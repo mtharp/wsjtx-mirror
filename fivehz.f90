@@ -31,7 +31,7 @@ subroutine fivehz
   if(first) then
      rxdelay=0.2
      txdelay=0.2
-     tlatency=3*2048/11025.0
+     tlatency=1.0
      first=.false.
      iptt=0
      ntr0=-99
