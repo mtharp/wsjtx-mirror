@@ -2,8 +2,8 @@
 !include <dfinc.mak>   #Some definitions for Compaq Visual Fortran
 CC = cl
 FC = df
-#FFLAGS = /traceback /fast /nologo /check:all /fpp /DCVF
-FFLAGS = /traceback /fast /nologo /fpp /DCVF
+FFLAGS = /traceback /fast /nologo /check:all /fpp /DCVF
+#FFLAGS = /traceback /fast /nologo /fpp /DCVF
 CFLAGS = /DWin32 /DCVF /I. 
 
 OBJS2 = wspr_tx.obj genmept.obj inter_mept.obj nchar.obj grid2deg.obj \
@@ -17,7 +17,7 @@ OBJS3 = wspr_rx.obj inter_mept.obj \
 	unpackgrid.obj deg2grid.obj getrms.obj \
 	set.obj encode232.obj fano232.obj wfile5.obj \
 	xcor162.obj slope.obj peakup.obj pctile.obj db.obj sort.obj \
-	ssort.obj decode162.obj getsound.obj
+	ssort.obj decode162.obj getsound.obj spec162.obj
 
 all:    WSPR.EXE wspr_tx.exe wspr_rx.exe
 

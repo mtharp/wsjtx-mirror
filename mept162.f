@@ -20,6 +20,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,c,c,c2,jz,df2,ps)
+      call spec162(c2,jz)
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,dtx,dfx,snrx,snrsync,sstf,kz)

@@ -21,8 +21,8 @@ program wspr_tx
   integer playsound,ptt
 
   nargs=iargc()
-  if(nargs.ne.6) then
-     print*,'Usage: wspr_tx call grid dBm nport ntxdf devout'
+  if(nargs.ne.7) then
+     print*,'Usage: wspr_tx call grid dBm nport ntxdf devout f0'
      go to 999
   endif
 
@@ -37,7 +37,8 @@ program wspr_tx
   call getarg(6,devout)
   ndevout=0
   read(devout,*,err=1) ndevout
-1 continue
+1 call getarg(7,arg)
+  read(arg,*) f0
 
   nsec=time()
   isec=mod(nsec,86400)
@@ -45,19 +46,24 @@ program wspr_tx
   im=(isec-ih*3600)/60
   is=mod(isec,60)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
-  do i=22,1,-1
-     if(message(i:i).ne.' ') go to 10
+  write(cdbm,'(i3)'),ndbm
+  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
+  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
+  do i=6,1,-1
+     if(call1(i:i).ne.' ') go to 10
   enddo
 10 iz=i
+  message=call1(1:iz)//grid//' '//cdbm
+  do i=22,1,-1
+     if(message(i:i).ne.' ') go to 20
+  enddo
+20 iz=i
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
+  ftx=f0 + 0.001500d0
   write(13,1010) ih,im,ftx,message(1:iz)
 1010 format(2i2.2,14x,f11.6,'  Transmitting "',a,'"')
   close(13)
 
-  write(cdbm,'(i3)'),ndbm
-  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
-  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
-  message=call1(1:i1)//grid//' '//cdbm
   call genmept(call1,grid,ndbm,ntxdf,99.0,iwave)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
   ierr=unlink('abort')

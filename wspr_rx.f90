@@ -16,6 +16,7 @@ program wspr_rx
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)
   integer*1 data1(11),i1
+  integer*1 hdr(44)
   integer mettab(0:255,0:1)                           !Metric table
   integer npr3(162)
   integer getsound
@@ -125,10 +126,21 @@ program wspr_rx
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
   open(14,file='decoded.txt',status='unknown')
 
-  ierr=unlink('abort')
-  ierr=getsound(ndevin,iwave)
-  npts=114*12000
-  call getrms(iwave,npts,ave,rms)
+  if(ndevin.ge.0) then
+     ierr=unlink('abort')
+     ierr=getsound(ndevin,iwave)
+     npts=114*12000
+     call getrms(iwave,npts,ave,rms)
+  else
+#ifdef CVF
+     open(12,file=outfile,form='binary',status='unknown')
+#else
+     open(12,file=outfile,access='stream',status='unknown')
+#endif
+     read(12) hdr
+     read(12) (iwave(i),i=1,114*12000)
+     close(12)
+  endif
   call mept162(cfile6,f0,minsync,iwave,NMAX,rms,nsec)
   if(nsave.gt.0) then
      outfile='save/'//outfile

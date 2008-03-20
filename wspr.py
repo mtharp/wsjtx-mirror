@@ -20,8 +20,8 @@ import random
 import math
 
 root = Tk()
-#Version="0.4 r" + "$Rev: 638 $"[6:-1]
-Version="0.4"
+Version="0.4 r" + "$Rev: 638 $"[6:-1]
+#Version="0.4"
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -312,12 +312,12 @@ def start_rx(f0,nsec):
     text1.see(END)
 
 #------------------------------------------------------ start_tx
-def start_tx(mycall,mygrid,ndbm,ntxdf):
+def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
     global receiving,transmitting
     cmd="wspr_tx.exe"
     args=mycall + " " + mygrid + " " + str(ndbm) + \
           " " + str(options.PttPort.get()) + " " + str(ntxdf) + \
-          " " + options.DevoutName.get()
+          " " + options.DevoutName.get() + " " + str(f0)
     transmitting=1
     try:
         os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
@@ -340,7 +340,7 @@ def update():
         if x<options.pctx.get() and lauto:
             ntxdf=int(round(1.e6*(ftx.get()-f0.get())))-1500
             thread.start_new_thread(start_tx,
-                (MyCall.get(),MyGrid.get(),dBm.get(),ntxdf))
+                (MyCall.get(),MyGrid.get(),dBm.get(),ntxdf,f0.get()),)
         else:
             thread.start_new_thread(start_rx,
                 (f0.get(),nsec))
