@@ -4,13 +4,15 @@ program wspr_rx
 
 #ifdef CVF
   use dfport
+#else
+  integer time
+  integer unlink
 #endif
 
   character*12 callsign
   character*4 grid
   parameter (NMAX=120*12000)                          !Max length of waveform
   integer*2 iwave(NMAX)                               !Generated waveform
-  integer time
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)
   integer*1 data1(11),i1
@@ -90,8 +92,8 @@ program wspr_rx
   save
 
   nargs=iargc()
-  if(nargs.ne.2) then
-     print*,'Usage: wspr_rx f0 nsec'
+  if(nargs.ne.4) then
+     print*,'Usage: wspr_rx f0 nsec minsync nsave'
      go to 999
   endif
 
@@ -99,6 +101,10 @@ program wspr_rx
   read(arg,*) f0
   call getarg(2,arg)
   read(arg,*) nsec
+  call getarg(3,arg)
+  read(arg,*) minsync
+  call getarg(4,arg)
+  read(arg,*) nsave
   nsym=162                  !Symbols per transmission
   do i=1,nsym
      pr3(i)=2*npr3(i)-1
@@ -113,12 +119,15 @@ program wspr_rx
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
   open(14,file='decoded.txt',status='unknown')
 
+  ierr=unlink('abort')
   ierr=getsound(iwave)
   npts=114*12000
   call getrms(iwave,npts,ave,rms)
-  outfile='save/'//cfile6(1:4)//'.wav'
-  call wfile5(iwave,npts,12000,outfile)
   call mept162(cfile6,f0,iwave,NMAX,rms,nsec)
+  if(nsave.gt.0) then
+     outfile='save/'//cfile6(1:4)//'.wav'
+     call wfile5(iwave,npts,12000,outfile)
+  endif
 
 999 continue
 end program wspr_rx

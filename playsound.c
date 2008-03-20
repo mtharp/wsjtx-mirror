@@ -36,6 +36,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include "portaudio.h"
 
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
@@ -121,6 +122,7 @@ extern int playsound_(short int iwave[])
   int                 numBytes;
   SAMPLE              max, val;
   double              average;
+  struct stat         stbuf;
 
   data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
   data.frameIndex = 0;
@@ -153,8 +155,14 @@ extern int playsound_(short int iwave[])
     err = Pa_StartStream( stream );
     if( err != paNoError ) goto done;
 
-    while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) 
-      Pa_Sleep(100);
+    while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) {
+      err=stat("abort", &stbuf);
+      if(err == 0) {
+	Pa_Sleep(1000);
+	exit(0);
+      }
+      Pa_Sleep(200);
+    }
     if( err < 0 ) goto done;
         
     err = Pa_CloseStream( stream );

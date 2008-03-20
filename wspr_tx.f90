@@ -4,6 +4,8 @@ program wspr_tx
 
 #ifdef CVF
   use dfport
+#else
+  integer unlink
 #endif
 
   parameter (NMAX=120*12000)
@@ -37,6 +39,7 @@ program wspr_tx
   message=call1(1:i1)//grid//' '//cdbm
   call genmept(call1,grid,ndbm,ntxdf,99.0,iwave)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
+  ierr=unlink('abort')
   ierr=playsound(iwave)
   if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
 

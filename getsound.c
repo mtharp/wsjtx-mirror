@@ -36,6 +36,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include "portaudio.h"
 
 #define SAMPLE_RATE  (12000)
@@ -122,6 +123,7 @@ extern int getsound_(short int iwave[])
   int                 numBytes;
   SAMPLE              max, val;
   double              average;
+  struct stat         stbuf;
 
   data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
   data.frameIndex = 0;
@@ -155,7 +157,12 @@ extern int getsound_(short int iwave[])
   if( err != paNoError ) goto done;
 
   while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) {
-    Pa_Sleep(100);
+    err=stat("abort", &stbuf);
+    if(err == 0) {
+      Pa_Sleep(1000);
+      exit(0);
+    }
+    Pa_Sleep(200);
   }
   if( err < 0 ) goto done;
 

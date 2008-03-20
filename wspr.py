@@ -235,7 +235,7 @@ def toggleauto(event=NONE):
 def start_rx(f0,nsec):
     global receiving,transmitting,bandmap,bandmap2
     cmd="wspr_rx.exe"
-    args=str(f0) + " " + str(nsec)
+    args=str(f0) + " " + str(nsec) + " " + str(isync) + " " + str(nsave.get())
     receiving=1
     try:
         os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
@@ -376,6 +376,16 @@ setupbutton.pack(side = LEFT)
 setupmenu = Menu(setupbutton, tearoff=0)
 setupbutton['menu'] = setupmenu
 setupmenu.add('command', label = 'Options', command = options1)
+
+#------------------------------------------------------ Save menu
+savebutton = Menubutton(mbar, text = 'Save')
+savebutton.pack(side = LEFT)
+savemenu = Menu(savebutton, tearoff=1)
+savebutton['menu'] = savemenu
+savemenu.add_radiobutton(label = 'None', variable=nsave,value=0)
+savemenu.add_radiobutton(label = 'Save decoded', variable=nsave,value=1)
+savemenu.add_radiobutton(label = 'Save all', variable=nsave,value=2)
+nsave.set(0)
 
 #------------------------------------------------------  Help menu
 helpbutton = Menubutton(mbar, text = 'Help')
@@ -605,4 +615,6 @@ f.write("MRUDir " + mrudir2 + "\n")
 f.close()
 
 #Terminate audio streams
+f=open("abort",mode='w')
 #time.sleep(0.5)
+#f.close()
