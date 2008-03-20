@@ -375,9 +375,11 @@ def update():
     msg6.configure(text=t,bg=bgcolor)
 
     if newdat:
-        f.open("pixmap.dat",'rb')
-        nx,ny=f.read()
-        print nx,ny
+##        f=open("pixmap.dat",'rb')
+##        nx,ny,a=f.read()
+##        print nx,ny
+##        f.close()
+        
 ##        n=Audio.gcom2.nlines
 ##        box=(nx,0,500,160)                #Define region
 ##        region=im.crop(box)               #Get all but leftmost nx columns
