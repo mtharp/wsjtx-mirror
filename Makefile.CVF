@@ -1,0 +1,29 @@
+#Makefile for Windows
+!include <dfinc.mak>   #Some definitions for Compaq Visual Fortran
+CC = cl
+FC = df
+#FFLAGS = /traceback /fast /nologo /check:all /fpp /DCVF
+FFLAGS = /traceback /fast /nologo /fpp /DCVF
+CFLAGS = /DWin32 /I. 
+
+OBJS1 = mept_jt.obj mept_tx.obj mept_rx.obj genmept.obj inter_mept.obj \
+	mix162.obj xfft.obj four1.obj four2.obj sync162.obj ps162.obj \
+	mept162.obj wfile5.obj nchar.obj grid2deg.obj \
+	packcall.obj packgrid.obj pack50.obj unpack50.obj unpackcall.obj \
+	unpackgrid.obj deg2grid.obj gran.obj getrms.obj ptt.obj \
+	set.obj encode232.obj fano232.obj \
+	xcor162.obj slope.obj peakup.obj pctile.obj db.obj sort.obj \
+	ssort.obj decode162.obj smooth.obj playsound.obj getsound.obj
+
+all:    mept_jt.exe
+
+mept_jt.exe: $(OBJS1)
+	$(FC) $(FFLAGS) /exe:mept_jt.exe $(OBJS1) pa.lib
+
+.PHONY : clean
+
+clean:
+    -del *.obj mept_jt.exe
+
+
+
