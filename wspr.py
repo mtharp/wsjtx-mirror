@@ -58,11 +58,13 @@ cmap0="Linrad"
 dBm=IntVar()
 mrudir=os.getcwd()
 ndbm0=-999
+newdat=0
 nsave=IntVar()
 nsec0=0
 nspeed0=IntVar()
 NX=500
 NY=160
+a=zeros(NX*NY,'s')
 im=Image.new('P',(NX,NY))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)
@@ -246,7 +248,7 @@ def toggleauto(event=NONE):
 
 #------------------------------------------------------ start_rx
 def start_rx(f0,nsec):
-    global receiving,transmitting,bandmap,bandmap2
+    global receiving,transmitting,bandmap,bandmap2,newdat
 
     utc=time.gmtime(time.time()+0.1*idsec)
     t="%02d%02d%02d_%02d%02d" % (utc[0]-2000,utc[1],utc[2],utc[3],utc[4])
@@ -310,6 +312,7 @@ def start_rx(f0,nsec):
         call0=bandmap2[i][1]
     text1.configure(state=DISABLED)
     text1.see(END)
+    newdat=1
 
 #------------------------------------------------------ start_tx
 def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
@@ -328,7 +331,7 @@ def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0, \
-        receiving,transmitting
+        receiving,transmitting,newdat
     tsec=time.time()
     nsec=int(tsec)
     if nsec<nsec0:
@@ -370,6 +373,27 @@ def update():
         bgcolor='green'
         t='Receiving'
     msg6.configure(text=t,bg=bgcolor)
+
+    if newdat:
+        f.open("pixmap.dat",'rb')
+        nx,ny=f.read()
+        print nx,ny
+##        n=Audio.gcom2.nlines
+##        box=(nx,0,500,160)                #Define region
+##        region=im.crop(box)               #Get all but leftmost nx columns
+##        try:
+##            im.paste(region,(0,0))        #Move waterfall left
+##        except:
+##            print "Images did not match, continuing anyway."
+##        for i in range(nx):
+##            line0.putdata(a[750*i:750*(i+1)])   #One row of pixels to line0
+##            im.paste(line0,(0,i))               #Paste in new top line
+##        nscroll=nscroll+n
+##        pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
+##        graph1.delete(ALL)
+##        #For some reason, top two lines are invisible, so we move down 2
+##        graph1.create_image(0,0+2,anchor='nw',image=pim)
+        newdat=0
     
     ldate.after(100,update)
     
