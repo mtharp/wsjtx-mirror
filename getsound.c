@@ -107,9 +107,9 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
 
 /*******************************************************************/
 #ifdef CVF
-extern int __stdcall GETSOUND(short int iwave[])
+extern int __stdcall GETSOUND(int *ndevin, short int iwave[])
 #else
-extern int getsound_(short int iwave[])
+extern int getsound_(int *ndevin, short int iwave[])
 #endif
 {
   PaStreamParameters  inputParameters,
@@ -136,7 +136,11 @@ extern int getsound_(short int iwave[])
   err = Pa_Initialize();
   if( err != paNoError ) goto done;
 
-  inputParameters.device = Pa_GetDefaultInputDevice();
+  if(*ndevin == 0)
+    inputParameters.device = Pa_GetDefaultInputDevice();
+  else
+    inputParameters.device = *ndevin;
+
   inputParameters.channelCount = 1;
   inputParameters.sampleFormat = PA_SAMPLE_TYPE;
   inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;

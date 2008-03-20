@@ -59,11 +59,10 @@ nsave=IntVar()
 nsec0=0
 nspeed0=IntVar()
 NX=500
-NY=120
+NY=160
 im=Image.new('P',(NX,NY))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)
-pctx=25
 receiving=0
 slabel="Sync   "
 transmitting=0
@@ -235,7 +234,8 @@ def toggleauto(event=NONE):
 def start_rx(f0,nsec):
     global receiving,transmitting,bandmap,bandmap2
     cmd="wspr_rx.exe"
-    args=str(f0) + " " + str(nsec) + " " + str(isync) + " " + str(nsave.get())
+    args=str(f0) + " " + str(nsec) + " " + str(isync) + " " + \
+        str(nsave.get()) + " " + options.DevinName.get()
     receiving=1
     try:
         os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
@@ -297,7 +297,9 @@ def start_rx(f0,nsec):
 def start_tx(mycall,mygrid,ndbm,ntxdf):
     global receiving,transmitting
     cmd="wspr_tx.exe"
-    args=mycall + " " + mygrid + " " + str(ndbm) + " 5 " + str(ntxdf)
+    args=mycall + " " + mygrid + " " + str(ndbm) + \
+          " " + str(options.PttPort.get()) + " " + str(ntxdf) + \
+          " " + options.DevoutName.get()
     transmitting=1
     try:
         os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
@@ -307,7 +309,7 @@ def start_tx(mycall,mygrid,ndbm,ntxdf):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,cmap0,lauto,nsec0,pctx, \
+    global root_geom,isec0,im,pim,cmap0,lauto,nsec0, \
         receiving,transmitting
     tsec=time.time()
     nsec=int(tsec)
@@ -317,8 +319,8 @@ def update():
     ns120=nsec%120
     if ns120==0 and (not transmitting) and (not receiving):
         x=random.uniform(0.,100.)
-        if x<pctx and lauto:
-            ntxdf=int(1.e6*(ftx.get()-f0.get()))-1500
+        if x<options.pctx.get() and lauto:
+            ntxdf=int(round(1.e6*(ftx.get()-f0.get())))-1500
             thread.start_new_thread(start_tx,
                 (MyCall.get(),MyGrid.get(),dBm.get(),ntxdf))
         else:
@@ -333,7 +335,6 @@ def update():
         ldate.configure(text=t)
         root_geom=root.geometry()
         utchours=utc[3]+utc[4]/60.0 + utc[5]/3600.0
-    pctx=sc1.get()
 
     bgcolor='gray85'
     t=''
@@ -406,11 +407,11 @@ lab1.pack(side=RIGHT)
 iframe1 = Frame(frame, bd=1, relief=SUNKEN)
 graph1=Canvas(iframe1, bg='black', width=NX, height=NY,cursor='crosshair')
 graph1.pack(side=LEFT)
-c=Canvas(iframe1, bg='white', width=50, height=NY,bd=0)
+c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
 #-------------------------------------------------------- Band map
-text1=Text(iframe1, height=8, width=12)
+text1=Text(iframe1, height=10, width=12)
 text1.pack(side=LEFT, padx=1)
 text1.insert(END,'132 ZL1BPU')
 sb = Scrollbar(iframe1, orient=VERTICAL, command=text1.yview)
@@ -457,58 +458,41 @@ lab2=Label(iframe2, text='UTC      Sync   dB        DT           Freq')
 lab2.place(x=3,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
-#-------------------------------------------------------- Decoded text
+#-------------------------------------------------------- 
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
-text=Text(iframe4, height=10, width=80)
-text.pack(side=LEFT, fill=X, padx=1)
-text.insert(END,'1054   4 -25   1.1  10.140140  K1JT FN20 25')
-sb = Scrollbar(iframe4, orient=VERTICAL, command=text.yview)
-sb.pack(side=RIGHT, fill=Y)
-text.configure(yscrollcommand=sb.set)
-iframe4.pack(expand=1, fill=X, padx=4)
-
-#-----------------------------------------------------General control area
-iframe5 = Frame(frame, bd=1, relief=FLAT,height=180)
-f5a=Frame(iframe5,height=170,bd=2,relief=FLAT)
+f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
 #------------------------------------------------------ Date and Time
-ldate=Label(f5a, bg='black', fg='yellow', width=11, bd=4,
+ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
         justify=CENTER, font=(font1,16))
-ldate.pack(side=LEFT,padx=2,pady=2)
-ldsec=Label(f5a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
-ldsec.pack(side=LEFT,ipadx=3,padx=2,pady=5)
+ldate.pack(side=TOP,padx=2,pady=2)
+ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
+ldsec.pack(side=TOP,ipadx=3,padx=2,pady=5)
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(ldsec,'<Button-3>',decdsec)
-f5a.pack(side=LEFT,expand=0,fill=Y)
 
-#------------------------------------------------------ Receiving parameters
-f5b=Frame(iframe5,bd=2,relief=FLAT)
-lsync=Label(f5b, bg='white', fg='black', text='Sync   1', width=8, relief=RIDGE)
-lsync.grid(column=0,row=0,padx=2,pady=1,sticky='EW')
+berase=Button(f4a, text='Erase',underline=0,command=erase,padx=1,pady=1)
+berase.pack(side=TOP,expand=1,fill=BOTH)
+auto=Button(f4a,text='Enable Tx',underline=0,command=toggleauto,
+            padx=1,pady=1)
+auto.pack(side=TOP,expand=1,fill=BOTH)
+f4a.pack(side=LEFT,expand=0,fill=Y)
+
+lsync=Label(f4a, bg='white', fg='black', text='Sync   1', width=8, relief=RIDGE)
+lsync.pack(side=TOP,ipadx=3,padx=2,pady=5)
 Widget.bind(lsync,'<Button-1>',incsync)
 Widget.bind(lsync,'<Button-3>',decsync)
-f5b.pack(side=LEFT,expand=0,fill=BOTH,padx=40)
-lab3=Label(iframe5,text='Rx',bd=0)
-lab3.pack(side=LEFT,padx=8)
-sc1=Scale(iframe5,from_=0,to_=100,orient='horizontal',
-          label='          % Transmitting',showvalue=1,sliderlength=5,
-          length=150,resolution=5,tickinterval=20.0)
-sc1.pack(side=LEFT)
-lab4=Label(iframe5,text='Tx',bd=0)
-lab4.pack(side=LEFT,padx=8)
 
-#------------------------------------------------------- Button Bar
-f5c = Frame(iframe5, bd=2, relief=SUNKEN)
-berase=Button(f5c, text='Erase',underline=0,command=erase,
-                padx=1,pady=1)
-auto=Button(f5c,text='Enable Tx',underline=0,command=toggleauto,
-            padx=1,pady=1)
-berase.pack(side=TOP,expand=1,fill=BOTH)
-auto.pack(side=TOP,expand=1,fill=BOTH)
-f5c.pack(expand=1, fill=X, padx=4,pady=4)
-
-iframe5.pack(expand=1, fill=X, padx=4)
+f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
+text=Text(f4b, height=11, width=68)
+text.pack(side=RIGHT, fill=X, padx=1)
+text.insert(END,'1054   4 -25   1.1  10.140140  K1JT FN20 25')
+sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
+sb.pack(side=RIGHT, fill=Y)
+text.configure(yscrollcommand=sb.set)
+f4b.pack(side=LEFT,expand=0,fill=Y)
+iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
@@ -553,8 +537,8 @@ try:
         elif key == 'MyCall': MyCall.set(value)
         elif key == 'MyGrid': MyGrid.set(value)
         elif key == 'dBm': dBm.set(value)
-        elif key == 'PctTx': sc1.set(value)
-        elif key == 'IDinterval': options.IDinterval.set(value)
+        elif key == 'PctTx': options.pctx.set(value)
+#        elif key == 'IDinterval': options.IDinterval.set(value)
         elif key == 'PttPort':
             try:
                 options.PttPort.set(value)
@@ -603,12 +587,12 @@ f.write("WSPRGeometry " + root_geom + "\n")
 f.write("MyCall " + MyCall.get() + "\n")
 f.write("MyGrid " + MyGrid.get() + "\n")
 f.write("dBm " + str(dBm.get()) + "\n")
-f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
+#f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
 f.write("PttPort " + str(options.PttPort.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
-f.write("PctTx " + str(pctx) + "\n")
+f.write("PctTx " + str(options.pctx.get()) + "\n")
 f.write("Sync " + str(isync) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")

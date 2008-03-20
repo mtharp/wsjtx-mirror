@@ -15,12 +15,13 @@ program wspr_tx
   character*4 grid
   character*3 cdbm
   character*22 message
+  character*32 devout
   integer*2 iwave(NMAX)
   integer playsound,ptt
 
   nargs=iargc()
-  if(nargs.ne.5) then
-     print*,'Usage: wspr_tx call grid dBm nport ntxdf'
+  if(nargs.ne.6) then
+     print*,'Usage: wspr_tx call grid dBm nport ntxdf devout'
      go to 999
   endif
 
@@ -32,15 +33,17 @@ program wspr_tx
   read(arg,*) nport
   call getarg(5,arg)
   read(arg,*) ntxdf
-
-  write(cdbm,'(i3)'),ndbm
+  call getarg(6,devout)
+  ndevout=0
+  read(devout,*,err=1) ndevout
+1  write(cdbm,'(i3)'),ndbm
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   message=call1(1:i1)//grid//' '//cdbm
   call genmept(call1,grid,ndbm,ntxdf,99.0,iwave)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
   ierr=unlink('abort')
-  ierr=playsound(iwave)
+  ierr=playsound(ndevout,iwave)
   if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
 
 999 continue

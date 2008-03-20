@@ -106,9 +106,9 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 
 /*******************************************************************/
 #ifdef CVF
-extern int __stdcall PLAYSOUND(short int iwave[])
+extern int __stdcall PLAYSOUND(int *ndevout, short int iwave[])
 #else
-extern int playsound_(short int iwave[])
+extern int playsound_(int *ndevout, short int iwave[])
 #endif
 {
   PaStreamParameters  inputParameters,
@@ -134,7 +134,12 @@ extern int playsound_(short int iwave[])
   data.frameIndex = 0;
   err = Pa_Initialize();
   if( err != paNoError ) goto done;
-  outputParameters.device = Pa_GetDefaultOutputDevice();
+
+  if( *ndevout == 0) 
+    outputParameters.device = Pa_GetDefaultOutputDevice();
+  else
+    outputParameters.device = *ndevout;
+
   outputParameters.channelCount = NUM_CHANNELS;
   outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
   outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;

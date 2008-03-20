@@ -26,17 +26,21 @@ ndevin=IntVar()
 ndevout=IntVar()
 DevinName=StringVar()
 DevoutName=StringVar()
+pctx=IntVar()
 
-idinterval=Pmw.EntryField(g1.interior(),labelpos=W,label_text='ID Interval (m):',
-        value=10,entry_textvariable=IDinterval,entry_width=12)
+##idinterval=Pmw.EntryField(g1.interior(),labelpos=W,label_text='ID Interval (m):',
+##        value=0,entry_textvariable=IDinterval,entry_width=12)
 comport=Pmw.EntryField(g1.interior(),labelpos=W,label_text='PTT Port:',
         value='/dev/ttyS0',entry_textvariable=PttPort,entry_width=12)
 audioin=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio In:',
         value='0',entry_textvariable=DevinName,entry_width=12)
 audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
         value='0',entry_textvariable=DevoutName,entry_width=12)
+pctx0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Pct Tx:',
+        value='33',entry_textvariable=pctx,entry_width=12)
 
-widgets = (idinterval,comport,audioin,audioout)
+##widgets = (idinterval,comport,audioin,audioout)
+widgets = (comport,audioin,audioout,pctx0)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)
 

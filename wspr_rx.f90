@@ -24,6 +24,7 @@ program wspr_rx
   character*12 arg
   character*6 cfile6
   character*70 outfile
+  character*32 devin
   equivalence(i1,i4)
   data npr3/                                          &
       1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,        &
@@ -92,8 +93,8 @@ program wspr_rx
   save
 
   nargs=iargc()
-  if(nargs.ne.4) then
-     print*,'Usage: wspr_rx f0 nsec minsync nsave'
+  if(nargs.ne.5) then
+     print*,'Usage: wspr_rx f0 nsec minsync nsave devin'
      go to 999
   endif
 
@@ -105,7 +106,10 @@ program wspr_rx
   read(arg,*) minsync
   call getarg(4,arg)
   read(arg,*) nsave
-  nsym=162                  !Symbols per transmission
+  call getarg(5,devin)
+  ndevin=0
+  read(devin,*,err=1) ndevin
+1  nsym=162                  !Symbols per transmission
   do i=1,nsym
      pr3(i)=2*npr3(i)-1
   enddo
@@ -120,7 +124,7 @@ program wspr_rx
   open(14,file='decoded.txt',status='unknown')
 
   ierr=unlink('abort')
-  ierr=getsound(iwave)
+  ierr=getsound(ndevin,iwave)
   npts=114*12000
   call getrms(iwave,npts,ave,rms)
   call mept162(cfile6,f0,iwave,NMAX,rms,nsec)
