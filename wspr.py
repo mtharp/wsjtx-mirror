@@ -17,6 +17,7 @@ from types import *
 import array
 import thread
 import random
+import math
 
 root = Tk()
 #Version="0.4 r" + "$Rev: 638 $"[6:-1]
@@ -45,6 +46,7 @@ root_geom=""
 
 #------------------------------------------------------ Global variables
 appdir=os.getcwd()
+balloon=Pmw.Balloon(root)
 bandmap=[]
 bandmap2=[]
 font1='Helvetica'
@@ -55,6 +57,7 @@ isync=1
 cmap0="Linrad"
 dBm=IntVar()
 mrudir=os.getcwd()
+ndbm0=-999
 nsave=IntVar()
 nsec0=0
 nspeed0=IntVar()
@@ -64,7 +67,7 @@ im=Image.new('P',(NX,NY))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)
 receiving=0
-slabel="Sync   "
+slabel="MinSync  "
 transmitting=0
 
 g.ndevin=IntVar()
@@ -75,6 +78,15 @@ g.DevoutName=StringVar()
 #------------------------------------------------------ quit
 def quit():
     root.destroy()
+
+#------------------------------------------------------ dbm_balloon
+def dbm_balloon():
+    mW=int(round(math.pow(10.0,0.1*dBm.get())))
+    if(mW<1000):
+        t="%.1f mW" % (mW,)
+    else:
+        t="%.1f W" % (0.001*mW,)
+    balloon.bind(ldBm,t)
 
 #------------------------------------------------------ all_hdr
 def all_hdr():
@@ -191,15 +203,17 @@ def erase(event=NONE):
 def draw_axis():
     xmid=10.1386 + 0.001500
     c.delete(ALL)
-    df=12000.0/4096.0
+    df=12000.0/8192.0
 # Draw tick marks
-    for iy in range(0,350,20):
-        j=iy/df
-        i1=10
-        if (iy%100)==0 :
+    for iy in range(-120,120,10):
+        j=80 - iy/df
+        i1=7
+        if (iy%50)==0:
+            i1=12
+            c.create_text(27,j,text=str(iy))
+        if (iy%100)==0:
             i1=15
-        y=8
-#        c.create_text(x,y,text=str(iy))
+            c.create_text(27,j,text=str(iy))
         c.create_line(0,j,i1,j,fill='black')
 
 #------------------------------------------------------ delwav
@@ -233,9 +247,13 @@ def toggleauto(event=NONE):
 #------------------------------------------------------ start_rx
 def start_rx(f0,nsec):
     global receiving,transmitting,bandmap,bandmap2
+
+    utc=time.gmtime(time.time()+0.1*idsec)
+    t="%02d%02d%02d_%02d%02d" % (utc[0]-2000,utc[1],utc[2],utc[3],utc[4])
+    savefile=t+".WAV"
     cmd="wspr_rx.exe"
     args=str(f0) + " " + str(nsec) + " " + str(isync) + " " + \
-        str(nsave.get()) + " " + options.DevinName.get()
+        str(nsave.get()) + " " + options.DevinName.get() + " " + savefile
     receiving=1
     try:
         os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
@@ -309,7 +327,7 @@ def start_tx(mycall,mygrid,ndbm,ntxdf):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,cmap0,lauto,nsec0, \
+    global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0, \
         receiving,transmitting
     tsec=time.time()
     nsec=int(tsec)
@@ -335,6 +353,12 @@ def update():
         ldate.configure(text=t)
         root_geom=root.geometry()
         utchours=utc[3]+utc[4]/60.0 + utc[5]/3600.0
+        try:
+            if dBm.get()!=ndbm0:
+                ndbm0=dBm.get()
+                dbm_balloon()
+        except:
+            pass
 
     bgcolor='gray85'
     t=''
@@ -439,9 +463,9 @@ g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 g2=Pmw.Group(iframe2a,tag_text="Tx message")
 MyCall=StringVar()
 MyGrid=StringVar()
-lcall=Pmw.EntryField(g2.interior(),labelpos=W,label_text='MyCall:',
+lcall=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Call:',
         value='K1JT',entry_textvariable=MyCall,entry_width=8)
-lgrid=Pmw.EntryField(g2.interior(),labelpos=W,label_text='MyGrid:',
+lgrid=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Grid:',
         value='FN20',entry_textvariable=MyGrid,entry_width=5)
 ldBm=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Power (dBm):',
         value=30,entry_textvariable=dBm,entry_width=4)
@@ -455,34 +479,34 @@ g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
 lab2=Label(iframe2, text='UTC      Sync   dB        DT           Freq')
-lab2.place(x=3,y=6, anchor='w')
+lab2.place(x=170,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
-#-------------------------------------------------------- 
+#-------------------------------------------------------- Buttons, UTC, etc
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
 f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
-
-#------------------------------------------------------ Date and Time
-ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
-        text='2005 Apr 22\n01:23:45', relief=RIDGE,
-        justify=CENTER, font=(font1,16))
-ldate.pack(side=TOP,padx=2,pady=2)
-ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
-ldsec.pack(side=TOP,ipadx=3,padx=2,pady=5)
-Widget.bind(ldsec,'<Button-1>',incdsec)
-Widget.bind(ldsec,'<Button-3>',decdsec)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,padx=1,pady=1)
 berase.pack(side=TOP,expand=1,fill=BOTH)
 auto=Button(f4a,text='Enable Tx',underline=0,command=toggleauto,
             padx=1,pady=1)
 auto.pack(side=TOP,expand=1,fill=BOTH)
-f4a.pack(side=LEFT,expand=0,fill=Y)
 
 lsync=Label(f4a, bg='white', fg='black', text='Sync   1', width=8, relief=RIDGE)
 lsync.pack(side=TOP,ipadx=3,padx=2,pady=5)
 Widget.bind(lsync,'<Button-1>',incsync)
 Widget.bind(lsync,'<Button-3>',decsync)
+
+ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
+ldsec.pack(side=TOP,ipadx=3,padx=2,pady=5)
+Widget.bind(ldsec,'<Button-1>',incdsec)
+Widget.bind(ldsec,'<Button-3>',decdsec)
+
+ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
+        text='2005 Apr 22\n01:23:45', relief=RIDGE,
+        justify=CENTER, font=(font1,16))
+ldate.pack(side=TOP,padx=2,pady=2)
+f4a.pack(side=LEFT,expand=0,fill=Y)
 
 f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
 text=Text(f4b, height=11, width=68)
@@ -572,6 +596,7 @@ except:
     print key,value
 
 lsync.configure(text=slabel+str(isync))
+dbm_balloon()
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")

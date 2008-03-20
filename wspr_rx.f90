@@ -93,8 +93,8 @@ program wspr_rx
   save
 
   nargs=iargc()
-  if(nargs.ne.5) then
-     print*,'Usage: wspr_rx f0 nsec minsync nsave devin'
+  if(nargs.ne.6) then
+     print*,'Usage: wspr_rx f0 nsec minsync nsave devin outfile'
      go to 999
   endif
 
@@ -109,7 +109,9 @@ program wspr_rx
   call getarg(5,devin)
   ndevin=0
   read(devin,*,err=1) ndevin
-1  nsym=162                  !Symbols per transmission
+1 call getarg(6,outfile)
+
+  nsym=162                  !Symbols per transmission
   do i=1,nsym
      pr3(i)=2*npr3(i)-1
   enddo
@@ -127,9 +129,9 @@ program wspr_rx
   ierr=getsound(ndevin,iwave)
   npts=114*12000
   call getrms(iwave,npts,ave,rms)
-  call mept162(cfile6,f0,iwave,NMAX,rms,nsec)
+  call mept162(cfile6,f0,minsync,iwave,NMAX,rms,nsec)
   if(nsave.gt.0) then
-     outfile='save/'//cfile6(1:4)//'.wav'
+     outfile='save/'//outfile
      call wfile5(iwave,npts,12000,outfile)
   endif
 

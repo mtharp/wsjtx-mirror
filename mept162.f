@@ -1,4 +1,4 @@
-      subroutine mept162(cfile6,f0,id,npts,rms,nsec)
+      subroutine mept162(cfile6,f0,minsync,id,npts,rms,nsec)
 
 C  Orchestrates the process of decoding MEPT_JT messages.
 
@@ -36,7 +36,7 @@ C  Look for sync patterns, get DF and DT
          if(nsnrx.lt.-33) nsnrx=-33
          freq=f0 + 1.d-6*(dfx+1500.0)
          message='                      '
-         if(nsync.ge.1) then
+         if(nsync.ge.minsync) then
            call decode162(c2,jz,dtx,dfx,message,ncycles,metric,nerr)
            write(13,1010) cfile6(1:4),nsync,nsnrx,dtx,freq,message
            write(14,1010) cfile6(1:4),nsync,nsnrx,dtx,freq,message,
