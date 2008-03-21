@@ -53,7 +53,7 @@ program wspr_tx
      if(call1(i:i).ne.' ') go to 10
   enddo
 10 iz=i
-  message=call1(1:iz)//grid//' '//cdbm
+  message=call1(1:iz)//' '//grid//' '//cdbm
   do i=22,1,-1
      if(message(i:i).ne.' ') go to 20
   enddo
