@@ -302,24 +302,28 @@ def draw_axis():
             c.create_text(27,j,text=str(iy))
         c.create_line(0,j,i1,j,fill='black')
 
+#------------------------------------------------------ del_all
+def del_all():
+    pass
+
 #------------------------------------------------------ delwav
 def delwav():
-    t="Are you sure you want to delete\nall *.WAV files in the RxWav directory?"
+    t="Are you sure you want to delete\nall *.WAV files in the Save directory?"
     msg=Pmw.MessageDialog(root,buttons=('Yes','No'),message_text=t)
     msg.geometry(msgpos())
     if g.Win32: msg.iconbitmap("wsjt.ico")
     msg.focus_set()
     result=msg.activate()
     if result == 'Yes':
-# Make a list of *.wav files in RxWav
-        la=dircache.listdir(appdir+'/RxWav')
+# Make a list of *.wav files in Save
+        la=dircache.listdir(appdir+'/Save')
         lb=[]
         for i in range(len(la)):
             j=la[i].find(".wav") + la[i].find(".WAV")
             if j>0: lb.append(la[i])
 # Now delete them all.
         for i in range(len(lb)):
-            fname=appdir+'/RxWav/'+lb[i]
+            fname=appdir+'/Save/'+lb[i]
             os.remove(fname)
 
 #------------------------------------------------------ toggleauto
@@ -518,10 +522,10 @@ filemenu.add('command', label = 'Open next in directory', command = opennext, \
 filemenu.add('command', label = 'Decode remaining files in directory', \
              command = decodeall, accelerator='Shift+F6')
 filemenu.add_separator()
-filemenu.add('command', label = 'Delete all *.WAV files in RxWav', \
+filemenu.add('command', label = 'Delete all *.WAV files in Save', \
              command = delwav)
 filemenu.add_separator()
-filemenu.add('command', label = 'Erase ALL.TXT', command = stub)
+filemenu.add('command', label = 'Erase ALL_MEPT.TXT', command = del_all)
 filemenu.add_separator()
 filemenu.add('command', label = 'Exit', command = quit)
 
@@ -670,12 +674,13 @@ ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
 ldate.pack(side=TOP,padx=2,pady=2)
 f4a.pack(side=LEFT,expand=0,fill=Y)
 
+#--------------------------------------------------------- Decoded text box
 f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
 text=Text(f4b, height=11, width=68)
-text.pack(side=RIGHT, fill=X, padx=1)
-text.insert(END,'1054   4 -25   1.1  10.140140  K1JT FN20 25')
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
+text.pack(side=RIGHT, fill=X, padx=1)
+text.insert(END,'1054   4 -25   1.1  10.140140  K1JT FN20 25')
 text.configure(yscrollcommand=sb.set)
 f4b.pack(side=LEFT,expand=0,fill=Y)
 iframe4.pack(expand=1, fill=X, padx=4)
@@ -786,7 +791,7 @@ erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
 all_hdr()
-#toggleauto()
+toggleauto()
 try:
     os.remove('pixmap.dat')
 except:
