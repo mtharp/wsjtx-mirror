@@ -77,13 +77,13 @@
             x=fac*s(k,i+nfft)
             if(x.gt.0.0) n=gain*log10(1.0*x) + offset
             n=min(252,max(0,n))
-            a(j,i+81)=n
+            a(j,NY-i-80)=n
          enddo
          do i=0,79
             x=fac*s(k,i)
             if(x.gt.0.0) n=gain*log10(1.0*x) + offset
             n=min(252,max(0,n))
-            a(j,i+81)=n
+            a(j,NY-i-80)=n
          enddo
       enddo
 

@@ -285,10 +285,10 @@ def draw_axis():
         i1=7
         if (iy%50)==0:
             i1=12
-            c.create_text(27,j,text=str(iy))
+            c.create_text(27,j,text=str(iy+100))      #use fmid!
         if (iy%100)==0:
             i1=15
-            c.create_text(27,j,text=str(iy))
+            c.create_text(27,j,text=str(iy+100))        #Use fmid!
         c.create_line(0,j,i1,j,fill='black')
 
 #------------------------------------------------------ del_all
@@ -362,7 +362,7 @@ def start_rx(f0,nsec,fname):
             i1=callsign.find(' ')
             callsign=callsign[:i1]
             nseq=int(lines[i][62:71])
-            ndf=int(lines[i][71:75])
+            ndf=int(lines[i][71:75]) + 100      # Use fmid!
             bandmap.append((ndf,callsign,nseq))
     text.configure(state=DISABLED)
     text.see(END)
@@ -565,13 +565,13 @@ helpmenu = Menu(helpbutton, tearoff=0)
 helpbutton['menu'] = helpmenu
 helpmenu.add('command', label = 'About WSPR', command = about)
 
-#------------------------------------------------- Speed selection buttons
-for i in (5, 4, 3, 2, 1):
-    t=str(i)
-    Radiobutton(mbar,text=t,value=i,variable=nspeed0).pack(side=RIGHT)
-nspeed0.set(2)
-lab1=Label(mbar,text='Speed: ',bd=0)
-lab1.pack(side=RIGHT)
+###------------------------------------------------- Speed selection buttons
+##for i in (5, 4, 3, 2, 1):
+##    t=str(i)
+##    Radiobutton(mbar,text=t,value=i,variable=nspeed0).pack(side=RIGHT)
+##nspeed0.set(2)
+##lab1=Label(mbar,text='Speed: ',bd=0)
+##lab1.pack(side=RIGHT)
 
 #------------------------------------------------------ Graphics area
 iframe1 = Frame(frame, bd=1, relief=SUNKEN)
