@@ -69,7 +69,7 @@
       gain=40 * 5.0**(0.01*contrast)
       offset=-90.
       fac=20.0/nadd
-      fac=fac*20000./base
+      fac=fac*25000./base
 
       do k=1,kz
          j=k-kz+NX

@@ -78,6 +78,8 @@ pim=ImageTk.PhotoImage(im)
 receiving=0
 scale0=1.0
 offset0=0.0
+s0=0.0
+c0=0.0
 slabel="MinSync  "
 transmitting=0
 tw=[]
@@ -121,19 +123,6 @@ def dbm_balloon():
     else:
         t="%.1f W" % (0.001*mW,)
     balloon.bind(ldBm,t)
-
-#------------------------------------------------------ all_hdr
-def all_hdr():
-    lines="\n " + time.asctime(time.gmtime()) + " UTC\n" + \
-        " UTC Sync dB    DT     Freq    Message          \n" + \
-        "------------------------------------------------\n"
-    try:
-        f=open(appdir+'/ALL_MEPT.TXT',mode='a')
-        f.writelines(lines)
-        f.close()
-    except:
-        print 'Write to ALL_MEPT.TXT failed.'
-        pass
 
 #------------------------------------------------------ openfile
 def openfile(event=NONE):
@@ -426,12 +415,10 @@ def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
 def update():
     global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modtime0,tw
+        modtime0,tw,s0,c0
     tsec=time.time()
     utc=time.gmtime(tsec+0.1*idsec)
     nsec=int(tsec)
-    if nsec<nsec0:
-        all_hdr()
     nsec0=nsec
     ns120=nsec%120
     if ns120==0 and (not transmitting) and (not receiving) and lauto:
@@ -500,7 +487,9 @@ def update():
         scale0=scale
         offset0=offset
         newdat=0
-    
+
+    s0=sc1.get()
+    c0=sc2.get()
     ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
@@ -758,6 +747,8 @@ try:
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Sync': isync=int(value)
         elif key == 'Debug': ndebug.set(value)
+        elif key == 'WatScale': sc1.set(value)
+        elif key == 'WatOffset': sc2.set(value)
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
 except:
     print 'Error reading WSPR.INI, continuing with defaults.'
@@ -790,7 +781,6 @@ draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
-all_hdr()
 toggleauto()
 try:
     os.remove('pixmap.dat')
@@ -816,6 +806,8 @@ f.write("PctTx " + str(options.pctx.get()) + "\n")
 f.write("Sync " + str(isync) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
+f.write("WatScale " + str(s0)+ "\n")
+f.write("WatOffset " + str(c0)+ "\n")
 f.close()
 
 #Terminate audio streams
