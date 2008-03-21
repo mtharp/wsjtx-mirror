@@ -1,4 +1,4 @@
-      subroutine mept162(cfile6,f0,minsync,id,npts,rms,nsec)
+      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec)
 
 C  Orchestrates the process of decoding MEPT_JT messages.
 
@@ -6,7 +6,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
 
       parameter (NFFT1=2*1024*1024)
       character*22 message
-      character*6 cfile6
+      character*70 outfile
       logical first
       real*8 f0
       real ps(-128:128)
@@ -20,10 +20,10 @@ C  Orchestrates the process of decoding MEPT_JT messages.
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,c,c,c2,jz,df2,ps)
-      call spec162(c2,jz)
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,dtx,dfx,snrx,snrsync,sstf,kz)
+      call spec162(c2,jz)
 
       siglev=20.0*log10(rms/300.0) 
       do k=1,kz
@@ -39,10 +39,11 @@ C  Look for sync patterns, get DF and DT
          message='                      '
          if(nsync.ge.minsync) then
            call decode162(c2,jz,dtx,dfx,message,ncycles,metric,nerr)
-           write(13,1010) cfile6(1:4),nsync,nsnrx,dtx,freq,message
-           write(14,1010) cfile6(1:4),nsync,nsnrx,dtx,freq,message,
+           i2=index(outfile,'.')-1
+           write(13,1010)outfile(i2-10:i2),nsync,nsnrx,dtx,freq,message
+           write(14,1010)outfile(i2-10:i2),nsync,nsnrx,dtx,freq,message,
      +          siglev,nsec/120,nint(dfx)
- 1010      format(a4,i4,i4,f6.1,f11.6,2x,a15,f8.1,i9,i4)
+ 1010      format(a11,i4,i4,f6.1,f11.6,2x,a15,f8.1,i9,i4)
          endif
       enddo
 

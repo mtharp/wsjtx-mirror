@@ -12,7 +12,6 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
       real tmp(513)
       real sstf(4,275)
-
       save
 
 C  Do FFTs of twice symbol length, stepped by half symbols.  Note that 

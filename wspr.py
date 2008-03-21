@@ -367,13 +367,13 @@ def start_rx(f0,nsec,fname):
     text.configure(state=NORMAL)
     nseq=0
     for i in range(len(lines)):
-        text.insert(END,lines[i][:46]+"\n")
-        callsign=lines[i][31:38]
+        text.insert(END,lines[i][:53]+"\n")
+        callsign=lines[i][38:45]
         if callsign[:1] != ' ':
             i1=callsign.find(' ')
             callsign=callsign[:i1]
-            nseq=int(lines[i][55:64])
-            ndf=int(lines[i][64:68])
+            nseq=int(lines[i][62:71])
+            ndf=int(lines[i][71:75])
             bandmap.append((ndf,callsign,nseq))
     text.configure(state=DISABLED)
     text.see(END)
@@ -644,8 +644,8 @@ g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, text='UTC      Sync   dB        DT           Freq')
-lab2.place(x=170,y=6, anchor='w')
+lab2=Label(iframe2, text='DATE       UTC    Sync    dB        DT           Freq')
+lab2.place(x=155,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Buttons, UTC, etc

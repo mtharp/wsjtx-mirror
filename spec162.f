@@ -5,7 +5,9 @@
       complex c(0:255)
       real s(120,0:255)
       real w(0:255)
+      real savg(0:255),tmp(256)
       integer*2 a(NX,NY)
+      common/acom/base,base2
 
       nfft=256
       df=375.0/nfft
@@ -17,6 +19,7 @@
 
       nadd=9
       call zero(s,120*256)
+      call zero(savg,256)
       istep=nfft/2
       nsteps=(jz-nfft)/(nadd*istep)
 
@@ -49,11 +52,15 @@
             enddo
             call four2a(c,nfft,1,-1,1)
             do i=0,nfft-1
-               s(k,i)=s(k,i) + real(c(i))**2 + imag(c(i))**2
+               sq=real(c(i))**2 + imag(c(i))**2
+               s(k,i)=s(k,i) + sq
+               savg(i)=savg(i) + sq
             enddo
          enddo
       enddo
       kz=k
+
+      call pctile(savg,tmp,80,35,base)
 
       brightness=0.
       contrast=0.
@@ -62,6 +69,7 @@
       gain=40 * 5.0**(0.01*contrast)
       offset=-90.
       fac=20.0/nadd
+      fac=fac*20000./base
 
       do k=1,kz
          j=k-kz+NX

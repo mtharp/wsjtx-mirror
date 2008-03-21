@@ -126,10 +126,10 @@ program wspr_rx
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
   open(14,file='decoded.txt',status='unknown')
 
+  npts=114*12000
   if(ndevin.ge.0) then
      ierr=unlink('abort')
      ierr=getsound(ndevin,iwave)
-     npts=114*12000
      call getrms(iwave,npts,ave,rms)
   else
 #ifdef CVF
@@ -140,9 +140,10 @@ program wspr_rx
      read(12) hdr
      read(12) (iwave(i),i=1,114*12000)
      close(12)
+     call getrms(iwave,npts,ave,rms)
   endif
-  call mept162(cfile6,f0,minsync,iwave,NMAX,rms,nsec)
-  if(nsave.gt.0) then
+  call mept162(outfile,f0,minsync,iwave,NMAX,rms,nsec)
+  if(nsave.gt.0 .and. ndevin.ge.0) then
      outfile='save/'//outfile
      call wfile5(iwave,npts,12000,outfile)
   endif
