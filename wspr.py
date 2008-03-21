@@ -11,7 +11,7 @@ from math import log10
 #from numpy.oldnumeric import zeros
 import array
 import dircache
-import Image,ImageTk  #, ImageDraw
+import Image, ImageTk, ImageDraw
 from palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
@@ -21,8 +21,8 @@ import random
 import math
 
 root = Tk()
-Version="0.4 r" + "$Rev: 638 $"[6:-1]
-#Version="0.4"
+#Version="0.4 r" + "$Rev: 638 $"[6:-1]
+Version="0.4"
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -56,11 +56,14 @@ isec0=0
 isync=1
 cmap0="Linrad"
 dBm=IntVar()
+loopall=0
 modtime0=0
 mrudir=os.getcwd()
 ndbm0=-999
 newdat=1
 newspec=1
+npal=IntVar()
+npal.set(2)
 nsave=IntVar()
 nscroll=0
 nsec0=0
@@ -69,6 +72,7 @@ NX=500
 NY=160
 a=array.array('h')
 im=Image.new('P',(NX,NY))
+draw=ImageDraw.Draw(im)
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)
 receiving=0
@@ -76,6 +80,7 @@ scale0=1.0
 offset0=0.0
 slabel="MinSync  "
 transmitting=0
+tw=[]
 
 g.appdir=appdir
 g.cmap="Linrad"
@@ -132,7 +137,7 @@ def all_hdr():
 
 #------------------------------------------------------ openfile
 def openfile(event=NONE):
-    global mrudir,fileopened,nopen
+    global mrudir,fileopened,nopen,tw
     nopen=1                         #Work-around for "click feedthrough" bug
     try:
         os.chdir(mrudir)
@@ -143,6 +148,58 @@ def openfile(event=NONE):
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
     os.chdir(appdir)
+    if(lauto): toggleauto()
+    i1=fileopened.find('.')
+    t=fileopened[i1-4:i1]
+    t=t[0:2] + ':' + t[2:4]
+    n=len(tw)
+    if n>12: tw=tw[n-12:]
+    tw=[t,] + tw
+    thread.start_new_thread(start_rx,(f0.get(),0,fname))
+
+#------------------------------------------------------ opennext
+def opennext(event=NONE):
+    global ncall,fileopened,loopall,mrudir,tw
+    if fileopened=="" and ncall==0:
+        openfile()
+        ncall=1
+    else:
+# Make a list of *.wav files in mrudir
+        la=os.listdir(mrudir)
+        la.sort()
+        lb=[]
+        for i in range(len(la)):
+            j=la[i].find(".wav") + la[i].find(".WAV")
+            if j>0: lb.append(la[i])
+        for i in range(len(lb)):
+            if lb[i]==fileopened:
+                break
+        if i<len(lb)-1:
+            fname=mrudir+"/"+lb[i+1]
+            mrudir=os.path.dirname(fname)
+            fileopened=os.path.basename(fname)
+            i1=fileopened.find('.')
+            t=fileopened[i1-4:i1]
+            t=t[0:2] + ':' + t[2:4]
+            n=len(tw)
+            if n>12: tw=tw[n-12:]
+            tw=[t,] + tw
+            thread.start_new_thread(start_rx,(f0.get(),0,fname))
+        else:
+            t="No more *.wav files in this directory."
+            msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
+            msg.geometry(msgpos())
+#            if g.Win32: msg.iconbitmap("wsjt.ico")
+            msg.focus_set()
+            ncall=0
+            loopall=0
+            
+
+#------------------------------------------------------ decodeall
+def decodeall(event=NONE):
+    global loopall
+    loopall=1
+    opennext()
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
@@ -269,20 +326,25 @@ def delwav():
 def toggleauto(event=NONE):
     global lauto
     lauto=1-lauto
-    if lauto==0: auto.configure(bg='gray85',relief=RAISED)
+    if lauto==0: auto.configure(bg='gray85',text='Auto is Off',relief=RAISED)
     if lauto==1:
-        auto.configure(bg='green',relief=SOLID)
+        auto.configure(bg='green',text='Auto is On',relief=SOLID)
 
 #------------------------------------------------------ start_rx
-def start_rx(f0,nsec):
-    global receiving,transmitting,bandmap,bandmap2,newdat
+def start_rx(f0,nsec,fname):
+    global receiving,transmitting,bandmap,bandmap2,newdat,loopall
 
     utc=time.gmtime(time.time()+0.1*idsec)
-    t="%02d%02d%02d_%02d%02d" % (utc[0]-2000,utc[1],utc[2],utc[3],utc[4])
-    savefile=t+".WAV"
+    if fname!="":
+        savefile=fname
+        devin='-1'
+    else:
+        t="%02d%02d%02d_%02d%02d" % (utc[0]-2000,utc[1],utc[2],utc[3],utc[4])
+        savefile=t+".WAV"
+        devin=options.DevinName.get()
     cmd="wspr_rx.exe"
     args=str(f0) + " " + str(nsec) + " " + str(isync) + " " + \
-        str(nsave.get()) + " " + options.DevinName.get() + " " + savefile
+        str(nsave.get()) + " " + devin + " " + savefile
     receiving=1
     try:
         os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
@@ -340,6 +402,7 @@ def start_rx(f0,nsec):
     text1.configure(state=DISABLED)
     text1.see(END)
     newdat=1
+    if loopall: opennext()
 
 #------------------------------------------------------ start_tx
 def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
@@ -359,24 +422,26 @@ def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
 def update():
     global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modtime0
+        modtime0,tw
     tsec=time.time()
+    utc=time.gmtime(tsec+0.1*idsec)
     nsec=int(tsec)
     if nsec<nsec0:
         all_hdr()
     nsec0=nsec
     ns120=nsec%120
-    if ns120==0 and (not transmitting) and (not receiving):
+    if ns120==0 and (not transmitting) and (not receiving) and lauto:
         x=random.uniform(0.,100.)
-        if x<options.pctx.get() and lauto:
+        if x<options.pctx.get():
             ntxdf=int(round(1.e6*(ftx.get()-f0.get())))-1500
             thread.start_new_thread(start_tx,
                 (MyCall.get(),MyGrid.get(),dBm.get(),ntxdf,f0.get()),)
         else:
-            thread.start_new_thread(start_rx,
-                (f0.get(),nsec))
+            n=len(tw)
+            if n>12: tw=tw[n-12:]
+            tw=[time.strftime('%H:%M',utc),] + tw
+            thread.start_new_thread(start_rx,(f0.get(),nsec,''))
 
-    utc=time.gmtime(tsec+0.1*idsec)
     isec=utc[5]
     if isec != isec0:                           #Do once per second
         isec0=isec
@@ -414,13 +479,17 @@ def update():
     except:
         newdat=0
 
-    scale=math.pow(10.0,0.03*sc1.get())
+    scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
     if newdat or scale!= scale0 or offset!=offset0:
         im.putdata(a,scale,offset)              #Compute whole new image
+        if newdat:
+            n=len(tw)
+            for i in range(n-1,-1,-1):
+                x=465-39*i
+                draw.text((x,148),tw[i],fill=253)   #Insert time label
         pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
         graph1.delete(ALL)
-        #For some reason, top two lines are invisible, so we move down 2
         graph1.create_image(0,0+2,anchor='nw',image=pim)
         g.ndecphase=2
         newMinute=0
@@ -444,6 +513,10 @@ filemenu = Menu(filebutton, tearoff=0)
 filebutton['menu'] = filemenu
 filemenu.add('command', label = 'Open', command = openfile, \
              accelerator='Ctrl+O')
+filemenu.add('command', label = 'Open next in directory', command = opennext, \
+             accelerator='F6')
+filemenu.add('command', label = 'Decode remaining files in directory', \
+             command = decodeall, accelerator='Shift+F6')
 filemenu.add_separator()
 filemenu.add('command', label = 'Delete all *.WAV files in RxWav', \
              command = delwav)
@@ -458,6 +531,29 @@ setupbutton.pack(side = LEFT)
 setupmenu = Menu(setupbutton, tearoff=0)
 setupbutton['menu'] = setupmenu
 setupmenu.add('command', label = 'Options', command = options1)
+##setupmenu.add_separator()
+##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
+##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
+
+#--------------------------------------------------------- View menu
+setupbutton = Menubutton(mbar, text = 'View', )
+setupbutton.pack(side = LEFT)
+setupmenu = Menu(setupbutton, tearoff=1)
+setupbutton['menu'] = setupmenu
+setupmenu.palettes=Menu(setupmenu,tearoff=0)
+setupmenu.palettes.add_radiobutton(label='Gray0',command=pal_gray0,
+            value=0,variable=npal)
+setupmenu.palettes.add_radiobutton(label='Gray1',command=pal_gray1,
+            value=1,variable=npal)
+setupmenu.palettes.add_radiobutton(label='Linrad',command=pal_linrad,
+            value=2,variable=npal)
+setupmenu.palettes.add_radiobutton(label='Blue',command=pal_blue,
+            value=3,variable=npal)
+setupmenu.palettes.add_radiobutton(label='Hot',command=pal_Hot,
+            value=4,variable=npal)
+setupmenu.palettes.add_radiobutton(label='AFMHot',command=pal_AFMHot,
+            value=5,variable=npal)
+setupmenu.add_cascade(label = 'Palette',menu=setupmenu.palettes)
 
 #------------------------------------------------------ Save menu
 savebutton = Menubutton(mbar, text = 'Save')
@@ -486,12 +582,12 @@ lab1.pack(side=RIGHT)
 
 #------------------------------------------------------ Graphics area
 iframe1 = Frame(frame, bd=1, relief=SUNKEN)
+
 graph1=Canvas(iframe1, bg='black', width=NX, height=NY,cursor='crosshair')
 graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
-#-------------------------------------------------------- Band map
 text1=Text(iframe1, height=10, width=12)
 text1.pack(side=LEFT, padx=1)
 text1.insert(END,'132 ZL1BPU')
@@ -500,8 +596,8 @@ sb.pack(side=RIGHT, fill=Y)
 text1.configure(yscrollcommand=sb.set)
 iframe1.pack(expand=1, fill=X, padx=4)
 
-iframe2 = Frame(frame, bd=1, relief=SUNKEN)
-sc1=Scale(iframe2,from_=-10.0,to_=10.0,orient='horizontal',
+iframe2 = Frame(frame, bd=1, relief=FLAT)
+sc1=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc1.pack(side=LEFT)
 sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
@@ -554,7 +650,7 @@ f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,padx=1,pady=1)
 berase.pack(side=TOP,expand=1,fill=BOTH)
-auto=Button(f4a,text='Enable Tx',underline=0,command=toggleauto,
+auto=Button(f4a,text='Auto On/Off',underline=0,command=toggleauto,
             padx=1,pady=1)
 auto.pack(side=TOP,expand=1,fill=BOTH)
 
@@ -583,6 +679,9 @@ sb.pack(side=RIGHT, fill=Y)
 text.configure(yscrollcommand=sb.set)
 f4b.pack(side=LEFT,expand=0,fill=Y)
 iframe4.pack(expand=1, fill=X, padx=4)
+
+root.bind_all('<F6>', opennext)
+root.bind_all('<Shift-F6>', decodeall)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
@@ -659,6 +758,27 @@ except:
     print 'Error reading WSPR.INI, continuing with defaults.'
     print key,value
 
+#------------------------------------------------------  Select palette
+if g.cmap == "gray0":
+    pal_gray0()
+    npal.set(0)
+if g.cmap == "gray1":
+    pal_gray1()
+    npal.set(1)
+if g.cmap == "Linrad":
+    pal_linrad()
+    npal.set(2)
+if g.cmap == "blue":
+    pal_blue()
+    npal.set(3)
+if g.cmap == "Hot":
+    pal_Hot()
+    npal.set(4)
+if g.cmap == "AFMHot":
+    pal_AFMHot()
+    npal.set(5)
+
+
 lsync.configure(text=slabel+str(isync))
 dbm_balloon()
 draw_axis()
@@ -666,7 +786,11 @@ erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
 all_hdr()
-os.remove('pixmap.dat')
+#toggleauto()
+try:
+    os.remove('pixmap.dat')
+except:
+    pass
 graph1.focus_set()
 ldate.after(100,update)
 root.mainloop()

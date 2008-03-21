@@ -34,7 +34,8 @@
          do i=1,NX-nmove
             a(i,j)=a(i+nmove,j)
          enddo
-         a(NX-nmove+1,j)=255
+!         a(NX-nmove+1,j)=255
+         a(NX-nmove+1,j)=0
       enddo
 
       i0=-istep+1
