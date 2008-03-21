@@ -8,7 +8,8 @@ from tkMessageBox import showwarning
 import os,time,sys
 import pyaudio
 from math import log10
-from numpy.oldnumeric import zeros
+#from numpy.oldnumeric import zeros
+import array
 import dircache
 import Image,ImageTk  #, ImageDraw
 from palettes import colormapblue, colormapgray0, colormapHot, \
@@ -50,32 +51,58 @@ balloon=Pmw.Balloon(root)
 bandmap=[]
 bandmap2=[]
 font1='Helvetica'
-g.appdir=appdir
 idsec=0
 isec0=0
 isync=1
 cmap0="Linrad"
 dBm=IntVar()
+modtime0=0
 mrudir=os.getcwd()
 ndbm0=-999
-newdat=0
+newdat=1
+newspec=1
 nsave=IntVar()
+nscroll=0
 nsec0=0
 nspeed0=IntVar()
 NX=500
 NY=160
-a=zeros(NX*NY,'s')
+a=array.array('h')
 im=Image.new('P',(NX,NY))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)
 receiving=0
+scale0=1.0
+offset0=0.0
 slabel="MinSync  "
 transmitting=0
 
+g.appdir=appdir
+g.cmap="Linrad"
+g.cmap0="Linrad"
 g.ndevin=IntVar()
 g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
+
+def pal_gray0():
+    g.cmap="gray0"
+    im.putpalette(Colormap2Palette(colormapgray0),"RGB")
+def pal_gray1():
+    g.cmap="gray1"
+    im.putpalette(Colormap2Palette(colormapgray1),"RGB")
+def pal_linrad():
+    g.cmap="Linrad"
+    im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
+def pal_blue():
+    g.cmap="blue"
+    im.putpalette(Colormap2Palette(colormapblue),"RGB")
+def pal_Hot():
+    g.cmap="Hot"
+    im.putpalette(Colormap2Palette(colormapHot),"RGB")
+def pal_AFMHot():
+    g.cmap="AFMHot"
+    im.putpalette(Colormap2Palette(colormapAFMHot),"RGB")
 
 #------------------------------------------------------ quit
 def quit():
@@ -330,8 +357,9 @@ def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0, \
-        receiving,transmitting,newdat
+    global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0,a, \
+        receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
+        modtime0
     tsec=time.time()
     nsec=int(tsec)
     if nsec<nsec0:
@@ -374,30 +402,33 @@ def update():
         t='Receiving'
     msg6.configure(text=t,bg=bgcolor)
 
-    if newdat:
-##        f=open("pixmap.dat",'rb')
-##        nx,ny,a=f.read()
-##        print nx,ny
-##        f.close()
-        
-##        n=Audio.gcom2.nlines
-##        box=(nx,0,500,160)                #Define region
-##        region=im.crop(box)               #Get all but leftmost nx columns
-##        try:
-##            im.paste(region,(0,0))        #Move waterfall left
-##        except:
-##            print "Images did not match, continuing anyway."
-##        for i in range(nx):
-##            line0.putdata(a[750*i:750*(i+1)])   #One row of pixels to line0
-##            im.paste(line0,(0,i))               #Paste in new top line
-##        nscroll=nscroll+n
-##        pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
-##        graph1.delete(ALL)
-##        #For some reason, top two lines are invisible, so we move down 2
-##        graph1.create_image(0,0+2,anchor='nw',image=pim)
+    try:
+        modtime=os.stat('pixmap.dat')[8]
+        if modtime!=modtime0:
+            f=open('pixmap.dat','rb')
+            a=array.array('h')
+            a.fromfile(f,NX*NY)
+            f.close()
+            newdat=1
+            modtime0=modtime
+    except:
+        newdat=0
+
+    scale=math.pow(10.0,0.03*sc1.get())
+    offset=0.3*sc2.get()
+    if newdat or scale!= scale0 or offset!=offset0:
+        im.putdata(a,scale,offset)              #Compute whole new image
+        pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
+        graph1.delete(ALL)
+        #For some reason, top two lines are invisible, so we move down 2
+        graph1.create_image(0,0+2,anchor='nw',image=pim)
+        g.ndecphase=2
+        newMinute=0
+        scale0=scale
+        offset0=offset
         newdat=0
     
-    ldate.after(100,update)
+    ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
 frame = Frame(root)
@@ -469,9 +500,18 @@ sb.pack(side=RIGHT, fill=Y)
 text1.configure(yscrollcommand=sb.set)
 iframe1.pack(expand=1, fill=X, padx=4)
 
+iframe2 = Frame(frame, bd=1, relief=SUNKEN)
+sc1=Scale(iframe2,from_=-10.0,to_=10.0,orient='horizontal',
+    showvalue=0,sliderlength=5)
+sc1.pack(side=LEFT)
+sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
+    showvalue=0,sliderlength=5)
+sc2.pack(side=LEFT)
+iframe2.pack(expand=1, fill=X, padx=4)
+
 #------------------------------------------------------ Labels under graphics
-iframe2a = Frame(frame, bd=1, relief=FLAT, height=10)
-g1=Pmw.Group(iframe2a,tag_text="Frequency setup")
+iframe2a = Frame(frame, bd=1, relief=FLAT)
+g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 f0=DoubleVar()
 ftx=DoubleVar()
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Carrier freq:',
@@ -501,8 +541,8 @@ for widget in widgets:
 f2=Frame(g1.interior())
 f2.pack()
 g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-
 iframe2a.pack(expand=1, fill=X, padx=1)
+
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
 lab2=Label(iframe2, text='UTC      Sync   dB        DT           Freq')
 lab2.place(x=170,y=6, anchor='w')
@@ -560,8 +600,6 @@ msg6=Message(iframe6, text='      ', width=400,relief=SUNKEN)
 msg6.pack(side=RIGHT, fill=X, padx=1)
 iframe6.pack(expand=1, fill=X, padx=4)
 frame.pack()
-
-ldate.after(100,update)
 
 lauto=0
 isync=1
@@ -628,7 +666,9 @@ erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
 all_hdr()
+os.remove('pixmap.dat')
 graph1.focus_set()
+ldate.after(100,update)
 root.mainloop()
 
 # Clean up and save user options before terminating

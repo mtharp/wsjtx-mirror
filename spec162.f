@@ -1,6 +1,6 @@
       subroutine spec162(c2,jz)
 
-      parameter(NX=116,NY=160,NTOT=NX*NY)
+      parameter(NX=500,NY=160)
       complex c2(65536)
       complex c(0:255)
       real s(120,0:255)
@@ -19,6 +19,24 @@
       call zero(s,120*256)
       istep=nfft/2
       nsteps=(jz-nfft)/(nadd*istep)
+
+#ifdef CVF
+      open(16,file='pixmap.dat',form='binary',status='unknown',err=1)
+#else
+      open(16,file='pixmap.dat',access='stream',status='unknown',err=1)
+#endif
+      read(16,end=1) a
+      go to 2
+ 1    call zero(a,NX*NY/2)
+
+ 2    nmove=nsteps+1
+      do j=1,NY                 !Move waterfall left
+         do i=1,NX-nmove
+            a(i,j)=a(i+nmove,j)
+         enddo
+         a(NX-nmove+1,j)=255
+      enddo
+
       i0=-istep+1
       k=0
       do n=1,nsteps
@@ -36,36 +54,32 @@
       enddo
       kz=k
 
-!###
       brightness=0.
       contrast=0.
       gamma=1.3 + 0.01*contrast
 !      gain=40*sqrt(nstep(nspeed)/5.0) * 5.0**(0.01*contrast)
-      gain=40*5.0**(0.01*contrast)
-      offset=brightness/2 + 10
+      gain=40 * 5.0**(0.01*contrast)
+      offset=-90.
       fac=20.0/nadd
 
       do k=1,kz
+         j=k-kz+NX
          do i=-80,-1
             x=fac*s(k,i+nfft)
             if(x.gt.0.0) n=gain*log10(1.0*x) + offset
             n=min(252,max(0,n))
-            a(k,i+81)=n
+            a(j,i+81)=n
          enddo
          do i=0,79
             x=fac*s(k,i)
             if(x.gt.0.0) n=gain*log10(1.0*x) + offset
             n=min(252,max(0,n))
-            a(k,i+81)=n
+            a(j,i+81)=n
          enddo
       enddo
 
-#ifdef CVF
-      open(16,file='pixmap.dat',form='binary',status='unknown')
-#else
-      open(16,file='pixmap.dat',access='stream',status='unknown')
-#endif
-      write(16) kz,NY,((a(k,i),k=1,kz),i=1,NY)
+      rewind 16
+      write(16) a
       close(16)
 
       return
