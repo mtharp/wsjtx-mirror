@@ -10,16 +10,16 @@
       call move(ss0(129),ss,128)
 
       nsmo=20
-      base=50*(float(nsum)**1.5)
+      base=10*(float(nsum)**1.5)
       ia=nsmo+1
       ib=n-nsmo-1
-      print*,n,nsum,ia,ib
       do i=ia,ib
          call pctile(ss(i-nsmo),tmp,2*nsmo+1,50,ref(i))
       enddo
       call pctile(ref(ia),tmp,ib-ia+1,68,base2)
 
 C  Don't flatten if signal is extremely low (e.g., RX is off).
+!      print*,base2/(0.05*base)
       if(base2.gt.0.05*base) then
          do i=ia,ib
             ss(i)=base*ss(i)/ref(i)
