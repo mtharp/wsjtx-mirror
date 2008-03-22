@@ -7,6 +7,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       parameter (NFFT1=2*1024*1024)
       character*22 message
       character*70 outfile
+      character*11 datetime
       logical first
       real*8 f0
       real ps(-128:128)
@@ -40,8 +41,10 @@ C  Look for sync patterns, get DF and DT
          if(nsync.ge.minsync) then
            call decode162(c2,jz,dtx,dfx,message,ncycles,metric,nerr)
            i2=index(outfile,'.')-1
-           write(13,1010)outfile(i2-10:i2),nsync,nsnrx,dtx,freq,message
-           write(14,1010)outfile(i2-10:i2),nsync,nsnrx,dtx,freq,message,
+           datetime=outfile(i2-10:i2)
+           datetime(7:7)=' '
+           write(13,1010) datetime,nsync,nsnrx,dtx,freq,message
+           write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,
      +          siglev,nsec/120,nint(dfx)
  1010      format(a11,i4,i4,f6.1,f11.6,2x,a15,f8.1,i9,i4)
          endif
