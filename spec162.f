@@ -4,6 +4,7 @@
       complex c2(65536)
       complex c(0:255)
       real s(120,0:255)
+      real ss(0:255)
       real w(0:255)
       real savg(0:255),tmp(256)
       integer*2 a(NX,NY)
@@ -45,6 +46,7 @@
       k=0
       do n=1,nsteps
          k=k+1
+         call zero(ss,256)
          do m=1,nadd
             i0=i0+istep
             do i=0,nfft-1
@@ -53,19 +55,20 @@
             call four2a(c,nfft,1,-1,1)
             do i=0,nfft-1
                sq=real(c(i))**2 + imag(c(i))**2
-               s(k,i)=s(k,i) + sq
+               ss(i)=ss(i) + sq
                savg(i)=savg(i) + sq
             enddo
+         enddo
+         call flat3(ss,256,nadd)
+         do i=0,nfft-1
+            s(k,i)=ss(i)
          enddo
       enddo
       kz=k
 
-      call pctile(savg,tmp,80,35,base)
-
       gain=40
       offset=-90.
       fac=20.0/nadd
-      fac=fac*25000./base
 
       do k=1,kz
          j=k-kz+NX
