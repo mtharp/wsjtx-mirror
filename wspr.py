@@ -21,8 +21,9 @@ import random
 import math
 
 root = Tk()
-#Version="0.4 r" + "$Rev$"[6:-1]
-Version="0.4"
+Version="0.4 r" + "$Rev$"[6:-1]
+#Version="0.4"
+print "Ignore the above error message, it is harmless."
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
