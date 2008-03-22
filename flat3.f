@@ -10,7 +10,7 @@
       call move(ss0(129),ss,128)
 
       nsmo=20
-      base=10*(float(nsum)**1.5)
+      base=50*(float(nsum)**1.5)
       ia=nsmo+1
       ib=n-nsmo-1
       do i=ia,ib
@@ -20,7 +20,7 @@
 
 C  Don't flatten if signal is extremely low (e.g., RX is off).
 !      print*,base2/(0.05*base)
-      if(base2.gt.0.05*base) then
+      if(base2.gt.0.01*base) then
          do i=ia,ib
             ss(i)=base*ss(i)/ref(i)
          enddo
