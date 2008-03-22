@@ -62,11 +62,7 @@
 
       call pctile(savg,tmp,80,35,base)
 
-      brightness=0.
-      contrast=0.
-      gamma=1.3 + 0.01*contrast
-!      gain=40*sqrt(nstep(nspeed)/5.0) * 5.0**(0.01*contrast)
-      gain=40 * 5.0**(0.01*contrast)
+      gain=40
       offset=-90.
       fac=20.0/nadd
       fac=fac*25000./base
@@ -75,13 +71,15 @@
          j=k-kz+NX
          do i=-80,-1
             x=fac*s(k,i+nfft)
-            if(x.gt.0.0) n=gain*log10(1.0*x) + offset
+            n=0
+            if(x.gt.0.0) n=gain*log10(x) + offset
             n=min(252,max(0,n))
             a(j,NY-i-80)=n
          enddo
          do i=0,79
             x=fac*s(k,i)
-            if(x.gt.0.0) n=gain*log10(1.0*x) + offset
+            n=0
+            if(x.gt.0.0) n=gain*log10(x) + offset
             n=min(252,max(0,n))
             a(j,NY-i-80)=n
          enddo
