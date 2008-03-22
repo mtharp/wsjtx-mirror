@@ -142,7 +142,7 @@ def openfile(event=NONE):
     t=fileopened[i1-4:i1]
     t=t[0:2] + ':' + t[2:4]
     n=len(tw)
-    if n>12: tw=tw[n-12:]
+    if n>12: tw=tw[:n-1]
     tw=[t,] + tw
     thread.start_new_thread(start_rx,(f0.get(),0,fname))
 
@@ -171,7 +171,7 @@ def opennext(event=NONE):
             t=fileopened[i1-4:i1]
             t=t[0:2] + ':' + t[2:4]
             n=len(tw)
-            if n>12: tw=tw[n-12:]
+            if n>12: tw=tw[:n-1]
             tw=[t,] + tw
             thread.start_new_thread(start_rx,(f0.get(),0,fname))
         else:
@@ -429,7 +429,7 @@ def update():
                 (MyCall.get(),MyGrid.get(),dBm.get(),ntxdf,f0.get()),)
         else:
             n=len(tw)
-            if n>12: tw=tw[n-12:]
+            if n>12: tw=tw[:n-1]
             tw=[time.strftime('%H:%M',utc),] + tw
             thread.start_new_thread(start_rx,(f0.get(),nsec,''))
 
@@ -634,7 +634,7 @@ iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
 lab2=Label(iframe2, text='DATE       UTC    Sync    dB        DT           Freq')
-lab2.place(x=155,y=6, anchor='w')
+lab2.place(x=160,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Buttons, UTC, etc
