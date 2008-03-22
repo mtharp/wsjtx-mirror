@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------ WSPR
-# $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision: 638 $
+# $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
 from tkFileDialog import *
@@ -21,7 +21,7 @@ import random
 import math
 
 root = Tk()
-#Version="0.4 r" + "$Rev: 638 $"[6:-1]
+#Version="0.4 r" + "$Rev$"[6:-1]
 Version="0.4"
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
