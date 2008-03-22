@@ -17,7 +17,7 @@ OBJS3 = wspr_rx.obj inter_mept.obj \
 	unpackgrid.obj deg2grid.obj getrms.obj \
 	set.obj encode232.obj fano232.obj wfile5.obj \
 	xcor162.obj slope.obj peakup.obj pctile.obj db.obj sort.obj \
-	ssort.obj decode162.obj getsound.obj spec162.obj
+	ssort.obj decode162.obj getsound.obj spec162.obj flat3.obj
 
 all:    WSPR.EXE wspr_tx.exe wspr_rx.exe
 
