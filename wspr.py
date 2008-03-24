@@ -235,18 +235,22 @@ def help(event=NONE):
     about.geometry(msgpos())
     if g.Win32: about.iconbitmap("wsjt.ico")
     t="Basic Operating Instructions"
-    Label(about,text=t,font=(font1,16)).pack(padx=20,pady=5)
+    Label(about,text=t,font=(font1,14)).pack(padx=20,pady=5)
     t="""
-1. Open the Setup -> Options page and enter your callsign,
+1. Open the Setup | Options page and enter your callsign,
    grid locator, COM port number for PTT control, and Tx
    power in dBm.  If you do not wish to use the system's
    default sound card, enter device numbers for Audio In
    and Audio Out.
+
 2. On the main screen, enter your dial frequency (USB) and
     Tx frequency in MHz.  Click on 'Rx' to receive only,
     'Tx' to transmit only, or the desired average percentage
     of transmission cycles.
-3. The program starts a Tx or Rx sequence at the start of each
+
+3. Be sure that your computer clock is correct to +/- 1 second.
+
+4. The program starts a Tx or Rx sequence at the start of each
     even minute.  The waterfall updates only near the end of
     each Rx sequence.
 """
