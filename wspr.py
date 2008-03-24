@@ -23,7 +23,6 @@ import string
 
 root = Tk()
 Version="0.5 r" + "$Rev$"[6:-1]
-#Version="0.4"
 print "Ignore the above error message, it is harmless."
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
@@ -239,12 +238,17 @@ def help(event=NONE):
     Label(about,text=t,font=(font1,16)).pack(padx=20,pady=5)
     t="""
 1. Open the Setup -> Options page and enter your callsign,
-   grid locator, PTT port number, and Tx power in dBm.
-2. If you do not wish to use the default sound card, enter
-   the desired device numbers for Audio In and Audio Out.
-3. On the main screen, enter your dial frequency (USB) and
-    desired Tx frequency in MHz.
-3.
+   grid locator, COM port number for PTT control, and Tx
+   power in dBm.  If you do not wish to use the system's
+   default sound card, enter device numbers for Audio In
+   and Audio Out.
+2. On the main screen, enter your dial frequency (USB) and
+    Tx frequency in MHz.  Click on 'Rx' to receive only,
+    'Tx' to transmit only, or the desired average percentage
+    of transmission cycles.
+3. The program starts a Tx or Rx sequence at the start of each
+    even minute.  The waterfall updates only near the end of
+    each Rx sequence.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
