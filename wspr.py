@@ -349,7 +349,8 @@ def tx_volume():
 
 #------------------------------------------------------ start_rx
 def start_rx(f0,nsec,fname):
-    global receiving,transmitting,bandmap,bandmap2,newdat,loopall,fmid
+    global receiving,transmitting,bandmap,bandmap2,newdat,loopall, \
+        fmid,idsec
 
     utc=time.gmtime(time.time()+0.1*idsec)
     if fname!="":
@@ -440,9 +441,9 @@ def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modtime0,tw,s0,c0,fmid,fmid0
-    tsec=time.time()
-    utc=time.gmtime(tsec+0.1*idsec)
+        modtime0,tw,s0,c0,fmid,fmid0,idsec
+    tsec=time.time() + 0.1*idsec
+    utc=time.gmtime(tsec)
     nsec=int(tsec)
     nsec0=nsec
     ns120=nsec%120
