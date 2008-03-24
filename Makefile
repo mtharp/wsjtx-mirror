@@ -7,7 +7,7 @@ CFLAGS = -I. -fbounds-check
 
 OBJS2 = wspr_tx.o genmept.o inter_mept.o nchar.o grid2deg.o \
 	packcall.o packgrid.o pack50.o unpack50.o unpackcall.o \
-	unpackgrid.o deg2grid.o ptt_unix.o set.o gran.o encode232.o \
+	unpackgrid.o deg2grid.o ptt.o set.o gran.o encode232.o \
 	playsound.o 
 
 OBJS3 = wspr_rx.o inter_mept.o \
@@ -19,20 +19,20 @@ OBJS3 = wspr_rx.o inter_mept.o \
 	ssort.o decode162.o getsound.o spec162.o flat3.o
 
 
-all:    wspr_tx.exe wspr_rx.exe
+all:    wspr.exe wspr_tx.exe wspr_rx.exe
 
 wspr.exe: wspr.spec
-	python c:/python25/pyinstaller-1.3/Build.py wspr.spec
+	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
 
 wspr.spec: wspr.py g.py options.py palettes.py
-	python c:/python25/pyinstaller-1.3/makespec.py --icon \
+	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
 	   wsjt.ico --tk --onefile wspr.py
 
 wspr_tx.exe: $(OBJS2)
-	$(FC) -o wspr_tx.exe $(FFLAGS) $(OBJS2) -lpthread libportaudio2.a
+	$(FC) -o wspr_tx.exe $(FFLAGS) $(OBJS2) libportaudio.a -lwinmm
 
 wspr_rx.exe: $(OBJS3)
-	$(FC) -o wspr_rx.exe $(FFLAGS) $(OBJS3) -lpthread libportaudio2.a
+	$(FC) -o wspr_rx.exe $(FFLAGS) $(OBJS3) libportaudio.a -lwinmm
 
 gran.o: gran.f90
 	$(FC) -c $(FFLAGS) gran.f90

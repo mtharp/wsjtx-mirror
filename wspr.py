@@ -19,9 +19,10 @@ import array
 import thread
 import random
 import math
+import string
 
 root = Tk()
-Version="0.4 r" + "$Rev$"[6:-1]
+Version="0.5 r" + "$Rev$"[6:-1]
 #Version="0.4"
 print "Ignore the above error message, it is harmless."
 print "******************************************************************"
@@ -44,19 +45,19 @@ else:
     except:
         pass
 root_geom=""
+import options
 
 
 #------------------------------------------------------ Global variables
 appdir=os.getcwd()
-balloon=Pmw.Balloon(root)
 bandmap=[]
 bandmap2=[]
+fmid=0.0
+fmid0=0.0
 font1='Helvetica'
 idsec=0
 isec0=0
 isync=1
-cmap0="Linrad"
-dBm=IntVar()
 loopall=0
 modtime0=0
 mrudir=os.getcwd()
@@ -71,6 +72,9 @@ nsec0=0
 nspeed0=IntVar()
 NX=500
 NY=160
+ipctx=IntVar()
+pctx=[-1,0,20,25,33,100]
+
 a=array.array('h')
 im=Image.new('P',(NX,NY))
 draw=ImageDraw.Draw(im)
@@ -116,15 +120,6 @@ def pal_AFMHot():
 def quit():
     root.destroy()
 
-#------------------------------------------------------ dbm_balloon
-def dbm_balloon():
-    mW=int(round(math.pow(10.0,0.1*dBm.get())))
-    if(mW<1000):
-        t="%.1f mW" % (mW,)
-    else:
-        t="%.1f W" % (0.001*mW,)
-    balloon.bind(ldBm,t)
-
 #------------------------------------------------------ openfile
 def openfile(event=NONE):
     global mrudir,fileopened,nopen,tw
@@ -138,7 +133,7 @@ def openfile(event=NONE):
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
     os.chdir(appdir)
-    if(lauto): toggleauto()
+    ipctx.set(0)
     i1=fileopened.find('.')
     t=fileopened[i1-4:i1]
     t=t[0:2] + ':' + t[2:4]
@@ -235,19 +230,24 @@ Copyright (c) 2008 by Joseph H. Taylor, Jr., K1JT.
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
 
-#------------------------------------------------------ incsync
-def incsync(event):
-    global isync
-    if isync<10:
-        isync=isync+1
-        lsync.configure(text=slabel+str(isync))
-
-#------------------------------------------------------ decsync
-def decsync(event):
-    global isync
-    if isync>-30:
-        isync=isync-1
-        lsync.configure(text=slabel+str(isync))
+#------------------------------------------------------ 
+def help(event=NONE):
+    about=Toplevel(root)
+    about.geometry(msgpos())
+    if g.Win32: about.iconbitmap("wsjt.ico")
+    t="Basic Operating Instructions"
+    Label(about,text=t,font=(font1,16)).pack(padx=20,pady=5)
+    t="""
+1. Open the Setup -> Options page and enter your callsign,
+   grid locator, PTT port number, and Tx power in dBm.
+2. If you do not wish to use the default sound card, enter
+   the desired device numbers for Audio In and Audio Out.
+3. On the main screen, enter your dial frequency (USB) and
+    desired Tx frequency in MHz.
+3.
+"""
+    Label(about,text=t,justify=LEFT).pack(padx=20)
+    about.focus_set()
 
 #------------------------------------------------------ incdsec
 def incdsec(event):
@@ -277,19 +277,20 @@ def erase(event=NONE):
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
-    xmid=10.1386 + 0.001500
+    global fmid
     c.delete(ALL)
     df=12000.0/8192.0
-# Draw tick marks
+    nfmid=int(1.0e6*fmid)%1000
+# Draw and label tick marks
     for iy in range(-120,120,10):
         j=80 - iy/df
         i1=7
         if (iy%50)==0:
             i1=12
-            c.create_text(27,j,text=str(iy+100))      #use fmid!
-        if (iy%100)==0:
-            i1=15
-            c.create_text(27,j,text=str(iy+100))        #Use fmid!
+            if (iy%100)==0: i1=15
+            n=nfmid+iy
+            if n<0: n=n+1000
+            c.create_text(27,j,text=str(n))
         c.create_line(0,j,i1,j,fill='black')
 
 #------------------------------------------------------ del_all
@@ -316,17 +317,29 @@ def delwav():
             fname=appdir+'/Save/'+lb[i]
             os.remove(fname)
 
-#------------------------------------------------------ toggleauto
-def toggleauto(event=NONE):
-    global lauto
-    lauto=1-lauto
-    if lauto==0: auto.configure(bg='gray85',text='Auto is Off',relief=RAISED)
-    if lauto==1:
-        auto.configure(bg='green',text='Auto is On',relief=SOLID)
+#--------------------------------------------------- rx_volume
+def rx_volume():
+    for path in string.split(os.environ["PATH"], os.pathsep):
+        file = os.path.join(path, "sndvol32") + ".exe"
+        try:
+            return os.spawnv(os.P_NOWAIT, file, (file,) + (" -r",))
+        except os.error:
+            pass
+    raise os.error, "Cannot find "+file
+
+#--------------------------------------------------- tx_volume
+def tx_volume():
+    for path in string.split(os.environ["PATH"], os.pathsep):
+        file = os.path.join(path, "sndvol32") + ".exe"
+        try:
+            return os.spawnv(os.P_NOWAIT, file, (file,))
+        except os.error:
+            pass
+    raise os.error, "Cannot find "+file
 
 #------------------------------------------------------ start_rx
 def start_rx(f0,nsec,fname):
-    global receiving,transmitting,bandmap,bandmap2,newdat,loopall
+    global receiving,transmitting,bandmap,bandmap2,newdat,loopall,fmid
 
     utc=time.gmtime(time.time()+0.1*idsec)
     if fname!="":
@@ -356,6 +369,7 @@ def start_rx(f0,nsec,fname):
 #  Write data to text box and insert freqs and calls into bandmap.
     text.configure(state=NORMAL)
     nseq=0
+    nfmid=int(1.0e6*fmid)%1000
     for i in range(len(lines)):
         text.insert(END,lines[i][:53]+"\n")
         callsign=lines[i][38:45]
@@ -363,7 +377,7 @@ def start_rx(f0,nsec,fname):
             i1=callsign.find(' ')
             callsign=callsign[:i1]
             nseq=int(lines[i][62:71])
-            ndf=int(lines[i][71:75]) + 100      # Use fmid!
+            ndf=int(lines[i][71:75]) + nfmid
             bandmap.append((ndf,callsign,nseq))
     text.configure(state=DISABLED)
     text.see(END)
@@ -402,7 +416,7 @@ def start_rx(f0,nsec,fname):
 def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
     global receiving,transmitting
     cmd="wspr_tx.exe"
-    args=mycall + " " + mygrid + " " + str(ndbm) + \
+    args=mycall.upper() + " " + mygrid.upper() + " " + str(ndbm) + \
           " " + str(options.PttPort.get()) + " " + str(ntxdf) + \
           " " + options.DevoutName.get() + " " + str(f0)
     transmitting=1
@@ -414,20 +428,21 @@ def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,cmap0,lauto,ndbm0,nsec0,a, \
+    global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modtime0,tw,s0,c0
+        modtime0,tw,s0,c0,fmid,fmid0
     tsec=time.time()
     utc=time.gmtime(tsec+0.1*idsec)
     nsec=int(tsec)
     nsec0=nsec
     ns120=nsec%120
-    if ns120==0 and (not transmitting) and (not receiving) and lauto:
+    if ns120==0 and (not transmitting) and (not receiving) and ipctx.get()>0:
         x=random.uniform(0.,100.)
-        if x<options.pctx.get():
+        if x<pctx[ipctx.get()]:
             ntxdf=int(round(1.e6*(ftx.get()-f0.get())))-1500
             thread.start_new_thread(start_tx,
-                (MyCall.get(),MyGrid.get(),dBm.get(),ntxdf,f0.get()),)
+                (options.MyCall.get(),options.MyGrid.get(),options.dBm.get(),
+                     ntxdf,f0.get()),)
         else:
             n=len(tw)
             if n>12: tw=tw[:n-1]
@@ -442,17 +457,17 @@ def update():
         root_geom=root.geometry()
         utchours=utc[3]+utc[4]/60.0 + utc[5]/3600.0
         try:
-            if dBm.get()!=ndbm0:
-                ndbm0=dBm.get()
-                dbm_balloon()
+            if options.dBm.get()!=ndbm0:
+                ndbm0=options.dBm.get()
+                options.dbm_balloon()
         except:
             pass
 
     bgcolor='gray85'
     t=''
     if transmitting:
-        t='Txing: '+MyCall.get().strip() + ' ' + MyGrid.get().strip() + \
-           ' ' + str(dBm.get())
+        t='Txing: '+options.MyCall.get().strip().upper() + ' ' + \
+           options.MyGrid.get().strip().upper() + ' ' + str(options.dBm.get())
         bgcolor='yellow'
     if receiving:
         bgcolor='green'
@@ -473,7 +488,7 @@ def update():
 
     scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
-    if newdat or scale!= scale0 or offset!=offset0:
+    if newdat or scale!= scale0 or offset!=offset0 or g.cmap!=g.cmap0:
         im.putdata(a,scale,offset)              #Compute whole new image
         if newdat:
             n=len(tw)
@@ -487,10 +502,14 @@ def update():
         newMinute=0
         scale0=scale
         offset0=offset
+        g.cmap0=g.cmap
         newdat=0
 
     s0=sc1.get()
     c0=sc2.get()
+    fmid=f0.get() + 0.001500
+    if fmid!=fmid0:
+        draw_axis()
     ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
@@ -525,9 +544,9 @@ setupbutton.pack(side = LEFT)
 setupmenu = Menu(setupbutton, tearoff=0)
 setupbutton['menu'] = setupmenu
 setupmenu.add('command', label = 'Options', command = options1)
-##setupmenu.add_separator()
-##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
-##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
+setupmenu.add_separator()
+setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
+setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
 
 #--------------------------------------------------------- View menu
 setupbutton = Menubutton(mbar, text = 'View', )
@@ -564,15 +583,8 @@ helpbutton = Menubutton(mbar, text = 'Help')
 helpbutton.pack(side = LEFT)
 helpmenu = Menu(helpbutton, tearoff=0)
 helpbutton['menu'] = helpmenu
+helpmenu.add('command', label = 'Help', command = help)
 helpmenu.add('command', label = 'About WSPR', command = about)
-
-###------------------------------------------------- Speed selection buttons
-##for i in (5, 4, 3, 2, 1):
-##    t=str(i)
-##    Radiobutton(mbar,text=t,value=i,variable=nspeed0).pack(side=RIGHT)
-##nspeed0.set(2)
-##lab1=Label(mbar,text='Speed: ',bd=0)
-##lab1.pack(side=RIGHT)
 
 #------------------------------------------------------ Graphics area
 iframe1 = Frame(frame, bd=1, relief=SUNKEN)
@@ -597,6 +609,7 @@ sc1.pack(side=LEFT)
 sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
+lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------ Labels under graphics
@@ -604,33 +617,33 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 f0=DoubleVar()
 ftx=DoubleVar()
-lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Carrier freq:',
+lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq (USB):',
         value=10.1386,entry_textvariable=f0,entry_width=12)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx freq:',
         value=10.140150,entry_textvariable=ftx,entry_width=12)
 widgets = (lf0, lftx)
 for widget in widgets:
     widget.pack(side=LEFT,padx=5,pady=2)
-f1=Frame(g1.interior())
-f1.pack()
-g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-
-#------------------------------------------------------ Tx params and msgs
-g2=Pmw.Group(iframe2a,tag_text="Tx message")
-MyCall=StringVar()
-MyGrid=StringVar()
-lcall=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Call:',
-        value='K1JT',entry_textvariable=MyCall,entry_width=8)
-lgrid=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Grid:',
-        value='FN20',entry_textvariable=MyGrid,entry_width=5)
-ldBm=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Power (dBm):',
-        value=30,entry_textvariable=dBm,entry_width=4)
-widgets = (lcall, lgrid, ldBm)
-for widget in widgets:
-    widget.pack(side=LEFT,padx=5,pady=2)
-f2=Frame(g1.interior())
-f2.pack()
-g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
+g1.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
+lab01=Label(iframe2a, text='').pack(side=LEFT,padx=1)
+g2=Pmw.Group(iframe2a,tag_text="T/R cycle")
+#------------------------------------------------------ T/R Cycle Select
+for i in range(6):
+    t="Idle"
+    if i==1:
+        t="Rx"
+    elif i==2:
+        t="20%"
+    elif i==3:
+        t="25%"
+    elif i==4:
+        t="33%"
+    elif i==5:
+        t="Tx"
+    Radiobutton(g2.interior(),text=t,value=i,
+                variable=ipctx).pack(side=LEFT,padx=4)
+ipctx.set(0)
+g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
@@ -643,25 +656,18 @@ iframe4 = Frame(frame, bd=1, relief=SUNKEN)
 f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,padx=1,pady=1)
-berase.pack(side=TOP,expand=1,fill=BOTH)
-auto=Button(f4a,text='Auto On/Off',underline=0,command=toggleauto,
-            padx=1,pady=1)
-auto.pack(side=TOP,expand=1,fill=BOTH)
-
-lsync=Label(f4a, bg='white', fg='black', text='Sync   1', width=8, relief=RIDGE)
-lsync.pack(side=TOP,ipadx=3,padx=2,pady=5)
-Widget.bind(lsync,'<Button-1>',incsync)
-Widget.bind(lsync,'<Button-3>',decsync)
-
-ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
-ldsec.pack(side=TOP,ipadx=3,padx=2,pady=5)
-Widget.bind(ldsec,'<Button-1>',incdsec)
-Widget.bind(ldsec,'<Button-3>',decdsec)
+berase.pack(side=TOP,padx=0,pady=15)
 
 ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
         justify=CENTER, font=(font1,16))
-ldate.pack(side=TOP,padx=2,pady=2)
+ldate.pack(side=TOP,padx=2,pady=5)
+
+ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
+ldsec.pack(side=TOP,ipadx=3,padx=2,pady=10)
+Widget.bind(ldsec,'<Button-1>',incdsec)
+Widget.bind(ldsec,'<Button-3>',decdsec)
+
 f4a.pack(side=LEFT,expand=0,fill=Y)
 
 #--------------------------------------------------------- Decoded text box
@@ -680,24 +686,22 @@ root.bind_all('<Shift-F6>', decodeall)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
-msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-msg1.pack(side=LEFT, fill=X, padx=1)
-msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-msg2.pack(side=LEFT, fill=X, padx=1)
-msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
-msg3.pack(side=LEFT, fill=X, padx=1)
-msg4=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-msg4.pack(side=LEFT, fill=X, padx=1)
-msg5=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-msg5.pack(side=LEFT, fill=X, padx=1)
+##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+##msg1.pack(side=LEFT, fill=X, padx=1)
+##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+##msg2.pack(side=LEFT, fill=X, padx=1)
+##msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
+##msg3.pack(side=LEFT, fill=X, padx=1)
+##msg4=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+##msg4.pack(side=LEFT, fill=X, padx=1)
+##msg5=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+##msg5.pack(side=LEFT, fill=X, padx=1)
 msg6=Message(iframe6, text='      ', width=400,relief=SUNKEN)
 msg6.pack(side=RIGHT, fill=X, padx=1)
 iframe6.pack(expand=1, fill=X, padx=4)
 frame.pack()
 
-lauto=0
 isync=1
-import options
 
 #---------------------------------------------------------- Process INI file
 try:
@@ -716,10 +720,10 @@ try:
     for i in range(len(params)):
         key,value=params[i].split()
         if   key == 'WSPRGeometry': root.geometry(value)
-        elif key == 'MyCall': MyCall.set(value)
-        elif key == 'MyGrid': MyGrid.set(value)
-        elif key == 'dBm': dBm.set(value)
-        elif key == 'PctTx': options.pctx.set(value)
+        elif key == 'MyCall': options.MyCall.set(value)
+        elif key == 'MyGrid': options.MyGrid.set(value)
+        elif key == 'dBm': options.dBm.set(value)
+        elif key == 'PctTx': ipctx.set(value)
 #        elif key == 'IDinterval': options.IDinterval.set(value)
         elif key == 'PttPort':
             try:
@@ -750,6 +754,8 @@ try:
         elif key == 'Debug': ndebug.set(value)
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
+        elif key == 'f0': f0.set(value)
+        elif key == 'ftx': ftx.set(value)
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
 except:
     print 'Error reading WSPR.INI, continuing with defaults.'
@@ -776,13 +782,14 @@ if g.cmap == "AFMHot":
     npal.set(5)
 
 
-lsync.configure(text=slabel+str(isync))
-dbm_balloon()
+##lsync.configure(text=slabel+str(isync))
+options.dbm_balloon()
+fmid=f0.get() + 0.001500
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
-toggleauto()
+##toggleauto()
 try:
     os.remove('pixmap.dat')
 except:
@@ -795,20 +802,21 @@ root.mainloop()
 f=open(appdir+'/WSPR.INI',mode='w')
 root_geom=root_geom[root_geom.index("+"):]
 f.write("WSPRGeometry " + root_geom + "\n")
-f.write("MyCall " + MyCall.get() + "\n")
-f.write("MyGrid " + MyGrid.get() + "\n")
-f.write("dBm " + str(dBm.get()) + "\n")
+f.write("MyCall " + options.MyCall.get() + "\n")
+f.write("MyGrid " + options.MyGrid.get() + "\n")
+f.write("dBm " + str(options.dBm.get()) + "\n")
 #f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
 f.write("PttPort " + str(options.PttPort.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
-f.write("PctTx " + str(options.pctx.get()) + "\n")
+f.write("PctTx " + str(ipctx.get()) + "\n")
 f.write("Sync " + str(isync) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")
-f.write("WatOffset " + str(c0)+ "\n")
+f.write("f0 " + str(f0.get()) + "\n")
+f.write("ftx " + str(ftx.get()) + "\n")
 f.close()
 
 #Terminate audio streams
