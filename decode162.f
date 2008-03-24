@@ -103,9 +103,8 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       if(istart.lt.0) istart=0
 
 C  Should amp be adjusted according to signal strength?
-
 C  Compute soft symbols using differential BPSK demodulation
-      c0=0.                                !### C0=amp ???
+      c0=0.
       k=istart
       fac=1.e-4
       phi=0.d0
@@ -160,6 +159,7 @@ C  Compute soft symbols using differential BPSK demodulation
       cdbm='   '
       if(nerr.ge.0) then
          call unpack50(data1,n1,n2)
+         if(n1+n2.eq.0) go to 900
          call unpackcall(n1,callsign)
          call unpackgrid(n2/128,grid)
          ndbm=iand(n2,127) - 64
@@ -169,9 +169,8 @@ C  Compute soft symbols using differential BPSK demodulation
          if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
          message=callsign(1:i1)//grid//' '//cdbm
       endif
-!      print*,nerr,ncycles,metric,callsign,grid,ndbm
 
-C  Save symbol spectra for possible decoding of average.
+C  Save symbol spectra for possible decoding of average?
 
-      return
+ 900  return
       end
