@@ -248,11 +248,13 @@ def help(event=NONE):
     'Tx' to transmit only, or the desired average percentage
     of transmission cycles.
 
-3. Be sure that your computer clock is correct to +/- 1 second.
+3. Be sure that your computer clock is correct to +/- 1 s. If
+   necessary you can make small adjustments by left- or right-
+   clicking on the 'Dsec' label.
 
-4. The program starts a Tx or Rx sequence at the start of each
-    even minute.  The waterfall updates only near the end of
-    each Rx sequence.
+4. The program will begin a Tx or Rx sequence at the start of
+    each even minute.  The waterfall updates only near the end
+    of each Rx sequence.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
