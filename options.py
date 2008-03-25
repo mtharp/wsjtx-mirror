@@ -3,6 +3,7 @@ from Tkinter import *
 import Pmw
 import g
 import math
+import pyaudio
 
 def done():
     root.withdraw()
@@ -14,6 +15,29 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title("Options")
 
 balloon=Pmw.Balloon(root)
+p = pyaudio.PyAudio()
+
+#------------------------------------------------------ dbm_balloon
+def dbm_balloon():
+    mW=int(round(math.pow(10.0,0.1*dBm.get())))
+    if(mW<1000):
+        t="%.1f mW" % (mW,)
+    else:
+        t="%.1f W" % (0.001*mW,)
+    balloon.bind(ldBm,t)
+
+def list_dev():
+    print 'This list will be made more user-friendly!'
+    max_devs = p.get_device_count()
+    for i in range(max_devs):
+        print ' '
+        devinfo = p.get_device_info_by_index(i)
+        for k in devinfo.items():
+            name, value = k
+            if name == 'hostApi':
+                value = str(value) + \
+                        " (%s)" % p.get_host_api_info_by_index(k[1])['name']
+            print "\t%s: %s" % (name, value)
 
 def options2(t):
     root.geometry(t)
@@ -51,18 +75,10 @@ ldBm=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Power (dBm):',
 widgets = (lcall,lgrid,comport,audioin,audioout,ldBm)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)
-
 Pmw.alignlabels(widgets)
-f1=Frame(g1.interior(),width=100,height=20)
+blist_dev=Button(g1.interior(), text='List Audio Devices',
+                 command=list_dev,padx=1,pady=1).pack(pady=4)
+f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()
 
 g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-
-#------------------------------------------------------ dbm_balloon
-def dbm_balloon():
-    mW=int(round(math.pow(10.0,0.1*dBm.get())))
-    if(mW<1000):
-        t="%.1f mW" % (mW,)
-    else:
-        t="%.1f W" % (0.001*mW,)
-    balloon.bind(ldBm,t)

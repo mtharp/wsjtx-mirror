@@ -131,15 +131,15 @@ def openfile(event=NONE):
     if fname:
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
+        ipctx.set(0)
+        i1=fileopened.find('.')
+        t=fileopened[i1-4:i1]
+        t=t[0:2] + ':' + t[2:4]
+        n=len(tw)
+        if n>12: tw=tw[:n-1]
+        tw=[t,] + tw
+        thread.start_new_thread(start_rx,(f0.get(),0,fname))
     os.chdir(appdir)
-    ipctx.set(0)
-    i1=fileopened.find('.')
-    t=fileopened[i1-4:i1]
-    t=t[0:2] + ':' + t[2:4]
-    n=len(tw)
-    if n>12: tw=tw[:n-1]
-    tw=[t,] + tw
-    thread.start_new_thread(start_rx,(f0.get(),0,fname))
 
 #------------------------------------------------------ opennext
 def opennext(event=NONE):
@@ -238,10 +238,10 @@ def help(event=NONE):
     Label(about,text=t,font=(font1,14)).pack(padx=20,pady=5)
     t="""
 1. Open the Setup | Options page and enter your callsign,
-   grid locator, COM port number for PTT control, and Tx
+   grid locator, COM port number (for PTT control), and Tx
    power in dBm.  If you do not wish to use the system's
-   default sound card, enter device numbers for Audio In
-   and Audio Out.
+   default sound card, enter suitable device numbers for
+   Audio In and Audio Out.
 
 2. On the main screen, enter your dial frequency (USB) and
     Tx frequency in MHz.  Click on 'Rx' to receive only,
@@ -253,8 +253,8 @@ def help(event=NONE):
    clicking on the 'Dsec' label.
 
 4. The program will begin a Tx or Rx sequence at the start of
-    each even minute.  The waterfall updates only near the end
-    of each Rx sequence.
+    each even minute.  The waterfall will update only near the
+    end of each Rx sequence.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
@@ -305,7 +305,8 @@ def draw_axis():
 
 #------------------------------------------------------ del_all
 def del_all():
-    pass
+    fname=appdir+'/ALL_MEPT.TXT'
+    os.remove(fname)
 
 #------------------------------------------------------ delwav
 def delwav():
@@ -585,14 +586,14 @@ savebutton.pack(side = LEFT)
 savemenu = Menu(savebutton, tearoff=1)
 savebutton['menu'] = savemenu
 savemenu.add_radiobutton(label = 'None', variable=nsave,value=0)
-savemenu.add_radiobutton(label = 'Save decoded', variable=nsave,value=1)
+#savemenu.add_radiobutton(label = 'Save decoded', variable=nsave,value=1)
 savemenu.add_radiobutton(label = 'Save all', variable=nsave,value=2)
 nsave.set(0)
 
 #------------------------------------------------------  Help menu
 helpbutton = Menubutton(mbar, text = 'Help')
 helpbutton.pack(side = LEFT)
-helpmenu = Menu(helpbutton, tearoff=0)
+helpmenu = Menu(helpbutton, tearoff=1)
 helpbutton['menu'] = helpmenu
 helpmenu.add('command', label = 'Help', command = help)
 helpmenu.add('command', label = 'About WSPR', command = about)
@@ -628,7 +629,7 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 f0=DoubleVar()
 ftx=DoubleVar()
-lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq (USB):',
+lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq:',
         value=10.1386,entry_textvariable=f0,entry_width=12)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx freq:',
         value=10.140150,entry_textvariable=ftx,entry_width=12)
