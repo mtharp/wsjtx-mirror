@@ -15,7 +15,6 @@ subroutine rx
 
   npts=114*12000
   if(ndevin.ge.0) then
-     ierr=unlink('abort')
      ierr=soundin(iwave,npts)
      call getrms(iwave,npts,ave,rms)
   else

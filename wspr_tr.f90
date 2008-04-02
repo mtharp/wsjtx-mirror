@@ -3,7 +3,7 @@ program wspr_tr
 #ifdef CVF
   use dfport
 #else
-  integer fstat
+  integer unlink
 #endif
 
 ! Logical units:
@@ -17,12 +17,12 @@ program wspr_tr
   character*74 line
   character*17 message
   real*8 tsec
-  logical receiving,transmitting,decoding
+  logical idle,receiving,transmitting,decoding
   integer istat(13)
   integer soundinit,soundexit
   include 'acom1.f90'
   data nsec0/9999999/,itr/0/
-  data receiving/.false./,transmitting/.false./,decoding/.false./
+  data idle/.false./,receiving/.false./,transmitting/.false./,decoding/.false./
 
   nargs=iargc()
   if(nargs.gt.0) then
@@ -30,6 +30,7 @@ program wspr_tr
      go to 999
   endif
 
+  ierr=unlink('abort')
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
   open(14,file='decoded.txt',status='unknown')
   end file 14
@@ -39,7 +40,9 @@ program wspr_tr
   ierr=soundinit()
   call random_seed
 
-20  ierr=stat('wspr_tr.in',istat)
+20 ierr=stat('abort',istat)
+  if(ierr.eq.0) go to 999
+  ierr=stat('wspr_tr.in',istat)
   if(istat(10).gt.is10) then
      open(10,file='wspr_tr.in',status='old')
      read(10,*) cjunk
@@ -54,12 +57,19 @@ program wspr_tr
      if(pctx.ge.40.0) rr=1.5                    !soft step?
      ierr=stat('wspr_tr.in',istat)
      is10=istat(10)
-     print*,'New parameters'
+!     write(*,3007)  f0,ftx,nport,callsign,grid,ndbm,pctx,idsec,ndevin,  &
+!          ndevout,nsave
+!3007 format(2f11.6,i3,1x,a6,1x,a4,i4,f6.1,4i3)
+     idle=.false.
+     if(pctx.lt.0.0) then
+        idle=.true.
+        call msleep(100)
+        go to 20
+     endif
   endif
 
   call getutc(cdate,utctime,ihr,imin,sec,tsec)
   nsec=tsec
-
   if(nsec.lt.nsec0) then
      write(*,1028) f0+1400.d-6,f0+1600.d-6
      write(13,1028) f0+1400.d-6,f0+1600.d-6
@@ -132,4 +142,5 @@ program wspr_tr
   go to 20
 
 999 ierr=soundexit()
+  ierr=unlink('abort')
 end program wspr_tr

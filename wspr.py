@@ -16,14 +16,14 @@ from palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 import array
-import thread
+##import thread
 import random
 import math
 import string
 
 root = Tk()
-Version="0.5 r" + "$Rev$"[6:-1]
-print "Ignore the above error message, it is harmless."
+Version="0.6 r" + "$Rev$"[6:-1]
+print "Ignore any error message above, it is harmless."
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -55,10 +55,12 @@ fmid=0.0
 fmid0=0.0
 font1='Helvetica'
 idsec=0
+ipctx=IntVar()
 isec0=0
 isync=1
 loopall=0
-modtime0=0
+modpixmap0=0
+modtext0=0
 mrudir=os.getcwd()
 ndbm0=-999
 newdat=1
@@ -71,7 +73,7 @@ nsec0=0
 nspeed0=IntVar()
 NX=500
 NY=160
-ipctx=IntVar()
+param20=""
 pctx=[-1,0,20,25,33,100]
 
 a=array.array('h')
@@ -138,7 +140,8 @@ def openfile(event=NONE):
         n=len(tw)
         if n>12: tw=tw[:n-1]
         tw=[t,] + tw
-        thread.start_new_thread(start_rx,(f0.get(),0,fname))
+        print 'Open file'
+##        thread.start_new_thread(start_rx,(f0.get(),0,fname))
     os.chdir(appdir)
 
 #------------------------------------------------------ opennext
@@ -168,7 +171,8 @@ def opennext(event=NONE):
             n=len(tw)
             if n>12: tw=tw[:n-1]
             tw=[t,] + tw
-            thread.start_new_thread(start_rx,(f0.get(),0,fname))
+            print 'Open next'
+##            thread.start_new_thread(start_rx,(f0.get(),0,fname))
         else:
             t="No more *.wav files in this directory."
             msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
@@ -348,53 +352,36 @@ def tx_volume():
             pass
     raise os.error, "Cannot find "+file
 
-#------------------------------------------------------ start_rx
-def start_rx(f0,nsec,fname):
-    global receiving,transmitting,bandmap,bandmap2,newdat,loopall, \
-        fmid,idsec
-
-    utc=time.gmtime(time.time()+0.1*idsec)
-    if fname!="":
-        savefile=fname
-        devin='-1'
-    else:
-        t="%02d%02d%02d_%02d%02d" % (utc[0]-2000,utc[1],utc[2],utc[3],utc[4])
-        savefile=t+".WAV"
-        devin=options.DevinName.get()
-    cmd="wspr_rx.exe"
-    args=str(f0) + " " + str(nsec) + " " + str(isync) + " " + \
-        str(nsave.get()) + " " + devin + " " + savefile
-    receiving=1
-    try:
-        os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
-    except:
-        print cmd + ' ' + args + ' failed.'
-    receiving=0
-
+#------------------------------------------------------ get_decoded
+def get_decoded():
+    global bandmap,bandmap2,newdat,loopall
+    
 # Get lines from decoded.txt
     try:
         f=open(appdir+'/decoded.txt',mode='r')
         lines=f.readlines()
         f.close()
+        if lines[0][:4]=="$EOF": lines=""
     except:
         lines=""
+    if len(lines)>0:
 #  Write data to text box and insert freqs and calls into bandmap.
-    text.configure(state=NORMAL)
-    nseq=0
-    nfmid=int(1.0e6*fmid)%1000
-    for i in range(len(lines)):
-        text.insert(END,lines[i][:53]+"\n")
-        callsign=lines[i][38:45]
-        if callsign[:1] != ' ':
-            i1=callsign.find(' ')
-            callsign=callsign[:i1]
-            nseq=int(lines[i][62:71])
-            ndf=int(lines[i][71:75]) + nfmid
-            bandmap.append((ndf,callsign,nseq))
-    text.configure(state=DISABLED)
-    text.see(END)
+        text.configure(state=NORMAL)
+        nseq=0
+        nfmid=int(1.0e6*fmid)%1000
+        for i in range(len(lines)):
+            text.insert(END,lines[i][:53]+"\n")
+            callsign=lines[i][38:45]
+            if callsign[:1] != ' ':
+                i1=callsign.find(' ')
+                callsign=callsign[:i1]
+                nseq=int(lines[i][62:71])
+                ndf=int(lines[i][71:75]) + nfmid
+                bandmap.append((ndf,callsign,nseq))
+        text.configure(state=DISABLED)
+        text.see(END)
 
-#  Remove information that's too old from bandmap.
+#  Remove any "too old" information from bandmap.
     iz=len(bandmap)
     for i in range(iz-1,0,-1):
         if (nseq - bandmap[i][2]) > 15:           # 15 sequences = 30 minutes
@@ -421,45 +408,40 @@ def start_rx(f0,nsec,fname):
         call0=bandmap2[i][1]
     text1.configure(state=DISABLED)
     text1.see(END)
-    newdat=1
+
     if loopall: opennext()
 
-#------------------------------------------------------ start_tx
-def start_tx(mycall,mygrid,ndbm,ntxdf,f0):
-    global receiving,transmitting
-    cmd="wspr_tx.exe"
-    args=mycall.upper() + " " + mygrid.upper() + " " + str(ndbm) + \
-          " " + str(options.PttPort.get()) + " " + str(ntxdf) + \
-          " " + options.DevoutName.get() + " " + str(f0)
-    transmitting=1
-    try:
-        os.spawnv(os.P_WAIT,cmd,(cmd,) + (args,))
-    except:
-        print cmd + ' ' + args + ' failed.'
-    transmitting=0
+#------------------------------------------------------ put_params
+def put_params():
+    global idsec,param20
+
+    param2=str(f0.get()) + " " + str(ftx.get()) \
+             + " " + str(options.PttPort.get()) \
+             + " " + options.MyCall.get().upper() \
+             + " " + options.MyGrid.get().upper() \
+             + " " + str(options.dBm.get()) \
+             + " " + str(pctx[ipctx.get()]) \
+             + " " + str(idsec) \
+             + " " + options.DevinName.get() \
+             + " " + options.DevoutName.get() \
+             + " " + str(nsave.get())
+    if param2 != param20:
+        param20=param2
+        param1="    f0    ftx port call grid dbm pctx dsec in out save"
+        param3="test.wav"
+        f=open(appdir+'/wspr_tr.in',mode='w')
+        f.write(param1 + "\n" + param2 + "\n" + param3 + "\n")
+        f.close()
 
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modtime0,tw,s0,c0,fmid,fmid0,idsec
+        modpixmap0,modtext0,tw,s0,c0,fmid,fmid0,idsec
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
     nsec=int(tsec)
     nsec0=nsec
-    ns120=nsec%120
-    if ns120==0 and (not transmitting) and (not receiving) and ipctx.get()>0:
-        x=random.uniform(0.,100.)
-        if x<pctx[ipctx.get()]:
-            ntxdf=int(round(1.e6*(ftx.get()-f0.get())))-1500
-            thread.start_new_thread(start_tx,
-                (options.MyCall.get(),options.MyGrid.get(),options.dBm.get(),
-                     ntxdf,f0.get()),)
-        else:
-            n=len(tw)
-            if n>12: tw=tw[:n-1]
-            tw=[time.strftime('%H:%M',utc),] + tw
-            thread.start_new_thread(start_rx,(f0.get(),nsec,''))
 
     isec=utc[5]
     if isec != isec0:                           #Do once per second
@@ -475,6 +457,7 @@ def update():
         except:
             pass
 
+    put_params()
     bgcolor='gray85'
     t=''
     if transmitting:
@@ -487,16 +470,24 @@ def update():
     msg6.configure(text=t,bg=bgcolor)
 
     try:
-        modtime=os.stat('pixmap.dat')[8]
-        if modtime!=modtime0:
+        modpixmap=os.stat('pixmap.dat')[8]
+        if modpixmap!=modpixmap0:
             f=open('pixmap.dat','rb')
             a=array.array('h')
             a.fromfile(f,NX*NY)
             f.close()
             newdat=1
-            modtime0=modtime
+            modpixmap0=modpixmap
     except:
         newdat=0
+
+    try:
+        modtext=os.stat('decoded.txt')[8]
+        if modtext!=modtext0:
+            get_decoded()
+            modtext0=os.stat('decoded.txt')[8]
+    except:
+        pass
 
     scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
@@ -801,7 +792,15 @@ draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
-##toggleauto()
+
+put_params()
+cmd="wspr_tr.exe"
+args=""
+try:
+    os.spawnv(os.P_NOWAIT,cmd,(cmd,) + (args,))
+    print "wspr_tr started successfully."
+except:
+    print cmd + ' ' + args + ' failed.'
 try:
     os.remove('pixmap.dat')
 except:
@@ -831,7 +830,5 @@ f.write("f0 " + str(f0.get()) + "\n")
 f.write("ftx " + str(ftx.get()) + "\n")
 f.close()
 
-#Terminate audio streams
+#Terminate wspr_tr
 f=open("abort",mode='w')
-#time.sleep(0.5)
-#f.close()
