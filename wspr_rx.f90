@@ -124,6 +124,7 @@ program wspr_rx
 1030 format(3i2.2)
 
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
+!  open(13,file='ALL_MEPT.TXT',status='unknown',position='append') ! or that if compiler error
   open(14,file='decoded.txt',status='unknown')
 
   npts=114*12000

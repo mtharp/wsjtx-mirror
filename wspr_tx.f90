@@ -59,6 +59,7 @@ program wspr_tx
   enddo
 20 iz=i
   open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
+!  open(13,file='ALL_MEPT.TXT',status='unknown',position='append')   ! or that if compiler error
   ftx=f0 + 0.001500d0
   write(13,1010) ih,im,ftx,message(1:iz)
 1010 format(2i2.2,14x,f11.6,'  Transmitting "',a,'"')
