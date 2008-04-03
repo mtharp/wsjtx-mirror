@@ -61,6 +61,7 @@ isync=1
 loopall=0
 modpixmap0=0
 modtext0=0
+modtxrx0=0
 mrudir=os.getcwd()
 ndbm0=-999
 newdat=1
@@ -140,8 +141,7 @@ def openfile(event=NONE):
         n=len(tw)
         if n>12: tw=tw[:n-1]
         tw=[t,] + tw
-        print 'Open file'
-##        thread.start_new_thread(start_rx,(f0.get(),0,fname))
+        put_params(fname)
     os.chdir(appdir)
 
 #------------------------------------------------------ opennext
@@ -171,8 +171,7 @@ def opennext(event=NONE):
             n=len(tw)
             if n>12: tw=tw[:n-1]
             tw=[t,] + tw
-            print 'Open next'
-##            thread.start_new_thread(start_rx,(f0.get(),0,fname))
+            put_params(fname)
         else:
             t="No more *.wav files in this directory."
             msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
@@ -412,7 +411,7 @@ def get_decoded():
     if loopall: opennext()
 
 #------------------------------------------------------ put_params
-def put_params():
+def put_params(param3=NONE):
     global idsec,param20
 
     param2=str(f0.get()) + " " + str(ftx.get()) \
@@ -425,19 +424,18 @@ def put_params():
              + " " + options.DevinName.get() \
              + " " + options.DevoutName.get() \
              + " " + str(nsave.get())
-    if param2 != param20:
+    if param2 != param20 or param3!=NONE:
         param20=param2
         param1="    f0    ftx port call grid dbm pctx dsec in out save"
-        param3="test.wav"
         f=open(appdir+'/wspr_tr.in',mode='w')
-        f.write(param1 + "\n" + param2 + "\n" + param3 + "\n")
+        f.write(param1 + '\n' + param2 + '\n' + '"' + param3 + '"\n')
         f.close()
 
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,modtext0,tw,s0,c0,fmid,fmid0,idsec
+        modpixmap0,modtext0,modtxrx0,tw,s0,c0,fmid,fmid0,idsec
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
     nsec=int(tsec)
@@ -458,6 +456,27 @@ def update():
             pass
 
     put_params()
+
+# If T/R status has changed, get new info
+    try:
+        modtxrx=os.stat('txrxtime.txt')[8]
+        if modtxrx!=modtxrx0:
+            f=open('txrxtime.txt',mode='r')
+            t=f.read()
+            transmitting=0
+            receiving=0
+            f.close()
+            modtxrx0=os.stat('txrxtime.txt')[8]
+            if t[:9]=='Receiving':
+                receiving=1
+                n=len(tw)
+                if n>12: tw=tw[:n-1]
+                tw=[t[13:18],] + tw
+            if t[:12]=='Transmitting':
+                transmitting=1
+    except:
+        pass
+
     bgcolor='gray85'
     t=''
     if transmitting:
@@ -469,6 +488,16 @@ def update():
         t='Receiving'
     msg6.configure(text=t,bg=bgcolor)
 
+# If new decoded text has appeared, display it.
+    try:
+        modtext=os.stat('decoded.txt')[8]
+        if modtext!=modtext0:
+            get_decoded()
+            modtext0=os.stat('decoded.txt')[8]
+    except:
+        pass
+
+# Display the waterfall
     try:
         modpixmap=os.stat('pixmap.dat')[8]
         if modpixmap!=modpixmap0:
@@ -480,15 +509,6 @@ def update():
             modpixmap0=modpixmap
     except:
         newdat=0
-
-    try:
-        modtext=os.stat('decoded.txt')[8]
-        if modtext!=modtext0:
-            get_decoded()
-            modtext0=os.stat('decoded.txt')[8]
-    except:
-        pass
-
     scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
     if newdat or scale!= scale0 or offset!=offset0 or g.cmap!=g.cmap0:
@@ -795,10 +815,9 @@ root.title('  WSPR      by K1JT')
 
 put_params()
 cmd="wspr_tr.exe"
-args=""
+args="--gui"
 try:
     os.spawnv(os.P_NOWAIT,cmd,(cmd,) + (args,))
-    print "wspr_tr started successfully."
 except:
     print cmd + ' ' + args + ' failed.'
 try:

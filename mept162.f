@@ -16,7 +16,8 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       data first/.true./
       save
 
-      end file 14
+      write(14,1000)
+ 1000 format('$EOF')
       rewind 14
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32

@@ -32,11 +32,6 @@ subroutine tx
 
 20 iz=i
   ftx=f0 + 0.001500d0
-!  open(13,file='ALL_MEPT.TXT',status='unknown',access='append')
-!  write(13,1010) ih,im,ftx,message(1:iz)
-!1010 format(2i2.2,14x,f11.6,'  Transmitting "',a,'"')
-!  close(13)
-
   call genmept(call1,grid,ndbm,ntxdf,99.0,jwave)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
   npts=114*12000
