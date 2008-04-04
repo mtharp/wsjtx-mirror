@@ -1,4 +1,4 @@
-      subroutine afc(cx,npts,a,dt0,ccfbest,dtbest)
+      subroutine afc(cx,npts,a,ccfbest,dtbest)
 
       complex cx(npts)
       real a(5),deltaa(5)
@@ -10,11 +10,11 @@
       a(4)=0.
       a(5)=0.
 
-      deltaa(1)=0.5
-      deltaa(2)=2.0
-      deltaa(3)=2.0
-      deltaa(4)=22.5
-      deltaa(5)=0.05
+      deltaa(1)=0.73
+      deltaa(2)=0.1
+      deltaa(3)=0.1
+      deltaa(4)=0.1
+      deltaa(5)=0.1
       nterms=3
 
       chisqr=0.
@@ -55,12 +55,10 @@ C  Find minimum of parabola defined by last three points
          chisqr=fchisq(cx,npts,fsample,a,ccfmax,dtmax)
          if(chisqr/chisqr0.gt.0.9999) go to 30
          chisqr0=chisqr
-         write(*,3001) iter,a,chisqr
- 3001    format(i2,5f10.3,f12.2)
       enddo
 
  30   ccfbest=ccfmax * (375.0/fsample)**2
-      dtbest=dtmax
+      dtbest=dtmax-2.0
 
       return
       end

@@ -7,11 +7,12 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       parameter (NH=NFFT/2)            !Length of power spectra
       parameter (NSMAX=351)            !Number of half-symbol steps
       real psavg(-NH:NH)               !Average spectrum of whole record
+      real psmo(-NH:NH)
       real s2(-NH:NH,NSMAX)            !2d spectrum, stepped by half-symbols
       real ccfred(-NH:NH)              !Peak of ccfblue, as function of freq
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
       real tmp(513)
-      real sstf(4,275)
+      real sstf(8,275)
       real a(5)
       save
 
@@ -31,93 +32,47 @@ C  Compute power spectrum for each step, and get average
          call ps162(c2(k),s2(-NH,j))
          call add(psavg,s2(-NH,j),psavg,NFFT)
       enddo
-      call pctile(psavg(-136),tmp,273,45,base)
 
-      ia=nint(-100.0/df)
-      ib=-ia
-      i0=0
-      lag1=-5
-      lag2=20
-      syncbest=-1.e30
+      do i=-nh+2,nh-2
+         psmo(i)=0.
+         do j=-2,2
+            psmo(i)=psmo(i)+psavg(i+j)
+         enddo
+         psmo(i)=0.2*psmo(i)
+      enddo
+      psmo(-nh)=psmo(-nh+2)
+      psmo(-nh+1)=psmo(-nh+2)
+      psmo(nh-1)=psmo(nh-2)
+      psmo(nh)=psmo(nh-2)
 
-C  First cut at finding sync:
-      call zero(ccfred,745)
+      call pctile(psmo(-136),tmp,273,45,base)
+      call pctile(psmo(-136),tmp,273,11,base2)
+      rms2=base-base2
+
+      do i=-nh,nh
+         psmo(i)=(psmo(i)-base)/rms2
+         write(51,3001) i,i*df,psavg(i),psmo(i)
+ 3001    format(i6,3f12.3)
+      enddo
+
+      ia=-136
+      ib=136
+      plimit=10
+      pmax=plimit
+      k=1
       do i=ia,ib
-         call xcor162(s2,i,nsteps,nsym,lag1,lag2,ccfblue,ccf0,lagpk0)
-         ccfred(i+3)=ccf0
-         sync=ccfblue(lagpk0)
-         k=i-ia+1
-         sstf(1,k)=sync/base
-         sstf(3,k)=i
-         sstf(4,k)=lagpk0
-      enddo
-
-      kz=k
-      do k=1,kz
-         if(sstf(1,k).lt.1.0) then
-            sstf(1,k)=0.
-         else
-            i1=max(1,k-5)
-            i2=min(kz,k+6)
-            do i=i1,i2
-               if(sstf(1,i).gt.sstf(1,k)) sstf(1,k)=0.
-            enddo
+         if(psmo(i).gt.pmax) then
+            sstf(1,k)=3.0
+            sstf(6,k)=i*df
+            pmax=psmo(i)
          endif
-      enddo
-
-      k=0
-      do i=1,kz
-         if(sstf(1,i).gt.0.0) then
+         if(psmo(i).lt.0.5*pmax .and. pmax.gt.plimit) then
             k=k+1
-            sstf(1,k)=sstf(1,i)
-            sstf(3,k)=sstf(3,i)
-            sstf(4,k)=sstf(4,i)
+            pmax=plimit
          endif
       enddo
-      kz=k
-
-      do k=1,kz
-         ipk=nint(sstf(3,k))
-         dfx=(ipk-i0+3)*df
-
-
-C  Peak up in time, at best whole-channel frequency
-         call xcor162(s2,ipk,nsteps,nsym,lag1,lag2,ccfblue,ccfmax,lagpk)
-         xlag=lagpk
-         if(lagpk.gt.lag1 .and. lagpk.lt.lag2) then
-            call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
-            xlag=lagpk+dx2
-         endif
-
-         print*,k,(lagpk*nq*dt - 2.0),dfx
-         a(1)=dfx
-         call afc(c2,jz,a,dt0,ccfbest,dtbest)
-
-C  Find rms of the CCF, without the main peak
-         sq=0.
-         nsq=0
-         do lag=lag1,lag2
-            if(abs(lag-xlag).gt.2.0) then
-               sq=sq+ccfblue(lag)**2
-               nsq=nsq+1
-            endif
-         enddo
-         rms=sqrt(sq/nsq)
-         snrsync=ccfblue(lagpk)/rms - 8.0           !Empirical
-
-         istart=xlag*nq
-         dtx=istart*dt - 2.0
-         ppmax=0.
-         do i=-4,4
-            ppmax=ppmax + psavg(ipk+i)
-         enddo
-         ppmax=(ppmax/(9.0*base)) - 1.0
-         snrx=db(max(ppmax,0.0001)) -23.55          !Empirical
-         sstf(1,k)=snrsync
-         sstf(2,k)=snrx
-         sstf(3,k)=dtx
-         sstf(4,k)=dfx
-      enddo
+      kz=k-1
+      print*,'kz: ',kz
 
       return
       end

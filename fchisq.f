@@ -3,9 +3,16 @@
       parameter (NMAX=120*375)
       complex cx(npts)
       real a(5)
-      complex w,wstep,za,zb,z
+      complex w1,ws1
+      complex w2,ws2
+      complex w3,ws3
+      complex w4,ws4
+      complex cs1(0:NMAX)
+      complex cs2(0:NMAX)
+      complex cs3(0:NMAX)
+      complex cs4(0:NMAX)
+      complex z1,z2,z3,z4
       real ss(2812)
-      complex csx(0:NMAX)
       data twopi/6.283185307/a1,a2,a3/99.,99.,99./
       save
 
@@ -15,46 +22,70 @@
          a2=a(2)
          a3=a(3)
 
-C  Mix and integrate the complex X and Y signals
-         csx(0)=0.
-         w=1.0
-         x0=0.5*(npts+1)
+C  Mix and integrate four channels
+         cs1(0)=0.
+         cs2(0)=0.
+         cs3(0)=0.
+         cs4(0)=0.
+         w1=1.0
+         w2=1.0
+         w3=1.0
+         w4=1.0
+         x0=0.5*(npts+1)                     !Middle sample
          s=2.0/npts
+         dt=1.0/fsample
          do i=1,npts
-            x=s*(i-x0)
+            x=s*(i-x0)                       !x runs from -1 to +1
             if(mod(i,100).eq.1) then
                p2=1.5*x*x - 0.5
 !               p3=2.5*(x**3) - 1.5*x
 !               p4=4.375*(x**4) - 3.75*(x**2) + 0.375
-               dphi=(a(1) + x*a(2) + p2*a(3)) * (twopi/fsample)
-               wstep=cmplx(cos(dphi),sin(dphi))
+               dphi1=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 1.5*baud)
+               dphi2=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 0.5*baud)
+               dphi3=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 0.5*baud)
+               dphi4=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 1.5*baud)
+               ws1=cmplx(cos(dphi1),sin(dphi1))
+               ws2=cmplx(cos(dphi2),sin(dphi2))
+               ws3=cmplx(cos(dphi3),sin(dphi3))
+               ws4=cmplx(cos(dphi4),sin(dphi4))
             endif
-            w=w*wstep
-            csx(i)=csx(i-1) + w*cx(i)
+            w1=w1*ws1
+            w2=w2*ws2
+            w3=w3*ws3
+            w4=w4*ws4
+            cs1(i)=cs1(i-1) + w1*cx(i)
+            cs2(i)=cs2(i-1) + w2*cx(i)
+            cs3(i)=cs3(i-1) + w3*cx(i)
+            cs4(i)=cs4(i-1) + w4*cx(i)
          enddo
       endif
 
-C  Compute 1/2-symbol powers at 1/16-symbol steps.
-      fac=1.e-4
-      pol=a(4)/57.2957795
-      aa=cos(pol)
-      bb=sin(pol)
+C  Compute full-symbol powers at 1/16-symbol steps.
       nsps=nint(fsample/baud)                  !Samples per symbol
-      nsph=nsps/2                              !Samples per half-symbol
-
-      ndiv=16                                  !Output ss() steps per symbol
-      nout=ndiv*npts/nsps
+      ndiv=16                                  !Steps per symbol
+      nout=ndiv*npts/nsps                      !Total steps
       dtstep=1.0/(ndiv*baud)                   !Time per output step
+      fac=1.e-5
 
+      ssmax=0.
       do i=1,nout
          j=i*nsps/ndiv
-         k=j-nsph
+         k=j - nsps
          ss(i)=0.
          if(k.ge.1) then
-            za=csx(j)-csx(k)
-            z=aa*za
-            ss(i)=fac*(real(z)**2 + aimag(z)**2)
+            z1=cs1(j)-cs1(k)
+            z2=cs2(j)-cs2(k)
+            z3=cs3(j)-cs3(k)
+            z4=cs4(j)-cs4(k)
+
+            p1=real(z1)**2 + aimag(z1)**2
+            p2=real(z2)**2 + aimag(z2)**2
+            p3=real(z3)**2 + aimag(z3)**2
+            p4=real(z4)**2 + aimag(z4)**2
+
+            ss(i)=fac*(max(p2,p4) - max(p1,p3))
          endif
+         if(abs(ss(i)).gt.abs(ssmax)) ssmax=ss(i)
       enddo
 
       ccfmax=0.
@@ -63,6 +94,11 @@ C  Compute 1/2-symbol powers at 1/16-symbol steps.
          ccfmax=ccf
          dtmax=lagpk*dtstep
       endif
+
+      write(*,3030) a(1),a(2),a(3),dtmax,ccfmax
+ 3030 format('fchisq:',3f8.2,2f10.3)
+
+! Reverse sign because we will be minimizing fchisq
       fchisq=-ccfmax
 
       return
