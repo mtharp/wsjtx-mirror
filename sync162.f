@@ -12,11 +12,13 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
       real tmp(513)
       real sstf(4,275)
+      real a(5)
       save
 
 C  Do FFTs of twice symbol length, stepped by half symbols.  Note that 
 C  we have already downsampled the data by factor of 2.
 
+      dt=1.0/375.0
       nsym=162
       nq=NFFT/4
       nsteps=jz/nq - 1
@@ -38,6 +40,7 @@ C  Compute power spectrum for each step, and get average
       lag2=20
       syncbest=-1.e30
 
+C  First cut at finding sync:
       call zero(ccfred,745)
       do i=ia,ib
          call xcor162(s2,i,nsteps,nsym,lag1,lag2,ccfblue,ccf0,lagpk0)
@@ -77,6 +80,7 @@ C  Compute power spectrum for each step, and get average
          ipk=nint(sstf(3,k))
          dfx=(ipk-i0+3)*df
 
+
 C  Peak up in time, at best whole-channel frequency
          call xcor162(s2,ipk,nsteps,nsym,lag1,lag2,ccfblue,ccfmax,lagpk)
          xlag=lagpk
@@ -84,6 +88,10 @@ C  Peak up in time, at best whole-channel frequency
             call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
             xlag=lagpk+dx2
          endif
+
+         print*,k,(lagpk*nq*dt - 2.0),dfx
+         a(1)=dfx
+         call afc(c2,jz,a,dt0,ccfbest,dtbest)
 
 C  Find rms of the CCF, without the main peak
          sq=0.
@@ -97,7 +105,6 @@ C  Find rms of the CCF, without the main peak
          rms=sqrt(sq/nsq)
          snrsync=ccfblue(lagpk)/rms - 8.0           !Empirical
 
-         dt=1.0/375.0
          istart=xlag*nq
          dtx=istart*dt - 2.0
          ppmax=0.

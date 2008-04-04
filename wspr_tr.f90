@@ -18,61 +18,73 @@ program wspr_tr
   character*17 message
   character*12 arg
   real*8 tsec
-  logical idle,receiving,transmitting,decoding,gui
+  logical idle,receiving,transmitting,decoding,gui,cmnd
   integer istat(13)
   integer soundinit,soundexit
   integer*1 hdr(44)
   include 'acom1.f90'
   data nsec0/9999999/,itr/0/
   data idle/.false./,receiving/.false./,transmitting/.false./
-  data decoding/.false./,gui/.false./
+  data decoding/.false./,gui/.false./,cmnd/.false./
 
   nargs=iargc()
-  if(nargs.lt.1) then
-     print*,'Usage: wspr_tr <args> ...'
+  if(nargs.ne.1 .and. nargs.ne.12) then
+     print*,'Usage: wspr_tr f0 ftx port call grid dBm pctx dsec in out save "infile"'
+     print*,'       wspr_tr --gui'
      go to 999
-  endif
-  call getarg(1,arg)
-  if(arg(1:5).eq.'--gui') gui=.true.
+  endif 
 
-  ierr=unlink('abort')
+  if(nargs.eq.1) gui=.true.
+  if(nargs.eq.12) then
+     call getparams(f0,ftx,nport,callsign,grid,ndbm,    &
+                           pctx,idsec,ndevin,ndevout,nsave,infile)
+     print*,infile
+     cmnd=.true.
+  endif
+
+ ierr=unlink('abort')
   open(11,file='txrxtime.txt',status='unknown',share='denynone')
   write(11,1000) 
 1000 format('Idle')
   open(13,file='ALL_MEPT.TXT',status='unknown',position='append',  &
        share='denynone')
   open(14,file='decoded.txt',status='unknown',share='denynone')
-  end file 14
+  write(14,1002)
+1002format('$EOF')
   rewind 14
 
   is10=-9999999
   ierr=soundinit()
   call random_seed
+  nrx=1
 
 20 ierr=stat('abort',istat)
   if(ierr.eq.0) go to 999
-  ierr=stat('wspr_tr.in',istat)
-  if(istat(10).gt.is10) then
-     open(10,file='wspr_tr.in',status='old',share='denynone')
-     read(10,*) cjunk
-     read(10,*) f0,ftx,nport,callsign,grid,ndbm,pctx,idsec,ndevin,ndevout,nsave
-     read(10,*) infile
-     close(10)
-     nrx=1
-     if(pctx.gt.50.0) nrx=0
-     rxavg=1.0
-     if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
-     rr=3.0
-     if(pctx.ge.40.0) rr=1.5                    !soft step?
+  if(.not.cmnd) then
      ierr=stat('wspr_tr.in',istat)
-     is10=istat(10)
-     idle=.false.
-     if(pctx.lt.0.0) then
-        idle=.true.
-        call msleep(100)
-        go to 20
+     if(istat(10).gt.is10) then
+        open(10,file='wspr_tr.in',status='old',share='denynone')
+        read(10,*) cjunk
+        read(10,*) f0,ftx,nport,callsign,grid,ndbm,pctx,idsec,          &
+             ndevin,ndevout,nsave
+        read(10,*) infile
+        close(10)
+        if(pctx.gt.50.0) nrx=0
+        ierr=stat('wspr_tr.in',istat)
+        is10=istat(10)
      endif
   endif
+  rxavg=1.0
+  if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
+  rr=3.0
+  if(pctx.ge.40.0) rr=1.5                    !soft step?
+  idle=.false.
+  if(pctx.lt.0.0) then
+     idle=.true.
+     call msleep(100)
+     go to 20
+  endif
+
   if(idle .and. infile(1:4).eq.'none') then
      call msleep(100)
      go to 20
@@ -81,10 +93,9 @@ program wspr_tr
   call getutc(cdate,utctime,tsec)
   nsec=tsec
   if(nsec.lt.nsec0 .and. (.not.gui)) then
-     write(*,1028) f0+1400.d-6,f0+1600.d-6
-     write(13,1028) f0+1400.d-6,f0+1600.d-6
-1028 format(/' Search range:',f11.6,' to',f11.6,' MHz'//                &
-             ' Date   UTC Sync dB    DT     Freq    Message'/           &
+     write(*,1028) 
+     write(13,1028)
+1028 format(/' Date   UTC Sync dB    DT     Freq    Message'/           &
              '------------------------------------------------------')
   endif
   nsec0=nsec
@@ -138,6 +149,7 @@ program wspr_tr
      endif
      ndecdone=0
      decoding=.false.
+     if(cmnd) go to 999
   endif
 
   if(ntxdone.gt.0) then
@@ -149,7 +161,6 @@ program wspr_tr
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-  print*,'B ',pctx,' ',infile(1:50)
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0) then
      call random_number(x)

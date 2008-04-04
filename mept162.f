@@ -28,7 +28,7 @@ C  Look for sync patterns, get DF and DT
       call spec162(c2,jz)
 
       siglev=20.0*log10(rms/300.0) 
-      do k=1,kz
+      do k=kz,1,-1
          snrsync=sstf(1,k)
          snrx=sstf(2,k)
          dtx=sstf(3,k)
