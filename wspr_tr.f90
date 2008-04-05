@@ -43,14 +43,16 @@ program wspr_tr
   endif
 
  ierr=unlink('abort')
-  open(11,file='txrxtime.txt',status='unknown',share='denynone')
+!  open(11,file='txrxtime.txt',status='unknown',share='denynone')
+  open(11,file='txrxtime.txt',status='unknown')
   write(11,1000) 
 1000 format('Idle')
-  open(13,file='ALL_MEPT.TXT',status='unknown',position='append',  &
-       share='denynone')
-  open(14,file='decoded.txt',status='unknown',share='denynone')
+!  open(13,file='ALL_MEPT.TXT',status='unknown',position='append',share='denynone')
+  open(13,file='ALL_MEPT.TXT',status='unknown',position='append')
+!  open(14,file='decoded.txt',status='unknown',share='denynone')
+  open(14,file='decoded.txt',status='unknown')
   write(14,1002)
-1002format('$EOF')
+1002 format('$EOF')
   rewind 14
 
   is10=-9999999
@@ -63,7 +65,8 @@ program wspr_tr
   if(.not.cmnd) then
      ierr=stat('wspr_tr.in',istat)
      if(istat(10).gt.is10) then
-        open(10,file='wspr_tr.in',status='old',share='denynone')
+!        open(10,file='wspr_tr.in',status='old',share='denynone')
+        open(10,file='wspr_tr.in',status='old')
         read(10,*) cjunk
         read(10,*) f0,ftx,nport,callsign,grid,ndbm,pctx,idsec,          &
              ndevin,ndevout,nsave
@@ -104,9 +107,9 @@ program wspr_tr
   if(infile(1:4).ne.'none' .and. (.not.transmitting) .and. & 
        (.not.receiving)) then
 #ifdef CVF
-     open(12,file=infile,form='binary',status='unknown')
+     open(12,file=infile,form='binary',status='old')
 #else
-     open(12,file=infile,access='stream',status='unknown')
+     open(12,file=infile,access='stream',status='old')
 #endif
      npts=114*12000
      read(12) hdr

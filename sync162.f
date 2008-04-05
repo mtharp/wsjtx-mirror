@@ -1,37 +1,14 @@
-      subroutine sync162(c2,jz,dtx,dfx,snrx,snrsync,sstf,kz)
+      subroutine sync162(psavg,sstf,kz)
 
 C  Find MEPT_JT sync signals, with best-fit DT and DF.  
 
-      complex c2(jz)
-      parameter (NFFT=512)             !Length of FFTs
+      parameter (NFFT=256)             !Length of FFTs
       parameter (NH=NFFT/2)            !Length of power spectra
       parameter (NSMAX=351)            !Number of half-symbol steps
       real psavg(-NH:NH)               !Average spectrum of whole record
       real psmo(-NH:NH)
-      real s2(-NH:NH,NSMAX)            !2d spectrum, stepped by half-symbols
-      real ccfred(-NH:NH)              !Peak of ccfblue, as function of freq
-      real ccfblue(-5:540)             !CCF with pseudorandom sequence
       real tmp(513)
-      real sstf(8,275)
-      real a(5)
-      save
-
-C  Do FFTs of twice symbol length, stepped by half symbols.  Note that 
-C  we have already downsampled the data by factor of 2.
-
-      dt=1.0/375.0
-      nsym=162
-      nq=NFFT/4
-      nsteps=jz/nq - 1
-      df=375.0/nfft
-      call zero(psavg,NFFT+1)
-
-C  Compute power spectrum for each step, and get average
-      do j=1,nsteps
-         k=(j-1)*nq + 1
-         call ps162(c2(k),s2(-NH,j))
-         call add(psavg,s2(-NH,j),psavg,NFFT)
-      enddo
+      real sstf(275)
 
       do i=-nh+2,nh-2
          psmo(i)=0.
@@ -40,39 +17,47 @@ C  Compute power spectrum for each step, and get average
          enddo
          psmo(i)=0.2*psmo(i)
       enddo
-      psmo(-nh)=psmo(-nh+2)
-      psmo(-nh+1)=psmo(-nh+2)
-      psmo(nh-1)=psmo(nh-2)
-      psmo(nh)=psmo(nh-2)
 
-      call pctile(psmo(-136),tmp,273,45,base)
-      call pctile(psmo(-136),tmp,273,11,base2)
+      call pctile(psmo(-68),tmp,137,45,base)
+      call pctile(psmo(-68),tmp,137,11,base2)
       rms2=base-base2
 
-      do i=-nh,nh
+      ia=-65
+      ib=65
+      df=375.0/nfft
+      do i=ia,ib
          psmo(i)=(psmo(i)-base)/rms2
-         write(51,3001) i,i*df,psavg(i),psmo(i)
+         write(51,3001) i,150.0+i*df,psavg(i),psmo(i)
  3001    format(i6,3f12.3)
       enddo
 
-      ia=-136
-      ib=136
       plimit=10
       pmax=plimit
       k=1
       do i=ia,ib
          if(psmo(i).gt.pmax) then
-            sstf(1,k)=3.0
-            sstf(6,k)=i*df
+            sstf(k)=i*df
             pmax=psmo(i)
          endif
-         if(psmo(i).lt.0.5*pmax .and. pmax.gt.plimit) then
+!         if(psmo(i).lt.0.5*pmax .and. pmax.gt.plimit) then
+         if(psmo(i).lt.pmax-3.0 .and. pmax.gt.plimit) then
+!            print*,'A ',k,pmax,sstf(k)
             k=k+1
-            pmax=plimit
+            sstf(k)=99999
+            pmax=psmo(i)
          endif
       enddo
       kz=k-1
-      print*,'kz: ',kz
+
+      k=0
+      do j=1,kz
+         if(abs(sstf(j)).lt.10000.0) then
+            k=k+1
+            sstf(k)=sstf(j)
+!            print*,'B ',k,sstf(k)
+         endif
+      enddo
+      kz=k
 
       return
       end

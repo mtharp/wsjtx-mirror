@@ -5,21 +5,19 @@ FC = g95
 FFLAGS = -cpp
 CFLAGS = -I. -fbounds-check
 
-OBJS2 = wspr_tx.o genmept.o inter_mept.o nchar.o grid2deg.o \
-	packcall.o packgrid.o pack50.o unpack50.o unpackcall.o \
-	unpackgrid.o deg2grid.o ptt.o set.o gran.o encode232.o \
-	playsound.o 
+OBJS4 = wspr_tr.o startrx.o rx.o getsound.o \
+	sound.o mept162.o getrms.o wfile5.o mix162.o \
+	sync162.o decode162.o spec162.o set.o xfft.o \
+	four1.o ps162.o pctile.o xcor162.o peakup.o db.o \
+	inter_mept.o fano232.o unpack50.o unpackcall.o \
+	unpackgrid.o four2.o flat3.o sort.o deg2grid.o \
+	ssort.o getutc.o starttx.o tx.o ptt.o genmept.o \
+	packcall.o packgrid.o pack50.o encode232.o gran.o \
+	nchar.o grid2deg.o startdec.o decode.o gmtime2.o \
+	getparams.o afc.o fchisq.o ccf2.o twkfreq.o cutil.o
 
-OBJS3 = wspr_rx.o inter_mept.o \
-	mix162.o xfft.o four1.o four2.o sync162.o ps162.o \
-	mept162.o nchar.o grid2deg.o unpack50.o unpackcall.o \
-	unpackgrid.o deg2grid.o getrms.o \
-	set.o encode232.o fano232.o wfile5.o \
-	xcor162.o slope.o peakup.o pctile.o db.o sort.o \
-	ssort.o decode162.o getsound.o spec162.o flat3.o
-
-
-all:    wspr.exe wspr_tx.exe wspr_rx.exe
+#all:    WSPR.EXE wspr_tr.exe
+all:    wspr_tr.exe
 
 wspr.exe: wspr.spec
 	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
@@ -28,29 +26,40 @@ wspr.spec: wspr.py g.py options.py palettes.py
 	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
 	   wsjt.ico --tk --onefile wspr.py
 
-wspr_tx.exe: $(OBJS2)
-	$(FC) -o wspr_tx.exe $(FFLAGS) $(OBJS2) libportaudio.a -lwinmm
-
-wspr_rx.exe: $(OBJS3)
-	$(FC) -o wspr_rx.exe $(FFLAGS) $(OBJS3) libportaudio.a -lwinmm
+wspr_tr.exe: $(OBJS4)
+	$(FC) -o wspr_tr.exe $(FFLAGS) $(OBJS4) libportaudio.a -lwinmm
 
 gran.o: gran.f90
 	$(FC) -c $(FFLAGS) gran.f90
-mept_rx.o: mept_rx.f90
-	$(FC) -c $(FFLAGS) mept_rx.f90
-mept_tx.o: mept_tx.f90
-	$(FC) -c $(FFLAGS) mept_tx.f90
 wspr.o: wspr.f90
 	$(FC) -c $(FFLAGS) wspr.f90
-wspr_rx.o: wspr_rx.f90
-	$(FC) -c $(FFLAGS) wspr_rx.f90
-wspr_tx.o: wspr_tx.f90
-	$(FC) -c $(FFLAGS) wspr_tx.f90
+wspr_tr.o: wspr_tr.f90
+	$(FC) -c $(FFLAGS) wspr_tr.f90
+
+startrx.o: startrx.f90 acom1.f90
+	$(FC) -c $(FFLAGS) startrx.f90
+starttx.o: starttx.f90 acom1.f90
+	$(FC) -c $(FFLAGS) starttx.f90
+startdec.o: startdec.f90 acom1.f90
+	$(FC) -c $(FFLAGS) startdec.f90
+rx.o: rx.f90 acom1.f90
+	$(FC) -c $(FFLAGS) rx.f90
+tx.o: tx.f90 acom1.f90
+	$(FC) -c $(FFLAGS) tx.f90
+decode.o: decode.f90 acom1.f90
+	$(FC) -c $(FFLAGS) decode.f90
+getutc.o: getutc.f90 acom1.f90
+	$(FC) -c $(FFLAGS) getutc.f90
+getparams.o: getparams.f90
+	$(FC) -c $(FFLAGS) getparams.f90
+gmtime2.o: gmtime2.c
+	$(CC) -c -DWin32 gmtime2.c
+
 
 .PHONY : clean
 
 clean:
-	rm *.o wspr.exe wspr_tx.exe wspr_rx.exe
+	rm *.o wspr_tr.exe
 
 
 

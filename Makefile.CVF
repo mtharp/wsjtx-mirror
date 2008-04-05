@@ -13,7 +13,8 @@ OBJS4 = wspr_tr.obj startrx.obj rx.obj getsound.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj deg2grid.obj \
 	ssort.obj getutc.obj starttx.obj tx.obj ptt.obj genmept.obj \
 	packcall.obj packgrid.obj pack50.obj encode232.obj gran.obj \
-	nchar.obj grid2deg.obj startdec.obj decode.obj
+	nchar.obj grid2deg.obj startdec.obj decode.obj gmtime2.obj \
+	getparams.obj afc.obj fchisq.obj ccf2.obj twkfreq.obj
 
 all:    WSPR.EXE wspr_tr.exe
 
@@ -41,6 +42,8 @@ tx.obj: tx.f90 acom1.f90
 	$(FC) /compile_only $(FFLAGS) tx.f90
 decode.obj: decode.f90 acom1.f90
 	$(FC) /compile_only $(FFLAGS) decode.f90
+gmtime2.obj: gmtime2.c
+	$(CC) /c /DWin32 gmtime2.c
 
 .PHONY : clean
 

@@ -95,8 +95,8 @@ C  Compute full-symbol powers at 1/16-symbol steps.
          dtmax=lagpk*dtstep
       endif
 
-      write(*,3030) a(1),a(2),a(3),dtmax,ccfmax
- 3030 format('fchisq:',3f8.2,2f10.3)
+!      write(*,3030) a(1),a(2),a(3),dtmax,ccfmax
+! 3030 format('fchisq:',3f8.2,2f10.3)
 
 ! Reverse sign because we will be minimizing fchisq
       fchisq=-ccfmax

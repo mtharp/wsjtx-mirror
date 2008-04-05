@@ -10,8 +10,11 @@
 #define PA_SAMPLE_TYPE  paInt16
 typedef short SAMPLE;
 
-// int soundinit(void)
+#ifdef CVF
 int __stdcall SOUNDINIT(void)
+#else 
+int soundinit_(void)
+#endif
 {
   PaError err;
   err = Pa_Initialize();
@@ -27,15 +30,21 @@ int __stdcall SOUNDINIT(void)
   }
 }
 
-// int soundexit(void)
+#ifdef CVF
 int __stdcall SOUNDEXIT(void)
+#else
+int soundexit_(void)
+#endif
 {
   Pa_Terminate();
   return 0;
 }
 
-// int soundin(short recordedSamples[],int totalFrames)
+#ifdef CVF
 int __stdcall SOUNDIN(short recordedSamples[],int *nframes0)
+#else
+int soundin_(short recordedSamples[],int *nframes0)
+#endif
 {
     PaStreamParameters inputParameters;
     PaStream *stream;
@@ -91,8 +100,11 @@ error:
     return -1;
 }
 
-// int soundout(short recordedSamples[], int totalFrames)
+#ifdef CVF
 int __stdcall SOUNDOUT(short recordedSamples[], int *nframes0)
+#else
+int soundout_(short recordedSamples[], int *nframes0)
+#endif
 {
     PaStreamParameters outputParameters;
     PaStream *stream;
@@ -148,8 +160,11 @@ error:
     return -1;
 }
 
-// void msleep_(int *msec0)
+#ifdef CVF
 void __stdcall MSLEEP(int *msec0)
+#else
+void msleep_(int *msec0)
+#endif
 {
   Pa_Sleep(*msec0);
 }

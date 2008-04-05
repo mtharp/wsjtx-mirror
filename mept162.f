@@ -4,16 +4,20 @@ C  Orchestrates the process of decoding MEPT_JT messages.
 
       integer*2 id(npts)
 
-      parameter (NFFT1=2*1024*1024)
+      parameter (NFFT1=2*1024*1024,NH1=NFFT1/2)
       character*22 message
       character*70 outfile
       character*11 datetime
       logical first
       real*8 f0
       real ps(-128:128)
-      real sstf(8,275)
+      real sstf(275)
+      real s2(-127:128)
+      real p(-137:137),tmp(275),fgood(100)
       real a(5)
+      real x(NFFT1)
       complex c(0:NFFT1),c2(65536),c3(65536)
+      equivalence (x,c)
       data first/.true./
       save
 
@@ -21,39 +25,100 @@ C  Orchestrates the process of decoding MEPT_JT messages.
  1000 format('$EOF')
       rewind 14
 
+      fac=1.e-8
+      do i=1,npts
+         x(i)=fac*id(i)
+      enddo
+      do i=npts+1,NFFT1
+         x(i)=0.
+      enddo
+      call xfft(x,NFFT1)
+      nadd=128
+      df1=nadd*12000.0/NFFT1
+      ia=nint(1400/df1)
+      ib=nint(1600/df1)
+      i0=nint(1500/df1)
+      do i=ia,ib
+         sq=0.
+         do n=1,nadd
+            k=(i-1)*nadd + n
+            sq=sq + real(c(k))**2 + aimag(c(k))**2
+         enddo
+         freq=i*df1 - 1500 + 150
+         p(i-i0)=sq
+      enddo
+
+      call pctile(p(-137),tmp,275,45,base)
+!      call pctile(p(-137),tmp,275,11,base2)
+!      rms2=base-base2
+
+      do i=-137,137
+         p(i)=10.0*log10((p(i)/base))
+         write(53,3001) i,150.0+i*df1,p(i)
+ 3001    format(i5,2f12.3)
+      enddo
+
+      k=0
+      plim=3.0
+      do i=-132,132
+         pp=0.
+         do k=-3,3
+            pp=pp+p(i)
+         enddo
+         pp=pp/7.0
+         if(pp.gt.plim .and. p(i-5).lt.pp-2 .and. p(i+5).lt.pp-2) then
+            k=k+1
+            fgood(k)=i*df1 + 150.0
+            print*,'C ',k,fgood(k),pp
+         endif
+      enddo
+
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,c,c,c2,jz,df2,ps)
 
 C  Look for sync patterns, get DF and DT
-      call sync162(c2,jz,dtx,dfx,snrx,snrsync,sstf,kz)
-      call spec162(c2,jz)
+      call spec162(c2,jz,s2)
+      call sync162(s2,sstf,kz)
 
-      siglev=20.0*log10(rms/300.0)  
-!      do k=kz,1,-1
+      baud=12000.0/8192.0
       do k=1,kz
-         snrsync=sstf(1,k)
-         snrx=sstf(2,k)
-         dtx=sstf(3,k)
-         dfx=sstf(4,k)
-         nsync=nint(snrsync)
-         if(nsync.lt.0) nsync=0
-         nsnrx=nint(snrx)
-         if(nsnrx.lt.-33) nsnrx=-33
-         freq=f0 + 1.d-6*(dfx+1500.0)
-         message='                      '
-         if(nsync.ge.minsync) then
-            do jj=-15,15
-               a(1)=-sstf(6,k) -0.55 + 0.3*jj
-               a(2)=0.
+         ccfbest=-1.e30
+         do kk=-3,3
+            do jj=-10,10
+               df2=sstf(k) + 0.25*baud*jj
+               a(1)=-df2
+               a(2)=0.5*baud*kk
                a(3)=0.
-               ccf=fchisq(c2,jz,375.0,a,ccfbest,dtbest)
-               call afc(c2,jz,a,ccfbest,dtbest)
-               call twkfreq(c2,c3,jz,a)
-               call decode162(c3,jz,dtx,0.0,message,ncycles,metric,nerr)
-               write(*,3001) jj,sstf(6,k),a(1),a(2),a(3),dtbest,
-     +                ccfbest,message
- 3001          format(i4,6f8.2,2x,a22)
+               ccf=fchisq(c2,jz,375.0,a,ccfx,dtxx)
+!               write(*,3011) kk,jj,df2,a(1),a(2),a(3),ccfx,dtxx
+! 3011          format(i3,i4,6f8.2)
+               if(ccfx.gt.ccfbest) then
+                  ccfbest=ccfx
+                  dtbest=dtxx-2.0
+                  a1=a(1)
+                  a2=a(2)
+               endif
             enddo
+         enddo
+
+         sync=0.
+         if(ccfbest.gt.0.0) sync=10.0*log10(ccfbest)
+         nsync=nint(sync)
+         df2=-a1 + 1.5
+         dtx=dtbest
+         nsnrx=0
+         message='                      '
+!        if(nsync.ge.minsync) then
+        if(nsync.ge.0) then
+            freq=f0 + 1.d-6*(df2+1500.0)
+            a(1)=0.
+            a(2)=a2
+            a(3)=0.
+            call twkfreq(c2,c3,jz,a)
+            call decode162(c3,jz,dtbest,df2,message,ncycles,metric,nerr)
+!            write(*,3001) kk,jj,df2,a(1),a(2),a(3),dtbest,
+!     +           ccfbest,message
+! 3001       format(i3,i4,6f8.2,2x,a22)
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
