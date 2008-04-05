@@ -8,12 +8,13 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       character*22 message
       character*70 outfile
       character*11 datetime
-      logical first
+      logical first,skip
       real*8 f0
       real ps(-128:128)
       real sstf(275)
       real s2(-127:128)
       real p(-137:137),tmp(275),fgood(100)
+      integer np(-137:137)
       real a(5)
       real x(NFFT1)
       complex c(0:NFFT1),c2(65536),c3(65536)
@@ -49,8 +50,6 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       enddo
 
       call pctile(p(-137),tmp,275,45,base)
-!      call pctile(p(-137),tmp,275,11,base2)
-!      rms2=base-base2
 
       do i=-137,137
          p(i)=10.0*log10((p(i)/base))
@@ -62,14 +61,21 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       plim=3.0
       do i=-132,132
          pp=0.
+         np(i)=0
+         pmin=1.e30
          do k=-3,3
             pp=pp+p(i)
+            pmin=min(p(i),pmin)
          enddo
          pp=pp/7.0
-         if(pp.gt.plim .and. p(i-5).lt.pp-2 .and. p(i+5).lt.pp-2) then
+         if(pp.gt.plim .and. p(i-5).lt.pp-2 .and. p(i+5).lt.pp-2 .and.
+     +           pmin.gt.pp-2) then
             k=k+1
             fgood(k)=i*df1 + 150.0
-            print*,'C ',k,fgood(k),pp
+            np(i-1)=1
+            np(i)=1
+            np(i+1)=1
+!            print*,'C ',k,fgood(k),pp
          endif
       enddo
 
@@ -81,24 +87,31 @@ C  Look for sync patterns, get DF and DT
       call sync162(s2,sstf,kz)
 
       baud=12000.0/8192.0
-      do k=1,kz
+!      do k=1,kz
+      skip=.false.
+      do i=-132,132
+         if(skip .and. np(i).ne.0) go to 100
+         if(np(i).eq.0) then
+            skip=.false.
+            go to 100
+         endif
+         df2=i*df1
          ccfbest=-1.e30
-         do kk=-3,3
-            do jj=-10,10
-               df2=sstf(k) + 0.25*baud*jj
-               a(1)=-df2
-               a(2)=0.5*baud*kk
-               a(3)=0.
-               ccf=fchisq(c2,jz,375.0,a,ccfx,dtxx)
+         do kk=-5,5
+!            do jj=-10,10
+!               df2=sstf(k) + 0.25*baud*jj
+            a(1)=-df2
+            a(2)=0.5*baud*kk
+            a(3)=0.
+            ccf=fchisq(c2,jz,375.0,a,ccfx,dtxx)
 !               write(*,3011) kk,jj,df2,a(1),a(2),a(3),ccfx,dtxx
 ! 3011          format(i3,i4,6f8.2)
-               if(ccfx.gt.ccfbest) then
-                  ccfbest=ccfx
-                  dtbest=dtxx-2.0
-                  a1=a(1)
-                  a2=a(2)
-               endif
-            enddo
+            if(ccfx.gt.ccfbest) then
+               ccfbest=ccfx
+               dtbest=dtxx-2.0
+               a1=a(1)
+               a2=a(2)
+            endif
          enddo
 
          sync=0.
@@ -126,7 +139,9 @@ C  Look for sync patterns, get DF and DT
             write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,
      +           -a(1),-a(2),-a(3)
  1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,3f7.2)
+            if(message(1:6).ne.'      ') skip=.true.
          endif
+ 100     continue
       enddo
 
       return
