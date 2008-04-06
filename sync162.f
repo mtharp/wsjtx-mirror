@@ -27,8 +27,8 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       df=375.0/nfft
       do i=ia,ib
          psmo(i)=(psmo(i)-base)/rms2
-         write(51,3001) i,150.0+i*df,psavg(i),psmo(i)
- 3001    format(i6,3f12.3)
+!         write(51,3001) i,150.0+i*df,psavg(i),psmo(i)
+! 3001    format(i6,3f12.3)
       enddo
 
       plimit=10

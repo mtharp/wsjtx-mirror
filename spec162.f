@@ -83,8 +83,8 @@ C###
       df=375.0/nfft
       do i=ia,ib
          s2(i)=(s2(i)-base)/rms2
-         write(52,3001) i,150.0+i*df,s2(i)
- 3001    format(i5,2f12.3)
+!         write(52,3001) i,150.0+i*df,s2(i)
+! 3001    format(i5,2f12.3)
       enddo
 C###
 

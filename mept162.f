@@ -13,7 +13,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       real ps(-128:128)
       real sstf(275)
       real s2(-127:128)
-      real p(-137:137),tmp(275),fgood(100)
+      real p(-137:137),tmp(275),snr(-137:137)
       integer np(-137:137)
       real a(5)
       real x(NFFT1)
@@ -51,13 +51,16 @@ C  Orchestrates the process of decoding MEPT_JT messages.
 
       call pctile(p(-137),tmp,275,45,base)
 
+      rewind 53
       do i=-137,137
+         sig=p(i)/base - 1.0
+         snr(i)=-33.
+         if(sig.gt.0.) snr(i)=10.0*log10(sig) - 26
          p(i)=10.0*log10((p(i)/base))
          write(53,3001) i,150.0+i*df1,p(i)
  3001    format(i5,2f12.3)
       enddo
 
-      k=0
       plim=3.0
       do i=-132,132
          pp=0.
@@ -70,12 +73,12 @@ C  Orchestrates the process of decoding MEPT_JT messages.
          pp=pp/7.0
          if(pp.gt.plim .and. p(i-5).lt.pp-2 .and. p(i+5).lt.pp-2 .and.
      +           pmin.gt.pp-2) then
-            k=k+1
-            fgood(k)=i*df1 + 150.0
+            np(i-3)=1
+            np(i-2)=1
             np(i-1)=1
             np(i)=1
             np(i+1)=1
-!            print*,'C ',k,fgood(k),pp
+            np(i+2)=1
          endif
       enddo
 
@@ -84,7 +87,7 @@ C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
 
 C  Look for sync patterns, get DF and DT
       call spec162(c2,jz,s2)
-      call sync162(s2,sstf,kz)
+!      call sync162(s2,sstf,kz)
 
       baud=12000.0/8192.0
 !      do k=1,kz
@@ -101,7 +104,7 @@ C  Look for sync patterns, get DF and DT
 !            do jj=-10,10
 !               df2=sstf(k) + 0.25*baud*jj
             a(1)=-df2
-            a(2)=0.5*baud*kk
+            a(2)=0.25*baud*kk
             a(3)=0.
             ccf=fchisq(c2,jz,375.0,a,ccfx,dtxx)
 !               write(*,3011) kk,jj,df2,a(1),a(2),a(3),ccfx,dtxx
@@ -119,16 +122,17 @@ C  Look for sync patterns, get DF and DT
          nsync=nint(sync)
          df2=-a1 + 1.5
          dtx=dtbest
-         nsnrx=0
+         nsnrx=nint(snr(i))
          message='                      '
-!        if(nsync.ge.minsync) then
-        if(nsync.ge.0) then
+        if(nsync.ge.minsync) then
             freq=f0 + 1.d-6*(df2+1500.0)
             a(1)=0.
             a(2)=a2
             a(3)=0.
             call twkfreq(c2,c3,jz,a)
             call decode162(c3,jz,dtbest,df2,message,ncycles,metric,nerr)
+            if(message.eq.'                      ') go to 100
+
 !            write(*,3001) kk,jj,df2,a(1),a(2),a(3),dtbest,
 !     +           ccfbest,message
 ! 3001       format(i3,i4,6f8.2,2x,a22)
