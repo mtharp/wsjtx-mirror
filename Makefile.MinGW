@@ -5,6 +5,14 @@ FC = g95
 FFLAGS = -cpp
 CFLAGS = -I. -fbounds-check
 
+OBJS1 = rxtest.o mept162.o getrms.o mix162.o deg2grid.o \
+	sync162.o decode162.o spec162.o set.o xfft.o \
+	four1.o ps162.o pctile.o xcor162.o peakup.o db.o \
+	inter_mept.o fano232.o unpack50.o unpackcall.o \
+	unpackgrid.o four2.o flat3.o sort.o ssort.o \
+	nchar.o grid2deg.o decode.o gmtime2.o wfile5.o \
+	afc.o fchisq.o ccf2.o twkfreq.o 
+
 OBJS4 = wspr_tr.o startrx.o rx.o getsound.o \
 	sound.o mept162.o getrms.o wfile5.o mix162.o \
 	sync162.o decode162.o spec162.o set.o xfft.o \
@@ -17,7 +25,7 @@ OBJS4 = wspr_tr.o startrx.o rx.o getsound.o \
 	getparams.o afc.o fchisq.o ccf2.o twkfreq.o cutil.o
 
 #all:    WSPR.EXE wspr_tr.exe
-all:    wspr_tr.exe
+all:    wspr_tr.exe rxtest.exe
 
 wspr.exe: wspr.spec
 	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
@@ -26,6 +34,9 @@ wspr.spec: wspr.py g.py options.py palettes.py
 	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
 	   wsjt.ico --tk --onefile wspr.py
 
+rxtest.exe: $(OBJS1)
+	$(FC) -o rxtest.exe $(FFLAGS) $(OBJS1)
+
 wspr_tr.exe: $(OBJS4)
 	$(FC) -o wspr_tr.exe $(FFLAGS) $(OBJS4) libportaudio.a -lwinmm
 
@@ -33,9 +44,11 @@ gran.o: gran.f90
 	$(FC) -c $(FFLAGS) gran.f90
 wspr.o: wspr.f90
 	$(FC) -c $(FFLAGS) wspr.f90
+
+rxtest.o: rxtest.f90 acom1.f90
+	$(FC) -c $(FFLAGS) rxtest.f90
 wspr_tr.o: wspr_tr.f90
 	$(FC) -c $(FFLAGS) wspr_tr.f90
-
 startrx.o: startrx.f90 acom1.f90
 	$(FC) -c $(FFLAGS) startrx.f90
 starttx.o: starttx.f90 acom1.f90
@@ -59,7 +72,7 @@ gmtime2.o: gmtime2.c
 .PHONY : clean
 
 clean:
-	rm *.o wspr_tr.exe
+	rm *.o wspr_tr.exe rxtest.exe
 
 
 
