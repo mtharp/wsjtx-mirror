@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec)
+      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ltest)
 
 C  Orchestrates the process of decoding MEPT_JT messages.
 
@@ -8,7 +8,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       character*22 message
       character*70 outfile
       character*11 datetime
-      logical first,skip
+      logical first,skip,ltest
       real*8 f0
       real ps(-128:128)
       real sstf(275)
@@ -139,10 +139,24 @@ C  Look for sync patterns, get DF and DT
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
-            write(13,1010) datetime,nsync,nsnrx,dtx,freq,message
-            write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,
-     +           -a(1),-a(2),-a(3)
- 1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,3f7.2)
+            if(ltest) then
+               write(*,1010) datetime,nsync,nsnrx,dtx,freq,message,
+     +              -a(1),-a(2),-a(3)
+            else
+
+#ifdef CVF
+               open(13,file='ALL_MEPT.TXT',status='unknown',
+     +                position='append',share='denynone')
+#else
+               open(13,file='ALL_MEPT.TXT',status='unknown',
+     +                position='append')
+#endif
+               write(13,1010) datetime,nsync,nsnrx,dtx,freq,message
+               close(13)
+               write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,
+     +               -a(1),-a(2),-a(3)
+ 1010          format(a11,i4,i4,f6.1,f11.6,2x,a15,3f7.2)
+            endif
             if(message(1:6).ne.'      ') skip=.true.
          endif
  100     continue

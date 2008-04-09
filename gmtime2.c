@@ -13,7 +13,6 @@ typedef struct _SYSTEMTIME
   short   Millisecond;
 } SYSTEMTIME;
 
-#define Win32 1
 #ifdef Win32
 extern void __stdcall GetSystemTime(SYSTEMTIME *st);
 #else

@@ -15,6 +15,7 @@ program wspr_tr
 
   character cjunk*1
   character*74 line
+  character*80 infile0
   character*17 message
   character*12 arg
   real*8 tsec
@@ -26,6 +27,7 @@ program wspr_tr
   data nsec0/9999999/,itr/0/
   data idle/.false./,receiving/.false./,transmitting/.false./
   data decoding/.false./,gui/.false./,cmnd/.false./
+  data infile0/''/
 
   nargs=iargc()
   if(nargs.ne.1 .and. nargs.ne.12) then
@@ -38,21 +40,25 @@ program wspr_tr
   if(nargs.eq.12) then
      call getparams(f0,ftx,nport,callsign,grid,ndbm,    &
                            pctx,idsec,ndevin,ndevout,nsave,infile)
-     print*,infile
+!     print*,infile
      cmnd=.true.
   endif
 
- ierr=unlink('abort')
-!  open(11,file='txrxtime.txt',status='unknown',share='denynone')
+  ierr=unlink('abort')
+#ifdef CVF
+  open(11,file='txrxtime.txt',status='unknown',share='denynone')
+  open(14,file='decoded.txt',status='unknown',share='denynone')
+#else
   open(11,file='txrxtime.txt',status='unknown')
+  open(14,file='decoded.txt',status='unknown')
+#endif
+
   write(11,1000) 
 1000 format('Idle')
-!  open(13,file='ALL_MEPT.TXT',status='unknown',position='append',share='denynone')
-  open(13,file='ALL_MEPT.TXT',status='unknown',position='append')
-!  open(14,file='decoded.txt',status='unknown',share='denynone')
-  open(14,file='decoded.txt',status='unknown')
+  call flush(11)
   write(14,1002)
 1002 format('$EOF')
+  call flush(14)
   rewind 14
 
   is10=-9999999
@@ -65,13 +71,16 @@ program wspr_tr
   if(.not.cmnd) then
      ierr=stat('wspr_tr.in',istat)
      if(istat(10).gt.is10) then
-!        open(10,file='wspr_tr.in',status='old',share='denynone')
+#ifdef CVF
+        open(10,file='wspr_tr.in',status='old',share='denynone')
+#else
         open(10,file='wspr_tr.in',status='old')
-        read(10,*) cjunk
+#endif
+        read(10,*,end=11) cjunk
         read(10,*) f0,ftx,nport,callsign,grid,ndbm,pctx,idsec,          &
              ndevin,ndevout,nsave
         read(10,*) infile
-        close(10)
+11      close(10)
         if(pctx.gt.50.0) nrx=0
         ierr=stat('wspr_tr.in',istat)
         is10=istat(10)
@@ -82,7 +91,7 @@ program wspr_tr
   rr=3.0
   if(pctx.ge.40.0) rr=1.5                    !soft step?
   idle=.false.
-  if(pctx.lt.0.0) then
+  if(pctx.lt.0.0 .and.infile.eq.infile0) then
      idle=.true.
      call msleep(100)
      go to 20
@@ -93,13 +102,22 @@ program wspr_tr
      go to 20
   endif
 
+  infile0=infile
   call getutc(cdate,utctime,tsec)
   nsec=tsec
   if(nsec.lt.nsec0 .and. (.not.gui)) then
      write(*,1028) 
+#ifdef CVF
+     open(13,file='ALL_MEPT.TXT',status='unknown',position='append',    &
+          share='denynone')
+#else
+     open(13,file='ALL_MEPT.TXT',status='unknown',position='append')
+#endif
+
      write(13,1028)
 1028 format(/' Date   UTC Sync dB    DT     Freq    Message'/           &
              '------------------------------------------------------')
+     close(13)
   endif
   nsec0=nsec
 
@@ -148,6 +166,7 @@ program wspr_tr
 24        rewind 14
         line='$EOF'
         write(14,1022) line
+        call flush(14)
         rewind 14
      endif
      ndecdone=0

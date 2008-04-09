@@ -374,12 +374,12 @@ def get_decoded():
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
-                nseq=int(lines[i][62:71])
-                ndf=int(lines[i][71:75]) + nfmid
+                nseq=int(lines[i][7:11])
+                ndf=int(lines[i][33:36])
                 bandmap.append((ndf,callsign,nseq))
         text.configure(state=DISABLED)
         text.see(END)
-
+        
 #  Remove any "too old" information from bandmap.
     iz=len(bandmap)
     for i in range(iz-1,0,-1):
@@ -492,8 +492,8 @@ def update():
     try:
         modtext=os.stat('decoded.txt')[8]
         if modtext!=modtext0:
-            get_decoded()
             modtext0=os.stat('decoded.txt')[8]
+            get_decoded()
     except:
         pass
 
@@ -814,6 +814,8 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
 
 put_params()
+os.remove('decoded.txt')
+f.truncate
 cmd="wspr_tr.exe"
 args="--gui"
 try:
