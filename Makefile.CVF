@@ -5,6 +5,14 @@ FC = df
 FFLAGS = /traceback /fast /nologo /check:all /fpp /DCVF
 CFLAGS = /DWin32 /DCVF /I. 
 
+OBJS1 = rxtest.obj mept162.obj getrms.obj mix162.obj deg2grid.obj \
+	sync162.obj decode162.obj spec162.obj set.obj xfft.obj \
+	four1.obj ps162.obj pctile.obj xcor162.obj peakup.obj db.obj \
+	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
+	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
+	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj \
+	afc.obj fchisq.obj ccf2.obj twkfreq.obj 
+
 OBJS4 = wspr_tr.obj startrx.obj rx.obj getsound.obj \
 	sound.obj mept162.obj getrms.obj wfile5.obj mix162.obj \
 	sync162.obj decode162.obj spec162.obj set.obj xfft.obj \
@@ -14,12 +22,15 @@ OBJS4 = wspr_tr.obj startrx.obj rx.obj getsound.obj \
 	ssort.obj getutc.obj starttx.obj tx.obj ptt.obj genmept.obj \
 	packcall.obj packgrid.obj pack50.obj encode232.obj gran.obj \
 	nchar.obj grid2deg.obj startdec.obj decode.obj gmtime2.obj \
-	getparams.obj afc.obj fchisq.obj ccf2.obj twkfreq.obj
+	getparams.obj afc.obj fchisq.obj ccf2.obj twkfreq.obj 
 
-all:    WSPR.EXE wspr_tr.exe
+all:    WSPR.EXE wspr_tr.exe rxtest.exe
 
 WSPR.EXE: wspr.spec wspr_tr.exe
 	c:\python25\python c:\pyinstaller-1.3\Build.py wspr.spec
+
+rxtest.exe: $(OBJS1)
+	$(FC) /exe:rxtest.exe $(FFLAGS) $(OBJS1)
 
 wspr_tr.exe: $(OBJS4)
 	$(FC) /exe:wspr_tr.exe $(FFLAGS) $(OBJS4) pa.lib
@@ -28,6 +39,8 @@ wspr.spec: wspr.py g.py options.py palettes.py
 	c:\python25\python c:\pyinstaller-1.3\makespec.py --icon wsjt.ico \
 	--tk --onefile wspr.py
 
+rxtest.obj: rxtest.f90 acom1.f90
+	$(FC) /compile_only $(FFLAGS) rxtest.f90
 wspr_tr.obj: wspr_tr.f90 acom1.f90
 	$(FC) /compile_only $(FFLAGS) wspr_tr.f90
 startrx.obj: startrx.f90 acom1.f90
@@ -43,7 +56,7 @@ tx.obj: tx.f90 acom1.f90
 decode.obj: decode.f90 acom1.f90
 	$(FC) /compile_only $(FFLAGS) decode.f90
 gmtime2.obj: gmtime2.c
-	$(CC) /c /DWin32 gmtime2.c
+	$(CC) /c /DWin32 /DCVF gmtime2.c
 
 .PHONY : clean
 
