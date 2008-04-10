@@ -61,6 +61,7 @@ isec0=0
 isync=1
 loopall=0
 modpixmap0=0
+modtxrx0=0
 mrudir=os.getcwd()
 ndbm0=-999
 newdat=1
@@ -626,7 +627,7 @@ g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 f0=DoubleVar()
 ftx=DoubleVar()
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq:',
-        value=10.1386,entry_textvariable=f0,entry_width=12)
+        value=10.1387,entry_textvariable=f0,entry_width=12)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx freq:',
         value=10.140150,entry_textvariable=ftx,entry_width=12)
 widgets = (lf0, lftx)

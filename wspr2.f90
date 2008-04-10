@@ -5,7 +5,6 @@ subroutine wspr2
 #endif
 
 ! Logical units:
-!  10  wspr_tr.in
 !  11  Transmitting/Receiving and UTC
 !  12  Audio data in *.wav file
 !  13  ALL_MEPT.TXT
@@ -26,13 +25,13 @@ subroutine wspr2
   open(11,file='txrxtime.txt',status='unknown')
   open(14,file='decoded.txt',status='unknown')
 #endif
-!  write(11,1000) 
-!1000 format('Idle')
-!  call flush(11)
-!  write(14,1002)
-!1002 format('$EOF')
-!  call flush(14)
-!  rewind 14
+  write(11,1000) 
+1000 format('Idle')
+  call flush(11)
+  write(14,1002)
+1002 format('$EOF')
+  call flush(14)
+  rewind 14
 
   ierr=soundinit()
   call random_seed
@@ -71,8 +70,6 @@ subroutine wspr2
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-  print*,pctx,nrx
-  print*,outfile
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0) then
      call random_number(x)
