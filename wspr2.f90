@@ -2,37 +2,24 @@ subroutine wspr2
 
 #ifdef CVF
   use dfport
-#else
-  integer unlink
 #endif
 
 ! Logical units:
 !  10  wspr_tr.in
 !  11  Transmitting/Receiving and UTC
-!  12
+!  12  Audio data in *.wav file
 !  13  ALL_MEPT.TXT
 !  14  decoded.txt
 
-  character cjunk*1
-  character*74 line
-  character*80 infile0
   character*17 message
-  character*12 arg
   real*8 tsec
   logical idle,receiving,transmitting,decoding,gui,cmnd
   integer soundinit,soundexit
   integer*1 hdr(44)
   include 'acom1.f90'
-  data nsec0/9999999/,itr/0/
-  data idle/.false./,receiving/.false./,transmitting/.false./
-  data decoding/.false./,gui/.false./,cmnd/.false./
-  data infile0/''/
+  data idle/.true./,receiving/.false./,transmitting/.false./
+  data decoding/.false./
 
-  gui=.true.
-
-  print*,'Hello, world.',gui,f0
-
-  ierr=unlink('abort')
 #ifdef CVF
   open(11,file='txrxtime.txt',status='unknown',share='denynone')
   open(14,file='decoded.txt',status='unknown',share='denynone')
@@ -40,7 +27,6 @@ subroutine wspr2
   open(11,file='txrxtime.txt',status='unknown')
   open(14,file='decoded.txt',status='unknown')
 #endif
-
   write(11,1000) 
 1000 format('Idle')
   call flush(11)
@@ -49,40 +35,21 @@ subroutine wspr2
   call flush(14)
   rewind 14
 
-  is10=-9999999
   ierr=soundinit()
   call random_seed
   nrx=1
 
 20 continue
-!20 ierr=stat('abort',istat)
-!  if(ierr.eq.0) go to 999
-!  if(.not.cmnd) then
-!     ierr=stat('wspr_tr.in',istat)
-!     if(istat(10).gt.is10) then
-!#ifdef CVF
-!        open(10,file='wspr_tr.in',status='old',share='denynone')
-!#else
-!        open(10,file='wspr_tr.in',status='old')
-!#endif
-!        read(10,*,end=11) cjunk
-!        read(10,*) f0,ftx,nport,callsign,grid,ndbm,pctx,idsec,          &
-!             ndevin,ndevout,nsave
-!        read(10,*) infile
-!11      close(10)
-!        if(pctx.gt.50.0) nrx=0
-!        ierr=stat('wspr_tr.in',istat)
-!        is10=istat(10)
-!     endif
-!  endif
 
-  pctx=0.
+!  if(pctx.gt.50.0) nrx=0
+
+  pctx=0.                                    !### temporary ###
   rxavg=1.0
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   rr=3.0
   if(pctx.ge.40.0) rr=1.5                    !soft step?
   idle=.false.
-  if(pctx.lt.0.0 .and.infile.eq.infile0) then
+  if(pctx.lt.0.0) then
      idle=.true.
      call msleep(100)
      go to 20
@@ -93,7 +60,6 @@ subroutine wspr2
      go to 20
   endif
 
-  infile0=infile
   call getutc(cdate,utctime,tsec)
   nsec=tsec
 
@@ -130,25 +96,10 @@ subroutine wspr2
      call startdec
   endif
 
-  if(ndecdone.gt.0) then
-     if(.not.gui) then
-        rewind 14
-        do i=1,99
-           read(14,1022,end=24) line
-1022       format(a74)
-           if(line(1:4).eq.'$EOF') go to 24
-           write(*,1022) line
-        enddo
-24        rewind 14
-        line='$EOF'
-        write(14,1022) line
-        call flush(14)
-        rewind 14
-     endif
-     ndecdone=0
-     decoding=.false.
-     if(cmnd) go to 999
-  endif
+!  if(ndecdone.gt.0) then
+!     ndecdone=0
+!     decoding=.false.
+!  endif
 
   if(ntxdone.gt.0) then
      transmitting=.false.
@@ -171,7 +122,7 @@ subroutine wspr2
         i1=index(message,'  ')
         message=message(:i1)//message(i1+2:)
      enddo
-     if(.not.gui) write(*,1030) cdate(3:8),utctime(1:4),ftx,message
+!     if(.not.gui) write(*,1030) cdate(3:8),utctime(1:4),ftx,message
      write(13,1030) cdate(3:8),utctime(1:4),ftx,message
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a17)
      rewind 11
@@ -186,9 +137,6 @@ subroutine wspr2
      nrx=nrx-1
   endif
   go to 20
-
-999 ierr=soundexit()
-  ierr=unlink('abort')
 
   return
 end subroutine wspr2
