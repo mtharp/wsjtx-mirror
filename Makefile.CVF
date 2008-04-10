@@ -1,9 +1,11 @@
 #Makefile for Windows
 !include <dfinc.mak>   #Some definitions for Compaq Visual Fortran
-CC = cl
+gcc = cl
 FC = df
-FFLAGS = /traceback /fast /nologo /check:all /fpp /DCVF
-CFLAGS = /DWin32 /DCVF /I. 
+FFLAGS = /traceback /fast /nologo
+#CFLAGS = /DWin32 /DCVF /I. 
+
+all:    WSPR.EXE 
 
 OBJS1 = rxtest.obj mept162.obj getrms.obj mix162.obj deg2grid.obj \
 	sync162.obj decode162.obj spec162.obj set.obj xfft.obj \
@@ -13,55 +15,57 @@ OBJS1 = rxtest.obj mept162.obj getrms.obj mix162.obj deg2grid.obj \
 	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj \
 	afc.obj fchisq.obj ccf2.obj twkfreq.obj 
 
-OBJS4 = wspr_tr.obj startrx.obj rx.obj getsound.obj \
-	sound.obj mept162.obj getrms.obj wfile5.obj mix162.obj \
-	sync162.obj decode162.obj spec162.obj set.obj xfft.obj \
-	four1.obj ps162.obj pctile.obj xcor162.obj peakup.obj db.obj \
-	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
-	unpackgrid.obj four2.obj flat3.obj sort.obj deg2grid.obj \
-	ssort.obj getutc.obj starttx.obj tx.obj ptt.obj genmept.obj \
-	packcall.obj packgrid.obj pack50.obj encode232.obj gran.obj \
-	nchar.obj grid2deg.obj startdec.obj decode.obj gmtime2.obj \
-	getparams.obj afc.obj fchisq.obj ccf2.obj twkfreq.obj 
-
-all:    WSPR.EXE wspr_tr.exe rxtest.exe
-
-WSPR.EXE: wspr.spec wspr_tr.exe
-	c:\python25\python c:\pyinstaller-1.3\Build.py wspr.spec
-
 rxtest.exe: $(OBJS1)
 	$(FC) /exe:rxtest.exe $(FFLAGS) $(OBJS1)
 
-wspr_tr.exe: $(OBJS4)
-	$(FC) /exe:wspr_tr.exe $(FFLAGS) $(OBJS4) pa.lib
+OBJS2C = sound.o gmtime2.o
+#OBJS2C = sound.o
+
+F2PYONLY = wspr1
+
+SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
+	startdec.f90 startrx.f90 starttx.f90 tx.f90 
+
+SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
+	sync162.f decode162.f spec162.f set.f xfft.f \
+	four1.f ps162.f pctile.f xcor162.f peakup.f db.f \
+	inter_mept.f fano232.f unpack50.f unpackcall.f \
+	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
+	ssort.f genmept.f \
+	packcall.f packgrid.f pack50.f encode232.f \
+	nchar.f grid2deg.f \
+	afc.f fchisq.f ccf2.f twkfreq.f 
+
+SRCS2C = ptt.c
+
+WSPR.EXE: w.pyd wspr.spec
+	python c:\python23\installer\Build.py wspr.spec
+
+w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
+	python f2py.py -c \
+	--quiet --"fcompiler=compaqv" \
+	--opt="/nologo /traceback /warn:errors /fast /fpp /define:CVF \
+	      /define:USE_PORTAUDIO" \
+	$(OBJS2C) \
+	-lwinmm -lpa \
+	-m w \
+	only: $(F2PYONLY) : \
+	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
+
 
 wspr.spec: wspr.py g.py options.py palettes.py 
-	c:\python25\python c:\pyinstaller-1.3\makespec.py --icon wsjt.ico \
+	python c:\python23\installer\makespec.py --icon wsjt.ico \
 	--tk --onefile wspr.py
 
-rxtest.obj: rxtest.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) rxtest.f90
-wspr_tr.obj: wspr_tr.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) wspr_tr.f90
-startrx.obj: startrx.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) startrx.f90
-starttx.obj: starttx.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) starttx.f90
-startdec.obj: startdec.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) startdec.f90
-rx.obj: rx.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) rx.f90
-tx.obj: tx.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) tx.f90
-decode.obj: decode.f90 acom1.f90
-	$(FC) /compile_only $(FFLAGS) decode.f90
-gmtime2.obj: gmtime2.c
-	$(CC) /c /DWin32 /DCVF gmtime2.c
+sound.o: sound.c
+	$(CC) /nologo /c /Fosound.o sound.c
+gmtime2.o: gmtime2.c
+	$(CC) /nologo /c /DWin32=1 /Fogmtime2.o gmtime2.c
 
 .PHONY : clean
 
 clean:
-	-del *.obj wspr.exe wspr_tr.exe
+	-del *.o *.obj wspr.exe w.pyd
 
 
 

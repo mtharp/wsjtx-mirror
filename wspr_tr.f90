@@ -1,4 +1,4 @@
-program wspr_tr
+subroutine wspr_tr
 
 #ifdef CVF
   use dfport
@@ -29,20 +29,7 @@ program wspr_tr
   data decoding/.false./,gui/.false./,cmnd/.false./
   data infile0/''/
 
-  nargs=iargc()
-  if(nargs.ne.1 .and. nargs.ne.12) then
-     print*,'Usage: wspr_tr f0 ftx port call grid dBm pctx dsec in out save "infile"'
-     print*,'       wspr_tr --gui'
-     go to 999
-  endif 
-
-  if(nargs.eq.1) gui=.true.
-  if(nargs.eq.12) then
-     call getparams(f0,ftx,nport,callsign,grid,ndbm,    &
-                           pctx,idsec,ndevin,ndevout,nsave,infile)
-!     print*,infile
-     cmnd=.true.
-  endif
+  gui=.true.
 
   ierr=unlink('abort')
 #ifdef CVF
@@ -213,4 +200,5 @@ program wspr_tr
 
 999 ierr=soundexit()
   ierr=unlink('abort')
-end program wspr_tr
+  return
+end subroutine wspr_tr

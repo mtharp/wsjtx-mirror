@@ -6,9 +6,10 @@ from tkFileDialog import *
 import g,Pmw
 from tkMessageBox import showwarning
 import os,time,sys
-import pyaudio
+##import pyaudio
 from math import log10
 #from numpy.oldnumeric import zeros
+from Numeric import zeros
 import array
 import dircache
 import Image, ImageTk, ImageDraw
@@ -16,10 +17,10 @@ from palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 import array
-##import thread
 import random
 import math
 import string
+import w
 
 root = Tk()
 Version="0.6 r" + "$Rev$"[6:-1]
@@ -414,22 +415,19 @@ def get_decoded():
 def put_params(param3=NONE):
     global idsec,param20
 
-    param2=str(f0.get()) + " " + str(ftx.get()) \
-             + " " + str(options.PttPort.get()) \
-             + " " + options.MyCall.get().upper() \
-             + " " + options.MyGrid.get().upper() \
-             + " " + str(options.dBm.get()) \
-             + " " + str(pctx[ipctx.get()]) \
-             + " " + str(idsec) \
-             + " " + options.DevinName.get() \
-             + " " + options.DevoutName.get() \
-             + " " + str(nsave.get())
-    if param2 != param20 or param3!=NONE:
-        param20=param2
-        param1="    f0    ftx port call grid dbm pctx dsec in out save"
-        f=open(appdir+'/wspr_tr.in',mode='w')
-        f.write(param1 + '\n' + param2 + '\n' + '"' + param3 + '"\n')
-        f.close()
+    w.acom1.f0=f0.get()
+    w.acom1.ftx=ftx.get()
+    w.acom1.mycall=(options.MyCall.get()+'      ')[:6]
+    w.acom1.mygrid=(options.MyGrid.get()+'    ')[:4]
+    try:
+        w.acom1.nport=int(options.PttPort.get())
+    except:
+        w.acom1.nport=0
+    w.acom1.dbm=options.dBm.get()
+    w.acom1.pctx=pctx[ipctx.get()]
+    w.acom1.idsec=idsec
+    w.acom1.nsave=nsave.get()
+#    w.acom1.infile='none                                                                            '
 
 #------------------------------------------------------ update
 def update():
@@ -814,18 +812,22 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR      by K1JT')
 
 put_params()
-os.remove('decoded.txt')
-f.truncate
-cmd="wspr_tr.exe"
-args="--gui"
 try:
-    os.spawnv(os.P_NOWAIT,cmd,(cmd,) + (args,))
+    os.remove('decoded.txt')
 except:
-    print cmd + ' ' + args + ' failed.'
+    pass
+##cmd="wspr_tr.exe"
+##args="--gui"
+##try:
+##    os.spawnv(os.P_NOWAIT,cmd,(cmd,) + (args,))
+##except:
+##    print cmd + ' ' + args + ' failed.'
 try:
     os.remove('pixmap.dat')
 except:
     pass
+
+w.wspr1()
 graph1.focus_set()
 ldate.after(100,update)
 root.mainloop()

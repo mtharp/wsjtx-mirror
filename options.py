@@ -3,7 +3,7 @@ from Tkinter import *
 import Pmw
 import g
 import math
-import pyaudio
+##import pyaudio
 
 def done():
     root.withdraw()
@@ -15,7 +15,7 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title("Options")
 
 balloon=Pmw.Balloon(root)
-p = pyaudio.PyAudio()
+##p = pyaudio.PyAudio()
 
 #------------------------------------------------------ dbm_balloon
 def dbm_balloon():
@@ -27,17 +27,18 @@ def dbm_balloon():
     balloon.bind(ldBm,t)
 
 def list_dev():
-    print 'This list will be made more user-friendly!'
-    max_devs = p.get_device_count()
-    for i in range(max_devs):
-        print ' '
-        devinfo = p.get_device_info_by_index(i)
-        for k in devinfo.items():
-            name, value = k
-            if name == 'hostApi':
-                value = str(value) + \
-                        " (%s)" % p.get_host_api_info_by_index(k[1])['name']
-            print "\t%s: %s" % (name, value)
+    pass
+##    print 'This list will be made more user-friendly!'
+##    max_devs = p.get_device_count()
+##    for i in range(max_devs):
+##        print ' '
+##        devinfo = p.get_device_info_by_index(i)
+##        for k in devinfo.items():
+##            name, value = k
+##            if name == 'hostApi':
+##                value = str(value) + \
+##                        " (%s)" % p.get_host_api_info_by_index(k[1])['name']
+##            print "\t%s: %s" % (name, value)
 
 def options2(t):
     root.geometry(t)
