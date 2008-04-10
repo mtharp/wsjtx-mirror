@@ -22,10 +22,6 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       data first/.true./
       save
 
-      write(14,1000)
- 1000 format('$EOF')
-      rewind 14
-
       fac=1.e-8
       do i=1,npts
          x(i)=fac*id(i)
@@ -55,7 +51,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       do i=-137,137
          sig=p(i)/base - 1.0
          snr(i)=-33.
-         if(sig.gt.0.) snr(i)=10.0*log10(sig) - 26
+         if(sig.gt.0.) snr(i)=10.0*log10(sig) - 26.5
          p(i)=10.0*log10((p(i)/base))
          write(53,3001) i,150.0+i*df1,p(i)
  3001    format(i5,2f12.3)

@@ -15,7 +15,6 @@ subroutine wspr2
   real*8 tsec
   logical idle,receiving,transmitting,decoding,gui,cmnd
   integer soundinit,soundexit
-  integer*1 hdr(44)
   include 'acom1.f90'
   data idle/.true./,receiving/.false./,transmitting/.false./
   data decoding/.false./
@@ -62,30 +61,6 @@ subroutine wspr2
 
   call getutc(cdate,utctime,tsec)
   nsec=tsec
-
-!  Reading data from a file?
-!  if(infile(1:4).ne.'none' .and. (.not.transmitting) .and. & 
-!       (.not.receiving)) then
-!#ifdef CVF
-!     open(12,file=infile,form='binary',status='old')
-!#else
-!     open(12,file=infile,access='stream',status='old')
-!#endif
-!     npts=114*12000
-!     read(12) hdr
-!     read(12) (iwave(i),i=1,npts)
-!     close(12)
-!     call getrms(iwave,npts,ave,rms)
-!     rewind 11
-!     write(11,1029) 
-!1029 format('Idle')
-!     outfile=infile
-!     call decode
-!     infile='none'
-!     idle=.true.
-!     go to 20
-!  endif
-
   ns120=mod(nsec,120)
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving)) go to 30
 
@@ -95,11 +70,6 @@ subroutine wspr2
      decoding=.true.
      call startdec
   endif
-
-!  if(ndecdone.gt.0) then
-!     ndecdone=0
-!     decoding=.false.
-!  endif
 
   if(ntxdone.gt.0) then
      transmitting=.false.

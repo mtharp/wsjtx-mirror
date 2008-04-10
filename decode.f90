@@ -18,8 +18,9 @@ subroutine decode
      call wfile5(iwave,npts,12000,outfile)
   endif
 
-  ndecdone=1
   call flush(14)
+  rewind 14
+  ndecdone=1
 
   return
 end subroutine decode

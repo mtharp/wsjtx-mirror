@@ -61,8 +61,6 @@ isec0=0
 isync=1
 loopall=0
 modpixmap0=0
-modtext0=0
-modtxrx0=0
 mrudir=os.getcwd()
 ndbm0=-999
 newdat=1
@@ -133,16 +131,11 @@ def openfile(event=NONE):
         pass
     fname=askopenfilename(filetypes=[("Wave files","*.wav *.WAV")])
     if fname:
+        w.getfile(fname,len(fname))
+##        if w.acom1.ierr: print 'Error ',w.acom1.ierr, \
+##           'when trying to read file',fname
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
-        ipctx.set(0)
-        i1=fileopened.find('.')
-        t=fileopened[i1-4:i1]
-        t=t[0:2] + ':' + t[2:4]
-        n=len(tw)
-        if n>12: tw=tw[:n-1]
-        tw=[t,] + tw
-        put_params(fname)
     os.chdir(appdir)
 
 #------------------------------------------------------ opennext
@@ -164,6 +157,7 @@ def opennext(event=NONE):
                 break
         if i<len(lb)-1:
             fname=mrudir+"/"+lb[i+1]
+            w.getfile(fname,len(fname))
             mrudir=os.path.dirname(fname)
             fileopened=os.path.basename(fname)
             i1=fileopened.find('.')
@@ -433,7 +427,7 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,modtext0,modtxrx0,tw,s0,c0,fmid,fmid0,idsec
+        modpixmap0,modtxrx0,tw,s0,c0,fmid,fmid0,idsec
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
     nsec=int(tsec)
@@ -487,13 +481,9 @@ def update():
     msg6.configure(text=t,bg=bgcolor)
 
 # If new decoded text has appeared, display it.
-    try:
-        modtext=os.stat('decoded.txt')[8]
-        if modtext!=modtext0:
-            modtext0=os.stat('decoded.txt')[8]
-            get_decoded()
-    except:
-        pass
+    if w.acom1.ndecdone:
+        get_decoded()
+        w.acom1.ndecdone=0
 
 # Display the waterfall
     try:
