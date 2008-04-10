@@ -17,7 +17,7 @@ subroutine wspr2
   integer soundinit,soundexit
   include 'acom1.f90'
   data idle/.true./,receiving/.false./,transmitting/.false./
-  data decoding/.false./
+  data decoding/.false./,ns1200/-999/
 
 #ifdef CVF
   open(11,file='txrxtime.txt',status='unknown',share='denynone')
@@ -26,23 +26,22 @@ subroutine wspr2
   open(11,file='txrxtime.txt',status='unknown')
   open(14,file='decoded.txt',status='unknown')
 #endif
-  write(11,1000) 
-1000 format('Idle')
-  call flush(11)
-  write(14,1002)
-1002 format('$EOF')
-  call flush(14)
-  rewind 14
+!  write(11,1000) 
+!1000 format('Idle')
+!  call flush(11)
+!  write(14,1002)
+!1002 format('$EOF')
+!  call flush(14)
+!  rewind 14
 
   ierr=soundinit()
   call random_seed
   nrx=1
 
-20 continue
-
-!  if(pctx.gt.50.0) nrx=0
-
-  pctx=0.                                    !### temporary ###
+20 call getutc(cdate,utctime,tsec)
+  nsec=tsec
+  ns120=mod(nsec,120)
+  if(pctx.gt.50.0) nrx=0
   rxavg=1.0
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   rr=3.0
@@ -54,14 +53,6 @@ subroutine wspr2
      go to 20
   endif
 
-  if(idle .and. infile(1:4).eq.'none') then
-     call msleep(100)
-     go to 20
-  endif
-
-  call getutc(cdate,utctime,tsec)
-  nsec=tsec
-  ns120=mod(nsec,120)
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving)) go to 30
 
   if(nrxdone.gt.0) then
@@ -80,6 +71,8 @@ subroutine wspr2
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
+  print*,pctx,nrx
+  print*,outfile
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0) then
      call random_number(x)

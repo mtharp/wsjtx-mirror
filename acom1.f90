@@ -6,6 +6,6 @@
   character cdate*8,utctime*10
   character callsign*6,grid*4
   integer*2 iwave
-  common/acom1/ f0,ftx,rms,nsec,ndevin,ndevout,nsave,nrxdone,ndbm,      &
-       ndecdone,ntxdone,nreceiving,ntransmitting,                         &
+  common/acom1/ f0,ftx,rms,pctx,nsec,ndevin,ndevout,nsave,nrxdone,      &
+       ndbm,ndecdone,ntxdone,nreceiving,ntransmitting,                  &
        iwave(NMAX),infile,outfile,cdate,utctime,callsign,grid

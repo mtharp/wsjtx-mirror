@@ -166,7 +166,6 @@ def opennext(event=NONE):
             n=len(tw)
             if n>12: tw=tw[:n-1]
             tw=[t,] + tw
-            put_params(fname)
         else:
             t="No more *.wav files in this directory."
             msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
@@ -411,17 +410,16 @@ def put_params(param3=NONE):
 
     w.acom1.f0=f0.get()
     w.acom1.ftx=ftx.get()
-    w.acom1.mycall=(options.MyCall.get()+'      ')[:6]
-    w.acom1.mygrid=(options.MyGrid.get()+'    ')[:4]
+    w.acom1.callsign=(options.MyCall.get()+'      ')[:6]
+    w.acom1.grid=(options.MyGrid.get()+'    ')[:4]
     try:
         w.acom1.nport=int(options.PttPort.get())
     except:
         w.acom1.nport=0
-    w.acom1.dbm=options.dBm.get()
+    w.acom1.ndbm=options.dBm.get()
     w.acom1.pctx=pctx[ipctx.get()]
     w.acom1.idsec=idsec
     w.acom1.nsave=nsave.get()
-#    w.acom1.infile='none                                                                            '
 
 #------------------------------------------------------ update
 def update():
@@ -446,8 +444,7 @@ def update():
                 options.dbm_balloon()
         except:
             pass
-
-    put_params()
+        put_params()
 
 # If T/R status has changed, get new info
     try:
