@@ -27,13 +27,10 @@ subroutine starttx
   m0=SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS)
 ! Start a thread for playing audio data
   Thread2=CreateThread(0,0,tx,0,CREATE_SUSPENDED,id1)
-  m1=SetThreadPriority(Thread2,THREAD_PRIORITY_ABOVE_NORMAL)
+  m1=SetThreadPriority(Thread2,THREAD_PRIORITY_NORMAL)
   m2=ResumeThread(Thread2)
 #else
-! Start a thread for playing audio data
-!  ierr=start_threads(ndevin,ndevout,y1,y2,nmax,iwrite,iwave,nwave,        &
-!       11025,NSPB,TRPeriod,TxOK,ndebug,Transmitting,                      &
-!       Tsec,ngo,nmode,tbuf,ibuf,ndsec,PttPort,devin_name,devout_name)
+  ierr=th_tx()
 #endif
 
   return

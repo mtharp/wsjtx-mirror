@@ -3,11 +3,11 @@
 C  Computes ccf of a row of s2 and the pseudo-random array pr3.  Returns
 C  peak of the CCF and the lag at which peak occurs.  
 
-      parameter (NFFT=512)             !Length of FFTs
-      parameter (NH=NFFT/2)            !Length of power spectra
-      parameter (NSMAX=352)            !Number of half-symbol steps
-      real psavg(-NH:NH)               !Average spectrum of whole record
-      real s2(-NH:NH,NSMAX)            !2d spectrum, stepped by half-symbols
+      parameter (NFFT=512)
+      parameter (NH=NFFT/2)
+      parameter (NSMAX=352)
+      real psavg(-NH:NH)
+      real s2(-NH:NH,NSMAX)
       real a(NSMAX)
       real ccf(-5:540)
       logical first

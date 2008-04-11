@@ -2,7 +2,7 @@
 
 C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
 
-      complex c2(npts)                        !Downsampled baseband data
+      complex c2(npts)
       real s2(77,126)
       real s3(64,63)
       character*22 message
@@ -12,11 +12,11 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
       complex*16 cz,cz1,c0,c1
       integer*1 i1,symbol(162)
-      integer*1 data1(11)                   !Decoded data (8-bit bytes)
-      integer   data4a(7)                   !Decoded data (8-bit bytes)
-      integer   data4(12)                   !Decoded data (6-bit bytes)
+      integer*1 data1(11)
+      integer   data4a(7)
+      integer   data4(12)
       integer amp
-      integer mettab(0:255,0:1)             !Metric table
+      integer mettab(0:255,0:1)
       logical first
       integer*1 sym0
       common/tst99/ sym0(162)

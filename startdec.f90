@@ -3,9 +3,10 @@ subroutine startdec
 #ifdef CVF
   use dfmt
   integer Thread3
-  external decode
+#else
+  integer th_decode
 #endif
-
+  external decode
   include 'acom1.f90'
 
 #ifdef CVF
@@ -30,11 +31,9 @@ subroutine startdec
   m1=SetThreadPriority(Thread3,THREAD_PRIORITY_NORMAL)
   m2=ResumeThread(Thread3)
 #else
-! Start a thread for playing audio data
-!  ierr=start_threads(ndevin,ndevout,y1,y2,nmax,iwrite,iwave,nwave,        &
-!       11025,NSPB,TRPeriod,TxOK,ndebug,Transmitting,                      &
-!       Tsec,ngo,nmode,tbuf,ibuf,ndsec,PttPort,devin_name,devout_name)
+  ierr=th_decode()
 #endif
+!  print*,'startdec',ierr
 
   return
 end subroutine startdec

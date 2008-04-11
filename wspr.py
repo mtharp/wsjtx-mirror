@@ -8,8 +8,12 @@ from tkMessageBox import showwarning
 import os,time,sys
 ##import pyaudio
 from math import log10
-#from numpy.oldnumeric import zeros
-from Numeric import zeros
+try:
+    from numpy.oldnumeric import zeros
+#    print "importing from numpy"
+except: 
+    from Numeric import zeros
+#    print "importing from Numeric"
 import array
 import dircache
 import Image, ImageTk, ImageDraw
@@ -24,7 +28,7 @@ import w
 
 root = Tk()
 Version="0.6 r" + "$Rev$"[6:-1]
-print "Ignore any error message above, it is harmless."
+##print "Ignore any error message above, it is harmless."
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -175,7 +179,6 @@ def opennext(event=NONE):
             msg.focus_set()
             ncall=0
             loopall=0
-            
 
 #------------------------------------------------------ decodeall
 def decodeall(event=NONE):
@@ -841,5 +844,4 @@ f.write("f0 " + str(f0.get()) + "\n")
 f.write("ftx " + str(ftx.get()) + "\n")
 f.close()
 
-#Terminate wspr_tr
-f=open("abort",mode='w')
+#  Close sound system

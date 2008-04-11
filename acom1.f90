@@ -7,5 +7,5 @@
   character callsign*6,grid*4
   integer*2 iwave
   common/acom1/ f0,ftx,rms,pctx,nsec,ndevin,ndevout,nsave,nrxdone,      &
-       ndbm,ndecdone,ntxdone,nreceiving,ntransmitting,                  &
+       ndbm,nport,ndecdone,ntxdone,nreceiving,ntransmitting,            &
        iwave(NMAX),infile,outfile,cdate,utctime,callsign,grid

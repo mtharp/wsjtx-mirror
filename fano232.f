@@ -7,7 +7,7 @@ C  written by Phil Karn, KA9Q.
 
       parameter (MAXBITS=103)
       parameter (MAXDAT=(MAXBITS+7)/8)
-      integer*1 symbol(0:2*MAXBITS-1)     !Soft channel symbols (erase=128)
+      integer*1 symbol(0:2*MAXBITS-1)
       integer*1 dat(MAXDAT)               !Decoded user data, 8 bits per byte
       integer mettab(0:255,0:1)           !Metric table
 

@@ -2,10 +2,10 @@
 
 C  Find MEPT_JT sync signals, with best-fit DT and DF.  
 
-      parameter (NFFT=256)             !Length of FFTs
-      parameter (NH=NFFT/2)            !Length of power spectra
-      parameter (NSMAX=351)            !Number of half-symbol steps
-      real psavg(-NH:NH)               !Average spectrum of whole record
+      parameter (NFFT=256)
+      parameter (NH=NFFT/2)
+      parameter (NSMAX=351)
+      real psavg(-NH:NH)
       real psmo(-NH:NH)
       real tmp(513)
       real sstf(275)

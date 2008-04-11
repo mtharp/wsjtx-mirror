@@ -31,9 +31,7 @@ subroutine wspr1
   m2=ResumeThread(Thread0)
 #else
 ! Start a thread for acquiring audio data
-!  ierr=start_threads(ndevin,ndevout,y1,y2,nmax,iwrite,iwave,nwave,        &
-!       11025,NSPB,TRPeriod,TxOK,ndebug,Transmitting,                      &
-!       Tsec,ngo,nmode,tbuf,ibuf,ndsec,PttPort,devin_name,devout_name)
+  ierr=th_wspr2()
 #endif
 
   return
