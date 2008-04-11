@@ -1,4 +1,4 @@
-#---------------------------------------------------------------------- WSPR
+#------------------------------------------------------------------------ WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -8,12 +8,8 @@ from tkMessageBox import showwarning
 import os,time,sys
 ##import pyaudio
 from math import log10
-try:
-    from numpy.oldnumeric import zeros
-#    print "importing from numpy"
-except: 
-    from Numeric import zeros
-#    print "importing from Numeric"
+#from numpy.oldnumeric import zeros
+from Numeric import zeros
 import array
 import dircache
 import Image, ImageTk, ImageDraw
@@ -28,7 +24,7 @@ import w
 
 root = Tk()
 Version="0.6 r" + "$Rev$"[6:-1]
-##print "Ignore any error message above, it is harmless."
+print "Ignore any error message above, it is harmless."
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -179,6 +175,7 @@ def opennext(event=NONE):
             msg.focus_set()
             ncall=0
             loopall=0
+            
 
 #------------------------------------------------------ decodeall
 def decodeall(event=NONE):
@@ -372,7 +369,7 @@ def get_decoded():
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
-                nseq=int(lines[i][7:11])
+                nseq=int(lines[i][7:11]) + 1440*int(lines[i][4:6])
                 ndf=int(lines[i][33:36])
                 bandmap.append((ndf,callsign,nseq))
         text.configure(state=DISABLED)
@@ -381,9 +378,8 @@ def get_decoded():
 #  Remove any "too old" information from bandmap.
     iz=len(bandmap)
     for i in range(iz-1,0,-1):
-        if (nseq - bandmap[i][2]) > 15:           # 15 sequences = 30 minutes
-            bandmap=bandmap[i+1:]
-            break
+        if (nseq - bandmap[i][2]) > 60:           # 60 minutes
+            bandmap=bandmap[:i] + bandmap[i+1:]
     
 #  Sort bandmap in reverse frequency order
     bandmap2=bandmap
@@ -394,14 +390,23 @@ def get_decoded():
     text1.configure(state=NORMAL)
     text1.delete('1.0',END)
     for i in range(iz):
-#        print i,bandmap2[i][0],bandmap2[i][1],call0
         if i==0:
             t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
-            text1.insert(END,t+"\n")
+            nage=int((nseq - bandmap[i][2])/15)
+            if nage==0: attr='age0'
+            if nage==1: attr='age1'
+            if nage==2: attr='age2'
+            if nage>=3: attr='age3'
+            text1.insert(END,t+"\n",attr)
         else:
             if bandmap2[i][1]!=call0:
                 t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
-                text1.insert(END,t+"\n")
+                nage=int((nseq - bandmap[i][2])/15)
+                if nage==0: attr='age0'
+                if nage==1: attr='age1'
+                if nage==2: attr='age2'
+                if nage>=3: attr='age3'
+                text1.insert(END,t+"\n",attr)
         call0=bandmap2[i][1]
     text1.configure(state=DISABLED)
     text1.see(END)
@@ -606,8 +611,12 @@ graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
-text1=Text(iframe1, height=10, width=12)
+text1=Text(iframe1, height=10, width=12, bg="Navy", fg="yellow")
 text1.pack(side=LEFT, padx=1)
+text1.tag_configure('age0',foreground='red')
+text1.tag_configure('age1',foreground='yellow')
+text1.tag_configure('age2',foreground='gray75')
+text1.tag_configure('age3',foreground='gray50')
 text1.insert(END,'132 ZL1BPU')
 sb = Scrollbar(iframe1, orient=VERTICAL, command=text1.yview)
 sb.pack(side=RIGHT, fill=Y)
@@ -844,4 +853,6 @@ f.write("f0 " + str(f0.get()) + "\n")
 f.write("ftx " + str(ftx.get()) + "\n")
 f.close()
 
-#  Close sound system
+#Terminate PortAudio
+w.paterminate()
+

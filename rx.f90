@@ -6,7 +6,7 @@ subroutine rx
   include 'acom1.f90'
 
   npts=114*12000
-  ierr=soundin(iwave,npts)
+  ierr=soundin(idevin,iwave,npts)
   call getrms(iwave,npts,ave,rms)
   nrxdone=1
 

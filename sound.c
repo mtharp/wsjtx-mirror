@@ -41,9 +41,9 @@ int soundexit_(void)
 }
 
 #ifdef CVF
-int __stdcall SOUNDIN(short recordedSamples[],int *nframes0)
+int __stdcall SOUNDIN(int *idevin, short recordedSamples[],int *nframes0)
 #else
-int soundin_(short recordedSamples[],int *nframes0)
+int soundin_(int *idevin, short recordedSamples[],int *nframes0)
 #endif
 {
     PaStreamParameters inputParameters;
@@ -61,7 +61,7 @@ int soundin_(short recordedSamples[],int *nframes0)
     for( i=0; i<numSamples; i++ ) 
       recordedSamples[i] = 0;
 
-    inputParameters.device = Pa_GetDefaultInputDevice();
+    inputParameters.device = *idevin;
     inputParameters.channelCount = NUM_CHANNELS;
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = 0.4;
@@ -101,9 +101,9 @@ error:
 }
 
 #ifdef CVF
-int __stdcall SOUNDOUT(short recordedSamples[], int *nframes0)
+int __stdcall SOUNDOUT(int *idevout,short recordedSamples[], int *nframes0)
 #else
-int soundout_(short recordedSamples[], int *nframes0)
+int soundout_(int *idevout, short recordedSamples[], int *nframes0)
 #endif
 {
     PaStreamParameters outputParameters;
@@ -117,7 +117,7 @@ int soundout_(short recordedSamples[], int *nframes0)
     totalFrames=*nframes0;
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(SAMPLE);
-    outputParameters.device = Pa_GetDefaultOutputDevice();
+    outputParameters.device = *idevout;
     outputParameters.channelCount = NUM_CHANNELS;
     outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
     outputParameters.suggestedLatency = 0.4;

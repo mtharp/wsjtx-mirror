@@ -13,7 +13,7 @@ subroutine wspr2
   character*17 message
   real*8 tsec
   logical idle,receiving,transmitting,decoding,gui,cmnd
-  integer soundinit,soundexit
+  integer nchin(0:20),nchout(0:20)
   include 'acom1.f90'
   data idle/.true./,receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
@@ -33,11 +33,27 @@ subroutine wspr2
   call flush(14)
   rewind 14
 
-  ierr=soundinit()
+  idevin=ndevin
+  idevout=ndevout
+  call padevsub(numdevs,ndefin,ndefout,nchin,nchout)
+  write(*,1003) idevin,idevout
+1003 format(/'User requested devices:  Input =',i2,'   Output =',i2)
+  write(*,1004) ndefin,ndefout
+1004 format( 'Default devices:         Input =',i2,'   Output =',i2)
+  if(idevin.lt.0 .or. idevin.ge.numdevs) idevin=ndefin
+  if(idevout.lt.0 .or. idevout.ge.numdevs) idevout=ndefout
+  if(idevin.eq.0 .and. idevout.eq.0) then
+     idevin=ndefin
+     idevout=ndefout
+  endif
+  write(*,1005) idevin,idevout
+1005 format( 'Will open devices:       Input =',i2,'   Output =',i2)
+
   call random_seed
   nrx=1
 
 20 call getutc(cdate,utctime,tsec)
+  tsec=tsec+0.1*idsec
   nsec=tsec
   ns120=mod(nsec,120)
   if(pctx.gt.50.0) nrx=0
@@ -66,7 +82,7 @@ subroutine wspr2
      ntxdone=0
   endif
 
-  call msleep(1000)
+  call msleep(100)
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
@@ -82,9 +98,16 @@ subroutine wspr2
         i1=index(message,'  ')
         message=message(:i1)//message(i1+2:)
      enddo
-!     if(.not.gui) write(*,1030) cdate(3:8),utctime(1:4),ftx,message
+
+#ifdef CVF
+     open(13,file='ALL_MEPT.TXT',status='unknown',                   &
+          position='append',share='denynone')
+#else
+     open(13,file='ALL_MEPT.TXT',status='unknown',position='append')
+#endif
      write(13,1030) cdate(3:8),utctime(1:4),ftx,message
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a17)
+     close(13)
      rewind 11
      write(11,1040) 'Transmitting',utctime(1:2)//':'//utctime(3:4)
 1040 format(a12,1x,a5)

@@ -46,8 +46,7 @@ C  Do the real-to-complex FFT
          c2(i)=c(j)
       enddo
 
-      call four1(c2,NFFT2,1)
-!      call four2a(c,nh,1,1,-1)        !Return to time domain
+      call four2a(c2,NFFT2,1,1,1)        !Return to time domain
 
       fac=1.e-5
       jz=npts/32

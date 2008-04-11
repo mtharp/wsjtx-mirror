@@ -36,7 +36,7 @@ subroutine tx
   call genmept(call1,grid,ndbm,ntxdf,99.0,jwave)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
   npts=114*12000
-  ierr=soundout(jwave,npts)
+  ierr=soundout(idevout,jwave,npts)
   if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
   ntxdone=1
 

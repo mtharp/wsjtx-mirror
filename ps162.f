@@ -13,8 +13,7 @@
          c(i)=0.
       enddo
 
-      call four1(c,nfft,-1)
-!      call fourt(c,nfft,1,-1,0,work)
+      call four2a(c,nfft,1,-1,1)
 
       fac=1.0/nfft
       do i=0,NFFT-1
