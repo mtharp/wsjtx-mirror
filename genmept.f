@@ -58,8 +58,8 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       ndbm2=iand(n2,127) - 64
       if(lbad1 .or. lbad2 .or. (call1.ne.call2) .or. 
      +   (grid.ne.grid2) .or. (ndbm.ne.ndbm2)) then
-         print*,'Error in structure of Tx message'
-         stop
+         print*,'Error in structure of Tx message, cannot transmit'
+         go to 999
       endif
 
 C  Set up necessary constants
@@ -112,6 +112,6 @@ C  Set up necessary constants
 
  100  continue
 
-      return
+ 999  return
       end
 
