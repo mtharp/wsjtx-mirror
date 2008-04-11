@@ -88,7 +88,6 @@ subroutine wspr2
      rewind 11
      write(11,1040) 'Transmitting',utctime(1:2)//':'//utctime(3:4)
 1040 format(a12,1x,a5)
-     print*,'A',nport
      call starttx
   else
      receiving=.true.
