@@ -8,7 +8,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       character*22 message
       character*70 outfile
       character*11 datetime
-      logical first,skip,ltest
+      logical first,skip,ltest,ldec
       real*8 f0
       real ps(-128:128)
       real sstf(275)
@@ -22,6 +22,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       data first/.true./
       save
 
+      ldec=.false.
       fac=1.e-8
       do i=1,npts
          x(i)=fac*id(i)
@@ -53,8 +54,6 @@ C  Orchestrates the process of decoding MEPT_JT messages.
          snr(i)=-33.
          if(sig.gt.0.) snr(i)=10.0*log10(sig) - 27
          p(i)=10.0*log10((p(i)/base))
-!         write(53,3001) i,150.0+i*df1,p(i)
-! 3001    format(i5,2f12.3)
       enddo
 
       plim=3.0
@@ -103,8 +102,6 @@ C  Look for sync patterns, get DF and DT
             a(2)=0.25*baud*kk
             a(3)=0.
             ccf=fchisq(c2,jz,375.0,a,ccfx,dtxx)
-!               write(*,3011) kk,jj,df2,a(1),a(2),a(3),ccfx,dtxx
-! 3011          format(i3,i4,6f8.2)
             if(ccfx.gt.ccfbest) then
                ccfbest=ccfx
                dtbest=dtxx-2.0
@@ -129,9 +126,7 @@ C  Look for sync patterns, get DF and DT
             call decode162(c3,jz,dtbest,df2,message,ncycles,metric,nerr)
             if(message.eq.'                      ') go to 100
 
-!            write(*,3001) kk,jj,df2,a(1),a(2),a(3),dtbest,
-!     +           ccfbest,message
-! 3001       format(i3,i4,6f8.2,2x,a22)
+            ldec=.true.
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
@@ -157,6 +152,12 @@ C  Look for sync patterns, get DF and DT
          endif
  100     continue
       enddo
+
+      if(ldec) then
+         call flush(14)
+         rewind 14
+         ndecdone=1
+      endif
 
       return
       end
