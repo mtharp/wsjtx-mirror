@@ -16,6 +16,7 @@ subroutine decode
   call mept162(outfile,f0,minsync,iwave,NMAX,rms,nsec,.false.,ndec)
   if(nsave.gt.0 .and. ndevin.ge.0) then
      outfile='save/'//outfile
+     npts=114*12000
      call wfile5(iwave,npts,12000,outfile)
   endif
 
