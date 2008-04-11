@@ -1,6 +1,6 @@
 #Makefile for Windows and MinGW
-CC = gcc
-FC = g95
+CC = /mingw/bin/gcc
+FC = /mingw/bin/g95
 
 FFLAGS = -cpp
 CFLAGS = -I. -fbounds-check
@@ -36,14 +36,14 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	nchar.f grid2deg.f \
 	afc.f fchisq.f ccf2.f twkfreq.f 
 
-SRCS2C = ptt.c
+SRCS2C = ptt.c start_threads.c
 
 WSPR.EXE: w.pyd wspr.spec
-	c:/python25/python c:\python25\installer-1.3\Build.py wspr.spec
+	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
 
 w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
-	c:/python25/python c:/python25/scripts/f2py.py -c -I.\
-	--quiet --"fcompiler=g95" \
+	c:/python25/python c:/python25/scripts/f2py.py -c -I. \
+	--quiet --fcompiler=g95 \
 	--opt="-fbounds-check -ftrace=full -O2 -cpp -DUSE_PORTAUDIO" \
 	--compiler=mingw32 \
 	$(OBJS2C) \
@@ -54,8 +54,8 @@ w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C)
 
 
 wspr.spec: wspr.py g.py options.py palettes.py 
-	c:/python25/python c:\python25\installer-1.3\makespec.py \
-	  --icon wsjt.ico --tk --onefile wspr.py
+	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
+	  wsjt.ico --tk --onefile wspr.py
 
 sound.o: sound.c
 	$(CC) -c sound.c
