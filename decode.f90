@@ -12,10 +12,17 @@ subroutine decode
 
   minsync=1
   nsec=time()
-  call mept162(outfile,f0,minsync,iwave,NMAX,rms,nsec,.false.)
+  ndec=0
+  call mept162(outfile,f0,minsync,iwave,NMAX,rms,nsec,.false.,ndec)
   if(nsave.gt.0 .and. ndevin.ge.0) then
      outfile='save/'//outfile
      call wfile5(iwave,npts,12000,outfile)
+  endif
+
+  if(ndec.ne.0) then
+     call flush(14)
+     rewind 14
+     ndecdone=1
   endif
 
   return

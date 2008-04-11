@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ltest)
+      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ltest,ndec)
 
 C  Orchestrates the process of decoding MEPT_JT messages.
 
@@ -8,7 +8,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       character*22 message
       character*70 outfile
       character*11 datetime
-      logical first,skip,ltest,ldec
+      logical first,skip,ltest
       real*8 f0
       real ps(-128:128)
       real sstf(275)
@@ -22,7 +22,6 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       data first/.true./
       save
 
-      ldec=.false.
       fac=1.e-8
       do i=1,npts
          x(i)=fac*id(i)
@@ -126,7 +125,7 @@ C  Look for sync patterns, get DF and DT
             call decode162(c3,jz,dtbest,df2,message,ncycles,metric,nerr)
             if(message.eq.'                      ') go to 100
 
-            ldec=.true.
+            ndec=1
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
@@ -152,12 +151,6 @@ C  Look for sync patterns, get DF and DT
          endif
  100     continue
       enddo
-
-      if(ldec) then
-         call flush(14)
-         rewind 14
-         ndecdone=1
-      endif
 
       return
       end
