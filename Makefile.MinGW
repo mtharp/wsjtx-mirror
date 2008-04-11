@@ -41,7 +41,7 @@ SRCS2C = ptt.c start_threads.c
 WSPR.EXE: w.pyd wspr.spec
 	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
 
-w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
+w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	c:/python25/python c:/python25/scripts/f2py.py -c -I. \
 	--quiet --fcompiler=g95 \
 	--opt="-fbounds-check -ftrace=full -O2 -cpp -DUSE_PORTAUDIO" \

@@ -32,7 +32,7 @@ subroutine tx
 
 20 iz=i
   ftx=f0 + 0.001500d0
-  ntxdf=nint(1.e6*(ftx-f0))
+  ntxdf=nint(1.e6*(ftx-f0)) - 1500
   call genmept(call1,grid,ndbm,ntxdf,99.0,jwave)
   print*,'B',nport
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
