@@ -21,6 +21,8 @@ import random
 import math
 import string
 import w
+import urllib
+import thread
 
 root = Tk()
 Version="0.6 r" + "$Rev$"[6:-1]
@@ -92,6 +94,7 @@ c0=0.0
 slabel="MinSync  "
 transmitting=0
 tw=[]
+upload=IntVar()
 
 g.appdir=appdir
 g.cmap="Linrad"
@@ -121,7 +124,7 @@ def pal_AFMHot():
     im.putpalette(Colormap2Palette(colormapAFMHot),"RGB")
 
 #------------------------------------------------------ quit
-def quit():
+def quit(event=NONE):
     root.destroy()
 
 #------------------------------------------------------ openfile
@@ -139,6 +142,12 @@ def openfile(event=NONE):
 ##           'when trying to read file',fname
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
+        i1=fileopened.find('.')
+        t=fileopened[i1-4:i1]
+        t=t[0:2] + ':' + t[2:4]
+        n=len(tw)
+        if n>12: tw=tw[:n-1]
+        tw=[t,] + tw
     os.chdir(appdir)
     ipctx.set(0)
 
@@ -179,7 +188,6 @@ def opennext(event=NONE):
             ncall=0
             loopall=0
             
-
 #------------------------------------------------------ decodeall
 def decodeall(event=NONE):
     global loopall
@@ -278,13 +286,24 @@ def decdsec(event):
 
 #------------------------------------------------------ erase
 def erase(event=NONE):
+    global bandmap,bandmap2
     text.configure(state=NORMAL)
     text.delete('1.0',END)
     text.configure(state=DISABLED)
     text1.configure(state=NORMAL)
     text1.delete('1.0',END)
     text1.configure(state=DISABLED)
-#    graph1.delete(ALL)
+    bandmap=[]
+    bandmap2=[]
+
+#----------------------------------------------------- df_readout
+# Readout of graphical cursor location
+def df_readout(event):
+    global fmid
+    nhz=1000000*fmid + (80.0-event.y) * 12000/8192.0
+    nhz=int(nhz%1000)
+    t="%3d Hz" % nhz
+    lab02.configure(text=t,bg='red')
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
@@ -361,6 +380,11 @@ def get_decoded():
         if lines[0][:4]=="$EOF": lines=""
     except:
         lines=""
+
+    if lines != '' and upload.get():
+#Dispatch autologger thread.
+        thread.start_new_thread(autolog, (lines,f0),)
+
     if len(lines)>0:
 #  Write data to text box and insert freqs and calls into bandmap.
         text.configure(state=NORMAL)
@@ -379,30 +403,21 @@ def get_decoded():
         text.see(END)
         
 #  Remove any "too old" information from bandmap.
-    iz=len(bandmap)
-    for i in range(iz-1,0,-1):
-        if (nseq - bandmap[i][2]) > 60:           # 60 minutes
-            bandmap=bandmap[:i] + bandmap[i+1:]
-    
+        iz=len(bandmap)
+        for i in range(iz-1,0,-1):
+            if (nseq - bandmap[i][2]) > 60:           # 60 minutes
+                bandmap=bandmap[:i] + bandmap[i+1:]
+        
 #  Sort bandmap in reverse frequency order
-    bandmap2=bandmap
-    bandmap2.sort()
-    bandmap2.reverse()
-    iz=len(bandmap2)
-    call0=""
-    text1.configure(state=NORMAL)
-    text1.delete('1.0',END)
-    for i in range(iz):
-        if i==0:
-            t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
-            nage=int((nseq - bandmap[i][2])/15)
-            if nage==0: attr='age0'
-            if nage==1: attr='age1'
-            if nage==2: attr='age2'
-            if nage>=3: attr='age3'
-            text1.insert(END,t+"\n",attr)
-        else:
-            if bandmap2[i][1]!=call0:
+        bandmap2=bandmap
+        bandmap2.sort()
+        bandmap2.reverse()
+        iz=len(bandmap2)
+        call0=""
+        text1.configure(state=NORMAL)
+        text1.delete('1.0',END)
+        for i in range(iz):
+            if i==0:
                 t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
                 nage=int((nseq - bandmap[i][2])/15)
                 if nage==0: attr='age0'
@@ -410,11 +425,52 @@ def get_decoded():
                 if nage==2: attr='age2'
                 if nage>=3: attr='age3'
                 text1.insert(END,t+"\n",attr)
-        call0=bandmap2[i][1]
-    text1.configure(state=DISABLED)
-    text1.see(END)
+            else:
+                if bandmap2[i][1]!=call0:
+                    t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
+                    nage=int((nseq - bandmap[i][2])/15)
+                    if nage==0: attr='age0'
+                    if nage==1: attr='age1'
+                    if nage==2: attr='age2'
+                    if nage>=3: attr='age3'
+                    text1.insert(END,t+"\n",attr)
+            call0=bandmap2[i][1]
+        text1.configure(state=DISABLED)
+        text1.see(END)
 
     if loopall: opennext()
+
+#------------------------------------------------------ autologger
+def autolog(lines,f0):
+    #TODO:  Create GUI options to enable/disable autologging.
+    #TODO:  Cache entries for later uploading if net is down.
+    #TODO:  (Maybe??) Allow for stations wishing to collect spot data but only upload in batch form vs real-time.
+    reportparams = ""
+    try:
+        for i in range(len(lines)):
+            acallsign=lines[i][38:45]
+            if acallsign[:1] != ' ':
+                foo = lines[i].split()
+                # foo now contains a list as follows
+                #date, time, sync, signal, dt, computed qrg, call, grid, indicated power, noise level, ?, ?
+                #0      1     2     3      4       5          6     7     8                9          10  11
+                #example:
+                #['080322', '1834', '12', '-14', '0.1', '10.140141', 'K7EK', 'CN87', '33', '11.1', '10051757', '40']
+                #now to format as a string to use for autologger upload using urlencode so we get a string formatted for http get/put operations
+                reportparams = urllib.urlencode({'function': 'wspr', 'dt': str(foo[4]), 'sync': str(foo[2]), 'rcall': options.MyCall.get(), 'rgrid': options.MyGrid.get(), 'rqrg': str(f0), 'date': str(foo[0]), 'time': str(foo[1]), 'sig': str(foo[3]), 'tqrg': str(foo[5]), 'tcall': str(foo[6]), 'tgrid': str(foo[7]), 'dbm': str(foo[8])})
+                #reportparams now contains a properly formed http request string for the agreed upon format between W6CQZ and N8FQ
+                #any other data collection point can be added as desired if it conforms to the 'standard format' defined above.
+                #The following opens a url and passes the reception report to the database insertion handler for W6CQZ
+#                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
+                #The following opens a url and passes the reception report to the database insertion handler from N8FQ/K3UK
+                urlf = urllib.urlopen("http://www.electroblog.com/drsked/meptspots.php?%s" % reportparams)
+                #The proper way to handle url posting will be to define the url as a configuration parameter so data sinks
+                #could be added/removed as necessary.  It is not strictly necessary to post reports to W6CQZ, but, since I
+                #happen to be W6CQZ I can better debug things from the server side by sending to my system during the active
+                #development phase of this code.
+#        print 'Successful upload'
+    except:
+        print "Socket error, non-fatal."
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
@@ -442,11 +498,12 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,modtxrx0,tw,s0,c0,fmid,fmid0,idsec
+        modpixmap0,modtxrx0,tw,s0,c0,fmid,fmid0,idsec,loopall
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
     nsec=int(tsec)
     nsec0=nsec
+    ns120=nsec % 120
 
     isec=utc[5]
     if isec != isec0:                           #Do once per second
@@ -482,6 +539,10 @@ def update():
                 transmitting=1
     except:
         pass
+
+    if ns120>114:
+        transmitting=0
+        receiving=0
 
     bgcolor='gray85'
     t=''
@@ -561,7 +622,7 @@ filemenu.add('command', label = 'Delete all *.WAV files in Save', \
 filemenu.add_separator()
 filemenu.add('command', label = 'Erase ALL_MEPT.TXT', command = del_all)
 filemenu.add_separator()
-filemenu.add('command', label = 'Exit', command = quit)
+filemenu.add('command', label = 'Exit', command = quit, accelerator='Alt+F4')
 
 #------------------------------------------------------ Setup menu
 setupbutton = Menubutton(mbar, text = 'Setup')
@@ -614,6 +675,7 @@ helpmenu.add('command', label = 'About WSPR', command = about)
 
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
+root.bind_all('<Alt-F4>', quit)
 root.bind_all('<F6>', opennext)
 root.bind_all('<Shift-F6>', decodeall)
 root.bind_all('<Control-o>',openfile)
@@ -623,6 +685,7 @@ root.bind_all('<Control-O>',openfile)
 iframe1 = Frame(frame, bd=1, relief=SUNKEN)
 
 graph1=Canvas(iframe1, bg='black', width=NX, height=NY,cursor='crosshair')
+Widget.bind(graph1,"<Motion>",df_readout)
 graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
@@ -646,6 +709,10 @@ sc1.pack(side=LEFT)
 sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
+lab02=Label(iframe2, text='')
+lab02.pack(side=LEFT,padx=40)
+bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
+bupload.pack(side=LEFT)
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 iframe2.pack(expand=1, fill=X, padx=4)
 
@@ -785,7 +852,7 @@ try:
             g.DevoutName.set(value)
             options.DevoutName.set(value)
         elif key == 'Nsave': nsave.set(value)
-        elif key == 'Sync': isync=int(value)
+        elif key == 'Upload': upload.set(value)
         elif key == 'Debug': ndebug.set(value)
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
@@ -859,7 +926,7 @@ f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("PctTx " + str(ipctx.get()) + "\n")
-f.write("Sync " + str(isync) + "\n")
+f.write("Upload " + str(upload.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")

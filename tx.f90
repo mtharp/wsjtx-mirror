@@ -13,6 +13,7 @@ subroutine tx
   integer*2 jwave(NMAX2)
   integer soundout,ptt
   include 'acom1.f90'
+  common/bcom/ntransmitted
 
   ndevout=0
   call1=callsign
@@ -38,6 +39,7 @@ subroutine tx
   npts=114*12000
   ierr=soundout(idevout,jwave,npts)
   if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
+  ntransmitted=1
   ntxdone=1
 
   return

@@ -20,11 +20,13 @@ subroutine decode
      call wfile5(iwave,npts,12000,outfile)
   endif
 
-  if(ndec.ne.0) then
-     call flush(14)
-     rewind 14
-     ndecdone=1
+  if(ndec.eq.0) then
+     write(14,1100)
+1100 format('$EOF')
   endif
+  call flush(14)
+  rewind 14
+  ndecdone=1
 
   return
 end subroutine decode

@@ -9,6 +9,7 @@
       real savg(0:255),tmp(256)
       real s2(-127:128)
       integer*2 a(NX,NY)
+      common/bcom/ntransmitted
 
       nfft=256
       df=375.0/nfft
@@ -39,8 +40,9 @@
             a(i,j)=a(i+nmove,j)
          enddo
 !         a(NX-nmove+1,j)=255
-         a(NX-nmove+1,j)=0
+         a(NX-nmove+1,j)=255*ntransmitted
       enddo
+      ntransmitted=0
 
       i0=-istep+1
       k=0
