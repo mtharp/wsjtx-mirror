@@ -443,9 +443,10 @@ def get_decoded():
 
 #------------------------------------------------------ autologger
 def autolog(lines,f0):
-    #TODO:  Create GUI options to enable/disable autologging.
-    #TODO:  Cache entries for later uploading if net is down.
-    #TODO:  (Maybe??) Allow for stations wishing to collect spot data but only upload in batch form vs real-time.
+# This code by W6CQZ ...
+# TODO:  Cache entries for later uploading if net is down.
+# TODO:  (Maybe??) Allow for stations wishing to collect spot data but
+#       only upload in batch form vs real-time.
     reportparams = ""
     try:
         for i in range(len(lines)):
@@ -453,11 +454,11 @@ def autolog(lines,f0):
             if acallsign[:1] != ' ':
                 foo = lines[i].split()
 # foo now contains a list as follows
-#date, time, sync, signal, dt, computed qrg, call, grid, indicated power, noise level, ?, ?
+#  date,     time,  sync, signal, dt,  computed qrg,  call,  grid,   dBm,  (extra params ...)
 #    0         1      2     3      4         5         6       7      8      9         10       11
-#example:
+# example:
 #['080322', '1834', '12', '-14', '0.1', '10.140141', 'K7EK', 'CN87', '33', '11.1', '10051757', '40']
-#now to format as a string to use for autologger upload using urlencode so we get a string formatted for http get/put operations
+# now to format as a string to use for autologger upload using urlencode so we get a string formatted for http get/put operations
                 reportparams = urllib.urlencode({'function': 'wspr', 'dt': str(foo[4]), \
                     'sync': str(foo[2]), 'rcall': options.MyCall.get(), \
                     'rgrid': options.MyGrid.get(), 'rqrg': str(f0), \
@@ -465,22 +466,22 @@ def autolog(lines,f0):
                     'sig': str(foo[3]), 'tqrg': str(foo[5]), \
                     'tcall': str(foo[6]), 'tgrid': str(foo[7]), \
                     'dbm': str(foo[8])})
-#reportparams now contains a properly formed http request string for
-#the agreed upon format between W6CQZ and N8FQ.
-#any other data collection point can be added as desired if it conforms
-#to the 'standard format' defined above.
-#The following opens a url and passes the reception report to the database
-#insertion handler for W6CQZ:
+# reportparams now contains a properly formed http request string for
+# the agreed upon format between W6CQZ and N8FQ.
+# any other data collection point can be added as desired if it conforms
+# to the 'standard format' defined above.
+# The following opens a url and passes the reception report to the database
+# insertion handler for W6CQZ:
 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
-#The following opens a url and passes the reception report to the
-#database insertion handler from W1BW:
+# The following opens a url and passes the reception report to the
+# database insertion handler from W1BW:
                 urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" \
                                       % reportparams)
-#The proper way to handle url posting will be to define the url as a
-#configuration parameter so data sinks could be added/removed as necessary.
-#It is not strictly necessary to post reports to W6CQZ, but, since I
-#happen to be W6CQZ I can better debug things from the server side by
-#sending to my system during the active development phase of this code.
+# The proper way to handle url posting will be to define the url as a
+# configuration parameter so data sinks could be added/removed as necessary.
+# It is not strictly necessary to post reports to W6CQZ, but, since I
+# happen to be W6CQZ I can better debug things from the server side by
+# sending to my system during the active development phase of this code.
     except:
         print "Socket error, non-fatal."
 
