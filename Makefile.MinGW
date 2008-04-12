@@ -21,7 +21,7 @@ rxtest.exe: $(OBJS1)
 
 OBJS2C = sound.o gmtime2.o
 
-F2PYONLY = wspr1 getfile
+F2PYONLY = wspr1 getfile paterminate
 
 SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90

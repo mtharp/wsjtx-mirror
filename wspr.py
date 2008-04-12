@@ -6,10 +6,11 @@ from tkFileDialog import *
 import g,Pmw
 from tkMessageBox import showwarning
 import os,time,sys
-##import pyaudio
 from math import log10
-from numpy.oldnumeric import zeros
-#from Numeric import zeros
+try:
+    from numpy.oldnumeric import zeros
+except: 
+    from Numeric import zeros
 import array
 import dircache
 import Image, ImageTk, ImageDraw
