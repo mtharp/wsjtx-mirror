@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#------------------------------------------------------------------------ WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -54,6 +54,8 @@ import options
 appdir=os.getcwd()
 bandmap=[]
 bandmap2=[]
+bm={}
+ft=[]
 fileopened=""
 fmid=0.0
 fmid0=0.0
@@ -286,7 +288,7 @@ def decdsec(event):
 
 #------------------------------------------------------ erase
 def erase(event=NONE):
-    global bandmap,bandmap2
+    global bandmap,bandmap2,bm
     text.configure(state=NORMAL)
     text.delete('1.0',END)
     text.configure(state=DISABLED)
@@ -295,6 +297,7 @@ def erase(event=NONE):
     text1.configure(state=DISABLED)
     bandmap=[]
     bandmap2=[]
+    bm={}
 
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
@@ -370,7 +373,7 @@ def tx_volume():
 
 #------------------------------------------------------ get_decoded
 def get_decoded():
-    global bandmap,bandmap2,newdat,loopall
+    global bandmap,bandmap2,bm,newdat,loopall
     
 # Get lines from decoded.txt
     try:
@@ -399,43 +402,36 @@ def get_decoded():
                 nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
                       int(lines[i][9:11])
                 ndf=int(lines[i][33:36])
-                bandmap.append((ndf,callsign,nseq))
+                bm[callsign]=(ndf,nseq)
+#                bandmap.append((ndf,callsign,nseq))
         text.configure(state=DISABLED)
         text.see(END)
-        
+
 #  Remove any "too old" information from bandmap.
+        bandmap=[]
+        for callsign,ft in bm.iteritems():
+            ndf,tdecoded=ft
+            if nseq-tdecoded < 60:                        #60 minutes 
+                bandmap.append((ndf,callsign,tdecoded))
+
         iz=len(bandmap)
-        for i in range(iz-1,0,-1):
-            if (nseq - bandmap[i][2]) > 60:           # 60 minutes
-                bandmap=bandmap[:i] + bandmap[i+1:]
-        
+        bm={}
+        for i in range(iz):
+            bm[bandmap[i][1]]=(bandmap[i][0],bandmap[i][2])
+
 #  Sort bandmap in reverse frequency order
-        bandmap2=bandmap
-        bandmap2.sort()
-        bandmap2.reverse()
-        iz=len(bandmap2)
-        call0=""
+        bandmap.sort()
+        bandmap.reverse()
         text1.configure(state=NORMAL)
         text1.delete('1.0',END)
         for i in range(iz):
-            if i==0:
-                t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
-                nage=int((nseq - bandmap[i][2])/15)
-                if nage==0: attr='age0'
-                if nage==1: attr='age1'
-                if nage==2: attr='age2'
-                if nage>=3: attr='age3'
-                text1.insert(END,t+"\n",attr)
-            else:
-                if bandmap2[i][1]!=call0:
-                    t="%4d" % (bandmap2[i][0],) + " " + bandmap2[i][1]
-                    nage=int((nseq - bandmap[i][2])/15)
-                    if nage==0: attr='age0'
-                    if nage==1: attr='age1'
-                    if nage==2: attr='age2'
-                    if nage>=3: attr='age3'
-                    text1.insert(END,t+"\n",attr)
-            call0=bandmap2[i][1]
+            t="%4d" % (bandmap[i][0],) + " " + bandmap[i][1]
+            nage=int((nseq - bandmap[i][2])/15)
+            attr='age0'
+            if nage==1: attr='age1'
+            if nage==2: attr='age2'
+            if nage>=3: attr='age3'
+            text1.insert(END,t+"\n",attr)
         text1.configure(state=DISABLED)
         text1.see(END)
 
@@ -788,7 +784,7 @@ f4a.pack(side=LEFT,expand=0,fill=Y)
 
 #--------------------------------------------------------- Decoded text box
 f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
-text=Text(f4b, height=11, width=68)
+text=Text(f4b, height=11, width=61)
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
 text.pack(side=RIGHT, fill=X, padx=1)
@@ -948,4 +944,3 @@ f.close()
 
 #Terminate PortAudio
 w.paterminate()
-

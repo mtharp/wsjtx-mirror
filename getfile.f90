@@ -15,14 +15,11 @@ subroutine getfile(fname,len)
   equivalence (ariff,hdr),(n1,n4),(d1,d2)
 
 1 if(ndecoding.eq.0) go to 2
-!#ifdef CVF
-!  call sleepqq(100)
-!#else
-!  call usleep(100*1000)
-!#endif
-!  go to 1
+  call msleep(100)
+  go to 1
 
-2 do i=len,1,-1
+2 ndecoding=1
+  do i=len,1,-1
      if(fname(i:i).eq.'/' .or. fname(i:i).eq.'\\') go to 10
   enddo
   i=0
@@ -30,23 +27,20 @@ subroutine getfile(fname,len)
   ierr=0
 
 #ifdef CVF
-!  open(10,file=fname,form='binary',status='old',err=998)
-!  read(10,end=998) hdr
-!  read(10,end=998) iwave
   open(10,file=fname,form='binary',status='old')
+#else
+  open(10,file=fname,access='stream',status='old')
+#endif
   read(10) hdr
   npts=114*12000
   read(10) (iwave(i),i=1,npts)
-#else
-!  call rfile2(fname,hdr,44+2*NDMAX,nr)
-#endif
+  call getrms(iwave,npts,ave,rms)
 
   ndecdone=0                              !??? ### ???
-!  decoding=.true.
+  ndiskdat=1
   outfile=fname
-  call startdec
+  nrxdone=1
 
-998 ierr=1001
 999 close(10)
   return
 end subroutine getfile

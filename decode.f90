@@ -7,6 +7,7 @@ subroutine decode
 #else
   integer time
 #endif
+  character*80 savefile
 
   include 'acom1.f90'
 
@@ -14,10 +15,10 @@ subroutine decode
   nsec=time()
   ndec=0
   call mept162(outfile,f0,minsync,iwave,NMAX,rms,nsec,.false.,ndec)
-  if(nsave.gt.0 .and. ndevin.ge.0) then
-     outfile='save/'//outfile
+  if(nsave.gt.0 .and. ndiskdat.eq.0) then
+     savefile='save/'//outfile
      npts=114*12000
-     call wfile5(iwave,npts,12000,outfile)
+     call wfile5(iwave,npts,12000,savefile)
   endif
 
   if(ndec.eq.0) then
@@ -27,6 +28,8 @@ subroutine decode
   call flush(14)
   rewind 14
   ndecdone=1
+  ndiskdat=0
+  ndecoding=0
 
   return
 end subroutine decode

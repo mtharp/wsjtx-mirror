@@ -62,14 +62,6 @@ subroutine wspr2
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   rr=3.0
   if(pctx.ge.40.0) rr=1.5                    !soft step?
-  idle=.false.
-  if(pctx.lt.0.0) then
-     idle=.true.
-     call msleep(100)
-     go to 20
-  endif
-
-  if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving)) go to 30
 
   if(nrxdone.gt.0) then
      receiving=.false.
@@ -82,6 +74,11 @@ subroutine wspr2
      transmitting=.false.
      ntxdone=0
   endif
+
+  idle=.false.
+  if(pctx.lt.0.0) idle=.true.
+  if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
+       (.not.idle)) go to 30
 
   call msleep(100)
   go to 20

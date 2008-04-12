@@ -33,7 +33,6 @@ subroutine startdec
 #else
   ierr=th_decode()
 #endif
-!  print*,'startdec',ierr
 
   return
 end subroutine startdec
