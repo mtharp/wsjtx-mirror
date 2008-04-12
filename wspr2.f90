@@ -49,7 +49,8 @@ subroutine wspr2
   endif
   write(*,1005) idevin,idevout
 1005 format( 'Will open devices:       Input =',i2,'   Output =',i2)
-
+  write(*,1006)
+1006 format(66('*'))
   call random_seed
   nrx=1
 
