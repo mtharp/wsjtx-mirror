@@ -35,6 +35,7 @@ subroutine wspr2
 
   idevin=ndevin
   idevout=ndevout
+
   call padevsub(numdevs,ndefin,ndefout,nchin,nchout)
   write(*,1003) idevin,idevout
 1003 format(/'User requested devices:  Input =',i2,'   Output =',i2)

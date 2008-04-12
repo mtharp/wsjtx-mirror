@@ -8,8 +8,8 @@ from tkMessageBox import showwarning
 import os,time,sys
 ##import pyaudio
 from math import log10
-#from numpy.oldnumeric import zeros
-from Numeric import zeros
+from numpy.oldnumeric import zeros
+#from Numeric import zeros
 import array
 import dircache
 import Image, ImageTk, ImageDraw
@@ -396,7 +396,8 @@ def get_decoded():
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
-                nseq=int(lines[i][7:11]) + 1440*int(lines[i][4:6])
+                nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
+                      int(lines[i][9:11])
                 ndf=int(lines[i][33:36])
                 bandmap.append((ndf,callsign,nseq))
         text.configure(state=DISABLED)
@@ -463,7 +464,7 @@ def autolog(lines,f0):
                 #The following opens a url and passes the reception report to the database insertion handler for W6CQZ
 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
                 #The following opens a url and passes the reception report to the database insertion handler from N8FQ/K3UK
-                urlf = urllib.urlopen("http://www.electroblog.com/drsked/meptspots.php?%s" % reportparams)
+                urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" % reportparams)
                 #The proper way to handle url posting will be to define the url as a configuration parameter so data sinks
                 #could be added/removed as necessary.  It is not strictly necessary to post reports to W6CQZ, but, since I
                 #happen to be W6CQZ I can better debug things from the server side by sending to my system during the active

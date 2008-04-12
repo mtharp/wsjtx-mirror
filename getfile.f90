@@ -42,7 +42,7 @@ subroutine getfile(fname,len)
 #endif
 
   ndecdone=0                              !??? ### ???
-  decoding=.true.
+!  decoding=.true.
   outfile=fname
   call startdec
 

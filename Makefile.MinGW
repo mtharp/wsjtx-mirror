@@ -10,7 +10,7 @@ all:    WSPR.EXE
 
 OBJS1 = rxtest.o mept162.o getrms.o mix162.o deg2grid.o \
 	sync162.o decode162.o spec162.o set.o xfft.o \
-	four1.o ps162.o pctile.o xcor162.o peakup.o db.o \
+	ps162.o pctile.o xcor162.o peakup.o db.o \
 	inter_mept.o fano232.o unpack50.o unpackcall.o \
 	unpackgrid.o four2.o flat3.o sort.o ssort.o \
 	nchar.o grid2deg.o decode.o gmtime2.o wfile5.o \
@@ -28,7 +28,7 @@ SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 
 SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	sync162.f decode162.f spec162.f set.f xfft.f \
-	four1.f ps162.f pctile.f xcor162.f peakup.f db.f \
+	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
 	ssort.f genmept.f \
@@ -36,7 +36,7 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	nchar.f grid2deg.f \
 	afc.f fchisq.f ccf2.f twkfreq.f 
 
-SRCS2C = ptt.c start_threads.c
+SRCS2C = ptt.c start_threads.c padevsub.c
 
 WSPR.EXE: w.pyd wspr.spec
 	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
