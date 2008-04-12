@@ -27,7 +27,6 @@ import thread
 
 root = Tk()
 Version="0.6 r" + "$Rev$"[6:-1]
-print "Ignore any error message above, it is harmless."
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Revision date: " + \
