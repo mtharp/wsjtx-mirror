@@ -22,6 +22,7 @@ import random
 import math
 import string
 import w
+import socket
 import urllib
 import thread
 
@@ -105,6 +106,9 @@ g.ndevin=IntVar()
 g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
+
+socktimeout = 10
+socket.setdefaulttimeout(socktimeout)
 
 def pal_gray0():
     g.cmap="gray0"
