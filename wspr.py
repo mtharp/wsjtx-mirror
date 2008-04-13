@@ -321,8 +321,16 @@ def df_readout(event):
 def set_tx_freq(event):
     global fmid
     nftx=int(1000000.0*fmid + (80.0-event.y) * 12000/8192.0)
-    ftx.set(0.000001*nftx)
-    sftx.set('%10.06f' % ftx.get())
+    fmhz=0.000001*nftx
+    t="Please confirm setting Tx frequency to " + "%10.06f MHz" % fmhz
+    msg=Pmw.MessageDialog(root,buttons=('Yes','No'),message_text=t)
+    msg.geometry(msgpos())
+    if g.Win32: msg.iconbitmap("wsjt.ico")
+    msg.focus_set()
+    result=msg.activate()
+    if result == 'Yes':
+        ftx.set(0.000001*nftx)
+        sftx.set('%10.06f' % ftx.get())
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
@@ -466,18 +474,23 @@ def autolog(lines,f0):
             if acallsign[:1] != ' ':
                 foo = lines[i].split()
 # foo now contains a list as follows
-#  date,     time,  sync, signal, dt,  computed qrg,  call,  grid,   dBm,  (extra params ...)
-#    0         1      2     3      4         5         6       7      8      9         10       11
+#  date,     time, signal,  dt,     freq,     drift,  call,  grid,   dBm,  (extra params ...)
+#    0         1      2      3        4         5      6       7      8      9         10       11
 # example:
-#['080322', '1834', '12', '-14', '0.1', '10.140141', 'K7EK', 'CN87', '33', '11.1', '10051757', '40']
-# now to format as a string to use for autologger upload using urlencode so we get a string formatted for http get/put operations
-                reportparams = urllib.urlencode({'function': 'wspr', 'dt': str(foo[4]), \
-                    'sync': str(foo[2]), 'rcall': options.MyCall.get(), \
+#['080322', '1834', '-14', '0.1', '10.140141', '-1', 'K7EK', 'CN87', '33', '11.1', '10051757', '40']
+# now to format as a string to use for autologger upload using urlencode
+# so we get a string formatted for http get/put operations:
+
+                reportparams = urllib.urlencode({'function': 'wspr',
+                    'dt': str(foo[3]), \
+                    'rcall': options.MyCall.get(), \
                     'rgrid': options.MyGrid.get(), 'rqrg': str(f0), \
                     'date': str(foo[0]), 'time': str(foo[1]), \
-                    'sig': str(foo[3]), 'tqrg': str(foo[5]), \
+                    'sig': str(foo[2]), 'tqrg': str(foo[4]), \
+                    'drift': str(foo[5]), \
                     'tcall': str(foo[6]), 'tgrid': str(foo[7]), \
                     'dbm': str(foo[8])})
+
 # reportparams now contains a properly formed http request string for
 # the agreed upon format between W6CQZ and N8FQ.
 # any other data collection point can be added as desired if it conforms
@@ -487,8 +500,10 @@ def autolog(lines,f0):
 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
 # The following opens a url and passes the reception report to the
 # database insertion handler from W1BW:
+
                 urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" \
                                       % reportparams)
+
 # The proper way to handle url posting will be to define the url as a
 # configuration parameter so data sinks could be added/removed as necessary.
 # It is not strictly necessary to post reports to W6CQZ, but, since I

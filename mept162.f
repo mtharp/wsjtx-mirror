@@ -141,13 +141,12 @@ C  Look for sync patterns, get DF and DT
                open(13,file='ALL_MEPT.TXT',status='unknown',
      +                position='append')
 #endif
-               write(13,1010) datetime,nsync,nsnrx,dtx,freq,message
-               close(13)
- 1010          format(a11,i4,i4,f6.1,f11.6,2x,a15,3f7.2)
-
                nf1=nint(-2.0*a(2))
-               write(14,1012) datetime,nsnrx,dtx,freq,nf1,message,
-     +               -a(3)
+               write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1
+               close(13)
+ 1010          format(a11,i4,i4,f6.1,f11.6,2x,a15,i5)
+
+               write(14,1012) datetime,nsnrx,dtx,freq,nf1,message,-a(3)
  1012          format(a11,i4,f6.1,f11.6,i4,2x,a15,f7.2)
             endif
             if(message(1:6).ne.'      ') skip=.true.
