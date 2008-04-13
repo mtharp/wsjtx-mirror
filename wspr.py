@@ -56,6 +56,8 @@ appdir=os.getcwd()
 bandmap=[]
 bandmap2=[]
 bm={}
+f0=DoubleVar()
+ftx=DoubleVar()
 ft=[]
 fileopened=""
 fmid=0.0
@@ -83,7 +85,7 @@ NX=500
 NY=160
 param20=""
 pctx=[-1,0,20,25,33,100]
-
+sftx=StringVar()
 a=array.array('h')
 im=Image.new('P',(NX,NY))
 draw=ImageDraw.Draw(im)
@@ -311,6 +313,13 @@ def df_readout(event):
     nhz=int(nhz%1000)
     t="%3d Hz" % nhz
     lab02.configure(text=t,bg='red')
+
+#----------------------------------------------------- set_tx_freq
+def set_tx_freq(event):
+    global fmid
+    nftx=int(1000000.0*fmid + (80.0-event.y) * 12000/8192.0)
+    ftx.set(0.000001*nftx)
+    sftx.set('%10.06f' % ftx.get())
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
@@ -699,6 +708,7 @@ iframe1 = Frame(frame, bd=1, relief=SUNKEN)
 
 graph1=Canvas(iframe1, bg='black', width=NX, height=NY,cursor='crosshair')
 Widget.bind(graph1,"<Motion>",df_readout)
+Widget.bind(graph1,"<Double-Button-1>",set_tx_freq)
 graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
@@ -732,12 +742,10 @@ iframe2.pack(expand=1, fill=X, padx=4)
 #------------------------------------------------------ Labels under graphics
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
-f0=DoubleVar()
-ftx=DoubleVar()
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq:',
         value=10.1387,entry_textvariable=f0,entry_width=12)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx freq:',
-        value=10.140150,entry_textvariable=ftx,entry_width=12)
+        entry_textvariable=sftx,entry_width=12)
 widgets = (lf0, lftx)
 for widget in widgets:
     widget.pack(side=LEFT,padx=5,pady=2)
@@ -900,6 +908,7 @@ if g.cmap == "AFMHot":
 ##lsync.configure(text=slabel+str(isync))
 options.dbm_balloon()
 fmid=f0.get() + 0.001500
+sftx.set('%10.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
@@ -910,12 +919,6 @@ try:
     os.remove('decoded.txt')
 except:
     pass
-##cmd="wspr_tr.exe"
-##args="--gui"
-##try:
-##    os.spawnv(os.P_NOWAIT,cmd,(cmd,) + (args,))
-##except:
-##    print cmd + ' ' + args + ' failed.'
 try:
     os.remove('pixmap.dat')
 except:
