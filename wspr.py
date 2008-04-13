@@ -544,6 +544,7 @@ def update():
     nsec=int(tsec)
     nsec0=nsec
     ns120=nsec % 120
+    ftx.set(float(sftx.get()))
 
     isec=utc[5]
     if isec != isec0:                           #Do once per second
