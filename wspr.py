@@ -54,7 +54,6 @@ import options
 #------------------------------------------------------ Global variables
 appdir=os.getcwd()
 bandmap=[]
-bandmap2=[]
 bm={}
 f0=DoubleVar()
 ftx=DoubleVar()
@@ -159,6 +158,11 @@ def openfile(event=NONE):
     os.chdir(appdir)
     ipctx.set(0)
 
+#------------------------------------------------------ stop_loopall
+def stop_loopall(event=NONE):
+    global loopall
+    loopall=0
+    
 #------------------------------------------------------ opennext
 def opennext(event=NONE):
     global ncall,fileopened,loopall,mrudir,tw
@@ -294,7 +298,7 @@ def decdsec(event):
 
 #------------------------------------------------------ erase
 def erase(event=NONE):
-    global bandmap,bandmap2,bm
+    global bandmap,bm
     text.configure(state=NORMAL)
     text.delete('1.0',END)
     text.configure(state=DISABLED)
@@ -302,7 +306,6 @@ def erase(event=NONE):
     text1.delete('1.0',END)
     text1.configure(state=DISABLED)
     bandmap=[]
-    bandmap2=[]
     bm={}
 
 #----------------------------------------------------- df_readout
@@ -386,7 +389,7 @@ def tx_volume():
 
 #------------------------------------------------------ get_decoded
 def get_decoded():
-    global bandmap,bandmap2,bm,newdat,loopall
+    global bandmap,bm,newdat,loopall
     
 # Get lines from decoded.txt
     try:
@@ -414,7 +417,7 @@ def get_decoded():
                 callsign=callsign[:i1]
                 nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
                       int(lines[i][9:11])
-                ndf=int(lines[i][33:36])
+                ndf=int(lines[i][29:32])
                 bm[callsign]=(ndf,nseq)
 #                bandmap.append((ndf,callsign,nseq))
         text.configure(state=DISABLED)
@@ -695,6 +698,7 @@ helpbutton['menu'] = helpmenu
 helpmenu.add('command', label = 'Help', command = help, accelerator='F1')
 helpmenu.add('command', label = 'About WSPR', command = about)
 
+root.bind_all('<Escape>', stop_loopall)
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
 root.bind_all('<Alt-F4>', quit)
@@ -732,10 +736,11 @@ sc1.pack(side=LEFT)
 sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
-lab02=Label(iframe2, text='')
-lab02.pack(side=LEFT,padx=40)
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.pack(side=LEFT)
+bupload.place(x=400,y=12, anchor='e')
+#bupload.pack(side=LEFT)
+lab02=Label(iframe2, text='')
+lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 iframe2.pack(expand=1, fill=X, padx=4)
 
@@ -772,7 +777,7 @@ g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, text='DATE         UTC      Sync      dB          DT            Freq')
+lab2=Label(iframe2, text='DATE         UTC         dB          DT              Freq             Drift')
 lab2.place(x=160,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 

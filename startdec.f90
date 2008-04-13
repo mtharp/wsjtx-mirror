@@ -28,7 +28,7 @@ subroutine startdec
   m0=SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS)
 ! Start a thread for playing audio data
   Thread3=CreateThread(0,0,decode,0,CREATE_SUSPENDED,id1)
-  m1=SetThreadPriority(Thread3,THREAD_PRIORITY_NORMAL)
+  m1=SetThreadPriority(Thread3,THREAD_PRIORITY_BELOW_NORMAL)
   m2=ResumeThread(Thread3)
 #else
   ierr=th_decode()
