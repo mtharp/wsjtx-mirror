@@ -31,8 +31,6 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       data first/.true./,idum/0/
       save
 
-      print*,ntxdf
-
       nsym=162                               !Symbols per transmission
       if(first) then
          do i=1,nsym
