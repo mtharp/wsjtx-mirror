@@ -423,11 +423,13 @@ def get_decoded():
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
-                nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
-                      int(lines[i][9:11])
-                ndf=int(lines[i][29:32])
-                bm[callsign]=(ndf,nseq)
-#                bandmap.append((ndf,callsign,nseq))
+                try:
+                    nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
+                          int(lines[i][9:11])
+                    ndf=int(lines[i][29:32])
+                    bm[callsign]=(ndf,nseq)
+                except:
+                    pass
         text.configure(state=DISABLED)
         text.see(END)
 
@@ -516,8 +518,11 @@ def autolog(lines,f0):
 def put_params(param3=NONE):
     global idsec,param20
 
-    w.acom1.f0=f0.get()
-    w.acom1.ftx=ftx.get()
+    try:
+        w.acom1.f0=f0.get()
+        w.acom1.ftx=ftx.get()
+    except:
+        pass
     w.acom1.callsign=(options.MyCall.get()+'      ')[:6]
     w.acom1.grid=(options.MyGrid.get()+'    ')[:4]
     try:
@@ -544,8 +549,10 @@ def update():
     nsec=int(tsec)
     nsec0=nsec
     ns120=nsec % 120
-    ftx.set(float(sftx.get()))
-
+    try:
+        ftx.set(float(sftx.get()))
+    except:
+        pass
     isec=utc[5]
     if isec != isec0:                           #Do once per second
         isec0=isec
@@ -634,7 +641,10 @@ def update():
 
     s0=sc1.get()
     c0=sc2.get()
-    fmid=f0.get() + 0.001500
+    try:
+        fmid=f0.get() + 0.001500
+    except:
+        pass
     if fmid!=fmid0:
         draw_axis()
     ldate.after(200,update)
