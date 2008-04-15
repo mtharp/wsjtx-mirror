@@ -28,7 +28,5 @@
          enddo
       endif
 
-      if(rms.lt.2000.0) print*,'*** Bad Rx data? *** ',ave,rms
-
       return
       end
