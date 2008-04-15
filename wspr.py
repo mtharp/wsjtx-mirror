@@ -71,6 +71,7 @@ modpixmap0=0
 mrudir=os.getcwd()
 ndbm0=-999
 ncall=0
+ndebug=IntVar()
 newdat=1
 newspec=1
 npal=IntVar()
@@ -643,6 +644,8 @@ def update():
         pass
     if fmid!=fmid0:
         draw_axis()
+
+    w.acom1.ndebug=ndebug.get()
     ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
@@ -681,6 +684,8 @@ setupmenu.add('command', label = 'Options', command = options1,
 setupmenu.add_separator()
 setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
 setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
+setupmenu.add_separator()
+setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 
 #--------------------------------------------------------- View menu
 setupbutton = Menubutton(mbar, text = 'View', )
