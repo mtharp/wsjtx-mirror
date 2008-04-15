@@ -5,10 +5,10 @@ subroutine wspr2
 #endif
 
 ! Logical units:
-!  11  Transmitting/Receiving and UTC
 !  12  Audio data in *.wav file
 !  13  ALL_MEPT.TXT
 !  14  decoded.txt
+!  16  pixmap.dat
 
   character*17 message
   real*8 tsec
@@ -19,15 +19,10 @@ subroutine wspr2
   data decoding/.false./,ns1200/-999/
 
 #ifdef CVF
-  open(11,file='txrxtime.txt',status='unknown',share='denynone')
   open(14,file='decoded.txt',status='unknown',share='denynone')
 #else
-  open(11,file='txrxtime.txt',status='unknown')
   open(14,file='decoded.txt',status='unknown')
 #endif
-  write(11,1000) 
-1000 format('Idle')
-  call flush(11)
   write(14,1002)
 1002 format('$EOF')
   call flush(14)
@@ -78,6 +73,13 @@ subroutine wspr2
 
   idle=.false.
   if(pctx.lt.0.0) idle=.true.
+
+  if(ns120.ge.114) then
+     transmitting=.false.
+     receiving=.false.
+     ntr=0
+  endif
+
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
        (.not.idle)) go to 30
 
@@ -104,17 +106,18 @@ subroutine wspr2
 #else
      open(13,file='ALL_MEPT.TXT',status='unknown',position='append')
 #endif
+
      write(13,1030) cdate(3:8),utctime(1:4),ftx,message
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a17)
      close(13)
-     rewind 11
-     write(11,1040) 'Transmitting',utctime(1:2)//':'//utctime(3:4)
-1040 format(a12,1x,a5)
+
+     ntr=-1
      call starttx
+
   else
      receiving=.true.
-     rewind 11
-     write(11,1040) 'Receiving   ',utctime(1:2)//':'//utctime(3:4)
+     rxtime=utctime(1:4)
+     ntr=1
      call startrx
      nrx=nrx-1
   endif

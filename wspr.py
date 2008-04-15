@@ -68,7 +68,6 @@ isec0=0
 isync=1
 loopall=0
 modpixmap0=0
-modtxrx0=0
 mrudir=os.getcwd()
 ndbm0=-999
 ncall=0
@@ -80,6 +79,7 @@ nsave=IntVar()
 nscroll=0
 nsec0=0
 nspeed0=IntVar()
+ntr0=0
 NX=500
 NY=160
 param20=""
@@ -330,7 +330,7 @@ def set_tx_freq(event):
     result=msg.activate()
     if result == 'Yes':
         ftx.set(0.000001*nftx)
-        sftx.set('%10.06f' % ftx.get())
+        sftx.set('%.06f' % ftx.get())
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
@@ -523,8 +523,8 @@ def put_params(param3=NONE):
         w.acom1.ftx=ftx.get()
     except:
         pass
-    w.acom1.callsign=(options.MyCall.get()+'      ')[:6]
-    w.acom1.grid=(options.MyGrid.get()+'    ')[:4]
+    w.acom1.callsign=(options.MyCall.get().strip().upper()+'      ')[:6]
+    w.acom1.grid=(options.MyGrid.get().strip().upper()+'    ')[:4]
     try:
         w.acom1.nport=int(options.PttPort.get())
     except:
@@ -543,7 +543,8 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,modtxrx0,tw,s0,c0,fmid,fmid0,idsec,loopall
+        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0
+
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
     nsec=int(tsec)
@@ -569,28 +570,23 @@ def update():
         put_params()
 
 # If T/R status has changed, get new info
-    try:
-        modtxrx=os.stat('txrxtime.txt')[8]
-        if modtxrx!=modtxrx0:
-            f=open('txrxtime.txt',mode='r')
-            t=f.read()
+    ntr=int(w.acom1.ntr)
+    if ntr!=ntr0:
+        ntr0=ntr
+        if ntr==-1:
+            transmitting=1
+            receiving=0
+        elif ntr==0:
             transmitting=0
             receiving=0
-            f.close()
-            modtxrx0=os.stat('txrxtime.txt')[8]
-            if t[:9]=='Receiving':
-                receiving=1
-                n=len(tw)
-                if n>12: tw=tw[:n-1]
-                tw=[t[13:18],] + tw
-            if t[:12]=='Transmitting':
-                transmitting=1
-    except:
-        pass
-
-    if ns120>114:
-        transmitting=0
-        receiving=0
+        else:
+            transmitting=0
+            receiving=1
+            n=len(tw)
+            if n>12: tw=tw[:n-1]
+            rxtime=g.ftnstr(w.acom1.rxtime)
+            rxtime=rxtime[:2] + ':' + rxtime[2:]
+            tw=[rxtime,] + tw
 
     bgcolor='gray85'
     t=''
