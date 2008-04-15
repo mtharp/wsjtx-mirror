@@ -8,7 +8,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       character*22 message
       character*70 outfile
       character*11 datetime
-      logical first,skip,ltest
+      logical first,skip
       real*8 f0
       real ps(-128:128)
       real sstf(275)
@@ -130,8 +130,7 @@ C  Look for sync patterns, get DF and DT
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             if(ltest) then
-               write(*,1010) datetime,nsync,nsnrx,dtx,freq,message,
-     +              -a(1),-a(2),-a(3)
+               write(*,1012) datetime,nsnrx,dtx,freq,nf1,message,-a(3)
             else
 
 #ifdef CVF

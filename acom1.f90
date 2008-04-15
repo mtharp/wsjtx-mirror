@@ -1,5 +1,6 @@
   parameter (NMAX=120*12000)                          !Max length of waveform
   real*8 f0,ftx
+  logical ltest
   integer nreceiving
   integer ntransmitting
   character*80 infile,outfile
@@ -8,5 +9,6 @@
   integer*2 iwave
   common/acom1/ f0,ftx,rms,pctx,nsec,ndevin,ndevout,nsave,nrxdone,      &
        ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,ntransmitting,       &
-       ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,iwave(NMAX),  &
+       ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,              &
+       ltest,iwave(NMAX),  &
        infile,outfile,cdate,utctime,callsign,grid,rxtime

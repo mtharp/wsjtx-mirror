@@ -3,37 +3,39 @@
 gcc = cl
 FC = df
 FFLAGS = /traceback /fast /nologo
-#CFLAGS = /DWin32 /DCVF /I. 
+#CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
-all:    WSPR.EXE 
+all:    wspr_rxtest.exe WSPR.EXE
 
-OBJS1 = rxtest.obj mept162.obj getrms.obj mix162.obj deg2grid.obj \
-	sync162.obj decode162.obj spec162.obj set.obj xfft.obj \
-	ps162.obj pctile.obj xcor162.obj peakup.obj db.obj \
-	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
-	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
-	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj \
+OBJS1 = wspr_rxtest.obj decode.obj getfile.obj			\
+	mept162.obj getrms.obj mix162.obj			\
+	deg2grid.obj						\
+	sync162.obj decode162.obj spec162.obj set.obj xfft.obj	\
+	ps162.obj pctile.obj xcor162.obj peakup.obj db.obj	\
+	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj	\
+	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj	\
+	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj		\
 	afc.obj fchisq.obj ccf2.obj twkfreq.obj 
 
-rxtest.exe: $(OBJS1)
-	$(FC) /exe:rxtest.exe $(FFLAGS) $(OBJS1)
+wspr_rxtest.exe: $(OBJS1)
+	$(FC) $(FFLAGS) /exe:wspr_rxtest.exe $(OBJS1)
 
 OBJS2C = sound.o gmtime2.o
 
 F2PYONLY = wspr1 getfile paterminate
 
-SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
-	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90 \
+SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90	\
+	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90		\
 	paterminate.f90
 
-SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
-	sync162.f decode162.f spec162.f set.f xfft.f \
-	ps162.f pctile.f xcor162.f peakup.f db.f \
-	inter_mept.f fano232.f unpack50.f unpackcall.f \
-	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
-	ssort.f genmept.f \
-	packcall.f packgrid.f pack50.f encode232.f \
-	nchar.f grid2deg.f \
+SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f		\
+	sync162.f decode162.f spec162.f set.f xfft.f	\
+	ps162.f pctile.f xcor162.f peakup.f db.f	\
+	inter_mept.f fano232.f unpack50.f unpackcall.f	\
+	unpackgrid.f four2.f flat3.f sort.f deg2grid.f	\
+	ssort.f genmept.f				\
+	packcall.f packgrid.f pack50.f encode232.f	\
+	nchar.f grid2deg.f				\
 	afc.f fchisq.f ccf2.f twkfreq.f 
 
 SRCS2C = ptt.c padevsub.c
@@ -57,10 +59,27 @@ wspr.spec: wspr.py g.py options.py palettes.py
 	python c:\python23\installer\makespec.py --icon wsjt.ico \
 	--tk --onefile wspr.py
 
+wspr_rxtest.obj: wspr_rxtest.f90
+	$(FC) /c $(FFLAGS) /fpp wspr_rxtest.f90
+
 sound.o: sound.c
 	$(CC) /nologo /c /Fosound.o sound.c
 gmtime2.o: gmtime2.c
 	$(CC) /nologo /c /DWin32=1 /Fogmtime2.o gmtime2.c
+
+gmtime2.obj: gmtime2.c
+	$(CC) /nologo /c /DWin32=1 gmtime2.c
+
+decode.obj: decode.f90
+	$(FC) /c $(FFLAGS) /DCVF /fpp decode.f90
+getfile.obj: getfile.f90
+	$(FC) /c $(FFLAGS) /DCVF /fpp getfile.f90
+mept162.obj: mept162.f
+	$(FC) /c $(FFLAGS) /DCVF /fpp mept162.f
+spec162.obj: spec162.f
+	$(FC) /c $(FFLAGS) /DCVF /fpp spec162.f
+wfile5.obj: wfile5.f
+	$(FC) /c $(FFLAGS) /DCVF /fpp wfile5.f
 
 .PHONY : clean
 
