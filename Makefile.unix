@@ -1,56 +1,89 @@
-#Makefile for Windows and MinGW
+#Makefile for Linux
 CC = gcc
 FC = g95
 
-FFLAGS = -cpp
+FFLAGS = -cpp -O2
 CFLAGS = -I. -fbounds-check
 
-OBJS2 = wspr_tx.o genmept.o inter_mept.o nchar.o grid2deg.o \
-	packcall.o packgrid.o pack50.o unpack50.o unpackcall.o \
-	unpackgrid.o deg2grid.o ptt_unix.o set.o gran.o encode232.o \
-	playsound.o 
-
-OBJS3 = wspr_rx.o inter_mept.o \
-	mix162.o xfft.o four1.o four2.o sync162.o ps162.o \
-	mept162.o nchar.o grid2deg.o unpack50.o unpackcall.o \
-	unpackgrid.o deg2grid.o getrms.o \
-	set.o encode232.o fano232.o wfile5.o \
-	xcor162.o slope.o peakup.o pctile.o db.o sort.o \
-	ssort.o decode162.o getsound.o spec162.o flat3.o
+all:	w.so wspr_rxtest
 
 
-all:    wspr_tx.exe wspr_rx.exe
+OBJS1 = wspr_rxtest.o getfile.o mept162.o getrms.o mix162.o deg2grid.o	\
+	sync162.o decode162.o spec162.o set.o xfft.o			\
+	ps162.o pctile.o xcor162.o peakup.o db.o			\
+	inter_mept.o fano232.o unpack50.o unpackcall.o			\
+	unpackgrid.o four2.o flat3.o sort.o ssort.o			\
+	nchar.o grid2deg.o decode.o gmtime2.o wfile5.o			\
+	afc.o fchisq.o ccf2.o twkfreq.o 
 
-wspr.exe: wspr.spec
-	python c:/python25/pyinstaller-1.3/Build.py wspr.spec
+wspr_rxtest: $(OBJS1)
+	$(FC) -o wspr_rxtest $(FFLAGS) $(OBJS1)
 
-wspr.spec: wspr.py g.py options.py palettes.py
-	python c:/python25/pyinstaller-1.3/makespec.py --icon \
-	   wsjt.ico --tk --onefile wspr.py
+OBJS2C = sound.o gmtime2.o
 
-wspr_tx.exe: $(OBJS2)
-	$(FC) -o wspr_tx.exe $(FFLAGS) $(OBJS2) -lpthread libportaudio2.a
+F2PYONLY = wspr1 getfile paterminate
 
-wspr_rx.exe: $(OBJS3)
-	$(FC) -o wspr_rx.exe $(FFLAGS) $(OBJS3) -lpthread libportaudio2.a
+SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
+	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90 \
+	paterminate.f90
 
-gran.o: gran.f90
-	$(FC) -c $(FFLAGS) gran.f90
-mept_rx.o: mept_rx.f90
-	$(FC) -c $(FFLAGS) mept_rx.f90
-mept_tx.o: mept_tx.f90
-	$(FC) -c $(FFLAGS) mept_tx.f90
-wspr.o: wspr.f90
-	$(FC) -c $(FFLAGS) wspr.f90
-wspr_rx.o: wspr_rx.f90
-	$(FC) -c $(FFLAGS) wspr_rx.f90
-wspr_tx.o: wspr_tx.f90
-	$(FC) -c $(FFLAGS) wspr_tx.f90
+SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
+	sync162.f decode162.f spec162.f set.f xfft.f \
+	ps162.f pctile.f xcor162.f peakup.f db.f \
+	inter_mept.f fano232.f unpack50.f unpackcall.f \
+	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
+	ssort.f genmept.f \
+	packcall.f packgrid.f pack50.f encode232.f \
+	nchar.f grid2deg.f \
+	afc.f fchisq.f ccf2.f twkfreq.f 
+
+#SRCS2C = ptt.c start_threads.c padevsub.c
+SRCS2C = ptt.c padevsub.c
+
+#WSPR.EXE: w.so wspr.spec
+#	python c:/python25/pyinstaller-1.3/Build.py wspr.spec
+
+w.so: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
+	python f2py.py -c -I. \
+	--quiet --fcompiler=g95 \
+	--opt="-fbounds-check -ftrace=full -O2 -cpp -DUSE_PORTAUDIO" \
+	--compiler=mingw32 \
+	$(OBJS2C) \
+	libportaudio.a libpthreadGC2.a -lwinmm \
+	-m w \
+	only: $(F2PYONLY) : \
+	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
+
+
+wspr.spec: wspr.py g.py options.py palettes.py 
+	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
+	  wsjt.ico --tk --onefile wspr.py
+
+sound.o: sound.c
+	$(CC) -c sound.c
+gmtime2.o: gmtime2.c
+	$(CC) -c gmtime2.c
+
+wspr_rxtest.o: wspr_rxtest.f90
+	$(FC) -c $(FFLAGS) wspr_rxtest.f90
+
+gmtime2.o: gmtime2.c
+	$(CC) -c gmtime2.c
+decode.o: decode.f90
+	$(FC) -c $(FFLAGS) decode.f90
+getfile.o: getfile.f90
+	$(FC) -c $(FFLAGS) getfile.f90
+mept162.o: mept162.f
+	$(FC) -c $(FFLAGS) mept162.f
+spec162.o: spec162.f
+	$(FC) -c $(FFLAGS) spec162.f
+wfile5.o: wfile5.f
+	$(FC) -c $(FFLAGS) wfile5.f
 
 .PHONY : clean
 
 clean:
-	rm *.o wspr.exe wspr_tx.exe wspr_rx.exe
+	rm *.o wspr wspr_rxtest w.so wspr.spec
 
 
 

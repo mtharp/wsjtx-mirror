@@ -8,7 +8,7 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       character*22 message
       character*70 outfile
       character*11 datetime
-      logical first,skip
+      logical first,skip,ltest
       real*8 f0
       real ps(-128:128)
       real sstf(275)
