@@ -35,7 +35,6 @@ subroutine getfile(fname,len)
   npts=114*12000
   read(10) (iwave(i),i=1,npts)
   call getrms(iwave,npts,ave,rms)
-
   ndecdone=0                              !??? ### ???
   ndiskdat=1
   outfile=fname

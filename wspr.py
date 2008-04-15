@@ -27,11 +27,11 @@ import urllib
 import thread
 
 root = Tk()
-Version="0.6 r" + "$Rev$"[6:-1]
+Version="0.6.1 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
-print "Revision date: " + \
-      "$Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $"[7:-1]
+##print "Revision date: " + \
+##      "$Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
 #See if we are running in Windows
@@ -322,7 +322,7 @@ def set_tx_freq(event):
     global fmid
     nftx=int(1000000.0*fmid + (80.0-event.y) * 12000/8192.0)
     fmhz=0.000001*nftx
-    t="Please confirm setting Tx frequency to " + "%10.06f MHz" % fmhz
+    t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
     msg=Pmw.MessageDialog(root,buttons=('Yes','No'),message_text=t)
     msg.geometry(msgpos())
     if g.Win32: msg.iconbitmap("wsjt.ico")
@@ -935,7 +935,7 @@ if g.cmap == "AFMHot":
 ##lsync.configure(text=slabel+str(isync))
 options.dbm_balloon()
 fmid=f0.get() + 0.001500
-sftx.set('%10.06f' % ftx.get())
+sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")

@@ -3,7 +3,7 @@
 #include "portaudio.h"
 
 #define SAMPLE_RATE  (12000)
-#define FRAMES_PER_BUFFER (1024)
+#define FRAMES_PER_BUFFER (2048)
 #define NUM_CHANNELS    (1)
 /* #define DITHER_FLAG     (paDitherOff)  */
 #define DITHER_FLAG     (0) /**/
