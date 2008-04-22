@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -27,7 +27,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="0.6.1 r" + "$Rev$"[6:-1]
+Version="0.7 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -139,6 +139,7 @@ def quit(event=NONE):
 def openfile(event=NONE):
     global mrudir,fileopened,nopen,tw
     nopen=1                         #Work-around for "click feedthrough" bug
+    upload.set(0)
     try:
         os.chdir(mrudir)
     except:
@@ -146,8 +147,6 @@ def openfile(event=NONE):
     fname=askopenfilename(filetypes=[("Wave files","*.wav *.WAV")])
     if fname:
         w.getfile(fname,len(fname))
-##        if w.acom1.ierr: print 'Error ',w.acom1.ierr, \
-##           'when trying to read file',fname
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
         i1=fileopened.find('.')
@@ -408,7 +407,7 @@ def get_decoded():
         if lines[0][:4]=="$EOF": lines=""
     except:
         lines=""
-
+        
     if lines != '' and upload.get():
 #Dispatch autologger thread.
         thread.start_new_thread(autolog, (lines,f0),)
@@ -419,6 +418,7 @@ def get_decoded():
         nseq=0
         nfmid=int(1.0e6*fmid)%1000
         for i in range(len(lines)):
+            if len(lines[i])<6: break                    #Skip $EOF
             text.insert(END,lines[i][:53]+"\n")
             callsign=lines[i][38:45]
             if callsign[:1] != ' ':

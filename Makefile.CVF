@@ -26,7 +26,7 @@ OBJS1 = wspr_rxtest.obj decode.obj getfile.obj \
 	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
 	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj \
-	afc.obj fchisq.obj ccf2.obj twkfreq.obj 
+	fchisq.obj ccf2.obj twkfreq.obj 
 
 wspr_rxtest.exe: $(OBJS1)
 	$(FC) $(FFLAGS) /exe:wspr_rxtest.exe $(OBJS1)

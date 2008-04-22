@@ -1,6 +1,7 @@
       subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ltest,ndec)
 
-C  Orchestrates the process of decoding MEPT_JT messages.
+C  Orchestrates the process of finding, synchronizing, and decoding 
+C  WSPR signals.
 
       integer*2 id(npts)
 
@@ -17,22 +18,14 @@ C  Orchestrates the process of decoding MEPT_JT messages.
       data first/.true./
       save
 
-!      end file 14
-!      rewind 14
-
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,c,c,c2,jz,df2,ps)
 
-C  Look for sync patterns, get DF and DT
-!      a(1)=0.
-!      a(2)=-0.5*12000.0/8192.
-!      a(3)=0.
-!      print*,'A',a
-!      call twkfreq(c2,c3,jz,a)
-!      c2=c3
-
-      call sync162(c2,jz,sstf,kz)
+C  Compute pixmap.dat
       call spec162(c2,jz)
+
+C  Look for sync patterns, get DF and DT
+      call sync162(c2,jz,sstf,kz)
 
       do k=1,kz
          snrsync=sstf(1,k)
@@ -46,22 +39,34 @@ C  Look for sync patterns, get DF and DT
          a(3)=0.
          call twkfreq(c2,c3,jz,a)                    !Remove drift
 
-         minsync=0                                   !####
+         minsync=1                                   !####
          nsync=nint(snrsync)
-         if(nsync.lt.0) nsync=0
          nsnrx=nint(snrx)
          if(nsnrx.lt.-33) nsnrx=-33
+         if(nsync.lt.0) nsync=0
          freq=f0 + 1.d-6*(dfx+1500.0)
          message='                      '
-         if(nsync.ge.minsync) then
+         if(nsync.ge.minsync .and. nsnrx.ge.-29) then
             call decode162(c3,jz,dtx,dfx,message,ncycles,metric,nerr)
+            if(message(1:6).eq.'      ') go to 24
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             nf1=nint(-2.0*a(2))
-!           write(13,1010) datetime,nsync,nsnrx,dtx,freq,message
-            write(*,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1
- 1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,i5)
+
+#ifdef CVF
+            open(13,file='ALL_MEPT.TXT',status='unknown',
+     +                position='append',share='denynone')
+#else
+            open(13,file='ALL_MEPT.TXT',status='unknown',
+     +                position='append')
+#endif
+            write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
+     +           ncycles/81,metric
+            close(13)
+ 1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,i5,2i7)
+            write(14,1012) datetime,nsnrx,dtx,freq,nf1,message
+ 1012       format(a11,i4,f6.1,f11.6,i4,2x,a15)
          endif
  24      continue
       enddo

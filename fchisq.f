@@ -1,4 +1,4 @@
-      real function fchisq(cx,npts,fsample,a,lagmax,ccfmax,dtmax)
+      real function fchisq(cx,npts,fsample,a,lag1,lag2,ccfmax,dtmax)
 
       parameter (NMAX=120*375)
       complex cx(npts)
@@ -87,7 +87,7 @@ C  Compute full-symbol powers at 1/16-symbol steps.
       enddo
 
       ccfmax=0.
-      call ccf2(ss,nout,lagmax,ccf,lagpk)
+      call ccf2(ss,nout,lag1,lag2,ccf,lagpk)
       if(ccf.gt.ccfmax) then
          ccfmax=ccf
          dtmax=lagpk*dtstep

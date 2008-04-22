@@ -150,7 +150,8 @@ C  Compute soft symbols using differential BPSK demodulation
       enddo
 
       ndelta=100
-      limit=100000
+!      limit=100000
+      limit=70000
       nbits=50+31
       call inter_mept(symbol,-1)                      !Remove interleaving
       call fano232(symbol,nbits,mettab,ndelta,limit,

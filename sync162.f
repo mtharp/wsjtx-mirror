@@ -6,30 +6,20 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       parameter (NFFT=512)             !Length of FFTs
       parameter (NH=NFFT/2)            !Length of power spectra
       parameter (NSMAX=351)            !Number of half-symbol steps
+      parameter (NF0=136,NF1=10)
+      parameter (LAGMAX=26)
       real psavg(-NH:NH)               !Average spectrum of whole record
       real s2(-NH:NH,NSMAX)            !2d spectrum, stepped by half-symbols
-!      real ccfred(-NH:NH)              !Peak of ccfblue, as function of freq
-!      real ccfblue(-5:540)             !CCF with pseudorandom sequence
-!      real tmp(513)
-!      real sstf(5,275)
-!      real drift(275)
-!      real xc(2,2,275)
-!      integer indx(513)
-
-      parameter (NF0=136,NF1=20)
-      parameter (LAGMAX=12)
       real psmo(-NH:NH)
       real freq(-NH:NH)
       real p1(-NH:NH)
       real drift(-NH:NH)
       real dtx(-NH:NH)
-      real a(5)
-      real sstf(5,275)
       integer keep0(-NH:NH)
       integer keep(-NH:NH)
-!      character*32 infile
+      real a(5)
+      real sstf(5,275)
       character*22 message
-!      character line*137
       real tmp(275)
       integer npr3(162)
       real pr3(162)
@@ -43,7 +33,6 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
      +  0,1,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0,1,1,
      +  0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,0,
      +  0,0/
-
       save
 
       nsym=162
@@ -52,7 +41,6 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       enddo
 
 C  Do FFTs of twice symbol length, stepped by half symbols.  
-
       nq=NFFT/4
       nsteps=jz/nq - 1
       df=375.0/nfft
@@ -65,16 +53,12 @@ C  Compute power spectrum for each step, and get average
          call ps162(c2(k),s2(-NH,j))
          call add(psavg,s2(-NH,j),psavg,NFFT)
       enddo
-!      call pctile(psavg(-136),tmp,273,45,base)
-!      write(55) jz,c2,s2,psavg
 
 ! Normalize and subtract baseline from psavg.
       call pctile(psavg(-136),tmp,273,35,base)
       psavg=psavg/base - 1.0
       base=base/351.0
       s2=s2/base - 1.0
-      df=375.0/NFFT
-      dt=128.0/375.0
 
 ! Boxcar-smooth the average spectrum over the WSPR signal bandwidth.
       do i=-NH+3,NH-3
@@ -87,7 +71,8 @@ C  Compute power spectrum for each step, and get average
 
 ! Mark potential suspects for WSPR signals.  
 ! (Keep only the best one within a surrounding range of +/- 8 bins.)
-      plimit=0.1
+
+      plimit=0.1                      !### Are the plimit values OK? ###
       do i=-NF0,NF0
          keep0(i)=0
          ia=i-8
@@ -108,7 +93,7 @@ C  Compute power spectrum for each step, and get average
          endif
       enddo
 
-! Now mark the bins +/- 1 from each already-marked bin.
+! Now mark the bins +/- 1 from each one already marked.
       do i=-NF0+1,NF0-1
       if(keep0(i).eq.1) then
          keep(i-1)=1
@@ -141,11 +126,12 @@ C  Compute power spectrum for each step, and get average
                endif
             enddo
          enddo
+
 ! Save the CCF value, frequency, drift rate, and DT.
          p1(i)=smax
          freq(i)=df*i
          drift(i)=df*kpk
-         dtx(i)=dt*lagpk
+         dtx(i)=128.0*dt*lagpk
  10      continue
       enddo
 
@@ -192,12 +178,19 @@ C  Compute power spectrum for each step, and get average
          a(1)=-freq(k) + 1.46   !### Why is this offset necessary? ###
          a(2)=-0.5*drift(k)
          a(3)=0.
-         ccf=-fchisq(c2,jz,375.0,a,200,ccfbest,dtbest)
+
+!### Use explicit lag1,lag2?  Correct lag should be around 8*lagpk
+!         ccf=-fchisq(c2,jz,375.0,a,200,ccfbest,dtbest)
+         lagpk=nint((dtx(k)+2)/(128*dt))
+         lag1=8*lagpk-10
+         lag2=8*lagpk+10
+         ccf=-fchisq(c2,jz,375.0,a,lag1,lag2,ccfbest,dtbest)
+!         lagx=nint(dtbest/(16*dt))-8*lagpk
 
          ipk=freq(k)/df
          call pctile(psavg(-136),tmp,273,45,base)
          ppmax=0.
-         do i=-4,4
+         do i=-4,4                             !### Why not use psmo? ###
             ppmax=ppmax + psavg(ipk+i)
          enddo
          ppmax=(ppmax/(9.0*base)) - 1.0
@@ -208,8 +201,6 @@ C  Compute power spectrum for each step, and get average
          sstf(3,k)=dtbest-2.0
          sstf(4,k)=freq(k)
          sstf(5,k)=drift(k)
-!         write(*,3301) k,(sstf(j,k),j=1,5)
-! 3301    format(i3,5f10.3)
       enddo
       
       return
