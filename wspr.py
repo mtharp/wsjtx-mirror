@@ -473,6 +473,7 @@ def autolog(lines,f0):
     reportparams = ""
     try:
         for i in range(len(lines)):
+            if len(lines[i])<6: break                    #Skip $EOF            
             acallsign=lines[i][38:45]
             if acallsign[:1] != ' ':
                 foo = lines[i].split()
