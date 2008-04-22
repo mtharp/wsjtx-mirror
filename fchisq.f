@@ -1,4 +1,4 @@
-      real function fchisq(cx,npts,fsample,a,ccfmax,dtmax)
+      real function fchisq(cx,npts,fsample,a,lagmax,ccfmax,dtmax)
 
       parameter (NMAX=120*375)
       complex cx(npts)
@@ -67,7 +67,6 @@ C  Compute full-symbol powers at 1/16-symbol steps.
       dtstep=1.0/(ndiv*baud)                   !Time per output step
       fac=1.e-5
 
-      ssmax=0.
       do i=1,nout
          j=i*nsps/ndiv
          k=j - nsps
@@ -85,21 +84,16 @@ C  Compute full-symbol powers at 1/16-symbol steps.
 
             ss(i)=fac*(max(p2,p4) - max(p1,p3))
          endif
-         if(abs(ss(i)).gt.abs(ssmax)) ssmax=ss(i)
       enddo
 
       ccfmax=0.
-      call ccf2(ss,nout,ccf,lagpk)
+      call ccf2(ss,nout,lagmax,ccf,lagpk)
       if(ccf.gt.ccfmax) then
          ccfmax=ccf
          dtmax=lagpk*dtstep
       endif
-
-!      write(*,3030) a(1),a(2),a(3),dtmax,ccfmax
-! 3030 format('fchisq:',3f8.2,2f10.3)
-
-! Reverse sign because we will be minimizing fchisq
-      fchisq=-ccfmax
+! Reverse sign (and offset!) because we will be minimizing fchisq
+      fchisq=-ccfmax + 100.0
 
       return
       end

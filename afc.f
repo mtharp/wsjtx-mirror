@@ -4,6 +4,7 @@
       real a(5),deltaa(5)
 
       fsample=375.0
+      lags=5
 !      a(1)=0.
       a(2)=0.
       a(3)=0.
@@ -23,13 +24,13 @@
 C  Start the iteration
       free=nfree
       chisqr0=1.e6
-      do iter=1,3                               !One iteration is enough?
+      do iter=1,10                               !One iteration is enough?
          do j=1,nterms
-            chisq1=fchisq(cx,npts,fsample,a,ccfmax,dtmax)
+            chisq1=fchisq(cx,npts,fsample,a,lags,ccfmax,dtmax)
             fn=0.
             delta=deltaa(j)
  10         a(j)=a(j)+delta
-            chisq2=fchisq(cx,npts,fsample,a,ccfmax,dtmax)
+            chisq2=fchisq(cx,npts,fsample,a,lags,ccfmax,dtmax)
             if(chisq2.eq.chisq1) go to 10
             if(chisq2.gt.chisq1) then
                delta=-delta                      !Reverse direction
@@ -40,7 +41,7 @@ C  Start the iteration
             endif
  20         fn=fn+1.0
             a(j)=a(j)+delta
-            chisq3=fchisq(cx,npts,fsample,a,ccfmax,dtmax)
+            chisq3=fchisq(cx,npts,fsample,a,lags,ccfmax,dtmax)
             if(chisq3.lt.chisq2) then
                chisq1=chisq2
                chisq2=chisq3
@@ -52,13 +53,16 @@ C  Find minimum of parabola defined by last three points
             a(j)=a(j)-delta
             deltaa(j)=deltaa(j)*fn/3.
          enddo
-         chisqr=fchisq(cx,npts,fsample,a,ccfmax,dtmax)
+         chisqr=fchisq(cx,npts,fsample,a,lags,ccfmax,dtmax)
          if(chisqr/chisqr0.gt.0.9999) go to 30
          chisqr0=chisqr
       enddo
 
- 30   ccfbest=ccfmax * (375.0/fsample)**2
-      dtbest=dtmax-2.0
+ 30   continue
+!      ccfbest=ccfmax * (375.0/fsample)**2
+      ccfbest=chisqr
+      dtbest=dtmax
+!      print*,'Z',iter,chisqr,chisqr0,chisqr/chisqr0
 
       return
       end

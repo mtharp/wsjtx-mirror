@@ -5,7 +5,19 @@ FC = df
 FFLAGS = /traceback /fast /nologo
 #CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
-all:    wspr_rxtest.exe WSPR.EXE
+#all:    wspr_rxtest.exe WSPR.EXE
+all:	test
+
+OBJS0 = test.obj mept162.obj mix162.obj deg2grid.obj			 \
+	sync162.obj decode162.obj spec162.obj set.obj xfft.obj ps162.obj \
+	pctile.obj xcor162.obj peakup.obj db.obj			 \
+	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj           \
+	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj		 \
+	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj	 \
+	afc.obj fchisq.obj ccf2.obj twkfreq.obj indexx.obj 
+
+test:	$(OBJS0)
+	$(FC) /exe:test.exe $(FFLAGS) $(OBJS0)
 
 OBJS1 = wspr_rxtest.obj decode.obj getfile.obj			\
 	mept162.obj getrms.obj mix162.obj			\

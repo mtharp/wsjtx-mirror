@@ -1,9 +1,9 @@
-      subroutine ccf2(ss,nz,ccfbest,lagpk)
+      subroutine ccf2(ss,nz,lagmax,ccfbest,lagpk)
 
-!      parameter (LAGMAX=20)
-      parameter (LAGMAX=200)
+!      parameter (LAGMAX=50)
+!      parameter (LAGMAX=200)
       real ss(nz)
-      real ccf(-LAGMAX:LAGMAX)
+      real ccf(-200:200)
       real pr(162)
       logical first
 
@@ -30,8 +30,8 @@ C  The WSPR pseudo-random sync pattern:
       endif
 
       ccfbest=0.
-      lag1=-LAGMAX
-      lag2=LAGMAX
+      lag1=-lagmax
+      lag2=lagmax
 
       do lag=lag1,lag2
          x=0.
@@ -45,12 +45,6 @@ C  The WSPR pseudo-random sync pattern:
             lagpk=lag
          endif
       enddo
-
-!      rewind 14
-!      do i=lag1,lag2
-!         write(14,3001) i,ccf(i)
-! 3001    format(i5,f12.3)
-!      enddo
 
       return
       end
