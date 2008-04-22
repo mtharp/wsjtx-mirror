@@ -5,28 +5,27 @@ FC = df
 FFLAGS = /traceback /fast /nologo
 #CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
-#all:    wspr_rxtest.exe WSPR.EXE
-all:	test
+#all:    wspr_rxtest.exe WSPR.EXE test.exe
+all:    wspr_rxtest.exe WSPR.EXE 
 
-OBJS0 = test.obj mept162.obj mix162.obj deg2grid.obj			 \
+OBJS0 = test.obj mept162.obj mix162.obj deg2grid.obj \
 	sync162.obj decode162.obj spec162.obj set.obj xfft.obj ps162.obj \
-	pctile.obj xcor162.obj peakup.obj db.obj			 \
-	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj           \
-	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj		 \
-	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj	 \
-	afc.obj fchisq.obj ccf2.obj twkfreq.obj indexx.obj 
+	pctile.obj xcor162.obj peakup.obj db.obj \
+	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
+	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
+	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj \
+	fchisq.obj ccf2.obj twkfreq.obj 
 
-test:	$(OBJS0)
+test.exe: $(OBJS0)
 	$(FC) /exe:test.exe $(FFLAGS) $(OBJS0)
 
-OBJS1 = wspr_rxtest.obj decode.obj getfile.obj			\
-	mept162.obj getrms.obj mix162.obj			\
-	deg2grid.obj						\
-	sync162.obj decode162.obj spec162.obj set.obj xfft.obj	\
-	ps162.obj pctile.obj xcor162.obj peakup.obj db.obj	\
-	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj	\
-	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj	\
-	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj		\
+OBJS1 = wspr_rxtest.obj decode.obj getfile.obj \
+	mept162.obj getrms.obj mix162.obj deg2grid.obj \
+	sync162.obj decode162.obj spec162.obj set.obj xfft.obj \
+	ps162.obj pctile.obj xcor162.obj peakup.obj db.obj \
+	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
+	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
+	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj \
 	afc.obj fchisq.obj ccf2.obj twkfreq.obj 
 
 wspr_rxtest.exe: $(OBJS1)
@@ -36,18 +35,18 @@ OBJS2C = sound.o gmtime2.o
 
 F2PYONLY = wspr1 getfile paterminate
 
-SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90	\
-	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90		\
+SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
+	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90	\
 	paterminate.f90
 
-SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f		\
-	sync162.f decode162.f spec162.f set.f xfft.f	\
-	ps162.f pctile.f xcor162.f peakup.f db.f	\
-	inter_mept.f fano232.f unpack50.f unpackcall.f	\
-	unpackgrid.f four2.f flat3.f sort.f deg2grid.f	\
-	ssort.f genmept.f				\
-	packcall.f packgrid.f pack50.f encode232.f	\
-	nchar.f grid2deg.f				\
+SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f	\
+	sync162.f decode162.f spec162.f set.f xfft.f \
+	ps162.f pctile.f xcor162.f peakup.f db.f \
+	inter_mept.f fano232.f unpack50.f unpackcall.f \
+	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
+	ssort.f genmept.f \
+	packcall.f packgrid.f pack50.f encode232.f \
+	nchar.f grid2deg.f \
 	afc.f fchisq.f ccf2.f twkfreq.f 
 
 SRCS2C = ptt.c padevsub.c
@@ -73,6 +72,8 @@ wspr.spec: wspr.py g.py options.py palettes.py
 
 wspr_rxtest.obj: wspr_rxtest.f90
 	$(FC) /c $(FFLAGS) /fpp wspr_rxtest.f90
+test.obj: test.f90
+	$(FC) /c $(FFLAGS) /fpp test.f90
 
 sound.o: sound.c
 	$(CC) /nologo /c /Fosound.o sound.c

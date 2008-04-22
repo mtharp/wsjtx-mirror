@@ -21,7 +21,7 @@ program wspr_rxtest
      call getarg(5,arg)
      read(arg,*) iters
      do iter=1,iters
-        call genmept('K1JT        ','FN20',30,ntxdf,fdot,snrdb,iwave)
+!###        call genmept('K1JT        ','FN20',30,ntxdf,snrdb,iwave)
         call decode
      enddo
      go to 999

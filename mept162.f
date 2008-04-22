@@ -32,7 +32,7 @@ C  Look for sync patterns, get DF and DT
 !      c2=c3
 
       call sync162(c2,jz,sstf,kz)
-!      call spec162(c2,jz)
+      call spec162(c2,jz)
 
       do k=1,kz
          snrsync=sstf(1,k)
