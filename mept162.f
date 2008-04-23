@@ -9,6 +9,7 @@ C  WSPR signals.
       character*11 datetime
       logical first,ltest
       real*8 f0
+      real ps(-256:256)
       real sstf(5,275)
       real a(5)
       complex c2(65536),c3(65536)
@@ -16,13 +17,13 @@ C  WSPR signals.
       save
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
-      call mix162(id,npts,c2,jz)
+      call mix162(id,npts,c2,jz,ps)
 
 C  Compute pixmap.dat
       call spec162(c2,jz)
 
 C  Look for sync patterns, get DF and DT
-      call sync162(c2,jz,sstf,kz)
+      call sync162(c2,jz,ps,sstf,kz)
 
       do k=1,kz
          snrsync=sstf(1,k)
@@ -30,7 +31,6 @@ C  Look for sync patterns, get DF and DT
          dtx=sstf(3,k)
          dfx=sstf(4,k)
          drift=sstf(5,k)
-
          a(1)=0.
          a(2)=-0.5*drift
          a(3)=0.

@@ -1,4 +1,4 @@
-      subroutine sync162(c2,jz,sstf,kz)
+      subroutine sync162(c2,jz,ps,sstf,kz)
 
 C  Find MEPT_JT sync signals, with best-fit DT and DF.  
 
@@ -10,6 +10,7 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       parameter (LAGMAX=26)
       real psavg(-NH:NH)               !Average spectrum of whole record
       real s2(-NH:NH,NSMAX)            !2d spectrum, stepped by half-symbols
+      real ps(-NH:NH)
       real psmo(-NH:NH)
       real freq(-NH:NH)
       real p1(-NH:NH)
@@ -64,7 +65,7 @@ C  Compute power spectrum for each step, and get average
       do i=-NH+3,NH-3
          psmo(i)=0.
          do k=-3,3
-            psmo(i)=psmo(i)+psavg(i+k)
+            psmo(i)=psmo(i)+ps(i+k)
          enddo
          psmo(i)=psmo(i)/7.0
       enddo
@@ -76,8 +77,8 @@ C  Compute power spectrum for each step, and get average
       do i=-NF0,NF0
          keep0(i)=0
          keep(i)=0
-         ia=i-8
-         ib=i+8
+         ia=i-4
+         ib=i+4
          pmax=-1.e30
          do ii=ia,ib
             if(psmo(ii).gt.pmax) then
@@ -200,8 +201,6 @@ C  Compute power spectrum for each step, and get average
          sstf(3,k)=dtbest-2.0
          sstf(4,k)=freq(k)
          sstf(5,k)=drift(k)
-!         write(*,3301) k,(sstf(j,k),j=1,5)
-! 3301    format(i1,5f10.3)
       enddo
       
       return
