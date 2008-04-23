@@ -180,10 +180,9 @@ C  Compute power spectrum for each step, and get average
          a(3)=0.
 
 !### Use explicit lag1,lag2?  Correct lag should be around 8*lagpk
-!         ccf=-fchisq(c2,jz,375.0,a,200,ccfbest,dtbest)
          lagpk=nint((dtx(k)+2)/(128*dt))
-         lag1=8*lagpk-10
-         lag2=8*lagpk+10
+         lag1=max(-200,8*lagpk-16)
+         lag2=min(200,8*lagpk+16)
          ccf=-fchisq(c2,jz,375.0,a,lag1,lag2,ccfbest,dtbest)
 !         lagx=nint(dtbest/(16*dt))-8*lagpk
 

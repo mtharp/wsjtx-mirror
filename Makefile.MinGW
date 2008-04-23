@@ -6,7 +6,6 @@ FFLAGS = -cpp
 CFLAGS = -I. -fbounds-check
 
 all:    WSPR.EXE
-#all:    WSPR.EXE wspr_tr.exe
 
 OBJS1 = rxtest.o mept162.o getrms.o mix162.o deg2grid.o \
 	sync162.o decode162.o spec162.o set.o xfft.o \
@@ -14,7 +13,7 @@ OBJS1 = rxtest.o mept162.o getrms.o mix162.o deg2grid.o \
 	inter_mept.o fano232.o unpack50.o unpackcall.o \
 	unpackgrid.o four2.o flat3.o sort.o ssort.o \
 	nchar.o grid2deg.o decode.o gmtime2.o wfile5.o \
-	afc.o fchisq.o ccf2.o twkfreq.o 
+	fchisq.o ccf2.o twkfreq.o 
 
 rxtest.exe: $(OBJS1)
 	$(FC) -o rxtest.exe $(FFLAGS) $(OBJS1)
