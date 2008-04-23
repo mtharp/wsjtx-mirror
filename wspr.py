@@ -353,7 +353,10 @@ def draw_axis():
 #------------------------------------------------------ del_all
 def del_all():
     fname=appdir+'/ALL_MEPT.TXT'
-    os.remove(fname)
+    try:
+        os.remove(fname)
+    except:
+        pass
 
 #------------------------------------------------------ delwav
 def delwav():
