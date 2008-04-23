@@ -75,6 +75,7 @@ C  Compute power spectrum for each step, and get average
       plimit=0.1                      !### Are the plimit values OK? ###
       do i=-NF0,NF0
          keep0(i)=0
+         keep(i)=0
          ia=i-8
          ib=i+8
          pmax=-1.e30
@@ -95,36 +96,39 @@ C  Compute power spectrum for each step, and get average
 
 ! Now mark the bins +/- 1 from each one already marked.
       do i=-NF0+1,NF0-1
-      if(keep0(i).eq.1) then
-         keep(i-1)=1
-         keep(i)=1
-         keep(i+1)=1
-      endif
+         if(keep0(i).eq.1) then
+            keep(i-1)=1
+            keep(i)=1
+            keep(i+1)=1
+         endif
       enddo
 
 ! Now do the main search over DT, DF, and drift.  (Do CCFs in all marked
 ! frequency bins and over a range of reasonable fdot values and lags.)
       fac2=0.017
+      p1=0.
       do i=-NF0,NF0
          if(keep(i).eq.0) go to 10
          smax=0.
          do k=-NF1,NF1
-            do lag=0,LAGMAX
-               sum=0.
-               n=lag-1
-               do j=1,162
-                  n=n+2
-                  ii=i + nint(k*(j-81)/162.0)
-                  x=max(s2(ii-1,n),s2(ii+3,n)) - 
-     +                 max(s2(ii-3,n),s2(ii+1,n))
-                  sum=sum + x*pr3(j)
+            if(abs(k).ne.1) then
+               do lag=0,LAGMAX
+                  sum=0.
+                  n=lag-1
+                  do j=1,162
+                     n=n+2
+                     ii=i + nint(k*(j-81)/162.0)
+                     x=max(s2(ii-1,n),s2(ii+3,n)) - 
+     +                    max(s2(ii-3,n),s2(ii+1,n))
+                     sum=sum + x*pr3(j)
+                  enddo
+                  if(sum.gt.smax) then
+                     kpk=k
+                     lagpk=lag
+                     smax=sum
+                  endif
                enddo
-               if(sum.gt.smax) then
-                  kpk=k
-                  lagpk=lag
-                  smax=sum
-               endif
-            enddo
+            endif
          enddo
 
 ! Save the CCF value, frequency, drift rate, and DT.
@@ -136,9 +140,9 @@ C  Compute power spectrum for each step, and get average
       enddo
 
 ! Eliminate potential duplicates and peaks smaller than plimit.
+      keep=0
       plimit=1.0
       do i=-NF0,NF0
-         keep(i)=0
          ia=max(-NF0,i-8)
          ib=min(NF0,i+8)
          pmax=-1.e30
@@ -186,20 +190,18 @@ C  Compute power spectrum for each step, and get average
          ccf=-fchisq(c2,jz,375.0,a,lag1,lag2,ccfbest,dtbest)
 !         lagx=nint(dtbest/(16*dt))-8*lagpk
 
+!         call pctile(psavg(-136),tmp,273,45,base)
+!  Should psmo be used for snrx?
          ipk=freq(k)/df
-         call pctile(psavg(-136),tmp,273,45,base)
-         ppmax=0.
-         do i=-4,4                             !### Why not use psmo? ###
-            ppmax=ppmax + psavg(ipk+i)
-         enddo
-         ppmax=(ppmax/(9.0*base)) - 1.0
-         snrx=db(max(ppmax,0.0001)) - 40 !Empirical
+         snrx=db(max(psavg(ipk),0.0001)) - 25.5         !Empirical
 
          sstf(1,k)=p1(k)
          sstf(2,k)=snrx
          sstf(3,k)=dtbest-2.0
          sstf(4,k)=freq(k)
          sstf(5,k)=drift(k)
+!         write(*,3301) k,(sstf(j,k),j=1,5)
+! 3301    format(i1,5f10.3)
       enddo
       
       return

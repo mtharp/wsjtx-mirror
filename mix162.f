@@ -1,4 +1,4 @@
-      subroutine mix162(id,npts,c,x,c2,jz,df2,ps)
+      subroutine mix162(id,npts,c2,jz)
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
 
@@ -11,6 +11,7 @@ C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       real*8 df
       complex c(0:NFFT1)
       complex c2(0:65535)
+      equivalence (x,c)
 
 C  Load data into real array x; pad with zeros up to nfft.
       fac=1.e-4

@@ -4,22 +4,19 @@ C  Orchestrates the process of finding, synchronizing, and decoding
 C  WSPR signals.
 
       integer*2 id(npts)
-
-      parameter (NFFT1=2*1024*1024)
       character*22 message
       character*70 outfile
       character*11 datetime
       logical first,ltest
       real*8 f0
-      real ps(-128:128)
       real sstf(5,275)
       real a(5)
-      complex c(0:NFFT1),c2(65536),c3(65536)
+      complex c2(65536),c3(65536)
       data first/.true./
       save
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
-      call mix162(id,npts,c,c,c2,jz,df2,ps)
+      call mix162(id,npts,c2,jz)
 
 C  Compute pixmap.dat
       call spec162(c2,jz)
@@ -46,13 +43,13 @@ C  Look for sync patterns, get DF and DT
          if(nsync.lt.0) nsync=0
          freq=f0 + 1.d-6*(dfx+1500.0)
          message='                      '
-         if(nsync.ge.minsync .and. nsnrx.ge.-29) then
+         if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
             call decode162(c3,jz,dtx,dfx,message,ncycles,metric,nerr)
             if(message(1:6).eq.'      ') go to 24
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
-            nf1=nint(-2.0*a(2))
+            nf1=nint(-a(2))
 
 #ifdef CVF
             open(13,file='ALL_MEPT.TXT',status='unknown',
