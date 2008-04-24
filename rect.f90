@@ -68,7 +68,7 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   call four2a(c,NFFT1,1,-1,1)
   nadd=64
   nh2=NFFT1/(2*nadd)
-  k=nh2*nadd
+  k=nh2*nadd - 1
   df2=nadd*375.0/NFFT1
   do i=-nh2+1,nh2
      s=0.
@@ -77,7 +77,7 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
         s=s + real(c(k))**2 + aimag(c(k))**2
      enddo
      ps(i)=1.e-6*s
-     if(k.eq.NFFT1) then
+     if(k.eq.NFFT1-1) then
         k=k-NFFT1
      endif
   enddo
