@@ -423,7 +423,7 @@ def get_decoded():
         for i in range(len(lines)):
             if len(lines[i])<6: break                    #Skip $EOF
             text.insert(END,lines[i][:57]+"\n")
-            callsign=lines[i][38:45]
+            callsign=lines[i][42:49]
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
