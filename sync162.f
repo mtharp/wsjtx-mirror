@@ -194,7 +194,7 @@ C  Compute power spectrum for each step, and get average
 !         call pctile(psavg(-136),tmp,273,45,base)
 !  Should psmo be used for snrx?
          ipk=freq(k)/df
-         snrx=db(max(psavg(ipk),0.0001)) - 25.5         !Empirical
+         snrx=db(max(psavg(ipk),0.0001)) - 26.5         !Empirical
 
          sstf(1,k)=p1(k)
          sstf(2,k)=snrx

@@ -46,7 +46,7 @@ C  Look for sync patterns, get DF and DT
          if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
             call decode162(c3,jz,dtx,dfx,message,ncycles,metric,nerr)
             if(message(1:6).eq.'      ') go to 24
-            call rect(c3,dtx,dfx,message,dfx2,width)
+            call rect(c3,dtx,dfx,message,dfx2,width,pmax)
 !            write(51)(c3(j),j=1,45000),dtx,dfx,ncycles/81,metric,message
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
