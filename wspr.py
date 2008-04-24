@@ -477,7 +477,7 @@ def autolog(lines,f0):
     try:
         for i in range(len(lines)):
             if len(lines[i])<6: break                    #Skip $EOF            
-            acallsign=lines[i][38:45]
+            acallsign=lines[i][42:49]
             if acallsign[:1] != ' ':
                 foo = lines[i].split()
 # foo now contains a list as follows
