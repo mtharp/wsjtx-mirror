@@ -481,7 +481,7 @@ def autolog(lines,f0):
             if acallsign[:1] != ' ':
                 foo = lines[i].split()
 # foo now contains a list as follows
-#  date,     time, signal,  dt,     freq,     drift,  call,  grid,   dBm,  (extra params ...)
+#  date,     time, signal,  dt,     freq,     drift, width   call,  grid,   dBm,  (extra params ...)
 #    0         1      2      3        4         5      6       7      8      9         10       11
 # example:
 #['080322', '1834', '-14', '0.1', '10.140141', '-1', 'K7EK', 'CN87', '33', '11.1', '10051757', '40']
@@ -495,8 +495,8 @@ def autolog(lines,f0):
                     'date': str(foo[0]), 'time': str(foo[1]), \
                     'sig': str(foo[2]), 'tqrg': str(foo[4]), \
                     'drift': str(foo[5]), \
-                    'tcall': str(foo[6]), 'tgrid': str(foo[7]), \
-                    'dbm': str(foo[8])})
+                    'tcall': str(foo[7]), 'tgrid': str(foo[8]), \
+                    'dbm': str(foo[9])})
 
 # reportparams now contains a properly formed http request string for
 # the agreed upon format between W6CQZ and N8FQ.
