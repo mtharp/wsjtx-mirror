@@ -18,8 +18,6 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       integer amp
       integer mettab(0:255,0:1)
       logical first
-      integer*1 sym0
-      common/tst99/ sym0(162)
       equivalence (i1,i4)
       data first/.true./
       integer npr3(162)
@@ -88,8 +86,6 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
      +   5,   5/
       save
 
-      rewind 41
-
       if(first) then
          twopi=8*atan(1.d0)
          dt=1.d0/375.d0                        !Sample interval
@@ -103,7 +99,7 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       if(istart.lt.0) istart=0
 
 C  Should amp be adjusted according to signal strength?
-C  Compute soft symbols using differential BPSK demodulation
+C  Compute soft symbols
       c0=0.
       k=istart
       fac=1.e-4

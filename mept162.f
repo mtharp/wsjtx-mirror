@@ -46,6 +46,8 @@ C  Look for sync patterns, get DF and DT
          if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
             call decode162(c3,jz,dtx,dfx,message,ncycles,metric,nerr)
             if(message(1:6).eq.'      ') go to 24
+            call rect(c3,dtx,dfx,message,dfx2,width)
+!            write(51)(c3(j),j=1,45000),dtx,dfx,ncycles/81,metric,message
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
@@ -59,11 +61,11 @@ C  Look for sync patterns, get DF and DT
      +                position='append')
 #endif
             write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
-     +           ncycles/81,metric
+     +           ncycles/81,metric,dfx2,width
             close(13)
- 1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,i5,2i7)
-            write(14,1012) datetime,nsnrx,dtx,freq,nf1,message
- 1012       format(a11,i4,f6.1,f11.6,i4,2x,a15)
+ 1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,i3,i6,i5,2f5.1)
+            write(14,1012) datetime,nsnrx,dtx,freq,nf1,width,message
+ 1012       format(a11,i4,f6.1,f11.6,i3,f5.1,2x,a15)
          endif
  24      continue
       enddo

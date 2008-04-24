@@ -808,7 +808,7 @@ g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, text='DATE         UTC         dB          DT              Freq             Drift')
+lab2=Label(iframe2, text='DATE         UTC         dB          DT             Freq             Drift      W')
 lab2.place(x=160,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
