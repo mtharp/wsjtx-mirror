@@ -541,8 +541,18 @@ def put_params(param3=NONE):
     w.acom1.pctx=pctx[ipctx.get()]
     w.acom1.idsec=idsec
     w.acom1.nsave=nsave.get()
-    w.acom1.ndevin=g.ndevin.get()
-    w.acom1.ndevout=g.ndevout.get()
+    try:
+        g.ndevin.set(options.DevinName.get())
+        w.acom1.ndevin=g.ndevin.get()
+    except:
+        g.ndevin.set(0)
+        w.acom1.ndevin=0
+    try:
+        g.ndevout.set(options.DevoutName.get())
+        w.acom1.ndevout=g.ndevout.get()
+    except:
+        g.ndevout.set(0)
+        w.acom1.ndevout=0
 
 #------------------------------------------------------ update
 def update():
@@ -573,6 +583,7 @@ def update():
         except:
             pass
         put_params()
+
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -901,6 +912,7 @@ try:
                 g.ndevin.set(0)
             g.DevinName.set(value)
             options.DevinName.set(value)
+#            w.acom1.devin_name=(options.DevinName.get()+'            ')[:12]
         elif key == 'AudioOut':
             try:
                 g.ndevout.set(value)
@@ -908,6 +920,7 @@ try:
                 g.ndevout.set(0)
             g.DevoutName.set(value)
             options.DevoutName.set(value)
+#            w.acom1.devout_name=(options.DevoutName.get()+'            ')[:12]
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Upload': upload.set(value)
         elif key == 'Debug': ndebug.set(value)
