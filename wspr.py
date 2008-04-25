@@ -561,7 +561,6 @@ def update():
         pass
     isec=utc[5]
     if isec != isec0:                           #Do once per second
-        print Version
         isec0=isec
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         ldate.configure(text=t)
