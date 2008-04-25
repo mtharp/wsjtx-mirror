@@ -10,6 +10,7 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   complex cr(45000)
   complex c(0:65535)
   complex w
+  complex c0
   real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
   real ps(-511:512)
   logical lbad1,lbad2
@@ -98,12 +99,25 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
      endif
      if(abs(i).le.3) sum=sum+ps(i)
      freq=i*df2
-     write(53,1010) freq,ps(i)
-1010 format(2f12.3)
+!     write(53,1010) freq,ps(i)
+!1010 format(2f12.3)
   enddo
   width=df2*sum/pmax
   dfx2=df2*ipk
   pmax=db(pmax)
+
+  c0=0.
+  k=0
+  do i=1,nsym
+     do n=1,nsps
+        k=k+1
+        c0=c0 + cr(k)
+     enddo
+!     amp0=sqrt(real(c0)**2 + aimag(c0)**2)
+     pha0=atan2(aimag(c0),real(c0))
+!     write(51,1010) i,pha0
+!1010 format(i3,f10.3)
+  enddo
 
   return
 end subroutine rect
