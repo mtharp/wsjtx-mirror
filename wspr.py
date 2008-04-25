@@ -27,7 +27,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="0.7 r" + "$Rev$"[6:-1]
+Version="0.7_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -494,9 +494,9 @@ def autolog(lines,f0):
                     'rgrid': options.MyGrid.get(), 'rqrg': str(f0), \
                     'date': str(foo[0]), 'time': str(foo[1]), \
                     'sig': str(foo[2]), 'tqrg': str(foo[4]), \
-                    'drift': str(foo[5]), \
+                    'drift': str(foo[5]), 'width': str(foo[6]), \
                     'tcall': str(foo[7]), 'tgrid': str(foo[8]), \
-                    'dbm': str(foo[9])})
+                    'dbm': str(foo[9]), 'version': Version})
 
 # reportparams now contains a properly formed http request string for
 # the agreed upon format between W6CQZ and N8FQ.
@@ -561,6 +561,7 @@ def update():
         pass
     isec=utc[5]
     if isec != isec0:                           #Do once per second
+        print Version
         isec0=isec
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         ldate.configure(text=t)
