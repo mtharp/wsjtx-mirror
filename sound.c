@@ -123,8 +123,6 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0)
     outputParameters.suggestedLatency = 0.4;
     outputParameters.hostApiSpecificStreamInfo = NULL;
 
-    printf("Output device: %d\n",outputParameters.device);
-
     //    printf("Opening output stream\n");
     err = Pa_OpenStream(
               &stream,
