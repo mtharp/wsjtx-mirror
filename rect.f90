@@ -35,8 +35,14 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   twopi=8.d0*atan(1.d0)
 
   i1=nint((dtx+2.0)/dt)           !Start index for synced symbols
-  i2=i1 + nz - 1
-  c3(1:nz)=c2(i1:i2)
+  if(i1.ge.1) then
+     i2=i1 + nz - 1
+     c3(1:nz)=c2(i1:i2)
+  else
+     c3(:-i1+1)=0
+     i2=nz+i1
+     c3(-i1:)=c2(:i2)
+  endif
 
   i1=index(message,' ')
   call1=message(1:i1-1)
