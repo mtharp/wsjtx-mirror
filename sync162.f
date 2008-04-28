@@ -183,19 +183,12 @@ C  Compute power spectrum for each step, and get average
          a(1)=-freq(k) + 1.46   !### Why is this offset necessary? ###
          a(2)=-0.5*drift(k)
          a(3)=0.
-
-!### Use explicit lag1,lag2?  Correct lag should be around 8*lagpk
          lagpk=nint((dtx(k)+2)/(128*dt))
          lag1=max(-200,8*lagpk-16)
          lag2=min(200,8*lagpk+16)
          ccf=-fchisq(c2,jz,375.0,a,lag1,lag2,ccfbest,dtbest)
-!         lagx=nint(dtbest/(16*dt))-8*lagpk
-
-!         call pctile(psavg(-136),tmp,273,45,base)
-!  Should psmo be used for snrx?
-         ipk=freq(k)/df
+         ipk=nint(freq(k)/df)
          snrx=db(max(psavg(ipk),0.0001)) - 26.5         !Empirical
-
          sstf(1,k)=p1(k)
          sstf(2,k)=snrx
          sstf(3,k)=dtbest-2.0
