@@ -7,18 +7,14 @@ FFLAGS = /traceback /fast /nologo
 
 #all:    wspr_rxtest.exe WSPR.EXE test.exe
 #all:    wspr_rxtest.exe WSPR.EXE tstrect.exe
-all:    WSPR.EXE tstrect.exe
+all:    WSPR.EXE testmsg.exe
 
-OBJS0 = test.obj mept162.obj mix162.obj deg2grid.obj \
-	sync162.obj decode162.obj spec162.obj set.obj xfft.obj ps162.obj \
-	pctile.obj xcor162.obj peakup.obj db.obj \
-	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
-	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
-	nchar.obj grid2deg.obj decode.obj gmtime2.obj wfile5.obj \
-	fchisq.obj ccf2.obj twkfreq.obj 
+OBJS0 = testmsg.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
+	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
+	grid2deg.obj wqencode.obj wqdecode.obj
 
-test.exe: $(OBJS0)
-	$(FC) /exe:test.exe $(FFLAGS) $(OBJS0)
+testmsg.exe: $(OBJS0)
+	$(FC) /exe:testmsg.exe /traceback /check:all /nologo $(OBJS0)
 
 OBJS1 = wspr_rxtest.obj decode.obj getfile.obj \
 	mept162.obj getrms.obj mix162.obj deg2grid.obj \
@@ -44,17 +40,16 @@ F2PYONLY = wspr1 getfile paterminate
 
 SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90	\
-	paterminate.f90 rect.f90
+	paterminate.f90 rect.f90 bestdx.f90
 
 SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f	\
 	sync162.f decode162.f spec162.f set.f xfft.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
-	ssort.f genmept.f \
-	packcall.f packgrid.f pack50.f encode232.f \
-	nchar.f grid2deg.f \
-	afc.f fchisq.f ccf2.f twkfreq.f 
+	ssort.f genmept.f packcall.f packgrid.f pack50.f \
+	encode232.f nchar.f grid2deg.f fchisq.f ccf2.f \
+	twkfreq.f azdist.f geodist.f
 
 SRCS2C = ptt.c padevsub.c
 

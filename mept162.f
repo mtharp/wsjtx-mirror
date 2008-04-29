@@ -66,6 +66,8 @@ C  Look for sync patterns, get DF and DT
  1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,i3,i6,i5,2f5.1)
             write(14,1012) datetime,nsnrx,dtx,freq,nf1,width,message
  1012       format(a11,i4,f6.1,f11.6,i3,f5.1,2x,a15)
+            i1=index(message,' ')
+            call bestdx(datetime,message(i1+1:i1+4))
          endif
  24      continue
       enddo
