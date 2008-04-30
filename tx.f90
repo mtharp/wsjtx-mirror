@@ -33,7 +33,7 @@ subroutine tx
 
 20 iz=i
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
-  call genmept(call1,grid,ndbm,ntxdf,99.0,jwave)
+  call genmept(call1,grid,ndbm,ntxdf,99.0,nreply,nsectx,jwave)
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
   npts=114*12000
   ierr=soundout(idevout,jwave,npts)

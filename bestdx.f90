@@ -24,8 +24,8 @@ subroutine bestdx(datetime,grid2)
      ndxkm(ihr)=ndkm
      dxgrid(ihr)=grid2
   endif
-  write(*,3001) ihr,mygrid(1:4),dxgrid(ihr),ndxkm(ihr)
-3001 format(i2,2x,a4,2x,a4,i7)
+!  write(*,3001) ihr,mygrid(1:4),dxgrid(ihr),ndxkm(ihr)
+!3001 format(i2,2x,a4,2x,a4,i7)
 
   return
 end subroutine bestdx

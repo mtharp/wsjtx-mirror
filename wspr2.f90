@@ -112,6 +112,7 @@ subroutine wspr2
      close(13)
 
      ntr=-1
+     nsectx=mod(nsec,86400)
      call starttx
 
   else

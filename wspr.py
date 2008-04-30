@@ -69,6 +69,7 @@ isync=1
 loopall=0
 modpixmap0=0
 mrudir=os.getcwd()
+nbestdx=IntVar()
 ndbm0=-999
 ncall=0
 ndebug=IntVar()
@@ -108,6 +109,9 @@ g.ndevin=IntVar()
 g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
+
+pwrlist=(0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,\
+         10,20,50,100,200,500,1000)
 
 socktimeout = 10
 socket.setdefaulttimeout(socktimeout)
@@ -534,10 +538,11 @@ def put_params(param3=NONE):
         w.acom1.nport=int(options.PttPort.get())
     except:
         w.acom1.nport=0
-    try:
-        w.acom1.ndbm=int(options.dBm.get())
-    except:
-        w.acom1.ndbm=0
+
+    for i in range(len(pwrlist)):
+        if pwrlist[i]==options.dBm.get():
+            w.acom1.ndbm=10+i
+            break
     w.acom1.pctx=pctx[ipctx.get()]
     w.acom1.idsec=idsec
     w.acom1.nsave=nsave.get()
@@ -583,7 +588,6 @@ def update():
         except:
             pass
         put_params()
-
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -661,6 +665,7 @@ def update():
         draw_axis()
 
     w.acom1.ndebug=ndebug.get()
+    w.acom1.nreply=nbestdx.get()
     ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
@@ -779,8 +784,10 @@ sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.place(x=400,y=12, anchor='e')
+bupload.place(x=360,y=12, anchor='e')
 #bupload.pack(side=LEFT)
+bbestdx=Checkbutton(iframe2,text='Tx Best DX',justify=RIGHT,variable=nbestdx)
+bbestdx.place(x=460,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
@@ -923,6 +930,7 @@ try:
 #            w.acom1.devout_name=(options.DevoutName.get()+'            ')[:12]
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Upload': upload.set(value)
+        elif key == 'BestDX': nbestdx.set(value)
         elif key == 'Debug': ndebug.set(value)
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
@@ -992,6 +1000,7 @@ f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("PctTx " + str(ipctx.get()) + "\n")
 f.write("Upload " + str(upload.get()) + "\n")
+f.write("BestDX " + str(nbestdx.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")
