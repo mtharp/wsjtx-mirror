@@ -21,9 +21,14 @@ balloon=Pmw.Balloon(root)
 def dbm_balloon():
     mW=int(round(math.pow(10.0,0.1*dBm.get())))
     if(mW<1000):
-        t="%.1f mW" % (mW,)
+        if mW==501: mW=500
+        t="%d mW" % (mW,)
     else:
-        t="%.1f W" % (0.001*mW,)
+        W=int(mW/1000)
+        if W==501: W=500
+        t="%d W" % (W,)
+    balloon.bind(cbpwr,t)
+
 
 def options2(t):
     root.geometry(t)
@@ -39,10 +44,9 @@ ndevin=IntVar()
 ndevout=IntVar()
 DevinName=StringVar()
 DevoutName=StringVar()
-dBm=DoubleVar()
+dBm=IntVar()
 
-pwrlist=(0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,\
-         10,20,50,100,200,500,1000)
+pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 
 MyCall=StringVar()
 MyGrid=StringVar()
@@ -58,7 +62,7 @@ audioin=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio In:',
         value='0',entry_textvariable=DevinName,entry_width=12)
 audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
         value='0',entry_textvariable=DevoutName,entry_width=12)
-cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (W):',
+cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (dBm):',
         entry_textvariable=dBm,entry_width=4,scrolledlist_items=pwrlist)
 
 widgets = (lcall,lgrid,comport,audioin,audioout,cbpwr)

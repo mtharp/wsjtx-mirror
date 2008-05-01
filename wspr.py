@@ -110,8 +110,7 @@ g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
 
-pwrlist=(0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,\
-         10,20,50,100,200,500,1000)
+pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 
 socktimeout = 10
 socket.setdefaulttimeout(socktimeout)
