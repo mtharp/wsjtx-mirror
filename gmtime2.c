@@ -25,7 +25,7 @@ void GetSystemTime(SYSTEMTIME *st){
   gettimeofday(&tmptimeofday,NULL);
   gmtime_r((const time_t *)&tmptimeofday.tv_sec,&tmptmtime);
   st->Year = (short)tmptmtime.tm_year;
-  st->Month = (short)tmptmtime.tm_year;
+  st->Month = (short)tmptmtime.tm_mon+1;
   st->DayOfWeek = (short)tmptmtime.tm_wday;
   st->Day = (short)tmptmtime.tm_mday;
   st->Hour = (short)tmptmtime.tm_hour;

@@ -8,7 +8,7 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       character*22 message
       character*12 callsign
       character*4 grid
-      character*5 cpwr,pwr(19)
+      character*4 cpwr
       real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
       complex*16 cz,cz1,c0,c1
       integer*1 i1,symbol(162)
@@ -19,10 +19,9 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       integer mettab(0:255,0:1)
       logical first
       equivalence (i1,i4)
+      integer ipwr(19)
+      data ipwr/0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60/
       data first/.true./
-      data pwr/'0.001','0.002','0.005','0.01','0.02','0.05',
-     +  '0.1','0.2','0.5','1','2','5','10','20','50',
-     +  '100','200','500','1000'/
       integer npr3(162)
       data npr3/
      + 1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,
@@ -156,7 +155,7 @@ C  Compute soft symbols
       call fano232(symbol,nbits,mettab,ndelta,limit,
      +     data1,ncycles,metric,nerr)
       message='                      '
-      cpwr='     '
+      npwr=-1
       if(nerr.ge.0) then
          call unpack50(data1,n1,n2)
          if(n1+n2.eq.0) go to 900
@@ -165,10 +164,15 @@ C  Compute soft symbols
          ntype=iand(n2,127) - 64
          i1=index(callsign,' ')
          if(ntype.ge.10 .and. ntype.le.28) then
-            cpwr=pwr(ntype-9)
-            message=callsign(:i1)//grid//' '//cpwr
+            npwr=ipwr(ntype-9)
+            write(cpwr,'(i3)') npwr
+            if(cpwr(1:2).eq.'  ') cpwr=cpwr(2:)
+            message=callsign(:i1)//grid//cpwr
          else if(ntype.eq.0) then
             message=grid//' DE '//callsign(:i1)
+         else
+            message=callsign(:i1)//grid
+            message(14:22)='*M_Type?*'
          endif
       endif
 

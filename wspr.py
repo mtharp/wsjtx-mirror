@@ -425,7 +425,7 @@ def get_decoded():
         nfmid=int(1.0e6*fmid)%1000
         for i in range(len(lines)):
             if len(lines[i])<6: break                    #Skip $EOF
-            text.insert(END,lines[i][:57]+"\n")
+            text.insert(END,lines[i][:63]+"\n")
             callsign=lines[i][42:49]
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
@@ -825,8 +825,8 @@ g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, text='DATE         UTC         dB          DT             Freq             Drift      W')
-lab2.place(x=160,y=6, anchor='w')
+lab2=Label(iframe2, text='DATE         UTC         dB        DT             Freq             Drift      W')
+lab2.place(x=150,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Buttons, UTC, etc
@@ -838,7 +838,7 @@ berase.pack(side=TOP,padx=0,pady=15)
 
 ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
-        justify=CENTER, font=(font1,16))
+        justify=CENTER, font=(font1,14))
 ldate.pack(side=TOP,padx=2,pady=5)
 
 ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
@@ -850,7 +850,7 @@ f4a.pack(side=LEFT,expand=0,fill=Y)
 
 #--------------------------------------------------------- Decoded text box
 f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
-text=Text(f4b, height=11, width=61)
+text=Text(f4b, height=11, width=63)
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
 text.pack(side=RIGHT, fill=X, padx=1)

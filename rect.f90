@@ -38,6 +38,9 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   if(i1.ge.1) then
      i2=i1 + nz - 1
      c3(1:nz)=c2(i1:i2)
+  else if(i1.eq.0) then
+     c3(1)=0
+     c3(2:nz)=c2(nz-1)
   else
      c3(:-i1+1)=0
      i2=nz+i1
@@ -47,7 +50,7 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   i1=index(message,' ')
   call1=message(1:i1-1)
   grid=message(i1+1:i1+4)
-  read(message(i1+6:),*) ndbm
+  read(message(i1+6:),*,err=900) ndbm
   call packcall(call1,n1,lbad1)
   call packgrid(grid,ng,lbad2)
   n2=128*ng + (ndbm+64)
@@ -125,5 +128,5 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
 !1010 format(i3,f10.3)
   enddo
 
-  return
+900  return
 end subroutine rect

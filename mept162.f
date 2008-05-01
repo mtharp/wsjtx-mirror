@@ -63,9 +63,9 @@ C  Look for sync patterns, get DF and DT
             write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,metric,dfx2,width
             close(13)
- 1010       format(a11,i4,i4,f6.1,f11.6,2x,a15,i3,i6,i5,2f5.1)
+ 1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5,2f5.1)
             write(14,1012) datetime,nsnrx,dtx,freq,nf1,width,message
- 1012       format(a11,i4,f6.1,f11.6,i3,f5.1,2x,a15)
+ 1012       format(a11,i4,f5.1,f11.6,i3,f5.1,2x,a22)
             i1=index(message,' ')
             call bestdx(datetime,message(i1+1:i1+4))
          endif
