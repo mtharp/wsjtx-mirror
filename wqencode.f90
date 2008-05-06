@@ -111,8 +111,10 @@ subroutine wqencode(msg,ntype,data0)
   call hash(call2,i2-i1-1,ih)
   i3=index(msg,' R ')
   if(i3.gt.0) i2=i2+2                            !-28 to -36
-  read(msg(i2+3:i2+3),*) nrpt
-  ntype=-nrpt
+  read(msg(i2+3:i2+3),*,end=42,err=42) nrpt
+  go to 43
+42 nrpt=1
+43 ntype=-nrpt
   if(i3.gt.0) ntype=-(nrpt+27)
   call packcall(call1,n1,lbad1)
   n2=128*ih + (ntype+64)
