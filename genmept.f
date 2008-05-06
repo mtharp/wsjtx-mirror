@@ -7,7 +7,7 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       character*4 grid,grid2
       parameter (NMAX=120*12000)     !Max length of wave file
       character*22 message           !Message to be generated
-      character*22 msg2,msg0
+!      character*22 msg2,msg0
       integer*2 iwave(NMAX)          !Generated wave file
 
       parameter (MAXSYM=176)
@@ -81,8 +81,8 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
 !         go to 999
 !      endif
 
-      call wqdecode(data0,msg2,ntype2,msg0)
-      print*,message,msg2,ntype2
+!      call wqdecode(data0,msg2,ntype2,msg0)
+!      print*,message,msg2,ntype2
 
 C  Set up necessary constants
       tsymbol=8192.d0/12000.d0

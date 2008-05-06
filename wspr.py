@@ -83,6 +83,7 @@ nscroll=0
 nsec0=0
 nspeed0=IntVar()
 ntr0=0
+ntest=IntVar()
 ntxfirst=IntVar()
 NX=500
 NY=160
@@ -552,6 +553,7 @@ def put_params(param3=NONE):
             pass
     w.acom1.pctx=pctx[ipctx.get()]
     w.acom1.idsec=idsec
+    w.acom1.ntest=ntest.get()
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nqso=nqso.get()
     w.acom1.nsave=nsave.get()
@@ -872,13 +874,15 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
+btest=Checkbutton(iframe6,text='Test mode',justify=LEFT,variable=ntest)
+btest.pack(side=LEFT, fill=X, padx=5)
 bqso=Checkbutton(iframe6,text='QSO Mode',justify=LEFT,variable=nqso)
-bqso.place(x=100,y=0)
+bqso.pack(side=LEFT, fill=X, padx=5)
 btxfirst=Checkbutton(iframe6,text='Tx First',justify=LEFT,variable=ntxfirst)
-btxfirst.place(x=200,y=0)
+btxfirst.pack(side=LEFT, fill=X, padx=5)
 TxMsg=Pmw.EntryField(iframe6,labelpos=W,label_text='Tx msg:',
         value='CQ K1JT FN20',entry_textvariable=txmsg,entry_width=22)
-TxMsg.place(x=300,y=2)
+TxMsg.pack(side=LEFT, fill=X, padx=5)
 
 ##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg1.pack(side=LEFT, fill=X, padx=1)
