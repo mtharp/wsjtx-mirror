@@ -87,18 +87,29 @@ subroutine wspr2
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
+  neven=1-mod(nsec/120,2)
+  if(nqso.eq.1) then                          !### Test only ###
+     if(neven.eq.ntxfirst) then
+        message=ctxmsg
+        nrx=0
+     else
+        nrx=1
+     endif
+  endif
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0) then
-     call random_number(x)
-     nrx=nint(rxavg + rr*(x-0.5))
      transmitting=.true.
-     write(message(13:16),'(i4)') ndbm
-     message(1:12)='"'//callsign//' '//grid
-     message(17:17)='"'
-     do i=1,4
-        i1=index(message,'  ')
-        message=message(:i1)//message(i1+2:)
-     enddo
+     if(nqso.eq.0) then
+        call random_number(x)
+        nrx=nint(rxavg + rr*(x-0.5))
+        write(message(13:16),'(i4)') ndbm
+        message(1:12)='"'//callsign//' '//grid
+        message(17:17)='"'
+        do i=1,4
+           i1=index(message,'  ')
+           message=message(:i1)//message(i1+2:)
+        enddo
+     endif
 
 #ifdef CVF
      open(13,file='ALL_MEPT.TXT',status='unknown',                   &
@@ -110,7 +121,6 @@ subroutine wspr2
      write(13,1030) cdate(3:8),utctime(1:4),ftx,message
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a17)
      close(13)
-
      ntr=-1
      nsectx=mod(nsec,86400)
      call starttx

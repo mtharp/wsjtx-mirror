@@ -77,16 +77,20 @@ newdat=1
 newspec=1
 npal=IntVar()
 npal.set(2)
+nqso=IntVar()
 nsave=IntVar()
 nscroll=0
 nsec0=0
 nspeed0=IntVar()
 ntr0=0
+ntxfirst=IntVar()
 NX=500
 NY=160
 param20=""
 pctx=[-1,0,20,25,33,100]
 sftx=StringVar()
+txmsg=StringVar()
+
 a=array.array('h')
 im=Image.new('P',(NX,NY))
 draw=ImageDraw.Draw(im)
@@ -426,14 +430,14 @@ def get_decoded():
         for i in range(len(lines)):
             if len(lines[i])<6: break                    #Skip $EOF
             text.insert(END,lines[i][:63]+"\n")
-            callsign=lines[i][42:49]
+            callsign=lines[i][41:48]
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
                 try:
                     nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
                           int(lines[i][9:11])
-                    ndf=int(lines[i][29:32])
+                    ndf=int(lines[i][28:31])
                     bm[callsign]=(ndf,nseq)
                 except:
                     pass
@@ -533,17 +537,23 @@ def put_params(param3=NONE):
         pass
     w.acom1.callsign=(options.MyCall.get().strip().upper()+'      ')[:6]
     w.acom1.grid=(options.MyGrid.get().strip().upper()+'    ')[:4]
+    w.acom1.ctxmsg=(txmsg.get().strip().upper()+'                      ')[:22]
     try:
         w.acom1.nport=int(options.PttPort.get())
     except:
         w.acom1.nport=0
 
     for i in range(len(pwrlist)):
-        if pwrlist[i]==options.dBm.get():
-            w.acom1.ndbm=10+i
-            break
+        try:
+            if pwrlist[i]==options.dBm.get():
+                w.acom1.ndbm=pwrlist[i]
+                break
+        except:
+            pass
     w.acom1.pctx=pctx[ipctx.get()]
     w.acom1.idsec=idsec
+    w.acom1.ntxfirst=ntxfirst.get()
+    w.acom1.nqso=nqso.get()
     w.acom1.nsave=nsave.get()
     try:
         g.ndevin.set(options.DevinName.get())
@@ -562,7 +572,7 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0
+        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg
 
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
@@ -862,6 +872,14 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
+bqso=Checkbutton(iframe6,text='QSO Mode',justify=LEFT,variable=nqso)
+bqso.place(x=100,y=0)
+btxfirst=Checkbutton(iframe6,text='Tx First',justify=LEFT,variable=ntxfirst)
+btxfirst.place(x=200,y=0)
+TxMsg=Pmw.EntryField(iframe6,labelpos=W,label_text='Tx msg:',
+        value='CQ K1JT FN20',entry_textvariable=txmsg,entry_width=22)
+TxMsg.place(x=300,y=2)
+
 ##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg1.pack(side=LEFT, fill=X, padx=1)
 ##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)

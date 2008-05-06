@@ -1,4 +1,4 @@
-      subroutine genmept(call1,grid,ndbm,ntxdf,snrdb,nreply,
+      subroutine genmept(message,ntxdf,snrdb,nreply,
      +      nsectx,iwave)
 
 C  Encode an MEPT_JT message and generate the corresponding wavefile.
@@ -7,11 +7,12 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       character*4 grid,grid2
       parameter (NMAX=120*12000)     !Max length of wave file
       character*22 message           !Message to be generated
+      character*22 msg2,msg0
       integer*2 iwave(NMAX)          !Generated wave file
 
       parameter (MAXSYM=176)
       integer*1 symbol(MAXSYM)
-      integer*1 data0(11),data1(11),i1
+      integer*1 data0(11),i1
       integer npr3(162)
       real pr3(162)
       logical first,lbad1,lbad2
@@ -47,8 +48,9 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          first=.false.
       endif
 
-      call packcall(call1,n1,lbad1)
-      call packgrid(grid,ng,lbad2)
+      call wqencode(message,ntype,data0)
+!      call packcall(call1,n1,lbad1)
+!      call packgrid(grid,ng,lbad2)
 
       ihrtx=nsectx/3600
       if(ihrtx.lt.ihrtx0 .and. ihrtx0.ne.99 .and. nreply.eq.1) then
@@ -60,8 +62,8 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          print*,'Sending reply message:',dxgrid(i),' DE ',call1
       endif
 
-      n2=128*ng + ndbm + 64
-      call pack50(n1,n2,data0)             !Pack 8 bits per byte, add tail
+!      n2=128*ng + ndbm + 64
+!      call pack50(n1,n2,data0)             !Pack 8 bits per byte, add tail
       nbytes=(50+31+7)/8
       call encode232(data0,nbytes,symbol,MAXSYM)  !Convolutional encoding
       call inter_mept(symbol,1)                   !Apply interleaving
@@ -70,14 +72,17 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          i1=symbol(i)
       enddo
 
-      call unpackcall(n1,call2)
-      call unpackgrid(n2/128,grid2)
-      ndbm2=iand(n2,127) - 64
-      if(lbad1 .or. lbad2 .or. (call1.ne.call2) .or. 
-     +   (grid.ne.grid2) .or. (ndbm.ne.ndbm2)) then
-         print*,'Error in structure of Tx message, cannot transmit'
-         go to 999
-      endif
+!      call unpackcall(n1,call2)
+!      call unpackgrid(n2/128,grid2)
+!      ndbm2=iand(n2,127) - 64
+!      if(lbad1 .or. lbad2 .or. (call1.ne.call2) .or. 
+!     +   (grid.ne.grid2) .or. (ndbm.ne.ndbm2)) then
+!         print*,'Error in structure of Tx message, cannot transmit'
+!         go to 999
+!      endif
+
+      call wqdecode(data0,msg2,ntype2,msg0)
+      print*,message,msg2,ntype2
 
 C  Set up necessary constants
       tsymbol=8192.d0/12000.d0

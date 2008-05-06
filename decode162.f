@@ -172,7 +172,7 @@ C  Compute soft symbols
             message=grid//' DE '//callsign(:i1)
          else
             message=callsign(:i1)//grid
-            message(14:22)='*M_Type?*'
+            message(14:22)='*MType?*'
          endif
       endif
 
