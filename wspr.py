@@ -27,7 +27,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="0.7_r" + "$Rev$"[6:-1]
+Version="0.8_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
