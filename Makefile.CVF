@@ -5,13 +5,13 @@ FC = df
 FFLAGS = /traceback /fast /nologo
 #CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
-#all:    wspr_rxtest.exe WSPR.EXE test.exe
-#all:    wspr_rxtest.exe WSPR.EXE tstrect.exe
-all:    WSPR.EXE testmsg.exe
+#all:    WSPR.EXE testmsg.exe
+all:    WSPR.EXE
 
 OBJS0 = testmsg.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
 	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
-	grid2deg.obj wqencode.obj wqdecode.obj
+	grid2deg.obj wqencode.obj wqdecode.obj nhash.obj hash.obj \
+	packname.obj unpackname.obj packtext2.obj unpacktext2.obj
 
 testmsg.exe: $(OBJS0)
 	$(FC) /exe:testmsg.exe /traceback /check:all /nologo $(OBJS0)
@@ -23,7 +23,7 @@ OBJS1 = wspr_rxtest.obj decode.obj getfile.obj \
 	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
 	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj \
-	fchisq.obj ccf2.obj twkfreq.obj
+	fchisq.obj ccf2.obj twkfreq.obj 
 
 OBJS3 = tstrect.obj rect.obj four2.obj packcall.obj packgrid.obj pack50.obj \
 	 encode232.obj nchar.obj grid2deg.obj inter_mept.obj db.obj
@@ -34,13 +34,15 @@ tstrect.exe: $(OBJS3)
 wspr_rxtest.exe: $(OBJS1)
 	$(FC) $(FFLAGS) /exe:wspr_rxtest.exe $(OBJS1)
 
-OBJS2C = sound.o gmtime2.o
+OBJS2C = sound.o gmtime2.o nhash.o
 
 F2PYONLY = wspr1 getfile paterminate
 
 SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90	\
-	paterminate.f90 rect.f90 bestdx.f90
+	paterminate.f90 rect.f90 bestdx.f90 wqencode.f90 \
+	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 unpackname.f90 \
+	unpacktext2.f90
 
 SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f	\
 	sync162.f decode162.f spec162.f set.f xfft.f \
@@ -77,6 +79,8 @@ wspr_rxtest.obj: wspr_rxtest.f90
 test.obj: test.f90
 	$(FC) /c $(FFLAGS) /fpp test.f90
 
+nhash.o: nhash.c
+	$(CC) /nologo /c /Fonhash.o nhash.c
 sound.o: sound.c
 	$(CC) /nologo /c /Fosound.o sound.c
 gmtime2.o: gmtime2.c
