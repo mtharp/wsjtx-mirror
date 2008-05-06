@@ -1,4 +1,4 @@
-subroutine wqdecode(data0,message,ntype,msgold)
+subroutine wqdecode(data0,message,ntype)
 
   parameter (N15=32758)
   integer*1 data0(11)

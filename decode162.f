@@ -20,7 +20,7 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       logical first
       equivalence (i1,i4)
       integer ipwr(19)
-      data ipwr/0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60/
+!      data ipwr/0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60/
       data first/.true./
       integer npr3(162)
       data npr3/
@@ -149,32 +149,33 @@ C  Compute soft symbols
 
       ndelta=100
 !      limit=100000
-      limit=70000
+      limit=40000
       nbits=50+31
       call inter_mept(symbol,-1)                      !Remove interleaving
       call fano232(symbol,nbits,mettab,ndelta,limit,
      +     data1,ncycles,metric,nerr)
       message='                      '
-      npwr=-1
-      if(nerr.ge.0) then
-         call unpack50(data1,n1,n2)
-         if(n1+n2.eq.0) go to 900
-         call unpackcall(n1,callsign)
-         call unpackgrid(n2/128,grid)
-         ntype=iand(n2,127) - 64
-         i1=index(callsign,' ')
-         if(ntype.ge.10 .and. ntype.le.28) then
-            npwr=ipwr(ntype-9)
-            write(cpwr,'(i3)') npwr
-            if(cpwr(1:2).eq.'  ') cpwr=cpwr(2:)
-            message=callsign(:i1)//grid//cpwr
-         else if(ntype.eq.0) then
-            message=grid//' DE '//callsign(:i1)
-         else
-            message=callsign(:i1)//grid
-            message(14:22)='*MType?*'
-         endif
-      endif
+      if(nerr.ge.0) call wqdecode(data1,message,ntype2)
+!      npwr=-1
+!      if(nerr.ge.0) then
+!         call unpack50(data1,n1,n2)
+!         if(n1+n2.eq.0) go to 900
+!         call unpackcall(n1,callsign)
+!         call unpackgrid(n2/128,grid)
+!         ntype=iand(n2,127) - 64
+!         i1=index(callsign,' ')
+!         if(ntype.ge.10 .and. ntype.le.28) then
+!            npwr=ipwr(ntype-9)
+!            write(cpwr,'(i3)') npwr
+!            if(cpwr(1:2).eq.'  ') cpwr=cpwr(2:)
+!            message=callsign(:i1)//grid//cpwr
+!         else if(ntype.eq.0) then
+!            message=grid//' DE '//callsign(:i1)
+!         else
+!            message=callsign(:i1)//grid
+!            message(14:22)='*MType?*'
+!         endif
+!      endif
 
  900  return
       end
