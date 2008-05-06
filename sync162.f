@@ -188,7 +188,7 @@ C  Compute power spectrum for each step, and get average
          lag2=min(200,8*lagpk+16)
          ccf=-fchisq(c2,jz,375.0,a,lag1,lag2,ccfbest,dtbest)
          ipk=nint(freq(k)/df)
-         snrx=db(max(psavg(ipk),0.0001)) - 26.5         !Empirical
+         snrx=db(max(psavg(ipk),0.0001)) - 27         !Empirical
          sstf(1,k)=p1(k)
          sstf(2,k)=snrx
          sstf(3,k)=dtbest-2.0

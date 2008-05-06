@@ -10,6 +10,7 @@ subroutine tx
 
   parameter (NMAX2=120*12000)
   character message*22,call1*12,cdbm*3
+  character*22 msg2
   integer*2 jwave(NMAX2)
   integer soundout,ptt
   include 'acom1.f90'
@@ -35,7 +36,8 @@ subroutine tx
   ctxmsg=message
   snr=99.0
   if(ntest.eq.1) snr=-26.0
-  call genmept(message,ntxdf,snr,nreply,nsectx,jwave)
+  call genmept(message,ntxdf,snr,nreply,nsectx,msg2,jwave)
+  ctxmsg=msg2
   if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
   npts=114*12000
   ierr=soundout(idevout,jwave,npts)

@@ -622,8 +622,9 @@ def update():
     bgcolor='gray85'
     t=''
     if transmitting:
-        t='Txing: '+options.MyCall.get().strip().upper() + ' ' + \
-           options.MyGrid.get().strip().upper() + ' ' + str(options.dBm.get())
+##        t='Txing: '+options.MyCall.get().strip().upper() + ' ' + \
+##           options.MyGrid.get().strip().upper() + ' ' + str(options.dBm.get())
+        t='Txing: '+g.ftnstr(w.acom1.ctxmsg)
         bgcolor='yellow'
     if receiving:
         bgcolor='green'
@@ -990,7 +991,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR      by K1JT')
+root.title('  WSPR 0.8     by K1JT')
 
 put_params()
 try:

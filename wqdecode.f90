@@ -2,7 +2,7 @@ subroutine wqdecode(data0,message,ntype)
 
   parameter (N15=32758)
   integer*1 data0(11)
-  character*22 message,msgold
+  character*22 message
   character*12 callsign
   character*3 cdbm
   character*2 crpt
@@ -12,7 +12,7 @@ subroutine wqdecode(data0,message,ntype)
   logical first
   character*12 dcall(0:N15-1)
   data first/.true./
-  save first
+  save first,dcall
 
   if(first) then
      dcall='            '
@@ -24,8 +24,6 @@ subroutine wqdecode(data0,message,ntype)
   i1=index(callsign,' ')
   call unpackgrid(n2/128,grid)
   ntype=iand(n2,127) -64
-  msgold=callsign(:i1)//grid
-  write(msgold(i1+5:),'(i4)') ntype
 
 ! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
   nu=mod(ntype,10)
@@ -108,7 +106,7 @@ subroutine wqdecode(data0,message,ntype)
      ih=(n2-64+28-ntype)/128
      if(dcall(ih)(1:1).ne.' ') then
         i2=index(dcall(ih),' ')
-        message='<'//dcall(ih)(:i2-1)//'> '//callsign(:i1)//' RRR'
+        message='<'//dcall(ih)(:i2-1)//'> '//callsign(:i1)//'RRR'
      else
         message=callsign(:i1)//'<...> RRR'
      endif

@@ -13,8 +13,6 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       complex*16 cz,cz1,c0,c1
       integer*1 i1,symbol(162)
       integer*1 data1(11)
-      integer   data4a(7)
-      integer   data4(12)
       integer amp
       integer mettab(0:255,0:1)
       logical first

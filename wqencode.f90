@@ -84,7 +84,7 @@ subroutine wqencode(msg,ntype,data0)
      if(index(msg,'/').le.0) then
         ntype=8
         ih=0
-        call packcall(call2,n1,lbad1)
+        call packcall(call1,n1,lbad1)
         grid=msg(i1+4:i1+7)
         call packgrid(grid,ng,lbad2)
         n2=128*ng + (ntype+64)
