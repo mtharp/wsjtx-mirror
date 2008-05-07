@@ -17,48 +17,46 @@
       save
 
       baud=12000.0/8192
-      if(a(1).ne.a1 .or. a(2).ne.a2 .or. a(3).ne.a3) then
-         a1=a(1)
-         a2=a(2)
-         a3=a(3)
+      a1=a(1)
+      a2=a(2)
+      a3=a(3)
 
 C  Mix and integrate four channels
-         cs1(0)=0.
-         cs2(0)=0.
-         cs3(0)=0.
-         cs4(0)=0.
-         w1=1.0
-         w2=1.0
-         w3=1.0
-         w4=1.0
-         x0=0.5*(npts+1)                     !Middle sample
-         s=2.0/npts
-         dt=1.0/fsample
-         do i=1,npts
-            x=s*(i-x0)                       !x runs from -1 to +1
-            if(mod(i,100).eq.1) then
-               p2=1.5*x*x - 0.5
-!               p3=2.5*(x**3) - 1.5*x
-!               p4=4.375*(x**4) - 3.75*(x**2) + 0.375
-               dphi1=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 1.5*baud)
-               dphi2=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 0.5*baud)
-               dphi3=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 0.5*baud)
-               dphi4=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 1.5*baud)
-               ws1=cmplx(cos(dphi1),sin(dphi1))
-               ws2=cmplx(cos(dphi2),sin(dphi2))
-               ws3=cmplx(cos(dphi3),sin(dphi3))
-               ws4=cmplx(cos(dphi4),sin(dphi4))
-            endif
-            w1=w1*ws1
-            w2=w2*ws2
-            w3=w3*ws3
-            w4=w4*ws4
-            cs1(i)=cs1(i-1) + w1*cx(i)
-            cs2(i)=cs2(i-1) + w2*cx(i)
-            cs3(i)=cs3(i-1) + w3*cx(i)
-            cs4(i)=cs4(i-1) + w4*cx(i)
-         enddo
-      endif
+      cs1(0)=0.
+      cs2(0)=0.
+      cs3(0)=0.
+      cs4(0)=0.
+      w1=1.0
+      w2=1.0
+      w3=1.0
+      w4=1.0
+      x0=0.5*(npts+1)           !Middle sample
+      s=2.0/npts
+      dt=1.0/fsample
+      do i=1,npts
+         x=s*(i-x0)             !x runs from -1 to +1
+         if(mod(i,100).eq.1) then
+            p2=1.5*x*x - 0.5
+!           p3=2.5*(x**3) - 1.5*x
+!           p4=4.375*(x**4) - 3.75*(x**2) + 0.375
+            dphi1=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 1.5*baud)
+            dphi2=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 0.5*baud)
+            dphi3=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 0.5*baud)
+            dphi4=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 1.5*baud)
+            ws1=cmplx(cos(dphi1),sin(dphi1))
+            ws2=cmplx(cos(dphi2),sin(dphi2))
+            ws3=cmplx(cos(dphi3),sin(dphi3))
+            ws4=cmplx(cos(dphi4),sin(dphi4))
+         endif
+         w1=w1*ws1
+         w2=w2*ws2
+         w3=w3*ws3
+         w4=w4*ws4
+         cs1(i)=cs1(i-1) + w1*cx(i)
+         cs2(i)=cs2(i-1) + w2*cx(i)
+         cs3(i)=cs3(i-1) + w3*cx(i)
+         cs4(i)=cs4(i-1) + w4*cx(i)
+      enddo
 
 C  Compute full-symbol powers at 1/16-symbol steps.
       nsps=nint(fsample/baud)                  !Samples per symbol
