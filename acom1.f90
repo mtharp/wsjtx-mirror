@@ -3,7 +3,7 @@
   logical ltest
   integer nreceiving
   integer ntransmitting
-  character*80 infile,outfile
+  character*80 infile,outfile,pttport
   character cdate*8,utctime*10,rxtime*4
   character callsign*6,grid*4,ctxmsg*22
   integer*2 iwave
@@ -11,4 +11,4 @@
        ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,ntransmitting,       &
        ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,nsectx,       &
        nreply,ntxfirst,nqso,ntest,ltest,iwave(NMAX),                    &
-       infile,outfile,cdate,utctime,callsign,grid,rxtime,ctxmsg
+       infile,outfile,pttport,cdate,utctime,callsign,grid,rxtime,ctxmsg
