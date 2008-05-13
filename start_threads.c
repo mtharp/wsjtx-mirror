@@ -14,42 +14,39 @@ extern void decode_(int *iarg);
 extern void rx_(int *iarg);
 extern void tx_(int *iarg);
 
+int spawn_thread(void (*f)()) {
+  pthread_t thread;
+  int iret;
+  int iarg0 = 0;
+
+  if ((iret = pthread_create(&thread,NULL,f,&iarg0)) != 0) {
+    perror("spawning new thread");
+    return iret;
+  }
+  if ((iret = pthread_detach(thread)) != 0) {
+    perror("detaching thread");
+    return iret;
+  }
+  return 0;
+}
+
+
 int th_wspr2_(void)
 {
-  pthread_t thread0;
-  int iret0;
-  int iarg0 = 0;
-  iret0 = pthread_create(&thread0,NULL,wspr2_,&iarg0);
-  //  printf("wspr2 %d\n",iret0);
-  return 0;
+  return spawn_thread(wspr2_);
 }
 
 int th_decode_(void)
 {
-  pthread_t thread1;
-  int iret1;
-  int iarg1 = 1;
-  iret1 = pthread_create(&thread1,NULL,decode_,&iarg1);
-  //  printf("decode %d\n",iret1);
-  return 0;
+  return spawn_thread(decode_);
 }
 
 int th_rx_(void)
 {
-  pthread_t thread2;
-  int iret2;
-  int iarg2 = 2;
-  iret2 = pthread_create(&thread2,NULL,rx_,&iarg2);
-  //  printf("rx %d\n",iret2);
-  return 0;
+  return spawn_thread(rx_);
 }
 
 int th_tx_(void)
 {
-  pthread_t thread3;
-  int iret3;
-  int iarg3 = 3;
-  iret3 = pthread_create(&thread3,NULL,tx_,&iarg3);
-  //  printf("tx %d\n",iret3);
-  return 0;
+  return spawn_thread(tx_);
 }
