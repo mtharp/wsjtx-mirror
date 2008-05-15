@@ -564,7 +564,7 @@ def put_params(param3=NONE):
     port = options.PttPort.get()
     if port.isdigit():
         w.acom1.nport = int(port)
-        port = "COM%d" % (port)
+        port = "COM%d" % (int(port))
     else:
         w.acom1.nport = 0
     w.acom1.pttport = (port + 80*' ')[:80]

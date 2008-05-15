@@ -8,7 +8,7 @@ C  WSPR signals.
       character*70 outfile
       character*11 datetime
       logical first,ltest
-      real*8 f0
+      real*8 f0,freq
       real ps(-256:256)
       real sstf(5,275)
       real a(5)
