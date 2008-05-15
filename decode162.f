@@ -145,7 +145,8 @@ C  Compute soft symbols
          i4a=i4
       enddo
 
-      ndelta=100
+!      ndelta=100
+      ndelta=50
 !      limit=100000
       limit=40000
       nbits=50+31

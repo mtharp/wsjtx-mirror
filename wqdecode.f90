@@ -19,6 +19,7 @@ subroutine wqdecode(data0,message,ntype)
      first=.false.
   endif
 
+  message='                      '
   call unpack50(data0,n1,n2)
   call unpackcall(n1,callsign)
   i1=index(callsign,' ')
