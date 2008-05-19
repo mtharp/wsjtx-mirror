@@ -430,15 +430,14 @@ def get_decoded():
         nfmid=int(1.0e6*fmid)%1000
         for i in range(len(lines)):
             if len(lines[i])<6: break                    #Skip $EOF
-            text.insert(END,lines[i][:63]+"\n")
-            callsign=lines[i][41:48]
+            text.insert(END,lines[i][:51]+"\n")
+            callsign=lines[i][29:36]
             if callsign[:1] != ' ':
                 i1=callsign.find(' ')
                 callsign=callsign[:i1]
                 try:
-                    nseq=1440*int(lines[i][4:6]) + 60*int(lines[i][7:9]) + \
-                          int(lines[i][9:11])
-                    ndf=int(lines[i][28:31])
+                    nseq=60*int(lines[i][0:2]) + int(lines[i][2:4])
+                    ndf=int(lines[i][21:24])
                     bm[callsign]=(ndf,nseq)
                 except:
                     pass
@@ -863,7 +862,7 @@ g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, text='DATE         UTC         dB        DT             Freq             Drift      W')
+lab2=Label(iframe2, text='UTC        dB        DT             Freq             Drift')
 lab2.place(x=150,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 

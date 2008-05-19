@@ -3,19 +3,22 @@
       parameter (NMAX=120*375)
       complex cx(npts)
       real a(5)
-      complex w1,ws1
-      complex w2,ws2
-      complex w3,ws3
-      complex w4,ws4
-      complex cs1(0:NMAX)
-      complex cs2(0:NMAX)
-      complex cs3(0:NMAX)
-      complex cs4(0:NMAX)
+      complex*16 w1,ws1
+      complex*16 w2,ws2
+      complex*16 w3,ws3
+      complex*16 w4,ws4
+      complex*16 cs1(0:NMAX)
+      complex*16 cs2(0:NMAX)
+      complex*16 cs3(0:NMAX)
+      complex*16 cs4(0:NMAX)
       complex z1,z2,z3,z4
-      real ss(2812)
+      real*8 twopi
+!      real ss(2812)
+      real ss(5624)
       data twopi/6.283185307/a1,a2,a3/99.,99.,99./
       save
 
+      twopi=8.d0*atan(1.d0)
       baud=12000.0/8192
       a1=a(1)
       a2=a(2)
@@ -65,6 +68,7 @@ C  Compute full-symbol powers at 1/16-symbol steps.
       dtstep=1.0/(ndiv*baud)                   !Time per output step
       fac=1.e-5
 
+      ss=0.
       do i=1,nout
          j=i*nsps/ndiv
          k=j - nsps
@@ -80,7 +84,8 @@ C  Compute full-symbol powers at 1/16-symbol steps.
             p3=real(z3)**2 + aimag(z3)**2
             p4=real(z4)**2 + aimag(z4)**2
 
-            ss(i)=fac*(max(p2,p4) - max(p1,p3))
+!            ss(i)=fac*(max(p2,p4) - max(p1,p3))
+            ss(i)=fac*((p2+p4) - (p1+p3))
          endif
       enddo
 

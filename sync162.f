@@ -180,7 +180,7 @@ C  Compute power spectrum for each step, and get average
       kz=k
 
       do k=1,kz
-         a(1)=-freq(k) + 1.46   !### Why is this offset necessary? ###
+         a(1)=-freq(k) + 1.4648   !### Why is this offset necessary? ###
          a(2)=-0.5*drift(k)
          a(3)=0.
          lagpk=nint((dtx(k)+2)/(128*dt))

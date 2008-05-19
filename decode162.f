@@ -1,4 +1,4 @@
-      subroutine decode162(c2,npts,dtx,dfx,message,ncycles,metric,nerr)
+      subroutine decode162(c2,npts,message,ncycles,metric,nerr)
 
 C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
 
@@ -91,90 +91,62 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
          dt=1.d0/375.d0                        !Sample interval
          df=375.d0/256.d0
          nsym=162
-         amp=32                                !### ??? ###
+         amp=20                                !### 32 ??? ###
          first=.false.
       endif
-
-      istart=nint((dtx+2.0)/dt)              !Start index for synced FFTs
-      if(istart.lt.0) istart=0
 
 C  Should amp be adjusted according to signal strength?
 C  Compute soft symbols
       c0=0.
-      k=istart
+      k=0
       fac=1.e-4
       phi=0.d0
       phi1=0.d0
-      nspchip=256
-      nchips=1
+      nsps=256
       fac2=0.001
+      phi=0.d0
+      phi1=0.d0
       do j=1,nsym
-         f0=dfx + (npr3(j)-1.5)*df
-         f1=dfx + (2+npr3(j)-1.5)*df
+         f0=(npr3(j)-1.5)*df
+         f1=(2+npr3(j)-1.5)*df
          dphi=twopi*dt*f0
          dphi1=twopi*dt*f1
-         sq0=0.
-         sq1=0.
-         do nc=1,nchips
-            phi=0.d0
-            phi1=0.d0
-            c0=0.
-            c1=0.
-            do i=1,nspchip
-               k=k+1
-               phi=phi+dphi
-               phi1=phi1+dphi1
-               cz=dcmplx(cos(phi),-sin(phi))
-               cz1=dcmplx(cos(phi1),-sin(phi1))
-               if(k.le.npts) then
-                  c0=c0 + c2(k)*cz                      !c2 was dat
-                  c1=c1 + c2(k)*cz1                     !c2 was dat
-               endif
-            enddo
-            sq0=sq0 + real(c0)**2 + aimag(c0)**2
-            sq1=sq1 + real(c1)**2 + aimag(c1)**2
+         c0=0.
+         c1=0.
+         do i=1,nsps
+            k=k+1
+            phi=phi+dphi
+            phi1=phi1+dphi1
+            if(phi.gt.twopi) phi=phi-twopi
+            if(phi1.gt.twopi) phi1=phi1-twopi
+            cz=dcmplx(cos(phi),-sin(phi))
+            cz1=dcmplx(cos(phi1),-sin(phi1))
+            if(k.le.npts) then
+               c0=c0 + c2(k)*cz
+               c1=c1 + c2(k)*cz1
+            endif
          enddo
-         sq0=fac2*sq0
-         sq1=fac2*sq1
+
+         sq0=fac2*(real(c0)**2 + aimag(c0)**2)
+         sq1=fac2*(real(c1)**2 + aimag(c1)**2)
          rsym=amp*(sq1-sq0)
          r=rsym+128.
          if(r.gt.255.0) r=255.0
          if(r.lt.0.0) r=0.0
          i4=nint(r)
          symbol(j)=i1
-         i4a=i4
       enddo
 
 !      ndelta=100
       ndelta=50
 !      limit=100000
-      limit=40000
+      limit=20000
       nbits=50+31
       call inter_mept(symbol,-1)                      !Remove interleaving
       call fano232(symbol,nbits,mettab,ndelta,limit,
      +     data1,ncycles,metric,nerr)
       message='                      '
       if(nerr.ge.0) call wqdecode(data1,message,ntype2)
-!      npwr=-1
-!      if(nerr.ge.0) then
-!         call unpack50(data1,n1,n2)
-!         if(n1+n2.eq.0) go to 900
-!         call unpackcall(n1,callsign)
-!         call unpackgrid(n2/128,grid)
-!         ntype=iand(n2,127) - 64
-!         i1=index(callsign,' ')
-!         if(ntype.ge.10 .and. ntype.le.28) then
-!            npwr=ipwr(ntype-9)
-!            write(cpwr,'(i3)') npwr
-!            if(cpwr(1:2).eq.'  ') cpwr=cpwr(2:)
-!            message=callsign(:i1)//grid//cpwr
-!         else if(ntype.eq.0) then
-!            message=grid//' DE '//callsign(:i1)
-!         else
-!            message=callsign(:i1)//grid
-!            message(14:22)='*MType?*'
-!         endif
-!      endif
 
  900  return
       end

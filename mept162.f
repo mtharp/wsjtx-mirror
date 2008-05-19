@@ -12,7 +12,8 @@ C  WSPR signals.
       real ps(-256:256)
       real sstf(5,275)
       real a(5)
-      complex c2(65536),c3(65536)
+      complex c2(65536)
+      complex c3(45000),c4(45000)
       data first/.true./
       save
 
@@ -31,7 +32,7 @@ C  Look for sync patterns, get DF and DT
          dtx=sstf(3,k)
          dfx=sstf(4,k)
          drift=sstf(5,k)
-         a(1)=0.
+         a(1)=-dfx
          a(2)=-0.5*drift
          a(3)=0.
          call twkfreq(c2,c3,jz,a)                    !Remove drift
@@ -44,11 +45,31 @@ C  Look for sync patterns, get DF and DT
          freq=f0 + 1.d-6*(dfx+1500.0)
          message='                      '
          if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
-            call decode162(c3,jz,dtx,dfx,message,ncycles,metric,nerr)
-            if(message(1:6).eq.'      ') go to 24
-            width=0.
-!            call rect(c3,dtx,dfx,message,dfx2,width,pmax)
-!            write(51)(c3(j),j=1,45000),dtx,dfx,ncycles/81,metric,message
+
+!            write(71) dtx,c3
+            dt=1.0/375
+            do idt=0,128
+               ii=(idt+1)/1
+               if(mod(idt,2).eq.1) ii=-ii
+               i1=nint((dtx+2.0)/dt) + ii !Start index for synced symbols
+               if(i1.ge.1) then
+                  i2=i1 + jz - 1
+                  c4(1:jz)=c3(i1:i2)
+               else if(i1.eq.0) then
+                  c4(1)=0.
+                  c4(2:jz)=c3(jz-1)
+               else
+                  c4(:-i1+1)=0
+                  i2=jz+i1
+                  c4(-i1:)=c3(:i2)
+               endif
+
+               call decode162(c4,jz,message,ncycles,metric,nerr)
+               if(message(1:6).ne.'      ') go to 23
+            enddo
+            go to 24
+ 23         width=0.
+!            call rect(c3,dtx,0.0,message,dfx2,width,pmax)
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
@@ -62,11 +83,11 @@ C  Look for sync patterns, get DF and DT
      +                position='append')
 #endif
             write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
-     +           ncycles/81,metric
+     +           ncycles/81,ii
             close(13)
- 1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5,2f5.1)
-            write(14,1012) datetime,nsnrx,dtx,freq,nf1,width,message
- 1012       format(a11,i4,f5.1,f11.6,i3,f5.1,2x,a22)
+ 1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
+            write(14,1012) datetime(8:11),nsnrx,dtx,freq,nf1,message
+ 1012       format(a4,i4,f5.1,f11.6,i3,2x,a22)
             i1=index(message,' ')
             call bestdx(datetime,message(i1+1:i1+4))
          endif

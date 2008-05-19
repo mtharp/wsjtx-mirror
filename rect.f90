@@ -10,7 +10,7 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   complex cr(45000)
   complex c(0:65535)
   complex w
-  complex c0
+  complex c0,c1
   real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
   real ps(-511:512)
   logical lbad1,lbad2
@@ -28,6 +28,9 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
       0,1,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0,1,1, &
       0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,0, &
       0,0/
+
+!  rewind 51
+!  rewind 53
   dt=1.0/375
   nsps=256
   nsym=162
@@ -76,7 +79,7 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   c(0:nz-1)=cr
   c(nz:)=0.
   call four2a(c,NFFT1,1,-1,1)
-  nadd=64
+  nadd=32
   nh2=NFFT1/(2*nadd)
   k=nh2*nadd - 1
   df2=nadd*375.0/NFFT1
@@ -108,25 +111,30 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
      endif
      if(abs(i).le.3) sum=sum+ps(i)
      freq=i*df2
-!     write(53,1010) freq,ps(i)
-!1010 format(2f12.3)
+!     write(53,1011) freq,ps(i)
+!1011 format(2f12.3)
   enddo
   width=df2*sum/pmax
   dfx2=df2*ipk
   pmax=db(pmax)
 
-  c0=0.
-  k=0
-  do i=1,nsym
-     do n=1,nsps
-        k=k+1
-        c0=c0 + cr(k)
-     enddo
+!  c0=0.
+!  c1=cr(k)
+!  u=0.001
+!  k=0
+!  do i=1,nsym
+!     do n=1,nsps
+!        k=k+1
+!        c0=c0 + cr(k)
+!        c1=(1-u)*c1 + u*cr(k)
+!     enddo
 !     amp0=sqrt(real(c0)**2 + aimag(c0)**2)
-     pha0=atan2(aimag(c0),real(c0))
-!     write(51,1010) i,pha0
-!1010 format(i3,f10.3)
-  enddo
+!     pha0=atan2(aimag(c0),real(c0))
+!     amp1=sqrt(real(c1)**2 + aimag(c1)**2)
+!     pha1=atan2(aimag(c1),real(c1))
+!     write(51,1010) i,amp0,pha0,amp1,pha1
+!1010 format(i3,4f10.3)
+!  enddo
 
 900  return
 end subroutine rect
