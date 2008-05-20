@@ -48,15 +48,12 @@ program rxtest
            c4(-i1:)=c3(:i2)
         endif
         call decode162(c4,jz,message,ncycles,metric,nerr)
-        if(message(1:6).ne.'      ') go to 23
+        if(message(1:6).ne.'      ') then
+           write(*,1012) ifile,nsnrx,dtx,freq,nf1,message,ii
+1012       format(i4.4,i4,f5.1,f11.6,i3,2x,a22,i6)
+           go to 24
+        endif
      enddo
-     go to 24
-23   continue
-!     call rect(c3,dtx,0.0,message,dfx2,width,pmax)
-
-     write(*,1012) ifile,nsnrx,dtx,freq,nf1,message,ii
-1012 format(i4.4,i4,f5.1,f11.6,i3,2x,a22,i6)
-     i1=index(message,' ')
 24   continue
   enddo
   

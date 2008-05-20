@@ -4,8 +4,9 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
 
       complex c4(npts)
       character*22 message
-      real*8 dt,df,phi,f0,dphi,twopi,f1,phi1,dphi1
+      real*8 dt,df,twopi,f0,f1,dphi0,dphi1
       complex*16 cz,cz1,c0,c1
+      complex*16 w0,w1,ws0,ws1
       integer*1 i1,symbol(162)
       integer*1 data1(11)
       integer amp
@@ -90,31 +91,27 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
 
 C  Should amp be adjusted according to signal strength?
 C  Compute soft symbols
-      c0=0.
       k=0
       nsps=256
       fac2=0.001
-      phi=0.d0
-      phi1=0.d0
+      w0=1.0
+      w1=1.0
+
       do j=1,nsym
          f0=(npr3(j)-1.5)*df
          f1=(2+npr3(j)-1.5)*df
-         dphi=twopi*dt*f0
+         dphi0=twopi*dt*f0
          dphi1=twopi*dt*f1
+         ws0=dcmplx(cos(dphi0),-sin(dphi0))
+         ws1=dcmplx(cos(dphi1),-sin(dphi1))
          c0=0.
          c1=0.
          do i=1,nsps
             k=k+1
-            phi=phi+dphi
-            phi1=phi1+dphi1
-            if(phi.gt.twopi) phi=phi-twopi
-            if(phi1.gt.twopi) phi1=phi1-twopi
-            cz=dcmplx(cos(phi),-sin(phi))
-            cz1=dcmplx(cos(phi1),-sin(phi1))
-            if(k.le.npts) then
-               c0=c0 + c4(k)*cz
-               c1=c1 + c4(k)*cz1
-            endif
+            w0=w0*ws0
+            w1=w1*ws1
+            c0=c0 + w0*c4(k)
+            c1=c1 + w1*c4(k)
          enddo
 
          sq0=fac2*(real(c0)**2 + aimag(c0)**2)
@@ -127,9 +124,7 @@ C  Compute soft symbols
          symbol(j)=i1
       enddo
 
-!      ndelta=100
       ndelta=50
-!      limit=100000
       limit=20000
       nbits=50+31
       call inter_mept(symbol,-1)                      !Remove interleaving
