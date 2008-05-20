@@ -46,7 +46,6 @@ C  Look for sync patterns, get DF and DT
          message='                      '
          if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
 
-!            write(71) dtx,c3
             dt=1.0/375
             do idt=0,128
                ii=(idt+1)/1

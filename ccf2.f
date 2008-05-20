@@ -2,7 +2,7 @@
 
       parameter (LAGMAX=200)
       real ss(nz)
-      real ccf(-200:200)
+!      real ccf(-LAGMAX:LAGMAX)
       real pr(162)
       logical first
 
@@ -29,8 +29,6 @@ C  The WSPR pseudo-random sync pattern:
       endif
 
       ccfbest=0.
-!      lag1=-lagmax
-!      lag2=lagmax
 
       do lag=lag1,lag2
          x=0.
@@ -38,9 +36,9 @@ C  The WSPR pseudo-random sync pattern:
             j=16*i + lag
             if(j.ge.1 .and. j.le.nz) x=x+ss(j)*pr(i)
          enddo
-         ccf(lag)=x
-         if(ccf(lag).gt.ccfbest) then
-            ccfbest=ccf(lag)
+!         ccf(lag)=x
+         if(x.gt.ccfbest) then
+            ccfbest=x
             lagpk=lag
          endif
       enddo

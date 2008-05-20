@@ -1,15 +1,10 @@
-      subroutine decode162(c2,npts,message,ncycles,metric,nerr)
+      subroutine decode162(c4,npts,message,ncycles,metric,nerr)
 
 C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
 
-      complex c2(npts)
-      real s2(77,126)
-      real s3(64,63)
+      complex c4(npts)
       character*22 message
-      character*12 callsign
-      character*4 grid
-      character*4 cpwr
-      real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
+      real*8 dt,df,phi,f0,dphi,twopi,f1,phi1,dphi1
       complex*16 cz,cz1,c0,c1
       integer*1 i1,symbol(162)
       integer*1 data1(11)
@@ -17,8 +12,6 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       integer mettab(0:255,0:1)
       logical first
       equivalence (i1,i4)
-      integer ipwr(19)
-!      data ipwr/0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60/
       data first/.true./
       integer npr3(162)
       data npr3/
@@ -99,9 +92,6 @@ C  Should amp be adjusted according to signal strength?
 C  Compute soft symbols
       c0=0.
       k=0
-      fac=1.e-4
-      phi=0.d0
-      phi1=0.d0
       nsps=256
       fac2=0.001
       phi=0.d0
@@ -122,8 +112,8 @@ C  Compute soft symbols
             cz=dcmplx(cos(phi),-sin(phi))
             cz1=dcmplx(cos(phi1),-sin(phi1))
             if(k.le.npts) then
-               c0=c0 + c2(k)*cz
-               c1=c1 + c2(k)*cz1
+               c0=c0 + c4(k)*cz
+               c1=c1 + c4(k)*cz1
             endif
          enddo
 

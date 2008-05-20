@@ -12,17 +12,13 @@
       complex*16 cs3(0:NMAX)
       complex*16 cs4(0:NMAX)
       complex z1,z2,z3,z4
-      real*8 twopi
+      real*8 twopi,baud,p2
 !      real ss(2812)
       real ss(5624)
-      data twopi/6.283185307/a1,a2,a3/99.,99.,99./
       save
 
       twopi=8.d0*atan(1.d0)
-      baud=12000.0/8192
-      a1=a(1)
-      a2=a(2)
-      a3=a(3)
+      baud=12000.d0/8192
 
 C  Mix and integrate four channels
       cs1(0)=0.

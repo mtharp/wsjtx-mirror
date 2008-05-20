@@ -6,12 +6,15 @@ FFLAGS = /traceback /fast /nologo
 #CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
 #all:    WSPR.EXE testmsg.exe
-all:    WSPR.EXE
+#all:    WSPR.EXE
+all:	rxtest.exe wspr.exe
 
 OBJS0 = testmsg.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
 	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
 	grid2deg.obj wqencode.obj wqdecode.obj nhash.obj hash.obj \
-	packname.obj unpackname.obj packtext2.obj unpacktext2.obj
+	packname.obj unpackname.obj packtext2.obj unpacktext2.obj \
+	genmept.obj wfile5.obj encode232.obj inter_mept.obj \
+	gran.obj 
 
 testmsg.exe: $(OBJS0)
 	$(FC) /exe:testmsg.exe /traceback /check:all /nologo $(OBJS0)
@@ -23,16 +26,28 @@ OBJS1 = wspr_rxtest.obj decode.obj getfile.obj \
 	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
 	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj \
-	fchisq.obj ccf2.obj twkfreq.obj 
+	fchisq.obj ccf2.obj twkfreq.obj bestdx.obj wqdecode.obj
+
+wspr_rxtest.exe: $(OBJS1)
+	$(FC) $(FFLAGS) /exe:wspr_rxtest.exe $(OBJS1)
+
+OBJS2 = rxtest.obj decode162.obj spec162.obj set.obj xfft.obj \
+	ps162.obj pctile.obj xcor162.obj peakup.obj db.obj \
+	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
+	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
+	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj \
+	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj \
+	rect.obj packcall.obj packgrid.obj pack50.obj encode232.obj \
+	nhash.obj unpackname.obj unpacktext2.obj deg2grid.obj
+
+rxtest.exe: $(OBJS2)
+	$(FC) $(FFLAGS) /exe:rxtest.exe $(OBJS2)
 
 OBJS3 = tstrect.obj rect.obj four2.obj packcall.obj packgrid.obj pack50.obj \
 	 encode232.obj nchar.obj grid2deg.obj inter_mept.obj db.obj
 
 tstrect.exe: $(OBJS3)
 	$(FC) /exe:tstrect.exe $(FFLAGS) $(OBJS3)
-
-wspr_rxtest.exe: $(OBJS1)
-	$(FC) $(FFLAGS) /exe:wspr_rxtest.exe $(OBJS1)
 
 OBJS2C = sound.o gmtime2.o nhash.o
 
@@ -79,6 +94,8 @@ wspr_rxtest.obj: wspr_rxtest.f90
 test.obj: test.f90
 	$(FC) /c $(FFLAGS) /fpp test.f90
 
+nhash.obj: nhash.c
+	$(CC) /nologo /c /DSTDCALL nhash.c
 nhash.o: nhash.c
 	$(CC) /nologo /c /Fonhash.o nhash.c
 sound.o: sound.c
