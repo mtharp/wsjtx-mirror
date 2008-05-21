@@ -119,19 +119,22 @@ subroutine rect(c4,message,dfx2,width,pmax)
      do i=-20,20
         k1=i
         if(k1.lt.0) k1=k1+nfft
-!        k2=i+nfft/256
+!        k2=i+nfft/128
 !        if(k2.lt.0) k2=k2+nfft
 !        s=real(c(k1))**2 + aimag(c(k1))**2 + real(c(k2))**2 + aimag(c(k2))**2
         s=real(c(k1))**2 + aimag(c(k1))**2 
         if(s.gt.smax) then
            ipk=i
+           if(ipk.gt.8) ipk=ipk-16
            smax=s
         endif
      enddo
      fpk=ipk*df3
-     write(54,3201) j,fpk,0.000015*smax
-3201 format(i3,2f10.3)
+     write(54,3201) j,ipk,fpk,0.000015*smax
+3201 format(i3,i5,2f10.3)
   enddo
+  write(54,3201) 163,ipk,-3.0,0.0
+  write(54,3201) 0,ipk,-3.0,0.0
 !###
 
 
