@@ -12,6 +12,7 @@ program rxtest
   jz=45000
   do ifile=1,9999
      read(71,end=999),datetime,nsnrx,dtx,freq,nf1,c3
+     if(ifile.ne.2) go to 24
 
 !     fac=1.0/65536.
 !     c(:jz)=fac*c3
@@ -49,8 +50,10 @@ program rxtest
         endif
         call decode162(c4,jz,message,ncycles,metric,nerr)
         if(message(1:6).ne.'      ') then
-           write(*,1012) ifile,nsnrx,dtx,freq,nf1,message,ii
-1012       format(i4.4,i4,f5.1,f11.6,i3,2x,a22,i6)
+           call rect(c4,message,dfx2,width,pmax)
+           write(*,1012) ifile,nsnrx,dtx,freq,nf1,message,ii,width,pmax-44
+1012       format(i4.4,i4,f5.1,f11.6,i3,2x,a22,i5,2f6.1)
+
            go to 24
         endif
      enddo

@@ -1,18 +1,17 @@
-subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
+subroutine rect(c4,message,dfx2,width,pmax)
 
   parameter (NFFT1=65536)
   parameter (MAXSYM=176)
   character*22 message
   character*12 call1,arg
   character*4 grid
-  complex c2(45000)
-  complex c3(45000)
+  complex c4(45000)
   complex cr(45000)
   complex c(0:65535)
-  complex w
-  complex c0,c1
-  real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
-  real ps(-511:512)
+  complex*16 w,ws
+  complex c0
+  real*8 t,dt,f,f0,dfgen,dphi,twopi,tsymbol
+  real ps(-32768:32768)
   logical lbad1,lbad2
   integer npr3(162)
   integer softsym(162)
@@ -37,19 +36,6 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   nz=nsps*nsym
   twopi=8.d0*atan(1.d0)
 
-  i1=nint((dtx+2.0)/dt)           !Start index for synced symbols
-  if(i1.ge.1) then
-     i2=i1 + nz - 1
-     c3(1:nz)=c2(i1:i2)
-  else if(i1.eq.0) then
-     c3(1)=0
-     c3(2:nz)=c2(nz-1)
-  else
-     c3(:-i1+1)=0
-     i2=nz+i1
-     c3(-i1:)=c2(:i2)
-  endif
-
   i1=index(message,' ')
   call1=message(1:i1-1)
   grid=message(i1+1:i1+4)
@@ -63,23 +49,24 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
   call inter_mept(symbol,1)                   !Apply interleaving
 
   dftone=12000.d0/8192.d0                     !1.4649 Hz
-  phi=0.d0
   k=0
+  w=1.0
   do j=1,nsym
-     f=dfx + dftone*(npr3(j)+2*symbol(j)-1.5)
+!     f=dftone*(npr3(j)+2*symbol(j)-1.5)
+     f=dftone*(npr3(j)-1.5)
      dphi=twopi*dt*f
+     ws=dcmplx(cos(dphi),-sin(dphi))
      do i=1,nsps
-        phi=phi+dphi
-        w=cmplx(cos(phi),-sin(phi))
+        w=w*ws
         k=k+1
-        cr(k)=w*c3(k)
+        cr(k)=w*c4(k)
      enddo
   enddo
 
   c(0:nz-1)=cr
   c(nz:)=0.
   call four2a(c,NFFT1,1,-1,1)
-  nadd=32
+  nadd=8
   nh2=NFFT1/(2*nadd)
   k=nh2*nadd - 1
   df2=nadd*375.0/NFFT1
@@ -103,38 +90,70 @@ subroutine rect(c2,dtx,dfx,message,dfx2,width,pmax)
 
   sum=0.
   pmax=0.
-  do i=-10,10
+  do i=-100,100
      ps(i)=ps(i)-ave
      if(ps(i).gt.pmax) then
         pmax=ps(i)
         ipk=i
      endif
-     if(abs(i).le.3) sum=sum+ps(i)
+     if(abs(i).le.5) sum=sum+ps(i)
      freq=i*df2
-!     write(53,1011) freq,ps(i)
-!1011 format(2f12.3)
+     write(53,1011) freq,ps(i)
+1011 format(2f12.3)
   enddo
   width=df2*sum/pmax
   dfx2=df2*ipk
   pmax=db(pmax)
 
-!  c0=0.
-!  c1=cr(k)
-!  u=0.001
-!  k=0
-!  do i=1,nsym
-!     do n=1,nsps
-!        k=k+1
-!        c0=c0 + cr(k)
-!        c1=(1-u)*c1 + u*cr(k)
-!     enddo
-!     amp0=sqrt(real(c0)**2 + aimag(c0)**2)
-!     pha0=atan2(aimag(c0),real(c0))
-!     amp1=sqrt(real(c1)**2 + aimag(c1)**2)
-!     pha1=atan2(aimag(c1),real(c1))
-!     write(51,1010) i,amp0,pha0,amp1,pha1
-!1010 format(i3,4f10.3)
-!  enddo
+!###
+  nfft=2048
+  ndat=5*256
+  do j=2,161
+     k=(j-2)*256
+     c(0:ndat-1)=cr(k+1:k+ndat)
+     c(ndat:nfft-1)=0.
+     call four2a(c,nfft,1,-1,1)
+     nh=nfft/2
+     df3=375.0/nfft
+     smax=0.
+     do i=-20,20
+        k1=i
+        if(k1.lt.0) k1=k1+nfft
+!        k2=i+nfft/256
+!        if(k2.lt.0) k2=k2+nfft
+!        s=real(c(k1))**2 + aimag(c(k1))**2 + real(c(k2))**2 + aimag(c(k2))**2
+        s=real(c(k1))**2 + aimag(c(k1))**2 
+        if(s.gt.smax) then
+           ipk=i
+           smax=s
+        endif
+     enddo
+     fpk=ipk*df3
+     write(54,3201) j,fpk,0.000015*smax
+3201 format(i3,2f10.3)
+  enddo
+!###
+
+
+
+  k=0
+  w=1.0
+  dphi=twopi*dt*dfx2
+  ws=dcmplx(cos(dphi),-sin(dphi))
+  do i=1,nsym
+     c0=0.
+     do n=1,nsps
+        k=k+1
+        w=w*ws
+!        c0=c0 + w*cr(k)
+        c0=c0 + cr(k)
+     enddo
+     amp0=sqrt(real(c0)**2 + aimag(c0)**2)
+     pha0=atan2(aimag(c0),real(c0))
+     write(51,1010) i,amp0,pha0,c0
+1010 format(i3,4f10.3)
+     c00=-c0
+  enddo
 
 900  return
 end subroutine rect
