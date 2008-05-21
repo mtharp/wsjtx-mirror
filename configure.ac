@@ -1,7 +1,7 @@
 dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
-dnl AC_PREREQ(2.59)
+dnl AC_PREREQ(2.61)
 
 dnl Sneaky way to get an Id tag into the configure script
 AC_COPYRIGHT([$Id$])

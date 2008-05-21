@@ -16,7 +16,7 @@ OBJS1 = wspr_rxtest.o getfile.o mept162.o getrms.o mix162.o deg2grid.o	\
 	inter_mept.o fano232.o unpack50.o unpackcall.o			\
 	unpackgrid.o four2.o flat3.o sort.o ssort.o			\
 	nchar.o grid2deg.o decode.o wfile5.o				\
-	afc.o fchisq.o ccf2.o twkfreq.o
+	fchisq.o ccf2.o twkfreq.o
 
 wspr_rxtest: $(OBJS1)
 	$(FC) -o wspr_rxtest $(FFLAGS) $(OBJS1)
@@ -39,7 +39,7 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	ssort.f genmept.f \
 	packcall.f packgrid.f pack50.f encode232.f \
 	nchar.f grid2deg.f \
-	afc.f fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
+	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
 
 #SRCS2C = ptt.c start_threads.c padevsub.c
 #SRCS2C = ptt_unix.c padevsub.c start_threads.c

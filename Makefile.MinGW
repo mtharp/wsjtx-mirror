@@ -36,7 +36,7 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	ssort.f genmept.f \
 	packcall.f packgrid.f pack50.f encode232.f \
 	nchar.f grid2deg.f \
-	afc.f fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
+	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
 
 SRCS2C = ptt.c start_threads.c padevsub.c
 
