@@ -107,7 +107,7 @@ wfile5.o: wfile5.f
 .PHONY : clean
 clean:
 	${RM} -f *.o *.pyc *.pyo Wspr/*.pyc Wspr/*.pyo Wspr/w.so \
-		wspr wspr_rxtest w.so wspr.spec
+		wspr wspr_rxtest w.so wspr.spec *~
 
 distclean:
 	${RM} -f config.log config.status Makefile
