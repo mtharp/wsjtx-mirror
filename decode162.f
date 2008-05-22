@@ -15,6 +15,7 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       equivalence (i1,i4)
       data first/.true./
       integer npr3(162)
+      common/ccom/rr(162)
       data npr3/
      + 1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,
      + 0,1,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,0,1,
@@ -117,6 +118,10 @@ C  Compute soft symbols
          sq0=fac2*(real(c0)**2 + aimag(c0)**2)
          sq1=fac2*(real(c1)**2 + aimag(c1)**2)
          rsym=amp*(sq1-sq0)
+!         write(55,3003) j,rsym,rr(j)
+! 3003    format(i5,3f10.3)
+!         rsym=rr(j)
+
          r=rsym+128.
          if(r.gt.255.0) r=255.0
          if(r.lt.0.0) r=0.0

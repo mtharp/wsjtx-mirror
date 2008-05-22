@@ -1,12 +1,12 @@
-#---------------------------------------------------------------------- WSPR
+#-------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
 from tkFileDialog import *
 from tkMessageBox import showwarning
 import os,time,sys
-from WsprMod import g,Pmw
-from WsprMod import palettes
+from Wspr import g,Pmw
+from Wspr import palettes
 from math import log10
 try:
     from numpy.oldnumeric import zeros
@@ -15,14 +15,14 @@ except:
 import array
 import dircache
 import Image, ImageTk, ImageDraw
-from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
+from Wspr.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 import array
 import random
 import math
 import string
-from WsprMod import w
+from Wspr import w
 import socket
 import urllib
 import thread
@@ -49,7 +49,7 @@ else:
     except:
         pass
 root_geom=""
-from WsprMod import options
+from Wspr import options
 
 
 #------------------------------------------------------ Global variables

@@ -38,7 +38,7 @@ program rxtest
            c4(-i1:)=c3(:i2)
         endif
 !        if(idt.eq.0) call afc2(c4)
-        call afc2(c4)
+!        call afc2(c4)
         call decode162(c4,jz,message,ncycles,metric,nerr)
         if(message(1:6).ne.'      ') then
            write(*,1012) ifile,nsnrx,dtx,freq,nf1,message,ii

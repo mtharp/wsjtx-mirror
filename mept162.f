@@ -48,7 +48,7 @@ C  Look for sync patterns, get DF and DT
 
             dt=1.0/375
             do idt=0,128
-               ii=(idt+1)/1
+               ii=(idt+1)/2
                if(mod(idt,2).eq.1) ii=-ii
                i1=nint((dtx+2.0)/dt) + ii !Start index for synced symbols
                if(i1.ge.1) then
