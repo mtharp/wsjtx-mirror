@@ -18,8 +18,9 @@ program rxtest
 
   dt=1.0/375
   jz=45000
+  ngood=0
   do ifile=1,9999
-     read(71,end=999),datetime,nsnrx,dtx,freq,nf1,c3
+     read(71,end=900),datetime,nsnrx,dtx,freq,nf1,c3
      if(ifile.ne.ireq .and. ireq.ne.0) go to 24
 
      do idt=0,128
@@ -43,11 +44,14 @@ program rxtest
         if(message(1:6).ne.'      ') then
            write(*,1012) ifile,nsnrx,dtx,freq,nf1,message,ii
 1012       format(i4.4,i4,f5.1,f11.6,i3,2x,a22,i5)
-
+           ngood=ngood+1
            go to 24
         endif
      enddo
 24   continue
   enddo
+
+900 write(*,1024) ngood
+1024 format('ngood:',i5)
   
 999 end program rxtest

@@ -86,7 +86,10 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
          dt=1.d0/375.d0                        !Sample interval
          df=375.d0/256.d0
          nsym=162
+         nbits=50+31
          amp=20                                !### 32 ??? ###
+         ndelta=50
+         limit=20000
          first=.false.
       endif
 
@@ -129,9 +132,6 @@ C  Compute soft symbols
          symbol(j)=i1
       enddo
 
-      ndelta=50
-      limit=20000
-      nbits=50+31
       call inter_mept(symbol,-1)                      !Remove interleaving
       call fano232(symbol,nbits,mettab,ndelta,limit,
      +     data1,ncycles,metric,nerr)
