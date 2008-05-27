@@ -40,6 +40,6 @@ subroutine getfile(fname,len)
   outfile=fname
   nrxdone=1
 
-999 close(10)
+  close(10)
   return
 end subroutine getfile

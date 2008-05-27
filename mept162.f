@@ -62,7 +62,6 @@ C  Look for sync patterns, get DF and DT
                   i2=jz+i1
                   c4(-i1:)=c3(:i2)
                endif
-
                call decode162(c4,jz,message,ncycles,metric,nerr)
                if(message(1:6).ne.'      ') go to 23
             enddo

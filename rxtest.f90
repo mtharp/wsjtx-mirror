@@ -51,7 +51,7 @@ program rxtest
 24   continue
   enddo
 
-900 write(*,1024) ngood
+900 if(ireq.eq.0) write(*,1024) ngood
 1024 format('ngood:',i5)
   
 999 end program rxtest
