@@ -53,7 +53,9 @@ C  Look for sync patterns, get DF and DT
                i1=nint((dtx+2.0)/dt) + ii !Start index for synced symbols
                if(i1.ge.1) then
                   i2=i1 + jz - 1
-                  c4(1:jz)=c3(i1:i2)
+!  Fix this earlier!
+                  c4(1:jz-i1+1)=c3(i1:)
+                  c4(jz-i1+2:)=0.
                else if(i1.eq.0) then
                   c4(1)=0.
                   c4(2:jz)=c3(jz-1)

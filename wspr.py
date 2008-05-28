@@ -5,8 +5,8 @@ from Tkinter import *
 from tkFileDialog import *
 from tkMessageBox import showwarning
 import os,time,sys
-from Wspr import g,Pmw
-from Wspr import palettes
+from WsprMod import g,Pmw
+from WsprMod import palettes
 from math import log10
 try:
     from numpy.oldnumeric import zeros
@@ -15,14 +15,14 @@ except:
 import array
 import dircache
 import Image, ImageTk, ImageDraw
-from Wspr.palettes import colormapblue, colormapgray0, colormapHot, \
+from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 import array
 import random
 import math
 import string
-from Wspr import w
+from WsprMod import w
 import socket
 import urllib
 import thread
@@ -49,7 +49,7 @@ else:
     except:
         pass
 root_geom=""
-from Wspr import options
+from WsprMod import options
 
 
 #------------------------------------------------------ Global variables
