@@ -81,7 +81,6 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
      +   5,   5/
       save
 
-      print*,'A'
       if(first) then
          twopi=8*atan(1.d0)
          dt=1.d0/375.d0                        !Sample interval
@@ -138,7 +137,6 @@ C  Compute soft symbols
      +     data1,ncycles,metric,nerr)
       message='                      '
       if(nerr.ge.0) call wqdecode(data1,message,ntype2)
-      print*,ncycles,metric,nerr,ntype2,' ',message
 
       return
       end

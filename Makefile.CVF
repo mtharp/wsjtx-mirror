@@ -6,15 +6,17 @@ FFLAGS = /traceback /fast /nologo
 #CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
 #all:    WSPR.EXE testmsg.exe
-#all:    WSPR.EXE
-all:	rxtest.exe wspr.exe
+all:    WSPR.EXE rxtest.exe testmsg.exe
+#all:	testmsg.exe
 
 OBJS0 = testmsg.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
 	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
 	grid2deg.obj wqencode.obj wqdecode.obj nhash.obj hash.obj \
 	packname.obj unpackname.obj packtext2.obj unpacktext2.obj \
 	genmept.obj wfile5.obj encode232.obj inter_mept.obj \
-	gran.obj 
+	gran.obj packprop.obj unpackprop.obj packpfx.obj \
+	unpackpfx.obj
+
 
 testmsg.exe: $(OBJS0)
 	$(FC) /exe:testmsg.exe /traceback /check:all /nologo $(OBJS0)
@@ -35,10 +37,11 @@ OBJS2 = rxtest.obj decode162.obj spec162.obj set.obj xfft.obj \
 	ps162.obj pctile.obj xcor162.obj peakup.obj db.obj \
 	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
-	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj \
+	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj gran.obj \
 	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj \
-	rect.obj packcall.obj packgrid.obj pack50.obj encode232.obj \
-	nhash.obj unpackname.obj unpacktext2.obj deg2grid.obj
+	afc2.obj packcall.obj packgrid.obj pack50.obj encode232.obj \
+	nhash.obj hash.obj unpackname.obj unpacktext2.obj deg2grid.obj \
+	unpackpfx.obj unpackprop.obj
 
 rxtest.exe: $(OBJS2)
 	$(FC) $(FFLAGS) /exe:rxtest.exe $(OBJS2)
@@ -57,7 +60,8 @@ SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90	\
 	paterminate.f90 rect.f90 bestdx.f90 wqencode.f90 \
 	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 unpackname.f90 \
-	unpacktext2.f90
+	unpacktext2.f90 packpfx.f90 packprop.f90 \
+	unpackpfx.f90 unpackprop.f90 
 
 SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f	\
 	sync162.f decode162.f spec162.f set.f xfft.f \
@@ -83,9 +87,9 @@ w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	-m w \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
+	mv w.pyd WsprMod/w.pyd
 
-
-wspr.spec: wspr.py g.py options.py palettes.py 
+wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py 
 	python c:\python23\installer\makespec.py --icon wsjt.ico \
 	--tk --onefile wspr.py
 
@@ -120,7 +124,7 @@ wfile5.obj: wfile5.f
 .PHONY : clean
 
 clean:
-	-del *.o *.obj wspr.exe w.pyd wspr.spec
+	-del *.o *.obj wspr.exe w.pyd wspr.spec rxtest.exe testmsg.exe
 
 
 
