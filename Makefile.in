@@ -12,7 +12,7 @@ CFLAGS += ${DEFS}
 CPPFLAGS += ${DEFS} -I.
 
 # WSPR specific Fortran flags
-FFLAGS += -Wall -fbounds-check -fno-second-underscore -ffixed-line-length-none -fPIC
+FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
 
 wspr:	w.so
 
@@ -28,6 +28,7 @@ wspr:	w.so
 
 OS=@OS@
 FC=@FC@
+FCV=@FCV@
 COMPILER += @FC_LIB_PATH@
 
 LDFLAGS	+= -L${COMPILER}
@@ -35,9 +36,6 @@ LDFLAGS	+= -L${COMPILER}
 PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
-
-
-wspr:	w.so
 
 OBJS1 = wspr_rxtest.o getfile.o mept162.o getrms.o mix162.o deg2grid.o	\
 	sync162.o decode162.o spec162.o set.o xfft.o			\
@@ -49,15 +47,17 @@ OBJS1 = wspr_rxtest.o getfile.o mept162.o getrms.o mix162.o deg2grid.o	\
 
 F2PYONLY = wspr1 getfile paterminate
 
-SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
-	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90 \
-	paterminate.f90 bestdx.f90 rect.f90 hash.f90 \
-	packname.f90 packtext2.f90 unpackname.f90 unpacktext2.f90 \
-	wqdecode.f90 wqencode.f90 
+SRCS2F90 = wspr1.F90 wspr2.F90 decode.F90 getutc.f90 gran.f90 rx.F90 \
+	startdec.F90 startrx.F90 starttx.F90 tx.F90 getfile.F90 \
+	paterminate.f90 rect.f90 bestdx.f90 wqencode.f90 \
+	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 \
+	unpackname.f90 unpacktext2.f90 \
+	packpfx.f90 packprop.f90 unpackpfx.f90 unpackprop.f90 \
+
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
-SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
+SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f \
 	sync162.f decode162.f spec162.f set.f xfft.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
@@ -74,8 +74,8 @@ OBJS2C  = ${SRCS2C:.c=.o}
 
 w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
 	${F2PY} -c --opt="-O ${CFLAGS} ${FFLAGS}" \
-	--quiet --fcompiler=${FC} \
-	--opt="-fbounds-check -ftrace=full -cpp" \
+	--fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
+	--opt="-fbounds-check ${FFLAGS}" \
 	${CPPFLAGS} ${LDFLAGS} ${LIBS}\
 	-m w \
 	only: $(F2PYONLY) : \
@@ -93,16 +93,16 @@ wspr_rxtest.o: wspr_rxtest.f90
 
 gmtime2.o: gmtime2.c
 	$(CC) -c gmtime2.c
-decode.o: decode.f90
-	$(FC) -c $(FFLAGS) decode.f90
+decode.o: decode.F90
+	$(FC) -c $(FFLAGS) decode.F90
 getfile.o: getfile.f90
 	$(FC) -c $(FFLAGS) getfile.f90
-mept162.o: mept162.f
-	$(FC) -c $(FFLAGS) mept162.f
+mept162.o: mept162.F
+	$(FC) -c $(FFLAGS) mept162.F
 spec162.o: spec162.f
 	$(FC) -c $(FFLAGS) spec162.f
-wfile5.o: wfile5.f
-	$(FC) -c $(FFLAGS) wfile5.f
+wfile5.o: wfile5.F
+	$(FC) -c $(FFLAGS) wfile5.F
 
 .PHONY : clean
 clean:

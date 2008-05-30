@@ -23,6 +23,7 @@ dnl Lets guess at some likely places for extra libs/includes XXX -db
 CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
+FCV=""
 
 AC_MSG_CHECKING([uname -s for Cygwin, Solaris or HPUX])
 case `uname -s` in
@@ -85,15 +86,15 @@ AC_PATH_PROG(G95, g95)
 AC_MSG_CHECKING([g95 lib path])
 G95_LIB_PATH=`${G95} -print-file-name=`
 AC_MSG_RESULT(${G95_LIB_PATH})
-dnl AC_PATH_PROG(GFORTRAN, gfortran)
+ AC_PATH_PROG(GFORTRAN, gfortran)
 dnl
 dnl FreeBSD currently installs gfortran as gfortran42
 dnl
-dnl AC_PATH_PROG(GFORTRAN, gfortran42)
-dnl AC_MSG_CHECKING([gfortran lib path])
-dnl GFORTRAN_LIB_PATH=`${GFORTRAN} -print-file-name=`
-dnl AC_MSG_RESULT(${GFORTRAN_LIB_PATH})
-dnl AC_MSG_CHECKING([OS])
+AC_PATH_PROG(GFORTRAN, gfortran42)
+AC_MSG_CHECKING([gfortran lib path])
+GFORTRAN_LIB_PATH=`${GFORTRAN} -print-file-name=`
+AC_MSG_RESULT(${GFORTRAN_LIB_PATH})
+AC_MSG_CHECKING([OS])
 OS=`uname`
 AC_SUBST(OS, "${OS}")
 
@@ -247,14 +248,30 @@ AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
 dnl now set conf.h,, CPPFLAGS and CFLAGS flags as needed
 dnl ====================================================
 
-if test "$g95" = yes; then
-        FC_LIB_PATH=${G95_LIB_PATH}
-	FC=`basename ${G95}`
-	gfortran=no
-elif test "$gfortran" = yes; then
-        FC_LIB_PATH=${GFORTRAN_LIB_PATH}
-	FC=`basename ${GFORTRAN}`
-	g95=no
+if test ! -z $GFORTRAN ; then
+	echo "*** gfortran compiler found"
+	if test "$gfortran" = yes; then
+       		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
+		FC=`basename ${GFORTRAN}`
+		g95=no
+		FFLAGS="${FFLAGS} -fno-range-check -ffixed-line-length-none"
+		FCV="gnu95"
+	fi
+else
+	echo "*** No gfortran compiler found"
+fi
+
+if test ! -z $G95 ; then
+	echo "*** g95 compiler found"
+	if test "$g95" = yes; then
+		FC_LIB_PATH=${G95_LIB_PATH}
+		FC=`basename ${G95}`
+		gfortran=no
+		FFLAGS="${FFLAGS} -ftrace=full -cpp"
+		FCV="g95"
+	fi
+else
+	echo "*** No g95 compiler found"
 fi
 
 if test -z $FC ; then
@@ -262,10 +279,14 @@ if test -z $FC ; then
        		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
 	        FC=`basename ${GFORTRAN}`
 		gfortran=yes
+		FFLAGS="${FFLAGS} -fno-range-check -ffixed-line-length-none -ftrace=full"
+		FCV="gnu95"
 	elif test ! -z $G95 ; then
        		FC_LIB_PATH=${G95_LIB_PATH}
 	        FC=`basename ${G95}`
 		g95=yes
+		FFLAGS="${FFLAGS} -ftrace=full -cpp"
+		FCV="g95"
 	fi
 fi
 
@@ -278,6 +299,7 @@ AC_DEFINE_UNQUOTED(FC_LIB_PATH, "${FC_LIB_PATH}", [Path to fortran libs.])
 AC_SUBST(FC_LIB_PATH, "${FC_LIB_PATH}")
 AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
 AC_SUBST(FC, "${FC}")
+AC_SUBST(FCV, "${FCV}")
 
 dnl set defaults
 
@@ -321,6 +343,7 @@ AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
 AC_SUBST(CFLAGS)
+AC_SUBST(FFLAGS)
 AC_SUBST(LOCAL_PORTAUDIO,"${LOCAL_PORTAUDIO}")
 AC_SUBST(LOCAL_PORTAUDIO_CLEAN,"${LOCAL_PORTAUDIO_CLEAN}")
 
