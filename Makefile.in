@@ -76,7 +76,7 @@ w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
 	${F2PY} -c --opt="-O ${CFLAGS} ${FFLAGS}" \
 	--fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
 	--opt="-fbounds-check ${FFLAGS}" \
-	${CPPFLAGS} ${LDFLAGS} ${LIBS}\
+	${CPPFLAGS} ${LDFLAGS} ${LIBS} \
 	-m w \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
