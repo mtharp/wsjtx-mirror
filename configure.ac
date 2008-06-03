@@ -224,7 +224,7 @@ AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
 
 dnl make sure portaudio dirs are valid
 dnl ==================================
-if test -e ${portaudio_lib_dir}/libportaudio.so;then
+if test -e ${portaudio_lib_dir}/libportaudio.so -o -e ${portaudio_lib_dir}/libportaudio.a;then
 	HAS_PORTAUDIO_LIB=1
 fi
 if test -e ${portaudio_include_dir}/portaudio.h; then
@@ -335,7 +335,7 @@ if test $HAS_SAMPLERATE_H -eq 1; then
 fi
 
 if test "$F2PY" = ""; then
-	AC_MSG_ERROR([You are missing f2py])
+	AC_SUBST(F2PY, "python f2py.py")
 fi
 
 dnl 
