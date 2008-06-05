@@ -279,7 +279,7 @@ if test -z $FC ; then
        		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
 	        FC=`basename ${GFORTRAN}`
 		gfortran=yes
-		FFLAGS="${FFLAGS} -fno-range-check -ffixed-line-length-none -ftrace=full"
+		FFLAGS="${FFLAGS} -fno-range-check -ffixed-line-length-none"
 		FCV="gnu95"
 	elif test ! -z $G95 ; then
        		FC_LIB_PATH=${G95_LIB_PATH}
