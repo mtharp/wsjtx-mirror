@@ -58,7 +58,7 @@ SRCS2F90 = wspr1.F90 wspr2.F90 decode.F90 getutc.f90 gran.f90 rx.F90 \
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
 SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f \
-	sync162.f decode162.f spec162.f set.f xfft.f \
+	sync162.f decode162.f spec162.F set.f xfft.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
@@ -90,19 +90,6 @@ sound.o: sound.c
 	$(CC) -c sound.c
 wspr_rxtest.o: wspr_rxtest.f90
 	$(FC) -c $(FFLAGS) wspr_rxtest.f90
-
-gmtime2.o: gmtime2.c
-	$(CC) -c gmtime2.c
-decode.o: decode.F90
-	$(FC) -c $(FFLAGS) decode.F90
-getfile.o: getfile.f90
-	$(FC) -c $(FFLAGS) getfile.f90
-mept162.o: mept162.F
-	$(FC) -c $(FFLAGS) mept162.F
-spec162.o: spec162.f
-	$(FC) -c $(FFLAGS) spec162.f
-wfile5.o: wfile5.F
-	$(FC) -c $(FFLAGS) wfile5.F
 
 .PHONY : clean
 clean:
