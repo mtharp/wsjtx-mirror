@@ -1,3 +1,4 @@
+
 dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
@@ -128,9 +129,6 @@ if test "$gcc_cv_header_string" = "yes"; then
 	AC_DEFINE(STRING_WITH_STRINGS, 1, [Define to 1 if string.h may be included along with strings.h])
 fi
 
-AC_CHECK_LIB(rt, clock_gettime, [RTLIBS="-lrt"], [RTLIBS=""])
-AC_CHECK_LIB(asound, snd_pcm_open, [ASOUNDLIBS="-lasound"], [ASOUNDLIBS=""])
-
 AC_CHECK_SIZEOF(int64_t)
 AC_CHECK_SIZEOF(long long)
 
@@ -209,8 +207,8 @@ AC_CONFIG_FILES(		\
 )
 
 dnl =========================================
-portaudio_lib_dir=""
-portaudio_include_dir=""
+portaudio_lib_dir="/usr/lib"
+portaudio_include_dir="/usr/include"
 
 AC_ARG_WITH([portaudio-include-dir],
 AC_HELP_STRING([--with-portaudio-include-dir=<path>],
@@ -224,7 +222,8 @@ AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
 
 dnl make sure portaudio dirs are valid
 dnl ==================================
-if test -e ${portaudio_lib_dir}/libportaudio.so -o -e ${portaudio_lib_dir}/libportaudio.a;then
+if test -e ${portaudio_lib_dir}/libportaudio.so \
+    -o -e ${portaudio_lib_dir}/libportaudio.a;then
 	HAS_PORTAUDIO_LIB=1
 fi
 if test -e ${portaudio_include_dir}/portaudio.h; then
@@ -301,37 +300,46 @@ AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
 AC_SUBST(FC, "${FC}")
 AC_SUBST(FCV, "${FCV}")
 
-dnl set defaults
-
-dnl =============
-dnl sanity tests.
-
-if test $HAS_PORTAUDIO -eq 0; then
-	portaudio_include_dir="portaudio-v19/include"
-	LIBS="${LIBS} ${RTLIBS} -lsamplerate portaudio-v19/lib/.libs/libportaudio.a"
-	LOCAL_PORTAUDIO="portaudio"
-	LOCAL_PORTAUDIO_CLEAN="portaudio_clean"
-else
-	LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
-	LIBS="${LIBS} ${RTLIBS} -lsamplerate -lportaudio"
-	LOCAL_PORTAUDIO=""
-	LOCAL_PORTAUDIO_CLEAN=""
-fi
-	AC_SUBST(AUDIO, "a2d.f90 jtaudio.c resample.c start_portaudio.c")
-	AC_DEFINE(USE_PORTAUDIO, 1, [Define if you want PORTAUDIO used.])
-	CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
-
 dnl =====================
-
 dnl set conf flags
 dnl ==============
 
 if test $HAS_PORTAUDIO_H -eq 1; then
 	AC_DEFINE(HAS_PORTAUDIO_H, 1, )
-fi
-
-if test $HAS_SAMPLERATE_H -eq 1; then
-        AC_DEFINE(HAS_SAMPLERATE_H, 1, )
+	LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
+	LIBS="${LIBS} -lportaudio"
+	CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
+	AC_CHECK_LIB(portaudio, Pa_GetVersion, \
+		[HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
+	if test $HAS_PORTAUDIO_VERSION -eq 0; then
+		AC_MSG_ERROR([This is likely portaudio v18; you need v19])
+	fi
+else
+	AC_MSG_RESULT([Trying FreeBSD paths])
+	portaudio_lib_dir="/usr/local/lib/portaudio2"
+	portaudio_include_dir="/usr/local/include/portaudio2"
+dnl
+dnl Try again to make sure portaudio dirs are valid
+dnl
+	if test -e ${portaudio_lib_dir}/libportaudio.so -o -e \
+		${portaudio_lib_dir}/libportaudio.a;then
+		HAS_PORTAUDIO_LIB=1
+	fi
+	if test -e ${portaudio_include_dir}/portaudio.h; then
+		HAS_PORTAUDIO_H=1
+	fi
+	if test $HAS_PORTAUDIO_H -eq 1 -a $HAS_PORTAUDIO_LIB -eq 1; then
+		HAS_PORTAUDIO=1
+		AC_DEFINE(HAS_PORTAUDIO_H, 1, )
+		LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
+		LIBS="${LIBS} -lportaudio"
+		CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
+		AC_CHECK_LIB(portaudio, Pa_GetVersion, \
+			[HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
+		if test $HAS_PORTAUDIO_VERSION -eq 0; then
+			AC_MSG_ERROR([This is likely portaudio v18; you need v19])
+		fi
+	fi
 fi
 
 if test "$F2PY" = ""; then
