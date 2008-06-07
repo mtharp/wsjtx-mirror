@@ -1,4 +1,3 @@
-
 dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
@@ -8,6 +7,10 @@ dnl Sneaky way to get an Id tag into the configure script
 AC_COPYRIGHT([$Id$])
 
 AC_INIT([wspr],[0.8])
+dnl Sneakier way to get a Version into setup.py
+rev=`echo "$Rev: 848 $"|awk '{print $2}'`
+version="0.8 r${rev}"
+fail=0
 
 AC_PREFIX_DEFAULT(/usr/local/)
 
@@ -87,10 +90,7 @@ AC_PATH_PROG(G95, g95)
 AC_MSG_CHECKING([g95 lib path])
 G95_LIB_PATH=`${G95} -print-file-name=`
 AC_MSG_RESULT(${G95_LIB_PATH})
- AC_PATH_PROG(GFORTRAN, gfortran)
-dnl
-dnl FreeBSD currently installs gfortran as gfortran42
-dnl
+AC_PATH_PROG(GFORTRAN, gfortran)
 AC_PATH_PROG(GFORTRAN, gfortran42)
 AC_MSG_CHECKING([gfortran lib path])
 GFORTRAN_LIB_PATH=`${GFORTRAN} -print-file-name=`
@@ -98,6 +98,7 @@ AC_MSG_RESULT(${GFORTRAN_LIB_PATH})
 AC_MSG_CHECKING([OS])
 OS=`uname`
 AC_SUBST(OS, "${OS}")
+AC_SUBST(VERSION, "${version}")
 
 dnl Checks for header files.
 
@@ -129,42 +130,6 @@ if test "$gcc_cv_header_string" = "yes"; then
 	AC_DEFINE(STRING_WITH_STRINGS, 1, [Define to 1 if string.h may be included along with strings.h])
 fi
 
-AC_CHECK_SIZEOF(int64_t)
-AC_CHECK_SIZEOF(long long)
-
-if test "$ac_cv_sizeof_int64_t" = 8; then
-  AC_CHECK_TYPE(uint64_t)
-  AC_CHECK_TYPE(int64_t)
-elif test "$ac_cv_sizeof_long_long" = 8; then
-  AC_CHECK_TYPE(uint64_t, unsigned long long)
-  AC_CHECK_TYPE(int64_t, long long)
-fi
-
-AC_CHECK_TYPE([u_int32_t], [],
-[
-	AC_CHECK_TYPE([uint32_t],
-	[
-		AC_DEFINE(u_int32_t, [uint32_t], [If system does not define u_int32_t, define a reasonable substitute.])
-	],
-	[
-		AC_MSG_WARN([system has no u_int32_t or uint32_t, default to unsigned long int])
-		AC_DEFINE(u_int32_t, [unsigned long int], [If system does not define u_int32_t, define to unsigned long int here.])
-	])
-])
-
-AC_CHECK_TYPE([u_int16_t], [],
-[
-	AC_CHECK_TYPE([uint16_t],
-	[
-		AC_DEFINE(u_int16_t, [uint16_t], [If system does not define u_int16_t, define a usable substitute])
-	],
-	[
-		AC_MSG_WARN([system has no u_int16_t or uint16_t, default to unsigned short int])
-		AC_DEFINE(u_int16_t, [unsigned short int], [If system does not define u_int16_t, define a usable substitute.])
-	])
-])
-
-AC_C_BIGENDIAN
 
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - wsjt will not compile without it **])])
@@ -190,7 +155,7 @@ fi
 
 
 if test "$prefix" = "NONE"; then 
-	AC_DEFINE_UNQUOTED(PREFIX, "$ac_default_prefix", [Prefix where wsjt is installed.])
+	AC_DEFINE_UNQUOTED(PREFIX, "$ac_default_prefix", [Prefix where wspr is installed.])
 
 else
 
@@ -203,35 +168,8 @@ dnl a custom prefix with a trailing slash
 fi
 
 AC_CONFIG_FILES(		\
-	Makefile		
+	Makefile setup.py
 )
-
-dnl =========================================
-portaudio_lib_dir="/usr/lib"
-portaudio_include_dir="/usr/include"
-
-AC_ARG_WITH([portaudio-include-dir],
-AC_HELP_STRING([--with-portaudio-include-dir=<path>],
-    [path to portaudio include files]),
-    [portaudio_include_dir=$with_portaudio_include_dir])
-
-AC_ARG_WITH([portaudio-lib-dir],
-AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
-    [path to portaudio lib files]),
-    [portaudio_lib_dir=$with_portaudio_lib_dir])
-
-dnl make sure portaudio dirs are valid
-dnl ==================================
-if test -e ${portaudio_lib_dir}/libportaudio.so \
-    -o -e ${portaudio_lib_dir}/libportaudio.a;then
-	HAS_PORTAUDIO_LIB=1
-fi
-if test -e ${portaudio_include_dir}/portaudio.h; then
-	HAS_PORTAUDIO_H=1
-fi
-if test $HAS_PORTAUDIO_H -eq 1 -a $HAS_PORTAUDIO_LIB -eq 1; then
-	HAS_PORTAUDIO=1
-fi
 
 dnl pick gfortran or g95
 dnl ====================
@@ -253,7 +191,7 @@ if test ! -z $GFORTRAN ; then
        		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
 		FC=`basename ${GFORTRAN}`
 		g95=no
-		FFLAGS="${FFLAGS} -fno-range-check -ffixed-line-length-none"
+		FFLAGS="$FFLAGS -fno-range-check -ffixed-line-length-none"
 		FCV="gnu95"
 	fi
 else
@@ -273,26 +211,32 @@ else
 	echo "*** No g95 compiler found"
 fi
 
+dnl
+dnl if FC is not set by now, pick a compiler for user
+dnl
 if test -z $FC ; then
 	if test ! -z $GFORTRAN ; then
+		if test "$g95" = yes; then
+			echo "You enabled g95, but no g95 compiler found, defaulting to gfortran instead"
+		fi
        		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
 	        FC=`basename ${GFORTRAN}`
+		g95=no
 		gfortran=yes
 		FFLAGS="${FFLAGS} -fno-range-check -ffixed-line-length-none"
 		FCV="gnu95"
 	elif test ! -z $G95 ; then
+		if test "$gfortran" = yes; then
+			echo "You enabled gfortran, but no gfortran compiler found, defaulting to g95 instead"
+		fi
        		FC_LIB_PATH=${G95_LIB_PATH}
 	        FC=`basename ${G95}`
 		g95=yes
+		gfortran=no
 		FFLAGS="${FFLAGS} -ftrace=full -cpp"
 		FCV="g95"
 	fi
 fi
-
-if test -z $FC ; then
-		AC_MSG_ERROR([You need g95 or gfortran])
-fi
-
 
 AC_DEFINE_UNQUOTED(FC_LIB_PATH, "${FC_LIB_PATH}", [Path to fortran libs.])
 AC_SUBST(FC_LIB_PATH, "${FC_LIB_PATH}")
@@ -300,46 +244,88 @@ AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
 AC_SUBST(FC, "${FC}")
 AC_SUBST(FCV, "${FCV}")
 
-dnl =====================
-dnl set conf flags
-dnl ==============
+dnl set defaults
+dnl ============
 
-if test $HAS_PORTAUDIO_H -eq 1; then
-	AC_DEFINE(HAS_PORTAUDIO_H, 1, )
+AC_MSG_CHECKING([for a v19 portaudio ])
+
+portaudio_lib_dir="/usr/lib"
+portaudio_include_dir="/usr/include"
+
+AC_ARG_WITH([portaudio-include-dir],
+AC_HELP_STRING([--with-portaudio-include-dir=<path>],
+    [path to portaudio include files]),
+    [portaudio_include_dir=$with_portaudio_include_dir])
+
+AC_ARG_WITH([portaudio-lib-dir],
+AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
+    [path to portaudio lib files]),
+    [portaudio_lib_dir=$with_portaudio_lib_dir])
+
+if test -e ${portaudio_include_dir}/portaudio.h; then
+	HAS_PORTAUDIO_H=1
+fi
+
+if test -e ${portaudio_lib_dir}/libportaudio.so \
+    -o -e ${portaudio_lib_dir}/libportaudio.a;then
+	HAS_PORTAUDIO_LIB=1
+fi
+
+if test $HAS_PORTAUDIO_H -eq 1 -a $HAS_PORTAUDIO_LIB -eq 1; then
 	LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
 	LIBS="${LIBS} -lportaudio"
 	CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
 	AC_CHECK_LIB(portaudio, Pa_GetVersion, \
 		[HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
 	if test $HAS_PORTAUDIO_VERSION -eq 0; then
-		AC_MSG_ERROR([This is likely portaudio v18; you need v19])
+		AC_MSG_RESULT([This is likely portaudio v18; you need portaudio v19])
+	else
+		HAS_PORTAUDIO=1
 	fi
 else
-	AC_MSG_RESULT([Trying FreeBSD paths])
+	AC_MSG_RESULT([portaudio not found trying FreeBSD paths ])
 	portaudio_lib_dir="/usr/local/lib/portaudio2"
 	portaudio_include_dir="/usr/local/include/portaudio2"
 dnl
 dnl Try again to make sure portaudio dirs are valid
 dnl
-	if test -e ${portaudio_lib_dir}/libportaudio.so -o -e \
-		${portaudio_lib_dir}/libportaudio.a;then
-		HAS_PORTAUDIO_LIB=1
-	fi
+	AC_MSG_CHECKING([for a v19 portaudio in FreeBSD paths.])
+	HAS_PORTAUDIO_H=0
+	HAS_PORTAUDIO_LIB=0
+
 	if test -e ${portaudio_include_dir}/portaudio.h; then
 		HAS_PORTAUDIO_H=1
 	fi
+
+	if test -e ${portaudio_lib_dir}/libportaudio.so \
+	    -o -e ${portaudio_lib_dir}/libportaudio.a;then
+		HAS_PORTAUDIO_LIB=1
+	fi
+
 	if test $HAS_PORTAUDIO_H -eq 1 -a $HAS_PORTAUDIO_LIB -eq 1; then
-		HAS_PORTAUDIO=1
-		AC_DEFINE(HAS_PORTAUDIO_H, 1, )
+		AC_MSG_RESULT([found portaudio in FreeBSD paths, double checking it is v19 ])
 		LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
 		LIBS="${LIBS} -lportaudio"
 		CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
 		AC_CHECK_LIB(portaudio, Pa_GetVersion, \
 			[HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
 		if test $HAS_PORTAUDIO_VERSION -eq 0; then
-			AC_MSG_ERROR([This is likely portaudio v18; you need v19])
+			AC_MSG_RESULT([How did you end up with a portaudio v18 here?])
+		else
+			AC_MSG_RESULT([found v19])
+			HAS_PORTAUDIO=1
+			HAS_PORTAUDIO_H=1
 		fi
 	fi
+fi
+
+dnl sanity tests.
+dnl
+echo
+
+if test -z $FC ; then
+	fail=1
+	echo "You need g95 or gfortran to compile this program!"
 fi
 
 if test "$F2PY" = ""; then
@@ -362,6 +348,24 @@ dnl do summary
 
 echo
 echo
+
+if test $HAS_PORTAUDIO -eq 1; then
+	AC_DEFINE(HAS_PORTAUDIO, 1, )
+	AC_DEFINE(HAS_PORTAUDIO_H, 1, )
+	AC_DEFINE(HAS_PORTAUDIO_LIB, 1, )
+else
+	fail=1
+	echo "This program needs portaudio v19 to compile."
+	echo "Please use --with-portaudio-include-dir= and"
+	echo " --with-portaudio-lib-dir= to set the paths."
+fi
+
+dnl
+dnl If fail a pre-requisite then fail
+dnl
+if test $fail -eq 1; then
+	AC_MSG_ERROR([Please check error messages and install missing packages.])
+fi
 
 if test $g95 == "yes"; then
 	echo "Using g95 as fortran compiler.";

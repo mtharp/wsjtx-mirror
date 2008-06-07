@@ -1,4 +1,5 @@
 MV ?= mv
+MKDIR ?= mkdir
 CC ?= @CC@
 FFLAGS	= @FFLAGS@
 LDFLAGS	= @LDFLAGS@
@@ -14,7 +15,7 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
 
-wspr:	w.so
+wspr:	WsprMod/w.so
 
 # The default rules
 .c.o:
@@ -72,7 +73,7 @@ OBJS2F77 = ${SRCS2F77:.f=.o} deep65.o
 SRCS2C = padevsub.c start_threads.c sound.c gmtime2.c ptt_unix.c nhash.c
 OBJS2C  = ${SRCS2C:.c=.o}
 
-w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
+WsprMod/w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
 	${F2PY} -c --opt="-O ${CFLAGS} ${FFLAGS}" \
 	--fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
 	--opt="-fbounds-check ${FFLAGS}" \
@@ -80,6 +81,7 @@ w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
 	-m w \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
+	${MKDIR} -p build/lib/WsprMod
 	${MV} w.so WsprMod/w.so
 
 wspr.spec: wspr.py g.py options.py palettes.py 
@@ -94,7 +96,7 @@ wspr_rxtest.o: wspr_rxtest.f90
 .PHONY : clean
 clean:
 	${RM} -f *.o *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
-		wspr wspr_rxtest w.so wspr.spec *~
+		WsprMod/*.so wspr wspr_rxtest w.so wspr.spec *~
 
 distclean:
 	${RM} -f config.log config.status Makefile
