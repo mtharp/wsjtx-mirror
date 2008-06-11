@@ -411,37 +411,31 @@ def tx_volume():
 def get_decoded():
     global bandmap,bm,newdat,loopall
     
-# Get lines from decoded.txt
+# Get lines from decoded.txt and parse them into an array of fields
     try:
         f=open(appdir+'/decoded.txt',mode='r')
-        lines=f.readlines()
+        lines = [line.split() for line in f]
         f.close()
-        if lines[0][:4]=="$EOF": lines=""
+	if len(lines) > 0 and lines[0][0] == '$EOF': lines = []
     except:
-        lines=""
-        
-    if upload.get():
-        #Dispatch autologger thread.
-        thread.start_new_thread(autolog, (lines,f0),)
+        lines=[]
+
 
     if len(lines)>0:
 #  Write data to text box and insert freqs and calls into bandmap.
         text.configure(state=NORMAL)
         nseq=0
         nfmid=int(1.0e6*fmid)%1000
-        for i in range(len(lines)):
-            if len(lines[i])<6: break                    #Skip $EOF
-            text.insert(END,lines[i][:51]+"\n")
-            callsign=lines[i][29:36]
-            if callsign[:1] != ' ':
-                i1=callsign.find(' ')
-                callsign=callsign[:i1]
-                try:
-                    nseq=60*int(lines[i][0:2]) + int(lines[i][2:4])
-                    ndf=int(lines[i][21:24])
-                    bm[callsign]=(ndf,nseq)
-                except:
-                    pass
+        for fields in lines:
+            if fields[0] == '$EOF': break
+            text.insert(END, "%4s %3s %4s %10s %-6s %4s %3s\n" % (fields[1],fields[3],fields[4],fields[5],fields[6],fields[7],fields[8]))
+            callsign=fields[6]
+            try:
+                nseq=60*int(fields[1][0:2]) + int(fields[1][2:4])
+                ndf=int(fields[5][-3:])
+                bm[callsign]=(ndf,nseq)
+            except:
+                pass
         text.configure(state=DISABLED)
         text.see(END)
 
@@ -473,10 +467,14 @@ def get_decoded():
         text1.configure(state=DISABLED)
         text1.see(END)
 
+    if upload.get():
+        #Dispatch autologger thread.
+        thread.start_new_thread(autolog, (lines,))
+
     if loopall: opennext()
 
 #------------------------------------------------------ autologger
-def autolog(lines,f0):
+def autolog(lines):
     # Random delay of up to 15 seconds to spread load out on server --W1BW
     time.sleep(random.random() * 15.0)
 
@@ -487,42 +485,41 @@ def autolog(lines,f0):
         #       only upload in batch form vs real-time.
         # Any spots to upload?
         if len(lines) > 0:
-            for i in range(len(lines)):
-                if len(lines[i])<6: break                    #Skip $EOF            
-                acallsign=lines[i][42:49]
-                if acallsign[:1] != ' ':
-                    foo = lines[i].split()
-                    # foo now contains a list as follows
-                    #  date,     time, signal,  dt,     freq,     drift, width   call,  grid,   dBm,  (extra params ...)
-                    #    0         1      2      3        4         5      6       7      8      9         10       11
-                    # example:
-                    #['080322', '1834', '-14', '0.1', '10.140141', '-1', 'K7EK', 'CN87', '33', '11.1', '10051757', '40']
-                    # now to format as a string to use for autologger upload using urlencode
-                    # so we get a string formatted for http get/put operations:
-                    reportparams = urllib.urlencode({'function': 'wspr',
-                                                     'dt': str(foo[3]), \
-                                                     'rcall': options.MyCall.get(), \
-                                                     'rgrid': options.MyGrid.get(), 'rqrg': str(f0), \
-                                                     'date': str(foo[0]), 'time': str(foo[1]), \
-                                                     'sig': str(foo[2]), 'tqrg': str(foo[4]), \
-                                                     'drift': str(foo[5]), 'width': str(foo[6]), \
-                                                     'tcall': str(foo[7]), 'tgrid': str(foo[8]), \
-                                                     'dbm': str(foo[9]), 'version': Version})
-                    # reportparams now contains a properly formed http request string for
-                    # the agreed upon format between W6CQZ and N8FQ.
-                    # any other data collection point can be added as desired if it conforms
-                    # to the 'standard format' defined above.
-                    # The following opens a url and passes the reception report to the database
-                    # insertion handler for W6CQZ:
-                    #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
-                    # The following opens a url and passes the reception report to the
-                    # database insertion handler from W1BW:
-                    urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" \
-                                      % reportparams)
-                    reply = urlf.readlines()
-                    #for r in reply:
-                    #    print r
-                    urlf.close()
+            for fields in lines:
+                if fields[0] == '$EOF': break
+                # now to format as a string to use for autologger upload using urlencode
+                # so we get a string formatted for http get/put operations:
+                reportparams = urllib.urlencode({'function': 'wspr',
+                                                 'rcall': options.MyCall.get(),
+                                                 'rgrid': options.MyGrid.get(),
+                                                 'rqrg': str(f0),
+                                                 'date': str(fields[0]),
+                                                 'time': str(fields[1]),
+                                                 #'sync': str(fields[2]),
+                                                 'sig': str(fields[3]),
+                                                 'dt': str(fields[4]),
+                                                 'tqrg': str(fields[5]),
+                                                 #'drift': str(fields[5]),
+                                                 #'width': str(fields[6]),
+                                                 'tcall': str(fields[6]),
+                                                 'tgrid': str(fields[7]),
+                                                 'dbm': str(fields[8]),
+                                                 'version': Version})
+                # reportparams now contains a properly formed http request string for
+                # the agreed upon format between W6CQZ and N8FQ.
+                # any other data collection point can be added as desired if it conforms
+                # to the 'standard format' defined above.
+                # The following opens a url and passes the reception report to the database
+                # insertion handler for W6CQZ:
+                #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
+                # The following opens a url and passes the reception report to the
+                # database insertion handler from W1BW:
+                urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" \
+                                  % reportparams)
+                reply = urlf.readlines()
+                #for r in reply:
+                #    print r
+                urlf.close()
         else:
             # No spots to report, so upload status message instead. --W1BW
             reportparams = urllib.urlencode({'function': 'wsprstat',
