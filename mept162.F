@@ -52,17 +52,12 @@ C  Look for sync patterns, get DF and DT
                if(mod(idt,2).eq.1) ii=-ii
                i1=nint((dtx+2.0)/dt) + ii !Start index for synced symbols
                if(i1.ge.1) then
-                  i2=i1 + jz - 1
 !  Fix this earlier!
                   c4(1:jz-i1+1)=c3(i1:)
                   c4(jz-i1+2:)=0.
-               else if(i1.eq.0) then
-                  c4(1)=0.
-                  c4(2:jz)=c3(jz-1)
                else
                   c4(:-i1+1)=0
-                  i2=jz+i1
-                  c4(-i1:)=c3(:i2)
+                  c4(-i1+2:jz)=c3(:i1+jz-1)
                endif
                call decode162(c4,jz,message,ncycles,metric,nerr)
                if(message(1:6).ne.'      ') go to 23
