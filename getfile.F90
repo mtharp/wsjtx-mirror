@@ -34,7 +34,13 @@ subroutine getfile(fname,len)
   read(10) hdr
   npts=114*12000
   read(10) (iwave(i),i=1,npts)
-  call getrms(iwave,npts,ave,rms)
+  n4=1
+  if (n1.eq.1) goto 8                     !skip byteswap if little endian
+  do i=1,npts
+     i4 = iwave(i)
+     iwave(i) = ishft(iand(iwave(i),255),8) +  iand(ishft(iwave(i),-8),255)
+  enddo    
+8 call getrms(iwave,npts,ave,rms)
   ndecdone=0                              !??? ### ???
   ndiskdat=1
   outfile=fname

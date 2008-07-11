@@ -23,7 +23,6 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       character*4 dxgrid(0:23)
       common/acom2/ ndxkm,dxgrid
 
-      equivalence(i1,i4)
       data npr3/
      + 1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,
      + 0,1,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,0,1,

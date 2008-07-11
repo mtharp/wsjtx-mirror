@@ -10,6 +10,7 @@ C  written by Phil Karn, KA9Q.
       integer*1 symbol(0:2*MAXBITS-1)
       integer*1 dat(MAXDAT)               !Decoded user data, 8 bits per byte
       integer mettab(0:255,0:1)           !Metric table
+      integer i4a,i4b
 
 C  These were the "node" structure in Karn's C code:
       integer nstate(0:MAXBITS-1)      !Encoder state of next node
@@ -18,21 +19,17 @@ C  These were the "node" structure in Karn's C code:
       integer tm(0:1,0:MAXBITS-1)      !Sorted metrics for current hypotheses
       integer ii(0:MAXBITS-1)          !Current branch being tested
 
-      integer*1 i1a,i1b
       logical noback
-      equivalence (i1a,i4a),(i1b,i4b)
       include 'conv232.f'
 
       ntail=nbits-31
 
 C  Compute all possible branch metrics for each symbol pair.
 C  This is the only place we actually look at the raw input symbols
-      i4a=0
-      i4b=0
       do np=0,nbits-1
          j=2*np
-         i1a=symbol(j)
-         i1b=symbol(j+1)
+         i4a=iand(symbol(j),255)
+         i4b=iand(symbol(j+1),255)
          metrics(0,np) = mettab(i4a,0) + mettab(i4b,0)
          metrics(1,np) = mettab(i4a,0) + mettab(i4b,1)
          metrics(2,np) = mettab(i4a,1) + mettab(i4b,0)
@@ -145,8 +142,8 @@ C  Copy decoded data to user's buffer
       nbytes=(nbits+7)/8
       np=7
       do j=1,nbytes-1
-         i4a=nstate(np)
-         dat(j)=i1a
+         i4a=iand(nstate(np),255)
+         dat(j)=i4a
          np=np+8
       enddo
       dat(nbytes)=0

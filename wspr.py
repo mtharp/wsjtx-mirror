@@ -27,6 +27,11 @@ import socket
 import urllib
 import thread
 
+## flag to enable experimental QSO mode interface; only for developer use!
+qso_enable = 0
+
+
+
 root = Tk()
 Version="0.8_r" + "$Rev$"[6:-1]
 print "******************************************************************"
@@ -644,9 +649,11 @@ def update():
     bgcolor='gray85'
     t=''
     if transmitting:
-##        t='Txing: '+options.MyCall.get().strip().upper() + ' ' + \
-##           options.MyGrid.get().strip().upper() + ' ' + str(options.dBm.get())
-        t='Txing: '+g.ftnstr(w.acom1.ctxmsg)
+        if qso_enable == 0:
+            t='Txing: '+options.MyCall.get().strip().upper() + ' ' + \
+               options.MyGrid.get().strip().upper() + ' ' + str(options.dBm.get())
+        else:
+            t='Txing: '+g.ftnstr(w.acom1.ctxmsg)
         bgcolor='yellow'
     if receiving:
         bgcolor='green'
@@ -820,8 +827,9 @@ sc2.pack(side=LEFT)
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 bupload.place(x=360,y=12, anchor='e')
 #bupload.pack(side=LEFT)
-bbestdx=Checkbutton(iframe2,text='Tx Best DX',justify=RIGHT,variable=nbestdx)
-bbestdx.place(x=460,y=12, anchor='e')
+if qso_enable:
+    bbestdx=Checkbutton(iframe2,text='Tx Best DX',justify=RIGHT,variable=nbestdx)
+    bbestdx.place(x=460,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
@@ -897,16 +905,16 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
-btest=Checkbutton(iframe6,text='Test mode',justify=LEFT,variable=ntest)
-btest.pack(side=LEFT, fill=X, padx=5)
-bqso=Checkbutton(iframe6,text='QSO Mode',justify=LEFT,variable=nqso)
-bqso.pack(side=LEFT, fill=X, padx=5)
-btxfirst=Checkbutton(iframe6,text='Tx First',justify=LEFT,variable=ntxfirst)
-btxfirst.pack(side=LEFT, fill=X, padx=5)
-TxMsg=Pmw.EntryField(iframe6,labelpos=W,label_text='Tx msg:',
-        value='CQ K1JT FN20',entry_textvariable=txmsg,entry_width=22)
-TxMsg.pack(side=LEFT, fill=X, padx=5)
-
+if qso_enable:
+    btest=Checkbutton(iframe6,text='Test mode',justify=LEFT,variable=ntest)
+    btest.pack(side=LEFT, fill=X, padx=5)
+    bqso=Checkbutton(iframe6,text='QSO Mode',justify=LEFT,variable=nqso)
+    bqso.pack(side=LEFT, fill=X, padx=5)
+    btxfirst=Checkbutton(iframe6,text='Tx First',justify=LEFT,variable=ntxfirst)
+    btxfirst.pack(side=LEFT, fill=X, padx=5)
+    TxMsg=Pmw.EntryField(iframe6,labelpos=W,label_text='Tx msg:',
+                         value='CQ K1JT FN20',entry_textvariable=txmsg,entry_width=22)
+    TxMsg.pack(side=LEFT, fill=X, padx=5)
 ##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg1.pack(side=LEFT, fill=X, padx=1)
 ##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
