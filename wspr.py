@@ -433,7 +433,7 @@ def get_decoded():
         nfmid=int(1.0e6*fmid)%1000
         for fields in lines:
             if fields[0] == '$EOF': break
-            text.insert(END, "%4s %3s %4s %10s %-6s %4s %3s\n" % (fields[1],fields[3],fields[4],fields[5],fields[6],fields[7],fields[8]))
+            text.insert(END, "%4s %3s %4s %10s %3s %-6s %4s %3s\n" % (fields[1],fields[3],fields[4],fields[5],fields[9],fields[6],fields[7],fields[8]))
             callsign=fields[6]
             try:
                 nseq=60*int(fields[1][0:2]) + int(fields[1][2:4])
@@ -504,7 +504,7 @@ def autolog(lines):
                                                  'sig': str(fields[3]),
                                                  'dt': str(fields[4]),
                                                  'tqrg': str(fields[5]),
-                                                 #'drift': str(fields[5]),
+                                                 'drift': str(fields[9]),
                                                  #'width': str(fields[6]),
                                                  'tcall': str(fields[6]),
                                                  'tgrid': str(fields[7]),
