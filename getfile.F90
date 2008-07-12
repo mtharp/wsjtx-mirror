@@ -38,7 +38,7 @@ subroutine getfile(fname,len)
   if (n1.eq.1) goto 8                     !skip byteswap if little endian
   do i=1,npts
      i4 = iwave(i)
-     iwave(i) = ishft(iand(iwave(i),255),8) +  iand(ishft(iwave(i),-8),255)
+     iwave(i) = ishft(iand(i4,255),8) +  iand(ishft(i4,-8),255)
   enddo    
 8 call getrms(iwave,npts,ave,rms)
   ndecdone=0                              !??? ### ???

@@ -10,7 +10,6 @@ C  written by Phil Karn, KA9Q.
       integer*1 symbol(0:2*MAXBITS-1)
       integer*1 dat(MAXDAT)               !Decoded user data, 8 bits per byte
       integer mettab(0:255,0:1)           !Metric table
-      integer i4a,i4b
 
 C  These were the "node" structure in Karn's C code:
       integer nstate(0:MAXBITS-1)      !Encoder state of next node
@@ -26,10 +25,14 @@ C  These were the "node" structure in Karn's C code:
 
 C  Compute all possible branch metrics for each symbol pair.
 C  This is the only place we actually look at the raw input symbols
+      i4a=0
+      i4b=0
       do np=0,nbits-1
          j=2*np
-         i4a=iand(symbol(j),255)
-         i4b=iand(symbol(j+1),255)
+         i4a=symbol(j)
+         i4b=symbol(j+1)
+         if (i4a.lt.0) i4a=i4a+256
+         if (i4b.lt.0) i4b=i4b+256
          metrics(0,np) = mettab(i4a,0) + mettab(i4b,0)
          metrics(1,np) = mettab(i4a,0) + mettab(i4b,1)
          metrics(2,np) = mettab(i4a,1) + mettab(i4b,0)
@@ -142,7 +145,7 @@ C  Copy decoded data to user's buffer
       nbytes=(nbits+7)/8
       np=7
       do j=1,nbytes-1
-         i4a=iand(nstate(np),255)
+         i4a=nstate(np)
          dat(j)=i4a
          np=np+8
       enddo
