@@ -27,13 +27,8 @@ import socket
 import urllib
 import thread
 
-## flag to enable experimental QSO mode interface; only for developer use!
-qso_enable = 0
-
-
-
 root = Tk()
-Version="0.8_r" + "$Rev$"[6:-1]
+Version="1.0_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -75,7 +70,6 @@ isync=1
 loopall=0
 modpixmap0=0
 mrudir=os.getcwd()
-nbestdx=IntVar()
 ndbm0=-999
 ncall=0
 ndebug=IntVar()
@@ -83,7 +77,6 @@ newdat=1
 newspec=1
 npal=IntVar()
 npal.set(2)
-nqso=IntVar()
 nsave=IntVar()
 nscroll=0
 nsec0=0
@@ -253,8 +246,8 @@ def about(event=NONE):
     t="""
 WSPR is pronounced "whisper" and stands for "Weak Signal
 Propagation Reporter".  The program transmits and receives
-the digital soundcard mode "MEPT_JT", which stands for
-"Manned Experimental Propagation Tests, by K1JT".
+a digital soundcard mode optimized for beacon-like transmissions
+on the LF, MF, and HF bands.
 
 Copyright (c) 2008 by Joseph H. Taylor, Jr., K1JT.
 """
@@ -433,7 +426,10 @@ def get_decoded():
         nfmid=int(1.0e6*fmid)%1000
         for fields in lines:
             if fields[0] == '$EOF': break
-            text.insert(END, "%4s %3s %4s %10s %3s %-6s %4s %3s\n" % (fields[1],fields[3],fields[4],fields[5],fields[9],fields[6],fields[7],fields[8]))
+#            text.insert(END, "%4s %3s %4s %10s %3s %-6s %4s %3s\n" % \
+            text.insert(END, "%4s %3s %4s %10s %3s  %s %s %s\n" % \
+                (fields[1],fields[3],fields[4],fields[5],fields[9], \
+                 fields[6],fields[7],fields[8]))
             callsign=fields[6]
             try:
                 nseq=60*int(fields[1][0:2]) + int(fields[1][2:4])
@@ -582,7 +578,6 @@ def put_params(param3=NONE):
     w.acom1.idsec=idsec
     w.acom1.ntest=ntest.get()
     w.acom1.ntxfirst=ntxfirst.get()
-    w.acom1.nqso=nqso.get()
     w.acom1.nsave=nsave.get()
     try:
         g.ndevin.set(options.DevinName.get())
@@ -647,17 +642,13 @@ def update():
             tw=[rxtime,] + tw
 
     bgcolor='gray85'
-    t=''
+    t='Waiting to start'
     if transmitting:
-        if qso_enable == 0:
-            t='Txing: '+options.MyCall.get().strip().upper() + ' ' + \
-               options.MyGrid.get().strip().upper() + ' ' + str(options.dBm.get())
-        else:
-            t='Txing: '+g.ftnstr(w.acom1.ctxmsg)
+        t='Txing: '+g.ftnstr(w.acom1.sending)
         bgcolor='yellow'
     if receiving:
-        bgcolor='green'
         t='Receiving'
+        bgcolor='green'
     msg6.configure(text=t,bg=bgcolor)
 
 # If new decoded text has appeared, display it.
@@ -706,7 +697,6 @@ def update():
         draw_axis()
 
     w.acom1.ndebug=ndebug.get()
-    w.acom1.nreply=nbestdx.get()
     ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
@@ -827,9 +817,6 @@ sc2.pack(side=LEFT)
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 bupload.place(x=360,y=12, anchor='e')
 #bupload.pack(side=LEFT)
-if qso_enable:
-    bbestdx=Checkbutton(iframe2,text='Tx Best DX',justify=RIGHT,variable=nbestdx)
-    bbestdx.place(x=460,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
@@ -905,16 +892,6 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
-if qso_enable:
-    btest=Checkbutton(iframe6,text='Test mode',justify=LEFT,variable=ntest)
-    btest.pack(side=LEFT, fill=X, padx=5)
-    bqso=Checkbutton(iframe6,text='QSO Mode',justify=LEFT,variable=nqso)
-    bqso.pack(side=LEFT, fill=X, padx=5)
-    btxfirst=Checkbutton(iframe6,text='Tx First',justify=LEFT,variable=ntxfirst)
-    btxfirst.pack(side=LEFT, fill=X, padx=5)
-    TxMsg=Pmw.EntryField(iframe6,labelpos=W,label_text='Tx msg:',
-                         value='CQ K1JT FN20',entry_textvariable=txmsg,entry_width=22)
-    TxMsg.pack(side=LEFT, fill=X, padx=5)
 ##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg1.pack(side=LEFT, fill=X, padx=1)
 ##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
@@ -982,7 +959,6 @@ try:
 #            w.acom1.devout_name=(options.DevoutName.get()+'            ')[:12]
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Upload': upload.set(value)
-        elif key == 'BestDX': nbestdx.set(value)
         elif key == 'Debug': ndebug.set(value)
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
@@ -1021,7 +997,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 0.8     by K1JT')
+root.title('  WSPR 1.0     by K1JT')
 
 put_params()
 try:
@@ -1052,7 +1028,6 @@ f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("PctTx " + str(ipctx.get()) + "\n")
 f.write("Upload " + str(upload.get()) + "\n")
-f.write("BestDX " + str(nbestdx.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")

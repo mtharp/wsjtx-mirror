@@ -50,7 +50,7 @@ F2PYONLY = wspr1 getfile paterminate
 
 SRCS2F90 = wspr1.F90 wspr2.F90 decode.F90 getutc.f90 gran.f90 rx.F90 \
 	startdec.F90 startrx.F90 starttx.F90 tx.F90 getfile.F90 \
-	paterminate.f90 rect.f90 bestdx.f90 wqencode.f90 \
+	paterminate.f90 rect.f90 wqencode.f90 \
 	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 \
 	unpackname.f90 unpacktext2.f90 \
 	packpfx.f90 packprop.f90 unpackpfx.f90 unpackprop.f90 \

@@ -120,14 +120,12 @@ C  Compute soft symbols
          sq0=fac2*(real(c0)**2 + aimag(c0)**2)
          sq1=fac2*(real(c1)**2 + aimag(c1)**2)
          rsym=amp*(sq1-sq0)
-!         write(55,3003) j,rsym,rr(j)
-! 3003    format(i5,3f10.3)
-!         rsym=rr(j)
-
          r=rsym+128.
          if(r.gt.255.0) r=255.0
          if(r.lt.0.0) r=0.0
-         symbol(j)=nint(r)
+         n4=nint(r)
+         if(n4.gt.127) n4=n4-256
+         symbol(j)=n4
       enddo
 
       call inter_mept(symbol,-1)                      !Remove interleaving

@@ -15,7 +15,7 @@ subroutine wqdecode(data0,message,ntype)
   logical first
   character*12 dcall(0:N15-1)
   data first/.true./
-  data cwx/'SUNNY','CLOUDY','RAIN','SNOW'/
+  data cwx/'CLEAR','CLOUDY','RAIN','SNOW'/
   data cwind/'CALM','BREEZES','WINDY','DRY','HUMID'/
   save first,dcall
 
@@ -122,6 +122,8 @@ subroutine wqdecode(data0,message,ntype)
      else
         message=callsign(:i1)//'<...> '//'R '//crpt
      endif
+     call hash(callsign,i1-1,ih)
+     dcall(ih)=callsign(:i1-1)
 
 ! pfx/call R and report (msg #4; types -37 to -54)
   else if(ntype.le.-37 .and. ntype.ge.-54) then
@@ -278,9 +280,9 @@ subroutine wqdecode(data0,message,ntype)
   else if(ntype.eq.-57) then
      ng=n2/128
      call unpacktext2(n1,ng,message)
-  else if(ntype.eq.-64) then
-     message='<Unknown message type>'
-     message='******** ??? ********'
+  else 
+!     message='<Unknown message type>'
+     message='BadMsg: '//callsign
   endif
 
   do i=1,22

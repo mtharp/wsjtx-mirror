@@ -64,7 +64,6 @@ C  Look for sync patterns, get DF and DT
             enddo
             go to 24
  23         width=0.
-!            call rect(c3,dtx,0.0,message,dfx2,width,pmax)
             i2=index(outfile,'.')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
@@ -82,9 +81,8 @@ C  Look for sync patterns, get DF and DT
             close(13)
             write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
- 1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5,f5.1)
+ 1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
             i1=index(message,' ')
-            call bestdx(datetime,message(i1+1:i1+4))
          endif
  24      continue
       enddo

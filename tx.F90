@@ -16,28 +16,24 @@ subroutine tx
   include 'acom1.f90'
   common/bcom/ntransmitted
 
-  if(nqso.eq.0) then
-     call1=callsign
-     ierr=ptt(nport,pttport,1,iptt)
-     write(cdbm,'(i3)'),ndbm
-     if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
-     if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
-     do i=6,1,-1
-        if(call1(i:i).ne.' ') go to 10
-     enddo
+  call1=callsign
+  ierr=ptt(nport,pttport,1,iptt)
+  write(cdbm,'(i3)'),ndbm
+  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
+  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
+  do i=6,1,-1
+     if(call1(i:i).ne.' ') go to 10
+  enddo
 
-10   iz=i
-     message=call1(1:iz)//' '//grid//' '//cdbm
-  else
-     message=ctxmsg
-  endif
+10 iz=i
+  message=call1(1:iz)//' '//grid//' '//cdbm
 
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
   ctxmsg=message
   snr=99.0
   if(ntest.eq.1) snr=-26.0
-  call genmept(message,ntxdf,snr,nreply,nsectx,msg2,jwave)
-  ctxmsg=msg2
+  call genmept(message,ntxdf,snr,nsectx,msg2,jwave)
+  sending=msg2
   ierr=ptt(nport,pttport,1,iptt)
   npts=114*12000
   ierr=soundout(idevout,jwave,npts)

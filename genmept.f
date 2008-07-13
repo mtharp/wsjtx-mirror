@@ -1,5 +1,4 @@
-      subroutine genmept(message,ntxdf,snrdb,nreply,
-     +      nsectx,msg2,iwave)
+      subroutine genmept(message,ntxdf,snrdb,nsectx,msg2,iwave)
 
 C  Encode an MEPT_JT message and generate the corresponding wavefile.
 
@@ -23,6 +22,7 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       character*4 dxgrid(0:23)
       common/acom2/ ndxkm,dxgrid
 
+      equivalence(i1,i4)
       data npr3/
      + 1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,
      + 0,1,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,0,1,
@@ -50,16 +50,6 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       call wqencode(message,ntype,data0)
 !      call packcall(call1,n1,lbad1)
 !      call packgrid(grid,ng,lbad2)
-
-      ihrtx=nsectx/3600
-      if(ihrtx.lt.ihrtx0 .and. ihrtx0.ne.99 .and. nreply.eq.1) then
-         i=ihrtx-1
-         if(i.lt.0) i=i+24
-         call packgrid(dxgrid(i),ng,lbad2)
-         ndbm=0
-         ihrtx0=ihrtx
-         print*,'Sending reply message:',dxgrid(i),' DE ',call1
-      endif
 
 !      n2=128*ng + ndbm + 64
 !      call pack50(n1,n2,data0)             !Pack 8 bits per byte, add tail
