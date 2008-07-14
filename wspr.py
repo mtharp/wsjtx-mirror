@@ -488,6 +488,12 @@ def autolog(lines):
         if len(lines) > 0:
             for fields in lines:
                 if fields[0] == '$EOF': break
+                n1=len(str(fields[6]))
+                n2=len(str(fields[7]))
+                n3=99
+                if fields[8].isdigit(): n3=int(fields[8])
+                if n1<3 or n1>6 or n2!=4 or n3<0 or n3>60:
+                    break
                 # now to format as a string to use for autologger upload using urlencode
                 # so we get a string formatted for http get/put operations:
                 reportparams = urllib.urlencode({'function': 'wspr',
