@@ -61,7 +61,8 @@ C  Look for sync patterns, get DF and DT
                   if(jz.lt.45000) c4(jz:)=0.
                endif
                call decode162(c4,45000,message,ncycles,metric,nerr)
-               if(message(1:6).ne.'      ') go to 23
+               if(message(1:6).ne.'      ' .and. 
+     +            message(1:6).ne.'000AAA') go to 23
             enddo
             go to 24
  23         width=0.
