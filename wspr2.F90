@@ -63,6 +63,7 @@ subroutine wspr2
      receiving=.false.
      nrxdone=0
      decoding=.true.
+     thisfile=outfile
      call startdec
   endif
 
@@ -87,7 +88,6 @@ subroutine wspr2
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-!  print*,outfile
   neven=1-mod(nsec/120,2)
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0) then
