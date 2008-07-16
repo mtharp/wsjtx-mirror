@@ -19,7 +19,7 @@ int spawn_thread(void (*f)()) {
   int iret;
   int iarg0 = 0;
 
-  if ((iret = pthread_create(&thread,NULL,f,&iarg0)) != 0) {
+  if ((iret = pthread_create(&thread,NULL,(void *)f,&iarg0)) != 0) {
     perror("spawning new thread");
     return iret;
   }

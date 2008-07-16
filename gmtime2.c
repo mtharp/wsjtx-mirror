@@ -41,7 +41,6 @@ extern void __stdcall GMTIME2(int it[], double *stime)
 extern void gmtime2_(int it[], double *stime)
 #endif
 {
-  int nsec;
   SYSTEMTIME st;
 
   GetSystemTime(&st);

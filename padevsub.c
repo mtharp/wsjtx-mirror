@@ -7,7 +7,7 @@ int padevsub_(int *numdev, int *ndefin, int *ndefout,
 {
   int      i, devIdx;
   int      numDevices;
-  PaDeviceInfo *pdi;
+  const    PaDeviceInfo *pdi;
   PaError  err;
 
   Pa_Initialize();

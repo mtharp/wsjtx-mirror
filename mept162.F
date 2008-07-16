@@ -5,7 +5,7 @@ C  WSPR signals.
 
       integer*2 id(npts)
       character*22 message
-      character*70 outfile
+      character*80 outfile
       character*11 datetime
       logical first,ltest
       real*8 f0,freq
@@ -66,7 +66,7 @@ C  Look for sync patterns, get DF and DT
             enddo
             go to 24
  23         width=0.
-            i2=index(outfile,'.')-1
+            i2=index(outfile,'.wav')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             nf1=nint(-a(2))
