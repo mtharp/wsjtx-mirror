@@ -888,7 +888,7 @@ f4a.pack(side=LEFT,expand=0,fill=Y)
 
 #--------------------------------------------------------- Decoded text box
 f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
-text=Text(f4b, height=11, width=63)
+text=Text(f4b, height=11, width=63, bg='white')
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
 text.pack(side=RIGHT, fill=X, padx=1)
