@@ -252,9 +252,9 @@ on the LF, MF, and HF bands.
 Copyright (c) 2008 by Joseph H. Taylor, Jr., K1JT.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
-    t="Revision date: " + \
-      "$Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $"[7:-1]
-    Label(about,text=t,justify=LEFT).pack(padx=20)
+##    t="Revision date: " + \
+##      "$Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $"[7:-1]
+##    Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
 
 #------------------------------------------------------ 
