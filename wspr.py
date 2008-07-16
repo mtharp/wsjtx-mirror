@@ -650,6 +650,7 @@ def update():
 
     bgcolor='gray85'
     t='Waiting to start'
+    bgcolor='pink'
     if transmitting:
         t='Txing: '+g.ftnstr(w.acom1.sending)
         bgcolor='yellow'
