@@ -8,6 +8,7 @@ C  Write a wavefile to disk.
       integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
       character*4 ariff,awave,afmt,adata
       integer*1 hdr(44)
+      integer*2 iswap_short
       common/hdr/ariff,nchunk,awave,afmt,lenfmt,nfmt2,nchan2,
      +     nsamrate,nbytesec,nbytesam2,nbitsam2,adata,ndata
       equivalence (hdr,ariff),(nfmt2,n4)
