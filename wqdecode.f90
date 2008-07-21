@@ -255,8 +255,13 @@ subroutine wqdecode(data0,message,ntype)
         ntemp=ntemp-1000
         cf=' C '
      endif
-     write(message,1020) cwx(nwx),ntemp,cf,cwind(n2/128)
-1020 format('WX ',a6,i3,a3,a7)
+     n2a=n2/128
+     if(nwx.ge.1 .and. nwx.le.4 .and. n2a.ge.1 .and. n2a.le.5) then
+        write(message,1020) cwx(nwx),ntemp,cf,cwind(n2/128)
+1020    format('WX ',a6,i3,a3,a7)
+     else
+        message='WX'//' (BadMsg)'
+     endif
 
 ! Hexadecimal data (type 62)
   else if(ntype.eq.62) then
