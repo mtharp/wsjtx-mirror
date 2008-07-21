@@ -375,14 +375,14 @@ def delwav():
     result=msg.activate()
     if result == 'Yes':
 # Make a list of *.wav files in Save
-        la=dircache.listdir(appdir+'/Save')
+        la=dircache.listdir(appdir+'/save')
         lb=[]
         for i in range(len(la)):
             j=la[i].find(".wav") + la[i].find(".WAV")
             if j>0: lb.append(la[i])
 # Now delete them all.
         for i in range(len(lb)):
-            fname=appdir+'/Save/'+lb[i]
+            fname=appdir+'/save/'+lb[i]
             os.remove(fname)
 
 #--------------------------------------------------- rx_volume
