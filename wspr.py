@@ -409,32 +409,55 @@ def tx_volume():
 def get_decoded():
     global bandmap,bm,newdat,loopall
     
-# Get lines from decoded.txt and parse them into an array of fields
+# Get lines from decoded.txt and parse each into an assoc array
     try:
         f=open(appdir+'/decoded.txt',mode='r')
-        lines = [line.split() for line in f]
+        decodes = []
+        for line in f:
+            fields = line.split()
+            if len(fields) < 10: continue
+            msg = fields[6:-3]
+            d = {}
+            d['date'] = fields[0]
+            d['time'] = fields[1]
+            d['sync'] = fields[2]
+            d['snr'] = fields[3]
+            d['dt'] = fields[4]
+            d['freq'] = fields[5]
+            d['msg'] = msg
+            d['drift'] = fields[-3]
+            d['cycles'] = fields[-2]
+            d['ii'] = fields[-1]
+            # try to figure out whether this is a beacon msg or QSO msg
+            d['beacon'] = True
+            if len(msg) != 3 or len(msg[1]) != 4 or len(msg[0]) < 3 or len(msg[0]) > 6 \
+                   or not msg[2].isdigit():
+                d['beacon'] = False
+            else:
+                dbm = int(msg[2])
+                if dbm < 0 or dbm > 60:
+                    d['beacon'] = False
+            # try to extract the callsign of the Tx station from beacon or QSO msg
+            if d['beacon']: d['call'] = d['msg'][0]
+            elif d['msg'][0] == 'CQ' or d['msg'][0][0] == '<':
+                d['call'] = d['msg'][1]
+            decodes.append(d)
         f.close()
-	if len(lines) > 0 and lines[0][0] == '$EOF': lines = []
     except:
-        lines=[]
+        decodes = []
 
-
-    if len(lines)>0:
+    if len(decodes) > 0:
 #  Write data to text box and insert freqs and calls into bandmap.
         text.configure(state=NORMAL)
         nseq=0
         nfmid=int(1.0e6*fmid)%1000
-        for fields in lines:
-            if fields[0] == '$EOF': break
-            if not fields[9].isdigit(): fields[9]='0'
-            if int(fields[9])<-4 or int(fields[9])>4: fields[9]='0'
-            text.insert(END, "%4s %3s %4s %10s %3s  %s %s %s\n" % \
-                (fields[1],fields[3],fields[4],fields[5],fields[9], \
-                 fields[6],fields[7],fields[8]))
-            callsign=fields[6]
+        for d in decodes:
+            text.insert(END, "%4s %3s %4s %10s %2s %s\n" % \
+                (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],' '.join(d['msg'])))
             try:
-                nseq=60*int(fields[1][0:2]) + int(fields[1][2:4])
-                ndf=int(fields[5][-3:])
+                callsign=d['call']
+                nseq=60*int(d['time'][0:2]) + int(d['time'][2:4])
+                ndf=int(d['freq'][-3:])
                 bm[callsign]=(ndf,nseq)
             except:
                 pass
@@ -471,12 +494,12 @@ def get_decoded():
 
     if upload.get():
         #Dispatch autologger thread.
-        thread.start_new_thread(autolog, (lines,))
+        thread.start_new_thread(autolog, (decodes,))
 
     if loopall: opennext()
 
 #------------------------------------------------------ autologger
-def autolog(lines):
+def autolog(decodes):
     # Random delay of up to 15 seconds to spread load out on server --W1BW
     time.sleep(random.random() * 15.0)
 
@@ -486,32 +509,27 @@ def autolog(lines):
         # TODO:  (Maybe??) Allow for stations wishing to collect spot data but
         #       only upload in batch form vs real-time.
         # Any spots to upload?
-        if len(lines) > 0:
-            for fields in lines:
-                if fields[0] == '$EOF': break
-                n1=len(str(fields[6]))
-                n2=len(str(fields[7]))
-                n3=99
-                if fields[8].isdigit(): n3=int(fields[8])
-                if n1<3 or n1>6 or n2!=4 or n3<0 or n3>60:
-                    break
+        if len(decodes) > 0:
+            for d in decodes:
+                # don't upload QSO messages, only things we think are beacons
+                if not d['beacon']: continue
                 # now to format as a string to use for autologger upload using urlencode
                 # so we get a string formatted for http get/put operations:
+                m = d['msg']
                 reportparams = urllib.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
                                                  'rqrg': str(f0),
-                                                 'date': str(fields[0]),
-                                                 'time': str(fields[1]),
-                                                 #'sync': str(fields[2]),
-                                                 'sig': str(fields[3]),
-                                                 'dt': str(fields[4]),
-                                                 'tqrg': str(fields[5]),
-                                                 'drift': str(fields[9]),
-                                                 #'width': str(fields[6]),
-                                                 'tcall': str(fields[6]),
-                                                 'tgrid': str(fields[7]),
-                                                 'dbm': str(fields[8]),
+                                                 'date': d['date'],
+                                                 'time': d['time'],
+                                                 #'sync': d['sync'],
+                                                 'sig': d['snr'],
+                                                 'dt': d['dt'],
+                                                 'tqrg': d['freq'],
+                                                 'drift': d['drift'],
+                                                 'tcall': m[0],
+                                                 'tgrid': m[1],
+                                                 'dbm': m[2],
                                                  'version': Version})
                 # reportparams now contains a properly formed http request string for
                 # the agreed upon format between W6CQZ and N8FQ.
