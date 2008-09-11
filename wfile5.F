@@ -13,7 +13,7 @@ C  Write a wavefile to disk.
      +     nsamrate,nbytesec,nbytesam2,nbitsam2,adata,ndata
       equivalence (hdr,ariff),(nfmt2,n4)
 
-      n4=0
+      n4=1
 C  Generate the header
       ariff='RIFF'
       awave='WAVE'
