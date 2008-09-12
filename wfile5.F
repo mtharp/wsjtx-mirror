@@ -2,6 +2,7 @@
 
 C  Write a wavefile to disk.
 
+      integer*1 n4 
       integer*2 iwave(nmax)
       character*80 outfile
 
@@ -13,7 +14,6 @@ C  Write a wavefile to disk.
      +     nsamrate,nbytesec,nbytesam2,nbitsam2,adata,ndata
       equivalence (hdr,ariff),(nfmt2,n4)
 
-      n4=1
 C  Generate the header
       ariff='RIFF'
       awave='WAVE'
