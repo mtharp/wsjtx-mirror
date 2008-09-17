@@ -1,4 +1,4 @@
-#---------------------------------------------------------------------- WSPR
+#----------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -28,7 +28,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.0_r" + "$Rev$"[6:-1]
+Version="1.01_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -1023,7 +1023,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 1.0     by K1JT')
+root.title('  WSPR 1.01     by K1JT')
 
 put_params()
 try:
