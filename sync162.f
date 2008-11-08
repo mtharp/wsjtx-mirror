@@ -169,7 +169,7 @@ C  Compute power spectrum for each step, and get average
          if(keep(i).ne.0) then
             x=10.0*log10(p1(i)) - 22
             if(x.ge.0.5) then
-               k=k+1
+               k=min(k+1,275)
                p1(k)=x
                freq(k)=freq(i)
                drift(k)=drift(i)
