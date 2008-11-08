@@ -58,6 +58,7 @@ bandmap=[]
 bm={}
 f0=DoubleVar()
 ftx=DoubleVar()
+ftx0=0.
 ft=[]
 fileopened=""
 fmid=0.0
@@ -89,7 +90,7 @@ ntxfirst=IntVar()
 NX=500
 NY=160
 param20=""
-pctx=[-1,0,20,25,33,100]
+pctx=[-1,0,10,20,25,33,100]
 sf0=StringVar()
 sftx=StringVar()
 txmsg=StringVar()
@@ -119,10 +120,10 @@ g.DevoutName=StringVar()
 
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 freq0=[0,1.8366,3.5926,5.3305,7.0386,10.1387,14.0956,18.1046,21.0946,24.9246,\
-       28.1246,50.2930]
+       28.1246,50.2930,5.3305]
 freqtx=[0,1.8366,3.5926,5.3305,7.0386,10.1387,14.0956,18.1046,21.0946,24.9246,\
-       28.1246,50.2930]
-for i in range(12):
+       28.1246,50.2930,5.3305]
+for i in range(13):
     freqtx[i]=freq0[i]+0.001500
 
 socktimeout = 10
@@ -365,6 +366,13 @@ def draw_axis():
             if n<0: n=n+1000
             c.create_text(27,j,text=str(n))
         c.create_line(0,j,i1,j,fill='black')
+    iy=1000000.0*(ftx.get()-f0.get()) - 1500
+    if abs(iy)<=100:
+        j=80 - iy/df
+        c.create_line(0,j,13,j,fill='red',width=3)
+    else:
+        MsgBox("Tx Frequency outside permitted limits.")
+
 
 #------------------------------------------------------ del_all
 def del_all():
@@ -628,7 +636,7 @@ def put_params(param3=NONE):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
+    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0
 
@@ -666,9 +674,15 @@ def update():
         except:
             pass
         put_params()
-#        print iband.get(),f0.get(),ftx.get()
-        t="%d    %f    %f" % (iband.get(),f0.get(),ftx.get())
-        msg1.configure(text=t)
+        nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
+##        bg='white'
+##        if abs(nndf)>100:
+##            bg='red'
+##        lftx.configure(bg=bg)
+        
+##        t="%d    %f    %f   %f" % (iband.get(),f0.get(),ftx.get(),pctx[ipctx.get()])
+##        t="%d" % nndf
+##        msg1.configure(text=t)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -742,9 +756,10 @@ def update():
         fmid=f0.get() + 0.001500
     except:
         pass
-    if fmid!=fmid0:
+    if fmid!=fmid0 or ftx.get()!=ftx0:
         draw_axis()
-
+    fmid0=fmid
+    ftx0=ftx.get()
     w.acom1.ndebug=ndebug.get()
     ldate.after(200,update)
     
@@ -833,7 +848,7 @@ bandmenu.add_radiobutton(label = '15 m', variable=iband,value=8)
 bandmenu.add_radiobutton(label = '12 m', variable=iband,value=9)
 bandmenu.add_radiobutton(label = '10 m', variable=iband,value=10)
 bandmenu.add_radiobutton(label = '6 m', variable=iband,value=11)
-#bandmenu.add_radiobutton(label = '144', variable=iband,value=12)
+bandmenu.add_radiobutton(label = 'Other', variable=iband,value=12)
 
 
 #------------------------------------------------------  Help menu
@@ -893,9 +908,9 @@ iframe2.pack(expand=1, fill=X, padx=4)
 #------------------------------------------------------ Labels under graphics
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
-lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq:',
+lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12)
-lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx freq:',
+lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx:',
         entry_textvariable=sftx,entry_width=12)
 widgets = (lf0, lftx)
 for widget in widgets:
@@ -904,17 +919,19 @@ g1.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 lab01=Label(iframe2a, text='').pack(side=LEFT,padx=1)
 g2=Pmw.Group(iframe2a,tag_text="T/R cycle")
 #------------------------------------------------------ T/R Cycle Select
-for i in range(6):
+for i in range(7):
     t="Idle"
     if i==1:
         t="Rx"
     elif i==2:
-        t="20%"
+        t="10%"
     elif i==3:
-        t="25%"
+        t="20%"
     elif i==4:
-        t="33%"
+        t="25%"
     elif i==5:
+        t="33%"
+    elif i==6:
         t="Tx"
     Radiobutton(g2.interior(),text=t,value=i,
                 variable=ipctx).pack(side=LEFT,padx=4)
@@ -1147,6 +1164,8 @@ f.write("freq0_10 "  + str( freq0[10]) + "\n")
 f.write("freqtx_10 " + str(freqtx[10]) + "\n")
 f.write("freq0_6 "  + str( freq0[11]) + "\n")
 f.write("freqtx_6 " + str(freqtx[11]) + "\n")
+f.write("freq0_other "  + str( freq0[12]) + "\n")
+f.write("freqtx_other " + str(freqtx[12]) + "\n")
 f.write("iband " + str(iband.get()) + "\n")
 
 f.close()

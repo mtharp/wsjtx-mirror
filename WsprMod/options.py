@@ -44,6 +44,7 @@ ndevin=IntVar()
 ndevout=IntVar()
 DevinName=StringVar()
 DevoutName=StringVar()
+DefTxTone=StringVar()
 dBm=IntVar()
 
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
@@ -64,8 +65,10 @@ audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
         value='0',entry_textvariable=DevoutName,entry_width=12)
 cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (dBm):',
         entry_textvariable=dBm,entry_width=4,scrolledlist_items=pwrlist)
+txtone=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Default Tx tone:',
+        value='1500',entry_textvariable=DefTxTone,entry_width=12)
 
-widgets = (lcall,lgrid,comport,audioin,audioout,cbpwr)
+widgets = (lcall,lgrid,comport,audioin,audioout,cbpwr,txtone)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)
 Pmw.alignlabels(widgets)
