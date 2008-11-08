@@ -28,7 +28,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.01_r" + "$Rev$"[6:-1]
+Version="1.1_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -63,6 +63,8 @@ fileopened=""
 fmid=0.0
 fmid0=0.0
 font1='Helvetica'
+iband=IntVar()
+iband0=0
 idsec=0
 ipctx=IntVar()
 isec0=0
@@ -88,6 +90,7 @@ NX=500
 NY=160
 param20=""
 pctx=[-1,0,20,25,33,100]
+sf0=StringVar()
 sftx=StringVar()
 txmsg=StringVar()
 
@@ -115,6 +118,12 @@ g.DevinName=StringVar()
 g.DevoutName=StringVar()
 
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
+freq0=[0,1.8366,3.5926,5.3305,7.0386,10.1387,14.0956,18.1046,21.0946,24.9246,\
+       28.1246,50.2930]
+freqtx=[0,1.8366,3.5926,5.3305,7.0386,10.1387,14.0956,18.1046,21.0946,24.9246,\
+       28.1246,50.2930]
+for i in range(12):
+    freqtx[i]=freq0[i]+0.001500
 
 socktimeout = 10
 socket.setdefaulttimeout(socktimeout)
@@ -621,7 +630,7 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg
+        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0
 
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
@@ -629,10 +638,21 @@ def update():
     nsec0=nsec
     ns120=nsec % 120
     try:
+        f0.set(float(sf0.get()))
         ftx.set(float(sftx.get()))
     except:
         pass
     isec=utc[5]
+    
+    if iband.get()!=iband0:
+        f0.set(freq0[iband.get()])
+        ftx.set(freqtx[iband.get()])
+        sf0.set(freq0[iband.get()])
+        sftx.set(freqtx[iband.get()])
+        iband0=iband.get()
+    freq0[iband.get()]=f0.get()
+    freqtx[iband.get()]=ftx.get()
+
     if isec != isec0:                           #Do once per second
         isec0=isec
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
@@ -646,6 +666,9 @@ def update():
         except:
             pass
         put_params()
+#        print iband.get(),f0.get(),ftx.get()
+        t="%d    %f    %f" % (iband.get(),f0.get(),ftx.get())
+        msg1.configure(text=t)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -794,6 +817,25 @@ savemenu.add_radiobutton(label = 'None', variable=nsave,value=0)
 savemenu.add_radiobutton(label = 'Save all', variable=nsave,value=2)
 nsave.set(0)
 
+#------------------------------------------------------ Band menu
+bandbutton = Menubutton(mbar, text = 'Band')
+bandbutton.pack(side = LEFT)
+bandmenu = Menu(bandbutton, tearoff=1)
+bandbutton['menu'] = bandmenu
+iband.set(5)
+bandmenu.add_radiobutton(label = '160 m', variable=iband,value=1)
+bandmenu.add_radiobutton(label = '80 m', variable=iband,value=2)
+bandmenu.add_radiobutton(label = '40 m', variable=iband,value=4)
+bandmenu.add_radiobutton(label = '30 m', variable=iband,value=5)
+bandmenu.add_radiobutton(label = '20 m', variable=iband,value=6)
+bandmenu.add_radiobutton(label = '17 m', variable=iband,value=7)
+bandmenu.add_radiobutton(label = '15 m', variable=iband,value=8)
+bandmenu.add_radiobutton(label = '12 m', variable=iband,value=9)
+bandmenu.add_radiobutton(label = '10 m', variable=iband,value=10)
+bandmenu.add_radiobutton(label = '6 m', variable=iband,value=11)
+#bandmenu.add_radiobutton(label = '144', variable=iband,value=12)
+
+
 #------------------------------------------------------  Help menu
 helpbutton = Menubutton(mbar, text = 'Help')
 helpbutton.pack(side = LEFT)
@@ -852,7 +894,7 @@ iframe2.pack(expand=1, fill=X, padx=4)
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial freq:',
-        value=10.1387,entry_textvariable=f0,entry_width=12)
+        value=10.1387,entry_textvariable=sf0,entry_width=12)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx freq:',
         entry_textvariable=sftx,entry_width=12)
 widgets = (lf0, lftx)
@@ -918,8 +960,8 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
-##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-##msg1.pack(side=LEFT, fill=X, padx=1)
+msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+msg1.pack(side=LEFT, fill=X, padx=1)
 ##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg2.pack(side=LEFT, fill=X, padx=1)
 ##msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
@@ -934,6 +976,7 @@ iframe6.pack(expand=1, fill=X, padx=4)
 frame.pack()
 
 isync=1
+iband.set(5)
 
 #---------------------------------------------------------- Process INI file
 try:
@@ -988,12 +1031,37 @@ try:
         elif key == 'Debug': ndebug.set(value)
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
-        elif key == 'f0': f0.set(value)
-        elif key == 'ftx': ftx.set(value)
+
+        elif key == 'freq0_160': freq0[1]=float(value)
+        elif key == 'freq0_80': freq0[2]=float(value)
+        elif key == 'freq0_40': freq0[4]=float(value)
+        elif key == 'freq0_30': freq0[5]=float(value)
+        elif key == 'freq0_20': freq0[6]=float(value)
+        elif key == 'freq0_17': freq0[7]=float(value)
+        elif key == 'freq0_15': freq0[8]=float(value)
+        elif key == 'freq0_12': freq0[9]=float(value)
+        elif key == 'freq0_10': freq0[10]=float(value)
+        elif key == 'freq0_6': freq0[11]=float(value)
+
+        elif key == 'freqtx_160': freqtx[1]=float(value)
+        elif key == 'freqtx_80': freqtx[2]=float(value)
+        elif key == 'freqtx_40': freqtx[4]=float(value)
+        elif key == 'freqtx_30': freqtx[5]=float(value)
+        elif key == 'freqtx_20': freqtx[6]=float(value)
+        elif key == 'freqtx_17': freqtx[7]=float(value)
+        elif key == 'freqtx_15': freqtx[8]=float(value)
+        elif key == 'freqtx_12': freqtx[9]=float(value)
+        elif key == 'freqtx_10': freqtx[10]=float(value)
+        elif key == 'freqtx_6': freqtx[11]=float(value)
+        elif key == 'iband': iband.set(value)
+
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
 except:
     print 'Error reading WSPR.INI, continuing with defaults.'
     print key,value
+
+f0.set(freq0[iband.get()])
+ftx.set(freqtx[iband.get()])
 
 #------------------------------------------------------  Select palette
 if g.cmap == "gray0":
@@ -1023,7 +1091,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 1.01     by K1JT')
+root.title('  WSPR 1.1     by K1JT')
 
 put_params()
 try:
@@ -1057,8 +1125,30 @@ f.write("Upload " + str(upload.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")
-f.write("f0 " + str(f0.get()) + "\n")
-f.write("ftx " + str(ftx.get()) + "\n")
+##f.write("f0 " + str(f0.get()) + "\n")
+##f.write("ftx " + str(ftx.get()) + "\n")
+f.write("freq0_160 " + str( freq0[1]) + "\n")
+f.write("freqtx_160 " + str(freqtx[1]) + "\n")
+f.write("freq0_80 "  + str( freq0[2]) + "\n")
+f.write("freqtx_80 " + str(freqtx[2]) + "\n")
+f.write("freq0_40 "  + str( freq0[4]) + "\n")
+f.write("freqtx_40 " + str(freqtx[4]) + "\n")
+f.write("freq0_30 "  + str( freq0[5]) + "\n")
+f.write("freqtx_30 " + str(freqtx[5]) + "\n")
+f.write("freq0_20 "  + str( freq0[6]) + "\n")
+f.write("freqtx_20 " + str(freqtx[6]) + "\n")
+f.write("freq0_17 "  + str( freq0[7]) + "\n")
+f.write("freqtx_17 " + str(freqtx[7]) + "\n")
+f.write("freq0_15 "  + str( freq0[8]) + "\n")
+f.write("freqtx_15 " + str(freqtx[8]) + "\n")
+f.write("freq0_12 "  + str( freq0[9]) + "\n")
+f.write("freqtx_12 " + str(freqtx[9]) + "\n")
+f.write("freq0_10 "  + str( freq0[10]) + "\n")
+f.write("freqtx_10 " + str(freqtx[10]) + "\n")
+f.write("freq0_6 "  + str( freq0[11]) + "\n")
+f.write("freqtx_6 " + str(freqtx[11]) + "\n")
+f.write("iband " + str(iband.get()) + "\n")
+
 f.close()
 
 #Terminate PortAudio
