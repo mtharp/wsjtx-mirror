@@ -281,18 +281,19 @@ def help(event=NONE):
    default sound card, enter suitable device numbers for
    Audio In and Audio Out (see console window).
 
-2. On the main screen, enter your dial frequency (USB) and
-    Tx frequency in MHz.  Click on 'Rx' to receive only,
-    'Tx' to transmit only, or the desired average percentage
-    of transmission cycles.
+2. Select the desired band from the Band menu and optionally
+   enter your dial frequency (USB) and/or Tx frequency on the
+   main screen.  Click on 'Rx' to receive only, 'Tx' to
+   transmit only, or the desired average percentage of
+   transmission cycles.
 
 3. Be sure that your computer clock is correct to +/- 1 s. If
    necessary you can make small adjustments by left- or right-
    clicking on the 'Dsec' label.
 
 4. The program will begin a Tx or Rx sequence at the start of
-    each even minute.  The waterfall will update near the end
-    of each Rx sequence.
+    each even minute.  The waterfall will update and decoding
+    will take place at the end of each Rx sequence.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
@@ -678,8 +679,7 @@ def update():
 ##        bg='white'
 ##        if abs(nndf)>100:
 ##            bg='red'
-##        lftx.configure(bg=bg)
-        
+##        lftx.configure(bg=bg)     
 ##        t="%d    %f    %f   %f" % (iband.get(),f0.get(),ftx.get(),pctx[ipctx.get()])
 ##        t="%d" % nndf
 ##        msg1.configure(text=t)
@@ -936,7 +936,7 @@ for i in range(7):
     Radiobutton(g2.interior(),text=t,value=i,
                 variable=ipctx).pack(side=LEFT,padx=4)
 ipctx.set(0)
-g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
+g2.pack(side=RIGHT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
@@ -977,8 +977,8 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
-msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-msg1.pack(side=LEFT, fill=X, padx=1)
+##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+##msg1.pack(side=LEFT, fill=X, padx=1)
 ##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg2.pack(side=LEFT, fill=X, padx=1)
 ##msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
