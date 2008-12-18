@@ -24,11 +24,10 @@ def dbm_balloon():
         if mW==501: mW=500
         t="%d mW" % (mW,)
     else:
-        W=int(mW/1000)
+        W=int(0.001*mW + 0.5)
         if W==501: W=500
         t="%d W" % (W,)
     balloon.bind(cbpwr,t)
-
 
 def options2(t):
     root.geometry(t)
