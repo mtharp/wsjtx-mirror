@@ -111,8 +111,10 @@ subroutine map65a(newdat)
         if(smax.gt.1.1) then
            ntry=ntry+1
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
-           call ccf65(ss(1,1,i),nhsym,sync1,ipol,dt,flipk,              &
-                syncshort,snr2,ipol2,dt2)
+           call ccf65(ss(1,1,i),nhsym,sync1,dt,flipk,              &
+                syncshort,snr2,dt2)
+           ipol=1
+           ipol2=1
 
 ! ########################### Search for Shorthand Messages #################
 !  Is there a shorthand tone above threshold?
