@@ -32,50 +32,30 @@ C  If freq=125.0 kHz, f0=48000 Hz.
       call filbig(id,NMAX,f0,newdat,cx,cy,n5)
       joff=0
       sqa=0.
-      sqb=0.
       do i=1,n5
          sqa=sqa + real(cx(i))**2 + aimag(cx(i))**2
-         sqb=sqb + real(cy(i))**2 + aimag(cy(i))**2
       enddo
       sqa=sqa/n5
       sqb=sqb/n5
 
 C  Find best DF, f1, f2, DT, and pol
 
-!      a(5)=dt00
-!      fsample=1378.125
-!      i0=nint((a(5)+0.5)*fsample)
-!      if(i0.lt.1) i0=1
-!      nz=n5+1-i0
-!      call afc65b(cx(i0),cy(i0),nz,fsample,nflip,ipol,a,dt,
-!     +    ccfbest,dtbest)
-
       call fil6521(cx,n5,c5x,n6)
-      call fil6521(cy,n5,c5y0,n6)
-
-!  Adjust for cable length difference:
-      z=cmplx(cos(dphi),sin(dphi))
-      do i=1,n6
-         c5y(i)=z*c5y0(i)
-      enddo
-
       fsample=1378.125/4.
       a(5)=dt00
       i0=nint((a(5)+0.5)*fsample) - 2
       if(i0.lt.1) i0=1
       nz=n6+1-i0
 
-      call afc65b(c5x(i0),c5y(i0),nz,fsample,nflip,ipol,a,dt,
+!###
+      call afc65b(c5x(i0),c5x(i0),nz,fsample,nflip,ipol,a,dt,
      +     ccfbest,dtbest)
 
-      pol=a(4)/57.2957795
-      aa=cos(pol)
-      bb=sin(pol)
-      sq0=aa*aa*sqa + bb*bb*sqb
+      sq0=sqa
       sync2=3.7*ccfbest/sq0
 
 C  Apply AFC corrections to the time-domain signal
-      call twkfreq(cx,cy,n5,a)
+      call twkfreq(cx,cx,n5,a)                           !###
 
 C  Compute spectrum at best polarization for each half symbol.
 C  Adding or subtracting a small number (e.g., 5) to j may make it decode.
@@ -86,12 +66,12 @@ C  Adding or subtracting a small number (e.g., 5) to j may make it decode.
       do k=1,nsym
          do i=1,nfft
             j=j+1
-            c5a(i)=aa*cx(j) + bb*cy(j)
+            c5a(i)=cx(j)
          enddo
          call four2a(c5a,nfft,1,1,1)
          do i=1,nfft
             j=j+1
-            c5b(i)=aa*cx(j) + bb*cy(j)
+            c5b(i)=cx(j)
          enddo
          call four2a(c5b,nfft,1,1,1)
 
