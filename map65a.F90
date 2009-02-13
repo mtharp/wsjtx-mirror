@@ -13,7 +13,7 @@ subroutine map65a(newdat)
   logical done(MAXMSG)
   character decoded*22,blank*22
   include 'spcom.f90'
-  real short(3,NFFT)                 !SNR dt ipol for potential shorthands
+  real short(2,NFFT)                 !SNR, dt for potential shorthands
   include 'gcom2.f90'
   include 'datcom.f90'
   data blank/'                      '/
@@ -113,8 +113,6 @@ subroutine map65a(newdat)
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
            call ccf65(ss(1,i),nhsym,sync1,dt,flipk,              &
                 syncshort,snr2,dt2)
-           ipol=1
-           ipol2=1
 
 ! ########################### Search for Shorthand Messages #################
 !  Is there a shorthand tone above threshold?
@@ -126,7 +124,7 @@ subroutine map65a(newdat)
 ! ### Do shorthand AFC here (or maybe after finding a pair?) ###
               short(1,i)=syncshort
               short(2,i)=dt2
-              short(3,i)=ipol2
+
 !  Check to see if lower tone of shorthand pair was found.
               do j=2,4
                  i0=i-nint(j*53.8330078/df)
@@ -152,7 +150,7 @@ subroutine map65a(newdat)
                           sig(km,3)=fshort
                           sig(km,4)=syncshort
                           sig(km,5)=dt2
-                          sig(km,6)=45*(ipol2-1)/57.2957795
+                          sig(km,6)=0
                           sig(km,7)=0
                           sig(km,8)=snr2
                           sig(km,9)=0
@@ -193,20 +191,13 @@ subroutine map65a(newdat)
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
 
-                 pol=0.
-!  If hiscall or hisgrid is in decoded message, save the pol'n angle.
-                 i1=index(decoded,hiscall(1:len_hiscall))
-                 i2=index(decoded,hisgrid(1:4))
-                 if(i1.ge.5 .or. i2.ge.9) then
-                    nhispol=nint(57.2957795*pol)
-                 endif
                  km=km+1
                  sig(km,1)=nfile
                  sig(km,2)=nutc
                  sig(km,3)=freq
                  sig(km,4)=sync1
                  sig(km,5)=dt
-                 sig(km,6)=pol
+                 sig(km,6)=0.
                  sig(km,7)=flipk
                  sig(km,8)=sync2
                  sig(km,9)=nkv
@@ -236,7 +227,7 @@ subroutine map65a(newdat)
               freq=sig(k,3)
               sync1=sig(k,4)
               dt=sig(k,5)
-              npol=nint(57.2957795*sig(k,6))
+              npol=0
               flip=sig(k,7)
               sync2=sig(k,8)
               nkv=sig(k,9)
@@ -260,6 +251,7 @@ subroutine map65a(newdat)
               if(decoded(1:4).eq.'RO  ' .or. decoded(1:4).eq.'RRR  ' .or.  &
                  decoded(1:4).eq.'73  ') nsync2=nsync2-6
               nwrite=nwrite+1
+              npol=0
               write(11,1010) nkHz,ndf,npol,nutc,dt,nsync2,decoded,nkv,nqual
 1010          format(i3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i4,i4)
            endif
@@ -307,7 +299,6 @@ subroutine map65a(newdat)
            freq=sig(i,3)
            sync1=sig(i,4)
            dt=sig(i,5)
-           npol=nint(57.2957795*sig(i,6))
            flip=sig(i,7)
            sync2=sig(i,8)
            nkv=sig(i,9)
