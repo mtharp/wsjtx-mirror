@@ -1,11 +1,11 @@
-      real function fchisq(cx,cy,npts,fsample,nflip,a,ccfmax,dtmax)
+      real function fchisq(cx,npts,fsample,nflip,a,ccfmax,dtmax)
 
       parameter (NMAX=60*96000)          !Samples per 60 s
-      complex cx(npts),cy(npts)
+      complex cx(npts)
       real a(5)
       complex w,wstep,za,zb,z
       real ss(2600)
-      complex csx(0:NMAX/64),csy(0:NMAX/64)
+      complex csx(0:NMAX/64)
       data twopi/6.283185307/a1,a2,a3/99.,99.,99./
       save
 
@@ -17,7 +17,6 @@
 
 C  Mix and integrate the complex X and Y signals
          csx(0)=0.
-         csy(0)=0.
          w=1.0
          x0=0.5*(npts+1)
          s=2.0/npts
@@ -32,15 +31,11 @@ C  Mix and integrate the complex X and Y signals
             endif
             w=w*wstep
             csx(i)=csx(i-1) + w*cx(i)
-            csy(i)=csy(i-1) + w*cy(i)
          enddo
       endif
 
 C  Compute 1/2-symbol powers at 1/16-symbol steps.
       fac=1.e-4
-      pol=a(4)/57.2957795
-      aa=cos(pol)
-      bb=sin(pol)
       nsps=nint(fsample/baud)                  !Samples per symbol
       nsph=nsps/2                              !Samples per half-symbol
 
@@ -54,8 +49,7 @@ C  Compute 1/2-symbol powers at 1/16-symbol steps.
          ss(i)=0.
          if(k.ge.1) then
             za=csx(j)-csx(k)
-            zb=csy(j)-csy(k)
-            z=aa*za + bb*zb
+            z=za
             ss(i)=fac*(real(z)**2 + aimag(z)**2)
          endif
       enddo

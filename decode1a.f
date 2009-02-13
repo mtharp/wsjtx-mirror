@@ -13,7 +13,7 @@ C  to decode it.
       complex c4x(NMAX/64)               !After 1/64 filter and downsample
       complex cx(NMAX/64)                !Data at 1378.125 samples/s
       complex c5x(NMAX/256)                              
-      complex c5a(256),    c5b(256)
+      complex c5a(256),c5b(256)
       complex z
 
       real s2(256,126)
