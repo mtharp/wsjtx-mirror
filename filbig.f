@@ -1,12 +1,12 @@
       subroutine filbig(id,nmax,f0,newdat,c4a,n4)
 
 C  Filter and downsample complex data for X and Y polarizations,
-C  stored in array id(4,nmax).  Output is downsampled from 96000 Hz
+C  stored in array id(2,nmax).  Output is downsampled from 96000 Hz
 C  to 1500 Hz, and the low-pass filter has f_cutoff = 375 Hz and 
 C  f_stop = 750 Hz.
 
       parameter (NFFT1=5376000,NFFT2=77175)
-      integer*2 id(4,nmax)                       !Input data
+      integer*2 id(2,nmax)                       !Input data
       complex c4a(NFFT2)                         !Output data
       complex ca(NFFT1)                          !FFT of input
       real*8 df

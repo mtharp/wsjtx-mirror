@@ -3,12 +3,12 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
 !  Compute spectra using half-symbol steps.
 
   parameter (NSMAX=60*96000)
-  integer*2 id(4,NSMAX,2)
+  integer*2 id(2,NSMAX,2)
   complex z
   real*8 ts,hsym
   include 'spcom.f90'
   include 'gcom2.f90'
-  complex cx(NFFT),cy(NFFT)               !  pad to 32k with zeros
+  complex cx(NFFT)                        !  pad to 32k with zeros
   data kbuf0/-999/,n/0/
   save
 
@@ -70,8 +70,6 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
            do i=k-n1+1,k
               id(1,i,kbuf)=0
               id(2,i,kbuf)=0
-              id(3,i,kbuf)=0
-              id(4,i,kbuf)=0
            enddo
            nclip=nclip+1
         endif
@@ -89,14 +87,10 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
         xr=fac*id(1,i0+i,kbuf)
         xi=fac*id(2,i0+i,kbuf)
         cx(i)=cmplx(xr,xi)
-        yr=fac*id(3,i0+i,kbuf)
-        yi=fac*id(4,i0+i,kbuf)
-        cy(i)=cmplx(yr,yi)
      enddo
 
      do i=npts+1,NFFT                   !Pad to 32k with zeros
         cx(i)=0.
-        cy(i)=0.
      enddo
 
      call four2a(cx,NFFT,1,1,1)         !Do the FFTs

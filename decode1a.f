@@ -7,7 +7,7 @@ C  to decode it.
 
       parameter (NFFT1=77760,NFFT2=2430)
       parameter (NMAX=60*96000)          !Samples per 60 s
-      integer*2 id(4,NMAX)               !46 MB: raw data from Linrad timf2
+      integer*2 id(2,NMAX)               !46 MB: raw data from Linrad timf2
       complex c2x(NMAX/4)                !After 1/4 filter and downsample
       complex c3x(NMAX/16)               !After 1/16 filter and downsample
       complex c4x(NMAX/64)               !After 1/64 filter and downsample

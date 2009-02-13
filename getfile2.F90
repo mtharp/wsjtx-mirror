@@ -28,7 +28,7 @@ subroutine getfile2(fname,len)
 10 filename=fname(i+1:)
   ierr=0
 
-  n=8*NSMAX
+  n=4*NSMAX
   ndecoding=4
   monitoring=0
   kbuf=1
@@ -43,8 +43,7 @@ subroutine getfile2(fname,len)
   ka=0.1*NSMAX
   kb=0.8*NSMAX
   do k=ka,kb
-     sq=sq + float(int(id(1,k,1)))**2 + float(int(id(2,k,1)))**2 +    &
-          float(int(id(3,k,1)))**2 + float(int(id(4,k,1)))**2
+     sq=sq + float(int(id(1,k,1)))**2 + float(int(id(2,k,1)))**2
   enddo
   sqave=174*sq/(kb-ka+1)
   rxnoise=10.0*log10(sqave) - 48.0

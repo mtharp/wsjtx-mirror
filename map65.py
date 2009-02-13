@@ -376,7 +376,7 @@ def openfile(event=NONE):
         os.chdir(mrudir)
     except:
         pass
-    fname=askopenfilename(filetypes=[("Linrad timf2 files","*.tf2 *.TF2")])
+    fname=askopenfilename(filetypes=[("Linrad timf2 files","*.iq *.IQ")])
     if fname:
         Audio.getfile(fname,len(fname))
         if Audio.gcom2.ierr: print 'Error ',Audio.gcom2.ierr, \
@@ -392,12 +392,12 @@ def opennext(event=NONE):
         openfile()
         ncall=1
     else:
-# Make a list of *.tf2 files in mrudir
+# Make a list of *.iq files in mrudir
         la=os.listdir(mrudir)
         la.sort()
         lb=[]
         for i in range(len(la)):
-            j=la[i].find(".tf2") + la[i].find(".TF2")
+            j=la[i].find(".iq") + la[i].find(".IQ")
             if j>0: lb.append(la[i])
         for i in range(len(lb)):
             if lb[i]==fileopened:
@@ -826,7 +826,7 @@ def clear_avg(event=NONE):
 
 #------------------------------------------------------ delwav
 def delwav():
-    t="Are you sure you want to delete\nall *.tf2 files in " + \
+    t="Are you sure you want to delete\nall *.iq files in " + \
        options.savedir.get() + " ?"
     msg=Pmw.MessageDialog(root,buttons=('Yes','No'),message_text=t)
     msg.geometry(msgpos())
@@ -834,11 +834,11 @@ def delwav():
     msg.focus_set()
     result=msg.activate()
     if result == 'Yes':
-# Make a list of *.tf2 in SaveDir
+# Make a list of *.iq in SaveDir
         la=dircache.listdir(options.savedir.get())
         lb=[]
         for i in range(len(la)):
-            j=la[i].find(".tf2") + la[i].find(".TF2")
+            j=la[i].find(".iq") + la[i].find(".IQ")
             if j>0: lb.append(la[i])
 # Now delete them all.
         savedir=options.savedir.get()
@@ -1374,7 +1374,7 @@ filemenu.add('command', label = 'Open next in directory', command = opennext, \
 filemenu.add('command', label = 'Decode remaining files in directory', \
              command = decodeall, accelerator='Shift+F6')
 filemenu.add_separator()
-filemenu.add('command', label = 'Delete all *.tf2 files in SaveDir', \
+filemenu.add('command', label = 'Delete all *.iq files in SaveDir', \
              command = delwav)
 filemenu.add('command', label = 'Erase Band Map and Messages', command = clr_all)
 filemenu.add('command', label = 'Erase ALL65.TXT', command = del_all)

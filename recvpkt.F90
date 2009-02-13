@@ -3,7 +3,7 @@ subroutine recvpkt(iarg)
 ! Receive timf2 packets from Linrad and stuff data into array id().
 ! (This routine runs in a background thread and will never return.)
 
-  parameter (NSZ=2*60*96000)
+  parameter (NSZ=60*96000)
   real*8 d8(NSZ)
   integer*1 userx_no,iusb
   integer*2 nblock,nblock0
@@ -91,9 +91,7 @@ subroutine recvpkt(iarg)
      endif
      x1=id(1,k2,n)
      x2=id(2,k2,n)
-     x3=id(3,k2,n)
-     x4=id(4,k2,n)
-     sq=sq + x1*x1 + x2*x2 + x3*x3 + x4*x4
+     sq=sq + x1*x1 + x2*x2
   enddo
   sqave=sqave + u*(sq-sqave)
   rxnoise=10.0*log10(sqave) - 48.0
