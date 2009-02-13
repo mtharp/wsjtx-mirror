@@ -4,7 +4,6 @@ subroutine map65a(newdat)
 
   parameter (MAXMSG=1000)            !Size of decoded message list
   real tavg(-50:50)                  !Temp for finding local base level
-  real base(4)                       !Local basel level at 4 pol'ns
   real tmp (200)                     !Temp storage for pctile sorting
   real sig(MAXMSG,30)                !Parameters of detected signals
   real a(5)
@@ -15,7 +14,6 @@ subroutine map65a(newdat)
   character decoded*22,blank*22
   include 'spcom.f90'
   real short(3,NFFT)                 !SNR dt ipol for potential shorthands
-  real qphi(12)
   include 'gcom2.f90'
   include 'datcom.f90'
   data blank/'                      '/
@@ -51,7 +49,6 @@ subroutine map65a(newdat)
   ftol=0.020                          !Frequency tolerance (kHz)
   foffset=0.001*(1270 + nfcal)
   fselect=mfqso + foffset
-  dphi=idphi/57.2957795
 
   do i=12,3,-1
      if(hiscall(i:i).ne.' ') go to 1
@@ -59,8 +56,6 @@ subroutine map65a(newdat)
   i=0
 1 len_hiscall=i
 
-  iloop=0
-2 if(ndphi.eq.1) dphi=30*iloop/57.2957795
   do nqd=1,0,-1
      if(nqd.eq.1) then                     !Quick decode, at fQSO
         fa=1000.0*(fselect+0.001*mousedf-100.0) - dftolerance
@@ -92,31 +87,26 @@ subroutine map65a(newdat)
      do i=ia,ib                               !Search over freq range
         call sleep_msec(0)
         freq=0.001*((i-1)*df - 23000) + 100.0
-!  Find the local base level for each polarization; update every 10 bins.
+!  Find the local base level; update every 10 bins.
         if(mod(i-ia,10).eq.0) then
-           do jp=1,4
-              do ii=-50,50
-                 iii=i+ii
-                 if(iii.ge.1 .and. iii.le.32768) then
-                    tavg(ii)=savg(jp,iii)
-                 else
-                    print*,'Error in iii:',iii,ia,ib,fa,fb
-                    go to 999
-                 endif
-              enddo
-              call pctile(tavg,tmp,101,50,base(jp))
+           do ii=-50,50
+              iii=i+ii
+              if(iii.ge.1 .and. iii.le.32768) then
+                 tavg(ii)=savg(1,iii)
+              else
+                 print*,'Error in iii:',iii,ia,ib,fa,fb
+                 go to 999
+              endif
            enddo
-           bmax=max(base(1),base(2),base(3),base(4))
+           call pctile(tavg,tmp,101,50,base)
         endif
 
 !  Do not process extremely strong signals
-        if(nqd.eq.0 .and. bmax.gt.1000.0) go to 70
+        if(nqd.eq.0 .and. base.gt.1000.0) go to 70
 
 !  Find max signal at this frequency
         smax=0.
-        do jp=1,4
-           if(savg(jp,i)/base(jp).gt.smax) smax=savg(jp,i)/base(jp)
-        enddo
+        if(savg(1,i)/base.gt.smax) smax=savg(1,i)/base
 
         if(smax.gt.1.1) then
            ntry=ntry+1
@@ -218,7 +208,6 @@ subroutine map65a(newdat)
                  sig(km,8)=sync2
                  sig(km,9)=nkv
                  sig(km,10)=qual
-!                 sig(km,11)=idphi
                  sig(km,12)=savg(ipol,i)
                  sig(km,13)=a(1)
                  sig(km,14)=a(2)
@@ -249,7 +238,6 @@ subroutine map65a(newdat)
               sync2=sig(k,8)
               nkv=sig(k,9)
               nqual=sig(k,10)
-!              idphi=nint(sig(k,11))
               if(flip.lt.0.0) then
                  do i=22,1,-1
                     if(decoded(i:i).ne.' ') go to 8
@@ -269,17 +257,8 @@ subroutine map65a(newdat)
               if(decoded(1:4).eq.'RO  ' .or. decoded(1:4).eq.'RRR  ' .or.  &
                  decoded(1:4).eq.'73  ') nsync2=nsync2-6
               nwrite=nwrite+1
-              if(ndphi.eq.0) then
-                 write(11,1010) nkHz,ndf,npol,nutc,dt,nsync2,decoded,nkv,nqual
-1010             format(i3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i4,i4)
-              else
-		 if(iloop.ge.1) qphi(iloop)=sig(k,10)
-                 write(11,1010) nkHz,ndf,npol,nutc,dt,nsync2,decoded,nkv,  &
-                      nqual,30*iloop
-                 write(27,1011) 30*iloop,nkHz,ndf,npol,nutc,  &
-                      dt,sync2,nkv,nqual,decoded
-1011             format(i3,i4,i5,i4,i5.4,f5.1,f7.1,i3,i5,2x,a22)
-              endif
+              write(11,1010) nkHz,ndf,npol,nutc,dt,nsync2,decoded,nkv,nqual
+1010          format(i3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i4,i4)
            endif
         enddo
         if(nwrite.eq.0) then
@@ -289,11 +268,6 @@ subroutine map65a(newdat)
         endif
    
      endif
-     if(ndphi.eq.1 .and.iloop.lt.12) then
-        iloop=iloop+1
-        go to 2
-     endif
-     if(ndphi.eq.1 .and.iloop.eq.12) call getdphi(qphi)
      if(nqd.eq.1) then
         write(11,*) '$EOF'
         call flushqqq(11)
@@ -379,7 +353,6 @@ subroutine map65a(newdat)
        fnamedate,savedir)
 
 999 close(23)
-  ndphi=0
   if(kbuf.eq.1) kkdone=60*96000
   if(kbuf.eq.2 .or. ndiskdat.eq.1) kkdone=0
   kk=kkdone
