@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------- MAP65
+#----------------------------------------------------------------- MAP65-IQ
 # $Date$ $Revision$
 #
 from Tkinter import *
@@ -23,7 +23,7 @@ root = Tk()
 Version="0.9 r" + "$Rev$"[6:-1]
 Version=Version.strip()
 print "******************************************************************"
-print "MAP65 Version " + Version + ", by K1JT"
+print "MAP65-IQ Version " + Version + ", by K1JT"
 print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -629,7 +629,7 @@ def about(event=NONE):
     about=Toplevel(root)
     about.geometry(msgpos())
     if g.Win32: about.iconbitmap("wsjt.ico")
-    t="MAP65 Version " + Version + ", by K1JT"
+    t="MAP65-IQ Version " + Version + ", by K1JT"
     Label(about,text=t,font=(font1,16)).pack(padx=20,pady=5)
     t="""
 MAP65 is a weak signal communications program designed primarily
@@ -1903,7 +1903,7 @@ Audio.gcom2.nhispol=-999
 monitor()
 first=1
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  MAP65     by K1JT')
+root.title('  MAP65-IQ     by K1JT')
 messages()
 bandmap()
 import astro
