@@ -1,4 +1,4 @@
-      subroutine filbig(id,nmax,f0,newdat,c4a,c4b,n4)
+      subroutine filbig(id,nmax,f0,newdat,c4a,n4)
 
 C  Filter and downsample complex data for X and Y polarizations,
 C  stored in array id(4,nmax).  Output is downsampled from 96000 Hz
@@ -7,7 +7,7 @@ C  f_stop = 750 Hz.
 
       parameter (NFFT1=5376000,NFFT2=77175)
       integer*2 id(4,nmax)                       !Input data
-      complex c4a(NFFT2),c4b(NFFT2)              !Output data
+      complex c4a(NFFT2)                         !Output data
       complex ca(NFFT1)                          !FFT of input
       real*8 df
 C Impulse response of filter (one side)
@@ -80,7 +80,7 @@ C      i0 is the bin number in ca and cb closest to f0.
 
       i0=nint(f0/df) + 1
       nh=NFFT2/2
-      do i=1,nh                                !Copy data into c4a and c4b,
+      do i=1,nh                                !Copy data into c4a
          j=i0+i-1                              !and apply the filter function
          c4a(i)=rfilt(i)*ca(j)
       enddo
@@ -92,11 +92,6 @@ C      i0 is the bin number in ca and cb closest to f0.
 
 C  Do the short reverse transform, to go back to time domain.
       call sfftw_execute_(plan3)
-
-C### temp:
-      do i=1,NFFT2
-         c4b(i)=c4a(i)
-      enddo
 
       n4=min(nmax/64,NFFT2)
       go to 999
