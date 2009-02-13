@@ -26,7 +26,7 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
      ts=1.d0 - hsym
      n=0
      do i=1,NFFT
-        szavg(1,i)=0.
+        szavg(i)=0.
      enddo
 
 ! Get baseline power level for this minute
@@ -104,18 +104,9 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
      n=n+1
      do i=1,NFFT                        !Save and accumulate power spectra
         sx=real(cx(i))**2 + aimag(cx(i))**2
-        ssz(1,n,i)=sx                    ! Pol = 0
-        szavg(1,i)=szavg(1,i) + sx
+        ssz(n,i)=sx                      ! Pol = 0
+        szavg(i)=szavg(i) + sx
         ssz5(n,i)=sx
-
-! Temporary:
-        ssz(2,n,i)=sx                    ! Pol = 0
-        szavg(2,i)=szavg(1,i) + sx
-        ssz(3,n,i)=sx                    ! Pol = 0
-        szavg(3,i)=szavg(1,i) + sx
-        ssz(4,n,i)=sx                    ! Pol = 0
-        szavg(4,i)=szavg(1,i) + sx
-
      enddo
 
 !         if(n.eq.ntot) then
@@ -125,8 +116,8 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
 1002    format(i4.4)
         utcdata=utcdata(1:2)//':'//utcdata(3:4)
         newspec=1
-        call move(ssz,ss,4*322*NFFT)
-        call move(szavg,savg,4*NFFT)
+        call move(ssz,ss,322*NFFT)
+        call move(szavg,savg,NFFT)
         newdat=1
         ndecoding=1
         go to 999

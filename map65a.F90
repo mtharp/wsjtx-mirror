@@ -92,7 +92,7 @@ subroutine map65a(newdat)
            do ii=-50,50
               iii=i+ii
               if(iii.ge.1 .and. iii.le.32768) then
-                 tavg(ii)=savg(1,iii)
+                 tavg(ii)=savg(iii)
               else
                  print*,'Error in iii:',iii,ia,ib,fa,fb
                  go to 999
@@ -106,12 +106,12 @@ subroutine map65a(newdat)
 
 !  Find max signal at this frequency
         smax=0.
-        if(savg(1,i)/base.gt.smax) smax=savg(1,i)/base
+        if(savg(i)/base.gt.smax) smax=savg(i)/base
 
         if(smax.gt.1.1) then
            ntry=ntry+1
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
-           call ccf65(ss(1,1,i),nhsym,sync1,dt,flipk,              &
+           call ccf65(ss(1,i),nhsym,sync1,dt,flipk,              &
                 syncshort,snr2,dt2)
            ipol=1
            ipol2=1
@@ -158,7 +158,7 @@ subroutine map65a(newdat)
                           sig(km,9)=0
                           sig(km,10)=0
 !                           sig(km,11)=rms0
-                          sig(km,12)=savg(ipol2,i)
+                          sig(km,12)=savg(i)
                           sig(km,13)=0
                           sig(km,14)=0
                           sig(km,15)=0
@@ -210,7 +210,7 @@ subroutine map65a(newdat)
                  sig(km,8)=sync2
                  sig(km,9)=nkv
                  sig(km,10)=qual
-                 sig(km,12)=savg(ipol,i)
+                 sig(km,12)=savg(i)
                  sig(km,13)=a(1)
                  sig(km,14)=a(2)
                  sig(km,15)=a(3)

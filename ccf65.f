@@ -2,7 +2,7 @@
      +     snr2,dt2)
 
       parameter (NFFT=512,NH=NFFT/2)
-      real ss(4,322)
+      real ss(322)
                    !Input: half-symbol powers, 4 pol'ns
       real s(NFFT)                     !CCF = ss*pr
       complex cs(0:NH)                 !Complex FT of s
@@ -53,7 +53,7 @@ C  Look for JT65 sync pattern and shorthand square-wave pattern.
       ccfbest2=0.
 
       do i=1,nhsym              ! ?? nhsym-1 ??
-         s(i)=min(4.0,ss(1,i)+ss(1,i+1))
+         s(i)=min(4.0,ss(i)+ss(i+1))
       enddo
       do i=nhsym+1,NFFT         ! ?? nhsym ??
          s(i)=0.
@@ -101,7 +101,7 @@ C  Find rms level on baseline of "ccfblue", for normalization.
 
 C  Find base level for normalizing snr2.
       do i=1,nhsym
-         tmp1(i)=ss(1,i)
+         tmp1(i)=ss(i)
       enddo
       call pctile(tmp1,tmp2,nhsym,40,base)
       snr2=0.398107*ccfbest2/base                !### empirical
