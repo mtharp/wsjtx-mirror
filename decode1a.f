@@ -1,6 +1,6 @@
       subroutine decode1a(id,newdat,freq,nflip,
      +         mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,
-     +         ipol,sync2,a,dt,pol,nkv,nhist,qual,decoded)
+     +         sync2,a,dt,nkv,nhist,qual,decoded)
 
 C  Apply AFC corrections to a candidate JT65 signal, and then try
 C  to decode it.
@@ -48,8 +48,7 @@ C  Find best DF, f1, f2, DT:
       nz=n6+1-i0
 
 !###
-      call afc65b(c5x(i0),c5x(i0),nz,fsample,nflip,ipol,a,dt,
-     +     ccfbest,dtbest)
+      call afc65b(c5x(i0),nz,fsample,nflip,a,dt,ccfbest,dtbest)
 
       sq0=sqa
       sync2=3.7*ccfbest/sq0
@@ -85,6 +84,7 @@ C  Adding or subtracting a small number (e.g., 5) to j may make it decode.
       call decode65b(s2,flip,mycall,hiscall,hisgrid,neme,ndepth,
      +    nqd,nkv,nhist,qual,decoded)
       dt=dt00 + dtbest
+      a(4)=0.
 
       return
       end

@@ -1,8 +1,6 @@
-      subroutine afc65b(cx,cy,npts,fsample,nflip,ipol,a,dt0,
-     +  ccfbest,dtbest)
+      subroutine afc65b(cx,npts,fsample,nflip,a,dt0,ccfbest,dtbest)
 
       complex cx(npts)
-      complex cy(npts)
       real a(5),deltaa(5)
 
       a(1)=0.
@@ -56,9 +54,6 @@ C  Find minimum of parabola defined by last three points
 
  30   ccfbest=ccfmax * (1378.125/fsample)**2
       dtbest=dtmax
-
-      a(4)=0.
-      ipol=1
 
       return
       end

@@ -191,8 +191,9 @@ subroutine map65a(newdat)
                  nflip=nint(flipk)
                  call decode1a(id(1,1,kbuf),newdat,freq,nflip,        &
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
-                      ipol,sync2,a,dt,pol,nkv,nhist,qual,decoded)
+                      sync2,a,dt,nkv,nhist,qual,decoded)
 
+                 pol=0.
 !  If hiscall or hisgrid is in decoded message, save the pol'n angle.
                  i1=index(decoded,hiscall(1:len_hiscall))
                  i2=index(decoded,hisgrid(1:4))
