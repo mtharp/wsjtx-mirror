@@ -3,7 +3,7 @@
 
       parameter (NFFT=512,NH=NFFT/2)
       real ss(322)
-                   !Input: half-symbol powers, 4 pol'ns
+                   !Input: half-symbol powers
       real s(NFFT)                     !CCF = ss*pr
       complex cs(0:NH)                 !Complex FT of s
       real s2(NFFT)                    !CCF = ss*pr2
@@ -14,7 +14,7 @@
       complex cpr2(0:NH)               !Complex FT of pr2
       real tmp1(322)
       real tmp2(322)
-      real ccf(-27:27,4)
+      real ccf(-27:27)
       logical first
       integer npr(126)
       data first/.true./
@@ -67,12 +67,12 @@ C  Look for JT65 sync pattern and shorthand square-wave pattern.
       call four2a(cs2,NFFT,1,1,-1) !Complex-to-real inv-FFT
 
       do lag=-27,27             !Check for best JT65 sync
-         ccf(lag,1)=s(lag+28)                  
-         if(abs(ccf(lag,1)).gt.ccfbest) then
-            ccfbest=abs(ccf(lag,1))
+         ccf(lag)=s(lag+28)                  
+         if(abs(ccf(lag)).gt.ccfbest) then
+            ccfbest=abs(ccf(lag))
             lagpk=lag
             flipk=1.0
-            if(ccf(lag,1).lt.0.0) flipk=-1.0
+            if(ccf(lag).lt.0.0) flipk=-1.0
          endif
       enddo
 
@@ -88,12 +88,12 @@ C  Look for JT65 sync pattern and shorthand square-wave pattern.
 C  Find rms level on baseline of "ccfblue", for normalization.
       sum=0.
       do lag=-26,26
-         if(abs(lag-lagpk).gt.1) sum=sum + ccf(lag,1)
+         if(abs(lag-lagpk).gt.1) sum=sum + ccf(lag)
       enddo
       base=sum/50.0
       sq=0.
       do lag=-26,26
-         if(abs(lag-lagpk).gt.1) sq=sq + (ccf(lag,1)-base)**2
+         if(abs(lag-lagpk).gt.1) sq=sq + (ccf(lag)-base)**2
       enddo
       rms=sqrt(sq/49.0)
       sync1=ccfbest/rms - 4.0
