@@ -45,7 +45,9 @@ subroutine map65a(newdat)
 
   if(nutc.ne.nutc0) nfile=nfile+1
   nutc0=nutc
-  df=96000.0/NFFT                     !df = 96000/NFFT = 2.930 Hz
+!  df=96000.0/NFFT                     !df = 96000/NFFT = 2.930 Hz
+  fsample=66666667.0/700.0            !fsample=95238.1
+  df=fsample/NFFT                     !df = 96000/NFFT = 2.906 Hz
   ftol=0.020                          !Frequency tolerance (kHz)
   foffset=0.001*(1270 + nfcal)
   fselect=mfqso + foffset
@@ -347,7 +349,7 @@ subroutine map65a(newdat)
        fnamedate,savedir)
 
 999 close(23)
-  if(kbuf.eq.1) kkdone=60*96000
+  if(kbuf.eq.1) kkdone=60*96000                    !### ??? ###
   if(kbuf.eq.2 .or. ndiskdat.eq.1) kkdone=0
   kk=kkdone
   nagain=0

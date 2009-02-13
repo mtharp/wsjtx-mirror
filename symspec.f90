@@ -15,7 +15,8 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
   kkk=kk
   if(kbuf.eq.2) kkk=kk-5760000
   fac=0.0002
-  hsym=2048.d0*96000.d0/11025.d0          !Samples per half symbol
+!  hsym=2048.d0*96000.d0/11025.d0         !Samples per half symbol
+  hsym=2048.d0*95238.1d0/11025.d0         !Samples per half symbol
   npts=hsym                               !Integral samples per half symbol
   ntot=322                                !Half symbols per transmission
 !  ntot=279                               !Half symbols in 51.8 sec

@@ -53,7 +53,8 @@ C  Convert impulse response to filter function
             rfilt(i)=real(cfilt(i))-base
          enddo
 
-         df=96000.d0/NFFT1
+!         df=96000.d0/NFFT1
+         df=95238.1d0/NFFT1
          first=.false.
       endif
 

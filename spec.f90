@@ -26,7 +26,8 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
   save
 
   if(first) then
-     df=96000.0/nfft
+!     df=96000.0/nfft
+     df=95238.1/nfft
      call zero(a,NX*NY/2)
      call zero(a2,NX*NY/2)
      first=.false.
