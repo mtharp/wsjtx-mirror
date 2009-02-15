@@ -1009,7 +1009,8 @@ def update():
         azdist()
         g.nfreq=nfreq.get()
         kxp=int(Audio.datcom.kxp)
-        if kxp-kxp0 >=0 and kxp-kxp0 < 50000 and \
+# On average, kxp should increase by 95238/2=47619 every second.
+        if kxp-kxp0 >=0 and kxp-kxp0 < 25000 and \
            ((not Audio.gcom2.lauto) or (not Audio.gcom1.transmitting)):
             msg5.configure(text='No Rx data',bg='red')
         else:

@@ -17,7 +17,7 @@ subroutine map65a(newdat)
   include 'gcom2.f90'
   include 'datcom.f90'
   data blank/'                      '/
-  data shmsg0/'ATT','RO ','RRR','73 '/
+  data shmsg0/'   ','RO ','RRR','73 '/
   data nfile/0/,nutc0/-999/,nid/0/,ip000/1/,ip001/1/,mousefqso0/-999/
   save
 
@@ -78,7 +78,6 @@ subroutine map65a(newdat)
      do i=1,NFFT
         short(1,i)=0.
         short(2,i)=0.
-        short(3,i)=0.
      enddo
 
      freq0=-999.

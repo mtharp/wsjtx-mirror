@@ -4,16 +4,16 @@ subroutine recvpkt(iarg)
 ! (This routine runs in a background thread and will never return.)
 
   parameter (NSZ=60*96000)
-  real*8 d8(NSZ)
+  real d4(NSZ)
   integer*1 userx_no,iusb
   integer*2 nblock,nblock0
   logical synced
-  real*8 center_freq,buf8
-  common/plrscom/center_freq,msec,fqso,iptr,nblock,userx_no,iusb,buf8(174)
+  real*8 center_freq
+  common/plrscom/center_freq,msec,fqso,iptr,nblock,userx_no,iusb,buf4(348)
   include 'datcom.f90'
   include 'gcom1.f90'
   include 'gcom2.f90'
-  equivalence (id,d8)
+  equivalence (id,d4)
   data nblock0/0/,kb/1/,ns00/99/
   data sqave/0.0/,u/0.001/,rxnoise/0.0/,pctblank/0.0/,kbuf/1/,lost_tot/0/
   data multicast0/-99/
@@ -25,7 +25,7 @@ subroutine recvpkt(iarg)
   kxp=0
   kb=1
   nsec0=-999
-  fcenter=144.125                   !Default (startup) frequency)
+  fcenter=144.125d0                 !Default (startup) frequency)
   multicast0=multicast
   ntx=0
   synced=.false.
@@ -33,10 +33,11 @@ subroutine recvpkt(iarg)
 10 if(multicast.ne.multicast0) go to 1
   call recv_pkt(center_freq)
 
-! Should receive a new packet every 174/96000 = 0.0018125 s
+! Should receive a new packet every 348/95238.1 = 0.003654 s
   nsec=mod(Tsec,86400.d0)           !Time according to MAP65
   nseclr=msec/1000                  !Time according to Linrad
-  fcenter=center_freq
+
+!  fcenter=center_freq                          !### Temporary ###
 
 ! Reset buffer pointers at start of minute.
   ns=mod(nsec,60)
@@ -56,8 +57,8 @@ subroutine recvpkt(iarg)
   if(transmitting.eq.1) ntx=1
 
 ! Test for buffer full
-  if((kb.eq.1 .and. (k+174).gt.NSMAX) .or.                          &
-       (kb.eq.2 .and. (k+174).gt.2*NSMAX)) go to 20
+  if((kb.eq.1 .and. (k+348).gt.NSMAX) .or.                          &
+       (kb.eq.2 .and. (k+348).gt.NSMAX)) go to 20
 
 ! Check for lost packets
   lost=nblock-nblock0-1
@@ -67,9 +68,10 @@ subroutine recvpkt(iarg)
      nb0=nblock0
      if(nb0.lt.0) nb0=nb0+65536
      lost_tot=lost_tot + lost               ! Insert zeros for the lost data.
-     do i=1,174*lost
+     do i=1,348*lost
         k=k+1
-        d8(k)=0
+        if(k.gt.NSZ) k=k-NSZ
+        d4(k)=0.
      enddo
   endif
   nblock0=nblock
@@ -79,10 +81,11 @@ subroutine recvpkt(iarg)
   if(tdiff.gt.30.) tdiff=tdiff-60.
 
 ! Move data into Rx buffer and compute average signal level.
+! Each r*4 word of buf4 and d4 is one sample, I and Q
   sq=0.
-  do i=1,174
+  do i=1,348
      k=k+1
-     d8(k)=buf8(i)
+     d4(k)=buf4(i)
      k2=k
      n=1
      if(k.gt.NSMAX) then
@@ -107,7 +110,7 @@ subroutine recvpkt(iarg)
      if(ntx.eq.0 .and. lauto+monitoring.ne.0) then
         if(ns.ge.nt1 .and. ndone1.eq.0 .and. synced) then
            nutc=mutc
-           fcenter=center_freq
+!           fcenter=center_freq                  !### Temporary ###
            kbuf=kb
            kk=k
            ndiskdat=0
@@ -115,18 +118,15 @@ subroutine recvpkt(iarg)
         endif
 
 ! See if it's time to start the full decoding procedure.
-        nhsym=(k-(kbuf-1)*60*96000)/17832.9252
+        nhsym=(k-(kbuf-1)*60*96000)/17691.3949
         if(ndone1.eq.1 .and. nhsym.ge.279 .and.ndone2.eq.0) then
            kk=k
            nlost=lost_tot                         ! Save stats for printout
            ndone2=1
-!           print*,'recvpkt 2:',ns,kb,k
         endif
      endif
 
-!     if(ns.le.5 .or. ns.ge.46) write(*,3001) ns,ndone1,kb,  &
-!          kbuf,ntx,kk,tdiff
-!3001 format(5i4,i11,f8.2)
+!     print*,k,kbuf,ns,nhsym,ndone1,ndone2
 
   endif
   go to 10

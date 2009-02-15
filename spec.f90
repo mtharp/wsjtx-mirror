@@ -97,7 +97,6 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
   endif
   fac=20.0/nadd
   fac=fac*0.065/base
- ! fac=fac*(0.1537/base)
   foffset=0.001*(1270+nfcal)
   nbpp=(nfb-nfa)*NFFT/(96.0*NX)  !Bins per pixel in wideband (upper) waterfall
   fselect=mousefqso + foffset - 1000.d0*(fcenter-144.125d0)
@@ -106,10 +105,6 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
   imid0=nint(1000.0*(fmid-125.0+48.0)/df) - nbpp/2  !Last term is empirical
   i0=imid-375
   ii0=imid0-375*nbpp
-!  if(nfullspec.eq.1) then
-!     nbpp=NFFT/NX
-!     ii0=0
-!  endif
 
   k=0
   do j=nlines,1,-1               !Reverse order so last will be on top
