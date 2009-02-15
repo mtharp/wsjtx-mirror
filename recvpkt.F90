@@ -3,7 +3,7 @@ subroutine recvpkt(iarg)
 ! Receive timf2 packets from Linrad and stuff data into array id().
 ! (This routine runs in a background thread and will never return.)
 
-  parameter (NSZ=60*96000)
+  parameter (NSZ=2*60*96000)
   real d4(NSZ)
   integer*1 userx_no,iusb
   integer*2 nblock,nblock0
@@ -41,8 +41,9 @@ subroutine recvpkt(iarg)
 
 ! Reset buffer pointers at start of minute.
   ns=mod(nsec,60)
+  
+!  if(ns.ne.ns00) print*,ns00,ns,kb,k,synced
   if(ns.lt.ns00 .and. (lauto+monitoring.ne.0)) then
-!     print*,'new minute:',mod(nsec/60,60),ns00,ns,ntx,kb
      if(ntx.eq.0) kb=3-kb
      k=(kb-1)*60*96000
      kxp=k
@@ -51,6 +52,8 @@ subroutine recvpkt(iarg)
      lost_tot=0
      synced=.true.
      ntx=0
+     nblock0=nblock-1
+!     print*,'new minute:',ns00,ns,kb,k,synced
   endif
   ns00=ns
 
@@ -58,7 +61,7 @@ subroutine recvpkt(iarg)
 
 ! Test for buffer full
   if((kb.eq.1 .and. (k+348).gt.NSMAX) .or.                          &
-       (kb.eq.2 .and. (k+348).gt.NSMAX)) go to 20
+       (kb.eq.2 .and. (k+348).gt.2*NSMAX)) go to 20
 
 ! Check for lost packets
   lost=nblock-nblock0-1
@@ -70,7 +73,6 @@ subroutine recvpkt(iarg)
      lost_tot=lost_tot + lost               ! Insert zeros for the lost data.
      do i=1,348*lost
         k=k+1
-        if(k.gt.NSZ) k=k-NSZ
         d4(k)=0.
      enddo
   endif
@@ -125,8 +127,6 @@ subroutine recvpkt(iarg)
            ndone2=1
         endif
      endif
-
-!     print*,k,kbuf,ns,nhsym,ndone1,ndone2
 
   endif
   go to 10
