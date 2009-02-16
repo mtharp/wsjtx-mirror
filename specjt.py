@@ -163,7 +163,7 @@ def df_mark():
     df=bw/NX                                #kHz per pixel
     x1=375.0 + (Audio.gcom2.mousefqso-fmid)/df    
     c.create_line(x1,25,x1,12,fill=color,width=2)
-    df=96000.0/32768.0
+    df=95238.1/32768.0
 # Mark sync tone and top JT65 tone (green) and shorthand tones (red)
     fstep=20.0*11025.0/4096.0
     x1=375.0 + (Audio.gcom2.mousedf + 6.6*fstep)/df
@@ -204,7 +204,7 @@ def draw_axis():
             
     c2.delete(ALL)
     xmid2=0
-    bw2=750.0*96000.0/32768.0                     #approx 2197.27 Hz
+    bw2=750.0*95238.1/32768.0           #was 2197.27 Hz, now 2179.83 Hz
     x1=int(xmid-0.5*bw2)/100 - 1
     x1=100*x1
     x2=int(xmid+0.5*bw2)
