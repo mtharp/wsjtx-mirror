@@ -192,7 +192,7 @@ subroutine map65a(newdat)
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
 
-                 km=km+1
+                 km=min(1000,km+1)
                  sig(km,1)=nfile
                  sig(km,2)=nutc
                  sig(km,3)=freq

@@ -37,7 +37,8 @@ subroutine recvpkt(iarg)
   nsec=mod(Tsec,86400.d0)           !Time according to MAP65
   nseclr=msec/1000                  !Time according to Linrad
 
-!  fcenter=center_freq                          !### Temporary ###
+!  fcenter=center_freq
+  fcenter=center_freq + 133.4d0                      !### Temporary ###
 
 ! Reset buffer pointers at start of minute.
   ns=mod(nsec,60)
@@ -94,6 +95,8 @@ subroutine recvpkt(iarg)
         k2=k2-NSMAX
         n=2
      endif
+     id(1,k2,2)=id(1,k2,n)/8                  !### Temporary? ###
+     id(2,k2,2)=id(2,k2,n)/8                  !### Temporary? ###
      x1=id(1,k2,n)
      x2=id(2,k2,n)
      sq=sq + x1*x1 + x2*x2
@@ -113,6 +116,7 @@ subroutine recvpkt(iarg)
         if(ns.ge.nt1 .and. ndone1.eq.0 .and. synced) then
            nutc=mutc
 !           fcenter=center_freq                  !### Temporary ###
+           fcenter=center_freq + 133.4d0             !### Temporary ###
            kbuf=kb
            kk=k
            ndiskdat=0
