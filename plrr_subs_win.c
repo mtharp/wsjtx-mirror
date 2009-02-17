@@ -10,8 +10,8 @@
 struct sockaddr_in addr;
 int fd;
 
-//void __stdcall SETUP_RSOCKET(void)
-void setup_rsocket_(int *multicast0)
+//void setup_rsocket_(int *multicast0)
+void __stdcall SETUP_RSOCKET(int *multicast0)
 {
   struct ip_mreq mreq;
   u_int yes=1;
@@ -94,8 +94,8 @@ void setup_rsocket_(int *multicast0)
   }
 }
 
-//void __stdcall RECV_PKT(char buf[])
-void recv_pkt_(char buf[])
+//void recv_pkt_(char buf[])
+void __stdcall RECV_PKT(char buf[])
 {
   int addrlen,nbytes;
   addrlen=sizeof(addr);

@@ -9,7 +9,7 @@ program plrr
   common/plrscom/center_freq,msec,fselect,iptr,nblock,userx_no,iusb,buf8(174)
   data first/.true./
 
-  call setup_rsocket
+  call setup_rsocket(0)
   ns0=-99
   nlost=0
 

@@ -5,9 +5,10 @@ program plrs
 
   integer RMODE
   parameter(RMODE=0)
-  parameter (NBPP=1392)
-  parameter (NZ=60*96000)
-  parameter (NBYTES=8*NZ)
+  parameter (NBPP=1392)                  !Bytes of sampled data per packet
+!  parameter (NZ=60*96000)
+  parameter (NZ=6*952381)
+  parameter (NBYTES=4*NZ)
   parameter (NPPR=NBYTES/NBPP)
   integer*1 userx_no,iusb
   integer*2 nblock
@@ -44,12 +45,16 @@ program plrs
      go to 1
   endif
 
-2 fname="all.tf2"//char(0)
+2 fname="all.iq"//char(0)
   userx_no=0
   iusb=1
   center_freq=144.125d0
-  dtmspacket=1000.d0*NBPP/(8.d0*96000.d0)
-  fsample=96000.0
+!  dtmspacket=1000.d0*NBPP/(8.d0*96000.d0)
+  dtmspacket=1000.d0*NBPP/(4.d0*95238.1d0)
+  print*,nz,nbytes,nppr,dtmspacket
+
+!  fsample=96000.0
+  fsample=95238.1
   npkt=0
 
   call setup_ssocket                       !Open a socket for multicasting

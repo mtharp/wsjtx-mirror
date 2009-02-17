@@ -21,6 +21,7 @@ subroutine map65a(newdat)
   data nfile/0/,nutc0/-999/,nid/0/,ip000/1/,ip001/1/,mousefqso0/-999/
   save
 
+  np1=1                              !### temporary
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
   nfoffset=nint(1000*(fcenter-144.125d0))
@@ -114,6 +115,27 @@ subroutine map65a(newdat)
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
            call ccf65(ss(1,i),nhsym,sync1,dt,flipk,              &
                 syncshort,snr2,dt2)
+!###
+           if(sync1.ge.3.0) write(*,4002) freq,sync1,dt,kbuf
+4002       format(f10.3,2f8.2,i3)
+           if(np1.eq.1) then
+              rewind 51
+              np1=0
+              k=0
+              do nnn=1,600
+                 sq=0.
+                 do i9=1,9523
+                    k=k+1
+                    xi=id(1,k,kbuf)
+                    xq=id(2,k,kbuf)
+                    sq=sq + xi*xi + xq*xq
+                 enddo
+                 rms=sqrt(sq/95238.0)
+                 write(51,4001) nnn,rms
+4001             format(i8,f12.4)
+              enddo
+           endif
+!###
 
 ! ########################### Search for Shorthand Messages #################
 !  Is there a shorthand tone above threshold?
