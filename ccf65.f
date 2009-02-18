@@ -101,7 +101,6 @@ C  Find rms level on baseline of "ccfblue", for normalization.
       rms=sqrt(sq/49.0)
       sync1=ccfbest/rms - 4.0
       dt1=3.5 + lagpk*(2048.0/11025.0)
-      if(sync1.gt.5.0) print*,lagpk,dt1,sync1
 
 C  Find base level for normalizing snr2.
       do i=1,nhsym
