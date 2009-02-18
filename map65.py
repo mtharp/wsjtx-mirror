@@ -1332,6 +1332,10 @@ def update():
     except:
         Audio.gcom2.nfcal=0
     try:
+        Audio.gcom2.nfadd=options.fadd.get()
+    except:
+        Audio.gcom2.nfadd=0
+    try:
         Audio.gcom2.ncsmin=options.ncsmin.get()
     except:
         Audio.gcom2.ncsmin=20
@@ -1852,6 +1856,7 @@ try:
         elif key == 'fa': options.fa.set(value)
         elif key == 'fb': options.fb.set(value)
         elif key == 'fcal': options.fcal.set(value)
+        elif key == 'fadd': options.fadd.set(value)
         elif key == 'CSmin': options.ncsmin.set(value)
         elif key == 'Nt1': options.nt1.set(value)
         elif key == 'dphi': options.dphi.set(value)
@@ -1948,6 +1953,7 @@ f.write("dphi " + str(options.dphi.get()) + "\n")
 f.write("fa " + str(options.fa.get()) + "\n")
 f.write("fb " + str(options.fb.get()) + "\n")
 f.write("fcal " + str(options.fcal.get()) + "\n")
+f.write("fadd " + str(options.fadd.get()) + "\n")
 f.write("CSmin " + str(options.ncsmin.get()) + "\n")
 f.write("Nt1 " + str(options.nt1.get()) + "\n")
 f.write("SaveDir " + str(options.savedir.get()) + "\n")

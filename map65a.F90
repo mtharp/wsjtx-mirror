@@ -24,7 +24,7 @@ subroutine map65a(newdat)
   np1=1                              !### temporary
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
-  nfoffset=nint(1000*(fcenter-144.125d0))
+  nfoffset=nint(1000*(fcenter-144.125d0)) + nfadd
   mfqso=mousefqso - nfoffset
 
   rewind 11
