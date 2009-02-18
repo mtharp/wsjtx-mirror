@@ -122,7 +122,7 @@ subroutine map65a(newdat)
               rewind 51
               np1=0
               k=0
-              do nnn=1,600
+              do nnn=1,520
                  sq=0.
                  do i9=1,9523
                     k=k+1
@@ -130,9 +130,12 @@ subroutine map65a(newdat)
                     xq=id(2,k,kbuf)
                     sq=sq + xi*xi + xq*xq
                  enddo
-                 rms=sqrt(sq/(2.0*9523.0))
-                 write(51,4001) nnn,rms
-4001             format(i8,f12.4)
+                 sq=sq/(2.0*9523.0)
+                 rms=sqrt(sq)
+                 xdb=-10.
+                 if(rms.gt.0.0) xdb=10.0*log10(sq)
+                 write(51,4001) nnn,rms,xdb
+4001             format(i8,2f12.4)
               enddo
            endif
 !###

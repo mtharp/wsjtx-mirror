@@ -101,7 +101,7 @@ subroutine recvpkt(iarg)
   enddo
   sq=sq/(2.0*348.0)
   sqave=sqave + u*(sq-sqave)
-  rxnoise=10.0*log10(sqave) - 20.0           !Target rms=10
+  rxnoise=10.0*log10(sqave) - 20.0           !Target rms=10, sqave=100
   kxp=k
 
 20 if(nsec.ne.nsec0) then
