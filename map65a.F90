@@ -116,8 +116,8 @@ subroutine map65a(newdat)
            call ccf65(ss(1,i),nhsym,sync1,dt,flipk,              &
                 syncshort,snr2,dt2)
 !###
-           if(sync1.ge.3.0) write(*,4002) freq,sync1,dt,kbuf
-4002       format(f10.3,2f8.2,i3)
+!           if(sync1.ge.3.0) write(*,4002) freq,sync1,dt,kbuf
+!4002       format(f10.3,2f8.2,i3)
            if(np1.eq.1) then
               rewind 51
               np1=0

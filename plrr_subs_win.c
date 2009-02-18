@@ -3,15 +3,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define HELLO_PORT 50004
-#define HELLO_GROUP "239.255.0.0"
+#define HELLO_PORT 50024
+//#define HELLO_GROUP "239.255.0.0"
+#define HELLO_GROUP "127.0.0.1"
 #define MSGBUFSIZE 1416
 
 struct sockaddr_in addr;
 int fd;
 
-//void setup_rsocket_(int *multicast0)
-void __stdcall SETUP_RSOCKET(int *multicast0)
+//void __stdcall SETUP_RSOCKET(int *multicast0)
+void setup_rsocket_(int *multicast0)
 {
   struct ip_mreq mreq;
   u_int yes=1;
@@ -94,8 +95,8 @@ void __stdcall SETUP_RSOCKET(int *multicast0)
   }
 }
 
-//void recv_pkt_(char buf[])
-void __stdcall RECV_PKT(char buf[])
+//void __stdcall RECV_PKT(char buf[])
+void recv_pkt_(char buf[])
 {
   int addrlen,nbytes;
   addrlen=sizeof(addr);

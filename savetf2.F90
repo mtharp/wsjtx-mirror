@@ -20,7 +20,7 @@ subroutine savetf2(id,fnamedate,savedir)
   if(nh.lt.0) nh=nh+24
   if(nh.ge.24) nh=nh-24
   write(fname,1001) fnamedate,nh,nm
-1001 format('/',a6,'_',2i2.2,'.tf2')
+1001 format('/',a6,'_',2i2.2,'.iq')
   do i=80,1,-1
      if(savedir(i:i).ne.' ') go to 1
   enddo
@@ -36,7 +36,7 @@ subroutine savetf2(id,fnamedate,savedir)
   close(17)
   go to 999
 
-997 print*,'Error writing tf2 file'
+997 print*,'Error writing *.iq file'
   print*,fname
   go to 999
 
