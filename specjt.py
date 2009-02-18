@@ -124,11 +124,12 @@ def fdf_change(event):
     m=(nfadd+int(1000.0*Audio.gcom2.fcenter)) % 1000 - 125
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                   #kHz per pixel
+    nn=int(1000.0*Audio.gcom2.fcenter) % 1000 - 125
     g.Freq=df*(event.x-375) + fmid
-    n=int(g.Freq+0.5)
+    n=int(g.Freq+0.5+nn)
     t="%d" % (n,)
-    if g.fc[n] != "":
-        t=t + ":  " + g.fc[n]
+##    if g.fc[n] != "":
+##        t=t + ":  " + g.fc[n]
     fdf.configure(text=t)
 
 def fdf_change2(event):
@@ -188,6 +189,7 @@ def draw_axis():
     x1=int(xmid-0.6*bw)                         #Make it too wide, to be
     x2=int(xmid+0.6*bw)                         #sure to get all the numbers
     nfadd=Audio.gcom2.nfadd
+    nfadd=0
     ixadd=((nfadd+int(1000.0*Audio.gcom2.fcenter)) % 1000) - 125
     ilab=10
     if bw <= 60.0: ilab=5
