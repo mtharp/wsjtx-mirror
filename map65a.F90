@@ -133,7 +133,7 @@ subroutine map65a(newdat)
                  sq=sq/(2.0*9523.0)
                  rms=sqrt(sq)
                  xdb=-10.
-                 if(rms.gt.0.0) xdb=10.0*log10(sq)
+                 if(rms.gt.0.0) xdb=10.0*log10(sq) - 20.0
                  write(51,4001) nnn,rms,xdb
 4001             format(i8,2f12.4)
               enddo
