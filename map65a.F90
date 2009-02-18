@@ -130,7 +130,7 @@ subroutine map65a(newdat)
                     xq=id(2,k,kbuf)
                     sq=sq + xi*xi + xq*xq
                  enddo
-                 rms=sqrt(sq/95238.0)
+                 rms=sqrt(sq/(2.0*9523.0))
                  write(51,4001) nnn,rms
 4001             format(i8,f12.4)
               enddo
@@ -262,9 +262,10 @@ subroutine map65a(newdat)
                  stop 'Error in message format'
 8                if(i.le.18) decoded(i+2:i+4)='OOO'
               endif
-              nkHz=nint(freq-foffset) + nfoffset
+              nn=mod(int(1000*fcenter),1000) - 125
+              nkHz=nint(freq-foffset) + nfoffset + nn
               f0=144.0+0.001*nkHz
-              ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
+              ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset+nn))
 
 !              ndf0=nint(a(1))
 !              ndf1=nint(a(2))
@@ -340,9 +341,10 @@ subroutine map65a(newdat)
               stop 'Error in message format'
 10            if(i.le.18) decoded(i+2:i+4)='OOO'
            endif
-           nkHz=nint(freq-foffset) + nfoffset
+           nn=mod(int(1000*fcenter),1000) - 125
+           nkHz=nint(freq-foffset) + nfoffset + nn
            f0=144.0+0.001*nkHz
-           ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
+           ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset+nn))
            ndf0=nint(a(1))
            ndf1=nint(a(2))
            ndf2=nint(a(3))
