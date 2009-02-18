@@ -8,9 +8,7 @@ C  to decode it.
       parameter (NFFT1=77760,NFFT2=2430)
       parameter (NMAX=60*96000)          !Samples per 60 s
       integer*2 id(2,NMAX)               !46 MB: raw data from Linrad timf2
-      complex c2x(NMAX/4)                !After 1/4 filter and downsample
-      complex c3x(NMAX/16)               !After 1/16 filter and downsample
-      complex c4x(NMAX/64)               !After 1/64 filter and downsample
+      complex cx0(NMAX/64)                !Data at 1378.125 samples/s
       complex cx(NMAX/64)                !Data at 1378.125 samples/s
       complex c5x(NMAX/256)                              
       complex c5a(256),c5b(256)
@@ -29,7 +27,15 @@ C  Mix sync tone to baseband, low-pass filter, and decimate by 64
       dt00=dt
 C  If freq=125.0 kHz, f0=48000 Hz.
       f0=1000*(freq-77.0)                  !Freq of sync tone (0-96000 Hz)
-      call filbig(id,NMAX,f0,newdat,cx,n5)
+      call filbig(id,NMAX,f0,newdat,cx0,n5)
+C Move data later by 1 s.  (This is a kludge.)
+      do i=1,1378
+         cx(i)=0.
+      enddo
+      do i=1,n5
+         cx(1378+i)=cx0(i)
+      enddo
+
       joff=0
       sqa=0.
       do i=1,n5
