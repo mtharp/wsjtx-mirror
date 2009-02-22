@@ -63,7 +63,8 @@ program plrs
 #ifdef CVF
      open(10,file=fname,form='binary',status='old')
 #else
-     fd=open(fname,RMODE)                  !Open file for reading
+     open(10,file=fname,access='stream',status='old')
+!     fd=open(fname,RMODE)                  !Open file for reading
 #endif
      dmsec=-dtmspacket
      nsec0=sec_midn()
@@ -81,11 +82,12 @@ program plrs
 #ifdef CVF
            read(10) buf8
 #else
-           nr=read(fd,buf8,NBPP)
-           if(nr.ne.NBPP) then
-              print*,'Error reading file all.tf2'
-              go to 999
-           endif
+           read(10) buf8
+!           nr=read(fd,buf8,NBPP)
+!           if(nr.ne.NBPP) then
+!              print*,'Error reading file all.tf2'
+!              go to 999
+!           endif
 #endif
            nblock=nblock+1
            call send_pkt(center_freq)
@@ -110,7 +112,8 @@ program plrs
 #ifdef CVF
      close(10)
 #else
-     i=close(fd)
+     close(10)
+!     i=close(fd)
 #endif
   enddo
 
