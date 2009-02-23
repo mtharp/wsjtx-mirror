@@ -1759,10 +1759,10 @@ frame.pack()
 
 # Create "worked", a dictionary of all calls in WSJT.LOG
 try:
-    f=open(appdir+'/WSJT.LOG','r')
+    f=open(appdir+'/WSJT.LOG','a+')
     s=f.readlines()
 except:
-    print 'Error opening WSJT.LOG'
+    print 'Cannot open or create ',appdir+'/WSJT.LOG'
     s=""
 f.close()
 tcall=""
