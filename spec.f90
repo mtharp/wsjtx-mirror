@@ -99,7 +99,8 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
   fac=fac*0.065/base
   foffset=0.001*(1270+nfcal)
   nbpp=(nfb-nfa)*NFFT/(96.0*NX)  !Bins per pixel in wideband (upper) waterfall
-  fselect=mousefqso + foffset - (1000.d0*(fcenter-144.125d0)+nfadd)
+  fselect=mousefqso + foffset - 1000.d0*(fcenter-144.125d0)
+  if(ndiskdat.eq.0) fselect=fselect - nfadd
   imid=nint(1000.0*(fselect-125.0+48.0)/df)
   fmid=0.5*(nfa+nfb) + foffset
   imid0=nint(1000.0*(fmid-125.0+48.0)/df) - nbpp/2  !Last term is empirical

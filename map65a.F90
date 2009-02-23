@@ -24,7 +24,8 @@ subroutine map65a(newdat)
   np1=1                              !### temporary
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
-  nfoffset=nint(1000*(fcenter-144.125d0)) + nfadd
+  nfoffset=nint(1000*(fcenter-144.125d0))
+  if(ndiskdat.eq.0) nfoffset=nfoffset + nfadd
   mfqso=mousefqso - nfoffset
 
   rewind 11
@@ -96,7 +97,10 @@ subroutine map65a(newdat)
               if(iii.ge.1 .and. iii.le.32768) then
                  tavg(ii)=savg(iii)
               else
-                 print*,'Error in iii:',iii,ia,ib,fa,fb
+!                 print*,'Error in iii:',iii,ia,ib,fa,fb
+                 write(*,1001) fcenter,1.d-6*fa,1.d-6*fb,iii
+1001             format('fcenter:',f9.3,'   fa:',f9.3,'   fb:',f9.3,   &
+                      '   iii:',i10)
                  go to 999
               endif
            enddo
