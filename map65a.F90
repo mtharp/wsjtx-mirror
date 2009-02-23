@@ -117,7 +117,7 @@ subroutine map65a(newdat)
         if(smax.gt.1.1) then
            ntry=ntry+1
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
-           call ccf65(ss(1,i),nhsym,sync1,dt,flipk,              &
+           call ccf65(ss(1,i),nhsym,sync1,dt,flipk,mode65,            &
                 syncshort,snr2,dt2)
 !###
 !           if(sync1.ge.3.0) write(*,4002) freq,sync1,dt,kbuf
@@ -157,7 +157,7 @@ subroutine map65a(newdat)
 
 !  Check to see if lower tone of shorthand pair was found.
               do j=2,4
-                 i0=i-nint(j*53.8330078/df)
+                 i0=i-nint(j*mode65*10.0*(11025.0/4096.0)/df)
 !  Should this be i0 +/- 1, or just i0?
 !  Should we also insist that difference in DT be either 1.5 or -1.5 s?
                  if(short(1,i0).gt.1.0) then
@@ -213,11 +213,11 @@ subroutine map65a(newdat)
            if(sync1.gt.thresh1 .and. abs(noffset).le.dftolerance) then
 !  Keep only the best candidate within ftol.
 !  (Am I deleting any good decodes by doing this?)
-              if(freq-freq0.le.ftol .and. sync1.gt.sync10 .and.               &
+              if(freq-freq0.le.ftol .and. sync1.gt.sync10 .and.             &
                    nkm.eq.1) km=km-1
               if(freq-freq0.gt.ftol .or. sync1.gt.sync10) then
                  nflip=nint(flipk)
-                 call decode1a(id(1,1,kbuf),newdat,freq,nflip,        &
+                 call decode1a(id(1,1,kbuf),newdat,freq,nflip,mode65,       &
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
 

@@ -1,5 +1,7 @@
-      subroutine ccf65(ss,nhsym,sync1,dt1,flipk,syncshort,
+      subroutine ccf65(ss,nhsym,sync1,dt1,flipk,mode65,syncshort,
      +     snr2,dt2)
+
+C  Check one frequency bin for JT65 sync pattern or shorthand pattern.
 
       parameter (NFFT=512,NH=NFFT/2)
       parameter (LAGMAX=37)

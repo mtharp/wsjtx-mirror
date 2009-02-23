@@ -1433,14 +1433,14 @@ modebutton['menu'] = modemenu
 # Can use the following to retrieve the state:
 # state=modemenu.entrycget(0,"state")
 
-#modemenu.add_radiobutton(label = 'JT65A', variable=mode, command = ModeJT65A, \
-#            state=DISABLED, accelerator='F8')
+modemenu.add_radiobutton(label = 'JT65A', variable=mode, command = ModeJT65A, \
+            accelerator='F8')
 modemenu.add_radiobutton(label = 'JT65B', variable=mode, command = ModeJT65B, \
-                         accelerator='Shift+F8')
-#modemenu.add_radiobutton(label = 'JT65C', variable=mode, command = ModeJT65C, \
-#            state=DISABLED, accelerator='Ctrl+F8')
-modemenu.add_radiobutton(label = 'Measure', variable=mode)
-modemenu.add_radiobutton(label = 'Pulsar', variable=mode,state=DISABLED)
+            accelerator='Shift+F8')
+modemenu.add_radiobutton(label = 'JT65C', variable=mode, command = ModeJT65C, \
+            accelerator='Ctrl+F8')
+#modemenu.add_radiobutton(label = 'Measure', variable=mode)
+#modemenu.add_radiobutton(label = 'Pulsar', variable=mode,state=DISABLED)
 
 #------------------------------------------------------ Decode menu
 decodebutton = Menubutton(mbar, text = 'Decode')
@@ -1522,9 +1522,9 @@ root.bind_all('<F4>', clrToRadio)
 root.bind_all('<F5>', what2send)
 root.bind_all('<F6>', opennext)
 root.bind_all('<Shift-F6>', decodeall)
-#root.bind_all('<F8>', ModeJT65A)
+root.bind_all('<F8>', ModeJT65A)
 root.bind_all('<Shift-F8>', ModeJT65B)
-#root.bind_all('<Control-F8>', ModeJT65C)
+root.bind_all('<Control-F8>', ModeJT65C)
 root.bind_all('<F10>', showspecjt)
 root.bind_all('<Shift-F10>', astro1)
 root.bind_all('<F11>',left_arrow)
