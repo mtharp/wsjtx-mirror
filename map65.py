@@ -1332,9 +1332,9 @@ def update():
     except:
         Audio.gcom2.nfcal=0
     try:
-        Audio.gcom2.nfadd=options.fadd.get()
+        Audio.gcom2.fadd=options.fadd.get()
     except:
-        Audio.gcom2.nfadd=0
+        Audio.gcom2.fadd=116.0
     try:
         Audio.gcom2.ncsmin=options.ncsmin.get()
     except:

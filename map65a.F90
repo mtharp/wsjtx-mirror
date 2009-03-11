@@ -25,7 +25,7 @@ subroutine map65a(newdat)
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
   nfoffset=nint(1000*(fcenter-144.125d0))
-  if(ndiskdat.eq.0) nfoffset=nfoffset + nfadd
+  if(ndiskdat.eq.0) nfoffset=nfoffset + nint(1000.d0*fadd)
   mfqso=mousefqso - nfoffset
 
   rewind 11
@@ -138,8 +138,8 @@ subroutine map65a(newdat)
                  rms=sqrt(sq)
                  xdb=-10.
                  if(rms.gt.0.0) xdb=10.0*log10(sq) - 20.0
-                 write(51,4001) nnn,rms,xdb
-4001             format(i8,2f12.4)
+!                 write(51,4001) nnn,rms,xdb
+!4001             format(i8,2f12.4)
               enddo
            endif
 !###
@@ -269,10 +269,12 @@ subroutine map65a(newdat)
                  stop 'Error in message format'
 8                if(i.le.18) decoded(i+2:i+4)='OOO'
               endif
-              nn=mod(int(1000*fcenter),1000) - 125
-              nkHz=nint(freq-foffset) + nfoffset + nn
+!              nn=mod(int(1000*fcenter),1000) - 125
+              nkHz=nint(freq-foffset) + nfoffset
+!              write(*,4002) freq,foffset,nfoffset,nn,nkhz
+!4002          format(2f15.6,3i10)
               f0=144.0+0.001*nkHz
-              ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset+nn))
+              ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
 
 !              ndf0=nint(a(1))
 !              ndf1=nint(a(2))
@@ -348,10 +350,10 @@ subroutine map65a(newdat)
               stop 'Error in message format'
 10            if(i.le.18) decoded(i+2:i+4)='OOO'
            endif
-           nn=mod(int(1000*fcenter),1000) - 125
-           nkHz=nint(freq-foffset) + nfoffset + nn
+!           nn=mod(int(1000*fcenter),1000) - 125
+           nkHz=nint(freq-foffset) + nfoffset
            f0=144.0+0.001*nkHz
-           ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset+nn))
+           ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
            ndf0=nint(a(1))
            ndf1=nint(a(2))
            ndf2=nint(a(3))

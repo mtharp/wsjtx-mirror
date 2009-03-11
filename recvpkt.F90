@@ -108,6 +108,11 @@ subroutine recvpkt(iarg)
      mutcm=mod(nseclr/60,60)
      mutc=100*mutch + mutcm
 
+!### Temporary!
+!     write(*,4100) center_freq,fadd,nfcal,mutc
+!4100 format(2f12.6,2i10)
+!###
+
 ! If we have not transmitted in this minute, see if it's time to start FFTs
      if(ntx.eq.0 .and. lauto+monitoring.ne.0) then
         if(ns.ge.nt1 .and. ndone1.eq.0 .and. synced) then

@@ -1,6 +1,7 @@
 ! Variable             Purpose                              Set in Thread
 !-------------------------------------------------------------------------
 real*8 fcenter         !Linrad center freq, from pkt header   recvpkt
+real*8 fadd            !Add to fcenter (MHz)                    GUI
 real ps0               !Spectrum of best ping, FSK441/JT6m      Decoder
 real psavg             !Average spectrum                        Decoder
 real s2                !2d spectrum for horizontal waterfall    GUI
@@ -39,7 +40,6 @@ integer ncsmin         !Minimum length of callsign in bandmap   GUI
 integer newspec        !New spectra in ss(4,322,NSMAX)     GUI,Decoder
 integer nfa            !Low end of map65 search (def 100 kHz)   GUI
 integer nfb            !High end of map65 search (def 160 kHz)  GUI
-integer nfadd          !Add to fcenter, kHz                     GUI
 integer nfcal          !Calibration offset, Hz                  GUI
 integer idphi          !Phase offset in Y channel (deg)         GUI
 integer nkeep          !Timeout limit for band maps (min)       GUI
@@ -103,12 +103,12 @@ character*80 filetokillb
 character*12 pttport
 character*8 utcdata     !HHMM UTC for the processed data       Decoder
 
-common/gcom2/fcenter,ps0(431),psavg(450),s2(64,3100),ccf(-5:540),           &
+common/gcom2/fcenter,fadd, ps0(431),psavg(450),s2(64,3100),ccf(-5:540),     &
      green(500),fselect,pctlost,pctblank,rxnoise,dphi,ngreen,dgain,         &
      ndecoding,ndecoding0,mousebutton,multicast,nsetftx,ierr,               &
      ndecdone,lauto,mantx,nrestart,ntr,nmsg,nsave,nadd5,                    &
      dftolerance,LDecoded,rxdone,monitoring,nzap,minsigdb,                  &
-     nclearave,nfreeze,nafc,ncsmin,newspec,nfa,nfb,nfadd,nfcal,idphi,nkeep, &
+     nclearave,nfreeze,nafc,ncsmin,newspec,nfa,nfb,nfcal,idphi,nkeep,       &
      nmode,mode65,nbpp,ndebug,ndphi,nhispol,nt1,                            &
      nblank,nport,mousedf,mousefqso,neme,nrw26,naggressive,ntx2,nagain,     &
      shok,sendingsh,d2a(661500),d2b(661500),b(60000),jza,jzb,ntime,         &

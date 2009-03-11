@@ -120,8 +120,7 @@ def pal_AFMHot():
 # Readout of graphical cursor location
 def fdf_change(event):
     global bw
-    nfadd=Audio.gcom2.nfadd
-    m=(nfadd+int(1000.0*Audio.gcom2.fcenter)) % 1000 - 125
+    m=(int(1000.0*(Audio.gcom2.fcenter+Audio.gcom2.fadd))) % 1000 - 125
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                   #kHz per pixel
     nn=int(1000.0*Audio.gcom2.fcenter) % 1000 - 125
@@ -160,8 +159,7 @@ def df_mark():
     draw_axis()
 # Mark QSO freq in top graph
     color='green'
-    nfadd=Audio.gcom2.nfadd
-    m=(nfadd+int(1000.0*Audio.gcom2.fcenter)) % 1000 - 125
+    m=(int(1000.0*(Audio.gcom2.fcenter+Audio.gcom2.fadd))) % 1000 - 125
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                #kHz per pixel
     x1=375.0 + (Audio.gcom2.mousefqso-fmid)/df    
@@ -188,9 +186,8 @@ def draw_axis():
     xmid=0.5*float(Audio.gcom2.nfb + Audio.gcom2.nfa)
     x1=int(xmid-0.6*bw)                         #Make it too wide, to be
     x2=int(xmid+0.6*bw)                         #sure to get all the numbers
-    nfadd=Audio.gcom2.nfadd
-    nfadd=0
-    ixadd=((nfadd+int(1000.0*Audio.gcom2.fcenter)) % 1000) - 125
+# use fadd here ???
+    ixadd=(int(1000.0*(Audio.gcom2.fcenter+Audio.gcom2.fadd))) % 1000 - 125
     ilab=10
     if bw <= 60.0: ilab=5
     if bw <= 30.0: ilab=2

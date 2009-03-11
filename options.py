@@ -46,7 +46,7 @@ dphi=IntVar()
 fa=IntVar()
 fb=IntVar()
 fcal=IntVar()
-fadd=IntVar()
+fadd=DoubleVar()
 ncsmin=IntVar()
 nt1=IntVar()
 savedir=StringVar()
@@ -105,7 +105,7 @@ fb_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fmax (kHz):',
     entry_width=9,value=160,entry_textvariable=fb)
 fcal_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fcal (Hz):',
     entry_width=9,entry_textvariable=fcal)
-fadd_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fadd (kHz):',
+fadd_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fadd (MHz):',
     entry_width=9,entry_textvariable=fadd)
 min_callsign_entry=Pmw.EntryField(g3.interior(),labelpos=W, \
     label_text='CSmin:',entry_width=9,value=4,entry_textvariable=ncsmin)
