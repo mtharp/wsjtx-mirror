@@ -33,7 +33,6 @@ subroutine savetf2(id,fnamedate,savedir,fhdr)
   open(17,file=fname,status='unknown',access='stream',err=998)
 #endif
 
-  print*,'fhdr:',fhdr
   write(17,err=997) fhdr,id
   close(17)
   go to 999
