@@ -1,9 +1,10 @@
-subroutine savetf2(id,fnamedate,savedir)
+subroutine savetf2(id,fnamedate,savedir,fhdr)
 
   parameter (NZ=60*96000)
   parameter (NSPP=174)
   parameter (NPKTS=NZ/NSPP)
   integer*2 id(2,NZ)
+  real*8 fhdr
   character*80 savedir,fname
   character cdate*8,ctime2*10,czone*5,fnamedate*6
   integer  itt(8)
@@ -32,7 +33,8 @@ subroutine savetf2(id,fnamedate,savedir)
   open(17,file=fname,status='unknown',access='stream',err=998)
 #endif
 
-  write(17,err=997) id
+  print*,'fhdr:',fhdr
+  write(17,err=997) fhdr,id
   close(17)
   go to 999
 

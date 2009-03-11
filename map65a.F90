@@ -67,8 +67,14 @@ subroutine map65a(newdat)
         ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
         ib=nint((fb+23000.0)/df + 1.0)
      else                                  !Wideband decode at all freqs
-        fa=1000*(nfa-100)
-        fb=1000*(nfb-100)
+!        fa=1000*(nfa-100)
+!        fb=1000*(nfb-100)
+        msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5
+        mh=(nfb-nfa)/2
+        fa=1000*(nfa-msub+mh)
+        fb=1000*(nfb-msub+mh)
+        fa=max(23000.0,fa)
+        fb=min(95000.0-23000.0,fb)
         ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
         ib=nint((fb+23000.0)/df + 1.0)
      endif
@@ -378,7 +384,7 @@ subroutine map65a(newdat)
   ndecdone=2
 
   if(nsave.gt.0 .and. ndiskdat.eq.0) call savetf2(id(1,1,kbuf),       &
-       fnamedate,savedir)
+       fnamedate,savedir,fcenter+fadd)
 
 999 close(23)
   if(kbuf.eq.1) kkdone=60*96000                    !### ??? ###

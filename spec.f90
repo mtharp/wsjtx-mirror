@@ -26,7 +26,6 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
   save
 
   if(first) then
-!     df=96000.0/nfft
      df=95238.1/nfft
      call zero(a,NX*NY/2)
      call zero(a2,NX*NY/2)
@@ -98,14 +97,15 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
   fac=20.0/nadd
   fac=fac*0.065/base
   foffset=0.001*(1270+nfcal)
-  nbpp=(nfb-nfa)*NFFT/(96.0*NX)  !Bins per pixel in wideband (upper) waterfall
+  nbpp=(nfb-nfa)*NFFT/(95.2381*NX)       !Bins per pixel in upper waterfall
 
-! ### Fix up the nest several statements!
-  fselect=mousefqso + foffset - 1000.d0*(fcenter-144.125d0)
-  if(ndiskdat.eq.0) fselect=fselect - 1000.d0*fadd
-  imid=nint(1000.0*(fselect-125.0+48.0)/df)
-  fmid=0.5*(nfa+nfb) + foffset
-  imid0=nint(1000.0*(fmid-125.0+48.0)/df) - nbpp/2  !Last term is empirical
+  msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5
+  fselect=mousefqso + foffset
+  imid=nint(1000.0*(fselect-msub+48.0)/df)
+  fmid=0.5*(nfa+nfb) + foffset 
+  imid0=nint(1000.0*(fmid-msub+48.0)/df) - nbpp/2
+!  write(*,4001) foffset,fselect,fmid,mousefqso,msub,imid,imid0
+!4001 format(3f10.3,4i9)
   i0=imid-375
   ii0=imid0-375*nbpp
 

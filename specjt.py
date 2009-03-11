@@ -40,9 +40,9 @@ c0=0
 g0=0
 g.cmap="Linrad"
 g.cmap0="Linrad"
-bw=96.0
+bw=95.2381
 df=2.69165
-fcenter0=0.
+ff0=0.
 fmid=1500
 fmid0=1500
 frange=2000
@@ -120,15 +120,14 @@ def pal_AFMHot():
 # Readout of graphical cursor location
 def fdf_change(event):
     global bw
-    m=(int(1000.0*(Audio.gcom2.fcenter+Audio.gcom2.fadd))) % 1000 - 125
+    ff=Audio.gcom2.fcenter+Audio.gcom2.fadd
+    msub=int(1000*(ff-int(ff))+0.5)
+    m=int(1000.0*ff+0.5) % 1000 - msub
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                   #kHz per pixel
-    nn=int(1000.0*Audio.gcom2.fcenter) % 1000 - 125
     g.Freq=df*(event.x-375) + fmid
-    n=int(g.Freq+0.5+nn)
+    n=int(g.Freq+0.5)
     t="%d" % (n,)
-##    if g.fc[n] != "":
-##        t=t + ":  " + g.fc[n]
     fdf.configure(text=t)
 
 def fdf_change2(event):
@@ -159,7 +158,10 @@ def df_mark():
     draw_axis()
 # Mark QSO freq in top graph
     color='green'
-    m=(int(1000.0*(Audio.gcom2.fcenter+Audio.gcom2.fadd))) % 1000 - 125
+    ff=Audio.gcom2.fcenter+Audio.gcom2.fadd
+    msub=int(1000*(ff-int(ff))+0.5)
+    m=int(1000.0*ff+0.5) % 1000 - msub
+#    m=(int(1000.0*ff+0.5)) % 1000 - 125
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                #kHz per pixel
     x1=375.0 + (Audio.gcom2.mousefqso-fmid)/df    
@@ -187,7 +189,10 @@ def draw_axis():
     x1=int(xmid-0.6*bw)                         #Make it too wide, to be
     x2=int(xmid+0.6*bw)                         #sure to get all the numbers
 # use fadd here ???
-    ixadd=(int(1000.0*(Audio.gcom2.fcenter+Audio.gcom2.fadd))) % 1000 - 125
+    ff=Audio.gcom2.fcenter+Audio.gcom2.fadd
+    msub=int(1000*(ff-int(ff))+0.5)
+    ixadd=(int(1000.0*ff+0.5)) % 1000 - msub
+#    print ff,msub,ixadd
     ilab=10
     if bw <= 60.0: ilab=5
     if bw <= 30.0: ilab=2
@@ -255,7 +260,7 @@ def update():
     global a,a2,b0,c0,g0,im,im2,isec0,line0,line02,newMinute,\
            nscroll,pim,pim2,nfa0,nfb0,bw, \
            root_geom,t0,mousedf0,mousefqso0,nfreeze0,tol0,mode0,nmark0, \
-           fmid,fmid0,frange,frange0,dftolerance0,fcenter0
+           fmid,fmid0,frange,frange0,dftolerance0,ff0
     
     utc=time.gmtime(time.time()+0.1*Audio.gcom1.ndsec)
     isec=utc[5]
@@ -269,8 +274,8 @@ def update():
         if isec==0: nscroll=0
         if isec==59: newMinute=1
 
-    nbpp=int((Audio.gcom2.nfb - Audio.gcom2.nfa)*32768/(96.0*NX))
-    bw=750.0*(96.0/32768.0)*nbpp
+    nbpp=int((Audio.gcom2.nfb - Audio.gcom2.nfa)*32768/(95.2381*NX))
+    bw=750.0*(95.2381/32768.0)*nbpp
 
     if g.showspecjt==1:
         showspecjt()
@@ -341,9 +346,9 @@ def update():
         if Audio.gcom2.nfreeze: df_mark()
         nfreeze0=int(Audio.gcom2.nfreeze)
 
-    if Audio.gcom2.fcenter!=fcenter0:
+    if Audio.gcom2.fcenter + Audio.gcom2.fadd != ff0:
         draw_axis()
-        fcenter0=float(Audio.gcom2.fcenter)
+        ff0=float(Audio.gcom2.fcenter+Audio.gcom2.fadd)
 
     if (Audio.gcom2.mousedf != mousedf0 or
             Audio.gcom2.mousefqso != mousefqso0 or
