@@ -1335,6 +1335,8 @@ def update():
         Audio.gcom2.fadd=options.fadd.get()
     except:
         Audio.gcom2.fadd=116.0
+    if not Audio.gcom2.monitoring and not lauto:
+        Audio.gcom2.fadd=0.0
     try:
         Audio.gcom2.ncsmin=options.ncsmin.get()
     except:

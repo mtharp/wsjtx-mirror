@@ -36,7 +36,7 @@ subroutine recvpkt(iarg)
 ! Should receive a new packet every 348/95238.1 = 0.003654 s
   nsec=mod(Tsec,86400.d0)           !Time according to MAP65
   nseclr=msec/1000                  !Time according to Linrad
-  fcenter=center_freq
+  if(lauto+monitoring.ne.0) fcenter=center_freq
 
 ! Reset buffer pointers at start of minute.
   ns=mod(nsec,60)
@@ -117,7 +117,7 @@ subroutine recvpkt(iarg)
      if(ntx.eq.0 .and. lauto+monitoring.ne.0) then
         if(ns.ge.nt1 .and. ndone1.eq.0 .and. synced) then
            nutc=mutc
-           fcenter=center_freq
+           if(lauto+monitoring.ne.0) fcenter=center_freq
            kbuf=kb
            kk=k
            ndiskdat=0

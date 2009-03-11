@@ -53,6 +53,8 @@ subroutine getfile2(fname,len)
 
 30 ndiskdat=1
   mousebutton=0
+  fcenter=fcfile
+  fcfile=0.d0
 
 999 return
 end subroutine getfile2
