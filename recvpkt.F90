@@ -25,7 +25,7 @@ subroutine recvpkt(iarg)
   kxp=0
   kb=1
   nsec0=-999
-  fcenter=144.125d0                 !Default (startup) frequency)
+  fcenter=144.130d0                 !Default (startup) frequency)
   multicast0=multicast
   ntx=0
   synced=.false.

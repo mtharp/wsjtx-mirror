@@ -162,6 +162,7 @@ def df_mark():
     msub=int(1000*(ff-int(ff))+0.5)
     m=int(1000.0*ff+0.5) % 1000 - msub
 #    m=(int(1000.0*ff+0.5)) % 1000 - 125
+#    print ff,msub,m,Audio.gcom2.nfa,Audio.gcom2.nfb
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                #kHz per pixel
     x1=375.0 + (Audio.gcom2.mousefqso-fmid)/df    
@@ -274,9 +275,6 @@ def update():
         if isec==0: nscroll=0
         if isec==59: newMinute=1
 
-    nbpp=int((Audio.gcom2.nfb - Audio.gcom2.nfa)*32768/(95.2381*NX))
-    bw=750.0*(95.2381/32768.0)*nbpp
-
     if g.showspecjt==1:
         showspecjt()
     nspeed=nspeed0.get()                        #Waterfall update rate
@@ -349,6 +347,18 @@ def update():
     if Audio.gcom2.fcenter + Audio.gcom2.fadd != ff0:
         draw_axis()
         ff0=float(Audio.gcom2.fcenter+Audio.gcom2.fadd)
+        msub=int(1000*(ff0-int(ff0))+0.5)
+        try:
+            Audio.gcom2.nfa=msub + g.fa
+        except:
+            Audio.gcom2.nfa=msub-30
+        try:
+            Audio.gcom2.nfb=msub + g.fb
+        except:
+            Audio.gcom2.nfa=msub+30
+
+    nbpp=int((Audio.gcom2.nfb - Audio.gcom2.nfa)*32768/(95.2381*NX))
+    bw=750.0*(95.2381/32768.0)*nbpp
 
     if (Audio.gcom2.mousedf != mousedf0 or
             Audio.gcom2.mousefqso != mousefqso0 or

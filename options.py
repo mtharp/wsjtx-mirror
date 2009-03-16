@@ -100,9 +100,9 @@ nkeep_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Timeout (min):',
 dphi_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Dphi (deg):',
     entry_width=9,entry_textvariable=dphi)
 fa_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fmin (kHz):',
-    entry_width=9,value=100,entry_textvariable=fa)
+    entry_width=9,value=-30,entry_textvariable=fa)
 fb_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fmax (kHz):',
-    entry_width=9,value=160,entry_textvariable=fb)
+    entry_width=9,value=30,entry_textvariable=fb)
 fcal_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fcal (Hz):',
     entry_width=9,entry_textvariable=fcal)
 fadd_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fadd (MHz):',

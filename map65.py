@@ -60,7 +60,7 @@ bm2_geom=""
 cmap0="Linrad"
 fileopened=""
 font1='Helvetica'
-fqso0=125
+fqso0=130
 hiscall=""
 hisgrid=""
 hisgrid0=""
@@ -1309,13 +1309,13 @@ def update():
     except:
         Audio.gcom2.idphi=0
     try:
-        Audio.gcom2.nfa=options.fa.get()
+        g.fa=int(options.fa.get())
     except:
-        Audio.gcom2.nfa=100
+        g.fa=-30
     try:
-        Audio.gcom2.nfb=options.fb.get()
+        g.fb=int(options.fb.get())
     except:
-        Audio.gcom2.nfa=160
+        g.fb=30
     try:
         Audio.gcom2.nfcal=options.fcal.get()
     except:
@@ -1897,7 +1897,7 @@ f.close
 Audio.ftn_init()
 GenStdMsgs()
 Audio.gcom4.addpfx=(options.addpfx.get().lstrip()+'        ')[:8]
-Audio.gcom2.mousefqso=125
+Audio.gcom2.mousefqso=130
 Audio.gcom2.nhispol=-999
 monitor()
 first=1
