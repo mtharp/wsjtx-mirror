@@ -53,7 +53,8 @@ subroutine getfile2(fname,len)
 
 30 ndiskdat=1
   mousebutton=0
-  fcenter=fcfile
+  fcenter=144.130
+  if(fcfile.gt.1.5 .and. fcfile.lt.11000.0) fcenter=fcfile
   fcfile=0.d0
 
 999 return

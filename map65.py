@@ -383,6 +383,9 @@ def openfile(event=NONE):
            'when trying to read file',fname
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
+        Audio.gcom2.monitoring=0
+        Audio.gcom2.ndiskdat=1
+        lab3.configure(text=fileopened)
     os.chdir(appdir)
  
 #------------------------------------------------------ opennext
@@ -410,6 +413,7 @@ def opennext(event=NONE):
                'when trying to read file',fname
             mrudir=os.path.dirname(fname)
             fileopened=os.path.basename(fname)
+            lab3.configure(text=fileopened)
         else:
             t="No more files to process."
             msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
@@ -871,24 +875,6 @@ def toggleauto(event=NONE):
     if lauto==0: auto.configure(text='Auto is OFF',bg='gray85',relief=RAISED)
     if lauto==1: auto.configure(text='Auto is ON',bg='red',relief=SOLID)
     
-#----------------------------------------------------- dtdf_change
-# Readout of graphical cursor location
-def dtdf_change(event):
-    if event.y<40 and Audio.gcom2.nspecial==0:
-        lab1.configure(text='Time (s)',bg="#33FFFF")   #light blue
-        t="%.1f" % (12.0*event.x/500.0-2.0,)
-        lab6.configure(text=t,bg="#33FFFF")
-    elif (event.y>=40 and event.y<95) or \
-             (event.y<95 and Audio.gcom2.nspecial>0):
-        lab1.configure(text='DF (Hz)',bg='red')
-        idf=Audio.gcom2.idf
-        t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
-        lab6.configure(text=t,bg="red")
-    else:
-        lab1.configure(text='Time (s)',bg='green')
-        t="%.1f" % (53.0*event.x/500.0,)
-        lab6.configure(text=t,bg="green")
-
 #---------------------------------------------------- mouse_click_g1
 def mouse_click_g1(event):
     global nopen
@@ -1104,6 +1090,9 @@ def update():
     else:
         bdecode.configure(bg='gray85',activebackground='gray85',state=ACTIVE)
         g.ndecphase=0
+
+    if Audio.gcom2.ndiskdat==0:
+        lab3.configure(text='')
 
     tx1.configure(bg='white')
     tx2.configure(bg='white')
@@ -1593,6 +1582,8 @@ avetext.bind('<Double-Button-1>',dbl_click_ave)
 #avetext.bind('<Double-Button-3>',dbl_click_ave)
 avetext.bind('<Key>',avetextkey)
 avetext.pack(side=LEFT, fill=X, padx=1)
+lab3=Label(iframe4b,text='', width=24, relief=FLAT)
+lab3.pack(side=LEFT, fill=X, padx=1)
 iframe4b.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------- Button Bar

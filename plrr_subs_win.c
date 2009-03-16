@@ -66,10 +66,10 @@ void setup_rsocket_(int *multicast0)
       perror("Reusing ADDR failed");
       exit(1);
     }
-    printf("Accepting multicast data from Linrad.\n");
+    printf("Will accept multicast data from Linrad.\n");
   }
   else {
-    printf("Accepting unicast data from Linrad.\n");
+    printf("Will accept unicast data from Linrad.\n");
   }
 
   /* set up destination address */
