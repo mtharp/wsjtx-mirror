@@ -73,10 +73,12 @@ subroutine map65a(newdat)
         mh=(nfb-nfa)/2
         fa=1000*(nfa-msub+mh)
         fb=1000*(nfb-msub+mh)
-        fa=max(23000.0,fa)
-        fb=min(95000.0-23000.0,fb)
+!        fa=max(51.0*df,fa)
+!        fb=min(95000.0-51.0*df,fb)
         ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
         ib=nint((fb+23000.0)/df + 1.0)
+        ia=max(51,ia)
+        ib=min(32768-51,ib)
      endif
 
      km=0
@@ -99,16 +101,7 @@ subroutine map65a(newdat)
 !  Find the local base level; update every 10 bins.
         if(mod(i-ia,10).eq.0) then
            do ii=-50,50
-              iii=i+ii
-              if(iii.ge.1 .and. iii.le.32768) then
-                 tavg(ii)=savg(iii)
-              else
-!                 print*,'Error in iii:',iii,ia,ib,fa,fb
-                 write(*,1001) fcenter,1.d-6*fa,1.d-6*fb,iii
-1001             format('fcenter:',f9.3,'   fa:',f9.3,'   fb:',f9.3,   &
-                      '   iii:',i10)
-                 go to 999
-              endif
+              tavg(ii)=savg(i+ii)
            enddo
            call pctile(tavg,tmp,101,50,base)
         endif
@@ -126,7 +119,7 @@ subroutine map65a(newdat)
            call ccf65(ss(1,i),nhsym,sync1,dt,flipk,mode65,            &
                 syncshort,snr2,dt2)
 !###
-!           if(sync1.ge.3.0) write(*,4002) freq,sync1,dt,kbuf
+!           if(sync1.ge.1.0) write(*,4002) freq,sync1,dt,kbuf
 !4002       format(f10.3,2f8.2,i3)
            if(np1.eq.1) then
               rewind 51
@@ -215,6 +208,8 @@ subroutine map65a(newdat)
 !  Use lower thresh1 at fQSO
            if(nqd.eq.1 .and. dftolerance.le.100) thresh1=0.
            noffset=0
+!           if(sync1.gt.0.0) print*,nqd,freq,sync1,thresh1
+!           if(abs(freq-122.9).lt.1.0) print*,nqd,freq,sync1,thresh1
            if(nqd.eq.1) noffset=nint(1000.0*(freq-foffset-mfqso)-mousedf)
            if(sync1.gt.thresh1 .and. abs(noffset).le.dftolerance) then
 !  Keep only the best candidate within ftol.
@@ -254,6 +249,7 @@ subroutine map65a(newdat)
         endif
 70      continue
      enddo
+
      if(nqd.eq.1) then
         nwrite=0
         do k=1,km

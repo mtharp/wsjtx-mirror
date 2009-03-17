@@ -47,6 +47,8 @@ fmid=1500
 fmid0=1500
 frange=2000
 frange0=2000
+gfa0=-9999
+gfb0=-9999
 isec0=-99
 mode0=""
 mousedf0=0
@@ -259,7 +261,7 @@ def freeze_decode2(event):
 #---------------------------------------------------- update
 def update():
     global a,a2,b0,c0,g0,im,im2,isec0,line0,line02,newMinute,\
-           nscroll,pim,pim2,nfa0,nfb0,bw, \
+           nscroll,pim,pim2,nfa0,nfb0,bw,gfa0,gfb0, \
            root_geom,t0,mousedf0,mousefqso0,nfreeze0,tol0,mode0,nmark0, \
            fmid,fmid0,frange,frange0,dftolerance0,ff0
     
@@ -344,9 +346,12 @@ def update():
         if Audio.gcom2.nfreeze: df_mark()
         nfreeze0=int(Audio.gcom2.nfreeze)
 
-    if Audio.gcom2.fcenter + Audio.gcom2.fadd != ff0:
+    if (Audio.gcom2.fcenter + Audio.gcom2.fadd != ff0) or \
+            g.fa != gfa0 or g.fb != gfb0:
         draw_axis()
         ff0=float(Audio.gcom2.fcenter+Audio.gcom2.fadd)
+        gfa0=g.fa
+        gfb0=g.fb
         msub=int(1000*(ff0-int(ff0))+0.5)
         try:
             Audio.gcom2.nfa=msub + g.fa

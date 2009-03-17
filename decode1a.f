@@ -42,7 +42,6 @@ C Move data later by 1 s.  (This is a kludge.)
          sqa=sqa + real(cx(i))**2 + aimag(cx(i))**2
       enddo
       sqa=sqa/n5
-      sqb=sqb/n5
 
 C  Find best DF, f1, f2, DT.  Start by lpf and downsampling to 344.53125 Hz.
       call fil6521(cx,n5,c5x,n6)
