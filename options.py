@@ -106,7 +106,7 @@ fb_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fmax (kHz):',
 fcal_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fcal (Hz):',
     entry_width=9,entry_textvariable=fcal)
 fadd_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fadd (MHz):',
-    entry_width=9,entry_textvariable=fadd)
+    entry_width=9,value=160.0,entry_textvariable=fadd)
 min_callsign_entry=Pmw.EntryField(g3.interior(),labelpos=W, \
     label_text='CSmin:',entry_width=9,value=4,entry_textvariable=ncsmin)
 nt1_entry=Pmw.EntryField(g3.interior(),labelpos=W, \

@@ -180,15 +180,6 @@ def testmsgs():
     tx5.insert(0,"@1000")
     tx6.insert(0,"@2000")
 
-#------------------------------------------------------ delta_phi
-def delta_phi():
-    global lauto
-    Audio.gcom2.monitoring=0
-    lauto=0
-    Audio.gcom2.lauto=0
-    Audio.gcom2.ndphi=1
-    decode()
-
 #------------------------------------------------------ 
 def messages(event=NONE):
     global Version,bm,bm_geom,msgtext
@@ -370,7 +361,7 @@ def decode_exclude(event=NONE):
 
 #------------------------------------------------------ openfile
 def openfile(event=NONE):
-    global mrudir,fileopened,nopen
+    global mrudir,fileopened,nopen,lauto
     nopen=1                         #Work-around for "click feedthrough" bug
     try:
         os.chdir(mrudir)
@@ -383,6 +374,8 @@ def openfile(event=NONE):
            'when trying to read file',fname
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
+        lauto=0
+        Audio.gcom2.lauto=0
         Audio.gcom2.monitoring=0
         Audio.gcom2.ndiskdat=1
         lab3.configure(text=fileopened)
@@ -636,11 +629,11 @@ def about(event=NONE):
     t="MAP65-IQ Version " + Version + ", by K1JT"
     Label(about,text=t,font=(font1,16)).pack(padx=20,pady=5)
     t="""
-MAP65 is a weak signal communications program designed primarily
+MAP65-IQ is a weak signal communications program designed primarily
 for the Earth-Moon-Earth (EME) propagation path.
 
-Copyright (c) 2001-2007 by Joseph H. Taylor, Jr., K1JT, with
-contributions from additional authors.  MAP65 is Open Source 
+Copyright (c) 2001-2009 by Joseph H. Taylor, Jr., K1JT, with
+contributions from additional authors.  MAP65-IQ is Open Source 
 software, licensed under the GNU General Public License (GPL).
 Source code and programming information may be found at 
 http://developer.berlios.de/projects/wsjt/.
@@ -659,7 +652,7 @@ def shortcuts(event=NONE):
     t="""
 F1	List keyboard shortcuts
 Shift+F1	List special mouse commands
-Ctrl+F1	About MAP65
+Ctrl+F1	About MAP65-IQ
 F2	Options
 F3	Tx Mute
 F4	Clear "To Radio"
@@ -1016,11 +1009,6 @@ def update():
                 g.ndop=g.ndop00
                 g.dfdt=g.dfdt0
 
-        if (len(HisGrid.get().strip())<4) or (hisgrid != hisgrid0):
-            msg6.configure(text="        ",bg='gray85')
-            hisgrid0=hisgrid
-            Audio.gcom2.nhispol=-999
-
         astrotext.delete(1.0,END)
         astrotext.insert(END,'   Moon\n')
         astrotext.insert(END,"Az: %7.1f\n" % g.AzMoon)
@@ -1164,10 +1152,6 @@ def update():
                 else:
                     t=t + 'V'
                     color='yellow'
-                msg6.configure(text=t,bg=color)
-
-#            text.configure(state=DISABLED)
-
             try:
                 f=open(appdir+'/decoded.ave',mode='r')
                 lines=f.readlines()
@@ -1304,10 +1288,7 @@ def update():
         Audio.gcom2.nkeep=options.nkeep.get()
     except:
         Audio.gcom2.nkeep=20
-    try:
-        Audio.gcom2.idphi=options.dphi.get()
-    except:
-        Audio.gcom2.idphi=0
+    Audio.gcom2.idphi=0
     try:
         g.fa=int(options.fa.get())
     except:
@@ -1386,7 +1367,6 @@ setupmenu.add('command', label = 'Options', command = options1, \
               accelerator='F2')
 setupmenu.add_separator()
 setupmenu.add('command', label = 'Generate messages for test tones', command=testmsgs)
-setupmenu.add('command', label = 'Find Delta Phi', command=delta_phi)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'F4 sets Tx6',variable=kb8rq)
 setupmenu.add_checkbutton(label = 'Double-click on callsign sets TxFirst',
@@ -1486,7 +1466,7 @@ helpmenu.add('command', label = 'What message to send?', \
              command = what2send, accelerator='F5')
 helpmenu.add('command', label = 'Available suffixes and add-on prefixes', \
              command = prefixes)
-helpmenu.add('command', label = 'About MAP65', command = about, \
+helpmenu.add('command', label = 'About MAP65-IQ', command = about, \
              accelerator='Ctrl+F1')
 
 #------------------------------------------------------ Label above text
@@ -1741,10 +1721,6 @@ msg4=Message(iframe6, text="", width=300,relief=SUNKEN)
 msg4.pack(side=LEFT, fill=X, padx=1)
 msg5=Message(iframe6, text="", width=300,relief=SUNKEN)
 msg5.pack(side=LEFT, fill=X, padx=1)
-msg6=Message(iframe6, text="", width=300,relief=SUNKEN)
-msg6.pack(side=LEFT, fill=X, padx=1)
-##msg7=Message(iframe6, text="", width=300,relief=SUNKEN)
-##msg7.pack(side=LEFT, fill=X, padx=1)
 msg8=Message(iframe6, text='                        ', width=300,relief=SUNKEN)
 msg8.pack(side=RIGHT, fill=X, padx=1)
 iframe6.pack(expand=1, fill=X, padx=4)
@@ -1852,7 +1828,6 @@ try:
         elif key == 'fadd': options.fadd.set(value)
         elif key == 'CSmin': options.ncsmin.set(value)
         elif key == 'Nt1': options.nt1.set(value)
-        elif key == 'dphi': options.dphi.set(value)
         elif key == 'SaveDir': options.savedir.set(value.replace("#"," "))
         elif key == 'AzElDir': options.azeldir.set(value.replace("#"," "))
         elif key == 'TxFirst': TxFirst.set(value)
@@ -1942,7 +1917,6 @@ if options.auxdec.get()=="": options.auxdec.set("0")
 f.write("AuxRA " + options.auxra.get() + "\n")
 f.write("AuxDEC " + options.auxdec.get() + "\n")
 f.write("nkeep " + str(options.nkeep.get()) + "\n")
-f.write("dphi " + str(options.dphi.get()) + "\n")
 f.write("fa " + str(options.fa.get()) + "\n")
 f.write("fb " + str(options.fb.get()) + "\n")
 f.write("fcal " + str(options.fcal.get()) + "\n")
