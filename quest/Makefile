@@ -1,0 +1,88 @@
+CC = gcc
+FC = g95
+#FFLAGS = -Wall -fbounds-check
+#FFLAGS = -g -O2 -march=i686 -Wall -freal-loops
+#FFLAGS = -g -O2 -march=i686 -Wall -fbounds-check
+FFLAGS = -g -O9 -march=i686 -Wall
+CFLAGS=-g -O9 -march=i686 -Wall
+
+OBJS1 = genmet.o ran1.o gasdev.o
+
+OBJS2 = tbtest.o pack8.o unpack8.o ran1.o gasdev.o \
+	viterbi.o tab.o genmet.o rayleigh.o
+
+OBJS3 = quest.o gasdev.o ran1.o rayleigh.o packbits.o unpackbits.o \
+	init_rs_int.o encode_rs_int.o decode_rs_int.o wrapkarn.o \
+	tab.o second.o cencode.o vdecode.o \
+	qsync.o qinit.o qdecode.o qdat.o qsim.o encode232.o \
+	fano232.o vit216.o vit218.o vit316.o vit416.o vit418.o
+
+OBJS4 = tstfano.o encode232.o ran1.o packbits.o unpackbits.o \
+	fano232.o
+
+OBJS5 = kvasd.o asd1.o cutil.o
+
+OBJS6 = testrs.o set.o chksync.o \
+	init_rs_int.o encode_rs_int.o decode_rs_int.o \
+	wrapkarn.o asd1.o gendat2.o extracta.o demod64.o \
+	ran1.o gasdev.o indexx.o rayleigh.o
+
+#all:	testrs tbtest genmet quest
+all:	quest tstfano genmet
+
+
+genmet: $(OBJS1)
+	$(FC) -o genmet $(OBJS1)
+
+tbtest: $(OBJS2)
+	$(FC) -o tbtest $(OBJS2)
+
+quest:  $(OBJS3)
+	$(FC) -o quest $(OBJS3)
+
+tstfano: $(OBJS4)
+	$(FC) -o tstfano $(OBJS4)
+
+kvasd: $(OBJS5)
+	$(FC) -o kvasd $(OBJS5)
+
+testrs: $(OBJS6)
+	$(FC) -o testrs $(OBJS6)
+
+asd1.o: asd1.c asd2.c asd3.c asd.h
+	gcc -c -O asd1.c
+
+encode_rs_int.o: encode_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+decode_rs_int.o: decode_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+init_rs_int.o: init_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+quest.o: quest.f90
+	$(FC) -c $(FFLAGS) quest.f90
+qsync.o: qsync.f90
+	$(FC) -c $(FFLAGS) qsync.f90
+qinit.o: qinit.f90
+	$(FC) -c $(FFLAGS) qinit.f90
+qdecode.o: qdecode.f90
+	$(FC) -c $(FFLAGS) qdecode.f90
+qdat.o: qdat.f90
+	$(FC) -c $(FFLAGS) qdat.f90
+qsim.o: qsim.f90
+	$(FC) -c $(FFLAGS) qsim.f90
+tstfano.o: tstfano.f90
+	$(FC) -c $(FFLAGS) tstfano.f90
+genmet.o: genmet.f90
+	$(FC) -c $(FFLAGS) genmet.f90
+cencode.o: cencode.f90 vcom2.f90
+	$(FC) -c $(FFLAGS) cencode.f90
+vdecode.o: vdecode.f90 vcom2.f90
+	$(FC) -c $(FFLAGS) vdecode.f90
+
+.PHONY : clean
+clean:
+	-rm *.o quest tstfano genmet
+
