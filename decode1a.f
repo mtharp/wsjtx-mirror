@@ -11,7 +11,7 @@ C  to decode it.
       complex cx0(NMAX/64)               !Data at 1378.125 samples/s
       complex cx(NMAX/64)                !Data at 1378.125 samples/s
       complex c5x(NMAX/256)              !Data at 344.53125 samples/s
-      complex c5a(256),c5b(256)
+      complex c5a(512),c5b(512)
       complex z
 
       real s2(256,126)
@@ -72,6 +72,7 @@ C NB: Adding or subtracting a small number (e.g., 5) to j may make it decode.
          do n=1,mode65
             do i=1,nfft
                j=j+1
+               if(i.gt.256 .or. j.gt.256) print*,'Error',i,j
                c5a(i)=cx(j)
             enddo
             call four2a(c5a,nfft,1,1,1)
