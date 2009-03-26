@@ -72,7 +72,6 @@ C NB: Adding or subtracting a small number (e.g., 5) to j may make it decode.
          do n=1,mode65
             do i=1,nfft
                j=j+1
-               if(i.gt.256 .or. j.gt.256) print*,'Error',i,j
                c5a(i)=cx(j)
             enddo
             call four2a(c5a,nfft,1,1,1)
