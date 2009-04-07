@@ -5,7 +5,7 @@
 C  Apply AFC corrections to a candidate JT65 signal, and then try
 C  to decode it.
 
-      parameter (NFFT1=77760,NFFT2=2430)
+!      parameter (NFFT1=77760,NFFT2=2430)
       parameter (NMAX=60*96000)          !Samples per 60 s
       integer*2 id(2,NMAX)               !46 MB: raw data from Linrad timf2
       complex cx0(NMAX/64)               !Data at 1378.125 samples/s
@@ -58,7 +58,7 @@ C Best fit for DF, f1, f2:
 
 C Apply AFC corrections to the time-domain signal.  (We're back to
 C full bandwidth now, at the 1378.125 Hz sample rate.)
-      call twkfreq(cx,cx,n5,a)                           !###
+      call twkfreq(cx,n5,a)                           !###
 
 C Compute spectrum at best polarization for each symbol.  This is done
 C for whole symbols in JT65A, half-symbols in JT65B, and quarter-symbols

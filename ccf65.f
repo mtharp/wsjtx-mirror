@@ -56,7 +56,8 @@ C  Look for JT65 sync pattern and shorthand square-wave pattern.
       ccfbest2=0.
 
       do i=1,nhsym              ! ?? nhsym-1 ??
-         s(i)=min(4.0,ss(i)+ss(i+1))
+!         s(i)=min(4.0,ss(i)+ss(i+1))
+         s(i)=ss(i)+ss(i+1)
       enddo
       do i=nhsym+1,NFFT         ! ?? nhsym ??
          s(i)=0.

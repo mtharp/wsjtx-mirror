@@ -11,6 +11,10 @@
 
       nfail=0
  1    call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
+      do j=1,63
+         write(52,5001) j,mrsym(j),mrprob(j),mr2sym(j),mr2prob(j)
+ 5001    format(5i5)
+      enddo
       if(ntest.lt.50 .or. nlow.gt.20) then
          ncount=-999                         !Flag bad data
          go to 900

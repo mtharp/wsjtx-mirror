@@ -24,8 +24,6 @@ subroutine map65a(newdat)
   np1=1                              !### temporary
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
-!  nfoffset=nint(1000*(fcenter-144.125d0))
-!  if(ndiskdat.eq.0) nfoffset=nfoffset + nint(1000.d0*fadd)
   nfoffset=nint(mod(1000*(fcenter+fadd-0.125d0),1000.d0))
   mfqso=mousefqso - nfoffset
 
@@ -68,14 +66,10 @@ subroutine map65a(newdat)
         ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
         ib=nint((fb+23000.0)/df + 1.0)
      else                                  !Wideband decode at all freqs
-!        fa=1000*(nfa-100)
-!        fb=1000*(nfb-100)
         msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5
         mh=(nfb-nfa)/2
         fa=1000*(nfa-msub+mh)
         fb=1000*(nfb-msub+mh)
-!        fa=max(51.0*df,fa)
-!        fb=min(95000.0-51.0*df,fb)
         ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
         ib=nint((fb+23000.0)/df + 1.0)
         ia=max(51,ia)
@@ -109,40 +103,13 @@ subroutine map65a(newdat)
 
 !  Do not process extremely strong signals
         if(nqd.eq.0 .and. base.gt.1000.0) go to 70
-
-!  Find max signal at this frequency
-        smax=0.
-        if(savg(i)/base.gt.smax) smax=savg(i)/base
+        smax=savg(i)/base
 
         if(smax.gt.1.1) then
            ntry=ntry+1
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
            call ccf65(ss(1,i),nhsym,sync1,dt,flipk,mode65,            &
                 syncshort,snr2,dt2)
-!###
-!           if(sync1.ge.1.0) write(*,4002) freq,sync1,dt,kbuf
-!4002       format(f10.3,2f8.2,i3)
-           if(np1.eq.1) then
-              rewind 51
-              np1=0
-              k=0
-              do nnn=1,520
-                 sq=0.
-                 do i9=1,9523
-                    k=k+1
-                    xi=id(1,k,kbuf)
-                    xq=id(2,k,kbuf)
-                    sq=sq + xi*xi + xq*xq
-                 enddo
-                 sq=sq/(2.0*9523.0)
-                 rms=sqrt(sq)
-                 xdb=-10.
-                 if(rms.gt.0.0) xdb=10.0*log10(sq) - 20.0
-!                 write(51,4001) nnn,rms,xdb
-!4001             format(i8,2f12.4)
-              enddo
-           endif
-!###
 
 ! ########################### Search for Shorthand Messages #################
 !  Is there a shorthand tone above threshold?
@@ -209,10 +176,10 @@ subroutine map65a(newdat)
 !  Use lower thresh1 at fQSO
            if(nqd.eq.1 .and. dftolerance.le.100) thresh1=0.
            noffset=0
-!           if(sync1.gt.0.0) print*,nqd,freq,sync1,thresh1
-!           if(abs(freq-122.9).lt.1.0) print*,nqd,freq,sync1,thresh1
+           ff00=126.2496
            if(nqd.eq.1) noffset=nint(1000.0*(freq-foffset-mfqso)-mousedf)
            if(sync1.gt.thresh1 .and. abs(noffset).le.dftolerance) then
+
 !  Keep only the best candidate within ftol.
 !  (Am I deleting any good decodes by doing this?)
               if(freq-freq0.le.ftol .and. sync1.gt.sync10 .and.             &
@@ -222,7 +189,6 @@ subroutine map65a(newdat)
                  call decode1a(id(1,1,kbuf),newdat,freq,nflip,mode65,       &
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
-
                  km=min(1000,km+1)
                  sig(km,1)=nfile
                  sig(km,2)=nutc
@@ -272,16 +238,9 @@ subroutine map65a(newdat)
                  stop 'Error in message format'
 8                if(i.le.18) decoded(i+2:i+4)='OOO'
               endif
-!              nn=mod(int(1000*fcenter),1000) - 125
               nkHz=nint(freq-foffset) + nfoffset
-!              write(*,4002) freq,foffset,nfoffset,nn,nkhz
-!4002          format(2f15.6,3i10)
               f0=144.0+0.001*nkHz
               ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
-
-!              ndf0=nint(a(1))
-!              ndf1=nint(a(2))
-!              ndf2=nint(a(3))
               nsync1=sync1
               nsync2=nint(10.0*log10(sync2)) - 40 !### empirical ###
               if(decoded(1:4).eq.'RO  ' .or. decoded(1:4).eq.'RRR  ' .or.  &
@@ -289,7 +248,7 @@ subroutine map65a(newdat)
               nwrite=nwrite+1
               npol=0
               write(11,1010) nkHz,ndf,npol,nutc,dt,nsync2,decoded,nkv,nqual
-1010          format(i3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i4,i4)
+1010          format(i3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i5)
            endif
         enddo
         if(nwrite.eq.0) then
@@ -353,7 +312,6 @@ subroutine map65a(newdat)
               stop 'Error in message format'
 10            if(i.le.18) decoded(i+2:i+4)='OOO'
            endif
-!           nn=mod(int(1000*fcenter),1000) - 125
            nkHz=nint(freq-foffset) + nfoffset
            f0=144.0+0.001*nkHz
            ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))

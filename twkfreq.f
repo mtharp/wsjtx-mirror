@@ -1,12 +1,11 @@
-      subroutine twkfreq(c4aa,c4bb,n5,a)
+      subroutine twkfreq(c4aa,n5,a)
 
       complex c4aa(n5)
-      complex c4bb(n5)
       real a(5)
       complex w,wstep
       data twopi/6.283185307/
 
-C  Apply AFC corrections to the c4aa and c4bb data
+C  Apply AFC corrections to the c4aa data
       w=1.0
       x0=0.5*(n5+1)
       s=2.0/n5
@@ -21,7 +20,6 @@ C  Apply AFC corrections to the c4aa and c4bb data
          endif
          w=w*wstep
          c4aa(i)=w*c4aa(i)
-         c4bb(i)=w*c4bb(i)
       enddo
 
       return
