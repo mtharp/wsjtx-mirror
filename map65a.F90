@@ -21,10 +21,10 @@ subroutine map65a(newdat)
   data nfile/0/,nutc0/-999/,nid/0/,ip000/1/,ip001/1/,mousefqso0/-999/
   save
 
-  np1=1                              !### temporary
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
-  nfoffset=nint(mod(1000*(fcenter+fadd-0.125d0),1000.d0))
+  nfoffset=nint(mod(1000*(fcenter+fadd-0.0005d0*(nfa+nfb)),1000.d0))
+  if(nfoffset.eq.1000) nfoffset=0
   mfqso=mousefqso - nfoffset
 
   rewind 11
@@ -46,7 +46,6 @@ subroutine map65a(newdat)
 
   if(nutc.ne.nutc0) nfile=nfile+1
   nutc0=nutc
-!  df=96000.0/NFFT                     !df = 96000/NFFT = 2.930 Hz
   fsample=66666667.0/700.0            !fsample=95238.1
   df=fsample/NFFT                     !df = 96000/NFFT = 2.906 Hz
   ftol=0.020                          !Frequency tolerance (kHz)
@@ -59,19 +58,21 @@ subroutine map65a(newdat)
   i=0
 1 len_hiscall=i
 
+  msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5  !kHz of center freq
+  mh=(nfb-nfa)/2                           !Mid-scale kHz on wide waterfall
+  x23=0.5*fsample-1000.0*mod(msub,100)
+
   do nqd=1,0,-1
      if(nqd.eq.1) then                     !Quick decode, at fQSO
-        fa=1000.0*(fselect+0.001*mousedf-100.0) - dftolerance
-        fb=1000.0*(fselect+0.001*mousedf-100.0) + dftolerance + 4*53.8330078
-        ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
-        ib=nint((fb+23000.0)/df + 1.0)
+        fa=1000.0*(fselect+0.001*mousedf-msub+mh) - dftolerance
+        fb=1000.0*(fselect+0.001*mousedf-msub+mh) + dftolerance + 4*53.8330078
+        ia=nint((fa+x23)/df + 1.0)
+        ib=nint((fb+x23)/df + 1.0)
      else                                  !Wideband decode at all freqs
-        msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5
-        mh=(nfb-nfa)/2
         fa=1000*(nfa-msub+mh)
         fb=1000*(nfb-msub+mh)
-        ia=nint((fa+23000.0)/df + 1.0)     ! 23000 = 48000 - 25000
-        ib=nint((fb+23000.0)/df + 1.0)
+        ia=nint((fa+x23)/df + 1.0)
+        ib=nint((fb+x23)/df + 1.0)
         ia=max(51,ia)
         ib=min(32768-51,ib)
      endif
@@ -92,7 +93,7 @@ subroutine map65a(newdat)
      ntry=0
      do i=ia,ib                               !Search over freq range
         call sleep_msec(0)
-        freq=0.001*((i-1)*df - 23000) + 100.0
+        freq=0.001*((i-1)*df - x23)
 !  Find the local base level; update every 10 bins.
         if(mod(i-ia,10).eq.0) then
            do ii=-50,50
@@ -128,8 +129,7 @@ subroutine map65a(newdat)
 !  Should this be i0 +/- 1, or just i0?
 !  Should we also insist that difference in DT be either 1.5 or -1.5 s?
                  if(short(1,i0).gt.1.0) then
-                    fshort=0.001*((i0-1)*df - 23000) + 100.0
-
+                    fshort=0.001*((i0-1)*df - x23)
                     noffset=0
                     if(nqd.eq.1) noffset=nint(1000.0*  &
                          (fshort-foffset-mfqso)-mousedf)
@@ -152,13 +152,11 @@ subroutine map65a(newdat)
                           sig(km,8)=snr2
                           sig(km,9)=0
                           sig(km,10)=0
-!                           sig(km,11)=rms0
                           sig(km,12)=savg(i)
                           sig(km,13)=0
                           sig(km,14)=0
                           sig(km,15)=0
                           sig(km,16)=0
-!                           sig(km,17)=0
                           sig(km,18)=0
                           msg(km)=shmsg0(j)
                           fshort0=fshort
@@ -176,8 +174,8 @@ subroutine map65a(newdat)
 !  Use lower thresh1 at fQSO
            if(nqd.eq.1 .and. dftolerance.le.100) thresh1=0.
            noffset=0
-           ff00=126.2496
-           if(nqd.eq.1) noffset=nint(1000.0*(freq-foffset-mfqso)-mousedf)
+           if(nqd.eq.1) noffset=nint(1000.0*(freq-foffset-mod(mfqso,100))  &
+                -mousedf)
            if(sync1.gt.thresh1 .and. abs(noffset).le.dftolerance) then
 
 !  Keep only the best candidate within ftol.
@@ -186,7 +184,7 @@ subroutine map65a(newdat)
                    nkm.eq.1) km=km-1
               if(freq-freq0.gt.ftol .or. sync1.gt.sync10) then
                  nflip=nint(flipk)
-                 call decode1a(id(1,1,kbuf),newdat,freq,nflip,mode65,       &
+                 call decode1a(id(1,1,kbuf),newdat,freq,msub,nflip,mode65,  &
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
                  km=min(1000,km+1)
@@ -205,7 +203,6 @@ subroutine map65a(newdat)
                  sig(km,14)=a(2)
                  sig(km,15)=a(3)
                  sig(km,16)=a(4)
-!                     sig(km,17)=a(5)
                  sig(km,18)=nhist
                  msg(km)=decoded
                  freq0=freq
@@ -239,7 +236,7 @@ subroutine map65a(newdat)
 8                if(i.le.18) decoded(i+2:i+4)='OOO'
               endif
               nkHz=nint(freq-foffset) + nfoffset
-              f0=144.0+0.001*nkHz
+              f0=144.0+0.001*nkHz                 !### Fix this! ###
               ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
               nsync1=sync1
               nsync2=nint(10.0*log10(sync2)) - 40 !### empirical ###
@@ -247,12 +244,13 @@ subroutine map65a(newdat)
                  decoded(1:4).eq.'73  ') nsync2=nsync2-6
               nwrite=nwrite+1
               npol=0
-              write(11,1010) nkHz,ndf,npol,nutc,dt,nsync2,decoded,nkv,nqual
-1010          format(i3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i5)
+              nkhz2=nkhz + msub - mod(msub,100)
+              write(11,1010) nkHz2,ndf,npol,nutc,dt,nsync2,decoded,nkv,nqual
+1010          format(i3.3,i5,i4,i5.4,f5.1,i4,2x,a22,i5,i5)
            endif
         enddo
         if(nwrite.eq.0) then
-           nfqso=mfqso + nfoffset
+           nfqso=mfqso + nfoffset! -  msub + mod(msub,100)
            write(11,1012) nfqso,nutc
 1012          format(i3,9x,i5.4)
         endif
@@ -298,7 +296,6 @@ subroutine map65a(newdat)
            sync2=sig(i,8)
            nkv=sig(i,9)
            nqual=min(sig(i,10),10.0)
-!                  rms0=sig(i,11)
            do k=1,5
               a(k)=sig(i,12+k)
            enddo
@@ -313,7 +310,7 @@ subroutine map65a(newdat)
 10            if(i.le.18) decoded(i+2:i+4)='OOO'
            endif
            nkHz=nint(freq-foffset) + nfoffset
-           f0=144.0+0.001*nkHz
+           f0=144.0+0.001*(nkHz + msub - mod(msub,100))    !Fix this!
            ndf=nint(1000.0*(freq-foffset-nkHz+nfoffset))
            ndf0=nint(a(1))
            ndf1=nint(a(2))

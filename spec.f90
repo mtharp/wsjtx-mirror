@@ -101,9 +101,9 @@ subroutine spec(brightness,contrast,ngain,nspeed,a,a2)
 
   msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5
   fselect=mousefqso + foffset
-  imid=nint(1000.0*(fselect-msub+48.0)/df)
+  imid=nint(1000.0*(fselect-msub+0.5*95.2381)/df)
   fmid=0.5*(nfa+nfb) + foffset 
-  imid0=nint(1000.0*(fmid-msub+48.0)/df) - nbpp/2
+  imid0=nint(1000.0*(fmid-msub+0.5*95.2381)/df) - nbpp/2
 !  write(*,4001) foffset,fselect,fmid,mousefqso,msub,imid,imid0
 !4001 format(3f10.3,4i9)
   i0=imid-375
