@@ -24,7 +24,7 @@ subroutine map65a(newdat)
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
   nfoffset=nint(mod(1000*(fcenter+fadd-0.0005d0*(nfa+nfb)),1000.d0))
-  if(nfoffset.eq.1000) nfoffset=0
+  if(nfoffset.ge.500) nfoffset=nfoffset-1000
   mfqso=mousefqso - nfoffset
 
   rewind 11
@@ -59,24 +59,21 @@ subroutine map65a(newdat)
 1 len_hiscall=i
 
   msub=1000*(fcenter+fadd-int(fcenter+fadd)) + 0.5  !kHz of center freq
-  mh=(nfb-nfa)/2                           !Mid-scale kHz on wide waterfall
+  mh=mod(msub,100)
   x23=0.5*fsample-1000.0*mod(msub,100)
 
   do nqd=1,0,-1
      if(nqd.eq.1) then                     !Quick decode, at fQSO
         fa=1000.0*(fselect+0.001*mousedf-msub+mh) - dftolerance
         fb=1000.0*(fselect+0.001*mousedf-msub+mh) + dftolerance + 4*53.8330078
-        ia=nint((fa+x23)/df + 1.0)
-        ib=nint((fb+x23)/df + 1.0)
      else                                  !Wideband decode at all freqs
         fa=1000*(nfa-msub+mh)
         fb=1000*(nfb-msub+mh)
-        ia=nint((fa+x23)/df + 1.0)
-        ib=nint((fb+x23)/df + 1.0)
-        ia=max(51,ia)
-        ib=min(32768-51,ib)
      endif
-
+     ia=nint((fa+x23)/df + 1.0)
+     ib=nint((fb+x23)/df + 1.0)
+     ia=max(51,ia)
+     ib=min(32768-51,ib)
      km=0
      nkm=1
      nz=n/8

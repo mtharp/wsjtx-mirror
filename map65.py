@@ -1290,13 +1290,9 @@ def update():
         Audio.gcom2.nkeep=20
     Audio.gcom2.idphi=0
     try:
-        g.fa=int(options.fa.get())
+        g.fspan=int(options.fspan.get())
     except:
-        g.fa=-30
-    try:
-        g.fb=int(options.fb.get())
-    except:
-        g.fb=30
+        g.fspan=60
     try:
         Audio.gcom2.nfcal=options.fcal.get()
     except:
@@ -1820,10 +1816,8 @@ try:
         elif key == 'AddPrefix': options.addpfx.set(value.replace("_"," ").lstrip())
         elif key == 'AuxRA': options.auxra.set(value)
         elif key == 'AuxDEC': options.auxdec.set(value)
-        
         elif key == 'nkeep': options.nkeep.set(value)
-        elif key == 'fa': options.fa.set(value)
-        elif key == 'fb': options.fb.set(value)
+        elif key == 'fspan': options.fspan.set(value)
         elif key == 'fcal': options.fcal.set(value)
         elif key == 'fadd': options.fadd.set(value)
         elif key == 'CSmin': options.ncsmin.set(value)
@@ -1917,8 +1911,7 @@ if options.auxdec.get()=="": options.auxdec.set("0")
 f.write("AuxRA " + options.auxra.get() + "\n")
 f.write("AuxDEC " + options.auxdec.get() + "\n")
 f.write("nkeep " + str(options.nkeep.get()) + "\n")
-f.write("fa " + str(options.fa.get()) + "\n")
-f.write("fb " + str(options.fb.get()) + "\n")
+f.write("fa " + str(options.fspan.get()) + "\n")
 f.write("fcal " + str(options.fcal.get()) + "\n")
 f.write("fadd " + str(options.fadd.get()) + "\n")
 f.write("CSmin " + str(options.ncsmin.get()) + "\n")

@@ -43,8 +43,7 @@ auxra=StringVar()
 auxdec=StringVar()
 nkeep=IntVar()
 dphi=IntVar()
-fa=IntVar()
-fb=IntVar()
+fspan=IntVar()
 fcal=IntVar()
 fadd=DoubleVar()
 ncsmin=IntVar()
@@ -99,10 +98,8 @@ nkeep_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Timeout (min):',
     entry_width=9,value=20,entry_textvariable=nkeep)
 dphi_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Dphi (deg):',
     entry_width=9,entry_textvariable=dphi)
-fa_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fmin (kHz):',
-    entry_width=9,value=-30,entry_textvariable=fa)
-fb_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fmax (kHz):',
-    entry_width=9,value=30,entry_textvariable=fb)
+fspan_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fspan (kHz):',
+    entry_width=9,value=60,entry_textvariable=fspan)
 fcal_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fcal (Hz):',
     entry_width=9,entry_textvariable=fcal)
 fadd_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Fadd (MHz):',
@@ -116,7 +113,7 @@ savedir_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='SaveDir:',
 azeldir_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='AzElDir:',
     entry_width=23,value=g.appdir,entry_textvariable=azeldir)
 widgets = (temp_prefix,aux_ra,aux_dec,nkeep_entry,dphi_entry, \
-           fa_entry,fb_entry,fcal_entry,fadd_entry,min_callsign_entry, \
+           fspan_entry,fcal_entry,fadd_entry,min_callsign_entry, \
            nt1_entry,savedir_entry,azeldir_entry,)
 for widget in widgets:
     widget.pack(padx=2,pady=2)
