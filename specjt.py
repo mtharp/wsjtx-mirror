@@ -163,8 +163,6 @@ def df_mark():
     ff=Audio.gcom2.fcenter+Audio.gcom2.fadd
     msub=int(1000*(ff-int(ff))+0.5)
     m=int(1000.0*ff+0.5) % 1000 - msub
-#    m=(int(1000.0*ff+0.5)) % 1000 - 125
-#    print ff,msub,m,Audio.gcom2.nfa,Audio.gcom2.nfb
     fmid=0.5*float(Audio.gcom2.nfa + Audio.gcom2.nfb) + m
     df=bw/NX                                #kHz per pixel
     x1=375.0 + (Audio.gcom2.mousefqso-fmid)/df    
@@ -191,11 +189,9 @@ def draw_axis():
     xmid=0.5*float(Audio.gcom2.nfb + Audio.gcom2.nfa)
     x1=int(xmid-0.6*bw)                         #Make it too wide, to be
     x2=int(xmid+0.6*bw)                         #sure to get all the numbers
-# use fadd here ???
     ff=Audio.gcom2.fcenter+Audio.gcom2.fadd
     msub=int(1000*(ff-int(ff))+0.5)
     ixadd=(int(1000.0*ff+0.5)) % 1000 - msub
-#    print ff,msub,ixadd
     ilab=10
     if bw <= 60.0: ilab=5
     if bw <= 30.0: ilab=2
@@ -349,6 +345,7 @@ def update():
     if (Audio.gcom2.fcenter + Audio.gcom2.fadd != ff0) or \
             g.fa != gfa0 or g.fb != gfb0:
         draw_axis()
+        df_mark()
         ff0=float(Audio.gcom2.fcenter+Audio.gcom2.fadd)
         gfa0=g.fa
         gfb0=g.fb
