@@ -358,6 +358,7 @@ def update():
             Audio.gcom2.nfa=msub+30
 
     nbpp=int((Audio.gcom2.nfb - Audio.gcom2.nfa)*32768/(95.2381*NX))
+    if nbpp<1: nbpp=1
     bw=750.0*(95.2381/32768.0)*nbpp
 
     if (Audio.gcom2.mousedf != mousedf0 or

@@ -1,4 +1,4 @@
-      subroutine decode1a(id,newdat,freq,msub,nflip,mode65,
+      subroutine decode1a(id,newdat,f0,nflip,mode65,
      +         mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,
      +         sync2,a,dt,nkv,nhist,qual,decoded)
 
@@ -25,7 +25,6 @@ C  to decode it.
 
 C  Mix sync tone to baseband, low-pass filter, and decimate by 64
       dt00=dt
-      f0=1000*(freq+0.5*95.2381-mod(msub,100))  !Freq of sync tone (0-95238 Hz)
       call filbig(id,NMAX,f0,newdat,cx0,n5)
 C Move data later by 1 s.  (This is a kludge.)
       do i=1,1378

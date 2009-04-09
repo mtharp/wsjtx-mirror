@@ -23,8 +23,7 @@ subroutine map65a(newdat)
 
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
-  nfoffset=nint(mod(1000*(fcenter+fadd-0.0005d0*(nfa+nfb)),1000.d0))
-  if(nfoffset.ge.500) nfoffset=nfoffset-1000
+  nfoffset=0
   mfqso=mousefqso - nfoffset
 
   rewind 11
@@ -47,7 +46,7 @@ subroutine map65a(newdat)
   if(nutc.ne.nutc0) nfile=nfile+1
   nutc0=nutc
   fsample=66666667.0/700.0            !fsample=95238.1
-  df=fsample/NFFT                     !df = 96000/NFFT = 2.906 Hz
+  df=fsample/NFFT                     !df = fsample/NFFT = 2.906 Hz
   ftol=0.020                          !Frequency tolerance (kHz)
   foffset=0.001*(1270 + nfcal)
   fselect=mfqso + foffset
@@ -171,17 +170,15 @@ subroutine map65a(newdat)
 !  Use lower thresh1 at fQSO
            if(nqd.eq.1 .and. dftolerance.le.100) thresh1=0.
            noffset=0
-           if(nqd.eq.1) noffset=nint(1000.0*(freq-foffset-mod(mfqso,100))  &
-                -mousedf)
            if(sync1.gt.thresh1 .and. abs(noffset).le.dftolerance) then
-
 !  Keep only the best candidate within ftol.
 !  (Am I deleting any good decodes by doing this?)
               if(freq-freq0.le.ftol .and. sync1.gt.sync10 .and.             &
                    nkm.eq.1) km=km-1
               if(freq-freq0.gt.ftol .or. sync1.gt.sync10) then
                  nflip=nint(flipk)
-                 call decode1a(id(1,1,kbuf),newdat,freq,msub,nflip,mode65,  &
+                 f00=(i-1)*df        !Freq of detected sync tone (0-95238 Hz)
+                 call decode1a(id(1,1,kbuf),newdat,f00,nflip,mode65,        &
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
                  km=min(1000,km+1)
@@ -247,7 +244,7 @@ subroutine map65a(newdat)
            endif
         enddo
         if(nwrite.eq.0) then
-           nfqso=mfqso + nfoffset! -  msub + mod(msub,100)
+           nfqso=mfqso + nfoffset
            write(11,1012) nfqso,nutc
 1012          format(i3,9x,i5.4)
         endif
