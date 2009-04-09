@@ -135,7 +135,7 @@ subroutine map65a(newdat)
                           km=km+1
                           sig(km,1)=nfile
                           sig(km,2)=nutc
-                          sig(km,3)=fshort
+                          sig(km,3)=fshort + 0.5*(nfa+nfb)
                           sig(km,4)=syncshort
                           sig(km,5)=dt2
                           sig(km,6)=0
