@@ -7,12 +7,14 @@ FC = df
 #FFLAGS = /traceback /check:all
 FFLAGS = /traceback /fast /nologo /warn
 
-all:    JT65code.exe WSJT7.EXE
+all:    scode8.exe WSJT8.EXE
 
 OBJS1 = igray.obj init_rs.obj encode_rs.obj decode_rs.obj wrapkarn.obj
 
-JT65code.exe: $(OBJS1)
-	$(FC) /traceback /fast /nologo /exe:JT65code.exe JT65code_all.f $(OBJS1)
+scode8.exe: $(OBJS1)
+	$(FC) /compile_only scode8_subs.f
+	$(FC) /traceback /fast /nologo /exe:scode8.exe scode8.f90 \
+	scode8_subs.obj
 
 OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o tab.o \
 	nhash.o
@@ -28,8 +30,7 @@ SRCS2F90 = a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	hash.f90 packprop.f90 unpackprop.f90 packname.f90 unpackname.f90 \
 	packtext2.f90 unpacktext2.f90 wsjtwspr.f90 gen64.f90
 
-SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f mtdecode.f \
-	stdecode.f indexx.f s2shape.f flat2.f gen65.f gen24.f entail.f \
+SRCS2F77 = wsjt1.f indexx.f flat2.f gen65.f gen24.f entail.f \
 	genmet.f wsjt24.f sync24.f ps24.f fourt.f xcor24.f decode24.f\
 	chkmsg.f gen6m.f interleave24.f \
 	gentone.f syncf0.f syncf1.f synct.f decode6m.f avemsg6m.f \
@@ -51,10 +52,10 @@ SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f mtdecode.f \
 
 SRCS2C   = resample.c ptt.c igray.c wrapkarn.c
 
-WSJT7.EXE: Audio.pyd wsjt.spec
+WSJT8.EXE: Audio.pyd wsjt.spec
 	python c:\python23\installer\Build.py wsjt.spec
-	-del WSJT7.EXE
-	REN wsjt.exe WSJT7.EXE
+	-del WSJT8.EXE
+	REN wsjt.exe WSJT8.EXE
 
 Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
 	python f2py.py -c \
@@ -113,6 +114,6 @@ tab.o: tab.c
 .PHONY : clean
 
 clean:
-    -del *.o *.obj JT65code.exe wsjt7.exe wsjt.spec Audio.pyd
+    -del *.o *.obj JT65code.exe wsjt8.exe wsjt.spec Audio.pyd
 
 

@@ -29,7 +29,7 @@ subroutine audio_init(ndin,ndout)
   ndevout=ndout
   TxOK=0
   Transmitting=0
-  nfsample=11025
+  nfsample=12000
   nspb=1024
   nbufs=2048
   nmax=nbufs*nspb
@@ -71,7 +71,7 @@ subroutine audio_init(ndin,ndout)
 #else
 !  print*,'Audio INIT called.'
   ierr=start_threads(ndevin,ndevout,y1,y2,nmax,iwrite,iwave,nwave,    &
-       11025,NSPB,TRPeriod,TxOK,ndebug,Transmitting,            &
+       12000,NSPB,TRPeriod,TxOK,ndebug,Transmitting,                  &
        Tsec,ngo,nmode,tbuf,ibuf,ndsec,PttPort,devin_name,devout_name)
 
 #endif
