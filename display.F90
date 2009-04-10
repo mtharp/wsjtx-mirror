@@ -1,4 +1,4 @@
-subroutine display(nkeep,ncsmin)
+subroutine display(nkeep,ncsmin,mhz)
 
 #ifdef CVF
   use dfport
@@ -6,7 +6,7 @@ subroutine display(nkeep,ncsmin)
 
   parameter (MAXLINES=500,MX=500)
   integer indx(MAXLINES),indx2(MX)
-  character*81 line(MAXLINES),line2(MX),line3(MAXLINES)
+  character*83 line(MAXLINES),line2(MX),line3(MAXLINES)
   character out*50,cfreq0*3
   character*6 callsign,callsign0
   character*12 freqcall(100)
@@ -20,11 +20,11 @@ subroutine display(nkeep,ncsmin)
 
   do i=1,MAXLINES
      read(26,1010,end=10) line(i)
-1010 format(a80)
+1010 format(a83)
      read(line(i),1020) f0,ndf,nh,nm
-1020 format(f7.3,i5,26x,i3,i2)
+1020 format(f9.3,i5,26x,i3,i2)
      utc(i)=60*nh + nm
-     freqkHz(i)=1000.d0*(f0-144.d0) + 0.001d0*ndf
+     freqkHz(i)=1000.d0*(f0-mhz) + 0.001d0*ndf
   enddo
 
 10 nz=i-1
@@ -37,7 +37,7 @@ subroutine display(nkeep,ncsmin)
      if(nage.lt.0) nage=nage+1440
      iage=(nage/nquad) + 1
      if(nage.le.1) iage=0
-     write(line(i)(78:81),1021) iage
+     write(line(i)(80:83),1021) iage
 1021 format(i4)
   enddo
 
@@ -125,8 +125,8 @@ subroutine display(nkeep,ncsmin)
   nc=0
   callsign0='          '
   do k=1,k3
-     out=line3(k)(5:12)//line3(k)(28:31)//line3(k)(39:43)//       &
-          line3(k)(35:38)//line3(k)(44:67)//line3(k)(77:81)
+     out=line3(k)(7:14)//line3(k)(30:33)//line3(k)(41:45)//       &
+          line3(k)(37:40)//line3(k)(46:69)//line3(k)(79:83)
      if(out(1:3).ne.'   ') then
         if(out(1:3).eq.cfreq0) then
            out(1:3)='   '
@@ -142,14 +142,14 @@ subroutine display(nkeep,ncsmin)
         if(callsign.ne.'      ' .and. callsign.ne.callsign0) then
            len=i2-1
            if(len.lt.0) len=6
-           if(len.ge.ncsmin) then                        !Omit short "callsigns"
+           if(len.ge.ncsmin) then                       !Omit short "callsigns"
               nc=nc+1
-              freqcall(nc)=cfreq0//' '//callsign//line3(k)(80:81)
+              freqcall(nc)=cfreq0//' '//callsign//line3(k)(82:83)
               callsign0=callsign
            endif
         endif
         if(callsign.ne.'      ' .and. callsign.eq.callsign0) then
-           freqcall(nc)=cfreq0//' '//callsign//line3(k)(80:81)
+           freqcall(nc)=cfreq0//' '//callsign//line3(k)(82:83)
         endif
      endif
   enddo

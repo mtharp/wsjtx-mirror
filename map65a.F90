@@ -18,12 +18,11 @@ subroutine map65a(newdat)
   include 'datcom.f90'
   data blank/'                      '/
   data shmsg0/'   ','RO ','RRR','73 '/
-  data nfile/0/,nutc0/-999/,nid/0/,ip000/1/,ip001/1/,mousefqso0/-999/
+  data nfile/0/,nutc0/-999/,mousefqso0/-999/
   save
 
   if(mousefqso.ne.mousefqso0 .and. nagain.eq.1) newspec=2
   mousefqso0=mousefqso
-  mfqso=mousefqso
 
   rewind 11
   rewind 12
@@ -44,11 +43,11 @@ subroutine map65a(newdat)
 
   if(nutc.ne.nutc0) nfile=nfile+1
   nutc0=nutc
-  fsample=66666667.0/700.0               !fsample=95238.1
-  df=fsample/NFFT                        !df = 2.906 Hz
-  ftol=0.020                             !Frequency tolerance (kHz)
-  foffset=0.001*(1270 + nfcal)           !Offset from sync tone plus cal
-  fqbase=mfqso-0.5*(nfa+nfb)+foffset    !fQSO at baseband (kHz)
+  fsample=66666667.0/700.0                !fsample=95238.1
+  df=fsample/NFFT                         !df = 2.906 Hz
+  ftol=0.020                              !Frequency tolerance (kHz)
+  foffset=0.001*(1270 + nfcal)            !Offset from sync tone plus cal
+  fqso=mousefqso-0.5*(nfa+nfb)+foffset    !fQSO at baseband (kHz)
 
   do i=12,3,-1
      if(hiscall(i:i).ne.' ') go to 1
@@ -58,32 +57,28 @@ subroutine map65a(newdat)
 
   do nqd=1,0,-1
      if(nqd.eq.1) then                     !Quick decode, at fQSO
-        fa=1000.0*(fqbase+0.001*mousedf) - dftolerance
-        fb=1000.0*(fqbase+0.001*mousedf) + dftolerance + 2*mode65*53.8330078
+        fa=1000.0*(fqso+0.001*mousedf) - dftolerance
+        fb=1000.0*(fqso+0.001*mousedf) + dftolerance + mode65*107.666016
      else                                  !Wideband decode at all freqs
         fa=-500*(nfb-nfa)
         fb= 500*(nfb-nfa)
      endif
-     ia=nint(fa/df + 16385.0)
-     ib=nint(fb/df + 16385.0)
+     ia=nint(fa/df) + 16385
+     ib=nint(fb/df) + 16385
      ia=max(51,ia)
      ib=min(32768-51,ib)
 
      km=0
      nkm=1
      nz=n/8
-
-     do i=1,NFFT
-        short(1,i)=0.
-        short(2,i)=0.
-     enddo
-
      freq0=-999.
      sync10=-999.
      fshort0=-999.
      sync20=-999.
      ntry=0
-     do i=ia,ib                               !Search over freq range
+     short=0.                              !Zero the whole short array
+
+     do i=ia,ib                            !Search over freq range
         call sleep_msec(0)
         freq=0.001*(i-16385)*df
 !  Find the local base level; update every 10 bins.
@@ -102,7 +97,7 @@ subroutine map65a(newdat)
            ntry=ntry+1
 !  Look for JT65 sync patterns and shorthand square-wave patterns.
            call ccf65(ss(1,i),nhsym,sync1,dt,flipk,mode65,            &
-                syncshort,snr2,dt2)
+                sync2,snr2,dt2)
 
 ! ########################### Search for Shorthand Messages #################
 !  Is there a shorthand tone above threshold?
@@ -110,9 +105,9 @@ subroutine map65a(newdat)
 !  Use lower thresh0 at fQSO
            if(nqd.eq.1 .and. dftolerance.le.100) thresh0=0.
 
-           if(syncshort.gt.thresh0) then
+           if(sync2.gt.thresh0) then
 ! ### Do shorthand AFC here (or maybe after finding a pair?) ###
-              short(1,i)=syncshort
+              short(1,i)=sync2
               short(2,i)=dt2
 
 !  Check to see if lower tone of shorthand pair was found.
@@ -123,20 +118,18 @@ subroutine map65a(newdat)
                  if(short(1,i0).gt.1.0) then
                     fshort=0.001*(i0-16385)*df
                     noffset=0
-                    if(nqd.eq.1) noffset=nint(1000.0*(freq-fqbase)-mousedf)
+                    if(nqd.eq.1) noffset=nint(1000.0*(freq-fqso)-mousedf)
                     if(abs(noffset).le.dftolerance) then
 !  Keep only the best candidate within ftol.
 !### NB: sync2 was not defined here!
-                       sync2=syncshort                   !### try this ???
                        if(fshort-fshort0.le.ftol .and. sync2.gt.sync20    &
                             .and. nkm.eq.2) km=km-1
-                       if(fshort-fshort0.gt.ftol .or.                     &
-                            sync2.gt.sync20) then
+                       if(fshort-fshort0.gt.ftol .or. sync2.gt.sync20) then
                           km=km+1
                           sig(km,1)=nfile
                           sig(km,2)=nutc
                           sig(km,3)=fshort + 0.5*(nfa+nfb)
-                          sig(km,4)=syncshort
+                          sig(km,4)=sync2
                           sig(km,5)=dt2
                           sig(km,6)=0
                           sig(km,7)=0
@@ -165,7 +158,7 @@ subroutine map65a(newdat)
 !  Use lower thresh1 at fQSO
            if(nqd.eq.1 .and. dftolerance.le.100) thresh1=0.
            noffset=0
-           if(nqd.eq.1) noffset=nint(1000.0*(freq-fqbase)-mousedf)
+           if(nqd.eq.1) noffset=nint(1000.0*(freq-fqso)-mousedf)
            if(sync1.gt.thresh1 .and. abs(noffset).le.dftolerance) then
 !  Keep only the best candidate within ftol.
 !  (Am I deleting any good decodes by doing this?)
@@ -226,7 +219,8 @@ subroutine map65a(newdat)
 8                if(i.le.18) decoded(i+2:i+4)='OOO'
               endif
               nkHz=nint(freq-foffset)
-              f0=144.0+0.001*nkHz                 !### Fix this! ###
+              mhz=fcenter+fadd
+              f0=mhz+0.001*nkHz
               ndf=nint(1000.0*(freq-foffset-nkHz))
               nsync1=sync1
               nsync2=nint(10.0*log10(sync2)) - 40 !### empirical ###
@@ -239,8 +233,8 @@ subroutine map65a(newdat)
            endif
         enddo
         if(nwrite.eq.0) then
-           write(11,1012) mfqso,nutc
-1012          format(i3,9x,i5.4)
+           write(11,1012) mousefqso,nutc
+1012          format(i3.3,9x,i5.4)
         endif
    
      endif
@@ -297,8 +291,9 @@ subroutine map65a(newdat)
               stop 'Error in message format'
 10            if(i.le.18) decoded(i+2:i+4)='OOO'
            endif
+           mhz=fcenter+fadd
            nkHz=nint(freq-foffset)
-           f0=144.0+0.001*nkHz                         !Fix this!
+           f0=mhz+0.001*nkHz
            ndf=nint(1000.0*(freq-foffset-nkHz))
            ndf0=nint(a(1))
            ndf1=nint(a(2))
@@ -311,23 +306,23 @@ subroutine map65a(newdat)
                 nsync2,nutc,decoded,nkv,nqual,nhist
            write(21,1014) f0,ndf,ndf0,ndf1,ndf2,dt,npol,nsync1,       &
                 nsync2,nutc,decoded,nkv,nqual,nhist
-1014       format(f7.3,i5,3i3,f5.1,i5,i3,i4,i5.4,2x,a22,3i3)
+1014       format(f9.3,i5,3i3,f5.1,i5,i3,i4,i5.4,2x,a22,3i3)
 
         endif
      endif
      j=j+nsiz(n)
   enddo
   write(26,1015) nutc
-1015 format(39x,i4.4)
+1015 format(41x,i4.4)
   call flushqqq(26)
-  call display(nkeep,ncsmin)
+  call display(nkeep,ncsmin,mhz)
   ndecdone=2
 
   if(nsave.gt.0 .and. ndiskdat.eq.0) call savetf2(id(1,1,kbuf),       &
        fnamedate,savedir,fcenter+fadd)
 
 999 close(23)
-  if(kbuf.eq.1) kkdone=60*96000                    !### ??? ###
+  if(kbuf.eq.1) kkdone=60*96000
   if(kbuf.eq.2 .or. ndiskdat.eq.1) kkdone=0
   kk=kkdone
   nagain=0
