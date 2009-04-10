@@ -24,7 +24,7 @@ from types import *
 import array
 
 root = Tk()
-Version="7.03 r" + "$Rev$"[6:-1]
+Version="8.0 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -2694,7 +2694,7 @@ Audio.ftn_init()
 Audio.gcom4.addpfx=(options.addpfx.get().lstrip()+(' '*8))[:8]
 stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSJT 7     by K1JT')
+root.title('  WSJT 8     by K1JT')
 from WsjtMod import astro
 from WsjtMod import specjt
 
