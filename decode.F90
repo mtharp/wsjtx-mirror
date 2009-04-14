@@ -14,8 +14,8 @@ subroutine decode
   minsync=1
   nsec=time()
   ndec=0
-  call mept162(thisfile,f0,minsync,iwave,NMAX,rms,nsec,ltest,ndec)
-  if(nsave.gt.0 .and. ndiskdat.eq.0) then
+  call mept162(thisfile,f0,minsync,iwave,NMAX,rms,nsec,ltest,ndec,ierr)
+  if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
      savefile='save/'//outfile
      npts=114*12000
      call wfile5(iwave,npts,12000,savefile)

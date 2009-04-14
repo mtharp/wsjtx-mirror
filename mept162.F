@@ -1,9 +1,10 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ltest,ndec)
+      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ltest,ndec,ierr)
 
 C  Orchestrates the process of finding, synchronizing, and decoding 
 C  WSPR signals.
 
       integer*2 id(npts)
+      integer*4 now(3)
       character*22 message
       character*80 outfile
       character*11 datetime
@@ -15,7 +16,7 @@ C  WSPR signals.
       complex c2(65536)
       complex c3(45000),c4(45000)
       data first/.true./
-      save
+C     save
 
 C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,c2,jz,ps)
@@ -25,7 +26,14 @@ C  Compute pixmap.dat
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,ps,sstf,kz)
-
+      if (kz .gt. 275 .or. kz .lt. 1) then
+        call itime(now)
+        write(*,1000) now,kz
+ 1000   format('Time ',I2.2,':',I2.2,':',I2.2'. Error from sync162: kz is',I4) 
+        ierr = 1
+        return
+      endif
+      ierr = 0
       do k=1,kz
          snrsync=sstf(1,k)
          snrx=sstf(2,k)
