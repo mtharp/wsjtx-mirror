@@ -22,11 +22,11 @@ int soundinit_(void)
     return 0;
   }
   else {
-    Pa_Terminate();
-    fprintf( stderr, "An error occured while using the portaudio stream\n" );
+//    Pa_Terminate();
+    fprintf( stderr, "An error occured when initializing the audio stream\n");
     fprintf( stderr, "Error number: %d\n", err );
-    fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-    return -1;
+    fprintf( stderr, "WSPR will now exit/n");
+    exit(255);
   }
 }
 
@@ -97,6 +97,11 @@ error:
     fprintf( stderr, "An error occured while using the portaudio stream\n" );
     fprintf( stderr, "Error number: %d\n", err );
     fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+#ifdef CVF
+     SOUNDINIT();
+#else 
+     soundinit_();
+#endif
     return -1;
 }
 
@@ -157,6 +162,11 @@ error:
     fprintf( stderr, "An error occured while using the portaudio stream\n" );
     fprintf( stderr, "Error number: %d\n", err );
     fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+#ifdef CVF
+    SOUNDINIT();
+#else 
+    soundinit_();
+#endif
     return -1;
 }
 
