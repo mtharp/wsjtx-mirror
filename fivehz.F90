@@ -40,8 +40,8 @@ subroutine fivehz
      ibuf00=-99
      ncall=-1
      u=0.05d0
-     fsample=11025.d0
-     mfsample=110250
+     fsample=12000.d0
+     mfsample=120000
      filled=.false.
   endif
 

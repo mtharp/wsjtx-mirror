@@ -85,7 +85,6 @@ ndwspr=IntVar()
 nel=0
 nblank=IntVar()
 ncall=0
-ncwtrperiod=120
 ndmiles=0
 ndkm=0
 ndebug=IntVar()
@@ -705,28 +704,6 @@ def ModeJT6M(event=NONE):
         Audio.gcom2.mousedf=0
         GenStdMsgs()
         erase()
-        
-
-#------------------------------------------------------ ModeCW
-def ModeCW(event=NONE):
-    if g.mode != "CW":
-        if lauto: toggleauto()
-        cleartext()
-        mode.set("CW")
-        Audio.gcom1.trperiod=ncwtrperiod
-        iframe4b.pack_forget()
-        text.configure(height=9)
-        bclravg.configure(state=DISABLED)
-        binclude.configure(state=DISABLED)
-        bexclude.configure(state=DISABLED)
-        cbfreeze.configure(state=DISABLED)
-        cbafc.configure(state=DISABLED)
-        if ltxdf: toggletxdf()
-        btxdf.configure(state=DISABLED)
-        report.configure(state=NORMAL)
-        ntx.set(1)
-        GenStdMsgs()
-        erase()
 
 #------------------------------------------------------ ModeWSPR
 def ModeWSPR():
@@ -821,9 +798,9 @@ def ModeJT4G():
     Audio.gcom2.mode4=72
 
 #------------------------------------------------------ ModeEcho
-#def ModeEcho(event=NONE):
-#    mode.set("Echo")
-#    stub()
+def ModeEcho(event=NONE):
+    mode.set("Echo")
+    stub()
     
 #------------------------------------------------------ msgpos
 def msgpos():
@@ -848,12 +825,11 @@ these operating modes:
   1. FSK441 - fast mode for meteor scatter
   2. JT6M   - optimized for meteor and ionospheric scatter on 50 MHz
   3. JT65   - for HF, EME, and troposcatter
-  4. CW     - 15 WPM Morse code, messages structured for EME
-  5. JT2    - for HF and EME
-  6. JT4    - for HF and EME
-  7. WSPR   - for HF and EME
+  4. JT2    - for HF and EME
+  5. JT4    - for HF and EME
+  6. WSPR   - for HF and EME
 
-Copyright (c) 2001-2008 by Joseph H. Taylor, Jr., K1JT, with
+Copyright (c) 2001-2009 by Joseph H. Taylor, Jr., K1JT, with
 contributions from additional authors.  WSJT is Open Source 
 software, licensed under the GNU General Public License (GPL).
 Source code and programming information may be found at 
@@ -888,7 +864,6 @@ Shift+F7	Set JT6M mode
 F8	Set JT65A mode
 Shift+F8	Set JT65B mode
 Ctrl+F8	Set JT65C mode
-Shift+Ctrl+F8 Set CW mode
 F10	Show SpecJT
 Shift+F10  Show astronomical data
 F11	Decrement Freeze DF
@@ -1058,7 +1033,7 @@ def azdist():
         labDist.configure(text="")
     else:
         if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-               mode.get()[:3]=='JT4' or mode.get()[:2]=="CW" or \
+               mode.get()[:3]=='JT4' or \
                mode.get()=='WSPR' or mode.get()[:4]=='JT64':
             labAz.configure(text="Az: %d" % (naz,))
             labHotAB.configure(text="",bg='gray85')
@@ -1148,24 +1123,16 @@ def toggle_shift(event):
 
 #------------------------------------------------------ inctrperiod
 def inctrperiod(event):
-    global ncwtrperiod
-    if mode.get()[:2]=="CW":
-        if ncwtrperiod==120: ncwtrperiod=150
-        if ncwtrperiod==60:  ncwtrperiod=120
-        Audio.gcom1.trperiod=ncwtrperiod
+    pass
 
 #------------------------------------------------------ dectrperiod
 def dectrperiod(event):
-    global ncwtrperiod
-    if mode.get()[:2]=="CW":
-        if ncwtrperiod==120: ncwtrperiod=60
-        if ncwtrperiod==150: ncwtrperiod=120
-        Audio.gcom1.trperiod=ncwtrperiod
+    pass
 
 #------------------------------------------------------ erase
 def erase(event=NONE):
     graph1.delete(ALL)
-    if mode.get()[:4]!="JT65" and mode.get()[:2]!="CW" and \
+    if mode.get()[:4]!="JT65" and \
             mode.get()!="WSPR" and mode.get()[:3]!='JT2' and \
             mode.get()[:3]!='JT4' and mode.get()[:4]!='JT64':
         graph2.delete(ALL)
@@ -1387,13 +1354,6 @@ def GenStdMsgs(event=NONE):
             t0=t0 + " "+options.MyGrid.get()[:4]
         tx6.insert(0,t0.upper())
         altmsg=0
-    elif mode.get()[:2]=="CW":
-        tx1.insert(0,"[" + ToRadio.get() + " " +options.MyCall.get() + "]")
-        tx2.insert(0,tx1.get()+" [OOO]")
-        tx3.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [RO]")
-        tx4.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [RRR]")
-        tx5.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [73]")
-        tx6.insert(0,"[CQ " + options.MyCall.get() + "]")
     elif mode.get()=="WSPR" or mode.get()[:4]=='JT64':
         if options.MyCall.get()!= MyCall0 or \
                options.addpfx.get()!= addpfx0 or ToRadio.get()!=ToRadio0:
@@ -1690,7 +1650,7 @@ def update():
             if ntx.get()==1 and noshjt65.get()==1: Audio.gcom2.ntx2=1
 
         if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-               mode.get()[:3]=='JT4' or mode.get()[:2]=='CW' or \
+               mode.get()[:3]=='JT4' or \
                mode.get()=='WSPR' or mode.get()[:4]=='JT64':
             graph2.delete(ALL)
             graph2.create_text(80,13,anchor=CENTER,text="Moon",font=g2font)
@@ -1739,8 +1699,6 @@ def update():
             msg2.configure(bg='#00FFFF')
         elif mode.get()=="JT6M":
             msg2.configure(bg='#FF00FF')
-        elif mode.get()=="CW":
-            msg2.configure(bg='#00FF00')
         elif mode.get()=="WSPR":
             msg2.configure(bg='#FF8888')
         elif mode.get()[:4]=="JT64":
@@ -1749,14 +1707,14 @@ def update():
             msg2.configure(bg='#8888FF')
         elif mode.get()[:3]=="JT4":
             msg2.configure(bg='#88FF88')
-#        elif mode.get()=="Echo":
-#            msg2.configure(bg='#FF0000')
+        elif mode.get()=="Echo":
+            msg2.configure(bg='#FF0000')
         g.mode=mode.get()
         if first: GenStdMsgs()
         first=0
 
-    samfac_in=Audio.gcom1.mfsample/110250.0
-    samfac_out=Audio.gcom1.mfsample2/110250.0
+    samfac_in=Audio.gcom1.mfsample/120000.0
+    samfac_out=Audio.gcom1.mfsample2/120000.0
     xin=1
     xout=1
     try:
@@ -1781,9 +1739,6 @@ def update():
     bdecode.configure(bg='gray85',activebackground='gray95')
     if Audio.gcom2.ndecoding:       #Set button bg=light_blue while decoding
         bdecode.configure(bg='#66FFFF',activebackground='#66FFFF')
-    if mode.get()[:2]=="CW":
-        msg5.configure(text="TR Period: %d s" % (Audio.gcom1.trperiod,), \
-                       bg='white')
     else:
         msg5.configure(text="TR Period: %d s" % (Audio.gcom1.trperiod,), \
                        bg='gray85')
@@ -1920,9 +1875,7 @@ def update():
     Audio.gcom2.neme=neme.get()
     Audio.gcom2.ndepth=ndepth.get()
     Audio.gcom2.ndwspr=ndwspr.get()
-    if mode.get()=='CW':
-        Audio.gcom2.ntdecode=56
-    elif mode.get()=='WSPR':
+    if mode.get()=='WSPR':
         Audio.gcom2.ntdecode=114
     else:
         if qdecode.get():
@@ -2049,14 +2002,12 @@ if (sys.platform=='darwin') :
     modemenu.add_radiobutton(label = 'JT65A', variable=mode, command = ModeJT65A)
     modemenu.add_radiobutton(label = 'JT65B', variable=mode, command = ModeJT65B)
     modemenu.add_radiobutton(label = 'JT65C', variable=mode, command = ModeJT65C)
-    modemenu.add_radiobutton(label = 'CW', variable=mode, command = ModeCW)
 else:
     modemenu.add_radiobutton(label = 'FSK441', variable=mode,command = ModeFSK441, state=NORMAL, accelerator='F7')
     modemenu.add_radiobutton(label = 'JT6M', variable=mode, command = ModeJT6M,accelerator='Shift+F7')
     modemenu.add_radiobutton(label = 'JT65A', variable=mode, command = ModeJT65A,accelerator='F8')
     modemenu.add_radiobutton(label = 'JT65B', variable=mode, command = ModeJT65B,accelerator='Shift+F8')
     modemenu.add_radiobutton(label = 'JT65C', variable=mode, command = ModeJT65C,accelerator='Ctrl+F8')
-    modemenu.add_radiobutton(label = 'CW', variable=mode, command = ModeCW,accelerator='Shift+Ctrl+F8')
 
 modemenu.add_radiobutton(label = 'JT2', variable=mode, command = ModeJT2)
 modemenu.add_radiobutton(label = 'JT4A', variable=mode, command = ModeJT4A)
@@ -2068,8 +2019,7 @@ modemenu.add_radiobutton(label = 'JT4F', variable=mode, command = ModeJT4F)
 modemenu.add_radiobutton(label = 'JT4G', variable=mode, command = ModeJT4G)
 modemenu.add_radiobutton(label = 'WSPR', variable=mode, command = ModeWSPR)
 modemenu.add_radiobutton(label = 'JT64A', variable=mode, command = ModeJT64A)
-#modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho,
-#                         state=DISABLED)
+modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho)
 
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Mode", menu=modemenu)
@@ -2244,8 +2194,7 @@ root.bind_all('<F8>', ModeJT65A)
 root.bind_all('<Shift-F8>', ModeJT65B)
 root.bind_all('<Control-F8>', ModeJT65C)
 root.bind_all('<Shift-F7>', ModeJT6M)
-root.bind_all('<Shift-Control-F8>', ModeCW)
-#root.bind_all('<F9>', ModeEcho)
+root.bind_all('<F9>', ModeEcho)
 root.bind_all('<F10>', showspecjt)
 root.bind_all('<Shift-F10>', astro1)
 root.bind_all('<F11>', left_arrow)
@@ -2551,8 +2500,6 @@ try:
                 ModeJT65C()
             elif value=='JT6M':
                 ModeJT6M()
-            elif value=='CW':
-                ModeCW()
             elif value=='WSPR':
                 ModeWSPR()
             elif value=='JT64A':
@@ -2662,10 +2609,8 @@ try:
             lookup()                       #Maybe should save HisGrid, instead?
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
         elif key == 'AstroGeometry': g.astro_geom0 =value
-        elif key == 'CWTRPeriod':
-            ncwtrperiod=int(value)
-            if mode.get()[:2]=="CW": Audio.gcom1.trperiod=ncwtrperiod
-        else: pass
+        else:
+            pass
 except:
     print 'Error reading WSJT.INI, continuing with defaults.'
     print key,value
@@ -2770,7 +2715,6 @@ mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 if g.astro_geom[:7]=="200x200": g.astro_geom="316x373" + g.astro_geom[7:]
 f.write("AstroGeometry " + g.astro_geom + "\n")
-f.write("CWTRPeriod " + str(ncwtrperiod) + "\n")
 f.close()
 
 Audio.ftn_quit()
