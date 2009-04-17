@@ -164,9 +164,7 @@ subroutine wsjtgen
 
   if(mode(1:4).eq.'Echo') then
 !  We're in Echo mode.
-!     dither=AmpA
-!     call echogen(dither,wavefile,nbytes,f1)
-!     AmpB=f1
+     call echogen(iwave,nwave)
      goto 900
   endif
 

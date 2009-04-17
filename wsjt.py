@@ -799,8 +799,33 @@ def ModeJT4G():
 
 #------------------------------------------------------ ModeEcho
 def ModeEcho(event=NONE):
+    if lauto: toggleauto()
     mode.set("Echo")
-    stub()
+    cleartext()
+    Audio.gcom1.trperiod=3
+    lab2.configure(text='')
+    lab1.configure(text='Time (s)',bg="green")
+    lab4.configure(fg='black')
+    lab5.configure(fg='black')
+    lab6.configure(bg="green")
+    iframe4b.pack_forget()
+    textheight=9
+    text.configure(height=textheight)
+    bclravg.configure(state=DISABLED)
+    binclude.configure(state=DISABLED)
+    bexclude.configure(state=DISABLED)
+    cbnb.configure(state=NORMAL)
+    cbzap.configure(state=NORMAL)
+    cbfreeze.configure(state=DISABLED)
+    cbafc.configure(state=DISABLED)
+    if ltxdf: toggletxdf()
+    btxdf.configure(state=DISABLED)
+    report.configure(state=NORMAL)
+    shmsg.configure(state=NORMAL)
+    graph2.configure(bg='black')
+    ntx.set(1)
+    erase()
+
     
 #------------------------------------------------------ msgpos
 def msgpos():
@@ -2508,6 +2533,8 @@ try:
                 ModeJT2()
             elif value[:3]=='JT4':
                 ModeJT4()
+            elif value=='Echo':
+                ModeEcho()
         elif key == 'MyCall': options.MyCall.set(value)
         elif key == 'MyGrid': options.MyGrid.set(value)
         elif key == 'HisCall':
