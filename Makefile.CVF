@@ -7,14 +7,22 @@ FC = df
 #FFLAGS = /traceback /check:all
 FFLAGS = /traceback /fast /nologo /warn
 
-all:    scode8.exe WSJT8.EXE
+all:    scode8.exe WSJT8.EXE tstecho.exe
 
 OBJS1 = igray.obj init_rs.obj encode_rs.obj decode_rs.obj wrapkarn.obj
 
 scode8.exe: $(OBJS1)
 	$(FC) /compile_only scode8_subs.f
-	$(FC) /traceback /fast /nologo /exe:scode8.exe scode8.f90 \
+	$(FC)/traceback /fast /nologo /exe:scode8.exe scode8.f90 \
 	scode8_subs.obj
+
+SRC4 = tstecho.f90
+
+tstecho.exe: $(SRC4) four2a.f db.f
+	$(FC)/compile_only four2a.f
+	$(FC)/compile_only db.f
+	$(FC) /traceback /fast /nologo /fpp /exe:tstecho.exe $(SRC4) \
+	four2a.obj db.obj fftw3single.lib
 
 OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o tab.o \
 	nhash.o
@@ -28,7 +36,9 @@ SRCS2F90 = a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	wsjtgen.f90 runqqq.f90 fivehz.f90 msgparms.f90 chkt0.f90 \
 	genwspr.f90 wqencode.f90 wqdecode.f90 packpfx.f90 unpackpfx.f90 \
 	hash.f90 packprop.f90 unpackprop.f90 packname.f90 unpackname.f90 \
-	packtext2.f90 unpacktext2.f90 wsjtwspr.f90 gen64.f90
+	packtext2.f90 unpacktext2.f90 wsjtwspr.f90 gen64.f90 \
+	echogen.f90
+
 
 SRCS2F77 = wsjt1.f indexx.f flat2.f gen65.f gen24.f entail.f \
 	genmet.f wsjt24.f sync24.f ps24.f fourt.f xcor24.f decode24.f\
@@ -48,7 +58,7 @@ SRCS2F77 = wsjt1.f indexx.f flat2.f gen65.f gen24.f entail.f \
 	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
 	encode232.f inter_mept.f pack50.f unpack50.f \
 	filbig2.F mept162a.f twkfreq.f sync162.f decode162.f \
-	ps162.f fchisq.f fano232.f ccf2.f wsjt64.f sync64.f
+	ps162.f fchisq.f fano232.f ccf2.f wsjt64.f sync64.f \
 
 SRCS2C   = resample.c ptt.c igray.c wrapkarn.c
 

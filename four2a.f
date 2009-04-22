@@ -23,7 +23,7 @@ C     The transform will be real and returned to the input array.
       integer nn(NPMAX),ns(NPMAX),nf(NPMAX),nl(NPMAX)
       integer plan(NPMAX)                   !As recommended by fftw3 docs
       data nplan/0/
-      include <fftw3.f>
+      include 'fftw3.f'
       save
 
       if(nfft.lt.0) go to 999
@@ -50,7 +50,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
             aa(j)=a(j)
          enddo
       endif
-      call sleep_msec(0)
+!      call sleep_msec(0)
       if(isign.eq.-1 .and. iform.eq.1) then
          call sfftw_plan_dft_1d(plan(i),nfft,a,a,
      +        FFTW_FORWARD,nspeed)
@@ -64,7 +64,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       else
          stop 'Unsupported request in four2a'
       endif
-      call sleep_msec(0)
+!      call sleep_msec(0)
       i=nplan
       if(nfft.le.32768) then
          do j=1,nfft
@@ -72,9 +72,10 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
          enddo
       endif
 
- 10   call sleep_msec(0)
+ 10   continue
+!      call sleep_msec(0)
       call sfftw_execute(plan(i))
-      call sleep_msec(0)
+!      call sleep_msec(0)
       return
 
  999  do i=1,nplan
