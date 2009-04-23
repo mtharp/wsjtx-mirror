@@ -1127,7 +1127,6 @@ root.mainloop()
 
 # Clean up and save user options before terminating
 f=open(appdir+'/WSPR.INI',mode='w')
-root_geom=root_geom[root_geom.index("+"):]
 f.write("WSPRGeometry " + root_geom + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
