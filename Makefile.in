@@ -11,10 +11,14 @@ CFLAGS += ${DEFS}
 CPPFLAGS += ${DEFS} -I.
 
 # WSJT specific Fortran flags
-FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
+FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
+#FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 #FFLAGS += -Wall -fbounds-check -fno-second-underscore -ffixed-line-length-none -fPIC
 #FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
 #FFLAGS += -cpp -fno-second-underscore
+
+all:    Audio.so plrs plrr
+
 # The default rules
 .c.o:
 	${CC} ${CPPFLAGS} ${CFLAGS} -c -o ${<:.c=.o} $<
@@ -25,19 +29,18 @@ FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 .F90.o:
 	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F90=.o} $<
 
+
 OS=@OS@
 FC=@FC@
 COMPILER += @FC_LIB_PATH@
 
 LDFLAGS	+= -L${COMPILER}
-LIBS += /usr/lib/libfftw3f.a
 
 PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
 
 ###
-all:    Audio.so plrs plrr
 
 OBJS2C   = init_rs.o encode_rs.o decode_rs.o plrr_subs.o loc.o deep65.o
 
