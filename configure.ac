@@ -91,7 +91,7 @@ AC_MSG_CHECKING([g95 lib path])
 G95_LIB_PATH=`${G95} -print-file-name=`
 AC_MSG_RESULT(${G95_LIB_PATH})
 AC_PATH_PROG(GFORTRAN, gfortran)
-AC_PATH_PROG(GFORTRAN, gfortran42)
+AC_PATH_PROG(GFORTRAN, gfortran43)
 AC_MSG_CHECKING([gfortran lib path])
 GFORTRAN_LIB_PATH=`${GFORTRAN} -print-file-name=`
 AC_MSG_RESULT(${GFORTRAN_LIB_PATH})
@@ -367,11 +367,11 @@ if test $fail -eq 1; then
 	AC_MSG_ERROR([Please check error messages and install missing packages.])
 fi
 
-if test $g95 == "yes"; then
+if test $g95 = "yes"; then
 	echo "Using g95 as fortran compiler.";
 fi
 
-if test $gfortran == "yes"; then
+if test $gfortran = "yes"; then
 	echo "Using gfortran as fortran compiler.";
 fi
 
