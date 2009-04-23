@@ -93,7 +93,7 @@ test.obj: test.f90
 	$(FC) /c $(FFLAGS) /fpp test.f90
 
 nhash.obj: nhash.c
-	$(CC) /nologo /c /DSTDCALL nhash.c
+	$(CC) /nologo /c /DSTDCALL /DWin32 nhash.c
 nhash.o: nhash.c
 	$(CC) /nologo /c /Fonhash.o nhash.c
 sound.o: sound.c
