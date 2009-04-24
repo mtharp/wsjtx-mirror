@@ -28,7 +28,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.1_r" + "$Rev$"[6:-1]
+Version="1.11_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -279,19 +279,22 @@ def help(event=NONE):
    grid locator, COM port number (for PTT control), and Tx
    power in dBm.  If you do not wish to use the system's
    default sound card, enter suitable device numbers for
-   Audio In and Audio Out (see console window).
+   Audio In and Audio Out (see console window for a list
+   of available devices).
 
 2. Select the desired band from the Band menu and optionally
-   enter your dial frequency (USB) and/or Tx frequency on the
-   main screen.  Click on 'Rx' to receive only, 'Tx' to
-   transmit only, or the desired average percentage of
-   transmission cycles.
+   enter your USB dial frequency and/or Tx frequency on the
+   main screen.  You can also select a Tx frequency by
+   double-clicking on the waterfall display.
 
-3. Be sure that your computer clock is correct to +/- 1 s. If
+3. Click on 'Rx' to receive only, 'Tx' to transmit only, or
+   the desired average percentage of transmission cycles.
+
+4. Be sure that your computer clock is correct to +/- 1 s. If
    necessary you can make small adjustments by left- or right-
    clicking on the 'Dsec' label.
 
-4. The program will begin a Tx or Rx sequence at the start of
+5. The program will begin a Tx or Rx sequence at the start of
     each even minute.  The waterfall will update and decoding
     will take place at the end of each Rx sequence.
 """
@@ -371,9 +374,12 @@ def draw_axis():
     if abs(iy)<=100:
         j=80 - iy/df
         c.create_line(0,j,13,j,fill='red',width=3)
+        bg='gray85'
+        fg='gray85'
     else:
-        MsgBox("Tx Frequency outside permitted limits.")
-
+        bg='red'
+        fg='black'
+    laberr.configure(bg=bg,fg=fg)
 
 #------------------------------------------------------ del_all
 def del_all():
@@ -676,13 +682,6 @@ def update():
             pass
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
-##        bg='white'
-##        if abs(nndf)>100:
-##            bg='red'
-##        lftx.configure(bg=bg)     
-##        t="%d    %f    %f   %f" % (iband.get(),f0.get(),ftx.get(),pctx[ipctx.get()])
-##        t="%d" % nndf
-##        msg1.configure(text=t)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -910,9 +909,10 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12)
+laberr=Label(g1.interior(), bg='gray85', fg='gray85', text='*')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx:',
         entry_textvariable=sftx,entry_width=12)
-widgets = (lf0, lftx)
+widgets = (lf0,laberr,lftx)
 for widget in widgets:
     widget.pack(side=LEFT,padx=5,pady=2)
 g1.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
@@ -969,7 +969,7 @@ text=Text(f4b, height=11, width=63, bg='white')
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
 text.pack(side=RIGHT, fill=X, padx=1)
-text.insert(END,'1054   4 -25   1.1  10.140140  K1JT FN20 25')
+text.insert(END,'1054   4 -25   1.11  10.140140  K1JT FN20 25')
 text.configure(yscrollcommand=sb.set)
 f4b.pack(side=LEFT,expand=0,fill=Y)
 iframe4.pack(expand=1, fill=X, padx=4)
@@ -1059,6 +1059,7 @@ try:
         elif key == 'freq0_12': freq0[9]=float(value)
         elif key == 'freq0_10': freq0[10]=float(value)
         elif key == 'freq0_6': freq0[11]=float(value)
+        elif key == 'freq0_other': freq0[12]=float(value)
 
         elif key == 'freqtx_160': freqtx[1]=float(value)
         elif key == 'freqtx_80': freqtx[2]=float(value)
@@ -1070,6 +1071,7 @@ try:
         elif key == 'freqtx_12': freqtx[9]=float(value)
         elif key == 'freqtx_10': freqtx[10]=float(value)
         elif key == 'freqtx_6': freqtx[11]=float(value)
+        elif key == 'freqtx_other': freqtx[12]=float(value)
         elif key == 'iband': iband.set(value)
 
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
@@ -1100,7 +1102,6 @@ if g.cmap == "AFMHot":
     pal_AFMHot()
     npal.set(5)
 
-
 ##lsync.configure(text=slabel+str(isync))
 options.dbm_balloon()
 fmid=f0.get() + 0.001500
@@ -1108,7 +1109,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 1.1     by K1JT')
+root.title('  WSPR 1.11     by K1JT')
 
 put_params()
 try:
