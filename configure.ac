@@ -3,13 +3,11 @@ dnl Process this file with autoconf to produce a configure script.
 
 dnl AC_PREREQ(2.61)
 
-dnl Sneaky way to get an Id tag into the configure script
+dnl This should be a svn hook instead.
+dnl Sneakier way to get a Version into setup.py
 AC_COPYRIGHT([$Id$])
 
 AC_INIT([wspr],[0.8])
-dnl Sneakier way to get a Version into setup.py
-rev=`echo "$Rev: 848 $"|awk '{print $2}'`
-version="0.8 r${rev}"
 fail=0
 
 AC_PREFIX_DEFAULT(/usr/local/)
@@ -29,6 +27,15 @@ LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
 FCV=""
 
+dnl
+dnl Pick up FC from the environment if present
+dnl I'll add a test to confirm this is a gfortran later -db
+dnl
+
+if test -n ${FC} ; then
+	gfortran=${FC}
+fi
+
 AC_MSG_CHECKING([uname -s for Cygwin, Solaris or HPUX])
 case `uname -s` in
 	CYGWIN*)
@@ -39,10 +46,26 @@ case `uname -s` in
 		AC_MSG_RESULT(SunOS or Solaris)
 		AC_DEFINE(__EXTENSIONS__, 1, [This is needed to use strtok_r on Solaris.])
 	;;
+dnl
+dnl Pick up current gfortran from ports infrastructure for fbsd
+dnl
+        FreeBSD*)
+		if test -z ${gfortran} ; then
+			gfortran=`grep FC: /usr/ports/Mk/bsd.gcc.mk | head -1 |awk '{print $2}'`
+		fi
+	;;
 	*)
 		AC_MSG_RESULT(no)
 	;;
 esac
+
+dnl
+dnl look for gfortran if nothing else was given
+dnl
+
+if test -z $gfortran ; then
+	gfortran="gfortran"
+fi
 
 if test "$ac_cv_c_compiler_gnu" = yes; then
 	AC_MSG_CHECKING(if $CC is Apple GCC)
@@ -87,18 +110,11 @@ AC_PATH_PROG(TEST, [test], [test])
 AC_PATH_PROG(PYTHON, python)
 AC_PATH_PROG(F2PY, f2py)
 AC_PATH_PROG(G95, g95)
-AC_MSG_CHECKING([g95 lib path])
-G95_LIB_PATH=`${G95} -print-file-name=`
-AC_MSG_RESULT(${G95_LIB_PATH})
-AC_PATH_PROG(GFORTRAN, gfortran)
-AC_PATH_PROG(GFORTRAN, gfortran43)
-AC_MSG_CHECKING([gfortran lib path])
-GFORTRAN_LIB_PATH=`${GFORTRAN} -print-file-name=`
-AC_MSG_RESULT(${GFORTRAN_LIB_PATH})
+AC_PATH_PROG(GFORTRAN, ${gfortran})
+AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
 OS=`uname`
 AC_SUBST(OS, "${OS}")
-AC_SUBST(VERSION, "${version}")
 
 dnl Checks for header files.
 
@@ -153,10 +169,8 @@ if test "$assert" = no; then
 	AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])
 fi
 
-
 if test "$prefix" = "NONE"; then 
-	AC_DEFINE_UNQUOTED(PREFIX, "$ac_default_prefix", [Prefix where wspr is installed.])
-
+	prefix=${ac_default_prefix}
 else
 
 dnl Don't get bitten by Cygwin's stupidity if the user specified
@@ -166,10 +180,6 @@ dnl a custom prefix with a trailing slash
 	AC_DEFINE_UNQUOTED(PREFIX, "$prefix", [Prefix where wsjt is installed.])
 	
 fi
-
-AC_CONFIG_FILES(		\
-	Makefile setup.py
-)
 
 dnl pick gfortran or g95
 dnl ====================
@@ -186,9 +196,9 @@ dnl now set conf.h,, CPPFLAGS and CFLAGS flags as needed
 dnl ====================================================
 
 if test ! -z $GFORTRAN ; then
-	echo "*** gfortran compiler found"
+	echo "*** gfortran compiler found at ${GFORTRAN}"
 	if test "$gfortran" = yes; then
-       		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
+       		FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
 		FC=`basename ${GFORTRAN}`
 		g95=no
 		FFLAGS="$FFLAGS -fno-range-check -ffixed-line-length-none"
@@ -201,7 +211,7 @@ fi
 if test ! -z $G95 ; then
 	echo "*** g95 compiler found"
 	if test "$g95" = yes; then
-		FC_LIB_PATH=${G95_LIB_PATH}
+       		FC_LIB_PATH=`${G95} -print-file-name=`
 		FC=`basename ${G95}`
 		gfortran=no
 		FFLAGS="${FFLAGS} -ftrace=full -cpp"
@@ -219,7 +229,7 @@ if test -z $FC ; then
 		if test "$g95" = yes; then
 			echo "You enabled g95, but no g95 compiler found, defaulting to gfortran instead"
 		fi
-       		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
+       		FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
 	        FC=`basename ${GFORTRAN}`
 		g95=no
 		gfortran=yes
@@ -229,7 +239,7 @@ if test -z $FC ; then
 		if test "$gfortran" = yes; then
 			echo "You enabled gfortran, but no gfortran compiler found, defaulting to g95 instead"
 		fi
-       		FC_LIB_PATH=${G95_LIB_PATH}
+       		FC_LIB_PATH=`${G95} -print-file-name=`
 	        FC=`basename ${G95}`
 		g95=yes
 		gfortran=no
@@ -243,6 +253,7 @@ AC_SUBST(FC_LIB_PATH, "${FC_LIB_PATH}")
 AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
 AC_SUBST(FC, "${FC}")
 AC_SUBST(FCV, "${FCV}")
+AC_SUBST(PREFIX, "${prefix}")
 
 dnl set defaults
 dnl ============
@@ -340,9 +351,9 @@ AC_SUBST(CFLAGS)
 AC_SUBST(FFLAGS)
 AC_SUBST(LOCAL_PORTAUDIO,"${LOCAL_PORTAUDIO}")
 AC_SUBST(LOCAL_PORTAUDIO_CLEAN,"${LOCAL_PORTAUDIO_CLEAN}")
-
+AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
-dnl AC_CONFIG_FILES(Makefile)
+
 
 dnl do summary
 

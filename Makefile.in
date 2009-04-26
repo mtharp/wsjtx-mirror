@@ -1,11 +1,13 @@
 MV ?= mv
 MKDIR ?= mkdir
+INSTALL=	install
 CC ?= @CC@
 FFLAGS	= @FFLAGS@
 LDFLAGS	= @LDFLAGS@
 LIBS	= @LIBS@
 CPPFLAGS = @CPPFLAGS@
 CFLAGS	= @CFLAGS@
+PREFIX	= @PREFIX@
 # ${CFLAGS}# WSPR specific C flags
 CFLAGS	+= -DBIGSYM=1 -fPIC
 DEFS = @DEFS@
@@ -30,9 +32,9 @@ wspr:	WsprMod/w.so
 OS=@OS@
 FC=@FC@
 FCV=@FCV@
-COMPILER += @FC_LIB_PATH@
+FC_LIB_PATH	+= @FC_LIB_PATH@
 
-LDFLAGS	+= -L${COMPILER}
+LDFLAGS	+= -L${FC_LIB_PATH}
 
 PYTHON	?= @PYTHON@
 RM	?= @RM@
@@ -94,9 +96,15 @@ wspr_rxtest.o: wspr_rxtest.f90
 	$(FC) -c $(FFLAGS) wspr_rxtest.f90
 
 .PHONY : clean
+install:	WsprMod/w.so
+	${RM} -rf build/
+	${PYTHON} setup.py install
+	${INSTALL} wspr ${PREFIX}/bin
+
 clean:
 	${RM} -f *.o *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
 		WsprMod/*.so wspr wspr_rxtest w.so wspr.spec *~
+	${RM} -rf build/
 
 distclean:
 	${RM} -f config.log config.status Makefile
