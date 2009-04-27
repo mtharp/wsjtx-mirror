@@ -32,7 +32,7 @@ subroutine tx
   ctxmsg=message
   snr=99.0
   if(ntest.eq.1) snr=-26.0
-  call genmept(message,ntxdf,snr,nsectx,msg2,jwave)
+  call genmept(message,ntxdf,snr,msg2,jwave)
   sending=msg2
   ierr=ptt(nport,pttport,1,iptt)
   npts=114*12000

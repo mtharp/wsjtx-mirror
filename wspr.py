@@ -28,7 +28,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.11_r" + "$Rev$"[6:-1]
+Version="1.12_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 ##print "Revision date: " + \
@@ -978,7 +978,7 @@ text=Text(f4b, height=11, width=63, bg='white')
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
 text.pack(side=RIGHT, fill=X, padx=1)
-text.insert(END,'1054   4 -25   1.11  10.140140  K1JT FN20 25')
+text.insert(END,'1054   4 -25   1.12  10.140140  K1JT FN20 25')
 text.configure(yscrollcommand=sb.set)
 f4b.pack(side=LEFT,expand=0,fill=Y)
 iframe4.pack(expand=1, fill=X, padx=4)
@@ -1118,7 +1118,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 1.11     by K1JT')
+root.title('  WSPR 1.12     by K1JT')
 
 put_params()
 try:
@@ -1148,6 +1148,7 @@ f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("PctTx " + str(ipctx.get()) + "\n")
 f.write("Upload " + str(upload.get()) + "\n")
+f.write("Debug " + str(ndebug.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")
@@ -1181,3 +1182,4 @@ f.close()
 
 #Terminate PortAudio
 w.paterminate()
+time.sleep(0.5)

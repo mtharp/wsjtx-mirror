@@ -1,4 +1,4 @@
-      subroutine genmept(message,ntxdf,snrdb,nsectx,msg2,iwave)
+      subroutine genmept(message,ntxdf,snrdb,msg2,iwave)
 
 C  Encode an MEPT_JT message and generate the corresponding wavefile.
 
