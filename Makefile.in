@@ -104,7 +104,7 @@ install:	WsprMod/w.so
 
 clean:
 	${RM} -f *.o *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
-		WsprMod/*.so wspr wspr_rxtest w.so wspr.spec *~
+		WsprMod/*.so wspr_rxtest w.so wspr.spec *~
 	${RM} -rf build/
 
 distclean:
