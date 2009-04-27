@@ -23,6 +23,7 @@ C  Compute pixmap.dat
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,ps,sstf,kz)
+      ierr = 0
       if(kz.eq.0) go to 900
       if (kz.gt.275 .or. kz.lt.0) then
         call getutc(cdate,ctime,tsec)
@@ -31,7 +32,6 @@ C  Look for sync patterns, get DF and DT
         ierr = 1
         return
       endif
-      ierr = 0
       do k=1,kz
          snrsync=sstf(1,k)
          snrx=sstf(2,k)
