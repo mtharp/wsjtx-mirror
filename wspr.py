@@ -685,7 +685,7 @@ def update():
             pass
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
-        ndb=int(w.acom1.xdb1-51.0)
+        ndb=int(w.acom1.xdb1-57.0)
         if ndb<-30: ndb=-30
         t='Rx Noise: '+str(ndb)+' dB'
         bg='gray85'
