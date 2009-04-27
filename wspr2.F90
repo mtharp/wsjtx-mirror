@@ -84,7 +84,8 @@ subroutine wspr2
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
        (.not.idle)) go to 30
 
-  call msleep(100)
+  call chklevel
+  call msleep(200)
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'

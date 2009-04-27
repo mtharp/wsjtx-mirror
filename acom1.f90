@@ -10,6 +10,6 @@
   common/acom1/ f0,ftx,rms,pctx,nsec,ndevin,ndevout,nsave,nrxdone,      &
        ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,ntransmitting,       &
        ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,nsectx,       &
-       ntxfirst,ntest,ltest,iwave(NMAX),                                &
+       ntxfirst,ntest,ltest,iwave(NMAX),nsec1,nsec2,rms1,xdb1,          &
        infile,outfile,pttport,cdate,utctime,callsign,grid,rxtime,       &
        ctxmsg,sending,thisfile

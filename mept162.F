@@ -23,10 +23,11 @@ C  Compute pixmap.dat
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,ps,sstf,kz)
-      if (kz .gt. 275 .or. kz .lt. 1) then
+      if(kz.eq.0) go to 900
+      if (kz.gt.275 .or. kz.lt.0) then
         call getutc(cdate,ctime,tsec)
-        write(*,1000) ctime
- 1000   format('Time ',a8,'. Error from sync162: kz is',I4) 
+        write(*,1000) ctime,kz
+ 1000   format('Time ',a8,'. Error from sync162: kz is',i10)
         ierr = 1
         return
       endif
@@ -94,5 +95,5 @@ C  Look for sync patterns, get DF and DT
  24      continue
       enddo
 
-      return
+ 900  return
       end

@@ -658,7 +658,7 @@ def update():
     except:
         pass
     isec=utc[5]
-    
+
     if iband.get()!=iband0:
         f0.set(freq0[iband.get()])
         ftx.set(freqtx[iband.get()])
@@ -682,6 +682,12 @@ def update():
             pass
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
+        ndb=int(w.acom1.xdb1-51.0)
+        if ndb<-30: ndb=-30
+        t='Rx Noise: '+str(ndb)+' dB'
+        bg='gray85'
+        if ndb<-10 or ndb>10: bg='red'
+        msg1.configure(text=t,bg=bg)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -977,8 +983,8 @@ iframe4.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------------ Status Bar
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
-##msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-##msg1.pack(side=LEFT, fill=X, padx=1)
+msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+msg1.pack(side=LEFT, fill=X, padx=1)
 ##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg2.pack(side=LEFT, fill=X, padx=1)
 ##msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
