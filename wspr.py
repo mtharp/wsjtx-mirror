@@ -296,7 +296,10 @@ def help(event=NONE):
 
 5. The program will begin a Tx or Rx sequence at the start of
     each even minute.  The waterfall will update and decoding
-    will take place at the end of each Rx sequence.
+    will take place at the end of each Rx sequence.  During
+    reception, you can adjust the Rx noise level to get
+    something close to 0 dB.  Use Setup -> Rx volume control
+    or change your receiver's output level.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
