@@ -17,6 +17,7 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
 
+build:
 wspr:	WsprMod/w.so
 
 # The default rules
