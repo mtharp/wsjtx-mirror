@@ -118,7 +118,7 @@ wfile5.obj: wfile5.f
 .PHONY : clean
 
 clean:
-	-del *.o *.obj wspr.exe w.pyd wspr.spec rxtest.exe testmsg.exe
+	-del *.o *.obj wspr.exe WsprMod\w.pyd wspr.spec rxtest.exe testmsg.exe
 
 
 
