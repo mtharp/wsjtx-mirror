@@ -68,10 +68,10 @@ SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f	\
 
 SRCS2C = ptt.c padevsub.c
 
-WSPR.EXE: w.pyd wspr.spec
+WSPR.EXE: WsprMod/w.pyd wspr.spec
 	python c:\python23\installer\Build.py wspr.spec
 
-w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
+WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	python f2py.py -c \
 	--quiet --"fcompiler=compaqv" \
 	--opt="/nologo /traceback /warn:errors /fast /fpp /define:CVF \
