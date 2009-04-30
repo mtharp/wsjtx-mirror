@@ -7,7 +7,7 @@ FC = df
 #FFLAGS = /traceback /check:all
 FFLAGS = /traceback /fast /nologo /warn
 
-all:    scode8.exe WSJT8.EXE tstecho.exe
+all:    scode8.exe WSJT8.EXE tstecho.exe t441.exe
 
 OBJS1 = igray.obj init_rs.obj encode_rs.obj decode_rs.obj wrapkarn.obj
 
@@ -15,6 +15,11 @@ scode8.exe: $(OBJS1)
 	$(FC) /compile_only scode8_subs.f
 	$(FC)/traceback /fast /nologo /exe:scode8.exe scode8.f90 \
 	scode8_subs.obj
+
+OBJS3 = t441.obj gen441.obj four2a.obj
+
+t441.exe: $(OBJS3)
+	$(FC) /traceback /fast /nologo /exe:t441.exe $(OBJS3) fftw3single.lib
 
 SRC4 = tstecho.f90
 
@@ -120,6 +125,9 @@ nhash.o: nhash.c
 	$(CC) /nologo /c /Fonhash.o nhash.c
 tab.o: tab.c
 	$(CC) /nologo /c /Fotab.o tab.c
+
+four2a.obj: four2a.f
+	$(FC) /fast /compile_only four2a.f
 
 .PHONY : clean
 
