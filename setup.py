@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-version = "WSPR Version " + "@VERSION@" + ", by K1JT"
+version = "WSPR Version " + "0.8" + ", by K1JT"
 
 from distutils.core import setup
 from distutils.file_util import copy_file
+import os
 
 def wspr_install(install):
 #
@@ -11,7 +12,8 @@ def wspr_install(install):
 # I'm doing a nasty hack here to support our hybrid build system -db
 #
 	if install == 1:
-		copy_file('WsprMod/w.so', 'build/lib/WsprMod')
+	    os.makedirs('build/lib/WsprMod')
+	    copy_file('WsprMod/w.so', 'build/lib/WsprMod')
 	setup(name='Wspr',
 	version=version,
 	description='Wspr Python Module for Weak Signal detection',
@@ -26,7 +28,6 @@ communication under extreme weak-signal conditions.
 #	scripts=['wspr','wspr.py'],
 	scripts=['wspr.py'],
 	      packages=['WsprMod'],
-#	data_files=[('NONE',['CALL3.TXT'])]
 	)
 
 if __name__ == '__main__':
