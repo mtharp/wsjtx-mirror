@@ -7,7 +7,7 @@ dnl This should be a svn hook instead.
 dnl Sneakier way to get a Version into setup.py
 AC_COPYRIGHT([$Id$])
 
-AC_INIT([wspr],[0.8])
+AC_INIT([wspr],[1.11])
 fail=0
 
 AC_PREFIX_DEFAULT(/usr/local/)
