@@ -11,6 +11,7 @@ program t441
   integer itone(3*28)                       !Tones of test message
   complex cz(3*28*25)                       !Complex LO for test message
   complex c(MAXFFT)                         !Mixed signal
+  complex csum
   data twopi/6.2831853/
 
   nargs=iargc()
@@ -31,8 +32,7 @@ program t441
   read(88) jjz,ps,f0,(dat(j),j=1,jjz)       !Read raw data saved by WSJT
   df1=11025.0/256.0                         !df for the ps() spectrum
 
-  foffset=582.
-  f0=882-foffset
+  xdf=-152.
   df0=441.0                                 !Tone spacing
   dt=1.0/11025.0                            !Sample interval
   phi=0.                                    !Initialize phase
@@ -40,7 +40,7 @@ program t441
   do i=1,nsamp                      !Generate conjugate of message waveform
      j=(i-1)/25 + 1
      if(j.ne.j0) then
-        freq=f0 + itone(j)*df0
+        freq=882.0 + xdf + itone(j)*df0
         dphi=twopi*freq*dt
         j0=j
      endif
@@ -49,7 +49,7 @@ program t441
   enddo
 
 ! Find best match to test message over all lags and all frequency offsets
-  nfft=256
+  nfft=512
   nh=nfft/2
   df=11025.0/nfft
   k=0
@@ -79,8 +79,8 @@ program t441
   enddo
   kz=k
   fpk=(npk-1)*df
-  xdf=fpk-foffset
-  write(*,1030) xdf,kpk,sbest
+!  xdf=fpk-foffset
+  write(*,1030) fpk,kpk,sbest
 1030 format('Fpk:',f7.0,'   Lagpk:',i4,'   Sbest:',f8.0)
   
 999 end program t441
