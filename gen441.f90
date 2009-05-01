@@ -34,5 +34,19 @@ subroutine gen441(msg,nmsg,itone)
      itone(3*i)=mod(n,4)
   enddo
 
+!  do i=1,43
+!     n=ichar(cc(i:i))
+!     if(n.eq.95) n=32
+!     if(n.ge.97 .and. n.le.122) n=n-32   !Promote lower case to upper
+!     if(n.lt.0 .or. n.gt.91) n=32        !Replace illegal char with blank 
+!     n=lookup(n)
+!     m1=n/16
+!     m2=mod(n/4,4)
+!     m3=mod(n,4)
+!     mm=100*m1+10*m2+m3
+!     write(*,3001) i,cc(i:i),mm
+!3001 format(i2,2x,a1,i5.3)
+!  enddo
+
   return
 end subroutine gen441
