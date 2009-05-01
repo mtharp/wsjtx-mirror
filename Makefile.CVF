@@ -16,10 +16,10 @@ scode8.exe: $(OBJS1)
 	$(FC)/traceback /fast /nologo /exe:scode8.exe scode8.f90 \
 	scode8_subs.obj
 
-OBJS3 = t441.obj gen441.obj four2a.obj
+OBJS3 = t441.obj gen441.obj
 
 t441.exe: $(OBJS3)
-	$(FC) /traceback /fast /nologo /exe:t441.exe $(OBJS3) fftw3single.lib
+	$(FC) /traceback /fast /nologo /exe:t441.exe $(OBJS3)
 
 SRC4 = tstecho.f90
 
