@@ -16,7 +16,7 @@ scode8.exe: $(OBJS1)
 	$(FC)/traceback /fast /nologo /exe:scode8.exe scode8.f90 \
 	scode8_subs.obj
 
-OBJS3 = t441.obj gen441.obj
+OBJS3 = t441.obj dfdt441.obj gen441.obj
 
 t441.exe: $(OBJS3)
 	$(FC) /traceback /fast /nologo /exe:t441.exe $(OBJS3)
@@ -47,19 +47,19 @@ SRCS2F90 = a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 
 SRCS2F77 = wsjt1.f indexx.f flat2.f gen65.f gen24.f entail.f \
 	genmet.f wsjt24.f sync24.f ps24.f fourt.f xcor24.f decode24.f\
-	chkmsg.f gen6m.f interleave24.f \
+	chkmsg.f gen6m.f interleave24.f spec441.f s2shape.f \
 	gentone.f syncf0.f syncf1.f synct.f decode6m.f avemsg6m.f \
 	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f ping.f \
 	longx.f peakup.f sync.f detect.f avemsg65.f decode65.f demod64a.f \
 	encode65.f extract.f chkhist.f flat1.f four2.f gencw.f \
-	gencwid.f msgtype.f getpfx1.f \
+	gencwid.f msgtype.f getpfx1.f spec2d.f stdecode.f mtdecode.f \
 	getpfx2.f getsnr.f graycode.f grid2k.f interleave63.f k2grid.f \
 	limit.f lpf1.f deep65.f morse.f nchar.f packcall.f packgrid.f \
 	packmsg.f packtext.f setup65.f short65.f slope.f spec2d65.f \
 	sync65.f unpackcall.f unpackgrid.f unpackmsg.f unpacktext.f \
 	xcor.f xfft.f xfft2.f wsjt65.f astro.f azdist.f coord.f dcoord.f \
 	deg2grid.f dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f \
-	moon2.f MoonDop.f sun.f toxyz.f pfxdump.f \
+	moon2.f MoonDop.f sun.f toxyz.f pfxdump.f avesp2.f bzap.f \
 	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
 	encode232.f inter_mept.f pack50.f unpack50.f \
 	filbig2.F mept162a.f twkfreq.f sync162.f decode162.f \
