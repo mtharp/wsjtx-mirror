@@ -60,10 +60,10 @@ subroutine dfdt441(dat,jz,freezedf,dftol,tmsg,nmsg,xdfpk,idtpk,sbest,ppk)
   kz=k
   xdfpk=idfpk*df
 
-!  do k=1,kz                                 !Write s2 (ccf with tmsg) to disk
-!     write(13,1040) k,s2(k)
-!1040 format(i5,f10.0)
-!  enddo
+  do k=1,kz                                 !Write s2 (ccf with tmsg) to disk
+     write(13,1040) k,s2(k)
+1040 format(i5,f10.0)
+  enddo
 
   do lag=0,2500/nstep                       !Compute acf of s2
      sum=0.
@@ -72,8 +72,8 @@ subroutine dfdt441(dat,jz,freezedf,dftol,tmsg,nmsg,xdfpk,idtpk,sbest,ppk)
      enddo
      acf(lag)=1.e-3*sum/(kz-lag)
      tp=lag*nstep/75.0
-!     write(14,1050) lag,tp,acf(lag)         !Write acf to disk
-!1050 format(i5,f10.3,f13.3)
+     write(14,1050) lag,tp,acf(lag)         !Write acf to disk
+1050 format(i5,f10.3,f13.3)
      if(tp.gt.1.5 .and. acf(lag).gt.acfmax) then
         acfmax=acf(lag)
         ppk=tp

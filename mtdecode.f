@@ -7,7 +7,7 @@ C  Decode Multi-Tone FSK441 mesages.
       integer NQRN
       integer DFTolerance
       logical pick
-      character*6 cfile6,cf*1
+      character*6 cfile6,cf*1,tmsg*28
 
       real sigdb(3100)             !Detected signal in dB, sampled at 20 ms
       real work(3100)
@@ -90,6 +90,19 @@ C  Find starting place and length of data to be analyzed:
          if(jj.lt.1) jj=1
          jjz=nint((width+0.02)/dt)+1
          jjz=min(jjz,jz+1-jj)
+
+!###
+!         nrec=nrec+1
+!         print*,nrec,jjz
+!         write(88) nrec,jjz,(dat(jj+j),j=0,jjz-1)
+!         freezedf=0.
+!         dftol=0.5*441
+!         tmsg='_'
+!         call dfdt441(dat(jj),jjz,freezedf,dftol,tmsg,msglen,xdfpk,
+!     +        idtpk,sbest,ppk)
+!         write(*,3001) jjz,msglen,nint(xdfpk),idtpk,nint(sbest),ppk
+! 3001    format(i6,i3,i5,i6,i8,f7.2)
+!###
 
 C  Compute average spectrum of this ping.
          call spec441(dat(jj),jjz,ps,f0)
