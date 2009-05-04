@@ -4,6 +4,8 @@ subroutine startrx
   use dfmt
   integer Thread1
   external rx
+#else
+  integer th_rx
 #endif
 
   include 'acom1.f90'

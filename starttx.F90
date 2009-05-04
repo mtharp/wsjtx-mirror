@@ -4,6 +4,8 @@ subroutine starttx
   use dfmt
   integer Thread2
   external tx
+#else
+  integer th_tx
 #endif
 
   include 'acom1.f90'
