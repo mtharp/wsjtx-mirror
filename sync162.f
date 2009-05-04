@@ -20,7 +20,6 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       integer keep(-NH:NH)
       real a(5)
       real sstf(5,275)
-      character*22 message
       real tmp(275)
       integer npr3(162)
       real pr3(162)
@@ -106,7 +105,6 @@ C  Compute power spectrum for each step, and get average
 
 ! Now do the main search over DT, DF, and drift.  (Do CCFs in all marked
 ! frequency bins and over a range of reasonable fdot values and lags.)
-      fac2=0.017
       p1=0.
       do i=-NF0,NF0
          if(keep(i).eq.0) go to 10

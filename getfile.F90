@@ -5,7 +5,6 @@ subroutine getfile(fname,len)
 #endif
 
   character*(*) fname
-  character*80 filename
   include 'acom1.f90'
   integer*1 hdr(44),n1
   integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
@@ -23,8 +22,7 @@ subroutine getfile(fname,len)
      if(fname(i:i).eq.'/' .or. fname(i:i).eq.'\\') go to 10
   enddo
   i=0
-10 filename=fname(i+1:)
-  ierr=0
+10  continue
 
 #ifdef CVF
   open(10,file=fname,form='binary',status='old')

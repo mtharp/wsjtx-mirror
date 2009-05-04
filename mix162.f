@@ -24,7 +24,6 @@ C  Do the real-to-complex FFT
       call xfft(x,NFFT1)
 
       df=12000.d0/NFFT1
-      df2=256.0*df
       i0=nint(1500.d0/df)
       ia=i0-NH2 + 1
       ib=i0+NH2

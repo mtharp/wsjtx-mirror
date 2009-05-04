@@ -31,6 +31,10 @@ subroutine startrx
   m2=ResumeThread(Thread1)
 #else
   ierr=th_rx()
+  if(ierr.ne.0) then
+     print*,'Error starting rx thread',ierr
+     stop
+  endif
 #endif
 
   return

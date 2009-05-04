@@ -114,7 +114,6 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0)
     PaStreamParameters outputParameters;
     PaStream *stream;
     PaError err;
-    int i;
     int totalFrames;
     int numSamples;
     int numBytes;

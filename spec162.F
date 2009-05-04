@@ -6,13 +6,11 @@
       real s(120,0:255)
       real ss(0:255)
       real w(0:255)
-      real savg(0:255),tmp(256)
-!      real s2(-127:128)
+      real savg(0:255)
       integer*2 a(NX,NY)
       common/bcom/ntransmitted
 
       nfft=256
-      df=375.0/nfft
       twopi=6.2831853
       pi=0.5*twopi
       do i=0,nfft-1
@@ -67,28 +65,6 @@
          enddo
       enddo
       kz=k
-
-C###
-!      nh=nfft/2
-!      do i=0,NFFT-1
-!         j=i
-!         if(j.gt.NH) j=j-NFFT
-!         s2(j)=10.0*log10(savg(i))
-!      enddo
-
-!      call pctile(s2(-68),tmp,137,45,base)
-!      call pctile(s2(-68),tmp,137,11,base2)
-!      rms2=base-base2
-
-!      ia=-68
-!      ib=68
-!      df=375.0/nfft
-!      do i=ia,ib
-!         s2(i)=(s2(i)-base)/rms2
-!         write(52,3001) i,150.0+i*df,s2(i)
-! 3001    format(i5,2f12.3)
-!      enddo
-C###
 
       gain=40
       offset=-90.

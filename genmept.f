@@ -2,8 +2,6 @@
 
 C  Encode an MEPT_JT message and generate the corresponding wavefile.
 
-      character*12 call1,call2
-      character*4 grid,grid2
       parameter (NMAX=120*12000)     !Max length of wave file
       character*22 message           !Message to be generated
       character*22 msg2
@@ -13,10 +11,8 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       integer*1 symbol(MAXSYM)
       integer*1 data0(11),i1
       integer npr3(162)
-      real pr3(162)
-      logical first,lbad1,lbad2
+      logical first
       real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
-      character*22 msgsent           !Message sent
 
       integer ndxkm(0:23)
       character*4 dxgrid(0:23)
@@ -39,20 +35,12 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
 
       nsym=162                               !Symbols per transmission
       if(first) then
-         do i=1,nsym
-            pr3(i)=2*npr3(i)-1
-         enddo
          pi=4.d0*atan(1.d0)
          twopi=2.d0*pi
          first=.false.
       endif
 
       call wqencode(message,ntype,data0)
-!      call packcall(call1,n1,lbad1)
-!      call packgrid(grid,ng,lbad2)
-
-!      n2=128*ng + ndbm + 64
-!      call pack50(n1,n2,data0)             !Pack 8 bits per byte, add tail
       nbytes=(50+31+7)/8
       call encode232(data0,nbytes,symbol,MAXSYM)  !Convolutional encoding
       call inter_mept(symbol,1)                   !Apply interleaving
@@ -61,17 +49,7 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          i1=symbol(i)
       enddo
 
-!      call unpackcall(n1,call2)
-!      call unpackgrid(n2/128,grid2)
-!      ndbm2=iand(n2,127) - 64
-!      if(lbad1 .or. lbad2 .or. (call1.ne.call2) .or. 
-!     +   (grid.ne.grid2) .or. (ndbm.ne.ndbm2)) then
-!         print*,'Error in structure of Tx message, cannot transmit'
-!         go to 999
-!      endif
-
       call wqdecode(data0,msg2,ntype2)
-!      print*,message,msg2,ntype2
 
 C  Set up necessary constants
       tsymbol=8192.d0/12000.d0
@@ -117,12 +95,9 @@ C  Set up necessary constants
                if(n.lt.-32767) n=-32767
             endif
             iwave(i)=n
- 10         continue
          enddo
       enddo
 
- 100  continue
-
- 999  return
+      return
       end
 

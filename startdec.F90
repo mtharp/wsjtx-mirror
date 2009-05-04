@@ -32,6 +32,10 @@ subroutine startdec
   m2=ResumeThread(Thread3)
 #else
   ierr=th_decode()
+  if(ierr.ne.0) then
+     print*,'Error starting decode thread',ierr
+     stop
+  endif
 #endif
 
   return

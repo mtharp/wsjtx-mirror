@@ -12,7 +12,7 @@ subroutine wspr2
 
   character*17 message
   real*8 tsec
-  logical idle,receiving,transmitting,decoding,gui,cmnd
+  logical idle,receiving,transmitting,decoding
   integer nchin(0:20),nchout(0:20)
   include 'acom1.f90'
   data idle/.true./,receiving/.false./,transmitting/.false./
@@ -89,7 +89,6 @@ subroutine wspr2
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-  neven=1-mod(nsec/120,2)
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0) then
      transmitting=.true.

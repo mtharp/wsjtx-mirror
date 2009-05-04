@@ -4,6 +4,8 @@ subroutine wspr1
   use dfmt
   integer Thread0
   external wspr2
+#else
+  integer th_wspr2
 #endif
 
   include 'acom1.f90'
@@ -32,6 +34,10 @@ subroutine wspr1
 #else
 ! Start a thread for acquiring audio data
   ierr=th_wspr2()
+  if(ierr.ne.0) then
+     print*,'Error creating thread for wspr2',ierr
+     stop
+  endif
 #endif
 
   return

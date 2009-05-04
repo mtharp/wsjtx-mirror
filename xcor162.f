@@ -6,7 +6,6 @@ C  peak of the CCF and the lag at which peak occurs.
       parameter (NFFT=512)
       parameter (NH=NFFT/2)
       parameter (NSMAX=352)
-      real psavg(-NH:NH)
       real s2(-NH:NH,NSMAX)
       real a(NSMAX)
       real ccf(-5:540)
@@ -34,7 +33,6 @@ C  peak of the CCF and the lag at which peak occurs.
          first=.false.
       endif
 
-      df=375.0/NFFT
       n=2
       method=2
       do j=1,nsteps

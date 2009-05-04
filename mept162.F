@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,rms,nsec,ndec,ierr)
+      subroutine mept162(outfile,f0,minsync,id,npts,ndec,ierr)
 
 C  Orchestrates the process of finding, synchronizing, and decoding 
 C  WSPR signals.
@@ -71,8 +71,8 @@ C  Look for sync patterns, get DF and DT
      +            message(1:6).ne.'000AAA') go to 23
             enddo
             go to 24
- 23         width=0.
-            i2=index(outfile,'.wav')-1
+
+ 23         i2=index(outfile,'.wav')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             nf1=nint(-a(2))

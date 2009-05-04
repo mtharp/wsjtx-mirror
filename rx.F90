@@ -14,6 +14,10 @@ subroutine rx
   npts=114*12000
   nsec1=time()
   ierr=soundin(idevin,iwave,npts)
+  if(ierr.ne.0) then
+     print*,'Error in soundin',ierr
+     stop
+  endif
   nsec2=time()
   if(ndebug.ne.0) then
      write(*,1010) mod(nsec1,120),mod(nsec2,120),nsec2-nsec1

@@ -14,16 +14,19 @@ extern void decode_(int *iarg);
 extern void rx_(int *iarg);
 extern void tx_(int *iarg);
 
-int spawn_thread(void (*f)()) {
+int spawn_thread(void (*f)(int *n)) {
   pthread_t thread;
   int iret;
   int iarg0 = 0;
 
-  if ((iret = pthread_create(&thread,NULL,(void *)f,&iarg0)) != 0) {
+  iret=pthread_create(&thread,NULL,(void *)f,&iarg0);
+  if (iret) {
     perror("spawning new thread");
     return iret;
   }
-  if ((iret = pthread_detach(thread)) != 0) {
+
+  iret = pthread_detach(thread);
+  if (iret) {
     perror("detaching thread");
     return iret;
   }
@@ -33,7 +36,9 @@ int spawn_thread(void (*f)()) {
 
 int th_wspr2_(void)
 {
-  return spawn_thread(wspr2_);
+  int ierr;
+  ierr=spawn_thread(wspr2_);
+  return ierr;
 }
 
 int th_decode_(void)

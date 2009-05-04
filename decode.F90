@@ -4,17 +4,14 @@ subroutine decode
 
 #ifdef CVF
   use dfport
-#else
-  integer time
 #endif
   character*80 savefile
 
   include 'acom1.f90'
 
   minsync=1
-  nsec=time()
   ndec=0
-  call mept162(thisfile,f0,minsync,iwave,NMAX,rms,nsec,ndec,ierr)
+  call mept162(thisfile,f0,minsync,iwave,NMAX,ndec,ierr)
   if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
      savefile='save/'//outfile
      npts=114*12000

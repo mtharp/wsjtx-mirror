@@ -4,8 +4,6 @@ subroutine tx
 
 #ifdef CVF
   use dfport
-#else
-  integer time
 #endif
 
   parameter (NMAX2=120*12000)
@@ -18,6 +16,10 @@ subroutine tx
 
   call1=callsign
   ierr=ptt(nport,pttport,1,iptt)
+  if(ierr.ne.0) then
+     print*,'Error using PTT port',ierr
+     stop
+  endif
   write(cdbm,'(i3)'),ndbm
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
@@ -35,9 +37,21 @@ subroutine tx
   call genmept(message,ntxdf,snr,msg2,jwave)
   sending=msg2
   ierr=ptt(nport,pttport,1,iptt)
+  if(ierr.ne.0) then
+     print*,'Error using PTT port',ierr
+     stop
+  endif
   npts=114*12000
   ierr=soundout(idevout,jwave,npts)
+  if(ierr.ne.0) then
+     print*,'Error in soundout',ierr
+     stop
+  endif
   ierr=ptt(nport,pttport,0,iptt)
+  if(ierr.ne.0) then
+     print*,'Error using PTT port',ierr
+     stop
+  endif
   ntransmitted=1
   ntxdone=1
 
