@@ -3,7 +3,7 @@
 #
 from Tkinter import *
 from tkFileDialog import *
-from tkMessageBox import showwarning
+import tkMessageBox
 import os,time,sys
 from WsprMod import g,Pmw
 from WsprMod import palettes
@@ -210,10 +210,7 @@ def opennext(event=NONE):
             tw=[t,] + tw
         else:
             t="No more *.wav files in this directory."
-            msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
-            msg.geometry(msgpos())
-#            if g.Win32: msg.iconbitmap("wsjt.ico")
-            msg.focus_set()
+            result=tkMessageBox.showwarning(message=t)
             ncall=0
             loopall=0
             
@@ -233,9 +230,7 @@ def stub(event=NONE):
 
 #------------------------------------------------------ MsgBox
 def MsgBox(t):
-    msg=Pmw.MessageDialog(root,buttons=('OK',),message_text=t)
-    result=msg.activate()
-    msg.focus_set()
+    result=tkMessageBox.showwarning(message=t)
 
 #------------------------------------------------------ msgpos
 def msgpos():
@@ -347,12 +342,8 @@ def set_tx_freq(event):
     nftx=int(1000000.0*fmid + (80.0-event.y) * 12000/8192.0)
     fmhz=0.000001*nftx
     t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
-    msg=Pmw.MessageDialog(root,buttons=('Yes','No'),message_text=t)
-    msg.geometry(msgpos())
-    if g.Win32: msg.iconbitmap("wsjt.ico")
-    msg.focus_set()
-    result=msg.activate()
-    if result == 'Yes':
+    result=tkMessageBox.askyesno(message=t)
+    if result:
         ftx.set(0.000001*nftx)
         sftx.set('%.06f' % ftx.get())
 
@@ -395,12 +386,8 @@ def del_all():
 #------------------------------------------------------ delwav
 def delwav():
     t="Are you sure you want to delete\nall *.WAV files in the Save directory?"
-    msg=Pmw.MessageDialog(root,buttons=('Yes','No'),message_text=t)
-    msg.geometry(msgpos())
-    if g.Win32: msg.iconbitmap("wsjt.ico")
-    msg.focus_set()
-    result=msg.activate()
-    if result == 'Yes':
+    result=tkMessageBox.askyesno(message=t)
+    if result:
 # Make a list of *.wav files in Save
         la=dircache.listdir(appdir+'/save')
         lb=[]
