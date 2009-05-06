@@ -162,11 +162,11 @@ subroutine wsjtgen
      goto 900
   endif
 
-  if(mode(1:4).eq.'Echo') then
-!  We're in Echo mode.
-     call echogen(iwave,nwave)
-     goto 900
-  endif
+!  if(mode(1:4).eq.'Echo') then
+!!  We're in Echo mode.
+!     call echogen(iwave,nwave)
+!     goto 900
+!  endif
 
   if(mode(1:4).eq.'JT6M') then
 !  We're in JT6M mode.

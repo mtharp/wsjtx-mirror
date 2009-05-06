@@ -53,12 +53,12 @@ SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f mtdecode.f \
 	rfile2.f encode232.f inter_mept.f pack50.f unpack50.f \
 	filbig2.F mept162a.f twkfreq.f sync162.f decode162.f \
 	ps162.f fchisq.f fano232.f ccf2.f wsjt64.f sync64.f \
-	echogen.f
-
 
 SRCS2C   = resample.c ptt.c igray.c wrapkarn.c start_portaudio.c cutil.c
+
 WSJT8.EXE: WsjtMod/Audio.pyd wsjt.spec
 	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wsjt.spec
+	rm -f WSJT8.EXE
 	mv wsjt.exe WSJT8.EXE
 
 WsjtMod/Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
@@ -71,12 +71,14 @@ WsjtMod/Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C)
 	-m Audio \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
-	mv Audio.pyd WsjtMod/Audio.pyd
+	mv -f Audio.pyd WsjtMod/Audio.pyd
+#	cp WsjtMod/Audio.pyd Audio.pyd
 
-wsjt.spec: wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
-	WsjtMod/palettes.py WsjtMod/smeter.py WsjtMod/specjt.py
-	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
-	   wsjt.ico --tk --onefile wsjt.py
+wsjt.spec: wsjt.py WsjtMod/Audio.pyd WsjtMod/astro.py WsjtMod/g.py \
+	WsjtMod/options.py WsjtMod/palettes.py WsjtMod/smeter.py \
+	WsjtMod/specjt.py
+	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py \
+	--icon wsjt.ico --tk --onefile wsjt.py
 
 jtaudio.o: jtaudio.c
 	$(CC) $(CFLAGS) -c -DWin32 jtaudio.c
@@ -91,4 +93,4 @@ decode_rs.o: decode_rs.c
 .PHONY : clean
 
 clean:
-	rm *.o JT65code.exe wsjt8.exe WsjtMod/Audio.pyd
+	rm *.o JT65code.exe wsjt8.exe Audio.pyd WsjtMod/Audio.pyd wsjt.spec

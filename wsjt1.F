@@ -30,6 +30,7 @@
         logical stbest          !True if the best decode was Single-Tone
         logical STfound         !True if at least one ST decode
         logical LDecoded        !True if anything was decoded
+        logical lcum
         real s2(64,3100)        !2D spectral array
         real ccf(-5:540)        !X-cor function in JT65 mode (blue line)
         real red(512)
