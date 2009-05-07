@@ -17,7 +17,6 @@ scode8.exe: $(OBJS1)
 	scode8_subs.obj
 
 OBJS3 = t441.obj dfdt441.obj gen441.obj
-
 t441.exe: $(OBJS3)
 	$(FC) /traceback /fast /nologo /exe:t441.exe $(OBJS3)
 
@@ -42,7 +41,7 @@ SRCS2F90 = a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	genwspr.f90 wqencode.f90 wqdecode.f90 packpfx.f90 unpackpfx.f90 \
 	hash.f90 packprop.f90 unpackprop.f90 packname.f90 unpackname.f90 \
 	packtext2.f90 unpacktext2.f90 wsjtwspr.f90 gen64.f90 \
-	echogen.f90
+	echogen.f90 dfdt441.f90 gen441.f90
 
 
 SRCS2F77 = wsjt1.f indexx.f flat2.f gen65.f gen24.f entail.f \
@@ -65,7 +64,7 @@ SRCS2F77 = wsjt1.f indexx.f flat2.f gen65.f gen24.f entail.f \
 	filbig2.F mept162a.f twkfreq.f sync162.f decode162.f \
 	ps162.f fchisq.f fano232.f ccf2.f wsjt64.f sync64.f \
 
-SRCS2C   = resample.c ptt.c igray.c wrapkarn.c
+SRCS2C   = ptt.c igray.c wrapkarn.c
 
 WSJT8.EXE: Audio.pyd wsjt.spec
 	python c:\python23\installer\Build.py wsjt.spec
@@ -78,7 +77,7 @@ Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C)
 	--opt="/nologo /traceback /warn:errors /fast /fpp /define:CVF \
 	      /define:USE_PORTAUDIO" \
 	$(OBJS2C) \
-	-lwinmm -lpa -lfftw3single -llibsamplerate \
+	-lwinmm -lpa -lfftw3single \
 	-m Audio \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
