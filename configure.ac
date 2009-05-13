@@ -8,6 +8,8 @@ AC_COPYRIGHT([$Id$])
 
 AC_INIT([map65iq],[0.9])
 
+fail=0
+
 AC_PREFIX_DEFAULT(/usr/local/)
 
 OLD_CFLAGS="$CFLAGS"
@@ -23,8 +25,22 @@ dnl Lets guess at some likely places for extra libs/includes XXX -db
 CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
+FCV=""
+FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none\
+			-Wall -fbounds-check -fno-second-underscore -fPIC"
+FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC"
+#-Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 
-AC_MSG_CHECKING([uname -s for Cygwin, Solaris or HPUX])
+dnl
+dnl Pick up FC from the environment if present
+dnl I'll add a test to confirm this is a gfortran later -db
+dnl
+
+if test -n ${FC} ; then
+	gfortran=${FC}
+fi
+
+AC_MSG_CHECKING([uname -s])
 case `uname -s` in
 	CYGWIN*)
 		AC_MSG_RESULT(Cygwin)
@@ -34,10 +50,28 @@ case `uname -s` in
 		AC_MSG_RESULT(SunOS or Solaris)
 		AC_DEFINE(__EXTENSIONS__, 1, [This is needed to use strtok_r on Solaris.])
 	;;
+dnl
+dnl Pick up current gfortran from ports infrastructure for fbsd
+dnl
+        FreeBSD*)
+		if test -z ${gfortran} ; then
+			gfortran=`grep FC: /usr/ports/Mk/bsd.gcc.mk | head -1 |awk '{print $2}'`
+		fi
+		FCV_G95="g95"
+	;;
 	*)
+		FCV_G95="g95"
 		AC_MSG_RESULT(no)
 	;;
 esac
+
+dnl
+dnl look for gfortran if nothing else was given
+dnl
+
+if test -z $gfortran ; then
+	gfortran="gfortran"
+fi
 
 if test "$ac_cv_c_compiler_gnu" = yes; then
 	AC_MSG_CHECKING(if $CC is Apple GCC)
@@ -65,7 +99,6 @@ if test ! -z "$CFLAGS"; then
 	CFLAGS="$CFLAGS $CFLAGS"
 fi
 
-
 AC_ISC_POSIX
 AC_C_INLINE
 AC_PROG_GCC_TRADITIONAL
@@ -82,14 +115,8 @@ AC_PATH_PROG(TEST, [test], [test])
 AC_PATH_PROG(PYTHON, python)
 AC_PATH_PROG(F2PY, f2py)
 AC_PATH_PROG(G95, g95)
-AC_MSG_CHECKING([g95 lib path])
-G95_LIB_PATH=`${G95} -print-file-name=`
-AC_MSG_RESULT(${G95_LIB_PATH})
-AC_PATH_PROG(GFORTRAN, gfortran)
-AC_PATH_PROG(GFORTRAN, gfortran43)
-AC_MSG_CHECKING([gfortran lib path])
-GFORTRAN_LIB_PATH=`${GFORTRAN} -print-file-name=`
-AC_MSG_RESULT(${GFORTRAN_LIB_PATH})
+AC_PATH_PROG(GFORTRAN, ${gfortran})
+AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
 OS=`uname`
 AC_SUBST(OS, "${OS}")
@@ -104,7 +131,7 @@ sys/resource.h linux/ppdev.h dev/ppbus/ppi.h sys/stat.h fcntl.h sys/ioctl.h ])
 
 AC_HEADER_TIME
 
-AC_CHECK_HEADER([samplerate.h], [HAS_SAMPLERATE_H=1], [HAS_SAMPLERATE_H=0])
+AC_CHECK_HEADER([fftw3.h], [HAS_FFTW3_H=1], [HAS_FFTW3_H=0])
 
 HAS_PORTAUDIO_H=0
 HAS_PORTAUDIO_LIB=0
@@ -125,45 +152,10 @@ if test "$gcc_cv_header_string" = "yes"; then
 	AC_DEFINE(STRING_WITH_STRINGS, 1, [Define to 1 if string.h may be included along with strings.h])
 fi
 
-AC_CHECK_LIB(rt, clock_gettime, [RTLIBS="-lrt"], [RTLIBS=""])
-AC_CHECK_LIB(asound, snd_pcm_open, [ASOUNDLIBS="-lasound"], [ASOUNDLIBS=""])
+dnl check for a fortran shim entry point
+AC_CHECK_LIB(fftw3f, sfftw_destroy_plan_, \
+	[HAS_FFTW3FLIBS=1], [HAS_FFTW3FLIBS=0])
 
-AC_CHECK_SIZEOF(int64_t)
-AC_CHECK_SIZEOF(long long)
-
-if test "$ac_cv_sizeof_int64_t" = 8; then
-  AC_CHECK_TYPE(uint64_t)
-  AC_CHECK_TYPE(int64_t)
-elif test "$ac_cv_sizeof_long_long" = 8; then
-  AC_CHECK_TYPE(uint64_t, unsigned long long)
-  AC_CHECK_TYPE(int64_t, long long)
-fi
-
-AC_CHECK_TYPE([u_int32_t], [],
-[
-	AC_CHECK_TYPE([uint32_t],
-	[
-		AC_DEFINE(u_int32_t, [uint32_t], [If system does not define u_int32_t, define a reasonable substitute.])
-	],
-	[
-		AC_MSG_WARN([system has no u_int32_t or uint32_t, default to unsigned long int])
-		AC_DEFINE(u_int32_t, [unsigned long int], [If system does not define u_int32_t, define to unsigned long int here.])
-	])
-])
-
-AC_CHECK_TYPE([u_int16_t], [],
-[
-	AC_CHECK_TYPE([uint16_t],
-	[
-		AC_DEFINE(u_int16_t, [uint16_t], [If system does not define u_int16_t, define a usable substitute])
-	],
-	[
-		AC_MSG_WARN([system has no u_int16_t or uint16_t, default to unsigned short int])
-		AC_DEFINE(u_int16_t, [unsigned short int], [If system does not define u_int16_t, define a usable substitute.])
-	])
-])
-
-AC_C_BIGENDIAN
 
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - wsjt will not compile without it **])])
@@ -187,23 +179,15 @@ if test "$assert" = no; then
 	AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])
 fi
 
-
 if test "$prefix" = "NONE"; then 
-	AC_DEFINE_UNQUOTED(PREFIX, "$ac_default_prefix", [Prefix where wsjt is installed.])
-
+	prefix=${ac_default_prefix}
 else
 
 dnl Don't get bitten by Cygwin's stupidity if the user specified
 dnl a custom prefix with a trailing slash
 
 	prefix=`echo $prefix | sed 's/\/$//'`
-	AC_DEFINE_UNQUOTED(PREFIX, "$prefix", [Prefix where wsjt is installed.])
-	
 fi
-
-AC_CONFIG_FILES(		\
-	Makefile		
-)
 
 dnl pick gfortran or g95
 dnl ====================
@@ -219,37 +203,67 @@ AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
 dnl now set conf.h,, CPPFLAGS and CFLAGS flags as needed
 dnl ====================================================
 
-if test "$g95" = yes; then
-        FC_LIB_PATH=${G95_LIB_PATH}
-	FC=${G95}
-	gfortran=no
-elif test "$gfortran" = yes; then
-        FC_LIB_PATH=${GFORTRAN_LIB_PATH}
-	FC=${GFORTRAN}
-	g95=no
+if test ! -z ${GFORTRAN} ; then
+	echo "*** gfortran compiler found at ${GFORTRAN}"
+	if test "$gfortran" = yes; then
+       		FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
+		FC=`basename ${GFORTRAN}`
+		g95=no
+		FFLAGS="${FFLAGS_GFORTRAN}"
+		FCV="gnu95"
+	fi
+else
+	echo "*** No gfortran compiler found"
 fi
 
+if test ! -z $G95 ; then
+	echo "*** g95 compiler found at ${G95}"
+	if test "$g95" = yes; then
+       		FC_LIB_PATH=`${G95} -print-file-name=`
+		FC=`basename ${G95}`
+		gfortran=no
+		FFLAGS="${FFLAGS_G95}"
+		FCV=${FCV_G95}
+	fi
+else
+	echo "*** No g95 compiler found"
+fi
+
+dnl
+dnl if FC is not set by now, pick a compiler for user
+dnl
 if test -z $FC ; then
 	if test ! -z $GFORTRAN ; then
-       		FC_LIB_PATH=${GFORTRAN_LIB_PATH}
-	        FC=${GFORTRAN}
+		if test "$g95" = yes; then
+			echo "You enabled g95, but no g95 compiler found, defaulting to gfortran instead"
+		fi
+       		FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
+	        FC=`basename ${GFORTRAN}`
+		g95=no
 		gfortran=yes
+		FFLAGS="${FFLAGS_GFORTRAN}"
+		FCV="gnu95"
 	elif test ! -z $G95 ; then
-       		FC_LIB_PATH=${G95_LIB_PATH}
-	        FC=${G95}
+		if test "$gfortran" = yes; then
+			echo "You enabled gfortran, but no gfortran compiler found, defaulting to g95 instead"
+		fi
+       		FC_LIB_PATH=`${G95} -print-file-name=`
+	        FC=`basename ${G95}`
 		g95=yes
+		gfortran=no
+		FFLAGS="${FFLAGS_G95}"
+		FCV=${FCV_G95}
 	fi
 fi
 
-if test -z $FC ; then
-		AC_MSG_ERROR([You need g95 or gfortran])
-fi
 
 
 AC_DEFINE_UNQUOTED(FC_LIB_PATH, "${FC_LIB_PATH}", [Path to fortran libs.])
 AC_SUBST(FC_LIB_PATH, "${FC_LIB_PATH}")
 AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
 AC_SUBST(FC, "${FC}")
+AC_SUBST(FCV, "${FCV}")
+AC_SUBST(PREFIX, "${prefix}")
 
 dnl set defaults
 dnl ============
@@ -330,6 +344,16 @@ fi
 dnl sanity tests.
 dnl =============
 
+if test -z $FC ; then
+	fail =1
+	echo "You need g95 or gfortran to compile this program!"
+fi
+
+if test $HAS_FFTW3_H -eq 0; then
+	fail=1
+	echo "You need to install the fftw3 libraries"
+fi
+
 if test $HAS_PORTAUDIO -eq 1; then
 	AC_DEFINE(HAS_PORTAUDIO, 1, )
 	AC_DEFINE(HAS_PORTAUDIO_H, 1, )
@@ -341,18 +365,43 @@ else
 	echo " --with-portaudio-lib-dir= to set the paths."
 fi
 
+if test $HAS_FFTW3_H -eq 1; then
+	AC_DEFINE(HAS_FFTW3_H, 1, )
+else
+	fail=1
+	echo "You are missing the fftw3.h include file"
+fi
+
+if test $HAS_FFTW3FLIBS -eq 1; then
+	LIBS="${LIBS} -lfftw3f"
+	AC_DEFINE(HAS_FFTW3FLIBS, 1, )
+else
+	fail =1
+	echo "You are missing the fortran shim libs in libfftw3."
+fi
+
 if test "$F2PY" = ""; then
-	AC_MSG_ERROR([You are missing f2py])
+	echo "You are missing f2py, trying local copy."
+	F2PY="python f2py.py";	
 fi
 
 dnl 
+dnl
+dnl If fail a pre-requisite then fail
+dnl
+
+if test $fail -eq 1; then
+	AC_MSG_ERROR([Please check error messages and install missing packages.])
+fi
+
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
 AC_SUBST(CFLAGS)
-
+AC_SUBST(FFLAGS)
+AC_SUBST(F2PY, "${F2PY}")
+AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
-dnl AC_CONFIG_FILES(Makefile)
 
 dnl do summary
 
@@ -361,9 +410,7 @@ echo
 
 if test $g95 = "yes"; then
 	echo "Using g95 as fortran compiler.";
-fi
-
-if test $gfortran = "yes"; then
+elif test $gfortran = "yes"; then
 	echo "Using gfortran as fortran compiler.";
 fi
 

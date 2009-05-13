@@ -1,7 +1,7 @@
 CC ?= @CC@
 FFLAGS	= @FFLAGS@
 LDFLAGS	= @LDFLAGS@
-LIBS	= @LIBS@ -lfftw3f
+LIBS	= @LIBS@
 CPPFLAGS = @CPPFLAGS@
 CFLAGS	= @CFLAGS@
 # WSJT specific C flags
@@ -11,7 +11,7 @@ CFLAGS += ${DEFS}
 CPPFLAGS += ${DEFS} -I.
 
 # WSJT specific Fortran flags
-FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
+#FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
 #FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 #FFLAGS += -Wall -fbounds-check -fno-second-underscore -ffixed-line-length-none -fPIC
 #FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
