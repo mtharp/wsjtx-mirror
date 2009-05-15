@@ -258,6 +258,7 @@ subroutine wqencode(msg,ntype,data0)
   if(index(msg,' DBD 73 GL').gt.0) ntype=24
   i1=index(msg,' ')
   read(msg(:i1-1),*,end=800,err=800) watts
+  nwatts = 0
   if(watts.ge.1.0) nwatts=watts
   if(watts.lt.1.0) nwatts=3000 + nint(1000.*watts)
   if(index(msg,'DIPOLE').gt.0) then
@@ -292,6 +293,7 @@ subroutine wqencode(msg,ntype,data0)
 
 ! WX wx temp C|F wind (msg #6; type 29)
 120 ntype=29
+  i1=0
   if(index(msg,' CLEAR ').gt.0) then
      i1=10
      n1=10000

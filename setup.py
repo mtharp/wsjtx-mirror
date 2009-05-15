@@ -25,7 +25,6 @@ communication under extreme weak-signal conditions.
 	author_email='joe@Princeton.EDU',
 	license='GPL',
 	url='http://physics.princeton.edu/pulsar/K1JT',
-#	scripts=['wspr','wspr.py'],
 	scripts=['wspr.py'],
 	      packages=['WsprMod'],
 	)
