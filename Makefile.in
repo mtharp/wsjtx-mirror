@@ -29,7 +29,6 @@ all:    Audio.so plrs plrr
 .F90.o:
 	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F90=.o} $<
 
-
 OS=@OS@
 FC=@FC@
 COMPILER += @FC_LIB_PATH@
