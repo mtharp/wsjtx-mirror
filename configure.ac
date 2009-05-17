@@ -142,13 +142,6 @@ dnl a custom prefix with a trailing slash
 	prefix=`echo $prefix | sed 's/\/$//'`
 fi
 
-AC_DEFINE_UNQUOTED(FC_LIB_PATH, "${FC_LIB_PATH}", [Path to fortran libs.])
-AC_SUBST(FC_LIB_PATH, "${FC_LIB_PATH}")
-AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
-AC_SUBST(FC, "${FC}")
-AC_SUBST(FCV, "${FCV}")
-AC_SUBST(PREFIX, "${prefix}")
-
 dnl sanity tests.
 dnl =============
 
@@ -202,6 +195,7 @@ if test $fail -eq 1; then
 	AC_MSG_ERROR([Please check error messages and install missing packages.])
 fi
 
+AC_SUBST(PREFIX, "${prefix}")
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
