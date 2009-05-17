@@ -28,11 +28,9 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.12_r" + "$Rev$"[6:-1]
+Version="1.13_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
-##print "Revision date: " + \
-##      "$Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
 #See if we are running in Windows
@@ -598,7 +596,7 @@ def put_params(param3=NONE):
     w.acom1.ctxmsg=(txmsg.get().strip().upper()+'                      ')[:22]
 
     # numeric port ==> COM%d, else string of device.  --W1BW
-    port = options.PttPort.get()
+    port = options.SerialPort.get()
     if port.isdigit():
         w.acom1.nport = int(port)
         port = "COM%d" % (int(port))
@@ -654,6 +652,12 @@ def update():
         ftx.set(freqtx[iband.get()])
         sf0.set(freq0[iband.get()])
         sftx.set(freqtx[iband.get()])
+        nHz=1000000.0*f0.get()
+        cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
+             (options.rignum.get(), options.serial_rate.get(), \
+              options.serial_handshake.get(), nHz)
+#        print cmd
+        os.system(cmd)
         iband0=iband.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -756,6 +760,14 @@ def update():
     fmid0=fmid
     ftx0=ftx.get()
     w.acom1.ndebug=ndebug.get()
+    if options.pttmode.get()=='CAT':
+        options.cat_enable.set(1)
+    if options.cat_enable.get():
+        options.cbbaud._entryWidget['state']=NORMAL
+        options.cbhs._entryWidget['state']=NORMAL
+    else:
+        options.cbbaud._entryWidget['state']=DISABLED
+        options.cbhs._entryWidget['state']=DISABLED
     ldate.after(200,update)
     
 #------------------------------------------------------ Top level frame
@@ -998,10 +1010,10 @@ try:
 except:
     params=""
     if g.Win32:
-        options.PttPort.set("0")
+        options.SerialPort.set("0")
         pass
     else:
-        options.PttPort.set("/dev/ttyS0")
+        options.SerialPort.set("/dev/ttyS0")
         pass
 
 try:
@@ -1013,14 +1025,14 @@ try:
         elif key == 'dBm': options.dBm.set(value)
         elif key == 'PctTx': ipctx.set(value)
 #        elif key == 'IDinterval': options.IDinterval.set(value)
-        elif key == 'PttPort':
+        elif key == 'SerialPort':
             try:
-                options.PttPort.set(value)
+                options.SerialPort.set(value)
             except:
                 if g.Win32:
-                    options.PttPort.set("0")
+                    options.SerialPort.set("0")
                 else:
-                    options.PttPort.set("/dev/ttyS0")
+                    options.SerialPort.set("/dev/ttyS0")
                 pass
             pass
         elif key == 'AudioIn':
@@ -1039,6 +1051,12 @@ try:
             g.DevoutName.set(value)
             options.DevoutName.set(value)
 #            w.acom1.devout_name=(options.DevoutName.get()+'            ')[:12]
+        elif key == 'PTTmode': options.pttmode.set(value)
+        elif key == 'CATenable': options.cat_enable.set(int(value))
+        elif key == 'SerialRate': options.serial_rate.set(int(value))
+        elif key == 'Handshake': options.serial_handshake.set(value)
+        elif key == 'RigNum': options.rignum.set(int(value))
+
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Upload': upload.set(value)
         elif key == 'Debug': ndebug.set(value)
@@ -1105,7 +1123,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 1.12     by K1JT')
+root.title('  WSPR 1.13     by K1JT')
 
 put_params()
 try:
@@ -1128,10 +1146,14 @@ f.write("WSPRGeometry " + root_geom + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
 f.write("dBm " + str(options.dBm.get()) + "\n")
-#f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
-f.write("PttPort " + str(options.PttPort.get()) + "\n")
+f.write("SerialPort " + str(options.SerialPort.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
+f.write("PTTmode " + options.pttmode.get() + "\n")
+f.write("CATenable " + str(options.cat_enable.get()) + "\n")
+f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
+f.write("Handshake " + options.serial_handshake.get() + "\n")
+f.write("RigNum " + str(options.rignum.get()) + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("PctTx " + str(ipctx.get()) + "\n")
 f.write("Upload " + str(upload.get()) + "\n")
@@ -1139,8 +1161,6 @@ f.write("Debug " + str(ndebug.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")
-##f.write("f0 " + str(f0.get()) + "\n")
-##f.write("ftx " + str(ftx.get()) + "\n")
 f.write("freq0_160 " + str( freq0[1]) + "\n")
 f.write("freqtx_160 " + str(freqtx[1]) + "\n")
 f.write("freq0_80 "  + str( freq0[2]) + "\n")
