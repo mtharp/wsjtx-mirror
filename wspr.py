@@ -652,12 +652,13 @@ def update():
         ftx.set(freqtx[iband.get()])
         sf0.set(freq0[iband.get()])
         sftx.set(freqtx[iband.get()])
-        nHz=1000000.0*f0.get()
-        cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
-             (options.rignum.get(), options.serial_rate.get(), \
-              options.serial_handshake.get(), nHz)
-        ierr=os.system(cmd)
-#        print ierr
+        if options.cat_enable.get():
+            nHz=1000000.0*f0.get()
+            cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
+                 (options.rignum.get(), options.serial_rate.get(), \
+                  options.serial_handshake.get(), nHz)
+            ierr=os.system(cmd)
+#            print ierr
         iband0=iband.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -763,9 +764,11 @@ def update():
     if options.pttmode.get()=='CAT':
         options.cat_enable.set(1)
     if options.cat_enable.get():
+        options.lrignum._entryFieldEntry['state']=NORMAL
         options.cbbaud._entryWidget['state']=NORMAL
         options.cbhs._entryWidget['state']=NORMAL
     else:
+        options.lrignum._entryFieldEntry['state']=DISABLED
         options.cbbaud._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
     ldate.after(200,update)
