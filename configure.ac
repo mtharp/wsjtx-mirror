@@ -144,14 +144,6 @@ fi
 dnl now set conf.h,, CPPFLAGS and CFLAGS flags as needed
 dnl ====================================================
 
-
-AC_DEFINE_UNQUOTED(FC_LIB_PATH, "${FC_LIB_PATH}", [Path to fortran libs.])
-AC_SUBST(FC_LIB_PATH, "${FC_LIB_PATH}")
-AC_DEFINE_UNQUOTED(FC, "${FC}", [Fortran compiler.])
-AC_SUBST(FC, "${FC}")
-AC_SUBST(FCV, "${FCV}")
-AC_SUBST(PREFIX, "${prefix}")
-
 dnl sanity tests.
 dnl
 echo
@@ -166,16 +158,14 @@ if test "$F2PY" = ""; then
 fi
 
 dnl 
+AC_SUBST(PREFIX, "${prefix}")
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
 AC_SUBST(CFLAGS)
 AC_SUBST(FFLAGS)
-AC_SUBST(LOCAL_PORTAUDIO,"${LOCAL_PORTAUDIO}")
-AC_SUBST(LOCAL_PORTAUDIO_CLEAN,"${LOCAL_PORTAUDIO_CLEAN}")
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
-
 
 dnl do summary
 
