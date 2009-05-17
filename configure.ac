@@ -17,7 +17,6 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_LANG(C)
 AC_PROG_F77
-
 dnl Make sure autoconf doesn't interfere with cflags -jmallett
 CFLAGS="$OLD_CFLAGS"
 
@@ -25,6 +24,10 @@ dnl Lets guess at some likely places for extra libs/includes XXX -db
 CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
+FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none\
+			-Wall -fbounds-check -fno-second-underscore -fPIC"
+FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC"
+#-Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 
 AX_CHECK_GFORTRAN
 AX_CHECK_PORTAUDIO
