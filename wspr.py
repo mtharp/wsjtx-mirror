@@ -656,8 +656,8 @@ def update():
         cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
              (options.rignum.get(), options.serial_rate.get(), \
               options.serial_handshake.get(), nHz)
-#        print cmd
-        os.system(cmd)
+        ierr=os.system(cmd)
+#        print ierr
         iband0=iband.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
