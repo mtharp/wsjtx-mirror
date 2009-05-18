@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -761,6 +761,13 @@ def update():
     fmid0=fmid
     ftx0=ftx.get()
     w.acom1.ndebug=ndebug.get()
+    w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
+    w.acom1.ncat=options.cat_enable.get()
+    cmd=("rigctl -m %d -s %d -C serial_handshake=%s @" % \
+        (options.rignum.get(), options.serial_rate.get(), \
+        options.serial_handshake.get()) + \
+        '                                                            ')[:60]
+    w.acom1.cmd=cmd
     if options.pttmode.get()=='CAT':
         options.cat_enable.set(1)
     if options.cat_enable.get():
