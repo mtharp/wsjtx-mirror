@@ -1,11 +1,9 @@
-      subroutine decode162(c4,npts,message,ncycles,metric,nerr,
-     +    mtx1,cmtx)
+      subroutine decode162(c4,npts,message,ncycles,metric,nerr)
 
 C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
 
       complex c4(npts)
       character*22 message
-      character*12 cmtx
       real*8 dt,df,twopi,f0,f1,dphi0,dphi1
       complex*16 c0,c1
       complex*16 w0,w1,ws0,ws1
@@ -134,13 +132,7 @@ C  Compute soft symbols
       call fano232(symbol,nbits,mettab,ndelta,limit,
      +     data1,ncycles,metric,nerr)
       message='                      '
-      if(nerr.ge.0) then
-         call fthread_mutex_lock(mtx1)
-         cmtx='decode162'
-         call wqdecode(data1,message,ntype2)
-         cmtx=''
-         call fthread_mutex_unlock(mtx1)
-      endif
+      if(nerr.ge.0) call wqdecode(data1,message,ntype2)
 
       return
       end

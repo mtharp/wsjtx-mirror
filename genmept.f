@@ -1,11 +1,10 @@
-      subroutine genmept(message,ntxdf,snrdb,msg2,iwave,mtx1,cmtx)
+      subroutine genmept(message,ntxdf,snrdb,msg2,iwave)
 
 C  Encode an MEPT_JT message and generate the corresponding wavefile.
 
       parameter (NMAX=120*12000)     !Max length of wave file
       character*22 message           !Message to be generated
       character*22 msg2
-      character*12 cmtx
       integer*2 iwave(NMAX)          !Generated wave file
 
       parameter (MAXSYM=176)
@@ -41,11 +40,7 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          first=.false.
       endif
 
-      call fthread_mutex_lock(mtx1)
-      cmtx='genmept'
       call wqencode(message,ntype,data0)
-      cmtx=''
-      call fthread_mutex_unlock(mtx1)
       nbytes=(50+31+7)/8
       call encode232(data0,nbytes,symbol,MAXSYM)  !Convolutional encoding
       call inter_mept(symbol,1)                   !Apply interleaving
@@ -54,11 +49,7 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          i1=symbol(i)
       enddo
 
-      call fthread_mutex_lock(mtx1)
-      cmtx='genmept'
       call wqdecode(data0,msg2,ntype2)
-      cmtx=''
-      call fthread_mutex_unlock(mtx1)
 
 C  Set up necessary constants
       tsymbol=8192.d0/12000.d0

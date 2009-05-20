@@ -25,7 +25,6 @@ subroutine wspr1
 !     THREAD_PRIORITY_HIGHEST            2
 !     THREAD_PRIORITY_TIME_CRITICAL     15
 
-  cmtx=''
   nrxdone=0
   m0=SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS)
 ! Start a thread for acquiring audio data
@@ -33,10 +32,7 @@ subroutine wspr1
   m1=SetThreadPriority(Thread0,THREAD_PRIORITY_NORMAL)
   m2=ResumeThread(Thread0)
 #else
-! Create a mutex
-  call fthread_mutex_init(mtx1)
-! Start a background thread for supervising data acquisition, decoding,
-! and transmitting functions.
+! Start a thread for acquiring audio data
   ierr=th_wspr2()
   if(ierr.ne.0) then
      print*,'Error creating thread for wspr2',ierr

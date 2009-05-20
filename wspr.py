@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -683,8 +683,6 @@ def update():
         bg='gray85'
         if ndb<-10 or ndb>10: bg='red'
         msg1.configure(text=t,bg=bg)
-	t=g.ftnstr(w.acom1.cmtx)
-        msg2.configure(text=t)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -999,8 +997,8 @@ iframe4.pack(expand=1, fill=X, padx=4)
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
 msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 msg1.pack(side=LEFT, fill=X, padx=1)
-msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-msg2.pack(side=LEFT, fill=X, padx=1)
+##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+##msg2.pack(side=LEFT, fill=X, padx=1)
 ##msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
 ##msg3.pack(side=LEFT, fill=X, padx=1)
 ##msg4=Message(iframe6, text='      ', width=300,relief=SUNKEN)
@@ -1138,10 +1136,10 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSPR 1.13     by K1JT')
 
 put_params()
-f=open(appdir+'/decoded.txt',mode='w')
-f.write("$EOF")
-f.close
-
+try:
+    os.remove('decoded.txt')
+except:
+    pass
 try:
     os.remove('pixmap.dat')
 except:
@@ -1201,5 +1199,4 @@ f.close()
 
 #Terminate PortAudio
 w.paterminate()
-w.ftn_quit()
 time.sleep(0.5)
