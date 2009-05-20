@@ -74,8 +74,8 @@ WSPR.EXE: WsprMod/w.pyd wspr.spec
 WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	python f2py.py -c \
 	--quiet --"fcompiler=compaqv" \
-	--opt="/nologo /traceback /warn:errors /fast /fpp /define:CVF \
-	      /define:USE_PORTAUDIO" \
+	--opt="/nologo /threads /traceback /warn:errors /fast /fpp \
+		/define:CVF /define:USE_PORTAUDIO" \
 	$(OBJS2C) \
 	-lwinmm -lpa \
 	-m w \

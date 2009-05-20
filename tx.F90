@@ -5,8 +5,9 @@ subroutine tx
 #ifdef CVF
   use dfport
   use dflib
-#endif
+#else
   integer system
+#endif
 
   parameter (NMAX2=120*12000)
   character message*22,call1*12,cdbm*3
@@ -24,7 +25,7 @@ subroutine tx
   if(pttmode.eq.'CAT') then
      cmnd(i0:)='T 1'
 #ifdef CVF
-     iret=runqq('rigctl.exe',cmnd(8:)
+     iret=runqq('rigctl.exe',cmnd(8:))
 #else
      iret=system(cmnd)
 #endif
@@ -63,7 +64,7 @@ subroutine tx
   if(pttmode.eq.'CAT') then
      cmnd(i0:)='T 0'
 #ifdef CVF
-     iret=runqq('rigctl.exe',cmnd(8:)
+     iret=runqq('rigctl.exe',cmnd(8:))
 #else
      iret=system(cmnd)
 #endif
