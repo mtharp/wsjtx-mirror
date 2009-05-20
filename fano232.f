@@ -135,7 +135,6 @@ C  Search the next best branch
          endif
          go to 10
  99      continue
-!         print*,np,nt,gamma(np)
       enddo
       i=nbits*maxcycles
 

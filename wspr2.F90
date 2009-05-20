@@ -18,34 +18,20 @@ subroutine wspr2
   data idle/.true./,receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
 
+  call fthread_mutex_lock(mtx1)
+  cmtx='wspr2'
 #ifdef CVF
   open(14,file='decoded.txt',status='unknown',share='denynone')
 #else
   open(14,file='decoded.txt',status='unknown')
 #endif
-  write(14,1002)
-1002 format('$EOF')
-  call flush(14)
-  rewind 14
+  cmtx=''
+  call fthread_mutex_unlock(mtx1)
 
   idevin=ndevin
   idevout=ndevout
 
-  call padevsub(numdevs,ndefin,ndefout,nchin,nchout)
-  write(*,1003) idevin,idevout
-1003 format(/'User requested devices:  Input =',i2,'   Output =',i2)
-  write(*,1004) ndefin,ndefout
-1004 format( 'Default devices:         Input =',i2,'   Output =',i2)
-  if(idevin.lt.0 .or. idevin.ge.numdevs) idevin=ndefin
-  if(idevout.lt.0 .or. idevout.ge.numdevs) idevout=ndefout
-  if(idevin.eq.0 .and. idevout.eq.0) then
-     idevin=ndefin
-     idevout=ndefout
-  endif
-  write(*,1005) idevin,idevout
-1005 format( 'Will open devices:       Input =',i2,'   Output =',i2)
-  write(*,1006)
-1006 format(66('*'))
+  call padevsub(idevin,idevout)
   call random_seed
   nrx=1
 
@@ -94,6 +80,9 @@ subroutine wspr2
      transmitting=.true.
      call random_number(x)
      nrx=nint(rxavg + rr*(x-0.5))
+
+     call fthread_mutex_lock(mtx1)
+     cmtx='wspr2'
      write(message(13:16),'(i4)') ndbm
      message(1:12)='"'//callsign//' '//grid
      message(17:17)='"'
@@ -112,6 +101,8 @@ subroutine wspr2
      write(13,1030) cdate(3:8),utctime(1:4),ftx,message
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a17)
      close(13)
+     cmtx=''
+     call fthread_mutex_unlock(mtx1)
      ntr=-1
      nsectx=mod(nsec,86400)
      call starttx

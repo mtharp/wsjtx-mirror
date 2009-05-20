@@ -16,19 +16,9 @@
       do i=ia,ib
          call pctile(ss(i-nsmo),tmp,2*nsmo+1,35,ref(i))
       enddo
-!      call pctile(ref(ia),tmp,ib-ia+1,68,base2)
-
-C  Don't flatten if signal is extremely low (e.g., RX is off).
-!      print*,base2/(0.05*base)
-!      if(base2.gt.0.005*base) then
       do i=ia,ib
          ss(i)=base*ss(i)/ref(i)
       enddo
-!      else
-!         do i=1,n
-!            ss(i)=0.
-!         enddo
-!      endif
 
       call move(ss(129),ss0,128)
       call move(ss,ss0(129),128)

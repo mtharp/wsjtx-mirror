@@ -10,13 +10,16 @@ C  Interleave (ndir=1) or de-interleave (ndir=-1) the array id.
       save
 
       if(first) then
+! Compute the interleave table using bit reversal.
          k=-1
          do i=0,255
-            write(c0,1001) i
- 1001       format(b8.8)
-            c1=c0(8:8)//c0(7:7)//c0(6:6)//c0(5:5)//c0(4:4)//c0(3:3)//
-     +         c0(2:2)//c0(1:1)
-            read(c1,1001) n
+            n=0
+            ii=i
+            do j=0,7
+               n=n+n
+               if(iand(ii,1).ne.0) n=n+1
+               ii=ii/2
+            enddo
             if(n.le.161) then
                k=k+1
                j0(k)=n

@@ -30,11 +30,9 @@ C  and North latitude.
       n20d = 2*(ichar(g3)-ichar('0'))
       xminlong = 5*(ichar(g5)-ichar('a')+0.5)
       dlong = nlong - n20d - xminlong/60.0
-c      print*,nlong,n20d,xminlong,dlong
       nlat = -90+10*(ichar(g2)-ichar('A')) + ichar(g4)-ichar('0')
       xminlat = 2.5*(ichar(g6)-ichar('a')+0.5)
       dlat = nlat + xminlat/60.0
-c      print*,nlat,xminlat,dlat
 
       return
       end

@@ -37,7 +37,12 @@ subroutine tx
      endif
   endif
 
+  call fthread_mutex_lock(mtx1)
+  cmtx='tx'
   write(cdbm,'(i3)'),ndbm
+  cmtx=''
+  call fthread_mutex_unlock(mtx1)
+
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   do i=6,1,-1
@@ -51,7 +56,7 @@ subroutine tx
   ctxmsg=message
   snr=99.0
   if(ntest.eq.1) snr=-26.0
-  call genmept(message,ntxdf,snr,msg2,jwave)
+  call genmept(message,ntxdf,snr,msg2,jwave,mtx1,cmtx)
   sending=msg2
 
   npts=114*12000

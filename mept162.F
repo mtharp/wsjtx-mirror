@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,ndec,ierr)
+      subroutine mept162(outfile,f0,minsync,id,npts,ndec,ierr,mtx1,cmtx)
 
 C  Orchestrates the process of finding, synchronizing, and decoding 
 C  WSPR signals.
@@ -7,7 +7,7 @@ C  WSPR signals.
       character*22 message
       character*80 outfile
       character*11 datetime
-      character cdate*8,ctime*10
+      character cdate*8,ctime*10,cmtx*12
       real*8 f0,freq,tsec
       real ps(-256:256)
       real sstf(5,275)
@@ -19,19 +19,12 @@ C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,c2,jz,ps)
 
 C  Compute pixmap.dat
-      call spec162(c2,jz)
+      call spec162(c2,jz,mtx1,cmtx)
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,ps,sstf,kz)
       ierr = 0
       if(kz.eq.0) go to 900
-      if (kz.gt.275 .or. kz.lt.0) then
-        call getutc(cdate,ctime,tsec)
-        write(*,1000) ctime,kz
- 1000   format('Time ',a8,'. Error from sync162: kz is',i10)
-        ierr = 1
-        return
-      endif
       do k=1,kz
          snrsync=sstf(1,k)
          snrx=sstf(2,k)
@@ -66,7 +59,8 @@ C  Look for sync patterns, get DF and DT
                   c4(-i1+2:jz)=c3(:i1+jz-1)
                   if(jz.lt.45000) c4(jz:)=0.
                endif
-               call decode162(c4,45000,message,ncycles,metric,nerr)
+               call decode162(c4,45000,message,ncycles,metric,nerr,
+     +                        mtx1,cmtx)
                if(message(1:6).ne.'      ' .and. 
      +            message(1:6).ne.'000AAA') go to 23
             enddo
@@ -77,6 +71,8 @@ C  Look for sync patterns, get DF and DT
             datetime(7:7)=' '
             nf1=nint(-a(2))
 
+            call fthread_mutex_lock(mtx1)
+            cmtx='mept162'
 #ifdef CVF
             open(13,file='ALL_MEPT.TXT',status='unknown',
      +                position='append',share='denynone')
@@ -91,6 +87,8 @@ C  Look for sync patterns, get DF and DT
      +           ncycles/81,ii
  1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
             i1=index(message,' ')
+            cmtx=''
+            call fthread_mutex_unlock(mtx1)
          endif
  24      continue
       enddo
