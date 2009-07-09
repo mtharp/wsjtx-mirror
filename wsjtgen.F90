@@ -169,17 +169,8 @@ subroutine wsjtgen
 !  endif
 
   if(mode(1:4).eq.'JT6M') then
-!  We're in JT6M mode.
-     call gen6m(msg,samfacout,iwave,nwave)
-     goto 900
-  endif
+     call gen6m(msg,samfacout,iwave,nwave)     !JT6M mode
 
-  if(mode(1:2).eq.'CW') then
-!  We're in CW mode
-!     wpm=15.
-     wpm=17.
-     freqcw=800.
-     call gencw(msg,wpm,freqcw,samfacout,iwave,nwave)
      goto 900
   endif
 

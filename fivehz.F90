@@ -1,7 +1,7 @@
 subroutine fivehz
 
 !  Called at interrupt level from the PortAudio callback routine.
-!  For nspb=2048 the callback rate is nfsample/nspb = 5.38 Hz.
+!  For nspb=2048 the callback rate is nfsample/nspb = 5.859 Hz.
 !  Thus, we should be able to control the timing of T/R sequence events
 !  here to within about 0.2 s.
 
@@ -22,7 +22,7 @@ subroutine fivehz
   real*8 fs,fsample,tt,u
   include 'gcom1.f90'
   include 'gcom2.f90'
-  data first/.true./,nc0/1/,nc1/1/,nsec0/-99/
+  data first/.true./,nc0/1/,nc1/1/,nsec0/-99/,nfsample/12000/
   save
 
   n1=time()
@@ -31,8 +31,8 @@ subroutine fivehz
 
   if(first) then
      rxdelay=0.2
-     txdelay=0.4
-     tlatency=1.0
+     txdelay=0.2                    !### was 0.4
+     tlatency=0.2                   !### was 1.0
      first=.false.
      iptt=0
      ntr0=-99
@@ -75,10 +75,10 @@ subroutine fivehz
   if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or.                   &
        mode(1:3).eq.'JT4' .or. mode(1:4).eq.'JT64') then
      if(nwave.lt.126*4096) nwave=126*4096
-     tx2=txdelay + nwave/11025.0
+     tx2=txdelay + float(nwave)/nfsample
      if(tx2.gt.(trperiod-2.0)) tx2=trperiod-tlatency-1.0
   else if(mode(1:4).eq.'WSPR') then
-     tx2=txdelay + nwave/11025.0
+     tx2=txdelay + float(nwave)/nfsample
      if(tx2.gt.(trperiod-2.0)) tx2=trperiod-tlatency-1.0
   endif
 
@@ -134,14 +134,14 @@ subroutine fivehz
   endif
 
 ! If PTT was just raised, start a countdown for raising TxOK:
-  nc1a=txdelay/0.18576
+  nc1a=txdelay*nfsample/2048.0
   if(nc1a.lt.2) nc1a=2
   if(iptt.eq.1 .and. iptt0.eq.0) nc1=-nc1a-1
   if(nc1.le.0) nc1=nc1+1
   if(nc1.eq.0) TxOK=1                               ! We are transmitting
 
 ! If TxOK was just lowered, start a countdown for lowering PTT:
-  nc0a=(tlatency+txdelay)/0.18576
+  nc0a=(tlatency+txdelay)*nfsample/2048.0
   if(nc0a.lt.5) nc0a=5
   if(TxOK.eq.0 .and. TxOKz.eq.1 .and. iptt.eq.1) nc0=-nc0a-1
   if(nc0.le.0) nc0=nc0+1
@@ -155,7 +155,7 @@ subroutine fivehz
   nbufs=i1+i2+i3                             !Silence g95 warning
   nbufs=ibuf-ibuf0
   if(nbufs.lt.0) nbufs=nbufs+1024
-  tdata=nbufs*2048.0/11025.0
+  tdata=nbufs*2048.0/nfsample
 
   if((mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or. mode(1:3).eq.'JT4' &
        .or. mode(1:2).eq.'CW' .or. mode(1:4).eq.'WSPR' .or.               &

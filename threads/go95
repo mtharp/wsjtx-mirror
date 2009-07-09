@@ -1,0 +1,2 @@
+gcc -c fthread.c
+g95 --no-second-underscore -o test_g95 test_threads.f90 fthread.o -lpthread
