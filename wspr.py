@@ -28,7 +28,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.13_r" + "$Rev$"[6:-1]
+Version="1.14_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -616,6 +616,7 @@ def put_params(param3=NONE):
     w.acom1.ntest=ntest.get()
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
+    w.acom1.nbfo=options.bfofreq.get()
     try:
         g.ndevin.set(options.DevinName.get())
         w.acom1.ndevin=g.ndevin.get()
@@ -1061,6 +1062,7 @@ try:
             g.DevoutName.set(value)
             options.DevoutName.set(value)
 #            w.acom1.devout_name=(options.DevoutName.get()+'            ')[:12]
+        elif key == 'BFOfreq': options.bfofreq.set(value)
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
         elif key == 'SerialRate': options.serial_rate.set(int(value))
@@ -1159,6 +1161,7 @@ f.write("dBm " + str(options.dBm.get()) + "\n")
 f.write("SerialPort " + str(options.SerialPort.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
+f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
 f.write("SerialRate " + str(options.serial_rate.get()) + "\n")

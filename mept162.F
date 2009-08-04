@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,ndec,ierr)
+      subroutine mept162(outfile,f0,minsync,id,npts,ndec,nbfo,ierr)
 
 C  Orchestrates the process of finding, synchronizing, and decoding 
 C  WSPR signals.
@@ -15,8 +15,8 @@ C  WSPR signals.
       complex c2(65536)
       complex c3(45000),c4(45000)
 
-C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
-      call mix162(id,npts,c2,jz,ps)
+C  Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32
+      call mix162(id,npts,nbfo,c2,jz,ps)
 
 C  Compute pixmap.dat
       call spec162(c2,jz)
@@ -48,7 +48,7 @@ C  Look for sync patterns, get DF and DT
          nsnrx=nint(snrx)
          if(nsnrx.lt.-33) nsnrx=-33
          if(nsync.lt.0) nsync=0
-         freq=f0 + 1.d-6*(dfx+1500.0)
+         freq=f0 + 1.d-6*(dfx+nbfo)
          message='                      '
          if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
 

@@ -10,7 +10,7 @@
   integer*2 iwave
   common/acom1/ f0,ftx,rms,pctx,nsec,ndevin,ndevout,nsave,nrxdone,      &
        ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,ntransmitting,       &
-       ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,nsectx,       &
+       ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,nsectx,nbfo,  &
        ntxfirst,ntest,ncat,ltest,iwave(NMAX),nsec1,nsec2,rms1,xdb1,     &
        infile,outfile,pttport,cdate,utctime,callsign,grid,rxtime,       &
        ctxmsg,sending,thisfile,cmd,pttmode

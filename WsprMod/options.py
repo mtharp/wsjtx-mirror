@@ -37,6 +37,7 @@ def options2(t):
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_text="Station parameters")
 IDinterval=IntVar()
+bfofreq=IntVar()
 ComPort=IntVar()
 SerialPort=StringVar()
 ndevin=IntVar()
@@ -49,6 +50,9 @@ serial_rate=IntVar()
 serial_handshake=StringVar()
 cat_enable=IntVar()
 rignum=IntVar()
+
+pttmode.set('DTR')
+serial_handshake.set('NONE')
 
 pttlist=("CAT","DTR","RTS")
 baudlist=(1200,4800,9600,19200,38400,57600)
@@ -69,6 +73,8 @@ audioin=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio In:',
         value='0',entry_textvariable=DevinName,entry_width=12)
 audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
         value='0',entry_textvariable=DevoutName,entry_width=12)
+rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
+        value='1500',entry_textvariable=bfofreq,entry_width=12)
 cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (dBm):',
         entry_textvariable=dBm,entry_width=4,scrolledlist_items=pwrlist)
 encat=Checkbutton(g1.interior(),text='Enable CAT',variable=cat_enable)
@@ -78,7 +84,7 @@ cbbaud=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Serial rate:',
         entry_textvariable=serial_rate,entry_width=4,scrolledlist_items=baudlist)
 cbhs=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Handshake:',
         entry_textvariable=serial_handshake,entry_width=4,scrolledlist_items=hslist)
-widgets = (lcall,lgrid,comport,cbptt,audioin,audioout,cbpwr,encat, \
+widgets = (lcall,lgrid,comport,cbptt,audioin,audioout,rxbfo,cbpwr,encat, \
            lrignum,cbbaud,cbhs)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)

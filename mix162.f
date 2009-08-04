@@ -1,6 +1,6 @@
-      subroutine mix162(id,npts,c2,jz,ps)
+      subroutine mix162(id,npts,nbfo,c2,jz,ps)
 
-C  Mix 1500 Hz +/- 100 Hz to baseband, and downsample by 1/32
+C  Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32
 
       parameter (NFFT1=2*1024*1024)
       parameter (NFFT2=NFFT1/32)
@@ -24,7 +24,7 @@ C  Do the real-to-complex FFT
       call xfft(x,NFFT1)
 
       df=12000.d0/NFFT1
-      i0=nint(1500.d0/df)
+      i0=nint(nbfo/df)
       ia=i0-NH2 + 1
       ib=i0+NH2
 
