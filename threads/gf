@@ -1,2 +1,0 @@
-gcc -c fthread.c
-gfortran --no-second-underscore -o test_gf test_threads.f90 fthread.o -lpthread

@@ -1,0 +1,23 @@
+help hist
+help histogram
+macro read p2.sm
+do1
+macro read p4.sm
+do1
+macro read p4.sm
+help ltype
+macro read p4.sm
+do1
+quit
+macro read p4.sm
+do1
+macro read p4.sm
+do1
+macro read p4.sm
+do1
+prnt1 jnq.ps
+quit
+macro read p4.sm
+do1
+prnt1 jnq.ps
+quit
