@@ -63,7 +63,7 @@ Nsps:  7000.0   Suggested FFTs:  6912 (1.0127)   7000 (1.0000)
    1.0   5.3 -30.6   8.1   0.7490   0.0000   0.0500   0.0206
    0.0   4.3 -31.6   6.3   0.5930   0.0000   0.0060   0.0188
   -1.0   3.3 -32.6   6.4   0.3770   0.0000   0.0000   0.0179
-
+
 User bits: 78       Sync symbols: 3 x  6     Modulation: 64-FSK
 Reed Solomon code: RS(63,13)   nb3: 378
 Channel Symbols:   Data: 63   Sync: 18   Total:  81    Rate: 0.16
@@ -129,7 +129,7 @@ Nsps:   512.0   Suggested FFTs:   504 (1.0159)    512 (1.0000)
    1.0   5.3 -19.3   8.1   0.7490   0.0000   0.0500   0.0204
    0.0   4.3 -20.3   6.3   0.5930   0.0000   0.0060   0.0189
   -1.0   3.3 -21.3   6.4   0.3770   0.0000   0.0000   0.0178
-
+
 User bits: 78       Sync symbols: 2 x  4     Modulation:  2-FSK
 Convolutional code: K=13, r=1/2     nb3: 180   MinMet:  800
 Channel Symbols:   Data:180   Sync:  8   Total: 188    Rate: 0.41
@@ -185,7 +185,7 @@ Nsps:     8.0   Suggested FFTs:     7 (1.1429)      8 (1.0000)
    3.0   7.9   0.8   9.0   0.4600   0.0000   0.1600   0.0015
    2.0   6.9  -0.2   8.6   0.4100   0.0000   0.0100   0.0014
    1.0   5.9  -1.2   9.6   0.3200   0.0000   0.0000   0.0014
-
+
 User bits: 78       Sync symbols: 2 x  8     Modulation:  8-FSK
 Convolutional code: K=16, r=1/4     nb3: 372   MinMet:  900
 Channel Symbols:   Data:124   Sync: 16   Total: 140    Rate: 0.19
