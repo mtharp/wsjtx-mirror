@@ -166,145 +166,15 @@ C  Intentionally degrade SNR by -nclip dB.
         tbest=0.
         NsyncOK=0
 
-!  If we're in JT65 mode, call the decode65 routines.
-        if(mode.eq.2) then
-!          if(rmspower.gt.34000.0) go to 900     !Reject very noisy data
-!  Check for a JT65 shorthand message
-           nstest=0
-           if(ntx2.ne.1) call short65(dat,jz,NFreeze,MouseDF,
-     +        DFTolerance,mode65,nspecial,nstest,dfsh,iderrsh,
-     +        idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
-!  Lowpass filter and decimate by 2
-           call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
-           idf=mousedf-mousedf2
-           jz=jz2
-           nadd=1
-           fzap(1)=0.
-           if(nzap.eq.1) call avesp2(dat,jz,nadd,mode,NFreeze,MouseDF2,
-     +       DFTolerance,fzap)
-       if(nzap.eq.1.and.nstest.eq.0) call bzap(dat,jz,nadd,mode,fzap)
 
-           i=index(MyCall,char(0))
-           if(i.le.0) i=index(MyCall,' ')
-           mycall=MyCall(1:i-1)//'            '
-           i=index(HisCall,char(0))
-           if(i.le.0) i=index(HisCall,' ')
-           hiscall=HisCall(1:i-1)//'            '
-
-!  Offset data by about 1 s.
-!           jztest=126*2048
-           jztest=11025*ntdecode/2 - 2755
-           if(jz.ge.jztest) call wsjt65(dat(4097),jz-4096,cfile6,
-     +        NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode65,Nseg,
-     +        MouseDF2,NAgain,ndepth,neme,idf,idfsh,
-     +        mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,
-     +        nstest,dfsh,snrsh,
-     +        NSyncOK,ccf,psavg,ndiag,nwsh)
-           goto 900
-        endif
-
-! If we're in JT6M mode, call the 6M decoding routines.
+! Iscat mode:
         if(mode.eq.4) then
-           do i=1,jz                    !### Why is it level-sensitive?
-              dat(i)=dat(i)/25.0
-           enddo
 ! For waterfall plot
            call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
-           if(sigma.lt.0.0) basevb=-99.0
-           if(jz/11025.0.lt.3.9 .or. sigma.lt.0.0) go to 900
-
-           f0=1076.66
-           if(NFreeze.eq.1) f0=1076.66 + MouseDF
-           f00=f0
-           call syncf0(dat,jz,NFreeze,DFTolerance,jstart,f0,smax)
-           call synct(dat,jz,jstart,f0,smax)
-           call syncf1(dat,jz,jstart,f0,NFreeze,DFTolerance,smax,red)
-
-           do i=1,512
-              ccf(i-6)=dB(red(i))
-           enddo
-           df=11025./256.
-           do i=1,64
-              sum=0.
-              do k=8*i-7,8*i
-                 sum=sum+red(k)
-              enddo
-              psavg(i)=5.0*sum
-              fac=1.0
-              freq=i*df
-              if(freq.gt.2500.0) fac=((freq-2500.)/20.0)**(-1.0)
-              psavg(i)=fac*psavg(i)
-              psavg(i+64)=0.001
-           enddo
-
-           jz=jz-jstart+1
-           nslim=MinSigdB
-           NFixLen=0
-
-C  Call the decoder if DF is in range or Freeze is off.
-           if(NFreeze.eq.0 .or. 
-     +         abs(f0-f00).lt.float(DFTolerance)) then
-              call decode6m(dat(jstart),jz,cfile6,nslim,istart,
-     +            NFixLen,lcum,f0,lumsg,npkept,yellow)
-           endif
-
-           if(pick) then
-              do i=1,216
-                 ps0(i)=yellow0(i)
-              enddo
-           else
-              ps0(216)=yellow(216)
-              yellow0(216)=yellow(216)
-              do i=1,215
-                 ps0(i)=2*yellow(i)
-                 yellow0(i)=ps0(i)
-              enddo
-           endif
-           goto 800
         endif
 
-        if(mode.eq.5) then
-!  We're in CW mode.
-!          call decodecw(dat,jz,cfile6,DFTolerance,NFreeze,
-!     +        MouseDF2,mycall,hiscall,hisgrid)
-           go to 900
-        endif
-
-!  If we're in JT2 or JT4 mode, call the decode24 routines.
+! JT8 mode:
         if(mode.eq.6 .or. mode.eq.7) then
-!  Lowpass filter and decimate by 2
-           call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
-           idf=mousedf-mousedf2
-           jz=jz2
-           nadd=1
-           fzap(1)=0.
-           if(nzap.eq.1) call avesp2(dat,jz,nadd,mode,NFreeze,MouseDF2,
-     +       DFTolerance,fzap)
-      if(nzap.eq.1.and.nstest.eq.0) call bzap(dat,jz,nadd,mode,fzap)
-
-           i=index(MyCall,char(0))
-           if(i.le.0) i=index(MyCall,' ')
-           mycall=MyCall(1:i-1)//'            '
-           i=index(HisCall,char(0))
-           if(i.le.0) i=index(HisCall,' ')
-           hiscall=HisCall(1:i-1)//'            '
-
-!  Offset data by about 1 s.
-           jztest=165000
-           if(jz.ge.jztest) call wsjt24(dat(4097),jz-4096,cfile6,
-     +        NClearAve,MinSigdB,DFTolerance,NFreeze,mode,mode4,
-     +        Nseg,MouseDF2,NAgain,idf,lumsg,lcum,nspecial,ndf,
-     +        NSyncOK,ccf,psavg,ndiag)
-           goto 900
-        endif
-
-!  If we're in WSPR mode, call the wspr routines.
-        if(mode.eq.8) then
-           i=index(MyCall,char(0))
-           if(i.le.0) i=index(MyCall,' ')
-           mycall=MyCall(1:i-1)//'            '
-           call wsjtwspr(dat,jz,cfile6,ndiag,ccf,psavg)
-           ccf(-5)=-9999.0
            goto 900
         endif
 
@@ -312,9 +182,10 @@ C  Call the decoder if DF is in range or Freeze is off.
         if(mode.eq.9) then
            mode64=1
            nstest=0
-           if(ntx2.ne.1) call short65(dat,jz,NFreeze,MouseDF,
-     +        DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,
-     +        idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
+!           if(ntx2.ne.1) call short65(dat,jz,NFreeze,MouseDF,
+!     +        DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,
+!     +        idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
+
 !  Lowpass filter and decimate by 2
            call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
            idf=mousedf-mousedf2
@@ -323,7 +194,7 @@ C  Call the decoder if DF is in range or Freeze is off.
            fzap(1)=0.
            if(nzap.eq.1) call avesp2(dat,jz,nadd,mode,NFreeze,MouseDF2,
      +       DFTolerance,fzap)
-      if(nzap.eq.1.and.nstest.eq.0) call bzap(dat,jz,nadd,mode,fzap)
+          if(nzap.eq.1.and.nstest.eq.0) call bzap(dat,jz,nadd,mode,fzap)
 
            i=index(MyCall,char(0))
            if(i.le.0) i=index(MyCall,' ')
@@ -345,7 +216,7 @@ C  Call the decoder if DF is in range or Freeze is off.
 
         endif
 
-!  We're in FSK441 mode. Compute the 2D spectrum.
+!  We're in JTMS mode. Compute the 2D spectrum.
         df=11025.0/256.0            !FFT resolution ~43 Hz
         dtbuf=nstep/11025.0
         stlim=nslim2                !Single-tone threshold

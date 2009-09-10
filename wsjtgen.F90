@@ -118,50 +118,34 @@ subroutine wsjtgen
   dt=1.d0/fsample_out
   LTone=2
 
-  if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or.                  &
-       mode(1:3).eq.'JT4' .or. mode(1:4).eq.'WSPR' .or.                &
-       mode(1:4).eq.'JT64') then
-
-     if(mode(1:4).eq.'JT65') then
-!  We're in JT65 mode.
-        if(mode(5:5).eq.'A') mode65=1
-        if(mode(5:5).eq.'B') mode65=2
-        if(mode(5:5).eq.'C') mode65=4
-        call gen65(msg,mode65,samfacout,ntxdf,ndebug,iwave,nwave,sendingsh,   &
-             msgsent,nmsg0)
-     else if(mode(1:4).eq.'WSPR') then
-        call genwspr(msg,samfacout,ntxdf,iwave,nwave,sendingsh,msgsent)
-     else if(mode(1:3).eq.'JT2' .or. mode(1:3).eq.'JT4' ) then
-        call gen24(msg,mode,mode4,samfacout,ntxdf,ndebug,iwave,nwave,      &
-             sendingsh,msgsent,nmsg0)
-     else if(mode(1:4).eq.'JT64') then
-        mode64=1
-        call gen64(msg,mode64,samfacout,ntxdf,iwave,nwave,sendingsh,   &
-             msgsent,nmsg0)
-     else
-        stop 'Unknown Tx mode requested.'
-     endif
-
-     if(lcwid) then
-!  Generate and insert the CW ID.
-        wpm=25.
-        freqcw=800.
-        idmsg=MyCall//'          '
-        call gencwid(idmsg,wpm,freqcw,samfacout,icwid,ncwid)
-        k=nwave
-        do i=1,ncwid
-           k=k+1
-           iwave(k)=icwid(i)
-        enddo
-        do i=1,2205                   !Add 0.2 s of silence
-           k=k+1
-           iwave(k)=0
-        enddo
-        nwave=k
-     endif
-
-     goto 900
+  if(mode(1:4).eq.'JT64') then
+     mode64=1
+     call gen64(msg,mode64,samfacout,ntxdf,iwave,nwave,sendingsh,   &
+          msgsent,nmsg0)
+  else
+     print*,'Unknown Tx mode requested.'
+!     stop 'Unknown Tx mode requested.'
   endif
+
+  if(lcwid) then
+!  Generate and insert the CW ID.
+     wpm=25.
+     freqcw=800.
+     idmsg=MyCall//'          '
+     call gencwid(idmsg,wpm,freqcw,samfacout,icwid,ncwid)
+     k=nwave
+     do i=1,ncwid
+        k=k+1
+        iwave(k)=icwid(i)
+     enddo
+     do i=1,2205                   !Add 0.2 s of silence
+        k=k+1
+        iwave(k)=0
+     enddo
+     nwave=k
+  endif
+
+  goto 900
 
   if(mode(1:4).eq.'Echo') then
 !  We're in Echo mode.
@@ -170,65 +154,6 @@ subroutine wsjtgen
 !     AmpB=f1
      goto 900
   endif
-
-  if(mode(1:4).eq.'JT6M') then
-!  We're in JT6M mode.
-     call gen6m(msg,samfacout,iwave,nwave)
-     goto 900
-  endif
-
-  if(mode(1:2).eq.'CW') then
-!  We're in CW mode
-!     wpm=15.
-     wpm=17.
-     freqcw=800.
-     call gencw(msg,wpm,freqcw,samfacout,iwave,nwave)
-     goto 900
-  endif
-
-!  We're in FSK441 mode.
-  if(nmsg.lt.28) nmsg=nmsg+1          !Add trailing blank if nmsg < 28
-
-!  Check for shorthand messages
-  sendingsh = 0
-  if(shok.eq.1 .and. nmsg.le.4) then
-     if (msg(1:3).eq.'R26') then
-        msg='++'
-        nmsg=2
-        sendingsh = 1
-     else if (msg(1:3).eq.'R27') then
-        msg='**'
-        nmsg=2
-        sendingsh = 1
-     else if (msg(1:3).eq.'RRR') then
-        msg='%%'
-        nmsg=2
-        sendingsh = 1
-     else if (msg(1:2).eq.'73') then
-        msg='@@'
-        nmsg=2
-        sendingsh = 1
-     endif
-  endif
-
-!  Encode the message
-  call abc441(msg,nmsg,itone,ndits)
-  ndata=ndits*nspd
-
-! Generate iwave
-  k=0
-  df=11025.0/NSPD
-  pha=0.
-  do m=1,ndits
-     freq=(LTone-1+itone(m))*df
-     dpha=twopi*freq*dt
-     do i=1,NSPD
-        k=k+1
-        pha=pha+dpha
-        iwave(k)=nint(32767.0*sin(pha))
-     enddo
-  enddo
-  nwave=k
   
 900 sending=txmsg
   if((mode(1:4).eq.'JT65' .or. mode(1:4).eq.'JT64' .or. &
