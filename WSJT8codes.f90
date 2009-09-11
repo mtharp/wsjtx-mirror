@@ -12,16 +12,13 @@ program WSJT8codes
   integer gsym(63)                              !Generated channel symbols
   
   nargs=iargc()
-  if(nargs.lt.2 .or. nargs.gt.3) then
-     print*,'Usage: WSJT8code "message" mode'
-     print*,'       WSJT8code -f infile mode'
-     go to 999
-  endif
+  if(nargs.lt.2 .or. nargs.gt.3) go to 900
 
   call getarg(1,msg0)                     !Retrieve message from command line
   if(msg0(1:2).eq.'-f') then
      call getarg(2,infile)
      open(10,file=infile,status='old')
+     if(nargs.lt.3) go to 900
      call getarg(3,cmode)
      iters=999
   else
@@ -67,5 +64,9 @@ program WSJT8codes
 
 100  continue
   enddo
+  go to 999
+
+900 print*,'Usage: WSJT8code "message" mode'
+  print*,'       WSJT8code -f infile mode'
 
 999 end program WSJT8codes
