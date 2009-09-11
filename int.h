@@ -19,7 +19,7 @@ struct rs {
   int pad;        /* Padding bytes in shortened block */
 };
 
-static inline int modnn(struct rs *rs,int x){
+static int modnn(struct rs *rs,int x){
   while (x >= rs->nn) {
     x -= rs->nn;
     x = (x >> rs->mm) + (x & rs->nn);
