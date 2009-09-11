@@ -17,17 +17,20 @@ CPPFLAGS += ${DEFS} -I.
 # WSJT specific Fortran flags
 #FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 
+all:	WsjtMod/Audio.so WSJT8codes
 Audio:	WsjtMod/Audio.so
 
-# The default rules
-.c.o:
-	${CC} ${CPPFLAGS} ${CFLAGS} -c -o ${<:.c=.o} $<
-
-.f.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.f=.o} $<
-
-.F90.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F90=.o} $<
+# Default rules
+%.o: %.c
+	${CC} ${CFLAGS} -c $<
+%.o: %.f
+	${FC} ${FFLAGS} -c $<
+%.o: %.F
+	${FC} ${FFLAGS} -c $<
+%.o: %.f90
+	${FC} ${FFLAGS} -c $<
+%.o: %.F90
+	${FC} ${FFLAGS} -c $<
 
 OS=@OS@
 FC=@FC@
@@ -40,6 +43,12 @@ PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
 
+OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
+	packgrid.o nchar.o grid2deg.o pkcall.o pkgrid.o pktext.o \
+	unpkcall.o unpkgrid.o deg2grid.o unpktext.o \
+	pk30.o pk48.o pk78.o packpfx.o unpackpfx.o \
+	hash.o nhash.o chenc.o chdec.o packbits.o unpackbits.o \
+	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o 
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0 chkt0
 
@@ -85,8 +94,6 @@ SRCS3C	= ptt_unix.c igray.c wrapkarn.c
 OBJS3C  = ${SRCS3C:.c=.o}
 AUDIOSRCS =	a2d.f90 jtaudio.c start_threads.c resample.c
 
-all:	WsjtMod/Audio.so wsjt8
-
 build:	WsjtMod/Audio.so
 
 WsjtMod/Audio.so: $(OBJS2C) $(OBJS3C) $(OBJS2F77) $(SRCS2F90) $(AUDIOSRCS)
@@ -108,13 +115,15 @@ wsjt8.spec: wsjt8.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 	--tk --onefile wsjt8.py
 wsjt8.py: wsjt.py
 	cp wsjt.py wsjt8.py
+WSJT8codes: $(OBJS1)
+	$(FC) -o WSJT8codes $(OBJS1)
 
 init_rs_int.o: init_rs.c
-	$(CC) $(CFLAGS) -c -DBIGSYM=1 -o init_rs_int.o init_rs.c
+	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
 encode_rs_int.o: encode_rs.c
-	$(CC) $(CFLAGS) -c -DBIGSYM=1 -o encode_rs_int.o encode_rs.c
+	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
 decode_rs_int.o: decode_rs.c
-	$(CC) $(CFLAGS) -c -DBIGSYM=1 -o decode_rs_int.o decode_rs.c
+	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
 
 cutil.o: cutil.c
 	$(CC) $(CFLAGS) -c -DSTARNIX=1 cutil.c
