@@ -136,7 +136,7 @@ install:	WsjtMod/Audio.so
 	${INSTALL} wsjt ${PREFIX}/bin
 clean:
 	${RM} -f *.o *.pyc *.so wsjt8 WsjtMod/*.pyc WsjtMod/*.pyc \
-		WsjtMod/*.so wsjt8.py wsjt8.spec
+		WsjtMod/*.so wsjt8.py wsjt8.spec WSJT8codes
 	${RM} -rf build/
 
 distclean: clean
