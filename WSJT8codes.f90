@@ -49,7 +49,6 @@ program WSJT8codes
      else
 ! Apply FEC and do the channel encoding
         call chenc(cmode,nbit,iu0,gsym)
-        print*,'B',(gsym(j),j=1,180)
 ! Decode channel symbols to recover source-encoded message bits
         call chdec(cmode,nbit,gsym,iu)
      endif
