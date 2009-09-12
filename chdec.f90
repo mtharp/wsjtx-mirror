@@ -9,7 +9,7 @@ subroutine chdec(cmode,nbit,gsym,iu)
   integer dat4(13)
   integer*1 dbits(96)
   integer*1 symbols(372)
-  integer*1 ddec(100)
+  integer*1 ddec(10)
   integer mettab(0:255,0:1)
   logical first
   data first/.true./
