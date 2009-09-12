@@ -48,7 +48,8 @@ OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 	unpkcall.o unpkgrid.o deg2grid.o unpktext.o \
 	pk30.o pk48.o pk78.o packpfx.o unpackpfx.o \
 	hash.o nhash.o chenc.o chdec.o packbits.o unpackbits.o \
-	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o 
+	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
+	tab.o vit213.o
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
@@ -79,7 +80,8 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
 OBJS2F77 = ${SRCS2F77:.f=.o} 
 
 SRCS2C	= init_rs.c encode_rs.c decode_rs.c fano.c tab.c nhash.c \
-	cutil.c fthread.c
+	cutil.c fthread.c vit213.c
+
 OBJS2C  = ${SRCS2C:.c=.o}
 
 SRCS3C	= ptt_unix.c igray.c wrapkarn.c

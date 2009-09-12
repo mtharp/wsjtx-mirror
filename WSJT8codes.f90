@@ -9,7 +9,7 @@ program WSJT8codes
   character cmode*5,cerr*1
   integer iu0(3)                                !Source-encoded data
   integer iu(3)                                 !Recovered data
-  integer gsym(63)                              !Generated channel symbols
+  integer gsym(180)                             !Generated channel symbols
   
   nargs=iargc()
   if(nargs.lt.2 .or. nargs.gt.3) go to 900
@@ -49,6 +49,7 @@ program WSJT8codes
      else
 ! Apply FEC and do the channel encoding
         call chenc(cmode,nbit,iu0,gsym)
+        print*,'B',(gsym(j),j=1,180)
 ! Decode channel symbols to recover source-encoded message bits
         call chdec(cmode,nbit,gsym,iu)
      endif
