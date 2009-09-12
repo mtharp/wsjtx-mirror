@@ -1218,21 +1218,21 @@ def GenStdMsgs(event=NONE):
             ToRadio0=ToRadio.get()
             t0=("SM5BSZ "+options.MyCall.get()).upper()
             Audio.gcom2.t0msg=(t0+' '*22)[:22]
-            nplain,naddon,ndiff=Audio.chkt0()
-            if nplain==1:
-                MsgBox("Bad 'MyCall' or bad prefix/suffix?\nPlease check on Setup | Options screen.")
-                options1()
-            t0=("SM5BSZ "+ToRadio0).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-            nplain,naddon,ndiff=Audio.chkt0()
-            if nplain==1:
-                MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
+#            nplain,naddon,ndiff=Audio.chkt0()
+#            if nplain==1:
+#                MsgBox("Bad 'MyCall' or bad prefix/suffix?\nPlease check on Setup | Options screen.")
+#                options1()
+#            t0=("SM5BSZ "+ToRadio0).upper()
+#            Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#            nplain,naddon,ndiff=Audio.chkt0()
+#            if nplain==1:
+#                MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
             
-        t0=(ToRadio.get() + " "+options.MyCall.get()).upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-        nplain,naddon,ndiff=Audio.chkt0()
-        if nplain==0 and naddon==0 and ndiff==0:
-            t0=t0 + " "+options.MyGrid.get()[:4]
+#        t0=(ToRadio.get() + " "+options.MyCall.get()).upper()
+#        Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#        nplain,naddon,ndiff=Audio.chkt0()
+#        if nplain==0 and naddon==0 and ndiff==0:
+#            t0=t0 + " "+options.MyGrid.get()[:4]
         tx1.insert(0,t0.upper())
         tx2.insert(0,tx1.get()+" OOO")
         tx3.insert(0,"RO")
@@ -1240,10 +1240,10 @@ def GenStdMsgs(event=NONE):
         tx5.insert(0,"73")
 
         t0="CQ " + options.MyCall.get().upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-        nplain,naddon,ndiff=Audio.chkt0()
-        if nplain==0 and naddon==0 and ndiff==0:
-            t0=t0 + " "+options.MyGrid.get()[:4]
+#        Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#        nplain,naddon,ndiff=Audio.chkt0()
+#        if nplain==0 and naddon==0 and ndiff==0:
+#            t0=t0 + " "+options.MyGrid.get()[:4]
         tx6.insert(0,t0.upper())
         altmsg=0
     elif mode.get()[:4]=='JT64':
@@ -1253,19 +1253,19 @@ def GenStdMsgs(event=NONE):
             addpfx0=options.addpfx.get()
             ToRadio0=ToRadio.get()
             t0=("SM5BSZ "+options.MyCall.get()).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-            nplain,naddon,ndiff=Audio.chkt0()
-            if nplain==1:
-                MsgBox("Bad 'MyCall' or bad prefix/suffix?\nPlease check on Setup | Options screen.")
-                options1()
-            t0=("SM5BSZ "+ToRadio0).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-            nplain,naddon,ndiff=Audio.chkt0()
-            if nplain==1:
-                MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
+#            Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#            nplain,naddon,ndiff=Audio.chkt0()
+#            if nplain==1:
+#                MsgBox("Bad 'MyCall' or bad prefix/suffix?\nPlease check on Setup | Options screen.")
+#                options1()
+#            t0=("SM5BSZ "+ToRadio0).upper()
+#            Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#            nplain,naddon,ndiff=Audio.chkt0()
+#            if nplain==1:
+#                MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
             
-        t0=("<" + ToRadio.get() + "> "+options.MyCall.get()).upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#        t0=("<" + ToRadio.get() + "> "+options.MyCall.get()).upper()
+#        Audio.gcom2.t0msg=(t0+' '*22)[:22]
 ##        nplain,naddon,ndiff=Audio.chkt0()
 ##        if nplain==0 and naddon==0 and ndiff==0:
 ##            t0=t0 + " "+options.MyGrid.get()[:4]
@@ -1281,11 +1281,11 @@ def GenStdMsgs(event=NONE):
         t5=("73 DE "+options.MyCall.get()+ " "+options.MyGrid.get()[:4]).upper()
         tx5.insert(0,t5)
 
-        t0="CQ " + options.MyCall.get().upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-        nplain,naddon,ndiff=Audio.chkt0()
-        if nplain==0 and naddon==0 and ndiff==0:
-            t0=t0 + " "+options.MyGrid.get()[:4]
+#        t0="CQ " + options.MyCall.get().upper()
+#        Audio.gcom2.t0msg=(t0+' '*22)[:22]
+#        nplain,naddon,ndiff=Audio.chkt0()
+#        if nplain==0 and naddon==0 and ndiff==0:
+#            t0=t0 + " "+options.MyGrid.get()[:4]
         tx6.insert(0,t0.upper())
         altmsg=0
     

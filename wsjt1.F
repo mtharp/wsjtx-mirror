@@ -224,52 +224,7 @@ C  Intentionally degrade SNR by -nclip dB.
         if(sigma.lt.0.0) basevb=-99.0
         if(sigma.lt.0.0) go to 900
         nline0=nline
-        STfound=.false.
-        npkept=0
 
-C  Look for single-tone messages
-        if((.not.pick) .or. MouseButton.eq.1) then
-           call stdecode(s2,nchan,nz,sigma,dtbuf,df,stlim,
-     +       DFTolerance,cfile6,pick,istart)
-        endif
-        if(nline.gt.nline0) STfound=.true.  !ST message(s) found
-
-C  Now the multi-tone decoding
-        call mtdecode(dat,jz,nz,MinSigdB,MinWidth,
-     +    NQRN,DFTolerance,istart,pick,cfile6,ps0)
-
-        npkept=nline             !Number of pings that were kept
-        smax=0.
-        stbest=.false.
-        if(npkept.gt.0) then
-           call indexx(npkept,tping,indx) !Merge the ST and MT decodes
-           do i=1,npkept
-              j=indx(i)
-              if(pick .and. STFound .and.
-     +          line(j)(29:31).eq.'   ') goto 10
-              call cs_lock('wsjt1')
-              write(lumsg,1050) line(j) !Write to decoded.txt
- 1050         format(a79)
-              if(lcum) write(21,1050) line(j) !Write to ALL.TXT
-              read(line(j),1060) sig,msg3
- 1060         format(16x,f3.0,9x,a3)
-              call cs_unlock
-              if(sig.gt.smax) then
-                 smax=sig
-                 tbest=tping(j)
-                 stbest = (msg3.ne.'   ')
-              endif
- 10        continue
-           enddo
-        endif
-
-        dt=1.0/11025.0                !Compute spectrum for pink curve
-        if(stbest) then
-           jj=nint(tbest/dt)
-           call spec441(dat(jj),1102,ps0,f0)
-        endif
-
- 800    continue
         call s2shape(s2,nchan,nz,tbest)
 
  900    LDecoded = ((NSyncOK.gt.0) .or. npkept.gt.0)
