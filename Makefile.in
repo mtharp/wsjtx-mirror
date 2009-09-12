@@ -69,13 +69,13 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
         indexx.f s2shape.f flat2.f fourt.f chkmsg.f gentone.f \
         set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f \
         sync.f demod64a.f chkhist.f flat1.f four2.f \
-        gencwid.f msgtype.f getsnr.f graycode.f grid2k.f \
+        gencwid.f msgtype.f getsnr.f grid2k.f \
         k2grid.f limit.f lpf1.f morse.f \
         nchar.f packcall.f packgrid.f packtext.f \
         slope.f spec2d65.f unpackcall.f \
         unpackgrid.f unpacktext.f xcor.f xfft.f xfft2.f \
 	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
-	rfile2.f filbig2.F twkfreq.f fchisq.f ccf2.f wsjt64.f sync64.f 
+	rfile2.f filbig2.F wsjt64.f sync64.f 
 
 OBJS2F77 = ${SRCS2F77:.f=.o} 
 
