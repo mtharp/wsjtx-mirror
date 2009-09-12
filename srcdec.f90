@@ -144,6 +144,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
         call unpackpfx(ng,c12)
         msg='DE '//c12//' RRR'
      endif
+
   else if(nbit.eq.78) then
      nc1=ishft(iu(1),-4)
      nc2=ishft(iand(iu(1),15),24) + ishft(iu(2),-8)
@@ -206,13 +207,11 @@ subroutine srcdec(cmode,nbit,iu,msg)
 
 100 call msgtrim(msg,nmsg)
 
-  i1=index(msg,' OOO ')
-  if(cmode.eq.'JTMS' .and. i1.ge.4) then
-     msg=msg(:i1)//'26'//msg(i1+4:)
-  endif
-  i1=index(msg,' RO ')
-  if(cmode.eq.'JTMS' .and. i1.ge.4) then
-     msg=msg(:i1)//'R26'//msg(i1+4:)
+  if(cmode.eq.'JTMS') then
+     i1=index(msg,' OOO ')
+     if(i1.ge.4) msg=msg(:i1)//'26'//msg(i1+4:)
+     i1=index(msg,' RO ')
+     if(i1.ge.4) msg=msg(:i1)//'R26'//msg(i1+4:)
   endif
 
   return
