@@ -39,7 +39,6 @@ subroutine ftn_init
   enddo
 1 iz=i
   lenappdir=iz
-  call pfxdump(appdir(:iz)//'/prefixes.txt')
 
 #ifdef CVF
   open(11,file=appdir(:iz)//'/decoded.txt',status='unknown',               &
