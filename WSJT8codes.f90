@@ -9,7 +9,7 @@ program WSJT8codes
   character cmode*5,cerr*1
   integer iu0(3)                                !Source-encoded data
   integer iu(3)                                 !Recovered data
-  integer gsym(180)                             !Generated channel symbols
+  integer gsym(372)                             !Generated channel symbols
   
   nargs=iargc()
   if(nargs.lt.2 .or. nargs.gt.3) go to 900

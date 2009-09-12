@@ -6,15 +6,15 @@ subroutine chenc(cmode,nbit,iu,gsym)
   integer iu(3)
   integer iu6(13)
   integer*1 iu6a(96)
-  integer*1 gsym1(180)
-  integer*1 dat1(90)
+  integer*1 gsym1(372)
+  integer*1 dat1(10)
   integer*1 i1a,i1b,i1c,i1d
-  integer gsym(180)
+  integer gsym(372)
   character*96 line
   common/acom1/i1a,i1b,i1c,i1d
   equivalence (i4,i1a)
 
-  if(cmode.eq.'JTMS') then
+  if(cmode.eq.'JTMS' .or. cmode.eq.'JT8') then
      i4=iu(1)
      dat1(1)=i1d
      dat1(2)=i1c
@@ -31,12 +31,12 @@ subroutine chenc(cmode,nbit,iu,gsym)
      dat1(9)=i1d
      dat1(10)=i1c
 
-     dat1(11:)=0
-     call enc213(dat1,nbit,gsym1,nsym,kc2,nc2)
+     if(cmode.eq.'JTMS') call enc213(dat1,nbit,gsym1,nsym,kc2,nc2)
+     if(cmode.eq.'JT8') call enc416(dat1,nbit,gsym1,nsym,kc2,nc2)
      do i=1,nsym
         gsym(i)=gsym1(i)
      enddo
-  else
+  else if(cmode.eq.'JT64' .or. cmode.eq.'ISCAT') then
      mm=6
      nq=64
      nn=63
