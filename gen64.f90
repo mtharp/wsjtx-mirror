@@ -4,10 +4,13 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
 ! Generate a JT64 wavefile.
 
   parameter (NMAX=60*12000)     !Max length of wave file
-  character*22 message          !Message to be generated
-  character*22 msgsent          !Message as it will be received
+  character*24 message          !Message to be generated
+  character*24 msgsent          !Message as it will be received
+  character cmode*5
   real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,samfac,tsymbol
-  integer*2 iwave(NMAX)  !Generated wave file
+  integer*2 iwave(NMAX)         !Generated wave file
+  integer iu0(3),iu(3)
+  integer gsym(372)             !372 is needed for JT8 mode
   integer sent(81)
   integer sendingsh
   integer ic6(6)
@@ -15,6 +18,21 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
   data ic6/0,1,4,3,5,2/,idum/-1/
   data twopi/6.283185307d0/
   save
+
+  cmode='JT64'                                   !### temp ### (JT64A)
+  call srcenc(cmode,message,nbit,iu0)
+! Message length will be nbit=2, 30, 48, or 78
+
+     if(nbit.eq.2) then
+        iu=iu0
+     else
+! Apply FEC and do the channel encoding
+        call chenc(cmode,nbit,iu0,gsym)
+! Decode channel symbols to recover source-encoded message bits
+        call chdec(cmode,nbit,gsym,iu)
+     endif
+! Remove source encoding, recover the human-readable message.
+     call srcdec(cmode,nbit,iu,msgsent)
 
 ! Set up the JT64 sync pattern
 ! Insert the 6x6 Costas array 3 times at low-frequency edge.
@@ -27,23 +45,24 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
         isync(i0+i)=ic6(i)
      enddo
   enddo
+  print*,'A',isync
+
+  k=0
+  do i=1,81
+     if(isync(i).lt.0) then
+        k=k+1
+        sent(i)=gsym(k)
+     else
+        sent(i)=isync(i)
+     endif
+  enddo
+
+  tsymbol=7000.d0/12000.d0
+  nsym=81
 
   nspecial=0
-  if(nspecial.eq.0) then
-!         call encode63
-! Temporary: use random data
-     do i=1,81
-        if(isync(i).lt.0) then
-           call random_number(x)
-           sent(i)=63.99999*x
-        else
-           sent(i)=isync(i)
-        endif
-     enddo
-
-     tsymbol=7000.d0/12000.d0
-     nsym=81
-  else
+  if(nbit.eq.2) then
+     nspecial=iu(1)
      tsymbol=16384.d0/12000.d0
      nsym=32
      sendingsh=1                         !Flag for shorthand message
