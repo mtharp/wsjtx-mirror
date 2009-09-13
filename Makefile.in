@@ -70,8 +70,7 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
         set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f \
         sync.f demod64a.f flat2.f four2.f \
         gencwid.f msgtype.f limit.f lpf1.f morse.f \
-        nchar.f packcall.f packgrid.f packtext.f \
-        slope.f spec2d65.f unpackcall.f \
+        nchar.f packcall.f packgrid.f packtext.f spec2d65.f unpackcall.f \
         unpackgrid.f unpacktext.f xfft.f xfft2.f \
 	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
 	rfile2.f filbig2.F wsjt64.f sync64.f 
