@@ -68,8 +68,8 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
 	MoonDop.f sun.f toxyz.f bzap.f spec441.f spec2d.f avesp2.f \
         indexx.f s2shape.f gentone.f \
         set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f \
-        sync.f demod64a.f chkhist.f flat2.f four2.f \
-        gencwid.f msgtype.f getsnr.f limit.f lpf1.f morse.f \
+        sync.f demod64a.f flat2.f four2.f \
+        gencwid.f msgtype.f limit.f lpf1.f morse.f \
         nchar.f packcall.f packgrid.f packtext.f \
         slope.f spec2d65.f unpackcall.f \
         unpackgrid.f unpacktext.f xfft.f xfft2.f \
