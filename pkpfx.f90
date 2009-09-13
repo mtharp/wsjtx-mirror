@@ -1,4 +1,4 @@
-subroutine packpfx(call1,n1,ng,nadd)
+subroutine pkpfx(call1,n1,ng,nadd)
 
   character*12 call1,call0
   character*3 pfx
@@ -48,4 +48,4 @@ subroutine packpfx(call1,n1,ng,nadd)
   endif
 
   return
-end subroutine packpfx
+end subroutine pkpfx

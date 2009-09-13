@@ -1,7 +1,7 @@
       subroutine unpackbits(sym,nsymd,m0,dbits)
 
 C  Unpack bits from sym() into dbits(), one bit per byte.
-C  NB: nsymd is the number of input words, and m0 their length.
+C  nsymd is the number of input words, and m0 their length.
 C  there will be m0*nsymd output bytes, each 0 or 1.
 
       integer sym(nsymd)

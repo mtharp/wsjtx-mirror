@@ -1,4 +1,4 @@
-subroutine unpackpfx(ng,call1)
+subroutine unpkpfx(ng,call1)
 
   character*12 call1
   character*3 pfx
@@ -32,4 +32,4 @@ subroutine unpackpfx(ng,call1)
   endif
 
   return
-end subroutine unpackpfx
+end subroutine unpkpfx
