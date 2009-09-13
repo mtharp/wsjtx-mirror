@@ -1,7 +1,7 @@
       subroutine filbig2(dat,nmax,f0,newdat2,c4a,n4)
 
 C  Filter and downsample real data for one polarization, stored
-C  in array dat(nmax).  Output is downsampled from 11025 (or 12000?) Hz
+C  in array dat(nmax).  Output is downsampled from 12000 (or 12000?) Hz
 C  to 375 Hz; the low-pass filter has f_cutoff = 100 Hz, f_stop = 187.5 Hz, 
 C  ripple=0.1 dB, Atten=50 dB.
 
@@ -67,7 +67,7 @@ C  Convert impulse response to filter function
             rfilt(i)=real(cfilt(i))-base
          enddo
 
-         df=11025.d0/NFFT1
+         df=12000.d0/NFFT1
          first=.false.
       endif
 
@@ -106,7 +106,7 @@ C      i0 is the bin number in ca and cb closest to f0.
          if(j.lt.1) j=j+NFFT1                  !### $$$ ###
          c4(i)=rfilt(i)*ca(j)
       enddo
-      n4=min(int(nmax*375.0/11025.0),NFFT2)
+      n4=min(int(nmax*375.0/12000.0),NFFT2)
 
 C  Do the short reverse transform, to go back to time domain.
 #ifdef CVF

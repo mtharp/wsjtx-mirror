@@ -2,15 +2,15 @@
 !---------------------------------------------------------------------------
 integer NRXMAX         !Max length of Rx ring buffers
 integer NTXMAX         !Max length of Tx waveform in samples
-parameter(NRXMAX=2097152)  ! =2048*1024
-parameter(NTXMAX=1653750)  ! =150*11025
+parameter(NRXMAX=2048*1024)
+parameter(NTXMAX=60*12000)
 real*8 tbuf            !Tsec at time of input callback          SoundIn
 integer ntrbuf         !(obsolete?)
 real*8 Tsec            !Present time                       SoundIn,SoundOut
 real*8 rxdelay         !Delay between PTT=1 and Tx audio        SoundIn
 real*8 txdelay         !Delay from end of Tx Audio and PTT=0    SoundOut
-real*8 samfacin        !(Input sample rate)/11025               GUI
-real*8 samfacout       !(Output sample rate)/11025              GUI
+real*8 samfacin        !(Input sample rate)/12000               GUI
+real*8 samfacout       !(Output sample rate)/12000              GUI
 real*8 txsnrdb         !SNR for simulations                     GUI
 integer*2 y1           !Ring buffer for audio channel 0         SoundIn
 integer*2 y2           !Ring buffer for audio channel 1         SoundIn

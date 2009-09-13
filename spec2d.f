@@ -21,7 +21,7 @@ C  display.
         equivalence (x,c)
         save
 
-        df=11025.0/NFFT
+        df=12000.0/NFFT
 
 C  Compute the 2d spectrogram s2(nchan,nz).  Note that in s2 the frequency
 C  bins are shifted down 5 bins from their natural positions.

@@ -1,17 +1,17 @@
 subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
      sendingsh,msgsent,nmsg)
 
-! Encodes a JT64 message into a wavefile.
+! Generate a JT64 wavefile.
 
-  parameter (NMAX=60*11025)     !Max length of wave file
+  parameter (NMAX=60*12000)     !Max length of wave file
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received
   real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,samfac,tsymbol
   integer*2 iwave(NMAX)  !Generated wave file
-  integer sent(63)
+  integer sent(81)
   integer sendingsh
   integer ic6(6)
-  integer isync(63)
+  integer isync(81)
   data ic6/0,1,4,3,5,2/,idum/-1/
   data twopi/6.283185307d0/
   save
@@ -21,8 +21,8 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
   isync=-1
   do n=1,3
      i0=0
-     if(n.eq.2) i0=28
-     if(n.eq.3) i0=57
+     if(n.eq.2) i0=36
+     if(n.eq.3) i0=75
      do i=1,6
         isync(i0+i)=ic6(i)
      enddo
@@ -30,13 +30,9 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
 
   nspecial=0
   if(nspecial.eq.0) then
-!         call wqencode(message,ntype,data0)
-
-! Must do rs_init for RS(45,9)
-!         call rs_encode(dgen,sent)
-
-! Temporary: correct sync plus random data
-     do i=1,63
+!         call encode63
+! Temporary: use random data
+     do i=1,81
         if(isync(i).lt.0) then
            call random_number(x)
            sent(i)=63.99999*x
@@ -45,33 +41,33 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
         endif
      enddo
 
-     tsymbol=8192.d0/11025.d0
-     nsym=63                            !Symbols per transmission
+     tsymbol=7000.d0/12000.d0
+     nsym=81
   else
-     tsymbol=16384.d0/11025.d0
+     tsymbol=16384.d0/12000.d0
      nsym=32
      sendingsh=1                         !Flag for shorthand message
   endif
 
 ! Set up necessary constants
-  dt=1.0/(samfac*11025.0)
-  f0=118*11025.d0/1024 + ntxdf
-  dfgen=mode64*11025.0/4096.0
+  dt=1.0/(samfac*12000.0)
+  f0=118*12000.d0/1024 + ntxdf
+  dfgen=mode64*12000.0/4096.0
   t=0.d0
   phi=0.d0
   k=0
   j0=0
-  ndata=(nsym*11025.d0*samfac*tsymbol)/2
+  ndata=(nsym*12000.d0*samfac*tsymbol)/2
   ndata=2*ndata
   do i=1,ndata
      t=t+dt
-     j=int(t/tsymbol) + 1                    !Symbol number, 1-63
+     j=int(t/tsymbol) + 1                    !Symbol number, 1-81
      if(j.ne.j0) then
         f=f0
         if(nspecial.ne.0) f=f0+10*nspecial*dfgen
         if(nspecial.eq.0) then
            k=k+1
-           f=f0+(sent(k))*dfgen
+           if(k.le.81) f=f0+(sent(k))*dfgen         !### Fix need for this ###
         endif
         dphi=twopi*dt*f
         j0=j

@@ -37,7 +37,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
      do i=1,nh
         ss(i)=0.
      enddo
-     df=11025.0/nfft
+     df=12000.0/nfft
      fac=2.0/10000.
      nsum=0
      iread=0

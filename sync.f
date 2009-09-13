@@ -48,7 +48,7 @@ C  before decimation by NSPD.
       call xfft(z,nfft)
 
 C  Now find the apparent baud rate.
-      df=11025.0/nfft
+      df=12000.0/nfft
       zmax=0.
       ia=391.0/df                                !Was 341/df
       ib=491.0/df                                !Was 541/df
@@ -82,6 +82,6 @@ c            jpk2=j
 c         endif
 c      enddo
 
-      bauderr=(baud-11025.0/NSPD)/df   !Baud rate error, in bins
+      bauderr=(baud-12000.0/NSPD)/df   !Baud rate error, in bins
       return
       end

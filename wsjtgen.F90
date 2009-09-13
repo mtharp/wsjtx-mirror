@@ -3,7 +3,7 @@ subroutine wsjtgen
 ! Compute the waveform to be transmitted.  
 
 ! Input:    txmsg        message to be transmitted, up to 28 characters
-!           samfacout    fsample_out/11025.d0
+!           samfacout    fsample_out/12000.d0
 
 ! Output:   iwave        waveform data, i*2 format
 !           nwave        number of samples
@@ -20,7 +20,7 @@ subroutine wsjtgen
   real*8 freq,pha,dpha,twopi,dt
   character testfile*27,tfile2*80
   logical lcwid
-  integer*2 icwid(110250),jwave(NWMAX)
+  integer*2 icwid(120000),jwave(NWMAX)
 
   integer*1 hdr(44)
   integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
@@ -34,7 +34,7 @@ subroutine wsjtgen
   include 'gcom2.f90'
 
   call cs_lock('wsjtgen')
-  fsample_out=11025.d0*samfacout
+  fsample_out=12000.d0*samfacout
   lcwid=.false.
   if(idinterval.gt.0) then
      n=(mod(int(tsec/60.d0),idinterval))

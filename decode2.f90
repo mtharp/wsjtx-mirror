@@ -20,12 +20,12 @@ subroutine decode2
 
   lenpick=22050                !Length of FSK441 mouse-picked region
   if(mode(1:4).eq.'JT6M') then
-     lenpick=4*11025
-     if(mousebutton.eq.3) lenpick=10*11025
+     lenpick=4*12000
+     if(mousebutton.eq.3) lenpick=10*12000
   endif
 
-  istart=1.0 + 11025*0.001*npingtime - lenpick/2
-  if(mode(1:4).eq.'JT6M') istart=istart+11025
+  istart=1.0 + 12000*0.001*npingtime - lenpick/2
+  if(mode(1:4).eq.'JT6M') istart=istart+12000
   if(istart.lt.2) istart=2
   if(ndecoding.eq.1) then
 ! Normal decoding at end of Rx period (or at t=53s in JT65)
@@ -35,7 +35,7 @@ subroutine decode2
 
 ! Mouse pick, top half of waterfall
 ! The following is empirical:
-     k=2048*ibuf0 + istart - 11025*mod(tbuf(ibuf0),dble(trperiod)) -3850
+     k=2048*ibuf0 + istart - 12000*mod(tbuf(ibuf0),dble(trperiod)) -3850
      if(k.le.0)      k=k+NRxMax
      if(k.gt.NrxMax) k=k-NRxMax
      nt=ntime/86400
@@ -54,7 +54,7 @@ subroutine decode2
      ib0=ibuf0-161
      if(lauto.eq.1 .and. mute.eq.0 .and. transmitting.eq.1) ib0=ibuf0-323
      if(ib0.lt.1) ib0=ib0+1024
-     k=2048*ib0 + istart - 11025*mod(tbuf(ib0),dble(trperiod)) - 3850
+     k=2048*ib0 + istart - 12000*mod(tbuf(ib0),dble(trperiod)) - 3850
      if(k.le.0)      k=k+NRxMax
      if(k.gt.NrxMax) k=k-NRxMax
      nt=ntime/86400
@@ -76,8 +76,8 @@ subroutine decode2
 
 !  This is a major kludge:
         if(mode(1:4).eq.'JT6M') then          
-           jzz=4*11025
-           if(mousebutton.eq.3) jzz=10*11025
+           jzz=4*12000
+           if(mousebutton.eq.3) jzz=10*12000
         else
            istart=istart + 3300 - jzz/2
         endif

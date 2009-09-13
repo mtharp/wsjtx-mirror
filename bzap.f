@@ -21,8 +21,8 @@
       call xfft(x,nfft)
 
 C  This is a kludge:
-      df=11025.0/(nadd*nfft)
-      if(mode.eq.2) df=11025.0/(2*nadd*nfft)
+      df=12000.0/(nadd*nfft)
+      if(mode.eq.2) df=12000.0/(2*nadd*nfft)
 
       tol=10.
       itol=nint(2.0/df)

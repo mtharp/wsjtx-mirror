@@ -5,7 +5,7 @@ subroutine getfile(fname,len)
   use dflib
 #endif
 
-  parameter (NDMAX=120*11025)
+  parameter (NDMAX=120*12000)
   character*(*) fname
   include 'gcom1.f90'
   include 'gcom2.f90'
@@ -92,7 +92,7 @@ end subroutine getfile
 
 subroutine check_endian
 
-  parameter (NDMAX=120*11025)
+  parameter (NDMAX=120*12000)
 
   integer*1 d1(NDMAX)
   integer*1 hdr(44)

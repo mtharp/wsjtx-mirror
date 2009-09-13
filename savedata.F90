@@ -33,18 +33,18 @@ subroutine savedata
   ibuf2=ibuf0-1
 1 jza=2048*(ibuf2-ibuf1)
   if(jza.lt.0) jza=jza+NRxMax
-  if(jza.lt.110250) go to 999           !Don't save files less than 10 s
-  if(jza.gt.120*11025) go to 999         !Don't save if something's fishy
+  if(jza.lt.120000) go to 999           !Don't save files less than 10 s
+  if(jza.gt.120*12000) go to 999         !Don't save if something's fishy
   k=2048*(ibuf1-1)
   if(mode(1:4).ne.'JT65' .and. mode(1:3).ne.'JT2' .and. mode(1:3).ne.'JT4'   &
        .and. mode(1:4).ne.'WSPR' .and. mode(1:2).ne.'CW' .and.               &
        mode(1:4).ne.'JT64') k=k+3*2048
   if(mode(1:4).ne.'JT65' .and. mode(1:3).ne.'JT2' .and. mode(1:3).ne.'JT4'   &
        .and. mode(1:4).ne.'WSPR' .and. mode(1:2).ne.'CW' .and.               &
-       mode(1:4).ne.'JT64' .and. jza.gt.30*11025) then
-     k=k + (jza-30*11025)
+       mode(1:4).ne.'JT64' .and. jza.gt.30*12000) then
+     k=k + (jza-30*12000)
      if(k.gt.NRxMax) k=k-NRxMax
-     jza=30*11025
+     jza=30*12000
   endif
 
 ! Check timestamps of buffers used for this data
@@ -101,7 +101,7 @@ subroutine savedata
      lenfmt=16
      nfmt2=1
      nchan2=1
-     nsamrate=11025
+     nsamrate=12000
      nbytesam2=2
      nbytesec=nchan2*nsamrate*nbytesam2
      nbitsam2=16

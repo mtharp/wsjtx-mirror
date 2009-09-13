@@ -11,7 +11,7 @@
       real fzap(200)
 
       iz=557                              !Compute the 2d spectrum
-      df=11025.0/2048.0
+      df=12000.0/2048.0
       nfft=nadd*1024
       jz=jza/nfft
       do j=1,jz

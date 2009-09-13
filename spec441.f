@@ -23,7 +23,7 @@ C  Returns spectral array and frequency of peak value.
         enddo
 
         smax=0.
-        df=11025.0/NFFT
+        df=12000.0/NFFT
         fac=1.0/(100.0*nfft*nz)
         do i=1,nh
            s(i)=fac*s(i)

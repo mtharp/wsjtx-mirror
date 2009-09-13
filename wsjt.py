@@ -1450,7 +1450,7 @@ def plot_small():
     graph2.delete(ALL)
     xy=[]
     xy2=[]
-    df=11025.0/256.0
+    df=12000.0/256.0
     fac=150.0/3500.0
     for i in range(81):
         x=int(i*df*fac)
@@ -1596,8 +1596,8 @@ def update():
         if first: GenStdMsgs()
         first=0
 
-    samfac_in=Audio.gcom1.mfsample/110250.0
-    samfac_out=Audio.gcom1.mfsample2/110250.0
+    samfac_in=Audio.gcom1.mfsample/120000.0
+    samfac_out=Audio.gcom1.mfsample2/120000.0
     xin=1
     xout=1
     try:

@@ -20,7 +20,7 @@ C  Load data into real array x; pad with zeros up to nfft.
       if(nfft.gt.jz) call zero(x(jz+1),nfft-jz)
 C  Do the FFT
       call xfft(x,nfft)
-      df=11025.0/nfft
+      df=12000.0/nfft
 
       ia=70/df
       do i=0,ia

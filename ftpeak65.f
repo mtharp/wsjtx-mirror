@@ -3,7 +3,7 @@
 C  Do the the JT65 "peakup" procedure in frequency and time; then 
 C  compute ftrack.
 
-      parameter (NMAX=30*11025)
+      parameter (NMAX=30*12000)
       parameter (NS=1024)
       real dat(jz)
       real pr(126)
@@ -21,7 +21,7 @@ C  compute ftrack.
 
       twopi=8*datan(1.d0)
       fsyncset=-300.d0
-      dt=2.d0/11025.d0               !Input dt (WSJT has downsampled by 2)
+      dt=2.d0/12000.d0               !Input dt (WSJT has downsampled by 2)
       n2 = NMAX/2
       call fil651(dat,jz,c2,n2)      !Filter and complex mix; rate 1/2
       dt=2.d0*dt                     !We're now downsampled by 4
@@ -67,7 +67,7 @@ C  function of DF, for each group of 16 symbols.
 
 C      What about using filter fil657?
 
-      df=0.25*11025.0/4096.0             !Oversample to get accurate peak
+      df=0.25*12000.0/4096.0             !Oversample to get accurate peak
       idfmax=50
       iz=n5-31
       do idf=-idfmax,idfmax
@@ -124,7 +124,7 @@ C  Get drift rate and compute ftrack.
          enddo
       enddo
 
-      df=0.25*11025.0/4096.0
+      df=0.25*12000.0/4096.0
       dfreq=ipk*df
       fdot=jpk*df*60.0/(0.875*46.8)
 

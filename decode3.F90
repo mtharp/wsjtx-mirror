@@ -4,7 +4,7 @@ subroutine decode3(d2,jz,istart,filename)
   use dfport
 #endif
 
-  integer*2 d2(jz),d2d(125*11025)
+  integer*2 d2(jz),d2d(125*12000)
   character*24 filename
   character FileID*40
   include 'gcom1.f90'
@@ -53,14 +53,14 @@ subroutine decode3(d2,jz,istart,filename)
   open(23,file=appdir(:lenappdir)//'/CALL3.TXT',status='unknown')
   if(nadd5.eq.1) then
 !  Insert 5 s of zeroes at start of data.
-     nzero=5*11025
+     nzero=5*12000
      do i=jz,nzero+1,-1
         d2d(i)=d2d(i-nzero)
      enddo
      do i=1,nzero
         d2d(i)=0
      enddo
-     jz=min(60*11025,jz+nzero)
+     jz=min(60*12000,jz+nzero)
   endif
   call wsjt1(d2d,jz,istart,samfacin,FileID,ndepth,                     &
        MinSigdB,NQRN,DFTolerance,MouseButton,NClearAve,nforce,         &

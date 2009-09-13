@@ -13,7 +13,7 @@ subroutine a2d(iarg)
   call padevsub(idevin,idevout)
 
   ierr=jtaudio(idevin,idevout,y1,y2,NMAX,iwrite,iwave,nwave,    &
-       11025,NSPB,TRPeriod,TxOK,ndebug,Transmitting,            &
+       12000,NSPB,TRPeriod,TxOK,ndebug,Transmitting,            &
        Tsec,ngo,nmode,tbuf,ibuf,ndsec)
   if(ierr.ne.0) then
      write(*,1005) ierr

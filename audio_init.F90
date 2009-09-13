@@ -31,7 +31,7 @@ subroutine audio_init(ndin,ndout)
   ndevout=ndout
   TxOK=0
   Transmitting=0
-  nfsample=11025
+  nfsample=12000
   nspb=1024
   nbufs=2048
   nmax=nbufs*nspb

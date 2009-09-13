@@ -10,8 +10,8 @@ subroutine pix2d65(d2,jz)
      sum=sum+d2(i)
   enddo
   nave=nint(sum/jz)
-  nadd=nint(53.0*11025.0/500.0)
-  if(mode(1:4).eq.'WSPR') nadd=nint(114.0*11025.0/500.0)
+  nadd=nint(53.0*12000.0/500.0)
+  if(mode(1:4).eq.'WSPR') nadd=nint(114.0*12000.0/500.0)
   ngreen=min(jz/nadd,500)
   k=0
   do i=1,ngreen

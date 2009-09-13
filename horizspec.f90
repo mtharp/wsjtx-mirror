@@ -1,5 +1,3 @@
-
-!------------------------------------------------------ horizspec
 subroutine horizspec(x,brightness,contrast,a)
 
   real x(4096)
@@ -16,7 +14,7 @@ subroutine horizspec(x,brightness,contrast,a)
   nq=nfft/4
   gain=50.0 * 3.0**(0.36+0.01*contrast)
   offset=0.5*(brightness+30.0)
-  df=11025.0/512.0
+  df=12000.0/512.0
   if(ntr.ne.ntr0) then
      if(lauto.eq.0 .or. ntr.eq.TxFirst) then
         call hscroll(a,nx)

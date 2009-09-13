@@ -205,7 +205,7 @@ C  Intentionally degrade SNR by -nclip dB.
 
 !  Offset data by about 1 s.
 !           jztest=126*2048
-           jztest=11025*ntdecode/2 - 2755
+           jztest=12000*ntdecode/2 - 2755
            if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,
      +        NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,
      +        MouseDF2,NAgain,ndepth,nchallenge,neme,idf,idfsh,
@@ -217,8 +217,8 @@ C  Intentionally degrade SNR by -nclip dB.
         endif
 
 !  We're in JTMS mode. Compute the 2D spectrum.
-        df=11025.0/256.0            !FFT resolution ~43 Hz
-        dtbuf=nstep/11025.0
+        df=12000.0/256.0            !FFT resolution ~43 Hz
+        dtbuf=nstep/12000.0
         stlim=nslim2                !Single-tone threshold
         call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
         if(sigma.lt.0.0) basevb=-99.0

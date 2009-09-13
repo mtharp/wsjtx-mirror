@@ -4,7 +4,7 @@
 C  Synchronizes JT64 data, finding the best-fit DT and DF.  
 C  NB: at this stage, submodes ABC are processed in the same way.
 
-      parameter (NP2=30*11025)         !Size of data array
+      parameter (NP2=30*12000)         !Size of data array
       parameter (NFFTMAX=4096)         !Max length of FFTs
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
       parameter (NSMAX=160)            !Max number of half-symbol steps
@@ -28,7 +28,7 @@ C  already downsampled the data by factor of 2.
       nfft=4096
       nsteps=2*jz/nfft - 1
       nh=nfft/2
-      df=0.5*11025.0/nfft
+      df=0.5*12000.0/nfft
 ! Set up the JT64 sync pattern
       isync=-1
       do n=1,3

@@ -42,8 +42,8 @@ subroutine fivehz
      ibuf00=-99
      ncall=-1
      u=0.05d0
-     fsample=11025.d0
-     mfsample=110250
+     fsample=12000.d0
+     mfsample=120000
      filled=.false.
   endif
 
@@ -77,10 +77,10 @@ subroutine fivehz
   if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or.                   &
        mode(1:3).eq.'JT4' .or. mode(1:4).eq.'JT64') then
      if(nwave.lt.126*4096) nwave=126*4096
-     tx2=txdelay + nwave/11025.0
+     tx2=txdelay + nwave/12000.0
      if(tx2.gt.(trperiod-2.0)) tx2=trperiod-tlatency-1.0
   else if(mode(1:4).eq.'WSPR') then
-     tx2=txdelay + nwave/11025.0
+     tx2=txdelay + nwave/12000.0
      if(tx2.gt.(trperiod-2.0)) tx2=trperiod-tlatency-1.0
   endif
 
@@ -157,7 +157,7 @@ subroutine fivehz
   nbufs=i1+i2+i3                             !Silence g95 warning
   nbufs=ibuf-ibuf0
   if(nbufs.lt.0) nbufs=nbufs+1024
-  tdata=nbufs*2048.0/11025.0
+  tdata=nbufs*2048.0/12000.0
 
   if((mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or. mode(1:3).eq.'JT4' &
        .or. mode(1:2).eq.'CW' .or. mode(1:4).eq.'WSPR' .or.               &
@@ -216,9 +216,9 @@ subroutine fivehztx
   if(first) then
      first=.false.
      ncall=-1
-     fsample=11025.d0
+     fsample=12000.d0
      u=0.05d0
-     mfsample2=110250
+     mfsample2=120000
      filled=.false.
   endif
 
