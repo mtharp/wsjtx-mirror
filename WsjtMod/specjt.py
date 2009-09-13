@@ -177,7 +177,7 @@ def ftnstr(x):
 def df_mark():
     draw_axis()
     if nmark.get()==0 or Audio.gcom2.nfreeze:
-        fstep=10.0*11025.0/4096.0
+        fstep=10.0*12000.0/4096.0
         if g.mode[4:5]=='B': fstep=2*fstep
         if g.mode[4:5]=='C': fstep=4*fstep
 
