@@ -1,7 +1,6 @@
         subroutine spec2d(data,jz,nstep,s2,nchan,nz,psavg0,sigma)
 
-C  Computes 2d spectrogram for FSK441 single-tone search and waterfall
-C  display.
+C  Computes 2d spectrogram for JTMS (and ISCAT?) waterfall display.
 
         parameter (NFFT=256)
         parameter (NR=NFFT+2)
@@ -16,7 +15,6 @@ C  display.
         real psavg0(128)
         real ps2(128)
         complex c(0:NH)
-        common/acom/a1,a2,a3,a4
         common/fcom/s(3100),indx(3100)
         equivalence (x,c)
         save
@@ -94,17 +92,6 @@ C  Compute a smoothed spectrum without local peaks, and find its max.
            psavg(i)=ave
            smaxx=max(psavg(i),smaxx)
         enddo
-
-C  Save scale factors for flattening spectra of pings.
-        a1=1.0
-        a2=psavg(nint(2*441/df))/psavg(nint(3*441/df))
-        a3=psavg(nint(2*441/df))/psavg(nint(4*441/df))
-        a4=psavg(nint(2*441/df))/psavg(nint(5*441/df))
-        afac=4.0/(a1+a2+a3+a4)
-        a1=afac*a1
-        a2=afac*a2
-        a3=afac*a3
-        a4=afac*a4
 
 C  Normalize 2D spectrum by the average based on weakest 25% of time
 C  slices, smoothed, and with local peaks removed.

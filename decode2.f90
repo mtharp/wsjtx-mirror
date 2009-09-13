@@ -18,7 +18,7 @@ subroutine decode2
 !    4       d2c   Decode recorded file
 !    5       d2a   Mouse pick, main window
 
-  lenpick=22050                !Length of FSK441 mouse-picked region
+  lenpick=2*12000                !Length of mouse-picked region
   if(mode(1:4).eq.'JT6M') then
      lenpick=4*12000
      if(mousebutton.eq.3) lenpick=10*12000
