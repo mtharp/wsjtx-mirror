@@ -21,7 +21,7 @@ subroutine pk48(w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
      read(w(2),*) n
      ngph=61000 + n - 32768
   else if(w(1).eq.'CQ' .and. nt1(2).eq.2) then
-     call packpfx(w(2),nc1,ngph,nadd)
+     call pkpfx(w(2),nc1,ngph,nadd)
      n5=1+nadd
   else if(nt1(1).eq.3 .and. nt1(2).eq.1) then
      n5=3
@@ -30,7 +30,7 @@ subroutine pk48(w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
      call pkcall(w(2),nc1,ntext1)
      if(w(3).eq.'RRR') n5=19
   else if(w(1).eq.'DE' .and.  nt1(2).eq.2) then
-     call packpfx(w(2),nc1,ngph,nadd)
+     call pkpfx(w(2),nc1,ngph,nadd)
      n5=4+nadd
      if(w(3).eq.'OOO') n5=10+nadd
      if(w(3).eq.'RO')  n5=16+nadd
@@ -49,13 +49,13 @@ subroutine pk48(w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
      if(w(3).eq.'RO') n5=13
      if(w(3).eq.'RRR') n5=20
   else if(nt1(1).eq.2 .and. w(2).eq.'OOO') then
-     call packpfx(w(1),nc1,ngph,nadd)
+     call pkpfx(w(1),nc1,ngph,nadd)
      n5=8+nadd
   else if(nt1(1).eq.2 .and. w(2).eq.'RO') then
-     call packpfx(w(1),nc1,ngph,nadd)
+     call pkpfx(w(1),nc1,ngph,nadd)
      n5=14+nadd
   else if(nt1(1).eq.2 .and. w(2).eq.'RRR') then
-     call packpfx(w(1),nc1,ngph,nadd)
+     call pkpfx(w(1),nc1,ngph,nadd)
      n5=21+nadd
   endif
 

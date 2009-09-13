@@ -46,7 +46,7 @@ F2PY	= @F2PY@
 OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 	packgrid.o nchar.o grid2deg.o pkcall.o pkgrid.o pktext.o \
 	unpkcall.o unpkgrid.o deg2grid.o unpktext.o \
-	pk30.o pk48.o pk78.o packpfx.o unpackpfx.o \
+	pk30.o pk48.o pk78.o pkpfx.o unpkpfx.o \
 	hash.o nhash.o chenc.o chdec.o packbits.o unpackbits.o \
 	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
 	tab.o vit213.o vit416.o
@@ -61,7 +61,7 @@ SRCS2F90 = astro0.F90 audio_init.F90 azdist0.f90 \
 	srcenc.f90 srcdec.f90 parse.f90 msgtrim.f90 \
 	pkcall.f90 pkgrid.f90 pktext.f90 \
 	unpkcall.f90 unpkgrid.f90 unpktext.f90 \
-	pk30.f90 pk48.f90 pk78.f90 packpfx.f90 unpackpfx.f90 \
+	pk30.f90 pk48.f90 pk78.f90 pkpfx.f90 unpkpfx.f90 \
 	hash.f90 chenc.f90 chdec.f90 
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}

@@ -18,13 +18,13 @@ subroutine pk78(msg,w,nw,nt1,nc1,nc2,ngph,n2,n5,iu)
      endif
      n2=0
   else if(nt1(1).eq.2 .and. nt1(2).eq.1) then
-     call packpfx(w(1),nc1,ngph,nadd)
+     call pkpfx(w(1),nc1,ngph,nadd)
      call pkcall(w(2),nc2,ntext2)
      n2=1
      n5=4*nadd
   else if(nt1(1).eq.1 .and. nt1(2).eq.2) then
      call pkcall(w(1),nc1,ntext1)
-     call packpfx(w(2),nc2,ngph,nadd)
+     call pkpfx(w(2),nc2,ngph,nadd)
      n2=2
      n5=4*nadd
   else

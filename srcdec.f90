@@ -78,7 +78,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
      else if(n5.eq.1 .or. n5.eq.2) then
         ng=ngph + 32768*(n5-1)
         if(ng.lt.61000) then
-           call unpackpfx(ng,c12)
+           call unpkpfx(ng,c12)
            msg='CQ '//c12
         else
            msg='CQ nnn '//c12
@@ -97,7 +97,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
         endif
      else if(n5.eq.4 .or. n5.eq.5) then
         ng=ngph + 32768*(n5-4)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg='DE '//c12
      else if(n5.eq.6 .or. n5.eq.12 .or. n5.eq.18) then
         call unpkcall(nc1,c12)
@@ -121,27 +121,27 @@ subroutine srcdec(cmode,nbit,iu,msg)
         endif
      else if(n5.eq.8 .or. n5.eq.9) then
         ng=ngph + 32768*(n5-8)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg=c12//' OOO'
      else if(n5.eq.10 .or. n5.eq.11) then
         ng=ngph + 32768*(n5-10)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg='DE '//c12//' OOO'
      else if(n5.eq.14 .or. n5.eq.15) then
         ng=ngph + 32768*(n5-14)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg=c12//' RO'
      else if(n5.eq.16 .or. n5.eq.17) then
         ng=ngph + 32768*(n5-16)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg='DE '//c12//' RO'
      else if(n5.eq.21 .or. n5.eq.22) then
         ng=ngph + 32768*(n5-21)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg=c12//' RRR'
      else if(n5.eq.23 .or. n5.eq.24) then
         ng=ngph + 32768*(n5-23)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         msg='DE '//c12//' RRR'
      endif
 
@@ -163,7 +163,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
      else if(n2.eq.1) then
         ng=ngph + 32768*(n5/4)
         call unpkcall(nc1,c12)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         call unpkcall(nc2,c2)
         i1=index(c12,' ')
         msg=c12(:i1)//c2(:6)
@@ -171,7 +171,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
         call unpkcall(nc1,c1)
         call unpkcall(nc2,c12)
         ng=ngph + 32768*(n5/4)
-        call unpackpfx(ng,c12)
+        call unpkpfx(ng,c12)
         i1=index(c12,' ')
         msg=c1//' '//c12(:i1-1)
      endif
