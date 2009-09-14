@@ -29,9 +29,9 @@ SRCS2F90 = a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 
 SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f \
 	indexx.f s2shape.f flat2.f packbits.f unpackbits.f \
-	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f ping.f \
-	sync.f demod64a.f \
-	four2.f gencwid.f msgtype.f \
+	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f ps64.f \
+	smooth.f sync.f demod64a.f \
+	four2.f fourt.f gencwid.f msgtype.f \
 	limit.f lpf1.f morse.f nchar.f packcall.f packgrid.f \
 	packtext.f spec2d65.f ftpeak65.f \
 	fil651.f fil652.f fil653.f symsync65.f \

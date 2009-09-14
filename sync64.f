@@ -22,13 +22,6 @@ C  The value 450 is empirical:
       data ic6/0,1,4,3,5,2/,idum/-1/
       save
 
-C  Do FFTs of symbol length, stepped by half symbols.  Note that we have
-C  already downsampled the data by factor of 2.
-      nsym=81
-      nfft=4096
-      nsteps=2*jz/nfft - 1
-      nh=nfft/2
-      df=0.5*12000.0/nfft
 ! Set up the JT64 sync pattern
       isync=-1
       do n=1,3
@@ -41,12 +34,20 @@ C  already downsampled the data by factor of 2.
       enddo
       nsync=18
 
+C  Do FFTs of symbol length, stepped by half symbols.  Note that we have
+C  already downsampled the data by factor of 2.
+      nsym=81
+      nfft=7000
+      nsteps=2*jz/nfft - 1
+      nh=nfft/2
+      df=0.5*12000.0/nfft
+
 C  Compute power spectrum for each step and get average
       call zero(psavg,nh)
       do j=1,nsteps
          k=(j-1)*nh + 1
          call limit(dat(k),nfft)
-         call ps(dat(k),nfft,s2(1,j))
+         call ps64(dat(k),nfft,s2(1,j))
          if(mode64.eq.4) call smooth(s2(1,j),nh)
          call add(psavg,s2(1,j),psavg,nh)
       enddo

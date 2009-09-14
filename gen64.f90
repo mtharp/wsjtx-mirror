@@ -94,7 +94,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      iwave(i)=32767.0*sin(phi)
   enddo
 
-  do j=1,5512                !Put another 0.5 sec of silence at end
+  do j=1,6000                !Put another 0.5 sec of silence at end
      i=i+1
      iwave(i)=0
   enddo
