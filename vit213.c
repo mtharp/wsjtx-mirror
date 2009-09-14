@@ -33,6 +33,13 @@ extern unsigned char Partab[];	/* Parity lookup table */
 
 int Syms[1 << K];
 
+int parity(int x)
+{
+  x ^= (x >> 16);
+  x ^= (x >> 8);
+  return Partab[x & 0xff];
+}
+
 // Wrapper for calling "encode" from Fortran:
 //void __stdcall ENCODE(
 void enc213_(

@@ -44,11 +44,11 @@ subroutine chenc(cmode,nbit,iu,gsym)
      kk=13
      if(nbit.eq.30) kk=5
      if(nbit.eq.48) kk=8
-     call rs_init(mm,nq,nn,kk,nfz)                 !Initialize Karn codec
+!     call rs_init(mm,nq,nn,kk,nfz)                 !Initialize Karn codec
      call unpackbits(iu,3,32,iu6a)
      iu6a(nbit+1:)=0
      call packbits(iu6a,kk,6,iu6)
-     call rs_encode(iu6,gsym)                      !Encode 
+     call rs_encode(iu6,kk,gsym)                      !Encode 
   endif
 
   return
