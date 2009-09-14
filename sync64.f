@@ -5,7 +5,7 @@ C  Synchronizes JT64 data, finding the best-fit DT and DF.
 C  NB: at this stage, submodes ABC are processed in the same way.
 
       parameter (NP2=30*12000)         !Size of data array
-      parameter (NFFTMAX=4096)         !Max length of FFTs
+      parameter (NFFTMAX=3500)         !Max length of FFTs
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
       parameter (NSMAX=160)            !Max number of half-symbol steps
       integer DFTolerance              !Range of DF search
@@ -37,10 +37,11 @@ C  The value 450 is empirical:
 C  Do FFTs of symbol length, stepped by half symbols.  Note that we have
 C  already downsampled the data by factor of 2.
       nsym=81
-      nfft=7000
+      nfft=3500
       nsteps=2*jz/nfft - 1
       nh=nfft/2
       df=0.5*12000.0/nfft
+      print*,jz,nfft,nh,nsteps,df
 
 C  Compute power spectrum for each step and get average
       call zero(psavg,nh)
@@ -117,7 +118,7 @@ C### Following code probably needs work!
       syncbest=-1.e30
       rewind 41
 
-      dtstep=0.37151927
+      dtstep=nh*2.d0/12000.d0
       do lag=-20,20
          sum=0.
          do j=1,nsym

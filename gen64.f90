@@ -114,4 +114,3 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 
   return
 end subroutine gen64
-
