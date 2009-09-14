@@ -1,4 +1,4 @@
-subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
+subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      sendingsh,msgsent,nmsg)
 
 ! Generate a JT64 wavefile.
@@ -7,7 +7,7 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
   character*24 message          !Message to be generated
   character*24 msgsent          !Message as it will be received
   character cmode*5
-  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,samfac,tsymbol
+  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
@@ -15,7 +15,7 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
   integer sendingsh
   integer ic6(6)
   integer isync(81)
-  data ic6/0,1,4,3,5,2/,idum/-1/
+  data ic6/0,1,4,3,5,2/,idum/-1/,nsps/7000/
   data twopi/6.283185307d0/
   save
 
@@ -46,8 +46,9 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
      enddo
   enddo
 
+  nsym=81
   k=0
-  do i=1,81
+  do i=1,nsym
      if(isync(i).lt.0) then
         k=k+1
         sent(i)=gsym(k)
@@ -56,26 +57,25 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
      endif
   enddo
 
-  tsymbol=7000.d0/12000.d0
-  nsym=81
-
+  tsymbol=nsps/12000.d0
   nspecial=0
   if(nbit.eq.2) then
      nspecial=iu(1)
      tsymbol=16384.d0/12000.d0
      nsym=32
      sendingsh=1                         !Flag for shorthand message
+! ### go to xxx
   endif
 
 ! Set up necessary constants
-  dt=1.0/(samfac*12000.0)
-  f0=118*12000.d0/1024 + ntxdf
-  dfgen=mode64*12000.0/4096.0
+  dt=1.d0/12000.d0
+  f0=1270.46 + ntxdf
+  dfgen=mode64*12000.d0/nsps
   t=0.d0
   phi=0.d0
   k=0
   j0=0
-  ndata=(nsym*12000.d0*samfac*tsymbol)/2
+  ndata=(nsym*12000.d0*tsymbol)/2
   ndata=2*ndata
   do i=1,ndata
      t=t+dt

@@ -120,8 +120,7 @@ subroutine wsjtgen
 
   if(mode(1:4).eq.'JT64') then
      mode64=1
-     call gen64(msg,mode64,samfacout,ntxdf,iwave,nwave,sendingsh,   &
-          msgsent,nmsg0)
+     call gen64(msg,mode64,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg0)
   else
      print*,'Unknown Tx mode requested.'
 !     stop 'Unknown Tx mode requested.'

@@ -60,19 +60,19 @@ C  Compute power spectrum for each step and get average
 C  Find the best frequency channel for CCF
       famin=3.
       fbmax=2700.
-
+      f0=1270.46
       fa=famin
       fb=fbmax
       if(NFreeze.eq.1) then
-         fa=max(famin,1270.46+MouseDF-DFTolerance)
-         fb=min(fbmax,1270.46+MouseDF+DFTolerance)
+         fa=max(famin,f0+MouseDF-DFTolerance)
+         fb=min(fbmax,f0+MouseDF+DFTolerance)
       else
-         fa=max(famin,1270.46+MouseDF-600)
-         fb=min(fbmax,1270.46+MouseDF+600)
+         fa=max(famin,f0+MouseDF-600)
+         fb=min(fbmax,f0+MouseDF+600)
       endif
       ia=fa/df
       ib=fb/df
-      i0=nint(1270.46/df)
+      i0=nint(f0/df)
       syncbest=-1.e30
       call zero(ccfred1,449)
 
@@ -132,8 +132,8 @@ C### Following code probably needs work!
                lagpk=lag
                syncbest=ccf64(lag)
             endif
-!         write(41,3001) lag,dtstep*lag,ccf64(lag)
-! 3001    format(i5,2f10.3)
+         write(41,3001) lag,dtstep*lag,ccf64(lag)
+ 3001    format(i5,2f10.3)
          ccfblue(lag+15)=ccf64(lag)
       enddo
 
