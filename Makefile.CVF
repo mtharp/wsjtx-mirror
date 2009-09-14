@@ -9,7 +9,8 @@ FFLAGS = /traceback /fast /nologo /warn
 
 all:    WSJT8.EXE WSJT8codes.EXE
 
-OBJS1 = nhash.obj init_rs.obj encode_rs.obj decode_rs.obj wrapkarn.obj
+OBJS1 = nhash.obj init_rs.obj encode_rs.obj decode_rs.obj \
+	wrapkarn.obj vit213.obj vit416.obj tab.obj
 
 OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o tab.o \
 	nhash.o
@@ -20,29 +21,27 @@ SRCS2F90 = a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	blanker.f90 decode1.f90 decode2.f90 decode3.f90 ftn_init.f90 \
 	ftn_quit.f90 get_fname.f90 getfile.f90 horizspec.f90 hscroll.f90 \
 	pix2d.f90 pix2d65.f90 rfile.f90 savedata.f90 spec.f90 \
-	wsjtgen.f90 runqqq.f90 fivehz.f90 chkt0.f90 \
-	packpfx.f90 unpackpfx.f90 \
-	hash.f90 packname.f90 unpackname.f90 \
-	packtext2.f90 unpacktext2.f90 gen64.f90 thcvf.f90
+	wsjtgen.f90 runqqq.f90 fivehz.f90 hash.f90 gen64.f90 thcvf.f90 \
+	srcenc.f90 srcdec.f90 chenc.f90 chdec.f90 parse.f90 \
+	pk30.f90 pk48.f90 pk78.f90 pkcall.f90 unpkcall.f90 \
+	pkgrid.f90 unpkgrid.f90 pkpfx.f90 unpkpfx.f90 \
+	pktext.f90 unpktext.f90 msgtrim.f90
 
-SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f mtdecode.f \
-	stdecode.f indexx.f s2shape.f flat2.f \
-	genmet.f fourt.f chkmsg.f gentone.f \
+SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f \
+	indexx.f s2shape.f flat2.f packbits.f unpackbits.f \
 	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f ping.f \
-	longx.f peakup.f sync.f detect.f demod64a.f \
-	chkhist.f flat1.f four2.f gencw.f \
-	gencwid.f msgtype.f getpfx1.f \
-	getpfx2.f getsnr.f graycode.f grid2k.f k2grid.f \
+	sync.f demod64a.f \
+	four2.f gencwid.f msgtype.f \
 	limit.f lpf1.f morse.f nchar.f packcall.f packgrid.f \
-	packmsg.f packtext.f slope.f spec2d65.f ftpeak65.f \
+	packtext.f spec2d65.f ftpeak65.f \
 	fil651.f fil652.f fil653.f symsync65.f \
-	unpackcall.f unpackgrid.f unpackmsg.f unpacktext.f \
-	xcor.f xfft.f xfft2.f astro.f azdist.f coord.f dcoord.f \
+	unpackcall.f unpackgrid.f unpacktext.f \
+	xfft.f xfft2.f astro.f azdist.f coord.f dcoord.f \
 	deg2grid.f dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f \
-	moon2.f MoonDop.f sun.f toxyz.f pfxdump.f \
-	filbig2.F twkfreq.f fchisq.f ccf2.f wsjt64.f sync64.f
+	moon2.f MoonDop.f sun.f toxyz.f \
+	filbig2.F wsjt64.f sync64.f
 
-SRCS2C   = resample.c ptt.c igray.c wrapkarn.c
+SRCS2C   = resample.c ptt.c igray.c wrapkarn.c vit213.c vit416.c
 
 WSJT8.EXE: Audio.pyd wsjt.spec
 	python c:\python23\installer\Build.py wsjt.spec
@@ -100,6 +99,12 @@ decode_rs.o: decode_rs.c
 
 wrapkarn.obj: wrapkarn.c
 	$(CC) /nologo /c /DCVF=1 wrapkarn.c
+
+vit213.obj: vit213.c
+	$(CC) /nologo /c /DCVF=1 vit213.c
+
+vit416.obj: vit416.c
+	$(CC) /nologo /c /DCVF=1 vit416.c
 
 igray.obj: igray.c
 	$(CC) /nologo /c /DCVF=1 igray.c

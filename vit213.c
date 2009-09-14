@@ -41,8 +41,11 @@ int parity(int x)
 }
 
 // Wrapper for calling "encode" from Fortran:
-//void __stdcall ENCODE(
+#ifdef CVF
+void __stdcall ENC213(
+#else
 void enc213_(
+#endif
 unsigned char data[],           // User data, 8 bits per byte
 int *nbits,                     // Number of user bits
 unsigned char symbols[],        // Encoded one-bit symbols, 8 per byte
@@ -86,9 +89,12 @@ int *nn)                        // N
   return 0;
 }
 
-// Wrapper for calling "viterbi" from Fortran:
-//void __stdcall VITERBI(
+// Wrapper for calling decoder from Fortran:
+#ifdef CVF
+void __stdcall VIT213(
+#else
 void vit213_(
+#endif
 unsigned char symbols[],  /* Raw deinterleaved input symbols */
 unsigned int *Nbits,	  /* Number of decoded information bits */
 int mettab[2][256],	  /* Metric table, [sent sym][rx symbol] */
