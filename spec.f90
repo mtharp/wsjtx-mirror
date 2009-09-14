@@ -148,7 +148,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   if(nsum.ge.nstep(nspeed)) then      !Integrate for specified time
      nlines=nlines+1
      do i=225000,751,-1               !Move spectra up one row
-        a0(i)=a0(i-750)               ! (will be "down" on display)
+        a0(i)=a0(i-750)               ! (this is "down" on display)
      enddo
      if(ndiskdat.eq.1 .and. nlines.eq.1) then
         do i=1,750
