@@ -7,7 +7,7 @@ C  NB: at this stage, submodes ABC are processed in the same way.
       parameter (NP2=30*12000)         !Size of data array
       parameter (NFFTMAX=3500)         !Max length of FFTs
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
-      parameter (NSMAX=180)            !Max number of half-symbol steps
+      parameter (NSMAX=160)            !Max number of half-symbol steps
       integer DFTolerance              !Range of DF search
       real dat(jz)
       real psavg(NHMAX)                !Average spectrum of whole record
@@ -77,6 +77,7 @@ C  Find the best frequency channel for CCF
       i0=nint(f0/df)
       syncbest=-1.e30
       call zero(ccfred1,449)
+      call zero(ccfblue,546)
 
 C### Following code probably needs work!
       ss=0.
@@ -89,7 +90,7 @@ C### Following code probably needs work!
                if(isync(j).ge.0) then
                   j0=2*j -1 + lag
                   if(j0.ge.1 .and. j0.le.nsteps) then
-                     sum=sum + s2(2*isync(j)+i,j0)
+                     sum=sum + s2(isync(j)+i,j0)
                   endif
                endif
             enddo
@@ -110,7 +111,7 @@ C### Following code probably needs work!
       ave=ss/nss
       syncbest=syncbest-ave
       do j=-224,224
-         if(ccfred1(j).ne.0.0) ccfred1(j)=0.2*(ccfred1(j)-ave)
+         if(ccfred1(j).ne.0.0) ccfred1(j)=2.0*(ccfred1(j)-ave)
       enddo
 
 ! Once more, at the best frequency
@@ -125,7 +126,7 @@ C### Following code probably needs work!
             if(isync(j).ge.0) then
                j0=2*j - 1 + lag
                if(j0.ge.1 .and. j0.le.nsteps) then
-                  sum=sum + s2(2*isync(j)+i,j0)
+                  sum=sum + s2(isync(j)+i,j0)
                endif
             endif
          enddo
@@ -136,7 +137,7 @@ C### Following code probably needs work!
             endif
          write(41,3001) lag,dtstep*lag,ccf64(lag)
  3001    format(i5,2f10.3)
-         ccfblue(lag+15)=ccf64(lag)
+         ccfblue(lag+15)=2.0*ccf64(lag)
       enddo
 
       snrsync=syncbest
