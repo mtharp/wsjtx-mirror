@@ -51,7 +51,7 @@ WSJT8.EXE: Audio.pyd wsjt.spec
 WSJT8codes.EXE: $(OBJS1)
 	$(FC) /compile_only /obj:WSJT8codes_all2.obj WSJT8codes_all2.f
 	$(FC) /exe:WSJT8codes.EXE WSJT8codes_all.f90 \
-	  WSJT8codes_all2.obj $(OBJS1) 
+	  WSJT8codes_all2.obj $(OBJS1) /link /stack:1500000
 
 
 Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
