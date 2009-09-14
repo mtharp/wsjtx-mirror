@@ -49,7 +49,7 @@ OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 	pk30.o pk48.o pk78.o pkpfx.o unpkpfx.o \
 	hash.o nhash.o chenc.o chdec.o packbits.o unpackbits.o \
 	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
-	tab.o vit213.o vit416.o
+	tab.o parity.o vit213.o vit416.o
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
