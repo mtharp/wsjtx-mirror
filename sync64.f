@@ -7,7 +7,7 @@ C  NB: at this stage, submodes ABC are processed in the same way.
       parameter (NP2=30*12000)         !Size of data array
       parameter (NFFTMAX=3500)         !Max length of FFTs
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
-      parameter (NSMAX=160)            !Max number of half-symbol steps
+      parameter (NSMAX=180)            !Max number of half-symbol steps
       integer DFTolerance              !Range of DF search
       real dat(jz)
       real psavg(NHMAX)                !Average spectrum of whole record
