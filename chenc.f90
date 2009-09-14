@@ -48,9 +48,7 @@ subroutine chenc(cmode,nbit,iu,gsym)
      call unpackbits(iu,3,32,iu6a)
      iu6a(nbit+1:)=0
      call packbits(iu6a,kk,6,iu6)
-     print*,'A'
      call rs_encode(iu6,gsym)                      !Encode 
-     print*,'B'
   endif
 
   return

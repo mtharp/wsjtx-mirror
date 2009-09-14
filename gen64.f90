@@ -45,7 +45,6 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
         isync(i0+i)=ic6(i)
      enddo
   enddo
-  print*,'A',isync
 
   k=0
   do i=1,81
@@ -56,7 +55,6 @@ subroutine gen64(message,mode64,samfac,ntxdf,iwave,nwave,  &
         sent(i)=isync(i)
      endif
   enddo
-  print*,'B',sent
 
   tsymbol=7000.d0/12000.d0
   nsym=81

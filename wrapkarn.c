@@ -18,6 +18,15 @@ void rs_init_(int *mm, int *nq, int *nn0, int *kk0, int *nfz)
 }
 
 #ifdef CVF
+void __stdcall RS_FREE(void)
+#else
+void rs_free_(void)
+#endif
+{
+  free_rs_int(rs);
+}
+
+#ifdef CVF
 void __stdcall RS_ENCODE(int *dgen, int *sent)
 #else
 void rs_encode_(int *dgen, int *sent)
