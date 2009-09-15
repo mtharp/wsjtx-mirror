@@ -76,6 +76,7 @@ C  Find the best frequency channel for CCF
       i0=nint(f0/df)
       syncbest=-1.e30
       call zero(ccfred1,449)
+      call zero(ccf64,449)
       call zero(ccfblue,546)
 
 C### Following code probably needs work!
@@ -134,8 +135,6 @@ C### Following code probably needs work!
                lagpk=lag
                syncbest=ccf64(lag)
             endif
-         write(41,3001) lag,dtstep*lag,ccf64(lag)
- 3001    format(i5,2f10.3)
          ccfblue(lag+15)=2.0*ccf64(lag)
       enddo
 
