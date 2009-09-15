@@ -41,7 +41,7 @@ b0=0
 c0=0
 g0=0
 g.cmap="Linrad"
-df=2.69165
+df=2.9296875
 fmid=1500
 fmid0=1500
 frange=2000
@@ -137,8 +137,8 @@ def tx_volume():
 # Readout of graphical cursor location
 def fdf_change(event):
     if nspeed0.get()<6:
-        g.DFreq=df*(event.x-288.7) + fmid - 1500
-        if nfr.get()==2: g.DFreq=2*df*(event.x-375.5) + fmid - 1270.5
+        g.DFreq=df*(event.x-295.7) + fmid - 1500
+        if nfr.get()==2: g.DFreq=2*df*(event.x-373.5) + fmid - 1270.5
         g.Freq=g.DFreq+1270.46
         if g.mode=="WSPR": g.DFreq=g.DFreq+1270.46-1500.0
         t="Freq: %5d    DF: %5d  (Hz)" % (int(g.Freq),int(g.DFreq))
@@ -417,11 +417,7 @@ def update():
 #-------------------------------------------------------- draw_axis
 def draw_axis():
     xmid=fmid
-    if naxis.get():
-        if g.mode=='WSPR':
-            xmid=xmid-1500
-        else:
-            xmid=xmid-1270.46
+    if naxis.get(): xmid=xmid-1270.46
     c.delete(ALL)
     if nspeed0.get()<6:
 # Draw the frequency or DF tick marks

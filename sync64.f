@@ -41,7 +41,6 @@ C  already downsampled the data by factor of 2.
       nsteps=2*jz/nfft - 1
       nh=nfft/2
       df=0.5*12000.0/nfft
-      print*,jz,nfft,nh,nsteps,df
 
 C  Compute power spectrum for each step and get average
       call zero(psavg,nh)
