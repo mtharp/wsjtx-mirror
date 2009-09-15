@@ -10,7 +10,6 @@ C  NB: at this stage, submodes ABC are processed in the same way.
       parameter (NSMAX=180)            !Max number of half-symbol steps
       integer DFTolerance              !Range of DF search
       real dat(jz)
-      real psavg(NHMAX)                !Average spectrum of whole record
       real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
 
@@ -20,7 +19,9 @@ C  The value 450 is empirical:
       integer ic6(6)
       integer isync(81)
       data ic6/0,1,4,3,5,2/,idum/-1/
-      save
+
+!      rewind 61
+!      write(61) jz,dat,DFTolerance,NFreeze,MouseDF,mode64
 
 ! Set up the JT64 sync pattern
       isync=-1
@@ -42,21 +43,13 @@ C  already downsampled the data by factor of 2.
       nh=nfft/2
       df=0.5*12000.0/nfft
 
-C  Compute power spectrum for each step and get average
-      call zero(psavg,nh)
+C  Compute power spectrum for each step
       do j=1,nsteps
          k=(j-1)*nh + 1
-         call limit(dat(k),nfft)
+!         call limit(dat(k),nfft)
          call ps64(dat(k),nfft,s2(1,j))
          if(mode64.eq.4) call smooth(s2(1,j),nh)
-         call add(psavg,s2(1,j),psavg,nh)
       enddo
-
-!      call flat1(psavg,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten the spectra
-!      do i=1,nh
-!         write(42,4001) i*df,psavg(i)
-! 4001    format(2f10.3)
-!      enddo
 
 C  Find the best frequency channel for CCF
       famin=3.
@@ -75,9 +68,6 @@ C  Find the best frequency channel for CCF
       ib=fb/df
       i0=nint(f0/df)
       syncbest=-1.e30
-      call zero(ccfred1,449)
-      call zero(ccf64,449)
-      call zero(ccfblue,546)
 
 C### Following code probably needs work!
       ss=0.
@@ -111,13 +101,12 @@ C### Following code probably needs work!
       ave=ss/nss
       syncbest=syncbest-ave
       do j=-224,224
-         if(ccfred1(j).ne.0.0) ccfred1(j)=2.0*(ccfred1(j)-ave)
+         if(ccfred1(j).ne.0.0) ccfred1(j)=0.5*(ccfred1(j)-ave)
       enddo
 
 ! Once more, at the best frequency
       i=ipk
       syncbest=-1.e30
-      rewind 41
 
       dtstep=nh*2.d0/12000.d0
       do lag=-20,20
@@ -135,10 +124,23 @@ C### Following code probably needs work!
                lagpk=lag
                syncbest=ccf64(lag)
             endif
-         ccfblue(lag+15)=2.0*ccf64(lag)
+         ccfblue(lag+15)=ccf64(lag)
       enddo
 
-      snrsync=syncbest
+      sum=0.
+      nsum=0
+      do j=-5,35
+         if(abs(j-15-lagpk).gt.1) then
+            sum=sum + ccfblue(j)
+            nsum=nsum + 1
+         endif
+      enddo
+      ave=sum/nsum
+      do j=-5,35
+         ccfblue(j)=ccfblue(j)-ave
+      enddo
+
+      snrsync=syncbest-ave
       snrx=-30
       if(syncbest.gt.2.0) snrx=db(syncbest) - 34.0
       dtx=dtstep*lagpk

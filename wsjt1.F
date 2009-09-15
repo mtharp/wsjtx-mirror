@@ -150,6 +150,8 @@ C  Intentionally degrade SNR by -nclip dB.
            sq=sq + (sum-avesq)**2
         enddo
         rmspower=sqrt(sq/nz)
+        call zero(ccf,546)
+        call zero(psavg,450)
 
         pick=.false.
         if(istart.gt.1) pick=.true. !This is a mouse-picked decoding
@@ -206,6 +208,7 @@ C  Intentionally degrade SNR by -nclip dB.
 !  Offset data by about 1 s.
 !           jztest=126*2048
            jztest=12000*ntdecode/2 - 2755
+
            if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,
      +        NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,
      +        MouseDF2,NAgain,ndepth,nchallenge,neme,idf,idfsh,
