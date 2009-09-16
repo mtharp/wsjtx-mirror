@@ -5,7 +5,7 @@ C  Synchronizes JT64 data, finding the best-fit DT and DF.
 C  NB: at this stage, submodes ABC are processed in the same way.
 
       parameter (NP2=30*12000)         !Size of data array
-      parameter (NFFTMAX=3500)         !Max length of FFTs
+      parameter (NFFTMAX=3240)         !Max length of FFTs
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
       parameter (NSMAX=180)            !Max number of half-symbol steps
       integer DFTolerance              !Range of DF search
@@ -29,7 +29,7 @@ C  The value 450 is empirical:
          i0=0
          if(n.eq.2) i0=27
          if(n.eq.3) i0=54
-         if(n.eq.3) i0=81
+         if(n.eq.4) i0=81
          do i=1,6
             isync(i0+i)=ic6(i)
          enddo
