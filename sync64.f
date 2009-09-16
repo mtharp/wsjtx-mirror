@@ -17,7 +17,7 @@ C  The value 450 is empirical:
       real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
       real ccf64(-224:224)
       integer ic6(6)
-      integer isync(81)
+      integer isync(87)
       data ic6/0,1,4,3,5,2/,idum/-1/
 
 !      rewind 61
@@ -25,10 +25,11 @@ C  The value 450 is empirical:
 
 ! Set up the JT64 sync pattern
       isync=-1
-      do n=1,3
+      do n=1,4
          i0=0
-         if(n.eq.2) i0=36
-         if(n.eq.3) i0=75
+         if(n.eq.2) i0=27
+         if(n.eq.3) i0=54
+         if(n.eq.3) i0=81
          do i=1,6
             isync(i0+i)=ic6(i)
          enddo
@@ -37,7 +38,7 @@ C  The value 450 is empirical:
 
 C  Do FFTs of symbol length, stepped by half symbols.  Note that we have
 C  already downsampled the data by factor of 2.
-      nsym=81
+      nsym=87
       nfft=3500
       nsteps=2*jz/nfft - 1
       nh=nfft/2

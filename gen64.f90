@@ -11,10 +11,10 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
-  integer sent(81)
+  integer sent(87)
   integer sendingsh
   integer ic6(6)
-  integer isync(81)
+  integer isync(87)
   data ic6/0,1,4,3,5,2/,idum/-1/,nsps/7000/
   data twopi/6.283185307d0/
   save
@@ -37,16 +37,17 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 ! Set up the JT64 sync pattern
 ! Insert the 6x6 Costas array 3 times at low-frequency edge.
   isync=-1
-  do n=1,3
+  do n=1,4
      i0=0
-     if(n.eq.2) i0=36
-     if(n.eq.3) i0=75
+     if(n.eq.2) i0=27
+     if(n.eq.3) i0=54
+     if(n.eq.3) i0=81
      do i=1,6
         isync(i0+i)=ic6(i)
      enddo
   enddo
 
-  nsym=81
+  nsym=87
   k=0
   do i=1,nsym
      if(isync(i).lt.0) then
@@ -79,13 +80,13 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
   ndata=2*ndata
   do i=1,ndata
      t=t+dt
-     j=int(t/tsymbol) + 1                    !Symbol number, 1-81
+     j=int(t/tsymbol) + 1                    !Symbol number, 1-nsym
      if(j.ne.j0) then
         f=f0
         if(nspecial.ne.0) f=f0+10*nspecial*dfgen
         if(nspecial.eq.0) then
            k=k+1
-           if(k.le.81) f=f0+(sent(k))*dfgen         !### Fix need for this ###
+           if(k.le.87) f=f0+(sent(k))*dfgen         !### Fix need for this ###
         endif
         dphi=twopi*dt*f
         j0=j
