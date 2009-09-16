@@ -39,7 +39,7 @@ C  The value 450 is empirical:
 C  Do FFTs of symbol length, stepped by half symbols.  Note that we have
 C  already downsampled the data by factor of 2.
       nsym=87
-      nfft=3500
+      nfft=3240                              !6480/2
       nsteps=2*jz/nfft - 1
       nh=nfft/2
       df=0.5*12000.0/nfft

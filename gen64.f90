@@ -15,7 +15,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
   integer sendingsh
   integer ic6(6)
   integer isync(87)
-  data ic6/0,1,4,3,5,2/,idum/-1/,nsps/7000/
+  data ic6/0,1,4,3,5,2/,idum/-1/,nsps/6480/
   data twopi/6.283185307d0/
   save
 
