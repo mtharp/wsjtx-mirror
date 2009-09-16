@@ -1,5 +1,5 @@
       subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,
-     +  mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
+     +  mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1)
 
 C  Synchronizes JT64 data, finding the best-fit DT and DF.  
 C  NB: at this stage, submodes ABC are processed in the same way.
@@ -12,10 +12,12 @@ C  NB: at this stage, submodes ABC are processed in the same way.
       real dat(jz)
       real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
-
-C  The value 450 is empirical:
       real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
       real ccf64(-224:224)
+
+      real ccfb(-5:540)
+      real ccfr(-224:224)
+
       integer ic6(6)
       integer isync(87)
       data ic6/0,1,4,3,5,2/,idum/-1/
@@ -44,9 +46,12 @@ C  already downsampled the data by factor of 2.
       nh=nfft/2
       df=0.5*12000.0/nfft
 
+      do iter=1,2
+         k0=(iter-1)*nh/2
+
 C  Compute power spectrum for each step
       do j=1,nsteps
-         k=(j-1)*nh + 1
+         k=(j-1)*nh + 1 + k0
 !         call limit(dat(k),nfft)
          call ps64(dat(k),nfft,s2(1,j))
          if(mode64.eq.4) call smooth(s2(1,j),nh)
@@ -109,7 +114,6 @@ C### Following code probably needs work!
       i=ipk
       syncbest=-1.e30
 
-      dtstep=nh*2.d0/12000.d0
       do lag=-20,20
          sum=0.
          do j=1,nsym
@@ -141,11 +145,47 @@ C### Following code probably needs work!
          ccfblue(j)=ccfblue(j)-ave
       enddo
 
-      snrsync=syncbest-ave
+      snrsync=syncbest/ave - 1.0
       snrx=-30
-      if(syncbest.gt.2.0) snrx=db(syncbest) - 34.0
+      if(snrsync.gt.1.0) snrx=db(snrsync) - 30.0 + 0.49
+      dtstep=nh*2.d0/12000.d0
       dtx=dtstep*lagpk
       dfx=(ipk-i0)*df
+
+      if(iter.eq.1) then
+         dtx1=dtx
+         dfx1=dfx
+         snrx1=snrx
+         snrsync1=snrsync
+         do i=-5,540
+            ccfb(i)=ccfblue(i)
+         enddo
+         do i=-224,224
+            ccfr(i)=ccfred1(i)
+         enddo
+      else
+         itera=2
+         dtx=dtx+0.5*dtstep
+         xgain=max(snrsync,snrsync1)-min(snrsync,snrsync1)
+         if(snrsync.lt.snrsync1) then
+            dtx=dtx1
+            dfx=dfx1
+            snrx=snrx1
+            snrsync=snrsync1
+            do i=-5,540
+               ccfblue(i)=ccfb(i)
+            enddo
+            do i=-224,224
+               ccfred1(i)=ccfr(i)
+            enddo
+            itera=1
+         endif
+         write(*,3001)  snrsync,snrx,dtx,dfx,itera,xgain
+         write(47,3001) snrsync,snrx,dtx,dfx,itera,xgain
+ 3001    format(4f8.2,i5,f8.2)
+      endif
+
+      enddo
 
       return
       end
