@@ -1524,6 +1524,9 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
+        if options.addpfx.get().lstrip()=='BOTH' and isec==58:
+            TxFirst.set(1-TxFirst.get())
+            print 'TxFirst: ',TxFirst.get()
         
         if Audio.gcom2.ndecoding==0:
             g.AzSun,g.ElSun,g.AzMoon,g.ElMoon,g.AzMoonB,g.ElMoonB,g.ntsky, \
