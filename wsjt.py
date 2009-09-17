@@ -1457,7 +1457,7 @@ def plot_small():
         xy.append(x)
         psavg=Audio.gcom2.psavg[i]
         if mode.get()=="Iscat": psavg=psavg + 27.959
-        n=int(150.0-2*psavg)
+        n=int(150.0-5*psavg)
         xy.append(n)
         if mode.get()=='JTMS':    
             ps0=Audio.gcom2.ps0[i]
@@ -1465,9 +1465,7 @@ def plot_small():
             xy2.append(x)
             xy2.append(n)
     graph2.create_line(xy,fill="magenta")
-    if mode.get()=='Iscat':
-        plot_yellow()
-    elif mode.get()=='JTMS':
+    if mode.get()=='JTMS':
         graph2.create_line(xy2,fill="red")
 ##        for i in range(4):
 ##            x=(i+2)*441*fac
@@ -1477,26 +1475,6 @@ def plot_small():
         ytop=110
         if i%2: ytop=115
         graph2.create_line([x,120,x,ytop],fill="white")
-
-#------------------------------------------------------ plot_yellow
-def plot_yellow():
-    nz=int(Audio.gcom2.ps0[215])
-    if nz>10:
-        y=[]
-        for i in range(nz):             #Find ymax for yellow curve
-            n=Audio.gcom2.ps0[i]
-            y.append(n)
-        ymax=max(y)
-        fac=1.0
-        if ymax>60: fac=60.0/ymax
-        xy2=[]
-        for i in range(nz):
-            x=int(2.34*i)
-            y=fac*Audio.gcom2.ps0[i] + 8
-            n=int(85.0-y)
-            xy2.append(x)
-            xy2.append(n)
-        graph1.create_line(xy2,fill="yellow")
 
 #------------------------------------------------------ update
 def update():

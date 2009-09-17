@@ -65,9 +65,23 @@ subroutine genms(message,iwave,nwave,msgsent)
      iwave(i)=32767.d0*sin(phi)
   enddo
 
-  tmsg=nsym*nsps*dt
-  write(*,3000) iu0,nbit,nsync,ndata,nsym,tmsg,msgsent
-3000 format(3z9,2i3,2i4,f6.3,1x,a24)
+!  tmsg=nsym*nsps*dt
+!  write(*,3000) iu0,nbit,nsync,ndata,nsym,tmsg,msgsent
+!3000 format(3z9,2i3,2i4,f6.3,1x,a24)
+
+! Make some pings
+  do i=1,nwave
+     iping=i/(3*12000)
+     w=0.05*(iping+1)
+     t0=dt*(iping+0.5)*(3*12000)
+     t=(i*dt-t0)/w
+     if(t.lt.0) then
+        fac=0.
+     else
+        fac=t*exp(-t)
+     endif
+     iwave(i)=fac*iwave(i)
+  enddo
 
   return
 end subroutine genms

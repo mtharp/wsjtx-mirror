@@ -227,8 +227,16 @@ C  Intentionally degrade SNR by -nclip dB.
         if(sigma.lt.0.0) basevb=-99.0
         if(sigma.lt.0.0) go to 900
         nline0=nline
-
         call s2shape(s2,nchan,nz,tbest)
+
+        rewind 42
+        do i=1,128
+           xdb=db(psavg(i))-10.0
+           write(42,3001) i*df,psavg(i),xdb
+ 3001      format(3f10.3)
+           psavg(i)=xdb
+        enddo
+
 
  900    LDecoded = ((NSyncOK.gt.0) .or. npkept.gt.0)
         end file 11
