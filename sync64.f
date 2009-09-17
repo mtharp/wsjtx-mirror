@@ -9,20 +9,19 @@ C  NB: at this stage, submodes ABC are processed in the same way.
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
       parameter (NSMAX=390)            !Max number of quarter-symbol steps
       integer DFTolerance              !Range of DF search
-      real dat(jz)
+      real dat(jz)                     !Raw data, downsampled to 6 kHz
       real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
-      real x(NFFTMAX)
-
+      real x(NFFTMAX)                  !Temp array for computing FFTs
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
       real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
       real ccf64(-224:224)
-      integer ic6(6)
       integer isync(24,3),jsync(24)
+      integer ic6(6)                   !Costas array
       data ic6/0,1,4,3,5,2/,idum/-1/
 
 
 ! Set up the JT64 sync pattern
-      mode64=1                                  !###
+      mode64=1                                  !### temporary ###
       nsync=0
       j=0
       do n=1,4
@@ -49,7 +48,7 @@ C  NB: we have already downsampled the data by factor of 2.
       kstep=3240/4
       df=0.5*12000.0/nfft
 
-C  Compute power spectrum for each step
+C  Compute power spectrum for each quarter-symbol step
       do j=1,nsteps
          k=(j-1)*kstep + 1
          do i=1,nh
@@ -59,7 +58,7 @@ C  Compute power spectrum for each step
          call ps64(x,nfft,s2(1,j))
       enddo
 
-C  Find the best frequency bin for CCF
+C  Determine the search range in frequency
       famin=3.
       fbmax=2700.
       f0=1270.46
@@ -75,9 +74,9 @@ C  Find the best frequency bin for CCF
       ia=fa/df
       ib=fb/df
       i0=nint(f0/df)
-      syncbest=-1.e30
 
-C### Following code probably needs work!
+C  Find best frequency bin and best sync pattern
+      syncbest=-1.e30
       ss=0.
       nss=0
       do i=ia,ib
@@ -123,8 +122,8 @@ C### Following code probably needs work!
             isbest=ispk
          endif
       enddo
+
       ave=ss/nss
-      syncbest=syncbest-ave
       do j=-224,224
          if(ccfred1(j).ne.0.0) ccfred1(j)=0.5*(ccfred1(j)-ave)
       enddo
