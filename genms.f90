@@ -78,7 +78,7 @@ subroutine genms(message,iwave,nwave,msgsent)
      if(t.lt.0) then
         fac=0.
      else
-        fac=t*exp(-t)
+        fac=2.718*t*exp(-t)
      endif
      iwave(i)=fac*iwave(i)
   enddo
