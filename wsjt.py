@@ -2338,7 +2338,7 @@ try:
         elif key == 'Mode':
             mode.set(value)
             if value=='JTMS':
-                ModeFSK441()
+                ModeJTMS()
             elif value=='Iscat':
                 ModeJT6M()
                 ModeWSPR()
