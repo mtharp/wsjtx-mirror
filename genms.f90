@@ -75,8 +75,8 @@ subroutine genms(message,iwave,nwave,msgsent)
      ip=mod(iping,3)
      w=0.05*(ip+1)
      ig=iping/3
-     amp=3.0-ig
-     t0=dt*(ip+0.5)*(3*12000)
+     amp=((3.0-ig)/3.0)**0.5
+     t0=dt*(iping+0.5)*(3*12000)
      t=(i*dt-t0)/w
      if(t.lt.0) then
         fac=0.
