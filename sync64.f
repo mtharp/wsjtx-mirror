@@ -1,63 +1,63 @@
       subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,
-     +  mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1)
+     +  mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
 
 C  Synchronizes JT64 data, finding the best-fit DT and DF.  
 C  NB: at this stage, submodes ABC are processed in the same way.
 
       parameter (NP2=30*12000)         !Size of data array
-      parameter (NFFTMAX=3240)         !Max length of FFTs
+      parameter (NFFTMAX=6480)         !Max length of FFTs
       parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
-      parameter (NSMAX=180)            !Max number of half-symbol steps
+      parameter (NSMAX=390)            !Max number of quarter-symbol steps
       integer DFTolerance              !Range of DF search
       real dat(jz)
       real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+      real x(NFFTMAX)
+
       real ccfblue(-5:540)             !CCF with pseudorandom sequence
       real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
       real ccf64(-224:224)
-
-      real ccfb(-5:540)
-      real ccfr(-224:224)
-
       integer ic6(6)
-      integer isync(87)
+      integer isync(24),jsync(24)
       data ic6/0,1,4,3,5,2/,idum/-1/
 
-!      rewind 61
-!      write(61) jz,dat,DFTolerance,NFreeze,MouseDF,mode64
 
 ! Set up the JT64 sync pattern
-      isync=-1
+      mode64=1                                  !###
+      nsync=0
+      j=0
       do n=1,4
          i0=0
          if(n.eq.2) i0=27
          if(n.eq.3) i0=54
          if(n.eq.4) i0=81
          do i=1,6
-            isync(i0+i)=ic6(i)
+            j=j+1
+            isync(j)=ic6(i)
+            jsync(j)=i0+i
          enddo
       enddo
-      nsync=18
+      nsync=j
+      nsym=nsync+63
 
-C  Do FFTs of symbol length, stepped by half symbols.  Note that we have
-C  already downsampled the data by factor of 2.
-      nsym=87
-      nfft=3240                              !6480/2
-      nsteps=2*jz/nfft - 1
+C  Do FFTs of twice symbol length, stepped by quarter symbols.  
+C  NB: we have already downsampled the data by factor of 2.
+      nfft=6480
       nh=nfft/2
+      nsteps=4*(jz-NH)/nh -1
+      kstep=3240/4
       df=0.5*12000.0/nfft
-
-      do iter=1,2
-         k0=(iter-1)*nh/2
 
 C  Compute power spectrum for each step
       do j=1,nsteps
-         k=(j-1)*nh + 1 + k0
-!         call limit(dat(k),nfft)
-         call ps64(dat(k),nfft,s2(1,j))
-         if(mode64.eq.4) call smooth(s2(1,j),nh)
+         k=(j-1)*kstep + 1
+         do i=1,nh
+            x(i)=dat(k+i-1)
+            x(i+nh)=0.
+         enddo
+         call ps64(x,nfft,s2(1,j))
       enddo
 
-C  Find the best frequency channel for CCF
+C  Find the best frequency bin for CCF
       famin=3.
       fbmax=2700.
       f0=1270.46
@@ -82,12 +82,10 @@ C### Following code probably needs work!
          smax=-1.e30
          do lag=-20,20
             sum=0.
-            do j=1,nsym
-               if(isync(j).ge.0) then
-                  j0=2*j -1 + lag
-                  if(j0.ge.1 .and. j0.le.nsteps) then
-                     sum=sum + s2(isync(j)+i,j0)
-                  endif
+            do j=1,nsync
+               j0=4*jsync(j) - 3 + lag
+               if(j0.ge.1 .and. j0.le.nsteps) then
+                  sum=sum + s2(i+2*isync(j),j0)
                endif
             enddo
             ccf64(lag)=sum/nsync
@@ -113,22 +111,19 @@ C### Following code probably needs work!
 ! Once more, at the best frequency
       i=ipk
       syncbest=-1.e30
-
       do lag=-20,20
          sum=0.
-         do j=1,nsym
-            if(isync(j).ge.0) then
-               j0=2*j - 1 + lag
-               if(j0.ge.1 .and. j0.le.nsteps) then
-                  sum=sum + s2(isync(j)+i,j0)
-               endif
+         do j=1,nsync
+            j0=4*jsync(j) - 3 + lag
+            if(j0.ge.1 .and. j0.le.nsteps) then
+               sum=sum + s2(i+2*isync(j),j0)
             endif
          enddo
          ccf64(lag)=sum/nsync
-            if(ccf64(lag).gt.syncbest) then
-               lagpk=lag
-               syncbest=ccf64(lag)
-            endif
+         if(ccf64(lag).gt.syncbest) then
+            lagpk=lag
+            syncbest=ccf64(lag)
+         endif
          ccfblue(lag+15)=ccf64(lag)
       enddo
 
@@ -145,48 +140,12 @@ C### Following code probably needs work!
          ccfblue(j)=ccfblue(j)-ave
       enddo
 
-      snrsync=syncbest/ave - 1.0
+      snrsync=syncbest-ave
       snrx=-30
-      if(snrsync.gt.1.0) snrx=db(snrsync) - 30.0 + 0.49
-      dtstep=nh*2.d0/12000.d0
+      if(syncbest.gt.2.0) snrx=db(syncbest) - 34.0
+      dtstep=kstep*2.d0/12000.d0
       dtx=dtstep*lagpk
       dfx=(ipk-i0)*df
 
-      if(iter.eq.1) then
-         dtx1=dtx
-         dfx1=dfx
-         snrx1=snrx
-         snrsync1=snrsync
-         do i=-5,540
-            ccfb(i)=ccfblue(i)
-         enddo
-         do i=-224,224
-            ccfr(i)=ccfred1(i)
-         enddo
-      else
-         itera=2
-         dtx=dtx+0.5*dtstep
-         xgain=max(snrsync,snrsync1)-min(snrsync,snrsync1)
-         if(snrsync.lt.snrsync1) then
-            dtx=dtx1
-            dfx=dfx1
-            snrx=snrx1
-            snrsync=snrsync1
-            do i=-5,540
-               ccfblue(i)=ccfb(i)
-            enddo
-            do i=-224,224
-               ccfred1(i)=ccfr(i)
-            enddo
-            itera=1
-         endif
-         write(*,3001)  snrsync,snrx,dtx,dfx,itera,xgain
-         write(47,3001) snrsync,snrx,dtx,dfx,itera,xgain
- 3001    format(4f8.2,i5,f8.2)
-      endif
-
-      enddo
-
       return
       end
-
