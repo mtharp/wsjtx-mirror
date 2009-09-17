@@ -72,15 +72,18 @@ subroutine genms(message,iwave,nwave,msgsent)
 ! Make some pings
   do i=1,nwave
      iping=i/(3*12000)
-     w=0.05*(iping+1)
-     t0=dt*(iping+0.5)*(3*12000)
+     ip=mod(iping,3)
+     w=0.05*(ip+1)
+     ig=iping/3
+     amp=3.0-ig
+     t0=dt*(ip+0.5)*(3*12000)
      t=(i*dt-t0)/w
      if(t.lt.0) then
         fac=0.
      else
         fac=2.718*t*exp(-t)
      endif
-     iwave(i)=fac*iwave(i)
+     iwave(i)=fac*amp*iwave(i)
   enddo
 
   return
