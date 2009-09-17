@@ -1,5 +1,5 @@
       subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,
-     +  mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
+     +  mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1,isbest)
 
 C  Synchronizes JT64 data, finding the best-fit DT and DF.  
 C  NB: at this stage, submodes ABC are processed in the same way.
@@ -17,7 +17,7 @@ C  NB: at this stage, submodes ABC are processed in the same way.
       real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
       real ccf64(-224:224)
       integer ic6(6)
-      integer isync(24),jsync(24)
+      integer isync(24,3),jsync(24)
       data ic6/0,1,4,3,5,2/,idum/-1/
 
 
@@ -32,7 +32,9 @@ C  NB: at this stage, submodes ABC are processed in the same way.
          if(n.eq.4) i0=81
          do i=1,6
             j=j+1
-            isync(j)=ic6(i)
+            isync(j,1)=ic6(i)
+            isync(j,2)=ic6(7-i)
+            isync(j,3)=5-ic6(i)
             jsync(j)=i0+i
          enddo
       enddo
@@ -81,16 +83,34 @@ C### Following code probably needs work!
       do i=ia,ib
          smax=-1.e30
          do lag=-20,20
-            sum=0.
+            sum1=0.
+            sum2=0.
+            sum3=0.
             do j=1,nsync
                j0=4*jsync(j) - 3 + lag
                if(j0.ge.1 .and. j0.le.nsteps) then
-                  sum=sum + s2(i+2*isync(j),j0)
+                  sum1=sum1 + s2(i+2*isync(j,1),j0)
+                  sum2=sum2 + s2(i+2*isync(j,2),j0)
+                  sum3=sum3 + s2(i+2*isync(j,3),j0)
                endif
             enddo
-            ccf64(lag)=sum/nsync
-            if(ccf64(lag).gt.smax) smax=ccf64(lag)
+            ccf1=sum1/nsync
+            ccf2=sum2/nsync
+            ccf3=sum3/nsync
+            if(ccf1.gt.smax) then
+               smax=ccf1
+               ispk=1
+            endif
+            if(ccf2.gt.smax) then
+               smax=ccf2
+               ispk=2
+            endif
+            if(ccf3.gt.smax) then
+               smax=ccf3
+               ispk=3
+            endif
          enddo
+
          j=i-i0
          if(abs(j).le.224) then
             ccfred1(i-i0)=smax
@@ -100,6 +120,7 @@ C### Following code probably needs work!
          if(smax.gt.syncbest) then
             syncbest=smax
             ipk=i
+            isbest=ispk
          endif
       enddo
       ave=ss/nss
@@ -108,7 +129,7 @@ C### Following code probably needs work!
          if(ccfred1(j).ne.0.0) ccfred1(j)=0.5*(ccfred1(j)-ave)
       enddo
 
-! Once more, at the best frequency
+! Once more, using best frequency and best sync pattern:
       i=ipk
       syncbest=-1.e30
       do lag=-20,20
@@ -116,7 +137,7 @@ C### Following code probably needs work!
          do j=1,nsync
             j0=4*jsync(j) - 3 + lag
             if(j0.ge.1 .and. j0.le.nsteps) then
-               sum=sum + s2(i+2*isync(j),j0)
+               sum=sum + s2(i+2*isync(j,isbest),j0)
             endif
          enddo
          ccf64(lag)=sum/nsync
@@ -140,9 +161,9 @@ C### Following code probably needs work!
          ccfblue(j)=ccfblue(j)-ave
       enddo
 
-      snrsync=syncbest-ave
-      snrx=-30
-      if(syncbest.gt.2.0) snrx=db(syncbest) - 34.0
+      snrsync=syncbest/ave - 1.0
+      snrx=-31.
+      if(syncbest.gt.1.0) snrx=db(snrsync) - 30.5
       dtstep=kstep*2.d0/12000.d0
       dtx=dtstep*lagpk
       dfx=(ipk-i0)*df

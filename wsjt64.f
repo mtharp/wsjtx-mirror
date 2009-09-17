@@ -55,15 +55,15 @@ C  already been done.
 
 C  Attempt to synchronize: look for sync tone, get DF and DT.
       call sync64(dat,npts,DFTolerance,NFreeze,MouseDF,
-     +    mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred)
+     +    mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
 
       nsync=snrsync
       if(nsync.lt.0) nsync=0
       nsnr=nint(snrx)
       jdf=nint(dfx)
-      write(11,1010) cfile6,nsync,nsnr,dtx,jdf
+      write(11,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
  1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
-      write(21,1010) cfile6,nsync,nsnr,dtx,jdf
+      write(21,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
 
       csync=' '
       decoded='                      '
