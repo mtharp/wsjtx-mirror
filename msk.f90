@@ -80,8 +80,7 @@ program msk
      do i=1,nsps
         k=k+1
         phi=phi+dphi
-!        cs(k)=cmplx(sin(phi),cos(phi))
-        cs(k)=cmplx(cos(phi),-sin(phi))
+        cs(k)=cmplx(cos(phi),sin(phi))
      enddo
   enddo
 
@@ -95,8 +94,8 @@ program msk
         k=k+1
         phi=phi+dphi
         y(k)=sin(phi)
-!        write(13,1010) k,y(k)
-!1010    format(i5,f10.3)
+        write(13,1010) k,y(k)
+1010    format(i5,f10.3)
      enddo
   enddo
 
@@ -158,7 +157,7 @@ program msk
   do lag=0,ndata*nsps
      c=0.
      do i=1,nsync*nsps
-        c(i)=cs(i)*y(i+lag)
+        c(i)=conjg(cs(i))*y(i+lag)
      enddo
      call four1(c,nfft,-1)
      smax=0.
@@ -182,6 +181,5 @@ program msk
 1060 format('Lagbest:',i5,'   Sbest:',f9.1,'   DF:',f7.1,'   phabest:',f6.1)
   write(*,1070) nerr
 1070 format('Bit errors:',i4)
-
 
 999 end program msk
