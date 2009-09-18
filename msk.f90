@@ -1,19 +1,20 @@
 program msk
 
-! Simulates an MSK signal waveform containing a sync vector and data 
-! of specified length.
+! Simulates an MSK waveform containing a sync vector and data of 
+! specified length.
 
-! "Decodes" the waveform using matched-filter correlators against the
-! basic symbol waveforms for "0" amd "1" bits.  
+! Decodes the waveform using matched-filter correlators against the
+! basic symbol waveforms for "0" amd "1".
 
-! Computes CCF of sync-vector waveform with the full waveform, to see how
-! well the sync can be distinguished from random data.
+! Computes CCF of the sync-vector waveform with the full waveform, to see how
+! well the sync can be detected in random (noiseless) data.
 
   parameter (MAXSYM=212)             !Max number of symbols (sync + data)
   parameter (MAXSAM=32*MAXSYM)       !Max number of samples
   integer id(MAXSYM)                 !Sync followed by data in one-bit format
   real x0(32)                        !Waveform for bit=0
   real x1(32)                        !Waveform for bit=1
+  real s(1024)                       !Waveform for sync bits
   real y(MAXSAM)                     !Full waveform for sync and data bits
   real ccf(-MAXSAM:MAXSAM)           !CCF of sync vector with received data
   character*12 arg
@@ -22,7 +23,7 @@ program msk
   data isync32/Z'1acffc1d'/          !32-bit sync
 
   nargs=iargc()
-  if(nargs.ne.4) then
+  if(nargs.ne.5) then
      print*,'Usage: msk fsample nsps nbit nsync'
      go to 999
   endif
@@ -34,6 +35,8 @@ program msk
   read(arg,*) nbit                   !User bits in message
   call getarg(4,arg)
   read(arg,*) nsync                  !Number of sync bits
+  call getarg(5,arg)
+  read(arg,*) foffset                !Frequency offset of received signal
 
   isync=isync32
   if(nsync.eq.13) isync=isync13
@@ -44,8 +47,8 @@ program msk
   twopi=8*atan(1.)
   dt=1./fs
   baud=fs/nsps
-  f0=baud
-  f1=0.5*f0
+  f0=baud + foffset
+  f1=0.5*baud + foffset
 
   write(*,1000) fs,baud,f0,f1,nsps
 1000 format('fs:',f7.0,'   baud:',f8.1,'   f0:',f8.1,'   f1:',f8.1,    &
@@ -53,21 +56,49 @@ program msk
   write(*,1002) nbit,ndata,nsync,nsym
 1002 format('nbit:',i3,'   ndata:',i4,'   nsync:',i3,'   nsym:',i4)
 
-  id=0
+  id=0                               !Clear the whole data array
   n=isync
   do j=1,nsync
-     id(j)=0
-     if(n.lt.0) id(j)=1
+     if(n.lt.0) id(j)=1              !Insert the sync vector's 1 bits
      n=ishft(n,1)
   enddo
 
   j=nsync
-  do i=1,ndata
+  do i=1,ndata              !Generate random data bits following the sync bits
      j=j+1
      call random_number(x)
      if(x.gt.0.5) id(j)=1
   enddo
 
+! Generate sync waveform
+  k=0
+  phi=0.
+  do j=1,nsync
+     if(id(j).eq.0) dphi=twopi*dt*baud
+     if(id(j).eq.1) dphi=0.5*twopi*dt*baud
+     do i=1,nsps
+        k=k+1
+        phi=phi+dphi
+        s(k)=sin(phi)
+     enddo
+  enddo
+
+! Generate simulated waveform, sync + data
+  k=0
+  phi=0.
+  do j=1,nsym
+     if(id(j).eq.0) dphi=twopi*dt*f0
+     if(id(j).eq.1) dphi=twopi*dt*f1
+     do i=1,nsps
+        k=k+1
+        phi=phi+dphi
+        y(k)=sin(phi)
+!        write(13,1010) k,y(k)
+!1010    format(i5,f10.3)
+     enddo
+  enddo
+
+! Generate basic symbol waveforms for "0" and "1" 
   phi0=0.
   phi1=0.
   dphi0=twopi*dt*f0
@@ -79,22 +110,7 @@ program msk
      x1(i)=sin(phi1)
   enddo
 
-  k=0
-  nx0=0
-  nx1=0
-  phi=0.
-  do j=1,nsym
-     if(id(j).eq.0) dphi=twopi*dt*f0
-     if(id(j).eq.1) dphi=twopi*dt*f1
-     do i=1,nsps
-        k=k+1
-        phi=phi+dphi
-        y(k)=sin(phi)
-        write(13,1010) k,y(k)
-1010    format(i5,f10.3)
-     enddo
-  enddo
-
+! Decode the waveform using matched-filter, integrate-and-dump correlators.
   k=0
   is=1
   nerr=0
@@ -118,12 +134,13 @@ program msk
   enddo
   print*,'Bit errors:',nerr
 
+! Compute CCF of sync waveform against the whole received waveform
 !  lstep=nsps
   lstep=1
   do lag=0,ndata*nsps,lstep
      sum=0.
      do i=1,nsps*nsync
-        sum=sum + y(i)*y(i+lag)
+        sum=sum + s(i)*y(i+lag)
      enddo
      ccf(lag)=2*sum/(nsps*nsync)
      ccf(-lag)=ccf(lag)
