@@ -14,7 +14,8 @@ program msk
   integer id(MAXSYM)                 !Sync followed by data in one-bit format
   real x0(32)                        !Waveform for bit=0
   real x1(32)                        !Waveform for bit=1
-  real s(1024)                       !Waveform for sync bits
+  complex cs(1024)                   !Complex waveform for sync bits
+  complex c(2048)                    !Work array
   real y(MAXSAM)                     !Full waveform for sync and data bits
   real ccf(-MAXSAM:MAXSAM)           !CCF of sync vector with received data
   character*12 arg
@@ -79,7 +80,8 @@ program msk
      do i=1,nsps
         k=k+1
         phi=phi+dphi
-        s(k)=sin(phi)
+!        cs(k)=cmplx(sin(phi),cos(phi))
+        cs(k)=cmplx(cos(phi),-sin(phi))
      enddo
   enddo
 
@@ -132,7 +134,6 @@ program msk
 1020 format(4i5,f10.3)
      if(ssym.gt.0) is=-is
   enddo
-  print*,'Bit errors:',nerr
 
 ! Compute CCF of sync waveform against the whole received waveform
 !  lstep=nsps
@@ -140,7 +141,7 @@ program msk
   do lag=0,ndata*nsps,lstep
      sum=0.
      do i=1,nsps*nsync
-        sum=sum + s(i)*y(i+lag)
+        sum=sum + real(cs(i))*y(i+lag)
      enddo
      ccf(lag)=2*sum/(nsps*nsync)
      ccf(-lag)=ccf(lag)
@@ -150,5 +151,33 @@ program msk
      write(15,1030) float(lag)/nsps,ccf(lag)
 1030 format(2f10.3)
   enddo
+
+  nfft=512
+  df=fs/nfft
+  sbest=0.
+  do lag=0,ndata*nsps
+     c=0.
+     do i=1,nsync*nsps
+        c(i)=cs(i)*y(i+lag)
+     enddo
+     call four1(c,nfft,-1)
+     smax=0.
+     do i=1,nfft
+        sq=real(c(i))**2 + aimag(c(i))**2
+        if(sq.gt.smax) then
+           smax=sq
+           ipk=i
+        endif
+     enddo
+     if(smax.gt.sbest) then
+        sbest=smax
+        fbest=df*(ipk-1)
+     endif
+!     write(16,1040) lag,1.e-4*smax,ipk
+!1040 format(i5,f10.3,i8)
+  enddo
+  if(fbest.gt.0.5*fs) fbest=fbest-fs
+  write(*,1050) nerr,sbest,fbest
+1050 format('Bit errors:',i4,'   Sbest:',f9.1,'   DF:',f7.1)
 
 999 end program msk
