@@ -23,10 +23,11 @@ program msk
   data isync13/Z'f9a80000'/          !13-bit sync
   data isync28/Z'dc444780'/          !28-bit sync
   data isync32/Z'1acffc1d'/          !32-bit sync
+  data idum/-1/
 
   nargs=iargc()
-  if(nargs.ne.6) then
-     print*,'Usage: msk fsample nsps nbit nsync DF Dpha'
+  if(nargs.ne.7) then
+     print*,'Usage: msk fsample nsps nbit nsync DF Dpha snrdb'
      go to 999
   endif
   call getarg(1,arg)
@@ -41,6 +42,8 @@ program msk
   read(arg,*) foffset                !Frequency offset of received signal
   call getarg(6,arg)
   read(arg,*) pha0                   !Phase offset of received signal
+  call getarg(7,arg)
+  read(arg,*) snrdb                  !S/N
 
   isync=isync32
   if(nsync.eq.13) isync=isync13
@@ -91,6 +94,8 @@ program msk
   enddo
 
 ! Generate the whole Tx waveform, sync + data, using foffset and pha0.
+  snr=10.0**(0.05*snrdb)
+  fac=0.707/snr
   k=0
   phi=pha0/57.2957795
   do j=1,nsym
@@ -99,7 +104,9 @@ program msk
      do i=1,nsps
         k=k+1
         phi=phi+dphi
-        cy(k)=cmplx(cos(phi),sin(phi))
+        xx=cos(phi) + fac*gasdev(idum)
+        yy=sin(phi) + fac*gasdev(idum)
+        cy(k)=cmplx(xx,yy)
         write(13,1010) k,cy(k)
 1010    format(i5,2f10.3)
      enddo
