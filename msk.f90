@@ -15,17 +15,17 @@ program msk
   real x0(32)                        !Waveform for bit=0
   real x1(32)                        !Waveform for bit=1
   complex cs(1024)                   !Complex waveform for sync bits
-  complex c(2048)                    !Work array
-  real y(MAXSAM)                     !Full waveform for sync and data bits
+  complex c(MAXSAM)                  !Work array
+  complex cy(MAXSAM)                 !Full waveform for sync and data bits
   real ccf(-MAXSAM:MAXSAM)           !CCF of sync vector with received data
-  character*12 arg
+  character arg*12,cerr*3
   data isync13/Z'f9a80000'/          !13-bit sync
   data isync28/Z'dc444780'/          !28-bit sync
   data isync32/Z'1acffc1d'/          !32-bit sync
 
   nargs=iargc()
-  if(nargs.ne.5) then
-     print*,'Usage: msk fsample nsps nbit nsync'
+  if(nargs.ne.6) then
+     print*,'Usage: msk fsample nsps nbit nsync DF Dpha'
      go to 999
   endif
   call getarg(1,arg)
@@ -38,45 +38,50 @@ program msk
   read(arg,*) nsync                  !Number of sync bits
   call getarg(5,arg)
   read(arg,*) foffset                !Frequency offset of received signal
+  call getarg(6,arg)
+  read(arg,*) pha0                   !Phase offset of received signal
 
   isync=isync32
   if(nsync.eq.13) isync=isync13
   if(nsync.eq.28) isync=isync28
-  ndata=(nbit+12)*2
-  nsym=ndata+nsync
-  
-  twopi=8*atan(1.)
-  dt=1./fs
-  baud=fs/nsps
-  f0=baud + foffset
-  f1=0.5*baud + foffset
+  ndata=(nbit+12)*2                  !Number of data symbols (K=13, r=1/2)
+  nsym=ndata+nsync                   !Total number of symbols
+  twopi=8*atan(1.0)
+  dt=1./fs                           !Sample interval
+  baud=fs/nsps                       !Keying rate
+  f0=baud                            !Nominal Tx frequency for "0" bit
+  f1=0.5*baud                        !Nominal Tx frequency for "1" bit
 
   write(*,1000) fs,baud,f0,f1,nsps
 1000 format('fs:',f7.0,'   baud:',f8.1,'   f0:',f8.1,'   f1:',f8.1,    &
           '   nsps:',i3)
   write(*,1002) nbit,ndata,nsync,nsym
 1002 format('nbit:',i3,'   ndata:',i4,'   nsync:',i3,'   nsym:',i4)
+  write(*,1004) foffset,pha0
+1004 format('Generated DF:',f8.1,'   Dpha:',f8.1)
 
-  id=0                               !Clear the whole data array
+! Unpack the sync bits into the first nsync positions of id()
+  id=0
   n=isync
   do j=1,nsync
-     if(n.lt.0) id(j)=1              !Insert the sync vector's 1 bits
+     if(n.lt.0) id(j)=1
      n=ishft(n,1)
   enddo
 
+! Fill id(nsym) with random data bits following the sync bits
   j=nsync
-  do i=1,ndata              !Generate random data bits following the sync bits
+  do i=1,ndata
      j=j+1
      call random_number(x)
      if(x.gt.0.5) id(j)=1
   enddo
 
-! Generate sync waveform
+! Generate the sync waveform
   k=0
   phi=0.
   do j=1,nsync
-     if(id(j).eq.0) dphi=twopi*dt*baud
-     if(id(j).eq.1) dphi=0.5*twopi*dt*baud
+     if(id(j).eq.0) dphi=twopi*dt*f0
+     if(id(j).eq.1) dphi=twopi*dt*f1
      do i=1,nsps
         k=k+1
         phi=phi+dphi
@@ -84,80 +89,29 @@ program msk
      enddo
   enddo
 
-! Generate simulated waveform, sync + data
+! Generate the whole Tx waveform, sync + data, using foffset and pha0.
   k=0
-  phi=0.
+  phi=pha0/57.2957795
   do j=1,nsym
-     if(id(j).eq.0) dphi=twopi*dt*f0
-     if(id(j).eq.1) dphi=twopi*dt*f1
+     if(id(j).eq.0) dphi=twopi*dt*(f0+foffset)
+     if(id(j).eq.1) dphi=twopi*dt*(f1+foffset)
      do i=1,nsps
         k=k+1
         phi=phi+dphi
-        y(k)=sin(phi)
-        write(13,1010) k,y(k)
-1010    format(i5,f10.3)
+        cy(k)=cmplx(cos(phi),sin(phi))
+        write(13,1010) k,cy(k)
+1010    format(i5,2f10.3)
      enddo
   enddo
 
-! Generate basic symbol waveforms for "0" and "1" 
-  phi0=0.
-  phi1=0.
-  dphi0=twopi*dt*f0
-  dphi1=twopi*dt*f1
-  do i=1,nsps
-     phi0=phi0+dphi0
-     phi1=phi1+dphi1
-     x0(i)=sin(phi0)
-     x1(i)=sin(phi1)
-  enddo
-
-! Decode the waveform using matched-filter, integrate-and-dump correlators.
-  k=0
-  is=1
-  nerr=0
-  do j=1,nsym
-     s0=0.
-     s1=0.
-     do i=1,nsps
-        k=k+1
-        s0=s0 + x0(i)*y(k)
-        s1=s1 + x1(i)*y(k)
-     enddo
-     s0=2*s0/nsps
-     s1=2*s1/nsps
-     ssym=is*(s1-s0)
-     ibit=0
-     if(ssym.gt.0) ibit=1
-     if(ibit.ne.id(j)) nerr=nerr+1
-     write(14,1020) j,id(j),ibit,ibit-id(j),ssym
-1020 format(4i5,f10.3)
-     if(ssym.gt.0) is=-is
-  enddo
-
-! Compute CCF of sync waveform against the whole received waveform
-!  lstep=nsps
-  lstep=1
-  do lag=0,ndata*nsps,lstep
-     sum=0.
-     do i=1,nsps*nsync
-        sum=sum + real(cs(i))*y(i+lag)
-     enddo
-     ccf(lag)=2*sum/(nsps*nsync)
-     ccf(-lag)=ccf(lag)
-  enddo
-
-  do lag=-ndata*nsps,ndata*nsps,lstep
-     write(15,1030) float(lag)/nsps,ccf(lag)
-1030 format(2f10.3)
-  enddo
-
+! Find the (presumably unknown) lag, DF, and Dpha
   nfft=512
   df=fs/nfft
   sbest=0.
   do lag=0,ndata*nsps
      c=0.
      do i=1,nsync*nsps
-        c(i)=conjg(cs(i))*y(i+lag)
+        c(i)=conjg(cs(i))*cy(i+lag)
      enddo
      call four1(c,nfft,-1)
      smax=0.
@@ -177,9 +131,88 @@ program msk
      endif
   enddo
   if(fbest.gt.0.5*fs) fbest=fbest-fs
-  write(*,1060) lagbest,sbest,fbest,57.2957795*phabest
-1060 format('Lagbest:',i5,'   Sbest:',f9.1,'   DF:',f7.1,'   phabest:',f6.1)
-  write(*,1070) nerr
-1070 format('Bit errors:',i4)
+  write(*,1060) fbest,57.2957795*phabest,lagbest,sbest
+1060 format('Measured  DF:',f8.1,'   Dpha:',f8.1,'   lag:',i5,   &
+          '   Sbest:',f9.1)
+
+  phi=0.
+  fmid=0.5*(f0+f1)
+  dphi=twopi*dt*fmid
+  do i=1,nsps*nsync
+     phi=phi+dphi
+     cs(i)=aimag(cy(i))*cmplx(sin(phi),-cos(phi))
+     sq=real(cs(i))**2 + aimag(cs(i))**2
+     write(16,1100) i,cs(i),sq
+1100 format(i5,3f10.3)
+  enddo
+
+! Generate basic symbol waveforms for "0" and "1" 
+  phi0=0.
+  phi1=0.
+  dphi0=twopi*dt*f0
+  dphi1=twopi*dt*f1
+  do i=1,nsps
+     phi0=phi0+dphi0
+     phi1=phi1+dphi1
+     x0(i)=sin(phi0)
+     x1(i)=sin(phi1)
+  enddo
+
+! Shift in frequency by -(nint(fbest)+idf)
+
+  sqpk=0.
+  do idf=-12,12
+     fshift=nint(fbest)+idf
+     phi=0.
+     dphi=twopi*dt*fshift
+     do i=1,nsps*nsym
+        phi=phi+dphi
+        c(i)=cy(i)*cmplx(cos(phi),-sin(phi))
+     enddo
+
+! Decode the waveform using matched-filter, integrate-and-dump correlators.
+     k=0
+     is=1
+     nerr=0
+     sq=0.
+     do j=1,nsym
+        s0=0.
+        s1=0.
+        do i=1,nsps
+           k=k+1
+           s0=s0 + x0(i)*aimag(c(k))
+           s1=s1 + x1(i)*aimag(c(k))
+        enddo
+        s0=2*s0/nsps
+        s1=2*s1/nsps
+        ssym=is*(s1-s0)
+        sq=sq + ssym*ssym
+        ibit=0
+        if(ssym.gt.0) ibit=1
+        if(ibit.ne.id(j)) nerr=nerr+1
+        if(ssym.gt.0) is=-is
+     enddo
+     if(sq.gt.sqpk) then
+        sqpk=sq
+        fpk=fshift
+        ierr=nerr
+     endif
+  enddo
+  cerr='   '
+  if(ierr.gt.0) cerr='***'
+  write(*,1022) fpk,ierr,cerr
+1022 format('Refined   DF:',f8.1/'Bit errors:',i4,1x,a3)
+
+! Compute CCF of sync waveform against the whole received waveform
+!  lstep=nsps
+  lstep=1
+  do lag=0,ndata*nsps,lstep
+     sum=0.
+     do i=1,nsps*nsync
+        sum=sum + real(cs(i))*aimag(c(i+lag))
+     enddo
+     ccf(lag)=2*sum/(nsps*nsync)
+     ccf(-lag)=ccf(lag)
+  enddo
 
 999 end program msk
