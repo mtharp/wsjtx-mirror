@@ -220,8 +220,8 @@ program msk
   write(*,1022) fpk,iphpk,sqpk
 1022 format('Refined   DF:',f8.1,'   Dpha:',i6,18x,'sqpk:',f9.1)
   if(ierr.gt.0) cerr='***'
-  write(*,1024) ierr,cerr
-1024 format('Bit errors:',i4,1x,a3)
+  write(*,1024) ierr,cerr,100.0*float(ierr)/nsym
+1024 format('Bit errors:',i4,1x,a3,f8.1,'%')
 
 ! Compute CCF of sync waveform against the whole received waveform
 !  lstep=nsps
