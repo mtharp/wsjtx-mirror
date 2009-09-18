@@ -167,17 +167,21 @@ program msk
         if(sq.gt.smax) then
            smax=sq
            ipk=i
+           phapk=atan2(aimag(c(i)),real(c(i)))
         endif
      enddo
      if(smax.gt.sbest) then
         sbest=smax
         fbest=df*(ipk-1)
+        phabest=phapk
+        lagbest=lag
      endif
-!     write(16,1040) lag,1.e-4*smax,ipk
-!1040 format(i5,f10.3,i8)
   enddo
   if(fbest.gt.0.5*fs) fbest=fbest-fs
-  write(*,1050) nerr,sbest,fbest
-1050 format('Bit errors:',i4,'   Sbest:',f9.1,'   DF:',f7.1)
+  write(*,1060) lagbest,sbest,fbest,57.2957795*phabest
+1060 format('Lagbest:',i5,'   Sbest:',f9.1,'   DF:',f7.1,'   phabest:',f6.1)
+  write(*,1070) nerr
+1070 format('Bit errors:',i4)
+
 
 999 end program msk
