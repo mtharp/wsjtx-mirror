@@ -104,7 +104,7 @@ program msk
      enddo
   enddo
 
-! Find the (presumably unknown) lag, DF, and Dpha
+! Find the (presumably unknown) lag and DF
   nfft=512
   df=fs/nfft
   sbest=0.
@@ -131,20 +131,10 @@ program msk
      endif
   enddo
   if(fbest.gt.0.5*fs) fbest=fbest-fs
+! NB: this computed phase will be off if frequency is inexact!
   write(*,1060) fbest,57.2957795*phabest,lagbest,sbest
 1060 format('Measured  DF:',f8.1,'   Dpha:',f8.1,'   lag:',i5,   &
           '   Sbest:',f9.1)
-
-  phi=0.
-  fmid=0.5*(f0+f1)
-  dphi=twopi*dt*fmid
-  do i=1,nsps*nsync
-     phi=phi+dphi
-     cs(i)=aimag(cy(i))*cmplx(sin(phi),-cos(phi))
-     sq=real(cs(i))**2 + aimag(cs(i))**2
-     write(16,1100) i,cs(i),sq
-1100 format(i5,3f10.3)
-  enddo
 
 ! Generate basic symbol waveforms for "0" and "1" 
   phi0=0.
@@ -158,8 +148,8 @@ program msk
      x1(i)=sin(phi1)
   enddo
 
-! Shift in frequency by -(nint(fbest)+idf)
-
+! Shift the received signal in frequency by small increments around
+! fbest, looking for maximum sq.
   sqpk=0.
   do idf=-12,12
      fshift=nint(fbest)+idf
