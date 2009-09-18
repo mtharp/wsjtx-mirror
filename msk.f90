@@ -107,8 +107,8 @@ program msk
         xx=cos(phi) + fac*gasdev(idum)
         yy=sin(phi) + fac*gasdev(idum)
         cy(k)=cmplx(xx,yy)
-        write(13,1010) k,cy(k)
-1010    format(i5,2f10.3)
+!        write(13,1010) k,cy(k)
+!1010    format(i5,2f10.3)
      enddo
   enddo
 
@@ -162,8 +162,8 @@ program msk
   nn=0
   do idf=-12,12
      fshift=nint(fbest)+idf
-     do iph=-90,90,10
-        phi=iph/57.2957795
+     do iph=-4,4
+        phi=(22.5*iph)/57.2957795
         dphi=twopi*dt*fshift
         do i=1,nsps*nsym
            phi=phi+dphi
@@ -212,16 +212,25 @@ program msk
            iphpk=iph
         endif
         nn=nn+1
-!        write(17,3001) nn,idf,iph,si,sq,dsq,nerr
-!3001    format(3i5,3f10.1,i5)
+!        write(17,3001) nn,fshift,22.5*iph,si,sq,dsq,nerr
+!3001    format(i5,2f8.1,3f10.1,i5)
      enddo
   enddo
   cerr='   '
-  write(*,1022) fpk,iphpk,sqpk
-1022 format('Refined   DF:',f8.1,'   Dpha:',i6,18x,'sqpk:',f9.1)
+  write(*,1022) fpk,22.5*iphpk,sqpk
+1022 format('Refined   DF:',f8.1,'   Dpha:',f8.1,16x,'sqpk:',f9.1)
   if(ierr.gt.0) cerr='***'
   write(*,1024) ierr,cerr,100.0*float(ierr)/nsym
 1024 format('Bit errors:',i4,1x,a3,f8.1,'%')
+
+  pha=22.5*iphpk
+  dphase=pha-pha0
+  if(dphase.gt.90.0)  dphase=dphase-180.0
+  if(dphase.lt.-90.0) dphase=dphase+180.0
+  dfreq=fpk-foffset
+! Q: Why is dphase always around +22.5 deg?
+  write(20,1030) foffset,fpk,dfreq,pha0,pha,dphase,ierr
+1030 format(6f8.1,i5)
 
 ! Compute CCF of sync waveform against the whole received waveform
 !  lstep=nsps
