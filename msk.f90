@@ -120,20 +120,18 @@ program msk
         if(sq.gt.smax) then
            smax=sq
            ipk=i
-           phapk=atan2(aimag(c(i)),real(c(i)))
         endif
      enddo
      if(smax.gt.sbest) then
         sbest=smax
         fbest=df*(ipk-1)
-        phabest=phapk
         lagbest=lag
      endif
   enddo
   if(fbest.gt.0.5*fs) fbest=fbest-fs
 ! NB: this computed phase will be off if frequency is inexact!
-  write(*,1060) fbest,57.2957795*phabest,lagbest,sbest
-1060 format('Measured  DF:',f8.1,'   Dpha:',f8.1,'   lag:',i5,   &
+  write(*,1060) fbest,lagbest,sbest
+1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
           '   Sbest:',f9.1)
 
 ! Generate basic symbol waveforms for "0" and "1" 
@@ -153,45 +151,48 @@ program msk
   sqpk=0.
   do idf=-12,12
      fshift=nint(fbest)+idf
-     phi=0.
-     dphi=twopi*dt*fshift
-     do i=1,nsps*nsym
-        phi=phi+dphi
-        c(i)=cy(i)*cmplx(cos(phi),-sin(phi))
-     enddo
+     do iph=-90,90,10
+        phi=iph/57.2957795
+        dphi=twopi*dt*fshift
+        do i=1,nsps*nsym
+           phi=phi+dphi
+           c(i)=cy(i)*cmplx(cos(phi),-sin(phi))
+        enddo
 
 ! Decode the waveform using matched-filter, integrate-and-dump correlators.
-     k=0
-     is=1
-     nerr=0
-     sq=0.
-     do j=1,nsym
-        s0=0.
-        s1=0.
-        do i=1,nsps
-           k=k+1
-           s0=s0 + x0(i)*aimag(c(k))
-           s1=s1 + x1(i)*aimag(c(k))
+        k=0
+        is=1
+        nerr=0
+        sq=0.
+        do j=1,nsym
+           s0=0.
+           s1=0.
+           do i=1,nsps
+              k=k+1
+              s0=s0 + x0(i)*aimag(c(k))
+              s1=s1 + x1(i)*aimag(c(k))
+           enddo
+           s0=2*s0/nsps
+           s1=2*s1/nsps
+           ssym=is*(s1-s0)
+           sq=sq + ssym*ssym
+           ibit=0
+           if(ssym.gt.0) ibit=1
+           if(ibit.ne.id(j)) nerr=nerr+1
+           if(ssym.gt.0) is=-is
         enddo
-        s0=2*s0/nsps
-        s1=2*s1/nsps
-        ssym=is*(s1-s0)
-        sq=sq + ssym*ssym
-        ibit=0
-        if(ssym.gt.0) ibit=1
-        if(ibit.ne.id(j)) nerr=nerr+1
-        if(ssym.gt.0) is=-is
+        if(sq.gt.sqpk) then
+           sqpk=sq
+           fpk=fshift
+           ierr=nerr
+           iphpk=iph
+        endif
      enddo
-     if(sq.gt.sqpk) then
-        sqpk=sq
-        fpk=fshift
-        ierr=nerr
-     endif
   enddo
   cerr='   '
   if(ierr.gt.0) cerr='***'
-  write(*,1022) fpk,ierr,cerr
-1022 format('Refined   DF:',f8.1/'Bit errors:',i4,1x,a3)
+  write(*,1022) fpk,iphpk,ierr,cerr
+1022 format('Refined   DF:',f8.1,'   Dpha:',i6/'Bit errors:',i4,1x,a3)
 
 ! Compute CCF of sync waveform against the whole received waveform
 !  lstep=nsps
