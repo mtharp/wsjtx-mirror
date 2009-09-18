@@ -17,6 +17,7 @@ program msk
   complex cs(1024)                   !Complex waveform for sync bits
   complex c(MAXSAM)                  !Work array
   complex cy(MAXSAM)                 !Full waveform for sync and data bits
+  complex z0,z1
   real ccf(-MAXSAM:MAXSAM)           !CCF of sync vector with received data
   character arg*12,cerr*3
   data isync13/Z'f9a80000'/          !13-bit sync
@@ -148,7 +149,10 @@ program msk
 
 ! Shift the received signal in frequency by small increments around
 ! fbest, looking for maximum sq.
-  sqpk=0.
+! NB: might be better to use the "fchisq" method?  (However, beware
+! the oscillatory nature of si and sq vs nn.)
+  dsqpk=0.
+  nn=0
   do idf=-12,12
      fshift=nint(fbest)+idf
      do iph=-90,90,10
@@ -163,36 +167,54 @@ program msk
         k=0
         is=1
         nerr=0
+        si=0.
         sq=0.
         do j=1,nsym
-           s0=0.
-           s1=0.
+           z0=0.
+           z1=0.
            do i=1,nsps
               k=k+1
-              s0=s0 + x0(i)*aimag(c(k))
-              s1=s1 + x1(i)*aimag(c(k))
+              z0=z0 + x0(i)*c(k)
+              z1=z1 + x1(i)*c(k)
            enddo
+           s0=real(z0)
+           s1=real(z1)
+           s0=2*s0/nsps
+           s1=2*s1/nsps
+           ssym=is*(s1-s0)
+           si=si + ssym*ssym
+
+           s0=aimag(z0)
+           s1=aimag(z1)
            s0=2*s0/nsps
            s1=2*s1/nsps
            ssym=is*(s1-s0)
            sq=sq + ssym*ssym
+
            ibit=0
            if(ssym.gt.0) ibit=1
            if(ibit.ne.id(j)) nerr=nerr+1
            if(ssym.gt.0) is=-is
         enddo
-        if(sq.gt.sqpk) then
+        dsq=sq-si
+        if(dsq.gt.dsqpk) then
+           dsqpk=dsq
            sqpk=sq
            fpk=fshift
            ierr=nerr
            iphpk=iph
         endif
+        nn=nn+1
+!        write(17,3001) nn,idf,iph,si,sq,dsq,nerr
+!3001    format(3i5,3f10.1,i5)
      enddo
   enddo
   cerr='   '
+  write(*,1022) fpk,iphpk,sqpk
+1022 format('Refined   DF:',f8.1,'   Dpha:',i6,18x,'sqpk:',f9.1)
   if(ierr.gt.0) cerr='***'
-  write(*,1022) fpk,iphpk,ierr,cerr
-1022 format('Refined   DF:',f8.1,'   Dpha:',i6/'Bit errors:',i4,1x,a3)
+  write(*,1024) ierr,cerr
+1024 format('Bit errors:',i4,1x,a3)
 
 ! Compute CCF of sync waveform against the whole received waveform
 !  lstep=nsps
