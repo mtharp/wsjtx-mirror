@@ -1,6 +1,6 @@
       subroutine ps64(dat,nfft,s)
 
-      parameter (NMAX=3500+2)
+      parameter (NMAX=6480+2)
       parameter (NHMAX=NMAX/2-1)
       real dat(nfft)
       real s(NHMAX)
