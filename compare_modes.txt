@@ -23,8 +23,8 @@ JT65  60 65FSK  72  RS(63,12)   4096 2.692  178 63x1 46.8  -24      ABC
                  2  none                                   -32      ?
 
 JT64  60 64FSK  78  RS(63,13)   6480 1.852  119  4x6 47.0  -26.2    ABCD?
-                48  RS(63,8)                               -27.8
-                30  RS(63,5)                               -28.9
+                48  RS(63,8)                               -27.6
+                30  RS(63,5)                               -28.8
                  2  none                                   -32      ?
 
 JT8   60  8FSK  78  K=16, r=1/4 4200 2.857   23  2x8 49.0  -23.9
@@ -43,10 +43,10 @@ messages are sent character by character, with no other encoding.
 Modulation is 4-FSK, keyed at 441 baud.  With adequate S/N (minimum
 ping strength (S+N)/N around 2 dB) the protocol is self synchronizing.
 Character transmission rate is 147 cps, so copying the message 
-"WA1ABC 26 KC0XYZ 2626 " requires ping duration 150 ms.
+"WA1ABC 26 KC0XYZ 2626 " requires ping duration of at least 150 ms.
 
 JTMS has the same basic design goals as FSK441.  User messages are
-"source encoded" to packets of n=30, 48, or 78 bits, using lossless
+"source encoded" into packets of n=30, 48, or 78 bits, using lossless
 compression.  Forward error correction (FEC) is added using a K=13,
 r=1/2 convolutional code.  A 32-bit synchronizing vector is appended.
 The number of transmitted symbols in a message is thus 2*(n+K-1)+32.
@@ -57,8 +57,8 @@ and 30-bit messages takes 101 ms and 77 ms, respectively.  The 32-bit
 sync vector makes start-of-message recognition very secure, and the
 strong FEC means that messages are usually copied exactly (or not at
 all).  Sensitivity is about the same as FSK441, but shorter pings can
-be used more effectively.   On-screen "garbage decodes" are much
-fewer than with FSK441.
+be used more effectively.  "Garbage decodes" are much fewer than with
+FSK441.
 
 
 Ionospheric Scatter on 6m
@@ -69,26 +69,26 @@ scatter and meteor scatter that is typically seen at distances
 800-2000 km on 50 MHz.  As in FSK441, user messages are sent character
 by character, with no further encoding.  Modulation is
 continuous-phase 44-FSK at 21.5 baud.  Each tone represents a distinct
-character from an "alphabet" of 43 characters, or a synchronizing
-tone; the sync tone is sent in 1 of every 3 symbol intervals.  No
-start-of-message synchronizing is provided.  The character
-transmission rate is 14.4 cps.  Messages can be decoded at signal
-levels as low as S/N = -10 dB (in a 2500 Hz reference noise
-bandwidth).
+character from an "alphabet" of 43 characters, or is a synchronizing
+tone.  The sync tone is sent in every 3rd symbol interval. The
+character transmission rate is 14.4 cps, and no start-of-message
+synchronizing is provided.  Messages can be decoded at signal levels
+as low as S/N = -10 dB in a 2500 Hz reference noise bandwidth.
 
-IScat has similar design goals to JT6M.  As in JTMS, messages are
-source-encoded to 30, 48, or 78 bits.  FEC redundancy is added using
-one of the Reed Solomon codes (63,5), (63,8), or (63,13), with 6-bit
-symbols.  Synchronizing information is appended as a sequence of eight
-tones forming an 8x8 "Costas array".  Different Costas arrays are used
-to denote 30-bit, 48-bit, and 78-bit messages.  Modulation is 64-FSK
-keyed at 23.4 baud, so the total bandwidth is 64*23.4 = 1500 Hz.
-Messages are repeated 9 times in each 27.3 s transmission.  Under
-conditions of additive white gaussian noise (AWGN) and Rayleigh
-fading, IScat signals are decodable on brief signal enhancements at
-S/N = -15 dB, and with weaker signals that average as little as -21
-dB.  Decoding is much more reliable than with JT6M, and on-screen
-decoding garbage is much less.
+IScat has similar design goals to JT6M, but achieves them more
+effectively.  As in JTMS, messages are source-encoded to 30, 48, or 78
+bits.  FEC redundancy is added using one of the Reed Solomon codes
+(63,5), (63,8), or (63,13), with 6-bit symbols.  Synchronizing
+information is appended as a sequence of eight tones forming an 8x8
+"Costas array".  Different Costas arrays are used to denote 30-bit,
+48-bit, and 78-bit messages.  Modulation is 64-FSK and keyed at 23.4
+baud, so the total bandwidth is 64*23.4 = 1500 Hz.  Messages are
+repeated 9 times in each 27.3 s transmission.  Under conditions of
+additive white gaussian noise (AWGN) and Rayleigh fading, IScat
+signals are decodable on brief signal enhancements at S/N = -15 dB,
+and with weaker signals that average as little as -21 dB.  Decoding is
+much more reliable than with JT6M, and on-screen decoding garbage is
+much less troublesome.
 
 
 
@@ -97,25 +97,24 @@ EME on VHF and UHF bands
 
 JT65 was designed for EME on the VHF bands, and has proven to be
 effective on UHF bands as well.  Messages are source-encoded to 72
-bits and carry Reed-Solomon error-control coding using a (63,12) code
-and 6-bit symbols.  Synchronizing information is sent as a
-pseudo-random pattern of 63 ON and 63 OFF intervals of a single tone.
-Encoded data is sent using 64-MSK modulation during the 63 sync-OFF
-intervals.  The keying rate is 2.69 baud, so a full transmission takes
-126/2.69 = 46.8 s.  Total bandwidth is 178 Hz (JT65A), 355 Hz (JT65B),
-and 711 Hz (JT65C).  Decoding is done using the Koetter-Vardy
-algebraic soft-decision algorithm.  Arbitrary JT65 messages can be
-reliably copied down to S/N = -24 dB.  The "Deep Search" decoder can
-copy messages involving callsigns found in a local database down to
--28 dB.  Shorthand codes are available to convey the simple messages
-"RO", "RRR", and "73", and these can be copied down to -30 dB or
-below.
+bits and carry Reed-Solomon error control using a (63,12) code and
+6-bit symbols.  Synchronizing information is sent as a pseudo-random
+pattern of 1266 ON/OFF intervals of a single tone.  Encoded data is
+sent using 64-MSK modulation during the 63 "sync OFF" intervals.  The
+keying rate is 2.69 baud, so a full transmission takes 126/2.69 = 46.8
+s.  Total bandwidth is 178 Hz (JT65A), 355 Hz (JT65B), and 711 Hz
+(JT65C).  Decoding is done using the Koetter-Vardy algebraic
+soft-decision algorithm.  Arbitrary JT65B messages can be reliably
+copied down to S/N = -24 dB.  The "Deep Search" decoder can copy
+messages involving callsigns found in a local database down to -28 dB.
+Shorthand codes are available to convey the simple messages "RO",
+"RRR", and "73", and these can be copied down to -30 dB or below.
 
-JT64 captures the best features of JT65 and adds further enhancements
+JT64 builds on the best features of JT65 and adds further enhancements
 and better performance.  In place of 72-bit messages it offers 30, 48,
 and 78-bit messages, as well as shorthands like those of JT655.  Only
 28% of transmitted energy is devoted to message synchronization,
-compared with 50% in JT65, yet sync performance is at least as good as
+compared with 50% in JT65 -- yet sync performance is at least as good as
 JT65.  Arbitrary add-on prefixes are allowed, rather than prefixes
-chosen from a restricted list.  The 78-bit messages can be copied down
+selected from a restricted list.  The 78-bit messages can be copied down
 to about -26 dB, and 30-bit messages down to -29 dB.
