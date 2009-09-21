@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "rs.h"
 
-void *rs5,*rs8,*rs13;
+static void *rs5,*rs8,*rs13;
 static int nn,kk,nroots;
 static int first=1;
 
@@ -18,9 +18,9 @@ void __stdcall RS_ENCODE(int *dgen, int *kk0, int *sent)
 
   if(first) {
     // Initialize parameters for three RS codecs
-    rs5=init_rs_int(6,67,3,1,58,0);       // nbit=30
-    rs8=init_rs_int(6,67,3,1,55,0);       // nbit=48
-    rs13=init_rs_int(6,67,3,1,50,0);      // nbit=78
+    rs5=init_rs_int(6,0x43,3,1,58,0);       // nbit=30
+    rs8=init_rs_int(6,0x43,3,1,55,0);       // nbit=48
+    rs13=init_rs_int(6,0x43,3,1,50,0);      // nbit=78
     nn=63;
     first=0;
   }
@@ -59,15 +59,15 @@ void __stdcall RS_DECODE(int *recd0, int *kk0, int *era0, int *numera0, int *dec
 
   if(first) {
     // Initialize parameters for three RS codecs
-    rs5=init_rs_int(6,67,3,1,58,0);       // nbit=30
-    rs8=init_rs_int(6,67,3,1,55,0);       // nbit=48
-    rs13=init_rs_int(6,67,3,1,50,0);      // nbit=78
+    rs5=init_rs_int(6,0x43,3,1,58,0);       // nbit=30
+    rs8=init_rs_int(6,0x43,3,1,55,0);       // nbit=48
+    rs13=init_rs_int(6,0x43,3,1,50,0);      // nbit=78
+    nn=63;
     first=0;
   }
 
   kk=*kk0;
   nroots=nn-kk;
-
   numera=*numera0;
   for(i=0; i<kk; i++) recd[i]=recd0[nn-1-i];
   for(i=0; i<nroots; i++) recd[kk+i]=recd0[nroots-1-i];

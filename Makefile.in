@@ -80,10 +80,9 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
 
 OBJS2F77 = ${SRCS2F77:.f=.o} 
 
-SRCS2C	= init_rs.c encode_rs.c decode_rs.c nhash.c \
-	cutil.c fthread.c tab.c vit213.c vit416.c
+SRCS2C	= nhash.c cutil.c fthread.c tab.c vit213.c vit416.c
 
-OBJS2C  = ${SRCS2C:.c=.o}
+OBJS2C  = ${SRCS2C:.c=.o} init_rs_int.o encode_rs_int.o decode_rs_int.o 
 
 SRCS3C	= ptt_unix.c igray.c wrapkarn.c
 OBJS3C  = ${SRCS3C:.c=.o}

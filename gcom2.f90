@@ -98,7 +98,7 @@ character*80 filetokillb
 character*80 pttport
 character*22 t0msg
 
-parameter (ND2MAX=120*12000)
+parameter (ND2MAX=60*12000)
 common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,iter,iyr,imo,ida,                        &
      ndecoding,ndecoding0,mousebutton,nhighpri,                       &
