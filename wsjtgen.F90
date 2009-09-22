@@ -98,7 +98,9 @@ subroutine wsjtgen
      call gen64(msg,mode64,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg0)
   else if(mode(1:4).eq.'JTMS') then
      call genms(msg,iwave,nwave,msgsent)
-  else
+  else if(mode(1:5).eq.'ISCAT') then
+     call geniscat(msg,iwave,nwave,sendingsh,msgsent)
+  else 
      print*,'Unknown Tx mode requested.'
 !     stop 'Unknown Tx mode requested.'
   endif

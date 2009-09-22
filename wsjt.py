@@ -2224,8 +2224,6 @@ msg7.pack(side=RIGHT, fill=X, padx=1)
 iframe6.pack(expand=1, fill=X, padx=4)
 frame.pack()
 
-ldate.after(100,update)
-
 lauto=0
 isync=1
 ntx.set(1)
@@ -2233,7 +2231,7 @@ ndepth.set(0)
 ndwspr.set(0)
 from WsjtMod import options
 options.defaults()
-ModeJT64()
+ModeJTMS()
 lookup()
 balloon.unbind(ToRadio)
 g.astro_geom0="+25+25"
@@ -2389,6 +2387,8 @@ stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSJT 8     by K1JT')
 from WsjtMod import astro
+ldate.after(100,update)
+
 from WsjtMod import specjt
 
 # SpecJT has a "mainloop", so does not return until it is terminated.

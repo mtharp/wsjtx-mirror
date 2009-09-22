@@ -37,7 +37,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Set up the JT64 sync pattern
-! Insert the 6x6 Costas array 3 times at low-frequency edge.
+! Insert the 6x6 Costas array 4 times at low-frequency edge.
   isync=-1
   do n=1,4
      i0=0
@@ -98,6 +98,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      iwave(i)=32767.0*sin(phi)
   enddo
 
+  i=ndata
   do j=1,6000                !Put another 0.5 sec of silence at end
      i=i+1
      iwave(i)=0
