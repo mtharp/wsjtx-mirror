@@ -62,6 +62,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 
   tsymbol=nsps/12000.d0
   nspecial=0
+  sendingsh=0
 10 if(nbit.eq.2) then
      nspecial=ishft(iu(1),-30)
      tsymbol=16384.d0/12000.d0
@@ -85,7 +86,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      j=int(t/tsymbol) + 1                    !Symbol number, 1-nsym
      if(j.ne.j0) then
         f=f0
-        if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+20*nspecial*dfgen
+        if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+21*nspecial*dfgen
         if(nspecial.eq.0) then
            k=k+1
            if(k.le.87) f=f0+(sent(k))*dfgen         !### Fix need for this ###
