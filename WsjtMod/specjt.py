@@ -140,7 +140,6 @@ def fdf_change(event):
         g.DFreq=df*(event.x-295.7) + fmid - 1500
         if nfr.get()==2: g.DFreq=2*df*(event.x-373.5) + fmid - 1270.5
         g.Freq=g.DFreq+1270.46
-        if g.mode=="WSPR": g.DFreq=g.DFreq+1270.46-1500.0
         t="Freq: %5d    DF: %5d  (Hz)" % (int(g.Freq),int(g.DFreq))
     else:
         g.PingTime=0.04*event.x
@@ -262,7 +261,7 @@ def set_frange():
 
 #---------------------------------------------------- decode_request
 def decode_request(event):
-    if (g.mode=='FSK441' or g.mode=='JT6M') and nspeed0.get()>5:
+    if (g.mode=='JTMS' or g.mode=='ISCAT') and nspeed0.get()>5:
 # If decoder is busy or we are not monitoring, ignore request
         if Audio.gcom2.ndecoding==0 and Audio.gcom2.monitoring:
             Audio.gcom2.mousebutton=event.num       #Left=1, Right=3
@@ -274,9 +273,8 @@ def decode_request(event):
 
 #---------------------------------------------------- freeze_decode
 def freeze_decode(event):
-    if (g.mode[:4]=='JT65' or g.mode[:3]=='JT2' or
-        g.mode[:3]=='JT4' or g.mode=="WSPR" or g.mode[:4]=='JT64') \
-       and nspeed0.get()<6:
+    if (g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT' or
+        g.mode[:3]=='JT8') and nspeed0.get()<6:
 # If decoder is busy or we are not monitoring, ignore request
         if Audio.gcom2.ndecoding==0 or Audio.gcom2.monitoring==0:
             set_freezedf(event)
@@ -381,9 +379,10 @@ def update():
         nfreeze0=int(Audio.gcom2.nfreeze)
 
     if g.mode!=mode0:
-        if (g.mode[:4]=="JT64" or g.mode[:5]=="ISCAT" or \
-            g.mode[:3]=="JT8") and nspeed0.get()>5: nspeed0.set(3)
-        if g.mode=="JTMS" and nspeed0.get()<6: nspeed0.set(6)
+        if (g.mode[:4]=="JT64" or g.mode[:3]=="JT8") and nspeed0.get()>5:
+            nspeed0.set(3)
+        if (g.mode=="JTMS" or g.mode[:5]=="ISCAT") and nspeed0.get()<6:
+            nspeed0.set(6)
         draw_axis()
         mode0=g.mode
 
