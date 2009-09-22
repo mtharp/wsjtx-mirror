@@ -11,7 +11,6 @@ subroutine genjt8(message,iwave,nwave,msgsent)
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
   integer sent(140)
-  integer sendingsh
   integer ic8(8)
   data ic8/3,6,2,4,5,0,7,1/
   data nsps/4200/
@@ -48,7 +47,6 @@ subroutine genjt8(message,iwave,nwave,msgsent)
 
 ! Set up necessary constants
   tsymbol=nsps/12000.d0
-  sendingsh=0
   dt=1.d0/12000.d0
   f0=1270.46d0
   dfgen=12000.d0/nsps
@@ -72,12 +70,8 @@ subroutine genjt8(message,iwave,nwave,msgsent)
      iwave(i)=32767.0*sin(phi)
   enddo
 
-  i=ndata
-  do j=1,6000                !Put another 0.5 sec of silence at end
-     i=i+1
-     iwave(i)=0
-  enddo
-  nwave=i
+  iwave(ndata+1:)=0
+  nwave=ndata+6000                          !0.5 s buffer before CW ID
 
   return
 end subroutine genjt8
