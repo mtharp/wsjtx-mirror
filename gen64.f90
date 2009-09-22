@@ -25,6 +25,8 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 
      if(nbit.eq.2) then
         iu=iu0
+        msgsent=message
+        go to 10
      else
 ! Apply FEC and do the channel encoding
         call chenc(cmode,nbit,iu0,gsym)
@@ -60,8 +62,8 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 
   tsymbol=nsps/12000.d0
   nspecial=0
-  if(nbit.eq.2) then
-     nspecial=iu(1)
+10 if(nbit.eq.2) then
+     nspecial=ishft(iu(1),-30)
      tsymbol=16384.d0/12000.d0
      nsym=32
      sendingsh=1                         !Flag for shorthand message
@@ -83,7 +85,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      j=int(t/tsymbol) + 1                    !Symbol number, 1-nsym
      if(j.ne.j0) then
         f=f0
-        if(nspecial.ne.0) f=f0+10*nspecial*dfgen
+        if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+20*nspecial*dfgen
         if(nspecial.eq.0) then
            k=k+1
            if(k.le.87) f=f0+(sent(k))*dfgen         !### Fix need for this ###
@@ -100,13 +102,6 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      iwave(i)=0
   enddo
   nwave=i
-!      call unpackmsg(dgen,msgsent)
-!      if(flip.lt.0.0) then
-!         do i=22,1,-1
-!            if(msgsent(i:i).ne.' ') goto 10
-!         enddo
-! 10      msgsent=msgsent(1:i)//' OOO'
-!      endif
   msgsent=message
   do i=22,1,-1
      if(msgsent(i:i).ne.' ') goto 20

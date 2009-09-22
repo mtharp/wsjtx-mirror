@@ -34,10 +34,10 @@ subroutine genms(message,iwave,nwave,msgsent)
      sent(14:13+ndata)=gsym(1:ndata)
 
 ! Decode channel symbols to recover source-encoded message bits
-     call chdec(cmode,nbit,gsym,iu)
+!     call chdec(cmode,nbit,gsym,iu)
   endif
 ! Remove source encoding, recover the human-readable message.
-  call srcdec(cmode,nbit,iu,msgsent)
+  call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Set up necessary constants
   nsps=8
