@@ -25,7 +25,8 @@ SRCS2F90 = a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	srcenc.f90 srcdec.f90 chenc.f90 chdec.f90 parse.f90 \
 	pk30.f90 pk48.f90 pk78.f90 pkcall.f90 unpkcall.f90 \
 	pkgrid.f90 unpkgrid.f90 pkpfx.f90 unpkpfx.f90 \
-	pktext.f90 unpktext.f90 msgtrim.f90 genms.f90 geniscat.f90
+	pktext.f90 unpktext.f90 msgtrim.f90 genms.f90 geniscat.f90 \
+	genjt8.f90
 
 SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f \
 	indexx.f s2shape.f flat2.f packbits.f unpackbits.f \

@@ -1,6 +1,6 @@
-subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
+subroutine genjt8(message,iwave,nwave,msgsent)
 
-! Generate a wavefile for the ISCAT mode.
+! Generate a JT8 wavefile.
 
   parameter (NMAX=60*12000)     !Max length of wave file
   character*24 message          !Message to be generated
@@ -10,55 +10,48 @@ subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
-  integer sent(71)
+  integer sent(140)
   integer sendingsh
   integer ic8(8)
-  data idum/-1/,nsps/512/
   data ic8/3,6,2,4,5,0,7,1/
+  data nsps/4200/
   data twopi/6.283185307d0/
   save
 
-  cmode='ISCAT'                                   !### temp ? ###
+  cmode='JT8'                                   !### temp ? ###
   call srcenc(cmode,message,nbit,iu0)
-! Message length will be nbit=2, 30, 48, or 78
-
-  if(nbit.eq.2) then
-     iu=iu0
-     msgsent=message
-     go to 10
-  else
-! Apply FEC and do the channel encoding
-     call chenc(cmode,nbit,iu0,gsym)
-! Decode channel symbols to recover source-encoded message bits
-!     call chdec(cmode,nbit,gsym,iu)
+! In JT8 mode, message length is always nbit=78
+  if(nbit.ne.78) then
+     print*,'genjt8, nbit=',nbit
+     stop
   endif
+
+! Apply FEC and do the channel encoding
+  call chenc(cmode,nbit,iu0,gsym)
+! Decode channel symbols to recover source-encoded message bits
+
+!        call chdec(cmode,nbit,gsym,iu)
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu0,msgsent)
 
-! Insert an 8x8 Costas array at the low-frequency edge.
+! Insert the 8x8 Costas array at beginning and end.
   do i=1,8
      sent(i)=ic8(i)
+     sent(i+132)=ic8(i)
   enddo
 
-  nsym=63+8
-  do i=1,63
+  nsym=140
+  k=0
+  do i=1,124
+     n=4*gsym(3*i-2) + 2*gsym(3*i-1) + gsym(3*i)
      sent(i+8)=gsym(i)
   enddo
 
-  tsymbol=nsps/12000.d0
-  nspecial=0
-  sendingsh=0
-10 if(nbit.eq.2) then
-     nspecial=ishft(iu(1),-30)
-!     tsymbol=16384.d0/12000.d0
-!     nsym=32
-     sendingsh=1                         !Flag for shorthand message
-! ### go to xxx
-  endif
-
 ! Set up necessary constants
+  tsymbol=nsps/12000.d0
+  sendingsh=0
   dt=1.d0/12000.d0
-  f0=700.d0
+  f0=1270.46d0
   dfgen=12000.d0/nsps
   t=0.d0
   phi=0.d0
@@ -71,11 +64,8 @@ subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
      j=int(t/tsymbol) + 1                    !Symbol number, 1-nsym
      if(j.ne.j0) then
         f=f0
-        if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+21*nspecial*dfgen
-        if(nspecial.eq.0) then
-           k=k+1
-           if(k.le.87) f=f0+(sent(k))*dfgen         !### Fix need for this ###
-        endif
+        k=k+1
+        if(k.le.140) f=f0+(sent(k))*dfgen         !### Fix need for this ###
         dphi=twopi*dt*f
         j0=j
      endif
@@ -83,13 +73,12 @@ subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
      iwave(i)=32767.0*sin(phi)
   enddo
 
-  do nrpt=2,9
-     i0=(nrpt-1)*ndata
-     do i=1,ndata
-        iwave(i0+i)=iwave(i)
-     enddo
+  i=ndata
+  do j=1,6000                !Put another 0.5 sec of silence at end
+     i=i+1
+     iwave(i)=0
   enddo
-  nwave=9*ndata
+  nwave=i
 
   return
-end subroutine geniscat
+end subroutine genjt8
