@@ -2,7 +2,7 @@ Mode T/R  Mod  Bits FEC         nsps  baud  BW  Sync  TxT   S/N     Sub-modes
 ------------------------------------------------------------------------------
 Meteor scatter:
 
-FSK441 30 4FSK   *  none          25   441 1764   *    *    -1
+FSK441 30 4FSK   *  none          25   441 1764   *  0.136* -1
 
 JTMS  30   MSK  78  K=13, r=1/2    8  1500 2250 1x28 0.139  -1 ? 
                 48  K=13, r=1/2                      0.099  -1 ? 

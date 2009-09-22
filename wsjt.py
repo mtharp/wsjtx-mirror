@@ -662,15 +662,15 @@ def ModeJT64C(event=NONE):
         mode.set("JT64C")
         ModeJT64()
 
-#------------------------------------------------------ ModeIscat
-def ModeIscat(event=NONE):
+#------------------------------------------------------ ModeISCAT
+def ModeISCAT(event=NONE):
     global slabel,isync,isync6m,itol
-    if g.mode != "Iscat":
+    if g.mode != "ISCAT":
         if lauto: toggleauto()
         cleartext()
         ModeJTMS()
         lab2.configure(text='FileID            T      Width      dB        DF')
-        mode.set("Iscat")
+        mode.set("ISCAT")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
         shmsg.configure(state=DISABLED)
@@ -723,7 +723,7 @@ WSJT8 is a weak signal communications program.  It supports
 these operating modes:
 
   1. JT64  - EME
-  2. Iscat - optimized for meteor and ionospheric scatter on 50 MHz
+  2. ISCAT - optimized for meteor and ionospheric scatter on 50 MHz
   3. JTMS  - fast mode for meteor scatter
   4. JT8   - for HF
   5. ECHO  - EME Echo testing
@@ -759,7 +759,7 @@ Shift+F5	Examples of minimal JT64 QSOs
 F6	Open next file in directory
 Shift+F6	Decode all wave files in directory
 F7	Set JTMS mode
-Shift+F7	Set Iscat mode
+Shift+F7	Set ISCAT mode
 F8	Set JT64A mode
 Shift+F8	Set JT64B mode
 Ctrl+F8	Set JT64C mode
@@ -787,21 +787,6 @@ Alt+S	Stop Monitoring or Decoding
 Alt+V	Save Last
 Alt+X	Exclude
 Alt+Z	Toggle Zap
-"""
-    Label(scwid,text=t,justify=LEFT).pack(padx=20)
-    scwid.focus_set()
-
-#------------------------------------------------------ wspr_msgs
-def wspr_msgs(event=NONE):
-    scwid=Toplevel(root)
-    scwid.geometry(msgpos())
-    if g.Win32: scwid.iconbitmap("wsjt.ico")
-    t="""
-Examples of "partially canned" message parameters
-
-wx:    CLEAR CLOUDY RAIN SNOW
-temp:  76 F    -5 C
-wind:  CALM BREEZES WINDY
 """
     Label(scwid,text=t,justify=LEFT).pack(padx=20)
     scwid.focus_set()
@@ -842,7 +827,7 @@ use the following standard procedures and *do not* exchange pertinent
 information by other means (e.g., internet, telephone, ...) while the
 QSO is in progress!
 
-JTMS or Iscat:   If you have received
+JTMS or ISCAT:   If you have received
     ... less than both calls from the other station, send both calls.
     ... both calls, send both calls and your signal report.
     ... both calls and signal report, send R and your report.
@@ -1062,7 +1047,7 @@ def defaults():
     lclip.configure(text='Clip   '+str(iclip))
     itol=5
     ltol.configure(text='Tol    '+str(ntol[itol]))
-    if g.mode=="Iscat":
+    if g.mode=="ISCAT":
         isync=-10
         itol=4
         ltol.configure(text='Tol    '+str(ntol[itol]))
@@ -1201,7 +1186,7 @@ def GenStdMsgs(event=NONE):
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
-    if mode.get()=="JTMS" or mode.get()=="Iscat":
+    if mode.get()=="JTMS" or mode.get()=="ISCAT":
         r=report.get()
         tx1.insert(0,setmsg(options.tx1.get(),r))
         tx2.insert(0,setmsg(options.tx2.get(),r))
@@ -1209,8 +1194,7 @@ def GenStdMsgs(event=NONE):
         tx4.insert(0,setmsg(options.tx4.get(),r))
         tx5.insert(0,setmsg(options.tx5.get(),r))
         tx6.insert(0,setmsg(options.tx6.get(),r))
-    elif mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-               mode.get()[:3]=='JT4':
+    elif mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
         if options.MyCall.get()!= MyCall0 or \
                options.addpfx.get()!= addpfx0 or ToRadio.get()!=ToRadio0:
             MyCall0=options.MyCall.get()
@@ -1232,7 +1216,7 @@ def GenStdMsgs(event=NONE):
         Audio.gcom2.t0msg=(t0+' '*22)[:22]
 #        nplain,naddon,ndiff=Audio.chkt0()
 #        if nplain==0 and naddon==0 and ndiff==0:
-#            t0=t0 + " "+options.MyGrid.get()[:4]
+        t0=t0 + " "+options.MyGrid.get()[:4]
         tx1.insert(0,t0.upper())
         tx2.insert(0,tx1.get()+" OOO")
         tx3.insert(0,"RO")
@@ -1243,49 +1227,7 @@ def GenStdMsgs(event=NONE):
         Audio.gcom2.t0msg=(t0+' '*22)[:22]
 #        nplain,naddon,ndiff=Audio.chkt0()
 #        if nplain==0 and naddon==0 and ndiff==0:
-#            t0=t0 + " "+options.MyGrid.get()[:4]
-        tx6.insert(0,t0.upper())
-        altmsg=0
-    elif mode.get()[:4]=='JT64':
-        if options.MyCall.get()!= MyCall0 or \
-               options.addpfx.get()!= addpfx0 or ToRadio.get()!=ToRadio0:
-            MyCall0=options.MyCall.get()
-            addpfx0=options.addpfx.get()
-            ToRadio0=ToRadio.get()
-            t0=("SM5BSZ "+options.MyCall.get()).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#            nplain,naddon,ndiff=Audio.chkt0()
-#            if nplain==1:
-#                MsgBox("Bad 'MyCall' or bad prefix/suffix?\nPlease check on Setup | Options screen.")
-#                options1()
-            t0=("SM5BSZ "+ToRadio0).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#            nplain,naddon,ndiff=Audio.chkt0()
-#            if nplain==1:
-#                MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
-            
-        t0=("<" + ToRadio.get() + "> "+options.MyCall.get()).upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-##        nplain,naddon,ndiff=Audio.chkt0()
-##        if nplain==0 and naddon==0 and ndiff==0:
-##            t0=t0 + " "+options.MyGrid.get()[:4]
-        tx1.insert(0,t0.upper())
-        r=report.get()
-        t2=(ToRadio.get() + " <"+options.MyCall.get() + "> " + r).upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-        tx2.insert(0,t2)
-        t3=(ToRadio.get() + " <"+options.MyCall.get() + "> R " + r).upper()
-        tx3.insert(0,t3)
-        t4=("<" + ToRadio.get() + "> " + options.MyCall.get() + " RRR").upper()
-        tx4.insert(0,t4)
-        t5=("73 DE "+options.MyCall.get()+ " "+options.MyGrid.get()[:4]).upper()
-        tx5.insert(0,t5)
-
-#        t0="CQ " + options.MyCall.get().upper()
-#        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#        nplain,naddon,ndiff=Audio.chkt0()
-#        if nplain==0 and naddon==0 and ndiff==0:
-#            t0=t0 + " "+options.MyGrid.get()[:4]
+        t0=t0 + " "+options.MyGrid.get()[:4]
         tx6.insert(0,t0.upper())
         altmsg=0
     
@@ -1456,7 +1398,7 @@ def plot_small():
         x=int(i*df*fac)
         xy.append(x)
         psavg=Audio.gcom2.psavg[i]
-        if mode.get()=="Iscat": psavg=psavg + 27.959
+        if mode.get()=="ISCAT": psavg=psavg + 27.959
         n=int(150.0-5*psavg)
         xy.append(n)
         if mode.get()=='JTMS':    
@@ -1533,7 +1475,7 @@ def update():
             graph2.create_text(13,109,anchor=W,text="Dgrd:%5.1f" % g.Dgrd,font=g2font)
 
     if (mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8' or \
-        mode.get()[:5]=='Iscat') and g.freeze_decode:
+        mode.get()[:5]=='ISCAT') and g.freeze_decode:
         itol=2
         ltol.configure(text='Tol    '+str(50))
         Audio.gcom2.dftolerance=50
@@ -1567,7 +1509,7 @@ def update():
     if mode.get() != g.mode or first:
         if mode.get()=="JTMS":
             msg2.configure(bg='#FFFF00')
-        elif mode.get()=="Iscat":
+        elif mode.get()=="ISCAT":
             msg2.configure(bg='#FF00FF')
         elif mode.get()[:4]=="JT64":
             msg2.configure(bg='#00FFFF')
@@ -1716,7 +1658,7 @@ def update():
     g.mode=mode.get()
     g.report=report.get()
     if mode.get()=='JTMS': isyncMS=isync
-    elif mode.get()=='Iscat': isync6m=isync
+    elif mode.get()=='ISCAT': isync6m=isync
     elif mode.get()[:4]=='JT64': isync65=isync
     Audio.gcom1.txfirst=TxFirst.get()
     try:
@@ -1869,11 +1811,11 @@ else:
 if (sys.platform=='darwin') :
     # accelerators break radiobutton behaviour in Darwin
     modemenu.add_radiobutton(label = 'JTMS', variable=mode,command = ModeJTMS, state=NORMAL)
-    modemenu.add_radiobutton(label = 'Iscat', variable=mode, command = ModeIscat)
+    modemenu.add_radiobutton(label = 'ISCAT', variable=mode, command = ModeISCAT)
     modemenu.add_radiobutton(label = 'JT64A', variable=mode, command = ModeJT64A)
 else:
     modemenu.add_radiobutton(label = 'JTMS', variable=mode,command = ModeJTMS, state=NORMAL, accelerator='F7')
-    modemenu.add_radiobutton(label = 'Iscat', variable=mode, command = ModeIscat,accelerator='Shift+F7')
+    modemenu.add_radiobutton(label = 'ISCAT', variable=mode, command = ModeISCAT,accelerator='Shift+F7')
     modemenu.add_radiobutton(label = 'JT64A', variable=mode, command = ModeJT64A,accelerator='F8')
 
 modemenu.add_radiobutton(label = 'JT8', variable=mode, command = ModeJT8)
@@ -2005,7 +1947,6 @@ root.bind_all('<F1>', shortcuts)
 root.bind_all('<Shift-F1>', mouse_commands)
 root.bind_all('<Control-F1>', about)
 root.bind_all('<F2>', options1)
-root.bind_all('<Shift-F2>',wspr_msgs)
 root.bind_all('<F3>', txmute)
 root.bind_all('<F4>', clrToRadio)
 root.bind_all('<Alt-F4>', quit)
@@ -2017,7 +1958,7 @@ root.bind_all('<F7>', ModeJTMS)
 root.bind_all('<F8>', ModeJT64A)
 #root.bind_all('<Shift-F8>', ModeJT65B)
 #root.bind_all('<Control-F8>', ModeJT65C)
-root.bind_all('<Shift-F7>', ModeIscat)
+root.bind_all('<Shift-F7>', ModeISCAT)
 #root.bind_all('<F9>', ModeEcho)
 root.bind_all('<F10>', showspecjt)
 root.bind_all('<Shift-F10>', astro1)
@@ -2320,7 +2261,7 @@ try:
             mode.set(value)
             if value=='JTMS':
                 ModeJTMS()
-            elif value=='Iscat':
+            elif value=='ISCAT':
                 ModeJT6M()
                 ModeWSPR()
             elif value=='JT64A':
@@ -2435,7 +2376,7 @@ except:
 
 g.mode=mode.get()
 if mode.get()=='JTMS': isync=isyncMS
-elif mode.get()=='Iscat': isync=isync6m
+elif mode.get()=='ISCAT': isync=isync6m
 elif mode.get()[:4]=='JT64': isync=isync65
 lsync.configure(text=slabel+str(isync))
 lclip.configure(text='Clip   '+str(iclip))

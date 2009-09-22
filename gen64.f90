@@ -29,10 +29,10 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 ! Apply FEC and do the channel encoding
         call chenc(cmode,nbit,iu0,gsym)
 ! Decode channel symbols to recover source-encoded message bits
-        call chdec(cmode,nbit,gsym,iu)
+!        call chdec(cmode,nbit,gsym,iu)
      endif
 ! Remove source encoding, recover the human-readable message.
-     call srcdec(cmode,nbit,iu,msgsent)
+     call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Set up the JT64 sync pattern
 ! Insert the 6x6 Costas array 3 times at low-frequency edge.
