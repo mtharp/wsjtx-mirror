@@ -2260,12 +2260,11 @@ try:
             if value=='JTMS':
                 ModeJTMS()
             elif value=='ISCAT':
-                ModeJT6M()
-                ModeWSPR()
+                ModeISCAT()
             elif value=='JT64A':
                 ModeJT64A()
             elif value[:3]=='JT8':
-                ModeJT4()
+                ModeJT8()
         elif key == 'MyCall': options.MyCall.set(value)
         elif key == 'MyGrid': options.MyGrid.set(value)
         elif key == 'HisCall':
