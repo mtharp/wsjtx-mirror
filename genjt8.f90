@@ -43,8 +43,7 @@ subroutine genjt8(message,iwave,nwave,msgsent)
   nsym=140
   k=0
   do i=1,124
-     n=4*gsym(3*i-2) + 2*gsym(3*i-1) + gsym(3*i)
-     sent(i+8)=gsym(i)
+     sent(i+8)=4*gsym(3*i-2) + 2*gsym(3*i-1) + gsym(3*i)
   enddo
 
 ! Set up necessary constants
