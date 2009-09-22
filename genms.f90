@@ -42,7 +42,6 @@ subroutine genms(message,iwave,nwave,msgsent)
 ! Set up necessary constants
   nsps=8
   dt=1.d0/12000.d0
-  tsymbol=nsps*dt
   f0=1500.d0 
   dfgen=750.d0
   t=0.d0
@@ -65,11 +64,7 @@ subroutine genms(message,iwave,nwave,msgsent)
      iwave(i)=32767.d0*sin(phi)
   enddo
 
-!  tmsg=nsym*nsps*dt
-!  write(*,3000) iu0,nbit,nsync,ndata,nsym,tmsg,msgsent
-!3000 format(3z9,2i3,2i4,f6.3,1x,a24)
-
-! Make some pings
+! ###  Make some pings ###
   do i=1,nwave
      iping=i/(3*12000)
      ip=mod(iping,3)

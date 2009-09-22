@@ -14,9 +14,7 @@ subroutine savedata
   equivalence (nfmt2,n4)
   save
 
-  if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or. mode(1:3).eq.'JT4'   &
-       .or. mode(1:2).eq.'CW' .or. mode(1:4).eq.'WSPR' .or.                &
-       mode(1:4).eq.'JT64') then
+  if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
      call get_fname(hiscall,iyr,imo,ida,ntime,lauto,fname0)
      ibuf1=ibuf0
      ibuf2=ibuf
@@ -34,47 +32,18 @@ subroutine savedata
 1 jza=2048*(ibuf2-ibuf1)
   if(jza.lt.0) jza=jza+NRxMax
   if(jza.lt.120000) go to 999           !Don't save files less than 10 s
-  if(jza.gt.120*12000) go to 999         !Don't save if something's fishy
+  if(jza.gt.60*12000) go to 999         !Don't save if something's fishy
   k=2048*(ibuf1-1)
-  if(mode(1:4).ne.'JT65' .and. mode(1:3).ne.'JT2' .and. mode(1:3).ne.'JT4'   &
-       .and. mode(1:4).ne.'WSPR' .and. mode(1:2).ne.'CW' .and.               &
-       mode(1:4).ne.'JT64') k=k+3*2048
-  if(mode(1:4).ne.'JT65' .and. mode(1:3).ne.'JT2' .and. mode(1:3).ne.'JT4'   &
-       .and. mode(1:4).ne.'WSPR' .and. mode(1:2).ne.'CW' .and.               &
-       mode(1:4).ne.'JT64' .and. jza.gt.30*12000) then
-     k=k + (jza-30*12000)
-     if(k.gt.NRxMax) k=k-NRxMax
-     jza=30*12000
+  if(mode(1:4).eq.'JTMS' .or. mode(1:5).eq.'ISCAT') then
+     k=k+3*2048
+     if(jza.gt.30*12000) then
+        k=k + (jza-30*12000)
+        if(k.gt.NRxMax) k=k-NRxMax
+        jza=30*12000
+     endif
   endif
 
-! Check timestamps of buffers used for this data
-  msbig=0
-  i=k/2048
-  if(msmax.eq.0) i=i+1
-  nz=jza/2048
-  if(msmax.eq.0) then
-     i=i+1
-     nz=nz-1
-  endif
-  do n=1,nz
-     i=i+1
-     if(i.gt.1024) i=i-1024
-     i0=i-1
-     if(i0.lt.1) i0=i0+1024
-     dtt=tbuf(i)-tbuf(i0)
-     ms=0
-     if(dtt.gt.0.d0 .and. dtt.lt.80000.0) ms=1000.d0*dtt
-     msbig=max(ms,msbig)
-  enddo
-
-  if(ndebug.gt.0 .and. msbig.gt.msmax .and. msbig.gt.330) then
-     call cs_lock('savedata')
-     write(*,1020) msbig
-1020 format('Warning: interrupt service interval',i11,' ms.')
-     call cs_unlock
-  endif
-  msmax=max(msbig,msmax)
-
+! Scale data by "digital gain" and move to d2a().
   do i=1,jza
      k=k+1
      if(k.gt.NRxMax) k=k-NRxMax
