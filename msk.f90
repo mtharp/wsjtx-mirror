@@ -3,11 +3,17 @@ program msk
 ! Simulates an MSK waveform containing a sync vector and data of 
 ! specified length.
 
-! Decodes the waveform using matched-filter correlators against the
-! basic symbol waveforms for "0" amd "1".
+! Finds sync status (DF and DT) by multiplying received waveform by 
+! conjugate of sync pattern, at a range of lags, computing FFT at 
+! each lag.  Refine these values and find initial phase, PHA0, by
+! looping over small increments in DF and PHA0.  
 
-! Computes CCF of the sync-vector waveform with the full waveform, to see how
-! well the sync can be detected in random (noiseless) data.
+! Demodulates the waveform by using matched-filter correlators against 
+! the basic symbol waveforms for "0" amd "1".  
+
+! Counts the number of hard-decision, single-bit errors in the demodulated
+! signal.  The signal should decode correctly if the fraction of such
+! errors is less than about 15%.
 
   parameter (MAXSYM=212)             !Max number of symbols (sync + data)
   parameter (MAXSAM=32*MAXSYM)       !Max number of samples
@@ -232,17 +238,5 @@ program msk
 ! Q: Why is dphase always around +22.5 deg?
   write(20,1030) foffset,fpk,dfreq,pha0,pha,dphase,ierr
 1030 format(6f8.1,i5)
-
-! Compute CCF of sync waveform against the whole received waveform
-!  lstep=nsps
-  lstep=1
-  do lag=0,ndata*nsps,lstep
-     sum=0.
-     do i=1,nsps*nsync
-        sum=sum + real(cs(i))*aimag(c(i+lag))
-     enddo
-     ccf(lag)=2*sum/(nsps*nsync)
-     ccf(-lag)=ccf(lag)
-  enddo
 
 999 end program msk
