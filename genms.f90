@@ -1,6 +1,6 @@
 subroutine genms(message,txsnrdb,iwave,nwave,msgsent)
 
-! Generate a JT8 wavefile.
+! Generate a JTMS wavefile.
 
   parameter (NMAX=60*12000)     !Max length of wave file
   character*24 message          !Message to be generated
@@ -9,8 +9,11 @@ subroutine genms(message,txsnrdb,iwave,nwave,msgsent)
   real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol,txsnrdb
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
-  integer gsym(372)             !372 is needed for JT8 mode
-  integer sent(193)
+  integer gsym(372)             !(372 is needed for JT8 mode)
+  integer sent(212)
+  integer is32(32)
+  data is32/0,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,1,      &
+            1,1,0,0,0,0,0,1,1,1,0,1/ 
   data twopi/6.283185307d0/
   save
 
@@ -19,19 +22,21 @@ subroutine genms(message,txsnrdb,iwave,nwave,msgsent)
 
 ! Apply FEC and do the channel encoding
   call chenc(cmode,nbit,iu0,gsym)
-! Decode channel symbols to recover source-encoded message bits
 
+! Decode channel symbols to recover source-encoded message bits
 !        call chdec(cmode,nbit,gsym,iu)
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu0,msgsent)
 
+! Append the encoded data after the 32-bit sync vector
   ndata=2*(nbit+12)
-  nsync=0
+  nsync=32
   nsym=ndata+nsync
-  sent(1:ndata)=gsym(1:ndata)
-  nsps=8
+  sent(1:nsync)=is32
+  sent(nsync+1:nsym)=gsym(1:ndata)
 
 ! Set up necessary constants
+  nsps=8
   tsymbol=nsps/12000.d0
   dt=1.d0/12000.d0
   f0=1500.d0

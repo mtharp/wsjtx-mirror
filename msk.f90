@@ -64,6 +64,7 @@ program msk
   write(*,1004) foffset,pha0
 1004 format('Generated DF:',f8.1,'   Dpha:',f8.1)
 
+! First, do several setup tasks.
 ! Unpack the sync bits into the first nsync positions of id()
   id=0
   n=isync
@@ -91,6 +92,18 @@ program msk
         phi=phi+dphi
         cs(k)=cmplx(cos(phi),sin(phi))
      enddo
+  enddo
+
+! Generate basic symbol waveforms for "0" and "1" 
+  phi0=0.
+  phi1=0.
+  dphi0=twopi*dt*f0
+  dphi1=twopi*dt*f1
+  do i=1,nsps
+     phi0=phi0+dphi0
+     phi1=phi1+dphi1
+     x0(i)=sin(phi0)
+     x1(i)=sin(phi1)
   enddo
 
 ! Generate the whole Tx waveform, sync + data, using foffset and pha0.
@@ -141,18 +154,6 @@ program msk
   write(*,1060) fbest,lagbest,sbest
 1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
           '   Sbest:',f9.1)
-
-! Generate basic symbol waveforms for "0" and "1" 
-  phi0=0.
-  phi1=0.
-  dphi0=twopi*dt*f0
-  dphi1=twopi*dt*f1
-  do i=1,nsps
-     phi0=phi0+dphi0
-     phi1=phi1+dphi1
-     x0(i)=sin(phi0)
-     x1(i)=sin(phi1)
-  enddo
 
 ! Shift the received signal in frequency by small increments around
 ! fbest, looking for maximum sq.
