@@ -207,17 +207,13 @@ unsigned int endstate            /* Encoder ending state */
   memset(data,0,(nbits+7)/8); /* round up in case nbits % 8 != 0 */
 
   for(i=nbits-1;i >= 0;i--){
-    //    int a0,a1;
     pp -= D;
     ipp -= D;
     m0=endstate >> LOGLONGBITS;
     m1=1L << (endstate & (LONGBITS-1));
     if(pp[m0] & m1) {
-      //      a0=nmetric[endstate];
       endstate |= (1 << (K-1));
-      //      a1=nmetric[endstate];
       data[i>>3] |= 0x80 >> (i&7);
-      //      printf("B  %d  %d  %d  %d\n",*metric,i,a0,a1);
     }
     endstate >>= 1;
   }

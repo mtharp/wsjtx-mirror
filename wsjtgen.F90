@@ -97,7 +97,7 @@ subroutine wsjtgen
      mode64=1
      call gen64(msg,mode64,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg0)
   else if(mode(1:4).eq.'JTMS') then
-     call genms(msg,iwave,nwave,msgsent)
+     call genms(msg,txsnrdb,iwave,nwave,msgsent)
   else if(mode(1:5).eq.'ISCAT') then
      call geniscat(msg,iwave,nwave,sendingsh,msgsent)
   else if(mode(1:3).eq.'JT8') then
@@ -136,34 +136,14 @@ subroutine wsjtgen
   endif
   
 900 sending=txmsg
-  if((mode(1:4).eq.'JT65' .or. mode(1:4).eq.'JT64' .or. &
-       mode(1:4).eq.'WSPR') .and. sendingsh.ne.1) sending=msgsent
+  if(mode(1:4).eq.'JT64' .and. sendingsh.ne.1) sending=msgsent
   do i=NMSGMAX,1,-1
      if(sending(i:i).ne.' '.and. ichar(sending(i:i)).ne.0) go to 910
   enddo
   i=1
 910 nmsg=i
 
-  if(lcwid .and. (mode.eq.'FSK441' .or. mode(1:4).eq.'JT6M')) then
-!  Generate and insert the CW ID.
-     wpm=25.
-     freqcw=440.
-     idmsg=MyCall//'          '
-     call gencwid(idmsg,wpm,freqcw,samfacout,icwid,ncwid)
-     k=0
-     do i=ncwid+1,int(trperiod*fsample)
-        k=k+1
-        if(k.gt.nwave) k=k-nwave
-        iwave(i)=iwave(k)
-     enddo
-     do i=1,ncwid
-        iwave(i)=icwid(i)
-     enddo
-     nwave=trperiod*fsample
-  endif
-
 999 continue
   call cs_unlock
   return
 end subroutine wsjtgen
-

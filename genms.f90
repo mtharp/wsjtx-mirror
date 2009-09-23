@@ -1,85 +1,90 @@
-subroutine genms(message,iwave,nwave,msgsent)
+subroutine genms(message,txsnrdb,iwave,nwave,msgsent)
 
-! Generate a JTMS wavefile.
+! Generate a JT8 wavefile.
 
-  parameter (NMAX=30*12000)     !Max length of wave file
+  parameter (NMAX=60*12000)     !Max length of wave file
   character*24 message          !Message to be generated
   character*24 msgsent          !Message as it will be received
-  character*5 cmode
-  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol
+  character cmode*5
+  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol,txsnrdb
   integer*2 iwave(NMAX)         !Generated wave file
-  integer iu0(3),iu(3)          !Source-encoded message
+  integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
   integer sent(193)
-  integer ibark(13)
-  data ibark/1,1,1,1,1,0,0,1,1,0,1,0,1/
-! MPS28 =1000111100010001000100101101
   data twopi/6.283185307d0/
   save
 
-  cmode='JTMS'                                   !### temp? ###
-  nsync=13
+  cmode='JTMS'                                   !### temp ? ###
   call srcenc(cmode,message,nbit,iu0)
-! Message length will be nbit=2, 30, 48, or 78
 
-  if(nbit.eq.2) then
-     iu=iu0
-  else
 ! Apply FEC and do the channel encoding
-     call chenc(cmode,nbit,iu0,gsym)
-     ndata=2*(nbit+12)
-     nsym=nsync+ndata
-! Insert the Barker sequence
-     sent(:13)=ibark
-     sent(14:13+ndata)=gsym(1:ndata)
-
+  call chenc(cmode,nbit,iu0,gsym)
 ! Decode channel symbols to recover source-encoded message bits
-!     call chdec(cmode,nbit,gsym,iu)
-  endif
+
+!        call chdec(cmode,nbit,gsym,iu)
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu0,msgsent)
 
-! Set up necessary constants
+  ndata=2*(nbit+12)
+  nsync=0
+  nsym=ndata+nsync
+  sent(1:ndata)=gsym(1:ndata)
   nsps=8
+
+! Set up necessary constants
+  tsymbol=nsps/12000.d0
   dt=1.d0/12000.d0
-  f0=1500.d0 
+  f0=1500.d0
   dfgen=750.d0
   t=0.d0
-  phi=0.d0
   k=0
-  j0=0
-  nwave=30*12000
-  do i=1,nwave
-     j=mod((i-1)/nsps,nsym)+1                !Symbol number, 1 to nsym
-     if(j.ne.j0) then
-        if(sent(j).eq.1) then
-           f=f0 + 0.5d0*dfgen
-        else
-           f=f0 - 0.5d0*dfgen
-        endif
-        dphi=twopi*f*dt
-        j0=j
+  phi=0.d0
+  do j=1,nsym
+     if(sent(j).eq.1) then
+        f=f0 + 0.5d0*dfgen
+     else
+        f=f0 - 0.5d0*dfgen
      endif
-     phi=phi+dphi
-     iwave(i)=32767.d0*sin(phi)
+     dphi=twopi*f*dt
+     do i=1,nsps
+        k=k+1
+        phi=phi+dphi
+        iwave(k)=32767.0*sin(phi)
+     enddo
   enddo
 
-! ###  Make some pings ###
-  do i=1,nwave
-     iping=i/(3*12000)
-     ip=mod(iping,3)
-     w=0.05*(ip+1)
-     ig=iping/3
-     amp=((3.0-ig)/3.0)**0.5
-     t0=dt*(iping+0.5)*(3*12000)
-     t=(i*dt-t0)/w
-     if(t.lt.0) then
-        fac=0.
-     else
-        fac=2.718*t*exp(-t)
-     endif
-     iwave(i)=fac*amp*iwave(i)
+  nrpt=29.5*12000.0/k
+  do irpt=2,nrpt
+     do i=1,nsps*nsym
+        k=k+1
+        iwave(k)=iwave(i)
+     enddo
   enddo
+
+  iwave(k+1:)=0
+  nwave=k
+
+  if(txsnrdb.lt.40.d0) then
+! ###  Make some pings ###
+     do i=1,nwave
+        iping=i/(3*12000)
+        if(iping.ne.iping0) then
+           ip=mod(iping,3)
+           w=0.05*(ip+1)
+           ig=(iping-1)/3
+           amp=sqrt((3.0-ig)/3.0)
+           t0=dt*(iping+0.5)*(3*12000)
+           iping0=iping
+        endif
+        t=(i*dt-t0)/w
+        if(t.lt.0.d0 .and. t.lt.10.d0) then
+           fac=0.
+        else
+           fac=2.718*t*dexp(-t)
+        endif
+        iwave(i)=fac*amp*iwave(i)
+     enddo
+  endif
 
   return
 end subroutine genms
