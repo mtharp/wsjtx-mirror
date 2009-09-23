@@ -104,7 +104,7 @@ subroutine wsjtgen
      call genjt8(msg,iwave,nwave,msgsent)
   else 
      print*,'Unknown Tx mode requested.'
-!     stop 'Unknown Tx mode requested.'
+     stop 'Unknown Tx mode requested.'
   endif
 
   if(lcwid) then
