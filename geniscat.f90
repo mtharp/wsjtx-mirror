@@ -13,8 +13,8 @@ subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
   integer sent(71)
   integer sendingsh
   integer ic8(8)
+  data ic8/3,6,2,4,5,0,7,1/     !8x8 Costas array
   data idum/-1/,nsps/512/
-  data ic8/3,6,2,4,5,0,7,1/
   data twopi/6.283185307d0/
   save
 
@@ -29,29 +29,27 @@ subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
   else
 ! Apply FEC and do the channel encoding
      call chenc(cmode,nbit,iu0,gsym)
-! Decode channel symbols to recover source-encoded message bits
-!     call chdec(cmode,nbit,gsym,iu)
   endif
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu0,msgsent)
 
-! Insert an 8x8 Costas array at the low-frequency edge.
+! Insert an 8x8 Costas array at the low-frequency edge.  Use different
+! Costas arrays for nbit=30, 48, and 78.
   do i=1,8
-     sent(i)=ic8(i)
+     if(nbit.eq.30) sent(i)=ic8(i)
+     if(nbit.eq.48) sent(i)=ic8(9-i)
+     if(nbit.eq.78) sent(i)=7-ic8(i)
   enddo
 
+! Append the encoded data after the sync pattern
   nsym=63+8
-  do i=1,63
-     sent(i+8)=gsym(i)
-  enddo
-
+  sent(9:nsym)=gsym(1:63)
   tsymbol=nsps/12000.d0
   nspecial=0
   sendingsh=0
+
 10 if(nbit.eq.2) then
      nspecial=ishft(iu(1),-30)
-!     tsymbol=16384.d0/12000.d0
-!     nsym=32
      sendingsh=1                         !Flag for shorthand message
 ! ### go to xxx
   endif
@@ -74,7 +72,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
         if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+21*nspecial*dfgen
         if(nspecial.eq.0) then
            k=k+1
-           if(k.le.87) f=f0+(sent(k))*dfgen         !### Fix need for this ###
+           if(k.le.71) f=f0+(sent(k))*dfgen         !### Fix need for this ? ###
         endif
         dphi=twopi*dt*f
         j0=j
