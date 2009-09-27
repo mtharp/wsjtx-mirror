@@ -115,7 +115,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
            if(n5.eq.13) msg=c12(:i2-1)//' <...> RO'
            if(n5.eq.20) msg=c12(:i2-1)//' <...> RRR'
         else
-           if(n5.eq.7) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> OOO'
+           if(n5.eq.7)  msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> OOO'
            if(n5.eq.13) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> RO'
            if(n5.eq.20) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> RRR'
         endif
@@ -196,12 +196,12 @@ subroutine srcdec(cmode,nbit,iu,msg)
      i1=index(c1,' ')
      if(i1.ne.1) then
         call hash(c1,i1-1,ih)
-        dcall(ih)=c12(:i1-1)
+        dcall(ih)=c1(:i1-1)
      endif
      i1=index(c2,' ')
      if(i1.ne.1) then
         call hash(c2,i1-1,ih)
-        dcall(ih)=c12(:i1-1)
+        dcall(ih)=c2(:i1-1)
      endif
   endif
 
