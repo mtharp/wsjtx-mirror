@@ -30,9 +30,9 @@ subroutine unpkgrid(ng,grid)
      grid(4:4)=char(48+mod(nn,10))
   else if(n.ge.92 .and.n.le.122) then
      nn=n-92
-     grid(1:1)='+'
-     grid(2:2)=char(48+nn/10)
-     grid(3:3)=char(48+mod(nn,10))
+     grid(1:2)='R+'
+     grid(3:3)=char(48+nn/10)
+     grid(4:4)=char(48+mod(nn,10))
   else if(n.eq.123) then
      grid='RO'
   else if(n.eq.124) then

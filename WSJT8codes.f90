@@ -26,6 +26,12 @@ program WSJT8codes
      call getarg(2,cmode)
   endif
 
+  if(cmode.ne.'JTMS' .and. cmode.ne.'ISCAT' .and. cmode.ne.'JT64' .and. &
+       cmode.ne.'JT8') then
+     print*, '*** Error, unsupported mode: ', cmode,' ***'
+     go to 999
+  endif
+
   if(iters.gt.1) write(*,1000) 
 1000 format('Message',16x,'Bits  Source-encoded data',11x,             &
           'Decoded message'/79('-'))

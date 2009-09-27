@@ -10,6 +10,10 @@ subroutine pkgrid(grid,ng,ntext)
   endif
 
 !  Test for numerical signal report
+  j=ichar(grid(1:1))
+  if(j.ge.48 .and. j.le.51) grid='+'//grid
+  j=ichar(grid(2:2))
+  if(grid(1:1).eq.'R' .and. j.ge.48 .and. j.le.51) grid='R+'//grid(2:)
   if(grid(1:1).eq.'-' .or. grid(1:1).eq.'+') then
      n=10*(ichar(grid(2:2))-48) + ichar(grid(3:3)) - 48
      if(grid(3:3).eq.' ') n=ichar(grid(2:2))-48
