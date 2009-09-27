@@ -63,7 +63,7 @@ subroutine chdec(cmode,nbit,gsym,iu)
      kk=5
      if(nbit.eq.48) kk=8
      if(nbit.eq.78) kk=13
-     call rs_decode(gsym,kk,era,nerase,dat4,ncount)
+     call krsdecode(gsym,kk,era,nerase,dat4,ncount)
      dbits=0
      call unpackbits(dat4,13,6,dbits)
      call packbits(dbits,3,32,iu)

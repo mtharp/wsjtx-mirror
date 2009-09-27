@@ -6,9 +6,9 @@ static int nn,kk,nroots;
 static int first=1;
 
 #ifdef CVF
-void __stdcall RS_ENCODE(int *dgen, int *kk0, int *sent)
+void __stdcall KRSENCODE(int *dgen, int *kk0, int *sent)
 #else
-  void rs_encode_(int *dgen, int *kk0, int *sent)
+  void krsencode_(int *dgen, int *kk0, int *sent)
 #endif
      // Encode JT65 data dgen[12], producing sent[63].
 {
@@ -43,9 +43,9 @@ void __stdcall RS_ENCODE(int *dgen, int *kk0, int *sent)
 }
 
 #ifdef CVF
-void __stdcall RS_DECODE(int *recd0, int *kk0, int *era0, int *numera0, int *decoded, int *nerr)
+void __stdcall KRSDECODE(int *recd0, int *kk0, int *era0, int *numera0, int *decoded, int *nerr)
 #else
-  void rs_decode_(int *recd0, int *kk0, int *era0, int *numera0, int *decoded, int *nerr)
+  void krsdecode_(int *recd0, int *kk0, int *era0, int *numera0, int *decoded, int *nerr)
 #endif
      // Decode JT65 received data recd0[63], producing decoded[12].
      // Erasures are indicated in era0[numera].  The number of corrected

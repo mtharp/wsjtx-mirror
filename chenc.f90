@@ -47,7 +47,7 @@ subroutine chenc(cmode,nbit,iu,gsym)
      call unpackbits(iu,3,32,iu6a)
      iu6a(nbit+1:)=0
      call packbits(iu6a,kk,6,iu6)
-     call rs_encode(iu6,kk,gsym)                      !Encode 
+     call krsencode(iu6,kk,gsym)                      !Encode 
   endif
 
   return
