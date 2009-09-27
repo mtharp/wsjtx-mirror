@@ -1,5 +1,5 @@
 subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
-     sendingsh,msgsent,nmsg)
+     sendingsh,nbit,msgsent,nmsg)
 
 ! Generate a JT64 wavefile.
 

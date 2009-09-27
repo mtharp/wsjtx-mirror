@@ -186,30 +186,6 @@ def testmsgs():
     tx5.insert(0,"@1000")
     tx6.insert(0,"@2000")
 
-#------------------------------------------------------ msg6list
-def msg6list(event=NONE):
-    if mode.get()=='WSPR':
-        t="OP name 73 GL"
-        if options.myname.get()!="":
-            t1=options.myname.get().strip()
-            if t1!="name": t1=t1.upper()
-            t="OP " + t1 + " 73 GL"
-        tx6list=("73 DE call grid", "73 DE p/call", "TNX name 73 GL",
-             t, "pwr W gain dbd", "pwr W gain dbd 73 GL",
-             "pwr W DIPOLE", "pwr W VERTICAL", "PSE QSY freq KHZ",
-             "WX wx temp F wind", "WX wx temp C wind")
-        tx6dialog=Pmw.ComboBoxDialog(root, title="Message Tx6",
-            buttons=('OK','cancel'),defaultbutton='OK',
-            scrolledlist_items=tx6list,listbox_width=22)
-        tx6dialog.geometry(msgpos())
-        if g.Win32: tx6dialog.iconbitmap("wsjt.ico")
-        tx6dialog.tkraise()
-        t=tx6dialog.activate()
-        if t=='OK':
-            t=tx6dialog.get()
-            tx6.delete(0,99)
-            tx6.insert(0,t)
-
 #------------------------------------------------------ textsize
 def textsize():
     global textheight
@@ -1553,7 +1529,7 @@ def update():
            bdecode.configure(text='*Decode*')
     msg5.configure(text="TR Period: %d s" % (Audio.gcom1.trperiod,), \
                        bg='gray85')
-    t="%d" % (int(Audio.mtxcom.mtxstate),)
+    t="%d" % (int(Audio.gcom2.nbitsent),)
     msg6.configure(text=t)
 
     tx1.configure(bg='white')
@@ -2199,7 +2175,6 @@ b6=Button(f5c, text='Tx6',underline=2,command=btx6,padx=1,pady=1)
 tx6.grid(column=1,row=5)
 rb6.grid(column=2,row=5)
 b6.grid(column=3,row=5)
-Widget.bind(tx6,'<Button-3>',msg6list)
 
 f5c.pack(side=LEFT,fill=BOTH)
 iframe5.pack(expand=1, fill=X, padx=4)

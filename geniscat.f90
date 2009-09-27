@@ -1,4 +1,4 @@
-subroutine geniscat(message,iwave,nwave,sendingsh,msgsent)
+subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 
 ! Generate a wavefile for the ISCAT mode.
 

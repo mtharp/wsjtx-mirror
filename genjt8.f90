@@ -1,4 +1,4 @@
-subroutine genjt8(message,iwave,nwave,msgsent)
+subroutine genjt8(message,iwave,nwave,nbit,msgsent)
 
 ! Generate a JT8 wavefile.
 

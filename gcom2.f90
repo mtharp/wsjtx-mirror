@@ -23,6 +23,7 @@ integer mantx          !Manual transmission requested?       GUI,SoundIn
 integer nrestart       !True if transmission should restart  GUI,SoundIn
 integer ntr            !Are we in 2nd sequence?                 SoundIn
 integer nmsg           !Length of Tx message                    SoundIn
+integer nbitsent       !User bits in Tx message                 SoundIn
 integer nsave          !Which files to save?                    GUI
 integer nadd5          !Prepend 5 sec of 0's before decoding?   GUI 
 integer dftolerance    !DF tolerance (Hz)                       GUI
@@ -102,11 +103,11 @@ parameter (ND2MAX=60*12000)
 common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,iter,iyr,imo,ida,                        &
      ndecoding,ndecoding0,mousebutton,nhighpri,                       &
-     ndecdone,npingtime,ierr,lauto,mantx,nrestart,ntr,nmsg,nsave,nadd5, &
-     dftolerance,LDecoded,rxdone,monitoring,nzap,nsavecum,minsigdb,   &
-     nclearave,newdat2,nfreeze,nafc,nmode,mode65,mode4,nclip,ndebug,  &
-     nblank,nport,   &
-     mousedf,neme,nsked,naggressive,ntx2,nslim2,nagain,nsavelast,ntxdf, &
+     ndecdone,npingtime,ierr,lauto,mantx,nrestart,ntr,nmsg,nbitsent,  &
+     nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,nzap,         &
+     nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
+     mode4,nclip,ndebug,nblank,nport,mousedf,neme,nsked,              &
+     naggressive,ntx2,nslim2,nagain,nsavelast,ntxdf,                  &
      shok,sendingsh,d2a(ND2MAX),d2b(ND2MAX),b(60000),jza,jzb,ntime,   &
      idinterval,msmax,lenappdir,idf,ndiskdat,nfsam,nlines,nflat,      &
      ntdecode,ntxreq,ntxnow,nchallenge,ndepth,ndwspr,nspecial,ndf,    &

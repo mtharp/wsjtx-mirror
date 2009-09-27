@@ -95,17 +95,18 @@ subroutine wsjtgen
 
   if(mode(1:4).eq.'JT64') then
      mode64=1
-     call gen64(msg,mode64,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg0)
+     call gen64(msg,mode64,ntxdf,iwave,nwave,sendingsh,nbit,msgsent,nmsg0)
   else if(mode(1:4).eq.'JTMS') then
-     call genms(msg,txsnrdb,iwave,nwave,msgsent)
+     call genms(msg,txsnrdb,iwave,nwave,nbit,msgsent)
   else if(mode(1:5).eq.'ISCAT') then
-     call geniscat(msg,iwave,nwave,sendingsh,msgsent)
+     call geniscat(msg,iwave,nwave,sendingsh,nbit,msgsent)
   else if(mode(1:3).eq.'JT8') then
-     call genjt8(msg,iwave,nwave,msgsent)
+     call genjt8(msg,iwave,nwave,nbit,msgsent)
   else 
      print*,'Unknown Tx mode requested.'
      stop 'Unknown Tx mode requested.'
   endif
+  nbitsent=nbit
 
   if(lcwid) then
 !  Generate and insert the CW ID.

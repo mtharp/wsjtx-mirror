@@ -1,4 +1,4 @@
-subroutine genms(message,txsnrdb,iwave,nwave,msgsent)
+subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
 
 ! Generate a JTMS wavefile.
 
