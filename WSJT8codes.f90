@@ -66,7 +66,7 @@ program WSJT8codes
      if(msg.ne.msg0) cerr='*'
      iu0(3)=ishft(iu0(3),-16)
      write(*,1010) msg0,nbit,iu0,cerr,msg
-1010 format(a24,i3,1x,2z9,z5,1x,a1,1x,a24)
+1010 format(a24,i3,1x,2z9.8,z5.4,1x,a1,1x,a24)
 
 100  continue
   enddo
