@@ -38,7 +38,6 @@
         real yellow(216)
         real yellow0(216)
         real fzap(200)
-        integer resample
         real*8 samfacin,samratio
         real dat2(NP2)
         character msg3*3
@@ -90,19 +89,9 @@
         enddo
         ave=sum/jz
         samratio=1.d0/samfacin
-        if(samratio.eq.1.d0) then
-           do j=1,jz
-              dat(j)=dat(j)-ave
-           enddo
-        else
-           do j=1,jz
-              dat2(j)=dat(j)-ave
-           enddo
-C  Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
-           ntype=2
-           ierr=resample(dat2,dat,samratio,jz,ntype)
-           if(ierr.ne.0) print*,'Resample error.',samratio
-        endif
+        do j=1,jz
+           dat(j)=dat(j)-ave
+        enddo
 
         if(ndiag.ne.0 .and. nclip.lt.0) then
 C  Intentionally degrade SNR by -nclip dB.
