@@ -1561,6 +1561,7 @@ def update():
     tx3.configure(bg='white')
     tx4.configure(bg='white')
     tx5.configure(bg='white')
+    if len(tx5.get())>14: tx5.configure(bg='pink')
     tx6.configure(bg='white')
     if tx6.get()[:1]=='#':
         try:
