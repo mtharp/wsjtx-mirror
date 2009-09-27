@@ -53,13 +53,6 @@ subroutine srcenc(cmode,msg,nbit,iu)
   sfx=' '
   iu=0
 
-  if(cmode.eq.'JTMS') then
-     i1=index(msg,' 26 ')
-     if(i1.ge.4) msg=msg(:i1)//'OOO'//msg(i1+3:)
-     i1=index(msg,' R26 ')
-     if(i1.ge.4) msg=msg(:i1)//'RO'//msg(i1+4:)
-  endif
-
   call parse(msg,msglen,w,nw,lenw,nt1,pfx,sfx)
   if(nw.lt.1) go to 10                 !Error return, blank message
   if(cmode.eq.'JT8') go to 5
@@ -86,7 +79,7 @@ subroutine srcenc(cmode,msg,nbit,iu)
      go to 10
   endif
 
-  call pk48(w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
+  call pk48(cmode,w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
   if(nbit.eq.48) then
      iu(1)=ishft(nc1,4) + iand(ishft(ngph,-11),15)
      m11=2**11 - 1

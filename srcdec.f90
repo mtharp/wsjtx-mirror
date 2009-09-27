@@ -207,7 +207,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
 
 100 call msgtrim(msg,nmsg)
 
-  if(cmode.eq.'JTMS') then
+  if(cmode.eq.'JTMS' .and. nbit.eq.48) then
      i1=index(msg,' OOO ')
      if(i1.ge.4) msg=msg(:i1)//'26'//msg(i1+4:)
      i1=index(msg,' RO ')
