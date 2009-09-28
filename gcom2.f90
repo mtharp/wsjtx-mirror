@@ -50,7 +50,6 @@ integer mousedf        !Mouse-selected freq offset, DF          GUI
 integer neme           !EME calls only in deep search?          GUI
 integer nsked          !Sked mode for deep search?              GUI
 integer naggressive    !Is "Aggressive decoding" checked?       GUI
-integer ntx2           !Is "No shorthands if Tx1" checked?      GUI
 integer nslim2         !2nd Decoder threshold for FSK441. JT6M  GUI
 integer nagain         !Decode same file again?                 GUI
 integer nsavelast      !Save last file?                         GUI
@@ -104,7 +103,7 @@ common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,nzap,         &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,nclip,ndebug,nblank,nport,mousedf,neme,nsked,              &
-     naggressive,ntx2,nslim2,nagain,nsavelast,ntxdf,                  &
+     naggressive,nslim2,nagain,nsavelast,ntxdf,                       &
      sendingsh,d2a(ND2MAX),d2b(ND2MAX),b(60000),jza,jzb,ntime,        &
      idinterval,msmax,lenappdir,idf,ndiskdat,nfsam,nlines,nflat,      &
      ntdecode,ntxreq,ntxnow,nchallenge,ndepth,ndwspr,nspecial,ndf,    &

@@ -39,18 +39,9 @@ Template3=StringVar()
 Template4=StringVar()
 Template5=StringVar()
 Template6=StringVar()
-addpfx=StringVar()
 auxra=StringVar()
 auxdec=StringVar()
 azeldir=StringVar()
-myname=StringVar()
-hisname=StringVar()
-wx=StringVar()
-temp=StringVar()
-wind=StringVar()
-pwr=StringVar()
-ant=StringVar()
-wxlist=("CLEAR","CLOUDY")
 
 def defaults():
     if itype.get()==0:
@@ -74,7 +65,7 @@ def defaults():
         tx3.delete(0,END)
         tx3.insert(0,'%T <%M> RO')
         tx4.delete(0,END)
-        tx4.insert(0,'RRR')
+        tx4.insert(0,'<%T> %M RRR')
         tx5.delete(0,END)
         tx5.insert(0,'73')
         tx6.delete(0,END)
@@ -92,21 +83,6 @@ def defaults():
         tx5.insert(0,'73')
         tx6.delete(0,END)
         tx6.insert(0,'CQ %M %G')
-
-#------------------------------------------------------ set_wx
-def set_wx(event=NONE):
-    print 'hello'
-    wxdialog=Pmw.ComboBoxDialog(root, title="Wx options",
-        buttons=('OK','cancel'),defaultbutton='OK',
-        scrolledlist_items=tx6list,listbox_width=9)
-    wxdialog.geometry(msgpos())
-    if g.Win32: wxdialog.iconbitmap("wsjt.ico")
-    wxdialog.tkraise()
-    t=wxdialog.activate()
-    if t=='OK':
-        t=wxdialog.get()
-        wx_entry.delete(0,END)
-        wx_entry.insert(0,t)
 
 mycall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='My Call:',
         value='K1JT',entry_textvariable=MyCall,entry_width=12)
@@ -183,18 +159,14 @@ for m in messages:
 
 #g3=Pmw.Group(root)
 g3=Pmw.Group(root,tag_text="Miscellaneous")
-temp_prefix=Pmw.EntryField(g3.interior(),labelpos=W,label_text='DXCC prefix:',
-    entry_width=9,entry_textvariable=addpfx)
 aux_ra=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Source RA:',
     entry_width=9,entry_textvariable=auxra)
 aux_dec=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Source DEC:',
     entry_width=9,entry_textvariable=auxdec)
 azeldir_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='AzElDir:',
     entry_width=9,value=g.appdir,entry_textvariable=azeldir)
-myname_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='MyName:',
-    entry_width=9,entry_textvariable=myname)
 
-widgets = (temp_prefix,aux_ra,aux_dec,azeldir_entry,myname_entry)
+widgets = (aux_ra,aux_dec,azeldir_entry)
 for widget in widgets:
     widget.pack(padx=10,pady=2)
 hipriority=Checkbutton(g3.interior(),text='High Priority',justify=RIGHT,

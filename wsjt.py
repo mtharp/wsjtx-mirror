@@ -50,7 +50,6 @@ root_geom=""
 appdir=os.getcwd()
 Audio.gcom2.appdir=(appdir+(' '*80))[:80]
 Audio.ftn_init()
-addpfx0=""
 first=1
 g.appdir=appdir
 isync=0
@@ -82,7 +81,6 @@ MyCall0=""
 nafc=IntVar()
 naz=0
 ndepth=IntVar()
-ndwspr=IntVar()
 nel=0
 nblank=IntVar()
 ncall=0
@@ -95,7 +93,6 @@ nfreeze=IntVar()
 nhotaz=0
 nhotabetter=0
 nopen=0
-noshjt65=IntVar()
 qdecode=IntVar()
 setseq=IntVar()
 slabel="Sync   "
@@ -173,12 +170,12 @@ def quit(event=NONE):
 def testmsgs():
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
-    tx1.insert(0,"@A")
-    tx2.insert(0,"@B")
-    tx3.insert(0,"@C")
-    tx4.insert(0,"@D")
-    tx5.insert(0,"@1000")
-    tx6.insert(0,"@2000")
+    tx1.insert(0,"@500")
+    tx2.insert(0,"@1000")
+    tx3.insert(0,"@1270")
+    tx4.insert(0,"@1500")
+    tx5.insert(0,"@2000")
+    tx6.insert(0,"@2500")
 
 #------------------------------------------------------ textsize
 def textsize():
@@ -186,9 +183,8 @@ def textsize():
     if textheight <= 9:
         textheight=21
     else:
-        if mode.get()[:4]=='JT65' or mode.get()=='WSPR' or \
-               mode.get()[:3]=='JT2' or mode.get()[:3]=='JT4' \
-               or mode.get()[:4]=='JT64':
+        if mode.get()[:4]=='JT64' or mode.get()=='ISCAT' or \
+               mode.get()[:3]=='JT8':
             textheight=7
         else:
             textheight=9
@@ -228,15 +224,14 @@ def dbl_click_text(event):
 
 #------------------------------------------------------ dbl_click3_text
 def dbl_click3_text(event):
-    if mode.get()[:4]=='JT65' or mode.get()=='WSPR' or \
-           mode.get()[:3]=='JT2' or mode.get()[:3]=='JT4' \
-           or mode.get()[:4]=='JT64':
+    if mode.get()[:4]=='JT64' or mode.get()=='ISCAT' or \
+           mode.get()[:3]=='JT8':
         t=text.get('1.0',END)           #Entire contents of text box
         t1=text.get('1.0',CURRENT)      #Contents from start to mouse pointer
         n=t1.rfind("\n")
         rpt=t1[n+12:n+15]
         if rpt[0:1] == " ": rpt=rpt[1:]
-        if mode.get()=='WSPR' or mode.get()[:4]=='JT64':
+        if mode.get()=='ISCAT' or mode.get()[:4]=='JT64':
             i=int((int(rpt)+33)/3)
             if i<1: i=1
             if i>9: i=9
@@ -269,8 +264,8 @@ def dbl_click_call(t,t1,rpt,event):
         if setseq.get(): TxFirst.set((nsec/Audio.gcom1.trperiod)%2)
         lookup()
         GenStdMsgs()
-        if (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-           mode.get()[:3]=='JT4') and rpt <> "OOO":
+        if (mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
+           mode.get()[:3]=='JT8') and rpt <> "OOO":
             n=tx1.get().rfind(" ")
             t2=tx1.get()[0:n+1]
             tx2.delete(0,END)
@@ -811,8 +806,8 @@ def minimal_qso(event=NONE):
     screenf5s.geometry(root_geom[root_geom.index("+"):])
     if g.Win32: screenf5s.iconbitmap("wsjt.ico")
     t="""
-The following are recommended sequences for  minimal QSOs
-using the standard JT65 messages:
+The following are recommended sequences for valid QSOs
+using the standard messages:
 
 Station #1                            Station #2
 ----------------------------------------------------------
@@ -832,35 +827,6 @@ VK7ABC K1JT RRR
 """
     Label(screenf5s,text=t,justify=LEFT).pack(padx=20)
     screenf5s.focus_set()
-#------------------------------------------------------ prefixes
-def prefixes(event=NONE):
-    pfx=Toplevel(root)
-    pfx.geometry(msgpos())
-    if g.Win32: pfx.iconbitmap("wsjt.ico")
-    f=open(appdir+'/prefixes.txt','r')
-    s=f.readlines()
-    t2=""
-    for i in range(3):
-        t2=t2+s[i]
-    t=""
-    for i in range(len(s)-3):
-        t=t+s[i+3]
-    t=t.split()
-    t.sort()
-    t1=""
-    n=0
-    for i in range(len(t)):
-        t1=t1+t[i]+"  "
-        n=n+len(t[i])+2
-        if n>60:
-            t1=t1+"\n"
-            n=0
-    t1=t1+"\n"
-    if options.addpfx.get().lstrip():
-        t1=t1+"\nOptional prefix:  "+(options.addpfx.get().lstrip()+'    ')[:8]
-    t2=t2+"\n"+t1
-    Label(pfx,text=t2,justify=LEFT).pack(padx=20)
-    pfx.focus_set()
 
 #------------------------------------------------------ azdist
 def azdist():
@@ -917,8 +883,7 @@ def decclip(event):
 def inctol(event=NONE):
     global itol
     maxitol=5
-    if mode.get()[:4]=='JT65' or mode.get()[:4]=='JT64': maxitol=6
-    if mode.get()=='WSPR': maxitol=3
+    if mode.get()[:4]=='JT64': maxitol=6
     if itol<maxitol: itol=itol+1
     ltol.configure(text='Tol    '+str(ntol[itol]))
 
@@ -1060,9 +1025,8 @@ def toggletxdf(event=NONE):
 #----------------------------------------------------- dtdf_change
 # Readout of graphical cursor location
 def dtdf_change(event):
-    if mode.get()[:4]!='JT65' and mode.get()[:3]!='JT2' and \
-               mode.get()[:3]!='JT4' and mode.get()[:4]!='WSPR' \
-               and mode.get()[:4]!='JT64':
+    if mode.get()[:4]!='JT64' and mode.get()[:5]!='ISCAT' and \
+               mode.get()[:3]!='JT8':
         t="%.1f" % (event.x*30.0/500.0,)
         lab6.configure(text=t,bg='green')
     else:
@@ -1091,12 +1055,9 @@ def dtdf_change(event):
 def mouse_click_g1(event):
     global nopen
     if not nopen:
-        if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-               mode.get()[:3]=='JT4' or mode.get()[:4]=='JT64':
+        if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
+               mode.get()[:3]=='JT8':
             Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*2.4)
-        elif mode.get()=='WSPR':
-# Fix this: ??  (idf dependence?)
-            Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*0.7324)
         else:
             if Audio.gcom2.ndecoding==0:              #If decoder is busy, ignore
                 Audio.gcom2.nagain=1
@@ -1110,9 +1071,8 @@ def mouse_click_g1(event):
 
 #------------------------------------------------------ double-click_g1
 def double_click_g1(event):
-    if (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-        mode.get()[:3]=='JT4' or mode.get()=='WSPR' \
-        or mode.get()[:4]=='JT64') and Audio.gcom2.ndecoding==0:
+    if (mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
+        mode.get()[:3]=='JT8') and Audio.gcom2.ndecoding==0:
         g.freeze_decode=1
     
 #------------------------------------------------------ mouse_up_g1
@@ -1135,7 +1095,7 @@ def left_arrow(event=NONE):
     
 #------------------------------------------------------ GenStdMsgs
 def GenStdMsgs(event=NONE):
-    global altmsg,MyCall0,addpfx0,ToRadio0
+    global altmsg,MyCall0,ToRadio0
     t=ToRadio.get().upper().strip()
     ToRadio.delete(0,99)
     ToRadio.insert(0,t)
@@ -1144,13 +1104,12 @@ def GenStdMsgs(event=NONE):
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
 
-    r='26'
-    tx1.insert(0,setmsg(options.tx1.get(),r))
-    tx2.insert(0,setmsg(options.tx2.get(),r))
-    tx3.insert(0,setmsg(options.tx3.get(),r))
-    tx4.insert(0,setmsg(options.tx4.get(),r))
-    tx5.insert(0,setmsg(options.tx5.get(),r))
-    tx6.insert(0,setmsg(options.tx6.get(),r))
+    tx1.insert(0,setmsg(options.tx1.get()))
+    tx2.insert(0,setmsg(options.tx2.get()))
+    tx3.insert(0,setmsg(options.tx3.get()))
+    tx4.insert(0,setmsg(options.tx4.get()))
+    tx5.insert(0,setmsg(options.tx5.get()))
+    tx6.insert(0,setmsg(options.tx6.get()))
     
 #------------------------------------------------------ GenAltMsgs
 def GenAltMsgs(event=NONE):
@@ -1160,8 +1119,8 @@ def GenAltMsgs(event=NONE):
     ToRadio.insert(0,t)
     if k2txb.get()!=0: ntx.set(1)
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
-    if (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-        mode.get()[:3]=='JT4') and ToRadio.get().find("/") == -1 and \
+    if (mode.get()[:4]=='JT64' or mode.get()[:4]=='ISCAT' or \
+        mode.get()[:3]=='JT8') and ToRadio.get().find("/") == -1 and \
                options.MyCall.get().find("/") == -1:
         for m in (tx1, tx2, tx3, tx4, tx5, tx6):
             m.delete(0,99)
@@ -1175,8 +1134,9 @@ def GenAltMsgs(event=NONE):
         altmsg=1
 
 #------------------------------------------------------ setmsg
-def setmsg(template,r):
+def setmsg(template):
     msg=""
+    r='OOO'
     npct=0
     for i in range(len(template)):
         if npct:
@@ -1191,7 +1151,7 @@ def setmsg(template,r):
             if template[i]=="%":
                 npct=1
             else:
-                msg=msg+template[i]            
+                msg=msg+template[i]
     return msg.upper()
     
 #------------------------------------------------------ plot_large
@@ -1365,11 +1325,6 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
-        if options.addpfx.get().lstrip()=='BOTH' and isec==58:
-            TxFirst.set(1-TxFirst.get())
-##        if options.addpfx.get().lstrip()=='BOTH' and \
-##               mode=='JTMS' and isec==28:
-##            TxFirst.set(1-TxFirst.get())
         
         if Audio.gcom2.ndecoding==0:
             g.AzSun,g.ElSun,g.AzMoon,g.ElMoon,g.AzMoonB,g.ElMoonB,g.ntsky, \
@@ -1383,9 +1338,6 @@ def update():
             if len(HisGrid.get().strip())<4:
                 g.ndop=g.ndop00
                 g.dfdt=g.dfdt0
-
-            Audio.gcom2.ntx2=0
-            if ntx.get()==1 and noshjt65.get()==1: Audio.gcom2.ntx2=1
 
         if mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
             graph2.delete(ALL)
@@ -1540,7 +1492,7 @@ def update():
             text.see(END)
 #            text.configure(state=DISABLED)
 
-            if mode.get()[:4]=='JT65':
+            if mode.get()[:4]=='JT64':
                 try:
                     f=open(appdir+'/decoded.ave',mode='r')
                     lines=f.readlines()
@@ -1560,9 +1512,8 @@ def update():
             im.putpalette(g.palette)
             cmap0=g.cmap
 
-        if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT2' or \
-                mode.get()[:3]=='JT4' or mode.get()=='WSPR' \
-                or mode.get()[:4]=='JT64':
+        if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
+                mode.get()[:3]=='JT8':
             plot_large()
         else:    
             im.putdata(Audio.gcom2.b)
@@ -1595,7 +1546,6 @@ def update():
     Audio.gcom2.mycall=(options.MyCall.get()+(' '*12))[:12]
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
     Audio.gcom2.hisgrid=(HisGrid.get()+(' '*6))[:6]
-    Audio.gcom4.addpfx=(options.addpfx.get().lstrip().upper()+(' '*8))[:8]
     Audio.gcom2.ntxreq=ntx.get()
     tx=(tx1,tx2,tx3,tx4,tx5,tx6)
     Audio.gcom2.txmsg=(tx[ntx.get()-1].get()+(' '*28))[:28]
@@ -1611,7 +1561,6 @@ def update():
     Audio.gcom2.dftolerance=ntol[itol]
     Audio.gcom2.neme=neme.get()
     Audio.gcom2.ndepth=ndepth.get()
-    Audio.gcom2.ndwspr=ndwspr.get()
     if qdecode.get():
         Audio.gcom2.ntdecode=48
     else:
@@ -1809,10 +1758,8 @@ helpmenu.add('command', label = 'Special mouse commands', \
              command = mouse_commands, accelerator='Shift+F1')
 helpmenu.add('command', label = 'What message to send?', \
              command = what2send, accelerator='F5')
-helpmenu.add('command', label = 'Examples of minimal JT65 QSOs', \
+helpmenu.add('command', label = 'Examples of minimal QSOs', \
              command = minimal_qso, accelerator='Shift+F5')
-helpmenu.add('command', label = 'Available suffixes and add-on prefixes', \
-             command = prefixes)
 helpmenu.add('command', label = 'About WSJT', command = about, \
              accelerator='Ctrl+F1')
 
@@ -1858,7 +1805,7 @@ iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Decoded text
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
-text=Text(iframe4, height=6, width=80)
+text=Text(iframe4, height=6, width=70)
 text.bind('<Double-Button-1>',dbl_click_text)
 text.bind('<Double-Button-3>',dbl_click3_text)
 text.bind('<Key>',textkey)
@@ -2137,7 +2084,6 @@ lauto=0
 isync=1
 ntx.set(1)
 ndepth.set(0)
-ndwspr.set(0)
 from WsjtMod import options
 options.defaults()
 ModeJTMS()
@@ -2232,7 +2178,6 @@ try:
         elif key == 'Template6':
             options.Template6.set(value.replace("_"," "))
             if options.Template6.get()==" ": options.Template6.set("")
-        elif key == 'AddPrefix': options.addpfx.set(value.replace("_"," ").lstrip())
         elif key == 'AuxRA': options.auxra.set(value)
         elif key == 'AuxDEC': options.auxdec.set(value)
         elif key == 'AzElDir':
@@ -2241,8 +2186,6 @@ try:
 		os.stat(options.azeldir.get())
 	    except:
 		options.azeldir.set(os.getcwd())
-        elif key == 'MyName': options.myname.set(value)
-        elif key == 'HighPri': options.HighPri.set(value)
         elif key == 'TxFirst': TxFirst.set(value)
         elif key == 'KB8RQ': kb8rq.set(value)
         elif key == 'K2TXB': k2txb.set(value)
@@ -2256,11 +2199,9 @@ try:
         elif key == 'Zap': nzap.set(value)
         elif key == 'NB': nblank.set(value)
         elif key == 'NAFC': nafc.set(value)
-        elif key == 'NoShJT65': noshjt65.set(value)
         elif key == 'QDecode': qdecode.set(value)
         elif key == 'NEME': neme.set(value)
         elif key == 'NDepth': ndepth.set(value)
-        elif key == 'Ndwspr': ndwspr.set(value)
         elif key == 'Debug': ndebug.set(value)
         elif key == 'HisCall':
             Audio.gcom2.hiscall=(value+' '*12)[:12]
@@ -2283,9 +2224,6 @@ lsync.configure(text=slabel+str(isync))
 lclip.configure(text='Clip   '+str(iclip))
 Audio.gcom2.azeldir=(options.azeldir.get()+' '*80)[:80]
 Audio.gcom2.ndepth=ndepth.get()
-Audio.gcom2.ndwspr=ndwspr.get()
-Audio.gcom2.nhighpri=options.HighPri.get()
-Audio.gcom4.addpfx=(options.addpfx.get().lstrip()+(' '*8))[:8]
 stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSJT 8     by K1JT')
@@ -2327,17 +2265,11 @@ f.write("Template3 " + options.Template3.get().replace(" ","_") + "\n")
 f.write("Template4 " + options.Template4.get().replace(" ","_") + "\n")
 f.write("Template5 " + options.Template5.get().replace(" ","_") + "\n")
 f.write("Template6 " + options.Template6.get().replace(" ","_") + "\n")
-if options.addpfx.get().lstrip()=="": options.addpfx.set("_")
-f.write("AddPrefix " + options.addpfx.get().lstrip() + "\n")
 if options.auxra.get()=="": options.auxra.set("0")
 if options.auxdec.get()=="": options.auxdec.set("0")
 f.write("AuxRA " + options.auxra.get() + "\n")
 f.write("AuxDEC " + options.auxdec.get() + "\n")
 f.write("AzElDir " + str(options.azeldir.get()).replace(" ","#") + "\n")
-if options.myname.get()=="":
-    options.myname.set("name")
-f.write("MyName " + options.myname.get() + "\n")
-f.write("HighPri " + str(options.HighPri.get()) + "\n")
 f.write("TxFirst " + str(TxFirst.get()) + "\n")
 f.write("KB8RQ " + str(kb8rq.get()) + "\n")
 f.write("K2TXB " + str(k2txb.get()) + "\n")
@@ -2352,11 +2284,9 @@ f.write("Clip " + str(iclip) + "\n")
 f.write("Zap " + str(nzap.get()) + "\n")
 f.write("NB " + str(nblank.get()) + "\n")
 f.write("NAFC " + str(nafc.get()) + "\n")
-f.write("NoShJT65 " + str(noshjt65.get()) + "\n")
 f.write("QDecode " + str(qdecode.get()) + "\n")
 f.write("NEME " + str(neme.get()) + "\n")
 f.write("NDepth " + str(ndepth.get()) + "\n")
-f.write("Ndwspr " + str(ndwspr.get()) + "\n")
 f.write("Debug " + str(ndebug.get()) + "\n")
 #f.write("TRPeriod " + str(Audio.gcom1.trperiod) + "\n")
 mrudir2=mrudir.replace(" ","#")
