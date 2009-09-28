@@ -98,7 +98,7 @@ nopen=0
 noshjt65=IntVar()
 qdecode=IntVar()
 setseq=IntVar()
-ShOK=IntVar()
+hcall=IntVar()
 slabel="Sync   "
 textheight=7
 ToRadio0=""
@@ -126,10 +126,9 @@ def restart():
     Audio.gcom2.nrestart=1
     Audio.gcom2.mantx=1
 
-#------------------------------------------------------ restart2
-def restart2():
-    Audio.gcom2.shok=ShOK.get()
-    Audio.gcom2.nrestart=1
+#------------------------------------------------------ set_templates
+def set_templates():
+    pass
 
 #------------------------------------------------------ toggle_freeze
 def toggle_freeze(event=NONE):
@@ -573,7 +572,6 @@ def ModeJTMS(event=NONE):
         if ltxdf: toggletxdf()
         btxdf.configure(state=DISABLED)
         report.configure(state=NORMAL)
-        shmsg.configure(state=NORMAL)
         graph2.configure(bg='black')
         report.delete(0,END)
         report.insert(0,'26')
@@ -607,7 +605,6 @@ def ModeJT64():
     if ltxdf: toggletxdf()
     btxdf.configure(state=NORMAL)
     report.configure(state=DISABLED)
-    shmsg.configure(state=DISABLED)
     graph2.configure(bg='#66FFFF')
     itol=4
     inctol()
@@ -649,7 +646,6 @@ def ModeISCAT(event=NONE):
         mode.set("ISCAT")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
-        shmsg.configure(state=DISABLED)
         cbnb.configure(state=NORMAL)
         cbzap.configure(state=NORMAL)
         cbfreeze.configure(state=NORMAL)
@@ -1162,50 +1158,14 @@ def GenStdMsgs(event=NONE):
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
-    if mode.get()=="JTMS" or mode.get()=="ISCAT":
-        r=report.get()
-        tx1.insert(0,setmsg(options.tx1.get(),r))
-        tx2.insert(0,setmsg(options.tx2.get(),r))
-        tx3.insert(0,setmsg(options.tx3.get(),r))
-        tx4.insert(0,setmsg(options.tx4.get(),r))
-        tx5.insert(0,setmsg(options.tx5.get(),r))
-        tx6.insert(0,setmsg(options.tx6.get(),r))
-    elif mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
-        if options.MyCall.get()!= MyCall0 or \
-               options.addpfx.get()!= addpfx0 or ToRadio.get()!=ToRadio0:
-            MyCall0=options.MyCall.get()
-            addpfx0=options.addpfx.get()
-            ToRadio0=ToRadio.get()
-            t0=("SM5BSZ "+options.MyCall.get()).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#            nplain,naddon,ndiff=Audio.chkt0()
-#            if nplain==1:
-#                MsgBox("Bad 'MyCall' or bad prefix/suffix?\nPlease check on Setup | Options screen.")
-#                options1()
-            t0=("SM5BSZ "+ToRadio0).upper()
-            Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#            nplain,naddon,ndiff=Audio.chkt0()
-#            if nplain==1:
-#                MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
-            
-        t0=(ToRadio.get() + " "+options.MyCall.get()).upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#        nplain,naddon,ndiff=Audio.chkt0()
-#        if nplain==0 and naddon==0 and ndiff==0:
-        t0=t0 + " "+options.MyGrid.get()[:4]
-        tx1.insert(0,t0.upper())
-        tx2.insert(0,tx1.get()+" OOO")
-        tx3.insert(0,"RO")
-        tx4.insert(0,"RRR")
-        tx5.insert(0,"73")
 
-        t0="CQ " + options.MyCall.get().upper()
-        Audio.gcom2.t0msg=(t0+' '*22)[:22]
-#        nplain,naddon,ndiff=Audio.chkt0()
-#        if nplain==0 and naddon==0 and ndiff==0:
-        t0=t0 + " "+options.MyGrid.get()[:4]
-        tx6.insert(0,t0.upper())
-        altmsg=0
+    r=report.get()
+    tx1.insert(0,setmsg(options.tx1.get(),r))
+    tx2.insert(0,setmsg(options.tx2.get(),r))
+    tx3.insert(0,setmsg(options.tx3.get(),r))
+    tx4.insert(0,setmsg(options.tx4.get(),r))
+    tx5.insert(0,setmsg(options.tx5.get(),r))
+    tx6.insert(0,setmsg(options.tx6.get(),r))
     
 #------------------------------------------------------ GenAltMsgs
 def GenAltMsgs(event=NONE):
@@ -1656,7 +1616,6 @@ def update():
     tx=(tx1,tx2,tx3,tx4,tx5,tx6)
     Audio.gcom2.txmsg=(tx[ntx.get()-1].get()+(' '*28))[:28]
     Audio.gcom2.mode=(mode.get()+(' '*6))[:6]
-    Audio.gcom2.shok=ShOK.get()
     Audio.gcom2.nsave=nsave.get()
     Audio.gcom2.nzap=nzap.get()
     Audio.gcom2.ndebug=ndebug.get()
@@ -2115,8 +2074,8 @@ report=Entry(f5c2, width=4)
 report.insert(0,'26')
 labreport.pack(side=RIGHT,expand=1,fill=BOTH)
 report.pack(side=RIGHT,expand=1,fill=BOTH)
-shmsg=Checkbutton(f5c,text='Sh Msg',justify=RIGHT,variable=ShOK,
-            command=restart2)
+cbhcall=Checkbutton(f5c,text='<call>',justify=RIGHT,variable=hcall,
+            command=set_templates)
 btxdf=Button(f5c,text='TxDF = 0',command=toggletxdf,
             padx=1,pady=1)
 genmsg=Button(f5c,text='GenStdMsgs',underline=0,command=GenStdMsgs,
@@ -2127,7 +2086,7 @@ auto.focus_set()
 
 txfirst.grid(column=0,row=0,sticky='W',padx=4)
 f5c2.grid(column=0,row=1,sticky='W',padx=4)
-shmsg.grid(column=0,row=2,sticky='W',padx=4)
+cbhcall.grid(column=0,row=2,sticky='W',padx=4)
 btxdf.grid(column=0,row=3,sticky='EW',padx=4)
 genmsg.grid(column=0,row=4,sticky='W',padx=4)
 auto.grid(column=0,row=5,sticky='EW',padx=4)
@@ -2272,8 +2231,7 @@ try:
                 Audio.gcom2.nport=0
             Audio.gcom2.pttport=(options.PttPort.get()+(' '*80))[:80]
         elif key == 'Mileskm': options.mileskm.set(value)
-        elif key == 'MsgStyle': options.ireport.set(value)
-        elif key == 'Region': options.iregion.set(value)
+        elif key == 'MsgStyle': options.itype.set(value)
         elif key == 'AudioIn':
             try:
                 g.ndevin.set(value)
@@ -2318,7 +2276,7 @@ try:
         elif key == 'Report':
             report.delete(0,99)
             report.insert(0,value)
-        elif key == 'ShOK': ShOK.set(value)
+        elif key == 'hcall': hcall.set(value)
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Band': nfreq.set(value)
         elif key == 'SyncMS': isyncMS=int(value)
@@ -2387,8 +2345,7 @@ f.write("HisGrid " + t + "\n")
 f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
 f.write("PttPort " + str(options.PttPort.get()) + "\n")
 f.write("Mileskm " + str(options.mileskm.get()) + "\n")
-f.write("MsgStyle " + str(options.ireport.get()) + "\n")
-f.write("Region " + str(options.iregion.get()) + "\n")
+f.write("MsgStyle " + str(options.itype.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("SamFacIn " + str(options.samfacin.get()) + "\n")
@@ -2416,7 +2373,7 @@ f.write("KB8RQ " + str(kb8rq.get()) + "\n")
 f.write("K2TXB " + str(k2txb.get()) + "\n")
 f.write("SetSeq " + str(setseq.get()) + "\n")
 f.write("Report " + g.report + "\n")
-f.write("ShOK " + str(ShOK.get()) + "\n")
+f.write("hcall " + str(hcall.get()) + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("Band " + str(nfreq.get()) + "\n")
 f.write("SyncMS " + str(isyncMS) + "\n")

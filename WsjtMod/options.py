@@ -53,59 +53,43 @@ ant=StringVar()
 wxlist=("CLEAR","CLOUDY")
 
 def defaults():
-#    if g.mode=="FSK441" or g.mode=="JT6M":
-    if (ireport.get()==0 and iregion.get()==0):
+    if itype.get()==0:
         tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
+        tx1.insert(0,'DE %M')
         tx2.delete(0,END)
-        tx2.insert(0,'%T %R %M %R%R')
+        tx2.insert(0,'%T OOO')
         tx3.delete(0,END)
-        tx3.insert(0,'R%R')
+        tx3.insert(0,'%T RO')
         tx4.delete(0,END)
         tx4.insert(0,'RRR')
         tx5.delete(0,END)
         tx5.insert(0,'73')
         tx6.delete(0,END)
         tx6.insert(0,'CQ %M')
-    elif (ireport.get()==1 and iregion.get()==0):
+    elif itype.get()==1:
         tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
+        tx1.insert(0,'<%T> %M')
         tx2.delete(0,END)
-        tx2.insert(0,'%T %M %G')
+        tx2.insert(0,'%T <%M> OOO')
         tx3.delete(0,END)
-        tx3.insert(0,'RR %G')
+        tx3.insert(0,'%T <%M> RO')
         tx4.delete(0,END)
         tx4.insert(0,'RRR')
         tx5.delete(0,END)
         tx5.insert(0,'73')
         tx6.delete(0,END)
         tx6.insert(0,'CQ %M')
-        
-    elif (ireport.get()==0 and iregion.get()==1):
+    elif itype.get()==2:
         tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
+        tx1.insert(0,'%T %M %G')
         tx2.delete(0,END)
-        tx2.insert(0,'%T %M %R %R')
+        tx2.insert(0,'%T %M %G OOO')
         tx3.delete(0,END)
-        tx3.insert(0,'%T %M R%R R%R')
+        tx3.insert(0,'RO')
         tx4.delete(0,END)
-        tx4.insert(0,'RRRR RRRR %M')
+        tx4.insert(0,'RRR')
         tx5.delete(0,END)
-        tx5.insert(0,'73 %M')
-        tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
-
-    elif (ireport.get()==1 and iregion.get()==1):
-        tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
-        tx2.delete(0,END)
-        tx2.insert(0,'%T %M %G')
-        tx3.delete(0,END)
-        tx3.insert(0,'%T %M RR %G')
-        tx4.delete(0,END)
-        tx4.insert(0,'RRRR RRRR %M')
-        tx5.delete(0,END)
-        tx5.insert(0,'73 %M')
+        tx5.insert(0,'73')
         tx6.delete(0,END)
         tx6.insert(0,'CQ %M')
 
@@ -123,8 +107,6 @@ def set_wx(event=NONE):
         t=wxdialog.get()
         wx_entry.delete(0,END)
         wx_entry.insert(0,t)
-
-
 
 mycall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='My Call:',
         value='K1JT',entry_textvariable=MyCall,entry_width=12)
@@ -163,24 +145,21 @@ rb5.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb6.pack(anchor=W,side=LEFT,padx=2,pady=2)
 f1.pack()
 
-g2=Pmw.Group(root,tag_text="FSK441/JT6M message templates")
+g2=Pmw.Group(root,tag_text="Message templates")
 f2=Frame(g2.interior(),width=100,height=20)
 f2a=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
 f2a.pack(side=LEFT,padx=6,pady=6)
-f2b=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
-f2b.pack(side=LEFT,padx=6,pady=6)
+#f2b=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
+#f2b.pack(side=LEFT,padx=6,pady=6)
 
-ireport=IntVar()
-rb1=Radiobutton(f2a,text='Report',value=0,variable=ireport)
-rb2=Radiobutton(f2a,text='Grid',value=1,variable=ireport)
+itype=IntVar()
+rb1=Radiobutton(f2a,text='30',value=0,variable=itype)
+rb2=Radiobutton(f2a,text='48',value=1,variable=itype)
+rb3=Radiobutton(f2a,text='78',value=2,variable=itype)
 rb1.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb2.pack(anchor=W,side=LEFT,padx=2,pady=2)
-
-iregion=IntVar()
-rb3=Radiobutton(f2b,text='NA',value=0,variable=iregion)
-rb4=Radiobutton(f2b,text='EU',value=1,variable=iregion)
 rb3.pack(anchor=W,side=LEFT,padx=2,pady=2)
-rb4.pack(anchor=W,side=LEFT,padx=2,pady=2)
+
 f2.pack()
 
 Button(g2.interior(),text="Reset defaults",command=defaults).pack(padx=6,pady=6)

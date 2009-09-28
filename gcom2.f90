@@ -7,7 +7,6 @@ real ccf               !CCF in time (blue curve)                Decoder
 real green             !Data for green line                     GUI
 integer ngreen         !Length of green                         GUI
 real dgain             !Digital audio gain setting              GUI
-integer iter           !(why is this here??)
 integer iyr            !UTC from python                         GUI
 integer imo            !UTC from python                         GUI
 integer ida            !UTC from python                         GUI
@@ -56,7 +55,6 @@ integer nslim2         !2nd Decoder threshold for FSK441. JT6M  GUI
 integer nagain         !Decode same file again?                 GUI
 integer nsavelast      !Save last file?                         GUI
 integer ntxdf          !Tx frequency offset                     GUI
-integer shok           !Shorthand messages OK?                  GUI
 integer sendingsh      !Sending a shorthand message?            SoundIn
 integer*2 d2a          !Rx data, extracted from y1              Decoder
 integer*2 d2b          !Rx data, selected by mouse-pick         Decoder
@@ -97,23 +95,22 @@ character*80 AzElDir     !Directory for azel.dat                GUI
 character*80 filetokilla !Filenames (full path)                 Decoder
 character*80 filetokillb
 character*80 pttport
-character*22 t0msg
 
 parameter (ND2MAX=60*12000)
 common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
-     green(500),ngreen,dgain,iter,iyr,imo,ida,                        &
+     green(500),ngreen,dgain,iyr,imo,ida,                             &
      ndecoding,ndecoding0,mousebutton,nhighpri,                       &
      ndecdone,npingtime,ierr,lauto,mantx,nrestart,ntr,nmsg,nbitsent,  &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,nzap,         &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,nclip,ndebug,nblank,nport,mousedf,neme,nsked,              &
      naggressive,ntx2,nslim2,nagain,nsavelast,ntxdf,                  &
-     shok,sendingsh,d2a(ND2MAX),d2b(ND2MAX),b(60000),jza,jzb,ntime,   &
+     sendingsh,d2a(ND2MAX),d2b(ND2MAX),b(60000),jza,jzb,ntime,        &
      idinterval,msmax,lenappdir,idf,ndiskdat,nfsam,nlines,nflat,      &
      ntdecode,ntxreq,ntxnow,nchallenge,ndepth,ndwspr,nspecial,ndf,    &
      nfmid,nforce,nfrange,ss1(-224:224),ss2(-224:224),                &
      mycall,hiscall,hisgrid,txmsg,sending,mode,fname0,fnamea,         &
      fnameb,decodedfile,AppDir,AzElDir,filetokilla,filetokillb,       &
-     utcdate,pttport,t0msg
+     utcdate,pttport
 
 !### volatile /gcom2/

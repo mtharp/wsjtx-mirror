@@ -44,7 +44,7 @@ C     The transform will be real and returned to the input array.
 C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       nspeed=FFTW_ESTIMATE
       if(nfft.le.16384) nspeed=FFTW_MEASURE
-      nspeed=FFTW_MEASURE
+!      nspeed=FFTW_MEASURE                           !### trial ###
       if(nfft.le.32768) then
          do j=1,nfft
             aa(j)=a(j)

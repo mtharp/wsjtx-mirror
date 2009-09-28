@@ -15,7 +15,7 @@ OBJS1 = nhash.obj init_rs.obj encode_rs.obj decode_rs.obj \
 OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o tab.o \
 	nhash.o
 
-F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0 chkt0
+F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
 SRCS2F90 = a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	blanker.f90 decode1.f90 decode2.f90 decode3.f90 ftn_init.f90 \

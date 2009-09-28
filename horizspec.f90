@@ -24,7 +24,7 @@ subroutine horizspec(x,brightness,contrast,a)
   endif
 
   i0=0
-  do iter=1,5
+  do irpt=1,5
      if(nx.lt.750) nx=nx+1
      do i=1,nfft
         y(i)=1.4*x(i+i0)
