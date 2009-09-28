@@ -138,7 +138,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
      go to 900
   endif
 
-  call xfft2(x,nfft)
+  call xfft(x,nfft)
 
   do i=1,nh                               !Accumulate power spectrum
      ss(i)=ss(i) + real(c(i))**2 + aimag(c(i))**2
