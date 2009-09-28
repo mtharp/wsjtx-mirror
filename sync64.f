@@ -55,7 +55,7 @@ C  Compute power spectrum for each quarter-symbol step
             x(i)=dat(k+i-1)
             x(i+nh)=0.
          enddo
-         call ps64(x,nfft,s2(1,j))
+         call ps(x,nfft,s2(1,j))
       enddo
 
 C  Determine the search range in frequency

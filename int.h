@@ -19,7 +19,7 @@ struct rs {
   int pad;        /* Padding bytes in shortened block */
 };
 
-static inline int modnn(struct rs *rs,int x){
+static int modnn(struct rs *rs,int x){
   while (x >= rs->nn) {
     x -= rs->nn;
     x = (x >> rs->mm) + (x & rs->nn);
@@ -33,7 +33,8 @@ static inline int modnn(struct rs *rs,int x){
 #define ALPHA_TO (rs->alpha_to) 
 #define INDEX_OF (rs->index_of)
 #define GENPOLY (rs->genpoly)
-#define NROOTS (rs->nroots)
+//#define NROOTS (rs->nroots)
+#define NROOTS (51)
 #define FCR (rs->fcr)
 #define PRIM (rs->prim)
 #define IPRIM (rs->iprim)
