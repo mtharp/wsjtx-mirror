@@ -1805,7 +1805,7 @@ iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Decoded text
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
-text=Text(iframe4, height=6, width=70)
+text=Text(iframe4, height=6, width=80)
 text.bind('<Double-Button-1>',dbl_click_text)
 text.bind('<Double-Button-3>',dbl_click3_text)
 text.bind('<Key>',textkey)
