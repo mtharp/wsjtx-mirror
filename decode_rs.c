@@ -30,10 +30,10 @@ void *p,DTYPE *data, int *eras_pos, int no_eras){
   int deg_lambda, el, deg_omega;
   int i, j, r,k;
   DTYPE u,q,tmp,num1,num2,den,discr_r;
-  DTYPE lambda[NROOTS+1], s[NROOTS];	/* Err+Eras Locator poly
+  DTYPE lambda[60], s[60];	/* Err+Eras Locator poly
 					 * and syndrome poly */
-  DTYPE b[NROOTS+1], t[NROOTS+1], omega[NROOTS+1];
-  DTYPE root[NROOTS], reg[NROOTS+1], loc[NROOTS];
+  DTYPE b[60], t[60], omega[60];
+  DTYPE root[60], reg[60], loc[60];
   int syn_error, count;
 
 #ifdef FIXED
