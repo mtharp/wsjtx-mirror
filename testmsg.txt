@@ -11,6 +11,8 @@ TNX 73 GL
 GRID?
 EM77
 BEST -19
+BEST +29
+BEST 29
 
 CQ K1JT FN20            
 QRZ K1JT                

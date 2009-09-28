@@ -78,7 +78,7 @@ subroutine parse(msg,msglen,w,nw,lenw,nt1,pfx,sfx)
      if(w(i).eq.'TNX') nt1(i)=12
      if(w(i).eq.'OP') nt1(i)=13
      if(w(i).eq.'GRID?') nt1(i)=14
-     read(w(i),*,err=30) nnn
+     read(w(i),'(i)',err=30) nnn
      nt1(i)=15
 30   if(index(w(i),'<').eq.1) then
         nt1(i)=3
