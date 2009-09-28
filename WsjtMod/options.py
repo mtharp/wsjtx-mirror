@@ -78,7 +78,7 @@ def defaults():
         tx5.delete(0,END)
         tx5.insert(0,'73')
         tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
+        tx6.insert(0,'CQ %M %G')
     elif itype.get()==2:
         tx1.delete(0,END)
         tx1.insert(0,'%T %M %G')
@@ -91,7 +91,7 @@ def defaults():
         tx5.delete(0,END)
         tx5.insert(0,'73')
         tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
+        tx6.insert(0,'CQ %M %G')
 
 #------------------------------------------------------ set_wx
 def set_wx(event=NONE):
@@ -153,16 +153,16 @@ f2a.pack(side=LEFT,padx=6,pady=6)
 #f2b.pack(side=LEFT,padx=6,pady=6)
 
 itype=IntVar()
-rb1=Radiobutton(f2a,text='30',value=0,variable=itype)
-rb2=Radiobutton(f2a,text='48',value=1,variable=itype)
-rb3=Radiobutton(f2a,text='78',value=2,variable=itype)
+rb1=Radiobutton(f2a,text='30',value=0,variable=itype,command=defaults)
+rb2=Radiobutton(f2a,text='48',value=1,variable=itype,command=defaults)
+rb3=Radiobutton(f2a,text='78',value=2,variable=itype,command=defaults)
 rb1.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb2.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb3.pack(anchor=W,side=LEFT,padx=2,pady=2)
 
 f2.pack()
 
-Button(g2.interior(),text="Reset defaults",command=defaults).pack(padx=6,pady=6)
+#Button(g2.interior(),text="Reset defaults",command=defaults).pack(padx=6,pady=6)
 
 tx1=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 1:',
                    entry_textvariable=Template1)
@@ -206,4 +206,3 @@ Pmw.alignlabels(widgets)
 g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 g3.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-

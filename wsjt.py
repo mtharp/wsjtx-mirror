@@ -98,7 +98,6 @@ nopen=0
 noshjt65=IntVar()
 qdecode=IntVar()
 setseq=IntVar()
-hcall=IntVar()
 slabel="Sync   "
 textheight=7
 ToRadio0=""
@@ -125,10 +124,6 @@ def showspecjt(event=NONE):
 def restart():
     Audio.gcom2.nrestart=1
     Audio.gcom2.mantx=1
-
-#------------------------------------------------------ set_templates
-def set_templates():
-    pass
 
 #------------------------------------------------------ toggle_freeze
 def toggle_freeze(event=NONE):
@@ -246,8 +241,7 @@ def dbl_click3_text(event):
             if i<1: i=1
             if i>9: i=9
             rpt="S%d" % (i,)
-            report.delete(0,END)
-            report.insert(0,rpt)
+#            report.insert(0,rpt)
         dbl_click_call(t,t1,rpt,event)
 
 #------------------------------------------------------ dbl_click_ave
@@ -503,11 +497,6 @@ def addtodb():
             os.rename("CALL3.TXT","CALL3.OLD")
             os.rename("CALL3.TMP","CALL3.TXT")
 
-#------------------------------------------------------ clrrpt
-def clrrpt(event):
-    report.delete(0,END)
-    report.focus_set()
-
 #-------------------------------------------------------- clrToRadio
 def clrToRadio(event):
     ToRadio.delete(0,END)
@@ -571,10 +560,7 @@ def ModeJTMS(event=NONE):
         cbafc.configure(state=DISABLED)
         if ltxdf: toggletxdf()
         btxdf.configure(state=DISABLED)
-        report.configure(state=NORMAL)
         graph2.configure(bg='black')
-        report.delete(0,END)
-        report.insert(0,'26')
         itol=4
         inctol()
         ntx.set(1)
@@ -604,7 +590,6 @@ def ModeJT64():
     cbafc.configure(state=NORMAL)
     if ltxdf: toggletxdf()
     btxdf.configure(state=NORMAL)
-    report.configure(state=DISABLED)
     graph2.configure(bg='#66FFFF')
     itol=4
     inctol()
@@ -1159,7 +1144,7 @@ def GenStdMsgs(event=NONE):
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
 
-    r=report.get()
+    r='26'
     tx1.insert(0,setmsg(options.tx1.get(),r))
     tx2.insert(0,setmsg(options.tx2.get(),r))
     tx3.insert(0,setmsg(options.tx3.get(),r))
@@ -1593,7 +1578,6 @@ def update():
 
 # Save some parameters
     g.mode=mode.get()
-    g.report=report.get()
     if mode.get()=='JTMS': isyncMS=isync
     elif mode.get()=='ISCAT': isync6m=isync
     elif mode.get()[:4]=='JT64': isync65=isync
@@ -1937,8 +1921,6 @@ root.bind_all('<Control-o>',openfile)
 root.bind_all('<Control-O>',openfile)
 root.bind_all('<Alt-q>',logqso)
 root.bind_all('<Alt-Q>',logqso)
-root.bind_all('<Alt-r>',clrrpt)
-root.bind_all('<Alt-R>',clrrpt)
 root.bind_all('<Alt-s>',stopmon)
 root.bind_all('<Alt-S>',stopmon)
 root.bind_all('<Alt-v>',savelast)
@@ -2069,13 +2051,6 @@ f5b.pack(side=LEFT,expand=0,fill=BOTH)
 f5c=Frame(iframe5,bd=2,relief=GROOVE)
 txfirst=Checkbutton(f5c,text='Tx First',justify=RIGHT,variable=TxFirst)
 f5c2=Frame(f5c,bd=0)
-labreport=Label(f5c2,text='Rpt',width=4)
-report=Entry(f5c2, width=4)
-report.insert(0,'26')
-labreport.pack(side=RIGHT,expand=1,fill=BOTH)
-report.pack(side=RIGHT,expand=1,fill=BOTH)
-cbhcall=Checkbutton(f5c,text='<call>',justify=RIGHT,variable=hcall,
-            command=set_templates)
 btxdf=Button(f5c,text='TxDF = 0',command=toggletxdf,
             padx=1,pady=1)
 genmsg=Button(f5c,text='GenStdMsgs',underline=0,command=GenStdMsgs,
@@ -2086,7 +2061,6 @@ auto.focus_set()
 
 txfirst.grid(column=0,row=0,sticky='W',padx=4)
 f5c2.grid(column=0,row=1,sticky='W',padx=4)
-cbhcall.grid(column=0,row=2,sticky='W',padx=4)
 btxdf.grid(column=0,row=3,sticky='EW',padx=4)
 genmsg.grid(column=0,row=4,sticky='W',padx=4)
 auto.grid(column=0,row=5,sticky='EW',padx=4)
@@ -2273,10 +2247,6 @@ try:
         elif key == 'KB8RQ': kb8rq.set(value)
         elif key == 'K2TXB': k2txb.set(value)
         elif key == 'SetSeq': setseq.set(value)
-        elif key == 'Report':
-            report.delete(0,99)
-            report.insert(0,value)
-        elif key == 'hcall': hcall.set(value)
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Band': nfreq.set(value)
         elif key == 'SyncMS': isyncMS=int(value)
@@ -2373,7 +2343,6 @@ f.write("KB8RQ " + str(kb8rq.get()) + "\n")
 f.write("K2TXB " + str(k2txb.get()) + "\n")
 f.write("SetSeq " + str(setseq.get()) + "\n")
 f.write("Report " + g.report + "\n")
-f.write("hcall " + str(hcall.get()) + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("Band " + str(nfreq.get()) + "\n")
 f.write("SyncMS " + str(isyncMS) + "\n")
