@@ -1746,7 +1746,6 @@ graph2.pack(side=LEFT)
 ##g2font=graph2.option_get("font","font")
 g2font=("Lucida Console",16)
 if g2font!="": g.g2font=g2font
-print g.g2font
 iframe1.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------ Labels under graphics

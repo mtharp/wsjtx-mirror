@@ -25,9 +25,9 @@ nb.pack(padx=5,pady=5,fill=BOTH,expand=1)
 
 g1=nb.add("Station parameters")
 g2=nb.add("JTMS")
-g3=nb.add("ISCAT")
-g4=nb.add("JT64")
-g5=nb.add("JT8")
+g3=nb.add("ISCAT & JT64")
+g4=nb.add("JT8")
+
 
 MyCall=StringVar()
 MyGrid=StringVar()
