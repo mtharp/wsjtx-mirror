@@ -23,7 +23,6 @@ MyCall=StringVar()
 MyGrid=StringVar()
 #RxDelay=StringVar()
 #TxDelay=StringVar()
-HighPri=IntVar()
 IDinterval=IntVar()
 ComPort=IntVar()
 PttPort=StringVar()
@@ -100,13 +99,10 @@ audioin=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio In:',
         value='0',entry_textvariable=DevinName,entry_width=12)
 audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
         value='0',entry_textvariable=DevoutName,entry_width=12)
-ratein=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rate In:',
-        value=1.0000,entry_textvariable=samfacin,entry_width=12)
-rateout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rate Out:',
-        value=1.0000,entry_textvariable=samfacout,entry_width=12)
+azeldir_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='AzElDir:',
+    entry_width=9,value=g.appdir,entry_textvariable=azeldir)
 
-#widgets = (mycall, mygrid, rxdelay,txdelay,idinterval,comport,audioin,audioout)
-widgets = (mycall, mygrid,idinterval,comport,audioin,audioout,ratein,rateout)
+widgets = (mycall, mygrid,idinterval,comport,audioin,audioout,azeldir_entry)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)
 
@@ -125,13 +121,11 @@ g2=Pmw.Group(root,tag_text="Message templates")
 f2=Frame(g2.interior(),width=100,height=20)
 f2a=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
 f2a.pack(side=LEFT,padx=6,pady=6)
-#f2b=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
-#f2b.pack(side=LEFT,padx=6,pady=6)
 
 itype=IntVar()
-rb1=Radiobutton(f2a,text='30',value=0,variable=itype,command=defaults)
-rb2=Radiobutton(f2a,text='48',value=1,variable=itype,command=defaults)
-rb3=Radiobutton(f2a,text='78',value=2,variable=itype,command=defaults)
+rb1=Radiobutton(f2a,text='Sm',value=0,variable=itype,command=defaults)
+rb2=Radiobutton(f2a,text='Med',value=1,variable=itype,command=defaults)
+rb3=Radiobutton(f2a,text='Lg',value=2,variable=itype,command=defaults)
 rb1.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb2.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb3.pack(anchor=W,side=LEFT,padx=2,pady=2)
@@ -157,24 +151,6 @@ messages=(tx1,tx2,tx3,tx4,tx5,tx6)
 for m in messages:
     m.pack(fill=X,expand=1,padx=10,pady=2)
 
-#g3=Pmw.Group(root)
-g3=Pmw.Group(root,tag_text="Miscellaneous")
-aux_ra=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Source RA:',
-    entry_width=9,entry_textvariable=auxra)
-aux_dec=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Source DEC:',
-    entry_width=9,entry_textvariable=auxdec)
-azeldir_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='AzElDir:',
-    entry_width=9,value=g.appdir,entry_textvariable=azeldir)
-
-widgets = (aux_ra,aux_dec,azeldir_entry)
-for widget in widgets:
-    widget.pack(padx=10,pady=2)
-hipriority=Checkbutton(g3.interior(),text='High Priority',justify=RIGHT,
-                       variable=HighPri)
-hipriority.pack(padx=10,pady=2,side=BOTTOM)
-Pmw.alignlabels(widgets)
-
-
 g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-g3.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
+
