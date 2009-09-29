@@ -1366,20 +1366,6 @@ def update():
 
     samfac_in=Audio.gcom1.mfsample/120000.0
     samfac_out=Audio.gcom1.mfsample2/120000.0
-    xin=1
-    xout=1
-    try:
-        xin=samfac_in/options.samfacin.get()
-        xout=samfac_out/options.samfacout.get()
-        if xin<0.999 or xin>1.001 or xout<0.999 or xout>1.001:
-            lab8.configure(text="%6.4f   %6.4f" \
-                % (options.samfacin.get(),options.samfacout.get()), \
-                fg='black',bg='red')
-        else:
-            lab8.configure(fg='gray85',bg='gray85')
-    except:
-        pass
-
     msg1.configure(text="%6.4f %6.4f" % (samfac_in,samfac_out))
     msg2.configure(text=mode.get())
     t="Freeze DF:%4d" % (int(Audio.gcom2.mousedf),)
@@ -1503,16 +1489,6 @@ def update():
     elif mode.get()=='ISCAT': isync6m=isync
     elif mode.get()[:4]=='JT64': isync65=isync
     Audio.gcom1.txfirst=TxFirst.get()
-    try:
-        Audio.gcom1.samfacin=options.samfacin.get()
-    except:
-        Audio.gcom1.samfacin=1.0
-    try:
-        Audio.gcom1.samfacout=options.samfacout.get()
-    except:
-        Audio.gcom1.samfacout=1.0
-#    if Audio.gcom1.samfacin>1.01: Audio.gcom1.samfacin=1.01
-# ... etc.
     Audio.gcom2.mycall=(options.MyCall.get()+(' '*12))[:12]
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
     Audio.gcom2.hisgrid=(HisGrid.get()+(' '*6))[:6]
@@ -2122,8 +2098,6 @@ try:
             g.DevoutName.set(value)
             options.DevoutName.set(value)
             Audio.gcom1.devout_name=(options.DevoutName.get()+(' '*12))[:12]
-        elif key == 'SamFacIn': options.samfacin.set(value)
-        elif key == 'SamFacOut': options.samfacout.set(value)
         elif key == 'Template1': options.Template1.set(value.replace("_"," "))
         elif key == 'Template2': options.Template2.set(value.replace("_"," "))
         elif key == 'Template3': options.Template3.set(value.replace("_"," "))
@@ -2205,8 +2179,6 @@ f.write("Mileskm " + str(options.mileskm.get()) + "\n")
 f.write("MsgStyle " + str(options.itype.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
-f.write("SamFacIn " + str(options.samfacin.get()) + "\n")
-f.write("SamFacOut " + str(options.samfacout.get()) + "\n")
 if options.Template6.get()=="": options.Template6.set("_")
 f.write("Template1 " + options.Template1.get().replace(" ","_") + "\n")
 f.write("Template2 " + options.Template2.get().replace(" ","_") + "\n")

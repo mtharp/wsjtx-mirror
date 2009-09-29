@@ -9,8 +9,6 @@ integer ntrbuf         !(obsolete?)
 real*8 Tsec            !Present time                       SoundIn,SoundOut
 real*8 rxdelay         !Delay between PTT=1 and Tx audio        SoundIn
 real*8 txdelay         !Delay from end of Tx Audio and PTT=0    SoundOut
-real*8 samfacin        !(Input sample rate)/12000               GUI
-real*8 samfacout       !(Output sample rate)/12000              GUI
 real*8 txsnrdb         !SNR for simulations                     GUI
 integer*2 y1           !Ring buffer for audio channel 0         SoundIn
 integer*2 y2           !Ring buffer for audio channel 1         SoundIn
@@ -43,7 +41,7 @@ integer ns0            !Time at last ALL.TXT date entry         Decoder
 character*12 devin_name,devout_name ! GUI
 
 common/gcom1/Tbuf(1024),ntrbuf(1024),Tsec,rxdelay,txdelay,              &
-     samfacin,samfacout,txsnrdb,y1(NRXMAX),y2(NRXMAX),                  &
+     txsnrdb,y1(NRXMAX),y2(NRXMAX),                                     &
      nmax,iwrite,iread,iwave(NTXMAX),nwave,TxOK,Receiving,Transmitting, &
      TxFirst,TRPeriod,ibuf,ibuf0,ave,rms,ngo,level,mute,newdat,ndsec,   &
      ndevin,ndevout,nx,mfsample,mfsample2,ns0,devin_name,devout_name
