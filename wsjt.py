@@ -378,7 +378,7 @@ def astro1(event=NONE):
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
-    t='400x250' + root_geom[root_geom.index("+"):]
+    t='400x265' + root_geom[root_geom.index("+"):]
     options.options2(t)
 
 #------------------------------------------------------ txmute
