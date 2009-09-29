@@ -660,7 +660,7 @@ WSJT8 is a weak signal communications program.  It supports
 these operating modes:
 
   1. JT64  - EME
-  2. ISCAT - optimized for meteor and ionospheric scatter on 50 MHz
+  2. ISCAT - ionospheric scatter on 50 MHz
   3. JTMS  - fast mode for meteor scatter
   4. JT8   - for HF
   5. ECHO  - EME Echo testing
