@@ -106,7 +106,8 @@ subroutine srcdec(cmode,nbit,iu,msg)
         if(n5.eq.6) msg='DE '//c12(:i1)//cgp
         if(n5.eq.12) msg='DE '//c12(:i1)//cgp//' OOO'
         if(n5.eq.18) msg='DE '//c12(:i1)//cgp//' RO'
-     else if(n5.eq.7 .or. n5.eq.13 .or. n5.eq.20) then
+     else if(n5.eq.7 .or. n5.eq.13 .or. n5.eq.20 .or.            &
+          n5.eq.30 .or. n5.eq.31) then
         call unpkcall(nc1,c12)
         i1=index(dcall(ngph),' ')
         i2=index(c12,' ')
@@ -114,10 +115,14 @@ subroutine srcdec(cmode,nbit,iu,msg)
            if(n5.eq.7) msg=c12(:i2-1)//' <...> OOO'
            if(n5.eq.13) msg=c12(:i2-1)//' <...> RO'
            if(n5.eq.20) msg=c12(:i2-1)//' <...> RRR'
+           if(n5.eq.30) msg=c12(:i2-1)//' <...> 27'
+           if(n5.eq.31) msg=c12(:i2-1)//' <...> R27'
         else
            if(n5.eq.7)  msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> OOO'
            if(n5.eq.13) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> RO'
            if(n5.eq.20) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> RRR'
+           if(n5.eq.30) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> 27'
+           if(n5.eq.31) msg=c12(:i2-1)//' <'//dcall(ngph)(:i1-1)//'> R27'
         endif
      else if(n5.eq.8 .or. n5.eq.9) then
         ng=ngph + 32768*(n5-8)
@@ -143,6 +148,23 @@ subroutine srcdec(cmode,nbit,iu,msg)
         ng=ngph + 32768*(n5-23)
         call unpkpfx(ng,c12)
         msg='DE '//c12//' RRR'
+     else if(n5.eq.25) then
+        call unpkcall(nc1,c12)
+        i1=index(c12,' ')
+        call unpkgrid(ngph,cgp)
+        msg='73 DE '//c12(:i1)//cgp
+     else if(n5.eq.26 .or. n5.eq.27) then
+        ng=ngph + 32768*(n5-26)
+        call unpkpfx(ng,c12)
+        msg='73 DE '//c12
+     else if(n5.eq.28) then
+        call unpkname(nc1,ngph,c12)
+        i1=index(c12,' ')
+        msg='TNX '//c12(:i1)//'73 GL'
+     else if(n5.eq.29) then
+        call unpkname(nc1,ngph,c12)
+        i1=index(c12,' ')
+        msg='OP '//c12(:i1)//'73 GL'
      endif
 
   else if(nbit.eq.78) then

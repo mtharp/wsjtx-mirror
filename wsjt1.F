@@ -1,5 +1,5 @@
         subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,
-     +    MinSigdB,NQRN,DFTolerance,MouseButton,NClearAve,nforce,
+     +    MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,
      +    Mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,
      +    MyCall,HisCall,HisGrid,neme,ntx2,s2,
      +    ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,
@@ -12,7 +12,6 @@
         integer istart          !Starting location in original d() array
         character FileID*40     !Name of file being processed
         integer MinSigdB        !Minimum ping strength, dB
-        integer NQRN            !QRN rejection parameter
         integer DFTolerance     !Defines DF search range
         integer NSyncOK         !Set to 1 if JT65 file synchronized OK
         character*12 mycall
@@ -49,7 +48,6 @@
         common/ccom/nline,tping(100),line(100)
         common/limcom/ nslim2a
         common/extcom/ntdecode
-        common/clipcom/ nclip
         save
 
         if(mode.eq.8) nzap=0
@@ -57,8 +55,6 @@
         jz=jz0
         ntdecode=ntdecode0
         modea=Mode
-        nclip=NQRN-5
-        nslim2a=nclip
         MinWidth=40                            !Minimum width of pings, ms
         call zero(psavg,450)
         rewind 11
@@ -93,20 +89,20 @@
            dat(j)=dat(j)-ave
         enddo
 
-        if(ndiag.ne.0 .and. nclip.lt.0) then
-C  Intentionally degrade SNR by -nclip dB.
-           sq=0.
-           do i=1,jz
-              sq=sq + dat(i)**2
-           enddo
-           p0=sq/jz
-           p1=p0*10.0**(-0.1*nclip)
-           dnoise=sqrt(4*(p1-p0))
-           idum=-1
-           do i=1,jz
-              dat(i)=dat(i) + dnoise*gran(idum)
-           enddo
-        endif
+!        if(ndiag.ne.0 .and. nclip.lt.0) then
+!  Intentionally degrade SNR by -nclip dB.
+!           sq=0.
+!           do i=1,jz
+!              sq=sq + dat(i)**2
+!           enddo
+!           p0=sq/jz
+!           p1=p0*10.0**(-0.1*nclip)
+!           dnoise=sqrt(4*(p1-p0))
+!           idum=-1
+!           do i=1,jz
+!              dat(i)=dat(i) + dnoise*gran(idum)
+!           enddo
+!        endif
 
         if(mode.ne.2 .and. nzap.ne.0) then
            nfrz=NFreeze

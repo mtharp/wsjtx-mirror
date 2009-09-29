@@ -1,11 +1,11 @@
-subroutine pk48(cmode,w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
+subroutine pk48(cmode,w,nw,lenw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
 
   parameter (NBASE2=37*37*36)
   character*5 cmode
   character*14 w(7)
   character pfx*3,sfx*1,c1*6
   character*8 opname
-  integer nt1(7)
+  integer lenw(7),nt1(7)
 
 ! 48-bit messages
   if(w(1).eq.'CQ' .and. nt1(2).eq.1 .and. nt1(3).eq.4) then
@@ -48,6 +48,8 @@ subroutine pk48(cmode,w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
      call hash(w(2)(2:i1-1),i1-2,ngph)
      if(w(3).eq.'OOO' .or. (cmode.eq.'JTMS' .and. w(3).eq.'26')) n5=7
      if(w(3).eq.'RO' .or. (cmode.eq.'JTMS' .and. w(3).eq.'R26')) n5=13
+     if(cmode.eq.'JTMS' .and. w(3).eq.'27')  n5=30
+     if(cmode.eq.'JTMS' .and. w(3).eq.'R27') n5=31
      if(w(3).eq.'RRR') n5=20
   else if(nt1(1).eq.2 .and. w(2).eq.'OOO' .or.                   &
        (cmode.eq.'JTMS' .and. w(2).eq.'26')) then
@@ -60,19 +62,21 @@ subroutine pk48(cmode,w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
   else if(nt1(1).eq.2 .and. w(2).eq.'RRR') then
      call pkpfx(w(1),nc1,ngph,nadd)
      n5=21+nadd
+  else if(w(1).eq.'73' .and. w(2).eq.'DE' .and. nt1(3).eq.1 .and.     &
+       nt1(4).eq.4) then
+     n5=25
+     call pkcall(w(3),nc1,ntext1)
+     call pkgrid(w(4),ngph,ntext1)
+  else if(w(1).eq.'73' .and. w(2).eq.'DE' .and. nt1(3).eq.2) then
+     call pkpfx(w(3),nc1,ngph,nadd)
+     n5=26+nadd
+  else if(w(1).eq.'TNX' .and. w(3).eq.'73' .and. w(4).eq.'GL') then
+     call pkname(w(2),lenw(2),nc1,ngph)
+     n5=28
+  else if(w(1).eq.'OP' .and. w(3).eq.'73' .and. w(4).eq.'GL') then
+     call pkname(w(2),lenw(2),nc1,ngph)
+     n5=29
   endif
-
-!  if(w(1).eq.'73' .and. w(2).eq.'DE' .and. nt1(3).eq.1 .and.     &
-!       nt1(4).eq.4) n5=25
-!  if(w(1).eq.'73' .and. w(2).eq.'DE' .and. nt1(3).eq.2) n5=26      !or 27
-!  if(w(1).eq.'TNX' .and. w(3).eq.'73' .and. w(4).eq.'GL') then
-!     opname=w(2)
-!     n5=28
-!  endif
-!  if(w(1).eq.'OP' .and. w(3).eq.'73' .and. w(4).eq.'GL') then
-!     opname=w(2)
-!     n5=29
-!  endif
 
   if(n5.ge.0) nbit=48
 

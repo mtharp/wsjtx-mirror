@@ -9,7 +9,7 @@ subroutine srcenc(cmode,msg,nbit,iu)
 !  48: 28+15+5 = nc1+ngph+n5
 !  78: 28+28+15+1+2+3+1 = nc1+nc2+ngph+n2+(n1+n3)+ntext
 ! nw     - number of words
-! len(7) - length of each word in characters
+! lenw(7) - length of each word in characters
 ! nt1(7) - type of each word
 ! n5    - 5-bit or 6-bit value, determines 48-bit message type
 ! nt1 Word type
@@ -79,7 +79,7 @@ subroutine srcenc(cmode,msg,nbit,iu)
      go to 10
   endif
 
-  call pk48(cmode,w,nw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
+  call pk48(cmode,w,nw,lenw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
   if(nbit.eq.48) then
      iu(1)=ishft(nc1,4) + iand(ishft(ngph,-11),15)
      m11=2**11 - 1
