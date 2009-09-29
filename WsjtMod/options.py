@@ -12,13 +12,23 @@ root.protocol('WM_DELETE_WINDOW',done)
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title("Options")
 
+Pmw.initialise(fontScheme='pmw2')
+
 def options2(t):
     root.geometry(t)
     root.deiconify()
     root.focus_set()
 
 #-------------------------------------------------------- Create GUI widgets
-g1=Pmw.Group(root,tag_text="Station parameters")
+nb=Pmw.NoteBook(root)
+nb.pack(padx=5,pady=5,fill=BOTH,expand=1)
+
+g1=nb.add("Station parameters")
+g2=nb.add("JTMS")
+g3=nb.add("ISCAT")
+g4=nb.add("JT64")
+g5=nb.add("JT8")
+
 MyCall=StringVar()
 MyGrid=StringVar()
 #RxDelay=StringVar()
@@ -83,23 +93,23 @@ def defaults():
         tx6.delete(0,END)
         tx6.insert(0,'CQ %M %G')
 
-mycall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='My Call:',
+mycall=Pmw.EntryField(g1,labelpos=W,label_text='My Call:',
         value='K1JT',entry_textvariable=MyCall,entry_width=12)
-mygrid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Grid Locator:',
+mygrid=Pmw.EntryField(g1,labelpos=W,label_text='Grid Locator:',
         value='FN20qi',entry_textvariable=MyGrid,entry_width=12)
-##rxdelay=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx Delay (s):',
+##rxdelay=Pmw.EntryField(g1,labelpos=W,label_text='Rx Delay (s):',
 ##        value='0.2',entry_textvariable=RxDelay)
-##txdelay=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx Delay (s):',
+##txdelay=Pmw.EntryField(g1,labelpos=W,label_text='Tx Delay (s):',
 ##        value='0.2',entry_textvariable=TxDelay)
-idinterval=Pmw.EntryField(g1.interior(),labelpos=W,label_text='ID Interval (m):',
+idinterval=Pmw.EntryField(g1,labelpos=W,label_text='ID Interval (m):',
         value=10,entry_textvariable=IDinterval,entry_width=12)
-comport=Pmw.EntryField(g1.interior(),labelpos=W,label_text='PTT Port:',
+comport=Pmw.EntryField(g1,labelpos=W,label_text='PTT Port:',
         value='/dev/ttyS0',entry_textvariable=PttPort,entry_width=12)
-audioin=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio In:',
+audioin=Pmw.EntryField(g1,labelpos=W,label_text='Audio In:',
         value='0',entry_textvariable=DevinName,entry_width=12)
-audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
+audioout=Pmw.EntryField(g1,labelpos=W,label_text='Audio Out:',
         value='0',entry_textvariable=DevoutName,entry_width=12)
-azeldir_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='AzElDir:',
+azeldir_entry=Pmw.EntryField(g1,labelpos=W,label_text='AzElDir:',
     entry_width=9,value=g.appdir,entry_textvariable=azeldir)
 
 widgets = (mycall, mygrid,idinterval,comport,audioin,audioout,azeldir_entry)
@@ -108,7 +118,7 @@ for widget in widgets:
 
 Pmw.alignlabels(widgets)
 mycall.component('entry').focus_set()
-f1=Frame(g1.interior(),width=100,height=20)
+f1=Frame(g1,width=100,height=20)
 mileskm=IntVar()
 Label(f1,text='Distance unit:').pack(side=LEFT)
 rb5=Radiobutton(f1,text='mi',value=0,variable=mileskm)
@@ -117,8 +127,7 @@ rb5.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb6.pack(anchor=W,side=LEFT,padx=2,pady=2)
 f1.pack()
 
-g2=Pmw.Group(root,tag_text="Message templates")
-f2=Frame(g2.interior(),width=100,height=20)
+f2=Frame(g2,width=100,height=20)
 f2a=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
 f2a.pack(side=LEFT,padx=6,pady=6)
 
@@ -132,25 +141,23 @@ rb3.pack(anchor=W,side=LEFT,padx=2,pady=2)
 
 f2.pack()
 
-#Button(g2.interior(),text="Reset defaults",command=defaults).pack(padx=6,pady=6)
+#Button(g2,text="Reset defaults",command=defaults).pack(padx=6,pady=6)
 
-tx1=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 1:',
+tx1=Pmw.EntryField(g2,labelpos=W,label_text='Tx 1:',
                    entry_textvariable=Template1)
-tx2=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 2:',
+tx2=Pmw.EntryField(g2,labelpos=W,label_text='Tx 2:',
                    entry_textvariable=Template2)
-tx3=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 3:',
+tx3=Pmw.EntryField(g2,labelpos=W,label_text='Tx 3:',
                    entry_textvariable=Template3)
-tx4=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 4:',
+tx4=Pmw.EntryField(g2,labelpos=W,label_text='Tx 4:',
                    entry_textvariable=Template4)
-tx5=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 5:',
+tx5=Pmw.EntryField(g2,labelpos=W,label_text='Tx 5:',
                    entry_textvariable=Template5)
-tx6=Pmw.EntryField(g2.interior(),labelpos=W,label_text='Tx 6:',
+tx6=Pmw.EntryField(g2,labelpos=W,label_text='Tx 6:',
                    entry_textvariable=Template6)
 
 messages=(tx1,tx2,tx3,tx4,tx5,tx6)
 for m in messages:
     m.pack(fill=X,expand=1,padx=10,pady=2)
 
-g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-
+nb.selectpage(0)

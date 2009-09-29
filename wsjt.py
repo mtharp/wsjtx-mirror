@@ -31,27 +31,31 @@ print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
+appdir=os.getcwd()
+g.appdir=appdir
+
 #See if we are running in Windows
 g.Win32=0
 if sys.platform=="win32":
     g.Win32=1
+#    from WsjtMod import options
     try:
         root.option_readfile('wsjtrc.win')
     except:
         pass
 else:
+#    from WsjtMod import options
     try:
         root.option_readfile('wsjtrc')
     except:
         pass
 root_geom=""
+from WsjtMod import options
 
 #------------------------------------------------------ Global variables
-appdir=os.getcwd()
 Audio.gcom2.appdir=(appdir+(' '*80))[:80]
 Audio.ftn_init()
 first=1
-g.appdir=appdir
 isync=0
 isyncMS=2
 isync6m=-10
@@ -207,7 +211,7 @@ def stopmon(event=NONE):
     global loopall
     loopall=0
     bmonitor.configure(bg='gray85')
-    Audio.gcom2.monitoring=0
+    Audio.gcom2.monitoring=0    
 
 #------------------------------------------------------ dbl_click_text
 def dbl_click_text(event):
@@ -374,7 +378,8 @@ def astro1(event=NONE):
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
-    options.options2(root_geom[root_geom.index("+"):])
+    t='590x340' + root_geom[root_geom.index("+"):]
+    options.options2(t)
 
 #------------------------------------------------------ txmute
 def txmute(event=NONE):
@@ -1738,8 +1743,10 @@ Widget.bind(graph1,"<Button-3>",mouse_click_g1)
 graph1.pack(side=LEFT)
 graph2=Canvas(iframe1, bg='black', width=150, height=120,cursor='crosshair')
 graph2.pack(side=LEFT)
-g2font=graph2.option_get("font","font")
+##g2font=graph2.option_get("font","font")
+g2font=("Lucida Console",16)
 if g2font!="": g.g2font=g2font
+print g.g2font
 iframe1.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------ Labels under graphics
@@ -2032,7 +2039,7 @@ lauto=0
 isync=1
 ntx.set(1)
 ndepth.set(0)
-from WsjtMod import options
+##from WsjtMod import options
 options.defaults()
 ModeJTMS()
 lookup()

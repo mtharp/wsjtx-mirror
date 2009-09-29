@@ -674,6 +674,7 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  SpecJT     by K1JT')
 if(__name__=="__main__"):
     Audio.gcom2.monitoring=1
+
 root.mainloop()
 
 #-------------------------------------------------- Save user params and quit
