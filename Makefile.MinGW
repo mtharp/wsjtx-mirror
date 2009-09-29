@@ -40,7 +40,7 @@ SRCS2F90 = a2d.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	unpkcall.f90 unpkgrid.f90 unpktext.f90 \
 	pk30.f90 pk48.f90 pk78.f90 pkpfx.f90 unpkpfx.f90 \
 	hash.f90 chenc.f90 chdec.f90 genms.f90 geniscat.f90 \
-	genjt8.f90
+	genjt8.f90 sec_midn.F90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
@@ -48,11 +48,11 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
 	dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f moon2.f \
 	MoonDop.f sun.f toxyz.f bzap.f spec441.f spec2d.f avesp2.f \
         indexx.f s2shape.f gentone.f packbits.f unpackbits.f \
-        set.f flatten.f db.f pctile.f sort.f ssort.f ps.f ps64.f \
-	smooth.f sync.f demod64a.f flat2.f four2.f fourt.f \
+        set.f flatten.f db.f pctile.f sort.f ssort.f ps.f \
+	smooth.f sync.f demod64a.f flat2.f four2a.f \
         gencwid.f msgtype.f limit.f lpf1.f morse.f \
         nchar.f packcall.f packgrid.f packtext.f spec2d65.f unpackcall.f \
-        unpackgrid.f unpacktext.f xfft.f xfft2.f \
+        unpackgrid.f unpacktext.f xfft.f \
 	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
 	rfile2.f filbig2.F wsjt64.f sync64.f 
 
@@ -96,7 +96,6 @@ encode_rs_int.o: encode_rs.c
 	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
 decode_rs_int.o: decode_rs.c
 	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
-
 
 .PHONY : clean
 
