@@ -25,37 +25,10 @@ JT64 AND ISCAT                        nbits
 2.                    K1JT W8WN EM77    78
 3. W8WN K1JT -19                        78
 4.                    K1JT W8WN R-21    78
-5. RR TNX SHELBY                        78
-6.                    TNX JOE 73 GL     78
-
-JTMS                                  nbits
--------------------------------------------
-1. CQ K1JT                              30
-2.                    DE W8WN           30
-3. W8WN 26                              30
-4.                    K1JT R26          30
 5. RRR                                   2
-6.                    73                 2
+6.                    TNX 73 GL         48
 
-1. CQ K1JT FN20                         48
-2.                    <K1JT> W8WN       48
-3. W8WN <K1JT> 26                       48
-4.                    K1JT <W8WN> R26   48
-5. RRR                                   2
-6.                    73                 2
+JTMS: replace OOO by 26 or 27
+      replace RO by R26 or R27
 
-1. CQ K1JT FN20                         48
-2.                    K1JT W8WN EM77    78
-3. W8WN K1JT 27                         78
-4.                    R27                2
-5. RRR                                   2
-6.                    73                 2
-
-JT8 (mostly HF?)                      nbits
--------------------------------------------
-1. CQ K1JT FN20                         48
-2.                    K1JT W8WN EM77    78
-3. W8WN K1JT -19                        78
-4.                    K1JT W8WN R-21    78
-5. RR TNX SHELBY                        78
-6.                    TNX JOE 73 GL     78
+JT8: uses only 78-bit messages
