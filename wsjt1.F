@@ -1,7 +1,7 @@
-        subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,
+        subroutine wsjt1(d,jz0,istart,FileID,ndepth,
      +    MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,
      +    Mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,
-     +    MyCall,HisCall,HisGrid,neme,ntx2,s2,
+     +    MyCall,HisCall,HisGrid,ntx2,s2,
      +    ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,
      +    MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
 
@@ -37,7 +37,6 @@
         real yellow(216)
         real yellow0(216)
         real fzap(200)
-        real*8 samfacin,samratio
         real dat2(NP2)
         character msg3*3
         character cfile6*6
@@ -84,7 +83,6 @@
            sum=sum + dat(j)
         enddo
         ave=sum/jz
-        samratio=1.d0/samfacin
         do j=1,jz
            dat(j)=dat(j)-ave
         enddo
@@ -196,7 +194,7 @@
 
            if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,
      +        NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,
-     +        MouseDF2,NAgain,ndepth,nchallenge,neme,idf,idfsh,
+     +        MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,
      +        mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,
      +        nstest,dfsh,snrsh,
      +        NSyncOK,ccf,psavg,ndiag,nwsh)

@@ -44,7 +44,6 @@ integer nforce         !Force decoding of questionable data  GUI,Decoder
 integer nfrange        !Frequency range of main display         GUI
 integer nport          !Requested COM port number               GUI
 integer mousedf        !Mouse-selected freq offset, DF          GUI
-integer neme           !EME calls only in deep search?          GUI
 integer nsked          !Sked mode for deep search?              GUI
 integer naggressive    !Is "Aggressive decoding" checked?       GUI
 integer nslim2         !2nd Decoder threshold for FSK441. JT6M  GUI
@@ -98,7 +97,7 @@ common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      ndecdone,npingtime,ierr,lauto,mantx,nrestart,ntr,nmsg,nbitsent,  &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,              &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
-     mode4,ndebug,nport,mousedf,neme,nsked,                           &
+     mode4,ndebug,nport,mousedf,nsked,                                &
      naggressive,nslim2,nagain,nsavelast,ntxdf,                       &
      sendingsh,d2a(ND2MAX),d2b(ND2MAX),b(60000),jza,jzb,ntime,        &
      idinterval,msmax,lenappdir,idf,ndiskdat,nlines,nflat,            &

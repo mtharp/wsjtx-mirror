@@ -1,6 +1,6 @@
       subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,
      +  DFTolerance,NFreeze,NAFC,mode64,Nseg,MouseDF,NAgain,
-     +  ndepth,nchallenge,neme,idf,idfsh,mycall,hiscall,hisgrid,
+     +  ndepth,nchallenge,idf,idfsh,mycall,hiscall,hisgrid,
      +  lumsg,lcum,nspecial,ndf,nstest,dfsh,
      +  snrsh,NSyncOK,ccfblue,ccfred,ndiag,nwsh)
 
