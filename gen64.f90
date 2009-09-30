@@ -45,7 +45,9 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      if(n.eq.3) i0=54
      if(n.eq.4) i0=81
      do i=1,6
-        isync(i0+i)=ic6(i)
+        if(nbit.eq.30) isync(i0+i)=ic6(i)
+        if(nbit.eq.48) isync(i0+i)=ic6(7-i)
+        if(nbit.eq.78) isync(i0+i)=5-ic6(i)
      enddo
   enddo
 
