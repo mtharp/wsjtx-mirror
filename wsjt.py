@@ -1370,7 +1370,8 @@ def update():
             options.b3.configure(state=NORMAL)
             
         g.mode=mode.get()
-        options.g2.configure(tag_text=g.mode)
+        t='Set ' + g.mode + ' defaults'
+        options.g2.configure(tag_text=t)
         if first: GenStdMsgs()
         first=0
 

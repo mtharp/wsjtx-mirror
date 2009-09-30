@@ -183,24 +183,25 @@ rb5.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb6.pack(anchor=W,side=LEFT,padx=2,pady=2)
 f1.pack()
 
-g2=Pmw.Group(p2,tag_text=g.mode)
+t='Set ' + g.mode + ' defaults'
+g2=Pmw.Group(p2,tag_text=t)
 g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-Button(g2.interior(),text="Save",command=save,width=7).pack(side=TOP, \
-            padx=2,pady=2)
-Button(g2.interior(),text="Restore",command=restore,width=7).pack(side=TOP, \
-            padx=2,pady=2)
+##Button(g2.interior(),text="Save",command=save,width=7).pack(side=TOP, \
+##            padx=2,pady=2)
+##Button(g2.interior(),text="Restore",command=restore,width=7).pack(side=TOP, \
+##            padx=2,pady=2)
+##g3=Pmw.Group(g2.interior(),tag_text="Set defaults")
+##g3.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 
-g3=Pmw.Group(g2.interior(),tag_text="Set defaults")
-g3.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-b1=Button(g3.interior(),text="1",command=def1,width=3)
-b2=Button(g3.interior(),text="2",command=def2,width=3)
-b3=Button(g3.interior(),text="3",command=def3,width=3)
-b4=Button(g3.interior(),text="4",command=def4,width=3)
+b1=Button(g2.interior(),text="1",command=def1,width=3)
+b2=Button(g2.interior(),text="2",command=def2,width=3)
+b3=Button(g2.interior(),text="3",command=def3,width=3)
+b4=Button(g2.interior(),text="4",command=def4,width=3)
 
-b1.pack(side=LEFT,padx=2,pady=2,expand=YES)
-b2.pack(side=LEFT,padx=2,pady=2,expand=YES)
-b3.pack(side=LEFT,padx=2,pady=2,expand=YES)
-b4.pack(side=LEFT,padx=2,pady=2,expand=YES)
+b1.pack(side=TOP,padx=2,pady=2,expand=YES)
+b2.pack(side=TOP,padx=2,pady=2,expand=YES)
+b3.pack(side=TOP,padx=2,pady=2,expand=YES)
+b4.pack(side=TOP,padx=2,pady=2,expand=YES)
 
 
 tx1=Pmw.EntryField(p2,labelpos=W,label_text='Tx 1:',
