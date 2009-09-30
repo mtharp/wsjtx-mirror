@@ -10,7 +10,11 @@ subroutine chenc(cmode,nbit,iu,gsym)
   integer*1 dat1(10)
   integer*1 i1a,i1b,i1c,i1d
   integer gsym(372)
+  integer gsym2(372)
   character*96 line
+  integer igray1(0:7)
+!  data igray0/0,1,3,2,7,6,4,5/    !Use this to remove the gray code
+  data igray1/0,1,3,2,6,7,5,4/
   common/acom1/i1a,i1b,i1c,i1d
   equivalence (i4,i1a)
 
@@ -31,11 +35,30 @@ subroutine chenc(cmode,nbit,iu,gsym)
      dat1(9)=i1d
      dat1(10)=i1c
 
-     if(cmode.eq.'JTMS') call enc213(dat1,nbit,gsym1,nsym,kc2,nc2)
-     if(cmode.eq.'JT8') call enc416(dat1,nbit,gsym1,nsym,kc2,nc2)
-     do i=1,nsym
-        gsym(i)=gsym1(i)
-     enddo
+     if(cmode.eq.'JTMS') then
+        call enc213(dat1,nbit,gsym1,nsym,kc2,nc2)
+        nhdata=nbit+12
+        do i=1,nhdata                          !Interleave the data
+           gsym(i)=gsym1(2*i-1)
+           gsym(nhdata+i)=gsym1(2*i)
+        enddo
+
+     else if(cmode.eq.'JT8') then
+        call enc416(dat1,nbit,gsym1,nsym,kc2,nc2)
+        do i1=0,30                    !Interleave using a 12x31 logical block
+           do i2=0,11
+              i=31*i2+i1
+              j=12*i1+i2
+              gsym2(i+1)=gsym1(j+1)    !Exchange i and j to remove interleaving
+           enddo
+        enddo
+! Apply gray code and insert 3-bit data symbols
+        do i=1,124
+           n=4*gsym2(3*i-2) + 2*gsym2(3*i-1) + gsym2(3*i)
+           gsym(i)=igray1(n)              !Use igray0() to remove the gray code
+        enddo
+     endif
+
   else if(cmode.eq.'JT64' .or. cmode.eq.'ISCAT') then
      mm=6
      nq=64

@@ -29,16 +29,12 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Append the encoded data after the 32-bit sync vector
-  nhdata=nbit+12
-  ndata=2*nhdata
+  ndata=2*(nbit+12)
   nsync=32
   nsym=ndata+nsync
   sent(1:nsync)=is32
-  do i=1,ndata,2                          !Interleave the data
-     sent(nsync+i)=gsym(i)
-     sent(nsync+nhdata+i+1)=gsym(i+1)
-  enddo
-
+  sent(nsync+1:nsym)=gsym(1:ndata)
+ 
 ! Set up necessary constants
   nsps=8
   tsymbol=nsps/12000.d0

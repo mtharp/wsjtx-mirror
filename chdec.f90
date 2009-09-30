@@ -4,6 +4,7 @@ subroutine chdec(cmode,nbit,gsym,iu)
 
   character*5 cmode
   integer gsym(372)
+  integer gsym2(372)
   integer iu(3)
   integer era(63)
   integer dat4(13)
@@ -12,6 +13,8 @@ subroutine chdec(cmode,nbit,gsym,iu)
   integer*1 ddec(10)
   integer mettab(0:255,0:1)
   logical first
+  integer igray0(0:7)
+  data igray0/0,1,3,2,7,6,4,5/    !Use this to remove the gray code
   data first/.true./
   save first,mettab
 
@@ -32,8 +35,34 @@ subroutine chdec(cmode,nbit,gsym,iu)
         first=.false.
      endif
 
-     nsym=2*(nbit+12)
-     if(cmode.eq.'JT8') nsym=4*(nbit+15)
+     if(cmode.eq.'JTMS') then
+        nhdata=nbit+12
+        nsym=2*nhdata                          !Number of binary symbols
+        gsym2(1:2*nhdata)=gsym(1:2*nhdata)
+        do i=1,nhdata                          !Remove the interleaving
+           gsym(2*i-1)=gsym2(i)
+           gsym(2*i)=gsym2(nhdata+i)
+        enddo        
+     else if(cmode.eq.'JT8') then
+        nsym=4*(nbit+15)                       !Number of binary symbols
+! Remove gray code and convert 3-bit symbols to bit-level soft symbols
+        gsym2=gsym
+        do i=1,124
+           n=igray0(gsym2(i))
+           gsym(3*i-2)=n/4
+           gsym(3*i-1)=iand(n,2)/2
+           gsym(3*i)=iand(n,1)
+        enddo
+        do i1=0,30                    !Remove interleaving
+           do i2=0,11
+              i=31*i2+i1
+              j=12*i1+i2
+              gsym2(j+1)=gsym(i+1)
+           enddo
+        enddo
+        gsym=gsym2
+     endif
+
      do i=1,nsym
         n=127
         if(gsym(i).eq.1) n=-127

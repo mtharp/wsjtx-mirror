@@ -13,10 +13,7 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
   integer gsym2(372)
   integer sent(140)
   integer ic8(8)
-  integer igray1(0:7)
   data ic8/3,6,2,4,5,0,7,1/
-!  data igray0/0,1,3,2,7,6,4,5/    !Use this to remove the gray code
-  data igray1/0,1,3,2,6,7,5,4/
   data nsps/4200/
   data twopi/6.283185307d0/
   save
@@ -36,29 +33,14 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
   call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Insert 8x8 Costas array at beginning and end of array sent().
-  do i=1,8
-     sent(i)=ic8(i)
-     sent(i+132)=ic8(i)
-  enddo
+  sent(1:8)=ic8
+  sent(133:140)=ic8
 
-! Interleave the data using a 12x31 logical block
-  do i1=0,30
-     do i2=0,11
-        i=31*i2+i1
-        j=12*i1+i2
-        gsym2(i+1)=gsym(j+1)        !Exchange i and j to remove interleaving
-     enddo
-  enddo
-
-! Apply gray code and insert 3-bit data symbols
-  nsym=140
-  k=0
-  do i=1,124
-     n=4*gsym2(3*i-2) + 2*gsym2(3*i-1) + gsym2(3*i)
-     sent(i+8)=igray1(n)            !Use igray0() to remove gray code
-  enddo
+! Insert the 3-bit data symbols
+  sent(9:132)=gsym(1:124)
 
 ! Set up necessary constants
+  nsym=140
   tsymbol=nsps/12000.d0
   dt=1.d0/12000.d0
   f0=1270.46d0
