@@ -53,13 +53,13 @@ OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
-SRCS2F90 = astro0.F90 audio_init.F90 azdist0.f90 \
+SRCS2F90 = wsjt1.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	decode1.F90 decode2.f90 decode3.F90 ftn_init.F90 \
 	ftn_quit.f90 get_fname.F90 getfile.F90 horizspec.f90 hscroll.f90 \
 	pix2d.f90 pix2d65.f90 rfile.f90 savedata.F90 spec.f90 \
 	wsjtgen.F90 runqqq.F90 fivehz.F90 gen64.f90 thnix.f90 \
 	srcenc.f90 srcdec.f90 parse.f90 msgtrim.f90 \
-	pkcall.f90 pkgrid.f90 pktext.f90 \
+	pkcall.f90 pkgrid.f90 pktext.f90 wsjt64.f90 sync64.f90 \
 	unpkcall.f90 unpkgrid.f90 unpktext.f90 \
 	pk30.f90 pk48.f90 pk78.f90 pkpfx.f90 unpkpfx.f90 \
 	hash.f90 chenc.f90 chdec.f90 genms.f90 geniscat.f90 \
@@ -67,7 +67,7 @@ SRCS2F90 = astro0.F90 audio_init.F90 azdist0.f90 \
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
-SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
+SRCS2F77 = astro.f azdist.f coord.f dcoord.f deg2grid.f \
 	dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f moon2.f \
 	MoonDop.f sun.f toxyz.f bzap.f spec441.f spec2d.f avesp2.f \
         indexx.f s2shape.f gentone.f packbits.f unpackbits.f \
@@ -77,7 +77,7 @@ SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
         nchar.f packcall.f packgrid.f packtext.f spec2d65.f unpackcall.f \
         unpackgrid.f unpacktext.f xfft.f \
 	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
-	rfile2.f filbig2.F wsjt64.f sync64.f 
+	rfile2.f filbig2.F 
 
 OBJS2F77 = ${SRCS2F77:.f=.o} 
 
