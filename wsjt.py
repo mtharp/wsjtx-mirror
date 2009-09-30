@@ -1106,7 +1106,7 @@ def GenAltMsgs(event=NONE):
 #------------------------------------------------------ setmsg
 def setmsg(template):
     msg=""
-    r='OOO'
+    r='-20'
     npct=0
     for i in range(len(template)):
         if npct:
@@ -1360,7 +1360,17 @@ def update():
             msg2.configure(bg='#88FF88')
         elif mode.get()=="Echo":
             msg2.configure(bg='#FF0000')
+        if mode.get()[:3]=="JT8":
+            options.b1.configure(state=DISABLED)
+            options.b2.configure(state=DISABLED)
+            options.b3.configure(state=DISABLED)
+        else:
+            options.b1.configure(state=NORMAL)
+            options.b2.configure(state=NORMAL)
+            options.b3.configure(state=NORMAL)
+            
         g.mode=mode.get()
+        options.g2.configure(tag_text=g.mode)
         if first: GenStdMsgs()
         first=0
 
@@ -1748,7 +1758,7 @@ iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Decoded text
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
-text=Text(iframe4, height=6, width=70)
+text=Text(iframe4, height=6, width=80)
 text.bind('<Double-Button-1>',dbl_click_text)
 text.bind('<Double-Button-3>',dbl_click3_text)
 text.bind('<Key>',textkey)
@@ -1826,7 +1836,7 @@ sb.pack(side=RIGHT, fill=Y)
 text.configure(yscrollcommand=sb.set)
 iframe4.pack(expand=1, fill=X, padx=4)
 iframe4b = Frame(frame, bd=1, relief=SUNKEN)
-avetext=Text(iframe4b, height=2, width=70)
+avetext=Text(iframe4b, height=2, width=80)
 avetext.bind('<Double-Button-1>',dbl_click_ave)
 avetext.bind('<Key>',avetextkey)
 avetext.pack(side=LEFT, fill=X, padx=1)
@@ -2014,8 +2024,6 @@ lauto=0
 isync=1
 ntx.set(1)
 ndepth.set(0)
-##from WsjtMod import options
-options.defaults()
 ModeJTMS()
 lookup()
 balloon.unbind(ToRadio)
@@ -2148,6 +2156,7 @@ lsync.configure(text=slabel+str(isync))
 Audio.gcom2.azeldir=(options.azeldir.get()+' '*80)[:80]
 Audio.gcom2.ndepth=ndepth.get()
 stopmon()
+#options.defaults()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSJT 8     by K1JT')
 from WsjtMod import astro
