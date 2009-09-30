@@ -29,11 +29,15 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Append the encoded data after the 32-bit sync vector
-  ndata=2*(nbit+12)
+  nhdata=nbit+12
+  ndata=2*nhdata
   nsync=32
   nsym=ndata+nsync
   sent(1:nsync)=is32
-  sent(nsync+1:nsym)=gsym(1:ndata)
+  do i=1,ndata,2                          !Interleave the data
+     sent(nsync+i)=gsym(i)
+     sent(nsync+nhdata+i+1)=gsym(i+1)
+  enddo
 
 ! Set up necessary constants
   nsps=8
@@ -70,7 +74,7 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   nwave=k
 
   if(txsnrdb.lt.40.d0) then
-! ###  Make some pings ###
+! ###  Make some pings (for tests only) ###
      do i=1,nwave
         iping=i/(3*12000)
         if(iping.ne.iping0) then

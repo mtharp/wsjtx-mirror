@@ -1,6 +1,7 @@
 subroutine wsjtgen
 
-! Compute the waveform to be transmitted.  
+! Compute the waveform to be transmitted.  Input and output data are
+! in /gcom1/ and /gcom2/.
 
 ! Input:    txmsg        message to be transmitted, up to 24 characters
 
@@ -28,6 +29,7 @@ subroutine wsjtgen
   include 'gcom1.f90'
   include 'gcom2.f90'
 
+! Perhaps the critical sections should be made shorter?
   call cs_lock('wsjtgen')
   fsample=12000.d0
   dt=1.d0/fsample

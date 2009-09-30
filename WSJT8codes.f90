@@ -55,7 +55,7 @@ program WSJT8codes
      else
 ! Apply FEC and do the channel encoding
         call chenc(cmode,nbit,iu0,gsym)
-! Decode channel symbols to recover source-encoded message bits
+! Decode hard-decision channel symbols to recover source-encoded message bits
         call chdec(cmode,nbit,gsym,iu)
      endif
 

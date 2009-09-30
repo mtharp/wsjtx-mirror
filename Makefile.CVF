@@ -40,7 +40,7 @@ SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f \
 	moon2.f MoonDop.f sun.f toxyz.f \
 	filbig2.F wsjt64.f sync64.f
 
-SRCS2C   = resample.c ptt.c igray.c wrapkarn.c vit213.c vit416.c
+SRCS2C   = resample.c ptt.c wrapkarn.c vit213.c vit416.c
 
 WSJT8.EXE: Audio.pyd wsjt.spec
 	python c:\python23\installer\Build.py wsjt.spec
