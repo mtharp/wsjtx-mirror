@@ -6,9 +6,9 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   character*24 message          !Message to be generated
   character*24 msgsent          !Message as it will be received
   character cmode*5
-  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol,txsnrdb
+  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,txsnrdb
   integer*2 iwave(NMAX)         !Generated wave file
-  integer iu0(3),iu(3)
+  integer iu(3)
   integer gsym(372)             !(372 is needed for JT8 mode)
   integer sent(212)
   integer is32(32)
@@ -18,15 +18,13 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   save
 
   cmode='JTMS'                                   !### temp ? ###
-  call srcenc(cmode,message,nbit,iu0)
+  call srcenc(cmode,message,nbit,iu)
 
 ! Apply FEC and do the channel encoding
-  call chenc(cmode,nbit,iu0,gsym)
+  call chenc(cmode,nbit,iu,gsym)
 
-! Decode channel symbols to recover source-encoded message bits
-!        call chdec(cmode,nbit,gsym,iu)
 ! Remove source encoding, recover the human-readable message.
-  call srcdec(cmode,nbit,iu0,msgsent)
+  call srcdec(cmode,nbit,iu,msgsent)
 
 ! Append the encoded data after the 32-bit sync vector
   ndata=2*(nbit+12)
@@ -37,7 +35,6 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
  
 ! Set up necessary constants
   nsps=8
-  tsymbol=nsps/12000.d0
   dt=1.d0/12000.d0
   f0=1500.d0
   dfgen=750.d0

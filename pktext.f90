@@ -2,7 +2,7 @@ subroutine pktext(msg,iu)
 
   character*24 msg
   integer iu(3)
-  integer*8 n1,n1z
+  integer*8 n1
   character*45 c
   data c/'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ +-./?@#$'/
   common/txtcom/n1a,n1b
@@ -29,7 +29,6 @@ subroutine pktext(msg,iu)
 
 ! We now have 55 bits in n1 and 22 bits in n2
 
-  n1z=n1
   n1=ishft(n1,9) + ishft(n2,-13)
   iu(1)=n1a
   iu(2)=n1b

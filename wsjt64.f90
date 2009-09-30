@@ -15,8 +15,8 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   logical lcum
   character decoded*22,cfile6*6,special*5,cooo*3
   character*22 deepmsg
-  character*67 ave1,ave2
-  character*1 csync
+  character*67 line,ave1,ave2
+  character*1 csync,c1
   character*12 mycall
   character*12 hiscall
   character*6 hisgrid
@@ -62,9 +62,9 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   if(nsync.lt.0) nsync=0
   nsnr=nint(snrx)
   jdf=nint(dfx)
-  write(11,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
-1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
-  write(21,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
+!  write(11,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
+!1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
+!  write(21,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
 
   csync=' '
   decoded='                      '
@@ -115,7 +115,54 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 !### From here onward, code from wsjt65.f was deleted.  Must restore
 !### and modify.
 
-200 continue
+  NSyncOK=1
+  nflag(nsave)=1            !Mark this RX file as good
+  csync='*'
+
+!  call decode65(dat,npts,dtx,dfx,flip,ndepth,neme,               &
+!       mycall,hiscall,hisgrid,mode65,nafc,decoded,               &
+!       ncount,deepmsg,qual)
+
+  if(ncount.eq.-999) qual=0                 !Bad data
+200 kvqual=0
+  if(ncount.ge.0) kvqual=1
+  nqual=qual
+  if(ndiag.eq.0 .and. nqual.gt.10) nqual=10
+  if(nqual.ge.nq1 .and.kvqual.eq.0) decoded=deepmsg
+
+  ndf=nint(dfx)
+  if(flip.lt.0.0 .and. (kvqual.eq.1 .or. nqual.ge.nq2)) cooo='OOO'
+  if(kvqual.eq.0.and.nqual.ge.nq1.and.nqual.lt.nq2) cooo(2:3)=' ?'
+  if(decoded.eq.'                      ') cooo='   '
+  do i=1,22
+     c1=decoded(i:i)
+     if(c1.ge.'a' .and. c1.le.'z') decoded(i:i)=char(ichar(c1)-32)
+  enddo
+  jdf=ndf+idf
+  if(nstest.gt.0) jdf=ndf
+
+  call cs_lock('wsjt64')
+  write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,                      &
+       nint(width),csync,special,decoded(1:19),cooo,kvqual,nqual
+1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
+
+! Blank all end-of-line stuff if no decode
+  if(line(31:40).eq.'          ') line=line(:30)
+
+! Blank DT if shorthand message  (### wrong logic? ###)
+  if(special.ne.'     ') then
+     line(15:19)='     '
+     line=line(:35)
+     ccfblue(-5)=-9999.0
+  else
+     nspecial=0
+  endif
+
+  if(lcum) write(21,1011) line
+1011 format(a67)
+! Write decoded msg unless this is an "Exclude" request:
+  if(MinSigdB.lt.99) write(lumsg,1011) line
+  call cs_unlock
 
 900 continue
 

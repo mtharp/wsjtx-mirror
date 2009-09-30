@@ -11,7 +11,6 @@ subroutine chenc(cmode,nbit,iu,gsym)
   integer*1 i1a,i1b,i1c,i1d
   integer gsym(372)
   integer gsym2(372)
-  character*96 line
   integer igray1(0:7)
 !  data igray0/0,1,3,2,7,6,4,5/    !Use this to remove the gray code
   data igray1/0,1,3,2,6,7,5,4/
@@ -60,10 +59,6 @@ subroutine chenc(cmode,nbit,iu,gsym)
      endif
 
   else if(cmode.eq.'JT64' .or. cmode.eq.'ISCAT') then
-     mm=6
-     nq=64
-     nn=63
-     nfz=3
      kk=13
      if(nbit.eq.30) kk=5
      if(nbit.eq.48) kk=8

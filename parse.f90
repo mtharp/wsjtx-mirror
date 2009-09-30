@@ -22,7 +22,7 @@ subroutine parse(msg,msglen,w,nw,lenw,nt1,pfx,sfx)
   character*24 msg
   character*14 w(7)
   character c10*10,c6*6
-  character g4*4,pfx*3,sfx*1
+  character pfx*3,sfx*1
   integer lenw(7),nt1(7)
   logical text
 
@@ -63,7 +63,6 @@ subroutine parse(msg,msglen,w,nw,lenw,nt1,pfx,sfx)
      if(text) nt1(i)=0                          !Oops, NG as call
 
      if(lenw(i).eq.4) then
-        g4=w(i)
         call packgrid(w(i),ngrid,text)
         if(.not.text) nt1(i)=4
      endif
@@ -87,8 +86,6 @@ subroutine parse(msg,msglen,w,nw,lenw,nt1,pfx,sfx)
      if(i2-1.ge.msglen) go to 900
   end do
   go to 900
-
-800 nw=-1                                   !Error flag
 
 900 if(nhash.eq.1) then
      pfx='   '

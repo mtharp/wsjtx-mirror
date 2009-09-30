@@ -13,7 +13,7 @@ subroutine wsjtgen
   parameter (NWMAX=60*12000)         !Max length of Tx waveform
 
   character msg*24,msgsent*24,idmsg*24
-  real*8 fsample,freq,pha,dpha,twopi,dt
+  real*8 fsample,freq,dpha,twopi,dt
   character testfile*27,tfile2*80
   logical lcwid
   integer*2 icwid(120000),jwave(NWMAX)

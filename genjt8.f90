@@ -8,9 +8,8 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
   character cmode*5
   real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol
   integer*2 iwave(NMAX)         !Generated wave file
-  integer iu0(3),iu(3)
+  integer iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
-  integer gsym2(372)
   integer sent(140)
   integer ic8(8)
   data ic8/3,6,2,4,5,0,7,1/
@@ -19,7 +18,7 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
   save
 
   cmode='JT8'                                   !### temp ? ###
-  call srcenc(cmode,message,nbit,iu0)
+  call srcenc(cmode,message,nbit,iu)
 ! In JT8 mode, message length is always nbit=78
   if(nbit.ne.78) then
      print*,'genjt8, nbit=',nbit
@@ -27,10 +26,10 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
   endif
 
 ! Apply FEC and do the channel encoding
-  call chenc(cmode,nbit,iu0,gsym)
+  call chenc(cmode,nbit,iu,gsym)
 
 ! Remove source encoding, recover the human-readable message.
-  call srcdec(cmode,nbit,iu0,msgsent)
+  call srcdec(cmode,nbit,iu,msgsent)
 
 ! Insert 8x8 Costas array at beginning and end of array sent().
   sent(1:8)=ic8

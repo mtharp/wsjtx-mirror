@@ -3,8 +3,7 @@ subroutine pk48(cmode,w,nw,lenw,nt1,pfx,sfx,nbit,nc1,ngph,n5)
   parameter (NBASE2=37*37*36)
   character*5 cmode
   character*14 w(7)
-  character pfx*3,sfx*1,c1*6
-  character*8 opname
+  character pfx*3,sfx*1
   integer lenw(7),nt1(7)
 
 ! 48-bit messages
