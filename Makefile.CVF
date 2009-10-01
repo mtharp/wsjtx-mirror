@@ -17,7 +17,7 @@ OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o tab.o \
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
-SRCS2F90 = a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
+SRCS2F90 = wsjt1.f90 a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	decode1.f90 decode2.f90 decode3.f90 ftn_init.f90 \
 	ftn_quit.f90 get_fname.f90 getfile.f90 horizspec.f90 hscroll.f90 \
 	pix2d.f90 pix2d65.f90 rfile.f90 savedata.f90 spec.f90 \
@@ -26,9 +26,10 @@ SRCS2F90 = a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	pk30.f90 pk48.f90 pk78.f90 pkcall.f90 unpkcall.f90 \
 	pkgrid.f90 unpkgrid.f90 pkpfx.f90 unpkpfx.f90 \
 	pktext.f90 unpktext.f90 msgtrim.f90 genms.f90 geniscat.f90 \
-	genjt8.f90 sec_midn.F90 pkname.f90 unpkname.f90
+	genjt8.f90 sec_midn.F90 pkname.f90 unpkname.f90 \
+	wsjt64.f90 sync64.f90
 
-SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f \
+SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f \
 	indexx.f s2shape.f flat2.f packbits.f unpackbits.f \
 	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f \
 	smooth.f sync.f demod64a.f four2a.f gencwid.f msgtype.f \
@@ -38,7 +39,7 @@ SRCS2F77 = wsjt1.f avesp2.f bzap.f spec441.f spec2d.f \
 	xfft.f astro.f azdist.f coord.f dcoord.f \
 	deg2grid.f dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f \
 	moon2.f MoonDop.f sun.f toxyz.f \
-	filbig2.F wsjt64.f sync64.f
+	filbig2.F 
 
 SRCS2C   = resample.c ptt.c wrapkarn.c vit213.c vit416.c
 
