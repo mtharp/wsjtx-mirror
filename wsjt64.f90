@@ -8,7 +8,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 ! have been 2x downsampled.  The search for shorthand messages has
 ! already been done.
 
-  parameter (MAXAVE=120)
   real dat(npts)                        !Raw data
   integer DFTolerance
   logical first
@@ -22,7 +21,7 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   character*6 hisgrid
   real ccfblue(-5:540),ccfred(-224:224)
   integer itf(2,9)
-  common/ave/ppsave(64,63,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
+  include 'avecom.f90'
   data first/.true./,ns10/0/,ns20/0/
   data itf/0,0, 1,0, -1,0, 0,-1, 0,1, 1,-1, 1,1, -1,-1, -1,1/
   save
@@ -117,9 +116,9 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   csync='*'
   qual=0.
 
-!  call decode65(dat,npts,dtx,dfx,flip,ndepth,neme,               &
-!       mycall,hiscall,hisgrid,mode65,nafc,decoded,               &
-!       ncount,deepmsg,qual)
+  call decode64(dat,npts,dtx,dfx,flip,ndepth,neme,               &
+       mycall,hiscall,hisgrid,mode64,nafc,decoded,               &
+       ncount,deepmsg,qual)
 
   if(ncount.eq.-999) qual=0                 !Bad data
 200 kvqual=0
