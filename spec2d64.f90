@@ -16,7 +16,6 @@ subroutine spec2d64(dat,jz,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
   real ftrack(87)
   real*8 pha,dpha,twopi
   complex cx(NMAX)
-!  include 'prcom.h'
   equivalence (x,cx)
   data twopi/6.28318530718d0/
   save
@@ -24,7 +23,7 @@ subroutine spec2d64(dat,jz,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
 ! Peak up in frequency and time, and compute ftrack.
 !  call ftpeak65(dat,jz,istart,f0,flip,pr,nafc,ftrack)
 
-  nfft=2048/mode64                     !Size of FFTs
+  nfft=3240/mode64                     !Size of FFTs
   dt=2.0/12000.0
   df=0.5*12000.0/nfft
   ps=0.

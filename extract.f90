@@ -1,10 +1,13 @@
-subroutine extract(s3,nadd,ncount,decoded)
+subroutine extract(s3,nadd,isbest,ncount,decoded)
 
   real s3(64,63)
   real tmp(4032)
-  character decoded*22
-  integer era(51),dat4(12),indx(64)
+  character decoded*22,msg*24
+  character*5 cmode
+  integer era(51),dat4(13),indx(64)
   integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
+  integer*1 dbits(96)
+  integer iu(3)
   logical first
   common/extcom/ntdecode
   data first/.true./,nsec1/0/
@@ -12,7 +15,6 @@ subroutine extract(s3,nadd,ncount,decoded)
 
   nfail=0
 1 call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
-
   if(ntest.lt.50 .or. nlow.gt.20) then
      ncount=-999                         !Flag bad data
      go to 900
@@ -29,6 +31,11 @@ subroutine extract(s3,nadd,ncount,decoded)
   endif
 
   ndec=0                                  !Temp for tests ###
+  kk=5
+  if(isbest.eq.2) kk=8
+  if(isbest.eq.3) kk=13
+  nbit=6*kk
+
   nemax=30
   maxe=8
   xlambda=15.0
@@ -39,12 +46,7 @@ subroutine extract(s3,nadd,ncount,decoded)
   endif
 
   if(ndec.eq.1) then
-!     call graycode(mr2sym,63,-1)
-!     call interleave63(mr2sym,-1)
-!     call interleave63(mr2prob,-1)
-
      nsec1=nsec1+1
-
      call cs_lock('extract')
      write(22,rec=1) nsec1,xlambda,maxe,naddsynd,mrsym,mrprob,mr2sym,mr2prob
      call flushqqq(22)
@@ -84,17 +86,20 @@ subroutine extract(s3,nadd,ncount,decoded)
      enddo
      ne2=nemax
 2    decoded='                      '
-     kk=13                                               !### test only ###
      do nerase=0,ne2,2
         call krsdecode(mrsym,kk,era,nerase,dat4,ncount)
         if(ncount.ge.0) then
-!           call unpackmsg(dat4,decoded)
-           decoded='Message decoded'
-           print*,decoded,nerase
+           dbits=0
+           call unpackbits(dat4,13,6,dbits)
+           call packbits(dbits,3,32,iu)
+           cmode='JT64'                             !### test only ###
+           call srcdec(cmode,nbit,iu,msg)
+           decoded=msg(1:22)
            go to 900
         endif
      enddo
   endif
 
-900 return
+900 continue
+  return
 end subroutine extract

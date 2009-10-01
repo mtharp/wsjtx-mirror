@@ -59,10 +59,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   if(nsync.lt.0) nsync=0
   nsnr=nint(snrx)
   jdf=nint(dfx)
-!  write(11,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
-!1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
-!  write(21,1010) cfile6,nsync,nsnr,dtx,jdf,isbest
-
   csync=' '
   decoded='                      '
   deepmsg='                      '
@@ -116,7 +112,7 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   csync='*'
   qual=0.
 
-  call decode64(dat,npts,dtx,dfx,flip,ndepth,neme,               &
+  call decode64(dat,npts,dtx,dfx,flip,ndepth,isbest,             &
        mycall,hiscall,hisgrid,mode64,nafc,decoded,               &
        ncount,deepmsg,qual)
 
