@@ -68,7 +68,7 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
 10 if(nbit.eq.2) then
      nspecial=ishft(iu(1),-30)
      tsymbol=16384.d0/12000.d0
-     nsym=32
+     nsym=34
      sendingsh=1                         !Flag for shorthand message
 ! ### go to xxx
   endif

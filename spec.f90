@@ -163,7 +163,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
 
      ia=1
      if(nfrange.eq.2000) then
-        i0=137 + nint((nfmid-1500)/df)
+        i0=136 + nint((nfmid-1500)/df)
         if(i0.lt.0) ia=1-i0
      else if(nfrange.eq.4000) then
         i0=nint(nfmid/df - 752.0)

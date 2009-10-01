@@ -176,47 +176,36 @@ def ftnstr(x):
 def df_mark():
     draw_axis()
     if nmark.get()==0 or Audio.gcom2.nfreeze:
-        fstep=10.0*12000.0/4096.0
+        fstep=21.0*12000.0/6480.0
         if g.mode[4:5]=='B': fstep=2*fstep
         if g.mode[4:5]=='C': fstep=4*fstep
+        mdf=Audio.gcom2.mousedf
 
 
-# Mark sync tone and top JT65 tone (green) and shorthand tones (red)
+# Mark DF=0 (green) and shorthand tones (red)
         if(frange==2000):
-            dx=288.7 + (1500-fmid)/df
-            if g.mode[:4]=="JT64" or g.mode[:5]=="ISCAT" or g.mode[:3]=="JT8":
+            dx=297 + (1500-fmid)/df
+            if g.mode[:4]=="JT64":
                 color='green'
-                n=1
-                if g.mode[:4]=='JT64':
-                    n=5
-                    x1=(Audio.gcom2.mousedf + 6.6*fstep)/df + dx
-                    c.create_line(x1-0.5,25,x1-0.5,12,fill=color)
-                    c.create_line(x1+0.5,25,x1+0.5,12,fill=color)
+                n=4
                 for i in range(n):
-                    mdf=Audio.gcom2.mousedf
                     x1=(mdf + i*fstep)/df + dx
                     j=12
                     if i>0: j=15
-                    if i!=1: c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
-                    if i!=1: c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
+                    c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
+                    c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
                     color='red'
         if(frange==4000):
             dx=375 + (1270.5-fmid)/(2*df)
-            if g.mode[:4]=="JT64" or g.mode[:5]=="ISCAT" or g.mode[:3]=="JT8":
+            if g.mode[:4]=="JT64":
                 color='green'
-                n=1
-                if g.mode[:4]=='JT64':
-                    n=5
-                    x1=(Audio.gcom2.mousedf + 6.6*fstep)/(2*df) + dx
-                    c.create_line(x1-0.5,25,x1-0.5,12,fill=color)
-                    c.create_line(x1+0.5,25,x1+0.5,12,fill=color)
+                n=4
                 for i in range(n):
-                    mdf=Audio.gcom2.mousedf
                     x1=(mdf + i*fstep)/(2*df) + dx
                     j=12
                     if i>0: j=15
-                    if i!=1: c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
-                    if i!=1: c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
+                    c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
+                    c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
                     color='red'
 
 #---------------------------------------------------- change_fmid
@@ -438,7 +427,7 @@ def draw_axis():
                 c.create_line(i,25,i,j,fill='black')
                 
         if g.mode[:4]=="JT64" or g.mode[:5]=="ISCAT" or g.mode[:3]=="JT8":
-            dx=288.7 + (1500-fmid)/df
+            dx=297 + (1500-fmid)/df
             dff=df
             if frange==4000:
                 dx=375 + (1270.5-fmid)/(2*df)

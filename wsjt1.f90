@@ -165,9 +165,9 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   if(mode.eq.9) then
      mode64=1
      nstest=0
-!           if(ntx2.ne.1) call short65(dat,jz,NFreeze,MouseDF,
-!     +        DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,
-!     +        idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
+     if(ntx2.ne.1) call short64(dat,jz,NFreeze,MouseDF,                &
+          DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,             &
+          idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
 
 !  Lowpass filter and decimate by 2
      call lpf1(dat,jz,jz2,MouseDF,MouseDF2)

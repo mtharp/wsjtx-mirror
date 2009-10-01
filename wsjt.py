@@ -1200,8 +1200,8 @@ def plot_large():
             graph1.create_line([x1,85,x1,95],fill="yellow")
             graph1.create_line([x2,85,x2,95],fill="yellow")
             t="RO"
-            if Audio.gcom2.nspecial==3: t="RRR"
-            if Audio.gcom2.nspecial==4: t="73"
+            if Audio.gcom2.nspecial==2: t="RRR"
+            if Audio.gcom2.nspecial==3: t="73"
             graph1.create_text(x2+3,93,anchor=W,text=t,fill="yellow")
 
         if Audio.gcom2.ccf[0] != -9999.0:

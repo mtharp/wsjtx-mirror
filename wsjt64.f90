@@ -34,8 +34,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
      ave2=' '
   endif
 
-  nspecial=0
-  nstest=0
   naggressive=0
   if(ndepth.ge.2) naggressive=1
   nq1=3
@@ -97,10 +95,9 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
      nsnr=snrsh
      dtx=1.
      ccfblue(-5)=-999.0
-     if(nspecial.eq.1) special='ATT  '
-     if(nspecial.eq.2) special='RO   '
-     if(nspecial.eq.3) special='RRR  '
-     if(nspecial.eq.4) special='73   '
+     if(nspecial.eq.1) special='RO   '
+     if(nspecial.eq.2) special='RRR  '
+     if(nspecial.eq.3) special='73   '
      NSyncOK=1              !Mark this RX file as good (for "Save Decoded")
      if(NFreeze.eq.0 .or. DFTolerance.ge.200) special(5:5)='?'
      width=nwsh
@@ -142,7 +139,7 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 
   call cs_lock('wsjt64')
   write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,                      &
-       nint(width),csync,special,decoded(1:19),cooo,kvqual,nqual
+       isbest,csync,special,decoded(1:19),cooo,kvqual,nqual
 1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
 
 ! Blank all end-of-line stuff if no decode
