@@ -55,8 +55,8 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   call sync64(dat,npts,DFTolerance,NFreeze,MouseDF,                      &
        mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
 
-  nsync=snrsync
-  if(nsync.lt.0) nsync=0
+!  nsync=snrsync
+!  if(nsync.lt.0) nsync=0
   nsnr=nint(snrx)
   jdf=nint(dfx)
   csync=' '
@@ -76,7 +76,7 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 
   nflag(nsave)=0                    !Clear the "good sync" flag
   iseg(nsave)=Nseg                  !Set the RX segment to 1 or 2
-  nsync=nint(snrsync-3.0)
+  nsync=nint(snrsync-2.0)
   nsnr=nint(snrx)
   if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
   nsnrlim=-32
