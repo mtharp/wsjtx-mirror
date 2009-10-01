@@ -39,9 +39,9 @@ subroutine extract(s3,nadd,ncount,decoded)
   endif
 
   if(ndec.eq.1) then
-     call graycode(mr2sym,63,-1)
-     call interleave63(mr2sym,-1)
-     call interleave63(mr2prob,-1)
+!     call graycode(mr2sym,63,-1)
+!     call interleave63(mr2sym,-1)
+!     call interleave63(mr2prob,-1)
 
      nsec1=nsec1+1
 
