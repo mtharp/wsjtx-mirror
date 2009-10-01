@@ -13,6 +13,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
   data first/.true./,nsec1/0/
   save
 
+  cmode='JT64'                             !### test only ###
   nfail=0
 1 call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
   if(ntest.lt.50 .or. nlow.gt.20) then
@@ -30,7 +31,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
      go to 1
   endif
 
-  ndec=0                                  !Temp for tests ###
+  ndec=1
   kk=5
   if(isbest.eq.2) kk=8
   if(isbest.eq.3) kk=13
@@ -48,11 +49,11 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
   if(ndec.eq.1) then
      nsec1=nsec1+1
      call cs_lock('extract')
-     write(22,rec=1) nsec1,xlambda,maxe,naddsynd,mrsym,mrprob,mr2sym,mr2prob
+     write(22,rec=1) nsec1,kk,xlambda,maxe,naddsynd,mrsym,mrprob,mr2sym,mr2prob
      call flushqqq(22)
      call cs_unlock
 
-     call runqqq('kvasd.exe','-q',iret)
+     call runqqq('kvasd2.exe','-q',iret)
 
      call cs_lock('extract')
      if(iret.ne.0) then
@@ -67,9 +68,11 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
 
      decoded='                      '
      if(ncount.ge.0) then
-!        call unpackmsg(dat4,decoded) !Unpack the user message
-        decoded='Message decoded'
-        print*,decoded
+        dbits=0
+        call unpackbits(dat4,13,6,dbits)
+        call packbits(dbits,3,32,iu)
+        call srcdec(cmode,nbit,iu,msg)
+        decoded=msg(1:22)
      endif
 20   call cs_unlock
   endif
@@ -92,7 +95,6 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
            dbits=0
            call unpackbits(dat4,13,6,dbits)
            call packbits(dbits,3,32,iu)
-           cmode='JT64'                             !### test only ###
            call srcdec(cmode,nbit,iu,msg)
            decoded=msg(1:22)
            go to 900
