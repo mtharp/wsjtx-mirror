@@ -561,7 +561,7 @@ def ModeJTMS(event=NONE):
 def ModeJT64():
     global slabel,isync,isync65,textheight,itol
     cleartext()
-    lab2.configure(text='FileID      Sync      dB        DT       DF    W')
+    lab2.configure(text='FileID      Sync     dB        DT       DF    *')
     lab4.configure(fg='gray85')
     lab5.configure(fg='gray85')
     Audio.gcom1.trperiod=60

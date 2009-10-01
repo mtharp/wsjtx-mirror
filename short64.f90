@@ -24,8 +24,6 @@ subroutine short64(data,jz,NFreeze,MouseDF,DFTolerance,                 &
   integer ipk(4)                         !Peak bin at each phase
   save
 
-  rewind 52
-
   nspecialbest=0                         !Default return value
   nstest=0
   df=12000.0/NFFT
@@ -147,10 +145,6 @@ subroutine short64(data,jz,NFreeze,MouseDF,DFTolerance,                 &
      kb=(ib2*df-f0)/df4
      do k=ka,kb
         i=nint((f0+k*df4)/df)
-!        ss1(k)=0.3 * (ss(i-2,n1) + ss(i-1,n1) + ss(i,n1) +             &
-!             ss(i+1,n1) + ss(i+2,n1))
-!        ss2(k)=0.3 * (ss(i-2,n2) + ss(i-1,n2) + ss(i,n2) +             &
-!             ss(i+1,n2) + ss(i+2,n2))
         ss1(k)=0.5 * (ss(i-1,n1) + ss(i,n1) + ss(i+1,n1))
         ss2(k)=0.5 * (ss(i-1,n2) + ss(i,n2) + ss(i+1,n2))
      enddo
@@ -191,8 +185,6 @@ subroutine short64(data,jz,NFreeze,MouseDF,DFTolerance,                 &
   do i=-224,224
      ss1a(i)=ss1(i+i0)
      ss2a(i)=ss2(i+i0)
-     write(52,3002) i*df4,ss1a(i),ss2a(i)
-3002 format(3f12.3)
   enddo
 
   return
