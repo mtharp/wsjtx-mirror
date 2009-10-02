@@ -21,7 +21,7 @@ subroutine spec2d64(dat,jz,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
   save
 
 ! Peak up in frequency and time, and compute ftrack.
-!  call ftpeak65(dat,jz,istart,f0,flip,pr,nafc,ftrack)
+!  call ftpeak64(dat,jz,istart,f0,flip,pr,nafc,ftrack)
 
   nfft=3240/mode64                     !Size of FFTs
   dt=2.0/12000.0
