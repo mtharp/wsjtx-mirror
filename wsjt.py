@@ -1237,11 +1237,11 @@ def plot_small():
         xy.append(x)
         psavg=Audio.gcom2.psavg[i]
         if mode.get()=="ISCAT": psavg=psavg + 27.959
-        n=int(150.0-5*psavg)
+        n=int(150.0-3*psavg)
         xy.append(n)
         if mode.get()=='JTMS':    
             ps0=Audio.gcom2.ps0[i]
-            n=int(150.0-2*ps0)
+            n=int(150.0-3*ps0)
             xy2.append(x)
             xy2.append(n)
     graph2.create_line(xy,fill="magenta")
@@ -1469,7 +1469,7 @@ def update():
         if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
                 mode.get()[:3]=='JT8':
             plot_large()
-        else:    
+        else:
             im.putdata(Audio.gcom2.b)
             pim=ImageTk.PhotoImage(im)          #Convert Image to PhotoImage
             graph1.delete(ALL)

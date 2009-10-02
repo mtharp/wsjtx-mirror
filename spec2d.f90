@@ -43,15 +43,15 @@ subroutine spec2d(data,jz,nstep,s2,nchan,nz,psavg0,sigma)
      enddo
   enddo
 
-! Normalize and save a copy of psavg0 for plotting.  Roll off the
-! spectrum at 300 and 3000 Hz.
+! Normalize and save a copy of psavg0 for plotting.  
+! Roll off the spectrum at 300 and 3000 Hz.
   do i=1,nh
      psavg0(i)=3.e-5*psavg0(i)/nz
-     f=df*i
-     fac=1.0
-     if(f.lt.300.0) fac=f/300.0
-     if(f.gt.3000.0) fac=max(0.00333,(3300.0-f)/300.0)
-     psavg0(i)=(fac**2)*psavg0(i)
+!     f=df*i
+!     fac=1.0
+!     if(f.lt.300.0) fac=f/300.0
+!     if(f.gt.3000.0) fac=max(0.00333,(3300.0-f)/300.0)
+!     psavg0(i)=(fac**2)*psavg0(i)
   enddo
 
 ! Compute an average spectrum from the weakest 25% of time slices.
