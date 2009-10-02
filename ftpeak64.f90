@@ -57,7 +57,7 @@ subroutine ftpeak64(dat,jz,istart,f0,flip,pr,nafc,ftrack)
 ! NB: if istart is increased by 64, kpk will decrease by 1.
 
   k0=nint(istart/64.0 - 7.0)
-  call symsync65(c5,n5,k0,s,flip,pr,16,kpk,ccf,smax)
+  call symsync64(c5,n5,k0,s,flip,pr,16,kpk,ccf,smax)
 
 ! Fix up the value of istart.  (The -1 is empirical.)
   istart=istart + 64.0*(kpk-1.0)

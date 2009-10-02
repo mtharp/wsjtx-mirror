@@ -1,6 +1,6 @@
 subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,            &
-     Mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,            &
+     mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,            &
      MyCall,HisCall,HisGrid,ntx2,s2,                               &
      ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,       &
      MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
@@ -16,6 +16,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   character*12 mycall
   character*12 hiscall
   character*6 hisgrid
+  character*6 mode
   real ps0(431)           !Spectrum of best ping
   integer npkept          !Number of pings kept and decoded
   integer lumsg           !Logical unit for decoded.txt
@@ -48,11 +49,8 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   common/extcom/ntdecode
   save
 
-  if(mode.eq.8) nzap=0
-  lcum=.true.
   jz=jz0
   ntdecode=ntdecode0
-  modea=Mode
   MinWidth=40                            !Minimum width of pings, ms
   call zero(psavg,450)
   rewind 11
@@ -72,11 +70,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   ndiag=1
   close(16)
 
-4 if(mode.lt.8 .and. jz.gt.655360) jz=655360
-  if(mode.eq.4 .and. jz.gt.330750) jz=330750      !### Fix this!
-  if(mode.eq.8 .and. jz.gt.1323000) jz=1323000
-
-  sum=0.
+4  sum=0.
   do j=1,jz            !Convert raw data from i*2 to real, remove DC
      dat(j)=0.1*d(j)
      sum=sum + dat(j)
@@ -101,9 +95,9 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
 !           enddo
 !        endif
 
-  if(mode.ne.2 .and. nzap.ne.0) then
+  if(mode(1:4).ne.'JT64' .and. nzap.ne.0) then
      nfrz=NFreeze
-     if(mode.eq.1) nfrz=0
+     if(mode(1:4).eq.'JTMS') nfrz=0
      if(jz.gt.100000) call avesp2(dat,jz,2,mode,nfrz,MouseDF,DFTolerance,fzap)
      nadd=1
      call bzap(dat,jz,nadd,mode,fzap)
@@ -151,18 +145,13 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
 
 
 ! Iscat mode:
-  if(mode.eq.4) then
+  if(mode(1:5).eq.'ISCAT') then
 ! For waterfall plot
      call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
-  endif
-
 ! JT8 mode:
-  if(mode.eq.6 .or. mode.eq.7) then
-     goto 900
-  endif
-
+  else if(mode(1:3).eq.'JT8') then
 !  JT64 mode:
-  if(mode.eq.9) then
+  else if(mode(1:4).eq.'JT64') then
      mode64=1
      nstest=0
      if(ntx2.ne.1) call short64(dat,jz,NFreeze,MouseDF,                &
@@ -195,18 +184,9 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
           MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &
           mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,                &
           nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
-     goto 900
+  else if(mode(1:4).eq.'JTMS') then
+     call wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,ps0,psavg)
   endif
-
-!  We're in JTMS mode. Compute the 2D spectrum.
-  df=12000.0/256.0            !FFT resolution ~43 Hz
-  dtbuf=nstep/12000.0
-  stlim=nslim2                !Single-tone threshold
-  call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
-  if(sigma.lt.0.0) basevb=-99.0
-  if(sigma.lt.0.0) go to 900
-  nline0=nline
-  call s2shape(s2,nchan,nz,tbest)
 
 900 LDecoded = ((NSyncOK.gt.0) .or. npkept.gt.0)
   endfile 11

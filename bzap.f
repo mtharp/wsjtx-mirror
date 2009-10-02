@@ -3,6 +3,7 @@
       parameter (NMAX=1024*1024)
       parameter (NMAXH=NMAX)
       real dat(jz),x(NMAX)
+      character*6 mode
       real fzap(200)
       complex c(NMAX)
       equivalence (x,c)
@@ -22,7 +23,7 @@
 
 C  This is a kludge:
       df=12000.0/(nadd*nfft)
-      if(mode.eq.2) df=12000.0/(2*nadd*nfft)
+      if(mode(1:4).eq.'JT64') df=12000.0/(2*nadd*nfft)
 
       tol=10.
       itol=nint(2.0/df)

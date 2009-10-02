@@ -30,10 +30,6 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
      else
 ! Apply FEC and do the channel encoding
         call chenc(cmode,nbit,iu0,gsym)
-        do i=1,63
-           write(51,3001) i,gsym(i)
-3001       format(2i5)
-        enddo
 
 ! Decode channel symbols to recover source-encoded message bits
 !        call chdec(cmode,nbit,gsym,iu)

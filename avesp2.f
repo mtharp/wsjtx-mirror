@@ -2,6 +2,7 @@
      +  DFTolerance,fzap)
 
       real dat(jza)
+      character*6 mode
       integer DFTolerance
       real psa(1024)                 !Ave ps, flattened and rolled off
       real ref(557)                  !Ref spectrum, lines excised
@@ -28,8 +29,7 @@ C  Flatten s2 and get psa, ref, and birdie
       ib=2700/df
       n=0
       fmouse=0.
-      if(mode.eq.2) fmouse=1270.46+MouseDF
-      if(mode.eq.4) fmouse=1076.66+MouseDF
+      if(mode(1:4).eq.'JT64') fmouse=1270.46+MouseDF     !### not needed? ###
 
       do i=ia,ib
          if(birdie(i)-ref(i).gt.3.0) then

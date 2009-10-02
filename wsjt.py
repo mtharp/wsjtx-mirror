@@ -932,19 +932,6 @@ def clear_avg(event=NONE):
     f.close()
     Audio.gcom2.nclearave=1
 
-#------------------------------------------------------ defaults
-def defaults():
-    global slabel,isync,itol,idsec
-    isync=1
-    if g.mode=="JTMS": isync=2
-    itol=5
-    ltol.configure(text='Tol    '+str(ntol[itol]))
-    if g.mode=="ISCAT":
-        isync=-10
-        itol=4
-        ltol.configure(text='Tol    '+str(ntol[itol]))
-    lsync.configure(text=slabel+str(isync))
-
 #------------------------------------------------------ delwav
 def delwav():
     t="Are you sure you want to delete\nall *.WAV files in the RxWav directory?"
@@ -1923,8 +1910,6 @@ ltol=Label(f5b, bg='white', fg='black', text='Tol    400', width=8, relief=RIDGE
 ltol.grid(column=0,row=2,padx=2,pady=1,sticky='EW')
 Widget.bind(ltol,'<Button-1>',inctol)
 Widget.bind(ltol,'<Button-3>',dectol)
-Button(f5b,text='Defaults',command=defaults,padx=1,pady=1).grid(column=0,
-                              row=3,sticky='EW')
 ldsec=Label(f5b, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
 ldsec.grid(column=0,row=4,ipadx=3,padx=2,pady=5,sticky='EW')
 lshift=Label(f5b, bg='white', fg='black', text='Shift 0.0', width=8, relief=RIDGE)
@@ -2157,7 +2142,6 @@ lsync.configure(text=slabel+str(isync))
 Audio.gcom2.azeldir=(options.azeldir.get()+' '*80)[:80]
 Audio.gcom2.ndepth=ndepth.get()
 stopmon()
-#options.defaults()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSJT 8     by K1JT')
 from WsjtMod import astro
