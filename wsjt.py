@@ -614,7 +614,7 @@ def ModeISCAT(event=NONE):
         if lauto: toggleauto()
         cleartext()
         ModeJTMS()
-        lab2.configure(text='FileID      Sync      dB       DF    *')
+        lab2.configure(text='FileID      Sync       dB        DF    *')
         mode.set("ISCAT")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
@@ -1122,6 +1122,7 @@ def plot_large():
             green=Audio.gcom2.green[i]
             y.append(green)
         ymax=max(y)
+        ymin=min(y)
         if ymax<1: ymax=1
         yfac=4.0
         if ymax>75.0/yfac: yfac=75.0/ymax
@@ -1133,8 +1134,7 @@ def plot_large():
             xy.append(n)
         graph1.create_line(xy,fill="green")
 
-        if Audio.gcom2.nspecial==0 or mode.get()[:3]=='JT2' or \
-                mode.get()[:3]=='JT4':
+        if Audio.gcom2.nspecial==0:
             y=[]
             for i in range(446):                #Find ymax for red curve
                 psavg=Audio.gcom2.psavg[i+1]
@@ -1146,10 +1146,6 @@ def plot_large():
             fac=500.0/446.0
             for i in range(446):                #Make xy list for red curve
                 x=i*fac
-                if mode.get()[:3]=='JT2' or mode.get()[:3]=='JT4':
-                    x=i*500.0/548.571 + 47                      #empirical
-                if mode.get()[:4]=='WSPR':
-                    x=(i-224) + 250                #empirical
                 psavg=Audio.gcom2.psavg[i+1]
                 n=int(90.0-yfac*psavg)
                 xy.append(x)
@@ -1193,18 +1189,18 @@ def plot_large():
 
         if Audio.gcom2.ccf[0] != -9999.0:
             y=[]
-            for i in range(65):             #Find ymax for blue curve
+            imax=65
+            if mode.get()[:5]=='ISCAT': imax=545
+            for i in range(imax):             #Find ymax for blue curve
                 ccf=Audio.gcom2.ccf[i]
                 y.append(ccf)
             ymax=max(y)
             yfac=40.0
             if ymax>55.0/yfac: yfac=55.0/ymax
             xy2=[]
-            fac=500.0/64.6
-            for i in range(65):             #Make xy list for blue curve
+            fac=500.0/(imax-0.4)
+            for i in range(imax):             #Make xy list for blue curve
                 x=(i+0.5)*fac
-                if mode.get()[:3]=='JT2' or mode.get()[:3]=='JT4':
-                    x=(i+0.5)*500.0/105.0 + 15     #15 is empirical
                 ccf=Audio.gcom2.ccf[i]
                 n=int(60.0-yfac*ccf)
                 xy2.append(x)
@@ -1465,7 +1461,8 @@ def update():
             im.putpalette(g.palette)
             cmap0=g.cmap
 
-        if mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
+        if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
+               mode.get()[:3]=='JT8':
             plot_large()
         else:
             im.putdata(Audio.gcom2.b)

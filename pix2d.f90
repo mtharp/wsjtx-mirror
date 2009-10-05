@@ -1,4 +1,4 @@
-subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,s2,nchan,nz,b)
+subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,ngreen,s2,nchan,nz,b)
 
 ! Compute pixels to represent the 2-d spectrum s2(nchan,nz), and the
 ! green line.
@@ -90,46 +90,6 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,s2,nchan,nz,b)
            ng0=ng
         endif
      enddo
-
-     if(mode.eq.'FSK441') then
-! Insert yellow tick marks at frequencies of the FSK441 tones
-        do i=2,5
-           f=441*i
-           ich=58-nint(f/43.066)
-           do j=1,5
-              b((ich-1)*500+j+2)=254
-              b((ich-1)*500+j+248)=254
-              b((ich-1)*500+j+495)=254
-           enddo
-        enddo
-     else if(mode.eq.'JT6M') then
-! Insert yellow tick marks at frequencies of the JT6M sync tone
-        f=1076.66
-        ich=60-nint(f/43.066)     !Why 58 for FSK441, above?
-        do j=1,5
-           b((ich-1)*500+j+2)=254
-           b((ich-1)*500+j+248)=254
-           b((ich-1)*500+j+495)=254
-        enddo
-! Insert green tick at frequency indicated by MouseDF
-        if(NFreeze.gt.0) then
-           f=1076.66+mousedf
-           ich=60-nint(f/43.066)     !Why 58 for FSK441, above?
-           do j=1,7
-              b((ich-1)*500+j+2)=255
-           enddo
-        endif
-     endif
-
-! Mark the best ping with a red tick
-     if(tbest.gt.0.0) then
-        nx=tbest/0.060 + 1
-        do j=110,120
-           b((j-1)*500+nx0)=0
-           b((j-1)*500+nx)=253
-        enddo
-        nx0=nx
-     endif
   endif
 
   return
