@@ -86,7 +86,7 @@ subroutine ftn_init
   open(22,file=appdir(:iz)//'/kvasd.dat',access='direct',recl=1024,        &
        status='unknown',share='denynone')
 #else
-  open(22,file=appdir(:iz)//'/kvasd.dat',access='direct',recl=1024,        &
+  open(22,file=appdir(:iz)//'/kvasd.dat',access='direct',recl=4096,        &
        status='unknown')
 #endif
 
