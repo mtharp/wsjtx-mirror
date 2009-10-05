@@ -47,8 +47,8 @@ subroutine jt8(dat,npts,cfile6,MinSigdB,DFTolerance,NFreeze,              &
 
   call cs_lock('jt8')
   write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,                      &
-       isbest,csync,special,decoded(1:19),cooo,kvqual,nqual
-1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
+       isbest,csync,special,decoded(1:19),kvqual,nqual
+1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,i8,i4)
 
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
