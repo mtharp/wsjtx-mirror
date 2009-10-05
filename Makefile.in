@@ -65,7 +65,8 @@ SRCS2F90 = wsjt1.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	hash.f90 chenc.f90 chdec.f90 genms.f90 geniscat.f90 \
 	genjt8.f90 sec_midn.F90 pkname.f90 unpkname.f90 \
 	spec2d64.f90 decode64.f90 extract.f90 chkhist.f90 \
-	short64.f90 flat1.f90 getsnr.f90
+	short64.f90 flat1.f90 getsnr.f90 ftpeak64.f90 \
+	symsync64.f90 wsjtms.f90 wsjtiscat.f90 jt8.f90 ping.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
@@ -78,7 +79,7 @@ SRCS2F77 = astro.f azdist.f coord.f dcoord.f deg2grid.f \
         gencwid.f msgtype.f limit.f lpf1.f morse.f \
         nchar.f packcall.f packgrid.f packtext.f unpackcall.f \
         unpackgrid.f unpacktext.f xfft.f \
-	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
+	fil651.f fil652.f fil653.f \
 	rfile2.f filbig2.F 
 
 OBJS2F77 = ${SRCS2F77:.f=.o} 

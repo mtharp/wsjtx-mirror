@@ -12,7 +12,7 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
   integer indx(NZMAX)
   real pingdat(3,100)
   real ps(128)
-  character msg*40,msg3*3
+  character msg*40,msg3*3,cf*1
   character*90 line
   common/ccom/nline,tping(100),line(100)
 
@@ -151,12 +151,7 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
 100  continue
   enddo
 
-!###
-
-800 continue
   call s2shape(s2,nchan,nz,tbest)
-
-900 LDecoded = ((NSyncOK.gt.0) .or. npkept.gt.0)
 
   return
 end subroutine wsjtms
