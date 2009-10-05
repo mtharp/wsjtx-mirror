@@ -132,7 +132,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
         lagpk=lag
         syncbest=ccf64(lag)
      endif
-     ccfblue(lag+15)=ccf64(lag)
+     ccfblue(lag)=ccf64(lag)
   enddo
 
   sum=0.
