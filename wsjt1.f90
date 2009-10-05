@@ -143,14 +143,14 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   tbest=0.
   NsyncOK=0
 
-  print*,'A ',mode,' ',cfile6,minsigdb
   if(mode(1:4).eq.'JTMS') then
 ! JTMS mode
      call wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
 
   else if(mode(1:5).eq.'ISCAT') then
 ! Iscat mode:
-     call iscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
+     call iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
+          NSyncOK,ccf,psavg)
 
   else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
 
@@ -202,11 +202,6 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   call flushqqq(21)
 
   df=12000.0/256.0
-  do i=1,128
-     psavg(i)=db(psavg(i))
-     write(52,3010) i*df,psavg(i),ps0(i)
-3010 format(3f10.3)
-  enddo
 
   return
 end subroutine wsjt1

@@ -10,7 +10,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
-  integer sent(71)
+  integer sent(73)
   integer sendingsh
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
@@ -33,7 +33,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu0,msgsent)
 
-! Insert an 8x8 Costas array at the low-frequency edge.  Use different
+! Insert a 10x10 Costas array at the low-frequency edge.  Use different
 ! Costas arrays for nbit=30, 48, and 78.
   do i=1,10
      if(nbit.eq.30) sent(i)=ic10(i)
@@ -72,7 +72,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
         if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+21*nspecial*dfgen
         if(nspecial.eq.0) then
            k=k+1
-           if(k.le.71) f=f0+(sent(k))*dfgen         !### Fix need for this ? ###
+           if(k.le.73) f=f0+(sent(k))*dfgen      !### Fix need for this ? ###
         endif
         dphi=twopi*dt*f
         j0=j
