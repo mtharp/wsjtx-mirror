@@ -12,7 +12,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
-  real ccf64(-224:224)
+  real ccf64(-5:540)
   integer isync(10,3)
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
