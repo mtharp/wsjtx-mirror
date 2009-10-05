@@ -89,6 +89,10 @@ subroutine decode3(d2,jz,istart,filename)
   else if(mode(1:5).eq.'ISCAT' .and. mousebutton.eq.0) then
      nz=s2(1,1)
      call pix2d(d2d,jz,mousebutton,MouseDF,NFreeze,mode,s2,64,nz,b)
+     do i=1,128
+        write(53,3009) i,psavg(i)
+3009    format(i5,e12.3)
+     enddo
   endif
 
 999 return

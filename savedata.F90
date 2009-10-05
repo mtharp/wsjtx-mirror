@@ -120,9 +120,7 @@ subroutine savedata
      call cs_unlock
   endif
 
-999 if(mode(1:4).ne.'JT65' .and. mode(1:3).ne.'JT2' .and. mode(1:3).ne.'JT2' &
-         .and. mode(1:3).ne.'JT4' .and. mode(1:2).ne.'CW' .and.              &
-         mode(1:4).ne.'JT64') then
+999 if(mode(1:4).ne.'JT64' .and. mode(1:3).ne.'JT8') then
      ibuf0z=ibuf0
      call get_fname(hiscall,iyr,imo,ida,ntime,lauto,fname0)
   endif

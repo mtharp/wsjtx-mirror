@@ -26,15 +26,11 @@ C  Subtract the average and normalize.
       nzz=nz
       nxmax=500                         !Was 494, then 385
       if(nz.lt.nxmax) go to 900
-!      fac=float(nz)/nxmax
-!      nadd=fac + 0.999999
-!      nzz=nxmax
       nadd=3
       nzz=nz/3
       do i=1,64
          do k=1,nzz
             sum=0.
-!            j=(k-1)*fac
             j=(k-1)*nadd
             do n=1,nadd
                sum=sum+s2(i,j+n)

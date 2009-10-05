@@ -912,7 +912,7 @@ def dectrperiod(event):
 #------------------------------------------------------ erase
 def erase(event=NONE):
     graph1.delete(ALL)
-    if mode.get()[:4]=="JTMS":
+    if mode.get()[:4]=="JTMS" or mode.get()[:5]=="ISCAT":
         graph2.delete(ALL)
     text.configure(state=NORMAL)
     text.delete('1.0',END)
@@ -1236,10 +1236,9 @@ def plot_small():
         x=int(i*df*fac)
         xy.append(x)
         psavg=Audio.gcom2.psavg[i]
-        if mode.get()=="ISCAT": psavg=psavg + 27.959
         n=int(150.0-3*psavg)
         xy.append(n)
-        if mode.get()=='JTMS':    
+        if mode.get()=='JTMS' or mode.get()=="ISCAT":
             ps0=Audio.gcom2.ps0[i]
             n=int(150.0-3*ps0)
             xy2.append(x)
@@ -1466,8 +1465,7 @@ def update():
             im.putpalette(g.palette)
             cmap0=g.cmap
 
-        if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
-                mode.get()[:3]=='JT8':
+        if mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
             plot_large()
         else:
             im.putdata(Audio.gcom2.b)

@@ -133,8 +133,8 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   if(.not.pick .and. nforce.eq.0 .and.                              &
        (basevb.lt.-15.0 .or. basevb.gt.20.0)) goto 900
   nchan=64                   !Save 64 spectral channels
-  nstep=221                  !Set step size to ~20 ms
-  nz=jz/nstep - 1            !# of spectra to compute
+  nstep=240                  !Set step size to ~20 ms
+  nz=jz/nstep                !# of spectra to compute
   if(.not.pick) then
      MouseButton=0
      jza=jz
@@ -143,20 +143,24 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   tbest=0.
   NsyncOK=0
 
+  if(mode(1:4).eq.'JTMS') then
+! JTMS mode
+     call wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
 
+  else if(mode(1:5).eq.'ISCAT') then
 ! Iscat mode:
-  if(mode(1:5).eq.'ISCAT') then
-! For waterfall plot
-     call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
-! JT8 mode:
-  else if(mode(1:3).eq.'JT8') then
-!  JT64 mode:
-  else if(mode(1:4).eq.'JT64') then
-     mode64=1
-     nstest=0
-     if(ntx2.ne.1) call short64(dat,jz,NFreeze,MouseDF,                &
-          DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,             &
-          idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
+     call wsjtiscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
+
+  else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
+
+     if(mode(1:4).eq.'JT64') then
+! JT64 mode:
+        mode64=1
+        nstest=0
+        if(ntx2.ne.1) call short64(dat,jz,NFreeze,MouseDF,                &
+             DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,             &
+             idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
+     endif
 
 !  Lowpass filter and decimate by 2
      call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
@@ -175,17 +179,19 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      if(i.le.0) i=index(HisCall,' ')
      hiscall=HisCall(1:i-1)//'            '
 
-!  Offset data by about 1 s.
-!           jztest=126*2048
-     jztest=12000*ntdecode/2 - 2755
+     if(mode(1:4).eq.'JT64') then
+        jztest=12000*ntdecode/2
+        if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
+             NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
+             MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &
+             mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,                &
+             nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
 
-     if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
-          NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
-          MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &
-          mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,                &
-          nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
-  else if(mode(1:4).eq.'JTMS') then
-     call wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
+     else if(mode(1:3).eq.'JT8') then
+! JT8 mode:
+        call jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
+             MouseDF2,NSyncOK,ccf,psavg)
+     endif
   endif
 
 900 LDecoded = ((NSyncOK.gt.0) .or. npkept.gt.0)

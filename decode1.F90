@@ -24,9 +24,8 @@ subroutine decode1(iarg)
   sendingsh0=-3
 
 10 ltrace=ndebug
-  if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT2' .or. mode(1:3).eq.'JT4'  &
-       .or. mode(1:2).eq.'CW' .or. mode(1:4).eq.'WSPR' .or.               &
-       mode(1:4).eq.'JT64') then
+  if(mode(1:4).eq.'JTMS' .or. mode(1:5).eq.'ISCAT' .or.                   &
+     mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
      if(rxdone) then
         call savedata
         newdat2=1
