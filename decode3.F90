@@ -15,19 +15,11 @@ subroutine decode3(d2,jz,istart,filename)
   FileID=filename
   decodedfile=filename
   lumsg=11
-  nmode=1
   if(mode(1:4).eq.'JT64') then
-     nmode=2
      if(mode(5:5).eq.'A') mode64=1
      if(mode(5:5).eq.'B') mode64=2
      if(mode(5:5).eq.'C') mode64=4
   endif
-  if(mode(1:4).eq.'Echo') nmode=3
-  if(mode(1:4).eq.'JT6M') nmode=4
-  if(mode(1:2).eq.'CW') nmode=5
-  if(mode(1:3).eq.'JT2') nmode=6
-  if(mode(1:3).eq.'JT4') nmode=7
-  if(mode(1:4).eq.'WSPR') nmode=8
 
   sum=0.
   do i=1,jz
@@ -40,7 +32,7 @@ subroutine decode3(d2,jz,istart,filename)
   enddo
 
   nseg=1
-  if(mode(1:4).eq.'JT64' .or. nmode.ge.6) then
+  if(mode(1:4).eq.'JT64') then
      i=index(FileID,'.')-3
      if(FileID(i:i).eq.'1'.or.FileID(i:i).eq.'3'.or.FileID(i:i).eq.'5'  &
           .or.FileID(i:i).eq.'7'.or.FileID(i:i).eq.'9') nseg=2
@@ -81,7 +73,7 @@ subroutine decode3(d2,jz,istart,filename)
   
   nclearave=0
   nagain=0
-  if(mode(1:4).eq.'JT64' .or. nmode.ge.6) then
+  if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
      call pix2d65(d2d,jz)
   else if(mode(1:4).eq.'JTMS') then
      nz=s2(1,1)

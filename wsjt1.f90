@@ -143,13 +143,14 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   tbest=0.
   NsyncOK=0
 
+  print*,'A ',mode,' ',cfile6,minsigdb
   if(mode(1:4).eq.'JTMS') then
 ! JTMS mode
      call wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
 
   else if(mode(1:5).eq.'ISCAT') then
 ! Iscat mode:
-     call wsjtiscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
+     call iscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
 
   else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
 

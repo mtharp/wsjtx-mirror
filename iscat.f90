@@ -1,4 +1,4 @@
-subroutine wsjtiscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
+subroutine iscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
 
   parameter (NZMAX=3100)
   real dat(jz)                !Raw audio data
@@ -31,4 +31,4 @@ subroutine wsjtiscat(dat,jz,cfile6,MinSigdB,NSyncOK,s2,psavg)
   print*,'c',nchan,nz,tbest,s2(1,1),s2(2,1)
 
   return
-end subroutine wsjtiscat
+end subroutine iscat

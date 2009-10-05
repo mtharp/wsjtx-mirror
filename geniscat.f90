@@ -2,7 +2,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 
 ! Generate a wavefile for the ISCAT mode.
 
-  parameter (NMAX=60*12000)     !Max length of wave file
+  parameter (NMAX=30*12000)     !Max length of wave file
   character*24 message          !Message to be generated
   character*24 msgsent          !Message as it will be received
   character cmode*5
@@ -12,8 +12,8 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   integer gsym(372)             !372 is needed for JT8 mode
   integer sent(71)
   integer sendingsh
-  integer ic8(8)
-  data ic8/3,6,2,4,5,0,7,1/     !8x8 Costas array
+  integer ic10(10)
+  data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
   data idum/-1/,nsps/512/
   data twopi/6.283185307d0/
   save
@@ -35,15 +35,15 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 
 ! Insert an 8x8 Costas array at the low-frequency edge.  Use different
 ! Costas arrays for nbit=30, 48, and 78.
-  do i=1,8
-     if(nbit.eq.30) sent(i)=ic8(i)
-     if(nbit.eq.48) sent(i)=ic8(9-i)
-     if(nbit.eq.78) sent(i)=7-ic8(i)
+  do i=1,10
+     if(nbit.eq.30) sent(i)=ic10(i)
+     if(nbit.eq.48) sent(i)=ic10(11-i)
+     if(nbit.eq.78) sent(i)=9-ic10(i)
   enddo
 
 ! Append the encoded data after the sync pattern
-  nsym=63+8
-  sent(9:nsym)=gsym(1:63)
+  nsym=63+10
+  sent(11:nsym)=gsym(1:63)
   tsymbol=nsps/12000.d0
   nspecial=0
   sendingsh=0
