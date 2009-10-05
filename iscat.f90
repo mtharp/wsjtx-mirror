@@ -19,9 +19,12 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   print*,'C'
 
   call cs_lock('mtdecode')
+  print*,'C1'
   write(11,1050) cfile6
 1050 format(a6,'  hello from wsjtiscat')
+  print*,'C2'
   call cs_unlock
+  print*,'C3'
 
 ! Compute 2D spectrum for display
   nchan=64                   !Save 64 spectral channels

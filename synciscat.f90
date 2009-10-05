@@ -1,5 +1,5 @@
 subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
-     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,isbest)
+     dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -11,13 +11,11 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
-  real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
-  real ccf64(-5:540)
+  real ccfred(-224:224)           !Peak of ccfblue, as function of freq
   integer isync(10,3)
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
 
-  print*,'a'
 ! Set up the ISCAT sync pattern
   nsync=10
   do i=1,10
@@ -60,7 +58,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   ia=fa/df
   ib=fb/df
   i0=nint(f0/df)
-  print*,'b',fa,fb,df,ia,ib,i0
 
 ! Find best frequency bin and best sync pattern
   syncbest=-1.e30
@@ -99,7 +96,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 
      j=i-i0
      if(abs(j).le.224) then
-        ccfred1(i-i0)=smax
+        ccfred(i-i0)=smax
         ss=ss+smax
         nss=nss+1
      endif
@@ -109,12 +106,11 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
         isbest=ispk
      endif
   enddo
-  print*,'c',ipk,isbest,syncbest
 
-  ave=ss/nss
-  do j=-224,224
-     if(ccfred1(j).ne.0.0) ccfred1(j)=0.5*(ccfred1(j)-ave)
-  enddo
+!  ave=ss/nss
+!  do j=-224,224
+!     ccfred(j)=0.5*(ccfred(j)-ave)
+!  enddo
 
 ! Once more, using best frequency and best sync pattern:
   i=ipk
@@ -127,12 +123,11 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
            sum=sum + s2(i+2*isync(j,isbest),j0)
         endif
      enddo
-     ccf64(lag)=sum/nsync
-     if(ccf64(lag).gt.syncbest) then
+     ccfblue(lag)=sum/nsync
+     if(ccfblue(lag).gt.syncbest) then
         lagpk=lag
-        syncbest=ccf64(lag)
+        syncbest=ccfblue(lag)
      endif
-     ccfblue(lag)=ccf64(lag)
   enddo
 
   sum=0.
@@ -155,14 +150,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df
 
-  print*,'B',dtx,dfx,snrx,snrsync
   do i=-5,540
      write(55,3001) i,ccfblue(i)
 3001 format(i5,f12.3)
   enddo
 
   do i=-224,224 
-     write(56,3001) i,ccfred1(i)
+     write(56,3001) i,ccfred(i)
   enddo
 
   return
