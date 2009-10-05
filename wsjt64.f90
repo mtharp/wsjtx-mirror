@@ -55,8 +55,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   call sync64(dat,npts,DFTolerance,NFreeze,MouseDF,                      &
        mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
 
-!  nsync=snrsync
-!  if(nsync.lt.0) nsync=0
   nsnr=nint(snrx)
   jdf=nint(dfx)
   csync=' '

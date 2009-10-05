@@ -13,26 +13,27 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   nstep=128                   !Step by 1/4 symbols
   df=12000.0/nfft
 
-  print*,'A',jz,Nfreeze,MouseDF,DFTolerance
   call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
-     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,isbest)
-  print*,'C'
+     dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred1)
+
+  nsync=nint(snrsync-2.0)
+  nsnr=nint(snrx)
+  if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
+  nsnrlim=-32
+  jdf=nint(dfx)
 
   call cs_lock('mtdecode')
-  print*,'C1'
-  write(11,1050) cfile6
-1050 format(a6,'  hello from wsjtiscat')
-  print*,'C2'
+  write(11,1010) cfile6,nsync,nsnr,jdf,isbest
+1010 format(a6,i4,i5,i5,i3)
+
   call cs_unlock
-  print*,'C3'
 
 ! Compute 2D spectrum for display
-  nchan=64                   !Save 64 spectral channels
-  nstep=240                  !Set step size to ~20 ms
-  nz=jz/nstep                !# of spectra to compute  
+!  nchan=64                   !Save 64 spectral channels
+!  nstep=240                  !Set step size to ~20 ms
+!  nz=jz/nstep                !# of spectra to compute  
 !  call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
 !  call s2shape(s2,nchan,nz,tbest)
 
-  print*,'D'
   return
 end subroutine iscat

@@ -1,5 +1,5 @@
-subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
-     dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
+subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
+     snrx,snrsync,isbest,ccfblue,ccfred)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -107,10 +107,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      endif
   enddo
 
-!  ave=ss/nss
-!  do j=-224,224
-!     ccfred(j)=0.5*(ccfred(j)-ave)
-!  enddo
+  avered=ss/nss
 
 ! Once more, using best frequency and best sync pattern:
   i=ipk
@@ -146,17 +143,21 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   snrsync=syncbest/ave - 1.0
   snrx=-31.
   if(syncbest.gt.1.0) snrx=db(snrsync) - 30.5
-  dtstep=kstep*2.d0/12000.d0
+  dtstep=kstep/12000.d0
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df
 
+  
   do i=-5,540
-     write(55,3001) i,ccfblue(i)
-3001 format(i5,f12.3)
+     write(55,3001) i*dtstep,ccfblue(i)
+3001 format(2f12.3)
   enddo
 
-  do i=-224,224 
-     write(56,3001) i,ccfred(i)
+  ja=ia-i0
+  jb=ib-i0
+  do j=ja,jb
+     ccfred(j)=0.5*(ccfred(j)-avered)
+     write(56,3001) j*df,ccfred(j)
   enddo
 
   return
