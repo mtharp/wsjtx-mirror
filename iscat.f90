@@ -14,7 +14,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   df=12000.0/nfft
 
   call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
-     dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred1)
+     dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred)
 
   nsync=nint(snrsync-2.0)
   nsnr=nint(snrx)
