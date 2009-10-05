@@ -147,19 +147,19 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df
 
-  rewind 55
-  rewind 56
-  do i=-5,540
-     write(55,3001) i,i*dtstep,ccfblue(i)
-3001 format(i6,2f12.3)
-  enddo
+!  rewind 55
+!  rewind 56
+!  do i=-5,540
+!     write(55,3001) i,i*dtstep,ccfblue(i)
+!3001 format(i6,2f12.3)
+!  enddo
 
-  ja=ia-i0
-  jb=ib-i0
-  do j=ja,jb
-     ccfred(j)=0.5*(ccfred(j)-avered)
-     write(56,3001) j,j*df,ccfred(j)
-  enddo
+!  ja=ia-i0
+!  jb=ib-i0
+!  do j=ja,jb
+!     ccfred(j)=0.5*(ccfred(j)-avered)
+!     write(56,3001) j,j*df,ccfred(j)
+!  enddo
 
   return
 end subroutine synciscat
