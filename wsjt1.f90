@@ -151,6 +151,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
 ! Iscat mode:
      call iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
           NSyncOK,ccf,psavg)
+     s2=0.
 
   else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
 

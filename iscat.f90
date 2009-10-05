@@ -27,8 +27,9 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   nchan=64                   !Save 64 spectral channels
   nstep=240                  !Set step size to ~20 ms
   nz=jz/nstep                !# of spectra to compute  
-  call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
-  call s2shape(s2,nchan,nz,tbest)
+!  call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
+!  call s2shape(s2,nchan,nz,tbest)
 
+  print*,'D'
   return
 end subroutine iscat
