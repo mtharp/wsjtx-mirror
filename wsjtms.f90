@@ -120,9 +120,17 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
      jjz=nint((width+0.02)/dt)+1
      jjz=min(jjz,jz+1-jj)
 
-     write(*,3001) iping,tstart,peak,mswidth
-3001 format(i5,2f8.2,i5)
-     if(iping.eq.1) call syncms(dat(jj),max(jjz,6000))
+     if(tstart.lt.29.5) then
+!        write(*,3001) iping,tstart,peak,mswidth
+!3001    format(i5,2f8.2,i5)
+        call syncms(dat(jj),max(jjz,6000),snrsync,dfx,lagbest)
+        nsnr=nint(db(snrsync)-2.0)
+        ndf=nint(dfx)
+        dtx=(lagbest+jj-1)*dt
+        nrpt=0
+        write(11,1010) cfile6,dtx,mswidth,nsnr,nrpt,ndf
+1010    format(a6,f6.1,i5,i4,i4,i6)
+     endif
 
 ! Compute average spectrum of this ping.
      call spec441(dat(jj),jjz,ps,f0)

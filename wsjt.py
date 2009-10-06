@@ -533,7 +533,7 @@ def ModeJTMS(event=NONE):
         mode.set("JTMS")
         cleartext()
         Audio.gcom1.trperiod=30
-        lab2.configure(text='FileID            T      Width    dB  Rpt       DF')
+        lab2.configure(text='FileID             T      Width     dB    Rpt          DF')
         lab1.configure(text='Time (s)',bg="green")
         lab4.configure(fg='black')
         lab5.configure(fg='black')

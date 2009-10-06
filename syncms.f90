@@ -1,4 +1,4 @@
-subroutine syncms(dat,jz)
+subroutine syncms(dat,jz,snrsync,fbest,lagbest)
 
   parameter (MAXSAM=24000)       !Max number of samples
   integer id(32)                 !Sync followed by data in one-bit format
@@ -25,7 +25,7 @@ subroutine syncms(dat,jz)
      dt=1./fs                           !Sample interval
      baud=fs/nsps                       !Keying rate
 
-     foffset=375. + 1500.0
+     foffset=375.
      f0=0.5*baud                            !Nominal Tx frequency for "0" bit
      f1=baud                        !Nominal Tx frequency for "1" bit
 
@@ -88,8 +88,8 @@ subroutine syncms(dat,jz)
      enddo
      freq=df*(ipk-1)
      if(ipk.gt.nh+1) freq=df*(ipk-1-nfft)
-     write(72,2002) lag,1.e-4*smax
-2002 format(i6,f12.3)
+!     write(72,2002) lag,1.e-4*smax
+!2002 format(i6,f12.3)
      if(smax.gt.sbest) then
         sbest=smax
         fbest=df*(ipk-1)
@@ -99,30 +99,33 @@ subroutine syncms(dat,jz)
 
   if(fbest.gt.0.5*fs) fbest=fbest-fs
 ! NB: this computed phase will be off if frequency is inexact!
-  write(*,1060) fbest,lagbest,sbest
-1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
-          '   Sbest:',e12.3)
+!  write(*,1060) fbest,lagbest,sbest
+!1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
+!          '   Sbest:',e12.3)
 
-  ia=max(1,lagbest-928)
-  ib=min(lagbest+2*928,jz)
-  do i=ia,ib
-     write(73,3101) i-lagbest,dat(i)
-3101 format(i8,f12.3)
-  enddo
+!  ia=max(1,lagbest-928)
+!  ib=min(lagbest+2*928,jz)
+!  do i=ia,ib
+!     k=mod(i-lagbest-1+9280,928)+1
+!     write(73,3101) i-lagbest,0.0033*dat(i),csync(k)
+!3101 format(i8,3f12.6)
+!  enddo
 
-! Once more, just for the plot of sq vs freq
-  c=0.
-  do i=1,nh
-     c(i)=csync(i)*dat(i+lagbest)
-  enddo
-  call four2a(c,nfft,1,-1,1)
-  do i=1,nfft
-     sq=real(c(i))**2 + aimag(c(i))**2
-     freq=df*(i-1)
-     if(i.gt.nh+1) freq=df*(i-1-nfft)
-     write(71,2001) freq,1.e-4*sq
-2001 format(2f12.3)
-  enddo
+!! Once more, just for the plot of sq vs freq
+!  c=0.
+!  do i=1,nh
+!     c(i)=csync(i)*dat(i+lagbest)
+!  enddo
+!  call four2a(c,nfft,1,-1,1)
+!  do i=1,nfft
+!     sq=real(c(i))**2 + aimag(c(i))**2
+!     freq=df*(i-1)
+!     if(i.gt.nh+1) freq=df*(i-1-nfft)
+!     write(71,2001) freq,1.e-4*sq
+!2001 format(2f12.3)
+!  enddo
+
+  snrsync=1.e-8*sbest
 
   return
 end subroutine syncms
