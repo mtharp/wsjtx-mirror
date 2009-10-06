@@ -16,6 +16,9 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
   character*90 line
   common/ccom/nline,tping(100),line(100)
 
+!### Placed here for tests ###
+  call cs_lock('wsjtms')
+
   nchan=64                   !Save 64 spectral channels
   nstep=240                  !Set step size to ~20 ms
   nz=jz/nstep                !# of spectra to compute
@@ -119,7 +122,7 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
 
      write(*,3001) iping,tstart,peak,mswidth
 3001 format(i5,2f8.2,i5)
-
+     if(iping.eq.1) call syncms(dat(jj),max(jjz,6000))
 
 ! Compute average spectrum of this ping.
      call spec441(dat(jj),jjz,ps,f0)
@@ -143,16 +146,15 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
      cf=' '
      if(nline.le.99) nline=nline+1
      tping(nline)=tstart
-     call cs_lock('mtdecode')
      write(line(nline),1050) cfile6,tstart,mswidth,int(peak),           &
           nwidth,nstrength,noffset,msg3,msg,cf
 1050 format(a6,f5.1,i5,i3,1x,2i1,i5,1x,a3,1x,a40,1x,a1)
-     call cs_unlock
 100  continue
   enddo
 
   call s2shape(s2,nchan,nz,tbest)
 
+  call cs_unlock
   return
 end subroutine wsjtms
 
