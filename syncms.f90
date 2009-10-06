@@ -1,0 +1,128 @@
+subroutine syncms(dat,jz)
+
+  parameter (MAXSAM=24000)       !Max number of samples
+  integer id(32)                 !Sync followed by data in one-bit format
+  real dat(jz)
+  real x0(32)                        !Waveform for bit=0
+  real x1(32)                        !Waveform for bit=1
+  complex csync(1024)                   !Complex waveform for sync bits
+  complex c(MAXSAM)                  !Work array
+  logical first
+  data isync32/Z'1acffc1d'/          !32-bit sync
+  data first/.true./
+  save
+
+  if(first) then
+     fs=12000
+     nsps=8
+     nsync=32
+     pha=0.
+     nbit=0
+     pha0=-90.
+     ndata=(nbit+12)*2                  !Number of data symbols (K=13, r=1/2)
+     nsym=ndata+nsync                   !Total number of symbols
+     twopi=8*atan(1.0)
+     dt=1./fs                           !Sample interval
+     baud=fs/nsps                       !Keying rate
+
+     foffset=375. + 1500.0
+     f0=0.5*baud                            !Nominal Tx frequency for "0" bit
+     f1=baud                        !Nominal Tx frequency for "1" bit
+
+! Unpack sync bits into the first nsync positions of id()
+     id=0
+     n=isync32
+     do j=1,nsync
+        if(n.lt.0) id(j)=1
+        n=ishft(n,1)
+     enddo
+
+! Generate sync waveform
+     k=0
+     phi=0.
+     do j=1,nsync
+        if(id(j).eq.1) then
+           dphi=twopi*dt*(f1+foffset)
+        else
+           dphi=twopi*dt*(f0+foffset)
+        endif
+        do i=1,nsps
+           k=k+1
+           phi=phi+dphi
+           csync(k)=cmplx(cos(phi),sin(phi))
+        enddo
+     enddo
+
+! Generate the basic waveforms for symbols "0" and "1" 
+     phi0=0.
+     phi1=0.
+     dphi0=twopi*dt*750.0
+     dphi1=twopi*dt*1500.0
+     do i=1,nsps
+        phi0=phi0+dphi0
+        phi1=phi1+dphi1
+        x0(i)=sin(phi0)
+        x1(i)=sin(phi1)
+     enddo
+  endif
+
+! Find lag and DF
+  nfft=512
+  nh=nfft/2
+  df=fs/nfft
+  sbest=0.
+  lagmax=3000
+  do lag=0,lagmax
+     c=0.
+     do i=1,nh
+        c(i)=csync(i)*dat(i+lag)
+     enddo
+     call four2a(c,nfft,1,-1,1)
+     smax=0.
+     do i=1,nfft
+        sq=real(c(i))**2 + aimag(c(i))**2
+        if(sq.gt.smax) then
+           smax=sq
+           ipk=i
+        endif
+     enddo
+     freq=df*(ipk-1)
+     if(ipk.gt.nh+1) freq=df*(ipk-1-nfft)
+     write(72,2002) lag,1.e-4*smax
+2002 format(i6,f12.3)
+     if(smax.gt.sbest) then
+        sbest=smax
+        fbest=df*(ipk-1)
+        lagbest=lag
+     endif
+  enddo
+
+  if(fbest.gt.0.5*fs) fbest=fbest-fs
+! NB: this computed phase will be off if frequency is inexact!
+  write(*,1060) fbest,lagbest,sbest
+1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
+          '   Sbest:',e12.3)
+
+  ia=max(1,lagbest-928)
+  ib=min(lagbest+2*928,jz)
+  do i=ia,ib
+     write(73,3101) i-lagbest,dat(i)
+3101 format(i8,f12.3)
+  enddo
+
+! Once more, just for the plot of sq vs freq
+  c=0.
+  do i=1,nh
+     c(i)=csync(i)*dat(i+lagbest)
+  enddo
+  call four2a(c,nfft,1,-1,1)
+  do i=1,nfft
+     sq=real(c(i))**2 + aimag(c(i))**2
+     freq=df*(i-1)
+     if(i.gt.nh+1) freq=df*(i-1-nfft)
+     write(71,2001) freq,1.e-4*sq
+2001 format(2f12.3)
+  enddo
+
+  return
+end subroutine syncms
