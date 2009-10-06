@@ -10,6 +10,7 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,ngreen,s2,nchan,nz,b)
   data nx0/0/
   save
 
+  if(nz.le.0) return
   tbest=s2(2,1)
   s2(1,1)=s2(3,1)
   s2(2,1)=s2(3,1)
