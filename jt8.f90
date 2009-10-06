@@ -8,7 +8,8 @@ subroutine jt8(dat,npts,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   real dat(npts)                        !Raw data
   integer DFTolerance
   real ccfblue(-5:540),ccfred(-224:224)
-  character line*90,decoded*24,deepmsg*24,special*5,csync*1
+  character line*90,decoded*24,deepmsg*24,special*5
+  character csync*1,cfile6*6
 
 ! Attempt to synchronize: look for sync tone, get DF and DT.
 !  call sync64(dat,npts,DFTolerance,NFreeze,MouseDF,                      &
