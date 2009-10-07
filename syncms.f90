@@ -9,8 +9,10 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   real fblue(0:4000)
   complex csync(1024)                !Complex sync waveform
   complex c(MAXSAM)                  !Work array
+  integer istep(3)
   logical first
   data isync32/Z'1acffc1d'/          !32-bit sync
+  data istep/928,1216,1696/,nstep/3/
   data first/.true./
   save
 
@@ -112,63 +114,20 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
 
 ! Find length of message, nbit
   smax=0.
-  i0=lagbest-928
-  if(i0.ge.3) then
-     do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
-           smax=ccfblue(i0+i)
-           nbit=30
+  do n=1,nstep
+     do nsgn=-1,1,2
+        i0=lagbest + nsgn*istep(n)
+        if(i0.ge.3) then
+           do i=-3,3
+              if(ccfblue(i0+i).gt.smax .and.                        &
+                   abs(fblue(i0+i)-fbest).lt.1.5*df) then
+                 smax=ccfblue(i0+i)
+                 isbest=n
+              endif
+           enddo
         endif
      enddo
-  endif
-  i0=lagbest+928
-  if(i0.le.lagmax-3) then
-     do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
-           smax=ccfblue(i0+i)
-           nbit=30
-        endif
-     enddo
-  endif
-  i0=lagbest-1216
-  if(i0.ge.3) then
-     do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
-           smax=ccfblue(i0+i)
-           nbit=48
-        endif
-     enddo
-  endif
-  i0=lagbest+1216
-  if(i0.le.lagmax-3) then
-     do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
-           smax=ccfblue(i0+i)
-           nbit=48
-        endif
-     enddo
-  endif
-  i0=lagbest-1696
-  if(i0.ge.3) then
-     do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
-           smax=ccfblue(i0+i)
-           nbit=78
-        endif
-     enddo
-  endif
-  i0=lagbest+1696
-  if(i0.le.lagmax-3) then
-     do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
-           smax=ccfblue(i0+i)
-           nbit=78
-        endif
-     enddo
-  endif
-  isbest=1
-  if(nbit.eq.48) isbest=2
-  if(nbit.eq.78) isbest=3
+  enddo
 
 ! NB: the computed phase will be off if frequency is inexact!
 !  write(*,1060) fbest,lagbest,sbest

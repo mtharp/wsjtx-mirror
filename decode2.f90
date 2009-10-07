@@ -19,13 +19,8 @@ subroutine decode2
 !    5       d2a   Mouse pick, main window
 
   lenpick=2*12000                !Length of mouse-picked region
-  if(mode(1:4).eq.'JT6M') then
-     lenpick=4*12000
-     if(mousebutton.eq.3) lenpick=10*12000
-  endif
-
   istart=1.0 + 12000*0.001*npingtime - lenpick/2
-  if(mode(1:4).eq.'JT6M') istart=istart+12000
+  if(mode(1:5).eq.'ISCAT') istart=istart+12000
   if(istart.lt.2) istart=2
   if(ndecoding.eq.1) then
 ! Normal decoding at end of Rx period (or at t=53s in JT65)
@@ -73,19 +68,10 @@ subroutine decode2
      if(mousebutton.eq.0) istart=1
      if(mousebutton.gt.0) then
         jzz=lenpick
-
-!  This is a major kludge:
-        if(mode(1:4).eq.'JT6M') then          
-           jzz=4*12000
-           if(mousebutton.eq.3) jzz=10*12000
-        else
-           istart=istart + 3300 - jzz/2
-        endif
-
+        istart=istart - jzz/2 + 9000             !Empirical
         if(istart.lt.2) istart=2
         if(istart+jzz.gt.jzc) istart=jzc-jzz
      endif
-     if(mode(1:4).eq.'WSPR') newdat2=1
      call decode3(d2c(istart),jzz,istart,filename)
 
   else if(ndecoding.eq.5) then
