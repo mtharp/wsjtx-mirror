@@ -120,8 +120,7 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
      jjz=nint((width+0.02)/dt)+1
      jjz=min(jjz,jz+1-jj)
 
-     if(tstart.lt.29.5 .and. iping.eq.3) then
-        rewind 72
+     if(tstart.lt.29.5) then
         call syncms(dat(jj),max(jjz,6000),snrsync,dfx,lagbest,isbest)
         nsnr=nint(db(snrsync)-2.0)
         ndf=nint(dfx)

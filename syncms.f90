@@ -115,7 +115,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   i0=lagbest-928
   if(i0.ge.3) then
      do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.0.5*df) then
+        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
            smax=ccfblue(i0+i)
            nbit=30
         endif
@@ -124,7 +124,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   i0=lagbest+928
   if(i0.le.lagmax-3) then
      do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.0.5*df) then
+        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
            smax=ccfblue(i0+i)
            nbit=30
         endif
@@ -133,7 +133,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   i0=lagbest-1216
   if(i0.ge.3) then
      do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.0.5*df) then
+        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
            smax=ccfblue(i0+i)
            nbit=48
         endif
@@ -142,7 +142,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   i0=lagbest+1216
   if(i0.le.lagmax-3) then
      do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.0.5*df) then
+        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
            smax=ccfblue(i0+i)
            nbit=48
         endif
@@ -151,7 +151,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   i0=lagbest-1696
   if(i0.ge.3) then
      do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.0.5*df) then
+        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
            smax=ccfblue(i0+i)
            nbit=78
         endif
@@ -160,7 +160,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   i0=lagbest+1696
   if(i0.le.lagmax-3) then
      do i=-3,3
-        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.0.5*df) then
+        if(ccfblue(i0+i).gt.smax .and. abs(fblue(i0+i)-fbest).lt.1.5*df) then
            smax=ccfblue(i0+i)
            nbit=78
         endif
