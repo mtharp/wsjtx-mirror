@@ -1242,9 +1242,6 @@ def plot_small():
     graph2.create_line(xy,fill="magenta")
     if mode.get()=='JTMS':
         graph2.create_line(xy2,fill="red")
-##        for i in range(4):
-##            x=(i+2)*441*fac
-##            graph2.create_line([x,0,x,20],fill="yellow")
     for i in range(7):
         x=i*500*fac
         ytop=110

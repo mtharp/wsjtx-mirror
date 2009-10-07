@@ -46,7 +46,7 @@ subroutine spec2d(data,jz,nstep,s2,nchan,nz,psavg0,sigma)
 ! Normalize and save a copy of psavg0 for plotting.  
 ! Roll off the spectrum at 300 and 3000 Hz.
   do i=1,nh
-     psavg0(i)=3.e-5*psavg0(i)/nz
+     psavg0(i)=3.e-6*psavg0(i)/nz
 !     f=df*i
 !     fac=1.0
 !     if(f.lt.300.0) fac=f/300.0
