@@ -18,24 +18,8 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,ngreen,s2,nchan,nz,b)
   gain=100.
   offset=0.0
 
-  if(mousebutton.eq.0) then
-     k=0
-     do i=54,7,-1
-        do j=1,nz
-           k=k+1
-           n=0
-           if(s2(i,j).gt.0) n=gain*log10(s2(i,j)) + offset
-           n=min(252,max(0,n))
-           b(k)=n
-        enddo
-        k=k+500-nz
-     enddo
-     do i=k+1,60000
-        b(i)=0
-     enddo
-
-  else
-! This is a mouse-picked decode, so we compute the "zoomed" region.
+  if(mousebutton.gt.0) then
+! This is a mouse-picked decode, so compute the "zoomed" region only.
      k=50*500
      do i=54,7,-1
         do j=1,nz
@@ -47,9 +31,20 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,ngreen,s2,nchan,nz,b)
         enddo
         k=k+500-nz
      enddo
-  endif
+  else
+     b=0
+     k=0
+     do i=54,7,-1
+        do j=1,nz
+           k=k+1
+           n=0
+           if(s2(i,j).gt.0) n=gain*log10(s2(i,j)) + offset
+           n=min(252,max(0,n))
+           b(k)=n
+        enddo
+        k=k+500-nz
+     enddo
 
-  if(mousebutton.eq.0) then
 ! Compute the green curve
      sum=0.
      do i=1,jz

@@ -42,7 +42,8 @@ subroutine decode2
         if(k.gt.NrxMax) k=k-NRxMax
         d2b(i)=dgain*y1(k)
      enddo
-     call decode3(d2b,lenpick,istart,fnamex)
+     istart2=min(istart-7200,1)
+     call decode3(d2b,lenpick,istart2,fnamex)
   else if(ndecoding.eq.3) then
 
 !Mouse pick, bottom half of waterfall
