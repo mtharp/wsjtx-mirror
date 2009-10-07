@@ -117,7 +117,8 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   do n=1,nstep
      do nsgn=-1,1,2
         i0=lagbest + nsgn*istep(n)
-        if(i0.ge.3) then
+        if((nsgn.eq.-1 .and. i0.ge.3) .or.                          &
+           (nsgn.eq.1 .and. i0.le.lagmax-3))  then
            do i=-3,3
               if(ccfblue(i0+i).gt.smax .and.                        &
                    abs(fblue(i0+i)-fbest).lt.1.5*df) then
