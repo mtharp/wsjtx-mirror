@@ -58,7 +58,7 @@ Audio.ftn_init()
 first=1
 isync=0
 isyncMS=2
-isync6m=-10
+isync6m=-15
 isync65=1
 isync_save=0
 itol=5                                       #Default tol=400 Hz
@@ -619,7 +619,7 @@ def ModeISCAT(event=NONE):
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
         cbfreeze.configure(state=NORMAL)
-        itol=3
+        itol=4
         ltol.configure(text='Tol    '+str(ntol[itol]))
         inctol()
         nfreeze.set(1)
@@ -982,28 +982,28 @@ def toggletxdf(event=NONE):
 #----------------------------------------------------- dtdf_change
 # Readout of graphical cursor location
 def dtdf_change(event):
-    if mode.get()[:4]!='JT64' and mode.get()[:5]!='ISCAT' and \
-               mode.get()[:3]!='JT8':
+    if mode.get()[:4]=='JTMS':
         t="%.1f" % (event.x*30.0/500.0,)
         lab6.configure(text=t,bg='green')
     else:
         if event.y<40 and Audio.gcom2.nspecial==0:
             lab1.configure(text='Time (s)',bg="#33FFFF")   #light blue
-            t="%.1f" % (12.0*event.x/500.0-2.0,)
+##            t="%.1f" % (12.0*event.x/500.0-2.0,)
+            t="%.1f" % float(event.x)
             lab6.configure(text=t,bg="#33FFFF")
         elif (event.y>=40 and event.y<95) or \
                  (event.y<95 and Audio.gcom2.nspecial>0):
             lab1.configure(text='DF (Hz)',bg='red')
             idf=Audio.gcom2.idf
-            if mode.get()[:4]=='WSPR':
-                t="%d" % int(0.7324*(event.x-250.0))
+            if mode.get()[:5]=='ISCAT':
+                t="%d" % int((12000.0/1024.0)*(event.x-250.0))
             else:
                 t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
             lab6.configure(text=t,bg="red")
         else:
             lab1.configure(text='Time (s)',bg='green')
-            if mode.get()=='WSPR':
-                t="%.1f" % (114.0*event.x/500.0,)
+            if mode.get()=='ISCAT':
+                t="%.1f" % (event.x*30.0/500.0,)
             else:
                 t="%.1f" % (53.0*event.x/500.0,)
             lab6.configure(text=t,bg="green")

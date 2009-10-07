@@ -6,7 +6,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   character*24 message          !Message to be generated
   character*24 msgsent          !Message as it will be received
   character cmode*5
-  real*8 t,dt,phi,f,f0,dfgen,dphi,twopi,tsymbol
+  real*8 dt,phi,f,f0,dfgen,dphi,twopi
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
@@ -44,7 +44,6 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 ! Append the encoded data after the sync pattern
   nsym=63+10
   sent(11:nsym)=gsym(1:63)
-  tsymbol=nsps/12000.d0
   nspecial=0
   sendingsh=0
 
@@ -55,39 +54,28 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   endif
 
 ! Set up necessary constants
-  dt=1.d0/12000.d0
   f0=700.d0
+  dt=1.d0/12000.d0
   dfgen=12000.d0/nsps
-  t=0.d0
   phi=0.d0
   k=0
-  j0=0
-  ndata=(nsym*12000.d0*tsymbol)/2
-  ndata=2*ndata
-  do i=1,ndata
-     t=t+dt
-     j=int(t/tsymbol) + 1                    !Symbol number, 1-nsym
-     if(j.ne.j0) then
+  do nrpt=1,9
+     do j=1,nsym
         f=f0
-        if(nspecial.ne.0 .and. mod(j,2).eq.0) f=f0+21*nspecial*dfgen
-        if(nspecial.eq.0) then
-           k=k+1
-           if(k.le.73) f=f0+(sent(k))*dfgen      !### Fix need for this ? ###
+        if(nspecial.ne.0 .and. mod(j,2).eq.0) then
+           f=f0+21*nspecial*dfgen
+        else
+           f=f0 + sent(j)*dfgen
         endif
         dphi=twopi*dt*f
-        j0=j
-     endif
-     phi=phi+dphi
-     iwave(i)=32767.0*sin(phi)
-  enddo
-
-  do nrpt=2,9
-     i0=(nrpt-1)*ndata
-     do i=1,ndata
-        iwave(i0+i)=iwave(i)
+        do i=1,nsps
+           k=k+1
+           phi=phi+dphi
+           iwave(k)=32767.0*sin(phi)
+        enddo
      enddo
   enddo
-  nwave=9*ndata
+  nwave=9*nsym*nsps
 
   return
 end subroutine geniscat
