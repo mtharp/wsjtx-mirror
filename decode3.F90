@@ -74,7 +74,7 @@ subroutine decode3(d2,jz,istart,filename)
   nclearave=0
   nagain=0
   if(mode(1:4).eq.'JT64' .or. mode(1:5).eq.'ISCAT'.or. mode(1:3).eq.'JT8') then
-     call pix2d65(d2d,jz)
+     call pix2d64(d2d,jz)
   else if(mode(1:4).eq.'JTMS') then
      nz=s2(1,1)
      call pix2d(d2d,jz,mousebutton,MouseDF,NFreeze,mode,ngreen,s2,64,nz,b)

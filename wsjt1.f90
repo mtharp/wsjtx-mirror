@@ -132,20 +132,17 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   if(istart.gt.1) pick=.true. !This is a mouse-picked decoding
   if(.not.pick .and. nforce.eq.0 .and.                              &
        (basevb.lt.-15.0 .or. basevb.gt.20.0)) goto 900
-  nchan=64                   !Save 64 spectral channels
-  nstep=240                  !Set step size to ~20 ms
-  nz=jz/nstep                !# of spectra to compute
+
   if(.not.pick) then
      MouseButton=0
      jza=jz
      labdat=labdat+1
   endif
-  tbest=0.
   NsyncOK=0
 
   if(mode(1:4).eq.'JTMS') then
 ! JTMS mode
-     call wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
+     call wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
 
   else if(mode(1:5).eq.'ISCAT') then
 ! Iscat mode:

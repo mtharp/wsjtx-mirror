@@ -20,7 +20,7 @@ F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 SRCS2F90 = wsjt1.f90 a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	decode1.f90 decode2.f90 decode3.f90 ftn_init.f90 \
 	ftn_quit.f90 get_fname.f90 getfile.f90 horizspec.f90 hscroll.f90 \
-	pix2d.f90 pix2d65.f90 rfile.f90 savedata.f90 spec.f90 \
+	pix2d.f90 pix2d64.f90 rfile.f90 savedata.f90 spec.f90 \
 	wsjtgen.f90 runqqq.f90 fivehz.f90 hash.f90 gen64.f90 thcvf.f90 \
 	srcenc.f90 srcdec.f90 chenc.f90 chdec.f90 parse.f90 \
 	pk30.f90 pk48.f90 pk78.f90 pkcall.f90 unpkcall.f90 \

@@ -1,4 +1,4 @@
-subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
+subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
 
   parameter (NZMAX=3100)
   real dat(jz)                      !Raw audio data
@@ -22,15 +22,13 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
   nchan=64                   !Save 64 spectral channels
   nstep=240                  !Set step size to ~20 ms
   nz=jz/nstep                !# of spectra to compute
-
-!  if(.not.pick) then
-!     MouseButton=0
-!     jza=jz
-!     labdat=labdat+1
-!  endif
   tbest=0.
   NsyncOK=0
 
+  if(.not.pick) then
+     MouseButton=0
+     jza=jz
+  endif
 
 ! Compute the 2D spectrum.
   df=12000.0/256.0            !FFT resolution ~47 Hz
@@ -42,7 +40,6 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
   minwidth=40
   nqrn=0
   dftolerance=400
-  istart=1
 
 ! Decode JTMS mesages.
 
@@ -124,8 +121,12 @@ subroutine wsjtms(dat,jz,cfile6,MinSigdB,pick,lumsg,lcum,NSyncOK,s2,ps0,psavg)
         call syncms(dat(jj),max(jjz,6000),snrsync,dfx,lagbest,isbest)
         nsnr=nint(db(snrsync)-2.0)
         ndf=nint(dfx)
-        dtx=(lagbest+jj-1)*dt
-        nrpt=0
+        dtx=(lagbest+istart+jj-1)*dt
+        nrpt=16
+        if(mswidth.ge.120) nrpt=26
+        if(mswidth.gt.1000) nrpt=36
+        if(nsnr.ge.6) nrpt=nrpt+1
+        if(nsnr.ge.9) nrpt=nrpt+1
         cf=' '
         if(nsnr.ge.2) cf='*'
         write(11,1010) cfile6,dtx,mswidth,nsnr,nrpt,ndf,isbest,cf

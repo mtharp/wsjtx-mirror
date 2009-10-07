@@ -56,7 +56,7 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,ngreen,s2,nchan,nz,b)
         sum=sum+d2(i)
      enddo
      nave=nint(sum/jz)
-     nadd=661
+     nadd=nint(30.0*12000.0/500.0)
      ngreen=min(jz/nadd,500)
      k=0
      j=0

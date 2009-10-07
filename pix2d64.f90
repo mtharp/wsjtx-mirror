@@ -1,4 +1,4 @@
-subroutine pix2d65(d2,jz)
+subroutine pix2d64(d2,jz)
 
 ! Compute data for green line in JT65 mode.
 
@@ -26,4 +26,4 @@ subroutine pix2d65(d2,jz)
   enddo
 
   return
-end subroutine pix2d65
+end subroutine pix2d64
