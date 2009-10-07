@@ -28,7 +28,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 ! Do FFTs of twice symbol length, stepped by quarter symbols.  
   nfft=1024
   nh=nfft/2
-  nsteps=4*(jz-NH)/nh -1
+  nsteps=min(4*(jz-NH)/nh,NSMAX)
   kstep=nh/4
   df=12000.0/nfft
 
