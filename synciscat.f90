@@ -110,14 +110,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   avered=ss/nss
 
 ! Once more, using best frequency and best sync pattern:
-  i=ipk
   syncbest=-1.e30
   do lag=-5,540
      sum=0.
      do j=1,nsync
         j0=4*j - 3 + lag
         if(j0.ge.1 .and. j0.le.nsteps) then
-           sum=sum + s2(i+2*isync(j,isbest),j0)
+           sum=sum + s2(ipk+2*isync(j,isbest),j0)
         endif
      enddo
      ccfblue(lag)=sum/nsync

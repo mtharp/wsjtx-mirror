@@ -1199,6 +1199,7 @@ def plot_large():
             if ymax>55.0/yfac: yfac=55.0/ymax
             xy2=[]
             fac=500.0/(imax-0.4)
+            if mode.get()[:5]=='ISCAT': fac=1.0
             for i in range(imax):             #Make xy list for blue curve
                 x=(i+0.5)*fac
                 ccf=Audio.gcom2.ccf[i]
