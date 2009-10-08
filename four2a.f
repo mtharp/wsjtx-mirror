@@ -18,6 +18,7 @@ C     to -1.  In the N array, N(1) must be the true N(1), not N(1)/2+1.
 C     The transform will be real and returned to the input array.
 
       parameter (NPMAX=100)
+      parameter (NSMALL=16384)
       complex a(nfft)
       complex aa(32768)
       integer nn(NPMAX),ns(NPMAX),nf(NPMAX),nl(NPMAX)
@@ -43,10 +44,11 @@ C     The transform will be real and returned to the input array.
 
 C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       nspeed=FFTW_ESTIMATE
-      if(nfft.le.16384) nspeed=FFTW_MEASURE
-!      nspeed=FFTW_MEASURE                           !### trial ###
-      if(nfft.le.32768) then
-         do j=1,nfft
+      if(nfft.le.NSMALL) then
+         nspeed=FFTW_MEASURE
+         jz=nfft
+         if(nform.eq.0) jz=nfft/2
+         do j=1,jz
             aa(j)=a(j)
          enddo
       endif
@@ -66,8 +68,10 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       endif
       call sleep_msec(0)
       i=nplan
-      if(nfft.le.32768) then
-         do j=1,nfft
+      if(nfft.le.NSMALL) then
+         jz=nfft
+         if(nform.eq.0) jz=nfft/2
+         do j=1,jz
             a(j)=aa(j)
          enddo
       endif

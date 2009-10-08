@@ -1,16 +1,16 @@
-subroutine short64(data,jz,NFreeze,MouseDF,DFTolerance,                 &
+subroutine short64(dat,jz,NFreeze,MouseDF,DFTolerance,                 &
      mode64,nspecialbest,nstest,dfsh,iderrbest,idriftbest,              &
      snrdb,ss1a,ss2a,nwsh,idfsh)
 
 ! Check to see if this might be a shorthand message.
 ! This is done before zapping, downsampling, or normal decoding.
 
-  parameter (NP2=60*12000)               !Size of data array
+  parameter (NP2=60*12000)               !Size of dat array
   parameter (NFFT=16384)                 !FFT length
   parameter (NH=NFFT/2)                  !Step size
-  parameter (MAXSTEPS=60*12000/NH)       !Max # of steps
+  parameter (MAXSTEPS=90)       !Max # of steps
 
-  real data(jz)
+  real dat(jz)
   integer DFTolerance
   real s2(NH,MAXSTEPS)                   !2d spectrum
   real ss(NH,4)                          !Save spectra in four phase bins
@@ -35,7 +35,7 @@ subroutine short64(data,jz,NFreeze,MouseDF,DFTolerance,                 &
   nsteps=4*nsteps                        !Number of steps
   do j=1,nsteps
      k=(j-1)*NH + 1
-     call ps(data(k),NFFT,s2(1,j))       !Get power spectra
+     call ps(dat(k),NFFT,s2(1,j))       !Get power spectra
      if(mode64.eq.4) then
         call smooth(s2(1,j),NH)
         call smooth(s2(1,j),NH)
