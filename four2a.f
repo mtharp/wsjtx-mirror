@@ -47,7 +47,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       if(nfft.le.NSMALL) then
          nspeed=FFTW_MEASURE
          jz=nfft
-         if(nform.eq.0) jz=nfft/2
+         if(iform.eq.0) jz=nfft/2
          do j=1,jz
             aa(j)=a(j)
          enddo
@@ -70,7 +70,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       i=nplan
       if(nfft.le.NSMALL) then
          jz=nfft
-         if(nform.eq.0) jz=nfft/2
+         if(iform.eq.0) jz=nfft/2
          do j=1,jz
             a(j)=aa(j)
          enddo

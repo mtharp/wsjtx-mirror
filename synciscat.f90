@@ -1,5 +1,5 @@
 subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
-     snrx,snrsync,isbest,ccfblue,ccfred)
+     snrx,snrsync,isbest,ccfblue,ccfred,s2)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -8,10 +8,11 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   parameter (NSMAX=2813)           !Max number of quarter-symbol steps
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
-  real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+  real s1(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+  real s2(64,63)                   !2d spectrum, synced data symbols only
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
-  real ccfred(-224:224)           !Peak of ccfblue, as function of freq
+  real ccfred(-224:224)            !Peak of ccfblue, as function of freq
   integer isync(10,3)
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
@@ -39,7 +40,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         x(i)=dat(k+i-1)
         x(i+nh)=0.
      enddo
-     call ps(x,nfft,s2(1,j))
+     call ps(x,nfft,s1(1,j))
   enddo
 
 ! Determine the search range in frequency
@@ -72,9 +73,9 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         do j=1,nsync
            j0=4*j - 3 + lag
            if(j0.ge.1 .and. j0.le.nsteps) then
-              sum1=sum1 + s2(i+2*isync(j,1),j0)
-              sum2=sum2 + s2(i+2*isync(j,2),j0)
-              sum3=sum3 + s2(i+2*isync(j,3),j0)
+              sum1=sum1 + s1(i+2*isync(j,1),j0)
+              sum2=sum2 + s1(i+2*isync(j,2),j0)
+              sum3=sum3 + s1(i+2*isync(j,3),j0)
            endif
         enddo
         ccf1=sum1/nsync
@@ -116,7 +117,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      do j=1,nsync
         j0=4*j - 3 + lag
         if(j0.ge.1 .and. j0.le.nsteps) then
-           sum=sum + s2(ipk+2*isync(j,isbest),j0)
+           sum=sum + s1(ipk+2*isync(j,isbest),j0)
         endif
      enddo
      ccfblue(lag)=sum/nsync
@@ -152,6 +153,30 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
   ccfred(-224:-ja)=0.
   ccfred(ja:224)=0.
+
+! Do FFTs of twice symbol length, stepped by quarter symbols.  
+  nfft=1024
+  nh=nfft/2
+  nsteps=min(4*(jz-NH)/nh,NSMAX)
+  kstep=nh/4
+  df=12000.0/nfft
+
+! Compute power spectrum for each quarter-symbol step
+  do j=1,nsteps
+     k=(j-1)*kstep + 1
+     do i=1,nh
+        x(i)=dat(k+i-1)
+        x(i+nh)=0.
+     enddo
+     call ps(x,nfft,s1(1,j))
+  enddo
+
+! Copy synchronized data symbols from s1 into s2
+  do j=1,63
+     do i=1,64
+        s2(i,j)=s1(ipk+2*(i-1),4*j-3+lagpk+40)
+     enddo
+  enddo
 
   return
 end subroutine synciscat

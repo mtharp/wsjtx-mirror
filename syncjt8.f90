@@ -95,8 +95,8 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   ave=ss/nss
   do j=-224,224
      if(ccfred(j).ne.0.0) ccfred(j)=0.5*(ccfred(j)-ave)
-     write(61,3001) j*df,ccfred(j)
-3001 format(2f12.3)
+!     write(61,3001) j*df,ccfred(j)
+!3001 format(2f12.3)
   enddo
 
 ! Once more, using best frequency and best sync pattern:
@@ -122,8 +122,8 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   ave=sum/nsum
   do j=-5,30
      ccfblue(j)=ccfblue(j)-ave
-     write(62,3002) j,ccfblue(j)
-3002 format(i5,f12.3)
+!     write(62,3002) j,ccfblue(j)
+!3002 format(i5,f12.3)
   enddo
 
   snrsync=syncbest/ave - 1.0

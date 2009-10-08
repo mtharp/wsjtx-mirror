@@ -1,10 +1,10 @@
-subroutine decode64(dat,npts,dtx,dfx,flip,ndepth,isbest,               &
+subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
      mycall,hiscall,hisgrid,mode64,nafc,decoded,ncount,                &
      deepmsg,qual)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
 
-  real dat(npts)                        !Raw data
+  real dat(jz)                        !Raw data
   real s2(74,87)
   real s3(64,63)
   real ftrack(87)
@@ -19,7 +19,7 @@ subroutine decode64(dat,npts,dtx,dfx,flip,ndepth,isbest,               &
 
 ! Compute spectra of the channel symbols
   f0=1270.46 + dfx
-  call spec2d64(dat,npts,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
+  call spec2d64(dat,jz,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
 
   do k=1,21
      j1=k+6
