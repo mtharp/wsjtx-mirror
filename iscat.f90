@@ -5,7 +5,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   real dat(jz)                !Raw audio data
   integer DFTolerance
   real s2(64,NZMAX)        !2D spectral array
-  character*6 cfile6
+  character cfile6*6,cf*1
   real ccfblue(-5:540),ccfred(-224:224)
 
   NsyncOK=0
@@ -23,8 +23,10 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   jdf=nint(dfx)
 
   call cs_lock('mtdecode')
-  write(11,1010) cfile6,nsync,nsnr,jdf,isbest
-1010 format(a6,i4,i5,i5,i3)
+  cf=' '
+  if(nsync.ge.1) cf='*'
+  write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf
+1010 format(a6,i4,i5,i5,i3,a1)
 
   call cs_unlock
 
