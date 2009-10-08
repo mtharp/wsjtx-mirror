@@ -44,7 +44,6 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 ! Append the encoded data after the sync pattern
   nsym=63+10
   sent(11:nsym)=gsym(1:63)
-  print*,'G',nsym,sent(1:nsym)
   nspecial=0
   sendingsh=0
 
