@@ -44,7 +44,7 @@ SRCS2F90 = wsjt1.f90 a2d.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	spec2d64.f90 ftpeak64.f90 symsync64.f90 decode64.f90 \
 	wsjtms.f90 iscat.f90 short64.f90 jt8.f90 extract.f90 \
 	ping.f90 syncms.f90 synciscat.f90 flat1.f90 getsnr.f90 \
-	chkhist.f90
+	chkhist.f90 syncjt8.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
