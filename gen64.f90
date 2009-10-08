@@ -1,5 +1,5 @@
-subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
-     sendingsh,nbit,msgsent,nmsg)
+subroutine gen64(message,mode64,ntxdf,iwave,nwave,sendingsh,nbit,       &
+     msgsent,nmsg)
 
 ! Generate a JT64 wavefile.
 
@@ -23,19 +23,19 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,  &
   call srcenc(cmode,message,nbit,iu0)
 ! Message length will be nbit=2, 30, 48, or 78
 
-     if(nbit.eq.2) then
-        iu=iu0
-        msgsent=message
-        go to 10
-     else
+  if(nbit.eq.2) then
+     iu=iu0
+     msgsent=message
+     go to 10
+  else
 ! Apply FEC and do the channel encoding
-        call chenc(cmode,nbit,iu0,gsym)
+     call chenc(cmode,nbit,iu0,gsym)
 
 ! Decode channel symbols to recover source-encoded message bits
 !        call chdec(cmode,nbit,gsym,iu)
-     endif
+  endif
 ! Remove source encoding, recover the human-readable message.
-     call srcdec(cmode,nbit,iu0,msgsent)
+  call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Set up the JT64 sync pattern
 ! Insert the 6x6 Costas array 4 times at low-frequency edge.
