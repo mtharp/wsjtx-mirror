@@ -78,6 +78,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
   endif
 
   if(ndec.eq.0) then
+! KVASD2 unavailable?  Decode with the hard-decision RS decoder.
      call indexx(63,mrprob,indx)
      do i=1,nemax
         j=indx(i)
