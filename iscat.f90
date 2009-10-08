@@ -6,7 +6,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   real s2(64,63)              !2D spectral array
   character cfile6*6,cf*1
   real ccfblue(-5:540),ccfred(-224:224)
-  character decoded*24
+  character decoded*22
 
   NsyncOK=0
   nfft=1024                   !Do FFTs of twice the symbol length
@@ -28,7 +28,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   if(nsync.ge.1) cf='*'
   call cs_lock('iscat')
   write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded
-1010 format(a6,i4,i5,i5,i3,a1,3x,a24)
+1010 format(a6,i4,i5,i5,i3,a1,3x,a22)
   call cs_unlock
 
   return
