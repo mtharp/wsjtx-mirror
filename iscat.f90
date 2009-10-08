@@ -17,18 +17,23 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2)
 
   nadd=1
+  decoded=' '
   call extract(s2,nadd,isbest,ncount,decoded)     !Extract the message
 
-  nsync=nint(snrsync-2.0)
+  nsync=nint(snrsync)
   nsnr=nint(snrx)
   if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
   nsnrlim=-32
   jdf=nint(dfx)
-  cf=' '
-  if(nsync.ge.1) cf='*'
+  if(nsync.lt.minsigdb) then
+     cf=' '
+     decoded=' '
+  else
+     cf='*'
+  endif
   call cs_lock('iscat')
-  write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded
-1010 format(a6,i4,i5,i5,i3,a1,3x,a22)
+  write(11,1010) cfile6,nsync,nsnr,dtx,jdf,isbest,cf,decoded
+1010 format(a6,i4,i5,f6.1,i5,i3,a1,3x,a22)
   call cs_unlock
 
   return

@@ -58,7 +58,7 @@ Audio.ftn_init()
 first=1
 isync=0
 isyncMS=2
-isync6m=-15
+isync6m=1
 isync65=1
 isync_save=0
 itol=5                                       #Default tol=400 Hz
@@ -614,7 +614,7 @@ def ModeISCAT(event=NONE):
         if lauto: toggleauto()
         cleartext()
         ModeJTMS()
-        lab2.configure(text='FileID      Sync       dB        DF    *')
+        lab2.configure(text='FileID      Sync       dB         DT         DF     *')
         mode.set("ISCAT")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
