@@ -180,6 +180,16 @@ subroutine srcdec(cmode,nbit,iu,msg)
      if(n2.eq.0) then
         call unpkcall(nc1,c1)
         call unpkcall(nc2,c2)
+        i1=index(c1,' ')
+        if(i1.ne.1) then
+           call hash(c1,i1-1,ih)
+           dcall(ih)=c1(:i1-1)
+        endif
+        i1=index(c2,' ')
+        if(i1.ne.1) then
+           call hash(c2,i1-1,ih)
+           dcall(ih)=c2(:i1-1)
+        endif
         call unpkgrid(ngph,cgp)
         msg=c1(:6)//' '//c2(:6)//' '//cgp
      else if(n2.eq.1) then
@@ -189,6 +199,15 @@ subroutine srcdec(cmode,nbit,iu,msg)
         call unpkcall(nc2,c2)
         i1=index(c12,' ')
         msg=c12(:i1)//c2(:6)
+        if(i1.ne.1) then
+           call hash(c12,i1-1,ih)
+           dcall(ih)=c12(:i1-1)
+        endif
+        i1=index(c2,' ')
+        if(i1.ne.1) then
+           call hash(c2,i1-1,ih)
+           dcall(ih)=c2(:i1-1)
+        endif
      else if(n2.eq.2) then
         call unpkcall(nc1,c1)
         call unpkcall(nc2,c12)
@@ -196,6 +215,15 @@ subroutine srcdec(cmode,nbit,iu,msg)
         call unpkpfx(ng,c12)
         i1=index(c12,' ')
         msg=c1//' '//c12(:i1-1)
+        if(i1.ne.1) then
+           call hash(c12,i1-1,ih)
+           dcall(ih)=c12(:i1-1)
+        endif
+        i1=index(c2,' ')
+        if(i1.ne.1) then
+           call hash(c1,i1-1,ih)
+           dcall(ih)=c1(:i1-1)
+        endif
      endif
      if(iand(n5,2).ne.0) then
         do i=24,1,-1
