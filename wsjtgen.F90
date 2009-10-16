@@ -138,8 +138,7 @@ subroutine wsjtgen
      goto 900
   endif
   
-900 sending=txmsg
-  if(mode(1:4).eq.'JT64' .and. sendingsh.ne.1) sending=msgsent
+900 sending=msgsent
   do i=NMSGMAX,1,-1
      if(sending(i:i).ne.' '.and. ichar(sending(i:i)).ne.0) go to 910
   enddo

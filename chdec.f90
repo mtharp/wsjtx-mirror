@@ -68,6 +68,7 @@ subroutine chdec(cmode,nbit,gsym,iu)
         if(gsym(i).eq.1) n=-127
         symbols(i)=n
      enddo
+
      if(cmode.eq.'JTMS') call vit213(symbols,nbit,mettab,ddec,metric)
      if(cmode.eq.'JT8')  call vit416(symbols,nbit,mettab,ddec,metric)
      iz=(nbit+7)/8

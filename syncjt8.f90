@@ -1,5 +1,5 @@
 subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
-     snrsync,ccfblue,ccfred)
+     snrsync,ccfblue,ccfred,s3)
 
 ! Synchronizes JT8 data, finding the best-fit DT and DF.  
 ! NB: data are already downsampled to 6 kHz.
@@ -11,6 +11,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+  real s3(8,124)                   !2d spectrum, synchronized, data only
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
@@ -124,6 +125,14 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
      ccfblue(j)=ccfblue(j)-ave
 !     write(62,3002) j,ccfblue(j)
 !3002 format(i5,f12.3)
+  enddo
+
+  do i=1,8
+     ii=ipk + 2*(i-1)
+     j0=4*8 - 3 + lagbest
+     do j=1,124
+        s3(i,j)=s2(ii,j0+4*j)
+     enddo
   enddo
 
   snrsync=syncbest/ave - 1.0

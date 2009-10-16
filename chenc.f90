@@ -2,15 +2,16 @@ subroutine chenc(cmode,nbit,iu,gsym)
 
 ! Apply FEC and generate channel symbols
 
+  parameter (MAXSYM=380)
   character*5 cmode
   integer iu(3)
   integer iu6(13)
   integer*1 iu6a(96)
-  integer*1 gsym1(372)
+  integer*1 gsym1(MAXSYM)
   integer*1 dat1(10)
   integer*1 i1a,i1b,i1c,i1d
-  integer gsym(372)
-  integer gsym2(372)
+  integer gsym(MAXSYM)
+  integer gsym2(MAXSYM)
   integer igray1(0:7)
 !  data igray0/0,1,3,2,7,6,4,5/    !Use this to remove the gray code
   data igray1/0,1,3,2,6,7,5,4/
@@ -51,7 +52,8 @@ subroutine chenc(cmode,nbit,iu,gsym)
               gsym2(i+1)=gsym1(j+1)    !Exchange i and j to remove interleaving
            enddo
         enddo
-! Apply gray code and insert 3-bit data symbols
+
+! Insert bits into 3-bit data symbols and apply gray code.
         do i=1,124
            n=4*gsym2(3*i-2) + 2*gsym2(3*i-1) + gsym2(3*i)
            gsym(i)=igray1(n)              !Use igray0() to remove the gray code
