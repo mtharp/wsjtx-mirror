@@ -49,7 +49,7 @@ OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 	pk30.o pk48.o pk78.o pkpfx.o unpkpfx.o pkname.o unpkname.o \
 	hash.o nhash.o chenc.o chdec.o packbits.o unpackbits.o \
 	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
-	tab.o vit213.o vit416.o
+	tab.o vit213.o enc416.o vit416.o
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
@@ -67,7 +67,7 @@ SRCS2F90 = wsjt1.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	spec2d64.f90 decode64.f90 extract.f90 chkhist.f90 \
 	short64.f90 flat1.f90 getsnr.f90 ftpeak64.f90 \
 	symsync64.f90 wsjtms.f90 iscat.f90 jt8.f90 ping.f90 \
-	synciscat.f90 syncms.f90 syncjt8.f90
+	synciscat.f90 syncms.f90 syncjt8.f90 enc416.f90 vit416.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
@@ -85,7 +85,7 @@ SRCS2F77 = astro.f azdist.f coord.f dcoord.f deg2grid.f \
 
 OBJS2F77 = ${SRCS2F77:.f=.o} 
 
-SRCS2C	= nhash.c cutil.c fthread.c tab.c vit213.c vit416.c
+SRCS2C	= nhash.c cutil.c fthread.c tab.c vit213.c
 
 OBJS2C  = ${SRCS2C:.c=.o} init_rs_int.o encode_rs_int.o decode_rs_int.o 
 
@@ -123,9 +123,10 @@ encode_rs_int.o: encode_rs.c
 	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
 decode_rs_int.o: decode_rs.c
 	$(CC) ${CFLAGS} -c -DBIGSYM=1 -o $@ $^
-
 cutil.o: cutil.c
 	$(CC) $(CFLAGS) -c -DSTARNIX=1 cutil.c
+vit416.o: vit416.f90 partab.f90
+	$(FC) -c -O9 vit416.f90
 
 .PHONY : clean
 install:	WsjtMod/Audio.so

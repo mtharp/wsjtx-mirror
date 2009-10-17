@@ -38,7 +38,7 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   endif
 
 ! Attempt to synchronize: get DF and DT.
-  csymc='  '
+  csync='  '
   call syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
        snrsync,ccfblue,ccfred,s3)
   nsync=nint(snrsync)
