@@ -160,7 +160,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      ccfblue(j)=ccfblue(j)-ave
   enddo
 
-  snrsync=syncbest/ave - 1.0
+  snrsync=syncbest/ave
   snrx=-31.
   if(syncbest.gt.1.0) snrx=db(snrsync) - 30.5
   dtstep=kstep*2.d0/12000.d0

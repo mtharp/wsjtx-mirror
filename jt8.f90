@@ -45,7 +45,7 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
 
   if(nsync.ge.minsigdb) then
 ! We have achieved sync.  Remove gray code and compute single-bit soft symbols.
-     fac=2.0
+     fac=1.0
      do j=1,124
         k=3*j-2
         r1=max(s3(4,j),s3(5,j),s3(6,j),s3(7,j))

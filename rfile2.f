@@ -1,6 +1,6 @@
       subroutine rfile2(fname,buf,n,nr)
 
-C  Write a wave file to disk.
+C  Read a file from disk.
 
       integer RMODE
       parameter(RMODE=0)
@@ -24,3 +24,4 @@ C  Write a wave file to disk.
 
       return
       end
+
