@@ -62,9 +62,9 @@ pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 MyCall=StringVar()
 MyGrid=StringVar()
 lcall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Call:',
-        value='K1JT',entry_textvariable=MyCall,entry_width=8)
+        value='Dummy',entry_textvariable=MyCall,entry_width=8)
 lgrid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Grid:',
-        value='FN20',entry_textvariable=MyGrid,entry_width=5)
+        value='AB99',entry_textvariable=MyGrid,entry_width=5)
 comport=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Serial Port:',
         value='0',entry_textvariable=SerialPort,entry_width=12)
 cbptt=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='PTT:',

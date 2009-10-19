@@ -28,7 +28,7 @@ import urllib
 import thread
 
 root = Tk()
-Version="1.14_r" + "$Rev$"[6:-1]
+Version="2.0_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -88,7 +88,6 @@ ntxfirst=IntVar()
 NX=500
 NY=160
 param20=""
-pctx=[-1,0,10,20,25,33,100]
 sf0=StringVar()
 sftx=StringVar()
 txmsg=StringVar()
@@ -564,7 +563,7 @@ def autolog(decodes):
                                              'rcall': options.MyCall.get(),
                                              'rgrid': options.MyGrid.get(),
                                              'rqrg': str(fmid),
-                                             'tpct': str(pctx[ipctx.get()]), 
+                                             'tpct': str(ipctx.get()), 
                                              'tqrg': sftx.get(),
                                              'dbm': str(options.dBm.get()),
                                              'version': Version})
@@ -611,7 +610,7 @@ def put_params(param3=NONE):
                 break
         except:
             pass
-    w.acom1.pctx=pctx[ipctx.get()]
+    w.acom1.pctx=ipctx.get()
     w.acom1.idsec=idsec
     w.acom1.ntest=ntest.get()
     w.acom1.ntxfirst=ntxfirst.get()
@@ -936,26 +935,12 @@ for widget in widgets:
     widget.pack(side=LEFT,padx=5,pady=2)
 g1.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 lab01=Label(iframe2a, text='').pack(side=LEFT,padx=1)
-g2=Pmw.Group(iframe2a,tag_text="T/R cycle")
-#------------------------------------------------------ T/R Cycle Select
-for i in range(7):
-    t="Idle"
-    if i==1:
-        t="Rx"
-    elif i==2:
-        t="10%"
-    elif i==3:
-        t="20%"
-    elif i==4:
-        t="25%"
-    elif i==5:
-        t="33%"
-    elif i==6:
-        t="Tx"
-    Radiobutton(g2.interior(),text=t,value=i,
-                variable=ipctx).pack(side=LEFT,padx=4)
+g2=Pmw.Group(iframe2a,tag_text="Tx fraction (%)")
+#------------------------------------------------------ Tx percentage Select
+pctscale=Scale(g2.interior(),orient=HORIZONTAL,length=250,from_=0, \
+               to=100,tickinterval=10,variable=ipctx).pack(side=LEFT,padx=4)
 ipctx.set(0)
-g2.pack(side=RIGHT,fill=BOTH,expand=0,padx=6,pady=6)
+g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
@@ -1135,7 +1120,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 1.13     by K1JT')
+root.title('  WSPR 2.0     by K1JT')
 
 put_params()
 try:
