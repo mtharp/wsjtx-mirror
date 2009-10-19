@@ -52,7 +52,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
             aa(j)=a(j)
          enddo
       endif
-!      call sleep_msec(0)
+      call msleep(1)
       if(isign.eq.-1 .and. iform.eq.1) then
          call sfftw_plan_dft_1d_(plan(i),nfft,a,a,
      +        FFTW_FORWARD,nspeed)
@@ -66,7 +66,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       else
          stop 'Unsupported request in four2a'
       endif
-!      call sleep_msec(0)
+      call msleep(1)
       i=nplan
       if(nfft.le.NSMALL) then
          jz=nfft
@@ -77,9 +77,9 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       endif
 
  10   continue
-!      call sleep_msec(0)
+      call msleep(1)
       call sfftw_execute_(plan(i))
-!      call sleep_msec(0)
+      call msleep(1)
       return
 
  999  do i=1,nplan

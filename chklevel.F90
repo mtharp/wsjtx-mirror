@@ -1,5 +1,7 @@
 subroutine chklevel
 
+! Called from wspr2 at ~5 Hz rate.
+
 #ifdef CVF
   use dfport
 #else

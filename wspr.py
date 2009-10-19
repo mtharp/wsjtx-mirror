@@ -1135,6 +1135,7 @@ except:
 w.wspr1()
 graph1.focus_set()
 ldate.after(100,update)
+
 root.mainloop()
 
 # Clean up and save user options before terminating
