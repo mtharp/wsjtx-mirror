@@ -1,4 +1,4 @@
-      SUBROUTINE FOUR2a (a,nfft,NDIM,ISIGN,IFORM)
+      subroutine four2a(a,nfft,ndim,isign,iform)
 
 C     IFORM = 1, 0 or -1, as data is
 C     complex, real, or the first half of a complex array.  Transform
@@ -22,10 +22,11 @@ C     The transform will be real and returned to the input array.
       complex a(nfft)
       complex aa(32768)
       integer nn(NPMAX),ns(NPMAX),nf(NPMAX),nl(NPMAX)
-      real*8 plan(NPMAX)                   !Should be i*8
+      real*8 plan(NPMAX)             !Actually should be i*8, but no matter
       data nplan/0/
       include 'fftw3.f'
-      save
+      common/patience/npatience
+      save plan,nplan,nn,ns,nf,nl
 
       if(nfft.lt.0) go to 999
 
@@ -42,17 +43,21 @@ C     The transform will be real and returned to the input array.
       nf(i)=iform
       nl(i)=nloc
 
-C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
+C  Planning: FFTW_ESTIMATE, FFTW_ESTIMATE_PATIENT, FFTW_MEASURE, 
+C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
       nspeed=FFTW_ESTIMATE
+      if(npatience.eq.1) nspeed=FFTW_ESTIMATE_PATIENT
+      if(npatience.eq.2) nspeed=FFTW_MEASURE
+      if(npatience.eq.3) nspeed=FFTW_PATIENT
+      if(npatience.eq.4) nspeed=FFTW_EXHAUSTIVE
       if(nfft.le.NSMALL) then
-         nspeed=FFTW_MEASURE
          jz=nfft
          if(iform.eq.0) jz=nfft/2
          do j=1,jz
             aa(j)=a(j)
          enddo
       endif
-      call msleep(1)
+!      call sleep_msec(0)
       if(isign.eq.-1 .and. iform.eq.1) then
          call sfftw_plan_dft_1d_(plan(i),nfft,a,a,
      +        FFTW_FORWARD,nspeed)
@@ -66,7 +71,7 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       else
          stop 'Unsupported request in four2a'
       endif
-      call msleep(1)
+!      call sleep_msec(0)
       i=nplan
       if(nfft.le.NSMALL) then
          jz=nfft
@@ -77,9 +82,9 @@ C  Planning: FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT, FFTW_EXHAUSTIVE
       endif
 
  10   continue
-      call msleep(1)
+!      call sleep_msec(0)
       call sfftw_execute_(plan(i))
-      call msleep(1)
+!      call sleep_msec(0)
       return
 
  999  do i=1,nplan

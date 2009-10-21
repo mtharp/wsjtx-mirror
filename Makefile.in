@@ -4,7 +4,7 @@ INSTALL=	install
 CC ?= @CC@
 FFLAGS	= @FFLAGS@
 LDFLAGS	= @LDFLAGS@
-LIBS	= @LIBS@
+LIBS	= @LIBS@ -lfftw3f
 CPPFLAGS = @CPPFLAGS@
 CFLAGS	= @CFLAGS@
 PREFIX	= @PREFIX@
@@ -15,22 +15,25 @@ CFLAGS += ${DEFS}
 CPPFLAGS += ${DEFS} -I.
 
 # WSPR specific Fortran flags
-#FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
+FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
 
 all:	wspr
 build:	wspr
 
 wspr:	WsprMod/w.so
 
-# The default rules
-.c.o:
-	${CC} ${CPPFLAGS} ${CFLAGS} -c -o ${<:.c=.o} $<
+# Default rules
+%.o: %.c
+	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
+%.o: %.f
+	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
+%.o: %.F
+	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
+%.o: %.f90
+	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
+%.o: %.F90
+	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
 
-.f.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.f=.o} $<
-
-.F90.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F90=.o} $<
 
 OS=@OS@
 FC=@FC@
@@ -42,14 +45,6 @@ LDFLAGS	+= -L${FC_LIB_PATH}
 PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
-
-OBJS1 = wspr_rxtest.o getfile.o mept162.o getrms.o mix162.o deg2grid.o	\
-	sync162.o decode162.o spec162.o set.o xfft.o			\
-	ps162.o pctile.o xcor162.o peakup.o db.o			\
-	inter_mept.o fano232.o unpack50.o unpackcall.o			\
-	unpackgrid.o four2.o flat3.o sort.o ssort.o			\
-	nchar.o grid2deg.o decode.o wfile5.o				\
-	fchisq.o ccf2.o twkfreq.o
 
 F2PYONLY = wspr1 getfile paterminate
 
@@ -67,7 +62,7 @@ SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f \
 	sync162.f decode162.f spec162.F set.f xfft.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
-	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
+	unpackgrid.f four2a.f flat3.f sort.f deg2grid.f \
 	ssort.f genmept.f \
 	packcall.f packgrid.f pack50.f encode232.f \
 	nchar.f grid2deg.f \

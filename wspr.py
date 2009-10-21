@@ -64,6 +64,7 @@ fmid0=0.0
 font1='Helvetica'
 iband=IntVar()
 iband0=0
+idle=IntVar()
 idsec=0
 ipctx=IntVar()
 isec0=0
@@ -610,7 +611,12 @@ def put_params(param3=NONE):
                 break
         except:
             pass
-    w.acom1.pctx=ipctx.get()
+    if idle.get()==0:
+        w.acom1.pctx=ipctx.get()
+        bidle.configure(bg='gray85')
+    else:
+        w.acom1.pctx=-1
+        bidle.configure(bg='red')
     w.acom1.idsec=idsec
     w.acom1.ntest=ntest.get()
     w.acom1.ntxfirst=ntxfirst.get()
@@ -915,8 +921,9 @@ sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.place(x=360,y=12, anchor='e')
-#bupload.pack(side=LEFT)
+bupload.place(x=340,y=12, anchor='e')
+bidle=Checkbutton(iframe2,text='Idle',justify=RIGHT,variable=idle)
+bidle.place(x=420,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
