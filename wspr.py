@@ -616,7 +616,7 @@ def put_params(param3=NONE):
         bidle.configure(bg='gray85')
     else:
         w.acom1.pctx=-1
-        bidle.configure(bg='red')
+        bidle.configure(bg='yellow')
     w.acom1.idsec=idsec
     w.acom1.ntest=ntest.get()
     w.acom1.ntxfirst=ntxfirst.get()
