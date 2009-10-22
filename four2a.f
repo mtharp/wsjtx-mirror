@@ -45,11 +45,12 @@ C     The transform will be real and returned to the input array.
 
 C  Planning: FFTW_ESTIMATE, FFTW_ESTIMATE_PATIENT, FFTW_MEASURE, 
 C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
-      nspeed=FFTW_ESTIMATE
-      if(npatience.eq.1) nspeed=FFTW_ESTIMATE_PATIENT
-      if(npatience.eq.2) nspeed=FFTW_MEASURE
-      if(npatience.eq.3) nspeed=FFTW_PATIENT
-      if(npatience.eq.4) nspeed=FFTW_EXHAUSTIVE
+      nflags=FFTW_ESTIMATE
+      if(npatience.eq.1) nflags=FFTW_ESTIMATE_PATIENT
+      if(npatience.eq.2) nflags=FFTW_MEASURE
+      if(npatience.eq.3) nflags=FFTW_PATIENT
+      if(npatience.eq.4) nflags=FFTW_EXHAUSTIVE
+      nflags=nflags + FFTW_USE_WISDOM + FFTW_THREADSAFE
       if(nfft.le.NSMALL) then
          jz=nfft
          if(iform.eq.0) jz=nfft/2
@@ -60,14 +61,14 @@ C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
 !      call sleep_msec(0)
       if(isign.eq.-1 .and. iform.eq.1) then
          call sfftw_plan_dft_1d_(plan(i),nfft,a,a,
-     +        FFTW_FORWARD,nspeed)
+     +        FFTW_FORWARD,nflags)
       else if(isign.eq.1 .and. iform.eq.1) then
          call sfftw_plan_dft_1d_(plan(i),nfft,a,a,
-     +        FFTW_BACKWARD,nspeed)
+     +        FFTW_BACKWARD,nflags)
       else if(isign.eq.-1 .and. iform.eq.0) then
-         call sfftw_plan_dft_r2c_1d_(plan(i),nfft,a,a,nspeed)
+         call sfftw_plan_dft_r2c_1d_(plan(i),nfft,a,a,nflags)
       else if(isign.eq.1 .and. iform.eq.-1) then
-         call sfftw_plan_dft_c2r_1d_(plan(i),nfft,a,a,nspeed)
+         call sfftw_plan_dft_c2r_1d_(plan(i),nfft,a,a,nflags)
       else
          stop 'Unsupported request in four2a'
       endif

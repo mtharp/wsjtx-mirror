@@ -9,12 +9,14 @@ subroutine wspr2
 !  13  ALL_MEPT.TXT
 !  14  decoded.txt
 !  16  pixmap.dat
+!  17  fftw_wisdom.dat
 
   character*17 message
   real*8 tsec
   logical idle,receiving,transmitting,decoding
   integer nchin(0:20),nchout(0:20)
   include 'acom1.f90'
+  common/patience/npatience
   data idle/.true./,receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
 
@@ -27,6 +29,12 @@ subroutine wspr2
 1002 format('$EOF')
   call flush(14)
   rewind 14
+
+!  open(17,file='fftw_wisdom.dat',status='unknown')
+!  call import_wisdom_from_file(isuccess,17)
+!  if(isuccess.ne.0) write(*,1000) 
+!1000 format('Using optimized FFTs.')
+  npatience=1
 
   idevin=ndevin
   idevout=ndevout
