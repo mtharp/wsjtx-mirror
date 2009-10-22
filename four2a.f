@@ -20,7 +20,7 @@ C     The transform will be real and returned to the input array.
       parameter (NPMAX=100)
       parameter (NSMALL=16384)
       complex a(nfft)
-      complex aa(32768)
+      complex aa(NSMALL)
       integer nn(NPMAX),ns(NPMAX),nf(NPMAX),nl(NPMAX)
       real*8 plan(NPMAX)             !Actually should be i*8, but no matter
       data nplan/0/

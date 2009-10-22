@@ -30,12 +30,7 @@ subroutine wspr2
   call flush(14)
   rewind 14
 
-!  open(17,file='fftw_wisdom.dat',status='unknown')
-!  call import_wisdom_from_file(isuccess,17)
-!  if(isuccess.ne.0) write(*,1000) 
-!1000 format('Using optimized FFTs.')
   npatience=1
-
   idevin=ndevin
   idevout=ndevout
 
