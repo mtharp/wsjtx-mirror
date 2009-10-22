@@ -26,15 +26,15 @@ C Impulse response of filter (one side)
 
       if(nmax.lt.0) go to 900
       if(first) then
-         npatience=FFTW_ESTIMATE
-!         npatience=FFTW_MEASURE
+         nflag=FFTW_ESTIMATE_PATIENT
+!         nflag=FFTW_MEASURE
 C  Plan the FFTs just once
          call sfftw_plan_dft_1d_(plan1,NFFT1,ca,ca,
-     +        FFTW_BACKWARD,npatience)
+     +        FFTW_BACKWARD,nflag)
          call sfftw_plan_dft_1d_(plan3,NFFT2,c4a,c4a,
-     +        FFTW_FORWARD,npatience)
+     +        FFTW_FORWARD,nflag)
          call sfftw_plan_dft_1d_(plan5,NFFT2,cfilt,cfilt,
-     +        FFTW_BACKWARD,npatience)
+     +        FFTW_BACKWARD,nflag)
 
 C  Convert impulse response to filter function
          do i=1,NFFT2
