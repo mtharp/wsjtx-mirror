@@ -50,7 +50,6 @@ C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
       if(npatience.eq.2) nflags=FFTW_MEASURE
       if(npatience.eq.3) nflags=FFTW_PATIENT
       if(npatience.eq.4) nflags=FFTW_EXHAUSTIVE
-      nflags=nflags + FFTW_USE_WISDOM + FFTW_THREADSAFE
       if(nfft.le.NSMALL) then
          jz=nfft
          if(iform.eq.0) jz=nfft/2
