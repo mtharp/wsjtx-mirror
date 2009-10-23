@@ -20,6 +20,14 @@ subroutine packpfx(call1,n1,ng,nadd)
      endif
      nadd=1
      ng=60000-32768+n
+  else if(call1(i1+3:i1+3).eq.' ') then
+! Two-character numerical suffix, /10 to /99
+     call0=call1(:i1-1)
+     call packcall(call0,n1,text)
+     nadd=1
+     n=10*(ichar(call1(i1+1:i1+1))-48) + ichar(call1(i1+2:i1+2)) - 48
+     nadd=1
+     ng=60000 + 26 + n
   else
 ! Prefix of 1 to 3 characters
      pfx=call1(:i1-1)

@@ -21,13 +21,17 @@ subroutine unpackpfx(ng,call1)
      if(call1(1:1).eq.' ') call1=call1(2:)
      if(call1(1:1).eq.' ') call1=call1(2:)
   else
-! Add-on suffix, one character
+! Add-on suffix, one or teo characters
      i1=index(call1,' ')
      nc=ng-60000
      if(nc.ge.0 .and. nc.le.9) then
         call1=call1(:i1-1)//'/'//char(nc+48)
      else if(nc.ge.10 .and. nc.le.35) then
         call1=call1(:i1-1)//'/'//char(nc+55)
+     else if(nc.ge.36 .and. nc.le.125) then
+        nc1=(nc-26)/10
+        nc2=mod(nc-26,10)
+        call1=call1(:i1-1)//'/'//char(nc1+48)//char(nc2+48)
      endif
   endif
 

@@ -14,6 +14,7 @@ subroutine wqdecode(data0,message,ntype)
   character ccur*4,cxp*2
   logical first
   character*12 dcall(0:N15-1)
+  character*4  dgrid(0:N15-1)
   data first/.true./
   data cwx/'CLEAR','CLOUDY','RAIN','SNOW'/
   data cwind/'CALM','BREEZES','WINDY','DRY','HUMID'/
@@ -21,6 +22,7 @@ subroutine wqdecode(data0,message,ntype)
 
   if(first) then
      dcall='            '
+     dgrid='    '
      first=.false.
   endif
 
@@ -41,6 +43,7 @@ subroutine wqdecode(data0,message,ntype)
      message=callsign(1:i1)//grid//' '//cdbm
      call hash(callsign,i1-1,ih)
      dcall(ih)=callsign(:i1)
+     dgrid(ih)=grid
 
 ! "Best DX" WSPR response (type 1)
   else if(ntype.eq.1) then
@@ -51,12 +54,14 @@ subroutine wqdecode(data0,message,ntype)
      message='CQ '//callsign(:i1)//grid
      call hash(callsign,i1-1,ih)
      dcall(ih)=callsign(:i1)
+     dgrid(ih)=grid
   else if(ntype.eq.4 .or. ntype.eq.5) then
      ng=n2/128 + 32768*(ntype-4)
      call unpackpfx(ng,callsign)
      message='CQ '//callsign
-     call hash(callsign,i1-1,ih)
-     dcall(ih)=callsign(:i1)
+     i2=index(callsign,' ')-1
+     call hash(callsign,i2,ih)
+     dcall(ih)=callsign(:i2)
 
 ! Reply to CQ (msg #2; type 6)
   else if(ntype.eq.6) then
@@ -75,6 +80,7 @@ subroutine wqdecode(data0,message,ntype)
      message='DE '//callsign(:i1)//grid
      call hash(callsign,i1-1,ih)
      dcall(ih)=callsign(:i1-1)
+     dgrid(ih)=grid
 
 ! Reply to CQ, DE pfx/call (msg #2; types 9, 11)
   else if(ntype.eq.9 .or. ntype.eq.11) then
@@ -189,6 +195,7 @@ subroutine wqdecode(data0,message,ntype)
      message='73 DE '//callsign(:i1)//grid
      call hash(callsign,i1-1,ih)
      dcall(ih)=callsign(:i1-1)
+     dgrid(ih)=grid
 
 ! 73 DE pfx/call (msg #6; type 21, 22)
   else if(ntype.eq.21 .or. ntype.eq.22) then
@@ -311,5 +318,6 @@ subroutine wqdecode(data0,message,ntype)
      i2=i2-1
   enddo
 
-900  return
+900  continue
+  return
 end subroutine wqdecode

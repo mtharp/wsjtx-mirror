@@ -73,6 +73,7 @@ C  Look for sync patterns, get DF and DT
             go to 24
 
  23         i2=index(outfile,'.wav')-1
+            if(i2.le.0) i2=index(outfile,'.WAV')-1
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             nf1=nint(-a(2))
