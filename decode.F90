@@ -13,7 +13,7 @@ subroutine decode
   ndec=0
   call mept162(thisfile,f0,minsync,iwave,NMAX,ndec,nbfo,ierr)
   if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
-     savefile='save/'//outfile
+     savefile='save/'//thisfile
      npts=114*12000
      call wfile5(iwave,npts,12000,savefile)
   endif
