@@ -35,7 +35,7 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2a.f flat3.f sort.f deg2grid.f \
 	ssort.f genmept.f packcall.f packgrid.f pack50.f \
-	encode232.f nchar.f grid2deg.f f77_wisdom.f \
+	encode232.f nchar.f grid2deg.f \
 	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
 
 SRCS2C = ptt.c start_threads.c padevsub.c
@@ -68,7 +68,4 @@ gmtime2.o: gmtime2.c
 .PHONY : clean
 
 clean:
-	rm *.o WSPR.EXE WsprMod/w.pyd wspr.spec
-
-
-
+	rm -f *.o WSPR.EXE WsprMod/w.pyd wspr.spec
