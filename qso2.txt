@@ -1,34 +1,58 @@
-JT64 AND ISCAT                        nbits
--------------------------------------------
-1. CQ K1JT                              30
-2.                    DE W8WN           30
-3. W8WN OOO                             30
-4.                    K1JT RO           30
-5. RRR                                   2
-6.                    73                 2
+Except as nopted, the following message formats 
+apply to modes JT64, ISCAT, and JTMS.  JT8 uses 
+only 78-bit messages.
 
-1. CQ K1JT FN20                         48
-2.                    <K1JT> W8WN       48
-3. W8WN <K1JT> OOO                      48
-4.                    K1JT <W8WN> RO    48
-5. RRR                                   2
-6.                    73                 2
+Basic QSO with grids
+----------------------------------------------
+1. CQ K1JT FN20                             48
+2.                       K1JT W8WN EM77     78
+3. W8WN K1JT FN20 OOO                       78
+4.                       RO                  2
+5. RRR                                       2
+6.                       73                  2
 
-1. CQ K1JT FN20                         48
-2.                    K1JT W8WN EM77    78
-3. W8WN K1JT FN20 OOO                   78
-4.                    RO                 2
-5. RRR                                   2
-6.                    73                 2
+QSO with numerical reports
+----------------------------------------------
+1. CQ K1JT FN20                             48
+2.                       K1JT W8WN EM77     78
+3. W8WN K1JT -21                            78
+4.                       K1JT W8WN R-22     78
+5. RRR                                       2
+6.                       TNX JOE 73 GL      78
 
-1. CQ K1JT FN20                         48
-2.                    K1JT W8WN EM77    78
-3. W8WN K1JT -19                        78
-4.                    K1JT W8WN R-21    78
-5. RRR                                   2
-6.                    TNX 73 GL         48
+QSO with add-on prefix or suffix
+----------------------------------------------
+1. CQ VO2/K1JT                              48
+2.                       VO2/K1JT W8WN      78
+3. W8WN VO2/K1JT OOO                        78
+4.                       RO                  2
+5. RRR                                       2
+6.                       TNX BERT 73 GL     78
 
-JTMS: replace OOO by 26 or 27
-      replace RO by R26 or R27
+QSO with hashed callsigns
+----------------------------------------------
+1. CQ K1JT FN20                             48
+2.                       <K1JT> W8WN        48
+3. W8WN <K1JT> OOO                          48
+4.                       K1JT <W8WN> RO     48
+5. RRR                                       2
+6.                       73                  2
 
-JT8: uses only 78-bit messages
+Hashed callsigns in JTMS mode
+----------------------------------------------
+1. CQ K1JT FN20                             48
+2.                       <K1JT> W8WN        48
+3. W8WN <K1JT> 26                           48
+4.                       K1JT <W8WN> R26    48
+5. RRR                                       2
+6.                       73                  2
+
+
+Bare minimum QSO
+----------------------------------------------
+1. CQ K1JT                                  30
+2.                       DE W8WN            30
+3. W8WN OOO                                 30
+4.                       K1JT RO            30
+5. RRR                                       2
+6.                       73                  2

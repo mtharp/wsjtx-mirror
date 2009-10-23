@@ -77,7 +77,7 @@ def def1():
     tx6.delete(0,END)
 
     tx1.insert(0,'DE %M')
-    if g.mode[:4]=='JT64':
+    if g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
         tx2.insert(0,'%T OOO')
         tx3.insert(0,'%T RO')
     else:    
@@ -99,7 +99,7 @@ def def2():
     tx6.delete(0,END)
 
     tx1.insert(0,'<%T> %M')
-    if g.mode[:4]=='JT64':
+    if g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
         tx2.insert(0,'%T <%M> OOO')
         tx3.insert(0,'%T <%M> RO')
     else:
@@ -120,7 +120,7 @@ def def3():
     tx6.delete(0,END)
 
     tx1.insert(0,'%T %M %G')
-    if g.mode[:4]=='JT64':
+    if g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
         tx2.insert(0,'%T %M %G OOO')
         tx3.insert(0,'RO')
     else:
