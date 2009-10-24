@@ -66,6 +66,7 @@ iband=IntVar()
 iband0=0
 idle=IntVar()
 idsec=0
+igrid6=IntVar()
 ipctx=IntVar()
 isec0=0
 isync=1
@@ -624,7 +625,7 @@ def put_params(param3=NONE):
     w.acom1.nsave=nsave.get()
     w.acom1.nbfo=options.bfofreq.get()
     w.acom1.idint=options.idint.get()
-    w.acom1.igrid6=options.igrid6.get()
+    w.acom1.igrid6=igrid6.get()
     try:
         g.ndevin.set(options.DevinName.get())
         w.acom1.ndevin=g.ndevin.get()
@@ -826,7 +827,7 @@ setupmenu.add_separator()
 setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
 setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
 setupmenu.add_separator()
-setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
+setupmenu.add_checkbutton(label = 'Tx 6-digit locator',variable=igrid6)
 
 #--------------------------------------------------------- View menu
 setupbutton = Menubutton(mbar, text = 'View', )
@@ -1061,7 +1062,7 @@ try:
         elif key == 'BFOfreq': options.bfofreq.set(value)
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
-        elif key == 'TxGrid6': options.igrid6.set(int(value))
+        elif key == 'TxGrid6': igrid6.set(int(value))
         elif key == 'SerialRate': options.serial_rate.set(int(value))
         elif key == 'Handshake': options.serial_handshake.set(value)
         elif key == 'RigNum': options.rignum.set(int(value))
@@ -1163,7 +1164,7 @@ f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
-f.write("TxGrid6 " + str(options.igrid6.get()) + "\n")
+f.write("TxGrid6 " + str(igrid6.get()) + "\n")
 f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
 f.write("Handshake " + options.serial_handshake.get() + "\n")
 f.write("RigNum " + str(options.rignum.get()) + "\n")

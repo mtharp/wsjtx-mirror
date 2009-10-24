@@ -50,7 +50,6 @@ serial_rate=IntVar()
 serial_handshake=StringVar()
 cat_enable=IntVar()
 idint=IntVar()
-igrid6=IntVar()
 rignum=IntVar()
 
 pttmode.set('DTR')
@@ -81,7 +80,6 @@ rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
         value='1500',entry_textvariable=bfofreq,entry_width=12)
 cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (dBm):',
         entry_textvariable=dBm,entry_width=4,scrolledlist_items=pwrlist)
-engrid6=Checkbutton(g1.interior(),text='Tx Grid6',variable=igrid6)
 encat=Checkbutton(g1.interior(),text='Enable CAT',variable=cat_enable)
 lrignum=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rig num:',
         value='214',entry_textvariable=rignum,entry_width=8)
@@ -90,7 +88,7 @@ cbbaud=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Serial rate:',
 cbhs=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Handshake:',
         entry_textvariable=serial_handshake,entry_width=4,scrolledlist_items=hslist)
 widgets = (lcall,lgrid,cwid,comport,cbptt,audioin,audioout,rxbfo,\
-           cbpwr,engrid6,encat,lrignum,cbbaud,cbhs)
+           cbpwr,encat,lrignum,cbbaud,cbhs)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)
 Pmw.alignlabels(widgets)
