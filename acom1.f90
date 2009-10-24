@@ -6,11 +6,12 @@
   character*80 infile,outfile,pttport,thisfile
   character cdate*8,utctime*10,rxtime*4
   character cmd*60,pttmode*3
-  character callsign*6,grid*4,ctxmsg*22,sending*22
+  character callsign*12,grid*4,grid6*6,ctxmsg*22,sending*22
   integer*2 iwave
-  common/acom1/ f0,ftx,rms,pctx,nsec,ndevin,ndevout,nsave,nrxdone,      &
-       ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,ntransmitting,       &
-       ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,idsec,nsectx,nbfo,  &
-       ntxfirst,ntest,ncat,ltest,iwave(NMAX),nsec1,nsec2,rms1,xdb1,     &
-       infile,outfile,pttport,cdate,utctime,callsign,grid,rxtime,       &
-       ctxmsg,sending,thisfile,cmd,pttmode
+  common/acom1/ f0,ftx,rms,pctx,igrid6,nsec,ndevin,ndevout,nsave,       &
+       nrxdone,ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,idint,       &
+       ntransmitting,ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,      &
+       idsec,nsectx,nbfo,ntxfirst,ntest,ncat,ltest,iwave(NMAX),         &
+       nsec1,nsec2,rms1,xdb1,infile,outfile,pttport,cdate,utctime,      &
+       callsign,grid,grid6,rxtime,ctxmsg,sending,thisfile,cmd,          &
+       pttmode

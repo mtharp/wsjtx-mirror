@@ -10,5 +10,6 @@ subroutine hash(string,len,ihash)
      i=nhash(ic,len,146)
      ihash=iand(i,MASK15)
 
+!     print*,'C',ihash,len,string
   return
 end subroutine hash

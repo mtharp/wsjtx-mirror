@@ -63,7 +63,7 @@ SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2a.f flat3.f sort.f deg2grid.f \
-	ssort.f genmept.f \
+	ssort.f genmept.f gencwid.f morse.f \
 	packcall.f packgrid.f pack50.f encode232.f \
 	nchar.f grid2deg.f \
 	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f

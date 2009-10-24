@@ -591,8 +591,9 @@ def put_params(param3=NONE):
         w.acom1.ftx=ftx.get()
     except:
         pass
-    w.acom1.callsign=(options.MyCall.get().strip().upper()+'      ')[:6]
+    w.acom1.callsign=(options.MyCall.get().strip().upper()+'            ')[:12]
     w.acom1.grid=(options.MyGrid.get().strip().upper()+'    ')[:4]
+    w.acom1.grid6=(options.MyGrid.get().strip().upper()+'      ')[:6]
     w.acom1.ctxmsg=(txmsg.get().strip().upper()+'                      ')[:22]
 
     # numeric port ==> COM%d, else string of device.  --W1BW
@@ -622,6 +623,8 @@ def put_params(param3=NONE):
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
     w.acom1.nbfo=options.bfofreq.get()
+    w.acom1.idint=options.idint.get()
+    w.acom1.igrid6=options.igrid6.get()
     try:
         g.ndevin.set(options.DevinName.get())
         w.acom1.ndevin=g.ndevin.get()
@@ -1025,6 +1028,7 @@ try:
         if   key == 'WSPRGeometry': root.geometry(value)
         elif key == 'MyCall': options.MyCall.set(value)
         elif key == 'MyGrid': options.MyGrid.set(value)
+        elif key == 'CWID': options.idint.set(value)
         elif key == 'dBm': options.dBm.set(value)
         elif key == 'PctTx': ipctx.set(value)
 #        elif key == 'IDinterval': options.IDinterval.set(value)
@@ -1057,6 +1061,7 @@ try:
         elif key == 'BFOfreq': options.bfofreq.set(value)
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
+        elif key == 'TxGrid6': options.igrid6.set(int(value))
         elif key == 'SerialRate': options.serial_rate.set(int(value))
         elif key == 'Handshake': options.serial_handshake.set(value)
         elif key == 'RigNum': options.rignum.set(int(value))
@@ -1150,6 +1155,7 @@ f=open(appdir+'/WSPR.INI',mode='w')
 f.write("WSPRGeometry " + root_geom + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
+f.write("CWID " + options.idint.get() + "\n")
 f.write("dBm " + str(options.dBm.get()) + "\n")
 f.write("SerialPort " + str(options.SerialPort.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
@@ -1157,6 +1163,7 @@ f.write("AudioOut " + options.DevoutName.get() + "\n")
 f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
+f.write("TxGrid6 " + str(options.igrid6.get()) + "\n")
 f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
 f.write("Handshake " + options.serial_handshake.get() + "\n")
 f.write("RigNum " + str(options.rignum.get()) + "\n")

@@ -1,10 +1,6 @@
       subroutine azdist(MyGrid,HisGrid,utch,nAz,nEl,nDmiles,nDkm,
      +  nHotAz,nHotABetter)
 
-C  Old calling sequence:
-c      subroutine azdist(MyGrid,HisGrid,UTChours,Az,Dmiles,Dkm,El,
-c     +  HotA,HotB,HotABetter)
-
       character*6 MyGrid,HisGrid,mygrid0,hisgrid0
       real*8 utch,utch0
       logical HotABetter,IamEast

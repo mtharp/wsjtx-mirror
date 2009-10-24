@@ -11,12 +11,15 @@ subroutine tx
 
   parameter (NMAX2=120*12000)
   character message*22,call1*12,cdbm*3
-  character*22 msg2
+  character*22 msg0,msg1,msg2,cwmsg
   character cmnd*60
   integer*2 jwave(NMAX2)
+  integer*2 icwid(72000)
   integer soundout,ptt
   include 'acom1.f90'
   common/bcom/ntransmitted
+  data ntx/0/
+  save ntx
 
   cmnd=cmd
   ierr=0
@@ -30,31 +33,53 @@ subroutine tx
      iret=system(cmnd)
 #endif
   else
-     ierr=ptt(nport,pttport,1,iptt)
-     if(ierr.ne.0) then
-        print*,'Error using PTT port',ierr
-        stop
-     endif
+     if(nport.gt.0) ierr=ptt(nport,pttport,1,iptt)
   endif
 
   write(cdbm,'(i3)'),ndbm
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
-  do i=6,1,-1
-     if(call1(i:i).ne.' ') go to 10
-  enddo
 
-10 iz=i
-  message=call1(1:iz)//' '//grid//' '//cdbm
-
+  ntx=1-ntx
+  i1=index(call1,' ')
+  i2=index(call1,'/')
+  if(i2.gt.0 .or. igrid6.ne.0) then
+! WSPR_2 message, in two parts
+     if(i2.le.0) then
+        msg1=call1(1:i1)//grid//' '//cdbm
+     else
+        msg1=call1(:i1)//cdbm
+     endif
+     msg0='<'//call1(:i1-1)//'> '//grid6//' '//cdbm
+     if(ntx.eq.1) message=msg1
+     if(ntx.eq.0) message=msg0
+  else
+! Normal WSPR message
+     message=call1(1:i1)//grid//' '//cdbm
+  endif
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
   ctxmsg=message
   snr=99.0
   if(ntest.eq.1) snr=-26.0
   call genmept(message,ntxdf,snr,msg2,jwave)
-  sending=msg2
 
   npts=114*12000
+  if(idint.ne.0) then
+!  Generate and insert the CW ID.
+     wpm=25.
+     freqcw=1500.0 + ntxdf
+     cwmsg=call1(:iz)//'                      '
+     icwid=0
+     call gencwid(cwmsg,wpm,freqcw,icwid,ncwid)
+     k=114.5*12000
+     do i=1,60000
+        k=k+1
+        jwave(k)=icwid(i)
+     enddo
+     npts=k
+  endif
+
+  sending=msg2
   ierr=soundout(idevout,jwave,npts)
   if(ierr.ne.0) then
      print*,'Error in soundout',ierr
@@ -69,11 +94,7 @@ subroutine tx
      iret=system(cmnd)
 #endif
   else
-     ierr=ptt(nport,pttport,0,iptt)
-     if(ierr.ne.0) then
-        print*,'Error using PTT port',ierr
-        stop
-     endif
+     if(nport.gt.0) ierr=ptt(nport,pttport,0,iptt)
   endif
 
   ntransmitted=1
