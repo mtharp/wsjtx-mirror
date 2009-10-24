@@ -20,7 +20,7 @@ rxtest.exe: $(OBJS1)
 
 OBJS2C = sound.o gmtime2.o nhash.o
 
-F2PYONLY = wspr1 getfile paterminate
+F2PYONLY = wspr1 getfile paterminate ftn_quit
 
 SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90 \
@@ -33,9 +33,9 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	sync162.f decode162.f spec162.f set.f xfft.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
-	unpackgrid.f four2a.f flat3.f sort.f deg2grid.f \
+	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
 	ssort.f genmept.f packcall.f packgrid.f pack50.f \
-	encode232.f nchar.f grid2deg.f \
+	encode232.f nchar.f grid2deg.f gencwid.f morse.f \
 	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
 
 SRCS2C = ptt.c start_threads.c padevsub.c
@@ -49,7 +49,7 @@ WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	--opt="-fbounds-check -ftrace=full -O2 -cpp -DUSE_PORTAUDIO" \
 	--compiler=mingw32 \
 	$(OBJS2C) \
-	libportaudio.a libpthreadGC2.a libfftw3f.a -lwinmm \
+	libportaudio.a libpthreadGC2.a -lwinmm \
 	-m w \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
@@ -68,4 +68,7 @@ gmtime2.o: gmtime2.c
 .PHONY : clean
 
 clean:
-	rm -f *.o WSPR.EXE WsprMod/w.pyd wspr.spec
+	rm *.o WSPR.EXE WsprMod/w.pyd wspr.spec
+
+
+
