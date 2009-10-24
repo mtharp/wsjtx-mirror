@@ -1,4 +1,4 @@
-      subroutine gencwid(msg,wpm,freqcw,iwave,nwave)
+      subroutine gencwid(msg,wpm0,freqcw,iwave,nwave)
 
       parameter (NMAX=60000)
       character msg*22,msg2*22
@@ -14,9 +14,11 @@
  10   iz=i-1
       msg2=msg(1:iz)//'                      '
       call morse(msg2,idat,ndits) !Encode part 1 of msg
-
-      tdit=1.2d0/wpm                   !Key-down dit time, seconds
+      nwave=48000
       dt=1.d0/12000.d0
+      wpm=1.2*ndits/(nwave*dt)
+      if(wpm.lt.wpm0) wpm=wpm0
+      tdit=1.2d0/wpm                   !Key-down dit time, seconds
       nwave=ndits*tdit/dt
       pha=0.
       dpha=twopi*freqcw*dt

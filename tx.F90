@@ -6,7 +6,7 @@ subroutine tx
   use dfport
   use dflib
 #else
-  integer system
+  integer system,time
 #endif
 
   parameter (NMAX2=120*12000)
@@ -14,12 +14,12 @@ subroutine tx
   character*22 msg0,msg1,msg2,cwmsg
   character cmnd*60
   integer*2 jwave(NMAX2)
-  integer*2 icwid(72000)
+  integer*2 icwid(48000)
   integer soundout,ptt
   include 'acom1.f90'
   common/bcom/ntransmitted
-  data ntx/0/
-  save ntx
+  data ntx/0/,ns0/0/
+  save ntx,ns0
 
   cmnd=cmd
   ierr=0
@@ -64,19 +64,20 @@ subroutine tx
   call genmept(message,ntxdf,snr,msg2,jwave)
 
   npts=114*12000
-  if(idint.ne.0) then
+  if(nsec.lt.ns0) ns0=nsec
+  if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then
 !  Generate and insert the CW ID.
      wpm=25.
      freqcw=1500.0 + ntxdf
-     cwmsg=call1(:iz)//'                      '
+     cwmsg=call1(:i1)//'                      '
      icwid=0
      call gencwid(cwmsg,wpm,freqcw,icwid,ncwid)
-     k=114.5*12000
-     do i=1,60000
-        k=k+1
-        jwave(k)=icwid(i)
-     enddo
-     npts=k
+     k0=114*12000
+     k1=115*12000
+     jwave(k0:k1)=0
+     jwave(k1+1:k1+48000)=icwid
+     npts=k1+48000
+     ns0=nsec
   endif
 
   sending=msg2
