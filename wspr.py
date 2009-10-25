@@ -248,12 +248,13 @@ def about(event=NONE):
     t="WSPR Version " + Version + ", by K1JT"
     Label(about,text=t,font=(font1,16)).pack(padx=20,pady=5)
     t="""
-WSPR is pronounced "whisper" and stands for "Weak Signal
-Propagation Reporter".  The program transmits and receives
-a digital soundcard mode optimized for beacon-like transmissions
-on the LF, MF, and HF bands.
+WSPR (pronounced "whisper") stands for "Weak Signal
+Propagation Reporter".  The program generates and decodes
+a digital soundcard mode optimized for beacon-like
+transmissions on the LF, MF, and HF bands.
 
-Copyright (c) 2008 by Joseph H. Taylor, Jr., K1JT.
+Copyright (c) 2008-2009 by Joseph H. Taylor, Jr., K1JT.  Source
+code is available under the GNU General Public License.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
 ##    t="Revision date: " + \
@@ -269,31 +270,35 @@ def help(event=NONE):
     t="Basic Operating Instructions"
     Label(about,text=t,font=(font1,14)).pack(padx=20,pady=5)
     t="""
-1. Open the Setup | Options page and enter your callsign,
-   grid locator, COM port number (for PTT control), and Tx
-   power in dBm.  If you do not wish to use the system's
-   default sound card, enter suitable device numbers for
-   Audio In and Audio Out (see console window for a list
-   of available devices).
+1. Open the Setup | Options screen and enter your callsign,
+   grid locator, and Tx power in dBm.  If you will not use
+   the computer's default sound card, enter suitable
+   device numbers for Audio In and Audio Out (see console
+   window for a list of available devices).
 
-2. Select the desired band from the Band menu and optionally
-   enter your USB dial frequency and/or Tx frequency on the
-   main screen.  You can also select a Tx frequency by
-   double-clicking on the waterfall display.
+2. Select a serial port for PTT control via DTR/RTS or for
+   CAT-style rig control including T/R switching and
+   frequency setting.  For rig control check 'Enable CAT'
+   and enter suitable parameters.
 
-3. Click on 'Rx' to receive only, 'Tx' to transmit only, or
-   the desired average percentage of transmission cycles.
+3. Select the desired band from the Band menu and optionally
+   enter your USB dial frequency on the main screen.  Select
+   a Tx frequency by double-clicking on the waterfall display.
 
-4. Be sure that your computer clock is correct to +/- 1 s. If
+4. Select a desired 'Tx fraction' using the large slider. Zero
+   percent means Rx only; 100% means Tx only.
+   
+5. Be sure that your computer clock is correct to +/- 1 s. If
    necessary you can make small adjustments by left- or right-
-   clicking on the 'Dsec' label.
+   clicking on the 'Dsec' label.  A better solution is to use
+   an automatic internet-based clock-setting utility.
 
-5. The program will begin a Tx or Rx sequence at the start of
-    each even minute.  The waterfall will update and decoding
-    will take place at the end of each Rx sequence.  During
-    reception, you can adjust the Rx noise level to get
-    something close to 0 dB.  Use Setup -> Rx volume control
-    or change your receiver's output level.
+6. WSPR will begin a Tx or Rx sequence at the start of each
+   even minute.  The waterfall will update and decoding will
+   take place at the end of each Rx sequence.  During
+   reception, you can adjust the Rx noise level to get
+   something close to 0 dB.  Use Setup | Rx volume control
+   or change your receiver's output level.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
