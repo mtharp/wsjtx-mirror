@@ -4,7 +4,6 @@ C  Interleave (ndir=1) or de-interleave (ndir=-1) the array id.
 
       integer*1 id(0:161),itmp(0:161)
       integer j0(0:161)
-      character*8 c0,c1
       logical first
       data first/.true./
       save

@@ -6,7 +6,7 @@ subroutine tx
   use dfport
   use dflib
 #else
-  integer system,time
+  integer system
 #endif
 
   parameter (NMAX2=120*12000)

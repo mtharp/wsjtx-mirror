@@ -10,18 +10,14 @@ subroutine decode
   include 'acom1.f90'
 
   minsync=1
-  ndec=0
-  call mept162(thisfile,f0,minsync,iwave,NMAX,ndec,nbfo,ierr)
+  call mept162(thisfile,f0,minsync,iwave,NMAX,nbfo,ierr)
   if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
      savefile='save/'//thisfile
      npts=114*12000
      call wfile5(iwave,npts,12000,savefile)
   endif
-
-  if(ndec.eq.0) then
-     write(14,1100)
+  write(14,1100)
 1100 format('$EOF')
-  endif
   call flush(14)
   rewind 14
   ndecdone=1

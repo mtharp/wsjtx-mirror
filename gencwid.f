@@ -5,7 +5,7 @@
       integer*2 iwave(NMAX)
 
       integer*1 idat(460)
-      real*8 dt,t,twopi,pha,dpha,tdit,samfac
+      real*8 dt,t,twopi,pha,dpha,tdit
       data twopi/6.283185307d0/
 
       do i=1,22

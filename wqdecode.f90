@@ -4,9 +4,8 @@ subroutine wqdecode(data0,message,ntype)
   integer*1 data0(11)
   character*22 message
   character*12 callsign
-  character*3 cdbm,cf
+  character*3 cdbm
   character grid4*4,grid6*6
-  character*36 fmt
   logical first
   character*12 dcall(0:N15-1)
   data first/.true./
@@ -30,7 +29,6 @@ subroutine wqdecode(data0,message,ntype)
 ! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
   if(ntype.ge.0 .and. ntype.le.60) then
      nu=mod(ntype,10)
-     nt=ntype/10
      if(nu.eq.0 .or. nu.eq.3 .or. nu.eq.7) then
         write(cdbm,'(i3)'),ntype
         if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
@@ -55,7 +53,6 @@ subroutine wqdecode(data0,message,ntype)
      endif
   else if(ntype.lt.0) then
      nu=mod(-(ntype+1),10)
-     nt=-(ntype+1)/10
      nadd=nu
      if(nu.gt.3) nadd=nu-3
      if(nu.gt.7) nadd=nu-7

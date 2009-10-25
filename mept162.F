@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,f0,minsync,id,npts,ndec,nbfo,ierr)
+      subroutine mept162(outfile,f0,minsync,id,npts,nbfo,ierr)
 
 C  Orchestrates the process of finding, synchronizing, and decoding 
 C  WSPR signals.
