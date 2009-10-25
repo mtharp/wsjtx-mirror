@@ -33,7 +33,6 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       data first/.true./,idum/0/,ihrtx0/99/
       save
 
-      nsym=162                               !Symbols per transmission
       if(first) then
          pi=4.d0*atan(1.d0)
          twopi=2.d0*pi

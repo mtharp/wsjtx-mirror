@@ -277,9 +277,9 @@ def help(event=NONE):
    window for a list of available devices).
 
 2. Select a serial port for PTT control via DTR/RTS or for
-   CAT-style rig control including T/R switching and
-   frequency setting.  For rig control check 'Enable CAT'
-   and enter suitable parameters.
+   CAT-style rig control (under Windows only) including
+   T/R switching and frequency setting.  For rig control
+   check 'Enable CAT' and enter suitable parameters.
 
 3. Select the desired band from the Band menu and optionally
    enter your USB dial frequency on the main screen.  Select

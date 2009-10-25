@@ -3045,12 +3045,10 @@ CFLAGS="$OLD_CFLAGS"
 CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
-FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none\
-			-Wall -fbounds-check -fno-second-underscore -fPIC"
-FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC"
-#-Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
-
-
+FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none \
+            -Wall -Wno-character-truncation -Wno-conversion -Wtabs -fPIC"
+FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -Wno=101 \
+      -fno-second-underscore -fPIC"
 
 # Check whether --enable-g95 was given.
 if test "${enable_g95+set}" = set; then
