@@ -49,6 +49,8 @@ serial_handshake=StringVar()
 cat_enable=IntVar()
 idint=IntVar()
 rignum=IntVar()
+inbad=IntVar()
+outbad=IntVar()
 
 pttmode.set('DTR')
 serial_handshake.set('NONE')

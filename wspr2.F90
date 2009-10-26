@@ -98,13 +98,13 @@ subroutine wspr2
      close(13)
      ntr=-1
      nsectx=mod(nsec,86400)
-     call starttx
+     if(ndevsok.eq.1) call starttx
 
   else
      receiving=.true.
      rxtime=utctime(1:4)
      ntr=1
-     call startrx
+     if(ndevsok.eq.1) call startrx
      nrx=nrx-1
   endif
   go to 20

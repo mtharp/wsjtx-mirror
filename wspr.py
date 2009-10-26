@@ -76,6 +76,8 @@ mrudir=os.getcwd()
 ndbm0=-999
 ncall=0
 ndebug=IntVar()
+nin0=0
+nout0=0
 newdat=1
 newspec=1
 npal=IntVar()
@@ -648,7 +650,7 @@ def put_params(param3=NONE):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0, \
+    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0
 
@@ -675,7 +677,6 @@ def update():
                  (options.rignum.get(), options.serial_rate.get(), \
                   options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
-#            print ierr
         iband0=iband.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -795,22 +796,31 @@ def update():
         options.lrignum._entryFieldEntry['state']=DISABLED
         options.cbbaud._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
+    if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
+        audio_config()
+        nin0=g.ndevin.get()
+        nout0=g.ndevout.get()
+    if options.inbad.get()==0:
+        msg2.configure(text='',bg='gray85')
+    else:
+        msg2.configure(text='Invalid audio input device?',bg='red')
+    if options.outbad.get()==0:
+        msg3.configure(text='',bg='gray85')
+    else:
+        msg3.configure(text='Invalid audio output device?',bg='red')
 
     ldate.after(200,update)
     
 #------------------------------------------------------ audio_config
 def audio_config():
     inbad,outbad=w.audiodev(g.ndevin.get(),g.ndevout.get())
-    
+    options.inbad.set(inbad)
+    options.outbad.set(outbad)
     if inbad or outbad:
-        print 'A',inbad,outbad
-        g.inbad=inbad
-        g.outbad=outbad
         options1()
-        
-    w.wspr1()
-    ldate.after(100,update)
-
+        w.acom1.ndevsok=0
+    else:
+        w.acom1.ndevsok=1
 
 #------------------------------------------------------ Top level frame
 frame = Frame(root)
@@ -1018,10 +1028,10 @@ iframe4.pack(expand=1, fill=X, padx=4)
 iframe6 = Frame(frame, bd=1, relief=SUNKEN)
 msg1=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 msg1.pack(side=LEFT, fill=X, padx=1)
-##msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-##msg2.pack(side=LEFT, fill=X, padx=1)
-##msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
-##msg3.pack(side=LEFT, fill=X, padx=1)
+msg2=Message(iframe6, text='      ', width=300,relief=SUNKEN)
+msg2.pack(side=LEFT, fill=X, padx=1)
+msg3=Message(iframe6, text='      ',width=300,relief=SUNKEN)
+msg3.pack(side=LEFT, fill=X, padx=1)
 ##msg4=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg4.pack(side=LEFT, fill=X, padx=1)
 ##msg5=Message(iframe6, text='      ', width=300,relief=SUNKEN)
@@ -1170,7 +1180,10 @@ except:
     pass
 
 graph1.focus_set()
-root_geom=root.geometry()
+w.acom1.ndevsok=0
+w.wspr1()
+ldate.after(100,update)
+
 ldate.after(100,audio_config)
 
 root.mainloop()
