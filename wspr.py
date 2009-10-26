@@ -820,6 +820,27 @@ def audio_config():
     else:
         w.acom1.ndevsok=1
 
+#------------------------------------------------------ audio_devices
+def audio_devices(event=NONE):
+    audev=Toplevel(root)
+    audev.geometry(msgpos())
+    if g.Win32: audev.iconbitmap("wsjt.ico")
+    f=open(appdir+'/audio_caps','r')
+    s=f.readlines()
+    t="Input Devices:\n"
+    for i in range(len(s)):
+        col=s[i].split()
+        if int(col[1])>0:
+            t=t + str(i) + s[i][28:]
+    t=t+"\nOutput Devices:\n"
+    for i in range(len(s)):
+        col=s[i].split()
+        if int(col[1])>0:
+            t=t + str(i) + s[i][28:]
+    Label(audev,text=t,justify=LEFT).pack(padx=20)
+    audev.focus_set()
+
+
 #------------------------------------------------------ Top level frame
 frame = Frame(root)
 
@@ -914,11 +935,14 @@ helpbutton.pack(side = LEFT)
 helpmenu = Menu(helpbutton, tearoff=0)
 helpbutton['menu'] = helpmenu
 helpmenu.add('command', label = 'Help', command = help, accelerator='F1')
+helpmenu.add('command', label = 'Available audio devices', \
+             command = audio_devices, accelerator='F3')
 helpmenu.add('command', label = 'About WSPR', command = about)
 
 root.bind_all('<Escape>', stop_loopall)
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
+root.bind_all('<F3>', audio_devices)
 root.bind_all('<Alt-F4>', quit)
 root.bind_all('<F6>', opennext)
 root.bind_all('<Shift-F6>', decodeall)
