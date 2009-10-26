@@ -2,13 +2,20 @@
 #include <portaudio.h>
 #include <string.h>
 
-int padevsub_(int *numdev, int *ndefin, int *ndefout, 
-	      int nchin[], int nchout[])
+#define NUM_CHANNELS    (1)
+#define PA_SAMPLE_TYPE  paInt16
+#define SAMPLE_RATE  (12000)
+
+int padevsub_(int *numdev, int *ndefin, int *ndefout, int nchin[], 
+	      int nchout[], int inerr[], int outerr[])
 {
-  int      i, devIdx;
+  int      i,devIdx;
   int      numDevices;
   const    PaDeviceInfo *pdi;
   PaError  err;
+  PaStreamParameters inputParameters;
+  PaStreamParameters outputParameters;
+  FILE *fp;
 
   Pa_Initialize();
   numDevices = Pa_GetDeviceCount();
@@ -32,18 +39,34 @@ int padevsub_(int *numdev, int *ndefin, int *ndefout,
     *ndefout = 0;
   }
 
-  printf("\nAudio     Input    Output     Device Name\n");
-  printf("Device  Channels  Channels\n");
-  printf("------------------------------------------------------------------\n");
-
+  fp=fopen("audio_caps","w");
   for( i=0; i < numDevices; i++ )  {
     pdi = Pa_GetDeviceInfo(i);
-//    if(i == Pa_GetDefaultInputDevice()) *ndefin = i;
-//    if(i == Pa_GetDefaultOutputDevice()) *ndefout = i;
     nchin[i]=pdi->maxInputChannels;
     nchout[i]=pdi->maxOutputChannels;
-    printf("  %2d       %2d        %2d       %s\n",i,nchin[i],nchout[i],pdi->name);
+    inerr[i]=1;
+    outerr[i]=1;
+    if(nchin[i]>0)  {
+      inputParameters.device = i;
+      inputParameters.channelCount = NUM_CHANNELS;
+      inputParameters.sampleFormat = PA_SAMPLE_TYPE;
+      inputParameters.suggestedLatency = 0.4;
+      inputParameters.hostApiSpecificStreamInfo = NULL;
+      inerr[i] = Pa_IsFormatSupported(&inputParameters,NULL,SAMPLE_RATE);
+    }
+
+    if(nchout[i]>0)  {
+      outputParameters.device = i;
+      outputParameters.channelCount = NUM_CHANNELS;
+      outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
+      outputParameters.suggestedLatency = 0.4;
+      outputParameters.hostApiSpecificStreamInfo = NULL;
+      outerr[i] = Pa_IsFormatSupported(NULL,&outputParameters,SAMPLE_RATE);
+    }
+    fprintf(fp,"%2d  %3d  %3d  %6d  %6d  %s\n",i,nchin[i],nchout[i],inerr[i],
+	   outerr[i],pdi->name);
   }
+  fclose(fp);
   return 0;
 }
 

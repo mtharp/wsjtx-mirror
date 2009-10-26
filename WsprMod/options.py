@@ -3,7 +3,6 @@ from Tkinter import *
 import Pmw
 import g
 import math
-##import pyaudio
 
 def done():
     root.withdraw()
@@ -15,7 +14,6 @@ if g.Win32: root.iconbitmap("wsjt.ico")
 root.title("Options")
 
 balloon=Pmw.Balloon(root)
-##p = pyaudio.PyAudio()
 
 #------------------------------------------------------ dbm_balloon
 def dbm_balloon():

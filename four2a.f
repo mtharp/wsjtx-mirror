@@ -28,7 +28,7 @@ C     The transform will be real and returned to the input array.
       common/patience/npatience
       save plan,nplan,nn,ns,nf,nl
 
-      if(nfft.lt.0) go to 999
+      if(nfft.lt.0 .or. ndim.lt.0) go to 999
 
       nloc=loc(a)
       do i=1,nplan

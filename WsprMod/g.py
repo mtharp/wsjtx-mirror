@@ -7,6 +7,8 @@ rms=1.0
 mode_change=0
 showspecjt=0
 g2font='courier 16 bold'
+inbad=0
+outbad=0
 
 #------------------------------------------------------ ftnstr
 def ftnstr(x):

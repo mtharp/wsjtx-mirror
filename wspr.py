@@ -108,6 +108,7 @@ slabel="MinSync  "
 transmitting=0
 tw=[]
 upload=IntVar()
+balloon=Pmw.Balloon(root)
 
 g.appdir=appdir
 g.cmap="Linrad"
@@ -182,6 +183,7 @@ def stop_loopall(event=NONE):
 #------------------------------------------------------ opennext
 def opennext(event=NONE):
     global ncall,fileopened,loopall,mrudir,tw
+    upload.set(0)
     if fileopened=="" and ncall==0:
         openfile()
         ncall=1
@@ -793,8 +795,23 @@ def update():
         options.lrignum._entryFieldEntry['state']=DISABLED
         options.cbbaud._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
+
     ldate.after(200,update)
     
+#------------------------------------------------------ audio_config
+def audio_config():
+    inbad,outbad=w.audiodev(g.ndevin.get(),g.ndevout.get())
+    
+    if inbad or outbad:
+        print 'A',inbad,outbad
+        g.inbad=inbad
+        g.outbad=outbad
+        options1()
+        
+    w.wspr1()
+    ldate.after(100,update)
+
+
 #------------------------------------------------------ Top level frame
 frame = Frame(root)
 
@@ -929,6 +946,8 @@ sc1.pack(side=LEFT)
 sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
+balloon.bind(sc1,"Brightness", "Brightness")
+balloon.bind(sc2,"Contrast", "Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 bupload.place(x=340,y=12, anchor='e')
 bidle=Checkbutton(iframe2,text='Idle',justify=RIGHT,variable=idle)
@@ -1150,9 +1169,9 @@ try:
 except:
     pass
 
-w.wspr1()
 graph1.focus_set()
-ldate.after(100,update)
+root_geom=root.geometry()
+ldate.after(100,audio_config)
 
 root.mainloop()
 

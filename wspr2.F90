@@ -9,12 +9,11 @@ subroutine wspr2
 !  13  ALL_MEPT.TXT
 !  14  decoded.txt
 !  16  pixmap.dat
-!  17  fftw_wisdom.dat
+!  17  audio_caps
 
   character*17 message
   real*8 tsec
   logical idle,receiving,transmitting,decoding
-  integer nchin(0:20),nchout(0:20)
   include 'acom1.f90'
   common/patience/npatience
   data idle/.true./,receiving/.false./,transmitting/.false./
@@ -31,24 +30,6 @@ subroutine wspr2
   rewind 14
 
   npatience=1
-  idevin=ndevin
-  idevout=ndevout
-
-  call padevsub(numdevs,ndefin,ndefout,nchin,nchout)
-  write(*,1003) idevin,idevout
-1003 format(/'User requested devices:  Input =',i2,'   Output =',i2)
-  write(*,1004) ndefin,ndefout
-1004 format( 'Default devices:         Input =',i2,'   Output =',i2)
-  if(idevin.lt.0 .or. idevin.ge.numdevs) idevin=ndefin
-  if(idevout.lt.0 .or. idevout.ge.numdevs) idevout=ndefout
-  if(idevin.eq.0 .and. idevout.eq.0) then
-     idevin=ndefin
-     idevout=ndefout
-  endif
-  write(*,1005) idevin,idevout
-1005 format( 'Will open devices:       Input =',i2,'   Output =',i2)
-  write(*,1006)
-1006 format(66('*'))
   call random_seed
   nrx=1
 
