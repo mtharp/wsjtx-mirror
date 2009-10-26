@@ -55,7 +55,6 @@ int soundin_(int *idevin, short recordedSamples[],int *nframes0)
     int numBytes;
     
     totalFrames=*nframes0;
-    //    printf("A %d\n",totalFrames);
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(SAMPLE);
     for( i=0; i<numSamples; i++ ) 
@@ -67,7 +66,6 @@ int soundin_(int *idevin, short recordedSamples[],int *nframes0)
     inputParameters.suggestedLatency = 0.4;
     inputParameters.hostApiSpecificStreamInfo = NULL;
 
-    //    printf("Opening input stream\n");
     err = Pa_OpenStream(
               &stream,
               &inputParameters,
@@ -79,15 +77,12 @@ int soundin_(int *idevin, short recordedSamples[],int *nframes0)
               NULL ); /* no callback, so no callback userData */
     if( err != paNoError ) goto error;
 
-    //    printf("Starting input stream\n");
     err = Pa_StartStream( stream );
     if( err != paNoError ) goto error;
 
-    //    printf("Reading from input stream\n");
     err = Pa_ReadStream( stream, recordedSamples, totalFrames );
     if( err != paNoError ) goto error;
     
-    //    printf("Closing input stream\n");
     err = Pa_CloseStream( stream );
     if( err != paNoError ) goto error;
     return 0;
@@ -127,7 +122,6 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0)
     outputParameters.suggestedLatency = 0.4;
     outputParameters.hostApiSpecificStreamInfo = NULL;
 
-    //    printf("Opening output stream\n");
     err = Pa_OpenStream(
               &stream,
               NULL, /* no input */
@@ -141,19 +135,15 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0)
 
     if( stream )
     {
-      //      printf("Starting output stream\n");
         err = Pa_StartStream( stream );
         if( err != paNoError ) goto error;
 
-	//	printf("Writing to output stream\n");
         err = Pa_WriteStream( stream, recordedSamples, totalFrames );
         if( err != paNoError ) goto error;
 
-	//	printf("Closing  output stream\n");
         err = Pa_CloseStream( stream );
         if( err != paNoError ) goto error;
     }
-    //    printf("Done.\n");
     return 0;
 
 error:

@@ -13,7 +13,7 @@ subroutine rx
 
   npts=114*12000
   nsec1=time()
-  ierr=soundin(idevin,iwave,npts)
+  ierr=soundin(ndevin,iwave,npts)
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
      stop

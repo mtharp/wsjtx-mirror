@@ -81,7 +81,7 @@ subroutine tx
   endif
 
   sending=msg2
-  ierr=soundout(idevout,jwave,npts)
+  ierr=soundout(ndevout,jwave,npts)
   if(ierr.ne.0) then
      print*,'Error in soundout',ierr
      stop
