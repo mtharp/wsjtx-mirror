@@ -60,8 +60,10 @@ subroutine tx
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
   ctxmsg=message
   snr=99.0
-  if(ntest.eq.1) snr=-26.0
-  call genmept(message,ntxdf,snr,msg2,jwave)
+  open(18,file='test.snr',status='old',err=10)
+  read(18,*,err=10,end=10) snr
+  close(18)
+10 call genwspr(message,ntxdf,snr,msg2,jwave)
 
   npts=114*12000
   if(nsec.lt.ns0) ns0=nsec

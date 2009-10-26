@@ -10,6 +10,7 @@ subroutine wspr2
 !  14  decoded.txt
 !  16  pixmap.dat
 !  17  audio_caps
+!  18  test.snr
 
   character*17 message
   real*8 tsec
