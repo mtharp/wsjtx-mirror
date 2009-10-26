@@ -24,7 +24,7 @@ F2PYONLY = wspr1 getfile paterminate ftn_quit audiodev
 
 SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	startdec.f90 startrx.f90 starttx.f90 tx.f90 getfile.f90 \
-	paterminate.f90 wqencode.f90 chklevel.F90 \
+	paterminate.f90 wqencode.f90 chklevel.F90 genwspr.f90 \
 	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 \
 	unpackname.f90 unpacktext2.f90 audiodev.f90 \
 	packpfx.f90 packprop.f90 unpackpfx.f90 unpackprop.f90 
@@ -34,7 +34,7 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2.f flat3.f sort.f deg2grid.f \
-	ssort.f genmept.f packcall.f packgrid.f pack50.f \
+	ssort.f packcall.f packgrid.f pack50.f \
 	encode232.f nchar.f grid2deg.f gencwid.f morse.f \
 	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
 
