@@ -884,7 +884,7 @@ setupmenu.add_checkbutton(label = 'Tx 6-digit locator',variable=igrid6)
 #--------------------------------------------------------- View menu
 setupbutton = Menubutton(mbar, text = 'View', )
 setupbutton.pack(side = LEFT)
-setupmenu = Menu(setupbutton, tearoff=1)
+setupmenu = Menu(setupbutton, tearoff=0)
 setupbutton['menu'] = setupmenu
 setupmenu.palettes=Menu(setupmenu,tearoff=0)
 setupmenu.palettes.add_radiobutton(label='Gray0',command=pal_gray0,
@@ -904,7 +904,7 @@ setupmenu.add_cascade(label = 'Palette',menu=setupmenu.palettes)
 #------------------------------------------------------ Save menu
 savebutton = Menubutton(mbar, text = 'Save')
 savebutton.pack(side = LEFT)
-savemenu = Menu(savebutton, tearoff=1)
+savemenu = Menu(savebutton, tearoff=0)
 savebutton['menu'] = savemenu
 savemenu.add_radiobutton(label = 'None', variable=nsave,value=0)
 #savemenu.add_radiobutton(label = 'Save decoded', variable=nsave,value=1)
@@ -914,7 +914,7 @@ nsave.set(0)
 #------------------------------------------------------ Band menu
 bandbutton = Menubutton(mbar, text = 'Band')
 bandbutton.pack(side = LEFT)
-bandmenu = Menu(bandbutton, tearoff=1)
+bandmenu = Menu(bandbutton, tearoff=0)
 bandbutton['menu'] = bandmenu
 iband.set(5)
 bandmenu.add_radiobutton(label = '160 m', variable=iband,value=1)
