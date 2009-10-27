@@ -34,7 +34,6 @@ wspr:	WsprMod/w.so
 %.o: %.F90
 	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
 
-
 OS=@OS@
 FC=@FC@
 FCV=@FCV@
@@ -84,24 +83,29 @@ WsprMod/w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
 	${MKDIR} -p build/lib/WsprMod
 	${MV} w.so WsprMod/w.so
 
-wspr.spec: wspr.py g.py options.py palettes.py 
-	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
-	  wsjt.ico --tk --onefile wspr.py
-
 sound.o: sound.c
 	$(CC) -c sound.c
 wspr_rxtest.o: wspr_rxtest.f90
 	$(FC) -c $(FFLAGS) wspr_rxtest.f90
 
-.PHONY : clean
-install:	WsprMod/w.so
+install: WsprMod/w.so
 	${RM} -rf build/
 	${PYTHON} setup.py install
 	${INSTALL} wspr ${PREFIX}/bin
 
+deb: wspr.py WsprMod/w.so WsprMod/g.py WsprMod/__init__.py \
+	WsprMod/options.py WsprMod/palettes.py WsprMod/PmwBlt.py \
+	WsprMod/PmwColor.py WsprMod/Pmw.py DEB/DEBIAN/control \
+	supported_rigs.txt wsprrc DEB/WSPR/wspr
+	cp wspr.py supported_rigs.txt wsprrc DEB/WSPR
+	cp WsprMod/w.so DEB/WSPR/WsprMod
+	cp WsprMod/*.py DEB/WSPR/WsprMod
+	dpkg-deb --build DEB wspr_ver_rev_i386.deb
+
+.PHONY : clean
 clean:
 	${RM} -f *.o *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
-		WsprMod/*.so wspr_rxtest w.so wspr.spec *~
+		WsprMod/*.so wspr_rxtest w.so *~
 	${RM} -rf build/
 
 distclean:
