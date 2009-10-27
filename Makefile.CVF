@@ -52,17 +52,17 @@ F2PYONLY = wspr1 getfile paterminate
 
 SRCS2F90 = wspr1.F90 wspr2.F90 decode.F90 getutc.f90 gran.f90 rx.F90 \
 	startdec.F90 startrx.F90 starttx.F90 tx.F90 getfile.F90	\
-	paterminate.f90 wqencode.f90 chklevel.F90 \
+	paterminate.f90 wqencode.f90 chklevel.F90 genwspr.f90 \
 	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 unpackname.f90 \
 	unpacktext2.f90 packpfx.f90 packprop.f90 \
 	unpackpfx.f90 unpackprop.f90 
 
-SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f	\
+SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f	gencwid.f morse.f \
 	sync162.f decode162.f spec162.F set.f xfft.f \
 	ps162.f pctile.f xcor162.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2a.f flat3.f sort.f deg2grid.f \
-	ssort.f genmept.f packcall.f packgrid.f pack50.f \
+	ssort.f packcall.f packgrid.f pack50.f \
 	encode232.f nchar.f grid2deg.f fchisq.f ccf2.f \
 	twkfreq.f azdist.f geodist.f
 
