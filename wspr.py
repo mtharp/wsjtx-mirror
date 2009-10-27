@@ -622,12 +622,6 @@ def put_params(param3=NONE):
                 break
         except:
             pass
-    if idle.get()==0:
-        w.acom1.pctx=ipctx.get()
-        bidle.configure(bg='gray85')
-    else:
-        w.acom1.pctx=-1
-        bidle.configure(bg='yellow')
     w.acom1.idsec=idsec
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
@@ -730,6 +724,12 @@ def update():
         t='Receiving'
         bgcolor='green'
     msg6.configure(text=t,bg=bgcolor)
+    if idle.get()==0:
+        w.acom1.pctx=ipctx.get()
+        bidle.configure(bg='gray85')
+    else:
+        w.acom1.pctx=-1
+        bidle.configure(bg='yellow')
 
 # If new decoded text has appeared, display it.
     if w.acom1.ndecdone:
@@ -1127,6 +1127,7 @@ try:
 
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Upload': upload.set(value)
+        elif key == 'Idle': idle.set(value)
         elif key == 'Debug': ndebug.set(value)
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
@@ -1232,6 +1233,7 @@ f.write("RigNum " + str(options.rignum.get()) + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("PctTx " + str(ipctx.get()) + "\n")
 f.write("Upload " + str(upload.get()) + "\n")
+f.write("Idle " + str(idle.get()) + "\n")
 f.write("Debug " + str(ndebug.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
