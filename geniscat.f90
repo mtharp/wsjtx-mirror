@@ -50,7 +50,6 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 10 if(nbit.eq.2) then
      nspecial=ishft(iu(1),-30)
      sendingsh=1                         !Flag for shorthand message
-! ### go to xxx
   endif
 
 ! Set up necessary constants
@@ -59,11 +58,17 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   dfgen=12000.d0/nsps
   phi=0.d0
   k=0
+  j2=0
   do nrpt=1,9
      do j=1,nsym
+        j2=j2+1
         f=f0
-        if(nspecial.ne.0 .and. mod(j,2).eq.0) then
-           f=f0+21*nspecial*dfgen
+        if(nspecial.ne.0) then
+           if(mod(j2,2).eq.0) then
+              f=f0
+           else
+              f=f0 + 21*nspecial*dfgen
+           endif
         else
            f=f0 + sent(j)*dfgen
         endif
