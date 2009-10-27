@@ -13,7 +13,7 @@ OBJS0 = testmsg.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
 	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
 	grid2deg.obj wqencode.obj wqdecode.obj nhash.obj hash.obj \
 	packname.obj unpackname.obj packtext2.obj unpacktext2.obj \
-	genmept.obj wfile5.obj encode232.obj inter_mept.obj \
+	genwspr.obj wfile5.obj encode232.obj inter_mept.obj \
 	gran.obj packprop.obj unpackprop.obj packpfx.obj \
 	unpackpfx.obj
 
@@ -38,7 +38,7 @@ OBJS2 = rxtest.obj decode162.obj spec162.obj set.obj xfft.obj \
 	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
 	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj gran.obj \
-	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj \
+	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj audiodev.f90 \
 	afc2.obj packcall.obj packgrid.obj pack50.obj encode232.obj \
 	nhash.obj hash.obj unpackname.obj unpacktext2.obj deg2grid.obj \
 	unpackpfx.obj unpackprop.obj
@@ -48,7 +48,7 @@ rxtest.exe: $(OBJS2)
 
 OBJS2C = sound.o gmtime2.o nhash.o
 
-F2PYONLY = wspr1 getfile paterminate
+F2PYONLY = wspr1 getfile paterminate audiodev
 
 SRCS2F90 = wspr1.F90 wspr2.F90 decode.F90 getutc.f90 gran.f90 rx.F90 \
 	startdec.F90 startrx.F90 starttx.F90 tx.F90 getfile.F90	\

@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -276,17 +276,18 @@ def help(event=NONE):
 1. Open the Setup | Options screen and enter your callsign,
    grid locator, and Tx power in dBm.  If you will not use
    the computer's default sound card, enter suitable
-   device numbers for Audio In and Audio Out (see console
-   window for a list of available devices).
+   device numbers for Audio In and Audio Out (hit F3 for a
+   list of available devices).
 
-2. Select a serial port for PTT control via DTR/RTS or for
-   CAT-style rig control including T/R switching and
-   frequency setting.  For rig control check 'Enable CAT'
-   and enter suitable parameters.
+2. Select a serial port for PTT control via DTR/RTS, or for
+   rig control including T/R switching and setting of
+   frequency and power level.  For rig control check
+   'Enable CAT' and enter suitable parameters.
 
-3. Select the desired band from the Band menu and optionally
-   enter your USB dial frequency on the main screen.  Select
-   a Tx frequency by double-clicking on the waterfall display.
+3. Select the desired band from the Band menu and if
+   necessary correct your USB dial frequency on the main
+   screen.  Select a Tx frequency by double-clicking
+   somewhere on the waterfall display.
 
 4. Select a desired 'Tx fraction' using the large slider. Zero
    percent means Rx only; 100% means Tx only.
@@ -801,11 +802,11 @@ def update():
     if options.inbad.get()==0:
         msg2.configure(text='',bg='gray85')
     else:
-        msg2.configure(text='Invalid audio input device?',bg='red')
+        msg2.configure(text='Invalid audio input device? F3 for help.',bg='red')
     if options.outbad.get()==0:
         msg3.configure(text='',bg='gray85')
     else:
-        msg3.configure(text='Invalid audio output device?',bg='red')
+        msg3.configure(text='Invalid audio output device? F3 for help.',bg='red')
 
     ldate.after(200,update)
     
@@ -835,7 +836,7 @@ def audio_devices(event=NONE):
     t=t+"\nOutput Devices:\n"
     for i in range(len(s)):
         col=s[i].split()
-        if int(col[1])>0:
+        if int(col[2])>0:
             t=t + str(i) + s[i][28:]
     Label(audev,text=t,justify=LEFT).pack(padx=20)
     audev.focus_set()
@@ -937,12 +938,13 @@ helpbutton['menu'] = helpmenu
 helpmenu.add('command', label = 'Help', command = help, accelerator='F1')
 helpmenu.add('command', label = 'Available audio devices', \
              command = audio_devices, accelerator='F3')
-helpmenu.add('command', label = 'About WSPR', command = about)
+helpmenu.add('command', label = 'About WSPR', command = about, accelerator='F4')
 
 root.bind_all('<Escape>', stop_loopall)
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
 root.bind_all('<F3>', audio_devices)
+root.bind_all('<F4>', about)
 root.bind_all('<Alt-F4>', quit)
 root.bind_all('<F6>', opennext)
 root.bind_all('<Shift-F6>', decodeall)
