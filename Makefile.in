@@ -81,7 +81,7 @@ SRCS2F77 = astro.f azdist.f coord.f dcoord.f deg2grid.f \
         nchar.f packcall.f packgrid.f packtext.f unpackcall.f \
         unpackgrid.f unpacktext.f xfft.f \
 	fil651.f fil652.f fil653.f \
-	rfile2.f filbig2.F 
+	rfile2.f 
 
 OBJS2F77 = ${SRCS2F77:.f=.o} 
 

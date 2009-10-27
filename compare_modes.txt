@@ -74,23 +74,22 @@ with no further encoding.  Modulation is continuous-phase 44-FSK at
 "alphabet" of 43 characters, or else a synchronizing tone; the sync
 tone is sent in every 3rd symbol interval. The character transmission
 rate is 14.4 cps, and no start-of-message synchronization is provided.
-Messages can be decoded at signal levels as low as S/N = -10 dB in a
-2500 Hz reference noise bandwidth.
+Messages can sometimes be decoded at signal levels as low as S/N = -10
+dB in a 2500 Hz reference noise bandwidth.
 
 ISCAT has similar design goals to JT6M, but achieves them much more
 effectively.  As in JTMS, messages are source-encoded to 30, 48, or 78
-bits.  FEC redundancy is added using the Reed Solomon codes (63,5),
-(63,8), and (63,13), with 6-bit symbols.  Synchronizing information is
-appended as a sequence of eight tones forming an 8x8 "Costas array".
-Different Costas arrays are used to denote 30-bit, 48-bit, and 78-bit
-messages.  Modulation is 64-FSK keyed at 23.4 baud, so the total
-bandwidth is 64*23.4 = 1500 Hz.  Messages are repeated 9 times in a
-27.3 s transmission.  Under conditions of additive white gaussian
-noise (AWGN) and Rayleigh fading, ISCAT signals are decodable on
-signal enhancements lasting a few seconds at S/N = -15 to -18 dB, and
-with signals that may average as little as -20 dB or below.  Decoding
-is much more reliable than with JT6M, and false-decode garbage is much
-less.
+bits.  FEC redundancy is added using one of the Reed Solomon codes
+(63,5), (63,8), or (63,13), with 6-bit symbols.  Synchronizing
+information is appended as a sequence of eight tones forming an 8x8
+"Costas array".  Different Costas arrays are used to denote 30-bit,
+48-bit, and 78-bit messages.  Modulation is 64-FSK keyed at 23.4 baud,
+so the total bandwidth is 64*23.4 = 1500 Hz.  Messages are repeated 9
+times in a 27.3 s transmission.  Under conditions of additive white
+gaussian noise (AWGN) and Rayleigh fading, ISCAT signals are decodable
+on signal enhancements lasting a few seconds at S/N = -15 to -18 dB,
+and with signals that average as little as -20 dB.  Decoding is much
+more reliable than with JT6M, and false-decode garbage is much less.
 
 
 EME on VHF and UHF bands
@@ -113,13 +112,12 @@ these can be copied down to -30 dB and below.
 
 JT64 builds on the best features of JT65 and adds further enhancements
 for better performance.  In place of 72-bit messages it offers 30, 48,
-and 78-bit messages, as well as shorthands like those in JT655.
-Arbitrary add-on prefixes are allowed, rather than prefixes selected
-from a restricted list.  Plain text messages may be up to 14 (rather
-than 13) characters.  Synchronization in time and frequency is
-achieved by including four 6x6 Costas arrays in the transmitted
-waveform, as opposed to a single sync tone.  Only 28% of transmitted
-energy is devoted to synchronization, compared with 50% in JT65 -- yet
-sync and AFC performance are both slightly better than in JT65.  The
-78-bit messages can be copied down to about -26 dB, and 30-bit
-messages down to -29 dB.
+and 78-bit messages, as well as shorthands like those in JT655.  A new
+message structure allows arbitrary add-on prefixes rather than
+prefixes selected from a restricted list.  Plain text messages may be
+up to 14 characters.  Synchronization in time and frequency is
+achieved by means of four 6x6 "Costas array" patterns, as opposed to a
+single sync tone.  Only 28% of transmitted energy is devoted to
+synchronization, compared with 50% in JT65 -- yet sync and AFC
+performance are both better than in JT65.  The 78-bit messages can be
+copied down to about -26 dB, and 30-bit messages down to -29 dB.
