@@ -66,7 +66,7 @@ lcall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Call:',
         value='Dummy',entry_textvariable=MyCall,entry_width=8)
 lgrid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Grid:',
         value='AB99',entry_textvariable=MyGrid,entry_width=5)
-cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='ID int (min):',
+cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
         value='0',entry_textvariable=idint,entry_width=5)
 comport=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Serial Port:',
         value='0',entry_textvariable=SerialPort,entry_width=12)
