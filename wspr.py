@@ -224,7 +224,8 @@ def decodeall(event=NONE):
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
-    options.options2(root_geom[root_geom.index("+"):])
+#    options.options2(root_geom[root_geom.index("+"):])
+    options.options2("")
 
 #------------------------------------------------------ stub
 def stub(event=NONE):
@@ -337,6 +338,7 @@ def erase(event=NONE):
 
 #------------------------------------------------------ tune
 def tune(event=NONE):
+    w.acom1.ntune=1
     btune.configure(bg='green')
 
 #----------------------------------------------------- df_readout
@@ -649,7 +651,8 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0
+        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0, \
+        bandmap,bm
 
     tsec=time.time() + 0.1*idsec
     utc=time.gmtime(tsec)
@@ -674,6 +677,11 @@ def update():
                  (options.rignum.get(), options.serial_rate.get(), \
                   options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
+        bandmap=[]
+        bm={}
+        text1.configure(state=NORMAL)
+        text1.delete('1.0',END)
+        text1.configure(state=DISABLED)
         iband0=iband.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -728,12 +736,20 @@ def update():
         t='Receiving'
         bgcolor='green'
     msg6.configure(text=t,bg=bgcolor)
+    if w.acom1.ntune==0:
+        btune.configure(bg='gray85')
+    w.acom1.pctx=ipctx.get()
+    w.acom1.idle=idle.get()
     if idle.get()==0:
-        w.acom1.pctx=ipctx.get()
         bidle.configure(bg='gray85')
+        btune.configure(state=DISABLED)
     else:
-        w.acom1.pctx=-1
         bidle.configure(bg='yellow')
+        btune.configure(state=NORMAL)
+    if upload.get()==1:
+        bupload.configure(bg='gray85')
+    else:
+        bupload.configure(bg='yellow')
 
 # If new decoded text has appeared, display it.
     if w.acom1.ndecdone:
@@ -820,8 +836,8 @@ def audio_config():
     options.inbad.set(inbad)
     options.outbad.set(outbad)
     if inbad or outbad:
-        options1()
         w.acom1.ndevsok=0
+        options1()
     else:
         w.acom1.ndevsok=1
 
@@ -965,8 +981,7 @@ graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
-#text1=Text(iframe1, height=10, width=12, bg="Navy", fg="yellow")
-text1=Text(iframe1, height=10, width=12, bg='RoyalBlue2', fg="yellow")
+text1=Text(iframe1, height=10, width=12, bg='Navy', fg="yellow")
 text1.pack(side=LEFT, padx=1)
 text1.tag_configure('age0',foreground='red')
 text1.tag_configure('age1',foreground='yellow')
@@ -1000,10 +1015,10 @@ iframe2.pack(expand=1, fill=X, padx=4)
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
-        value=10.1387,entry_textvariable=sf0,entry_width=12)
+        value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
 laberr=Label(g1.interior(), bg='gray85', fg='gray85', text='*')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx:',
-        entry_textvariable=sftx,entry_width=12)
+        value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
 widgets = (lf0,laberr,lftx)
 for widget in widgets:
     widget.pack(side=LEFT,padx=5,pady=2)

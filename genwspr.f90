@@ -80,20 +80,22 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
               dphi=twopi*dt*f
            endif
            sig=0.9999
-        endif
-        phi=phi+dphi
-        if(snrdb.gt.50.0) then
-           n=32767.0*sin(phi)           !Normal transmission, signal only
-        else
-           if(isig.eq.1) then
-              n=fac*(gran(idum) + sig*snr*sin(phi))
+           phi=phi+dphi
+           if(snrdb.gt.50.0) then
+              n=32767.0*sin(phi)           !Normal transmission, signal only
            else
-              n=iwave(i) + fac*sig*snr*sin(phi)
+              if(isig.eq.1) then
+                 n=fac*(gran(idum) + sig*snr*sin(phi))
+              else
+                 n=iwave(i) + fac*sig*snr*sin(phi)
+              endif
+              if(n.gt.32767) n=32767
+              if(n.lt.-32767) n=-32767
            endif
-           if(n.gt.32767) n=32767
-           if(n.lt.-32767) n=-32767
+           iwave(i)=n
+        else
+           iwave(i)=0
         endif
-        iwave(i)=n
      enddo
   enddo
 

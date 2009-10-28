@@ -12,12 +12,12 @@ subroutine wspr2
 !  17  audio_caps
 !  18  test.snr
 
-  character*17 message
+  character message*24,cdbm*4
   real*8 tsec
-  logical idle,receiving,transmitting,decoding
+  logical receiving,transmitting,decoding
   include 'acom1.f90'
   common/patience/npatience
-  data idle/.true./,receiving/.false./,transmitting/.false./
+  data receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
 
 #ifdef CVF
@@ -57,17 +57,23 @@ subroutine wspr2
      ntxdone=0
   endif
 
-  idle=.false.
-  if(pctx.lt.0.0) idle=.true.
-
-  if(ns120.ge.114) then
+  if(ns120.ge.114 .and. ntune.eq.0) then
      transmitting=.false.
      receiving=.false.
      ntr=0
   endif
 
+  if(pctx.lt.1.0) ntune=0
+  if (ntune.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
+       (.not.receiving) .and. pctx.ge.1.0) then
+! Test transmission of length pctx seconds.
+     nsectx=mod(nsec,86400)
+     transmitting=.true.
+     call starttx
+  endif
+
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
-       (.not.idle)) go to 30
+       (idle.eq.0)) go to 30
 
   call chklevel
   call msleep(200)
@@ -79,23 +85,19 @@ subroutine wspr2
      transmitting=.true.
      call random_number(x)
      nrx=nint(rxavg + rr*(x-0.5))
-     write(message(13:16),'(i4)') ndbm
-     message(1:12)='"'//callsign//' '//grid
-     message(17:17)='"'
-     do i=1,4
-        i1=index(message,'  ')
-        message=message(:i1)//message(i1+2:)
-     enddo
+     write(cdbm,'(i4)') ndbm
+     message=callsign//grid//cdbm
+     call msgtrim(message,msglen)
 
 #ifdef CVF
-     open(13,file='ALL_MEPT.TXT',status='unknown',                   &
+     open(13,file='ALL_WSPR.TXT',status='unknown',                   &
           position='append',share='denynone')
 #else
-     open(13,file='ALL_MEPT.TXT',status='unknown',position='append')
+     open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
 #endif
 
      write(13,1030) cdate(3:8),utctime(1:4),ftx,message
-1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a17)
+1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a24)
      close(13)
      ntr=-1
      nsectx=mod(nsec,86400)

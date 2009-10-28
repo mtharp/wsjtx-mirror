@@ -68,7 +68,8 @@ C  Look for sync patterns, get DF and DT
                endif
                call decode162(c4,45000,message,ncycles,metric,nerr)
                if(message(1:6).ne.'      ' .and. 
-     +            message(1:6).ne.'000AAA') go to 23
+     +            message(1:6).ne.'000AAA' .and.
+     +            index(message,'A000AA').le.0) go to 23
             enddo
             go to 24
 
@@ -79,10 +80,10 @@ C  Look for sync patterns, get DF and DT
             nf1=nint(-a(2))
 
 #ifdef CVF
-            open(13,file='ALL_MEPT.TXT',status='unknown',
+            open(13,file='ALL_WSPR.TXT',status='unknown',
      +                position='append',share='denynone')
 #else
-            open(13,file='ALL_MEPT.TXT',status='unknown',
+            open(13,file='ALL_WSPR.TXT',status='unknown',
      +                position='append')
 #endif
             write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,

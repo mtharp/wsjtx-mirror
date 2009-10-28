@@ -52,14 +52,10 @@ subroutine wqdecode(data0,message,ntype)
         dcall(ih)=callsign(:i2)
      endif
   else if(ntype.lt.0) then
-     nu=mod(-(ntype+1),10)
-     nadd=nu
-     if(nu.gt.3) nadd=nu-3
-     if(nu.gt.7) nadd=nu-7
+     ndbm=-(ntype+1)
      grid6=callsign(6:6)//callsign(1:5)
      ih=(n2-ntype-64)/128
      callsign=dcall(ih)
-     ndbm=-(ntype+1)-nadd
      write(cdbm,'(i3)'),ndbm
      if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
      if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)

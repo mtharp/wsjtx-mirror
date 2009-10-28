@@ -12,6 +12,6 @@
        nrxdone,ndbm,nport,ndec,ndecdone,ntxdone,nreceiving,idint,       &
        ntransmitting,ndiskdat,ndecoding,ntr,ndebug,idevin,idevout,      &
        idsec,nsectx,nbfo,ntxfirst,ntest,ncat,ltest,iwave(NMAX),         &
-       ndevsok,nsec1,nsec2,rms1,xdb1,infile,outfile,pttport,            &
+       idle,ntune,ndevsok,nsec1,nsec2,rms1,xdb1,infile,outfile,pttport, &
        cdate,utctime,callsign,grid,grid6,rxtime,ctxmsg,sending,         &
        thisfile,cmd,pttmode
