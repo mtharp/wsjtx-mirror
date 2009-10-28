@@ -382,12 +382,6 @@ def draw_axis():
     if abs(iy)<=100:
         j=80 - iy/df
         c.create_line(0,j,13,j,fill='red',width=3)
-        bg='gray85'
-        fg='gray85'
-    else:
-        bg='red'
-        fg='black'
-    laberr.configure(bg=bg,fg=fg)
 
 #------------------------------------------------------ del_all
 def del_all():
@@ -795,6 +789,10 @@ def update():
         pass
     if fmid!=fmid0 or ftx.get()!=ftx0:
         draw_axis()
+        lftx.configure(validate={'validator':'real',
+            'min':f0.get()+0.001500-0.000100,'minstrict':1,
+            'max':f0.get()+0.001500+0.000100,'maxstrict':1})
+        
     fmid0=fmid
     ftx0=ftx.get()
     w.acom1.ndebug=ndebug.get()
@@ -1016,10 +1014,9 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
-laberr=Label(g1.interior(), bg='gray85', fg='gray85', text='*')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx:',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
-widgets = (lf0,laberr,lftx)
+widgets = (lf0,lftx)
 for widget in widgets:
     widget.pack(side=LEFT,padx=5,pady=2)
 g1.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
