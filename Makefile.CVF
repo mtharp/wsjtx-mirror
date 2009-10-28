@@ -38,7 +38,7 @@ OBJS2 = rxtest.obj decode162.obj spec162.obj set.obj xfft.obj \
 	inter_mept.obj fano232.obj unpack50.obj unpackcall.obj \
 	unpackgrid.obj four2.obj flat3.obj sort.obj ssort.obj \
 	nchar.obj grid2deg.obj gmtime2.obj wfile5.obj gran.obj \
-	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj audiodev.f90 \
+	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj \
 	afc2.obj packcall.obj packgrid.obj pack50.obj encode232.obj \
 	nhash.obj hash.obj unpackname.obj unpacktext2.obj deg2grid.obj \
 	unpackpfx.obj unpackprop.obj
@@ -54,8 +54,8 @@ SRCS2F90 = wspr1.F90 wspr2.F90 decode.F90 getutc.f90 gran.f90 rx.F90 \
 	startdec.F90 startrx.F90 starttx.F90 tx.F90 getfile.F90	\
 	paterminate.f90 wqencode.f90 chklevel.F90 genwspr.f90 \
 	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 unpackname.f90 \
-	unpacktext2.f90 packpfx.f90 packprop.f90 \
-	unpackpfx.f90 unpackprop.f90 
+	unpacktext2.f90 packpfx.f90 packprop.f90 audiodev.f90 \
+	unpackpfx.f90 unpackprop.f90 msgtrim.f90
 
 SRCS2F77 = mept162.F getrms.f wfile5.F mix162.f	gencwid.f morse.f \
 	sync162.f decode162.f spec162.F set.f xfft.f \
@@ -115,10 +115,11 @@ spec162.obj: spec162.f
 wfile5.obj: wfile5.f
 	$(FC) /c $(FFLAGS) /DCVF /fpp wfile5.f
 
+pkg: wspr.exe
+	rh
+	giss
+
 .PHONY : clean
 
 clean:
 	-del *.o *.obj wspr.exe WsprMod\w.pyd wspr.spec rxtest.exe testmsg.exe
-
-
-
