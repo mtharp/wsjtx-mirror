@@ -335,6 +335,10 @@ def erase(event=NONE):
     bandmap=[]
     bm={}
 
+#------------------------------------------------------ tune
+def tune(event=NONE):
+    btune.configure(bg='green')
+
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
 def df_readout(event):
@@ -961,7 +965,8 @@ graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
-text1=Text(iframe1, height=10, width=12, bg="Navy", fg="yellow")
+#text1=Text(iframe1, height=10, width=12, bg="Navy", fg="yellow")
+text1=Text(iframe1, height=10, width=12, bg='RoyalBlue2', fg="yellow")
 text1.pack(side=LEFT, padx=1)
 text1.tag_configure('age0',foreground='red')
 text1.tag_configure('age1',foreground='yellow')
@@ -1022,7 +1027,7 @@ iframe4 = Frame(frame, bd=1, relief=SUNKEN)
 f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,padx=1,pady=1)
-berase.pack(side=TOP,padx=0,pady=15)
+berase.pack(side=TOP,padx=0,pady=10)
 
 ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
@@ -1030,9 +1035,12 @@ ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
 ldate.pack(side=TOP,padx=2,pady=5)
 
 ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
-ldsec.pack(side=TOP,ipadx=3,padx=2,pady=10)
+ldsec.pack(side=TOP,ipadx=3,padx=2,pady=5)
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(ldsec,'<Button-3>',decdsec)
+
+btune=Button(f4a, text='Tune',underline=0,command=tune,padx=1,pady=1)
+btune.pack(side=TOP,padx=0,pady=5)
 
 f4a.pack(side=LEFT,expand=0,fill=Y)
 
