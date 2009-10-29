@@ -174,7 +174,7 @@ def openfile(event=NONE):
         if n>12: tw=tw[:n-1]
         tw=[t,] + tw
     os.chdir(appdir)
-    ipctx.set(0)
+    idle.set(1)
 
 #------------------------------------------------------ stop_loopall
 def stop_loopall(event=NONE):
