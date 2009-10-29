@@ -12,8 +12,6 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   integer npr3(162)
   logical first
   real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
-  integer ndxkm(0:23)
-  character*4 dxgrid(0:23)
   character linetx*51,line*75
   common/acom2/linetx
 

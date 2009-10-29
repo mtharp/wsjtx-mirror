@@ -1,6 +1,6 @@
   parameter (NMAX=120*12000)                          !Max length of waveform
   real*8 f0,ftx,fcal
-  logical ltest,nreceiving,ntransmitting
+  logical ltest
   character*80 infile,outfile,pttport,thisfile
   character cdate*8,utctime*10,rxtime*4
   character cmd*60,pttmode*3
