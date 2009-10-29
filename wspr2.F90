@@ -16,6 +16,8 @@ subroutine wspr2
   real*8 tsec
   logical receiving,transmitting,decoding
   include 'acom1.f90'
+  character linetx*51
+  common/acom2/linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
@@ -49,6 +51,7 @@ subroutine wspr2
      nrxdone=0
      decoding=.true.
      thisfile=outfile
+     if(ncal.eq.1) ncal=2
      call startdec
   endif
 
@@ -72,6 +75,14 @@ subroutine wspr2
      call starttx
   endif
 
+  if (ncal.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
+       (.not.receiving)) then
+! Execute one receive sequence
+     receiving=.true.
+     rxtime=utctime(1:4)
+     call startrx
+  endif
+
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
        (idle.eq.0)) go to 30
 
@@ -88,17 +99,8 @@ subroutine wspr2
      write(cdbm,'(i4)') ndbm
      message=callsign//grid//cdbm
      call msgtrim(message,msglen)
-
-#ifdef CVF
-     open(13,file='ALL_WSPR.TXT',status='unknown',                   &
-          position='append',share='denynone')
-#else
-     open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
-#endif
-
-     write(13,1030) cdate(3:8),utctime(1:4),ftx,message
-1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ',a24)
-     close(13)
+     write(linetx,1030) cdate(3:8),utctime(1:4),ftx
+1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ')
      ntr=-1
      nsectx=mod(nsec,86400)
      if(ndevsok.eq.1) call starttx

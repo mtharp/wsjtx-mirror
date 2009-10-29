@@ -6,17 +6,16 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   character*22 message           !Message to be generated
   character*22 msg2
   integer*2 iwave(NMAX)          !Generated wave file
-
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)
   integer*1 data0(11),i1
   integer npr3(162)
   logical first
   real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
-
   integer ndxkm(0:23)
   character*4 dxgrid(0:23)
-  common/acom2/ ndxkm,dxgrid
+  character linetx*51,line*75
+  common/acom2/linetx
 
   equivalence(i1,i4)
   data npr3/                                   &
@@ -49,6 +48,17 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   enddo
 
   call wqdecode(data0,msg2,ntype2)
+
+#ifdef CVF
+  open(13,file='ALL_WSPR.TXT',status='unknown',                   &
+       position='append',share='denynone')
+#else
+  open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
+#endif
+  line=linetx//msg2
+  write(13,1010) line
+1010 format(a75)
+  close(13)
 
 ! Set up necessary constants
   tsymbol=8192.d0/12000.d0

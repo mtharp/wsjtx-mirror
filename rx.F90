@@ -12,6 +12,7 @@ subroutine rx
   include 'acom1.f90'
 
   npts=114*12000
+  if(ncal.eq.1) npts=65536
   nsec1=time()
   ierr=soundin(ndevin,iwave,npts)
   if(ierr.ne.0) then

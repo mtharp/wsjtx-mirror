@@ -26,6 +26,7 @@ subroutine wspr1
 !     THREAD_PRIORITY_TIME_CRITICAL     15
 
   nrxdone=0
+  fcal=1.d0
   m0=SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS)
 ! Start a thread for acquiring audio data
   Thread0=CreateThread(0,0,wspr2,0,CREATE_SUSPENDED,id0)

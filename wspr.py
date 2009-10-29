@@ -338,7 +338,13 @@ def erase(event=NONE):
 def tune(event=NONE):
     idle.set(1)
     w.acom1.ntune=1
-    btune.configure(bg='red')
+    btune.configure(bg='yellow')
+
+#------------------------------------------------------ freqcal
+def freqcal(event=NONE):
+    idle.set(1)
+    w.acom1.ncal=1
+    bcal.configure(bg='green')
 
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
@@ -607,6 +613,8 @@ def put_params(param3=NONE):
 
     # numeric port ==> COM%d, else string of device.  --W1BW
     port = options.SerialPort.get()
+    if port=='None': port='0'
+    if port[:3]=='COM': port=port[3:]
     if port.isdigit():
         w.acom1.nport = int(port)
         port = "COM%d" % (int(port))
@@ -696,8 +704,13 @@ def update():
         if ndb<-30: ndb=-30
         t='Rx Noise: '+str(ndb)+' dB'
         bg='gray85'
-        if ndb<-10 or ndb>10: bg='red'
-        msg1.configure(text=t,bg=bg)
+        r=SUNKEN
+        if w.acom1.receiving:
+            if ndb<-10 or ndb>10: bg='red'
+        else:
+            t=''
+        if t=='': r=FLAT
+        msg1.configure(text=t,bg=bg,relief=r)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -730,20 +743,23 @@ def update():
     msg6.configure(text=t,bg=bgcolor)
     if w.acom1.ntune==0:
         btune.configure(bg='gray85')
+        pctscale.configure(state=NORMAL)
+    else:
+        pctscale.configure(state=DISABLED)
+    if w.acom1.ncal==0:
+        bcal.configure(bg='gray85')
     w.acom1.pctx=ipctx.get()
     w.acom1.idle=idle.get()
-    if w.acom1.ntune:
-        pctscale.configure(state=DISABLED)
-    else:
-        pctscale.configure(state=NORMAL)
     if idle.get()==0:
         bidle.configure(bg='gray85')
     else:
         bidle.configure(bg='yellow')
     if w.acom1.transmitting or w.acom1.receiving:
         btune.configure(state=DISABLED)
+        bcal.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
+        bcal.configure(state=NORMAL)
     if upload.get()==1:
         bupload.configure(bg='gray85')
     else:
@@ -1017,27 +1033,32 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
-lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx:',
+lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
 widgets = (lf0,lftx)
 for widget in widgets:
-    widget.pack(side=LEFT,padx=5,pady=2)
-g1.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
+    widget.pack(side=TOP,padx=5,pady=8)
+g1.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 lab01=Label(iframe2a, text='').pack(side=LEFT,padx=1)
 g2=Pmw.Group(iframe2a,tag_text="Tx fraction (%)")
 #------------------------------------------------------ Tx percentage Select
-pctscale=Scale(g2.interior(),orient=HORIZONTAL,length=250,from_=0, \
+pctscale=Scale(g2.interior(),orient=HORIZONTAL,length=350,from_=0, \
                to=100,tickinterval=10,variable=ipctx)
 pctscale.pack(side=LEFT,padx=4)
 ipctx.set(0)
-g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
+g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 g3=Pmw.Group(iframe2a,tag_text='Special')
 bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle)
 bidle.pack(padx=2)
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,
-             width=9,padx=1,pady=1)
-btune.pack(side=TOP,padx=10,pady=5)
-g3.pack(side=LEFT,fill=BOTH,expand=0,padx=12,pady=6)
+             width=9,padx=1,pady=2)
+btune.pack(side=TOP,padx=10,pady=2)
+balloon.bind(btune,"Tx for number of seconds set by Tx fraction slider")
+bcal=Button(g3.interior(), text='Calibrate',underline=0,command=freqcal,
+             width=9,padx=1,pady=2)
+bcal.pack(side=TOP,padx=10,pady=3)
+balloon.bind(bcal,"Rx for 5 seconds and measure audio frequency")
+g3.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=1)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
