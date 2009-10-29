@@ -338,8 +338,9 @@ def erase(event=NONE):
 
 #------------------------------------------------------ tune
 def tune(event=NONE):
+    idle.set(1)
     w.acom1.ntune=1
-    btune.configure(bg='green')
+    btune.configure(bg='red')
 
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
@@ -385,7 +386,7 @@ def draw_axis():
 
 #------------------------------------------------------ del_all
 def del_all():
-    fname=appdir+'/ALL_MEPT.TXT'
+    fname=appdir+'/ALL_WSPR.TXT'
     try:
         os.remove(fname)
     except:
@@ -734,11 +735,17 @@ def update():
         btune.configure(bg='gray85')
     w.acom1.pctx=ipctx.get()
     w.acom1.idle=idle.get()
+    if w.acom1.ntune:
+        pctscale.configure(state=DISABLED)
+    else:
+        pctscale.configure(state=NORMAL)
     if idle.get()==0:
         bidle.configure(bg='gray85')
-        btune.configure(state=DISABLED)
     else:
         bidle.configure(bg='yellow')
+    if w.acom1.ntransmitting or w.acom1.nreceiving:
+        btune.configure(state=DISABLED)
+    else:
         btune.configure(state=NORMAL)
     if upload.get()==1:
         bupload.configure(bg='gray85')
@@ -882,7 +889,7 @@ filemenu.add_separator()
 filemenu.add('command', label = 'Delete all *.WAV files in Save', \
              command = delwav)
 filemenu.add_separator()
-filemenu.add('command', label = 'Erase ALL_MEPT.TXT', command = del_all)
+filemenu.add('command', label = 'Erase ALL_WSPR.TXT', command = del_all)
 filemenu.add_separator()
 filemenu.add('command', label = 'Exit', command = quit, accelerator='Alt+F4')
 
@@ -1002,14 +1009,12 @@ balloon.bind(sc1,"Brightness", "Brightness")
 balloon.bind(sc2,"Contrast", "Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 bupload.place(x=340,y=12, anchor='e')
-bidle=Checkbutton(iframe2,text='Idle',justify=RIGHT,variable=idle)
-bidle.place(x=420,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 iframe2.pack(expand=1, fill=X, padx=4)
 
-#------------------------------------------------------ Labels under graphics
+#------------------------------------------------------ Stuff under graphics
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
@@ -1024,9 +1029,17 @@ lab01=Label(iframe2a, text='').pack(side=LEFT,padx=1)
 g2=Pmw.Group(iframe2a,tag_text="Tx fraction (%)")
 #------------------------------------------------------ Tx percentage Select
 pctscale=Scale(g2.interior(),orient=HORIZONTAL,length=250,from_=0, \
-               to=100,tickinterval=10,variable=ipctx).pack(side=LEFT,padx=4)
+               to=100,tickinterval=10,variable=ipctx)
+pctscale.pack(side=LEFT,padx=4)
 ipctx.set(0)
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=6,pady=6)
+g3=Pmw.Group(iframe2a,tag_text='Special')
+bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle)
+bidle.pack(padx=2)
+btune=Button(g3.interior(), text='Tune',underline=0,command=tune,
+             width=9,padx=1,pady=1)
+btune.pack(side=TOP,padx=10,pady=5)
+g3.pack(side=LEFT,fill=BOTH,expand=0,padx=12,pady=6)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
@@ -1038,21 +1051,21 @@ iframe2.pack(expand=1, fill=X, padx=4)
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
 f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
-berase=Button(f4a, text='Erase',underline=0,command=erase,padx=1,pady=1)
-berase.pack(side=TOP,padx=0,pady=10)
+berase=Button(f4a, text='Erase',underline=0,command=erase,\
+              width=9,padx=1,pady=1)
+berase.pack(side=TOP,padx=0,pady=20)
 
 ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
         justify=CENTER, font=(font1,14))
-ldate.pack(side=TOP,padx=2,pady=5)
+ldate.pack(side=TOP,padx=2,pady=0)
 
-ldsec=Label(f4a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
-ldsec.pack(side=TOP,ipadx=3,padx=2,pady=5)
+ldsec=Label(f4a,bg='white',fg='black',text='Dsec  0.0',width=9,relief=RIDGE)
+ldsec.pack(side=TOP,ipadx=3,padx=2,pady=20)
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(ldsec,'<Button-3>',decdsec)
 
-btune=Button(f4a, text='Tune',underline=0,command=tune,padx=1,pady=1)
-btune.pack(side=TOP,padx=0,pady=5)
+
 
 f4a.pack(side=LEFT,expand=0,fill=Y)
 

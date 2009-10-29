@@ -84,7 +84,7 @@ subroutine tx
 
   sending=msg2
   if(ntune.eq.1) npts=12000*pctx
-  ierr=soundout(ndevout,jwave,npts)
+  ierr=soundout(ndevout,jwave(24000),npts)
   ntune=0
   if(ierr.ne.0) then
      print*,'Error in soundout',ierr
