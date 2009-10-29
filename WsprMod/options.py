@@ -59,9 +59,40 @@ pttlist=("CAT","DTR","RTS")
 baudlist=(1200,4800,9600,19200,38400,57600)
 hslist=("NONE","XONXOFF","Hardware")
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
+indevlist=[]
+outdevlist=[]
 
 MyCall=StringVar()
 MyGrid=StringVar()
+
+f=open('audio_caps','r')
+s=f.readlines()
+f.close
+t="Input Devices:\n"
+for i in range(len(s)):
+    col=s[i].split()
+    if int(col[1])>0:
+        t=str(i) + s[i][29:]
+        t=t[:len(t)-1]
+        indevlist.append(t)
+for i in range(len(s)):
+    col=s[i].split()
+    if int(col[2])>0:
+        t=str(i) + s[i][29:]
+        t=t[:len(t)-1]
+        outdevlist.append(t)
+
+#------------------------------------------------------ audin
+def audin(event=NONE):
+    g.DevinName.set(DevinName.get())
+    g.ndevin.set(int(DevinName.get()[:2]))
+    
+#------------------------------------------------------ audout
+def audout(event=NONE):
+    g.DevoutName.set(DevoutName.get())
+    g.ndevout.set(int(DevoutName.get()[:2]))
+
+
 lcall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Call:',
         value='Dummy',entry_textvariable=MyCall,entry_width=8)
 lgrid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Grid:',
@@ -72,10 +103,12 @@ comport=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Serial Port:',
         value='0',entry_textvariable=SerialPort,entry_width=12)
 cbptt=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='PTT:',
         entry_textvariable=pttmode,entry_width=4,scrolledlist_items=pttlist)
-audioin=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio In:',
-        value='0',entry_textvariable=DevinName,entry_width=12)
-audioout=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Audio Out:',
-        value='0',entry_textvariable=DevoutName,entry_width=12)
+audioin=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Audio In:',
+        entry_textvariable=DevinName,entry_width=30,
+        scrolledlist_items=indevlist,selectioncommand=audin)
+audioout=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Audio Out:',
+        entry_textvariable=DevoutName,entry_width=30,
+        scrolledlist_items=outdevlist,selectioncommand=audout)
 rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
         value='1500',entry_textvariable=bfofreq,entry_width=12)
 cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (dBm):',
@@ -94,5 +127,4 @@ for widget in widgets:
 Pmw.alignlabels(widgets)
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()
-
 g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)

@@ -275,11 +275,9 @@ def help(event=NONE):
     Label(about,text=t,font=(font1,14)).pack(padx=20,pady=5)
     t="""
 1. Open the Setup | Options screen and enter your callsign,
-   grid locator, and Tx power in dBm.  If you will not use
-   the computer's default sound card, enter suitable
-   device numbers for Audio In and Audio Out (hit F3 for a
-   list of available devices).
-
+   grid locator, and Tx power in dBm.  Select desired
+   devices for Audio In and Audio Out.
+   
 2. Select a serial port for PTT control via DTR/RTS, or for
    rig control including T/R switching and setting of
    frequency and power level.  For rig control check
@@ -629,18 +627,8 @@ def put_params(param3=NONE):
     w.acom1.nbfo=options.bfofreq.get()
     w.acom1.idint=options.idint.get()
     w.acom1.igrid6=igrid6.get()
-    try:
-        g.ndevin.set(options.DevinName.get())
-        w.acom1.ndevin=g.ndevin.get()
-    except:
-        g.ndevin.set(0)
-        w.acom1.ndevin=0
-    try:
-        g.ndevout.set(options.DevoutName.get())
-        w.acom1.ndevout=g.ndevout.get()
-    except:
-        g.ndevout.set(0)
-        w.acom1.ndevout=0
+    w.acom1.ndevin=g.ndevin.get()
+    w.acom1.ndevout=g.ndevout.get()
 
 #------------------------------------------------------ update
 def update():
@@ -743,7 +731,7 @@ def update():
         bidle.configure(bg='gray85')
     else:
         bidle.configure(bg='yellow')
-    if w.acom1.ntransmitting or w.acom1.nreceiving:
+    if w.acom1.transmitting or w.acom1.receiving:
         btune.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
@@ -827,11 +815,11 @@ def update():
     if options.inbad.get()==0:
         msg2.configure(text='',bg='gray85')
     else:
-        msg2.configure(text='Invalid audio input device? F3 for help.',bg='red')
+        msg2.configure(text='Invalid audio input device.',bg='red')
     if options.outbad.get()==0:
         msg3.configure(text='',bg='gray85')
     else:
-        msg3.configure(text='Invalid audio output device? F3 for help.',bg='red')
+        msg3.configure(text='Invalid audio output device.',bg='red')
 
     ldate.after(200,update)
     
@@ -853,6 +841,7 @@ def audio_devices(event=NONE):
     if g.Win32: audev.iconbitmap("wsjt.ico")
     f=open(appdir+'/audio_caps','r')
     s=f.readlines()
+    f.close
     t="Input Devices:\n"
     for i in range(len(s)):
         col=s[i].split()
@@ -1135,21 +1124,24 @@ try:
                 pass
             pass
         elif key == 'AudioIn':
+            value=value.replace("#"," ")
+            g.DevinName.set(value)
             try:
-                g.ndevin.set(value)
+                g.ndevin.set(int(value[:2]))
             except:
                 g.ndevin.set(0)
-            g.DevinName.set(value)
             options.DevinName.set(value)
-#            w.acom1.devin_name=(options.DevinName.get()+'            ')[:12]
+
+
         elif key == 'AudioOut':
+            value=value.replace("#"," ")
+            g.DevoutName.set(value)
             try:
-                g.ndevout.set(value)
+                g.ndevout.set(int(value[:2]))
             except:
                 g.ndevout.set(0)
-            g.DevoutName.set(value)
             options.DevoutName.set(value)
-#            w.acom1.devout_name=(options.DevoutName.get()+'            ')[:12]
+
         elif key == 'BFOfreq': options.bfofreq.set(value)
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
@@ -1192,9 +1184,12 @@ try:
 
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
 except:
-    print 'Error reading WSPR.INI, continuing with defaults.'
-    print key,value
+    print 'Error reading WSPR.INI, while processing'
+    print 'key=',key,'   value=',value
+    print 'Continuing with defaults.'
 
+if g.DevinName.get()=="":
+    g.ndevin.set(-1)
 f0.set(freq0[iband.get()])
 ftx.set(freqtx[iband.get()])
 
@@ -1218,7 +1213,6 @@ if g.cmap == "AFMHot":
     pal_AFMHot()
     npal.set(5)
 
-##lsync.configure(text=slabel+str(isync))
 options.dbm_balloon()
 fmid=f0.get() + 0.001500
 sftx.set('%.06f' % ftx.get())
@@ -1254,8 +1248,8 @@ f.write("MyGrid " + options.MyGrid.get() + "\n")
 f.write("CWID " + str(options.idint.get()) + "\n")
 f.write("dBm " + str(options.dBm.get()) + "\n")
 f.write("SerialPort " + str(options.SerialPort.get()) + "\n")
-f.write("AudioIn " + options.DevinName.get() + "\n")
-f.write("AudioOut " + options.DevoutName.get() + "\n")
+f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
+f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
 f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
