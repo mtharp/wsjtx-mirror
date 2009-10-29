@@ -1,4 +1,4 @@
-#--------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -1022,7 +1022,7 @@ sc2.pack(side=LEFT)
 balloon.bind(sc1,"Brightness", "Brightness")
 balloon.bind(sc2,"Contrast", "Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.place(x=340,y=12, anchor='e')
+bupload.place(x=350,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')

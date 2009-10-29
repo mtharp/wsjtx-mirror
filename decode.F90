@@ -31,8 +31,9 @@ subroutine decode
 !3001    format(2f12.3)
      enddo
      fcal=(1.d7 + (fpeak-1500.d0))/1.d7
-     write(*,1002) fpeak,fcal
-1002 format('Fpeak:',f10.3,' Hz'/'Calibration factor:',f11.8)
+     write(*,1002) fpeak,fcal,f0*fcal
+1002 format('Fpeak:',f10.3,' Hz'/'Calibration factor:',f11.8/     &
+          'Set USB dial frequency to:',f11.6,' MHz')
      ncal=0
   else
      minsync=1
