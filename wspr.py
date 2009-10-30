@@ -57,6 +57,7 @@ f0=DoubleVar()
 f1=DoubleVar()
 ftx=DoubleVar()
 ftx0=0.
+f10=0.
 ft=[]
 fileopened=""
 fmid=0.0
@@ -650,7 +651,7 @@ def put_params(param3=NONE):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
+    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,f10,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0, \
         bandmap,bm
@@ -670,7 +671,11 @@ def update():
     t="%.6f" % (f1.get(),)
     sf1.set(t)
 
-    if iband.get()!=iband0:
+    if fmid!=fmid0 or ftx.get()!=ftx0 or f1.get()!=f10 or iband.get()!=iband0:
+        draw_axis()
+        lftx.configure(validate={'validator':'real',
+            'min':f0.get()+0.001500-0.000100,'minstrict':1,
+            'max':f0.get()+0.001500+0.000100,'maxstrict':1})
         f0.set(freq0[iband.get()])
         t="%.6f" % (f0.get(),)
         sf0.set(t)
@@ -678,7 +683,7 @@ def update():
         t="%.6f" % (ftx.get(),)
         sftx.set(t)
         if options.cat_enable.get():
-            nHz=1000000.0*f0.get()
+            nHz=int(1000000.0*f0.get()*options.calfactor.get()+0.5)
             cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
                  (options.rignum.get(), options.serial_rate.get(), \
                   options.serial_handshake.get(), nHz)
@@ -689,6 +694,10 @@ def update():
         text1.delete('1.0',END)
         text1.configure(state=DISABLED)
         iband0=iband.get()
+
+    fmid0=fmid
+    ftx0=ftx.get()
+    f10=f1.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
 
@@ -813,14 +822,7 @@ def update():
         fmid=f0.get() + 0.001500
     except:
         pass
-    if fmid!=fmid0 or ftx.get()!=ftx0:
-        draw_axis()
-        lftx.configure(validate={'validator':'real',
-            'min':f0.get()+0.001500-0.000100,'minstrict':1,
-            'max':f0.get()+0.001500+0.000100,'maxstrict':1})
-        
-    fmid0=fmid
-    ftx0=ftx.get()
+
     w.acom1.ndebug=ndebug.get()
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
