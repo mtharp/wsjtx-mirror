@@ -65,10 +65,10 @@ sound.o: sound.c
 gmtime2.o: gmtime2.c
 	$(CC) -c -DWin32=1 gmtime2.c
 
+pkg: wspr.exe
+	giss0
+
 .PHONY : clean
 
 clean:
-	rm *.o WSPR.EXE WsprMod/w.pyd wspr.spec
-
-
-
+	rm -f *.o WSPR.EXE WsprMod/w.pyd wspr.spec Output/setup.exe
