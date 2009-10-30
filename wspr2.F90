@@ -17,7 +17,7 @@ subroutine wspr2
   logical receiving,transmitting,decoding
   include 'acom1.f90'
   character linetx*51
-  common/acom2/linetx
+  common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
@@ -71,6 +71,7 @@ subroutine wspr2
        (.not.receiving) .and. pctx.ge.1.0) then
 ! Test transmission of length pctx seconds.
      nsectx=mod(nsec,86400)
+     ntune2=ntune
      transmitting=.true.
      call starttx
   endif

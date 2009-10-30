@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -49,12 +49,12 @@ else:
 root_geom=""
 from WsprMod import options
 
-
 #------------------------------------------------------ Global variables
 appdir=os.getcwd()
 bandmap=[]
 bm={}
 f0=DoubleVar()
+f1=DoubleVar()
 ftx=DoubleVar()
 ftx0=0.
 ft=[]
@@ -92,6 +92,7 @@ NX=500
 NY=160
 param20=""
 sf0=StringVar()
+sf1=StringVar()
 sftx=StringVar()
 txmsg=StringVar()
 
@@ -665,12 +666,17 @@ def update():
     except:
         pass
     isec=utc[5]
+    f1.set(f0.get()*options.calfactor.get())
+    t="%.6f" % (f1.get(),)
+    sf1.set(t)
 
     if iband.get()!=iband0:
         f0.set(freq0[iband.get()])
+        t="%.6f" % (f0.get(),)
+        sf0.set(t)
         ftx.set(freqtx[iband.get()])
-        sf0.set(freq0[iband.get()])
-        sftx.set(freqtx[iband.get()])
+        t="%.6f" % (ftx.get(),)
+        sftx.set(t)
         if options.cat_enable.get():
             nHz=1000000.0*f0.get()
             cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
@@ -1031,13 +1037,17 @@ iframe2.pack(expand=1, fill=X, padx=4)
 #------------------------------------------------------ Stuff under graphics
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
-lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
+lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Nominal:',
         value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
+lf1=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
+        value=10.1387,entry_textvariable=sf1,entry_width=12,validate='real')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
-widgets = (lf0,lftx)
+widgets = (lf0,lf1,lftx)
 for widget in widgets:
-    widget.pack(side=TOP,padx=5,pady=8)
+    widget.pack(side=TOP,padx=5,pady=2)
+Pmw.alignlabels(widgets)
+
 g1.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 lab01=Label(iframe2a, text='').pack(side=LEFT,padx=1)
 g2=Pmw.Group(iframe2a,tag_text="Tx fraction (%)")
@@ -1119,6 +1129,9 @@ frame.pack()
 
 isync=1
 iband.set(5)
+idle.set(1)
+ipctx.set(20)
+w.acom1.calfac=1.0
 
 #---------------------------------------------------------- Process INI file
 try:
@@ -1173,6 +1186,9 @@ try:
             options.DevoutName.set(value)
 
         elif key == 'BFOfreq': options.bfofreq.set(value)
+        elif key == 'CalFac':
+            options.calfactor.set(value)
+            w.acom1.calfac=options.calfactor.get()
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
         elif key == 'TxGrid6': igrid6.set(int(value))
@@ -1281,6 +1297,7 @@ f.write("SerialPort " + str(options.SerialPort.get()) + "\n")
 f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
 f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
 f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
+f.write("CalFac " + str(options.calfactor.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
 f.write("TxGrid6 " + str(igrid6.get()) + "\n")

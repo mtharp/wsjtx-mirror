@@ -36,6 +36,7 @@ def options2(t):
 g1=Pmw.Group(root,tag_text="Station parameters")
 IDinterval=IntVar()
 bfofreq=IntVar()
+calfactor=DoubleVar()
 ComPort=IntVar()
 SerialPort=StringVar()
 ndevin=IntVar()
@@ -59,8 +60,9 @@ pttlist=("CAT","DTR","RTS")
 baudlist=(1200,4800,9600,19200,38400,57600)
 hslist=("NONE","XONXOFF","Hardware")
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
-serialportlist=("None","/dev/ttyS0","COM1","COM2","COM3","COM4","COM5",
-    "COM6","COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14","COM15")
+serialportlist=("None","/dev/ttyS0","COM1","COM2","COM3","COM4","COM5", \
+    "COM6","COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14", \
+                "COM15")
 indevlist=[]
 outdevlist=[]
 
@@ -103,6 +105,8 @@ cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
         value='0',entry_textvariable=idint,entry_width=5)
 rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
         value='1500',entry_textvariable=bfofreq,entry_width=12)
+calfac=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Cal Factor:',
+        value='1.0000000',entry_textvariable=calfactor,entry_width=12)
 audioin=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Audio In:',
         entry_textvariable=DevinName,entry_width=30,
         scrolledlist_items=indevlist,selectioncommand=audin)
@@ -125,7 +129,7 @@ cbbaud=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Serial rate:',
         entry_textvariable=serial_rate,entry_width=4,scrolledlist_items=baudlist)
 cbhs=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Handshake:',
         entry_textvariable=serial_handshake,entry_width=4,scrolledlist_items=hslist)
-widgets = (lcall,lgrid,cwid,rxbfo,audioin,audioout,cbpwr,comport,\
+widgets = (lcall,lgrid,cwid,rxbfo,calfac,audioin,audioout,cbpwr,comport,\
            cbptt,encat,lrignum,cbbaud,cbhs)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)

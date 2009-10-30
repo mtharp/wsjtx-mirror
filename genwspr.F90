@@ -13,7 +13,7 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   logical first
   real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
   character linetx*51,line*75
-  common/acom2/linetx
+  common/acom2/ntune2,linetx
 
   equivalence(i1,i4)
   data npr3/                                   &
@@ -76,13 +76,15 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
      t=-2.d0 - 0.1*(isig-1)
      phi=0.d0
      j0=0
+     f=f0
+     dphi=twopi*dt*f
 
      do i=1,NMAX
         t=t+dt
         j=int(t/tsymbol) + 1                          !Symbol number
         sig=0.
         if(j.ge.1 .and. j.le.162) then
-           if(j.ne.j0) then
+           if(j.ne.j0 .and. ntune2.eq.0) then
               f=f0 + dfgen*(npr3(j)+2*symbol(j)-1.5)
               j0=j
               dphi=twopi*dt*f
@@ -106,6 +108,7 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
         endif
      enddo
   enddo
+  ntune2=0
 
   return
 end subroutine genwspr
