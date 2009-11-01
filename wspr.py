@@ -671,11 +671,7 @@ def update():
     t="%.6f" % (f1.get(),)
     sf1.set(t)
 
-    if fmid!=fmid0 or ftx.get()!=ftx0 or f1.get()!=f10 or iband.get()!=iband0:
-        draw_axis()
-        lftx.configure(validate={'validator':'real',
-            'min':f0.get()+0.001500-0.000100,'minstrict':1,
-            'max':f0.get()+0.001500+0.000100,'maxstrict':1})
+    if iband.get()!=iband0:
         f0.set(freq0[iband.get()])
         t="%.6f" % (f0.get(),)
         sf0.set(t)
@@ -695,9 +691,9 @@ def update():
         text1.configure(state=DISABLED)
         iband0=iband.get()
 
-    fmid0=fmid
-    ftx0=ftx.get()
-    f10=f1.get()
+##    fmid0=fmid
+##    ftx0=ftx.get()
+##    f10=f1.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
 
@@ -822,6 +818,14 @@ def update():
         fmid=f0.get() + 0.001500
     except:
         pass
+
+##    if fmid!=fmid0 or ftx.get()!=ftx0 or f1.get()!=f10 or iband.get()!=iband0:
+    if fmid!=fmid0 or ftx.get()!=ftx0 or f1.get()!=f10:
+        draw_axis()
+        lftx.configure(validate={'validator':'real',
+            'min':f0.get()+0.001500-0.000100,'minstrict':1,
+            'max':f0.get()+0.001500+0.000100,'maxstrict':1})
+
 
     w.acom1.ndebug=ndebug.get()
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
