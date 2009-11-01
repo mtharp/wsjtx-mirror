@@ -69,22 +69,25 @@ outdevlist=[]
 MyCall=StringVar()
 MyGrid=StringVar()
 
-f=open('audio_caps','r')
-s=f.readlines()
-f.close
-t="Input Devices:\n"
-for i in range(len(s)):
-    col=s[i].split()
-    if int(col[1])>0:
-        t=str(i) + s[i][29:]
-        t=t[:len(t)-1]
-        indevlist.append(t)
-for i in range(len(s)):
-    col=s[i].split()
-    if int(col[2])>0:
-        t=str(i) + s[i][29:]
-        t=t[:len(t)-1]
-        outdevlist.append(t)
+try:
+    f=open('audio_caps','r')
+    s=f.readlines()
+    f.close
+    t="Input Devices:\n"
+    for i in range(len(s)):
+        col=s[i].split()
+        if int(col[1])>0:
+            t=str(i) + s[i][29:]
+            t=t[:len(t)-1]
+            indevlist.append(t)
+    for i in range(len(s)):
+        col=s[i].split()
+        if int(col[2])>0:
+            t=str(i) + s[i][29:]
+            t=t[:len(t)-1]
+            outdevlist.append(t)
+except:
+    pass
 
 #------------------------------------------------------ audin
 def audin(event=NONE):
