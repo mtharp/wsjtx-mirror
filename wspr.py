@@ -667,7 +667,10 @@ def update():
     except:
         pass
     isec=utc[5]
-    f1.set(f0.get()*options.calfactor.get())
+    try:
+        f1.set(f0.get()*options.calfactor.get())
+    except:
+        f1.set(f0.get())
     t="%.6f" % (f1.get(),)
     sf1.set(t)
 

@@ -33,7 +33,7 @@ subroutine tx
      iret=system(cmnd)
 #endif
   else
-     if(nport.gt.0) ierr=ptt(nport,pttport,1,iptt)
+     if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,1,iptt)
   endif
 
   write(cdbm,'(i3)'),ndbm
@@ -99,7 +99,7 @@ subroutine tx
      iret=system(cmnd)
 #endif
   else
-     if(nport.gt.0) ierr=ptt(nport,pttport,0,iptt)
+     if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,0,iptt)
   endif
 
   ntransmitted=1
