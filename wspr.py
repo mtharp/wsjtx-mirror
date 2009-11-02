@@ -47,6 +47,8 @@ else:
     except:
         pass
 root_geom=""
+
+i1,i2=w.audiodev(0,2)                          #Prime the audio device lists
 from WsprMod import options
 
 #------------------------------------------------------ Global variables
@@ -615,7 +617,7 @@ def put_params(param3=NONE):
 
     # numeric port ==> COM%d, else string of device.  --W1BW
     port = options.SerialPort.get()
-    if port=='None': port='0'
+    if port=='NONE': port='0'
     if port[:3]=='COM': port=port[3:]
     if port.isdigit():
         w.acom1.nport = int(port)
@@ -1148,13 +1150,6 @@ try:
     params=f.readlines()
 except:
     params=""
-    if g.Win32:
-        options.SerialPort.set("0")
-        pass
-    else:
-        options.SerialPort.set("/dev/ttyS0")
-        pass
-
 try:
     for i in range(len(params)):
         key,value=params[i].split()
@@ -1239,9 +1234,8 @@ try:
 
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
 except:
-    print 'Error reading WSPR.INI, while processing'
-    print 'key=',key,'   value=',value
-    print 'Continuing with defaults.'
+    print 'Invalid entry in WSPR.INI:',params[i]
+    print 'Continuing with default parameters.'
 
 if g.DevinName.get()=="":
     g.ndevin.set(-1)
