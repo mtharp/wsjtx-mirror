@@ -14,7 +14,6 @@ subroutine wspr2
 
   character message*24,cdbm*4
   real*8 tsec
-  logical receiving,transmitting,decoding
   include 'acom1.f90'
   character linetx*51
   common/acom2/ntune2,linetx

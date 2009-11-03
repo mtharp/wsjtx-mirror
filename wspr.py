@@ -47,8 +47,6 @@ else:
     except:
         pass
 root_geom=""
-
-i1,i2=w.audiodev(0,2)                          #Prime the audio device lists
 from WsprMod import options
 
 #------------------------------------------------------ Global variables
@@ -56,10 +54,10 @@ appdir=os.getcwd()
 bandmap=[]
 bm={}
 f0=DoubleVar()
-f1=DoubleVar()
+##f1=DoubleVar()
 ftx=DoubleVar()
 ftx0=0.
-f10=0.
+##f10=0.
 ft=[]
 fileopened=""
 fmid=0.0
@@ -95,7 +93,7 @@ NX=500
 NY=160
 param20=""
 sf0=StringVar()
-sf1=StringVar()
+##sf1=StringVar()
 sftx=StringVar()
 txmsg=StringVar()
 
@@ -344,11 +342,11 @@ def tune(event=NONE):
     w.acom1.ntune=1
     btune.configure(bg='yellow')
 
-#------------------------------------------------------ freqcal
-def freqcal(event=NONE):
-    idle.set(1)
-    w.acom1.ncal=1
-    bcal.configure(bg='green')
+###------------------------------------------------------ freqcal
+##def freqcal(event=NONE):
+##    idle.set(1)
+##    w.acom1.ncal=1
+##    bcal.configure(bg='green')
 
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
@@ -616,8 +614,8 @@ def put_params(param3=NONE):
     w.acom1.ctxmsg=(txmsg.get().strip().upper()+'                      ')[:22]
 
     # numeric port ==> COM%d, else string of device.  --W1BW
-    port = options.SerialPort.get()
-    if port=='NONE': port='0'
+    port = options.PttPort.get()
+    if port=='None': port='0'
     if port[:3]=='COM': port=port[3:]
     if port.isdigit():
         w.acom1.nport = int(port)
@@ -650,10 +648,19 @@ def put_params(param3=NONE):
     w.acom1.igrid6=igrid6.get()
     w.acom1.ndevin=g.ndevin.get()
     w.acom1.ndevout=g.ndevout.get()
+    w.acom1.nbaud=options.serial_rate.get()
+    w.acom1.ndatabits=options.databits.get()
+    w.acom1.nstopbits=options.stopbits.get()
+    nhs=0
+    if options.serial_handshake.get()=='XONXOFF': nhs=1
+    if options.serial_handshake.get()=='Hardware': nhs=2
+    w.acom1.nhandshake=nhs
+    w.acom1.catport=(options.CatPort.get()+'            ')[:12]
+    w.acom1.nrig=options.rignum.get()
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,f10,nin0,nout0, \
+    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0, \
         bandmap,bm
@@ -669,12 +676,12 @@ def update():
     except:
         pass
     isec=utc[5]
-    try:
-        f1.set(f0.get()*options.calfactor.get())
-    except:
-        f1.set(f0.get())
-    t="%.6f" % (f1.get(),)
-    sf1.set(t)
+##    try:
+##        f1.set(f0.get()*options.calfactor.get())
+##    except:
+##        f1.set(f0.get())
+##    t="%.6f" % (f1.get(),)
+##    sf1.set(t)
 
     if iband.get()!=iband0:
         f0.set(freq0[iband.get()])
@@ -684,7 +691,8 @@ def update():
         t="%.6f" % (ftx.get(),)
         sftx.set(t)
         if options.cat_enable.get():
-            nHz=int(1000000.0*f0.get()*options.calfactor.get()+0.5)
+##            nHz=int(1000000.0*f0.get()*options.calfactor.get()+0.5)
+            nHz=int(1000000.0*f0.get()+0.5)
             cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
                  (options.rignum.get(), options.serial_rate.get(), \
                   options.serial_handshake.get(), nHz)
@@ -762,8 +770,8 @@ def update():
         pctscale.configure(state=NORMAL)
     else:
         pctscale.configure(state=DISABLED)
-    if w.acom1.ncal==0:
-        bcal.configure(bg='gray85')
+##    if w.acom1.ncal==0:
+##        bcal.configure(bg='gray85')
     w.acom1.pctx=ipctx.get()
     w.acom1.idle=idle.get()
     if idle.get()==0:
@@ -772,10 +780,10 @@ def update():
         bidle.configure(bg='yellow')
     if w.acom1.transmitting or w.acom1.receiving:
         btune.configure(state=DISABLED)
-        bcal.configure(state=DISABLED)
+#        bcal.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
-        bcal.configure(state=NORMAL)
+##        bcal.configure(state=NORMAL)
     if upload.get()==1:
         bupload.configure(bg='gray85')
     else:
@@ -825,31 +833,34 @@ def update():
         pass
 
 ##    if fmid!=fmid0 or ftx.get()!=ftx0 or f1.get()!=f10 or iband.get()!=iband0:
-    if fmid!=fmid0 or ftx.get()!=ftx0 or f1.get()!=f10:
+    if fmid!=fmid0 or ftx.get()!=ftx0:
         draw_axis()
         lftx.configure(validate={'validator':'real',
             'min':f0.get()+0.001500-0.000100,'minstrict':1,
             'max':f0.get()+0.001500+0.000100,'maxstrict':1})
 
-
     w.acom1.ndebug=ndebug.get()
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
-    cmd=("rigctl -m %d -s %d -C serial_handshake=%s @" % \
-        (options.rignum.get(), options.serial_rate.get(), \
-        options.serial_handshake.get()) + \
-        '                                                            ')[:60]
-    w.acom1.cmd=cmd
     if options.pttmode.get()=='CAT':
         options.cat_enable.set(1)
+##    else:
+##        options.cat_enable.set(0)
     if options.cat_enable.get():
+        options.cat_port._entryWidget['state']=NORMAL
         options.lrignum._entryFieldEntry['state']=NORMAL
         options.cbbaud._entryWidget['state']=NORMAL
+        options.cbdata._entryWidget['state']=NORMAL
+        options.cbstop._entryWidget['state']=NORMAL
         options.cbhs._entryWidget['state']=NORMAL
     else:
+        options.cat_port._entryWidget['state']=DISABLED
         options.lrignum._entryFieldEntry['state']=DISABLED
         options.cbbaud._entryWidget['state']=DISABLED
+        options.cbdata._entryWidget['state']=DISABLED
+        options.cbstop._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
+
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
         nin0=g.ndevin.get()
@@ -1039,7 +1050,7 @@ sc2.pack(side=LEFT)
 balloon.bind(sc1,"Brightness", "Brightness")
 balloon.bind(sc2,"Contrast", "Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.place(x=350,y=12, anchor='e')
+bupload.place(x=390,y=12, anchor='e')
 lab02=Label(iframe2, text='')
 lab02.place(x=500,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
@@ -1048,15 +1059,15 @@ iframe2.pack(expand=1, fill=X, padx=4)
 #------------------------------------------------------ Stuff under graphics
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
-lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Nominal:',
+lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
-lf1=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
-        value=10.1387,entry_textvariable=sf1,entry_width=12,validate='real')
+##lf1=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
+##        value=10.1387,entry_textvariable=sf1,entry_width=12,validate='real')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
-widgets = (lf0,lf1,lftx)
+widgets = (lf0,lftx)
 for widget in widgets:
-    widget.pack(side=TOP,padx=5,pady=2)
+    widget.pack(side=TOP,padx=5,pady=4)
 Pmw.alignlabels(widgets)
 
 g1.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
@@ -1070,15 +1081,15 @@ ipctx.set(0)
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 g3=Pmw.Group(iframe2a,tag_text='Special')
 bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle)
-bidle.pack(padx=2)
+bidle.pack(padx=8)
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,
              width=9,padx=1,pady=2)
-btune.pack(side=TOP,padx=10,pady=2)
+btune.pack(side=TOP,padx=10,pady=8)
 balloon.bind(btune,"Tx for number of seconds set by Tx fraction slider")
-bcal=Button(g3.interior(), text='Calibrate',underline=0,command=freqcal,
-             width=9,padx=1,pady=2)
-bcal.pack(side=TOP,padx=10,pady=3)
-balloon.bind(bcal,"Rx for 5 seconds and measure audio frequency")
+##bcal=Button(g3.interior(), text='Calibrate',underline=0,command=freqcal,
+##             width=9,padx=1,pady=2)
+##bcal.pack(side=TOP,padx=10,pady=3)
+##balloon.bind(bcal,"Rx for 5 seconds and measure audio frequency")
 g3.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=1)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
@@ -1142,7 +1153,7 @@ isync=1
 iband.set(5)
 idle.set(1)
 ipctx.set(20)
-w.acom1.calfac=1.0
+##w.acom1.calfac=1.0
 
 #---------------------------------------------------------- Process INI file
 try:
@@ -1150,6 +1161,13 @@ try:
     params=f.readlines()
 except:
     params=""
+##    if g.Win32:
+##        options.SerialPort.set("0")
+##        pass
+##    else:
+##        options.SerialPort.set("/dev/ttyS0")
+##        pass
+
 try:
     for i in range(len(params)):
         key,value=params[i].split()
@@ -1160,16 +1178,17 @@ try:
         elif key == 'dBm': options.dBm.set(value)
         elif key == 'PctTx': ipctx.set(value)
 #        elif key == 'IDinterval': options.IDinterval.set(value)
-        elif key == 'SerialPort':
-            try:
-                options.SerialPort.set(value)
-            except:
-                if g.Win32:
-                    options.SerialPort.set("0")
-                else:
-                    options.SerialPort.set("/dev/ttyS0")
-                pass
-            pass
+        elif key == 'PttPort': options.PttPort.set(value)
+        elif key == 'CatPort': options.CatPort.set(value)
+##            try:
+##                options.PttPort.set(value)
+##            except:
+##                if g.Win32:
+##                    options.PttPort.set("0")
+##                else:
+##                    options.PttPort.set("/dev/ttyS0")
+##                pass
+##            pass
         elif key == 'AudioIn':
             value=value.replace("#"," ")
             g.DevinName.set(value)
@@ -1190,13 +1209,15 @@ try:
             options.DevoutName.set(value)
 
         elif key == 'BFOfreq': options.bfofreq.set(value)
-        elif key == 'CalFac':
-            options.calfactor.set(value)
-            w.acom1.calfac=options.calfactor.get()
+##        elif key == 'CalFac':
+##            options.calfactor.set(value)
+##            w.acom1.calfac=options.calfactor.get()
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
         elif key == 'TxGrid6': igrid6.set(int(value))
         elif key == 'SerialRate': options.serial_rate.set(int(value))
+        elif key == 'DataBits': options.databits.set(int(value))
+        elif key == 'StopBits': options.stopbits.set(int(value))
         elif key == 'Handshake': options.serial_handshake.set(value)
         elif key == 'RigNum': options.rignum.set(int(value))
 
@@ -1234,8 +1255,9 @@ try:
 
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
 except:
-    print 'Invalid entry in WSPR.INI:',params[i]
-    print 'Continuing with default parameters.'
+    print 'Error reading WSPR.INI, while processing'
+    print 'key=',key,'   value=',value
+    print 'Continuing with defaults.'
 
 if g.DevinName.get()=="":
     g.ndevin.set(-1)
@@ -1296,15 +1318,18 @@ f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
 f.write("CWID " + str(options.idint.get()) + "\n")
 f.write("dBm " + str(options.dBm.get()) + "\n")
-f.write("SerialPort " + str(options.SerialPort.get()) + "\n")
+f.write("PttPort " + str(options.PttPort.get()) + "\n")
+f.write("CatPort " + str(options.CatPort.get()) + "\n")
 f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
 f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
 f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
-f.write("CalFac " + str(options.calfactor.get()) + "\n")
+##f.write("CalFac " + str(options.calfactor.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
 f.write("TxGrid6 " + str(igrid6.get()) + "\n")
 f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
+f.write("DataBits " + str(options.databits.get()) + "\n")
+f.write("StopBits " + str(options.stopbits.get()) + "\n")
 f.write("Handshake " + options.serial_handshake.get() + "\n")
 f.write("RigNum " + str(options.rignum.get()) + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")

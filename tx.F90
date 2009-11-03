@@ -12,7 +12,8 @@ subroutine tx
   parameter (NMAX2=120*12000)
   character message*22,call1*12,cdbm*3
   character*22 msg0,msg1,msg2,cwmsg
-  character cmnd*60
+  character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
+  character cmnd*120
   integer*2 jwave(NMAX2)
   integer*2 icwid(48000)
   integer soundout,ptt
@@ -21,12 +22,25 @@ subroutine tx
   data ntx/0/,ns0/0/
   save ntx,ns0
 
-  cmnd=cmd
   ierr=0
   call1=callsign
-  i0=index(cmnd,'@')
   if(pttmode.eq.'CAT') then
-     cmnd(i0:)='T 1'
+     print*,'B',nbaud,ndatabits,nstopbits,nhandshake
+     write(crig,'(i6)') nrig
+     write(cbaud,'(i6)') nbaud
+     write(cdata,'(i1)') ndatabits
+     write(cstop,'(i1)') nstopbits
+     chs='None'
+     if(nhandshake.eq.1) chs='XONXOFF'
+     if(nhandshake.eq.2) chs='Hardware'
+     cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
+          ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
+          ' -C serial_handshake='//chs//' T 1'
+
+! Example rigctl command:
+! rigctl -m 1608 -r /dev/USB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
+!   -C serial_handshake=Hardware T 1
+
 #ifdef CVF
      iret=runqq('rigctl.exe',cmnd(8:))
 #else
@@ -92,7 +106,9 @@ subroutine tx
   endif
 
   if(pttmode.eq.'CAT') then
-     cmnd(i0:)='T 0'
+     cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
+          ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
+          ' -C serial_handshake='//chs//' T 0'
 #ifdef CVF
      iret=runqq('rigctl.exe',cmnd(8:))
 #else
