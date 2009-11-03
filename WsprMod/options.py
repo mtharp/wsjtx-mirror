@@ -36,7 +36,6 @@ def options2(t):
 g1=Pmw.Group(root,tag_text="Station parameters")
 IDinterval=IntVar()
 bfofreq=IntVar()
-##calfactor=DoubleVar()
 ptt_port=IntVar()
 CatPort=StringVar()
 PttPort=StringVar()
@@ -117,8 +116,6 @@ cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
         value='0',entry_textvariable=idint,entry_width=5)
 rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
         value='1500',entry_textvariable=bfofreq,entry_width=12)
-##calfac=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Cal Factor:',
-##        value='1.0000000',entry_textvariable=calfactor,entry_width=12)
 audioin=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Audio In:',
         entry_textvariable=DevinName,entry_width=30,
         scrolledlist_items=indevlist,selectioncommand=audin)
@@ -127,8 +124,6 @@ audioout=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Audio Out:',
         scrolledlist_items=outdevlist,selectioncommand=audout)
 cbpwr=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Power (dBm):',
         entry_textvariable=dBm,entry_width=4,scrolledlist_items=pwrlist)
-##ptt_port=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Serial Port:',
-##        value='0',entry_textvariable=SerialPort,entry_width=12)
 cbptt=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='PTT method:',
         entry_textvariable=pttmode,entry_width=4,scrolledlist_items=pttlist)
 ptt_port=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='PTT port:',
