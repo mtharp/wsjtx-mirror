@@ -21,6 +21,7 @@ subroutine wspr2
   data receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
 
+  call cs_init
   call cs_lock('wspr2')
 #ifdef CVF
   open(14,file='decoded.txt',status='unknown',share='denynone')

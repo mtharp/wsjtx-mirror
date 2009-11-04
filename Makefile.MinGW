@@ -39,7 +39,7 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	encode232.f nchar.f grid2deg.f gencwid.f morse.f \
 	fchisq.f ccf2.f twkfreq.f azdist.f geodist.f
 
-SRCS2C = ptt.c start_threads.c padevsub.c
+SRCS2C = ptt.c start_threads.c padevsub.c fthread.c
 
 WSPR.EXE: WsprMod/w.pyd wspr.spec
 	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
