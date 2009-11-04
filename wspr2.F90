@@ -19,7 +19,7 @@ subroutine wspr2
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
-  data decoding/.false./,ns1200/-999/
+  data ns1200/-999/
 
   call cs_init
   call cs_lock('wspr2')
@@ -51,7 +51,7 @@ subroutine wspr2
   if(nrxdone.gt.0) then
      receiving=.false.
      nrxdone=0
-     decoding=.true.
+     ndecoding=1
      thisfile=outfile
      if(ncal.eq.1) ncal=2
      call startdec

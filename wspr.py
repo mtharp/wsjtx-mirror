@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------ WSPR
+#----------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -841,6 +841,10 @@ def update():
         msg3.configure(text='',bg='gray85')
     else:
         msg3.configure(text='Invalid audio output device.',bg='red')
+    if w.acom1.ndecoding:
+        lab03.configure(text='Decoding',bg='#66FFFF')
+    else:
+        lab03.configure(text='',bg='gray85')
 
     ldate.after(200,update)
     
@@ -1018,9 +1022,11 @@ sc2.pack(side=LEFT)
 balloon.bind(sc1,"Brightness", "Brightness")
 balloon.bind(sc2,"Contrast", "Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.place(x=390,y=12, anchor='e')
-lab02=Label(iframe2, text='')
+bupload.place(x=420,y=12, anchor='e')
+lab02=Label(iframe2,text='',pady=5)
 lab02.place(x=500,y=10, anchor='e')
+lab03=Label(iframe2,text='',pady=5)
+lab03.place(x=300,y=10, anchor='e')
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 iframe2.pack(expand=1, fill=X, padx=4)
 

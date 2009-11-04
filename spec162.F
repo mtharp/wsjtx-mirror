@@ -23,14 +23,12 @@
       istep=nfft/2
       nsteps=(jz-nfft)/(nadd*istep)
 
-      call cs_lock('spec162')
 #ifdef CVF
       open(16,file='pixmap.dat',form='binary',status='unknown',err=1)
 #else
       open(16,file='pixmap.dat',access='stream',status='unknown',err=1)
 #endif
       read(16,end=1) a
-      call cs_unlock
       go to 2
  1    call zero(a,NX*NY/2)
 
@@ -90,11 +88,9 @@
          enddo
       enddo
 
-      call cs_lock('spec162')
       rewind 16
       write(16) a
       close(16)
-      call cs_unlock
 
       return
       end
