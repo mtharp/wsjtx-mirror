@@ -27,13 +27,13 @@ subroutine decode
            smax=s
            fpeak=i*df
         endif
-!        write(71,3001) i*df,1.e-12*s
-!3001    format(2f12.3)
      enddo
      calfac=(1.d7 + (fpeak-1500.d0))/1.d7
+     call cs_lock('decode')
      write(*,1002) fpeak,calfac,f0*calfac
 1002 format('Fpeak:',f10.3,' Hz'/'Calibration factor:',f11.8/     &
           'Set USB dial frequency to:',f11.6,' MHz')
+     call cs_unlock
      ncal=0
   else
      minsync=1
@@ -46,10 +46,12 @@ subroutine decode
      endif
   endif
 
+  call cs_lock('decode')
   write(14,1100)
 1100 format('$EOF')
   call flush(14)
   rewind 14
+  call cs_unlock
   ndecdone=1
   ndiskdat=0
   ndecoding=0

@@ -25,6 +25,8 @@ subroutine wspr1
 !     THREAD_PRIORITY_HIGHEST            2
 !     THREAD_PRIORITY_TIME_CRITICAL     15
 
+  call cs_init
+
   nrxdone=0
   fcal=1.d0
   m0=SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS)

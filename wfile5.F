@@ -30,6 +30,7 @@ C  Generate the header
       nbytes=ndata+44
       nchunk=nbytes-8
 
+      call cs_lock('wfile5')
 #ifdef CVF
       open(12,file=outfile,form='binary',status='unknown')
 #else
@@ -44,6 +45,7 @@ C  Generate the header
       write(12) hdr
       write(12) iwave
       close(12)
+      call cs_unlock
 
       return
       end

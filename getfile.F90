@@ -24,6 +24,7 @@ subroutine getfile(fname,len)
   i=0
 10  continue
 
+  call cs_lock('getfile')
 #ifdef CVF
   open(10,file=fname,form='binary',status='old')
 #else
@@ -32,6 +33,8 @@ subroutine getfile(fname,len)
   read(10) hdr
   npts=114*12000
   read(10) (iwave(i),i=1,npts)
+  close(10)
+  call cs_unlock
   n4=1
   if (n1.eq.1) goto 8                     !skip byteswap if little endian
   do i=1,npts
@@ -44,6 +47,5 @@ subroutine getfile(fname,len)
   outfile=fname
   nrxdone=1
 
-  close(10)
   return
 end subroutine getfile

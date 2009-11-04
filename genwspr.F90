@@ -47,6 +47,7 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
 
   call wqdecode(data0,msg2,ntype2)
 
+  call cs_lock('genwspr')
 #ifdef CVF
   open(13,file='ALL_WSPR.TXT',status='unknown',                   &
        position='append',share='denynone')
@@ -57,6 +58,7 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   write(13,1010) line
 1010 format(a75)
   close(13)
+  call cs_unlock
 
 ! Set up necessary constants
   tsymbol=8192.d0/12000.d0

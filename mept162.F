@@ -78,6 +78,7 @@ C  Look for sync patterns, get DF and DT
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             nf1=nint(-a(2))
+            call cs_lock('mept162a')
 
 #ifdef CVF
             open(13,file='ALL_WSPR.TXT',status='unknown',
@@ -93,6 +94,7 @@ C  Look for sync patterns, get DF and DT
      +           ncycles/81,ii
  1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
             i1=index(message,' ')
+            call cs_unlock
          endif
  24      continue
       enddo

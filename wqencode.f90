@@ -11,6 +11,7 @@ subroutine wqencode(msg,ntype,data0)
   integer nu(0:9)
   data nu/0,-1,1,0,-1,2,1,0,-1,1/
 
+  call cs_lock('wqencode')
 ! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
   i1=index(msg,' ')
   i2=index(msg,'/')
@@ -60,5 +61,6 @@ subroutine wqencode(msg,ntype,data0)
   go to 900
 
 900 continue
+  call cs_unlock
   return
 end subroutine wqencode

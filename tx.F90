@@ -25,10 +25,12 @@ subroutine tx
   ierr=0
   call1=callsign
   if(pttmode.eq.'CAT') then
+     call cs_lock('tx')
      write(crig,'(i6)') nrig
      write(cbaud,'(i6)') nbaud
      write(cdata,'(i1)') ndatabits
      write(cstop,'(i1)') nstopbits
+     call cs_unlock
      chs='None'
      if(nhandshake.eq.1) chs='XONXOFF'
      if(nhandshake.eq.2) chs='Hardware'
@@ -48,7 +50,9 @@ subroutine tx
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,1,iptt)
   endif
 
+  call cs_lock('tx')
   write(cdbm,'(i3)'),ndbm
+  call cs_unlock
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
 

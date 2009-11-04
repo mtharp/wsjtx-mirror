@@ -21,6 +21,7 @@ subroutine wspr2
   data receiving/.false./,transmitting/.false./
   data decoding/.false./,ns1200/-999/
 
+  call cs_lock('wspr2')
 #ifdef CVF
   open(14,file='decoded.txt',status='unknown',share='denynone')
 #else
@@ -30,6 +31,7 @@ subroutine wspr2
 1002 format('$EOF')
   call flush(14)
   rewind 14
+  call cs_unlock
 
   npatience=1
   call random_seed
@@ -96,11 +98,13 @@ subroutine wspr2
      transmitting=.true.
      call random_number(x)
      nrx=nint(rxavg + rr*(x-0.5))
+     call cs_lock('wspr2')
      write(cdbm,'(i4)') ndbm
      message=callsign//grid//cdbm
      call msgtrim(message,msglen)
      write(linetx,1030) cdate(3:8),utctime(1:4),ftx
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ')
+     call cs_unlock
      ntr=-1
      nsectx=mod(nsec,86400)
      if(ndevsok.eq.1) call starttx
