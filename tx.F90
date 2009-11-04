@@ -25,7 +25,6 @@ subroutine tx
   ierr=0
   call1=callsign
   if(pttmode.eq.'CAT') then
-     print*,'B',nbaud,ndatabits,nstopbits,nhandshake
      write(crig,'(i6)') nrig
      write(cbaud,'(i6)') nbaud
      write(cdata,'(i1)') ndatabits
@@ -36,7 +35,6 @@ subroutine tx
      cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
           ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
           ' -C serial_handshake='//chs//' T 1'
-
 ! Example rigctl command:
 ! rigctl -m 1608 -r /dev/USB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
 !   -C serial_handshake=Hardware T 1

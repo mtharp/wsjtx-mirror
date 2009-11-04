@@ -66,9 +66,15 @@ pttlist=("CAT","DTR","RTS")
 baudlist=(1200,4800,9600,19200,38400,57600)
 hslist=("None","XONXOFF","Hardware")
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
-serialportlist=("None","/dev/ttyS0","COM1","COM2","COM3","COM4","COM5", \
-    "COM6","COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14", \
-                "COM15")
+
+if g.Win32:
+    serialportlist=("None","COM1","COM2","COM3","COM4","COM5","COM6", \
+        "COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14","COM15")
+else:
+    serialportlist=("None","/dev/ttyS0","/dev/ttyS1","/dev/ttyUSB0", \
+        "/dev/ttyUSB1","/dev/ttyUSB2","/dev/ttyUSB3","/dev/ttyUSB4", \
+        "/dev/ttyUSB5","/dev/ttyUSB6","/dev/ttyUSB7","/dev/ttyUSB8")
+                    
 datalist=(7,8)
 stoplist=(1,2)
 indevlist=[]

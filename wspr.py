@@ -47,6 +47,7 @@ else:
     except:
         pass
 root_geom=""
+i1,i2=w.audiodev(0,2)
 from WsprMod import options
 
 #------------------------------------------------------ Global variables
