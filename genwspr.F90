@@ -2,7 +2,7 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
 
 ! Encode an MEPT_JT message and generate the corresponding wavefile.
 
-  parameter (NMAX=120*12000)     !Max length of wave file
+  parameter (NMAX=120*48000)     !Max length of wave file
   character*22 message           !Message to be generated
   character*22 msg2
   integer*2 iwave(NMAX)          !Generated wave file
@@ -61,10 +61,10 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   call cs_unlock
 
 ! Set up necessary constants
-  tsymbol=8192.d0/12000.d0
-  dt=1.d0/12000.d0
+  tsymbol=4.d0*8192.d0/48000.d0
+  dt=1.d0/48000.d0
   f0=1500 + ntxdf
-  dfgen=12000.d0/8192.d0                     !1.4649 Hz
+  dfgen=1.d0/tsymbol                     !1.4649 Hz
   nsigs=1
   if(snrdb.eq.10.0) nsigs=10
   do isig=1,nsigs

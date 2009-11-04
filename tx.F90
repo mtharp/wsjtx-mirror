@@ -9,13 +9,14 @@ subroutine tx
   integer system
 #endif
 
-  parameter (NMAX2=120*12000)
+  parameter (NMAX2=120*40000)
+  parameter (NMAX3=4*48000)
   character message*22,call1*12,cdbm*3
   character*22 msg0,msg1,msg2,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
   character cmnd*120
   integer*2 jwave(NMAX2)
-  integer*2 icwid(48000)
+  integer*2 icwid(NMAX3)
   integer soundout,ptt
   include 'acom1.f90'
   common/bcom/ntransmitted
@@ -81,7 +82,7 @@ subroutine tx
   close(18)
 10 call genwspr(message,ntxdf,snr,msg2,jwave)
 
-  npts=114*12000
+  npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then
 !  Generate and insert the CW ID.
@@ -90,8 +91,8 @@ subroutine tx
      cwmsg=call1(:i1)//'                      '
      icwid=0
      call gencwid(cwmsg,wpm,freqcw,icwid,ncwid)
-     k0=114*12000
-     k1=115*12000
+     k0=114*48000
+     k1=115*48000
      jwave(k0:k1)=0
      jwave(k1+1:k1+48000)=icwid
      npts=k1+48000
@@ -99,8 +100,10 @@ subroutine tx
   endif
 
   sending=msg2
-  if(ntune.eq.1) npts=12000*pctx
-  ierr=soundout(ndevout,jwave(24000),npts)
+  if(ntune.eq.1) npts=48000*pctx
+  print*,'A',npts
+  ierr=soundout(ndevout,jwave(2*48000),npts)
+  print*,'B'
   ntune=0
   if(ierr.ne.0) then
      print*,'Error in soundout',ierr
