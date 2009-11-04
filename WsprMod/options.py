@@ -113,11 +113,34 @@ def audout(event=NONE):
     g.DevoutName.set(DevoutName.get())
     g.ndevout.set(int(DevoutName.get()[:2]))
 
+#------------------------------------------------------- chkcall
+def chkcall(t):
+    r=-1
+    n=len(t)
+    if n>=3 and n<=10: r=1
+    return r
+
+#------------------------------------------------------- chkgrid
+def chkgrid(t):
+    r=-1
+    n=len(t)
+    if n==4 or n==6:
+        if int(t[0:1],36)>=10 and int(t[0:1],36)<=27 and \
+           int(t[1:2],36)>=10 and int(t[1:2],36)<=27 and \
+           int(t[2:3],36)>=0 and int(t[2:3],36)<=9 and \
+           int(t[3:4],36)>=0 and int(t[3:4],36)<=9: r=1
+        if r==1 and n==6:
+            r=-1
+            if int(t[4:5],36)>=10 and int(t[4:5],36)<=33 and \
+               int(t[5:6],36)>=10 and int(t[5:6],36)<=33: r=1
+    return r
 
 lcall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Call:',
-        value='',entry_textvariable=MyCall,entry_width=8)
+        value='',entry_textvariable=MyCall,entry_width=8,
+        validate=chkcall)
 lgrid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Grid:',
-        value='',entry_textvariable=MyGrid,entry_width=5)
+        value='',entry_textvariable=MyGrid,entry_width=5,
+        validate=chkgrid)
 cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
         value='0',entry_textvariable=idint,entry_width=5)
 rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',

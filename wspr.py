@@ -616,15 +616,6 @@ def put_params(param3=NONE):
         w.acom1.nport = 0
     w.acom1.pttport = (port + 80*' ')[:80]
 
-    if options.MyCall.get()=='':
-        options.lcall._entryFieldEntry['background']='pink'
-    else:
-        options.lcall._entryFieldEntry['background']='white'
-    if options.MyGrid.get()=='':
-        options.lgrid._entryFieldEntry['background']='pink'
-    else:
-        options.lgrid._entryFieldEntry['background']='white'
-
     for i in range(len(pwrlist)):
         try:
             if pwrlist[i]==options.dBm.get():
@@ -1225,6 +1216,15 @@ except:
     print 'Error reading WSPR.INI, while processing'
     print 'key=',key,'   value=',value
     print 'Continuing with defaults.'
+
+if options.MyCall.get()=='':
+    options.lcall._entryFieldEntry['background']='pink'
+else:
+    options.lcall._entryFieldEntry['background']='white'
+if options.MyGrid.get()=='':
+    options.lgrid._entryFieldEntry['background']='pink'
+else:
+    options.lgrid._entryFieldEntry['background']='white'
 
 if g.DevinName.get()=="":
     g.ndevin.set(-1)
