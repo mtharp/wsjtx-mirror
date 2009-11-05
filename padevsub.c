@@ -4,7 +4,7 @@
 
 #define NUM_CHANNELS    (1)
 #define PA_SAMPLE_TYPE  paInt16
-#define SAMPLE_RATE  (12000)
+#define SAMPLE_RATE  (48000)
 
 int padevsub_(int *numdev, int *ndefin, int *ndefout, int nchin[], 
 	      int nchout[], int inerr[], int outerr[])
