@@ -65,7 +65,7 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   dt=1.d0/48000.d0
   f0=1500 + ntxdf
   dfgen=1.d0/tsymbol                     !1.4649 Hz
-  snr=10.0**(0.05*(snrdb-1))   !Bandwidth correction?
+  snr=10.0**(0.05*(snrdb-6.5))   !Bandwidth correction?
   fac=3000.0
   if(snr.gt.1.0) fac=3000.0/snr
   t=-2.d0
