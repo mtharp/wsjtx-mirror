@@ -11,7 +11,6 @@ subroutine decode
   real x(65536)
   complex c(0:32768)
   equivalence (x,c)
-
   include 'acom1.f90'
 
   if(ncal.eq.2) then
@@ -38,7 +37,7 @@ subroutine decode
   else
      minsync=1
      if(nsave.gt.0 .and. ndiskdat.eq.0) jwave=iwave(1:114*12000)
-     call mept162(thisfile,f0,minsync,iwave,NMAX,nbfo,ierr)
+     call mept162(thisfile,appdir,nappdir,f0,minsync,iwave,NMAX,nbfo,ierr)
      if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
         savefile='save/'//thisfile
         npts=114*12000

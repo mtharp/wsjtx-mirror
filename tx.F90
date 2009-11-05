@@ -25,33 +25,35 @@ subroutine tx
 
   ierr=0
   call1=callsign
+  call cs_lock('tx')
   if(pttmode.eq.'CAT') then
-     call cs_lock('tx')
      write(crig,'(i6)') nrig
      write(cbaud,'(i6)') nbaud
      write(cdata,'(i1)') ndatabits
      write(cstop,'(i1)') nstopbits
-     call cs_unlock
      chs='None'
      if(nhandshake.eq.1) chs='XONXOFF'
      if(nhandshake.eq.2) chs='Hardware'
      cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
           ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
           ' -C serial_handshake='//chs//' T 1'
-! Example rigctl command:
-! rigctl -m 1608 -r /dev/USB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
-!   -C serial_handshake=Hardware T 1
 
+! Example rigctl command:
+! rigctl -m 1608 -r /dev/ttyUSB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
+!   -C serial_handshake=Hardware T 1
 #ifdef CVF
      iret=runqq('rigctl.exe',cmnd(8:))
 #else
      iret=system(cmnd)
 #endif
+     if(iret.ne.0) then
+        print*,'Error executing rigctl command to set Tx mode:'
+        print*,cmnd
+     endif
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,1,iptt)
   endif
 
-  call cs_lock('tx')
   write(cdbm,'(i3)'),ndbm
   call cs_unlock
   if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
@@ -119,11 +121,17 @@ subroutine tx
      cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
           ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
           ' -C serial_handshake='//chs//' T 0'
+     call cs_lock('tx')
 #ifdef CVF
      iret=runqq('rigctl.exe',cmnd(8:))
 #else
      iret=system(cmnd)
 #endif
+     if(iret.ne.0) then
+        print*,'Error executing rigctl command to set Rx mode:'
+        print*,cmnd
+     endif
+     call cs_unlock
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,0,iptt)
   endif

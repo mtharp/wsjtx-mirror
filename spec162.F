@@ -1,8 +1,9 @@
-      subroutine spec162(c2,jz)
+      subroutine spec162(c2,jz,appdir,nappdir)
 
       parameter(NX=500,NY=160)
       complex c2(65536)
       complex c(0:255)
+      character*80 appdir,pixmap
       real s(120,0:255)
       real ss(0:255)
       real w(0:255)
@@ -23,10 +24,11 @@
       istep=nfft/2
       nsteps=(jz-nfft)/(nadd*istep)
 
+      pixmap=appdir(:nappdir)//'/pixmap.dat'
 #ifdef CVF
-      open(16,file='pixmap.dat',form='binary',status='unknown',err=1)
+      open(16,file=pixmap,form='binary',status='unknown',err=1)
 #else
-      open(16,file='pixmap.dat',access='stream',status='unknown',err=1)
+      open(16,file=pixmap,access='stream',status='unknown',err=1)
 #endif
       read(16,end=1) a
       go to 2

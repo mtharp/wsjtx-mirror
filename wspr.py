@@ -52,6 +52,8 @@ from WsprMod import options
 
 #------------------------------------------------------ Global variables
 appdir=os.getcwd()
+w.acom1.nappdir=len(appdir)
+w.acom1.appdir=(appdir+(' '*80))[:80]
 bandmap=[]
 bm={}
 f0=DoubleVar()
@@ -669,10 +671,14 @@ def update():
         sftx.set(t)
         if options.cat_enable.get():
             nHz=int(1000000.0*f0.get()+0.5)
-            cmd="rigctl -m %d -s %d -C serial_handshake=%s F %d" % \
-                 (options.rignum.get(), options.serial_rate.get(), \
-                  options.serial_handshake.get(), nHz)
+            cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
+                 (options.rignum.get(),options.CatPort.get(), \
+                  options.serial_rate.get(),options.databits.get(), \
+                  options.stopbits.get(),options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
+            if ierr!=0:
+                print 'Error executing rigctl command to set frequency:'
+                print cmd            
         bandmap=[]
         bm={}
         text1.configure(state=NORMAL)

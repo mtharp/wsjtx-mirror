@@ -60,7 +60,7 @@ inbad=IntVar()
 outbad=IntVar()
 
 pttmode.set('DTR')
-serial_handshake.set('NONE')
+serial_handshake.set('None')
 
 pttlist=("CAT","DTR","RTS")
 baudlist=(1200,4800,9600,19200,38400,57600)
