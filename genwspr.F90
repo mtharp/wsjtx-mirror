@@ -65,50 +65,38 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
   dt=1.d0/48000.d0
   f0=1500 + ntxdf
   dfgen=1.d0/tsymbol                     !1.4649 Hz
-  nsigs=1
-  if(snrdb.eq.10.0) nsigs=10
-  do isig=1,nsigs
-     if(nsigs.eq.1) snr=10.0**(0.05*(snrdb-1))   !Bandwidth correction?
-     fac=3000.0
-     if(snr.gt.1.0) fac=3000.0/snr
-     if(nsigs.eq.10) then
-        snr=10.0**(0.05*(-20-isig-1))
-        f0=1390 + 20*isig
-     endif
-     t=-2.d0 - 0.1*(isig-1)
-     phi=0.d0
-     j0=0
-     f=f0
-     dphi=twopi*dt*f
+  snr=10.0**(0.05*(snrdb-1))   !Bandwidth correction?
+  fac=3000.0
+  if(snr.gt.1.0) fac=3000.0/snr
+  t=-2.d0
+  phi=0.d0
+  j0=0
+  f=f0
+  dphi=twopi*dt*f
 
-     do i=1,NMAX
-        t=t+dt
-        j=int(t/tsymbol) + 1                          !Symbol number
-        sig=0.
-        if(j.ge.1 .and. j.le.162) then
-           if(j.ne.j0 .and. ntune2.eq.0) then
-              f=f0 + dfgen*(npr3(j)+2*symbol(j)-1.5)
-              j0=j
-              dphi=twopi*dt*f
-           endif
-           sig=0.9999
-           phi=phi+dphi
-           if(snrdb.gt.50.0) then
-              n=32767.0*sin(phi)           !Normal transmission, signal only
-           else
-              if(isig.eq.1) then
-                 n=fac*(gran(idum) + sig*snr*sin(phi))
-              else
-                 n=iwave(i) + fac*sig*snr*sin(phi)
-              endif
-              if(n.gt.32767) n=32767
-              if(n.lt.-32767) n=-32767
-           endif
-           iwave(i)=n
-        else
-           iwave(i)=0
+  do i=1,NMAX
+     t=t+dt
+     j=int(t/tsymbol) + 1                          !Symbol number
+     sig=0.
+     if(j.ge.1 .and. j.le.162) then
+        if(j.ne.j0 .and. ntune2.eq.0) then
+           f=f0 + dfgen*(npr3(j)+2*symbol(j)-1.5)
+           j0=j
+           dphi=twopi*dt*f
         endif
-     enddo
+        sig=0.9999
+        phi=phi+dphi
+        if(snrdb.gt.50.0) then
+           n=32767.0*sin(phi)           !Normal transmission, signal only
+        else
+           n=fac*(gran(idum) + sig*snr*sin(phi))
+           if(n.gt.32767) n=32767
+           if(n.lt.-32767) n=-32767
+        endif
+        iwave(i)=n
+     else
+        iwave(i)=0
+     endif
   enddo
   ntune2=0
 
