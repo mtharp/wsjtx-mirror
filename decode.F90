@@ -39,7 +39,7 @@ subroutine decode
      if(nsave.gt.0 .and. ndiskdat.eq.0) jwave=iwave(1:114*12000)
      call mept162(thisfile,appdir,nappdir,f0,minsync,iwave,NMAX,nbfo,ierr)
      if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
-        savefile='save/'//thisfile
+        savefile=appdir(:nappdir)//'/save/'//thisfile
         npts=114*12000
         call wfile5(jwave,npts,12000,savefile)
      endif

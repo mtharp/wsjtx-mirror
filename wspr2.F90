@@ -15,18 +15,19 @@ subroutine wspr2
   character message*24,cdbm*4
   real*8 tsec
   include 'acom1.f90'
-  character linetx*51
+  character linetx*51,dectxt*80
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data ns1200/-999/
 
   call cs_init
+  dectxt=appdir(:nappdir)//'/decoded.txt'
   call cs_lock('wspr2')
 #ifdef CVF
-  open(14,file='decoded.txt',status='unknown',share='denynone')
+  open(14,file=dectxt,status='unknown',share='denynone')
 #else
-  open(14,file='decoded.txt',status='unknown')
+  open(14,file=dectxt,status='unknown')
 #endif
   write(14,1002)
 1002 format('$EOF')

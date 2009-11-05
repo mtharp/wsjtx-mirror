@@ -14,7 +14,7 @@ subroutine tx
   character message*22,call1*12,cdbm*3
   character*22 msg0,msg1,msg2,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
-  character cmnd*120
+  character cmnd*120,snrfile*80
   integer*2 jwave,icwid
   integer soundout,ptt
   include 'acom1.f90'
@@ -79,11 +79,13 @@ subroutine tx
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
   ctxmsg=message
   snr=99.0
-  open(18,file='test.snr',status='old',err=10)
+  
+  snrfile=appdir(:nappdir)//'/test.snr'
+  open(18,file=snrfile,status='old',err=10)
   read(18,*,err=10,end=10) snr
   close(18)
 
-10 call genwspr(message,ntxdf,snr,msg2,jwave)
+10 call genwspr(message,ntxdf,snr,appdir,nappdir,msg2,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then
