@@ -9,17 +9,17 @@ subroutine tx
   integer system
 #endif
 
-  parameter (NMAX2=120*40000)
-  parameter (NMAX3=4*48000)
+  parameter (NMAX2=120*48000)
+  parameter (NMAX3=5*48000)
   character message*22,call1*12,cdbm*3
   character*22 msg0,msg1,msg2,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
   character cmnd*120
-  integer*2 jwave(NMAX2)
-  integer*2 icwid(NMAX3)
+  integer*2 jwave,icwid
   integer soundout,ptt
   include 'acom1.f90'
   common/bcom/ntransmitted
+  common/dcom/jwave(NMAX2),icwid(NMAX3)
   data ntx/0/,ns0/0/
   save ntx,ns0
 
@@ -80,8 +80,8 @@ subroutine tx
   open(18,file='test.snr',status='old',err=10)
   read(18,*,err=10,end=10) snr
   close(18)
-10 call genwspr(message,ntxdf,snr,msg2,jwave)
 
+10 call genwspr(message,ntxdf,snr,msg2,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then
@@ -91,20 +91,25 @@ subroutine tx
      cwmsg=call1(:i1)//'                      '
      icwid=0
      call gencwid(cwmsg,wpm,freqcw,icwid,ncwid)
-     k0=114*48000
-     k1=115*48000
+     k0=113*48000
+     k1=k0+24000
+     k2=k1+5*48000
      jwave(k0:k1)=0
-     jwave(k1+1:k1+48000)=icwid
-     npts=k1+48000
+     jwave(k1+1:k2)=icwid
+     jwave(k2:)=0
+!     print*,'C',k0/48000.,k1/48000.,k2/48000.
+     npts=k2
      ns0=nsec
   endif
 
   sending=msg2
-  if(ntune.eq.1) npts=48000*pctx
-  print*,'A',npts
-  ierr=soundout(ndevout,jwave(2*48000),npts)
-  print*,'B'
-  ntune=0
+  if(ntune.eq.0) then
+     ierr=soundout(ndevout,jwave(48000),npts)
+  else
+     npts=48000*pctx
+     ierr=soundout(ndevout,jwave(2*48000),npts)
+     ntune=0
+  endif
   if(ierr.ne.0) then
      print*,'Error in soundout',ierr
      stop

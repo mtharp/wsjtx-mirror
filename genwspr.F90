@@ -27,8 +27,8 @@ subroutine genwspr(message,ntxdf,snrdb,msg2,iwave)
     0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,0,   &
     0,0/
 
-  data first/.true./,idum/0/,ihrtx0/99/
-  save
+  data first/.true./,idum/0/
+  save first,idum,pi,twopi
 
   if(first) then
      pi=4.d0*atan(1.d0)

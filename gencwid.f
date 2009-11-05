@@ -14,7 +14,7 @@
  10   iz=i-1
       msg2=msg(1:iz)//'                      '
       call morse(msg2,idat,ndits) !Encode part 1 of msg
-      nwave=4*48000
+      nwave=5*48000
       dt=1.d0/48000.d0
       wpm=1.2*ndits/(nwave*dt)
       if(wpm.lt.wpm0) wpm=wpm0

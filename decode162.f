@@ -14,7 +14,6 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
       logical first
       data first/.true./
       integer npr3(162)
-      common/ccom/rr(162)
       data npr3/
      + 1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,
      + 0,1,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,0,1,
