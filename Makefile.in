@@ -95,6 +95,7 @@ install: WsprMod/w.so
 	${INSTALL} wspr ${PREFIX}/bin
 
 deb: wspr.py WsprMod/w.so WsprMod/g.py WsprMod/__init__.py \
+	WsprMod/advanved.py \
 	WsprMod/options.py WsprMod/palettes.py WsprMod/PmwBlt.py \
 	WsprMod/PmwColor.py WsprMod/Pmw.py DEB/DEBIAN/control \
 	supported_rigs.txt wsprrc DEB/WSPR/wspr
