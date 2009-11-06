@@ -52,6 +52,7 @@ w.acom1.nappdir=len(appdir)
 w.acom1.appdir=(appdir+(' '*80))[:80]
 i1,i2=w.audiodev(0,2)
 from WsprMod import options
+from WsprMod import advanced
 
 #------------------------------------------------------ Global variables
 bandmap=[]
@@ -68,7 +69,6 @@ iband=IntVar()
 iband0=0
 idle=IntVar()
 idsec=0
-igrid6=IntVar()
 ipctx=IntVar()
 isec0=0
 isync=1
@@ -229,6 +229,10 @@ def options1(event=NONE):
 #    options.options2(root_geom[root_geom.index("+"):])
     options.options2("")
 
+#------------------------------------------------------ advanced1
+def advanced1(event=NONE):
+    advanced.advanced2("")
+
 #------------------------------------------------------ stub
 def stub(event=NONE):
     MsgBox("Sorry, this function is not yet implemented.")
@@ -341,6 +345,7 @@ def tune(event=NONE):
     idle.set(1)
     w.acom1.ntune=1
     btune.configure(bg='yellow')
+#    balloon.configure(state='none')
 
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
@@ -628,9 +633,11 @@ def put_params(param3=NONE):
     w.acom1.idsec=idsec
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
-    w.acom1.nbfo=options.bfofreq.get()
-    w.acom1.idint=options.idint.get()
-    w.acom1.igrid6=igrid6.get()
+    w.acom1.nbfo=advanced.bfofreq.get()
+    w.acom1.idint=advanced.idint.get()
+    if options.MyCall.get().find('/')>0:
+        advanced.igrid6.set(1)
+    w.acom1.igrid6=advanced.igrid6.get()
     w.acom1.ndevin=g.ndevin.get()
     w.acom1.ndevout=g.ndevout.get()
     w.acom1.nbaud=options.serial_rate.get()
@@ -918,13 +925,14 @@ setupbutton = Menubutton(mbar, text = 'Setup')
 setupbutton.pack(side = LEFT)
 setupmenu = Menu(setupbutton, tearoff=0)
 setupbutton['menu'] = setupmenu
-setupmenu.add('command', label = 'Options', command = options1,
+setupmenu.add('command', label = 'Station parameters', command = options1,
               accelerator='F2')
-setupmenu.add_separator()
-setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
-setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
-setupmenu.add_separator()
-setupmenu.add_checkbutton(label = 'Tx 6-digit locator',variable=igrid6)
+setupmenu.add('command', label = 'Advanced', command = advanced1,
+              accelerator='Alt+F2')
+##setupmenu.add_separator()
+##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
+##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
+##setupmenu.add_separator()
 
 #--------------------------------------------------------- View menu
 setupbutton = Menubutton(mbar, text = 'View', )
@@ -988,6 +996,7 @@ helpmenu.add('command', label = 'About WSPR', command = about, accelerator='F4')
 root.bind_all('<Escape>', stop_loopall)
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
+root.bind_all('<Alt-F2>', advanced1)
 root.bind_all('<F3>', audio_devices)
 root.bind_all('<F4>', about)
 root.bind_all('<Alt-F4>', quit)
@@ -1003,6 +1012,7 @@ graph1=Canvas(iframe1, bg='black', width=NX, height=NY,cursor='crosshair')
 Widget.bind(graph1,"<Motion>",df_readout)
 Widget.bind(graph1,"<Double-Button-1>",set_tx_freq)
 graph1.pack(side=LEFT)
+balloon.bind(graph1,"Double-click to select a Tx frequency")
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
@@ -1025,10 +1035,11 @@ sc1.pack(side=LEFT)
 sc2=Scale(iframe2,from_=-100.0,to_=100.0,orient='horizontal',
     showvalue=0,sliderlength=5)
 sc2.pack(side=LEFT)
-balloon.bind(sc1,"Brightness", "Brightness")
-balloon.bind(sc2,"Contrast", "Contrast")
+balloon.bind(sc1,"Brightness")
+balloon.bind(sc2,"Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 bupload.place(x=420,y=12, anchor='e')
+balloon.bind(bupload,"Check to send spots to WSPRnet.org")
 lab02=Label(iframe2,text='',pady=5)
 lab02.place(x=500,y=10, anchor='e')
 lab03=Label(iframe2,text='',pady=5)
@@ -1046,6 +1057,9 @@ lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
 widgets = (lf0,lftx)
 for widget in widgets:
     widget.pack(side=TOP,padx=5,pady=4)
+balloon.bind(lf0,"Double-click to set default frequency for this band")
+balloon.bind(lftx,"Will transmit on this frequency")
+
 Pmw.alignlabels(widgets)
 
 g1.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
@@ -1055,15 +1069,17 @@ g2=Pmw.Group(iframe2a,tag_text="Tx fraction (%)")
 pctscale=Scale(g2.interior(),orient=HORIZONTAL,length=350,from_=0, \
                to=100,tickinterval=10,variable=ipctx)
 pctscale.pack(side=LEFT,padx=4)
+balloon.bind(pctscale,"Select desired fraction of sequences to transmit")
 ipctx.set(0)
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 g3=Pmw.Group(iframe2a,tag_text='Special')
 bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle)
 bidle.pack(padx=8)
+balloon.bind(bidle,"Check for no automatic T/R sequences")
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,
              width=9,padx=1,pady=2)
 btune.pack(side=TOP,padx=10,pady=8)
-balloon.bind(btune,"Tx for number of seconds set by Tx fraction slider")
+balloon.bind(btune,"Transmit for number of seconds set by Tx fraction slider")
 g3.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=1)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
@@ -1079,6 +1095,7 @@ f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 berase=Button(f4a, text='Erase',underline=0,command=erase,\
               width=9,padx=1,pady=1)
 berase.pack(side=TOP,padx=0,pady=20)
+balloon.bind(berase,"Erase decoded text and band map")
 
 ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
@@ -1089,8 +1106,7 @@ ldsec=Label(f4a,bg='white',fg='black',text='Dsec  0.0',width=9,relief=RIDGE)
 ldsec.pack(side=TOP,ipadx=3,padx=2,pady=20)
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(ldsec,'<Button-3>',decdsec)
-
-
+balloon.bind(ldsec,"Left- or right-click to adjust UTC")
 
 f4a.pack(side=LEFT,expand=0,fill=Y)
 
@@ -1114,8 +1130,10 @@ msg2=Message(iframe6, text='      ', width=300,relief=FLAT)
 msg2.pack(side=LEFT, fill=X, padx=1)
 msg3=Message(iframe6, text='      ',width=300,relief=FLAT)
 msg3.pack(side=LEFT, fill=X, padx=1)
-##msg4=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-##msg4.pack(side=LEFT, fill=X, padx=1)
+msg4=Message(iframe6, text='      ', width=300,relief=FLAT)
+msg4.pack(side=LEFT, fill=X, padx=1)
+balloon.configure(statuscommand=msg4)
+
 ##msg5=Message(iframe6, text='      ', width=300,relief=SUNKEN)
 ##msg5.pack(side=LEFT, fill=X, padx=1)
 msg6=Message(iframe6, text='      ', width=400,relief=SUNKEN)
@@ -1147,10 +1165,9 @@ try:
         if   key == 'WSPRGeometry': root.geometry(value)
         elif key == 'MyCall': options.MyCall.set(value)
         elif key == 'MyGrid': options.MyGrid.set(value)
-        elif key == 'CWID': options.idint.set(value)
+        elif key == 'CWID': advanced.idint.set(value)
         elif key == 'dBm': options.dBm.set(value)
         elif key == 'PctTx': ipctx.set(value)
-#        elif key == 'IDinterval': options.IDinterval.set(value)
         elif key == 'PttPort': options.PttPort.set(value)
         elif key == 'CatPort': options.CatPort.set(value)
 ##            try:
@@ -1181,10 +1198,10 @@ try:
                 g.ndevout.set(0)
             options.DevoutName.set(value)
 
-        elif key == 'BFOfreq': options.bfofreq.set(value)
+        elif key == 'BFOfreq': advanced.bfofreq.set(value)
         elif key == 'PTTmode': options.pttmode.set(value)
         elif key == 'CATenable': options.cat_enable.set(int(value))
-        elif key == 'TxGrid6': igrid6.set(int(value))
+##        elif key == 'TxGrid6': advanced.igrid6.set(int(value))
         elif key == 'SerialRate': options.serial_rate.set(int(value))
         elif key == 'DataBits': options.databits.set(int(value))
         elif key == 'StopBits': options.stopbits.set(int(value))
@@ -1295,16 +1312,16 @@ f=open(appdir+'/WSPR.INI',mode='w')
 f.write("WSPRGeometry " + root_geom + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
-f.write("CWID " + str(options.idint.get()) + "\n")
+f.write("CWID " + str(advanced.idint.get()) + "\n")
 f.write("dBm " + str(options.dBm.get()) + "\n")
 f.write("PttPort " + str(options.PttPort.get()) + "\n")
 f.write("CatPort " + str(options.CatPort.get()) + "\n")
 f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
 f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
-f.write("BFOfreq " + str(options.bfofreq.get()) + "\n")
+f.write("BFOfreq " + str(advanced.bfofreq.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")
 f.write("CATenable " + str(options.cat_enable.get()) + "\n")
-f.write("TxGrid6 " + str(igrid6.get()) + "\n")
+##f.write("TxGrid6 " + str(advanced.igrid6.get()) + "\n")
 f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
 f.write("DataBits " + str(options.databits.get()) + "\n")
 f.write("StopBits " + str(options.stopbits.get()) + "\n")

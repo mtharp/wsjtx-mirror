@@ -11,7 +11,7 @@ root=Toplevel()
 root.withdraw()
 root.protocol('WM_DELETE_WINDOW',done)
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title("Options")
+root.title("Station parameters")
 
 balloon=Pmw.Balloon(root)
 
@@ -33,9 +33,7 @@ def options2(t):
     root.focus_set()
 
 #-------------------------------------------------------- Create GUI widgets
-g1=Pmw.Group(root,tag_text="Station parameters")
-IDinterval=IntVar()
-bfofreq=IntVar()
+g1=Pmw.Group(root,tag_pyclass=None)
 ptt_port=IntVar()
 CatPort=StringVar()
 PttPort=StringVar()
@@ -54,7 +52,6 @@ stopbits=IntVar()
 stopbits.set(2)
 serial_handshake=StringVar()
 cat_enable=IntVar()
-idint=IntVar()
 rignum=IntVar()
 inbad=IntVar()
 outbad=IntVar()
@@ -141,10 +138,6 @@ lcall=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Call:',
 lgrid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Grid:',
         value='',entry_textvariable=MyGrid,entry_width=5,
         validate=chkgrid)
-cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
-        value='0',entry_textvariable=idint,entry_width=5)
-rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
-        value='1500',entry_textvariable=bfofreq,entry_width=12)
 audioin=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Audio In:',
         entry_textvariable=DevinName,entry_width=30,
         scrolledlist_items=indevlist,selectioncommand=audin)
@@ -172,11 +165,11 @@ cbstop=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Stop bits:',
         entry_textvariable=stopbits,entry_width=4,scrolledlist_items=stoplist)
 cbhs=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Handshake:',
         entry_textvariable=serial_handshake,entry_width=4,scrolledlist_items=hslist)
-widgets = (lcall,lgrid,cwid,rxbfo,audioin,audioout,cbpwr,cbptt,ptt_port,\
+widgets = (lcall,lgrid,audioin,audioout,cbpwr,cbptt,ptt_port,\
            encat,cat_port,lrignum,cbbaud,cbdata,cbstop,cbhs)
 for widget in widgets:
     widget.pack(fill=X,expand=1,padx=10,pady=2)
 Pmw.alignlabels(widgets)
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()
-g1.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
+g1.pack(side=LEFT,fill=BOTH,expand=1,padx=4,pady=4)
