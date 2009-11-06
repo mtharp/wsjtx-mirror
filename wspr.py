@@ -1073,13 +1073,12 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
-Widget.bind(g1.interior(),"<Double-Button-1>",set_def_freqs)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
 widgets = (lf0,lftx)
 for widget in widgets:
     widget.pack(side=TOP,padx=5,pady=4)
-balloon.bind(lf0,"Double-click to set default frequency for this band")
+balloon.bind(lf0,"USB dial frequency")
 balloon.bind(lftx,"Will transmit on this frequency")
 
 Pmw.alignlabels(widgets)
