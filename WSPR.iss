@@ -10,6 +10,7 @@ Source: "c:\k1jt\svn\wsjt\wspr\wspr.exe";            DestDir: "{app}"
 Source: "c:\k1jt\svn\wsjt\wspr\wsjt.ico";            DestDir: "{app}";
 Source: "c:\k1jt\svn\wsjt\wspr\wsprrc.win";          DestDir: "{app}";
 Source: "c:\k1jt\svn\wsjt\wspr\supported_rigs.txt";  DestDir: "{app}";
+Source: "c:\k1jt\svn\wsjt\wspr\default_freqs.txt";   DestDir: "{app}";
 Source: "c:\k1jt\svn\wsjt\wspr\rigctl.exe";          DestDir: "{app}";
 Source: "c:\k1jt\svn\wsjt\wspr\libhamlib-2.dll";     DestDir: "{app}";
 Source: "c:\k1jt\svn\wsjt\wspr\hamlib*.dll";         DestDir: "{app}";

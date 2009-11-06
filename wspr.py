@@ -122,11 +122,12 @@ g.DevinName=StringVar()
 g.DevoutName=StringVar()
 
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
-freq0=[0,1.8366,3.5926,5.3305,7.0386,10.1387,14.0956,18.1046,21.0946,24.9246,\
-       28.1246,50.2930,5.3305]
-freqtx=[0,1.8366,3.5926,5.3305,7.0386,10.1387,14.0956,18.1046,21.0946,24.9246,\
-       28.1246,50.2930,5.3305]
-for i in range(13):
+freq0=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
+       21.0946,24.9246,28.1246,50.2930,144.4880,10.1387]
+freqtx=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
+       21.0946,24.9246,28.1246,50.2930,144.4880,10.1387]
+
+for i in range(15):
     freqtx[i]=freq0[i]+0.001500
 
 socktimeout = 10
@@ -355,6 +356,23 @@ def df_readout(event):
     nhz=int(nhz%1000)
     t="%3d Hz" % nhz
     lab02.configure(text=t,bg='red')
+
+#----------------------------------------------------- set_def_freqs
+def set_def_freqs(event):
+    try:
+        f=open('default_freqs.txt','r')
+        s=f.readlines()
+        f.close
+        freq0=[]
+        for i in range(len(s)):
+            cband,cfreq=s[i].split()
+            rfreq=float(cfreq)
+            freq0.append(rfreq)
+    except:
+        print 'No freq file'
+        pass
+    for i in range(15):
+        freqtx[i]=freq0[i]+0.001500
 
 #----------------------------------------------------- set_tx_freq
 def set_tx_freq(event):
@@ -970,17 +988,20 @@ bandbutton.pack(side = LEFT)
 bandmenu = Menu(bandbutton, tearoff=0)
 bandbutton['menu'] = bandmenu
 iband.set(5)
-bandmenu.add_radiobutton(label = '160 m', variable=iband,value=1)
-bandmenu.add_radiobutton(label = '80 m', variable=iband,value=2)
-bandmenu.add_radiobutton(label = '40 m', variable=iband,value=4)
-bandmenu.add_radiobutton(label = '30 m', variable=iband,value=5)
-bandmenu.add_radiobutton(label = '20 m', variable=iband,value=6)
-bandmenu.add_radiobutton(label = '17 m', variable=iband,value=7)
-bandmenu.add_radiobutton(label = '15 m', variable=iband,value=8)
-bandmenu.add_radiobutton(label = '12 m', variable=iband,value=9)
-bandmenu.add_radiobutton(label = '10 m', variable=iband,value=10)
-bandmenu.add_radiobutton(label = '6 m', variable=iband,value=11)
-bandmenu.add_radiobutton(label = 'Other', variable=iband,value=12)
+bandmenu.add_radiobutton(label = '600 m',variable=iband,value=1)
+bandmenu.add_radiobutton(label = '160 m',variable=iband,value=2)
+bandmenu.add_radiobutton(label = '80 m', variable=iband,value=3)
+bandmenu.add_radiobutton(label = '60 m', variable=iband,value=4)
+bandmenu.add_radiobutton(label = '40 m', variable=iband,value=5)
+bandmenu.add_radiobutton(label = '30 m', variable=iband,value=6)
+bandmenu.add_radiobutton(label = '20 m', variable=iband,value=7)
+bandmenu.add_radiobutton(label = '17 m', variable=iband,value=8)
+bandmenu.add_radiobutton(label = '15 m', variable=iband,value=9)
+bandmenu.add_radiobutton(label = '12 m', variable=iband,value=10)
+bandmenu.add_radiobutton(label = '10 m', variable=iband,value=11)
+bandmenu.add_radiobutton(label = '6 m',  variable=iband,value=12)
+bandmenu.add_radiobutton(label = '2 m',  variable=iband,value=13)
+bandmenu.add_radiobutton(label = 'Other',variable=iband,value=14)
 
 
 #------------------------------------------------------  Help menu
@@ -1052,6 +1073,7 @@ iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
+Widget.bind(g1.interior(),"<Double-Button-1>",set_def_freqs)
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
 widgets = (lf0,lftx)
@@ -1215,29 +1237,35 @@ try:
         elif key == 'WatScale': sc1.set(value)
         elif key == 'WatOffset': sc2.set(value)
 
-        elif key == 'freq0_160': freq0[1]=float(value)
-        elif key == 'freq0_80': freq0[2]=float(value)
-        elif key == 'freq0_40': freq0[4]=float(value)
-        elif key == 'freq0_30': freq0[5]=float(value)
-        elif key == 'freq0_20': freq0[6]=float(value)
-        elif key == 'freq0_17': freq0[7]=float(value)
-        elif key == 'freq0_15': freq0[8]=float(value)
-        elif key == 'freq0_12': freq0[9]=float(value)
-        elif key == 'freq0_10': freq0[10]=float(value)
-        elif key == 'freq0_6': freq0[11]=float(value)
-        elif key == 'freq0_other': freq0[12]=float(value)
+        elif key == 'freq0_600': freq0[1]=float(value)
+        elif key == 'freq0_160': freq0[2]=float(value)
+        elif key == 'freq0_80': freq0[3]=float(value)
+        elif key == 'freq0_60': freq0[4]=float(value)
+        elif key == 'freq0_40': freq0[5]=float(value)
+        elif key == 'freq0_30': freq0[6]=float(value)
+        elif key == 'freq0_20': freq0[7]=float(value)
+        elif key == 'freq0_17': freq0[8]=float(value)
+        elif key == 'freq0_15': freq0[9]=float(value)
+        elif key == 'freq0_12': freq0[10]=float(value)
+        elif key == 'freq0_10': freq0[11]=float(value)
+        elif key == 'freq0_6': freq0[12]=float(value)
+        elif key == 'freq0_2': freq0[13]=float(value)
+        elif key == 'freq0_other': freq0[14]=float(value)
 
-        elif key == 'freqtx_160': freqtx[1]=float(value)
-        elif key == 'freqtx_80': freqtx[2]=float(value)
-        elif key == 'freqtx_40': freqtx[4]=float(value)
-        elif key == 'freqtx_30': freqtx[5]=float(value)
-        elif key == 'freqtx_20': freqtx[6]=float(value)
-        elif key == 'freqtx_17': freqtx[7]=float(value)
-        elif key == 'freqtx_15': freqtx[8]=float(value)
-        elif key == 'freqtx_12': freqtx[9]=float(value)
-        elif key == 'freqtx_10': freqtx[10]=float(value)
-        elif key == 'freqtx_6': freqtx[11]=float(value)
-        elif key == 'freqtx_other': freqtx[12]=float(value)
+        elif key == 'freqtx_600': freqtx[1]=float(value)
+        elif key == 'freqtx_160': freqtx[2]=float(value)
+        elif key == 'freqtx_80': freqtx[3]=float(value)
+        elif key == 'freqtx_60': freqtx[4]=float(value)
+        elif key == 'freqtx_40': freqtx[5]=float(value)
+        elif key == 'freqtx_30': freqtx[6]=float(value)
+        elif key == 'freqtx_20': freqtx[7]=float(value)
+        elif key == 'freqtx_17': freqtx[8]=float(value)
+        elif key == 'freqtx_15': freqtx[9]=float(value)
+        elif key == 'freqtx_12': freqtx[10]=float(value)
+        elif key == 'freqtx_10': freqtx[11]=float(value)
+        elif key == 'freqtx_6': freqtx[12]=float(value)
+        elif key == 'freqtx_2': freqtx[13]=float(value)
+        elif key == 'freqtx_other': freqtx[14]=float(value)
         elif key == 'iband': iband.set(value)
 
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
@@ -1335,28 +1363,34 @@ f.write("Debug " + str(ndebug.get()) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")
 f.write("WatScale " + str(s0)+ "\n")
-f.write("freq0_160 " + str( freq0[1]) + "\n")
-f.write("freqtx_160 " + str(freqtx[1]) + "\n")
-f.write("freq0_80 "  + str( freq0[2]) + "\n")
-f.write("freqtx_80 " + str(freqtx[2]) + "\n")
-f.write("freq0_40 "  + str( freq0[4]) + "\n")
-f.write("freqtx_40 " + str(freqtx[4]) + "\n")
-f.write("freq0_30 "  + str( freq0[5]) + "\n")
-f.write("freqtx_30 " + str(freqtx[5]) + "\n")
-f.write("freq0_20 "  + str( freq0[6]) + "\n")
-f.write("freqtx_20 " + str(freqtx[6]) + "\n")
-f.write("freq0_17 "  + str( freq0[7]) + "\n")
-f.write("freqtx_17 " + str(freqtx[7]) + "\n")
-f.write("freq0_15 "  + str( freq0[8]) + "\n")
-f.write("freqtx_15 " + str(freqtx[8]) + "\n")
-f.write("freq0_12 "  + str( freq0[9]) + "\n")
-f.write("freqtx_12 " + str(freqtx[9]) + "\n")
-f.write("freq0_10 "  + str( freq0[10]) + "\n")
-f.write("freqtx_10 " + str(freqtx[10]) + "\n")
-f.write("freq0_6 "  + str( freq0[11]) + "\n")
-f.write("freqtx_6 " + str(freqtx[11]) + "\n")
-f.write("freq0_other "  + str( freq0[12]) + "\n")
-f.write("freqtx_other " + str(freqtx[12]) + "\n")
+f.write("freq0_600 " + str( freq0[1]) + "\n")
+f.write("freqtx_600 " + str(freqtx[1]) + "\n")
+f.write("freq0_160 " + str( freq0[2]) + "\n")
+f.write("freqtx_160 " + str(freqtx[2]) + "\n")
+f.write("freq0_80 "  + str( freq0[3]) + "\n")
+f.write("freqtx_80 " + str(freqtx[3]) + "\n")
+f.write("freq0_60 "  + str( freq0[4]) + "\n")
+f.write("freqtx_60 " + str(freqtx[4]) + "\n")
+f.write("freq0_40 "  + str( freq0[5]) + "\n")
+f.write("freqtx_40 " + str(freqtx[5]) + "\n")
+f.write("freq0_30 "  + str( freq0[6]) + "\n")
+f.write("freqtx_30 " + str(freqtx[6]) + "\n")
+f.write("freq0_20 "  + str( freq0[7]) + "\n")
+f.write("freqtx_20 " + str(freqtx[7]) + "\n")
+f.write("freq0_17 "  + str( freq0[8]) + "\n")
+f.write("freqtx_17 " + str(freqtx[8]) + "\n")
+f.write("freq0_15 "  + str( freq0[9]) + "\n")
+f.write("freqtx_15 " + str(freqtx[9]) + "\n")
+f.write("freq0_12 "  + str( freq0[10]) + "\n")
+f.write("freqtx_12 " + str(freqtx[10]) + "\n")
+f.write("freq0_10 "  + str( freq0[11]) + "\n")
+f.write("freqtx_10 " + str(freqtx[11]) + "\n")
+f.write("freq0_6 "  + str( freq0[12]) + "\n")
+f.write("freqtx_6 " + str(freqtx[12]) + "\n")
+f.write("freq0_2 "  + str( freq0[13]) + "\n")
+f.write("freqtx_2 " + str(freqtx[13]) + "\n")
+f.write("freq0_other "  + str( freq0[14]) + "\n")
+f.write("freqtx_other " + str(freqtx[14]) + "\n")
 f.write("iband " + str(iband.get()) + "\n")
 
 f.close()
