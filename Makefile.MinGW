@@ -57,7 +57,8 @@ WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	mv w.pyd WsprMod/w.pyd
 
 
-wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py 
+wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py \
+	WsprMod/advanced.py
 	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
 	  wsjt.ico --tk --onefile wspr.py
 

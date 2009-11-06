@@ -31,9 +31,9 @@ Set a CW ID interval (in minutes) only if your regulating
 authority requires you to identify in Morse code.
 Otherwise leave the ID interval set to 0.
 
-Please note: Unnecessary CW identification may cause
-interference to other WSPR signals, because CW
-bandwidth is much greter than WSPR signal bandwidth.
+Please note: unnecessary use of CW identification causes
+needless interference to other WSPR signals, since CW
+bandwidth is much more than WSPR signal bandwidth.
 """
 lab1=Label(g1.interior(),text=t,justify=LEFT)
 
@@ -41,12 +41,10 @@ cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (minutes):',
         value='0',entry_textvariable=idint,entry_width=5)
 
 t="""
-Normally the center of the WSPR reception band is the
-dial frequency plus 1500 Hz.  This is the correct value
-for all standard transceivers.
-
-Users of special hardware may select a different BFO
-frequency here.  
+Normally the WSPR reception band is centered at dial
+frequency plus 1500 Hz.  This offset is the correct value
+for all standard transceivers.  Users of special hardware
+(SoftRock, etc.) may select a different BFO frequency here.  
 """
 lab2=Label(g1.interior(),text=t,justify=LEFT)
 
@@ -54,22 +52,28 @@ rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
         value='1500',entry_textvariable=bfofreq,entry_width=12)
 
 t="""
-Normal WSPR transmissions use 4-character locators, e.g.,
+Normal WSPR transmissions use 4-character locators,
+foe example:
 
     K1ABC FN42 37
 
 If you must use a compound callsign such as PJ4/K1ABC
-or G2XYZ/P, WSPR will use a two-transmission sequence:
+or K1ABC/P, WSPR will use a two-transmission sequence
+including your 6-digit locator:
 
     PJ4/K1ABC 37
     <K1ABC> FK52UD 37
 
 Although not recommended for normal use, you may force
-two-transmission sequences for normal callsigns by
-checking this box.
+two-transmission sequences with 6-digit locators by
+checking the box below.  The sequence will then have
+this form:
+
+    K1ABC FN42 37
+    <K1ABC> FN42AX 37
 """
 lab3=Label(g1.interior(),text=t,justify=LEFT)
-bgrid6=Checkbutton(g1.interior(),text='Tx 6-digit locator',variable=igrid6)
+bgrid6=Checkbutton(g1.interior(),text='Transmit 6-digit locator',variable=igrid6)
 
 widgets = (lab1,cwid,lab2,rxbfo,lab3,bgrid6)
 for widget in widgets:
