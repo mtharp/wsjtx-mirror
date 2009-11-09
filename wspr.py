@@ -603,13 +603,8 @@ def autolog(decodes):
             #for r in reply:
             #    print r
             urlf.close()
-    # The proper way to handle url posting will be to define the url as a
-    # configuration parameter so data sinks could be added/removed as necessary.
-    # It is not strictly necessary to post reports to W6CQZ, but, since I
-    # happen to be W6CQZ I can better debug things from the server side by
-    # sending to my system during the active development phase of this code.
     except:
-        print "Socket error, non-fatal."
+        print time.asctime(time.gmtime())+" UTC: attempted access to WSPRnet timed out."
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
