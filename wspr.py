@@ -281,14 +281,17 @@ def help(event=NONE):
     t="Basic Operating Instructions"
     Label(about,text=t,font=(font1,14)).pack(padx=20,pady=5)
     t="""
-1. Open the Setup | Options screen and enter your callsign,
-   grid locator, and Tx power in dBm.  Select desired
-   devices for Audio In and Audio Out.
+1. Open the Setup | Station Parameters screen and enter
+   your callsign and grid locator 6 characters).  Select
+   desired devices for Audio In and Audio Out, and your
+   power level in dBm.
    
-2. Select a serial port for PTT control via DTR/RTS, or for
-   rig control including T/R switching and setting of
-   frequency and power level.  For rig control check
-   'Enable CAT' and enter suitable parameters.
+2. Select your PTT method (CAT control, DTR, or RTS).  If
+   you choose DTR or RTS, select a PTT port.  If T/R
+   switching or frequency setting will be done by CAT
+   control, select a CAT port and be sure that "Enable CAT"
+   is checked.  You will need to enter a Rig number and
+   correct parameters for the serial connection.
 
 3. Select the desired band from the Band menu and if
    necessary correct your USB dial frequency on the main
@@ -304,11 +307,11 @@ def help(event=NONE):
    an automatic internet-based clock-setting utility.
 
 6. WSPR will begin a Tx or Rx sequence at the start of each
-   even minute.  The waterfall will update and decoding will
-   take place at the end of each Rx sequence.  During
-   reception, you can adjust the Rx noise level to get
-   something close to 0 dB.  Use Setup | Rx volume control
-   or change your receiver's output level.
+   even-numbered minute.  The waterfall will update and
+   decoding will take place at the end of each Rx sequence.
+   During reception, you can adjust the Rx noise level to get
+   something close to 0 dB.  Use the operating system's audio
+   mixer control or change your receiver's output level.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
@@ -1033,7 +1036,6 @@ graph1=Canvas(iframe1, bg='black', width=NX, height=NY,cursor='crosshair')
 Widget.bind(graph1,"<Motion>",df_readout)
 Widget.bind(graph1,"<Double-Button-1>",set_tx_freq)
 graph1.pack(side=LEFT)
-balloon.bind(graph1,"Double-click to select a Tx frequency")
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
@@ -1273,12 +1275,14 @@ except:
     print 'key=',key,'   value=',value
     print 'Continuing with defaults.'
 
-if options.MyCall.get()=='':
+if options.MyCall.get()=='' or options.MyCall.get()=='##':
     options.lcall._entryFieldEntry['background']='pink'
+    options1()
 else:
     options.lcall._entryFieldEntry['background']='white'
-if options.MyGrid.get()=='':
+if options.MyGrid.get()=='' or options.MyGrid.get()=='##':
     options.lgrid._entryFieldEntry['background']='pink'
+    options1()
 else:
     options.lgrid._entryFieldEntry['background']='white'
 
@@ -1337,13 +1341,17 @@ root.mainloop()
 # Clean up and save user options before terminating
 f=open(appdir+'/WSPR.INI',mode='w')
 f.write("WSPRGeometry " + root_geom + "\n")
+if options.MyCall.get()=='': options.MyCall.set('##')
 f.write("MyCall " + options.MyCall.get() + "\n")
+if options.MyGrid.get()=='': options.MyGrid.set('##')
 f.write("MyGrid " + options.MyGrid.get() + "\n")
 f.write("CWID " + str(advanced.idint.get()) + "\n")
 f.write("dBm " + str(options.dBm.get()) + "\n")
 f.write("PttPort " + str(options.PttPort.get()) + "\n")
 f.write("CatPort " + str(options.CatPort.get()) + "\n")
+if options.DevinName.get()=='': options.DevinName.set('0')
 f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
+if options.DevoutName.get()=='': options.DevoutName.set('2')
 f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
 f.write("BFOfreq " + str(advanced.bfofreq.get()) + "\n")
 f.write("PTTmode " + options.pttmode.get() + "\n")

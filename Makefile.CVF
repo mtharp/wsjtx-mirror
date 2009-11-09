@@ -41,7 +41,7 @@ OBJS2 = rxtest.obj decode162.obj spec162.obj set.obj xfft.obj \
 	fchisq.obj ccf2.obj twkfreq.obj wqdecode.obj \
 	afc2.obj packcall.obj packgrid.obj pack50.obj encode232.obj \
 	nhash.obj hash.obj unpackname.obj unpacktext2.obj deg2grid.obj \
-	unpackpfx.obj unpackprop.obj
+	unpackpfx.obj unpackprop.obj thcvf.obj
 
 rxtest.exe: $(OBJS2)
 	$(FC) $(FFLAGS) /exe:rxtest.exe $(OBJS2)
