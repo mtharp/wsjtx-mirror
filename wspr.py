@@ -26,6 +26,7 @@ from WsprMod import w
 import socket
 import urllib
 import thread
+import webbrowser
 
 root = Tk()
 Version="2.0_r" + "$Rev$"[6:-1]
@@ -315,6 +316,14 @@ def help(event=NONE):
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
+
+#------------------------------------------------------ usersguide
+def usersguide(event=NONE):
+    webbrowser.open('http://physics.princeton.edu/pulsar/K1JT/wspr.html')
+
+#------------------------------------------------------ usersguide
+def homepage(event=NONE):
+    webbrowser.open('http://physics.princeton.edu/pulsar/K1JT/')
 
 #------------------------------------------------------ incdsec
 def incdsec(event):
@@ -885,27 +894,6 @@ def audio_config():
     else:
         w.acom1.ndevsok=1
 
-#------------------------------------------------------ audio_devices
-def audio_devices(event=NONE):
-    audev=Toplevel(root)
-    audev.geometry(msgpos())
-    if g.Win32: audev.iconbitmap("wsjt.ico")
-    f=open(appdir+'/audio_caps','r')
-    s=f.readlines()
-    f.close
-    t="Audio Input Devices:\n"
-    for i in range(len(s)):
-        col=s[i].split()
-        if int(col[1])>0:
-            t=t + '  ' + str(i) + s[i][28:]
-    t=t+"\nAudio Output Devices:\n"
-    for i in range(len(s)):
-        col=s[i].split()
-        if int(col[2])>0:
-            t=t + '  ' + str(i) + s[i][28:]
-    Label(audev,text=t,justify=LEFT).pack(padx=20)
-    audev.focus_set()
-
 #------------------------------------------------------ save_params
 def save_params():
     f=open(appdir+'/WSPR.INI',mode='w')
@@ -1069,16 +1057,16 @@ helpbutton = Menubutton(mbar, text = 'Help')
 helpbutton.pack(side = LEFT)
 helpmenu = Menu(helpbutton, tearoff=0)
 helpbutton['menu'] = helpmenu
-helpmenu.add('command', label = 'Help', command = help, accelerator='F1')
-helpmenu.add('command', label = 'Available audio devices', \
-             command = audio_devices, accelerator='F3')
-helpmenu.add('command', label = 'About WSPR', command = about, accelerator='F4')
-
+helpmenu.add('command',label='Help',command=help,accelerator='F1')
+helpmenu.add('command',label="Online User's Guide",command=usersguide, \
+        accelerator='F3')
+helpmenu.add('command',label="WSJT Home Page",command=homepage)
+helpmenu.add('command', label='About WSPR',command=about,accelerator='F4')
 root.bind_all('<Escape>', stop_loopall)
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
 root.bind_all('<Alt-F2>', advanced1)
-root.bind_all('<F3>', audio_devices)
+root.bind_all('<F3>', usersguide)
 root.bind_all('<F4>', about)
 root.bind_all('<Alt-F4>', quit)
 root.bind_all('<F6>', opennext)
