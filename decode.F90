@@ -14,8 +14,9 @@ subroutine decode
   include 'acom1.f90'
 
   if(ncal.eq.2) then
+     fac=1.e-6
      do i=1,65536
-        x(i)=iwave(i)
+        x(i)=fac*iwave(i)
      enddo
      call xfft(x,65536)
      df=12000.d0/65536.d0
@@ -32,6 +33,7 @@ subroutine decode
 1002 format('Measured audio frequency:',f10.2,' Hz')
      call cs_unlock
      ncal=0
+     go to 100
   else
      minsync=1
      if(nsave.gt.0 .and. ndiskdat.eq.0) jwave=iwave(1:114*12000)
@@ -49,9 +51,10 @@ subroutine decode
   call flush(14)
   rewind 14
   call cs_unlock
+
   ndecdone=1
   ndiskdat=0
-  ndecoding=0
+100 ndecoding=0
 
   return
 end subroutine decode
