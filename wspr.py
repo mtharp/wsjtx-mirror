@@ -360,23 +360,6 @@ def df_readout(event):
     t="%3d Hz" % nhz
     lab02.configure(text=t,bg='red')
 
-#----------------------------------------------------- set_def_freqs
-def set_def_freqs(event):
-    try:
-        f=open('default_freqs.txt','r')
-        s=f.readlines()
-        f.close
-        freq0=[]
-        for i in range(len(s)):
-            cband,cfreq=s[i].split()
-            rfreq=float(cfreq)
-            freq0.append(rfreq)
-    except:
-        print 'No freq file'
-        pass
-    for i in range(15):
-        freqtx[i]=freq0[i]+0.001500
-
 #----------------------------------------------------- set_tx_freq
 def set_tx_freq(event):
     global fmid
@@ -669,7 +652,10 @@ def put_params(param3=NONE):
     if options.serial_handshake.get()=='Hardware': nhs=2
     w.acom1.nhandshake=nhs
     w.acom1.catport=(options.CatPort.get()+'            ')[:12]
-    w.acom1.nrig=options.rignum.get()
+    try:
+        w.acom1.nrig=options.rignum.get()
+    except:
+        pass
 
 #------------------------------------------------------ update
 def update():
@@ -779,6 +765,10 @@ def update():
         pctscale.configure(state=NORMAL)
     else:
         pctscale.configure(state=DISABLED)
+    if w.acom1.ncal==0:
+        advanced.bcal.configure(bg='gray85')
+    else:
+        idle.set(1)
     w.acom1.pctx=ipctx.get()
     w.acom1.idle=idle.get()
     if idle.get()==0:
@@ -787,8 +777,10 @@ def update():
         bidle.configure(bg='yellow')
     if w.acom1.transmitting or w.acom1.receiving:
         btune.configure(state=DISABLED)
+        advanced.bcal.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
+        advanced.bcal.configure(state=NORMAL)
     if upload.get()==1:
         bupload.configure(bg='gray85')
     else:
@@ -901,19 +893,82 @@ def audio_devices(event=NONE):
     f=open(appdir+'/audio_caps','r')
     s=f.readlines()
     f.close
-    t="Input Devices:\n"
+    t="Audio Input Devices:\n"
     for i in range(len(s)):
         col=s[i].split()
         if int(col[1])>0:
-            t=t + str(i) + s[i][28:]
-    t=t+"\nOutput Devices:\n"
+            t=t + '  ' + str(i) + s[i][28:]
+    t=t+"\nAudio Output Devices:\n"
     for i in range(len(s)):
         col=s[i].split()
         if int(col[2])>0:
-            t=t + str(i) + s[i][28:]
+            t=t + '  ' + str(i) + s[i][28:]
     Label(audev,text=t,justify=LEFT).pack(padx=20)
     audev.focus_set()
 
+#------------------------------------------------------ save_params
+def save_params():
+    f=open(appdir+'/WSPR.INI',mode='w')
+    f.write("WSPRGeometry " + root_geom + "\n")
+    if options.MyCall.get()=='': options.MyCall.set('##')
+    f.write("MyCall " + options.MyCall.get() + "\n")
+    if options.MyGrid.get()=='': options.MyGrid.set('##')
+    f.write("MyGrid " + options.MyGrid.get() + "\n")
+    f.write("CWID " + str(advanced.idint.get()) + "\n")
+    f.write("dBm " + str(options.dBm.get()) + "\n")
+    f.write("PttPort " + str(options.PttPort.get()) + "\n")
+    f.write("CatPort " + str(options.CatPort.get()) + "\n")
+    if options.DevinName.get()=='': options.DevinName.set('0')
+    f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
+    if options.DevoutName.get()=='': options.DevoutName.set('2')
+    f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
+    f.write("BFOfreq " + str(advanced.bfofreq.get()) + "\n")
+    f.write("PTTmode " + options.pttmode.get() + "\n")
+    f.write("CATenable " + str(options.cat_enable.get()) + "\n")
+    ##f.write("TxGrid6 " + str(advanced.igrid6.get()) + "\n")
+    f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
+    f.write("DataBits " + str(options.databits.get()) + "\n")
+    f.write("StopBits " + str(options.stopbits.get()) + "\n")
+    f.write("Handshake " + options.serial_handshake.get() + "\n")
+    f.write("RigNum " + str(options.rignum.get()) + "\n")
+    f.write("Nsave " + str(nsave.get()) + "\n")
+    f.write("PctTx " + str(ipctx.get()) + "\n")
+    f.write("Upload " + str(upload.get()) + "\n")
+    f.write("Idle " + str(idle.get()) + "\n")
+    f.write("Debug " + str(ndebug.get()) + "\n")
+    mrudir2=mrudir.replace(" ","#")
+    f.write("MRUDir " + mrudir2 + "\n")
+    f.write("WatScale " + str(s0)+ "\n")
+    f.write("freq0_600 " + str( freq0[1]) + "\n")
+    f.write("freqtx_600 " + str(freqtx[1]) + "\n")
+    f.write("freq0_160 " + str( freq0[2]) + "\n")
+    f.write("freqtx_160 " + str(freqtx[2]) + "\n")
+    f.write("freq0_80 "  + str( freq0[3]) + "\n")
+    f.write("freqtx_80 " + str(freqtx[3]) + "\n")
+    f.write("freq0_60 "  + str( freq0[4]) + "\n")
+    f.write("freqtx_60 " + str(freqtx[4]) + "\n")
+    f.write("freq0_40 "  + str( freq0[5]) + "\n")
+    f.write("freqtx_40 " + str(freqtx[5]) + "\n")
+    f.write("freq0_30 "  + str( freq0[6]) + "\n")
+    f.write("freqtx_30 " + str(freqtx[6]) + "\n")
+    f.write("freq0_20 "  + str( freq0[7]) + "\n")
+    f.write("freqtx_20 " + str(freqtx[7]) + "\n")
+    f.write("freq0_17 "  + str( freq0[8]) + "\n")
+    f.write("freqtx_17 " + str(freqtx[8]) + "\n")
+    f.write("freq0_15 "  + str( freq0[9]) + "\n")
+    f.write("freqtx_15 " + str(freqtx[9]) + "\n")
+    f.write("freq0_12 "  + str( freq0[10]) + "\n")
+    f.write("freqtx_12 " + str(freqtx[10]) + "\n")
+    f.write("freq0_10 "  + str( freq0[11]) + "\n")
+    f.write("freqtx_10 " + str(freqtx[11]) + "\n")
+    f.write("freq0_6 "  + str( freq0[12]) + "\n")
+    f.write("freqtx_6 " + str(freqtx[12]) + "\n")
+    f.write("freq0_2 "  + str( freq0[13]) + "\n")
+    f.write("freqtx_2 " + str(freqtx[13]) + "\n")
+    f.write("freq0_other "  + str( freq0[14]) + "\n")
+    f.write("freqtx_other " + str(freqtx[14]) + "\n")
+    f.write("iband " + str(iband.get()) + "\n")
+    f.close()
 
 #------------------------------------------------------ Top level frame
 frame = Frame(root)
@@ -938,6 +993,8 @@ filemenu.add('command', label = 'Delete all *.WAV files in Save', \
              command = delwav)
 filemenu.add_separator()
 filemenu.add('command', label = 'Erase ALL_WSPR.TXT', command = del_all)
+filemenu.add_separator()
+filemenu.add('command', label = 'Save user parameters', command = save_params)
 filemenu.add_separator()
 filemenu.add('command', label = 'Exit', command = quit, accelerator='Alt+F4')
 
@@ -1339,68 +1396,7 @@ ldate.after(100,audio_config)
 root.mainloop()
 
 # Clean up and save user options before terminating
-f=open(appdir+'/WSPR.INI',mode='w')
-f.write("WSPRGeometry " + root_geom + "\n")
-if options.MyCall.get()=='': options.MyCall.set('##')
-f.write("MyCall " + options.MyCall.get() + "\n")
-if options.MyGrid.get()=='': options.MyGrid.set('##')
-f.write("MyGrid " + options.MyGrid.get() + "\n")
-f.write("CWID " + str(advanced.idint.get()) + "\n")
-f.write("dBm " + str(options.dBm.get()) + "\n")
-f.write("PttPort " + str(options.PttPort.get()) + "\n")
-f.write("CatPort " + str(options.CatPort.get()) + "\n")
-if options.DevinName.get()=='': options.DevinName.set('0')
-f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
-if options.DevoutName.get()=='': options.DevoutName.set('2')
-f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
-f.write("BFOfreq " + str(advanced.bfofreq.get()) + "\n")
-f.write("PTTmode " + options.pttmode.get() + "\n")
-f.write("CATenable " + str(options.cat_enable.get()) + "\n")
-##f.write("TxGrid6 " + str(advanced.igrid6.get()) + "\n")
-f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
-f.write("DataBits " + str(options.databits.get()) + "\n")
-f.write("StopBits " + str(options.stopbits.get()) + "\n")
-f.write("Handshake " + options.serial_handshake.get() + "\n")
-f.write("RigNum " + str(options.rignum.get()) + "\n")
-f.write("Nsave " + str(nsave.get()) + "\n")
-f.write("PctTx " + str(ipctx.get()) + "\n")
-f.write("Upload " + str(upload.get()) + "\n")
-f.write("Idle " + str(idle.get()) + "\n")
-f.write("Debug " + str(ndebug.get()) + "\n")
-mrudir2=mrudir.replace(" ","#")
-f.write("MRUDir " + mrudir2 + "\n")
-f.write("WatScale " + str(s0)+ "\n")
-f.write("freq0_600 " + str( freq0[1]) + "\n")
-f.write("freqtx_600 " + str(freqtx[1]) + "\n")
-f.write("freq0_160 " + str( freq0[2]) + "\n")
-f.write("freqtx_160 " + str(freqtx[2]) + "\n")
-f.write("freq0_80 "  + str( freq0[3]) + "\n")
-f.write("freqtx_80 " + str(freqtx[3]) + "\n")
-f.write("freq0_60 "  + str( freq0[4]) + "\n")
-f.write("freqtx_60 " + str(freqtx[4]) + "\n")
-f.write("freq0_40 "  + str( freq0[5]) + "\n")
-f.write("freqtx_40 " + str(freqtx[5]) + "\n")
-f.write("freq0_30 "  + str( freq0[6]) + "\n")
-f.write("freqtx_30 " + str(freqtx[6]) + "\n")
-f.write("freq0_20 "  + str( freq0[7]) + "\n")
-f.write("freqtx_20 " + str(freqtx[7]) + "\n")
-f.write("freq0_17 "  + str( freq0[8]) + "\n")
-f.write("freqtx_17 " + str(freqtx[8]) + "\n")
-f.write("freq0_15 "  + str( freq0[9]) + "\n")
-f.write("freqtx_15 " + str(freqtx[9]) + "\n")
-f.write("freq0_12 "  + str( freq0[10]) + "\n")
-f.write("freqtx_12 " + str(freqtx[10]) + "\n")
-f.write("freq0_10 "  + str( freq0[11]) + "\n")
-f.write("freqtx_10 " + str(freqtx[11]) + "\n")
-f.write("freq0_6 "  + str( freq0[12]) + "\n")
-f.write("freqtx_6 " + str(freqtx[12]) + "\n")
-f.write("freq0_2 "  + str( freq0[13]) + "\n")
-f.write("freqtx_2 " + str(freqtx[13]) + "\n")
-f.write("freq0_other "  + str( freq0[14]) + "\n")
-f.write("freqtx_other " + str(freqtx[14]) + "\n")
-f.write("iband " + str(iband.get()) + "\n")
-
-f.close()
+save_params()
 
 #Terminate PortAudio
 w.paterminate()

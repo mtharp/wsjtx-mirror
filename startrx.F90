@@ -29,7 +29,7 @@ subroutine startrx
   m0=SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS)
 ! Start a thread for acquiring audio data
   Thread1=CreateThread(0,0,rx,0,CREATE_SUSPENDED,id1)
-  m1=SetThreadPriority(Thread1,THREAD_PRIORITY_NORMAL)
+  m1=SetThreadPriority(Thread1,THREAD_PRIORITY_ABOVE_NORMAL)
   m2=ResumeThread(Thread1)
 #else
   ierr=th_rx()

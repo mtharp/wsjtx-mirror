@@ -27,11 +27,9 @@ subroutine decode
            fpeak=i*df
         endif
      enddo
-     calfac=(1.d7 + (fpeak-1500.d0))/1.d7
      call cs_lock('decode')
-     write(*,1002) fpeak,calfac,f0*calfac
-1002 format('Fpeak:',f10.3,' Hz'/'Calibration factor:',f11.8/     &
-          'Set USB dial frequency to:',f11.6,' MHz')
+     write(*,1002) fpeak
+1002 format('Measured audio frequency:',f10.2,' Hz')
      call cs_unlock
      ncal=0
   else
