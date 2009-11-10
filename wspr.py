@@ -929,7 +929,7 @@ def save_params():
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
     f.write("Handshake " + options.serial_handshake.get() + "\n")
-    f.write("RigNum " + str(options.rignum.get()) + "\n")
+    f.write("Rig " + str(options.rig.get().replace(" ","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
     f.write("PctTx " + str(ipctx.get()) + "\n")
     f.write("Upload " + str(upload.get()) + "\n")
@@ -1288,8 +1288,10 @@ try:
         elif key == 'DataBits': options.databits.set(int(value))
         elif key == 'StopBits': options.stopbits.set(int(value))
         elif key == 'Handshake': options.serial_handshake.set(value)
-        elif key == 'RigNum': options.rignum.set(int(value))
-
+        elif key == 'Rig':
+            t=value.replace("#"," ")
+            options.rig.set(t)
+            options.rignum.set(int(t[:4]))
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Upload': upload.set(value)
         elif key == 'Idle': idle.set(value)
@@ -1329,6 +1331,7 @@ try:
         elif key == 'iband': iband.set(value)
 
         elif key == 'MRUDir': mrudir=value.replace("#"," ")
+
 except:
     print 'Error reading WSPR.INI, while processing'
     print 'key=',key,'   value=',value
