@@ -319,11 +319,22 @@ def help(event=NONE):
 
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
-    webbrowser.open('http://physics.princeton.edu/pulsar/K1JT/wspr.html')
+    url='http://physics.princeton.edu/pulsar/K1JT/wspr.html'
+    thread.start_new_thread(browser,(url,))
 
-#------------------------------------------------------ usersguide
+#------------------------------------------------------ wsprnet
+def wsprnet(event=NONE):
+    url='http://wsprnet.org/'
+    thread.start_new_thread(browser,(url,))
+
+#------------------------------------------------------ homepage
 def homepage(event=NONE):
-    webbrowser.open('http://physics.princeton.edu/pulsar/K1JT/')
+    url='http://physics.princeton.edu/pulsar/K1JT/'
+    thread.start_new_thread(browser,(url,))
+
+#------------------------------------------------------- browser
+def browser(url):
+    webbrowser.open(url)
 
 #------------------------------------------------------ incdsec
 def incdsec(event):
@@ -1053,16 +1064,19 @@ helpbutton.pack(side = LEFT)
 helpmenu = Menu(helpbutton, tearoff=0)
 helpbutton['menu'] = helpmenu
 helpmenu.add('command',label='Help',command=help,accelerator='F1')
-helpmenu.add('command',label="Online User's Guide",command=usersguide, \
+helpmenu.add('command',label="Online WSPR User's Guide",command=usersguide, \
         accelerator='F3')
+helpmenu.add('command',label="WSPRnet.org",command=wsprnet, \
+        accelerator='F4')
 helpmenu.add('command',label="WSJT Home Page",command=homepage)
-helpmenu.add('command', label='About WSPR',command=about,accelerator='F4')
+helpmenu.add('command', label='About WSPR',command=about,accelerator='F5')
 root.bind_all('<Escape>', stop_loopall)
 root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
 root.bind_all('<Alt-F2>', advanced1)
 root.bind_all('<F3>', usersguide)
-root.bind_all('<F4>', about)
+root.bind_all('<F4>', wsprnet)
+root.bind_all('<F5>', about)
 root.bind_all('<Alt-F4>', quit)
 root.bind_all('<F6>', opennext)
 root.bind_all('<Shift-F6>', decodeall)
