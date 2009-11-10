@@ -855,16 +855,21 @@ def update():
     w.acom1.ncat=options.cat_enable.get()
     if options.pttmode.get()=='CAT':
         options.cat_enable.set(1)
+    if options.pttmode.get()=='CAT' or options.pttmode.get()=='VOX':
+        options.PttPort.set('None')
+        options.ptt_port._entryWidget['state']=DISABLED
+    else:
+        options.ptt_port._entryWidget['state']=NORMAL
     if options.cat_enable.get():
         options.cat_port._entryWidget['state']=NORMAL
-        options.lrignum._entryFieldEntry['state']=NORMAL
+        options.lrignum._entryWidget['state']=NORMAL
         options.cbbaud._entryWidget['state']=NORMAL
         options.cbdata._entryWidget['state']=NORMAL
         options.cbstop._entryWidget['state']=NORMAL
         options.cbhs._entryWidget['state']=NORMAL
     else:
         options.cat_port._entryWidget['state']=DISABLED
-        options.lrignum._entryFieldEntry['state']=DISABLED
+        options.lrignum._entryWidget['state']=DISABLED
         options.cbbaud._entryWidget['state']=DISABLED
         options.cbdata._entryWidget['state']=DISABLED
         options.cbstop._entryWidget['state']=DISABLED

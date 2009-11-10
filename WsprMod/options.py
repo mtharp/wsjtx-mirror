@@ -54,6 +54,7 @@ stopbits=IntVar()
 stopbits.set(2)
 serial_handshake=StringVar()
 cat_enable=IntVar()
+rig=StringVar()
 rignum=IntVar()
 inbad=IntVar()
 outbad=IntVar()
@@ -61,7 +62,7 @@ outbad=IntVar()
 pttmode.set('DTR')
 serial_handshake.set('None')
 
-pttlist=("CAT","DTR","RTS")
+pttlist=("CAT","DTR","RTS","VOX")
 baudlist=(1200,4800,9600,19200,38400,57600)
 hslist=("None","XONXOFF","Hardware")
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
@@ -78,6 +79,7 @@ datalist=(7,8)
 stoplist=(1,2)
 indevlist=[]
 outdevlist=[]
+riglist=[]
 
 MyCall=StringVar()
 MyGrid=StringVar()
@@ -102,6 +104,15 @@ try:
 except:
     pass
 
+try:
+    f=open('hamlib_rig_numbers','r')
+    s=f.readlines()
+    f.close
+    for i in range(len(s)):
+        riglist.append(s[i])
+except:
+    pass
+
 #------------------------------------------------------ audin
 def audin(event=NONE):
     g.DevinName.set(DevinName.get())
@@ -111,6 +122,10 @@ def audin(event=NONE):
 def audout(event=NONE):
     g.DevoutName.set(DevoutName.get())
     g.ndevout.set(int(DevoutName.get()[:2]))
+
+#------------------------------------------------------ rig_number
+def rig_number(event=NONE):
+    rignum.set(int(rig.get()[:4]))
 
 #------------------------------------------------------- chkcall
 def chkcall(t):
@@ -157,8 +172,9 @@ encat=Checkbutton(g1.interior(),text='Enable CAT',variable=cat_enable)
 cat_port=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='CAT port:',
         entry_textvariable=CatPort,entry_width=12,\
         scrolledlist_items=serialportlist)
-lrignum=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rig num:',
-        value='214',entry_textvariable=rignum,entry_width=8)
+lrignum=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Rig number:',
+        entry_textvariable=rig,entry_width=30,
+        scrolledlist_items=riglist,selectioncommand=rig_number)
 cbbaud=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Serial rate:',
         entry_textvariable=serial_rate,entry_width=4,scrolledlist_items=baudlist)
 cbdata=Pmw.ComboBox(g1.interior(),labelpos=W,label_text='Data bits:',
