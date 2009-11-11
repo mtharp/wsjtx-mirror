@@ -10,7 +10,7 @@ subroutine tx
 #endif
 
   parameter (NMAX2=120*48000)
-  parameter (NMAX3=5*48000)
+  parameter (NMAX3=4.5*48000)
   character message*22,call1*12,cdbm*3
   character*22 msg0,msg1,msg2,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
@@ -96,12 +96,11 @@ subroutine tx
      icwid=0
      call gencwid(cwmsg,wpm,freqcw,icwid,ncwid)
      k0=113*48000
-     k1=k0+24000
-     k2=k1+5*48000
+     k1=k0+12000
+     k2=k1+4.5*48000
      jwave(k0:k1)=0
      jwave(k1+1:k2)=icwid
      jwave(k2:)=0
-!     print*,'C',k0/48000.,k1/48000.,k2/48000.
      npts=k2
      ns0=nsec
   endif

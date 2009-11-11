@@ -61,6 +61,7 @@ subroutine wspr2
   if(ntxdone.gt.0) then
      transmitting=.false.
      ntxdone=0
+     ntr=0
   endif
 
   if(ns120.ge.114 .and. ntune.eq.0) then
@@ -96,7 +97,7 @@ subroutine wspr2
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
   if(pctx.eq.0.0) nrx=1
-  if(nrx.eq.0) then
+  if(nrx.eq.0 .and. ntr.ne.-1) then
      transmitting=.true.
      call random_number(x)
      nrx=nint(rxavg + rr*(x-0.5))
@@ -106,9 +107,10 @@ subroutine wspr2
      call msgtrim(message,msglen)
      write(linetx,1030) cdate(3:8),utctime(1:4),ftx
 1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ')
-     call cs_unlock
      ntr=-1
      nsectx=mod(nsec,86400)
+     ntxdone=0
+     call cs_unlock
      if(ndevsok.eq.1) call starttx
 
   else

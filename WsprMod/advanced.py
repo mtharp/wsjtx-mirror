@@ -33,10 +33,8 @@ def freqcal(event=NONE):
 g1=Pmw.Group(root,tag_pyclass=None)
 
 t="""
-Important:
-
-Please read the WSPR User's Guide before
-using any features on this screen.
+Important:   please read the WSPR User's
+Guide before using features on this screen.
 """
 lab1=Label(g1.interior(),text=t,justify=LEFT)
 
