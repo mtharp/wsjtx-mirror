@@ -319,7 +319,7 @@ def help(event=NONE):
 
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/wspr.html'
+    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_2.0_User.pdf'
     thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ wsprnet
