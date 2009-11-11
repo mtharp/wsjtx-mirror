@@ -1,6 +1,6 @@
 subroutine decode
 
-!  Decode MEPT_JT signals for one 2-minute sequence.
+!  Decode WSPR signals for one 2-minute sequence.
 
 #ifdef CVF
   use dfport

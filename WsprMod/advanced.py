@@ -3,6 +3,7 @@ from Tkinter import *
 import Pmw
 import g
 import w
+import time
 
 def done():
     root.withdraw()
@@ -26,8 +27,9 @@ calfactor=DoubleVar()
 
 #------------------------------------------------------ freqcal
 def freqcal(event=NONE):
-    w.acom1.ncal=1
-    bcal.configure(bg='green')
+    if w.acom1.ncal==0:
+        bcal.configure(bg='green')
+        w.acom1.ncal=1
 
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)

@@ -23,7 +23,10 @@ subroutine rx
   npts=n2
   nsec2=time()
   call getrms(iwave,npts,ave,rms)          !### is this needed any more??
+  call cs_lock('rx')
   nrxdone=1
+  if(ncal.eq.1) ncal=2
+  call cs_unlock
 
   return
 end subroutine rx

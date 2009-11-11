@@ -57,9 +57,11 @@ subroutine wspr2
      nrxdone=0
      ndecoding=1
      thisfile=outfile
-     if(ncal.eq.1) ncal=2
      call cs_unlock
-     call startdec
+     if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
+        (nrxnormal.eq.0 .and. ncal.eq.2)) then
+        call startdec
+     endif
   endif
 
   call cs_lock('wspr2')
@@ -95,6 +97,7 @@ subroutine wspr2
      receiving=.true.
      rxtime=utctime(1:4)
      call cs_unlock
+     nrxnormal=0
      call startrx
   endif
 
@@ -127,7 +130,10 @@ subroutine wspr2
      receiving=.true.
      rxtime=utctime(1:4)
      ntr=1
-     if(ndevsok.eq.1) call startrx
+     if(ndevsok.eq.1) then
+        nrxnormal=1
+        call startrx
+     endif
      nrx=nrx-1
   endif
   go to 20
