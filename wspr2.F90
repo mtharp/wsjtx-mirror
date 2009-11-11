@@ -59,7 +59,8 @@ subroutine wspr2
      thisfile=outfile
      call cs_unlock
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
-        (nrxnormal.eq.0 .and. ncal.eq.2)) then
+        (nrxnormal.eq.0 .and. ncal.eq.2) .or.                          &
+        ndiskdat.eq.1) then
         call startdec
      endif
   endif
