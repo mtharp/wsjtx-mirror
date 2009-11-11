@@ -31,9 +31,10 @@ subroutine decode
      call cs_lock('decode')
      write(*,1002) fpeak
 1002 format('Measured audio frequency:',f10.2,' Hz')
-     call cs_unlock
      ncal=0
-     go to 100
+     ndecoding=0
+     call cs_unlock
+     go to 900
   else
      minsync=1
      if(nsave.gt.0 .and. ndiskdat.eq.0) jwave=iwave(1:114*12000)
@@ -50,11 +51,10 @@ subroutine decode
 1100 format('$EOF')
   call flush(14)
   rewind 14
-  call cs_unlock
-
   ndecdone=1
   ndiskdat=0
-100 ndecoding=0
+  ndecoding=0
+  call cs_unlock
 
-  return
+900  return
 end subroutine decode

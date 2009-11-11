@@ -39,7 +39,8 @@ subroutine wspr2
   call random_seed
   nrx=1
 
-20 call getutc(cdate,utctime,tsec)
+20 call cs_lock('wspr2')
+  call getutc(cdate,utctime,tsec)
   tsec=tsec+0.1*idsec
   nsec=tsec
   ns120=mod(nsec,120)
@@ -48,16 +49,20 @@ subroutine wspr2
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   rr=3.0
   if(pctx.ge.40.0) rr=1.5                    !soft step?
+  call cs_unlock
 
   if(nrxdone.gt.0) then
+     call cs_lock('wspr2')
      receiving=.false.
      nrxdone=0
      ndecoding=1
      thisfile=outfile
      if(ncal.eq.1) ncal=2
+     call cs_unlock
      call startdec
   endif
 
+  call cs_lock('wspr2')
   if(ntxdone.gt.0) then
      transmitting=.false.
      ntxdone=0
@@ -69,22 +74,27 @@ subroutine wspr2
      receiving=.false.
      ntr=0
   endif
-
   if(pctx.lt.1.0) ntune=0
+  call cs_unlock
+
   if (ntune.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
        (.not.receiving) .and. pctx.ge.1.0) then
 ! Test transmission of length pctx seconds.
+     call cs_lock('wspr2')
      nsectx=mod(nsec,86400)
      ntune2=ntune
      transmitting=.true.
+     call cs_unlock
      call starttx
   endif
 
   if (ncal.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
        (.not.receiving)) then
 ! Execute one receive sequence
+     call cs_lock('wspr2')
      receiving=.true.
      rxtime=utctime(1:4)
+     call cs_unlock
      call startrx
   endif
 
@@ -98,10 +108,10 @@ subroutine wspr2
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
   if(pctx.eq.0.0) nrx=1
   if(nrx.eq.0 .and. ntr.ne.-1) then
+     call cs_lock('wspr2')
      transmitting=.true.
      call random_number(x)
      nrx=nint(rxavg + rr*(x-0.5))
-     call cs_lock('wspr2')
      write(cdbm,'(i4)') ndbm
      message=callsign//grid//cdbm
      call msgtrim(message,msglen)
