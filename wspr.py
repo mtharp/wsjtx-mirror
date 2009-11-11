@@ -699,7 +699,8 @@ def update():
         t="%.6f" % (ftx.get(),)
         sftx.set(t)
         if options.cat_enable.get():
-            nHz=int(1000000.0*f0.get()+0.5)
+            calfac=float(advanced.calfactor.get())
+            nHz=int(1000000.0*f0.get()*calfac+0.5)
             cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                  (options.rignum.get(),options.CatPort.get(), \
                   options.serial_rate.get(),options.databits.get(), \
@@ -924,7 +925,7 @@ def save_params():
     f.write("BFOfreq " + str(advanced.bfofreq.get()) + "\n")
     f.write("PTTmode " + options.pttmode.get() + "\n")
     f.write("CATenable " + str(options.cat_enable.get()) + "\n")
-    ##f.write("TxGrid6 " + str(advanced.igrid6.get()) + "\n")
+    f.write("CalFactor " + str(advanced.calfactor.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1281,8 +1282,9 @@ try:
             options.DevoutName.set(value)
 
         elif key == 'BFOfreq': advanced.bfofreq.set(value)
+        elif key == 'CalFactor': advanced.calfactor.set(value)
         elif key == 'PTTmode': options.pttmode.set(value)
-        elif key == 'CATenable': options.cat_enable.set(int(value))
+        elif key == 'CATenable': options.cat_enable.set(value)
 ##        elif key == 'TxGrid6': advanced.igrid6.set(int(value))
         elif key == 'SerialRate': options.serial_rate.set(int(value))
         elif key == 'DataBits': options.databits.set(int(value))
