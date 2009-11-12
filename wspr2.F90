@@ -6,7 +6,7 @@ subroutine wspr2
 
 ! Logical units:
 !  12  Audio data in *.wav file
-!  13  ALL_MEPT.TXT
+!  13  ALL_WSPR.TXT
 !  14  decoded.txt
 !  16  pixmap.dat
 !  17  audio_caps

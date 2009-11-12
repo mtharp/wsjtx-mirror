@@ -228,12 +228,17 @@ def decodeall(event=NONE):
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
-#    options.options2(root_geom[root_geom.index("+"):])
-    options.options2("")
+    t=""
+    if root_geom.find("+")>=0:
+        t=root_geom[root_geom.index("+"):]
+    options.options2(t)
 
 #------------------------------------------------------ advanced1
 def advanced1(event=NONE):
-    advanced.advanced2("")
+    t=""
+    if root_geom.find("+")>=0:
+        t=root_geom[root_geom.index("+"):]
+    advanced.advanced2(t)
 
 #------------------------------------------------------ stub
 def stub(event=NONE):
@@ -480,19 +485,32 @@ def get_decoded():
             d['drift'] = fields[-3]
             d['cycles'] = fields[-2]
             d['ii'] = fields[-1]
-            # try to figure out whether this is a beacon msg or QSO msg
-            d['beacon'] = True
-            if len(msg) != 3 or len(msg[1]) != 4 or len(msg[0]) < 3 or len(msg[0]) > 6 \
-                   or not msg[2].isdigit():
-                d['beacon'] = False
+
+            # Determine message type
+            d['type1'] = True
+            d['type2'] = False
+            d['type3'] = False
+            if len(msg) != 3 or len(msg[1]) != 4 or len(msg[0]) < 3 or \
+                len(msg[0]) > 6 or not msg[2].isdigit():
+                d['type1'] = False
             else:
                 dbm = int(msg[2])
                 if dbm < 0 or dbm > 60:
-                    d['beacon'] = False
-            # try to extract the callsign of the Tx station from beacon or QSO msg
-            if d['beacon']: d['call'] = d['msg'][0]
-            elif d['msg'][0] == 'CQ' or d['msg'][0][0] == '<':
-                d['call'] = d['msg'][1]
+                    d['type1'] = False
+                n=dbm%10
+                if n!=0 and n!=3 and n!=7:
+                    d['type1'] = False
+            if not d['type1']:
+                if len(msg)==2:
+                    d['type2']=True
+                else:
+                    d['type3']=True
+            # Get callsign
+            callsign = d['msg'][0]
+            if callsign[0]=='<':
+                n=callsign.find('>')
+                callsign=callsign[1:n]
+            d['call'] = callsign
             decodes.append(d)
         f.close()
     except:
@@ -519,9 +537,10 @@ def get_decoded():
 #  Remove any "too old" information from bandmap.
         bandmap=[]
         for callsign,ft in bm.iteritems():
-            ndf,tdecoded=ft
-            if nseq-tdecoded < 60:                        #60 minutes 
-                bandmap.append((ndf,callsign,tdecoded))
+            if callsign!='...':
+                ndf,tdecoded=ft
+                if nseq-tdecoded < 60:                        #60 minutes 
+                    bandmap.append((ndf,callsign,tdecoded))
 
         iz=len(bandmap)
         bm={}
@@ -550,6 +569,20 @@ def get_decoded():
 
     if loopall: opennext()
 
+##    for d in decodes:
+##        m=d['msg']
+##        tcall=m[0]
+##        if d['type2']:
+##            tgrid=''
+##            dbm=m[1]
+##        else:
+##            tgrid=m[1]
+##            dbm=m[2]
+##        if tcall[0]=='<':
+##            n=tcall.find('>')
+##            tcall=tcall[1:n]
+##        print 'Call:',tcall,'   Grid:',tgrid,'   dBm:',dbm
+
 #------------------------------------------------------ autologger
 def autolog(decodes):
     # Random delay of up to 15 seconds to spread load out on server --W1BW
@@ -563,25 +596,33 @@ def autolog(decodes):
         # Any spots to upload?
         if len(decodes) > 0:
             for d in decodes:
-                # don't upload QSO messages, only things we think are beacons
-                if not d['beacon']: continue
                 # now to format as a string to use for autologger upload using urlencode
                 # so we get a string formatted for http get/put operations:
-                m = d['msg']
+                m=d['msg']
+                tcall=m[0]
+                if d['type2']:
+                    tgrid=''
+                    dbm=m[1]
+                else:
+                    tgrid=m[1]
+                    dbm=m[2]
+                if tcall[0]=='<':
+                    n=tcall.find('>')
+                    tcall=tcall[1:n]
+                if tcall=='...': continue
                 reportparams = urllib.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
                                                  'rqrg': str(f0),
                                                  'date': d['date'],
                                                  'time': d['time'],
-                                                 #'sync': d['sync'],
                                                  'sig': d['snr'],
                                                  'dt': d['dt'],
                                                  'tqrg': d['freq'],
                                                  'drift': d['drift'],
-                                                 'tcall': m[0],
-                                                 'tgrid': m[1],
-                                                 'dbm': m[2],
+                                                 'tcall': tcall,
+                                                 'tgrid': tgrid,
+                                                 'dbm': dbm,
                                                  'version': Version})
                 # reportparams now contains a properly formed http request string for
                 # the agreed upon format between W6CQZ and N8FQ.
@@ -652,8 +693,14 @@ def put_params(param3=NONE):
     w.acom1.idsec=idsec
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
-    w.acom1.nbfo=advanced.bfofreq.get()
-    w.acom1.idint=advanced.idint.get()
+    try:
+        w.acom1.nbfo=advanced.bfofreq.get()
+    except:
+        w.acom1.nbfo=1500
+    try:
+        w.acom1.idint=advanced.idint.get()
+    except:
+        w.acom1.idint=0
     if options.MyCall.get().find('/')>0:
         advanced.igrid6.set(1)
     w.acom1.igrid6=advanced.igrid6.get()
@@ -848,9 +895,8 @@ def update():
     if fmid!=fmid0 or ftx.get()!=ftx0:
         draw_axis()
         lftx.configure(validate={'validator':'real',
-            'min':f0.get()+0.001500-0.000100,'minstrict':1,
-            'max':f0.get()+0.001500+0.000100,'maxstrict':1})
-
+            'min':f0.get()+0.001500-0.000100,'minstrict':0,
+            'max':f0.get()+0.001500+0.000100,'maxstrict':0})
     w.acom1.ndebug=ndebug.get()
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
@@ -889,9 +935,9 @@ def update():
     else:
         msg3.configure(text='Invalid audio output device.',bg='red')
     if w.acom1.ndecoding:
-        lab03.configure(text='Decoding',bg='#66FFFF')
+        msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
     else:
-        lab03.configure(text='',bg='gray85')
+        msg5.configure(text='',bg='gray85',relief=FLAT)
 
     ldate.after(200,update)
     
@@ -1099,7 +1145,7 @@ graph1.pack(side=LEFT)
 c=Canvas(iframe1, bg='white', width=40, height=NY,bd=0)
 c.pack(side=LEFT)
 
-text1=Text(iframe1, height=10, width=12, bg='Navy', fg="yellow")
+text1=Text(iframe1, height=10, width=15, bg='Navy', fg="yellow")
 text1.pack(side=LEFT, padx=1)
 text1.tag_configure('age0',foreground='red')
 text1.tag_configure('age1',foreground='yellow')
@@ -1134,7 +1180,8 @@ iframe2.pack(expand=1, fill=X, padx=4)
 iframe2a = Frame(frame, bd=1, relief=FLAT)
 g1=Pmw.Group(iframe2a,tag_text="Frequencies (MHz)")
 lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
-        value=10.1387,entry_textvariable=sf0,entry_width=12,validate='real')
+        value=10.1387,entry_textvariable=sf0,entry_width=12,
+        validate='real')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
 widgets = (lf0,lftx)
@@ -1217,10 +1264,10 @@ msg4=Message(iframe6, text='      ', width=300,relief=FLAT)
 msg4.pack(side=LEFT, fill=X, padx=1)
 balloon.configure(statuscommand=msg4)
 
-##msg5=Message(iframe6, text='      ', width=300,relief=SUNKEN)
-##msg5.pack(side=LEFT, fill=X, padx=1)
+msg5=Message(iframe6, text='      ', width=300,relief=FLAT)
 msg6=Message(iframe6, text='      ', width=400,relief=SUNKEN)
 msg6.pack(side=RIGHT, fill=X, padx=1)
+msg5.pack(side=RIGHT, fill=X, padx=1)
 iframe6.pack(expand=1, fill=X, padx=4)
 frame.pack()
 

@@ -41,11 +41,15 @@ Guide before using features on this screen.
 lab1=Label(g1.interior(),text=t,justify=LEFT)
 
 cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (minutes):',
-        value='0',entry_textvariable=idint,entry_width=5)
+        value='0',entry_textvariable=idint,entry_width=5,
+        validate={'validator':'numeric','min':0,'max':60})
 rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
-        value='1500',entry_textvariable=bfofreq,entry_width=10)
+        value='1500',entry_textvariable=bfofreq,entry_width=10,
+        validate={'validator':'real','min':-3000,'max':3000})
 fcal=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Fcal factor:',
-        value='1.0000000',entry_textvariable=calfactor,entry_width=10)
+        value='1.0000000',entry_textvariable=calfactor,entry_width=10,
+        validate={'validator':'real','min':0.99999,'max':1.00001,
+        'minstrict':0,'maxstrict':0})
 lab2=Label(g1.interior(),text='',justify=LEFT)
 bgrid6=Checkbutton(g1.interior(),text='Transmit 6-digit locator',variable=igrid6)
 
