@@ -36,7 +36,7 @@ g1=Pmw.Group(root,tag_pyclass=None)
 
 t="""
 Important:   please read the WSPR User's
-Guide(F3 key) before using features on
+Guide (F3 key) before using features on
 this screen.
 """
 lab1=Label(g1.interior(),text=t,justify=LEFT)
