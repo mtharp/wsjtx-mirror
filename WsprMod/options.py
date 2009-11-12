@@ -110,7 +110,8 @@ try:
     s=f.readlines()
     f.close
     for i in range(len(s)):
-        riglist.append(s[i])
+        t=s[i]
+        riglist.append(t[:len(t)-1])
 except:
     pass
 

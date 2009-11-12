@@ -36,9 +36,11 @@ g1=Pmw.Group(root,tag_pyclass=None)
 
 t="""
 Important:   please read the WSPR User's
-Guide before using features on this screen.
+Guide(F3 key) before using features on
+this screen.
 """
 lab1=Label(g1.interior(),text=t,justify=LEFT)
+lab1.pack(fill=X,expand=1,padx=5,pady=0)
 
 cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (minutes):',
         value='0',entry_textvariable=idint,entry_width=5,
@@ -50,18 +52,16 @@ fcal=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Fcal factor:',
         value='1.0000000',entry_textvariable=calfactor,entry_width=10,
         validate={'validator':'real','min':0.99999,'max':1.00001,
         'minstrict':0,'maxstrict':0})
-lab2=Label(g1.interior(),text='',justify=LEFT)
-bgrid6=Checkbutton(g1.interior(),text='Transmit 6-digit locator',variable=igrid6)
-
-widgets = (lab1,cwid,rxbfo,fcal,lab2,bgrid6)
+widgets = (cwid,rxbfo,fcal)
 for widget in widgets:
-    widget.pack(fill=X,expand=1,padx=5,pady=0)
+    widget.pack(fill=X,padx=2,pady=2)
 
-lab3=Label(g1.interior(),text='',justify=LEFT).pack()
-
-bcal=Button(g1.interior(), text='Measure an audio\nfrequency',command=freqcal,
-             width=16,padx=1,pady=2)
-bcal.pack(side=TOP,padx=10,pady=3)
+bcal=Button(g1.interior(), text='Measure an audio frequency',command=freqcal,
+             width=26,padx=1,pady=2)
+bcal.pack(padx=5,pady=5)
+bgrid6=Checkbutton(g1.interior(),text='Transmit 6-digit locator',
+                   variable=igrid6)
+bgrid6.pack(padx=5,pady=2)
 
 Pmw.alignlabels(widgets)
 f1=Frame(g1.interior(),width=100,height=10)
