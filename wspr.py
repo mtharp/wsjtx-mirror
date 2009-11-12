@@ -1449,9 +1449,15 @@ ldate.after(100,audio_config)
 
 root.mainloop()
 
-# Clean up and save user options before terminating
+# Clean up and save user options, then terminate.
+if options.pttmode.get()=='CAT':
+    calfac=float(advanced.calfactor.get())
+    nHz=int(1000000.0*f0.get()*calfac+0.5)
+    cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s T 0" % \
+         (options.rignum.get(),options.CatPort.get(), \
+          options.serial_rate.get(),options.databits.get(), \
+          options.stopbits.get(),options.serial_handshake.get())
+    ierr=os.system(cmd)
 save_params()
-
-#Terminate PortAudio
 w.paterminate()
 time.sleep(0.5)
