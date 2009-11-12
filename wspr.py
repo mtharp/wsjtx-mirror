@@ -1093,7 +1093,7 @@ bandbutton = Menubutton(mbar, text = 'Band')
 bandbutton.pack(side = LEFT)
 bandmenu = Menu(bandbutton, tearoff=0)
 bandbutton['menu'] = bandmenu
-iband.set(5)
+iband.set(6)
 bandmenu.add_radiobutton(label = '600 m',variable=iband,value=1)
 bandmenu.add_radiobutton(label = '160 m',variable=iband,value=2)
 bandmenu.add_radiobutton(label = '80 m', variable=iband,value=3)
@@ -1272,7 +1272,7 @@ iframe6.pack(expand=1, fill=X, padx=4)
 frame.pack()
 
 isync=1
-iband.set(5)
+iband.set(6)
 idle.set(1)
 ipctx.set(20)
 
