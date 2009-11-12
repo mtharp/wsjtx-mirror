@@ -85,6 +85,7 @@ newdat=1
 newspec=1
 npal=IntVar()
 npal.set(2)
+nparam=0
 nsave=IntVar()
 nscroll=0
 nsec0=0
@@ -1282,109 +1283,101 @@ try:
     params=f.readlines()
 except:
     params=""
-##    if g.Win32:
-##        options.SerialPort.set("0")
-##        pass
-##    else:
-##        options.SerialPort.set("/dev/ttyS0")
-##        pass
 
-try:
-    for i in range(len(params)):
-        key,value=params[i].split()
-        if   key == 'WSPRGeometry': root.geometry(value)
-        elif key == 'MyCall': options.MyCall.set(value)
-        elif key == 'MyGrid': options.MyGrid.set(value)
-        elif key == 'CWID': advanced.idint.set(value)
-        elif key == 'dBm': options.dBm.set(value)
-        elif key == 'PctTx': ipctx.set(value)
-        elif key == 'PttPort': options.PttPort.set(value)
-        elif key == 'CatPort': options.CatPort.set(value)
-##            try:
-##                options.PttPort.set(value)
-##            except:
-##                if g.Win32:
-##                    options.PttPort.set("0")
-##                else:
-##                    options.PttPort.set("/dev/ttyS0")
-##                pass
-##            pass
-        elif key == 'AudioIn':
-            value=value.replace("#"," ")
-            g.DevinName.set(value)
-            try:
-                g.ndevin.set(int(value[:2]))
-            except:
-                g.ndevin.set(0)
-            options.DevinName.set(value)
+badlist=[]
+#----------------------------------------------------------- readinit
+def readinit():
+    global nparam
+    try:
+        for i in range(len(params)):
+            if badlist.count(i)>0:
+                print 'Skipping bad entry in WSPR.INI:',params[i]
+                continue
+            key,value=params[i].split()
+            if   key == 'WSPRGeometry': root.geometry(value)
+            elif key == 'MyCall': options.MyCall.set(value)
+            elif key == 'MyGrid': options.MyGrid.set(value)
+            elif key == 'CWID': advanced.idint.set(value)
+            elif key == 'dBm': options.dBm.set(value)
+            elif key == 'PctTx': ipctx.set(value)
+            elif key == 'PttPort': options.PttPort.set(value)
+            elif key == 'CatPort': options.CatPort.set(value)
+            elif key == 'AudioIn':
+                value=value.replace("#"," ")
+                g.DevinName.set(value)
+                try:
+                    g.ndevin.set(int(value[:2]))
+                except:
+                    g.ndevin.set(0)
+                options.DevinName.set(value)
 
 
-        elif key == 'AudioOut':
-            value=value.replace("#"," ")
-            g.DevoutName.set(value)
-            try:
-                g.ndevout.set(int(value[:2]))
-            except:
-                g.ndevout.set(0)
-            options.DevoutName.set(value)
+            elif key == 'AudioOut':
+                value=value.replace("#"," ")
+                g.DevoutName.set(value)
+                try:
+                    g.ndevout.set(int(value[:2]))
+                except:
+                    g.ndevout.set(0)
+                options.DevoutName.set(value)
 
-        elif key == 'BFOfreq': advanced.bfofreq.set(value)
-        elif key == 'CalFactor': advanced.calfactor.set(value)
-        elif key == 'PTTmode': options.pttmode.set(value)
-        elif key == 'CATenable': options.cat_enable.set(value)
-##        elif key == 'TxGrid6': advanced.igrid6.set(int(value))
-        elif key == 'SerialRate': options.serial_rate.set(int(value))
-        elif key == 'DataBits': options.databits.set(int(value))
-        elif key == 'StopBits': options.stopbits.set(int(value))
-        elif key == 'Handshake': options.serial_handshake.set(value)
-        elif key == 'Rig':
-            t=value.replace("#"," ")
-            options.rig.set(t)
-            options.rignum.set(int(t[:4]))
-        elif key == 'Nsave': nsave.set(value)
-        elif key == 'Upload': upload.set(value)
-        elif key == 'Idle': idle.set(value)
-        elif key == 'Debug': ndebug.set(value)
-        elif key == 'WatScale': sc1.set(value)
-        elif key == 'WatOffset': sc2.set(value)
+            elif key == 'BFOfreq': advanced.bfofreq.set(value)
+            elif key == 'CalFactor': advanced.calfactor.set(value)
+            elif key == 'PTTmode': options.pttmode.set(value)
+            elif key == 'CATenable': options.cat_enable.set(value)
+            elif key == 'SerialRate': options.serial_rate.set(int(value))
+            elif key == 'DataBits': options.databits.set(int(value))
+            elif key == 'StopBits': options.stopbits.set(int(value))
+            elif key == 'Handshake': options.serial_handshake.set(value)
+            elif key == 'Rig':
+                t=value.replace("#"," ")
+                options.rig.set(t)
+                options.rignum.set(int(t[:4]))
+            elif key == 'Nsave': nsave.set(value)
+            elif key == 'Upload': upload.set(value)
+            elif key == 'Idle': idle.set(value)
+            elif key == 'Debug': ndebug.set(value)
+            elif key == 'WatScale': sc1.set(value)
+            elif key == 'WatOffset': sc2.set(value)
 
-        elif key == 'freq0_600': freq0[1]=float(value)
-        elif key == 'freq0_160': freq0[2]=float(value)
-        elif key == 'freq0_80': freq0[3]=float(value)
-        elif key == 'freq0_60': freq0[4]=float(value)
-        elif key == 'freq0_40': freq0[5]=float(value)
-        elif key == 'freq0_30': freq0[6]=float(value)
-        elif key == 'freq0_20': freq0[7]=float(value)
-        elif key == 'freq0_17': freq0[8]=float(value)
-        elif key == 'freq0_15': freq0[9]=float(value)
-        elif key == 'freq0_12': freq0[10]=float(value)
-        elif key == 'freq0_10': freq0[11]=float(value)
-        elif key == 'freq0_6': freq0[12]=float(value)
-        elif key == 'freq0_2': freq0[13]=float(value)
-        elif key == 'freq0_other': freq0[14]=float(value)
+            elif key == 'freq0_600': freq0[1]=float(value)
+            elif key == 'freq0_160': freq0[2]=float(value)
+            elif key == 'freq0_80': freq0[3]=float(value)
+            elif key == 'freq0_60': freq0[4]=float(value)
+            elif key == 'freq0_40': freq0[5]=float(value)
+            elif key == 'freq0_30': freq0[6]=float(value)
+            elif key == 'freq0_20': freq0[7]=float(value)
+            elif key == 'freq0_17': freq0[8]=float(value)
+            elif key == 'freq0_15': freq0[9]=float(value)
+            elif key == 'freq0_12': freq0[10]=float(value)
+            elif key == 'freq0_10': freq0[11]=float(value)
+            elif key == 'freq0_6': freq0[12]=float(value)
+            elif key == 'freq0_2': freq0[13]=float(value)
+            elif key == 'freq0_other': freq0[14]=float(value)
+            elif key == 'freqtx_600': freqtx[1]=float(value)
+            elif key == 'freqtx_160': freqtx[2]=float(value)
+            elif key == 'freqtx_80': freqtx[3]=float(value)
+            elif key == 'freqtx_60': freqtx[4]=float(value)
+            elif key == 'freqtx_40': freqtx[5]=float(value)
+            elif key == 'freqtx_30': freqtx[6]=float(value)
+            elif key == 'freqtx_20': freqtx[7]=float(value)
+            elif key == 'freqtx_17': freqtx[8]=float(value)
+            elif key == 'freqtx_15': freqtx[9]=float(value)
+            elif key == 'freqtx_12': freqtx[10]=float(value)
+            elif key == 'freqtx_10': freqtx[11]=float(value)
+            elif key == 'freqtx_6': freqtx[12]=float(value)
+            elif key == 'freqtx_2': freqtx[13]=float(value)
+            elif key == 'freqtx_other': freqtx[14]=float(value)
+            elif key == 'iband': iband.set(value)
+            elif key == 'MRUDir': mrudir=value.replace("#"," ")
+            nparam=i
 
-        elif key == 'freqtx_600': freqtx[1]=float(value)
-        elif key == 'freqtx_160': freqtx[2]=float(value)
-        elif key == 'freqtx_80': freqtx[3]=float(value)
-        elif key == 'freqtx_60': freqtx[4]=float(value)
-        elif key == 'freqtx_40': freqtx[5]=float(value)
-        elif key == 'freqtx_30': freqtx[6]=float(value)
-        elif key == 'freqtx_20': freqtx[7]=float(value)
-        elif key == 'freqtx_17': freqtx[8]=float(value)
-        elif key == 'freqtx_15': freqtx[9]=float(value)
-        elif key == 'freqtx_12': freqtx[10]=float(value)
-        elif key == 'freqtx_10': freqtx[11]=float(value)
-        elif key == 'freqtx_6': freqtx[12]=float(value)
-        elif key == 'freqtx_2': freqtx[13]=float(value)
-        elif key == 'freqtx_other': freqtx[14]=float(value)
-        elif key == 'iband': iband.set(value)
+    except:
+        badlist.append(i)
+        nparam=i
 
-        elif key == 'MRUDir': mrudir=value.replace("#"," ")
-
-except:
-    print 'Error reading WSPR.INI, while processing'
-    print 'key=',key,'   value=',value
-    print 'Continuing with defaults.'
+while nparam < len(params)-1:
+    readinit()
 
 if options.MyCall.get()=='' or options.MyCall.get()=='##':
     options.lcall._entryFieldEntry['background']='pink'
