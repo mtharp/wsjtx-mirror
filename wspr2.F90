@@ -19,7 +19,7 @@ subroutine wspr2
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
-  data ns1200/-999/
+  data ns1200/-999/,nrxnormal/0/
 
   call cs_init
   dectxt=appdir(:nappdir)//'/decoded.txt'
