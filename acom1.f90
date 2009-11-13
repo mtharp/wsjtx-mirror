@@ -11,7 +11,7 @@
        ndevout,nsave,nrxdone,ndbm,nport,ndec,ndecdone,ntxdone,         &
        idint,ndiskdat,ndecoding,ntr,nbaud,ndatabits,nstopbits,         &
        receiving,transmitting,nrig,nappdir,                            &
-       nhandshake,ndebug,idevin,idevout,idsec,nsectx,nbfo,             &
+       nhandshake,ndebug,idevin,idevout,nsectx,nbfo,                   &
        ntxfirst,ntest,ncat,ltest,iwave(NMAX),kwave(NZ),idle,ntune,     &
        ncal,ndevsok,nsec1,nsec2,rms1,xdb1,infile,outfile,pttport,      &
        cdate,utctime,callsign,grid,grid6,rxtime,ctxmsg,sending,        &

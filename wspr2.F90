@@ -41,7 +41,6 @@ subroutine wspr2
 
 20 call cs_lock('wspr2')
   call getutc(cdate,utctime,tsec)
-  tsec=tsec+0.1*idsec
   nsec=tsec
   ns120=mod(nsec,120)
   if(pctx.gt.50.0) nrx=0

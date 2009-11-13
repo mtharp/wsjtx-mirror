@@ -69,7 +69,6 @@ font1='Helvetica'
 iband=IntVar()
 iband0=0
 idle=IntVar()
-idsec=0
 ipctx=IntVar()
 isec0=0
 isync=1
@@ -309,10 +308,9 @@ def help(event=NONE):
 4. Select a desired 'Tx fraction' using the large slider. Zero
    percent means Rx only; 100% means Tx only.
    
-5. Be sure that your computer clock is correct to +/- 1 s. If
-   necessary you can make small adjustments by left- or right-
-   clicking on the 'Dsec' label.  A better solution is to use
-   an automatic internet-based clock-setting utility.
+5. Be sure that your computer clock is correct to +/- 1 s.
+   Many people like to use an automatic internet-based
+   clock-setting utility.
 
 6. WSPR will begin a Tx or Rx sequence at the start of each
    even-numbered minute.  The waterfall will update and
@@ -342,22 +340,6 @@ def homepage(event=NONE):
 #------------------------------------------------------- browser
 def browser(url):
     webbrowser.open(url)
-
-#------------------------------------------------------ incdsec
-def incdsec(event):
-    global idsec
-    idsec=idsec+5
-    bg='red'
-    if idsec==0: bg='white'
-    ldsec.configure(text='Dsec  '+str(0.1*idsec),bg=bg)
-
-#------------------------------------------------------ decdsec
-def decdsec(event):
-    global idsec
-    idsec=idsec-5
-    bg='red'
-    if idsec==0: bg='white'
-    ldsec.configure(text='Dsec  '+str(0.1*idsec),bg=bg)
 
 #------------------------------------------------------ erase
 def erase(event=NONE):
@@ -662,7 +644,7 @@ def autolog(decodes):
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
-    global idsec,param20
+    global param20
 
     try:
         w.acom1.f0=f0.get()
@@ -692,7 +674,6 @@ def put_params(param3=NONE):
                 break
         except:
             pass
-    w.acom1.idsec=idsec
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
     try:
@@ -725,10 +706,10 @@ def put_params(param3=NONE):
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
-        modpixmap0,tw,s0,c0,fmid,fmid0,idsec,loopall,ntr0,txmsg,iband0, \
+        modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm
 
-    tsec=time.time() + 0.1*idsec
+    tsec=time.time()
     utc=time.gmtime(tsec)
     nsec=int(tsec)
     nsec0=nsec
@@ -1231,20 +1212,13 @@ f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,\
               width=9,padx=1,pady=1)
-berase.pack(side=TOP,padx=0,pady=20)
+berase.pack(side=TOP,padx=0,pady=40)
 balloon.bind(berase,"Erase decoded text and band map")
 
 ldate=Label(f4a, bg='black', fg='yellow', width=11, bd=4,
         text='2005 Apr 22\n01:23:45', relief=RIDGE,
         justify=CENTER, font=(font1,14))
-ldate.pack(side=TOP,padx=2,pady=0)
-
-ldsec=Label(f4a,bg='white',fg='black',text='Dsec  0.0',width=9,relief=RIDGE)
-ldsec.pack(side=TOP,ipadx=3,padx=2,pady=20)
-Widget.bind(ldsec,'<Button-1>',incdsec)
-Widget.bind(ldsec,'<Button-3>',decdsec)
-balloon.bind(ldsec,"Left- or right-click to adjust UTC")
-
+ldate.pack(side=TOP,padx=10,pady=0)
 f4a.pack(side=LEFT,expand=0,fill=Y)
 
 #--------------------------------------------------------- Decoded text box
