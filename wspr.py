@@ -97,6 +97,7 @@ NY=160
 param20=""
 sf0=StringVar()
 sftx=StringVar()
+start_idle=IntVar()
 txmsg=StringVar()
 
 a=array.array('h')
@@ -229,9 +230,9 @@ def decodeall(event=NONE):
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
-    t=""
-    if root_geom.find("+")>=0:
-        t=root_geom[root_geom.index("+"):]
+    t=''
+    if root_geom.find('+')>=0:
+        t=root_geom[root_geom.index('+'):]
     options.options2(t)
 
 #------------------------------------------------------ advanced1
@@ -1017,6 +1018,7 @@ def save_params():
     f.write("freq0_other "  + str( freq0[14]) + "\n")
     f.write("freqtx_other " + str(freqtx[14]) + "\n")
     f.write("iband " + str(iband.get()) + "\n")
+    f.write("StartIdle " + str(start_idle.get()) + "\n")
     f.close()
 
 #------------------------------------------------------ Top level frame
@@ -1056,7 +1058,9 @@ setupmenu.add('command', label = 'Station parameters', command = options1,
               accelerator='F2')
 setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
-##setupmenu.add_separator()
+setupmenu.add_separator()
+setupmenu.add_checkbutton(label = 'Always start in Idle mode',
+                          variable=start_idle)
 ##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
 ##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
 ##setupmenu.add_separator()
@@ -1371,6 +1375,7 @@ def readinit():
             elif key == 'freqtx_2': freqtx[13]=float(value)
             elif key == 'freqtx_other': freqtx[14]=float(value)
             elif key == 'iband': iband.set(value)
+            elif key == 'StartIdle': start_idle.set(value)
             elif key == 'MRUdir':
                 mrudir=value.replace("#"," ")
             nparam=i
@@ -1388,7 +1393,8 @@ if r<0:
     options1()
 else:
     options.lcall._entryFieldEntry['background']='white'
-r=options.chkcall(options.MyGrid.get())
+    
+r=options.chkgrid(options.MyGrid.get())
 if r<0:
     options.lgrid._entryFieldEntry['background']='pink'
     options1()
@@ -1399,6 +1405,8 @@ if g.DevinName.get()=="":
     g.ndevin.set(-1)
 f0.set(freq0[iband.get()])
 ftx.set(freqtx[iband.get()])
+if start_idle.get():
+    idle.set(1)
 
 #------------------------------------------------------  Select palette
 if g.cmap == "gray0":

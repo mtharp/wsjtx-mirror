@@ -45,11 +45,9 @@ subroutine genwspr(message,ntxdf,snrdb,appdir,nappdir,msg2,iwave)
      i4=0
      i1=symbol(i)
   enddo
-
   call wqdecode(data0,msg2,ntype2)
 
   call cs_lock('genwspr')
-
   alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
 #ifdef CVF
   open(13,file=alltxt,status='unknown',position='append',share='denynone')
