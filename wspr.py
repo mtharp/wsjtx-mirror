@@ -1382,13 +1382,14 @@ def readinit():
 while nparam < len(params)-1:
     readinit()
 
-
-if options.MyCall.get()=='' or options.MyCall.get()=='##':
+r=options.chkcall(options.MyCall.get())
+if r<0:
     options.lcall._entryFieldEntry['background']='pink'
     options1()
 else:
     options.lcall._entryFieldEntry['background']='white'
-if options.MyGrid.get()=='' or options.MyGrid.get()=='##':
+r=options.chkcall(options.MyGrid.get())
+if r<0:
     options.lgrid._entryFieldEntry['background']='pink'
     options1()
 else:
