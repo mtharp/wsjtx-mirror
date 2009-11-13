@@ -983,9 +983,11 @@ def save_params():
     f.write("Upload " + str(upload.get()) + "\n")
     f.write("Idle " + str(idle.get()) + "\n")
     f.write("Debug " + str(ndebug.get()) + "\n")
+    f.write("WatScale " + str(s0) + "\n")
+    f.write("WatOffset " + str(c0) + "\n")
+    f.write("Palette " + g.cmap + "\n")
     mrudir2=mrudir.replace(" ","#")
-    f.write("MRUDir " + mrudir2 + "\n")
-    f.write("WatScale " + str(s0)+ "\n")
+    f.write("MRUdir " + mrudir2 + "\n")
     f.write("freq0_600 " + str( freq0[1]) + "\n")
     f.write("freqtx_600 " + str(freqtx[1]) + "\n")
     f.write("freq0_160 " + str( freq0[2]) + "\n")
@@ -1287,7 +1289,7 @@ except:
 badlist=[]
 #----------------------------------------------------------- readinit
 def readinit():
-    global nparam
+    global nparam,mrudir
     try:
         for i in range(len(params)):
             if badlist.count(i)>0:
@@ -1339,7 +1341,7 @@ def readinit():
             elif key == 'Debug': ndebug.set(value)
             elif key == 'WatScale': sc1.set(value)
             elif key == 'WatOffset': sc2.set(value)
-
+            elif key == 'Palette': g.cmap=value
             elif key == 'freq0_600': freq0[1]=float(value)
             elif key == 'freq0_160': freq0[2]=float(value)
             elif key == 'freq0_80': freq0[3]=float(value)
@@ -1369,7 +1371,8 @@ def readinit():
             elif key == 'freqtx_2': freqtx[13]=float(value)
             elif key == 'freqtx_other': freqtx[14]=float(value)
             elif key == 'iband': iband.set(value)
-            elif key == 'MRUDir': mrudir=value.replace("#"," ")
+            elif key == 'MRUdir':
+                mrudir=value.replace("#"," ")
             nparam=i
 
     except:
@@ -1378,6 +1381,7 @@ def readinit():
 
 while nparam < len(params)-1:
     readinit()
+
 
 if options.MyCall.get()=='' or options.MyCall.get()=='##':
     options.lcall._entryFieldEntry['background']='pink'
