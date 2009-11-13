@@ -677,6 +677,8 @@ def put_params(param3=NONE):
             mindiff=abs(dbm-pwrlist[i])
             ibest=i
     dbm=pwrlist[ibest]
+    options.dBm.set(dbm)
+    w.acom1.ndbm=dbm
         
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()

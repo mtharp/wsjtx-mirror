@@ -46,6 +46,8 @@ subroutine genwspr(message,ntxdf,snrdb,appdir,nappdir,msg2,iwave)
      i1=symbol(i)
   enddo
   call wqdecode(data0,msg2,ntype2)
+  print*,'A',ntype,message
+  print*,'B',ntype2,msg2
 
   call cs_lock('genwspr')
   alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
