@@ -66,7 +66,6 @@ fileopened=""
 fmid=0.0
 fmid0=0.0
 font1='Helvetica'
-font2='Courier'
 iband=IntVar()
 iband0=0
 idle=IntVar()
@@ -1207,10 +1206,7 @@ g3.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=1)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-if g.Win32:
-    lab2=Label(iframe2, text='UTC        dB        DT             Freq             Drift')
-else:
-    lab2=Label(iframe2, text='UTC  dB  DT   Freq      DF Call', font=(font2,10))
+lab2=Label(iframe2, text='UTC        dB        DT             Freq             Drift')
 lab2.place(x=165,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
