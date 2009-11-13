@@ -23,16 +23,16 @@ build:	wspr
 wspr:	WsprMod/w.so
 
 # Default rules
-%.o: %.c
-	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
-%.o: %.f
-	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
-%.o: %.F
-	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
-%.o: %.f90
-	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
-%.o: %.F90
-	${FC} ${CPPFLAGS} ${FFLAGS} -c $<
+.c.o:
+	${CC} ${CPPFLAGS} ${CFLAGS} -c -o ${<:.c=.o} $<
+.f.o:
+	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.f=.o} $<
+.F.o:
+	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F=.o} $<
+.f90.o:
+	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.f90=.o} $<
+.F90.o:
+	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F90=.o} $<
 
 OS=@OS@
 FC=@FC@
@@ -84,8 +84,6 @@ WsprMod/w.so:	${OBJS2C} $(SRCS2F90) $(SRCS2F77) acom1.f90
 	${MKDIR} -p build/lib/WsprMod
 	${MV} w.so WsprMod/w.so
 
-sound.o: sound.c
-	$(CC) -c sound.c
 wspr_rxtest.o: wspr_rxtest.f90
 	$(FC) -c $(FFLAGS) wspr_rxtest.f90
 
