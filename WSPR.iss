@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSPR
-AppVerName=WSPR Version 2.00 r1682
+AppVerName=WSPR Version 2.00 r1690
 
 AppCopyright=Copyright (C) 2008-2009 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSPR
@@ -15,6 +15,8 @@ Source: "c:\k1jt\svn\wsjt\wspr\rigctl.exe";          DestDir: "{app}";  Flags: o
 Source: "c:\k1jt\svn\wsjt\wspr\libhamlib-2.dll";     DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\k1jt\svn\wsjt\wspr\hamlib*.dll";         DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\k1jt\svn\wsjt\wspr\save\Samples\091022_0436.wav";  DestDir: "{app}\save\Samples";  Flags: onlyifdoesntexist
+Source: "c:\k1jt\svn\wsjt\wspr\fcal.exe";            DestDir: "{app}"
+Source: "c:\k1jt\svn\wsjt\wspr\fcal.dat";            DestDir: "{app}"
 
 Source: "c:\k1jt\svn\wsjt\wspr\Output\wspr.ini";     DestDir: "{app}";
 
