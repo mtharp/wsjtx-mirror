@@ -735,8 +735,12 @@ def update():
         t="%.6f" % (ftx.get(),)
         sftx.set(t)
         if options.cat_enable.get():
-            calfac=float(advanced.calfactor.get())
-            nHz=int(1000000.0*f0.get()*calfac+0.5)
+            print 'A',advanced.encal.get(),advanced.Acal.get(),advanced.Bcal.get()
+            if advanced.encal.get():
+                nHz=int(advanced.Acal.get() + \
+                        1000000.0*f0.get()*advanced.Bcal.get() + 0.5)
+            else:
+                nHz=int(1000000.0*f0.get() + 0.5)
             cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                  (options.rignum.get(),options.CatPort.get(), \
                   options.serial_rate.get(),options.databits.get(), \
@@ -826,7 +830,7 @@ def update():
     else:
         pctscale.configure(state=DISABLED)
     if w.acom1.ncal==0:
-        advanced.bcal.configure(bg='gray85')
+        advanced.bmeas.configure(bg='gray85')
     else:
         idle.set(1)
     w.acom1.pctx=ipctx.get()
@@ -837,10 +841,10 @@ def update():
         bidle.configure(bg='yellow')
     if w.acom1.transmitting or w.acom1.receiving:
         btune.configure(state=DISABLED)
-        advanced.bcal.configure(state=DISABLED)
+        advanced.bmeas.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
-        advanced.bcal.configure(state=NORMAL)
+        advanced.bmeas.configure(state=NORMAL)
     if upload.get()==1:
         bupload.configure(bg='gray85')
     else:
@@ -968,7 +972,8 @@ def save_params():
     f.write("BFOfreq " + str(advanced.bfofreq.get()) + "\n")
     f.write("PTTmode " + options.pttmode.get() + "\n")
     f.write("CATenable " + str(options.cat_enable.get()) + "\n")
-    f.write("CalFactor " + str(advanced.calfactor.get()) + "\n")
+    f.write("Acal " + str(advanced.Acal.get()) + "\n")
+    f.write("Bcal " + str(advanced.Acal.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1316,7 +1321,8 @@ def readinit():
                 options.DevoutName.set(value)
 
             elif key == 'BFOfreq': advanced.bfofreq.set(value)
-            elif key == 'CalFactor': advanced.calfactor.set(value)
+            elif key == 'Acal': advanced.Acal.set(value)
+            elif key == 'Bcal': advanced.Acal.set(value)
             elif key == 'PTTmode': options.pttmode.set(value)
             elif key == 'CATenable': options.cat_enable.set(value)
             elif key == 'SerialRate': options.serial_rate.set(int(value))
@@ -1445,8 +1451,6 @@ root.mainloop()
 
 # Clean up and save user options, then terminate.
 if options.pttmode.get()=='CAT':
-    calfac=float(advanced.calfactor.get())
-    nHz=int(1000000.0*f0.get()*calfac+0.5)
     cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s T 0" % \
          (options.rignum.get(),options.CatPort.get(), \
           options.serial_rate.get(),options.databits.get(), \

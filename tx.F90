@@ -99,7 +99,7 @@ subroutine tx
      cwmsg=call1(:i1)//'                      '
      icwid=0
      call gencwid(cwmsg,wpm,freqcw,icwid,ncwid)
-     k0=113*48000
+     k0=112*48000
      k1=k0+12000
      k2=k1+4.5*48000
      jwave(k0:k1)=0
@@ -111,9 +111,8 @@ subroutine tx
 
   if(ntune.eq.0) then
      call gmtime2(nt,tsec2)
-!     print*,'B',tsec2-tsec0
-     istart=48000*(1.0+tsec2-tsec0)
-     ierr=soundout(ndevout,jwave(istart),npts-istart)
+     istart=48000*(tsec2-tsec0)
+     ierr=soundout(ndevout,jwave(istart),npts)
   else
      npts=48000*pctx
      ierr=soundout(ndevout,jwave(2*48000),npts)

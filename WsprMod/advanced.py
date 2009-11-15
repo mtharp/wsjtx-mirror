@@ -23,12 +23,14 @@ idint=IntVar()
 bfofreq=IntVar()
 idint=IntVar()
 igrid6=IntVar()
-calfactor=DoubleVar()
+encal=IntVar()
+Acal=DoubleVar()
+Bcal=DoubleVar()
 
 #------------------------------------------------------ freqcal
 def freqcal(event=NONE):
     if w.acom1.ncal==0:
-        bcal.configure(bg='green')
+        bmeas.configure(bg='green')
         w.acom1.ncal=1
 
 #-------------------------------------------------------- Create GUI widgets
@@ -42,28 +44,36 @@ this screen.
 lab1=Label(g1.interior(),text=t,justify=LEFT)
 lab1.pack(fill=X,expand=1,padx=5,pady=0)
 
-cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (minutes):',
+cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
         value='0',entry_textvariable=idint,entry_width=5,
         validate={'validator':'numeric','min':0,'max':60})
-rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz):',
+cwid.pack(fill=X,padx=2,pady=2)
+rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz): ',
         value='1500',entry_textvariable=bfofreq,entry_width=10,
         validate={'validator':'real','min':-3000,'max':3000})
-fcal=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Fcal factor:',
-        value='1.0000000',entry_textvariable=calfactor,entry_width=10,
-        validate={'validator':'real','min':0.99999,'max':1.00001,
+rxbfo.pack(fill=X,padx=2,pady=2)
+enable_cal=Checkbutton(g1.interior(),text='Enable frequency correction',
+                   variable=encal)
+enable_cal.pack(padx=5,pady=5)
+A_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='A (Hz):',
+        value='0.0',entry_textvariable=Acal,entry_width=10,
+        validate={'validator':'real','min':-100.0,'max':100.0,
         'minstrict':0,'maxstrict':0})
-widgets = (cwid,rxbfo,fcal)
-for widget in widgets:
-    widget.pack(fill=X,padx=2,pady=2)
+A_entry.pack(fill=X,padx=2,pady=2)
+B_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='B (ppm):',
+        value='0.0',entry_textvariable=Bcal,entry_width=10,
+        validate={'validator':'real','min':-100.0,'max':100.0,
+        'minstrict':0,'maxstrict':0})
+B_entry.pack(fill=X,padx=2,pady=2)
+Pmw.alignlabels([cwid,rxbfo,A_entry,B_entry])
 
-bcal=Button(g1.interior(), text='Measure an audio frequency',command=freqcal,
+bmeas=Button(g1.interior(), text='Measure an audio frequency',command=freqcal,
              width=26,padx=1,pady=2)
-bcal.pack(padx=5,pady=5)
+bmeas.pack(padx=5,pady=10)
 bgrid6=Checkbutton(g1.interior(),text='Transmit 6-digit locator',
                    variable=igrid6)
 bgrid6.pack(padx=5,pady=2)
 
-Pmw.alignlabels(widgets)
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()
 g1.pack(side=LEFT,fill=BOTH,expand=1,padx=4,pady=4)

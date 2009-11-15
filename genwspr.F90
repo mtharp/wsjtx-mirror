@@ -68,7 +68,7 @@ subroutine genwspr(message,ntxdf,snrdb,appdir,nappdir,msg2,iwave)
   snr=10.0**(0.05*(snrdb-6.5))   !Bandwidth correction?
   fac=3000.0
   if(snr.gt.1.0) fac=3000.0/snr
-  t=-2.d0
+  t=-1.d0
   phi=0.d0
   j0=0
   f=f0
