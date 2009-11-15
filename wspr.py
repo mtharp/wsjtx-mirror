@@ -735,10 +735,9 @@ def update():
         t="%.6f" % (ftx.get(),)
         sftx.set(t)
         if options.cat_enable.get():
-            print 'A',advanced.encal.get(),advanced.Acal.get(),advanced.Bcal.get()
             if advanced.encal.get():
                 nHz=int(advanced.Acal.get() + \
-                        1000000.0*f0.get()*advanced.Bcal.get() + 0.5)
+                    f0.get()*(1000000.0 + advanced.Bcal.get()) + 0.5)
             else:
                 nHz=int(1000000.0*f0.get() + 0.5)
             cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
