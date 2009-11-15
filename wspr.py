@@ -801,6 +801,14 @@ def update():
             rxtime=g.ftnstr(w.acom1.rxtime)
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
+        if receiving:
+            filemenu.entryconfig(0,state=DISABLED)
+            filemenu.entryconfig(1,state=DISABLED)
+            filemenu.entryconfig(2,state=DISABLED)
+        else:
+            filemenu.entryconfig(0,state=NORMAL)
+            filemenu.entryconfig(1,state=NORMAL)
+            filemenu.entryconfig(2,state=NORMAL)
 
     bgcolor='gray85'
     t='Waiting to start'
