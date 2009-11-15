@@ -3,18 +3,29 @@ program fcal
   parameter(NZ=1000)
   implicit real*8 (a-h,o-z)
   real*8 fd(NZ),deltaf(NZ),r(NZ)
-  character cjunk*4
+  character infile*50
 
-  open(10,file='fcal.dat',status='old',err=997)
-  read(10,*,err=998) cjunk
-  read(10,*,err=998) cjunk
-  read(10,*,err=998) cjunk
-  do i=1,9999
-     read(10,*,end=10) fd(i),deltaf(i)
+  nargs=iargc()
+  if(nargs.ne.1) then
+     print*,'Usage: fcal <infile>'
+     go to 999
+  endif
+  call getarg(1,infile)
+
+  open(10,file=infile,status='old',err=997)
+
+  i=0
+  do j=1,9999
+     read(10,*,err=5,end=10) f,df
+     i=i+1
+     fd(i)=f
+     deltaf(i)=df
      r(i)=0.d0
+5    continue
   enddo
 
-10 iz=i-1
+10 iz=i
+  if(iz.lt.2) go to 998
   call fit(fd,deltaf,r,iz,a,b,sigmaa,sigmab,rms)
 
   write(*,1002) 
@@ -30,17 +41,21 @@ program fcal
   calfac=1.d0 + 1.d-6*b
   err=1.d-6*sigmab
 
-  write(*,1100) a,b,rms
+  if(iz.ge.3) then
+     write(*,1100) a,b,rms
 1100 format(/'A:',f8.2,' Hz    B:',f9.6,' ppm    StdDev:',f6.2,' Hz')
   if(iz.gt.2) write(*,1110) sigmaa,sigmab
 1110 format('err:',f6.2,9x,f9.6,23x,f13.9)
+  else
+     write(*,1120) a,b
+1120 format(/'A:',f8.2,' Hz    B:',f9.6)
+  endif
 
   go to 999
 
-997 print*,'Cannot open file fcal.dat'
+997 print*,'Cannot open input file: ',infile
   go to 999
-998 print*,'Must have 3 header lines and at least 2 valid'
-  print*,'data lines in fcal.dat'
+998 print*,'Input file must contain at least 2 valid measurement pairs'
 
 999 end program fcal
 

@@ -5,7 +5,7 @@ FC = df
 FFLAGS = /traceback /fast /nologo
 #CFLAGS = /nologo /DWin32=1 /DCVF /I. 
 
-all:    WSPR.EXE rxtest.exe testmsg.exe
+all:    WSPR.EXE rxtest.exe testmsg.exe fcal.exe
 
 OBJS0 = testmsg.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
 	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
@@ -84,6 +84,9 @@ wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py \
 	   WsprMod/advanced.py 
 	python c:\python23\installer\makespec.py --icon wsjt.ico \
 	--tk --onefile wspr.py
+
+fcal.exe: fcal.f90
+	$(FC) /check:all /traceback fcal.f90
 
 wspr_rxtest.obj: wspr_rxtest.f90
 	$(FC) /c $(FFLAGS) /fpp wspr_rxtest.f90
