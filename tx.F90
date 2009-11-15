@@ -16,7 +16,8 @@ subroutine tx
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
   character cmnd*120,snrfile*80
   integer*2 jwave,icwid
-  integer soundout,ptt
+  integer soundout,ptt,nt(9)
+  real*8 tsec1
   include 'acom1.f90'
   common/bcom/ntransmitted
   common/dcom/jwave(NMAX2),icwid(NMAX3)
@@ -85,7 +86,10 @@ subroutine tx
   read(18,*,err=10,end=10) snr
   close(18)
 
-10 call genwspr(message,ntxdf,snr,appdir,nappdir,sending,jwave)
+10 continue
+  call gmtime2(nt,tsec1)
+  print*,'A',tsec1-tsec0
+  call genwspr(message,ntxdf,snr,appdir,nappdir,sending,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then

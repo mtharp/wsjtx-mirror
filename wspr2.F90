@@ -16,6 +16,7 @@ subroutine wspr2
   real*8 tsec
   include 'acom1.f90'
   character linetx*51,dectxt*80
+  integer nt(9)
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
@@ -124,6 +125,7 @@ subroutine wspr2
      nsectx=mod(nsec,86400)
      ntxdone=0
      call cs_unlock
+     call gmtime2(nt,tsec0)
      if(ndevsok.eq.1) call starttx
 
   else
