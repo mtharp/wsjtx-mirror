@@ -1,6 +1,6 @@
 subroutine tx
 
-!  Make one WSPR or "tune" transmission.
+!  Make one transmission of a WSPR message, or an unmodulated "Tune" sequence.
 
 #ifdef CVF
   use dfport
@@ -17,7 +17,7 @@ subroutine tx
   character cmnd*120,snrfile*80
   integer*2 jwave,icwid
   integer soundout,ptt,nt(9)
-  real*8 tsec1
+  real*8 tsec1,tsec2
   include 'acom1.f90'
   common/bcom/ntransmitted
   common/dcom/jwave(NMAX2),icwid(NMAX3)
@@ -88,7 +88,7 @@ subroutine tx
 
 10 continue
   call gmtime2(nt,tsec1)
-  print*,'A',tsec1-tsec0
+!  print*,'A',tsec1-tsec0
   call genwspr(message,ntxdf,snr,appdir,nappdir,sending,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
@@ -110,7 +110,10 @@ subroutine tx
   endif
 
   if(ntune.eq.0) then
-     ierr=soundout(ndevout,jwave(48000),npts)
+     call gmtime2(nt,tsec2)
+!     print*,'B',tsec2-tsec0
+     istart=48000*(1.0+tsec2-tsec0)
+     ierr=soundout(ndevout,jwave(istart),npts-istart)
   else
      npts=48000*pctx
      ierr=soundout(ndevout,jwave(2*48000),npts)
