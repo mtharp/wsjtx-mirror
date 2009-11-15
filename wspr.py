@@ -51,7 +51,7 @@ root_geom=""
 appdir=os.getcwd()
 w.acom1.nappdir=len(appdir)
 w.acom1.appdir=(appdir+(' '*80))[:80]
-i1,i2=w.audiodev(0,2)
+#i1,i2=w.audiodev(0,2)
 from WsprMod import options
 from WsprMod import advanced
 
@@ -597,7 +597,7 @@ def autolog(decodes):
                 reportparams = urllib.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
-                                                 'rqrg': str(f0),
+                                                 'rqrg': str(f0.get()),
                                                  'date': d['date'],
                                                  'time': d['time'],
                                                  'sig': d['snr'],
@@ -617,7 +617,7 @@ def autolog(decodes):
                 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
                 # The following opens a url and passes the reception report to the
                 # database insertion handler from W1BW:
-                urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" \
+                urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
                 reply = urlf.readlines()
                 #for r in reply:
@@ -633,7 +633,7 @@ def autolog(decodes):
                                              'tqrg': sftx.get(),
                                              'dbm': str(options.dBm.get()),
                                              'version': Version})
-            urlf = urllib.urlopen("http://wsprnet.org/meptspots.php?%s" \
+            urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
             reply = urlf.readlines()
             #for r in reply:
