@@ -52,7 +52,11 @@ int padevsub_(int *numdev, int *ndefin, int *ndefout, int nchin[],
       inputParameters.sampleFormat = PA_SAMPLE_TYPE;
       inputParameters.suggestedLatency = 0.4;
       inputParameters.hostApiSpecificStreamInfo = NULL;
-      inerr[i] = Pa_IsFormatSupported(&inputParameters,NULL,SAMPLE_RATE);
+      // The following call causes problems on Ubuntu 9.10.  Until we figure
+      // that out, we'll assume the required sound format is OK and
+      // learn the truth when we actually select & open the device.  --W1BW
+      //inerr[i] = Pa_IsFormatSupported(&inputParameters,NULL,SAMPLE_RATE);
+      inerr[i] = 0;
     }
 
     if(nchout[i]>0)  {
@@ -61,7 +65,11 @@ int padevsub_(int *numdev, int *ndefin, int *ndefout, int nchin[],
       outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
       outputParameters.suggestedLatency = 0.4;
       outputParameters.hostApiSpecificStreamInfo = NULL;
-      outerr[i] = Pa_IsFormatSupported(NULL,&outputParameters,SAMPLE_RATE);
+      // The following call causes problems on Ubuntu 9.10.  Until we figure
+      // that out, we'll assume the required sound format is OK and
+      // learn the truth when we actually select & open the device.  --W1BW
+      //outerr[i] = Pa_IsFormatSupported(NULL,&outputParameters,SAMPLE_RATE);
+      outerr[i] = 0;
     }
     fprintf(fp,"%2d  %3d  %3d  %6d  %6d  %s\n",i,nchin[i],nchout[i],inerr[i],
 	   outerr[i],pdi->name);

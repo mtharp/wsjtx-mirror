@@ -569,8 +569,8 @@ def get_decoded():
 
 #------------------------------------------------------ autologger
 def autolog(decodes):
-    # Random delay of up to 15 seconds to spread load out on server --W1BW
-    time.sleep(random.random() * 15.0)
+    # Random delay of up to 20 seconds to spread load out on server --W1BW
+    time.sleep(random.random() * 20.0)
 
     try:
         # This code originally by W6CQZ ... modified by W1BW
