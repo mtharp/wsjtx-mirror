@@ -51,7 +51,7 @@ root_geom=""
 appdir=os.getcwd()
 w.acom1.nappdir=len(appdir)
 w.acom1.appdir=(appdir+(' '*80))[:80]
-#i1,i2=w.audiodev(0,2)
+i1,i2=w.audiodev(0,2)
 from WsprMod import options
 from WsprMod import advanced
 
