@@ -726,6 +726,7 @@ def update():
     except:
         pass
     isec=utc[5]
+    twait=120.0 - (tsec % 120.0)
 
     if iband.get()!=iband0:
         f0.set(freq0[iband.get()])
@@ -755,8 +756,6 @@ def update():
         text1.configure(state=DISABLED)
         iband0=iband.get()
 
-##    fmid0=fmid
-##    ftx0=ftx.get()
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
 
@@ -840,10 +839,13 @@ def update():
         bidle.configure(bg='yellow')
     if w.acom1.transmitting or w.acom1.receiving:
         btune.configure(state=DISABLED)
-        advanced.bmeas.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
+    if w.acom1.transmitting or w.acom1.receiving or twait < 6.0:
+        advanced.bmeas.configure(state=DISABLED)
+    else:
         advanced.bmeas.configure(state=NORMAL)
+
     if upload.get()==1:
         bupload.configure(bg='gray85')
     else:
@@ -938,7 +940,7 @@ def update():
         msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
     else:
         msg5.configure(text='',bg='gray85',relief=FLAT)
-
+  
     ldate.after(200,update)
     
 #------------------------------------------------------ audio_config

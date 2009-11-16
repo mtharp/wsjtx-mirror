@@ -82,9 +82,14 @@ subroutine fit(x,y,r,iz,a,b,sigmaa,sigmab,rms)
      r(i)=y(i) - (a + b*x(i))
      sq=sq + r(i)**2
   enddo
-  rms=sqrt(sq/(iz-2))
-  sigmaa=sqrt(rms*rms*sx2/delta)
-  sigmab=iz*rms*rms/delta
+  rms=0.
+  sigmaa=0.
+  sigmab=0.
+  if(iz.ge.3) then
+     rms=sqrt(sq/(iz-2))
+     sigmaa=sqrt(rms*rms*sx2/delta)
+     sigmab=iz*rms*rms/delta
+  endif
 
   return
 end subroutine fit
