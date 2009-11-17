@@ -133,7 +133,13 @@ def rig_number(event=NONE):
 def chkcall(t):
     r=-1
     n=len(t)
-    if n>=3 and n<=10: r=1
+    if n>=3 and n<=10:
+        i1=t.count('/')
+        i2=t.find('/')
+        if i1==1 and i2>0:
+            t=t[:i2-1]+t[i2+1:]
+        if t.isalnum():
+            r=1
     return r
 
 #------------------------------------------------------- chkgrid
