@@ -690,8 +690,6 @@ def put_params(param3=NONE):
         w.acom1.idint=advanced.idint.get()
     except:
         w.acom1.idint=0
-    if options.MyCall.get().find('/')>0:
-        advanced.igrid6.set(1)
     w.acom1.igrid6=advanced.igrid6.get()
     w.acom1.ndevin=g.ndevin.get()
     w.acom1.ndevout=g.ndevout.get()
@@ -940,6 +938,13 @@ def update():
         msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
     else:
         msg5.configure(text='',bg='gray85',relief=FLAT)
+
+    if advanced.encal.get():
+        advanced.A_entry.configure(entry_state=NORMAL,label_state=NORMAL)
+        advanced.B_entry.configure(entry_state=NORMAL,label_state=NORMAL)
+    else:
+        advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
+        advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
   
     ldate.after(200,update)
     

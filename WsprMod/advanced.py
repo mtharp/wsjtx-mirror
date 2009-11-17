@@ -54,7 +54,7 @@ rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz): ',
 rxbfo.pack(fill=X,padx=2,pady=2)
 enable_cal=Checkbutton(g1.interior(),text='Enable frequency correction',
                    variable=encal)
-enable_cal.pack(padx=5,pady=5)
+enable_cal.pack(anchor=W,padx=5,pady=5)
 A_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='A (Hz):',
         value='0.0',entry_textvariable=Acal,entry_width=10,
         validate={'validator':'real','min':-100.0,'max':100.0,
@@ -70,9 +70,9 @@ Pmw.alignlabels([cwid,rxbfo,A_entry,B_entry])
 bmeas=Button(g1.interior(), text='Measure an audio frequency',command=freqcal,
              width=26,padx=1,pady=2)
 bmeas.pack(padx=5,pady=10)
-bgrid6=Checkbutton(g1.interior(),text='Transmit 6-digit locator',
+bgrid6=Checkbutton(g1.interior(),text='Force transmission of 6-digit locator',
                    variable=igrid6)
-bgrid6.pack(padx=5,pady=2)
+bgrid6.pack(anchor=W,padx=5,pady=2)
 
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()
