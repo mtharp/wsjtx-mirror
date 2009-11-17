@@ -28,7 +28,7 @@ subroutine wqdecode(data0,message,ntype)
   ntype=iand(n2,127) -64
 
 ! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
-  if(ntype.ge.0 .and. ntype.le.60) then
+  if(ntype.ge.0 .and. ntype.le.62) then
      nu=mod(ntype,10)
      if(nu.eq.0 .or. nu.eq.3 .or. nu.eq.7) then
         write(cdbm,'(i3)'),ntype
