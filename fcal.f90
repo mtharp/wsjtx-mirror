@@ -13,6 +13,7 @@ program fcal
   call getarg(1,infile)
 
   open(10,file=infile,status='old',err=997)
+  open(12,file='fcal.out',status='unknown')
 
   i=0
   do j=1,9999
@@ -50,6 +51,9 @@ program fcal
      write(*,1120) a,b
 1120 format(/'A:',f8.2,' Hz    B:',f9.6)
   endif
+
+  write(12,1130) a,b
+1130 format(f6.2/f10.6)
 
   go to 999
 

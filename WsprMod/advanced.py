@@ -4,6 +4,7 @@ import Pmw
 import g
 import w
 import time
+import tkMessageBox
 
 def done():
     root.withdraw()
@@ -24,14 +25,34 @@ bfofreq=IntVar()
 idint=IntVar()
 igrid6=IntVar()
 encal=IntVar()
+fset=IntVar()
 Acal=DoubleVar()
 Bcal=DoubleVar()
+fset.set(0)
 
 #------------------------------------------------------ freqcal
 def freqcal(event=NONE):
     if w.acom1.ncal==0:
         bmeas.configure(bg='green')
         w.acom1.ncal=1
+
+#-------------------------------------------------------- readab
+def readab(event=NONE):
+    try:
+        f=open('fcal.out','r')
+        s=f.readlines()
+        f.close
+        Acal.set(float(s[0]))
+        Bcal.set(float(s[1]))
+    except:
+        t='Cannot open fcal.out, or invalid data in file'
+        result=tkMessageBox.showwarning(message=t)
+        Acal.set(0.0)
+        Bcal.set(0.0)
+
+#-------------------------------------------------------- setfreq
+def setfreq(event=NONE):
+    fset.set(1)
 
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)
@@ -69,7 +90,15 @@ Pmw.alignlabels([cwid,rxbfo,A_entry,B_entry])
 
 bmeas=Button(g1.interior(), text='Measure an audio frequency',command=freqcal,
              width=26,padx=1,pady=2)
-bmeas.pack(padx=5,pady=10)
+bmeas.pack(padx=5,pady=5)
+
+breadab=Button(g1.interior(), text='Read A and B from fcal.out',command=readab,
+             width=26,padx=1,pady=2)
+breadab.pack(padx=5,pady=5)
+
+bsetfreq=Button(g1.interior(), text='Reset rig frequency',command=setfreq,
+             width=26,padx=1,pady=2)
+bsetfreq.pack(padx=5,pady=5)
 bgrid6=Checkbutton(g1.interior(),text='Force transmission of 6-digit locator',
                    variable=igrid6)
 bgrid6.pack(anchor=W,padx=5,pady=2)

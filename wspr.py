@@ -553,20 +553,6 @@ def get_decoded():
 
     if loopall: opennext()
 
-##    for d in decodes:
-##        m=d['msg']
-##        tcall=m[0]
-##        if d['type2']:
-##            tgrid=''
-##            dbm=m[1]
-##        else:
-##            tgrid=m[1]
-##            dbm=m[2]
-##        if tcall[0]=='<':
-##            n=tcall.find('>')
-##            tcall=tcall[1:n]
-##        print 'Call:',tcall,'   Grid:',tgrid,'   dBm:',dbm
-
 #------------------------------------------------------ autologger
 def autolog(decodes):
     # Random delay of up to 20 seconds to spread load out on server --W1BW
@@ -620,8 +606,6 @@ def autolog(decodes):
                 urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
                 reply = urlf.readlines()
-                #for r in reply:
-                #    print r
                 urlf.close()
         else:
             # No spots to report, so upload status message instead. --W1BW
@@ -636,11 +620,10 @@ def autolog(decodes):
             urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
             reply = urlf.readlines()
-            #for r in reply:
-            #    print r
             urlf.close()
     except:
-        print time.asctime(time.gmtime())+" UTC: attempted access to WSPRnet timed out."
+        print time.asctime(time.gmtime()) + \
+              " UTC: attempted access to WSPRnet timed out.\a"
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
@@ -726,7 +709,8 @@ def update():
     isec=utc[5]
     twait=120.0 - (tsec % 120.0)
 
-    if iband.get()!=iband0:
+    if iband.get()!=iband0 or advanced.fset.get():
+        advanced.fset.set(0)
         f0.set(freq0[iband.get()])
         t="%.6f" % (f0.get(),)
         sf0.set(t)
@@ -745,14 +729,22 @@ def update():
                   options.stopbits.get(),options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
             if ierr!=0:
-                print 'Error executing rigctl command to set frequency:'
-                print cmd            
-        bandmap=[]
-        bm={}
-        text1.configure(state=NORMAL)
-        text1.delete('1.0',END)
-        text1.configure(state=DISABLED)
-        iband0=iband.get()
+                print 'Error attempting to set rig frequency.\a'
+                print cmd + '\a'
+                iband.set(iband0)
+                f0.set(freq0[iband.get()])
+                t="%.6f" % (f0.get(),)
+                sf0.set(t)
+                ftx.set(freqtx[iband.get()])
+                t="%.6f" % (ftx.get(),)
+                sftx.set(t)
+            else:
+                bandmap=[]
+                bm={}
+                text1.configure(state=NORMAL)
+                text1.delete('1.0',END)
+                text1.configure(state=DISABLED)
+                iband0=iband.get()
 
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -809,6 +801,12 @@ def update():
             filemenu.entryconfig(0,state=NORMAL)
             filemenu.entryconfig(1,state=NORMAL)
             filemenu.entryconfig(2,state=NORMAL)
+        if transmitting:
+            for i in range(14):
+                bandmenu.entryconfig(i,state=DISABLED)
+        else:
+            for i in range(14):
+                bandmenu.entryconfig(i,state=NORMAL)
 
     bgcolor='gray85'
     t='Waiting to start'
@@ -914,6 +912,7 @@ def update():
         options.cbdata._entryWidget['state']=NORMAL
         options.cbstop._entryWidget['state']=NORMAL
         options.cbhs._entryWidget['state']=NORMAL
+        advanced.bsetfreq.configure(state=NORMAL)
     else:
         options.cat_port._entryWidget['state']=DISABLED
         options.lrignum._entryWidget['state']=DISABLED
@@ -921,6 +920,7 @@ def update():
         options.cbdata._entryWidget['state']=DISABLED
         options.cbstop._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
+        advanced.bsetfreq.configure(state=DISABLED)
 
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
@@ -1297,7 +1297,7 @@ def readinit():
     try:
         for i in range(len(params)):
             if badlist.count(i)>0:
-                print 'Skipping bad entry in WSPR.INI:',params[i]
+                print 'Skipping bad entry in WSPR.INI:\a',params[i]
                 continue
             key,value=params[i].split()
             if   key == 'WSPRGeometry': root.geometry(value)
@@ -1448,6 +1448,7 @@ try:
 except:
     pass
 
+iband0=iband.get()
 graph1.focus_set()
 w.acom1.ndevsok=0
 w.wspr1()
