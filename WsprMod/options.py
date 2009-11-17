@@ -138,7 +138,7 @@ def chkcall(t):
         i2=t.find('/')
         if i1==1 and i2>0:
             t=t[:i2-1]+t[i2+1:]
-        if t.isalnum():
+        if t.isalnum() and t.find(' ')<0:
             r=1
     return r
 
