@@ -932,8 +932,10 @@ def update():
         msg2.configure(text='Invalid audio input device.',bg='red')
     if options.outbad.get()==0:
         msg3.configure(text='',bg='gray85')
+        btune.configure(state=NORMAL)
     else:
         msg3.configure(text='Invalid audio output device.',bg='red')
+        btune.configure(state=DISABLED)
     if w.acom1.ndecoding:
         msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
     else:
