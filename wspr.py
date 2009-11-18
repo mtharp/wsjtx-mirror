@@ -916,6 +916,8 @@ def update():
         options.cbstop._entryWidget['state']=NORMAL
         options.cbhs._entryWidget['state']=NORMAL
         advanced.bsetfreq.configure(state=NORMAL)
+        advanced.breadab.configure(state=NORMAL)
+        advanced.enable_cal.configure(state=NORMAL)
     else:
         options.cat_port._entryWidget['state']=DISABLED
         options.lrignum._entryWidget['state']=DISABLED
@@ -924,6 +926,9 @@ def update():
         options.cbstop._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
         advanced.bsetfreq.configure(state=DISABLED)
+        advanced.breadab.configure(state=DISABLED)
+        advanced.enable_cal.configure(state=DISABLED)
+        advanced.encal.set(0)
 
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
