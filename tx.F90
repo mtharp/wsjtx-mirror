@@ -89,7 +89,7 @@ subroutine tx
 10 continue
   call gmtime2(nt,tsec1)
 !  print*,'A',tsec1-tsec0
-  call genwspr(message,ntxdf,snr,appdir,nappdir,sending,jwave)
+  call genwspr(message,ntxdf,ntune,snr,appdir,nappdir,sending,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then

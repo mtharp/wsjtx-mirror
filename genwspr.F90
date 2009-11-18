@@ -1,4 +1,4 @@
-subroutine genwspr(message,ntxdf,snrdb,appdir,nappdir,msg2,iwave)
+subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
 
 ! Encode an MEPT_JT message and generate the corresponding wavefile.
 
@@ -47,18 +47,20 @@ subroutine genwspr(message,ntxdf,snrdb,appdir,nappdir,msg2,iwave)
   enddo
   call wqdecode(data0,msg2,ntype2)
 
-  call cs_lock('genwspr')
-  alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
+  if(ntune.eq.0) then
+     call cs_lock('genwspr')
+     alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
 #ifdef CVF
-  open(13,file=alltxt,status='unknown',position='append',share='denynone')
+     open(13,file=alltxt,status='unknown',position='append',share='denynone')
 #else
-  open(13,file=alltxt,status='unknown',position='append')
+     open(13,file=alltxt,status='unknown',position='append')
 #endif
-  line=linetx//msg2
-  write(13,1010) line
+     line=linetx//msg2
+     write(13,1010) line
 1010 format(a75)
-  close(13)
-  call cs_unlock
+     close(13)
+     call cs_unlock
+  endif
 
 ! Set up necessary constants
   tsymbol=4.d0*8192.d0/48000.d0
