@@ -44,6 +44,7 @@ def readab(event=NONE):
         f.close
         Acal.set(float(s[0]))
         Bcal.set(float(s[1]))
+        ecal.set(1)
     except:
         t='Cannot open fcal.out, or invalid data in file'
         result=tkMessageBox.showwarning(message=t)
@@ -96,7 +97,7 @@ breadab=Button(g1.interior(), text='Read A and B from fcal.out',command=readab,
              width=26,padx=1,pady=2)
 breadab.pack(padx=5,pady=5)
 
-bsetfreq=Button(g1.interior(), text='Reset rig frequency',command=setfreq,
+bsetfreq=Button(g1.interior(), text='Update rig frequency',command=setfreq,
              width=26,padx=1,pady=2)
 bsetfreq.pack(padx=5,pady=5)
 bgrid6=Checkbutton(g1.interior(),text='Force transmission of 6-digit locator',

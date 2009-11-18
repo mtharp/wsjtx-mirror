@@ -742,9 +742,12 @@ def update():
                 f0.set(freq0[iband.get()])
                 t="%.6f" % (f0.get(),)
                 sf0.set(t)
+                print 'C'
                 ftx.set(freqtx[iband.get()])
                 t="%.6f" % (ftx.get(),)
                 sftx.set(t)
+        else:
+            iband0=iband.get()
 
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
