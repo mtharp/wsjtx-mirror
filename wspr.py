@@ -992,7 +992,7 @@ def save_params():
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
-    f.write("Handshake " + options.serial_handshake.get() + "\n")
+    f.write("Handshake " + options.serial_handshake.get().replace(" ","#")  + "\n")
     f.write("Rig " + str(options.rig.get().replace(" ","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
     f.write("PctTx " + str(ipctx.get()) + "\n")
@@ -1344,7 +1344,7 @@ def readinit():
             elif key == 'SerialRate': options.serial_rate.set(int(value))
             elif key == 'DataBits': options.databits.set(int(value))
             elif key == 'StopBits': options.stopbits.set(int(value))
-            elif key == 'Handshake': options.serial_handshake.set(value)
+            elif key == 'Handshake': options.serial_handshake.set(value.replace("#"," ") )
             elif key == 'Rig':
                 t=value.replace("#"," ")
                 options.rig.set(t)
