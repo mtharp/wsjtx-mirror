@@ -836,7 +836,7 @@ def update():
         bidle.configure(bg='gray85')
     else:
         bidle.configure(bg='yellow')
-    if w.acom1.transmitting or w.acom1.receiving:
+    if w.acom1.transmitting or w.acom1.receiving or options.outbad.get():
         btune.configure(state=DISABLED)
     else:
         btune.configure(state=NORMAL)
@@ -940,10 +940,8 @@ def update():
         msg2.configure(text='Invalid audio input device.',bg='red')
     if options.outbad.get()==0:
         msg3.configure(text='',bg='gray85')
-        btune.configure(state=NORMAL)
     else:
         msg3.configure(text='Invalid audio output device.',bg='red')
-        btune.configure(state=DISABLED)
     if w.acom1.ndecoding:
         msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
     else:
