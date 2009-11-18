@@ -44,7 +44,7 @@ def readab(event=NONE):
         f.close
         Acal.set(float(s[0]))
         Bcal.set(float(s[1]))
-        ecal.set(1)
+        encal.set(1)
     except:
         t='Cannot open fcal.out, or invalid data in file'
         result=tkMessageBox.showwarning(message=t)
