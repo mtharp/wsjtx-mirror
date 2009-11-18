@@ -125,9 +125,9 @@ g.DevoutName=StringVar()
 
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 freq0=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
-       21.0946,24.9246,28.1246,50.2930,144.4880,10.1387]
+       21.0946,24.9246,28.1246,50.2930,144.4880,0.1360]
 freqtx=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
-       21.0946,24.9246,28.1246,50.2930,144.4880,10.1387]
+       21.0946,24.9246,28.1246,50.2930,144.4880,0.1360]
 
 for i in range(15):
     freqtx[i]=freq0[i]+0.001500
@@ -728,7 +728,14 @@ def update():
                   options.serial_rate.get(),options.databits.get(), \
                   options.stopbits.get(),options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
-            if ierr!=0:
+            if ierr==0:
+                bandmap=[]
+                bm={}
+                text1.configure(state=NORMAL)
+                text1.delete('1.0',END)
+                text1.configure(state=DISABLED)
+                iband0=iband.get()
+            else:
                 print 'Error attempting to set rig frequency.\a'
                 print cmd + '\a'
                 iband.set(iband0)
@@ -738,13 +745,6 @@ def update():
                 ftx.set(freqtx[iband.get()])
                 t="%.6f" % (ftx.get(),)
                 sftx.set(t)
-            else:
-                bandmap=[]
-                bm={}
-                text1.configure(state=NORMAL)
-                text1.delete('1.0',END)
-                text1.configure(state=DISABLED)
-                iband0=iband.get()
 
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -1407,8 +1407,10 @@ else:
 
 if g.DevinName.get()=="":
     g.ndevin.set(-1)
+
 f0.set(freq0[iband.get()])
 ftx.set(freqtx[iband.get()])
+
 if start_idle.get():
     idle.set(1)
 
@@ -1454,6 +1456,11 @@ iband0=iband.get()
 graph1.focus_set()
 w.acom1.ndevsok=0
 w.wspr1()
+t="%.6f" % (f0.get(),)
+sf0.set(t)
+t="%.6f" % (ftx.get(),)
+sftx.set(t)
+
 ldate.after(100,update)
 
 ldate.after(100,audio_config)
