@@ -43,6 +43,16 @@ OBJS2 = rxtest.obj decode162.obj spec162.obj set.obj xfft.obj \
 rxtest.exe: $(OBJS2)
 	$(FC) $(FFLAGS) /exe:rxtest.exe $(OBJS2)
 
+OBJS3 = WSPRcode.obj deg2grid.obj pack50.obj packcall.obj packgrid.obj \
+	unpack50.obj unpackcall.obj unpackgrid.obj nchar.obj \
+	grid2deg.obj wqencode.obj wqdecode.obj nhash.obj hash.obj \
+	packname.obj unpackname.obj packtext2.obj unpacktext2.obj \
+	encode232.obj inter_mept.obj packprop.obj unpackprop.obj \
+	packpfx.obj unpackpfx.obj cs_stubs.obj fano232.obj
+
+WSPRcode.exe: $(OBJS3)
+	$(FC) /exe:WSPRcode.exe /traceback /check:all /nologo $(OBJS3)
+
 OBJS2C = sound.o gmtime2.o nhash.o
 
 F2PYONLY = wspr1 getfile paterminate audiodev

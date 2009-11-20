@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSPR
-AppVerName=WSPR Version 2.00 r1710
+AppVerName=WSPR Version 2.00 r1714
 
 AppCopyright=Copyright (C) 2008-2009 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSPR
