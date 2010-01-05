@@ -12,6 +12,7 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
   integer indx(NZMAX)
   real pingdat(3,100)
   real ps(128)
+  real psavg(450)
   character msg*40,msg3*3,cf*1
   character*90 line
   common/ccom/nline,tping(100),line(100)
@@ -32,6 +33,10 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
   dtbuf=nstep/12000.0
   stlim=nslim2                !Single-tone threshold
   call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
+  do i=1,128
+     psavg(i)=db(psavg(i))
+  enddo
+
   nline0=nline
   npkept=0
   minwidth=40

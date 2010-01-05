@@ -1242,8 +1242,7 @@ def plot_small():
             n=int(150.0-3*(psavg+20))
         elif mode.get()[:4]=='JTMS':
             psavg=Audio.gcom2.psavg[i]
-            n=int(150.0-psavg)
-        print i,psavg,n
+            n=int(150.0-2.5*(psavg+15))
         xy.append(n)
     graph2.create_line(xy,fill="magenta")
 
