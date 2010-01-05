@@ -15,6 +15,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
+  real tmp1(NSMAX),tmp2(NSMAX)
+  integer ns(292)
   integer isync(10,3)
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
@@ -41,6 +43,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 ! Compute power spectrum for each quarter-symbol step
   s1=0.
   xsave=0.
+  ns=0
   do j=1,nsteps
      k=(j-1)*kstep + 1
      jj=mod(j-1,292)+1
@@ -50,12 +53,16 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      enddo
      call ps(x,nfft,xs1)
      call add(s1(1,jj),xs1,s1(1,jj),nq)
-     call add(xsave,xs1,xsave,nq)
+     ns(jj)=ns(jj)+1
   enddo
 
-  do i=1,nh/2
+  do i=1,nq
+     do j=1,292
+        tmp1(j)=s1(i,j)/ns(j)
+     enddo
+     call pctile(tmp1,tmp2,292,45,xsave(i))
      fac=1.0
-     if(xsave(i).gt.0.0) fac=8000.0/xsave(i)
+     if(xsave(i).gt.0.0) fac=1.0/xsave(i)
      do j=1,292
         s1(i,j)=fac*s1(i,j)
      enddo
@@ -78,12 +85,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   ib=fb/df
   i0=nint(f0/df)
 
-  rewind 71
-  rewind 72
-  do i=1,nq
-     write(72,3002) i*df,xsave(i)
-3002 format(2f10.2)
-  enddo
+!  call cs_lock('synciscat')
+!  rewind 71
+!  rewind 72
+!  do i=1,nq
+!     write(72,3002) i*df,xsave(i),db(xsave(i))
+!3002 format(3f10.2)
+!  enddo
 
 ! Find best frequency bin and best sync pattern
   syncbest=-1.e30
@@ -95,16 +103,24 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         sum1=0.
         sum2=0.
         sum3=0.
+        b1=0.
+        b2=0.
+        b3=0.
         do j=1,nsync
            j0=4*j - 3 + lag
            jj0=mod(j0-1,292)+1
            sum1=sum1 + s1(i+2*isync(j,1),jj0)
            sum2=sum2 + s1(i+2*isync(j,2),jj0)
            sum3=sum3 + s1(i+2*isync(j,3),jj0)
+           do k=0,9
+              if(k.ne.isync(j,1)) b1=b1+s1(i+2*k,jj0)
+              if(k.ne.isync(j,2)) b2=b2+s1(i+2*k,jj0)
+              if(k.ne.isync(j,3)) b3=b3+s1(i+2*k,jj0)
+           enddo
         enddo
-        ccf1=sum1/nsync
-        ccf2=sum2/nsync
-        ccf3=sum3/nsync
+        ccf1=500.0*sum1/(b1*nsync)
+        ccf2=500.0*sum2/(b2*nsync)
+        ccf3=500.0*sum3/(b3*nsync)
         if(ccf1.gt.smax) then
            smax=ccf1
            ispk=1
@@ -122,12 +138,10 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      j=i-i0
      if(abs(j).le.224) then
         ccfred(j)=smax
-        write(71,3001) i*df,smax,j*df
-3001    format(3f10.1)
+!        write(71,3001) i*df,smax,j*df,i,j
+!3001    format(3f10.1,2i5)
         ss=ss+smax
         nss=nss+1
-     else
-        print*,'synciscat:',i,j,ia,ib,i0
      endif
      if(smax.gt.syncbest) then
         syncbest=smax
@@ -136,6 +150,9 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      endif
   enddo
 
+!  call flushqqq(71)
+!  call flushqqq(72)
+!  call cs_unlock
   avered=ss/nss
 
 ! Once more, using best frequency and best sync pattern:
@@ -191,5 +208,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      enddo
   enddo
 
+  call cs_unlock
   return
 end subroutine synciscat
