@@ -208,6 +208,5 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      enddo
   enddo
 
-  call cs_unlock
   return
 end subroutine synciscat
