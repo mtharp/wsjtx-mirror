@@ -1227,13 +1227,23 @@ def plot_small():
     graph2.delete(ALL)
     xy=[]
     xy2=[]
-    df=12000.0/1024.0
+    if mode.get()[:5]=='ISCAT':
+        df=12000.0/1024.0
+        iz=256
+    elif mode.get()[:4]=='JTMS':
+        df=12000.0/256.0
+        iz=128
     fac=150.0/3500.0
-    for i in range(256):
+    for i in range(iz):
         x=int(i*df*fac)
         xy.append(x)
-        psavg=Audio.gcom2.ps0[i]
-        n=int(150.0-3*(psavg+20))
+        if mode.get()[:5]=='ISCAT':
+            psavg=Audio.gcom2.ps0[i]
+            n=int(150.0-3*(psavg+20))
+        elif mode.get()[:4]=='JTMS':
+            psavg=Audio.gcom2.psavg[i]
+            n=int(150.0-psavg)
+        print i,psavg,n
         xy.append(n)
     graph2.create_line(xy,fill="magenta")
 
