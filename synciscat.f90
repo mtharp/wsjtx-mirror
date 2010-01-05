@@ -1,5 +1,5 @@
-subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
-     snrx,snrsync,isbest,ccfblue,ccfred,s2)
+subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,dtx,dfx,      &
+     snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -16,6 +16,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
   real tmp1(NSMAX),tmp2(NSMAX)
+  real ps0(431)
   integer ns(292)
   integer isync(10,3)
   integer ic10(10)
@@ -35,8 +36,10 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   nh=nfft/2
   nq=nfft/4
   nsteps=4*(jz-NH)/nh
-  nsteps=nsteps/292
-  nsteps=nsteps*292
+  if(n2.eq.0) then
+     nsteps=nsteps/292
+     nsteps=nsteps*292
+  endif
   kstep=nh/4
   df=12000.0/nfft
 
@@ -85,6 +88,9 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   ib=fb/df
   i0=nint(f0/df)
 
+  do i=1,nq
+     ps0(i)=db(xsave(i))
+  enddo
 !  call cs_lock('synciscat')
 !  rewind 71
 !  rewind 72

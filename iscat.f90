@@ -1,11 +1,12 @@
 subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
-          NSyncOK,ccfblue,ccfred)
+          n2,NSyncOK,ccfblue,ccfred,ps0)
 
   real dat(jz)                !Raw audio data
   integer DFTolerance
   real s2(64,63)              !2D spectral array
   character cfile6*6,cf*1
   real ccfblue(-5:540),ccfred(-224:224)
+  real ps0(431)
   character decoded*22
 
   NsyncOK=0
@@ -13,8 +14,8 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   nstep=128                   !Step by 1/4 symbols
   df=12000.0/nfft
 
-  call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,                &
-     dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2)
+  call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,                &
+     dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
 
   nadd=1
   decoded=' '
