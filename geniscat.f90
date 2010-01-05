@@ -19,6 +19,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   save
 
   cmode='ISCAT'                                   !### temp ? ###
+  nsym=63+10
   call srcenc(cmode,message,nbit,iu0)
 ! Message length will be nbit=2, 30, 48, or 78
 
@@ -42,7 +43,6 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   enddo
 
 ! Append the encoded data after the sync pattern
-  nsym=63+10
   sent(11:nsym)=gsym(1:63)
   nspecial=0
   sendingsh=0
