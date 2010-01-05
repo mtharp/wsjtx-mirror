@@ -9,6 +9,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real xs1(NHMAX)
+  real xsave(NHMAX)
   real s1(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real s2(64,63)                   !2d spectrum, synced data symbols only
   real x(NFFTMAX)                  !Temp array for computing FFTs
@@ -30,6 +31,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 ! Do FFTs of twice symbol length, stepped by quarter symbols.  
   nfft=1024
   nh=nfft/2
+  nq=nfft/4
   nsteps=4*(jz-NH)/nh
   nsteps=nsteps/292
   nsteps=nsteps*292
@@ -38,6 +40,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
 ! Compute power spectrum for each quarter-symbol step
   s1=0.
+  xsave=0.
   do j=1,nsteps
      k=(j-1)*kstep + 1
      jj=mod(j-1,292)+1
@@ -46,7 +49,16 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         x(i+nh)=0.
      enddo
      call ps(x,nfft,xs1)
-     call add(s1(1,jj),xs1,s1(1,jj),nh)
+     call add(s1(1,jj),xs1,s1(1,jj),nq)
+     call add(xsave,xs1,xsave,nq)
+  enddo
+
+  do i=1,nh/2
+     fac=1.0
+     if(xsave(i).gt.0.0) fac=8000.0/xsave(i)
+     do j=1,292
+        s1(i,j)=fac*s1(i,j)
+     enddo
   enddo
 
 ! Determine the search range in frequency
@@ -65,6 +77,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   ia=fa/df
   ib=fb/df
   i0=nint(f0/df)
+
+  rewind 71
+  rewind 72
+  do i=1,nq
+     write(72,3002) i*df,xsave(i)
+3002 format(2f10.2)
+  enddo
 
 ! Find best frequency bin and best sync pattern
   syncbest=-1.e30
@@ -102,9 +121,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
      j=i-i0
      if(abs(j).le.224) then
-        ccfred(i-i0)=smax
+        ccfred(j)=smax
+        write(71,3001) i*df,smax,j*df
+3001    format(3f10.1)
         ss=ss+smax
         nss=nss+1
+     else
+        print*,'synciscat:',i,j,ia,ib,i0
      endif
      if(smax.gt.syncbest) then
         syncbest=smax

@@ -12,7 +12,7 @@ root.protocol('WM_DELETE_WINDOW',done)
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title("Options")
 
-Pmw.initialise(fontScheme='pmw2')
+##Pmw.initialise(fontScheme='pmw2')
 
 def options2(t):
     root.geometry(t)
