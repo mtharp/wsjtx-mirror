@@ -1,5 +1,5 @@
 subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
-          n2,NSyncOK,ccfblue,ccfred,ps0)
+          NSyncOK,ccfblue,ccfred,ps0)
 
   real dat(jz)                !Raw audio data
   integer DFTolerance
@@ -13,13 +13,12 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   nfft=1024                   !Do FFTs of twice the symbol length
   nstep=128                   !Step by 1/4 symbols
   df=12000.0/nfft
-
-  call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,                &
-     dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
-
   nadd=1
   decoded=' '
-  call extract(s2,nadd,isbest,ncount,decoded)     !Extract the message
+
+  call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,               &
+       dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
+  call extract(s2,nadd,isbest,ncount,decoded)
 
   nsync=nint(snrsync)
   nsnr=nint(snrx)
@@ -33,8 +32,8 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      cf='*'
   endif
   call cs_lock('iscat')
-  write(11,1010) cfile6,nsync,nsnr,dtx,jdf,isbest,cf,decoded
-1010 format(a6,i4,i5,f6.1,i5,i3,a1,3x,a22)
+  write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded
+1010 format(a6,i4,i5,i5,i3,a1,3x,a22)
   call cs_unlock
 
   return

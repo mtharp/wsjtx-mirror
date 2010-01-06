@@ -31,7 +31,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
      go to 1
   endif
 
-  ndec=1
+  if(first) ndec=1
   kk=5
   if(isbest.eq.2) kk=8
   if(isbest.eq.3) kk=13
@@ -56,16 +56,24 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
      call runqqq('kvasd2.exe','-q',iret)
 
      call cs_lock('extract')
-     if(iret.ne.0) then
-        if(first) write(*,1000) iret
-1000    format('Error in KV decoder, or no KV decoder present.'/        &
-             'Return code:',i8,'.  Will use BM algorithm.')
-        ndec=0
-        first=.false.
-        go to 20
-     endif
-     read(22,rec=2,err=20) nsec2,ncount,dat4
 
+     if(iret.ne.0) then
+        if(first .and. iret.eq.-1) then
+           write(*,1000)
+1000       format('No KV decoder present, will use BM algorithm.')
+           ndec=0
+           first=.false.
+           go to 20
+        else
+           write(*,1001) iret
+1001       format('Error in KV decoder, return code:',i12/       &
+                  'Will use BM algorithm.')
+           ndec=0
+           go to 20
+        endif
+     endif
+
+     read(22,rec=2,err=20) nsec2,ncount,dat4
      decoded='                      '
      if(ncount.ge.0) then
         dbits=0
@@ -78,7 +86,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded)
   endif
 
   if(ndec.eq.0) then
-! KVASD2 unavailable?  Decode with the hard-decision RS decoder.
+! KVASD2 failed or unavailable.  Decode with the hard-decision RS decoder.
      call indexx(63,mrprob,indx)
      do i=1,nemax
         j=indx(i)

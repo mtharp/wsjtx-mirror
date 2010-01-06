@@ -1,4 +1,4 @@
-subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,dtx,dfx,      &
+subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
@@ -17,6 +17,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,dtx,dfx,      &
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
   real tmp1(NSMAX),tmp2(NSMAX)
   real ps0(431)
+!  real s3(64,73)                   !Temporary?
   integer ns(292)
   integer isync(10,3)
   integer ic10(10)
@@ -36,12 +37,12 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,dtx,dfx,      &
   nh=nfft/2
   nq=nfft/4
   nsteps=4*(jz-NH)/nh
-  if(n2.eq.0) then
-     nsteps=nsteps/292
-     nsteps=nsteps*292
-  endif
   kstep=nh/4
   df=12000.0/nfft
+
+! Keep only an integer number of repetitions
+  nsteps=nsteps/292
+  nsteps=nsteps*292
 
 ! Compute power spectrum for each quarter-symbol step
   s1=0.
@@ -213,6 +214,22 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,n2,dtx,dfx,      &
         s2(i,j)=s1(ipk+2*(i-1),jj0)
      enddo
   enddo
+
+! This is temporary:
+!  sum=0.
+!  do j=1,73
+!     j0=4*j - 3 + lagpk + 40
+!     jj0=mod(j0-1,292)+1
+!     do i=1,64
+!        s3(i,j)=s1(ipk+2*(i-1),jj0)
+!        sum=sum + s3(i,j)
+!     enddo
+!  enddo
+!  ave=sum/(64.*73)
+!  s3=s3/ave
+!  do j=1,73
+!     call zplot(s3(1,j),64,j,ave1,rms1)
+!  enddo
 
   return
 end subroutine synciscat

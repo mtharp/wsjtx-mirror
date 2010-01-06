@@ -614,7 +614,7 @@ def ModeISCAT(event=NONE):
         if lauto: toggleauto()
         cleartext()
         ModeJTMS()
-        lab2.configure(text='FileID      Sync       dB         DT         DF     *')
+        lab2.configure(text='FileID      Sync       dB        DF      *')
         mode.set("ISCAT")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
