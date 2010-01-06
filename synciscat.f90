@@ -75,11 +75,12 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
 
 ! Determine the search range in frequency
-  famin=3.
-  fbmax=1200.
+  famin=300.
+  fbmax=1100.
   f0=700.0
-  fa=famin
-  fb=fbmax
+  ia=famin/df
+  ib=fbmax/df
+  i0=nint(f0/df)
   if(NFreeze.eq.1) then
      fa=max(famin,f0+MouseDF-DFTolerance)
      fb=min(fbmax,f0+MouseDF+DFTolerance)
@@ -87,9 +88,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      fa=max(famin,f0+MouseDF-400)
      fb=min(fbmax,f0+MouseDF+400)
   endif
-  ia=fa/df
-  ib=fb/df
-  i0=nint(f0/df)
 
 ! Save passband spectrum for display
   ps0(1:nq)=xsave(1:nq)
@@ -152,7 +150,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         ss=ss+smax
         nss=nss+1
      endif
-     if(smax.gt.syncbest) then
+     f=i*df
+     if(f.ge.fa .and. f.le.fb .and. smax.gt.syncbest) then
         syncbest=smax
         ipk=i
         isbest=ispk
@@ -199,14 +198,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   if(syncbest.gt.1.0) snrx=db(snrsync) - 20.0
   dtstep=kstep/12000.d0
   dtx=dtstep*lagpk
-  dfx=(ipk-i0)*df
+  dfx=ipk*df - f0
 
-  ja=nint(dftolerance/df)
-  do j=-ja,ja
-     ccfred(j)=0.5*(ccfred(j)-avered)
-  enddo
-  ccfred(-224:-ja)=0.
-  ccfred(ja:224)=0.
+  ja=ia-i0
+  jb=ib-i0
+  ccfred(ja:jb)=0.5*(ccfred(ja:jb)-avered)
+  ccfred(-224:ja)=0.
+  ccfred(jb:224)=0.
 
 ! Copy synchronized data symbols from s1 into s2
   do j=1,63
