@@ -17,13 +17,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
   real tmp1(NSMAX),tmp2(NSMAX)
   real ps0(431)
-!  real s3(64,73)                   !Temporary?
+  real s3(64,73)                   !Temporary?
   integer ns(292)
   integer isync(10,3)
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
 
-! Set up the ISCAT sync pattern
+! Set up the ISCAT sync patterns
   nsync=10
   do i=1,10
      isync(i,1)=ic10(i)
@@ -56,10 +56,12 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         x(i+nh)=0.
      enddo
      call ps(x,nfft,xs1)
-     call add(s1(1,jj),xs1,s1(1,jj),nq)
+!     call add(s1(1,jj),xs1,s1(1,jj),nq)
+     s1(1:nq,jj)=s1(1:nq,jj)+xs1(1:nq)
      ns(jj)=ns(jj)+1
   enddo
 
+! Flatten the spectrum
   do i=1,nq
      do j=1,292
         tmp1(j)=s1(i,j)/ns(j)
@@ -82,16 +84,16 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      fa=max(famin,f0+MouseDF-DFTolerance)
      fb=min(fbmax,f0+MouseDF+DFTolerance)
   else
-     fa=max(famin,f0+MouseDF-600)
-     fb=min(fbmax,f0+MouseDF+600)
+     fa=max(famin,f0+MouseDF-400)
+     fb=min(fbmax,f0+MouseDF+400)
   endif
   ia=fa/df
   ib=fb/df
   i0=nint(f0/df)
 
-  do i=1,nq
-     ps0(i)=db(xsave(i))
-  enddo
+! Save passband spectrum for display
+  ps0(1:nq)=xsave(1:nq)
+
 !  call cs_lock('synciscat')
 !  rewind 71
 !  rewind 72
@@ -179,6 +181,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      endif
   enddo
 
+! Remove baseline from ccfblue
   sum=0.
   nsum=0
   do j=0,291
@@ -188,10 +191,9 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      endif
   enddo
   ave=sum/nsum
-  do j=0,291
-     ccfblue(j)=ccfblue(j)-ave
-  enddo
+  ccfblue(0:291)=ccfblue(0:291)-ave
 
+!### Should compute snrave, snrpeak...
   snrsync=syncbest/ave - 1.0
   snrx=-31.
   if(syncbest.gt.1.0) snrx=db(snrsync) - 20.0
@@ -216,6 +218,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
 
 ! This is temporary:
+!  rewind 89
 !  sum=0.
 !  do j=1,73
 !     j0=4*j - 3 + lagpk + 40
