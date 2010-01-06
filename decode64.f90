@@ -33,7 +33,7 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
   enddo
   nadd=mode64
 
-  call extract(s3,nadd,isbest,ncount,decoded)     !Extract the message
+  call extract(s3,nadd,isbest,ncount,decoded,ndec)     !Extract the message
   qual=0.
 !  if(ndepth.ge.1) call deep65(s3,mode64,neme,                         &
 !       flip,mycall,hiscall,hisgrid,deepmsg,qual)

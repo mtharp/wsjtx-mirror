@@ -18,7 +18,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 
   call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,               &
        dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
-  call extract(s2,nadd,isbest,ncount,decoded)
+  call extract(s2,nadd,isbest,ncount,decoded,ndec)
 
   nsync=nint(snrsync)
   nsnr=nint(snrx)
@@ -32,8 +32,8 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      cf='*'
   endif
   call cs_lock('iscat')
-  write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded
-1010 format(a6,i4,i5,i5,i3,a1,3x,a22)
+  write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded,ndec
+1010 format(a6,i4,i5,i5,i3,a1,3x,a22,i10)
   call cs_unlock
 
   return

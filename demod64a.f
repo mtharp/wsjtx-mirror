@@ -63,6 +63,7 @@ C  Compute probabilities for most reliable symbol values
 
       sum=0.
       nlow=0
+      nhigh=0
       do j=1,63
          sum=sum+mrprob(j)
          if(mrprob(j).le.5) nlow=nlow+1
