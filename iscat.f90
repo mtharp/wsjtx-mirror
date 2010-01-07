@@ -1,5 +1,5 @@
 subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
-          NSyncOK,ccfblue,ccfred,ps0)
+          nxa,nxb,NSyncOK,ccfblue,ccfred,ps0)
 
   real dat(jz)                !Raw audio data
   integer DFTolerance
@@ -16,8 +16,18 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   nadd=1
   decoded=' '
 
-  call synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,               &
-       dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
+  if(nxb.eq.0) then
+     istart=1
+     jza=jz
+  else
+     istart=max(nint(jz*nxa/500.0),1)
+     jza=min(nint(jz*(nxb-nxa)/500.0),jz)
+  endif
+
+  call synciscat(dat(istart),jza,DFTolerance,NFreeze,MouseDF,           &
+       dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps)
+  if(nxb.gt.0) nxb=nint(nsteps*128*500.0/jz + nxa)
+
   call extract(s2,nadd,isbest,ncount,decoded,ndec)
 
   nsync=nint(snrsync)

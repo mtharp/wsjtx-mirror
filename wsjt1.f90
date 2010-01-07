@@ -1,7 +1,7 @@
 subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,            &
      mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,            &
-     MyCall,HisCall,HisGrid,ntx2,s2,                               &
+     MyCall,HisCall,HisGrid,ntx2,nxa,nxb,s2,                       &
      ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,       &
      MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
 
@@ -147,7 +147,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   else if(mode(1:5).eq.'ISCAT') then
 ! Iscat mode:
      call iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
-          NSyncOK,ccf,psavg,ps0)
+          nxa,nxb,NSyncOK,ccf,psavg,ps0)
      s2=0.                                     !Why is this here?
 
   else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then

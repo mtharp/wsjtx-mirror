@@ -5,7 +5,6 @@ integer NTXMAX         !Max length of Tx waveform in samples
 parameter(NRXMAX=2048*1024)
 parameter(NTXMAX=60*12000)
 real*8 tbuf            !Tsec at time of input callback          SoundIn
-integer ntrbuf         !(obsolete?)
 real*8 Tsec            !Present time                       SoundIn,SoundOut
 real*8 rxdelay         !Delay between PTT=1 and Tx audio        SoundIn
 real*8 txdelay         !Delay from end of Tx Audio and PTT=0    SoundOut
@@ -25,8 +24,8 @@ integer TxFirst        !Transmit first?                         GUI
 integer TRPeriod       !Tx or Rx period in seconds              GUI
 integer ibuf           !Most recent input buffer#               SoundIn
 integer ibuf0          !Buffer# at start of Rx sequence         SoundIn
-real ave               !(why is this here?)                     GUI
-real rms               !(why is this here?)                     GUI
+real ave               !For "Rx noise"                          GUI
+real rms               !For "Rx noise"                          GUI
 integer ngo            !Set to 0 to terminate audio streams     GUI
 integer level          !S-meter level, 0-100                    GUI
 integer mute           !True means "don't transmit"             GUI
@@ -38,9 +37,9 @@ integer nx             !x coordinate for waterfall pixmap       GUI
 integer mfsample       !Measured sample rate, input             SoundIn
 integer mfsample2      !Measured sample rate, output            SoundOut
 integer ns0            !Time at last ALL.TXT date entry         Decoder
-character*12 devin_name,devout_name ! GUI
+character*12 devin_name,devout_name  !                          GUI
 
-common/gcom1/Tbuf(1024),ntrbuf(1024),Tsec,rxdelay,txdelay,              &
+common/gcom1/Tbuf(1024),Tsec,rxdelay,txdelay,                           &
      txsnrdb,y1(NRXMAX),y2(NRXMAX),                                     &
      nmax,iwrite,iread,iwave(NTXMAX),nwave,TxOK,Receiving,Transmitting, &
      TxFirst,TRPeriod,ibuf,ibuf0,ave,rms,ngo,level,mute,newdat,ndsec,   &

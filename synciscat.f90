@@ -1,5 +1,5 @@
 subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
-     snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0)
+     snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -90,7 +90,9 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   endif
 
 ! Save passband spectrum for display
-  ps0(1:nq)=xsave(1:nq)
+  do i=1,nq
+     ps0(i)=db(xsave(i))
+  enddo
 
 !  call cs_lock('synciscat')
 !  rewind 71
@@ -191,6 +193,14 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
   ave=sum/nsum
   ccfblue(0:291)=ccfblue(0:291)-ave
+  tmp1=ccfblue(0:291)
+  ccfblue=0
+  do i=0,291
+     j=i+lagpk-146
+     if(j.gt.292) j=j-292
+     if(j.lt.1) j=j+292
+     ccfblue(i+98)=tmp1(j)                      !The 98 is empirical
+  enddo
 
 !### Should compute snrave, snrpeak...
   snrsync=syncbest/ave - 1.0

@@ -102,6 +102,7 @@ ToRadio0=""
 tx6alt=""
 txsnrdb=99.
 TxFirst=IntVar()
+nxa=0
 green=zeros(500,'f')
 im=Image.new('P',(500,120))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
@@ -996,7 +997,7 @@ def dtdf_change(event):
             lab1.configure(text='DF (Hz)',bg='red')
             idf=Audio.gcom2.idf
             if mode.get()[:5]=='ISCAT':
-                t="%d" % int((12000.0/1024.0)*(event.x-250.0))
+                t="%d" % int(0.5*(12000.0/1024.0)*(event.x-250.0)+5)
             else:
                 t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
             lab6.configure(text=t,bg="red")
@@ -1010,13 +1011,12 @@ def dtdf_change(event):
 
 #---------------------------------------------------- mouse_click_g1
 def mouse_click_g1(event):
-    global nopen
-    print 'A',event.x
+    global nopen,nxa
+    nxa=max(1,event.x)
     if not nopen:
-        if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
-               mode.get()[:3]=='JT8':
+        if mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
             Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*2.4)
-        else:
+        elif mode.get()=='JTMS':
             if Audio.gcom2.ndecoding==0:              #If decoder is busy, ignore
                 Audio.gcom2.nagain=1
                 Audio.gcom2.mousebutton=event.num     #Left=1, Right=3
@@ -1035,7 +1035,11 @@ def double_click_g1(event):
     
 #------------------------------------------------------ mouse_up_g1
 def mouse_up_g1(event):
-    print 'B',event.x
+    if mode.get()=='ISCAT' and abs(event.x-nxa)>10:
+        nxb=min(event.x,500)
+        Audio.gcom2.nxa=nxa
+        Audio.gcom2.nxb=nxb
+        decode()
     pass
 
 #------------------------------------------------------ right_arrow
@@ -1135,6 +1139,13 @@ def plot_large():
             xy.append(n)
         graph1.create_line(xy,fill="green")
 
+        if Audio.gcom2.nxb>0:
+            graph1.create_line(Audio.gcom2.nxa,110,Audio.gcom2.nxb,110,fill='yellow')
+            graph1.create_line(Audio.gcom2.nxa,105,Audio.gcom2.nxa,115,fill='yellow')
+            graph1.create_line(Audio.gcom2.nxb,105,Audio.gcom2.nxb,115,fill='yellow')
+            Audio.gcom2.nxa=0
+            Audio.gcom2.nxb=0
+            
         if Audio.gcom2.nspecial==0:
             y=[]
             for i in range(446):                #Find ymax for red curve
@@ -2141,6 +2152,8 @@ elif mode.get()[:4]=='JT64': isync=isync65
 lsync.configure(text=slabel+str(isync))
 Audio.gcom2.azeldir=(options.azeldir.get()+' '*80)[:80]
 Audio.gcom2.ndepth=ndepth.get()
+Audio.gcom2.nxa=0
+Audio.gcom2.nxb=0
 stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
 root.title('  WSJT 8     by K1JT')

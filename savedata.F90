@@ -24,7 +24,6 @@ subroutine savedata
   endif
 
   if(ibuf0.eq.ibuf0z) go to 999         !Startup condition, do not save
-  if(ntrbuf(ibuf0z).eq.1) go to 999     !We were transmitting, do not save
 
 ! Get buffer pointers, then copy completed Rx sequence from y1 to d2a:
   ibuf1=ibuf0z

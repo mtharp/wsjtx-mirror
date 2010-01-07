@@ -50,6 +50,8 @@ integer nslim2         !2nd Decoder threshold for FSK441. JT6M  GUI
 integer nagain         !Decode same file again?                 GUI
 integer nsavelast      !Save last file?                         GUI
 integer ntxdf          !Tx frequency offset                     GUI
+integer nxa            !Mouse-swipe lower limit                 GUI
+integer nxb            !Mouse-swipe upper limit                 GUI
 integer sendingsh      !Sending a shorthand message?            SoundIn
 integer*2 d2a          !Rx data, extracted from y1              Decoder
 integer*2 d2b          !Rx data, selected by mouse-pick         Decoder
@@ -98,7 +100,7 @@ common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,              &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,ndebug,nport,mousedf,nsked,                                &
-     naggressive,nslim2,nagain,nsavelast,ntxdf,                       &
+     naggressive,nslim2,nagain,nsavelast,ntxdf,nxa,nxb,               &
      sendingsh,d2a(ND2MAX),d2b(ND2MAX),b(60000),jza,jzb,ntime,        &
      idinterval,msmax,lenappdir,idf,ndiskdat,nlines,nflat,            &
      ntdecode,ntxreq,ntxnow,nchallenge,ndepth,ndwspr,nspecial,ndf,    &

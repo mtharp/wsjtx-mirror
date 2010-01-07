@@ -52,8 +52,8 @@ subroutine decode3(d2,jz,istart,filename)
   endif
   call wsjt1(d2d,jz,istart,FileID,ndepth,                         &
        MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,         &
-       mode,NFreeze,NAFC,NZap,mode64,mode4,idf,ntdecode,         &
-       MyCall,HisCall,HisGrid,ntx2,s2,                            &
+       mode,NFreeze,NAFC,NZap,mode64,mode4,idf,ntdecode,          &
+       MyCall,HisCall,HisGrid,ntx2,nxa,nxb,s2,                    &
        ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,    &
        MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
   nforce=0
