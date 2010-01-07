@@ -884,16 +884,6 @@ def decdsec(event):
     ldsec.configure(text='Dsec  '+str(0.1*idsec),bg=bg)
     Audio.gcom1.ndsec=idsec
 
-#------------------------------------------------------ toggle_shift
-def toggle_shift(event):
-    Audio.gcom2.nadd5=1-Audio.gcom2.nadd5
-    if Audio.gcom2.nadd5:
-        bg='red'
-        lshift.configure(text='Shift 5.0',bg=bg)
-    else:
-        bg='white'
-        lshift.configure(text='Shift 0.0',bg=bg)
-
 #------------------------------------------------------ inctrperiod
 def inctrperiod(event):
     global ncwtrperiod
@@ -1025,7 +1015,6 @@ def mouse_click_g1(event):
                     Audio.gcom2.ndecoding=4           #Decode from recorded file
                 elif Audio.gcom2.ndecoding0==1:
                     Audio.gcom2.ndecoding=5        #Decode data in main screen
-    nopen=0
 
 #------------------------------------------------------ double-click_g1
 def double_click_g1(event):
@@ -1035,6 +1024,7 @@ def double_click_g1(event):
     
 #------------------------------------------------------ mouse_up_g1
 def mouse_up_g1(event):
+    global nopen
     if mode.get()=='ISCAT':
         if abs(event.x-nxa)>10:
             nxb=min(event.x,500)
@@ -1042,7 +1032,9 @@ def mouse_up_g1(event):
             Audio.gcom2.nxb=nxb
             decode()
         else:
-            Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*5.859)
+            if not nopen:
+                Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*5.859)
+    nopen=0
 
 #------------------------------------------------------ right_arrow
 def right_arrow(event=NONE):
@@ -1379,7 +1371,7 @@ def update():
     msg1.configure(text="%6.4f %6.4f" % (samfac_in,samfac_out))
     msg2.configure(text=mode.get())
     t="Freeze DF:%4d" % (int(Audio.gcom2.mousedf),)
-    if abs(int(Audio.gcom2.mousedf))>600:
+    if abs(int(Audio.gcom2.mousedf))>400:
         msg3.configure(text=t,fg='black',bg='red')
     else:
         msg3.configure(text=t,fg='black',bg='gray85')    
@@ -1394,6 +1386,10 @@ def update():
                        bg='gray85')
     t="%d" % (int(Audio.gcom2.nbitsent),)
     msg6.configure(text=t)
+    if isync>=0:
+        lsync.configure(bg='white')
+    else:
+        lsync.configure(bg='red')
 
     tx1.configure(bg='white')
     tx2.configure(bg='white')
@@ -1925,11 +1921,8 @@ Widget.bind(ltol,'<Button-1>',inctol)
 Widget.bind(ltol,'<Button-3>',dectol)
 ldsec=Label(f5b, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
 ldsec.grid(column=0,row=4,ipadx=3,padx=2,pady=5,sticky='EW')
-lshift=Label(f5b, bg='white', fg='black', text='Shift 0.0', width=8, relief=RIDGE)
-lshift.grid(column=1,row=4,ipadx=3,padx=2,pady=5,sticky='EW')
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(ldsec,'<Button-3>',decdsec)
-Widget.bind(lshift,'<Button-1>',toggle_shift)
 
 f5b.pack(side=LEFT,expand=0,fill=BOTH)
 

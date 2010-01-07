@@ -80,20 +80,20 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      dat(j)=dat(j)-ave
   enddo
 
-!        if(ndiag.ne.0 .and. nclip.lt.0) then
-!  Intentionally degrade SNR by -nclip dB.
-!           sq=0.
-!           do i=1,jz
-!              sq=sq + dat(i)**2
-!           enddo
-!           p0=sq/jz
-!           p1=p0*10.0**(-0.1*nclip)
-!           dnoise=sqrt(4*(p1-p0))
-!           idum=-1
-!           do i=1,jz
-!              dat(i)=dat(i) + dnoise*gran(idum)
-!           enddo
-!        endif
+  if(ndiag.ne.0 .and. minsigdb.lt.0) then
+!  Intentionally degrade SNR by minsigdb dB.
+     sq=0.
+     do i=1,jz
+        sq=sq + dat(i)**2
+     enddo
+     p0=sq/jz
+     p1=p0*10.0**(-0.1*minsigdb)
+     dnoise=sqrt(4*(p1-p0))
+     idum=-1
+     do i=1,jz
+        dat(i)=dat(i) + dnoise*gran(idum)
+     enddo
+  endif
 
   if(mode(1:4).ne.'JT64' .and. nzap.ne.0) then
      nfrz=NFreeze

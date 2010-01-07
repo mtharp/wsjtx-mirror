@@ -24,7 +24,6 @@ integer ntr            !Are we in 2nd sequence?                 SoundIn
 integer nmsg           !Length of Tx message                    SoundIn
 integer nbitsent       !User bits in Tx message                 SoundIn
 integer nsave          !Which files to save?                    GUI
-integer nadd5          !Prepend 5 sec of 0's before decoding?   GUI 
 integer dftolerance    !DF tolerance (Hz)                       GUI
 logical LDecoded       !Was a message decoded?                  Decoder
 logical rxdone         !Has the Rx sequence finished?      SoundIn,Decoder
@@ -97,7 +96,7 @@ common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,iyr,imo,ida,                             &
      ndecoding,ndecoding0,mousebutton,nhighpri,                       &
      ndecdone,npingtime,ierr,lauto,mantx,nrestart,ntr,nmsg,nbitsent,  &
-     nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,              &
+     nsave,dftolerance,LDecoded,rxdone,monitoring,                    &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,ndebug,nport,mousedf,nsked,                                &
      naggressive,nslim2,nagain,nsavelast,ntxdf,nxa,nxb,               &
