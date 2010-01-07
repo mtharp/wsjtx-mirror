@@ -1011,6 +1011,7 @@ def dtdf_change(event):
 #---------------------------------------------------- mouse_click_g1
 def mouse_click_g1(event):
     global nopen
+    print 'A',event.x
     if not nopen:
         if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
                mode.get()[:3]=='JT8':
@@ -1034,7 +1035,7 @@ def double_click_g1(event):
     
 #------------------------------------------------------ mouse_up_g1
 def mouse_up_g1(event):
-#    print event.x
+    print 'B',event.x
     pass
 
 #------------------------------------------------------ right_arrow
@@ -1146,6 +1147,8 @@ def plot_large():
             fac=500.0/446.0
             for i in range(446):                #Make xy list for red curve
                 x=i*fac
+                if mode.get()=='ISCAT':
+                    x=250 + 2*(i-224)
                 psavg=Audio.gcom2.psavg[i+1]
                 n=int(90.0-yfac*psavg)
                 xy.append(x)
