@@ -1,5 +1,5 @@
 subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
-     snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps)
+     snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -16,8 +16,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
   real tmp1(NSMAX),tmp2(NSMAX)
+  real s3(256,8)
   real ps0(431)
-  real s3(64,73)                   !Temporary?
   integer ns(292)
   integer isync(10,3)
   integer ic10(10)
@@ -46,6 +46,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
 ! Compute power spectrum for each quarter-symbol step
   s1=0.
+  s3=0.
   xsave=0.
   ns=0
   do j=1,nsteps
@@ -56,12 +57,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         x(i+nh)=0.
      enddo
      call ps(x,nfft,xs1)
-!     call add(s1(1,jj),xs1,s1(1,jj),nq)
      s1(1:nq,jj)=s1(1:nq,jj)+xs1(1:nq)
      ns(jj)=ns(jj)+1
+     jj=mod(j-1,8)+1
+     s3(1:nq,jj)=s3(1:nq,jj)+xs1(1:nq)
   enddo
 
-! Flatten the spectrum
+! Flatten the s1 spectrum
   do i=1,nq
      do j=1,292
         tmp1(j)=s1(i,j)/ns(j)
@@ -89,18 +91,43 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      fb=min(fbmax,f0+MouseDF+400)
   endif
 
-! Save passband spectrum for display
+! Save the passband spectrum, for display
   do i=1,nq
      ps0(i)=db(xsave(i))
   enddo
 
-!  call cs_lock('synciscat')
-!  rewind 71
-!  rewind 72
-!  do i=1,nq
-!     write(72,3002) i*df,xsave(i),db(xsave(i))
-!3002 format(3f10.2)
-!  enddo
+! Test for shorthand message
+  do i=ia,ib+3*42
+     smin=1.e30
+     do j=1,8
+        smin=min(smin,s3(i,j))
+     enddo
+     do j=1,8
+        s3(i,j)=s3(i,j)/smin
+     enddo
+  enddo
+
+  rewind 81
+  do i=ia,ib
+     write(81,3001) i*df,(s3(i,j),j=1,8)
+3001 format(f8.1,8f8.3)
+  enddo
+
+  kshort=0
+  ipk=0
+  short=-1.e30
+  do k=1,3
+     do j=1,8
+        do i=ia,ib
+           sum=s3(i,j) - s3(i+42*k,j)
+           if(sum.gt.short) then
+              short=sum
+              ishort=i
+              kshort=k
+           endif
+        enddo
+     enddo
+  enddo
 
 ! Find best frequency bin and best sync pattern
   syncbest=-1.e30
@@ -147,8 +174,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      j=i-i0
      if(abs(j).le.224) then
         ccfred(j)=smax
-!        write(71,3001) i*df,smax,j*df,i,j
-!3001    format(3f10.1,2i5)
         ss=ss+smax
         nss=nss+1
      endif
@@ -159,10 +184,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         isbest=ispk
      endif
   enddo
-
-!  call flushqqq(71)
-!  call flushqqq(72)
-!  call cs_unlock
   avered=ss/nss
 
 ! Once more, using best frequency and best sync pattern:
@@ -212,7 +233,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
   ja=ia-i0
   jb=ib-i0
-  ccfred(ja:jb)=0.5*(ccfred(ja:jb)-avered)
+  ccfred(ja:jb)=0.25*(ccfred(ja:jb)-avered)
   ccfred(-224:ja)=0.
   ccfred(jb:224)=0.
 
@@ -225,22 +246,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      enddo
   enddo
 
-! This is temporary:
-!  rewind 89
-!  sum=0.
-!  do j=1,73
-!     j0=4*j - 3 + lagpk + 40
-!     jj0=mod(j0-1,292)+1
-!     do i=1,64
-!        s3(i,j)=s1(ipk+2*(i-1),jj0)
-!        sum=sum + s3(i,j)
-!     enddo
-!  enddo
-!  ave=sum/(64.*73)
-!  s3=s3/ave
-!  do j=1,73
-!     call zplot(s3(1,j),64,j,ave1,rms1)
-!  enddo
+  nsync=max(snrsync-1.0,0.0)
+  if(nsync.eq.0 .and. short.gt.1.1) dfx=ishort*df-f0
 
   return
 end subroutine synciscat

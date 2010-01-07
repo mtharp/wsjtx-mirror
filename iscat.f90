@@ -24,26 +24,34 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      jza=min(nint(jz*(nxb-nxa)/500.0),jz)
   endif
 
-  call synciscat(dat(istart),jza,DFTolerance,NFreeze,MouseDF,           &
-       dtx,dfx,snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps)
+  call synciscat(dat(istart),jza,DFTolerance,NFreeze,MouseDF,dtx,dfx,    &
+       snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
   if(nxb.gt.0) nxb=nint(nsteps*128*500.0/jz + nxa)
 
-  call extract(s2,nadd,isbest,ncount,decoded,ndec)
-
-  nsync=nint(snrsync)
+  nsync=snrsync-1.0
   nsnr=nint(snrx)
   if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
   nsnrlim=-32
   jdf=nint(dfx)
-  if(nsync.lt.minsigdb) then
-     cf=' '
-     decoded=' '
-  else
+  cf=' '
+  decoded=' '
+  if(nsync.gt.MinSigdB) then
+     call extract(s2,nadd,isbest,ncount,decoded,ndec)
      cf='*'
   endif
+
+  if(nsync.eq.0 .and. short.gt.1.5) then
+     if(kshort.eq.1) decoded='RO'
+     if(kshort.eq.2) decoded='RRR'
+     if(kshort.eq.3) decoded='73'
+     isbest=0
+     nsync=short
+     nsnr=db(short) - 20.0
+  endif
+
   call cs_lock('iscat')
   write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded,ndec
-1010 format(a6,i4,i5,i5,i3,a1,3x,a22,i10)
+1010 format(a6,i4,i5,i5,i3,a1,3x,a22,20x,i1)
   call cs_unlock
 
   return

@@ -10,10 +10,9 @@ FFLAGS = /traceback /fast /nologo /warn
 all:    WSJT8.EXE WSJT8codes.EXE
 
 OBJS1 = nhash.obj init_rs.obj encode_rs.obj decode_rs.obj \
-	wrapkarn.obj vit213.obj vit416.obj tab.obj
+	wrapkarn.obj vit213.obj tab.obj
 
-OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o tab.o \
-	nhash.o
+OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o nhash.o
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
 
@@ -30,7 +29,8 @@ SRCS2F90 = wsjt1.f90 a2d.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	wsjt64.f90 sync64.f90 short64.f90 flat1.f90 getsnr.f90 \
 	decode64.f90 extract.f90 chkhist.f90 spec2d64.f90 \
 	symsync64.f90 wsjtms.f90 ping.f90 spec2d.f90 iscat.f90 \
-	jt8.f90 synciscat.f90 syncms.f90 syncjt8.f90
+	jt8.f90 synciscat.f90 syncms.f90 syncjt8.f90 \
+	enc416.f90 vit416.f90
 
 SRCS2F77 = avesp2.f bzap.f spec441.f \
 	indexx.f s2shape.f flat2.f packbits.f unpackbits.f \
@@ -41,10 +41,9 @@ SRCS2F77 = avesp2.f bzap.f spec441.f \
 	fil653.f unpackcall.f unpackgrid.f unpacktext.f \
 	xfft.f astro.f azdist.f coord.f dcoord.f \
 	deg2grid.f dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f \
-	moon2.f MoonDop.f sun.f toxyz.f \
-	filbig2.F 
+	moon2.f MoonDop.f sun.f toxyz.f 
 
-SRCS2C   = resample.c ptt.c wrapkarn.c vit213.c vit416.c
+SRCS2C   = ptt.c wrapkarn.c vit213.c tab.c
 
 WSJT8.EXE: Audio.pyd wsjt.spec
 	python c:\python23\installer\Build.py wsjt.spec
@@ -58,18 +57,13 @@ WSJT8codes.EXE: $(OBJS1)
 
 
 Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
-	python f2py.py -c \
-	--quiet --"fcompiler=compaqv" \
-	--opt="/nologo /traceback /warn:errors /fast /fpp /define:CVF \
-	      /define:USE_PORTAUDIO" \
-	$(OBJS2C) \
-	-lwinmm -lpa -lfftw3single -llibsamplerate \
-	-m Audio \
+	python f2py.py -c --quiet --"fcompiler=compaqv" \
+	--opt="/fpp /define:CVF" $(OBJS2C) \
+	-lwinmm -lpa -lfftw3single -m Audio \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
 	mv Audio.pyd WsjtMod/Audio.pyd
 	cp WsjtMod/Audio.pyd Audio.pyd 
-
 
 wsjt.spec: wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 	WsjtMod/palettes.py WsjtMod/smeter.py WsjtMod/specjt.py
