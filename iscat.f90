@@ -45,7 +45,6 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      if(kshort.eq.2) decoded='RRR'
      if(kshort.eq.3) decoded='73'
      isbest=0
-     nsync=short
      nsnr=db(short) - 20.0
   endif
 
