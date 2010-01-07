@@ -45,7 +45,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      if(kshort.eq.2) decoded='RRR'
      if(kshort.eq.3) decoded='73'
      isbest=0
-     nsnr=db(short) - 20.0
+     nsnr=db(short) - 23.0
   endif
 
   call cs_lock('iscat')

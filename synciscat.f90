@@ -118,8 +118,10 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   short=-1.e30
   do k=1,3
      do j=1,8
+        jj=j+4
+        if(jj.gt.8) jj=jj-8
         do i=ia,ib
-           sum=s3(i,j) - s3(i+42*k,j)
+           sum=s3(i,j) - s3(i,jj)+ s3(i+42*k,jj) - s3(i+42*k,j)
            if(sum.gt.short) then
               short=sum
               ishort=i
@@ -247,7 +249,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
 
   nsync=max(snrsync-1.0,0.0)
-  if(nsync.eq.0 .and. short.gt.1.1) dfx=ishort*df-f0
+  print*,'A',short
+  if(nsync.eq.0 .and. short.gt.1.5) dfx=ishort*df-f0
 
   return
 end subroutine synciscat
