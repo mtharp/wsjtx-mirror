@@ -249,7 +249,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
 
   nsync=max(snrsync-1.0,0.0)
-  print*,'A',short
   if(nsync.eq.0 .and. short.gt.1.5) dfx=ishort*df-f0
 
   return
