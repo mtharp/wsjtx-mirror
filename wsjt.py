@@ -1035,12 +1035,14 @@ def double_click_g1(event):
     
 #------------------------------------------------------ mouse_up_g1
 def mouse_up_g1(event):
-    if mode.get()=='ISCAT' and abs(event.x-nxa)>10:
-        nxb=min(event.x,500)
-        Audio.gcom2.nxa=nxa
-        Audio.gcom2.nxb=nxb
-        decode()
-    pass
+    if mode.get()=='ISCAT':
+        if abs(event.x-nxa)>10:
+            nxb=min(event.x,500)
+            Audio.gcom2.nxa=nxa
+            Audio.gcom2.nxb=nxb
+            decode()
+        else:
+            Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*5.859)
 
 #------------------------------------------------------ right_arrow
 def right_arrow(event=NONE):
