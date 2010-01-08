@@ -1,5 +1,5 @@
 subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
-     snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
+     snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
 
@@ -228,7 +228,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 !### Should compute snrave, snrpeak...
   snrsync=syncbest/ave - 1.0
   snrx=-30.
-  if(syncbest.gt.1.0) snrx=db(snrsync) - 19.5
+  if(snrsync.gt.0.0) snrx=db(snrsync) - 19.5
   dtstep=kstep/12000.d0
   dtx=dtstep*lagpk
   dfx=ipk*df - f0

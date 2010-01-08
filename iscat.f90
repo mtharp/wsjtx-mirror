@@ -26,17 +26,16 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   if(jza.lt.32*1200) go to 999
 
   call synciscat(dat(istart),jza,DFTolerance,NFreeze,MouseDF,dtx,dfx,    &
-       snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
+       snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
   if(nxb.gt.0) nxb=nint(nsteps*128*500.0/jz + nxa)
 
-  nsync=snrsync-1.0
   nsnr=nint(snrx)
   if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
   nsnrlim=-32
   jdf=nint(dfx)
   cf=' '
   decoded=' '
-  if(nsync.gt.MinSigdB) then
+  if(nsync.ge.MinSigdB) then
      call extract(s2,nadd,isbest,ncount,decoded,ndec)
      cf='*'
   endif
