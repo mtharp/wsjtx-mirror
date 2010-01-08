@@ -222,3 +222,4 @@ for m in messages:
     m.pack(fill=X,expand=1,padx=10,pady=2)
 
 nb.selectpage(0)
+def4()
