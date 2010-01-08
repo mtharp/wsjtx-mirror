@@ -115,6 +115,10 @@ fano.o: fano.c
 tab.o: tab.c
 	$(CC) /nologo /c /Fotab.o tab.c
 
+pkg: WSJT8.EXE
+	rh
+	giss
+
 .PHONY : clean
 
 clean:

@@ -1,0 +1,1 @@
+"c:\joe\Inno Setup 4\iscc" wsjt8.iss
