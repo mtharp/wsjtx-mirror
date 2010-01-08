@@ -152,15 +152,13 @@ def fdf_change(event):
 
 #---------------------------------------------------- set_freezedf
 def set_freezedf(event):
-    if g.mode[:4]=='JT65' or g.mode[:3]=='JT2' or \
-       g.mode[:3]=='JT4' or g.mode=="WSPR" or g.mode[:4]=='JT64':
+    if g.mode[:4]=='JT64' or g.mode[:3]=='JT8':
         n=int(df*(event.x-288.7) + fmid - 1500)
         if nfr.get()==2: n=int(2*df*(event.x-375.5) + fmid - 1270.5)
 #        if n<-600: n=-600
 #        if n>600:  n=600
         if n<-1270: n=-1270
         if n>3800: n=3800
-        if g.mode=="WSPR": n=n+1270-1500
         Audio.gcom2.mousedf=n
     else:
         decode_request(event)
@@ -285,7 +283,7 @@ def update():
         root_geom=root.geometry()
         g.rms=Audio.gcom1.rms
         if isec==0: nscroll=0
-        if isec==59 and (g.mode!='WSPR' or utc[4]%2==1): newMinute=1
+        if isec==59: newMinute=1
 
     if g.showspecjt==1:
         showspecjt()
@@ -331,7 +329,7 @@ def update():
         if Audio.gcom2.monitoring:
             if minsep.get() and newMinute:
                 draw.line((0,0,749,0),fill=128)     #Draw the minute separator
-            if nscroll == 13 and (g.mode!='WSPR' or utc[4]%2==0):
+            if nscroll == 13:
                 draw.text((5,2),t0[0:5],fill=253)   #Insert time label
         else:
             if minsep.get():
@@ -485,7 +483,7 @@ else:
     
 setupmenu.add_checkbutton(label = 'Mark T/R boundaries',variable=minsep)
 setupmenu.add_checkbutton(label='Flatten spectra',variable=nflat)
-setupmenu.add_checkbutton(label='Mark JT65 tones only if Freeze is checked',
+setupmenu.add_checkbutton(label='Mark JT64 tones only if Freeze is checked',
             variable=nmark)
 setupmenu.add_separator()
 setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
@@ -493,7 +491,7 @@ setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
 setupmenu.add_separator()
 setupmenu.add_radiobutton(label='Frequency axis',command=df_mark,
             value=0,variable=naxis)
-setupmenu.add_radiobutton(label='JT65 DF axis',command=df_mark,
+setupmenu.add_radiobutton(label='JT64 DF axis',command=df_mark,
             value=1,variable=naxis)
 setupmenu.add_separator()
 setupmenu.palettes=Menu(setupmenu,tearoff=0)
