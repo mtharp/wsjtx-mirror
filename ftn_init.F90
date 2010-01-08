@@ -14,7 +14,7 @@
 !   21  ALL.TXT
 !   22  kvasd.dat
 !   23  CALL3.TXT
-
+!   24  FFTDAT.TXT
 !------------------------------------------------ ftn_init
 subroutine ftn_init
 !f2py threadsafe

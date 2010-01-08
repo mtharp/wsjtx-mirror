@@ -1024,10 +1024,14 @@ def double_click_g1(event):
     
 #------------------------------------------------------ mouse_up_g1
 def mouse_up_g1(event):
-    global nopen
+    global nopen,nxa
     if mode.get()=='ISCAT':
         if abs(event.x-nxa)>10:
             nxb=min(event.x,500)
+            if nxb<nxa:
+                t=nxb
+                nxb=nxa
+                nxa=t
             Audio.gcom2.nxa=nxa
             Audio.gcom2.nxb=nxb
             decode()
@@ -1154,7 +1158,7 @@ def plot_large():
                 x=i*fac
                 if mode.get()=='ISCAT':
                     x=250 + 2*(i-224)
-                psavg=Audio.gcom2.psavg[i+1]
+                psavg=0.3*Audio.gcom2.psavg[i+1]
                 n=int(90.0-yfac*psavg)
                 xy.append(x)
                 xy.append(n)

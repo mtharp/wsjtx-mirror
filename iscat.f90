@@ -23,6 +23,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
      istart=max(nint(jz*nxa/500.0),1)
      jza=min(nint(jz*(nxb-nxa)/500.0),jz)
   endif
+  if(jza.lt.32*1200) go to 999
 
   call synciscat(dat(istart),jza,DFTolerance,NFreeze,MouseDF,dtx,dfx,    &
        snrx,snrsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
@@ -53,5 +54,5 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 1010 format(a6,i4,i5,i5,i3,a1,3x,a22,20x,i1)
   call cs_unlock
 
-  return
+999 return
 end subroutine iscat
