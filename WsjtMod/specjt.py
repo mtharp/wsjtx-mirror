@@ -143,9 +143,9 @@ def fdf_change(event):
         t="Freq: %5d    DF: %5d  (Hz)" % (int(g.Freq),int(g.DFreq))
     else:
         g.PingTime=0.04*event.x
-        g.PingFreq=(121-event.y)*21.533
+        g.PingFreq=(113-event.y)*23.438
         if event.y > 150:
-            g.PingFreq=(271-event.y)*21.533
+            g.PingFreq=(263-event.y)*23.438
         if g.PingFreq<400: g.PingFreq=0
         t="Time: %4.1f s  Freq: %d Hz" % (g.PingTime,g.PingFreq)
     fdf.configure(text=t)

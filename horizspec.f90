@@ -36,12 +36,12 @@ subroutine horizspec(x,brightness,contrast,a)
      enddo
 
      p=0.
-     do i=21,120
+     do i=13,112
         p=p+ss(i)
         n=0
         if(ss(i).gt.0.) n=gain*log10(0.05*ss(i)) + offset
         n=min(252,max(0,n))
-        j=121-i
+        j=113-i
         a(nx,j)=n
      enddo
 

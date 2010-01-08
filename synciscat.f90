@@ -227,8 +227,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
 !### Should compute snrave, snrpeak...
   snrsync=syncbest/ave - 1.0
-  snrx=-31.
-  if(syncbest.gt.1.0) snrx=db(snrsync) - 20.0
+  snrx=-30.
+  if(syncbest.gt.1.0) snrx=db(snrsync) - 19.5
   dtstep=kstep/12000.d0
   dtx=dtstep*lagpk
   dfx=ipk*df - f0

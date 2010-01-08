@@ -987,7 +987,7 @@ def dtdf_change(event):
             lab1.configure(text='DF (Hz)',bg='red')
             idf=Audio.gcom2.idf
             if mode.get()[:5]=='ISCAT':
-                t="%d" % int(0.5*(12000.0/1024.0)*(event.x-250.0)+5)
+                t="%d" % int(0.25*(12000.0/1024.0)*(event.x-250.0)+3)
             else:
                 t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
             lab6.configure(text=t,bg="red")
@@ -1037,7 +1037,10 @@ def mouse_up_g1(event):
             decode()
         else:
             if not nopen:
-                Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*5.859)
+                mdf=int(Audio.gcom2.idf+(event.x-250)*5.859)
+                if mdf<-400: mdf=-400
+                if mdf>400: mdf=400
+                Audio.gcom2.mousedf=mdf
     nopen=0
 
 #------------------------------------------------------ right_arrow
@@ -1157,7 +1160,7 @@ def plot_large():
             for i in range(446):                #Make xy list for red curve
                 x=i*fac
                 if mode.get()=='ISCAT':
-                    x=250 + 2*(i-224)
+                    x=4*i - 642
                 psavg=0.3*Audio.gcom2.psavg[i+1]
                 n=int(90.0-yfac*psavg)
                 xy.append(x)
@@ -1481,8 +1484,9 @@ def update():
         if mode.get()[:4]=='JT64' or mode.get()[:5]=='ISCAT' or \
                mode.get()[:3]=='JT8':
             plot_large()
+        if mode.get()=='ISCAT' or mode.get()=='JTMS':
             plot_small()
-        else:
+        if mode.get()=='JTMS':
             im.putdata(Audio.gcom2.b)
             pim=ImageTk.PhotoImage(im)          #Convert Image to PhotoImage
             graph1.delete(ALL)
@@ -1490,7 +1494,6 @@ def update():
             graph1.create_image(0,0,anchor='nw',image=pim)
             t=g.filetime(g.ftnstr(Audio.gcom2.decodedfile))
             graph1.create_text(100,80,anchor=W,text=t,fill="white")
-            plot_small()
         if loopall: opennext()
         nopen=0
 

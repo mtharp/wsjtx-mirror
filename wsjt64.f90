@@ -1,7 +1,7 @@
 subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
      DFTolerance,NFreeze,NAFC,mode64,Nseg,MouseDF,NAgain,           &
      ndepth,nchallenge,idf,idfsh,mycall,hiscall,hisgrid,            &
-     lumsg,lcum,nspecial,ndf,nstest,dfsh,                           &
+     lumsg,nspecial,ndf,nstest,dfsh,                           &
      snrsh,NSyncOK,ccfblue,ccfred,ndiag,nwsh)
 
 ! Orchestrates the process of decoding JT64 messages, using data that
@@ -11,7 +11,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   real dat(npts)                        !Raw data
   integer DFTolerance
   logical first
-  logical lcum
   character decoded*22,cfile6*6,special*5,cooo*3
   character*22 deepmsg
   character*67 line,ave1,ave2
@@ -147,7 +146,7 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
      nspecial=0
   endif
 
-  if(lcum) write(21,1011) line
+  write(21,1011) line
 1011 format(a67)
 ! Write decoded msg unless this is an "Exclude" request:
   if(MinSigdB.lt.99) write(lumsg,1011) line

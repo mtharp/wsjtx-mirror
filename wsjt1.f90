@@ -40,7 +40,6 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   real dat2(NP2)
   character msg3*3
   character cfile6*6
-  logical lcum
   integer indx(100)
   character*90 line
   common/avecom/dat(NP2),labdat,jza,modea
@@ -183,7 +182,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
         if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
              NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
              MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &
-             mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,                &
+             mycall,hiscall,hisgrid,lumsg,nspecial,ndf,                     &
              nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
 
      else if(mode(1:3).eq.'JT8') then

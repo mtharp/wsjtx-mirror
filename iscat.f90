@@ -51,7 +51,10 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 
   call cs_lock('iscat')
   write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded,ndec
+  if(decoded.ne.'                      ') then
+     write(21,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded,ndec
 1010 format(a6,i4,i5,i5,i3,a1,3x,a22,20x,i1)
+  endif
   call cs_unlock
 
 999 return
