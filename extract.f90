@@ -56,9 +56,14 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
   maxe=8
   xlambda=15.0
   naddsynd=200
-  if(ntdecode.eq.48) then
+  if(kk.eq.8) then
      xlambda=12.0
      naddsynd=50
+     maxe=6
+  else if(kk.eq.5) then
+     xlambda=10.0
+     naddsynd=50
+     maxe=3
   endif
 
   nsec1=nsec1+1

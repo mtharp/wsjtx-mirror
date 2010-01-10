@@ -107,11 +107,11 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      enddo
   enddo
 
-  rewind 81
-  do i=ia,ib
-     write(81,3001) i*df,(s3(i,j),j=1,8)
-3001 format(f8.1,8f8.3)
-  enddo
+!  rewind 81
+!  do i=ia,ib
+!     write(81,3001) i*df,(s3(i,j),j=1,8)
+!3001 format(f8.1,8f8.3)
+!  enddo
 
   kshort=0
   ipk=0
@@ -186,6 +186,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         isbest=ispk
      endif
   enddo
+
   avered=ss/nss
 
 ! Once more, using best frequency and best sync pattern:
@@ -249,7 +250,9 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   enddo
 
   nsync=max(snrsync-1.0,0.0)
-  if(nsync.eq.0 .and. short.gt.1.5) dfx=ishort*df-f0
+  f=ishort*df
+  if(f.ge.fa .and. f.le.fb .and. nsync.eq.0 .and.         &
+       short.gt.1.5) dfx=ishort*df-f0
 
   return
 end subroutine synciscat
