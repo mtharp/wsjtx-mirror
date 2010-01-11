@@ -79,6 +79,26 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      dat(j)=dat(j)-ave
   enddo
 
+  k=0
+  do i=1,jz/100
+     sq=0.
+     do j=1,100
+        k=k+1
+        sq=sq + dat(k)*dat(k)
+     enddo
+     if(sqrt(sq/100.0).gt.100.0) go to 5
+  enddo
+
+5 i0=k
+  jz=jz-i0+1
+  if(nxb.gt.0) then
+     nxa=nxa+i0-1
+     nxb=nxb+i0-1
+  endif
+  do i=1,jz
+     dat(i)=dat(i+i0-1)
+  enddo
+
   if(ndiag.ne.0 .and. minsigdb.lt.0) then
 !  Intentionally degrade SNR by minsigdb dB.
      sq=0.

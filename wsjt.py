@@ -1153,8 +1153,8 @@ def plot_large():
                 psavg=Audio.gcom2.psavg[i+1]
                 y.append(psavg)
             ymax=max(y)
-            yfac=30.0
-            if ymax>85.0/yfac: yfac=85.0/ymax
+            yfac=90.0
+            if ymax>(85.0/yfac): yfac=85.0/ymax
             xy=[]
             fac=500.0/446.0
             for i in range(446):                #Make xy list for red curve
@@ -1210,8 +1210,8 @@ def plot_large():
                 ccf=Audio.gcom2.ccf[i]
                 y.append(ccf)
             ymax=max(y)
-            yfac=40.0
-            if ymax>55.0/yfac: yfac=55.0/ymax
+            yfac=2.0
+            if ymax>(55.0/yfac): yfac=55.0/ymax
             xy2=[]
             fac=500.0/(imax-0.4)
             if mode.get()[:5]=='ISCAT': fac=1.0

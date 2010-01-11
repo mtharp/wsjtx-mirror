@@ -101,12 +101,6 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      enddo
   enddo
 
-!  rewind 81
-!  do i=ia,ib
-!     write(81,3001) i*df,(s3(i,j),j=1,8)
-!3001 format(f8.1,8f8.3)
-!  enddo
-
   kshort=0
   ipk=0
   short=-1.e30
@@ -222,17 +216,32 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
 ! Copy synchronized data symbols from s1 into s2
   do j=1,63
-     j0=4*j - 3 + lagpk + 40 + 8
+     j0=4*j + lagpk + 45
      jj0=mod(j0-1,300)+1
      do i=1,64
         s2(i,j)=s1(ipk+2*(i-1),jj0)
      enddo
   enddo
 
+! Determine the message type
+  s16=0.
+  s18=0.
+  s20=0.
+  do j=-1,0
+     j0=4*j + lagpk + 45
+     jj0=mod(j0-1,300)+1
+     s16=s16 + s1(ipk+2*16,jj0)
+     s18=s18 + s1(ipk+2*18,jj0)
+     s20=s20 + s1(ipk+2*20,jj0)
+  enddo
+  if(max(s16,s18,s20).eq.s16) isbest=1
+  if(max(s16,s18,s20).eq.s18) isbest=2
+  if(max(s16,s18,s20).eq.s20) isbest=3
+
   nsync=max(snrsync-1.0,0.0)
   f=ishort*df
   if(f.ge.fa .and. f.le.fb .and. nsync.eq.0 .and.         &
-       short.gt.1.5) dfx=ishort*df-f0
+       short.gt.2.0) dfx=ishort*df-f0
 
   return
 end subroutine synciscat
