@@ -5,7 +5,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
   parameter (NFFTMAX=1024)         !Max length of FFTs
   parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
-  parameter (NSMAX=292)            !Max number of quarter-symbol steps
+  parameter (NSMAX=300)            !Max number of quarter-symbol steps
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real xs1(NHMAX)
@@ -18,19 +18,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   real tmp1(NSMAX),tmp2(NSMAX)
   real s3(256,8)
   real ps0(431)
-  integer ns(292)
-  integer isync(10,3)
+  integer ns(300)
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
 
 ! Set up the ISCAT sync patterns
   nsync=10
-  do i=1,10
-     isync(i,1)=ic10(i)
-     isync(i,2)=ic10(11-i)
-     isync(i,3)=9-ic10(i)
-  enddo
-  nsym=nsync+63
+  nsym=63+10+2
 
 ! Do FFTs of twice symbol length, stepped by quarter symbols.  
   nfft=1024
@@ -41,8 +35,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   df=12000.0/nfft
 
 ! Keep only an integer number of repetitions
-  nsteps=nsteps/292
-  nsteps=nsteps*292
+  nsteps=nsteps/300
+  nsteps=nsteps*300
 
 ! Compute power spectrum for each quarter-symbol step
   s1=0.
@@ -51,7 +45,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   ns=0
   do j=1,nsteps
      k=(j-1)*kstep + 1
-     jj=mod(j-1,292)+1
+     jj=mod(j-1,300)+1
      do i=1,nh
         x(i)=dat(k+i-1)
         x(i+nh)=0.
@@ -65,13 +59,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
 ! Flatten the s1 spectrum
   do i=1,nq
-     do j=1,292
+     do j=1,300
         tmp1(j)=s1(i,j)/ns(j)
      enddo
-     call pctile(tmp1,tmp2,292,45,xsave(i))
+     call pctile(tmp1,tmp2,300,45,xsave(i))
      fac=1.0
      if(xsave(i).gt.0.0) fac=1.0/xsave(i)
-     do j=1,292
+     do j=1,300
         s1(i,j)=fac*s1(i,j)
      enddo
   enddo
@@ -137,7 +131,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   nss=0
   do i=ia,ib
      smax=-1.e30
-     do lag=0,291
+     do lag=0,299
         sum1=0.
         sum2=0.
         sum3=0.
@@ -146,30 +140,16 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
         b3=0.
         do j=1,nsync
            j0=4*j - 3 + lag
-           jj0=mod(j0-1,292)+1
-           sum1=sum1 + s1(i+2*isync(j,1),jj0)
-           sum2=sum2 + s1(i+2*isync(j,2),jj0)
-           sum3=sum3 + s1(i+2*isync(j,3),jj0)
+           jj0=mod(j0-1,300)+1
+           sum1=sum1 + s1(i+2*ic10(j),jj0)
            do k=0,9
-              if(k.ne.isync(j,1)) b1=b1+s1(i+2*k,jj0)
-              if(k.ne.isync(j,2)) b2=b2+s1(i+2*k,jj0)
-              if(k.ne.isync(j,3)) b3=b3+s1(i+2*k,jj0)
+              if(k.ne.ic10(j)) b1=b1+s1(i+2*k,jj0)
            enddo
         enddo
         ccf1=500.0*sum1/(b1*nsync)
-        ccf2=500.0*sum2/(b2*nsync)
-        ccf3=500.0*sum3/(b3*nsync)
         if(ccf1.gt.smax) then
            smax=ccf1
            ispk=1
-        endif
-        if(ccf2.gt.smax) then
-           smax=ccf2
-           ispk=2
-        endif
-        if(ccf3.gt.smax) then
-           smax=ccf3
-           ispk=3
         endif
      enddo
 
@@ -192,12 +172,12 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 ! Once more, using best frequency and best sync pattern:
   ccfblue=0.
   syncbest=-1.e30
-  do lag=0,291
+  do lag=0,299
      sum=0.
      do j=1,nsync
         j0=4*j - 3 + lag
-        jj0=mod(j0-1,292)+1
-        sum=sum + s1(ipk+2*isync(j,isbest),jj0)
+        jj0=mod(j0-1,300)+1
+        sum=sum + s1(ipk+2*ic10(j),jj0)
      enddo
      ccfblue(lag)=sum/nsync
      if(ccfblue(lag).gt.syncbest) then
@@ -209,20 +189,20 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 ! Remove baseline from ccfblue
   sum=0.
   nsum=0
-  do j=0,291
+  do j=0,299
      if(abs(j-lagpk).gt.2) then
         sum=sum + ccfblue(j)
         nsum=nsum + 1
      endif
   enddo
   ave=sum/nsum
-  ccfblue(0:291)=ccfblue(0:291)-ave
-  tmp1=ccfblue(0:291)
+  ccfblue(0:299)=ccfblue(0:299)-ave
+  tmp1=ccfblue(0:299)
   ccfblue=0
-  do i=0,291
+  do i=0,299
      j=i+lagpk-146
-     if(j.gt.292) j=j-292
-     if(j.lt.1) j=j+292
+     if(j.gt.300) j=j-300
+     if(j.lt.1) j=j+300
      ccfblue(i+98)=tmp1(j)                      !The 98 is empirical
   enddo
 
@@ -242,8 +222,8 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
 
 ! Copy synchronized data symbols from s1 into s2
   do j=1,63
-     j0=4*j - 3 + lagpk + 40
-     jj0=mod(j0-1,292)+1
+     j0=4*j - 3 + lagpk + 40 + 8
+     jj0=mod(j0-1,300)+1
      do i=1,64
         s2(i,j)=s1(ipk+2*(i-1),jj0)
      enddo

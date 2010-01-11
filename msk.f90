@@ -18,6 +18,8 @@ program msk
   parameter (MAXSYM=212)             !Max number of symbols (sync + data)
   parameter (MAXSAM=32*MAXSYM)       !Max number of samples
   integer id(MAXSYM)                 !Sync followed by data in one-bit format
+  integer id2(MAXSYM)                !Hard-decision demodulated bits
+  integer symbol(MAXSYM)             !Soft-decision symbols
   real x0(32)                        !Waveform for bit=0
   real x1(32)                        !Waveform for bit=1
   complex cs(1024)                   !Complex waveform for sync bits
@@ -101,15 +103,17 @@ program msk
   enddo
 
 ! Generate basic symbol waveforms for "0" and "1" 
-  phi0=0.
+!  phi0=twopi/8.               !This gives Dpha=0.
+!  phi1=twopi/8.
+  phi0=0.                      !This gives Dpha=45 deg
   phi1=0.
   dphi0=twopi*dt*f0
   dphi1=twopi*dt*f1
   do i=1,nsps
-     phi0=phi0+dphi0
-     phi1=phi1+dphi1
      x0(i)=sin(phi0)
      x1(i)=sin(phi1)
+     phi0=phi0+dphi0
+     phi1=phi1+dphi1
   enddo
 
 ! Generate the whole Tx waveform, sync + data, using foffset and pha0.
@@ -167,9 +171,9 @@ program msk
 ! the oscillatory nature of si and sq vs nn.)
   dsqpk=0.
   nn=0
-  do idf=-12,12
+  do idf=-12,12                            !Try freq offsets over +/- 12 Hz
      fshift=nint(fbest)+idf
-     do iph=-4,4
+     do iph=-4,4                           !Try phases over +/- 90 deg
         phi=(22.5*iph)/57.2957795
         dphi=twopi*dt*fshift
         do i=1,nsps*nsym
@@ -206,11 +210,12 @@ program msk
            sq=sq + ssym*ssym
 
            ibit=0
-           if(ssym.gt.0) ibit=1
+           if(ssym.gt.0.0) ibit=1
            if(ibit.ne.id(j)) nerr=nerr+1
-           if(ssym.gt.0) is=-is
+           if(ssym.gt.0.0) is=-is
         enddo
-        dsq=sq-si
+!        dsq=sq-si
+        dsq=sq/si
         if(dsq.gt.dsqpk) then
            dsqpk=dsq
            sqpk=sq
@@ -230,13 +235,57 @@ program msk
   write(*,1024) ierr,cerr,100.0*float(ierr)/nsym
 1024 format('Bit errors:',i4,1x,a3,f8.1,'%')
 
-  pha=22.5*iphpk
-  dphase=pha-pha0
-  if(dphase.gt.90.0)  dphase=dphase-180.0
-  if(dphase.lt.-90.0) dphase=dphase+180.0
-  dfreq=fpk-foffset
-! Q: Why is dphase always around +22.5 deg?
-  write(20,1030) foffset,fpk,dfreq,pha0,pha,dphase,ierr
-1030 format(6f8.1,i5)
+!Do it once more, using best params
+
+  fshift=fpk
+  phi=(22.5*iphpk)/57.2957795
+  dphi=twopi*dt*fshift
+  do i=1,nsps*nsym
+     phi=phi+dphi
+     c(i)=cy(i)*cmplx(cos(phi),-sin(phi))
+  enddo
+
+! Decode the waveform using matched-filter, integrate-and-dump correlators.
+  k=0
+  is=1
+  nerr=0
+  si=0.
+  sq=0.
+  do j=1,nsym
+     z0=0.
+     z1=0.
+     do i=1,nsps
+        k=k+1
+        z0=z0 + x0(i)*c(k)
+        z1=z1 + x1(i)*c(k)
+     enddo
+     s0=real(z0)
+     s1=real(z1)
+     s0=2*s0/nsps
+     s1=2*s1/nsps
+     ssym=is*(s1-s0)
+     si=si + ssym*ssym
+     
+     s0=aimag(z0)
+     s1=aimag(z1)
+     s0=2*s0/nsps
+     s1=2*s1/nsps
+     ssym=is*(s1-s0)
+     sq=sq + ssym*ssym
+     symbol(j)=nint(10.0*ssym)
+
+     ibit=0
+     if(ssym.gt.0.0) ibit=1
+     if(ibit.ne.id(j)) nerr=nerr+1
+     if(ssym.gt.0.0) is=-is
+     id2(j)=ibit
+  enddo
+
+  do j=1,nsym
+     idiff=id2(j)-id(j)
+     write(12,1040) j,id(j),id2(j),idiff,symbol(j)
+     if(id2(j).ne.id(j)) write(13,1040) j,id(j),id2(j),idiff,symbol(j)
+1040 format(4i5,i10)
+  enddo
 
 999 end program msk

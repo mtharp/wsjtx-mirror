@@ -10,7 +10,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu0(3),iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
-  integer sent(73)
+  integer sent(75)
   integer sendingsh
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
@@ -19,7 +19,7 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
   save
 
   cmode='ISCAT'                                   !### temp ? ###
-  nsym=63+10
+  nsym=63+10+2
   call srcenc(cmode,message,nbit,iu0)
 ! Message length will be nbit=2, 30, 48, or 78
 
@@ -34,16 +34,22 @@ subroutine geniscat(message,iwave,nwave,sendingsh,nbit,msgsent)
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu0,msgsent)
 
-! Insert a 10x10 Costas array at the low-frequency edge.  Use different
-! Costas arrays for nbit=30, 48, and 78.
-  do i=1,10
-     if(nbit.eq.30) sent(i)=ic10(i)
-     if(nbit.eq.48) sent(i)=ic10(11-i)
-     if(nbit.eq.78) sent(i)=9-ic10(i)
-  enddo
+! Insert a 10x10 Costas array at the low-frequency edge.
+  sent(1:10)=ic10
+! Add two symbols indicating value of nbit.
+  if(nbit.eq.30) then
+     sent(11)=16
+     sent(12)=16
+  else if(nbit.eq.48) then
+     sent(11)=18
+     sent(12)=18
+  else
+     sent(11)=20
+     sent(12)=20
+  endif
 
 ! Append the encoded data after the sync pattern
-  sent(11:nsym)=gsym(1:63)
+  sent(13:nsym)=gsym(1:63)
   nspecial=0
   sendingsh=0
 

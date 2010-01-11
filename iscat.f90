@@ -25,7 +25,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 !  endif
 !  if(jza.lt.32*1200) go to 999
 
-  nn=512*73
+  nn=512*75
   do istart=1,jz-nn,nn/2
      lz=jz/nn
      do len=lz,2,-1
