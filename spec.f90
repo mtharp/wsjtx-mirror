@@ -29,7 +29,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   equivalence (x,c)
   save
 
-  call cs_lock('spec')
+!  call cs_lock('spec')
   if(first) then
      istep=5*480
      nfft=4096
@@ -209,7 +209,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
 
 900 continue
   if(ndiskdat.eq.1) ndecoding=4
-  call cs_unlock
+!  call cs_unlock
 
   return
 end subroutine spec

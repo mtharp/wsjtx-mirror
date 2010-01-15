@@ -44,7 +44,7 @@ SRCS2F90 = wsjt1.f90 a2d.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	spec2d64.f90 ftpeak64.f90 symsync64.f90 decode64.f90 \
 	wsjtms.f90 iscat.f90 short64.f90 jt8.f90 extract.f90 \
 	ping.f90 syncms.f90 synciscat.f90 flat1.f90 getsnr.f90 \
-	chkhist.f90 syncjt8.f90 enc416.f90 vit416.f90
+	chkhist.f90 syncjt8.f90 enc416.f90 vit416.f90 four2a.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
@@ -53,7 +53,7 @@ SRCS2F77 = astro.f azdist.f coord.f dcoord.f deg2grid.f \
 	MoonDop.f sun.f toxyz.f bzap.f spec441.f avesp2.f \
         indexx.f s2shape.f gentone.f packbits.f unpackbits.f \
         set.f flatten.f db.f pctile.f sort.f ssort.f ps.f \
-	smooth.f sync.f demod64a.f flat2.f four2a.f \
+	smooth.f sync.f demod64a.f flat2.f \
         gencwid.f msgtype.f limit.f lpf1.f morse.f \
         nchar.f packcall.f packgrid.f packtext.f unpackcall.f \
         unpackgrid.f unpacktext.f xfft.f \

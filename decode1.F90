@@ -14,7 +14,8 @@ subroutine decode1(iarg)
   include 'gcom2.f90'
   include 'gcom3.f90'
   include 'gcom4.f90'
-  common/mtxcom/ltrace,mtx,mtxstate,csub0
+  integer*8 mtx
+  common/mtxcom/mtx,ltrace,mtxstate,csub0
 
   data sending0/'                      '/
 
@@ -24,6 +25,7 @@ subroutine decode1(iarg)
   sendingsh0=-3
 
 10 ltrace=ndebug
+  ltrace=0
   if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
      if(rxdone) then
         call savedata
