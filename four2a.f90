@@ -50,6 +50,8 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   if(npatience.eq.3) nflags=FFTW_PATIENT
   if(npatience.eq.4) nflags=FFTW_EXHAUSTIVE
   call cs_lock('four2a')
+!  write(*,3001) nplan,nfft,isign,iform,nloc,npatience
+!3001 format('A',i4,i8,2i3,2x,z8,i3)
 
   if(nfft.le.NSMALL) then
      jz=nfft
@@ -58,6 +60,8 @@ subroutine four2a(a,nfft,ndim,isign,iform)
         aa(j)=a(j)
      enddo
   endif
+
+!  print*,'B'
   if(isign.eq.-1 .and. iform.eq.1) then
      call sfftw_plan_dft_1d(plan(i),nfft,a,a,FFTW_FORWARD,nflags)
   else if(isign.eq.1 .and. iform.eq.1) then
@@ -69,6 +73,7 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   else
      stop 'Unsupported request in four2a'
   endif
+!  print*,'C'
   i=nplan
   if(nfft.le.NSMALL) then
      jz=nfft
@@ -77,9 +82,11 @@ subroutine four2a(a,nfft,ndim,isign,iform)
         a(j)=aa(j)
      enddo
   endif
+!  print*,'D'
 
 10 continue
   call sfftw_execute(plan(i))
+!  print*,'E'
   call cs_unlock
   return
 
