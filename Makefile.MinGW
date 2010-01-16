@@ -76,7 +76,7 @@ WsjtMod/Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C)
 	--opt="-fbounds-check -ftrace=full -O2 -cpp -DUSE_PORTAUDIO" \
 	--compiler=mingw32 \
 	$(OBJS2C) \
-	libportaudio.a libfftw3f.a libsamplerate.a libpthreadGC2.a -lwinmm  \
+	libportaudio.a libfftw3f_win.a libpthreadGC2.a -lwinmm  \
 	-m Audio \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
