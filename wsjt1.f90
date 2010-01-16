@@ -114,7 +114,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      enddo
   endif
 
-  if(mode(1:4).ne.'JT64' .and. nzap.ne.0) then
+  if(mode(1:4).ne.'JT64' .and. mode(1:5).ne.'ISCAT' .and. nzap.ne.0) then
      nfrz=NFreeze
      if(mode(1:4).eq.'JTMS') nfrz=0
      if(jz.gt.100000) call avesp2(dat,jz,2,mode,nfrz,MouseDF,DFTolerance,fzap)
