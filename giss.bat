@@ -1,1 +1,1 @@
-"c:\joe\Inno Setup 4\iscc" wsjt8.iss
+"c:\Program Files\Inno Setup 5\iscc.exe" wsjt8.iss
