@@ -50,7 +50,7 @@ WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	--opt="-fbounds-check -ftrace=full -O2 -cpp -DUSE_PORTAUDIO" \
 	--compiler=mingw32 \
 	$(OBJS2C) \
-	libportaudio.a libpthreadGC2.a libfftw3f.a -lwinmm \
+	libportaudio.a libpthreadGC2.a libfftw3f_win.a -lwinmm \
 	-m w \
 	only: $(F2PYONLY) : \
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
