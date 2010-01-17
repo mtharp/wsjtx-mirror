@@ -1,20 +1,20 @@
 subroutine four2a(a,nfft,ndim,isign,iform)
 
-!     IFORM = 1, 0 or -1, as data is
-!     complex, real, or the first half of a complex array.  Transform
-!     values are returned in array DATA.  They are complex, real, or
-!     the first half of a complex array, as IFORM = 1, -1 or 0.
+! IFORM = 1, 0 or -1, as data is
+! complex, real, or the first half of a complex array.  Transform
+! values are returned in array DATA.  They are complex, real, or
+! the first half of a complex array, as IFORM = 1, -1 or 0.
 
-!     The transform of a real array (IFORM = 0) dimensioned N(1) by N(2)
-!     by ... will be returned in the same array, now considered to
-!     be complex of dimensions N(1)/2+1 by N(2) by ....  Note that if
-!     IFORM = 0 or -1, N(1) must be even, and enough room must be
-!     reserved.  The missing values may be obtained by complex conjugation.  
+! The transform of a real array (IFORM = 0) dimensioned N(1) by N(2)
+! by ... will be returned in the same array, now considered to
+! be complex of dimensions N(1)/2+1 by N(2) by ....  Note that if
+! IFORM = 0 or -1, N(1) must be even, and enough room must be
+! reserved.  The missing values may be obtained by complex conjugation.  
 
-!     The reverse transformation of a half complex array dimensioned
-!     N(1)/2+1 by N(2) by ..., is accomplished by setting IFORM
-!     to -1.  In the N array, N(1) must be the true N(1), not N(1)/2+1.
-!     The transform will be real and returned to the input array.
+! The reverse transformation of a half complex array dimensioned
+! N(1)/2+1 by N(2) by ..., is accomplished by setting IFORM
+! to -1.  In the N array, N(1) must be the true N(1), not N(1)/2+1.
+! The transform will be real and returned to the input array.
 
   parameter (NPMAX=100)
   parameter (NSMALL=16384)
@@ -50,8 +50,6 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   if(npatience.eq.3) nflags=FFTW_PATIENT
   if(npatience.eq.4) nflags=FFTW_EXHAUSTIVE
   call cs_lock('four2a')
-!  write(*,3001) nplan,nfft,isign,iform,nloc,npatience
-!3001 format('A',i4,i8,2i3,2x,z8,i3)
 
   if(nfft.le.NSMALL) then
      jz=nfft
@@ -61,7 +59,6 @@ subroutine four2a(a,nfft,ndim,isign,iform)
      enddo
   endif
 
-!  print*,'B'
   if(isign.eq.-1 .and. iform.eq.1) then
      call sfftw_plan_dft_1d(plan(i),nfft,a,a,FFTW_FORWARD,nflags)
   else if(isign.eq.1 .and. iform.eq.1) then
@@ -73,7 +70,6 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   else
      stop 'Unsupported request in four2a'
   endif
-!  print*,'C'
   i=nplan
   if(nfft.le.NSMALL) then
      jz=nfft
@@ -82,11 +78,9 @@ subroutine four2a(a,nfft,ndim,isign,iform)
         a(j)=aa(j)
      enddo
   endif
-!  print*,'D'
 
 10 continue
   call sfftw_execute(plan(i))
-!  print*,'E'
   call cs_unlock
   return
 
