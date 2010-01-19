@@ -109,7 +109,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
            sum=sum + s2(ipk+2*ic8(j),j0)+ s2(ipk+2*ic8(j),j0+528)
         endif
      enddo
-     ccfblue(lag)=sum/16.0
+     ccfblue(lag)=sum/16.
   enddo
 
   sum=0.
@@ -122,7 +122,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   enddo
   ave=sum/nsum
   do j=-5,30
-     ccfblue(j)=ccfblue(j)-ave
+     ccfblue(j)=4*(ccfblue(j)-ave)
 !     write(62,3002) j,ccfblue(j)
 !3002 format(i5,f12.3)
   enddo

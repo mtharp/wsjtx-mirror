@@ -32,7 +32,7 @@ C  Compute probabilities for most reliable symbol values
       do j=1,63
          s1=-1.e30
          fsum=0.
-         i1=0                                !Silence compiler warning.
+         i1=1                                    !Silence compiler warning
          do i=1,64
             x=min(afac*signal(i,j)/ave,50.d0)
             fs(i)=exp(x)
@@ -44,7 +44,7 @@ C  Compute probabilities for most reliable symbol values
          enddo
 
          s2=-1.e30
-         i2=0 !Shut up compiler warnings. -db
+         i2=1                                    !Silence compiler warning
          do i=1,64
             if(i.ne.i1 .and. signal(i,j).gt.s2) then
                s2=signal(i,j)

@@ -10,7 +10,7 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   real ccfblue(-5:540),ccfred(-224:224)
   real s3(0:7,124)                    !2d spectrum, synchronized, data only
   character line*90,decoded*24,deepmsg*24,special*5
-  character csync*2,cfile6*6,cmode*5
+  character csync*1,cfile6*6,cmode*5
   integer iu(3)
   integer*1 symbols(372)
   integer*1 ddec(10)
@@ -41,6 +41,7 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   csync='  '
   call syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
        snrsync,ccfblue,ccfred,s3)
+  isbest=3
   nsync=nint(snrsync)
 
   if(nsync.ge.minsigdb) then
@@ -95,12 +96,12 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
      call srcdec(cmode,nbit,iu,decoded)
      nsnr=nint(snrx)
      ndf=nint(dfx)
-     csync='3*'
+     csync='*'
      NSyncOK=1
 
      call cs_lock('jt8')
-     write(11,1010) cfile6,nsync,nsnr,dtx,ndf,csync,decoded,metric
-1010 format(a6,i3,i5,f5.1,i5,1x,a2,1x,a24,i10)
+     write(11,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,metric
+1010 format(a6,i3,i5,f5.1,i5,i3,a1,2x,a24,i10)
      call cs_unlock
   endif
 

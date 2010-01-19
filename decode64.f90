@@ -1,6 +1,6 @@
 subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
      mycall,hiscall,hisgrid,mode64,nafc,decoded,ncount,                &
-     deepmsg,qual)
+     deepmsg,qual,ndec)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
 

@@ -38,7 +38,6 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
   nbit=6*kk
 
 ! First, try decoding with hard-decision RS decoder, no erasures.
-  nemax=30
   call indexx(63,mrprob,indx)
   decoded='                      '
   call krsdecode(mrsym,kk,era,0,dat4,ncount)
@@ -75,7 +74,6 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
   call runqqq('kvasd2.exe','-q',iret)
 
   call cs_lock('extract')
-
   if(iret.eq.0) then
      read(22,rec=2,err=20) nsec2,ncount,dat4
      decoded='                      '

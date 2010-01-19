@@ -198,7 +198,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      hiscall=HisCall(1:i-1)//'            '
 
      if(mode(1:4).eq.'JT64') then
-        jztest=12000*ntdecode/2
+        jztest=12000*(ntdecode-2)/2             !Why this test?
         if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
              NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
              MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &

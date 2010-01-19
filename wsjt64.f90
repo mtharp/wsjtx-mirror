@@ -53,7 +53,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 ! Attempt to synchronize: look for sync tone, get DF and DT.
   call sync64(dat,npts,DFTolerance,NFreeze,MouseDF,                      &
        mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
-
   nsnr=nint(snrx)
   jdf=nint(dfx)
   csync=' '
@@ -111,11 +110,11 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 
   call decode64(dat,npts,dtx,dfx,flip,ndepth,isbest,             &
        mycall,hiscall,hisgrid,mode64,nafc,decoded,               &
-       ncount,deepmsg,qual)
+       ncount,deepmsg,qual,ndec)
 
   if(ncount.eq.-999) qual=0                 !Bad data
 200 kvqual=0
-  if(ncount.ge.0) kvqual=1
+  if(ncount.ge.0) kvqual=ndec
   nqual=qual
   if(ndiag.eq.0 .and. nqual.gt.10) nqual=10
   if(nqual.ge.nq1 .and.kvqual.eq.0) decoded=deepmsg
@@ -130,9 +129,9 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   if(nstest.gt.0) jdf=ndf
 
   call cs_lock('wsjt64')
-  write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,                      &
+  write(line,1010) cfile6,nsync,nsnr,dtx,jdf,                      &
        isbest,csync,special,decoded(1:19),cooo,kvqual,nqual
-1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
+1010 format(a6,i3,i5,f5.1,i5,i3,a1,1x,a5,a19,1x,a3,i4,i4)
 
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
