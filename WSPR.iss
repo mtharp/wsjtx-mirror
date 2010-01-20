@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSPR
-AppVerName=WSPR Version 2.00 r1768
+AppVerName=WSPR Version 2.00 r1769
 
 AppCopyright=Copyright (C) 2008-2010 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSPR
@@ -14,6 +14,7 @@ Source: "c:\Users\joe\wsjt\wspr\hamlib_rig_numbers";  DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\wspr\rigctl.exe";          DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wspr\libhamlib-2.dll";     DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wspr\hamlib*.dll";         DestDir: "{app}";  Flags: onlyifdoesntexist
+Source: "c:\Users\joe\wsjt\wspr\pthreadGC2.dll";      DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wspr\save\Samples\091022_0436.wav";  DestDir: "{app}\save\Samples";  Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wspr\fcal.exe";            DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\fcal.dat";            DestDir: "{app}"
