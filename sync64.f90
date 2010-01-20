@@ -31,24 +31,25 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      do i=1,6
         j=j+1
         isync(j,1)=ic6(i)
-        isync(j,2)=ic6(7-i)
-        isync(j,3)=5-ic6(i)
+        isync(j,2)=ic6(i)
+        isync(j,3)=ic6(i)
         jsync(j)=i0+i
      enddo
      j=j+1
-     jsync(j)=i0+7
      isync(j,1)=16
      isync(j,2)=18
      isync(j,3)=20
+     jsync(j)=i0+7
+
      j=j+1
-     jsync(j)=i0+8
      isync(j,1)=18
      isync(j,2)=20
      isync(j,3)=22
+     jsync(j)=i0+8
   enddo
+
   nsync=j
   nsym=nsync+63
-!  print*,'A',nsync,nsym
 
 ! Do FFTs of twice symbol length, stepped by quarter symbols.  
 ! NB: we have already downsampled the data by factor of 2.

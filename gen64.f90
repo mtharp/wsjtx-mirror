@@ -67,16 +67,6 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,sendingsh,nbit,       &
      isync(86)=20
      isync(87)=22
   endif
-  
-  do n=1,3
-     i0=0
-     if(n.eq.2) i0=27
-     if(n.eq.3) i0=54
-     if(n.eq.4) i0=81
-     do i=1,6
-        isync(i0+i)=ic6(i)
-     enddo
-  enddo
 
   k=0
   do i=1,nsym

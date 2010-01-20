@@ -21,15 +21,19 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
   f0=1270.46 + dfx
   call spec2d64(dat,jz,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
 
-  do k=1,21
-     j1=k+6
-     j2=k+33
-     j3=k+60
+  do k=1,31
+     j1=k+8
+     j2=k+47
      do i=1,64
         s3(i,k)=s2(i+5,j1)
         s3(i,k+21)=s2(i+5,j2)
-        s3(i,k+42)=s2(i+5,j3)
      enddo
+  enddo
+  k=32
+  j2=32+47
+  do i=1,64
+     s3(i,k)=s2(i+5,j1)
+     s3(i,k+21)=s2(i+5,j2)
   enddo
   nadd=mode64
 
