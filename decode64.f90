@@ -13,8 +13,8 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
   include 'avecom.f90'
 !  include 'prcom.h'
 
-  dt=2.0/12000.0                   !Sample interval (2x downsampled data)
-  istart=nint(dtx/dt)              !Start index for synced FFTs
+  dt=2.0/12000.0               !Sample interval (this is 2x downsampled data)
+  istart=nint(dtx/dt)          !Start index for synced FFTs
   nsym=87
 
 ! Compute spectra of the channel symbols
@@ -26,14 +26,14 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
      j2=k+47
      do i=1,64
         s3(i,k)=s2(i+5,j1)
-        s3(i,k+21)=s2(i+5,j2)
+        s3(i,k+31)=s2(i+5,j2)
      enddo
   enddo
   k=32
   j2=32+47
   do i=1,64
      s3(i,k)=s2(i+5,j1)
-     s3(i,k+21)=s2(i+5,j2)
+     s3(i,k+31)=s2(i+5,j2)
   enddo
   nadd=mode64
 
