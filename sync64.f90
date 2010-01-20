@@ -19,16 +19,15 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   integer ic6(6)                   !Costas array
   data ic6/0,1,4,3,5,2/,idum/-1/
 
+  mode64=1                                  !### temporary ###
 
 ! Set up the JT64 sync pattern
-  mode64=1                                  !### temporary ###
-  nsync=0
+! ### For now, we'll sstill search for 3 possible patterns ###
   j=0
-  do n=1,4
+  do n=1,3
      i0=0
-     if(n.eq.2) i0=27
-     if(n.eq.3) i0=54
-     if(n.eq.4) i0=81
+     if(n.eq.2) i0=39
+     if(n.eq.3) i0=79
      do i=1,6
         j=j+1
         isync(j,1)=ic6(i)
@@ -36,9 +35,20 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
         isync(j,3)=5-ic6(i)
         jsync(j)=i0+i
      enddo
+     j=j+1
+     jsync(j)=i0+7
+     isync(j,1)=16
+     isync(j,2)=18
+     isync(j,3)=20
+     j=j+1
+     jsync(j)=i0+8
+     isync(j,1)=18
+     isync(j,2)=20
+     isync(j,3)=22
   enddo
   nsync=j
   nsym=nsync+63
+!  print*,'A',nsync,nsym
 
 ! Do FFTs of twice symbol length, stepped by quarter symbols.  
 ! NB: we have already downsampled the data by factor of 2.
