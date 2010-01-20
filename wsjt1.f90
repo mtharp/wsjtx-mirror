@@ -161,6 +161,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
 
   if(mode(1:4).eq.'JTMS') then
 ! JTMS mode
+     if(jz.lt.12000) go to 900
      call wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
 
   else if(mode(1:5).eq.'ISCAT') then

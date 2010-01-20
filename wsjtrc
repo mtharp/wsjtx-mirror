@@ -1,7 +1,7 @@
-*font:			Arial 8
-*Label*font:		Arial 8
-*Text*font:		"Courier New" 9
-*Canvas*font:           Arial 8
+*font:			Arial 10
+*Label*font:		Arial 10
+*Text*font:		"Courier New" 12
+*Canvas*font:           Arial 10
 *background:		gray85
 *Text*background:	white
 *Entry*background:	white
