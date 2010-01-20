@@ -37,8 +37,12 @@ subroutine decode3(d2,jz,istart,filename)
      if(FileID(i:i).eq.'1'.or.FileID(i:i).eq.'3'.or.FileID(i:i).eq.'5'  &
           .or.FileID(i:i).eq.'7'.or.FileID(i:i).eq.'9') nseg=2
   endif
+  if(mode(1:4).eq.'JTMS') NZap=0
 
+  call cs_lock('decode3')
   open(23,file=appdir(:lenappdir)//'/CALL3.TXT',status='unknown')
+  call cs_unlock
+
   call wsjt1(d2d,jz,istart,FileID,ndepth,                         &
        MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,         &
        mode,NFreeze,NAFC,NZap,mode64,mode4,idf,ntdecode,          &
