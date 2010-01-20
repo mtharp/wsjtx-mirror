@@ -38,21 +38,46 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,sendingsh,nbit,       &
   call srcdec(cmode,nbit,iu0,msgsent)
 
 ! Set up the JT64 sync pattern
-! Insert the 6x6 Costas array 4 times at low-frequency edge.
-  isync=-1
-  do n=1,4
+! Insert the 6x6 Costas array 3 times at low-frequency edge, following
+! each with two symbols to indicate message length.
+  nsym=87
+  isync=-1                            !Preset the whole isync array to -1
+  isync(1:6)=ic6
+  isync(40:45)=ic6
+  isync(80:85)=ic6
+  if(nbit.eq.30) then
+     isync(7)=16
+     isync(8)=18
+     isync(46)=16
+     isync(47)=18
+     isync(86)=16
+     isync(87)=18
+  else if(nbit.eq.48) then
+     isync(7)=18
+     isync(8)=20
+     isync(46)=18
+     isync(47)=20
+     isync(86)=18
+     isync(87)=20
+  else
+     isync(7)=20
+     isync(8)=22
+     isync(46)=20
+     isync(47)=22
+     isync(86)=20
+     isync(87)=22
+  endif
+  
+  do n=1,3
      i0=0
      if(n.eq.2) i0=27
      if(n.eq.3) i0=54
      if(n.eq.4) i0=81
      do i=1,6
-        if(nbit.eq.30) isync(i0+i)=ic6(i)
-        if(nbit.eq.48) isync(i0+i)=ic6(7-i)
-        if(nbit.eq.78) isync(i0+i)=5-ic6(i)
+        isync(i0+i)=ic6(i)
      enddo
   enddo
 
-  nsym=87
   k=0
   do i=1,nsym
      if(isync(i).lt.0) then
