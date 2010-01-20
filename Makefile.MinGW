@@ -42,7 +42,8 @@ SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 SRCS2C = ptt.c start_threads.c padevsub.c fthread.c
 
 WSPR.EXE: WsprMod/w.pyd wspr.spec
-	c:/python25/python c:/python25/pyinstaller-1.3/Build.py wspr.spec
+	c:/python25/python c:/python25/pyinstaller-1.4/Build.py wspr.spec
+	mv dist/wspr.exe WSPR.EXE
 
 WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	c:/python25/python c:/python25/scripts/f2py.py -c -I. \
@@ -58,7 +59,7 @@ WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 
 wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py \
 	WsprMod/advanced.py
-	c:/python25/python c:/python25/pyinstaller-1.3/makespec.py --icon \
+	c:/python25/python c:/python25/pyinstaller-1.4/makespec.py --icon \
 	  wsjt.ico --tk --onefile wspr.py
 fcal.exe: fcal.f90
 	$(FC) -o fcal.exe fcal.f90
