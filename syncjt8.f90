@@ -5,9 +5,9 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
 ! NB: data are already downsampled to 6 kHz.
 
   parameter (NP2=30*12000)         !Size of data array
-  parameter (NFFTMAX=4200)         !Max length of FFTs
+  parameter (NFFTMAX=4096)         !Max length of FFTs
   parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
-  parameter (NSMAX=590)            !Max number of quarter-symbol steps
+  parameter (NSMAX=605)            !Max number of quarter-symbol steps
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
@@ -20,13 +20,13 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
 
   mousedf=0                        !### tests only ###
 ! Set up the JT8 sync pattern
-  nsync=2*8                        !16 sync symbols
-  ndata=((78+15)*4)/3              !124 data symbols
-  nsym=nsync+ndata                 !Total of 140 symbols
+  nsync=16 + 4                     !16 sync symbols, 4 to specify msg length
+  ndata=124                        !124 data symbols
+  nsym=nsync+ndata                 !Total of 144 symbols
 
 ! Do FFTs of twice symbol length, stepped by quarter symbols.  
 ! NB: we have already downsampled the data by factor of 2.
-  nfft=4200
+  nfft=4096
   nh=nfft/2
   nsteps=min(4*(jz-NH)/nh,NSMAX)
   kstep=nfft/8
@@ -70,7 +70,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
         do j=1,8
            j0=4*j - 3 + lag
            if(j0.ge.1 .and. j0.le.nsteps) then
-              sum=sum + s2(i+2*ic8(j),j0)+ s2(i+2*ic8(j),j0+528)
+              sum=sum + s2(i+2*ic8(j),j0)+ s2(i+2*ic8(j),j0+536)
            endif
         enddo
         ccf=sum/16.0
@@ -106,7 +106,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
      do j=1,8
         j0=4*j - 3 + lag
         if(j0.ge.1 .and. j0.le.nsteps) then
-           sum=sum + s2(ipk+2*ic8(j),j0)+ s2(ipk+2*ic8(j),j0+528)
+           sum=sum + s2(ipk+2*ic8(j),j0)+ s2(ipk+2*ic8(j),j0+536)
         endif
      enddo
      ccfblue(lag)=sum/16.
@@ -129,7 +129,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
 
   do i=1,8
      ii=ipk + 2*(i-1)
-     j0=4*8 - 3 + lagbest
+     j0=4*8 - 3 + lagbest + 8
      do j=1,124
         s3(i,j)=s2(ii,j0+4*j)
      enddo
