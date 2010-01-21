@@ -10,10 +10,10 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
   integer*2 iwave(NMAX)         !Generated wave file
   integer iu(3)
   integer gsym(372)             !372 is needed for JT8 mode
-  integer sent(140)
+  integer sent(144)
   integer ic8(8)
   data ic8/3,6,2,4,5,0,7,1/
-  data nsps/4200/
+  data nsps/4096/
   data twopi/6.283185307d0/
   save
 
@@ -33,13 +33,38 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
 
 ! Insert 8x8 Costas array at beginning and end of array sent().
   sent(1:8)=ic8
-  sent(133:140)=ic8
+  sent(135:142)=ic8
+! Insert two symbols after each Costas array to specify message length.
+  if(nbit.eq.30) then
+     sent(9)=2
+     sent(10)=2
+     sent(143)=2
+     sent(144)=2
+  else if(nbit.eq.48) then
+     sent(9)=3
+     sent(10)=3
+     sent(143)=3
+     sent(144)=3
+  else
+     sent(9)=6
+     sent(10)=6
+     sent(143)=6
+     sent(144)=6
+  endif
 
 ! Insert the 3-bit data symbols
-  sent(9:132)=gsym(1:124)
+  sent(11:134)=gsym(1:124)
+
+! Use the four free symbols in 30-bit mode
+  if(nbit.eq.30) then
+     sent(121)=sent(20)
+     sent(122)=sent(45)
+     sent(123)=sent(70)
+     sent(124)=sent(95)
+  endif
 
 ! Set up necessary constants
-  nsym=140
+  nsym=144
   tsymbol=nsps/12000.d0
   dt=1.d0/12000.d0
   f0=1270.46d0
@@ -56,7 +81,7 @@ subroutine genjt8(message,iwave,nwave,nbit,msgsent)
      if(j.ne.j0) then
         f=f0
         k=k+1
-        if(k.le.140) f=f0+(sent(k))*dfgen         !### Fix need for this ###
+        if(k.le.144) f=f0+(sent(k))*dfgen         !### Fix need for this ###
         dphi=twopi*dt*f
         j0=j
      endif
