@@ -43,7 +43,16 @@ int th_wspr2_(void)
 
 int th_decode_(void)
 {
-  return spawn_thread(decode_);
+  pthread_t thread1;
+  static int started=0;
+  int iret1;
+  int iarg1 = 1;
+
+  if(started)  pthread_join(thread1,NULL);
+  iret1 = pthread_create(&thread1,NULL,decode_,&iarg1);
+  if(iret1==0) started=1;
+  return iret1;
+  //  return spawn_thread(decode_);
 }
 
 int th_rx_(void)
