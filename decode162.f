@@ -87,7 +87,7 @@ C  Decode MEPT_JT data, assuming that DT and DF have already been determined.
          nbits=50+31
          amp=20                                !### 32 ??? ###
          ndelta=50
-         limit=20000
+         limit=10000
          first=.false.
       endif
 

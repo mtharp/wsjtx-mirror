@@ -14,6 +14,9 @@ extern void decode_(int *iarg);
 extern void rx_(int *iarg);
 extern void tx_(int *iarg);
 
+pthread_t decode_thread;
+static int decode_started=0;
+
 int spawn_thread(void (*f)(int *n)) {
   pthread_t thread;
   int iret;
@@ -43,16 +46,21 @@ int th_wspr2_(void)
 
 int th_decode_(void)
 {
-  pthread_t thread1;
-  static int started=0;
   int iret1;
   int iarg1 = 1;
 
-  if(started)  pthread_join(thread1,NULL);
-  iret1 = pthread_create(&thread1,NULL,decode_,&iarg1);
-  if(iret1==0) started=1;
+  if(decode_started>0)  {
+    if(time(NULL)-decode_started < 100)  {
+      printf("Attempted to start decoder too soon:  %d   %d",
+	     time(NULL),decode_started);
+      return 0;
+    }
+    pthread_join(decode_thread,NULL);
+    decode_started=0;
+  }
+  iret1 = pthread_create(&decode_thread,NULL,decode_,&iarg1);
+  if(iret1==0) decode_started=time(NULL);
   return iret1;
-  //  return spawn_thread(decode_);
 }
 
 int th_rx_(void)
