@@ -500,6 +500,21 @@ def get_decoded():
     except:
         decodes = []
 
+#  Remove any "too old" information from bandmap.
+    bandmap=[]
+    for callsign,ft in bm.iteritems():
+        if callsign!='...':
+            ndf,tdecoded=ft
+            tmin=int((time.time()%86400)/60)
+            tdiff=tmin-tdecoded
+            if tdiff<0: tdiff=tdiff+1440
+            if tdiff < 60:                        #60 minutes 
+                bandmap.append((ndf,callsign,tdecoded))
+    iz=len(bandmap)
+    bm={}
+    for i in range(iz):
+        bm[bandmap[i][1]]=(bandmap[i][0],bandmap[i][2])
+
     if len(decodes) > 0:
 #  Write data to text box and insert freqs and calls into bandmap.
         text.configure(state=NORMAL)
@@ -510,26 +525,14 @@ def get_decoded():
                 (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],' '.join(d['msg'])))
             try:
                 callsign=d['call']
-                nseq=60*int(d['time'][0:2]) + int(d['time'][2:4])
+                tmin=60*int(d['time'][0:2]) + int(d['time'][2:4])
                 ndf=int(d['freq'][-3:])
-                bm[callsign]=(ndf,nseq)
+                bm[callsign]=(ndf,tmin)
+                bandmap.append((ndf,callsign,tmin))
             except:
                 pass
         text.configure(state=DISABLED)
         text.see(END)
-
-#  Remove any "too old" information from bandmap.
-        bandmap=[]
-        for callsign,ft in bm.iteritems():
-            if callsign!='...':
-                ndf,tdecoded=ft
-                if nseq-tdecoded < 60:                        #60 minutes 
-                    bandmap.append((ndf,callsign,tdecoded))
-
-        iz=len(bandmap)
-        bm={}
-        for i in range(iz):
-            bm[bandmap[i][1]]=(bandmap[i][0],bandmap[i][2])
 
 #  Sort bandmap in reverse frequency order
         bandmap.sort()
@@ -538,7 +541,8 @@ def get_decoded():
         text1.delete('1.0',END)
         for i in range(iz):
             t="%4d" % (bandmap[i][0],) + " " + bandmap[i][1]
-            nage=int((nseq - bandmap[i][2])/15)
+            nage=int((tmin - bandmap[i][2])/15)
+            if nage<0: nage=nage+1440
             attr='age0'
             if nage==1: attr='age1'
             if nage==2: attr='age2'
