@@ -44,11 +44,8 @@ subroutine wspr2
   call getutc(cdate,utctime,tsec)
   nsec=tsec
   ns120=mod(nsec,120)
-  if(pctx.gt.50.0) nrx=0
   rxavg=1.0
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
-  rr=3.0
-  if(pctx.ge.40.0) rr=1.5                    !soft step?
   call cs_unlock
 
   if(nrxdone.gt.0) then
@@ -115,7 +112,12 @@ subroutine wspr2
      call cs_lock('wspr2')
      transmitting=.true.
      call random_number(x)
-     nrx=nint(rxavg + rr*(x-0.5))
+     if(pctx.lt.50.0) then
+        nrx=nint(rxavg + 3.0*(x-0.5))
+     else
+        nrx=0
+        if(x.lt.rxavg) nrx=1
+     endif
      write(cdbm,'(i4)') ndbm
      message=callsign//grid//cdbm
      call msgtrim(message,msglen)
