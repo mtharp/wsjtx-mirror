@@ -533,6 +533,7 @@ def get_decoded():
                 pass
         text.configure(state=DISABLED)
         text.see(END)
+        iz=len(bandmap)
 
 #  Sort bandmap in reverse frequency order
         bandmap.sort()
