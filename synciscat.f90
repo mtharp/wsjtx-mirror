@@ -1,4 +1,4 @@
-subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
+subroutine synciscat(dat,jz,i0,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
      snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
@@ -10,6 +10,7 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real xs1(NHMAX)
   real xsave(NHMAX)
+  real s0(256,2812)
   real s1(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real s2(64,63)                   !2d spectrum, synced data symbols only
   real x(NFFTMAX)                  !Temp array for computing FFTs
@@ -30,12 +31,13 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   nfft=1024
   nh=nfft/2
   nq=nfft/4
-  nsteps=4*(jz-NH)/nh
-  kstep=nh/4
+!  nsteps=4*(jz-NH)/nh
+!  kstep=nh/4
+  call spec_iscat(dat,jz,s0,nsteps0)
   df=12000.0/nfft
 
 ! Keep only an integer number of repetitions
-  nsteps=nsteps/300
+  nsteps=nsteps0/300
   nsteps=nsteps*300
 
 ! Compute power spectrum for each quarter-symbol step
@@ -43,18 +45,14 @@ subroutine synciscat(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,      &
   s3=0.
   xsave=0.
   ns=0
+  j0=i0/128
   do j=1,nsteps
      k=(j-1)*kstep + 1
      jj=mod(j-1,300)+1
-     do i=1,nh
-        x(i)=dat(k+i-1)
-        x(i+nh)=0.
-     enddo
-     call ps(x,nfft,xs1)
-     s1(1:nq,jj)=s1(1:nq,jj)+xs1(1:nq)
+     s1(1:nq,jj)=s1(1:nq,jj)+s0(1:nq,j+j0)
      ns(jj)=ns(jj)+1
      jj=mod(j-1,8)+1
-     s3(1:nq,jj)=s3(1:nq,jj)+xs1(1:nq)
+     s3(1:nq,jj)=s3(1:nq,jj)+s0(1:nq,j+j0)
   enddo
 
 ! Flatten the s1 spectrum

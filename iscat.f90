@@ -41,7 +41,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
            if(len0.lt.1) go to 90
         endif
 
-        call synciscat(dat(i0),jza,DFTolerance,NFreeze,MouseDF,      &
+        call synciscat(dat(i0),jza,i0,DFTolerance,NFreeze,MouseDF,      &
              dtx,dfx,snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,     &
              short,kshort)
 
