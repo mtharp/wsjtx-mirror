@@ -82,6 +82,7 @@ nin0=0
 nout0=0
 newdat=1
 newspec=1
+no_beep=IntVar()
 npal=IntVar()
 npal.set(2)
 nparam=0
@@ -125,9 +126,9 @@ g.DevoutName=StringVar()
 
 pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 freq0=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
-       21.0946,24.9246,28.1246,50.2930,144.4880,0.1360]
+       21.0946,24.9246,28.1246,50.2930,70.0286,144.4880,0.1360]
 freqtx=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
-       21.0946,24.9246,28.1246,50.2930,144.4880,0.1360]
+       21.0946,24.9246,28.1246,50.2930,70.0301,144.4880,0.1360]
 
 for i in range(15):
     freqtx[i]=freq0[i]+0.001500
@@ -627,8 +628,9 @@ def autolog(decodes):
             reply = urlf.readlines()
             urlf.close()
     except:
-        print time.asctime(time.gmtime()) + \
-              " UTC: attempted access to WSPRnet timed out.\a"
+        t=" UTC: attempted access to WSPRnet timed out."
+        if not no_beep: t=t + "\a"
+        print time.asctime(time.gmtime()) + t
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
@@ -747,7 +749,6 @@ def update():
                 f0.set(freq0[iband.get()])
                 t="%.6f" % (f0.get(),)
                 sf0.set(t)
-                print 'C'
                 ftx.set(freqtx[iband.get()])
                 t="%.6f" % (ftx.get(),)
                 sftx.set(t)
@@ -1039,6 +1040,7 @@ def save_params():
     f.write("freqtx_other " + str(freqtx[14]) + "\n")
     f.write("iband " + str(iband.get()) + "\n")
     f.write("StartIdle " + str(start_idle.get()) + "\n")
+    f.write("NoBeep " + str(no_beep.get()) + "\n")
     f.close()
 
 #------------------------------------------------------ Top level frame
@@ -1081,6 +1083,8 @@ setupmenu.add('command', label = 'Advanced', command = advanced1,
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
                           variable=start_idle)
+setupmenu.add_checkbutton(label = 'No beep when access to WSPRnet fails',
+                          variable=no_beep)
 ##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
 ##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
 ##setupmenu.add_separator()
@@ -1133,8 +1137,9 @@ bandmenu.add_radiobutton(label = '15 m', variable=iband,value=9)
 bandmenu.add_radiobutton(label = '12 m', variable=iband,value=10)
 bandmenu.add_radiobutton(label = '10 m', variable=iband,value=11)
 bandmenu.add_radiobutton(label = '6 m',  variable=iband,value=12)
-bandmenu.add_radiobutton(label = '2 m',  variable=iband,value=13)
-bandmenu.add_radiobutton(label = 'Other',variable=iband,value=14)
+bandmenu.add_radiobutton(label = '4 m',  variable=iband,value=13)
+bandmenu.add_radiobutton(label = '2 m',  variable=iband,value=14)
+bandmenu.add_radiobutton(label = 'Other',variable=iband,value=15)
 
 
 #------------------------------------------------------  Help menu
@@ -1391,6 +1396,7 @@ def readinit():
             elif key == 'freqtx_other': freqtx[14]=float(value)
             elif key == 'iband': iband.set(value)
             elif key == 'StartIdle': start_idle.set(value)
+            elif key == 'NoBeep': no_beep.set(value)
             elif key == 'MRUdir':
                 mrudir=value.replace("#"," ")
             nparam=i
