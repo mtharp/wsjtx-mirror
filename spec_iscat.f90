@@ -8,17 +8,17 @@ subroutine spec_iscat(dat,jz,s0,nsteps)
   real x(1024)
   real xs1(512)
 
-  nfft=1024
-  nh=nfft/2
-  nq=nfft/4
-  nsteps=4*(jz-NH)/nh
-  kstep=nh/4
+  nsps=512                          !Samples per symbol
+  kstep=nsps/4                      !Quarter-symbol steps
+  nfft=1024                         !FFT length
+  nq=nfft/4                         !Length of saved spectrum (0-3 kHz)
+  nsteps=(jz-nsps)/kstep            !Number of quarter-symbol steps
 
 ! Compute the power spectrum for each quarter-symbol step
   do j=1,nsteps
      k=(j-1)*kstep + 1
-     x(1:nh)=dat(k:k+nh-1)
-     x(nh+1:)=0.
+     x(1:nsps)=dat(k:k+nsps-1)
+     x(nsps+1:)=0.
      call ps(x,nfft,xs1)
      s0(1:nq,j)=xs1(1:nq)
   enddo

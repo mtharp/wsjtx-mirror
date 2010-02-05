@@ -8,6 +8,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   real ccfblue(-5:540),ccfred(-224:224)
   real ps0(431)
   character decoded*22
+  logical dofft
 
   NsyncOK=0
   nfft=1024                   !Do FFTs of twice the symbol length
@@ -15,19 +16,13 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   df=12000.0/nfft
   nadd=1
   decoded=' '
+  dofft=.true.
 
-!  if(nxb.eq.0) then
-!     istart=1
-!     jza=jz
-!  else
-!     istart=max(nint(jz*nxa/500.0),1)
-!     jza=min(nint(jz*(nxb-nxa)/500.0),jz)
-!  endif
-!  if(jza.lt.32*1200) go to 999
-
-  nn=512*75
+! Try a range of starting points, stepping by half the message length
+  nn=512*(63+10+2)                         !Message length in samples
   do istart=1,jz-nn,nn/2
      lenz=jz/nn
+! Try a range of integer number of message repetitions, starting with largest
      do len=lenz,2,-1
         jza=len*nn
         if(jza.gt.jz-istart) go to 90
@@ -41,8 +36,9 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
            if(len0.lt.1) go to 90
         endif
 
-        call synciscat(dat(i0),jza,i0,DFTolerance,NFreeze,MouseDF,      &
-             dtx,dfx,snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,     &
+! Try to establish sync or find a shorthand message
+        call synciscat(dat(i0),jza,i0,dofft,DFTolerance,NFreeze,MouseDF,   &
+             dtx,dfx,snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,       &
              short,kshort)
 
         nsnr=nint(snrx)
