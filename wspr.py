@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#---------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -451,7 +451,7 @@ def tx_volume():
 def get_decoded():
     global bandmap,bm,newdat,loopall
     
-# Get lines from decoded.txt and parse each into an assoc array
+# Get lines from decoded.txt and parse each into an associative array
     try:
         f=open(appdir+'/decoded.txt',mode='r')
         decodes = []
@@ -471,7 +471,7 @@ def get_decoded():
             d['cycles'] = fields[-2]
             d['ii'] = fields[-1]
 
-            # Determine message type
+# Determine message type
             d['type1'] = True
             d['type2'] = False
             d['type3'] = False
@@ -490,7 +490,7 @@ def get_decoded():
                     d['type2']=True
                 else:
                     d['type3']=True
-            # Get callsign
+# Get callsign
             callsign = d['msg'][0]
             if callsign[0]=='<':
                 n=callsign.find('>')
@@ -501,23 +501,8 @@ def get_decoded():
     except:
         decodes = []
 
-#  Remove any "too old" information from bandmap.
-    bandmap=[]
-    for callsign,ft in bm.iteritems():
-        if callsign!='...':
-            ndf,tdecoded=ft
-            tmin=int((time.time()%86400)/60)
-            tdiff=tmin-tdecoded
-            if tdiff<0: tdiff=tdiff+1440
-            if tdiff < 60:                        #60 minutes 
-                bandmap.append((ndf,callsign,tdecoded))
-    iz=len(bandmap)
-    bm={}
-    for i in range(iz):
-        bm[bandmap[i][1]]=(bandmap[i][0],bandmap[i][2])
-
     if len(decodes) > 0:
-#  Write data to text box and insert freqs and calls into bandmap.
+#  Write data to text box; append freqs and calls to bandmap.
         text.configure(state=NORMAL)
         nseq=0
         nfmid=int(1.0e6*fmid)%1000
@@ -528,30 +513,54 @@ def get_decoded():
                 callsign=d['call']
                 tmin=60*int(d['time'][0:2]) + int(d['time'][2:4])
                 ndf=int(d['freq'][-3:])
-                bm[callsign]=(ndf,tmin)
                 bandmap.append((ndf,callsign,tmin))
             except:
                 pass
         text.configure(state=DISABLED)
         text.see(END)
-        iz=len(bandmap)
 
-#  Sort bandmap in reverse frequency order
-        bandmap.sort()
-        bandmap.reverse()
-        text1.configure(state=NORMAL)
-        text1.delete('1.0',END)
-        for i in range(iz):
-            t="%4d" % (bandmap[i][0],) + " " + bandmap[i][1]
-            nage=int((tmin - bandmap[i][2])/15)
-            if nage<0: nage=nage+1440
-            attr='age0'
-            if nage==1: attr='age1'
-            if nage==2: attr='age2'
-            if nage>=3: attr='age3'
-            text1.insert(END,t+"\n",attr)
-        text1.configure(state=DISABLED)
-        text1.see(END)
+# Erase the bm{} dictionary, then repopulate it from "bandmap".
+# Most recent info for each callsign should be saved.
+    bm={}
+    iz=len(bandmap)
+    for i in range(iz):
+        bm[bandmap[i][1]]=(bandmap[i][0],bandmap[i][2])
+
+# Erase bandmap entirely
+    bandmap=[]
+# Repopulate "bandmap" from "bm", which should not contain dupes.
+    for callsign,ft in bm.iteritems():
+        if callsign!='...':
+            ndf,tdecoded=ft
+            tmin=int((time.time()%86400)/60)
+            tdiff=tmin-tdecoded
+            if tdiff<0: tdiff=tdiff+1440
+# Insert info in "bandmap" only if age is less than one hour
+            if tdiff < 60:                        #60 minutes 
+                bandmap.append((ndf,callsign,tdecoded))
+    
+# Once more, erase the bm{} dictionary, then repopulate it from "bandmap"
+    bm={}
+    iz=len(bandmap)
+    for i in range(iz):
+        bm[bandmap[i][1]]=(bandmap[i][0],bandmap[i][2])
+
+#  Sort bandmap in reverse frequency order, then display it
+    bandmap.sort()
+    bandmap.reverse()
+    text1.configure(state=NORMAL)
+    text1.delete('1.0',END)
+    for i in range(iz):
+        t="%4d" % (bandmap[i][0],) + " " + bandmap[i][1]
+        nage=int((tmin - bandmap[i][2])/15)
+        if nage<0: nage=nage+1440
+        attr='age0'
+        if nage==1: attr='age1'
+        if nage==2: attr='age2'
+        if nage>=3: attr='age3'
+        text1.insert(END,t+"\n",attr)
+    text1.configure(state=DISABLED)
+    text1.see(END)
 
     if upload.get():
         #Dispatch autologger thread.
@@ -587,7 +596,6 @@ def autolog(decodes):
                     tcall=tcall[1:n]
                 if tcall=='...': continue
                 dfreq=float(d['freq'])-w.acom1.f0b-0.001500
-                print 'dfreq:',dfreq
                 if abs(dfreq)>0.0001:
                     print 'Frequency changed, no upload of spots'
                     continue
