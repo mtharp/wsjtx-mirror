@@ -13,6 +13,7 @@ subroutine decode
   equivalence (x,c)
   include 'acom1.f90'
 
+  f0b=f0a
   if(ncal.eq.2) then
      fac=1.e-6
      do i=1,65536

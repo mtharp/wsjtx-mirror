@@ -586,6 +586,11 @@ def autolog(decodes):
                     n=tcall.find('>')
                     tcall=tcall[1:n]
                 if tcall=='...': continue
+                dfreq=float(d['freq'])-w.acom1.f0b-0.001500
+                print 'dfreq:',dfreq
+                if abs(dfreq)>0.0001:
+                    print 'Frequency changed, no upload of spots'
+                    continue
                 reportparams = urllib.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
@@ -628,7 +633,7 @@ def autolog(decodes):
             reply = urlf.readlines()
             urlf.close()
     except:
-        t=" UTC: attempted access to WSPRnet timed out."
+        t=" UTC: attempted access to WSPRnet failed."
         if not no_beep: t=t + "\a"
         print time.asctime(time.gmtime()) + t
 

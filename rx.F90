@@ -14,6 +14,7 @@ subroutine rx
   npts=114*12000
   if(ncal.eq.1) npts=65536
   nsec1=time()
+  f0a=f0                                   !Save rx frequency at start
   ierr=soundin(ndevin,kwave,4*npts)
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
