@@ -634,7 +634,7 @@ def autolog(decodes):
             urlf.close()
     except:
         t=" UTC: attempted access to WSPRnet failed."
-        if not no_beep: t=t + "\a"
+        if not no_beep.get(): t=t + "\a"
         print time.asctime(time.gmtime()) + t
 
 #------------------------------------------------------ put_params
