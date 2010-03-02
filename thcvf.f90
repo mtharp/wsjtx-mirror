@@ -3,7 +3,7 @@ subroutine cs_init
   type (RTL_CRITICAL_SECTION) ncrit1
   character*12 csub0
   integer*8 mtx
-  common/mtxcom/mtx.ltrace,mtxstate,csub0
+  common/mtxcom/mtx,ltrace,mtxstate,csub0
   ltrace=0
   mtx=loc(ncrit1)
   mtxstate=0
@@ -60,7 +60,7 @@ subroutine cs_unlock
   use dfmt
   character*12 csub0
   integer*8 mtx
-  common/mtxcom/mtx.ltrace,mtxstate,csub0
+  common/mtxcom/mtx,ltrace,mtxstate,csub0
   mtxstate=0
   if(ltrace.ge.3) print*,'Mutex unlocked'
   call LeaveCriticalSection(mtx)
