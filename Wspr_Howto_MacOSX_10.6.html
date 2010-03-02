@@ -1,0 +1,18 @@
+<HTML><HEAD><TITLE>Howto Install WSPR on Mac OS X Snow Leopard</TITLE></HEAD><BODY>
+<p><div align="center">Notes by John Nelson G4KLA<br>2 March 2010<br>
+(with acknowledgment to Joe Large W6CQZ for breaking the ground.)</div><br><br>
+<font size="1" face="Verdana">
+If you have not installed the basic infrastructure needed on the Mac then you should download WSJT code<br>
+svn co svn://svn.berlios.de/wsjt/trunk<br>
+and carry out the instructions in <b>Steps 1 to 3</b> in Wsjt_Howto_MacOSX_10.6.html.   If you have already done
+that, then the rest is easy.<br><br>
+<b>Step 4</b> Change to the directory containing the WSPR code and set the environment parameters:<br>
+setenv MACOSX_DEPLOYMENT_TARGET 10.6<br>
+setenv VERSIONER_PYTHON_PREFER_32_BIT yes<br>
+configure_10.6  --with-portaudio-lib-dir=/usr/local/lib  --with-portaudio-include-dir=/usr/local/include<br>
+make<br><br>
+If you are successul then the last line should read:  m w.so  WsprMod/w.so and you can run the program with:<br>
+python wspr.py<br><br>
+<em>Last point</em> If you find errors or omissions in this document, or improvements, or need help, please let me know.   g4kla at rmnjmn dot demon dot co dot uk<br>
+</p>
+</BODY></HTML>
