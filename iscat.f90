@@ -52,7 +52,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
            cf='*'
         endif
 
-        if(nsync.eq.0 .and. short.gt.2.0) then
+        if(nsync.eq.0 .and. short.gt.6.0) then
            if(kshort.eq.1) decoded='RO'
            if(kshort.eq.2) decoded='RRR'
            if(kshort.eq.3) decoded='73'

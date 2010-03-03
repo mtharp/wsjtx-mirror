@@ -239,8 +239,9 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
 
   nsync=max(snrsync-1.0,0.0)
   f=ishort*df
+! ### Test was short.gt.3.0 ###
   if(f.ge.fa .and. f.le.fb .and. nsync.eq.0 .and.         &
-       short.gt.3.0) dfx=ishort*df-f0
+       short.gt.6.0) dfx=ishort*df-f0
 
   return
 end subroutine synciscat

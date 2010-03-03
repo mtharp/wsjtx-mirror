@@ -51,7 +51,14 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
      go to 900
   endif
 
-! BM algorithm failed, try the KV decoder.
+! BM algorithm failed.  Test probabilities for reasonable values...
+  nbig=0
+  do j=1,63
+     if(mrprob(j).eq.255 .and. mr2prob(j).eq.0) nbig=nbig+1
+  enddo
+  if(nbig.ge.10) go to 900
+
+! Try the KV decoder.
   maxe=8
   xlambda=15.0
   naddsynd=200
@@ -94,7 +101,11 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
 1001 format('Error in KV decoder, return code:',i12)
   endif
 
-20 call cs_unlock
+20 continue
+!  write(*,*)  nbig,iret,' ',decoded
+!  write(78,*) nbig,iret,' ',decoded
+
+  call cs_unlock
 
 900 continue
   return
