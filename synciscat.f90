@@ -21,6 +21,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   logical dofft
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
+  save s0
 
 ! Set up the ISCAT sync patterns
   nsync=10
