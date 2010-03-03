@@ -1,4 +1,4 @@
-subroutine synciscat(dat,jz,i0,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
+subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
      snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
 
 ! Synchronizes ISCAT data, finding the best-fit DT and DF.  
@@ -48,13 +48,13 @@ subroutine synciscat(dat,jz,i0,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   s3=0.
   xsave=0.
   ns=0
-  j0=i0/128
+  j0=i00/128
   do j=1,nsteps
-     jj=mod(j+j0-1,300)+1
-     s1(1:nq,jj)=s1(1:nq,jj)+s0(1:nq,j+j0)
+     jj=mod(j-1,300)+1
+     s1(1:nq,jj)=s1(1:nq,jj) + s0(1:nq,j+j0)
      ns(jj)=ns(jj)+1
-     jj=mod(j+j0-1,8)+1
-     s3(1:nq,jj)=s3(1:nq,jj)+s0(1:nq,j+j0)
+     jj=mod(j-1,8)+1
+     s3(1:nq,jj)=s3(1:nq,jj) + s0(1:nq,j+j0)
   enddo
 
 ! Flatten the s1 spectrum
