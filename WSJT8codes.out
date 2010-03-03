@@ -1,0 +1,101 @@
+Examples illustrating the message structures supported by experimental
+modes ISCAT, JTMS, JT64, and JT8 in WSJT8.  At present only the 78-bit
+formats have been implemented in JT8.  Input messages are shown at the
+left, followed by number of bits, the source-encoded data in
+hexadecimal, and the decoded (output) message.  A flag "*" is present 
+if there is any difference between input and output messages.
+
+Message                Bits  Source-encoded data   OK? Decoded message
+-------------------------------------------------------------------------------
+RO                        2  40000000 00000000 0000   RO                      
+RRR                       2  80000000 00000000 0000   RRR                     
+73                        2  C0000000 00000000 0000   73                      
+
+CQ K1ABC                 30  F70C2380 00000000 0000   CQ K1ABC                
+DE W9XYZ                 30  F9777BB4 00000000 0000   DE W9XYZ                
+W9XYZ OOO                30  F9777BB8 00000000 0000   W9XYZ OOO               
+K1ABC RO                 30  F70C238C 00000000 0000   K1ABC RO                
+RRR TNX 73               30  FA087420 00000000 0000   RRR TNX 73              
+TNX 73 GL                30  FA087430 00000000 0000   TNX 73 GL               
+GRID?                    30  FA087040 00000000 0000   GRID?                   
+EM77                     30  FA0E4B60 00000000 0000   EM77                    
+BEST -19                 30  FA087100 00000000 0000   BEST -19                
+BEST +29                 30  FA087400 00000000 0000   BEST +29                
+BEST 29                  30  FA087400 00000000 0000 * BEST +29                
+BEST -1                  30  FA087220 00000000 0000 * BEST -01                
+BEST 1                   30  FA087240 00000000 0000 * BEST +01                
+
+CQ K1ABC FN20            48  F70C238B 39C00000 0000   CQ K1ABC FN20           
+QRZ K1ABC                48  F70C238F E1E00000 0000   QRZ K1ABC               
+CQ 118 K1ABC             48  F70C238D D7C20000 0000   CQ 118 K1ABC            
+CQ VO2/K1ABC             48  F70C2385 28220000 0000   CQ VO2/K1ABC            
+CQ K1ABC/2               48  F70C238D 4C420000 0000   CQ K1ABC/2              
+
+<K1ABC> W9XYZ            48  F9777BB3 2F230000 0000   <K1ABC> W9XYZ           
+<VO2/K1ABC> W9XYZ        48  F9777BBD 6E630000 0000   <VO2/K1ABC> W9XYZ       
+<K1ABC/2> W9XYZ          48  F9777BBE 38230000 0000   <K1ABC/2> W9XYZ         
+DE VO2/W9XYZ             48  F9777BB5 28250000 0000   DE VO2/W9XYZ            
+DE W9XYZ/2               48  F9777BBD 4C450000 0000   DE W9XYZ/2              
+DE W9XYZ EM77            48  F9777BBB A9E60000 0000   DE W9XYZ EM77           
+
+W9XYZ <K1ABC> OOO        48  F9777BB3 2F270000 0000   W9XYZ <K1ABC> OOO       
+W9XYZ <VO2/K1ABC> OOO    48  F9777BBD 6E670000 0000   W9XYZ <VO2/K1ABC> OOO   
+VO2/W9XYZ OOO            48  F9777BB5 28290000 0000   VO2/W9XYZ OOO           
+DE VO2/K1ABC OOO         48  F70C2385 282B0000 0000   DE VO2/K1ABC OOO        
+DE K1ABC FN20 OOO        48  F70C238B 39CC0000 0000   DE K1ABC FN20 OOO       
+
+K1ABC <W9XYZ> RO         48  F70C2388 FAED0000 0000   K1ABC <W9XYZ> RO        
+K1ABC <VO2/W9XYZ> RO     48  F70C238C 874D0000 0000   K1ABC <VO2/W9XYZ> RO    
+VO2/K1ABC RO             48  F70C2385 282F0000 0000   VO2/K1ABC RO            
+DE VO2/W9XYZ RO          48  F9777BB5 28310000 0000   DE VO2/W9XYZ RO         
+DE K1ABC FN20 RO         48  F70C238B 39D20000 0000   DE K1ABC FN20 RO        
+
+<K1ABC> W9XYZ RRR        48  F9777BB3 2F330000 0000   <K1ABC> W9XYZ RRR       
+<VO2/K1ABC> W9XYZ RRR    48  F9777BBD 6E730000 0000   <VO2/K1ABC> W9XYZ RRR   
+K1ABC <W9XYZ> RRR        48  F70C2388 FAF40000 0000   K1ABC <W9XYZ> RRR       
+K1ABC <VO2/W9XYZ> RRR    48  F70C238C 87540000 0000   K1ABC <VO2/W9XYZ> RRR   
+VO2/K1ABC RRR            48  F70C2385 28360000 0000   VO2/K1ABC RRR           
+DE VO2/W9XYZ RRR         48  F9777BB5 28380000 0000   DE VO2/W9XYZ RRR        
+
+73 DE W9XYZ EM77         48  F9777BBB A9F90000 0000   73 DE W9XYZ EM77        
+73 DE VO2/W9XYZ          48  F9777BB5 283B0000 0000   73 DE VO2/W9XYZ         
+TNX RUSSELL 73 GL        48  9A924C7A EC5C0000 0000   TNX RUSSELL 73 GL       
+OP ROBERTO 73 GL         48  988C2B7B 4BBD0000 0000   OP ROBERTO 73 GL        
+
+K1ABC W9XYZ EM77         78  F70C238F 9777BBBA 9E00   K1ABC W9XYZ EM77        
+K1ABC W9XYZ/2            78  F70C238F 9777BBD4 C510   K1ABC W9XYZ/2           
+K1ABC W9XYZ              78  F70C238F 9777BBFD 2200   K1ABC W9XYZ             
+VO2/K1ABC W9XYZ          78  F70C238F 9777BB52 8290   VO2/K1ABC W9XYZ         
+K1ABC VO2/W9XYZ          78  F70C238F 9777BB52 8310   K1ABC VO2/W9XYZ         
+K1ABC W9XYZ EM77 OOO     78  F70C238F 9777BBBA 9E08   K1ABC W9XYZ EM77 OOO    
+K1ABC W9XYZ OOO          78  F70C238F 9777BBFD 2208   K1ABC W9XYZ OOO         
+VO2/K1ABC W9XYZ OOO      78  F70C238F 9777BB52 8298   VO2/K1ABC W9XYZ OOO     
+K1ABC W9XYZ -21          78  F70C238F 9777BBFD 3600   K1ABC W9XYZ -21         
+K1ABC W9XYZ +21          78  F70C238F 9777BBFD 8A00   K1ABC W9XYZ +21         
+K1ABC W9XYZ RO           78  F70C238F 9777BBFE 1800   K1ABC W9XYZ RO          
+K1ABC W9XYZ R-21         78  F70C238F 9777BBFD B000   K1ABC W9XYZ R-21        
+K1ABC W9XYZ R+21         78  F70C238F 9777BBFE 0400   K1ABC W9XYZ R+21        
+K1ABC W9XYZ R21          78  F70C238F 9777BBFE 0400 * K1ABC W9XYZ R+21        
+K1ABC W9XYZ RRR          78  F70C238F 9777BBFE 1A00   K1ABC W9XYZ RRR         
+K1ABC W9XYZ 73           78  F70C238F 9777BBFE 1C00   K1ABC W9XYZ 73          
+123456789ABCDE           78  4629667D 059FAB1B 6654   123456789ABCDE          
+123456789ABCDEF          78  4629667D 059FAB1B 6654 * 123456789ABCDE          
+
+In JTMS mode, 48-bit messages involving a signal report are slightly
+different.  Where "OOO" and "RO" are used in the other modes, JTMS uses
+"26", "27", "R26", and "R27":
+----------------------------------------------------------------------------
+W9XYZ <K1ABC> 26         48  F9777BB3 2F270000 0000   W9XYZ <K1ABC> 26        
+W9XYZ <K1ABC> 27         48  F9777BB3 2F3E0000 0000   W9XYZ <K1ABC> 27        
+W9XYZ <VO2/K1ABC> 26     48  F9777BBD 6E670000 0000   W9XYZ <VO2/K1ABC> 26    
+VO2/W9XYZ 26             48  F9777BB5 28290000 0000   VO2/W9XYZ 26            
+DE VO2/K1ABC 26          48  F70C2385 282B0000 0000   DE VO2/K1ABC 26         
+DE K1ABC FN20 26         48  F70C238B 39CC0000 0000   DE K1ABC FN20 26        
+
+K1ABC <W9XYZ> R26        48  F70C2388 FAED0000 0000   K1ABC <W9XYZ> R26       
+K1ABC <W9XYZ> R27        48  F70C2388 FAFF0000 0000   K1ABC <W9XYZ> R27       
+K1ABC <VO2/W9XYZ> R26    48  F70C238C 874D0000 0000   K1ABC <VO2/W9XYZ> R26   
+VO2/K1ABC R26            48  F70C2385 282F0000 0000   VO2/K1ABC R26           
+DE VO2/W9XYZ R26         48  F9777BB5 28310000 0000   DE VO2/W9XYZ R26        
+DE K1ABC FN20 R26        48  F70C238B 39D20000 0000   DE K1ABC FN20 R26       
+

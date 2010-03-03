@@ -1,58 +1,59 @@
-Except as nopted, the following message formats 
-apply to modes JT64, ISCAT, and JTMS.  JT8 uses 
-only 78-bit messages.
+Examples showing how the 30-, 48-, and 78-bit messages are used in
+minimal QSOs.  All message formats are available in JT64, ISCAT, and
+JTMS modes.  JT8 uses only 78-bit messages at present, but may be
+expanded to include the shorter ones.
 
-Basic QSO with grids
-----------------------------------------------
-1. CQ K1JT FN20                             48
-2.                       K1JT W8WN EM77     78
-3. W8WN K1JT FN20 OOO                       78
-4.                       RO                  2
-5. RRR                                       2
-6.                       73                  2
+Basic QSO with grids                       nbits
+------------------------------------------------
+1. CQ K1ABC FN20                              48
+2.                       K1ABC W9XYZ EM77     78
+3. W9XYZ K1ABC FN20 OOO                       78
+4.                       RO                    2
+5. RRR                                         2
+6.                       73                    2
 
 QSO with numerical reports
-----------------------------------------------
-1. CQ K1JT FN20                             48
-2.                       K1JT W8WN EM77     78
-3. W8WN K1JT -21                            78
-4.                       K1JT W8WN R-22     78
-5. RRR                                       2
-6.                       TNX JOE 73 GL      78
+------------------------------------------------
+1. CQ K1ABC FN20                              48
+2.                       K1ABC W9XYZ EM77     78
+3. W9XYZ K1ABC -21                            78
+4.                       K1ABC W9XYZ R-22     78
+5. RRR                                         2
+6.                       TNX JOE 73 GL        48
 
 QSO with add-on prefix or suffix
-----------------------------------------------
-1. CQ VO2/K1JT                              48
-2.                       VO2/K1JT W8WN      78
-3. W8WN VO2/K1JT OOO                        78
-4.                       RO                  2
-5. RRR                                       2
-6.                       TNX BERT 73 GL     78
+------------------------------------------------
+1. CQ VO2/K1ABC                               48
+2.                       VO2/K1ABC W9XYZ      78
+3. W9XYZ VO2/K1ABC OOO                        78
+4.                       RO                    2
+5. RRR                                         2
+6.                       TNX ANGELO 73 GL     48
 
 QSO with hashed callsigns
-----------------------------------------------
-1. CQ K1JT FN20                             48
-2.                       <K1JT> W8WN        48
-3. W8WN <K1JT> OOO                          48
-4.                       K1JT <W8WN> RO     48
-5. RRR                                       2
-6.                       73                  2
+------------------------------------------------
+1. CQ K1ABC FN20                              48
+2.                       <K1ABC> W9XYZ        48
+3. W9XYZ <K1ABC> OOO                          48
+4.                       K1ABC <W9XYZ> RO     48
+5. RRR                                         2
+6.                       73                    2
 
-Hashed callsigns in JTMS mode
-----------------------------------------------
-1. CQ K1JT FN20                             48
-2.                       <K1JT> W8WN        48
-3. W8WN <K1JT> 26                           48
-4.                       K1JT <W8WN> R26    48
-5. RRR                                       2
-6.                       73                  2
+QSO with hashed callsigns in JTMS mode
+------------------------------------------------
+1. CQ K1ABC FN20                              48
+2.                       <K1ABC> W9XYZ        48
+3. W9XYZ <K1ABC> 26                           48
+4.                       K1ABC <W9XYZ> R27    48
+5. RRR                                         2
+6.                       73                    2
 
 
 Bare minimum QSO
-----------------------------------------------
-1. CQ K1JT                                  30
-2.                       DE W8WN            30
-3. W8WN OOO                                 30
-4.                       K1JT RO            30
-5. RRR                                       2
-6.                       73                  2
+------------------------------------------------
+1. CQ K1ABC                                   30
+2.                       DE W9XYZ             30
+3. W9XYZ OOO                                  30
+4.                       K1ABC RO             30
+5. RRR                                         2
+6.                       73                    2
