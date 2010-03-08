@@ -45,7 +45,6 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   common/avecom/dat(NP2),labdat,jza,modea
   common/ccom/nline,tping(100),line(100)
   common/limcom/ nslim2a
-  common/extcom/ntdecode
   save
 
   jz=jz0

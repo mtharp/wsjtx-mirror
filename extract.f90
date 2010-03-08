@@ -8,7 +8,6 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
   integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
   integer*1 dbits(96)
   integer iu(3)
-  common/extcom/ntdecode
   data nsec1/0/
   save
 
@@ -101,11 +100,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
 1001 format('Error in KV decoder, return code:',i12)
   endif
 
-20 continue
-!  write(*,*)  nbig,iret,' ',decoded
-!  write(78,*) nbig,iret,' ',decoded
-
-  call cs_unlock
+20  call cs_unlock
 
 900 continue
   return
