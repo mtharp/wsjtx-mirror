@@ -6,7 +6,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   real dat(jz)                !Raw audio data
   integer DFTolerance
   real s2(64,63)              !2D spectral array
-  character cfile6*6,cf*1
+  character cfile6*6
   real ccfblue(-5:540),ccfred(-224:224)
   real ps0(431)
   character decoded*22
@@ -35,27 +35,24 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 
         nsnr=nint(snrx)
         jdf=nint(dfx)
-        cf=' '
         decoded=' '
-        if(isync.ge.MinSigdB) then
-           call extract(s2,nadd,isbest,ncount,decoded,ndec)
-           cf='*'
-        endif
+        if(isync.ge.MinSigdB) call extract(s2,nadd,isbest,ncount,decoded,ndec)
 
-        if(isync.eq.0 .and. short.gt.6.0) then
+        if(isync.eq.0 .and. short.gt.5.0) then
            if(kshort.eq.1) decoded='RO'
            if(kshort.eq.2) decoded='RRR'
            if(kshort.eq.3) decoded='73'
            isbest=0
-           nsnr=db(short) - 23.0
+           nsnr=nint(db(short)-23.0)
+           ndec=1
         endif
 
         call cs_lock('iscat')
         t1=i0/12000.0
-        write(11,1010) cfile6,isync,nsnr,jdf,isbest,cf,decoded,ndec,t1,len0
+        write(11,1010) cfile6,isync,nsnr,jdf,isbest,decoded,ndec,t1,len0
         if(decoded.ne.'                      ') then
-           write(21,1010) cfile6,isync,nsnr,jdf,isbest,cf,decoded,ndec,t1,len0
-1010       format(a6,i4,i5,i5,i3,a1,3x,a22,10x,i1,f6.1,i4)
+           write(21,1010) cfile6,isync,nsnr,jdf,isbest,decoded,ndec,t1,len0
+1010       format(a6,i4,i5,i5,i3,3x,a22,10x,i1,f6.1,i4)
         endif
         call cs_unlock
         if(decoded.ne.'                      ') go to 999

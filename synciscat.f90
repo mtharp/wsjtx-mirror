@@ -234,10 +234,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
 
   isync=max(snrsync-1.0,0.0)
   f=ishort*df
-  if(f.ge.fa .and. f.le.fb .and. isync.eq.0 .and. short.gt.6.0) then
-     dfx=ishort*df-f0
-     ndec=1
-  endif
+  if(f.ge.fa .and. f.le.fb .and. isync.eq.0 .and. short.gt.5.0) dfx=ishort*df-f0
 
   return
 end subroutine synciscat
