@@ -977,17 +977,17 @@ def dtdf_change(event):
         t="%.1f" % (event.x*30.0/500.0,)
         lab6.configure(text=t,bg='green')
     else:
-        if event.y<40 and Audio.gcom2.nspecial==0:
+        if event.y<40 and Audio.gcom2.nspecial==0 and mode.get()<>'ISCAT':
             lab1.configure(text='Time (s)',bg="#33FFFF")   #light blue
 ##            t="%.1f" % (12.0*event.x/500.0-2.0,)
             t="%.1f" % float(event.x)
             lab6.configure(text=t,bg="#33FFFF")
         elif (event.y>=40 and event.y<95) or \
-                 (event.y<95 and Audio.gcom2.nspecial>0):
+              (event.y<95 and (Audio.gcom2.nspecial>0 or mode.get()=='ISCAT')):
             lab1.configure(text='DF (Hz)',bg='red')
             idf=Audio.gcom2.idf
             if mode.get()[:5]=='ISCAT':
-                t="%d" % int(0.25*(12000.0/1024.0)*(event.x-250.0)+3)
+                t="%d" % int(0.25*(12000.0/1024.0)*(event.x-250.0))
             else:
                 t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
             lab6.configure(text=t,bg="red")
@@ -1037,7 +1037,7 @@ def mouse_up_g1(event):
             decode()
         else:
             if not nopen:
-                mdf=int(Audio.gcom2.idf+(event.x-250)*5.859)
+                mdf=int(Audio.gcom2.idf+(event.x-250)*2.9296875)
                 if mdf<-400: mdf=-400
                 if mdf>400: mdf=400
                 Audio.gcom2.mousedf=mdf
