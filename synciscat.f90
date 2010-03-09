@@ -1,21 +1,20 @@
 subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
-     snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,short,kshort)
+     snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,kshort)
 
-! Synchronizes ISCAT data, finding the best-fit DT and DF.  
+! Synchronize ISCAT data, finding best-fit DT, DF, snrx, isync, etc.
 
   parameter (NFFTMAX=1024)         !Max length of FFTs
   parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
   parameter (NSMAX=300)            !Max number of quarter-symbol steps
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
-  real xsave(NHMAX)
   real s0(256,2812)
-  real s1(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+  real s1(256,NSMAX)               !2d spectrum, stepped by half-symbols
   real s2(64,63)                   !2d spectrum, synced data symbols only
+  real s3(256,8)
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-224:224)            !Peak of ccfblue, as function of freq
   real tmp1(NSMAX),tmp2(NSMAX)
-  real s3(256,8)
   real ps0(431)
   integer ns(300)
   logical dofft
@@ -47,7 +46,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
 ! Fold spectra from s0 into s1 and s3
   s1=0.
   s3=0.
-  xsave=0.
+  ps0=0.
   ns=0
   j0=i00/128
   do j=1,nsteps
@@ -63,9 +62,9 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
      do j=1,300
         tmp1(j)=s1(i,j)/ns(j)
      enddo
-     call pctile(tmp1,tmp2,300,45,xsave(i))
+     call pctile(tmp1,tmp2,300,45,ps0(i))
      fac=1.0
-     if(xsave(i).gt.0.0) fac=1.0/xsave(i)
+     if(ps0(i).gt.0.0) fac=1.0/ps0(i)
      do j=1,300
         s1(i,j)=fac*s1(i,j)
      enddo
@@ -86,9 +85,9 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
      fb=min(fbmax,f0+MouseDF+400)
   endif
 
-! Save the passband spectrum, for display
+! Convert spectrum to dB, for display
   do i=1,nq
-     ps0(i)=db(xsave(i))
+     ps0(i)=db(ps0(i))
   enddo
 
 ! Test for shorthand message
@@ -128,8 +127,6 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
      smax=-1.e30
      do lag=0,299
         sum1=0.
-        sum2=0.
-        sum3=0.
         b1=0.
         do j=1,nsync
            j0=4*j - 3 + lag
@@ -139,10 +136,9 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
               if(k.ne.ic10(j)) b1=b1+s1(i+2*k,jj0)
            enddo
         enddo
-        ccf1=500.0*sum1/(b1*nsync)
+        ccf1=500.0*sum1/(b1*(nsync-1))
         if(ccf1.gt.smax) then
            smax=ccf1
-           ispk=1
         endif
      enddo
 
@@ -156,7 +152,6 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
      if(f.ge.fa .and. f.le.fb .and. smax.gt.syncbest) then
         syncbest=smax
         ipk=i
-        isbest=ispk
      endif
   enddo
 
@@ -237,11 +232,12 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   if(max(s16,s18,s20).eq.s18) isbest=2
   if(max(s16,s18,s20).eq.s20) isbest=3
 
-  nsync=max(snrsync-1.0,0.0)
+  isync=max(snrsync-1.0,0.0)
   f=ishort*df
-! ### Test was short.gt.3.0 ###
-  if(f.ge.fa .and. f.le.fb .and. nsync.eq.0 .and.         &
-       short.gt.6.0) dfx=ishort*df-f0
+  if(f.ge.fa .and. f.le.fb .and. isync.eq.0 .and. short.gt.6.0) then
+     dfx=ishort*df-f0
+     ndec=1
+  endif
 
   return
 end subroutine synciscat

@@ -1,5 +1,7 @@
 subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
-          nxa,nxb,NSyncOK,ccfblue,ccfred,ps0)
+          NSyncOK,ccfblue,ccfred,ps0)
+
+! Decode in ISCAT mode
 
   real dat(jz)                !Raw audio data
   integer DFTolerance
@@ -11,48 +13,36 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
   logical dofft
 
   NsyncOK=0
-  nfft=1024                   !Do FFTs of twice the symbol length
-  nstep=128                   !Step by 1/4 symbols
-  df=12000.0/nfft
   nadd=1
   decoded=' '
+  ndec=0
   dofft=.true.
 
 ! Try a range of starting points, stepping by half the message length
   nn=512*(63+10+2)                         !Message length in samples
   do istart=1,jz-nn,nn/2
      lenz=jz/nn
-! Try a range of integer number of message repetitions, starting with largest
-     do len=lenz,2,-1
-        jza=len*nn
-        if(jza.gt.jz-istart) go to 90
+! Try a range of integral numbers of message repetitions, starting with largest
+     do len=lenz,1,-1
+        jza=min(jz-istart,nint(len+0.75)*nn)
         isbest=1
         i0=istart
         len0=len
-        if(nxb.gt.0) then
-           i0=max(nint(jz*nxa/500.0),1)
-           jza=min(nint(jz*(nxb-nxa)/500.0),jz)
-           len0=jza/nn
-           if(len0.lt.1) go to 90
-        endif
 
-! Try to establish sync or find a shorthand message
+! Establish sync or find a shorthand message
         call synciscat(dat(i0),jza,i0,dofft,DFTolerance,NFreeze,MouseDF,   &
-             dtx,dfx,snrx,nsync,isbest,ccfblue,ccfred,s2,ps0,nsteps,       &
-             short,kshort)
+             dtx,dfx,snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,kshort)
 
         nsnr=nint(snrx)
-        if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
-        nsnrlim=-32
         jdf=nint(dfx)
         cf=' '
         decoded=' '
-        if(nsync.ge.MinSigdB) then
+        if(isync.ge.MinSigdB) then
            call extract(s2,nadd,isbest,ncount,decoded,ndec)
            cf='*'
         endif
 
-        if(nsync.eq.0 .and. short.gt.6.0) then
+        if(isync.eq.0 .and. short.gt.6.0) then
            if(kshort.eq.1) decoded='RO'
            if(kshort.eq.2) decoded='RRR'
            if(kshort.eq.3) decoded='73'
@@ -62,22 +52,16 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 
         call cs_lock('iscat')
         t1=i0/12000.0
-!        t2=t1+jza/12000.0
-!        write(*,1000) t1,t2,len0,nsync,short,kshort
-!1000    format(2f6.1,i4,i8,f8.1,i5)
-        write(11,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded,ndec,t1,len0
+        write(11,1010) cfile6,isync,nsnr,jdf,isbest,cf,decoded,ndec,t1,len0
         if(decoded.ne.'                      ') then
-           write(21,1010) cfile6,nsync,nsnr,jdf,isbest,cf,decoded,ndec,t1,len0
+           write(21,1010) cfile6,isync,nsnr,jdf,isbest,cf,decoded,ndec,t1,len0
 1010       format(a6,i4,i5,i5,i3,a1,3x,a22,10x,i1,f6.1,i4)
         endif
         call cs_unlock
         if(decoded.ne.'                      ') go to 999
-        if(nxb.gt.0) go to 999
         if(i0.ne.1 .or. jza.ne.jz) rewind 11
-90      continue
      enddo
   enddo
 
 999 return
-  if(nxb.gt.0) nxb=nint(nsteps*128*500.0/jz + nxa)
 end subroutine iscat

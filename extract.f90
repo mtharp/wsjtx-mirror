@@ -11,13 +11,12 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
   data nsec1/0/
   save
 
-  cmode='JT64'                             !### test only ###
+  cmode='JT64'
   nfail=0
-  ndec=0
 
 1 call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow,nhigh)
   if(ntest.lt.50 .or. nlow.gt.20) then
-     ncount=-999                         !Flag bad data
+     ncount=-999                         !Bad data, don't attempt decoding
      go to 900
   endif
 
@@ -46,7 +45,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
      call packbits(dbits,3,32,iu)
      call srcdec(cmode,nbit,iu,msg)
      decoded=msg(1:22)
-     ndec=1
+     ndec=2
      go to 900
   endif
 
@@ -89,7 +88,7 @@ subroutine extract(s3,nadd,isbest,ncount,decoded,ndec)
         call packbits(dbits,3,32,iu)
         call srcdec(cmode,nbit,iu,msg)
         decoded=msg(1:22)
-        ndec=2
+        ndec=3
         go to 20
      endif
   elseif(iret.eq.-1) then
