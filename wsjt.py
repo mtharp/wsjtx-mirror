@@ -628,10 +628,6 @@ def ModeISCAT(event=NONE):
         Audio.gcom2.mousedf=0
         GenStdMsgs()
         erase()
-        
-#------------------------------------------------------ ModeEcho
-def ModeEcho():
-    pass
 
 #------------------------------------------------------ ModeJT8
 def ModeJT8():
@@ -643,8 +639,10 @@ def ModeJT8():
 #------------------------------------------------------ ModeEcho
 def ModeEcho(event=NONE):
     mode.set("Echo")
-    stub()
-    
+    if lauto: toggleauto()
+    tx1.delete(0,99)
+    tx1.insert(0,"ECHO")
+
 #------------------------------------------------------ msgpos
 def msgpos():
     g=root_geom[root_geom.index("+"):]
@@ -669,7 +667,7 @@ these operating modes:
   2. ISCAT - ionospheric scatter on 50 MHz
   3. JTMS  - fast mode for meteor scatter
   4. JT8   - for HF
-  5. ECHO  - EME Echo testing
+  5. Echo  - EME Echo testing
 
 Copyright (c) 2001-2009 by Joseph H. Taylor, Jr., K1JT, with
 contributions from additional authors.  WSJT is Open Source 
@@ -948,7 +946,7 @@ def toggleauto(event=NONE):
     global lauto
     lauto=1-lauto
     Audio.gcom2.lauto=lauto
-    if lauto:
+    if lauto and mode.get()!='Echo':
         monitor()
     else:
         Audio.gcom1.txok=0
@@ -1370,7 +1368,7 @@ def update():
         g.mode=mode.get()
         t='Set ' + g.mode + ' defaults'
         options.g2.configure(tag_text=t)
-        if first: GenStdMsgs()
+        if first and mode.get()!='Echo' : GenStdMsgs()
         first=0
 
     samfac_in=Audio.gcom1.mfsample/120000.0
@@ -1644,8 +1642,7 @@ else:
     modemenu.add_radiobutton(label = 'JT64A', variable=mode, command = ModeJT64A,accelerator='F8')
 
 modemenu.add_radiobutton(label = 'JT8', variable=mode, command = ModeJT8)
-modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho,
-                         state=DISABLED)
+modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho)
 
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Mode", menu=modemenu)
@@ -2057,6 +2054,8 @@ try:
                 ModeJT64A()
             elif value[:3]=='JT8':
                 ModeJT8()
+            elif value[:4]=='Echo':
+                ModeEcho()
         elif key == 'MyCall': options.MyCall.set(value)
         elif key == 'MyGrid': options.MyGrid.set(value)
         elif key == 'HisCall':
