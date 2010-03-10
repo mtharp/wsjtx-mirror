@@ -126,7 +126,6 @@ subroutine fivehz
      if(n3.eq.4 .and. s6.ge.t2a+techo) then
         t2az=t2a
         f1z=f1
-        t3b=s6
         ibuf_echo1=ibuf
         t5a=s6
         n3=5
@@ -135,7 +134,7 @@ subroutine fivehz
         go to 10
      endif
 
-     if(n3.eq.5 .and. s6.gt.t3b+2.1) then
+     if(n3.eq.5 .and. s6.gt.t5a+2.1) then
         ibuf_echo2=ibuf
         echodone=.true.
         t6a=s6
