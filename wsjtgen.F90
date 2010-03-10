@@ -104,6 +104,10 @@ subroutine wsjtgen
      call geniscat(msg,iwave,nwave,sendingsh,nbit,msgsent)
   else if(mode(1:3).eq.'JT8') then
      call genjt8(msg,iwave,nwave,nbit,msgsent)
+  else if(mode(1:4).eq.'Echo') then
+     dither=500.0
+     call echogen(dither,iwave,nwave,f1)
+     goto 999
   else 
      print*,'Unknown Tx mode requested.'
      stop 'Unknown Tx mode requested.'
@@ -128,16 +132,6 @@ subroutine wsjtgen
      nwave=k
   endif
 
-  goto 900
-
-  if(mode(1:4).eq.'Echo') then
-!  We're in Echo mode.
-!     dither=AmpA
-!     call echogen(dither,wavefile,nbytes,f1)
-!     AmpB=f1
-     goto 900
-  endif
-  
 900 sending=msgsent
   do i=NMSGMAX,1,-1
      if(sending(i:i).ne.' '.and. ichar(sending(i:i)).ne.0) go to 910

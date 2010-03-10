@@ -91,7 +91,7 @@ subroutine fivehz
      if(s6.lt.s6z) then
         TxOK=0                              !Lower TxOK
         i1=ptt(nport,pttport,1,iptt)        !Raise PTT
-!       call genecho()                      !Generate the waveform
+        call wsjtgen                        !Generate the waveform
         t1a=s6
         n3=1
         write(*,3001) n3,s6,0.0,' Raise PTT'

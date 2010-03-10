@@ -1427,8 +1427,8 @@ def update():
         nmsg=int(Audio.gcom2.nmsg)
         t=g.ftnstr(Audio.gcom2.sending)
         if mode.get()=='Echo':
-            t='ECHO'
-            nmsg=4
+            t='ECHO TEST'
+            nmsg=9
             Audio.gcom2.ntxnow=0
         t="Txing:  "+t[:nmsg]
         bgcolor='yellow'
