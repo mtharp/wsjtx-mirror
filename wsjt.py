@@ -639,9 +639,10 @@ def ModeJT8():
 #------------------------------------------------------ ModeEcho
 def ModeEcho(event=NONE):
     mode.set("Echo")
+    ModeJT64()
     if lauto: toggleauto()
-    tx1.delete(0,99)
-    tx1.insert(0,"ECHO")
+#    tx1.delete(0,99)
+#    tx1.insert(0,"ECHO")
 
 #------------------------------------------------------ msgpos
 def msgpos():
@@ -1305,7 +1306,7 @@ def update():
                 g.ndop=g.ndop00
                 g.dfdt=g.dfdt0
 
-        if mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
+        if mode.get()[:4]=='JT64' or mode.get()=='JT8' or mode.get()=='Echo':
             graph2.delete(ALL)
             graph2.create_text(80,13,anchor=CENTER,text="Moon",font=g2font)
             graph2.create_text(13,37,anchor=W, text="Az: %6.2f" % g.AzMoon,font=g2font)
@@ -1425,6 +1426,10 @@ def update():
     if Audio.gcom1.transmitting:
         nmsg=int(Audio.gcom2.nmsg)
         t=g.ftnstr(Audio.gcom2.sending)
+        if mode.get()=='Echo':
+            t='ECHO'
+            nmsg=4
+            Audio.gcom2.ntxnow=0
         t="Txing:  "+t[:nmsg]
         bgcolor='yellow'
         if Audio.gcom2.sendingsh==1:  bgcolor='#66FFFF'    #Shorthand (lt blue)
@@ -1436,7 +1441,7 @@ def update():
         elif Audio.gcom2.ntxnow==3: tx3.configure(bg=bgcolor)
         elif Audio.gcom2.ntxnow==4: tx4.configure(bg=bgcolor)
         elif Audio.gcom2.ntxnow==5: tx5.configure(bg=bgcolor)
-        else: tx6.configure(bg=bgcolor)
+        elif Audio.gcom2.ntxnow==6: tx6.configure(bg=bgcolor)
     else:
         bgcolor='green'
         t='Receiving'
