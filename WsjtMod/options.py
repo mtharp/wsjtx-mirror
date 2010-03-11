@@ -25,6 +25,7 @@ nb.pack(padx=5,pady=5,fill=BOTH,expand=1)
 
 p1=nb.add("Station parameters")
 p2=nb.add("Message templates")
+p3=nb.add("EME Echo Mode")
 
 MyCall=StringVar()
 MyGrid=StringVar()
@@ -37,6 +38,11 @@ PttPort=StringVar()
 g.ndefault=1
 ndevin=IntVar()
 ndevout=IntVar()
+ntc=IntVar()
+necho=IntVar()
+fRIT=IntVar()
+dither=IntVar()
+dlatency=DoubleVar()
 DevinName=StringVar()
 DevoutName=StringVar()
 samfacin=DoubleVar()
@@ -220,6 +226,22 @@ tx6=Pmw.EntryField(p2,labelpos=W,label_text='Tx 6:',
 messages=(tx1,tx2,tx3,tx4,tx5,tx6)
 for m in messages:
     m.pack(fill=X,expand=1,padx=10,pady=2)
+
+echo_ntc=Pmw.EntryField(p3,labelpos=W,label_text='Averaging time (m):',
+        value='1',entry_textvariable=ntc,entry_width=6)
+echo_necho=Pmw.EntryField(p3,labelpos=W,label_text='Echo waveform (0 or 1):',
+        value='0',entry_textvariable=necho,entry_width=6)
+echo_fRIT=Pmw.EntryField(p3,labelpos=W,label_text='RIT setting (Hz):',
+        value='0',entry_textvariable=fRIT,entry_width=6)
+echo_dither=Pmw.EntryField(p3,labelpos=W,label_text='Dither range (Hz):',
+        value='300',entry_textvariable=dither,entry_width=6)
+echo_dlatency=Pmw.EntryField(p3,labelpos=W,label_text='Latency correction (s):',
+        value='0.0',entry_textvariable=dlatency,entry_width=6)
+
+widgets = (echo_ntc,echo_necho,echo_fRIT,echo_dither,echo_dlatency)
+for widget in widgets:
+    widget.pack(fill=X,expand=1,padx=10,pady=2)
+Pmw.alignlabels(widgets)
 
 nb.selectpage(0)
 def4()

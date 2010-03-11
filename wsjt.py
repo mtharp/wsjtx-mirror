@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#---------------------------------------------------------------------- WSJT8
+#----------------------------------------------------------------------- WSJT8
 # $Date$ $Revision$
 #
 from Tkinter import *
@@ -1538,6 +1538,14 @@ def update():
         Audio.gcom2.nport=0
 
     Audio.gcom2.pttport=(options.PttPort.get() + (' '*80))[:80]
+    try:
+        Audio.gcom2.ntc=options.ntc.get()
+        Audio.gcom2.necho=options.necho.get()
+        Audio.gcom2.nfrit=options.fRIT.get()
+        Audio.gcom2.ndither=options.dither.get()
+        Audio.gcom2.dlatency=options.dlatency.get()
+    except:
+        pass
 
     if altmsg: tx6alt=tx6.get()    
 # Queue up the next update

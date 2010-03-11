@@ -1,9 +1,9 @@
 subroutine fivehz
 
 !  Called at interrupt level from the PortAudio callback routine.
-!  For nspb=2048 the callback rate is nfsample/nspb = 5.38 Hz.
+!  For nspb=2048 the callback rate is nfsample/nspb = 5.86 Hz.
 !  Thus, we should be able to control the timing of T/R sequence events
-!  here to within about 0.2 s.
+!  here to within about 0.17 s.
 
 !  Do not do anything very time consuming in this routine!!
 !  Disk I/O is a bad idea.  Writing to stdout (for diagnostic purposes)
@@ -18,7 +18,7 @@ subroutine fivehz
 
   parameter (NTRING=64)
   real*8 tt1(0:NTRING-1)
-  logical first,txtime,filled,echodone
+  logical first,txtime,filled
   integer ptt
   integer TxOKz
   real*8 fs,fsample,tt,u
@@ -45,7 +45,6 @@ subroutine fivehz
      fsample=12000.d0
      mfsample=120000
      filled=.false.
-     echodone=.false.
      n3=0
      techo=2.5
   endif
@@ -79,13 +78,6 @@ subroutine fivehz
   if(mode(1:4).eq.'Echo') then
      s6=mod(tsec,6.d0)
      if(lauto.eq.0) go to 10
-! Delay first start so we don't start somewhere in mid-segment
-     if(.not.echodone) then
-        if(s6.lt.5.4) go to 10
-!       call procecho()
-        echodone=.true.
-        go to 10
-     endif
 
 ! When s6 has wrapped back to zero, start a new cycle
      if(s6.lt.s6z) then
@@ -94,7 +86,7 @@ subroutine fivehz
         call wsjtgen                        !Generate the waveform
         t1a=s6
         n3=1
-        write(*,3001) n3,s6,0.0,' Raise PTT'
+        if(ndebug.gt.0) write(*,3001) n3,s6,0.0,' Raise PTT'
 3001    format(i1,2f7.2,10x,a)
         go to 10
      endif
@@ -103,7 +95,7 @@ subroutine fivehz
         TxOK=1
         t2a=s6                              !Save start time of Tx audio
         n3=2
-        write(*,3001) n3,s6,s6-t1a,' Start Tx audio'
+        if(ndebug.gt.0) write(*,3001) n3,s6,s6-t1a,' Start Tx audio'
         go to 10
      endif
 
@@ -111,7 +103,7 @@ subroutine fivehz
         TxOK=0                              !Stop Tx audio
         t3a=s6
         n3=3
-        write(*,3001) n3,s6,s6-t2a,' Stop Tx audio'
+        if(ndebug.gt.0) write(*,3001) n3,s6,s6-t2a,' Stop Tx audio'
         go to 10
      endif
 
@@ -119,28 +111,27 @@ subroutine fivehz
         i1=ptt(nport,pttport,0,iptt)        !Lower PTT
         t4a=s6
         n3=4
-        write(*,3001) n3,s6,s6-t3a,' Lower PTT'
+        if(ndebug.gt.0) write(*,3001) n3,s6,s6-t3a,' Lower PTT'
         go to 10
      endif
 
      if(n3.eq.4 .and. s6.ge.t2a+techo) then
         t2az=t2a
         f1z=f1
-        ibuf_echo1=ibuf
+        ibuf0=ibuf
         t5a=s6
         n3=5
-        write(*,3002) n3,s6,s6-t4a,ibuf_echo1,' Start Rx'
+        if(ndebug.gt.0) write(*,3002) n3,s6,s6-t4a,ibuf0,' Start Rx'
 3002    format(i1,2f7.2,i8,2x,a)
         go to 10
      endif
 
      if(n3.eq.5 .and. s6.gt.t5a+2.1) then
-        ibuf_echo2=ibuf
-        echodone=.true.
+        ndecoding=1
         t6a=s6
         n3=6
-        write(*,3002) n3,s6,s6-t5a,ibuf_echo2,' Stop Rx'
-        write(*,*)
+        if(ndebug.gt.0) write(*,3002) n3,s6,s6-t5a,ibuf,' Stop Rx'
+        if(ndebug.gt.0) write(*,*)
         go to 10
      endif
 

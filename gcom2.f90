@@ -7,6 +7,7 @@ real ccf               !CCF in time (blue curve)                Decoder
 real green             !Data for green line                     GUI
 integer ngreen         !Length of green                         GUI
 real dgain             !Digital audio gain setting              GUI
+real dlatency          !Differential Tx/Rx latency              GUI
 integer iyr            !UTC from python                         GUI
 integer imo            !UTC from python                         GUI
 integer ida            !UTC from python                         GUI
@@ -15,6 +16,10 @@ integer ndecoding0     !Status on previous decode            GUI,Decoder
 integer mousebutton    !Which button was clicked?               GUI
 integer nhighpri       !Run at "Above Normal" priority?         GUI
 integer ndecdone       !Is decoder finished?                 GUI,Decoder
+integer ntc            !Time constant for echo averaging (m)    GUI
+integer necho          !0 for CW, 1 for 27x27 Costas            GUI
+integer nfrit          !RIT setting for Echo mode               GUI
+integer ndither        !Dither for Echo mode (Hz)               GUI
 integer npingtime      !Time in file of mouse-selected ping  GUI,Decoder
 integer ierr           !(why is this here?)
 integer lauto          !Are we in Auto mode?                    GUI
@@ -91,9 +96,10 @@ character*80 pttport
 
 parameter (ND2MAX=60*12000)
 common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
-     green(500),ngreen,dgain,iyr,imo,ida,                             &
+     green(500),ngreen,dgain,dlatency,iyr,imo,ida,                    &
      ndecoding,ndecoding0,mousebutton,nhighpri,                       &
-     ndecdone,npingtime,ierr,lauto,mantx,nrestart,ntr,nmsg,nbitsent,  &
+     ndecdone,ntc,necho,nfrit,ndither,npingtime,ierr,lauto,mantx,     &
+     nrestart,ntr,nmsg,nbitsent,                                      &
      nsave,dftolerance,LDecoded,rxdone,monitoring,                    &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,ndebug,nport,mousedf,nsked,                                &

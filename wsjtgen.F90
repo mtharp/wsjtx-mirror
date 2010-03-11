@@ -31,6 +31,14 @@ subroutine wsjtgen
 
 ! Perhaps the critical sections should be made shorter?
   call cs_lock('wsjtgen')
+
+  if(mode(1:4).eq.'Echo') then
+     print*,ntc,necho,nfrit,ndither,dlatency
+     dither=ndither
+     call echogen(necho,dither,iwave,nwave,f1)
+     goto 999
+  endif
+
   fsample=12000.d0
   dt=1.d0/fsample
   lcwid=.false.
@@ -104,10 +112,6 @@ subroutine wsjtgen
      call geniscat(msg,iwave,nwave,sendingsh,nbit,msgsent)
   else if(mode(1:3).eq.'JT8') then
      call genjt8(msg,iwave,nwave,nbit,msgsent)
-  else if(mode(1:4).eq.'Echo') then
-     dither=500.0
-     call echogen(dither,iwave,nwave,f1)
-     goto 999
   else 
      print*,'Unknown Tx mode requested.'
      stop 'Unknown Tx mode requested.'

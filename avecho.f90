@@ -26,10 +26,6 @@ subroutine avecho(d,jzz,t3a,t3b,f0,f1,fRIT,NSaveCum,AppDir,    &
   common/echo/xdop(2),techo,ElMoon,mjd
 
   jz=min(jzz,32768)
-!  avecho=' '
-
-!2 call i1tor4(d,jz,data)    !Convert byte data to real
-
   dt3=t3b-t3a
 
   if(nsum.eq.0) then
