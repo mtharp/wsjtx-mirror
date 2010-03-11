@@ -26,6 +26,13 @@ subroutine decode1(iarg)
 
 10 ltrace=ndebug
   ltrace=0
+
+  if(mode(1:4).eq.'Echo' .and. ndecoding.eq.1) then
+     call avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,fecho,nsumecho)
+     ndecoding=0
+     ndecdone=1
+  endif
+
   if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
      if(rxdone) then
         call savedata

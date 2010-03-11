@@ -33,9 +33,8 @@ subroutine wsjtgen
   call cs_lock('wsjtgen')
 
   if(mode(1:4).eq.'Echo') then
-     print*,ntc,necho,nfrit,ndither,dlatency
      dither=ndither
-     call echogen(necho,dither,iwave,nwave,f1)
+     call echogen(necho,dither,iwave,nwave,fecho)
      goto 999
   endif
 

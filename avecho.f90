@@ -1,23 +1,14 @@
-subroutine avecho(d,jzz,t3a,t3b,f0,f1,fRIT,NSaveCum,AppDir,    &
-     s1,s2,nsum,doppler,techo2,measure,ntc)
+subroutine avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,f1,nsum)
 
-!  character*(*) avecho  !Interface for passing string to VB
-  integer*1 d(jzz)   !Raw audio data
-  real t3a          !Time that TX audio started (s)
-  real t3b          !Time that RX recording started (s)
-  real f0           !Nominal TX frequency (MHz)
-  real f1           !Frequency of audio tone (Hz)
-  real fRIT         !RX offset from TX dial frequency (Hz)
+  parameter (NBSIZE=1024*2048)
+  integer*2 y1(NBSIZE)                   !Buffer for Rx data
+  real d(28672)                          !Real audio data
   real s1(600)      !Avg spectrum relative to initial Doppler echo freq
   real s2(600)      !Avg spectrum with Dither and changing Doppler removed
   real tmp(600)
   integer nsum      !Number of integrations
-
-  character AppDir*80 !Installation directory for WSJT
-  character fcum*99
   real dop0         !Doppler shift for initial integration (Hz)
   real doppler      !Doppler shift for current integration (Hz)
-
   real data(32768)
   real s(4096)
   real x(32770)
@@ -25,34 +16,39 @@ subroutine avecho(d,jzz,t3a,t3b,f0,f1,fRIT,NSaveCum,AppDir,    &
   equivalence (x,c)
   common/echo/xdop(2),techo,ElMoon,mjd
 
-  jz=min(jzz,32768)
-  dt3=t3b-t3a
+  n=0
+  do j=0,13
+     k=j*2048
+     do i=1,2048
+        k=k+1
+        n=n+1
+        d(n)=y1(k)
+     enddo
+  enddo
 
   if(nsum.eq.0) then
      dop0=2.0*xdop(1)       !Remember the initial Doppler
-     call zero(s1,600)
-     call zero(s2,600)
+     s1=0.
+     s1=0.
   endif
 
   doppler=2.0*xdop(1)
-  dt=1.0/11025.0
-  df=2.0*11025.0/32768.0
-  istart=(techo - (t3b-t3a))/dt
-  if(istart.lt.1) istart=1
-  if(istart.gt.jz) istart=jz
-  nz=min(22050,jz-istart)
-  call move(data(istart),x,nz)
-  call zero(x(nz+1),32768-nz)
+  dt=1.0/12000.0
+  df=2*12000.0/32768.0
+  istart=1
+  nz=14*2048 + 1 - istart
+  x(1:24030)=d(istart:istart+24029)
+  x(24031:)=0.0
   call xfft(x,32768)
 
   fac=(1.0/32768.0)**2
   do i=1,4096                          !Compress spectrum by factor of 2
      j=2*i
-     s(i)=real(c(j-1))**2 + imag(c(j-1))**2  + real(c(j))**2 + imag(c(j))**2
+     s(i)=real(c(j-1))**2 + aimag(c(j-1))**2  + real(c(j))**2 + aimag(c(j))**2
      s(i)=fac*s(i)
   enddo
 
-  fnominal=1500           !Nominal audio frequency w/o doppler or dither
+  fnominal=1500.0           !Nominal audio frequency w/o doppler or dither
   ia=nint((fnominal+dop0-fRIT)/df)
   ib=nint((f1+doppler-fRIT)/df)
   if(ia.lt.300 .or. ib.lt.300) goto 900
@@ -115,7 +111,9 @@ subroutine avecho(d,jzz,t3a,t3b,f0,f1,fRIT,NSaveCum,AppDir,    &
   if(NQual.lt.0)  NQual=0
   if(NQual.gt.10) NQual=10
 
+  rewind 11
   write(*,1010) nsum,sigdB,echosig,echodop,width,NQual
+  write(11,1010) nsum,sigdB,echosig,echodop,width,NQual
 1010 format(i4,f6.1,f7.1,f8.1,f6.1,i4)
 
 900 techo2=techo

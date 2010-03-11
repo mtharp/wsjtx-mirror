@@ -33,6 +33,7 @@ subroutine ftn_init
   call cs_lock('ftn_init')
   i=ptt(nport,pttport,0,iptt)                       !Clear the PTT line
   addpfx='    '
+  nsumecho=0
 
   do i=80,1,-1
      if(AppDir(i:i).ne.' ') goto 1
