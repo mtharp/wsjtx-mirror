@@ -15,6 +15,7 @@ subroutine decode
 
   f0b=f0a
   if(ncal.eq.2) then
+! Process a "Measure an audio frequency" request
      fac=1.e-6
      do i=1,65536
         x(i)=fac*iwave(i)
@@ -35,6 +36,39 @@ subroutine decode
      ncal=0
      ndecoding=0
      call cs_unlock
+     go to 900
+  else if(ncal.eq.4) then
+! Process a Frequency Measuring Test sequence
+     fac=1.e-6
+     nrpt=nrecsec*12000/65536
+     k=0
+     do irpt=1,nrpt
+        do i=1,65536
+           k=k+1
+           x(i)=fac*iwave(k)
+        enddo
+        call xfft(x,65536)
+        df=12000.d0/65536.d0
+        smax=0.
+        do i=1,16384
+           s=real(c(i))**2 + aimag(c(i))**2
+           if(s.gt.smax) then
+              smax=s
+              fpeak=i*df
+           endif
+        enddo
+        call cs_lock('decode')
+        thisfile=utctime(1:4)//'00.wav'
+        write(*,1004) utctime(1:2)//':'//utctime(3:4),fpeak,nkhz,noffset
+        write(19,1004) utctime(1:2)//':'//utctime(3:4),fpeak,nkhs,noffset
+1004    format(a5,f12.2,2i8)
+        call cs_unlock
+        if(irpt.eq.1) savefile=appdir(:nappdir)//'/save/'//thisfile
+     enddo
+     npts=nrecsec*12000
+     call wfile5(jwave,npts,12000,savefile)      !Does its own cs_lock
+     ncal=0
+     ndecoding=0
      go to 900
   else
      minsync=1

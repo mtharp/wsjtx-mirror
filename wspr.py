@@ -88,7 +88,6 @@ npal.set(2)
 nparam=0
 nsave=IntVar()
 nscroll=0
-nsec0=0
 nspeed0=IntVar()
 ntr0=0
 ntxfirst=IntVar()
@@ -711,7 +710,7 @@ def put_params(param3=NONE):
 
 #------------------------------------------------------ update
 def update():
-    global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
+    global root_geom,isec0,im,pim,ndbm0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm
@@ -719,8 +718,7 @@ def update():
     tsec=time.time()
     utc=time.gmtime(tsec)
     nsec=int(tsec)
-    nsec0=nsec
-    ns120=nsec % 120
+        
     try:
         f0.set(float(sf0.get()))
         ftx.set(float(sftx.get()))
@@ -796,6 +794,49 @@ def update():
             t=''
         if t=='': r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
+
+        if advanced.nfmt.get()==1 and w.acom1.ncal==0 and utc[5]==0:
+            ns=nsec % 86400
+            iz=len(advanced.nutc)-1
+            for i in range(iz):
+                ns1=advanced.nutc[i]
+                ns2=advanced.nutc[i+1]-60
+                if advanced.nutc[i+1] < advanced.nutc[i]: ns2=ns2+86400
+                if ns >= ns1 and ns < ns2:
+                    nrecsec=ns2-ns+58
+                    if nrecsec>54: nrecsec=54
+                    w.acom1.nrecsec=nrecsec
+                    noffset=500*(utc[4]%4) + 500
+                    if options.cat_enable.get():
+                        w.acom1.noffset=noffset
+                        w.acom1.nkhz=nkhz[i]
+                        nHz=1000.0*advanced.nkhz[i]-noffset
+                        cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
+                             (options.rignum.get(),options.CatPort.get(), \
+                              options.serial_rate.get(),options.databits.get(), \
+                              options.stopbits.get(),options.serial_handshake.get(), nHz)
+                        ierr=os.system(cmd)
+                        if ierr==0:
+                            bandmap=[]
+                            bm={}
+                            text1.configure(state=NORMAL)
+                            text1.delete('1.0',END)
+                            text1.configure(state=DISABLED)
+                            iband0=iband.get()
+                        else:
+                            print 'Error attempting to set rig frequency.\a'
+                            print cmd + '\a'
+                            iband.set(iband0)
+                            f0.set(freq0[iband.get()])
+                            t="%.6f" % (f0.get(),)
+                            sf0.set(t)
+                            ftx.set(freqtx[iband.get()])
+                            t="%.6f" % (ftx.get(),)
+                            sftx.set(t)
+                    w.acom1.ncal=3
+                    t=time.strftime('%H:%M:%S',utc)
+                    print 'Starting FMT sequence at ',t,advanced.nkhz[i],noffset
+                    
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)

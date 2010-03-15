@@ -26,15 +26,40 @@ idint=IntVar()
 igrid6=IntVar()
 encal=IntVar()
 fset=IntVar()
+nfmt=IntVar()
 Acal=DoubleVar()
 Bcal=DoubleVar()
 fset.set(0)
+nfmt.set(0)
+nutc=[]
+nkhz=[]
 
 #------------------------------------------------------ freqcal
 def freqcal(event=NONE):
     if w.acom1.ncal==0:
         bmeas.configure(bg='green')
         w.acom1.ncal=1
+
+#------------------------------------------------------ fmt
+def fmt(event=NONE):
+    global nutc,nkhz
+    if w.acom1.ncal==0:
+        bfmt.configure(bg='green')
+        try:
+            f=open('fmt.txt','r')
+            s=f.readlines()
+            f.close
+            iz=len(s)
+            for i in range(iz):
+                n,m,fmtcall=s[i].split()
+                nutc.append(3600*int(n[:2]) + 60*int(n[2:]))
+                nkhz.append(int(m))
+            nutc.append(nutc[iz-1]+300)
+            nkhz.append(nkhz[iz-1])
+            nfmt.set(1)
+        except:
+            t='Cannot open fmt.txt, or invalid data in file'
+            result=tkMessageBox.showwarning(message=t)
 
 #-------------------------------------------------------- readab
 def readab(event=NONE):
@@ -100,6 +125,11 @@ breadab.pack(padx=5,pady=5)
 bsetfreq=Button(g1.interior(), text='Update rig frequency',command=setfreq,
              width=26,padx=1,pady=2)
 bsetfreq.pack(padx=5,pady=5)
+
+bfmt=Button(g1.interior(), text='Execute FMT sequence',command=fmt,
+             width=26,padx=1,pady=2)
+bfmt.pack(padx=5,pady=5)
+
 bgrid6=Checkbutton(g1.interior(),text='Force transmission of 6-digit locator',
                    variable=igrid6)
 bgrid6.pack(anchor=W,padx=5,pady=2)
