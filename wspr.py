@@ -800,7 +800,7 @@ def update():
             iz=len(advanced.nutc)-1
             for i in range(iz):
                 ns1=advanced.nutc[i]
-                ns2=advanced.nutc[i+1]-60
+                ns2=advanced.nutc[i+1]-59
                 if advanced.nutc[i+1] < advanced.nutc[i]: ns2=ns2+86400
                 if ns >= ns1 and ns < ns2:
                     nrecsec=ns2-ns+58
@@ -809,7 +809,7 @@ def update():
                     noffset=500*(utc[4]%4) + 500
                     if options.cat_enable.get():
                         w.acom1.noffset=noffset
-                        w.acom1.nkhz=nkhz[i]
+                        w.acom1.nkhz=advanced.nkhz[i]
                         nHz=1000.0*advanced.nkhz[i]-noffset
                         cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                              (options.rignum.get(),options.CatPort.get(), \
@@ -817,12 +817,7 @@ def update():
                               options.stopbits.get(),options.serial_handshake.get(), nHz)
                         ierr=os.system(cmd)
                         if ierr==0:
-                            bandmap=[]
-                            bm={}
-                            text1.configure(state=NORMAL)
-                            text1.delete('1.0',END)
-                            text1.configure(state=DISABLED)
-                            iband0=iband.get()
+                            pass
                         else:
                             print 'Error attempting to set rig frequency.\a'
                             print cmd + '\a'

@@ -1,6 +1,6 @@
 subroutine rx
 
-!  Receive and decode MEPT_JT signals for one 2-minute sequence.
+!  Receive WSPR signals for one 2-minute sequence.
 
 #ifdef CVF
   use dfport
