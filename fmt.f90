@@ -14,35 +14,36 @@ program fmt
   equivalence (x,c)
 
   nargs=iargc()
-  if(nargs.ne.2) then
-     print*,'Usage: fmt <kHz> <offset>'
+  if(nargs.lt.2) then
+     print*,'Usage: fmt <kHz> <offset> <nrpt>'
      go to 999
   endif
   call getarg(1,arg)
   read(arg,*) nkhz
   call getarg(2,arg)
   read(arg,*) noffset
+  nrpt=9999999
+  if(nargs.ge.3) then
+     call getarg(3,arg)
+     read(arg,*) nrpt
+  endif
 
-!  cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
-!          ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
-!          ' -C serial_handshake='//chs//' T 1'
+  cmnd='rigctl -m 214 -r COM1 -s 4800 -C data_bits=8 -C stop_bits=2 -C serial_handshake=Hardware F 3592607'
 
-! Example rigctl command:
-! rigctl -m 1608 -r /dev/ttyUSB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
-!   -C serial_handshake=Hardware T 1
-
-!  iret=system(cmnd)
-!  if(iret.ne.0) then
-!     print*,'Error executing rigctl command to set frequency:'
-!     print*,cmnd
-!     go to 999
-!  endif
+  nHz=1000*nkhz - noffset
+  write(cmnd(92:),*) nHz
+  iret=system(cmnd)
+  if(iret.ne.0) then
+     print*,'Error executing rigctl command to set frequency:'
+     print*,cmnd
+     go to 999
+  endif
 
   open(13,file='fmt.out',status='unknown',position='append')
   call soundinit
   ndevin=0
   npts=NZ1
-  do iter=1,100
+  do iter=1,nrpt
      nsec=time()
      ierr=soundin(ndevin,kwave,4*npts)
      if(ierr.ne.0) then
@@ -83,7 +84,8 @@ program fmt
      nhr=n/3600
      nmin=mod(n/60,60)
      nsec=mod(n,60)
-     write(*,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms
+     smax=100.0*smax/(rms*rms)
+     write(*,1100)  nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms
      write(13,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms
 1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,4f10.2)
      call flush(13)
