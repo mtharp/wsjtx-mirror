@@ -1,6 +1,6 @@
 subroutine rx
 
-!  Receive WSPR signals for one 2-minute sequence.
+!  Receive and decode MEPT_JT signals for one 2-minute sequence.
 
 #ifdef CVF
   use dfport
@@ -13,7 +13,6 @@ subroutine rx
 
   npts=114*12000
   if(ncal.eq.1) npts=65536
-  if(ncal.eq.3) npts=nrecsec*12000
   nsec1=time()
   f0a=f0                                   !Save rx frequency at start
   ierr=soundin(ndevin,kwave,4*npts)
@@ -28,7 +27,6 @@ subroutine rx
   call cs_lock('rx')
   nrxdone=1
   if(ncal.eq.1) ncal=2
-  if(ncal.eq.3) ncal=4
   call cs_unlock
 
   return

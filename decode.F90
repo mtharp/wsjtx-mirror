@@ -5,19 +5,16 @@ subroutine decode
 #ifdef CVF
   use dfport
 #endif
-  parameter (NFFTMAX=128*1024)
-  parameter (NHMAX=NFFTMAX/2)
   character*80 savefile
   integer*2 jwave(114*12000)
   real*8 df,fpeak
-  real x(NFFTMAX)
-  complex c(0:NHMAX)
+  real x(65536)
+  complex c(0:32768)
   equivalence (x,c)
   include 'acom1.f90'
 
   f0b=f0a
   if(ncal.eq.2) then
-! Process a "Measure an audio frequency" request
      fac=1.e-6
      do i=1,65536
         x(i)=fac*iwave(i)
@@ -38,44 +35,6 @@ subroutine decode
      ncal=0
      ndecoding=0
      call cs_unlock
-     go to 900
-  else if(ncal.eq.4) then
-! Process a Frequency Measuring Test sequence
-     fac=1.e-6
-     nfft=1024*128
-     nq=nfft/4
-     nrpt=nrecsec*12000/nfft
-     k=0
-     do irpt=1,nrpt
-        do i=1,nfft
-           k=k+1
-           x(i)=fac*iwave(k)
-        enddo
-        call xfft(x,nfft)
-        df=12000.d0/nfft
-        smax=0.
-        do i=1,nq
-           s=0.25*(real(c(i-1))**2 + aimag(c(i-1))**2) +         &
-                0.5*(real(c(i))**2 + aimag(c(i))**2)   +         &
-                0.25*(real(c(i+1))**2 + aimag(c(i+1))**2)
-           if(s.gt.smax) then
-              smax=s
-              fpeak=i*df
-           endif
-        enddo
-        call cs_lock('decode')
-        thisfile=utctime(1:4)//'00.wav'
-        write(*,1004)  utctime(1:2)//':'//utctime(3:4),nkhz,noffset,fpeak,smax
-        write(19,1004) utctime(1:2)//':'//utctime(3:4),nkhz,noffset,fpeak,smax
-1004    format(a5,2i8,f10.2,f10.1)
-        call flush(19)
-        call cs_unlock
-        if(irpt.eq.1) savefile=appdir(:nappdir)//'/save/'//thisfile
-     enddo
-     npts=nrecsec*12000
-     call wfile5(jwave,npts,12000,savefile)      !Does its own cs_lock
-     ncal=0
-     ndecoding=0
      go to 900
   else
      minsync=1

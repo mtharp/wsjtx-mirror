@@ -56,7 +56,7 @@ subroutine wspr2
      thisfile=outfile
      call cs_unlock
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
-        (nrxnormal.eq.0 .and. (ncal.eq.2 .or. ncal.eq.4)) .or.         &
+        (nrxnormal.eq.0 .and. ncal.eq.2) .or.                          &
         ndiskdat.eq.1) then
         call startdec
      endif
@@ -88,8 +88,8 @@ subroutine wspr2
      call starttx
   endif
 
-  if ((ncal.eq.1 .or. ncal.eq.3) .and. ndevsok.eq.1.and.              &
-       (.not.transmitting) .and. (.not.receiving)) then
+  if (ncal.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
+       (.not.receiving)) then
 ! Execute one receive sequence
      call cs_lock('wspr2')
      receiving=.true.
