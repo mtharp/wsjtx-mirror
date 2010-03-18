@@ -41,6 +41,10 @@ program fmt
   endif
 
   open(13,file='fmt.out',status='unknown',position='append')
+  open(14,file='fmt.spec',status='unknown',position='append')
+  open(15,file='fmt.raw',status='unknown',position='append',    &
+       form='unformatted')
+
   call soundinit
   ndevin=0
   npts=NZ1
