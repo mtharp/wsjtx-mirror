@@ -8,6 +8,7 @@ program fmt
   character arg*12,cmnd*120
   real x(65536)
   complex c(0:32768)
+  real s1(16384)
   real*8 s,sq
   integer time
   integer soundin
@@ -77,7 +78,9 @@ program fmt
            smax=s
            ipk=i
         endif
+        s1(i)=s
      enddo
+
 
      fpeak=ipk*df
      n=mod(nsec,86400)
@@ -88,7 +91,13 @@ program fmt
      write(*,1100)  nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms
      write(13,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms
 1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,4f10.2)
+     write(14,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms
+     do i=1,nq
+        write(14,1102) i*df,s1(i)
+1102    format(2f10.2)
+     enddo
      call flush(13)
+     call flush(14)
   enddo
 
 999 end program fmt
