@@ -96,8 +96,10 @@ program fmt
         write(14,1102) i*df,s1(i)
 1102    format(2f10.2)
      enddo
+     write(15) nhr,nmin,nsec,nkhz,noffset,fpeak,smax,ave,rms,iwave
      call flush(13)
      call flush(14)
+     call flush(15)
   enddo
 
 999 end program fmt
