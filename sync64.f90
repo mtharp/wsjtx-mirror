@@ -136,7 +136,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 
   ave=ss/nss
   do j=-224,224
-     if(ccfred1(j).ne.0.0) ccfred1(j)=0.5*(ccfred1(j)-ave)
+     if(ccfred1(j).ne.0.0) ccfred1(j)=ccfred1(j)-ave
   enddo
 
 ! Once more, using best frequency and best sync pattern:
@@ -168,12 +168,12 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   enddo
   ave=sum/nsum
   do j=-5,35
-     ccfblue(j)=ccfblue(j)-ave
+     ccfblue(j)=18.0*(ccfblue(j)-ave)
   enddo
 
   snrsync=syncbest/ave
   snrx=-31.
-  if(syncbest.gt.1.0) snrx=db(snrsync) - 30.5
+  if(syncbest.gt.1.0) snrx=db(snrsync) - 31.0
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df

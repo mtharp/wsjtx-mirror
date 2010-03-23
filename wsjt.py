@@ -102,7 +102,7 @@ ToRadio0=""
 tx6alt=""
 txsnrdb=99.
 TxFirst=IntVar()
-nxa=0
+a=0
 green=zeros(500,'f')
 im=Image.new('P',(500,120))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
@@ -1145,7 +1145,7 @@ def plot_large():
             graph1.create_line(Audio.gcom2.nxb,105,Audio.gcom2.nxb,115,fill='yellow')
             Audio.gcom2.nxa=0
             Audio.gcom2.nxb=0
-            
+
         if Audio.gcom2.nspecial==0:
             y=[]
             for i in range(446):                #Find ymax for red curve
@@ -1154,6 +1154,9 @@ def plot_large():
             ymax=max(y)
             yfac=90.0
             if ymax>(85.0/yfac): yfac=85.0/ymax
+            if mode.get()[:4]=='JT64':
+                yfac=60.0
+                if ymax>4: yfac=4*yfac/ymax
             xy=[]
             fac=500.0/446.0
             for i in range(446):                #Make xy list for red curve
