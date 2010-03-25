@@ -1,7 +1,7 @@
 Examples showing how the 30-, 48-, and 78-bit messages are used in
 minimal QSOs.  All message formats are available in JT64, ISCAT, and
-JTMS modes.  JT8 uses only 78-bit messages at present, but may be
-expanded to include the shorter ones.
+JTMS modes.  JT8 uses only 78-bit messages at present (but may be
+expanded to include the shorter ones).
 
 Basic QSO with grids                       nbits
 ------------------------------------------------

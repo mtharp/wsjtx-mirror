@@ -3,7 +3,7 @@ modes ISCAT, JTMS, JT64, and JT8 in WSJT8.  At present only the 78-bit
 formats have been implemented in JT8.  Input messages are shown at the
 left, followed by number of bits, the source-encoded data in
 hexadecimal, and the decoded (output) message.  A flag "*" is present 
-if there is any difference between input and output messages.
+if there is any difference between the encoded and decoded messages.
 
 Message                Bits  Source-encoded data   OK? Decoded message
 -------------------------------------------------------------------------------
