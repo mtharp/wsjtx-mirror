@@ -431,65 +431,65 @@ def lookup_gen(event):
     lookup()
     GenStdMsgs()
 
-#-------------------------------------------------------- addtodb
-def addtodb():
-    global hiscall
-    if HisGrid.get()=="":
-        MsgBox("Please enter a valid grid locator.")
-    else:
-        modified=0
-        hiscall=ToRadio.get().upper().strip()
-        hisgrid=HisGrid.get().strip()
-        hc=hiscall
-        NewEntry=hc + "," + hisgrid
-	result=tkMessageBox.askyesno(message="Is this station known to be active on EME?")
-        if result:
-            NewEntry=NewEntry + ",EME,,"
-        else:
-            NewEntry=NewEntry + ",,,"
-        try:
-            f=open(appdir+'/CALL3.TXT','r')
-            s=f.readlines()
-        except:
-            print 'Error opening CALL3.TXT'
-            s=""
-        f.close()
-        hc2=""
-        stmp=[]
-        for i in range(len(s)):
-            hc1=hc2
-            if s[i][:2]=="//":
-                stmp.append(s[i])
-            else:
-                i1=s[i].find(",")
-                hc2=s[i][:i1]
-                if hc>hc1 and hc<hc2:
-                    stmp.append(NewEntry+"\n")
-                    modified=1
-                elif hc==hc2:
-                    t=s[i] + "\n\n is already in CALL3.TXT\nDo you wish to replace this entry?"
-		    result=tkMessageBox.askyesno(message=t)
-                    if result:
-                        i1=s[i].find(",")
-                        i2=s[i].find(",",i1+1)
-                        i3=s[i].find(",",i2+1)
-                        i4=len(NewEntry)
-                        s[i]=NewEntry[:i4-1] + s[i][i3+1:]
-                        modified=1
-                stmp.append(s[i])
-        if hc>hc1 and modified==0:
-            stmp.append(NewEntry+"\n")
-        try:
-            f=open(appdir+'/CALL3.TMP','w')
-            f.writelines(stmp)
-            f.close()
-        except:
-            print 'Error in opening or writing to CALL3.TMP'
-
-        if modified:
-            if os.path.exists("CALL3.OLD"): os.remove("CALL3.OLD")
-            os.rename("CALL3.TXT","CALL3.OLD")
-            os.rename("CALL3.TMP","CALL3.TXT")
+###-------------------------------------------------------- addtodb
+##def addtodb():
+##    global hiscall
+##    if HisGrid.get()=="":
+##        MsgBox("Please enter a valid grid locator.")
+##    else:
+##        modified=0
+##        hiscall=ToRadio.get().upper().strip()
+##        hisgrid=HisGrid.get().strip()
+##        hc=hiscall
+##        NewEntry=hc + "," + hisgrid
+##	result=tkMessageBox.askyesno(message="Is this station known to be active on EME?")
+##        if result:
+##            NewEntry=NewEntry + ",EME,,"
+##        else:
+##            NewEntry=NewEntry + ",,,"
+##        try:
+##            f=open(appdir+'/CALL3.TXT','r')
+##            s=f.readlines()
+##        except:
+##            print 'Error opening CALL3.TXT'
+##            s=""
+##        f.close()
+##        hc2=""
+##        stmp=[]
+##        for i in range(len(s)):
+##            hc1=hc2
+##            if s[i][:2]=="//":
+##                stmp.append(s[i])
+##            else:
+##                i1=s[i].find(",")
+##                hc2=s[i][:i1]
+##                if hc>hc1 and hc<hc2:
+##                    stmp.append(NewEntry+"\n")
+##                    modified=1
+##                elif hc==hc2:
+##                    t=s[i] + "\n\n is already in CALL3.TXT\nDo you wish to replace this entry?"
+##		    result=tkMessageBox.askyesno(message=t)
+##                    if result:
+##                        i1=s[i].find(",")
+##                        i2=s[i].find(",",i1+1)
+##                        i3=s[i].find(",",i2+1)
+##                        i4=len(NewEntry)
+##                        s[i]=NewEntry[:i4-1] + s[i][i3+1:]
+##                        modified=1
+##                stmp.append(s[i])
+##        if hc>hc1 and modified==0:
+##            stmp.append(NewEntry+"\n")
+##        try:
+##            f=open(appdir+'/CALL3.TMP','w')
+##            f.writelines(stmp)
+##            f.close()
+##        except:
+##            print 'Error in opening or writing to CALL3.TMP'
+##
+##        if modified:
+##            if os.path.exists("CALL3.OLD"): os.remove("CALL3.OLD")
+##            os.rename("CALL3.TXT","CALL3.OLD")
+##            os.rename("CALL3.TMP","CALL3.TXT")
 
 #-------------------------------------------------------- clrToRadio
 def clrToRadio(event):
@@ -1913,8 +1913,8 @@ labGrid=Label(f5a,text='Grid:', width=9, relief=FLAT)
 labGrid.grid(column=0,row=1)
 HisGrid=Entry(f5a,width=9)
 HisGrid.grid(column=1,row=1,pady=1)
-bAdd=Button(f5a, text='Add',command=addtodb,padx=1,pady=1)
-bAdd.grid(column=2,row=1,sticky='EW',padx=4)
+##bAdd=Button(f5a, text='Add',command=addtodb,padx=1,pady=1)
+##bAdd.grid(column=2,row=1,sticky='EW',padx=4)
 labAz=Label(f5a,text='Az 257  El 15',width=11)
 labAz.grid(column=1,row=2)
 labHotAB=Label(f5a,bg='#FFCCFF',text='HotA: 247')
