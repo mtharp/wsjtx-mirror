@@ -68,7 +68,7 @@ SRCS2F90 = wsjt1.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	short64.f90 flat1.f90 getsnr.f90 ftpeak64.f90 \
 	symsync64.f90 wsjtms.f90 iscat.f90 jt8.f90 ping.f90 \
 	synciscat.f90 syncms.f90 syncjt8.f90 enc416.f90 vit416.f90 \
-	spec_iscat.f90
+	spec_iscat.f90 echogen.f90 avecho.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
@@ -128,6 +128,20 @@ cutil.o: cutil.c
 	$(CC) $(CFLAGS) -c -DSTARNIX=1 cutil.c
 vit416.o: vit416.f90 partab.f90
 	$(FC) -c -O9 vit416.f90
+
+deb: wsjt.py WsjtMod/Audio.so WsjtMod/g.py WsjtMod/__init__.py \
+	WsjtMod/options.py WsjtMod/palettes.py WsjtMod/PmwBlt.py \
+	WsjtMod/PmwColor.py WsjtMod/Pmw.py WsjtMod/smeter.py \
+	WsjtMod/specjt.py WsjtMod/astro.py DEB/DEBIAN/control \
+	wsjtrc 
+
+	cp wsjt.py wsjtrc met2.21 met8.21 kvasd.dat KVASD_g95 TSKY.DAT \
+	wsjt.ico DEB/WSJT8
+
+	cp WSJT0.INI DEB/WSJT8/WSJT.INI
+	cp WsjtMod/Audio.so DEB/WSJT8/WsjtMod
+	cp WsjtMod/*.py DEB/WSJT8/WsjtMod
+	dpkg-deb --build DEB wsjt_ver_rev_i386.deb
 
 .PHONY : clean
 install:	WsjtMod/Audio.so

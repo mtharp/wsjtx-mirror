@@ -263,7 +263,7 @@ int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[],
 		       (void *)&data);  //address of data structure
 
     if(err_open_in) {   // We should have no error here usually
-      printf("Error opening input audio stream:\n");
+      printf("Error A opening input audio stream:\n");
       printf("\tErrortext: %s\n\tNumber: %d\n",Pa_GetErrorText(err_open_in), err_open_in);
 
       err = 1;
@@ -271,7 +271,7 @@ int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[],
       //      printf("Successfully opened audio input.\n");
     }
   } else {
-    printf("Error opening input audio stream.\n");
+    printf("Error B opening input audio stream.\n");
     printf("\tErrortext: %s\n\tNumber: %d\n",Pa_GetErrorText(err_open_in), err_open_in);
 
     err = 1;
