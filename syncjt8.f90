@@ -18,7 +18,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   integer ic8(8)                   !Costas array, 8x8
   data ic8/3,6,2,4,5,0,7,1/
 
-  mousedf=0                        !### tests only ###
+!  mousedf=0                        !### tests only ###
 ! Set up the JT8 sync pattern
   nsync=16 + 4                     !16 sync symbols, 4 to specify msg length
   ndata=124                        !124 data symbols
@@ -136,8 +136,8 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   enddo
 
   snrsync=syncbest/ave - 1.0
-  snrx=-31.
-  if(syncbest.gt.1.0) snrx=db(snrsync) - 27.0
+  snrx=-27.
+  if(snrsync.ge.1.0) snrx=db(snrsync) - 27.0
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagbest - 1.0
   dfx=(ipk-i0)*df

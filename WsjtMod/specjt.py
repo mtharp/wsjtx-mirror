@@ -137,7 +137,7 @@ def tx_volume():
 # Readout of graphical cursor location
 def fdf_change(event):
     if nspeed0.get()<6:
-        g.DFreq=df*(event.x-295.7) + fmid - 1500
+        g.DFreq=df*(event.x-297.5) + fmid - 1500
         if nfr.get()==2: g.DFreq=2*df*(event.x-373.5) + fmid - 1270.5
         g.Freq=g.DFreq+1270.46
         t="Freq: %5d    DF: %5d  (Hz)" % (int(g.Freq),int(g.DFreq))
@@ -153,10 +153,9 @@ def fdf_change(event):
 #---------------------------------------------------- set_freezedf
 def set_freezedf(event):
     if g.mode[:4]=='JT64' or g.mode[:3]=='JT8':
-        n=int(df*(event.x-288.7) + fmid - 1500)
+#        n=int(df*(event.x-288.7) + fmid - 1500) - 20
+        n=int(df*(event.x-291.) + fmid - 1500) - 20
         if nfr.get()==2: n=int(2*df*(event.x-375.5) + fmid - 1270.5)
-#        if n<-600: n=-600
-#        if n>600:  n=600
         if n<-1270: n=-1270
         if n>3800: n=3800
         Audio.gcom2.mousedf=n
@@ -178,7 +177,6 @@ def df_mark():
         if g.mode[4:5]=='B': fstep=2*fstep
         if g.mode[4:5]=='C': fstep=4*fstep
         mdf=Audio.gcom2.mousedf
-
 
 # Mark DF=0 (green) and shorthand tones (red)
         if(frange==2000):

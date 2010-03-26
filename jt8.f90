@@ -1,5 +1,5 @@
 subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
-             MouseDF2,NSyncOK,ccfblue,ccfred)
+             MouseDF,NSyncOK,ccfblue,ccfred)
 
 ! Orchestrates the process of decoding JT8 messages, using data that
 ! have been 2x downsampled.  The search for shorthand messages has
@@ -42,7 +42,7 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   call syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
        snrsync,ccfblue,ccfred,s3)
   isbest=3
-  nsync=nint(snrsync)
+  nsync=snrsync-1.5
 
   if(nsync.ge.minsigdb) then
 ! We have achieved sync.  Remove gray code and compute single-bit soft symbols.
@@ -73,27 +73,30 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
 
      nbit=78
      call vit416(gsym1,nbit,mettab,ddec,metric)
-     iz=(nbit+7)/8
-     ddec(iz+1:)=0
-     n1=ddec(1)
-     n2=ddec(2)
-     n3=ddec(3)
-     n4=ddec(4)
-     iu(1)=ishft(iand(n1,255),24) + ishft(iand(n2,255),16) +         &
-           ishft(iand(n3,255),8) + iand(n4,255)
-     n1=ddec(5)
-     n2=ddec(6)
-     n3=ddec(7)
-     n4=ddec(8)
-     iu(2)=ishft(iand(n1,255),24) + ishft(iand(n2,255),16) +         &
-           ishft(iand(n3,255),8) + iand(n4,255)
-     n1=ddec(9)
-     n2=ddec(10)
-     iu(3)=ishft(iand(n1,255),24) + ishft(iand(n2,255),16)
-
      decoded='                        '
-     cmode='JT8'
-     call srcdec(cmode,nbit,iu,decoded)
+     minmet=200                                 !### TBD ###
+     if(metric.ge.minmet) then
+        iz=(nbit+7)/8
+        ddec(iz+1:)=0
+        n1=ddec(1)
+        n2=ddec(2)
+        n3=ddec(3)
+        n4=ddec(4)
+        iu(1)=ishft(iand(n1,255),24) + ishft(iand(n2,255),16) +         &
+             ishft(iand(n3,255),8) + iand(n4,255)
+        n1=ddec(5)
+        n2=ddec(6)
+        n3=ddec(7)
+        n4=ddec(8)
+        iu(2)=ishft(iand(n1,255),24) + ishft(iand(n2,255),16) +         &
+             ishft(iand(n3,255),8) + iand(n4,255)
+        n1=ddec(9)
+        n2=ddec(10)
+        iu(3)=ishft(iand(n1,255),24) + ishft(iand(n2,255),16)
+
+        cmode='JT8'
+        call srcdec(cmode,nbit,iu,decoded)
+     endif
      nsnr=nint(snrx)
      ndf=nint(dfx)
      csync='*'

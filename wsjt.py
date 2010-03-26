@@ -988,7 +988,7 @@ def dtdf_change(event):
             if mode.get()[:5]=='ISCAT':
                 t="%d" % int(0.25*(12000.0/1024.0)*(event.x-250.0))
             else:
-                t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
+                t="%d" % int(0.5*(idf+1200.0*event.x/500.0-600.0))
             lab6.configure(text=t,bg="red")
         else:
             lab1.configure(text='Time (s)',bg='green')
@@ -1004,7 +1004,8 @@ def mouse_click_g1(event):
     nxa=max(1,event.x)
     if not nopen:
         if mode.get()[:4]=='JT64' or mode.get()[:3]=='JT8':
-            Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*2.4)
+#            Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*2.4)
+            Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*1.2)
         elif mode.get()=='JTMS':
             if Audio.gcom2.ndecoding==0:              #If decoder is busy, ignore
                 Audio.gcom2.nagain=1
@@ -1213,6 +1214,7 @@ def plot_large():
                 y.append(ccf)
             ymax=max(y)
             yfac=2.0
+            if mode.get()=='JT8': yfac=5.0
             if ymax>(55.0/yfac): yfac=55.0/ymax
             xy2=[]
             fac=500.0/(imax-0.4)
