@@ -145,7 +145,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
   pick=.false.
   if(istart.gt.1) pick=.true. !This is a mouse-picked decoding
   if(.not.pick .and. nforce.eq.0 .and.                              &
-       (basevb.lt.-15.0 .or. basevb.gt.20.0)) goto 900
+       (basevb.lt.-15.0 .or. basevb.gt.25.0)) goto 900
 
   if(.not.pick) then
      MouseButton=0
@@ -161,12 +161,12 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
 
   else if(mode(1:5).eq.'ISCAT') then
 ! Iscat mode:
-     call iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
+     jza=min(30*12000,jz)
+     call iscat(dat,jza,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
           NSyncOK,ccf,psavg,ps0)
      s2=0.                                     !Why is this here?
 
   else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
-
      if(mode(1:4).eq.'JT64') then
 ! JT64 mode:
         mode64=1
