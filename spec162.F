@@ -23,8 +23,9 @@
       call zero(savg,256)
       istep=nfft/2
       nsteps=(jz-nfft)/(nadd*istep)
-
       pixmap=appdir(:nappdir)//'/pixmap.dat'
+
+      call cs_lock('spec162')
 #ifdef CVF
       open(16,file=pixmap,form='binary',status='unknown',err=1)
 #else
@@ -35,11 +36,12 @@
  1    call zero(a,NX*NY/2)
 
  2    nmove=nsteps+1
+      call cs_unlock
+
       do j=1,NY                 !Move waterfall left
          do i=1,NX-nmove
             a(i,j)=a(i+nmove,j)
          enddo
-!         a(NX-nmove+1,j)=255
          a(NX-nmove+1,j)=255*ntransmitted
       enddo
       ntransmitted=0
@@ -90,9 +92,11 @@
          enddo
       enddo
 
+      call cs_lock('spec162')
       rewind 16
       write(16) a
       close(16)
+      call cs_unlock
 
       return
       end

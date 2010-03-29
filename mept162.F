@@ -20,9 +20,7 @@ C  Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,nbfo,c2,jz,ps)
 
 C  Compute pixmap.dat
-      call cs_lock('spec162')
       call spec162(c2,jz,appdir,nappdir)
-      call cs_unlock
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,ps,sstf,kz)
@@ -30,8 +28,12 @@ C  Look for sync patterns, get DF and DT
       if(kz.eq.0) go to 900
       if (kz.gt.275 .or. kz.lt.0) then
         call getutc(cdate,ctime,tsec)
+
+        call cs_lock('mept162')
         write(*,1000) ctime,kz
  1000   format('Time ',a8,'. Error from sync162: kz is',i10)
+        call cs_unlock
+
         ierr = 1
         return
       endif
@@ -81,9 +83,9 @@ C  Look for sync patterns, get DF and DT
             datetime=outfile(i2-10:i2)
             datetime(7:7)=' '
             nf1=nint(-a(2))
-            call cs_lock('mept162a')
-
             alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
+
+            call cs_lock('mept162a')
 #ifdef CVF
             open(13,file=alltxt,status='unknown',position='append',
      +           share='denynone')
@@ -98,6 +100,7 @@ C  Look for sync patterns, get DF and DT
  1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
             i1=index(message,' ')
             call cs_unlock
+
          endif
  24      continue
       enddo
