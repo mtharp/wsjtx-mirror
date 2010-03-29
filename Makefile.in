@@ -51,7 +51,8 @@ OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
 	tab.o vit213.o enc416.o vit416.o
 
-F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0
+F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0 \
+	audiodev
 
 SRCS2F90 = wsjt1.f90 astro0.F90 audio_init.F90 azdist0.f90 \
 	decode1.F90 decode2.f90 decode3.F90 ftn_init.F90 \

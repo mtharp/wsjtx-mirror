@@ -2159,22 +2159,43 @@ try:
             Audio.gcom2.pttport=(options.PttPort.get()+(' '*80))[:80]
         elif key == 'Mileskm': options.mileskm.set(value)
         elif key == 'MsgStyle': options.itype.set(value)
+        
+##        elif key == 'AudioIn':
+##            try:
+##                g.ndevin.set(value)
+##            except:
+##                g.ndevin.set(0)
+##            g.DevinName.set(value)
+##            options.DevinName.set(value)
+##            Audio.gcom1.devin_name=(options.DevinName.get()+(' '*12))[:12]
+##        elif key == 'AudioOut':
+##            try:
+##                g.ndevout.set(value)
+##            except:
+##                g.ndevout.set(0)
+##            g.DevoutName.set(value)
+##            options.DevoutName.set(value)
+##            Audio.gcom1.devout_name=(options.DevoutName.get()+(' '*12))[:12]
+
         elif key == 'AudioIn':
+            value=value.replace("#"," ")
+            g.DevinName.set(value)
             try:
-                g.ndevin.set(value)
+                g.ndevin.set(int(value[:2]))
             except:
                 g.ndevin.set(0)
-            g.DevinName.set(value)
             options.DevinName.set(value)
-            Audio.gcom1.devin_name=(options.DevinName.get()+(' '*12))[:12]
+
+
         elif key == 'AudioOut':
+            value=value.replace("#"," ")
+            g.DevoutName.set(value)
             try:
-                g.ndevout.set(value)
+                g.ndevout.set(int(value[:2]))
             except:
                 g.ndevout.set(0)
-            g.DevoutName.set(value)
             options.DevoutName.set(value)
-            Audio.gcom1.devout_name=(options.DevoutName.get()+(' '*12))[:12]
+
         elif key == 'Template1': options.Template1.set(value.replace("_"," "))
         elif key == 'Template2': options.Template2.set(value.replace("_"," "))
         elif key == 'Template3': options.Template3.set(value.replace("_"," "))
@@ -2261,8 +2282,10 @@ f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
 f.write("PttPort " + str(options.PttPort.get()) + "\n")
 f.write("Mileskm " + str(options.mileskm.get()) + "\n")
 f.write("MsgStyle " + str(options.itype.get()) + "\n")
-f.write("AudioIn " + options.DevinName.get() + "\n")
-f.write("AudioOut " + options.DevoutName.get() + "\n")
+if options.DevinName.get()=='': options.DevinName.set('0')
+f.write("AudioIn "  + options.DevinName.get().replace(" ","#") + "\n")
+if options.DevoutName.get()=='': options.DevoutName.set('2')
+f.write("AudioOut " + options.DevoutName.get().replace(" ","#") + "\n")
 if options.Template6.get()=="": options.Template6.set("_")
 f.write("Template1 " + options.Template1.get().replace(" ","_") + "\n")
 f.write("Template2 " + options.Template2.get().replace(" ","_") + "\n")
