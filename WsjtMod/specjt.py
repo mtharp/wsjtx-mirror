@@ -191,6 +191,13 @@ def df_mark():
                     c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
                     c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
                     color='red'
+            elif g.mode=="JT8":
+                color='green'
+                x1=mdf/df + dx
+                j=12
+                c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
+                c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
+
         if(frange==4000):
             dx=375 + (1270.5-fmid)/(2*df)
             if g.mode[:4]=="JT64":
@@ -203,6 +210,12 @@ def df_mark():
                     c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
                     c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
                     color='red'
+            elif g.mode=="JT8":
+                color='green'
+                x1=mdf/df + dx
+                j=12
+                c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
+                c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
 
 #---------------------------------------------------- change_fmid
 def change_fmid1():
