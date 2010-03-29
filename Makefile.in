@@ -106,8 +106,8 @@ WsjtMod/Audio.so: $(OBJS2C) $(OBJS3C) $(OBJS2F77) $(SRCS2F90) $(AUDIOSRCS)
 	${SRCS3C} ${AUDIOSRCS}
 	${MV} Audio.so WsjtMod
 
-wsjt8:  WsjtMod/Audio.so wsjt8.spec
-	python /home/joe/temp/pyinstaller-1.3/Build.py wsjt8.spec
+#wsjt8:  WsjtMod/Audio.so wsjt8.spec
+#	python /home/joe/temp/pyinstaller-1.3/Build.py wsjt8.spec
 
 wsjt8.spec: wsjt8.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 	WsjtMod/palettes.py WsjtMod/smeter.py WsjtMod/specjt.py
@@ -135,8 +135,8 @@ deb: wsjt.py WsjtMod/Audio.so WsjtMod/g.py WsjtMod/__init__.py \
 	WsjtMod/specjt.py WsjtMod/astro.py DEB/DEBIAN/control \
 	wsjtrc 
 
-	cp wsjt.py wsjtrc met2.21 met8.21 kvasd.dat KVASD_g95 TSKY.DAT \
-	wsjt.ico DEB/WSJT8
+	cp wsjt.py wsjtrc met2.21 met8.21 kvasd.dat kvasd2 TSKY.DAT \
+	wsjt.ico CALL3.TXT DEB/WSJT8
 
 	cp WSJT0.INI DEB/WSJT8/WSJT.INI
 	cp WsjtMod/Audio.so DEB/WSJT8/WsjtMod
