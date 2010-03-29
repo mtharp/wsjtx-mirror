@@ -43,7 +43,7 @@ subroutine decode3(d2,jz,istart,filename)
 !  open(23,file=appdir(:lenappdir)//'/CALL3.TXT',status='unknown')
 !  call cs_unlock
 
-  call wsjt1(d2d,jz,istart,FileID,ndepth,                         &
+  call wsjt1(d2d,jz,istart,FileID,ndepth,real(rxsnrdb),           &
        MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,         &
        mode,NFreeze,NAFC,NZap,mode64,mode4,idf,ntdecode,          &
        MyCall,HisCall,HisGrid,ntx2,s2,                            &

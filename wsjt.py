@@ -183,7 +183,8 @@ def textsize():
     else:
         if mode.get()[:4]=='JT64' or mode.get()=='ISCAT' or \
                mode.get()[:3]=='JT8':
-            textheight=7
+##            textheight=7
+            textheight=9
         else:
             textheight=9
     text.configure(height=textheight)
@@ -566,15 +567,20 @@ def ModeJT64():
     lab4.configure(fg='gray85')
     lab5.configure(fg='gray85')
     Audio.gcom1.trperiod=60
-    iframe4b.pack(after=iframe4,expand=1, fill=X, padx=4)
-    textheight=7
+##    iframe4b.pack(after=iframe4,expand=1, fill=X, padx=4)
+##    textheight=7
+    iframe4b.pack_forget()
+    textheight=9
     text.configure(height=textheight)
     isync=isync65
     slabel="Sync   "
     lsync.configure(text=slabel+str(isync))
-    bclravg.configure(state=NORMAL)
-    binclude.configure(state=NORMAL)
-    bexclude.configure(state=NORMAL)
+##    bclravg.configure(state=NORMAL)
+##    binclude.configure(state=NORMAL)
+##    bexclude.configure(state=NORMAL)
+    bclravg.configure(state=DISABLED)
+    binclude.configure(state=DISABLED)
+    bexclude.configure(state=DISABLED)
     cbfreeze.configure(state=NORMAL)
     if ltxdf: toggletxdf()
     btxdf.configure(state=NORMAL)
@@ -619,6 +625,9 @@ def ModeISCAT(event=NONE):
         mode.set("ISCAT")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
+        bclravg.configure(state=DISABLED)
+        binclude.configure(state=DISABLED)
+        bexclude.configure(state=DISABLED)
         cbfreeze.configure(state=NORMAL)
         itol=4
         ltol.configure(text='Tol    '+str(ntol[itol]))
@@ -1408,6 +1417,20 @@ def update():
     tx4.configure(bg='white')
     tx5.configure(bg='white')
     if len(tx5.get())>14: tx5.configure(bg='pink')
+
+    tx5.configure(bg='white')
+    if tx5.get()[:1]=='#':
+        try:
+            rxsnrdb=float(tx5.get()[1:])
+            if rxsnrdb>-99.0 and rxsnrdb<0.0:
+                Audio.gcom1.rxsnrdb=rxsnrdb
+                tx5.configure(bg='orange')
+        except:
+            rxsnrdb=0.0
+    else:
+        rxsnrdb=0.0
+        Audio.gcom1.rxsnrdb=rxsnrdb
+
     tx6.configure(bg='white')
     if tx6.get()[:1]=='#':
         try:
@@ -1420,6 +1443,7 @@ def update():
     else:
         txsnrdb=99.0
         Audio.gcom1.txsnrdb=txsnrdb
+        
     if Audio.gcom2.monitoring and not Audio.gcom1.transmitting:
         bmonitor.configure(bg='green')
         if (sys.platform == 'darwin'):

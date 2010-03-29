@@ -11,7 +11,8 @@ subroutine runqqq(fname,cmnd,iret)
 #ifdef CVF
   iret=runqq(fname,cmnd)
 #else
-  iret=system('kvasd2 -q > dev_null')
+!  iret=system('kvasd2 -q > dev_null')
+  iret=system('kvasd2 -q')
 #endif
 
   return

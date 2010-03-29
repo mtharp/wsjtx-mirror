@@ -122,8 +122,8 @@ subroutine gen64(message,mode64,ntxdf,iwave,nwave,sendingsh,nbit,       &
      iwave(i)=0
   enddo
   nwave=i
-  msgsent=message
-  do i=22,1,-1
+
+  do i=24,1,-1
      if(msgsent(i:i).ne.' ') goto 20
   enddo
 20 nmsg=i

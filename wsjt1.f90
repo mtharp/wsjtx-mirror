@@ -1,4 +1,4 @@
-subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
+subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
      MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,            &
      mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,            &
      MyCall,HisCall,HisGrid,ntx2,s2,                               &
@@ -94,14 +94,14 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,                       &
      dat(i)=dat(i+i0-1)
   enddo
 
-  if(ndiag.ne.0 .and. minsigdb.lt.0) then
-!  Intentionally degrade SNR by minsigdb dB.
+  if(rxsnrdb.lt.0.0) then
+!  Intentionally degrade SNR by rxsnrdb dB.
      sq=0.
      do i=1,jz
         sq=sq + dat(i)**2
      enddo
      p0=sq/jz
-     p1=p0*10.0**(-0.1*minsigdb)
+     p1=p0*10.0**(-0.1*rxsnrdb)
      dnoise=sqrt(4*(p1-p0))
      idum=-1
      do i=1,jz
