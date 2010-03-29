@@ -1585,14 +1585,14 @@ def update():
         audio_config()
         nin0=g.ndevin.get()
         nout0=g.ndevout.get()
-    if options.inbad.get()==0:
-        msg2.configure(text='',bg='gray85')
-    else:
-        msg2.configure(text='Invalid audio input device.',bg='red')
-    if options.outbad.get()==0:
-        msg3.configure(text='',bg='gray85')
-    else:
-        msg3.configure(text='Invalid audio output device.',bg='red')    
+##    if options.inbad.get()==0:
+##        msg2.configure(text='',bg='gray85')
+##    else:
+##        msg2.configure(text='Invalid audio input device.',bg='red')
+##    if options.outbad.get()==0:
+##        msg3.configure(text='',bg='gray85')
+##    else:
+##        msg3.configure(text='Invalid audio output device.',bg='red')    
 
     if altmsg: tx6alt=tx6.get()    
 # Queue up the next update
