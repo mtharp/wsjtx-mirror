@@ -52,7 +52,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
         write(11,1010) cfile6,isync,nsnr,jdf,isbest,decoded,ndec,t1,len0
         if(decoded.ne.'                      ') then
            write(21,1010) cfile6,isync,nsnr,jdf,isbest,decoded,ndec,t1,len0
-1010       format(a6,i4,i5,i5,i3,3x,a22,10x,i1,f6.1,i4)
+1010       format(a6,i4,i5,i5,i3,'*',2x,a22,10x,i1,f6.1,i4)
         endif
         call cs_unlock
         if(decoded.ne.'                      ') go to 999
