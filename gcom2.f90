@@ -30,6 +30,7 @@ integer nrestart       !True if transmission should restart  GUI,SoundIn
 integer ntr            !Are we in 2nd sequence?                 SoundIn
 integer nmsg           !Length of Tx message                    SoundIn
 integer nbitsent       !User bits in Tx message                 SoundIn
+integer ndevsok        !Audio devices OK                        GUI
 integer nsave          !Which files to save?                    GUI
 integer dftolerance    !DF tolerance (Hz)                       GUI
 logical LDecoded       !Was a message decoded?                  Decoder
@@ -101,7 +102,7 @@ common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,dlatency,fecho,iyr,imo,ida,              &
      ndecoding,ndecoding0,mousebutton,nhighpri,                       &
      ndecdone,ntc,necho,nfrit,ndither,nsumecho,npingtime,ierr,lauto,  &
-     mantx,nrestart,ntr,nmsg,nbitsent,                                &
+     mantx,nrestart,ntr,nmsg,nbitsent,ndevsok,                        &
      nsave,dftolerance,LDecoded,rxdone,monitoring,                    &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,ndebug,nport,mousedf,nsked,                                &

@@ -10,7 +10,7 @@ subroutine a2d(iarg)
   idevin=iarg                                !Silence compiler warning
   idevin=ndevin
   idevout=ndevout
-  call padevsub(idevin,idevout)
+!  call padevsub(idevin,idevout)
 
   ierr=jtaudio(idevin,idevout,y1,y2,NMAX,iwrite,iwave,nwave,    &
        12000,NSPB,TRPeriod,TxOK,ndebug,Transmitting,            &

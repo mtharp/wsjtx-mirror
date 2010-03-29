@@ -350,7 +350,7 @@ int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[],
   return(err);
 }
 
-
+/*
 int padevsub_(int *idevin, int *idevout)
 {
   int numdev,ndefin,ndefout;
@@ -412,4 +412,4 @@ int padevsub_(int *idevin, int *idevout)
 
   return 0;
 }
-
+*/

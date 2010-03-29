@@ -50,10 +50,13 @@ else:
     except:
         pass
 root_geom=""
+
+Audio.gcom2.appdir=(appdir+(' '*80))[:80]
+Audio.gcom2.lenappdir=len(appdir)
+i1,i2=Audio.audiodev(0,2)
 from WsjtMod import options
 
 #------------------------------------------------------ Global variables
-Audio.gcom2.appdir=(appdir+(' '*80))[:80]
 Audio.ftn_init()
 first=1
 isync=0
@@ -93,6 +96,8 @@ neme=IntVar()
 nfreeze=IntVar()
 nhotaz=0
 nhotabetter=0
+nin0=0
+nout0=0
 nopen=0
 qdecode=IntVar()
 setseq=IntVar()
@@ -1284,7 +1289,7 @@ def plot_small():
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
            im,pim,cmap0,isync,isyncMS,isync6m,isync65,isync_save,idsec, \
-           first,itol,txsnrdb,tx6alt
+           first,itol,txsnrdb,tx6alt,nin0,nout0
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
@@ -1576,9 +1581,33 @@ def update():
     except:
         pass
 
+    if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
+        audio_config()
+        nin0=g.ndevin.get()
+        nout0=g.ndevout.get()
+    if options.inbad.get()==0:
+        msg2.configure(text='',bg='gray85')
+    else:
+        msg2.configure(text='Invalid audio input device.',bg='red')
+    if options.outbad.get()==0:
+        msg3.configure(text='',bg='gray85')
+    else:
+        msg3.configure(text='Invalid audio output device.',bg='red')    
+
     if altmsg: tx6alt=tx6.get()    
 # Queue up the next update
     ldate.after(100,update)
+
+#------------------------------------------------------ audio_config
+def audio_config():
+    inbad,outbad=Audio.audiodev(g.ndevin.get(),g.ndevout.get())
+    options.inbad.set(inbad)
+    options.outbad.set(outbad)
+    if inbad or outbad:
+        Audio.gcom2.ndevsok=0
+        options1()
+    else:
+        Audio.gcom2.ndevsok=1
     
 #------------------------------------------------------ Top level frame
 frame = Frame(root)

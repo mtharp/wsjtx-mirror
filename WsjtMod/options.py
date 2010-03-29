@@ -36,6 +36,8 @@ itype=IntVar()
 ComPort=IntVar()
 PttPort=StringVar()
 g.ndefault=1
+inbad=IntVar()
+outbad=IntVar()
 ndevin=IntVar()
 ndevout=IntVar()
 ntc=IntVar()
@@ -56,6 +58,50 @@ Template6=StringVar()
 auxra=StringVar()
 auxdec=StringVar()
 azeldir=StringVar()
+
+if g.Win32:
+    serialportlist=("None","COM1","COM2","COM3","COM4","COM5","COM6", \
+        "COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14","COM15")
+else:
+    serialportlist=("None","/dev/ttyS0","/dev/ttyS1","/dev/ttyUSB0", \
+        "/dev/ttyUSB1","/dev/ttyUSB2","/dev/ttyUSB3","/dev/ttyUSB4", \
+        "/dev/ttyUSB5","/dev/ttyUSB6","/dev/ttyUSB7","/dev/ttyUSB8")
+                    
+indevlist=[]
+outdevlist=[]
+
+try:
+    f=open('audio_caps','r')
+    s=f.readlines()
+    f.close
+    t="Input Devices:\n"
+    for i in range(len(s)):
+        col=s[i].split()
+        if int(col[1])>0:
+            t=str(i) + s[i][29:]
+            t=t[:len(t)-1]
+            indevlist.append(t)
+    for i in range(len(s)):
+        col=s[i].split()
+        if int(col[2])>0:
+            t=str(i) + s[i][29:]
+            t=t[:len(t)-1]
+            outdevlist.append(t)
+except:
+    pass
+
+#------------------------------------------------------ audin
+def audin(event=NONE):
+    g.DevinName.set(DevinName.get())
+    g.ndevin.set(int(DevinName.get()[:2]))
+    
+#------------------------------------------------------ audout
+def audout(event=NONE):
+    g.DevoutName.set(DevoutName.get())
+    g.ndevout.set(int(DevoutName.get()[:2]))
+
+PttPort.set('None')
+
 
 #---------------------------------------------------------- save()
 def save():
@@ -165,12 +211,26 @@ mygrid=Pmw.EntryField(p1,labelpos=W,label_text='Grid Locator:',
 ##        value='0.2',entry_textvariable=TxDelay)
 idinterval=Pmw.EntryField(p1,labelpos=W,label_text='ID Interval (m):',
         value=10,entry_textvariable=IDinterval,entry_width=12)
-comport=Pmw.EntryField(p1,labelpos=W,label_text='PTT Port:',
-        value='/dev/ttyS0',entry_textvariable=PttPort,entry_width=12)
-audioin=Pmw.EntryField(p1,labelpos=W,label_text='Audio In:',
-        value='0',entry_textvariable=DevinName,entry_width=12)
-audioout=Pmw.EntryField(p1,labelpos=W,label_text='Audio Out:',
-        value='0',entry_textvariable=DevoutName,entry_width=12)
+
+##comport=Pmw.EntryField(p1,labelpos=W,label_text='PTT Port:',
+##        value='/dev/ttyS0',entry_textvariable=PttPort,entry_width=12)
+##audioin=Pmw.EntryField(p1,labelpos=W,label_text='Audio In:',
+##        value='0',entry_textvariable=DevinName,entry_width=12)
+##audioout=Pmw.EntryField(p1,labelpos=W,label_text='Audio Out:',
+##        value='0',entry_textvariable=DevoutName,entry_width=12)
+
+audioin=Pmw.ComboBox(p1,labelpos=W,label_text='Audio In:',
+        entry_textvariable=DevinName,entry_width=30,
+        scrolledlist_items=indevlist,selectioncommand=audin)
+audioout=Pmw.ComboBox(p1,labelpos=W,label_text='Audio Out:',
+        entry_textvariable=DevoutName,entry_width=30,
+        scrolledlist_items=outdevlist,selectioncommand=audout)
+##cbptt=Pmw.ComboBox(p1,labelpos=W,label_text='PTT method:',
+##        entry_textvariable=pttmode,entry_width=4,scrolledlist_items=pttlist)
+comport=Pmw.ComboBox(p1,labelpos=W,label_text='PTT port:',
+        entry_textvariable=PttPort,entry_width=12,\
+        scrolledlist_items=serialportlist)
+
 azeldir_entry=Pmw.EntryField(p1,labelpos=W,label_text='AzElDir:',
     entry_width=9,value=g.appdir,entry_textvariable=azeldir)
 
