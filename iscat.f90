@@ -22,7 +22,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 ! Try a range of starting points, stepping by half the message length
   nn=512*(63+10+2)                         !Message length in samples
   do istart=1,jz-nn,nn/2
-     lenz=jz/nn
+     lenz=(jz-istart)/nn
 ! Try a range of integral numbers of message repetitions, starting with largest
      do len=lenz,1,-1
         jza=min(jz-istart,nint(len+0.75)*nn)
@@ -33,6 +33,9 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 ! Establish sync or find a shorthand message
         call synciscat(dat(i0),jza,i0,dofft,DFTolerance,NFreeze,MouseDF,   &
              dtx,dfx,snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,kshort)
+        if(len.eq.2) isync=isync-1
+        if(len.eq.1) isync=isync-2
+        if(isync.lt.0) isync=0
 
         nsnr=nint(snrx)
         jdf=nint(dfx)
@@ -48,9 +51,9 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
            nsnr=nint(db(short)-23.0)
            ndec=1
         endif
+        t1=i0/12000.0
 
         call cs_lock('iscat')
-        t1=i0/12000.0
         write(11,1010) cfile6,isync,nsnr,jdf,isbest,c1,decoded,ndec,t1,len0
         if(decoded.ne.'                      ') then
            write(21,1010) cfile6,isync,nsnr,jdf,isbest,c1,decoded,ndec,t1,len0

@@ -300,7 +300,7 @@ subroutine addnoise(n)
 
   if(txsnrdb.gt.40.0) return
   if(txsnrdb.ne.txsnrdb0) then
-     snr=10.0**(0.05*(txsnrdb-1))
+     snr=10.0**(0.05*txsnrdb)
      fac=3000.0
      if(snr.gt.1.0) fac=3000.0/snr
      txsnrdb0=txsnrdb
