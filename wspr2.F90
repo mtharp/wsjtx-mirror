@@ -24,6 +24,7 @@ subroutine wspr2
 
   call cs_init
   dectxt=appdir(:nappdir)//'/decoded.txt'
+
   call cs_lock('wspr2')
 #ifdef CVF
   open(14,file=dectxt,status='unknown',share='denynone')
@@ -49,12 +50,14 @@ subroutine wspr2
   call cs_unlock
 
   if(nrxdone.gt.0) then
+
      call cs_lock('wspr2')
      receiving=.false.
      nrxdone=0
      ndecoding=1
      thisfile=outfile
      call cs_unlock
+
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
         (nrxnormal.eq.0 .and. ncal.eq.2) .or.                          &
         ndiskdat.eq.1) then
@@ -68,7 +71,6 @@ subroutine wspr2
      ntxdone=0
      ntr=0
   endif
-
   if(ns120.ge.114 .and. ntune.eq.0) then
      transmitting=.false.
      receiving=.false.
@@ -79,23 +81,27 @@ subroutine wspr2
 
   if (ntune.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
        (.not.receiving) .and. pctx.ge.1.0) then
+
 ! Test transmission of length pctx seconds.
      call cs_lock('wspr2')
      nsectx=mod(nsec,86400)
      ntune2=ntune
      transmitting=.true.
      call cs_unlock
+
      call starttx
   endif
 
   if (ncal.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
        (.not.receiving)) then
+
 ! Execute one receive sequence
      call cs_lock('wspr2')
      receiving=.true.
      rxtime=utctime(1:4)
-     call cs_unlock
      nrxnormal=0
+     call cs_unlock
+
      call startrx
   endif
 
@@ -108,7 +114,9 @@ subroutine wspr2
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
   if(pctx.eq.0.0) nrx=1
+
   if(nrx.eq.0 .and. ntr.ne.-1) then
+
      call cs_lock('wspr2')
      transmitting=.true.
      call random_number(x)
@@ -127,6 +135,7 @@ subroutine wspr2
      nsectx=mod(nsec,86400)
      ntxdone=0
      call cs_unlock
+
      call gmtime2(nt,tsec0)
      if(ndevsok.eq.1) call starttx
 

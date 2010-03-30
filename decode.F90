@@ -29,12 +29,14 @@ subroutine decode
            fpeak=i*df
         endif
      enddo
+
      call cs_lock('decode')
      write(*,1002) fpeak
 1002 format('Measured audio frequency:',f10.2,' Hz')
      ncal=0
      ndecoding=0
      call cs_unlock
+
      go to 900
   else
      minsync=1

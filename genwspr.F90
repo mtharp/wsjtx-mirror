@@ -48,6 +48,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
   call wqdecode(data0,msg2,ntype2)
 
   if(ntune.eq.0) then
+
      call cs_lock('genwspr')
      alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
 #ifdef CVF
@@ -60,6 +61,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
 1010 format(a75)
      close(13)
      call cs_unlock
+
   endif
 
 ! Set up necessary constants

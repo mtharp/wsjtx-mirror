@@ -42,6 +42,7 @@ subroutine tx
 ! Example rigctl command:
 ! rigctl -m 1608 -r /dev/ttyUSB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
 !   -C serial_handshake=Hardware T 1
+
 #ifdef CVF
      iret=runqq('rigctl.exe',cmnd(8:))
 #else
@@ -57,12 +58,13 @@ subroutine tx
 
   write(cdbm,'(i3)'),ndbm
   call cs_unlock
-  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
-  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
 
+  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
+  if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
   ntx=1-ntx
   i1=index(call1,' ')
   i2=index(call1,'/')
+
   if(i2.gt.0 .or. igrid6.ne.0) then
 ! WSPR_2 message, in two parts
      if(i2.le.0) then
@@ -73,25 +75,29 @@ subroutine tx
      msg0='<'//call1(:i1-1)//'> '//grid6//' '//cdbm
      if(ntx.eq.1) message=msg1
      if(ntx.eq.0) message=msg0
+
   else
 ! Normal WSPR message
      message=call1(1:i1)//grid//' '//cdbm
   endif
+
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
   ctxmsg=message
   snr=99.0
-  
   snrfile=appdir(:nappdir)//'/test.snr'
+
+  call cs_lock('tx')
   open(18,file=snrfile,status='old',err=10)
   read(18,*,err=10,end=10) snr
   close(18)
+  call cs_unlock
 
 10 continue
   call gmtime2(nt,tsec1)
-!  print*,'A',tsec1-tsec0
   call genwspr(message,ntxdf,ntune,snr,appdir,nappdir,sending,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
+
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then
 !  Generate and insert the CW ID.
      wpm=25.
@@ -127,6 +133,7 @@ subroutine tx
      cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
           ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
           ' -C serial_handshake='//chs//' T 0'
+
      call cs_lock('tx')
 #ifdef CVF
      iret=runqq('rigctl.exe',cmnd(8:))
@@ -138,6 +145,7 @@ subroutine tx
         print*,cmnd
      endif
      call cs_unlock
+
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,0,iptt)
   endif
