@@ -15,12 +15,12 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
   real ccf64(-224:224)
+  real tmp(449)
   integer isync(24,3),jsync(24)
   integer ic6(6)                   !Costas array
   data ic6/0,1,4,3,5,2/,idum/-1/
 
   mode64=1                                  !### temporary ###
-
 ! Set up the JT64 sync pattern
 ! ### For now, we'll still search for 3 possible patterns ###
   j=0
@@ -60,6 +60,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   df=0.5*12000.0/nfft
 
 ! Compute power spectrum for each quarter-symbol step
+  s2=0.
   do j=1,nsteps
      k=(j-1)*kstep + 1
      do i=1,nh
@@ -88,8 +89,6 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 
 ! Find best frequency bin and best sync pattern
   syncbest=-1.e30
-  ss=0.
-  nss=0
   do i=ia,ib
      smax=-1.e30
      do lag=-20,20
@@ -124,8 +123,6 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      j=i-i0
      if(abs(j).le.224) then
         ccfred1(i-i0)=smax
-        ss=ss+smax
-        nss=nss+1
      endif
      if(smax.gt.syncbest) then
         syncbest=smax
@@ -134,9 +131,9 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      endif
   enddo
 
-  ave=ss/nss
+  call pctile(ccfred1(-224),tmp,449,40,avered)
   do j=-224,224
-     if(ccfred1(j).ne.0.0) ccfred1(j)=ccfred1(j)-ave
+     if(ccfred1(j).ne.0.0) ccfred1(j)=ccfred1(j)-avered
   enddo
 
 ! Once more, using best frequency and best sync pattern:
@@ -166,14 +163,14 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
         nsum=nsum + 1
      endif
   enddo
-  ave=sum/nsum
+  aveblue=sum/nsum
   do j=-5,35
-     ccfblue(j)=18.0*(ccfblue(j)-ave)
+     ccfblue(j)=18.0*(ccfblue(j)-aveblue)
   enddo
 
-  snrsync=syncbest/ave
-  snrx=-31.
-  if(syncbest.gt.1.0) snrx=db(snrsync) - 33.0
+  snrsync=syncbest/avered
+  snrx=-30.
+  if(syncbest.gt.2.0) snrx=db(snrsync-1.0) - 30.0
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df
