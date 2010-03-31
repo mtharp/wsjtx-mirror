@@ -11,6 +11,8 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+  real ss2(NHMAX)
+  real tmp(NHMAX)
   real s3(8,124)                   !2d spectrum, synchronized, data only
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
@@ -33,6 +35,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   df=6000.0/nfft
 
 ! Compute power spectrum for each quarter-symbol step
+  ss2=0.
   do j=1,nsteps
      k=(j-1)*kstep + 1
      do i=1,nh
@@ -40,7 +43,11 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
         x(i+nh)=0.
      enddo
      call ps(x,nfft,s2(1,j))
+     ss2=ss2 + s2(1:NHMAX,j)
   enddo
+  ss2=ss2/nsteps
+  call pctile(ss2,tmp,NHMAX,40,aves2)
+  aves2=aves2/0.6
 
 ! Determine the search range in frequency
   famin=3.
@@ -93,11 +100,8 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
      endif
   enddo
 
-  ave=ss/nss
   do j=-224,224
-     if(ccfred(j).ne.0.0) ccfred(j)=0.5*(ccfred(j)-ave)
-!     write(61,3001) j*df,ccfred(j)
-!3001 format(2f12.3)
+     if(ccfred(j).ne.0.0) ccfred(j)=0.5*(ccfred(j)-aves2)
   enddo
 
 ! Once more, using best frequency and best sync pattern:
@@ -120,11 +124,9 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
         nsum=nsum + 1
      endif
   enddo
-  ave=sum/nsum
+  aveblue=sum/nsum
   do j=-5,30
-     ccfblue(j)=4*(ccfblue(j)-ave)
-!     write(62,3002) j,ccfblue(j)
-!3002 format(i5,f12.3)
+     ccfblue(j)=4*(ccfblue(j)-aveblue)
   enddo
 
   do i=1,8
@@ -135,9 +137,10 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
      enddo
   enddo
 
-  snrsync=syncbest/ave - 1.0
-  snrx=-27.
-  if(snrsync.ge.1.0) snrx=db(snrsync) - 27.0
+  snrsync=syncbest/aves2
+  snrx=-26.
+  if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 26.0
+
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagbest - 1.0
   dfx=(ipk-i0)*df

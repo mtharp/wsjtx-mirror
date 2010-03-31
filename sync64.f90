@@ -175,7 +175,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 
   snrsync=syncbest/aves2
   snrx=-30.
-  if(syncbest.gt.2.0) snrx=db(snrsync-1.0) - 30.0
+  if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 30.0
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df - 1.0

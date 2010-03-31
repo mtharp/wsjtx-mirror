@@ -20,7 +20,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   logical dofft
   integer ic10(10)
   data ic10/0,1,3,7,4,9,8,6,2,5/     !10x10 Costas array
-  save s0
+  save s0,aves2
 
 ! Set up the ISCAT sync patterns
   nsync=10
@@ -34,7 +34,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   nsteps=4*(jz-NH)/nh
   if(dofft) then
 ! Compute and save power spectra for each quarter-symbol step
-     call spec_iscat(dat,jz,s0,nsteps)
+     call spec_iscat(dat,jz,s0,nsteps,aves2)
      dofft=.false.
   endif
   df=12000.0/nfft
@@ -183,8 +183,8 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
         nsum=nsum + 1
      endif
   enddo
-  ave=sum/nsum
-  ccfblue(0:299)=ccfblue(0:299)-ave
+  aveblue=sum/nsum
+  ccfblue(0:299)=ccfblue(0:299)-aveblue
   tmp1=ccfblue(0:299)
   ccfblue=0
   do i=0,299
@@ -194,10 +194,10 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
      ccfblue(i+98)=tmp1(j)                      !The 98 is empirical
   enddo
 
-!### Should compute snrave, snrpeak...
-  snrsync=syncbest/ave - 1.0
-  snrx=-30.
-  if(snrsync.gt.0.0) snrx=db(snrsync) - 19.5
+  snrsync=syncbest/(aves2*sqrt(nsteps/300.0))
+  snrx=-23.5
+  if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 23.5
+
   dtstep=kstep/12000.d0
   dtx=dtstep*lagpk
   dfx=ipk*df - f0
@@ -232,7 +232,8 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   if(max(s16,s18,s20).eq.s18) isbest=2
   if(max(s16,s18,s20).eq.s20) isbest=3
 
-  isync=max(snrsync,0.0)
+  isync=max(snrsync-2.0,0.0)
+  isync=min(isync,99)
   f=ishort*df
   if(f.ge.fa .and. f.le.fb .and. isync.eq.0 .and. short.gt.5.0) dfx=ishort*df-f0
 

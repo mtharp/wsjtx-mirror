@@ -1,4 +1,4 @@
-subroutine spec_iscat(dat,jz,s0,nsteps)
+subroutine spec_iscat(dat,jz,s0,nsteps,aves2)
 
 ! Compute FFTs of twice the symbol length, stepped by quarter symbols.  
 ! Save 2d power spectra in s0(256,nsteps).
@@ -7,6 +7,8 @@ subroutine spec_iscat(dat,jz,s0,nsteps)
   real s0(256,2812)                 !2d spectrum, stepped by half-symbols
   real x(1024)
   real xs1(512)
+  real ss2(256)
+  real tmp(256)
 
   nsps=512                          !Samples per symbol
   kstep=nsps/4                      !Quarter-symbol steps
@@ -21,7 +23,10 @@ subroutine spec_iscat(dat,jz,s0,nsteps)
      x(nsps+1:)=0.
      call ps(x,nfft,xs1)
      s0(1:nq,j)=xs1(1:nq)
+     ss2=ss2 + xs1(1:nq)
   enddo
+  ss2=ss2/nsteps
+  call pctile(ss2,tmp,256,40,aves2)
 
   return
 end subroutine spec_iscat
