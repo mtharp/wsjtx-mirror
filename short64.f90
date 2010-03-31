@@ -20,7 +20,8 @@ subroutine short64(dat,jz,NFreeze,MouseDF,DFTolerance,                 &
   real ss2a(-224:224)                    !Upper magenta curve
   real ss1(-473:1784)                    !Lower magenta curve (temp)
   real ss2(-473:1784)                    !Upper magenta curve (temp)
-  real ssavg(-11:11)
+!  real ssavg(-11:11)
+  real ssavg(-18:18)
   integer ipk(4)                         !Peak bin at each phase
   save
 
