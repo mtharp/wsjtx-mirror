@@ -176,7 +176,8 @@ subroutine fivehz
 !        ibuf0=ibuf0+3                  !So we don't copy our own Tx
 !        if(ibuf0.gt.1024) ibuf0=ibuf0-1024
 !     endif
-     ntime=time()                      !Save start time
+!     ntime=time()                      !Save start time
+     ntime=nsec                      !Save start time
      if(mantx.eq.1 .and. iptt.eq.1) then
         mantx=0
         TxOK=0

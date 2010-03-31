@@ -5,7 +5,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
      ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,       &
      MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
 
-  parameter (NP2=120*12000)
+  parameter (NP2=60*12000)
 
   integer*2 d(jz0)        !Buffer for raw one-byte data
   integer istart          !Starting location in original d() array
@@ -37,12 +37,11 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
   real yellow(216)
   real yellow0(216)
   real fzap(200)
-  real dat2(NP2)
+  real dat(NP2)
   character msg3*3
   character cfile6*6
   integer indx(100)
   character*90 line
-  common/avecom/dat(NP2),labdat,jza,modea
   common/ccom/nline,tping(100),line(100)
   common/limcom/ nslim2a
   save
@@ -143,7 +142,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
   call zero(psavg,450)
 
   pick=.false.
-  if(istart.gt.1) pick=.true. !This is a mouse-picked decoding
+  if(istart.gt.1) pick=.true.                !This is a mouse-picked decoding
   if(.not.pick .and. nforce.eq.0 .and.                              &
        (basevb.lt.-15.0 .or. basevb.gt.25.0)) goto 900
 
@@ -171,6 +170,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
 ! JT64 mode:
         mode64=1
         nstest=0
+
         if(ntx2.ne.1) call short64(dat,jz,NFreeze,MouseDF,                &
              DFTolerance,mode64,nspecial,nstest,dfsh,iderrsh,             &
              idriftsh,snrsh,ss1,ss2,nwsh,idfsh)
@@ -178,6 +178,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
 
 !  Lowpass filter and decimate by 2
      call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
+
      idf=mousedf-mousedf2
      jz=jz2
      nadd=1
@@ -194,13 +195,14 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
      hiscall=HisCall(1:i-1)//'            '
 
      if(mode(1:4).eq.'JT64') then
-        jztest=12000*(ntdecode-2)/2             !Why this test?
-        if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
+!        jztest=12000*(ntdecode-2)/2             !Why this test?
+!        if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
+
+        call wsjt64(dat,jz,cfile6,                                          &
              NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
              MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &
              mycall,hiscall,hisgrid,lumsg,nspecial,ndf,                     &
              nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
-
      else if(mode(1:3).eq.'JT8') then
 ! JT8 mode:
         call jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &

@@ -22,7 +22,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   mode64=1                                  !### temporary ###
 
 ! Set up the JT64 sync pattern
-! ### For now, we'll sstill search for 3 possible patterns ###
+! ### For now, we'll still search for 3 possible patterns ###
   j=0
   do n=1,3
      i0=0
@@ -173,7 +173,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 
   snrsync=syncbest/ave
   snrx=-31.
-  if(syncbest.gt.1.0) snrx=db(snrsync) - 31.0
+  if(syncbest.gt.1.0) snrx=db(snrsync) - 33.0
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df

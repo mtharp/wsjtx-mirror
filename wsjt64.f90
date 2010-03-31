@@ -19,10 +19,8 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   character*12 hiscall
   character*6 hisgrid
   real ccfblue(-5:540),ccfred(-224:224)
-  integer itf(2,9)
   include 'avecom.f90'
   data first/.true./,ns10/0/,ns20/0/
-  data itf/0,0, 1,0, -1,0, 0,-1, 0,1, 1,-1, 1,1, -1,-1, -1,1/
   save
 
   if(first) then
@@ -99,10 +97,6 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
   if(nsync.lt.MinSigdB .or. nsnr.lt.nsnrlim) go to 200
 
 ! If we get here, we have achieved sync!
-
-!### From here onward, code from wsjt65.f was deleted.  Must restore
-!### and modify.
-
   NSyncOK=1
   nflag(nsave)=1            !Mark this RX file as good
   csync='*'

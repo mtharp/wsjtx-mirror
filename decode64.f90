@@ -2,7 +2,7 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
      mycall,hiscall,hisgrid,mode64,nafc,decoded,ncount,                &
      deepmsg,qual,ndec)
 
-! Decodes JT65 data, assuming that DT and DF have already been determined.
+! Decodes JT64 data, assuming that DT and DF have already been determined.
 
   real dat(jz)                        !Raw data
   real s2(74,87)
@@ -11,7 +11,6 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
   character*22 decoded,deepmsg
   character mycall*12,hiscall*12,hisgrid*6
   include 'avecom.f90'
-!  include 'prcom.h'
 
   dt=2.0/12000.0               !Sample interval (this is 2x downsampled data)
   istart=nint(dtx/dt)          !Start index for synced FFTs
@@ -29,14 +28,8 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
         s3(i,k+31)=s2(i+5,j2)
      enddo
   enddo
-  k=32
-  j2=32+47
-  do i=1,64
-     s3(i,k)=s2(i+5,j1)
-     s3(i,k+31)=s2(i+5,j2)
-  enddo
+  s3(1:64,63)=s2(6:69,79)
   nadd=mode64
-
   call extract(s3,nadd,isbest,ncount,decoded,ndec)     !Extract the message
   qual=0.
 !  if(ndepth.ge.1) call deep65(s3,mode64,neme,                         &
