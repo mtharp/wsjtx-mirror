@@ -70,7 +70,7 @@ subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
 
   nflag(nsave)=0                    !Clear the "good sync" flag
   iseg(nsave)=Nseg                  !Set the RX segment to 1 or 2
-  nsync=min(99,nint(snrsync-2.0))
+  nsync=max(0.0,snrsync)
   nsnr=nint(snrx)
   if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
   nsnrlim=-32

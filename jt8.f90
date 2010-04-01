@@ -42,7 +42,7 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   call syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
        snrsync,ccfblue,ccfred,s3)
   isbest=3
-  nsync=min(99,nint(snrsync-2.0))
+  nsync=max(0.0,snrsync)
 
   if(nsync.ge.minsigdb) then
 ! We have achieved sync.  Remove gray code and compute single-bit soft symbols.

@@ -140,6 +140,7 @@ subroutine syncjt8(dat,jz,DFTolerance,NFreeze,MouseDF,dtx,dfx,snrx,      &
   snrsync=syncbest/aves2
   snrx=-26.
   if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 26.0
+  if(snrsync.gt.0.0) snrsync=1.4*sqrt(snrsync)
 
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagbest - 1.0

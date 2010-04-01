@@ -197,6 +197,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   snrsync=syncbest/(aves2*sqrt(nsteps/300.0))
   snrx=-23.5
   if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 23.5
+  if(snrsync.gt.0.0) snrsync=sqrt(snrsync)
 
   dtstep=kstep/12000.d0
   dtx=dtstep*lagpk
@@ -232,8 +233,7 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
   if(max(s16,s18,s20).eq.s18) isbest=2
   if(max(s16,s18,s20).eq.s20) isbest=3
 
-  isync=max(snrsync-2.0,0.0)
-  isync=min(isync,99)
+  isync=max(0.0,snrsync)
   f=ishort*df
   if(f.ge.fa .and. f.le.fb .and. isync.eq.0 .and. short.gt.5.0) dfx=ishort*df-f0
 

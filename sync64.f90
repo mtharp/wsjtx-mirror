@@ -172,9 +172,10 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      ccfblue(j)=18.0*(ccfblue(j)-aveblue)
   enddo
 
-  snrsync=0.3*syncbest/aves2
-  snrx=-30.
-  if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 30.0
+  snrsync=syncbest/aves2
+  snrx=-32.
+  if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 32.0
+  if(snrsync.gt.0.0) snrsync=sqrt(snrsync)
 
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagpk
