@@ -44,6 +44,10 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   isbest=3
   nsync=max(0.0,snrsync)
 
+  minmet=200
+  if(snrsync.ge.2.0) minmet=150*(snrsync-0.6667)
+  if(minmet.gt.1000) minmet=1000
+
   if(nsync.ge.minsigdb) then
 ! We have achieved sync.  Remove gray code and compute single-bit soft symbols.
      fac=1.0
@@ -74,7 +78,6 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
      nbit=78
      call vit416(gsym1,nbit,mettab,ddec,metric)
      decoded='                        '
-     minmet=200                                 !### TBD ###
      if(metric.ge.minmet) then
         iz=(nbit+7)/8
         ddec(iz+1:)=0
@@ -101,11 +104,13 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
      ndf=nint(dfx)
      csync='*'
      NSyncOK=1
+     n1=max(0,metric/200)
+     n2=minmet/200
 
      call cs_lock('jt8')
-     write(11,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,metric
-1010 format(a6,i3,i5,f5.1,i5,i3,a1,2x,a24,i10)
-     write(21,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,metric
+     write(11,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,n1,n2
+1010 format(a6,i3,i5,f5.1,i5,i3,a1,2x,a24,i10,i4)
+     write(21,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,n1,n2
      call cs_unlock
   endif
 

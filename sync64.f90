@@ -1,5 +1,5 @@
 subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
-     mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred1,isbest)
+     mode64,dtx,dfx,snrx,snrsync,ccfblue,ccfred,isbest)
 
 ! Synchronizes JT64 data, finding the best-fit DT and DF.  
 ! NB: at this stage, submodes ABC are processed in the same way.
@@ -15,7 +15,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   real tmp(NHMAX)
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
-  real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
+  real ccfred(-224:224)           !Peak of ccfblue, as function of freq
   real ccf64(-224:224)
   integer isync(24,3),jsync(24)
   integer ic6(6)                   !Costas array
@@ -127,7 +127,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 
      j=i-i0
      if(abs(j).le.224) then
-        ccfred1(i-i0)=smax
+        ccfred(i-i0)=smax
      endif
      if(smax.gt.syncbest) then
         syncbest=smax
@@ -137,7 +137,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   enddo
 
   do j=-224,224
-     if(ccfred1(j).ne.0.0) ccfred1(j)=ccfred1(j)-aves2
+     if(ccfred(j).ne.0.0) ccfred(j)=ccfred(j)-aves2
   enddo
 
 ! Once more, using best frequency and best sync pattern:
