@@ -11,16 +11,18 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   integer DFTolerance              !Range of DF search
   real dat(jz)                     !Raw data, downsampled to 6 kHz
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
+  real ss2(NHMAX)
+  real tmp(NHMAX)
   real x(NFFTMAX)                  !Temp array for computing FFTs
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
   real ccf64(-224:224)
-  real tmp(449)
   integer isync(24,3),jsync(24)
   integer ic6(6)                   !Costas array
   data ic6/0,1,4,3,5,2/,idum/-1/
 
   mode64=1                                  !### temporary ###
+
 ! Set up the JT64 sync pattern
 ! ### For now, we'll still search for 3 possible patterns ###
   j=0
@@ -60,7 +62,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   df=0.5*12000.0/nfft
 
 ! Compute power spectrum for each quarter-symbol step
-  s2=0.
+  ss2=0.
   do j=1,nsteps
      k=(j-1)*kstep + 1
      do i=1,nh
@@ -68,7 +70,10 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
         x(i+nh)=0.
      enddo
      call ps(x,nfft,s2(1,j))
+     ss2=ss2 + s2(1:NHMAX,j)
   enddo
+  ss2=ss2/nsteps
+  call pctile(ss2,tmp,NHMAX,40,aves2)
 
 ! Determine the search range in frequency
   famin=3.
@@ -131,9 +136,8 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      endif
   enddo
 
-  call pctile(ccfred1(-224),tmp,449,40,avered)
   do j=-224,224
-     if(ccfred1(j).ne.0.0) ccfred1(j)=ccfred1(j)-avered
+     if(ccfred1(j).ne.0.0) ccfred1(j)=ccfred1(j)-aves2
   enddo
 
 ! Once more, using best frequency and best sync pattern:
@@ -168,9 +172,10 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
      ccfblue(j)=18.0*(ccfblue(j)-aveblue)
   enddo
 
-  snrsync=syncbest/avered
+  snrsync=0.3*syncbest/aves2
   snrx=-30.
-  if(syncbest.gt.2.0) snrx=db(snrsync-1.0) - 30.0
+  if(snrsync.gt.2.0) snrx=db(snrsync-1.0) - 30.0
+
   dtstep=kstep*2.d0/12000.d0
   dtx=dtstep*lagpk
   dfx=(ipk-i0)*df
