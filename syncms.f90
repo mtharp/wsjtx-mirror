@@ -1,6 +1,6 @@
-subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
+subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest,fpeak)
 
-  parameter (MAXSAM=24000)           !Max number of samples in ping
+  parameter (MAXSAM=32768)           !Max number of samples in ping
   integer id(32)                     !Sync followed by data in one-bit format
   real dat(jz)
   real x0(32)                        !Waveform for bit=0
@@ -9,6 +9,7 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   real fblue(0:4000)
   complex csync(1024)                !Complex sync waveform
   complex c(MAXSAM)                  !Work array
+  complex cdat(MAXSAM)
   integer istep(3)
   logical first
   data isync32/Z'1acffc1d'/          !32-bit sync
@@ -70,11 +71,14 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
      enddo
   endif
 
+!  call analytic(dat,jz,cdat)
+
 ! Find lag and DF
   nfft=512
   nh=nfft/2
   df=fs/nfft
   sbest=0.
+  isbest=0
   lagmax=min(4000,jz-nh)
   iz=500.0/df
   do lag=0,lagmax
@@ -131,33 +135,38 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest)
   enddo
 
 ! NB: the computed phase will be off if frequency is inexact!
-!  write(*,1060) fbest,lagbest,sbest
-!1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
-!          '   Sbest:',e12.3)
+  write(*,1060) fbest,lagbest,1.e-8*sbest
+1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
+          '   Sbest:',f8.1)
 
-!  ia=max(1,lagbest-928)
-!  ib=min(lagbest+2*928,jz)
-!  do i=ia,ib
-!     k=mod(i-lagbest-1+9280,928)+1
-!     write(73,3101) i-lagbest,0.0033*dat(i),csync(k)
-!3101 format(i8,3f12.6)
-!  enddo
+  ia=max(1,lagbest-1696)
+  ib=min(lagbest+2*1696,jz)
+  do i=ia,ib
+     k=mod(i-lagbest-1+9280,928)+1
+     write(73,3101) i-lagbest,0.0033*dat(i),csync(k)
+3101 format(i8,4f12.6)
+  enddo
 
-!! Once more, just for the plot of sq vs freq
-!  c=0.
-!  do i=1,nh
-!     c(i)=csync(i)*dat(i+lagbest)
-!  enddo
-!  call four2a(c,nfft,1,-1,1)
-!  do i=1,nfft
-!     sq=real(c(i))**2 + aimag(c(i))**2
-!     freq=df*(i-1)
-!     if(i.gt.nh+1) freq=df*(i-1-nfft)
-!     write(71,2001) freq,1.e-4*sq
-!2001 format(2f12.3)
-!  enddo
+! Once more, just for the plot of sq vs freq
+  c=0.
+  do i=1,nh
+     c(i)=csync(i)*dat(i+lagbest)
+  enddo
+  call four2a(c,nfft,1,-1,1)
+  do i=1,nfft
+     sq=real(c(i))**2 + aimag(c(i))**2
+     freq=df*(i-1)
+     if(i.gt.nh+1) freq=df*(i-1-nfft)
+     write(71,2001) freq,1.e-4*sq
+2001 format(2f12.3)
+  enddo
 
+  fpeak=fbest
   snrsync=1.e-8*sbest
+
+  call flushqqq(71)
+  call flushqqq(72)
+  call flushqqq(73)
 
   return
 end subroutine syncms

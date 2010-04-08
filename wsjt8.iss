@@ -9,7 +9,7 @@ DefaultGroupName=WSJT8
 Source: "c:\Users\joe\wsjt\wsjt8a\WSJT8.EXE";         DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\pthreadGC2.dll";      DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wsjt8a\qso.txt";           DestDir: "{app}"
-Source: "c:\Users\joe\wsjt\wsjt8a\WSJT8codes.txt";    DestDir: "{app}";
+Source: "c:\Users\joe\wsjt\wsjt8a\WSJT8codes.out";    DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\wsjt8a\wsjt.ico";          DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wsjt8a\TSKY.DAT";          DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wsjt8a\kvasd2.exe";        DestDir: "{app}";

@@ -1566,12 +1566,17 @@ def update():
 #    Audio.gcom1.rxdelay=float('0'+options.RxDelay.get())
 #    Audio.gcom1.txdelay=float('0'+options.TxDelay.get())
     Audio.gcom2.nslim2=isync-4
-    try:
-        Audio.gcom2.nport=int(options.PttPort.get())
-    except:
-        Audio.gcom2.nport=0
 
-    Audio.gcom2.pttport=(options.PttPort.get() + (' '*80))[:80]
+    port = options.PttPort.get()
+    if port=='None': port='0'
+    if port[:3]=='COM': port=port[3:]
+    if port.isdigit():
+        Audio.gcom2.nport = int(port)
+        port = "COM%d" % (int(port))
+    else:
+        Audio.gcom2.nport = 0
+    Audio.gcom2.pttport = (port + 80*' ')[:80]
+
     try:
         Audio.gcom2.ntc=options.ntc.get()
         Audio.gcom2.necho=options.necho.get()

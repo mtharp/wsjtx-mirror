@@ -41,25 +41,20 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   t=0.d0
   k=0
   phi=0.d0
-  do j=1,nsym
-     if(sent(j).eq.1) then
-        f=f0 + 0.5d0*dfgen
-     else
-        f=f0 - 0.5d0*dfgen
-     endif
-     dphi=twopi*f*dt
-     do i=1,nsps
-        k=k+1
-        phi=phi+dphi
-        iwave(k)=32767.0*sin(phi)
-     enddo
-  enddo
-
-  nrpt=29.5*12000.0/k
-  do irpt=2,nrpt
-     do i=1,nsps*nsym
-        k=k+1
-        iwave(k)=iwave(i)
+  nrpt=30.0*12000.0/(nsym*nsps)
+  do irpt=1,nrpt
+     do j=1,nsym
+        if(sent(j).eq.1) then
+           f=f0 + 0.5d0*dfgen
+        else
+           f=f0 - 0.5d0*dfgen
+        endif
+        dphi=twopi*f*dt
+        do i=1,nsps
+           k=k+1
+           phi=phi+dphi
+           iwave(k)=nint(32767.0*sin(phi))
+        enddo
      enddo
   enddo
 
@@ -84,7 +79,7 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
         else
            fac=2.718*t*dexp(-t)
         endif
-        iwave(i)=fac*amp*iwave(i)
+        iwave(i)=nint(fac*amp*iwave(i))
      enddo
   endif
 

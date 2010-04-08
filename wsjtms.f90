@@ -13,7 +13,7 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
   real pingdat(3,100)
   real ps(128)
   real psavg(450)
-  character msg*40,msg3*3,cf*1
+  character msg*40,msg3*3,c1*1
   character*90 line
   common/ccom/nline,tping(100),line(100)
 
@@ -51,7 +51,6 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
   nf2=DFTolerance
   msg3='   '
   dt=1.0/12000.0
-
   
 ! Find signal power at suitable intervals to search for pings.
 ! Probably should filter the data first, matching the nominal JTMS spectrum.
@@ -120,7 +119,10 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
      jjz=min(jjz,jz+1-jj)
 
      if(tstart.lt.29.5) then
-        call syncms(dat(jj),max(jjz,6000),snrsync,dfx,lagbest,isbest)
+! Look for the JTMS sync pattern
+        call syncms(dat(jj),max(jjz,6000),snrsync,fbest,lagbest,isbest,fpeak)
+        dfx=fpeak
+!        if(isbest.gt.0) call msksymbol(dat(jj),max(jjz,6000),dfx,lagbest,isbest)
         nsnr=nint(db(snrsync)-2.0)
         ndf=nint(dfx)
         dtx=(lagbest+istart+jj-1)*dt
@@ -129,10 +131,10 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
         if(mswidth.gt.1000) nrpt=36
         if(nsnr.ge.6) nrpt=nrpt+1
         if(nsnr.ge.9) nrpt=nrpt+1
-        cf=' '
-        if(nsnr.ge.2) cf='*'
+        c1=' '
+        if(nsnr.ge.2 .and. isbest.ne.0) c1='*'
         call cs_lock('wsjtms')
-        write(11,1010) cfile6,dtx,mswidth,nsnr,nrpt,ndf,isbest,cf
+        write(11,1010) cfile6,dtx,mswidth,nsnr,nrpt,ndf,isbest,c1
 1010    format(a6,f6.1,i5,i4,i4,i6,i3,a1)
         call cs_unlock
      endif
@@ -156,11 +158,11 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
      endif
 
      tstart=tstart + dt*(istart-1)
-     cf=' '
+     c1=' '
      if(nline.le.99) nline=nline+1
      tping(nline)=tstart
 !     write(line(nline),1050) cfile6,tstart,mswidth,int(peak),           &
-!          nwidth,nstrength,noffset,msg3,msg,cf
+!          nwidth,nstrength,noffset,msg3,msg,c1
 !1050 format(a6,f5.1,i5,i3,1x,2i1,i5,1x,a3,1x,a40,1x,a1)
   enddo
 
