@@ -7,12 +7,18 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
   complex c0(8)                      !Waveform for bit=0
   complex c1(8)                      !Waveform for bit=1
   complex c(MAXSAM)                  !Work array
-  complex z
+  complex z,z0,z1
   real ccfblue(0:4000)
   real fblue(0:4000)
   real*8 fs,dt,twopi,baud,f0,f1
   integer istep(3),ibit(3)
+  integer gsym(180)
+  integer iu(3)
   logical first
+
+  integer is32(32)                     !Sync vector in one-bit format
+  data is32/0,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,1/ 
+
   data istep/928,1216,1696/
   data ibit/30,48,78/
   data first/.true./
@@ -66,8 +72,8 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
      if(ipk.gt.nh+1) freq=df*(ipk-1-nfft)
      ccfblue(lag)=1.e-8*smax
      fblue(lag)=freq
-     write(72,2002) lag,ccfblue(lag),fblue(lag)
-2002 format(i6,2f12.3)
+!     write(72,2002) lag,ccfblue(lag),fblue(lag)
+!2002 format(i6,2f12.3)
      if(smax.gt.sbest) then
         sbest=smax
         fbest=df*(ipk-1)
@@ -84,7 +90,7 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
         if((nsgn.eq.-1 .and. i0.ge.3) .or.                          &
            (nsgn.eq.1 .and. i0.le.lagmax-3))  then
            do i=-3,3
-              write(74,*) n,nsgn,i0+i,ccfblue(i0+i)
+!              write(74,*) n,nsgn,i0+i,ccfblue(i0+i)
               if(ccfblue(i0+i).gt.smax .and.                        &
                    abs(fblue(i0+i)-fbest).lt.1.5*df) then
                  smax=ccfblue(i0+i)
@@ -101,43 +107,97 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
      nbit=ibit(isbest)
      nstep=istep(isbest)
   endif
+  nsym=nstep/nsps
 
   write(*,1060) fbest,lagbest,1.e-8*sbest,nbit
 1060 format('DF:',f8.1,'   Lag:',i5,'   Sbest:',f8.1,'   Nbit:',i3)
 
-  phi=0.d0
-  dphi=twopi*dt*fbest
-  do i=1,jz
-     phi=phi+dphi
-     cdat(i)=cdat(i) * cmplx(cos(phi),-sin(phi))
-     j=mod(i-lagbest+100*nstep,nstep) + 1
-     z=0.
-     c(i)=0.
-     if(j.ge.1 .and. j.le.256) then
-        z=csync(j)
-        c(i)=cdat(i) * conjg(z)
+! Get refined values of DF and phase
+  smax=0.
+  do idf=-25,25
+     dphi=twopi*dt*(fbest+idf)
+     s1=0.
+     do iph=-160,180,20
+        phi=iph/57.2957795
+        s=0.
+        do i=1,256
+           phi=phi+dphi
+           s=s + cdat(lagbest+i-1)*cmplx(cos(phi),-sin(phi)) * conjg(csync(i))
+        enddo
+        if(s.gt.s1) then
+           s1=s
+           iph1=iph
+        endif
+     enddo
+!     write(71,3101) idf,iph1,s1
+!3101 format(2i5,f10.1)
+     if(s1.gt.smax) then
+        smax=s1
+        iphpk=iph1
+        idfpk=idf
      endif
-     write(73,3101) i,i-lagbest,0.002*cdat(i),z
-3101 format(2i8,4f12.3)
+  enddo
+  print*,'Best:',smax,idfpk,iphpk
+
+! Adjust cdat() using best values for frequency and phase
+  dphi=twopi*dt*(fbest+idfpk)
+!  phi=iphpk/57.2957795 - lagbest*dphi
+  do i=1,jz
+     phi=(i-lagbest+1)*dphi
+     cdat(i)=cdat(i)*cmplx(cos(phi),-sin(phi))
   enddo
 
-  xn=log(float(jz))/log(2.0)
-  n=xn
-  if(xn-n .gt.0.001) n=n+1
-  nfft=2**n
-  nh=nfft/2
-  df=fs/nfft
-  c(jz+1:nfft)=0.
-  call four2a(c,nfft,1,-1,1)
-  do i=1,nfft
-     sq=real(c(i))**2 + aimag(c(i))**2
-     freq=df*(i-1)
-     if(i.gt.nh+1) freq=df*(i-1-nfft)
-     write(71,2001) freq,1.e-8*sq
-2001 format(2f12.3)
+! Get soft symbols
+  nerr=0
+  nsgn=1
+  do j=1,nsym
+     k=lagbest + 8*j-7
+     z0=dot_product(c0,cdat(k:k+7))
+     z1=dot_product(c1,cdat(k:k+7))
+     z0=0.003*z0 * cexp(cmplx(0.0,-j*1.56/200.0))
+     z1=0.003*z1 * cexp(cmplx(0.0,-j*1.56/200.0))
+     x0=z0
+     x1=z1
+
+     if(nsgn.lt.0) then
+        z0=-z0
+        z1=-z1
+     endif
+     if(abs(z0).ge.abs(z1)) pha=atan2(aimag(z0),real(z0))
+     if(abs(z0).lt.abs(z1)) pha=atan2(aimag(z1),real(z1))
+     write(72,*) j,pha,z0,z1
+
+     softsym=nsgn*(x1-x0)
+     if(softsym.ge.0.0) then
+        id2=1
+     else
+        id2=0
+        nsgn=-nsgn
+     endif
+     if(j.le.32 .and. id2.ne.is32(j)) nerr=nerr+1
+     if(j.gt.32) then
+        n=nint(softsym)
+        gsym(j-32)=min(127,max(-127,n)) + 128
+     endif
+     ii=0
+     if(j.le.32) ii=is32(j)
+     n=0
+     if(j.gt.32) n=gsym(j-32)
+     write(71,1010) j,ii,id2,n,softsym,x0,x1,z0,z1
+1010 format(4i4,3f8.0,2x,4f8.0)
   enddo
 
-  dfx=fbest-375
+  write(*,1020) nerr
+1020 format('Hard-decision errors in sync vector:',i4)
+
+  call decodems(78,gsym,metric,iu)
+  print*,metric,iu
+
+  gsym=256-gsym
+  call decodems(78,gsym,metric,iu)
+  print*,metric,iu
+
+  dfx=fbest-375+idfpk
   snrsync=1.e-8*sbest
 
   call flushqqq(71)
