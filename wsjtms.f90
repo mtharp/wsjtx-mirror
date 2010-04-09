@@ -120,8 +120,7 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
 
      if(tstart.lt.29.5) then
 ! Look for the JTMS sync pattern
-        call syncms(dat(jj),max(jjz,6000),snrsync,fbest,lagbest,isbest,fpeak)
-        dfx=fpeak
+        call syncms(dat(jj),max(jjz,6000),snrsync,dfx,lagbest,isbest)
 !        if(isbest.gt.0) call msksymbol(dat(jj),max(jjz,6000),dfx,lagbest,isbest)
         nsnr=nint(db(snrsync)-2.0)
         ndf=nint(dfx)

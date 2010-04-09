@@ -1,77 +1,37 @@
-subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest,fpeak)
+subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
 
   parameter (MAXSAM=32768)           !Max number of samples in ping
-  integer id(32)                     !Sync followed by data in one-bit format
-  real dat(jz)
-  real x0(32)                        !Waveform for bit=0
-  real x1(32)                        !Waveform for bit=1
+  real dat(jz)                       !Raw data sampled at 12000 Hz
+  complex cdat(MAXSAM)               !Analytic signal
+  complex csync(256)                 !Complex sync waveform
+  complex c0(8)                      !Waveform for bit=0
+  complex c1(8)                      !Waveform for bit=1
+  complex c(MAXSAM)                  !Work array
+  complex z
   real ccfblue(0:4000)
   real fblue(0:4000)
-  complex csync(1024)                !Complex sync waveform
-  complex c(MAXSAM)                  !Work array
-  complex cdat(MAXSAM)
-  integer istep(3)
+  real*8 fs,dt,twopi,baud,f0,f1
+  integer istep(3),ibit(3)
   logical first
-  data isync32/Z'1acffc1d'/          !32-bit sync
-  data istep/928,1216,1696/,nstep/3/
+  data istep/928,1216,1696/
+  data ibit/30,48,78/
   data first/.true./
   save
 
   if(first) then
-     fs=12000
-     nsps=8
-     nsync=32
-     pha=0.
-     nbit=0
-     pha0=-90.
-     ndata=(nbit+12)*2               !Number of data symbols (K=13, r=1/2)
-     nsym=ndata+nsync                !Total number of symbols
-     twopi=8*atan(1.0)
-     dt=1./fs                        !Sample interval
-     baud=fs/nsps                       !Keying rate
-
-     foffset=375.
-     f0=0.5*baud                            !Nominal Tx frequency for "0" bit
-     f1=baud                        !Nominal Tx frequency for "1" bit
-
-! Unpack sync bits into the first nsync positions of id()
-     id=0
-     n=isync32
-     do j=1,nsync
-        if(n.lt.0) id(j)=1
-        n=ishft(n,1)
-     enddo
-
-! Generate sync waveform
-     k=0
-     phi=0.
-     do j=1,nsync
-        if(id(j).eq.1) then
-           dphi=twopi*dt*(f1+foffset)
-        else
-           dphi=twopi*dt*(f0+foffset)
-        endif
-        do i=1,nsps
-           k=k+1
-           phi=phi+dphi
-           csync(k)=cmplx(cos(phi),sin(phi))
-        enddo
-     enddo
-
-! Generate the basic waveforms for symbols "0" and "1" 
-     phi0=0.
-     phi1=0.
-     dphi0=twopi*dt*750.0
-     dphi1=twopi*dt*1500.0
-     do i=1,nsps
-        phi0=phi0+dphi0
-        phi1=phi1+dphi1
-        x0(i)=sin(phi0)
-        x1(i)=sin(phi1)
-     enddo
+     first=.false.
+     twopi=8*atan(1.d0)
+     fs=12000.d0                     !Sample rate
+     nsps=8                          !Number of samples per symbol
+     nsync=32                        !Number of symbols in sync vector
+     dt=1.d0/fs                      !Sample interval
+     baud=fs/nsps                    !Keying rate
+     f0=0.5d0*baud                   !Nominal Tx frequency for "0" bit
+     f1=baud                         !Nominal Tx frequency for "1" bit
+     call setupms(f0,f1,csync,c0,c1)
   endif
 
-!  call analytic(dat,jz,cdat)
+  call analytic(dat,jz,cdat)         !Convert signal to analytic form
 
 ! Find lag and DF
   nfft=512
@@ -82,10 +42,10 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest,fpeak)
   lagmax=min(4000,jz-nh)
   iz=500.0/df
   do lag=0,lagmax
-     c=0.
      do i=1,nh
-        c(i)=csync(i)*dat(i+lag)
+        c(i)=cdat(i+lag)*conjg(csync(i))
      enddo
+     c(nh+1:nfft)=0.
      call four2a(c,nfft,1,-1,1)
      smax=0.
      do i=1,iz
@@ -106,8 +66,8 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest,fpeak)
      if(ipk.gt.nh+1) freq=df*(ipk-1-nfft)
      ccfblue(lag)=1.e-8*smax
      fblue(lag)=freq
-!     write(72,2002) lag,ccfblue(lag),fblue(lag)
-!2002 format(i6,2f12.3)
+     write(72,2002) lag,ccfblue(lag),fblue(lag)
+2002 format(i6,2f12.3)
      if(smax.gt.sbest) then
         sbest=smax
         fbest=df*(ipk-1)
@@ -116,14 +76,15 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest,fpeak)
   enddo
   if(fbest.gt.0.5*fs) fbest=fbest-fs
 
-! Find length of message, nbit
+! Find length of message: isbest=1, 2, or 3 for nbit=30, 48, or 78.
   smax=0.
-  do n=1,nstep
+  do n=1,3
      do nsgn=-1,1,2
         i0=lagbest + nsgn*istep(n)
         if((nsgn.eq.-1 .and. i0.ge.3) .or.                          &
            (nsgn.eq.1 .and. i0.le.lagmax-3))  then
            do i=-3,3
+              write(74,*) n,nsgn,i0+i,ccfblue(i0+i)
               if(ccfblue(i0+i).gt.smax .and.                        &
                    abs(fblue(i0+i)-fbest).lt.1.5*df) then
                  smax=ccfblue(i0+i)
@@ -134,39 +95,55 @@ subroutine syncms(dat,jz,snrsync,fbest,lagbest,isbest,fpeak)
      enddo
   enddo
 
-! NB: the computed phase will be off if frequency is inexact!
-  write(*,1060) fbest,lagbest,1.e-8*sbest
-1060 format('Measured  DF:',f8.1,16x,'   lag:',i5,   &
-          '   Sbest:',f8.1)
+  nbit=0
+  nstep=928
+  if(isbest.ne.0) then
+     nbit=ibit(isbest)
+     nstep=istep(isbest)
+  endif
 
-  ia=max(1,lagbest-1696)
-  ib=min(lagbest+2*1696,jz)
-  do i=ia,ib
-     k=mod(i-lagbest-1+9280,928)+1
-     write(73,3101) i-lagbest,0.0033*dat(i),csync(k)
-3101 format(i8,4f12.6)
+  write(*,1060) fbest,lagbest,1.e-8*sbest,nbit
+1060 format('DF:',f8.1,'   Lag:',i5,'   Sbest:',f8.1,'   Nbit:',i3)
+
+  phi=0.d0
+  dphi=twopi*dt*fbest
+  do i=1,jz
+     phi=phi+dphi
+     cdat(i)=cdat(i) * cmplx(cos(phi),-sin(phi))
+     j=mod(i-lagbest+100*nstep,nstep) + 1
+     z=0.
+     c(i)=0.
+     if(j.ge.1 .and. j.le.256) then
+        z=csync(j)
+        c(i)=cdat(i) * conjg(z)
+     endif
+     write(73,3101) i,i-lagbest,0.002*cdat(i),z
+3101 format(2i8,4f12.3)
   enddo
 
-! Once more, just for the plot of sq vs freq
-  c=0.
-  do i=1,nh
-     c(i)=csync(i)*dat(i+lagbest)
-  enddo
+  xn=log(float(jz))/log(2.0)
+  n=xn
+  if(xn-n .gt.0.001) n=n+1
+  nfft=2**n
+  nh=nfft/2
+  df=fs/nfft
+  c(jz+1:nfft)=0.
   call four2a(c,nfft,1,-1,1)
   do i=1,nfft
      sq=real(c(i))**2 + aimag(c(i))**2
      freq=df*(i-1)
      if(i.gt.nh+1) freq=df*(i-1-nfft)
-     write(71,2001) freq,1.e-4*sq
+     write(71,2001) freq,1.e-8*sq
 2001 format(2f12.3)
   enddo
 
-  fpeak=fbest
+  dfx=fbest-375
   snrsync=1.e-8*sbest
 
   call flushqqq(71)
   call flushqqq(72)
   call flushqqq(73)
+  call flushqqq(74)
 
   return
 end subroutine syncms
