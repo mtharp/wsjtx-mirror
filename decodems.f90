@@ -2,17 +2,19 @@ subroutine decodems(nbit,gsym,metric,iu)
 
 ! Decode soft channel symbols to recover source-encoded user message
 
-  integer gsym(372)
-  integer gsym2(372)
+  integer gsym(180)
+  integer gsym2(180)
   integer iu(3)
   integer era(63)
   integer dat4(13)
   integer*1 dbits(96)
-  integer*1 symbols(372)
+  integer*1 symbols(180)
   integer*1 ddec(10)
+  integer*1 i1
   integer mettab(0:255,0:1)
   logical first
   data first/.true./
+  equivalence (i1,i4)
   save first,mettab
 
   if(first) then
@@ -38,14 +40,11 @@ subroutine decodems(nbit,gsym,metric,iu)
   enddo
 
   do i=1,nsym
-     n=gsym(i)
-     if(gsym(i).lt.-127) n=-127
-     if(gsym(i).gt. 127) n=127
-     symbols(i)=n
+     i4=gsym(i)
+     symbols(i)=i1
   enddo
 
   call vit213(symbols,nbit,mettab,ddec,metric)
-  print*,metric,ddec
 
   iz=(nbit+7)/8
   ddec(iz+1:)=0

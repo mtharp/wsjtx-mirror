@@ -1,6 +1,6 @@
-subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
+subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,metric,decoded)
 
-  parameter (MAXSAM=32768)           !Max number of samples in ping
+  parameter (MAXSAM=65536)           !Max number of samples in ping
   real dat(jz)                       !Raw data sampled at 12000 Hz
   complex cdat(MAXSAM)               !Analytic signal
   complex csync(256)                 !Complex sync waveform
@@ -13,8 +13,10 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
   real*8 fs,dt,twopi,baud,f0,f1
   integer istep(3),ibit(3)
   integer gsym(180)
+  integer isym(212)
   integer iu(3)
   logical first
+  character cmode*5,decoded*24
 
   integer is32(32)                     !Sync vector in one-bit format
   data is32/0,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,1/ 
@@ -37,7 +39,7 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
      call setupms(f0,f1,csync,c0,c1)
   endif
 
-  call analytic(dat,jz,cdat)         !Convert signal to analytic form
+  call analytic(dat,jz,cdat)      !Convert signal to analytic form
 
 ! Find lag and DF
   nfft=512
@@ -137,7 +139,7 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
         idfpk=idf
      endif
   enddo
-  print*,'Best:',smax,idfpk,iphpk
+  print*,'Best:',smax,idfpk,iphpk,nsym
 
 ! Adjust cdat() using best values for frequency and phase
   dphi=twopi*dt*(fbest+idfpk)
@@ -146,6 +148,17 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
      phi=(i-lagbest+1)*dphi
      cdat(i)=cdat(i)*cmplx(cos(phi),-sin(phi))
   enddo
+
+!###
+!  open(51,file='gsym.dat',status='old')
+!  read(51,2902) isym
+!2902 format(8(8i1,1x))
+!  do i=1,212
+!     n=2*isym(i)-1
+!     isym(i)=min(127,max(-127,n)) + 128
+!  enddo
+!  close(51)
+!###
 
 ! Get soft symbols
   nerr=0
@@ -165,7 +178,8 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
      endif
      if(abs(z0).ge.abs(z1)) pha=atan2(aimag(z0),real(z0))
      if(abs(z0).lt.abs(z1)) pha=atan2(aimag(z1),real(z1))
-     write(72,*) j,pha,z0,z1
+     write(72,2903) j,(isym(j)-127)/2,pha,z0,z1
+2903 format(2i6,5f10.2)
 
      softsym=nsgn*(x1-x0)
      if(softsym.ge.0.0) then
@@ -174,8 +188,13 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
         id2=0
         nsgn=-nsgn
      endif
-     if(j.le.32 .and. id2.ne.is32(j)) nerr=nerr+1
-     if(j.gt.32) then
+     if(j.le.32) then
+        n=0
+        if(id2.ne.is32(j)) n=1
+!        write(*,2901) j,is32(j),id2,n,softsym
+!2901    format(4i6,f9.1)
+        if(id2.ne.is32(j)) nerr=nerr+1
+     else
         n=nint(softsym)
         gsym(j-32)=min(127,max(-127,n)) + 128
      endif
@@ -190,13 +209,12 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest)
   write(*,1020) nerr
 1020 format('Hard-decision errors in sync vector:',i4)
 
-  call decodems(78,gsym,metric,iu)
-  print*,metric,iu
-
-  gsym=256-gsym
-  call decodems(78,gsym,metric,iu)
-  print*,metric,iu
-
+  decoded='                        '
+  if(nbit.ne.0) then
+     call decodems(nbit,gsym,metric,iu)
+     cmode='JTMS'
+     call srcdec(cmode,nbit,iu,decoded)
+  endif
   dfx=fbest-375+idfpk
   snrsync=1.e-8*sbest
 
