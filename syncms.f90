@@ -1,8 +1,9 @@
-subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,metric,decoded)
+subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
 
   parameter (MAXSAM=65536)           !Max number of samples in ping
   real dat(jz)                       !Raw data sampled at 12000 Hz
   complex cdat(MAXSAM)               !Analytic signal
+  complex cdat0(MAXSAM)               !Analytic signal
   complex csync(256)                 !Complex sync waveform
   complex c0(8)                      !Waveform for bit=0
   complex c1(8)                      !Waveform for bit=1
@@ -40,6 +41,7 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,metric,decoded)
   endif
 
   call analytic(dat,jz,cdat)      !Convert signal to analytic form
+  cdat0(1:jz)=cdat(1:jz)
 
 ! Find lag and DF
   nfft=512
@@ -111,8 +113,8 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,metric,decoded)
   endif
   nsym=nstep/nsps
 
-  write(*,1060) fbest,lagbest,1.e-8*sbest,nbit
-1060 format('DF:',f8.1,'   Lag:',i5,'   Sbest:',f8.1,'   Nbit:',i3)
+!  write(*,1060) fbest,lagbest,1.e-8*sbest,nbit
+!1060 format('DF:',f8.1,'   Lag:',i5,'   Sbest:',f8.1,'   Nbit:',i3)
 
 ! Get refined values of DF and phase
   smax=0.
@@ -143,27 +145,16 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,metric,decoded)
 
 ! Adjust cdat() using best values for frequency and phase
   dphi=twopi*dt*(fbest+idfpk)
-!  phi=iphpk/57.2957795 - lagbest*dphi
+  do iph=-160,180,20
+  phi0=iph/57.2957795
   do i=1,jz
-     phi=(i-lagbest+1)*dphi
-     cdat(i)=cdat(i)*cmplx(cos(phi),-sin(phi))
+     phi=phi0 + (i-lagbest+1)*dphi
+     cdat(i)=cdat0(i)*cmplx(cos(phi),-sin(phi))
   enddo
 
-!###
-!  open(51,file='gsym.dat',status='old')
-!  read(51,2902) isym
-!2902 format(8(8i1,1x))
-!  do i=1,212
-!     n=2*isym(i)-1
-!     isym(i)=min(127,max(-127,n)) + 128
-!  enddo
-!  close(51)
-!###
-
-! Get soft symbols
   nerr=0
   nsgn=1
-  do j=1,nsym
+  do j=1,nsym                               !Get soft symbols
      k=lagbest + 8*j-7
      z0=dot_product(c0,cdat(k:k+7))
      z1=dot_product(c1,cdat(k:k+7))
@@ -206,22 +197,28 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,metric,decoded)
 1010 format(4i4,3f8.0,2x,4f8.0)
   enddo
 
-  write(*,1020) nerr
-1020 format('Hard-decision errors in sync vector:',i4)
+!  write(*,1020) nerr
+!1020 format('Hard-decision errors in sync vector:',i4)
 
   decoded='                        '
+  metric=0
   if(nbit.ne.0) then
+     minmet=5*nbit
      call decodems(nbit,gsym,metric,iu)
-     cmode='JTMS'
-     call srcdec(cmode,nbit,iu,decoded)
+     if(metric.ge.minmet) then
+        cmode='JTMS'
+        call srcdec(cmode,nbit,iu,decoded)
+     endif
   endif
+  print*,iph,iphpk,nerr,metric,'   ',decoded
+  enddo
   dfx=fbest-375+idfpk
   snrsync=1.e-8*sbest
 
   call flushqqq(71)
   call flushqqq(72)
-  call flushqqq(73)
-  call flushqqq(74)
+!  call flushqqq(73)
+!  call flushqqq(74)
 
   return
 end subroutine syncms
