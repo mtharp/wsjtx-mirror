@@ -554,7 +554,7 @@ def ModeJTMS(event=NONE):
         bclravg.configure(state=DISABLED)
         binclude.configure(state=DISABLED)
         bexclude.configure(state=DISABLED)
-        cbfreeze.configure(state=DISABLED)
+        cbfreeze.configure(state=NORMAL)
         if ltxdf: toggletxdf()
         btxdf.configure(state=DISABLED)
         graph2.configure(bg='black')

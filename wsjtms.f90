@@ -1,4 +1,5 @@
-subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
+subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
+     DFTolerance,pick,NSyncOK,s2,ps0,psavg)
 
   parameter (NZMAX=3100)
   real dat(jz)                      !Raw audio data
@@ -41,14 +42,11 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
   npkept=0
   minwidth=40
   nqrn=0
-  dftolerance=400
 
 ! Decode JTMS mesages.
 
   slim=MinSigdB
   wmin=0.001*MinWidth * (19.95/20.0)
-  nf1=-DFTolerance
-  nf2=DFTolerance
   msg3='   '
   dt=1.0/12000.0
   
@@ -122,7 +120,8 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,pick,NSyncOK,s2,ps0,psavg)
 ! Look for the JTMS sync pattern
         jz2=max(jjz,6000)
         if(jz2.gt.65536) jz2=65536
-        call syncms(dat(jj),jz2,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
+        call syncms(dat(jj),jz2,NFreeze,MouseDF,DFTolerance,snrsync,   &
+             dfx,lagbest,isbest,nerr,metric,decoded)
 !        if(isbest.gt.0) call msksymbol(dat(jj),max(jjz,6000),dfx,lagbest,isbest)
         nsnr=nint(db(snrsync)-2.0)
         ndf=nint(dfx)

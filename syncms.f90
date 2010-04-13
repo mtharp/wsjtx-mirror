@@ -1,7 +1,9 @@
-subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
+subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
+     lagbest,isbest,nerr,metric,decoded)
 
   parameter (MAXSAM=65536)           !Max number of samples in ping
   real dat(jz)                       !Raw data sampled at 12000 Hz
+  integer DFTolerance
   complex cdat(MAXSAM)               !Analytic signal
   complex cdat0(MAXSAM)               !Analytic signal
   complex csync(256)                 !Complex sync waveform
@@ -40,61 +42,69 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
      call setupms(f0,f1,csync,c0,c1)
   endif
 
-  call analytic(dat,jz,cdat)      !Convert signal to analytic form
-  cdat0(1:jz)=cdat(1:jz)
+  decoded='                        '
+  metric=0
 
-! Find lag and DF
-  nfft=512
+  call analytic(dat,jz,cdat)      !Convert signal to analytic form
+  cdat0(1:jz)=cdat(1:jz)          !Save a copy for possible later use
+
+  nfft=512                        !Set constants and initial values
   nh=nfft/2
   df=fs/nfft
   sbest=0.
   isbest=0
   lagmax=min(4000,jz-nh)
+  lagbest=0
   iz=500.0/df
-  do lag=0,lagmax
+
+  famin=-25.                      !Set DF search range
+  fbmax=775.
+  ia=famin/df
+  ib=fbmax/df
+  f0=375.
+  if(NFreeze.eq.1) then
+     fa=max(famin,f0+MouseDF-DFTolerance)
+     fb=min(fbmax,f0+MouseDF+DFTolerance)
+  else
+     fa=max(famin,f0+MouseDF-400)
+     fb=min(fbmax,f0+MouseDF+400)
+  endif
+  ia=fa/df - 2
+  if(ia.lt.1) ia=1
+  ib=fb/df + 3
+
+  do lag=0,lagmax                           !Find lag and DF
      do i=1,nh
         c(i)=cdat(i+lag)*conjg(csync(i))
      enddo
      c(nh+1:nfft)=0.
      call four2a(c,nfft,1,-1,1)
      smax=0.
-     do i=1,iz
+     do i=ia,ib
         sq=real(c(i))**2 + aimag(c(i))**2
-        if(sq.gt.smax) then
-           smax=sq
-           ipk=i
-        endif
-     enddo
-     do i=nfft-iz,nfft
-        sq=real(c(i))**2 + aimag(c(i))**2
-        if(sq.gt.smax) then
+        f=df*(i-1)
+        if(f.ge.fa-0.5*df .and. f.le.fb+0.5*df .and. sq.gt.smax) then
            smax=sq
            ipk=i
         endif
      enddo
      freq=df*(ipk-1)
-     if(ipk.gt.nh+1) freq=df*(ipk-1-nfft)
      ccfblue(lag)=1.e-8*smax
      fblue(lag)=freq
-!     write(72,2002) lag,ccfblue(lag),fblue(lag)
-!2002 format(i6,2f12.3)
      if(smax.gt.sbest) then
         sbest=smax
-        fbest=df*(ipk-1)
+        fbest=freq
         lagbest=lag
      endif
   enddo
-  if(fbest.gt.0.5*fs) fbest=fbest-fs
 
-! Find length of message: isbest=1, 2, or 3 for nbit=30, 48, or 78.
   smax=0.
-  do n=1,3
+  do n=1,3                                   !Find message length
      do nsgn=-1,1,2
         i0=lagbest + nsgn*istep(n)
         if((nsgn.eq.-1 .and. i0.ge.3) .or.                          &
            (nsgn.eq.1 .and. i0.le.lagmax-3))  then
            do i=-3,3
-!              write(74,*) n,nsgn,i0+i,ccfblue(i0+i)
               if(ccfblue(i0+i).gt.smax .and.                        &
                    abs(fblue(i0+i)-fbest).lt.1.5*df) then
                  smax=ccfblue(i0+i)
@@ -105,6 +115,11 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
      enddo
   enddo
 
+  if(lagbest.eq.0) then
+     snrsync=0.                             !Bail out if nothing found
+     go to 999
+  endif
+
   nbit=0
   nstep=928
   if(isbest.ne.0) then
@@ -113,41 +128,38 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
   endif
   nsym=nstep/nsps
 
-!  write(*,1060) fbest,lagbest,1.e-8*sbest,nbit
-!1060 format('DF:',f8.1,'   Lag:',i5,'   Sbest:',f8.1,'   Nbit:',i3)
+  rewind 72
 
-! Get refined values of DF and phase
   smax=0.
-  do idf=-25,25
+  do idf=-25,25                           !Refine values of DF and phase
      dphi=twopi*dt*(fbest+idf)
-     s1=0.
-     do iph=-160,180,20
-        phi=iph/57.2957795
-        s=0.
-        do i=1,256
-           phi=phi+dphi
-           s=s + cdat(lagbest+i-1)*cmplx(cos(phi),-sin(phi)) * conjg(csync(i))
+     dfx=fbest + idf - 375.0
+     if(dfx.ge.mousedf-dftolerance .and. dfx.le.mousedf+dftolerance) then
+        s1=0.
+        do iph=-160,180,20
+           phi=iph/57.2957795
+           s=0.
+           do i=1,256
+              phi=phi+dphi
+              s=s + cdat(lagbest+i-1)* cmplx(cos(phi),-sin(phi)) *     &
+                   conjg(csync(i))
+           enddo
+           if(s.gt.s1) then
+              s1=s
+              iph1=iph
+           endif
         enddo
-        if(s.gt.s1) then
-           s1=s
-           iph1=iph
+        if(s1.gt.smax) then
+           smax=s1
+           iphpk=iph1
+           idfpk=idf
         endif
-     enddo
-!     write(71,3101) idf,iph1,s1
-!3101 format(2i5,f10.1)
-     if(s1.gt.smax) then
-        smax=s1
-        iphpk=iph1
-        idfpk=idf
      endif
   enddo
-  print*,'Best:',smax,idfpk,iphpk,nsym
 
-! Adjust cdat() using best values for frequency and phase
   dphi=twopi*dt*(fbest+idfpk)
-  do iph=-160,180,20
-  phi0=iph/57.2957795
-  do i=1,jz
+  phi0=0.
+  do i=1,jz                            !Tweak using best DF and phase
      phi=phi0 + (i-lagbest+1)*dphi
      cdat(i)=cdat0(i)*cmplx(cos(phi),-sin(phi))
   enddo
@@ -162,15 +174,14 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
      z1=0.003*z1 * cexp(cmplx(0.0,-j*1.56/200.0))
      x0=z0
      x1=z1
-
      if(nsgn.lt.0) then
         z0=-z0
         z1=-z1
      endif
      if(abs(z0).ge.abs(z1)) pha=atan2(aimag(z0),real(z0))
      if(abs(z0).lt.abs(z1)) pha=atan2(aimag(z1),real(z1))
-     write(72,2903) j,(isym(j)-127)/2,pha,z0,z1
-2903 format(2i6,5f10.2)
+     write(72,2903) j,pha,z0,z1
+2903 format(i6,5f10.2)
 
      softsym=nsgn*(x1-x0)
      if(softsym.ge.0.0) then
@@ -179,11 +190,9 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
         id2=0
         nsgn=-nsgn
      endif
-     if(j.le.32) then
+     if(j.le.32) then                       !Count the hard sync-bit errors
         n=0
         if(id2.ne.is32(j)) n=1
-!        write(*,2901) j,is32(j),id2,n,softsym
-!2901    format(4i6,f9.1)
         if(id2.ne.is32(j)) nerr=nerr+1
      else
         n=nint(softsym)
@@ -193,32 +202,20 @@ subroutine syncms(dat,jz,snrsync,dfx,lagbest,isbest,nerr,metric,decoded)
      if(j.le.32) ii=is32(j)
      n=0
      if(j.gt.32) n=gsym(j-32)
-     write(71,1010) j,ii,id2,n,softsym,x0,x1,z0,z1
-1010 format(4i4,3f8.0,2x,4f8.0)
   enddo
 
-!  write(*,1020) nerr
-!1020 format('Hard-decision errors in sync vector:',i4)
-
-  decoded='                        '
-  metric=0
-  if(nbit.ne.0) then
-     minmet=5*nbit
+  if(nbit.ne.0 .and. nerr.le.8) then
+     minmet=8*(nbit+12)
      call decodems(nbit,gsym,metric,iu)
      if(metric.ge.minmet) then
         cmode='JTMS'
         call srcdec(cmode,nbit,iu,decoded)
      endif
   endif
-  print*,iph,iphpk,nerr,metric,'   ',decoded
-  enddo
   dfx=fbest-375+idfpk
-  snrsync=1.e-8*sbest
+  snrsync=1.e-9*sbest
 
-  call flushqqq(71)
   call flushqqq(72)
-!  call flushqqq(73)
-!  call flushqqq(74)
 
-  return
+999  return
 end subroutine syncms
