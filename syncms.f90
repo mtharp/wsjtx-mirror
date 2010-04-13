@@ -10,7 +10,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   complex c0(8)                      !Waveform for bit=0
   complex c1(8)                      !Waveform for bit=1
   complex c(MAXSAM)                  !Work array
-  complex z,z0,z1
+  complex z,z0,z1,zsum,zavg
   real ccfblue(0:4000)
   real fblue(0:4000)
   real*8 fs,dt,twopi,baud,f0,f1
@@ -166,6 +166,8 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
 
   nerr=0
   nsgn=1
+  zsum=0.
+  u=0.25
   do j=1,nsym                               !Get soft symbols
      k=lagbest + 8*j-7
      z0=dot_product(c0,cdat(k:k+7))
@@ -178,10 +180,20 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
         z0=-z0
         z1=-z1
      endif
-     if(abs(z0).ge.abs(z1)) pha=atan2(aimag(z0),real(z0))
-     if(abs(z0).lt.abs(z1)) pha=atan2(aimag(z1),real(z1))
-     write(72,2903) j,pha,z0,z1
-2903 format(i6,5f10.2)
+     if(abs(z0).ge.abs(z1)) then
+        pha=atan2(aimag(z0),real(z0))
+        if(j.eq.1) zavg=z0
+        zavg=zavg + u*(z0-zavg)
+        zsum=zsum + z0
+     else
+        pha=atan2(aimag(z1),real(z1))
+        if(j.eq.1) zavg=z0
+        zavg=zavg + u*(z1-zavg)
+        zsum=zsum + z1
+     endif
+     phavg=atan2(aimag(zavg),real(zavg))
+     write(72,2903) j,pha,phavg,zavg,zsum            !Save phase for plot
+2903 format(i6,2f10.3,4f10.2)
 
      softsym=nsgn*(x1-x0)
      if(softsym.ge.0.0) then

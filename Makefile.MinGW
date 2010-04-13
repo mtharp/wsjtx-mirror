@@ -4,9 +4,9 @@ CC = /mingw/bin/gcc
 FC = /mingw/bin/g95
 
 # FFLAGS = -O2
-CFLAGS = -I. -fbounds-check
+CFLAGS = -I. -fbounds-check -fno-second-underscore
 
-all:    WSJT8.EXE WSJT8codes.EXE
+all:    WSJT8.EXE WSJT8codes.EXE tms.exe
 
 # Default rules
 %.o: %.c
@@ -27,6 +27,17 @@ OBJS1 = WSJT8codes.o srcenc.o srcdec.o parse.o msgtrim.o packcall.o \
 	hash.o chenc.o chdec.o packbits.o unpackbits.o \
 	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
 	vit213.o enc416.o vit416.o nhash.o tab.o
+
+OBJS4 = tms.o srcdec.o parse.o msgtrim.o packcall.o \
+	packgrid.o nchar.o grid2deg.o pkcall.o pkgrid.o pktext.o \
+	unpkcall.o unpkgrid.o deg2grid.o unpktext.o \
+	pk30.o pk48.o pk78.o pkpfx.o unpkpfx.o pkname.o unpkname.o \
+	hash.o chenc.o chdec.o packbits.o unpackbits.o \
+	wrapkarn.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
+	vit213.o enc416.o vit416.o nhash.o tab.o syncms.o db.o \
+	thnix_stub.o setupms.o analytic.o four2a.o decodems.o \
+	runqqq.o cutil.o
+
 
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0 \
 	audiodev
@@ -92,6 +103,9 @@ wsjt.spec: wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 
 WSJT8codes.EXE: $(OBJS1)
 	$(FC) -o WSJT8codes $(OBJS1)
+
+tms.exe: $(OBJS4)
+	$(FC) -o tms.exe $(OBJS4) libfftw3f_win.a 
 
 jtaudio.o: jtaudio.c
 	$(CC) $(CFLAGS) -c -DWin32 jtaudio.c
