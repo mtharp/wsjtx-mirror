@@ -24,6 +24,10 @@ program tms
      read(10,end=999) iping,jz,(dat(i),i=1,jz)
      if(iping.eq.nping .or. nping.eq.0) then
 
+        sq=dot_product(dat(1:jz),dat(1:jz))
+        rms=sqrt(sq/1000.0)
+        fac=884.244/rms
+        dat(1:jz)=fac*dat(1:jz)
         k=0
         nadd=200
         do j=1,jz/nadd
@@ -32,7 +36,7 @@ program tms
               k=k+1
               sq=sq + dat(k)**2
            enddo
-           sdb=db(sq/nadd) - 46
+           sdb=db(sq/nadd) + 10.0
            write(13,1002) j/120.0,sdb
 1002       format(f8.3,f10.3)
         enddo

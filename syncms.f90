@@ -168,8 +168,10 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   nsgn=1
   zsum=0.
   u=0.25
+  sig=0.
   do j=1,nsym                               !Get soft symbols
      k=lagbest + 8*j-7
+     tmid=(k+3)*dt
      z0=dot_product(c0,cdat(k:k+7))
      z1=dot_product(c1,cdat(k:k+7))
      z0=0.003*z0 * cexp(cmplx(0.0,-j*1.56/200.0))
@@ -183,17 +185,21 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
      if(abs(z0).ge.abs(z1)) then
         pha=atan2(aimag(z0),real(z0))
         if(j.eq.1) zavg=z0
+        if(j.eq.1) sig=z0*conjg(z0)
         zavg=zavg + u*(z0-zavg)
+        sig=sig + u*(z0*conjg(z0)-sig)
         zsum=zsum + z0
      else
         pha=atan2(aimag(z1),real(z1))
         if(j.eq.1) zavg=z0
+        if(j.eq.1) sig=z0*conjg(z0)
         zavg=zavg + u*(z1-zavg)
+        sig=sig + u*(z1*conjg(z1)-sig)
         zsum=zsum + z1
      endif
      phavg=atan2(aimag(zavg),real(zavg))
-     write(72,2903) j,pha,phavg,zavg,zsum            !Save phase for plot
-2903 format(i6,2f10.3,4f10.2)
+     write(72,2903) j,pha,phavg,tmid,sig             !Save phase for plot
+2903 format(i6,2f10.3,f10.6,f10.2)
 
      softsym=nsgn*(x1-x0)
      if(softsym.ge.0.0) then
