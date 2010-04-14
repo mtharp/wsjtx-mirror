@@ -26,7 +26,7 @@ program tms
 
         sq=dot_product(dat(1:jz),dat(1:jz))
         rms=sqrt(sq/1000.0)
-        fac=884.244/rms
+        fac=1.0/rms
         dat(1:jz)=fac*dat(1:jz)
         k=0
         nadd=200
@@ -43,7 +43,7 @@ program tms
 
         call syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,   &
              dfx,lagbest,isbest,nerr,metric,decoded)
-        nsnr=nint(db(snrsync)-2.0)
+        nsnr=db(snrsync) - 34.0
         ndf=nint(dfx)
         dtx=0.
         mswidth=jz/12.0

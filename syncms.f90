@@ -176,16 +176,15 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
         do j=1,nsym                               !Get soft symbols
            k=lagbest + 8*j-7
            tmid=(k+3)*dt
-           z0=dot_product(c0,cdat(k:k+7))
-           z1=dot_product(c1,cdat(k:k+7))
-           z0=0.003*z0 * cexp(cmplx(0.0,-j*1.56/200.0))
-           z1=0.003*z1 * cexp(cmplx(0.0,-j*1.56/200.0))
-           x0=z0
-           x1=z1
+           z0=dot_product(c0,cdat(k:k+7)) * cexp(cmplx(0.0,-j*1.56/200.0))
+           z1=dot_product(c1,cdat(k:k+7)) * cexp(cmplx(0.0,-j*1.56/200.0))
+           if(j.eq.1 .and. real(z0).lt.real(z1)) nsgn=-1
            if(nsgn.lt.0) then
               z0=-z0
               z1=-z1
            endif
+           x0=z0
+           x1=z1
            if(abs(z0).ge.abs(z1)) then
               pha=atan2(aimag(z0),real(z0))
               if(j.eq.1) zavg=z0
@@ -205,7 +204,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
 !           write(72,2903) j,pha,phavg,tmid,sig             !Save phase for plot
 !2903       format(i6,2f10.3,f10.6,f10.2)
 
-           softsym=nsgn*(x1-x0)
+           softsym=5.0*(x1-x0)
            if(softsym.ge.0.0) then
               id2=1
            else
@@ -216,14 +215,11 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
               n=0
               if(id2.ne.is32(j)) n=1
               if(id2.ne.is32(j)) nerr=nerr+1
-           else
+           endif
+           if(j.ge.33 .and. j.le.212) then
               n=nint(softsym)
               gsym(j-32)=min(127,max(-127,n)) + 128
            endif
-           ii=0
-           if(j.le.32) ii=is32(j)
-           n=0
-           if(j.gt.32) n=gsym(j-32)
         enddo
         
         if(nbit.ne.0 .and. nerr.le.8) then
@@ -252,7 +248,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
 !2701 format(4i6,2x,a24)
 
   dfx=fbest-375+idfpk
-  snrsync=1.e-9*sbest
+  snrsync=sbest
 
 !  call flushqqq(72)
 !  call flushqqq(73)
