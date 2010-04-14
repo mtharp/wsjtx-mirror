@@ -19,7 +19,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   integer isym(212)
   integer iu(3)
   logical first
-  character cmode*5,decoded*24
+  character cmode*5,decoded*24,dec2*24
 
   integer is32(32)                     !Sync vector in one-bit format
   data is32/0,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,1/ 
@@ -128,7 +128,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   endif
   nsym=nstep/nsps
 
-  rewind 72
+!  rewind 72
 
   smax=0.
   do idf=-25,25                           !Refine values of DF and phase
@@ -157,83 +157,105 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
      endif
   enddo
 
-  dphi=twopi*dt*(fbest+idfpk)
-  phi0=0.
-  do i=1,jz                            !Tweak using best DF and phase
-     phi=phi0 + (i-lagbest+1)*dphi
-     cdat(i)=cdat0(i)*cmplx(cos(phi),-sin(phi))
+  metmax=-10000
+  do idf=-10,10,2
+     do iph=0,180,30
+        dphi=twopi*dt*(fbest+idfpk+idf)
+        phi0=iph/57.2957795
+
+        do i=1,jz                            !Tweak using best DF and phase
+           phi=phi0 + (i-lagbest+1)*dphi
+           cdat(i)=cdat0(i)*cmplx(cos(phi),-sin(phi))
+        enddo
+
+        nerr=0
+        nsgn=1
+        zsum=0.
+        u=0.25
+        sig=0.
+        do j=1,nsym                               !Get soft symbols
+           k=lagbest + 8*j-7
+           tmid=(k+3)*dt
+           z0=dot_product(c0,cdat(k:k+7))
+           z1=dot_product(c1,cdat(k:k+7))
+           z0=0.003*z0 * cexp(cmplx(0.0,-j*1.56/200.0))
+           z1=0.003*z1 * cexp(cmplx(0.0,-j*1.56/200.0))
+           x0=z0
+           x1=z1
+           if(nsgn.lt.0) then
+              z0=-z0
+              z1=-z1
+           endif
+           if(abs(z0).ge.abs(z1)) then
+              pha=atan2(aimag(z0),real(z0))
+              if(j.eq.1) zavg=z0
+              if(j.eq.1) sig=z0*conjg(z0)
+              zavg=zavg + u*(z0-zavg)
+              sig=sig + u*(z0*conjg(z0)-sig)
+              zsum=zsum + z0
+           else
+              pha=atan2(aimag(z1),real(z1))
+              if(j.eq.1) zavg=z0
+              if(j.eq.1) sig=z0*conjg(z0)
+              zavg=zavg + u*(z1-zavg)
+              sig=sig + u*(z1*conjg(z1)-sig)
+              zsum=zsum + z1
+           endif
+           phavg=atan2(aimag(zavg),real(zavg))
+!           write(72,2903) j,pha,phavg,tmid,sig             !Save phase for plot
+!2903       format(i6,2f10.3,f10.6,f10.2)
+
+           softsym=nsgn*(x1-x0)
+           if(softsym.ge.0.0) then
+              id2=1
+           else
+              id2=0
+              nsgn=-nsgn
+           endif
+           if(j.le.32) then                   !Count the hard sync-bit errors
+              n=0
+              if(id2.ne.is32(j)) n=1
+              if(id2.ne.is32(j)) nerr=nerr+1
+           else
+              n=nint(softsym)
+              gsym(j-32)=min(127,max(-127,n)) + 128
+           endif
+           ii=0
+           if(j.le.32) ii=is32(j)
+           n=0
+           if(j.gt.32) n=gsym(j-32)
+        enddo
+        
+        if(nbit.ne.0 .and. nerr.le.8) then
+           minmet=8*(nbit+12)
+           call decodems(nbit,gsym,metric,iu)
+           if(metric.ge.minmet) then
+              cmode='JTMS'
+              call srcdec(cmode,nbit,iu,decoded)
+           endif
+        endif
+
+        if(metric.gt.metmax) then
+           dec2=decoded
+           idfpk2=idf
+           iphpk2=iph
+           metmax=metric
+           nerr2=nerr
+        endif
+     enddo
   enddo
+  idfpk=idfpk+idfpk2
+  decoded=dec2
+  metric=metmax
+  nerr=nerr2
+!  write(73,2701) idfpk2,iphpk2,nerr,metric,decoded
+!2701 format(4i6,2x,a24)
 
-  nerr=0
-  nsgn=1
-  zsum=0.
-  u=0.25
-  sig=0.
-  do j=1,nsym                               !Get soft symbols
-     k=lagbest + 8*j-7
-     tmid=(k+3)*dt
-     z0=dot_product(c0,cdat(k:k+7))
-     z1=dot_product(c1,cdat(k:k+7))
-     z0=0.003*z0 * cexp(cmplx(0.0,-j*1.56/200.0))
-     z1=0.003*z1 * cexp(cmplx(0.0,-j*1.56/200.0))
-     x0=z0
-     x1=z1
-     if(nsgn.lt.0) then
-        z0=-z0
-        z1=-z1
-     endif
-     if(abs(z0).ge.abs(z1)) then
-        pha=atan2(aimag(z0),real(z0))
-        if(j.eq.1) zavg=z0
-        if(j.eq.1) sig=z0*conjg(z0)
-        zavg=zavg + u*(z0-zavg)
-        sig=sig + u*(z0*conjg(z0)-sig)
-        zsum=zsum + z0
-     else
-        pha=atan2(aimag(z1),real(z1))
-        if(j.eq.1) zavg=z0
-        if(j.eq.1) sig=z0*conjg(z0)
-        zavg=zavg + u*(z1-zavg)
-        sig=sig + u*(z1*conjg(z1)-sig)
-        zsum=zsum + z1
-     endif
-     phavg=atan2(aimag(zavg),real(zavg))
-     write(72,2903) j,pha,phavg,tmid,sig             !Save phase for plot
-2903 format(i6,2f10.3,f10.6,f10.2)
-
-     softsym=nsgn*(x1-x0)
-     if(softsym.ge.0.0) then
-        id2=1
-     else
-        id2=0
-        nsgn=-nsgn
-     endif
-     if(j.le.32) then                       !Count the hard sync-bit errors
-        n=0
-        if(id2.ne.is32(j)) n=1
-        if(id2.ne.is32(j)) nerr=nerr+1
-     else
-        n=nint(softsym)
-        gsym(j-32)=min(127,max(-127,n)) + 128
-     endif
-     ii=0
-     if(j.le.32) ii=is32(j)
-     n=0
-     if(j.gt.32) n=gsym(j-32)
-  enddo
-
-  if(nbit.ne.0 .and. nerr.le.8) then
-     minmet=8*(nbit+12)
-     call decodems(nbit,gsym,metric,iu)
-     if(metric.ge.minmet) then
-        cmode='JTMS'
-        call srcdec(cmode,nbit,iu,decoded)
-     endif
-  endif
   dfx=fbest-375+idfpk
   snrsync=1.e-9*sbest
 
-  call flushqqq(72)
+!  call flushqqq(72)
+!  call flushqqq(73)
 
 999  return
 end subroutine syncms
