@@ -121,15 +121,17 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
 ! Look for the JTMS sync pattern
         jz2=max(jjz,6000)
         if(jz2.gt.65536) jz2=65536
-
+        if(jz2.gt.jz) jz2=jz
+!        print*,jj,jz2,jz,jjz,tstart,width
         sq=dot_product(dat(jj:jj+jz2-1),dat(jj:jj+jz2-1))
         rms=sqrt(sq/1000.0)
         fac=1.0/rms
         dat2(1:jz2)=fac*dat(jj:jj+jz2-1)
         call syncms(dat2,jz2,NFreeze,MouseDF,DFTolerance,snrsync,   &
              dfx,lagbest,isbest,nerr,metric,decoded)
-!        if(isbest.gt.0) call msksymbol(dat(jj),max(jjz,6000),dfx,lagbest,isbest)
-        nsnr=db(snrsync) - 34.0
+        if(decoded.eq.'                        ') go to 30
+!        nsnr=db(snrsync) - 26.0
+        nsnr=peak
         ndf=nint(dfx)
         dtx=(lagbest+istart+jj-1)*dt
         nrpt=16
@@ -139,17 +141,18 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         if(nsnr.ge.9) nrpt=nrpt+1
         c1=' '
         if(nsnr.ge.2 .and. isbest.ne.0) c1='*'
+        wmsg=width/0.1413
         call cs_lock('wsjtms')
-        write(11,1010) cfile6,dtx,mswidth,nsnr,nrpt,ndf,isbest,c1,    &
+        write(11,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
              decoded,nerr,metric
-        write(21,1010) cfile6,dtx,mswidth,nsnr,nrpt,ndf,isbest,c1,    &
+        write(21,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
              decoded,nerr,metric
-1010    format(a6,f6.1,i5,i4,i4,i6,i3,a1,2x,a24,i7,i5)
+1010    format(a6,f6.1,f5.1,i4,i4,i6,i3,a1,2x,a24,i7,i5)
         call cs_unlock
      endif
 
 ! Compute average spectrum of this ping.
-     call spec441(dat(jj),jjz,ps,f0)
+30   call spec441(dat(jj),jjz,ps,f0)
 
 ! Decode the message.
 !###

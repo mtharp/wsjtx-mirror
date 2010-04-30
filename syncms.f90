@@ -21,7 +21,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   logical first
   character cmode*5,decoded*24,dec2*24
 
-  integer is32(32)                     !Sync vector in one-bit format
+  integer is32(32)                   !Sync vector in one-bit format
   data is32/0,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,1/ 
 
   data istep/928,1216,1696/
@@ -45,10 +45,10 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   decoded='                        '
   metric=0
 
-  call analytic(dat,jz,cdat)      !Convert signal to analytic form
-  cdat0(1:jz)=cdat(1:jz)          !Save a copy for possible later use
+  call analytic(dat,jz,cdat)         !Convert signal to analytic form
+  cdat0(1:jz)=cdat(1:jz)             !Save a copy for possible later use
 
-  nfft=512                        !Set constants and initial values
+  nfft=512                           !Set constants and initial values
   nh=nfft/2
   df=fs/nfft
   sbest=0.
@@ -57,7 +57,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   lagbest=0
   iz=500.0/df
 
-  famin=-25.                      !Set DF search range
+  famin=-25.                         !Set DF search range
   fbmax=775.
   ia=famin/df
   ib=fbmax/df
@@ -73,7 +73,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   if(ia.lt.1) ia=1
   ib=fb/df + 3
 
-  do lag=0,lagmax                           !Find lag and DF
+  do lag=0,lagmax                    !Find lag and DF
      do i=1,nh
         c(i)=cdat(i+lag)*conjg(csync(i))
      enddo
@@ -99,7 +99,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   enddo
 
   smax=0.
-  do n=1,3                                   !Find message length
+  do n=1,3                           !Find message length
      do nsgn=-1,1,2
         i0=lagbest + nsgn*istep(n)
         if((nsgn.eq.-1 .and. i0.ge.3) .or.                          &
@@ -116,7 +116,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   enddo
 
   if(lagbest.eq.0) then
-     snrsync=0.                             !Bail out if nothing found
+     snrsync=0.                      !Bail out if nothing found
      go to 999
   endif
 
@@ -131,7 +131,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
 !  rewind 72
 
   smax=0.
-  do idf=-25,25                           !Refine values of DF and phase
+  do idf=-25,25                      !Refine values of DF and phase
      dphi=twopi*dt*(fbest+idf)
      dfx=fbest + idf - 375.0
      if(dfx.ge.mousedf-dftolerance .and. dfx.le.mousedf+dftolerance) then
@@ -158,12 +158,12 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
   enddo
 
   metmax=-10000
-  do idf=-10,10,2
+  do idf=-10,10
      do iph=0,180,30
         dphi=twopi*dt*(fbest+idfpk+idf)
         phi0=iph/57.2957795
 
-        do i=1,jz                            !Tweak using best DF and phase
+        do i=1,jz                    !Tweak using best DF and phase
            phi=phi0 + (i-lagbest+1)*dphi
            cdat(i)=cdat0(i)*cmplx(cos(phi),-sin(phi))
         enddo
@@ -173,11 +173,11 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
         zsum=0.
         u=0.25
         sig=0.
-        do j=1,nsym                               !Get soft symbols
+        do j=1,nsym                  !Get soft symbols
            k=lagbest + 8*j-7
            tmid=(k+3)*dt
-           z0=dot_product(c0,cdat(k:k+7)) * cexp(cmplx(0.0,-j*1.56/200.0))
-           z1=dot_product(c1,cdat(k:k+7)) * cexp(cmplx(0.0,-j*1.56/200.0))
+           z0=dot_product(c0,cdat(k:k+7))
+           z1=dot_product(c1,cdat(k:k+7))
            if(j.eq.1 .and. real(z0).lt.real(z1)) nsgn=-1
            if(nsgn.lt.0) then
               z0=-z0
@@ -185,24 +185,29 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
            endif
            x0=z0
            x1=z1
-           if(abs(z0).ge.abs(z1)) then
-              pha=atan2(aimag(z0),real(z0))
-              if(j.eq.1) zavg=z0
-              if(j.eq.1) sig=z0*conjg(z0)
-              zavg=zavg + u*(z0-zavg)
-              sig=sig + u*(z0*conjg(z0)-sig)
-              zsum=zsum + z0
-           else
-              pha=atan2(aimag(z1),real(z1))
-              if(j.eq.1) zavg=z0
-              if(j.eq.1) sig=z0*conjg(z0)
-              zavg=zavg + u*(z1-zavg)
-              sig=sig + u*(z1*conjg(z1)-sig)
-              zsum=zsum + z1
-           endif
-           phavg=atan2(aimag(zavg),real(zavg))
-!           write(72,2903) j,pha,phavg,tmid,sig             !Save phase for plot
-!2903       format(i6,2f10.3,f10.6,f10.2)
+
+           s0=min(x0*x0,x1*x1)
+           s1=max(x0*x0,x1*x1)
+           sig=sig + s1 - s0
+
+!           if(abs(z0).ge.abs(z1)) then
+!              pha=atan2(aimag(z0),real(z0))
+!              if(j.eq.1) zavg=z0
+!              if(j.eq.1) sig=z0*conjg(z0)
+!              zavg=zavg + u*(z0-zavg)
+!              sig=sig + u*(z0*conjg(z0)-sig)
+!              zsum=zsum + z0
+!           else
+!              pha=atan2(aimag(z1),real(z1))
+!              if(j.eq.1) zavg=z0
+!              if(j.eq.1) sig=z0*conjg(z0)
+!              zavg=zavg + u*(z1-zavg)
+!              sig=sig + u*(z1*conjg(z1)-sig)
+!              zsum=zsum + z1
+!           endif
+!           phavg=atan2(aimag(zavg),real(zavg))
+!!           write(72,2903) j,pha,phavg,tmid,sig     !Save phase for plot
+!!2903       format(i6,2f10.3,f10.6,f10.2)
 
            softsym=5.0*(x1-x0)
            if(softsym.ge.0.0) then
@@ -211,7 +216,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
               id2=0
               nsgn=-nsgn
            endif
-           if(j.le.32) then                   !Count the hard sync-bit errors
+           if(j.le.32) then          !Count the hard sync-bit errors
               n=0
               if(id2.ne.is32(j)) n=1
               if(id2.ne.is32(j)) nerr=nerr+1
@@ -222,8 +227,8 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
            endif
         enddo
         
-        if(nbit.ne.0 .and. nerr.le.8) then
-           minmet=8*(nbit+12)
+        if(nbit.ne.0 .and. nerr.le.6) then
+           minmet=9*(nbit+12)
            call decodems(nbit,gsym,metric,iu)
            if(metric.ge.minmet) then
               cmode='JTMS'
@@ -237,6 +242,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
            iphpk2=iph
            metmax=metric
            nerr2=nerr
+           sigbest=sig
         endif
      enddo
   enddo
@@ -249,6 +255,7 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
 
   dfx=fbest-375+idfpk
   snrsync=sbest
+  snrsync=sigbest
 
 !  call flushqqq(72)
 !  call flushqqq(73)
