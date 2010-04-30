@@ -89,10 +89,8 @@ subroutine tx
   call cs_lock('tx')
   open(18,file=snrfile,status='old',err=10)
   read(18,*,err=10,end=10) snr
-  close(18)
+10 close(18)
   call cs_unlock
-
-10 continue
   call gmtime2(nt,tsec1)
   call genwspr(message,ntxdf,ntune,snr,appdir,nappdir,sending,jwave)
   npts=114*48000
