@@ -27,25 +27,13 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
   call srcdec(cmode,nbit,iu,msgsent)
 
   if(nbit.eq.2) then
-     nsps=128
-     f0=937.5d0
-     f1=f0 + 375*iand(3,ishft(iu(1),-30))
-     nrpt=30.0*12000.0/(2*nsps)
-     k=0
-     do irpt=1,nrpt
-        dphi=twopi*f0*dt
-        do i=1,nsps
-           k=k+1
-           phi=phi+dphi
-           iwave(k)=nint(32767.0*sin(phi))
-        enddo
-        dphi=twopi*f1*dt
-        do i=1,nsps
-           k=k+1
-           phi=phi+dphi
-           iwave(k)=nint(32767.0*sin(phi))
-        enddo
+     f1=882.d0 + 441*iand(3,ishft(iu(1),-30))
+     dphi=twopi*f1*dt
+     do i=1,360000
+        phi=phi+dphi
+        iwave(i)=nint(32767.0*sin(phi))
      enddo
+     k=360000-1
      go to 900
   endif
 

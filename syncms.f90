@@ -190,25 +190,6 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,dfx,     &
            s1=max(x0*x0,x1*x1)
            sig=sig + s1 - s0
 
-!           if(abs(z0).ge.abs(z1)) then
-!              pha=atan2(aimag(z0),real(z0))
-!              if(j.eq.1) zavg=z0
-!              if(j.eq.1) sig=z0*conjg(z0)
-!              zavg=zavg + u*(z0-zavg)
-!              sig=sig + u*(z0*conjg(z0)-sig)
-!              zsum=zsum + z0
-!           else
-!              pha=atan2(aimag(z1),real(z1))
-!              if(j.eq.1) zavg=z0
-!              if(j.eq.1) sig=z0*conjg(z0)
-!              zavg=zavg + u*(z1-zavg)
-!              sig=sig + u*(z1*conjg(z1)-sig)
-!              zsum=zsum + z1
-!           endif
-!           phavg=atan2(aimag(zavg),real(zavg))
-!!           write(72,2903) j,pha,phavg,tmid,sig     !Save phase for plot
-!!2903       format(i6,2f10.3,f10.6,f10.2)
-
            softsym=5.0*(x1-x0)
            if(softsym.ge.0.0) then
               id2=1

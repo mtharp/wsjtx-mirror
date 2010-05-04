@@ -59,15 +59,31 @@ subroutine srcenc(cmode,msg,nbit,iu)
 
 ! Shorthand messages
   if(nw.eq.1) then
-     if(w(1).eq.'RO') then
-        iu(1)=ishft(1,30)
-        nbit=2
-     else if(w(1).eq.'RRR') then
-        iu(1)=ishft(2,30)
-        nbit=2
-     else if(w(1).eq.'73') then
-        iu(1)=ishft(3,30)
-        nbit=2
+     if(cmode.eq.'JTMS') then
+        if(w(1).eq.'R26') then
+           iu(1)=0
+           nbit=2
+        else if(w(1).eq.'R27') then
+           iu(1)=ishft(1,30)
+           nbit=2
+        else if(w(1).eq.'RRR') then
+           iu(1)=ishft(2,30)
+           nbit=2
+        else if(w(1).eq.'73') then
+           iu(1)=ishft(3,30)
+           nbit=2
+        endif
+     else
+        if(w(1).eq.'RO') then
+           iu(1)=ishft(1,30)
+           nbit=2
+        else if(w(1).eq.'RRR') then
+           iu(1)=ishft(2,30)
+           nbit=2
+        else if(w(1).eq.'73') then
+           iu(1)=ishft(3,30)
+           nbit=2
+        endif
      endif
      if(nbit.eq.2) go to 10
   endif
