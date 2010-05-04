@@ -1,5 +1,5 @@
 subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,dfx,     &
-     lagbest,isbest,nerr,metric,decoded)
+     lagbest,isbest,nerr,metric,decoded,short,nshort)
 
   parameter (MAXSAM=65536)           !Max number of samples in ping
   real dat(jz)                       !Raw data sampled at 12000 Hz
@@ -45,9 +45,20 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,dfx,     &
   decoded='                        '
   metric=0
 
-  call analytic(dat,jz,cdat)         !Convert signal to analytic form
-  cdat0(1:jz)=cdat(1:jz)             !Save a copy for possible later use
+  call analytic(dat,jz,cdat,fshort,short)   !Convert signal to analytic form
 
+  nshort=0
+  if(short.ge.10.0) then
+     do ish=0,3
+        dfshort=fshort-(882+ish*441)
+        if(abs(dfshort).lt.DFTolerance) go to 10
+     enddo
+  endif
+  go to 20
+10 nshort=ish+1
+20 continue
+
+  cdat0(1:jz)=cdat(1:jz)             !Save a copy for possible later use
   nfft=512                           !Set constants and initial values
   nh=nfft/2
   df=fs/nfft

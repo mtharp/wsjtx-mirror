@@ -127,30 +127,41 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         fac=1.0/rms
         dat2(1:jz2)=fac*dat(jj:jj+jz2-1)
         call syncms(dat2,jz2,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,   &
-             dfx,lagbest,isbest,nerr,metric,decoded)
-        if(decoded.eq.'                        ') go to 30
+             dfx,lagbest,isbest,nerr,metric,decoded,short,nshort)
 !        nsnr=db(snrsync) - 26.0
         nsnr=peak
         ndf=nint(dfx)
         dtx=(lagbest+istart+jj-1)*dt
         nrpt=16
+        c1=' '
+        if(nsnr.ge.2 .and. isbest.ne.0) c1='*'
+
+        if(decoded.eq.'                        ' .and. nshort.gt.0) then
+           c1='#'
+           nsnr=nint(short-19.0)
+           if(nshort.eq.1) decoded='R26'
+           if(nshort.eq.2) decoded='R27'
+           if(nshort.eq.3) decoded='RRR'
+           if(nshort.eq.4) decoded='73'
+        endif
+
         if(mswidth.ge.120) nrpt=26
         if(mswidth.gt.1000) nrpt=36
         if(nsnr.ge.6) nrpt=nrpt+1
         if(nsnr.ge.9) nrpt=nrpt+1
-        c1=' '
-        if(nsnr.ge.2 .and. isbest.ne.0) c1='*'
-        call cs_lock('wsjtms')
-        write(11,1010) cfile6,dtx,width,nsnr,nrpt,ndf,isbest,c1,    &
-             decoded,nerr,metric
-        write(21,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
-             decoded,nerr,metric
-1010    format(a6,f5.1,f6.2,i4,i4,i6,i3,a1,2x,a24,i7,i5)
-        call cs_unlock
+        if(decoded.ne.'                        ') then
+           call cs_lock('wsjtms')
+           write(11,1010) cfile6,dtx,width,nsnr,nrpt,ndf,isbest,c1,    &
+                decoded,nerr,metric
+           write(21,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
+                decoded,nerr,metric
+1010       format(a6,f5.1,f6.2,i4,i4,i6,i3,a1,2x,a24,i7,i5)
+           call cs_unlock
+        endif
      endif
 
 ! Compute average spectrum of this ping.
-30   call spec441(dat(jj),jjz,ps,f0)
+     call spec441(dat(jj),jjz,ps,f0)
 
 ! Decode the message.
 !###
