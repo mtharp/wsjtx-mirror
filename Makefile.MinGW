@@ -6,7 +6,7 @@ FC = /mingw/bin/g95
 # FFLAGS = -O2
 CFLAGS = -I. -fbounds-check -fno-second-underscore
 
-all:    WSJT8.EXE WSJT8codes.EXE tms.exe
+all:    WSJT8.EXE WSJT8codes.EXE
 
 # Default rules
 %.o: %.c

@@ -26,9 +26,16 @@ subroutine srcdec(cmode,nbit,iu,msg)
 
   if(nbit.eq.2) then
      n=ishft(iu(1),-30)
-     if(n.eq.1) msg='RO'
-     if(n.eq.2) msg='RRR'
-     if(n.eq.3) msg='73'
+     if(cmode.eq.'JTMS') then
+        if(n.eq.0) msg='R26'
+        if(n.eq.1) msg='R27'
+        if(n.eq.2) msg='RRR'
+        if(n.eq.3) msg='73'
+     else
+        if(n.eq.1) msg='RO'
+        if(n.eq.2) msg='RRR'
+        if(n.eq.3) msg='73'
+     endif
      go to 100
   else if(nbit.eq.30) then
      nc1=ishft(iu(1),-4)

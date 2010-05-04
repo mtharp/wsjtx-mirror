@@ -81,10 +81,16 @@ K1ABC W9XYZ 73           78  F70C238F 9777BBFE 1C00   K1ABC W9XYZ 73
 123456789ABCDE           78  4629667D 059FAB1B 6654   123456789ABCDE          
 123456789ABCDEF          78  4629667D 059FAB1B 6654 * 123456789ABCDE          
 
-In JTMS mode, 48-bit messages involving a signal report are slightly
-different.  Where "OOO" and "RO" are used in the other modes, JTMS uses
-"26", "27", "R26", and "R27":
+In JTMS mode, 2-bit messages and 48-bit messages involving a signal
+report are slightly different.  Where "OOO" and "RO" are used in the
+other modes, JTMS uses "26", "27", "R26", and "R27".
 ----------------------------------------------------------------------------
+
+R26                       2  00000000 00000000 0000   R26
+R27                       2  40000000 00000000 0000   R27
+RRR                       2  80000000 00000000 0000   RRR
+73                        2  C0000000 00000000 0000   73
+
 W9XYZ <K1ABC> 26         48  F9777BB3 2F270000 0000   W9XYZ <K1ABC> 26        
 W9XYZ <K1ABC> 27         48  F9777BB3 2F3E0000 0000   W9XYZ <K1ABC> 27        
 W9XYZ <VO2/K1ABC> 26     48  F9777BBD 6E670000 0000   W9XYZ <VO2/K1ABC> 26    
