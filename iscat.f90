@@ -32,7 +32,8 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
 
 ! Establish sync or find a shorthand message
         call synciscat(dat(i0),jza,i0,dofft,DFTolerance,NFreeze,MouseDF,   &
-             dtx,dfx,snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,kshort)
+             dtx,dfx,snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,        &
+             dfshort,kshort)
         if(len.eq.2) isync=isync-1
         if(len.eq.1) isync=isync-2
         if(isync.lt.0) isync=0
@@ -44,6 +45,7 @@ subroutine iscat(dat,jz,cfile6,MinSigdB,NFreeze,MouseDF,DFTolerance,    &
            c1='*'
            call extract(s2,nadd,isbest,ncount,decoded,ndec)
         else if(short.gt.5.0) then
+           jdf=nint(dfshort)
            if(kshort.eq.1) decoded='RO'
            if(kshort.eq.2) decoded='RRR'
            if(kshort.eq.3) decoded='73'

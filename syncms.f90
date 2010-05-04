@@ -1,4 +1,4 @@
-subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
+subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,dfx,     &
      lagbest,isbest,nerr,metric,decoded)
 
   parameter (MAXSAM=65536)           !Max number of samples in ping
@@ -227,8 +227,13 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,snrsync,dfx,     &
            endif
         enddo
         
-        if(nbit.ne.0 .and. nerr.le.6) then
+        minmet=10*(nbit+12)
+        maxerr=6
+        if(ndepth.ge.2) then
            minmet=9*(nbit+12)
+           maxerr=8
+        endif
+        if(nbit.ne.0 .and. nerr.le.maxerr) then
            call decodems(nbit,gsym,metric,iu)
            if(metric.ge.minmet) then
               cmode='JTMS'

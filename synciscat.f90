@@ -1,5 +1,5 @@
 subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
-     snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,kshort)
+     snrx,isync,isbest,ccfblue,ccfred,s2,ps0,short,dfshort,kshort)
 
 ! Synchronize ISCAT data, finding best-fit DT, DF, snrx, isync, etc.
 
@@ -235,7 +235,8 @@ subroutine synciscat(dat,jz,i00,dofft,DFTolerance,NFreeze,MouseDF,dtx,dfx,  &
 
   isync=max(0.0,snrsync)
   f=ishort*df
-  if(f.ge.fa .and. f.le.fb .and. isync.eq.0 .and. short.gt.5.0) dfx=ishort*df-f0
+  dfshort=f-f0
+  if(f.lt.fa .or. f.gt.fb) short=0.
 
   return
 end subroutine synciscat

@@ -1,11 +1,11 @@
 subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
-     DFTolerance,pick,NSyncOK,s2,ps0,psavg)
+     DFTolerance,pick,ndepth,NSyncOK,s2,ps0,psavg)
 
   parameter (NZMAX=3100)
-  real dat(jz)                      !Raw audio data
+  real dat(360000)                      !Raw audio data
   real dat2(65536)
   integer DFTolerance
-  real ps0(431)           !Spectrum of best ping  (###correct dimension?###)
+  real ps0(431)            !Spectrum of best ping  (###correct dimension?###)
   real s2(64,NZMAX)        !2D spectral array
   logical pick
   character*6 cfile6
@@ -122,12 +122,11 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         jz2=max(jjz,6000)
         if(jz2.gt.65536) jz2=65536
         if(jz2.gt.jz) jz2=jz
-!        print*,jj,jz2,jz,jjz,tstart,width
         sq=dot_product(dat(jj:jj+jz2-1),dat(jj:jj+jz2-1))
         rms=sqrt(sq/1000.0)
         fac=1.0/rms
         dat2(1:jz2)=fac*dat(jj:jj+jz2-1)
-        call syncms(dat2,jz2,NFreeze,MouseDF,DFTolerance,snrsync,   &
+        call syncms(dat2,jz2,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,   &
              dfx,lagbest,isbest,nerr,metric,decoded)
         if(decoded.eq.'                        ') go to 30
 !        nsnr=db(snrsync) - 26.0
@@ -141,13 +140,12 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         if(nsnr.ge.9) nrpt=nrpt+1
         c1=' '
         if(nsnr.ge.2 .and. isbest.ne.0) c1='*'
-        wmsg=width/0.1413
         call cs_lock('wsjtms')
-        write(11,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
+        write(11,1010) cfile6,dtx,width,nsnr,nrpt,ndf,isbest,c1,    &
              decoded,nerr,metric
         write(21,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
              decoded,nerr,metric
-1010    format(a6,f6.1,f5.1,i4,i4,i6,i3,a1,2x,a24,i7,i5)
+1010    format(a6,f5.1,f6.2,i4,i4,i6,i3,a1,2x,a24,i7,i5)
         call cs_unlock
      endif
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#----------------------S------------------------------------------------- WSJT8
+#----------------------------------------------------------------------- WSJT8
 # $Date$ $Revision$
 #
 from Tkinter import *
@@ -1625,17 +1625,11 @@ else:
    mbar = Menu(root)
    root.config(menu=mbar)
 
-# Tearoff menus make less sense under darwin
-use_tearoff = (sys.platform != 'darwin')
-
 #------------------------------------------------------ File Menu
-if (sys.platform != 'darwin'):
-   filebutton = Menubutton(mbar, text = 'File')
-   filebutton.pack(side = LEFT)
-   filemenu = Menu(filebutton, tearoff=0)
-   filebutton['menu'] = filemenu
-else:
-   filemenu = Menu(mbar, tearoff=0)
+filebutton = Menubutton(mbar, text = 'File')
+filebutton.pack(side = LEFT)
+filemenu = Menu(filebutton)
+filebutton['menu'] = filemenu
 filemenu.add('command', label = 'Open', command = openfile, \
              accelerator='Ctrl+O')
 filemenu.add('command', label = 'Open next in directory', command = opennext, \
@@ -1654,13 +1648,10 @@ if (sys.platform == 'darwin'):
     mbar.add_cascade(label="File", menu=filemenu)
 
 #------------------------------------------------------ Setup menu
-if (sys.platform != 'darwin'):
-   setupbutton = Menubutton(mbar, text = 'Setup')
-   setupbutton.pack(side = LEFT)
-   setupmenu = Menu(setupbutton, tearoff=0)
-   setupbutton['menu'] = setupmenu
-else:   
-   setupmenu = Menu(mbar, tearoff=0)
+setupbutton = Menubutton(mbar, text = 'Setup')
+setupbutton.pack(side = LEFT)
+setupmenu = Menu(setupbutton)
+setupbutton['menu'] = setupmenu
 setupmenu.add('command', label = 'Options', command = options1, \
               accelerator='F2')
 setupmenu.add_separator()
@@ -1678,13 +1669,10 @@ if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Setup", menu=setupmenu)
 
 #------------------------------------------------------ View menu
-if (sys.platform != 'darwin'):
-    viewbutton=Menubutton(mbar,text='View')
-    viewbutton.pack(side=LEFT)
-    viewmenu=Menu(viewbutton,tearoff=0)
-    viewbutton['menu']=viewmenu
-else:    
-    viewmenu=Menu(mbar,tearoff=0)
+viewbutton=Menubutton(mbar,text='View')
+viewbutton.pack(side=LEFT)
+viewmenu=Menu(viewbutton)
+viewbutton['menu']=viewmenu
 viewmenu.add('command', label = 'SpecJT', command = showspecjt, \
              accelerator='F10')
 viewmenu.add('command', label = 'Astronomical data', command = astro1, \
@@ -1694,13 +1682,10 @@ if (sys.platform == 'darwin'):
     mbar.add_cascade(label="View", menu=viewmenu)
 
 #------------------------------------------------------ Mode menu
-if (sys.platform != 'darwin'):
-    modebutton = Menubutton(mbar, text = 'Mode')
-    modebutton.pack(side = LEFT)
-    modemenu = Menu(modebutton, tearoff=0)
-    modebutton['menu'] = modemenu
-else:    
-    modemenu = Menu(mbar, tearoff=use_tearoff)
+modebutton = Menubutton(mbar, text = 'Mode')
+modebutton.pack(side = LEFT)
+modemenu = Menu(modebutton)
+modebutton['menu'] = modemenu
 
 # To enable menu item 0:
 # modemenu.entryconfig(0,state=NORMAL)
@@ -1723,14 +1708,27 @@ modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho)
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Mode", menu=modemenu)
 
+#------------------------------------------------------ Decode menu
+decodebutton = Menubutton(mbar, text = 'Decode')
+decodebutton.pack(side = LEFT)
+decodemenu = Menu(decodebutton)
+decodebutton['menu'] = decodemenu
+decodemenu.JTMS=Menu(decodemenu)
+decodemenu.JTMS.add_radiobutton(label = 'Normal',
+                                variable=ndepth, value=1)
+decodemenu.JTMS.add_radiobutton(label = 'Aggressive',
+                                variable=ndepth, value=2)
+
+decodemenu.add_cascade(label = 'JTMS',menu=decodemenu.JTMS)
+
+if (sys.platform == 'darwin'):
+    mbar.add_cascade(label="Decode", menu=decodemenu)
+
 #------------------------------------------------------ Save menu
-if (sys.platform != 'darwin'):
-    savebutton = Menubutton(mbar, text = 'Save')
-    savebutton.pack(side = LEFT)
-    savemenu = Menu(savebutton, tearoff=use_tearoff)
-    savebutton['menu'] = savemenu
-else:    
-    savemenu = Menu(mbar, tearoff=use_tearoff)
+savebutton = Menubutton(mbar, text = 'Save')
+savebutton.pack(side = LEFT)
+savemenu = Menu(savebutton)
+savebutton['menu'] = savemenu
 nsave=IntVar()
 savemenu.add_radiobutton(label = 'None', variable=nsave,value=0)
 savemenu.add_radiobutton(label = 'Save decoded', variable=nsave,value=1)
@@ -1742,13 +1740,10 @@ if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Save", menu=savemenu)
 
 #------------------------------------------------------ Band menu
-if (sys.platform != 'darwin'):
-    bandbutton = Menubutton(mbar, text = 'Band')
-    bandbutton.pack(side = LEFT)
-    bandmenu = Menu(bandbutton, tearoff=use_tearoff)
-    bandbutton['menu'] = bandmenu
-else:    
-    bandmenu = Menu(mbar, tearoff=use_tearoff)
+bandbutton = Menubutton(mbar, text = 'Band')
+bandbutton.pack(side = LEFT)
+bandmenu = Menu(bandbutton)
+bandbutton['menu'] = bandmenu
 nfreq=IntVar()
 bandmenu.add_radiobutton(label = '1.8', variable=nfreq,value=2)
 bandmenu.add_radiobutton(label = '3.5', variable=nfreq,value=4)
@@ -1774,13 +1769,10 @@ if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Band", menu=bandmenu)
 
 #------------------------------------------------------ Help menu
-if (sys.platform != 'darwin'):
-   helpbutton = Menubutton(mbar, text = 'Help')
-   helpbutton.pack(side = LEFT)
-   helpmenu = Menu(helpbutton, tearoff=0)
-   helpbutton['menu'] = helpmenu
-else:   
-   helpmenu = Menu(mbar, tearoff=0)
+helpbutton = Menubutton(mbar, text = 'Help')
+helpbutton.pack(side = LEFT)
+helpmenu = Menu(helpbutton)
+helpbutton['menu'] = helpmenu
 helpmenu.add('command', label = 'Keyboard shortcuts', command = shortcuts, \
              accelerator='F1')
 helpmenu.add('command', label = 'Special mouse commands', \

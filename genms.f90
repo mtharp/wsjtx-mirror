@@ -26,6 +26,29 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
 ! Remove source encoding, recover the human-readable message.
   call srcdec(cmode,nbit,iu,msgsent)
 
+  if(nbit.eq.2) then
+     nsps=128
+     f0=937.5d0
+     f1=f0 + 375*iand(3,ishft(iu(1),-30))
+     nrpt=30.0*12000.0/(2*nsps)
+     k=0
+     do irpt=1,nrpt
+        dphi=twopi*f0*dt
+        do i=1,nsps
+           k=k+1
+           phi=phi+dphi
+           iwave(k)=nint(32767.0*sin(phi))
+        enddo
+        dphi=twopi*f1*dt
+        do i=1,nsps
+           k=k+1
+           phi=phi+dphi
+           iwave(k)=nint(32767.0*sin(phi))
+        enddo
+     enddo
+     go to 900
+  endif
+
 ! Append the encoded data after the 32-bit sync vector
   ndata=2*(nbit+12)
   nsync=32
@@ -58,7 +81,7 @@ subroutine genms(message,txsnrdb,iwave,nwave,nbit,msgsent)
      enddo
   enddo
 
-  iwave(k+1:)=0
+900 iwave(k+1:)=0
   nwave=k
 
   if(txsnrdb.lt.40.d0) then
