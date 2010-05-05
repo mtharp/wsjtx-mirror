@@ -1,6 +1,6 @@
 subroutine analytic(d,npts,c,fshort,smax)
   real d(npts)
-  real s(16384)
+  real s(32768)
   complex c(65536)
 
   xn=log(float(npts))/log(2.0)

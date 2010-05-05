@@ -128,7 +128,6 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         dat2(1:jz2)=fac*dat(jj:jj+jz2-1)
         call syncms(dat2,jz2,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,   &
              dfx,lagbest,isbest,nerr,metric,decoded,short,nshort)
-!        nsnr=db(snrsync) - 26.0
         nsnr=peak
         ndf=nint(dfx)
         dtx=(lagbest+istart+jj-1)*dt
@@ -136,13 +135,15 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         c1=' '
         if(nsnr.ge.2 .and. isbest.ne.0) c1='*'
 
-        if(decoded.eq.'                        ' .and. nshort.gt.0) then
+        if(decoded.eq.'                        ' .and. nshort.gt.0 .and.   &
+             short.gt.24.0) then
            c1='#'
            nsnr=nint(short-19.0)
            if(nshort.eq.1) decoded='R26'
            if(nshort.eq.2) decoded='R27'
            if(nshort.eq.3) decoded='RRR'
            if(nshort.eq.4) decoded='73'
+           print*,'A',nshort,short
         endif
 
         if(mswidth.ge.120) nrpt=26
