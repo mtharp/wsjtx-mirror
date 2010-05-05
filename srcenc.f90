@@ -104,6 +104,15 @@ subroutine srcenc(cmode,msg,nbit,iu)
   endif
 
 5 nbit=78
+  if(cmode.eq.'JTMS' .and. nw.eq.3 .and. lenw(3).le.3) then
+     if(w(3)(1:1).eq.'R') then
+        if(w(3)(2:2).eq.'2') w(3)(2:2)='0'
+        if(w(3)(2:2).eq.'3') w(3)(2:2)='1'
+     else
+        if(w(3)(1:1).eq.'2') w(3)(1:1)='0'
+        if(w(3)(1:1).eq.'3') w(3)(1:1)='1'
+     endif
+  endif
   call pk78(msg,w,nw,nt1,nc1,nc2,ngph,n2,n5,iu)
   if(iand(n5,1).eq.0) then
      iu(1)=ishft(nc1,4) + iand(ishft(nc2,-24),15)

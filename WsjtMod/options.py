@@ -172,11 +172,11 @@ def def3():
     tx6.delete(0,END)
 
     tx1.insert(0,'%T %M %G')
-    if g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
+    if g.mode[:3]=='JT8' or g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
         tx2.insert(0,'%T %M %G OOO')
         tx3.insert(0,'RO')
     else:
-        tx2.insert(0,'%T %M %G 26')
+        tx2.insert(0,'%T %M 26')
         tx3.insert(0,'R26')
     tx4.insert(0,'RRR')
     tx5.insert(0,'73')

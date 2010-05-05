@@ -198,6 +198,19 @@ subroutine srcdec(cmode,nbit,iu,msg)
            dcall(ih)=c2(:i1-1)
         endif
         call unpkgrid(ngph,cgp)
+        if(cmode.eq.'JTMS') then
+           if(cgp(1:1).eq.'+') then
+              cgp=cgp(2:3)
+              if(cgp(1:1).eq.'0') cgp(1:1)='2'
+              if(cgp(1:1).eq.'1') cgp(1:1)='3'
+           else 
+              if(cgp(1:2).eq.'R+') then
+                 cgp='R'//cgp(3:4)
+                 if(cgp(2:2).eq.'0') cgp(2:2)='2'
+                 if(cgp(2:2).eq.'1') cgp(2:2)='3'
+              endif
+           endif
+        endif
         msg=c1(:6)//' '//c2(:6)//' '//cgp
      else if(n2.eq.1) then
         ng=ngph + 32768*(n5/4)
