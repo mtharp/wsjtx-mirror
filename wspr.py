@@ -386,7 +386,7 @@ def draw_axis():
     global fmid
     c.delete(ALL)
     df=12000.0/8192.0
-    nfmid=int(1.0e6*fmid)%1000
+    nfmid=int(1.0e6*fmid + 0.5)%1000
 # Draw and label tick marks
     for iy in range(-120,120,10):
         j=80 - iy/df
