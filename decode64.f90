@@ -18,7 +18,7 @@ subroutine decode64(dat,jz,dtx,dfx,flip,ndepth,isbest,                 &
 
 ! Compute spectra of the channel symbols
   f0=1270.46 + dfx
-  call spec2d64(dat,jz,nsym,flip,istart,f0,ftrack,nafc,mode64,s2)
+  call spec2d64(dat,jz,nsym,istart,f0,ftrack,nafc,mode64,s2)
 
   do k=1,31
      j1=k+8

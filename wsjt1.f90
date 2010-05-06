@@ -1,8 +1,8 @@
 subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
      MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,            &
-     mode,NFreeze,NAFC,NZap,mode65,mode4,idf,ntdecode0,            &
+     mode,NFreeze,NAFC,NZap,mode64,mode4,idf,ntdecode0,            &
      MyCall,HisCall,HisGrid,ntx2,s2,                               &
-     ps0,npkept,lumsg,basevb,rmspower,nslim2,psavg,ccf,Nseg,       &
+     ps0,npkept,lumsg,basevb,rmspower,psavg,ccf,Nseg,       &
      MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
 
   parameter (NP2=60*12000)
@@ -21,29 +21,20 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
   integer npkept          !Number of pings kept and decoded
   integer lumsg           !Logical unit for decoded.txt
   real basevb             !Baseline signal level, dB
-  integer nslim2          !Minimum strength for single-tone pings, dB
   real psavg(450)         !Average spectrum of the whole file
   integer Nseg            !First or second Tx sequence?
   integer MouseDF         !Freeze position for DF
   logical pick            !True if this is a mouse-picked ping
-  logical stbest          !True if the best decode was Single-Tone
-  logical STfound         !True if at least one ST decode
   logical LDecoded        !True if anything was decoded
   real s2(64,3100)        !2D spectral array
   real ccf(-5:540)        !X-cor function in JT65 mode (blue line)
-  real red(512)
   real ss1(-224:224)      !Magenta curve (for JT65 shorthands)
   real ss2(-224:224)      !Orange curve (for JT65 shorthands)
-  real yellow(216)
-  real yellow0(216)
   real fzap(200)
   real dat(NP2)
-  character msg3*3
   character cfile6*6
-  integer indx(100)
   character*90 line
   common/ccom/nline,tping(100),line(100)
-  common/limcom/ nslim2a
   save
 
   jz=jz0
@@ -169,7 +160,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
   else if(mode(1:4).eq.'JT64' .or. mode(1:3).eq.'JT8') then
      if(mode(1:4).eq.'JT64') then
 ! JT64 mode:
-        mode64=1
+        mode64=1                               !### Test only ###
         nstest=0
 
         if(ntx2.ne.1) call short64(dat,jz,NFreeze,MouseDF,                &
@@ -201,12 +192,12 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
 
         call wsjt64(dat,jz,cfile6,                                          &
              NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
-             MouseDF2,NAgain,ndepth,nchallenge,idf,idfsh,                   &
+             MouseDF2,NAgain,ndepth,idf,idfsh,                              &
              mycall,hiscall,hisgrid,lumsg,nspecial,ndf,                     &
              nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
      else if(mode(1:3).eq.'JT8') then
 ! JT8 mode:
-        call jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
+        call jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,                &
              MouseDF2,NSyncOK,ccf,psavg)
      endif
   endif

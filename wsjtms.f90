@@ -33,7 +33,6 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
 ! Compute the 2D spectrum.
   df=12000.0/256.0            !FFT resolution ~47 Hz
   dtbuf=nstep/12000.0
-  stlim=nslim2                !Single-tone threshold
   call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
   do i=1,128
      psavg(i)=db(psavg(i))

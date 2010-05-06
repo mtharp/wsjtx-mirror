@@ -12,7 +12,6 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
   character line*90,decoded*24,deepmsg*24,special*5
   character csync*1,cfile6*6,cmode*5
   integer iu(3)
-  integer*1 symbols(372)
   integer*1 ddec(10)
   integer*1 gsym1(372)
   integer*1 gsym2(372)

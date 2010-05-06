@@ -1,7 +1,7 @@
 subroutine wsjt64(dat,npts,cfile6,NClearAve,MinSigdB,               &
      DFTolerance,NFreeze,NAFC,mode64,Nseg,MouseDF,NAgain,           &
-     ndepth,nchallenge,idf,idfsh,mycall,hiscall,hisgrid,            &
-     lumsg,nspecial,ndf,nstest,dfsh,                           &
+     ndepth,idf,idfsh,mycall,hiscall,hisgrid,                       &
+     lumsg,nspecial,ndf,nstest,dfsh,                                &
      snrsh,NSyncOK,ccfblue,ccfred,ndiag,nwsh)
 
 ! Orchestrates the process of decoding JT64 messages, using data that

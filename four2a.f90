@@ -26,7 +26,7 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   include 'fftw3.f'
   save plan,nplan,nn,ns,nf,nl
 
-  if(nfft.lt.0) go to 999
+  if(nfft.lt.0 .or. ndim.lt.1) go to 999
 
   nloc=loc(a)
   do i=1,nplan

@@ -289,7 +289,7 @@ subroutine fivehztx
      endif
   endif
 
-900  return
+  return
 end subroutine fivehztx
 
 subroutine addnoise(n)

@@ -8,7 +8,6 @@
 
 #define V213
 
-
 #ifdef V213
 #define	K 13			/* Constraint length */
 #define N 2			/* Number of symbols per data bit */
@@ -93,7 +92,7 @@ int *nn)                        // N
 #ifdef CVF
 void __stdcall VIT213(
 #else
-void vit213_(
+int vit213_(
 #endif
 unsigned char symbols[],  /* Raw deinterleaved input symbols */
 unsigned int *Nbits,	  /* Number of decoded information bits */

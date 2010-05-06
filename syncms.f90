@@ -10,13 +10,12 @@ subroutine syncms(dat,jz,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,dfx,     &
   complex c0(8)                      !Waveform for bit=0
   complex c1(8)                      !Waveform for bit=1
   complex c(MAXSAM)                  !Work array
-  complex z,z0,z1,zsum,zavg
+  complex z0,z1,zsum
   real ccfblue(0:4000)
   real fblue(0:4000)
   real*8 fs,dt,twopi,baud,f0,f1
   integer istep(3),ibit(3)
   integer gsym(180)
-  integer isym(212)
   integer iu(3)
   logical first
   character cmode*5,decoded*24,dec2*24
