@@ -126,7 +126,7 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         fac=1.0/rms
         dat2(1:jz2)=fac*dat(jj:jj+jz2-1)
         call syncms(dat2,jz2,NFreeze,MouseDF,DFTolerance,ndepth,snrsync,   &
-             dfx,lagbest,isbest,nerr,metric,decoded,short,nshort)
+             dfx,lagbest,isbest,nerr,nqual,decoded,short,nshort)
         nsnr=peak
         ndf=nint(dfx)
         dtx=(lagbest+istart+jj-1)*dt
@@ -152,9 +152,9 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
         if(decoded.ne.'                        ') then
            call cs_lock('wsjtms')
            write(11,1010) cfile6,dtx,width,nsnr,nrpt,ndf,isbest,c1,    &
-                decoded,nerr,metric
+                decoded,nerr,nqual
            write(21,1010) cfile6,dtx,wmsg,nsnr,nrpt,ndf,isbest,c1,    &
-                decoded,nerr,metric
+                decoded,nerr,nqual
 1010       format(a6,f5.1,f6.2,i4,i4,i6,i3,a1,2x,a24,i7,i5)
            call cs_unlock
         endif
