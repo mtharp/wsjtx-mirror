@@ -3,7 +3,7 @@
      +     ntsky,doppler00,doppler,dbMoon,RAMoon,DecMoon,HA,Dgrd,sd,
      +     poloffset,xnr,auxra,auxdec,azaux,elaux)
 
-C  Computes astronomical quantities for display in JT65, CW, and EME Echo mode.
+C  Computes astronomical quantities for display in JT64, JT8, and Echo mode.
 C  NB: may want to smooth the Tsky map to 10 degrees or so.
 
       character*6 MyGrid,HisGrid
