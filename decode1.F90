@@ -28,7 +28,7 @@ subroutine decode1(iarg)
   ltrace=0
 
   if(mode(1:4).eq.'Echo' .and. ndecoding.eq.1) then
-     call avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,fecho,nsumecho)
+     call avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,fecho,nsumecho)
      ndecoding=0
      ndecdone=1
   endif

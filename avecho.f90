@@ -1,4 +1,4 @@
-subroutine avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,f1,nsum)
+subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,f1,nsum)
 
   parameter (NBSIZE=1024*2048)
   integer*2 y1(NBSIZE)                   !Buffer for Rx data
@@ -15,9 +15,7 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,f1,nsum)
   complex c(0:16384)
   equivalence (x,c)
   common/echo/xdop(2),techo,ElMoon,mjd
-  save dop0,s1,s2
 
-  print*,'A',f1,ibuf0,ibuf0*2048.0/12000.0
   n=0
   do j=0,13
      k=j*2048
@@ -31,7 +29,7 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,f1,nsum)
   if(nsum.eq.0) then
      dop0=2.0*xdop(1)       !Remember the initial Doppler
      s1=0.
-     s2=0.
+     s1=0.
   endif
 
   doppler=2.0*xdop(1)
@@ -51,10 +49,8 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,dlatency,f1,nsum)
   enddo
 
   fnominal=1500.0           !Nominal audio frequency w/o doppler or dither
-  fRIT=0.                   !### test only ###
   ia=nint((fnominal+dop0-fRIT)/df)
   ib=nint((f1+doppler-fRIT)/df)
-  print*,'B',ia,ib,dop0,f1,doppler,df
   if(ia.lt.300 .or. ib.lt.300) goto 900
   if(ia.gt.3795 .or. ib.gt.3795) goto 900
 
