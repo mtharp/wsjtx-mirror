@@ -7,6 +7,10 @@ subroutine pk78(msg,w,nw,nt1,nc1,nc2,ngph,n2,n5,iu)
 ! 78-bit messages
   n2=0
   n5=0
+  if(w(3)(1:2).eq.'R ') then
+     w(3)=w(4)
+     n5=8
+  endif
 
   if(nt1(1).eq.1 .and. nt1(2).eq.1) then
      call pkcall(w(1),nc1,ntext1)
@@ -21,12 +25,12 @@ subroutine pk78(msg,w,nw,nt1,nc1,nc2,ngph,n2,n5,iu)
      call pkpfx(w(1),nc1,ngph,nadd)
      call pkcall(w(2),nc2,ntext2)
      n2=1
-     n5=4*nadd
+     n5=n5 + 4*nadd
   else if(nt1(1).eq.1 .and. nt1(2).eq.2) then
      call pkcall(w(1),nc1,ntext1)
      call pkpfx(w(2),nc2,ngph,nadd)
      n2=2
-     n5=4*nadd
+     n5=n5 + 4*nadd
   else
      n5=1
      call pktext(msg,iu)

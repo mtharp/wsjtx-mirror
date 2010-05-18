@@ -115,9 +115,9 @@ subroutine srcenc(cmode,msg,nbit,iu)
   endif
   call pk78(msg,w,nw,nt1,nc1,nc2,ngph,n2,n5,iu)
   if(iand(n5,1).eq.0) then
-     iu(1)=ishft(nc1,4) + iand(ishft(nc2,-24),15)
-     iu(2)=ishft(nc2,8) + iand(ishft(ngph,-7),255)
-     iu(3)=ishft(ngph,25) + ishft(iand(n2,3),23) + ishft(n5,18)
+     iu(1)=ishft(nc1,4) + iand(ishft(nc2,-24),15)            !28 + 4 bits
+     iu(2)=ishft(nc2,8) + iand(ishft(ngph,-7),255)           !24 + 8
+     iu(3)=ishft(ngph,25) + ishft(iand(n2,3),23) + ishft(n5,18)  
   else
      nc1=ishft(iu(1),-4)
      nc2=ishft(iand(iu(1),15),24) + ishft(iu(2),-8)

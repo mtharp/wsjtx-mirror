@@ -211,9 +211,13 @@ subroutine srcdec(cmode,nbit,iu,msg)
               endif
            endif
         endif
-        msg=c1(:6)//' '//c2(:6)//' '//cgp
+        if(iand(n5,8).eq.0) then
+           msg=c1(:6)//' '//c2(:6)//' '//cgp
+        else
+           msg=c1(:6)//' '//c2(:6)//' R '//cgp
+        endif
      else if(n2.eq.1) then
-        ng=ngph + 32768*(n5/4)
+        ng=ngph + 32768*(iand(n5,4)/4)
         call unpkcall(nc1,c12)
         call unpkpfx(ng,c12)
         call unpkcall(nc2,c2)
@@ -231,7 +235,7 @@ subroutine srcdec(cmode,nbit,iu,msg)
      else if(n2.eq.2) then
         call unpkcall(nc1,c1)
         call unpkcall(nc2,c12)
-        ng=ngph + 32768*(n5/4)
+        ng=ngph + 32768*(iand(n5,4)/4)
         call unpkpfx(ng,c12)
         i1=index(c12,' ')
         msg=c1//' '//c12(:i1-1)
