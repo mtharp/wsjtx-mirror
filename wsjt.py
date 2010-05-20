@@ -1313,11 +1313,11 @@ def update():
         azdist()
         g.nfreq=nfreq.get()
         if tx1.get()=='AUTO' and mode.get()=='Echo' and isec==0:
-        if (utc[4]%2)==0 and lauto==0:
-            toggleauto()
-        if (utc[4]%2)==1 and lauto==1:
-            toggleauto()
-            Audio.gcom2.nsumecho=0
+            if (utc[4]%10)==0 and lauto==0:
+                toggleauto()
+            if (utc[4]%10)==1 and lauto==1:
+                toggleauto()
+                Audio.gcom2.nsumecho=0
 
         if Audio.gcom2.ndecoding==0:
             g.AzSun,g.ElSun,g.AzMoon,g.ElMoon,g.AzMoonB,g.ElMoonB,g.ntsky, \
