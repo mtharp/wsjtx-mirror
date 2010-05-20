@@ -26,7 +26,7 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
      d(i)=y1(k)
      sq=sq + d(i)*d(i)
   enddo
-  sigdB=db(sq/(14*2048)) - 18.25
+  sigdB=db(sq/(14*2048)) - 58.5
   if(sigdB.lt.-99.0) sigdB=-99.0
 
   if(nsum.eq.0) then
@@ -56,8 +56,7 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   do i=1,8192
      s(i)=real(c(i))**2 + aimag(c(i))**2
      s(i)=fac*s(i)
-     if(nsave.ne.0) write(51,3001) i*df,s(i),db(s(i))
-3001 format(f10.3,2f12.3)
+!     if(nsave.ne.0) write(51,3001) i*df,s(i),db(s(i))
   enddo
 
   fnominal=1500.0           !Nominal audio frequency w/o doppler or dither
@@ -73,10 +72,12 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   u=1.0/nsum
   if(ntc.lt.1) ntc=1
   if(nsum.gt.10*ntc) u=1.0/(10*ntc)
+  rewind 52
   do i=1,600
      s1(i)=(1.0-u)*s1(i) + u*s(ia+i-300)  !Center at initial doppler freq
      s2(i)=(1.0-u)*s2(i) + u*s(ib+i-300)  !Center at expected echo freq
      if(nsave.ne.0) write(52,3001) (i-300)*df,s1(i),s2(i)
+3001 format(f10.3,2f12.3)
   enddo
 
   call pctile(s2,tmp,600,50,x0)
