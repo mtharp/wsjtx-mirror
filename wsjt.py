@@ -655,6 +655,7 @@ def ModeEcho(event=NONE):
     mode.set("Echo")
     ModeJT64()
     if lauto: toggleauto()
+    lab2.configure(text='     N      Level         Sig              DF         Width      Q')
 #    tx1.delete(0,99)
 #    tx1.insert(0,"ECHO")
 

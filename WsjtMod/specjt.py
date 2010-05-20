@@ -381,6 +381,8 @@ def update():
             nspeed0.set(3)
         if (g.mode=="JTMS" or g.mode[:5]=="ISCAT") and nspeed0.get()<6:
             nspeed0.set(6)
+        if g.mode[:4]=="Echo" and nspeed0.get()>5:
+            nspeed0.set(3)
         draw_axis()
         mode0=g.mode
 

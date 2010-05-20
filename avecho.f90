@@ -18,12 +18,16 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   save s1,s2,dop0
 
   if(ibuf0.lt.1) print*,'IBUF0:',ibuf0
+  sq=0.
   k=2048*(ibuf0-1)  
   do i=1,14*2048
      k=k+1
      if(k.gt.NBSIZE) k=k-NBSIZE
      d(i)=y1(k)
+     sq=sq + d(i)*d(i)
   enddo
+  sigdB=db(sq/(14*2048)) - 18.25
+  if(sigdB.lt.-99.0) sigdB=-99.0
 
   if(nsum.eq.0) then
      dop0=2.0*xdop(1)       !Remember the initial Doppler
@@ -107,13 +111,6 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   echodop=df*(ipk-300)
   snr=0.
   if(rms.gt.0.0) snr=(peak-x0)/rms
-
-  sq=0.
-  do i=1,jz
-     sq=sq+data(i)*data(i)
-  enddo
-  sigdB=db(sq/jz) - 18.25
-  if(sigdB.lt.-99.0) sigdB=-99.0
 
   NQual=(snr-2.5)/2.5
   if(nsum.lt.12)  NQual=(snr-3)/3
