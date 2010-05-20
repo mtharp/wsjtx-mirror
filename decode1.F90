@@ -8,6 +8,7 @@ subroutine decode1(iarg)
 #endif
 
   character sending0*28,mode0*6,cshort*11
+  character fnamex*24
   integer sendingsh0
   
   include 'gcom1.f90'
@@ -28,7 +29,13 @@ subroutine decode1(iarg)
   ltrace=0
 
   if(mode(1:4).eq.'Echo' .and. ndecoding.eq.1) then
-     call avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,fecho,nsumecho)
+     nt=ntime/86400
+     nt=86400*nt + tbuf(ibuf0)
+     call get_fname(mycall,iyr,imo,ida,nt,lauto,fnamex)
+     i1=index(fnamex,'.WAV')
+     fnamex=fnamex(1:i1-3)//'.eco'
+     call avecho(fnamex,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,   &
+          nsave,fecho,nsumecho)
      ndecoding=0
      ndecdone=1
   endif

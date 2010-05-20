@@ -1,6 +1,7 @@
-subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
+subroutine avecho(fname,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
 
   parameter (NBSIZE=1024*2048)
+  character*24 fname
   integer*2 y1(NBSIZE)                   !Buffer for Rx data
   real d(28672)                          !Real audio data
   real s1(600)      !Avg spectrum relative to initial Doppler echo freq
@@ -72,13 +73,15 @@ subroutine avecho(y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   u=1.0/nsum
   if(ntc.lt.1) ntc=1
   if(nsum.gt.10*ntc) u=1.0/(10*ntc)
-  rewind 52
+  if(nsave.ne.0) open(24,file=fname,status='unknown')
   do i=1,600
      s1(i)=(1.0-u)*s1(i) + u*s(ia+i-300)  !Center at initial doppler freq
      s2(i)=(1.0-u)*s2(i) + u*s(ib+i-300)  !Center at expected echo freq
-     if(nsave.ne.0) write(52,3001) (i-300)*df,s1(i),s2(i)
+     if(nsave.ne.0) write(24,3001) (i-300)*df,s1(i),s2(i)
 3001 format(f10.3,2f12.3)
   enddo
+  close(24)
+  call flushqqq(24)
 
   call pctile(s2,tmp,600,50,x0)
   call pctile(s2,tmp,600,84,x1)

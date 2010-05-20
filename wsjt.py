@@ -1290,7 +1290,7 @@ def plot_small():
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
            im,pim,cmap0,isync,isyncMS,isync6m,isync65,isync_save,idsec, \
-           first,itol,txsnrdb,tx6alt,nin0,nout0
+           first,itol,txsnrdb,tx6alt,nin0,nout0,lauto
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
@@ -1312,7 +1312,13 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
-        
+        if tx1.get()=='AUTO' and mode.get()=='Echo' and isec==0:
+        if (utc[4]%2)==0 and lauto==0:
+            toggleauto()
+        if (utc[4]%2)==1 and lauto==1:
+            toggleauto()
+            Audio.gcom2.nsumecho=0
+
         if Audio.gcom2.ndecoding==0:
             g.AzSun,g.ElSun,g.AzMoon,g.ElMoon,g.AzMoonB,g.ElMoonB,g.ntsky, \
                 g.ndop,g.ndop00,g.dbMoon,g.RAMoon,g.DecMoon,g.HA8,g.Dgrd,  \
@@ -1600,7 +1606,7 @@ def update():
 ##    else:
 ##        msg3.configure(text='Invalid audio output device.',bg='red')    
 
-    if altmsg: tx6alt=tx6.get()    
+    if altmsg: tx6alt=tx6.get()
 # Queue up the next update
     ldate.after(100,update)
 
