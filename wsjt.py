@@ -1312,10 +1312,10 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
-        if tx1.get()=='AUTO' and mode.get()=='Echo' and isec==0:
-            if (utc[4]%10)==0 and lauto==0:
+        if tx1.get()=='AUTO' and mode.get()=='Echo':
+            if isec==0 and (utc[4]%10)==0 and lauto==0:
                 toggleauto()
-            if (utc[4]%10)==1 and lauto==1:
+            if isec==4 and (utc[4]%10)==1 and lauto==1:
                 toggleauto()
                 Audio.gcom2.nsumecho=0
 
