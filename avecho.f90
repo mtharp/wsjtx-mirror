@@ -1,4 +1,5 @@
-subroutine avecho(fname,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
+subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
+     dlatency,nsave,f1,nsum)
 
   parameter (NBSIZE=1024*2048)
   character*24 fname
@@ -27,6 +28,7 @@ subroutine avecho(fname,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
      d(i)=y1(k)
      sq=sq + d(i)*d(i)
   enddo
+
   sigdB=db(sq/(14*2048)) - 58.5
   if(sigdB.lt.-99.0) sigdB=-99.0
 
@@ -37,37 +39,26 @@ subroutine avecho(fname,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   endif
 
   doppler=2.0*xdop(1)
+  if(nsave.ne.0) write(25) fname,ntime,dop0,doppler,d(1:28672)
+
   dt=1.0/12000.0
-!  df=2*12000.0/32768.0
   df=12000.0/32768.0
   istart=1
   nz=14*2048 + 1 - istart
-  x(1:24030)=d(istart:istart+24029)
-  x(24031:)=0.0
+  x(1:28672)=d(istart:istart+28672)
+  x(28673:)=0.0
   call xfft(x,32768)
 
   fac=(1.0/32768.0)**2
-!  do i=1,4096                          !Compress spectrum by factor of 2
-!     j=2*i
-!     s(i)=real(c(j-1))**2 + aimag(c(j-1))**2  + real(c(j))**2 + aimag(c(j))**2
-!     s(i)=fac*s(i)
-!     if(nsave.ne.0) write(51,3001) i*df,s(i),db(s(i))
-!3001 format(f10.3,2f12.3)
-!  enddo
   do i=1,8192
-     s(i)=real(c(i))**2 + aimag(c(i))**2
-     s(i)=fac*s(i)
-!     if(nsave.ne.0) write(51,3001) i*df,s(i),db(s(i))
+     s(i)=fac * (real(c(i))**2 + aimag(c(i))**2)
   enddo
 
   fnominal=1500.0           !Nominal audio frequency w/o doppler or dither
   ia=nint((fnominal+dop0-nfrit)/df)
   ib=nint((f1+doppler-nfrit)/df)
-  
-!  if(ia.lt.300 .or. ib.lt.300) goto 900
-!  if(ia.gt.3795 .or. ib.gt.3795) goto 900
-  if(ia.lt.600 .or. ib.lt.600) goto 900
-  if(ia.gt.7590 .or. ib.gt.7590) goto 900
+  if(ia.lt.600 .or. ib.lt.600) go to 900
+  if(ia.gt.7590 .or. ib.gt.7590) go to 900
 
   nsum=nsum+1
   u=1.0/nsum
@@ -124,16 +115,15 @@ subroutine avecho(fname,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,nsave,f1,nsum)
   if(NQual.lt.0)  NQual=0
   if(NQual.gt.10) NQual=10
 
-!  write(*,1009) nsum,sigdB,echosig,echodop,width,NQual,ibuf0
-!1009 format(i4,f6.1,f7.1,f8.1,f6.1,i4,i8)
-
   rewind 11
   write(11,1010) nsum,sigdB,echosig,echodop,width,NQual
 1010 format(i4,f6.1,f7.1,f8.1,f6.1,i4)
   write(21,1010) nsum,sigdB,echosig,echodop,width,NQual
+
   call flushqqq(11)
   call flushqqq(21)
+  call flushqqq(24)
+  call flushqqq(25)
 
-900 techo2=techo
-  return
+900 return
 end subroutine avecho

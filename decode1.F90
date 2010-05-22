@@ -34,7 +34,7 @@ subroutine decode1(iarg)
      call get_fname(mycall,iyr,imo,ida,nt,lauto,fnamex)
      i1=index(fnamex,'.WAV')
      fnamex=fnamex(1:i1-3)//'.eco'
-     call avecho(fnamex,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,   &
+     call avecho(fnamex,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,dlatency,   &
           nsave,fecho,nsumecho)
      ndecoding=0
      ndecdone=1

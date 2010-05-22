@@ -1313,9 +1313,10 @@ def update():
         azdist()
         g.nfreq=nfreq.get()
         if tx1.get()=='AUTO' and mode.get()=='Echo':
-            if isec==0 and (utc[4]%10)==0 and lauto==0:
+            nmin=5
+            if isec==0 and (utc[4]%nmin)==0 and lauto==0:
                 toggleauto()
-            if isec==4 and (utc[4]%10)==1 and lauto==1:
+            if isec==4 and (utc[4]%nmin)==1 and lauto==1:
                 toggleauto()
                 Audio.gcom2.nsumecho=0
 

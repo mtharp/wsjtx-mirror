@@ -15,6 +15,7 @@
 !   22  kvasd.dat
 !   23  CALL3.TXT
 !   24  *.eco
+!   25  echo.dat
 
 !------------------------------------------------ ftn_init
 subroutine ftn_init
@@ -42,6 +43,13 @@ subroutine ftn_init
 1 iz=i
   lenappdir=iz
 
+  AzElDir='C:\Users\Joe\wsjt\MAP65'
+  do i=80,1,-1
+     if(AzElDir(i:i).ne.' ') goto 2
+  enddo
+2 iz2=i
+
+
 #ifdef CVF
   open(11,file=appdir(:iz)//'/decoded.txt',status='unknown',               &
        share='denynone',err=910)
@@ -61,10 +69,11 @@ subroutine ftn_init
   endfile 12
 
 #ifdef CVF
-  open(14,file=appdir(:iz)//'/azel.dat',status='unknown',                 &
+  open(14,file=azeldir(:iz2)//'/azel.dat',status='unknown',                 &
        share='denynone',err=930)
 #else
-  open(14,file=appdir(:iz)//'/azel.dat',status='unknown',                 &
+  print*,azeldir(:iz2)
+  open(14,file=azeldir(:iz2)//'/azel.dat',status='unknown',                 &
        err=930)
 #endif
 
@@ -90,6 +99,14 @@ subroutine ftn_init
 #else
   open(22,file=appdir(:iz)//'/kvasd.dat',access='direct',recl=4096,        &
        status='unknown')
+#endif
+
+#ifdef CVF
+  open(25,file=appdir(:iz)//'/echo.dat',form='unformatted',                &
+       access='append',status='unknown')
+#else
+  open(25,file=appdir(:iz)//'/echo.dat',form='unformatted',                &
+       position='append',status='unknown')
 #endif
 
   call zero(nsky,180*180)
