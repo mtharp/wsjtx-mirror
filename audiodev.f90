@@ -6,7 +6,7 @@ subroutine audiodev(jdevin,jdevout,inbad,outbad)
 
   character cdevice*40,audiocaps*80
   integer inbad,outbad
-  integer nchin(0:20),nchout(0:20),inerr(0:20),outerr(0:20)
+  integer nchin(0:40),nchout(0:40),inerr(0:40),outerr(0:40)
 !  include 'acom1.f90'
   include 'gcom2.f90'
 
