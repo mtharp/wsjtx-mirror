@@ -39,7 +39,7 @@ subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
   endif
 
   doppler=2.0*xdop(1)
-  if(nsave.ne.0) write(25) fname,ntime,dop0,doppler,d(1:28672)
+!  if(nsave.ne.0) write(25) fname,ntime,dop0,doppler,d(1:28672)
 
   dt=1.0/12000.0
   df=12000.0/32768.0
