@@ -43,12 +43,12 @@ subroutine ftn_init
 1 iz=i
   lenappdir=iz
 
-  AzElDir='C:\Users\Joe\wsjt\MAP65'
+!  AzElDir='C:\Users\Joe\wsjt\MAP65'
+  AzElDir=appdir
   do i=80,1,-1
      if(AzElDir(i:i).ne.' ') goto 2
   enddo
 2 iz2=i
-
 
 #ifdef CVF
   open(11,file=appdir(:iz)//'/decoded.txt',status='unknown',               &
