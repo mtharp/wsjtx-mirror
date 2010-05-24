@@ -39,19 +39,15 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,grid,cauxra,cauxdec,       &
   endif
 
 2 nmode=1
-  if(mode(1:4).eq.'JT65') then
+  if(mode(1:4).eq.'JT64') then
      nmode=2
-     if(mode(5:5).eq.'A') mode65=1
-     if(mode(5:5).eq.'B') mode65=2
-     if(mode(5:5).eq.'C') mode65=4
+     if(mode(5:5).eq.'A') mode64=1
+     if(mode(5:5).eq.'B') mode64=2
+     if(mode(5:5).eq.'C') mode64=4
   endif
   if(mode(1:4).eq.'Echo') nmode=3
-  if(mode(1:4).eq.'JT6M') nmode=4
-  if(mode(1:2).eq.'CW') nmode=5
-  if(mode(1:3).eq.'JT2') nmode=6
-  if(mode(1:3).eq.'JT4') nmode=7
-  if(mode(1:4).eq.'WSPR') nmode=8
-  if(mode(1:4).eq.'JT64') nmode=9
+  if(mode(1:5).eq.'ISCAT') nmode=4
+  if(mode(1:3).eq.'JT8') nmode=5
   uth=uth8
   call cs_unlock
 
@@ -115,7 +111,7 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,grid,cauxra,cauxdec,       &
 1010 format(i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Moon'/        &
             i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Sun'/         &
             i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Source'/      &
-            i4,',',f8.1,',',f8.2,',',f8.1,',',f8.2,',Doppler')
+            i5,',',f8.1,',',f8.2,',',f8.1,',',f8.2,',Doppler')
      rewind 14
 800  isec0=isec
      call cs_unlock

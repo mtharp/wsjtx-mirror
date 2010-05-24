@@ -72,7 +72,6 @@ subroutine ftn_init
   open(14,file=azeldir(:iz2)//'/azel.dat',status='unknown',                 &
        share='denynone',err=930)
 #else
-  print*,azeldir(:iz2)
   open(14,file=azeldir(:iz2)//'/azel.dat',status='unknown',                 &
        err=930)
 #endif

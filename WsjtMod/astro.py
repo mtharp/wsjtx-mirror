@@ -26,9 +26,10 @@ def update():
     t3= "Moon/DX: %6.2f  %6.2f\n" % (g.AzMoonB,g.ElMoonB)
     t4= "Sun:     %6.2f  %6.2f\n" % (g.AzSun,g.ElSun)
     t4a="Source:  %6.2f  %6.2f\n\n" % (g.AzAux,g.ElAux)
-    t5= "        Doppler   df/dt\n"
-    t6= "DX:     %7d %7.2f\n" % (g.ndop,g.dfdt)
-    t7= "Self:   %7d %7.2f\n\n" % (g.ndop00,g.dfdt0)
+    t5= "           Self      DX\n"
+    t6= "Doppler: %6d %7d\n" % (g.ndop00,g.ndop)
+    t7= "df/dt:  %7.1f %7.1f\n" % (g.dfdt0,g.dfdt)       #Change these!
+    t7aa="Spread: %7.1f %7.1f\n\n" % (g.dfdt0,g.dfdt)
     t7a="            RA      DEC\n"
     irah=int(g.RAMoon)
     iram=int(60.0*(g.RAMoon-irah))
@@ -41,7 +42,7 @@ def update():
     if g.nfreq==4: t8="Freq:  3.5 Tsky:%6d\n" % (g.ntsky)
     t9= "MNR: %5.1f  Dgrd:%6.1f\n" % (g.MaxNR,g.Dgrd)
     t10="DPol: %4d  SD:%8.2f\n" % (g.poloffset,g.sd)
-    t=t1+t2+t3+t4+t4a+t5+t6+t7+t7a+t7b+t7c+t8+t9+t10
+    t=t1+t2+t3+t4+t4a+t5+t6+t7+t7aa+t7a+t7b+t7c+t8+t9+t10
     lab1.configure(text=t)
     g.astro_geom=root.geometry()
     frame.after(1000,update)

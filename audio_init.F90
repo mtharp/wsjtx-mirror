@@ -13,19 +13,15 @@ subroutine audio_init(ndin,ndout)
   include 'gcom2.f90'
 
   nmode=1
-  if(mode(1:4).eq.'JT65') then
+  if(mode(1:4).eq.'JT64') then
      nmode=2
-     if(mode(5:5).eq.'A') mode65=1
-     if(mode(5:5).eq.'B') mode65=2
-     if(mode(5:5).eq.'C') mode65=4
+     if(mode(5:5).eq.'A') mode64=1
+     if(mode(5:5).eq.'B') mode64=2
+     if(mode(5:5).eq.'C') mode64=4
   endif
   if(mode(1:4).eq.'Echo') nmode=3
-  if(mode(1:4).eq.'JT6M') nmode=4
-  if(mode(1:2).eq.'CW') nmode=5
-  if(mode(1:3).eq.'JT2') nmode=6
-  if(mode(1:3).eq.'JT4') nmode=7
-  if(mode(1:4).eq.'WSPR') nmode=8
-  if(mode(1:4).eq.'JT64') nmode=9
+  if(mode(1:5).eq.'ISCAT') nmode=4
+  if(mode(1:3).eq.'JT8') nmode=5
 
   ndevin=ndin
   ndevout=ndout
