@@ -1312,8 +1312,11 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
-        if tx1.get()=='AUTO' and mode.get()=='Echo':
-            nmin=5
+        if tx1.get()[0:2]=='GO' and mode.get()=='Echo':
+            try:
+                nmin=int(tx1.get()[3:5])
+            except:
+                nmin=10
             if isec==0 and (utc[4]%nmin)==0 and lauto==0:
                 toggleauto()
             if isec==4 and (utc[4]%nmin)==1 and lauto==1:
