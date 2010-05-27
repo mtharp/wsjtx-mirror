@@ -116,6 +116,11 @@ ptt_(int *unused, char *ptt_port, int *ntx, int *iptt)
       return(0);
     }
 
+    if (strcmp(ptt_port,"COM0")==0)  {
+      *iptt = *ntx;
+      return(0);
+    }
+
     if ((fd = open(ptt_port, O_RDWR|O_NONBLOCK)) < 0) {
 	fprintf(stderr, "Can't open %s.\n", ptt_port);
 	return (1);
