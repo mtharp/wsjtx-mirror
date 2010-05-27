@@ -12,7 +12,7 @@ subroutine runqqq(fname,cmnd,iret)
   iret=runqq(fname,cmnd)
 #else
 !  iret=system('kvasd2 -q > dev_null')
-  iret=system('kvasd2 -q')
+  iret=system('./kvasd2 -q')
 #endif
 
   return

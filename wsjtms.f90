@@ -142,7 +142,6 @@ subroutine wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,        &
            if(nshort.eq.2) decoded='R27'
            if(nshort.eq.3) decoded='RRR'
            if(nshort.eq.4) decoded='73'
-           print*,'A',nshort,short
         endif
 
         if(mswidth.ge.120) nrpt=26

@@ -250,7 +250,11 @@ int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[],
 
 // Test if this configuration actually works, so we do not run into an ugly assertion
   err_open_in = Pa_IsFormatSupported(&inputParameters, NULL, dSampleRate);
-
+  if(err_open_in != 0)  {
+    printf("err_open_in: %d   Requested sample rate: %f\n",
+	   err_open_in,dSampleRate);
+    err_open_in=0;
+  }
   if (err_open_in == 0) {
     err_open_in = Pa_OpenStream(
 		       &instream,       //address of stream
