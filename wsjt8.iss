@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSJT
-AppVerName=WSJT Version 8 r1931
+AppVerName=WSJT Version 8 r1940
 AppCopyright=Copyright (C) 2001-2010 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSJT8
 DefaultGroupName=WSJT8

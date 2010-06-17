@@ -22,6 +22,9 @@ from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 import array
+import urllib
+import thread
+import webbrowser
 
 root = Tk()
 Version="8.0 r" + "$Rev$"[6:-1]
@@ -830,6 +833,20 @@ VK7ABC K1JT RRR
 """
     Label(screenf5s,text=t,justify=LEFT).pack(padx=20)
     screenf5s.focus_set()
+
+#------------------------------------------------------ usersguide
+def usersguide(event=NONE):
+    url='http://physics.princeton.edu/pulsar/K1JT/WSJT8_User.pdf'
+    thread.start_new_thread(browser,(url,))
+
+#------------------------------------------------------ homepage
+def homepage(event=NONE):
+    url='http://physics.princeton.edu/pulsar/K1JT/'
+    thread.start_new_thread(browser,(url,))
+
+#------------------------------------------------------- browser
+def browser(url):
+    webbrowser.open(url)
 
 #------------------------------------------------------ azdist
 def azdist():
@@ -1792,6 +1809,9 @@ helpmenu.add('command', label = 'What message to send?', \
              command = what2send, accelerator='F5')
 helpmenu.add('command', label = 'Examples of minimal QSOs', \
              command = minimal_qso, accelerator='Shift+F5')
+helpmenu.add('command',label="Online WSPR User's Guide",command=usersguide, \
+             accelerator='F9')
+helpmenu.add('command',label="WSJT Home Page",command=homepage)
 helpmenu.add('command', label = 'About WSJT', command = about, \
              accelerator='Ctrl+F1')
 
@@ -1859,7 +1879,7 @@ root.bind_all('<F8>', ModeJT64A)
 #root.bind_all('<Shift-F8>', ModeJT65B)
 #root.bind_all('<Control-F8>', ModeJT65C)
 root.bind_all('<Shift-F7>', ModeISCAT)
-#root.bind_all('<F9>', ModeEcho)
+root.bind_all('<F9>', usersguide)
 root.bind_all('<F10>', showspecjt)
 root.bind_all('<Shift-F10>', astro1)
 root.bind_all('<F11>', left_arrow)
