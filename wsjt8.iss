@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSJT
-AppVerName=WSJT Version 8 r1928
+AppVerName=WSJT Version 8 r1931
 AppCopyright=Copyright (C) 2001-2010 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSJT8
 DefaultGroupName=WSJT8
@@ -8,8 +8,7 @@ DefaultGroupName=WSJT8
 [Files]
 Source: "c:\Users\joe\wsjt\wsjt8a\WSJT8.EXE";         DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\pthreadGC2.dll";      DestDir: "{app}";
-Source: "c:\Users\joe\wsjt\wsjt8a\qso.txt";           DestDir: "{app}"
-Source: "c:\Users\joe\wsjt\wsjt8a\WSJT8codes.out";    DestDir: "{app}";
+Source: "c:\Users\joe\wsjt\wsjt8a\CALL3.TXT";         DestDir: "{app}";  Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\wsjt8a\wsjt.ico";          DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\wsjt8a\TSKY.DAT";          DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\wsjt8a\kvasd2.exe";        DestDir: "{app}";

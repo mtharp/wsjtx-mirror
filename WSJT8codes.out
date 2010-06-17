@@ -76,8 +76,10 @@ K1ABC W9XYZ RO           78  F70C238F 9777BBFE 1800   K1ABC W9XYZ RO
 K1ABC W9XYZ R-21         78  F70C238F 9777BBFD B000   K1ABC W9XYZ R-21        
 K1ABC W9XYZ R+21         78  F70C238F 9777BBFE 0400   K1ABC W9XYZ R+21        
 K1ABC W9XYZ R21          78  F70C238F 9777BBFE 0400 * K1ABC W9XYZ R+21        
+K1ABC W9XYZ R EM77       78  F70C238F 9777BBBA 9E20   K1ABC W9XYZ R EM77      
 K1ABC W9XYZ RRR          78  F70C238F 9777BBFE 1A00   K1ABC W9XYZ RRR         
 K1ABC W9XYZ 73           78  F70C238F 9777BBFE 1C00   K1ABC W9XYZ 73          
+TNX BERT 73 GL           48  122C4D46 D7FC0000 0000   TNX BERT 73 GL          
 123456789ABCDE           78  4629667D 059FAB1B 6654   123456789ABCDE          
 123456789ABCDEF          78  4629667D 059FAB1B 6654 * 123456789ABCDE          
 
@@ -85,7 +87,6 @@ In JTMS mode, 2-bit messages and 48-bit messages involving a signal
 report are slightly different.  Where "OOO" and "RO" are used in the
 other modes, JTMS uses "26", "27", "R26", and "R27".
 ----------------------------------------------------------------------------
-
 R26                       2  00000000 00000000 0000   R26
 R27                       2  40000000 00000000 0000   R27
 RRR                       2  80000000 00000000 0000   RRR
@@ -104,4 +105,3 @@ K1ABC <VO2/W9XYZ> R26    48  F70C238C 874D0000 0000   K1ABC <VO2/W9XYZ> R26
 VO2/K1ABC R26            48  F70C2385 282F0000 0000   VO2/K1ABC R26           
 DE VO2/W9XYZ R26         48  F9777BB5 28310000 0000   DE VO2/W9XYZ R26        
 DE K1ABC FN20 R26        48  F70C238B 39D20000 0000   DE K1ABC FN20 R26       
-
