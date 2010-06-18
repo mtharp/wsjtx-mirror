@@ -156,7 +156,7 @@ def def2():
         tx2.insert(0,'%T %M %R')
         tx3.insert(0,'%T %M R%R')
     tx4.insert(0,'RRR')
-    tx5.insert(0,'TNX 73 GL')
+    tx5.insert(0,'73')
     tx6.insert(0,'CQ %M %G')
 
 #---------------------------------------------------------- def3
