@@ -85,6 +85,7 @@ kb8rq=IntVar()
 loopall=0
 mode=StringVar()
 mode.set("")
+mode0=""
 mrudir=os.getcwd()
 MyCall0=""
 naz=0
@@ -95,6 +96,7 @@ ncwtrperiod=120
 ndmiles=0
 ndkm=0
 ndebug=IntVar()
+ndefault0=0
 neme=IntVar()
 nfreeze=IntVar()
 nhotaz=0
@@ -1307,7 +1309,7 @@ def plot_small():
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
            im,pim,cmap0,isync,isyncMS,isync6m,isync65,isync_save,idsec, \
-           first,itol,txsnrdb,tx6alt,nin0,nout0,lauto
+           first,itol,txsnrdb,tx6alt,nin0,nout0,lauto,ndefault0,mode0
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
@@ -1627,6 +1629,15 @@ def update():
 ##    else:
 ##        msg3.configure(text='Invalid audio output device.',bg='red')    
 
+    if g.ndefault != ndefault0:
+        GenStdMsgs()
+        ndefault0=g.ndefault
+    if g.mode != mode0:
+        g.ndefault=1
+        ndefault0=1
+        options.defaults()
+        GenStdMsgs()
+        mode0=g.mode
     if altmsg: tx6alt=tx6.get()
 # Queue up the next update
     ldate.after(100,update)

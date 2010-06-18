@@ -127,22 +127,41 @@ def def1():
     tx4.delete(0,END)
     tx5.delete(0,END)
     tx6.delete(0,END)
-
-    tx1.insert(0,'DE %M')
-    if g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
-        tx2.insert(0,'%T OOO')
-        tx3.insert(0,'%T RO')
-    else:    
-        tx2.insert(0,'%T 26')
-        tx3.insert(0,'%T R26')
+    tx1.insert(0,'%T %M %G')
+    if g.mode[:4]=='JTMS':
+        tx2.insert(0,'%T %M 26')
+        tx3.insert(0,'R26')
+    else:
+        tx2.insert(0,'%T %M %G OOO')
+        tx3.insert(0,'RO')
     tx4.insert(0,'RRR')
     tx5.insert(0,'73')
-    tx6.insert(0,'CQ %M')
-
+    tx6.insert(0,'CQ %M %G')
 
 #---------------------------------------------------------- def2
 def def2():
     g.ndefault=2
+    tx1.delete(0,END)
+    tx2.delete(0,END)
+    tx3.delete(0,END)
+    tx4.delete(0,END)
+    tx5.delete(0,END)
+    tx6.delete(0,END)
+
+    tx1.insert(0,'%T %M %G')
+    if g.mode[:4]=='JTMS':
+        tx2.insert(0,'%T %M 26')
+        tx3.insert(0,'%T %M R26')
+    else:
+        tx2.insert(0,'%T %M %R')
+        tx3.insert(0,'%T %M R%R')
+    tx4.insert(0,'RRR')
+    tx5.insert(0,'TNX 73 GL')
+    tx6.insert(0,'CQ %M %G')
+
+#---------------------------------------------------------- def3
+def def3():
+    g.ndefault=3
     tx1.delete(0,END)
     tx2.delete(0,END)
     tx3.delete(0,END)
@@ -161,28 +180,6 @@ def def2():
     tx5.insert(0,'73')
     tx6.insert(0,'CQ %M %G')
 
-#---------------------------------------------------------- def3
-def def3():
-    g.ndefault=3
-    tx1.delete(0,END)
-    tx2.delete(0,END)
-    tx3.delete(0,END)
-    tx4.delete(0,END)
-    tx5.delete(0,END)
-    tx6.delete(0,END)
-
-    tx1.insert(0,'%T %M %G')
-    if g.mode[:3]=='JT8' or g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
-        tx2.insert(0,'%T %M %G OOO')
-        tx3.insert(0,'RO')
-    else:
-        tx2.insert(0,'%T %M 26')
-        tx3.insert(0,'R26')
-    tx4.insert(0,'RRR')
-    tx5.insert(0,'73')
-    tx6.insert(0,'CQ %M %G')
-
-
 #---------------------------------------------------------- def4
 def def4():
     g.ndefault=4
@@ -193,13 +190,16 @@ def def4():
     tx5.delete(0,END)
     tx6.delete(0,END)
 
-    tx1.insert(0,'%T %M %G')
-    tx2.insert(0,'%T %M %R')
-    tx3.insert(0,'%T %M R%R')
+    tx1.insert(0,'DE %M')
+    if g.mode[:4]=='JT64' or g.mode[:5]=='ISCAT':
+        tx2.insert(0,'%T OOO')
+        tx3.insert(0,'%T RO')
+    else:    
+        tx2.insert(0,'%T 26')
+        tx3.insert(0,'%T R26')
     tx4.insert(0,'RRR')
-    tx5.insert(0,'TNX 73 GL')
-    tx6.insert(0,'CQ %M %G')
-
+    tx5.insert(0,'73')
+    tx6.insert(0,'CQ %M')
 
 mycall=Pmw.EntryField(p1,labelpos=W,label_text='My Call:',
         value='K1JT',entry_textvariable=MyCall,entry_width=12)
@@ -249,7 +249,7 @@ rb5.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb6.pack(anchor=W,side=LEFT,padx=2,pady=2)
 f1.pack()
 
-t='Set ' + g.mode + ' defaults'
+t='Set ' + g.mode + ' QSO format'
 g2=Pmw.Group(p2,tag_text=t)
 g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 ##Button(g2.interior(),text="Save",command=save,width=7).pack(side=TOP, \
@@ -259,16 +259,15 @@ g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 ##g3=Pmw.Group(g2.interior(),tag_text="Set defaults")
 ##g3.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 
-b1=Button(g2.interior(),text="1",command=def1,width=3)
-b2=Button(g2.interior(),text="2",command=def2,width=3)
-b3=Button(g2.interior(),text="3",command=def3,width=3)
-b4=Button(g2.interior(),text="4",command=def4,width=3)
+b1=Button(g2.interior(),text="Standard",command=def1,width=12)
+b2=Button(g2.interior(),text="Num Rpts",command=def2,width=12)
+b3=Button(g2.interior(),text="Hashed Calls",command=def3,width=12)
+b4=Button(g2.interior(),text="Shortest",command=def4,width=12)
 
-b1.pack(side=TOP,padx=2,pady=2,expand=YES)
-b2.pack(side=TOP,padx=2,pady=2,expand=YES)
-b3.pack(side=TOP,padx=2,pady=2,expand=YES)
-b4.pack(side=TOP,padx=2,pady=2,expand=YES)
-
+b1.pack(side=TOP,padx=2,pady=1,expand=YES)
+b2.pack(side=TOP,padx=2,pady=1,expand=YES)
+b3.pack(side=TOP,padx=2,pady=1,expand=YES)
+b4.pack(side=TOP,padx=2,pady=1,expand=YES)
 
 tx1=Pmw.EntryField(p2,labelpos=W,label_text='Tx 1:',
                    entry_textvariable=Template1)
