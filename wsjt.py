@@ -104,6 +104,7 @@ nhotabetter=0
 nin0=0
 nout0=0
 nopen=0
+nxa=1
 qdecode=IntVar()
 setseq=IntVar()
 slabel="Sync   "
@@ -1395,7 +1396,8 @@ def update():
     i=g.rfnd(t,".")
     t=t[:i]
     lab3.configure(text=t)
-    if mode.get() != g.mode or first:
+
+    if (mode.get() != g.mode) or first:
         if mode.get()=="JTMS":
             msg2.configure(bg='#FFFF00')
         elif mode.get()=="ISCAT":
@@ -1414,11 +1416,13 @@ def update():
             options.b1.configure(state=NORMAL)
             options.b2.configure(state=NORMAL)
             options.b3.configure(state=NORMAL)
-            
         g.mode=mode.get()
-        t='Set ' + g.mode + ' defaults'
-        options.g2.configure(tag_text=t)
-        if first and mode.get()!='Echo' : GenStdMsgs()
+        if not first:
+            g.ndefault=1
+            ndefault0=1
+            options.defaults()
+        GenStdMsgs()            
+#        if first and mode.get()!='Echo' : GenStdMsgs()
         first=0
 
     samfac_in=Audio.gcom1.mfsample/120000.0
@@ -1632,12 +1636,6 @@ def update():
     if g.ndefault != ndefault0:
         GenStdMsgs()
         ndefault0=g.ndefault
-    if g.mode != mode0:
-        g.ndefault=1
-        ndefault0=1
-        options.defaults()
-        GenStdMsgs()
-        mode0=g.mode
     if altmsg: tx6alt=tx6.get()
 # Queue up the next update
     ldate.after(100,update)

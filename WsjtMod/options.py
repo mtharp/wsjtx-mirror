@@ -249,15 +249,8 @@ rb5.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb6.pack(anchor=W,side=LEFT,padx=2,pady=2)
 f1.pack()
 
-t='Set ' + g.mode + ' QSO format'
-g2=Pmw.Group(p2,tag_text=t)
+g2=Pmw.Group(p2,tag_text='QSO Format')
 g2.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
-##Button(g2.interior(),text="Save",command=save,width=7).pack(side=TOP, \
-##            padx=2,pady=2)
-##Button(g2.interior(),text="Restore",command=restore,width=7).pack(side=TOP, \
-##            padx=2,pady=2)
-##g3=Pmw.Group(g2.interior(),tag_text="Set defaults")
-##g3.pack(side=LEFT,fill=BOTH,expand=1,padx=6,pady=6)
 
 b1=Button(g2.interior(),text="Standard",command=def1,width=12)
 b2=Button(g2.interior(),text="Num Rpts",command=def2,width=12)
