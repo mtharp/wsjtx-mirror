@@ -192,7 +192,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
 !        if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
 
 !        call wsjt64(dat,jz,cfile6,                                          &
-        call wsjt64(dat(12000),jz-12000,cfile6,                             &
+        call wsjt64(dat(9000),jz-9000,cfile6,                             &
              NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
              MouseDF2,NAgain,ndepth,idf,idfsh,                              &
              mycall,hiscall,hisgrid,lumsg,nspecial,ndf,                     &

@@ -107,9 +107,9 @@ subroutine jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,              &
      n2=minmet/200
 
      call cs_lock('jt8')
-     write(11,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,n1,n2
+     write(11,1010) cfile6,nsync,nsnr,dtx+1.0,ndf,isbest,csync,decoded,n1,n2
 1010 format(a6,i3,i5,f5.1,i5,i3,a1,2x,a24,i10,i4)
-     write(21,1010) cfile6,nsync,nsnr,dtx,ndf,isbest,csync,decoded,n1,n2
+     write(21,1010) cfile6,nsync,nsnr,dtx+1.0,ndf,isbest,csync,decoded,n1,n2
      call cs_unlock
   endif
 

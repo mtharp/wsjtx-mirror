@@ -8,11 +8,10 @@ subroutine runqqq(fname,cmnd,iret)
   character*(*) fname,cmnd
 
   iret=ichar(fname(1:1)) + ichar(cmnd(1:1))    !Silence compiler warning
-#ifdef CVF
-  iret=runqq(fname,cmnd)
-#else
-!  iret=system('kvasd2 -q > dev_null')
+#ifdef Win32
   iret=system('.\\kvasd2 -q')
+#else
+  iret=system('./kvasd2 -q')
 #endif
 
   return

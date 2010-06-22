@@ -96,7 +96,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
   syncbest=-1.e30
   do i=ia,ib
      smax=-1.e30
-     do lag=-20,20
+     do lag=-20,30
         sum1=0.
         sum2=0.
         sum3=0.
@@ -143,7 +143,7 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
 ! Once more, using best frequency and best sync pattern:
   i=ipk
   syncbest=-1.e30
-  do lag=-20,20
+  do lag=-20,30
      sum=0.
      do j=1,nsync
         j0=4*jsync(j) - 3 + lag
@@ -157,18 +157,20 @@ subroutine sync64(dat,jz,DFTolerance,NFreeze,MouseDF,                &
         syncbest=ccf64(lag)
      endif
      ccfblue(lag+15)=ccf64(lag)
+!     write(72,3001) lag,ccf64(lag)
+!3001 format(i5,f12.3)
   enddo
 
   sum=0.
   nsum=0
-  do j=-5,35
+  do j=-5,45
      if(abs(j-15-lagpk).gt.1) then
         sum=sum + ccfblue(j)
         nsum=nsum + 1
      endif
   enddo
   aveblue=sum/nsum
-  do j=-5,35
+  do j=-5,45
      ccfblue(j)=18.0*(ccfblue(j)-aveblue)
   enddo
 
