@@ -147,6 +147,7 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
   if(mode(1:4).eq.'JTMS') then
 ! JTMS mode
      if(jz.lt.12000) go to 900
+     if(jz.gt.30*12000) jz=30*12000
      call wsjtms(dat,jz,istart,cfile6,MinSigdB,NFreeze,MouseDF,         &
           DFTolerance,pick,ndepth,NSyncOK,s2,ps0,psavg)
 
@@ -190,14 +191,16 @@ subroutine wsjt1(d,jz0,istart,FileID,ndepth,rxsnrdb,               &
 !        jztest=12000*(ntdecode-2)/2             !Why this test?
 !        if(jz.ge.jztest) call wsjt64(dat(4097),jz-4096,cfile6,              &
 
-        call wsjt64(dat,jz,cfile6,                                          &
+!        call wsjt64(dat,jz,cfile6,                                          &
+        call wsjt64(dat(12000),jz-12000,cfile6,                             &
              NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode64,Nseg,       &
              MouseDF2,NAgain,ndepth,idf,idfsh,                              &
              mycall,hiscall,hisgrid,lumsg,nspecial,ndf,                     &
              nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
      else if(mode(1:3).eq.'JT8') then
 ! JT8 mode:
-        call jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,                &
+!        call jt8(dat,jz,cfile6,MinSigdB,DFTolerance,NFreeze,                &
+        call jt8(dat(12000),jz-12000,cfile6,MinSigdB,DFTolerance,NFreeze,    &
              MouseDF2,NSyncOK,ccf,psavg)
      endif
   endif
