@@ -15,10 +15,14 @@ subroutine rx
   if(ncal.eq.1) npts=65536
   nsec1=time()
   f0a=f0                                   !Save rx frequency at start
-  ierr=soundin(ndevin,kwave,4*npts)
+  ierr=soundin(ndevin,kwave,4*npts,iqmode)
+!  write(50) 8*npts,(kwave(i),i=1,8*npts)
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
      stop
+  endif
+  if(iqmode.eq.1) then
+     call iqdemod(kwave,8*npts)
   endif
   call fil1(kwave,4*npts,iwave,n2)
   npts=n2

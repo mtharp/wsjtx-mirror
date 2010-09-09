@@ -24,6 +24,7 @@ idint=IntVar()
 bfofreq=IntVar()
 idint=IntVar()
 igrid6=IntVar()
+iqmode=IntVar()
 encal=IntVar()
 fset=IntVar()
 Acal=DoubleVar()
@@ -103,6 +104,11 @@ bsetfreq.pack(padx=5,pady=5)
 bgrid6=Checkbutton(g1.interior(),text='Force transmission of 6-digit locator',
                    variable=igrid6)
 bgrid6.pack(anchor=W,padx=5,pady=2)
+
+biqmode=Checkbutton(g1.interior(),text='Enable I/Q mode',
+                   variable=iqmode)
+biqmode.pack(anchor=W,padx=5,pady=2)
+
 
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()

@@ -43,7 +43,7 @@ int soundexit_(void)
 #ifdef CVF
 int __stdcall SOUNDIN(int *idevin, short recordedSamples[],int *nframes0)
 #else
-int soundin_(int *idevin, short recordedSamples[],int *nframes0)
+int soundin_(int *idevin, short recordedSamples[], int *nframes0, int *iqmode)
 #endif
 {
     PaStreamParameters inputParameters;
@@ -53,15 +53,17 @@ int soundin_(int *idevin, short recordedSamples[],int *nframes0)
     int totalFrames;
     int numSamples;
     int numBytes;
+    int num_channels;
     
     totalFrames=*nframes0;
-    numSamples = totalFrames * NUM_CHANNELS;
+    num_channels=*iqmode + 1;
+    numSamples = totalFrames * num_channels;
     numBytes = numSamples * sizeof(SAMPLE);
     for( i=0; i<numSamples; i++ ) 
       recordedSamples[i] = 0;
 
     inputParameters.device = *idevin;
-    inputParameters.channelCount = NUM_CHANNELS;
+    inputParameters.channelCount = num_channels;
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = 0.4;
     inputParameters.hostApiSpecificStreamInfo = NULL;

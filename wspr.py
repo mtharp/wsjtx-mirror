@@ -694,6 +694,7 @@ def put_params(param3=NONE):
     except:
         w.acom1.idint=0
     w.acom1.igrid6=advanced.igrid6.get()
+    w.acom1.iqmode=advanced.iqmode.get()
     w.acom1.ndevin=g.ndevin.get()
     w.acom1.ndevout=g.ndevout.get()
     w.acom1.nbaud=options.serial_rate.get()
@@ -1008,6 +1009,7 @@ def save_params():
     f.write("Acal " + str(advanced.Acal.get()) + "\n")
     f.write("Bcal " + str(advanced.Bcal.get()) + "\n")
     f.write("CalEnable " + str(advanced.encal.get()) + "\n")
+    f.write("IQmode " + str(advanced.iqmode.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1364,6 +1366,7 @@ def readinit():
             elif key == 'Acal': advanced.Acal.set(value)
             elif key == 'Bcal': advanced.Bcal.set(value)
             elif key == 'CalEnable': advanced.encal.set(value)
+            elif key == 'IQmode': advanced.iqmode.set(value)
             elif key == 'PTTmode': options.pttmode.set(value)
             elif key == 'CATenable': options.cat_enable.set(value)
             elif key == 'SerialRate': options.serial_rate.set(int(value))
