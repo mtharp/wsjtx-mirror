@@ -2,9 +2,6 @@ subroutine decode
 
 !  Decode WSPR signals for one 2-minute sequence.
 
-#ifdef CVF
-  use dfport
-#endif
   character*80 savefile
   integer*2 jwave(114*12000)
   real*8 df,fpeak

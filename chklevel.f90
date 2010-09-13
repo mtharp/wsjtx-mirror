@@ -2,11 +2,7 @@ subroutine chklevel
 
 ! Called from wspr2 at ~5 Hz rate.
 
-#ifdef CVF
-  use dfport
-#else
   integer time
-#endif
 
   include 'acom1.f90'
 

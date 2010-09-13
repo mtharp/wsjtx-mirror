@@ -2,11 +2,7 @@ subroutine rx
 
 !  Receive and decode MEPT_JT signals for one 2-minute sequence.
 
-#ifdef CVF
-  use dfport
-#else
   integer time
-#endif
 
   integer soundin
   include 'acom1.f90'

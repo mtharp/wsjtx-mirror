@@ -86,12 +86,7 @@ C  Look for sync patterns, get DF and DT
             alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
 
             call cs_lock('mept162a')
-#ifdef CVF
-            open(13,file=alltxt,status='unknown',position='append',
-     +           share='denynone')
-#else
             open(13,file=alltxt,status='unknown',position='append')
-#endif
             write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
             close(13)

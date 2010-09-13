@@ -51,11 +51,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
 
      call cs_lock('genwspr')
      alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
-#ifdef CVF
-     open(13,file=alltxt,status='unknown',position='append',share='denynone')
-#else
      open(13,file=alltxt,status='unknown',position='append')
-#endif
      line=linetx//msg2
      write(13,1010) line
 1010 format(a75)

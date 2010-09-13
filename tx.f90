@@ -2,12 +2,7 @@ subroutine tx
 
 !  Make one transmission of a WSPR message, or an unmodulated "Tune" sequence.
 
-#ifdef CVF
-  use dfport
-  use dflib
-#else
   integer system
-#endif
 
   parameter (NMAX2=120*48000)
   parameter (NMAX3=4.5*48000)
@@ -43,11 +38,7 @@ subroutine tx
 ! rigctl -m 1608 -r /dev/ttyUSB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
 !   -C serial_handshake=Hardware T 1
 
-#ifdef CVF
-     iret=runqq('rigctl.exe',cmnd(8:))
-#else
      iret=system(cmnd)
-#endif
      if(iret.ne.0) then
         print*,'Error executing rigctl command to set Tx mode:'
         print*,cmnd
@@ -133,11 +124,7 @@ subroutine tx
           ' -C serial_handshake='//chs//' T 0'
 
      call cs_lock('tx')
-#ifdef CVF
-     iret=runqq('rigctl.exe',cmnd(8:))
-#else
      iret=system(cmnd)
-#endif
      if(iret.ne.0) then
         print*,'Error executing rigctl command to set Rx mode:'
         print*,cmnd

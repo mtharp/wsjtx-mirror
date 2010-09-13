@@ -1,9 +1,5 @@
 subroutine wspr2
 
-#ifdef CVF
-  use dfport
-#endif
-
 ! Logical units:
 !  12  Audio data in *.wav file
 !  13  ALL_WSPR.TXT
@@ -26,11 +22,7 @@ subroutine wspr2
   dectxt=appdir(:nappdir)//'/decoded.txt'
 
   call cs_lock('wspr2')
-#ifdef CVF
-  open(14,file=dectxt,status='unknown',share='denynone')
-#else
   open(14,file=dectxt,status='unknown')
-#endif
   write(14,1002)
 1002 format('$EOF')
   call flush(14)

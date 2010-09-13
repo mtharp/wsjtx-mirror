@@ -59,15 +59,6 @@ C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
       endif
 !      call sleep_msec(0)
       if(isign.eq.-1 .and. iform.eq.1) then
-#ifdef CVF
-         call sfftw_plan_dft_1d_(plan(i),nfft,a,a,FFTW_FORWARD,nflags)
-      else if(isign.eq.1 .and. iform.eq.1) then
-         call sfftw_plan_dft_1d_(plan(i),nfft,a,a,FFTW_BACKWARD,nflags)
-      else if(isign.eq.-1 .and. iform.eq.0) then
-         call sfftw_plan_dft_r2c_1d_(plan(i),nfft,a,a,nflags)
-      else if(isign.eq.1 .and. iform.eq.-1) then
-         call sfftw_plan_dft_c2r_1d_(plan(i),nfft,a,a,nflags)
-#else
          call sfftw_plan_dft_1d(plan(i),nfft,a,a,FFTW_FORWARD,nflags)
       else if(isign.eq.1 .and. iform.eq.1) then
          call sfftw_plan_dft_1d(plan(i),nfft,a,a,FFTW_BACKWARD,nflags)
@@ -75,7 +66,6 @@ C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
          call sfftw_plan_dft_r2c_1d(plan(i),nfft,a,a,nflags)
       else if(isign.eq.1 .and. iform.eq.-1) then
          call sfftw_plan_dft_c2r_1d(plan(i),nfft,a,a,nflags)
-#endif
       else
          stop 'Unsupported request in four2a'
       endif
@@ -91,20 +81,12 @@ C            FFTW_PATIENT,  FFTW_EXHAUSTIVE
 
  10   continue
 !      call sleep_msec(0)
-#ifdef CVF
-      call sfftw_execute_(plan(i))
-#else
       call sfftw_execute(plan(i))
-#endif
 !      call sleep_msec(0)
       return
 
  999  do i=1,nplan
-#ifdef CVF
-         call sfftw_destroy_plan_(plan(i))
-#else
          call sfftw_destroy_plan(plan(i))
-#endif
       enddo
 
       return

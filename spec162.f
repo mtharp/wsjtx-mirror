@@ -26,11 +26,7 @@
       pixmap=appdir(:nappdir)//'/pixmap.dat'
 
       call cs_lock('spec162')
-#ifdef CVF
-      open(16,file=pixmap,form='binary',status='unknown',err=1)
-#else
       open(16,file=pixmap,access='stream',status='unknown',err=1)
-#endif
       read(16,end=1) a
       go to 2
  1    call zero(a,NX*NY/2)

@@ -31,11 +31,7 @@ C  Generate the header
       nchunk=nbytes-8
 
       call cs_lock('wfile5')
-#ifdef CVF
-      open(12,file=outfile,form='binary',status='unknown')
-#else
       open(12,file=outfile,access='stream',status='unknown')
-#endif
       if (n4.ne.nfmt2) then
         call change_endian                  !Change hdr to little-endian
         do i=1,nmax

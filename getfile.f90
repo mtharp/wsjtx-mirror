@@ -1,10 +1,6 @@
 subroutine getfile(fname,len)
 !f2py threadsafe
 
-#ifdef CVF
-  use dflib
-#endif
-
   character*(*) fname
   include 'acom1.f90'
   integer*1 hdr(44),n1
@@ -26,11 +22,7 @@ subroutine getfile(fname,len)
 10  continue
 
   call cs_lock('getfile')
-#ifdef CVF
-  open(10,file=fname,form='binary',status='old')
-#else
   open(10,file=fname,access='stream',status='old')
-#endif
   read(10) hdr
   npts=114*12000
   read(10) (iwave(i),i=1,npts)
