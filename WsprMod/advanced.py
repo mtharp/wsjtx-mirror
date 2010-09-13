@@ -75,6 +75,10 @@ rxbfo=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Rx BFO (Hz): ',
         value='1500',entry_textvariable=bfofreq,entry_width=10,
         validate={'validator':'real','min':-3000,'max':3000})
 rxbfo.pack(fill=X,padx=2,pady=2)
+
+biqmode=Checkbutton(g1.interior(),text='Enable I/Q mode',variable=iqmode)
+biqmode.pack(anchor=W,padx=5,pady=2)
+
 enable_cal=Checkbutton(g1.interior(),text='Enable frequency correction',
                    variable=encal)
 enable_cal.pack(anchor=W,padx=5,pady=5)
@@ -104,11 +108,6 @@ bsetfreq.pack(padx=5,pady=5)
 bgrid6=Checkbutton(g1.interior(),text='Force transmission of 6-digit locator',
                    variable=igrid6)
 bgrid6.pack(anchor=W,padx=5,pady=2)
-
-biqmode=Checkbutton(g1.interior(),text='Enable I/Q mode',
-                   variable=iqmode)
-biqmode.pack(anchor=W,padx=5,pady=2)
-
 
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()
