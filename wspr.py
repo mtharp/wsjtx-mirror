@@ -29,7 +29,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="2.01_r" + "$Rev$"[6:-1]
+Version="2.10_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -1477,7 +1477,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 2.01     by K1JT')
+root.title('  WSPR 2.10     by K1JT')
 
 put_params()
 try:

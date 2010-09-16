@@ -5,6 +5,7 @@ program wsprcode
 ! information contained in WSPR messages.
 
   parameter (NSYM=162)
+  parameter (MAXSYM=176)
   character*22 message,msg,msg2
   character*40 infile
   integer*1 data0(7)

@@ -48,9 +48,10 @@ program fmt
   call soundinit
   ndevin=0
   npts=NZ1
+  iqmode=0
   do iter=1,nrpt
      nsec=time()
-     ierr=soundin(ndevin,kwave,4*npts)
+     ierr=soundin(ndevin,kwave,4*npts,iqmode)
      if(ierr.ne.0) then
         print*,'Error in soundin',ierr
         stop
@@ -84,7 +85,6 @@ program fmt
         endif
         s1(i)=s
      enddo
-
 
      fpeak=ipk*df
      n=mod(nsec,86400)

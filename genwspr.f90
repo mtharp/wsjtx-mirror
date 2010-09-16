@@ -1,12 +1,12 @@
-subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
+subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,appdir,nappdir,msg2,jwave)
 
 ! Encode an MEPT_JT message and generate the corresponding wavefile.
 
-  parameter (NMAX=120*48000)     !Max length of wave file
+  parameter (NMAX=2*120*48000)     !Max length of wave file
   character*22 message           !Message to be generated
   character*22 msg2
   character*80 appdir,alltxt
-  integer*2 iwave(NMAX)          !Generated wave file
+  integer*2 jwave(NMAX)          !Generated wave file
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)
   integer*1 data0(11),i1
@@ -74,7 +74,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
   f=f0
   dphi=twopi*dt*f
 
-  do i=1,NMAX
+  do i=1,120*48000
      t=t+dt
      j=int(t/tsymbol) + 1                          !Symbol number
      sig=0.
@@ -87,15 +87,39 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,appdir,nappdir,msg2,iwave)
         sig=0.9999
         phi=phi+dphi
         if(snrdb.gt.50.0) then
-           n=32767.0*sin(phi)           !Normal transmission, signal only
+           if(iqmode.eq.0) then
+              n=32767.0*sin(phi)           !Normal transmission, signal only
+              jwave(i)=n
+           else
+              n=32767.0*cos(phi)           !Normal transmission, signal only
+              jwave(2*i-1)=n
+              n=32767.0*sin(phi)           !Normal transmission, signal only
+              jwave(2*i)=n
+           endif
         else
-           n=fac*(gran(idum) + sig*snr*sin(phi))
-           if(n.gt.32767) n=32767
-           if(n.lt.-32767) n=-32767
+           if(iqmode.eq.0) then
+              n=fac*(gran(idum) + sig*snr*sin(phi))
+              if(n.gt.32767) n=32767
+              if(n.lt.-32767) n=-32767
+              jwave(i)=n
+           else
+              n=fac*(gran(idum) + sig*snr*cos(phi))
+              if(n.gt.32767) n=32767
+              if(n.lt.-32767) n=-32767
+              jwave(2*i-1)=n
+              n=fac*(gran(idum) + sig*snr*sin(phi))
+              if(n.gt.32767) n=32767
+              if(n.lt.-32767) n=-32767
+              jwave(2*i)=n
+           endif
         endif
-        iwave(i)=n
      else
-        iwave(i)=0
+        if(iqmode.eq.0) then
+           jwave(i)=0
+        else
+           jwave(2*i-1)=0
+           jwave(2*i)=0
+        endif
      endif
   enddo
   ntune2=0

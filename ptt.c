@@ -1,12 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-#ifdef CVF
-extern int __stdcall PTT(int *nport, char *unused, int *ntx, int *iptt)
-#else
 int ptt_(int *nport, char *unused, int *ntx, int *iptt)
-#endif
-
 {
   static HANDLE hFile;
   static int open=0;

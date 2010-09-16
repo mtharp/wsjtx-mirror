@@ -4,17 +4,12 @@
 
 #define SAMPLE_RATE  (48000)
 #define FRAMES_PER_BUFFER (4096)
-#define NUM_CHANNELS    (1)
 /* #define DITHER_FLAG     (paDitherOff)  */
 #define DITHER_FLAG     (0) /**/
 #define PA_SAMPLE_TYPE  paInt16
 typedef short SAMPLE;
 
-#ifdef CVF
-int __stdcall SOUNDINIT(void)
-#else 
 int soundinit_(void)
-#endif
 {
   PaError err;
   err = Pa_Initialize();
@@ -30,21 +25,13 @@ int soundinit_(void)
   }
 }
 
-#ifdef CVF
-int __stdcall SOUNDEXIT(void)
-#else
 int soundexit_(void)
-#endif
 {
   Pa_Terminate();
   return 0;
 }
 
-#ifdef CVF
-int __stdcall SOUNDIN(int *idevin, short recordedSamples[],int *nframes0)
-#else
 int soundin_(int *idevin, short recordedSamples[], int *nframes0, int *iqmode)
-#endif
 {
     PaStreamParameters inputParameters;
     PaStream *stream;
@@ -94,19 +81,11 @@ error:
     fprintf( stderr, "An error occured while using the portaudio stream\n" );
     fprintf( stderr, "Error number: %d\n", err );
     fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-#ifdef CVF
-     SOUNDINIT();
-#else 
-     soundinit_();
-#endif
+    soundinit_();
     return -1;
 }
 
-#ifdef CVF
-int __stdcall SOUNDOUT(int *idevout,short recordedSamples[], int *nframes0)
-#else
-int soundout_(int *idevout, short recordedSamples[], int *nframes0)
-#endif
+int soundout_(int *idevout, short recordedSamples[], int *nframes0, int *iqmode)
 {
     PaStreamParameters outputParameters;
     PaStream *stream;
@@ -114,12 +93,14 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0)
     int totalFrames;
     int numSamples;
     int numBytes;
+    int num_channels;
 
     totalFrames=*nframes0;
-    numSamples = totalFrames * NUM_CHANNELS;
+    num_channels=*iqmode + 1;
+    numSamples = totalFrames * num_channels;
     numBytes = numSamples * sizeof(SAMPLE);
     outputParameters.device = *idevout;
-    outputParameters.channelCount = NUM_CHANNELS;
+    outputParameters.channelCount = num_channels;
     outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
     outputParameters.suggestedLatency = 0.4;
     outputParameters.hostApiSpecificStreamInfo = NULL;
@@ -153,19 +134,11 @@ error:
     fprintf( stderr, "An error occured while using the portaudio stream\n" );
     fprintf( stderr, "Error number: %d\n", err );
     fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-#ifdef CVF
-    SOUNDINIT();
-#else 
     soundinit_();
-#endif
     return -1;
 }
 
-#ifdef CVF
-void __stdcall MSLEEP(int *msec0)
-#else
 void msleep_(int *msec0)
-#endif
 {
   Pa_Sleep(*msec0);
 }

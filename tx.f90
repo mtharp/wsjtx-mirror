@@ -4,7 +4,7 @@ subroutine tx
 
   integer system
 
-  parameter (NMAX2=120*48000)
+  parameter (NMAX2=2*120*48000)
   parameter (NMAX3=4.5*48000)
   character message*22,call1*12,cdbm*3
   character*22 msg0,msg1,cwmsg
@@ -73,6 +73,10 @@ subroutine tx
   endif
 
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
+  if(iqmode.ne.0) then
+     ntxdf=ntxdf + 8760
+     print*,ntxdf
+  endif
   ctxmsg=message
   snr=99.0
   snrfile=appdir(:nappdir)//'/test.snr'
@@ -83,11 +87,11 @@ subroutine tx
 10 close(18)
   call cs_unlock
   call gmtime2(nt,tsec1)
-  call genwspr(message,ntxdf,ntune,snr,appdir,nappdir,sending,jwave)
+  call genwspr(message,ntxdf,ntune,snr,iqmode,appdir,nappdir,sending,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
 
-  if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint) then
+  if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint .and. iqmode.eq.0) then
 !  Generate and insert the CW ID.
      wpm=25.
      freqcw=1500.0 + ntxdf
@@ -107,10 +111,10 @@ subroutine tx
   if(ntune.eq.0) then
      call gmtime2(nt,tsec2)
      istart=48000*(tsec2-tsec0)
-     ierr=soundout(ndevout,jwave(istart),npts)
+     ierr=soundout(ndevout,jwave(istart),npts,iqmode)
   else
      npts=48000*pctx
-     ierr=soundout(ndevout,jwave(2*48000),npts)
+     ierr=soundout(ndevout,jwave(2*48000),npts,iqmode)
      ntune=0
   endif
   if(ierr.ne.0) then

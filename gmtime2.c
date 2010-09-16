@@ -35,11 +35,7 @@ void GetSystemTime(SYSTEMTIME *st){
 }
 #endif
 
-#ifdef CVF
-extern void __stdcall GMTIME2(int it[], double *stime)
-#else
 extern void gmtime2_(int it[], double *stime)
-#endif
 {
   SYSTEMTIME st;
 
