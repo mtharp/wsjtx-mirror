@@ -751,10 +751,14 @@ def update():
                     f0.get()*(1000000.0 + advanced.Bcal.get()) + 0.5)
             else:
                 nHz=int(1000000.0*f0.get() + 0.5)
-            cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
-                 (options.rignum.get(),options.CatPort.get(), \
-                  options.serial_rate.get(),options.databits.get(), \
-                  options.stopbits.get(),options.serial_handshake.get(), nHz)
+            if options.rignum.get()==901:
+                nHzLO=4*(nHz - advanced.fiq.get())
+                cmd="CMDSR -f %d" % (nHzLO,)
+            else:
+                cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
+                     (options.rignum.get(),options.CatPort.get(), \
+                      options.serial_rate.get(),options.databits.get(), \
+                      options.stopbits.get(),options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
             if ierr==0:
                 bandmap=[]
