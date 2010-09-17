@@ -273,13 +273,16 @@ Propagation Reporter".  The program generates and decodes
 a digital soundcard mode optimized for beacon-like
 transmissions on the LF, MF, and HF bands.
 
-Copyright (c) 2008-2009 by Joseph H. Taylor, Jr., K1JT.  Source
-code is available under the GNU General Public License.
+Copyright (c) 2008-2010 by Joseph H. Taylor, Jr., K1JT, with
+contributions from additional authors.  WSPR is Open Source 
+software, licensed under the GNU General Public License (GPL).
+Source code and programming information may be found at 
+http://developer.berlios.de/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
-##    t="Revision date: " + \
-##      "$Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $"[7:-1]
-##    Label(about,text=t,justify=LEFT).pack(padx=20)
+    t="Revision date: " + \
+      "$Date: 2010-09-17 13:03:38 -0400 (Fri, 17 Sep 2010) $"[7:-1]
+    Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
 
 #------------------------------------------------------ 
@@ -1023,6 +1026,9 @@ def save_params():
     f.write("Bcal " + str(advanced.Bcal.get()) + "\n")
     f.write("CalEnable " + str(advanced.encal.get()) + "\n")
     f.write("IQmode " + str(advanced.iqmode.get()) + "\n")
+    f.write("IQrx " + str(advanced.iqrx.get()) + "\n")
+    f.write("IQtx " + str(advanced.iqtx.get()) + "\n")
+    f.write("FIQ " + str(advanced.fiq.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1380,6 +1386,9 @@ def readinit():
             elif key == 'Bcal': advanced.Bcal.set(value)
             elif key == 'CalEnable': advanced.encal.set(value)
             elif key == 'IQmode': advanced.iqmode.set(value)
+            elif key == 'IQrx': advanced.iqrx.set(value)
+            elif key == 'IQtx': advanced.iqtx.set(value)
+            elif key == 'FIQ': advanced.fiq.set(value)
             elif key == 'PTTmode': options.pttmode.set(value)
             elif key == 'CATenable': options.cat_enable.set(value)
             elif key == 'SerialRate': options.serial_rate.set(int(value))
