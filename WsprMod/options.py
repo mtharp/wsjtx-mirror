@@ -70,7 +70,8 @@ pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 
 if g.Win32:
     serialportlist=("None","COM1","COM2","COM3","COM4","COM5","COM6", \
-        "COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14","COM15")
+        "COM7","COM8","COM9","COM10","COM11","COM12","COM13","COM14", \
+        "COM15","USB")
 else:
     serialportlist=("None","/dev/ttyS0","/dev/ttyS1","/dev/ttyUSB0", \
         "/dev/ttyUSB1","/dev/ttyUSB2","/dev/ttyUSB3","/dev/ttyUSB4", \

@@ -25,7 +25,10 @@ bfofreq=IntVar()
 idint=IntVar()
 igrid6=IntVar()
 iqmode=IntVar()
+iqrx=IntVar()
+iqtx=IntVar()
 encal=IntVar()
+fiq=IntVar()
 fset=IntVar()
 Acal=DoubleVar()
 Bcal=DoubleVar()
@@ -78,6 +81,18 @@ rxbfo.pack(fill=X,padx=2,pady=2)
 
 biqmode=Checkbutton(g1.interior(),text='Enable I/Q mode',variable=iqmode)
 biqmode.pack(anchor=W,padx=5,pady=2)
+
+biqrx=Checkbutton(g1.interior(),text='Reverse Rx I,Q',variable=iqrx)
+biqrx.pack(anchor=W,padx=5,pady=2)
+
+biqtx=Checkbutton(g1.interior(),text='Reverse Tx I,Q',variable=iqtx)
+biqtx.pack(anchor=W,padx=5,pady=2)
+
+fiq_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='F_iq (Hz):',
+        value='8760',entry_textvariable=fiq,entry_width=10,
+        validate={'validator':'integer','min':-24000,'max':24000,
+        'minstrict':0,'maxstrict':0})
+fiq_entry.pack(fill=X,padx=2,pady=2)
 
 enable_cal=Checkbutton(g1.interior(),text='Enable frequency correction',
                    variable=encal)

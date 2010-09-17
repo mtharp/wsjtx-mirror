@@ -98,6 +98,7 @@ param20=""
 sf0=StringVar()
 sftx=StringVar()
 start_idle=IntVar()
+t0=""
 txmsg=StringVar()
 
 a=array.array('h')
@@ -695,6 +696,12 @@ def put_params(param3=NONE):
         w.acom1.idint=0
     w.acom1.igrid6=advanced.igrid6.get()
     w.acom1.iqmode=advanced.iqmode.get()
+    w.acom1.iqrx=advanced.iqrx.get()
+    w.acom1.iqtx=advanced.iqtx.get()
+    try:
+        w.acom1.nfiq=advanced.fiq.get()
+    except:
+        w.acom1.nfiq=0
     w.acom1.ndevin=g.ndevin.get()
     w.acom1.ndevout=g.ndevout.get()
     w.acom1.nbaud=options.serial_rate.get()
@@ -715,7 +722,7 @@ def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
-        bandmap,bm
+        bandmap,bm,t0
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -840,7 +847,9 @@ def update():
     if receiving:
         t='Receiving'
         bgcolor='green'
-    msg6.configure(text=t,bg=bgcolor)
+    if t!=t0:
+        msg6.configure(text=t,bg=bgcolor)
+        t0=t
     if w.acom1.ntune==0:
         btune.configure(bg='gray85')
         pctscale.configure(state=NORMAL)
@@ -1506,10 +1515,13 @@ root.mainloop()
 
 # Clean up and save user options, then terminate.
 if options.pttmode.get()=='CAT':
-    cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s T 0" % \
-         (options.rignum.get(),options.CatPort.get(), \
-          options.serial_rate.get(),options.databits.get(), \
-          options.stopbits.get(),options.serial_handshake.get())
+    if options.rignum.get() == 901:
+        cmd="CMDSR -T 0"
+    else:
+        cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s T 0" % \
+             (options.rignum.get(),options.CatPort.get(), \
+              options.serial_rate.get(),options.databits.get(), \
+              options.stopbits.get(),options.serial_handshake.get())
     ierr=os.system(cmd)
 save_params()
 w.paterminate()

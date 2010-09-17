@@ -10,7 +10,7 @@
   common/acom1/ f0,f0a,f0b,ftx,tsec0,rms,pctx,igrid6,nsec,ndevin,      &
        ndevout,nsave,nrxdone,ndbm,nport,ndec,ndecdone,ntxdone,         &
        idint,ndiskdat,ndecoding,ntr,nbaud,ndatabits,nstopbits,         &
-       receiving,transmitting,nrig,nappdir,iqmode,                     &
+       receiving,transmitting,nrig,nappdir,iqmode,nfiq,                &
        nhandshake,ndebug,idevin,idevout,nsectx,nbfo,                   &
        ntxfirst,ntest,ncat,ltest,iwave(NMAX),kwave(NZ),idle,ntune,     &
        ncal,ndevsok,nsec1,nsec2,rms1,xdb1,infile,outfile,pttport,      &

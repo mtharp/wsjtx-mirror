@@ -1,4 +1,5 @@
-subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,appdir,nappdir,msg2,jwave)
+subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
+     msg2,jwave)
 
 ! Encode an MEPT_JT message and generate the corresponding wavefile.
 
@@ -91,10 +92,15 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,appdir,nappdir,msg2,jwave)
               n=32767.0*sin(phi)           !Normal transmission, signal only
               jwave(i)=n
            else
-              n=32767.0*cos(phi)           !Normal transmission, signal only
-              jwave(2*i-1)=n
-              n=32767.0*sin(phi)           !Normal transmission, signal only
-              jwave(2*i)=n
+              n1=32767.0*cos(phi)           !Normal transmission, signal only
+              n2=32767.0*sin(phi)           !Normal transmission, signal only
+              if(iqtx.eq.0) then
+                 jwave(2*i-1)=n1
+                 jwave(2*i)=n2
+              else
+                 jwave(2*i-1)=n1
+                 jwave(2*i)=n2
+              endif
            endif
         else
            if(iqmode.eq.0) then

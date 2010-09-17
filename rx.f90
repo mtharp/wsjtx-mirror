@@ -18,7 +18,7 @@ subroutine rx
      stop
   endif
   if(iqmode.eq.1) then
-     call iqdemod(kwave,8*npts)
+     call iqdemod(kwave,8*npts,nfiq,iqrx)
   endif
   call fil1(kwave,4*npts,iwave,n2)
   npts=n2

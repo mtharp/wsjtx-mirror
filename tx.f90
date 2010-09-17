@@ -23,20 +23,23 @@ subroutine tx
   call1=callsign
   call cs_lock('tx')
   if(pttmode.eq.'CAT') then
-     write(crig,'(i6)') nrig
-     write(cbaud,'(i6)') nbaud
-     write(cdata,'(i1)') ndatabits
-     write(cstop,'(i1)') nstopbits
-     chs='None'
-     if(nhandshake.eq.1) chs='XONXOFF'
-     if(nhandshake.eq.2) chs='Hardware'
-     cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
-          ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
-          ' -C serial_handshake='//chs//' T 1'
-
+     if(nrig.eq.901) then
+        cmnd='CMDSR -T 1'
+     else
+        write(crig,'(i6)') nrig
+        write(cbaud,'(i6)') nbaud
+        write(cdata,'(i1)') ndatabits
+        write(cstop,'(i1)') nstopbits
+        chs='None'
+        if(nhandshake.eq.1) chs='XONXOFF'
+        if(nhandshake.eq.2) chs='Hardware'
+        cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
+             ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
+             ' -C serial_handshake='//chs//' T 1'
 ! Example rigctl command:
 ! rigctl -m 1608 -r /dev/ttyUSB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
 !   -C serial_handshake=Hardware T 1
+     endif
 
      iret=system(cmnd)
      if(iret.ne.0) then
@@ -74,8 +77,7 @@ subroutine tx
 
   ntxdf=nint(1.e6*(ftx-f0)) - 1500
   if(iqmode.ne.0) then
-     ntxdf=ntxdf + 8760
-     print*,ntxdf
+     ntxdf=ntxdf + nfiq
   endif
   ctxmsg=message
   snr=99.0
@@ -87,7 +89,8 @@ subroutine tx
 10 close(18)
   call cs_unlock
   call gmtime2(nt,tsec1)
-  call genwspr(message,ntxdf,ntune,snr,iqmode,appdir,nappdir,sending,jwave)
+  call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,appdir,nappdir,    &
+       sending,jwave)
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
 
@@ -123,10 +126,13 @@ subroutine tx
   endif
 
   if(pttmode.eq.'CAT') then
-     cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
-          ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
-          ' -C serial_handshake='//chs//' T 0'
-
+     if(nrig.eq.901) then
+        cmnd='CMDSR -T 0'
+     else
+        cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
+             ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
+             ' -C serial_handshake='//chs//' T 0'
+     endif
      call cs_lock('tx')
      iret=system(cmnd)
      if(iret.ne.0) then
@@ -134,7 +140,6 @@ subroutine tx
         print*,cmnd
      endif
      call cs_unlock
-
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,0,iptt)
   endif
