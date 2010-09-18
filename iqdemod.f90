@@ -8,14 +8,13 @@ subroutine iqdemod(kwave,jz,nfiq,iqrx)
   f0=nfiq
   dpha=twopi*f0*dt
   pha=0.d0
-
   npts=jz/2
   do i=1,npts
      if(iqrx.eq.0) then
-        y=kwave(2*i-1)                             !Reversed?
+        y=kwave(2*i-1)
         x=kwave(2*i)
      else
-        x=kwave(2*i-1)                             !Reversed?
+        x=kwave(2*i-1)
         y=kwave(2*i)
      endif
      pha=pha+dpha
