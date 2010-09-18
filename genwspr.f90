@@ -98,8 +98,8 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
                  jwave(2*i-1)=n1
                  jwave(2*i)=n2
               else
-                 jwave(2*i-1)=n1
-                 jwave(2*i)=n2
+                 jwave(2*i-1)=n2
+                 jwave(2*i)=n1
               endif
            endif
         else
