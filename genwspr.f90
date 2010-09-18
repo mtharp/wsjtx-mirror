@@ -49,7 +49,6 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
   call wqdecode(data0,msg2,ntype2)
 
   if(ntune.eq.0) then
-
      call cs_lock('genwspr')
      alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
      open(13,file=alltxt,status='unknown',position='append')
@@ -58,7 +57,6 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
 1010 format(a75)
      close(13)
      call cs_unlock
-
   endif
 
 ! Set up necessary constants

@@ -113,10 +113,12 @@ subroutine tx
 
   if(ntune.eq.0) then
      call gmtime2(nt,tsec2)
-     istart=48000*(tsec2-tsec0)
+     n=48000*(tsec2-tsec0)
+     istart=n*(iqmode+1) + 1
      ierr=soundout(ndevout,jwave(istart),npts,iqmode)
   else
      npts=48000*pctx
+     istart=2*48000*(iqmode+1)+1
      ierr=soundout(ndevout,jwave(2*48000),npts,iqmode)
      ntune=0
   endif
