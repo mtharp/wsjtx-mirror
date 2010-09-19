@@ -5,7 +5,6 @@ subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2)
   integer*2 kwave(iz,jz)
   integer time
 
-  
   nsec3=time()
   i2=48000*(nsec3-nsec1)
   if(i2.gt.114*48000) i2=114*48000
