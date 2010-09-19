@@ -12,7 +12,6 @@ subroutine rx
   nsec1=time()
   f0a=f0                                   !Save rx frequency at start
   ierr=soundin(ndevin,kwave,4*npts,iqmode)
-!  write(50) 8*npts,(kwave(i),i=1,8*npts)
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
      stop
@@ -20,7 +19,7 @@ subroutine rx
   if(iqmode.eq.1) then
      call iqdemod(kwave,8*npts,nfiq,iqrx)
   endif
-  call fil1(kwave,4*npts,iwave,n2)
+  call fil1(kwave,4*npts,iwave,n2)         !Fiilter and downsample
   npts=n2
   nsec2=time()
   call getrms(iwave,npts,ave,rms)          !### is this needed any more??
