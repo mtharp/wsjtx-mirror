@@ -1,4 +1,4 @@
-subroutine chklevel(kwave,iz,jz,xdb1,xdb2)
+subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2)
 
 ! Called from wspr2 at ~5 Hz rate.
 
@@ -28,10 +28,10 @@ subroutine chklevel(kwave,iz,jz,xdb1,xdb2)
   sq1=0.
   sq2=0.
   do i=i3,i4
-     x1=kwave(1,i)-ave
+     x1=kwave(1,i)-ave1
      sq1=sq1 + x1*x1
      if(iz.eq.2) then
-        x2=kwave(2,i)-ave
+        x2=kwave(2,i)-ave2
         sq2=sq2 + x2*x2
      endif
   enddo
