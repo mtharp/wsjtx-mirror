@@ -100,7 +100,7 @@ subroutine wspr2
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
        (idle.eq.0)) go to 30
   call chklevel(kwave,iqmode+1,NZ/2,nsec1,xdb1,xdb2)
-  call msleep(1000)
+  call msleep(200)
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'

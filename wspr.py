@@ -800,13 +800,18 @@ def update():
             pass
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
-        ndb=int(w.acom1.xdb1-57.0)
+        ndb=int(w.acom1.xdb1-36.0)
         if ndb<-30: ndb=-30
-        t='Rx Noise: '+str(ndb)+' dB'
+        if advanced.iqmode.get():
+            ndb2=int(w.acom1.xdb2-36.0)
+            if ndb2<-30: ndb2=-30
+            t='Rx Noise: ' + str(ndb)+ '  ' + str(ndb2) + ' dB'
+        else:
+            t='Rx Noise: '+str(ndb)+' dB'
         bg='gray85'
         r=SUNKEN
         if w.acom1.receiving:
-            if ndb<-10 or ndb>10: bg='red'
+            if ndb<-20 or ndb>10: bg='red'
         else:
             t=''
         if t=='': r=FLAT
