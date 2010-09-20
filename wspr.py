@@ -820,7 +820,10 @@ def update():
         bg='gray85'
         r=SUNKEN
         if w.acom1.receiving:
-            if ndb<-20 or ndb>10: bg='red'
+            if ndb>10 and ndb<=20:
+                bg='yellow'
+            elif ndb<-20 or ndb>20:
+                bg='red'
         else:
             t=''
         if t=='': r=FLAT
@@ -1130,7 +1133,7 @@ setupmenu.add('command', label = 'Station parameters', command = options1,
               accelerator='F2')
 setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
-setupmenu.add('command', label = 'IQ Mode', command = advanced1,
+setupmenu.add('command', label = 'IQ Mode', command = iq1,
               accelerator='F8')
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',

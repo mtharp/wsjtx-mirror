@@ -10,7 +10,7 @@ subroutine tx
   character*22 msg0,msg1,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
   character cmnd*120,snrfile*80
-  integer*2 jwave,icwid
+  integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
   real*8 tsec1,tsec2
   include 'acom1.f90'
@@ -116,20 +116,24 @@ subroutine tx
      call gmtime2(nt,tsec2)
      n=48000*(tsec2-tsec0)
      istart=n*(iqmode+1) + 1
-     do i=1,npts+istart
-        id2(i)=fac*jwave(i)
+     j=istart-1
+     do i=1,npts*(iqmode+1)
+        j=j+1
+        id2(i)=fac*jwave(j)
      enddo
-     ierr=soundout(ndevout,id2(istart),npts,iqmode)
+     ierr=soundout(ndevout,id2,npts,iqmode)
   else
-     istart=2*48000*(iqmode+1)
+     istart=2*48000 +1
      if(pctx.lt.100.0) then
         npts=48000*pctx
-        do i=1,npts+istart
-           id2(i)=fac*jwave(i)
+        j=istart-1
+        do i=1,npts*(iqmode+1)
+           j=j+1
+           id2(i)=fac*jwave(j)
         enddo
-        ierr=soundout(ndevout,id2(istart),npts,iqmode)
+        ierr=soundout(ndevout,id2,npts,iqmode)
      else
-        npts=24*4096
+        npts=36*4096
         do irpt=1,100
            fac=10.0**(0.05*ntxdb)
            j=istart-1
