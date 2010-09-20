@@ -709,6 +709,7 @@ def put_params(param3=NONE):
     w.acom1.iqmode=iq.iqmode.get()
     w.acom1.iqrx=iq.iqrx.get()
     w.acom1.iqtx=iq.iqtx.get()
+    w.acom1.ntxdb=iq.isc1.get()
     try:
         w.acom1.nfiq=iq.fiq.get()
     except:

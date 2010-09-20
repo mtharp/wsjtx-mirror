@@ -15,7 +15,7 @@ subroutine tx
   real*8 tsec1,tsec2
   include 'acom1.f90'
   common/bcom/ntransmitted
-  common/dcom/jwave(NMAX2),icwid(NMAX3)
+  common/dcom/jwave(NMAX2),icwid(NMAX3),id2(NMAX2)
   data ntx/0/,ns0/0/
   save ntx,ns0
 
@@ -111,15 +111,35 @@ subroutine tx
      ns0=nsec
   endif
 
+  fac=10.0**(0.05*ntxdb)
   if(ntune.eq.0) then
      call gmtime2(nt,tsec2)
      n=48000*(tsec2-tsec0)
      istart=n*(iqmode+1) + 1
-     ierr=soundout(ndevout,jwave(istart),npts,iqmode)
+     do i=1,npts+istart
+        id2(i)=fac*jwave(i)
+     enddo
+     ierr=soundout(ndevout,id2(istart),npts,iqmode)
   else
-     npts=48000*pctx
-     istart=2*48000*(iqmode+1)+1
-     ierr=soundout(ndevout,jwave(2*48000),npts,iqmode)
+     istart=2*48000*(iqmode+1)
+     if(pctx.lt.100.0) then
+        npts=48000*pctx
+        do i=1,npts+istart
+           id2(i)=fac*jwave(i)
+        enddo
+        ierr=soundout(ndevout,id2(istart),npts,iqmode)
+     else
+        npts=24*4096
+        do irpt=1,100
+           fac=10.0**(0.05*ntxdb)
+           j=istart-1
+           do i=1,npts
+              j=j+1
+              id2(i)=fac*jwave(j)
+           enddo
+           ierr=soundout(ndevout,id2,npts,iqmode)
+        enddo
+     endif
      ntune=0
   endif
   if(ierr.ne.0) then
