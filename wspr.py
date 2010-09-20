@@ -710,6 +710,8 @@ def put_params(param3=NONE):
     w.acom1.iqrx=iq.iqrx.get()
     w.acom1.iqtx=iq.iqtx.get()
     w.acom1.ntxdb=iq.isc1.get()
+    w.acom1.ntxbal=iq.isc2.get()
+    w.acom1.ntxpha=iq.isc3.get()
     try:
         w.acom1.nfiq=iq.fiq.get()
     except:
@@ -1046,6 +1048,9 @@ def save_params():
     f.write("IQrx " + str(iq.iqrx.get()) + "\n")
     f.write("IQtx " + str(iq.iqtx.get()) + "\n")
     f.write("FIQ " + str(iq.fiq.get()) + "\n")
+    f.write("Ntxdb " + str(iq.isc1.get()) + "\n")
+    f.write("Ntxbal " + str(iq.isc2.get()) + "\n")
+    f.write("Ntxpha " + str(iq.isc3.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1409,6 +1414,9 @@ def readinit():
             elif key == 'IQrx': iq.iqrx.set(value)
             elif key == 'IQtx': iq.iqtx.set(value)
             elif key == 'FIQ': iq.fiq.set(value)
+            elif key == 'Ntxdb': iq.isc1.set(value)
+            elif key == 'Ntxbal': iq.isc2.set(value)
+            elif key == 'Ntxpha': iq.isc3.set(value)
             elif key == 'PTTmode': options.pttmode.set(value)
             elif key == 'CATenable': options.cat_enable.set(value)
             elif key == 'SerialRate': options.serial_rate.set(int(value))

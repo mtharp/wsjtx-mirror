@@ -13,7 +13,7 @@ root=Toplevel()
 root.withdraw()
 root.protocol('WM_DELETE_WINDOW',done)
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title("Advanced")
+root.title("I-Q Mode")
 
 def iq2(t):
     root.geometry(t)

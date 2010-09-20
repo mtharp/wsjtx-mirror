@@ -133,14 +133,15 @@ subroutine tx
         enddo
         ierr=soundout(ndevout,id2,npts,iqmode)
      else
-        npts=36*4096
+        npts=24*4096
         do irpt=1,100
            fac=10.0**(0.05*ntxdb)
            j=istart-1
-           do i=1,npts
+           do i=1,npts*(iqmode+1)
               j=j+1
               id2(i)=fac*jwave(j)
            enddo
+           if(iqmode.eq.1) call phasetx(id2,npts,fac,ntxbal,ntxpha)
            ierr=soundout(ndevout,id2,npts,iqmode)
         enddo
      endif
