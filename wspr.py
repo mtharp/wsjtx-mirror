@@ -54,6 +54,7 @@ w.acom1.appdir=(appdir+(' '*80))[:80]
 i1,i2=w.audiodev(0,2)
 from WsprMod import options
 from WsprMod import advanced
+from WsprMod import iq
 
 #------------------------------------------------------ Global variables
 bandmap=[]
@@ -242,6 +243,13 @@ def advanced1(event=NONE):
     if root_geom.find("+")>=0:
         t=root_geom[root_geom.index("+"):]
     advanced.advanced2(t)
+
+#------------------------------------------------------ iq1
+def iq1(event=NONE):
+    t=""
+    if root_geom.find("+")>=0:
+        t=root_geom[root_geom.index("+"):]
+    iq.iq2(t)
 
 #------------------------------------------------------ stub
 def stub(event=NONE):
@@ -698,11 +706,11 @@ def put_params(param3=NONE):
     except:
         w.acom1.idint=0
     w.acom1.igrid6=advanced.igrid6.get()
-    w.acom1.iqmode=advanced.iqmode.get()
-    w.acom1.iqrx=advanced.iqrx.get()
-    w.acom1.iqtx=advanced.iqtx.get()
+    w.acom1.iqmode=iq.iqmode.get()
+    w.acom1.iqrx=iq.iqrx.get()
+    w.acom1.iqtx=iq.iqtx.get()
     try:
-        w.acom1.nfiq=advanced.fiq.get()
+        w.acom1.nfiq=iq.fiq.get()
     except:
         w.acom1.nfiq=0
     w.acom1.ndevin=g.ndevin.get()
@@ -755,7 +763,7 @@ def update():
             else:
                 nHz=int(1000000.0*f0.get() + 0.5)
             if options.rignum.get()==901:
-                nHzLO=4*(nHz - advanced.fiq.get())
+                nHzLO=4*(nHz - iq.fiq.get())
                 cmd="CMDSR -f %d" % (nHzLO,)
             else:
                 cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
@@ -802,7 +810,7 @@ def update():
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
         ndb=int(w.acom1.xdb1-36.0)
         if ndb<-30: ndb=-30
-        if advanced.iqmode.get():
+        if iq.iqmode.get():
             ndb2=int(w.acom1.xdb2-36.0)
             if ndb2<-30: ndb2=-30
             t='Rx Noise: ' + str(ndb)+ '  ' + str(ndb2) + ' dB'
@@ -1030,10 +1038,10 @@ def save_params():
     f.write("Acal " + str(advanced.Acal.get()) + "\n")
     f.write("Bcal " + str(advanced.Bcal.get()) + "\n")
     f.write("CalEnable " + str(advanced.encal.get()) + "\n")
-    f.write("IQmode " + str(advanced.iqmode.get()) + "\n")
-    f.write("IQrx " + str(advanced.iqrx.get()) + "\n")
-    f.write("IQtx " + str(advanced.iqtx.get()) + "\n")
-    f.write("FIQ " + str(advanced.fiq.get()) + "\n")
+    f.write("IQmode " + str(iq.iqmode.get()) + "\n")
+    f.write("IQrx " + str(iq.iqrx.get()) + "\n")
+    f.write("IQtx " + str(iq.iqtx.get()) + "\n")
+    f.write("FIQ " + str(iq.fiq.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1121,6 +1129,8 @@ setupmenu.add('command', label = 'Station parameters', command = options1,
               accelerator='F2')
 setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
+setupmenu.add('command', label = 'IQ Mode', command = advanced1,
+              accelerator='F8')
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
                           variable=start_idle)
@@ -1204,6 +1214,7 @@ root.bind_all('<F5>', about)
 root.bind_all('<Alt-F4>', quit)
 root.bind_all('<F6>', opennext)
 root.bind_all('<F7>', advanced1)
+root.bind_all('<F8>', iq1)
 root.bind_all('<Shift-F6>', decodeall)
 root.bind_all('<Control-o>',openfile)
 root.bind_all('<Control-O>',openfile)
@@ -1390,10 +1401,10 @@ def readinit():
             elif key == 'Acal': advanced.Acal.set(value)
             elif key == 'Bcal': advanced.Bcal.set(value)
             elif key == 'CalEnable': advanced.encal.set(value)
-            elif key == 'IQmode': advanced.iqmode.set(value)
-            elif key == 'IQrx': advanced.iqrx.set(value)
-            elif key == 'IQtx': advanced.iqtx.set(value)
-            elif key == 'FIQ': advanced.fiq.set(value)
+            elif key == 'IQmode': iq.iqmode.set(value)
+            elif key == 'IQrx': iq.iqrx.set(value)
+            elif key == 'IQtx': iq.iqtx.set(value)
+            elif key == 'FIQ': iq.fiq.set(value)
             elif key == 'PTTmode': options.pttmode.set(value)
             elif key == 'CATenable': options.cat_enable.set(value)
             elif key == 'SerialRate': options.serial_rate.set(int(value))
