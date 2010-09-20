@@ -25,6 +25,9 @@ iqrx=IntVar()
 iqtx=IntVar()
 fiq=IntVar()
 
+isc1=IntVar()
+isc1.set(0)
+
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)
 
@@ -51,11 +54,10 @@ fiq_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Fiq (Hz):         
         'minstrict':0,'maxstrict':0})
 fiq_entry.pack(fill=X,padx=2,pady=2)
 
-##pctscale=Scale(g2.interior(),orient=HORIZONTAL,length=350,from_=0, \
-##               to=100,tickinterval=10,variable=ipctx)
-##pctscale.pack(side=LEFT,padx=4)
-##balloon.bind(pctscale,"Select desired fraction of sequences to transmit")
-##ipctx.set(0)
+sc1=Scale(g1.interior(),orient=HORIZONTAL,length=300,from_=-100, \
+               to=100,variable=isc1)
+sc1.pack(side=LEFT,padx=4)
+##balloon.bind(sc1,"Select desired fraction of sequences to transmit")
 
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()

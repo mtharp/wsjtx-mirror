@@ -808,10 +808,10 @@ def update():
             pass
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
-        ndb=int(w.acom1.xdb1-36.0)
+        ndb=int(w.acom1.xdb1-41.0)
         if ndb<-30: ndb=-30
         if iq.iqmode.get():
-            ndb2=int(w.acom1.xdb2-36.0)
+            ndb2=int(w.acom1.xdb2-41.0)
             if ndb2<-30: ndb2=-30
             t='Rx Noise: ' + str(ndb)+ '  ' + str(ndb2) + ' dB'
         else:
