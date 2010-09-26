@@ -17,11 +17,11 @@ subroutine rx
      stop
   endif
   if(iqmode.eq.1) then
-     call iqdemod(kwave,kwave,4*npts,nfiq,iqrx)
+     call iqdemod(kwave,4*npts,nfiq,iqrx,iwave)
   else
      call fil1(kwave,4*npts,iwave,n2)         !Filter and downsample
+     npts=n2
   endif
-  npts=n2
   nsec2=time()
   call getrms(iwave,npts,ave,rms)          !### is this needed any more??
   call cs_lock('rx')
