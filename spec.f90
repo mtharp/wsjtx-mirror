@@ -29,7 +29,8 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   save
 
   call cs_lock('spec')
-  print*,iwrite
+  print*,'A',iwrite
+  if(iwrite.ne.-1) go to 900
 
   if(first) then
      istep=2205
@@ -65,6 +66,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
      if(k.gt.nmax) k=k-nmax
 !     x(i)=0.5*dgain*y1(k)
   enddo
+  print*,'B'
   iread=iread+istep                       !Update pointer
   if(iread.gt.nmax) iread=iread-nmax
 
@@ -82,6 +84,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   rms1=sqrt(sq/nfft)
   if(rms.eq.0) rms=rms1
   rms=0.25*rms1 + 0.75*rms
+  print*,'C',rms
   
 !  level=0                                    !Compute S-meter level
 !  if(rms.gt.0.0) then                        !Scale 0-100, steps = 0.4 dB
@@ -97,9 +100,11 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
      ss(i)=ss(i) + real(c(i))**2 + aimag(c(i))**2
   enddo
   nsum=nsum+1
+  print*,'D'
 
   if(nsum.ge.nstep(nspeed)) then      !Integrate for specified time
      nlines=nlines+1
+     print*,'E',nlines
      do i=225000,751,-1               !Move spectra up one row
         a0(i)=a0(i-750)               ! (will be "down" on display)
      enddo
@@ -129,6 +134,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
      enddo
      if(jz.lt.300) jz=jz+1
   endif
+  print*,'F'
 
   npts=iwrite-iread
   if(npts.lt.0) npts=npts+nmax
@@ -149,6 +155,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
      logmap0=logmap
      nspeed0=nspeed
   endif
+  print*,'G'
 
   do i=1,iz
      n=0

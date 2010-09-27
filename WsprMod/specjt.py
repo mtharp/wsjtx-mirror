@@ -189,11 +189,12 @@ def update():
     g0=sc3.get()
 
 # Don't calculate spectra for waterfall while transmitting
-    if w.acom1.transmitting==0:
-        w.spec(brightness,contrast,logm,g0,nspeed,a) #Call Fortran routine spec
-        newdat=w.acom1.newdat                   #True if new data available
-    else:
-        newdat=0
+##    if w.acom1.transmitting==0:
+##        w.spec(brightness,contrast,logm,g0,nspeed,a) #Call Fortran routine spec
+##        newdat=w.acom1.newdat                   #True if new data available
+##    else:
+##        newdat=0
+    newdat=0
 
     xdb1=int(w.acom1.xdb1 - 41.0)
     level=50.0 + 1.25*xdb1

@@ -7,8 +7,6 @@ subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2,i4)
   data nsec3z/-999/
   save nsec3z
 
-  xdb1=-99.
-  xdb2=-99.
   nsec3=time()
   i2=48000*(nsec3-nsec1)
   if(i2.gt.114*48000) i2=114*48000
@@ -21,6 +19,8 @@ subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2,i4)
   i3=max(1,i4-48000+1)
   if(nsec3.eq.nsec3z) go to 900
 
+  xdb1=-99.
+  xdb2=-99.
   nsec3z=nsec3
   npts=i4-i3+1
   s1=0.
