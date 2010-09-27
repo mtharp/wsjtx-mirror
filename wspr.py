@@ -1552,7 +1552,8 @@ ldate.after(100,update)
 
 ldate.after(100,audio_config)
 
-root.mainloop()
+from WsprMod import specjt
+##root.mainloop()
 
 # Clean up and save user options, then terminate.
 if options.pttmode.get()=='CAT':
