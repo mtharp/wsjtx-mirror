@@ -9,13 +9,12 @@ import g
 import string
 import cPickle
 import tkMessageBox
+import w
 
 try:
     from numpy.oldnumeric import zeros, multiarray
-#    print "specjt importing from numpy"
 except:
     from Numeric import zeros, multiarray
-#    print "specjt importing from Numeric"
 import Image, ImageTk, ImageDraw
 from palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
@@ -113,7 +112,6 @@ def rx_volume():
 #--------------------------------------------------- tx_volume  ..extended for Vista
 def tx_volume():
     for path in string.split(os.environ["PATH"], os.pathsep):
-        print path
         file = os.path.join(path, "sndvol32") + ".exe"
         if os.path.exists(file):
             os.spawnv(os.P_NOWAIT, file, (file,))
@@ -181,7 +179,6 @@ def update():
         ltime.configure(text=t0)
         root_geom=root.geometry()
 #        g.rms=Audio.gcom1.rms
-        print isec
 
     if g.showspecjt==1:
         showspecjt()
@@ -192,14 +189,15 @@ def update():
     g0=sc3.get()
 
 # Don't calculate spectra for waterfall while transmitting
-##    if Audio.gcom2.ndecoding==0 and \
-##           (Audio.gcom2.monitoring or Audio.gcom2.ndiskdat):
-##        Audio.spec(brightness,contrast,logm,g0,nspeed,a) #Call Fortran routine spec
-##        newdat=Audio.gcom1.newdat                   #True if new data available
-##    else:
-##        newdat=0
+    if w.acom1.transmitting==0:
+        w.spec(brightness,contrast,logm,g0,nspeed,a) #Call Fortran routine spec
+        newdat=w.acom1.newdat                   #True if new data available
+    else:
+        newdat=0
 
-#    sm.updateProgress(newValue=Audio.gcom1.level) #S-meter bar
+    xdb1=int(w.acom1.xdb1 - 41.0)
+    level=50.0 + 1.25*xdb1
+    sm.updateProgress(newValue=level) #S-meter bar
     newdat=1
     if newdat or brightness!=b0 or contrast!=c0 or logm!=logm0:
         if brightness==b0 and contrast==c0 and logm==logm0:
@@ -492,7 +490,7 @@ ltime.after(200,update)
 root.deiconify()
 g.showspecjt=2
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 2.10     by K1JT')
+root.title('  SpecJT')
 ##if(__name__=="__main__"):
 ##    Audio.gcom2.monitoring=1
 root.mainloop()

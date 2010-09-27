@@ -16,7 +16,7 @@ subroutine wspr2
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
-  data ns1200/-999/,nrxnormal/0/
+  data nrxnormal/0/
 
   call cs_init
   dectxt=appdir(:nappdir)//'/decoded.txt'
@@ -99,7 +99,7 @@ subroutine wspr2
 
   if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
        (idle.eq.0)) go to 30
-  call chklevel(kwave,iqmode+1,NZ/2,nsec1,xdb1,xdb2)
+  call chklevel(kwave,iqmode+1,NZ/2,nsec1,xdb1,xdb2,iwrite)
   call msleep(200)
   go to 20
 

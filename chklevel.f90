@@ -1,10 +1,14 @@
-subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2)
+subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2,i4)
 
 ! Called from wspr2 at ~5 Hz rate.
 
   integer*2 kwave(iz,jz)
   integer time
+  data nsec3z/-999/
+  save nsec3z
 
+  xdb1=-99.
+  xdb2=-99.
   nsec3=time()
   i2=48000*(nsec3-nsec1)
   if(i2.gt.114*48000) i2=114*48000
@@ -15,6 +19,9 @@ subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2)
 
 10 i4=i
   i3=max(1,i4-48000+1)
+  if(nsec3.eq.nsec3z) go to 900
+
+  nsec3z=nsec3
   npts=i4-i3+1
   s1=0.
   s2=0.
@@ -34,19 +41,22 @@ subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2)
         sq2=sq2 + x2*x2
      endif
   enddo
-  xdb1=-99.
   rms1=-99.
   if(sq1.gt.0.0) then
      rms1=sqrt(sq1/npts)
      xdb1=20.0*log10(rms1)
   endif
 
-  xdb2=-99.
   rms2=-99.
   if(sq2.gt.0.0) then
      rms2=sqrt(sq2/npts)
      xdb2=20.0*log10(rms2)
   endif
+
+!  write(*,3001) i4/48000.0,i1,i2,i3,i4
+!3001 format(f10.1,4i10)
+
+900 continue
 
   return
 end subroutine chklevel

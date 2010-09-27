@@ -67,7 +67,7 @@ class Smeter:
 	self.canvas.itemconfig(self.label, fill=self.labelColor)
 	# And update the label
 	if self.doLabel:
-            dB=int((value-50.0)/2.5)
+            dB=int((value-50.0)/1.25)
             t='%d dB'%dB
             self.canvas.itemconfig(self.label, text=t)
 	self.canvas.update_idletasks()
