@@ -5,7 +5,6 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   integer*2 kwave(2,npts)
   integer*2 iwave(npts)
   real*8 twopi,df,f0,sq
-
   real x1(NFFT4)
   complex c,c1
   common/fftcom/ c(0:NFFT-1),c1(0:NFFT4-1)
@@ -29,7 +28,7 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   call four2a(c,NFFT,1,-1,1)
 
   ia=nint(f0/df)
-  ib=nint((f0+5000.d0)/df)
+  ib=nint((f0+3000.d0)/df)
   j=-1
   fac=1.0/NFFT
   do i=ia,ib
