@@ -37,7 +37,6 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   enddo
   c1(j+1:)=0.
   c1(0)=0.
-
   call four2a(c1,NFFT4,1,1,-1)
 
   sq=0.
@@ -46,7 +45,7 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   enddo
   rms=sqrt(sq/(npts/4.0))
 
-  fac=100.0/rms
+  fac=3000.0/rms
   do i=1,npts/4
      r=fac*x1(i)
      if(r.gt. 32767.0) r= 32767.0

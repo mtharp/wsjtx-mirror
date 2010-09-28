@@ -815,9 +815,9 @@ def update():
         if iq.iqmode.get():
             ndb2=int(w.acom1.xdb2-41.0)
             if ndb2<-30: ndb2=-30
-            t='Rx Noise: ' + str(ndb)+ '  ' + str(ndb2) + ' dB'
+            t='Rx Noise: %3d %3d  dB' % (ndb,ndb2)
         else:
-            t='Rx Noise: '+str(ndb)+' dB'
+            t='Rx Noise: %3d  dB' % (ndb,)
         bg='gray85'
         r=SUNKEN
         if w.acom1.receiving:
