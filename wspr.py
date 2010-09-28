@@ -1,4 +1,4 @@
-#------------------------------------------------------------------- WSPR
+#-------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -583,6 +583,7 @@ def get_decoded():
 #------------------------------------------------------ autologger
 def autolog(decodes):
     # Random delay of up to 20 seconds to spread load out on server --W1BW
+    print 'AA'
     time.sleep(random.random() * 20.0)
 
     try:
@@ -611,6 +612,8 @@ def autolog(decodes):
                 if abs(dfreq)>0.0001:
                     print 'Frequency changed, no upload of spots'
                     continue
+                print 'A',Version
+                Version='2.10_r2184'
                 reportparams = urllib.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
@@ -634,10 +637,14 @@ def autolog(decodes):
                 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
                 # The following opens a url and passes the reception report to the
                 # database insertion handler from W1BW:
+                print 'B',reportparams
                 urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
+                print 'C'
                 reply = urlf.readlines()
+                print 'D'
                 urlf.close()
+                print 'E'
         else:
             # No spots to report, so upload status message instead. --W1BW
             reportparams = urllib.urlencode({'function': 'wsprstat',
@@ -656,6 +663,7 @@ def autolog(decodes):
         t=" UTC: attempted access to WSPRnet failed."
         if not no_beep.get(): t=t + "\a"
         print time.asctime(time.gmtime()) + t
+    print 'FF'
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):

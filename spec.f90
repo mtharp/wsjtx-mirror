@@ -10,7 +10,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   integer nspeed                !Scrolling speed index
 ! Output:
   integer*2 a(225000)           !Pixel values for 750 x 300 array
-  integer*2 id2(2,120*48000)
+  integer*2 idat(2,120*48000)
 
   real a0(225000)               !Save the last 300 spectra
   integer nstep(5)
@@ -20,7 +20,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   real ss(2048)                 !Power spectrum
   logical first
   include 'acom1.f90'
-  equivalence (kwave,id2)
+  equivalence (kwave,idat)
   data jz/0/                    !Number of spectral lines available
   data nstep/15,10,5,2,1/       !Integration limits
   data first/.true./

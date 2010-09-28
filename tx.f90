@@ -115,7 +115,8 @@ subroutine tx
   if(ntune.eq.0) then
      call gmtime2(nt,tsec2)
      n=48000*(tsec2-tsec0)
-     istart=n*(iqmode+1) + 1
+!     istart=n*(iqmode+1) + 1
+     istart=1
      j=istart-1
      do i=1,npts*(iqmode+1)
         j=j+1
