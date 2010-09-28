@@ -29,12 +29,12 @@ isc1=IntVar()
 isc1.set(0)
 isc2=IntVar()
 isc2.set(0)
+isc2a=IntVar()
+isc2a.set(0)
 isc3=IntVar()
 isc3.set(0)
-##isc4=IntVar()
-##isc4.set(0)
-##isc5=IntVar()
-##isc5.set(0)
+isc3a=IntVar()
+isc3a.set(0)
 
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)
@@ -70,13 +70,19 @@ sc1=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
                to=0,variable=isc1,label='Tx dB')
 sc1.pack(side=TOP,padx=4,pady=2)
 
-sc2=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-               to=100,variable=isc2,label='Tx I/Q Balance')
+sc2=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
+               to=30,variable=isc2,label='Tx I/Q Balance (0.1 dB)')
 sc2.pack(side=TOP,padx=4,pady=2)
+sc2a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
+               to=100,variable=isc2a,label='Tx I/Q Balance (0.002 dB)')
+sc2a.pack(side=TOP,padx=4,pady=2)
 
-sc3=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-               to=100,variable=isc3,label='Tx Phase')
+sc3=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-20, \
+               to=20,variable=isc3,label='Tx Phase (deg)')
 sc3.pack(side=TOP,padx=4,pady=2)
+sc3a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
+               to=100,variable=isc3a,label='Tx Phase (0.02 deg)')
+sc3a.pack(side=TOP,padx=4,pady=2)
 
 ##sc4=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
 ##               to=100,variable=isc4,label='Rx I/Q Balance')

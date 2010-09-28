@@ -12,7 +12,7 @@
        idint,ndiskdat,ndecoding,ntr,nbaud,ndatabits,nstopbits,         &
        receiving,transmitting,nrig,nappdir,iqmode,iqrx,iqtx,nfiq,      &
        nhandshake,ndebug,idevin,idevout,nsectx,nbfo,                   &
-       ntxdb,ntxbal,ntxpha,iwrite,newdat,                              &
+       ntxdb,txbal,txpha,iwrite,newdat,                                &
        ntxfirst,ntest,ncat,ltest,iwave(NMAX),kwave(NZ),idle,ntune,     &
        ncal,ndevsok,nsec1,nsec2,xdb1,xdb2,infile,outfile,              &
        pttport,cdate,utctime,callsign,grid,grid6,rxtime,ctxmsg,        &

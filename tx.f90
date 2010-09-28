@@ -122,6 +122,7 @@ subroutine tx
         j=j+1
         id2(i)=fac*jwave(j)
      enddo
+     if(iqmode.eq.1) call phasetx(id2,npts,fac,txbal,txpha)
      ierr=soundout(ndevout,id2,npts,iqmode)
   else
      istart=2*48000 +1
@@ -142,7 +143,7 @@ subroutine tx
               j=j+1
               id2(i)=fac*jwave(j)
            enddo
-           if(iqmode.eq.1) call phasetx(id2,npts,fac,ntxbal,ntxpha)
+           if(iqmode.eq.1) call phasetx(id2,npts,fac,txbal,txpha)
            ierr=soundout(ndevout,id2,npts,iqmode)
         enddo
      endif
