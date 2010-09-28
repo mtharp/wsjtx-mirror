@@ -29,7 +29,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="2.10_r" + "$Rev: 2185$"[6:-1]
+Version="2.10_r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
