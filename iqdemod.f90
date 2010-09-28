@@ -5,9 +5,10 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   integer*2 kwave(2,npts)
   integer*2 iwave(npts)
   real*8 twopi,df,f0,sq
-  complex c(0:NFFT-1)
+
   real x1(NFFT4)
-  complex c1(0:NFFT4-1)
+  complex c,c1
+  common/fftcom/ c(0:NFFT-1),c1(0:NFFT4-1)
   equivalence (x1,c1)
 
   twopi=8.d0*atan(1.d0)
