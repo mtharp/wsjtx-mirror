@@ -16,7 +16,8 @@ subroutine wspr2
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
-  data nrxnormal/0/
+  data nrxnormal/0/,ireset/1/
+  save ireset
 
   call cs_init
   dectxt=appdir(:nappdir)//'/decoded.txt'
@@ -101,7 +102,11 @@ subroutine wspr2
        (idle.eq.0)) go to 30
   if(receiving) then
      call chklevel(kwave,iqmode+1,NZ/2,nsec1,xdb1,xdb2,iwrite)
-!     if(iqmode.eq.1) call speciq(kwave,NZ/2,iwrite,iqrx,nfiq)
+     if(iqmode.eq.1 .and. iqrxadj.eq.1) then
+        call speciq(kwave,NZ/2,iwrite,iqrx,nfiq,ireset,gain,phase,reject)
+     else
+        ireset=1
+     endif
   endif
 !  call msleep(200)
   call msleep(700)

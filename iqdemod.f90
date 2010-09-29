@@ -1,4 +1,4 @@
-subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
+subroutine iqdemod(kwave,npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
 
   parameter (NFFT =5760000)
   parameter (NFFT4=1440000)
@@ -7,6 +7,7 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   real*8 twopi,df,f0,sq
   real x1(NFFT4)
   complex c,c1
+  complex h,u,v
   common/fftcom/ c(0:NFFT-1),c1(0:NFFT4-1)
   equivalence (x1,c1)
 
@@ -31,12 +32,30 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iwave)
   ib=nint((f0+3000.d0)/df)
   j=-1
   fac=1.0/NFFT
-  do i=ia,ib
-     j=j+1
-     c1(j)=fac*c(i)
-  enddo
+
+  h=gain*cmplx(cos(phase),sin(phase))
+  if(iqrxapp.eq.0) then
+     do i=ia,ib
+        j=j+1
+        c1(j)=fac*c(i)
+     enddo
+  else
+     do i=ia,ib
+        j=j+1
+        u=fac*c(i)
+        v=fac*c(nfft-i)
+        x=real(u)  + real(v)  - (aimag(u) + aimag(v))*aimag(h) +         &
+             (real(u) - real(v))*real(h)
+        y=aimag(u) - aimag(v) + (aimag(u) + aimag(v))*real(h)  +         &
+             (real(u) - real(v))*aimag(h)
+        c1(j)=cmplx(x,y)
+     enddo
+  endif
+
   c1(j+1:)=0.
   c1(0)=0.
+
+
   call four2a(c1,NFFT4,1,1,-1)
 
   sq=0.

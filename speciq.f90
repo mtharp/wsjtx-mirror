@@ -1,26 +1,29 @@
-subroutine speciq(kwave,npts,iwrite,iqrx,nfiq)
+subroutine speciq(kwave,npts,iwrite,iqrx,nfiq,ireset,gain,phase,reject)
 
   parameter (NFFT=32768)
   parameter (NH=NFFT/2)
   integer*2 kwave(2,npts)
-  logical first
   real s(-NH+1:NH)
   complex c,z,zsum,zave
-  common/fftcom2/c(0:NFFT-1),ss(-NH+1:NH)
-  data first/.true./
-  save first,nn
+  complex c0,z1,z2,w,wstep
+  complex h,u,v
+  common/fftcom2/c(0:NFFT-1),c0(0:NFFT-1)
+  data iw0/-999/
+  save
 
-  if(first) then
-     df=48000.0/NFFT
-     ss=0.
-     first=.false.
+  if(ireset.eq.1) then
      nn=0
      zsum=0.
-     rewind 50
+     ireset=0
+     rsum=0.
   endif
 
-  if(iwrite.lt.nfft) go to 900
+  df=48000.0/NFFT
+  twopi=8.0*atan(1.0)
+  dt=1.0/48000.0
 
+  if(iwrite.lt.nfft .or. iwrite.eq.iw0) go to 900
+  iw0=iwrite
   nn=nn+1
   fac=10.0**(-4.3)
   j=iwrite-nfft
@@ -35,48 +38,59 @@ subroutine speciq(kwave,npts,iwrite,iqrx,nfiq)
      endif
      c(i)=fac*cmplx(x,y)
   enddo
+  c0=c
 
-  call four2a(c,NFFT,1,-1,1)
+  call four2a(c,NFFT,1,-1,1)              ! 1d, forward, complex
 
+  smax=0.
+  ia=(nfiq+500)/df
+  ib=(nfiq+2500)/df
+  ipk=0
   do i=0,nfft-1
      j=i
      if(j.gt.NH) j=j-nfft
      s(j)=real(c(i))**2 + aimag(c(i))**2
-  enddo
-
-  do i=-NH+1,NH
-     u=1.0 - exp(-(0.2*s(i)))
-     ss(i)=(1.0-u)*ss(i) + u*s(i)
-  enddo
-
-  call cs_lock('speciq')
-!  do i=-NH+1,NH
-!     write(50,3001) i*df,db(s(i)),db(ss(i))
-!3001 format(3f12.3)
-!  enddo
-
-  ia=(nfiq+1000)/df
-  ib=(nfiq+2000)/df
-  smax=0.
-  do i=ia,ib
-     if(s(i).gt.smax) then
-        smax=s(i)
+     if(i.ge.ia .and. i.le.ib .and. s(j).gt.smax) then
+        smax=s(j)
         ipk=i
      endif
   enddo
+  
+  if(ipk.eq.0) then
+     print*,'b',ia,ib,ipk,iwrite
+     go to 900
+  endif
+
   p=s(ipk) + s(-ipk)
   z=c(ipk)*c(nfft-ipk)/p
   zsum=zsum+z
   zave=zsum/nn
   tmp=sqrt(1.0 - (2.0*real(zave))**2)
-  pha=asin(2.0*aimag(zave)/tmp)
+  phase=asin(2.0*aimag(zave)/tmp)
   gain=tmp/(1.0-2.0*real(zave))
-  write(*,3002)  nn,ipk*df,zave,gain,pha,db(s(ipk)),db(s(-ipk))
-  write(50,3002) nn,ipk*df,zave,gain,pha,db(s(ipk)),db(s(-ipk))
-3002 format(i5,f7.0,4f10.6,2f8.1)
+  h=gain*cmplx(cos(phase),sin(phase))
 
-  call flush(50)
-  call cs_unlock
+  u=c(ipk)
+  v=c(nfft-ipk)
+  x=real(u)  + real(v)  - (aimag(u) + aimag(v))*aimag(h) +              &
+       (real(u) - real(v))*real(h)
+  y=aimag(u) - aimag(v) + (aimag(u) + aimag(v))*real(h)  +              &
+       (real(u) - real(v))*aimag(h)
+  p1=x*x + y*y
+
+  u=c(nfft-ipk)
+  v=c(ipk)
+  x=real(u)  + real(v)  - (aimag(u) + aimag(v))*aimag(h) +              &
+       (real(u) - real(v))*real(h)
+  y=aimag(u) - aimag(v) + (aimag(u) + aimag(v))*real(h)  +              &
+       (real(u) - real(v))*aimag(h)
+  p2=x*x + y*y
+
+  r=db(p1/p2)
+  if(nn.ge.2) then
+     rsum=rsum+r
+     reject=rsum/(nn-1)
+  endif
 
 900 return
 end subroutine speciq

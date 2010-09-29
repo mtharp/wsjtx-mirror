@@ -11,8 +11,8 @@
        ndevout,nsave,nrxdone,ndbm,nport,ndec,ndecdone,ntxdone,         &
        idint,ndiskdat,ndecoding,ntr,nbaud,ndatabits,nstopbits,         &
        receiving,transmitting,nrig,nappdir,iqmode,iqrx,iqtx,nfiq,      &
-       nhandshake,ndebug,idevin,idevout,nsectx,nbfo,                   &
-       ntxdb,txbal,txpha,iwrite,newdat,                                &
+       nhandshake,ndebug,idevin,idevout,nsectx,nbfo,iqrxapp,           &
+       ntxdb,txbal,txpha,iwrite,newdat,iqrxadj,gain,phase,reject,      &
        ntxfirst,ntest,ncat,ltest,iwave(NMAX),kwave(NZ),idle,ntune,     &
        ncal,ndevsok,nsec1,nsec2,xdb1,xdb2,infile,outfile,              &
        pttport,cdate,utctime,callsign,grid,grid6,rxtime,ctxmsg,        &

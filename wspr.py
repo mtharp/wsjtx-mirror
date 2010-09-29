@@ -101,6 +101,9 @@ sftx=StringVar()
 start_idle=IntVar()
 t0=""
 txmsg=StringVar()
+nreject=0
+gain=1.0
+phdeg=0.0
 
 a=array.array('h')
 im=Image.new('P',(NX,NY))
@@ -707,6 +710,8 @@ def put_params(param3=NONE):
     w.acom1.igrid6=advanced.igrid6.get()
     w.acom1.iqmode=iq.iqmode.get()
     w.acom1.iqrx=iq.iqrx.get()
+    w.acom1.iqrxapp=iq.iqrxapp.get()
+    w.acom1.iqrxadj=iq.iqrxadj.get()
     w.acom1.iqtx=iq.iqtx.get()
     w.acom1.ntxdb=iq.isc1.get()
     bal=iq.isc2.get() + 0.02*iq.isc2a.get()
@@ -738,7 +743,7 @@ def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
-        bandmap,bm,t0
+        bandmap,bm,t0,nreject,gain,phdeg
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -832,6 +837,12 @@ def update():
             t=''
         if t=='': r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
+
+        gain=w.acom1.gain
+        phdeg=57.2957795*w.acom1.phase
+        nreject=int(w.acom1.reject)
+        t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
+        iq.lab1.configure(text=t)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -1103,6 +1114,10 @@ def save_params():
     f.write("iband " + str(iband.get()) + "\n")
     f.write("StartIdle " + str(start_idle.get()) + "\n")
     f.write("NoBeep " + str(no_beep.get()) + "\n")
+    f.write("Ygain " + str(gain) + "\n")
+    f.write("Phdeg " + str(phdeg) + "\n")
+    f.write("Reject " + str(nreject) + "\n")
+    f.write("RxApply " + str(iq.iqrxapp.get()) + "\n")
     f.close()
 
 #------------------------------------------------------ Top level frame
@@ -1473,6 +1488,12 @@ def readinit():
             elif key == 'iband': iband.set(value)
             elif key == 'StartIdle': start_idle.set(value)
             elif key == 'NoBeep': no_beep.set(value)
+
+            elif key == 'Ygain': w.acom1.gain=float(value)
+            elif key == 'Phdeg': w.acom1.phase=float(value)/57.2957795
+            elif key == 'Reject': w.acom1.reject=float(value)
+            elif key == 'RxApply': iq.iqrxapp.set(value)
+
             elif key == 'MRUdir':
                 mrudir=value.replace("#"," ")
             nparam=i
@@ -1481,6 +1502,9 @@ def readinit():
         badlist.append(i)
         nparam=i
 
+w.acom1.gain=1.0
+w.acom1.phase=0.0
+w.acom1.reject=0.
 while nparam < len(params)-1:
     readinit()
 

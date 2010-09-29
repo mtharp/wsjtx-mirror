@@ -24,6 +24,8 @@ iqmode=IntVar()
 iqrx=IntVar()
 iqtx=IntVar()
 fiq=IntVar()
+iqrxapp=IntVar()
+iqrxadj=IntVar()
 
 isc1=IntVar()
 isc1.set(0)
@@ -50,48 +52,55 @@ g1=Pmw.Group(root,tag_pyclass=None)
 biqmode=Checkbutton(g1.interior(),text='Enable I/Q mode',variable=iqmode)
 biqmode.pack(anchor=W,padx=5,pady=2)
 
+biqtx=Checkbutton(g1.interior(),text='Reverse Tx I,Q',variable=iqtx)
+biqtx.pack(anchor=W,padx=5,pady=2)
+
 biqrx=Checkbutton(g1.interior(),text='Reverse Rx I,Q',variable=iqrx)
 biqrx.pack(anchor=W,padx=5,pady=2)
 
-biqtx=Checkbutton(g1.interior(),text='Reverse Tx I,Q',variable=iqtx)
-biqtx.pack(anchor=W,padx=5,pady=2)
+biqrxapp=Checkbutton(g1.interior(),text='Apply phasing corrections', \
+        variable=iqrxapp)
+biqrxapp.pack(anchor=W,padx=5,pady=2)
+
+biqrxadj=Checkbutton(g1.interior(),text='Adjust phasing', \
+        variable=iqrxadj)
+biqrxadj.pack(anchor=W,padx=5,pady=2)
+
+lab1=Label(g1.interior(),text='',justify=LEFT)
+lab1.pack(anchor=W,padx=5,pady=4)
 
 fiq_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Fiq (Hz):         ',
         value='12000',entry_textvariable=fiq,entry_width=10,
         validate={'validator':'integer','min':-24000,'max':24000,
         'minstrict':0,'maxstrict':0})
-fiq_entry.pack(fill=X,padx=2,pady=2)
+fiq_entry.pack(fill=X,padx=2,pady=4)
 
 ##t='Tx dB  Tx amp  Tx Pha'
 ##lab1=Label(g1.interior(),text=t,justify=LEFT)
 ##lab1.pack(fill=X,expand=1,padx=5,pady=0)
 
 sc1=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
-               to=0,variable=isc1,label='Tx dB')
+        to=0,variable=isc1,label='Tx dB',relief=SOLID,bg='#FFC0CB')
 sc1.pack(side=TOP,padx=4,pady=2)
 
 sc2=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
-               to=30,variable=isc2,label='Tx I/Q Balance (0.1 dB)')
+        to=30,variable=isc2,label='Tx I/Q Balance (0.1 dB)', \
+        relief=SOLID,bg='#EEDD82')
 sc2.pack(side=TOP,padx=4,pady=2)
+
 sc2a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-               to=100,variable=isc2a,label='Tx I/Q Balance (0.002 dB)')
+        to=100,variable=isc2a,label='Tx I/Q Balance (0.002 dB)', \
+        relief=SOLID,bg='#EEDD82')
 sc2a.pack(side=TOP,padx=4,pady=2)
 
 sc3=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-20, \
-               to=20,variable=isc3,label='Tx Phase (deg)')
+        to=20,variable=isc3,label='Tx Phase (deg)', \
+        relief=SOLID,bg='#AFeeee')
 sc3.pack(side=TOP,padx=4,pady=2)
 sc3a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-               to=100,variable=isc3a,label='Tx Phase (0.02 deg)')
+        to=100,variable=isc3a,label='Tx Phase (0.02 deg)', \
+        relief=SOLID,bg='#AFeeee')
 sc3a.pack(side=TOP,padx=4,pady=2)
-
-##sc4=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-##               to=100,variable=isc4,label='Rx I/Q Balance')
-##sc4.pack(side=TOP,padx=4,pady=2)
-##
-##sc5=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-##               to=100,variable=isc5,label='Rx Phase')
-##sc5.pack(side=TOP,padx=4,pady=2)
-##balloon.bind(sc1,"Select desired fraction of sequences to transmit")
 
 f1=Frame(g1.interior(),width=100,height=10)
 f1.pack()

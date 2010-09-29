@@ -17,7 +17,7 @@ subroutine rx
      stop
   endif
   if(iqmode.eq.1) then
-     call iqdemod(kwave,4*npts,nfiq,iqrx,iwave)
+     call iqdemod(kwave,4*npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
   else
      call fil1(kwave,4*npts,iwave,n2)         !Filter and downsample
      npts=n2
