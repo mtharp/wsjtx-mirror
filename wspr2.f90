@@ -108,8 +108,7 @@ subroutine wspr2
         ireset=1
      endif
   endif
-!  call msleep(200)
-  call msleep(700)
+  call msleep(200)
   go to 20
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'

@@ -24,6 +24,8 @@ idint=IntVar()
 bfofreq=IntVar()
 idint=IntVar()
 igrid6=IntVar()
+isc1=IntVar()
+isc1.set(0)
 encal=IntVar()
 fset=IntVar()
 Acal=DoubleVar()
@@ -65,6 +67,10 @@ this screen.
 """
 lab1=Label(g1.interior(),text=t,justify=LEFT)
 lab1.pack(fill=X,expand=1,padx=5,pady=0)
+
+sc1=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
+        to=0,variable=isc1,label='Reduce Tx Audio (dB)',relief=SOLID,bg='#FFC0CB')
+sc1.pack(side=TOP,padx=4,pady=4)
 
 cwid=Pmw.EntryField(g1.interior(),labelpos=W,label_text='CW ID (min):',
         value='0',entry_textvariable=idint,entry_width=5,

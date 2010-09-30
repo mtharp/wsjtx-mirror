@@ -27,8 +27,6 @@ fiq=IntVar()
 iqrxapp=IntVar()
 iqrxadj=IntVar()
 
-isc1=IntVar()
-isc1.set(0)
 isc2=IntVar()
 isc2.set(0)
 isc2a=IntVar()
@@ -74,14 +72,6 @@ fiq_entry=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Fiq (Hz):         
         validate={'validator':'integer','min':-24000,'max':24000,
         'minstrict':0,'maxstrict':0})
 fiq_entry.pack(fill=X,padx=2,pady=4)
-
-##t='Tx dB  Tx amp  Tx Pha'
-##lab1=Label(g1.interior(),text=t,justify=LEFT)
-##lab1.pack(fill=X,expand=1,padx=5,pady=0)
-
-sc1=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
-        to=0,variable=isc1,label='Tx dB',relief=SOLID,bg='#FFC0CB')
-sc1.pack(side=TOP,padx=4,pady=2)
 
 sc2=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
         to=30,variable=isc2,label='Tx I/Q Balance (0.1 dB)', \

@@ -6,18 +6,21 @@ subroutine tx
 
   parameter (NMAX2=2*120*48000)
   parameter (NMAX3=4.5*48000)
-  character message*22,call1*12,cdbm*3
+  character message*22,message0*22,call1*12,cdbm*3
   character*22 msg0,msg1,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
   character cmnd*120,snrfile*80
   integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
   real*8 tsec1,tsec2
+  integer time
   include 'acom1.f90'
   common/bcom/ntransmitted
   common/dcom/jwave(NMAX2),icwid(NMAX3),id2(NMAX2)
   data ntx/0/,ns0/0/
-  save ntx,ns0
+  data message0/'dummy'/,ntxdf0/-999/,ntune0/-999/,snr0/-999.0/
+  data iqmode0/-999/,iqtx0/-999/
+  save ntx,ns0,message0,ntxdf0,ntune0,snr0,iqmode0,iqtx0
 
   ierr=0
   call1=callsign
@@ -89,8 +92,23 @@ subroutine tx
 10 close(18)
   call cs_unlock
   call gmtime2(nt,tsec1)
-  call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,appdir,nappdir,    &
-       sending,jwave)
+
+  newgen=0
+  if(message.ne.message0 .or. ntxdf.ne.ntxdf0 .or.                    &
+       ntune.ne.ntune0 .or. snr.ne.snr0 .or. iqmode.ne.iqmode0 .or.   &
+       iqtx.ne.iqtx0) then
+     message0=message
+     ntxdf0=ntxdf
+     ntune0=ntune
+     snr0=snr
+     iqmode0=iqmode
+     iqtx0=iqtx
+     newgen=1
+  endif
+
+  if(newgen.ne.0) call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,   &
+       appdir,nappdir,sending,jwave)
+
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
 
@@ -113,17 +131,25 @@ subroutine tx
 
   fac=10.0**(0.05*ntxdb)
   if(ntune.eq.0) then
-     call gmtime2(nt,tsec2)
-     n=48000*(tsec2-tsec0)
-!     istart=n*(iqmode+1) + 1
-     istart=1
+20   call gmtime2(nt,tsec2)
+     tdiff=tsec2-tsec0
+     if(tdiff.lt.0.9) then
+        call msleep(100)
+        go to 20
+     endif
+
+     istart=48000*(tsec2-tsec0)*(iqmode+1)
+     if(istart.lt.1) istart=1
+     npts=npts-istart+1
      j=istart-1
      do i=1,npts*(iqmode+1)
         j=j+1
         id2(i)=fac*jwave(j)
      enddo
-     if(iqmode.eq.1) call phasetx(id2,npts,fac,txbal,txpha)
+
+     if(iqmode.eq.1 .and. newgen.eq.1) call phasetx(id2,npts,fac,txbal,txpha)
      ierr=soundout(ndevout,id2,npts,iqmode)
+
   else
      istart=2*48000 +1
      if(pctx.lt.100.0) then
