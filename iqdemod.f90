@@ -37,13 +37,17 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
   if(iqrxapp.eq.0) then
      do i=ia,ib
         j=j+1
-        c1(j)=fac*c(i)
+        k=i
+        if(k.lt.0) k=k+nfft
+        c1(j)=fac*c(k)
      enddo
   else
      do i=ia,ib
         j=j+1
-        u=fac*c(i)
-        v=fac*c(nfft-i)
+        k=i
+        if(k.lt.0) k=k+nfft
+        u=fac*c(k)
+        v=fac*c(nfft-k)
         x=real(u)  + real(v)  - (aimag(u) + aimag(v))*aimag(h) +         &
              (real(u) - real(v))*real(h)
         y=aimag(u) - aimag(v) + (aimag(u) + aimag(v))*real(h)  +         &
