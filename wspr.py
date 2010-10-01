@@ -775,6 +775,9 @@ def update():
             if options.rignum.get()==901:
                 nHzLO=4*(nHz - iq.fiq.get())
                 cmd="CMDSR -f %d" % (nHzLO,)
+            elif options.rignum.get()==2509:
+                cmd="rigctl -m %d -r %s F %d" % \
+                     (options.rignum.get(),options.CatPort.get(),nHz)
             else:
                 cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                      (options.rignum.get(),options.CatPort.get(), \
@@ -1070,7 +1073,8 @@ def save_params():
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
     f.write("Handshake " + options.serial_handshake.get().replace(" ","#")  + "\n")
-    f.write("Rig " + str(options.rig.get().replace(" ","#"))[:46] + "\n")
+    t=str(options.rig.get().replace(" ","#"))
+    f.write("Rig " + str(t.replace("\t","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
     f.write("PctTx " + str(ipctx.get()) + "\n")
     f.write("Upload " + str(upload.get()) + "\n")
@@ -1589,6 +1593,9 @@ root.mainloop()
 if options.pttmode.get()=='CAT':
     if options.rignum.get() == 901:
         cmd="CMDSR -T 0"
+    elif options.rignum.get() == 2509:
+        cmd="rigctl -m %d -r %s T 0" % \
+             (options.rignum.get(),options.CatPort.get())
     else:
         cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s T 0" % \
              (options.rignum.get(),options.CatPort.get(), \
