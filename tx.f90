@@ -13,7 +13,6 @@ subroutine tx
   integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
   real*8 tsec1,tsec2
-  integer time
   include 'acom1.f90'
   common/bcom/ntransmitted
   common/dcom/jwave(NMAX2),icwid(NMAX3),id2(NMAX2)

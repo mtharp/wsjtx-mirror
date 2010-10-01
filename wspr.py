@@ -835,7 +835,7 @@ def update():
                 bg='red'
         else:
             t=''
-        if t=='': r=FLAT
+            r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
 
         gain=w.acom1.gain

@@ -5,7 +5,7 @@ subroutine speciq(kwave,npts,iwrite,iqrx,nfiq,ireset,gain,phase,reject)
   integer*2 kwave(2,npts)
   real s(-NH+1:NH)
   complex c,z,zsum,zave
-  complex c0,z1,z2,w,wstep
+  complex c0
   complex h,u,v
   common/fftcom2/c(0:NFFT-1),c0(0:NFFT-1)
   data iw0/-999/

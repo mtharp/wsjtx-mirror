@@ -1,7 +1,7 @@
 subroutine phasetx(id2,npts,fac,txbal,txpha)
 
   integer*2 id2(2,npts)
-  complex h,z
+  complex z
 
   pha=txpha/57.2957795
   xbal=10.0**(0.005*txbal)
