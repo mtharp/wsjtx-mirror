@@ -1,4 +1,4 @@
-subroutine phasetx(id2,npts,fac,txbal,txpha)
+subroutine phasetx(id2,npts,txbal,txpha)
 
   integer*2 id2(2,npts)
   complex z
@@ -18,7 +18,7 @@ subroutine phasetx(id2,npts,fac,txbal,txpha)
      phi=atan2(y,x)
      xx=30000.0*cos(phi)
      yy=30000.0*sin(phi+pha)
-     z=fac*cmplx(xx,yy)
+     z=cmplx(xx,yy)
      id2(1,i)=b1*real(z)
      id2(2,i)=b2*aimag(z)
   enddo
