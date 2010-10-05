@@ -102,11 +102,10 @@ subroutine tx
      snr0=snr
      iqmode0=iqmode
      iqtx0=iqtx
+     call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,   &
+       appdir,nappdir,sending,jwave)
      newgen=1
   endif
-
-  if(newgen.ne.0) call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,   &
-       appdir,nappdir,sending,jwave)
 
   npts=114*48000
   if(nsec.lt.ns0) ns0=nsec
@@ -137,16 +136,22 @@ subroutine tx
         go to 20
      endif
 
-     istart=48000*(tsec2-tsec0)*(iqmode+1)
-     if(istart.lt.1) istart=1
-     npts=npts-istart+1
-     j=istart-1
-     do i=1,npts*(iqmode+1)
-        j=j+1
-        id2(i)=fac*jwave(j)
-     enddo
+     if(newgen.eq.1) then
+        istart=48000*(tsec2-tsec0)
+        istart=istart*(iqmode+1)+1           !istart must be odd if iqmode=1
+        if(istart.lt.1) istart=1
+        npts=npts-istart
+        j=istart-1
+        do i=1,npts*(iqmode+1)
+           j=j+1
+           id2(i)=fac*jwave(j)
+        enddo
+     endif
 
-     if(iqmode.eq.1 .and. newgen.eq.1) call phasetx(id2,npts,fac,txbal,txpha)
+     if(iqmode.eq.1) then
+        call phasetx(id2,npts,fac,txbal,txpha)
+     endif
+
      ierr=soundout(ndevout,id2,npts,iqmode)
 
   else
