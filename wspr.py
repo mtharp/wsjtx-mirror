@@ -343,6 +343,11 @@ def usersguide(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/WSPR_2.0_User.pdf'
     thread.start_new_thread(browser,(url,))
 
+#------------------------------------------------------ usersupp
+def usersupp(event=NONE):
+    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_2.1_Supplement.pdf'
+    thread.start_new_thread(browser,(url,))
+
 #------------------------------------------------------ wsprnet
 def wsprnet(event=NONE):
     url='http://wsprnet.org/'
@@ -1233,6 +1238,7 @@ helpbutton['menu'] = helpmenu
 helpmenu.add('command',label='Help',command=help,accelerator='F1')
 helpmenu.add('command',label="Online WSPR User's Guide",command=usersguide, \
         accelerator='F3')
+helpmenu.add('command',label="Online WSPR 2.1 Supplement",command=usersupp)
 helpmenu.add('command',label="WSPRnet.org",command=wsprnet, \
         accelerator='F4')
 helpmenu.add('command',label="WSJT Home Page",command=homepage)
