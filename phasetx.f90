@@ -15,12 +15,10 @@ subroutine phasetx(id2,npts,txbal,txpha)
   do i=1,npts
      x=id2(1,i)
      y=id2(2,i)
+     amp=sqrt(x*x+y*y)
      phi=atan2(y,x)
-     xx=30000.0*cos(phi)
-     yy=30000.0*sin(phi+pha)
-     z=cmplx(xx,yy)
-     id2(1,i)=b1*real(z)
-     id2(2,i)=b2*aimag(z)
+     id2(1,i)=nint(b1*amp*cos(phi))
+     id2(2,i)=nint(b2*amp*sin(phi+pha))
   enddo
 
   return
