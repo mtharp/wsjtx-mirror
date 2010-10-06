@@ -56,11 +56,11 @@ biqtx.pack(anchor=W,padx=5,pady=2)
 biqrx=Checkbutton(g1.interior(),text='Reverse Rx I,Q',variable=iqrx)
 biqrx.pack(anchor=W,padx=5,pady=2)
 
-biqrxapp=Checkbutton(g1.interior(),text='Apply phasing corrections', \
+biqrxapp=Checkbutton(g1.interior(),text='Apply Rx phasing corrections', \
         variable=iqrxapp)
 biqrxapp.pack(anchor=W,padx=5,pady=2)
 
-biqrxadj=Checkbutton(g1.interior(),text='Adjust phasing', \
+biqrxadj=Checkbutton(g1.interior(),text='Adjust Rx phasing', \
         variable=iqrxadj)
 biqrxadj.pack(anchor=W,padx=5,pady=2)
 
