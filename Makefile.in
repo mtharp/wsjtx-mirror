@@ -17,22 +17,22 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr
+all:	wspr wsprcode
 build:	wspr
 
 wspr:	WsprMod/w.so
 
 # Default rules
-.c.o:
-	${CC} ${CPPFLAGS} ${CFLAGS} -c -o ${<:.c=.o} $<
-.f.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.f=.o} $<
-.F.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F=.o} $<
-.f90.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.f90=.o} $<
-.F90.o:
-	${FC} ${CPPFLAGS} ${FFLAGS} -c -o ${<:.F90=.o} $<
+%.o: %.c
+	${CC} ${CFLAGS} -c $<
+%.o: %.f
+	${FC} ${FFLAGS} -c $<
+%.o: %.F
+	${FC} ${FFLAGS} -c $<
+%.o: %.f90
+	${FC} ${FFLAGS} -c $<
+%.o: %.F90
+	${FC} ${FFLAGS} -c $<
 
 OS=@OS@
 FC=@FC@
@@ -45,6 +45,16 @@ PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
 
+OBJS3 = WSPRcode.o deg2grid.o pack50.o packcall.o packgrid.o \
+	unpack50.o unpackcall.o unpackgrid.o nchar.o \
+	grid2deg.o wqencode.o wqdecode.o nhash.o hash.o \
+	packname.o unpackname.o packtext2.o unpacktext2.o \
+	encode232.o inter_mept.o packprop.o unpackprop.o \
+	packpfx.o unpackpfx.o cs_stubs.o fano232.o
+
+wsprcode: $(OBJS3)
+	$(FC) -o wsprcode $(OBJS3)
+
 F2PYONLY = wspr1 getfile paterminate audiodev
 
 SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
@@ -53,13 +63,14 @@ SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	wqdecode.f90 hash.f90 packname.f90 packtext2.f90 \
 	unpackname.f90 unpacktext2.f90 audiodev.f90 fil1.f90 \
 	packpfx.f90 packprop.f90 unpackpfx.f90 unpackprop.f90 \
-	msgtrim.f90 thnix.f90 iqdemod.f90 phasetx.f90 speciq.f90
+	msgtrim.f90 thnix.f90 iqdemod.f90 phasetx.f90 speciq.f90 \
+	xcor162.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
 SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	sync162.f decode162.f spec162.f set.f xfft.f \
-	ps162.f pctile.f xcor162.f peakup.f db.f \
+	ps162.f pctile.f peakup.f db.f \
 	inter_mept.f fano232.f unpack50.f unpackcall.f \
 	unpackgrid.f four2a.f flat3.f sort.f deg2grid.f \
 	ssort.f gencwid.f morse.f \
