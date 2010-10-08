@@ -973,8 +973,10 @@ def update():
             'min':f0.get()+0.001500-0.000100,'minstrict':0,
             'max':f0.get()+0.001500+0.000100,'maxstrict':0})
     w.acom1.ndebug=ndebug.get()
-    w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
-    w.acom1.ncat=options.cat_enable.get()
+
+    if options.rignum.get()==2509:
+        options.pttmode.set('CAT')
+        options.CatPort.set('USB')
     if options.pttmode.get()=='CAT':
         options.cat_enable.set(1)
     if options.pttmode.get()=='CAT' or options.pttmode.get()=='VOX':
@@ -983,12 +985,19 @@ def update():
     else:
         options.ptt_port._entryWidget['state']=NORMAL
     if options.cat_enable.get():
-        options.cat_port._entryWidget['state']=NORMAL
         options.lrignum._entryWidget['state']=NORMAL
-        options.cbbaud._entryWidget['state']=NORMAL
-        options.cbdata._entryWidget['state']=NORMAL
-        options.cbstop._entryWidget['state']=NORMAL
-        options.cbhs._entryWidget['state']=NORMAL
+        if options.cat_port.get() != 'USB':
+            options.cat_port._entryWidget['state']=NORMAL
+            options.cbbaud._entryWidget['state']=NORMAL
+            options.cbdata._entryWidget['state']=NORMAL
+            options.cbstop._entryWidget['state']=NORMAL
+            options.cbhs._entryWidget['state']=NORMAL
+        else:
+            options.cat_port._entryWidget['state']=DISABLED
+            options.cbbaud._entryWidget['state']=DISABLED
+            options.cbdata._entryWidget['state']=DISABLED
+            options.cbstop._entryWidget['state']=DISABLED
+            options.cbhs._entryWidget['state']=DISABLED
         advanced.bsetfreq.configure(state=NORMAL)
         advanced.breadab.configure(state=NORMAL)
         advanced.enable_cal.configure(state=NORMAL)
@@ -1003,6 +1012,8 @@ def update():
         advanced.breadab.configure(state=DISABLED)
         advanced.enable_cal.configure(state=DISABLED)
         advanced.encal.set(0)
+    w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
+    w.acom1.ncat=options.cat_enable.get()
 
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
