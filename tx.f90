@@ -14,6 +14,7 @@ subroutine tx
   integer soundout,ptt,nt(9)
   real*8 tsec1,tsec2
   include 'acom1.f90'
+  common/acom2/ntune2,linetx
   common/bcom/ntransmitted
   common/dcom/jwave(NMAX2),icwid(NMAX3),id2(NMAX2)
   data ntx/0/,ns0/0/
@@ -25,8 +26,15 @@ subroutine tx
   call1=callsign
   call cs_lock('tx')
   if(pttmode.eq.'CAT') then
-     if(nrig.eq.901) then
-        cmnd='CMDSR -T 1'
+     if (nrig.eq.2509) then
+        write(crig,'(i6)') nrig
+        write(cbaud,'(i6)') nbaud
+        write(cdata,'(i1)') ndatabits
+        write(cstop,'(i1)') nstopbits
+        chs='None'
+        if(nhandshake.eq.1) chs='XONXOFF'
+        if(nhandshake.eq.2) chs='Hardware'
+        cmnd='rigctl '//'-m'//crig//' -r USB T 1'
      else
         write(crig,'(i6)') nrig
         write(cbaud,'(i6)') nbaud
@@ -89,8 +97,9 @@ subroutine tx
   open(18,file=snrfile,status='old',err=10)
   read(18,*,err=10,end=10) snr
 10 close(18)
-  call cs_unlock
   call gmtime2(nt,tsec1)
+  if(ntune.eq.0 .and. ntune2.ne.0) ntune2=0
+  call cs_unlock
 
   newgen=0
   if(message.ne.message0 .or. ntxdf.ne.ntxdf0 .or.                    &
@@ -150,7 +159,6 @@ subroutine tx
            call phasetx(id2,npts,txbal,txpha)
         endif
      endif
-
      ierr=soundout(ndevout,id2,npts,iqmode)
 
   else
@@ -162,6 +170,7 @@ subroutine tx
            j=j+1
            id2(i)=fac*jwave(j)
         enddo
+        if(iqmode.eq.1) call phasetx(id2,npts,txbal,txpha)
         ierr=soundout(ndevout,id2,npts,iqmode)
      else
         npts=24*4096
@@ -184,8 +193,8 @@ subroutine tx
   endif
 
   if(pttmode.eq.'CAT') then
-     if(nrig.eq.901) then
-        cmnd='CMDSR -T 0'
+     if(nrig.eq.2509) then
+        cmnd='rigctl '//'-m'//crig//' -r USB T 0'
      else
         cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
              ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &

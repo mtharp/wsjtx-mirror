@@ -777,12 +777,10 @@ def update():
                     f0.get()*(1000000.0 + advanced.Bcal.get()) + 0.5)
             else:
                 nHz=int(1000000.0*f0.get() + 0.5)
-            if options.rignum.get()==901:
-                nHzLO=4*(nHz - iq.fiq.get())
-                cmd="CMDSR -f %d" % (nHzLO,)
-            elif options.rignum.get()==2509:
+            if options.rignum.get()==2509:
+                nHzLO=nHz - iq.fiq.get()
                 cmd="rigctl -m %d -r %s F %d" % \
-                     (options.rignum.get(),options.CatPort.get(),nHz)
+                     (options.rignum.get(),options.CatPort.get(),nHzLO)
             else:
                 cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                      (options.rignum.get(),options.CatPort.get(), \
@@ -1597,9 +1595,7 @@ root.mainloop()
 
 # Clean up and save user options, then terminate.
 if options.pttmode.get()=='CAT':
-    if options.rignum.get() == 901:
-        cmd="CMDSR -T 0"
-    elif options.rignum.get() == 2509:
+    if options.rignum.get() == 2509:
         cmd="rigctl -m %d -r %s T 0" % \
              (options.rignum.get(),options.CatPort.get())
     else:
