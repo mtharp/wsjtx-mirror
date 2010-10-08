@@ -19,7 +19,7 @@ subroutine tx
   common/dcom/jwave(NMAX2),icwid(NMAX3),id2(NMAX2)
   data ntx/0/,ns0/0/
   data message0/'dummy'/,ntxdf0/-999/,ntune0/-999/,snr0/-999.0/
-  data iqmode0/-999/,iqtx0/-999/
+  data iqmode0/-999/,iqtx0/-999/,nrpt/10/
   save ntx,ns0,message0,ntxdf0,ntune0,snr0,iqmode0,iqtx0
 
   ierr=0
@@ -51,11 +51,15 @@ subroutine tx
 !   -C serial_handshake=Hardware T 1
      endif
 
-     iret=system(cmnd)
-     if(iret.ne.0) then
-        print*,'Error executing rigctl command to set Tx mode:'
+     do irpt=1,nrpt
+        iret=system(cmnd)
+        if(iret.eq.0) go to 1
+        print*,'Error executing rigctl to set Tx mode:',irpt,iret
         print*,cmnd
-     endif
+        call msleep(100)
+     enddo
+1    continue
+
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,1,iptt)
   endif
@@ -200,13 +204,18 @@ subroutine tx
              ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
              ' -C serial_handshake='//chs//' T 0'
      endif
+
      call cs_lock('tx')
-     iret=system(cmnd)
-     if(iret.ne.0) then
-        print*,'Error executing rigctl command to set Rx mode:'
+     do irpt=1,nrpt
+        iret=system(cmnd)
+        if(iret.eq.0) go to 101
+        print*,'Error executing rigctl to set Rx mode:',irpt,iret
         print*,cmnd
-     endif
+        call msleep(100)
+     enddo
+101    continue
      call cs_unlock
+
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,0,iptt)
   endif
