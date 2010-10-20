@@ -16,6 +16,12 @@ subroutine rx
      print*,'Error in soundin',ierr
      stop
   endif
+
+  call cs_lock('rx_a')
+  write(*,3001) iqmode,gain,57.2957795*phase,reject
+3001 format('Rx: ',i3,2f9.6,f8.2)
+  call cs_unlock
+
   if(iqmode.eq.1) then
      call iqdemod(kwave,4*npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
   else
