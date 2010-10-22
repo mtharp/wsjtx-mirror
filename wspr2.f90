@@ -34,13 +34,19 @@ subroutine wspr2
   call random_seed
   nrx=1
 
-20 call cs_lock('wspr2')
+10 call cs_lock('wspr2')
   call getutc(cdate,utctime,tsec)
   nsec=tsec
   ns120=mod(nsec,120)
   rxavg=1.0
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   call cs_unlock
+!  if(transmitting .and. nstoptx.eq.1) then
+!     call killtx
+!     nstoptx=0
+!     transmitting=.false.
+!     go to 20
+!  endif
 
   if(nrxdone.gt.0) then
 
@@ -108,13 +114,14 @@ subroutine wspr2
         ireset=1
      endif
   endif
-  call msleep(200)
-  go to 20
+
+20 call msleep(200)
+  go to 10
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
   if(pctx.eq.0.0) nrx=1
 
-  if(nrx.eq.0 .and. ntr.ne.-1) then
+  if(ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1)) then
 
      call cs_lock('wspr2')
      transmitting=.true.
@@ -133,6 +140,7 @@ subroutine wspr2
      ntr=-1
      nsectx=mod(nsec,86400)
      ntxdone=0
+     ntxnext=0
      call cs_unlock
 
      call gmtime2(nt,tsec0)
@@ -148,7 +156,7 @@ subroutine wspr2
      endif
      nrx=nrx-1
   endif
-  go to 20
+  go to 10
 
   return
 end subroutine wspr2

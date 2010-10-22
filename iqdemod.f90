@@ -1,9 +1,11 @@
-subroutine iqdemod(kwave,npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
+subroutine iqdemod(kwave,npts,nfiq,nbfo,iqrx,iqrxapp,gain,phase,iwave)
+
+! Convert I/Q data sampled at 48000 Hz to real data sampled at 12000 Hz.
 
   parameter (NFFT =5760000)
   parameter (NFFT4=1440000)
-  integer*2 kwave(2,npts)
-  integer*2 iwave(npts)
+  integer*2 kwave(2,114*48000)
+  integer*2 iwave(114*12000)
   real*8 twopi,df,f0,sq
   real x1(NFFT4)
   complex c,c1
@@ -26,7 +28,7 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
   enddo
   c(npts:)=0.
 
-  call four2a(c,NFFT,1,-1,1)
+  call four2a(c,NFFT,1,-1,1)               !Long FFT of entire I/Q dataset
 
   ia=nint(f0/df)
   ib=nint((f0+3000.d0)/df)
@@ -59,6 +61,14 @@ subroutine iqdemod(kwave,npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
   c1(j+1:)=0.
   c1(0)=0.
 
+  bw=3000.0
+  if(bw.lt.3000.0) then
+     j0=nint(nbfo/df)
+     ja=nint((nbfo-0.5*bw))/df
+     jb=nint((nbfo+0.5*bw))/df
+     c1(:ja-1)=0.
+     c1(jb+1:)=0.
+  endif
 
   call four2a(c1,NFFT4,1,1,-1)
 

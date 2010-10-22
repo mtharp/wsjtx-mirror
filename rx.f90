@@ -19,11 +19,7 @@ subroutine rx
 
 
   if(iqmode.eq.1) then
-     call cs_lock('rx_a')
-     write(*,3001) iqmode,iqrx,iqrxapp,iqrxadj,gain,57.2957795*phase,reject
-3001 format('Rx: ',4i2,f9.4,2f8.2)
-     call cs_unlock
-     call iqdemod(kwave,4*npts,nfiq,iqrx,iqrxapp,gain,phase,iwave)
+     call iqdemod(kwave,4*npts,nfiq,nbfo,iqrx,iqrxapp,gain,phase,iwave)
   else
      call fil1(kwave,4*npts,iwave,n2)         !Filter and downsample
      npts=n2

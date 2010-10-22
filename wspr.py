@@ -381,6 +381,16 @@ def tune(event=NONE):
     btune.configure(bg='yellow')
 #    balloon.configure(state='none')
 
+#------------------------------------------------------ txnext
+def txnext(event=NONE):
+    if ipctx.get()>0:
+        w.acom1.ntxnext=1
+
+###------------------------------------------------------ stoptx
+##def stoptx(event=NONE):
+##    w.acom1.nstoptx=1
+##    w.acom1.ntxnext=0
+
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
 def df_readout(event):
@@ -1333,15 +1343,22 @@ pctscale.pack(side=LEFT,padx=4)
 balloon.bind(pctscale,"Select desired fraction of sequences to transmit")
 ipctx.set(0)
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
+#------------------------------------------------------ Special controls
 g3=Pmw.Group(iframe2a,tag_text='Special')
-bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle)
-bidle.pack(padx=8)
+bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle,width=5)
+bidle.grid(row=0,column=0,padx=2,pady=3)
 balloon.bind(bidle,"Check for no automatic T/R sequences")
-btune=Button(g3.interior(), text='Tune',underline=0,command=tune,
-             width=9,padx=1,pady=2)
-btune.pack(side=TOP,padx=10,pady=8)
+btune=Button(g3.interior(), text='Tune',underline=0,command=tune,width=9)
+btune.grid(row=1,column=0,padx=2,pady=3)
 balloon.bind(btune,"Transmit for number of seconds set by Tx fraction slider")
-g3.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=1)
+
+btxnext=Button(g3.interior(), text='Tx Next',underline=3,command=txnext,width=9)
+btxnext.grid(row=0,column=1,padx=2,pady=3)
+##bstoptx=Button(g3.interior(), text='Stop Tx',underline=0,command=stoptx,width=9)
+##bstoptx.grid(row=1,column=1,padx=2,pady=3)
+
+g3.pack(side=LEFT,fill=X,expand=0,padx=10,pady=1)
+
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
@@ -1591,6 +1608,8 @@ except:
 iband0=iband.get()
 graph1.focus_set()
 w.acom1.ndevsok=0
+w.acom1.ntxnext=0
+w.acom1.nstoptx=0
 w.wspr1()
 t="%.6f" % (f0.get(),)
 sf0.set(t)
