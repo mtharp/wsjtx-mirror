@@ -12,6 +12,9 @@ program fmtave
   call getarg(1,infile)
 
   open(10,file=infile,status='old')
+  read(10,*) cutc
+  read(10,*) cutc
+  read(10,*) cutc
 
   nkhz0=0
   sum=0.d0
@@ -28,8 +31,8 @@ program fmtave
         err=rms/sqrt(n-1.d0)
         if(err.lt.0.1) err=0.1
         fMHz=0.001d0*nkHz0
-        write(*,1010) fMHz,ave,rms,err,cutc1
-1010    format(f8.3,3f8.2,2x,a8)
+        write(*,1010) fMHz,ave,rms,err,ave/fMHz,cutc1
+1010    format(f8.3,4f8.2,2x,a8)
         sum=0.d0
         sumsq=0.d0
         n=0
@@ -50,6 +53,6 @@ program fmtave
   err=rms/sqrt(n-1.d0)
   if(err.lt.0.1) err=0.1
   fMHz=0.001d0*nkHz
-  write(*,1010) fMHz,ave,rms,err,cutc1
+  write(*,1010) fMHz,ave,rms,err,ave/fMHz,cutc1
 
 999 end program fmtave

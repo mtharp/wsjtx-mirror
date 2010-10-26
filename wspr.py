@@ -805,7 +805,8 @@ def update():
                 text1.configure(state=DISABLED)
                 iband0=iband.get()
                 f=open(appdir+'/fmt.ini',mode='w')
-                f.write(cmd)
+                f.write(cmd+'\n')
+                f.write(str(g.ndevin.get()))
                 f.close()
             else:
                 print 'Error attempting to set rig frequency.\a'
