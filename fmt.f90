@@ -29,7 +29,10 @@ program fmt
      read(arg,*) nrpt
   endif
 
-  cmnd='rigctl -m 214 -r COM1 -s 4800 -C data_bits=8 -C stop_bits=2 -C serial_handshake=Hardware F 3592607'
+!  cmnd='rigctl -m 214 -r COM1 -s 4800 -C data_bits=8 -C stop_bits=2 -C serial_handshake=Hardware F 3592607'
+  open(10,file='fmt.ini',status='old',err=910)
+  read(10,*) cmnd
+  close(10)
 
   nHz=1000*nkhz - noffset
   write(cmnd(92:),*) nHz
@@ -105,6 +108,9 @@ program fmt
      call flush(14)
      call flush(15)
   enddo
+  go to 999
+
+910 print*,'Cannot open file: fmt.ini'
 
 999 end program fmt
 
