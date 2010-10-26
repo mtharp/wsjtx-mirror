@@ -88,7 +88,7 @@ program fmt
      fac=1.0/float(nfft)**2
      i0=noffset/df
      ia=(noffset-500)/df
-     ib=(noffset+500)/df
+     ib=(noffset+1000)/df
      do i=ia,ib                              !Find fpeak
         s1(i)=fac * (real(c(i))**2 + aimag(c(i))**2)
         if(s1(i).gt.smax) then
