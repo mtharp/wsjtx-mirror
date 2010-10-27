@@ -120,7 +120,7 @@ program fmt
      write(*,1100)  nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,ncal,pave,snr,cflag
      write(12,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,ncal,pave,snr,cflag
      write(13,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,ncal,pave,snr,cflag
-1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,2f9.2,i3,2f7.1,2x,a1)
+1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,2f10.3,i3,2f7.1,2x,a1)
      call flush(12)
      call flush(13)
   enddo
@@ -129,3 +129,4 @@ program fmt
 910 print*,'Cannot open file: fmt.ini'
 
 999 end program fmt
+
