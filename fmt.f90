@@ -21,8 +21,8 @@ program fmt
   equivalence (x,c)
 
   nargs=iargc()
-  if(nargs.lt.4) then
-     print*,'Usage: fmt kHz offset tsec cal'
+  if(nargs.lt.3) then
+     print*,'Usage: fmt <kHz> <offset> <tsec>'
      go to 999
   endif
   call getarg(1,arg)
@@ -31,8 +31,6 @@ program fmt
   read(arg,*) noffset                  !Offset (Hz)
   call getarg(3,arg)
   read(arg,*) ntsec                    !Length of measurement (s)
-  call getarg(4,arg)
-  read(arg,*) ncal                     !1=cal, 0=meas
 
   open(10,file='fmt.ini',status='old',err=910)
   read(10,'(a120)') cmnd              !Get rigctl command to set frequency
@@ -71,8 +69,7 @@ program fmt
   nrpt=n2/NH - 1
   fac=1.0/float(NFFT)**2
   ia=(noffset-500)/df
-  ib=(noffset+500)/df
-  if(ncal.eq.0) ib=(noffset+1000)/df
+  ib=(noffset+1000)/df
 
   do irpt=0,nrpt
      k=irpt*NH
@@ -117,10 +114,10 @@ program fmt
      ferr=fpeak-noffset
      cflag=' '
      if(snr.lt.18.0) cflag='*'
-     write(*,1100)  nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,ncal,pave,snr,cflag
-     write(12,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,ncal,pave,snr,cflag
-     write(13,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,ncal,pave,snr,cflag
-1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,2f10.3,i3,2f7.1,2x,a1)
+     write(*,1100)  nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,pave,snr,cflag
+     write(12,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,pave,snr,cflag
+     write(13,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,pave,snr,cflag
+1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,2f10.3,2f7.1,2x,a1)
      call flush(12)
      call flush(13)
   enddo
