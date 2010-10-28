@@ -14,6 +14,7 @@ program fcal
 
   open(10,file=infile,status='old',err=997)
   open(12,file='fcal.out',status='unknown')
+  open(13,file='fcal.plt',status='unknown')
 
   i=0
   do j=1,9999
@@ -37,6 +38,7 @@ program fcal
      fm=fd(i) + 1.d-6*deltaf(i)
      calfac=1.d0 + 1.d-6*deltaf(i)/fd(i)
      write(*,1010) fd(i),deltaf(i),fm,r(i)
+     write(13,1010) fd(i),deltaf(i),fm,r(i)
 1010 format(f8.3,f8.2,f14.9,f8.2)
   enddo
   calfac=1.d0 + 1.d-6*b
@@ -44,12 +46,12 @@ program fcal
 
   if(iz.ge.3) then
      write(*,1100) a,b,rms
-1100 format(/'A:',f8.2,' Hz    B:',f9.6,' ppm    StdDev:',f6.2,' Hz')
+1100 format(/'A:',f8.2,' Hz    B:',f7.4,' ppm    StdDev:',f6.2,' Hz')
   if(iz.gt.2) write(*,1110) sigmaa,sigmab
-1110 format('err:',f6.2,9x,f9.6,23x,f13.9)
+1110 format('err:',f6.2,9x,f7.4,23x,f13.9)
   else
      write(*,1120) a,b
-1120 format(/'A:',f8.2,' Hz    B:',f9.6)
+1120 format(/'A:',f8.2,' Hz    B:',f7.4)
   endif
 
   write(12,1130) a,b
@@ -92,7 +94,7 @@ subroutine fit(x,y,r,iz,a,b,sigmaa,sigmab,rms)
   if(iz.ge.3) then
      rms=sqrt(sq/(iz-2))
      sigmaa=sqrt(rms*rms*sx2/delta)
-     sigmab=iz*rms*rms/delta
+     sigmab=sqrt(iz*rms*rms/delta)
   endif
 
   return
