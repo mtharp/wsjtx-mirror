@@ -17,7 +17,7 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe 
+all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe fmeasure.exe
 
 OBJS1 = rxtest.o mept162.o getrms.o mix162.o deg2grid.o \
 	sync162.o decode162.o spec162.o set.o xfft.o \
@@ -94,6 +94,9 @@ fmtave.exe: fmtave.f90
 
 fcal.exe: fcal.f90
 	$(FC) -o fcal.exe fcal.f90
+
+fmeasure.exe: fmeasure.f90
+	$(FC) -o fmeasure.exe fmeasure.f90
 
 sound.o: sound.c
 	$(CC) -c sound.c
