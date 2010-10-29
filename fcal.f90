@@ -56,12 +56,12 @@ program fcal
 
   if(iz.ge.3) then
      write(*,1100) a,b,rms
-1100 format(/'A:',f8.2,' Hz    B:',f7.4,' ppm    StdDev:',f6.2,' Hz')
+1100 format(/'A:',f8.2,' Hz    B:',f9.4,' ppm    StdDev:',f6.2,' Hz')
   if(iz.gt.2) write(*,1110) sigmaa,sigmab
-1110 format('err:',f6.2,9x,f7.4,23x,f13.9)
+1110 format('err:',f6.2,9x,f9.4,23x,f13.9)
   else
      write(*,1120) a,b
-1120 format(/'A:',f8.2,' Hz    B:',f7.4)
+1120 format(/'A:',f8.2,' Hz    B:',f9.4)
   endif
 
   write(12,1130) a,b
