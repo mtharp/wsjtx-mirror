@@ -4,6 +4,7 @@ program fcal
   implicit real*8 (a-h,o-z)
   real*8 fd(NZ),deltaf(NZ),r(NZ)
   character infile*50
+  character line*80
 
   nargs=iargc()
   if(nargs.ne.1) then
@@ -18,7 +19,16 @@ program fcal
 
   i=0
   do j=1,9999
-     read(10,*,err=5,end=10) f,df
+     read(10,1000,end=10) line
+1000 format(a80)
+     i0=index(line,' 0 ')
+     i1=index(line,' 1 ')
+     if(i0.le.0 .and. i1.le.0) then
+        read(line,*,err=5) f,df
+        ncal=1
+     else
+        read(line,*,err=5) f,df,ncal
+     endif
      i=i+1
      fd(i)=f
      deltaf(i)=df
@@ -55,7 +65,7 @@ program fcal
   endif
 
   write(12,1130) a,b
-1130 format(f6.2/f10.6)
+1130 format(f10.4)
 
   go to 999
 

@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------- WSPR
+#------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -29,7 +29,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="2.10_r" + "$Rev$"[6:-2]
+Version="2.11_r" + "$Rev$"[6:-2]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"

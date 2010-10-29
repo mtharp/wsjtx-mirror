@@ -17,7 +17,7 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    WSPR.EXE fcal.exe
+all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe 
 
 OBJS1 = rxtest.o mept162.o getrms.o mix162.o deg2grid.o \
 	sync162.o decode162.o spec162.o set.o xfft.o \
@@ -84,6 +84,14 @@ wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py \
 	WsprMod/advanced.py WsprMod/iq.py
 	c:/python25/python c:/python25/pyinstaller-1.4/makespec.py --icon \
 	  wsjt.ico --tk --onefile wspr.py
+
+fmt.exe: fmt.f90 fil1.f90 four2a.f peakup.f db.f sound.o 
+	$(FC) -o fmt.exe -ftrace=full fmt.f90 fil1.f90 four2a.f peakup.f db.f \
+	sound.o libportaudio.a c:\MinGW\lib\libwinmm.a libfftw3f_win.a
+
+fmtave.exe: fmtave.f90
+	$(FC) -o fmtave.exe fmtave.f90
+
 fcal.exe: fcal.f90
 	$(FC) -o fcal.exe fcal.f90
 

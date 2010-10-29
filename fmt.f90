@@ -11,6 +11,7 @@ program fmt
   integer*2 kwave(NMAX)                      !Raw data samples at 48 kHz
   integer*2 iwave(NMAX2)                     !Downsampled data, 12 kHz
   character arg*12                           !Command-line arg
+  character callsign*6
   character cmnd*120                         !Command to set rig frequency
   character cflag*1
   real x(NFFT)                               !Real data for FFT
@@ -21,16 +22,22 @@ program fmt
   equivalence (x,c)
 
   nargs=iargc()
-  if(nargs.lt.3) then
-     print*,'Usage: fmt <kHz> <offset> <tsec>'
+  if(nargs.ne.6) then
+     print*,'Usage:   fmt <kHz> <0|1> <offset> <range> <tsec> <call>'
+     print*,'Example: fmt 10000   1    1500     100      30    WWV'
      go to 999
   endif
   call getarg(1,arg)
   read(arg,*) nkhz                     !Nominal frequency to be measured (kHz)
   call getarg(2,arg)
-  read(arg,*) noffset                  !Offset (Hz)
+  read(arg,*) ncal                     !1=CAL, 0=to be measured
   call getarg(3,arg)
+  read(arg,*) noffset                  !Offset (Hz)
+  call getarg(4,arg)
+  read(arg,*) nrange                   !Search range (Hz)
+  call getarg(5,arg)
   read(arg,*) ntsec                    !Length of measurement (s)
+  call getarg(6,callsign)
 
   open(10,file='fmt.ini',status='old',err=910)
   read(10,'(a120)') cmnd              !Get rigctl command to set frequency
@@ -54,6 +61,12 @@ program fmt
      w(i)=sin(i*3.14159/NFFT)
   enddo
 
+  write(*,1000)
+1000 format(                                                              &
+     '   UTC     Freq CAL Offset  fMeas        DF    Level   S/N  Call'/   &
+     '          (kHz)  ?   (Hz)    (Hz)       (Hz)    (dB)  (dB)      '/   &
+     '------------------------------------------------------------------')
+
   call soundinit                             !Initialize Portaudio
 
   npts=ntsec*48000
@@ -64,18 +77,19 @@ program fmt
      print*,'Error in soundin',ierr
      stop
   endif
-  call fil1(kwave,npts,iwave,n2)          !Fiilter and downsample to 12 kHz
+  call fil1(kwave,npts,iwave,n2)          !Filter and downsample to 12 kHz
 
   nrpt=n2/NH - 1
   fac=1.0/float(NFFT)**2
-  ia=(noffset-500)/df
-  ib=(noffset+1000)/df
+  ia=(noffset-nrange)/df
+  ib=(noffset+nrange)/df
 
   do irpt=0,nrpt
      k=irpt*NH
      t0=nsec0 + k/12000.0
      do i=1,NFFT
         k=k+1
+        if(k.gt.NMAX2) go to 999
         x(i)=w(i)*iwave(k)
      enddo
 
@@ -109,15 +123,18 @@ program fmt
      nhr=n/3600
      nmin=mod(n/60,60)
      nsec=mod(n,60)
-     pave=db(ave)
+     pave=db(ave) + 8.0
      snr=db(smax/ave)
      ferr=fpeak-noffset
      cflag=' '
-     if(snr.lt.18.0) cflag='*'
-     write(*,1100)  nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,pave,snr,cflag
-     write(12,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,pave,snr,cflag
-     write(13,1100) nhr,nmin,nsec,nkhz,noffset,fpeak,ferr,pave,snr,cflag
-1100 format(i2.2,':',i2.2,':',i2.2,i7,i6,2f10.3,2f7.1,2x,a1)
+     if(snr.lt.20.0) cflag='*'
+     write(*,1100)  nhr,nmin,nsec,nkhz,ncal,noffset,fpeak,ferr,pave,   &
+          snr,callsign,cflag
+     write(12,1100) nhr,nmin,nsec,nkhz,ncal,noffset,fpeak,ferr,pave,   &
+          snr,callsign,cflag
+     write(13,1100) nhr,nmin,nsec,nkhz,ncal,noffset,fpeak,ferr,pave,   &
+          snr,callsign,cflag
+1100 format(i2.2,':',i2.2,':',i2.2,i7,i3,i6,2f10.3,2f7.1,2x,a6,2x,a1)
      call flush(12)
      call flush(13)
   enddo

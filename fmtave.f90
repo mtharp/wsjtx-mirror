@@ -12,25 +12,28 @@ program fmtave
   call getarg(1,infile)
 
   open(10,file=infile,status='old')
+  open(12,file='fmtave.out',status='unknown')
 
+  write(*,1000)
+1000 format('    Freq    DF    CAL   N     rms    UTC'/                &
+            '   (kHz)   (Hz)    ?         (Hz)'/                       &
+            '-------------------------------------------')
   nkhz0=0
   sum=0.d0
   sumsq=0.d0
   n=0
   do i=1,99999
-     read(10,*,end=10) cutc,nkHz,noffset,faudio,snr,yave,yrms
+     read(10,*,end=10) cutc,nkHz,ncal,noffset,faudio,snr,yave,yrms
      if(nkHz.ne.nkHz0 .and. i.ne.1) then
         ave=sum/n
         rms=0.d0
         if(n.gt.1) then
            rms=sqrt(abs(sumsq - sum*sum/n)/(n-1.d0))
         endif
-        err=0.2
-        if(n.ge.2) err=rms/sqrt(n-1.d0)
-        if(err.lt.0.1) err=0.1
         fMHz=0.001d0*nkHz0
-        write(*,1010) fMHz,ave,rms,err,cutc1
-1010    format(f8.3,3f8.2,2x,a8)
+        write(*,1010)  fMHz,ave,ncal,n,rms,cutc1
+        write(12,1010) fMHz,ave,ncal,n,rms,cutc1
+1010    format(2f8.3,i4,i5,f8.2,2x,a8)
         sum=0.d0
         sumsq=0.d0
         n=0
@@ -48,9 +51,8 @@ program fmtave
   if(n.gt.0) then
      rms=sqrt((sumsq - sum*sum/n)/(n-1.d0))
   endif
-  err=rms/sqrt(n-1.d0)
-  if(err.lt.0.1) err=0.1
   fMHz=0.001d0*nkHz
-  write(*,1010) fMHz,ave,rms,err,cutc1
+  write(*,1010)  fMHz,ave,ncal,n,rms,cutc1
+  write(12,1010) fMHz,ave,ncal,n,rms,cutc1
 
 999 end program fmtave
