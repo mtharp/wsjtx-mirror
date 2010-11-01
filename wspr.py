@@ -348,6 +348,11 @@ def usersupp(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/WSPR_2.1_Supplement.pdf'
     thread.start_new_thread(browser,(url,))
 
+#------------------------------------------------------ fmtguide
+def fmtguide(event=NONE):
+    url='http://physics.princeton.edu/pulsar/K1JT/FMT_Users_Guide.pdf'
+    thread.start_new_thread(browser,(url,))
+
 #------------------------------------------------------ wsprnet
 def wsprnet(event=NONE):
     url='http://wsprnet.org/'
@@ -1262,6 +1267,7 @@ helpmenu.add('command',label='Help',command=help,accelerator='F1')
 helpmenu.add('command',label="Online WSPR User's Guide",command=usersguide, \
         accelerator='F3')
 helpmenu.add('command',label="Online WSPR 2.1 Supplement",command=usersupp)
+helpmenu.add('command',label="Online FMT User's Guide",command=fmtguide)
 helpmenu.add('command',label="WSPRnet.org",command=wsprnet, \
         accelerator='F4')
 helpmenu.add('command',label="WSJT Home Page",command=homepage)
@@ -1597,7 +1603,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 2.10     by K1JT')
+root.title('  WSPR 2.11     by K1JT')
 
 put_params()
 try:

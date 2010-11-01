@@ -10,7 +10,8 @@ program fcal
 
   nargs=iargc()
   if(nargs.ne.1) then
-     print*,'Usage: fcal <infile>'
+     print*,'Usage:   fcal <infile>'
+     print*,'Example: fcal fmtave.out'
      go to 999
   endif
   call getarg(1,infile)
