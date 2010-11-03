@@ -120,8 +120,10 @@ deb: wspr.py WsprMod/w.so WsprMod/g.py WsprMod/__init__.py \
 	WsprMod/advanced.py \
 	WsprMod/options.py WsprMod/palettes.py WsprMod/PmwBlt.py \
 	WsprMod/PmwColor.py WsprMod/Pmw.py DEB/DEBIAN/control \
-	hamlib_rig_numbers wsprrc DEB/WSPR/wspr
+	hamlib_rig_numbers wsprrc fmt fmtave fcal fmeasure \
+	gocal 0230 DEB/WSPR/wspr
 	cp wspr.py wsprrc hamlib_rig_numbers wsprcode DEB/WSPR
+	cp fmt fmtave fcal fmeasure gocal 0230 DEB/WSPR
 	cp WsprMod/w.so DEB/WSPR/WsprMod
 	cp WsprMod/*.py DEB/WSPR/WsprMod
 	dpkg-deb --build DEB wspr_ver_rev_i386.deb
