@@ -350,7 +350,7 @@ def usersupp(event=NONE):
 
 #------------------------------------------------------ fmtguide
 def fmtguide(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/FMT_Users_Guide.pdf'
+    url='http://physics.princeton.edu/pulsar/K1JT/FMT_User.pdf'
     thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ wsprnet
