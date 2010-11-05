@@ -25,6 +25,6 @@ Source: "c:\Users\joe\wsjt\wspr\gocal.bat";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\0230.bat";            DestDir: "{app}"
 
 [Icons]
-Name: "{group}\WSPR";        Filename: "{app}\WSPR.EXE"; WorkingDir: {app} IconFilename: {app}\wsjt.ico
-Name: "{userdesktop}\WSPR";  Filename: "{app}\WSPR.EXE"; WorkingDir: {app} IconFilename: {app}\wsjt.ico
+Name: "{group}\WSPR";        Filename: "{app}\WSPR.EXE"; WorkingDir: {app}; IconFilename: {app}\wsjt.ico
+Name: "{userdesktop}\WSPR";  Filename: "{app}\WSPR.EXE"; WorkingDir: {app}; IconFilename: {app}\wsjt.ico
 

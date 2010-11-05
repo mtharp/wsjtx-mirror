@@ -29,6 +29,7 @@ program fcal
      if(i0.le.0 .and. i1.le.0) then
         read(line,*,err=5) f,df
         ncal=1
+        i=i+1
         callsign(i)='      '
      else
         i=i+1
