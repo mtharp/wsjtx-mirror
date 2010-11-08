@@ -31,11 +31,9 @@ program fcal
         ncal=1
         i=i+1
         callsign(i)='      '
-     else
+     else if(i1.gt.0) then
         i=i+1
         read(line,*,err=5) f,df,ncal,nn,rr,cutc,callsign(i)
-     endif
-     if(ncal.eq.1) then
         fd(i)=f
         deltaf(i)=df
         r(i)=0.d0

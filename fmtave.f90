@@ -33,8 +33,8 @@ program fmtave
            rms=sqrt(abs(sumsq - sum*sum/n)/(n-1.d0))
         endif
         fMHz=0.001d0*nkHz0
-        write(*,1010)  fMHz,ave,ncal,n,rms,cutc1,callsign0
-        write(12,1010) fMHz,ave,ncal,n,rms,cutc1,callsign0
+        write(*,1010)  fMHz,ave,ncal0,n,rms,cutc1,callsign0
+        write(12,1010) fMHz,ave,ncal0,n,rms,cutc1,callsign0
 1010    format(2f8.3,i4,i5,f8.2,2x,a8,2x,a6)
         sum=0.d0
         sumsq=0.d0
@@ -44,7 +44,10 @@ program fmtave
      sum=sum + dial_error
      sumsq=sumsq + dial_error**2
      n=n+1
-     if(n.eq.1) cutc1=cutc
+     if(n.eq.1) then
+        cutc1=cutc
+        ncal0=ncal
+     endif
      nkHz0=nkHz
      callsign0=callsign
   enddo
