@@ -17,9 +17,9 @@ program fmtave
   open(12,file='fmtave.out',status='unknown')
 
   write(*,1000)
-1000 format('    Freq    DF    CAL   N     rms    UTC     Call'/       &
-            '   (kHz)   (Hz)    ?         (Hz)'/                       &
-            '---------------------------------------------------')
+1000 format('    Freq     DF    CAL   N     rms    UTC     Call'/       &
+            '   (kHz)    (Hz)    ?         (Hz)'/                       &
+            '----------------------------------------------------')
   nkhz0=0
   sum=0.d0
   sumsq=0.d0
@@ -35,7 +35,7 @@ program fmtave
         fMHz=0.001d0*nkHz0
         write(*,1010)  fMHz,ave,ncal0,n,rms,cutc1,callsign0
         write(12,1010) fMHz,ave,ncal0,n,rms,cutc1,callsign0
-1010    format(2f8.3,i4,i5,f8.2,2x,a8,2x,a6)
+1010    format(f8.3,f9.3,i4,i5,f8.2,2x,a8,2x,a6)
         sum=0.d0
         sumsq=0.d0
         n=0
