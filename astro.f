@@ -29,15 +29,11 @@ C  NB: may want to smooth the Tsky map to 10 degrees or so.
  1	lenappdir=i
         call zero(nsky,180*180)
 	fname=Appdir(1:lenappdir)//'/TSKY.DAT'
-#ifdef CVF
-        open(13,file=fname,status='old',form='binary',err=10)
-        read(13) nsky
-        close(13)
-#else
+        call cs_lock('astro')
         open(13,file=fname,status='old',access='stream',err=10)
         read(13) nsky
         close(13)
-#endif
+        call cs_unlock
         ltsky=.true.
         first=.false.
       endif

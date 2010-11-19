@@ -8,8 +8,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define HELLO_PORT 50004
-#define HELLO_GROUP "239.255.0.0"
+// #define HELLO_PORT 50004
+// #define HELLO_GROUP "239.255.0.0"
+#define HELLO_PORT 50024
+#define HELLO_GROUP "128.112.87.74"
 
 struct sockaddr_in addr;
 int fd;

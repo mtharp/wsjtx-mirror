@@ -107,8 +107,12 @@ subroutine symspec(id,kbuf,kk,kkdone,nutc,newdat)
 !         if(n.eq.ntot) then
      if(n.ge.279) then
         call move(ssz5,ss5,322*NFFT)
+
+        call cs_lock('symspec')
         write(utcdata,1002) nutc
 1002    format(i4.4)
+        call cs_unlock
+
         utcdata=utcdata(1:2)//':'//utcdata(3:4)
         newspec=1
         call move(ssz,ss,322*NFFT)

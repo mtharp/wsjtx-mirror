@@ -10,13 +10,6 @@ DEFS = @DEFS@
 CFLAGS += ${DEFS}
 CPPFLAGS += ${DEFS} -I.
 
-# WSJT specific Fortran flags
-#FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
-#FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
-#FFLAGS += -Wall -fbounds-check -fno-second-underscore -ffixed-line-length-none -fPIC
-#FFLAGS += -Wall -fbounds-check -fno-second-underscore -fPIC
-#FFLAGS += -cpp -fno-second-underscore
-
 all:    Audio.so plrs plrr
 
 # The default rules
@@ -41,16 +34,16 @@ F2PY	= @F2PY@
 
 ###
 
-OBJS2C   = init_rs.o encode_rs.o decode_rs.o plrr_subs.o loc.o deep65.o
+OBJS2C   = init_rs.o encode_rs.o decode_rs.o plrr_subs.o loc.o \
+	deep65.o fthread.o
 
 F2PYONLY = ftn_init ftn_quit audio_init getfile azdist0 astro0 spec
 
-SRCS2F90 = astro0.F90 audio_init.F90 azdist0.f90 \
-	decode1.F90 ftn_init.F90 ftn_quit.f90 wsjtgen.F90 \
-	runqqq.F90 fivehz.F90 flushqqq.F90 \
-	rfile.f90 rfile3a.F90 spec.f90 map65a.F90 display.F90 \
-	getfile.F90 getfile2.F90 recvpkt.F90 savetf2.F90 \
-	symspec.f90 sec_midn.F90
+SRCS2F90 = astro0.f90 audio_init.f90 azdist0.f90 decode1.f90 \
+	ftn_init.f90 ftn_quit.f90 wsjtgen.f90 runqqq.f90 fivehz.f90 \
+	rfile.f90 rfile3a.f90 spec.f90 map65a.f90 display.f90 \
+	getfile.f90 getfile2.f90 recvpkt.f90 savetf2.f90 \
+	symspec.f90 sec_midn.f90 thnix.f90
 
 SRCS2F77 = indexx.f gen65.f chkmsg.f \
 	gentone.f gencwid.f set.f db.f pctile.f sort.f ssort.f \
@@ -65,29 +58,14 @@ SRCS2F77 = indexx.f gen65.f chkmsg.f \
 	filbig.f fil6521.f twkfreq.f decode65b.f \
 	afc65b.f fchisq.f ccf2.f rfile2.f
 
-SRCS2C   = ptt.c igray.c wrapkarn.c rfile3.c wfile3.c
-
 OBJS2F77 = ${SRCS2F77:.f=.o}
 
 SRCS3C = ptt_unix.c igray.c wrapkarn.c cutil.c
 OBJS3C = ${SRCS3C:.c=.o}
 AUDIOSRCS = a2d.f90 jtaudio.c start_portaudio.c
 
-#Audio.so: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C)
-#	python f2py.py -c \
-#	--quiet --"fcompiler=compaqv" \
-#	--opt="/nologo /traceback /warn:errors /fast /fpp /define:Win32 \
-#	      /define:USE_PORTAUDIO" \
-#	$(OBJS2C) \
-#	-lwinmm -lpa -lfftw3single -llibsamplerate \
-#	-m Audio \
-#	only: $(F2PYONLY) : \
-#	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
-
-###
-
-deep65.o: deep65.F
-	$(FC) -c -O0 -Wall -fPIC deep65.F
+deep65.o: deep65.f
+	$(FC) -c -O0 -fno-second-underscore -Wall -fPIC deep65.f
 
 Audio.so: $(OBJS2C) $(OBJS3C) $(OBJS2F77) $(SRCS2F90) $(AUDIOSRCS)
 	 ${F2PY} -c --quiet --opt="-O ${CFLAGS} \
@@ -105,17 +83,17 @@ encode_rs_int.o: encode_rs.c
 decode_rs_int.o: decode_rs.c
 	$(CC) $(CFLAGS) -c -DBIGSYM=1 -o decode_rs_int.o decode_rs.c
 
-plrr:   plrr.F90 sec_midn.F90 plrr_subs.c cutil.c
+plrr:   plrr.f90 sec_midn.f90 plrr_subs.c cutil.c
 	$(CC) -c plrs_subs.c cutil.c
-	$(FC) -o plrr -fno-second-underscore plrr.F90 sec_midn.F90 plrr_subs.o cutil.o
+	$(FC) -o plrr -fno-second-underscore plrr.f90 sec_midn.f90 plrr_subs.o cutil.o
 
-plrs:   plrs.F90 sec_midn.F90 plrs_subs.c cutil.c
+plrs:   plrs.f90 sec_midn.f90 plrs_subs.c cutil.c
 	$(CC) -c plrs_subs.c cutil.c
-	$(FC) -o plrs -fno-second-underscore plrs.F90 sec_midn.F90 plrs_subs.o cutil.o
+	$(FC) -o plrs -fno-second-underscore plrs.f90 sec_midn.f90 plrs_subs.o cutil.o
 
 .PHONY : clean
 clean:
-	${RM} -f *.o *.pyc *.so *~ map65 map65.spec
+	${RM} -f *.o *.pyc *.so *~ map65 map65.spec plrs plrr
 
 distclean: clean
 	${RM} -f config.log config.status Makefile

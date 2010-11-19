@@ -60,12 +60,7 @@ program plrs
   call setup_ssocket                       !Open a socket for multicasting
 
   do iter=1,iters
-#ifdef CVF
-     open(10,file=fname,form='binary',status='old')
-#else
      open(10,file=fname,access='stream',status='old')
-!     fd=open(fname,RMODE)                  !Open file for reading
-#endif
      dmsec=-dtmspacket
      nsec0=sec_midn()
 
@@ -79,16 +74,7 @@ program plrs
            msec2=nint(tmsec)
            msec=nint(dmsec)
 
-#ifdef CVF
            read(10) buf8
-#else
-           read(10) buf8
-!           nr=read(fd,buf8,NBPP)
-!           if(nr.ne.NBPP) then
-!              print*,'Error reading file all.tf2'
-!              go to 999
-!           endif
-#endif
            nblock=nblock+1
            call send_pkt(center_freq)
            npkt=npkt+1
@@ -109,12 +95,7 @@ program plrs
            read(*,*) cjunk,pause,fast
         endif
      enddo
-#ifdef CVF
      close(10)
-#else
-     close(10)
-!     i=close(fd)
-#endif
   enddo
 
 

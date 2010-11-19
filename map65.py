@@ -43,7 +43,6 @@ else:
         pass
 root_geom=""
 
-
 #------------------------------------------------------ Global variables
 appdir=os.getcwd()
 g.appdir=appdir
@@ -1864,6 +1863,7 @@ f=open(appdir+'/tmp26.txt','w')
 f.truncate(0)
 f.close
 Audio.ftn_init()
+
 GenStdMsgs()
 Audio.gcom4.addpfx=(options.addpfx.get().lstrip()+'        ')[:8]
 Audio.gcom2.mousefqso=130

@@ -561,9 +561,7 @@ except:
     ndevout=0
 Audio.gcom1.ndevout=ndevout
 						# Only valid for windows
-                                                # for now
 Audio.audio_init(ndevin,ndevout)                #Start the audio stream
-
 ltime.after(200,update)
 
 root.deiconify()
