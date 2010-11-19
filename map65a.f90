@@ -163,7 +163,7 @@ subroutine map65a(newdat)
               if(freq-freq0.gt.ftol .or. sync1.gt.sync10) then
                  nflip=nint(flipk)
                  f00=(i-1)*df        !Freq of detected sync tone (0-95238 Hz)
-                 call decode1a(id(1,1,kbuf),newdat,f00,nflip,mode65,        &
+                 call decode1a(dd(1,1,kbuf),newdat,f00,nflip,mode65,        &
                       mycall,hiscall,hisgrid,neme,ndepth,nqd,dphi,ndphi,    &
                       sync2,a,dt,nkv,nhist,qual,decoded)
                  km=min(1000,km+1)
@@ -327,8 +327,8 @@ subroutine map65a(newdat)
   call display(nkeep,ncsmin,mhz)
   ndecdone=2
 
-  if(nsave.gt.0 .and. ndiskdat.eq.0) call savetf2(id(1,1,kbuf),       &
-       fnamedate,savedir,fcenter+fadd)
+!  if(nsave.gt.0 .and. ndiskdat.eq.0) call savetf2(id(1,1,kbuf),       &
+!       fnamedate,savedir,fcenter+fadd)
 
 999 close(23)
   if(kbuf.eq.1) kkdone=60*96000

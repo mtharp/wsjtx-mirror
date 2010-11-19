@@ -1,19 +1,22 @@
 subroutine recvpkt(iarg)
 
-! Receive timf2 packets from Linrad and stuff data into array id().
+! Receive timf2 packets from Linrad and stuff data into array dd().
 ! (This routine runs in a background thread and will never return.)
 
   parameter (NSZ=2*60*96000)
-  real d4(NSZ)
   integer*1 userx_no,iusb
   integer*2 nblock,nblock0
   logical synced
-  real*8 center_freq
+  real*8 center_freq,d8,buf8(174)
   common/plrscom/center_freq,msec,fqso,iptr,nblock,userx_no,iusb,buf4(348)
   include 'datcom.f90'
   include 'gcom1.f90'
   include 'gcom2.f90'
-  equivalence (id,d4)
+  integer*2 id(2,NSMAX,2),jd(2)
+  real*4 xd(2)
+  equivalence (jd,d4)
+  equivalence (xd,d8)
+  equivalence (buf4,buf8)
   data nblock0/0/,kb/1/,ns00/99/
   data sqave/0.0/,u/0.002/,rxnoise/0.0/,pctblank/0.0/,kbuf/1/,lost_tot/0/
   data multicast0/-99/
@@ -35,8 +38,17 @@ subroutine recvpkt(iarg)
 
 10 if(multicast.ne.multicast0) go to 1
   call recv_pkt(center_freq)
+  if(userx_no.gt.0) then
+     ifloat=0
+     iz=348
+  else
+     ifloat=1
+     iz=174
+  endif
 
-! Should receive a new packet every 348/95238.1 = 0.003654 s
+! Should receive a new packet every 348/95238.1 = 0.003654 s (i*2 data)
+!                        ...  every 174/95238.1 = 0.001827 s (r*4 data)
+
   nsec=mod(Tsec,86400.d0)           !Time according to MAP65
   nseclr=msec/1000                  !Time according to Linrad
   if(lauto+monitoring.ne.0) fcenter=center_freq
@@ -62,8 +74,8 @@ subroutine recvpkt(iarg)
   if(transmitting.eq.1) ntx=1
 
 ! Test for buffer full
-  if((kb.eq.1 .and. (k+348).gt.NSMAX) .or.                          &
-       (kb.eq.2 .and. (k+348).gt.2*NSMAX)) go to 20
+  if((kb.eq.1 .and. (k+iz).gt.NSMAX) .or.                          &
+       (kb.eq.2 .and. (k+iz).gt.2*NSMAX)) go to 20
 
 ! Check for lost packets
   lost=nblock-nblock0-1
@@ -73,10 +85,12 @@ subroutine recvpkt(iarg)
      nb0=nblock0
      if(nb0.lt.0) nb0=nb0+65536
      lost_tot=lost_tot + lost               ! Insert zeros for the lost data.
-     do i=1,348*lost
-        k=k+1
-        d4(k)=0.
-     enddo
+!###
+!     do i=1,iz*lost
+!        k=k+1
+!        d4(k)=0.
+!     enddo
+!###
   endif
   nblock0=nblock
 
@@ -87,20 +101,32 @@ subroutine recvpkt(iarg)
 ! Move data into Rx buffer and compute average signal level.
 ! Each r*4 word of buf4 and d4 is one sample, I and Q
   sq=0.
-  do i=1,348
+  do i=1,iz
      k=k+1
-     d4(k)=buf4(i)
      k2=k
      n=1
      if(k.gt.NSMAX) then
         k2=k2-NSMAX
         n=2
      endif
-     x1=id(1,k2,n)
-     x2=id(2,k2,n)
-     sq=sq + x1*x1 + x2*x2
+     if(ifloat.eq.0) then
+        d4=buf4(i)
+        x1=jd(1)
+        x2=jd(2)
+        dd(1,k2,n)=x1
+        dd(2,k2,n)=x2
+        sq=sq + x1*x1 + x2*x2
+     else
+        d8=buf8(i)
+        x1=xd(1)
+        x2=xd(2)
+        dd(1,k2,n)=x1
+        dd(2,k2,n)=x2
+        sq=sq + x1*x1 + x2*x2
+     endif
   enddo
-  sq=sq/(2.0*348.0)
+
+  sq=sq/(2.0*iz)
   sqave=sqave + u*(sq-sqave)
   rxnoise=10.0*log10(sqave) - 20.0           !Target rms=10, sqave=100
   kxp=k

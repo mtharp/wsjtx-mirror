@@ -1,4 +1,3 @@
-!----------------------------------------------------- getfile
 subroutine getfile(fname,len)
   character*(*) fname
 
