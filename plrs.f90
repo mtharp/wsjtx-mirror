@@ -12,20 +12,22 @@ program plrs
   parameter (NPPR=NBYTES/NBPP)
   integer*1 userx_no,iusb
   integer*2 nblock
-  real*8 d(NZ),buf8
+  integer*2 id2(2,174),jd2(2,348)
+  real*8 d(NZ)
   integer fd
   integer open,read,close
   integer nm(11)
   character*8 fname,arg,cjunk*1
   logical fast,pause
   real*8 center_freq,dmsec,dtmspacket,tmsec
-  common/plrscom/center_freq,msec2,fsample,iptr,nblock,userx_no,iusb,buf8(174)
+  common/plrscom/center_freq,msec2,fsample,iptr,nblock,userx_no,iusb,buf4(2,174)
+  equivalence (jd2,buf4)
   data nm/45,46,48,50,52,54,55,56,57,58,59/
   data nblock/0/,fast/.false./,pause/.false./
 
   nargs=iargc()
-  if(nargs.ne.4) then
-     print*,'Usage: plrs <fast|pause|slow> <minutes> <iters> <iwait>'
+  if(nargs.ne.5) then
+     print*,'Usage: plrs <fast|pause|slow> <minutes> <iters> <iwait> <ifloat>'
      go to 999
   endif
 
@@ -38,6 +40,8 @@ program plrs
   read(arg,*) iters
   call getarg(4,arg)
   read(arg,*) iwait
+  call getarg(5,arg)
+  read(arg,*) ifloat
 
   if(iwait.ne.0) then
 1    if(mod(int(sec_midn()),60).eq.0) go to 2
@@ -46,8 +50,10 @@ program plrs
   endif
 
 2 fname="all.iq"//char(0)
-  userx_no=0
+  userx_no=1
+  if(ifloat.eq.1) userx_no=-1
   iusb=1
+  iptr=0
   center_freq=144.125d0
 !  dtmspacket=1000.d0*NBPP/(8.d0*96000.d0)
   dtmspacket=1000.d0*NBPP/(4.d0*95238.1d0)
@@ -74,10 +80,24 @@ program plrs
            msec2=nint(tmsec)
            msec=nint(dmsec)
 
-           read(10) buf8
-           nblock=nblock+1
-           call send_pkt(center_freq)
-           npkt=npkt+1
+           if(ifloat.eq.0) then
+              read(10) jd2
+              nblock=nblock+1
+              call send_pkt(center_freq)
+              npkt=npkt+1
+           else
+              do ii=1,2
+                 read(10) id2
+                 do i=1,174
+                    buf4(1,i)=id2(1,i)
+                    buf4(2,i)=id2(2,i)
+                 enddo
+                 nblock=nblock+1
+                 call send_pkt(center_freq)
+                 npkt=npkt+1
+              enddo
+           endif
+
               
            if(mod(npkt,100).eq.0) then
               nsec=int(sec_midn())-nsec0
