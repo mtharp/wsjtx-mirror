@@ -38,7 +38,10 @@ subroutine decode
   else
      minsync=1
      if(nsave.gt.0 .and. ndiskdat.eq.0) jwave=iwave(1:114*12000)
-     call mept162(thisfile,appdir,nappdir,f0,minsync,iwave,NMAX,nbfo,ierr)
+!    Sivan Toledo: changed f0 to f0b below, to correct a reporting bug
+!      that resulted in f0 being reported for spots even though f0 was
+!      changed after the audio was captured.
+     call mept162(thisfile,appdir,nappdir,f0b,minsync,iwave,NMAX,nbfo,ierr)
      if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
         savefile=appdir(:nappdir)//'/save/'//thisfile
         npts=114*12000
