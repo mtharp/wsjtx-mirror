@@ -30,6 +30,8 @@ program fcal
         read(line,*,err=5) f,df
         ncal=1
         i=i+1
+        fd(i)=f
+        deltaf(i)=df
         callsign(i)='      '
      else if(i1.gt.0) then
         i=i+1
