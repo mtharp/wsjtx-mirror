@@ -56,6 +56,12 @@ from WsprMod import options
 from WsprMod import advanced
 from WsprMod import iq
 
+hopping_feature=False
+if os.path.exists('hopping.txt'):
+    print 'Hopping Enabled'
+    hopping_feature=True
+    from WsprMod import hopping
+
 #------------------------------------------------------ Global variables
 bandmap=[]
 bm={}
@@ -232,6 +238,14 @@ def decodeall(event=NONE):
     global loopall
     loopall=1
     opennext()
+
+#------------------------------------------------------ hopping1
+if hopping_feature:
+  def hopping1(event=NONE):
+      t=''
+      if root_geom.find('+')>=0:
+          t=root_geom[root_geom.index('+'):]
+      hopping.hopping2(t)
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
@@ -765,6 +779,27 @@ def update():
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg
 
+    if hopping_feature==1 and hopping.hopping==1:
+        w.acom1.nfhopping=1        
+        
+        if w.acom1.nfhopok:
+            w.acom1.nfhopok=0
+            #print 'hopping'
+            found=False
+            while not found:
+              b = random.randint(1,len(hopping.bandlabels)-1)
+              #print '>>> ',b,' ',hopping.hoppingflag[b].get()
+              if hopping.hoppingflag[b].get()!=0:
+                found=True
+                #print 'That is it! ',b,' ',hopping.bandlabels[b],' ',hopping.hoppingpctx[b].get()
+                ipctx.set(hopping.hoppingpctx[b].get())
+                iband.set(b)
+    else:
+        #print 'tuning off hopping scheduling'
+        w.acom1.nfhopping=0
+        
+    #print 'hopping scheduling ?',w.acom1.nfhopping
+    
     tsec=time.time()
     utc=time.gmtime(tsec)
     nsec=int(tsec)
@@ -1196,6 +1231,8 @@ setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
 setupmenu.add('command', label = 'IQ Mode', command = iq1,
               accelerator='F8')
+if hopping_feature:
+    setupmenu.add('command', label = 'Frequency Hopping', command = hopping1) # Sivan
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
                           variable=start_idle)

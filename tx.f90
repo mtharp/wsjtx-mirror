@@ -22,6 +22,8 @@ subroutine tx
   data iqmode0/-999/,iqtx0/-999/,nrpt/10/
   save ntx,ns0,message0,ntxdf0,ntune0,snr0,iqmode0,iqtx0
 
+  nfhopok=0                                ! Transmitting, don't hop 
+
   ierr=0
   call1=callsign
   call cs_lock('tx')
@@ -222,6 +224,9 @@ subroutine tx
 
   ntransmitted=1
   ntxdone=1
+  
+  nfhopok=1                                ! Tx done, can hop 
+  
 
   return
 end subroutine tx

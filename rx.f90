@@ -10,8 +10,10 @@ subroutine rx
   npts=114*12000
   if(ncal.eq.1) npts=65536
   nsec1=time()
+  nfhopok=0                                ! Don't hop! 
   f0a=f0                                   !Save rx frequency at start
   ierr=soundin(ndevin,kwave,4*npts,iqmode)
+  nfhopok=1                                ! Data acquisition done, can hop 
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
      stop

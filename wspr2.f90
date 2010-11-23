@@ -33,6 +33,9 @@ subroutine wspr2
   npatience=1
   call random_seed
   nrx=1
+  
+  nfhopping=0 ! hopping scheduling disabled
+  nfhopok=0   ! not a good time to hop
 
 10 call cs_lock('wspr2')
   call getutc(cdate,utctime,tsec)
@@ -119,7 +122,24 @@ subroutine wspr2
   go to 10
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-  if(pctx.eq.0.0) nrx=1
+
+  ! Frequency hopping scheduling; overrides normal scheduling
+  if (nfhopping.eq.1) then
+    if (pctx.eq.0.0) then
+      nrx=1
+    else
+      call random_number(x)
+      print *,'random number: ',x,100.0*x,1.0*pctx
+      if (100*x .lt. 1.0*pctx) then
+        ntxnext=1
+      else
+        nrx=1
+      endif 
+    endif
+  else
+    if(pctx.eq.0.0) nrx=1
+  endif
+  
 
   if(ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1)) then
 
