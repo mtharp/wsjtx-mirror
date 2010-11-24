@@ -63,6 +63,7 @@ if os.path.exists('hopping.txt'):
     from WsprMod import hopping
 
 #------------------------------------------------------ Global variables
+band=[-1,600,160,80,60,40,30,20,17,15,12,10,6,4,2,0]
 bandmap=[]
 bm={}
 f0=DoubleVar()
@@ -848,6 +849,18 @@ def update():
                 f.write(cmd+'\n')
                 f.write(str(g.ndevin.get())+'\n')
                 f.close()
+
+                cmd2=''
+                if os.path.exists('.\user_hardware.bat') or \
+                   os.path.exists('.\user_.exe'):
+                    cmd2='.\user_hardware ' + str(band[iband0])
+                elif os.path.exists('./user_hardware'):
+                    cmd2='./user_hardware ' + str(band[iband0])
+                if cmd2!='':
+                    try:
+                        ierr2=os.system(cmd2)
+                    except:
+                        print 'Execution of "'+cmd2+'" failed.'
             else:
                 print 'Error attempting to set rig frequency.\a'
                 print cmd + '\a'
