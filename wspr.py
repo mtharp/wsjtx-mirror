@@ -852,7 +852,7 @@ def update():
 
                 cmd2=''
                 if os.path.exists('.\user_hardware.bat') or \
-                   os.path.exists('.\user_.exe'):
+                   os.path.exists('.\user_hardware.exe'):
                     cmd2='.\user_hardware ' + str(band[iband0])
                 elif os.path.exists('./user_hardware'):
                     cmd2='./user_hardware ' + str(band[iband0])
