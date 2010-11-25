@@ -92,7 +92,6 @@ C  Compute full-symbol powers at 1/16-symbol steps.
          dtmax=lagpk*dtstep
       endif
 
-      print*,ccf,lagpk
 ! Reverse sign (and offset!) because we will be minimizing fchisq
       fchisq=-ccfmax + 100.0
 
