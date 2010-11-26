@@ -31,7 +31,12 @@ bandlabels=['dummy','600 m','160 m','80 m','60 m','40 m','30 m',\
 #hoppingflag=zeros(len(bandlabels)+1)
 #hoppingpctx=zeros(len(bandlabels)+1)
 
-hopping=0
+hopping=IntVar()
+hopping.set(0)
+#hopping=0
+
+hoppingconfigured=IntVar()
+hoppingconfigured.set(0)
 
 bhopping   =range(len(bandlabels))
 shopping   =range(len(bandlabels))
@@ -66,7 +71,9 @@ def globalupdate():
     for band in range(1,len(bandlabels)):
         #print band
         if hoppingflag[band].get()!=0: localhopping=1
-    hopping=localhopping
+    #hopping=localhopping
+    hoppingconfigured.set(localhopping)
+    if not localhopping: hopping.set(0)
     #if hopping==0: print 'no hopping'
     #else:          print 'hopping'
 

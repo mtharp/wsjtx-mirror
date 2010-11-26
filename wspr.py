@@ -780,12 +780,18 @@ def update():
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg
 
-    if hopping_feature==1 and hopping.hopping==1:
+    if hopping_feature==1:
+        if hopping.hoppingconfigured.get()==1:
+          bhopping.configure(state=NORMAL)
+        else:
+          bhopping.configure(state=DISABLED)
+
+    if hopping_feature==1 and hopping.hopping.get()==1:
         w.acom1.nfhopping=1        
         
         if w.acom1.nfhopok:
             w.acom1.nfhopok=0
-            #print 'hopping'
+            print 'hopping'
             found=False
             while not found:
               b = random.randint(1,len(hopping.bandlabels)-1)
@@ -1368,13 +1374,24 @@ sc2.pack(side=LEFT)
 balloon.bind(sc1,"Brightness")
 balloon.bind(sc2,"Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
-bupload.place(x=420,y=12, anchor='e')
 balloon.bind(bupload,"Check to send spots to WSPRnet.org")
+if hopping_feature==1:
+    bupload.place(x=330,y=12, anchor='e')
+    bhopping=Checkbutton(iframe2,text='Frequency Hop',justify=RIGHT,variable=hopping.hopping)
+    bhopping.place(x=445,y=12, anchor='e')
+    bhopping.configure(state=DISABLED)
+    balloon.bind(bhopping,"Check to frequency hop; configure in Setup->Frequency Hopping")
+    #lab03=Label(iframe2,text='',pady=5)
+    #lab03.place(x=300,y=10, anchor='e')
+else:  
+    bupload.place(x=420,y=12, anchor='e')
+    lab03=Label(iframe2,text='',pady=5)
+    lab03.place(x=300,y=10, anchor='e')
+    
+lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 lab02=Label(iframe2,text='',pady=5)
 lab02.place(x=500,y=10, anchor='e')
-lab03=Label(iframe2,text='',pady=5)
-lab03.place(x=300,y=10, anchor='e')
-lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
+  
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------ Stuff under graphics
