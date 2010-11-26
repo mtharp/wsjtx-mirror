@@ -125,6 +125,7 @@ c0=0.0
 slabel="MinSync  "
 transmitting=0
 tw=[]
+fw=[] # band labels for spectrum display
 upload=IntVar()
 balloon=Pmw.Balloon(root)
 
@@ -791,7 +792,7 @@ def update():
         
         if w.acom1.nfhopok:
             w.acom1.nfhopok=0
-            print 'hopping'
+            #print 'hopping'
             found=False
             while not found:
               b = random.randint(1,len(hopping.bandlabels)-1)
@@ -941,6 +942,10 @@ def update():
             rxtime=g.ftnstr(w.acom1.rxtime)
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
+ 
+            global fw
+            if n>12: fw=fw[:n-1]
+            fw=[hopping.bandlabels[ iband.get()],] + fw
         if receiving:
             filemenu.entryconfig(0,state=DISABLED)
             filemenu.entryconfig(1,state=DISABLED)
@@ -1023,6 +1028,8 @@ def update():
             for i in range(n-1,-1,-1):
                 x=465-39*i
                 draw.text((x,148),tw[i],fill=253)   #Insert time label
+                draw.text((x,1),fw[i],fill=253)   #Insert time label
+                               
         pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
         graph1.delete(ALL)
         graph1.create_image(0,0+2,anchor='nw',image=pim)
