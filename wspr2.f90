@@ -13,6 +13,7 @@ subroutine wspr2
   include 'acom1.f90'
   character linetx*51,dectxt*80
   integer nt(9)
+  integer iclock(12)
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
@@ -31,7 +32,7 @@ subroutine wspr2
   call cs_unlock
 
   npatience=1
-  call system_clock(iclock)
+  call system_clock(iclock(1))
   call random_seed(PUT=iclock)
   nrx=1
   
