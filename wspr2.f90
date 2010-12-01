@@ -31,7 +31,8 @@ subroutine wspr2
   call cs_unlock
 
   npatience=1
-  call random_seed
+  call system_clock(iclock)
+  call random_seed(PUT=iclock)
   nrx=1
   
   nfhopping=0 ! hopping scheduling disabled

@@ -945,7 +945,7 @@ def update():
  
             global fw
             if n>12: fw=fw[:n-1]
-            fw=[hopping.bandlabels[ iband.get()],] + fw
+            fw=[hopping.bandlabels[ iband.get()][:-2],] + fw
         if receiving:
             filemenu.entryconfig(0,state=DISABLED)
             filemenu.entryconfig(1,state=DISABLED)
@@ -1028,7 +1028,7 @@ def update():
             for i in range(n-1,-1,-1):
                 x=465-39*i
                 draw.text((x,148),tw[i],fill=253)   #Insert time label
-                draw.text((x,1),fw[i],fill=253)   #Insert time label
+                draw.text((x+10,1),fw[i],fill=253)   #Insert time label
                                
         pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
         graph1.delete(ALL)
