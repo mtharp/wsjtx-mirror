@@ -56,11 +56,11 @@ from WsprMod import options
 from WsprMod import advanced
 from WsprMod import iq
 
-hopping_feature=False
-if os.path.exists('hopping.txt'):
-    print 'Hopping Enabled'
-    hopping_feature=True
-    from WsprMod import hopping
+##hopping_feature=False
+##if os.path.exists('hopping.txt'):
+##    print 'Hopping Enabled'
+hopping_feature=True
+from WsprMod import hopping
 
 #------------------------------------------------------ Global variables
 band=[-1,600,160,80,60,40,30,20,17,15,12,10,6,4,2,0]
