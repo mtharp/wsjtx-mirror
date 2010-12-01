@@ -799,7 +799,7 @@ def update():
               #print '>>> ',b,' ',hopping.hoppingflag[b].get()
               if hopping.hoppingflag[b].get()!=0:
                 found=True
-                print 'hopping to ',hopping.bandlabels[b],' Tx Fraction ',hopping.hoppingpctx[b].get()
+##                print 'hopping to ',hopping.bandlabels[b],' Tx Fraction ',hopping.hoppingpctx[b].get()
                 ipctx.set(hopping.hoppingpctx[b].get())
                 iband.set(b)
     else:

@@ -131,7 +131,7 @@ subroutine wspr2
       nrx=1
     else
       call random_number(x)
-      print *,'random number: ',x,100.0*x,1.0*pctx
+!      print *,'random number: ',x,100.0*x,1.0*pctx
       if (100*x .lt. 1.0*pctx) then
         ntxnext=1
       else
