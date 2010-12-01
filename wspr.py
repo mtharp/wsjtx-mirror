@@ -301,10 +301,10 @@ a digital soundcard mode optimized for beacon-like
 transmissions on the LF, MF, and HF bands.
 
 Copyright (c) 2008-2010 by Joseph H. Taylor, Jr., K1JT, with
-contributions from additional authors.  WSPR is Open Source 
-software, licensed under the GNU General Public License (GPL).
-Source code and programming information may be found at 
-http://developer.berlios.de/projects/wsjt/.
+contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
+Open Source software, licensed under the GNU General Public
+License (GPL).  Source code and programming information may
+be found at http://developer.berlios.de/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     t="Revision date: " + \
@@ -1677,7 +1677,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 2.11     by K1JT')
+root.title('  WSPR 2.20     by K1JT')
 
 put_params()
 try:
