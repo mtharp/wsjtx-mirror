@@ -55,11 +55,6 @@ i1,i2=w.audiodev(0,2)
 from WsprMod import options
 from WsprMod import advanced
 from WsprMod import iq
-
-##hopping_feature=False
-##if os.path.exists('hopping.txt'):
-##    print 'Hopping Enabled'
-hopping_feature=True
 from WsprMod import hopping
 
 #------------------------------------------------------ Global variables
@@ -242,12 +237,11 @@ def decodeall(event=NONE):
     opennext()
 
 #------------------------------------------------------ hopping1
-if hopping_feature:
-  def hopping1(event=NONE):
-      t=''
-      if root_geom.find('+')>=0:
-          t=root_geom[root_geom.index('+'):]
-      hopping.hopping2(t)
+def hopping1(event=NONE):
+    t=''
+    if root_geom.find('+')>=0:
+        t=root_geom[root_geom.index('+'):]
+    hopping.hopping2(t)
 
 #------------------------------------------------------ options1
 def options1(event=NONE):
@@ -781,38 +775,43 @@ def update():
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg
 
-    if hopping_feature==1:
-        if hopping.hoppingconfigured.get()==1:
-          bhopping.configure(state=NORMAL)
-        else:
-          bhopping.configure(state=DISABLED)
-
-    if hopping_feature==1 and hopping.hopping.get()==1:
-        w.acom1.nfhopping=1        
-        
-        if w.acom1.nfhopok:
-            w.acom1.nfhopok=0
-            #print 'hopping'
-            found=False
-            while not found:
-              b = random.randint(1,len(hopping.bandlabels)-1)
-              #print '>>> ',b,' ',hopping.hoppingflag[b].get()
-              if hopping.hoppingflag[b].get()!=0:
-                found=True
-##                print 'hopping to ',hopping.bandlabels[b],' Tx Fraction ',hopping.hoppingpctx[b].get()
-                ipctx.set(hopping.hoppingpctx[b].get())
-                iband.set(b)
-    else:
-        #print 'tuning off hopping scheduling'
-        w.acom1.nfhopping=0
-        
-    #print 'hopping scheduling ?',w.acom1.nfhopping
-    
     tsec=time.time()
     utc=time.gmtime(tsec)
     nsec=int(tsec)
     nsec0=nsec
     ns120=nsec % 120
+
+    if hopping.hoppingconfigured.get()==1:
+      bhopping.configure(state=NORMAL)
+    else:
+      bhopping.configure(state=DISABLED)
+
+    if hopping.hopping.get()==1:
+        w.acom1.nfhopping=1        
+        
+        if w.acom1.nfhopok:
+            w.acom1.nfhopok=0
+            b=-1
+            if hopping.coord_bands.get()==1:
+                ns=nsec % 86400
+                ns1=ns % (10*120)
+                b=ns1/120 + 3
+##                print 'A',ns,ns1,b
+                if b==12: b=2
+                if hopping.hoppingflag[b].get()==0: b=-1
+            if b<0:                
+                found=False
+                while not found:
+                    b = random.randint(1,len(hopping.bandlabels)-1)
+                    if hopping.hoppingflag[b].get()!=0:
+                        found=True
+            ipctx.set(hopping.hoppingpctx[b].get())
+            iband.set(b)
+##            print 'Hop:',hopping.coord_bands.get(),b,ipctx.get(),hopping.bandlabels[b]
+
+    else:
+        w.acom1.nfhopping=0
+            
     try:
         f0.set(float(sf0.get()))
         ftx.set(float(sftx.get()))
@@ -1257,16 +1256,12 @@ setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
 setupmenu.add('command', label = 'IQ Mode', command = iq1,
               accelerator='F8')
-if hopping_feature:
-    setupmenu.add('command', label = 'Frequency Hopping', command = hopping1) # Sivan
+setupmenu.add('command', label = 'Frequency Hopping', command = hopping1) # Sivan
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
                           variable=start_idle)
 setupmenu.add_checkbutton(label = 'No beep when access to WSPRnet fails',
                           variable=no_beep)
-##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
-##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
-##setupmenu.add_separator()
 
 #--------------------------------------------------------- View menu
 setupbutton = Menubutton(mbar, text = 'View', )
@@ -1382,23 +1377,14 @@ balloon.bind(sc1,"Brightness")
 balloon.bind(sc2,"Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 balloon.bind(bupload,"Check to send spots to WSPRnet.org")
-if hopping_feature==1:
-    bupload.place(x=330,y=12, anchor='e')
-    bhopping=Checkbutton(iframe2,text='Frequency Hop',justify=RIGHT,variable=hopping.hopping)
-    bhopping.place(x=445,y=12, anchor='e')
-    bhopping.configure(state=DISABLED)
-    balloon.bind(bhopping,"Check to frequency hop; configure in Setup->Frequency Hopping")
-    #lab03=Label(iframe2,text='',pady=5)
-    #lab03.place(x=300,y=10, anchor='e')
-else:  
-    bupload.place(x=420,y=12, anchor='e')
-    lab03=Label(iframe2,text='',pady=5)
-    lab03.place(x=300,y=10, anchor='e')
-    
+bupload.place(x=330,y=12, anchor='e')
+bhopping=Checkbutton(iframe2,text='Frequency Hop',justify=RIGHT,variable=hopping.hopping)
+bhopping.place(x=445,y=12, anchor='e')
+bhopping.configure(state=DISABLED)
+balloon.bind(bhopping,"Check to frequency hop; configure in Setup->Frequency Hopping")
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 lab02=Label(iframe2,text='',pady=5)
 lab02.place(x=500,y=10, anchor='e')
-  
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------ Stuff under graphics
