@@ -786,6 +786,7 @@ def update():
     else:
       bhopping.configure(state=DISABLED)
 
+    hopped=0
     if hopping.hopping.get()==1:
         w.acom1.nfhopping=1        
         
@@ -796,7 +797,6 @@ def update():
                 ns=nsec % 86400
                 ns1=ns % (10*120)
                 b=ns1/120 + 3
-##                print 'A',ns,ns1,b
                 if b==12: b=2
                 if hopping.hoppingflag[b].get()==0: b=-1
             if b<0:                
@@ -806,8 +806,9 @@ def update():
                     if hopping.hoppingflag[b].get()!=0:
                         found=True
             ipctx.set(hopping.hoppingpctx[b].get())
+            if b!=iband.get(): hopped=1
             iband.set(b)
-##            print 'Hop:',hopping.coord_bands.get(),b,ipctx.get(),hopping.bandlabels[b]
+##            print 'Hopping to',hopping.bandlabels[b],' at',ns120
 
     else:
         w.acom1.nfhopping=0
@@ -845,6 +846,7 @@ def update():
                       options.stopbits.get(),options.serial_handshake.get(), nHz)
             ierr=os.system(cmd)
             if ierr==0:
+                ierr2=0
                 bandmap=[]
                 bm={}
                 text1.configure(state=NORMAL)
@@ -877,6 +879,9 @@ def update():
                 ftx.set(freqtx[iband.get()])
                 t="%.6f" % (ftx.get(),)
                 sftx.set(t)
+##            if ierr==0 and ierr2==0 and w.acom1.nfhopping==1 and hopped==1:
+            if ierr==0 and ierr2==0 and w.acom1.nfhopping==1 and hopped==1 \
+                   and hopping.tuneupflag[iband.get()].get(): w.acom1.ntune=-4
         else:
             iband0=iband.get()
 
@@ -1216,6 +1221,7 @@ def save_params():
     f.write("Reject " + str(nreject) + "\n")
     f.write("RxApply " + str(iq.iqrxapp.get()) + "\n")
     f.close()
+    hopping.save_params(appdir)
 
 #------------------------------------------------------ Top level frame
 frame = Frame(root)
@@ -1613,6 +1619,7 @@ w.acom1.phase=0.0
 w.acom1.reject=0.
 while nparam < len(params)-1:
     readinit()
+hopping.restore_params(appdir)
 
 r=options.chkcall(options.MyCall.get())
 if r<0:

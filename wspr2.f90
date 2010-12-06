@@ -83,7 +83,7 @@ subroutine wspr2
   if(pctx.lt.1.0) ntune=0
   call cs_unlock
 
-  if (ntune.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
+  if (ntune.ne.0 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
        (.not.receiving) .and. pctx.ge.1.0) then
 
 ! Test transmission of length pctx seconds.

@@ -37,6 +37,8 @@ shopping   =range(len(bandlabels))
 lhopping   =range(len(bandlabels))
 hoppingflag=range(len(bandlabels))
 hoppingpctx=range(len(bandlabels))
+btuneup    =range(len(bandlabels))
+tuneupflag =range(len(bandlabels))
 
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)
@@ -47,6 +49,8 @@ lpctx=Label(g1.interior(),text='Tx fraction (%)')
 lpctx.grid(row=r,column=1,padx=2,pady=2,sticky='SW')
 llab=Label(g1.interior(),text='      ') # to make space for the percentage labels without repacking
 llab.grid(row=r,column=2,padx=2,pady=2,sticky='SW')
+ltune=Label(g1.interior(),text='Tuneup')
+ltune.grid(row=r,column=3,padx=2,pady=2,sticky='SW')
 
 def globalupdate():
     global hopping
@@ -71,14 +75,45 @@ for r in range(1,16):
     hoppingflag[r].set(0)
     hoppingpctx[r] = IntVar()
     hoppingpctx[r].set(0)
-    bhopping[r]=Checkbutton(g1.interior(),text=bandlabels[r],command=bcmd,variable=hoppingflag[r])
+    tuneupflag[r] = IntVar()
+    tuneupflag[r].set(0)
+    bhopping[r]=Checkbutton(g1.interior(),text=bandlabels[r],command=bcmd, \
+                        variable=hoppingflag[r])
     bhopping[r].grid(row=r,column=0,padx=2,pady=3,sticky='SW')
-    shopping[r]=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=0, to=100,command=scmd,variable=hoppingpctx[r],showvalue=0)
+    shopping[r]=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=0, \
+                        to=100,command=scmd,variable=hoppingpctx[r],showvalue=0)
     shopping[r].grid(row=r,column=1,padx=2,pady=2,sticky='SW')
     lhopping[r]=Label(g1.interior(),text='0')
     lhopping[r].grid(row=r,column=2,padx=2,pady=2,sticky='SW')
+    btuneup[r]=Checkbutton(g1.interior(),text="",command=bcmd, \
+                           variable=tuneupflag[r])
+    btuneup[r].grid(row=r,column=3,padx=2,pady=3,sticky='SW')
 
 cbcoord=Checkbutton(g1.interior(),text='Coordinated bands',variable=coord_bands)
 cbcoord.grid(row=18,column=1,padx=2,pady=2,sticky='S')
 g1.pack(side=LEFT,fill=X,expand=0,padx=4,pady=4)
 
+def save_params(appdir):
+    f=open(appdir+'/hopping.ini',mode='w')
+    t="%d %d\n" % (hopping.get(),coord_bands.get())
+    f.write(t)
+    for r in range(1,16):
+        t="%4s %2d %5d %2d\n" % (bandlabels[r][:-2], hoppingflag[r].get(), \
+                                hoppingpctx[r].get(),tuneupflag[r].get())
+        f.write(t)
+    f.close()
+
+def restore_params(appdir):
+    try:
+        f=open(appdir+'/hopping.ini',mode='r')
+        s=f.readlines()
+        f.close()
+        hopping.set(int(s[0][0:1]))
+        coord_bands.set(int(s[0][2:3]))
+        for r in range(1,16):
+            hoppingflag[r].set(int(s[r][6:7]))
+            hoppingpctx[r].set(int(s[r][8:13]))
+            tuneupflag[r].set(int(s[r][13:16]))
+        globalupdate()
+    except:
+        print 'Error reading hopping.ini.'
