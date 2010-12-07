@@ -221,10 +221,10 @@ subroutine tx
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,0,iptt)
   endif
 
-  ntransmitted=1
   ntxdone=1                        !Tx done
   if(ntune.ge.0) nfhopok=1         !Unless this was ATU tuneup, can now hop
-  ntune=0
+  if(ntune.eq.0) ntransmitted=1    !Flag only "real" transmissions
+  ntune=0                          !Clear the "tune" indicator
 
   return
 end subroutine tx
