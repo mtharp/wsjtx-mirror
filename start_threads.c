@@ -17,37 +17,32 @@ extern void tx_(int *iarg);
 pthread_t decode_thread;
 static int decode_started=0;
 
-int spawn_thread(void (*f)(int *n)) {
-  pthread_t thread;
-  int iret;
-  int iarg0 = 0;
-
-  iret=pthread_create(&thread,NULL,(void *)f,&iarg0);
-  if (iret) {
-    perror("spawning new thread");
-    return iret;
-  }
-
-  iret = pthread_detach(thread);
-  if (iret) {
-    perror("detaching thread");
-    return iret;
-  }
-  return 0;
-}
-
-
 int th_wspr2_(void)
 {
-  int ierr;
-  ierr=spawn_thread(wspr2_);
-  return ierr;
+  pthread_t wspr2_thread;
+  int ret1,ret2,ret3;
+  int iarg0 = 0;
+  struct sched_param param;
+
+  // Create wspr2 thread.
+  ret1=pthread_create(&wspr2_thread,NULL,wspr2_,&iarg0);
+
+  // Set wspr2_thread priority to normal.
+  param.sched_priority=0;
+  ret2=pthread_setschedparam(wspr2_thread,SCHED_OTHER,&param);
+
+  // Detach the thread
+  ret3=pthread_detach(wspr2_thread);
+
+  return 0;
+
 }
 
 int th_decode_(void)
 {
-  int iret1;
+  int ret1,ret2;
   int iarg1 = 1;
+  struct sched_param param;
 
   if(decode_started>0)  {
     // the following was "< 100":
@@ -59,17 +54,54 @@ int th_decode_(void)
     pthread_join(decode_thread,NULL);
     decode_started=0;
   }
-  iret1 = pthread_create(&decode_thread,NULL,decode_,&iarg1);
-  if(iret1==0) decode_started=time(NULL);
-  return iret1;
+
+  ret1 = pthread_create(&decode_thread,NULL,decode_,&iarg1);
+  if(ret1==0) decode_started=time(NULL);
+
+  // Set thread priority below normal. (Priority must be in range -15 to +15.)
+  param.sched_priority=-1;
+  ret2=pthread_setschedparam(decode_thread,SCHED_OTHER,&param);
+
+  return ret1;
 }
 
 int th_rx_(void)
 {
-  return spawn_thread(rx_);
+  pthread_t rx_thread;
+  int ret1,ret2,ret3;
+  int iarg0 = 0;
+  struct sched_param param;
+
+  // Create rx thread.
+  ret1=pthread_create(&rx_thread,NULL,rx_,&iarg0);
+
+  // Set rx_thread priority above normal.
+  param.sched_priority=1;
+  ret2=pthread_setschedparam(rx_thread,SCHED_OTHER,&param);
+
+  // Detach the thread
+  ret3=pthread_detach(rx_thread);
+
+  return 0;
 }
 
 int th_tx_(void)
 {
-  return spawn_thread(tx_);
+  pthread_t tx_thread;
+  int ret1,ret2,ret3;
+  int iarg0 = 0;
+  struct sched_param param;
+
+  // Create tx thread.
+  ret1=pthread_create(&tx_thread,NULL,tx_,&iarg0);
+
+  // Set tx_thread priority above normal.
+  param.sched_priority=1;
+  ret2=pthread_setschedparam(tx_thread,SCHED_OTHER,&param);
+
+  // Detach the thread
+  ret3=pthread_detach(tx_thread);
+
+  return 0;
+
 }

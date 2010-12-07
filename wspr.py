@@ -1031,8 +1031,9 @@ def update():
             n=len(tw)
             for i in range(n-1,-1,-1):
                 x=465-39*i
-                draw.text((x,148),tw[i],fill=253)   #Insert time label
-                draw.text((x+10,1),fw[i],fill=253)   #Insert time label
+                draw.text((x,148),tw[i],fill=253)        #Insert time label
+                if i<len(fw):
+                    draw.text((x+10,1),fw[i],fill=253)   #Insert band label
                                
         pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
         graph1.delete(ALL)
