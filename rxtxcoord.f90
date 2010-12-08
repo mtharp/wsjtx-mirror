@@ -56,9 +56,5 @@ subroutine rxtxcoord(nsec,iband,pctx,nrx,ntxnext)
      nrx=1
   endif
 
-  call cs_lock('rxtxccoord')
-  print*,'A',iband,ib,iseq,nrx,ntxnext
-  call cs_unlock
-
   return
 end subroutine rxtxcoord
