@@ -89,7 +89,7 @@ for r in range(1,16):
                            variable=tuneupflag[r])
     btuneup[r].grid(row=r,column=3,padx=2,pady=3,sticky='SW')
 
-cbcoord=Checkbutton(g1.interior(),text='Coordinated bands',variable=coord_bands)
+cbcoord=Checkbutton(g1.interior(),text='Coordinated hopping',variable=coord_bands)
 cbcoord.grid(row=18,column=1,padx=2,pady=2,sticky='S')
 g1.pack(side=LEFT,fill=X,expand=0,padx=4,pady=4)
 

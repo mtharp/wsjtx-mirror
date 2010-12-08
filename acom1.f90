@@ -8,7 +8,7 @@
   character callsign*12,grid*4,grid6*6,ctxmsg*22,sending*22
   integer*2 iwave,kwave
   common/acom1/ f0,f0a,f0b,ftx,tsec0,rms,pctx,igrid6,nsec,ndevin,      &
-       nfhopping,nfhopok,                                              &
+       nfhopping,nfhopok,iband,ncoord,                                 &
        ndevout,nsave,nrxdone,ndbm,nport,ndec,ndecdone,ntxdone,         &
        idint,ndiskdat,ndecoding,ntr,nbaud,ndatabits,nstopbits,         &
        receiving,transmitting,nrig,nappdir,iqmode,iqrx,iqtx,nfiq,      &

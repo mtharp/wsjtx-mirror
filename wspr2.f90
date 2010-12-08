@@ -125,23 +125,25 @@ subroutine wspr2
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
 
-  ! Frequency hopping scheduling; overrides normal scheduling
+! Frequency hopping scheduling; overrides normal scheduling
   if (nfhopping.eq.1) then
-    if (pctx.eq.0.0) then
-      nrx=1
-    else
-      call random_number(x)
-!      print *,'random number: ',x,100.0*x,1.0*pctx
-      if (100*x .lt. 1.0*pctx) then
-        ntxnext=1
-      else
+     if (pctx.eq.0.0) then
         nrx=1
-      endif 
-    endif
+     else
+        if(ncoord.eq.0) then
+           call random_number(x)
+           if (100*x .lt. pctx) then
+              ntxnext=1
+           else
+              nrx=1
+           endif
+        else
+           call rxtxcoord(nsec,iband,pctx,nrx,ntxnext)
+        endif
+     endif
   else
-    if(pctx.eq.0.0) nrx=1
+     if(pctx.eq.0.0) nrx=1
   endif
-  
 
   if(ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1)) then
 

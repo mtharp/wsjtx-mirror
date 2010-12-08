@@ -807,8 +807,8 @@ def update():
                         found=True
             ipctx.set(hopping.hoppingpctx[b].get())
             if b!=iband.get(): hopped=1
+            w.acom1.iband=b
             iband.set(b)
-##            print 'Hopping to',hopping.bandlabels[b],' at',ns120
 
     else:
         w.acom1.nfhopping=0
@@ -1099,6 +1099,7 @@ def update():
         advanced.encal.set(0)
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
+    w.acom1.ncoord=hopping.coord_bands.get()
 
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
