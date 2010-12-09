@@ -64,7 +64,7 @@ SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	unpackname.f90 unpacktext2.f90 audiodev.f90 fil1.f90 \
 	packpfx.f90 packprop.f90 unpackpfx.f90 unpackprop.f90 \
 	msgtrim.f90 thnix.f90 iqdemod.f90 phasetx.f90 speciq.f90 \
-	xcor162.f90
+	xcor162.f90 rxtxcoord.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 

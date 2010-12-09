@@ -41,7 +41,7 @@ SRCS2F90 = wspr1.f90 wspr2.f90 decode.f90 getutc.f90 gran.f90 rx.f90 \
 	unpackname.f90 unpacktext2.f90 audiodev.f90 msgtrim.f90 \
 	packpfx.f90 packprop.f90 unpackpfx.f90 unpackprop.f90 \
 	thnix.f90 fil1.f90 iqdemod.f90 phasetx.f90 speciq.f90 \
-	xcor162.f90
+	xcor162.f90 rxtxcoord.f90
 
 SRCS2F77 = mept162.f getrms.f wfile5.f mix162.f \
 	sync162.f decode162.f spec162.f set.f xfft.f \

@@ -8,7 +8,7 @@ subroutine rxtxcoord(nsec,iband,pctx,nrx,ntxnext)
   data nsec0/-1/
   save nsec0,tx
   
-  if(nsec-nsec0.gt.2*3600) then
+  if(abs(nsec-nsec0).gt.2*3600) then
 ! At startup and whenever 2 hours have elapsed, compute new Rx/Tx pattern
      nsec0=nsec
      tx=0
@@ -49,6 +49,7 @@ subroutine rxtxcoord(nsec,iband,pctx,nrx,ntxnext)
   endif
 
   iseq=mod((nsec-nsec0)/120,6) + 1
+  if(iseq.lt.1) iseq=1
   ib=mod(iband+8,10) + 1
   if(tx(ib,iseq).eq.1) then
      ntxnext=1
