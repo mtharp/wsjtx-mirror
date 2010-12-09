@@ -138,7 +138,7 @@ subroutine wspr2
               nrx=1
            endif
         else
-           call rxtxcoord(nsec,iband,pctx,nrx,ntxnext)
+           call rxtxcoord(nsec,pctx,nrx,ntxnext)
         endif
      endif
   else

@@ -807,12 +807,17 @@ def update():
                         found=True
             ipctx.set(hopping.hoppingpctx[b].get())
             if b!=iband.get(): hopped=1
-            w.acom1.iband=b
             iband.set(b)
 
     else:
         w.acom1.nfhopping=0
-            
+        ns=nsec % 86400
+        ns1=ns % (10*120)
+        b=ns1/120 + 3
+        if b==12: b=2
+        if iband.get()==b and random.randint(1,2)==1:
+            w.acom1.ntxnext=1
+
     try:
         f0.set(float(sf0.get()))
         ftx.set(float(sftx.get()))
