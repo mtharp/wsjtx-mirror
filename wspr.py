@@ -72,6 +72,7 @@ font1='Helvetica'
 iband=IntVar()
 iband0=0
 idle=IntVar()
+ierr=0
 ipctx=IntVar()
 isec0=0
 isync=1
@@ -773,7 +774,7 @@ def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
-        bandmap,bm,t0,nreject,gain,phdeg
+        bandmap,bm,t0,nreject,gain,phdeg,ierr
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -991,7 +992,10 @@ def update():
         advanced.bmeas.configure(bg='gray85')
     else:
         idle.set(1)
-    w.acom1.pctx=ipctx.get()
+    if ierr==0:
+      w.acom1.pctx=ipctx.get()
+    else:
+      w.acom1.pctx=0
     w.acom1.idle=idle.get()
     if idle.get()==0:
         bidle.configure(bg='gray85')
