@@ -12,7 +12,6 @@ subroutine wqencode(msg,ntype,data0)
   data nu/0,-1,1,0,-1,2,1,0,-1,1/
 
   call cs_lock('wqencode')
-! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
   i1=index(msg,' ')
   i2=index(msg,'/')
   i3=index(msg,'<')
@@ -22,17 +21,27 @@ subroutine wqencode(msg,ntype,data0)
   call packcall(call1,n1,lbad1)
   call packgrid(grid4,ng,lbad2)
   if(lbad1 .or. lbad2) go to 10
+
+! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
   ndbm=0
   read(msg(i1+5:),*) ndbm
-  if(ndbm.lt.0) ndbm=0
+  if(ndbm.ge.0) then
+     isign=1
+  else
+     isign=-1
+     ndbm=-ndbm
+  endif
   if(ndbm.gt.60) ndbm=60
   ndbm=ndbm+nu(mod(ndbm,10))
-  n2=128*ng + (ndbm+64)
+  n2=128*ng + ndbm
+  if(isign.eq.1) n2=n2+64
   call pack50(n1,n2,data0)
   ntype=ndbm
   go to 900
 
 10 if(i2.ge.2 .and. i3.lt.1) then
+
+! Compound callsign
      call packpfx(call1,n1,ng,nadd)
      ndbm=0
      read(msg(i1+1:),*) ndbm
@@ -42,7 +51,10 @@ subroutine wqencode(msg,ntype,data0)
      ntype=ndbm + 1 + nadd
      n2=128*ng + ntype + 64
      call pack50(n1,n2,data0)
+
   else if(i3.eq.1) then
+
+! Hash-coded callsign
      i4=index(msg,'>')
      call1=msg(2:i4-1)
      call hash(call1,i4-2,ih)
@@ -58,7 +70,6 @@ subroutine wqencode(msg,ntype,data0)
      n2=128*ih + ntype + 64
      call pack50(n1,n2,data0)
   endif
-  go to 900
 
 900 continue
   call cs_unlock

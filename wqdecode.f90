@@ -25,19 +25,30 @@ subroutine wqdecode(data0,message,ntype)
   call unpackcall(n1,callsign)
   i1=index(callsign,' ')
   call unpackgrid(n2/128,grid4)
-  ntype=iand(n2,127) -64
+  ntype=iand(n2,127) - 64
+  isign=1
+  if(iand(n2,64).eq.0) then
+     n=iand(n2,63)
+     nu=mod(n,10)
+     if(nu.eq.0 .or. nu.eq.3 .or. nu.eq.7) then    
+        isign=-1
+        ntype=ntype+64
+     endif
+  endif
 
-! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
   if(ntype.ge.0 .and. ntype.le.62) then
      nu=mod(ntype,10)
      if(nu.eq.0 .or. nu.eq.3 .or. nu.eq.7) then
-        write(cdbm,'(i3)'),ntype
+! Standard WSPR message (types 0 3 7 10 13 17 ... 60)
+        write(cdbm,'(i3)'),isign*ntype
         if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
         if(cdbm(1:1).eq.' ') cdbm=cdbm(2:)
         message=callsign(1:i1)//grid4//' '//cdbm
         call hash(callsign,i1-1,ih)
         dcall(ih)=callsign(:i1)
+
      else
+! Compound callsign
         nadd=nu
         if(nu.gt.3) nadd=nu-3
         if(nu.gt.7) nadd=nu-7
@@ -52,7 +63,9 @@ subroutine wqdecode(data0,message,ntype)
         call hash(callsign,i2-1,ih)
         dcall(ih)=callsign(:i2)
      endif
+
   else if(ntype.lt.0) then
+! Hash-coded callsign
      ndbm=-(ntype+1)
      grid6=callsign(6:6)//callsign(1:5)
      ih=(n2-ntype-64)/128

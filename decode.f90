@@ -55,7 +55,6 @@ subroutine decode
   call flush(14)
   rewind 14
   ndecdone=1
-  ndiskdat=0
   ndecoding=0
   call cs_unlock
 

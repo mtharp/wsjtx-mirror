@@ -29,7 +29,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="2.21_r" + "$Rev$"[6:-2]
+Version="3.00_r" + "$Rev$"[6:-2]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -133,7 +133,8 @@ g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
 
-pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
+pwrlist=(-30,-27,-23,-20,-17,-13,-10,-7,-3,   \
+         0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 freq0=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
        21.0946,24.9246,28.1246,50.2930,70.0286,144.4890,0.1360]
 freqtx=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
@@ -351,12 +352,7 @@ def help(event=NONE):
 
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_2.0_User.pdf'
-    thread.start_new_thread(browser,(url,))
-
-#------------------------------------------------------ usersupp
-def usersupp(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_2.1_Supplement.pdf'
+    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_3.0_User.pdf'
     thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ fmtguide
@@ -582,6 +578,7 @@ def get_decoded():
             tdiff=tmin-tdecoded
             if tdiff<0: tdiff=tdiff+1440
 # Insert info in "bandmap" only if age is less than one hour
+            if w.acom1.ndiskdat==1: tdiff=2
             if tdiff < 60:                        #60 minutes 
                 bandmap.append((ndf,callsign,tdecoded))
     
@@ -604,6 +601,7 @@ def get_decoded():
         if nage==1: attr='age1'
         if nage==2: attr='age2'
         if nage>=3: attr='age3'
+        if w.acom1.ndiskdat==1: attr='age0'
         text1.insert(END,t+"\n",attr)
     text1.configure(state=DISABLED)
     text1.see(END)
@@ -1019,6 +1017,7 @@ def update():
     if w.acom1.ndecdone:
         get_decoded()
         w.acom1.ndecdone=0
+        w.acom1.ndiskdat=0
 
 # Display the waterfall
     try:
@@ -1273,7 +1272,8 @@ setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
 setupmenu.add('command', label = 'IQ Mode', command = iq1,
               accelerator='F8')
-setupmenu.add('command', label = 'Frequency Hopping', command = hopping1) # Sivan
+setupmenu.add('command', label = 'Frequency Hopping', command = hopping1,
+              accelerator='F9')              
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
                           variable=start_idle)
@@ -1341,7 +1341,6 @@ helpbutton['menu'] = helpmenu
 helpmenu.add('command',label='Help',command=help,accelerator='F1')
 helpmenu.add('command',label="Online WSPR User's Guide",command=usersguide, \
         accelerator='F3')
-helpmenu.add('command',label="Online WSPR 2.1 Supplement",command=usersupp)
 helpmenu.add('command',label="Online FMT User's Guide",command=fmtguide)
 helpmenu.add('command',label="WSPRnet.org",command=wsprnet, \
         accelerator='F4')
@@ -1352,11 +1351,12 @@ root.bind_all('<F1>', help)
 root.bind_all('<F2>', options1)
 root.bind_all('<F3>', usersguide)
 root.bind_all('<F4>', wsprnet)
-root.bind_all('<F5>', about)
 root.bind_all('<Alt-F4>', quit)
+root.bind_all('<F5>', about)
 root.bind_all('<F6>', opennext)
 root.bind_all('<F7>', advanced1)
 root.bind_all('<F8>', iq1)
+root.bind_all('<F9>', hopping1)
 root.bind_all('<Shift-F6>', decodeall)
 root.bind_all('<Control-o>',openfile)
 root.bind_all('<Control-O>',openfile)
@@ -1681,7 +1681,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 2.21     by K1JT')
+root.title('  WSPR 3.0     by K1JT')
 
 put_params()
 try:

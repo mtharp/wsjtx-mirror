@@ -17,14 +17,19 @@ balloon=Pmw.Balloon(root)
 
 #------------------------------------------------------ dbm_balloon
 def dbm_balloon():
-    mW=int(round(math.pow(10.0,0.1*dBm.get())))
-    if(mW<1000):
-        if mW==501: mW=500
-        t="%d mW" % (mW,)
+    if dBm.get()<0:
+        uW=int(round(math.pow(10.0,0.1*(30+dBm.get()))))
+        if uW==501: uW=500
+        t="%d uW" % (uW,)
     else:
-        W=int(0.001*mW + 0.5)
-        if W==501: W=500
-        t="%d W" % (W,)
+        mW=int(round(math.pow(10.0,0.1*dBm.get())))
+        if(mW<1000):
+            if mW==501: mW=500
+            t="%d mW" % (mW,)
+        else:
+            W=int(0.001*mW + 0.5)
+            if W==501: W=500
+            t="%d W" % (W,)
     balloon.bind(cbpwr,t)
 
 def options2(t):
@@ -66,7 +71,8 @@ serial_handshake.set('None')
 pttlist=("CAT","DTR","RTS","VOX")
 baudlist=(1200,4800,9600,19200,38400,57600)
 hslist=("None","XONXOFF","Hardware")
-pwrlist=(0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
+pwrlist=(-30,-27,-23,-20,-17,-13,-10,-7,-3,   \
+         0,3,7,10,13,17,20,23,27,30,33,37,40,43,47,50,53,57,60)
 
 if g.Win32:
     serialportlist=("None","COM1","COM2","COM3","COM4","COM5","COM6", \
