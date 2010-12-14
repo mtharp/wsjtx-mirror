@@ -596,7 +596,7 @@ def get_decoded():
     for i in range(iz):
         t="%4d" % (bandmap[i][0],) + " " + bandmap[i][1]
         nage=int((tmin - bandmap[i][2])/15)
-        if nage<0: nage=nage+1440
+        if nage<0: nage=nage+96
         attr='age0'
         if nage==1: attr='age1'
         if nage==2: attr='age2'
