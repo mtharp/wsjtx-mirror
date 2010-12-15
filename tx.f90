@@ -121,11 +121,12 @@ subroutine tx
      newgen=1
   endif
 
-  npts=114*48000
+  npts=112*48000
   if(nsec.lt.ns0) ns0=nsec
 
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint .and. iqmode.eq.0) then
-!  Generate and insert the CW ID.
+! Generate and insert the CW ID.
+! NB: CW ID is not yet implemented in I/Q mode.
      wpm=25.
      freqcw=1500.0 + ntxdf
      cwmsg=call1(:i1)//'                      '
@@ -143,18 +144,36 @@ subroutine tx
 
   fac=10.0**(0.05*ntxdb)
   if(ntune.eq.0) then
-20   call gmtime2(nt,tsec2)
-     tdiff=tsec2-tsec0
-     if(tdiff.lt.0.9) then
-        call msleep(100)
-        go to 20
+
+! Normal WSPR transmission
+     if(newgen.eq.1) then
+        do i=1,npts*(iqmode+1)
+           id2(i)=fac*jwave(i)
+        enddo
+        if(iqmode.eq.1) then
+           call phasetx(id2,npts,txbal,txpha)
+        endif
      endif
 
-     if(newgen.eq.1) then
-        istart=48000*(tsec2-tsec0)
-        istart=istart*(iqmode+1)+1           !istart must be odd if iqmode=1
-        if(istart.lt.1) istart=1
-        npts=npts-istart
+20   call gmtime2(nt,tsec2)
+     tdiff=tsec2-tsec0
+!     if(tdiff.lt.0.9) then
+!        call msleep(100)
+!        go to 20
+!     endif
+     istart=48000*(tsec2-tsec0)
+     npts=npts-istart
+     istart=istart*(iqmode+1)+1           !istart must be odd if iqmode=1
+     if(istart.lt.1) istart=1
+     ierr=soundout(ndevout,id2(istart),npts,iqmode)
+
+  else
+
+     istart=2*48000 +1
+     if(pctx.lt.100.0) then
+! This is a "Tune" transmission
+        npts=48000*pctx
+        if(ntune.lt.0) npts=48000*abs(ntune)
         j=istart-1
         do i=1,npts*(iqmode+1)
            j=j+1
@@ -163,22 +182,10 @@ subroutine tx
         if(iqmode.eq.1) then
            call phasetx(id2,npts,txbal,txpha)
         endif
-     endif
-     ierr=soundout(ndevout,id2,npts,iqmode)
-
-  else
-     istart=2*48000 +1
-     if(pctx.lt.100.0) then
-        npts=48000*pctx
-        if(ntune.lt.0) npts=48000*abs(ntune)
-        j=istart-1
-        do i=1,npts*(iqmode+1)
-           j=j+1
-           id2(i)=fac*jwave(j)
-        enddo
-        if(iqmode.eq.1) call phasetx(id2,npts,txbal,txpha)
         ierr=soundout(ndevout,id2,npts,iqmode)
+
      else
+! Send a series of dashes, for making I/Q phase adjustments.
         npts=24*4096
         do irpt=1,100
            fac=10.0**(0.05*ntxdb)
@@ -187,7 +194,9 @@ subroutine tx
               j=j+1
               id2(i)=fac*jwave(j)
            enddo
-           if(iqmode.eq.1) call phasetx(id2,npts,txbal,txpha)
+           if(iqmode.eq.1) then
+              call phasetx(id2,npts,txbal,txpha)
+           endif
            ierr=soundout(ndevout,id2,npts,iqmode)
         enddo
      endif
@@ -214,7 +223,7 @@ subroutine tx
         print*,cmnd
         call msleep(100)
      enddo
-101    continue
+101  continue
      call cs_unlock
 
   else
