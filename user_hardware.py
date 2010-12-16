@@ -10,7 +10,7 @@ mosley=2
 band=int(sys.argv[1])
 nant=doublet                    #Default antenna is "doublet"
 if band==160: nant=vertical
-if band==20 or band==15 or band==10:  nant=mosley
+##if band==20 or band==15 or band==10:  nant=mosley
 iband=ib[band]
 
 # Fixed paremeters for LabJack:
@@ -28,7 +28,7 @@ outputD = c_long(0)
 iodata2=0
 iodata=iant[nant]
 
-# Other LabJack commands should be OR'd into iodata here:
+# Any other LabJack commands should be OR'd into iodata here:
 
 stateD=c_long(iodata)
 stateIO=c_long(iodata2)

@@ -692,11 +692,11 @@ def autolog(decodes):
 def put_params(param3=NONE):
     global param20
 
-    try:
-        w.acom1.f0=f0.get()
-        w.acom1.ftx=ftx.get()
-    except:
-        pass
+##    try:
+##        w.acom1.f0=f0.get()
+##        w.acom1.ftx=ftx.get()
+##    except:
+##        pass
     w.acom1.callsign=(options.MyCall.get().strip().upper()+'            ')[:12]
     w.acom1.grid=(options.MyGrid.get().strip().upper()+'    ')[:4]
     w.acom1.grid6=(options.MyGrid.get().strip().upper()+'      ')[:6]
@@ -891,6 +891,11 @@ def update():
 
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
+    try:
+        w.acom1.f0=f0.get()
+        w.acom1.ftx=ftx.get()
+    except:
+        pass
 
     if isec != isec0:                           #Do once per second
         isec0=isec
