@@ -19,8 +19,6 @@ subroutine speciq(kwave,npts,iwrite,iqrx,nfiq,ireset,gain,phase,reject)
   endif
 
   df=48000.0/NFFT
-  twopi=8.0*atan(1.0)
-  dt=1.0/48000.0
 
   if(iwrite.lt.nfft .or. iwrite.eq.iw0) go to 900
   iw0=iwrite

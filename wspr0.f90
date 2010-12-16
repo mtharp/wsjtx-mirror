@@ -1,7 +1,7 @@
 program wspr0
 
-!  use dfport
-  character*40 infile,outfile
+! Command-line version of WSPR.
+
   character*12 arg
   integer nt(9)
   real*8 f0,tsec

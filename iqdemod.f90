@@ -6,14 +6,13 @@ subroutine iqdemod(kwave,npts,nfiq,nbfo,iqrx,iqrxapp,gain,phase,iwave)
   parameter (NFFT4=1440000)
   integer*2 kwave(2,114*48000)
   integer*2 iwave(114*12000)
-  real*8 twopi,df,f0,sq
+  real*8 df,f0,sq
   real x1(NFFT4)
   complex c,c1
   complex h,u,v
   common/fftcom/ c(0:NFFT-1),c1(0:NFFT4-1)
   equivalence (x1,c1)
 
-  twopi=8.d0*atan(1.d0)
   df=48000.d0/NFFT
   f0=nfiq
   do i=1,npts
@@ -63,7 +62,6 @@ subroutine iqdemod(kwave,npts,nfiq,nbfo,iqrx,iqrxapp,gain,phase,iwave)
 
   bw=3000.0
   if(bw.lt.3000.0) then
-     j0=nint(nbfo/df)
      ja=nint((nbfo-0.5*bw))/df
      jb=nint((nbfo+0.5*bw))/df
      c1(:ja-1)=0.

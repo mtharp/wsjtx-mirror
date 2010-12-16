@@ -156,7 +156,7 @@ subroutine tx
      endif
 
 20   call gmtime2(nt,tsec2)
-     tdiff=tsec2-tsec0
+!     tdiff=tsec2-tsec0
 !     if(tdiff.lt.0.9) then
 !        call msleep(100)
 !        go to 20

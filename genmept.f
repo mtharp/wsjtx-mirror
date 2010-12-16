@@ -5,17 +5,13 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
       character*12 call1,call2
       character*4 grid,grid2
       parameter (NMAX=120*12000)     !Max length of wave file
-      character*22 message           !Message to be generated
       integer*2 iwave(NMAX)          !Generated wave file
-
       parameter (MAXSYM=176)
       integer*1 symbol(MAXSYM)
-      integer*1 data0(11),data1(11),i1
+      integer*1 data0(11),i1
       integer npr3(162)
-      real pr3(162)
       logical first,lbad1,lbad2
       real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
-      character*22 msgsent           !Message sent
       equivalence(i1,i4)
       data npr3/
      + 1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,1,0,
@@ -33,9 +29,6 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
 
       nsym=162                               !Symbols per transmission
       if(first) then
-         do i=1,nsym
-            pr3(i)=2*npr3(i)-1
-         enddo
          pi=4.d0*atan(1.d0)
          twopi=2.d0*pi
          first=.false.
@@ -119,8 +112,6 @@ C  Set up necessary constants
  10         continue
          enddo
       enddo
-
- 100  continue
 
       return
       end

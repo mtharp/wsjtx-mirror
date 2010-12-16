@@ -106,17 +106,13 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 /*******************************************************************/
 extern int playsound_(short int iwave[])
 {
-  PaStreamParameters  inputParameters,
-                      outputParameters;
+  PaStreamParameters  outputParameters;
   PaStream*           stream;
   PaError             err = paNoError;
   paTestData          data;
-  int                 i;
   int                 totalFrames;
   int                 numSamples;
   int                 numBytes;
-  SAMPLE              max, val;
-  double              average;
 
   data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
   data.frameIndex = 0;

@@ -6,8 +6,7 @@ program wsprcode
 
   parameter (NSYM=162)
   parameter (MAXSYM=176)
-  character*22 message,msg,msg2
-  character*40 infile
+  character*22 msg,msg2
   integer*1 data0(7)
   integer*1 data1(7)
   integer*1 dat(NSYM)
@@ -92,9 +91,7 @@ program wsprcode
   write(*,1000) msg
 1000 format('Message: ',a22)
 
-  nconst=31                                      !Constraint length of code
-  nuser=50                                       !Message payload, bits
-  nbits=50+31
+  nbits=50+31               !User bits=50, constraint length=32
   nbytes=(nbits+7)/8
   ndelta=50
   limit=20000
@@ -129,8 +126,5 @@ program wsprcode
 
   write(*,1020) msg2,ntype1
 1020 format(/'Decoded message: ',a22,'   ntype:',i3)
-  go to 999
-
-998 print*,'Cannot open file for reading: ',infile
 
 999 end program wsprcode
