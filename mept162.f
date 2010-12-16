@@ -94,7 +94,7 @@ C  Look for sync patterns, get DF and DT
      +           ncycles/81,ii
             if(ncmdline.eq.0) close(13)
             if(ncmdline.eq.1) write(*,1010) datetime,nsync,nsnrx,dtx,
-     +           freq,message,nf1,ncycles/81,ii
+     +           freq,message
             write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
  1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)

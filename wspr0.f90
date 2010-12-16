@@ -12,7 +12,7 @@ program wspr0
   nargs=iargc()
 10 if(nargs.eq.0) then
      print*,' '
-     print*,'WSPR0 Version 0.3 r90'
+     print*,'wspr0 -- version 1.0'
      print*,' '
      print*,'Usage: wspr0 Tx  f0 ftx nport call grid dBm [snr] [outfile | nfiles]'
      print*,'       wspr0 T/R f0 ftx nport call grid dBm pctx'
@@ -48,6 +48,9 @@ program wspr0
      call wspr0_tx(nargs,ntr)
   else if(arg(1:2).eq.'RX'.or. arg(1:2).eq.'Rx' .or. arg(1:2).eq.'rx') then
 ! Receive only
+        write(*,1028)
+        write(13,1028)
+1028    format(' UTC        Sync dB   DT    Freq       Message'/50('-'))
      call wspr0_rx(nargs,ntr)
   else if(arg(1:3).eq.'T/R'.or. arg(1:3).eq.'t/r') then
 ! Transmit and receive, choosing sequences randomly
@@ -69,11 +72,8 @@ program wspr0
 1001 format(i2,'-',a3,'-',i4)
      nsec=mod(nsec,86400)
      if(nsec.lt.nsec0) then
-        write(*,1028) utcdate,f0+1400.d-6,f0+1600.d-6
-        write(13,1028) utcdate,f0+1400.d-6,f0+1600.d-6
-1028    format(/' UTC Date: ',a11,'    Search range:',f11.6,' to',f11.6,' MHz'// &
-             ' UTC Sync dB    DT     Freq    Message                  Noise'/    &
-             '-------------------------------------------------------------')
+        write(*,1028)
+        write(13,1028)
      endif
      nsec0=nsec
 

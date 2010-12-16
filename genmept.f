@@ -70,7 +70,7 @@ C  Set up necessary constants
          fac=3000.0
          if(snr.gt.1.0) fac=3000.0/snr
          if(nsigs.eq.10) then
-            snr=10.0**(0.05*(-20-isig-1))
+            snr=10.0**(0.05*(-20-isig))
             f0=1390 + 20*isig
          endif
          t=-2.d0 - 0.1*(isig-1)
