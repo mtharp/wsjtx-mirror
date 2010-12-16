@@ -30,7 +30,7 @@ examples of program usage:
 -----------------------------------------------------------------------
 C:\WPSR> wspr0
 
- wspr0 Version 0.3 r90
+ wspr0 -- version 1.0
 
  Usage: wspr0 Tx  f0 ftx nport call grid dBm [snr] [outfile | nfiles]
         wspr0 T/R f0 ftx nport call grid dBm pctx
