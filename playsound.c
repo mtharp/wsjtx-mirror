@@ -170,9 +170,7 @@ done:
   return err;
 }
 
-extern void pa_sleep_(int *nsleep)
+void msleep_(int *msec0)
 {
-  int n;
-  n=*nsleep;
-  Pa_Sleep(n);
+  Pa_Sleep(*msec0);
 }

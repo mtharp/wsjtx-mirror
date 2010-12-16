@@ -80,7 +80,7 @@ subroutine wspr0_rx(nargs,ntr)
         call mept162(cfile6,f0,iwave,npts,rms)
         if(ntr.ne.0) go to 999
      endif
-30   call pa_sleep(100)
+30   call msleep(100)
      go to 20
   endif
       

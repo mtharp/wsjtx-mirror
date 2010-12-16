@@ -84,7 +84,7 @@ program wspr0
      else
         call wspr0_rx(nargs,ntr)
      endif
-     call pa_sleep(100)
+     call msleep(100)
      go to 20
   else
 ! Illegal set of command parameters

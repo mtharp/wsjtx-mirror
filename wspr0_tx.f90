@@ -80,7 +80,7 @@ subroutine wspr0_tx(nargs,ntr)
            if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
            if(ntr.ne.0) go to 999
         endif
-30      call pa_sleep(100)
+30      call msleep(100)
         go to 20
      endif
      if(nfiles.eq.9999) go to 999
