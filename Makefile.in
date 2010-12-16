@@ -17,7 +17,7 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr wsprcode fmt fmtave fcal fmeasure
+all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0
 build:	wspr
 
 wspr:	WsprMod/w.so
@@ -44,6 +44,15 @@ LDFLAGS	+= -L${FC_LIB_PATH}
 PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
+
+OBJS1 = wspr0.o wspr0_tx.o playsound.o ptt_unix.o gmtime2.o wfile5.o \
+	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
+	encode232.o gran.o packcall.o packgrid.o pack50.o packpfx.o \
+	hash.o unpackcall.o unpackgrid.o unpackpfx.o unpack50.o \
+	grid2deg.o deg2grid.o nhash.o nchar.o wspr0_rx.o getrms.o \
+	getsound.o mept162.o mix162.o spec162.o sync162.o twkfreq.o \
+	decode162.o getutc.o set.o xfft.o four2a.o flat3.o ps162.o \
+	pctile.o fchisq.o db.o fano232.o sort.o ssort.o ccf2.o
 
 OBJS3 = WSPRcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 	unpack50.o unpackcall.o unpackgrid.o nchar.o \
@@ -108,8 +117,8 @@ fcal: fcal.f90
 fmeasure: fmeasure.f90
 	$(FC) -o fmeasure fmeasure.f90
 
-wspr_rxtest.o: wspr_rxtest.f90
-	$(FC) -c $(FFLAGS) wspr_rxtest.f90
+wspr0:	$(OBJS1)
+	$(FC) -o wspr0 $(FFLAGS) $(OBJS1) -lportaudio -lfftw3f
 
 install: WsprMod/w.so
 	${RM} -rf build/
@@ -126,12 +135,21 @@ deb: wspr.py WsprMod/w.so WsprMod/g.py WsprMod/__init__.py \
 	cp fmt fmtave fcal fmeasure gocal 0230 DEB/WSPR
 	cp WsprMod/w.so DEB/WSPR/WsprMod
 	cp WsprMod/*.py DEB/WSPR/WsprMod
-	dpkg-deb --build DEB wspr_ver_rev_i386.deb
+	cp -pr DEB DEB1
+	rm -rf DEB1/WSPR/save/.svn
+	rm -rf DEB1/WSPR/lib/.svn
+	rm -rf DEB1/WSPR/.svn
+	rm -rf DEB1/WSPR/WsprMod/.svn
+	rm -rf DEB1/.svn
+	rm -rf DEB1/DEBIAN/.svn
+	dpkg-deb --build DEB1 wspr_ver_rev_i386.deb
+	rm -rf DEB1
 
 .PHONY : clean
 clean:
-	${RM} -f *.o *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
-		WsprMod/*.so wspr_rxtest w.so *~
+	${RM} -f *.o *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
+	    WsprMod/w.so WsprMod/*.so w.so *~ \
+	    wsprcode fmt fmtave fcal fmeasure wspr0
 	${RM} -rf build/
 
 distclean:

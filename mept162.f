@@ -1,4 +1,4 @@
-      subroutine mept162(outfile,appdir,nappdir,f0,minsync,id,npts,
+      subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,
      +  nbfo,ierr)
 
 C  Orchestrates the process of finding, synchronizing, and decoding 
@@ -19,8 +19,10 @@ C  WSPR signals.
 C  Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32
       call mix162(id,npts,nbfo,c2,jz,ps)
 
+      if(ncmdline.eq.0) then
 C  Compute pixmap.dat
-      call spec162(c2,jz,appdir,nappdir)
+         call spec162(c2,jz,appdir,nappdir)
+      endif
 
 C  Look for sync patterns, get DF and DT
       call sync162(c2,jz,ps,sstf,kz)
@@ -80,16 +82,19 @@ C  Look for sync patterns, get DF and DT
 
  23         i2=index(outfile,'.wav')-1
             if(i2.le.0) i2=index(outfile,'.WAV')-1
-            datetime=outfile(i2-10:i2)
+            datetime=outfile(max(1,i2-10):i2)
             datetime(7:7)=' '
             nf1=nint(-a(2))
             alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
 
             call cs_lock('mept162a')
-            open(13,file=alltxt,status='unknown',position='append')
+            if(ncmdline.eq.0) open(13,file=alltxt,status='unknown',
+     +           position='append')
             write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
-            close(13)
+            if(ncmdline.eq.0) close(13)
+            if(ncmdline.eq.1) write(*,1010) datetime,nsync,nsnrx,dtx,
+     +           freq,message,nf1,ncycles/81,ii
             write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
  1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
