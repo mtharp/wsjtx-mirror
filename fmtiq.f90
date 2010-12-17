@@ -60,7 +60,7 @@ program fmtiq
      endif
 
      nsec=time()
-     ierr=soundin(ndevin,iwave,NFFT,iqmode)
+     ierr=soundin(ndevin,48000,iwave,NFFT,iqmode)
      if(ierr.ne.0) then
         print*,'Error in soundin',ierr
         stop

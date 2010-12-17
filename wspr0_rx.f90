@@ -10,7 +10,7 @@ subroutine wspr0_rx(nargs,ntr)
   integer*1 i1
   integer*1 hdr(44)
   integer npr3(162)
-  integer getsound
+  integer soundin
   real*8 f0
   character*20 arg
   character*80 infile,appdir,thisfile
@@ -68,7 +68,8 @@ subroutine wspr0_rx(nargs,ntr)
         call getutc(cdate,utctime,tsec)
         thisfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
         print*,'B ',thisfile
-        ierr=getsound(iwave)
+!        ierr=getsound(iwave)
+        ierr=soundin(0,12000,iwave,114*12000,0)
         npts=114*12000
         call getrms(iwave,npts,ave,rms)
         print*,'C ',npts,rms

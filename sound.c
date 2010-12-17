@@ -31,7 +31,8 @@ int soundexit_(void)
   return 0;
 }
 
-int soundin_(int *idevin, short recordedSamples[], int *nframes0, int *iqmode)
+int soundin_(int *idevin, int *nrate0, short recordedSamples[], 
+	     int *nframes0, int *iqmode)
 {
     PaStreamParameters inputParameters;
     PaStream *stream;
@@ -41,7 +42,9 @@ int soundin_(int *idevin, short recordedSamples[], int *nframes0, int *iqmode)
     int numSamples;
     int numBytes;
     int num_channels;
-    
+    int nrate;
+
+    nrate=*nrate0;
     totalFrames=*nframes0;
     num_channels=*iqmode + 1;
     numSamples = totalFrames * num_channels;
@@ -85,7 +88,8 @@ error:
     return -1;
 }
 
-int soundout_(int *idevout, short recordedSamples[], int *nframes0, int *iqmode)
+int soundout_(int *idevout, int *nrate0, short recordedSamples[], 
+	      int *nframes0, int *iqmode)
 {
     PaStreamParameters outputParameters;
     PaStream *stream;
@@ -94,7 +98,9 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0, int *iqmode)
     int numSamples;
     int numBytes;
     int num_channels;
+    int nrate;
 
+    nrate=*nrate0;
     totalFrames=*nframes0;
     num_channels=*iqmode + 1;
     numSamples = totalFrames * num_channels;
@@ -109,7 +115,7 @@ int soundout_(int *idevout, short recordedSamples[], int *nframes0, int *iqmode)
               &stream,
               NULL, /* no input */
               &outputParameters,
-              SAMPLE_RATE,
+              nrate,
               FRAMES_PER_BUFFER,
               paClipOff,
               NULL, /* no callback, use blocking API */

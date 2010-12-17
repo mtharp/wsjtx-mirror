@@ -113,6 +113,7 @@ extern int playsound_(short int iwave[], int *npts)
   int                 totalFrames;
   int                 numSamples;
   int                 numBytes;
+  int itemp=0;
 
   //  data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
   data.maxFrameIndex = totalFrames = *npts;
@@ -146,8 +147,11 @@ extern int playsound_(short int iwave[], int *npts)
     err = Pa_StartStream( stream );
     if( err != paNoError ) goto done;
 
-    while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) 
-      Pa_Sleep(100);
+    while( ( err = Pa_IsStreamActive( stream ) ) == 1 )  {
+      itemp++;
+      printf("a %d   %d   %d\n",itemp,*npts,data.frameIndex);
+      Pa_Sleep(1000);
+    }
     if( err < 0 ) goto done;
         
     err = Pa_CloseStream( stream );

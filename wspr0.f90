@@ -4,7 +4,7 @@ program wspr0
 
   character*12 arg
   integer nt(9)
-  integer pa_init
+  integer soundexit
   real*8 f0,tsec
   character*11 utcdate
   character*3 month(12)
@@ -40,8 +40,7 @@ program wspr0
   ntr=0
   nsec0=999999
   open(13,file='ALL_WSPR0.TXT',status='unknown',access='append')
-  ierr=pa_init()
-  print*,'AA',ierr
+  call soundinit
   call getarg(1,arg)
   if(arg(1:2).eq.'TX'.or. arg(1:2).eq.'Tx' .or. arg(1:2).eq.'tx') then
 ! Transmit only
@@ -82,7 +81,6 @@ program wspr0
      nsec0=nsec
 
      call random_number(x)
-     if(pctx.eq.49.5) print*,pctx,100.0*x
      if(100.0*x.lt.pctx) then
         call wspr0_tx(nargs,ntr)
      else
@@ -95,6 +93,6 @@ program wspr0
      nargs=0
      go to 10
   endif
-  call pa_terminate
+  ierr=soundexit()
 
 999 end program wspr0

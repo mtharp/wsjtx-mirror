@@ -165,7 +165,7 @@ subroutine tx
      npts=npts-istart
      istart=istart*(iqmode+1)+1           !istart must be odd if iqmode=1
      if(istart.lt.1) istart=1
-     ierr=soundout(ndevout,id2(istart),npts,iqmode)
+     ierr=soundout(ndevout,48000,id2(istart),npts,iqmode)
 
   else
 
@@ -182,7 +182,7 @@ subroutine tx
         if(iqmode.eq.1) then
            call phasetx(id2,npts,txbal,txpha)
         endif
-        ierr=soundout(ndevout,id2,npts,iqmode)
+        ierr=soundout(ndevout,48000,id2,npts,iqmode)
 
      else
 ! Send a series of dashes, for making I/Q phase adjustments.
@@ -197,7 +197,7 @@ subroutine tx
            if(iqmode.eq.1) then
               call phasetx(id2,npts,txbal,txpha)
            endif
-           ierr=soundout(ndevout,id2,npts,iqmode)
+           ierr=soundout(ndevout,48000,id2,npts,iqmode)
         enddo
      endif
   endif

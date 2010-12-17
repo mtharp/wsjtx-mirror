@@ -72,7 +72,7 @@ program fmt
   npts=ntsec*48000
   iqmode=0
   nsec0=mod(time(),86400)
-  ierr=soundin(ndevin,kwave,npts,iqmode)  !Get audio data, 48 kHz rate
+  ierr=soundin(ndevin,48000,kwave,npts,iqmode)  !Get audio data, 48 kHz rate
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
      stop
