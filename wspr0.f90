@@ -4,6 +4,7 @@ program wspr0
 
   character*12 arg
   integer nt(9)
+  integer pa_init
   real*8 f0,tsec
   character*11 utcdate
   character*3 month(12)
@@ -38,6 +39,7 @@ program wspr0
 
   ntr=0
   nsec0=999999
+  ierr=pa_init()
   call getarg(1,arg)
   if(arg(1:2).eq.'TX'.or. arg(1:2).eq.'Tx' .or. arg(1:2).eq.'tx') then
 ! Transmit only
@@ -90,6 +92,7 @@ program wspr0
 ! Illegal set of command parameters
      nargs=0
      go to 10
-endif
+  endif
+  call pa_terminate
 
 999 end program wspr0

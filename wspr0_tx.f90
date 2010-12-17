@@ -64,6 +64,10 @@ subroutine wspr0_tx(nargs,ntr)
         ih=isec/3600
         im=(isec-ih*3600)/60
         is=mod(isec,60)
+
+        if(is.ne.is0) print*,'A',nsec,isec,is
+        is0=is
+
         if(mod(im,2).ne.0) go to 30
         if(is.eq.0) then
            if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
@@ -77,6 +81,7 @@ subroutine wspr0_tx(nargs,ntr)
            write(13,1031) ih,im,ftx,message(1:iz)
 1031       format(2i2.2,14x,f11.6,'  Transmitting "',a,'"')
            ierr=playsound(iwave)
+           print*,'B',ierr,nport,ntr
            if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
            if(ntr.ne.0) go to 999
         endif

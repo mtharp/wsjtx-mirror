@@ -124,8 +124,8 @@ extern int getsound_(short int iwave[])
   for( i=0; i<numSamples; i++ ) 
     data.recordedSamples[i] = 0;
 
-  err = Pa_Initialize();
-  if( err != paNoError ) goto done;
+  //  err = Pa_Initialize();
+  //  if( err != paNoError ) goto done;
 
   inputParameters.device = Pa_GetDefaultInputDevice();
   inputParameters.channelCount = 1;
@@ -155,7 +155,7 @@ extern int getsound_(short int iwave[])
   err = Pa_CloseStream( stream );    
 
 done:
-  Pa_Terminate();
+  //  Pa_Terminate();
   if( err != paNoError ) {
     fprintf( stderr, "An error occured while using the portaudio stream\n" );
     fprintf( stderr, "Error number: %d\n", err );

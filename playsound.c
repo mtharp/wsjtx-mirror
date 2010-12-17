@@ -122,8 +122,8 @@ extern int playsound_(short int iwave[])
 
   /* Play the wave file */
   data.frameIndex = 0;
-  err = Pa_Initialize();
-  if( err != paNoError ) goto done;
+  //  err = Pa_Initialize();
+  //  if( err != paNoError ) goto done;
   outputParameters.device = Pa_GetDefaultOutputDevice();
   outputParameters.channelCount = NUM_CHANNELS;
   outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
@@ -154,7 +154,7 @@ extern int playsound_(short int iwave[])
   }
 
 done:
-  Pa_Terminate();
+  //  Pa_Terminate();
   //    if( data.recordedSamples )       /* Sure it is NULL or valid. */
   //        free( data.recordedSamples );
   if( err != paNoError ) {
@@ -164,6 +164,18 @@ done:
     err = 1;          /* Always return 0 or 1, but no other return codes. */
   }
   return err;
+}
+
+int pa_init_(void)
+{
+  int err;
+  err = Pa_Initialize();
+  return err;
+}
+
+void pa_terminate_(void)
+{
+  Pa_Terminate();
 }
 
 void msleep_(int *msec0)
