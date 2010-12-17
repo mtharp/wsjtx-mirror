@@ -39,6 +39,7 @@ program wspr0
 
   ntr=0
   nsec0=999999
+  open(13,file='ALL_WSPR0.TXT',status='unknown',access='append')
   ierr=pa_init()
   print*,'AA',ierr
   call getarg(1,arg)
@@ -53,7 +54,7 @@ program wspr0
 ! Receive only
         write(*,1028)
         write(13,1028)
-1028    format(' UTC        Sync dB   DT    Freq       Message'/50('-'))
+1028    format(' Date   UTC Sync dB   DT    Freq       Message'/50('-'))
      call wspr0_rx(nargs,ntr)
   else if(arg(1:3).eq.'T/R'.or. arg(1:3).eq.'t/r') then
 ! Transmit and receive, choosing sequences randomly

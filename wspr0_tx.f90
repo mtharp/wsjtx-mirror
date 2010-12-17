@@ -72,8 +72,8 @@ subroutine wspr0_tx(nargs,ntr)
 
         if(is120.eq.0) then
            if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
-           if(ntr.eq.0) write(*,1030) ih,im,is,f0,ftx,message
-1030       format(i2.2,':',i2.2,':',i2.2,2f11.6,2x,a22)
+!           if(ntr.eq.0) write(*,1030) ih,im,is,f0,ftx,message
+!1030       format(i2.2,':',i2.2,':',i2.2,2f11.6,2x,a22)
            do i=22,1,-1
               if(message(i:i).ne.' ') go to 25
            enddo
@@ -91,7 +91,7 @@ subroutine wspr0_tx(nargs,ntr)
         go to 20
      endif
      if(nfiles.eq.9999) go to 999
-enddo
+  enddo
 
 999 return
 end subroutine wspr0_tx
