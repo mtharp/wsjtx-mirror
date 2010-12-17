@@ -26,9 +26,9 @@ program wspr0
      print*,'       pctx is the percentage of 2-minute periods to Tx'
      print*,' '
      print*,'Examples:'
-     print*,'       wspr0 Tx  10.1387 10.140100 1 K1JT FN20 30'
-     print*,'       wspr0 Tx  10.1387 10.140100 0 K1JT FN20 30 -22 test.wav'
-     print*,'       wspr0 T/R 10.1387 10.140100 0 K1JT FN20 30 25'
+     print*,'       wspr0 Tx  10.1387 10.140200 1 K1JT FN20 30'
+     print*,'       wspr0 Tx  10.1387 10.140200 0 K1JT FN20 30 -22 test.wav'
+     print*,'       wspr0 T/R 10.1387 10.140200 0 K1JT FN20 30 25'
      print*,'       wspr0 Rx  10.1387'
      print*,'       wspr0 Rx  10.1387 00001.wav 00002.wav 00003.wav'
      print*,' '
@@ -39,7 +39,7 @@ program wspr0
 
   ntr=0
   nsec0=999999
-  open(13,file='ALL_WSPR0.TXT',status='unknown',access='append')
+  open(14,file='ALL_WSPR0.TXT',status='unknown',access='append')
   call soundinit
   call getarg(1,arg)
   if(arg(1:2).eq.'TX'.or. arg(1:2).eq.'Tx' .or. arg(1:2).eq.'tx') then
@@ -52,7 +52,7 @@ program wspr0
   else if(arg(1:2).eq.'RX'.or. arg(1:2).eq.'Rx' .or. arg(1:2).eq.'rx') then
 ! Receive only
         write(*,1028)
-        write(13,1028)
+        write(14,1028)
 1028    format(' Date   UTC Sync dB   DT    Freq       Message'/50('-'))
      call wspr0_rx(nargs,ntr)
   else if(arg(1:3).eq.'T/R'.or. arg(1:3).eq.'t/r') then
@@ -76,7 +76,7 @@ program wspr0
      nsec=mod(nsec,86400)
      if(nsec.lt.nsec0) then
         write(*,1028)
-        write(13,1028)
+        write(14,1028)
      endif
      nsec0=nsec
 

@@ -88,16 +88,18 @@ C  Look for sync patterns, get DF and DT
             alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
 
             call cs_lock('mept162a')
-            if(ncmdline.eq.0) open(13,file=alltxt,status='unknown',
-     +           position='append')
-            write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
+            if(ncmdline.eq.0) then
+               open(13,file=alltxt,status='unknown',position='append')
+               write(13,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
-            if(ncmdline.eq.0) close(13)
-            if(ncmdline.eq.1) write(*,1010) datetime,nsync,nsnrx,dtx,
-     +           freq,message
+               close(13)
+            else
+               write(*,1010) datetime,nsync,nsnrx,dtx,freq,message
+            endif
             write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii
  1010       format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
+            call flush(14)
             i1=index(message,' ')
             call cs_unlock
 

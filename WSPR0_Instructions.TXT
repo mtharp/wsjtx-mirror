@@ -43,9 +43,9 @@ C:\WPSR> wspr0
         pctx is the percentage of 2-minute periods to Tx
 
  Examples:
-        wspr0 Tx  10.1387 10.140100 1 K1JT FN20 30
-        wspr0 Tx  10.1387 10.140100 0 K1JT FN20 30 -22 test.wav
-        wspr0 T/R 10.1387 10.140100 0 K1JT FN20 30 25
+        wspr0 Tx  10.1387 10.140200 1 K1JT FN20 30
+        wspr0 Tx  10.1387 10.140200 0 K1JT FN20 30 -22 test.wav
+        wspr0 T/R 10.1387 10.140200 0 K1JT FN20 30 25
         wspr0 Rx  10.1387
         wspr0 Rx  10.1387 00001.wav 00002.wav 00003.wav
 
@@ -183,7 +183,7 @@ LOCAL TESTS WITH ONE COMPUTER
 You can generate a set of three test files at specified S/N level by
 entering a command like this:
 
-C:\wspr0> wspr0 Tx 10.1387 10.140100 0 K1JT FN20 30 -26 3
+C:\wspr0> wspr0 Tx 10.1387 10.140200 0 K1JT FN20 30 -26 3
 
 These files may then be "received" and decoded by entering this
 command:
@@ -200,8 +200,8 @@ time offsets of 0.1 s relative to the first one, and with S/N -21,
 -22, ... -30 dB.  This feature was designed for testing the
 multi-signal decoder.  Here is a complete example of its use:
 
-C:\wspr0> wspr0 Tx 10.1387 10.140100 0 K1JT FN20 30 10 test.wav
-  10.138700  10.140100  10.0  K1JT FN20 30            test.wav
+C:\wspr0> wspr0 Tx 10.1387 10.140200 0 K1JT FN20 30 10 test.wav
+  10.138700  10.140200  10.0  K1JT FN20 30            test.wav
 
 C:\wspr0> wspr0 Rx 10.1387 test.wav
  UTC        Sync dB   DT    Freq       Message
@@ -232,7 +232,7 @@ each 4-FSK symbol; column 3 gives the tone frequency in Hz.  Each tone
 should last for 8192/12000 = 0.6827 seconds, and transitions between
 tones should be done in a phase-continuous manner.
 
-C:\wspr0> wspr0 Tx 10.1387 10.140100 0 K1JT FN20 30 11
+C:\wspr0> wspr0 Tx 10.1387 10.140200 0 K1JT FN20 30 11
   1  3  1502.197
   2  3  1502.197
   3  2  1500.732

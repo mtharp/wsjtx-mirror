@@ -59,20 +59,13 @@ subroutine wspr0_rx(nargs,ntr)
      ih=isec/3600
      im=(isec-ih*3600)/60
      is=mod(isec,60)
-
-     if(is.ne.is0) print*,'A',nsec,isec,is
-     is0=is
-
-     if(mod(im,2).ne.0) go to 30
-     if(is.eq.0) then
+     is120=mod(isec,120)
+     if(is120.eq.0) then
         call getutc(cdate,utctime,tsec)
         thisfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-        print*,'B ',thisfile
-!        ierr=getsound(iwave)
         ierr=soundin(0,12000,iwave,114*12000,0)
         npts=114*12000
         call getrms(iwave,npts,ave,rms)
-        print*,'C ',npts,rms
         call mept162(thisfile,appdir,nappdir,f0,1,iwave,NMAX,nbfo,ierr)
         if(ntr.ne.0) go to 999
      endif

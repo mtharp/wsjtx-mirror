@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "portaudio.h"
 
-#define SAMPLE_RATE  (48000)
-#define FRAMES_PER_BUFFER (4096)
 /* #define DITHER_FLAG     (paDitherOff)  */
 #define DITHER_FLAG     (0) /**/
 #define PA_SAMPLE_TYPE  paInt16
@@ -43,8 +41,10 @@ int soundin_(int *idevin, int *nrate0, short recordedSamples[],
     int numBytes;
     int num_channels;
     int nrate;
+    int frames_per_buffer=1024;
 
     nrate=*nrate0;
+    if(nrate>12000) frames_per_buffer=4096;
     totalFrames=*nframes0;
     num_channels=*iqmode + 1;
     numSamples = totalFrames * num_channels;
@@ -62,8 +62,8 @@ int soundin_(int *idevin, int *nrate0, short recordedSamples[],
               &stream,
               &inputParameters,
               NULL,                  /* &outputParameters, */
-              SAMPLE_RATE,
-              FRAMES_PER_BUFFER,
+              nrate,
+              frames_per_buffer,
               paClipOff,
               NULL, /* no callback, use blocking API */
               NULL ); /* no callback, so no callback userData */
@@ -99,8 +99,10 @@ int soundout_(int *idevout, int *nrate0, short recordedSamples[],
     int numBytes;
     int num_channels;
     int nrate;
+    int frames_per_buffer=1024;
 
     nrate=*nrate0;
+    if(nrate>12000) frames_per_buffer=4096;
     totalFrames=*nframes0;
     num_channels=*iqmode + 1;
     numSamples = totalFrames * num_channels;
@@ -116,7 +118,7 @@ int soundout_(int *idevout, int *nrate0, short recordedSamples[],
               NULL, /* no input */
               &outputParameters,
               nrate,
-              FRAMES_PER_BUFFER,
+              frames_per_buffer,
               paClipOff,
               NULL, /* no callback, use blocking API */
               NULL ); /* no callback, so no callback userData */
