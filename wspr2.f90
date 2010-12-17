@@ -145,7 +145,7 @@ subroutine wspr2
      if(pctx.eq.0.0) nrx=1
   endif
 
-  if(ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1)) then
+  if(pctx.gt.0.0 .and. (ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1))) then
 
      call cs_lock('wspr2')
      transmitting=.true.

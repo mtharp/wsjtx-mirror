@@ -51,7 +51,8 @@ program wspr0
      call wspr0_tx(nargs,ntr)
   else if(arg(1:2).eq.'RX'.or. arg(1:2).eq.'Rx' .or. arg(1:2).eq.'rx') then
 ! Receive only
-        write(*,1028)
+        write(*,1026)
+1026    format(' UTC  dB   DT    Freq       Message'/54('-'))
         write(14,1028)
 1028    format(' Date   UTC Sync dB   DT    Freq       Message'/50('-'))
      call wspr0_rx(nargs,ntr)
@@ -75,7 +76,7 @@ program wspr0
 1001 format(i2,'-',a3,'-',i4)
      nsec=mod(nsec,86400)
      if(nsec.lt.nsec0) then
-        write(*,1028)
+        write(*,1026)
         write(14,1028)
      endif
      nsec0=nsec

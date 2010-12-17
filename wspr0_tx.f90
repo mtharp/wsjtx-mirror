@@ -72,8 +72,9 @@ subroutine wspr0_tx(nargs,ntr)
            enddo
 25         iz=i
            write(*,1031) ih,im,ftx,message(1:iz)
-           write(14,1031) ih,im,ftx,message(1:iz)
-1031       format(2i2.2,14x,f11.6,'  Transmitting "',a,'"')
+1031       format(2i2.2,9x,f11.6,'  Transmitting "',a,'"')
+           write(14,1032) ih,im,ftx,message(1:iz)
+1032       format(7x,2i2.2,13x,f11.6,'  Transmitting "',a,'"')
            ierr=soundout(-1,12000,iwave,114*12000,0)
            if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
            if(ntr.ne.0) go to 999
