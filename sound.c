@@ -53,6 +53,7 @@ int soundin_(int *idevin, int *nrate0, short recordedSamples[],
       recordedSamples[i] = 0;
 
     inputParameters.device = *idevin;
+    if(*idevin<0) inputParameters.device = Pa_GetDefaultInputDevice();
     inputParameters.channelCount = num_channels;
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = 0.4;
@@ -108,6 +109,7 @@ int soundout_(int *idevout, int *nrate0, short recordedSamples[],
     numSamples = totalFrames * num_channels;
     numBytes = numSamples * sizeof(SAMPLE);
     outputParameters.device = *idevout;
+    if(*idevout<0) outputParameters.device = Pa_GetDefaultOutputDevice();
     outputParameters.channelCount = num_channels;
     outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
     outputParameters.suggestedLatency = 0.4;

@@ -63,7 +63,7 @@ subroutine wspr0_rx(nargs,ntr)
      if(is120.eq.0) then
         call getutc(cdate,utctime,tsec)
         thisfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'
-        ierr=soundin(0,12000,iwave,114*12000,0)
+        ierr=soundin(-1,12000,iwave,114*12000,0)
         npts=114*12000
         call getrms(iwave,npts,ave,rms)
         call mept162(thisfile,appdir,nappdir,f0,1,iwave,NMAX,nbfo,ierr)
