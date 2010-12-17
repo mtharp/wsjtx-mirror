@@ -52,6 +52,7 @@ subroutine wspr0_tx(nargs,ntr)
   do ifile=1,nfiles
      if(nfiles.gt.1 .and. nfiles.lt.9999) write(outfile,1010) ifile
 1010 format(i5.5,'.wav')
+     print*,'A: call genmept'
      call genmept(call1,grid,ndbm,ntxdf,snrdb,iwave)
      if(snrdb.eq.11.0) go to 999
      if(outfile.ne."") then
@@ -64,12 +65,12 @@ subroutine wspr0_tx(nargs,ntr)
         ih=isec/3600
         im=(isec-ih*3600)/60
         is=mod(isec,60)
+        is120=mod(isec,120)
 
-        if(is.ne.is0) print*,'A',nsec,isec,is
-        is0=is
+        if(is120.ne.is120z) print*,'B',is120
+        is120z=is120
 
-        if(mod(im,2).ne.0) go to 30
-        if(is.eq.0) then
+        if(is120.eq.0) then
            if(nport.gt.0) ierr=ptt(nport,junk,1,iptt)
            if(ntr.eq.0) write(*,1030) ih,im,is,f0,ftx,message
 1030       format(i2.2,':',i2.2,':',i2.2,2f11.6,2x,a22)
@@ -80,12 +81,13 @@ subroutine wspr0_tx(nargs,ntr)
            write(*,1031) ih,im,ftx,message(1:iz)
            write(13,1031) ih,im,ftx,message(1:iz)
 1031       format(2i2.2,14x,f11.6,'  Transmitting "',a,'"')
-           ierr=playsound(iwave)
-           print*,'B',ierr,nport,ntr
+           print*,'C call playsound'
+           ierr=playsound(iwave,114*12000)
+           print*,'D playsound done',ierr,nport,ntr
            if(nport.gt.0) ierr=ptt(nport,junk,0,iptt)
            if(ntr.ne.0) go to 999
         endif
-30      call msleep(100)
+        call msleep(100)
         go to 20
      endif
      if(nfiles.eq.9999) go to 999

@@ -104,7 +104,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 }
 
 /*******************************************************************/
-extern int playsound_(short int iwave[])
+extern int playsound_(short int iwave[], int *npts)
 {
   PaStreamParameters  outputParameters;
   PaStream*           stream;
@@ -114,7 +114,8 @@ extern int playsound_(short int iwave[])
   int                 numSamples;
   int                 numBytes;
 
-  data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
+  //  data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
+  data.maxFrameIndex = totalFrames = *npts;
   data.frameIndex = 0;
   numSamples = totalFrames * NUM_CHANNELS;
   numBytes = numSamples * sizeof(SAMPLE);
@@ -170,12 +171,14 @@ int pa_init_(void)
 {
   int err;
   err = Pa_Initialize();
+  if(err==0) printf("Portaudio initialized\n");
   return err;
 }
 
 void pa_terminate_(void)
 {
   Pa_Terminate();
+  printf("Portaudio terminated\n");
 }
 
 void msleep_(int *msec0)

@@ -40,6 +40,7 @@ program wspr0
   ntr=0
   nsec0=999999
   ierr=pa_init()
+  print*,'AA',ierr
   call getarg(1,arg)
   if(arg(1:2).eq.'TX'.or. arg(1:2).eq.'Tx' .or. arg(1:2).eq.'tx') then
 ! Transmit only
