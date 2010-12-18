@@ -785,7 +785,7 @@ def update():
       bhopping.configure(state=DISABLED)
 
     hopped=0
-    if hopping.hopping.get()==1:
+    if hopping.hopping.get()==1 and idle.get()==0:
         w.acom1.nfhopping=1        
         
         if w.acom1.nfhopok:
