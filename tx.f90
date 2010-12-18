@@ -10,6 +10,8 @@ subroutine tx
   character*22 msg0,msg1,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
   character cmnd*120,snrfile*80
+  character linetx*51,line*75
+  character*80 alltxt
   integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
   real*8 tsec1,tsec2
@@ -119,6 +121,15 @@ subroutine tx
      call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,   &
        appdir,nappdir,sending,jwave)
      newgen=1
+  else
+     call cs_lock('tx')
+     alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
+     open(13,file=alltxt,status='unknown',position='append')
+     line=linetx//message
+     write(13,1010) line
+ 1010 format(a75)
+     close(13)
+     call cs_unlock
   endif
 
   npts=112*48000
