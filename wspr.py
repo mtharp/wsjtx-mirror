@@ -1,4 +1,4 @@
-#------------------------------------------------------------------- WSPR
+#------------------------------------------------------------------ WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -747,7 +747,6 @@ def put_params(param3=NONE):
     w.acom1.txbal=bal
     pha=iq.isc3.get() + 0.02*iq.isc3a.get()
     w.acom1.txpha=pha
-##    print bal,pha
     try:
         w.acom1.nfiq=iq.fiq.get()
     except:
@@ -888,6 +887,8 @@ def update():
                    and hopping.tuneupflag[iband.get()].get(): w.acom1.ntune=-4
         else:
             iband0=iband.get()
+        iq.ib.set(iband.get())
+        iq.newband()
 
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
@@ -931,6 +932,7 @@ def update():
             r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
 
+##        print iq.ib.get(),iq.tbal[4],iq.tbal[5],iq.tbal[6]
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
@@ -1178,10 +1180,6 @@ def save_params():
     f.write("IQtx " + str(iq.iqtx.get()) + "\n")
     f.write("FIQ " + str(iq.fiq.get()) + "\n")
     f.write("Ntxdb " + str(advanced.isc1.get()) + "\n")
-    f.write("Ntxbal " + str(iq.isc2.get()) + "\n")
-    f.write("Ntxbalf " + str(iq.isc2a.get()) + "\n")
-    f.write("Ntxpha " + str(iq.isc3.get()) + "\n")
-    f.write("Ntxphaf " + str(iq.isc3a.get()) + "\n")
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
@@ -1231,8 +1229,6 @@ def save_params():
     f.write("iband " + str(iband.get()) + "\n")
     f.write("StartIdle " + str(start_idle.get()) + "\n")
     f.write("NoBeep " + str(no_beep.get()) + "\n")
-    f.write("Ygain " + str(gain) + "\n")
-    f.write("Phdeg " + str(phdeg) + "\n")
     f.write("Reject " + str(nreject) + "\n")
     f.write("RxApply " + str(iq.iqrxapp.get()) + "\n")
     f.close()
@@ -1561,10 +1557,6 @@ def readinit():
             elif key == 'IQrx': iq.iqrx.set(value)
             elif key == 'IQtx': iq.iqtx.set(value)
             elif key == 'FIQ': iq.fiq.set(value)
-            elif key == 'Ntxdb': advanced.isc1.set(value)
-            elif key == 'Ntxbal': iq.isc2.set(value)
-            elif key == 'Ntxbalf': iq.isc2a.set(value)
-            elif key == 'Ntxpha': iq.isc3.set(value)
             elif key == 'Ntxphaf': iq.isc3a.set(value)
             elif key == 'PTTmode': options.pttmode.set(value)
             elif key == 'CATenable': options.cat_enable.set(value)
@@ -1616,9 +1608,6 @@ def readinit():
             elif key == 'iband': iband.set(value)
             elif key == 'StartIdle': start_idle.set(value)
             elif key == 'NoBeep': no_beep.set(value)
-
-            elif key == 'Ygain': w.acom1.gain=float(value)
-            elif key == 'Phdeg': w.acom1.phase=float(value)/57.2957795
             elif key == 'Reject': w.acom1.reject=float(value)
             elif key == 'RxApply': iq.iqrxapp.set(value)
 
@@ -1636,6 +1625,8 @@ w.acom1.reject=0.
 while nparam < len(params)-1:
     readinit()
 hopping.restore_params(appdir)
+iq.ib.set(iband.get())
+iq.restore()
 
 r=options.chkcall(options.MyCall.get())
 if r<0:

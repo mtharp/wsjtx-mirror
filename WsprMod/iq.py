@@ -5,6 +5,7 @@ import g
 import w
 import time
 import tkMessageBox
+import pickle
 
 def done():
     root.withdraw()
@@ -19,6 +20,8 @@ def iq2(t):
     root.geometry(t)
     root.deiconify()
     root.focus_set()
+    j=ib.get()
+    lab0.configure(text=str(mb[j])+' m')
 
 iqmode=IntVar()
 iqrx=IntVar()
@@ -36,16 +39,74 @@ isc3.set(0)
 isc3a=IntVar()
 isc3a.set(0)
 
+ib=IntVar()
+gain=DoubleVar()
+phdeg=DoubleVar()
+mb=[0,600,160,80,60,40,30,20,17,15,12,10,6,4,2,0]
+tbal=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+tpha=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+rbal=[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+rpha=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+allbands=0
+
+def saveband(event=NONE):
+    global allbands,tbal,tpha,rbal,rpha
+    if allbands:
+        for j in range(1,15):
+            tbal[j]=isc2.get() + 0.02*isc2a.get()
+            tpha[j]=isc3.get() + 0.02*isc3a.get()
+            rbal[j]=w.acom1.gain
+            rpha[j]=57.2957795*w.acom1.phase
+    else:
+        j=ib.get()
+        tbal[j]=isc2.get() + 0.02*isc2a.get()
+        tpha[j]=isc3.get() + 0.02*isc3a.get()
+        rbal[j]=w.acom1.gain
+        rpha[j]=57.2957795*w.acom1.phase
+
+    f=open(g.appdir+'/iqpickle',mode='w')
+    pickle.dump(tbal,f)    
+    pickle.dump(tpha,f)    
+    pickle.dump(rbal,f)    
+    pickle.dump(rpha,f)    
+    f.close()
+
+def saveall(event=NONE):
+    global allbands
+    allbands=1
+    saveband()
+    allbands=0
+
+def restore():
+    global tbal,tpha,rbal,rpha
+    try:
+        f=open(g.appdir+'/iqpickle',mode='r')
+        tbal=pickle.load(f)
+        tpha=pickle.load(f)
+        rbal=pickle.load(f)
+        rpha=pickle.load(f)
+        f.close()
+    except:
+        pass
+    newband()
+
+def newband():
+    j=ib.get()
+    lab0.configure(text=str(mb[j])+' m')
+    w.acom1.gain=rbal[j]
+    w.acom1.phase=rpha[j]/57.2957795
+    isc2.set(int(tbal[j]))
+    isc2a.set(int((tbal[j]-isc2.get())/0.02))
+    isc3.set(int(tpha[j]))
+    isc3a.set(int((tpha[j]-isc3.get())/0.02))
+
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)
 
-##t="""
-##Important:   please read the WSPR User's
-##Guide (F3 key) before using features on
-##this screen.
-##"""
-##lab1=Label(g1.interior(),text=t,justify=LEFT)
-##lab1.pack(fill=X,expand=1,padx=5,pady=0)
+lab0=Label(g1.interior(),text='160 m',bg='yellow',pady=5)
+lab0.place(x=180,y=40, anchor='e')
+#lab0.pack(anchor=W,padx=5,pady=4)
+
 
 biqmode=Checkbutton(g1.interior(),text='Enable I/Q mode',variable=iqmode)
 biqmode.pack(anchor=W,padx=5,pady=2)
@@ -78,8 +139,8 @@ sc2=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-30, \
         relief=SOLID,bg='#EEDD82')
 sc2.pack(side=TOP,padx=4,pady=2)
 
-sc2a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-        to=100,variable=isc2a,label='Tx I/Q Balance (0.002 dB)', \
+sc2a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-50, \
+        to=50,variable=isc2a,label='Tx I/Q Balance (0.002 dB)', \
         relief=SOLID,bg='#EEDD82')
 sc2a.pack(side=TOP,padx=4,pady=2)
 
@@ -87,11 +148,19 @@ sc3=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-20, \
         to=20,variable=isc3,label='Tx Phase (deg)', \
         relief=SOLID,bg='#AFeeee')
 sc3.pack(side=TOP,padx=4,pady=2)
-sc3a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-100, \
-        to=100,variable=isc3a,label='Tx Phase (0.02 deg)', \
+sc3a=Scale(g1.interior(),orient=HORIZONTAL,length=200,from_=-50, \
+        to=50,variable=isc3a,label='Tx Phase (0.02 deg)', \
         relief=SOLID,bg='#AFeeee')
 sc3a.pack(side=TOP,padx=4,pady=2)
 
-f1=Frame(g1.interior(),width=100,height=10)
+bsave=Button(g1.interior(), text='Save for this band',command=saveband,
+             width=32,padx=1,pady=2)
+bsave.pack(padx=2,pady=4)
+
+bsaveall=Button(g1.interior(), text='Save for all bands',command=saveall,
+             width=32,padx=1,pady=2)
+bsaveall.pack(padx=2,pady=4)
+
+f1=Frame(g1.interior(),width=100,height=1)
 f1.pack()
 g1.pack(side=LEFT,fill=BOTH,expand=1,padx=4,pady=4)
