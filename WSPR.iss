@@ -21,12 +21,10 @@ Source: "c:\Users\joe\wsjt\wspr\fcal.dat";            DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\fmt.exe";             DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\fmtave.exe";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\fmeasure.exe";        DestDir: "{app}"
-Source: "c:\Users\joe\web\FMT_User.pdf";              Destdir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\gocal.bat";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\0230.bat";            DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\wspr0.exe";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\WSPR0_Instructions.TXT";  DestDir: "{app}"
-Source: "c:\Users\joe\web\WSPR_3.0_User.pdf";         DestDir: "{app}"
 
 [Icons]
 Name: "{group}\WSPR";        Filename: "{app}\WSPR.EXE"; WorkingDir: {app}; IconFilename: {app}\wsjt.ico

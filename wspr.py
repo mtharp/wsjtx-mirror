@@ -23,6 +23,7 @@ import random
 import math
 import string
 from WsprMod import w
+from WsprMod import smeter
 import socket
 import urllib
 import thread
@@ -916,9 +917,11 @@ def update():
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
         ndb=int(w.acom1.xdb1-41.0)
         if ndb<-30: ndb=-30
+        ndbave=ndb
         if iq.iqmode.get():
             ndb2=int(w.acom1.xdb2-41.0)
             if ndb2<-30: ndb2=-30
+            ndbave=0.5*(ndb+ndb2)
             t='Rx Noise: %3d %3d  dB' % (ndb,ndb2)
         else:
             t='Rx Noise: %3d  dB' % (ndb,)
@@ -933,8 +936,8 @@ def update():
             t=''
             r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
+        sm.updateProgress(newValue=ndbave+30)            #S-meter bar
 
-##        print iq.ib.get(),iq.tbal[4],iq.tbal[5],iq.tbal[6]
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
@@ -1459,6 +1462,13 @@ iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- Buttons, UTC, etc
 iframe4 = Frame(frame, bd=1, relief=SUNKEN)
+f4aa=Frame(iframe4,height=170,bd=2,relief=RIDGE)
+sm=smeter.Smeter(f4aa,fillColor='slateblue',orientation='vertical', \
+    width=10,height=170,doLabel=0)
+sm.frame.pack(side=LEFT)
+
+f4aa.pack(side=LEFT,expand=0,fill=Y)
+
 f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,\
