@@ -870,6 +870,7 @@ def update():
 
                 cmd2=''
                 if os.path.exists('.\user_hardware.bat') or \
+                   os.path.exists('.\user_hardware.cmd') or \
                    os.path.exists('.\user_hardware.exe'):
                     cmd2='.\user_hardware ' + str(band[iband0])
                 elif os.path.exists('./user_hardware'):
@@ -919,6 +920,11 @@ def update():
             pass
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
+        gain=w.acom1.gain
+        phdeg=57.2957795*w.acom1.phase
+        nreject=int(w.acom1.reject)
+        t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
+        iq.lab1.configure(text=t)
         ndb=int(w.acom1.xdb1-41.0)
         if ndb<-30: ndb=-30
         dbave=w.acom1.xdb1
@@ -931,22 +937,20 @@ def update():
             t='Rx Noise: %3d  dB' % (ndb,)
         bg='gray85'
         r=SUNKEN
+        smcolor="green"
         if w.acom1.receiving:
             if ndb>10 and ndb<=20:
                 bg='yellow'
+                smcolor='yellow'
             elif ndb<-20 or ndb>20:
                 bg='red'
+                smcolor='red'
         else:
             t=''
             r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
-        sm.updateProgress(newValue=dbave)            #S-meter bar
-
-        gain=w.acom1.gain
-        phdeg=57.2957795*w.acom1.phase
-        nreject=int(w.acom1.reject)
-        t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
-        iq.lab1.configure(text=t)
+        if not receiving: dbave=0
+        sm.updateProgress(newValue=dbave,newColor=smcolor)
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
@@ -1426,7 +1430,7 @@ lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
 widgets = (lf0,lftx)
 for widget in widgets:
     widget.pack(side=TOP,padx=5,pady=4)
-balloon.bind(lf0,"USB dial frequency")
+balloon.bind(lf0,"Set radio's dial frequency to this value and select USB mode")
 balloon.bind(lftx,"Will transmit on this frequency")
 
 Pmw.alignlabels(widgets)
@@ -1449,9 +1453,10 @@ balloon.bind(bidle,"Check for no automatic T/R sequences")
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,width=9)
 btune.grid(row=1,column=0,padx=2,pady=3)
 balloon.bind(btune,"Transmit for number of seconds set by Tx fraction slider")
-
 btxnext=Button(g3.interior(), text='Tx Next',underline=3,command=txnext,width=9)
 btxnext.grid(row=0,column=1,padx=2,pady=3)
+balloon.bind(btxnext,"Make the next 2-minute period a transmission")
+
 ##bstoptx=Button(g3.interior(), text='Stop Tx',underline=0,command=stoptx,width=9)
 ##bstoptx.grid(row=1,column=1,padx=2,pady=3)
 

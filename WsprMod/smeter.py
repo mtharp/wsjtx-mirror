@@ -41,9 +41,11 @@ class Smeter:
 	self.update()
 	self.canvas.pack(side='top', fill='x', expand='no')
 
-    def updateProgress(self, newValue, newMax=None):
+    def updateProgress(self, newValue, newColor=None, newMax=None):
         if newMax:
             self.max = newMax
+        if newColor:
+            self.fillColor=newColor
         self.value = newValue
         self.update()
 

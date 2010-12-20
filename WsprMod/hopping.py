@@ -27,7 +27,7 @@ bandlabels=['dummy','600 m','160 m','80 m','60 m','40 m','30 m',\
             'Other']
 
 coord_bands=IntVar()
-coord_bands.set(0)
+coord_bands.set(1)
 hopping=IntVar()
 hopping.set(0)
 hoppingconfigured=IntVar()
