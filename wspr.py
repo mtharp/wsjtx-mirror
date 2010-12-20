@@ -397,6 +397,7 @@ def tune(event=NONE):
 def txnext(event=NONE):
     if ipctx.get()>0:
         w.acom1.ntxnext=1
+        btxnext.configure(bg="green")
 
 ###------------------------------------------------------ stoptx
 ##def stoptx(event=NONE):
@@ -785,36 +786,37 @@ def update():
       bhopping.configure(state=DISABLED)
 
     hopped=0
-    if hopping.hopping.get()==1 and idle.get()==0:
-        w.acom1.nfhopping=1        
-        
-        if w.acom1.nfhopok:
-            w.acom1.nfhopok=0
-            b=-1
-            if hopping.coord_bands.get()==1:
-                ns=nsec % 86400
-                ns1=ns % (10*120)
-                b=ns1/120 + 3
-                if b==12: b=2
-                if hopping.hoppingflag[b].get()==0: b=-1
-            if b<0:                
-                found=False
-                while not found:
-                    b = random.randint(1,len(hopping.bandlabels)-1)
-                    if hopping.hoppingflag[b].get()!=0:
-                        found=True
-            ipctx.set(hopping.hoppingpctx[b].get())
-            if b!=iband.get(): hopped=1
-            iband.set(b)
+    if not idle.get():
+        if hopping.hopping.get()==1:
+            w.acom1.nfhopping=1        
+            
+            if w.acom1.nfhopok:
+                w.acom1.nfhopok=0
+                b=-1
+                if hopping.coord_bands.get()==1:
+                    ns=nsec % 86400
+                    ns1=ns % (10*120)
+                    b=ns1/120 + 3
+                    if b==12: b=2
+                    if hopping.hoppingflag[b].get()==0: b=-1
+                if b<0:                
+                    found=False
+                    while not found:
+                        b = random.randint(1,len(hopping.bandlabels)-1)
+                        if hopping.hoppingflag[b].get()!=0:
+                            found=True
+                ipctx.set(hopping.hoppingpctx[b].get())
+                if b!=iband.get(): hopped=1
+                iband.set(b)
 
-    else:
-        w.acom1.nfhopping=0
-        ns=nsec % 86400
-        ns1=ns % (10*120)
-        b=ns1/120 + 3
-        if b==12: b=2
-        if iband.get()==b and random.randint(1,2)==1:
-            w.acom1.ntxnext=1
+        else:
+            w.acom1.nfhopping=0
+            ns=nsec % 86400
+            ns1=ns % (10*120)
+            b=ns1/120 + 3
+            if b==12: b=2
+            if iband.get()==b and random.randint(1,2)==1 and ipctx.get()>0:
+                w.acom1.ntxnext=1
 
     try:
         f0.set(float(sf0.get()))
@@ -970,10 +972,11 @@ def update():
             filemenu.entryconfig(1,state=NORMAL)
             filemenu.entryconfig(2,state=NORMAL)
         if transmitting:
-            for i in range(14):
+            btxnext.configure(bg="gray85")
+            for i in range(15):
                 bandmenu.entryconfig(i,state=DISABLED)
         else:
-            for i in range(14):
+            for i in range(15):
                 bandmenu.entryconfig(i,state=NORMAL)
 
     bgcolor='gray85'
