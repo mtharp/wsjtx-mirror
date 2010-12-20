@@ -3,7 +3,7 @@ from Tkinter import *
 import Pmw
 import g
 import w
-import time
+import os,time
 import tkMessageBox
 from functools import partial
 
@@ -14,7 +14,7 @@ root=Toplevel()
 root.withdraw()
 root.protocol('WM_DELETE_WINDOW',done)
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title("Frequency Hopping")
+root.title("Band Hopping")
 
 def hopping2(t):
     root.geometry(t)
@@ -104,16 +104,17 @@ def save_params(appdir):
     f.close()
 
 def restore_params(appdir):
-    try:
-        f=open(appdir+'/hopping.ini',mode='r')
-        s=f.readlines()
-        f.close()
-        hopping.set(int(s[0][0:1]))
-        coord_bands.set(int(s[0][2:3]))
-        for r in range(1,16):
-            hoppingflag[r].set(int(s[r][6:7]))
-            hoppingpctx[r].set(int(s[r][8:13]))
-            tuneupflag[r].set(int(s[r][13:16]))
-        globalupdate()
-    except:
-        print 'Error reading hopping.ini.'
+    if os.path.isfile(appdir+'/hopping.ini'):
+        try:
+            f=open(appdir+'/hopping.ini',mode='r')
+            s=f.readlines()
+            f.close()
+            hopping.set(int(s[0][0:1]))
+            coord_bands.set(int(s[0][2:3]))
+            for r in range(1,16):
+                hoppingflag[r].set(int(s[r][6:7]))
+                hoppingpctx[r].set(int(s[r][8:13]))
+                tuneupflag[r].set(int(s[r][13:16]))
+            globalupdate()
+        except:
+            print 'Error reading hopping.ini.'

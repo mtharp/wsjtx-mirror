@@ -719,6 +719,10 @@ def put_params(param3=NONE):
         dbm=int(options.dBm.get())
     except:
         dbm=37
+    i1=options.MyCall.get().find('/')
+    if dbm<0 and (i1>0 or advanced.igrid6.get()):
+        dbm=0
+        options.dBm.set(0)
     mindiff=9999
     for i in range(len(pwrlist)):
         if abs(dbm-pwrlist[i])<mindiff:
@@ -917,11 +921,11 @@ def update():
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
         ndb=int(w.acom1.xdb1-41.0)
         if ndb<-30: ndb=-30
-        ndbave=ndb
+        dbave=w.acom1.xdb1
         if iq.iqmode.get():
             ndb2=int(w.acom1.xdb2-41.0)
             if ndb2<-30: ndb2=-30
-            ndbave=0.5*(ndb+ndb2)
+            dbave=0.5*(w.acom1.xdb1 + w.acom1.xdb2)
             t='Rx Noise: %3d %3d  dB' % (ndb,ndb2)
         else:
             t='Rx Noise: %3d  dB' % (ndb,)
@@ -936,7 +940,7 @@ def update():
             t=''
             r=FLAT
         msg1.configure(text=t,bg=bg,relief=r)
-        sm.updateProgress(newValue=ndbave+30)            #S-meter bar
+        sm.updateProgress(newValue=dbave)            #S-meter bar
 
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
@@ -1279,7 +1283,7 @@ setupmenu.add('command', label = 'Advanced', command = advanced1,
               accelerator='F7')
 setupmenu.add('command', label = 'IQ Mode', command = iq1,
               accelerator='F8')
-setupmenu.add('command', label = 'Frequency Hopping', command = hopping1,
+setupmenu.add('command', label = 'Band Hopping', command = hopping1,
               accelerator='F9')              
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
@@ -1402,10 +1406,10 @@ balloon.bind(sc2,"Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 balloon.bind(bupload,"Check to send spots to WSPRnet.org")
 bupload.place(x=330,y=12, anchor='e')
-bhopping=Checkbutton(iframe2,text='Frequency Hop',justify=RIGHT,variable=hopping.hopping)
+bhopping=Checkbutton(iframe2,text='Band Hop',justify=RIGHT,variable=hopping.hopping)
 bhopping.place(x=445,y=12, anchor='e')
 bhopping.configure(state=DISABLED)
-balloon.bind(bhopping,"Check to frequency hop; configure in Setup->Frequency Hopping")
+balloon.bind(bhopping,"Check to band hop; configure in Setup->Band Hopping")
 lab00=Label(iframe2, text='Band Map').place(x=623,y=10, anchor='e')
 lab02=Label(iframe2,text='',pady=5)
 lab02.place(x=500,y=10, anchor='e')
@@ -1457,19 +1461,18 @@ iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
 lab2=Label(iframe2, text='UTC        dB        DT             Freq             Drift')
-lab2.place(x=165,y=6, anchor='w')
+lab2.place(x=180,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
-#-------------------------------------------------------- Buttons, UTC, etc
-iframe4 = Frame(frame, bd=1, relief=SUNKEN)
+#-------------------------------------------------------- UTC, etc
+iframe4 = Frame(frame, bd=1, relief=FLAT)
 f4aa=Frame(iframe4,height=170,bd=2,relief=RIDGE)
-sm=smeter.Smeter(f4aa,fillColor='slateblue',orientation='vertical', \
-    width=10,height=170,doLabel=0)
+sm=smeter.Smeter(f4aa,fillColor='green',orientation='vertical', \
+    width=10,height=170,doLabel=0,min=0,max=80)
 sm.frame.pack(side=LEFT)
-
 f4aa.pack(side=LEFT,expand=0,fill=Y)
 
-f4a=Frame(iframe4,height=170,bd=2,relief=FLAT)
+f4a=Frame(iframe4,height=170,bd=2,relief=RIDGE)
 
 berase=Button(f4a, text='Erase',underline=0,command=erase,\
               width=9,padx=1,pady=1)
@@ -1483,7 +1486,7 @@ ldate.pack(side=TOP,padx=10,pady=0)
 f4a.pack(side=LEFT,expand=0,fill=Y)
 
 #--------------------------------------------------------- Decoded text box
-f4b=Frame(iframe4,height=170,bd=2,relief=FLAT)
+f4b=Frame(iframe4,height=170,bd=2,relief=RIDGE)
 text=Text(f4b, height=11, width=63, bg='white')
 sb = Scrollbar(f4b, orient=VERTICAL, command=text.yview)
 sb.pack(side=RIGHT, fill=Y)
