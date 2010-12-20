@@ -84,6 +84,7 @@
 2502    SAT-Schneider          DRT1                    0.2         Beta
 2508    mRS                    miniVNA                 0.1         Alpha
 2509    SoftRock               Si570 AVR-USB           0.1         Beta
+2511    KTH-SDR                Si570 AVR-USB           0.1         Beta
 364     Ten-Tec                Delta II                0.1         Untested
 351     Ten-Tec                Omni VI Plus            0.2         Beta
 1603    Ten-Tec                RX-320                  0.6         Stable

@@ -845,7 +845,7 @@ def update():
                     f0.get()*(1000000.0 + advanced.Bcal.get()) + 0.5)
             else:
                 nHz=int(1000000.0*f0.get() + 0.5)
-            if options.rignum.get()==2509:
+            if options.rignum.get()==2509 or options.rignum.get()==2511:
                 nHzLO=nHz - iq.fiq.get()
                 cmd="rigctl -m %d -r %s F %d" % \
                      (options.rignum.get(),options.CatPort.get(),nHzLO)
@@ -1088,7 +1088,7 @@ def update():
             'max':f0.get()+0.001500+0.000100,'maxstrict':0})
     w.acom1.ndebug=ndebug.get()
 
-    if options.rignum.get()==2509:
+    if options.rignum.get()==2509 or options.rignum.get()==2511:
         options.pttmode.set('CAT')
         options.CatPort.set('USB')
     if options.pttmode.get()=='CAT':
@@ -1730,7 +1730,7 @@ root.mainloop()
 
 # Clean up and save user options, then terminate.
 if options.pttmode.get()=='CAT':
-    if options.rignum.get() == 2509:
+    if options.rignum.get()==2509 or options.rignum.get()==2511:
         cmd="rigctl -m %d -r %s T 0" % \
              (options.rignum.get(),options.CatPort.get())
     else:
