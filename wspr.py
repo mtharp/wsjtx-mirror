@@ -77,6 +77,7 @@ ierr=0
 ipctx=IntVar()
 isec0=0
 isync=1
+itx0=0
 loopall=0
 modpixmap0=0
 mrudir=os.getcwd()
@@ -104,6 +105,7 @@ sf0=StringVar()
 sftx=StringVar()
 start_idle=IntVar()
 t0=""
+timer1=0
 txmsg=StringVar()
 nreject=0
 gain=1.0
@@ -777,7 +779,7 @@ def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
-        bandmap,bm,t0,nreject,gain,phdeg,ierr
+        bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -954,9 +956,11 @@ def update():
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
-    if ntr!=ntr0:
+    itx=w.acom1.transmitting
+    if ntr!=ntr0 or itx!=itx0:
         ntr0=ntr
-        if ntr==-1:
+        itx0=int(itx)
+        if ntr==-1 or itx==1:
             transmitting=1
             receiving=0
         elif ntr==0:
@@ -989,7 +993,7 @@ def update():
         else:
             for i in range(15):
                 bandmenu.entryconfig(i,state=NORMAL)
-
+        
     bgcolor='gray85'
     t='Waiting to start'
     bgcolor='pink'
@@ -1154,7 +1158,7 @@ def update():
         advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
         advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
   
-    ldate.after(200,update)
+    timer1=ldate.after(200,update)
     
 #------------------------------------------------------ audio_config
 def audio_config():
@@ -1722,11 +1726,12 @@ t="%.6f" % (ftx.get(),)
 sftx.set(t)
 
 ldate.after(100,update)
-
 ldate.after(100,audio_config)
 
 ##from WsprMod import specjt
 root.mainloop()
+
+ldate.after_cancel(timer1)
 
 # Clean up and save user options, then terminate.
 if options.pttmode.get()=='CAT':

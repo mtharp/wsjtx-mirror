@@ -51,7 +51,7 @@ int th_decode_(void)
 
   if(decode_started>0)  {
     // the following was "< 100":
-    if(time(NULL)-decode_started < 5)  {
+    if(time(NULL)-decode_started < 2)  {
       printf("Attempted to start decoder too soon:  %d   %d",
 	     time(NULL),decode_started);
       return 0;

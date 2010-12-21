@@ -50,7 +50,7 @@ subroutine wspr0_tx(nargs,ntr)
   do ifile=1,nfiles
      if(nfiles.gt.1 .and. nfiles.lt.9999) write(outfile,1010) ifile
 1010 format(i5.5,'.wav')
-     call genmept(call1,grid,ndbm,ntxdf,snrdb,iwave)
+     call genmept(message,ntxdf,snrdb,iwave)
      if(snrdb.eq.11.0) go to 999
      if(outfile.ne."") then
         call wfile5(iwave,NMAX,12000,outfile)

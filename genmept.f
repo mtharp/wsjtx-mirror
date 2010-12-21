@@ -1,16 +1,15 @@
-      subroutine genmept(call1,grid,ndbm,ntxdf,snrdb,iwave)
+      subroutine genmept(message,ntxdf,snrdb,iwave)
 
-C  Encode an MEPT_JT message and generate the corresponding wavefile.
+C  Encode a WSPR message and generate the corresponding wavefile.
 
-      character*12 call1,call2
-      character*4 grid,grid2
+      character*22 message
       parameter (NMAX=120*12000)     !Max length of wave file
       integer*2 iwave(NMAX)          !Generated wave file
       parameter (MAXSYM=176)
       integer*1 symbol(MAXSYM)
       integer*1 data0(11),i1
       integer npr3(162)
-      logical first,lbad1,lbad2
+      logical first
       real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
       equivalence(i1,i4)
       data npr3/
@@ -33,12 +32,7 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          first=.false.
       endif
 
-      call packcall(call1,n1,lbad1)
-      call packgrid(grid,ng,lbad2)
-      n2=128*ng + (ndbm+64)
-!      write(*,3010) n1,n2,call1,grid,ndbm
-! 3010 format(2z12,2x,a12,2x,a4,i6)
-      call pack50(n1,n2,data0)             !Pack 8 bits per byte, add tail
+      call wqencode(message,ntype,data0)
       nbytes=(50+31+7)/8
       call encode232(data0,nbytes,symbol,MAXSYM)  !Convolutional encoding
       call inter_mept(symbol,1)                   !Apply interleaving
@@ -46,16 +40,6 @@ C  Encode an MEPT_JT message and generate the corresponding wavefile.
          i4=0
          i1=symbol(i)
       enddo
-
-      call unpackcall(n1,call2)
-      call unpackgrid(n2/128,grid2)
-      ndbm2=iand(n2,127) - 64
-!      write(*,3010) n1,n2,call2,grid2,ndbm2
-      if(lbad1 .or. lbad2 .or. (call1.ne.call2) .or. 
-     +   (grid.ne.grid2) .or. (ndbm.ne.ndbm2)) then
-         print*,'Error in structure of Tx message'
-         stop
-      endif
 
 C  Set up necessary constants
       tsymbol=8192.d0/12000.d0
