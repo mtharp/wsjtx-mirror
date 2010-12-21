@@ -723,6 +723,7 @@ def put_params(param3=NONE):
         dbm=37
     i1=options.MyCall.get().find('/')
     if dbm<0 and (i1>0 or advanced.igrid6.get()):
+        MsgBox("Negative dBm values are permitted\n only for Type 1 messages.")
         dbm=0
         options.dBm.set(0)
     mindiff=9999
@@ -881,7 +882,10 @@ def update():
                     try:
                         ierr2=os.system(cmd2)
                     except:
+                        ierr2=-1
+                    if ierr2!=0:
                         print 'Execution of "'+cmd2+'" failed.'
+                        MsgBox('Execution of "'+cmd2+'" failed.\nEntering Idle mode.')
             else:
                 print 'Error attempting to set rig frequency.\a'
                 print cmd + '\a'
