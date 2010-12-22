@@ -48,17 +48,6 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
   enddo
   call wqdecode(data0,msg2,ntype2)
 
-!  if(ntune.eq.0) then
-!     call cs_lock('genwspr')
-!     alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
-!     open(13,file=alltxt,status='unknown',position='append')
-!     line=linetx//msg2
-!     write(13,1010) line
-!1010 format(a75)
-!     close(13)
-!     call cs_unlock
-!  endif
-
 ! Set up necessary constants
   tsymbol=4.d0*8192.d0/48000.d0
   dt=1.d0/48000.d0
@@ -126,6 +115,8 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
         endif
      endif
   enddo
+  if(ntune2.lt.0) msg2='Tune'
+  if(ntune2.eq.-4) msg2='ATU tuneup'
   ntune2=0
 
   return

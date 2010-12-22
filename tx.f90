@@ -103,7 +103,7 @@ subroutine tx
   read(18,*,err=10,end=10) snr
 10 close(18)
   call gmtime2(nt,tsec1)
-  if(ntune.eq.0 .and. ntune2.ne.0) ntune2=0
+  if(ntune.eq.0 .and. ntune2.ne.0) ntune2=0      !### ??? ###
   call cs_unlock
 
   newgen=0
@@ -119,7 +119,8 @@ subroutine tx
      call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,   &
        appdir,nappdir,sending,jwave)
      newgen=1
-  else
+  endif
+  if(ntune.eq.0) then
      call cs_lock('tx')
      alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
      open(13,file=alltxt,status='unknown',position='append')

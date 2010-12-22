@@ -145,9 +145,12 @@ subroutine wspr2
      if(pctx.eq.0.0) nrx=1
   endif
 
+  if(transmitting .or. receiving) go to 10
+
   if(pctx.gt.0.0 .and. (ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1))) then
 
      call cs_lock('wspr2')
+     ntune2=ntune
      transmitting=.true.
      call random_number(x)
      if(pctx.lt.50.0) then

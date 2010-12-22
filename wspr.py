@@ -1,4 +1,4 @@
-#--------------------------------------------------------------------- WSPR
+#-------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 from Tkinter import *
@@ -904,6 +904,7 @@ def update():
 
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
+    w.acom1.iband=iband.get()
     try:
         w.acom1.f0=f0.get()
         w.acom1.ftx=ftx.get()
@@ -1715,6 +1716,16 @@ try:
     os.remove('pixmap.dat')
 except:
     pass
+
+##if hopping.hopping.get() and hopping.coord_bands.get() and not idle.get():
+##    tsec=time.time()
+##    utc=time.gmtime(tsec)
+##    ns1=int(tsec) % 1200
+##    b=ns1/120 + 3
+##    if b==12: b=2
+##    if hopping.hoppingflag[b].get():
+##        iband.set(b)
+## Issue rigctl command here
 
 iband0=iband.get()
 graph1.focus_set()
