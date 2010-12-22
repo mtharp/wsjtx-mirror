@@ -34,21 +34,19 @@ subroutine tx
         write(cbaud,'(i6)') nbaud
         write(cdata,'(i1)') ndatabits
         write(cstop,'(i1)') nstopbits
-        chs='None'
-        if(nhandshake.eq.1) chs='XONXOFF'
-        if(nhandshake.eq.2) chs='Hardware'
         cmnd='rigctl '//'-m'//crig//' -r USB T 1'
      else
         write(crig,'(i6)') nrig
         write(cbaud,'(i6)') nbaud
         write(cdata,'(i1)') ndatabits
         write(cstop,'(i1)') nstopbits
-        chs='None'
-        if(nhandshake.eq.1) chs='XONXOFF'
-        if(nhandshake.eq.2) chs='Hardware'
+        do i=40,1,-1
+           if chs(i:i).ne.' ') go to 1
+        enddo
+1       iz=i
         cmnd='rigctl '//'-m'//crig//' -r '//catport//' -s'//cbaud//           &
              ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
-             ' -C serial_handshake='//chs//' T 1'
+             ' -C serial_handshake='//chs(:iz)//' T 1'
 ! Example rigctl command:
 ! rigctl -m 1608 -r /dev/ttyUSB0 -s 57600 -C data_bits=8 -C stop_bits=1 \
 !   -C serial_handshake=Hardware T 1
@@ -56,12 +54,12 @@ subroutine tx
 
      do irpt=1,nrpt
         iret=system(cmnd)
-        if(iret.eq.0) go to 1
+        if(iret.eq.0) go to 2
         print*,'Error executing rigctl to set Tx mode:',irpt,iret
         print*,cmnd
         call msleep(100)
      enddo
-1    continue
+2    continue
 
   else
      if(nport.gt.0 .or. pttport(1:4).eq.'/dev') ierr=ptt(nport,pttport,1,iptt)
@@ -223,7 +221,7 @@ subroutine tx
      else
         cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
              ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
-             ' -C serial_handshake='//chs//' T 0'
+             ' -C serial_handshake='//chs(:iz)//' T 0'
      endif
 
      call cs_lock('tx')

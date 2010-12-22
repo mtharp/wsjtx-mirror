@@ -765,10 +765,8 @@ def put_params(param3=NONE):
     w.acom1.nbaud=options.serial_rate.get()
     w.acom1.ndatabits=options.databits.get()
     w.acom1.nstopbits=options.stopbits.get()
-    nhs=0
-    if options.serial_handshake.get()=='XONXOFF': nhs=1
-    if options.serial_handshake.get()=='Hardware': nhs=2
-    w.acom1.nhandshake=nhs
+    w.acom1.chs=options.serial_handshake.get() + \
+                 '                                        '[:40]
     w.acom1.catport=(options.CatPort.get()+'            ')[:12]
     try:
         w.acom1.nrig=options.rignum.get()
