@@ -8,7 +8,7 @@ subroutine tx
   parameter (NMAX3=4.5*48000)
   character message*22,message0*22,call1*12,cdbm*3
   character*22 msg0,msg1,cwmsg
-  character crig*6,cbaud*6,cdata*1,cstop*1,chs*8
+  character crig*6,cbaud*6,cdata*1,cstop*1
   character cmnd*120,snrfile*80
   character linetx*51,line*75
   character*80 alltxt
@@ -41,7 +41,7 @@ subroutine tx
         write(cdata,'(i1)') ndatabits
         write(cstop,'(i1)') nstopbits
         do i=40,1,-1
-           if chs(i:i).ne.' ') go to 1
+           if(chs(i:i).ne.' ') go to 1
         enddo
 1       iz=i
         cmnd='rigctl '//'-m'//crig//' -r '//catport//' -s'//cbaud//           &
