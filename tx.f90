@@ -46,7 +46,7 @@ subroutine tx
         chs='None'
         if(nhandshake.eq.1) chs='XONXOFF'
         if(nhandshake.eq.2) chs='Hardware'
-        cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
+        cmnd='rigctl '//'-m'//crig//' -r '//catport//' -s'//cbaud//           &
              ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
              ' -C serial_handshake='//chs//' T 1'
 ! Example rigctl command:
@@ -126,8 +126,8 @@ subroutine tx
      alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
      open(13,file=alltxt,status='unknown',position='append')
      line=linetx//message
-     write(13,1010) line
- 1010 format(a75)
+     write(13,1010) line,iband
+ 1010 format(a75,i3)
      close(13)
      call cs_unlock
   endif

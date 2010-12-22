@@ -53,13 +53,13 @@ int th_decode_(void)
     // the following was "< 100":
     if(time(NULL)-decode_started < 2)  {
       printf("Attempted to start decoder too soon:  %d   %d",
-	     time(NULL),decode_started);
+	     (int)time(NULL),decode_started);
       return 0;
     }
     pthread_join(decode_thread,NULL);
     decode_started=0;
   }
-  iret1 = pthread_create(&decode_thread,NULL,decode_,&iarg1);
+  iret1 = pthread_create(&decode_thread,NULL,(void *)decode_,&iarg1);
   if(iret1==0) decode_started=time(NULL);
   return iret1;
 }
