@@ -10,10 +10,11 @@ subroutine tx
   character*22 msg0,msg1,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1
   character cmnd*120,snrfile*80
-  character linetx*51,line*75
+  character linetx*40
   character*80 alltxt
   integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
+  integer ib(14)
   real*8 tsec1,tsec2
   include 'acom1.f90'
   common/acom2/ntune2,linetx
@@ -22,7 +23,8 @@ subroutine tx
   data ntx/0/,ns0/0/
   data message0/'dummy'/,ntxdf0/-999/,ntune0/-999/,snr0/-999.0/
   data iqmode0/-999/,iqtx0/-999/,nrpt/10/
-  save ntx,ns0,message0,ntxdf0,ntune0,snr0,iqmode0,iqtx0
+  data ib/500,160,80,60,40,30,20,17,15,12,10,6,4,2/
+  save ntx,ns0,message0,ntxdf0,ntune0,snr0,iqmode0,iqtx0,ib
 
   nfhopok=0                                ! Transmitting, don't hop 
   ierr=0
@@ -124,9 +126,8 @@ subroutine tx
      call cs_lock('tx')
      alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
      open(13,file=alltxt,status='unknown',position='append')
-     line=linetx//message
-     write(13,1010) line,iband
- 1010 format(a75,i3)
+     write(13,1010) linetx,ib(iband),message
+ 1010 format(a40,i4,' m: ',a22)
      close(13)
      call cs_unlock
   endif

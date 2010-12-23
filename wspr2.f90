@@ -11,7 +11,7 @@ subroutine wspr2
   character message*24,cdbm*4
   real*8 tsec
   include 'acom1.f90'
-  character linetx*51,dectxt*80
+  character linetx*40,dectxt*80
   integer nt(9)
   integer iclock(12)
   common/acom2/ntune2,linetx
@@ -163,7 +163,7 @@ subroutine wspr2
      message=callsign//grid//cdbm
      call msgtrim(message,msglen)
      write(linetx,1030) cdate(3:8),utctime(1:4),ftx
-1030 format(a6,1x,a4,14x,f11.6,2x,'Transmitting ')
+1030 format(a6,1x,a4,f11.6,2x,'Transmitting on ')
      ntr=-1
      nsectx=mod(nsec,86400)
      ntxdone=0
