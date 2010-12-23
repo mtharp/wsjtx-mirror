@@ -7,17 +7,20 @@ subroutine wspr2
 !  16  pixmap.dat
 !  17  audio_caps
 !  18  test.snr
+!  19  wspr.log
 
   character message*24,cdbm*4
-  real*8 tsec
+  real*8 tsec,tsec1
   include 'acom1.f90'
-  character linetx*40,dectxt*80
+  character linetx*40,dectxt*80,logfile*80
   integer nt(9)
   integer iclock(12)
+  integer ib(14)
   common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data nrxnormal/0/,ireset/1/
+  data ib/500,160,80,60,40,30,20,17,15,12,10,6,4,2/
   save ireset
 
   call cs_init
@@ -29,13 +32,14 @@ subroutine wspr2
 1002 format('$EOF')
   call flush(14)
   rewind 14
+  logfile=appdir(:nappdir)//'/wspr.log'
+  open(19,file=logfile,status='unknown',position='append')
   call cs_unlock
 
   npatience=1
   call system_clock(iclock(1))
   call random_seed(PUT=iclock)
   nrx=1
-  
   nfhopping=0 ! hopping scheduling disabled
   nfhopok=0   ! not a good time to hop
 
@@ -65,6 +69,13 @@ subroutine wspr2
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
         (nrxnormal.eq.0 .and. ncal.eq.2) .or.                          &
         ndiskdat.eq.1) then
+        call cs_lock('wspr2')
+        call gmtime2(nt,tsec1)
+        t120=mod(tsec1,120.d0)
+        write(19,1031) cdate(3:8),utctime(1:4),t120,'Dec ',iband,ib(iband)
+1031    format(a6,1x,a4,f7.2,2x,a4,2i4,2x,a22)
+        call flush(19)
+        call cs_unlock
         call startdec
      endif
   endif
@@ -91,8 +102,11 @@ subroutine wspr2
      nsectx=mod(nsec,86400)
      ntune2=ntune
      transmitting=.true.
+     call gmtime2(nt,tsec1)
+     t120=mod(tsec1,120.d0)
+     write(19,1031) cdate(3:8),utctime(1:4),t120,'Test',iband,ib(iband)
+     call flush(19)
      call cs_unlock
-
      call starttx
   endif
 
@@ -104,8 +118,11 @@ subroutine wspr2
      receiving=.true.
      rxtime=utctime(1:4)
      nrxnormal=0
+     call gmtime2(nt,tsec1)
+     t120=mod(tsec1,120.d0)
+     write(19,1031) cdate(3:8),utctime(1:4),t120,'Cal ',iband,ib(iband)
+     call flush(19)
      call cs_unlock
-
      call startrx
   endif
 
@@ -170,8 +187,16 @@ subroutine wspr2
      ntxnext=0
      call cs_unlock
 
-     call gmtime2(nt,tsec0)
-     if(ndevsok.eq.1) call starttx
+     if(ndevsok.eq.1) then
+        call cs_lock('wspr2')
+        call gmtime2(nt,tsec0)
+        t120=mod(tsec0,120.d0)
+        write(19,1031) cdate(3:8),utctime(1:4),t120,'Tx  ',iband,ib(iband),  &
+             message
+        call flush(19)
+        call cs_unlock
+        call starttx
+     endif
 
   else
      receiving=.true.
@@ -179,6 +204,12 @@ subroutine wspr2
      ntr=1
      if(ndevsok.eq.1) then
         nrxnormal=1
+        call cs_lock('wspr2')
+        call gmtime2(nt,tsec1)
+        t120=mod(tsec1,120.d0)
+        write(19,1031) cdate(3:8),utctime(1:4),t120,'Rx  ',iband,ib(iband)
+        call flush(19)
+        call cs_unlock
         call startrx
      endif
      nrx=nrx-1
