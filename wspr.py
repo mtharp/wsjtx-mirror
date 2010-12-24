@@ -896,7 +896,7 @@ def update():
                 sftx.set(t)
 ##            if ierr==0 and ierr2==0 and w.acom1.nfhopping==1 and hopped==1:
             if ierr==0 and ierr2==0 and w.acom1.nfhopping==1 and hopped==1 \
-                   and hopping.tuneupflag[iband.get()].get(): w.acom1.ntune=-4
+                   and hopping.tuneupflag[iband.get()].get(): w.acom1.ntune=-3
         else:
             iband0=iband.get()
         iq.ib.set(iband.get())

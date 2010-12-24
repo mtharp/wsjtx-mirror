@@ -2,17 +2,19 @@ subroutine rxtxcoord(ns0,pctx,nrx,ntxnext)
 
 ! Determine Rx or Tx in coordinated hopping mode.
 
-  integer tx(10,6)    !T/R array for 2 hours: 10 bands, 6 time slots per band
+  integer tx(10,6)    !T/R array for 2 hours: 10 bands, 6 time slots
   real r(6)           !Random numbers
   integer ii(1)
-  data nsec0/-10000000/
-  save nsec0,tx
+  data n2hr0/-999/
+  save n2hr0,tx
   
-  nsec=(ns0+10)/120
+  nsec=(ns0+10)/120                   !Round up to start of next 2-min slot
   nsec=nsec*120
-  if(abs(nsec-nsec0).gt.7200 - 10) then
-! At startup and whenever 2 hours have elapsed, compute new Rx/Tx pattern
-     nsec0=nsec                       !Save time when new array is computed
+  n2hr=nsec/7200                      !2-hour slot number
+
+  if(n2hr.ne.n2hr0) then
+! Compute a new Rx/Tx pattern for this 2-hour interval
+     n2hr0=n2hr                       !Mark this one as done
      tx=0                             !Clear the tx array
      do j=1,10                        !Loop over all 10 bands
         call random_number(r)
@@ -50,11 +52,10 @@ subroutine rxtxcoord(ns0,pctx,nrx,ntxnext)
      enddo
 
 ! We now have 1 to 3 Tx periods per band in the 2-hour interval.
-
   endif
 
   iband=mod(nsec/120,10) + 1
-  iseq=mod((nsec-nsec0)/1200,6) + 1
+  iseq=mod(nsec/1200,6) + 1
   if(iseq.lt.1) iseq=1
   if(tx(iband,iseq).eq.1) then
      ntxnext=1
