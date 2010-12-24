@@ -9,7 +9,7 @@ subroutine wspr2
 !  18  test.snr
 !  19  wspr.log
 
-  character message*24,cdbm*4,type*4
+  character message*24,cdbm*4
   real*8 tsec,tsec1
   include 'acom1.f90'
   character linetx*40,dectxt*80,logfile*80
@@ -104,10 +104,11 @@ subroutine wspr2
      transmitting=.true.
      call gmtime2(nt,tsec1)
      t120=mod(tsec1,120.d0)
-     type='Tune'
-     if(ntune.eq.-3) type='ATU '
-     if(type.eq.'Tune' .or. t120.lt.116.5) write(19,1031) cdate(3:8),   &
-          utctime(1:4),t120,type,iband,ib(iband)
+     if(ntune.eq.-3 .and. t120.lt.116.5) then
+        write(19,1031) cdate(3:8),utctime(1:4),t120,'ATU ',iband,ib(iband)
+     else
+        write(19,1031) cdate(3:8),utctime(1:4),t120,'Tune',iband,ib(iband)
+     endif
      call flush(19)
      call cs_unlock
      call starttx
