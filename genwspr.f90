@@ -116,7 +116,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
      endif
   enddo
   if(ntune2.lt.0) msg2='Tune'
-  if(ntune2.eq.-4) msg2='ATU tuneup'
+  if(ntune2.eq.-3) msg2='ATU tuneup'
   ntune2=0
 
   return
