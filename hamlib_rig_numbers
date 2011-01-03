@@ -6,6 +6,7 @@
 2501    Elektor                Elektor 3/04            0.4         Stable
 2507    Elektor                Elektor SDR-USB         0.3         Stable
 2301    Flex-radio             SDR-1000                0.2         Untested
+1901    Hamlib                 RPC rig                 0.3         Beta
 354     Icom                   IC ID-1                 0.7         Untested
 303     Icom                   IC-271                  0.7         Untested
 304     Icom                   IC-275                  0.7.1       Beta

@@ -850,6 +850,8 @@ def update():
                 nHzLO=nHz - iq.fiq.get()
                 cmd="rigctl -m %d -r %s F %d" % \
                      (options.rignum.get(),options.CatPort.get(),nHzLO)
+            elif options.rignum.get()==1901:
+                cmd="rigctl -m 1901 -r localhost F %d" % (nHz,)
             else:
                 cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                      (options.rignum.get(),options.CatPort.get(), \

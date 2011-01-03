@@ -37,6 +37,8 @@ subroutine tx
         write(cdata,'(i1)') ndatabits
         write(cstop,'(i1)') nstopbits
         cmnd='rigctl '//'-m'//crig//' -r USB T 1'
+     else if(nrig.eq.1901) then
+        cmnd='rigctl -m 1901 -r localhost T 1'
      else
         write(crig,'(i6)') nrig
         write(cbaud,'(i6)') nbaud
@@ -220,6 +222,8 @@ subroutine tx
   if(pttmode.eq.'CAT') then
      if(nrig.eq.2509) then
         cmnd='rigctl '//'-m'//crig//' -r USB T 0'
+     else if(nrig.eq.1901) then
+        cmnd='rigctl -m 1901 -r localhost T 0'
      else
         cmnd='rigctl '//'-m'//crig//' -r'//catport//' -s'//cbaud//           &
              ' -C data_bits='//cdata//' -C stop_bits='//cstop//              &
