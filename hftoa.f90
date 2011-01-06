@@ -5,7 +5,7 @@ program hftoa
   parameter (NMAX=300*48000)                 !Max length of data
   integer*2 idat(NMAX)                       !Sampled data
   character arg*12                           !Command-line arg
-  character label*7                         !Label for filename
+  character label*7                          !Label for filename
   character cdate*8                          !CCYYMMDD
   character ctime*10                         !HHMMSS.SSS
   character start_time*4                     !Requested start time (HHMM)
@@ -16,11 +16,11 @@ program hftoa
   nargs=iargc()
   if(nargs.ne.4) then
      print*,'Usage:   hftoa  <label> <fs> <nsec> <tstart>'
-     print*,'Example: hftoa    K1JT  22050   300    2145'
+     print*,'Example: hftoa    K1JT  22050  300    2145'
      go to 999
   endif
   call getarg(1,arg)
-  read(arg,*) label                   !Callsign (or other label for filename)
+  read(arg,*) label                    !Label for filename
   call getarg(2,arg)
   read(arg,*) nfsample                 !Sample rate (Hz)
   call getarg(3,arg)
