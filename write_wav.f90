@@ -1,8 +1,8 @@
-subroutine write_wav(lu,idat,npts,nfsample,nchan)
+subroutine write_wav(lu,idat,ntot,nfsample,nchan)
 
 ! Write a wavefile to logical unit lu.
 
-  integer*2 idat(npts)
+  integer*2 idat(ntot)
   integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
   character*4 ariff,awave,afmt,adata
   integer*1 hdr(44)
@@ -22,7 +22,7 @@ subroutine write_wav(lu,idat,npts,nfsample,nchan)
   nsamrate=nfsample                     !Sample rate
   nbytesec=nfsample*nchan2*nbitsam2/8   !Bytes per second
   nbytesam2=nchan2*nbitsam2/8           !Block-align               
-  ndata=npts*nchan2*nbitsam2/8
+  ndata=ntot*nbitsam2/8
   nbytes=ndata+44
   nchunk=nbytes-8
 

@@ -299,7 +299,7 @@ Propagation Reporter".  The program generates and decodes
 a digital soundcard mode optimized for beacon-like
 transmissions on the LF, MF, and HF bands.
 
-Copyright (c) 2008-2010 by Joseph H. Taylor, Jr., K1JT, with
+Copyright (c) 2008-2011 by Joseph H. Taylor, Jr., K1JT, with
 contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
 Open Source software, licensed under the GNU General Public
 License (GPL).  Source code and programming information may
@@ -869,6 +869,8 @@ def update():
                 f=open(appdir+'/fmt.ini',mode='w')
                 f.write(cmd+'\n')
                 f.write(str(g.ndevin.get())+'\n')
+                f.write(options.MyCall.get()+'\n')
+                f.write(options.MyGrid.get()+'\n')
                 f.close()
 
                 cmd2=''

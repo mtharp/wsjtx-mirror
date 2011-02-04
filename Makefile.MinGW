@@ -100,6 +100,12 @@ wspr0.exe: $(OBJS1)
 	$(FC) -o wspr0 $(FFLAGS) $(OBJS1) libportaudio.a \
 	   c:\MinGW\lib\libwinmm.a libfftw3f_win.a
 
+OBJS4 = hftoa.o write_wav.o sound.o fil1.o getutc.o gmtime2.o
+
+hftoa.exe: $(OBJS4)
+	$(FC) -o hftoa.exe $(FFLAGS) $(OBJS4) libportaudio.a \
+	   c:\MinGW\lib\libwinmm.a
+
 sound.o: sound.c
 	$(CC) -c sound.c
 gmtime2.o: gmtime2.c
