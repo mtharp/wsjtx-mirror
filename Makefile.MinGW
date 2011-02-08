@@ -17,7 +17,8 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe
+all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe \
+	hftoa.exe ccf.exe
 
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
@@ -105,6 +106,12 @@ OBJS4 = hftoa.o write_wav.o sound.o fil1.o getutc.o gmtime2.o
 hftoa.exe: $(OBJS4)
 	$(FC) -o hftoa.exe $(FFLAGS) $(OBJS4) libportaudio.a \
 	   c:\MinGW\lib\libwinmm.a
+
+OBJS5 = ccf.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
+        fold1pps.o resample.o
+
+ccf.exe: $(OBJS5)
+	$(FC) -o ccf.exe $(FFLAGS) $(OBJS5) libfftw3f_win.a libsamplerate.a
 
 sound.o: sound.c
 	$(CC) -c sound.c
