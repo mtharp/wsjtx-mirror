@@ -17,7 +17,7 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0
+all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa
 build:	wspr
 
 wspr:	WsprMod/w.so
@@ -119,6 +119,11 @@ fmeasure: fmeasure.f90
 
 wspr0:	$(OBJS1)
 	$(FC) -o wspr0 $(FFLAGS) $(OBJS1) -lportaudio -lfftw3f
+
+OBJS4 = hftoa.o write_wav.o sound.o fil1.o getutc.o gmtime2.o
+
+hftoa:  $(OBJS4)
+	$(FC) -o hftoa $(FFLAGS) $(OBJS4) -lportaudio 
 
 install: WsprMod/w.so
 	${RM} -rf build/
