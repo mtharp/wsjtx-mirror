@@ -9,16 +9,13 @@ program hftoa
   character label*7                          !Label for filename
   character cdate*8                          !CCYYMMDD
   character ctime*10                         !HHMMSS.SSS
-  character hdr_ctime*10                     !HHMMSS.SSS
   character start_time*4                     !Requested start time (HHMM)
   character outfile*40                       !Output filename
   character cmnd*120                         !Command to set rig frequency
-  character*4 mode,hdrmode
-  character*6 mycall,mygrid,hdrcall,hdrgrid
-  real*8 fkhz,hdrfreq,tsec,hdrtsec
+  character*4 mode
+  character*6 mycall,mygrid
+  real*8 fkhz,tsec
   integer soundin
-  common/toacom/hdrtsec,hdrfreq,hdrcall,hdrgrid,hdrmode,hdr_ctime
-  equivalence (id2,hdrfreq)
 
   nargs=iargc()
   if(nargs.ne.4) then
@@ -92,13 +89,8 @@ program hftoa
 
   call fil1(id1,npts,id2,ntot)                     !Downsample to 12 kHz
 
-  hdrtsec=tsec
-  hdrfreq=fkhz               !Copy hdr info over the first few samples in id2
-  hdrcall=mycall
-  hdrgrid=mygrid
-  hdrmode=mode
-  hdr_ctime=ctime
   call write_wav(12,id2,ntot,nfsample/4,nchan)     !Write wav file to disk
+  write(12) tsec,fkhz,mycall,mygrid,mode,ctime     !Append header information
 
   sum=0.
   xmax1=0.
