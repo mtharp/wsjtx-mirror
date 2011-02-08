@@ -18,18 +18,22 @@ program hftoa
   integer soundin
 
   nargs=iargc()
-  if(nargs.ne.4) then
-     print*,'Usage:   hftoa <f_kHz> <mode> <nsec> <tstart>'
-     print*,'Example: hftoa   3990    AM     300    2145'
+  if(nargs.ne.6) then
+     print*,'Usage:   hftoa <fsample> <ndown> <f_kHz> <mode> <nsec> <tstart>'
+     print*,'Example: hftoa   48000      4     3990     AM     300    2145'
      go to 999
   endif
 
   call getarg(1,arg)
-  read(arg,*) fkhz                     !Frequency in kHz
-  call getarg(2,mode)                  !Rx mode, e.g. AM, USB
+  read(arg,*) nfsample                 !Sample rate (Hz)
+  call getarg(2,arg)
+  read(arg,*) ndown                    !Downsampling factor (1 or 4)
   call getarg(3,arg)
+  read(arg,*) fkhz                     !Rx frequency (kHz)
+  call getarg(4,mode)                  !Rx mode, e.g. AM, USB, LSB
+  call getarg(5,arg)
   read(arg,*) nsec                     !Duration of recording (s)
-  call getarg(4,arg)
+  call getarg(6,arg)
   read(arg,*) start_time               !Start time (HHMM)
 
   open(10,file='fmt.ini',status='old',err=910)
@@ -51,6 +55,7 @@ program hftoa
 
   if(mode.eq.'am  ') mode='AM  '
   if(mode.eq.'usb ') mode='USB '
+  if(mode.eq.'lsb ') mode='LSB '
   cmnd(i1+1:)='M '//mode//' 0'
   iret=system(cmnd)                          !Set Rx mode
   if(iret.ne.0) then
@@ -60,7 +65,6 @@ program hftoa
   endif
 
   nchan=1
-  nfsample=48000
 
   call soundinit                             !Initialize Portaudio
 
@@ -87,9 +91,12 @@ program hftoa
      stop
   endif
 
-  call fil1(id1,npts,id2,ntot)                     !Downsample to 12 kHz
+  if(ndown.eq.4) then
+     call fil1(id1,npts,id2,ntot)                     !Downsample by 1/4
+     nfsample=nfsample/4
+  endif
 
-  call write_wav(12,id2,ntot,nfsample/4,nchan)     !Write wav file to disk
+  call write_wav(12,id2,ntot,nfsample,nchan)       !Write wav file to disk
   write(12) tsec,fkhz,mycall,mygrid,mode,ctime     !Append header information
 
   sum=0.
@@ -108,7 +115,7 @@ program hftoa
   rms1=sqrt(sq/(ntot-1))
 
   write(*,1100) ave1,rms1,xmax1
-1100 format('Ave:',f8.1,'   Rms:',f8.1,'   MaxAbs:',f8.1)
+1100 format('Ave:',f8.1,'   Rms:',f8.1,'   Max:',f8.1)
   go to 999
 
 910 print*,'Cannot open file: fmt.ini'
