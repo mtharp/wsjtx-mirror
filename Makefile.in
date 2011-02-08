@@ -120,7 +120,7 @@ fmeasure: fmeasure.f90
 wspr0:	$(OBJS1)
 	$(FC) -o wspr0 $(FFLAGS) $(OBJS1) -lportaudio -lfftw3f
 
-OBJS4 = hftoa.o write_wav.o sound.o fil1.o getutc.o gmtime2.o
+OBJS4 = hftoa.o write_wav.o sound.o fil1.o averms.o getutc.o gmtime2.o
 
 hftoa:  $(OBJS4)
 	$(FC) -o hftoa $(FFLAGS) $(OBJS4) -lportaudio 

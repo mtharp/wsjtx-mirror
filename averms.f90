@@ -1,4 +1,4 @@
-subroutine getrms(x,npts,ave,rms,xmax)
+subroutine averms(x,npts,ave,rms,xmax)
 
   real x(npts)
 
@@ -17,4 +17,4 @@ subroutine getrms(x,npts,ave,rms,xmax)
   rms=sqrt(sq/(npts-1))
   
   return
-end subroutine getrms
+end subroutine averms

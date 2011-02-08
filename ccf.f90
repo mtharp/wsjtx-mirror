@@ -21,13 +21,18 @@ program ccf
   equivalence (xx1,c1),(xx2,c2),(xx,cc)
 
   nargs=iargc()
-  if(nargs.ne.2) then
-     print*,'Usage: ccf <file1> <file2>'
+  if(nargs.ne.4) then
+     print*,'Usage:   ccf <f1>  <f2>       <file1>                <file2>'
+     print*,'Example: ccf  500  2500  K1JT_110208_210000.wav AA6E_110208_210000.wav '
      go to 999
   endif
 
-  call getarg(1,file1)
-  call getarg(2,file2)
+  call getarg(1,arg)
+  read(arg,*) nf1
+  call getarg(2,arg)
+  read(arg,*) nf2
+  call getarg(3,file1)
+  call getarg(4,file2)
   open(12,file=file1,access='stream',status='old')
   call read_wav(12,id1,npts1,nfs1,nch1)       !Read data from disk
   close(12)
@@ -56,8 +61,8 @@ program ccf
      x1(i)=id1(i)
      x2(i)=id2(i)
   enddo
-  call getrms(x1,npts1,ave1,rms1,xmax1)       !Get ave, rms
-  call getrms(x2,npts1,ave2,rms2,xmax2)
+  call averms(x1,npts1,ave1,rms1,xmax1)       !Get ave, rms
+  call averms(x2,npts1,ave2,rms2,xmax2)
   x1(:npts)=(1.0/rms1)*(x1(:npts)-ave1)       !Remove DC and normalize
   x2(:npts)=(1.0/rms2)*(x2(:npts)-ave2)
 
@@ -162,8 +167,8 @@ program ccf
 
   fac=1.e-12
   cc=0.
-  ia=500.0/df                               !Define rectangular passband
-  ib=2500.0/df
+  ia=nf1/df                               !Define rectangular passband
+  ib=nf2/df
   do i=ia,ib
      j=nint(0.01*i*df)
      z1=c1(i)/cal1(j)                       !Apply calibrations

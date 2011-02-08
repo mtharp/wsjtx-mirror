@@ -126,4 +126,5 @@ pkg: WSPR.EXE wspr.iss
 
 clean:
 	rm -f *.o WSPR.EXE WsprMod/w.pyd wspr.spec Output/setup.exe \
-	  fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe
+	  fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe hftoa.exe \
+	  ccf.exe
