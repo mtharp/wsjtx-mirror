@@ -14,6 +14,7 @@ program ccf
   integer resample
   real xx1(NFFTMAX),xx2(NFFTMAX),xx(NFFTMAX),xx1pps(NFFTMAX)
   real xx1a(NFFTMAX),xx2a(NFFTMAX)
+  real fil(0:NHMAX)
   complex c1(0:NHMAX),c2(0:NHMAX),cc(0:NHMAX)
   complex z1,z2
   complex cal1(35),cal2(35)
@@ -76,7 +77,7 @@ program ccf
 1010 format('File',i2,':',i6,i3,i9,3f8.1,f11.4,f8.1,i6)
 
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
-  ntype=2
+  ntype=1
   samfac=nfs/p1
   ierr=resample(x1,xx1,samfac,npts,ntype)    !Resample to nfs Hz, exactly
   if(ierr.ne.0) print*,'Resample error.',samfac
@@ -102,8 +103,8 @@ program ccf
   prof1=0.
   prof2=0.
   do i=1,npts,nfs                           !Fold at p=nfs (exactly)
-     prof1=prof1 + xx1a(i:i+ip-1)
-     prof2=prof2 + xx2a(i:i+ip-1)
+     prof1(:ip)=prof1(:ip) + xx1a(i:i+ip-1)
+     prof2(:ip)=prof2(:ip) + xx2a(i:i+ip-1)
   enddo
 
   pmin1=0.
@@ -133,10 +134,9 @@ program ccf
   do i=-20,250
      j=i
      if(j.lt.1) j=j+ip
-     write(32,1020) i,1000.0*i*dt,xx1(j),xx2(j)
-1020 format(i6,f12.3,2f10.3)
+     write(32,1020) 1000.0*i*dt,xx1(j),xx2(j)
+1020 format(f12.3,2f10.3)
   enddo
-
 
   call four2a(xx1,ip,1,-1,0)                !FFTs of 1 PPS profiles
   call four2a(xx2,ip,1,-1,0)
@@ -151,8 +151,8 @@ program ccf
      s2=real(z2)**2 + aimag(z2)**2
      pha1=atan2(aimag(z1),real(z1))
      pha2=atan2(aimag(z2),real(z2))
-     write(33,1030) i,s1,db(s1),pha1,s2,db(s2),pha2
-1030 format(i6,2(f10.0,2f10.3))
+     write(33,1030) i,db(s1),pha1,db(s2),pha2
+1030 format(i6,4f10.3)
   enddo
 
   xx1=xx1a
@@ -162,49 +162,59 @@ program ccf
      xx2(i:i+nfs-200)=0.
   enddo
 
-  call four2a(xx1,nfft,1,-1,0)              !Forward FFTs
+  call four2a(xx1,nfft,1,-1,0)              !Forward FFTs of 1PPS pulses
   call four2a(xx2,nfft,1,-1,0)
 
   fac=1.e-12
   cc=0.
-  ia=nf1/df                               !Define rectangular passband
-  ib=nf2/df
+  ia=100/df                                 !Define rectangular passband
+  ib=3500/df
+  bw=nf2
+  fil=0.
   do i=ia,ib
      j=nint(0.01*i*df)
-     z1=c1(i)/cal1(j)                       !Apply calibrations
-     z2=c2(i)/cal2(j)
+!     z1=c1(i)/cal1(j)                       !Apply calibrations
+!     z2=c2(i)/cal2(j)
+     z1=c1(i)
+     z2=c2(i)
      cc(i)=fac*z1*conjg(z2)                 !Multiply transforms
+     f=i*df
+     fil(i)=exp(-((f-nf1)/(0.5*bw))**2)
+     cc(i)=cc(i)*fil(i)
   enddo
 
-  call four2a(cc,nfft,1,1,-1)               !Inverse FFT to get CCF
+  call four2a(cc,nfft,1,1,-1)        !Inverse FFT ==> CCF of 1 PPS pulses
   xx1pps=xx*sqrt(nfs/200.0)
 
   xx1=xx1a
   xx2=xx2a
-  do i=1,npts,nfs                           !Keep all but the 1PPS pulse
+  do i=1,npts,nfs                           !Keep signal without 1PPS pulses
      xx1(i:i+200)=0.
      xx2(i:i+200)=0.
   enddo
 
-  call four2a(xx1,nfft,1,-1,0)              !Forward FFTs
+  call four2a(xx1,nfft,1,-1,0)              !Forward FFTs of signal
   call four2a(xx2,nfft,1,-1,0)
 
-  fac=1.e-12
+  fac=8*1.e-12
   cc=0.
   do i=ia,ib
      j=nint(0.01*i*df)
-     z1=c1(i)/cal1(j)                       !Apply calibrations
-     z2=c2(i)/cal2(j)
+!     z1=c1(i)/cal1(j)                       !Apply calibrations
+!     z2=c2(i)/cal2(j)
+     z1=c1(i)
+     z2=c2(i)
      cc(i)=fac*z1*conjg(z2)                 !Multiply transforms
+     cc(i)=cc(i)*fil(i)
   enddo
 
-  call four2a(cc,nfft,1,1,-1)               !Inverse FFT to get CCF
+  call four2a(cc,nfft,1,1,-1)               !Inverse FFT ==> CCF of signal
 
   do i=-30,30
      j=i
      if(j.le.0) j=i+nfft
-     write(34,1110) 1000.0*i*dt,xx1pps(j),xx(j) !Write CCFs to disk
-1110 format(1f0.3,2f12.3)
+     write(34,1110) 1000.0*(i-1)*dt,xx1pps(j),xx(j) !Write CCFs to disk
+1110 format(f10.3,2f12.3)
   enddo
 
 999 end program ccf
