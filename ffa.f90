@@ -90,10 +90,8 @@ subroutine ffa(dat,ndim,npts,ip,prof,pmax,pk,ipk)
 
   pk=0.
   do i=1,ip
-!     ptest=abs(prof(i))
-     ptest=-prof(i)
-     if(ptest.gt.pk) then
-        pk=ptest
+     if(abs(prof(i)).gt.abs(pk)) then
+        pk=prof(i)
         ipk=i
      endif
   enddo

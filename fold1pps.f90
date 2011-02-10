@@ -1,19 +1,24 @@
 subroutine fold1pps(x,npts,ip1,ip2,prof,p,pk,ipk)
 
+  parameter (NFSMAX=48000)
   real x(npts)
-  real proftmp(12005),prof(12005)
+  real proftmp(NFSMAX),prof(NFSMAX)
   real*8 p,ptmp
 
   pk=0.
   do ip=ip1,ip2
      call ffa(x,npts,npts,ip,proftmp,ptmp,pktmp,ipktmp)
-     if(pktmp.gt.pk) then
+     if(abs(pktmp).gt.abs(pk)) then
         p=ptmp
         pk=pktmp
         ipk=ipktmp
-        prof=proftmp
+        prof(:ip)=proftmp(:ip)
      endif
   enddo
+  ip=p
+  if(pk.lt.0.0) then
+     prof(:ip)=-prof(:ip)
+  endif
 
   return
 end subroutine fold1pps
