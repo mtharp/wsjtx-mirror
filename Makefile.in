@@ -131,11 +131,11 @@ OBJS5 = ccf.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
 ccf:    $(OBJS5)
 	$(FC) -o ccf $(FFLAGS) $(OBJS5) -lfftw3f -lsamplerate
 
-OBJS6 = wwv.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
-        fold1pps.o resample.o
+OBJS6 = wwv.o read_wav.o averms.o db.o ffa.o fold1pps.o getutc.o \
+	gmtime2.o sound.o resample.o
 
 wwv:    $(OBJS6)
-	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lfftw3f -lsamplerate
+	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lportaudio -lsamplerate
 
 install: WsprMod/w.so
 	${RM} -rf build/
