@@ -8,7 +8,7 @@ program wwv
   character arg*12                           !Command-line arg
   character cdate*8                          !CCYYMMDD
   character ctime*10                         !HHMMSS.SSS
-  character cmnd*120                         !Command to set rig frequency
+  character*120 cmnd0,cmnd                   !Command to set rig frequency
   character*4 cwwv
   character*6 mycall,mygrid
   real*8 tsec,tsec0,fkhz,p1,samfac
@@ -18,47 +18,36 @@ program wwv
   real ccf1(0:NFSMAX/40)
   integer soundin
   integer resample
+  integer nkhz(0:4)
+  data nkhz/2500,5000,10000,15000,20000/
+  data nloop/-1/,nHz0/-99/
 
   nargs=iargc()
-  if(nargs.ne.3) then
-     print*,'Usage:    wwv  <fsample> <f_kHz> <nsec>'
-     print*,'Example:  wwv    48000    10000    60'
+  if(nargs.ne.4) then
+     print*,'Usage:    wwv  <fsample> <f_kHz> <nsave> <nsec>'
+     print*,'Example:  wwv    48000    10000     0      60'
      go to 999
   endif
 
   call getarg(1,arg)
-  read(arg,*) nfs                 !Sample rate (Hz)
+  read(arg,*) nfs                      !Sample rate (Hz)
   call getarg(2,arg)
   read(arg,*) fkhz                     !Rx frequency (kHz)
   call getarg(3,arg)
-  read(arg,*) nsec                     !Duration of recording (s)
+  read(arg,*) nsave                    !nsave=1 to save all profiles and ccfs
+  call getarg(4,arg)
+  read(arg,*) nsec                     !Duration of each recording (s)
 
   open(10,file='fmt.ini',status='old',err=910)
-  read(10,'(a120)') cmnd              !Get rigctl command to set frequency
+  read(10,'(a120)') cmnd0              !Get rigctl command to set frequency
   read(10,*) ndevin
   read(10,*) mycall
   read(10,*) mygrid
   close(10)
 
   open(16,file='delay.dat',status='unknown',position='append')
+  open(20,file='wwv.bin',form='unformatted',status='unknown',position='append')
 
-  nHz=nint(1.d3*fkhz)
-  i1=index(cmnd,' F ')
-  write(cmnd(i1+2:),*) nHz                   !Insert desired frequency
-  iret=system(cmnd)                          !Set Rx frequency
-  if(iret.ne.0) then
-     print*,'Error executing rigctl command to set frequency:'
-     print*,cmnd
-     go to 999
-  endif
-
-  cmnd(i1+1:)='M AM 0'
-  iret=system(cmnd)                          !Set Rx mode
-  if(iret.ne.0) then
-     print*,'Error executing rigctl command to set Rx mode:'
-     print*,cmnd
-     go to 999
-  endif
 
   call soundinit                             !Initialize Portaudio
 
@@ -72,7 +61,37 @@ program wwv
 
   call getutc(cdate,ctime,tsec0)
 
-10 call getutc(cdate,ctime,tsec)
+10 nloop=nloop+1
+
+  if(fkhz.gt.0.d0) then
+     nHz=nint(1.d3*fkhz)
+  else
+     nHz=1000*nkhz(mod(nloop,5))
+  endif
+  
+  if(nHz.ne.nHz0) then
+     cmnd=cmnd0
+     i1=index(cmnd,' F ')
+     write(cmnd(i1+2:),*) nHz                   !Insert desired frequency
+     iret=system(cmnd)                          !Set Rx frequency
+     if(iret.ne.0) then
+        print*,'Error executing rigctl command to set frequency:'
+        print*,cmnd
+        go to 999
+     endif
+
+     cmnd(i1+1:)='M AM 0'
+     iret=system(cmnd)                          !Set Rx mode
+     if(iret.ne.0) then
+        print*,'Error executing rigctl command to set Rx mode:'
+        print*,cmnd
+        go to 999
+     endif
+     nHz0=nHz
+  endif
+
+  call getutc(cdate,ctime,tsec)
+
   ierr=soundin(ndevin,nfs,id,npts,nchan-1)   !Get audio data
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
@@ -155,15 +174,21 @@ program wwv
   hrs=mod(tsec,86400.d0)/3600
   read(cdate(7:8),*) nday
   day=nday + hrs/24.0
-  nkhz=nint(fkhz)
-  write(*,1012)  cdate,ctime(:6),day,delay,ccfmax1,nkhz,p1,mycall,mygrid
-  write(16,1012) cdate,ctime(:6),day,delay,ccfmax1,nkhz,p1,mycall,mygrid
+  ikhz=nhz/1000
+  write(*,1012)  cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid
+  write(16,1012) cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid
 1012 format(a8,2x,a6,f11.5,f8.2,f10.3,i7,f10.2,1x,a6,1x,a6)
 
 !  call flush(13)
 !  call flush(14)
 !  call flush(15)
   call flush(16)
+
+  if(nsave.gt.0) then
+     write(20)  cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid,  &
+          prof1(:ip),ccf1(:lagmax)
+     call flush(20)
+  endif
 
   go to 10
 
