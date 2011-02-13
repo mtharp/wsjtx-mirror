@@ -14,6 +14,7 @@ program wwv
   real*8 tsec,tsec0,fkhz,p1,samfac
   real x1(NMAX),xx1(NMAX)
   real prof1(NFSMAX)
+  real xcal(NFSMAX)
   real tick1(NFSMAX/200)
   real ccf1(0:NFSMAX/40)
   integer soundin
@@ -23,20 +24,12 @@ program wwv
   data nloop/-1/,nHz0/-99/
 
   nargs=iargc()
-  if(nargs.ne.4) then
-     print*,'Usage:    wwv  <fsample> <f_kHz> <nsave> <nsec>'
-     print*,'Example:  wwv    48000    10000     0      60'
+  if(nargs.lt.1 .or. nargs.gt.2) then
+     print*,'Usage: wwv cal <nsec>'
+     print*,'       wwv <f_kHz>'
+     print*,'       wwv all'
      go to 999
   endif
-
-  call getarg(1,arg)
-  read(arg,*) nfs                      !Sample rate (Hz)
-  call getarg(2,arg)
-  read(arg,*) fkhz                     !Rx frequency (kHz)
-  call getarg(3,arg)
-  read(arg,*) nsave                    !nsave=1 to save all profiles and ccfs
-  call getarg(4,arg)
-  read(arg,*) nsec                     !Duration of each recording (s)
 
   open(10,file='fmt.ini',status='old',err=910)
   read(10,'(a120)') cmnd0              !Get rigctl command to set frequency
@@ -45,15 +38,35 @@ program wwv
   read(10,*) mygrid
   close(10)
 
+  nfs=48000                                  !Sample rate
+  nchan=1
+  dt=1.0/nfs
+  call soundinit                             !Initialize Portaudio
+
+  call getarg(1,arg)
+  if(arg.eq.'cal' .or. arg.eq.'CAL') then
+     call getarg(2,arg)
+     read(arg,*) nsec
+     call calobs(nfs,nsec,ndevin,id,x1,prof1)
+     go to 999
+  endif
+
+  fkhz=0.
+  if(arg.ne.'all' .and. arg.ne.'ALL') read(arg,*) fkhz    !Rx frequency (kHz)
+
+  open(10,file='cal.dat',status='old',err=920)
+  read(10,1000) p1
+1000 format(76x,f12.4)
+  do i=1,nfs
+     read(10,1002) xcal(i)
+1002 format(10x,f10.3)
+  enddo
+  close(10)
+
   open(16,file='delay.dat',status='unknown',position='append')
   open(20,file='wwv.bin',form='unformatted',status='unknown',position='append')
 
-
-  call soundinit                             !Initialize Portaudio
-
-  npts=nfs*nsec
-  nchan=1
-  dt=1.0/nfs
+  npts=nfs*51
 
   do i=1,nfs/200
      tick1(i)=sin(6.283185307*1000.0*dt*i)
@@ -91,6 +104,10 @@ program wwv
   endif
 
   call getutc(cdate,ctime,tsec)
+  do while (ctime(5:6).ne.'01')
+     call getutc(cdate,ctime,tsec)
+     call msleep(100)
+  enddo
 
   ierr=soundin(ndevin,nfs,id,npts,nchan-1)   !Get audio data
   if(ierr.ne.0) then
@@ -136,15 +153,16 @@ program wwv
 !1020 format(f12.3,f10.3)
 !  enddo
 
-!  ia=-0.002/dt
-!  ib=+0.025/dt
-!  do i=ia,ib
-!     j=i+ipk
-!     if(j.lt.1) j=j+ip
-!     if(j.gt.ip) j=j-ip
-!     write(14,1030) 1000.0*i*dt,prof1(j)
-!1030 format(f12.3,f10.3)
-!  enddo
+  rewind 14
+  ia=-0.002/dt
+  ib=+0.025/dt
+  do i=ia,ib
+     j=i+ipk
+     if(j.lt.1) j=j+ip
+     if(j.gt.ip) j=j-ip
+     write(14,1030) 1000.0*i*dt,prof1(j)
+1030 format(f12.3,f10.3)
+  enddo
 
   lag1=nint(nfs*0.002)
   lagmax=nfs/40
@@ -164,11 +182,12 @@ program wwv
      endif
   enddo
 
-!  fac=1.0/ccfmax1
-!  do lag=0,lagmax
-!     write(15,1040) 1000.0*lag*dt,fac*ccf1(lag)
-!1040 format(f9.3,2f10.6)
-!  enddo
+  rewind 15
+  fac=1.0/ccfmax1
+  do lag=0,lagmax
+     write(15,1040) 1000.0*lag*dt,fac*ccf1(lag)
+1040 format(f9.3,2f10.6)
+  enddo
 
   delay=1000.0*lagpk1*dt
   hrs=mod(tsec,86400.d0)/3600
@@ -180,8 +199,8 @@ program wwv
 1012 format(a8,2x,a6,f11.5,f8.2,f10.3,i7,f10.2,1x,a6,1x,a6)
 
 !  call flush(13)
-!  call flush(14)
-!  call flush(15)
+  call flush(14)
+  call flush(15)
   call flush(16)
 
   if(nsave.gt.0) then
@@ -193,5 +212,8 @@ program wwv
   go to 10
 
 910 print*,'Cannot open file: fmt.ini'
+  go to 999
+920 print*,'Cannot open file: cal.dat'
+  go to 999
 
 999 end program wwv

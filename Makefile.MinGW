@@ -114,7 +114,7 @@ ccf.exe: $(OBJS5)
 	$(FC) -o ccf.exe $(FFLAGS) $(OBJS5) libfftw3f_win.a libsamplerate.a
 
 OBJS6 = wwv.o read_wav.o averms.o db.o fold1pps.o ffa.o getutc.o \
-	gmtime2.o sound.o resample.o
+	gmtime2.o sound.o resample.o calobs.o
 
 wwv.exe: $(OBJS6)
 	$(FC) -o wwv.exe $(FFLAGS) $(OBJS6) libportaudio.a \
