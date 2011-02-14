@@ -15,7 +15,7 @@ program wwv
   real x1(NMAX),xx1(NMAX)
   real prof1(NFSMAX)
   real xcal(NFSMAX)
-  real tick1(NFSMAX/200)
+  real w(NFSMAX/200)                         !Waveform of WWV tick
   real ccf1(0:NFSMAX/40)
   integer soundin
   integer resample
@@ -31,21 +31,21 @@ program wwv
      go to 999
   endif
 
-  open(10,file='fmt.ini',status='old',err=910)
+  open(10,file='fmt.ini',status='old',err=910)  !Open this WSPR file
   read(10,'(a120)') cmnd0              !Get rigctl command to set frequency
-  read(10,*) ndevin
-  read(10,*) mycall
-  read(10,*) mygrid
+  read(10,*) ndevin                    !Get audio device number
+  read(10,*) mycall                    !Get my callsign
+  read(10,*) mygrid                    !Get my grid locator
   close(10)
 
   nfs=48000                                  !Sample rate
-  nchan=1
   dt=1.0/nfs
+  nchan=1                                    !Single-channel recording
   call soundinit                             !Initialize Portaudio
 
   call getarg(1,arg)
   if(arg.eq.'cal' .or. arg.eq.'CAL') then
-     call getarg(2,arg)
+     call getarg(2,arg)                      !This is a CAL measurement
      read(arg,*) nsec
      call calobs(nfs,nsec,ndevin,id,x1,prof1)
      go to 999
@@ -54,10 +54,10 @@ program wwv
   fkhz=0.
   if(arg.ne.'all' .and. arg.ne.'ALL') read(arg,*) fkhz    !Rx frequency (kHz)
 
-  open(10,file='cal.dat',status='old',err=920)
-  read(10,1000) p1
+  open(10,file='cal.dat',status='old',err=920) !Open previously recorded cal.dat
+  read(10,1000) p1                            !Get measured sample rate
 1000 format(76x,f12.4)
-  do i=1,nfs
+  do i=1,nfs                                  !Read the cal profile
      read(10,1002) xcal(i)
 1002 format(10x,f10.3)
   enddo
@@ -66,16 +66,12 @@ program wwv
   open(16,file='delay.dat',status='unknown',position='append')
   open(20,file='wwv.bin',form='unformatted',status='unknown',position='append')
 
+  do i=1,nfs/200                             !Generate the WWV tick waveform
+     w(i)=sin(6.283185307*1000.0*dt*i)
+  enddo
   npts=nfs*51
 
-  do i=1,nfs/200
-     tick1(i)=sin(6.283185307*1000.0*dt*i)
-  enddo
-
-  call getutc(cdate,ctime,tsec0)
-
 10 nloop=nloop+1
-
   if(fkhz.gt.0.d0) then
      nHz=nint(1.d3*fkhz)
   else
@@ -173,7 +169,7 @@ program wwv
      do i=1,nfs/200
         j=ipk+lag+i-1
         if(j.gt.ip) j=j-ip
-        s1=s1 + tick1(i)*prof1(j)
+        s1=s1 + w(i)*prof1(j)
      enddo
      ccf1(lag)=s1
      if(ccf1(lag).gt.ccfmax1) then
