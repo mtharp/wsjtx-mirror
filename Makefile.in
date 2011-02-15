@@ -17,7 +17,7 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv
+all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv t1
 build:	wspr
 
 wspr:	WsprMod/w.so
@@ -136,6 +136,11 @@ OBJS6 = wwv.o read_wav.o averms.o db.o ffa.o fold1pps.o getutc.o \
 
 wwv:    $(OBJS6)
 	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lportaudio -lsamplerate
+
+OBJS7 = t1.o four2a.o db.o averms.o clean.o
+
+t1:    $(OBJS7)
+	$(FC) -o t1 $(FFLAGS) $(OBJS7) -lfftw3f 
 
 install: WsprMod/w.so
 	${RM} -rf build/
