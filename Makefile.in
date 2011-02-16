@@ -132,10 +132,10 @@ ccf:    $(OBJS5)
 	$(FC) -o ccf $(FFLAGS) $(OBJS5) -lfftw3f -lsamplerate
 
 OBJS6 = wwv.o read_wav.o averms.o db.o ffa.o fold1pps.o getutc.o \
-	gmtime2.o sound.o resample.o calobs.o
+	gmtime2.o sound.o resample.o calobs.o four2a.o clean.o
 
 wwv:    $(OBJS6)
-	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lportaudio -lsamplerate
+	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lportaudio -lsamplerate -lfftw3f
 
 OBJS7 = t1.o four2a.o db.o averms.o clean.o
 
