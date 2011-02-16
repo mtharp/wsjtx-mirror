@@ -9,27 +9,29 @@ program wwv
   character cdate*8                          !CCYYMMDD
   character ctime*10                         !HHMMSS.SSS
   character*120 cmnd0,cmnd                   !Command to set rig frequency
-  character*4 cwwv
   character*6 mycall,mygrid
-  real*8 tsec,tsec0,fkhz,p1,samfac
+  real*8 tsec,fkhz,p1,samfac,day2011
   real x1(NMAX),xx1(NMAX)
   real prof1(NFSMAX)
-  real xcal(NFSMAX)
-  real w(NFSMAX/200)                         !Waveform of WWV tick
-  real ccf1(0:NFSMAX/40)
+  real xx(NFSMAX)
+  real notch(-20:20)
+  real snr(4)
+  real delay(4)
+  complex c(0:NFSMAX/2)
+  complex cal1(0:35)
+  integer iipk(1)
   integer soundin
   integer resample
+  integer time
   integer nkhz(0:4)
+  integer nwwv(4)
+  equivalence (iipk,ipk)
+  equivalence (xx,c)
   data nkhz/2500,5000,10000,15000,20000/
   data nloop/-1/,nHz0/-99/
 
   nargs=iargc()
-  if(nargs.lt.1 .or. nargs.gt.2) then
-     print*,'Usage: wwv cal <nsec>'
-     print*,'       wwv <f_kHz>'
-     print*,'       wwv all'
-     go to 999
-  endif
+  if(nargs.lt.1 .or. nargs.gt.2) go to 998
 
   open(10,file='fmt.ini',status='old',err=910)  !Open this WSPR file
   read(10,'(a120)') cmnd0              !Get rigctl command to set frequency
@@ -39,15 +41,15 @@ program wwv
   close(10)
 
   nfs=48000                                  !Sample rate
-  dt=1.0/nfs
   nchan=1                                    !Single-channel recording
   call soundinit                             !Initialize Portaudio
 
   call getarg(1,arg)
   if(arg.eq.'cal' .or. arg.eq.'CAL') then
+     if(nargs.ne.2) go to 998
      call getarg(2,arg)                      !This is a CAL measurement
      read(arg,*) nsec
-     call calobs(nfs,nsec,ndevin,id,x1,prof1)
+     call calobs(nfs,nsec,ndevin,id,x1)
      go to 999
   endif
 
@@ -55,20 +57,27 @@ program wwv
   if(arg.ne.'all' .and. arg.ne.'ALL') read(arg,*) fkhz    !Rx frequency (kHz)
 
   open(10,file='cal.dat',status='old',err=920) !Open previously recorded cal.dat
-  read(10,1000) p1                            !Get measured sample rate
-1000 format(76x,f12.4)
-  do i=1,nfs                                  !Read the cal profile
-     read(10,1002) xcal(i)
-1002 format(10x,f10.3)
+  do j=1,35
+     if(j.eq.1) read(10,1001) jj,cal1(j),p1
+     if(j.ne.1) read(10,1001) jj,cal1(j)
+1001 format(i6,2f10.3,f13.4)
+     f=j*100.0
+     x=0.
+     if(f.lt.300.0) x=(f-300.0)/200.0
+     if(f.gt.3000.0) x=(3000-f)/200.0
+     cal1(j)=exp(-x*x)/cal1(j)
   enddo
+  cal1(0)=0.
   close(10)
+
+  do i=-20,20
+     x=float(i)/20.0
+     notch(i)=1.0 - exp(-x*x)
+  enddo
 
   open(16,file='delay.dat',status='unknown',position='append')
   open(20,file='wwv.bin',form='unformatted',status='unknown',position='append')
 
-  do i=1,nfs/200                             !Generate the WWV tick waveform
-     w(i)=sin(6.283185307*1000.0*dt*i)
-  enddo
   npts=nfs*51
 
 10 nloop=nloop+1
@@ -117,10 +126,6 @@ program wwv
   call averms(x1,npts,ave1,rms1,xmax1)        !Get ave, rms
   x1(:npts)=(1.0/rms1)*(x1(:npts)-ave1)       !Remove DC and normalize
 
-  ip1=nfs-1
-  ip2=nfs
-  call fold1pps(x1,npts,ip1,ip2,prof1,p1,pk1,ipk1)  !Find sample rates
-
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
   ntype=1
   samfac=nfs/p1
@@ -133,77 +138,65 @@ program wwv
   do i=1,npts,nfs                           !Fold at p=nfs (exactly)
      prof1(:ip)=prof1(:ip) + xx1(i:i+ip-1)
   enddo
-  if(pk1.lt.0.0) prof1(:ip)=-prof1(:ip)
+  prof1=-prof1
+  xx=prof1
+  call four2a(xx,ip,1,-1,0)                !Forward FFT of profile
 
-  pk=0.
-  do i=1,ip
-     if(prof1(i).gt.pk) then
-        pk=prof1(i)
-        ipk=i
-     endif
+  df=float(nfs)/ip
+  ib=nint(3500.0/df)
+  do i=0,ib
+     j=nint(0.01*i*df)
+     c(i)=c(i)*cal1(j)
   enddo
-  prof1(:ip)=prof1(:ip)/pk
+!  c(0)=0.
+  c(ib:)=0.
+  c(95:105)=0.
+  if(ctime(3:4).eq.'02') then
+     c(420:460)=c(420:460)*notch
+  else
+     read(ctime(4:4),*) i10
+     if(mod(i10,2).eq.1) then
+        c(580:620)=c(580:620)*notch
+     else
+        c(480:520)=c(480:520)*notch
+     endif
+  endif
 
-!  do i=1,ip
-!     write(13,1020) 1000.0*i*dt,prof1(i)
-!1020 format(f12.3,f10.3)
+!  do i=0,ib
+!     s=real(c(i))**2 + aimag(c(i))**2
+!     pha=atan2(aimag(c(i)),real(c(i)))
+!     write(13,1031) i*df,s,db(s),pha
+!1031 format(f10.3,f12.3,2f10.3)
 !  enddo
 
-  rewind 14
-  ia=-0.002/dt
-  ib=+0.025/dt
-  do i=ia,ib
-     j=i+ipk
-     if(j.lt.1) j=j+ip
+  call four2a(c,ip,1,1,-1)             !Inverse FFT ==> calibrated profile
+
+  fac=6.62/ip
+  xx=fac*xx
+  iipk=maxloc(xx)
+  do i=1,ip
+     j=ipk+i-100
+     if(j.lt.1)  j=j+ip
      if(j.gt.ip) j=j-ip
-     write(14,1030) 1000.0*i*dt,prof1(j)
-1030 format(f12.3,f10.3)
   enddo
 
-  lag1=nint(nfs*0.002)
-  lagmax=nfs/40
-  ccf1=0.
-  ccfmax1=0.
-  do lag=lag1,lagmax
-     s1=0.
-     do i=1,nfs/200
-        j=ipk+lag+i-1
-        if(j.gt.ip) j=j-ip
-        s1=s1 + w(i)*prof1(j)
-     enddo
-     ccf1(lag)=s1
-     if(ccf1(lag).gt.ccfmax1) then
-        ccfmax1=ccf1(lag)
-        lagpk1=lag
-     endif
-  enddo
+  call clean(xx,ipk,snr,delay,nwwv,nd)
 
-  rewind 15
-  fac=1.0/ccfmax1
-  do lag=0,lagmax
-     write(15,1040) 1000.0*lag*dt,fac*ccf1(lag)
-1040 format(f9.3,2f10.6)
-  enddo
-
-  delay=1000.0*lagpk1*dt
-  hrs=mod(tsec,86400.d0)/3600
-  read(cdate(7:8),*) nday
-  day=nday + hrs/24.0
+  day2011=time()/86400.d0 - 14974.d0
   ikhz=nhz/1000
-  write(*,1012)  cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid
-  write(16,1012) cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid
-1012 format(a8,2x,a6,f11.5,f8.2,f10.3,i7,f10.2,1x,a6,1x,a6)
+  do i=1,nd
+     write(*,1000)  cdate,ctime(1:6),day2011,ikhz,snr(i),delay(i),nwwv(i)
+     write(16,1000) cdate,ctime(1:6),day2011,ikhz,snr(i),delay(i),nwwv(i)
+1000 format(a8,2x,a6,f10.4,i7,f7.1,f8.2,i4)
+  enddo
 
-!  call flush(13)
-  call flush(14)
-  call flush(15)
   call flush(16)
 
-  if(nsave.gt.0) then
-     write(20)  cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid,  &
-          prof1(:ip),ccf1(:lagmax)
-     call flush(20)
-  endif
+!  if(nsave.gt.0) then
+!     write(20)  cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid,  &
+!          prof1(:ip)
+!     call flush(20)
+!  endif
 
   go to 10
 
@@ -211,5 +204,9 @@ program wwv
   go to 999
 920 print*,'Cannot open file: cal.dat'
   go to 999
+
+998 print*,'Usage: wwv cal <nsec>'
+  print*,  '       wwv <f_kHz>'
+  print*,  '       wwv all'
 
 999 end program wwv

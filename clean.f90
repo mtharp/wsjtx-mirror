@@ -1,4 +1,4 @@
-subroutine clean(xx,ipk,snr,delay,nd)
+subroutine clean(xx,ipk,snr,delay,nwwv,nd)
 
   parameter (NFSMAX=48000)
   real xx(NFSMAX)                             !Dirty profile
@@ -8,6 +8,7 @@ subroutine clean(xx,ipk,snr,delay,nd)
   real ccf1(0:NFSMAX/6),ccf2(0:NFSMAX/6)
   real delay(4)
   real snr(4)
+  integer nwwv(4)
   logical first
   data first/.true./
   save first,w1,w2
@@ -25,12 +26,19 @@ subroutine clean(xx,ipk,snr,delay,nd)
      first=.false.
   endif
 
-
   do i=1,ip
      j=ipk+i-1
      if(j.gt.ip) j=j-ip
      xt(i)=xx(j)
   enddo
+
+!  rewind 13
+!  rewind 14
+!  do i=1,ip
+!     write(13,1010) 1000.0*(i-1)*dt,xt(i)
+!     write(14,1010) 1000.0*(i-1)*dt,xt(i)
+!1010 format(2f10.3)
+!  enddo
 
   lagmax=nfs/6
   lag1=nint(nfs*0.002)
@@ -63,11 +71,6 @@ subroutine clean(xx,ipk,snr,delay,nd)
         endif
      enddo
 
-     do i=1,ip
-        write(14,1010) 1000.0*(i-1)*dt,xt(i)
-1010    format(2f10.3)
-     enddo
-
      call averms(ccf1(101:200),100,ave1,rms1,xmax1)        !Get ave, rms
      call averms(ccf2(101:200),100,ave2,rms2,xmax2)
 
@@ -81,7 +84,6 @@ subroutine clean(xx,ipk,snr,delay,nd)
      endif
 
      call flush(14)
-     rewind 14
 
      if(snr0.lt.12.0) go to 100
      if(ii.eq.1) ccfmax0=ccfmax
@@ -90,7 +92,17 @@ subroutine clean(xx,ipk,snr,delay,nd)
      nd=nd+1
      snr(nd)=db(snr0/12.0)
      delay(nd)=1000.0*lagpk*dt
+     nwwv(nd)=nw
+
+!     rewind 14
+!     do i=1,ip
+!        write(14,1010) 1000.0*(i-1)*dt,xt(i)
+!     enddo
   enddo
 
-100  return
+100 continue
+!  call flush(13)
+!  call flush(14)
+
+  return
 end subroutine clean
