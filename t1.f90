@@ -52,6 +52,16 @@ program t1
   read(ctime(4:4),*) i10
   xx=prof1
 
+  iipk=maxloc(xx)
+  do i=1,ip
+     j=ipk+i-nint(0.001/dt)
+     if(j.lt.1)  j=j+ip
+     if(j.gt.ip) j=j-ip
+     t=1000.0*i*dt - 1.0
+     write(13,3001) t,xx(j)
+3001 format(2f10.3)
+  enddo
+
   call four2a(xx,ip,1,-1,0)                !Forward FFT of profile
 
   df=float(nfs)/ip
@@ -73,25 +83,28 @@ program t1
      endif
   endif
 
-  do i=0,ib
-     s=real(c(i))**2 + aimag(c(i))**2
-     pha=atan2(aimag(c(i)),real(c(i)))
-     write(13,1030) i*df,s,db(s),pha
-1030 format(f10.3,f12.3,2f10.3)
-  enddo
+!  do i=0,ib
+!     s=real(c(i))**2 + aimag(c(i))**2
+!     pha=atan2(aimag(c(i)),real(c(i)))
+!     write(13,1030) i*df,s,db(s),pha
+!1030 format(f10.3,f12.3,2f10.3)
+!  enddo
 
   call four2a(c,ip,1,1,-1)             !Inverse FFT ==> calibrated profile
 
   fac=6.62/ip
   xx=fac*xx
+
   iipk=maxloc(xx)
   do i=1,ip
-     j=ipk+i-100
+     j=ipk+i-nint(0.001/dt)
      if(j.lt.1)  j=j+ip
      if(j.gt.ip) j=j-ip
+     t=1000.0*i*dt - 1.0
+     write(14,3001) t,xx(j)
   enddo
 
-  call clean(xx,ipk,snr,delay,nd)
+  call clean(xx,ipk,snr,delay,nwwv,nd)
 
   do i=1,nd
      write(*,1000) irec,ctime,day,ikhz,snr(i),delay(i)
@@ -100,11 +113,13 @@ program t1
   enddo
 
   call flush(13)
+  call flush(14)
   call flush(16)
   rewind 13
+  rewind 14
 
-!  read*,cjunk
-!  if(cjunk.eq.'q') go to 999
+  read*,cjunk
+  if(cjunk.eq.'q') go to 999
   go to 10
 
 999 end program t1

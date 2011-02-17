@@ -46,9 +46,7 @@ program wwv
 
   call getarg(1,arg)
   if(arg.eq.'cal' .or. arg.eq.'CAL') then
-     if(nargs.ne.2) go to 998
-     call getarg(2,arg)                      !This is a CAL measurement
-     read(arg,*) nsec
+     nsec=60
      call calobs(nfs,nsec,ndevin,id,x1)
      go to 999
   endif
