@@ -41,19 +41,22 @@ program wwv
   read(10,*) mygrid                    !Get my grid locator
   close(10)
 
+  open(13,file='prof.dat',status='unknown')  !Files for 1PPS+WWV profiles
+  open(14,file='short.dat',status='unknown')
+
   dtmin=2.0
   dtmax=40.0
+  dbmin=0.0
   nsave=1
   open(10,file='wwv.ini',status='old',err=1)  !Optional parameter file
   read(10,*) param,dtmin
   read(10,*) param,dtmax
+  read(10,*) param,dbmin
   read(10,*) param,nsave
   close(10)
 
-  open(13,file='prof.dat',status='unknown')  !Files for 1PPS+WWV profiles
-  open(14,file='short.dat',status='unknown')
-
 1 nfs=48000                                  !Sample rate
+  dt=1.0/nfs
   nchan=1                                    !Single-channel recording
   call soundinit                             !Initialize Portaudio
 
@@ -157,7 +160,7 @@ program wwv
   xx=prof1
 
   if(nsave.ne.0) then
-     iipk=maxloc(xx)
+     iipk=maxloc(prof1)
      i0=0.001/dt
      rewind 13
      rewind 14
@@ -207,7 +210,7 @@ program wwv
   xx=fac*xx
   iipk=maxloc(xx)
 
-  call clean(xx,ipk,dtmin,dtmax,snr,delay,nwwv,nd)
+  call clean(xx,ipk,dtmin,dtmax,dbmin,snr,delay,nwwv,nd)
 
   day2011=time()/86400.d0 - 14974.d0
   ikhz=nhz/1000

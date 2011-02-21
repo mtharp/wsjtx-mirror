@@ -1,4 +1,4 @@
-subroutine clean(xx,ipk,dtmin,dtmax,snr,delay,nwwv,nd)
+subroutine clean(xx,ipk,dtmin,dtmax,dbmin,snr,delay,nwwv,nd)
 
   parameter (NFSMAX=48000)
   real xx(NFSMAX)                             !Dirty profile
@@ -33,7 +33,7 @@ subroutine clean(xx,ipk,dtmin,dtmax,snr,delay,nwwv,nd)
   enddo
 
   lag1=0.001*dtmin*nfs
-  lagmax=0.001*dtmax*nfz
+  lagmax=0.001*dtmax*nfs
 
   do ii=1,4
      ccf1=0.
@@ -81,16 +81,17 @@ subroutine clean(xx,ipk,dtmin,dtmax,snr,delay,nwwv,nd)
      if(ii.eq.1) ccfmax0=ccfmax
      if(ccfmax.lt.0.2*ccfmax0) go to 100
 
-     nd=nd+1
-     snr(nd)=db(snr0/12.0)
-     delay(nd)=1000.0*lagpk*dt
-     nwwv(nd)=nw
+     snrdb=db(snr0/12.0)
+     if(snrdb.ge.dbmin) then
+        nd=nd+1
+        snr(nd)=snrdb
+        delay(nd)=1000.0*lagpk*dt
+        nwwv(nd)=nw
+     endif
 
   enddo
 
 100 continue
-!  call flush(13)
-!  call flush(14)
 
   return
 end subroutine clean
