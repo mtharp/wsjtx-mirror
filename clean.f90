@@ -1,4 +1,4 @@
-subroutine clean(xx,ipk,snr,delay,nwwv,nd)
+subroutine clean(xx,ipk,dtmin,dtmax,snr,delay,nwwv,nd)
 
   parameter (NFSMAX=48000)
   real xx(NFSMAX)                             !Dirty profile
@@ -32,16 +32,8 @@ subroutine clean(xx,ipk,snr,delay,nwwv,nd)
      xt(i)=xx(j)
   enddo
 
-!  rewind 13
-!  rewind 14
-!  do i=1,ip
-!     write(13,1010) 1000.0*(i-1)*dt,xt(i)
-!     write(14,1010) 1000.0*(i-1)*dt,xt(i)
-!1010 format(2f10.3)
-!  enddo
-
-  lagmax=nfs/6
-  lag1=nint(nfs*0.002)
+  lag1=0.001*dtmin*nfs
+  lagmax=0.001*dtmax*nfz
 
   do ii=1,4
      ccf1=0.
@@ -94,10 +86,6 @@ subroutine clean(xx,ipk,snr,delay,nwwv,nd)
      delay(nd)=1000.0*lagpk*dt
      nwwv(nd)=nw
 
-!     rewind 14
-!     do i=1,ip
-!        write(14,1010) 1000.0*(i-1)*dt,xt(i)
-!     enddo
   enddo
 
 100 continue

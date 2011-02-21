@@ -10,6 +10,7 @@ program wwv
   character ctime*10                         !HHMMSS.SSS
   character*120 cmnd0,cmnd                   !Command to set rig frequency
   character*6 mycall,mygrid
+  character param*5
   real*8 tsec,fkhz,p1,samfac,day2011
   real x1(NMAX),xx1(NMAX)
   real prof1(NFSMAX)
@@ -40,13 +41,29 @@ program wwv
   read(10,*) mygrid                    !Get my grid locator
   close(10)
 
-  nfs=48000                                  !Sample rate
+  dtmin=2.0
+  dtmax=40.0
+  nsave=1
+  open(10,file='wwv.ini',status='old',err=1)  !Optional parameter file
+  read(10,*) param,dtmin
+  read(10,*) param,dtmax
+  read(10,*) param,nsave
+  close(10)
+
+  open(13,file='prof.dat',status='unknown')  !Files for 1PPS+WWV profiles
+  open(14,file='short.dat',status='unknown')
+
+1 nfs=48000                                  !Sample rate
   nchan=1                                    !Single-channel recording
   call soundinit                             !Initialize Portaudio
 
   call getarg(1,arg)
   if(arg.eq.'cal' .or. arg.eq.'CAL') then
      nsec=60
+     if(nargs.eq.2) then
+        call getarg(2,arg)
+        read(arg,*) nsec
+     endif
      call calobs(nfs,nsec,ndevin,id,x1)
      go to 999
   endif
@@ -138,6 +155,30 @@ program wwv
   enddo
   prof1=-prof1
   xx=prof1
+
+  if(nsave.ne.0) then
+     iipk=maxloc(xx)
+     i0=0.001/dt
+     rewind 13
+     rewind 14
+     do i=1,ip
+        j=ipk+i-100
+        if(j.lt.1)  j=j+ip
+        if(j.gt.ip) j=j-ip
+        write(13,1010) 1000.0*(i-1)*dt,prof1(j)
+1010 format(2f10.3)
+        t=1000.0*(i-i0)*dt
+        if(t.ge.-1.0 .and. t.le.dtmax) then
+           j=ipk+i-i0
+           if(j.lt.1) j=j+ip
+           if(j.gt.ip) j=j-ip
+           write(14,1010) t,prof1(j)
+        endif
+     enddo
+     call flush(13)
+     call flush(14)
+  endif
+
   call four2a(xx,ip,1,-1,0)                !Forward FFT of profile
 
   df=float(nfs)/ip
@@ -146,7 +187,7 @@ program wwv
      j=nint(0.01*i*df)
      c(i)=c(i)*cal1(j)
   enddo
-!  c(0)=0.
+
   c(ib:)=0.
   c(95:105)=0.
   if(ctime(3:4).eq.'02') then
@@ -160,25 +201,13 @@ program wwv
      endif
   endif
 
-!  do i=0,ib
-!     s=real(c(i))**2 + aimag(c(i))**2
-!     pha=atan2(aimag(c(i)),real(c(i)))
-!     write(13,1031) i*df,s,db(s),pha
-!1031 format(f10.3,f12.3,2f10.3)
-!  enddo
-
   call four2a(c,ip,1,1,-1)             !Inverse FFT ==> calibrated profile
 
   fac=6.62/ip
   xx=fac*xx
   iipk=maxloc(xx)
-  do i=1,ip
-     j=ipk+i-100
-     if(j.lt.1)  j=j+ip
-     if(j.gt.ip) j=j-ip
-  enddo
 
-  call clean(xx,ipk,snr,delay,nwwv,nd)
+  call clean(xx,ipk,dtmin,dtmax,snr,delay,nwwv,nd)
 
   day2011=time()/86400.d0 - 14974.d0
   ikhz=nhz/1000
@@ -189,13 +218,6 @@ program wwv
   enddo
 
   call flush(16)
-
-!  if(nsave.gt.0) then
-!     write(20)  cdate,ctime(:6),day,delay,ccfmax1,ikhz,p1,mycall,mygrid,  &
-!          prof1(:ip)
-!     call flush(20)
-!  endif
-
   go to 10
 
 910 print*,'Cannot open file: fmt.ini'
