@@ -108,7 +108,7 @@ program wwv
      nHz=1000*nkhz(mod(nloop,5))
   endif
   
-  if(nHz.ne.nHz0 .and. cmnd0(:6).ne.'rigctl') then
+  if(nHz.ne.nHz0 .and. cmnd0(:6).eq.'rigctl') then
      cmnd=cmnd0
      i1=index(cmnd,' F ')
      write(cmnd(i1+2:),*) nHz                   !Insert desired frequency
