@@ -61,7 +61,10 @@ program wwv
   call soundinit                             !Initialize Portaudio
 
   call getarg(1,arg)
-  if(arg.eq.'cal' .or. arg.eq.'CAL') then
+  if(arg(:2).eq.'-v') then
+     print*,'Version 1.01'
+     go to 999
+  else if(arg.eq.'cal' .or. arg.eq.'CAL') then
      nsec=60
      if(nargs.eq.2) then
         call getarg(2,arg)
@@ -105,7 +108,7 @@ program wwv
      nHz=1000*nkhz(mod(nloop,5))
   endif
   
-  if(nHz.ne.nHz0) then
+  if(nHz.ne.nHz0 .and. cmnd0(:6).ne.'rigctl') then
      cmnd=cmnd0
      i1=index(cmnd,' F ')
      write(cmnd(i1+2:),*) nHz                   !Insert desired frequency
