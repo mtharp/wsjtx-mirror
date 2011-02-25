@@ -2,7 +2,7 @@ subroutine fold1pps(x,npts,ip1,ip2,prof,p,pk,ipk)
 
   parameter (NFSMAX=48000)
   real x(npts)
-  real proftmp(NFSMAX),prof(NFSMAX)
+  real proftmp(NFSMAX+5),prof(NFSMAX+5)
   real*8 p,ptmp
 
   pk=0.

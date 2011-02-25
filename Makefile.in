@@ -17,7 +17,8 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv t1
+all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv \
+	t1 calibrate
 build:	wspr
 
 wspr:	WsprMod/w.so
@@ -141,6 +142,12 @@ OBJS7 = t1.o four2a.o db.o averms.o clean.o
 
 t1:    $(OBJS7)
 	$(FC) -o t1 $(FFLAGS) $(OBJS7) -lfftw3f 
+
+OBJS8 = calibrate.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
+        fold1pps.o resample.o
+
+calibrate: $(OBJS8)
+	$(FC) -o calibrate $(FFLAGS) $(OBJS8) -lfftw3f -lsamplerate
 
 install: WsprMod/w.so
 	${RM} -rf build/

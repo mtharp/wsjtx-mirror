@@ -13,8 +13,8 @@ program wwv
   character param*5
   real*8 tsec,fkhz,p1,samfac,day2011
   real x1(NMAX),xx1(NMAX)
-  real prof1(NFSMAX)
-  real xx(NFSMAX)
+  real prof1(NFSMAX+5)
+  real xx(NFSMAX+5)
   real notch(-20:20)
   real snr(4)
   real delay(4)

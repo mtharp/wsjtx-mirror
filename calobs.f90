@@ -5,8 +5,8 @@ subroutine calobs(nfs,nsec,ndevin,id,x1)
   integer*2 id(NMAX)                         !Raw data
   real*8 p1,samfac
   real x1(NMAX),xx1(NMAX)
-  real prof1(NFSMAX)
-  real xx(NFSMAX)
+  real prof1(NFSMAX+5)
+  real xx(NFSMAX+5)
   complex cc(0:NFSMAX/2)
   complex z1
   integer soundin,resample
@@ -26,8 +26,8 @@ subroutine calobs(nfs,nsec,ndevin,id,x1)
   call averms(x1,npts,ave1,rms1,xmax1)        !Get ave, rms
   x1(:npts)=(1.0/rms1)*(x1(:npts)-ave1)       !Remove DC and normalize
 
-  ip1=nfs-1
-  ip2=nfs
+  ip1=nfs-5
+  ip2=nfs+4
   call fold1pps(x1,npts,ip1,ip2,prof1,p1,pk1,ipk1)  !Find sample rates
 
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear

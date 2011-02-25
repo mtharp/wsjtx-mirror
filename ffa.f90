@@ -77,8 +77,8 @@ subroutine ffa(dat,ndim,npts,ip,prof,pmax,pk,ipk)
      enddo
      xmax=max(xmax0,xmax)
 
-!     write(22,3001) p,xmax0/lmax
-!3001 format(2f12.6)
+     write(22,3001) p,xmax0/lmax
+3001 format(2f12.6)
 
      if(xmax.gt.xmax1) then
         pmax=p

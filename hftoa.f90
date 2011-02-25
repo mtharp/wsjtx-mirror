@@ -96,8 +96,8 @@ program hftoa
      nfsample=nfsample/4
   endif
 
-  call write_wav(12,id2,ntot,nfsample,nchan)       !Write wav file to disk
-  write(12) tsec,fkhz,mycall,mygrid,mode,ctime     !Append header information
+  call write_wav(12,id2,ntot,nfsample,nchan)          !Write wav file to disk
+  write(12) tsec,fkhz,mycall,mygrid,mode,ctime,cdate  !Append header info
 
   sum=0.
   xmax1=0.

@@ -14,7 +14,7 @@ program ccf
   integer resample
   real xx1(NFFTMAX),xx2(NFFTMAX),xx(NFFTMAX),xx1pps(NFFTMAX)
   real xx1a(NFFTMAX),xx2a(NFFTMAX)
-  real fil(0:NHMAX)
+  real rfil(0:NHMAX)
   complex c1(0:NHMAX),c2(0:NHMAX),cc(0:NHMAX)
   complex z1,z2
   complex cal1(35),cal2(35)
@@ -41,9 +41,9 @@ program ccf
   call read_wav(12,id2,npts2,nfs2,nch2)
   close(12)
 
-  open(32,file='prof.dat',status='unknown')
-  open(33,file='cal.dat',status='unknown')
-  open(34,file='ccf.dat',status='unknown')
+  open(32,file='ccfprof.dat',status='unknown')
+  open(33,file='ccfcal.dat',status='unknown')
+  open(34,file='ccf.out',status='unknown')
 
 
   if(nfs1.ne.nfs2) then
@@ -145,7 +145,7 @@ program ccf
      i=100*j
      z1=0.01*sum(c1(i-50:i+49))
      z2=0.01*sum(c2(i-50:i+49))
-     cal1(j)=z1
+     cal1(j)=z1/8.0
      cal2(j)=z2
      s1=real(z1)**2 + aimag(z1)**2
      s2=real(z2)**2 + aimag(z2)**2
@@ -170,17 +170,20 @@ program ccf
   ia=100/df                                 !Define rectangular passband
   ib=3500/df
   bw=nf2
-  fil=0.
+  rfil=0.
   do i=ia,ib
      j=nint(0.01*i*df)
-!     z1=c1(i)/cal1(j)                       !Apply calibrations
-!     z2=c2(i)/cal2(j)
-     z1=c1(i)
-     z2=c2(i)
+     z1=c1(i)/cal1(j)                       !Apply calibrations
+     z2=c2(i)/cal2(j)
      cc(i)=fac*z1*conjg(z2)                 !Multiply transforms
      f=i*df
-     fil(i)=exp(-((f-nf1)/(0.5*bw))**2)
-     cc(i)=cc(i)*fil(i)
+     rfil(i)=1.0 
+     if(f.lt.float(nf1)) rfil(i)=exp(-((f-nf1)/300.0)**2)
+     if(f.gt.float(nf2)) rfil(i)=exp(-((f-nf2)/300.0)**2)
+!     if(mod(i,1000).eq.0) write(37,7001) f,rfil(i)
+!7001 format(f12.3,f12.6)
+     cc(i)=cc(i)*rfil(i)
+     cc(i)=conjg(cc(i))
   enddo
 
   call four2a(cc,nfft,1,1,-1)        !Inverse FFT ==> CCF of 1 PPS pulses
@@ -188,7 +191,7 @@ program ccf
 
   xx1=xx1a
   xx2=xx2a
-  do i=1,npts,nfs                           !Keep signal without 1PPS pulses
+  do i=1,npts,nfs                           !Keep signal without 1 PPS pulses
      xx1(i:i+200)=0.
      xx2(i:i+200)=0.
   enddo
@@ -200,21 +203,20 @@ program ccf
   cc=0.
   do i=ia,ib
      j=nint(0.01*i*df)
-!     z1=c1(i)/cal1(j)                       !Apply calibrations
-!     z2=c2(i)/cal2(j)
-     z1=c1(i)
-     z2=c2(i)
+     z1=c1(i)/cal1(j)                       !Apply calibrations
+     z2=c2(i)/cal2(j)
      cc(i)=fac*z1*conjg(z2)                 !Multiply transforms
-     cc(i)=cc(i)*fil(i)
+     cc(i)=cc(i)*rfil(i)
+     cc(i)=conjg(cc(i))
   enddo
 
   call four2a(cc,nfft,1,1,-1)               !Inverse FFT ==> CCF of signal
 
-  do i=-30,30
+  do i=-50,50
      j=i
      if(j.le.0) j=i+nfft
-     write(34,1110) 1000.0*(i-1)*dt,xx1pps(j),xx(j) !Write CCFs to disk
-1110 format(f10.3,2f12.3)
+     write(34,1110) 1000.0*i*dt,xx1pps(j),xx(j) !Write CCFs to disk
+1110 format(f10.3,2f12.6)
   enddo
 
 999 end program ccf
