@@ -14,7 +14,15 @@ program ccf
   integer resample
   real xx1(NFFTMAX),xx2(NFFTMAX),xx(NFFTMAX),xx1pps(NFFTMAX)
   real xx1a(NFFTMAX),xx2a(NFFTMAX)
+  real ccf1(-100:100),ccf2(-100:100)
   real rfil(0:NHMAX)
+
+  character cdate*8                          !CCYYMMDD
+  character ctime*10                         !HHMMSS.SSS
+  character*4 mode1,mode2
+  character*6 call1,call2,grid1,grid2
+  real*8 fkhz,tsec
+
   complex c1(0:NHMAX),c2(0:NHMAX),cc(0:NHMAX)
   complex z1,z2
   complex cal1(35),cal2(35)
@@ -36,15 +44,21 @@ program ccf
   call getarg(4,file2)
   open(12,file=file1,access='stream',status='old')
   call read_wav(12,id1,npts1,nfs1,nch1)       !Read data from disk
-  close(12)
+  read(12) tsec,fkhz,call1,grid1,mode1,ctime      !Get header info
+  cdate='?'
+  read(12,end=1) cdate
+1 close(12)
+
   open(12,file=file2,access='stream',status='old')
   call read_wav(12,id2,npts2,nfs2,nch2)
-  close(12)
+  read(12) tsec,fkhz,call2,grid2,mode2,ctime      !Get header info
+  cdate='?'
+  read(12,end=2) cdate
+2  close(12)
 
   open(32,file='ccfprof.dat',status='unknown')
   open(33,file='ccfcal.dat',status='unknown')
   open(34,file='ccf.out',status='unknown')
-
 
   if(nfs1.ne.nfs2) then
      print*,'Mismatched sample rates:',nfs1,nfs2
@@ -72,9 +86,12 @@ program ccf
   call fold1pps(x1,npts,ip1,ip2,prof1,p1,pk1,ipk1)  !Find sample rates
   call fold1pps(x2,npts,ip1,ip2,prof2,p2,pk2,ipk2)
 
-  write(*,1010) 1,nfs,nch1,npts1,ave1,rms1,xmax1,p1,pk1,ipk1
-  write(*,1010) 2,nfs,nch2,npts2,ave2,rms2,xmax2,p2,pk2,ipk2
-1010 format('File',i2,':',i6,i3,i9,3f8.1,f11.4,f8.1,i6)
+  write(*,1010) call1,grid1,cdate,ctime(:6),ave1,rms1,xmax1
+  write(*,1010) call2,grid2,cdate,ctime(:6),ave2,rms2,xmax2
+1010 format(a6,2x,a6,2x,'UTC: ',a8,1x,a6,'  Ave:',f8.1,'  Rms:',    &
+          f8.1,'  Max:',f8.1)
+  write(*,1011) fkhz,mode1,float(npts1)/nfs
+1011 format('Freq:',f10.3,' kHz   Mode: ',a4,'   Duration:',f6.1' s')
 
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
   ntype=1
@@ -212,10 +229,12 @@ program ccf
 
   call four2a(cc,nfft,1,1,-1)               !Inverse FFT ==> CCF of signal
 
-  do i=-50,50
+  do i=-100,100
      j=i
      if(j.le.0) j=i+nfft
-     write(34,1110) 1000.0*i*dt,xx1pps(j),xx(j) !Write CCFs to disk
+     ccf1(i)=xx1pps(j)
+     ccf2(i)=xx(j)
+     write(34,1110) 1000.0*i*dt,ccf1(i),ccf2(i)       !Write CCFs to disk
 1110 format(f10.3,2f12.6)
   enddo
 

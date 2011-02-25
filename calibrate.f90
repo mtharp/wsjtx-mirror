@@ -23,7 +23,7 @@ program calibrate
   integer resample
   complex cxx(0:NHMAX)
   complex z1
-  complex cal(350)
+  complex cal(35)
   equivalence (xx,cxx)
 
   nargs=iargc()
@@ -115,8 +115,8 @@ program calibrate
   call four2a(xx,ip,1,-1,0)                 !FFT of 1 PPS profile
 
   cal=0.
-  do j=6,350                                 !Compute calibration array
-     i=10*j
+  do j=1,35                                 !Compute calibration array
+     i=100*j
      z1=0.01*sum(cxx(i-50:i+49))
      cal(j)=z1
      s1=real(z1)**2 + aimag(z1)**2
@@ -125,11 +125,12 @@ program calibrate
 1030 format(i6,2f10.3)
   enddo
 
+  print*,xxa(1:3)
   call averms(xxa,npts,ave,rms,xmax)                 !Get ave, rms
   fac=100.0
   if(xmax.gt.200.0) fac=20000.0/xmax
   id(:npts)=fac*xxa(:npts)
-  write(14) tsec,fkhz,mycall,mygrid,mode,ctime,cdate,ip,npts,          &
+  write(14) tsec,fkhz,mycall,mygrid,mode,ctime,cdate,ip,npts,fac,      &
        prof(:ip),cal,id(:npts)
 
 999 end program calibrate

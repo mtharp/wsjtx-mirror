@@ -18,7 +18,7 @@ CPPFLAGS += ${DEFS} -I.
 FFLAGS += -fbounds-check
 
 all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv \
-	t1 calibrate
+	t1 calibrate ccf1
 build:	wspr
 
 wspr:	WsprMod/w.so
@@ -148,6 +148,12 @@ OBJS8 = calibrate.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
 
 calibrate: $(OBJS8)
 	$(FC) -o calibrate $(FFLAGS) $(OBJS8) -lfftw3f -lsamplerate
+
+OBJS9 = ccf1.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
+        fold1pps.o resample.o
+
+ccf1:   $(OBJS9)
+	$(FC) -o ccf1 $(FFLAGS) $(OBJS9) -lfftw3f -lsamplerate
 
 install: WsprMod/w.so
 	${RM} -rf build/
