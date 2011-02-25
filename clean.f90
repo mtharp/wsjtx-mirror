@@ -75,8 +75,6 @@ subroutine clean(xx,ipk,dtmin,dtmax,dbmin,snr,delay,nwwv,nd)
         snr0=ccfmax/rms2
      endif
 
-     call flush(14)
-
      if(snr0.lt.12.0) go to 100
      if(ii.eq.1) ccfmax0=ccfmax
      if(ccfmax.lt.0.2*ccfmax0) go to 100
