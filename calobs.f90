@@ -20,9 +20,7 @@ subroutine calobs(nfs,nsec,ndevin,id,x1)
      stop
   endif
 
-  do i=1,npts                                 !Convert to floats
-     x1(i)=id(i)
-  enddo
+  x1(:npts)=id(:npts)
   call averms(x1,npts,ave1,rms1,xmax1)        !Get ave, rms
   x1(:npts)=(1.0/rms1)*(x1(:npts)-ave1)       !Remove DC and normalize
 
@@ -42,16 +40,15 @@ subroutine calobs(nfs,nsec,ndevin,id,x1)
   do i=1,npts,nfs                           !Fold at p=nfs (exactly)
      prof1(:ip)=prof1(:ip) + xx1(i:i+ip-1)
   enddo
-  if(pk1.lt.0.0) prof1(:ip)=-prof1(:ip)
 
-  pk=0.
+  pmax=0.
   do i=1,ip
-     if(prof1(i).gt.pk) then
-        pk=prof1(i)
+     if(abs(prof1(i)).gt.abs(pmax)) then
+        pmax=prof1(i)
         ipk=i
      endif
   enddo
-  prof1(:ip)=prof1(:ip)/pk
+  prof1(:ip)=prof1(:ip)/pmax
 
   write(*,1000) ave1,rms1,xmax1,p1
 1000 format('Ave:',f8.2,'   Rms:',f8.2,'   Max:',f8.0,'   Fsample:',f12.4)

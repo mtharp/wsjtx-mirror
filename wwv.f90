@@ -62,7 +62,7 @@ program wwv
 
   call getarg(1,arg)
   if(arg(:2).eq.'-v') then
-     print*,'Version 1.02'
+     print*,'Version 1.03'
      go to 999
   else if(arg.eq.'cal' .or. arg.eq.'CAL') then
      nsec=60
@@ -141,9 +141,7 @@ program wwv
      stop
   endif
 
-  do i=1,npts                                 !Convert to floats
-     x1(i)=id(i)
-  enddo
+  x1(:npts)=id(:npts)
   call averms(x1,npts,ave1,rms1,xmax1)        !Get ave, rms
   x1(:npts)=(1.0/rms1)*(x1(:npts)-ave1)       !Remove DC and normalize
 
@@ -159,11 +157,19 @@ program wwv
   do i=1,npts,nfs                           !Fold at p=nfs (exactly)
      prof1(:ip)=prof1(:ip) + xx1(i:i+ip-1)
   enddo
-  prof1=-prof1
+
+  pmax=0.
+  do i=1,ip
+     if(abs(prof1(i)).gt.abs(pmax)) then
+        pmax=prof1(i)
+        ipk=i
+     endif
+  enddo
+  prof1(:ip)=prof1(:ip)/pmax
   xx=prof1
 
   if(nsave.ne.0) then
-     iipk=maxloc(prof1)
+!     iipk=maxloc(prof1)
      i0=0.001/dt
      rewind 13
      rewind 14
@@ -231,8 +237,9 @@ program wwv
 920 print*,'Cannot open file: cal.dat'
   go to 999
 
-998 print*,'Usage: wwv cal <nsec>'
-  print*,  '       wwv <f_kHz>'
-  print*,  '       wwv all'
+998 print*,'Usage: wwv cal <nsec>      (Calibration, 1 PPS only)'
+  print*,  '       wwv <f_kHz>         (1 PPS and WWV at one frequency)'
+  print*,  '       wwv all             (1 PPS and WWV at all frequencies)'
+  print*,  '       wwv -v              (Print version number and exit'
 
 999 end program wwv

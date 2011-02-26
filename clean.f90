@@ -75,18 +75,14 @@ subroutine clean(xx,ipk,dtmin,dtmax,dbmin,snr,delay,nwwv,nd)
         snr0=ccfmax/rms2
      endif
 
-     if(snr0.lt.12.0) go to 100
+     snrdb=db(snr0/12.0)
+     if(snrdb.lt.dbmin) go to 100
      if(ii.eq.1) ccfmax0=ccfmax
      if(ccfmax.lt.0.2*ccfmax0) go to 100
-
-     snrdb=db(snr0/12.0)
-     if(snrdb.ge.dbmin) then
-        nd=nd+1
-        snr(nd)=snrdb
-        delay(nd)=1000.0*lagpk*dt
-        nwwv(nd)=nw
-     endif
-
+     nd=nd+1
+     snr(nd)=snrdb
+     delay(nd)=1000.0*lagpk*dt
+     nwwv(nd)=nw
   enddo
 
 100 continue
