@@ -14,7 +14,7 @@ program ccf
   integer resample
   real xx1(NFFTMAX),xx2(NFFTMAX),xx(NFFTMAX),xx1pps(NFFTMAX)
   real xx1a(NFFTMAX),xx2a(NFFTMAX)
-  real ccf1(-100:100),ccf2(-100:100)
+  real xcf1(-512:12511),xcf2(-512:12511)
   real rfil(0:NHMAX)
 
   character cdate*8                          !CCYYMMDD
@@ -32,7 +32,7 @@ program ccf
   nargs=iargc()
   if(nargs.ne.4) then
      print*,'Usage:   ccf <f1>  <f2>       <file1>                <file2>'
-     print*,'Example: ccf  500  2500  K1JT_110208_210000.wav AA6E_110208_210000.wav '
+     print*,'Example: ccf  300  3000  K1JT_110209_024500.wav AA6E_110209_024500.wav'
      go to 999
   endif
 
@@ -66,18 +66,18 @@ program ccf
   endif
 
   nfs=nfs1
-  npts=min(npts1,npts2)
+  npts0=min(npts1,npts2)
+  npts=npts0
   dt=1.0/nfs
   n=log(float(npts))/log(2.0) + 0.9999
   nfft=2**n
   df=float(nfs)/nfft
 
-  do i=1,npts                                 !Convert to floats
-     x1(i)=id1(i)
-     x2(i)=id2(i)
-  enddo
-  call averms(x1,npts1,ave1,rms1,xmax1)       !Get ave, rms
-  call averms(x2,npts1,ave2,rms2,xmax2)
+  x1(:npts)=id1(:npts)
+  x2(:npts)=id2(:npts)
+
+  call averms(x1,npts,ave1,rms1,xmax1)       !Get ave, rms
+  call averms(x2,npts,ave2,rms2,xmax2)
   x1(:npts)=(1.0/rms1)*(x1(:npts)-ave1)       !Remove DC and normalize
   x2(:npts)=(1.0/rms2)*(x2(:npts)-ave2)
 
@@ -90,7 +90,7 @@ program ccf
   write(*,1010) call2,grid2,cdate,ctime(:6),ave2,rms2,xmax2
 1010 format(a6,2x,a6,2x,'UTC: ',a8,1x,a6,'  Ave:',f8.1,'  Rms:',    &
           f8.1,'  Max:',f8.1)
-  write(*,1011) fkhz,mode1,float(npts1)/nfs
+  write(*,1011) fkhz,mode1,float(npts)/nfs
 1011 format('Freq:',f10.3,' kHz   Mode: ',a4,'   Duration:',f6.1' s')
 
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
@@ -174,9 +174,10 @@ program ccf
 
   xx1=xx1a
   xx2=xx2a
-  do i=200,npts,nfs                         !Keep only the 1PPS pulse
-     xx1(i:i+nfs-200)=0.
-     xx2(i:i+nfs-200)=0.
+  nchop=200
+  do i=nchop,npts,nfs                         !Keep only the 1PPS pulse
+     xx1(i:i+nfs-nchop)=0.
+     xx2(i:i+nfs-nchop)=0.
   enddo
 
   call four2a(xx1,nfft,1,-1,0)              !Forward FFTs of 1PPS pulses
@@ -204,13 +205,13 @@ program ccf
   enddo
 
   call four2a(cc,nfft,1,1,-1)        !Inverse FFT ==> CCF of 1 PPS pulses
-  xx1pps=xx*sqrt(nfs/200.0)
+  xx1pps=xx*sqrt(float(nfs)/nchop)
 
   xx1=xx1a
   xx2=xx2a
   do i=1,npts,nfs                           !Keep signal without 1 PPS pulses
-     xx1(i:i+200)=0.
-     xx2(i:i+200)=0.
+     xx1(i:i+nchop)=0.
+     xx2(i:i+nchop)=0.
   enddo
 
   call four2a(xx1,nfft,1,-1,0)              !Forward FFTs of signal
@@ -229,13 +230,39 @@ program ccf
 
   call four2a(cc,nfft,1,1,-1)               !Inverse FFT ==> CCF of signal
 
-  do i=-100,100
+!  do i=-512,12511
+  i1=-512
+  i2=511
+  pk1=0.
+  pk2=0.
+  do i=i1,i2
      j=i
      if(j.le.0) j=i+nfft
-     ccf1(i)=xx1pps(j)
-     ccf2(i)=xx(j)
-     write(34,1110) 1000.0*i*dt,ccf1(i),ccf2(i)       !Write CCFs to disk
+     xcf1(i)=xx1pps(j)
+     xcf2(i)=xx(j)
+     pk1=max(pk1,xcf1(i))
+     pk2=max(pk2,xcf2(i))
+  enddo
+
+  do i=i1,i2
+     xcf1(i)=xcf1(i)/pk1
+     xcf2(i)=xcf2(i)/pk2
+     write(34,1110) 1000.0*i*dt,xcf1(i),xcf2(i)       !Write CCFs to disk
 1110 format(f10.3,2f12.6)
+  enddo
+
+  nfft2=1024
+  xx1(:nfft2)=xcf1(-512:511)
+  xx2(:nfft2)=xcf2(-512:511)
+  call four2a(xx1,nfft2,1,-1,0)
+  call four2a(xx2,nfft2,1,-1,0)
+  df2=float(nfs)/nfft2
+  iz=3500.0/df2
+  do i=1,iz
+     s1=real(c1(i))**2 + aimag(c1(i))**2
+     s2=real(c2(i))**2 + aimag(c2(i))**2
+     write(35,1120) i*df2,s1,s2,db(s1),db(s2)
+1120 format(f10.3,2f12.1,2f12.3)
   enddo
 
 999 end program ccf
