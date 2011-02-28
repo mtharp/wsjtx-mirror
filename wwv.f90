@@ -62,7 +62,7 @@ program wwv
 
   call getarg(1,arg)
   if(arg(:2).eq.'-v') then
-     print*,'Version 1.03'
+     print*,'Version 1.04'
      go to 999
   else if(arg.eq.'cal' .or. arg.eq.'CAL') then
      nsec=60

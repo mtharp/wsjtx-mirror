@@ -6,6 +6,7 @@ subroutine clean(xx,ipk,dtmin,dtmax,dbmin,snr,delay,nwwv,nd)
   real w1(NFSMAX/200)                         !Waveform of WWV tick
   real w2(NFSMAX/200)                         !Waveform of WWVH tick
   real ccf1(0:NFSMAX/6),ccf2(0:NFSMAX/6)
+  real sq1(0:NFSMAX/6),sq2(0:NFSMAX/6),tmp(0:NFSMAX/6)
   real delay(4)
   real snr(4)
   integer nwwv(4)
@@ -63,22 +64,26 @@ subroutine clean(xx,ipk,dtmin,dtmax,dbmin,snr,delay,nwwv,nd)
         endif
      enddo
 
-     call averms(ccf1(101:200),100,ave1,rms1,xmax1)        !Get ave, rms
-     call averms(ccf2(101:200),100,ave2,rms2,xmax2)
+     iz=lagmax-lag1+1
+     do i=1,iz
+        sq1(i)=abs(ccf1(i+lag1-1))
+        sq2(i)=abs(ccf2(i+lag1-1))
+     enddo
+     call pctile(sq1,tmp,iz,50,rms1a)
+     call pctile(sq2,tmp,iz,50,rms2a)
 
      fac=gamma*ccfmax/120.0
      if(nw.eq.1) then
         xt(lagpk:lagpk+239)=xt(lagpk:lagpk+239)-fac*w1
-        snr0=ccfmax/rms1
+        snr0=ccfmax/rms1a
      else
         xt(lagpk:lagpk+239)=xt(lagpk:lagpk+239)-fac*w2
-        snr0=ccfmax/rms2
+        snr0=ccfmax/rms2a
      endif
 
-     snrdb=db(snr0/12.0)
-     if(snrdb.lt.dbmin) go to 100
+     snrdb=db(snr0/8.0)
      if(ii.eq.1) ccfmax0=ccfmax
-     if(ccfmax.lt.0.2*ccfmax0) go to 100
+     if(snrdb.lt.dbmin .or. ccfmax.lt.0.2*ccfmax0) go to 100
      nd=nd+1
      snr(nd)=snrdb
      delay(nd)=1000.0*lagpk*dt
