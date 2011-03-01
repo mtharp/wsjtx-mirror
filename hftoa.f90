@@ -18,23 +18,27 @@ program hftoa
   integer soundin
 
   nargs=iargc()
-  if(nargs.ne.6) then
-     print*,'Usage:   hftoa <fsample> <ndown> <f_kHz> <mode> <nsec> <tstart>'
-     print*,'Example: hftoa   48000      4     3990     AM     300    2145'
+  if(nargs.ne.1 .and. nargs.ne.4) then
+     print*,'Usage:   hftoa <f_kHz> <mode> <nsec> <tstart>'
+     print*,'Example: hftoa   3990    AM     300    2100'
      go to 999
   endif
 
   call getarg(1,arg)
-  read(arg,*) nfsample                 !Sample rate (Hz)
-  call getarg(2,arg)
-  read(arg,*) ndown                    !Downsampling factor (1 or 4)
-  call getarg(3,arg)
-  read(arg,*) fkhz                     !Rx frequency (kHz)
-  call getarg(4,mode)                  !Rx mode, e.g. AM, USB, LSB
-  call getarg(5,arg)
-  read(arg,*) nsec                     !Duration of recording (s)
-  call getarg(6,arg)
-  read(arg,*) start_time               !Start time (HHMM)
+  if(arg(:2).eq.'-v') then
+     print*,'Version 1.00'
+     go to 999
+  else
+     read(arg,*) fkhz                     !Rx frequency (kHz)
+     call getarg(2,mode)                  !Rx mode, e.g. AM, USB, LSB
+     call getarg(3,arg)
+     read(arg,*) nsec                     !Duration of recording (s)
+     call getarg(4,arg)
+     read(arg,*) start_time               !Start time (HHMM)
+  endif
+
+  nfsample=48000
+  ndown=4
 
   open(10,file='fmt.ini',status='old',err=910)
   read(10,'(a120)') cmnd              !Get rigctl command to set frequency
@@ -43,25 +47,27 @@ program hftoa
   read(10,*) mygrid
   close(10)
 
-  nHz=nint(1000.d0*fkhz)
-  i1=index(cmnd,' F ')
-  write(cmnd(i1+2:),*) nHz                   !Insert desired frequency
-  iret=system(cmnd)                          !Set Rx frequency
-  if(iret.ne.0) then
-     print*,'Error executing rigctl command to set frequency:'
-     print*,cmnd
-     go to 999
-  endif
+  if(cmnd(:6).eq.'rigctl') then
+     nHz=nint(1000.d0*fkhz)
+     i1=index(cmnd,' F ')
+     write(cmnd(i1+2:),*) nHz                   !Insert desired frequency
+     iret=system(cmnd)                          !Set Rx frequency
+     if(iret.ne.0) then
+        print*,'Error executing rigctl command to set frequency:'
+        print*,cmnd
+        go to 999
+     endif
 
-  if(mode.eq.'am  ') mode='AM  '
-  if(mode.eq.'usb ') mode='USB '
-  if(mode.eq.'lsb ') mode='LSB '
-  cmnd(i1+1:)='M '//mode//' 0'
-  iret=system(cmnd)                          !Set Rx mode
-  if(iret.ne.0) then
-     print*,'Error executing rigctl command to set Rx mode:'
-     print*,cmnd
-     go to 999
+     if(mode.eq.'am  ') mode='AM  '
+     if(mode.eq.'usb ') mode='USB '
+     if(mode.eq.'lsb ') mode='LSB '
+     cmnd(i1+1:)='M '//mode//' 0'
+     iret=system(cmnd)                          !Set Rx mode
+     if(iret.ne.0) then
+        print*,'Error executing rigctl command to set Rx mode:'
+        print*,cmnd
+        go to 999
+     endif
   endif
 
   nchan=1
