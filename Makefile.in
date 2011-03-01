@@ -17,8 +17,7 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv \
-	t1 calibrate ccf1
+all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv 
 build:	wspr
 
 wspr:	WsprMod/w.so
@@ -133,27 +132,11 @@ ccf:    $(OBJS5)
 	$(FC) -o ccf $(FFLAGS) $(OBJS5) -lfftw3f -lsamplerate
 
 OBJS6 = wwv.o read_wav.o averms.o db.o ffa.o fold1pps.o getutc.o \
-	gmtime2.o sound.o resample.o calobs.o four2a.o clean.o
+	gmtime2.o sound.o resample.o calobs.o four2a.o clean.o \
+	pctile.o sort.o ssort.o
 
 wwv:    $(OBJS6)
 	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lportaudio -lsamplerate -lfftw3f
-
-OBJS7 = t1.o four2a.o db.o averms.o clean.o
-
-t1:    $(OBJS7)
-	$(FC) -o t1 $(FFLAGS) $(OBJS7) -lfftw3f 
-
-OBJS8 = calibrate.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
-        fold1pps.o resample.o
-
-calibrate: $(OBJS8)
-	$(FC) -o calibrate $(FFLAGS) $(OBJS8) -lfftw3f -lsamplerate
-
-OBJS9 = ccf1.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
-        fold1pps.o resample.o
-
-ccf1:   $(OBJS9)
-	$(FC) -o ccf1 $(FFLAGS) $(OBJS9) -lfftw3f -lsamplerate
 
 install: WsprMod/w.so
 	${RM} -rf build/
