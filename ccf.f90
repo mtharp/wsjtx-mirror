@@ -44,9 +44,11 @@ program ccf
   call getarg(4,file2)
   open(12,file=file1,access='stream',status='old')
   call read_wav(12,id1,npts1,nfs1,nch1)       !Read data from disk
-  read(12) tsec,fkhz,call1,grid1,mode1,ctime      !Get header info
-  cdate='?'
-  read(12,end=1) cdate
+  if(file1(1:4).ne.'K9AN') then
+     read(12) tsec,fkhz,call1,grid1,mode1,ctime      !Get header info
+     cdate='?'
+     read(12,end=1) cdate
+  endif
 1 close(12)
 
   open(12,file=file2,access='stream',status='old')
@@ -230,9 +232,9 @@ program ccf
 
   call four2a(cc,nfft,1,1,-1)               !Inverse FFT ==> CCF of signal
 
-!  do i=-512,12511
   i1=-512
-  i2=511
+!  i2=511
+  i2=12511
   pk1=0.
   pk2=0.
   do i=i1,i2
@@ -244,12 +246,24 @@ program ccf
      pk2=max(pk2,xcf2(i))
   enddo
 
+  xpk1=0.
+  xpk2=0.
   do i=i1,i2
      xcf1(i)=xcf1(i)/pk1
      xcf2(i)=xcf2(i)/pk2
      write(34,1110) 1000.0*i*dt,xcf1(i),xcf2(i)       !Write CCFs to disk
 1110 format(f10.3,2f12.6)
+     if(xcf1(i).gt.xpk1) then
+        xpk1=xcf1(i)
+        ipk1=i
+     endif
+     if(xcf2(i).gt.xpk2) then
+        xpk2=xcf2(i)
+        ipk2=i
+     endif
   enddo
+  write(*,1112) 1000.0*(ipk2-ipk1)*dt
+1112 format('Delay:',f8.2)
 
   nfft2=1024
   xx1(:nfft2)=xcf1(-512:511)
