@@ -10,7 +10,7 @@ program ccf
   character arg*12                           !Command-line arg
   character*40 file1,file2
   real prof1(NFSMAX),prof2(NFSMAX)
-  real*8 p1,p2,samfac
+  real*8 p1,p2,samfac1,samfac2
   integer resample
   real xx1(NFFTMAX),xx2(NFFTMAX),xx(NFFTMAX),xx1pps(NFFTMAX)
   real xx1a(NFFTMAX),xx2a(NFFTMAX)
@@ -96,16 +96,19 @@ program ccf
 1011 format('Freq:',f10.3,' kHz   Mode: ',a4,'   Duration:',f6.1' s')
 
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
-  ntype=1
-  samfac=nfs/p1
-  ierr=resample(x1,xx1,samfac,npts,ntype)    !Resample to nfs Hz, exactly
-  if(ierr.ne.0) print*,'Resample error.',samfac
-  npts1=samfac*npts
+  ntype=3
+  samfac1=nfs/p1
+  t0=second()
+  ierr=resample(x1,xx1,samfac1,npts,ntype)    !Resample to nfs Hz, exactly
+  t1=second()
+  print*,t1-t0
+  if(ierr.ne.0) print*,'Resample error.',samfac1
+  npts1=samfac1*npts
 
-  samfac=nfs/p2
-  ierr=resample(x2,xx2,samfac,npts,ntype)
-  if(ierr.ne.0) print*,'Resample error.',samfac
-  npts2=samfac*npts
+  samfac2=nfs/p2
+  ierr=resample(x2,xx2,samfac2,npts,ntype)
+  if(ierr.ne.0) print*,'Resample error.',samfac2
+  npts2=samfac2*npts
   npts=min(npts1,npts2)
 
   xx1(npts+1:nfft)=0.
@@ -189,7 +192,6 @@ program ccf
   cc=0.
   ia=100/df                                 !Define rectangular passband
   ib=3500/df
-  bw=nf2
   rfil=0.
   do i=ia,ib
      j=nint(0.01*i*df)
@@ -262,8 +264,8 @@ program ccf
         ipk2=i
      endif
   enddo
-  write(*,1112) 1000.0*(ipk2-ipk1)*dt
-1112 format('Delay:',f8.2)
+  write(*,1112) samfac1,samfac2,1000.0*(ipk2-ipk1)*dt
+1112 format('sf1:', f12.9,'   sf2:',f12.9,'   Delay:',f8.2)
 
   nfft2=1024
   xx1(:nfft2)=xcf1(-512:511)
