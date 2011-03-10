@@ -1,7 +1,7 @@
 subroutine calobs(nfs,nsec,ndevin,id,x1)
 
   parameter (NFSMAX=48000)
-  parameter (NMAX=310*NFSMAX)                !Max length of data
+  parameter (NMAX=1210*NFSMAX)                !Max length of data
   integer*2 id(NMAX)                         !Raw data
   real*8 p1,samfac
   real x1(NMAX),xx1(NMAX)
@@ -50,15 +50,22 @@ subroutine calobs(nfs,nsec,ndevin,id,x1)
   enddo
   prof1(:ip)=prof1(:ip)/pmax
 
-  write(*,1000) ave1,rms1,xmax1,p1
-1000 format('Ave:',f8.2,'   Rms:',f8.2,'   Max:',f8.0,'   Fsample:',f12.4)
+  ppm=1.d6*(48000.d0/p1 - 1.d0)
+  err=1.e6/npts
+  write(*,1000) ave1,rms1,xmax1,p1,ppm,err
+1000 format('Ave:',f8.2,'   Rms:',f8.2,'   Max:',f8.0/                   &
+    'Fsample:',f12.4,'   Sample interval error:',f8.3,' +/-',f7.3,' ppm')
+  write(71,3001) ave1,rms1,xmax1,p1,ppm,err
+3001 format(2f8.2,f8.0,f12.4,2f9.3)
+  call flush(71)
 
   open(10,file='prof_1pps.dat',status='unknown')
   open(11,file='short_1pps.dat',status='unknown')
-  write(10,1010) 0.0,0.0,ave1,rms1,xmax1,p1
-  write(11,1010) 0.0,0.0,ave1,rms1,xmax1,p1
-1010 format(2f10.3,'   Ave:',f8.2,'   Rms:',f8.2,'   Max:',f8.0,         &
-          '   Fsample:',f12.4)
+  write(10,1010) 0.0,0.0,ave1,rms1,xmax1,p1,ppm,err
+  write(11,1010) 0.0,0.0,ave1,rms1,xmax1,p1,ppm,err
+1010 format(2f10.3,'   Ave:',f8.2,'   Rms:',f8.2,'   Max:',f8.0/         &
+    'Fsample:',f12.4,'   Sample interval error:',f8.3,' +/-',f7.3,' ppm')
+
   dt=1.0/nfs
   i0=0.005/dt
   do i=1,ip

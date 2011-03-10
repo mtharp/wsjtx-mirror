@@ -3,7 +3,7 @@ program wwv
 ! Find time delay between 1 PPS ticks from GPS and WWV.
 
   parameter (NFSMAX=48000)
-  parameter (NMAX=310*NFSMAX)                !Max length of data
+  parameter (NMAX=1210*NFSMAX)                !Max length of data
   integer*2 id(NMAX)                         !Raw data
   character arg*12                           !Command-line arg
   character cdate*8                          !CCYYMMDD
