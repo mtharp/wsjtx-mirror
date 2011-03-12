@@ -24,9 +24,9 @@ program qth
   open(12,file='qth.out',status='unknown')
 
   do i=1,NMAX
-     read(10,1010,end=10) call1(i),grid1(i),call2(i),grid2(i),ddelay(i)
-1010 format(a6,1x,a6,2x,a6,1x,a6,f7.2)
-     sigma(i)=0.08
+     read(10,1010,end=10) call1(i),grid1(i),call2(i),grid2(i),ddelay(i),sigma(i)
+1010 format(a6,1x,a6,2x,a6,1x,a6,2f7.2)
+     if(sigma(i).eq.0.0) sigma(i)=0.08
      call grid2deg(grid1(i),xlon1(i),xlat1(i))
      call grid2deg(grid2(i),xlon2(i),xlat2(i))
      xlon1(i)=-xlon1(i)
@@ -38,8 +38,10 @@ program qth
 
   xlon0=-80
   xlat0=40
-  dlon=1.0
-  dlat=1.0
+!  xlon0=40
+!  xlat0=55
+  dlon=4.0
+  dlat=4.0
   i0=10
 
   sqmin=1.e30
@@ -65,7 +67,9 @@ program qth
         enddo
      enddo
      
-     call geodist(39.0653,-84.6075,blat,blon,az,baz,dist)
+!      call geodist(39.0653,-84.6075,blat,blon,az,baz,dist)
+!     call geodist(55.75,37.28,blat,blon,az,baz,dist)
+    call geodist(41.7292,-72.7083,blat,blon,az,baz,dist)
      write(*,1030) iter,blon,blat,sqmin,dist
 1030 format(i3,2f10.4,f10.2,3f8.0)
      if(iter.eq.iters) then
@@ -76,12 +80,12 @@ program qth
         write(12,1032) blon,blat,dx,dy
 1032    format('Lon:',f7.2,'   Lat:',f7.2,'   dx_km:',f6.1,'   dy_km:',f6.1)
         write(*,1040) (i*dlon,i=-5,5)
-1040    format(7x,13f5.2)
+1040    format(7x,13f6.2)
         write(12,1042) (i*dlon,i=-5,5)
 1042    format(7x,13f6.2)
         do j=6,-6,-1
            write(*,1050)  j*dlat,(nint(chisq(i,j)),i=-5,5)
-1050       format(f5.2,2x,13i5)
+1050       format(f5.2,2x,13i6)
            write(12,1060) j*dlat,(nint(chisq(i,j)),i=-5,5)
 1060       format(f5.2,2x,13i6)
         enddo

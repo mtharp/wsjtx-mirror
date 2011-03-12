@@ -98,10 +98,7 @@ program ccf
 ! Resample ntype: 0=best, 1=sinc_medium, 2=sinc_fast, 3=hold, 4=linear
   ntype=3
   samfac1=nfs/p1
-  t0=second()
   ierr=resample(x1,xx1,samfac1,npts,ntype)    !Resample to nfs Hz, exactly
-  t1=second()
-  print*,t1-t0
   if(ierr.ne.0) print*,'Resample error.',samfac1
   npts1=samfac1*npts
 

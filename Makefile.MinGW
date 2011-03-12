@@ -18,7 +18,7 @@ CFLAGS = -I. -fbounds-check
 	${FC} ${FFLAGS} -c $<
 
 all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe \
-	hftoa.exe ccf.exe wwv.exe qth.exe
+	hftoa.exe ccf.exe wwv.exe qth.exe ddelay.exe
 
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
@@ -125,6 +125,11 @@ OBJS7 = qth.o grid2deg.o geodist.o
 
 qth.exe: $(OBJS7)
 	$(FC) -o qth.exe $(FFLAGS) $(OBJS7)
+
+OBJS8 = ddelay.o grid2deg.o geodist.o
+
+ddelay.exe: $(OBJS8)
+	$(FC) -o ddelay.exe $(FFLAGS) $(OBJS8)
 
 sound.o: sound.c
 	$(CC) -c sound.c
