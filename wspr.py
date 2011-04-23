@@ -1029,9 +1029,13 @@ def update():
       w.acom1.pctx=0
     if txmute.get():
         w.acom1.pctx=0
+        w.acom1.ntxnext=0
         bmute.configure(bg='red')
+        btxnext.configure(state=DISABLED)
+        btxnext.configure(bg='gray85')
     else:
         bmute.configure(bg='gray85')
+        btxnext.configure(state=NORMAL)
     w.acom1.idle=idle.get()
     if idle.get()==0:
         bidle.configure(bg='gray85')
