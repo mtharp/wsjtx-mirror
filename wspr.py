@@ -107,6 +107,7 @@ start_idle=IntVar()
 t0=""
 timer1=0
 txmsg=StringVar()
+txmute=IntVar()
 nreject=0
 gain=1.0
 phdeg=0.0
@@ -1026,6 +1027,11 @@ def update():
       w.acom1.pctx=ipctx.get()
     else:
       w.acom1.pctx=0
+    if txmute.get():
+        w.acom1.pctx=0
+        bmute.configure(bg='red')
+    else:
+        bmute.configure(bg='gray85')
     w.acom1.idle=idle.get()
     if idle.get()==0:
         bidle.configure(bg='gray85')
@@ -1458,14 +1464,17 @@ ipctx.set(0)
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 #------------------------------------------------------ Special controls
 g3=Pmw.Group(iframe2a,tag_text='Special')
-bidle=Checkbutton(g3.interior(),text='Idle',justify=RIGHT,variable=idle,width=5)
-bidle.grid(row=0,column=0,padx=2,pady=3)
+bidle=Checkbutton(g3.interior(),text='Idle       ',justify=RIGHT,variable=idle,width=5)
+bidle.grid(row=0,column=1,padx=4,pady=3)
 balloon.bind(bidle,"Check for no automatic T/R sequences")
+bmute=Checkbutton(g3.interior(),text='Tx Mute',justify=RIGHT,variable=txmute,width=5)
+bmute.grid(row=1,column=1,padx=4,pady=3)
+balloon.bind(bmute,"Check for no Tx")
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,width=9)
 btune.grid(row=1,column=0,padx=2,pady=3)
 balloon.bind(btune,"Transmit for number of seconds set by Tx fraction slider")
 btxnext=Button(g3.interior(), text='Tx Next',underline=3,command=txnext,width=9)
-btxnext.grid(row=0,column=1,padx=2,pady=3)
+btxnext.grid(row=0,column=0,padx=2,pady=3)
 balloon.bind(btxnext,"Make the next 2-minute period a transmission")
 
 ##bstoptx=Button(g3.interior(), text='Stop Tx',underline=0,command=stoptx,width=9)
