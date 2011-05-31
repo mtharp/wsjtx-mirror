@@ -1,8 +1,0 @@
-Package: WSPR
-Version: 3.00r2309
-Section: unknown
-Priority: optional
-Architecture: i386
-Depends: python-tk,python-imaging-tk,python-numpy,libfftw3-3
-Maintainer: Joe Taylor, K1JT <k1jt@arrl.net>
-Description: Amateur Radio weak-signal communication.
