@@ -17,7 +17,8 @@ CPPFLAGS += ${DEFS} -I.
 # WSPR specific Fortran flags
 FFLAGS += -fbounds-check
 
-all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv 
+all:	wspr wsprcode fmt fmtave fcal fmeasure wspr0 hftoa ccf wwv
+
 build:	wspr
 
 wspr:	WsprMod/w.so
