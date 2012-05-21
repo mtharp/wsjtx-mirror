@@ -1,6 +1,27 @@
 #------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
+# WSPR (pronounced "whisper") stands for "Weak Signal
+# Propagation Reporter".  The program generates and decodes
+# a digital soundcard mode optimized for beacon-like
+# transmissions on the LF, MF, and HF bands.
+#
+# Copyright (c) 2008-2012 by Joseph H. Taylor, Jr., K1JT, with
+# contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
+# Open Source software, licensed under the GNU General Public
+# License (GPL).  Source code and programming information may
+# be found at http://developer.berlios.de/projects/wsjt/.
+#
+# Revision for MacOsX 10.6.8 by KE6HDU
+# Apparently the tK library has a leak on MacOsX, so every extra call
+# to that library has been suppressed.  This reduced memory use from
+# 100KB/second to the point where memory is only lost when the window
+# is updated for some reason.  This sort of loss is typically 100KB per 2 minutes
+# or about 100 times slower than the original.  You can reduce even that
+# by decreasing the sensitivity to noise changes.  This change also greatly
+# reduced the load on the kernel, from a sustained 13% to essentially nothing.
+# These changes are also licensed under the GNU General Public License (GPL).
+
 from Tkinter import *
 from tkFileDialog import *
 import tkMessageBox
@@ -30,7 +51,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="3.00_r" + "$Rev$"[6:-2]
+Version="3.0.1_r" + "$Rev$"[6:-2]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -59,9 +80,13 @@ from WsprMod import iq
 from WsprMod import hopping
 
 #------------------------------------------------------ Global variables
+advanced0=999
+advanced1=999
 band=[-1,600,160,80,60,40,30,20,17,15,12,10,6,4,2,0]
 bandmap=[]
 bm={}
+btune0=999
+encal0=999
 f0=DoubleVar()
 ftx=DoubleVar()
 ftx0=0.
@@ -70,10 +95,13 @@ fileopened=""
 fmid=0.0
 fmid0=0.0
 font1='Helvetica'
+hopping0=99
 iband=IntVar()
 iband0=0
 idle=IntVar()
+idle0=999
 ierr=0
+inbad0=999
 ipctx=IntVar()
 isec0=0
 isync=1
@@ -81,11 +109,15 @@ itx0=0
 loopall=0
 modpixmap0=0
 mrudir=os.getcwd()
+ndb0=99
 ndbm0=-999
+ncal0=999
 ncall=0
 ndebug=IntVar()
+ndecoding0=999
 nin0=0
 nout0=0
+ntune0=999
 newdat=1
 newspec=1
 no_beep=IntVar()
@@ -100,6 +132,7 @@ ntr0=0
 ntxfirst=IntVar()
 NX=500
 NY=160
+outbad0=999
 param20=""
 sf0=StringVar()
 sftx=StringVar()
@@ -108,6 +141,8 @@ t0=""
 timer1=0
 txmsg=StringVar()
 txmute=IntVar()
+txmute0=999
+upload0=999
 nreject=0
 gain=1.0
 phdeg=0.0
@@ -775,11 +810,14 @@ def put_params(param3=NONE):
         pass
 
 #------------------------------------------------------ update
+# the routine will be invoked ~5 times per second
 def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1
+
+    global hopping0,ndb0,ntune0
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -787,11 +825,17 @@ def update():
     nsec0=nsec
     ns120=nsec % 120
 
+# enable/disable the Band Hop check box
     if hopping.hoppingconfigured.get()==1:
-      bhopping.configure(state=NORMAL)
+	if hopping0!=1:
+	    hopping0=1
+	    bhopping.configure(state=NORMAL)
     else:
-      bhopping.configure(state=DISABLED)
+	if hopping0!=2:
+	    hopping0=2
+	    bhopping.configure(state=DISABLED)
 
+# implement band happing if it was selected
     hopped=0
     if not idle.get():
         if hopping.hopping.get()==1:
@@ -830,6 +874,7 @@ def update():
         ftx.set(float(sftx.get()))
     except:
         pass
+
     isec=utc[5]
     twait=120.0 - (tsec % 120.0)
 
@@ -910,14 +955,18 @@ def update():
     freq0[iband.get()]=f0.get()
     freqtx[iband.get()]=ftx.get()
     w.acom1.iband=iband.get()
+
     try:
         w.acom1.f0=f0.get()
         w.acom1.ftx=ftx.get()
     except:
         pass
 
+    newsecond=0					# =1 if a new second
     if isec != isec0:                           #Do once per second
+# this code block is executed once per second
         isec0=isec
+	newsecond=1
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         ldate.configure(text=t)
         root_geom=root.geometry()
@@ -928,40 +977,47 @@ def update():
                 options.dbm_balloon()
         except:
             pass
+
         put_params()
         nndf=int(1000000.0*(ftx.get()-f0.get()) + 0.5) - 1500
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
-        t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
-        iq.lab1.configure(text=t)
         ndb=int(w.acom1.xdb1-41.0)
         if ndb<-30: ndb=-30
         dbave=w.acom1.xdb1
         if iq.iqmode.get():
+	    t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
+	    iq.lab1.configure(text=t)
             ndb2=int(w.acom1.xdb2-41.0)
             if ndb2<-30: ndb2=-30
             dbave=0.5*(w.acom1.xdb1 + w.acom1.xdb2)
             t='Rx Noise: %3d %3d  dB' % (ndb,ndb2)
         else:
             t='Rx Noise: %3d  dB' % (ndb,)
-        bg='gray85'
-        r=SUNKEN
-        smcolor="green"
-        if w.acom1.receiving:
-            if ndb>10 and ndb<=20:
-                bg='yellow'
-                smcolor='yellow'
-            elif ndb<-20 or ndb>20:
-                bg='red'
-                smcolor='red'
-        else:
-            t=''
-            r=FLAT
-        msg1.configure(text=t,bg=bg,relief=r)
-        if not receiving: dbave=0
-        sm.updateProgress(newValue=dbave,newColor=smcolor)
 
+# update noise display at lower left of screen
+	bg='gray85'
+	r=SUNKEN
+	smcolor="green"
+	if w.acom1.receiving:
+	    if ndb>10 and ndb<=20:
+		bg='yellow'
+		smcolor='yellow'
+	    elif ndb<-20 or ndb>20:
+		bg='red'
+		smcolor='red'
+	else:
+	    t=''
+	    r=FLAT
+
+        if ndb0+2<ndb or ndb0>ndb+2:	# avoid redraws for small changes
+	    ndb0=ndb
+	    msg1.configure(text=t,bg=bg,relief=r)
+	    if not receiving: dbave=0
+	    sm.updateProgress(newValue=dbave,newColor=smcolor)
+
+# this code block is executed ~5 times per second
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
     itx=w.acom1.transmitting
@@ -1001,7 +1057,8 @@ def update():
         else:
             for i in range(15):
                 bandmenu.entryconfig(i,state=NORMAL)
-        
+
+# update the receiving status at the lower right of screen
     bgcolor='gray85'
     t='Waiting to start'
     bgcolor='pink'
@@ -1011,49 +1068,90 @@ def update():
     if receiving:
         t='Receiving'
         bgcolor='green'
-    if t!=t0:
+    if t!=t0:			# dont draw unless changed
         msg6.configure(text=t,bg=bgcolor)
         t0=t
-    if w.acom1.ntune==0:
-        btune.configure(bg='gray85')
-        pctscale.configure(state=NORMAL)
-    else:
-        pctscale.configure(state=DISABLED)
-    if w.acom1.ncal==0:
-        advanced.bmeas.configure(bg='gray85')
-    else:
-        idle.set(1)
+
+# tend to percent scale
+    ntune=w.acom1.ntune
+    if ntune!=ntune0:
+        ntune0=ntune
+	if ntune==0:
+	    btune.configure(bg='gray85')
+	    pctscale.configure(state=NORMAL)
+	else:
+	    pctscale.configure(state=DISABLED)
+
+# set idle switch
+    global ncal0
+    ncal=w.acom1.ncal
+    if ncal!=ncal0:
+    	ncal0=ncal
+	if ncal==0:
+	    advanced.bmeas.configure(bg='gray85')
+	else:
+	    idle.set(1)
+
     if ierr==0:
       w.acom1.pctx=ipctx.get()
     else:
       w.acom1.pctx=0
-    if txmute.get():
-        w.acom1.pctx=0
-        w.acom1.ntxnext=0
-        bmute.configure(bg='red')
-        btxnext.configure(state=DISABLED)
-        btxnext.configure(bg='gray85')
-    else:
-        bmute.configure(bg='gray85')
-        btxnext.configure(state=NORMAL)
-    w.acom1.idle=idle.get()
-    if idle.get()==0:
-        bidle.configure(bg='gray85')
-    else:
-        bidle.configure(bg='yellow')
-    if w.acom1.transmitting or w.acom1.receiving or options.outbad.get():
-        btune.configure(state=DISABLED)
-    else:
-        btune.configure(state=NORMAL)
-    if w.acom1.transmitting or w.acom1.receiving or twait < 6.0:
-        advanced.bmeas.configure(state=DISABLED)
-    else:
-        advanced.bmeas.configure(state=NORMAL)
 
-    if upload.get()==1:
-        bupload.configure(bg='gray85')
+# if mute is pressed turn TxNext gray and mute button red
+    global txmute0
+    if txmute.get()!=txmute0:
+    	txmute0=txmute.get()
+	if txmute0:
+	    w.acom1.pctx=0
+	    w.acom1.ntxnext=0
+	    bmute.configure(bg='red')
+	    btxnext.configure(state=DISABLED)
+	    btxnext.configure(bg='gray85')
+	else:
+	    bmute.configure(bg='gray85')
+	    btxnext.configure(state=NORMAL)
+
+    w.acom1.idle=idle.get()
+
+# make idle button yellow if checked
+    global idle0
+    if idle0!=idle.get():
+    	idle0=idle.get()
+	if idle0==0:
+	    bidle.configure(bg='gray85')
+	else:
+	    bidle.configure(bg='yellow')
+
+    global btune0
+    if w.acom1.transmitting or w.acom1.receiving or options.outbad.get():
+        if btune0!=1:
+	    btune0=1
+	    btune.configure(state=DISABLED)
     else:
-        bupload.configure(bg='yellow')
+        if btune0!=2:
+	    btune0=2
+	    btune.configure(state=NORMAL)
+
+    global advanced0
+    if w.acom1.transmitting or w.acom1.receiving or twait < 6.0:
+        if advanced0!=1:
+	    advanced0=1
+	    advanced.bmeas.configure(state=DISABLED)
+    else:
+        if advanced0!=2:
+	    advanced0=2
+	    advanced.bmeas.configure(state=NORMAL)
+
+# update the upload spots button color
+    global upload0
+    if upload.get()==1:
+        if upload0!=1:
+	    upload0=1
+	    bupload.configure(bg='gray85')
+    else:
+        if upload0!=2:
+	    upload0=2
+	    bupload.configure(bg='yellow')
 
 # If new decoded text has appeared, display it.
     if w.acom1.ndecdone:
@@ -1072,28 +1170,29 @@ def update():
             newdat=1
             modpixmap0=modpixmap
     except:
-        newdat=0
+	    newdat=0
+
     scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
     if newdat or scale!= scale0 or offset!=offset0 or g.cmap!=g.cmap0:
-        im.putdata(a,scale,offset)              #Compute whole new image
-        if newdat:
-            n=len(tw)
-            for i in range(n-1,-1,-1):
-                x=465-39*i
-                draw.text((x,148),tw[i],fill=253)        #Insert time label
-                if i<len(fw):
-                    draw.text((x+10,1),fw[i],fill=253)   #Insert band label
-                               
-        pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
-        graph1.delete(ALL)
-        graph1.create_image(0,0+2,anchor='nw',image=pim)
-        g.ndecphase=2
-        newMinute=0
-        scale0=scale
-        offset0=offset
-        g.cmap0=g.cmap
-        newdat=0
+	im.putdata(a,scale,offset)              #Compute whole new image
+	if newdat:
+	    n=len(tw)
+	    for i in range(n-1,-1,-1):
+		x=465-39*i
+		draw.text((x,148),tw[i],fill=253)        #Insert time label
+		if i<len(fw):
+		    draw.text((x+10,1),fw[i],fill=253)   #Insert band label
+			       
+	pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
+	graph1.delete(ALL)
+	graph1.create_image(0,0+2,anchor='nw',image=pim)
+	g.ndecphase=2
+	newMinute=0
+	scale0=scale
+	offset0=offset
+	g.cmap0=g.cmap
+	newdat=0
 
     s0=sc1.get()
     c0=sc2.get()
@@ -1103,22 +1202,29 @@ def update():
         pass
 
     if fmid!=fmid0 or ftx.get()!=ftx0:
+        fmid0=fmid
+	ftx0=ftx.get()
         draw_axis()
         lftx.configure(validate={'validator':'real',
             'min':f0.get()+0.001500-0.000100,'minstrict':0,
             'max':f0.get()+0.001500+0.000100,'maxstrict':0})
+
     w.acom1.ndebug=ndebug.get()
 
     if options.rignum.get()==2509 or options.rignum.get()==2511:
         options.pttmode.set('CAT')
         options.CatPort.set('USB')
+
     if options.pttmode.get()=='CAT':
         options.cat_enable.set(1)
+
     if options.pttmode.get()=='CAT' or options.pttmode.get()=='VOX':
         options.PttPort.set('None')
         options.ptt_port._entryWidget['state']=DISABLED
     else:
         options.ptt_port._entryWidget['state']=NORMAL
+
+    global advanced1
     if options.cat_enable.get():
         options.lrignum._entryWidget['state']=NORMAL
         if options.cat_port.get() != 'USB':
@@ -1133,9 +1239,11 @@ def update():
             options.cbdata._entryWidget['state']=DISABLED
             options.cbstop._entryWidget['state']=DISABLED
             options.cbhs._entryWidget['state']=DISABLED
-        advanced.bsetfreq.configure(state=NORMAL)
-        advanced.breadab.configure(state=NORMAL)
-        advanced.enable_cal.configure(state=NORMAL)
+	if advanced1!=1:
+	    advanced1=1
+	    advanced.bsetfreq.configure(state=NORMAL)
+	    advanced.breadab.configure(state=NORMAL)
+	    advanced.enable_cal.configure(state=NORMAL)
     else:
         options.cat_port._entryWidget['state']=DISABLED
         options.lrignum._entryWidget['state']=DISABLED
@@ -1143,10 +1251,13 @@ def update():
         options.cbdata._entryWidget['state']=DISABLED
         options.cbstop._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
-        advanced.bsetfreq.configure(state=DISABLED)
-        advanced.breadab.configure(state=DISABLED)
-        advanced.enable_cal.configure(state=DISABLED)
-        advanced.encal.set(0)
+	if advanced1!=2:
+	    advanced1=2
+	    advanced.bsetfreq.configure(state=DISABLED)
+	    advanced.breadab.configure(state=DISABLED)
+	    advanced.enable_cal.configure(state=DISABLED)
+	    advanced.encal.set(0)
+
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
     w.acom1.ncoord=hopping.coord_bands.get()
@@ -1155,28 +1266,43 @@ def update():
         audio_config()
         nin0=g.ndevin.get()
         nout0=g.ndevout.get()
-    if options.inbad.get()==0:
-        msg2.configure(text='',bg='gray85')
-    else:
-        msg2.configure(text='Invalid audio input device.',bg='red')
-    if options.outbad.get()==0:
-        msg3.configure(text='',bg='gray85')
-    else:
-        msg3.configure(text='Invalid audio output device.',bg='red')
-    if w.acom1.ndecoding:
-        msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
-    else:
-        msg5.configure(text='',bg='gray85',relief=FLAT)
 
-    if advanced.encal.get():
-        advanced.A_entry.configure(entry_state=NORMAL,label_state=NORMAL)
-        advanced.B_entry.configure(entry_state=NORMAL,label_state=NORMAL)
-    else:
-        advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
-        advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
+    global inbad0
+    if inbad0!=options.inbad.get():
+	inbad0=options.inbad.get()
+	if inbad0==0:
+	    msg2.configure(text='',bg='gray85')
+	else:
+	    msg2.configure(text='Invalid audio input device.',bg='red')
+
+    global outbad0
+    if outbad0!=options.outbad.get():
+	outbad0=options.outbad.get()
+	if outbad0==0:
+	    msg3.configure(text='',bg='gray85')
+	else:
+	    msg3.configure(text='Invalid audio output device.',bg='red')
+
+    global ndecoding0
+    if ndecoding0!=w.acom1.ndecoding:
+	ndecoding0=w.acom1.ndecoding
+	if ndecoding0:
+	    msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
+	else:
+	    msg5.configure(text='',bg='gray85',relief=FLAT)
+
+    global encal0
+    if encal0!=advanced.encal.get():
+	encal0=advanced.encal.get()
+	if encal0:
+	    advanced.A_entry.configure(entry_state=NORMAL,label_state=NORMAL)
+	    advanced.B_entry.configure(entry_state=NORMAL,label_state=NORMAL)
+	else:
+	    advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
+	    advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
   
     timer1=ldate.after(200,update)
-    
+
 #------------------------------------------------------ audio_config
 def audio_config():
     inbad,outbad=w.audiodev(g.ndevin.get(),g.ndevout.get())
@@ -1722,7 +1848,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 3.0     by K1JT')
+root.title('  WSPR 3.0.1     by K1JT')
 
 put_params()
 try:

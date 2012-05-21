@@ -25,7 +25,7 @@ wspr:	WsprMod/w.so
 
 # Default rules
 %.o: %.c
-	${CC} ${CFLAGS} -c $<
+	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
 %.o: %.f
 	${FC} ${FFLAGS} -c $<
 %.o: %.F
@@ -107,7 +107,7 @@ WsprMod/w.so:	${OBJS2C} $(SRCS2C) $(SRCS2F90) $(SRCS2F77) acom1.f90
 
 fmt: fmt.f90 fil1.f90 four2a.f peakup.f db.f sound.o 
 	$(FC) -o fmt fmt.f90 fil1.f90 four2a.f peakup.f db.f \
-	sound.o ${LIBS}
+	sound.o ${LDFLAGS} ${LIBS}
 
 fmtave: fmtave.f90
 	$(FC) -o fmtave fmtave.f90
@@ -119,12 +119,12 @@ fmeasure: fmeasure.f90
 	$(FC) -o fmeasure fmeasure.f90
 
 wspr0:	$(OBJS1)
-	$(FC) -o wspr0 $(FFLAGS) $(OBJS1) -lportaudio -lfftw3f
+	$(FC) -o wspr0 $(LDFLAGS) $(FFLAGS) $(OBJS1) -lportaudio -lfftw3f
 
 OBJS4 = hftoa.o write_wav.o sound.o fil1.o averms.o getutc.o gmtime2.o
 
 hftoa:  $(OBJS4)
-	$(FC) -o hftoa $(FFLAGS) $(OBJS4) -lportaudio 
+	$(FC) -o hftoa $(LDFLAGS) $(FFLAGS) $(OBJS4) -lportaudio 
 
 OBJS5 = ccf.o read_wav.o averms.o four2a.o thnix_stub.o db.o ffa.o \
         fold1pps.o resample.o
@@ -137,7 +137,7 @@ OBJS6 = wwv.o read_wav.o averms.o db.o ffa.o fold1pps.o getutc.o \
 	pctile.o sort.o ssort.o
 
 wwv:    $(OBJS6)
-	$(FC) -o wwv $(FFLAGS) $(OBJS6) -lportaudio -lsamplerate -lfftw3f
+	$(FC) -o wwv $(FFLAGS) $(LDFLAGS) $(OBJS6) -lportaudio -lsamplerate -lfftw3f
 
 install: WsprMod/w.so
 	${RM} -rf build/
