@@ -19,7 +19,7 @@ integer mousebutton    !Which button was clicked?               GUI
 integer ndecdone       !Is decoder finished?                 GUI,Decoder
 integer npingtime      !Time in file of mouse-selected ping  GUI,Decoder
 integer npingtime2     !End time of mouse-selected ping      GUI,Decoder
-integer ntc            !Time constand for echo averaging (m)    GUI
+integer ntc            !Time constant for echo averaging (m)    GUI
 integer necho          !0 for CW, 1 for 27x27 Costas            GUI
 integer nfrit          !RIT setting for Echo mode (Hz)          GUI
 integer ndither        !Dither range for Echo mode (Hz)         GUI

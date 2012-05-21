@@ -64,9 +64,9 @@ subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
   if(ia.gt.7590 .or. ib.gt.7590) go to 900
 
   nsum=nsum+1
-  u=1.0/nsum
   if(ntc.lt.1) ntc=1
-  if(nsum.gt.10*ntc) u=1.0/(10*ntc)
+  u=1.0/nsum
+  if(nsum.gt.ntc) u=1.0/ntc
   do i=1,600
      s1(i)=(1.0-u)*s1(i) + u*s(ia+i-300)  !Center at initial doppler freq
      s2(i)=(1.0-u)*s2(i) + u*s(ib+i-300)  !Center at expected echo freq

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#--------------------------------------------------------------------- WSJT
+#------------------------------------------------------------------- WSJT
 # $Date$ $Revision$
 #
 from Tkinter import *
@@ -26,7 +26,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="9.1 r" + "$Rev$"[6:-1]
+Version="9.2 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \

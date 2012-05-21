@@ -232,7 +232,7 @@ aux_dec=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Source DEC:',
     entry_width=9,entry_textvariable=auxdec)
 azeldir_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='AzElDir:',
     entry_width=9,value=g.appdir,entry_textvariable=azeldir)
-ntc_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Echo Avg (m):',
+ntc_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Echo Avg:',
     entry_width=9,entry_textvariable=ntc)
 ##necho_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Echo waveform:',
 ##    entry_width=9,entry_textvariable=necho)
