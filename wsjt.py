@@ -2837,7 +2837,7 @@ if nmonitor.get():
 else:
     stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSJT 9.1     by K1JT')
+root.title('  WSJT 9.2     by K1JT')
 from WsjtMod import astro
 from WsjtMod import specjt
 
