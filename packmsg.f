@@ -1,9 +1,10 @@
       subroutine packmsg(msg,dat)
 
       parameter (NBASE=37*36*10*27*27*27)
+      parameter (NBASE2=262178562)
       character*22 msg
       integer dat(12)
-      character*12 c1,c2
+      character*12 c1,c2,c2z
       character*4 c3
       character*6 grid6
 c      character*3 dxcc                  !Where is DXCC implemented?
@@ -49,19 +50,36 @@ C  ... and if so, does it have a reply frequency?
       c3='    '
       if(ic.ge.ib+1) c3=msg(ib+1:ic)
       if(c3.eq.'OOO ') c3='    '           !Strip out the OOO flag
-      call getpfx1(c1,k1)
+      call getpfx1(c1,k1,junk)
       call packcall(c1,nc1,text1)
-      call getpfx1(c2,k2)
+      c2z=c2
+      call getpfx1(c2,k2,nv2)
       call packcall(c2,nc2,text2)
-      if(k1.lt.0 .or. k2.lt.0 .or. k1*k2.ne.0) go to 10
-      if(k2.gt.0) k2=k2+450
-      k=max(k1,k2)
-      if(k.gt.0) then
-         call k2grid(k,grid6)
-         c3=grid6(1:4)                     !Explicitly truncate to 4 chars
+      if(nv2.eq.0) then
+         if(k1.lt.0 .or. k2.lt.0 .or. k1*k2.ne.0) go to 10
+         if(k2.gt.0) k2=k2+450
+         k=max(k1,k2)
+         if(k.gt.0) then
+            call k2grid(k,grid6)
+            c3=grid6(:4)
+         endif
       endif
       call packgrid(c3,ng,text3)
-      if((.not.text1) .and. (.not.text2) .and. (.not.text3)) go to 20
+      if(nv2.eq.0 .and. (.not.text1) .and. (.not.text2) .and. 
+     +        (.not.text3)) go to 20
+      if(nv2.gt.0) then
+         if(nv2.eq.1) then
+            if(c1(1:3).eq.'CQ ')  nc1=262178563 + k2
+            if(c1(1:4).eq.'QRZ ') nc1=264002072 + k2 
+            if(c1(1:3).eq.'DE ')  nc1=265825581 + k2
+         endif
+         if(nv2.eq.2) then
+            if(c1(1:3).eq.'CQ ')  nc1=267649090 + k2
+            if(c1(1:4).eq.'QRZ ') nc1=267698375 + k2
+            if(c1(1:3).eq.'DE ')  nc1=267747660 + k2
+         endif
+         go to 20
+      endif
 
 C  The message will be treated as plain text.
  10   call packtext(msg,nc1,nc2,ng)

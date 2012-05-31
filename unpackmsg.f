@@ -3,7 +3,7 @@
       parameter (NBASE=37*36*10*27*27*27)
       parameter (NGBASE=180*180)
       integer dat(12)
-      character c1*12,c2*12,grid*4,msg*22,grid6*6
+      character c1*12,c2*12,grid*4,msg*22,grid6*6,psfx*4,junk2*4
       logical cqnnn
 
       cqnnn=.false.
@@ -21,29 +21,38 @@
          go to 100
       endif
 
-      if(nc1.lt.NBASE) then
-         call unpackcall(nc1,c1)
-      else
-         c1='......'
+      call unpackcall(nc1,c1,iv2,psfx)
+      if(iv2.eq.0) then
+! This is an "original JT65" message
          if(nc1.eq.NBASE+1) c1='CQ    '
          if(nc1.eq.NBASE+2) c1='QRZ   '
          nfreq=nc1-NBASE-3
          if(nfreq.ge.0 .and. nfreq.le.999) then
-            c1(1:3)='CQ '
-            c1(4:4)=char(48+nfreq/100)
-            c1(5:5)=char(48+mod(nfreq/10,10))
-            c1(6:6)=char(48+mod(nfreq,10))
-            cqnnn=.true.           
-         endif         
+            write(c1,1002) nfreq
+ 1002       format('CQ ',i3.3)
+            cqnnn=.true.
+         endif
       endif
 
-      if(nc2.lt.NBASE) then
-         call unpackcall(nc2,c2)
-      else
-         c2='......'
-      endif
-
+      call unpackcall(nc2,c2,junk1,junk2)
       call unpackgrid(ng,grid)
+
+      if(iv2.gt.0) then
+! This is a JT65v2 message
+         n1=len_trim(psfx)
+         n2=len_trim(c2)
+         if(iv2.eq.1) msg='CQ '//psfx(:n1)//'/'//c2(:n2)//' '//grid
+         if(iv2.eq.2) msg='QRZ '//psfx(:n1)//'/'//c2(:n2)//' '//grid
+         if(iv2.eq.3) msg='DE '//psfx(:n1)//'/'//c2(:n2)//' '//grid
+         if(iv2.eq.4) msg='CQ '//c2(:n2)//'/'//psfx(:n1)//' '//grid
+         if(iv2.eq.5) msg='QRZ '//c2(:n2)//'/'//psfx(:n1)//' '//grid
+         if(iv2.eq.6) msg='DE '//c2(:n2)//'/'//psfx(:n1)//' '//grid
+         if(iv2.eq.7) msg='DE '//c2(:n2)//' '//grid
+         go to 100
+      else
+         
+      endif
+
       grid6=grid//'ma'
       call grid2k(grid6,k)
       if(k.ge.1 .and. k.le.450)   call getpfx2(k,c1)
@@ -57,7 +66,7 @@
       msg='                      '
       j=0
       if(cqnnn) then
-         msg=c1//'                '
+         msg=c1//'          '
          j=7                                  !### ??? ###
          go to 10
       endif
@@ -75,7 +84,7 @@
          msg(j:j)=c2(i:i)
          if(c2(i:i).eq.' ') go to 20
       enddo
-      j=j+1
+      if(j.le.21) j=j+1
       msg(j:j)=' '
 
  20   if(k.eq.0) then
@@ -83,7 +92,7 @@
             if(j.le.21) j=j+1
             msg(j:j)=grid(i:i)
          enddo
-         j=j+1
+         if(j.le.21) j=j+1
          msg(j:j)=' '
       endif
 
