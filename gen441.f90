@@ -16,7 +16,7 @@ subroutine gen441(itone,ndits,cfrag)
      do i=1,NSPD
         k=k+1
         pha=pha+dpha
-        cfrag(k)=cmplx(cos(pha),-sin(pha))
+        cfrag(k)=cmplx(sin(pha),-cos(pha))
      enddo
   enddo
 

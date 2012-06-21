@@ -15,19 +15,15 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
   real s(NMAX)
   real ccf(-6000:6000)
   integer dftolerance
+  logical first
+  data first/.true./
   common/scratch/work(NMAX)
-  save frag0,cfrag,ndits
+  save
 
-  frag=' '
-  if(frag.ne.frag0) then
-     do i=28,1,-1                          !Get length of message fragment
-        if(frag(i:i).ne.' ') go to 10
-     enddo
-10   nfrag=i
-     if(nfrag.eq.0) nfrag=1
-     call abc441(frag,nfrag,itone,ndits)
-     call gen441(itone,ndits,cfrag)        !Generate complex waveform
-     frag0=frag
+  if(first) then
+     call abc441(' ',1,itone,ndits)         !Generate waveform for <space>
+     call gen441(itone,ndits,cfrag)
+     first=.true.
   endif
 
   ccf0=3.0
@@ -36,7 +32,6 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
      ccf0=2.1
      sb0=0.60
   endif
-
 
   nsps=25                                  !Initialize variables
   nsam=nsps*ndits
@@ -93,12 +88,13 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
      a=0.
      do j=1,nsam
         a=a + abs(cdat(j+i-1))
-        z=z + cdat(j+i-1)*cfrag(j)
+        z=z + cdat(j+i-1)*conjg(cfrag(j))
      enddo
      ss=abs(z)/a
-!     ss=abs(z)
      if(ss.gt.sbest) then
         sbest=ss
+        ipk=i
+        amp=a/nsam
      endif
   enddo
   if(sbest.lt.sb0) go to 800            !Skip if not decodable FSK441 data

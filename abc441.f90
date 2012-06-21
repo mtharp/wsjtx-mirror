@@ -4,6 +4,8 @@ subroutine abc441(msg,nmsg,itone,ndits)
   integer itone(84)
   integer lookup(0:91)
   character cc*43
+!                   1         2         3         4
+!          1234567890123456789012345678901234567890123
   data cc/' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?/#$'/
   data lookup/13, 15, 17, 46, 47, 45, 44, 12, 11, 14, &
                1,  2,  3,  4,  5,  6,  7,  8,  9, 10, &
