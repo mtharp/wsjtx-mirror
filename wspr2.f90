@@ -63,7 +63,8 @@ subroutine wspr2
      receiving=.false.
      nrxdone=0
      ndecoding=1
-     thisfile=outfile
+!     thisfile=outfile
+     thisfile=cdate(3:8)//'_'//rxtime(1:4)//'.'//'wav'    !Tnx to G3WKW !
      call cs_unlock
 
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
