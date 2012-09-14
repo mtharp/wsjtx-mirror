@@ -25,7 +25,7 @@ C  already downsampled the data by factor of 2.
       nsym=126
       nfft=2048
       if(nfast.eq.2) nfft=1024
-      nsteps=2*jz/nfft - 1
+      nsteps=min(320,2*jz/nfft - 1)
       nh=nfft/2
 
       df=0.5*11025.0/nfft
