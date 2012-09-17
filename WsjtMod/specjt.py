@@ -261,7 +261,7 @@ def decode_request(event):
             else:
                 Audio.gcom2.ndecoding=3             #Mouse pick, bottom half
 
-    elif g.mode=='ISCAT' and nspeed0.get()>5 and \
+    elif g.mode[:5]=='ISCAT' and nspeed0.get()>5 and \
           Audio.gcom2.ndecoding==0 and Audio.gcom2.monitoring:
         Audio.gcom2.mousebutton=event.num       #Left=1, Right=3
         Audio.gcom2.npingtime=int(40*event.x)   #Time (ms) of selected ping
@@ -386,7 +386,7 @@ def update():
            and nspeed0.get()>5: nspeed0.set(3)
         if g.mode=="FSK441" and nspeed0.get()<6: nspeed0.set(7)
         if g.mode=="JTMS" and nspeed0.get()<6: nspeed0.set(7)
-        if g.mode=="ISCAT" and nspeed0.get()<6: nspeed0.set(7)
+        if g.mode[:5]=="ISCAT" and nspeed0.get()<6: nspeed0.set(7)
         if g.mode=="Echo" and nspeed0.get()>5: nspeed0.set(3)
         draw_axis()
         mode0=g.mode
