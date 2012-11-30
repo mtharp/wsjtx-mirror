@@ -1,4 +1,4 @@
-#--------------------------------------------------------------------- WSPR
+#-------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # WSPR (pronounced "whisper") stands for "Weak Signal
@@ -1092,7 +1092,7 @@ def update():
 	else:
 	    idle.set(1)
 
-    if ierr==0:
+    if ierr==0 and txmute.get()==0:
       w.acom1.pctx=ipctx.get()
     else:
       w.acom1.pctx=0
