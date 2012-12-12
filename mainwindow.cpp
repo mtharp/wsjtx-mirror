@@ -1,4 +1,4 @@
-//--------------------------------------------------------------- MainWindow
+//---------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -146,7 +146,8 @@ MainWindow::MainWindow(QWidget *parent) :
   lockFile.open(QIODevice::ReadWrite);
   QFile quitFile(m_appDir + "/.lock");
   quitFile.remove();
-  proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' + "/jt9 -s"));
+//  proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' +
+//      "/save/wspr0 Rx 0.4742 save/121212_0014.wav" ));
 
   m_pbdecoding_style1="QPushButton{background-color: cyan; \
       border-style: outset; border-width: 1px; border-radius: 5px; \
@@ -374,7 +375,7 @@ void MainWindow::dataSink(int k)
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-    decode();                                                //Start decoder
+//    decode();                                                //Start decoder
     if(!m_diskData) {                        //Always save; may delete later
       int ihr=t.time().toString("hh").toInt();
       int imin=t.time().toString("mm").toInt();
@@ -386,6 +387,9 @@ void MainWindow::dataSink(int k)
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
     }
+//    decode();                                                //Start decoder
+    proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' +
+           "/wspr0 Rx 10.1387 " + m_fname + '"' ));
   }
   soundInThread.m_dataSinkBusy=false;
 }
@@ -795,7 +799,7 @@ void MainWindow::decode()                                       //decode()
 void MainWindow::jt9_error()                                     //jt9_error
 {
   if(!m_killAll) {
-    msgBox("Error starting or running\n" + m_appDir + "/jt9 -s");
+    msgBox("Error starting or running\n" + m_appDir + "/wspr0");
     exit(1);
   }
 }
@@ -810,25 +814,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
 {
   while(proc_jt9.canReadLine()) {
     QByteArray t=proc_jt9.readLine();
-    if(t.indexOf("<DecodeFinished>") >= 0) {
-      m_bsynced = (t.mid(19,1).toInt()==1);
-      m_bdecoded = (t.mid(23,1).toInt()==1);
-      bool keepFile=m_saveAll or (m_saveSynced and m_bsynced) or
-          (m_saveDecoded and m_bdecoded);
-      if(!keepFile) {
-        QFile savedFile(m_fname);
-        savedFile.remove();
-      }
-      jt9com_.nagain=0;
-      jt9com_.ndiskdat=0;
-      QFile lockFile(m_appDir + "/.lock");
-      lockFile.open(QIODevice::ReadWrite);
-//      ui->DecodeButton->setStyleSheet("");
-      decodeBusy(false);
-      m_RxLog=0;
-      m_startAnother=m_loopall;
-      return;
-    } else {
+    if(t.indexOf(" UTC ") != 0 and t.indexOf("-----") != 0) {
       int n=t.length();
       QString bg="white";
       if(t.indexOf(" CQ ")>0) bg="#66ff66";                //Light green

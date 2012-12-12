@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>435</height>
+    <height>340</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -49,7 +49,7 @@
         <property name="minimumSize">
          <size>
           <width>453</width>
-          <height>170</height>
+          <height>100</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -79,7 +79,7 @@
            <property name="maximumSize">
             <size>
              <width>610</width>
-             <height>400</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -872,6 +872,9 @@ p, li { white-space: pre-wrap; }
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>WSPR-15</string>
    </property>
@@ -879,6 +882,9 @@ p, li { white-space: pre-wrap; }
   <action name="actionWSPR_30">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>WSPR-30</string>
