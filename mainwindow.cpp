@@ -1013,8 +1013,8 @@ void MainWindow::guiUpdate()
     }
 
     m_setftx=0;
-    QString utc = t.date().toString("yyyy MMM dd") + "\n " +
-            t.time().toString() + " ";
+    QString utc = t.date().toString(" yyyy MMM dd") + " \n " +
+            t.time().toString();
     ui->labUTC->setText(utc);
     if(!m_monitoring and !m_diskData) {
       ui->xThermo->setValue(0.0);
