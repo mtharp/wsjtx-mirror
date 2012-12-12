@@ -43,7 +43,6 @@ private slots:
   void OnExit();
   void on_actionLinrad_triggered();
   void on_actionCuteSDR_triggered();
-  void on_stopTxButton_clicked();
   void on_actionOnline_Users_Guide_triggered();
   void on_actionWide_Waterfall_triggered();
   void on_actionOpen_triggered();
@@ -57,7 +56,6 @@ private slots:
   void on_actionKeyboard_shortcuts_triggered();
   void on_actionSpecial_mouse_commands_triggered();
   void on_actionAvailable_suffixes_and_add_on_prefixes_triggered();
-  void on_DecodeButton_clicked();
   void decode();
   void decodeBusy(bool b);
   void on_EraseButton_clicked();
@@ -71,14 +69,12 @@ private slots:
   void on_actionWSPR_15_triggered();
   void on_NBcheckBox_toggled(bool checked);
   void on_NBslider_valueChanged(int value);
-  void on_TxFreqSpinBox_valueChanged(int arg1);
   void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();
   void on_actionMediumDecode_triggered();
   void on_actionDeepestDecode_triggered();
   void on_inGain_valueChanged(int n);
-  void bumpFqso(int n);
   void on_actionMonitor_OFF_at_startup_triggered();
 
 private:

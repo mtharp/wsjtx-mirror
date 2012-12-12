@@ -306,7 +306,6 @@ void MainWindow::readSettings()
   m_NBslider=settings.value("NBslider",40).toInt();
   ui->NBslider->setValue(m_NBslider);
   m_txFreq=settings.value("TxFreq",1500).toInt();
-  ui->TxFreqSpinBox->setValue(m_txFreq);
   soundOutThread.setTxFreq(m_txFreq);
   m_saveSynced=ui->actionSave_synced->isChecked();
   m_saveDecoded=ui->actionSave_decoded->isChecked();
@@ -463,12 +462,6 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
   dlg.exec();
 }
 
-void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
-{
-//  if(m_auto) on_autoButton_clicked();
-  btxok=false;
-}
-
 void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
 {
   int n;
@@ -482,31 +475,6 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
       on_actionDecode_remaining_files_in_directory_triggered();
     }
     break;
-  case Qt::Key_F11:
-    n=11;
-    if(e->modifiers() & Qt::ControlModifier) n+=100;
-    bumpFqso(n);
-    break;
-  case Qt::Key_F12:
-    n=12;
-    if(e->modifiers() & Qt::ControlModifier) n+=100;
-    bumpFqso(n);
-    break;
-  }
-}
-
-void MainWindow::bumpFqso(int n)                                 //bumpFqso()
-{
-  int i;
-  bool ctrl = (n>=100);
-  n=n%100;
-  i=g_pWideGraph->QSOfreq();
-  if(n==11) i--;
-  if(n==12) i++;
-  g_pWideGraph->setQSOfreq(i);
-  if(!ctrl) {
-    ui->TxFreqSpinBox->setValue(i);
-    g_pWideGraph->setTxFreq(i);
   }
 }
 
@@ -774,18 +742,9 @@ void MainWindow::on_actionAvailable_suffixes_and_add_on_prefixes_triggered()
   stub();                                    //Display list of Add-On pfx/sfx
 }
 
-void MainWindow::on_DecodeButton_clicked()                    //Decode request
-{
-  if(!m_decoderBusy) {
-    jt9com_.newdat=0;
-    jt9com_.nagain=1;
-    decode();
-  }
-}
-
 void MainWindow::decode()                                       //decode()
 {
-  ui->DecodeButton->setStyleSheet(m_pbdecoding_style1);
+//  ui->DecodeButton->setStyleSheet(m_pbdecoding_style1);
   if(jt9com_.nagain==0 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
     int imin=ms/60000;
@@ -864,7 +823,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
       jt9com_.ndiskdat=0;
       QFile lockFile(m_appDir + "/.lock");
       lockFile.open(QIODevice::ReadWrite);
-      ui->DecodeButton->setStyleSheet("");
+//      ui->DecodeButton->setStyleSheet("");
       decodeBusy(false);
       m_RxLog=0;
       m_startAnother=m_loopall;
@@ -889,7 +848,6 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
 void MainWindow::decodeBusy(bool b)                             //decodeBusy()
 {
   m_decoderBusy=b;
-  ui->DecodeButton->setEnabled(!b);
   ui->actionOpen->setEnabled(!b);
   ui->actionOpen_next_in_directory->setEnabled(!b);
   ui->actionDecode_remaining_files_in_directory->setEnabled(!b);
@@ -1174,13 +1132,6 @@ void MainWindow::on_NBcheckBox_toggled(bool checked)
 void MainWindow::on_NBslider_valueChanged(int n)
 {
   m_NBslider=n;
-}
-
-void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
-{
-  m_txFreq=n;
-  if(g_pWideGraph!=NULL) g_pWideGraph->setTxFreq(n);
-  soundOutThread.setTxFreq(n);
 }
 
 void MainWindow::on_actionQuickDecode_triggered()
