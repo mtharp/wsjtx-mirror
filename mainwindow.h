@@ -26,9 +26,7 @@ public slots:
   void dataSink(int k);
   void diskDat();
   void diskWriteFinished();
-  void freezeDecode(int n);
   void guiUpdate();
-  void doubleClickOnCall(QString hiscall, bool ctrl);
   void readFromStdout();
   void readFromStderr();
   void jt9_error();
@@ -39,23 +37,13 @@ protected:
   virtual bool eventFilter(QObject *object, QEvent *event);
 
 private slots:
-  void on_tx1_editingFinished();
-  void on_tx2_editingFinished();
-  void on_tx3_editingFinished();
-  void on_tx4_editingFinished();
-  void on_tx5_editingFinished();
-  void on_tx6_editingFinished();
   void on_actionDeviceSetup_triggered();
-  void on_monitorButton_clicked();
   void on_actionExit_triggered();
   void on_actionAbout_triggered();
   void OnExit();
   void on_actionLinrad_triggered();
   void on_actionCuteSDR_triggered();
-  void on_autoButton_clicked();
   void on_stopTxButton_clicked();
-  void on_tolSpinBox_valueChanged(int arg1);
-  void on_stopButton_clicked();
   void on_actionOnline_Users_Guide_triggered();
   void on_actionWide_Waterfall_triggered();
   void on_actionOpen_triggered();
@@ -73,21 +61,7 @@ private slots:
   void decode();
   void decodeBusy(bool b);
   void on_EraseButton_clicked();
-  void on_txb1_clicked();
-  void on_txFirstCheckBox_stateChanged(int arg1);
   void set_ntx(int n);
-  void on_txb2_clicked();
-  void on_txb3_clicked();
-  void on_txb4_clicked();
-  void on_txb5_clicked();
-  void on_txb6_clicked();
-  void on_lookupButton_clicked();
-  void on_addButton_clicked();
-  void on_dxCallEntry_textChanged(const QString &arg1);
-  void on_dxGridEntry_textChanged(const QString &arg1);
-  void selectCall2(bool ctrl);
-  void on_genStdMsgsPushButton_clicked();
-  void on_logQSOButton_clicked();
   void on_actionErase_wsjtx_rx_log_triggered();
   void on_actionErase_wsjtx_tx_log_triggered();
   void on_actionAFMHot_triggered();
@@ -98,7 +72,6 @@ private slots:
   void on_NBcheckBox_toggled(bool checked);
   void on_NBslider_valueChanged(int value);
   void on_TxFreqSpinBox_valueChanged(int arg1);
-  void on_pbTxFreq_clicked();
   void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();
@@ -208,8 +181,6 @@ private:
     void createStatusBar();
     void updateStatusBar();
     void msgBox(QString t);
-    void genStdMsgs(QString rpt);
-    void lookup();
     void ba2msg(QByteArray ba, char* message);
     void msgtype(QString t, QLineEdit* tx);
     void stub();

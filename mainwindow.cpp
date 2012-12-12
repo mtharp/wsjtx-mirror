@@ -34,10 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
   on_EraseButton_clicked();
   ui->labUTC->setStyleSheet( \
         "QLabel { background-color : black; color : yellow; }");
-  ui->labTol1->setStyleSheet( \
-        "QLabel { background-color : white; color : black; }");
-  ui->labTol1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  ui->dxStationGroupBox->setStyleSheet("QFrame{border: 5px groove red}");
 
   QActionGroup* paletteGroup = new QActionGroup(this);
   ui->actionCuteSDR->setActionGroup(paletteGroup);
@@ -61,14 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->actionMediumDecode->setActionGroup(DepthGroup);
   ui->actionDeepestDecode->setActionGroup(DepthGroup);
 
-  QButtonGroup* txMsgButtonGroup = new QButtonGroup;
-  txMsgButtonGroup->addButton(ui->txrb1,1);
-  txMsgButtonGroup->addButton(ui->txrb2,2);
-  txMsgButtonGroup->addButton(ui->txrb3,3);
-  txMsgButtonGroup->addButton(ui->txrb4,4);
-  txMsgButtonGroup->addButton(ui->txrb5,5);
-  txMsgButtonGroup->addButton(ui->txrb6,6);
-  connect(txMsgButtonGroup,SIGNAL(buttonClicked(int)),SLOT(set_ntx(int)));
   connect(ui->decodedTextBrowser,SIGNAL(selectCallsign(bool)),this,
           SLOT(selectCall2(bool)));
 
@@ -169,7 +157,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_pbAutoOn_style="QPushButton{background-color: red; \
       border-style: outset; border-width: 1px; border-radius: 5px; \
       border-color: black; min-width: 5em; padding: 3px;}";
-  genStdMsgs("-30");
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
   if(m_mode=="JT9-2") on_actionWSPR_2_triggered();
@@ -190,11 +177,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_monitoring=!m_monitorStartOFF;           // Start with Monitoring ON/OFF
   soundInThread.setMonitoring(m_monitoring);
   m_diskData=false;
-  g_pWideGraph->setTol(m_tol);
-  static int ntol[] = {1,2,5,10,20,50,100,200,500};
-  for (int i=0; i<10; i++) {
-    if(ntol[i]==m_tol) ui->tolSpinBox->setValue(i);
-  }
 
 // Create "m_worked", a dictionary of all calls in wsjt.log
   QFile f("wsjt.log");
@@ -243,9 +225,6 @@ void MainWindow::writeSettings()
   settings.beginGroup("MainWindow");
   settings.setValue("geometry", saveGeometry());
   settings.setValue("MRUdir", m_path);
-  settings.setValue("TxFirst",m_txFirst);
-  settings.setValue("DXcall",ui->dxCallEntry->text());
-  settings.setValue("DXgrid",ui->dxGridEntry->text());
   if(g_pWideGraph->isVisible()) {
     m_wideGraphGeom = g_pWideGraph->geometry();
     settings.setValue("WideGraphGeom",m_wideGraphGeom);
@@ -290,13 +269,10 @@ void MainWindow::readSettings()
   QSettings settings(inifile, QSettings::IniFormat);
   settings.beginGroup("MainWindow");
   restoreGeometry(settings.value("geometry").toByteArray());
-  ui->dxCallEntry->setText(settings.value("DXcall","").toString());
-  ui->dxGridEntry->setText(settings.value("DXgrid","").toString());
   m_wideGraphGeom = settings.value("WideGraphGeom", \
                                    QRect(45,30,726,301)).toRect();
   m_path = settings.value("MRUdir", m_appDir + "/save").toString();
   m_txFirst = settings.value("TxFirst",false).toBool();
-  ui->txFirstCheckBox->setChecked(m_txFirst);
   settings.endGroup();
 
   settings.beginGroup("Common");
@@ -461,12 +437,6 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   }
 }
 
-void MainWindow::on_monitorButton_clicked()                  //Monitor
-{
-  m_monitoring=true;
-  soundInThread.setMonitoring(true);
-  m_diskData=false;
-}
 void MainWindow::on_actionLinrad_triggered()                 //Linrad palette
 {
   if(g_pWideGraph != NULL) g_pWideGraph->setPalette("Linrad");
@@ -493,23 +463,9 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
   dlg.exec();
 }
 
-void MainWindow::on_autoButton_clicked()                     //Auto
-{
-  m_auto = !m_auto;
-  if(m_auto) {
-    ui->autoButton->setStyleSheet(m_pbAutoOn_style);
-    ui->autoButton->setText("Auto is ON");
-  } else {
-    btxok=false;
-    ui->autoButton->setStyleSheet("");
-    ui->autoButton->setText("Auto is OFF");
-    on_monitorButton_clicked();
-  }
-}
-
 void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
 {
-  if(m_auto) on_autoButton_clicked();
+//  if(m_auto) on_autoButton_clicked();
   btxok=false;
 }
 
@@ -521,13 +477,6 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
   case Qt::Key_F3:
     btxMute=!btxMute;
     break;
-  case Qt::Key_F4:
-    ui->dxCallEntry->setText("");
-    ui->dxGridEntry->setText("");
-    if(m_kb8rq) {
-      m_ntx=6;
-      ui->txrb6->setChecked(true);
-    }
   case Qt::Key_F6:
     if(e->modifiers() & Qt::ShiftModifier) {
       on_actionDecode_remaining_files_in_directory_triggered();
@@ -543,17 +492,6 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
     if(e->modifiers() & Qt::ControlModifier) n+=100;
     bumpFqso(n);
     break;
-  case Qt::Key_G:
-    if(e->modifiers() & Qt::AltModifier) {
-      genStdMsgs("-30");
-      break;
-    }
-  case Qt::Key_L:
-    if(e->modifiers() & Qt::ControlModifier) {
-      lookup();
-      genStdMsgs("-30");
-      break;
-    }
   }
 }
 
@@ -616,14 +554,6 @@ void MainWindow::createStatusBar()                           //createStatusBar
   statusBar()->addWidget(lab5);
 }
 
-void MainWindow::on_tolSpinBox_valueChanged(int i)             //tolSpinBox
-{
-  static int ntol[] = {1,2,5,10,20,50,100,200,500};
-  m_tol=ntol[i];
-  g_pWideGraph->setTol(m_tol);
-  ui->labTol1->setText(QString::number(ntol[i]));
-}
-
 void MainWindow::on_actionExit_triggered()                     //Exit()
 {
   OnExit();
@@ -649,12 +579,14 @@ void MainWindow::OnExit()
   qApp->exit(0);                                      // Exit the event loop
 }
 
+/*
 void MainWindow::on_stopButton_clicked()                       //stopButton
 {
   m_monitoring=false;
   soundInThread.setMonitoring(m_monitoring);
   m_loopall=false;  
 }
+*/
 
 void MainWindow::msgBox(QString t)                             //msgBox
 {
@@ -706,7 +638,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
       lab1->setStyleSheet("QLabel{background-color: #66ff66}");
       lab1->setText(" " + fname.mid(i,15) + " ");
     }
-    on_stopButton_clicked();
+//    on_stopButton_clicked();
     m_diskData=true;
     *future1 = QtConcurrent::run(getfile, fname, m_TRperiod);
     watcher1->setFuture(*future1);         // call diskDat() when done
@@ -848,29 +780,6 @@ void MainWindow::on_DecodeButton_clicked()                    //Decode request
     jt9com_.newdat=0;
     jt9com_.nagain=1;
     decode();
-  }
-}
-
-void MainWindow::freezeDecode(int n)                          //freezeDecode()
-{
-  if(n==1) {
-    bumpFqso(0);
-  } else {
-    static int ntol[] = {1,2,5,10,20,50,100,200,500};
-    if(!m_decoderBusy) {
-      jt9com_.newdat=0;
-      jt9com_.nagain=1;
-      int i;
-      if(m_mode=="JT9-1") i=4;
-      if(m_mode=="JT9-2") i=4;
-      if(m_mode=="JT9-5") i=3;
-      if(m_mode=="JT9-10") i=2;
-      if(m_mode=="JT9-30") i=1;
-      m_tol=ntol[i];
-      g_pWideGraph->setTol(m_tol);
-      ui->tolSpinBox->setValue(i);
-      decode();
-    }
   }
 }
 
@@ -1031,9 +940,7 @@ void MainWindow::guiUpdate()
       }
       */
       if(!soundOutThread.isRunning()) {
-        QString t=ui->tx6->text();
-        double snr=t.mid(1,5).toDouble();
-        if(snr>0.0 or snr < -50.0) snr=99.0;
+        double snr=99.0;
         soundOutThread.setTxSNR(snr);
         soundOutThread.start(QThread::HighPriority);
       }
@@ -1046,12 +953,6 @@ void MainWindow::guiUpdate()
 // Calculate Tx waveform when needed
   if((iptt==1 && iptt0==0) || m_restart) {
     QByteArray ba;
-    if(m_ntx == 1) ba=ui->tx1->text().toLocal8Bit();
-    if(m_ntx == 2) ba=ui->tx2->text().toLocal8Bit();
-    if(m_ntx == 3) ba=ui->tx3->text().toLocal8Bit();
-    if(m_ntx == 4) ba=ui->tx4->text().toLocal8Bit();
-    if(m_ntx == 5) ba=ui->tx5->text().toLocal8Bit();
-    if(m_ntx == 6) ba=ui->tx6->text().toLocal8Bit();
 
     ba2msg(ba,message);
 //    ba2msg(ba,msgsent);
@@ -1120,9 +1021,9 @@ void MainWindow::guiUpdate()
   }
 
   if(m_monitoring) {
-    ui->monitorButton->setStyleSheet(m_pbmonitor_style);
+//    ui->monitorButton->setStyleSheet(m_pbmonitor_style);
   } else {
-    ui->monitorButton->setStyleSheet("");
+//    ui->monitorButton->setStyleSheet("");
   }
 
   lab2->setText("QSO Freq:  " + QString::number(g_pWideGraph->QSOfreq()));
@@ -1196,370 +1097,11 @@ void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
   message[22]=0;
 }
 
-void MainWindow::on_txFirstCheckBox_stateChanged(int nstate)        //TxFirst
-{
-  m_txFirst = (nstate==2);
-}
-
 void MainWindow::set_ntx(int n)                                   //set_ntx()
 {
   m_ntx=n;
 }
-
-void MainWindow::on_txb1_clicked()                                //txb1
-{
-  m_ntx=1;
-  ui->txrb1->setChecked(true);
-  m_restart=true;
-}
-
-void MainWindow::on_txb2_clicked()                                //txb2
-{
-  m_ntx=2;
-  ui->txrb2->setChecked(true);
-  m_restart=true;
-}
-
-void MainWindow::on_txb3_clicked()                                //txb3
-{
-  m_ntx=3;
-  ui->txrb3->setChecked(true);
-  m_restart=true;
-}
-
-void MainWindow::on_txb4_clicked()                                //txb4
-{
-  m_ntx=4;
-  ui->txrb4->setChecked(true);
-  m_restart=true;
-}
-
-void MainWindow::on_txb5_clicked()                                //txb5
-{
-  m_ntx=5;
-  ui->txrb5->setChecked(true);
-  m_restart=true;
-}
-
-void MainWindow::on_txb6_clicked()                                //txb6
-{
-  m_ntx=6;
-  ui->txrb6->setChecked(true);
-  m_restart=true;
-}
-
-void MainWindow::selectCall2(bool ctrl)                          //selectCall2
-{
-  QString t = ui->decodedTextBrowser->toPlainText();   //Full contents
-  int i=ui->decodedTextBrowser->textCursor().position();
-  int i0=t.lastIndexOf(" ",i);
-  int i1=t.indexOf(" ",i);
-  QString hiscall=t.mid(i0+1,i1-i0-1);
-  if(hiscall!="") {
-    if(hiscall.length() < 13) doubleClickOnCall(hiscall, ctrl);
-  }
-}
-                                                          //doubleClickOnCall
-void MainWindow::doubleClickOnCall(QString hiscall, bool ctrl)
-{
-  ui->dxCallEntry->setText(hiscall);
-  QString t = ui->decodedTextBrowser->toPlainText();   //Full contents
-  int i2=ui->decodedTextBrowser->textCursor().position();
-  QString t1 = t.mid(0,i2);              //contents up to \n on selected line
-  int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
-  QString t2 = t1.mid(i1,i2-i1);         //selected line
-  int n = 60*t2.mid(0,2).toInt() + t2.mid(2,2).toInt();
-  int nmod=n%(m_TRperiod/30);
-  m_txFirst=(nmod!=0);
-  ui->txFirstCheckBox->setChecked(m_txFirst);
-  QString rpt=t2.mid(10,3);
-  if(rpt.indexOf("  ")==0) rpt="+" + rpt.mid(2,2);
-  if(rpt.indexOf(" -")==0) rpt=rpt.mid(1,2);
-  if(rpt.indexOf(" ")==0) rpt="+" + rpt.mid(1,2);
-  if(rpt.toInt()<-50) rpt="-50";
-  if(rpt.toInt()>49) rpt="+49";
-  if(ctrl) {
-    int i4=t.mid(i2,20).indexOf(" ");
-    QString hisgrid=t.mid(i2,20).mid(i4+1,4);
-    ui->dxGridEntry->setText(hisgrid);
-  } else {
-    lookup();
-  }
-  genStdMsgs(rpt);
-  if(t2.indexOf(m_myCall)>0) {
-    m_ntx=2;
-    ui->txrb2->setChecked(true);
-  } else {
-    m_ntx=1;
-    ui->txrb1->setChecked(true);
-  }
-}
-
-void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
-{
-  QString hiscall=ui->dxCallEntry->text().toUpper().trimmed();
-  ui->dxCallEntry->setText(hiscall);
-  QString t0=hiscall + " " + m_myCall + " ";
-  QString t=t0 + m_myGrid.mid(0,4);
-  msgtype(t, ui->tx1);
-  if(rpt == "") {
-    t=t+" OOO";
-    msgtype(t, ui->tx2);
-    msgtype("RO", ui->tx3);
-    msgtype("RRR", ui->tx4);
-    msgtype("73", ui->tx5);
-  } else {
-    t=t0 + rpt;
-    msgtype(t, ui->tx2);
-    t=t0 + "R" + rpt;
-    msgtype(t, ui->tx3);
-    t=t0 + "RRR";
-    msgtype(t, ui->tx4);
-    t=t0 + "73";
-    msgtype(t, ui->tx5);
-  }
-
-  t="CQ " + m_myCall + " " + m_myGrid.mid(0,4);
-  msgtype(t, ui->tx6);
-  m_ntx=1;
-  ui->txrb1->setChecked(true);
-}
-
-void MainWindow::lookup()                                       //lookup()
-{
-  QString hiscall=ui->dxCallEntry->text().toUpper().trimmed();
-  ui->dxCallEntry->setText(hiscall);
-  QString call3File = m_appDir + "/CALL3.TXT";
-  QFile f(call3File);
-  if(!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    msgBox("Cannot open " + call3File);
-    return;
-  }
-  char c[132];
-  qint64 n=0;
-  for(int i=0; i<999999; i++) {
-    n=f.readLine(c,sizeof(c));
-    if(n <= 0) {
-      ui->dxGridEntry->setText("");
-      break;
-     }
-    QString t=QString(c);
-    if(t.indexOf(hiscall)==0) {
-      int i1=t.indexOf(",");
-      QString hisgrid=t.mid(i1+1,6);
-      i1=hisgrid.indexOf(",");
-      if(i1>0) {
-        hisgrid=hisgrid.mid(0,4);
-      } else {
-        hisgrid=hisgrid.mid(0,4) + hisgrid.mid(4,2).toLower();
-      }
-      ui->dxGridEntry->setText(hisgrid);
-      break;
-    }
-  }
-  f.close();
-}
-
-void MainWindow::on_lookupButton_clicked()                    //Lookup button
-{
-  lookup();
-}
-
-void MainWindow::on_addButton_clicked()                       //Add button
-{
-  if(ui->dxGridEntry->text()=="") {
-    msgBox("Please enter a valid grid locator.");
-    return;
-  }
-  m_call3Modified=false;
-  QString hiscall=ui->dxCallEntry->text().toUpper().trimmed();
-  QString hisgrid=ui->dxGridEntry->text().trimmed();
-  QString newEntry=hiscall + "," + hisgrid;
-
-//  int ret = QMessageBox::warning(this, "Add",
-//       newEntry + "\n" + "Is this station known to be active on EME?",
-//       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-//  if(ret==QMessageBox::Yes) {
-//    newEntry += ",EME,,";
-//  } else {
-    newEntry += ",,,";
-//  }
-
-  QString call3File = m_appDir + "/CALL3.TXT";
-  QFile f1(call3File);
-  if(!f1.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    msgBox("Cannot open " + call3File);
-    return;
-  }
-  QString tmpFile = m_appDir + "/CALL3.TMP";
-  QFile f2(tmpFile);
-  if(!f2.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    msgBox("Cannot open " + tmpFile);
-    return;
-  }
-  QTextStream in(&f1);
-  QTextStream out(&f2);
-  QString hc=hiscall;
-  QString hc1="";
-  QString hc2="AAAAAA";
-  QString s;
-  do {
-    s=in.readLine();
-    hc1=hc2;
-    if(s.mid(0,2)=="//") {
-      out << s + "\n";
-    } else {
-      int i1=s.indexOf(",");
-      hc2=s.mid(0,i1);
-      if(hc>hc1 && hc<hc2) {
-        out << newEntry + "\n";
-        if(s.mid(0,6)=="ZZZZZZ") {
-          out << s + "\n";
-//          exit;                             //Statement has no effect!
-        }
-        m_call3Modified=true;
-      } else if(hc==hc2) {
-        QString t=s + "\n\n is already in CALL3.TXT\n" +
-            "Do you wish to replace it?";
-        int ret = QMessageBox::warning(this, "Add",t,
-             QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-        if(ret==QMessageBox::Yes) {
-          out << newEntry + "\n";
-          m_call3Modified=true;
-        }
-      } else {
-        if(s!="") out << s + "\n";
-      }
-    }
-  } while(!s.isNull());
-
-  f1.close();
-  if(hc>hc1 && !m_call3Modified) {
-    out << newEntry + "\n";
-  }
-  if(m_call3Modified) {
-    QFile f0(m_appDir + "/CALL3.OLD");
-    if(f0.exists()) f0.remove();
-    QFile f1(m_appDir + "/CALL3.TXT");
-    f1.rename(m_appDir + "/CALL3.OLD");
-    f2.rename(m_appDir + "/CALL3.TXT");
-    f2.close();
-  }
-}
-
-void MainWindow::msgtype(QString t, QLineEdit* tx)               //msgtype()
-{
-  char message[23];
-  char msgsent[23];
-  int len1=22;
-  int jtone[85];
-
-  t=t.toUpper();
-  QByteArray s=t.toUpper().toLocal8Bit();
-  ba2msg(s,message);
-  int ichk=1,itext=0;
-  genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
-  msgsent[22]=0;
-  bool text=false;
-  if(itext!=0) text=true;
-  QString t1;
-  t1.fromAscii(msgsent);
-  if(text) t1=t1.mid(0,13);
-  QPalette p(tx->palette());
-  if(text) {
-    p.setColor(QPalette::Base,"#ffccff");
-  } else {
-    p.setColor(QPalette::Base,Qt::white);
-  }
-  tx->setPalette(p);
-  int len=t.length();
-  if(text) {
-    len=qMin(len,13);
-    tx->setText(t.mid(0,len).toUpper());
-  } else {
-    tx->setText(t);
-  }
-}
-
-void MainWindow::on_tx1_editingFinished()                       //tx1 edited
-{
-  QString t=ui->tx1->text();
-  msgtype(t, ui->tx1);
-}
-
-void MainWindow::on_tx2_editingFinished()                       //tx2 edited
-{
-  QString t=ui->tx2->text();
-  msgtype(t, ui->tx2);
-}
-
-void MainWindow::on_tx3_editingFinished()                       //tx3 edited
-{
-  QString t=ui->tx3->text();
-  msgtype(t, ui->tx3);
-}
-
-void MainWindow::on_tx4_editingFinished()                       //tx4 edited
-{
-  QString t=ui->tx4->text();
-  msgtype(t, ui->tx4);
-}
-
-void MainWindow::on_tx5_editingFinished()                       //tx5 edited
-{
-  QString t=ui->tx5->text();
-  msgtype(t, ui->tx5);
-}
-
-void MainWindow::on_tx6_editingFinished()                       //tx6 edited
-{
-  QString t=ui->tx6->text();
-  msgtype(t, ui->tx6);
-  double snr=t.mid(1,5).toDouble();
-  if(snr>0.0 or snr < -50.0) snr=99.0;
-  soundOutThread.setTxSNR(snr);
-}
-
-void MainWindow::on_dxCallEntry_textChanged(const QString &t) //dxCall changed
-{
-  m_hisCall=t.toUpper().trimmed();
-  ui->dxCallEntry->setText(m_hisCall);
-}
-
-void MainWindow::on_dxGridEntry_textChanged(const QString &t) //dxGrid changed
-{
-  int n=t.length();
-  if(n!=4 and n!=6) return;
-  if(!t[0].isLetter() or !t[1].isLetter()) return;
-  if(!t[2].isDigit() or !t[3].isDigit()) return;
-  if(n==4) m_hisGrid=t.mid(0,2).toUpper() + t.mid(2,2);
-  if(n==6) m_hisGrid=t.mid(0,2).toUpper() + t.mid(2,2) +
-      t.mid(4,2).toLower();
-  ui->dxGridEntry->setText(m_hisGrid);
-}
-
-void MainWindow::on_genStdMsgsPushButton_clicked()         //genStdMsgs button
-{
-  genStdMsgs("-30");
-}
-
-void MainWindow::on_logQSOButton_clicked()                 //Log QSO button
-{
-  double dialFreq=g_pWideGraph->dialFreq();
-  QDateTime t = QDateTime::currentDateTimeUtc();
-  QString logEntry=t.date().toString("yyyy-MMM-dd,") +
-      t.time().toString("hh:mm,") + m_hisCall + "," + m_hisGrid + "," +
-      QString::number(dialFreq) + "," + m_mode + "\n";
-  QFile f("wsjt.log");
-  if(!f.open(QFile::Append)) {
-    msgBox("Cannot open file \"wsjt.log\".");
-    return;
-  }
-  QTextStream out(&f);
-  out << logEntry;
-  f.close();
-}
-
+                                                       //doubleClickOnCall
 void MainWindow::on_actionErase_wsjtx_rx_log_triggered()     //Erase Rx log
 {
   int ret = QMessageBox::warning(this, "Confirm Erase",
@@ -1639,13 +1181,6 @@ void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
   m_txFreq=n;
   if(g_pWideGraph!=NULL) g_pWideGraph->setTxFreq(n);
   soundOutThread.setTxFreq(n);
-}
-
-void MainWindow::on_pbTxFreq_clicked()
-{
-  int ntx=g_pWideGraph->QSOfreq();
-  m_txFreq=ntx;
-  ui->TxFreqSpinBox->setValue(ntx);
 }
 
 void MainWindow::on_actionQuickDecode_triggered()
