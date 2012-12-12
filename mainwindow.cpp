@@ -13,13 +13,12 @@ int itone[85];                        //Tx audio tones for 85 symbols
 bool btxok;                           //True if OK to transmit
 bool btxMute;
 double outputLatency;                 //Latency in seconds
-//float c0[2*1800*1500];
 
 WideGraph* g_pWideGraph = NULL;
 QSharedMemory mem_jt9("mem_jt9");
 
 QString rev="$Rev$";
-QString Program_Title_Version="  WSJT-X   v0.5, r" + rev.mid(6,4) +
+QString Program_Title_Version="  WSPR-X   v0.1, r" + rev.mid(6,4) +
                               "    by K1JT";
 
 //-------------------------------------------------- MainWindow constructor
