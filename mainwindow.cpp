@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->setupUi(this);
 
 #ifdef WIN32
-  freopen("wsjtx.log","w",stderr);
+  freopen("wsprx.log","w",stderr);
 #endif
   on_EraseButton_clicked();
   ui->labUTC->setStyleSheet( \
@@ -46,11 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->actionBlue->setActionGroup(paletteGroup);
 
   QActionGroup* modeGroup = new QActionGroup(this);
-  ui->actionJT9_1->setActionGroup(modeGroup);
-  ui->actionJT9_2->setActionGroup(modeGroup);
-  ui->actionJT9_5->setActionGroup(modeGroup);
-  ui->actionJT9_10->setActionGroup(modeGroup);
-  ui->actionJT9_30->setActionGroup(modeGroup);
+  ui->actionWSPR_2->setActionGroup(modeGroup);
+  ui->actionWSPR_15->setActionGroup(modeGroup);
+  ui->actionWSPR_30->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -108,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_myCall="K1JT";
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
-  m_saveDir="/users/joe/wsjtx/install/save";
+  m_saveDir="/users/joe/wsprx/install/save";
   m_txFreq=1500;
   m_setftx=0;
   m_loopall=false;
@@ -174,11 +172,9 @@ MainWindow::MainWindow(QWidget *parent) :
   genStdMsgs("-30");
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
-  if(m_mode=="JT9-1") on_actionJT9_1_triggered();
-  if(m_mode=="JT9-2") on_actionJT9_2_triggered();
-  if(m_mode=="JT9-5") on_actionJT9_5_triggered();
-  if(m_mode=="JT9-10") on_actionJT9_10_triggered();
-  if(m_mode=="JT9-30") on_actionJT9_30_triggered();
+  if(m_mode=="JT9-2") on_actionWSPR_2_triggered();
+  if(m_mode=="JT9-10") on_actionWSPR_15_triggered();
+  if(m_mode=="JT9-30") on_actionWSPR_30_triggered();
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(diskDat()));
@@ -241,7 +237,7 @@ MainWindow::~MainWindow()
 //-------------------------------------------------------- writeSettings()
 void MainWindow::writeSettings()
 {
-  QString inifile = m_appDir + "/wsjtx.ini";
+  QString inifile = m_appDir + "/wsprx.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("MainWindow");
@@ -290,7 +286,7 @@ void MainWindow::writeSettings()
 //---------------------------------------------------------- readSettings()
 void MainWindow::readSettings()
 {
-  QString inifile = m_appDir + "/wsjtx.ini";
+  QString inifile = m_appDir + "/wsprx.ini";
   QSettings settings(inifile, QSettings::IniFormat);
   settings.beginGroup("MainWindow");
   restoreGeometry(settings.value("geometry").toByteArray());
@@ -1065,7 +1061,7 @@ void MainWindow::guiUpdate()
     msgsent[22]=0;
     lab5->setText("Last Tx:  " + QString::fromAscii(msgsent));
     if(m_restart) {
-      QFile f("wsjtx_tx.log");
+      QFile f("wsprx_tx.log");
       f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
       QTextStream out(&f);
       out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
@@ -1087,7 +1083,7 @@ void MainWindow::guiUpdate()
     btxok=true;
     m_transmitting=true;
 
-    QFile f("wsjtx_tx.log");
+    QFile f("wsprx_tx.log");
     f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     QTextStream out(&f);
     out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
@@ -1567,39 +1563,25 @@ void MainWindow::on_logQSOButton_clicked()                 //Log QSO button
 void MainWindow::on_actionErase_wsjtx_rx_log_triggered()     //Erase Rx log
 {
   int ret = QMessageBox::warning(this, "Confirm Erase",
-      "Are you sure you want to erase file wsjtx_rx.log ?",
+      "Are you sure you want to erase file wsprx_rx.log ?",
        QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
   if(ret==QMessageBox::Yes) {
-    m_RxLog |= 2;                      // Rewind wsjtx_rx.log
+    m_RxLog |= 2;                      // Rewind wsprx_rx.log
   }
 }
 
 void MainWindow::on_actionErase_wsjtx_tx_log_triggered()     //Erase Tx log
 {
   int ret = QMessageBox::warning(this, "Confirm Erase",
-      "Are you sure you want to erase file wsjtx_tx.log ?",
+      "Are you sure you want to erase file wsprx_tx.log ?",
        QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
   if(ret==QMessageBox::Yes) {
-    QFile f("wsjtx_tx.log");
+    QFile f("wsprx_tx.log");
     f.remove();
   }
 }
 
-void MainWindow::on_actionJT9_1_triggered()
-{
-  m_mode="JT9-1";
-  m_TRperiod=60;
-  m_nsps=6912;
-  m_hsymStop=181;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #ff6ec7}");
-  lab4->setText(m_mode);
-  ui->actionJT9_1->setChecked(true);
-}
-
-void MainWindow::on_actionJT9_2_triggered()
+void MainWindow::on_actionWSPR_2_triggered()
 {
   m_mode="JT9-2";
   m_TRperiod=120;
@@ -1610,26 +1592,12 @@ void MainWindow::on_actionJT9_2_triggered()
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ffff00}");
   lab4->setText(m_mode);
-  ui->actionJT9_2->setChecked(true);
+  ui->actionWSPR_2->setChecked(true);
 }
 
-void MainWindow::on_actionJT9_5_triggered()
+void MainWindow::on_actionWSPR_15_triggered()
 {
-  m_mode="JT9-5";
-  m_TRperiod=300;
-  m_nsps=40960;
-  m_hsymStop=172;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #ffa500}");
-  lab4->setText(m_mode);
-  ui->actionJT9_5->setChecked(true);
-}
-
-void MainWindow::on_actionJT9_10_triggered()
-{
-  m_mode="JT9-10";
+  m_mode="JT9-15";
   m_TRperiod=600;
   m_nsps=82944;
   m_hsymStop=171;
@@ -1638,10 +1606,10 @@ void MainWindow::on_actionJT9_10_triggered()
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #7fff00}");
   lab4->setText(m_mode);
-  ui->actionJT9_10->setChecked(true);
+  ui->actionWSPR_15->setChecked(true);
 }
 
-void MainWindow::on_actionJT9_30_triggered()
+void MainWindow::on_actionWSPR_30_triggered()
 {
   m_mode="JT9-30";
   m_TRperiod=1800;
@@ -1652,7 +1620,7 @@ void MainWindow::on_actionJT9_30_triggered()
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #97ffff}");
   lab4->setText(m_mode);
-  ui->actionJT9_30->setChecked(true);
+  ui->actionWSPR_30->setChecked(true);
 }
 
 void MainWindow::on_NBcheckBox_toggled(bool checked)

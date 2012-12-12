@@ -1254,11 +1254,9 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Mode</string>
     </property>
-    <addaction name="actionJT9_1"/>
-    <addaction name="actionJT9_2"/>
-    <addaction name="actionJT9_5"/>
-    <addaction name="actionJT9_10"/>
-    <addaction name="actionJT9_30"/>
+    <addaction name="actionWSPR_2"/>
+    <addaction name="actionWSPR_15"/>
+    <addaction name="actionWSPR_30"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSetup"/>
@@ -1578,44 +1576,31 @@ p, li { white-space: pre-wrap; }
     <string>FUNcube Dongle Settings</string>
    </property>
   </action>
-  <action name="actionJT9_1">
+  <action name="actionWSPR_2">
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>JT9-1</string>
+    <string>WSPR-2</string>
    </property>
   </action>
-  <action name="actionJT9_2">
+  <action name="actionWSPR_15">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>JT9-2</string>
+    <string>WSPR-15</string>
    </property>
   </action>
-  <action name="actionJT9_5">
+  <action name="actionWSPR_30">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>JT9-5</string>
-   </property>
-  </action>
-  <action name="actionJT9_10">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>JT9-10</string>
-   </property>
-  </action>
-  <action name="actionJT9_30">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>JT9-30</string>
+    <string>WSPR-30</string>
    </property>
   </action>
   <action name="actionSave_synced">
