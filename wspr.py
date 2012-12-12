@@ -238,7 +238,10 @@ def stop_loopall(event=NONE):
     
 #------------------------------------------------------ opennext
 def opennext(event=NONE):
-    global ncall,fileopened,loopall,mrudir,tw
+    global ncall,fileopened,loopall,mrudir,tw,ndecoding0
+
+    if int(w.acom1.ndecoding) != 0:
+        return
     upload.set(0)
     if fileopened=="" and ncall==0:
         openfile()
@@ -815,9 +818,8 @@ def update():
     global root_geom,isec0,im,pim,ndbm0,nsec0,a,ftx0,nin0,nout0, \
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
-        bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1
-
-    global hopping0,ndb0,ntune0
+        bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1,ndecoding0, \
+        hopping0,ndb0,ntune0
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -1157,7 +1159,7 @@ def update():
     if w.acom1.ndecdone:
         get_decoded()
         w.acom1.ndecdone=0
-        w.acom1.ndiskdat=0
+#        w.acom1.ndiskdat=0
 
 # Display the waterfall
     try:
@@ -1283,9 +1285,8 @@ def update():
 	else:
 	    msg3.configure(text='Invalid audio output device.',bg='red')
 
-    global ndecoding0
-    if ndecoding0!=w.acom1.ndecoding:
-	ndecoding0=w.acom1.ndecoding
+    if ndecoding0!=int(w.acom1.ndecoding):
+	ndecoding0=int(w.acom1.ndecoding)
 	if ndecoding0:
 	    msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
 	else:

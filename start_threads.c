@@ -50,12 +50,14 @@ int th_decode_(void)
   int iarg1 = 1;
 
   if(decode_started>0)  {
+    /*
     // the following was "< 100":
     if(time(NULL)-decode_started < 2)  {
       printf("Attempted to start decoder too soon:  %d   %d",
 	     (int)time(NULL),decode_started);
       return 0;
     }
+    */
     pthread_join(decode_thread,NULL);
     decode_started=0;
   }

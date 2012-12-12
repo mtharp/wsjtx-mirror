@@ -62,14 +62,12 @@ subroutine wspr2
      call cs_lock('wspr2')
      receiving=.false.
      nrxdone=0
-     ndecoding=1
-!     thisfile=outfile
      thisfile=cdate(3:8)//'_'//rxtime(1:4)//'.'//'wav'    !Tnx to G3WKW !
+     if(ndiskdat.ne.0) thisfile=outfile
      call cs_unlock
 
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
-        (nrxnormal.eq.0 .and. ncal.eq.2) .or.                          &
-        ndiskdat.eq.1) then
+        (nrxnormal.eq.0 .and. ncal.eq.2) .or. ndiskdat.eq.1) then
         call cs_lock('wspr2')
         call gmtime2(nt,tsec1)
         t120=mod(tsec1,120.d0)
@@ -77,7 +75,12 @@ subroutine wspr2
 1031    format(a6,1x,a4,f7.2,2x,a4,2i4,2x,a22)
         call flush(19)
         call cs_unlock
-        call startdec
+        if(ndecoding.eq.0) then
+           ndecoding=1
+           call startdec
+        else
+           print*,'Attempted to start decode thread when already running.'
+        endif
      endif
   endif
 
@@ -128,6 +131,7 @@ subroutine wspr2
      write(19,1031) cdate(3:8),utctime(1:4),t120,'Cal ',iband,ib(iband)
      call flush(19)
      call cs_unlock
+     ndiskdat=0
      call startrx
   endif
 
