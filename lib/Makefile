@@ -42,6 +42,7 @@ OBJS2 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 wspr0.exe: $(OBJS2)
 	$(FC) -o wspr0 $(FFLAGS) $(OBJS2) libportaudio.a \
 	   c:\MinGW\lib\libwinmm.a libfftw3f_win.a
+	cp wspr0.exe ../../wsprx_install
 
 sound.o: sound.c
 	$(CC) -c sound.c
