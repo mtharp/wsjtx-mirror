@@ -9,13 +9,12 @@
 #include "getfile.h"
 #include <portaudio.h>
 
-int itone[85];                        //Tx audio tones for 85 symbols
+int itone[85];                        //Tx audio tones
 bool btxok;                           //True if OK to transmit
 bool btxMute;
 double outputLatency;                 //Latency in seconds
 
 WideGraph* g_pWideGraph = NULL;
-QSharedMemory mem_jt9("mem_jt9");
 
 QString rev="$Rev$";
 QString Program_Title_Version="  WSPR-X   v0.1, r" + rev.mid(6,4) +
@@ -114,37 +113,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef WIN32
   while(true) {
-      int iret=killbyname("jt9.exe");
+      int iret=killbyname("wspr0.exe");
       if(iret == 603) break;
       if(iret != 0) msgBox("KillByName return code: " +
                            QString::number(iret));
   }
 #endif
-  if(!mem_jt9.attach()) {
-    if (!mem_jt9.create(sizeof(jt9com_))) {
-      msgBox("Unable to create shared memory segment.");
-    }
-  }
-  char *to = (char*)mem_jt9.data();
-  int size=sizeof(jt9com_);
-  if(jt9com_.newdat==0) {
-//    int noffset = 4*4*5760000 + 4*4*322*32768 + 4*4*32768;
-//    to += noffset;
-//    size -= noffset;
-  }
-  memset(to,0,size);         //Zero all decoding params in shared memory
 
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
     msgBox("Unable to initialize PortAudio.");
   }
   readSettings();		             //Restore user's setup params
-  QFile lockFile(m_appDir + "/.lock");     //Create .lock so jt9 will wait
-  lockFile.open(QIODevice::ReadWrite);
-  QFile quitFile(m_appDir + "/.lock");
-  quitFile.remove();
-//  proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' +
-//      "/save/wspr0 Rx 0.4742 save/121212_0014.wav" ));
 
   m_pbdecoding_style1="QPushButton{background-color: cyan; \
       border-style: outset; border-width: 1px; border-radius: 5px; \
@@ -506,7 +486,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab3 = new QLabel("");
   lab3->setAlignment(Qt::AlignHCenter);
-  lab3->setMinimumSize(QSize(80,18));
+  lab3->setMinimumSize(QSize(120,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
 
@@ -537,25 +517,8 @@ void MainWindow::OnExit()
 {
   g_pWideGraph->saveSettings();
   m_killAll=true;
-  mem_jt9.detach();
-  QFile quitFile(m_appDir + "/.quit");
-  quitFile.open(QIODevice::ReadWrite);
-  QFile lockFile(m_appDir + "/.lock");
-  lockFile.remove();                      // Allow jt9 to terminate
-  bool b=proc_jt9.waitForFinished(1000);
-  if(!b) proc_jt9.kill();
-  quitFile.remove();
   qApp->exit(0);                                      // Exit the event loop
 }
-
-/*
-void MainWindow::on_stopButton_clicked()                       //stopButton
-{
-  m_monitoring=false;
-  soundInThread.setMonitoring(m_monitoring);
-  m_loopall=false;  
-}
-*/
 
 void MainWindow::msgBox(QString t)                             //msgBox
 {
@@ -770,22 +733,6 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nsave=m_nsave;
   strncpy(jt9com_.datetime, m_dateTime.toAscii(), 20);
 
-  //newdat=1  ==> this is new data, must do the big FFT
-  //nagain=1  ==> decode only at fQSO +/- Tol
-
-  char *to = (char*)mem_jt9.data();
-  char *from = (char*) jt9com_.ss;
-  int size=sizeof(jt9com_);
-  if(jt9com_.newdat==0) {
-    int noffset = 4*184*22000 + 4*22000 + 4*2*1800*1500 + 2*1800*12000;
-    to += noffset;
-    from += noffset;
-    size -= noffset;
-  }
-  memcpy(to, from, qMin(mem_jt9.size(), size));
-
-  QFile lockFile(m_appDir + "/.lock");       // Allow jt9 to start
-  lockFile.remove();
   decodeBusy(true);
 }
 
@@ -867,15 +814,7 @@ void MainWindow::guiUpdate()
 
     if(bTxTime and iptt==0 and !btxMute) {
       int itx=1;
-      int ierr = ptt(m_pttPort,itx,&iptt);       // Raise PTT
-      /*
-      if(ierr<0) {
-        on_stopTxButton_clicked();
-        char s[18];
-        sprintf(s,"PTT Error %d",ierr);
-        msgBox(s);
-      }
-      */
+      ptt(m_pttPort,itx,&iptt);       // Raise PTT
       if(!soundOutThread.isRunning()) {
         double snr=99.0;
         soundOutThread.setTxSNR(snr);
@@ -936,14 +875,7 @@ void MainWindow::guiUpdate()
   }
   if(nc0 == 0) {
     int itx=0;
-    int ierr=ptt(m_pttPort,itx,&iptt);       // Lower PTT
-    /*
-    if(ierr<0) {
-      char s[18];
-      sprintf(s,"PTT Error %d",ierr);
-      msgBox(s);
-    }
-    */
+    ptt(m_pttPort,itx,&iptt);       // Lower PTT
     if(!btxMute) soundOutThread.quitExecution=true;
     m_transmitting=false;
     if(m_auto) {
@@ -1070,7 +1002,8 @@ void MainWindow::on_actionWSPR_2_triggered()
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ffff00}");
-  lab4->setText(m_mode);
+//  lab4->setText(m_mode);
+  lab4->setText("WSPR-2");
   ui->actionWSPR_2->setChecked(true);
 }
 
