@@ -758,10 +758,12 @@ void MainWindow::readFromStdout()                             //readFromStdout
     QByteArray t=proc_jt9.readLine();
     if(t.indexOf(" UTC ") != 0 and t.indexOf("-----") != 0) {
       int n=t.length();
+      /*
       QString bg="white";
       if(t.indexOf(" CQ ")>0) bg="#66ff66";                //Light green
       if(t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666";      //Light red
       ui->decodedTextBrowser->setTextBackgroundColor(bg);
+      */
       t=t.mid(0,n-2) + "                                                  ";
       ui->decodedTextBrowser->append(t);
     }
@@ -836,7 +838,7 @@ void MainWindow::guiUpdate()
 //    ba2msg(ba,msgsent);
     int len1=22;
     int ichk=0,itext=0;
-    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
+//    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
     msgsent[22]=0;
     lab5->setText("Last Tx:  " + QString::fromAscii(msgsent));
     if(m_restart) {

@@ -54,14 +54,14 @@ RC_FILE = wsprx.rc
 unix {
 INCLUDEPATH += $$quote(/usr/include/qwt-qt4)
 LIBS += -lfftw3f /usr/lib/libgfortran.so.3
-LIBS += ../wsprx/lib/libjt9.a
+LIBS += ../wsprx/lib/libwspr.a
 LIBS += /usr/lib/libqwt-qt4.so
 LIBS += -lportaudio
 }
 
 win32 {
 INCLUDEPATH += c:/qwt-6.0.1/include
-LIBS += ../wsprx/lib/libjt9.a
+LIBS += ../wsprx/lib/libwspr.a
 LIBS += ../wsprx/libfftw3f_win.a
 LIBS += ../QtSupport/palir-02.dll
 LIBS += libwsock32
