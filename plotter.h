@@ -38,7 +38,7 @@ public:
   qint32  m_fCal;
   qint32  m_w;
 
-  void draw(float sw[], float red[], int i0);		//Update the waterfall
+  void draw(float sw[]);		               //Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);
   int  getPlotZero();
@@ -102,7 +102,6 @@ private:
   char    m_sutc[5];
   qint32  m_line;
   qint32  m_fSample;
-  qint32  m_i0;
   qint32  m_xClick;
   qint32  m_freqPerDiv;
   qint32  m_nsps;

@@ -32,8 +32,6 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
   int w = settings.value("PlotWidth",1000).toInt();
   ui->widePlot->m_w=w;
-//  ui->widePlot->setNSpan(n);
-//  int nbpp = n * 32768.0/(w*96.0) + 0.5;
   ui->widePlot->setBinsPerPixel(1);
   m_waterfallAvg = settings.value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
@@ -60,7 +58,7 @@ void WideGraph::saveSettings()
 {
   //Save user's settings
   QString inifile(QApplication::applicationDirPath());
-  inifile += "/wsjtx.ini";
+  inifile += "/wsprx.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("WideGraph");
@@ -99,10 +97,7 @@ void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
     for (int i=0; i<NSMAX; i++)
         splot[i] /= n;                       //Normalize the average
     n=0;
-
-//    int w=ui->widePlot->plotWidth();
-    int i0=0;                            //###
-    int i=i0;
+    int i=0;
     int jz=1000.0/df3;
     for (int j=0; j<jz; j++) {
       float sum=0;
@@ -123,7 +118,7 @@ void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
       }
     }
     m_ntr0=ntr;
-    ui->widePlot->draw(swide,red,i0);
+    ui->widePlot->draw(swide);
   }
 }
 
@@ -171,11 +166,6 @@ void WideGraph::setQSOfreq(int n)
 int WideGraph::QSOfreq()
 {
   return ui->widePlot->fQSO();
-}
-
-int WideGraph::nSpan()
-{
-  return ui->widePlot->m_nSpan;
 }
 
 float WideGraph::fSpan()

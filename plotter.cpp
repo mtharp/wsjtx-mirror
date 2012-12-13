@@ -17,6 +17,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
 
   m_StartFreq = 1000;
   m_nSpan=1000;                    //Units: Hz
+  m_fftBinWidth=1500.0/2048.0;
   m_fSpan=(float)m_nSpan;
   m_hdivs = HORZ_DIVS;
   m_FreqUnits = 1;
@@ -69,9 +70,8 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_ScalePixmap = QPixmap(m_w,30);
     m_ScalePixmap.fill(Qt::white);
 
-//    m_fSpan=m_w*m_fftBinWidth;
-//    m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
-//    qDebug() << "A" << m_StartFreq;
+    m_fSpan=m_w*m_fftBinWidth;
+    m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
   }
   DrawOverlay();
 }
@@ -87,12 +87,11 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=false;
 }
 
-void CPlotter::draw(float swide[], float red[], int i0)             //draw()
+void CPlotter::draw(float swide[])                                //draw()
 {
   int j,y2;
   float y;
 
-  m_i0=i0;
   double gain = pow(10.0,0.05*(m_plotGain+7));
 
 //move current data down one line (must do this before attaching a QPainter object)
@@ -108,26 +107,25 @@ void CPlotter::draw(float swide[], float red[], int i0)             //draw()
   j=0;
   bool strong0=false;
   bool strong=false;
+  int i0=(m_StartFreq-1000)/m_fftBinWidth;
 
-  int iz=XfromFreq(2000.0);
   for(int i=0; i<m_w; i++) {
-    if(i>iz) swide[i]=0;
     strong=false;
-    if(swide[i]<0) {
+    if(swide[i0+i]<0) {
       strong=true;
-      swide[i]=-swide[i];
+      swide[i0+i]=-swide[i0+i];
     }
-    y = 10.0*log10(swide[i]);
+    y = 10.0*log10(swide[i0+i]);
     int y1 = 5.0*gain*y + 10*m_plotZero;
     if (y1<0) y1=0;
     if (y1>254) y1=254;
-    if (swide[i]>1.e29) y1=255;
+    if (swide[i0+i]>1.e29) y1=255;
     painter1.setPen(m_ColorTbl[y1]);
     painter1.drawPoint(i,0);
     y2=0;
     if(m_bCurrent) y2 = 0.4*gain*y - 15;
-    if(m_bCumulative) y2=1.5*gain*10.0*log10(jt9com_.savg[i]) - 20;
-    if(m_bJT9Sync) y2=3.0*gain*red[i] - 15;
+    if(m_bCumulative) y2=1.5*gain*10.0*log10(jt9com_.savg[i0+i]) - 20;
+    y2=y2*float(m_h)/540.0;
     if(strong != strong0 or i==m_w-1) {
       painter2D.drawPolyline(LineBuf,j);
       j=0;
@@ -280,6 +278,14 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
                        m_HDivText[i]);
     }
   }
+
+  QPen pen0(Qt::green, 3);                 //Mark QSO Freq with green tick
+  painter0.setPen(pen0);
+  x=XfromFreq(1500);
+  int x1=x - 100/df;
+  int x2=x + 100/df;
+  pen0.setWidth(6);
+  painter0.drawLine(x1,28,x2,28);
 
   QPen pen1(Qt::red, 3);                         //Mark Tx Freq with red tick
   painter0.setPen(pen1);
