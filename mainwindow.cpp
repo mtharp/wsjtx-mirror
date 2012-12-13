@@ -57,9 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->actionMediumDecode->setActionGroup(DepthGroup);
   ui->actionDeepestDecode->setActionGroup(DepthGroup);
 
-  connect(ui->decodedTextBrowser,SIGNAL(selectCallsign(bool)),this,
-          SLOT(selectCall2(bool)));
-
   setWindowTitle(Program_Title_Version);
   connect(&soundInThread, SIGNAL(readyForFFT(int)),
              this, SLOT(dataSink(int)));
@@ -389,7 +386,7 @@ void MainWindow::dataSink(int k)
     }
 //    decode();                                                //Start decoder
     proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' +
-           "/wspr0 Rx 10.1387 " + m_fname + '"' ));
+           "/wspr0 Rx 7.0386 " + m_fname + '"' ));            //10.1387
   }
   soundInThread.m_dataSinkBusy=false;
 }
@@ -587,10 +584,6 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;
     g_pWideGraph->setWindowFlags(flags);
-    connect(g_pWideGraph, SIGNAL(freezeDecode2(int)),this,
-            SLOT(freezeDecode(int)));
-    connect(g_pWideGraph, SIGNAL(f11f12(int)),this,
-            SLOT(bumpFqso(int)));
   }
   g_pWideGraph->show();
 }
