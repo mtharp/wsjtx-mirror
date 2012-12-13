@@ -270,9 +270,7 @@ void MainWindow::readSettings()
                                          "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
   m_NB=settings.value("NB",false).toBool();
-  ui->NBcheckBox->setChecked(m_NB);
   m_NBslider=settings.value("NBslider",40).toInt();
-  ui->NBslider->setValue(m_NBslider);
   m_txFreq=settings.value("TxFreq",1500).toInt();
   soundOutThread.setTxFreq(m_txFreq);
   m_saveSynced=ui->actionSave_synced->isChecked();
@@ -1021,17 +1019,6 @@ void MainWindow::on_actionWSPR_30_triggered()
   lab3->setStyleSheet("QLabel{background-color: #97ffff}");
   lab3->setText("WSPR-30");
   ui->actionWSPR_30->setChecked(true);
-}
-
-void MainWindow::on_NBcheckBox_toggled(bool checked)
-{
-  m_NB=checked;
-  ui->NBslider->setEnabled(m_NB);
-}
-
-void MainWindow::on_NBslider_valueChanged(int n)
-{
-  m_NBslider=n;
 }
 
 void MainWindow::on_actionQuickDecode_triggered()

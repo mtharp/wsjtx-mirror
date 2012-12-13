@@ -67,8 +67,6 @@ private slots:
   void on_actionWSPR_2_triggered();
   void on_actionWSPR_30_triggered();
   void on_actionWSPR_15_triggered();
-  void on_NBcheckBox_toggled(bool checked);
-  void on_NBslider_valueChanged(int value);
   void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();
