@@ -338,7 +338,7 @@ void MainWindow::dataSink(int k)
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
   t.sprintf(" Rx noise: %5.1f  %5.1f %% ",px,m_pctZap);
-  lab3->setText(t);
+  lab2->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_monitoring || m_diskData) {
     g_pWideGraph->dataSink2(s,red,df3,ihsym,m_diskData,lstrong);
@@ -480,16 +480,17 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab2 = new QLabel("");
   lab2->setAlignment(Qt::AlignHCenter);
-  lab2->setMinimumSize(QSize(90,18));
+  lab2->setMinimumSize(QSize(130,18));
   lab2->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab2);
 
   lab3 = new QLabel("");
   lab3->setAlignment(Qt::AlignHCenter);
-  lab3->setMinimumSize(QSize(120,18));
+  lab3->setMinimumSize(QSize(60,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
 
+  /*
   lab4 = new QLabel("");
   lab4->setAlignment(Qt::AlignHCenter);
   lab4->setMinimumSize(QSize(50,18));
@@ -501,6 +502,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
   lab5->setMinimumSize(QSize(100,18));
   lab5->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab5);
+  */
 }
 
 void MainWindow::on_actionExit_triggered()                     //Exit()
@@ -895,8 +897,6 @@ void MainWindow::guiUpdate()
 //    ui->monitorButton->setStyleSheet("");
   }
 
-  lab2->setText("QSO Freq:  " + QString::number(g_pWideGraph->QSOfreq()));
-
   if(m_startAnother) {
     m_startAnother=false;
     on_actionOpen_next_in_directory_triggered();
@@ -1001,9 +1001,8 @@ void MainWindow::on_actionWSPR_2_triggered()
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #ffff00}");
-//  lab4->setText(m_mode);
-  lab4->setText("WSPR-2");
+  lab3->setStyleSheet("QLabel{background-color: #ffff00}");
+  lab3->setText("WSPR-2");
   ui->actionWSPR_2->setChecked(true);
 }
 
@@ -1016,8 +1015,8 @@ void MainWindow::on_actionWSPR_15_triggered()
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #7fff00}");
-  lab4->setText(m_mode);
+  lab3->setStyleSheet("QLabel{background-color: #7fff00}");
+  lab3->setText("WSPR-15");
   ui->actionWSPR_15->setChecked(true);
 }
 
@@ -1030,8 +1029,8 @@ void MainWindow::on_actionWSPR_30_triggered()
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #97ffff}");
-  lab4->setText(m_mode);
+  lab3->setStyleSheet("QLabel{background-color: #97ffff}");
+  lab3->setText("WSPR-30");
   ui->actionWSPR_30->setChecked(true);
 }
 

@@ -68,6 +68,10 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_2DPixmap.fill(Qt::black);
     m_ScalePixmap = QPixmap(m_w,30);
     m_ScalePixmap.fill(Qt::white);
+
+//    m_fSpan=m_w*m_fftBinWidth;
+//    m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
+//    qDebug() << "A" << m_StartFreq;
   }
   DrawOverlay();
 }
@@ -277,35 +281,11 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     }
   }
 
-  QPen pen0(Qt::green, 3);                 //Mark QSO Freq with green tick
-  painter0.setPen(pen0);
-  x=XfromFreq(m_fQSO);
-  painter0.drawLine(x,17,x,30);
-  int x1=x - m_tol/df;
-  int x2=x + m_tol/df;
-  pen0.setWidth(6);
-  painter0.drawLine(x1,28,x2,28);
-
-  QPen pen1(Qt::red, 3);                 //Mark TxFreq with red tick
+  QPen pen1(Qt::red, 3);                         //Mark Tx Freq with red tick
   painter0.setPen(pen1);
   x = XfromFreq(m_txFreq);
-  painter0.drawLine(x,0,x,13);
-  painter0.drawLine(x,13,x-2,11);
-  painter0.drawLine(x,13,x+2,11);
+  painter0.drawLine(x,17,x,30);
 
-  /*
-  df = 12000.0/m_nsps;
-  int nlabs=df*w/m_freqPerDiv + 1.0;
-//  m_LowerScalePixmap.fill(Qt::white);
-//  painter3.drawRect(0, 0, w, 30);
-  pixperdiv = m_freqPerDiv/df;
-  for( int i=0; i<10*nlabs; i++) {
-    x = i*pixperdiv/10;
-    y=24;
-    if ((i%10) == 0) y=18;
-//    painter3.drawLine(x,y,x,30);
-  }
-  */
 }
 
 void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
