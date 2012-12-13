@@ -46,13 +46,10 @@ protected:
 
 private slots:
   void on_waterfallAvgSpinBox_valueChanged(int arg1);
-  void on_freqSpanSpinBox_valueChanged(int arg1);
   void on_zeroSpinBox_valueChanged(int arg1);
   void on_gainSpinBox_valueChanged(int arg1);
-  void on_fDialLineEdit_editingFinished();
   void on_rbCurrent_clicked();
   void on_rbCumulative_clicked();
-  void on_rbJT9Sync_clicked();
 
 private:
   qint32 m_waterfallAvg;

@@ -30,23 +30,19 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->widePlot->setPlotGain(settings.value("PlotGain", 0).toInt());
   ui->zeroSpinBox->setValue(ui->widePlot->getPlotZero());
   ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
-  int n = settings.value("FreqSpan",1).toInt();
   int w = settings.value("PlotWidth",1000).toInt();
   ui->widePlot->m_w=w;
-  ui->freqSpanSpinBox->setValue(n);
-  ui->widePlot->setNSpan(n);
+//  ui->widePlot->setNSpan(n);
 //  int nbpp = n * 32768.0/(w*96.0) + 0.5;
   ui->widePlot->setBinsPerPixel(1);
   m_waterfallAvg = settings.value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   m_dialFreq=settings.value("DialFreqkHz",474.000).toDouble();
-  ui->fDialLineEdit->setText(QString::number(m_dialFreq));
   ui->widePlot->m_bCurrent=settings.value("Current",true).toBool();
   ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
   ui->widePlot->m_bJT9Sync=settings.value("JT9Sync",false).toBool();
   ui->rbCurrent->setChecked(ui->widePlot->m_bCurrent);
   ui->rbCumulative->setChecked(ui->widePlot->m_bCumulative);
-  ui->rbJT9Sync->setChecked(ui->widePlot->m_bJT9Sync);
   int nbpp=settings.value("BinsPerPixel",1).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
   m_qsoFreq=settings.value("QSOfreq",1010).toInt();
@@ -71,7 +67,6 @@ void WideGraph::saveSettings()
   settings.setValue("PlotZero",ui->widePlot->m_plotZero);
   settings.setValue("PlotGain",ui->widePlot->m_plotGain);
   settings.setValue("PlotWidth",ui->widePlot->plotWidth());
-  settings.setValue("FreqSpan",ui->freqSpanSpinBox->value());
   settings.setValue("WaterfallAvg",ui->waterfallAvgSpinBox->value());
   settings.setValue("DialFreqkHz",m_dialFreq);
   settings.setValue("Current",ui->widePlot->m_bCurrent);
@@ -130,11 +125,6 @@ void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
     m_ntr0=ntr;
     ui->widePlot->draw(swide,red,i0);
   }
-}
-
-void WideGraph::on_freqSpanSpinBox_valueChanged(int n)
-{
-  ui->widePlot->setBinsPerPixel(n);
 }
 
 void WideGraph::on_waterfallAvgSpinBox_valueChanged(int n)
@@ -226,11 +216,6 @@ void WideGraph::setPalette(QString palette)
   ui->widePlot->setPalette(palette);
 }
 
-void WideGraph::on_fDialLineEdit_editingFinished()
-{
-  m_dialFreq=ui->fDialLineEdit->text().toDouble();
-}
-
 double WideGraph::fGreen()
 {
   return ui->widePlot->fGreen();
@@ -260,13 +245,6 @@ void WideGraph::on_rbCumulative_clicked()
   ui->widePlot->m_bCurrent=false;
   ui->widePlot->m_bCumulative=true;
   ui->widePlot->m_bJT9Sync=false;
-}
-
-void WideGraph::on_rbJT9Sync_clicked()
-{
-  ui->widePlot->m_bCurrent=false;
-  ui->widePlot->m_bCumulative=false;
-  ui->widePlot->m_bJT9Sync=true;
 }
 
 void WideGraph::setTxFreq(int n)
