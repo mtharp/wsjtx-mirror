@@ -22,7 +22,7 @@ WideGraph::WideGraph(QWidget *parent) :
 
   //Restore user's settings
   QString inifile(QApplication::applicationDirPath());
-  inifile += "/wsjtx.ini";
+  inifile += "/wsprx.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("WideGraph");

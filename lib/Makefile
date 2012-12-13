@@ -1,12 +1,13 @@
-# Makefile for MinGW on Windows
+# Makefile for WSPRX, using MinGW on Windows
 # Windows re-direct:
 #   C> make > junk1 2>&1
 
 CC = gcc
 FC = g95
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
-CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
+FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -ftrace=frame
+#CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
+CFLAGS = -I. -fbounds-check 
 
 # Default rules
 %.o: %.c
@@ -50,4 +51,4 @@ gmtime2.o: gmtime2.c
 .PHONY : clean
 
 clean:
-	rm -f *.o libwspr.a 
+	rm -f *.o libwspr.a wspr0.exe

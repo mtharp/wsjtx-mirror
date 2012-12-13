@@ -55,6 +55,7 @@ program wspr0
 1026    format(' UTC  dB   DT    Freq       Message'/54('-'))
         write(14,1028)
 1028    format(' Date   UTC Sync dB   DT    Freq       Message'/50('-'))
+        print*,'a',nargs,ntr
      call wspr0_rx(nargs,ntr)
   else if(arg(1:3).eq.'T/R'.or. arg(1:3).eq.'t/r') then
 ! Transmit and receive, choosing sequences randomly

@@ -4,7 +4,6 @@
       real ss0(NZ)
       real ss(NZ)
       real ref(NZ)
-      real tmp(NZ)
 
       call move(ss0,ss(129),128)
       call move(ss0(129),ss,128)
@@ -14,7 +13,7 @@
       ia=nsmo+1
       ib=n-nsmo-1
       do i=ia,ib
-         call pctile(ss(i-nsmo),tmp,2*nsmo+1,35,ref(i))
+         call pctile(ss(i-nsmo),2*nsmo+1,35,ref(i))
       enddo
       do i=ia,ib
          ss(i)=base*ss(i)/ref(i)

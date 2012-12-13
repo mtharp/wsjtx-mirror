@@ -5,7 +5,7 @@ subroutine wqdecode(data0,message,ntype)
   character*22 message
   character*12 callsign
   character*3 cdbm
-  character grid4*4,grid6*6
+  character grid4*4,grid6*6,psfx*4
   logical first
   character*12 dcall(0:N15-1)
   data first/.true./
@@ -22,7 +22,7 @@ subroutine wqdecode(data0,message,ntype)
 
   message='                      '
   call unpack50(data0,n1,n2)
-  call unpackcall(n1,callsign)
+  call unpackcall(n1,callsign,iv2,psfx)
   i1=index(callsign,' ')
   call unpackgrid(n2/128,grid4)
   ntype=iand(n2,127) -64

@@ -20,7 +20,6 @@ C  Find MEPT_JT sync signals, with best-fit DT and DF.
       integer keep(-NH:NH)
       real a(5)
       real sstf(5,275)
-      real tmp(275)
       integer npr3(162)
       real pr3(162)
       data npr3/
@@ -55,7 +54,7 @@ C  Compute power spectrum for each step, and get average
       enddo
 
 ! Normalize and subtract baseline from psavg.
-      call pctile(psavg(-136),tmp,273,35,base)
+      call pctile(psavg(-136),273,35,base)
       psavg=psavg/base - 1.0
       base=base/351.0
       s2=s2/base - 1.0

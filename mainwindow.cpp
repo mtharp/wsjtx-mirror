@@ -84,7 +84,6 @@ MainWindow::MainWindow(QWidget *parent) :
   btxok=false;
   m_restart=false;
   m_transmitting=false;
-  m_killAll=false;
   m_widebandDecode=false;
   m_ntx=1;
   m_myCall="K1JT";
@@ -110,15 +109,6 @@ MainWindow::MainWindow(QWidget *parent) :
   decodeBusy(false);
 
   ui->xThermo->setFillBrush(Qt::green);
-
-#ifdef WIN32
-  while(true) {
-      int iret=killbyname("wspr0.exe");
-      if(iret == 603) break;
-      if(iret != 0) msgBox("KillByName return code: " +
-                           QString::number(iret));
-  }
-#endif
 
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
@@ -518,7 +508,6 @@ void MainWindow::closeEvent(QCloseEvent*)
 void MainWindow::OnExit()
 {
   g_pWideGraph->saveSettings();
-  m_killAll=true;
   qApp->exit(0);                                      // Exit the event loop
 }
 
@@ -740,10 +729,8 @@ void MainWindow::decode()                                       //decode()
 
 void MainWindow::jt9_error()                                     //jt9_error
 {
-  if(!m_killAll) {
-    msgBox("Error starting or running\n" + m_appDir + "/wspr0");
-    exit(1);
-  }
+  msgBox("Error starting or running\n" + m_appDir + "/wspr0");
+//  exit(1);
 }
 
 void MainWindow::readFromStderr()                             //readFromStderr

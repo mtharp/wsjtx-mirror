@@ -123,7 +123,6 @@ private:
     bool    m_NB;
     bool    m_call3Modified;
     bool    m_dataAvailable;
-    bool    m_killAll;
     bool    m_bsynced;
     bool    m_bdecoded;
     bool    m_monitorStartOFF;
