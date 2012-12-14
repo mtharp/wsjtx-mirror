@@ -31,7 +31,7 @@ libwspr.a: $(OBJS1)
 	ranlib libwspr.a
 
 OBJS2 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
-	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
+	genmept.o wqencode.o wqdecode.o inter_mept.o \
 	encode232.o gran.o packcall.o packgrid.o pack50.o packpfx.o \
 	hash.o unpackcall.o unpackgrid.o unpackpfx.o unpack50.o \
 	grid2deg.o deg2grid.o nhash.o nchar.o wspr0_rx.o getrms.o \

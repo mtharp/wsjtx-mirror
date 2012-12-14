@@ -11,7 +11,6 @@ subroutine wqdecode(data0,message,ntype)
   data first/.true./
   save first,dcall
 
-  call cs_lock('wqdecode')
 ! May want to have a timeout (say, one hour?) on calls fetched 
 ! from the hash table.
 
@@ -67,7 +66,6 @@ subroutine wqdecode(data0,message,ntype)
         message='<...> '//grid6//' '//cdbm
      endif
   endif
-  call cs_unlock
 
   return
 end subroutine wqdecode
