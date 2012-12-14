@@ -325,7 +325,7 @@ void MainWindow::dataSink(int k)
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
-  t.sprintf(" Rx noise: %5.1f  %5.1f %% ",px,m_pctZap);
+  t.sprintf(" Rx noise: %5.1f dB ",px);
   lab2->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_monitoring || m_diskData) {
@@ -354,7 +354,7 @@ void MainWindow::dataSink(int k)
     }
 //    decode();                                                //Start decoder
     proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' +
-           "/wspr0 Rx 7.0386 " + m_fname + '"' ));            //10.1387
+           "/wspr0 Rx 0.474200 " + m_fname + '"' ));            //10.1387
   }
   soundInThread.m_dataSinkBusy=false;
 }
@@ -468,7 +468,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab2 = new QLabel("");
   lab2->setAlignment(Qt::AlignHCenter);
-  lab2->setMinimumSize(QSize(130,18));
+  lab2->setMinimumSize(QSize(110,18));
   lab2->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab2);
 
@@ -477,20 +477,6 @@ void MainWindow::createStatusBar()                           //createStatusBar
   lab3->setMinimumSize(QSize(60,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
-
-  /*
-  lab4 = new QLabel("");
-  lab4->setAlignment(Qt::AlignHCenter);
-  lab4->setMinimumSize(QSize(50,18));
-  lab4->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  statusBar()->addWidget(lab4);
-
-  lab5 = new QLabel("");
-  lab5->setAlignment(Qt::AlignHCenter);
-  lab5->setMinimumSize(QSize(100,18));
-  lab5->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  statusBar()->addWidget(lab5);
-  */
 }
 
 void MainWindow::on_actionExit_triggered()                     //Exit()
@@ -911,7 +897,7 @@ void MainWindow::guiUpdate()
     }
 
     m_setftx=0;
-    QString utc = t.date().toString(" yyyy MMM dd") + " \n " +
+    QString utc = t.date().toString("yyyy MMM dd") + " \n " +
             t.time().toString();
     ui->labUTC->setText(utc);
     if(!m_monitoring and !m_diskData) {
