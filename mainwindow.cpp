@@ -137,15 +137,6 @@ MainWindow::MainWindow(QWidget *parent) :
   }
   readSettings();		             //Restore user's setup params
 
-  m_pbdecoding_style1="QPushButton{background-color: cyan; \
-      border-style: outset; border-width: 1px; border-radius: 5px; \
-      border-color: black; min-width: 5em; padding: 3px;}";
-  m_pbmonitor_style="QPushButton{background-color: #00ff00; \
-      border-style: outset; border-width: 1px; border-radius: 5px; \
-      border-color: black; min-width: 5em; padding: 3px;}";
-  m_pbAutoOn_style="QPushButton{background-color: red; \
-      border-style: outset; border-width: 1px; border-radius: 5px; \
-      border-color: black; min-width: 5em; padding: 3px;}";
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
   if(m_mode=="JT9-2") on_actionWSPR_2_triggered();
@@ -372,7 +363,7 @@ void MainWindow::dataSink(int k)
 //    decode();                                                //Start decoder
     m_decodedList.clear();
     QString cmnd='"' + m_appDir + '"' + "/wspr0 D 0.474200 " + m_fname + '"';
-    lab3->setStyleSheet(m_pbdecoding_style1);
+    lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     proc_jt9.start(QDir::toNativeSeparators(cmnd));
   }
