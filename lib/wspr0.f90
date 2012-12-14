@@ -13,11 +13,12 @@ program wspr0
   nargs=iargc()
 10 if(nargs.eq.0) then
      print*,' '
-     print*,'wspr0 -- version 1.0'
+     print*,'wspr0 -- version 2.0'
      print*,' '
      print*,'Usage: wspr0 Tx  f0 ftx nport call grid dBm [snr] [outfile | nfiles]'
      print*,'       wspr0 T/R f0 ftx nport call grid dBm pctx'
      print*,'       wspr0 Rx  f0 [infile ...]'
+     print*,'       wspr0 D   f0 [infile ...]'
      print*,' '
      print*,'       f0 is the transceiver dial frequency (MHz)'
      print*,'       ftx is the signal frequency (MHz)'
@@ -31,6 +32,7 @@ program wspr0
      print*,'       wspr0 T/R 10.1387 10.140200 0 K1JT FN20 30 25'
      print*,'       wspr0 Rx  10.1387'
      print*,'       wspr0 Rx  10.1387 00001.wav 00002.wav 00003.wav'
+     print*,'       wspr0 D   10.1387 120729_1234.wav'
      print*,' '
      print*,'For more information see:'
      print*,'       physics.princeton.edu/pulsar/K1JT/WSPR0_Instructions.TXT'
@@ -56,6 +58,11 @@ program wspr0
         write(14,1028)
 1028    format(' Date   UTC Sync dB   DT    Freq       Message'/50('-'))
      call wspr0_rx(nargs,ntr)
+  else if(arg(1:1).eq.'D'.or. arg(1:1).eq.'d') then
+! Decode only (running as sub-process of program WSPR).
+     call wspr0_rx(nargs,ntr)
+     write(*,1029)
+1029 format('<DecodeFinished>')
   else if(arg(1:3).eq.'T/R'.or. arg(1:3).eq.'t/r') then
 ! Transmit and receive, choosing sequences randomly
      if(nargs.ne.8) then

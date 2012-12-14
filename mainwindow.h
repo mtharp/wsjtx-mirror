@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 #include <QtGui>
 #include <QTimer>
+//#include <QUrl>
+#include <QtNetwork>
 #include <QDateTime>
 #include "soundin.h"
 #include "soundout.h"
@@ -74,6 +76,7 @@ private slots:
   void on_inGain_valueChanged(int n);
   void on_actionMonitor_OFF_at_startup_triggered();
   void on_TxNextButton_clicked();
+  void onNetworkReply(QNetworkReply* reply);
 
 private:
     Ui::MainWindow *ui;
@@ -146,7 +149,10 @@ private:
     QFutureWatcher<void>* watcher2;
     QFutureWatcher<void>* watcher3;
 
+    QNetworkReply* reply;
+    QNetworkAccessManager* mNetworkManager;
     QProcess proc_jt9;
+    QStringList m_decodedList;
 
     QString m_path;
     QString m_pbdecoding_style1;

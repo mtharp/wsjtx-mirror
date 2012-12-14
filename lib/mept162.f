@@ -94,8 +94,8 @@ C  Look for sync patterns, get DF and DT
      +           ncycles/81,ii
                close(13)
             else
-               write(*,1008) datetime(8:11),nsnrx,dtx,freq,message
- 1008          format(a4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
+               write(*,1008) datetime(8:11),nsnrx,dtx,freq,nf1,message
+ 1008          format(a4,i4,f5.1,f11.6,i3,2x,a22)
             endif
             write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,
      +           ncycles/81,ii

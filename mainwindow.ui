@@ -134,7 +134,7 @@
            </size>
           </property>
           <property name="title">
-           <string>     UTC      dB            DT          Freq          Drift</string>
+           <string>     UTC      dB          DT              Freq           Drift</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <item>

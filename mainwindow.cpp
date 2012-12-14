@@ -13,12 +13,13 @@ int itone[85];                        //Tx audio tones
 bool btxok;                           //True if OK to transmit
 bool btxMute;
 double outputLatency;                 //Latency in seconds
-
 WideGraph* g_pWideGraph = NULL;
 
+QString ver="4.0.0";
 QString rev="$Rev$";
-QString Program_Title_Version="  WSPR-X   v0.1, r" + rev.mid(6,4) +
+QString Program_Title_Version="  WSPR-X   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
+QString Version=ver + "_r" + rev.mid(6,4);
 
 //-------------------------------------------------- MainWindow constructor
 MainWindow::MainWindow(QWidget *parent) :
@@ -90,6 +91,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
   connect(&proc_jt9, SIGNAL(readyReadStandardError()),
           this, SLOT(readFromStderr()));
+
+  mNetworkManager = new QNetworkAccessManager(this);
+  QObject::connect(mNetworkManager, SIGNAL(finished(QNetworkReply*)),
+                   this, SLOT(onNetworkReply(QNetworkReply*)));
 
   QTimer *guiTimer = new QTimer(this);
   connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
@@ -337,8 +342,8 @@ void MainWindow::dataSink(int k)
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
-  t.sprintf(" Rx noise: %5.1f dB ",px);
-  lab2->setText(t);
+  t.sprintf(" Receiving: %5.1f dB ",px);
+  lab1->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_monitoring || m_diskData) {
     g_pWideGraph->dataSink2(s,red,df3,ihsym,m_diskData,lstrong);
@@ -365,8 +370,11 @@ void MainWindow::dataSink(int k)
       watcher2->setFuture(*future2);
     }
 //    decode();                                                //Start decoder
-    proc_jt9.start(QDir::toNativeSeparators('"' + m_appDir + '"' +
-           "/wspr0 Rx 0.474200 " + m_fname + '"' ));            //10.1387
+    m_decodedList.clear();
+    QString cmnd='"' + m_appDir + '"' + "/wspr0 D 0.474200 " + m_fname + '"';
+    lab3->setStyleSheet(m_pbdecoding_style1);
+    lab3->setText("Decoding");
+    proc_jt9.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
 }
@@ -445,7 +453,6 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
 
 void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
 {
-  int n;
   switch(e->key())
   {
   case Qt::Key_F3:
@@ -473,20 +480,20 @@ void MainWindow::createStatusBar()                           //createStatusBar
 {
   lab1 = new QLabel("Receiving");
   lab1->setAlignment(Qt::AlignHCenter);
-  lab1->setMinimumSize(QSize(80,18));
+  lab1->setMinimumSize(QSize(85,18));
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab1);
 
   lab2 = new QLabel("");
   lab2->setAlignment(Qt::AlignHCenter);
-  lab2->setMinimumSize(QSize(110,18));
+  lab2->setMinimumSize(QSize(60,18));
   lab2->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab2);
 
   lab3 = new QLabel("");
   lab3->setAlignment(Qt::AlignHCenter);
-  lab3->setMinimumSize(QSize(60,18));
+  lab3->setMinimumSize(QSize(80,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
 }
@@ -609,7 +616,6 @@ void MainWindow::diskDat()                                   //diskDat()
 
 void MainWindow::diskWriteFinished()                       //diskWriteFinished
 {
-//  qDebug() << "diskWriteFinished";
 }
 
 //Delete ../save/*.wav
@@ -680,7 +686,6 @@ void MainWindow::on_actionAvailable_suffixes_and_add_on_prefixes_triggered()
 
 void MainWindow::decode()                                       //decode()
 {
-//  ui->DecodeButton->setStyleSheet(m_pbdecoding_style1);
   if(jt9com_.nagain==0 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
     int imin=ms/60000;
@@ -725,16 +730,42 @@ void MainWindow::readFromStderr()                             //readFromStderr
 
 void MainWindow::readFromStdout()                             //readFromStdout
 {
+  QString t1;
   while(proc_jt9.canReadLine()) {
-    QByteArray t=proc_jt9.readLine();
-    if(t.indexOf(" UTC ") != 0 and t.indexOf("-----") != 0) {
+    QString t(proc_jt9.readLine());
+    if(t.indexOf("<DecodeFinished>") >= 0) {
+      for(int i=0; i<m_decodedList.size(); i++) {
+        t1=m_decodedList.at(i).toAscii();
+        QStringList s=t1.split(" ",QString::SkipEmptyParts);
+        int iutc=s.at(0).toInt();
+        int sig=s.at(1).toInt();
+        float dt=s.at(2).toFloat();
+        double rqrg=s.at(3).toDouble();
+        int drift=s.at(4).toInt();
+        QString rcall=s.at(5).toAscii();
+        QString rgrid=s.at(6).toAscii();
+        int dbm=s.at(6).toInt();
+//        qDebug() << i << iutc << sig << dt << rqrg << drift << rcall
+//                    << rgrid << dbm;
+        // Upload to WSPRnet here ...
+      }
+      m_decodedList.clear();
+
+//      m_bdecoded = (t.mid(23,1).toInt()==1);
+      bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
+      if(!keepFile) {
+        QFile savedFile(m_fname);
+        savedFile.remove();
+      }
+      lab3->setStyleSheet("");
+      lab3->setText("");
+      decodeBusy(false);
+      m_RxLog=0;
+      m_startAnother=m_loopall;
+      return;
+    } else {
+      m_decodedList += t;
       int n=t.length();
-      /*
-      QString bg="white";
-      if(t.indexOf(" CQ ")>0) bg="#66ff66";                //Light green
-      if(t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666";      //Light red
-      ui->decodedTextBrowser->setTextBackgroundColor(bg);
-      */
       t=t.mid(0,n-2) + "                                                  ";
       ui->decodedTextBrowser->append(t);
     }
@@ -807,8 +838,7 @@ void MainWindow::guiUpdate()
 
     ba2msg(ba,message);
 //    ba2msg(ba,msgsent);
-    int len1=22;
-    int ichk=0,itext=0;
+//    int len1=22;
 //    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
     msgsent[22]=0;
     lab5->setText("Last Tx:  " + QString::fromAscii(msgsent));
@@ -890,7 +920,7 @@ void MainWindow::guiUpdate()
       lab1->setText(s);
     } else if(m_monitoring) {
       lab1->setStyleSheet("QLabel{background-color: #00ff00}");
-      lab1->setText("Receiving ");
+//      lab1->setText("Receiving ");
     } else if (!m_diskData) {
       lab1->setStyleSheet("");
       lab1->setText("");
@@ -905,20 +935,6 @@ void MainWindow::guiUpdate()
     }
     m_hsym0=khsym;
     m_sec0=nsec;
-
-/*
-    if(m_myCall=="K1JT") {
-      char s[20];
-      double t1=1.0;
-//Better: use signals from sound threads?
-      if(soundInThread.isRunning()) t1=soundInThread.samFacIn();
-      double t2=1.0;
-      if(soundOutThread.isRunning()) t2=soundOutThread.samFacOut();
-      sprintf(s,"%6.4f  %6.4f",t1,t2);
-      lab5->setText(s);
-    }
-*/
-
   }
   iptt0=iptt;
   btxok0=btxok;
@@ -926,8 +942,6 @@ void MainWindow::guiUpdate()
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 {
-  bool eom;
-  eom=false;
   int iz=ba.length();
   for(int i=0;i<22; i++) {
     if(i<iz) {
@@ -974,8 +988,8 @@ void MainWindow::on_actionWSPR_2_triggered()
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab3->setStyleSheet("QLabel{background-color: #ffff00}");
-  lab3->setText("WSPR-2");
+  lab2->setStyleSheet("QLabel{background-color: #ffff00}");
+  lab2->setText("WSPR-2");
   ui->actionWSPR_2->setChecked(true);
 }
 
@@ -988,8 +1002,8 @@ void MainWindow::on_actionWSPR_15_triggered()
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab3->setStyleSheet("QLabel{background-color: #7fff00}");
-  lab3->setText("WSPR-15");
+  lab2->setStyleSheet("QLabel{background-color: #7fff00}");
+  lab2->setText("WSPR-15");
   ui->actionWSPR_15->setChecked(true);
 }
 
@@ -1002,8 +1016,8 @@ void MainWindow::on_actionWSPR_30_triggered()
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab3->setStyleSheet("QLabel{background-color: #97ffff}");
-  lab3->setText("WSPR-30");
+  lab2->setStyleSheet("QLabel{background-color: #97ffff}");
+  lab2->setText("WSPR-30");
   ui->actionWSPR_30->setChecked(true);
 }
 
@@ -1037,5 +1051,35 @@ void MainWindow::on_actionMonitor_OFF_at_startup_triggered()
 
 void MainWindow::on_TxNextButton_clicked()
 {
-  qDebug() << "A";
+  QString t("http://wsprnet.org/post?function=wsprstat&rcall=K1JT&");
+  t += "rgrid=FN20qi&rqrg=10.140200&tpct=0&tqrg=10.140200&dbm=20&";
+  t += "version=" + Version;
+  QUrl url(t);
+//  qDebug() << "A" << t;
+  reply = mNetworkManager->get(QNetworkRequest(url));
+}
+
+void MainWindow::onNetworkReply(QNetworkReply* reply)
+{
+  qDebug() << "B" << reply->error();
+  QString replyString;
+  if(reply->error() == QNetworkReply::NoError) {
+    int httpstatuscode = reply->attribute(
+          QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    qDebug() << "C" << httpstatuscode;
+    switch(httpstatuscode)
+    {
+    case 0:                                   //RESPONSE_OK:
+      if (reply->isReadable()) {
+  //Assuming this is a human readable file replyString now contains the file
+        replyString = QString::fromUtf8(reply->readAll().data());
+        qDebug() << "D" << replyString;
+      }
+      break;
+    default:
+      //httpstatuscode is nonzero...
+      break;
+    }
+  }
+  reply->deleteLater();
 }
