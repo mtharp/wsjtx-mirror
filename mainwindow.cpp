@@ -517,7 +517,7 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 {
   if(g_pWideGraph==NULL) {
     g_pWideGraph = new WideGraph(0);
-    g_pWideGraph->setWindowTitle("Wide Graph");
+    g_pWideGraph->setWindowTitle("WSPR-X Waterfall");
     g_pWideGraph->setGeometry(m_wideGraphGeom);
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;

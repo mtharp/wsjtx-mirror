@@ -10,7 +10,7 @@ WideGraph::WideGraph(QWidget *parent) :
 {
   ui->setupUi(this);
   this->setWindowFlags(Qt::Dialog);
-  this->installEventFilter(parent); //Installing the filter
+  this->installEventFilter(parent);                   //Installing the filter
   ui->widePlot->setCursor(Qt::CrossCursor);
   this->setMaximumWidth(2048);
   this->setMaximumHeight(880);
