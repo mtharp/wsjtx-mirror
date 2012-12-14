@@ -47,7 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
-  ui->actionSave_synced->setActionGroup(saveGroup);
   ui->actionSave_decoded->setActionGroup(saveGroup);
   ui->actionSave_all->setActionGroup(saveGroup);
 
@@ -55,6 +54,24 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->actionQuickDecode->setActionGroup(DepthGroup);
   ui->actionMediumDecode->setActionGroup(DepthGroup);
   ui->actionDeepestDecode->setActionGroup(DepthGroup);
+
+  QActionGroup* BandGroup = new QActionGroup(this);
+  ui->action2200_m->setActionGroup(BandGroup);
+  ui->action630_m->setActionGroup(BandGroup);
+  ui->action160_m->setActionGroup(BandGroup);
+  ui->action80_m->setActionGroup(BandGroup);
+  ui->action60_m->setActionGroup(BandGroup);
+  ui->action40_m->setActionGroup(BandGroup);
+  ui->action30_m->setActionGroup(BandGroup);
+  ui->action20_m->setActionGroup(BandGroup);
+  ui->action17_m->setActionGroup(BandGroup);
+  ui->action15_m->setActionGroup(BandGroup);
+  ui->action12_m->setActionGroup(BandGroup);
+  ui->action10_m->setActionGroup(BandGroup);
+  ui->action6_m->setActionGroup(BandGroup);
+  ui->action4_m->setActionGroup(BandGroup);
+  ui->action2_m->setActionGroup(BandGroup);
+  ui->actionOther->setActionGroup(BandGroup);
 
   setWindowTitle(Program_Title_Version);
   connect(&soundInThread, SIGNAL(readyForFFT(int)),
@@ -94,7 +111,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_setftx=0;
   m_loopall=false;
   m_startAnother=false;
-  m_saveSynced=false;
   m_saveDecoded=false;
   m_saveAll=false;
   m_sec0=-1;
@@ -216,7 +232,6 @@ void MainWindow::writeSettings()
   settings.setValue("PaletteBlue",ui->actionBlue->isChecked());
   settings.setValue("Mode",m_mode);
   settings.setValue("SaveNone",ui->actionNone->isChecked());
-  settings.setValue("SaveSynced",ui->actionSave_synced->isChecked());
   settings.setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("NDepth",m_ndepth);
@@ -264,8 +279,6 @@ void MainWindow::readSettings()
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9-1").toString();
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
-  ui->actionSave_synced->setChecked(settings.value(
-                                        "SaveSynced",false).toBool());
   ui->actionSave_decoded->setChecked(settings.value(
                                          "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
@@ -273,7 +286,6 @@ void MainWindow::readSettings()
   m_NBslider=settings.value("NBslider",40).toInt();
   m_txFreq=settings.value("TxFreq",1500).toInt();
   soundOutThread.setTxFreq(m_txFreq);
-  m_saveSynced=ui->actionSave_synced->isChecked();
   m_saveDecoded=ui->actionSave_decoded->isChecked();
   m_saveAll=ui->actionSave_all->isChecked();
   m_ndepth=settings.value("NDepth",0).toInt();
@@ -633,23 +645,13 @@ void MainWindow::on_actionNo_shorthands_if_Tx1_triggered()
 
 void MainWindow::on_actionNone_triggered()                    //Save None
 {
-  m_saveSynced=false;
   m_saveDecoded=false;
   m_saveAll=false;
   ui->actionNone->setChecked(true);
 }
 
-void MainWindow::on_actionSave_synced_triggered()
-{
-  m_saveSynced=true;
-  m_saveDecoded=false;
-  m_saveAll=false;
-  ui->actionSave_synced->setChecked(true);
-}
-
 void MainWindow::on_actionSave_decoded_triggered()
 {
-  m_saveSynced=false;
   m_saveDecoded=true;
   m_saveAll=false;
   ui->actionSave_decoded->setChecked(true);
@@ -657,7 +659,6 @@ void MainWindow::on_actionSave_decoded_triggered()
 
 void MainWindow::on_actionSave_all_triggered()                //Save All
 {
-  m_saveSynced=false;
   m_saveDecoded=false;
   m_saveAll=true;
   ui->actionSave_all->setChecked(true);
@@ -703,7 +704,6 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nfsample=12000;
   jt9com_.ntrperiod=m_TRperiod;
   m_nsave=0;
-  if(m_saveSynced) m_nsave=1;
   if(m_saveDecoded) m_nsave=2;
   jt9com_.nsave=m_nsave;
   strncpy(jt9com_.datetime, m_dateTime.toAscii(), 20);
@@ -1033,4 +1033,9 @@ void MainWindow::on_inGain_valueChanged(int n)
 void MainWindow::on_actionMonitor_OFF_at_startup_triggered()
 {
   m_monitorStartOFF=!m_monitorStartOFF;
+}
+
+void MainWindow::on_TxNextButton_clicked()
+{
+  qDebug() << "A";
 }

@@ -67,13 +67,13 @@ private slots:
   void on_actionWSPR_2_triggered();
   void on_actionWSPR_30_triggered();
   void on_actionWSPR_15_triggered();
-  void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();
   void on_actionMediumDecode_triggered();
   void on_actionDeepestDecode_triggered();
   void on_inGain_valueChanged(int n);
   void on_actionMonitor_OFF_at_startup_triggered();
+  void on_TxNextButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -113,7 +113,6 @@ private:
     bool    m_auto;
     bool    m_restart;
     bool    m_startAnother;
-    bool    m_saveSynced;
     bool    m_saveDecoded;
     bool    m_saveAll;
     bool    m_widebandDecode;

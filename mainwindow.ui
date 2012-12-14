@@ -556,7 +556,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="separator"/>
     <addaction name="actionDelete_all_wav_files_in_SaveDir"/>
     <addaction name="actionErase_wsjtx_rx_log"/>
-    <addaction name="actionErase_wsjtx_tx_log"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_user_parameters"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -592,7 +593,6 @@ p, li { white-space: pre-wrap; }
      <string>Save</string>
     </property>
     <addaction name="actionNone"/>
-    <addaction name="actionSave_synced"/>
     <addaction name="actionSave_decoded"/>
     <addaction name="actionSave_all"/>
    </widget>
@@ -729,7 +729,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionErase_wsjtx_rx_log">
    <property name="text">
-    <string>Erase wsjtx_rx.log</string>
+    <string>Erase ALL_WSPR.TXT</string>
    </property>
   </action>
   <action name="actionLinrad">
@@ -1036,83 +1036,139 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="action2200_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>2200 m</string>
    </property>
   </action>
   <action name="action630_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>630 m</string>
    </property>
   </action>
   <action name="action160_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>160 m</string>
    </property>
   </action>
   <action name="action80_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>80 m</string>
    </property>
   </action>
   <action name="action60_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>60 m</string>
    </property>
   </action>
   <action name="action40_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>40 m</string>
    </property>
   </action>
   <action name="action30_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>30 m</string>
    </property>
   </action>
   <action name="action20_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>20 m</string>
    </property>
   </action>
   <action name="action17_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>17 m</string>
    </property>
   </action>
   <action name="action15_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>15 m</string>
    </property>
   </action>
   <action name="action12_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>12 m</string>
    </property>
   </action>
   <action name="action10_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>10 m</string>
    </property>
   </action>
   <action name="action6_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>6 m</string>
    </property>
   </action>
   <action name="action4_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>4 m</string>
    </property>
   </action>
   <action name="action2_m">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>2 m</string>
    </property>
   </action>
   <action name="actionOther">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Other</string>
+   </property>
+  </action>
+  <action name="actionSave_user_parameters">
+   <property name="text">
+    <string>Save user parameters</string>
    </property>
   </action>
  </widget>
