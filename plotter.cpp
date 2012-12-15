@@ -199,21 +199,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
           painter.drawLine(0, y, w, y);
   }
 
-/*
-  //draw amplitude values
-  painter.setPen(Qt::yellow);
-//  Font.setWeight(QFont::Light);
-//  painter.setFont(Font);
-//  int dB = m_MaxdB;
-  int dB = 50;
-  for( int i=0; i<VERT_DIVS-1; i++)
-  {
-    y = (int)( (float)i*pixperdiv );
-    painter.drawStaticText(5, y-1, QString::number(dB)+" dB");
-    dB -= m_dBStepSize;
-  }
-*/
-
   QRect rect0;
   QPainter painter0(&m_ScalePixmap);
   painter0.initFrom(this);
@@ -302,7 +287,6 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
 
 int CPlotter::XfromFreq(float f)                               //XfromFreq()
 {
-//  float w = m_WaterfallPixmap.width();
   int x = (int) m_w * (f - m_StartFreq)/m_fSpan;
   if(x<0 ) return 0;
   if(x>m_w) return m_w;

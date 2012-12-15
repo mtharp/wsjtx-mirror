@@ -15,7 +15,7 @@ bool btxMute;
 double outputLatency;                 //Latency in seconds
 WideGraph* g_pWideGraph = NULL;
 
-QString ver="4.0.0";
+QString ver="0.5";
 QString rev="$Rev$";
 QString Program_Title_Version="  WSPR-X   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
