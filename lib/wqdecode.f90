@@ -8,11 +8,15 @@ subroutine wqdecode(data0,message,ntype)
   character grid4*4,grid6*6,psfx*4
   logical first
   character*12 dcall(0:N15-1)
-  data first/.true./
-  save first,dcall
+  save dcall
 
 ! May want to have a timeout (say, one hour?) on calls fetched 
 ! from the hash table.
+
+  if(message.eq.'ClearHashTable        ') then
+     dcall='            '
+     return
+  endif
 
   if(message.eq.'SaveHashTable         ') then
      open(15,file='hashtable.txt',status='unknown')
@@ -23,16 +27,12 @@ subroutine wqdecode(data0,message,ntype)
      return
   endif
 
-  if(first) then
-     dcall='            '
-     open(15,file='hashtable.txt',status='unknown')
-     do i=0,N15-1
-        read(15,1000,end=10) ih,callsign
-        dcall(ih)=callsign
-     enddo
-10   close(15)
-     first=.false.
-  endif
+  open(15,file='hashtable.txt',status='unknown')
+  do i=0,N15-1
+     read(15,1000,end=10) ih,callsign
+     dcall(ih)=callsign
+  enddo
+10 close(15)
 
   message='                      '
   call unpack50(data0,n1,n2)
