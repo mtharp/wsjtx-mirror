@@ -19,7 +19,6 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_fftBinWidth=1500.0/2048.0;
   m_fSpan=1000.0;
   m_hdivs = HORZ_DIVS;
-  m_FreqUnits = 1;
   m_Running = false;
   m_paintEventBusy=false;
   m_WaterfallPixmap = QPixmap(0,0);
@@ -181,7 +180,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter.drawRect(0, 0, m_w, m_h2);
   painter.setBrush(Qt::SolidPattern);
 
-  double df = m_binsPerPixel*m_fftBinWidth;
+  double df = m_fftBinWidth;
   pixperdiv = m_freqPerDiv/df;
   y = m_h2 - m_h2/VERT_DIVS;
   for( int i=1; i<m_hdivs; i++)                   //draw vertical grids
@@ -227,7 +226,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.setFont(Font);
   painter0.setPen(Qt::black);
 
-  if(m_binsPerPixel < 1) m_binsPerPixel=1;
   m_fSpan = w*df;
   int n=m_fSpan/10;
   m_freqPerDiv=10;
@@ -313,7 +311,7 @@ int CPlotter::XfromFreq(float f)                               //XfromFreq()
 
 float CPlotter::FreqfromX(int x)                               //FreqfromX()
 {
-  return float(1000.0 + x*m_binsPerPixel*m_fftBinWidth);
+  return float(1000.0 + x*m_fftBinWidth);
 }
 
 void CPlotter::SetRunningState(bool running)              //SetRunningState()
@@ -345,29 +343,6 @@ int CPlotter::plotWidth(){return m_WaterfallPixmap.width();}
 void CPlotter::UpdateOverlay() {DrawOverlay();}
 void CPlotter::setDataFromDisk(bool b) {m_dataFromDisk=b;}
 
-void CPlotter::setTol(int n)                                 //setTol()
-{
-  m_tol=n;
-  DrawOverlay();
-}
-
-int CPlotter::Tol()                                         //Tol()
-{
-  return m_tol;
-}
-
-void CPlotter::setBinsPerPixel(int n)                       // set nbpp
-{
-  m_binsPerPixel = n;
-  DrawOverlay();                         //Redraw scales and ticks
-  update();                              //trigger a new paintEvent}
-}
-
-int CPlotter::binsPerPixel()                                // get nbpp
-{
-  return m_binsPerPixel;
-}
-
 void CPlotter::setTxFreq(int x, bool bf)                       //setTxFreq()
 {
   if(bf) {
@@ -381,11 +356,6 @@ void CPlotter::setTxFreq(int x, bool bf)                       //setTxFreq()
   }
   DrawOverlay();
   update();
-}
-
-void CPlotter::setFcal(int n)                                   //setFcal()
-{
-  m_fCal=n;
 }
 
 int CPlotter::TxFreq() {return m_TxFreq;}                        //TxFreq()
@@ -491,11 +461,6 @@ void CPlotter::setPalette(QString palette)                      //setPalette()
     }
   }
 
-}
-
-double CPlotter::fGreen()
-{
-  return m_fGreen;
 }
 
 void CPlotter::setNsps(int ntrperiod, int nsps)                                  //setNSpan()

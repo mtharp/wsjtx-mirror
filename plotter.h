@@ -31,9 +31,7 @@ public:
   int     m_plotZero;
   int     m_plotGain;
   float   m_fSpan;
-  qint32  m_binsPerPixel;
   qint32  m_TxFreq;
-  qint32  m_fCal;
   qint32  m_w;
 
   void draw(float sw[]);		               //Update the waterfall
@@ -45,19 +43,13 @@ public:
   int  plotWidth();
   void UpdateOverlay();
   void setDataFromDisk(bool b);
-  void setTol(int n);
-  int  Tol();
-  void setBinsPerPixel(int n);
-  int  binsPerPixel();
   void setTxFreq(int n, bool bf);
-  void setFcal(int n);
   void DrawOverlay();
   int  TxFreq();
   void setPalette(QString palette);
   void setFsample(int n);
   void setNsps(int ntrperiod, int nsps);
   void setTxFreq(int n);
-  double fGreen();
   void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
 
 signals:
@@ -81,17 +73,14 @@ private:
   QPixmap m_2DPixmap;
   QPixmap m_ScalePixmap;
   QPixmap m_OverlayPixmap;
-//  QPixmap m_LowerScalePixmap;
   QSize   m_Size;
   QString m_Str;
   QString m_HDivText[483];
   bool    m_Running;
   bool    m_paintEventBusy;
-  double  m_fGreen;
   double  m_fftBinWidth;
   qint64  m_StartFreq;
   qint32  m_dBStepSize;
-  qint32  m_FreqUnits;
   qint32  m_hdivs;
   bool    m_dataFromDisk;
   char    m_sutc[5];

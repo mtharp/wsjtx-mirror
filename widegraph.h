@@ -16,17 +16,11 @@ public:
 
   void   dataSink2(float s[], float red[], float df3, int ihsym,
                    int ndiskdata, uchar lstrong[]);
-  void   setQSOfreq(int n);
-  int    QSOfreq();
   void   saveSettings();
-  int    Tol();
-  void   setTol(int n);
-  void   setFcal(int n);
   void   setPalette(QString palette);
   void   setFsample(int n);
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
-  double fGreen();
   double dialFreq();
 
   qint32 m_qsoFreq;

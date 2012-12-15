@@ -32,7 +32,6 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
   int w = settings.value("PlotWidth",1000).toInt();
   ui->widePlot->m_w=w;
-  ui->widePlot->setBinsPerPixel(1);
   m_waterfallAvg = settings.value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   m_dialFreq=settings.value("DialFreqkHz",474.000).toDouble();
@@ -40,8 +39,6 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
   ui->rbCurrent->setChecked(ui->widePlot->m_bCurrent);
   ui->rbCumulative->setChecked(ui->widePlot->m_bCumulative);
-  int nbpp=settings.value("BinsPerPixel",1).toInt();
-  ui->widePlot->setBinsPerPixel(nbpp);
   m_qsoFreq=settings.value("QSOfreq",1010).toInt();
   ui->widePlot->setTxFreq(m_qsoFreq,true);
   settings.endGroup();
@@ -68,7 +65,6 @@ void WideGraph::saveSettings()
   settings.setValue("DialFreqkHz",m_dialFreq);
   settings.setValue("Current",ui->widePlot->m_bCurrent);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
-  settings.setValue("BinsPerPixel",ui->widePlot->binsPerPixel());
   settings.setValue("QSOfreq",ui->widePlot->TxFreq());
   settings.endGroup();
 }
@@ -78,7 +74,7 @@ void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
 {
   static float splot[NSMAX];
   static float swide[2048];
-  int nbpp = ui->widePlot->binsPerPixel();
+  int nbpp=1;
   static int n=0;
 
   //Average spectra over specified number, m_waterfallAvg
@@ -155,48 +151,14 @@ void WideGraph::keyPressEvent(QKeyEvent *e)
   }
 }
 
-void WideGraph::setQSOfreq(int n)
-{
-  m_qsoFreq=n;
-  ui->widePlot->setTxFreq(m_qsoFreq,true);
-}
-
-int WideGraph::QSOfreq()
-{
-  return ui->widePlot->TxFreq();
-}
-
 void WideGraph::wideFreezeDecode(int n)
 {
   emit freezeDecode2(n);
 }
 
-void WideGraph::setTol(int n)
-{
-  ui->widePlot->setTol(n);
-  ui->widePlot->DrawOverlay();
-  ui->widePlot->update();
-}
-
-int WideGraph::Tol()
-{
-  return ui->widePlot->Tol();
-}
-
-void WideGraph::setFcal(int n)
-{
-  m_fCal=n;
-  ui->widePlot->setFcal(n);
-}
-
 void WideGraph::setPalette(QString palette)
 {
   ui->widePlot->setPalette(palette);
-}
-
-double WideGraph::fGreen()
-{
-  return ui->widePlot->fGreen();
 }
 
 double WideGraph::dialFreq()
