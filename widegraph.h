@@ -19,7 +19,6 @@ public:
   void   setQSOfreq(int n);
   int    QSOfreq();
   int    nStartFreq();
-  float  fSpan();
   void   saveSettings();
   int    Tol();
   void   setTol(int n);

@@ -38,13 +38,12 @@ WideGraph::WideGraph(QWidget *parent) :
   m_dialFreq=settings.value("DialFreqkHz",474.000).toDouble();
   ui->widePlot->m_bCurrent=settings.value("Current",true).toBool();
   ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
-  ui->widePlot->m_bJT9Sync=settings.value("JT9Sync",false).toBool();
   ui->rbCurrent->setChecked(ui->widePlot->m_bCurrent);
   ui->rbCumulative->setChecked(ui->widePlot->m_bCumulative);
   int nbpp=settings.value("BinsPerPixel",1).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
   m_qsoFreq=settings.value("QSOfreq",1010).toInt();
-  ui->widePlot->setFQSO(m_qsoFreq,true);
+  ui->widePlot->setTxFreq(m_qsoFreq,true);
   settings.endGroup();
 }
 
@@ -69,9 +68,8 @@ void WideGraph::saveSettings()
   settings.setValue("DialFreqkHz",m_dialFreq);
   settings.setValue("Current",ui->widePlot->m_bCurrent);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
-  settings.setValue("JT9Sync",ui->widePlot->m_bJT9Sync);
   settings.setValue("BinsPerPixel",ui->widePlot->binsPerPixel());
-  settings.setValue("QSOfreq",ui->widePlot->fQSO());
+  settings.setValue("QSOfreq",ui->widePlot->TxFreq());
   settings.endGroup();
 }
 
@@ -160,17 +158,12 @@ void WideGraph::keyPressEvent(QKeyEvent *e)
 void WideGraph::setQSOfreq(int n)
 {
   m_qsoFreq=n;
-  ui->widePlot->setFQSO(m_qsoFreq,true);
+  ui->widePlot->setTxFreq(m_qsoFreq,true);
 }
 
 int WideGraph::QSOfreq()
 {
-  return ui->widePlot->fQSO();
-}
-
-float WideGraph::fSpan()
-{
-  return ui->widePlot->m_fSpan;
+  return ui->widePlot->TxFreq();
 }
 
 int WideGraph::nStartFreq()
@@ -227,14 +220,12 @@ void WideGraph::on_rbCurrent_clicked()
 {
   ui->widePlot->m_bCurrent=true;
   ui->widePlot->m_bCumulative=false;
-  ui->widePlot->m_bJT9Sync=false;
 }
 
 void WideGraph::on_rbCumulative_clicked()
 {
   ui->widePlot->m_bCurrent=false;
   ui->widePlot->m_bCumulative=true;
-  ui->widePlot->m_bJT9Sync=false;
 }
 
 void WideGraph::setTxFreq(int n)

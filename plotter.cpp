@@ -16,9 +16,8 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   setAttribute(Qt::WA_NoSystemBackground, true);
 
   m_StartFreq = 1000;
-  m_nSpan=1000;                    //Units: Hz
   m_fftBinWidth=1500.0/2048.0;
-  m_fSpan=(float)m_nSpan;
+  m_fSpan=1000.0;
   m_hdivs = HORZ_DIVS;
   m_FreqUnits = 1;
   m_Running = false;
@@ -28,7 +27,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_ScalePixmap = QPixmap(0,0);
   m_OverlayPixmap = QPixmap(0,0);
   m_Size = QSize(0,0);
-  m_fQSO = 1020;
+  m_TxFreq = 1500;
   m_line = 0;
   m_fSample = 12000;
   m_nsps=6912;
@@ -101,7 +100,6 @@ void CPlotter::draw(float swide[])                                //draw()
   QPainter painter2D(&m_2DPixmap);
 
   painter2D.setPen(Qt::green);
-  if(m_bJT9Sync) painter2D.setPen(Qt::red);
 
   QPoint LineBuf[MAX_SCREENSIZE];
   j=0;
@@ -382,35 +380,35 @@ int CPlotter::binsPerPixel()                                // get nbpp
   return m_binsPerPixel;
 }
 
-void CPlotter::setFQSO(int x, bool bf)                       //setFQSO()
+void CPlotter::setTxFreq(int x, bool bf)                       //setTxFreq()
 {
   if(bf) {
-    m_fQSO=x;         // x is freq in Hz
-    m_xClick=XfromFreq(m_fQSO);
+    m_TxFreq=x;         // x is freq in Hz
+    m_xClick=XfromFreq(m_TxFreq);
   } else {
     if(x<0) x=0;      // x is pixel number
     if(x>m_Size.width()) x=m_Size.width();
-    m_fQSO = int(FreqfromX(x)+0.5);
+    m_TxFreq = int(FreqfromX(x)+0.5);
     m_xClick=x;
   }
   DrawOverlay();
   update();
 }
 
-void CPlotter::setFcal(int n)                                  //setFcal()
+void CPlotter::setFcal(int n)                                   //setFcal()
 {
   m_fCal=n;
 }
 
-int CPlotter::fQSO() {return m_fQSO;}                          //get fQSO
+int CPlotter::TxFreq() {return m_TxFreq;}                        //TxFreq()
 
 void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
 {
   int x=event->x();
-  setFQSO(x,false);                               // Wideband waterfall
+  setTxFreq(x,false);                               // Wideband waterfall
   bool ctrl = (event->modifiers() & Qt::ControlModifier);
   if(!ctrl) {
-    setTxFreq(m_fQSO);
+    setTxFreq(m_TxFreq);
     emit freezeDecode1(1);                  //### ???
   }
 }
@@ -419,13 +417,8 @@ void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click
 {
 //  int h = (m_Size.height()-60)/2;
   int x=event->x();
-  setFQSO(x,false);
+  setTxFreq(x,false);
   emit freezeDecode1(2);                  //### ???
-}
-
-void CPlotter::setNSpan(int n)                                  //setNSpan()
-{
-  m_nSpan=n;
 }
 
 void CPlotter::setPalette(QString palette)                      //setPalette()

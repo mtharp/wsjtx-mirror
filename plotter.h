@@ -28,13 +28,11 @@ public:
   QColor  m_ColorTbl[256];
   bool    m_bCurrent;
   bool    m_bCumulative;
-  bool    m_bJT9Sync;
   int     m_plotZero;
   int     m_plotGain;
   float   m_fSpan;
-  qint32  m_nSpan;
   qint32  m_binsPerPixel;
-  qint32  m_fQSO;
+  qint32  m_TxFreq;
   qint32  m_fCal;
   qint32  m_w;
 
@@ -47,17 +45,16 @@ public:
   void SetStartFreq(quint64 f);
   qint64 startFreq();
   int  plotWidth();
-  void setNSpan(int n);
   void UpdateOverlay();
   void setDataFromDisk(bool b);
   void setTol(int n);
   int  Tol();
   void setBinsPerPixel(int n);
   int  binsPerPixel();
-  void setFQSO(int n, bool bf);
+  void setTxFreq(int n, bool bf);
   void setFcal(int n);
   void DrawOverlay();
-  int  fQSO();
+  int  TxFreq();
   void setPalette(QString palette);
   void setFsample(int n);
   void setNsps(int ntrperiod, int nsps);
