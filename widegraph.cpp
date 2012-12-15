@@ -166,11 +166,6 @@ int WideGraph::QSOfreq()
   return ui->widePlot->TxFreq();
 }
 
-int WideGraph::nStartFreq()
-{
-  return ui->widePlot->startFreq();
-}
-
 void WideGraph::wideFreezeDecode(int n)
 {
   emit freezeDecode2(n);

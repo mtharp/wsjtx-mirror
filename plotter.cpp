@@ -341,18 +341,6 @@ int CPlotter::getPlotGain()                               //getPlotGain()
   return m_plotGain;
 }
 
-void CPlotter::SetStartFreq(quint64 f)                    //SetStartFreq()
-{
-  m_StartFreq=f;
-//    resizeEvent(NULL);
-  DrawOverlay();
-}
-
-qint64 CPlotter::startFreq()                              //startFreq()
-{
-  return m_StartFreq;
-}
-
 int CPlotter::plotWidth(){return m_WaterfallPixmap.width();}
 void CPlotter::UpdateOverlay() {DrawOverlay();}
 void CPlotter::setDataFromDisk(bool b) {m_dataFromDisk=b;}
@@ -415,7 +403,6 @@ void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
 
 void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click
 {
-//  int h = (m_Size.height()-60)/2;
   int x=event->x();
   setTxFreq(x,false);
   emit freezeDecode1(2);                  //### ???

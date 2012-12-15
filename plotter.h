@@ -42,8 +42,6 @@ public:
   int  getPlotZero();
   void setPlotGain(int plotGain);
   int  getPlotGain();
-  void SetStartFreq(quint64 f);
-  qint64 startFreq();
   int  plotWidth();
   void UpdateOverlay();
   void setDataFromDisk(bool b);

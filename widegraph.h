@@ -18,7 +18,6 @@ public:
                    int ndiskdata, uchar lstrong[]);
   void   setQSOfreq(int n);
   int    QSOfreq();
-  int    nStartFreq();
   void   saveSettings();
   int    Tol();
   void   setTol(int n);
