@@ -102,5 +102,6 @@ program wspr0
      go to 10
   endif
   ierr=soundexit()
+  call wqdecode(0,'SaveHashTable         ',0)
 
 999 end program wspr0

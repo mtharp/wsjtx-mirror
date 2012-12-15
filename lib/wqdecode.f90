@@ -14,8 +14,23 @@ subroutine wqdecode(data0,message,ntype)
 ! May want to have a timeout (say, one hour?) on calls fetched 
 ! from the hash table.
 
+  if(message.eq.'SaveHashTable         ') then
+     open(15,file='hashtable.txt',status='unknown')
+     do i=0,N15-1
+        if(dcall(i).ne.'            ') write(15,1000) i,dcall(i)
+1000    format(i5,2x,a12)
+     enddo
+     return
+  endif
+
   if(first) then
      dcall='            '
+     open(15,file='hashtable.txt',status='unknown')
+     do i=0,N15-1
+        read(15,1000,end=10) ih,callsign
+        dcall(ih)=callsign
+     enddo
+10   close(15)
      first=.false.
   endif
 
