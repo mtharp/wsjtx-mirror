@@ -35,7 +35,7 @@ QMAKE_EXTRA_COMPILERS += gfortran
 SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     soundin.cpp soundout.cpp devsetup.cpp \
     widegraph.cpp getfile.cpp \
-    getdev.cpp
+    getdev.cpp displaytext.cpp
 
 win32 {
 SOURCES +=
@@ -43,7 +43,7 @@ SOURCES +=
 
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h getfile.h \
-            commons.h sleep.h
+            commons.h sleep.h displaytext.h
 
 DEFINES += __cplusplus
 
