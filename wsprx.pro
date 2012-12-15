@@ -9,7 +9,7 @@ CONFIG   += qwt thread
 #CONFIG   += console
 
 TARGET = wsprx
-VERSION = 0.2
+VERSION = 4.0.0
 TEMPLATE = app
 
 win32 {
@@ -35,7 +35,7 @@ QMAKE_EXTRA_COMPILERS += gfortran
 SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     soundin.cpp soundout.cpp devsetup.cpp \
     widegraph.cpp getfile.cpp \
-    displaytext.cpp getdev.cpp
+    getdev.cpp
 
 win32 {
 SOURCES +=
@@ -43,7 +43,7 @@ SOURCES +=
 
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h getfile.h \
-            commons.h sleep.h displaytext.h
+            commons.h sleep.h
 
 DEFINES += __cplusplus
 
