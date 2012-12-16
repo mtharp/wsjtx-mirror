@@ -889,3 +889,84 @@ void MainWindow::onNetworkReply(QNetworkReply* reply)
   }
   reply->deleteLater();
 }
+
+/*
+//------------------------------------------------------------- //guiUpdate2()
+void MainWindow::guiUpdate2()
+{
+  int nseq=tseq();
+  if(m_rxdone) {
+    m_receiving=false;
+    m_rxdone=false;
+    //thisfile=
+    if((m_rxnormal and ncal==0) or (!m_rxnormal and ncal==2) or
+       (ndiskdat==1)) {
+      //decode()
+    }
+  }
+
+  if(m_txdone) {
+    m_transmitting=false;
+    m_txdone=false;
+    ntr=0;
+  }
+
+  if(nseq >= nseqdone and ntune==0) {
+    m_transmitting=false;
+    m_receiving=false;
+    ntr=0;
+  }
+
+  if(pctx<1) ntune=0;
+
+  if(ntune!=0 and !m_transmitting and !m_receiving and pctx>=1) {
+    m_transmitting=true;
+    //starttx()
+  }
+
+  if(ncal==1 and !m_transmitting and !m_receiving) {
+    m_receiving=true;
+    //thisfile=
+    m_rxnormal=false;
+    ndiskdat=0;
+    //startrx()
+  }
+
+  if(nseq!=0 or m_transmitting or m_receiving or m_idle) {
+    //chklevel()
+    //if(iqmode) ...
+    return;
+  }
+
+  //outfile=...
+  if(m_hopping) {
+    //...
+  } else {
+    if(pctx==0) nrx=1;
+  }
+
+  if(m_transmitting or m_receiving) return;
+
+  if(pctx>0 and (m_txnext or (nrx==0 and ntr!=-1))) {
+    m_transmitting=true;              //Start a normal Tx sequence
+    x=ran();
+    if(pctx<50) {
+      nrx=int(rxavg + 3.0*(x-0.5) + 0.5);
+    } else {
+      nrx=0;
+      if(x<rxavg) nrx=1;
+    }
+    message=MyCall + MyGrid + "ndbm";
+    ntr=-1;
+    m_txdone=false;
+    m_txnext=false;
+    //starttx()
+  } else {
+    m_receiving=true;                 //Start a normal Rx sequence
+    ntr=1;
+    m_rxnormal=true;
+    //startrx()
+    nrx=nrx-1;
+  }
+}
+*/
