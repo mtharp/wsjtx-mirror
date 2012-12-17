@@ -30,7 +30,6 @@ public slots:
   void diskWriteFinished();
   void guiUpdate();
   void guiUpdate2();
-  void oneSec();
   void readFromStdout();
   void readFromStderr();
   void jt9_error();
@@ -158,6 +157,8 @@ private:
     void createStatusBar();
     void updateStatusBar();
     void msgBox(QString t);
+    void oneSec();
+    double tsec();
 };
 
 extern void getfile(QString fname, int ntrperiod);

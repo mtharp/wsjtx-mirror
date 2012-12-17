@@ -118,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_mode="WSPR-2";
   m_TRperiod=120;
   m_inGain=0;
+  m_hopping=false;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -486,7 +487,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
   soundInThread.setReceiving(m_receiving);
   QString fname;
   fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
-                                       "WSJT Files (*.wav)");
+                                       "WSPR Files (*.wav)");
   if(fname != "") {
     m_path=fname;
     int i;
@@ -890,11 +891,15 @@ void MainWindow::oneSec() {
 //------------------------------------------------------------- //guiUpdate2()
 void MainWindow::guiUpdate2()
 {
-//  m_nseq=tseq();
+  m_nseq=int(tsec()) % m_TRperiod;
+  m_rxavg=1.0;
+  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;
+
   if(m_rxdone) {
     m_receiving=false;
     m_rxdone=false;
-    //thisfile=
+    //thisfile= yymmdd + m_rxtime + ".wav"
+    //if(m_diskData) thisfile=file2
     if((m_rxnormal and m_ncal==0) or (!m_rxnormal and m_ncal==2) or
        (m_diskData==1)) {
       //decode()
@@ -916,13 +921,16 @@ void MainWindow::guiUpdate2()
   if(m_pctx<1) m_ntune=0;
 
   if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
+    //Make a test transmission of duration pctx.
+    //m_nsectx=nsec
     m_transmitting=true;
     //starttx()
   }
 
   if(m_ncal==1 and !m_transmitting and !m_receiving) {
+    //Execute one Rx sequence (length??)
     m_receiving=true;
-    //thisfile=
+    //m_rxtime=hhmm
     m_rxnormal=false;
     m_diskData=0;
     //startrx()
@@ -946,7 +954,7 @@ void MainWindow::guiUpdate2()
   if(m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
     m_transmitting=true;              //Start a normal Tx sequence
     float x=0.5;
-//    x=ran();
+//    x=ran();                                //###
     if(m_pctx<50) {
       m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
     } else {
@@ -954,15 +962,24 @@ void MainWindow::guiUpdate2()
       if(x<m_rxavg) m_nrx=1;
     }
 //    message=MyCall + MyGrid + "ndbm";
+    //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
     m_ntr=-1;
+    //m_nsectx=nsec
     m_txdone=false;
     m_txnext=false;
     //starttx()
   } else {
     m_receiving=true;                 //Start a normal Rx sequence
+    //m_rxtime=hhmm
     m_ntr=1;
     m_rxnormal=true;
     //startrx()
     m_nrx=m_nrx-1;
   }
+}
+
+double MainWindow::tsec()
+{
+  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
+  return 0.001*ms;
 }
