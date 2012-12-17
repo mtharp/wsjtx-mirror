@@ -36,7 +36,7 @@ typedef struct
   int kin;          //Parameters sent to/from the portaudio callback function
   int ncall;
   bool bzero;
-  bool monitoring;
+  bool receiving;
 } paUserData;
 
 //--------------------------------------------------------------- a2dCallback
@@ -68,7 +68,7 @@ extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
 
   nbytes=2*framesToProcess;        //Bytes per frame
   k=udata->kin;
-  if(udata->monitoring) {
+  if(udata->receiving) {
     memcpy(&jt9com_.d2[k],inputBuffer,nbytes);      //Copy all samples to d2
   }
   udata->kin += framesToProcess;
@@ -90,7 +90,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   udata.kin=0;                              //Buffer pointer
   udata.ncall=0;                            //Number of callbacks
   udata.bzero=false;                        //Flag to request reset of kin
-  udata.monitoring=m_monitoring;
+  udata.receiving=m_receiving;
 
   inParam.device=m_nDevIn;                  //### Input Device Number ###
   inParam.channelCount=1;                   //Number of analog channels
@@ -133,7 +133,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   while (!qe) {
     qe = quitExecution;
     if (qe) break;
-    udata.monitoring=m_monitoring;
+    udata.receiving=m_receiving;
     qint64 ms = QDateTime::currentMSecsSinceEpoch();
     m_SamFacIn=1.0;
     if(udata.ncall>100) {
@@ -144,13 +144,13 @@ void SoundInThread::run()                           //SoundInThread::run()
     ntr = nsec % m_TRperiod;
 
 // Reset buffer pointer and symbol number at start of minute
-    if(ntr < ntr0 or !m_monitoring or m_nsps!=nsps0) {
+    if(ntr < ntr0 or !m_receiving or m_nsps!=nsps0) {
       nstep0=0;
       nsps0=m_nsps;
       udata.bzero=true;
     }
     k=udata.kin;
-    if(m_monitoring) {
+    if(m_receiving) {
       int kstep=m_nsps/2;
 //      m_step=k/kstep;
       m_step=(k-1)/kstep;
@@ -183,9 +183,9 @@ void SoundInThread::quit()                                       //quit()
   quitExecution = true;
 }
 
-void SoundInThread::setMonitoring(bool b)                    //setMonitoring()
+void SoundInThread::setReceiving(bool b)                    //setReceiving()
 {
-  m_monitoring = b;
+  m_receiving = b;
 }
 
 void SoundInThread::setPeriod(int ntrperiod, int nsps)

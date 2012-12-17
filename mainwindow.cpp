@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget *parent) :
   soundInThread.start(QThread::HighestPriority);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
-  soundInThread.setMonitoring(m_monitoring);
+  soundInThread.setReceiving(m_receiving);
   m_diskData=false;
 
   if(ui->actionLinrad->isChecked()) on_actionLinrad_triggered();
@@ -288,7 +288,7 @@ void MainWindow::dataSink(int k)
   t.sprintf(" Receiving: %5.1f dB ",px);
   lab1->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
-  if(m_monitoring || m_diskData) {
+  if(m_receiving || m_diskData) {
     g_pWideGraph->dataSink2(s,red,df3,ihsym,m_diskData,lstrong);
   }
 
@@ -482,8 +482,8 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 
 void MainWindow::on_actionOpen_triggered()                     //Open File
 {
-  m_monitoring=false;
-  soundInThread.setMonitoring(m_monitoring);
+  m_receiving=false;
+  soundInThread.setReceiving(m_receiving);
   QString fname;
   fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
                                        "WSJT Files (*.wav)");
@@ -655,159 +655,7 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
   ui->decodedTextBrowser->clear();
 }
 
-//------------------------------------------------------------- //guiUpdate()
-void MainWindow::guiUpdate()
-{
-  static int iptt0=0;
-  static int iptt=0;
-  static bool btxok0=false;
-  static int nc0=1;
-  static int nc1=1;
-  static char message[29];
-  static char msgsent[29];
-  static int nsendingsh=0;
-  int khsym=0;
 
-  double tx1=0.0;
-//  double tx2=m_TRperiod;
-  double tx2=1.0 + 85.0*m_nsps/12000.0;
-
-  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
-  int nsec=ms/1000;
-  double tsec=0.001*ms;
-  double t2p=fmod(tsec,2*m_TRperiod);
-  bool bTxTime = (t2p >= tx1) && (t2p < tx2);
-
-  if(m_auto) {
-
-    QFile f("txboth");
-    if(f.exists() and fmod(tsec,m_TRperiod)<1.0 + 85.0*m_nsps/12000.0)
-      bTxTime=true;
-
-    if(bTxTime and iptt==0 and !btxMute) {
-      int itx=1;
-      ptt(m_pttPort,itx,&iptt);       // Raise PTT
-      if(!soundOutThread.isRunning()) {
-        double snr=99.0;
-        soundOutThread.setTxSNR(snr);
-        soundOutThread.start(QThread::HighPriority);
-      }
-    }
-    if(!bTxTime || btxMute) {
-      btxok=false;
-    }
-  }
-
-// Calculate Tx waveform when needed
-  if((iptt==1 && iptt0==0) || m_restart) {
-    QByteArray ba;
-
-//    ba2msg(ba,message);
-//    ba2msg(ba,msgsent);
-//    int len1=22;
-//    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
-    msgsent[22]=0;
-    lab5->setText("Last Tx:  " + QString::fromAscii(msgsent));
-    if(m_restart) {
-      QFile f("wsprx_tx.log");
-      f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
-      QTextStream out(&f);
-      out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
-          << "  Tx message:  " << QString::fromAscii(msgsent) << endl;
-      f.close();
-
-    }
-
-    m_restart=false;
-  }
-
-// If PTT was just raised, start a countdown for raising TxOK:
-  if(iptt==1 && iptt0==0) nc1=-9;    // TxDelay = 0.8 s
-  if(nc1 <= 0) nc1++;
-  if(nc1 == 0) {
-    ui->xThermo->setValue(0.0);   //Set Thermo to zero
-    m_monitoring=false;
-    soundInThread.setMonitoring(false);
-    btxok=true;
-    m_transmitting=true;
-
-    QFile f("wsprx_tx.log");
-    f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
-    QTextStream out(&f);
-    out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
-        << "  Tx message:  " << QString::fromAscii(msgsent) << endl;
-    f.close();
-  }
-
-// If btxok was just lowered, start a countdown for lowering PTT
-  if(!btxok && btxok0 && iptt==1) nc0=-11;  //RxDelay = 1.0 s
-  if(nc0 <= 0) {
-    nc0++;
-  }
-  if(nc0 == 0) {
-    int itx=0;
-    ptt(m_pttPort,itx,&iptt);       // Lower PTT
-    if(!btxMute) soundOutThread.quitExecution=true;
-    m_transmitting=false;
-    if(m_auto) {
-      m_monitoring=true;
-      soundInThread.setMonitoring(m_monitoring);
-    }
-  }
-
-  if(iptt == 0 && !btxok) {
-    // sending=""
-    // nsendingsh=0
-  }
-
-  if(m_monitoring) {
-//    ui->monitorButton->setStyleSheet(m_pbmonitor_style);
-  } else {
-//    ui->monitorButton->setStyleSheet("");
-  }
-
-  if(m_startAnother) {
-    m_startAnother=false;
-    on_actionOpen_next_in_directory_triggered();
-  }
-
-  if(nsec != m_sec0) {                                     //Once per second
-    QDateTime t = QDateTime::currentDateTimeUtc();
-    if(m_transmitting) {
-      if(nsendingsh==1) {
-        lab1->setStyleSheet("QLabel{background-color: #66ffff}");
-      } else if(nsendingsh==-1) {
-        lab1->setStyleSheet("QLabel{background-color: #ffccff}");
-      } else {
-        lab1->setStyleSheet("QLabel{background-color: #ffff33}");
-      }
-      char s[37];
-      sprintf(s,"Tx: %s",msgsent);
-      lab1->setText(s);
-    } else if(m_monitoring) {
-      lab1->setStyleSheet("QLabel{background-color: #00ff00}");
-//      lab1->setText("Receiving ");
-    } else if (!m_diskData) {
-      lab1->setStyleSheet("");
-      lab1->setText("");
-    }
-
-    m_setftx=0;
-    QString utc = t.date().toString("yyyy MMM dd") + " \n " +
-            t.time().toString();
-    ui->labUTC->setText(utc);
-    if(!m_monitoring and !m_diskData) {
-      ui->xThermo->setValue(0.0);
-    }
-    m_hsym0=khsym;
-    m_sec0=nsec;
-  }
-  iptt0=iptt;
-  btxok0=btxok;
-}
-
-
-                                                       //doubleClickOnCall
 void MainWindow::on_actionWSPR_2_triggered()
 {
   m_mode="WSPR-2";
@@ -890,17 +738,165 @@ void MainWindow::onNetworkReply(QNetworkReply* reply)
   reply->deleteLater();
 }
 
-/*
+//------------------------------------------------------------- //guiUpdate()
+void MainWindow::guiUpdate()
+{
+  static int iptt0=0;
+  static int iptt=0;
+  static bool btxok0=false;
+  static int nc0=1;
+  static int nc1=1;
+  static char message[29];
+  static char msgsent[29];
+  static int nsendingsh=0;
+  int khsym=0;
+
+  double tx1=0.0;
+//  double tx2=m_TRperiod;
+  double tx2=1.0 + 85.0*m_nsps/12000.0;
+
+  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
+  int nsec=ms/1000;
+  double tsec=0.001*ms;
+  double t2p=fmod(tsec,2*m_TRperiod);
+  bool bTxTime = (t2p >= tx1) && (t2p < tx2);
+
+  if(m_auto) {
+
+    QFile f("txboth");
+    if(f.exists() and fmod(tsec,m_TRperiod)<1.0 + 85.0*m_nsps/12000.0)
+      bTxTime=true;
+
+    if(bTxTime and iptt==0 and !btxMute) {
+      int itx=1;
+      ptt(m_pttPort,itx,&iptt);       // Raise PTT
+      if(!soundOutThread.isRunning()) {
+        double snr=99.0;
+        soundOutThread.setTxSNR(snr);
+        soundOutThread.start(QThread::HighPriority);
+      }
+    }
+    if(!bTxTime || btxMute) {
+      btxok=false;
+    }
+  }
+
+// Calculate Tx waveform when needed
+  if((iptt==1 && iptt0==0) || m_restart) {
+    QByteArray ba;
+
+//    ba2msg(ba,message);
+//    ba2msg(ba,msgsent);
+//    int len1=22;
+//    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
+    msgsent[22]=0;
+    lab5->setText("Last Tx:  " + QString::fromAscii(msgsent));
+    if(m_restart) {
+      QFile f("wsprx_tx.log");
+      f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
+      QTextStream out(&f);
+      out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
+          << "  Tx message:  " << QString::fromAscii(msgsent) << endl;
+      f.close();
+
+    }
+
+    m_restart=false;
+  }
+
+// If PTT was just raised, start a countdown for raising TxOK:
+  if(iptt==1 && iptt0==0) nc1=-9;    // TxDelay = 0.8 s
+  if(nc1 <= 0) nc1++;
+  if(nc1 == 0) {
+    ui->xThermo->setValue(0.0);   //Set Thermo to zero
+    m_receiving=false;
+    soundInThread.setReceiving(false);
+    btxok=true;
+    m_transmitting=true;
+
+    QFile f("wsprx_tx.log");
+    f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
+    QTextStream out(&f);
+    out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
+        << "  Tx message:  " << QString::fromAscii(msgsent) << endl;
+    f.close();
+  }
+
+// If btxok was just lowered, start a countdown for lowering PTT
+  if(!btxok && btxok0 && iptt==1) nc0=-11;  //RxDelay = 1.0 s
+  if(nc0 <= 0) {
+    nc0++;
+  }
+  if(nc0 == 0) {
+    int itx=0;
+    ptt(m_pttPort,itx,&iptt);       // Lower PTT
+    if(!btxMute) soundOutThread.quitExecution=true;
+    m_transmitting=false;
+    if(m_auto) {
+      m_receiving=true;
+      soundInThread.setReceiving(m_receiving);
+    }
+  }
+
+  if(iptt == 0 && !btxok) {
+    // sending=""
+    // nsendingsh=0
+  }
+
+  if(m_receiving) {
+//    ui->monitorButton->setStyleSheet(m_pbmonitor_style);
+  } else {
+//    ui->monitorButton->setStyleSheet("");
+  }
+
+  if(m_startAnother) {
+    m_startAnother=false;
+    on_actionOpen_next_in_directory_triggered();
+  }
+
+  if(nsec != m_sec0) {                                     //Once per second
+    oneSec();
+    if(m_transmitting) {
+      lab1->setStyleSheet("QLabel{background-color: #ffff33}");
+      char s[37];
+      sprintf(s,"Tx: %s",msgsent);
+      lab1->setText(s);
+    } else if(m_receiving) {
+      lab1->setStyleSheet("QLabel{background-color: #00ff00}");
+  //      lab1->setText("Receiving ");
+    } else if (!m_diskData) {
+      lab1->setStyleSheet("");
+      lab1->setText("");
+    }
+    m_hsym0=khsym;
+    m_sec0=nsec;
+  }
+  iptt0=iptt;
+  btxok0=btxok;
+}
+
+void MainWindow::oneSec() {
+  QDateTime t = QDateTime::currentDateTimeUtc();
+
+  m_setftx=0;
+  QString utc = t.date().toString("yyyy MMM dd") + " \n " +
+          t.time().toString();
+  ui->labUTC->setText(utc);
+  if(!m_receiving and !m_diskData) {
+    ui->xThermo->setValue(0.0);
+  }
+}
+
 //------------------------------------------------------------- //guiUpdate2()
 void MainWindow::guiUpdate2()
 {
-  int nseq=tseq();
+//  m_nseq=tseq();
   if(m_rxdone) {
     m_receiving=false;
     m_rxdone=false;
     //thisfile=
-    if((m_rxnormal and ncal==0) or (!m_rxnormal and ncal==2) or
-       (ndiskdat==1)) {
+    if((m_rxnormal and m_ncal==0) or (!m_rxnormal and m_ncal==2) or
+       (m_diskData==1)) {
       //decode()
     }
   }
@@ -908,31 +904,31 @@ void MainWindow::guiUpdate2()
   if(m_txdone) {
     m_transmitting=false;
     m_txdone=false;
-    ntr=0;
+    m_ntr=0;
   }
 
-  if(nseq >= nseqdone and ntune==0) {
+  if(m_nseq >= m_nseqdone and m_ntune==0) {
     m_transmitting=false;
     m_receiving=false;
-    ntr=0;
+    m_ntr=0;
   }
 
-  if(pctx<1) ntune=0;
+  if(m_pctx<1) m_ntune=0;
 
-  if(ntune!=0 and !m_transmitting and !m_receiving and pctx>=1) {
+  if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
     m_transmitting=true;
     //starttx()
   }
 
-  if(ncal==1 and !m_transmitting and !m_receiving) {
+  if(m_ncal==1 and !m_transmitting and !m_receiving) {
     m_receiving=true;
     //thisfile=
     m_rxnormal=false;
-    ndiskdat=0;
+    m_diskData=0;
     //startrx()
   }
 
-  if(nseq!=0 or m_transmitting or m_receiving or m_idle) {
+  if(m_nseq!=0 or m_transmitting or m_receiving or m_idle) {
     //chklevel()
     //if(iqmode) ...
     return;
@@ -942,31 +938,31 @@ void MainWindow::guiUpdate2()
   if(m_hopping) {
     //...
   } else {
-    if(pctx==0) nrx=1;
+    if(m_pctx==0) m_nrx=1;
   }
 
   if(m_transmitting or m_receiving) return;
 
-  if(pctx>0 and (m_txnext or (nrx==0 and ntr!=-1))) {
+  if(m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
     m_transmitting=true;              //Start a normal Tx sequence
-    x=ran();
-    if(pctx<50) {
-      nrx=int(rxavg + 3.0*(x-0.5) + 0.5);
+    float x=0.5;
+//    x=ran();
+    if(m_pctx<50) {
+      m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
     } else {
-      nrx=0;
-      if(x<rxavg) nrx=1;
+      m_nrx=0;
+      if(x<m_rxavg) m_nrx=1;
     }
-    message=MyCall + MyGrid + "ndbm";
-    ntr=-1;
+//    message=MyCall + MyGrid + "ndbm";
+    m_ntr=-1;
     m_txdone=false;
     m_txnext=false;
     //starttx()
   } else {
     m_receiving=true;                 //Start a normal Rx sequence
-    ntr=1;
+    m_ntr=1;
     m_rxnormal=true;
     //startrx()
-    nrx=nrx-1;
+    m_nrx=m_nrx-1;
   }
 }
-*/

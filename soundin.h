@@ -25,7 +25,7 @@ public:
   }
 
   void setInputDevice(qint32 n);
-  void setMonitoring(bool b);
+  void setReceiving(bool b);
   void setPeriod(int ntrperiod, int nsps);
   int  mstep();
   double samFacIn();
@@ -45,6 +45,6 @@ private:
   qint32 m_TRperiod;
   qint32 m_TRperiod0;
   qint32 m_nsps;
-  bool   m_monitoring;
+  bool   m_receiving;
 };
 #endif // SOUNDIN_H

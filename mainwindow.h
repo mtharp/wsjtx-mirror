@@ -29,6 +29,8 @@ public slots:
   void diskDat();
   void diskWriteFinished();
   void guiUpdate();
+  void guiUpdate2();
+  void oneSec();
   void readFromStdout();
   void readFromStderr();
   void jt9_error();
@@ -66,6 +68,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    float m_rxavg;
     qint32  m_nDevIn;
     qint32  m_nDevOut;
     qint32  m_idInt;
@@ -86,8 +90,14 @@ private:
     qint32  m_hsymStop;
     qint32  m_inGain;
     qint32  m_nsave;
+    qint32  m_nseq;
+    qint32  m_ncal;
+    qint32  m_ntr;
+    qint32  m_nseqdone;
+    qint32  m_ntune;
+    qint32  m_pctx;
 
-    bool    m_monitoring;
+    bool    m_receiving;
     bool    m_transmitting;
     bool    m_diskData;
     bool    m_loopall;
@@ -97,6 +107,12 @@ private:
     bool    m_saveDecoded;
     bool    m_saveAll;
     bool    m_bdecoded;
+    bool    m_rxdone;
+    bool    m_rxnormal;
+    bool    m_idle;
+    bool    m_txdone;
+    bool    m_txnext;
+    bool    m_hopping;
 
     char    m_decoded[80];
 
