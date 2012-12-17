@@ -286,6 +286,7 @@ void MainWindow::dataSink(int k)
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
+  qDebug() << "B" << t;
   lab1->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_monitoring || m_diskData) {
@@ -772,6 +773,7 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                     //Once per second
+    qDebug() << "A" << m_transmitting << m_monitoring << nsec;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_transmitting) {
       if(nsendingsh==1) {
@@ -806,8 +808,6 @@ void MainWindow::guiUpdate()
   btxok0=btxok;
 }
 
-
-                                                       //doubleClickOnCall
 void MainWindow::on_actionWSPR_2_triggered()
 {
   m_mode="WSPR-2";
