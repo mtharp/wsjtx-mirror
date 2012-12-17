@@ -28,7 +28,7 @@ public slots:
   void dataSink(int k);
   void diskDat();
   void diskWriteFinished();
-  void guiUpdate();
+//  void guiUpdate();
   void guiUpdate2();
   void readFromStdout();
   void readFromStderr();
@@ -64,6 +64,10 @@ private slots:
   void on_inGain_valueChanged(int n);
   void on_TxNextButton_clicked();
   void onNetworkReply(QNetworkReply* reply);
+  void on_sbPctTx_valueChanged(int arg1);
+  void on_cbIdle_toggled(bool b);
+  void on_cbTxMute_toggled(bool b);
+  void startTx2();
 
 private:
     Ui::MainWindow *ui;
@@ -95,6 +99,7 @@ private:
     qint32  m_nseqdone;
     qint32  m_ntune;
     qint32  m_pctx;
+    qint32  m_iptt;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -112,6 +117,7 @@ private:
     bool    m_txdone;
     bool    m_txnext;
     bool    m_hopping;
+    bool    m_TxOK;
 
     char    m_decoded[80];
 
@@ -138,6 +144,8 @@ private:
     QProcess proc_jt9;
     QStringList m_decodedList;
 
+    QTimer* pttTimer;
+
     QString m_path;
     QString m_myCall;
     QString m_myGrid;
@@ -158,7 +166,11 @@ private:
     void updateStatusBar();
     void msgBox(QString t);
     void oneSec();
+    void startRx();
+    void startTx();
+    void stopTx();
     double tsec();
+
 };
 
 extern void getfile(QString fname, int ntrperiod);

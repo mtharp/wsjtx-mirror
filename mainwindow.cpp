@@ -93,8 +93,11 @@ MainWindow::MainWindow(QWidget *parent) :
                    this, SLOT(onNetworkReply(QNetworkReply*)));
 
   QTimer *guiTimer = new QTimer(this);
-  connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
+//  connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
+  connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate2()));
   guiTimer->start(100);                            //Don't change the 100 ms!
+  pttTimer = new QTimer(this);
+
   m_auto=false;
   m_waterfallAvg = 1;
   btxMute=false;
@@ -119,6 +122,11 @@ MainWindow::MainWindow(QWidget *parent) :
   m_TRperiod=120;
   m_inGain=0;
   m_hopping=false;
+  m_rxdone=false;
+  m_txdone=false;
+  m_ntune=0;
+  m_idle=false;
+  m_TxOK=false;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -145,6 +153,7 @@ MainWindow::MainWindow(QWidget *parent) :
   soundInThread.start(QThread::HighestPriority);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
+  m_receiving=true;
   soundInThread.setReceiving(m_receiving);
   m_diskData=false;
 
@@ -317,6 +326,7 @@ void MainWindow::dataSink(int k)
     QString cmnd='"' + m_appDir + '"' + "/wspr0 D 0.474200 " + m_fname + '"';
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
+    m_rxdone=true;
     proc_jt9.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
@@ -663,6 +673,7 @@ void MainWindow::on_actionWSPR_2_triggered()
   m_TRperiod=120;
   m_nsps=15360;
   m_hsymStop=178;
+  m_nseqdone=115;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
@@ -677,6 +688,7 @@ void MainWindow::on_actionWSPR_15_triggered()
   m_TRperiod=900;
   m_nsps=82944;
   m_hsymStop=171;
+  m_nseqdone=895;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
@@ -691,6 +703,7 @@ void MainWindow::on_actionWSPR_30_triggered()
   m_TRperiod=1800;
   m_nsps=252000;
   m_hsymStop=167;
+  m_nseqdone=1795;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
@@ -716,19 +729,19 @@ void MainWindow::on_TxNextButton_clicked()
 
 void MainWindow::onNetworkReply(QNetworkReply* reply)
 {
-  qDebug() << "B" << reply->error();
+  qDebug() << "Network Reply:" << reply->error();
   QString replyString;
   if(reply->error() == QNetworkReply::NoError) {
     int httpstatuscode = reply->attribute(
           QNetworkRequest::HttpStatusCodeAttribute).toUInt();
-    qDebug() << "C" << httpstatuscode;
+    qDebug() << "http status code:" << httpstatuscode;
     switch(httpstatuscode)
     {
     case 0:                                   //RESPONSE_OK:
       if (reply->isReadable()) {
   //Assuming this is a human readable file replyString now contains the file
         replyString = QString::fromUtf8(reply->readAll().data());
-        qDebug() << "D" << replyString;
+        qDebug() << "Network reply string:" << replyString;
       }
       break;
     default:
@@ -739,6 +752,7 @@ void MainWindow::onNetworkReply(QNetworkReply* reply)
   reply->deleteLater();
 }
 
+/*
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
@@ -875,6 +889,7 @@ void MainWindow::guiUpdate()
   iptt0=iptt;
   btxok0=btxok;
 }
+*/
 
 void MainWindow::oneSec() {
   QDateTime t = QDateTime::currentDateTimeUtc();
@@ -883,20 +898,28 @@ void MainWindow::oneSec() {
   QString utc = t.date().toString("yyyy MMM dd") + " \n " +
           t.time().toString();
   ui->labUTC->setText(utc);
+//  qDebug() << "C" << m_receiving << m_diskData << t.time().toString();
   if(!m_receiving and !m_diskData) {
-    ui->xThermo->setValue(0.0);
+//    ui->xThermo->setValue(0.0);
   }
 }
 
 //------------------------------------------------------------- //guiUpdate2()
 void MainWindow::guiUpdate2()
 {
-  m_nseq=int(tsec()) % m_TRperiod;
+  int nsec=int(tsec());
+  m_nseq = nsec % m_TRperiod;
+  if(nsec != m_sec0) {
+    oneSec();
+    m_sec0=nsec;
+  }
   m_rxavg=1.0;
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;
 
   if(m_rxdone) {
+    qDebug() << "RxDone" << nsec << m_nseq;
     m_receiving=false;
+    soundInThread.setReceiving(m_receiving);
     m_rxdone=false;
     //thisfile= yymmdd + m_rxtime + ".wav"
     //if(m_diskData) thisfile=file2
@@ -907,20 +930,29 @@ void MainWindow::guiUpdate2()
   }
 
   if(m_txdone) {
+    qDebug() << "TxDone" << nsec << m_nseq;
     m_transmitting=false;
     m_txdone=false;
     m_ntr=0;
   }
 
   if(m_nseq >= m_nseqdone and m_ntune==0) {
+//    if(m_nseq==m_nseqdone) qDebug() << "Seq Done" << m_nseq << m_nseqdone;
+    if(m_transmitting) {
+      stopTx();
+      m_txdone=true;
+    }
+    if(m_receiving) m_rxdone=true;
     m_transmitting=false;
     m_receiving=false;
+    soundInThread.setReceiving(m_receiving);
     m_ntr=0;
   }
 
   if(m_pctx<1) m_ntune=0;
 
   if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
+    qDebug() << "Tune" << m_ntune << m_pctx;
     //Make a test transmission of duration pctx.
     //m_nsectx=nsec
     m_transmitting=true;
@@ -928,33 +960,35 @@ void MainWindow::guiUpdate2()
   }
 
   if(m_ncal==1 and !m_transmitting and !m_receiving) {
+    qDebug() << "Cal";
     //Execute one Rx sequence (length??)
     m_receiving=true;
+    soundInThread.setReceiving(m_receiving);
     //m_rxtime=hhmm
     m_rxnormal=false;
     m_diskData=0;
-    //startrx()
+    startRx();
   }
 
   if(m_nseq!=0 or m_transmitting or m_receiving or m_idle) {
+//    qDebug() << "ChkLevel";
     //chklevel()
     //if(iqmode) ...
     return;
   }
 
-  //outfile=...
+  //file2= yymmdd + hhmm + ".wav"
   if(m_hopping) {
+    qDebug() << "Hopping";
     //...
   } else {
     if(m_pctx==0) m_nrx=1;
   }
 
-  if(m_transmitting or m_receiving) return;
-
-  if(m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
+//  qDebug() << "A" << m_pctx << m_txnext << m_nrx << m_ntr;
+  if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
     m_transmitting=true;              //Start a normal Tx sequence
-    float x=0.5;
-//    x=ran();                                //###
+    float x=(float)rand()/RAND_MAX;
     if(m_pctx<50) {
       m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
     } else {
@@ -964,16 +998,19 @@ void MainWindow::guiUpdate2()
 //    message=MyCall + MyGrid + "ndbm";
     //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
     m_ntr=-1;
+    qDebug() << "Start transmitting" << x << m_rxavg << m_nrx << m_ntr;
     //m_nsectx=nsec
     m_txdone=false;
     m_txnext=false;
-    //starttx()
+    startTx();
   } else {
     m_receiving=true;                 //Start a normal Rx sequence
+    soundInThread.setReceiving(m_receiving);
     //m_rxtime=hhmm
     m_ntr=1;
     m_rxnormal=true;
-    //startrx()
+    qDebug() << "Start receiving" << m_ntr << m_nrx;
+    startRx();
     m_nrx=m_nrx-1;
   }
 }
@@ -983,3 +1020,50 @@ double MainWindow::tsec()
   qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
   return 0.001*ms;
 }
+
+void MainWindow::on_sbPctTx_valueChanged(int arg1)
+{
+  m_pctx=ui->sbPctTx->value();
+}
+
+void MainWindow::startRx()
+{
+  qDebug() << "startRx";
+}
+
+void MainWindow::startTx()
+{
+  int itx=1;
+  ptt(m_pttPort,itx,&m_iptt);                   // Raise PTT
+  if(!soundOutThread.isRunning()) {
+    double snr=99.0;
+    soundOutThread.setTxSNR(snr);
+    soundOutThread.start(QThread::HighPriority);
+  }
+
+  pttTimer->setSingleShot(true);
+  connect(pttTimer, SIGNAL(timeout()), this, SLOT(startTx2()));
+  qDebug() << "startTx";
+  pttTimer->start(200);                         //Sequencer delay
+}
+
+void MainWindow::startTx2()
+{
+  qDebug() << "startTx2";
+}
+
+void MainWindow::stopTx()
+{
+  qDebug() << "stopTx";
+}
+
+void MainWindow::on_cbIdle_toggled(bool b)
+{
+  m_idle=b;
+}
+
+void MainWindow::on_cbTxMute_toggled(bool b)
+{
+  m_TxOK=b;
+}
+
