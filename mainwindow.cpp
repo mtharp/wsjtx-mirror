@@ -127,6 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_ntune=0;
   m_idle=false;
   m_TxOK=false;
+  m_nrx=1;
 
   ui->xThermo->setFillBrush(Qt::green);
 
