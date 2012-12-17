@@ -15,7 +15,7 @@ bool btxMute;
 double outputLatency;                 //Latency in seconds
 WideGraph* g_pWideGraph = NULL;
 
-QString ver="0.5";
+QString ver="4.0.0";
 QString rev="$Rev$";
 QString Program_Title_Version="  WSPR-X   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
@@ -33,8 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
   on_EraseButton_clicked();
   ui->labUTC->setStyleSheet( \
-        "QLabel { background-color : \
-        black; color : yellow; border: 3px ridge gray}");
+        "QLabel { background-color : black; \
+        color : yellow; border: 3px ridge gray}");
 
   QActionGroup* paletteGroup = new QActionGroup(this);
   ui->actionCuteSDR->setActionGroup(paletteGroup);
@@ -115,8 +115,8 @@ MainWindow::MainWindow(QWidget *parent) :
   m_palette="CuteSDR";
   m_RxLog=1;                     //Write Date and Time to RxLog
   m_nutc0=9999;
-  m_mode="WSPR-2";
-  m_TRperiod=120;
+  m_mode="JT9-1";
+  m_TRperiod=60;
   m_inGain=0;
 
   ui->xThermo->setFillBrush(Qt::green);
@@ -129,9 +129,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
-  if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
-  if(m_mode=="WSPR-10") on_actionWSPR_15_triggered();
-  if(m_mode=="WSPR-30") on_actionWSPR_30_triggered();
+  if(m_mode=="JT9-2") on_actionWSPR_2_triggered();
+  if(m_mode=="JT9-10") on_actionWSPR_15_triggered();
+  if(m_mode=="JT9-30") on_actionWSPR_30_triggered();
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(diskDat()));
@@ -146,6 +146,19 @@ MainWindow::MainWindow(QWidget *parent) :
   soundOutThread.setTxFreq(m_txFreq);
   soundInThread.setMonitoring(m_monitoring);
   m_diskData=false;
+
+// Create "m_worked", a dictionary of all calls in wsjt.log
+  QFile f("wsjt.log");
+  f.open(QIODevice::ReadOnly);
+  QTextStream in(&f);
+  QString line,t,callsign;
+  for(int i=0; i<99999; i++) {
+    line=in.readLine();
+    if(line.length()<=0) break;
+    t=line.mid(18,12);
+    callsign=t.mid(0,t.indexOf(","));
+  }
+  f.close();
 
   if(ui->actionLinrad->isChecked()) on_actionLinrad_triggered();
   if(ui->actionCuteSDR->isChecked()) on_actionCuteSDR_triggered();
@@ -201,7 +214,6 @@ void MainWindow::writeSettings()
   settings.setValue("SaveNone",ui->actionNone->isChecked());
   settings.setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
-  settings.setValue("NBslider",m_NBslider);
   settings.setValue("TxFreq",m_txFreq);
   settings.setValue("InGain",m_inGain);
   settings.endGroup();
@@ -237,7 +249,7 @@ void MainWindow::readSettings()
                                  "PaletteAFMHot",false).toBool());
   ui->actionBlue->setChecked(settings.value(
                                  "PaletteBlue",false).toBool());
-  m_mode=settings.value("Mode","WSPR-2").toString();
+  m_mode=settings.value("Mode","JT9-1").toString();
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_decoded->setChecked(settings.value(
                                          "SaveDecoded",false).toBool());
@@ -286,7 +298,6 @@ void MainWindow::dataSink(int k)
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
-  qDebug() << "B" << t;
   lab1->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_monitoring || m_diskData) {
@@ -464,7 +475,7 @@ void MainWindow::msgBox(QString t)                             //msgBox
 void MainWindow::on_actionOnline_Users_Guide_triggered()      //Display manual
 {
   QDesktopServices::openUrl(QUrl(
-  "http://www.physics.princeton.edu/pulsar/K1JT/WSPR_3.0_User.pdf",
+  "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_Users_Guide.pdf",
                               QUrl::TolerantMode));
 }
 
@@ -773,7 +784,6 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                     //Once per second
-    qDebug() << "A" << m_transmitting << m_monitoring << nsec;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_transmitting) {
       if(nsendingsh==1) {
@@ -810,7 +820,7 @@ void MainWindow::guiUpdate()
 
 void MainWindow::on_actionWSPR_2_triggered()
 {
-  m_mode="WSPR-2";
+  m_mode="JT9-2";
   m_TRperiod=120;
   m_nsps=15360;
   m_hsymStop=178;
@@ -824,8 +834,8 @@ void MainWindow::on_actionWSPR_2_triggered()
 
 void MainWindow::on_actionWSPR_15_triggered()
 {
-  m_mode="WSPR-15";
-  m_TRperiod=900;
+  m_mode="JT9-15";
+  m_TRperiod=600;
   m_nsps=82944;
   m_hsymStop=171;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
@@ -838,7 +848,7 @@ void MainWindow::on_actionWSPR_15_triggered()
 
 void MainWindow::on_actionWSPR_30_triggered()
 {
-  m_mode="WSPR-30";
+  m_mode="JT9-30";
   m_TRperiod=1800;
   m_nsps=252000;
   m_hsymStop=167;
@@ -889,84 +899,3 @@ void MainWindow::onNetworkReply(QNetworkReply* reply)
   }
   reply->deleteLater();
 }
-
-/*
-//------------------------------------------------------------- //guiUpdate2()
-void MainWindow::guiUpdate2()
-{
-  int nseq=tseq();
-  if(m_rxdone) {
-    m_receiving=false;
-    m_rxdone=false;
-    //thisfile=
-    if((m_rxnormal and ncal==0) or (!m_rxnormal and ncal==2) or
-       (ndiskdat==1)) {
-      //decode()
-    }
-  }
-
-  if(m_txdone) {
-    m_transmitting=false;
-    m_txdone=false;
-    ntr=0;
-  }
-
-  if(nseq >= nseqdone and ntune==0) {
-    m_transmitting=false;
-    m_receiving=false;
-    ntr=0;
-  }
-
-  if(pctx<1) ntune=0;
-
-  if(ntune!=0 and !m_transmitting and !m_receiving and pctx>=1) {
-    m_transmitting=true;
-    //starttx()
-  }
-
-  if(ncal==1 and !m_transmitting and !m_receiving) {
-    m_receiving=true;
-    //thisfile=
-    m_rxnormal=false;
-    ndiskdat=0;
-    //startrx()
-  }
-
-  if(nseq!=0 or m_transmitting or m_receiving or m_idle) {
-    //chklevel()
-    //if(iqmode) ...
-    return;
-  }
-
-  //outfile=...
-  if(m_hopping) {
-    //...
-  } else {
-    if(pctx==0) nrx=1;
-  }
-
-  if(m_transmitting or m_receiving) return;
-
-  if(pctx>0 and (m_txnext or (nrx==0 and ntr!=-1))) {
-    m_transmitting=true;              //Start a normal Tx sequence
-    x=ran();
-    if(pctx<50) {
-      nrx=int(rxavg + 3.0*(x-0.5) + 0.5);
-    } else {
-      nrx=0;
-      if(x<rxavg) nrx=1;
-    }
-    message=MyCall + MyGrid + "ndbm";
-    ntr=-1;
-    m_txdone=false;
-    m_txnext=false;
-    //starttx()
-  } else {
-    m_receiving=true;                 //Start a normal Rx sequence
-    ntr=1;
-    m_rxnormal=true;
-    //startrx()
-    nrx=nrx-1;
-  }
-}
-*/
