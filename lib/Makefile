@@ -23,8 +23,7 @@ CFLAGS = -I. -fbounds-check
 
 all:    libwspr.a wspr0.exe
 
-OBJS1 = symspec.o timf2.o fil3.o four2a.o pctile.o redsync.o \
-	sort.o ssort.o db.o 
+OBJS1 = symspec.o timf2.o fil3.o four2a.o pctile.o sort.o ssort.o db.o
 
 libwspr.a: $(OBJS1)
 	ar cr libwspr.a $(OBJS1) 
