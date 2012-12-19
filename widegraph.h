@@ -14,8 +14,7 @@ public:
   explicit WideGraph(QWidget *parent = 0);
   ~WideGraph();
 
-  void   dataSink2(float s[], float red[], float df3, int ihsym,
-                   int ndiskdata, uchar lstrong[]);
+  void   dataSink2(float s[], float df3, int ihsym, int ndiskdata);
   void   saveSettings();
   void   setPalette(QString palette);
   void   setFsample(int n);

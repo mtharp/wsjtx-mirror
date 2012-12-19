@@ -1,5 +1,4 @@
-subroutine symspec(k,ntrperiod,nsps,ingain,nb,nbslider,pxdb,s,red,    &
-     df3,ihsym,nzap,slimit,lstrong,npts8)
+subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -17,9 +16,9 @@ subroutine symspec(k,ntrperiod,nsps,ingain,nb,nbslider,pxdb,s,red,    &
 !  slimit    NB scale adjustment
 !  lstrong   true if strong signal at this freq
 
-  parameter (NMAX=1800*12000)        !Total sample intervals per 30 minutes
-  parameter (NDMAX=1800*1500)        !Sample intervals at 1500 Hz rate
-  parameter (NSMAX=22000)            !Max length of saved spectra
+  parameter (NMAX=900*12000)         !Total sample intervals per 30 minutes
+  parameter (NDMAX=900*1500)         !Sample intervals at 1500 Hz rate
+  parameter (NSMAX=1366)             !Max length of saved spectra
   parameter (NFFT1=1024)
   parameter (NFFT2=1024,NFFT2A=NFFT2/8)
   parameter (MAXFFT3=32768)
@@ -28,21 +27,17 @@ subroutine symspec(k,ntrperiod,nsps,ingain,nb,nbslider,pxdb,s,red,    &
   real*4 x2(NFFT1+105)
   real*4 ssum(NSMAX)
   real*4 red(NSMAX)
+  real*4 ss(184,NSMAX)
   complex cx(0:MAXFFT3-1)
   logical*1 lstrong(0:1023)               !Should be (0:512)
   integer*2 id2
-  complex c0
-  common/jt9com/ss(184,NSMAX),savg(NSMAX),c0(NDMAX),id2(NMAX),nutc,ndiskdat, &
-       ntr,mousefqso,newdat,nfa,nfb,ntol,kin,nzhsym,nsynced,ndecoded
+  complex c0(NDMAX)
+  common/jt9com/nutc,ndiskdat,id2(NMAX),savg(NSMAX)
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
   save
 
-  if(ntrperiod.eq.1)  nfft3=2048
-  if(ntrperiod.eq.2)  nfft3=2048
-  if(ntrperiod.eq.5)  nfft3=6144
-  if(ntrperiod.eq.10) nfft3=12288
-  if(ntrperiod.eq.30) nfft3=32768
-
+  nsps=15360              !Nothing magical about thios value, comes from JT9-2
+  nfft3=2048
   jstep=nsps/16
   if(k.gt.NMAX) go to 999
   if(k.lt.nfft3) then

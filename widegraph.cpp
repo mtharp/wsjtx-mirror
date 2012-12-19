@@ -69,8 +69,7 @@ void WideGraph::saveSettings()
   settings.endGroup();
 }
 
-void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
-                          int ndiskdata, uchar lstrong[])
+void WideGraph::dataSink2(float s[], float df3, int ihsym, int ndiskdata)
 {
   static float splot[NSMAX];
   static float swide[2048];

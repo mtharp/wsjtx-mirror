@@ -272,16 +272,10 @@ void MainWindow::readSettings()
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink(int k)
 {
-  static float s[NSMAX],red[NSMAX];
+  static float s[NSMAX];
   static int ihsym=0;
-  static int nzap=0;
-  static int nb;
-  static int trmin;
-  static int npts8;
   static float px=0.0;
   static float df3;
-  static uchar lstrong[1024];
-  static float slimit;
 
   if(m_diskData) {
     jt9com_.ndiskdat=1;
@@ -290,24 +284,17 @@ void MainWindow::dataSink(int k)
   }
 
 // Get power, spectrum, and ihsym
-  nb=0;
-  trmin=m_TRperiod/60;
-  symspec_(&k, &trmin, &m_nsps, &m_inGain, &nb, &m_NBslider, &px, s, red,
-           &df3, &ihsym, &nzap, &slimit, lstrong, &npts8);
+  symspec_(&k, &m_inGain, &px, s, &df3, &ihsym);
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
   lab1->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_receiving || m_diskData) {
-    g_pWideGraph->dataSink2(s,red,df3,ihsym,m_diskData,lstrong);
+    g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
   if(ihsym == m_hsymStop) {
-    jt9com_.npts8=(ihsym*m_nsps)/16;
-    jt9com_.newdat=1;
-    jt9com_.nagain=0;
-    jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
 //    decode();                                                //Start decoder
@@ -554,7 +541,6 @@ void MainWindow::diskDat()                                   //diskDat()
   m_diskData=true;
   for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
     k=(n+1)*kstep;
-    jt9com_.npts8=k/8;
     dataSink(k);
     if(n%10 == 1 or n == m_hsymStop)
         qApp->processEvents();                   //Keep GUI responsive
