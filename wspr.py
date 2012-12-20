@@ -992,6 +992,7 @@ def update():
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
+## NB: the digital gain control "ndgain" presently is for cosmetic effect only.
         ndb=int(w.acom1.xdb1-41.0+ndgain.get())
         if ndb<-30: ndb=-30
         dbave=w.acom1.xdb1
