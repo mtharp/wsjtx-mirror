@@ -8,6 +8,7 @@ subroutine rx
   include 'acom1.f90'
 
   npts=114*12000
+  if(ntrminutes.eq.15) npts=890*12000
   if(ncal.eq.1) npts=65536
   nsec1=time()
   nfhopok=0                                ! Don't hop! 
