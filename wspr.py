@@ -103,6 +103,7 @@ idle0=999
 ierr=0
 inbad0=999
 ipctx=IntVar()
+ndgain=IntVar()
 isec0=0
 isync=1
 itx0=0
@@ -991,7 +992,7 @@ def update():
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
-        ndb=int(w.acom1.xdb1-41.0)
+        ndb=int(w.acom1.xdb1-41.0+ndgain.get())
         if ndb<-30: ndb=-30
         dbave=w.acom1.xdb1
         if iq.iqmode.get():
@@ -1022,6 +1023,7 @@ def update():
         if ndb0+2<ndb or ndb0>ndb+2:	# avoid redraws for small changes
 	    ndb0=ndb
 	    msg1.configure(text=t,bg=bg,relief=r)
+	    dbave=dbave + ndgain.get()
 	    if not receiving: dbave=0
 	    sm.updateProgress(newValue=dbave,newColor=smcolor)
 
@@ -1649,6 +1651,14 @@ f4aa=Frame(iframe4,height=170,bd=2,relief=RIDGE)
 sm=smeter.Smeter(f4aa,fillColor='green',orientation='vertical', \
     width=10,height=170,doLabel=0,min=0,max=80)
 sm.frame.pack(side=LEFT)
+
+dgainscale=Scale(f4aa,orient=VERTICAL,length=170,from_=50, \
+               to=-50,variable=ndgain)
+dgainscale.pack(side=LEFT,padx=4)
+balloon.bind(dgainscale,"Digital gain control")
+ndgain.set(0)
+g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
+
 f4aa.pack(side=LEFT,expand=0,fill=Y)
 
 f4a=Frame(iframe4,height=170,bd=2,relief=RIDGE)

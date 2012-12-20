@@ -41,10 +41,11 @@ subroutine decode
 !    Sivan Toledo: changed f0 to f0b below, to correct a reporting bug
 !      that resulted in f0 being reported for spots even though f0 was
 !      changed after the audio was captured.
-     call mept162(thisfile,appdir,nappdir,f0b,ncmdline,iwave,NMAX,nbfo,ierr)
+     npts=114*12000
+     if(ntrminutes.eq.15) npts=890*12000
+     call mept162(thisfile,appdir,nappdir,f0b,ncmdline,iwave,npts,nbfo,ierr)
      if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
         savefile=appdir(:nappdir)//'/save/'//thisfile
-        npts=114*12000
         call wfile5(jwave,npts,12000,savefile)
      endif
   endif
