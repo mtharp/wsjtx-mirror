@@ -10,14 +10,13 @@ subroutine tx
   character*22 msg0,msg1,cwmsg
   character crig*6,cbaud*6,cdata*1,cstop*1
   character cmnd*120,snrfile*80
-  character linetx*40
   character*80 alltxt
   integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
   integer ib(14)
   real*8 tsec1,tsec2
   include 'acom1.f90'
-  common/acom2/ntune2,linetx
+  include 'acom2.f90'
   common/bcom/ntransmitted
   common/dcom/jwave(NMAX2),icwid(NMAX3),id2(NMAX2)
   data ntx/0/,ns0/0/

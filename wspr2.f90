@@ -10,19 +10,20 @@ subroutine wspr2
 !  19  wspr.log
 
   character message*24,cdbm*4
-  real*8 tsec,tsec1
+  real*8 tsec,tsec1,trseconds
   include 'acom1.f90'
-  character linetx*40,dectxt*80,logfile*80
+  include 'acom2.f90'
+  character dectxt*80,logfile*80
   integer nt(9)
   integer iclock(12)
   integer ib(14)
-  common/acom2/ntune2,linetx
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data nrxnormal/0/,ireset/1/
   data ib/500,160,80,60,40,30,20,17,15,12,10,6,4,2/
   save ireset
 
+  ntrminutes=2
   call cs_init
   dectxt=appdir(:nappdir)//'/decoded.txt'
 
@@ -44,9 +45,10 @@ subroutine wspr2
   nfhopok=0   ! not a good time to hop
 
 10 call cs_lock('wspr2')
+  trseconds=60.d0*ntrminutes
   call getutc(cdate,utctime,tsec)
   nsec=tsec
-  ns120=mod(nsec,120)
+  nsectr=mod(nsec,60*ntrminutes)
   rxavg=1.0
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   call cs_unlock
@@ -70,8 +72,8 @@ subroutine wspr2
         (nrxnormal.eq.0 .and. ncal.eq.2) .or. ndiskdat.eq.1) then
         call cs_lock('wspr2')
         call gmtime2(nt,tsec1)
-        t120=mod(tsec1,120.d0)
-        write(19,1031) cdate(3:8),utctime(1:4),t120,'Dec ',iband,ib(iband)
+        sectr=mod(tsec1,trseconds)
+        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Dec ',iband,ib(iband)
 1031    format(a6,1x,a4,f7.2,2x,a4,2i4,2x,a22)
         call flush(19)
         call cs_unlock
@@ -90,7 +92,7 @@ subroutine wspr2
      ntxdone=0
      ntr=0
   endif
-  if(ns120.ge.114 .and. ntune.eq.0) then
+  if(nsectr.ge.114 .and. ntune.eq.0) then
      transmitting=.false.
      receiving=.false.
      ntr=0
@@ -107,11 +109,11 @@ subroutine wspr2
      ntune2=ntune
      transmitting=.true.
      call gmtime2(nt,tsec1)
-     t120=mod(tsec1,120.d0)
-     if(ntune.eq.-3 .and. t120.lt.116.5) then
-        write(19,1031) cdate(3:8),utctime(1:4),t120,'ATU ',iband,ib(iband)
+     sectr=mod(tsec1,trseconds)
+     if(ntune.eq.-3 .and. sectr.lt.116.5) then
+        write(19,1031) cdate(3:8),utctime(1:4),sectr,'ATU ',iband,ib(iband)
      else
-        write(19,1031) cdate(3:8),utctime(1:4),t120,'Tune',iband,ib(iband)
+        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Tune',iband,ib(iband)
      endif
      call flush(19)
      call cs_unlock
@@ -127,15 +129,15 @@ subroutine wspr2
      rxtime=utctime(1:4)
      nrxnormal=0
      call gmtime2(nt,tsec1)
-     t120=mod(tsec1,120.d0)
-     write(19,1031) cdate(3:8),utctime(1:4),t120,'Cal ',iband,ib(iband)
+     sectr=mod(tsec1,trseconds)
+     write(19,1031) cdate(3:8),utctime(1:4),sectr,'Cal ',iband,ib(iband)
      call flush(19)
      call cs_unlock
      ndiskdat=0
      call startrx
   endif
 
-  if(ns120.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
+  if(nsectr.eq.0 .and. (.not.transmitting) .and. (.not.receiving) .and. &
        (idle.eq.0)) go to 30
   if(receiving) then
      call chklevel(kwave,iqmode+1,NZ/2,nsec1,xdb1,xdb2,iwrite)
@@ -199,8 +201,8 @@ subroutine wspr2
      if(ndevsok.eq.1) then
         call cs_lock('wspr2')
         call gmtime2(nt,tsec0)
-        t120=mod(tsec0,120.d0)
-        write(19,1031) cdate(3:8),utctime(1:4),t120,'Tx  ',iband,ib(iband),  &
+        sectr=mod(tsec0,trseconds)
+        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Tx  ',iband,ib(iband),  &
              message
         call flush(19)
         call cs_unlock
@@ -215,8 +217,8 @@ subroutine wspr2
         nrxnormal=1
         call cs_lock('wspr2')
         call gmtime2(nt,tsec1)
-        t120=mod(tsec1,120.d0)
-        write(19,1031) cdate(3:8),utctime(1:4),t120,'Rx  ',iband,ib(iband)
+        sectr=mod(tsec1,trseconds)
+        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Rx  ',iband,ib(iband)
         call flush(19)
         call cs_unlock
         call startrx

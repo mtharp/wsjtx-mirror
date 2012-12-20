@@ -14,8 +14,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,appdir,nappdir,   &
   integer npr3(162)
   logical first
   real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,tsymbol
-  character linetx*40
-  common/acom2/ntune2,linetx
+  include 'acom2.f90'
 
   equivalence(i1,i4)
   data npr3/                                   &

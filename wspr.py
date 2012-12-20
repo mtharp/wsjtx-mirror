@@ -51,7 +51,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="3.0.1_r" + "$Rev$"[6:-2]
+Version="3.9_r" + "$Rev$"[6:-2]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -124,6 +124,7 @@ no_beep=IntVar()
 npal=IntVar()
 npal.set(2)
 nparam=0
+ntrminutes=IntVar()
 nsave=IntVar()
 nscroll=0
 nsec0=0
@@ -828,15 +829,20 @@ def update():
     ns120=nsec % 120
 
 # enable/disable the Band Hop check box
-    if hopping.hoppingconfigured.get()==1:
-	if hopping0!=1:
-	    hopping0=1
-	    bhopping.configure(state=NORMAL)
+    if ntrminutes.get()==2:
+        if hopping.hoppingconfigured.get()==1:
+            if hopping0!=1:
+                hopping0=1
+                bhopping.configure(state=NORMAL)
+        else:
+            if hopping0!=2:
+                hopping0=2
+                bhopping.configure(state=DISABLED)
     else:
-	if hopping0!=2:
-	    hopping0=2
-	    bhopping.configure(state=DISABLED)
-
+        hopping.hopping.set(0)
+        bhopping.configure(state=DISABLED)
+        hopping0=2
+        
 # implement band happing if it was selected
     hopped=0
     if not idle.get():
@@ -1263,6 +1269,9 @@ def update():
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
     w.acom1.ncoord=hopping.coord_bands.get()
+    w.acom1.ntrminutes=ntrminutes.get()
+    if(ntrminutes.get() != 2 and hopping.hoppingconfigured.get()==1):
+        hopping.hopping.set(0)
 
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
@@ -1284,6 +1293,11 @@ def update():
 	    msg3.configure(text='',bg='gray85')
 	else:
 	    msg3.configure(text='Invalid audio output device.',bg='red')
+
+    if ntrminutes.get()==2:
+        msg4.configure(text='WSPR-2',bg='green')
+    elif ntrminutes.get()==15:
+        msg4.configure(text='WSPR-15',bg='#00ffff')
 
     if ndecoding0!=int(w.acom1.ndecoding):
 	ndecoding0=int(w.acom1.ndecoding)
@@ -1444,24 +1458,33 @@ setupmenu.add_checkbutton(label = 'No beep when access to WSPRnet fails',
                           variable=no_beep)
 
 #--------------------------------------------------------- View menu
-setupbutton = Menubutton(mbar, text = 'View', )
-setupbutton.pack(side = LEFT)
-setupmenu = Menu(setupbutton, tearoff=0)
-setupbutton['menu'] = setupmenu
-setupmenu.palettes=Menu(setupmenu,tearoff=0)
-setupmenu.palettes.add_radiobutton(label='Gray0',command=pal_gray0,
+viewbutton = Menubutton(mbar, text = 'View', )
+viewbutton.pack(side = LEFT)
+viewmenu = Menu(viewbutton, tearoff=0)
+viewbutton['menu'] = setupmenu
+viewmenu.palettes=Menu(setupmenu,tearoff=0)
+viewmenu.palettes.add_radiobutton(label='Gray0',command=pal_gray0,
             value=0,variable=npal)
-setupmenu.palettes.add_radiobutton(label='Gray1',command=pal_gray1,
+viewmenu.palettes.add_radiobutton(label='Gray1',command=pal_gray1,
             value=1,variable=npal)
-setupmenu.palettes.add_radiobutton(label='Linrad',command=pal_linrad,
+viewmenu.palettes.add_radiobutton(label='Linrad',command=pal_linrad,
             value=2,variable=npal)
-setupmenu.palettes.add_radiobutton(label='Blue',command=pal_blue,
+viewmenu.palettes.add_radiobutton(label='Blue',command=pal_blue,
             value=3,variable=npal)
-setupmenu.palettes.add_radiobutton(label='Hot',command=pal_Hot,
+viewmenu.palettes.add_radiobutton(label='Hot',command=pal_Hot,
             value=4,variable=npal)
-setupmenu.palettes.add_radiobutton(label='AFMHot',command=pal_AFMHot,
+viewmenu.palettes.add_radiobutton(label='AFMHot',command=pal_AFMHot,
             value=5,variable=npal)
-setupmenu.add_cascade(label = 'Palette',menu=setupmenu.palettes)
+viewmenu.add_cascade(label = 'Palette',menu=viewmenu.palettes)
+
+#------------------------------------------------------ Mode menu
+modebutton = Menubutton(mbar, text = 'Mode')
+modebutton.pack(side = LEFT)
+modemenu = Menu(modebutton, tearoff=0)
+modebutton['menu'] = modemenu
+modemenu.add_radiobutton(label = 'WSPR-2', variable=ntrminutes,value=2)
+modemenu.add_radiobutton(label = 'WSPR-15', variable=ntrminutes,value=15)
+ntrminutes.set(2)
 
 #------------------------------------------------------ Save menu
 savebutton = Menubutton(mbar, text = 'Save')
@@ -1849,7 +1872,7 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 3.0.1     by K1JT')
+root.title('  WSPR 3.9     by K1JT')
 
 put_params()
 try:
