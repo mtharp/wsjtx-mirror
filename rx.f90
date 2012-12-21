@@ -1,6 +1,6 @@
 subroutine rx
 
-!  Receive and decode MEPT_JT signals for one 2-minute sequence.
+! Receive WSPR signals for one 2-minute sequence.
 
   integer time
 
@@ -11,24 +11,28 @@ subroutine rx
   if(ntrminutes.eq.15) npts=890*12000
   if(ncal.eq.1) npts=65536
   nsec1=time()
-  nfhopok=0                                ! Don't hop! 
+  nfhopok=0                                !Don't hop! 
   f0a=f0                                   !Save rx frequency at start
   ierr=soundin(ndevin,48000,kwave,4*npts,iqmode)
-  nfhopok=1                                ! Data acquisition done, can hop 
+  if(f0a.ne.f0) then
+     call cs_lock('rx')
+     print*,'Error in rx.f90:',f0,f0a
+     call cs_unlock
+  endif
+  nfhopok=1                                !Data acquisition done, can hop 
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr
      stop
   endif
 
-
   if(iqmode.eq.1) then
      call iqdemod(kwave,4*npts,nfiq,nbfo,iqrx,iqrxapp,gain,phase,iwave)
   else
-     call fil1(kwave,4*npts,iwave,n2)         !Filter and downsample
+     call fil1(kwave,4*npts,iwave,n2)       !Filter and downsample
      npts=n2
   endif
   nsec2=time()
-  call getrms(iwave,npts,ave,rms)          !### is this needed any more??
+  call getrms(iwave,npts,ave,rms)           !### is this needed any more??
   call cs_lock('rx')
   nrxdone=1
   if(ncal.eq.1) ncal=2
