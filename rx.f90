@@ -16,7 +16,8 @@ subroutine rx
   ierr=soundin(ndevin,48000,kwave,4*npts,iqmode)
   if(f0a.ne.f0) then
      call cs_lock('rx')
-     print*,'Error in rx.f90:',f0,f0a
+     print*,'Error in rx.f90 ',utctime,f0,f0a
+     f0a=f0
      call cs_unlock
   endif
   nfhopok=1                                !Data acquisition done, can hop 

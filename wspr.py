@@ -1,4 +1,4 @@
-#--------------------------------------------------------------------- WSPR
+#-------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # WSPR (pronounced "whisper") stands for "Weak Signal
@@ -846,7 +846,7 @@ def update():
         
 # implement band happing if it was selected
     hopped=0
-    if not idle.get():
+    if not idle.get() and ntrminutes.get()==2:
         if hopping.hopping.get()==1:
             w.acom1.nfhopping=1        
             
