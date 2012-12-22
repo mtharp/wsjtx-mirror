@@ -15,9 +15,8 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
   complex c2(65536)
   complex c3(45000),c4(45000)
 
-! Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32 (WSPR-2)
-! or by 1/256 (WSPR-15).
-
+! WSPR-2: mix from nbfo +/- 100 Hz to baseband, downsample by 1/32
+! WSPR-15: mix from (nbfo+112.5) +/- 12.5 Hz to baseband, downsample by 1/256
   call mix162(id,npts,nbfo,c2,jz,ps)
 
   if(ncmdline.eq.0) then

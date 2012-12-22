@@ -7,7 +7,7 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
   integer*2 id(npts)
   real x(NFFT1MAX)
   real ps(-256:256)
-  real*8 df
+  real*8 df,fbfo
   complex c(0:NH1MAX)
   complex c2(0:65535)
   equivalence (x,c)
@@ -28,6 +28,8 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
   call xfft(x,nfft1)                         !Do the real-to-complex FFT
 
   df=12000.d0/nfft1
+  fbfo=nbfo
+  if(npts.gt.120*12000) fbfo=nbfo + 112.5d0
   i0=nint(nbfo/df)
   ia=i0-NH2 + 1
   ib=i0+NH2

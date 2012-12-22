@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------- WSPR
+#--------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # WSPR (pronounced "whisper") stands for "Weak Signal
@@ -1366,6 +1366,7 @@ def save_params():
     t=str(options.rig.get().replace(" ","#"))
     f.write("Rig " + str(t.replace("\t","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
+    f.write("TRminutes " + str(ntrminutes.get()) + "\n")
     f.write("PctTx " + str(ipctx.get()) + "\n")
     f.write("DGain " + str(ndgain.get()) + "\n")
     f.write("Upload " + str(upload.get()) + "\n")
@@ -1778,6 +1779,7 @@ def readinit():
                 options.rig.set(t)
                 options.rignum.set(int(t[:4]))
             elif key == 'Nsave': nsave.set(value)
+            elif key == 'TRminutes': ntrminutes.set(value)
             elif key == 'Upload': upload.set(value)
             elif key == 'Idle': idle.set(value)
             elif key == 'Debug': ndebug.set(value)
