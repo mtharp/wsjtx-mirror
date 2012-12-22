@@ -30,7 +30,7 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
   df=12000.d0/nfft1
   fbfo=nbfo
   if(npts.gt.120*12000) fbfo=nbfo + 112.5d0
-  i0=nint(nbfo/df)
+  i0=nint(fbfo/df)
   ia=i0-NH2 + 1
   ib=i0+NH2
 
