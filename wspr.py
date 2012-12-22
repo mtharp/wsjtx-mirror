@@ -1368,6 +1368,7 @@ def save_params():
     f.write("Rig " + str(t.replace("\t","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
     f.write("PctTx " + str(ipctx.get()) + "\n")
+    f.write("DGain " + str(ndgain.get()) + "\n")
     f.write("Upload " + str(upload.get()) + "\n")
     f.write("Idle " + str(idle.get()) + "\n")
     f.write("Debug " + str(ndebug.get()) + "\n")
@@ -1736,6 +1737,7 @@ def readinit():
             elif key == 'CWID': advanced.idint.set(value)
             elif key == 'dBm': options.dBm.set(value)
             elif key == 'PctTx': ipctx.set(value)
+            elif key == 'DGain': ndgain.set(value)
             elif key == 'PttPort': options.PttPort.set(value)
             elif key == 'CatPort': options.CatPort.set(value)
             elif key == 'AudioIn':
