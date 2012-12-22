@@ -16,8 +16,8 @@ subroutine rx
   ierr=soundin(ndevin,48000,kwave,4*npts,iqmode)
   if(f0a.ne.f0) then
      call cs_lock('rx')
-     write(70,*) print*,'Error in rx.f90 ',utctime,f0,f0a
-     call flush(70)
+!     write(70,*) 'Error in rx.f90 ',utctime,f0,f0a
+!     call flush(70)
      f0a=f0
      call cs_unlock
   endif

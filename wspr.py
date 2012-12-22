@@ -139,6 +139,7 @@ param20=""
 sf0=StringVar()
 sftx=StringVar()
 start_idle=IntVar()
+startup=1
 t0=""
 timer1=0
 txmsg=StringVar()
@@ -184,7 +185,7 @@ freqtx=[0,0.5024,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,18.1046,\
 for i in range(15):
     freqtx[i]=freq0[i]+0.001500
 
-socktimeout = 10
+socktimeout = 20
 socket.setdefaulttimeout(socktimeout)
 
 def pal_gray0():
@@ -821,7 +822,7 @@ def update():
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1,ndecoding0, \
-        hopping0,ndb0,ntune0
+        hopping0,ndb0,ntune0,startup
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -849,9 +850,9 @@ def update():
     if not idle.get() and ntrminutes.get()==2:
         if hopping.hopping.get()==1:
             w.acom1.nfhopping=1        
-            
-            if w.acom1.nfhopok:
+            if w.acom1.nfhopok or startup:
                 w.acom1.nfhopok=0
+                startup=0
                 b=-1
                 if hopping.coord_bands.get()==1:
                     ns=nsec % 86400
@@ -1020,6 +1021,11 @@ def update():
 	else:
 	    t=''
 	    r=FLAT
+
+	if ntrminutes.get()==2:
+            msg4.configure(text='WSPR-2',bg='green')
+        elif ntrminutes.get()==15:
+            msg4.configure(text='WSPR-15',bg='#00ffff')
 
         if ndb0+2<ndb or ndb0>ndb+2:	# avoid redraws for small changes
 	    ndb0=ndb
@@ -1296,11 +1302,6 @@ def update():
 	    msg3.configure(text='',bg='gray85')
 	else:
 	    msg3.configure(text='Invalid audio output device.',bg='red')
-
-    if ntrminutes.get()==2:
-        msg4.configure(text='WSPR-2',bg='green')
-    elif ntrminutes.get()==15:
-        msg4.configure(text='WSPR-15',bg='#00ffff')
 
     if ndecoding0!=int(w.acom1.ndecoding):
 	ndecoding0=int(w.acom1.ndecoding)
@@ -1654,10 +1655,11 @@ sm=smeter.Smeter(f4aa,fillColor='green',orientation='vertical', \
 sm.frame.pack(side=LEFT)
 
 dgainscale=Scale(f4aa,orient=VERTICAL,length=170,from_=50, \
-               to=-50,variable=ndgain)
+        to=-50,variable=ndgain,sliderlength=20,showvalue=0,width=9)
 dgainscale.pack(side=LEFT,padx=4)
 balloon.bind(dgainscale,"Digital gain control")
 ndgain.set(0)
+
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 
 f4aa.pack(side=LEFT,expand=0,fill=Y)
