@@ -3,7 +3,6 @@ subroutine decode
 !  Decode WSPR signals for one 2-minute sequence.
 
   character*80 savefile
-  integer*2 jwave(114*12000)
   real*8 df,fpeak
   real x(65536)
   complex c(0:32768)
@@ -37,17 +36,16 @@ subroutine decode
      go to 900
   else
      ncmdline=0
-     if(nsave.gt.0 .and. ndiskdat.eq.0) jwave=iwave(1:114*12000)
+     npts=114*12000
+     if(ntrminutes.eq.15) npts=890*12000
+     if(nsave.gt.0 .and. ndiskdat.eq.0) then
+        savefile=appdir(:nappdir)//'/save/'//thisfile
+        call wfile5(iwave,npts,12000,savefile)
+     endif
 !    Sivan Toledo: changed f0 to f0b below, to correct a reporting bug
 !      that resulted in f0 being reported for spots even though f0 was
 !      changed after the audio was captured.
-     npts=114*12000
-     if(ntrminutes.eq.15) npts=890*12000
      call mept162(thisfile,appdir,nappdir,f0b,ncmdline,iwave,npts,nbfo,ierr)
-     if(nsave.gt.0 .and. ndiskdat.eq.0 .and. ierr.eq.0) then
-        savefile=appdir(:nappdir)//'/save/'//thisfile
-        call wfile5(jwave,npts,12000,savefile)
-     endif
   endif
 
   call cs_lock('decode')

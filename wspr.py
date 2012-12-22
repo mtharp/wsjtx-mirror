@@ -1,4 +1,4 @@
-#------------------------------------------------------------------- WSPR
+#-------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # WSPR (pronounced "whisper") stands for "Weak Signal
@@ -954,7 +954,6 @@ def update():
                 ftx.set(freqtx[iband.get()])
                 t="%.6f" % (ftx.get(),)
                 sftx.set(t)
-##            if ierr==0 and ierr2==0 and w.acom1.nfhopping==1 and hopped==1:
             if ierr==0 and ierr2==0 and w.acom1.nfhopping==1 and hopped==1 \
                    and hopping.tuneupflag[iband.get()].get(): w.acom1.ntune=-3
         else:
