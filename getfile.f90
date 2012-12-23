@@ -24,6 +24,7 @@ subroutine getfile(fname,len)
   open(10,file=fname,access='stream',status='old')
   read(10) hdr
   npts=114*12000
+  if(ntrminutes.eq.15) npts=890*12000
   read(10) (iwave(i),i=1,npts)
   close(10)
   n4=1

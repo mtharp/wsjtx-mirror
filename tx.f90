@@ -4,7 +4,7 @@ subroutine tx
 
   integer system
 
-  parameter (NMAX2=2*120*48000)
+  parameter (NMAX2=900*48000)
   parameter (NMAX3=4.5*48000)
   character message*22,message0*22,call1*12,cdbm*3
   character*22 msg0,msg1,cwmsg
@@ -119,7 +119,7 @@ subroutine tx
      snr0=snr
      iqmode0=iqmode
      iqtx0=iqtx
-     call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,   &
+     call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,ntrminutes,   &
        appdir,nappdir,sending,jwave)
      newgen=1
   endif
@@ -138,7 +138,7 @@ subroutine tx
 
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint .and. iqmode.eq.0) then
 ! Generate and insert the CW ID.
-! NB: CW ID is not yet implemented in I/Q mode.
+! NB: CW ID is not yet implemented in I/Q mode, or in WSPR-15
      wpm=25.
      freqcw=1500.0 + ntxdf
      cwmsg=call1(:i1)//'                      '

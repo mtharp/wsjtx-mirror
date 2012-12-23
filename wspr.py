@@ -453,7 +453,9 @@ def txnext(event=NONE):
 # Readout of graphical cursor location
 def df_readout(event):
     global fmid
-    nhz=1000000*fmid + (80.0-event.y) * 12000/8192.0
+    df=12000/8192.0
+    if ntrminutes.get()==15: df=12000/65536.0
+    nhz=1000000*fmid + (80.0-event.y)*df + 2
     nhz=int(nhz%1000)
     t="%3d Hz" % nhz
     lab02.configure(text=t,bg='red')
@@ -461,7 +463,9 @@ def df_readout(event):
 #----------------------------------------------------- set_tx_freq
 def set_tx_freq(event):
     global fmid
-    nftx=int(1000000.0*fmid + (80.0-event.y) * 12000/8192.0)
+    df=12000/8192.0
+    if ntrminutes.get()==15: df=12000/65536.0
+    nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
     fmhz=0.000001*nftx
     t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
     result=tkMessageBox.askyesno(message=t)
@@ -473,23 +477,43 @@ def set_tx_freq(event):
 def draw_axis():
     global fmid
     c.delete(ALL)
-    df=12000.0/8192.0
+    if ntrminutes.get()==15: df=12000.0/65536.0
     nfmid=int(1.0e6*fmid + 0.5)%1000
 # Draw and label tick marks
-    for iy in range(-120,120,10):
-        j=80 - iy/df
-        i1=7
-        if (iy%50)==0:
-            i1=12
-            if (iy%100)==0: i1=15
+    if ntrminutes.get()==2:
+        df=12000.0/8192.0
+        for iy in range(-120,120,10):
+            j=80 - iy/df
+            i1=7
+            if (iy%50)==0:
+                i1=12
+                if (iy%100)==0: i1=15
+                n=nfmid+iy
+                if n<0: n=n+1000
+                c.create_text(27,j,text=str(n))
+            c.create_line(0,j,i1,j,fill='black')
+        iy=1000000.0*(ftx.get()-f0.get()) - 1500
+        if abs(iy)<=100:
+            j=80 - iy/df
+            c.create_line(0,j,13,j,fill='red',width=3)            
+
+    if ntrminutes.get()==15:
+        df=12000.0/65536.0
+        for iy in range(-15,15):
+            j=82 - iy/df
+            i1=7
             n=nfmid+iy
-            if n<0: n=n+1000
-            c.create_text(27,j,text=str(n))
-        c.create_line(0,j,i1,j,fill='black')
-    iy=1000000.0*(ftx.get()-f0.get()) - 1500
-    if abs(iy)<=100:
-        j=80 - iy/df
-        c.create_line(0,j,13,j,fill='red',width=3)
+            if (n%5)==0:
+                i1=12
+                if (n%10)==0: i1=15
+                if n<0: n=n+1000
+                c.create_text(27,j,text=str(n))
+            c.create_line(0,j,i1,j,fill='black')
+
+        iy=1000000.0*(ftx.get()-f0.get()) - 1612.5
+        if abs(iy)<=13:
+            j=80 - iy/df
+            c.create_line(0,j,13,j,fill='red',width=3)
 
 #------------------------------------------------------ del_all
 def del_all():
@@ -828,7 +852,6 @@ def update():
     utc=time.gmtime(tsec)
     nsec=int(tsec)
     nsec0=nsec
-    ns120=nsec % 120
 
 # enable/disable the Band Hop check box
     if ntrminutes.get()==2:
@@ -886,7 +909,8 @@ def update():
         pass
 
     isec=utc[5]
-    twait=120.0 - (tsec % 120.0)
+    trmin=ntrminutes.get()
+    twait=trmin - (tsec % trmin)
 
     if iband.get()!=iband0 or advanced.fset.get():
         advanced.fset.set(0)
@@ -1196,6 +1220,7 @@ def update():
 	    n=len(tw)
 	    for i in range(n-1,-1,-1):
 		x=465-39*i
+		if ntrminutes.get()==15: x=465-36*i
 		draw.text((x,148),tw[i],fill=253)        #Insert time label
 		if i<len(fw):
 		    draw.text((x+10,1),fw[i],fill=253)   #Insert band label
@@ -1214,6 +1239,7 @@ def update():
     c0=sc2.get()
     try:
         fmid=f0.get() + 0.001500
+        if ntrminutes.get()==15: fmid=f0.get() + 0.0016115
     except:
         pass
 
@@ -1221,9 +1247,14 @@ def update():
         fmid0=fmid
 	ftx0=ftx.get()
         draw_axis()
-        lftx.configure(validate={'validator':'real',
-            'min':f0.get()+0.001500-0.000100,'minstrict':0,
-            'max':f0.get()+0.001500+0.000100,'maxstrict':0})
+        if ntrminutes.get()==2:
+            lftx.configure(validate={'validator':'real',
+                'min':f0.get()+0.001500-0.000100,'minstrict':0,
+                'max':f0.get()+0.001500+0.000100,'maxstrict':0})
+        if ntrminutes.get()==15:
+            lftx.configure(validate={'validator':'real',
+                'min':f0.get()+0.0016115-0.0000125,'minstrict':0,
+                'max':f0.get()+0.0016115+0.0000125,'maxstrict':0})
 
     w.acom1.ndebug=ndebug.get()
 
