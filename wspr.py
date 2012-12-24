@@ -118,6 +118,7 @@ ndebug=IntVar()
 ndecoding0=999
 nin0=0
 nout0=0
+nred=0
 ntune0=999
 newdat=1
 newspec=1
@@ -452,7 +453,8 @@ def txnext(event=NONE):
 #----------------------------------------------------- df_readout
 # Readout of graphical cursor location
 def df_readout(event):
-    global fmid
+    global fmid,nred
+    nred=10
     df=12000/8192.0
     if ntrminutes.get()==15: df=12000/65536.0
     nhz=1000000*fmid + (80.0-event.y)*df + 2
@@ -846,7 +848,7 @@ def update():
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1,ndecoding0, \
-        hopping0,ndb0,ntune0,startup
+        hopping0,ndb0,ntune0,startup,nred
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -1056,6 +1058,9 @@ def update():
 	    dbave=dbave + ndgain.get()
 	    if not receiving: dbave=0
 	    sm.updateProgress(newValue=dbave,newColor=smcolor)
+	if nred>0:
+            nred=nred-1
+            if nred==0: lab02.configure(text="",bg='gray85')
 
 # this code block is executed ~5 times per second
 # If T/R status has changed, get new info
