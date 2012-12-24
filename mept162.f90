@@ -18,7 +18,8 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
 ! WSPR-2: mix from nbfo +/- 100 Hz to baseband, downsample by 1/32
 ! WSPR-15: mix from (nbfo+112.5) +/- 12.5 Hz to baseband, downsample by 1/256
   call mix162(id,npts,nbfo,c2,jz,ps)
-
+  c2(jz+1:)=0.
+  jz=45000
   if(ncmdline.eq.0) then
      call spec162(c2,jz,appdir,nappdir)              !Compute pixmap.dat
   endif
