@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------- WSPR
+#--------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # WSPR (pronounced "whisper") stands for "Weak Signal
@@ -1210,7 +1210,7 @@ def update():
             newdat=1
             modpixmap0=modpixmap
     except:
-	    newdat=0
+	newdat=0
 
     scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
@@ -1220,7 +1220,6 @@ def update():
 	    n=len(tw)
 	    for i in range(n-1,-1,-1):
 		x=465-39*i
-		if ntrminutes.get()==15: x=465-36*i
 		draw.text((x,148),tw[i],fill=253)        #Insert time label
 		if i<len(fw):
 		    draw.text((x+10,1),fw[i],fill=253)   #Insert band label

@@ -36,8 +36,10 @@ subroutine decode
      go to 900
   else
      ncmdline=0
-     npts=114*12000
-     if(ntrminutes.eq.15) npts=890*12000
+!     npts=114*12000
+!     if(ntrminutes.eq.15) npts=890*12000
+     npts=120*12000
+     if(ntrminutes.eq.15) npts=900*12000
      if(nsave.gt.0 .and. ndiskdat.eq.0) then
         savefile=appdir(:nappdir)//'/save/'//thisfile
         call wfile5(iwave,npts,12000,savefile)
