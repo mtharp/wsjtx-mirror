@@ -64,7 +64,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,ntrminutes,   &
   f=f0
   dphi=twopi*dt*f
   
-  do i=1,ntrminutes*60**48000
+  do i=1,ntrminutes*60*48000
      t=t+dt
      j=int(t/tsymbol) + 1                          !Symbol number
      sig=0.

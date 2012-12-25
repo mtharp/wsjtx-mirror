@@ -92,7 +92,8 @@ subroutine wspr2
      ntxdone=0
      ntr=0
   endif
-  if(nsectr.ge.114 .and. ntune.eq.0) then
+  nsecdone=60*ntrminutes - 6                       !### Less for WSPR-15 ?
+  if(nsectr.ge.nsecdone .and. ntune.eq.0) then
      transmitting=.false.
      receiving=.false.
      ntr=0

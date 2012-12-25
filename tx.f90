@@ -134,6 +134,7 @@ subroutine tx
   endif
 
   npts=112*48000
+  if(ntrminutes.eq.15) npts=886*48000
   if(nsec.lt.ns0) ns0=nsec
 
   if(idint.ne.0 .and. (nsec-ns0)/60.ge.idint .and. iqmode.eq.0) then
