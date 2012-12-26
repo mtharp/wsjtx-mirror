@@ -2,73 +2,38 @@ program wspr0
 
 ! Command-line version of WSPR.
 
-  character*12 arg
   integer nt(9)
   integer soundexit
-  real*8 f0,tsec
+  real*8 f0,ftx,tsec
+  character*12 call12
+  character*6 grid6
+  character*80 outfile
   character*11 utcdate
   character*3 month(12)
   data month/'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'/
 
-  nargs=iargc()
-10 if(nargs.eq.0) then
-     print*,' '
-     print*,'wspr0 -- version 1.0'
-     print*,' '
-     print*,'Usage: wspr0 Tx  f0 ftx nport call grid dBm [snr] [outfile | nfiles]'
-     print*,'       wspr0 T/R f0 ftx nport call grid dBm pctx'
-     print*,'       wspr0 Rx  f0 [infile ...]'
-     print*,' '
-     print*,'       f0 is the transceiver dial frequency (MHz)'
-     print*,'       ftx is the signal frequency (MHz)'
-     print*,'       nport is the COM port number for PTT control'
-     print*,'       snr is the S/N in 2500 Hz bandwidth (for test files)'
-     print*,'       pctx is the percentage of 2-minute periods to Tx'
-     print*,' '
-     print*,'Examples:'
-     print*,'       wspr0 Tx  10.1387 10.140200 1 K1JT FN20 30'
-     print*,'       wspr0 Tx  10.1387 10.140200 0 K1JT FN20 30 -22 test.wav'
-     print*,'       wspr0 T/R 10.1387 10.140200 0 K1JT FN20 30 25'
-     print*,'       wspr0 Rx  10.1387'
-     print*,'       wspr0 Rx  10.1387 00001.wav 00002.wav 00003.wav'
-     print*,' '
-     print*,'For more information see:'
-     print*,'       physics.princeton.edu/pulsar/K1JT/WSPR0_Instructions.TXT'
-     go to 999
-  endif
+  call wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,    &
+       call12,grid6,ndbm,outfile)
+  print*,'A2',ntrminutes,nrxtx,nport,nfiles,snrdb,f0,ftx,call12,grid6,ndbm
 
   ntr=0
   nsec0=999999
   open(14,file='ALL_WSPR0.TXT',status='unknown',access='append')
   call soundinit
-  call getarg(1,arg)
-  if(arg(1:2).eq.'TX'.or. arg(1:2).eq.'Tx' .or. arg(1:2).eq.'tx') then
-! Transmit only
-     if(nargs.lt.7) then
-        nargs=0
-        go to 10
-     endif
-     call wspr0_tx(nargs,ntr)
-  else if(arg(1:2).eq.'RX'.or. arg(1:2).eq.'Rx' .or. arg(1:2).eq.'rx') then
-! Receive only
+
+  if(nrxtx.eq.1) then                            !Receive only
         write(*,1026)
 1026    format(' UTC  dB   DT    Freq       Message'/54('-'))
         write(14,1028)
 1028    format(' Date   UTC Sync dB   DT    Freq       Message'/50('-'))
-     call wspr0_rx(nargs,ntr)
-  else if(arg(1:3).eq.'T/R'.or. arg(1:3).eq.'t/r') then
-! Transmit and receive, choosing sequences randomly
-     if(nargs.ne.8) then
-        nargs=0
-        go to 10
-     endif
+     call wspr0_rx(ntrminutes,nrxtx,nfiles,f0)
+
+  else if(nrxtx.eq.2) then                       !Transmit only
+     call wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,        &
+          call12,grid6,ndbm,outfile,ntr)
+  else if(nrxtx.eq.3) then                       !Tx and Rx, choosen randomly
      call random_seed
      ntr=1
-     call getarg(2,arg)
-     read(arg,*) f0
-     call getarg(8,arg)
-     read(arg,*) pctx
-     pctx=min(max(pctx,0.0),100.0)
 20   nsec=time()
      call gmtime2(nt,tsec)
      nsec=tsec
@@ -83,17 +48,15 @@ program wspr0
 
      call random_number(x)
      if(100.0*x.lt.pctx) then
-        call wspr0_tx(nargs,ntr)
+        call wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,      &
+             call12,grid6,ndbm,outfile,ntr)
      else
-        call wspr0_rx(nargs,ntr)
+        call wspr0_rx(ntrminutes,f0,ntr)
      endif
      call msleep(100)
      go to 20
-  else
-! Illegal set of command parameters
-     nargs=0
-     go to 10
   endif
+
   ierr=soundexit()
 
-999 end program wspr0
+end program wspr0
