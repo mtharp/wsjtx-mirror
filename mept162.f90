@@ -94,7 +94,7 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
         datetime(7:7)=' '
         nf1=nint(-a(2))
         alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
-        if(npts.gt.120*12000) dtx=dtx + 1.8         !### Why is this needesd ???
+        if(npts.gt.120*12000) dtx=8*(dtx + 1.8)    !### The 1.8 is empirical ###
 
         call cs_lock('mept162a')
         if(ncmdline.eq.0) then
