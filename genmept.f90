@@ -54,16 +54,22 @@ subroutine genmept(message,ntxdf,ntrminutes,multi,list,snrdb,iwave)
      if(nsigs.eq.1) snr=10.0**(0.05*snrdb)
      fac=3000.0
      if(snr.gt.1.0) fac=3000.0/snr
+     t=-2.d0 - 0.1*(isig-1)
      if(nsigs.eq.10) then
         if(ntrminutes.eq.2) then
-           snr=10.0**(0.05*(-20-isig))
+           ndb=-20-isig
+           snr=10.0**(0.05*ndb)
            f0=1390 + 20*isig
         else
-           snr=10.0**(0.05*(-29-isig))
+           ndb=-29-isig
+           snr=10.0**(0.05*ndb)
            f0=1612.5 + 2.5*(isig-5.5)
         endif
+        dtx=-t-2.0
+        write(*,1000) isig,ndb,dtx,1.d-6*f0,message
+1000    format(i2,2x,i4,f5.1,f11.6,2x,a22)
      endif
-     t=-2.d0 - 0.1*(isig-1)
+
      phi=0.d0
      j0=0
 
@@ -77,8 +83,8 @@ subroutine genmept(message,ntxdf,ntrminutes,multi,list,snrdb,iwave)
               j0=j
               if(list.ne.0) then
                  k=npr3(j) + 2*symbol(j)
-                 write(*,1000) j,k,f
-1000             format(i3,i3,f10.3)
+                 write(*,1010) j,k,f
+1010             format(i3,i3,f10.3)
                  go to 10
               else
                  dphi=twopi*dt*f

@@ -67,7 +67,6 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
      endif
      message='                      '
      if(nsync.ge.minsync .and. nsnrx.ge.minsnr) then
-
         dt=1.0/375
         do idt=0,128
            ii=(idt+1)/2
@@ -95,6 +94,7 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
         datetime(7:7)=' '
         nf1=nint(-a(2))
         alltxt=appdir(:nappdir)//'/ALL_WSPR.TXT'
+        if(npts.gt.120*12000) dtx=dtx + 1.8         !### Why is this needesd ???
 
         call cs_lock('mept162a')
         if(ncmdline.eq.0) then
@@ -104,7 +104,7 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
            close(13)
         else
            write(*,1008) datetime(8:11),nsnrx,dtx,freq,message
-1008       format(a4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
+1008       format(a4,i4,f5.1,f11.6,2x,a22)
         endif
         write(14,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,      &
              ncycles/81,ii
