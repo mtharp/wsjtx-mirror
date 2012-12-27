@@ -12,9 +12,8 @@ program wspr0
   character*3 month(12)
   data month/'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'/
 
-  call wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,    &
-       call12,grid6,ndbm,outfile)
-  print*,'A2',ntrminutes,nrxtx,nport,nfiles,snrdb,f0,ftx,call12,grid6,ndbm
+  call wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,       &
+       pctx,f0,ftx,call12,grid6,ndbm,outfile)
 
   ntr=0
   nsec0=999999
@@ -29,7 +28,7 @@ program wspr0
      call wspr0_rx(ntrminutes,nrxtx,nfiles,f0)
 
   else if(nrxtx.eq.2) then                       !Transmit only
-     call wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,        &
+     call wspr0_tx(ntrminutes,nport,nfiles,multi,list,snrdb,f0,ftx,    &
           call12,grid6,ndbm,outfile,ntr)
   else if(nrxtx.eq.3) then                       !Tx and Rx, choosen randomly
      call random_seed
@@ -48,7 +47,7 @@ program wspr0
 
      call random_number(x)
      if(100.0*x.lt.pctx) then
-        call wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,      &
+        call wspr0_tx(ntrminutes,nport,nfiles,multi,list,snrdb,f0,ftx,   &
              call12,grid6,ndbm,outfile,ntr)
      else
         call wspr0_rx(ntrminutes,f0,ntr)

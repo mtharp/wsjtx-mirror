@@ -1,1 +1,2 @@
-g95 -o hftoa.exe -Wall -fno-second-underscore -Wno-precision-loss -ftrace=full hftoa.f90 write_wav.f90 sound.o libportaudio.a c:\MinGW\lib\libwinmm.a 
+wspr0 -m -t s -22 -n 3 -a 1615
+wspr0 -m 00001.wav 00002.wav 00003.wav

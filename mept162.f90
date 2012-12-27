@@ -52,12 +52,21 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
 
      minsync=1                                   !####
      nsync=nint(snrsync)
-     nsnrx=nint(snrx)
-     if(nsnrx.lt.-33) nsnrx=-33
      if(nsync.lt.0) nsync=0
-     freq=f0 + 1.d-6*(dfx+nbfo)
+     if(npts.le.120*12000) then
+        minsnr=-33
+        nsnrx=nint(snrx)                         !WSPR-2
+        if(nsnrx.lt.minsnr) nsnrx=minsnr
+        freq=f0 + 1.d-6*(dfx+nbfo)
+     else
+        minsnr=-42
+        nsnrx=nint(snrx-9.0)                     !WSPR-15
+        if(nsnrx.lt.minsnr) nsnrx=minsnr
+        dfx=dfx/8
+        freq=f0 + 1.d-6*(dfx+nbfo+112.5d0)
+     endif
      message='                      '
-     if(nsync.ge.minsync .and. nsnrx.ge.-33) then      !### -31 dB limit?
+     if(nsync.ge.minsync .and. nsnrx.ge.minsnr) then
 
         dt=1.0/375
         do idt=0,128

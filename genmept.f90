@@ -1,9 +1,9 @@
-subroutine genmept(message,ntxdf,snrdb,iwave)
+subroutine genmept(message,ntxdf,ntrminutes,multi,list,snrdb,iwave)
 
 ! Encode a WSPR message and generate the corresponding wavefile.
 
   character*22 message
-  parameter (NMAX=120*12000)     !Max length of wave file
+  parameter (NMAX=900*12000)     !Max length of wave file
   integer*2 iwave(NMAX)          !Generated wave file
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)
@@ -43,24 +43,31 @@ subroutine genmept(message,ntxdf,snrdb,iwave)
 
 ! Set up necessary constants
   tsymbol=8192.d0/12000.d0
+  if(ntrminutes.eq.15) tsymbol=65536.d0/12000.d0
+  nz=60*ntrminutes*12000
   dt=1.d0/12000.d0
   f0=1500 + ntxdf
-  dfgen=12000.d0/8192.d0                     !1.4649 Hz
+  dfgen=1.d0/tsymbol                          !1.4649 Hz or 0.1831 Hz
   nsigs=1
-  if(snrdb.eq.10.0) nsigs=10
+  if(multi.ne.0) nsigs=10
   do isig=1,nsigs
-     if(nsigs.eq.1) snr=10.0**(0.05*(snrdb-1))   !Bandwidth correction?
+     if(nsigs.eq.1) snr=10.0**(0.05*snrdb)
      fac=3000.0
      if(snr.gt.1.0) fac=3000.0/snr
      if(nsigs.eq.10) then
-        snr=10.0**(0.05*(-20-isig))
-        f0=1390 + 20*isig
+        if(ntrminutes.eq.2) then
+           snr=10.0**(0.05*(-20-isig))
+           f0=1390 + 20*isig
+        else
+           snr=10.0**(0.05*(-29-isig))
+           f0=1612.5 + 2.5*(isig-5.5)
+        endif
      endif
      t=-2.d0 - 0.1*(isig-1)
      phi=0.d0
      j0=0
 
-     do i=1,NMAX
+     do i=1,nz
         t=t+dt
         j=int(t/tsymbol) + 1                          !Symbol number
         sig=0.
@@ -68,7 +75,7 @@ subroutine genmept(message,ntxdf,snrdb,iwave)
            if(j.ne.j0) then
               f=f0 + dfgen*(npr3(j)+2*symbol(j)-1.5)
               j0=j
-              if(snrdb.eq.11.0) then
+              if(list.ne.0) then
                  k=npr3(j) + 2*symbol(j)
                  write(*,1000) j,k,f
 1000             format(i3,i3,f10.3)
@@ -98,4 +105,3 @@ subroutine genmept(message,ntxdf,snrdb,iwave)
 
   return
 end subroutine genmept
-

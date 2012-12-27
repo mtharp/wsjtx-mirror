@@ -465,15 +465,16 @@ def df_readout(event):
 #----------------------------------------------------- set_tx_freq
 def set_tx_freq(event):
     global fmid
-    df=12000/8192.0
-    if ntrminutes.get()==15: df=12000/65536.0
-    nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
-    fmhz=0.000001*nftx
-    t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
-    result=tkMessageBox.askyesno(message=t)
-    if result:
-        ftx.set(0.000001*nftx)
-        sftx.set('%.06f' % ftx.get())
+    if ntrminutes.get()==2:
+        df=12000/8192.0
+        if ntrminutes.get()==15: df=12000/65536.0
+        nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
+        fmhz=0.000001*nftx
+        t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
+        result=tkMessageBox.askyesno(message=t)
+        if result:
+            ftx.set(0.000001*nftx)
+            sftx.set('%.06f' % ftx.get())
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
@@ -1680,7 +1681,7 @@ iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
 lab2=Label(iframe2, text='UTC        dB        DT             Freq             Drift')
-lab2.place(x=180,y=6, anchor='w')
+lab2.place(x=210,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- UTC, etc

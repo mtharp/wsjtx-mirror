@@ -1,7 +1,7 @@
-subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,   &
-     call12,grid6,ndbm,outfile)
+subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,   &
+     pctx,f0,ftx,call12,grid6,ndbm,outfile)
 
-  real*8 f0,ftx
+  real*8 f0,ftx,txaudio
   character*12 arg
   character*12 call12
   character*6 grid6
@@ -39,6 +39,8 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,   &
      print*,'       -p n   PTT port'
      print*,'       -P n   Transmitting percent (default=25)'
      print*,'       -s x   SNR of generated data, dB (default 100)'
+     print*,'       -x     Generate wavefile(s) with 10 signals'
+     print*,'       -X     Generate list of Tx tones'
      print*,' '
      print*,'Examples:'
      print*,'       wspr0 -t                      #Transmit default message'
@@ -63,16 +65,21 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,   &
   ndbm=37
   pctx=25.
   outfile=" "
-  f0=10.1387
-  ftx=10.1402
+  f0=10.138700d0
+  ftx=10.140200d0
+  txaudio=0.d0
   mfiles=0
   k=0
+  multi=0
+  list=0
 
   do n=1,99
      k=k+1
      call getarg(k,arg)
      if(arg(1:2).eq.'-m') then
         ntrminutes=15
+     else if(arg(1:2).eq.'-r') then
+        nrxtx=1
      else if(arg(1:2).eq.'-t') then
         nrxtx=2
      else if(arg(1:2).eq.'-b') then
@@ -95,6 +102,10 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,   &
         k=k+1
         call getarg(k,arg)
         read(arg,*) ftx
+     else if(arg(1:2).eq.'-a') then
+        k=k+1
+        call getarg(k,arg)
+        read(arg,*) txaudio
      else if(arg(1:2).eq.'-n') then
         k=k+1
         call getarg(k,arg)
@@ -115,6 +126,11 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,   &
      else if(arg(1:2).eq.'-o') then
         k=k+1
         call getarg(k,outfile)
+     else if(arg(1:2).eq.'-x') then
+        multi=1
+        snrdb=0.
+     else if(arg(1:2).eq.'-X') then
+        list=1
      else
         mfiles=mfiles+1
      endif
@@ -123,6 +139,7 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,snrdb,pctx,f0,ftx,   &
 
   if(outfile(1:1).ne.' ') nfiles=1
   if(nrxtx.eq.1) nfiles=mfiles
+  if(txaudio.ne.0.d0) ftx=f0 + 1.d-6*txaudio
   
   return
 end subroutine wspr0init

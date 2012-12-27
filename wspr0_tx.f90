@@ -1,4 +1,4 @@
-subroutine wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,      &
+subroutine wspr0_tx(ntrminutes,nport,nfiles,multi,list,snrdb,f0,ftx,    &
      call12,grid6,ndbm,outfile,ntr)
 
 !  Read command-line arguments and generate Tx data for the MEPT_JT mode.
@@ -14,9 +14,15 @@ subroutine wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,      &
   integer ptt,soundout
 
   ntxdf=nint(1.d6*(ftx-f0))-1500
-  if(abs(ntxdf).gt.100) then
-     print*,'Error: ftx must be above f0 by 1400 to 1600 Hz'
-     stop
+  txdf2=1.d6*(ftx-f0)-1612.5d0
+  if(multi.eq.0 .and. list.eq.0) then
+     if(ntrminutes.eq.2 .and. abs(ntxdf).gt.100) then
+        print*,'Error: ftx must be above f0 by 1400 to 1600 Hz'
+        stop
+     else if(ntrminutes.eq.15 .and. abs(txdf2).gt.12.5) then
+        print*,'Error: ftx must be above f0 by 1600 to 1625 Hz'
+        stop
+     endif
   endif
 
   i1=index(call12,' ')
@@ -30,10 +36,11 @@ subroutine wspr0_tx(ntrminutes,nport,nfiles,snrdb,f0,ftx,      &
   do ifile=1,nfiles
      if(nfiles.gt.1 .or. outfile(1:1).eq.' ') write(outfile,1010) ifile
 1010 format(i5.5,'.wav')
-     call genmept(message,ntxdf,snrdb,iwave)
-     if(snrdb.eq.11.0) go to 999
+     call genmept(message,ntxdf,ntrminutes,multi,list,snrdb,iwave)
+     if(list.ne.0) go to 999
      if(outfile.ne."") then
-        call wfile5(iwave,NMAX,12000,outfile)
+        nz=60*ntrminutes*12000
+        call wfile5(iwave,nz,12000,outfile)
         write(*,1020) f0,ftx,snrdb,message,outfile(1:24)
 1020    format(2f11.6,f6.1,2x,a22,2x,a24)
      else
