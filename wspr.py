@@ -51,7 +51,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="3.9_r" + "$Rev$"[6:-2]
+Version="4.0 r" + "$Rev$"[6:-2]
 print "******************************************************************"
 print "WSPR Version " + Version + ", by K1JT"
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
@@ -127,6 +127,7 @@ npal=IntVar()
 npal.set(2)
 nparam=0
 ntrminutes=IntVar()
+ntrminutes0=0
 nsave=IntVar()
 nscroll=0
 nsec0=0
@@ -398,7 +399,7 @@ def help(event=NONE):
 
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_3.0_User.pdf'
+    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_4.0_User.pdf'
     thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ fmtguide
@@ -465,16 +466,15 @@ def df_readout(event):
 #----------------------------------------------------- set_tx_freq
 def set_tx_freq(event):
     global fmid
-    if ntrminutes.get()==2:
-        df=12000/8192.0
-        if ntrminutes.get()==15: df=12000/65536.0
-        nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
-        fmhz=0.000001*nftx
-        t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
-        result=tkMessageBox.askyesno(message=t)
-        if result:
-            ftx.set(0.000001*nftx)
-            sftx.set('%.06f' % ftx.get())
+    df=12000/8192.0
+    if ntrminutes.get()==15: df=12000/65536.0
+    nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
+    fmhz=0.000001*nftx
+    t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
+    result=tkMessageBox.askyesno(message=t)
+    if result:
+        ftx.set(0.000001*nftx)
+        sftx.set('%.06f' % ftx.get())
 
 #-------------------------------------------------------- draw_axis
 def draw_axis():
@@ -849,7 +849,7 @@ def update():
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1,ndecoding0, \
-        hopping0,ndb0,ntune0,startup,nred
+        hopping0,ndb0,ntune0,startup,nred,ntrminutes0
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -1048,10 +1048,16 @@ def update():
 	    t=''
 	    r=FLAT
 
-	if ntrminutes.get()==2:
-            msg4.configure(text='WSPR-2',bg='green')
-        elif ntrminutes.get()==15:
-            msg4.configure(text='WSPR-15',bg='#00ffff')
+        if ntrminutes.get()!=ntrminutes0:
+            if ntrminutes.get()==2:
+                msg4.configure(text='WSPR-2',bg='green')
+                setupmenu.entryconfig(2,state=NORMAL)
+                setupmenu.entryconfig(3,state=NORMAL)
+            elif ntrminutes.get()==15:
+                msg4.configure(text='WSPR-15',bg='#00ffff')
+                setupmenu.entryconfig(2,state=DISABLED)
+                setupmenu.entryconfig(3,state=DISABLED)
+            ntrminutes0=ntrminutes.get()
 
         if ndb0+2<ndb or ndb0>ndb+2:	# avoid redraws for small changes
 	    ndb0=ndb
@@ -1924,7 +1930,8 @@ sftx.set('%.06f' % ftx.get())
 draw_axis()
 erase()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSPR 3.9     by K1JT')
+Title='WSPR ' + Version + '    by K1JT'
+root.title(Title)
 
 put_params()
 try:

@@ -10,7 +10,7 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,   &
   nargs=iargc()
   if(nargs.eq.0) then
      print*,' '
-     print*,'wspr0 -- version 2.0'
+     print*,'wspr0 -- version 4.0'
      print*,' '
      print*,'Usage: wspr0 [options...] [files...]'
      print*,' '
@@ -19,19 +19,19 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,   &
      print*,'Transmit/Receive status:'
      print*,'       -t   Run in 100% Tx mode. (Default is Rx mode.)'
      print*,'       -b   Pseudo-random selection of Rx and Tx cycles.'
+     print*,'       -D   Open and decode one or more wav files.'
      print*,' '
-     print*,'Transmitted message:'
-     print*,'By default, the callsign, grid locator, and power level'
-     print*,'for the transmitted message are taken from file wspr0.def.'
-     print*,'These may be overridden by using options -c, -g, -d:'
-     print*,'       -c <call>'
-     print*,'       -g <grid>'
-     print*,'       -d <dBm>'
+     print*,'Transmitted message: by default, the callsign, grid locator,'
+     print*,'and power level for the transmitted message are taken from'
+     print*,'file wspr0.def. These may be overridden by using the options'
+     print*,'       -c call'
+     print*,'       -g grid'
+     print*,'       -d dBm'
      print*,' '
      print*,'Frequencies:'
-     print*,'       -f x   Transceiver dial frequency is x'
-     print*,'       -F x   Center frequency of transmission is x'
-
+     print*,'       -f x   Transceiver dial frequency is x (MHz)'
+     print*,'       -F x   Center frequency of transmission is x (MHz)'
+     print*,'       -a x   Audio frequency of transmission is x (Hz)'
      print*,' '
      print*,'       -m     Run in WSPR-15 mode (default is WSPR-2)'
      print*,'       -n n   Number of files to be generated'
@@ -39,8 +39,8 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,   &
      print*,'       -p n   PTT port'
      print*,'       -P n   Transmitting percent (default=25)'
      print*,'       -s x   SNR of generated data, dB (default 100)'
-     print*,'       -x     Generate wavefile(s) with 10 signals'
-     print*,'       -X     Generate list of Tx tones'
+     print*,'       -x     Generate test file(s) with 10 signals in each'
+     print*,'       -X     Generate list of audio tones for this message'
      print*,' '
      print*,'Examples:'
      print*,'       wspr0 -t                      #Transmit default message'
@@ -48,7 +48,7 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,   &
      print*,'       wspr0 -t -s -25 -n 3          #Generate three test files'
      print*,'       wspr0 -b                      #Randomized T/R sequences'
      print*,'       wspr0 -f 14.0956              #Rx only, on 20m'
-     print*,'       wspr0 00001.wav 00002.wav     #Decode two files'
+     print*,'       wspr0 -D 00001.wav 00002.wav  #Decode these two files'
      print*,' '
      print*,'For more information see:'
      print*,'       physics.princeton.edu/pulsar/K1JT/WSPR0_Instructions.TXT'
@@ -78,7 +78,7 @@ subroutine wspr0init(ntrminutes,nrxtx,nport,nfiles,multi,list,snrdb,   &
      call getarg(k,arg)
      if(arg(1:2).eq.'-m') then
         ntrminutes=15
-     else if(arg(1:2).eq.'-r') then
+     else if(arg(1:2).eq.'-D') then
         nrxtx=1
      else if(arg(1:2).eq.'-t') then
         nrxtx=2
