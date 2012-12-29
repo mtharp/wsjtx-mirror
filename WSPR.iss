@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSPR
-AppVerName=WSPR Version 3.00 r2320
+AppVerName=WSPR Version 4.0 r2862
 
 AppCopyright=Copyright (C) 2008-2010 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSPR
@@ -25,6 +25,8 @@ Source: "c:\Users\joe\wsjt\wspr\gocal.bat";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\0230.bat";            DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\wspr0.exe";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wspr\WSPR0_Instructions.TXT";  DestDir: "{app}"
+Source: "c:\Users\joe\wsjt\wspr\WSPR_4.0_User.pdf";   DestDir: "{app}"
+
 
 [Icons]
 Name: "{group}\WSPR";        Filename: "{app}\WSPR.EXE"; WorkingDir: {app}; IconFilename: {app}\wsjt.ico
