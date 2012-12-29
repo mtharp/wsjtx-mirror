@@ -16,7 +16,7 @@ subroutine wspr2
   character dectxt*80,logfile*80
   integer nt(9)
   integer iclock(12)
-  integer ib(14)
+  integer ib(15)
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data nrxnormal/0/,ireset/1/
