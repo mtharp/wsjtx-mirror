@@ -712,7 +712,7 @@ def autolog(decodes):
                     tcall=tcall[1:n]
                 if tcall=='...': continue
                 dfreq=float(d['freq'])-w.acom1.f0b-0.001500
-                if abs(dfreq)>0.0001:
+                if abs(dfreq)>0.0001 and ntrminutes.get()==2:
                     print 'Frequency changed, no upload of spots'
                     continue
                 reportparams = urllib.urlencode({'function': 'wspr',
