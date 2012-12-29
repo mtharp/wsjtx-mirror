@@ -20,7 +20,7 @@ subroutine wspr2
   common/patience/npatience
   data receiving/.false./,transmitting/.false./
   data nrxnormal/0/,ireset/1/
-  data ib/500,160,80,60,40,30,20,17,15,12,10,6,4,2/
+  data ib/630,160,80,60,40,30,20,17,15,12,10,6,4,2,630/
   save ireset
 
   ntrminutes=2
