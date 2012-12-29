@@ -110,7 +110,6 @@ itx0=0
 loopall=0
 modpixmap0=0
 mrudir=os.getcwd()
-ndb0=99
 ndbm0=-999
 ncal0=999
 ncall=0
@@ -849,7 +848,7 @@ def update():
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1,ndecoding0, \
-        hopping0,ndb0,ntune0,startup,nred,ntrminutes0
+        hopping0,ntune0,startup,nred,ntrminutes0
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -1001,7 +1000,6 @@ def update():
     newsecond=0					# =1 if a new second
     if isec != isec0:                           #Do once per second
 # this code block is executed once per second
-        isec0=isec
 	newsecond=1
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         ldate.configure(text=t)
@@ -1019,34 +1017,6 @@ def update():
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
-## NB: the digital gain control "ndgain" presently is for cosmetic effect only.
-        ndb=int(w.acom1.xdb1-41.0+ndgain.get())
-        if ndb<-30: ndb=-30
-        dbave=w.acom1.xdb1
-        if iq.iqmode.get():
-	    t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
-	    iq.lab1.configure(text=t)
-            ndb2=int(w.acom1.xdb2-41.0)
-            if ndb2<-30: ndb2=-30
-            dbave=0.5*(w.acom1.xdb1 + w.acom1.xdb2)
-            t='Rx Noise: %3d %3d  dB' % (ndb,ndb2)
-        else:
-            t='Rx Noise: %3d  dB' % (ndb,)
-
-# update noise display at lower left of screen
-	bg='gray85'
-	r=SUNKEN
-	smcolor="green"
-	if w.acom1.receiving:
-	    if ndb>10 and ndb<=20:
-		bg='yellow'
-		smcolor='yellow'
-	    elif ndb<-20 or ndb>20:
-		bg='red'
-		smcolor='red'
-	else:
-	    t=''
-	    r=FLAT
 
         if ntrminutes.get()!=ntrminutes0:
             if ntrminutes.get()==2:
@@ -1059,17 +1029,40 @@ def update():
                 setupmenu.entryconfig(3,state=DISABLED)
             ntrminutes0=ntrminutes.get()
 
-        if ndb0+2<ndb or ndb0>ndb+2:	# avoid redraws for small changes
-	    ndb0=ndb
-	    msg1.configure(text=t,bg=bg,relief=r)
-	    dbave=dbave + ndgain.get()
-	    if not receiving: dbave=0
-	    sm.updateProgress(newValue=dbave,newColor=smcolor)
-	if nred>0:
-            nred=nred-1
-            if nred==0: lab02.configure(text="",bg='gray85')
-
 # this code block is executed ~5 times per second
+# NB: the digital gain control "ndgain" presently has cosmetic effect only.
+    ndb=int(w.acom1.xdb1-41.0+ndgain.get())
+    if ndb<-30: ndb=-30
+    dbave=w.acom1.xdb1
+    if iq.iqmode.get():
+        t='Bal: %6.4f  Pha: %6.1f      >%3d dB' % (gain,phdeg,nreject)
+        iq.lab1.configure(text=t)
+        ndb2=int(w.acom1.xdb2-41.0)
+        if ndb2<-30: ndb2=-30
+        dbave=0.5*(w.acom1.xdb1 + w.acom1.xdb2)
+        t='Rx Noise: %3d %3d  dB' % (ndb,ndb2)
+    else:
+        t='Rx Noise: %3d  dB' % (ndb,)
+# update noise display at lower left of screen
+    bg='gray85'
+    r=SUNKEN
+    smcolor="green"
+    if w.acom1.receiving==0:
+        t=''
+        r=FLAT
+        
+    if isec!=isec0:
+        msg1.configure(text=t,relief=r)
+        isec0=isec
+    
+    dbave=dbave + ndgain.get()
+    if not receiving: dbave=0
+    sm.updateProgress(newValue=dbave,newColor=smcolor)
+    
+    if nred>0:
+        nred=nred-1
+        if nred==0: lab02.configure(text="",bg='gray85')
+
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
     itx=w.acom1.transmitting
@@ -1125,7 +1118,7 @@ def update():
         t0=t
 
 # tend to percent scale
-    ntune=w.acom1.ntune
+    ntune=int(w.acom1.ntune)
     if ntune!=ntune0:
         ntune0=ntune
 	if ntune==0:

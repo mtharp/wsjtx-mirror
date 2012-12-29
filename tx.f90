@@ -168,6 +168,8 @@ subroutine tx
         endif
      endif
 
+     call msleep(200)                     !T/R sequencing delay
+
 20   call gmtime2(nt,tsec2)
 !     tdiff=tsec2-tsec0
 !     if(tdiff.lt.0.9) then
@@ -219,6 +221,7 @@ subroutine tx
      stop
   endif
 
+  call msleep(200)                        !T/R sequencing delay
   if(pttmode.eq.'CAT') then
      if(nrig.eq.2509) then
         cmnd='rigctl '//'-m'//crig//' -r USB T 0'
