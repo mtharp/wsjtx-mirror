@@ -9,14 +9,16 @@ subroutine chklevel(kwave,iz,jz,nsec1,xdb1,xdb2,i4)
 
   nsec3=time()
   i2=48000*(nsec3-nsec1)
-  if(i2.gt.114*48000) i2=114*48000
+  if(i2.gt.jz) i2=jz
   i1=max(1,i2-48000+1)
   do i=i2,i1,-1
      if(kwave(1,i).ne.0) go to 10
   enddo
 
 10 i4=i
-  i3=max(1,i4-48000+1)
+  tc=0.2                                  !Level-meter time constant (s)
+  ii=nint(tc*48000.0)
+  i3=max(1,i4-ii+1)
   if(nsec3.eq.nsec3z) go to 900
 
   nsec3z=nsec3
