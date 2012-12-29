@@ -14,7 +14,7 @@ subroutine tx
   integer*2 jwave,icwid,id2
   integer soundout,ptt,nt(9)
   integer ib(14)
-  real*8 tsec1,tsec2
+  real*8 tsec1,tsec2,trseconds
   include 'acom1.f90'
   include 'acom2.f90'
   common/bcom/ntransmitted
@@ -25,10 +25,18 @@ subroutine tx
   data ib/500,160,80,60,40,30,20,17,15,12,10,6,4,2/
   save ntx,ns0,message0,ntxdf0,ntune0,snr0,iqmode0,iqtx0,ib
 
+  trseconds=60.d0*ntrminutes
   nfhopok=0                                ! Transmitting, don't hop 
   ierr=0
   call1=callsign
   call cs_lock('tx')
+
+  call gmtime2(nt,tsec1)
+  sectr=mod(tsec1,trseconds)
+  write(19,1031) cdate(3:8),utctime(1:4),sectr,'PTT on  '
+1031 format(a6,1x,a4,f7.2,2x,a8)
+  call flush(19)
+
   if(pttmode.eq.'CAT') then
      if (nrig.eq.2509) then
         write(crig,'(i6)') nrig
@@ -169,8 +177,14 @@ subroutine tx
      endif
 
      call msleep(200)                     !T/R sequencing delay
+     call gmtime2(nt,tsec2)
 
-20   call gmtime2(nt,tsec2)
+     call cs_lock('tx')
+     sectr=mod(tsec2,trseconds)
+     write(19,1031) cdate(3:8),utctime(1:4),sectr,'Tx Audio'
+     call flush(19)
+     call cs_unlock('tx')
+
 !     tdiff=tsec2-tsec0
 !     if(tdiff.lt.0.9) then
 !        call msleep(100)
@@ -221,7 +235,21 @@ subroutine tx
      stop
   endif
 
+  call gmtime2(nt,tsec1)
+  sectr=mod(tsec1,trseconds)
+  write(19,1031) cdate(3:8),utctime(1:4),sectr,'Audio 0 '
+  call flush(19)
+  call cs_unlock('tx')
+
   call msleep(200)                        !T/R sequencing delay
+
+  call cs_lock('tx')
+  call gmtime2(nt,tsec1)
+  sectr=mod(tsec1,trseconds)
+  write(19,1031) cdate(3:8),utctime(1:4),sectr,'PTT Off '
+  call flush(19)
+  call cs_unlock('tx')
+
   if(pttmode.eq.'CAT') then
      if(nrig.eq.2509) then
         cmnd='rigctl '//'-m'//crig//' -r USB T 0'
