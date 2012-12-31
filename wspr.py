@@ -1080,7 +1080,7 @@ def update():
             receiving=1
             n=len(tw)
             if n>12: tw=tw[:n-1]
-            rxtime=g.ftnstr(w.acom1.rxtime)
+            rxtime=g.ftnstr(w.acom1.rxtime2)
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
  

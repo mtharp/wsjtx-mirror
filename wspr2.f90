@@ -58,7 +58,7 @@ subroutine wspr2
      call cs_lock('wspr2')
      receiving=.false.
      nrxdone=0
-     thisfile=cdate(3:8)//'_'//rxtime(1:4)//'.'//'wav'    !Tnx to G3WKW !
+     thisfile=cdate(3:8)//'_'//rxtime2(1:4)//'.'//'wav'    !Tnx to G3WKW !
      if(ndiskdat.ne.0) thisfile=outfile
      call cs_unlock
 
