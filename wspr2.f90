@@ -41,8 +41,8 @@ subroutine wspr2
   call system_clock(iclock(1))
   call random_seed(PUT=iclock)
   nrx=1
-  nfhopping=0 ! hopping scheduling disabled
-  nfhopok=0   ! not a good time to hop
+  nfhopping=0                               !Hopping scheduling disabled
+  nfhopok=0                                 !Not a good time to hop
 
 10 call cs_lock('wspr2')
   trseconds=60.d0*ntrminutes
@@ -52,12 +52,6 @@ subroutine wspr2
   rxavg=1.0
   if(pctx.gt.0.0) rxavg=100.0/pctx - 1.0
   call cs_unlock
-!  if(transmitting .and. nstoptx.eq.1) then
-!     call killtx
-!     nstoptx=0
-!     transmitting=.false.
-!     go to 20
-!  endif
 
   if(nrxdone.gt.0) then
 
@@ -70,13 +64,7 @@ subroutine wspr2
 
      if((nrxnormal.eq.1 .and. ncal.eq.0) .or.                          &
         (nrxnormal.eq.0 .and. ncal.eq.2) .or. ndiskdat.eq.1) then
-        call cs_lock('wspr2')
-        call gmtime2(nt,tsec1)
-        sectr=mod(tsec1,trseconds)
-        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Dec ',iband,ib(iband)
-1031    format(a6,1x,a4,f7.2,2x,a4,2i4,2x,a22)
-        call flush(19)
-        call cs_unlock
+        call loggit('Start decode')
         if(ndecoding.eq.0) then
            ndecoding=1
            call startdec
@@ -92,7 +80,8 @@ subroutine wspr2
      ntxdone=0
      ntr=0
   endif
-  nsecdone=60*ntrminutes - 6                       !### Less for WSPR-15 ?
+  nsecdone=114
+  if(ntrminutes.eq.15) nsecdone=890
   if(nsectr.ge.nsecdone .and. ntune.eq.0) then
      transmitting=.false.
      receiving=.false.
@@ -109,14 +98,14 @@ subroutine wspr2
      nsectx=mod(nsec,86400)
      ntune2=ntune
      transmitting=.true.
-     call gmtime2(nt,tsec1)
-     sectr=mod(tsec1,trseconds)
-     if(ntune.eq.-3 .and. sectr.lt.116.5) then
-        write(19,1031) cdate(3:8),utctime(1:4),sectr,'ATU ',iband,ib(iband)
-     else
-        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Tune',iband,ib(iband)
-     endif
-     call flush(19)
+!     call gmtime2(nt,tsec1)
+!     sectr=mod(tsec1,trseconds)
+!     if(ntune.eq.-3 .and. sectr.lt.116.5) then
+!        write(19,1031) cdate(3:8),utctime(1:4),sectr,'ATU ',iband,ib(iband)
+!     else
+!        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Tune',iband,ib(iband)
+!     endif
+!     call flush(19)
      call cs_unlock
      call starttx
   endif
@@ -124,16 +113,13 @@ subroutine wspr2
   if (ncal.eq.1 .and. ndevsok.eq.1.and. (.not.transmitting) .and.   &
        (.not.receiving)) then
 
-! Execute one receive sequence
+! Execute one receive sequence, for IQ calibration
      call cs_lock('wspr2')
      receiving=.true.
      rxtime=utctime(1:4)
      nrxnormal=0
-     call gmtime2(nt,tsec1)
-     sectr=mod(tsec1,trseconds)
-     write(19,1031) cdate(3:8),utctime(1:4),sectr,'Cal ',iband,ib(iband)
-     call flush(19)
      call cs_unlock
+     call loggit('Start Cal')
      ndiskdat=0
      call startrx
   endif
@@ -178,7 +164,7 @@ subroutine wspr2
 
   if(pctx.gt.0.0 .and. (ntxnext.eq.1 .or. (nrx.eq.0 .and. ntr.ne.-1))) then
 
-     call cs_lock('wspr2')
+     call cs_lock('wspr2')                   !Start a normal Tx sequence
      ntune2=ntune
      transmitting=.true.
      call random_number(x)
@@ -200,28 +186,17 @@ subroutine wspr2
      call cs_unlock
 
      if(ndevsok.eq.1) then
-        call cs_lock('wspr2')
-        call gmtime2(nt,tsec0)
-        sectr=mod(tsec0,trseconds)
-        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Tx  ',iband,ib(iband),  &
-             message
-        call flush(19)
-        call cs_unlock
+        call loggit('Start Tx')
         call starttx
      endif
 
   else
-     receiving=.true.
+     receiving=.true.                       !Start a normal Rx sequence
      rxtime=utctime(1:4)
      ntr=1
      if(ndevsok.eq.1) then
         nrxnormal=1
-        call cs_lock('wspr2')
-        call gmtime2(nt,tsec1)
-        sectr=mod(tsec1,trseconds)
-        write(19,1031) cdate(3:8),utctime(1:4),sectr,'Rx  ',iband,ib(iband)
-        call flush(19)
-        call cs_unlock
+        call loggit('Start Rx')
         call startrx
      endif
      nrx=nrx-1

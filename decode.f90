@@ -1,6 +1,6 @@
 subroutine decode
 
-!  Decode WSPR signals for one 2-minute sequence.
+!  Decode WSPR signals for one sequence.
 
   character*80 savefile
   real*8 df,fpeak
@@ -59,5 +59,8 @@ subroutine decode
   ndecoding=0
   call cs_unlock
 
-900  return
+900  continue
+  call loggit('Decode done')
+
+  return
 end subroutine decode

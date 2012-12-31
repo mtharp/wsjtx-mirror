@@ -1,5 +1,5 @@
   parameter (NMAX=900*12000)                          !Max length of waveform
-  parameter (NZ=2*900*48000)
+  parameter (NZ=900*48000)
   real*8 f0,f0a,f0b,ftx,tsec0
   logical ltest,receiving,transmitting
   character*80 infile,outfile,pttport,thisfile
@@ -15,6 +15,6 @@
        ndebug,idevin,idevout,nsectx,nbfo,iqrxapp,                      &
        ntxdb,txbal,txpha,iwrite,newdat,iqrxadj,gain,phase,reject,      &
        ntxfirst,ntest,ncat,ltest,iwave(NMAX),kwave(NZ),idle,ntune,     &
-       ntxnext,nstoptx,ncal,ndevsok,nsec1,nsec2,xdb1,xdb2,             &
+       ntxnext,nstoptx,ncal,ndevsok,nsec1,xdb1,xdb2,                   &
        infile,outfile,pttport,cdate,utctime,callsign,grid,grid6,       &
        rxtime,ctxmsg,sending,thisfile,pttmode,catport,appdir,chs
