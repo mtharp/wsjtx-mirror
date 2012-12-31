@@ -23,7 +23,6 @@ subroutine rx
   endif
   call cs_lock('rx')
   f0a=f0
-  rxtime2=rxtime
   nfhopok=1                                !Data acquisition done, can hop 
   if(ierr.ne.0) then
      print*,'Error in soundin',ierr

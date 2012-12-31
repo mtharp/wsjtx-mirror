@@ -26,6 +26,7 @@ subroutine wspr2
   ntrminutes=2
   call cs_init
   dectxt=appdir(:nappdir)//'/decoded.txt'
+  rxtime='xxxx'
 
   call cs_lock('wspr2')
   open(14,file=dectxt,status='unknown')
@@ -58,7 +59,7 @@ subroutine wspr2
      call cs_lock('wspr2')
      receiving=.false.
      nrxdone=0
-     thisfile=cdate(3:8)//'_'//rxtime2(1:4)//'.'//'wav'    !Tnx to G3WKW !
+     thisfile=cdate(3:8)//'_'//rxtime(1:4)//'.'//'wav'    !Tnx to G3WKW !
      if(ndiskdat.ne.0) thisfile=outfile
      call cs_unlock
 
@@ -191,11 +192,15 @@ subroutine wspr2
      endif
 
   else
-     receiving=.true.                       !Start a normal Rx sequence
-     rxtime=utctime(1:4)
-     ntr=1
      if(ndevsok.eq.1) then
+
+        call cs_lock('wspr2')
+        receiving=.true.                       !Start a normal Rx sequence
+        rxtime=utctime(1:4)
+        ntr=1
         nrxnormal=1
+        call cs_unlock
+
         call loggit('Start Rx')
         call startrx
      endif

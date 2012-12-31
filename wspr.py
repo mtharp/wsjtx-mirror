@@ -1065,7 +1065,7 @@ def update():
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
-    itx=w.acom1.transmitting
+    itx=int(w.acom1.transmitting)
     if ntr!=ntr0 or itx!=itx0:
         ntr0=ntr
         itx0=int(itx)
@@ -1080,7 +1080,7 @@ def update():
             receiving=1
             n=len(tw)
             if n>12: tw=tw[:n-1]
-            rxtime=g.ftnstr(w.acom1.rxtime2)
+            rxtime=g.ftnstr(w.acom1.rxtime)
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
  
