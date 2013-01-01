@@ -119,7 +119,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_RxLog=1;                     //Write Date and Time to RxLog
   m_nutc0=9999;
   m_mode="WSPR-2";
-  m_TRperiod=120;
+  m_TRseconds=120;
   m_inGain=0;
   m_hopping=false;
   m_rxdone=false;
@@ -141,7 +141,6 @@ MainWindow::MainWindow(QWidget *parent) :
   g_pWideGraph->setTxFreq(m_txFreq);
   if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
   if(m_mode=="WSPR-10") on_actionWSPR_15_triggered();
-  if(m_mode=="WSPR-30") on_actionWSPR_30_triggered();
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(diskDat()));
@@ -214,6 +213,7 @@ void MainWindow::writeSettings()
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("NBslider",m_NBslider);
   settings.setValue("TxFreq",m_txFreq);
+  settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("InGain",m_inGain);
   settings.endGroup();
 }
@@ -255,6 +255,10 @@ void MainWindow::readSettings()
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
   m_NBslider=settings.value("NBslider",40).toInt();
   m_txFreq=settings.value("TxFreq",1500).toInt();
+  m_dialFreq=settings.value("DialFreq",10.1387).toDouble();
+  QString t;
+  t.sprintf("%.6f ",m_dialFreq);
+  ui->dialFreqLineEdit->setText(t);
   soundOutThread.setTxFreq(m_txFreq);
   m_saveDecoded=ui->actionSave_decoded->isChecked();
   m_saveAll=ui->actionSave_all->isChecked();
@@ -297,24 +301,26 @@ void MainWindow::dataSink(int k)
   if(ihsym == m_hsymStop) {
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-//    decode();                                                //Start decoder
+    QString t2;
+
     if(!m_diskData) {                        //Always save; may delete later
       int ihr=t.time().toString("hh").toInt();
       int imin=t.time().toString("mm").toInt();
-      imin=imin - (imin%(m_TRperiod/60));
-      QString t2;
+      imin=imin - (imin%(m_TRseconds/60));
       t2.sprintf("%2.2d%2.2d",ihr,imin);
       m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
             t2 + ".wav";
-      *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
+      *future2 = QtConcurrent::run(savewav, m_fname, m_TRseconds);
       watcher2->setFuture(*future2);
     }
-//    decode();                                                //Start decoder
+
     m_decodedList.clear();
-    QString cmnd='"' + m_appDir + '"' + "/wspr0 D 0.474200 " + m_fname + '"';
+    t2.sprintf("%.6f ",m_dialFreq);
+    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;
+    loggit("Start Decoder");
     proc_jt9.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
@@ -496,7 +502,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
     }
 //    on_stopButton_clicked();
     m_diskData=true;
-    *future1 = QtConcurrent::run(getfile, fname, m_TRperiod);
+    *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
     watcher1->setFuture(*future1);         // call diskDat() when done
   }
 }
@@ -521,7 +527,7 @@ void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
         lab1->setText(" " + fname.mid(i,len) + " ");
       }
       m_diskData=true;
-      *future1 = QtConcurrent::run(getfile, fname, m_TRperiod);
+      *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
       watcher1->setFuture(*future1);
       return;
     }
@@ -611,6 +617,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
   while(proc_jt9.canReadLine()) {
     QString t(proc_jt9.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
+      loggit("Decoder Finished");
       for(int i=0; i<m_decodedList.size(); i++) {
         t1=m_decodedList.at(i).toAscii();
         QStringList s=t1.split(" ",QString::SkipEmptyParts);
@@ -622,9 +629,11 @@ void MainWindow::readFromStdout()                             //readFromStdout
         QString rcall=s.at(5).toAscii();
         QString rgrid=s.at(6).toAscii();
         int dbm=s.at(6).toInt();
-//        qDebug() << i << iutc << sig << dt << rqrg << drift << rcall
-//                    << rgrid << dbm;
-        // Upload to WSPRnet here ...
+        loggit("Upload to WSPRnet");
+        qDebug() << i << iutc << sig << dt << rqrg << drift << rcall
+                 << rgrid << dbm;
+        // Upload to WSPRnet here ...  Use a "future" call, and don't
+        // forget to include a randomized wait period
       }
       m_decodedList.clear();
 
@@ -657,13 +666,13 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
 void MainWindow::on_actionWSPR_2_triggered()
 {
   m_mode="WSPR-2";
-  m_TRperiod=120;
+  m_TRseconds=120;
   m_nsps=15360;
   m_hsymStop=178;
   m_nseqdone=115;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
+  soundInThread.setPeriod(m_TRseconds,m_nsps);
+  soundOutThread.setPeriod(m_TRseconds,m_nsps);
+  g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
   lab2->setStyleSheet("QLabel{background-color: #ffff00}");
   lab2->setText("WSPR-2");
   ui->actionWSPR_2->setChecked(true);
@@ -672,31 +681,16 @@ void MainWindow::on_actionWSPR_2_triggered()
 void MainWindow::on_actionWSPR_15_triggered()
 {
   m_mode="WSPR-15";
-  m_TRperiod=900;
+  m_TRseconds=900;
   m_nsps=82944;
   m_hsymStop=171;
   m_nseqdone=895;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
+  soundInThread.setPeriod(m_TRseconds,m_nsps);
+  soundOutThread.setPeriod(m_TRseconds,m_nsps);
+  g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
   lab2->setStyleSheet("QLabel{background-color: #7fff00}");
   lab2->setText("WSPR-15");
   ui->actionWSPR_15->setChecked(true);
-}
-
-void MainWindow::on_actionWSPR_30_triggered()
-{
-  m_mode="WSPR-30";
-  m_TRperiod=1800;
-  m_nsps=252000;
-  m_hsymStop=167;
-  m_nseqdone=1795;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab2->setStyleSheet("QLabel{background-color: #97ffff}");
-  lab2->setText("WSPR-30");
-  ui->actionWSPR_30->setChecked(true);
 }
 
 void MainWindow::on_inGain_valueChanged(int n)
@@ -754,19 +748,19 @@ void MainWindow::guiUpdate()
   int khsym=0;
 
   double tx1=0.0;
-//  double tx2=m_TRperiod;
+//  double tx2=m_TRseconds;
   double tx2=1.0 + 85.0*m_nsps/12000.0;
 
   qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
   int nsec=ms/1000;
   double tsec=0.001*ms;
-  double t2p=fmod(tsec,2*m_TRperiod);
+  double t2p=fmod(tsec,2*m_TRseconds);
   bool bTxTime = (t2p >= tx1) && (t2p < tx2);
 
   if(m_auto) {
 
     QFile f("txboth");
-    if(f.exists() and fmod(tsec,m_TRperiod)<1.0 + 85.0*m_nsps/12000.0)
+    if(f.exists() and fmod(tsec,m_TRseconds)<1.0 + 85.0*m_nsps/12000.0)
       bTxTime=true;
 
     if(bTxTime and iptt==0 and !btxMute) {
@@ -880,7 +874,6 @@ void MainWindow::guiUpdate()
 
 void MainWindow::oneSec() {
   QDateTime t = QDateTime::currentDateTimeUtc();
-
   m_setftx=0;
   QString utc = t.date().toString("yyyy MMM dd") + " \n " +
           t.time().toString();
@@ -895,7 +888,7 @@ void MainWindow::oneSec() {
 void MainWindow::guiUpdate2()
 {
   int nsec=int(tsec());
-  m_nseq = nsec % m_TRperiod;
+  m_nseq = nsec % m_TRseconds;
   if(nsec != m_sec0) {
     oneSec();
     m_sec0=nsec;
@@ -904,7 +897,7 @@ void MainWindow::guiUpdate2()
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;
 
   if(m_rxdone) {
-    qDebug() << "RxDone" << nsec << m_nseq;
+    loggit("Rx Done");
     m_receiving=false;
     soundInThread.setReceiving(m_receiving);
     m_rxdone=false;
@@ -917,7 +910,7 @@ void MainWindow::guiUpdate2()
   }
 
   if(m_txdone) {
-    qDebug() << "TxDone" << nsec << m_nseq;
+    loggit("TxDone");
     m_transmitting=false;
     m_txdone=false;
     m_ntr=0;
@@ -939,13 +932,14 @@ void MainWindow::guiUpdate2()
   if(m_pctx<1) m_ntune=0;
 
   if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
-    qDebug() << "Tune" << m_ntune << m_pctx;
+    loggit("Tune");
     //Make a test transmission of duration pctx.
     //m_nsectx=nsec
     m_transmitting=true;
     //starttx()
   }
 
+  /*
   if(m_ncal==1 and !m_transmitting and !m_receiving) {
     qDebug() << "Cal";
     //Execute one Rx sequence (length??)
@@ -956,6 +950,7 @@ void MainWindow::guiUpdate2()
     m_diskData=0;
     startRx();
   }
+*/
 
   if(m_nseq!=0 or m_transmitting or m_receiving or m_idle) {
 //    qDebug() << "ChkLevel";
@@ -972,7 +967,6 @@ void MainWindow::guiUpdate2()
     if(m_pctx==0) m_nrx=1;
   }
 
-//  qDebug() << "A" << m_pctx << m_txnext << m_nrx << m_ntr;
   if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
     m_transmitting=true;              //Start a normal Tx sequence
     float x=(float)rand()/RAND_MAX;
@@ -985,8 +979,7 @@ void MainWindow::guiUpdate2()
 //    message=MyCall + MyGrid + "ndbm";
     //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
     m_ntr=-1;
-    qDebug() << "Start transmitting" << x << m_rxavg << m_nrx << m_ntr;
-    //m_nsectx=nsec
+    loggit("Start Tx");
     m_txdone=false;
     m_txnext=false;
     startTx();
@@ -996,8 +989,8 @@ void MainWindow::guiUpdate2()
     //m_rxtime=hhmm
     m_ntr=1;
     m_rxnormal=true;
-    qDebug() << "Start receiving" << m_ntr << m_nrx;
-    startRx();
+    loggit("Start Rx");
+//    startRx();
     m_nrx=m_nrx-1;
   }
 }
@@ -1013,10 +1006,12 @@ void MainWindow::on_sbPctTx_valueChanged(int arg1)
   m_pctx=ui->sbPctTx->value();
 }
 
+/*
 void MainWindow::startRx()
 {
   qDebug() << "startRx";
 }
+*/
 
 void MainWindow::startTx()
 {
@@ -1030,18 +1025,18 @@ void MainWindow::startTx()
 
   pttTimer->setSingleShot(true);
   connect(pttTimer, SIGNAL(timeout()), this, SLOT(startTx2()));
-  qDebug() << "startTx";
+  loggit("Start Tx");
   pttTimer->start(200);                         //Sequencer delay
 }
 
 void MainWindow::startTx2()
 {
-  qDebug() << "startTx2";
+  loggit("Start Tx2");
 }
 
 void MainWindow::stopTx()
 {
-  qDebug() << "stopTx";
+  loggit("Stop Tx");
 }
 
 void MainWindow::on_cbIdle_toggled(bool b)
@@ -1054,3 +1049,13 @@ void MainWindow::on_cbTxMute_toggled(bool b)
   m_TxOK=b;
 }
 
+
+void MainWindow::on_dialFreqLineEdit_editingFinished()
+{
+  m_dialFreq=ui->dialFreqLineEdit->text().toDouble();
+}
+
+void MainWindow::loggit(QString t)
+{
+  qDebug() << t << m_nseq;
+}

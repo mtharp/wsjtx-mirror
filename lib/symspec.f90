@@ -26,8 +26,6 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   real*4 x0(NFFT1),x1(NFFT1)
   real*4 x2(NFFT1+105)
   real*4 ssum(NSMAX)
-  real*4 red(NSMAX)
-  real*4 ss(184,NSMAX)
   complex cx(0:MAXFFT3-1)
   logical*1 lstrong(0:1023)               !Should be (0:512)
   integer*2 id2
@@ -36,7 +34,7 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
   save
 
-  nsps=15360              !Nothing magical about thios value, comes from JT9-2
+  nsps=15360              !Nothing magical about this value, comes from JT9-2
   nfft3=2048
   jstep=nsps/16
   if(k.gt.NMAX) go to 999
@@ -67,6 +65,7 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   k0=k
  
   nzap=0
+  nbslider=0
   sigmas=1.0*(10.0**(0.01*nbslider)) + 0.7
   peaklimit=sigmas*max(10.0,rms)
   px=0.
@@ -93,7 +92,6 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
      k8=k8+kstep1/8
   enddo
 
-  npts8=k8
   ja=ja+jstep                         !Index of first sample
   nsum=nblks*kstep1 - nzap
 
@@ -113,7 +111,6 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   cx(0:nfft3-1)=w3(1:nfft3)*cx(0:nfft3-1)  !Apply window w3
   call four2a(cx,nfft3,1,1,1)           !Third forward FFT (X)
 
-  n=min(184,ihsym)
   df3=1500.0/nfft3
   i0=nint(-500.0/df3)
   iz=min(NSMAX,nint(1000.0/df3))
@@ -122,7 +119,6 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
      j=i0+i-1
      if(j.lt.0) j=j+nfft3
      sx=fac*(real(cx(j))**2 + aimag(cx(j))**2)
-     ss(n,i)=sx
      ssum(i)=ssum(i) + sx
      s(i)=sx
   enddo
@@ -134,6 +130,7 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   s(1:iz)=fac0*s(1:iz)
   call pctile(ssum,iz,50,xmed1)
   fac1=1.0/max(xmed1,0.006*ihsym)
+  savg(1:iz)=fac1*ssum(1:iz)
 
   return
 end subroutine symspec

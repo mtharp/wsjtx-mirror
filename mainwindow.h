@@ -58,7 +58,6 @@ private slots:
   void on_actionAFMHot_triggered();
   void on_actionBlue_triggered();
   void on_actionWSPR_2_triggered();
-  void on_actionWSPR_30_triggered();
   void on_actionWSPR_15_triggered();
   void on_actionSave_decoded_triggered();
   void on_inGain_valueChanged(int n);
@@ -68,11 +67,15 @@ private slots:
   void on_cbIdle_toggled(bool b);
   void on_cbTxMute_toggled(bool b);
   void startTx2();
+  void loggit(QString t);
+
+  void on_dialFreqLineEdit_editingFinished();
 
 private:
     Ui::MainWindow *ui;
 
-    float m_rxavg;
+    double  m_dialFreq;
+    float   m_rxavg;
     qint32  m_nDevIn;
     qint32  m_nDevOut;
     qint32  m_idInt;
@@ -88,7 +91,7 @@ private:
     qint32  m_paInDevice;
     qint32  m_paOutDevice;
     qint32  m_NBslider;
-    qint32  m_TRperiod;
+    qint32  m_TRseconds;
     qint32  m_nsps;
     qint32  m_hsymStop;
     qint32  m_inGain;
@@ -166,7 +169,7 @@ private:
     void updateStatusBar();
     void msgBox(QString t);
     void oneSec();
-    void startRx();
+//    void startRx();
     void startTx();
     void stopTx();
     double tsec();
