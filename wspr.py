@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------- WSPR
+#------------------------------------------------------------------------ WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # WSPR (pronounced "whisper") stands for "Weak Signal
@@ -1065,7 +1065,7 @@ def update():
 
 # If T/R status has changed, get new info
     ntr=int(w.acom1.ntr)
-    itx=int(w.acom1.transmitting)
+    itx=w.acom1.transmitting
     if ntr!=ntr0 or itx!=itx0:
         ntr0=ntr
         itx0=int(itx)

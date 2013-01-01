@@ -280,7 +280,6 @@ subroutine tx
   if(ntune.ge.0) nfhopok=1         !Unless this was ATU tuneup, can now hop
   if(ntune.eq.0) ntransmitted=1    !Flag only "real" transmissions
   ntune=0                          !Clear the "tune" indicator
-  call loggit('Tx done')
 
   return
 end subroutine tx
