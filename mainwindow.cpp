@@ -629,9 +629,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
         QString rcall=s.at(5).toAscii();
         QString rgrid=s.at(6).toAscii();
         int dbm=s.at(6).toInt();
-        loggit("Upload to WSPRnet");
-        qDebug() << i << iutc << sig << dt << rqrg << drift << rcall
-                 << rgrid << dbm;
+//        loggit("Upload to WSPRnet");
+//        qDebug() << i << iutc << sig << dt << rqrg << drift << rcall << rgrid << dbm;
         // Upload to WSPRnet here ...  Use a "future" call, and don't
         // forget to include a randomized wait period
       }
