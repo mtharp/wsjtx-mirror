@@ -34,7 +34,8 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
   save
 
-  nfft3=2048
+!  nfft3=2048
+  nfft3=nsps/4
   jstep=nsps/16
   if(k.gt.NMAX) go to 999
   if(k.lt.nfft3) then

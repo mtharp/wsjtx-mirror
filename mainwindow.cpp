@@ -148,7 +148,7 @@ MainWindow::MainWindow(QWidget *parent) :
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
   if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
-  if(m_mode=="WSPR-10") on_actionWSPR_15_triggered();
+  if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(diskDat()));
