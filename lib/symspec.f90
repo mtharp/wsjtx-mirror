@@ -29,8 +29,8 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
   complex cx(0:MAXFFT3-1)
   logical*1 lstrong(0:1023)               !Should be (0:512)
   integer*2 id2
-  complex c0(NDMAX)
-  common/datcom/nutc,ndiskdat,id2(NMAX),savg(NSMAX)
+  complex c0
+  common/datcom/nutc,ndiskdat,id2(NMAX),savg(NSMAX),c0(NDMAX)
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
   save
 
