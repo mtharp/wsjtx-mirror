@@ -16,17 +16,17 @@ void getfile(QString fname, int ntrperiod)
   FILE* fp=fopen(name,"rb");
 
   int i0=fname.indexOf(".wav");
-  jt9com_.nutc=0;
-  if(i0>0) jt9com_.nutc=100*fname.mid(i0-4,2).toInt() +
+  datcom_.nutc=0;
+  if(i0>0) datcom_.nutc=100*fname.mid(i0-4,2).toInt() +
       fname.mid(i0-2,2).toInt();
   int npts=ntrperiod*12000;
-  memset(jt9com_.d2,0,2*npts);
+  memset(datcom_.d2,0,2*npts);
 
   if(fp != NULL) {
 // Read (and ignore) a 44-byte WAV header; then read data
-    fread(jt9com_.d2,1,44,fp);
-//    fread(jt9com_.d2,2,30000,fp);
-    fread(jt9com_.d2,2,npts,fp);
+    fread(datcom_.d2,1,44,fp);
+//    fread(datcom_.d2,2,30000,fp);
+    fread(datcom_.d2,2,npts,fp);
     fclose(fp);
   }
 }
@@ -84,9 +84,9 @@ void savewav(QString fname, int ntrperiod)
     hdr.ndata=2*npts;
 
     fwrite(&hdr,sizeof(hdr),1,fp);
-//    memcpy(jt9com_.d2,buf,2*npts);
+//    memcpy(datcom_.d2,buf,2*npts);
 //    fwrite(buf,2,npts,fp);
-    fwrite(jt9com_.d2,2,npts,fp);
+    fwrite(datcom_.d2,2,npts,fp);
     fclose(fp);
   }
 //  free(buf);

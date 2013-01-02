@@ -79,13 +79,13 @@ MainWindow::MainWindow(QWidget *parent) :
           SLOT(showStatusMessage(QString)));
   createStatusBar();
 
-  connect(&proc_jt9, SIGNAL(readyReadStandardOutput()),
+  connect(&p1, SIGNAL(readyReadStandardOutput()),
                     this, SLOT(readFromStdout()));
 
-  connect(&proc_jt9, SIGNAL(error(QProcess::ProcessError)),
+  connect(&p1, SIGNAL(error(QProcess::ProcessError)),
           this, SLOT(jt9_error()));
 
-  connect(&proc_jt9, SIGNAL(readyReadStandardError()),
+  connect(&p1, SIGNAL(readyReadStandardError()),
           this, SLOT(readFromStderr()));
 
   mNetworkManager = new QNetworkAccessManager(this);
@@ -282,9 +282,9 @@ void MainWindow::dataSink(int k)
   static float df3;
 
   if(m_diskData) {
-    jt9com_.ndiskdat=1;
+    datcom_.ndiskdat=1;
   } else {
-    jt9com_.ndiskdat=0;
+    datcom_.ndiskdat=0;
   }
 
 // Get power, spectrum, and ihsym
@@ -321,7 +321,7 @@ void MainWindow::dataSink(int k)
     lab3->setText("Decoding");
     m_rxdone=true;
     loggit("Start Decoder");
-    proc_jt9.start(QDir::toNativeSeparators(cmnd));
+    p1.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
 }
@@ -607,15 +607,15 @@ void MainWindow::jt9_error()                                     //jt9_error
 
 void MainWindow::readFromStderr()                             //readFromStderr
 {
-  QByteArray t=proc_jt9.readAllStandardError();
+  QByteArray t=p1.readAllStandardError();
   msgBox(t);
 }
 
 void MainWindow::readFromStdout()                             //readFromStdout
 {
   QString t1;
-  while(proc_jt9.canReadLine()) {
-    QString t(proc_jt9.readLine());
+  while(p1.canReadLine()) {
+    QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       loggit("Decoder Finished");
       for(int i=0; i<m_decodedList.size(); i++) {
@@ -1056,5 +1056,5 @@ void MainWindow::on_dialFreqLineEdit_editingFinished()
 
 void MainWindow::loggit(QString t)
 {
-  qDebug() << t << m_nseq;
+//  qDebug() << t << m_nseq;
 }

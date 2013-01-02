@@ -121,7 +121,7 @@ void CPlotter::draw(float swide[])                                //draw()
     painter1.drawPoint(i,0);
     y2=0;
     if(m_bCurrent) y2 = 0.4*gain*y - 15;
-    if(m_bCumulative) y2=1.5*gain*10.0*log10(jt9com_.savg[i0+i]) - 20;
+    if(m_bCumulative) y2=1.5*gain*10.0*log10(datcom_.savg[i0+i]) - 20;
     y2=y2*float(m_h)/540.0;
     if(strong != strong0 or i==m_w-1) {
       painter2D.drawPolyline(LineBuf,j);
@@ -148,9 +148,9 @@ void CPlotter::draw(float swide[])                                //draw()
 void CPlotter::UTCstr()
 {
   int ihr,imin;
-  if(jt9com_.ndiskdat != 0) {
-    ihr=jt9com_.nutc/100;
-    imin=jt9com_.nutc % 100;
+  if(datcom_.ndiskdat != 0) {
+    ihr=datcom_.nutc/100;
+    imin=datcom_.nutc % 100;
   } else {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
     imin=ms/60000;

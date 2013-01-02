@@ -11,7 +11,7 @@ extern struct {
   int ndiskdat;                     //1 ==> data read from *.wav file  float ss[184*NSMAX];
   short int d2[900*12000];
   float savg[1366];
-} jt9com_;                          //This is "common/jt9com/..." in fortran
+} datcom_;                          //This is "common/datcom/..." in fortran
 }
 
 typedef struct
@@ -52,7 +52,7 @@ extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
   nbytes=2*framesToProcess;        //Bytes per frame
   k=udata->kin;
   if(udata->receiving) {
-    memcpy(&jt9com_.d2[k],inputBuffer,nbytes);      //Copy all samples to d2
+    memcpy(&datcom_.d2[k],inputBuffer,nbytes);      //Copy all samples to d2
   }
   udata->kin += framesToProcess;
   return paContinue;

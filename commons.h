@@ -10,7 +10,7 @@ extern struct {
   int ndiskdat;                     //1 ==> data read from *.wav file
   short int d2[900*12000];
   float savg[1366];
-} jt9com_;
+} datcom_;
 
 }
 

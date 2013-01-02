@@ -144,7 +144,8 @@ private:
 
     QNetworkReply* reply;
     QNetworkAccessManager* mNetworkManager;
-    QProcess proc_jt9;
+    QProcess p1;
+    QProcess p2;
     QStringList m_decodedList;
 
     QTimer* pttTimer;

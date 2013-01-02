@@ -30,7 +30,7 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   logical*1 lstrong(0:1023)               !Should be (0:512)
   integer*2 id2
   complex c0(NDMAX)
-  common/jt9com/nutc,ndiskdat,id2(NMAX),savg(NSMAX)
+  common/datcom/nutc,ndiskdat,id2(NMAX),savg(NSMAX)
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
   save
 
