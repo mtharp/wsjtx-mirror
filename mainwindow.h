@@ -28,11 +28,14 @@ public slots:
   void dataSink(int k);
   void diskDat();
   void diskWriteFinished();
-//  void guiUpdate();
-  void guiUpdate2();
-  void readFromStdout();
-  void readFromStderr();
-  void jt9_error();
+  void uploadFinished();
+  void guiUpdate();
+  void p1ReadFromStdout();
+  void p1ReadFromStderr();
+  void p1Error();
+  void p2ReadFromStdout();
+  void p2ReadFromStderr();
+  void p2Error();
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -68,6 +71,7 @@ private slots:
   void on_cbTxMute_toggled(bool b);
   void startTx2();
   void loggit(QString t);
+  void p2Start();
 
   void on_dialFreqLineEdit_editingFinished();
 
@@ -149,6 +153,7 @@ private:
     QStringList m_decodedList;
 
     QTimer* pttTimer;
+    QTimer* uploadTimer;
 
     QString m_path;
     QString m_myCall;

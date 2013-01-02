@@ -94,6 +94,9 @@ subroutine mept162(outfile,appdir,nappdir,f0,ncmdline,id,npts,nbfo,ierr)
              ncycles/81,ii
 1010    format(a11,i4,i4,f5.1,f11.6,2x,a22,i3,i6,i5)
         call flush(14)
+        open(17,file='wspr0.out',status='unknown',position='append')
+        write(17,1010) datetime,nsync,nsnrx,dtx,freq,message,nf1,ncycles/81,ii
+        close(17)
         i1=index(message,' ')
 
      endif

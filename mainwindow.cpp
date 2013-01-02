@@ -80,23 +80,31 @@ MainWindow::MainWindow(QWidget *parent) :
   createStatusBar();
 
   connect(&p1, SIGNAL(readyReadStandardOutput()),
-                    this, SLOT(readFromStdout()));
-
-  connect(&p1, SIGNAL(error(QProcess::ProcessError)),
-          this, SLOT(jt9_error()));
-
+                    this, SLOT(p1ReadFromStdout()));
   connect(&p1, SIGNAL(readyReadStandardError()),
-          this, SLOT(readFromStderr()));
+          this, SLOT(p1ReadFromStderr()));
+  connect(&p1, SIGNAL(error(QProcess::ProcessError)),
+          this, SLOT(p1Error()));
+
+  connect(&p2, SIGNAL(readyReadStandardOutput()),
+                    this, SLOT(p2ReadFromStdout()));
+  connect(&p2, SIGNAL(readyReadStandardError()),
+          this, SLOT(p2ReadFromStderr()));
+  connect(&p2, SIGNAL(error(QProcess::ProcessError)),
+          this, SLOT(p2Error()));
 
   mNetworkManager = new QNetworkAccessManager(this);
   QObject::connect(mNetworkManager, SIGNAL(finished(QNetworkReply*)),
                    this, SLOT(onNetworkReply(QNetworkReply*)));
 
   QTimer *guiTimer = new QTimer(this);
-//  connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
-  connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate2()));
+  connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
   guiTimer->start(100);                            //Don't change the 100 ms!
   pttTimer = new QTimer(this);
+
+  uploadTimer = new QTimer(this);
+  uploadTimer->setSingleShot(true);
+  connect(uploadTimer, SIGNAL(timeout()), this, SLOT(p2Start()));
 
   m_auto=false;
   m_waterfallAvg = 1;
@@ -148,6 +156,10 @@ MainWindow::MainWindow(QWidget *parent) :
   future2 = new QFuture<void>;
   watcher2 = new QFutureWatcher<void>;
   connect(watcher2, SIGNAL(finished()),this,SLOT(diskWriteFinished()));
+
+  future3 = new QFuture<void>;
+  watcher3 = new QFutureWatcher<void>;
+  connect(watcher3, SIGNAL(finished()),this,SLOT(uploadFinished()));
 
   soundInThread.setInputDevice(m_paInDevice);
   soundInThread.start(QThread::HighestPriority);
@@ -599,42 +611,16 @@ void MainWindow::on_actionSave_all_triggered()                //Save All
   ui->actionSave_all->setChecked(true);
 }
 
-void MainWindow::jt9_error()                                     //jt9_error
-{
-  msgBox("Error starting or running\n" + m_appDir + "/wspr0");
-//  exit(1);
-}
-
-void MainWindow::readFromStderr()                             //readFromStderr
-{
-  QByteArray t=p1.readAllStandardError();
-  msgBox(t);
-}
-
-void MainWindow::readFromStdout()                             //readFromStdout
+void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 {
   QString t1;
   while(p1.canReadLine()) {
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       loggit("Decoder Finished");
-      for(int i=0; i<m_decodedList.size(); i++) {
-        t1=m_decodedList.at(i).toAscii();
-        QStringList s=t1.split(" ",QString::SkipEmptyParts);
-        int iutc=s.at(0).toInt();
-        int sig=s.at(1).toInt();
-        float dt=s.at(2).toFloat();
-        double rqrg=s.at(3).toDouble();
-        int drift=s.at(4).toInt();
-        QString rcall=s.at(5).toAscii();
-        QString rgrid=s.at(6).toAscii();
-        int dbm=s.at(6).toInt();
-//        loggit("Upload to WSPRnet");
-//        qDebug() << i << iutc << sig << dt << rqrg << drift << rcall << rgrid << dbm;
-        // Upload to WSPRnet here ...  Use a "future" call, and don't
-        // forget to include a randomized wait period
-      }
-      m_decodedList.clear();
+      float x=rand()/((double)RAND_MAX + 1);
+      int msdelay=20000*x;
+      uploadTimer->start(msdelay);                         //Sequencer delay
 
 //      m_bdecoded = (t.mid(23,1).toInt()==1);
       bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
@@ -648,12 +634,59 @@ void MainWindow::readFromStdout()                             //readFromStdout
       m_startAnother=m_loopall;
       return;
     } else {
-      m_decodedList += t;
+//      m_decodedList += t;
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       ui->decodedTextBrowser->append(t);
     }
   }
+}
+
+void MainWindow::p1ReadFromStderr()                        //p1readFromStderr
+{
+  QByteArray t=p1.readAllStandardError();
+  msgBox(t);
+}
+
+void MainWindow::p1Error()                                     //p1Error
+{
+  msgBox("Error starting or running\n" + m_appDir + "/wspr0");
+}
+
+void MainWindow::p2Start()
+{
+  QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
+      "/wspr0.out -F call=" + m_myCall + " -F grid=" + m_myGrid;
+  cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
+  loggit("Start curl");
+  p2.start(cmnd);
+}
+
+void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
+{
+  while(p2.canReadLine()) {
+    QString t(p2.readLine());
+    if(t.indexOf("spot(s) added") > 0) {
+      QFile f("wspr0.out");
+      f.remove();
+    }
+  }
+}
+
+void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
+{
+  QByteArray t=p2.readAllStandardError();
+  if(t.length()>0) msgBox(t);
+}
+
+void MainWindow::p2Error()                                     //p2rror
+{
+  msgBox("Error attempting to start curl.");
+}
+
+void MainWindow::uploadFinished()                             //uploadFinished
+{
+  qDebug() << "Upload Finished";
 }
 
 void MainWindow::on_EraseButton_clicked()                          //Erase
@@ -732,145 +765,6 @@ void MainWindow::onNetworkReply(QNetworkReply* reply)
   reply->deleteLater();
 }
 
-/*
-//------------------------------------------------------------- //guiUpdate()
-void MainWindow::guiUpdate()
-{
-  static int iptt0=0;
-  static int iptt=0;
-  static bool btxok0=false;
-  static int nc0=1;
-  static int nc1=1;
-  static char message[29];
-  static char msgsent[29];
-  static int nsendingsh=0;
-  int khsym=0;
-
-  double tx1=0.0;
-//  double tx2=m_TRseconds;
-  double tx2=1.0 + 85.0*m_nsps/12000.0;
-
-  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
-  int nsec=ms/1000;
-  double tsec=0.001*ms;
-  double t2p=fmod(tsec,2*m_TRseconds);
-  bool bTxTime = (t2p >= tx1) && (t2p < tx2);
-
-  if(m_auto) {
-
-    QFile f("txboth");
-    if(f.exists() and fmod(tsec,m_TRseconds)<1.0 + 85.0*m_nsps/12000.0)
-      bTxTime=true;
-
-    if(bTxTime and iptt==0 and !btxMute) {
-      int itx=1;
-      ptt(m_pttPort,itx,&iptt);       // Raise PTT
-      if(!soundOutThread.isRunning()) {
-        double snr=99.0;
-        soundOutThread.setTxSNR(snr);
-        soundOutThread.start(QThread::HighPriority);
-      }
-    }
-    if(!bTxTime || btxMute) {
-      btxok=false;
-    }
-  }
-
-// Calculate Tx waveform when needed
-  if((iptt==1 && iptt0==0) || m_restart) {
-    QByteArray ba;
-
-//    ba2msg(ba,message);
-//    ba2msg(ba,msgsent);
-//    int len1=22;
-//    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
-    msgsent[22]=0;
-    lab5->setText("Last Tx:  " + QString::fromAscii(msgsent));
-    if(m_restart) {
-      QFile f("wsprx_tx.log");
-      f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
-      QTextStream out(&f);
-      out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
-          << "  Tx message:  " << QString::fromAscii(msgsent) << endl;
-      f.close();
-
-    }
-
-    m_restart=false;
-  }
-
-// If PTT was just raised, start a countdown for raising TxOK:
-  if(iptt==1 && iptt0==0) nc1=-9;    // TxDelay = 0.8 s
-  if(nc1 <= 0) nc1++;
-  if(nc1 == 0) {
-    ui->xThermo->setValue(0.0);   //Set Thermo to zero
-    m_receiving=false;
-    soundInThread.setReceiving(false);
-    btxok=true;
-    m_transmitting=true;
-
-    QFile f("wsprx_tx.log");
-    f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
-    QTextStream out(&f);
-    out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
-        << "  Tx message:  " << QString::fromAscii(msgsent) << endl;
-    f.close();
-  }
-
-// If btxok was just lowered, start a countdown for lowering PTT
-  if(!btxok && btxok0 && iptt==1) nc0=-11;  //RxDelay = 1.0 s
-  if(nc0 <= 0) {
-    nc0++;
-  }
-  if(nc0 == 0) {
-    int itx=0;
-    ptt(m_pttPort,itx,&iptt);       // Lower PTT
-    if(!btxMute) soundOutThread.quitExecution=true;
-    m_transmitting=false;
-    if(m_auto) {
-      m_receiving=true;
-      soundInThread.setReceiving(m_receiving);
-    }
-  }
-
-  if(iptt == 0 && !btxok) {
-    // sending=""
-    // nsendingsh=0
-  }
-
-  if(m_receiving) {
-//    ui->monitorButton->setStyleSheet(m_pbmonitor_style);
-  } else {
-//    ui->monitorButton->setStyleSheet("");
-  }
-
-  if(m_startAnother) {
-    m_startAnother=false;
-    on_actionOpen_next_in_directory_triggered();
-  }
-
-  if(nsec != m_sec0) {                                     //Once per second
-    oneSec();
-    if(m_transmitting) {
-      lab1->setStyleSheet("QLabel{background-color: #ffff33}");
-      char s[37];
-      sprintf(s,"Tx: %s",msgsent);
-      lab1->setText(s);
-    } else if(m_receiving) {
-      lab1->setStyleSheet("QLabel{background-color: #00ff00}");
-  //      lab1->setText("Receiving ");
-    } else if (!m_diskData) {
-      lab1->setStyleSheet("");
-      lab1->setText("");
-    }
-    m_hsym0=khsym;
-    m_sec0=nsec;
-  }
-  iptt0=iptt;
-  btxok0=btxok;
-}
-*/
-
 void MainWindow::oneSec() {
   QDateTime t = QDateTime::currentDateTimeUtc();
   m_setftx=0;
@@ -883,8 +777,8 @@ void MainWindow::oneSec() {
   }
 }
 
-//------------------------------------------------------------- //guiUpdate2()
-void MainWindow::guiUpdate2()
+//------------------------------------------------------------- //guiUpdate()
+void MainWindow::guiUpdate()
 {
   int nsec=int(tsec());
   m_nseq = nsec % m_TRseconds;
