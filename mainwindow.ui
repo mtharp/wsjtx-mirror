@@ -232,6 +232,9 @@ p, li { white-space: pre-wrap; }
         </item>
         <item>
          <widget class="QCheckBox" name="cbBandHop">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Band Hop</string>
           </property>
@@ -239,13 +242,19 @@ p, li { white-space: pre-wrap; }
         </item>
         <item>
          <widget class="QCheckBox" name="cbIdle">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Idle</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="cbTxMute">
+         <widget class="QCheckBox" name="cbTxEnable">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Tx Enable</string>
           </property>
@@ -1197,7 +1206,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>inGain</tabstop>
   <tabstop>cbUpload</tabstop>
   <tabstop>cbBandHop</tabstop>
-  <tabstop>cbTxMute</tabstop>
+  <tabstop>cbTxEnable</tabstop>
  </tabstops>
  <resources/>
  <connections/>

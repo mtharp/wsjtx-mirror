@@ -68,12 +68,16 @@ private slots:
   void onNetworkReply(QNetworkReply* reply);
   void on_sbPctTx_valueChanged(int arg1);
   void on_cbIdle_toggled(bool b);
-  void on_cbTxMute_toggled(bool b);
+  void on_cbTxEnable_toggled(bool b);
   void startTx2();
   void loggit(QString t);
   void p2Start();
 
   void on_dialFreqLineEdit_editingFinished();
+
+  void on_cbUpload_toggled(bool checked);
+
+  void on_cbBandHop_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;
@@ -125,6 +129,8 @@ private:
     bool    m_txnext;
     bool    m_hopping;
     bool    m_TxOK;
+    bool    m_uploadSpots;
+    bool    m_bandHop;
 
     char    m_decoded[80];
 

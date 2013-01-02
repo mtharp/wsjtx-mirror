@@ -227,6 +227,7 @@ void MainWindow::writeSettings()
   settings.setValue("TxFreq",m_txFreq);
   settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("InGain",m_inGain);
+  settings.setValue("UploadSpots",m_uploadSpots);
   settings.endGroup();
 }
 
@@ -276,6 +277,8 @@ void MainWindow::readSettings()
   m_saveAll=ui->actionSave_all->isChecked();
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
+  m_uploadSpots=settings.value("UploadSpots",false).toBool();
+  ui->cbUpload->setChecked(m_uploadSpots);
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -618,10 +621,14 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       loggit("Decoder Finished");
-      float x=rand()/((double)RAND_MAX + 1);
-      int msdelay=20000*x;
-      uploadTimer->start(msdelay);                         //Sequencer delay
-
+      if(m_uploadSpots) {
+        float x=rand()/((double)RAND_MAX + 1);
+        int msdelay=20000*x;
+        uploadTimer->start(msdelay);                         //Upload delay
+      } else {
+        QFile f("wspr0.out");
+        f.remove();
+      }
 //      m_bdecoded = (t.mid(23,1).toInt()==1);
       bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
       if(!keepFile) {
@@ -937,7 +944,7 @@ void MainWindow::on_cbIdle_toggled(bool b)
   m_idle=b;
 }
 
-void MainWindow::on_cbTxMute_toggled(bool b)
+void MainWindow::on_cbTxEnable_toggled(bool b)
 {
   m_TxOK=b;
 }
@@ -951,4 +958,14 @@ void MainWindow::on_dialFreqLineEdit_editingFinished()
 void MainWindow::loggit(QString t)
 {
 //  qDebug() << t << m_nseq;
+}
+
+void MainWindow::on_cbUpload_toggled(bool b)
+{
+  m_uploadSpots=b;
+}
+
+void MainWindow::on_cbBandHop_toggled(bool b)
+{
+  m_bandHop=b;
 }
