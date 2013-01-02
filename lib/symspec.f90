@@ -106,7 +106,9 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
      if(j.ge.1 .and. j.le.NDMAX) cx(i)=c0(j)
   enddo
 
-  if(ihsym.lt.184) ihsym=ihsym+1
+!  if(ihsym.lt.184) ihsym=ihsym+1
+  ihsym=ihsym+1
+
   cx(0:nfft3-1)=w3(1:nfft3)*cx(0:nfft3-1)  !Apply window w3
   call four2a(cx,nfft3,1,1,1)           !Third forward FFT (X)
 

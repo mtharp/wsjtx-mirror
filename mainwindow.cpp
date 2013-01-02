@@ -313,7 +313,6 @@ void MainWindow::dataSink(int k)
     g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
-  qDebug() << m_nsps << m_hsymStop << ihsym;
   if(ihsym == m_hsymStop) {
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
@@ -707,9 +706,9 @@ void MainWindow::on_actionWSPR_2_triggered()
 {
   m_mode="WSPR-2";
   m_TRseconds=120;
-  m_nsps=15360;
-  m_hsymStop=178;
-  m_nseqdone=115;
+  m_nsps=8192;
+  m_nseqdone=114;
+  m_hsymStop=int(2.0*m_nseqdone*12000.0/m_nsps);
   soundInThread.setPeriod(m_TRseconds,m_nsps);
   soundOutThread.setPeriod(m_TRseconds,m_nsps);
   g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
@@ -722,9 +721,9 @@ void MainWindow::on_actionWSPR_15_triggered()
 {
   m_mode="WSPR-15";
   m_TRseconds=900;
-  m_nsps=82944;
-  m_hsymStop=171;
-  m_nseqdone=895;
+  m_nsps=65536;
+  m_nseqdone=890;
+  m_hsymStop=int(2.0*m_nseqdone*12000.0/m_nsps);
   soundInThread.setPeriod(m_TRseconds,m_nsps);
   soundOutThread.setPeriod(m_TRseconds,m_nsps);
   g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
