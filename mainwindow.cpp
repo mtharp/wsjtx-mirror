@@ -627,7 +627,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         uploadTimer->start(msdelay);                         //Upload delay
       } else {
         QFile f("wspr0.out");
-        f.remove();
+        if(f.exists()) f.remove();
       }
 //      m_bdecoded = (t.mid(23,1).toInt()==1);
       bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
