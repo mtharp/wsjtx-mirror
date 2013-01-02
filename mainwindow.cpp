@@ -303,7 +303,7 @@ void MainWindow::dataSink(int k)
   }
 
 // Get power, spectrum, and ihsym
-  symspec_(&k, &m_inGain, &px, s, &df3, &ihsym);
+  symspec_(&k, &m_nsps, &m_inGain, &px, s, &df3, &ihsym);
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
@@ -313,6 +313,7 @@ void MainWindow::dataSink(int k)
     g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
+  qDebug() << m_nsps << m_hsymStop << ihsym;
   if(ihsym == m_hsymStop) {
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");

@@ -1,4 +1,4 @@
-subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
+subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -34,7 +34,6 @@ subroutine symspec(k,ingain,pxdb,s,df3,ihsym)
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
   save
 
-  nsps=15360              !Nothing magical about this value, comes from JT9-2
   nfft3=2048
   jstep=nsps/16
   if(k.gt.NMAX) go to 999

@@ -29,7 +29,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_TxFreq = 1500;
   m_line = 0;
   m_fSample = 12000;
-  m_nsps=6912;
+  m_nsps=15360;
   m_dBStepSize=10;
   m_Percent2DScreen = 30;	//percent of screen used for 2D display
   m_txFreq=0;
@@ -453,9 +453,7 @@ void CPlotter::setNsps(int ntrperiod, int nsps)                                 
   m_nsps=nsps;
   m_fftBinWidth=1500.0/2048.0;
   if(m_nsps==15360)  m_fftBinWidth=1500.0/2048.0;
-  if(m_nsps==40960)  m_fftBinWidth=1500.0/6144.0;
   if(m_nsps==82944)  m_fftBinWidth=1500.0/12288.0;
-  if(m_nsps==252000) m_fftBinWidth=1500.0/32768.0;
   DrawOverlay();                         //Redraw scales and ticks
   update();                              //trigger a new paintEvent}
 }
