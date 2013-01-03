@@ -28,7 +28,6 @@ public slots:
   void dataSink(int k);
   void diskDat();
   void diskWriteFinished();
-  void uploadFinished();
   void guiUpdate();
   void p1ReadFromStdout();
   void p1ReadFromStderr();
@@ -130,6 +129,7 @@ private:
     bool    m_hopping;
     bool    m_TxOK;
     bool    m_uploadSpots;
+    bool    m_uploading;
     bool    m_bandHop;
 
     char    m_decoded[80];

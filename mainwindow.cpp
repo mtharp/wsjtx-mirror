@@ -136,6 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_idle=false;
   m_TxOK=false;
   m_nrx=1;
+  m_uploading=false;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -157,9 +158,11 @@ MainWindow::MainWindow(QWidget *parent) :
   watcher2 = new QFutureWatcher<void>;
   connect(watcher2, SIGNAL(finished()),this,SLOT(diskWriteFinished()));
 
+  /*
   future3 = new QFuture<void>;
   watcher3 = new QFutureWatcher<void>;
   connect(watcher3, SIGNAL(finished()),this,SLOT(uploadFinished()));
+  */
 
   soundInThread.setInputDevice(m_paInDevice);
   soundInThread.start(QThread::HighestPriority);
@@ -662,10 +665,12 @@ void MainWindow::p1Error()                                     //p1Error
 
 void MainWindow::p2Start()
 {
+  if(m_uploading) return;
   QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
       "/wspr0.out -F call=" + m_myCall + " -F grid=" + m_myGrid;
   cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
   loggit("Start curl");
+  m_uploading=true;
   p2.start(cmnd);
 }
 
@@ -678,22 +683,20 @@ void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
       f.remove();
     }
   }
+  m_uploading=false;
 }
 
 void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
 {
   QByteArray t=p2.readAllStandardError();
   if(t.length()>0) msgBox(t);
+  m_uploading=false;
 }
 
 void MainWindow::p2Error()                                     //p2rror
 {
   msgBox("Error attempting to start curl.");
-}
-
-void MainWindow::uploadFinished()                             //uploadFinished
-{
-  qDebug() << "Upload Finished";
+  m_uploading=false;
 }
 
 void MainWindow::on_EraseButton_clicked()                          //Erase
