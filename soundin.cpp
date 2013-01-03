@@ -42,7 +42,7 @@ extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
   int nbytes,k;
 
   udata->ncall++;
-  if( (statusFlags&paInputOverflow) != 0) {
+  if( (statusFlags & paInputOverflow) != 0) {
     qDebug() << "Input Overflow";
   }
   if(udata->bzero) {           //Start of a new Rx sequence

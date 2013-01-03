@@ -1,15 +1,15 @@
-subroutine encode232(dat,nsym,symbol)
+subroutine encode232(dat,nbytes,symbol,maxsym)
 
 ! Convolutional encoder for a K=32, r=1/2 code.
 
-  integer*1 dat(13)                 !User data, packed 8 bits per byte
-  integer*1 symbol(500)             !Channel symbols, one bit per byte
+  integer*1 dat(nbytes)             !User data, packed 8 bits per byte
+  integer*1 symbol(maxsym)          !Channel symbols, one bit per byte
   integer*1 i1
   include 'conv232.f90'
 
   nstate=0
   k=0
-  do j=1,nsym
+  do j=1,nbytes
      do i=7,0,-1
         i1=dat(j)
         i4=i1
@@ -23,11 +23,8 @@ subroutine encode232(dat,nsym,symbol)
         n=ieor(n,ishft(n,-16))
         k=k+1
         symbol(k)=partab(iand(ieor(n,ishft(n,-8)),255))
-        if(k.ge.nsym) go to 100
      enddo
   enddo
-
-100 continue
 
   return
 end subroutine encode232

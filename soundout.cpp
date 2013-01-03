@@ -7,7 +7,7 @@ extern "C" {
 }
 
 extern float gran();                  //Noise generator (for tests only)
-extern int itone[85];                 //Tx audio tones for 85 symbols
+extern int itone[162];                 //Tx audio tones for 162 symbols
 extern bool btxok;
 extern bool btxMute;
 extern double outputLatency;
@@ -55,7 +55,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     srand(mstr);                                //Initialize random seed
   }
   isym=ic/(4*udata->nsps);                      //Actual fsample=48000
-  if(isym>=85) return 1;
+  if(isym>=162) return 1;
   baud=12000.0/udata->nsps;
   freq=udata->ntxfreq + itone[isym]*baud;
   dphi=twopi*freq/48000.0;

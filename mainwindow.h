@@ -185,6 +185,8 @@ private:
     void startTx();
     void stopTx();
     double tsec();
+    void ba2msg(QByteArray ba, char* message);
+
 
 };
 
@@ -200,10 +202,7 @@ extern "C" {
 //----------------------------------------------------- C and Fortran routines
 void symspec_(int* k, int* nsps, int* ingain, float* px, float s[],
               float* df3, int* nhsym);
-/*
-void genjt9_(char* msg, int* ichk, char* msgsent, int itone[],
-             int* itext, int len1, int len2);
-*/
+void genwsprx_(char* msg, int itone[], int len1);
 }
 
 #endif // MAINWINDOW_H

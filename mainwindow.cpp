@@ -689,7 +689,10 @@ void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
 void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
 {
   QByteArray t=p2.readAllStandardError();
-  if(t.length()>0) msgBox(t);
+  if(t.length()>0) {
+    loggit(t);
+//    msgBox(t);
+  }
   m_uploading=false;
 }
 
@@ -918,23 +921,43 @@ void MainWindow::startRx()
 
 void MainWindow::startTx()
 {
+  static char msg[23];
+  QString message=m_myCall + m_myGrid + "37";            //### dBm ###
+  QByteArray ba=message.toAscii();
+  ba2msg(ba,msg);
+  int len1=22;
+  genwsprx_(msg,itone,len1);
   int itx=1;
   ptt(m_pttPort,itx,&m_iptt);                   // Raise PTT
-  if(!soundOutThread.isRunning()) {
-    double snr=99.0;
-    soundOutThread.setTxSNR(snr);
-    soundOutThread.start(QThread::HighPriority);
-  }
-
   pttTimer->setSingleShot(true);
   connect(pttTimer, SIGNAL(timeout()), this, SLOT(startTx2()));
   loggit("Start Tx");
   pttTimer->start(200);                         //Sequencer delay
 }
 
+void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
+{
+  bool eom;
+  eom=false;
+  int iz=ba.length();
+  for(int i=0;i<22; i++) {
+    if(i<iz) {
+      message[i]=ba[i];
+    } else {
+      message[i]=32;
+    }
+  }
+  message[22]=0;
+}
+
 void MainWindow::startTx2()
 {
   loggit("Start Tx2");
+  if(!soundOutThread.isRunning()) {
+    double snr=99.0;
+    soundOutThread.setTxSNR(snr);
+    soundOutThread.start(QThread::HighPriority);
+  }
 }
 
 void MainWindow::stopTx()
