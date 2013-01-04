@@ -72,16 +72,12 @@ private slots:
   void startTx2();
   void loggit(QString t);
   void p2Start();
-
   void on_dialFreqLineEdit_editingFinished();
-
   void on_cbUpload_toggled(bool checked);
-
   void on_cbBandHop_toggled(bool checked);
-
   void on_TuneButton_clicked();
-
   void on_txFreqLineEdit_editingFinished();
+  void on_dBmComboBox_currentIndexChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;
@@ -116,6 +112,7 @@ private:
     qint32  m_pctx;
     qint32  m_iptt;
     qint32  m_txFreq0;
+    qint32  m_dBm;
 
     bool    m_receiving;
     bool    m_transmitting;

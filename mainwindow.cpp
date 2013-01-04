@@ -141,6 +141,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
   ui->xThermo->setFillBrush(Qt::green);
 
+  for(int i=0; i<28; i++)  {                      //Initialize dBm values
+    float dbm=(10.0*i)/3.0 - 30.0;
+    int ndbm;
+    if(dbm<0) ndbm=int(dbm-0.5);
+    if(dbm>=0) ndbm=int(dbm+0.5);
+    QString t;
+    t.sprintf("%d dBm",ndbm);
+    ui->dBmComboBox->addItem(t);
+  }
+
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
     msgBox("Unable to initialize PortAudio.");
@@ -236,6 +246,7 @@ void MainWindow::writeSettings()
   settings.setValue("UploadSpots",m_uploadSpots);
   settings.setValue("TxEnable",m_TxOK);
   settings.setValue("PctTx",m_pctx);
+  settings.setValue("dBm",m_dBm);
   settings.endGroup();
 }
 
@@ -291,6 +302,8 @@ void MainWindow::readSettings()
   ui->cbTxEnable->setChecked(m_TxOK);
   m_pctx=settings.value("PctTx",25).toInt();
   ui->sbPctTx->setValue(m_pctx);
+  m_dBm=settings.value("dBm",37).toInt();
+  ui->dBmComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -925,7 +938,9 @@ void MainWindow::on_sbPctTx_valueChanged(int arg1)
 void MainWindow::startTx()
 {
   static char msg[23];
-  QString message=m_myCall + " " + m_myGrid.mid(0,4) + " 37";    //### dBm ###
+  QString sdBm;
+  sdBm.sprintf(" %d",m_dBm);
+  QString message=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
   QByteArray ba=message.toAscii();
   ba2msg(ba,msg);
   int len1=22;
@@ -1017,4 +1032,9 @@ void MainWindow::on_TuneButton_clicked()
 {
   on_cbIdle_toggled(true);
   m_ntune=1;
+}
+
+void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)
+{
+  m_dBm=arg1.toInt();
 }
