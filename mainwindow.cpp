@@ -1036,5 +1036,6 @@ void MainWindow::on_TuneButton_clicked()
 
 void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)
 {
-  m_dBm=arg1.toInt();
+  int i1=arg1.indexOf(" ");
+  m_dBm=arg1.mid(0,i1).toInt();
 }

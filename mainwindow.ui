@@ -292,7 +292,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QComboBox" name="dBmComboBox">
           <property name="maximumSize">
            <size>
-            <width>60</width>
+            <width>70</width>
             <height>16777215</height>
            </size>
           </property>
