@@ -196,3 +196,8 @@ int WideGraph::txFreq()
 {
   return ui->widePlot->m_TxFreq;
 }
+
+void WideGraph::setTxed()
+{
+  ui->widePlot->m_transmitted=true;
+}

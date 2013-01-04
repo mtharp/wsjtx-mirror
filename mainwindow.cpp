@@ -985,6 +985,7 @@ void MainWindow::startTx2()
 
 void MainWindow::stopTx()
 {
+  g_pWideGraph->setTxed();
   int itx=0;
   ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
   loggit("Stop Tx");

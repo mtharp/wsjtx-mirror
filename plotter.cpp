@@ -32,6 +32,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_nsps=15360;
   m_dBStepSize=10;
   m_Percent2DScreen = 30;	//percent of screen used for 2D display
+  m_transmitted=false;
 }
 
 CPlotter::~CPlotter() { }                                      // Destructor
@@ -116,7 +117,11 @@ void CPlotter::draw(float swide[])                                //draw()
     if (y1<0) y1=0;
     if (y1>254) y1=254;
     if (swide[i0+i]>1.e29) y1=255;
-    painter1.setPen(m_ColorTbl[y1]);
+    if(y1==255 and m_transmitted) {
+      painter1.setPen(Qt::red);
+    } else {
+      painter1.setPen(m_ColorTbl[y1]);
+    }
     painter1.drawPoint(i,0);
     y2=0;
     if(m_bCurrent) y2 = 0.4*gain*y - 15;
@@ -133,6 +138,7 @@ void CPlotter::draw(float swide[])                                //draw()
     LineBuf[j].setY(m_h-(y2+0.8*m_h));
     j++;
   }
+  m_transmitted=false;
 
   if(swide[0]>1.0e29) m_line=0;
   m_line++;

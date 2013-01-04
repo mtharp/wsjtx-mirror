@@ -21,6 +21,7 @@ public:
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
   void   setDialFreq(double f);
+  void   setTxed();
   double dialFreq();
   int    txFreq();
 

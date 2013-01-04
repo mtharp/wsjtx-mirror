@@ -28,6 +28,7 @@ public:
   QColor  m_ColorTbl[256];
   bool    m_bCurrent;
   bool    m_bCumulative;
+  bool    m_transmitted;
   int     m_plotZero;
   int     m_plotGain;
   float   m_fSpan;
