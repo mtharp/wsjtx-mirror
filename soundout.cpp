@@ -56,16 +56,21 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     srand(mstr);                                //Initialize random seed
   }
   isym=ic/(4*udata->nsps);                      //Actual fsample=48000
-  if(isym>=162) return 1;
+  if(isym>=162) {
+    qDebug() << "Returning 1 from d2aCallback";
+    return paComplete;
+  }
   baud=12000.0/udata->nsps;
   freq=udata->ntxfreq + itone[isym]*baud;
   dphi=twopi*freq/48000.0;
+
   /*
   if(isym != isym0) {
-    qDebug() << isym << itone[isym] << btxok << btxMute;
+    qDebug() << isym << itone[isym] << udata->ntxfreq;
     isym0=isym;
   }
   */
+
   if(udata->txsnrdb < 0.0) {
     snr=pow(10.0,0.05*(udata->txsnrdb-6.0));
     fac=3000.0;
@@ -86,7 +91,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     *wptr++ = i2;                   //left
     ic++;
   }
-  return 0;
+  return paContinue;
 }
 
 void SoundOutThread::run()
@@ -140,7 +145,8 @@ void SoundOutThread::run()
 //---------------------------------------------- Soundcard output loop
   while (!qe) {
     qe = quitExecution;
-    if (qe) break;
+    if(qe) break;
+    if(Pa_IsStreamActive(outStream)==0) break;
 
     udata.txsnrdb=m_txsnrdb;
     udata.nsps=m_nsps;

@@ -32,7 +32,6 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_nsps=15360;
   m_dBStepSize=10;
   m_Percent2DScreen = 30;	//percent of screen used for 2D display
-  m_txFreq=0;
 }
 
 CPlotter::~CPlotter() { }                                      // Destructor
@@ -270,7 +269,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
 
   QPen pen1(Qt::red, 3);                         //Mark Tx Freq with red tick
   painter0.setPen(pen1);
-  x = XfromFreq(m_txFreq);
+  x = XfromFreq(m_TxFreq);
   painter0.drawLine(x,17,x,30);
 
 }
@@ -295,7 +294,7 @@ int CPlotter::XfromFreq(float f)                               //XfromFreq()
 
 float CPlotter::FreqfromX(int x)                               //FreqfromX()
 {
-  return float(1000.0 + x*m_fftBinWidth);
+  return float(m_StartFreq + x*m_fftBinWidth);
 }
 
 void CPlotter::SetRunningState(bool running)              //SetRunningState()
@@ -346,11 +345,10 @@ int CPlotter::TxFreq() {return m_TxFreq;}                        //TxFreq()
 
 void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
 {
-  int x=event->x();
-  setTxFreq(x,false);                               // Wideband waterfall
   bool ctrl = (event->modifiers() & Qt::ControlModifier);
-  if(!ctrl) {
-    setTxFreq(m_TxFreq);
+  if(ctrl) {
+    int x=event->x();
+    setTxFreq(x,false);
     emit freezeDecode1(1);                  //### ???
   }
 }
@@ -458,9 +456,4 @@ void CPlotter::setNsps(int ntrperiod, int nsps)                                 
   update();                              //trigger a new paintEvent}
 }
 
-void CPlotter::setTxFreq(int n)                                 //setTol()
-{
-  m_txFreq=n;
-  DrawOverlay();
-  update();
-}
+

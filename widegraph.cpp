@@ -189,5 +189,10 @@ void WideGraph::on_rbCumulative_clicked()
 
 void WideGraph::setTxFreq(int n)
 {
-  ui->widePlot->setTxFreq(n);
+  ui->widePlot->setTxFreq(n,true);
+}
+
+int WideGraph::txFreq()
+{
+  return ui->widePlot->m_TxFreq;
 }

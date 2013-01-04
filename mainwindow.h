@@ -28,6 +28,7 @@ public slots:
   void dataSink(int k);
   void diskDat();
   void diskWriteFinished();
+  void freezeDecode(int n);
   void guiUpdate();
   void p1ReadFromStdout();
   void p1ReadFromStderr();
@@ -80,6 +81,8 @@ private slots:
 
   void on_TuneButton_clicked();
 
+  void on_txFreqLineEdit_editingFinished();
+
 private:
     Ui::MainWindow *ui;
 
@@ -112,9 +115,11 @@ private:
     qint32  m_ntune;
     qint32  m_pctx;
     qint32  m_iptt;
+    qint32  m_txFreq0;
 
     bool    m_receiving;
     bool    m_transmitting;
+    bool    m_switching;
     bool    m_diskData;
     bool    m_loopall;
     bool    m_auto;

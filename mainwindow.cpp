@@ -170,13 +170,15 @@ MainWindow::MainWindow(QWidget *parent) :
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
   m_receiving=true;
-  soundInThread.setReceiving(m_receiving);
+  soundInThread.setReceiving(true);
+  m_switching=false;
   m_diskData=false;
 
   if(ui->actionLinrad->isChecked()) on_actionLinrad_triggered();
   if(ui->actionCuteSDR->isChecked()) on_actionCuteSDR_triggered();
   if(ui->actionAFMHot->isChecked()) on_actionAFMHot_triggered();
   if(ui->actionBlue->isChecked()) on_actionBlue_triggered();
+  freezeDecode(2);
 }                                          // End of MainWindow constructor
 
 //--------------------------------------------------- MainWindow destructor
@@ -317,6 +319,7 @@ void MainWindow::dataSink(int k)
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
+  lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_receiving || m_diskData) {
@@ -506,6 +509,8 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;
     g_pWideGraph->setWindowFlags(flags);
+    connect(g_pWideGraph, SIGNAL(freezeDecode2(int)),this,
+            SLOT(freezeDecode(int)));
   }
   g_pWideGraph->show();
 }
@@ -530,6 +535,15 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
     *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
     watcher1->setFuture(*future1);         // call diskDat() when done
   }
+}
+
+void MainWindow::freezeDecode(int n)                          //freezeDecode()
+{
+  m_txFreq=g_pWideGraph->txFreq();
+  double x=ui->dialFreqLineEdit->text().toDouble()+0.000001*m_txFreq;
+  QString t;
+  t.sprintf("%.6f",x);
+  ui->txFreqLineEdit->setText(t);
 }
 
 void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
@@ -795,7 +809,7 @@ void MainWindow::oneSec() {
           t.time().toString();
   ui->labUTC->setText(utc);
   if(!m_receiving and !m_diskData) {
-//    ui->xThermo->setValue(0.0);
+    ui->xThermo->setValue(0.0);
   }
 }
 
@@ -808,6 +822,14 @@ void MainWindow::guiUpdate()
     oneSec();
     m_sec0=nsec;
   }
+
+  if(m_txFreq != m_txFreq0) {
+    QString t;
+    t.sprintf(" %4d",m_txFreq);
+    ui->lab11->setText(t);
+    m_txFreq0=m_txFreq;
+  }
+
   m_rxavg=1.0;
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;
 
@@ -845,12 +867,13 @@ void MainWindow::guiUpdate()
     loggit("Tune");
     //Make a test transmission of duration pctx.
     //m_nsectx=nsec
-    m_transmitting=true;
     startTx();
   }
 
-  if(m_nseq==0 and !m_transmitting and !m_receiving and !m_idle) {
+  if(m_nseq==0 and !m_transmitting and !m_receiving and !m_idle
+     and !m_switching) {
 
+    m_switching=true;
     if(m_hopping) {
       loggit("Hopping");
       //...
@@ -859,7 +882,7 @@ void MainWindow::guiUpdate()
     }
 
     if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
-      m_transmitting=true;              //Start a normal Tx sequence
+//Start a normal Tx sequence
       float x=(float)rand()/RAND_MAX;
       if(m_pctx<50) {
         m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
@@ -874,7 +897,8 @@ void MainWindow::guiUpdate()
       m_txnext=false;
       startTx();
     } else {
-      m_receiving=true;                 //Start a normal Rx sequence
+//Start a normal Rx sequence
+      m_receiving=true;
       soundInThread.setReceiving(true);
       //m_rxtime=hhmm
       m_ntr=1;
@@ -882,6 +906,7 @@ void MainWindow::guiUpdate()
       loggit("Start Rx");
       //    startRx();
       m_nrx=m_nrx-1;
+      m_switching=false;
     }
   }
 }
@@ -897,17 +922,10 @@ void MainWindow::on_sbPctTx_valueChanged(int arg1)
   m_pctx=ui->sbPctTx->value();
 }
 
-/*
-void MainWindow::startRx()
-{
-  qDebug() << "startRx";
-}
-*/
-
 void MainWindow::startTx()
 {
   static char msg[23];
-  QString message=m_myCall + " " + m_myGrid.mid(0,4) + " 37";      //### dBm ###
+  QString message=m_myCall + " " + m_myGrid.mid(0,4) + " 37";    //### dBm ###
   QByteArray ba=message.toAscii();
   ba2msg(ba,msg);
   int len1=22;
@@ -918,6 +936,9 @@ void MainWindow::startTx()
   connect(pttTimer, SIGNAL(timeout()), this, SLOT(startTx2()));
   loggit("Start Tx");
   pttTimer->start(200);                         //Sequencer delay
+  lab1->setStyleSheet("QLabel{background-color: #ff0000}");
+  lab1->setText(message);
+  ui->xThermo->setValue(0.0);                    //Update thermometer
 }
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
@@ -937,16 +958,20 @@ void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 
 void MainWindow::startTx2()
 {
-  loggit("Start Tx2");
   if(!soundOutThread.isRunning()) {
     double snr=99.0;
     soundOutThread.setTxSNR(snr);
     soundOutThread.start(QThread::HighPriority);
+    m_transmitting=true;
+    m_switching=false;
+    loggit("Start Tx2");
   }
 }
 
 void MainWindow::stopTx()
 {
+  int itx=0;
+  ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
   loggit("Stop Tx");
 }
 
@@ -965,6 +990,12 @@ void MainWindow::on_cbTxEnable_toggled(bool b)
 void MainWindow::on_dialFreqLineEdit_editingFinished()
 {
   m_dialFreq=ui->dialFreqLineEdit->text().toDouble();
+}
+
+void MainWindow::on_txFreqLineEdit_editingFinished()
+{
+  double txMHz=ui->txFreqLineEdit->text().toDouble();
+  m_txFreq=int(1.0e6 * (txMHz-m_dialFreq) + 0.5);
 }
 
 void MainWindow::loggit(QString t)
