@@ -243,7 +243,7 @@ p, li { white-space: pre-wrap; }
         <item>
          <widget class="QCheckBox" name="cbIdle">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>Idle</string>

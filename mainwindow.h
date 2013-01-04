@@ -78,6 +78,8 @@ private slots:
 
   void on_cbBandHop_toggled(bool checked);
 
+  void on_TuneButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 

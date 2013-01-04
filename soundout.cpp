@@ -43,6 +43,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   static int ic=0;
   static short int i2;
   int isym;
+  static int isym0=-99;
 
   udata->ncall++;
   if(udata->bRestart) {
@@ -59,6 +60,12 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   baud=12000.0/udata->nsps;
   freq=udata->ntxfreq + itone[isym]*baud;
   dphi=twopi*freq/48000.0;
+  /*
+  if(isym != isym0) {
+    qDebug() << isym << itone[isym] << btxok << btxMute;
+    isym0=isym;
+  }
+  */
   if(udata->txsnrdb < 0.0) {
     snr=pow(10.0,0.05*(udata->txsnrdb-6.0));
     fac=3000.0;

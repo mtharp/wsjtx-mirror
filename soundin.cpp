@@ -1,7 +1,7 @@
 #include "soundin.h"
 #include <stdexcept>
 
-#define FRAMES_PER_BUFFER 1024
+#define FRAMES_PER_BUFFER 2048
 #define NSMAX 22000
 
 extern "C" {

@@ -136,6 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_idle=false;
   m_TxOK=false;
   m_nrx=1;
+  m_txnext=false;
   m_uploading=false;
 
   ui->xThermo->setFillBrush(Qt::green);
@@ -231,6 +232,8 @@ void MainWindow::writeSettings()
   settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("InGain",m_inGain);
   settings.setValue("UploadSpots",m_uploadSpots);
+  settings.setValue("TxEnable",m_TxOK);
+  settings.setValue("PctTx",m_pctx);
   settings.endGroup();
 }
 
@@ -282,6 +285,10 @@ void MainWindow::readSettings()
   ui->inGain->setValue(m_inGain);
   m_uploadSpots=settings.value("UploadSpots",false).toBool();
   ui->cbUpload->setChecked(m_uploadSpots);
+  m_TxOK=settings.value("TxEnable",false).toBool();
+  ui->cbTxEnable->setChecked(m_TxOK);
+  m_pctx=settings.value("PctTx",25).toInt();
+  ui->sbPctTx->setValue(m_pctx);
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -745,12 +752,15 @@ void MainWindow::on_inGain_valueChanged(int n)
 
 void MainWindow::on_TxNextButton_clicked()
 {
+  /* The following was for testing direct access to WSPRnet:
   QString t("http://wsprnet.org/post?function=wsprstat&rcall=K1JT&");
   t += "rgrid=FN20qi&rqrg=10.140200&tpct=0&tqrg=10.140200&dbm=20&";
   t += "version=" + Version;
   QUrl url(t);
 //  qDebug() << "A" << t;
   reply = mNetworkManager->get(QNetworkRequest(url));
+  */
+  m_txnext=true;
 }
 
 void MainWindow::onNetworkReply(QNetworkReply* reply)
@@ -784,7 +794,6 @@ void MainWindow::oneSec() {
   QString utc = t.date().toString("yyyy MMM dd") + " \n " +
           t.time().toString();
   ui->labUTC->setText(utc);
-//  qDebug() << "C" << m_receiving << m_diskData << t.time().toString();
   if(!m_receiving and !m_diskData) {
 //    ui->xThermo->setValue(0.0);
   }
@@ -805,14 +814,8 @@ void MainWindow::guiUpdate()
   if(m_rxdone) {
     loggit("Rx Done");
     m_receiving=false;
-    soundInThread.setReceiving(m_receiving);
+    soundInThread.setReceiving(false);
     m_rxdone=false;
-    //thisfile= yymmdd + m_rxtime + ".wav"
-    //if(m_diskData) thisfile=file2
-    if((m_rxnormal and m_ncal==0) or (!m_rxnormal and m_ncal==2) or
-       (m_diskData==1)) {
-      //decode()
-    }
   }
 
   if(m_txdone) {
@@ -822,16 +825,17 @@ void MainWindow::guiUpdate()
     m_ntr=0;
   }
 
-  if(m_nseq >= m_nseqdone and m_ntune==0) {
-//    if(m_nseq==m_nseqdone) qDebug() << "Seq Done" << m_nseq << m_nseqdone;
+  if((m_nseq >= m_nseqdone and m_ntune==0) or
+     (m_nseq >= m_pctx and m_ntune>0)) {
     if(m_transmitting) {
       stopTx();
       m_txdone=true;
     }
     if(m_receiving) m_rxdone=true;
+
     m_transmitting=false;
     m_receiving=false;
-    soundInThread.setReceiving(m_receiving);
+    soundInThread.setReceiving(false);
     m_ntr=0;
   }
 
@@ -842,62 +846,43 @@ void MainWindow::guiUpdate()
     //Make a test transmission of duration pctx.
     //m_nsectx=nsec
     m_transmitting=true;
-    //starttx()
+    startTx();
   }
 
-  /*
-  if(m_ncal==1 and !m_transmitting and !m_receiving) {
-    qDebug() << "Cal";
-    //Execute one Rx sequence (length??)
-    m_receiving=true;
-    soundInThread.setReceiving(m_receiving);
-    //m_rxtime=hhmm
-    m_rxnormal=false;
-    m_diskData=0;
-    startRx();
-  }
-*/
+  if(m_nseq==0 and !m_transmitting and !m_receiving and !m_idle) {
 
-  if(m_nseq!=0 or m_transmitting or m_receiving or m_idle) {
-//    qDebug() << "ChkLevel";
-    //chklevel()
-    //if(iqmode) ...
-    return;
-  }
-
-  //file2= yymmdd + hhmm + ".wav"
-  if(m_hopping) {
-    qDebug() << "Hopping";
-    //...
-  } else {
-    if(m_pctx==0) m_nrx=1;
-  }
-
-  if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
-    m_transmitting=true;              //Start a normal Tx sequence
-    float x=(float)rand()/RAND_MAX;
-    if(m_pctx<50) {
-      m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
+    if(m_hopping) {
+      loggit("Hopping");
+      //...
     } else {
-      m_nrx=0;
-      if(x<m_rxavg) m_nrx=1;
+      if(m_pctx==0) m_nrx=1;
     }
+
+    if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
+      m_transmitting=true;              //Start a normal Tx sequence
+      float x=(float)rand()/RAND_MAX;
+      if(m_pctx<50) {
+        m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
+      } else {
+        m_nrx=0;
+        if(x<m_rxavg) m_nrx=1;
+      }
 //    message=MyCall + MyGrid + "ndbm";
     //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
-    m_ntr=-1;
-    loggit("Start Tx");
-    m_txdone=false;
-    m_txnext=false;
-    startTx();
-  } else {
-    m_receiving=true;                 //Start a normal Rx sequence
-    soundInThread.setReceiving(m_receiving);
-    //m_rxtime=hhmm
-    m_ntr=1;
-    m_rxnormal=true;
-    loggit("Start Rx");
-//    startRx();
-    m_nrx=m_nrx-1;
+      m_ntr=-1;
+      m_txdone=false;
+      m_txnext=false;
+      startTx();
+    } else {
+      m_receiving=true;                 //Start a normal Rx sequence
+      soundInThread.setReceiving(true);
+      //m_rxtime=hhmm
+      m_ntr=1;
+      m_rxnormal=true;
+      loggit("Start Rx");
+      //    startRx();
+      m_nrx=m_nrx-1;
+    }
   }
 }
 
@@ -922,7 +907,7 @@ void MainWindow::startRx()
 void MainWindow::startTx()
 {
   static char msg[23];
-  QString message=m_myCall + m_myGrid + "37";            //### dBm ###
+  QString message=m_myCall + " " + m_myGrid.mid(0,4) + " 37";      //### dBm ###
   QByteArray ba=message.toAscii();
   ba2msg(ba,msg);
   int len1=22;
@@ -973,6 +958,7 @@ void MainWindow::on_cbIdle_toggled(bool b)
 void MainWindow::on_cbTxEnable_toggled(bool b)
 {
   m_TxOK=b;
+  btxok=b;
 }
 
 
@@ -983,7 +969,7 @@ void MainWindow::on_dialFreqLineEdit_editingFinished()
 
 void MainWindow::loggit(QString t)
 {
-//  qDebug() << t << m_nseq;
+//  qDebug() << t << m_sec0 << m_nseq << m_nrx << m_ntr;
 }
 
 void MainWindow::on_cbUpload_toggled(bool b)
@@ -994,4 +980,10 @@ void MainWindow::on_cbUpload_toggled(bool b)
 void MainWindow::on_cbBandHop_toggled(bool b)
 {
   m_bandHop=b;
+}
+
+void MainWindow::on_TuneButton_clicked()
+{
+  on_cbIdle_toggled(true);
+  m_ntune=1;
 }
