@@ -2,7 +2,6 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
 
 ! Input:
 !  k         pointer to the most recent new data
-!  ntrperiod T/R sequence length, minutes
 !  nsps      samples per symbol (12000 Hz)
 !  ndiskdat  0/1 to indicate if data from disk
 !  nb        0/1 status of noise blanker (off/on)
@@ -31,10 +30,9 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
   integer*2 id2
   complex c0
   common/datcom/nutc,ndiskdat,id2(NMAX),savg(NSMAX),c0(NDMAX)
-  data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
+  data rms/999.0/,k0/99999999/,nfft3z/0/
   save
 
-!  nfft3=2048
   nfft3=nsps/4
   jstep=nsps/16
   if(k.gt.NMAX) go to 999

@@ -31,7 +31,7 @@ OBJS1 = symspec.o timf2.o fil3.o wspr0_tx.o sound.o ptt.o gmtime2.o \
 	mept162.o mix162.o spec162.o sync162.o twkfreq.o \
 	decode162.o getutc.o set.o xfft.o four2a.o flat3.o ps162.o \
 	pctile.o fchisq.o db.o fano232.o sort.o ssort.o ccf2.o \
-	genwsprx.o
+	genwsprx.o savec2.o
 
 libwspr.a: $(OBJS1)
 	ar cr libwspr.a $(OBJS1) 

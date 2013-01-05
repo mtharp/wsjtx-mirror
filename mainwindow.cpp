@@ -353,6 +353,10 @@ void MainWindow::dataSink(int k)
             t2 + ".wav";
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRseconds);
       watcher2->setFuture(*future2);
+      int len1=m_fname.indexOf(".wav")+4;
+      char fname[80];
+      strcpy(fname,m_fname.toAscii());
+      savec2_(fname,&m_TRseconds,&m_dialFreq,len1);
     }
 
     m_decodedList.clear();
