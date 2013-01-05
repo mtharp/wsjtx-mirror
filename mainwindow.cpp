@@ -466,7 +466,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 {
   lab1 = new QLabel("Receiving");
   lab1->setAlignment(Qt::AlignHCenter);
-  lab1->setMinimumSize(QSize(85,18));
+  lab1->setMinimumSize(QSize(150,18));
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab1);
@@ -952,7 +952,7 @@ void MainWindow::startTx()
   loggit("Start Tx");
   pttTimer->start(200);                         //Sequencer delay
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
-  lab1->setText(message);
+  lab1->setText("Transmitting:  " + message);
   ui->xThermo->setValue(0.0);                    //Update thermometer
 }
 

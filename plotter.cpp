@@ -70,6 +70,7 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 
     m_fSpan=m_w*m_fftBinWidth;
     m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
+    if(m_nsps==65536) m_StartFreq=20 * int((1612.5-0.5*m_fSpan)/20.0 + 0.5);
   }
   DrawOverlay();
 }
@@ -105,6 +106,7 @@ void CPlotter::draw(float swide[])                                //draw()
   bool strong0=false;
   bool strong=false;
   int i0=(m_StartFreq-1000)/m_fftBinWidth;
+  if(m_nsps==65536) i0=(m_StartFreq-1550)/m_fftBinWidth;
 
   for(int i=0; i<m_w; i++) {
     strong=false;
@@ -186,7 +188,16 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter.setBrush(Qt::SolidPattern);
 
   double df = m_fftBinWidth;
+  m_fSpan = w*df;
+  int n=m_fSpan/10;
+  m_freqPerDiv=10;
+  if(n>25) m_freqPerDiv=50;
+  if(n>70) m_freqPerDiv=100;
+  if(n>140) m_freqPerDiv=200;
+  if(n>310) m_freqPerDiv=500;
   pixperdiv = m_freqPerDiv/df;
+  m_hdivs = w*df/m_freqPerDiv + 0.9999;
+
   y = m_h2 - m_h2/VERT_DIVS;
   for( int i=1; i<m_hdivs; i++)                   //draw vertical grids
   {
@@ -216,14 +227,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.setFont(Font);
   painter0.setPen(Qt::black);
 
-  m_fSpan = w*df;
-  int n=m_fSpan/10;
-  m_freqPerDiv=10;
-  if(n>25) m_freqPerDiv=50;
-  if(n>70) m_freqPerDiv=100;
-  if(n>140) m_freqPerDiv=200;
-  if(n>310) m_freqPerDiv=500;
-  m_hdivs = w*df/m_freqPerDiv + 0.9999;
   m_ScalePixmap.fill(Qt::white);
   painter0.drawRect(0, 0, w, 30);
 
@@ -265,11 +268,18 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     }
   }
 
-  QPen pen0(Qt::green, 3);                 //Mark QSO Freq with green tick
+  QPen pen0(Qt::green, 3);              //Mark decoding range with green line
   painter0.setPen(pen0);
-  x=XfromFreq(1500);
-  int x1=x - 100/df;
-  int x2=x + 100/df;
+  int x1,x2;
+  if(m_nsps==8192) {
+    x=XfromFreq(1500);
+    x1=x - 100/df;
+    x2=x + 100/df;
+  } else {
+    x=XfromFreq(1612.5);
+    x1=x - 12.5/df;
+    x2=x + 12.5/df;
+  }
   pen0.setWidth(6);
   painter0.drawLine(x1,28,x2,28);
 
@@ -448,18 +458,16 @@ void CPlotter::setPalette(QString palette)                      //setPalette()
       m_ColorTbl[i].setRgb(r,g,b);
     }
   }
-
 }
 
 void CPlotter::setNsps(int ntrperiod, int nsps)                                  //setNSpan()
 {
   m_TRperiod=ntrperiod;
   m_nsps=nsps;
-  m_fftBinWidth=1500.0/2048.0;
-  if(m_nsps==15360)  m_fftBinWidth=1500.0/2048.0;
-  if(m_nsps==82944)  m_fftBinWidth=1500.0/12288.0;
+  m_fftBinWidth=4.0*1500.0/m_nsps;
+  m_fSpan=m_w*m_fftBinWidth;
+  m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
+  if(m_nsps==65536) m_StartFreq=10 * int((1612.5-0.5*m_fSpan)/10.0 + 0.5);
   DrawOverlay();                         //Redraw scales and ticks
   update();                              //trigger a new paintEvent}
 }
-
-

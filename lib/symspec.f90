@@ -111,11 +111,15 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
   ihsym=ihsym+1
 
   cx(0:nfft3-1)=w3(1:nfft3)*cx(0:nfft3-1)  !Apply window w3
-  call four2a(cx,nfft3,1,1,1)           !Third forward FFT (X)
+  call four2a(cx,nfft3,1,1,1)              !Third FFT
 
   df3=1500.0/nfft3
   i0=nint(-500.0/df3)
   iz=min(NSMAX,nint(1000.0/df3))
+  if(nsps.eq.65536) then 
+     i0=50.0/df3
+     iz=min(NSMAX,nint(125.0/df3))
+  endif
   fac=(1.0/nfft3)**2
   do i=1,iz
      j=i0+i-1
