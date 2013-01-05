@@ -676,10 +676,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile savedWav(m_fname);
         savedWav.remove();
         int i1=m_fname.indexOf(".wav");
-        QString t=m_fname.mid(0,i1) + "c2";
-        qDebug() << "Removing " + m_fname;
-        qDebug() << "Removing " + t;
-        QFile savedC2(t);
+        QFile savedC2(m_fname.mid(i1-11,11) + ".c2");
         savedC2.remove();
       }
       lab3->setStyleSheet("");
