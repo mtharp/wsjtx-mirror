@@ -673,8 +673,14 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 //      m_bdecoded = (t.mid(23,1).toInt()==1);
       bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
       if(!keepFile) {
-        QFile savedFile(m_fname);
-        savedFile.remove();
+        QFile savedWav(m_fname);
+        savedWav.remove();
+        int i1=m_fname.indexOf(".wav");
+        QString t=m_fname.mid(0,i1) + "c2";
+        qDebug() << "Removing " + m_fname;
+        qDebug() << "Removing " + t;
+        QFile savedC2(t);
+        savedC2.remove();
       }
       lab3->setStyleSheet("");
       lab3->setText("");
