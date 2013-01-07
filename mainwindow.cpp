@@ -351,17 +351,20 @@ void MainWindow::dataSink(int k)
       t2.sprintf("%2.2d%2.2d",ihr,imin);
       m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
             t2 + ".wav";
+      m_c2name=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
+            t2 + ".c2";
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRseconds);
       watcher2->setFuture(*future2);
-      int len1=m_fname.indexOf(".wav")+4;
+      int len1=m_c2name.length();
       char fname[80];
-      strcpy(fname,m_fname.toAscii());
+      strcpy(fname,m_c2name.toAscii());
       savec2_(fname,&m_TRseconds,&m_dialFreq,len1);
     }
 
     m_decodedList.clear();
     t2.sprintf("%.6f ",m_dialFreq);
-    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
+//    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
+    QString cmnd='"' + m_appDir + '"' + "/wspr0c2 " + m_c2name + '"';
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;

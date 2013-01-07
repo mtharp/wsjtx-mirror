@@ -174,6 +174,7 @@ private:
     QString m_dateTime;
     QString m_mode;
     QString m_fname;
+    QString m_c2name;
 
     SoundInThread soundInThread;             //Instantiate the audio threads
     SoundOutThread soundOutThread;
