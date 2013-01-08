@@ -25,7 +25,7 @@ program wsprd
   call wsprd_init(ntrminutes,f0,infile)
 
   open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
-  open(14,file='wspr0.out',status='unknown')
+  open(14,file='wsprd.out',status='unknown',position='append')
 
   open(18,file=infile,access='stream',status='old')
   lc2=index(infile,'.c2').gt.0
