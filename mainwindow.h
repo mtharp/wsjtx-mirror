@@ -160,7 +160,6 @@ private:
     QNetworkAccessManager* mNetworkManager;
     QProcess p1;
     QProcess p2;
-    QStringList m_decodedList;
 
     QTimer* pttTimer;
     QTimer* uploadTimer;

@@ -361,8 +361,6 @@ void MainWindow::dataSink(int k)
       savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
     }
 
-    m_decodedList.clear();
-    t2.sprintf("%.6f ",m_dialFreq);
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;
@@ -608,11 +606,18 @@ void MainWindow::diskDat()                                   //diskDat()
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
-    k=(n+1)*kstep;
-    dataSink(k);
-    if(n%10 == 1 or n == m_hsymStop)
-        qApp->processEvents();                   //Keep GUI responsive
+  k=m_path.length();
+  if(m_path.mid(k-4,-1)==".wav") {
+    for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
+      k=(n+1)*kstep;
+      dataSink(k);
+      if(n%10 == 1 or n == m_hsymStop) qApp->processEvents(); //Keep GUI alive
+    }
+  } else {
+    lab3->setStyleSheet("QLabel{background-color:cyan}");
+    lab3->setText("Decoding");
+    QString cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+    p1.start(QDir::toNativeSeparators(cmnd));
   }
 }
 
@@ -692,7 +697,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       m_startAnother=m_loopall;
       return;
     } else {
-//      m_decodedList += t;
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       ui->decodedTextBrowser->append(t);
