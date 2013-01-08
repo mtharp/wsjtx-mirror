@@ -8,6 +8,7 @@ DefaultGroupName=wsprx
 [Files]
 Source: "c:\Users\joe\wsjt\wsprx_install\wsprx.exe";         DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\wsprd.exe";         DestDir: "{app}"
+Source: "c:\Users\joe\wsjt\wsprx_install\curl.exe";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\wsjt.ico";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\afmhot.dat";        DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\wsprx_install\blue.dat";          DestDir: "{app}";
