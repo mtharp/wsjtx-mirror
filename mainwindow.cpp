@@ -1,4 +1,4 @@
-//--------------------------------------------------------------- MainWindow
+//-------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -361,13 +361,20 @@ void MainWindow::dataSink(int k)
       savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
     }
 
-    t2.sprintf("%.6f ",m_dialFreq);
-//    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
-    QString cmnd='"' + m_appDir + '"' + "/wspr0c2 " + m_c2name + '"';
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;
     loggit("Start Decoder");
+    QString cmnd;
+    if(m_diskData) {
+      t2.sprintf(" -f %.6f ",m_dialFreq);
+
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
+          m_path + '"';
+    } else {
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
+    }
     p1.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
@@ -603,11 +610,18 @@ void MainWindow::diskDat()                                   //diskDat()
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
-    k=(n+1)*kstep;
-    dataSink(k);
-    if(n%10 == 1 or n == m_hsymStop)
-        qApp->processEvents();                   //Keep GUI responsive
+  k=m_path.length();
+  if(m_path.mid(k-4,-1)==".wav") {
+    for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
+      k=(n+1)*kstep;
+      dataSink(k);
+      if(n%10 == 1 or n == m_hsymStop) qApp->processEvents(); //Keep GUI alive
+    }
+  } else {
+    lab3->setStyleSheet("QLabel{background-color:cyan}");
+    lab3->setText("Decoding");
+    QString cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+    p1.start(QDir::toNativeSeparators(cmnd));
   }
 }
 
@@ -671,7 +685,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         int msdelay=20000*x;
         uploadTimer->start(msdelay);                         //Upload delay
       } else {
-        QFile f("wspr0.out");
+        QFile f("wsprd.out");
         if(f.exists()) f.remove();
       }
 //      m_bdecoded = (t.mid(23,1).toInt()==1);
@@ -687,7 +701,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       m_startAnother=m_loopall;
       return;
     } else {
-//      m_decodedList += t;
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       ui->decodedTextBrowser->append(t);
@@ -703,14 +716,14 @@ void MainWindow::p1ReadFromStderr()                        //p1readFromStderr
 
 void MainWindow::p1Error()                                     //p1Error
 {
-  msgBox("Error starting or running\n" + m_appDir + "/wspr0");
+  msgBox("Error starting or running\n" + m_appDir + "/wsprd");
 }
 
 void MainWindow::p2Start()
 {
   if(m_uploading) return;
   QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
-      "/wspr0.out -F call=" + m_myCall + " -F grid=" + m_myGrid;
+      "/wsprd.out -F call=" + m_myCall + " -F grid=" + m_myGrid;
   cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
   loggit("Start curl");
   m_uploading=true;
@@ -724,7 +737,7 @@ void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
   while(p2.canReadLine()) {
     QString t(p2.readLine());
     if(t.indexOf("spot(s) added") > 0) {
-      QFile f("wspr0.out");
+      QFile f("wsprd.out");
       f.remove();
     }
   }
@@ -971,8 +984,6 @@ void MainWindow::startTx()
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 {
-  bool eom;
-  eom=false;
   int iz=ba.length();
   for(int i=0;i<22; i++) {
     if(i<iz) {
