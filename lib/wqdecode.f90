@@ -6,7 +6,6 @@ subroutine wqdecode(data0,message,ntype)
   character*12 callsign
   character*3 cdbm
   character grid4*4,grid6*6,psfx*4
-  logical first
   character*12 dcall(0:N15-1)
   save dcall
 

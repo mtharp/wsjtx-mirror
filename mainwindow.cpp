@@ -363,12 +363,16 @@ void MainWindow::dataSink(int k)
 
     m_decodedList.clear();
     t2.sprintf("%.6f ",m_dialFreq);
-//    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
-    QString cmnd='"' + m_appDir + '"' + "/wspr0c2 " + m_c2name + '"';
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;
     loggit("Start Decoder");
+    QString cmnd;
+    if(m_diskData) {
+        cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+    } else {
+        cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
+    }
     p1.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;

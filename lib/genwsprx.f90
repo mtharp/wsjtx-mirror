@@ -5,7 +5,7 @@ subroutine genwsprx(message,itone)
   character*22 message
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)
-  integer*1 data0(11),i1
+  integer*1 data0(11)
   integer*4 itone(162)
   integer npr3(162)
   data npr3/                                      &

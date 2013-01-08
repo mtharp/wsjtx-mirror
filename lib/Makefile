@@ -5,7 +5,7 @@
 CC = gcc
 FC = g95
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -ftrace=frame
+FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss 
 #CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
 CFLAGS = -I. -fbounds-check 
 
@@ -21,17 +21,15 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libwspr.a wspr0.exe
+all:    libwspr.a wsprd.exe
 
-OBJS1 = symspec.o timf2.o fil3.o wspr0_tx.o sound.o ptt.o gmtime2.o \
-	wfile5.o genmept.o wqencode.o wqdecode.o inter_mept.o \
-	encode232.o gran.o packcall.o packgrid.o pack50.o packpfx.o \
-	hash.o unpackcall.o unpackgrid.o unpackpfx.o unpack50.o \
-	grid2deg.o deg2grid.o nhash.o nchar.o wspr0_rx.o getrms.o \
-	mept162.o mix162.o spec162.o sync162.o twkfreq.o \
-	decode162.o getutc.o set.o xfft.o four2a.o flat3.o ps162.o \
-	pctile.o fchisq.o db.o fano232.o sort.o ssort.o ccf2.o \
-	genwsprx.o savec2.o
+OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
+	fchisq.o fil3.o flat3.o four2a.o genwsprx.o getrms.o \
+	grid2deg.o hash.o inter_mept.o mept162a.o mix162.o mix162a.o \
+	nchar.o nhash.o pack50.o packcall.o packgrid.o packpfx.o \
+	pctile.o ps162.o ptt.o savec2.o set.o sort.o ssort.o symspec.o \
+	sync162.o timf2.o twkfreq.o unpack50.o unpackcall.o \
+	unpackgrid.o unpackpfx.o wqdecode.o wqencode.o xfft.o 
 
 libwspr.a: $(OBJS1)
 	ar cr libwspr.a $(OBJS1) 
@@ -39,17 +37,11 @@ libwspr.a: $(OBJS1)
 
 OBJS2 = wspr0.o 
 
-wspr0.exe: $(OBJS2) libwspr.a
-	$(FC) -o wspr0 $(FFLAGS) $(OBJS2) libwspr.a libportaudio.a \
-	   c:\MinGW\lib\libwinmm.a libfftw3f_win.a
-	cp wspr0.exe ../../wsprx_install
-
-sound.o: sound.c
-	$(CC) -c sound.c
-gmtime2.o: gmtime2.c
-	$(CC) -c -DWin32=1 gmtime2.c
+wsprd.exe: wsprd.o libwspr.a
+	$(FC) -o wsprd.exe $(FFLAGS) wsprd.o libwspr.a libfftw3f_win.a
+	cp wsprd.exe ../../wsprx_install
 
 .PHONY : clean
 
 clean:
-	rm -f *.o libwspr.a wspr0.exe
+	rm -f *.o libwspr.a wsprd.exe
