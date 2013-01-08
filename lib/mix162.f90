@@ -2,29 +2,35 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
 
 ! Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32
 
-  parameter (NFFT1=2*1024*1024)
-  parameter (NFFT2=NFFT1/32)
-  parameter (NH2=NFFT2/2)
+  parameter (NFFT1MAX=16*1024*1024)
+  parameter (NH1MAX=NFFT1MAX/2)
   integer*2 id(npts)
-  real x(NFFT1)
   real ps(-256:256)
-  real*8 df
-  complex c(0:NFFT1)
+  real*8 df,fbfo
   complex c2(0:65535)
+  complex c(0:NH1MAX)
+  real x(NFFT1MAX)
   equivalence (x,c)
+
+  nfft1=NFFT1MAX
+  if(npts.le.120*12000) nfft1=2*1024*1024
+  nfft2=65536
+  nh2=nfft2/2
+  ndown=nfft1/nfft2
 
 ! Load data into real array x; pad with zeros up to nfft.
   fac=1.e-4
   do i=1,npts
      x(i)=fac*id(i)
   enddo
-  call zero(x(npts+1),NFFT1-npts)
+  x(npts+1:nfft1)=0.
 
-! Do the real-to-complex FFT
-  call xfft(x,NFFT1)
+  call xfft(x,nfft1)                         !Do the real-to-complex FFT
 
-  df=12000.d0/NFFT1
-  i0=nint(nbfo/df)
+  df=12000.d0/nfft1
+  fbfo=nbfo
+  if(npts.gt.120*12000) fbfo=nbfo + 112.5d0
+  i0=nint(fbfo/df)
   ia=i0-NH2 + 1
   ib=i0+NH2
 
@@ -47,7 +53,7 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
   call four2a(c2,NFFT2,1,1,1)        !Return to time domain
 
   fac=1.e-5
-  jz=npts/32
+  jz=npts/ndown
   do i=0,jz-1
      c2(i)=fac*c2(i)
   enddo

@@ -35,10 +35,10 @@ libwspr.a: $(OBJS1)
 	ar cr libwspr.a $(OBJS1) 
 	ranlib libwspr.a
 
-OBJS2 = wspr0.o 
+OBJS2 = wsprd.o wsprd_init.o
 
-wsprd.exe: wsprd.o libwspr.a
-	$(FC) -o wsprd.exe $(FFLAGS) wsprd.o libwspr.a libfftw3f_win.a
+wsprd.exe: $(OBJS2) libwspr.a
+	$(FC) -o wsprd.exe $(FFLAGS) $(OBJS2) libwspr.a libfftw3f_win.a
 	cp wsprd.exe ../../wsprx_install
 
 .PHONY : clean

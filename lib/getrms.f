@@ -1,7 +1,6 @@
       subroutine getrms(iwave,npts,ave,rms)
 
-      parameter (NMAX=120*12000)
-      integer*2 iwave(NMAX)
+      integer*2 iwave(npts)
       real*8 sq
 
       s=0.
@@ -22,11 +21,11 @@
          iwave(i)=n
       enddo
 
-      if(npts.lt.NMAX) then
-         do i=npts+1,NMAX
-            iwave(i)=0
-         enddo
-      endif
+!      if(npts.lt.NMAX) then
+!         do i=npts+1,NMAX
+!            iwave(i)=0
+!         enddo
+!      endif
 
       return
       end

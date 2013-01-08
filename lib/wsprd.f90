@@ -4,20 +4,35 @@ program wsprd
   integer*2 id(NMAX)
   real*8 f0,dialFreq
   real*4 ps(-256:256)
-  character*80 infile
+  character*80 arg,infile
   logical lc2
   character c2file*14,datetime*11
   complex c2(65536)
   data nbfo/1500/
 
-  call getarg(1,infile)
-  open(18,file=infile,access='stream',status='old')
-  lc2=index(infile,'.c2').gt.0
+  nargs=iargc()
+  if(nargs.eq.0) then
+     print*,'Usage: wsprd [options...] infile'
+     print*,''
+     print*,'Options:'
+     print*,'       -f x   Transceiver dial frequency is x (MHz)'
+     print*,'       -m n   Run in WSPR-n mode (default is WSPR-2)'
+     print*,''
+     print*,'Input file type may be *.wav or *.c2'
+     go to 999
+  endif
+
+  call wsprd_init(ntrminutes,f0,infile)
 
   open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
   open(14,file='wspr0.out',status='unknown')
 
-  ntrminutes=2
+  open(18,file=infile,access='stream',status='old')
+  lc2=index(infile,'.c2').gt.0
+  i1=index(infile,'.wav')
+  if(i1.le.0)   i1=index(infile,'.c2')
+  datetime=infile(i1-11:i1-1)
+  datetime(7:7)=' '
 
   if(lc2) then
      read(18) c2file,ntrmin,dialFreq,c2(1:45000)
@@ -26,9 +41,9 @@ program wsprd
      npts=60*ntrminutes*12000
      call mix162a(c2,ps)
      c2=(2.94127/13.983112)*c2
+     datetime=c2file
+     datetime(7:7)=' '
   else
-     f0=10.1387
-     ntrminutes=2
      npts=60*ntrminutes*12000
      read(18) id(1:22)
      read(18) id(1:npts)
@@ -38,12 +53,8 @@ program wsprd
      call mix162(id,npts,nbfo,c2,jz,ps)
   endif
 
-  i1=index(infile,'.wav')
-  if(i1.le.0)   i1=index(infile,'.c2')
-  datetime=infile(i1-11:i1-1)
-  datetime(7:7)=' '
   call mept162a(datetime,f0,c2,ps,lc2,npts,nbfo)
   write(*,1100)
 1100 format('<DecodeFinished>')
     
-end program wsprd
+999 end program wsprd
