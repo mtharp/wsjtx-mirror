@@ -38,7 +38,7 @@ OBJS2 = wsprd.o wsprd_init.o
 
 wsprd.exe: $(OBJS2) libwspr.a
 	$(FC) -o wsprd.exe $(FFLAGS) $(OBJS2) libwspr.a libfftw3f_win.a
-#	cp wsprd.exe ../../wsprx_install
+	cp wsprd.exe ../../wsprx_install
 
 .PHONY : clean
 

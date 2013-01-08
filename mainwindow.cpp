@@ -143,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
-    int ndbm;
+    int ndbm=0;
     if(dbm<0) ndbm=int(dbm-0.5);
     if(dbm>=0) ndbm=int(dbm+0.5);
     QString t;
@@ -361,7 +361,6 @@ void MainWindow::dataSink(int k)
       savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
     }
 
-    m_decodedList.clear();
     t2.sprintf("%.6f ",m_dialFreq);
 //    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
     QString cmnd='"' + m_appDir + '"' + "/wspr0c2 " + m_c2name + '"';
