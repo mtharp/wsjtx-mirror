@@ -367,9 +367,13 @@ void MainWindow::dataSink(int k)
     loggit("Start Decoder");
     QString cmnd;
     if(m_diskData) {
-        cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+      t2.sprintf(" -f %.6f ",m_dialFreq);
+
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
+          m_path + '"';
     } else {
-        cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
     }
     p1.start(QDir::toNativeSeparators(cmnd));
   }
