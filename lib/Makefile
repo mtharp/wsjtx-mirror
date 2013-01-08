@@ -6,8 +6,7 @@ CC = gcc
 FC = g95
 
 FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss 
-#CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
-CFLAGS = -I. -fbounds-check 
+CFLAGS = -I.
 
 # Default rules
 %.o: %.c
@@ -24,8 +23,8 @@ CFLAGS = -I. -fbounds-check
 all:    libwspr.a wsprd.exe
 
 OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
-	fchisq.o fil3.o flat3.o four2a.o genwsprx.o getrms.o \
-	grid2deg.o hash.o inter_mept.o mept162a.o mix162.o mix162a.o \
+	fchisq.o fil3.o flat3.o four2a.o genwsprx.o grid2deg.o \
+	hash.o inter_mept.o mept162a.o mix162.o mix162a.o \
 	nchar.o nhash.o pack50.o packcall.o packgrid.o packpfx.o \
 	pctile.o ps162.o ptt.o savec2.o set.o sort.o ssort.o symspec.o \
 	sync162.o timf2.o twkfreq.o unpack50.o unpackcall.o \

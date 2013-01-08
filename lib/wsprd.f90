@@ -4,7 +4,7 @@ program wsprd
   integer*2 id(NMAX)
   real*8 f0,dialFreq
   real*4 ps(-256:256)
-  character*80 arg,infile
+  character*80 infile
   logical lc2
   character c2file*14,datetime*11
   complex c2(65536)
@@ -44,14 +44,30 @@ program wsprd
      datetime=c2file
      datetime(7:7)=' '
   else
-     npts=60*ntrminutes*12000
+!     npts=60*ntrminutes*12000
+     npts=114*12000
+     if(ntrminutes.eq.15) npts=890*12000
      read(18) id(1:22)
      read(18) id(1:npts)
-     call getrms(id,npts,ave,rms)
+     id(npts+1:60*ntrminutes*12000)=0
 ! WSPR-2: mix from nbfo +/- 100 Hz to baseband, downsample by 1/32
 ! WSPR-15: mix from (nbfo+112.5) +/- 12.5 Hz to baseband, downsample by 1/256
      call mix162(id,npts,nbfo,c2,jz,ps)
   endif
+
+! Scale the amplitudes
+  sq=0.
+  iz=42750
+  if(ntrminutes.eq.15) iz=41540
+  do i=1,iz
+     x=real(c2(i))**2 + aimag(c2(i))**2
+     sq=sq + x
+  enddo
+  rmsc2=sqrt(sq/iz)
+  fac=(2.294/rmsc2)
+  c2(1:iz)=fac*c2(1:iz)
+  c2(iz+1:)=0.
+  ps=fac*fac*ps
 
   call mept162a(datetime,f0,c2,ps,lc2,npts,nbfo)
   write(*,1100)
