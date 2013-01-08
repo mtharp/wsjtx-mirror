@@ -356,9 +356,9 @@ void MainWindow::dataSink(int k)
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRseconds);
       watcher2->setFuture(*future2);
       int len1=m_c2name.length();
-      char fname[80];
-      strcpy(fname,m_c2name.toAscii());
-      savec2_(fname,&m_TRseconds,&m_dialFreq,len1);
+      char c2name[80];
+      strcpy(c2name,m_c2name.toAscii());
+      savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
     }
 
     m_decodedList.clear();
@@ -486,7 +486,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab3 = new QLabel("");
   lab3->setAlignment(Qt::AlignHCenter);
-  lab3->setMinimumSize(QSize(80,18));
+  lab3->setMinimumSize(QSize(120,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
 }
@@ -664,6 +664,8 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
   while(p1.canReadLine()) {
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
+      lab3->setStyleSheet("");
+      lab3->setText("");
       loggit("Decoder Finished");
       if(m_uploadSpots) {
         float x=rand()/((double)RAND_MAX + 1);
@@ -682,8 +684,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile savedC2(m_fname.mid(i1-11,11) + ".c2");
         savedC2.remove();
       }
-      lab3->setStyleSheet("");
-      lab3->setText("");
       m_RxLog=0;
       m_startAnother=m_loopall;
       return;
@@ -715,6 +715,8 @@ void MainWindow::p2Start()
   cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
   loggit("Start curl");
   m_uploading=true;
+  lab3->setStyleSheet("QLabel{background-color:yellow}");
+  lab3->setText("Uploading Spots");
   p2.start(cmnd);
 }
 
@@ -727,6 +729,8 @@ void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
       f.remove();
     }
   }
+  lab3->setStyleSheet("");
+  lab3->setText("");
   m_uploading=false;
 }
 
