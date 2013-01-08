@@ -40,7 +40,7 @@ program wsprd
      ntrminutes=ntrmin
      npts=60*ntrminutes*12000
      call mix162a(c2,ps)
-     c2=(2.94127/13.983112)*c2
+     c2=(2.94127/13.983112)*c2                  !### ??? ###
      datetime=c2file
      datetime(7:7)=' '
   else

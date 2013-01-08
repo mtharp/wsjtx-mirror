@@ -1,4 +1,4 @@
-//-------------------------------------------------------------- MainWindow
+//--------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -143,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
-    int ndbm=0;
+    int ndbm;
     if(dbm<0) ndbm=int(dbm-0.5);
     if(dbm>=0) ndbm=int(dbm+0.5);
     QString t;
@@ -361,20 +361,14 @@ void MainWindow::dataSink(int k)
       savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
     }
 
+    m_decodedList.clear();
+    t2.sprintf("%.6f ",m_dialFreq);
+//    QString cmnd='"' + m_appDir + '"' + "/wspr0 D " + t2 + m_fname + '"';
+    QString cmnd='"' + m_appDir + '"' + "/wspr0c2 " + m_c2name + '"';
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;
     loggit("Start Decoder");
-    QString cmnd;
-    if(m_diskData) {
-      t2.sprintf(" -f %.6f ",m_dialFreq);
-
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
-      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
-          m_path + '"';
-    } else {
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
-    }
     p1.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
@@ -610,18 +604,11 @@ void MainWindow::diskDat()                                   //diskDat()
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  k=m_path.length();
-  if(m_path.mid(k-4,-1)==".wav") {
-    for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
-      k=(n+1)*kstep;
-      dataSink(k);
-      if(n%10 == 1 or n == m_hsymStop) qApp->processEvents(); //Keep GUI alive
-    }
-  } else {
-    lab3->setStyleSheet("QLabel{background-color:cyan}");
-    lab3->setText("Decoding");
-    QString cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
-    p1.start(QDir::toNativeSeparators(cmnd));
+  for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
+    k=(n+1)*kstep;
+    dataSink(k);
+    if(n%10 == 1 or n == m_hsymStop)
+        qApp->processEvents();                   //Keep GUI responsive
   }
 }
 
@@ -701,6 +688,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       m_startAnother=m_loopall;
       return;
     } else {
+//      m_decodedList += t;
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       ui->decodedTextBrowser->append(t);
@@ -984,6 +972,8 @@ void MainWindow::startTx()
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 {
+  bool eom;
+  eom=false;
   int iz=ba.length();
   for(int i=0;i<22; i++) {
     if(i<iz) {
