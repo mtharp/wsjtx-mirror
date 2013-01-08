@@ -143,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
-    int ndbm;
+    int ndbm=0;
     if(dbm<0) ndbm=int(dbm-0.5);
     if(dbm>=0) ndbm=int(dbm+0.5);
     QString t;
@@ -980,8 +980,6 @@ void MainWindow::startTx()
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 {
-  bool eom;
-  eom=false;
   int iz=ba.length();
   for(int i=0;i<22; i++) {
     if(i<iz) {
