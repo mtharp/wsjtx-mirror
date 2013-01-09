@@ -1,6 +1,6 @@
 [Setup]
 AppName=wsprx
-AppVerName=wsprx Version 0.5 r2904
+AppVerName=wsprx Version 0.5 r2913
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
 DefaultDirName=c:\wsprx
 DefaultGroupName=wsprx
@@ -12,6 +12,7 @@ Source: "c:\Users\joe\wsjt\wsprx_install\curl.exe";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\wsjt.ico";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\afmhot.dat";        DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\wsprx_install\blue.dat";          DestDir: "{app}";
+Source: "c:\Users\joe\wsjt\wsprx_install\save\dummy";        DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\QtSupport\*.dll";                 DestDir: "{app}";  Flags: onlyifdoesntexist
 
 [Icons]
