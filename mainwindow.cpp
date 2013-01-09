@@ -1018,6 +1018,13 @@ void MainWindow::startTx2()
 {
   if(!soundOutThread.isRunning()) {
     double snr=99.0;
+    QFile f("test.snr");
+    if(f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      char c[20];
+      int n=f.readLine(c,sizeof(c));
+      QString t=QString(c);
+      snr=t.toDouble();
+    }
     soundOutThread.setTxSNR(snr);
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
