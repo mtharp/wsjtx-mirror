@@ -1021,7 +1021,7 @@ void MainWindow::startTx2()
     QFile f("test.snr");
     if(f.open(QIODevice::ReadOnly | QIODevice::Text)) {
       char c[20];
-      int n=f.readLine(c,sizeof(c));
+      f.readLine(c,sizeof(c));
       QString t=QString(c);
       snr=t.toDouble();
     }
