@@ -101,6 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
   guiTimer->start(100);                            //Don't change the 100 ms!
   pttTimer = new QTimer(this);
+  tuneTimer = new QTimer(this);
 
   uploadTimer = new QTimer(this);
   uploadTimer->setSingleShot(true);
@@ -174,6 +175,13 @@ MainWindow::MainWindow(QWidget *parent) :
   watcher3 = new QFutureWatcher<void>;
   connect(watcher3, SIGNAL(finished()),this,SLOT(uploadFinished()));
   */
+
+  m_txNext_style="QPushButton{background-color: #00ff00; \
+      border-style: outset; border-width: 1px; border-radius: 3px; \
+      border-color: black; padding: 4px;}";
+  m_tune_style="QPushButton{background-color: #ff0000; \
+      border-style: outset; border-width: 1px; border-radius: 3px; \
+      border-color: black; padding: 4px;}";
 
   soundInThread.setInputDevice(m_paInDevice);
   soundInThread.start(QThread::HighestPriority);
@@ -813,6 +821,7 @@ void MainWindow::on_TxNextButton_clicked()
 //  qDebug() << "A" << t;
   reply = mNetworkManager->get(QNetworkRequest(url));
   */
+  ui->TxNextButton->setStyleSheet(m_txNext_style);
   m_txnext=true;
 }
 
@@ -909,6 +918,7 @@ void MainWindow::guiUpdate()
     startTx();
   }
 
+//  qDebug() << m_nseq << m_transmitting << m_receiving << m_idle;
   if(m_nseq==0 and !m_transmitting and !m_receiving and !m_idle
      and !m_switching) {
 
@@ -934,6 +944,7 @@ void MainWindow::guiUpdate()
       m_ntr=-1;
       m_txdone=false;
       m_txnext=false;
+      ui->TxNextButton->setStyleSheet("");
       startTx();
     } else {
 //Start a normal Rx sequence
@@ -975,8 +986,16 @@ void MainWindow::startTx()
   ptt(m_pttPort,itx,&m_iptt);                   // Raise PTT
   pttTimer->setSingleShot(true);
   connect(pttTimer, SIGNAL(timeout()), this, SLOT(startTx2()));
-  loggit("Start Tx");
   pttTimer->start(200);                         //Sequencer delay
+  if(m_ntune==1) {
+    tuneTimer->setSingleShot(true);
+    connect(tuneTimer, SIGNAL(timeout()), this, SLOT(stopTx()));
+    int n=1000*m_pctx + 200;                        //Transmission length
+    tuneTimer->start(n);
+    message="Tune";
+    m_ntune=0;
+  }
+  loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
   lab1->setText("Transmitting:  " + message);
   ui->xThermo->setValue(0.0);                    //Update thermometer
@@ -1011,6 +1030,14 @@ void MainWindow::stopTx()
 {
   g_pWideGraph->setTxed();
   int itx=0;
+  if (soundOutThread.isRunning()) {
+    soundOutThread.quitExecution=true;
+    soundOutThread.wait(3000);
+  }
+  m_transmitting=false;
+  lab1->setStyleSheet("");
+  lab1->setText("");
+  ui->TuneButton->setStyleSheet("");
   ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
   loggit("Stop Tx");
 }
@@ -1055,8 +1082,9 @@ void MainWindow::on_cbBandHop_toggled(bool b)
 
 void MainWindow::on_TuneButton_clicked()
 {
-  on_cbIdle_toggled(true);
+//  on_cbIdle_toggled(true);
   m_ntune=1;
+  ui->TuneButton->setStyleSheet(m_tune_style);
 }
 
 void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)

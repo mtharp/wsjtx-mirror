@@ -70,6 +70,7 @@ private slots:
   void on_cbIdle_toggled(bool b);
   void on_cbTxEnable_toggled(bool b);
   void startTx2();
+  void stopTx();
   void loggit(QString t);
   void p2Start();
   void on_dialFreqLineEdit_editingFinished();
@@ -163,6 +164,7 @@ private:
 
     QTimer* pttTimer;
     QTimer* uploadTimer;
+    QTimer* tuneTimer;
 
     QString m_path;
     QString m_myCall;
@@ -174,6 +176,8 @@ private:
     QString m_mode;
     QString m_fname;
     QString m_c2name;
+    QString m_txNext_style;
+    QString m_tune_style;
 
     SoundInThread soundInThread;             //Instantiate the audio threads
     SoundOutThread soundOutThread;
@@ -187,7 +191,6 @@ private:
     void oneSec();
 //    void startRx();
     void startTx();
-    void stopTx();
     double tsec();
     void ba2msg(QByteArray ba, char* message);
 
