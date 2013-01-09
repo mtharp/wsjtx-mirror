@@ -13,8 +13,8 @@ CAboutDlg::CAboutDlg(QWidget *parent, QString Revision) :
   m_Str += "Propagation Reporter.\" The program generates and decodes <br>";
   m_Str += "a digital soundcard mode optimized for beacon-like <br>";
   m_Str += "transmissions on the HF, MF, and LF bands. <br><br>";
-  m_Str += "Copyright 2001-2012 by Joe Taylor, K1JT.   Additional <br>";
-  m_Str += "acknowledgments are contained in the source code. <br>";
+  m_Str += "Copyright 2001-2013 by Joe Taylor, K1JT.   Additional <br>";
+  m_Str += "acknowledgments are contained in the source code. <br><br>";
   ui->labelTxt->setText(m_Str);
 }
 
