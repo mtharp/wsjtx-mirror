@@ -938,7 +938,6 @@ void MainWindow::guiUpdate()
     startTx();
   }
 
-//  qDebug() << m_nseq << m_transmitting << m_receiving << m_idle;
   if(m_nseq==0 and !m_transmitting and !m_receiving and !m_idle
      and !m_switching) {
 
@@ -950,7 +949,8 @@ void MainWindow::guiUpdate()
       if(m_pctx==0) m_nrx=1;
     }
 
-    if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1))) {
+    if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1)) or
+       m_pctx==100) {
 //Start a normal Tx sequence
       float x=(float)rand()/RAND_MAX;
       if(m_pctx<50) {
@@ -1086,7 +1086,7 @@ void MainWindow::stopTx()
   ui->TuneButton->setStyleSheet("");
   ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
   loggit("Stop Tx");
-  startRx();
+  if(m_pctx<100) startRx();
 }
 
 void MainWindow::on_cbIdle_toggled(bool b)

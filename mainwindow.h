@@ -81,7 +81,6 @@ private slots:
   void on_dBmComboBox_currentIndexChanged(const QString &arg1);
   void on_bandComboBox_currentIndexChanged(int n);
   void on_sbTxAudio_valueChanged(int n);
-
   void on_stopTxButton_clicked();
 
 private:
