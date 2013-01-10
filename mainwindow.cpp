@@ -950,7 +950,7 @@ void MainWindow::guiUpdate()
     }
 
     if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1)) or
-       m_pctx==100) {
+       (m_TxOK and m_pctx==100)) {
 //Start a normal Tx sequence
       float x=(float)rand()/RAND_MAX;
       if(m_pctx<50) {
@@ -1086,7 +1086,7 @@ void MainWindow::stopTx()
   ui->TuneButton->setStyleSheet("");
   ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
   loggit("Stop Tx");
-  if(m_pctx<100) startRx();
+  startRx();
 }
 
 void MainWindow::on_cbIdle_toggled(bool b)
