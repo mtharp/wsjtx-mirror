@@ -595,10 +595,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
 void MainWindow::freezeDecode(int n)                          //freezeDecode()
 {
   m_txFreq=g_pWideGraph->txFreq();
-  double x=ui->dialFreqLineEdit->text().toDouble()+0.000001*m_txFreq;
-  QString t;
-  t.sprintf("%.6f",x);
-  ui->txFreqLineEdit->setText(t);
+  ui->sbTxAudio->setValue(m_txFreq);
 }
 
 void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
@@ -895,7 +892,7 @@ void MainWindow::guiUpdate()
   if(m_txFreq != m_txFreq0) {
     QString t;
     t.sprintf(" %4d",m_txFreq);
-    ui->lab11->setText(t);
+//    ui->lab11->setText(t);
     m_txFreq0=m_txFreq;
   }
 
@@ -1144,5 +1141,14 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
   t.sprintf("%.6f ",m_dialFreq);
   ui->dialFreqLineEdit->setText(t);
   t.sprintf("%.6f",m_dialFreq+0.000001*m_txFreq);
+  ui->txFreqLineEdit->setText(t);
+}
+
+void MainWindow::on_sbTxAudio_valueChanged(int n)
+{
+  m_txFreq=n;
+  double x=ui->dialFreqLineEdit->text().toDouble()+0.000001*m_txFreq;
+  QString t;
+  t.sprintf("%.6f",x);
   ui->txFreqLineEdit->setText(t);
 }
