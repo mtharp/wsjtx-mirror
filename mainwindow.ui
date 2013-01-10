@@ -594,6 +594,19 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="stopTxButton">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Stop Tx</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>

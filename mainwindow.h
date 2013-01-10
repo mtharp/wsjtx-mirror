@@ -82,6 +82,8 @@ private slots:
   void on_bandComboBox_currentIndexChanged(int n);
   void on_sbTxAudio_valueChanged(int n);
 
+  void on_stopTxButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -194,7 +196,7 @@ private:
     void updateStatusBar();
     void msgBox(QString t);
     void oneSec();
-//    void startRx();
+    void startRx();
     void startTx();
     double tsec();
     void ba2msg(QByteArray ba, char* message);

@@ -48,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
   QActionGroup* modeGroup = new QActionGroup(this);
   ui->actionWSPR_2->setActionGroup(modeGroup);
   ui->actionWSPR_15->setActionGroup(modeGroup);
-  ui->actionWSPR_30->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -807,6 +806,7 @@ void MainWindow::on_actionWSPR_2_triggered()
   lab2->setStyleSheet("QLabel{background-color: #ffff00}");
   lab2->setText("WSPR-2");
   ui->actionWSPR_2->setChecked(true);
+  stopTx();
 }
 
 void MainWindow::on_actionWSPR_15_triggered()
@@ -822,6 +822,7 @@ void MainWindow::on_actionWSPR_15_triggered()
   lab2->setStyleSheet("QLabel{background-color: #7fff00}");
   lab2->setText("WSPR-15");
   ui->actionWSPR_15->setChecked(true);
+  stopTx();
 }
 
 void MainWindow::on_inGain_valueChanged(int n)
@@ -889,6 +890,7 @@ void MainWindow::guiUpdate()
     m_sec0=nsec;
   }
 
+//No need for the following code???
   if(m_txFreq != m_txFreq0) {
     QString t;
     t.sprintf(" %4d",m_txFreq);
@@ -966,17 +968,21 @@ void MainWindow::guiUpdate()
       startTx();
     } else {
 //Start a normal Rx sequence
-      m_receiving=true;
-      soundInThread.setReceiving(true);
-      //m_rxtime=hhmm
-      m_ntr=1;
-      m_rxnormal=true;
-      loggit("Start Rx");
-      //    startRx();
-      m_nrx=m_nrx-1;
-      m_switching=false;
+      startRx();
     }
   }
+}
+
+void MainWindow::startRx()
+{
+  m_receiving=true;
+  soundInThread.setReceiving(true);
+  //m_rxtime=hhmm
+  m_ntr=1;
+  m_rxnormal=true;
+  loggit("Start Rx");
+  m_nrx=m_nrx-1;
+  m_switching=false;
 }
 
 double MainWindow::tsec()
@@ -1080,6 +1086,7 @@ void MainWindow::stopTx()
   ui->TuneButton->setStyleSheet("");
   ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
   loggit("Stop Tx");
+  startRx();
 }
 
 void MainWindow::on_cbIdle_toggled(bool b)
@@ -1147,8 +1154,14 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
 void MainWindow::on_sbTxAudio_valueChanged(int n)
 {
   m_txFreq=n;
+  soundOutThread.setTxFreq(m_txFreq);
   double x=ui->dialFreqLineEdit->text().toDouble()+0.000001*m_txFreq;
   QString t;
   t.sprintf("%.6f",x);
   ui->txFreqLineEdit->setText(t);
+}
+
+void MainWindow::on_stopTxButton_clicked()
+{
+  stopTx();
 }
