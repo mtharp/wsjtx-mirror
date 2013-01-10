@@ -79,6 +79,7 @@ private slots:
   void on_TuneButton_clicked();
   void on_txFreqLineEdit_editingFinished();
   void on_dBmComboBox_currentIndexChanged(const QString &arg1);
+  void on_bandComboBox_currentIndexChanged(int n);
 
 private:
     Ui::MainWindow *ui;
@@ -115,6 +116,7 @@ private:
     qint32  m_iptt;
     qint32  m_txFreq0;
     qint32  m_dBm;
+    qint32  m_band;
 
     bool    m_receiving;
     bool    m_transmitting;

@@ -13,6 +13,9 @@ int itone[162];                       //Tx audio tones
 bool btxok;                           //True if OK to transmit
 bool btxMute;
 double outputLatency;                 //Latency in seconds
+double dFreq[]={0.136,0.4742,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,
+           18.1046,21.0946,24.9246,28.1246,50.293,70.091,144.489,0.0};
+
 WideGraph* g_pWideGraph = NULL;
 
 QString ver="0.5";
@@ -141,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_txnext=false;
   m_uploading=false;
   m_grid6=false;
+  m_band=6;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -153,6 +157,14 @@ MainWindow::MainWindow(QWidget *parent) :
     t.sprintf("%d dBm",ndbm);
     ui->dBmComboBox->addItem(t);
   }
+
+  int band[] ={2200,630,160,80,60,40,30,20,17,15,12,10,6,4,2};
+  for(int i=0; i<15; i++) {
+    QString t;
+    t.sprintf("%4d m",band[i]);
+    ui->bandComboBox->addItem(t);
+  }
+  ui->bandComboBox->addItem("Other");
 
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
@@ -258,6 +270,7 @@ void MainWindow::writeSettings()
   settings.setValue("PctTx",m_pctx);
   settings.setValue("dBm",m_dBm);
   settings.setValue("Grid6",m_grid6);
+  settings.setValue("Iband",m_band);
   settings.endGroup();
 }
 
@@ -315,6 +328,8 @@ void MainWindow::readSettings()
   ui->sbPctTx->setValue(m_pctx);
   m_dBm=settings.value("dBm",37).toInt();
   ui->dBmComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
+  m_band=settings.value("Iband",6).toInt();
+  ui->bandComboBox->setCurrentIndex(m_band);
   m_grid6=settings.value("Grid6",false).toBool();
   settings.endGroup();
 
@@ -1119,4 +1134,15 @@ void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)
 {
   int i1=arg1.indexOf(" ");
   m_dBm=arg1.mid(0,i1).toInt();
+}
+
+void MainWindow::on_bandComboBox_currentIndexChanged(int n)
+{
+  m_band=n;
+  m_dialFreq=dFreq[n];
+  QString t;
+  t.sprintf("%.6f ",m_dialFreq);
+  ui->dialFreqLineEdit->setText(t);
+  t.sprintf("%.6f",m_dialFreq+0.000001*m_txFreq);
+  ui->txFreqLineEdit->setText(t);
 }

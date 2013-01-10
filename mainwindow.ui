@@ -402,7 +402,7 @@ p, li { white-space: pre-wrap; }
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="lab1">
             <property name="maximumSize">
              <size>
@@ -415,7 +415,7 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QLineEdit" name="dialFreqLineEdit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -434,7 +434,7 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="lab2">
             <property name="maximumSize">
              <size>
@@ -447,7 +447,7 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QLineEdit" name="txFreqLineEdit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -466,7 +466,7 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="lab10">
             <property name="maximumSize">
              <size>
@@ -479,10 +479,20 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QLabel" name="lab11">
             <property name="text">
              <string>  1500</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="bandComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Band:</string>
             </property>
            </widget>
           </item>
@@ -654,36 +664,11 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionWSPR_2"/>
     <addaction name="actionWSPR_15"/>
    </widget>
-   <widget class="QMenu" name="menuBand">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Band</string>
-    </property>
-    <addaction name="action2200_m"/>
-    <addaction name="action630_m"/>
-    <addaction name="action160_m"/>
-    <addaction name="action80_m"/>
-    <addaction name="action60_m"/>
-    <addaction name="action40_m"/>
-    <addaction name="action30_m"/>
-    <addaction name="action20_m"/>
-    <addaction name="action17_m"/>
-    <addaction name="action15_m"/>
-    <addaction name="action12_m"/>
-    <addaction name="action10_m"/>
-    <addaction name="action6_m"/>
-    <addaction name="action4_m"/>
-    <addaction name="action2_m"/>
-    <addaction name="actionOther"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSetup"/>
    <addaction name="menuView"/>
    <addaction name="menuMode"/>
    <addaction name="menuSave"/>
-   <addaction name="menuBand"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
