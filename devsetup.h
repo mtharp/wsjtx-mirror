@@ -23,6 +23,7 @@ public:
 
   bool    m_restartSoundIn;
   bool    m_restartSoundOut;
+  bool    m_grid6;
 
   QString m_myCall;
   QString m_myGrid;
@@ -35,8 +36,8 @@ public slots:
 
 private slots:
   void on_myCallEntry_editingFinished();
-
   void on_myGridEntry_editingFinished();
+  void on_cbGrid6_toggled(bool b);
 
 private:
   Ui::DialogSndCard ui;

@@ -80,6 +80,7 @@ subroutine wqdecode(data0,message,ntype)
         message='<...> '//grid6//' '//cdbm
      endif
   endif
+  if(message(1:2).eq.'<>') message='<...>'//message(3:)
 
   return
 end subroutine wqdecode

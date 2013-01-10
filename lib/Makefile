@@ -20,7 +20,7 @@ CFLAGS = -I.
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libwspr.a wsprd.exe
+all:    libwspr.a wsprd.exe WSPRcode.exe
 
 OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
 	fchisq.o fil3.o flat3.o four2a.o genwsprx.o grid2deg.o \
@@ -39,6 +39,11 @@ OBJS2 = wsprd.o wsprd_init.o
 wsprd.exe: $(OBJS2) libwspr.a
 	$(FC) -o wsprd.exe $(FFLAGS) $(OBJS2) libwspr.a libfftw3f_win.a
 	cp wsprd.exe ../../wsprx_install
+
+OBJS3 = WSPRcode.o
+WSPRcode.exe: $(OBJS3) libwspr.a
+	$(FC) -o WSPRcode.exe $(FFLAGS) $(OBJS3) libwspr.a
+	cp WSPRcode.exe ../../wsprx_install
 
 .PHONY : clean
 

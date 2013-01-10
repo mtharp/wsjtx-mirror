@@ -103,7 +103,7 @@ void DevSetup::initDlg()
   ui.comboBoxSndOut->setCurrentIndex(m_nDevOut);
   m_paInDevice=m_inDevList[m_nDevIn];
   m_paOutDevice=m_outDevList[m_nDevOut];
-
+  ui.cbGrid6->setChecked(m_grid6);
 }
 
 //------------------------------------------------------- accept()
@@ -131,7 +131,6 @@ void DevSetup::accept()
   QDialog::accept();
 }
 
-
 void DevSetup::on_myCallEntry_editingFinished()
 {
   QString t=ui.myCallEntry->text();
@@ -143,4 +142,9 @@ void DevSetup::on_myGridEntry_editingFinished()
   QString t=ui.myGridEntry->text();
   t=t.mid(0,4).toUpper()+t.mid(4,2).toLower();
   ui.myGridEntry->setText(t);
+}
+
+void DevSetup::on_cbGrid6_toggled(bool b)
+{
+  m_grid6=b;
 }

@@ -108,6 +108,7 @@ private:
     qint32  m_nseq;
     qint32  m_ncal;
     qint32  m_ntr;
+    qint32  m_ntx;
     qint32  m_nseqdone;
     qint32  m_ntune;
     qint32  m_pctx;
@@ -136,6 +137,7 @@ private:
     bool    m_uploadSpots;
     bool    m_uploading;
     bool    m_bandHop;
+    bool    m_grid6;
 
     char    m_decoded[80];
 

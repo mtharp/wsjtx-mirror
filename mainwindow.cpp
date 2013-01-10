@@ -137,8 +137,10 @@ MainWindow::MainWindow(QWidget *parent) :
   m_idle=false;
   m_TxOK=false;
   m_nrx=1;
+  m_ntx=0;
   m_txnext=false;
   m_uploading=false;
+  m_grid6=false;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -255,6 +257,7 @@ void MainWindow::writeSettings()
   settings.setValue("TxEnable",m_TxOK);
   settings.setValue("PctTx",m_pctx);
   settings.setValue("dBm",m_dBm);
+  settings.setValue("Grid6",m_grid6);
   settings.endGroup();
 }
 
@@ -312,6 +315,7 @@ void MainWindow::readSettings()
   ui->sbPctTx->setValue(m_pctx);
   m_dBm=settings.value("dBm",37).toInt();
   ui->dBmComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
+  m_grid6=settings.value("Grid6",false).toBool();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -404,6 +408,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_saveDir=m_saveDir;
   dlg.m_nDevIn=m_nDevIn;
   dlg.m_nDevOut=m_nDevOut;
+  dlg.m_grid6=m_grid6;
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
@@ -416,6 +421,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_paInDevice=dlg.m_paInDevice;
     m_nDevOut=dlg.m_nDevOut;
     m_paOutDevice=dlg.m_paOutDevice;
+    m_grid6=dlg.m_grid6;
 
     if(dlg.m_restartSoundIn) {
       soundInThread.quit();
@@ -975,9 +981,24 @@ void MainWindow::on_sbPctTx_valueChanged(int arg1)
 void MainWindow::startTx()
 {
   static char msg[23];
-  QString sdBm;
+  QString sdBm,msg1,msg0,message;
   sdBm.sprintf(" %d",m_dBm);
-  QString message=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
+  m_ntx=1-m_ntx;
+  int i2=m_myCall.indexOf("/");
+  if(i2>0 or m_grid6) {
+    // This is a "type 2" WSPR message
+    if(i2<0) {
+      msg1=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
+    } else {
+      msg1=m_myCall + sdBm;
+    }
+    msg0="<" + m_myCall + "> " + m_myGrid + sdBm;
+    if(m_ntx==0) message=msg0;
+    if(m_ntx==1) message=msg1;
+  } else {
+    // Normal WSPR message
+    message=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
+  }
   QByteArray ba=message.toAscii();
   ba2msg(ba,msg);
   int len1=22;
