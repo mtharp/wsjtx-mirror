@@ -83,6 +83,8 @@ private slots:
   void on_sbTxAudio_valueChanged(int n);
   void on_stopTxButton_clicked();
 
+  void on_startRxButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -137,6 +139,7 @@ private:
     bool    m_txdone;
     bool    m_txnext;
     bool    m_hopping;
+    bool    m_RxOK;
     bool    m_TxOK;
     bool    m_uploadSpots;
     bool    m_uploading;

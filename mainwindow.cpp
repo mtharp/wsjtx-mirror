@@ -137,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_txdone=false;
   m_ntune=0;
   m_idle=false;
+  m_RxOK=true;
   m_TxOK=false;
   m_nrx=1;
   m_ntx=0;
@@ -573,9 +574,10 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
 {
   m_receiving=false;
   soundInThread.setReceiving(m_receiving);
+  m_RxOK=false;
   QString fname;
   fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
-                                       "WSPR Files (*.wav)");
+                                       "WSPR Files (*.wav *.c2)");
   if(fname != "") {
     m_path=fname;
     int i;
@@ -975,14 +977,16 @@ void MainWindow::guiUpdate()
 
 void MainWindow::startRx()
 {
-  m_receiving=true;
-  soundInThread.setReceiving(true);
-  //m_rxtime=hhmm
-  m_ntr=1;
-  m_rxnormal=true;
-  loggit("Start Rx");
-  m_nrx=m_nrx-1;
-  m_switching=false;
+  if(m_RxOK) {
+    m_receiving=true;
+    soundInThread.setReceiving(true);
+    //m_rxtime=hhmm
+    m_ntr=1;
+    m_rxnormal=true;
+    loggit("Start Rx");
+    m_nrx=m_nrx-1;
+    m_switching=false;
+  }
 }
 
 double MainWindow::tsec()
@@ -1164,4 +1168,10 @@ void MainWindow::on_sbTxAudio_valueChanged(int n)
 void MainWindow::on_stopTxButton_clicked()
 {
   stopTx();
+}
+
+void MainWindow::on_startRxButton_clicked()
+{
+  m_RxOK=true;
+  startRx();
 }

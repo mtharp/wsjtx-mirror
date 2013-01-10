@@ -200,7 +200,7 @@ p, li { white-space: pre-wrap; }
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>5</height>
+          <height>13</height>
          </size>
         </property>
        </spacer>
@@ -327,15 +327,51 @@ p, li { white-space: pre-wrap; }
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>5</height>
+          <height>13</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="EraseButton">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>70</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>&amp;Erase</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="startRxButton">
+              <property name="maximumSize">
+               <size>
+                <width>70</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Start Rx</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item>
            <widget class="QLabel" name="labUTC">
             <property name="sizePolicy">
@@ -525,25 +561,6 @@ p, li { white-space: pre-wrap; }
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QPushButton" name="EraseButton">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>&amp;Erase</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QPushButton" name="TxNextButton">
             <property name="sizePolicy">
