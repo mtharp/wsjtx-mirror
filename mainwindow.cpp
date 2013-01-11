@@ -51,26 +51,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
-  ui->actionSave_decoded->setActionGroup(saveGroup);
+  ui->actionSave_wav->setActionGroup(saveGroup);
+  ui->actionSave_c2->setActionGroup(saveGroup);
   ui->actionSave_all->setActionGroup(saveGroup);
-
-  QActionGroup* BandGroup = new QActionGroup(this);
-  ui->action2200_m->setActionGroup(BandGroup);
-  ui->action630_m->setActionGroup(BandGroup);
-  ui->action160_m->setActionGroup(BandGroup);
-  ui->action80_m->setActionGroup(BandGroup);
-  ui->action60_m->setActionGroup(BandGroup);
-  ui->action40_m->setActionGroup(BandGroup);
-  ui->action30_m->setActionGroup(BandGroup);
-  ui->action20_m->setActionGroup(BandGroup);
-  ui->action17_m->setActionGroup(BandGroup);
-  ui->action15_m->setActionGroup(BandGroup);
-  ui->action12_m->setActionGroup(BandGroup);
-  ui->action10_m->setActionGroup(BandGroup);
-  ui->action6_m->setActionGroup(BandGroup);
-  ui->action4_m->setActionGroup(BandGroup);
-  ui->action2_m->setActionGroup(BandGroup);
-  ui->actionOther->setActionGroup(BandGroup);
 
   setWindowTitle(Program_Title_Version);
   connect(&soundInThread, SIGNAL(readyForFFT(int)),
@@ -121,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
   btxok=false;
   m_restart=false;
   m_transmitting=false;
+  m_tuning=false;
   m_myCall="K1JT";
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
@@ -128,8 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_txFreq=1500;
   m_loopall=false;
   m_startAnother=false;
-  m_saveDecoded=false;
-  m_saveAll=false;
+  m_save=0;
   m_sec0=-1;
   m_palette="CuteSDR";
   m_RxLog=1;                     //Write Date and Time to RxLog
@@ -263,7 +246,8 @@ void MainWindow::writeSettings()
   settings.setValue("PaletteBlue",ui->actionBlue->isChecked());
   settings.setValue("Mode",m_mode);
   settings.setValue("SaveNone",ui->actionNone->isChecked());
-  settings.setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
+  settings.setValue("SaveWav",ui->actionSave_wav->isChecked());
+  settings.setValue("SaveC2",ui->actionSave_c2->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("NBslider",m_NBslider);
   settings.setValue("TxFreq",m_txFreq);
@@ -310,9 +294,13 @@ void MainWindow::readSettings()
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","WSPR-2").toString();
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
-  ui->actionSave_decoded->setChecked(settings.value(
-                                         "SaveDecoded",false).toBool());
+  ui->actionSave_wav->setChecked(settings.value("SaveWav",false).toBool());
+  ui->actionSave_c2->setChecked(settings.value("SaveC2",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
+  m_save=0;
+  if(ui->actionSave_wav->isChecked()) m_save=1;
+  if(ui->actionSave_c2->isChecked()) m_save=2;
+  if(ui->actionSave_all->isChecked()) m_save=3;
   m_NBslider=settings.value("NBslider",40).toInt();
   m_txFreq=settings.value("TxFreq",1500).toInt();
   m_dialFreq=settings.value("DialFreq",10.1387).toDouble();
@@ -320,14 +308,13 @@ void MainWindow::readSettings()
   t.sprintf("%.6f ",m_dialFreq);
   ui->dialFreqLineEdit->setText(t);
   soundOutThread.setTxFreq(m_txFreq);
-  m_saveDecoded=ui->actionSave_decoded->isChecked();
-  m_saveAll=ui->actionSave_all->isChecked();
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
   m_uploadSpots=settings.value("UploadSpots",false).toBool();
   ui->cbUpload->setChecked(m_uploadSpots);
   m_TxOK=settings.value("TxEnable",false).toBool();
   ui->cbTxEnable->setChecked(m_TxOK);
+  ui->TuneButton->setEnabled(m_TxOK);
   m_pctx=settings.value("PctTx",25).toInt();
   m_rxavg=1.0;
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
@@ -592,7 +579,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
       lab1->setStyleSheet("QLabel{background-color: #66ff66}");
       lab1->setText(" " + fname.mid(i,15) + " ");
     }
-//    on_stopButton_clicked();
+    on_cbIdle_toggled(true);
     m_diskData=true;
     *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
     watcher1->setFuture(*future1);         // call diskDat() when done
@@ -662,13 +649,13 @@ void MainWindow::diskWriteFinished()                       //diskWriteFinished
 {
 }
 
-//Delete ../save/*.wav
+//Delete ../save/*.wav, *.c2
 void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
 {
   int i;
   QString fname;
   int ret = QMessageBox::warning(this, "Confirm Delete",
-      "Are you sure you want to delete all *.wav files in\n" +
+      "Are you sure you want to delete all *.wav and *.c2 files in\n" +
        QDir::toNativeSeparators(m_saveDir) + " ?",
        QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
   if(ret==QMessageBox::Yes) {
@@ -678,29 +665,33 @@ void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
     for(f=files.begin(); f!=files.end(); ++f) {
       fname=*f;
       i=(fname.indexOf(".wav"));
-      if(i>10) dir.remove(fname);
-    }
+      if(i>1) dir.remove(fname);
+      i=(fname.indexOf(".c2"));
+      if(i>1) dir.remove(fname);    }
   }
 }
 
 void MainWindow::on_actionNone_triggered()                    //Save None
 {
-  m_saveDecoded=false;
-  m_saveAll=false;
+  m_save=0;
   ui->actionNone->setChecked(true);
 }
 
-void MainWindow::on_actionSave_decoded_triggered()
+void MainWindow::on_actionSave_wav_triggered()
 {
-  m_saveDecoded=true;
-  m_saveAll=false;
-  ui->actionSave_decoded->setChecked(true);
+  m_save=1;
+  ui->actionSave_wav->setChecked(true);
+}
+
+void MainWindow::on_actionSave_c2_triggered()
+{
+  m_save=2;
+  ui->actionSave_c2->setChecked(true);
 }
 
 void MainWindow::on_actionSave_all_triggered()                //Save All
 {
-  m_saveDecoded=false;
-  m_saveAll=true;
+  m_save=3;
   ui->actionSave_all->setChecked(true);
 }
 
@@ -721,13 +712,14 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile f("wsprd.out");
         if(f.exists()) f.remove();
       }
-//      m_bdecoded = (t.mid(23,1).toInt()==1);
-      bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
-      if(!keepFile) {
+      if(m_save==1 or m_save==3) {
         QFile savedWav(m_fname);
         savedWav.remove();
+      }
+      if(m_save==2 or m_save==3) {
         int i1=m_fname.indexOf(".wav");
-        QFile savedC2(m_fname.mid(i1-11,11) + ".c2");
+        QString sc2=m_fname.mid(0,i1) + ".c2";
+        QFile savedC2(sc2);
         savedC2.remove();
       }
       m_RxLog=0;
@@ -924,7 +916,7 @@ void MainWindow::guiUpdate()
     }
   }
 
-  if(m_nseq >= m_nseqdone) {           //We've reached sequence end time
+  if(!m_tuning and (m_nseq >= m_nseqdone)) {   //Reached sequence end time?
     if(m_transmitting) stopTx();
     m_transmitting=false;
     m_receiving=false;
@@ -986,14 +978,6 @@ void MainWindow::startTx()
   genwsprx_(msg,itone,len1);
   ptt(m_pttPort,1,&m_iptt);                   // Raise PTT
   ptt1Timer->start(200);                       //Sequencer delay
-  /*
-  if(m_ntune==1) {
-    int n=1000*m_pctx + 200;                        //Transmission length
-    tuneTimer->start(n);
-    message="Tune";
-    m_ntune=0;
-  }
-  */
   loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
   lab1->setText("Transmitting:  " + message);
@@ -1062,6 +1046,7 @@ void MainWindow::on_cbIdle_toggled(bool b)
 void MainWindow::on_cbTxEnable_toggled(bool b)
 {
   m_TxOK=b;
+  ui->TuneButton->setEnabled(m_TxOK);
   btxok=b;
   if(!m_TxOK and m_transmitting) stopTx();
 }
@@ -1085,21 +1070,6 @@ void MainWindow::on_cbUpload_toggled(bool b)
 void MainWindow::on_cbBandHop_toggled(bool b)
 {
   m_bandHop=b;
-}
-
-void MainWindow::on_TuneButton_clicked()
-{
-//  on_cbIdle_toggled(true);
-//  m_ntune=1;
-  ui->TuneButton->setStyleSheet(m_tune_style);
-  /*
-  if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
-    loggit("Tune");
-    //Make a test transmission of duration pctx.
-    //m_nsectx=nsec
-    startTx();
-  }
-  */
 }
 
 void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)
@@ -1129,11 +1099,6 @@ void MainWindow::on_sbTxAudio_valueChanged(int n)
   ui->txFreqLineEdit->setText(t);
 }
 
-void MainWindow::on_stopTxButton_clicked()
-{
-  stopTx();
-}
-
 void MainWindow::on_startRxButton_clicked()
 {
   m_RxOK=true;
@@ -1142,9 +1107,26 @@ void MainWindow::on_startRxButton_clicked()
 
 void MainWindow::loggit(QString t)
 {
+/*
   QDateTime t2 = QDateTime::currentDateTimeUtc();
   double ts=tsec();
   int ms=1000.0*(ts-int(ts));
   qDebug() << t << t2.time().toString() << ms << m_nseq << m_ntr << m_rxavg
            << m_nrx << m_receiving << m_transmitting;
+*/
+}
+
+void MainWindow::on_TuneButton_clicked()
+{
+  m_tuning=!m_tuning;
+  if(m_tuning) {
+    on_cbIdle_toggled(true);
+    m_receiving=false;
+    ui->TuneButton->setStyleSheet(m_tune_style);
+    itone[0]=-1;
+    m_tuning=true;
+    startTx();
+  } else {
+    stopTx();
+  }
 }

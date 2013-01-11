@@ -337,42 +337,6 @@ p, li { white-space: pre-wrap; }
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QPushButton" name="EraseButton">
-              <property name="minimumSize">
-               <size>
-                <width>50</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>70</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>&amp;Erase</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="startRxButton">
-              <property name="maximumSize">
-               <size>
-                <width>70</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Start Rx</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
            <widget class="QLabel" name="labUTC">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -562,6 +526,38 @@ p, li { white-space: pre-wrap; }
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
+           <widget class="QPushButton" name="EraseButton">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&amp;Erase</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="startRxButton">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Start Rx</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="TxNextButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -608,19 +604,6 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="text">
              <string>Tune</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="stopTxButton">
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Stop Tx</string>
             </property>
            </widget>
           </item>
@@ -686,7 +669,8 @@ p, li { white-space: pre-wrap; }
      <string>Save</string>
     </property>
     <addaction name="actionNone"/>
-    <addaction name="actionSave_decoded"/>
+    <addaction name="actionSave_wav"/>
+    <addaction name="actionSave_c2"/>
     <addaction name="actionSave_all"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -1053,28 +1037,6 @@ p, li { white-space: pre-wrap; }
     <string>WSPR-30</string>
    </property>
   </action>
-  <action name="actionSave_synced">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Save synced</string>
-   </property>
-  </action>
-  <action name="actionSave_decoded">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Save decoded</string>
-   </property>
-  </action>
   <action name="actionMediumDecode">
    <property name="checkable">
     <bool>true</bool>
@@ -1236,6 +1198,22 @@ p, li { white-space: pre-wrap; }
   <action name="actionSave_user_parameters">
    <property name="text">
     <string>Save user parameters</string>
+   </property>
+  </action>
+  <action name="actionSave_wav">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save  .wav</string>
+   </property>
+  </action>
+  <action name="actionSave_c2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save  .c2</string>
    </property>
   </action>
  </widget>

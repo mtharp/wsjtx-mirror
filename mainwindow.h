@@ -56,13 +56,11 @@ private slots:
   void on_actionDecode_remaining_files_in_directory_triggered();
   void on_actionDelete_all_wav_files_in_SaveDir_triggered();
   void on_actionNone_triggered();
-  void on_actionSave_all_triggered();
   void on_EraseButton_clicked();
   void on_actionAFMHot_triggered();
   void on_actionBlue_triggered();
   void on_actionWSPR_2_triggered();
   void on_actionWSPR_15_triggered();
-  void on_actionSave_decoded_triggered();
   void on_inGain_valueChanged(int n);
   void on_TxNextButton_clicked();
   void onNetworkReply(QNetworkReply* reply);
@@ -77,14 +75,15 @@ private slots:
   void on_dialFreqLineEdit_editingFinished();
   void on_cbUpload_toggled(bool checked);
   void on_cbBandHop_toggled(bool checked);
-  void on_TuneButton_clicked();
   void on_txFreqLineEdit_editingFinished();
   void on_dBmComboBox_currentIndexChanged(const QString &arg1);
   void on_bandComboBox_currentIndexChanged(int n);
   void on_sbTxAudio_valueChanged(int n);
-  void on_stopTxButton_clicked();
-
   void on_startRxButton_clicked();
+  void on_TuneButton_clicked();
+  void on_actionSave_wav_triggered();
+  void on_actionSave_c2_triggered();
+  void on_actionSave_all_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -119,16 +118,16 @@ private:
     qint32  m_iptt;
     qint32  m_dBm;
     qint32  m_band;
+    qint32  m_save;
 
     bool    m_receiving;
     bool    m_transmitting;
+    bool    m_tuning;
     bool    m_diskData;
     bool    m_loopall;
     bool    m_auto;
     bool    m_restart;
     bool    m_startAnother;
-    bool    m_saveDecoded;
-    bool    m_saveAll;
     bool    m_bdecoded;
     bool    m_rxdone;
     bool    m_idle;
