@@ -71,6 +71,7 @@ private slots:
   void on_cbTxEnable_toggled(bool b);
   void startTx2();
   void stopTx();
+  void stopTx2();
   void loggit(QString t);
   void p2Start();
   void on_dialFreqLineEdit_editingFinished();
@@ -96,7 +97,6 @@ private:
     qint32  m_waterfallAvg;
     qint32  m_pttPort;
     qint32  m_txFreq;
-    qint32  m_setftx;
     qint32  m_sec0;
     qint32  m_RxLog;
     qint32  m_nutc0;
@@ -115,16 +115,13 @@ private:
     qint32  m_ntr;
     qint32  m_ntx;
     qint32  m_nseqdone;
-    qint32  m_ntune;
     qint32  m_pctx;
     qint32  m_iptt;
-    qint32  m_txFreq0;
     qint32  m_dBm;
     qint32  m_band;
 
     bool    m_receiving;
     bool    m_transmitting;
-    bool    m_switching;
     bool    m_diskData;
     bool    m_loopall;
     bool    m_auto;
@@ -134,9 +131,7 @@ private:
     bool    m_saveAll;
     bool    m_bdecoded;
     bool    m_rxdone;
-    bool    m_rxnormal;
     bool    m_idle;
-    bool    m_txdone;
     bool    m_txnext;
     bool    m_hopping;
     bool    m_RxOK;
@@ -171,7 +166,8 @@ private:
     QProcess p1;
     QProcess p2;
 
-    QTimer* pttTimer;
+    QTimer* ptt0Timer;
+    QTimer* ptt1Timer;
     QTimer* uploadTimer;
     QTimer* tuneTimer;
 

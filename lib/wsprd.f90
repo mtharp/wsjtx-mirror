@@ -1,6 +1,7 @@
 program wsprd
 
   parameter (NMAX=900*12000)                          !Max length of waveform
+  parameter (N15=32768)
   integer*2 id(NMAX)
   real*8 f0,dialFreq
   real*4 ps(-256:256)
@@ -9,6 +10,9 @@ program wsprd
   character c2file*14,datetime*11
   complex c2(65536)
   data nbfo/1500/
+  character*12 callsign
+  character*12 dcall
+  common/hashcom/dcall(0:N15-1)
 
   nargs=iargc()
   if(nargs.eq.0) then
@@ -26,7 +30,7 @@ program wsprd
 
   open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
   open(14,file='wsprd.out',status='unknown',position='append')
-
+  open(15,file='hashtable.txt',status='unknown')
   open(18,file=infile,access='stream',status='old')
   lc2=index(infile,'.c2').gt.0
   i1=index(infile,'.wav')
@@ -34,7 +38,15 @@ program wsprd
   datetime=infile(i1-11:i1-1)
   datetime(7:7)=' '
 
-  if(lc2) then
+! May want to have a timeout (say, one hour?) on calls fetched 
+! from the hash table.
+  dcall='            '
+  do i=0,N15-1
+     read(15,1000,end=10) ih,callsign
+     dcall(ih)=callsign
+  enddo
+
+10 if(lc2) then
      read(18) c2file,ntrmin,dialFreq,c2(1:45000)
      f0=dialFreq
      ntrminutes=ntrmin
@@ -72,5 +84,12 @@ program wsprd
   call mept162a(datetime,f0,c2,ps,lc2,npts,nbfo)
   write(*,1100)
 1100 format('<DecodeFinished>')
+
+! Save the hash table
+  rewind 15
+  do i=0,N15-1
+     if(dcall(i).ne.'            ') write(15,1000) i,dcall(i)
+1000 format(i5,2x,a12)
+  enddo
     
 999 end program wsprd

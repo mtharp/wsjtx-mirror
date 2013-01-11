@@ -18,7 +18,7 @@ double dFreq[]={0.136,0.4742,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,
 
 WideGraph* g_pWideGraph = NULL;
 
-QString ver="0.5";
+QString ver="0.6";
 QString rev="$Rev$";
 QString Program_Title_Version="  WSPR-X   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
@@ -102,9 +102,15 @@ MainWindow::MainWindow(QWidget *parent) :
   QTimer *guiTimer = new QTimer(this);
   connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
   guiTimer->start(100);                            //Don't change the 100 ms!
-  pttTimer = new QTimer(this);
+  ptt0Timer = new QTimer(this);
+  ptt0Timer->setSingleShot(true);
+  connect(ptt0Timer, SIGNAL(timeout()), this, SLOT(stopTx2()));
+  ptt1Timer = new QTimer(this);
+  ptt1Timer->setSingleShot(true);
+  connect(ptt1Timer, SIGNAL(timeout()), this, SLOT(startTx2()));
   tuneTimer = new QTimer(this);
-
+  tuneTimer->setSingleShot(true);
+  connect(tuneTimer, SIGNAL(timeout()), this, SLOT(stopTx()));
   uploadTimer = new QTimer(this);
   uploadTimer->setSingleShot(true);
   connect(uploadTimer, SIGNAL(timeout()), this, SLOT(p2Start()));
@@ -120,7 +126,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_appDir = QApplication::applicationDirPath();
   m_saveDir="/users/joe/wsprx/install/save";
   m_txFreq=1500;
-  m_setftx=0;
   m_loopall=false;
   m_startAnother=false;
   m_saveDecoded=false;
@@ -134,8 +139,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_inGain=0;
   m_hopping=false;
   m_rxdone=false;
-  m_txdone=false;
-  m_ntune=0;
   m_idle=false;
   m_RxOK=true;
   m_TxOK=false;
@@ -145,6 +148,8 @@ MainWindow::MainWindow(QWidget *parent) :
   m_uploading=false;
   m_grid6=false;
   m_band=6;
+  m_nseq=0;
+  m_ntr=0;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -201,9 +206,8 @@ MainWindow::MainWindow(QWidget *parent) :
   soundInThread.start(QThread::HighestPriority);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
-  m_receiving=true;
+  m_receiving=true;                        //Start with Rx ON
   soundInThread.setReceiving(true);
-  m_switching=false;
   m_diskData=false;
 
   if(ui->actionLinrad->isChecked()) on_actionLinrad_triggered();
@@ -325,6 +329,8 @@ void MainWindow::readSettings()
   m_TxOK=settings.value("TxEnable",false).toBool();
   ui->cbTxEnable->setChecked(m_TxOK);
   m_pctx=settings.value("PctTx",25).toInt();
+  m_rxavg=1.0;
+  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
   ui->sbPctTx->setValue(m_pctx);
   m_dBm=settings.value("dBm",37).toInt();
   ui->dBmComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
@@ -573,7 +579,7 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 void MainWindow::on_actionOpen_triggered()                     //Open File
 {
   m_receiving=false;
-  soundInThread.setReceiving(m_receiving);
+  soundInThread.setReceiving(false);
   m_RxOK=false;
   QString fname;
   fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
@@ -808,7 +814,7 @@ void MainWindow::on_actionWSPR_2_triggered()
   lab2->setStyleSheet("QLabel{background-color: #ffff00}");
   lab2->setText("WSPR-2");
   ui->actionWSPR_2->setChecked(true);
-  stopTx();
+  if(m_transmitting) stopTx();
 }
 
 void MainWindow::on_actionWSPR_15_triggered()
@@ -821,10 +827,10 @@ void MainWindow::on_actionWSPR_15_triggered()
   soundInThread.setPeriod(m_TRseconds,m_nsps);
   soundOutThread.setPeriod(m_TRseconds,m_nsps);
   g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
-  lab2->setStyleSheet("QLabel{background-color: #7fff00}");
+  lab2->setStyleSheet("QLabel{background-color: #ee82ee}");
   lab2->setText("WSPR-15");
   ui->actionWSPR_15->setChecked(true);
-  stopTx();
+  if(m_transmitting) stopTx();
 }
 
 void MainWindow::on_inGain_valueChanged(int n)
@@ -873,7 +879,6 @@ void MainWindow::onNetworkReply(QNetworkReply* reply)
 
 void MainWindow::oneSec() {
   QDateTime t = QDateTime::currentDateTimeUtc();
-  m_setftx=0;
   QString utc = t.date().toString("yyyy MMM dd") + " \n " +
           t.time().toString();
   ui->labUTC->setText(utc);
@@ -892,68 +897,14 @@ void MainWindow::guiUpdate()
     m_sec0=nsec;
   }
 
-//No need for the following code???
-  if(m_txFreq != m_txFreq0) {
-    QString t;
-    t.sprintf(" %4d",m_txFreq);
-//    ui->lab11->setText(t);
-    m_txFreq0=m_txFreq;
-  }
+  if(m_nseq==0 and !m_idle and !m_receiving and !m_transmitting and
+     m_ntr==0) {
+    if(m_pctx==0) m_nrx=1;             //Always receive if pctx=0
 
-  m_rxavg=1.0;
-  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;
+    if(m_TxOK and (m_pctx>0) and (m_txnext or ((m_nrx==0) and (m_ntr!=-1))) or
+       (m_TxOK and (m_pctx==100))) {
 
-  if(m_rxdone) {
-    loggit("Rx Done");
-    m_receiving=false;
-    soundInThread.setReceiving(false);
-    m_rxdone=false;
-  }
-
-  if(m_txdone) {
-    loggit("TxDone");
-    m_transmitting=false;
-    m_txdone=false;
-    m_ntr=0;
-  }
-
-  if((m_nseq >= m_nseqdone and m_ntune==0) or
-     (m_nseq >= m_pctx and m_ntune>0)) {
-    if(m_transmitting) {
-      stopTx();
-      m_txdone=true;
-    }
-    if(m_receiving) m_rxdone=true;
-
-    m_transmitting=false;
-    m_receiving=false;
-    soundInThread.setReceiving(false);
-    m_ntr=0;
-  }
-
-  if(m_pctx<1) m_ntune=0;
-
-  if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
-    loggit("Tune");
-    //Make a test transmission of duration pctx.
-    //m_nsectx=nsec
-    startTx();
-  }
-
-  if(m_nseq==0 and !m_transmitting and !m_receiving and !m_idle
-     and !m_switching) {
-
-    m_switching=true;
-    if(m_hopping) {
-      loggit("Hopping");
-      //...
-    } else {
-      if(m_pctx==0) m_nrx=1;
-    }
-
-    if(m_TxOK and m_pctx>0 and (m_txnext or (m_nrx==0 and m_ntr!=-1)) or
-       (m_TxOK and m_pctx==100)) {
-//Start a normal Tx sequence
+      //This will be a normal Tx sequence.  Compute # of Rx's to follow.
       float x=(float)rand()/RAND_MAX;
       if(m_pctx<50) {
         m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
@@ -963,16 +914,24 @@ void MainWindow::guiUpdate()
       }
 //    message=MyCall + MyGrid + "ndbm";
     //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
-      m_ntr=-1;
-      m_txdone=false;
+      m_ntr=-1;                         //This says we will have transmitted
       m_txnext=false;
       ui->TxNextButton->setStyleSheet("");
-      startTx();
+      startTx();                        //Start a normal Tx sequence
     } else {
-//Start a normal Rx sequence
-      startRx();
+      m_ntr=1;
+      startRx();                        //Start a normal Rx sequence
     }
   }
+
+  if(m_nseq >= m_nseqdone) {           //We've reached sequence end time
+    if(m_transmitting) stopTx();
+    m_transmitting=false;
+    m_receiving=false;
+    m_ntr=0;
+    soundInThread.setReceiving(false);
+  }
+
 }
 
 void MainWindow::startRx()
@@ -982,10 +941,8 @@ void MainWindow::startRx()
     soundInThread.setReceiving(true);
     //m_rxtime=hhmm
     m_ntr=1;
-    m_rxnormal=true;
     loggit("Start Rx");
     m_nrx=m_nrx-1;
-    m_switching=false;
   }
 }
 
@@ -998,6 +955,8 @@ double MainWindow::tsec()
 void MainWindow::on_sbPctTx_valueChanged(int arg1)
 {
   m_pctx=ui->sbPctTx->value();
+  m_rxavg=1.0;
+  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
 }
 
 void MainWindow::startTx()
@@ -1025,19 +984,16 @@ void MainWindow::startTx()
   ba2msg(ba,msg);
   int len1=22;
   genwsprx_(msg,itone,len1);
-  int itx=1;
-  ptt(m_pttPort,itx,&m_iptt);                   // Raise PTT
-  pttTimer->setSingleShot(true);
-  connect(pttTimer, SIGNAL(timeout()), this, SLOT(startTx2()));
-  pttTimer->start(200);                         //Sequencer delay
+  ptt(m_pttPort,1,&m_iptt);                   // Raise PTT
+  ptt1Timer->start(200);                       //Sequencer delay
+  /*
   if(m_ntune==1) {
-    tuneTimer->setSingleShot(true);
-    connect(tuneTimer, SIGNAL(timeout()), this, SLOT(stopTx()));
     int n=1000*m_pctx + 200;                        //Transmission length
     tuneTimer->start(n);
     message="Tune";
     m_ntune=0;
   }
+  */
   loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
   lab1->setText("Transmitting:  " + message);
@@ -1071,7 +1027,6 @@ void MainWindow::startTx2()
     soundOutThread.setTxSNR(snr);
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
-    m_switching=false;
     loggit("Start Tx2");
   }
 }
@@ -1079,7 +1034,6 @@ void MainWindow::startTx2()
 void MainWindow::stopTx()
 {
   g_pWideGraph->setTxed();
-  int itx=0;
   if (soundOutThread.isRunning()) {
     soundOutThread.quitExecution=true;
     soundOutThread.wait(3000);
@@ -1088,11 +1042,18 @@ void MainWindow::stopTx()
   lab1->setStyleSheet("");
   lab1->setText("");
   ui->TuneButton->setStyleSheet("");
-  ptt(m_pttPort,itx,&m_iptt);                   //Lower PTT
+  ptt0Timer->start(200);                       //Sequencer delay
   loggit("Stop Tx");
-  startRx();
+//  startRx();
+  m_receiving=true;
+  soundInThread.setReceiving(true);
 }
 
+void MainWindow::stopTx2()
+{
+  loggit("Stop Tx2");
+  ptt(m_pttPort,0,&m_iptt);                   //Lower PTT
+}
 void MainWindow::on_cbIdle_toggled(bool b)
 {
   m_idle=b;
@@ -1102,8 +1063,8 @@ void MainWindow::on_cbTxEnable_toggled(bool b)
 {
   m_TxOK=b;
   btxok=b;
+  if(!m_TxOK and m_transmitting) stopTx();
 }
-
 
 void MainWindow::on_dialFreqLineEdit_editingFinished()
 {
@@ -1114,11 +1075,6 @@ void MainWindow::on_txFreqLineEdit_editingFinished()
 {
   double txMHz=ui->txFreqLineEdit->text().toDouble();
   m_txFreq=int(1.0e6 * (txMHz-m_dialFreq) + 0.5);
-}
-
-void MainWindow::loggit(QString t)
-{
-//  qDebug() << t << m_sec0 << m_nseq << m_nrx << m_ntr;
 }
 
 void MainWindow::on_cbUpload_toggled(bool b)
@@ -1134,8 +1090,16 @@ void MainWindow::on_cbBandHop_toggled(bool b)
 void MainWindow::on_TuneButton_clicked()
 {
 //  on_cbIdle_toggled(true);
-  m_ntune=1;
+//  m_ntune=1;
   ui->TuneButton->setStyleSheet(m_tune_style);
+  /*
+  if(m_ntune!=0 and !m_transmitting and !m_receiving and m_pctx>=1) {
+    loggit("Tune");
+    //Make a test transmission of duration pctx.
+    //m_nsectx=nsec
+    startTx();
+  }
+  */
 }
 
 void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)
@@ -1174,4 +1138,13 @@ void MainWindow::on_startRxButton_clicked()
 {
   m_RxOK=true;
   startRx();
+}
+
+void MainWindow::loggit(QString t)
+{
+  QDateTime t2 = QDateTime::currentDateTimeUtc();
+  double ts=tsec();
+  int ms=1000.0*(ts-int(ts));
+  qDebug() << t << t2.time().toString() << ms << m_nseq << m_ntr << m_rxavg
+           << m_nrx << m_receiving << m_transmitting;
 }

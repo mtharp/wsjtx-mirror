@@ -6,32 +6,8 @@ subroutine wqdecode(data0,message,ntype)
   character*12 callsign
   character*3 cdbm
   character grid4*4,grid6*6,psfx*4
-  character*12 dcall(0:N15-1)
-  save dcall
-
-! May want to have a timeout (say, one hour?) on calls fetched 
-! from the hash table.
-
-  if(message.eq.'ClearHashTable        ') then
-     dcall='            '
-     return
-  endif
-
-  if(message.eq.'SaveHashTable         ') then
-     open(15,file='hashtable.txt',status='unknown')
-     do i=0,N15-1
-        if(dcall(i).ne.'            ') write(15,1000) i,dcall(i)
-1000    format(i5,2x,a12)
-     enddo
-     return
-  endif
-
-  open(15,file='hashtable.txt',status='unknown')
-  do i=0,N15-1
-     read(15,1000,end=10) ih,callsign
-     dcall(ih)=callsign
-  enddo
-10 close(15)
+  character*12 dcall
+  common/hashcom/dcall(0:N15-1)
 
   message='                      '
   call unpack50(data0,n1,n2)
