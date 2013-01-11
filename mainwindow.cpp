@@ -1125,9 +1125,9 @@ void MainWindow::on_TuneButton_clicked()
     on_cbIdle_toggled(true);
     m_receiving=false;
     ui->TuneButton->setStyleSheet(m_tune_style);
-    itone[0]=-1;
     m_tuning=true;
     startTx();
+    itone[0]=-1;
   } else {
     stopTx();
   }

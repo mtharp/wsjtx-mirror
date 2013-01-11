@@ -55,17 +55,14 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     srand(mstr);                                //Initialize random seed
   }
   isym=ic/(4*udata->nsps);                      //Actual fsample=48000
-  if(isym>=162) return paComplete;
+  if(isym>=162 and itone[0]>=0) return paComplete;
   baud=12000.0/udata->nsps;
-  freq=udata->ntxfreq + itone[isym]*baud;
-  dphi=twopi*freq/48000.0;
-
-  /*
-  if(isym != isym0) {
-    qDebug() << isym << itone[isym] << udata->ntxfreq;
-    isym0=isym;
+  if(itone[0]>=0) {
+    freq=udata->ntxfreq + itone[isym]*baud;
+  } else {
+    freq=udata->ntxfreq;
   }
-  */
+  dphi=twopi*freq/48000.0;
 
   if(udata->txsnrdb < 0.0) {
     snr=pow(10.0,0.05*(udata->txsnrdb-6.0));
