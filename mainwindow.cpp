@@ -597,7 +597,8 @@ void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
   int i,len;
   QFileInfo fi(m_path);
   QStringList list;
-  list= fi.dir().entryList().filter(".wav");
+//  list= fi.dir().entryList().filter(".wav");
+  list= fi.dir().entryList();
   for (i = 0; i < list.size()-1; ++i) {
     if(i==list.size()-2) m_loopall=false;
     len=list.at(i).length();
@@ -605,16 +606,12 @@ void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
       int n=m_path.length();
       QString fname=m_path.replace(n-len,len,list.at(i+1));
       m_path=fname;
-      int i;
-      i=fname.indexOf(".wav") - 11;
-      if(i>=0) {
-        lab1->setStyleSheet("QLabel{background-color: #66ff66}");
-        lab1->setText(" " + fname.mid(i,len) + " ");
+      if(fname.indexOf(".wav")>1 or fname.indexOf(".c2")>1) {
+        m_diskData=true;
+        *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
+        watcher1->setFuture(*future1);
+        return;
       }
-      m_diskData=true;
-      *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
-      watcher1->setFuture(*future1);
-      return;
     }
   }
 }
@@ -712,11 +709,11 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile f("wsprd.out");
         if(f.exists()) f.remove();
       }
-      if(m_save==1 or m_save==3) {
+      if(m_save!=1 and m_save!=3) {
         QFile savedWav(m_fname);
         savedWav.remove();
       }
-      if(m_save==2 or m_save==3) {
+      if(m_save!=2 and m_save!=3) {
         int i1=m_fname.indexOf(".wav");
         QString sc2=m_fname.mid(0,i1) + ".c2";
         QFile savedC2(sc2);
@@ -840,8 +837,9 @@ void MainWindow::on_TxNextButton_clicked()
 //  qDebug() << "A" << t;
   reply = mNetworkManager->get(QNetworkRequest(url));
   */
-  ui->TxNextButton->setStyleSheet(m_txNext_style);
-  m_txnext=true;
+  m_txnext=!m_txnext;
+  if(m_txnext) ui->TxNextButton->setStyleSheet(m_txNext_style);
+  if(!m_txnext) ui->TxNextButton->setStyleSheet("");
 }
 
 void MainWindow::onNetworkReply(QNetworkReply* reply)
@@ -896,7 +894,7 @@ void MainWindow::guiUpdate()
     if(m_TxOK and (m_pctx>0) and (m_txnext or ((m_nrx==0) and (m_ntr!=-1))) or
        (m_TxOK and (m_pctx==100))) {
 
-      //This will be a normal Tx sequence.  Compute # of Rx's to follow.
+//This will be a normal Tx sequence. Compute # of Rx's that will follow.
       float x=(float)rand()/RAND_MAX;
       if(m_pctx<50) {
         m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
@@ -904,8 +902,7 @@ void MainWindow::guiUpdate()
         m_nrx=0;
         if(x<m_rxavg) m_nrx=1;
       }
-//    message=MyCall + MyGrid + "ndbm";
-    //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
+
       m_ntr=-1;                         //This says we will have transmitted
       m_txnext=false;
       ui->TxNextButton->setStyleSheet("");
@@ -931,7 +928,6 @@ void MainWindow::startRx()
   if(m_RxOK) {
     m_receiving=true;
     soundInThread.setReceiving(true);
-    //m_rxtime=hhmm
     m_ntr=1;
     loggit("Start Rx");
     m_nrx=m_nrx-1;
@@ -1041,6 +1037,7 @@ void MainWindow::stopTx2()
 void MainWindow::on_cbIdle_toggled(bool b)
 {
   m_idle=b;
+  ui->cbIdle->setChecked(b);
 }
 
 void MainWindow::on_cbTxEnable_toggled(bool b)
@@ -1109,11 +1106,16 @@ void MainWindow::loggit(QString t)
 {
 /*
   QDateTime t2 = QDateTime::currentDateTimeUtc();
-  double ts=tsec();
-  int ms=1000.0*(ts-int(ts));
-  qDebug() << t << t2.time().toString() << ms << m_nseq << m_ntr << m_rxavg
-           << m_nrx << m_receiving << m_transmitting;
+  qDebug() << t2.time().toString("hh:mm:ss.zzz") << t;
 */
+
+  /*
+  QFile f("wsprx.log");
+  if(f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+    //    message=MyCall + MyGrid + "ndbm";
+        //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
+    f.write(t);
+    */
 }
 
 void MainWindow::on_TuneButton_clicked()
