@@ -26,14 +26,15 @@ public:
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
   QColor  m_ColorTbl[256];
-  bool    m_bRFscale;
-  bool    m_bCumulative;
-  bool    m_transmitted;
-  int     m_plotZero;
-  int     m_plotGain;
+  double  m_dialFreq;
   float   m_fSpan;
   qint32  m_TxFreq;
   qint32  m_w;
+  int     m_plotZero;
+  int     m_plotGain;
+  bool    m_bRFscale;
+  bool    m_bCumulative;
+  bool    m_transmitted;
 
   void draw(float sw[]);		               //Update the waterfall
   void SetRunningState(bool running);
@@ -76,14 +77,11 @@ private:
   QSize   m_Size;
   QString m_Str;
   QString m_HDivText[483];
-  bool    m_Running;
-  bool    m_paintEventBusy;
+
   double  m_fftBinWidth;
   qint64  m_StartFreq;
   qint32  m_dBStepSize;
   qint32  m_hdivs;
-  bool    m_dataFromDisk;
-  char    m_sutc[5];
   qint32  m_line;
   qint32  m_fSample;
   qint32  m_xClick;
@@ -95,7 +93,12 @@ private:
   qint32  m_h2;
   qint32  m_tol;
   qint32  m_TRperiod;
-//  qint32  m_txFreq;
+  qint32  m_RFHz;
+  bool    m_Running;
+  bool    m_paintEventBusy;
+  bool    m_dataFromDisk;
+  char    m_sutc[5];
+
 
 private slots:
   void mousePressEvent(QMouseEvent *event);

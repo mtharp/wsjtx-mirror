@@ -173,11 +173,10 @@ void CPlotter::UTCstr()
 
 void CPlotter::DrawOverlay()                                 //DrawOverlay()
 {
-  if(m_OverlayPixmap.isNull()) return;
-  if(m_WaterfallPixmap.isNull()) return;
-  int w = m_WaterfallPixmap.width();
+  if(m_OverlayPixmap.isNull() or m_WaterfallPixmap.isNull() or
+     m_dialFreq==0) return;
+//  int w = m_WaterfallPixmap.width();
   int x,y;
-  float pixPerHdiv;
 
   QRect rect;
   QPainter painter(&m_OverlayPixmap);
@@ -189,29 +188,31 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter.drawRect(0, 0, m_w, m_h2);
   painter.setBrush(Qt::SolidPattern);
 
-  double df = m_fftBinWidth;
-  m_fSpan = w*df;
+  m_fSpan = m_w*m_fftBinWidth;
   int n=m_fSpan/10;
   m_freqPerDiv=10;
   if(n>25) m_freqPerDiv=50;
   if(n>70) m_freqPerDiv=100;
   if(n>140) m_freqPerDiv=200;
   if(n>310) m_freqPerDiv=500;
-  pixPerHdiv = m_freqPerDiv/df;
-  m_hdivs = w*df/m_freqPerDiv + 0.9999;
+  float pixPerHdiv = m_freqPerDiv/m_fftBinWidth;
+  float pixPerVdiv = float(m_h2)/float(VERT_DIVS);
+
+  m_RFHz=int(1000000.0*m_dialFreq+m_StartFreq) % 1000;
+//  qDebug() << "B" << m_StartFreq << m_dialFreq << m_RFHz;
+  m_hdivs = m_w*m_fftBinWidth/m_freqPerDiv + 0.9999;
 
   painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
   for( int i=1; i<m_hdivs; i++)                   //draw vertical grids
   {
     x=int(i*pixPerHdiv);
-    painter.drawLine(x, 0, x , m_h2);
+    painter.drawLine(x,0,x,m_h2);
   }
 
-  float pixPerVdiv = float(m_h2)/float(VERT_DIVS);
   for( int i=1; i<VERT_DIVS; i++)                 //draw horizontal grids
   {
     y = (int)( (float)i*pixPerVdiv );
-    painter.drawLine(0, y, w, y);
+    painter.drawLine(0,y,m_w,y);
   }
 
   QRect rect0;
@@ -227,10 +228,9 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.setPen(Qt::black);
 
   m_ScalePixmap.fill(Qt::white);
-  painter0.drawRect(0, 0, w, 30);
+  painter0.drawRect(0, 0, m_w, 30);
 
 //draw tick marks on upper scale
-//  pixperdiv = m_freqPerDiv/df;
   for( int i=1; i<m_hdivs; i++) {         //major ticks
     x = (int)( (float)i*pixPerHdiv );
     painter0.drawLine(x,18,x,30);
@@ -272,12 +272,12 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   int x1,x2;
   if(m_nsps==8192) {
     x=XfromFreq(1500);
-    x1=x - 100/df;
-    x2=x + 100/df;
+    x1=x - 100/m_fftBinWidth;
+    x2=x + 100/m_fftBinWidth;
   } else {
     x=XfromFreq(1612.5);
-    x1=x - 12.5/df;
-    x2=x + 12.5/df;
+    x1=x - 12.5/m_fftBinWidth;
+    x2=x + 12.5/m_fftBinWidth;
   }
   pen0.setWidth(6);
   painter0.drawLine(x1,28,x2,28);
@@ -293,7 +293,11 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
 {
   float freq;
   for(int i=0; i<=m_hdivs; i++) {
-    freq = m_StartFreq + i*m_freqPerDiv;
+    if(m_bRFscale) {
+      freq=int(m_RFHz + i*m_freqPerDiv) % 1000;
+    } else {
+      freq=m_StartFreq + i*m_freqPerDiv;
+    }
     m_HDivText[i].setNum((int)freq);
   }
 }

@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_band=6;
   m_nseq=0;
   m_ntr=0;
+  m_BFO=1500;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -162,6 +163,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
+  g_pWideGraph->setBFO(m_BFO);
+  g_pWideGraph->setDialFreq(m_dialFreq);
   if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
   if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
   future1 = new QFuture<void>;
@@ -259,6 +262,7 @@ void MainWindow::writeSettings()
   settings.setValue("dBm",m_dBm);
   settings.setValue("Grid6",m_grid6);
   settings.setValue("Iband",m_band);
+  settings.setValue("BFO",m_BFO);
   settings.endGroup();
 }
 
@@ -324,6 +328,7 @@ void MainWindow::readSettings()
   m_band=settings.value("Iband",6).toInt();
   ui->bandComboBox->setCurrentIndex(m_band);
   m_grid6=settings.value("Grid6",false).toBool();
+  m_BFO=settings.value("BFO",1500).toInt();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -417,6 +422,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_nDevIn=m_nDevIn;
   dlg.m_nDevOut=m_nDevOut;
   dlg.m_grid6=m_grid6;
+  dlg.m_BFO=m_BFO;
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
@@ -430,6 +436,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_nDevOut=dlg.m_nDevOut;
     m_paOutDevice=dlg.m_paOutDevice;
     m_grid6=dlg.m_grid6;
+    m_BFO=dlg.m_BFO;
+    g_pWideGraph->setBFO(m_BFO);
 
     if(dlg.m_restartSoundIn) {
       soundInThread.quit();

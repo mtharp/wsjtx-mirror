@@ -21,11 +21,9 @@ public:
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
   void   setDialFreq(double f);
+  void   setBFO(int n);
   void   setTxed();
-  double dialFreq();
   int    txFreq();
-
-  qint32 m_qsoFreq;
 
 signals:
   void freezeDecode2(int n);
@@ -41,10 +39,8 @@ private slots:
   void on_waterfallAvgSpinBox_valueChanged(int arg1);
   void on_zeroSpinBox_valueChanged(int arg1);
   void on_gainSpinBox_valueChanged(int arg1);
-
   void on_cbCumulative_toggled(bool checked);
-
-  void on_cbRFscale_toggled(bool checked);
+  void on_FreqScaleButton_clicked();
 
 private:
   qint32 m_waterfallAvg;
@@ -53,8 +49,7 @@ private:
   qint32 m_TRperiod;
   qint32 m_nsps;
   qint32 m_ntr0;
-
-  double m_dialFreq;
+  qint32 m_BFO;
 
   Ui::WideGraph *ui;
 };

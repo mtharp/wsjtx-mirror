@@ -119,6 +119,7 @@ private:
     qint32  m_dBm;
     qint32  m_band;
     qint32  m_save;
+    qint32  m_BFO;
 
     bool    m_receiving;
     bool    m_transmitting;

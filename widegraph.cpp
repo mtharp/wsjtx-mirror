@@ -20,7 +20,7 @@ WideGraph::WideGraph(QWidget *parent) :
   connect(ui->widePlot, SIGNAL(freezeDecode1(int)),this,
           SLOT(wideFreezeDecode(int)));
 
-  //Restore user's settings
+//Restore user's settings
   QString inifile(QApplication::applicationDirPath());
   inifile += "/wsprx.ini";
   QSettings settings(inifile, QSettings::IniFormat);
@@ -35,12 +35,11 @@ WideGraph::WideGraph(QWidget *parent) :
   m_waterfallAvg = settings.value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->m_bRFscale=settings.value("RFscale",false).toBool();
-  ui->cbRFscale->setChecked(ui->widePlot->m_bRFscale);
+  ui->widePlot->m_dialFreq=settings.value("DialFreq",10.1387).toDouble();
   ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
   ui->cbCumulative->setChecked(ui->widePlot->m_bCumulative);
-  m_qsoFreq=settings.value("QSOfreq",1010).toInt();
-  ui->widePlot->setTxFreq(m_qsoFreq,true);
   settings.endGroup();
+  if(! ui->widePlot->m_bRFscale)   ui->label_3->setText("Audio");
 }
 
 WideGraph::~WideGraph()
@@ -51,7 +50,7 @@ WideGraph::~WideGraph()
 
 void WideGraph::saveSettings()
 {
-  //Save user's settings
+//Save user's settings
   QString inifile(QApplication::applicationDirPath());
   inifile += "/wsprx.ini";
   QSettings settings(inifile, QSettings::IniFormat);
@@ -63,7 +62,7 @@ void WideGraph::saveSettings()
   settings.setValue("WaterfallAvg",ui->waterfallAvgSpinBox->value());
   settings.setValue("RFscale",ui->widePlot->m_bRFscale);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
-  settings.setValue("QSOfreq",ui->widePlot->TxFreq());
+  settings.setValue("DialFreq",ui->widePlot->m_dialFreq);
   settings.endGroup();
 }
 
@@ -74,7 +73,7 @@ void WideGraph::dataSink2(float s[], float df3, int ihsym, int ndiskdata)
   int nbpp=1;
   static int n=0;
 
-  //Average spectra over specified number, m_waterfallAvg
+//Average spectra over specified number, m_waterfallAvg
   if (n==0) {
     for (int i=0; i<NSMAX; i++)
       splot[i]=s[i];
@@ -97,7 +96,6 @@ void WideGraph::dataSink2(float s[], float df3, int ihsym, int ndiskdata)
         sum += splot[i];
       }
       swide[j]=sum;
-//      if(lstrong[1 + i/32]!=0) swide[j]=-smax;   //Tag strong signals
     }
 
 // Time according to this computer
@@ -160,12 +158,7 @@ void WideGraph::setPalette(QString palette)
 
 void WideGraph::setDialFreq(double f)
 {
-  m_dialFreq=f;
-}
-
-double WideGraph::dialFreq()
-{
-  return m_dialFreq;
+  ui->widePlot->m_dialFreq=f;
 }
 
 void WideGraph::setPeriod(int ntrperiod, int nsps)
@@ -195,7 +188,26 @@ void WideGraph::on_cbCumulative_toggled(bool b)
   ui->widePlot->m_bCumulative=b;
 }
 
-void WideGraph::on_cbRFscale_toggled(bool b)
+void WideGraph::setBFO(int n)
 {
-  ui->widePlot->m_bRFscale=b;
+  m_BFO=n;
+  if(ui->widePlot->m_bRFscale) {
+    QString t;
+    int i=1000.0*ui->widePlot->m_dialFreq + 0.001*m_BFO;
+    t.sprintf("%.3f MHz",0.001*i);
+    ui->label_3->setText(t);
+  }
+}
+
+void WideGraph::on_FreqScaleButton_clicked()
+{
+  ui->widePlot->m_bRFscale=!ui->widePlot->m_bRFscale;
+  ui->widePlot->DrawOverlay();
+  ui->widePlot->update();
+  QString t("Audio");
+  if(ui->widePlot->m_bRFscale) {
+    int i=1000.0*ui->widePlot->m_dialFreq + 0.001*m_BFO;
+    t.sprintf("%.3f MHz",0.001*i);
+  }
+  ui->label_3->setText(t);
 }

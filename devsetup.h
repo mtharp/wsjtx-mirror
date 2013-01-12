@@ -20,6 +20,7 @@ public:
   qint32  m_outDevList[100];
   qint32  m_paInDevice;
   qint32  m_paOutDevice;
+  qint32  m_BFO;
 
   bool    m_restartSoundIn;
   bool    m_restartSoundOut;
@@ -38,6 +39,8 @@ private slots:
   void on_myCallEntry_editingFinished();
   void on_myGridEntry_editingFinished();
   void on_cbGrid6_toggled(bool b);
+
+  void on_bfoLineEdit_editingFinished();
 
 private:
   Ui::DialogSndCard ui;
