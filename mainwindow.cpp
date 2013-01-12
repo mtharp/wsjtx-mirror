@@ -1059,6 +1059,7 @@ void MainWindow::on_cbTxEnable_toggled(bool b)
 void MainWindow::on_dialFreqLineEdit_editingFinished()
 {
   m_dialFreq=ui->dialFreqLineEdit->text().toDouble();
+  g_pWideGraph->setDialFreq(m_dialFreq);
 }
 
 void MainWindow::on_txFreqLineEdit_editingFinished()
@@ -1087,6 +1088,7 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
 {
   m_band=n;
   m_dialFreq=dFreq[n];
+  g_pWideGraph->setDialFreq(m_dialFreq);
   QString t;
   t.sprintf("%.6f ",m_dialFreq);
   ui->dialFreqLineEdit->setText(t);
