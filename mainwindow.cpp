@@ -383,7 +383,7 @@ void MainWindow::dataSink(int k)
       int len1=m_c2name.length();
       char c2name[80];
       strcpy(c2name,m_c2name.toAscii());
-      savec2_(c2name,&m_TRseconds,&m_dialFreq,&m_BFO,len1);
+      savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
     }
 
     lab3->setStyleSheet("QLabel{background-color:cyan}");
