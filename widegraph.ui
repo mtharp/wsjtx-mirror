@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1178</width>
+    <width>625</width>
     <height>326</height>
    </rect>
   </property>
@@ -204,19 +204,16 @@
         </spacer>
        </item>
        <item>
-        <widget class="QRadioButton" name="rbCurrent">
+        <widget class="QCheckBox" name="cbCumulative">
          <property name="text">
-          <string>Current</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
+          <string>Cumulative</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="rbCumulative">
+        <widget class="QCheckBox" name="cbRFscale">
          <property name="text">
-          <string>Cumulative</string>
+          <string>RF Scale</string>
          </property>
         </widget>
        </item>

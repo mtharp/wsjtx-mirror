@@ -126,8 +126,11 @@ void CPlotter::draw(float swide[])                                //draw()
     }
     painter1.drawPoint(i,0);
     y2=0;
-    if(m_bCurrent) y2 = 0.4*gain*y - 15;
-    if(m_bCumulative) y2=1.5*gain*10.0*log10(datcom_.savg[i0+i]) - 20;
+    if(m_bCumulative) {
+      y2=1.5*gain*10.0*log10(datcom_.savg[i0+i]) - 20;
+    } else {
+      y2 = 0.4*gain*y - 15;
+    }
     y2=y2*float(m_h)/540.0;
     if(strong != strong0 or i==m_w-1) {
       painter2D.drawPolyline(LineBuf,j);
@@ -174,8 +177,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   if(m_WaterfallPixmap.isNull()) return;
   int w = m_WaterfallPixmap.width();
   int x,y;
-//  int nHzDiv[11]={0,50,100,200,200,200,500,500,500,500,500};
-  float pixperdiv;
+  float pixPerHdiv;
 
   QRect rect;
   QPainter painter(&m_OverlayPixmap);
@@ -195,24 +197,21 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   if(n>70) m_freqPerDiv=100;
   if(n>140) m_freqPerDiv=200;
   if(n>310) m_freqPerDiv=500;
-  pixperdiv = m_freqPerDiv/df;
+  pixPerHdiv = m_freqPerDiv/df;
   m_hdivs = w*df/m_freqPerDiv + 0.9999;
 
-  y = m_h2 - m_h2/VERT_DIVS;
+  painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
   for( int i=1; i<m_hdivs; i++)                   //draw vertical grids
   {
-    x = (int)( (float)i*pixperdiv );
-    painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
-    painter.drawLine(x, 0, x , y);
-    painter.drawLine(x, m_h2-5, x , m_h2);
+    x=int(i*pixPerHdiv);
+    painter.drawLine(x, 0, x , m_h2);
   }
 
-  pixperdiv = (float)m_h2 / (float)VERT_DIVS;
-  painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
+  float pixPerVdiv = float(m_h2)/float(VERT_DIVS);
   for( int i=1; i<VERT_DIVS; i++)                 //draw horizontal grids
   {
-          y = (int)( (float)i*pixperdiv );
-          painter.drawLine(0, y, w, y);
+    y = (int)( (float)i*pixPerVdiv );
+    painter.drawLine(0, y, w, y);
   }
 
   QRect rect0;
@@ -231,38 +230,38 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawRect(0, 0, w, 30);
 
 //draw tick marks on upper scale
-  pixperdiv = m_freqPerDiv/df;
-  for( int i=1; i<m_hdivs; i++) {     //major ticks
-    x = (int)( (float)i*pixperdiv );
+//  pixperdiv = m_freqPerDiv/df;
+  for( int i=1; i<m_hdivs; i++) {         //major ticks
+    x = (int)( (float)i*pixPerHdiv );
     painter0.drawLine(x,18,x,30);
   }
   int minor=5;
   if(m_freqPerDiv==200) minor=4;
   for( int i=1; i<minor*m_hdivs; i++) {   //minor ticks
-    x = i*pixperdiv/minor;
+    x = i*pixPerHdiv/minor;
     painter0.drawLine(x,24,x,30);
   }
 
-  //draw frequency values
+//draw frequency values
   MakeFrequencyStrs();
   for( int i=0; i<=m_hdivs; i++) {
     if(0==i) {
       //left justify the leftmost text
-      x = (int)( (float)i*pixperdiv);
-      rect0.setRect(x,0, (int)pixperdiv, 20);
+      x = (int)( (float)i*pixPerHdiv);
+      rect0.setRect(x,0, (int)pixPerHdiv, 20);
       painter0.drawText(rect0, Qt::AlignLeft|Qt::AlignVCenter,
                        m_HDivText[i]);
     }
     else if(m_hdivs == i) {
       //right justify the rightmost text
-      x = (int)( (float)i*pixperdiv - pixperdiv);
-      rect0.setRect(x,0, (int)pixperdiv, 20);
+      x = (int)( (float)i*pixPerHdiv - pixPerHdiv);
+      rect0.setRect(x,0, (int)pixPerHdiv, 20);
       painter0.drawText(rect0, Qt::AlignRight|Qt::AlignVCenter,
                        m_HDivText[i]);
     } else {
       //center justify the rest of the text
-      x = (int)( (float)i*pixperdiv - pixperdiv/2);
-      rect0.setRect(x,0, (int)pixperdiv, 20);
+      x = (int)( (float)i*pixPerHdiv - pixPerHdiv/2);
+      rect0.setRect(x,0, (int)pixPerHdiv, 20);
       painter0.drawText(rect0, Qt::AlignHCenter|Qt::AlignVCenter,
                        m_HDivText[i]);
     }
@@ -296,7 +295,6 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
   for(int i=0; i<=m_hdivs; i++) {
     freq = m_StartFreq + i*m_freqPerDiv;
     m_HDivText[i].setNum((int)freq);
-    //      StartFreq += m_freqPerDiv;
   }
 }
 

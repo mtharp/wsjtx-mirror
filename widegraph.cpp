@@ -15,7 +15,7 @@ WideGraph::WideGraph(QWidget *parent) :
   this->setMaximumWidth(2048);
   this->setMaximumHeight(880);
   ui->widePlot->setMaximumHeight(800);
-  ui->widePlot->m_bCurrent=false;
+  ui->widePlot->m_bRFscale=false;
 
   connect(ui->widePlot, SIGNAL(freezeDecode1(int)),this,
           SLOT(wideFreezeDecode(int)));
@@ -34,10 +34,10 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->widePlot->m_w=w;
   m_waterfallAvg = settings.value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
-  ui->widePlot->m_bCurrent=settings.value("Current",true).toBool();
+  ui->widePlot->m_bRFscale=settings.value("RFscale",false).toBool();
+  ui->cbRFscale->setChecked(ui->widePlot->m_bRFscale);
   ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
-  ui->rbCurrent->setChecked(ui->widePlot->m_bCurrent);
-  ui->rbCumulative->setChecked(ui->widePlot->m_bCumulative);
+  ui->cbCumulative->setChecked(ui->widePlot->m_bCumulative);
   m_qsoFreq=settings.value("QSOfreq",1010).toInt();
   ui->widePlot->setTxFreq(m_qsoFreq,true);
   settings.endGroup();
@@ -61,7 +61,7 @@ void WideGraph::saveSettings()
   settings.setValue("PlotGain",ui->widePlot->m_plotGain);
   settings.setValue("PlotWidth",ui->widePlot->plotWidth());
   settings.setValue("WaterfallAvg",ui->waterfallAvgSpinBox->value());
-  settings.setValue("Current",ui->widePlot->m_bCurrent);
+  settings.setValue("RFscale",ui->widePlot->m_bRFscale);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
   settings.setValue("QSOfreq",ui->widePlot->TxFreq());
   settings.endGroup();
@@ -175,18 +175,6 @@ void WideGraph::setPeriod(int ntrperiod, int nsps)
   ui->widePlot->setNsps(ntrperiod, nsps);
 }
 
-void WideGraph::on_rbCurrent_clicked()
-{
-  ui->widePlot->m_bCurrent=true;
-  ui->widePlot->m_bCumulative=false;
-}
-
-void WideGraph::on_rbCumulative_clicked()
-{
-  ui->widePlot->m_bCurrent=false;
-  ui->widePlot->m_bCumulative=true;
-}
-
 void WideGraph::setTxFreq(int n)
 {
   ui->widePlot->setTxFreq(n,true);
@@ -200,4 +188,14 @@ int WideGraph::txFreq()
 void WideGraph::setTxed()
 {
   ui->widePlot->m_transmitted=true;
+}
+
+void WideGraph::on_cbCumulative_toggled(bool b)
+{
+  ui->widePlot->m_bCumulative=b;
+}
+
+void WideGraph::on_cbRFscale_toggled(bool b)
+{
+  ui->widePlot->m_bRFscale=b;
 }

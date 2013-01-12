@@ -26,7 +26,7 @@ public:
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
   QColor  m_ColorTbl[256];
-  bool    m_bCurrent;
+  bool    m_bRFscale;
   bool    m_bCumulative;
   bool    m_transmitted;
   int     m_plotZero;

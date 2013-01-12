@@ -41,8 +41,10 @@ private slots:
   void on_waterfallAvgSpinBox_valueChanged(int arg1);
   void on_zeroSpinBox_valueChanged(int arg1);
   void on_gainSpinBox_valueChanged(int arg1);
-  void on_rbCurrent_clicked();
-  void on_rbCumulative_clicked();
+
+  void on_cbCumulative_toggled(bool checked);
+
+  void on_cbRFscale_toggled(bool checked);
 
 private:
   qint32 m_waterfallAvg;
