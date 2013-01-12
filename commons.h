@@ -1,8 +1,6 @@
 #ifndef COMMONS_H
 #define COMMONS_H
 
-#define NSMAX 22000
-
 extern "C" {
 
 extern struct {

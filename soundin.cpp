@@ -2,13 +2,12 @@
 #include <stdexcept>
 
 #define FRAMES_PER_BUFFER 2048
-#define NSMAX 22000
 
 extern "C" {
 #include <portaudio.h>
 extern struct {
   int nutc;                         //UTC as integer, HHMM
-  int ndiskdat;                     //1 ==> data read from *.wav file  float ss[184*NSMAX];
+  int ndiskdat;                     //1 ==> data read from *.wav file
   short int d2[900*12000];
   float savg[1366];
   float c0[2*900*1500];

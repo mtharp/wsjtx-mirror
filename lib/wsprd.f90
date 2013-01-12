@@ -5,11 +5,11 @@ program wsprd
   integer*2 id(NMAX)
   real*8 f0,dialFreq
   real*4 ps(-256:256)
+  integer junk(10)
   character*80 infile
   logical lc2
   character c2file*14,datetime*11
   complex c2(65536)
-  data nbfo/1500/
   character*12 callsign
   character*12 dcall
   common/hashcom/dcall(0:N15-1)
@@ -47,7 +47,15 @@ program wsprd
   enddo
 
 10 if(lc2) then
-     read(18) c2file,ntrmin,dialFreq,c2(1:45000)
+     read(18) c2file,ntrmin,dialFreq,nbfo,junk
+     rewind 18
+     if(junk(1).eq.2) then
+        read(18) c2file,ntrmin,dialFreq,nbfo,junk,c2(1:45000)  !Version 2
+     else
+        read(18) c2file,ntrmin,dialFreq,c2(1:45000)    !Version 1
+        nbfo=1500                              !Default BFO freq, version 1
+     endif
+
      f0=dialFreq
      ntrminutes=ntrmin
      npts=60*ntrminutes*12000
@@ -59,7 +67,7 @@ program wsprd
 !     npts=60*ntrminutes*12000
      npts=114*12000
      if(ntrminutes.eq.15) npts=890*12000
-     read(18) id(1:22)
+     read(18) id(1:22)                          !Read and ignore header
      read(18) id(1:npts)
      id(npts+1:60*ntrminutes*12000)=0
 ! WSPR-2: mix from nbfo +/- 100 Hz to baseband, downsample by 1/32

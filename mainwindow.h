@@ -215,7 +215,8 @@ extern "C" {
 void symspec_(int* k, int* nsps, int* ingain, float* px, float s[],
               float* df3, int* nhsym);
 void genwsprx_(char* msg, int itone[], int len1);
-void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq, int len1);
+void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq,
+             int* nbfo, int len1);
 }
 
 #endif // MAINWINDOW_H
