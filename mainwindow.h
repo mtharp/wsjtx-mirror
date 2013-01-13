@@ -120,6 +120,7 @@ private:
     qint32  m_band;
     qint32  m_save;
     qint32  m_BFO;
+    qint32  m_RxStartBand;
 
     bool    m_receiving;
     bool    m_transmitting;

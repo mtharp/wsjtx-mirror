@@ -709,7 +709,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       lab3->setStyleSheet("");
       lab3->setText("");
       loggit("Decoder Finished");
-      if(m_uploadSpots) {
+      if(m_uploadSpots and (m_band==m_RxStartBand)) {
         float x=rand()/((double)RAND_MAX + 1);
         int msdelay=20000*x;
         uploadTimer->start(msdelay);                         //Upload delay
@@ -917,6 +917,7 @@ void MainWindow::guiUpdate()
       startTx();                        //Start a normal Tx sequence
     } else {
       m_ntr=1;
+      m_RxStartBand=m_band;
       startRx();                        //Start a normal Rx sequence
     }
   }
@@ -1042,10 +1043,16 @@ void MainWindow::stopTx2()
   loggit("Stop Tx2");
   ptt(m_pttPort,0,&m_iptt);                   //Lower PTT
 }
+
 void MainWindow::on_cbIdle_toggled(bool b)
 {
   m_idle=b;
   ui->cbIdle->setChecked(b);
+  if(b) {
+    ui->cbIdle->setStyleSheet("QCheckBox{background-color: yellow}");
+  } else {
+    ui->cbIdle->setStyleSheet("");
+  }
 }
 
 void MainWindow::on_cbTxEnable_toggled(bool b)
@@ -1059,7 +1066,7 @@ void MainWindow::on_cbTxEnable_toggled(bool b)
 void MainWindow::on_dialFreqLineEdit_editingFinished()
 {
   m_dialFreq=ui->dialFreqLineEdit->text().toDouble();
-  g_pWideGraph->setDialFreq(m_dialFreq);
+  if(g_pWideGraph!=NULL) g_pWideGraph->setDialFreq(m_dialFreq);
 }
 
 void MainWindow::on_txFreqLineEdit_editingFinished()
@@ -1071,6 +1078,11 @@ void MainWindow::on_txFreqLineEdit_editingFinished()
 void MainWindow::on_cbUpload_toggled(bool b)
 {
   m_uploadSpots=b;
+  if(b) {
+    ui->cbUpload->setStyleSheet("");
+  } else {
+    ui->cbUpload->setStyleSheet("QCheckBox{background-color: yellow}");
+  }
 }
 
 void MainWindow::on_cbBandHop_toggled(bool b)
@@ -1088,7 +1100,7 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
 {
   m_band=n;
   m_dialFreq=dFreq[n];
-  g_pWideGraph->setDialFreq(m_dialFreq);
+  if(g_pWideGraph!=NULL) g_pWideGraph->setDialFreq(m_dialFreq);
   QString t;
   t.sprintf("%.6f ",m_dialFreq);
   ui->dialFreqLineEdit->setText(t);

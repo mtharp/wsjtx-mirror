@@ -159,6 +159,14 @@ void WideGraph::setPalette(QString palette)
 void WideGraph::setDialFreq(double f)
 {
   ui->widePlot->m_dialFreq=f;
+  ui->widePlot->DrawOverlay();
+  ui->widePlot->update();
+  QString t("Audio");
+  if(ui->widePlot->m_bRFscale) {
+    int i=1000.0*ui->widePlot->m_dialFreq + 0.001*m_BFO;
+    t.sprintf("%.3f MHz",0.001*i);
+  }
+  ui->label_3->setText(t);
 }
 
 void WideGraph::setPeriod(int ntrperiod, int nsps)
