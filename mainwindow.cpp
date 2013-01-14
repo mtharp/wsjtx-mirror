@@ -5,7 +5,6 @@
 #include "plotter.h"
 #include "about.h"
 #include "widegraph.h"
-#include "sleep.h"
 #include "getfile.h"
 #include <portaudio.h>
 

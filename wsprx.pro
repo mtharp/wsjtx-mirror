@@ -43,7 +43,7 @@ SOURCES +=
 
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h getfile.h \
-            commons.h sleep.h displaytext.h
+            commons.h displaytext.h
 
 DEFINES += __cplusplus
 
