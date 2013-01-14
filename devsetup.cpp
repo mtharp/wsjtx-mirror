@@ -104,6 +104,13 @@ void DevSetup::initDlg()
   m_paInDevice=m_inDevList[m_nDevIn];
   m_paOutDevice=m_outDevList[m_nDevOut];
   ui.cbGrid6->setChecked(m_grid6);
+  ui.cbEnableCAT->setChecked(m_catEnabled);
+  ui.catPortComboBox->setEnabled(m_catEnabled);
+  ui.rigComboBox->setEnabled(m_catEnabled);
+  ui.serialRateComboBox->setEnabled(m_catEnabled);
+  ui.dataBitsComboBox->setEnabled(m_catEnabled);
+  ui.stopBitsComboBox->setEnabled(m_catEnabled);
+  ui.handshakeComboBox->setEnabled(m_catEnabled);
   QString t;
   t.sprintf("%d",m_BFO);
   ui.bfoLineEdit->setText(t);
@@ -147,12 +154,31 @@ void DevSetup::on_myGridEntry_editingFinished()
   ui.myGridEntry->setText(t);
 }
 
+void DevSetup::on_bfoLineEdit_editingFinished()
+{
+  m_BFO=ui.bfoLineEdit->text().toInt();
+}
+
 void DevSetup::on_cbGrid6_toggled(bool b)
 {
   m_grid6=b;
 }
 
-void DevSetup::on_bfoLineEdit_editingFinished()
+
+void DevSetup::on_cbEnableCAT_toggled(bool b)
 {
-  m_BFO=ui.bfoLineEdit->text().toInt();
+  m_catEnabled=b;
+  ui.catPortComboBox->setEnabled(b);
+  ui.rigComboBox->setEnabled(b);
+  ui.serialRateComboBox->setEnabled(b);
+  ui.dataBitsComboBox->setEnabled(b);
+  ui.stopBitsComboBox->setEnabled(b);
+  ui.handshakeComboBox->setEnabled(b);
+}
+
+void DevSetup::on_rigComboBox_activated(const QString &arg1)
+{
+  int i1=arg1.indexOf(" ");
+  m_rig=arg1.mid(0,i1).toInt();
+  qDebug() << m_rig << ui.rigComboBox->itemText(0) << ui.rigComboBox->itemText(1);
 }

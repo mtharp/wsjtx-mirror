@@ -29,12 +29,12 @@
     <attribute name="title">
      <string>Station</string>
     </attribute>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>12</x>
        <y>10</y>
-       <width>316</width>
+       <width>368</width>
        <height>300</height>
       </rect>
      </property>
@@ -134,6 +134,26 @@
             <height>16777215</height>
            </size>
           </property>
+          <item>
+           <property name="text">
+            <string>CAT</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DTR</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>RTS</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>VOX</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
@@ -252,41 +272,57 @@
             <string>COM13</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>COM14</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM15</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>USB</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="2" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>13</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QCheckBox" name="cbEnableCAT">
         <property name="text">
          <string>Enable CAT</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
+      <item row="5" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <widget class="QLabel" name="label_12">
           <property name="text">
-           <string>CAT port:</string>
+           <string>Rig number:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="catPortComboBox"/>
+         <widget class="QComboBox" name="rigComboBox">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>101 Yaesu FT-847</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>214 Kenwood TS-2000</string>
+           </property>
+          </item>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer">
@@ -312,21 +348,121 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="dataBitsComboBox"/>
+         <widget class="QComboBox" name="dataBitsComboBox">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>7</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>8</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
          <widget class="QLabel" name="label_13">
           <property name="text">
-           <string>Rig number:</string>
+           <string>CAT port:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="rigComboBox"/>
+         <widget class="QComboBox" name="catPortComboBox">
+          <item>
+           <property name="text">
+            <string>None</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM1</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM2</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM3</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM4</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM5</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM6</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM7</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM8</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM9</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM10</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM11</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM12</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM13</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM14</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>COM15</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>USB</string>
+           </property>
+          </item>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_2">
@@ -352,11 +488,25 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="stopBitsComboBox"/>
+         <widget class="QComboBox" name="stopBitsComboBox">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="6" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <widget class="QLabel" name="label_14">
@@ -366,7 +516,41 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="serialRateComboBox"/>
+         <widget class="QComboBox" name="serialRateComboBox">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>1200</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>4800</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>9600</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>19200</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>38400</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>57600</string>
+           </property>
+          </item>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_3">
@@ -392,11 +576,30 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="handshakeComboBox"/>
+         <widget class="QComboBox" name="handshakeComboBox">
+          <property name="currentIndex">
+           <number>2</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>None</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>XONXOFF</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Hardware</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <spacer name="verticalSpacer_3">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -409,14 +612,14 @@
         </property>
        </spacer>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <widget class="QLabel" name="label_8">
         <property name="text">
          <string>                  Dev Ch API      Name</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2">
+      <item row="10" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="label_6">
@@ -446,7 +649,7 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="11" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QLabel" name="label_7">
@@ -478,7 +681,7 @@
         </item>
        </layout>
       </item>
-      <item row="11" column="0" colspan="2">
+      <item row="12" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label_10">
@@ -508,6 +711,19 @@
         </item>
        </layout>
       </item>
+      <item row="2" column="0">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>13</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
    </widget>
@@ -515,7 +731,7 @@
     <attribute name="title">
      <string>Advanced</string>
     </attribute>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget_1">
      <property name="geometry">
       <rect>
        <x>32</x>

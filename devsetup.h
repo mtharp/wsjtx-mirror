@@ -21,10 +21,16 @@ public:
   qint32  m_paInDevice;
   qint32  m_paOutDevice;
   qint32  m_BFO;
+  qint32  m_catPort;
+  qint32  m_rig;
+  qint32  m_serialRate;
+  qint32  m_dataBits;
+  qint32  m_stopBits;
 
   bool    m_restartSoundIn;
   bool    m_restartSoundOut;
   bool    m_grid6;
+  bool    m_catEnabled;
 
   QString m_myCall;
   QString m_myGrid;
@@ -38,9 +44,10 @@ public slots:
 private slots:
   void on_myCallEntry_editingFinished();
   void on_myGridEntry_editingFinished();
-  void on_cbGrid6_toggled(bool b);
-
   void on_bfoLineEdit_editingFinished();
+  void on_cbGrid6_toggled(bool b);
+  void on_cbEnableCAT_toggled(bool b);
+  void on_rigComboBox_activated(const QString &arg1);
 
 private:
   Ui::DialogSndCard ui;

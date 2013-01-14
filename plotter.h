@@ -30,6 +30,7 @@ public:
   float   m_fSpan;
   qint32  m_TxFreq;
   qint32  m_w;
+  qint32  m_BFO;
   int     m_plotZero;
   int     m_plotGain;
   bool    m_bRFscale;

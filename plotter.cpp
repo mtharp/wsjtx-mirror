@@ -296,7 +296,7 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
     if(m_bRFscale) {
       freq=int(m_RFHz + i*m_freqPerDiv) % 1000;
     } else {
-      freq=m_StartFreq + i*m_freqPerDiv;
+      freq=m_StartFreq + m_BFO - 1500 + i*m_freqPerDiv;
     }
     m_HDivText[i].setNum((int)freq);
   }

@@ -6,7 +6,7 @@ subroutine mixlpf(x1,nbfo,c0)
   complex c1(512),c2(105+512)
   complex c0(64)
   data phi/0.d0/
-  save
+  save phi,c2
 
   twopi=8.d0*atan(1.d0)
   dphi=twopi*nbfo/12000.d0
@@ -15,11 +15,11 @@ subroutine mixlpf(x1,nbfo,c0)
      phi=phi+dphi
      if(phi.gt.twopi) phi=phi-twopi
      xphi=phi
-     c1(i)=x1(i)*cmplx(cos(xphi),-sin(xphi))
+     c1(i)=x1(i)*cmplx(cos(xphi),sin(xphi))
   enddo
   c2(106:105+512)=c1
   
-  call fil3(c2,105+512,c0,n2)
+  call fil3c(c2,105+512,c0,n2)
   c2(1:105)=c1(512-104:512)                       !Save 105 trailing samples
 
   return

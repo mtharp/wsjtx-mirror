@@ -141,6 +141,7 @@ private:
     bool    m_uploading;
     bool    m_bandHop;
     bool    m_grid6;
+    bool    m_catEnabled;
 
     char    m_decoded[80];
 

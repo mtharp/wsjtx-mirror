@@ -199,6 +199,7 @@ void WideGraph::on_cbCumulative_toggled(bool b)
 void WideGraph::setBFO(int n)
 {
   m_BFO=n;
+  ui->widePlot->m_BFO=n;
   if(ui->widePlot->m_bRFscale) {
     QString t;
     int i=1000.0*ui->widePlot->m_dialFreq + 0.001*m_BFO;

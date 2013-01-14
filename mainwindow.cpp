@@ -262,6 +262,7 @@ void MainWindow::writeSettings()
   settings.setValue("Grid6",m_grid6);
   settings.setValue("Iband",m_band);
   settings.setValue("BFO",m_BFO);
+  settings.setValue("catEnabled",m_catEnabled);
   settings.endGroup();
 }
 
@@ -330,6 +331,7 @@ void MainWindow::readSettings()
   ui->bandComboBox->setCurrentIndex(m_band);
   m_grid6=settings.value("Grid6",false).toBool();
   m_BFO=settings.value("BFO",1500).toInt();
+  m_catEnabled=settings.value("catEnabled",false).toBool();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -425,6 +427,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_nDevOut=m_nDevOut;
   dlg.m_grid6=m_grid6;
   dlg.m_BFO=m_BFO;
+  dlg.m_catEnabled=m_catEnabled;
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
@@ -440,6 +443,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_grid6=dlg.m_grid6;
     m_BFO=dlg.m_BFO;
     g_pWideGraph->setBFO(m_BFO);
+    m_catEnabled=dlg.m_catEnabled;
 
     if(dlg.m_restartSoundIn) {
       soundInThread.quit();
