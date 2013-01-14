@@ -1,4 +1,4 @@
-subroutine savec2(c2name,ntrseconds,dialFreq)
+subroutine savec2(c2name,ntrseconds,f0m1500)
 
 ! Array c0() has complex samples at 1500 Hz sample rate.
 ! WSPR-2:  downsample by 1/4 to produce c2(45000), centered at 1500 Hz
@@ -11,7 +11,7 @@ subroutine savec2(c2name,ntrseconds,dialFreq)
 
   character*(*) c2name
   character*14 outfile
-  real*8 dialFreq
+  real*8 f0m1500
   integer*2 id2
   complex c0
   complex c1(0:MAXFFT-1)
@@ -48,7 +48,7 @@ subroutine savec2(c2name,ntrseconds,dialFreq)
   i1=index(c2name,'.c2')
   outfile=c2name(i1-11:i1+2)
   open(18,file=c2name,status='unknown',access='stream')
-  write(18) outfile,ntrminutes,dialFreq,c2(0:45000-1)
+  write(18) outfile,ntrminutes,f0m1500,c2(0:45000-1)
   close(18)
 
   return

@@ -23,12 +23,13 @@ CFLAGS = -I.
 all:    libwspr.a wsprd.exe WSPRcode.exe
 
 OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
-	fchisq.o fil3.o flat3.o four2a.o genwsprx.o grid2deg.o \
+	fchisq.o fil3c.o flat3.o four2a.o genwsprx.o grid2deg.o \
 	hash.o inter_mept.o mept162a.o mix162.o mix162a.o \
 	nchar.o nhash.o pack50.o packcall.o packgrid.o packpfx.o \
 	pctile.o ps162.o ptt.o savec2.o set.o sort.o ssort.o symspec.o \
 	sync162.o timf2.o twkfreq.o unpack50.o unpackcall.o \
-	unpackgrid.o unpackpfx.o wqdecode.o wqencode.o xfft.o 
+	unpackgrid.o unpackpfx.o wqdecode.o wqencode.o xfft.o \
+	mixlpf.o
 
 libwspr.a: $(OBJS1)
 	ar cr libwspr.a $(OBJS1) 

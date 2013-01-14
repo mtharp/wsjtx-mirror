@@ -3,7 +3,7 @@ program wsprd
   parameter (NMAX=900*12000)                          !Max length of waveform
   parameter (N15=32768)
   integer*2 id(NMAX)
-  real*8 f0,dialFreq
+  real*8 f0,f0m1500
   real*4 ps(-256:256)
   character*80 infile
   logical lc2
@@ -47,8 +47,8 @@ program wsprd
   enddo
 
 10 if(lc2) then
-     read(18) c2file,ntrmin,dialFreq,c2(1:45000)
-     f0=dialFreq
+     read(18) c2file,ntrmin,f0m1500,c2(1:45000)
+     f0=f0m1500
      ntrminutes=ntrmin
      npts=60*ntrminutes*12000
      call mix162a(c2,ps)

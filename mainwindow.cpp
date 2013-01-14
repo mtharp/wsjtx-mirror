@@ -316,6 +316,8 @@ void MainWindow::readSettings()
   ui->inGain->setValue(m_inGain);
   m_uploadSpots=settings.value("UploadSpots",false).toBool();
   ui->cbUpload->setChecked(m_uploadSpots);
+  if(!m_uploadSpots) ui->cbUpload->setStyleSheet(
+              "QCheckBox{background-color: yellow}");
   m_TxOK=settings.value("TxEnable",false).toBool();
   ui->cbTxEnable->setChecked(m_TxOK);
   ui->TuneButton->setEnabled(m_TxOK);
@@ -353,7 +355,7 @@ void MainWindow::dataSink(int k)
   }
 
 // Get power, spectrum, and ihsym
-  symspec_(&k, &m_nsps, &m_inGain, &px, s, &df3, &ihsym);
+  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
@@ -383,7 +385,8 @@ void MainWindow::dataSink(int k)
       int len1=m_c2name.length();
       char c2name[80];
       strcpy(c2name,m_c2name.toAscii());
-      savec2_(c2name,&m_TRseconds,&m_dialFreq,len1);
+      double f0m1500=m_dialFreq + m_BFO - 1500;
+      savec2_(c2name,&m_TRseconds,&f0m1500,len1);
     }
 
     lab3->setStyleSheet("QLabel{background-color:cyan}");
@@ -392,7 +395,7 @@ void MainWindow::dataSink(int k)
     loggit("Start Decoder");
     QString cmnd;
     if(m_diskData) {
-      t2.sprintf(" -f %.6f ",m_dialFreq);
+      t2.sprintf(" -f %.6f ",m_dialFreq+m_BFO);
 
       cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
       if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +

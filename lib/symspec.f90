@@ -1,4 +1,4 @@
-subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
+subroutine symspec(k,nsps,nbfo,ingain,pxdb,s,df3,ihsym)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -82,10 +82,8 @@ subroutine symspec(k,nsps,ingain,pxdb,s,df3,ihsym)
      call timf2(x0,k,NFFT1,nwindow,nb,peaklimit,x1,   &
           slimit,lstrong,px,nzap)
 
-! Mix at 1500 Hz, lowpass at +/-750 Hz, and downsample to 1500 Hz complex.
-     x2(106:105+kstep1)=x1(1:kstep1)
-     call fil3(x2,kstep1+105,c0(k8+1),n2)
-     x2(1:105)=x1(kstep1-104:kstep1)   !Save 105 trailing samples
+! Mix at nbfo Hz, lowpass at +/-750 Hz, and downsample to 1500 Hz complex.
+     call mixlpf(x1,nbfo,c0(k8+1))
      k1=k1+kstep1
      k8=k8+kstep1/8
   enddo
