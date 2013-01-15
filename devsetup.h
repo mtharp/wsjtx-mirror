@@ -2,6 +2,8 @@
 #define DEVSETUP_H
 
 #include <QDialog>
+#include <QProcess>
+#include <QMessageBox>
 #include "ui_devsetup.h"
 
 class DevSetup : public QDialog
@@ -21,12 +23,16 @@ public:
   qint32  m_paInDevice;
   qint32  m_paOutDevice;
   qint32  m_BFO;
-  qint32  m_catPort;
+  qint32  m_catPortIndex;
   qint32  m_rig;
   qint32  m_rigIndex;
   qint32  m_serialRate;
+  qint32  m_serialRateIndex;
   qint32  m_dataBits;
+  qint32  m_dataBitsIndex;
   qint32  m_stopBits;
+  qint32  m_stopBitsIndex;
+  qint32  m_handshakeIndex;
 
   bool    m_restartSoundIn;
   bool    m_restartSoundOut;
@@ -38,9 +44,18 @@ public:
   QString m_saveDir;
   QString m_azelDir;
   QString m_dxccPfx;
+  QString m_catPort;
+  QString m_handshake;
+
+  QProcess p4;
+  QMessageBox msgBox0;
+
 
 public slots:
   void accept();
+  void p4ReadFromStdout();
+  void p4ReadFromStderr();
+  void p4Error();
 
 private slots:
   void on_myCallEntry_editingFinished();
@@ -49,6 +64,14 @@ private slots:
   void on_cbGrid6_toggled(bool b);
   void on_cbEnableCAT_toggled(bool b);
   void on_rigComboBox_activated(int index);
+  void on_catPortComboBox_activated(int index);
+  void on_serialRateComboBox_activated(int index);
+  void on_dataBitsComboBox_activated(int index);
+  void on_stopBitsComboBox_activated(int index);
+  void on_handshakeComboBox_activated(int index);
+
+private:
+  void msgBox(QString t);
 
 private:
   Ui::DialogSndCard ui;

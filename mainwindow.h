@@ -121,8 +121,16 @@ private:
     qint32  m_save;
     qint32  m_BFO;
     qint32  m_RxStartBand;
+    qint32  m_catPortIndex;
     qint32  m_rig;
     qint32  m_rigIndex;
+    qint32  m_serialRate;
+    qint32  m_serialRateIndex;
+    qint32  m_dataBits;
+    qint32  m_dataBitsIndex;
+    qint32  m_stopBits;
+    qint32  m_stopBitsIndex;
+    qint32  m_handshakeIndex;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -188,6 +196,8 @@ private:
     QString m_c2name;
     QString m_txNext_style;
     QString m_tune_style;
+    QString m_catPort;
+    QString m_handshake;
 
     SoundInThread soundInThread;             //Instantiate the audio threads
     SoundOutThread soundOutThread;

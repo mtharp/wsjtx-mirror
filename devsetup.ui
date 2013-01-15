@@ -302,26 +302,28 @@
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <widget class="QLabel" name="label_12">
+          <property name="maximumSize">
+           <size>
+            <width>26</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Rig number:</string>
+           <string>Rig:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="rigComboBox">
-          <property name="currentIndex">
-           <number>1</number>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
           </property>
-          <item>
-           <property name="text">
-            <string>101 Yaesu FT-847</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>214 Kenwood TS-2000</string>
-           </property>
-          </item>
+          <property name="currentIndex">
+           <number>-1</number>
+          </property>
          </widget>
         </item>
         <item>

@@ -266,6 +266,17 @@ void MainWindow::writeSettings()
   settings.setValue("catEnabled",m_catEnabled);
   settings.setValue("Rig",m_rig);
   settings.setValue("RigIndex",m_rigIndex);
+  settings.setValue("CATport",m_catPort);
+  settings.setValue("CATportIndex",m_catPortIndex);
+  settings.setValue("SerialRate",m_serialRate);
+  settings.setValue("SerialRateIndex",m_serialRateIndex);
+  settings.setValue("DataBits",m_dataBits);
+  settings.setValue("DataBitsIndex",m_dataBitsIndex);
+  settings.setValue("StopBits",m_stopBits);
+  settings.setValue("StopBitsIndex",m_stopBitsIndex);
+  settings.setValue("Handshake",m_handshake);
+  settings.setValue("HandshakeIndex",m_handshakeIndex);
+
   settings.endGroup();
 }
 
@@ -336,6 +347,17 @@ void MainWindow::readSettings()
   m_catEnabled=settings.value("catEnabled",false).toBool();
   m_rig=settings.value("Rig",214).toInt();
   m_rigIndex=settings.value("RigIndex",100).toInt();
+  m_catPort=settings.value("CATport","None").toString();
+  m_catPortIndex=settings.value("CATportIndex",0).toInt();
+  m_serialRate=settings.value("SerialRate",4800).toInt();
+  m_serialRateIndex=settings.value("SerialRateIndex",1).toInt();
+  m_dataBits=settings.value("DataBits",8).toInt();
+  m_dataBitsIndex=settings.value("DataBitsIndex",1).toInt();
+  m_stopBits=settings.value("StopBits",8).toInt();
+  m_stopBitsIndex=settings.value("StopBitsIndex",1).toInt();
+  m_handshake=settings.value("Handshake","None").toString();
+  m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
+
   ui->bandComboBox->setCurrentIndex(m_band);
   settings.endGroup();
 
@@ -435,6 +457,16 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_catEnabled=m_catEnabled;
   dlg.m_rig=m_rig;
   dlg.m_rigIndex=m_rigIndex;
+  dlg.m_catPort=m_catPort;
+  dlg.m_catPortIndex=m_catPortIndex;
+  dlg.m_serialRate=m_serialRate;
+  dlg.m_serialRateIndex=m_serialRateIndex;
+  dlg.m_dataBits=m_dataBits;
+  dlg.m_dataBitsIndex=m_dataBitsIndex;
+  dlg.m_stopBits=m_stopBits;
+  dlg.m_stopBitsIndex=m_stopBitsIndex;
+  dlg.m_handshake=m_handshake;
+  dlg.m_handshakeIndex=m_handshakeIndex;
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
@@ -453,6 +485,16 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_catEnabled=dlg.m_catEnabled;
     m_rig=dlg.m_rig;
     m_rigIndex=dlg.m_rigIndex;
+    m_catPort=dlg.m_catPort;
+    m_catPortIndex=dlg.m_catPortIndex;
+    m_serialRate=dlg.m_serialRate;
+    m_serialRateIndex=dlg.m_serialRateIndex;
+    m_dataBits=dlg.m_dataBits;
+    m_dataBitsIndex=dlg.m_dataBitsIndex;
+    m_stopBits=dlg.m_stopBits;
+    m_stopBitsIndex=dlg.m_stopBitsIndex;
+    m_handshake=dlg.m_handshake;
+    m_handshakeIndex=dlg.m_handshakeIndex;
 
     if(dlg.m_restartSoundIn) {
       soundInThread.quit();
@@ -1123,12 +1165,17 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
   ui->txFreqLineEdit->setText(t);
   if(m_rig>=1) {
     int nHz=int(1000000.0*m_dialFreq + 0.5);
-    QString cmnd1,cmnd2;
-    cmnd1.sprintf("rigctl -m %d -r COM1 -s %d -C data_bits=%d",m_rig,4800,8);
-    cmnd2.sprintf(" -C stop_bits=%d -C serial_handshake=Hardware F %d",2,nHz);
-    p3.start(cmnd1+cmnd2);
+    QString cmnd1,cmnd2,cmnd3;
+
+    cmnd1.sprintf("rigctl -m %d -r ",m_rig);
+    cmnd1+=m_catPort;
+    cmnd2.sprintf(" -s %d -C data_bits=%d -C stop_bits=%d -C serial_handshake=",
+                  m_serialRate,m_dataBits,m_stopBits);
+    cmnd2+=m_handshake;
+    cmnd3.sprintf(" F %d",nHz);
+//    qDebug() << cmnd1+cmnd2+cmnd3;
+    p3.start(cmnd1+cmnd2+cmnd3);
   }
-//  cmnd="rigctl -m 214 -r COM1 -s 4800 -C data_bits=8 -C stop_bits=2 -C serial_handshake=Hardware F 10138710"
 }
 
 void MainWindow::on_sbTxAudio_valueChanged(int n)
