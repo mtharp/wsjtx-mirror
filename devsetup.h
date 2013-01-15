@@ -23,6 +23,7 @@ public:
   qint32  m_BFO;
   qint32  m_catPort;
   qint32  m_rig;
+  qint32  m_rigIndex;
   qint32  m_serialRate;
   qint32  m_dataBits;
   qint32  m_stopBits;
@@ -47,7 +48,7 @@ private slots:
   void on_bfoLineEdit_editingFinished();
   void on_cbGrid6_toggled(bool b);
   void on_cbEnableCAT_toggled(bool b);
-  void on_rigComboBox_activated(const QString &arg1);
+  void on_rigComboBox_activated(int index);
 
 private:
   Ui::DialogSndCard ui;

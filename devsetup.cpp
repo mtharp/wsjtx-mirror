@@ -111,6 +111,8 @@ void DevSetup::initDlg()
   ui.dataBitsComboBox->setEnabled(m_catEnabled);
   ui.stopBitsComboBox->setEnabled(m_catEnabled);
   ui.handshakeComboBox->setEnabled(m_catEnabled);
+
+  ui.rigComboBox->setCurrentIndex(m_rigIndex);
   QString t;
   t.sprintf("%d",m_BFO);
   ui.bfoLineEdit->setText(t);
@@ -138,6 +140,7 @@ void DevSetup::accept()
   m_paInDevice=m_inDevList[m_nDevIn];
   m_nDevOut=ui.comboBoxSndOut->currentIndex();
   m_paOutDevice=m_outDevList[m_nDevOut];
+  m_rigIndex=ui.rigComboBox->currentIndex();
   QDialog::accept();
 }
 
@@ -176,9 +179,8 @@ void DevSetup::on_cbEnableCAT_toggled(bool b)
   ui.handshakeComboBox->setEnabled(b);
 }
 
-void DevSetup::on_rigComboBox_activated(const QString &arg1)
+void DevSetup::on_rigComboBox_activated(int n)
 {
-  int i1=arg1.indexOf(" ");
-  m_rig=arg1.mid(0,i1).toInt();
-  qDebug() << m_rig << ui.rigComboBox->itemText(0) << ui.rigComboBox->itemText(1);
+  m_rigIndex=n;
+  m_rig=ui.rigComboBox->itemText(n).split(" ").at(0).toInt();
 }

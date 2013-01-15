@@ -121,6 +121,8 @@ private:
     qint32  m_save;
     qint32  m_BFO;
     qint32  m_RxStartBand;
+    qint32  m_rig;
+    qint32  m_rigIndex;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -167,6 +169,7 @@ private:
     QNetworkAccessManager* mNetworkManager;
     QProcess p1;
     QProcess p2;
+    QProcess p3;
 
     QTimer* ptt0Timer;
     QTimer* ptt1Timer;

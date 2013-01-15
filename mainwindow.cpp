@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_nseq=0;
   m_ntr=0;
   m_BFO=1500;
+  m_rig=-1;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -263,6 +264,8 @@ void MainWindow::writeSettings()
   settings.setValue("Iband",m_band);
   settings.setValue("BFO",m_BFO);
   settings.setValue("catEnabled",m_catEnabled);
+  settings.setValue("Rig",m_rig);
+  settings.setValue("RigIndex",m_rigIndex);
   settings.endGroup();
 }
 
@@ -328,10 +331,12 @@ void MainWindow::readSettings()
   m_dBm=settings.value("dBm",37).toInt();
   ui->dBmComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
   m_band=settings.value("Iband",6).toInt();
-  ui->bandComboBox->setCurrentIndex(m_band);
   m_grid6=settings.value("Grid6",false).toBool();
   m_BFO=settings.value("BFO",1500).toInt();
   m_catEnabled=settings.value("catEnabled",false).toBool();
+  m_rig=settings.value("Rig",214).toInt();
+  m_rigIndex=settings.value("RigIndex",100).toInt();
+  ui->bandComboBox->setCurrentIndex(m_band);
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -428,6 +433,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_grid6=m_grid6;
   dlg.m_BFO=m_BFO;
   dlg.m_catEnabled=m_catEnabled;
+  dlg.m_rig=m_rig;
+  dlg.m_rigIndex=m_rigIndex;
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
@@ -444,6 +451,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_BFO=dlg.m_BFO;
     g_pWideGraph->setBFO(m_BFO);
     m_catEnabled=dlg.m_catEnabled;
+    m_rig=dlg.m_rig;
+    m_rigIndex=dlg.m_rigIndex;
 
     if(dlg.m_restartSoundIn) {
       soundInThread.quit();
@@ -1112,6 +1121,14 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
   ui->dialFreqLineEdit->setText(t);
   t.sprintf("%.6f",m_dialFreq+0.000001*m_txFreq);
   ui->txFreqLineEdit->setText(t);
+  if(m_rig>=1) {
+    int nHz=int(1000000.0*m_dialFreq + 0.5);
+    QString cmnd1,cmnd2;
+    cmnd1.sprintf("rigctl -m %d -r COM1 -s %d -C data_bits=%d",m_rig,4800,8);
+    cmnd2.sprintf(" -C stop_bits=%d -C serial_handshake=Hardware F %d",2,nHz);
+    p3.start(cmnd1+cmnd2);
+  }
+//  cmnd="rigctl -m 214 -r COM1 -s 4800 -C data_bits=8 -C stop_bits=2 -C serial_handshake=Hardware F 10138710"
 }
 
 void MainWindow::on_sbTxAudio_valueChanged(int n)
