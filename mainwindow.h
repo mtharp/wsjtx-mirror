@@ -131,6 +131,8 @@ private:
     qint32  m_stopBits;
     qint32  m_stopBitsIndex;
     qint32  m_handshakeIndex;
+    qint32  m_ncw;
+    qint32  m_secID;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -213,8 +215,6 @@ private:
     void startTx();
     double tsec();
     void ba2msg(QByteArray ba, char* message);
-
-
 };
 
 extern void getfile(QString fname, int ntrperiod);
@@ -231,6 +231,7 @@ void symspec_(int* k, int* nsps, int* nbfo, int* ingain, float* px,
               float s[], float* df3, int* nhsym);
 void genwsprx_(char* msg, int itone[], int len1);
 void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq, int len1);
+void morse_(char* msg, int* icw, int* ncw, int len);
 }
 
 #endif // MAINWINDOW_H

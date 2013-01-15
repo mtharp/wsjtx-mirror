@@ -268,3 +268,8 @@ void DevSetup::msgBox(QString t)                             //msgBox
   msgBox0.setText(t);
   msgBox0.exec();
 }
+
+void DevSetup::on_idIntSpinBox_valueChanged(int n)
+{
+  m_idInt=n;
+}

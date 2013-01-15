@@ -69,6 +69,7 @@ private slots:
   void on_dataBitsComboBox_activated(int index);
   void on_stopBitsComboBox_activated(int index);
   void on_handshakeComboBox_activated(int index);
+  void on_idIntSpinBox_valueChanged(int n);
 
 private:
   void msgBox(QString t);

@@ -1,4 +1,4 @@
-//-------------------------------------------------------------- MainWindow
+//--------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -9,6 +9,7 @@
 #include <portaudio.h>
 
 int itone[162];                       //Tx audio tones
+int icw[250];                         //Dits for CW ID
 bool btxok;                           //True if OK to transmit
 bool btxMute;
 double outputLatency;                 //Latency in seconds
@@ -134,6 +135,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_ntr=0;
   m_BFO=1500;
   m_rig=-1;
+  m_secID=0;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -294,6 +296,7 @@ void MainWindow::readSettings()
 
   settings.beginGroup("Common");
   m_myCall=settings.value("MyCall","").toString();
+  morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
   m_myGrid=settings.value("MyGrid","").toString();
   m_idInt=settings.value("IDint",0).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
@@ -471,6 +474,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
     m_myCall=dlg.m_myCall;
+    morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
     m_myGrid=dlg.m_myGrid;
     m_idInt=dlg.m_idInt;
     m_pttPort=dlg.m_pttPort;
@@ -979,7 +983,8 @@ void MainWindow::guiUpdate()
     }
   }
 
-  if(!m_tuning and (m_nseq >= m_nseqdone)) {   //Reached sequence end time?
+  int nstop=m_nseqdone + m_ncw*3072.0/48000.0 - 2.0;
+  if(!m_tuning and (m_nseq >= nstop)) {   //Reached sequence end time?
     if(m_transmitting) stopTx();
     m_transmitting=false;
     m_receiving=false;
@@ -1016,7 +1021,9 @@ void MainWindow::on_sbPctTx_valueChanged(int arg1)
 void MainWindow::startTx()
 {
   static char msg[23];
+  int nmin;
   QString sdBm,msg1,msg0,message;
+
   sdBm.sprintf(" %d",m_dBm);
   m_ntx=1-m_ntx;
   int i2=m_myCall.indexOf("/");
@@ -1038,6 +1045,15 @@ void MainWindow::startTx()
   ba2msg(ba,msg);
   int len1=22;
   genwsprx_(msg,itone,len1);
+  icw[0]=0;
+  if(m_idInt>0) {
+    nmin=(m_sec0-m_secID)/60;
+    if(nmin >= m_idInt) {
+      icw[0]=m_ncw;
+      m_secID=m_sec0;
+    }
+  }
+  qDebug() << m_idInt << m_secID << m_sec0 << nmin << icw[0];
   ptt(m_pttPort,1,&m_iptt);                   // Raise PTT
   ptt1Timer->start(200);                       //Sequencer delay
   loggit("Start Tx");
