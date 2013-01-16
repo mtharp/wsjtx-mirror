@@ -7,7 +7,7 @@ subroutine morse(msg,idat,n)
 !    Space between words = 7 dots
 
   character*(*) msg
-  integer idat(460)
+  integer idat(250)
   integer*1 ic(21,38)
   data ic/                                        &
      1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,20,  &

@@ -106,6 +106,7 @@ void DevSetup::initDlg()
   ui.myCallEntry->setText(m_myCall);
   ui.myGridEntry->setText(m_myGrid);
   ui.idIntSpinBox->setValue(m_idInt);
+  ui.pttMethodComboBox->setCurrentIndex(m_pttMethodIndex);
   ui.pttComboBox->setCurrentIndex(m_pttPort);
   ui.saveDirEntry->setText(m_saveDir);
   ui.comboBoxSndIn->setCurrentIndex(m_nDevIn);
@@ -149,6 +150,7 @@ void DevSetup::accept()
   m_myCall=ui.myCallEntry->text();
   m_myGrid=ui.myGridEntry->text();
   m_idInt=ui.idIntSpinBox->value();
+  m_pttMethodIndex=ui.pttMethodComboBox->currentIndex();
   m_pttPort=ui.pttComboBox->currentIndex();
   m_saveDir=ui.saveDirEntry->text();
   m_nDevIn=ui.comboBoxSndIn->currentIndex();
@@ -156,6 +158,8 @@ void DevSetup::accept()
   m_nDevOut=ui.comboBoxSndOut->currentIndex();
   m_paOutDevice=m_outDevList[m_nDevOut];
   m_rigIndex=ui.rigComboBox->currentIndex();
+  QString t=ui.rigComboBox->itemText(m_rigIndex);
+  m_rig=t.mid(0,7).toInt();
   m_serialRateIndex=ui.serialRateComboBox->currentIndex();
   m_dataBitsIndex=ui.dataBitsComboBox->currentIndex();
   m_stopBitsIndex=ui.stopBitsComboBox->currentIndex();
@@ -201,7 +205,8 @@ void DevSetup::on_cbEnableCAT_toggled(bool b)
 void DevSetup::on_rigComboBox_activated(int n)
 {
   m_rigIndex=n;
-  m_rig=ui.rigComboBox->itemText(n).split(" ").at(0).toInt();
+  QString t=ui.rigComboBox->itemText(n);
+  m_rig=t.mid(0,7).toInt();
 }
 
 void DevSetup::on_catPortComboBox_activated(int index)
@@ -244,7 +249,6 @@ void DevSetup::p4ReadFromStdout()                        //p4readFromStdout
       t2=t.mid(8,22).trimmed();
       t3=t.mid(31,23).trimmed();
       t=t1 + "  " + t2 + "  " + t3;
-//      qDebug() << t;
       ui.rigComboBox->addItem(t);
     }
   }
@@ -272,4 +276,9 @@ void DevSetup::msgBox(QString t)                             //msgBox
 void DevSetup::on_idIntSpinBox_valueChanged(int n)
 {
   m_idInt=n;
+}
+
+void DevSetup::on_pttMethodComboBox_activated(int index)
+{
+  m_pttMethodIndex=index;
 }

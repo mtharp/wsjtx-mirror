@@ -94,6 +94,7 @@ private:
     qint32  m_nDevOut;
     qint32  m_idInt;
     qint32  m_waterfallAvg;
+    qint32  m_pttMethodIndex;
     qint32  m_pttPort;
     qint32  m_txFreq;
     qint32  m_sec0;
@@ -215,6 +216,7 @@ private:
     void startTx();
     double tsec();
     void ba2msg(QByteArray ba, char* message);
+    QString rig_command();
 };
 
 extern void getfile(QString fname, int ntrperiod);

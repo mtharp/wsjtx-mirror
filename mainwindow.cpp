@@ -239,6 +239,7 @@ void MainWindow::writeSettings()
   settings.setValue("MyCall",m_myCall);
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("IDint",m_idInt);
+  settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
   settings.setValue("SaveDir",m_saveDir);
   settings.setValue("SoundInIndex",m_nDevIn);
@@ -299,6 +300,7 @@ void MainWindow::readSettings()
   morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
   m_myGrid=settings.value("MyGrid","").toString();
   m_idInt=settings.value("IDint",0).toInt();
+  m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
   m_saveDir=settings.value("SaveDir",m_appDir + "/save").toString();
   m_nDevIn = settings.value("SoundInIndex", 0).toInt();
@@ -451,6 +453,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_myCall=m_myCall;
   dlg.m_myGrid=m_myGrid;
   dlg.m_idInt=m_idInt;
+  dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
   dlg.m_saveDir=m_saveDir;
   dlg.m_nDevIn=m_nDevIn;
@@ -474,9 +477,11 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
     m_myCall=dlg.m_myCall;
-    morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
+
+//    morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
     m_myGrid=dlg.m_myGrid;
     m_idInt=dlg.m_idInt;
+    m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
     m_saveDir=dlg.m_saveDir;
     m_nDevIn=dlg.m_nDevIn;
@@ -1053,8 +1058,12 @@ void MainWindow::startTx()
       m_secID=m_sec0;
     }
   }
-  qDebug() << m_idInt << m_secID << m_sec0 << nmin << icw[0];
-  ptt(m_pttPort,1,&m_iptt);                   // Raise PTT
+//Raise PTT
+  if(m_pttMethodIndex==0) {
+    QString cmnd=rig_command() + " T 1";
+    p3.start(cmnd);
+  }
+  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) ptt(m_pttPort,1,&m_iptt);
   ptt1Timer->start(200);                       //Sequencer delay
   loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
@@ -1114,7 +1123,12 @@ void MainWindow::stopTx()
 void MainWindow::stopTx2()
 {
   loggit("Stop Tx2");
-  ptt(m_pttPort,0,&m_iptt);                   //Lower PTT
+//Lower PTT
+  if(m_pttMethodIndex==0) {
+    QString cmnd=rig_command() + " T 0";
+    p3.start(cmnd);
+  }
+  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) ptt(m_pttPort,0,&m_iptt);
 }
 
 void MainWindow::on_cbIdle_toggled(bool b)
@@ -1181,17 +1195,22 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
   ui->txFreqLineEdit->setText(t);
   if(m_rig>=1) {
     int nHz=int(1000000.0*m_dialFreq + 0.5);
-    QString cmnd1,cmnd2,cmnd3;
-
-    cmnd1.sprintf("rigctl -m %d -r ",m_rig);
-    cmnd1+=m_catPort;
-    cmnd2.sprintf(" -s %d -C data_bits=%d -C stop_bits=%d -C serial_handshake=",
-                  m_serialRate,m_dataBits,m_stopBits);
-    cmnd2+=m_handshake;
+    QString cmnd1,cmnd3;
+    cmnd1=rig_command();
     cmnd3.sprintf(" F %d",nHz);
-//    qDebug() << cmnd1+cmnd2+cmnd3;
-    p3.start(cmnd1+cmnd2+cmnd3);
+    p3.start(cmnd1+cmnd3);
   }
+}
+
+QString MainWindow::rig_command()
+{
+  QString cmnd1,cmnd2;
+  cmnd1.sprintf("rigctl -m %d -r ",m_rig);
+  cmnd1+=m_catPort;
+  cmnd2.sprintf(" -s %d -C data_bits=%d -C stop_bits=%d -C serial_handshake=",
+                m_serialRate,m_dataBits,m_stopBits);
+  cmnd2+=m_handshake;
+  return cmnd1+cmnd2;
 }
 
 void MainWindow::on_sbTxAudio_valueChanged(int n)

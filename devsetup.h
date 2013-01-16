@@ -15,6 +15,7 @@ public:
 
   void initDlg();
   qint32  m_idInt;
+  qint32  m_pttMethodIndex;
   qint32  m_pttPort;
   qint32  m_nDevIn;
   qint32  m_nDevOut;
@@ -70,6 +71,8 @@ private slots:
   void on_stopBitsComboBox_activated(int index);
   void on_handshakeComboBox_activated(int index);
   void on_idIntSpinBox_valueChanged(int n);
+
+  void on_pttMethodComboBox_activated(int index);
 
 private:
   void msgBox(QString t);
