@@ -234,7 +234,10 @@ subroutine wsjtgen
   if(txsnrdb.lt.40.d0) call makepings(iwave,nwave)
   
 900 sending=txmsg
-  if(mode(1:4).eq.'JT65' .and. sendingsh.ne.1) sending=msgsent
+  if(mode(1:4).eq.'JT65' .and. sendingsh.ne.1) then
+     sending=msgsent
+     if(msg(1:1).eq.'@') sending=msg
+  endif
   if(mode(1:3).eq.'JT4' .or. mode(1:5).eq.'ISCAT') sending=msgsent
   do i=NMSGMAX,1,-1
      if(sending(i:i).ne.' '.and. ichar(sending(i:i)).ne.0) go to 910
