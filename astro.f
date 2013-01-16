@@ -51,8 +51,9 @@ C  Compute spatial polarization offset
       endif
 
       doppler00=2.0*xdop(1)
-      if(mode.eq.2 .or. mode.eq.5) doppler=xdop(1)+xdop(2)
-      if(mode.eq.3) doppler=2.0*xdop(1)
+!      if(mode.eq.2 .or. mode.eq.5) doppler=xdop(1)+xdop(2)
+      doppler=xdop(1)+xdop(2)
+      if(mode.eq.3) doppler=2.0*xdop(1)             !Echo mode
       dBMoon=-40.0*log10(dist/356903.)
       sd=16.23*370152.0/dist
 
@@ -85,5 +86,4 @@ C  Compute spatial polarization offset
       ElAux=ElAux*rad
 
       return
-
       end
