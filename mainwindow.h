@@ -134,6 +134,7 @@ private:
     qint32  m_handshakeIndex;
     qint32  m_ncw;
     qint32  m_secID;
+    qint32  m_COMportOpen;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -224,7 +225,7 @@ extern void savewav(QString fname, int ntrperiod);
 extern void getDev(int* numDevices,char hostAPI_DeviceName[][50],
                    int minChan[], int maxChan[],
                    int minSpeed[], int maxSpeed[]);
-extern int ptt(int nport, int itx, int* iptt);
+extern int ptt(int nport, int itx, int* iptt, int* nopen);
 
 
 extern "C" {

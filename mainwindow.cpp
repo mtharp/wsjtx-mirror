@@ -136,6 +136,8 @@ MainWindow::MainWindow(QWidget *parent) :
   m_BFO=1500;
   m_rig=-1;
   m_secID=0;
+  m_iptt=0;
+  m_COMportOpen=0;
 
   ui->xThermo->setFillBrush(Qt::green);
 
@@ -1063,7 +1065,9 @@ void MainWindow::startTx()
     QString cmnd=rig_command() + " T 1";
     p3.start(cmnd);
   }
-  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) ptt(m_pttPort,1,&m_iptt);
+  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
+    ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
+  }
   ptt1Timer->start(200);                       //Sequencer delay
   loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
@@ -1128,7 +1132,9 @@ void MainWindow::stopTx2()
     QString cmnd=rig_command() + " T 0";
     p3.start(cmnd);
   }
-  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) ptt(m_pttPort,0,&m_iptt);
+  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
+    ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
+  }
 }
 
 void MainWindow::on_cbIdle_toggled(bool b)
@@ -1231,10 +1237,10 @@ void MainWindow::on_startRxButton_clicked()
 
 void MainWindow::loggit(QString t)
 {
-/*
+  /*
   QDateTime t2 = QDateTime::currentDateTimeUtc();
   qDebug() << t2.time().toString("hh:mm:ss.zzz") << t;
-*/
+  */
 
   /*
   QFile f("wsprx.log");
