@@ -2256,7 +2256,7 @@ bandmenu.add_radiobutton(label = '2304', variable=nfreq,value=2304)
 bandmenu.add_radiobutton(label = '3456', variable=nfreq,value=3456)
 bandmenu.add_radiobutton(label = '5760', variable=nfreq,value=5760)
 bandmenu.add_radiobutton(label = '10368', variable=nfreq,value=10368)
-bandmenu.add_radiobutton(label = '24192', variable=nfreq,value=24192)
+bandmenu.add_radiobutton(label = '24048', variable=nfreq,value=24192)
 nfreq.set(144)
 
 if (sys.platform == 'darwin'):

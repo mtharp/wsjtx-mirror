@@ -14,6 +14,7 @@ C  Test for numerical signal report, etc.
          else
             n=ichar(grid(2:2))-48
          endif
+         if(n.gt.30) n=30
          ng=NGBASE+1+n
          go to 100
       else if(grid(1:2).eq.'R-') then
@@ -22,6 +23,7 @@ C  Test for numerical signal report, etc.
          else
             n=ichar(grid(3:3))-48
          endif
+         if(n.gt.30) n=30
          if(n.eq.0) go to 90
          ng=NGBASE+31+n
          go to 100
