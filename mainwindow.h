@@ -36,6 +36,10 @@ public slots:
   void p2ReadFromStdout();
   void p2ReadFromStderr();
   void p2Error();
+  void p3ReadFromStdout();
+  void p3ReadFromStderr();
+  void p3Error();
+
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -202,6 +206,7 @@ private:
     QString m_tune_style;
     QString m_catPort;
     QString m_handshake;
+    QString m_cmnd;
 
     SoundInThread soundInThread;             //Instantiate the audio threads
     SoundOutThread soundOutThread;

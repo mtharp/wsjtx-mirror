@@ -78,6 +78,13 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(&p2, SIGNAL(error(QProcess::ProcessError)),
           this, SLOT(p2Error()));
 
+  connect(&p3, SIGNAL(readyReadStandardOutput()),
+                    this, SLOT(p3ReadFromStdout()));
+  connect(&p3, SIGNAL(readyReadStandardError()),
+          this, SLOT(p3ReadFromStderr()));
+  connect(&p3, SIGNAL(error(QProcess::ProcessError)),
+          this, SLOT(p3Error()));
+
   mNetworkManager = new QNetworkAccessManager(this);
   QObject::connect(mNetworkManager, SIGNAL(finished(QNetworkReply*)),
                    this, SLOT(onNetworkReply(QNetworkReply*)));
@@ -150,14 +157,6 @@ MainWindow::MainWindow(QWidget *parent) :
     t.sprintf("%d dBm",ndbm);
     ui->dBmComboBox->addItem(t);
   }
-
-  int band[] ={2200,630,160,80,60,40,30,20,17,15,12,10,6,4,2};
-  for(int i=0; i<15; i++) {
-    QString t;
-    t.sprintf("%4d m",band[i]);
-    ui->bandComboBox->addItem(t);
-  }
-  ui->bandComboBox->addItem("Other");
 
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
@@ -420,7 +419,9 @@ void MainWindow::dataSink(int k)
       int len1=m_c2name.length();
       char c2name[80];
       strcpy(c2name,m_c2name.toAscii());
-      double f0m1500=m_dialFreq + m_BFO - 1500;
+      double f0m1500=m_dialFreq + 0.000001*(m_BFO - 1500);
+//      double f0m1500=m_dialFreq + m_BFO - 1500;
+      qDebug() << m_dialFreq << m_BFO << f0m1500;
       savec2_(c2name,&m_TRseconds,&f0m1500,len1);
     }
 
@@ -860,6 +861,28 @@ void MainWindow::p2Error()                                     //p2rror
   m_uploading=false;
 }
 
+void MainWindow::p3ReadFromStdout()                        //p3readFromStdout
+{
+  QByteArray t=p3.readAllStandardOutput();
+  if(t.length()>0) {
+    msgBox("rigctl stdout:\n\n"+t+"\n"+m_cmnd);
+  }
+}
+
+void MainWindow::p3ReadFromStderr()                        //p3readFromStderr
+{
+  QByteArray t=p3.readAllStandardError();
+  if(t.length()>0) {
+    msgBox("rigctl stderr:\n\n"+t+"\n"+m_cmnd);
+  }
+}
+
+void MainWindow::p3Error()                                     //p3rror
+{
+  msgBox("Error attempting to run rigctl.\n\n"+m_cmnd);
+}
+
+
 void MainWindow::on_EraseButton_clicked()                          //Erase
 {
   ui->decodedTextBrowser->clear();
@@ -1062,8 +1085,9 @@ void MainWindow::startTx()
   }
 //Raise PTT
   if(m_pttMethodIndex==0) {
-    QString cmnd=rig_command() + " T 1";
-    p3.start(cmnd);
+    m_cmnd=rig_command() + " T 1";
+    p3.start(m_cmnd);
+    p3.waitForFinished();
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
@@ -1129,8 +1153,9 @@ void MainWindow::stopTx2()
   loggit("Stop Tx2");
 //Lower PTT
   if(m_pttMethodIndex==0) {
-    QString cmnd=rig_command() + " T 0";
-    p3.start(cmnd);
+    m_cmnd=rig_command() + " T 0";
+    p3.start(m_cmnd);
+    p3.waitForFinished();
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
@@ -1199,12 +1224,14 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
   ui->dialFreqLineEdit->setText(t);
   t.sprintf("%.6f",m_dialFreq+0.000001*m_txFreq);
   ui->txFreqLineEdit->setText(t);
-  if(m_rig>=1) {
+  if(m_catEnabled) {
     int nHz=int(1000000.0*m_dialFreq + 0.5);
     QString cmnd1,cmnd3;
     cmnd1=rig_command();
     cmnd3.sprintf(" F %d",nHz);
-    p3.start(cmnd1+cmnd3);
+    m_cmnd=cmnd1 + cmnd3;
+    p3.start(m_cmnd);
+    p3.waitForFinished();
   }
 }
 
@@ -1237,10 +1264,11 @@ void MainWindow::on_startRxButton_clicked()
 
 void MainWindow::loggit(QString t)
 {
-  /*
+/*
   QDateTime t2 = QDateTime::currentDateTimeUtc();
-  qDebug() << t2.time().toString("hh:mm:ss.zzz") << t;
-  */
+  qDebug() << t2.time().toString("hh:mm:ss.zzz") << t
+           << m_catEnabled << (int)m_catEnabled;
+*/
 
   /*
   QFile f("wsprx.log");
