@@ -52,4 +52,5 @@ ppt_unix.o: ppt_unix.c
 .PHONY : clean
 
 clean:
-	rm -f *.o libwspr.a wsprd
+	rm -f *.o libwspr.a wsprd WSPRcode
+
