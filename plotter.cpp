@@ -198,8 +198,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   float pixPerHdiv = m_freqPerDiv/m_fftBinWidth;
   float pixPerVdiv = float(m_h2)/float(VERT_DIVS);
 
-  m_RFHz=int(1000000.0*m_dialFreq+m_StartFreq) % 1000;
-//  qDebug() << "B" << m_StartFreq << m_dialFreq << m_RFHz;
+  m_RFHz=int(1000000.0*m_dialFreq+m_StartFreq + 0.5) % 1000;
   m_hdivs = m_w*m_fftBinWidth/m_freqPerDiv + 0.9999;
 
   painter.setPen(QPen(Qt::white, 1,Qt::DotLine));

@@ -403,6 +403,7 @@ void MainWindow::dataSink(int k)
   if(ihsym == m_hsymStop) {
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
+    double f0m1500=m_dialFreq + 0.000001*(m_BFO - 1500);
     QString t2;
 
     if(!m_diskData) {                        //Always save; may delete later
@@ -419,9 +420,6 @@ void MainWindow::dataSink(int k)
       int len1=m_c2name.length();
       char c2name[80];
       strcpy(c2name,m_c2name.toAscii());
-      double f0m1500=m_dialFreq + 0.000001*(m_BFO - 1500);
-//      double f0m1500=m_dialFreq + m_BFO - 1500;
-      qDebug() << m_dialFreq << m_BFO << f0m1500;
       savec2_(c2name,&m_TRseconds,&f0m1500,len1);
     }
 
@@ -431,7 +429,7 @@ void MainWindow::dataSink(int k)
     loggit("Start Decoder");
     QString cmnd;
     if(m_diskData) {
-      t2.sprintf(" -f %.6f ",m_dialFreq+m_BFO);
+      t2.sprintf(" -f %.6f ",f0m1500);
 
       cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
       if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
@@ -741,7 +739,8 @@ void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
       i=(fname.indexOf(".wav"));
       if(i>1) dir.remove(fname);
       i=(fname.indexOf(".c2"));
-      if(i>1) dir.remove(fname);    }
+      if(i>1) dir.remove(fname);
+    }
   }
 }
 
@@ -786,11 +785,11 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile f("wsprd.out");
         if(f.exists()) f.remove();
       }
-      if(m_save!=1 and m_save!=3) {
+      if(m_save!=1 and m_save!=3 and !m_diskData) {
         QFile savedWav(m_fname);
         savedWav.remove();
       }
-      if(m_save!=2 and m_save!=3) {
+      if(m_save!=2 and m_save!=3 and !m_diskData) {
         int i1=m_fname.indexOf(".wav");
         QString sc2=m_fname.mid(0,i1) + ".c2";
         QFile savedC2(sc2);
