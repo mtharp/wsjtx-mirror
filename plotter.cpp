@@ -293,7 +293,7 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
   float freq;
   for(int i=0; i<=m_hdivs; i++) {
     if(m_bRFscale) {
-      freq=int(m_RFHz + i*m_freqPerDiv) % 1000;
+      freq=int(m_RFHz + m_BFO - 1500 + i*m_freqPerDiv) % 1000;
     } else {
       freq=m_StartFreq + m_BFO - 1500 + i*m_freqPerDiv;
     }
