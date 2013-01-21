@@ -84,6 +84,9 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
       }
       if(!btxok or btxMute)  i2=0;
       *wptr++ = i2;                   //left
+#ifdef unix
+      *wptr++ = i2;                   //right
+#endif
       ic++;
     }
     return paContinue;
@@ -110,6 +113,9 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     }
     if(!btxok or btxMute)  i2=0;
     *wptr++ = i2;                   //left
+#ifdef unix
+    *wptr++ = i2;                   //right
+#endif
     ic++;
   }
   return paContinue;

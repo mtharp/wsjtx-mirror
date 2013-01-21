@@ -52,11 +52,10 @@ FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui
 RC_FILE = wsprx.rc
 
 unix {
-INCLUDEPATH += $$quote(/usr/include/qwt-qt4)
-LIBS += -lfftw3f /usr/lib/libgfortran.so.3
-LIBS += ../wsprx/lib/libwspr.a
-LIBS += /usr/lib/libqwt-qt4.so
-LIBS += -lportaudio
+    INCLUDEPATH += $$quote(/usr/include/qwt-qt4)
+    LIBS += ../wsprx/lib/libwspr.a
+    LIBS += /usr/lib/libqwt-qt4.so
+    LIBS += -lportaudio -lgfortran -lfftw3f
 }
 
 win32 {
