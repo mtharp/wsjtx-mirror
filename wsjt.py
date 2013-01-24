@@ -26,7 +26,7 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="9.3 r" + "$Rev$"[6:-1]
+Version="9.4 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \
@@ -1901,7 +1901,7 @@ def update():
             text.see(END)
 #            text.configure(state=DISABLED)
 
-            if mode.get()[:4]=='JT65':
+            if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
                 try:
                     f=open(appdir+'/decoded.ave',mode='r')
                     lines=f.readlines()
@@ -2838,7 +2838,7 @@ if nmonitor.get():
 else:
     stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSJT 9.3     by K1JT')
+root.title('  WSJT 9.4     by K1JT')
 from WsjtMod import astro
 from WsjtMod import specjt
 

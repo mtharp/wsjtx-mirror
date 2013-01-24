@@ -230,8 +230,9 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
 
 ! Offset data by about 1 s.
      jztest=165000
-     if(jz.ge.jztest) call wsjt24(dat(4097),jz-4096,cfile6,             &
+     if(jz.ge.jztest) call wsjt24(dat,jz,cfile6,                        &
           NClearAve,MinSigdB,DFTolerance,NFreeze,mode,mode4,            &
+          mycall,hiscall,hisgrid,                                       &
           Nseg,MouseDF2,NAgain,idf,lumsg,lcum,nspecial,ndf,             &
           NSyncOK,ccf,psavg,ndiag)
      goto 900

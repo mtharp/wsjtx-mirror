@@ -38,6 +38,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   rewind 23
   k=0
   icall=0
+  call cs_lock('deep65  ')
   do n=1,MAXCALLS
      if(n.eq.1) then
         callsign=hiscall
@@ -102,6 +103,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   enddo
 
 20 continue
+  call cs_unlock
   ntot=k
   neme0=neme
 
@@ -140,8 +142,10 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   enddo
 
 ! ### DO NOT REMOVE ### 
+  call cs_lock('deep65  ')
   rewind 77
   write(77,*) p1,p2
+  call cs_unlock
 ! ### Works OK without it (in both Windows and Linux) if compiled 
 ! ### without optimization.  However, in Windows this is a colossal 
 ! ### pain because of the way F2PY wants to run the compile step.
