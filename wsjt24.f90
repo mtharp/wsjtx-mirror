@@ -22,8 +22,10 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   character*6 hisgrid
   character submode*1
   real*4 ccfbluesum(-5:540),ccfredsum(-224:224)
+  integer nch(7)
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
   data first/.true./,ns10/0/,ns20/0/
+  data nch/1,2,4,9,18,36,72/
   save
 
   if(first) then
@@ -94,7 +96,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   endif
 
   call decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,        &
-       hisgrid,decoded,ncount,deepmsg,qual,submode)
+       hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
 
 200 kvqual=0
   if(ncount.ge.0) kvqual=1
@@ -120,7 +122,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   call cs_lock('wsjt24')
   write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,nint(width),         &
        csync,special,decoded,kvqual,nqual,submode
-1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a22,i4,i5,1x,a1)
+1010 format(a6,i3,i5,f5.1,i5,i4,1x,a1,1x,a5,a22,i4,i5,1x,a1)
 
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
@@ -184,6 +186,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
 
   ccfbluesum=ccfbluesum + ccfblue
   ccfredsum=ccfredsum + ccfred
+  if(mode4.gt.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
 
   return
 end subroutine wsjt24

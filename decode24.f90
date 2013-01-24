@@ -1,5 +1,5 @@
 subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
-  hisgrid,decoded,ncount,deepbest,qbest,submode)
+  hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
 

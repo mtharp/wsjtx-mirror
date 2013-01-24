@@ -14,6 +14,8 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   real ccfred(-450:450)            !Peak of ccfblue, as function of freq
   real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
   real tmp(1260)
+  integer ipk1(1)
+  equivalence (ipk1,ipk1a)
   save
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 
@@ -59,13 +61,21 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   syncbest=-1.e30
   syncbest2=-1.e30
   ccfred=0.
+  if(ia-i0.lt.-450) ia=i0-450
+  if(ib-i0.gt.450)  ib=i0450
+  jmax=-1000
+  jmin=1000
 
   do i=ia,ib                                !Find best frequency channel for CCF
 
      call xcor24(s2,i,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccf0,lagpk0,flip)
      j=i-i0
      if(mode.eq.7) j=j + 3*mode4
-     if(j.ge.-372 .and. j.le.372) ccfred(j)=ccf0
+     if(j.ge.-372 .and. j.le.372) then
+        ccfred(j)=ccf0
+        jmax=max(j,jmax)
+        jmin=min(j,jmin)
+     endif
 
 ! Find rms of the CCF, without main peak
      call slope(ccfblue(lag1),lag2-lag1+1,lagpk0-lag1+1.0)
@@ -131,48 +141,27 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
      if(mode.eq.7) snrx=snrx + 3.0         !Empirical
   endif
   if(snrx.lt.-33.0) snrx=-33.0
+  width=df*mode4
 
-! Compute width of sync tone to outermost -3 dB points
-  i1=max(-450,ia-i0)
-  i2=min(450,ib-i0)
-  call pctile(ccfred(i1),tmp,i2-i1+1,45,base)
-
-  jpk=ipk-i0
-  if(abs(jpk).gt.450) then
-     print*,'sync24 a:',jpk,ipk,i0
-     snrsync=0.
-     go to 999
-  else
-     stest=base + 0.5*(ccfred(jpk)-base) ! -3 dB
-  endif
-  do i=-10,0
-     if(jpk+i.ge.-371) then 
-        if(ccfred(jpk+i).gt.stest) go to 30
-     endif
-  enddo
-  i=0
-30 continue
-  if(abs(jpk+i-1).gt.450 .or. abs(jpk+i).gt.450) then
-     print*,'sync24 b:',jpk,i
-  else
-     x1=i-0.5
-  endif
-
-  do i=10,0,-1
-     if(jpk+i.le.371) then
-        if(ccfred(jpk+i).gt.stest) go to 32
-     endif
-  enddo
-  i=0
-32 x2=i+0.5
-  width=x2-x1
-  if(width.gt.1.2) width=sqrt(width**2 - 1.44)
-  width=df*width
-  width=max(0.0,min(99.0,width))
-
-  do i=-224,224
+  ccfred1=0.
+  jmin=max(jmin,-224)
+  jmax=min(jmax,224)
+  do i=jmin,jmax
      ccfred1(i)=ccfred(i)
   enddo
+
+  ipk1=maxloc(ccfred1) - 225
+  ns=0
+  s=0.
+  iw=min(mode4,(ib-ia)/4)
+  do i=jmin,jmax
+     if(abs(i-ipk1a).gt.iw) then
+        s=s+ccfred1(i)
+        ns=ns+1
+     endif
+  enddo
+  base=s/ns
+  ccfred1=ccfred1-base
 
 999 return
 end subroutine sync24
