@@ -17,7 +17,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   nused=0
   ns=0
   nqual=0
-  deepmsg='                      '
+  deepbest='                      '
   do i=1,nsave
      if(iseg(i).eq.mseg) then
         ns=ns+1
