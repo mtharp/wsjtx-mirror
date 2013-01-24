@@ -772,9 +772,9 @@ def ModeCW(event=NONE):
 def ModeJT4():
     global slabel,isync,isync65,textheight,itol
     ModeJT65()
-    bclravg.pack_forget()
-    binclude.pack_forget()
-    bexclude.pack_forget()
+#    bclravg.pack_forget()
+#    binclude.pack_forget()
+#    bexclude.pack_forget()
 
 
 #------------------------------------------------------ ModeJT4A
@@ -2205,7 +2205,7 @@ decodemenu.JT65.add_radiobutton(label ='Include Average in Aggressive Deep Searc
                                 variable=ndepth, value=3)
 
 ##decodemenu.add_cascade(label = 'ISCAT',menu=decodemenu.ISCAT)
-decodemenu.add_cascade(label = 'JT65',menu=decodemenu.JT65)
+decodemenu.add_cascade(label = 'JT4 and JT65',menu=decodemenu.JT65)
 
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Decode", menu=decodemenu)

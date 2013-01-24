@@ -175,8 +175,5 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
           decoded(i:i)=char(ichar(decoded(i:i))-32)
   enddo
 
-!  write(*,3010) p1,p2,p1-p2,p1/p2,qual,decoded
-!3010 format('DS:',5f9.1,2x,a22)
-
   return
 end subroutine deep24

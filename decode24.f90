@@ -54,7 +54,6 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
   ichbest=-1
 
 ! Should amp be adjusted according to signal strength?
-
 ! Compute soft symbols using differential BPSK demodulation
   c0=0.                                !### C0=amp ???
   k=istart
@@ -109,24 +108,10 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
      if(i4.gt.127) i4=i4-256
      if(j.ge.1) then
         symbol(j)=i4
-!        rsymbol(j,ich)=rsymbol(j,ich) + rsym
         rsymbol(j,ich)=rsym
         sym(j)=rsym
      endif
   enddo
-  
-!###  The following does simple message averaging:
-!  nsum(ich)=nsum(ich)+1
-!  do j=1,207
-!     sym(j)=rsymbol(j,ich)/nsum(ich)
-!     r=sym(j) + 128.
-!     if(r.gt.255.0) r=255.0
-!     if(r.lt.0.0) r=0.0
-!     i4=nint(r)
-!     if(i4.gt.127) i4=i4-256
-!     symbol(j)=i4
-!  enddo
-!###
   
   call extract4(sym,nadd,ncount,decoded)     !Do the KV decode
 
@@ -143,31 +128,14 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
   if(mode.eq.7 .and. nchips.lt.mode4) go to 40
 
 100 continue
-!100 do i=1,9
-!     i4=data1(i)
-!     if(i4.lt.0) i4=i4+256
-!     data4a(i)=i4
-!  enddo
-!  write(c72,1100) (data4a(i),i=1,9)
-!1100 format(9b8.8)
-!  read(c72,1102) data4
-!1102 format(12b6)
-
-!  decoded='                      '
-!  submode=' '
 
   if(ncount.lt.0) then
      decoded=deepbest
      submode=char(ichar('A')+ichbest-1)
      qual=qbest
   endif
-!  if(decoded(1:6).eq.'000AAA') then
-!     decoded='***WRONG MODE?***'
-!     ncount=-1
-!  endif
 
-! Save symbol spectra for possible decoding of average.
-  ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)
+  ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  !Save data for message averaging
 
   return
 end subroutine decode24

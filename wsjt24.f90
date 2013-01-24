@@ -1,11 +1,10 @@
 subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,            &
-     Nseg,MouseDF,NAgain,                                              &
+     Nseg,MouseDF,NAgain,ndepth,                                       &
      idf,lumsg,lcum,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
-! No message averaging and no deep search, at present.
 
   parameter (MAXAVE=120)
   real dat(npts)                                     !Raw data
@@ -37,7 +36,6 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      if(nspecial.eq.999) go to 900        !Silence compiler warning
   endif
 
-  ndepth=3                                !###
   naggressive=0
   if(ndepth.ge.2) naggressive=1
   nq1=3
@@ -65,9 +63,9 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   deepmsg='                      '
   special='     '
   cooo='   '
-  ncount=-1             !Flag for RS decode of current record
-  ncount1=-1            !Flag for RS Decode of ave1
-  ncount2=-1            !Flag for RS Decode of ave2
+  ncount=-1             !Flag for convolutional decode of current record
+  ncount1=-1            !Flag for convolutional decode of ave1
+  ncount2=-1            !Flag for convolutional decode of ave2
   NSyncOK=0
   nqual1=0
   nqual2=0
@@ -110,11 +108,15 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      if(c1.ge.'a' .and. c1.le.'z') decoded(i:i)=char(ichar(c1)-32)
   enddo
   jdf=ndf+idf
+  do i=22,1,-1
+     if(decoded(i:i).ne.' ') exit
+  enddo
+  decoded(i+2:i+4)=cooo
 
   call cs_lock('wsjt24')
   write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,nint(width),         &
-       csync,special,decoded(1:19),cooo,kvqual,nqual,submode
-1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i3,i5,1x,a1)
+       csync,special,decoded,kvqual,nqual,submode
+1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a22,i4,i5,1x,a1)
 
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
