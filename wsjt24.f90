@@ -135,11 +135,9 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   call cs_unlock
 
   if(nsave.ge.1) call avemsg4(1,mode4,ndepth,                        &
-       avemsg1,nused1,nq1,nq2,neme,mycall,hiscall,hisgrid,qual1,     &
-       ns1,ncount1)
+       avemsg1,nused1,nq1,nq2,neme,mycall,hiscall,hisgrid,qual1,ns1,ncount1)
   if(nsave.ge.1) call avemsg4(2,mode4,ndepth,                        &
-       avemsg2,nused2,nq1,nq2,neme,mycall,hiscall,hisgrid,qual2,     &
-       ns2,ncount2)
+       avemsg2,nused2,nq1,nq2,neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2)
   nqual1=qual1
   nqual2=qual2
 ! if(ndiag.eq.0 .and. nqual1.gt.10) nqual1=10

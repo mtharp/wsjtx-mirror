@@ -162,6 +162,15 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   enddo
   base=s/ns
   ccfred1=ccfred1-base
+  ccf10=0.1*maxval(ccfred1)
+  do i=ipk1a,jmin,-1
+     if(ccfred1(i).le.ccf10) exit
+  enddo
+  i1=i
+  do i=ipk1a,jmax
+     if(ccfred1(i).le.ccf10) exit
+  enddo
+  width=df*(i-i1)
 
 999 return
 end subroutine sync24

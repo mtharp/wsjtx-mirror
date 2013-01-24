@@ -6,7 +6,9 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   parameter (MAXAVE=120)                    !Max avg count is 120
   character decoded*22,deepmsg*22,deepbest*22
   character mycall*12,hiscall*12,hisgrid*6
-  real s3(207,7)
+  real sym(207,7)
+  integer nch(7)
+  data nch/1,2,4,9,18,36,72/
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
 
 ! Count the available spectra for this Monitor segment (mseg=1 or 2),
@@ -25,18 +27,20 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   if(nused.lt.1) go to 100
 
 ! Compute the average of all flagged soft symbols for this segment.
-  s3=0.
+  sym=0.
+  ns=0
   do k=1,nsave
      if(nflag(k).eq.1 .and. iseg(k).eq.mseg) then
-        s3(1:207,1:7)=s3(1:207,1:7) + ppsave(1:207,1:7,k)
+        sym(1:207,1:7)=sym(1:207,1:7) + ppsave(1:207,1:7,k)
+        ns=ns+1
      endif
   enddo
+  if(ns.gt.0) sym=sym/ns
 
   nadd=nused*mode4
-
   do k=1,7
-     call extract4(s3(1,k),nadd,ncount,decoded)     !Do the KV decode
-     if(ncount.ge.0) exit
+     call extract4(sym(1,k),nadd,ncount,decoded)     !Do the KV decode
+     if(ncount.ge.0 .or. nch(k).ge.mode4) exit
   enddo
   if(ncount.lt.0) decoded='                      '
 
@@ -48,12 +52,13 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
      neme=1
 
      do k=1,7
-        call deep24(s3(2,k),neme,flipx,mycall,hiscall,hisgrid,deepmsg,qual)
+        call deep24(sym(2,k),neme,flipx,mycall,hiscall,hisgrid,deepmsg,qual)
         if(qual.gt.qbest) then
            qbest=qual
            deepbest=deepmsg
            ichbest=k
         endif
+        if(nch(k).ge.mode4) exit
      enddo
      deepmsg=deepbest
      qual=qbest

@@ -125,6 +125,7 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
   endif
 
   ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  !Save data for message averaging
+  if(ichbest.lt.1) ichbest=1
 
   return
 end subroutine decode24
