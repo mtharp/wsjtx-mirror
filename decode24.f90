@@ -8,18 +8,13 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
   character decoded*22,deepmsg*22,deepbest*22
   character*12 mycall,hiscall
   character*6 hisgrid
-  character*72 c72
   character submode*1
   real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
   complex*16 cz,cz1,c0,c1
-  integer*1 symbol(207)
   real*4 rsymbol(207,7)
   real*4 sym(207)
   integer nsum(7)
-  integer*1 data1(13)                   !Decoded data (8-bit bytes)
-  integer   data4a(9)                   !Decoded data (8-bit bytes)
-  integer   data4(12)                   !Decoded data (6-bit bytes)
-  integer amp,delta
+  integer amp
   integer mettab(0:255,0:1)             !Metric table
   integer nch(7)
   integer npr2(207)
@@ -101,13 +96,7 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
      sq0=fac2*sq0
      sq1=fac2*sq1
      rsym=amp*(sq1-sq0)
-     r=rsym+128.
-     if(r.gt.255.0) r=255.0
-     if(r.lt.0.0) r=0.0
-     i4=nint(r)
-     if(i4.gt.127) i4=i4-256
      if(j.ge.1) then
-        symbol(j)=i4
         rsymbol(j,ich)=rsym
         sym(j)=rsym
      endif

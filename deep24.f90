@@ -4,7 +4,7 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
   parameter (MAXCALLS=7000,MAXRPT=63)
   real*4 sym(206)
-  character callsign*12,grid*4,message*22,hisgrid*6,c*1,ceme*3
+  character callsign*12,grid*4,message*22,hisgrid*6,ceme*3
   character*12 mycall,hiscall
   character mycall0*12,hiscall0*12,hisgrid0*6
   character*22 decoded
@@ -159,15 +159,12 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   qual=1.0*(p1-bias)
 
   decoded='                      '
-!  c=' '
 
   if(qual.gt.1.0) then
-!     if(qual.lt.6.0) c='?'
      decoded=testmsg(ip1)
   else
      qual=0.
   endif
-!  decoded(22:22)=c
 
 ! Make sure everything is upper case.
   do i=1,22
