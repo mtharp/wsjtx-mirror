@@ -156,18 +156,18 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 !  if(mode65.ge.4) bias=max(1.04*p2,0.505)
 
   if(p2.eq.p1 .and. p1.ne.-1.e30) stop 'Error in deep24'
-  qual=10.0*(p1-bias)
+  qual=1.0*(p1-bias)
 
   decoded='                      '
-  c=' '
+!  c=' '
 
   if(qual.gt.1.0) then
-     if(qual.lt.6.0) c='?'
+!     if(qual.lt.6.0) c='?'
      decoded=testmsg(ip1)
   else
      qual=0.
   endif
-  decoded(22:22)=c
+!  decoded(22:22)=c
 
 ! Make sure everything is upper case.
   do i=1,22

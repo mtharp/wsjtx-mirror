@@ -58,6 +58,8 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   call sync24(dat,npts,DFTolerance,NFreeze,MouseDF,mode,             &
        mode4,dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width)
 
+  call snr4(ccfblue,snrsync,snrx)          !### New calc of sync, snr ###
+  
   csync=' '
   decoded='                      '
   deepmsg='                      '
@@ -75,10 +77,11 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   
   nflag(nsave)=0                    !Clear the "good sync" flag
   iseg(nsave)=Nseg                  !Set the RX segment to 1 or 2
-  nsync=nint(snrsync-3.0)
+
+  nsync=snrsync
   nsnr=nint(snrx)
-  if(nsnr.lt.-30 .or. nsync.lt.0) nsync=0
   nsnrlim=-33
+  if(nsnr.lt.nsnrlim .or. nsync.lt.0) nsync=0
   if(nsync.lt.MinSigdB .or. nsnr.lt.nsnrlim) go to 200
 
 ! If we get here, we have achieved sync!
@@ -112,6 +115,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      if(decoded(i:i).ne.' ') exit
   enddo
   decoded(i+2:i+4)=cooo
+!  if(nqual.lt.6) decoded(22:22)='?'               !### ??? ###
 
   call cs_lock('wsjt24')
   write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,nint(width),         &
