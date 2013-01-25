@@ -8,11 +8,12 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,grid,cauxra,cauxdec,       &
 !f2py intent(out) AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,ntsky,ndop,ndop00,dbMoon8,RAMoon8,DecMoon8,HA8,Dgrd8,sd8,poloffset8,xnr8,dfdt,dfdt0,RaAux8,DecAux8,AzAux8,ElAux8,width1,width2,w501,w502,xlst8
 
   parameter (DEGS=57.2957795130823d0)
-  character grid*6
+  character grid*6,c1*1
   character*9 cauxra,cauxdec
   real*8 AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,AzAux8,ElAux8
   real*8 dbMoon8,RAMoon8,DecMoon8,HA8,Dgrd8,xnr8,dfdt,dfdt0,dt
   real*8 sd8,poloffset8,day8,width1,width2,w501,w502,xlst8
+  include 'gcom1.f90'
   include 'gcom2.f90'
   data uth8z/0.d0/,imin0/-99/
   save
@@ -137,14 +138,16 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,grid,cauxra,cauxdec,       &
      enddo
 700  jz=i
      open(14,file=AzElDir(:jz)//'/azel.dat',status='unknown',err=930)
+     c1='R'
+     if(Transmitting.ne.0) c1='T'
      write(14,1010,err=800) ih,im,is,AzMoon,ElMoon,                  &
         ih,im,is,AzSun,ElSun,                                        &
         ih,im,is,AzAux,ElAux,                                        &
-        nfreq,doppler,dfdt,doppler00,dfdt0
+        nfreq,doppler,dfdt,doppler00,dfdt0,c1
 1010 format(i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Moon'/        &
             i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Sun'/         &
             i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Source'/      &
-            i5,',',f8.1,',',f8.2,',',f8.1,',',f8.2,',Doppler')
+            i5,',',f8.1,',',f8.2,',',f8.1,',',f8.2,',Doppler, ',a1)
      close(14)
 800  isec0=isec
      elmoon2=elmoon
