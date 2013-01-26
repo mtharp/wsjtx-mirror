@@ -1,4 +1,4 @@
-subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
+subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
@@ -37,14 +37,13 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
   mode0=mode
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)
-  df=11025.d0/2520.d0
+  df=11025.d0/2520.d0       !Tone separation for JT4A mode
   nsym=206
   amp=15
   istart=nint(dtx/dt)              !Start index for synced FFTs
   if(istart.lt.0) istart=0
   nchips=0
-  ich=0
-  qbest=0.
+  qbest=-1.e30
   deepmsg='                      '
   ichbest=-1
 
@@ -54,6 +53,11 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
   k=istart
   phi=0.d0
   phi1=0.d0
+
+  nw=0.5*width/df
+  do ich=1,7
+     if(nch(ich).ge.nw) exit
+  enddo
 
 40 ich=ich+1
   nchips=nch(ich)
@@ -113,19 +117,18 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,     &
      ichbest=ich
   endif
 
-  if(ncount.ge.0) go to 100
+  if(ncount.ge.0) then
+     ichbest=ich
+     go to 100
+  endif
   if(mode.eq.7 .and. nchips.lt.mode4) go to 40
 
-100 continue
-
-  if(ncount.lt.0) then
+100 if(ncount.lt.0) then
      decoded=deepbest
-     submode=char(ichar('A')+ichbest-1)
      qual=qbest
   endif
-
+  submode=char(ichar('A')+ichbest-1)
   ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  !Save data for message averaging
-  if(ichbest.lt.1) ichbest=1
 
   return
 end subroutine decode24

@@ -240,7 +240,10 @@ def dbl_click_text(event):
     if mode.get()=='Diana':
         report.delete(0,END)
         report.insert(0,'OOO')
-    dbl_click_call(t,t1,'OOO',event)
+    if mode.get()[:3]=='JT4':
+        dbl_click3_text(event)
+    else:
+        dbl_click_call(t,t1,'OOO',event)
 
 #------------------------------------------------------ dbl_click3_text
 def dbl_click3_text(event):
@@ -1322,6 +1325,9 @@ def left_arrow(event=NONE):
 #------------------------------------------------------ GenStdMsgs
 def GenStdMsgs(event=NONE):
     global altmsg,MyCall0,addpfx0,ToRadio0
+    if mode.get()[:3]=='JT4':
+        GenAltMsgs()
+        return
     t=ToRadio.get().upper().strip()
     ToRadio.delete(0,99)
     ToRadio.insert(0,t)
@@ -1341,7 +1347,7 @@ def GenStdMsgs(event=NONE):
         if tx3.get()=='ROOO':
             tx3.delete(0,END)
             tx3.insert(0,'RO')
-    elif mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
+    elif mode.get()[:4]=='JT65':
         if options.MyCall.get()!= MyCall0 or \
                options.addpfx.get()!= addpfx0 or ToRadio.get()!=ToRadio0:
             MyCall0=options.MyCall.get()
@@ -1399,12 +1405,22 @@ def GenAltMsgs(event=NONE):
         for m in (tx1, tx2, tx3, tx4, tx5, tx6):
             m.delete(0,99)
         t=ToRadio.get() + " "+options.MyCall.get()
-        tx1.insert(0,t.upper())
-        tx2.insert(0,tx1.get()+" OOO")
-        tx3.insert(0,tx1.get()+" RO")
-        tx4.insert(0,tx1.get()+" RRR")
-        tx5.insert(0,"TNX 73 GL ")
-        tx6.insert(0,tx6alt.upper())
+        t=t.upper()
+        tx2.insert(0,t+" OOO")
+        tx3.insert(0,t+" RO")
+        tx4.insert(0,t+" RRR")
+        tx5.insert(0,t+" 73")
+        t=t + " " + options.MyGrid.get()[:4].upper()
+        tx1.insert(0,t)
+        if mode.get()[:3]=='JT4':
+            t0="CQ " + options.MyCall.get().upper()
+            Audio.gcom2.t0msg=(t0+' '*22)[:22]
+            nplain,naddon,ndiff=Audio.chkt0()
+            if nplain==0 and naddon==0 and ndiff==0:
+                t0=t0 + " "+options.MyGrid.get()[:4]
+            tx6.insert(0,t0.upper())
+        else:
+            tx6.insert(0,tx6alt.upper())
         altmsg=1
 
 #------------------------------------------------------ setmsg

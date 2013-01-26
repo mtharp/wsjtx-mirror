@@ -95,7 +95,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      cooo='O ?'
   endif
 
-  call decode24(dat,npts,dtx,dfx,flip,mode,mode4,mycall,hiscall,        &
+  call decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,    &
        hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
 
 200 kvqual=0
@@ -150,13 +150,13 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   call cs_lock('wsjt24  ')
   if(ns1.ge.1) then                            !Write the average line
      if(ns1.lt.10) write(ave1,1021) cfile6,1,nused1,ns1,avemsg1,nc1,nqual1
-1021 format(a6,i3,i4,'/',i1,20x,a19,i7,i5)
+1021 format(a6,i3,i4,'/',i1,21x,a19,i7,i5)
      if(ns1.ge.10 .and. nsave.le.99) write(ave1,1022) cfile6,        &
           1,nused1,ns1,avemsg1,nc1,nqual1
-1022 format(a6,i3,i4,'/',i2,19x,a19,i7,i5)
+1022 format(a6,i3,i4,'/',i2,20x,a19,i7,i5)
      if(ns1.ge.100) write(ave1,1023) cfile6,1,nused1,ns1,            &
           avemsg1,nc1,nqual1
-1023 format(a6,i3,i4,'/',i3,18x,a19,i7,i5)
+1023 format(a6,i3,i4,'/',i3,19x,a19,i7,i5)
      if(lcum .and. (avemsg1.ne.'                  '))                &
           write(21,1011) ave1
      ns10=ns1

@@ -150,7 +150,7 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 ! ### pain because of the way F2PY wants to run the compile step.
 
 
-  bias=1.1*p2
+  bias=1.15*p2                                !### 1.1 ?
 !  if(mode65.eq.1) bias=max(1.12*p2,0.335)
 !  if(mode65.eq.2) bias=max(1.08*p2,0.405)
 !  if(mode65.ge.4) bias=max(1.04*p2,0.505)
@@ -171,6 +171,10 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
      if(decoded(i:i).ge.'a' .and. decoded(i:i).le.'z')                &
           decoded(i:i)=char(ichar(decoded(i:i))-32)
   enddo
+
+!  write(71,3000) p1,p2,qual,decoded
+!3000 format(3f8.1,2x,a22)
+!  call flush(71)
 
   return
 end subroutine deep24
