@@ -55,6 +55,7 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   phi1=0.d0
 
   nw=0.5*width/df
+  if(nw.gt.mode4) nw=mode4
   do ich=1,7
      if(nch(ich).ge.nw) exit
   enddo

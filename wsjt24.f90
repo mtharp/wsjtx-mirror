@@ -184,7 +184,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
 
   ccfbluesum=ccfbluesum + ccfblue
   ccfredsum=ccfredsum + ccfred
-  if(mode4.gt.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
+  if(mode4.gt.1 .and.ichbest.ge.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
 
   return
 end subroutine wsjt24
