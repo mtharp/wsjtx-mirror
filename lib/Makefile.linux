@@ -6,7 +6,7 @@ CC = gcc
 FC = gfortran
 
 FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss 
-CFLAGS = -I.
+CFLAGS = -I. -DHAVE_STDLIB_H -DHAVE_UNISTD_H -DHAVE_LINUX_PPDEV_H -DHAVE_FCNTL_H -DHAVE_STDIO_H -DHAVE_SYS_IOCTL_H
 
 # Default rules
 %.o: %.c
@@ -47,7 +47,7 @@ WSPRcode: $(OBJS3) libwspr.a
 	cp WSPRcode ../../wsprx_install
 
 ppt_unix.o: ppt_unix.c
-	$(CC) -I. -c -DHAVE_LINUX_PPDEV_H ptt_unix.c
+	$(CC) $(CFLAGS) -c ptt_unix.c
 
 .PHONY : clean
 
