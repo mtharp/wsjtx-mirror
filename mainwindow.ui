@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>614</width>
-    <height>450</height>
+    <height>350</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -133,7 +133,7 @@
        <number>0</number>
       </property>
       <property name="text">
-       <string> UTC      dB        DT                  Freq     Drift</string>
+       <string>    UTC        dB        DT                  Freq        Drift</string>
       </property>
      </widget>
     </item>
@@ -177,7 +177,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="acceptRichText">
        <bool>false</bool>
@@ -277,7 +277,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QwtThermo" name="xThermo">
+         <widget class="QwtThermo" name="xThermo" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -290,22 +290,19 @@ p, li { white-space: pre-wrap; }
             <height>160</height>
            </size>
           </property>
-          <property name="scalePosition">
-           <enum>QwtThermo::LeftScale</enum>
-          </property>
-          <property name="borderWidth">
+          <property name="borderWidth" stdset="0">
            <number>1</number>
           </property>
-          <property name="maxValue">
+          <property name="maxValue" stdset="0">
            <double>60.000000000000000</double>
           </property>
-          <property name="minValue">
+          <property name="minValue" stdset="0">
            <double>0.000000000000000</double>
           </property>
-          <property name="pipeWidth">
+          <property name="pipeWidth" stdset="0">
            <number>8</number>
           </property>
-          <property name="value">
+          <property name="value" stdset="0">
            <double>0.000000000000000</double>
           </property>
          </widget>
@@ -792,7 +789,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>614</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
