@@ -107,11 +107,15 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
      endif
   enddo
   
+  call timer('extr4a  ',0)
   call extract4(sym,nadd,ncount,decoded)     !Do the KV decode
+  call timer('extr4a  ',1)
 
   qual=0.                                    !Now try deep search
   neme=1
+  call timer('deep24a ',0)
   call deep24(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
+  call timer('deep24a ',1)
   if(qual.gt.qbest) then
      qbest=qual
      deepbest=deepmsg

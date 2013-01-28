@@ -57,10 +57,14 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
+  call timer('sync24  ',0)
   call sync24(dat,npts,DFTolerance,NFreeze,MouseDF,mode,             &
        mode4,dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width)
+  call timer('sync24  ',1)
 
+  call timer('snr4    ',0)
   call snr4(ccfblue,snrsync,snrx)          !### New calc of sync, snr ###
+  call timer('snr4    ',1)
   
   csync=' '
   decoded='                      '
@@ -95,8 +99,10 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      cooo='O ?'
   endif
 
+  call timer('decode24',0)
   call decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,    &
        hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
+  call timer('decode24',1)
 
 200 kvqual=0
   if(ncount.ge.0) kvqual=1
@@ -134,10 +140,12 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
 1011 format(a77)
   call cs_unlock
 
+  call timer('avemsg4 ',0)
   if(nsave.ge.1) call avemsg4(1,mode4,ndepth,                        &
        avemsg1,nused1,nq1,nq2,neme,mycall,hiscall,hisgrid,qual1,ns1,ncount1)
   if(nsave.ge.1) call avemsg4(2,mode4,ndepth,                        &
        avemsg2,nused2,nq1,nq2,neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2)
+  call timer('avemsg4 ',1)
   nqual1=qual1
   nqual2=qual2
 ! if(ndiag.eq.0 .and. nqual1.gt.10) nqual1=10

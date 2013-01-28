@@ -31,6 +31,12 @@ subroutine ftn_init
   integer*2 nsky
   common/sky/ nsky(360,180)
   common/mtxcom/mtx,ltrace,mtxstate,csub0
+  common/tracer/ limtrace,lu
+
+  limtrace=0
+  lu=26
+  open(26,file='timer.out',status='unknown')
+  call timer('wsjt    ',0)
 
   call cs_init
   call cs_lock('ftn_init')

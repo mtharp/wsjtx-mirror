@@ -6,34 +6,35 @@ subroutine timer(dname,k)
 
   character*8 dname,name(50),space,ename
   character*16 sname
-  logical first,on(50)
+  logical on(50)
   real ut(50),ut0(50),dut(50),tt(2)
   integer ncall(50),nlevel(50),nparent(50)
   integer onlevel(0:10)
   common/tracer/ limtrace,lu
-  data first/.true./,eps/0.000001/,ntrace/0/
+  data eps/0.000001/,ntrace/0/
   data level/0/,nmax/0/,space/'        '/
   data limtrace/0/,lu/-1/
   save
 
+  if(limtrace.lt.0) go to 999
   if(lu.lt.1) lu=6
-  if(k.gt.1) go to 40	!Check for "all done" (k>1)
+  if(k.gt.1) go to 40                        !Check for "all done" (k>1)
   onlevel(0)=0
 
-  do n=1,nmax				!Check for existing name
+  do n=1,nmax                                !Check for existing name
      if(name(n).eq.dname) go to 20
   enddo
 
-  nmax=nmax+1				!This is a new one
+  nmax=nmax+1                                !This is a new one
   n=nmax
   ncall(n)=0
   on(n)=.false.
   ut(n)=eps
   name(n)=dname
 
-20 if(k.eq.0) then				!Get start times (k=0)
+20 if(k.eq.0) then                                !Get start times (k=0)
      if(on(n)) print*,'Error in timer: ',dname,' already on.'
-     level=level+1				!Increment the level
+     level=level+1                                !Increment the level
      on(n)=.true.
      ut0(n)=etime(tt)
      ncall(n)=ncall(n)+1
@@ -45,7 +46,7 @@ subroutine timer(dname,k)
      nparent(n)=onlevel(level-1)
      onlevel(level)=n
 
-  else if(k.eq.1) then	!Get stop times and accumulate sums. (k=1)
+  else if(k.eq.1) then        !Get stop times and accumulate sums. (k=1)
      if(on(n)) then
         on(n)=.false.
         ut1=etime(tt)
@@ -56,8 +57,8 @@ subroutine timer(dname,k)
 
   ntrace=ntrace+1
   if(ntrace.lt.limtrace) write(lu,1020) ntrace,dname,k,level,nparent(n)
-1020 format(i5,': ',a8,3i5)
-  return
+1020 format(i8,': ',a8,3i5)
+  go to 998
 
 ! Write out the timer statistics
 
@@ -96,6 +97,14 @@ subroutine timer(dname,k)
 
   write(lu,1070) sum,sumf
 1070 format(/36x,f10.2,f6.2)
+  nmax=0
+  eps=0.000001
+  ntrace=0
+  level=0
+  space='        '
+  onlevel(0)=0
 
-  return
+998 flush(lu)
+
+999 return
 end subroutine timer
