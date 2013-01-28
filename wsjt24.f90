@@ -116,7 +116,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   do i=22,1,-1
      if(decoded(i:i).ne.' ') exit
   enddo
-  decoded(i+2:i+4)=cooo
+  if(i.le.20) decoded(i+2:)=cooo
 !  if(nqual.lt.6) decoded(22:22)='?'               !### ??? ###
 
   call cs_lock('wsjt24')
@@ -184,7 +184,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
 
   ccfbluesum=ccfbluesum + ccfblue
   ccfredsum=ccfredsum + ccfred
-  if(mode4.gt.1 .and.ichbest.ge.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
+  if(mode4.gt.1 .and. ichbest.gt.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
 
   return
 end subroutine wsjt24
