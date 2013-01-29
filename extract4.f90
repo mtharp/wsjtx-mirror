@@ -13,7 +13,7 @@ subroutine extract4(sym,nadd,ncount,decoded)
   save first,mettab
 
   if(first) then
-     call getmet24(mode,mettab)
+     call getmet4(mode,mettab)
      first=.false.
   endif
 
@@ -34,7 +34,7 @@ subroutine extract4(sym,nadd,ncount,decoded)
   decoded='                      '
   submode=' '
 
-  call interleave24(symbol(2),-1)         !Remove the interleaving
+  call interleave4(symbol(2),-1)          !Remove the interleaving
   call fano232(symbol(2),nbits,mettab,ndelta,limit,data1,ncycles,metric,ncount)
   nlim=ncycles/nbits
 

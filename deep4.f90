@@ -1,4 +1,4 @@
-subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
+subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
 ! Have barely begun converting this from JT65 to JT4
 
@@ -155,7 +155,7 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 !  if(mode65.eq.2) bias=max(1.08*p2,0.405)
 !  if(mode65.ge.4) bias=max(1.04*p2,0.505)
 
-  if(p2.eq.p1 .and. p1.ne.-1.e30) stop 'Error in deep24'
+  if(p2.eq.p1 .and. p1.ne.-1.e30) stop 'Error in deep4'
   qual=1.0*(p1-bias)
 
   decoded='                      '
@@ -177,4 +177,4 @@ subroutine deep24(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 !  call flush(71)
 
   return
-end subroutine deep24
+end subroutine deep4

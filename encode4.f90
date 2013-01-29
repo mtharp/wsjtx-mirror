@@ -12,7 +12,7 @@ subroutine encode4(message,ncode)
   call packmsg(message,dgen,text)  !Pack 72-bit message into 12 six-bit symbols
   call entail(dgen,data0)
   call encode232(data0,206,symbol)       !Convolutional encoding
-  call interleave24(symbol,1)            !Apply JT4 interleaving
+  call interleave4(symbol,1)             !Apply JT4 interleaving
   do i=1,206
      ncode(i)=symbol(i)
   enddo

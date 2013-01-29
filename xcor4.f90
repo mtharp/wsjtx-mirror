@@ -1,4 +1,4 @@
-subroutine xcor24(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccf,ccf0,lagpk,flip)
+subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccf,ccf0,lagpk,flip)
 
 ! Computes ccf of a row of s2 and the pseudo-random array pr2.  Returns
 ! peak of the CCF and the lag at which peak occurs.  For JT65, the 
@@ -47,7 +47,7 @@ subroutine xcor24(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccf,ccf0,lagpk,flip)
            w=float(kz-iabs(k))/mode4
            wsum=wsum+w
            if(ipk+k.lt.1 .or. ipk+3*n+k.gt.1260) then
-              print*,'xcor24:',ipk,n,k
+              print*,'xcor4:',ipk,n,k
            else
               ss0=ss0 + w*s2(ipk    +k,j)
               ss1=ss1 + w*s2(ipk+  n+k,j)
@@ -91,4 +91,4 @@ subroutine xcor24(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccf,ccf0,lagpk,flip)
   endif
 
   return
-end subroutine xcor24
+end subroutine xcor4

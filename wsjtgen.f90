@@ -141,7 +141,7 @@ subroutine wsjtgen
         sendingsh=0
         msgsent=msg
      else if(mode(1:3).eq.'JT4' ) then
-        call gen24(msg,mode4,samfacout,ntxdf,iwave,nwave,                 &
+        call gen4(msg,mode4,samfacout,ntxdf,iwave,nwave,                  &
              sendingsh,msg22,nmsg0)
         msgsent=msg22
      else if(mode(1:5).eq.'Diana') then

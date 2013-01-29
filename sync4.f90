@@ -1,4 +1,4 @@
-subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
+subroutine sync4(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -31,7 +31,7 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
 
   do j=1,nsteps                     !Compute spectrum for each step, get average
      k=(j-1)*nq + 1
-     call ps24(dat(k),nfft,s2(1,j))
+     call ps4(dat(k),nfft,s2(1,j))
      psavg(1:nh)=psavg(1:nh) + s2(1:nh,j)
   enddo
 
@@ -68,7 +68,7 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
 
   do i=ia,ib                                !Find best frequency channel for CCF
 
-     call xcor24(s2,i,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccf0,lagpk0,flip)
+     call xcor4(s2,i,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccf0,lagpk0,flip)
      j=i-i0
      if(mode.eq.7) j=j + 3*mode4
      if(j.ge.-372 .and. j.le.372) then
@@ -110,7 +110,7 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   if(mode.eq.7) dfx=dfx + 3*mode4*df
 
 ! Peak up in time, at best whole-channel frequency
-  call xcor24(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccfmax,lagpk,flip)
+  call xcor4(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccfmax,lagpk,flip)
   xlag=lagpk
   if(lagpk.gt.lag1 .and. lagpk.lt.lag2) then
      call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
@@ -173,5 +173,5 @@ subroutine sync24(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   width=df*(i-i1)
 
 999 return
-end subroutine sync24
+end subroutine sync4
 

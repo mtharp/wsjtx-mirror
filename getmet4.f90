@@ -1,4 +1,4 @@
-subroutine getmet24(mode,mettab)
+subroutine getmet4(mode,mettab)
 
 ! Return appropriate metric table for soft-decision convolutional decoder.
 
@@ -48,5 +48,5 @@ subroutine getmet24(mode,mettab)
   enddo
 
   return
-end subroutine getmet24
+end subroutine getmet4
 

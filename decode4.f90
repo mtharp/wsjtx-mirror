@@ -1,4 +1,4 @@
-subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
+subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
@@ -33,7 +33,7 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   data nch/1,2,4,9,18,36,72/
   save mettab,mode0,nsum,rsymbol
 
-  if(mode.ne.mode0) call getmet24(mode,mettab)
+  if(mode.ne.mode0) call getmet4(mode,mettab)
   mode0=mode
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)
@@ -113,9 +113,9 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
 
   qual=0.                                    !Now try deep search
   neme=1
-  call timer('deep24a ',0)
-  call deep24(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
-  call timer('deep24a ',1)
+  call timer('deep4a  ',0)
+  call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
+  call timer('deep4a  ',1)
   if(qual.gt.qbest) then
      qbest=qual
      deepbest=deepmsg
@@ -136,4 +136,4 @@ subroutine decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  !Save data for message averaging
 
   return
-end subroutine decode24
+end subroutine decode4

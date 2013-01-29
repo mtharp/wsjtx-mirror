@@ -1,6 +1,5 @@
-subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
-     DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,            &
-     Nseg,MouseDF,NAgain,ndepth,                                       &
+subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,   &
+     mode,mode4,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth,         &
      idf,lumsg,lcum,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
@@ -57,10 +56,10 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
-  call timer('sync24  ',0)
-  call sync24(dat,npts,DFTolerance,NFreeze,MouseDF,mode,             &
+  call timer('sync4   ',0)
+  call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,             &
        mode4,dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width)
-  call timer('sync24  ',1)
+  call timer('sync4   ',1)
 
   call timer('snr4    ',0)
   call snr4(ccfblue,snrsync,snrx)          !### New calc of sync, snr ###
@@ -99,10 +98,10 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
      cooo='O ?'
   endif
 
-  call timer('decode24',0)
-  call decode24(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,    &
+  call timer('decode4 ',0)
+  call decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,    &
        hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
-  call timer('decode24',1)
+  call timer('decode4 ',1)
 
 200 kvqual=0
   if(ncount.ge.0) kvqual=1
@@ -125,7 +124,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   if(i.le.20) decoded(i+2:)=cooo
 !  if(nqual.lt.6) decoded(22:22)='?'               !### ??? ###
 
-  call cs_lock('wsjt24')
+  call cs_lock('wsjt4')
   write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,nint(width),         &
        csync,special,decoded,kvqual,nqual,submode
 1010 format(a6,i3,i5,f5.1,i5,i4,1x,a1,1x,a5,a22,i4,i5,1x,a1)
@@ -155,7 +154,7 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   if(ncount1.ge.0) nc1=1
   if(ncount2.ge.0) nc2=1
 
-  call cs_lock('wsjt24  ')
+  call cs_lock('wsjt4   ')
   if(ns1.ge.1) then                            !Write the average line
      if(ns1.lt.10) write(ave1,1021) cfile6,1,nused1,ns1,avemsg1,nc1,nqual1
 1021 format(a6,i3,i4,'/',i1,21x,a19,i7,i5)
@@ -195,4 +194,4 @@ subroutine wsjt24(dat,npts,cfile6,NClearAve,MinSigdB,                  &
   if(mode4.gt.1 .and. ichbest.gt.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
 
   return
-end subroutine wsjt24
+end subroutine wsjt4

@@ -53,9 +53,9 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
      qbest=0.
      neme=1
 
-     call timer('deep24b ',0)
+     call timer('deep4b  ',0)
      do k=1,7
-        call deep24(sym(2,k),neme,flipx,mycall,hiscall,hisgrid,deepmsg,qual)
+        call deep4(sym(2,k),neme,flipx,mycall,hiscall,hisgrid,deepmsg,qual)
         if(qual.gt.qbest) then
            qbest=qual
            deepbest=deepmsg
@@ -63,7 +63,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
         endif
         if(nch(k).ge.mode4) exit
      enddo
-     call timer('deep24b ',1)
+     call timer('deep4b  ',1)
      deepmsg=deepbest
      qual=qbest
      nqual=qbest
