@@ -31,7 +31,7 @@ void DevSetup::initDlg()
   char pa_device_hostapi[128];
 
   k=0;
-#ifdef WIN32
+
 // Needs work to compile for Linux
   for(id=0; id<numDevices; id++ )  {
     pdi=Pa_GetDeviceInfo(id);
@@ -42,7 +42,7 @@ void DevSetup::initDlg()
       sprintf((char*)(pa_device_name),"%s",pdi->name);
       sprintf((char*)(pa_device_hostapi),"%s",
               Pa_GetHostApiInfo(pdi->hostApi)->name);
-
+#ifdef WIN32
       p1=(char*)"";
       p=strstr(pa_device_hostapi,"MME");
       if(p!=NULL) p1=(char*)"MME";
