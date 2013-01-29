@@ -50,7 +50,6 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
   common/extcom/ntdecode
   save
 
-  call timer('wsjt1   ',0)
   lcum=.true.
   jz=jz0
   ntdecode=ntdecode0
@@ -231,12 +230,10 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
 
 ! Offset data by about 1 s.
      jztest=165000
-     call timer('wsjt4   ',0)
      if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,      &
           DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,        &
           Nseg,MouseDF2,NAgain,ndepth,idf,lumsg,lcum,nspecial,ndf,      &
           NSyncOK,ccf,psavg,ndiag)
-     call timer('wsjt4   ',1)
      goto 900
   endif
 
@@ -334,7 +331,6 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
 901 call flush(11)
   call flush(12)
   call flush(21)
-  call timer('wsjt1   ',1)
 
   return
 end subroutine wsjt1

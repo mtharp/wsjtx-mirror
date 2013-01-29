@@ -9,7 +9,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   real sym(207,7)
   integer nch(7)
   data nch/1,2,4,9,18,36,72/
-  common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
+  common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
 
 ! Count the available spectra for this Monitor segment (mseg=1 or 2),
 ! and the number of spectra flagged as good.
@@ -38,12 +38,10 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   if(ns.gt.0) sym=sym/ns
 
   nadd=nused*mode4
-  call timer('extr4b  ',0)
-  do k=1,7
+  do k=ich1,ich2
      call extract4(sym(1,k),nadd,ncount,decoded)     !Do the KV decode
      if(ncount.ge.0 .or. nch(k).ge.mode4) exit
   enddo
-  call timer('extr4b  ',1)
   if(ncount.lt.0) decoded='                      '
 
   nqual=0
@@ -53,8 +51,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
      qbest=0.
      neme=1
 
-     call timer('deep4b  ',0)
-     do k=1,7
+     do k=ich1,ich2
         call deep4(sym(2,k),neme,flipx,mycall,hiscall,hisgrid,deepmsg,qual)
         if(qual.gt.qbest) then
            qbest=qual
@@ -63,7 +60,6 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
         endif
         if(nch(k).ge.mode4) exit
      enddo
-     call timer('deep4b  ',1)
      deepmsg=deepbest
      qual=qbest
      nqual=qbest

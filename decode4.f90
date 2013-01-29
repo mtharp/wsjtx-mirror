@@ -18,7 +18,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   integer mettab(0:255,0:1)             !Metric table
   integer nch(7)
   integer npr2(207)
-  common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
+  common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
   data mode0/-999/
   data nsum/7*0/,rsymbol/1449*0.0/
   data npr2/                                                         &
@@ -59,74 +59,74 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
   do ich=1,7
      if(nch(ich).ge.nw) exit
   enddo
+  ich1=ich
+  do ich=1,7
+     if(nch(ich).le.mode4) ich2=ich
+  enddo
 
-40 ich=ich+1
-  nchips=nch(ich)
-  nspchip=1260/nchips
-  k=istart
-  phi=0.d0
-  phi1=0.d0
-  fac2=1.e-8 * sqrt(float(mode4))
-  do j=1,nsym+1
-     if(flip.gt.0.0) then
-        f0=1270.46 + dfx + (npr2(j)-1.5)*mode4*df
-        f1=1270.46 + dfx + (2+npr2(j)-1.5)*mode4*df
-     else
-        f0=1270.46 + dfx + (1-npr2(j)-1.5)*mode4*df
-        f1=1270.46 + dfx + (3-npr2(j)-1.5)*mode4*df
-     endif
-     dphi=twopi*dt*f0
-     dphi1=twopi*dt*f1
-     sq0=0.
-     sq1=0.
-     do nc=1,nchips
-        phi=0.d0
-        phi1=0.d0
-        c0=0.
-        c1=0.
-        do i=1,nspchip
-           k=k+1
-           phi=phi+dphi
-           phi1=phi1+dphi1
-           cz=dcmplx(cos(phi),-sin(phi))
-           cz1=dcmplx(cos(phi1),-sin(phi1))
-           if(k.le.npts) then
-              c0=c0 + dat(k)*cz
-              c1=c1 + dat(k)*cz1
-           endif
+  do ich=ich1,ich2
+     nchips=nch(ich)
+     nspchip=1260/nchips
+     k=istart
+     phi=0.d0
+     phi1=0.d0
+     fac2=1.e-8 * sqrt(float(mode4))
+     do j=1,nsym+1
+        if(flip.gt.0.0) then
+           f0=1270.46 + dfx + (npr2(j)-1.5)*mode4*df
+           f1=1270.46 + dfx + (2+npr2(j)-1.5)*mode4*df
+        else
+           f0=1270.46 + dfx + (1-npr2(j)-1.5)*mode4*df
+           f1=1270.46 + dfx + (3-npr2(j)-1.5)*mode4*df
+        endif
+        dphi=twopi*dt*f0
+        dphi1=twopi*dt*f1
+        sq0=0.
+        sq1=0.
+        do nc=1,nchips
+           phi=0.d0
+           phi1=0.d0
+           c0=0.
+           c1=0.
+           do i=1,nspchip
+              k=k+1
+              phi=phi+dphi
+              phi1=phi1+dphi1
+              cz=dcmplx(cos(phi),-sin(phi))
+              cz1=dcmplx(cos(phi1),-sin(phi1))
+              if(k.le.npts) then
+                 c0=c0 + dat(k)*cz
+                 c1=c1 + dat(k)*cz1
+              endif
+           enddo
+           sq0=sq0 + real(c0)**2 + aimag(c0)**2
+           sq1=sq1 + real(c1)**2 + aimag(c1)**2
         enddo
-        sq0=sq0 + real(c0)**2 + aimag(c0)**2
-        sq1=sq1 + real(c1)**2 + aimag(c1)**2
+        sq0=fac2*sq0
+        sq1=fac2*sq1
+        rsym=amp*(sq1-sq0)
+        if(j.ge.1) then
+           rsymbol(j,ich)=rsym
+           sym(j)=rsym
+        endif
      enddo
-     sq0=fac2*sq0
-     sq1=fac2*sq1
-     rsym=amp*(sq1-sq0)
-     if(j.ge.1) then
-        rsymbol(j,ich)=rsym
-        sym(j)=rsym
+     
+     call extract4(sym,nadd,ncount,decoded)     !Do the convolutional decode
+
+     qual=0.                                    !Now try deep search
+     neme=1
+     call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
+     if(qual.gt.qbest) then
+        qbest=qual
+        deepbest=deepmsg
+        ichbest=ich
+     endif
+
+     if(ncount.ge.0) then
+        ichbest=ich
+        go to 100
      endif
   enddo
-  
-  call timer('extr4a  ',0)
-  call extract4(sym,nadd,ncount,decoded)     !Do the KV decode
-  call timer('extr4a  ',1)
-
-  qual=0.                                    !Now try deep search
-  neme=1
-  call timer('deep4a  ',0)
-  call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
-  call timer('deep4a  ',1)
-  if(qual.gt.qbest) then
-     qbest=qual
-     deepbest=deepmsg
-     ichbest=ich
-  endif
-
-  if(ncount.ge.0) then
-     ichbest=ich
-     go to 100
-  endif
-  if(mode.eq.7 .and. nchips.lt.mode4) go to 40
 
 100 if(ncount.lt.0) then
      decoded=deepbest

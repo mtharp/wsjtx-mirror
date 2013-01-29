@@ -28,7 +28,7 @@ subroutine extract4(sym,nadd,ncount,decoded)
 
   nbits=72+31
   ndelta=50
-  limit=100000
+  limit=50000
   ncycles=0
   ncount=-1
   decoded='                      '
