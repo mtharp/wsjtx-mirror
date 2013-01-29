@@ -46,7 +46,7 @@ WSPRcode: $(OBJS3) libwspr.a
 	$(FC) -o WSPRcode $(FFLAGS) $(OBJS3) libwspr.a
 	cp WSPRcode ../../wsprx_install
 
-ppt_unix.o: ppt_unix.c
+ppt_unix.o: ptt_unix.c
 	$(CC) $(CFLAGS) -c ptt_unix.c
 
 .PHONY : clean
