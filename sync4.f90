@@ -141,7 +141,6 @@ subroutine sync4(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
      if(mode.eq.7) snrx=snrx + 3.0         !Empirical
   endif
   if(snrx.lt.-33.0) snrx=-33.0
-  width=df*mode4
 
   ccfred1=0.
   jmin=max(jmin,-224)

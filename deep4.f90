@@ -1,6 +1,6 @@
 subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
-! Have barely begun converting this from JT65 to JT4
+! Deep search routine for JT4
 
   parameter (MAXCALLS=7000,MAXRPT=63)
   real*4 sym(206)
@@ -15,7 +15,6 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   integer ncode(206)
   real*4   code(206,2*MAXCALLS + 2 + MAXRPT)
   real pp(2*MAXCALLS + 2 + MAXRPT)
-!  common/c3com/ mcall3a
 
   data neme0/-99/
   data rpt/'-01','-02','-03','-04','-05',          &
@@ -31,15 +30,15 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
            'R-21','R-22','R-23','R-24','R-25',     &
            'R-26','R-27','R-28','R-29','R-30',     &
            'RO','RRR','73'/
-  save
+  save mycall0,hiscall0,hisgrid0,neme0,ntot,code,testmsg
 
   if(mycall.eq.mycall0 .and. hiscall.eq.hiscall0 .and.         &
-       hisgrid.eq.hisgrid0 .and. mcall3a.eq.0 .and. neme.eq.neme0) go to 30
-      
-  mcall3a=0
+       hisgrid.eq.hisgrid0 .and. neme.eq.neme0) go to 30
+
   rewind 23
   k=0
   icall=0
+  call cs_lock('deep4')
   do n=1,MAXCALLS
      if(n.eq.1) then
         callsign=hiscall
@@ -105,12 +104,13 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   enddo
 
 20 continue
+  call cs_unlock
   ntot=k
-  neme0=neme
 
 30 mycall0=mycall
   hiscall0=hiscall
   hisgrid0=hisgrid
+  neme0=neme
 
   sq=0.
   do j=1,206
@@ -127,7 +127,6 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
      if(flip.gt.0.0 .or. testmsg(k)(1:3).ne.'CQ ') then
         p=0.
         do j=1,206
-           i=code(j,k)+1
            p=p + code(j,k)*sym(j)
         enddo
         pp(k)=p
@@ -143,26 +142,26 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   enddo
 
 ! ### DO NOT REMOVE ### 
-!  rewind 77
-!  write(77,*) p1,p2
+  call cs_lock('deep4')
+  rewind 77
+  write(77,*) p1,p2,ntot,rms
+  call cs_unlock
 ! ### Works OK without it (in both Windows and Linux) if compiled 
 ! ### without optimization.  However, in Windows this is a colossal 
 ! ### pain because of the way F2PY wants to run the compile step.
 
+  qual=p1-max(1.15*p2,80.0)
 
-  bias=1.15*p2                                !### 1.1 ?
-!  if(mode65.eq.1) bias=max(1.12*p2,0.335)
-!  if(mode65.eq.2) bias=max(1.08*p2,0.405)
-!  if(mode65.ge.4) bias=max(1.04*p2,0.505)
-
-  if(p2.eq.p1 .and. p1.ne.-1.e30) stop 'Error in deep4'
-  qual=1.0*(p1-bias)
-
-  decoded='                      '
+  call cs_lock('deep4')
+  write(71,3000) p1,p2,qual,testmsg(ip1)
+3000 format(3f10.3,2x,a22)
+  call flush(71)
+  call cs_unlock
 
   if(qual.gt.1.0) then
      decoded=testmsg(ip1)
   else
+     decoded='                      '
      qual=0.
   endif
 
@@ -171,10 +170,6 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
      if(decoded(i:i).ge.'a' .and. decoded(i:i).le.'z')                &
           decoded(i:i)=char(ichar(decoded(i:i))-32)
   enddo
-
-!  write(71,3000) p1,p2,qual,decoded
-!3000 format(3f8.1,2x,a22)
-!  call flush(71)
 
   return
 end subroutine deep4

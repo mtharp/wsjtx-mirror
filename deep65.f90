@@ -13,7 +13,6 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   integer ncode(63,2*MAXCALLS + 2 + MAXRPT)
   real pp(2*MAXCALLS + 2 + MAXRPT)
   common/mrscom/ mrs(63),mrs2(63)
-  common/c3com/ mcall3a
 
   data neme0/-99/
   data rpt/'-01','-02','-03','-04','-05',          &
@@ -29,16 +28,15 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
            'R-21','R-22','R-23','R-24','R-25',     &
            'R-26','R-27','R-28','R-29','R-30',     &
            'RO','RRR','73'/
-  save
+  save mycall0,hiscall0,hisgrid0,neme0,ntot,code,testmsg
 
   if(mycall.eq.mycall0 .and. hiscall.eq.hiscall0 .and.         &
-       hisgrid.eq.hisgrid0 .and. mcall3a.eq.0 .and. neme.eq.neme0) go to 30
+       hisgrid.eq.hisgrid0 .and. neme.eq.neme0) go to 30
       
-  mcall3a=0
   rewind 23
   k=0
   icall=0
-  call cs_lock('deep65  ')
+  call cs_lock('deep65')
   do n=1,MAXCALLS
      if(n.eq.1) then
         callsign=hiscall
@@ -142,7 +140,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   enddo
 
 ! ### DO NOT REMOVE ### 
-  call cs_lock('deep65  ')
+  call cs_lock('deep65')
   rewind 77
   write(77,*) p1,p2
   call cs_unlock

@@ -57,6 +57,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
   nslim2a=0                                   !### Is this OK ??? ###
   MinWidth=40                            !Minimum width of pings, ms
   call zero(psavg,450)
+  call cs_lock('wsjt1')
   rewind 11
   rewind 12
 
@@ -76,6 +77,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
 
 4 if(mode.lt.8 .and. jz.gt.655360) jz=655360
   if(mode.eq.4 .and. jz.gt.330750) jz=330750      !### Fix this!
+  call cs_unlock
 
   sum=0.
   do j=1,jz            !Convert raw data from i*2 to real, remove DC

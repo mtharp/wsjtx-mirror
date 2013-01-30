@@ -13,8 +13,8 @@ subroutine decode1(iarg)
   include 'gcom3.f90'
   include 'gcom4.f90'
   common/mtxcom/mtx,ltrace,mtxstate,csub0
-
   data sending0/'                      '/
+  save
 
   ntr0=iarg                                    !Silence compiler warning
   ntr0=ntr

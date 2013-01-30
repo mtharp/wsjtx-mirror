@@ -2,6 +2,7 @@ subroutine cs_init
   character*12 csub0
   integer*8 mtx
   common/mtxcom/mtx,ltrace,mtxstate,csub0
+  save
   ltrace=0
   mtxstate=0
   csub0='**unlocked**'
@@ -13,6 +14,7 @@ subroutine cs_destroy
   character*12 csub0
   integer*8 mtx
   common/mtxcom/mtx,ltrace,mtxstate,csub0
+  save
   call fthread_mutex_destroy(mtx)
   return
 end subroutine cs_destroy
@@ -33,6 +35,7 @@ subroutine cs_lock(csub)
   integer fthread_mutex_lock,fthread_mutex_trylock
   integer*8 mtx
   common/mtxcom/mtx,ltrace,mtxstate,csub0
+  save
   n=fthread_mutex_trylock(mtx)
   if(n.ne.0) then
 ! Another thread has already locked the mutex
@@ -51,6 +54,7 @@ subroutine cs_unlock
   character*12 csub0
   integer*8 mtx
   common/mtxcom/mtx,ltrace,mtxstate,csub0
+  save
   if(ltrace.ge.3) print*,'Mutex unlocked,',ltrace,mtx,mtxstate,csub0
   mtxstate=0
   call fthread_mutex_unlock(mtx)

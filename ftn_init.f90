@@ -31,6 +31,7 @@ subroutine ftn_init
   integer*2 nsky
   common/sky/ nsky(360,180)
   common/mtxcom/mtx,ltrace,mtxstate,csub0
+  save /mtxcom/
 
   call cs_init
   call cs_lock('ftn_init')

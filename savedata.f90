@@ -110,23 +110,22 @@ subroutine savedata
 
 
      call cs_lock('savedata')
-     open(17,file=longname,status='unknown',form='unformatted',      &
-          access='direct',recl=nbytes,err=20)
+     open(17,file=longname,status='unknown',access='stream',err=20)
      if (n4.ne.nfmt2) then
-       nchunk = iswap_int(nchunk)
-       lenfmt = iswap_int(lenfmt)
-       nfmt2 = iswap_short(nfmt2)
-       nchan2 = iswap_short(nchan2)
-       nsamrate = iswap_int(nsamrate)
-       nbytesec = iswap_int(nbytesec)
-       nbytesam2 = iswap_short(nbytesam2)
-       nbitsam2 = iswap_short(nbitsam2)
-       ndata = iswap_int(ndata)
-       write(17,rec=1) ariff,nchunk,awave,afmt,lenfmt,nfmt2,nchan2,nsamrate, &
-            nbytesec,nbytesam2,nbitsam2,adata,ndata,(iswap_short(d2a(j)),j=1,jza)
+        nchunk = iswap_int(nchunk)
+        lenfmt = iswap_int(lenfmt)
+        nfmt2 = iswap_short(nfmt2)
+        nchan2 = iswap_short(nchan2)
+        nsamrate = iswap_int(nsamrate)
+        nbytesec = iswap_int(nbytesec)
+        nbytesam2 = iswap_short(nbytesam2)
+        nbitsam2 = iswap_short(nbitsam2)
+        ndata = iswap_int(ndata)
+        write(17) ariff,nchunk,awave,afmt,lenfmt,nfmt2,nchan2,nsamrate, &
+             nbytesec,nbytesam2,nbitsam2,adata,ndata,(iswap_short(d2a(j)),j=1,jza)
      else
-       write(17,rec=1) ariff,nchunk,awave,afmt,lenfmt,nfmt2,nchan2,nsamrate, &
-            nbytesec,nbytesam2,nbitsam2,adata,ndata,(d2a(j),j=1,jza)
+        write(17) ariff,nchunk,awave,afmt,lenfmt,nfmt2,nchan2,nsamrate, &
+             nbytesec,nbytesam2,nbitsam2,adata,ndata,(d2a(j),j=1,jza)
      endif
      close(17)     
 

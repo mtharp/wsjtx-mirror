@@ -146,7 +146,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,   &
   if(ncount1.ge.0) nc1=1
   if(ncount2.ge.0) nc2=1
 
-  call cs_lock('wsjt4   ')
+  call cs_lock('wsjt4')
   if(ns1.ge.1) then                            !Write the average line
      if(ns1.lt.10) write(ave1,1021) cfile6,1,nused1,ns1,avemsg1,nc1,nqual1
 1021 format(a6,i3,i4,'/',i1,21x,a19,i7,i5)
