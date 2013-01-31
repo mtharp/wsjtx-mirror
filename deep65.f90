@@ -28,7 +28,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
            'R-21','R-22','R-23','R-24','R-25',     &
            'R-26','R-27','R-28','R-29','R-30',     &
            'RO','RRR','73'/
-  save mycall0,hiscall0,hisgrid0,neme0,ntot,code,testmsg
+  save mycall0,hiscall0,hisgrid0,neme0,ntot,ncode,testmsg
 
   if(mycall.eq.mycall0 .and. hiscall.eq.hiscall0 .and.         &
        hisgrid.eq.hisgrid0 .and. neme.eq.neme0) go to 30
@@ -144,6 +144,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   call cs_lock('deep65')
   rewind 77
   write(77,*) p1,p2
+  call flush(77)
   call cs_unlock
 ! ### Works OK without it (in both Windows and Linux) if compiled 
 ! ### without optimization.  However, in Windows this is a colossal 
