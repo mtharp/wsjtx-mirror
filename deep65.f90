@@ -116,8 +116,8 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   p1=-1.e30
   p2=-1.e30
   do k=1,ntot
-     if(k.ge.2 .and. k.le.64 .and. flip.lt.0.0) cycle
      pp(k)=0.
+     if(k.ge.2 .and. k.le.64 .and. flip.lt.0.0) cycle
 ! Test all messages if flip=+1; skip the CQ messages if flip=-1.
      if(flip.gt.0.0 .or. testmsg(k)(1:3).ne.'CQ ') then
         sum=0.
