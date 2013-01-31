@@ -80,8 +80,8 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
      mz=1
 ! Allow MyCall + HisCall + rpt (?)
-     if(n.eq.1 .and. j3.lt.1 .and. j4.lt.1 .and.                       &
-          flip.gt.0.0 .and. callsign(1:6).ne.'      ') mz=MAXRPT+1
+     if(n.eq.1 .and. j3.lt.1 .and. j4.lt.1 .and. callsign(1:6).ne.'      ') &
+          mz=MAXRPT+1
      do m=1,mz
         if(m.gt.1) grid=rpt(m-1)
         if(j3.lt.1 .and.j4.lt.1) callgrid(icall)=callsign(1:j2)//' '//grid
@@ -122,6 +122,7 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   p1=-1.e30
   p2=-1.e30
   do k=1,ntot
+     if(k.ge.2 .and. k.le.64 .and. flip.lt.0.0) cycle
      pp(k)=0.
 ! Test all messages if flip=+1; skip the CQ messages if flip=-1.
      if(flip.gt.0.0 .or. testmsg(k)(1:3).ne.'CQ ') then
@@ -141,22 +142,23 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
      if(pp(i).gt.p2 .and. pp(i).ne.p1) p2=pp(i)
   enddo
 
+  qual=p1-max(1.15*p2,80.0)
 ! ### DO NOT REMOVE ### 
   call cs_lock('deep4')
   rewind 77
-  write(77,*) p1,p2,ntot,rms
+  write(77,*) p1,p2,ntot,rms,qual,ip1,testmsg(ip1)
+  call flush(77)
   call cs_unlock
 ! ### Works OK without it (in both Windows and Linux) if compiled 
 ! ### without optimization.  However, in Windows this is a colossal 
 ! ### pain because of the way F2PY wants to run the compile step.
 
-  qual=p1-max(1.15*p2,80.0)
 
-  call cs_lock('deep4')
-  write(71,3000) p1,p2,qual,testmsg(ip1)
-3000 format(3f10.3,2x,a22)
-  call flush(71)
-  call cs_unlock
+!  call cs_lock('deep4')
+!  write(71,3001) p1,p2,qual,testmsg(ip1)
+!3001 format(3f10.3,2x,a22)
+!  call flush(71)
+!  call cs_unlock
 
   if(qual.gt.1.0) then
      decoded=testmsg(ip1)

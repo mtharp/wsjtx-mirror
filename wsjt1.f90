@@ -221,7 +221,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
      fzap(1)=0.
      if(nzap.eq.1) call avesp2(dat,jz,nadd,mode,NFreeze,MouseDF2,        &
           DFTolerance,fzap)
-     if(nzap.eq.1.and.nstest.eq.0) call bzap(dat,jz,nadd,mode,fzap)
+     if(nzap.eq.1) call bzap(dat,jz,nadd,mode,fzap)
 
      i=index(MyCall,char(0))
      if(i.le.0) i=index(MyCall,' ')
@@ -230,7 +230,6 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
      if(i.le.0) i=index(HisCall,' ')
      hiscall=HisCall(1:i-1)//'            '
 
-! Offset data by about 1 s.
      jztest=165000
      if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,      &
           DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,        &
