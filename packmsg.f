@@ -96,8 +96,8 @@ C  Encode data into 6-bit words
       dat(8)=iand(ishft(nc2, -8),63)                !6 bits
       dat(9)=iand(ishft(nc2, -2),63)                !6 bits
       dat(10)=16*iand(nc2,3)+iand(ishft(ng,-12),15) !2+4 bits
-      dat(11)=iand(ishft(ng,-6),63)
-      dat(12)=iand(ng,63)
+      dat(11)=iand(ishft(ng,-6),63)                 !6 bits
+      dat(12)=iand(ng,63)                           !6 bits
 
       return
       end
