@@ -20,12 +20,14 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt.a jt4metrics.exe simsync.exe jt4code.exe simjt4.exe
+all:    libjt.a jt4metrics.exe simsync.exe jt4code.exe simjt4.exe fskprob.exe
 
 OBJS1 = chkmsg.o deg2grid.o encode232.o encode4.o entail.o fano232.o \
 	getmet4.o getpfx1.o getpfx2.o gran.o grid2deg.o grid2k.o \
 	interleave4.o k2grid.o nchar.o packcall.o packgrid.o packmsg.o \
-	packtext.o unpackcall.o unpackgrid.o unpackmsg.o unpacktext.o
+	packtext.o unpackcall.o unpackgrid.o unpackmsg.o unpacktext.o \
+	interleave4a.o getmu.o bessi.o bessi0.o bessi1.o derf.o \
+	gammp.o gcf.o gser.o gammln.o factrl.o pdfChisq.o
 
 libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1) 
@@ -47,7 +49,11 @@ OBJS5 = simjt4.o libjt.a
 simjt4.exe: $(OBJS5)
 	$(FC) -o simjt4.exe $(FFLAGS) $(OBJS5) libjt.a 
 
+OBJS6 = fskprob.o libjt.a 
+fskprob.exe: $(OBJS6)
+	$(FC) -o fskprob.exe $(FFLAGS) $(OBJS6) libjt.a 
+
 .PHONY : clean
 
 clean:
-	rm -f *.o jt4metrics.exe simsync.exe jt4code.exe simjt4.exe
+	rm -f *.o jt4metrics.exe simsync.exe jt4code.exe simjt4.exe fskprob.exe

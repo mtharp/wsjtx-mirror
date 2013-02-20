@@ -1,25 +1,25 @@
 program simjt4
 
   parameter (NMAX=100)
-  real*4 ps(0:NMAX)
-  real*4 pn(0:NMAX)
-  real*4 sym(0:1,207)
+  real*4 sym(0:1,206)
   real*8 sum0,sum1,sumcycles
   character arg*12,c72*72
   character*22 msg,decoded
   integer icode(206)
-  integer*1 icode1(206),i10,i11
+  integer imsg(72)
+  logical iknown(72)
   integer mettab(0:255,0:1)             !Metric table
   integer*1 symbol(206)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
-  real log2
-  log2(x)=log(x)/log(2.0)
+  common/pspncom/ps(0:NMAX),pn(0:NMAX),scale
+  common/jt4com1/imsg6(12)
 
   nargs=iargc()
-  if(nargs.ne.7) then
-     print*,'Usage: simjt4 nadd scale ndelta limit known snr iters'
+  if(nargs.ne.9) then
+     print*,'Usage: simjt4 nadd scale ndelta limit known snr nmet amp iters'
+     print*,'               1    10.0   30   10000   0    0    1   3   100'
      go to 999
   endif
 
@@ -36,25 +36,39 @@ program simjt4
   call getarg(6,arg)
   read(arg,*) snrdb
   call getarg(7,arg)
+  read(arg,*) nmet
+  call getarg(8,arg)
+  read(arg,*) amp
+  call getarg(9,arg)
   read(arg,*) iters
+
+  iknown=.false.
+  xi=1.0
+  do i=1,known
+     iknown(int(xi))=.true.
+     xi=xi + 72.0/known
+  enddo     
 
   do i=0,NMAX
      read(13,*) x,pn(i),ps(i)
+     if(pn(i).eq.0.0) pn(i)=1.e-6
+     if(ps(i).eq.0.0) ps(i)=1.e-6
   enddo
   call getmet4(7,mettab)
 
   write(*,1010) 
 1010 format(/                                                              &
-  '  EsNo  EbNo  db65    false    fcopy  cycles    ber    ave0    ave1'/  &
-  '--------------------------------------------------------------------')
+  '  EsNo  EbNo  db65    false    fcopy  cycles    ber    ave0    ave1    time'/  &
+  '----------------------------------------------------------------------------')
 
   msg='CQ K1JT FN20'
   call encode4(msg,icode)
-  icode1=icode
-  call interleave4(icode1,-1)
+  write(c72,1002) imsg6
+1002 format(12b6.6)
+  read(c72,1004) imsg
+1004 format(72i1)
 
-  rate=0.350
-  baud=nadd*11025.0/2520.0
+  rate=72.0/206.0
   nbits=72+31
   maxlim=0
 
@@ -65,7 +79,7 @@ program simjt4
      EsNo=idb
      if(snrdb.ne.0.0) EsNo=snrdb
      EbNo=EsNo - 10.0*log10(rate)
-     db65=EsNo - 10.0*log10(2500.0/baud)
+     db65=EsNo - 10.0*log10(2500.0/(nadd*11025.0/2520.0))
      sig=sqrt(10.0**(0.1*EsNo))                !Signal level
 
      ngood=0
@@ -74,6 +88,8 @@ program simjt4
      sumcycles=0.d0
      sum0=0.d0
      sum1=0.d0
+     ttotal=0.
+
      do iter=1,iters
         do j=1,206                            !Simulate received 2-FSK symbols
            s0=0.
@@ -110,28 +126,18 @@ program simjt4
            if(icode(j).eq.1 .and. sym(1,j).lt.sym(0,j)) nb=nb+1
            if(icode(j).eq.0 .and. sym(1,j).ge.sym(0,j)) nb=nb+1
         enddo
-        call interleave4(symbol,-1)         !Remove interleaving
+        call interleave4(symbol,-1)                !Remove interleaving
+        call interleave4a(sym,-1)
 
-        if(known.gt.0) then
-           i10=64
-           i11=-64
-!           do j=1,2*known
-           kused=0
-           nalt=103/known
-           do j=1,206,2*nalt
-              if(icode1(j).eq.0) symbol(j)=i10
-              if(icode1(j).eq.1) symbol(j)=i11
-              if(icode1(j+1).eq.0) symbol(j+1)=i10
-              if(icode1(j+1).eq.1) symbol(j+1)=i11
-              kused=kused+1
-              if(kused.ge.known) exit
-           enddo
-        endif
-        call fano232(symbol,nbits,mettab,ndelta,limit,data1,ncycles,   &
-             metric,ncount)
-        nlim=ncycles/nbits
-        maxlim=max(maxlim,nlim)
-        sumcycles=sumcycles+nlim
+        call cpu_time(t0)
+        call fano232(symbol,sym,nadd,nmet,amp,iknown,imsg,nbits,mettab,   &
+             ndelta,limit,data1,ncycles,metric,ncount)
+        call cpu_time(t1)
+        ttotal=ttotal + (t1-t0)
+
+        nAvgCycles=ncycles/nbits
+        maxlim=max(maxlim,nAvgCycles)
+        sumcycles=sumcycles+nAvgCycles
         if(ncount.eq.0) then
            do i=1,9
               i4=data1(i)
@@ -158,9 +164,10 @@ program simjt4
      ber=nbadbit/((ngood+1)*206.0)
      ave0=sum0/(iters*206.d0)
      ave1=sum1/(iters*206.d0)
+     tavg=ttotal/iters
      write(*,1020)  EsNo,EbNo,db65,ffalse,fgood,nint(avecycles),  &
-          ber,ave0,ave1
-1020 format(3f6.1,2f9.4,i7,3f8.3)
+          ber,ave0,ave1,tavg
+1020 format(3f6.1,2f9.4,i7,4f8.3)
      if(fgood.eq.0) exit
   enddo
 

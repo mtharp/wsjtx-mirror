@@ -61,10 +61,12 @@ program jt4metrics
   write(*,1000) avg0,avg00,ber
 1000 format('Avg noise:',f8.3,'   Est noise:',f8.3,'   BER:',f8.3)
 
+  fac=4.93/nadd
   do i=0,NMAX
      pn(i)=hn(i)/xiters
      ps(i)=hs(i)/xiters
-     write(13,1010) 0.01*i,pn(i),ps(i)
+     y=float(i)/(NMAX/10.0)
+     write(13,1010) y,fac*pn(i),fac*ps(i)
 1010 format(f8.2,2f15.12)
   enddo
 
