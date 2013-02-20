@@ -8,8 +8,6 @@ program simjt4
   integer icode(206)
   integer imsg(72)
   logical iknown(72)
-  integer mettab(0:255,0:1)             !Metric table
-  integer*1 symbol(206)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
@@ -17,9 +15,9 @@ program simjt4
   common/jt4com1/imsg6(12)
 
   nargs=iargc()
-  if(nargs.ne.9) then
-     print*,'Usage: simjt4 nadd scale ndelta limit known snr nmet amp iters'
-     print*,'               1    10.0   30   10000   0    0    1   3   100'
+  if(nargs.ne.8) then
+     print*,'Usage: simjt4 nadd scale ndelta limit known snr amp iters'
+     print*,'               1    10.0   30   10000   0    0   3   100'
      go to 999
   endif
 
@@ -36,10 +34,8 @@ program simjt4
   call getarg(6,arg)
   read(arg,*) snrdb
   call getarg(7,arg)
-  read(arg,*) nmet
-  call getarg(8,arg)
   read(arg,*) amp
-  call getarg(9,arg)
+  call getarg(8,arg)
   read(arg,*) iters
 
   iknown=.false.
@@ -54,7 +50,6 @@ program simjt4
      if(pn(i).eq.0.0) pn(i)=1.e-6
      if(ps(i).eq.0.0) ps(i)=1.e-6
   enddo
-  call getmet4(7,mettab)
 
   write(*,1010) 
 1010 format(/                                                              &
@@ -117,21 +112,14 @@ program simjt4
 
         nb=0
         do j=1,206
-           i4=nint(scale*(sym(1,j)-sym(0,j))) 
-           if(i4.gt.127) i4=127
-           if(i4.lt.-127) i4=-127
-           i4=i4+128
-           if(i4.ge.128) i4=i4-256
-           symbol(j)=i4
            if(icode(j).eq.1 .and. sym(1,j).lt.sym(0,j)) nb=nb+1
            if(icode(j).eq.0 .and. sym(1,j).ge.sym(0,j)) nb=nb+1
         enddo
-        call interleave4(symbol,-1)                !Remove interleaving
         call interleave4a(sym,-1)
 
         call cpu_time(t0)
-        call fano232(symbol,sym,nadd,nmet,amp,iknown,imsg,nbits,mettab,   &
-             ndelta,limit,data1,ncycles,metric,ncount)
+        call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,    &
+             data1,ncycles,metric,ncount)
         call cpu_time(t1)
         ttotal=ttotal + (t1-t0)
 

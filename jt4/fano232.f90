@@ -1,18 +1,15 @@
-subroutine fano232(symbol,sym,nadd,nmet,amp,iknown,imsg,nbits,mettab,    &
-     ndelta,maxcycles,dat,ncycles,metric,ierr)
+subroutine fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
+     dat,ncycles,metric,ierr)
 
 ! Sequential decoder for K=32, r=1/2 convolutional code using 
-! the Fano algorithm.  Translated from C routine for same purpose
-! written by Phil Karn, KA9Q.
+! the Fano algorithm.  Translated from C routine by Phil Karn, KA9Q.
 
   parameter (MAXBITS=103)
   parameter (MAXBYTES=(MAXBITS+7)/8)
-  integer*1 symbol(0:2*MAXBITS-1)  !Soft symbols (as unsigned i*1)
-  real sym(0:1,0:205)
+  real*4  sym(0:1,0:205)
   integer imsg(72)
   logical iknown(72)
   integer*1 dat(MAXBYTES)          !Decoded user data, 8 bits per byte
-  integer mettab(0:255,0:1)        !Metric table
 
 ! These were the "node" structure in Karn's C code:
   integer nstate(0:MAXBITS-1)      !Encoder state of next node
@@ -26,37 +23,15 @@ subroutine fano232(symbol,sym,nadd,nmet,amp,iknown,imsg,nbits,mettab,    &
 
 ! Compute all possible branch metrics for each symbol pair.
 ! This is the only place we actually look at the raw input symbols
-  i4a=0
-  i4b=0
   do np=0,nbits-1
      j=2*np
- !    if(nmet.eq.0) then
-        i4a=symbol(j)
-        i4b=symbol(j+1)
-        if (i4a.lt.0) i4a=i4a+256
-        if (i4b.lt.0) i4b=i4b+256
-        metrics(0,np) = mettab(i4a,0) + mettab(i4b,0)
-        metrics(1,np) = mettab(i4a,0) + mettab(i4b,1)
-        metrics(2,np) = mettab(i4a,1) + mettab(i4b,0)
-        metrics(3,np) = mettab(i4a,1) + mettab(i4b,1)
- !    else
-
-        n=min(2*nadd,18)                                     !### limit ??
-        call getmu(sym(0,j),sym(1,j),n,amp,mu0j0,mu1j0)
-        call getmu(sym(0,j+1),sym(1,j+1),n,amp,mu0j1,mu1j1)
-        m0 = mu0j0 + mu0j1
-        m1 = mu0j0 + mu1j1
-        m2 = mu1j0 + mu0j1
-        m3 = mu1j0 + mu1j1
-
-     write(72,3101) np,metrics(0:3,np),m0,m1,m2,m3
-3101 format(i3,4i6,4x,4i6)
-        if(nmet.ne.0) then
-           metrics(0,np) = m0
-           metrics(1,np) = m1
-           metrics(2,np) = m2
-           metrics(3,np) = m3
-        endif
+     n=2*nadd
+     call getmu(sym(0,j),sym(1,j),n,amp,mu0j0,mu1j0)
+     call getmu(sym(0,j+1),sym(1,j+1),n,amp,mu0j1,mu1j1)
+     metrics(0,np)=mu0j0 + mu0j1
+     metrics(1,np)=mu0j0 + mu1j1
+     metrics(2,np)=mu1j0 + mu0j1
+     metrics(3,np)=mu1j0 + mu1j1
   enddo
 
   np=0
