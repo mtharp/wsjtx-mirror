@@ -72,7 +72,7 @@ program simjt4
   nbits=72+31
   maxlim=0
 
-  idb1=10
+  idb1=10 - nint(1.62*int(log(float(nadd))/log(2.0)))
   idb2=-20
   if(snrdb.ne.0.0) idb2=idb1
   do idb=idb1,idb2,-1
