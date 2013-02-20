@@ -3,7 +3,7 @@ subroutine getmu(s0,s1,n,amp,mu0,mu1)
   parameter (NMAX=100)
   real*8 pdfChisq,p0,p1,ps0,ps1,pn0,pn1,x
   real log2
-  common/pspncom/ps(0:NMAX),pn(0:NMAX),scale
+  common/scalecom/scale
   log2(x)=log(x)/log(2.0)
 
   ps0=pdfChisq(n*s0,n,amp)

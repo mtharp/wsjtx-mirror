@@ -7,19 +7,23 @@ program jt4code
   character*22 msg0,msg,decoded
   character*72 c72
   integer   dgen(12)
-  integer*1 data0(13),symbol(216)
+  integer*1 symbol(206)
+  integer*1 data0(13)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
-  integer   data4a(9)                   !Decoded data (8-bit bytes)
-  integer   data4(12)                   !Decoded data (6-bit bytes)
-  integer mettab(0:255,0:1)             !Metric table
+  integer data4a(9)                   !Decoded data (8-bit bytes)
+  integer data4(12)                   !Decoded data (6-bit bytes)
   integer ncode(206)
+  integer iknown(72)
+  integer imsg(72)
+  real*4  sym(0:1,206)
+  common/scalecom/scale
 
   nargs=iargc()
   if(nargs.ne.1) then
      print*,'Usage: JT65code "message"'
      go to 999
   endif
-  call getmet4(7,mettab)
+!  call getmet4(7,mettab)
   call getarg(1,msg0)                     !Get message from command line
   msg=msg0
 
@@ -32,26 +36,33 @@ program jt4code
 1040 format('Packed message, 6-bit symbols: ',12i3) !Display packed symbols
 
   call encode4(msg,ncode)
-  symbol(1:206)=ncode
-
-  write(*,1050) symbol(1:206)
+  symbol=ncode
+  write(*,1050) symbol
 1050 format('Channel symbols:',50i1/                              &
             ('                ',50i1))
 
   call interleave4(symbol,-1)         !Remove interleaving
 
   do i=1,206
-     if(symbol(i).eq.1) then
-        symbol(i)=-118
+     if(symbol(i).eq.0) then
+        sym(0,i)=5.
+        sym(1,i)=1.
      else
-        symbol(i)=118
+        sym(1,i)=5.
+        sym(0,i)=1.
      endif
   enddo
 
+  scale=10.0
+  nadd=1
+  amp=5.0
+  iknown=0
+  imsg=0
   nbits=72+31
-  ndelta=50
+  ndelta=30
   limit=100
-  call fano232(symbol,nbits,mettab,ndelta,limit,data1,ncycles,metric,ncount)
+  call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,data1,    &
+       ncycles,metric,ncount)
   nlim=ncycles/nbits
 
   if(ncount.ge.0) then
@@ -67,6 +78,8 @@ program jt4code
      call unpackmsg(data4,decoded)
      write(*,1060) decoded
 1060 format('Decoded message: ',a22)
+  else
+     print*,'Error: Fano decoder failed.'
   endif
 
 999 end program jt4code

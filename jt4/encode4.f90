@@ -5,7 +5,7 @@ subroutine encode4(message,ncode)
   character*22 message          !Message to be generated
   character*3 cok               !'   ' or 'OOO'
   integer dgen
-  integer*1 data0(13),symbol(216)
+  integer*1 data0(13),symbol(206)
   logical text
   common/jt4com1/dgen(13)
 
