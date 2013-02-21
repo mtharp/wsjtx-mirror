@@ -1,8 +1,9 @@
-subroutine fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
-     dat,ncycles,metric,ierr)
+subroutine fano232a(sym,irev,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
+     dat,icycles,metric,ierr)
 
-! Sequential decoder for K=32, r=1/2 convolutional code (Fano algorithm).
-! Translated from C routine written by Phil Karn, KA9Q.
+! Sequential decoder for K=32, r=1/2 convolutional code.  Uses the Fano 
+! algorithm, expanded to include bidirectional decoding.  Some code is
+! adapted from a C routine written by Phil Karn, KA9Q.
 
   parameter (MAXBITS=103)
   parameter (MAXBYTES=(MAXBITS+7)/8)
@@ -12,24 +13,30 @@ subroutine fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
   integer imsg(72)
   logical iknown(72)
   integer*1 dat(MAXBYTES)          !Decoded user data, 8 bits per byte
-
-! These were the "node" structure in Karn's C code:
   integer nstate(0:MAXBITS-1)      !Encoder state of next node
   integer gamma(0:MAXBITS-1)       !Cumulative metric to this node
   integer metrics(0:3,0:MAXBITS-1) !Metric increments indexed by Tx/Rx syms
   integer tm(0:1,0:MAXBITS-1)      !Sorted metrics for current hypotheses
   integer ii(0:MAXBITS-1)          !Current branch being tested (0 or 1)
 
+  integer nstate0(0:MAXBITS-1)     !State array saved from forward pass
   logical noback
   include 'conv232.f90'            !Polynomials and parity table
+  save npoly1,npoly2,partab,nstate0,np0
 
-  symr(0:1,0:205)=sym(0:1,205:0:-1) !Get sym in reverse order
-  npoly1r=0
-  npoly2r=0
-  do i=0,31                        !Make bit-reversed polynomials
-     if(btest(npoly1,i)) npoly2r=ibset(npoly2r,31-i)
-     if(btest(npoly2,i)) npoly1r=ibset(npoly1r,31-i)
-  enddo
+  if(irev.gt.0) then
+     symr(0:1,0:205)=sym(0:1,205:0:-1) !Get sym in reverse order
+     npoly1r=0
+     npoly2r=0
+     do i=0,31                        !Make bit-reversed polynomials
+        if(btest(npoly1,i)) npoly2r=ibset(npoly2r,31-i)
+        if(btest(npoly2,i)) npoly1r=ibset(npoly1r,31-i)
+     enddo
+  else
+     npoly1r=npoly1
+     npoly2r=npoly2
+     symr=sym
+  endif
 
 ! Compute all possible branch metrics for each symbol pair.
 ! This is the only place we actually look at the raw input symbols
@@ -68,11 +75,7 @@ subroutine fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
   gamma(k)=0
   nt=0
 
-  do i=1,nbits*maxcycles                    !Start the Fano decoder
-     write(71,3001) i,k,nstate(k),gamma(k),tm(0:1,k),ii(k)
-3001 format(i9,i4,1x,b32.32,i5,2i5,i2)
-!     write(71,3001) i,k,ibit,ierr,gamma(k),tm(0:1,k),ii(k)
-!3001 format(i9,i4,2i3,i5,2i5,i3)
+  do icycles=1,nbits*maxcycles                !Start the Fano decoder
      ngamma=gamma(k) + tm(ii(k),k)          !Look forward
 
      if(k.le.71 .and. iknown(k+1)) then     !Account for "known" bits
@@ -90,6 +93,14 @@ subroutine fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
         gamma(k+1)=ngamma                  !Move forward
         nstate(k+1)=ishft(nstate(k),1)
         k=k+1
+        if(irev.eq.2 .and. k+np0.ge.nbits-1 .and.                    &
+             nstate(k).eq.nstate0(nbits-1-k)) then
+           do j=k+1,nbits-1
+              nstate(j)=nstate0(nbits-1-j)
+           enddo
+!           print*,k
+           k=nbits-1
+        endif
         if(k.eq.nbits-1) go to 100         !We're done!
 
         n=iand(nstate(k),npoly1r)
@@ -141,9 +152,23 @@ subroutine fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
         enddo
      endif
   enddo
-  i=nbits*maxcycles
+  icycles=nbits*maxcycles
   
 100 metric=gamma(k)                      !Final path metric
+
+  if(irev.eq.0 .and. k.lt.102) then
+     np0=k
+     do i=0,np0                          !Bit-reverse and save state vectors
+        n=nstate(i)
+        nr=0
+        do m=0,31
+           if(btest(n,m)) nr=ibset(nr,31-m)
+        enddo
+        nstate0(i)=nr
+     enddo 
+     nstate0(np0+1:)=0
+  endif
+
   nbytes=(nbits+7)/8                     !Copy decoded data to user's buffer
   k=7
   do j=1,nbytes-1
@@ -152,15 +177,17 @@ subroutine fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,maxcycles,   &
      k=k+8
   enddo
   dat(nbytes)=0
-  write(c72r,1100) dat(1:9)
-1100 format(9b8.8)
-  do i=1,72
-     c72(i:i)=c72r(73-i:73-i)
-  enddo
-  read(c72,1100) dat(1:9)
-  ncycles=i+1
   ierr=0
-  if(i.ge.maxcycles*nbits) ierr=-1
+  if(icycles.ge.maxcycles*nbits) ierr=-1
+
+  if(irev.gt.0) then
+     write(c72r,1100) dat(1:9)
+1100 format(9b8.8)
+     do j=1,72
+        c72(j:j)=c72r(73-j:73-j)
+     enddo
+     read(c72,1100) dat(1:9)
+  endif
 
   return
-end subroutine fano232r
+end subroutine fano232a

@@ -28,8 +28,7 @@ OBJS1 = chkmsg.o deg2grid.o encode232.o encode4.o entail.o fano232.o \
 	interleave4.o k2grid.o nchar.o packcall.o packgrid.o packmsg.o \
 	packtext.o unpackcall.o unpackgrid.o unpackmsg.o unpacktext.o \
 	interleave4a.o getmu.o bessi.o bessi0.o bessi1.o derf.o \
-	gammp.o gcf.o gser.o gammln.o factrl.o pdfChisq.o fano232r.o \
-	ex28.o
+	gammp.o gcf.o gser.o gammln.o factrl.o pdfChisq.o ex28.o
 
 libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1) 
@@ -62,4 +61,5 @@ sim14.exe: $(OBJS7)
 .PHONY : clean
 
 clean:
-	rm -f *.o jt4metrics.exe simsync.exe jt4code.exe simjt4.exe fskprob.exe
+	rm -f *.o jt4metrics.exe simsync.exe jt4code.exe simjt4.exe \
+	fskprob.exe sim14.exe libjt.a

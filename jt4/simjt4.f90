@@ -15,9 +15,9 @@ program simjt4
   common/scalecom/scale
 
   nargs=iargc()
-  if(nargs.ne.8) then
-     print*,'Usage: simjt4 nadd scale ndelta limit known snr amp iters'
-     print*,'               1    10.0   30   10000   0    0   6   100'
+  if(nargs.ne.9) then
+     print*,'Usage: simjt4 nadd scale ndelta limit known snr amp irev iters'
+     print*,'               1    10.0   30   10000   0    0   6    1   100'
      go to 999
   endif
 
@@ -36,6 +36,8 @@ program simjt4
   call getarg(7,arg)
   read(arg,*) amp
   call getarg(8,arg)
+  read(arg,*) irev
+  call getarg(9,arg)
   read(arg,*) iters
 
   iknown=.false.
@@ -116,6 +118,10 @@ program simjt4
         call cpu_time(t0)
         call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,    &
              data1,ncycles,metric,ncount)
+!        if(irev.ne.0 .and. ncount.lt.0) then
+!           call fano232a(sym,irev,nadd,amp,iknown,imsg,nbits,ndelta,limit,   &
+!                data1,ncycles,metric,ncount)
+!        endif
         call cpu_time(t1)
         ttotal=ttotal + (t1-t0)
         nAvgCycles=ncycles/nbits
@@ -132,11 +138,11 @@ program simjt4
            read(c72,1102) data4
 1102       format(12b6)
            call unpackmsg(data4,decoded)
-           write(70,3001) metric,nAvgCycles,decoded
-3001       format(2i10,2x,a22)
+!           write(70,3001) metric,nAvgCycles,decoded
+!3001       format(2i10,2x,a22)
            if(decoded.ne.msg) then
               nfalse=nfalse+1
-              write(71,3001) metric,nAvgCycles,decoded
+!              write(71,3001) metric,nAvgCycles,decoded
            else
               ngood=ngood+1
               nbadbit=nbadbit+nb

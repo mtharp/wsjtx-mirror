@@ -60,9 +60,10 @@ program jt4code
   ndelta=30
   limit=100
 
-  call fano232r(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,data1,    &
+  call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,data1,    &
        ncycles,metric,ncount)
   nAvgCycles=ncycles/nbits
+  print*,'A:',ncount,nAvgCycles
 
   if(ncount.ge.0) then
      do i=1,9
