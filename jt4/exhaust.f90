@@ -1,4 +1,4 @@
-subroutine ex28(sym,c72,data1,qual)
+subroutine exhaust(sym,c72,data1,nqual)
 
   real sym(0:1,206)
   character*72 c72,c72a
@@ -32,7 +32,7 @@ subroutine ex28(sym,c72,data1,qual)
   s(n2abest)=0.
   s1a=sumbest
   s2a=maxval(s)
-  qa=100.0*s1a/s2a - 106.0
+  qa=100.0*(s1a/s2a - 1.0)
 
   c72=c72a
   sumbest=0.
@@ -58,16 +58,19 @@ subroutine ex28(sym,c72,data1,qual)
   s(n2bbest)=0.
   s1b=sumbest
   s2b=maxval(s)
-  qb=100.0*s1b/s2b - 106.0
-  qual=min(qa,qb)
+  qb=100.0*(s1b/s2b - 1.0)
+  q=min(qa,qb)
+  nqual=1.5*(q-4.0)
+  if(nqual.lt.0) nqual=0
+  if(nqual.gt.10) nqual=10
 
   write(c72(1:14),1002) n2abest
   write(c72(59:72),1002) n2bbest
   read(c72,1004) data1(1:9)
   data1(10:13)=0
 
-  write(72,3002) n2abest,qa,n2bbest,qb
-3002 format(i8,f10.3,i10,f10.3)
+!  write(72,3002) n2abest,qa,n2bbest,qb
+!3002 format(i8,f10.3,i10,f10.3)
 
   return
-end subroutine ex28
+end subroutine exhaust

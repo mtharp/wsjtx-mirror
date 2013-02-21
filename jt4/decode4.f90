@@ -20,9 +20,9 @@ subroutine decode4(sym,ndepth,nadd,amp,iknown,imsg,nbits,ndelta,limit,    &
 1002 format(72i1)
      c72=c72a
      c72(1:14)='              '
-     call exhaust(sym,c72,data1,qual)
+     call exhaust(sym,c72,data1,nqual)
      ncount=-1
-     if(qual.gt.1.0) ncount=3
+     if(nqual.gt.0) ncount=3
   endif
 
   return
