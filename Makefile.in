@@ -42,7 +42,6 @@ PYTHON	?= @PYTHON@
 RM	?= @RM@
 F2PY	= @F2PY@
 
-
 OBJS1 = JT65code.o nchar.o grid2deg.o packmsg.o packtext.o \
 	packcall.o packgrid.o unpackmsg.o unpacktext.o unpackcall.o \
 	unpackgrid.o deg2grid.o chkmsg.o getpfx1.o \
@@ -50,64 +49,51 @@ OBJS1 = JT65code.o nchar.o grid2deg.o packmsg.o packtext.o \
 	igray.o init_rs_int.o encode_rs_int.o decode_rs_int.o \
 	wrapkarn.o cutil.o
 
-OBJS4	= t75.o iscat.o four2a.o db.o pctile.o match.o dtrim.o \
-	sort.o ssort.o thnix_stub.o geniscat.o synciscat.o
-
-t75:	$(OBJS4)
-	$(FC) -o t75 $(OBJS4) -lfftw3f
-
-OBJS5  = t76.o iscat.o four2a.o db.o pctile.o match.o \
-	sort.o ssort.o thnix_stub.o synciscat.o
-
-t76:	$(OBJS5)
-	$(FC) -o t76 $(OBJS5) -lfftw3f
-
 F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0 chkt0
 
-SRCS2F90 = abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
+SRCS2F90 = wsjt1.f90 a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	decode1.f90 decode2.f90 decode3.f90 ftn_init.f90 \
 	ftn_quit.f90 get_fname.f90 getfile.f90 horizspec.f90 hscroll.f90 \
 	pix2d.f90 pix2d65.f90 rfile.f90 savedata.f90 spec.f90 match.f90 \
-	wsjtgen.f90 fivehz.f90 chkt0.f90 gran.f90 makepings.f90 \
+	wsjtgen.f90 fivehz.f90 chkt0.f90 makepings.f90 \
 	packpfx.f90 unpackpfx.f90 genms.f90 decodems.f90 setupms.f90 \
-	thnix.f90 tweak1.f90 tweak2.f90 smo.f90 analytic.f90 dtrim.f90 \
-	geniscat.f90 iscat.f90 four2a.f90 hipass.f90 synciscat.f90 \
-	msdf.f90 syncms.f90 lenms.f90 jtms.f90 foldms.f90 avecho.f90 \
-	echogen.f90 alignmsg.f90 chk441.f90 gen441.f90 tm2.f90 \
-	gendiana.f90 diana.f90 specdiana.f90 syncdiana.f90 \
-	decdiana.f90 ana932.f90
+	thnix.f90 tweak1.f90 smo.f90 analytic.f90 geniscat.f90 synciscat.f90 \
+	iscat.f90 four2a.f90 hipass.f90 msdf.f90 syncms.f90 lenms.f90 \
+	jtms.f90 foldms.f90 avecho.f90 echogen.f90 alignmsg.f90 \
+	chk441.f90 gen441.f90 tm2.f90 gendiana.f90 diana.f90 ana932.f90 \
+	specdiana.f90 syncdiana.f90 decdiana.f90 tweak2.f90 dtrim.f90 \
+	wsjt4.f90 decode4.f90 encode4.f90 getmet4.f90 extract4.f90 \
+	deep4.f90 avemsg4.f90 encode232.f90 fano232.f90 sync4.f90 \
+	snr4.f90 xcor4.f90 gen4.f90 ps4.f90 interleave4.f90 rfile2.f90
 
 OBJS2F90 = ${SRCS2F90:.f90=.o}
 
-SRCS2F77 = wsjt1.f astro.f azdist.f coord.f dcoord.f deg2grid.f \
-	dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f moon2.f \
-	MoonDop.f sun.f toxyz.f pfxdump.f \
-        avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
-        indexx.f s2shape.f flat2.f gen65.f gen24.f entail.f genmet.f \
-	wsjt24.f sync24.f ps24.f xcor24.f decode24.f \
-	chkmsg.f gentone.f interleave24.f \
-        syncf0.f syncf1.f synct.f avemsg6m.f \
-        set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f \
-        ping.f longx.f peakup.f sync.f detect.f avemsg65.f decode65.f \
-        demod64a.f encode65.f extract.f chkhist.f flat1.f \
-        gencw.f gencwid.f msgtype.f \
-	getpfx1.f getpfx2.f getsnr.f graycode.f grid2k.f \
-        interleave63.f k2grid.f limit.f lpf1.f morse.f \
-        nchar.f packcall.f packgrid.f packmsg.f packtext.f setup65.f \
-        short65.f slope.f spec2d65.f sync65.f unpackcall.f \
-        unpackgrid.f unpackmsg.f unpacktext.f xcor.f xfft.f xfft2.f wsjt65.f \
-	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f \
-	rfile2.f encode232.f
+SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
+	indexx.f s2shape.f flat2.f gen65.f entail.f \
+	genmet.f chkmsg.f astro.f extract.f \
+	gentone.f syncf0.f syncf1.f synct.f avemsg6m.f \
+	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f ping.f \
+	longx.f peakup.f sync.f detect.f avemsg65.f decode65.f demod64a.f \
+	encode65.f chkhist.f flat1.f gencw.f \
+	gencwid.f msgtype.f getpfx1.f \
+	getpfx2.f getsnr.f graycode.f grid2k.f interleave63.f k2grid.f \
+	limit.f lpf1.f morse.f nchar.f packcall.f packgrid.f \
+	packmsg.f packtext.f setup65.f short65.f slope.f spec2d65.f \
+	sync65.f unpackcall.f unpackgrid.f unpackmsg.f unpacktext.f \
+	xcor.f xfft.f xfft2.f wsjt65.f azdist.f coord.f dcoord.f \
+	deg2grid.f dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f \
+	moon2.f MoonDop.f sun.f toxyz.f pfxdump.f \
+	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f 
 
 OBJS2F77 = ${SRCS2F77:.f=.o} deep65.o
 
 SRCS2C	= init_rs.c encode_rs.c decode_rs.c fano.c tab.c nhash.c \
-	cutil.c fthread.c tmoonsub.c
+	cutil.c fthread.c tmoonsub.c gran.c
 OBJS2C  = ${SRCS2C:.c=.o}
 
 SRCS3C	= ptt_unix.c igray.c wrapkarn.c
 OBJS3C  = ${SRCS3C:.c=.o}
-AUDIOSRCS =	a2d.f90 jtaudio.c start_threads.c resample.c
+AUDIOSRCS = jtaudio.c start_threads.c resample.c
 
 all:	WsjtMod/Audio.so wsjt9 JT65code
 

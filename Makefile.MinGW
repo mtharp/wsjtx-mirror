@@ -66,8 +66,6 @@ SRCS2F90 = wsjt1.f90 a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	deep4.f90 avemsg4.f90 encode232.f90 fano232.f90 sync4.f90 \
 	snr4.f90 xcor4.f90 gen4.f90 ps4.f90 interleave4.f90 rfile2.f90
 
-
-
 SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
 	indexx.f s2shape.f flat2.f gen65.f entail.f \
 	genmet.f chkmsg.f astro.f extract.f \
