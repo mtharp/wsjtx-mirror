@@ -16,7 +16,7 @@ program simjt4
 
   nargs=iargc()
   if(nargs.ne.9) then
-     print*,'Usage: simjt4 nadd scale ndelta limit known snr amp irev iters'
+     print*,'Usage: simjt4 nadd scale ndelta limit known snr amp depth iters'
      print*,'               1    10.0   30   10000   0    0   6    1   100'
      go to 999
   endif
@@ -36,7 +36,7 @@ program simjt4
   call getarg(7,arg)
   read(arg,*) amp
   call getarg(8,arg)
-  read(arg,*) irev
+  read(arg,*) ndepth
   call getarg(9,arg)
   read(arg,*) iters
 
@@ -116,18 +116,14 @@ program simjt4
         call interleave4a(sym,-1)
 
         call cpu_time(t0)
-        call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,    &
+        call decode4(sym,ndepth,nadd,amp,iknown,imsg,nbits,ndelta,limit,    &
              data1,ncycles,metric,ncount)
-!        if(irev.ne.0 .and. ncount.lt.0) then
-!           call fano232a(sym,irev,nadd,amp,iknown,imsg,nbits,ndelta,limit,   &
-!                data1,ncycles,metric,ncount)
-!        endif
         call cpu_time(t1)
         ttotal=ttotal + (t1-t0)
         nAvgCycles=ncycles/nbits
         maxlim=max(maxlim,nAvgCycles)
         sumcycles=sumcycles+nAvgCycles
-        if(ncount.eq.0) then
+        if(ncount.ge.0) then
            do i=1,9
               i4=data1(i)
               if(i4.lt.0) i4=i4+256

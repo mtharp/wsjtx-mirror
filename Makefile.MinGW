@@ -66,6 +66,8 @@ SRCS2F90 = wsjt1.f90 a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	deep4.f90 avemsg4.f90 encode232.f90 fano232.f90 sync4.f90 \
 	snr4.f90 xcor4.f90 gen4.f90 ps4.f90 interleave4.f90 rfile2.f90
 
+
+
 SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
 	indexx.f s2shape.f flat2.f gen65.f entail.f \
 	genmet.f chkmsg.f astro.f extract.f \
@@ -105,6 +107,30 @@ wsjt.spec: wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 	WsjtMod/palettes.py WsjtMod/smeter.py WsjtMod/specjt.py
 	c:/python27/python c:/python27/pyinstaller-1.5.1/makespec.py --icon \
 	   wsjt.ico --tk --onefile wsjt.py
+
+OBJS7 = jt4metrics.o gran.o
+jt4metrics.exe: $(OBJS7)
+	$(FC) -o jt4metrics.exe $(FFLAGS) $(OBJS7)
+
+OBJS8 = simsync.o gran.o
+simsync.exe: $(OBJS8)
+	$(FC) -o simsync.exe $(FFLAGS) $(OBJS8)
+
+OBJS9 = jt4code.o packmsg.o entail.o encode232.o interleave4.o \
+	fano232.o unpackmsg.o packtext.o getpfx1.o packcall.o k2grid.o \
+	packgrid.o unpacktext.o unpackcall.o unpackgrid.o grid2k.o \
+	getpfx2.o nchar.o deg2grid.o grid2deg.o getmet4.o encode4.o \
+	chkmsg.o
+jt4code.exe: $(OBJS9)
+	$(FC) -o jt4code.exe $(FFLAGS) $(OBJS9)
+
+OBJS10 = simjt4.o gran.o packmsg.o entail.o encode232.o interleave4.o \
+	fano232.o unpackmsg.o packtext.o getpfx1.o packcall.o k2grid.o \
+	packgrid.o unpacktext.o unpackcall.o unpackgrid.o grid2k.o \
+	getpfx2.o nchar.o deg2grid.o grid2deg.o getmet4.o encode4.o \
+	chkmsg.o
+simjt4.exe: $(OBJS10)
+	$(FC) -o simjt4.exe $(FFLAGS) $(OBJS10)
 
 jtaudio.o: jtaudio.c
 	$(CC) $(CFLAGS) -c -DWin32 jtaudio.c

@@ -6,6 +6,7 @@ program sim14
   character arg*12,c72*72
   character*22 msg,decoded
   integer icode(206)
+  integer*1 symbol(206)
   integer imsg(72)
   logical iknown(72)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
@@ -61,6 +62,8 @@ program sim14
 1006 format(b14,44x,b14)
   n2=16384*n2a + n2b
   print*,'A',n2a,n2b,n2
+  symbol=icode
+  call interleave4(symbol,1)
 
   rate=72.0/206.0
   nbits=72+31
@@ -100,7 +103,7 @@ program sim14
            s1=s1/nadd
            sum0=sum0 + min(s0,s1)
            sum1=sum1 + max(s0,s1)
-           if(icode(j).eq.1) then
+           if(symbol(j).eq.1) then
               sym(0,j)=s0
               sym(1,j)=s1
            else
@@ -111,8 +114,8 @@ program sim14
 
         nb=0
         do j=1,206
-           if(icode(j).eq.1 .and. sym(1,j).lt.sym(0,j)) nb=nb+1
-           if(icode(j).eq.0 .and. sym(1,j).ge.sym(0,j)) nb=nb+1
+           if(symbol(j).eq.1 .and. sym(1,j).lt.sym(0,j)) nb=nb+1
+           if(symbol(j).eq.0 .and. sym(1,j).ge.sym(0,j)) nb=nb+1
         enddo
         call interleave4a(sym,-1)           !Remove the symbol interleaving
 
