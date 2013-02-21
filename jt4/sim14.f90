@@ -12,7 +12,6 @@ program sim14
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
   common/scalecom/scale
-  common/jt4com1/imsg6(12)
 
   nargs=iargc()
   if(nargs.ne.8) then
@@ -55,10 +54,8 @@ program sim14
   '---------------------------------------------------------------------')
 
   msg='CQ K1JT FN20'
-  call encode4(msg,icode)
-  write(c72,1002) imsg6
-1002 format(12b6.6)
-  read(c72,1004) imsg
+  call encode4(msg,imsg,icode)
+  write(c72,1004) imsg
 1004 format(72i1)
   read(c72,1006) n2a,n2b
 1006 format(b14,44x,b14)
@@ -122,7 +119,7 @@ program sim14
         call cpu_time(t0)
 !        call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,    &
 !             data1,ncycles,metric,ncount)
-        call ex28(sym,c72,n2)
+        call ex28(sym,c72,data1)
         call cpu_time(t1)
         ttotal=ttotal + (t1-t0)
         do i=1,9

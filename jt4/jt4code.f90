@@ -23,25 +23,22 @@ program jt4code
      print*,'Usage: JT65code "message"'
      go to 999
   endif
-!  call getmet4(7,mettab)
   call getarg(1,msg0)                     !Get message from command line
   msg=msg0
 
-  call packmsg(msg,dgen)         !Pack 72-bit message into 12 six-bit symbols
   write(*,1020) msg0
 1020 format('Message:   ',a22)            !Echo input message
-  if(iand(dgen(10),8).ne.0) write(*,1030) !Is the plain text bit set?
-1030 format('Plain text.')         
-  write(*,1040) dgen
-1040 format('Packed message, 6-bit symbols: ',12i3) !Display packed symbols
 
-  call encode4(msg,ncode)
+  call encode4(msg,imsg,ncode)
+  if(imsg(57).ne.0) write(*,1030)         !Is the free-text bit set?
+1030 format('Free text.')
+  write(*,1040) imsg
+1040 format(/'Source-encoded message, 72 bits:'/(50i1))
+
   symbol=ncode
+  call interleave4(symbol,1)
   write(*,1050) symbol
-1050 format('Channel symbols:',50i1/                              &
-            ('                ',50i1))
-
-  call interleave4(symbol,-1)         !Remove interleaving
+1050 format(/'Channel symbols, 206 bits:'/(50i1))
 
   do i=1,206
      if(symbol(i).eq.0) then
@@ -52,6 +49,7 @@ program jt4code
         sym(0,i)=1.
      endif
   enddo
+  call interleave4a(sym,-1)
 
   scale=10.0
   nadd=1
@@ -61,6 +59,7 @@ program jt4code
   nbits=72+31
   ndelta=30
   limit=100
+
   call fano232(sym,nadd,amp,iknown,imsg,nbits,ndelta,limit,data1,    &
        ncycles,metric,ncount)
   nlim=ncycles/nbits
@@ -77,7 +76,7 @@ program jt4code
 1102 format(12b6)
      call unpackmsg(data4,decoded)
      write(*,1060) decoded
-1060 format('Decoded message: ',a22)
+1060 format(/'Decoded message: ',a22)
   else
      print*,'Error: Fano decoder failed.'
   endif
