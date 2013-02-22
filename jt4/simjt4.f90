@@ -12,12 +12,14 @@ program simjt4
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
+  integer nlim(10)
   common/scalecom/scale
+  data nlim/1,2,5,10,20,50,100,200,500,1000/
 
   nargs=iargc()
   if(nargs.ne.8) then
-     print*,'Usage: simjt4 nadd scale ndelta limit snr amp depth iters'
-     print*,'               1    10.0   30   10000  0   6    1   100'
+     print*,'Usage: simjt4 nadd scale ndelta lim snr amp depth iters'
+     print*,'               1    10.0   30    1   0   6    1   100'
      go to 999
   endif
 
@@ -28,7 +30,7 @@ program simjt4
   call getarg(3,arg)
   read(arg,*) ndelta
   call getarg(4,arg)
-  read(arg,*) limit
+  read(arg,*) lim
   call getarg(5,arg)
   read(arg,*) snrdb
   call getarg(6,arg)
@@ -38,25 +40,30 @@ program simjt4
   call getarg(8,arg)
   read(arg,*) iters
 
+  if(lim.lt.1) lim=1
+  if(lim.gt.10) lim=10
+  write(*,1000) nadd,lim,ndepth
+1000 format(/'nadd:',i4,'   lim:',i3,'   ndepth:',i2)
+
+  limit=10000*nlim(lim)
   iknown=.false.
+!                          ndepth=1: Fano
   if(ndepth.eq.2) then
-     iknown(1:28)=.true.             !N1 known (CQ or MyCall); then Fano
+     iknown(1:28)=.true.             !MyCall or CQ known, Fano for the rest
   else if(ndepth.eq.3) then
-     iknown(15:58)=.true.            !New msg order; N1 known, blank grid;
-                                     !exhaustive search for N2=xcall
+     iknown(1:56)=.true.             !MyCall+HisCall known; ex search for xrpt
   else if(ndepth.eq.4) then
-     iknown(1:56)=.true.             !N1 and N2 known; ex search for xrpt
+     iknown(1:28)=.true.             !MyCall or CQ known, DS for xcall+xgrid
   else if(ndepth.eq.5) then
-     iknown(1:28)=.true.             !N1 known, DS for xcall+xgrid
-  else if(ndepth.eq.6) then
-     iknown(29:72)=.true.            !N2 and NG known, DS for xcall
+     iknown(29:72)=.true.            !HisCall+HisGrid known, DS for xcall
   endif
 
   write(*,1010) 
-1010 format(/                                                              &
+1010 format(                                                               &
   ' EsNo  EbNo  db65   false   fcopy  cycles   ber   ave0   ave1   time'/  &
   '---------------------------------------------------------------------')
 
+!  msg='CQ K1JT FN20'
   msg='K1JT VK7MO -24'
   call encode4(msg,imsg,icode)
   symbol=icode
