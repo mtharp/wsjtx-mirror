@@ -15,9 +15,9 @@ program simjt4
   common/scalecom/scale
 
   nargs=iargc()
-  if(nargs.ne.9) then
-     print*,'Usage: simjt4 nadd scale ndelta limit known snr amp depth iters'
-     print*,'               1    10.0   30   10000   0    0   6    1   100'
+  if(nargs.ne.8) then
+     print*,'Usage: simjt4 nadd scale ndelta limit snr amp depth iters'
+     print*,'               1    10.0   30   10000  0   6    1   100'
      go to 999
   endif
 
@@ -30,25 +30,26 @@ program simjt4
   call getarg(4,arg)
   read(arg,*) limit
   call getarg(5,arg)
-  read(arg,*) known
-  call getarg(6,arg)
   read(arg,*) snrdb
-  call getarg(7,arg)
+  call getarg(6,arg)
   read(arg,*) amp
-  call getarg(8,arg)
+  call getarg(7,arg)
   read(arg,*) ndepth
-  call getarg(9,arg)
+  call getarg(8,arg)
   read(arg,*) iters
 
   iknown=.false.
-  if(known.gt.0) then
-     xi=1.0
-     do i=1,known
-        iknown(int(xi))=.true.
-        xi=xi + 72.0/known
-     enddo
-  else if(known.lt.0) then
-     iknown(15:58)=.true.
+  if(ndepth.eq.2) then
+     iknown(1:28)=.true.             !N1 known (CQ or MyCall); then Fano
+  else if(ndepth.eq.3) then
+     iknown(15:58)=.true.            !New msg order; N1 known, blank grid;
+                                     !exhaustive search for N2=xcall
+  else if(ndepth.eq.4) then
+     iknown(1:56)=.true.             !N1 and N2 known; ex search for xrpt
+  else if(ndepth.eq.5) then
+     iknown(1:28)=.true.             !N1 known, DS for xcall+xgrid
+  else if(ndepth.eq.6) then
+     iknown(29:72)=.true.            !N2 and NG known, DS for xcall
   endif
 
   write(*,1010) 
@@ -56,7 +57,7 @@ program simjt4
   ' EsNo  EbNo  db65   false   fcopy  cycles   ber   ave0   ave1   time'/  &
   '---------------------------------------------------------------------')
 
-  msg='CQ K1JT FN20'
+  msg='K1JT VK7MO -24'
   call encode4(msg,imsg,icode)
   symbol=icode
   call interleave4(symbol,1)
