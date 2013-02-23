@@ -1,5 +1,5 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
-  hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
+subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
+     mycall,hiscall,hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
 
@@ -114,12 +114,13 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,  &
      call extract4(sym,nadd,ncount,decoded)     !Do the convolutional decode
 
      qual=0.                                    !Now try deep search
-     neme=1
-     call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
-     if(qual.gt.qbest) then
-        qbest=qual
-        deepbest=deepmsg
-        ichbest=ich
+     if(ndepth.ge.1) then
+        call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
+        if(qual.gt.qbest) then
+           qbest=qual
+           deepbest=deepmsg
+           ichbest=ich
+        endif
      endif
 
      if(ncount.ge.0) then

@@ -27,9 +27,8 @@ OBJS1 = chkmsg.o deg2grid.o encode232.o encode4.o entail.o fano232.o \
 	getmet4.o getpfx1.o getpfx2.o gran.o grid2deg.o grid2k.o \
 	interleave4.o k2grid.o nchar.o packcall.o packgrid.o packmsg.o \
 	packtext.o unpackcall.o unpackgrid.o unpackmsg.o unpacktext.o \
-	interleave4a.o getmu.o bessi.o bessi0.o bessi1.o derf.o \
-	gammp.o gcf.o gser.o gammln.o factrl.o pdfChisq.o exhaust.o \
-	decode4.o
+	interleave4a.o getmu.o bessi.o bessi0.o bessi1.o gammln.o \
+	pdfChisq.o exhaust.o ex28.o decode4.o
 
 fano232.o: fano232.f90 conv232.f90
 	$(FC) -c -O fano232.f90

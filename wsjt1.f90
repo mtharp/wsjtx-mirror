@@ -231,9 +231,9 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
      hiscall=HisCall(1:i-1)//'            '
 
      jztest=165000
-     if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,      &
-          DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,        &
-          Nseg,MouseDF2,NAgain,ndepth,idf,lumsg,lcum,nspecial,ndf,      &
+     if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,       &
+          DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,         &
+          Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,lcum,nspecial,ndf,  &
           NSyncOK,ccf,psavg,ndiag)
      goto 900
   endif

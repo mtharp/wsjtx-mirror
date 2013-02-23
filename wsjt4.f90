@@ -1,5 +1,5 @@
 subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,   &
-     mode,mode4,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth,         &
+     mode,mode4,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth,neme,    &
      idf,lumsg,lcum,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
@@ -94,8 +94,8 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,   &
      cooo='O ?'
   endif
 
-  call decode4(dat,npts,dtx,dfx,flip,mode,mode4,width,mycall,hiscall,    &
-       hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
+  call decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
+       mycall,hiscall,hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
 
 200 kvqual=0
   if(ncount.ge.0) kvqual=1
