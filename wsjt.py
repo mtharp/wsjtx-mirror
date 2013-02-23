@@ -33,6 +33,8 @@ print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
+Title="  WSJT 9.4    r" + "$Rev$"[6:-1] + "     by K1JT"
+
 #See if we are running in Windows
 g.Win32=0
 if sys.platform=="win32":
@@ -2854,7 +2856,7 @@ if nmonitor.get():
 else:
     stopmon()
 if g.Win32: root.iconbitmap("wsjt.ico")
-root.title('  WSJT 9.4     by K1JT')
+root.title(Title)
 from WsjtMod import astro
 from WsjtMod import specjt
 
