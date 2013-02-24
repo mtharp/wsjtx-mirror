@@ -63,63 +63,77 @@ def resetgen():
     genmsg.set(1)
 
 def defaults():
-    t=''
-    if mytag.get()==1: t=' %S'
-    if histag.get()==1: t=' %H'
-    if (ireport.get()==0 and iregion.get()==0):
+    if g.mode[:3]=='JT4':
         tx1.delete(0,END)
         tx1.insert(0,'%T %M')
         tx2.delete(0,END)
         tx2.insert(0,'%T %M %R')
         tx3.delete(0,END)
-        tx3.insert(0,'R%R'+t)
+        tx3.insert(0,'%T %M R%R')
         tx4.delete(0,END)
-        tx4.insert(0,'RRR'+t)
+        tx4.insert(0,'@1270')
         tx5.delete(0,END)
-        tx5.insert(0,'73'+t)
+        tx5.insert(0,'@1700')
         tx6.delete(0,END)
         tx6.insert(0,'CQ %M')
-    elif (ireport.get()==1 and iregion.get()==0):
-        tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
-        tx2.delete(0,END)
-        tx2.insert(0,'%T %M %G')
-        tx3.delete(0,END)
-        tx3.insert(0,'RR %G'+t)
-        tx4.delete(0,END)
-        tx4.insert(0,'RRR'+t)
-        tx5.delete(0,END)
-        tx5.insert(0,'73'+t)
-        tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
+    else:
+        t=''
+        if mytag.get()==1: t=' %S'
+        if histag.get()==1: t=' %H'
+        if (ireport.get()==0 and iregion.get()==0):
+            tx1.delete(0,END)
+            tx1.insert(0,'%T %M')
+            tx2.delete(0,END)
+            tx2.insert(0,'%T %M %R')
+            tx3.delete(0,END)
+            tx3.insert(0,'R%R'+t)
+            tx4.delete(0,END)
+            tx4.insert(0,'RRR'+t)
+            tx5.delete(0,END)
+            tx5.insert(0,'73'+t)
+            tx6.delete(0,END)
+            tx6.insert(0,'CQ %M')
+        elif (ireport.get()==1 and iregion.get()==0):
+            tx1.delete(0,END)
+            tx1.insert(0,'%T %M')
+            tx2.delete(0,END)
+            tx2.insert(0,'%T %M %G')
+            tx3.delete(0,END)
+            tx3.insert(0,'RR %G'+t)
+            tx4.delete(0,END)
+            tx4.insert(0,'RRR'+t)
+            tx5.delete(0,END)
+            tx5.insert(0,'73'+t)
+            tx6.delete(0,END)
+            tx6.insert(0,'CQ %M')
 
-    elif (ireport.get()==0 and iregion.get()==1):
-        tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
-        tx2.delete(0,END)
-        tx2.insert(0,'%T %M %R %R')
-        tx3.delete(0,END)
-        tx3.insert(0,'%T %M R%R R%R')
-        tx4.delete(0,END)
-        tx4.insert(0,'RRRR RRRR %M')
-        tx5.delete(0,END)
-        tx5.insert(0,'73 %M')
-        tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
+        elif (ireport.get()==0 and iregion.get()==1):
+            tx1.delete(0,END)
+            tx1.insert(0,'%T %M')
+            tx2.delete(0,END)
+            tx2.insert(0,'%T %M %R %R')
+            tx3.delete(0,END)
+            tx3.insert(0,'%T %M R%R R%R')
+            tx4.delete(0,END)
+            tx4.insert(0,'RRRR RRRR %M')
+            tx5.delete(0,END)
+            tx5.insert(0,'73 %M')
+            tx6.delete(0,END)
+            tx6.insert(0,'CQ %M')
 
-    elif (ireport.get()==1 and iregion.get()==1):
-        tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
-        tx2.delete(0,END)
-        tx2.insert(0,'%T %M %G')
-        tx3.delete(0,END)
-        tx3.insert(0,'%T %M RR %G')
-        tx4.delete(0,END)
-        tx4.insert(0,'RRRR RRRR %M')
-        tx5.delete(0,END)
-        tx5.insert(0,'73 %M')
-        tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
+        elif (ireport.get()==1 and iregion.get()==1):
+            tx1.delete(0,END)
+            tx1.insert(0,'%T %M')
+            tx2.delete(0,END)
+            tx2.insert(0,'%T %M %G')
+            tx3.delete(0,END)
+            tx3.insert(0,'%T %M RR %G')
+            tx4.delete(0,END)
+            tx4.insert(0,'RRRR RRRR %M')
+            tx5.delete(0,END)
+            tx5.insert(0,'73 %M')
+            tx6.delete(0,END)
+            tx6.insert(0,'CQ %M')
 
 #------------------------------------------------------ setMyTag
 def setMyTag(event=NONE):

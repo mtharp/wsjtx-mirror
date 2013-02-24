@@ -112,6 +112,7 @@ ShOK=IntVar()
 slabel="Sync   "
 textheight=7
 ToRadio0=""
+trxnoise0=""
 tx6alt=""
 txsnrdb=99.
 TxFirst=IntVar()
@@ -1327,9 +1328,9 @@ def left_arrow(event=NONE):
 #------------------------------------------------------ GenStdMsgs
 def GenStdMsgs(event=NONE):
     global altmsg,MyCall0,addpfx0,ToRadio0
-    if mode.get()[:3]=='JT4':
-        GenAltMsgs()
-        return
+##    if mode.get()[:3]=='JT4':
+##        GenAltMsgs()
+##        return
     t=ToRadio.get().upper().strip()
     ToRadio.delete(0,99)
     ToRadio.insert(0,t)
@@ -1338,7 +1339,7 @@ def GenStdMsgs(event=NONE):
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
     if mode.get()=="FSK441" or mode.get()[:5]=="ISCAT" or \
-       mode.get()=='JTMS' or mode.get()=='Diana':
+       mode.get()=='JTMS' or mode.get()=='Diana' or mode.get()[:3]=='JT4':
         r=report.get()
         tx1.insert(0,setmsg(options.tx1.get(),r))
         tx2.insert(0,setmsg(options.tx2.get(),r))
@@ -1673,7 +1674,7 @@ def plot_small():
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
-           im,pim,cmap0,isync,isync441,isync_iscat,isync65,               \
+           im,pim,cmap0,isync,isync441,isync_iscat,isync65,trxnoise0,     \
            isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas
     
     utc=time.gmtime(time.time()+0.1*idsec)
@@ -1771,10 +1772,12 @@ def update():
     else:
         print "RMS noise:", g.rms, " out of range."
     t="Rx noise:%3d dB" % (n,)
-    if n>=-10 and n<=10:
-        msg4.configure(text=t,bg='gray85')
-    else:
-        msg4.configure(text=t,bg='red')
+    if t!=trxnoise0:
+        if n>=-10 and n<=10:
+            msg4.configure(text=t,bg='gray85')
+        else:
+            msg4.configure(text=t,bg='red')
+        trxnoise0=t
 
     t=g.ftnstr(Audio.gcom2.decodedfile)
 #    i=t.rfind(".")
@@ -2844,6 +2847,7 @@ elif mode.get()[:3]=='JT4':
     if mode.get()[3:4]=='E': Audio.gcom2.mode4=18
     if mode.get()[3:4]=='F': Audio.gcom2.mode4=36
     if mode.get()[3:4]=='G': Audio.gcom2.mode4=72
+#options.defaults()
 
 lsync.configure(text=slabel+str(isync))
 Audio.gcom2.azeldir=(options.azeldir.get()+' '*80)[:80]
