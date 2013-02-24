@@ -309,7 +309,10 @@ def dbl_click_call(t,t1,rpt,event):
         if (mode.get()[:4]=='JT65' or \
                 mode.get()[:3]=='JT4') and rpt <> "OOO":
             n=tx1.get().rfind(" ")
-            t2=tx1.get()[0:n+1]
+            if n>=7: 
+                t2=tx1.get()[0:n+1]
+            else:
+                t2=tx1.get() + " "
             tx2.delete(0,END)
             tx2.insert(0,t2+rpt)
             tx3.delete(0,END)
@@ -1459,7 +1462,7 @@ def setmsg(template,r):
             if template[i]=="%":
                 npct=1
             else:
-                msg=msg+template[i]            
+                msg=msg+template[i]
     return msg.upper()
 
 #------------------------------------------------------ plot_echo
