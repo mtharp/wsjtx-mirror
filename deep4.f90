@@ -146,7 +146,8 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 ! ### DO NOT REMOVE ### 
   call cs_lock('deep4')
   rewind 77
-  write(77,*) p1,p2,ntot,rms,qual,ip1,testmsg(ip1)
+  if(ip1.ge.1 .and. ip1.le.2*MAXCALLS+2+MAXRPT) write(77,*) p1,p2,ntot,   &
+       rms,qual,ip1,testmsg(ip1)
   call flush(77)
   call cs_unlock
 ! ### Works OK without it (in both Windows and Linux) if compiled 

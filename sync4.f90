@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
+subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -6,7 +6,7 @@ subroutine sync4(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   parameter (NFFTMAX=2520)         !Max length of FFTs
   parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
   parameter (NSMAX=525)            !Max number of half-symbol steps
-  integer DFTolerance              !Range of DF search
+  integer ntol                     !Range of DF search
   real dat(jz)
   real psavg(NHMAX)                !Average spectrum of whole record
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
@@ -43,8 +43,8 @@ subroutine sync4(dat,jz,DFTolerance,NFreeze,MouseDF,mode,mode4,    &
   fa=famin
   fb=fbmax
   if(NFreeze.eq.1) then
-     fa=max(famin,1270.46+MouseDF-DFTolerance)
-     fb=min(fbmax,1270.46+MouseDF+DFTolerance)
+     fa=max(famin,1270.46+MouseDF-ntol)
+     fb=min(fbmax,1270.46+MouseDF+ntol)
   else
      fa=max(famin,1270.46+MouseDF-600)
      fb=min(fbmax,1270.46+MouseDF+600)

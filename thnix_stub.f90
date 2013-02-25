@@ -34,6 +34,7 @@ subroutine cs_lock(csub)
   integer*8 mtx
   common/mtxcom/mtx,ltrace,mtxstate,csub0
 !  n=fthread_mutex_trylock(mtx)
+  n=0
   if(n.ne.0) then
 ! Another thread has already locked the mutex
 !     n=fthread_mutex_lock(mtx)
