@@ -1,5 +1,5 @@
 subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
-     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
+     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
 
@@ -9,6 +9,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   integer ntol                     !Range of DF search
   real dat(jz)
   real psavg(NHMAX)                !Average spectrum of whole record
+  real ps0(450)                    !Avg spectrum for plotting
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-450:450)            !Peak of ccfblue, as function of freq
@@ -35,7 +36,14 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
      psavg(1:nh)=psavg(1:nh) + s2(1:nh,j)
   enddo
 
-  call flat1(psavg,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
+  nsmo=min(10*mode4,150)
+  call flat1(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
+
+  if(mode4.ge.9) call smo(psavg,nh,tmp,mode4/4)
+  i0=60
+  do i=1,450
+     ps0(i)=5.0*(psavg(i0+2*i) + psavg(i0+2*i+1) - 2.0)
+  enddo
 
 ! Set freq and lag ranges
   famin=200.
@@ -136,10 +144,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   snrx=-99.0
   ppmax=psavg(ipk)-1.0
 
-  if(ppmax.gt.0.0001) then
-     snrx=db(ppmax*df/2500.0) + 7.5        !Empirical
-     if(mode.eq.7) snrx=snrx + 3.0         !Empirical
-  endif
+  if(ppmax.gt.0.0001) snrx=db(ppmax*df/2500.0) + 10.5        !Empirical
   if(snrx.lt.-33.0) snrx=-33.0
 
   ccfred1=0.

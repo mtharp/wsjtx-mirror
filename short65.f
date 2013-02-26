@@ -42,7 +42,7 @@ C  Do 16 k FFTs, stepped by 8k.  (*** Maybe should step by 4k? ***)
          call add(psavg,s2(1,j),psavg,NH)
       enddo
 
-      call flat1(psavg,s2,NH,nsteps,NH,MAXSTEPS)
+      call flat1(psavg,33,s2,NH,nsteps,NH,MAXSTEPS)
 
       nfac=40*mode65
       dtstep=0.5/df

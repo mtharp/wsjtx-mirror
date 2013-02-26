@@ -16,7 +16,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
   character*12 mycall
   character*12 hiscall
   character*6 hisgrid
-  real ps0(431)           !Spectrum of best ping
+  real ps0(450)           !Spectrum of best ping
   integer npkept          !Number of pings kept and decoded
   integer lumsg           !Logical unit for decoded.txt
   integer nslim2          !Minimum strength for single-tone pings, dB
@@ -234,7 +234,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
      if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,       &
           DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,         &
           Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,lcum,nspecial,ndf,  &
-          NSyncOK,ccf,psavg,ndiag)
+          NSyncOK,ccf,psavg,ndiag,ps0)
      goto 900
   endif
 

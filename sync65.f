@@ -39,7 +39,7 @@ C  Compute power spectrum for each step and get average
          call add(psavg,s2(1,j),psavg,nh)
       enddo
 
-      call flat1(psavg,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten the spectra
+      call flat1(psavg,33,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten the spectra
 
 C  Find the best frequency channel for CCF
 !      famin= 670.46

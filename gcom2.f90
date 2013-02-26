@@ -105,7 +105,7 @@ character*80 pttport
 character*22 t0msg
 
 parameter (ND2MAX=120*11025)
-common/gcom2/ps0(431),psavg(450),s2(64,3100),ccf(-5:540),             &
+common/gcom2/ps0(450),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,dlatency,fecho,iter,iyr,imo,ida,         &
      ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,ndither,        &
      nsumecho,ndecdone,npingtime,npingtime2,ierr,lauto,mantx,         &

@@ -1259,10 +1259,15 @@ def dtdf_change(event):
             lab6.configure(text=t,bg="#33FFFF")
         elif (event.y>=40 and event.y<95) or \
                  (event.y<95 and Audio.gcom2.nspecial>0):
-            lab1.configure(text='DF (Hz)',bg='red')
+         
             idf=Audio.gcom2.idf
             t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
-            lab6.configure(text=t,bg="red")
+            if mode.get()[:3]=='JT4' and event.y<67:
+                lab1.configure(text='DF (Hz)',bg='yellow')
+                lab6.configure(text=t,bg="yellow")
+            else:
+                lab1.configure(text='DF (Hz)',bg='red')
+                lab6.configure(text=t,bg="red")
         else:
             lab1.configure(text='Time (s)',bg='green')
             if mode.get()=='Diana':
@@ -1586,6 +1591,25 @@ def plot_large():
             if Audio.gcom2.nspecial==3: t="RRR"
             if Audio.gcom2.nspecial==4: t="73"
             graph1.create_text(x2+3,93,anchor=W,text=t,fill="yellow")
+
+
+        if mode.get()[:3]=='JT4':
+            y=[]
+            for i in range(446):                #Find ymax for yellow curve
+                ps0=Audio.gcom2.ps0[i+1]
+                y.append(ps0)
+            ymax=max(y)
+            yfac=30.0
+            if ymax>85.0/yfac: yfac=85.0/ymax
+            xy=[]
+            fac=500.0/446.0
+            for i in range(446):                #Make xy list for yellow curve
+                x=i*500.0/548.571 + 47                      #empirical
+                ps0=Audio.gcom2.ps0[i+1]
+                n=int(90.0-yfac*ps0)
+                xy.append(x)
+                xy.append(n)
+            graph1.create_line(xy,fill="yellow")
 
         if Audio.gcom2.ccf[0] != -9999.0:
             y=[]
