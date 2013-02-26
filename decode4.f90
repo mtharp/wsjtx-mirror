@@ -13,14 +13,13 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
   complex*16 cz,cz1,c0,c1
   real*4 rsymbol(207,7)
   real*4 sym(207)
-  integer nsum(7)
   integer amp
   integer mettab(0:255,0:1)             !Metric table
   integer nch(7)
   integer npr2(207)
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
   data mode0/-999/
-  data nsum/7*0/,rsymbol/1449*0.0/
+  data rsymbol/1449*0.0/
   data npr2/                                                         &
        0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0,  &
        0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0,  &
@@ -31,7 +30,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
        1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1/
 
   data nch/1,2,4,9,18,36,72/
-  save mettab,mode0,nsum,rsymbol
+  save mettab,mode0,rsymbol
 
   if(mode.ne.mode0) call getmet4(mode,mettab)
   mode0=mode

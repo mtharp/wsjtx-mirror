@@ -1,7 +1,7 @@
 subroutine extract4(sym,nadd,ncount,decoded)
 
   real sym(207)
-  character decoded*22, submode*1
+  character decoded*22
   character*72 c72
   integer*1 symbol(207)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
@@ -17,8 +17,9 @@ subroutine extract4(sym,nadd,ncount,decoded)
      first=.false.
   endif
 
+  amp=4.0                               !Optimize this (may depend on nadd).
   do j=1,207
-     r=sym(j) + 128.
+     r=amp*sym(j) + 128.
      if(r.gt.255.0) r=255.0
      if(r.lt.0.0) r=0.0
      i4=nint(r)
@@ -28,13 +29,13 @@ subroutine extract4(sym,nadd,ncount,decoded)
 
   nbits=72+31
   ndelta=50
-  limit=50000
+  limit=100000
   ncycles=0
   ncount=-1
   decoded='                      '
-  submode=' '
 
   call interleave4(symbol(2),-1)          !Remove the interleaving
+
   call fano232(symbol(2),nbits,mettab,ndelta,limit,data1,ncycles,metric,ncount)
   nlim=ncycles/nbits
 
@@ -52,7 +53,6 @@ subroutine extract4(sym,nadd,ncount,decoded)
      call cs_unlock
 
      call unpackmsg(data4,decoded)
-     submode=char(ichar('A')+ich-1)
      if(decoded(1:6).eq.'000AAA') then
         decoded='***WRONG MODE?***'
         ncount=-1
