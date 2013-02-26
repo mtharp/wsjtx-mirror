@@ -40,7 +40,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   call flat1(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
 
   if(mode4.ge.9) call smo(psavg,nh,tmp,mode4/4)
-  i0=60
+  i0=132
   do i=1,450
      ps0(i)=5.0*(psavg(i0+2*i) + psavg(i0+2*i+1) - 2.0)
   enddo
@@ -144,7 +144,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   snrx=-99.0
   ppmax=psavg(ipk)-1.0
 
-  if(ppmax.gt.0.0001) snrx=db(ppmax*df/2500.0) + 10.5        !Empirical
+  if(ppmax.gt.0.0001) snrx=db(ppmax*df/2500.0) + 16.5        !Empirical
   if(snrx.lt.-33.0) snrx=-33.0
 
   ccfred1=0.

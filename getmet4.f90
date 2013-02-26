@@ -40,7 +40,7 @@ subroutine getmet4(mode,mettab)
        -9.966,-9.966,-9.966,-9.966,-9.966,-9.966,-9.966,-9.966/
   save
 
-  bias=0.375                                  !Nominally 0.5
+  bias=0.5
   scale=10.0
   do i=0,255
      mettab(i,0)=nint(scale*(xx0(i)-bias))

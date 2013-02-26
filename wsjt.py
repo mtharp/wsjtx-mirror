@@ -75,6 +75,7 @@ font1='Helvetica'
 hiscall=""
 hisgrid=""
 isec0=-99
+jt4avg=IntVar()
 jtol=IntVar()
 k2txb=IntVar()
 kb8rq=IntVar()
@@ -1261,12 +1262,13 @@ def dtdf_change(event):
                  (event.y<95 and Audio.gcom2.nspecial>0):
          
             idf=Audio.gcom2.idf
-            t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
-            if mode.get()[:3]=='JT4' and event.y<67:
+            if mode.get()[:3]=='JT4' and event.y<67 and jt4avg.get():
                 lab1.configure(text='DF (Hz)',bg='yellow')
+                t="%d" % int(idf+2400.0*event.x/500.0-1200.0,)
                 lab6.configure(text=t,bg="yellow")
             else:
                 lab1.configure(text='DF (Hz)',bg='red')
+                t="%d" % int(idf+1200.0*event.x/500.0-600.0,)
                 lab6.configure(text=t,bg="red")
         else:
             lab1.configure(text='Time (s)',bg='green')
@@ -1592,8 +1594,7 @@ def plot_large():
             if Audio.gcom2.nspecial==4: t="73"
             graph1.create_text(x2+3,93,anchor=W,text=t,fill="yellow")
 
-
-        if mode.get()[:3]=='JT4':
+        if mode.get()[:3]=='JT4' and jt4avg.get():
             y=[]
             for i in range(446):                #Find ymax for yellow curve
                 ps0=Audio.gcom2.ps0[i+1]
@@ -2156,6 +2157,7 @@ setupmenu.add_checkbutton(label = 'Gen Msgs sets Tx1',variable=k2txb)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Monitor ON at startup',variable=nmonitor)
 setupmenu.add_checkbutton(label = 'Low-Duty Beacon Mode',variable=nlowbeacon)
+setupmenu.add_checkbutton(label = 'Plot average JT4 spectrum',variable=jt4avg)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 if (sys.platform == 'darwin'):
@@ -2843,6 +2845,7 @@ try:
         elif key == 'NDepth': ndepth.set(value)
         elif key == 'Debug': ndebug.set(value)
         elif key == 'LowBeacon': nlowbeacon.set(value)
+        elif key == 'JT4avg': jt4avg.set(value)
         elif key == 'Monitor': nmonitor.set(value)
         elif key == 'HisCall':
             Audio.gcom2.hiscall=(value+' '*12)[:12]
@@ -2960,6 +2963,7 @@ f.write("NEME " + str(neme.get()) + "\n")
 f.write("NDepth " + str(ndepth.get()) + "\n")
 f.write("Debug " + str(ndebug.get()) + "\n")
 f.write("LowBeacon " + str(nlowbeacon.get()) + "\n")
+f.write("JT4avg " + str(jt4avg.get()) + "\n")
 f.write("Monitor " + str(nmonitor.get()) + "\n")
 #f.write("TRPeriod " + str(Audio.gcom1.trperiod) + "\n")
 mrudir2=mrudir.replace(" ","#")
