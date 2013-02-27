@@ -653,6 +653,8 @@ def ModeJT65():
     shrx.grid_forget()
     report.grid_forget()
     labreport.grid_forget()
+    report.delete(0,END)
+    report.insert(0,'-20')
     graph2.configure(bg='#66FFFF')
     itol=4
     inctol()

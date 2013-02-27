@@ -65,17 +65,17 @@ def resetgen():
 def defaults():
     if g.mode[:3]=='JT4':
         tx1.delete(0,END)
-        tx1.insert(0,'%T %M')
+        tx1.insert(0,'%T %M %G')
         tx2.delete(0,END)
         tx2.insert(0,'%T %M %R')
         tx3.delete(0,END)
         tx3.insert(0,'%T %M R%R')
         tx4.delete(0,END)
-        tx4.insert(0,'@1270')
+        tx4.insert(0,'@1450 (RRR)')
         tx5.delete(0,END)
-        tx5.insert(0,'@1700')
+        tx5.insert(0,'@1700 (73)')
         tx6.delete(0,END)
-        tx6.insert(0,'CQ %M')
+        tx6.insert(0,'CQ %M %G')
     else:
         t=''
         if mytag.get()==1: t=' %S'
