@@ -268,6 +268,11 @@ subroutine wsjtgen
 
 999 continue
   call cs_unlock
+  if(txsnrdb.lt.40.d0) then
+     s=abs(txsnrdb)
+     fspread=1000.0*(s-int(s))
+     if(fspread.gt.0.0) call spread(iwave,nwave,fspread,iwave)
+  endif
   return
 end subroutine wsjtgen
 

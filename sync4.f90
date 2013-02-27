@@ -144,7 +144,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   snrx=-99.0
   ppmax=psavg(ipk)-1.0
 
-  if(ppmax.gt.0.0001) snrx=db(ppmax*df/2500.0) + 16.5        !Empirical
+  if(ppmax.gt.0.0001) snrx=db(ppmax*df/2500.0) + 16.5        !Not now used
   if(snrx.lt.-33.0) snrx=-33.0
 
   ccfred1=0.
