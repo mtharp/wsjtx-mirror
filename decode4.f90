@@ -1,4 +1,4 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
+subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
      mycall,hiscall,hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT65 data, assuming that DT and DF have already been determined.
@@ -53,12 +53,13 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
   phi=0.d0
   phi1=0.d0
 
-  nw=1.2*width/df
-  if(nw.gt.mode4) nw=mode4
-  do ich=1,7
-     if(nch(ich).ge.nw) exit
-  enddo
-  ich1=ich
+!  nw=0.5*width/df
+!  if(nw.gt.mode4) nw=mode4
+!  do ich=1,7
+!     if(nch(ich).ge.nw) exit
+!  enddo
+!  ich1=ich
+  ich1=minwidth
   do ich=1,7
      if(nch(ich).le.mode4) ich2=ich
   enddo
