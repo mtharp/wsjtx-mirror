@@ -23,5 +23,7 @@ subroutine snr4(blue,sync,snr)
   snr=10.0*log10(blue(ipk)/rms) - 30.6
   sync=snr+25.5
 
+  print*,'B',blue(ipk),rms,sync,blue(ipk)/rms,db(blue(ipk)/rms)
+
   return
 end subroutine snr4

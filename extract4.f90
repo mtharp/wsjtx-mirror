@@ -17,7 +17,7 @@ subroutine extract4(sym,nadd,ncount,decoded)
      first=.false.
   endif
 
-  amp=4.0                               !Optimize this (may depend on nadd).
+  amp=3.8                               !Optimize this (may depend on nadd).
   do j=1,207
      r=amp*sym(j) + 128.
      if(r.gt.255.0) r=255.0

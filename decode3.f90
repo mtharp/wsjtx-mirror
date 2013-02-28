@@ -59,7 +59,7 @@ subroutine decode3(d2,jz,istart,filename)
   if(jz.gt.14*11025) call dtrim(d2d,jz)
   nfast=1
   if(mode.eq.'JT65B2' .or. mode.eq.'JT65C2') nfast=2
-  call wsjt1(d2d,jz,istart,samfacin,FileID,ndepth,                     &
+  call wsjt1(d2d,jz,istart,samfacin,FileID,ndepth,degrade,             &
        MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,              &
        nMode,NFreeze,NAFC,NZap,mode65,nfast,mode4,idf,ntdecode,        &
        MyCall,HisCall,HisGrid,neme,ntx2,ndebug,s2,                     &

@@ -182,20 +182,24 @@ def df_mark():
                 n=1
                 if g.mode[:4]=='JT65' or nd:
                     n=5
-                    x1=(Audio.gcom2.mousedf + 6.6*fstep)/df + dx
+                    x1=(Audio.gcom2.mousedf + 6.6*fstep)/df + dx +0.5
                     if nd: x1=(Audio.gcom2.mousedf + 4.2*fstep)/df + dx
-                    c.create_line(x1-0.5,25,x1-0.5,12,fill=color)
-                    c.create_line(x1+0.5,25,x1+0.5,12,fill=color)
+                    c.create_line(x1,25,x1,12,fill=color,width=2)  
                 for i in range(n):
                     mdf=Audio.gcom2.mousedf
-                    x1=(mdf + i*fstep)/df + dx
+                    x1=(mdf + i*fstep)/df + dx + 0.5
                     j=12
                     if i>0: j=15
                     if i!=1:
-                        c.create_line(x1-0.5,25,x1-0.5,j,fill=color)
-                    if i!=1:
-                        c.create_line(x1+0.5,25,x1+0.5,j,fill=color)
+                        c.create_line(x1,25,x1,j,fill=color,width=2)
                     color='red'
+                if g.mode[:3]=="JT4":
+                    mdf=Audio.gcom2.mousedf
+                    x1=(mdf + 1500-1270)/df + dx + 0.5
+                    c.create_line(x1,25,x1,j,fill=color,width=2)
+                    x1=(mdf + 1700-1270)/df + dx + 0.5
+                    c.create_line(x1,25,x1,j,fill=color,width=2)
+                    
         if(frange==4000):
             dx=375 + (1270.5-fmid)/(2*df)
             if g.mode[:4]=="JT65" or g.mode[:3]=="JT4" or g.mode=='Diana':

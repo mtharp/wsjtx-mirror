@@ -71,7 +71,7 @@ def defaults():
         tx3.delete(0,END)
         tx3.insert(0,'%T %M R%R')
         tx4.delete(0,END)
-        tx4.insert(0,'@1450 (RRR)')
+        tx4.insert(0,'@1500 (RRR)')
         tx5.delete(0,END)
         tx5.insert(0,'@1700 (73)')
         tx6.delete(0,END)

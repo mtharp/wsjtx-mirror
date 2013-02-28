@@ -1,4 +1,4 @@
-subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
+subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
      MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,            &
      Mode,NFreeze,NAFC,NZap,mode65,nfast,mode4,idf,ntdecode0,      &
      MyCall,HisCall,HisGrid,neme,ntx2,ndebug,s2,                   &
@@ -100,20 +100,20 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,              &
      if(ierr.ne.0) print*,'Resample error.',samratio
   endif
 
-!  if(ndiag.ne.0 .and. nclip.lt.0) then
-! Intentionally degrade SNR by -nclip dB.
-!     sq=0.
-!     do i=1,jz
-!        sq=sq + dat(i)**2
-!     enddo
-!     p0=sq/jz
-!     p1=p0*10.0**(-0.1*nclip)
-!     dnoise=sqrt(4*(p1-p0))
-!     idum=-1
-!     do i=1,jz
-!        dat(i)=dat(i) + dnoise*gran(idum)
-!     enddo
-!  endif
+   if(degrade.lt.0.0) then
+! Intentionally degrade SNR by 'degrade' dB.
+      sq=0.
+      do i=1,jz
+         sq=sq + dat(i)**2
+      enddo
+      p0=sq/jz
+      p1=p0*10.0**(-0.1*degrade)
+      dnoise=sqrt(4*(p1-p0))
+      idum=-1
+      do i=1,jz
+         dat(i)=dat(i) + dnoise*gran(idum)
+      enddo
+   endif
 
   if(mode.ne.2 .and. nzap.ne.0) then
      nfrz=NFreeze

@@ -13,10 +13,14 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(-450:450)            !Peak of ccfblue, as function of freq
+  real red(-450:450)               !Peak of ccfblue, as function of freq
   real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
   real tmp(1260)
   integer ipk1(1)
+  integer nch(7)
+  logical savered
   equivalence (ipk1,ipk1a)
+  data nch/1,2,4,9,18,36,72/
   save
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 
@@ -67,58 +71,47 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   lag1=-5
   lag2=59
   syncbest=-1.e30
-  syncbest2=-1.e30
   ccfred=0.
   if(ia-i0.lt.-450) ia=i0-450
   if(ib-i0.gt.450)  ib=i0450
   jmax=-1000
   jmin=1000
 
-  do i=ia,ib                                !Find best frequency channel for CCF
-
-     call xcor4(s2,i,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccf0,lagpk0,flip)
-     j=i-i0
-     if(mode.eq.7) j=j + 3*mode4
-     if(j.ge.-372 .and. j.le.372) then
-        ccfred(j)=ccf0
-        jmax=max(j,jmax)
-        jmin=min(j,jmin)
-     endif
+  do ich=1,7                              !Fine best width
+     savered=.false.
+     do i=ia,ib                           !Find best frequency channel for CCF
+        call xcor4(s2,i,nsteps,nsym,lag1,lag2,ich,mode4,ccfblue,ccf0,   &
+             lagpk0,flip)
+        j=i-i0 + 3*mode4
+        if(j.ge.-372 .and. j.le.372) then
+           ccfred(j)=ccf0
+           jmax=max(j,jmax)
+           jmin=min(j,jmin)
+        endif
 
 ! Find rms of the CCF, without main peak
-     call slope(ccfblue(lag1),lag2-lag1+1,lagpk0-lag1+1.0)
-     sync=abs(ccfblue(lagpk0))
-     ppmax=psavg(i)-1.0
+        call slope(ccfblue(lag1),lag2-lag1+1,lagpk0-lag1+1.0)
+        sync=abs(ccfblue(lagpk0))
 
 ! Find best sync value
-     if(sync.gt.syncbest2) then
-        ipk2=i
-        lagpk2=lagpk0
-        syncbest2=sync
-     endif
-
-! We are most interested if snrx will be more than -30 dB.
-     if(ppmax.gt.0.2938) then            !Corresponds to snrx.gt.-30.0
         if(sync.gt.syncbest) then
            ipk=i
            lagpk=lagpk0
+           ichpk=ich
            syncbest=sync
+           savered=.true.
         endif
-     endif
+     enddo
+     if(savered) red=ccfred
   enddo
 
-! If we found nothing with snrx > -30 dB, take the best sync that *was* found.
-  if(syncbest.lt.-10.) then
-     ipk=ipk2
-     lagpk=lagpk2
-     syncbest=syncbest2
-  endif
-
-  dfx=(ipk-i0)*df
-  if(mode.eq.7) dfx=dfx + 3*mode4*df
+  ccfred=red
+  width=df*nch(ichpk)
+  dfx=(ipk-i0 + 3*mode4)*df
 
 ! Peak up in time, at best whole-channel frequency
-  call xcor4(s2,ipk,nsteps,nsym,lag1,lag2,mode4,ccfblue,ccfmax,lagpk,flip)
+  call xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ichpk,mode4,ccfblue,ccfmax,   &
+       lagpk,flip)
   xlag=lagpk
   if(lagpk.gt.lag1 .and. lagpk.lt.lag2) then
      call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
@@ -136,17 +129,19 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
      endif
   enddo
   rms=sqrt(sq/nsq)
-  snrsync=abs(ccfblue(lagpk))/rms - 1.1                       !Empirical
+  snrsync=max(0.0,db(abs(ccfblue(lagpk)/rms - 1.0)) - 4.5)
+  snrx=-26.
+  if(mode4.eq.2)  snrx=-25.
+  if(mode4.eq.4)  snrx=-24.
+  if(mode4.eq.9)  snrx=-23.
+  if(mode4.eq.18) snrx=-22.
+  if(mode4.eq.36) snrx=-21.
+  if(mode4.eq.72) snrx=-20.
+  snrx=snrx + snrsync
 
   dt=2.0/11025.0
   istart=xlag*nq
   dtx=istart*dt
-  snrx=-99.0
-  ppmax=psavg(ipk)-1.0
-
-  if(ppmax.gt.0.0001) snrx=db(ppmax*df/2500.0) + 16.5        !Not now used
-  if(snrx.lt.-33.0) snrx=-33.0
-
   ccfred1=0.
   jmin=max(jmin,-224)
   jmax=min(jmax,224)
@@ -174,7 +169,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   do i=ipk1a,jmax
      if(ccfred1(i).le.ccf10) exit
   enddo
-  width=df*(i-i1)
 
 999 return
 end subroutine sync4

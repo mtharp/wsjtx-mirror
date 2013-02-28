@@ -9,6 +9,7 @@ integer ngreen         !Length of green                         GUI
 real dgain             !Digital audio gain setting              GUI
 real dlatency          !Differential Tx/Rx latency              GUI
 real fecho             !Audio tone for echo test                Decoder
+real degrade           !Degrade S/N for decoder tests           GUI
 integer iter           !(why is this here??)
 integer iyr            !UTC from python                         GUI
 integer imo            !UTC from python                         GUI
@@ -106,7 +107,7 @@ character*22 t0msg
 
 parameter (ND2MAX=120*11025)
 common/gcom2/ps0(450),psavg(450),s2(64,3100),ccf(-5:540),             &
-     green(500),ngreen,dgain,dlatency,fecho,iter,iyr,imo,ida,         &
+     green(500),ngreen,dgain,dlatency,fecho,degrade,iter,iyr,imo,ida, &
      ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,ndither,        &
      nsumecho,ndecdone,npingtime,npingtime2,ierr,lauto,mantx,         &
      nrestart,ntr,ntxboth,nmsg,                                       &

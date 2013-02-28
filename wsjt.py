@@ -1903,6 +1903,19 @@ def update():
     else:
         txsnrdb=99.0
         Audio.gcom1.txsnrdb=txsnrdb
+
+    if tx6.get()[:1]=='$':
+        try:
+            degrade=float(tx6.get()[1:])
+            if degrade<0.0 and degrade>-99.0:
+                Audio.gcom2.degrade=degrade
+                tx6.configure(bg='red')
+        except:
+            degrade=0.0
+    else:
+        degrade=0.0
+        Audio.gcom2.degrade=degrade
+
     if Audio.gcom2.monitoring and not Audio.gcom1.transmitting:
         bmonitor.configure(bg='green')
         if (sys.platform == 'darwin'):
