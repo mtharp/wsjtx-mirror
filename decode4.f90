@@ -53,7 +53,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,width,   &
   phi=0.d0
   phi1=0.d0
 
-  nw=0.5*width/df
+  nw=1.2*width/df
   if(nw.gt.mode4) nw=mode4
   do ich=1,7
      if(nch(ich).ge.nw) exit

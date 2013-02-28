@@ -1,7 +1,7 @@
 subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
      MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,            &
-     Mode,NFreeze,NAFC,NZap,mode65,nfast,mode4,idf,ntdecode0,      &
-     MyCall,HisCall,HisGrid,neme,ntx2,ndebug,s2,                   &
+     Mode,NFreeze,NAFC,NZap,mode65,nfast,mode4,minwidth,idf,       &
+     ntdecode0,MyCall,HisCall,HisGrid,neme,ntx2,ndebug,s2,         &
      ps0,npkept,lumsg,nslim2,psavg,ccf,Nseg,                       &
      MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
 
@@ -55,7 +55,6 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
   ntdecode=ntdecode0
   modea=Mode
   nslim2a=0                                   !### Is this OK ??? ###
-  MinWidth=40                            !Minimum width of pings, ms
   call zero(psavg,450)
   call cs_lock('wsjt1')
   rewind 11
@@ -231,9 +230,9 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
      hiscall=HisCall(1:i-1)//'            '
 
      jztest=165000
-     if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,       &
-          DFTolerance,NFreeze,mode,mode4,mycall,hiscall,hisgrid,         &
-          Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,lcum,nspecial,ndf,  &
+     if(jz.ge.jztest) call wsjt4(dat,jz,cfile6,NClearAve,MinSigdB,        &
+          DFTolerance,NFreeze,mode,mode4,minwidth,mycall,hiscall,hisgrid, &
+          Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,lcum,nspecial,ndf,   &
           NSyncOK,ccf,psavg,ndiag,ps0)
      goto 900
   endif
@@ -270,6 +269,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
      
 
 ! We're in FSK441 or JTMS mode. Compute the 2D spectrum.
+  MinWidth=40                            !Minimum width of pings, ms
   df=11025.0/256.0            !FFT resolution ~43 Hz
   dtbuf=nstep/11025.0
   stlim=nslim2                !Single-tone threshold

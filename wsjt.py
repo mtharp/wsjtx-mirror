@@ -64,6 +64,7 @@ isync65=1
 isync_save=0
 itol=5                                       #Default tol=400 Hz
 ntol=(10,25,50,100,200,400,600)              #List of available tolerances
+iMinW=1
 idsec=0
 #irdsec=0
 lauto=0
@@ -603,6 +604,7 @@ def ModeFSK441(event=NONE):
         bexclude.pack_forget()
         cbfreeze.grid_forget()
         cbafc.grid_forget()
+        lMinW.grid_forget()
         lsync.grid(column=0,row=0,padx=8,sticky='EW')
         ltol.grid(column=0,row=1,padx=8,sticky='EW')
         cbzap.grid(column=1,row=0,padx=2,sticky='W')
@@ -653,6 +655,7 @@ def ModeJT65():
     shrx.grid_forget()
     report.grid_forget()
     labreport.grid_forget()
+    lMinW.grid_forget()
     report.delete(0,END)
     report.insert(0,'-20')
     graph2.configure(bg='#66FFFF')
@@ -784,6 +787,8 @@ def ModeCW(event=NONE):
 def ModeJT4():
     global slabel,isync,isync65,textheight,itol
     ModeJT65()
+    lMinW.grid(column=0,row=2,padx=2,sticky='EW')
+
 #    bclravg.pack_forget()
 #    binclude.pack_forget()
 #    bexclude.pack_forget()
@@ -1129,6 +1134,18 @@ def dectol(event):
     if itol>0 : itol=itol-1
     ltol.configure(text='Tol    '+str(ntol[itol]))
 
+#------------------------------------------------------ incMinW
+def incMinW(event=NONE):
+    global iMinW
+    if iMinW<7: iMinW=iMinW+1
+    lMinW.configure(text='MinW  ' + chr(ord('A')+iMinW-1))
+
+#------------------------------------------------------ decMinW
+def decMinW(event):
+    global iMinW
+    if iMinW>1 : iMinW=iMinW-1
+    lMinW.configure(text='MinW   ' + chr(ord('A')+iMinW-1))
+                    
 #------------------------------------------------------ incdsec
 def incdsec(event):
     global idsec
@@ -2059,6 +2076,7 @@ def update():
     Audio.gcom2.nafc=nafc.get()
     Audio.gcom2.nfreeze=nfreeze.get()
     Audio.gcom2.dftolerance=ntol[itol]
+    Audio.gcom2.minwidth=iMinW
     Audio.gcom2.neme=neme.get()
     Audio.gcom2.ndepth=ndepth.get()
     Audio.gcom2.ndtr=options.ndtr.get()
@@ -2577,6 +2595,9 @@ cbafc.grid(column=1,row=1,padx=2,sticky='W')
 ##lspace.grid(column=0,row=5,padx=2,pady=5,sticky='W')
 ltol=Label(f5b1, bg='white', fg='black', text='Tol    400', width=8, relief=RIDGE)
 ltol.grid(column=0,row=1,padx=2,sticky='EW')
+lMinW=Label(f5b1, bg='white', fg='black', text='MinW    A', width=8, relief=RIDGE)
+lMinW.grid(column=0,row=2,padx=2,sticky='EW')
+
 ##sbsync=Spinbox(f5b,from_=-20,to=10,bg='white',width=4,textvariable=nsync)
 ##sbsync.grid(column=0,row=4)
 ##nsync.set(1)
@@ -2586,12 +2607,15 @@ ltol.grid(column=0,row=1,padx=2,sticky='EW')
 ##jtol.set(200)
 Widget.bind(ltol,'<Button-1>',inctol)
 Widget.bind(ldsec,'<Button-1>',incdsec)
+Widget.bind(lMinW,'<Button-1>',incMinW)
 if (sys.platform != 'darwin'):
    Widget.bind(ldsec,'<Button-3>',decdsec)
    Widget.bind(ltol,'<Button-3>',dectol)
+   Widget.bind(lMinW,'<Button-3>',decMinW)
 else:
    Widget.bind(ldsec,'<Button-2>',decdsec)
    Widget.bind(ltol,'<Button-2>',dectol)
+   Widget.bind(lMinW,'<Button-2>',decMinW)
 
 #------------------------------------------------------ Tx parameters
 f5b2=Frame(f5b,bd=2,relief=GROOVE)

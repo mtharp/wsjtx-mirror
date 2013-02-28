@@ -61,8 +61,8 @@ subroutine decode3(d2,jz,istart,filename)
   if(mode.eq.'JT65B2' .or. mode.eq.'JT65C2') nfast=2
   call wsjt1(d2d,jz,istart,samfacin,FileID,ndepth,degrade,             &
        MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,              &
-       nMode,NFreeze,NAFC,NZap,mode65,nfast,mode4,idf,ntdecode,        &
-       MyCall,HisCall,HisGrid,neme,ntx2,ndebug,s2,                     &
+       nMode,NFreeze,NAFC,NZap,mode65,nfast,mode4,minwidth,idf,        &
+       ntdecode,MyCall,HisCall,HisGrid,neme,ntx2,ndebug,s2,            &
        ps0,npkept,lumsg,nslim2,psavg,ccf,Nseg,                         &
        MouseDF,NAgain,LDecoded,nspecial,ndf,ss1,ss2)
   nforce=0

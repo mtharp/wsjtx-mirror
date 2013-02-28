@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
+subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -25,7 +25,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 
 ! we have already downsampled the data by factor of 2.
-
   nsym=207
   nfft=2520
   nh=nfft/2
@@ -77,7 +76,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,    &
   jmax=-1000
   jmin=1000
 
-  do ich=1,7                              !Fine best width
+  do ich=minwidth,7                       !Find best width
      savered=.false.
      do i=ia,ib                           !Find best frequency channel for CCF
         call xcor4(s2,i,nsteps,nsym,lag1,lag2,ich,mode4,ccfblue,ccf0,   &

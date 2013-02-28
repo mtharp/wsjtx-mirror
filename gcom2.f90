@@ -14,6 +14,7 @@ integer iter           !(why is this here??)
 integer iyr            !UTC from python                         GUI
 integer imo            !UTC from python                         GUI
 integer ida            !UTC from python                         GUI
+integer minwidth       !Minimum width index 'ich' for JT4       GUI
 integer ndecoding      !Decoder status (see decode2.f90)     GUI,Decoder
 integer ndecoding0     !Status on previous decode            GUI,Decoder
 integer mousebutton    !Which button was clicked?               GUI
@@ -108,7 +109,7 @@ character*22 t0msg
 parameter (ND2MAX=120*11025)
 common/gcom2/ps0(450),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,dlatency,fecho,degrade,iter,iyr,imo,ida, &
-     ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,ndither,        &
+     minwidth,ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,ndither, &
      nsumecho,ndecdone,npingtime,npingtime2,ierr,lauto,mantx,         &
      nrestart,ntr,ntxboth,nmsg,                                       &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,nzap,         &

@@ -1,6 +1,6 @@
-subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,   &
-     mode,mode4,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth,neme,    &
-     idf,lumsg,lcum,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
+subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
+     mode,mode4,minwidth,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth, &
+     neme,idf,lumsg,lcum,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
@@ -57,8 +57,8 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,   &
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
-  call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,             &
-       mode4,dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
+  call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,mode4,minwidth,  &
+       dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
   
   csync=' '
   decoded='                      '
