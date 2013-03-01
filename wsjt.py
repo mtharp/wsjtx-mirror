@@ -788,6 +788,8 @@ def ModeJT4():
     global slabel,isync,isync65,textheight,itol
     ModeJT65()
     lMinW.grid(column=0,row=2,padx=2,sticky='EW')
+    report.grid(column=1,row=1,sticky='W',padx=7)
+    labreport.grid(column=0,row=1,sticky='E',padx=0)
 
 #    bclravg.pack_forget()
 #    binclude.pack_forget()
@@ -2868,6 +2870,7 @@ try:
         elif key == 'Report':
             report.delete(0,END)
             report.insert(0,value)
+            g.report=int(value)
         elif key == 'ShOK': ShOK.set(value)
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Band': nfreq.set(value)

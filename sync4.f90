@@ -104,7 +104,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   enddo
 
   ccfred=red
-  width=df*nch(ichpk)
+!  width=df*nch(ichpk)
   dfx=(ipk-i0 + 3*mode4)*df
 
 ! Peak up in time, at best whole-channel frequency
@@ -159,7 +159,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   enddo
   base=s/ns
   ccfred1=ccfred1-base
-  ccf10=0.1*maxval(ccfred1)
+  ccf10=0.5*maxval(ccfred1)
   do i=ipk1a,jmin,-1
      if(ccfred1(i).le.ccf10) exit
   enddo
@@ -167,6 +167,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   do i=ipk1a,jmax
      if(ccfred1(i).le.ccf10) exit
   enddo
+  width=(i-i1)*df
 
 999 return
 end subroutine sync4

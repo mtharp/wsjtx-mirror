@@ -7,8 +7,8 @@
       character*12 c1,c2,c2z
       character*4 c3
       character*6 grid6
-c      character*3 dxcc                  !Where is DXCC implemented?
       logical text1,text2,text3
+      common/n1n2ng/ncall1,ncall2,ngrid
 
 C  Convert all letters to upper case
       do i=1,22
@@ -98,6 +98,10 @@ C  Encode data into 6-bit words
       dat(10)=16*iand(nc2,3)+iand(ishft(ng,-12),15) !2+4 bits
       dat(11)=iand(ishft(ng,-6),63)                 !6 bits
       dat(12)=iand(ng,63)                           !6 bits
+
+      ncall1=nc1
+      ncall2=nc2
+      ngrid=ng
 
       return
       end

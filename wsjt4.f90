@@ -105,6 +105,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   ndf=nint(dfx)
   if(flip.lt.0.0 .and. (kvqual.eq.1 .or. nqual.ge.nq2)) cooo='OOO'
   if(kvqual.eq.0.and.nqual.ge.nq1.and.nqual.lt.nq2) cooo(2:3)=' ?'
+  if(index(decoded,'-').ge.9) cooo='   '
   if(decoded.eq.'                      ') cooo='   '
   do i=1,22
      c1=decoded(i:i)

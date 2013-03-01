@@ -13,6 +13,7 @@ subroutine gen4(message,mode4,samfac,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg)
   integer*1 data0(13),symbol(216)
   logical first
   common/prcom2/ npr2(207),pr2(207)
+  common/n1n2ng/ncall1,ncall2,ngrid
   data npr2/                                                    &
        0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0, &
        0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0, &
@@ -36,6 +37,7 @@ subroutine gen4(message,mode4,samfac,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg)
   endif
 
   call chkmsg(message,cok,nspecial,flip)
+  if(ngrid.ge.32402 .and. ngrid.le.32464) flip=-1.0   !Use #-sync for reports
   call packmsg(message,dgen)  !Pack 72-bit message into 12 six-bit symbols
   call entail(dgen,data0)
   call unpackmsg(dgen,msgsent)
