@@ -37,8 +37,8 @@ subroutine gen4(message,mode4,samfac,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg)
   endif
 
   call chkmsg(message,cok,nspecial,flip)
-  if(ngrid.ge.32402 .and. ngrid.le.32464) flip=-1.0   !Use #-sync for reports
   call packmsg(message,dgen)  !Pack 72-bit message into 12 six-bit symbols
+  if(ngrid.ge.32402 .and. ngrid.le.32464) flip=-1.0   !Use #-sync for reports
   call entail(dgen,data0)
   call unpackmsg(dgen,msgsent)
 
@@ -78,9 +78,9 @@ subroutine gen4(message,mode4,samfac,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg)
   enddo
   nwave=i
 
-  if(flip.lt.0.0) then
+  if(flip.lt.0.0 .and. (ngrid.lt.32402 .or. ngrid.gt.32464)) then
      do i=22,1,-1
-        if(msgsent(i:i).ne.' ') goto 10
+        if(msgsent(i:i).ne.' ') exit
      enddo
 10   msgsent=msgsent(1:i)//' OOO'
   endif

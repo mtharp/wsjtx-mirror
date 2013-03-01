@@ -15,7 +15,6 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   integer ncode(206)
   real*4   code(206,2*MAXCALLS + 2 + MAXRPT)
   real pp(2*MAXCALLS + 2 + MAXRPT)
-
   data neme0/-99/
   data rpt/'-01','-02','-03','-04','-05',          &
            '-06','-07','-08','-09','-10',          &
@@ -123,7 +122,8 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   p2=-1.e30
   do k=1,ntot
      pp(k)=0.
-     if(k.ge.2 .and. k.le.64 .and. flip.lt.0.0) cycle
+! Should re-instate the following:
+!     if(k.ge.2 .and. k.le.64 .and. flip.gt.0.0) cycle   
 ! Test all messages if flip=+1; skip the CQ messages if flip=-1.
      if(flip.gt.0.0 .or. testmsg(k)(1:3).ne.'CQ ') then
         p=0.
