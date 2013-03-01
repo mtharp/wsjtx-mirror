@@ -2886,6 +2886,8 @@ try:
         elif key == 'LowBeacon': nlowbeacon.set(value)
         elif key == 'JT4avg': jt4avg.set(value)
         elif key == 'Monitor': nmonitor.set(value)
+        elif key == 'MinW': iMinW=int(value)
+        
         elif key == 'HisCall':
             Audio.gcom2.hiscall=(value+' '*12)[:12]
             ToRadio.delete(0,99)
@@ -2919,6 +2921,7 @@ elif mode.get()[:3]=='JT4':
 #options.defaults()
 
 lsync.configure(text=slabel+str(isync))
+lMinW.configure(text='MinW  ' + chr(ord('A')+iMinW-1))
 Audio.gcom2.azeldir=(options.azeldir.get()+' '*80)[:80]
 Audio.gcom2.ndepth=ndepth.get()
 Audio.gcom2.nhighpri=options.HighPri.get()
@@ -3004,6 +3007,7 @@ f.write("Debug " + str(ndebug.get()) + "\n")
 f.write("LowBeacon " + str(nlowbeacon.get()) + "\n")
 f.write("JT4avg " + str(jt4avg.get()) + "\n")
 f.write("Monitor " + str(nmonitor.get()) + "\n")
+f.write("MinW " + str(iMinW) + "\n")
 #f.write("TRPeriod " + str(Audio.gcom1.trperiod) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")

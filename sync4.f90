@@ -22,6 +22,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   equivalence (ipk1,ipk1a)
   data nch/1,2,4,9,18,36,72/
   save
+  freq(i)=(i-i0 + 3*mode4)*df
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 
 ! we have already downsampled the data by factor of 2.
@@ -49,8 +50,8 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   enddo
 
 ! Set freq and lag ranges
-  famin=200.
-  fbmax=2700.
+  famin=200.0 + 3*mode4*df
+  fbmax=2700.0 - 3*mode4*df
   fa=famin
   fb=fbmax
   if(NFreeze.eq.1) then
@@ -60,25 +61,23 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
      fa=max(famin,1270.46+MouseDF-600)
      fb=min(fbmax,1270.46+MouseDF+600)
   endif
-  ia=fa/df
-  ib=fb/df
-  if(mode.eq.7) then
-     ia=ia - 3*mode4
-     ib=ib - 3*mode4
-  endif
+  ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
+  ib=fb/df - 3*mode4                   !Index of lowest tone, top of range
   i0=nint(1270.46/df)
+  irange=450
+  if(ia-i0.lt.-irange) ia=i0-irange
+  if(ib-i0.gt.irange)  ib=i0+irange
   lag1=-5
   lag2=59
   syncbest=-1.e30
   ccfred=0.
-  if(ia-i0.lt.-450) ia=i0-450
-  if(ib-i0.gt.450)  ib=i0450
   jmax=-1000
   jmin=1000
 
   do ich=minwidth,7                       !Find best width
+     kz=nch(ich)/2
      savered=.false.
-     do i=ia,ib                           !Find best frequency channel for CCF
+     do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
         call xcor4(s2,i,nsteps,nsym,lag1,lag2,ich,mode4,ccfblue,ccf0,   &
              lagpk0,flip)
         j=i-i0 + 3*mode4
