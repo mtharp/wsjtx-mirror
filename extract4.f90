@@ -1,5 +1,6 @@
-subroutine extract4(sym,nadd,ncount,decoded)
+subroutine extract4(sym0,nadd,ncount,decoded)
 
+  real sym0(207)
   real sym(207)
   character decoded*22
   character*72 c72
@@ -17,7 +18,18 @@ subroutine extract4(sym,nadd,ncount,decoded)
      first=.false.
   endif
 
-  amp=3.8                               !Optimize this (may depend on nadd).
+!  read(66,*) amp,ndelta,limit
+!  close(66)
+  amp=30.0
+  ndelta=50
+  limit=50000
+
+  ave0=sum(sym0)/207.0
+  sym=sym0-ave0
+  sq=dot_product(sym,sym)
+  rms0=sqrt(sq/206.0)
+  sym=sym/rms0
+
   do j=1,207
      r=amp*sym(j) + 128.
      if(r.gt.255.0) r=255.0
@@ -28,8 +40,6 @@ subroutine extract4(sym,nadd,ncount,decoded)
   enddo
 
   nbits=72+31
-  ndelta=50
-  limit=100000
   ncycles=0
   ncount=-1
   decoded='                      '
