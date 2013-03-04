@@ -36,14 +36,20 @@ JT65code.exe: $(OBJS1)
 OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o \
 	tab.o nhash.o 
 
-OBJS4	= t72.o abc441.o gen441.o coh441.o dfdphi.o tweak1.o
-t72.exe:$(OBJS4)
-	$(FC) -o t72.exe $(OBJS4)
+OBJS4	= t60.o wsjt4.o sync4.o avemsg4.o decode4.o ps4.o flat1.o \
+	xcor4.o slope.o peakup.o db.o deep4.o getmet4.o extract4.o \
+	four2a.o pctile.o encode4.o interleave4.o fano232.o unpackmsg.o \
+	chkmsg.o packmsg.o entail.o encode232.o unpacktext.o unpackcall.o \
+	unpackgrid.o grid2k.o getpfx2.o packtext.o getpfx1.o packcall.o \
+	k2grid.o packgrid.o deg2grid.o grid2deg.o nchar.o sort.o ssort.o \
+	thnix_stub.o
+t60.exe:$(OBJS4)
+	$(FC) -o t60.exe $(OBJS4) libfftw3f_win.a 
 
-OBJS5	= t76.o iscat.o four2a.o db.o pctile.o match.o \
-	sort.o ssort.o thnix_stub.o geniscat.o synciscat.o
-t76.exe:$(OBJS5)
-	$(FC) -o t76 $(OBJS5) libfftw3f_win.a
+OBJS5	= t50.o getmu.o bessi0.o bessi1.o bessi.o gammln.o pdfChisq.o \
+	getmet4.o
+t50.exe:$(OBJS5)
+	$(FC) -o t50 $(OBJS5)
 
 OBJS6	= techo.o analytic.o four2b.o db.o
 techo.exe: $(OBJS6)
@@ -64,8 +70,8 @@ SRCS2F90 = wsjt1.f90 a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 	specdiana.f90 syncdiana.f90 decdiana.f90 tweak2.f90 dtrim.f90 \
 	wsjt4.f90 decode4.f90 encode4.f90 getmet4.f90 extract4.f90 \
 	deep4.f90 avemsg4.f90 encode232.f90 fano232.f90 sync4.f90 \
-	snr4.f90 xcor4.f90 gen4.f90 ps4.f90 interleave4.f90 rfile2.f90
-
+	xcor4.f90 gen4.f90 ps4.f90 interleave4.f90 rfile2.f90 \
+	spread.f90 
 
 
 SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
