@@ -8,6 +8,7 @@
 #include "soundin.h"
 #include "soundout.h"
 #include "commons.h"
+#include "wsprnet.h"
 
 //--------------------------------------------------------------- MainWindow
 namespace Ui {
@@ -39,7 +40,6 @@ public slots:
   void p3ReadFromStdout();
   void p3ReadFromStderr();
   void p3Error();
-
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -88,6 +88,8 @@ private slots:
   void on_actionSave_wav_triggered();
   void on_actionSave_c2_triggered();
   void on_actionSave_all_triggered();
+  void uploadSpots();
+  void wsprNetResponse(QString serverResponse);
 
 private:
     Ui::MainWindow *ui;
@@ -191,6 +193,8 @@ private:
     QTimer* ptt1Timer;
     QTimer* uploadTimer;
     QTimer* tuneTimer;
+
+    WSPRNet *wsprNet;
 
     QString m_path;
     QString m_myCall;

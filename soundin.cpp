@@ -79,6 +79,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   inParam.suggestedLatency=0.05;
   inParam.hostApiSpecificStreamInfo=NULL;
 
+  qDebug() << "Pa_IsFormatSuported";
   paerr=Pa_IsFormatSupported(&inParam,NULL,12000.0);
   if(paerr<0) {
     emit error("PortAudio says requested soundcard format not supported.");

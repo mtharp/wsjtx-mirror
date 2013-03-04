@@ -1,4 +1,4 @@
-//-------------------------------------------------------------- MainWindow
+//--------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -103,7 +103,8 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(tuneTimer, SIGNAL(timeout()), this, SLOT(stopTx()));
   uploadTimer = new QTimer(this);
   uploadTimer->setSingleShot(true);
-  connect(uploadTimer, SIGNAL(timeout()), this, SLOT(p2Start()));
+  //connect(uploadTimer, SIGNAL(timeout()), this, SLOT(p2Start()));
+  connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
 
   m_auto=false;
   m_waterfallAvg = 1;
@@ -203,6 +204,15 @@ MainWindow::MainWindow(QWidget *parent) :
   if(ui->actionCuteSDR->isChecked()) on_actionCuteSDR_triggered();
   if(ui->actionAFMHot->isChecked()) on_actionAFMHot_triggered();
   if(ui->actionBlue->isChecked()) on_actionBlue_triggered();
+
+  ui->legendLabel->setFont(ui->decodedTextBrowser->font());
+  //                        2058   -9  -0.4   14.097140    0   HS0ZKM        OK03     37
+  ui->legendLabel->setText(" UTC   dB    DT        Freq   DF   Call          Grid    dBm");
+
+  wsprNet = new WSPRNet(this);
+  //connect( ui->wsprnet_pushButton, SIGNAL(clicked()), this, SLOT(uploadSpots()));
+  connect( wsprNet, SIGNAL(wsprNetResponse(QString)), this, SLOT(wsprNetResponse(QString)));
+
   freezeDecode(2);
 }                                          // End of MainWindow constructor
 
@@ -801,7 +811,24 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     } else {
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
-      ui->decodedTextBrowser->append(t);
+      t.remove(QRegExp("\\s+$"));
+      QStringList rxFields = t.split(QRegExp("\\s+"));
+      qDebug() << "++> Rx: " << rxFields;
+      QString rxLine;
+      if ( rxFields.count() == 8 ) {
+        rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
+          .arg(rxFields.at(0), 4)
+          .arg(rxFields.at(1), 4)
+          .arg(rxFields.at(2), 5)
+          .arg(rxFields.at(3), 11)
+          .arg(rxFields.at(4), 4)
+          .arg(rxFields.at(5), -12)
+          .arg(rxFields.at(6), -6)
+          .arg(rxFields.at(7), 3);
+      } else {
+          rxLine = t;
+      }
+      ui->decodedTextBrowser->append(rxLine);
     }
   }
 }
@@ -815,6 +842,28 @@ void MainWindow::p1ReadFromStderr()                        //p1readFromStderr
 void MainWindow::p1Error()                                     //p1Error
 {
   msgBox("Error starting or running\n" + m_appDir + "/wsprd");
+}
+
+void MainWindow::uploadSpots()
+{
+    if(m_uploading)
+        return;
+    wsprNet->upload(m_myCall, m_myGrid, m_appDir + "/wsprd.out");
+    loggit("Start WSPRNet Upload");
+    m_uploading = true;
+    lab3->setStyleSheet("QLabel{background-color:yellow}");
+    lab3->setText("Uploading Spots");
+}
+
+void MainWindow::wsprNetResponse(QString serverResponse)
+{
+    qDebug() << serverResponse;
+    m_uploading=false;
+    if(serverResponse.indexOf("spot(s) added") > 0) {
+      QFile::remove(m_appDir + "/wsprd.out");
+    }
+    lab3->setStyleSheet("");
+    lab3->setText("");
 }
 
 void MainWindow::p2Start()
