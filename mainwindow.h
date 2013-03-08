@@ -89,7 +89,7 @@ private slots:
   void on_actionSave_c2_triggered();
   void on_actionSave_all_triggered();
   void uploadSpots();
-  void wsprNetResponse(QString serverResponse);
+  void uploadResponse(QString response);
 
 private:
     Ui::MainWindow *ui;

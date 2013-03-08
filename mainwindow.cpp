@@ -210,8 +210,8 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->legendLabel->setText(" UTC   dB    DT        Freq   DF   Call          Grid    dBm");
 
   wsprNet = new WSPRNet(this);
-  //connect( ui->wsprnet_pushButton, SIGNAL(clicked()), this, SLOT(uploadSpots()));
-  connect( wsprNet, SIGNAL(wsprNetResponse(QString)), this, SLOT(wsprNetResponse(QString)));
+  connect( ui->wsprnet_pushButton, SIGNAL(clicked()), this, SLOT(uploadSpots()));
+  connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
 
   freezeDecode(2);
 }                                          // End of MainWindow constructor
@@ -599,7 +599,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab3 = new QLabel("");
   lab3->setAlignment(Qt::AlignHCenter);
-  lab3->setMinimumSize(QSize(120,18));
+  lab3->setMinimumSize(QSize(150,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
 }
@@ -848,22 +848,37 @@ void MainWindow::uploadSpots()
 {
     if(m_uploading)
         return;
-    wsprNet->upload(m_myCall, m_myGrid, m_appDir + "/wsprd.out");
+
+    QString rfreq = QString("%1").arg(m_dialFreq + 0.001500, 0, 'f', 6);
+    QString tfreq = QString("%1").arg(0.000001 * m_txFreq + m_dialFreq, 0, 'f', 6);
+
+    wsprNet->upload(m_myCall,
+                    m_myGrid,
+                    rfreq,
+                    tfreq,
+                    QString::number(m_TxOK ? m_pctx : 0),
+                    QString::number(m_dBm),
+                    Version,
+                    m_appDir + "/wsprd.out");
     loggit("Start WSPRNet Upload");
     m_uploading = true;
     lab3->setStyleSheet("QLabel{background-color:yellow}");
     lab3->setText("Uploading Spots");
 }
 
-void MainWindow::wsprNetResponse(QString serverResponse)
+void MainWindow::uploadResponse(QString response)
 {
-    qDebug() << serverResponse;
-    m_uploading=false;
-    if(serverResponse.indexOf("spot(s) added") > 0) {
-      QFile::remove(m_appDir + "/wsprd.out");
+    if (response == "done") {
+        m_uploading=false;
+        lab3->setStyleSheet("");
+        lab3->setText("");
+    } else if (response == "Upload Failed") {
+        m_uploading=false;
+        lab3->setStyleSheet("");
+        lab3->setText(response);
+    } else {
+        lab3->setText(response);
     }
-    lab3->setStyleSheet("");
-    lab3->setText("");
 }
 
 void MainWindow::p2Start()
