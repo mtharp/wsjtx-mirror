@@ -210,7 +210,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->legendLabel->setText(" UTC   dB    DT        Freq   DF   Call          Grid    dBm");
 
   wsprNet = new WSPRNet(this);
-  connect( ui->wsprnet_pushButton, SIGNAL(clicked()), this, SLOT(uploadSpots()));
+  //connect( ui->wsprnet_pushButton, SIGNAL(clicked()), this, SLOT(uploadSpots()));
   connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
 
   freezeDecode(2);

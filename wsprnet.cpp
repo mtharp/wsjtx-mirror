@@ -88,7 +88,7 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
 
         // Prevent reporting data ouside of the current frequency band
         float f = fabs(m_rfreq.toFloat() - rx.cap(6).toFloat());
-        qDebug() << "Freq Delta = " << f;
+        //qDebug() << "Freq Delta = " << f;
         if (f > 0.0002)
             return false;
 
