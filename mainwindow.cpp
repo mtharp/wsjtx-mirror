@@ -1,4 +1,4 @@
-//--------------------------------------------------------------- MainWindow
+//---------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -813,18 +813,28 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       t=t.mid(0,n-2) + "                                                  ";
       t.remove(QRegExp("\\s+$"));
       QStringList rxFields = t.split(QRegExp("\\s+"));
-      qDebug() << "++> Rx: " << rxFields;
+      //qDebug() << "++> Rx: " << rxFields;
       QString rxLine;
       if ( rxFields.count() == 8 ) {
-        rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
-          .arg(rxFields.at(0), 4)
-          .arg(rxFields.at(1), 4)
-          .arg(rxFields.at(2), 5)
-          .arg(rxFields.at(3), 11)
-          .arg(rxFields.at(4), 4)
-          .arg(rxFields.at(5), -12)
-          .arg(rxFields.at(6), -6)
-          .arg(rxFields.at(7), 3);
+          rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
+                  .arg(rxFields.at(0), 4)
+                  .arg(rxFields.at(1), 4)
+                  .arg(rxFields.at(2), 5)
+                  .arg(rxFields.at(3), 11)
+                  .arg(rxFields.at(4), 4)
+                  .arg(rxFields.at(5), -12)
+                  .arg(rxFields.at(6), -6)
+                  .arg(rxFields.at(7), 3);
+      } else if ( rxFields.count() == 7 ) { // Type 2 message
+          rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
+                  .arg(rxFields.at(0), 4)
+                  .arg(rxFields.at(1), 4)
+                  .arg(rxFields.at(2), 5)
+                  .arg(rxFields.at(3), 11)
+                  .arg(rxFields.at(4), 4)
+                  .arg(rxFields.at(5), -12)
+                  .arg("", -6)
+                  .arg(rxFields.at(6), 3);
       } else {
           rxLine = t;
       }
@@ -868,6 +878,7 @@ void MainWindow::uploadSpots()
 
 void MainWindow::uploadResponse(QString response)
 {
+    //qDebug() << ">>> " << response;
     if (response == "done") {
         m_uploading=false;
         lab3->setStyleSheet("");

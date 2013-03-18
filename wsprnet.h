@@ -10,6 +10,7 @@ Q_OBJECT
 public:
     explicit WSPRNet(QObject *parent = 0);
     void upload(QString call, QString grid, QString rfreq, QString tfreq, QString tpct, QString dbm, QString version, QString fileName);
+    static bool decodeLine(QString line, QHash<QString,QString> &query);
 
 signals:
     void uploadStatus(QString);
@@ -27,7 +28,6 @@ private:
     int m_urlQueueSize;
     int m_uploadType;
 
-    bool decodeLine(QString line, QHash<QString,QString> &query);
     QString urlEncodeNoSpot();
     QString urlEncodeSpot(QHash<QString,QString> spot);
 };

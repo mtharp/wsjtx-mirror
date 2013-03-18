@@ -27,12 +27,14 @@ void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq, Q
     m_vers = version;
     m_file = fileName;
 
+    //qDebug() << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
+
     // Open the wsprd.out file
     QFile wsprdOutFile(fileName);
     if (!wsprdOutFile.open(QIODevice::ReadOnly | QIODevice::Text) || wsprdOutFile.size() == 0) {
         urlQueue.enqueue( wsprNetUrl + urlEncodeNoSpot());
         m_uploadType = 1;
-        uploadTimer->start(50);
+        uploadTimer->start(200);
         return;
     }
 
@@ -40,23 +42,23 @@ void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq, Q
     while (!wsprdOutFile.atEnd()) {
         QHash<QString,QString> query;
         if ( decodeLine(wsprdOutFile.readLine(), query) ) {
+           // Prevent reporting data ouside of the current frequency band
+           float f = fabs(m_rfreq.toFloat() - query["tqrg"].toFloat());
+           if (f > 0.0002)
+                continue;
            urlQueue.enqueue( wsprNetUrl + urlEncodeSpot(query));
            m_uploadType = 2;
-           uploadTimer->start(50);
         }
     }
     m_urlQueueSize = urlQueue.size();
+    uploadTimer->start(200);
 }
 
 void WSPRNet::networkReply(QNetworkReply *reply)
 {
     QString serverResponse = reply->readAll();
-    QString response;
     if( m_uploadType == 2) {
-        if (serverResponse.contains(QRegExp("spot\\(s\\) added"))) {
-            response = "Uploading Spot " + QString::number(m_urlQueueSize - urlQueue.size()) + "/"+ QString::number(m_urlQueueSize);
-            emit uploadStatus(response);
-        } else {
+        if (!serverResponse.contains(QRegExp("spot\\(s\\) added"))) {
             emit uploadStatus("Upload Failed");
             urlQueue.clear();
             uploadTimer->stop();
@@ -85,13 +87,6 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         msg.remove(QRegExp("\\s+$"));
         msg.remove(QRegExp("^\\s+"));
         QString call, grid, dbm;
-
-        // Prevent reporting data ouside of the current frequency band
-        float f = fabs(m_rfreq.toFloat() - rx.cap(6).toFloat());
-        //qDebug() << "Freq Delta = " << f;
-        if (f > 0.0002)
-            return false;
-
         QRegExp msgRx;
 
         // Check for Message Type 1
@@ -130,20 +125,15 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         }
 
         query["function"] = "wspr";
-        query["rcall"] = m_call;
-        query["rgrid"] = m_grid;
-        query["rqrg"] = m_rfreq;
         query["date"] = rx.cap(1);
         query["time"] = rx.cap(2);
         query["sig"] = rx.cap(4);
         query["dt"] = rx.cap(5);
-        query["drift"] = rx.cap(10);
+        query["drift"] = rx.cap(8);
         query["tqrg"] = rx.cap(6);
         query["tcall"] = call;
         query["tgrid"] = grid;
         query["dbm"] = dbm;
-        query["version"] = m_vers;
-
     } else {
         return false;
     }
@@ -163,7 +153,7 @@ QString WSPRNet::urlEncodeNoSpot()
     queryString += "dbm=" + m_dbm + "&";
     queryString += "version=" +  m_vers;
 
-    qDebug() << queryString;
+    //qDebug() << queryString;
 
     return queryString;;
 }
@@ -173,9 +163,9 @@ QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
     QString queryString;
 
     queryString += "function=" + query["function"] + "&";
-    queryString += "rcall=" + query["rcall"] + "&";
-    queryString += "rgrid=" + query["rgrid"] + "&";
-    queryString += "rqrg=" + query["rqrg"] + "&";
+    queryString += "rcall=" + m_call + "&";
+    queryString += "rgrid=" + m_grid + "&";
+    queryString += "rqrg=" + m_rfreq + "&";
     queryString += "date=" + query["date"] + "&";
     queryString += "time=" + query["time"] + "&";
     queryString += "sig=" + query["sig"] + "&";
@@ -185,9 +175,9 @@ QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
     queryString += "tcall=" + query["tcall"] + "&";
     queryString += "tgrid=" + query["tgrid"] + "&";
     queryString += "dbm=" + query["dbm"] + "&";
-    queryString += "version=" + query["version"];
+    queryString += "version=" + m_vers;
 
-    qDebug() << queryString;
+    //qDebug() << queryString;
 
     return queryString;
 }
@@ -198,6 +188,8 @@ void WSPRNet::work()
         QUrl url(urlQueue.dequeue());
         QNetworkRequest request(url);
         networkManager->get(request);
+        QString status = "Uploading Spot " + QString::number(m_urlQueueSize - urlQueue.size()) + "/"+ QString::number(m_urlQueueSize);
+        emit uploadStatus(status);
     } else {
         uploadTimer->stop();
     }
