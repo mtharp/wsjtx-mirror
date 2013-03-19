@@ -1,6 +1,6 @@
 [Setup]
 AppName=wsprx
-AppVerName=wsprx Version 0.7 r2960
+AppVerName=wsprx Version 0.8 r3058
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
 DefaultDirName=c:\wsprx
 DefaultGroupName=wsprx
@@ -8,7 +8,6 @@ DefaultGroupName=wsprx
 [Files]
 Source: "c:\Users\joe\wsjt\wsprx_install\wsprx.exe";         DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\wsprd.exe";         DestDir: "{app}"
-Source: "c:\Users\joe\wsjt\wsprx_install\curl.exe";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\rigctl.exe";        DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\wsjt.ico";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt\wsprx_install\afmhot.dat";        DestDir: "{app}";

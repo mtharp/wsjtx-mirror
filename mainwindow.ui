@@ -280,7 +280,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QwtThermo" name="xThermo">
+         <widget class="QwtThermo" name="xThermo" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -293,19 +293,19 @@ p, li { white-space: pre-wrap; }
             <height>160</height>
            </size>
           </property>
-          <property name="borderWidth">
+          <property name="borderWidth" stdset="0">
            <number>1</number>
           </property>
-          <property name="maxValue">
+          <property name="maxValue" stdset="0">
            <double>60.000000000000000</double>
           </property>
-          <property name="minValue">
+          <property name="minValue" stdset="0">
            <double>0.000000000000000</double>
           </property>
-          <property name="pipeWidth">
+          <property name="pipeWidth" stdset="0">
            <number>8</number>
           </property>
-          <property name="value">
+          <property name="value" stdset="0">
            <double>0.000000000000000</double>
           </property>
          </widget>
@@ -633,77 +633,77 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <property name="text">
-            <string>2200</string>
+            <string>2200 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>630</string>
+            <string>630 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>160</string>
+            <string>160 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>80</string>
+            <string>80 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>60</string>
+            <string>60 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>40</string>
+            <string>40 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>30</string>
+            <string>30 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>20</string>
+            <string>20 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>17</string>
+            <string>17 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>15</string>
+            <string>15 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>12</string>
+            <string>12 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>10</string>
+            <string>10 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>6</string>
+            <string>6 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>4</string>
+            <string>4 m</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>2</string>
+            <string>2 m</string>
            </property>
           </item>
           <item>
@@ -792,7 +792,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>614</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
