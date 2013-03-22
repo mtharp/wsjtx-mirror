@@ -1,6 +1,6 @@
 subroutine abc441(msg,nmsg,itone,ndits)
 
-  character msg*28
+  character(*) msg
   integer itone(84)
   integer lookup(0:91)
   character cc*43
