@@ -102,8 +102,8 @@ void CPlotter::draw(float swide[], int i0)             //draw()
   QPoint LineBuf[MAX_SCREENSIZE];
   j=0;
 
-  int iz=XfromFreq(2000.0);
-//  for(int i=0; i<m_w; i++) {
+//  int iz=XfromFreq(2000.0);
+  int iz=XfromFreq(6000.0);
   for(int i=0; i<iz; i++) {
     if(i>iz) swide[i]=0;
     y=0.0;

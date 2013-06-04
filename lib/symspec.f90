@@ -77,7 +77,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   n=min(184,ihsym)
   df3=12000.0/nfft3                   !JT9-1: 0.732 Hz = 0.42 * tone spacing
   i0=nint(1000.0/df3)
-  iz=min(NSMAX,nint(1000.0/df3))
+  iz=min(NSMAX,nint(5000.0/df3))
   fac=(1.0/nfft3)**2
   do i=1,iz
      j=i0+i-1
@@ -90,10 +90,12 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
 
   fac00=0.35
   npct=20
-  call pctile(s,iz,npct,xmed0)
+  ia=1
+  ib=1000.0/df3
+  call pctile(s(ia),ib-ia,npct,xmed0)
   fac0=fac00/max(xmed0,0.006)
   s(1:iz)=fac0*s(1:iz)
-  call pctile(ssum,iz,npct,xmed1)
+  call pctile(ssum(ia),ib-ia,npct,xmed1)
   fac1=fac00/max(xmed1,0.006*ihsym)
   savg(1:iz)=fac1*ssum(1:iz)
 
