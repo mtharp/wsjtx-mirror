@@ -1,7 +1,6 @@
 subroutine jt9c(ss,savg,c0,id2,nparams0)
 
-  parameter (NTMAX=120)
-  parameter (NSMAX=1365)
+  include 'constants.f90'
   real*4 ss(184*NSMAX),savg(NSMAX)
   complex c0(NTMAX*1500)
   integer*2 id2(NTMAX*12000)

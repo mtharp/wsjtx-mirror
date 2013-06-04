@@ -2,10 +2,7 @@ subroutine decoder(ss,id2,nstandalone)
 
 ! Decoder for JT9.
 
-  parameter (NTMAX=120)
-  parameter (NMAX=NTMAX*12000)        !Total sample intervals per 30 minutes
-  parameter (NDMAX=NTMAX*1500)        !Sample intervals at 1500 Hz rate
-  parameter (NSMAX=1365)             !Max length of saved spectra
+  include 'constants.f90'
   real ss(184,NSMAX)
   character*22 msg
   character*80 fmt

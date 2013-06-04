@@ -1,7 +1,6 @@
 subroutine jt9b(jt9com,nbytes)
 
-  parameter (NTMAX=120)
-  parameter (NSMAX=1365)
+  include 'constants.f90'
   integer*1 jt9com(0:nbytes-1)
   kss=0
   ksavg=kss + 4*184*NSMAX
