@@ -40,10 +40,8 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->m_bCurrent=settings.value("Current",false).toBool();
   ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
-  ui->widePlot->m_bJT9Sync=settings.value("JT9Sync",true).toBool();
   if(ui->widePlot->m_bCurrent) ui->spec2dComboBox->setCurrentIndex(0);
   if(ui->widePlot->m_bCumulative) ui->spec2dComboBox->setCurrentIndex(1);
-  if(ui->widePlot->m_bJT9Sync) ui->spec2dComboBox->setCurrentIndex(2);
   int nbpp=settings.value("BinsPerPixel",2).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
   m_qsoFreq=settings.value("QSOfreq",1500).toInt();
@@ -72,18 +70,16 @@ void WideGraph::saveSettings()
   settings.setValue("WaterfallAvg",ui->waterfallAvgSpinBox->value());
   settings.setValue("Current",ui->widePlot->m_bCurrent);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
-  settings.setValue("JT9Sync",ui->widePlot->m_bJT9Sync);
   settings.setValue("BinsPerPixel",ui->widePlot->binsPerPixel());
   settings.setValue("QSOfreq",ui->widePlot->fQSO());
   settings.endGroup();
 }
 
-void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
+void WideGraph::dataSink2(float s[], float df3, int ihsym,
                           int ndiskdata)
 {
   static float splot[NSMAX];
   static float swide[2048];
-  static float rwide[2048];
   int nbpp = ui->widePlot->binsPerPixel();
   static int n=0;
 
@@ -108,15 +104,11 @@ void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
     int jz=1000.0/df3;
     for (int j=0; j<jz; j++) {
       float sum=0;
-      float rsum=0;
       for (int k=0; k<nbpp; k++) {
         i++;
         sum += splot[i];
-        rsum += red[i];
       }
       swide[j]=sum;
-      rwide[j]=rsum/nbpp;
-//      if(lstrong[1 + i/32]!=0) swide[j]=-smax;   //Tag strong signals
     }
 
 // Time according to this computer
@@ -128,7 +120,7 @@ void WideGraph::dataSink2(float s[], float red[], float df3, int ihsym,
       }
     }
     m_ntr0=ntr;
-    ui->widePlot->draw(swide,rwide,i0);
+    ui->widePlot->draw(swide,i0);
   }
 }
 
@@ -259,10 +251,8 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
 {
   ui->widePlot->m_bCurrent=false;
   ui->widePlot->m_bCumulative=false;
-  ui->widePlot->m_bJT9Sync=false;
   if(arg1=="Current") ui->widePlot->m_bCurrent=true;
   if(arg1=="Cumulative") ui->widePlot->m_bCumulative=true;
-  if(arg1=="JT9 Sync") ui->widePlot->m_bJT9Sync=true;
 }
 
 void WideGraph::on_fMinSpinBox_valueChanged(int n)

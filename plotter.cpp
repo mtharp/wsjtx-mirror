@@ -83,7 +83,7 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=false;
 }
 
-void CPlotter::draw(float swide[], float red[], int i0)             //draw()
+void CPlotter::draw(float swide[], int i0)             //draw()
 {
   int j,y2;
   float y;
@@ -98,7 +98,6 @@ void CPlotter::draw(float swide[], float red[], int i0)             //draw()
   QPainter painter2D(&m_2DPixmap);
 
   painter2D.setPen(Qt::green);
-  if(m_bJT9Sync) painter2D.setPen(Qt::red);
 
   QPoint LineBuf[MAX_SCREENSIZE];
   j=0;
@@ -125,7 +124,6 @@ void CPlotter::draw(float swide[], float red[], int i0)             //draw()
       }
       y2=gain*6.0*log10(sum/m_binsPerPixel) - 10.0;
     }
-    if(m_bJT9Sync) y2=3.0*gain*red[i] - 15;
     if(i==iz-1) painter2D.drawPolyline(LineBuf,j);
     LineBuf[j].setX(i);
     LineBuf[j].setY(m_h-(y2+0.8*m_h));

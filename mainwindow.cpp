@@ -548,7 +548,7 @@ void MainWindow::readSettings()
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink(int k)
 {
-  static float s[NSMAX],red[NSMAX];
+  static float s[NSMAX];
   static int ihsym=0;
   static int nzap=0;
   static int trmin;
@@ -564,7 +564,7 @@ void MainWindow::dataSink(int k)
 
 // Get power, spectrum, and ihsym
   trmin=m_TRperiod/60;
-  symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,red,&df3,&ihsym,&npts8);
+  symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
@@ -572,7 +572,7 @@ void MainWindow::dataSink(int k)
   lab2->setText(t);
   ui->xThermo->setValue((double)px);                    //Update thermometer
   if(m_monitoring || m_diskData) {
-    g_pWideGraph->dataSink2(s,red,df3,ihsym,m_diskData);
+    g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
   if(ihsym == m_hsymStop) {

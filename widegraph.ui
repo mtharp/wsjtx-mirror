@@ -440,7 +440,7 @@
           <string>Select data for display curve</string>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <item>
           <property name="text">
@@ -450,11 +450,6 @@
          <item>
           <property name="text">
            <string>Cumulative</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>JT9 Sync</string>
           </property>
          </item>
         </widget>

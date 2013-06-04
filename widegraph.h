@@ -14,8 +14,7 @@ public:
   explicit WideGraph(QWidget *parent = 0);
   ~WideGraph();
 
-  void   dataSink2(float s[], float red[], float df3, int ihsym,
-                   int ndiskdata);
+  void   dataSink2(float s[], float df3, int ihsym, int ndiskdata);
   void   setQSOfreq(int n);
   int    QSOfreq();
   int    nSpan();

@@ -1,4 +1,4 @@
-subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,red,df3,ihsym,npts8)
+subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -11,13 +11,11 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,red,df3,ihsym,npts8)
 ! Output:
 !  pxdb      power (0-60 dB)
 !  s()       spectrum for waterfall display
-!  red()     first cut at JT9 sync amplitude
 !  ihsym     index number of this half-symbol (1-184)
 
   include 'constants.f90'
   real*4 s(NSMAX),w3(MAXFFT3)
   real*4 ssum(NSMAX)
-  real*4 red(NSMAX)
   real*4 xc(0:MAXFFT3-1)
   complex cx(0:MAXFFT3/2)
   integer*2 id2
@@ -98,7 +96,6 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,red,df3,ihsym,npts8)
   call pctile(ssum,iz,npct,xmed1)
   fac1=fac00/max(xmed1,0.006*ihsym)
   savg(1:iz)=fac1*ssum(1:iz)
-  call redsync(ss,ntrperiod,ihsym,iz,red)
 
 900 npts=k
   npts8=k/8

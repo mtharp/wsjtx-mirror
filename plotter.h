@@ -32,7 +32,6 @@ public:
   QColor  m_ColorTbl[256];
   bool    m_bCurrent;
   bool    m_bCumulative;
-  bool    m_bJT9Sync;
   int     m_plotZero;
   int     m_plotGain;
   float   m_fSpan;
@@ -42,7 +41,7 @@ public:
   qint32  m_fCal;
   qint32  m_w;
 
-  void draw(float sw[], float red[], int i0);		//Update the waterfall
+  void draw(float sw[], int i0);		//Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);
   int  getPlotZero();
