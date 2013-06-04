@@ -1,9 +1,8 @@
-subroutine softsym(c0,id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,        &
+subroutine softsym(id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,        &
      freq,drift,schk,i1SoftSymbols)
 
 ! Compute the soft symbols
 
-  complex c0(0:npts8-1)
   complex c2(0:4096-1)
   complex c3(0:4096-1)
   complex c5(0:4096-1)
@@ -16,7 +15,7 @@ subroutine softsym(c0,id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,        &
   ndown=nsps8/nspsd
 
 ! Mix, low-pass filter, and downsample to 16 samples per symbol
-  call downsam9(c0,id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
+  call downsam9(id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
 
   call peakdt9(c2,nz2,nsps8,nspsd,c3,nz3,xdt)  !Find DT
 

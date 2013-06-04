@@ -86,9 +86,9 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,red,df3,ihsym,npts8)
      enddo
      sq=sq + dot_product(x1,x1)
 ! Mix at 1500 Hz, lowpass at +/-750 Hz, and downsample to 1500 Hz complex.
-     x2(106:105+kstep1)=x1(1:kstep1)
-     call fil3(x2,kstep1+105,c0(k8+1),n2)
-     x2(1:105)=x1(kstep1-104:kstep1)   !Save 105 trailing samples
+!     x2(106:105+kstep1)=x1(1:kstep1)
+!     call fil3(x2,kstep1+105,c0(k8+1),n2)
+!     x2(1:105)=x1(kstep1-104:kstep1)   !Save 105 trailing samples
      k1=k1+kstep1
      k8=k8+kstep1/8
   enddo

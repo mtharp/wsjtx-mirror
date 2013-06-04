@@ -16,7 +16,7 @@ subroutine jt9c(ss,savg,c0,id2,nparams0)
   nparams=nparams0                     !Copy parameters into common/npar/
 
   call flush(6)
-  if(sum(nparams).ne.0) call decoder(ss,c0,id2,0)
+  if(sum(nparams).ne.0) call decoder(ss,id2,0)
 
   return
 end subroutine jt9c

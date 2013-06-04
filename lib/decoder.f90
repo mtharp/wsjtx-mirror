@@ -1,4 +1,4 @@
-subroutine decoder(ss,c0,id2,nstandalone)
+subroutine decoder(ss,id2,nstandalone)
 
 ! Decoder for JT9.
 
@@ -16,7 +16,6 @@ subroutine decoder(ss,c0,id2,nstandalone)
   logical done(NSMAX)
   integer*2 id2(NTMAX*12000)
   integer*1 i1SoftSymbols(207)
-  complex c0(NDMAX)
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfb,ntol,  &
        kin,nzhsym,nsave,nagain,ndepth,nrxlog,nfsample,datetime
   common/tracer/limtrace,lu
@@ -124,7 +123,7 @@ subroutine decoder(ss,c0,id2,nstandalone)
 
            call timer('softsym ',0)
            fpk=1000.0 + df3*(i-1)
-           call softsym(c0,id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,    &
+           call softsym(id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,    &
                 freq,drift,schk,i1SoftSymbols)
            call timer('softsym ',1)
 
