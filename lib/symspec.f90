@@ -19,30 +19,29 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,red,df3,ihsym,npts8)
   parameter (NDMAX=NTMAX*1500)        !Sample intervals at 1500 Hz rate
   parameter (NSMAX=1365)              !Max length of saved spectra
   parameter (NFFT1=1024)
-  parameter (NFFT2=1024,NFFT2A=NFFT2/8)
-  parameter (MAXFFT3=32768)
+  parameter (MAXFFT3=16384)
   real*4 s(NSMAX),w3(MAXFFT3)
   real*4 x1(NFFT1)
   real*4 x2(NFFT1+105)
   real*4 ssum(NSMAX)
   real*4 red(NSMAX)
-  complex cx(0:MAXFFT3-1)
+  real*4 xc(0:MAXFFT3-1)
+  complex cx(0:MAXFFT3/2)
   integer*2 id2
   complex c0
   common/jt9com/ss(184,NSMAX),savg(NSMAX),c0(NDMAX),id2(NMAX),nutc,ndiskdat, &
        ntr,mousefqso,newdat,nfa,nfb,ntol,kin,nzhsym,nsynced,ndecoded
   data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
+  equivalence (xc,cx)
   save
 
-  if(ntrperiod.eq.1)  nfft3=2048
-  if(ntrperiod.eq.2)  nfft3=2048
-  if(ntrperiod.eq.5)  nfft3=6144
-  if(ntrperiod.eq.10) nfft3=12288
-  if(ntrperiod.eq.30) nfft3=32768
-
-  jstep=nsps/16                                !Step size = half-symbol in c0()
+  nfft3=16384                                  !df=12000.0/16384 = 0.732422
+!  nfft3=2048
+  jstep=nsps/2                                 !Step size = half-symbol in id2()
+  jstep8=nsps/16                               !Step size = half-symbol in c0()
   if(k.gt.NMAX) go to 999
-  if(k.lt.nfft3) then
+!  if(k.lt.nfft3) then
+  if(k.lt.2048) then
      ihsym=0
      go to 999                                 !Wait for enough samples to start
   endif
@@ -95,25 +94,36 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,red,df3,ihsym,npts8)
   enddo
 
   npts8=k8
-  ja=ja+jstep                         !Index of first sample
+  ja=ja+jstep8                         !Index of first sample
   rms=sqrt(sq/(nblks*NFFT1))
   pxdb=0.
   if(rms.gt.0.0) pxdb=20.0*log10(rms)
   if(pxdb.gt.60.0) pxdb=60.0
 
+  fac0=0.1
   do i=0,nfft3-1                      !Copy data into cx
-     j=ja+i-(nfft3-1)
-     cx(i)=0.
-     if(j.ge.1 .and. j.le.NDMAX) cx(i)=c0(j)
+     j=8*ja+i-(nfft3-1)
+     xc(i)=0.
+!     if(j.ge.1 .and. j.le.NDMAX) cx(i)=c0(j)
+     if(j.ge.1) xc(i)=fac0*id2(j)
   enddo
 
   if(ihsym.lt.184) ihsym=ihsym+1
-  cx(0:nfft3-1)=w3(1:nfft3)*cx(0:nfft3-1)  !Apply window w3
-  call four2a(cx,nfft3,1,1,1)              !Third FFT (forward)
+
+!  write(69,3001) nsps,jstep8,jstep,kstep1,ja,8*ja,ihsym
+!3001 format(7i9)
+!  call flush(69)
+
+!  cx(0:nfft3-1)=w3(1:nfft3)*cx(0:nfft3-1)  !Apply window w3
+!  call four2a(cx,nfft3,1,1,1)              !Third FFT (forward)
+  xc(0:nfft3-1)=w3(1:nfft3)*xc(0:nfft3-1)   !Apply window w3
+  call four2a(xc,nfft3,1,-1,0)               !Real-to-complex FFT
 
   n=min(184,ihsym)
-  df3=1500.0/nfft3                    !JT9-a: 0.732 Hz = 0.42 * tone spacing
-  i0=nint(-500.0/df3)
+!   df3=1500.0/nfft3                    !JT9-1: 0.732 Hz = 0.42 * tone spacing
+  df3=12000.0/nfft3                   !JT9-1: 0.732 Hz = 0.42 * tone spacing
+!  i0=nint(-500.0/df3)
+  i0=nint(1000.0/df3)
   iz=min(NSMAX,nint(1000.0/df3))
   fac=(1.0/nfft3)**2
   do i=1,iz

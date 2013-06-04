@@ -1,8 +1,10 @@
-subroutine downsam9(c0,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
+subroutine downsam9(c0,id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
 
 !Downsample to nspsd samples per symbol, info centered at fpk
 
-  parameter (NMAX=128*31500)
+  parameter (NMAX=128*1920)
+  parameter (NTMAX=120)
+  integer*2 id2(0:8*npts8-1)
   complex c0(0:npts8-1)
   complex c1(0:NMAX-1)
   complex c2(0:4096-1)
@@ -14,6 +16,9 @@ subroutine downsam9(c0,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
   df1=1500.0/nfft1
 
   if(newdat.eq.1) then
+     write(69,*) npts8,nsps8,nfft1,df1
+     call flush(69)
+
      fac=1.e-4
      do i=0,npts8-1,2
         c1(i)=fac*conjg(c0(i))
@@ -34,6 +39,7 @@ subroutine downsam9(c0,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
 !3001    format(i5,2f12.3,i8)
      enddo
      call pctile(s,1000,40,avenoise)
+     newdat=0
   endif
 
   ndown=nsps8/16                           !Downsample factor

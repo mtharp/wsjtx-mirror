@@ -20,7 +20,7 @@ CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt9.a jt9sim.exe jt9.exe jt9code.exe test9.exe
+all:    libjt9.a jt9sim.exe jt9.exe jt9code.exe
 
 OBJS1 = pctile.o graycode.o sort.o ssort.o \
 	unpackmsg.o igray.o unpackcall.o unpackgrid.o \

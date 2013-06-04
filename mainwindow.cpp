@@ -33,7 +33,7 @@ Rig* rig = NULL;
 QTextEdit* pShortcuts;
 
 QString rev="$Rev$";
-QString Program_Title_Version="  WSJT-X   v1.0, r" + rev.mid(6,4) +
+QString Program_Title_Version="  WSJT-X   v1.1, r" + rev.mid(6,4) +
                               "    by K1JT";
 
 //-------------------------------------------------- MainWindow constructor
@@ -189,7 +189,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_QSOmsg="";
   decodeBusy(false);
 
-  ui->xThermo->setFillBrush(Qt::green);
+  ui->xThermo->setMaximumWidth(12);
   ui->labAz->setStyleSheet("border: 0px;");
   ui->labDist->setStyleSheet("border: 0px;");
 
