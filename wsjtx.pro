@@ -11,7 +11,7 @@ CONFIG   += thread
 
 TARGET = wsjtx
 DESTDIR = ../wsjtx_install
-VERSION = 1.0
+VERSION = 1.1
 TEMPLATE = app
 DEFINES = QT4
 
@@ -65,8 +65,8 @@ LIBS += -lhamlib
 win32 {
 #INCLUDEPATH += c:/qwt-6.0.1/include
 INCLUDEPATH += ../../hamlib-1.2.15.3/include
-#LIBS += ../../hamlib-1.2.15.3/src/.libs/libhamlib.dll.a
-LIBS += ../../hamlib-1.2.15.3/lib/gcc/libhamlib.dll.a
+LIBS += ../../hamlib-1.2.15.3/src/.libs/libhamlib.dll.a
+#LIBS += ../../hamlib-1.2.15.3/lib/gcc/libhamlib.dll.a
 LIBS += ../wsjtx/lib/libjt9.a
 LIBS += ../wsjtx/libfftw3f_win.a
 LIBS += ../wsjtx/libpskreporter.a
