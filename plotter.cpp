@@ -15,8 +15,8 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   setAttribute(Qt::WA_OpaquePaintEvent, false);
   setAttribute(Qt::WA_NoSystemBackground, true);
 
-  m_StartFreq = 1000;
-  m_nSpan=1000;                    //Units: Hz
+  m_StartFreq = 0;
+  m_nSpan=2;                         //used for FFT bins/pixel
   m_fSpan=(float)m_nSpan;
   m_hdivs = HORZ_DIVS;
   m_FreqUnits = 1;
@@ -316,7 +316,8 @@ int CPlotter::XfromFreq(float f)                               //XfromFreq()
 
 float CPlotter::FreqfromX(int x)                               //FreqfromX()
 {
-  return float(1000.0 + x*m_binsPerPixel*m_fftBinWidth);
+//  return float(1000.0 + x*m_binsPerPixel*m_fftBinWidth);
+  return float(x*m_binsPerPixel*m_fftBinWidth);
 }
 
 void CPlotter::SetRunningState(bool running)              //SetRunningState()

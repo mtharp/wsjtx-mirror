@@ -13,7 +13,7 @@ TARGET = wsjtx
 DESTDIR = ../wsjtx_install
 VERSION = 1.0
 TEMPLATE = app
-DEFINES = QT5
+DEFINES = QT4
 
 win32 {
 DEFINES += WIN32
@@ -65,13 +65,14 @@ LIBS += -lhamlib
 win32 {
 #INCLUDEPATH += c:/qwt-6.0.1/include
 INCLUDEPATH += ../../hamlib-1.2.15.3/include
-LIBS += ../../hamlib-1.2.15.3/src/.libs/libhamlib.dll.a
+#LIBS += ../../hamlib-1.2.15.3/src/.libs/libhamlib.dll.a
+LIBS += ../../hamlib-1.2.15.3/lib/gcc/libhamlib.dll.a
 LIBS += ../wsjtx/lib/libjt9.a
 LIBS += ../wsjtx/libfftw3f_win.a
 LIBS += ../wsjtx/libpskreporter.a
 LIBS += ../wsjtx/libHRDInterface001.a
 #LIBS += ../QtSupport/palir-02.dll
-LIBS += /users/joe/wsjt/QtSupport/palir-02.dll
+LIBS += ../QtSupport/palir-02.dll
 LIBS += libwsock32
 LIBS += C:/MinGW/lib/libf95.a
 #CONFIG(release) {

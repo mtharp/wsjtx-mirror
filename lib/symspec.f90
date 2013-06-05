@@ -10,8 +10,12 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
 
 ! Output:
 !  pxdb      power (0-60 dB)
-!  s()       spectrum for waterfall display
+!  s()       current spectrum for waterfall display
 !  ihsym     index number of this half-symbol (1-184)
+
+! jt9com
+!  ss()      JT9 symbol spectra at half-symbol steps
+!  savg()    average spectra for waterfall display
 
   include 'constants.f90'
   real*4 s(NSMAX),w3(MAXFFT3)
@@ -53,14 +57,14 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
      sq=sq + x1*x1
   enddo
   sq=sq * gain**2
-  k0=k
-
-  ja=ja+jstep                         !Index of first sample
-
   rms=sqrt(sq/(k-k0))
   pxdb=0.
   if(rms.gt.0.0) pxdb=20.0*log10(rms)
   if(pxdb.gt.60.0) pxdb=60.0
+
+
+  k0=k
+  ja=ja+jstep                         !Index of first sample
 
   fac0=0.1
   do i=0,nfft3-1                      !Copy data into cx
@@ -76,7 +80,8 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
 
   n=min(184,ihsym)
   df3=12000.0/nfft3                   !JT9-1: 0.732 Hz = 0.42 * tone spacing
-  i0=nint(1000.0/df3)
+!  i0=nint(1000.0/df3)
+  i0=0
   iz=min(NSMAX,nint(5000.0/df3))
   fac=(1.0/nfft3)**2
   do i=1,iz

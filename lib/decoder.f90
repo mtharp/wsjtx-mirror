@@ -59,8 +59,10 @@ subroutine decoder(ss,id2,nstandalone)
   tstep=0.5*nsps/12000.0                      !Half-symbol step (seconds)
   done=.false.
 
-  ia=max(1,nint((nfa-1000)/df3))
-  ib=min(NSMAX,nint((nfb-1000)/df3))
+!  nf0=1000
+  nf0=0
+  ia=max(1,nint((nfa-nf0)/df3))
+  ib=min(NSMAX,nint((nfb-nf0)/df3))
   lag1=-(2.5/tstep + 0.9999)
   lag2=5.0/tstep + 0.9999
   call timer('sync9   ',0)
@@ -91,15 +93,15 @@ subroutine decoder(ss,id2,nstandalone)
         ccfok(ia:ib)=.true.
         nfa1=nfqso-ntol
         nfb1=nfqso+ntol
-        ia=max(1,nint((nfa1-1000)/df3))
-        ib=min(NSMAX,nint((nfb1-1000)/df3))
+        ia=max(1,nint((nfa1-nf0)/df3))
+        ib=min(NSMAX,nint((nfb1-nf0)/df3))
         ia1=ia
         ib1=ib
      else
         nfa1=nfa
         nfb1=nfb
-        ia=max(1,nint((nfa1-1000)/df3))
-        ib=min(NSMAX,nint((nfb1-1000)/df3))
+        ia=max(1,nint((nfa1-nf0)/df3))
+        ib=min(NSMAX,nint((nfb1-nf0)/df3))
         do i=ia,ib
            ccfok(i)=ccfred(i).gt.ccflim .and. red2(i).gt.red2lim
         enddo
@@ -119,7 +121,7 @@ subroutine decoder(ss,id2,nstandalone)
            if(nqd.eq.1) nfreqs1=nfreqs1+1
 
            call timer('softsym ',0)
-           fpk=1000.0 + df3*(i-1)
+           fpk=nf0 + df3*(i-1)
            call softsym(id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,    &
                 freq,drift,schk,i1SoftSymbols)
            call timer('softsym ',1)
