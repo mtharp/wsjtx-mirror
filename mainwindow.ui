@@ -437,22 +437,6 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="DecodeButton">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Decode most recent Rx period at QSO Frequency (use shift for all freqs)</string>
-        </property>
-        <property name="text">
-         <string>&amp;Decode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="EraseButton">
         <property name="minimumSize">
          <size>
@@ -465,6 +449,22 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>&amp;Erase</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="DecodeButton">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Decode most recent Rx period at QSO Frequency (use shift for all freqs)</string>
+        </property>
+        <property name="text">
+         <string>&amp;Decode</string>
         </property>
        </widget>
       </item>
@@ -719,16 +719,7 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -828,7 +819,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string notr="true">buttonGroup</string>
+                  <string>buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -862,7 +853,7 @@ p, li { white-space: pre-wrap; }
                   <bool>true</bool>
                  </property>
                  <attribute name="buttonGroup">
-                  <string notr="true">buttonGroup</string>
+                  <string>buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -893,7 +884,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string notr="true">buttonGroup</string>
+                  <string>buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1061,7 +1052,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string notr="true">buttonGroup</string>
+                  <string>buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1209,7 +1200,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string notr="true">buttonGroup</string>
+                  <string>buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1240,7 +1231,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string notr="true">buttonGroup</string>
+                  <string>buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1278,16 +1269,7 @@ p, li { white-space: pre-wrap; }
              <property name="spacing">
               <number>0</number>
              </property>
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
+             <property name="margin">
               <number>0</number>
              </property>
              <item>
@@ -2845,11 +2827,16 @@ p, li { white-space: pre-wrap; }
   <tabstop>logQSOButton</tabstop>
   <tabstop>stopButton</tabstop>
   <tabstop>monitorButton</tabstop>
-  <tabstop>DecodeButton</tabstop>
   <tabstop>EraseButton</tabstop>
+  <tabstop>DecodeButton</tabstop>
   <tabstop>autoButton</tabstop>
   <tabstop>stopTxButton</tabstop>
+  <tabstop>tuneButton</tabstop>
   <tabstop>bandComboBox</tabstop>
+  <tabstop>readFreq</tabstop>
+  <tabstop>inGain</tabstop>
+  <tabstop>dxCallEntry</tabstop>
+  <tabstop>dxGridEntry</tabstop>
   <tabstop>lookupButton</tabstop>
   <tabstop>addButton</tabstop>
   <tabstop>txFirstCheckBox</tabstop>
@@ -2857,13 +2844,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbR2T</tabstop>
   <tabstop>pbT2R</tabstop>
   <tabstop>rptSpinBox</tabstop>
-  <tabstop>pbCallCQ</tabstop>
-  <tabstop>pbAnswerCaller</tabstop>
-  <tabstop>pbSendRRR</tabstop>
-  <tabstop>genMsg</tabstop>
-  <tabstop>freeTextMsg</tabstop>
-  <tabstop>rbGenMsg</tabstop>
-  <tabstop>rbFreeText</tabstop>
+  <tabstop>tabWidget</tabstop>
   <tabstop>genStdMsgsPushButton</tabstop>
   <tabstop>tx1</tabstop>
   <tabstop>tx2</tabstop>
@@ -2883,9 +2864,18 @@ p, li { white-space: pre-wrap; }
   <tabstop>txb4</tabstop>
   <tabstop>txb5</tabstop>
   <tabstop>txb6</tabstop>
-  <tabstop>inGain</tabstop>
-  <tabstop>decodedTextBrowser2</tabstop>
   <tabstop>decodedTextBrowser</tabstop>
+  <tabstop>decodedTextBrowser2</tabstop>
+  <tabstop>genMsg</tabstop>
+  <tabstop>pbAnswerCaller</tabstop>
+  <tabstop>rbFreeText</tabstop>
+  <tabstop>pbSendRRR</tabstop>
+  <tabstop>freeTextMsg</tabstop>
+  <tabstop>pbAnswerCQ</tabstop>
+  <tabstop>pbSendReport</tabstop>
+  <tabstop>pbSend73</tabstop>
+  <tabstop>rbGenMsg</tabstop>
+  <tabstop>pbCallCQ</tabstop>
  </tabstops>
  <resources/>
  <connections>

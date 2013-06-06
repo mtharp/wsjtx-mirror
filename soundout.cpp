@@ -47,7 +47,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   static int ic=0,j=0;
   static short int i2;
   int isym,nspd;
-
+  int xit=2000;
   udata->ncall++;
   if(udata->bRestart) {
  // Time according to this computer
@@ -67,8 +67,9 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   }
 
   if(isym>=85 and icw[0]>0) {              //Output the CW ID
-    freq=udata->ntxfreq;
+    freq=udata->ntxfreq - xit;
     dphi=twopi*freq/48000.0;
+
 //    float wpm=20.0;
 //    int nspd=1.2*48000.0/wpm;
 //    nspd=3072;                           //18.75 WPM
@@ -100,7 +101,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   }
 
   baud=12000.0/udata->nsps;
-  freq=udata->ntxfreq + itone[isym]*baud;
+  freq=udata->ntxfreq + itone[isym]*baud - xit;
   dphi=twopi*freq/48000.0;
   amp=32767.0;
   int i0=84.983*4.0*udata->nsps;

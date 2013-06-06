@@ -72,7 +72,7 @@ LIBS += ../wsjtx/libfftw3f_win.a
 LIBS += ../wsjtx/libpskreporter.a
 LIBS += ../wsjtx/libHRDInterface001.a
 #LIBS += ../QtSupport/palir-02.dll
-LIBS += ../QtSupport/palir-02.dll
+LIBS += /users/joe/wsjt/QtSupport/palir-02.dll
 LIBS += libwsock32
 LIBS += C:/MinGW/lib/libf95.a
 #CONFIG(release) {
