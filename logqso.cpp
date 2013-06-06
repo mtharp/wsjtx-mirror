@@ -5,25 +5,28 @@
 
 
 LogQSO::LogQSO(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::LogQSO)
+  QDialog(parent),
+  ui(new Ui::LogQSO)
 {
-    ui->setupUi(this);
+  ui->setupUi(this);
 }
 
 LogQSO::~LogQSO()
 {
-    delete ui;
+  delete ui;
 }
 
 void LogQSO::initLogQSO(QString hisCall, QString hisGrid, QString mode,
-                        QString rptSent, QString rptRcvd, QString date,
-                        QString qsoStart, QString qsoStop, double dialFreq,
-                        QString myCall, QString myGrid, bool noSuffix,
-                        bool toRTTY, bool dBtoComments)
+                        QString rptSent, QString rptRcvd, QDateTime dateTime,
+                        double dialFreq, QString myCall, QString myGrid,
+                        bool noSuffix, bool toRTTY, bool dBtoComments)
 {
   ui->call->setText(hisCall);
   ui->grid->setText(hisGrid);
+  ui->txPower->setText("");
+  ui->comments->setText("");
+  if(m_saveTxPower) ui->txPower->setText(m_txPower);
+  if(m_saveComments) ui->comments->setText(m_comments);
   if(dBtoComments) {
     QString t=mode;
     if(rptSent!="") t+="  Sent: " + rptSent;
@@ -35,10 +38,11 @@ void LogQSO::initLogQSO(QString hisCall, QString hisGrid, QString mode,
   ui->mode->setText(mode);
   ui->sent->setText(rptSent);
   ui->rcvd->setText(rptRcvd);
-  date=date.mid(0,4) + "-" + date.mid(4,2) + "-" + date.mid(6,2);
+  m_dateTime=dateTime;
+  QString date=dateTime.toString("yyyy-MM-dd");
   ui->date->setText(date);
-  ui->time->setText(qsoStart);
-  if(qsoStart=="") ui->time->setText(qsoStop);    //Silence compiler warning
+  QString time=dateTime.toString("hhmm");
+  ui->time->setText(time);
   m_dialFreq=dialFreq;
   m_myCall=myCall;
   m_myGrid=myGrid;
@@ -70,35 +74,37 @@ void LogQSO::initLogQSO(QString hisCall, QString hisGrid, QString mode,
   if(dialFreq>47000.0 and dialFreq<47200.0) band="6mm";
   if(dialFreq>75500.0 and dialFreq<81000.0) band="4mm";
   ui->band->setText(band);
+  ui->cbTxPower->setChecked(m_saveTxPower);
+  ui->cbComments->setChecked(m_saveComments);
 }
 
 void LogQSO::accept()
 {
+  QString hisCall,hisGrid,mode,rptSent,rptRcvd,date,time,band;
+  QString comments,name;
+
+  hisCall=ui->call->text();
+  hisGrid=ui->grid->text();
+  mode=ui->mode->text();
+  rptSent=ui->sent->text();
+  rptRcvd=ui->rcvd->text();
+  date=ui->date->text();
+  date=date.mid(0,4) + date.mid(5,2) + date.mid(8,2);
+  time=ui->time->text();
+  band=ui->band->text();
+  name=ui->name->text();
+  m_txPower=ui->txPower->text();
+  comments=ui->comments->text();
+  m_comments=comments;
+  QString strDialFreq(QString::number(m_dialFreq,'f',6));
+
+//Log this QSO to file "wsjtx_log.adi"
   QFile f2("wsjtx_log.adi");
   if(!f2.open(QIODevice::Text | QIODevice::Append)) {
     QMessageBox m;
     m.setText("Cannot open file \"wsjtx_log.adi\".");
     m.exec();
   } else {
-    QString hisCall,hisGrid,mode,rptSent,rptRcvd,date,qsoStart,band;
-    QString comments,name;
-//    if(qsoStart=="") qsoStart=qsoStop;
-//    if(qsoStop=="") qsoStop=qsoStart;
-
-    hisCall=ui->call->text();
-    hisGrid=ui->grid->text();
-    mode=ui->mode->text();
-    rptSent=ui->sent->text();
-    rptRcvd=ui->rcvd->text();
-    date=ui->date->text();
-    date=date.mid(0,4) + date.mid(5,2) + date.mid(8,2);
-    qsoStart=ui->time->text();
-    band=ui->band->text();
-    name=ui->name->text();
-    comments=ui->comments->text();
-
-    QString strDialFreq(QString::number(m_dialFreq,'f',6));
-
     QTextStream out(&f2);
     if(f2.size()==0) out << "WSJT-X ADIF Export<eoh>" << endl;
 
@@ -109,14 +115,15 @@ void LogQSO::accept()
     t+=" <rst_sent:" + QString::number(rptSent.length()) + ">" + rptSent;
     t+=" <rst_rcvd:" + QString::number(rptRcvd.length()) + ">" + rptRcvd;
     t+=" <qso_date:8>" + date;
-    t+=" <time_on:4>" + qsoStart;
-//    t+=" <time_off:4>" + qsoStop;
+    t+=" <time_on:4>" + time;
     t+=" <band:" + QString::number(band.length()) + ">" + band;
     t+=" <freq:" + QString::number(strDialFreq.length()) + ">" + strDialFreq;
     t+=" <station_callsign:" + QString::number(m_myCall.length()) + ">" +
         m_myCall;
     t+=" <my_gridsquare:" + QString::number(m_myGrid.length()) + ">" +
         m_myGrid;
+    if(m_txPower!="") t+= " <tx_pwr:" + QString::number(m_txPower.length()) +
+        ">" + m_txPower;
     if(comments!="") t+=" <comment:" + QString::number(comments.length()) +
         ">" + comments;
     if(name!="") t+=" <name:" + QString::number(name.length()) +
@@ -125,6 +132,24 @@ void LogQSO::accept()
     out << t << endl;
     f2.close();
   }
+
+//Log this QSO to file "wsjtx.log"
+  QFile f("wsjtx.log");
+  if(!f.open(QIODevice::Text | QIODevice::Append)) {
+    QMessageBox m;
+    m.setText("Cannot open file \"wsjtx.log\".");
+    m.exec();
+  } else {
+    QString logEntry=m_dateTime.date().toString("yyyy-MMM-dd,") +
+        m_dateTime.time().toString("hh:mm,") + hisCall + "," +
+        hisGrid + "," + strDialFreq + "," + mode +
+            "," + rptSent + "," + rptRcvd + "," + comments;
+    QTextStream out(&f);
+    out << logEntry << endl;
+    f.close();
+  }
+
+//Clean up and finish logging
   emit(acceptQSO(true));
   QDialog::accept();
 }
@@ -133,4 +158,14 @@ void LogQSO::reject()
 {
   emit(acceptQSO(false));
   QDialog::reject();
+}
+
+void LogQSO::on_cbTxPower_toggled(bool checked)
+{
+  m_saveTxPower=checked;
+}
+
+void LogQSO::on_cbComments_toggled(bool checked)
+{
+  m_saveComments=checked;
 }

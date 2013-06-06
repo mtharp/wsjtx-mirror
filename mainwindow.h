@@ -258,6 +258,8 @@ private:
     bool    m_pttData;
     bool    m_dontReadFreq;
     bool    m_lockTxFreq;
+    bool    m_saveTxPower;
+    bool    m_saveComments;
 
     char    m_decoded[80];
 
@@ -318,11 +320,14 @@ private:
     QString m_msgSent0;
     QString m_fileToSave;
     QString m_QSOmsg;
+    QString m_txPower;
+    QString m_logComments;
+    QString m_pskAntenna;
 
     QStringList m_macro;
     QStringList m_dFreq;
 
-    QDateTime dateTimeQSO;
+    QDateTime m_dateTimeQSO;
 
     SoundInThread soundInThread;             //Instantiate the audio threads
     SoundOutThread soundOutThread;

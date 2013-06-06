@@ -418,6 +418,11 @@ void MainWindow::writeSettings()
   settings.setValue("Polling",m_poll);
   settings.setValue("OutBufSize",outBufSize);
   settings.setValue("LockTxFreq",m_lockTxFreq);
+  settings.setValue("SaveTxPower",m_saveTxPower);
+  settings.setValue("SaveComments",m_saveComments);
+  settings.setValue("TxPower",m_txPower);
+  settings.setValue("LogComments",m_logComments);
+  settings.setValue("PSKantenna",m_pskAntenna);
   settings.endGroup();
 }
 
@@ -446,9 +451,21 @@ void MainWindow::readSettings()
   m_pttPort=settings.value("PTTport",0).toInt();
   m_saveDir=settings.value("SaveDir",m_appDir + "/save").toString();
   m_nDevIn = settings.value("SoundInIndex", 0).toInt();
-  m_paInDevice = settings.value("paInDevice",0).toInt();
+  m_paInDevice = settings.value("paInDevice", paNoDevice).toInt();
+  if (m_paInDevice == paNoDevice) { // no saved input device?
+    m_paInDevice = Pa_GetDefaultInputDevice();
+    if (m_paInDevice == paNoDevice) { // no default input device?
+      m_paInDevice = 0;
+    }
+  }
   m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
-  m_paOutDevice = settings.value("paOutDevice",0).toInt();
+  m_paOutDevice = settings.value("paOutDevice", paNoDevice).toInt();
+  if (m_paOutDevice == paNoDevice) { // no saved output device?
+    m_paOutDevice = Pa_GetDefaultOutputDevice();
+    if (m_paOutDevice == paNoDevice) { // no default output device?
+      m_paOutDevice = 0;
+    }
+  }
   ui->actionCuteSDR->setChecked(settings.value(
                                   "PaletteCuteSDR",true).toBool());
   ui->actionLinrad->setChecked(settings.value(
@@ -531,6 +548,11 @@ void MainWindow::readSettings()
   outBufSize=settings.value("OutBufSize",4096).toInt();
   m_lockTxFreq=settings.value("LockTxFreq",false).toBool();
   ui->actionLockTxFreq->setChecked(m_lockTxFreq);
+  m_saveTxPower=settings.value("SaveTxPower",false).toBool();
+  m_saveComments=settings.value("SaveComments",false).toBool();
+  m_txPower=settings.value("TxPower","").toString();
+  m_logComments=settings.value("LogComments","").toString();
+  m_pskAntenna=settings.value("PSKantenna","").toString();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -610,6 +632,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   DevSetup dlg(this);
   dlg.m_myCall=m_myCall;
   dlg.m_myGrid=m_myGrid;
+  dlg.m_pskAntenna=m_pskAntenna;
   dlg.m_idInt=m_idInt;
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
@@ -650,6 +673,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   if(dlg.exec() == QDialog::Accepted) {
     m_myCall=dlg.m_myCall;
     m_myGrid=dlg.m_myGrid;
+    m_pskAntenna=dlg.m_pskAntenna;
     m_idInt=dlg.m_idInt;
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
@@ -1421,9 +1445,9 @@ void MainWindow::readFromStdout()                             //readFromStdout
         remote.toWCharArray(tremote);
 
         QString local="station_callsign," + m_myCall + "," +
-            "my_gridsquare," + m_myGrid + "," +
-            "programid,WSJT-X,programversion," + rev.mid(6,4) + ",,";
-
+            "my_gridsquare," + m_myGrid + ",";
+        if(m_pskAntenna!="") local += "my_antenna," + m_pskAntenna + ",";
+        local += "programid,WSJT-X,programversion," + rev.mid(6,4) + ",,";
         wchar_t tlocal[256];
         local.toWCharArray(tlocal);
 
@@ -1441,16 +1465,18 @@ void MainWindow::readFromStdout()                             //readFromStdout
       }
 #else
       if(b and !m_diskData and okToPost) {
-          int i1=msg.indexOf(" ");
-          QString c2=msg.mid(i1+1);
-          int i2=c2.indexOf(" ");
-          QString g2=c2.mid(i2+1,4);
-          c2=c2.mid(0,i2);
-          int nHz=t.mid(22,4).toInt();
-          QString freq = QString::number((int)(1000000.0*m_dialFreq + nHz + 0.5));
-          QString snr= QString::number(t.mid(10,3).toInt());
-          if(gridOK(g2))
-              psk_Reporter->addRemoteStation(c2,g2,freq,"JT9",snr,QString::number(QDateTime::currentDateTime().toTime_t()));
+        int i1=msg.indexOf(" ");
+        QString c2=msg.mid(i1+1);
+        int i2=c2.indexOf(" ");
+        QString g2=c2.mid(i2+1,4);
+        c2=c2.mid(0,i2);
+        int nHz=t.mid(22,4).toInt();
+        QString freq = QString::number((int)(1000000.0*m_dialFreq +
+                                             nHz + 0.5));
+        QString snr= QString::number(t.mid(10,3).toInt());
+        if(gridOK(g2))
+          psk_Reporter->addRemoteStation(c2,g2,freq,"JT9",snr,
+                   QString::number(QDateTime::currentDateTime().toTime_t()));
       }
 #endif
     }
@@ -2327,13 +2353,16 @@ void MainWindow::on_genStdMsgsPushButton_clicked()         //genStdMsgs button
 void MainWindow::on_logQSOButton_clicked()                 //Log QSO button
 {
   if(m_hisCall=="") return;
-  dateTimeQSO = QDateTime::currentDateTimeUtc();
-  QString date=dateTimeQSO.toString("yyyyMMdd");
+  m_dateTimeQSO=QDateTime::currentDateTimeUtc();
 
   logDlg = new LogQSO(0);
-  logDlg->initLogQSO(m_hisCall,m_hisGrid,m_mode,m_rptSent,m_rptRcvd,date,
-                    m_qsoStart,m_qsoStop,m_dialFreq,m_myCall,m_myGrid,
-                    m_noSuffix,m_toRTTY,m_dBtoComments);
+  logDlg->m_saveTxPower=m_saveTxPower;
+  logDlg->m_saveComments=m_saveComments;
+  logDlg->m_txPower=m_txPower;
+  logDlg->m_comments=m_logComments;
+  logDlg->initLogQSO(m_hisCall,m_hisGrid,m_mode,m_rptSent,m_rptRcvd,
+                     m_dateTimeQSO,m_dialFreq+m_txFreq/1.0e6,
+                     m_myCall,m_myGrid,m_noSuffix,m_toRTTY,m_dBtoComments);
   connect(logDlg, SIGNAL(acceptQSO(bool)),this,SLOT(acceptQSO2(bool)));
   if(m_logQSOgeom != QRect(500,400,424,283)) logDlg->setGeometry(m_logQSOgeom);
   logDlg->show();
@@ -2343,19 +2372,10 @@ void MainWindow::acceptQSO2(bool accepted)
 {
   if(accepted) {
     m_logQSOgeom=logDlg->geometry();
-    QString date=dateTimeQSO.toString("yyyyMMdd");
-    QFile f("wsjtx.log");
-    if(!f.open(QIODevice::Text | QIODevice::Append)) {
-      msgBox("Cannot open file \"wsjtx.log\".");
-    } else {
-      QString logEntry=dateTimeQSO.date().toString("yyyy-MMM-dd,") +
-          dateTimeQSO.time().toString("hh:mm,") + m_hisCall + "," +
-          m_hisGrid + "," + QString::number(m_dialFreq) + "," + m_mode +
-          "," + m_rptSent + "," + m_rptRcvd;
-      QTextStream out(&f);
-      out << logEntry << endl;
-      f.close();
-    }
+    m_saveTxPower=logDlg->m_saveTxPower;
+    m_saveComments=logDlg->m_saveComments;
+    m_txPower=logDlg->m_txPower;
+    m_logComments=logDlg->m_comments;
     if(m_clearCallGrid) {
       m_hisCall="";
       ui->dxCallEntry->setText("");

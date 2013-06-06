@@ -1,6 +1,6 @@
 [Setup]
 AppName=wsjtx
-AppVerName=wsjtx Version 1.1.0 r3333
+AppVerName=wsjtx Version 1.1.0 r3337
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
 DefaultDirName=c:\wsjtx
 DefaultGroupName=wsjtx
@@ -14,7 +14,7 @@ Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\wsjt.ico";          DestDir: "{app
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\afmhot.dat";        DestDir: "{app}";
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\blue.dat";          DestDir: "{app}";
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\CALL3.TXT";         DestDir: "{app}";  Flags: onlyifdoesntexist
-Source: "c:\Users\joe\wsjt_k1jt\QtSupport\*.dll";                 DestDir: "{app}";
+Source: "c:\Users\joe\wsjt\QtSupport\*.dll";                      DestDir: "{app}";
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx\shortcuts.txt";             DestDir: "{app}"
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx\mouse_commands.txt";        DestDir: "{app}"
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx\WSJT-X_Users_Guide.pdf";    DestDir: "{app}"
