@@ -1324,7 +1324,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
 {
   while(proc_jt9.canReadLine()) {
     QByteArray t=proc_jt9.readLine();
-    qDebug() << "A" << t;
     if(t.indexOf("<DecodeFinished>") >= 0) {
       m_bsynced = (t.mid(19,1).toInt()==1);
       m_bdecoded = (t.mid(23,1).toInt()==1);
@@ -1370,8 +1369,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
         m_blankLine=false;
       }
 
-      qDebug() << "B";
-
       QString bg="white";
       if(t.indexOf(" CQ ")>0) bg="#66ff66";                          //green
       if(m_myCall!="" and t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666"; //red
@@ -1391,8 +1388,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
         m_QSOmsg=t1;
       }
 
-      qDebug() << "C";
-
       if(jt9com_.nagain==0) {
         if(t.indexOf(" CQ ")>0) bg="#66ff66";                          //green
         if(m_myCall!="" and t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666"; //red
@@ -1405,8 +1400,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
         cursor.insertHtml(s);
         ui->decodedTextBrowser->setTextCursor(cursor);
       }
-
-      qDebug() << "D";
 
       QString msg=t.mid(34);
       int i1=msg.indexOf("\r");
@@ -1433,8 +1426,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
       int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
       bool okToPost=(nsec>50);
 
-      qDebug() << "E";
-
 #ifdef WIN32
       if(m_pskReporterInit and b and !m_diskData and okToPost) {
         int i1=msg.indexOf(" ");
@@ -1457,7 +1448,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
             "my_gridsquare#" + m_myGrid + "#";
         if(m_pskAntenna!="") local += "my_antenna#" + m_pskAntenna + "#";
         local += "programid#WSJT-X#programversion#" + rev.mid(6,4) + "##";
-        qDebug() << "F: " << local;
         wchar_t tlocal[256];
         local.toWCharArray(tlocal);
 
@@ -1995,8 +1985,6 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   if(gridOK(hisgrid)) ui->dxGridEntry->setText(hisgrid);
   if(ui->dxGridEntry->text()=="") lookup();
   m_hisGrid=ui->dxGridEntry->text();
-
-  qDebug() << "A" << ui->dxGridEntry->text();
 
   int n = 60*t2.mid(0,2).toInt() + t2.mid(2,2).toInt();
   int nmod=n%(m_TRperiod/30);
