@@ -36,8 +36,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
      sync10=-999.
      thresh0=1.5
 
-!     ia=641
-!     ib=641
+     ia=630
+     ib=640
 
      do i=ia,ib                               !Search over freq range
         freq=i*df
@@ -47,8 +47,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
         call ccf65(ss(1,i),nhsym,savg(i),sync1,dt,flipk,syncshort,snr2,dt2)
         call timer('ccf65   ',1)
 
-!        write(73,3003) i,freq,savg(i),sync1,dt,flipk
-!3003    format(i6,5f9.2)
+        write(73,3003) i,freq,savg(i),sync1,dt,flipk
+3003    format(i6,5f9.2)
 !        if(ia.gt.0) cycle
 
 ! ########################### Search for Shorthand Messages #################

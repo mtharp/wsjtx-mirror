@@ -110,10 +110,10 @@ subroutine ccf65(ss,nhsym,ssmax,sync1,dt1,flipk,syncshort,snr2,dt2)
   syncshort=0.5*ccfbest2/rms - 4.0           !### better normalizer than rms?
   dt2=(2.5 + lagpk2*(2048.0/11025.0))
 
-!  do i=-11,54
-!     write(74,3001) i,ccf(i)
-!3001 format(i6,f10.3)
-!  enddo
+  do i=-11,54
+     write(74,3001) i,ccf(i)
+3001 format(i6,f10.3)
+  enddo
 
   return
 end subroutine ccf65
