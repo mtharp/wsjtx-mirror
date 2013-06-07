@@ -87,7 +87,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
   endif
 
 ! NB: f0 is the frequency at which we want our filter centered.
-!     i0 is the bin number in ca and cb closest to f0.
+!     i0 is the bin number in ca closest to f0.
 
   i0=nint(f0/df) + 1
   nh=nfft2/2
@@ -107,7 +107,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
 
 ! Do the short reverse transform, to go back to time domain.
   call timer('FFTsmall',0)
-  call sfftw_execute(plan3)
+  call sfftw_execute(plan2)
   call timer('FFTsmall',1)
   n4=min(npts/8,nfft2)
   return

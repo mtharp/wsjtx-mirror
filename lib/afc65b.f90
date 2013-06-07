@@ -44,8 +44,8 @@ subroutine afc65b(cx,npts,fsample,nflip,a,ccfbest,dtbest)
         delta=delta*(1./(1.+(chisq1-chisq2)/(chisq3-chisq2))+0.5)
         a(j)=a(j)-delta
         deltaa(j)=deltaa(j)*fn/3.
-        write(*,4001) iter,j,a(1),a(2),a(3),chisq3,cx(10000)
-4001    format(2i4,4f10.4,2e12.3)
+!        write(*,4001) iter,j,a(1),a(2),a(3),chisq3,cx(10000)
+!4001    format(2i4,3f10.4,3e12.3)
      enddo
      chisqr=fchisq65(cx,npts,fsample,nflip,a,ccfmax,dtmax)
      if(chisqr/chisqr0.gt.0.9999) go to 30

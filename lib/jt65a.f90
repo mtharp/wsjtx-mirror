@@ -36,8 +36,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
      sync10=-999.
      thresh0=1.5
 
-     ia=641
-     ib=641
+!     ia=641
+!     ib=641
 
      do i=ia,ib                               !Search over freq range
         freq=i*df
@@ -64,10 +64,10 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
 !  Keep only the best candidate within ftol.
         if(freq-freq0.lt.ftol .or. sync1.lt.sync10) cycle
         nflip=nint(flipk)
-        f00=i*df                   !Freq of detected sync tone (0-5000 Hz)
+        f0=i*df                   !Freq of detected sync tone (0-5000 Hz)
 
         call timer('decode1a',0)
-        call decode1a(dd,npts,newdat,f00,nflip,mode65,nqd,   &
+        call decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,   &
              nutc,ntol,sync2,a,dt,nkv,nhist,decoded)
         call timer('decode1a',1)
 
