@@ -18,7 +18,7 @@ WideGraph::WideGraph(QWidget *parent) :
   connect(ui->widePlot, SIGNAL(freezeDecode1(int)),this,
           SLOT(wideFreezeDecode(int)));
 
-  m_fMin=1000;
+  m_fMin=3000;
   ui->fMinSpinBox->setValue(m_fMin);
 
   //Restore user's settings
@@ -213,9 +213,17 @@ int WideGraph::getFmax()
   return m_fMax;
 }
 
-void WideGraph::setfMax(int n)
+void WideGraph::setFmin(int n)
+{
+  m_fMin = n;
+  ui->fMinSpinBox->setValue(n);
+  setRxRange(m_fMin,m_fMax);
+}
+
+void WideGraph::setFmax(int n)
 {
   m_fMax = n;
+  ui->fMaxSpinBox->setValue(n);
   setRxRange(m_fMin,m_fMax);
 }
 

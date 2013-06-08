@@ -18,7 +18,10 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
 !  savg()    average spectra for waterfall display
 
   include 'constants.f90'
-  real*4 s(NSMAX),w3(MAXFFT3)
+  real*4 w3(MAXFFT3)
+  real*4 s(NSMAX)
+  real*4 ref(NSMAX)
+  real*4 refsum(NSMAX)
   real*4 ssum(NSMAX)
   real*4 xc(0:MAXFFT3-1)
   complex cx(0:MAXFFT3/2)
@@ -48,6 +51,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
      ja=0
      ssum=0.
      ihsym=0
+     refsum=0.
      if(ndiskdat.eq.0) id2(k+1:)=0   !Needed to prevent "ghosts". Not sure why.
   endif
   gain=10.0**(0.05*ingain)
@@ -93,19 +97,12 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
      s(i)=sx
   enddo
 
-  fac00=0.35
-  npct=20
-  ia=1
-  ib=1000.0/df3
-  call pctile(s(ia),ib-ia,npct,xmed0)
-  fac0=fac00/max(xmed0,0.006)
-  s(1:iz)=fac0*s(1:iz)
-  call pctile(ssum(ia),ib-ia,npct,xmed1)
-  fac1=fac00/max(xmed1,0.006*ihsym)
-  savg(1:iz)=fac1*ssum(1:iz)
+  call flat2(s,iz,ref)
+  refsum=refsum+ref
+  s=0.2*s/ref
+  savg=0.2*ssum/refsum
 
-900 npts=k
-  npts8=k/8
+900 npts8=k/8
 
   return
 end subroutine symspec

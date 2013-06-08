@@ -211,6 +211,8 @@ private:
     qint32  m_repeatMsg;
     qint32  m_watchdogLimit;
     qint32  m_poll;
+    qint32  m_fMin;
+    qint32  m_fMax;
 
     bool    m_monitoring;
     bool    m_transmitting;

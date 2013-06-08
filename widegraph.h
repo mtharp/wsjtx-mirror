@@ -24,7 +24,8 @@ public:
   float  fSpan();
   void   saveSettings();
   void   setRxRange(int fMin, int fMax);
-  void   setfMax(int n);
+  void   setFmin(int n);
+  void   setFmax(int n);
   void   setFcal(int n);
   void   setPalette(QString palette);
   void   setFsample(int n);

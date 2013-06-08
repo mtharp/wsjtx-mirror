@@ -238,6 +238,8 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
   g_pWideGraph->m_lockTxFreq=m_lockTxFreq;
+  g_pWideGraph->setFmin(m_fMin);
+  g_pWideGraph->setFmax(m_fMax);
 
   if(m_mode=="JT9-1") on_actionJT9_1_triggered();
   if(m_mode=="JT9-2") on_actionJT9_2_triggered();
@@ -352,6 +354,8 @@ void MainWindow::writeSettings()
   if(g_pWideGraph->isVisible()) {
     m_wideGraphGeom = g_pWideGraph->geometry();
     settings.setValue("WideGraphGeom",m_wideGraphGeom);
+    m_fMin=g_pWideGraph->getFmin();
+    m_fMax=g_pWideGraph->getFmax();
   }
   settings.endGroup();
 
@@ -423,6 +427,8 @@ void MainWindow::writeSettings()
   settings.setValue("TxPower",m_txPower);
   settings.setValue("LogComments",m_logComments);
   settings.setValue("PSKantenna",m_pskAntenna);
+  settings.setValue("Fmin",m_fMin);
+  settings.setValue("Fmax",m_fMax);
   settings.endGroup();
 }
 
@@ -553,6 +559,8 @@ void MainWindow::readSettings()
   m_txPower=settings.value("TxPower","").toString();
   m_logComments=settings.value("LogComments","").toString();
   m_pskAntenna=settings.value("PSKantenna","").toString();
+  m_fMin=settings.value("fMin",3000).toInt();
+  m_fMax=settings.value("fMax",4000).toInt();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -2404,7 +2412,7 @@ void MainWindow::on_actionJT9_1_triggered()
   ui->actionJT9_1->setChecked(true);
   //m_fMax=2000;
   //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setfMax(2000);
+  g_pWideGraph->setFmax(m_fMax);
 }
 
 void MainWindow::on_actionJT9_2_triggered()
@@ -2422,7 +2430,7 @@ void MainWindow::on_actionJT9_2_triggered()
   ui->actionJT9_2->setChecked(true);
   //m_fMax=2000;
   //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setfMax(2000);
+  g_pWideGraph->setFmax(2000);
 }
 
 void MainWindow::on_actionJT9_5_triggered()
@@ -2440,7 +2448,7 @@ void MainWindow::on_actionJT9_5_triggered()
   ui->actionJT9_5->setChecked(true);
   //m_fMax=1300;
   //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setfMax(1300);
+  g_pWideGraph->setFmax(1300);
 }
 
 void MainWindow::on_actionJT9_10_triggered()
@@ -2458,7 +2466,7 @@ void MainWindow::on_actionJT9_10_triggered()
   ui->actionJT9_10->setChecked(true);
   //m_fMax=1150;
   //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setfMax(1150);
+  g_pWideGraph->setFmax(1150);
 }
 
 void MainWindow::on_actionJT9_30_triggered()
@@ -2476,7 +2484,7 @@ void MainWindow::on_actionJT9_30_triggered()
   ui->actionJT9_30->setChecked(true);
   //m_fMax=1050;
   //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setfMax(1050);
+  g_pWideGraph->setFmax(1050);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)

@@ -9,7 +9,7 @@ subroutine downsam9(id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
   real*4 x1(0:NMAX1-1)
   complex c1(0:NMAX1/2)
   complex c2(0:4096-1)
-  real s(1000)
+  real s(5000)
   equivalence (c1,x1)
   save
 
@@ -26,22 +26,27 @@ subroutine downsam9(id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
      call four2a(c1,nfft1,1,-1,0)             !Forward FFT, r2c
 
      nadd=1.0/df1
-     j=1000.0/df1
+     j=0
      s=0.
-     do i=1,1000
+     do i=1,5000
         do n=1,nadd
            j=j+1
            s(i)=s(i)+real(c1(j))**2 + aimag(c1(j))**2
         enddo
      enddo
-     call pctile(s,1000,40,avenoise)
      newdat=0
   endif
 
   ndown=8*nsps8/16                         !Downsample factor
   nfft2=nfft1/ndown                        !Backward FFT length
   nh2=nfft2/2
+  nf=nint(fpk)
   i0=fpk/df1
+
+  nw=100
+  ia=max(1,nf-nw)
+  ib=min(5000,nf+nw)
+  call pctile(s(ia),ib-ia+1,40,avenoise)
 
   fac=sqrt(1.0/avenoise)
   do i=0,nfft2-1
