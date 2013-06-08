@@ -6,7 +6,7 @@ program jt65
   integer*4 ihdr(11)
   integer*2 id2(NZMAX)
   real*4 dd(NZMAX)
-  character*80 infile,infile0
+  character*80 infile
   integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
   character*4 ariff,awave,afmt,adata
   common/hdr/ariff,lenfile,awave,afmt,lenfmt,nfmt2,nchan2, &
@@ -16,10 +16,9 @@ program jt65
 
   nargs=iargc()
   if(nargs.lt.1) then
-     print*,'Usage: jt65 <infile>'
+     print*,'Usage: jt65 file1 [file2 ...]'
      go to 999
   endif
-  call getarg(1,infile0)
   limtrace=0
   lu=12
 
@@ -36,20 +35,27 @@ program jt65
 
   call timer('jt65    ',0)
 
-  infile='/users/joe/wsjt_k1jt/wsjtx_install/save/'//infile0
-  open(10,file=infile,access='stream',status='old',err=998)
-  read(10) ihdr
-  nutc=ihdr(1)                           !Silence compiler warning
-  i1=index(infile0,'.wav')
-  read(infile0(i1-4:i1-1),*,err=1) nutc
-  go to 2
-1 nutc=0
-2 npts=52*12000
-  read(10) id2(1:npts)
-  dd(1:npts)=id2(1:npts)
-  dd(npts+1:)=0.
+  do ifile=1,nargs
+     call getarg(ifile,infile)
+     open(10,file=infile,access='stream',status='old',err=998)
 
-  call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
+     call timer('read    ',0)
+     read(10) ihdr
+     nutc=ihdr(1)                           !Silence compiler warning
+     i1=index(infile,'.wav')
+     read(infile(i1-4:i1-1),*,err=1) nutc
+     go to 2
+1    nutc=0
+2    npts=52*12000
+     read(10) id2(1:npts)
+     call timer('read    ',1)
+     dd(1:npts)=id2(1:npts)
+     dd(npts+1:)=0.
+
+     call timer('jt65a   ',0)
+     call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
+     call timer('jt65a   ',1)
+  enddo
 
   call timer('jt65    ',1)
   call timer('jt65    ',101)

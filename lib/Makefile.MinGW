@@ -57,7 +57,8 @@ jt9code.exe: $(OBJS4) libjt9.a
 OBJS5 = jt65.o jt65a.o symspec65.o flat65.o ccf65.o decode1a.o \
 	filbig.o fil6521.o afc65b.o decode65b.o s3avg.o setup65.o \
 	extract.o fchisq65.o demod64a.o chkhist.o interleave63.o ccf2.o \
-	move.o indexx.o graycode65.o twkfreq65.o
+	move.o indexx.o graycode65.o twkfreq65.o \
+	wrapkarn.o init_rs.o encode_rs.o decode_rs.o
 jt65.exe: $(OBJS5) libjt9.a 
 	$(FC) -o jt65.exe $(OBJS5) libjt9.a ../libfftw3f_win.a
 
@@ -98,6 +99,16 @@ sec_midn.o: sec_midn.f90
 
 tstrig.o: tstrig.c
 	$(CC) -c -Wall -I..\..\..\hamlib-1.2.15.3\include tstrig.c
+
+init_rs.o: init_rs.c
+	$(CC) -c -DBIGSYM=1 -o init_rs.o init_rs.c
+
+encode_rs.o: encode_rs.c
+	$(CC) -c -DBIGSYM=1 -o encode_rs.o encode_rs.c
+
+decode_rs.o: decode_rs.c
+	$(CC) -c -DBIGSYM=1 -o decode_rs.o decode_rs.c
+
 
 .PHONY : clean
 

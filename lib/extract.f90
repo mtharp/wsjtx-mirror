@@ -16,7 +16,6 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
      go to 900
   endif
   call chkhist(mrsym,nhist,ipk)
-  nhist=0
 
   if(nhist.ge.20) then
      nfail=nfail+1
@@ -51,14 +50,14 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
      call flush(22)
 !         call timer('kvasd   ',0)
 !#ifdef UNIX
-!     iret=system('./kvasd -q > dev_null')
+!         iret=system('./kvasd -q > dev_null')
 !#else
      iret=system('kvasd -q > dev_null')
 !#endif
 !         call timer('kvasd   ',1)
      if(iret.ne.0) then
         if(first) write(*,1000) iret
-1000    format('Error in KV decoder, or no KV decoder present.'/        &
+1000    format('Error in KV decoder, or no KV decoder present.'/     &
              'Return code:',i8,'.  Will use BM algorithm.')
         ndec=0
         first=.false.
@@ -80,7 +79,26 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
         decoded='                      '
      endif
   endif
-20 continue
+20 if(ndec.eq.0) then
+     call indexx(63,mrprob,indx)
+     do i=1,nemax
+        j=indx(i)
+        if(mrprob(j).gt.120) then
+           ne2=i-1
+           go to 2
+        endif
+        era(i)=j-1
+     enddo
+     ne2=nemax
+2    decoded='                      '
+     do nerase=0,ne2,2
+        call rs_decode(mrsym,era,nerase,dat4,ncount)
+        if(ncount.ge.0) then
+           call unpackmsg(dat4,decoded)
+           go to 900
+        endif
+     enddo
+  endif
 
 900 return
 end subroutine extract
