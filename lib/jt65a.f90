@@ -41,10 +41,6 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
         call ccf65(ss(1,i),nhsym,savg(i),sync1,dt,flipk,syncshort,snr2,dt2)
         call timer('ccf65   ',1)
 
-        write(73,3003) i,freq,savg(i),sync1,dt,flipk
-3003    format(i6,5f9.2)
-!        if(ia.gt.0) cycle
-
 ! ########################### Search for Shorthand Messages #################
 !  include 'shorthand1.f90'
 

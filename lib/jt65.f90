@@ -34,7 +34,7 @@ program jt65
   open(12,file='timer.out',status='unknown')
   open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
 
-  call timer('jt9     ',0)
+  call timer('jt65    ',0)
 
   infile='/users/joe/wsjt_k1jt/wsjtx_install/save/'//infile0
   open(10,file=infile,access='stream',status='old',err=998)
@@ -51,8 +51,8 @@ program jt65
 
   call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
 
-  call timer('jt9     ',1)
-  call timer('jt9     ',101)
+  call timer('jt65    ',1)
+  call timer('jt65    ',101)
   call four2a(a,-1,1,1,1)
   call filbig(a,-1,1,0.0,0,0,0,0,0)
   go to 999

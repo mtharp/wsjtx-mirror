@@ -15,7 +15,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
   logical first
   include 'fftw3.f90'
   equivalence (rfilt,cfilt)
-  data first/.true./,npatience/1/
+  data first/.true./,npatience/0/
   data halfpulse/114.97547150,36.57879257,-20.93789101,              &
        5.89886379,1.59355187,-2.49138308,0.60910773,-0.04248129/
   save
