@@ -8,13 +8,10 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
   complex cx(NMAX/8)                 !Data at 1378.125 samples/s
   complex c5x(NMAX/32)               !Data at 344.53125 Hz
   complex c5a(512)
-  complex z
   real s2(66,126)
-  real s3(64,63)
   real a(5)
   logical first
   character decoded*22
-  character mycall*12,hiscall*12,hisgrid*6
   data first/.true./,jjjmin/1000/,jjjmax/-1000/
   data nutc0/-999/,nhz0/-9999999/
   save
@@ -64,9 +61,9 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
 ! Now we are back to using the 1378.125 Hz sample rate, enough to 
 ! accommodate the full JT65C bandwidth.
 
-!  call timer('twkfreq ',0)
-!  call twkfreq(cx,cy,n5,a)
-!  call timer('twkfreq ',1)
+  call timer('twkfreq ',0)
+  call twkfreq65(cx,n5,a)
+  call timer('twkfreq ',1)
 
 ! Compute spectrum for each half symbol.
 ! Adding or subtracting a small number (e.g., 5) to j may make it decode.\
@@ -108,9 +105,8 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
 
   call timer('sh_ffts ',1)
 
-  flip=nflip
   call timer('dec65b  ',0)
-  call decode65b(s2,flip,mode65,nqd,nkv,nhist,decoded,s3)
+  call decode65b(s2,nflip,mode65,nqd,nkv,nhist,decoded)
   dt=dt00 + dtbest + 1.7
   call timer('dec65b  ',1)
 

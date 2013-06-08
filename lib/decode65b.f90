@@ -1,4 +1,4 @@
-subroutine decode65b(s2,flip,mode65,nqd,nkv,nhist,decoded,s3)
+subroutine decode65b(s2,nflip,mode65,nqd,nkv,nhist,decoded)
 
   real s2(66,126)
   real s3(64,63)
@@ -13,12 +13,12 @@ subroutine decode65b(s2,flip,mode65,nqd,nkv,nhist,decoded,s3)
 
   do j=1,63
      k=mdat(j)                       !Points to data symbol
-     if(flip.lt.0.0) k=mdat2(j)
+     if(nflip.lt.0) k=mdat2(j)
      do i=1,64
         s3(i,j)=s2(i+2,k)
      enddo
      k=mdat2(j)                       !Points to data symbol
-     if(flip.lt.0.0) k=mdat(j)
+     if(nflip.lt.0) k=mdat(j)
   enddo
 
   nadd=mode65
@@ -26,7 +26,7 @@ subroutine decode65b(s2,flip,mode65,nqd,nkv,nhist,decoded,s3)
 ! Suppress "birdie messages" and other garbage decodes:
   if(decoded(1:7).eq.'000AAA ') ncount=-1
   if(decoded(1:7).eq.'0L6MWK ') ncount=-1
-  if(flip.lt.0.0 .and. ltext) ncount=-1
+  if(nflip.lt.0 .and. ltext) ncount=-1
   nkv=1
   if(ncount.lt.0) then 
      nkv=0

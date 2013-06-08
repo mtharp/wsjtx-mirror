@@ -27,7 +27,7 @@ program jt65
   ntol=50
   nfa=500
   nfb=2500
-  mousefqso=1500
+  nfqso=1500
   nagain=0
   ndiskdat=1
 
@@ -49,10 +49,12 @@ program jt65
   dd(1:npts)=id2(1:npts)
   dd(npts+1:)=0.
 
-  call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,mousefqso,nagain,ndiskdat)
+  call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
 
   call timer('jt9     ',1)
   call timer('jt9     ',101)
+  call four2a(a,-1,1,1,1)
+  call filbig(a,-1,1,0.0,0,0,0,0,0)
   go to 999
 
 998 print*,'Cannot open file:'

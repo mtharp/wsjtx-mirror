@@ -57,7 +57,7 @@ jt9code.exe: $(OBJS4) libjt9.a
 OBJS5 = jt65.o jt65a.o symspec65.o flat65.o ccf65.o decode1a.o \
 	filbig.o fil6521.o afc65b.o decode65b.o s3avg.o setup65.o \
 	extract.o fchisq65.o demod64a.o chkhist.o interleave63.o ccf2.o \
-	move.o indexx.o
+	move.o indexx.o graycode65.o twkfreq65.o
 jt65.exe: $(OBJS5) libjt9.a 
 	$(FC) -o jt65.exe $(OBJS5) libjt9.a ../libfftw3f_win.a
 

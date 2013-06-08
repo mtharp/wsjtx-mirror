@@ -3,9 +3,7 @@ subroutine chkhist(mrsym,nmax,ipk)
   integer mrsym(63)
   integer hist(0:63)
 
-  do i=0,63
-     hist(i)=0
-  enddo
+  hist=0
   do j=1,63
      i=mrsym(j)
      hist(i)=hist(i)+1

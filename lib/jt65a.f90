@@ -4,28 +4,25 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
 
   parameter (NSZ=3413)
   parameter (NZMAX=60*12000)
-  parameter (NFFT=8192)              !### ??? ###
+  parameter (NFFT=8192)
   real dd(NZMAX)
-  real*4 ss(322,NSZ),savg(NSZ)
-  real tavg(-50:50)                  !Temp for finding local base level
-  real tmp (200)                     !Temp storage for pctile sorting
+  real*4 ss(322,NSZ)
+  real*4 savg(NSZ)
   real a(5)
-  character decoded*22,blank*22
-  data blank/'                      '/
+  character decoded*22
   save
 
   call symspec65(dd,npts,ss,nhsym,savg)    !Get normalized symbol spectra
 
   df=12000.0/NFFT                     !df = 12000.0/16384 = 0.732 Hz
   ftol=10.0                           !Frequency tolerance (Hz)
-  fqso=nfqso                      !fqso at baseband (Hz)
   mode65=1
 
   do nqd=0,0,-1
-     if(nqd.eq.1) then                     !Quick decode, at fQSO
+     if(nqd.eq.1) then                !Quick decode, at fQSO
         fa=nfqso - ntol
         fb=nfqso + ntol
-     else                                  !Wideband decode at all freqs
+     else                             !Wideband decode at all freqs
         fa=500.0
         fb=2500.0
      endif
@@ -35,9 +32,6 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
      freq0=-999.
      sync10=-999.
      thresh0=1.5
-
-     ia=630
-     ib=640
 
      do i=ia,ib                               !Search over freq range
         freq=i*df
@@ -59,7 +53,7 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
 !  Use lower thresh1 at fQSO
         if(nqd.eq.1 .and. ntol.le.100) thresh1=0.
 !  Is sync1 above threshold?
-        if(sync1.lt.thresh1 .or. abs(noffset).gt.ntol) cycle
+        if(sync1.lt.thresh1) cycle
 
 !  Keep only the best candidate within ftol.
         if(freq-freq0.lt.ftol .or. sync1.lt.sync10) cycle
@@ -72,7 +66,6 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
         call timer('decode1a',1)
 
         nfreq=nint(freq)
-        nsync1=sync1
 
         s2db=10.0*log10(sync2) - 40             !### empirical ###
         nsync2=nint(s2db)

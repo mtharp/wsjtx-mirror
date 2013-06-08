@@ -13,8 +13,9 @@ subroutine demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
   real*4 s3(64,63)
   real*8 fs(64)
   integer mrsym(63),mrprob(63),mr2sym(63),mr2prob(63)
-  common/mrscom/ mrs(63),mrs2(63)
+!  common/mrscom/ mrs(63),mrs2(63)
 
+  if(nadd.eq.-999) return
   afac=1.1 * float(nadd)**0.64
   scale=255.999
 
@@ -56,8 +57,8 @@ subroutine demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
      mr2sym(j)=i2-1
      mrprob(j)=scale*p1
      mr2prob(j)=scale*p2
-     mrs(j)=i1
-     mrs2(j)=i2
+!     mrs(j)=i1
+!     mrs2(j)=i2
   enddo
 
   sum=0.
