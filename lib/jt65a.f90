@@ -8,6 +8,7 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
   real dd(NZMAX)
   real*4 ss(322,NSZ)
   real*4 savg(NSZ)
+  logical done(NSZ)
   real a(5)
   character decoded*22
   save
@@ -15,10 +16,11 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
   call symspec65(dd,npts,ss,nhsym,savg)    !Get normalized symbol spectra
 
   df=12000.0/NFFT                     !df = 12000.0/16384 = 0.732 Hz
-  ftol=10.0                           !Frequency tolerance (Hz)
+  ftol=15.0                           !Frequency tolerance (Hz)
   mode65=1
+  done=.false.
 
-  do nqd=0,0,-1
+  do nqd=1,0,-1
      if(nqd.eq.1) then                !Quick decode, at fQSO
         fa=nfqso - ntol
         fb=nfqso + ntol
@@ -34,8 +36,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
      thresh0=1.5
 
      do i=ia,ib                               !Search over freq range
+        if(savg(i).lt.thresh0 .or. done(i)) cycle
         freq=i*df
-        if(savg(i).lt.thresh0) cycle
 
         call timer('ccf65   ',0)
         call ccf65(ss(1,i),nhsym,savg(i),sync1,dt,flipk,syncshort,snr2,dt2)
@@ -61,21 +63,22 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
              nutc,ntol,sync2,a,dt,nkv,nhist,decoded)
         call timer('decode1a',1)
 
-        nfreq=nint(freq)
-
-        s2db=10.0*log10(sync2) - 40             !### empirical ###
-        nsync2=nint(s2db)
-        if(decoded(1:4).eq.'RO  ' .or. decoded(1:4).eq.'RRR  ' .or.  &
-             decoded(1:4).eq.'73  ') nsync2=nint(1.33*s2db + 2.0)
-
-        write(*,1010) nutc,nsync2,dt,nfreq,decoded,nflip,newdat
-1010    format(i4.4,i6,f6.1,i6,2x,a22,3x,2i3)
+        if(decoded.ne.'                      ') then
+           nfreq=nint(freq)
+           s2db=10.0*log10(sync2) - 40             !### empirical ###
+           nsync2=nint(s2db)
+           write(*,1010) nutc,nsync2,dt,nfreq,decoded,nflip,newdat
+1010       format(i4.4,i6,f6.1,i6,2x,a22,3x,2i3)
+           freq0=freq
+           sync10=sync1
+           i2=min(NSZ,i+10)                !### ??? ###
+           done(i:i2)=.true.
+        endif
      enddo
      if(nagain.eq.1) go to 999
   enddo
 
-999 close(23)
-  nagain=0
+999 nagain=0
 
   return
 end subroutine jt65a

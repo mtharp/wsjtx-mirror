@@ -26,7 +26,7 @@ program jt65
   ntol=50
   nfa=500
   nfb=2500
-  nfqso=1500
+  nfqso=933
   nagain=0
   ndiskdat=1
 
@@ -59,8 +59,8 @@ program jt65
 
   call timer('jt65    ',1)
   call timer('jt65    ',101)
-  call four2a(a,-1,1,1,1)
-  call filbig(a,-1,1,0.0,0,0,0,0,0)
+  call four2a(a,-1,1,1,1)                  !Free the memory used for plans
+  call filbig(a,-1,1,0.0,0,0,0,0,0)        ! (ditto)
   go to 999
 
 998 print*,'Cannot open file:'
