@@ -3,6 +3,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
 ! Filter and real data in array dd(npts), sampled at 12000 Hz.
 ! Output is complex, sampled at 1375.125 Hz.
 
+  parameter (NSZ=3413)
   parameter (NFFT1=672000,NFFT2=77175)
   real*4  dd(npts)                           !Input data
   complex ca(NFFT1)                          !FFT of input
@@ -18,6 +19,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
   data first/.true./,npatience/0/
   data halfpulse/114.97547150,36.57879257,-20.93789101,              &
        5.89886379,1.59355187,-2.49138308,0.60910773,-0.04248129/
+  common/refspec/dfref,ref(NSZ)
   save
 
   if(npts.lt.0) go to 900
@@ -68,10 +70,19 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
      call timer('FFTbig  ',0)
      call sfftw_execute(plan1)
      call timer('FFTbig  ',1)
+
+     do i=1,NFFT1/2                             !Flatten the spectrum
+        j=nint(i*df/dfref)
+        if(j.lt.1) j=1
+        if(j.gt.NSZ) j=NSZ
+        fac=sqrt(min(30.0,1.0/ref(j)))
+        ca(i)=fac * ca(i)
+     enddo
+
 !###
 !     nadd=50
 !     iz=NFFT1/(2*nadd)
-!     df=nadd*12000.0/NFFT1
+!     df1=nadd*12000.0/NFFT1
 !     k=0
 !     do i=1,iz
 !        ss=0.
@@ -79,7 +90,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
 !           k=k+1
 !           ss=ss + real(ca(k))**2 + aimag(ca(k))**2
 !        enddo
-!        write(81,3001) i*df,ss,db(ss)
+!        write(81,3001) i*df1,ss,db(ss)
 !3001    format(f12.3,e12.3,f12.3)
 !     enddo
 !###        

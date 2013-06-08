@@ -1,5 +1,7 @@
 subroutine symspec65(dd,npts,ss,nhsym,savg)
 
+! Compute symbol spectra at half-symbol steps
+
   parameter (NFFT=8192)
   parameter (NSZ=3413)                         !NFFT*5000/12000
   parameter (MAXHSYM=322)
@@ -7,10 +9,11 @@ subroutine symspec65(dd,npts,ss,nhsym,savg)
   real*4 dd(npts)
   real*4 ss(MAXHSYM,NSZ)
   real*4 savg(NSZ)
-  real*4 ref(NSZ)
   real*4 x(NFFT)
   complex c(0:NFFT/2)
+  common/refspec/dfref,ref(NSZ)
   equivalence (x,c)
+  save /refspec/
 
   hstep=2048.d0*12000.d0/11025.d0              !half-symbol = 2229.116 samples
   nsps=nint(2*hstep)
@@ -33,20 +36,12 @@ subroutine symspec65(dd,npts,ss,nhsym,savg)
   savg=savg/nhsym
 
   call flat65(ss,nhsym,MAXHSYM,NSZ,ref)
-
-!  do i=1,NSZ
-!     write(71,3001) i*df,savg(i),db(savg(i)),ref(i),db(ref(i))
-!3001 format(5f15.3)
-!  enddo
+  dfref=df
 
   savg=savg/ref
   do j=1,nhsym
      ss(j,1:NSZ)=ss(j,1:NSZ)/ref
   enddo
-
-!  do i=1,NSZ
-!     write(72,3001) i*df,savg(i),db(savg(i))
-!  enddo
 
   return
 end subroutine symspec65

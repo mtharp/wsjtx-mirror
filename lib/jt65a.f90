@@ -13,7 +13,9 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
   character decoded*22
   save
 
+  call timer('symsp65 ',0)
   call symspec65(dd,npts,ss,nhsym,savg)    !Get normalized symbol spectra
+  call timer('symsp65 ',1)
 
   df=12000.0/NFFT                     !df = 12000.0/16384 = 0.732 Hz
   ftol=15.0                           !Frequency tolerance (Hz)

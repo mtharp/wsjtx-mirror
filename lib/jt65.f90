@@ -43,10 +43,10 @@ program jt65
      read(10) ihdr
      nutc=ihdr(1)                           !Silence compiler warning
      i1=index(infile,'.wav')
-     read(infile(i1-4:i1-1),*,err=1) nutc
-     go to 2
-1    nutc=0
-2    npts=52*12000
+     read(infile(i1-4:i1-1),*,err=10) nutc
+     go to 20
+10    nutc=0
+20    npts=52*12000
      read(10) id2(1:npts)
      call timer('read    ',1)
      dd(1:npts)=id2(1:npts)
