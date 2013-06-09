@@ -160,7 +160,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_palette="CuteSDR";
   m_RxLog=1;                     //Write Date and Time to RxLog
   m_nutc0=9999;
-  m_mode="JT9-1";
+  m_mode="JT9";
   m_rpt="-15";
   m_TRperiod=60;
   m_inGain=0;
@@ -240,7 +240,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   g_pWideGraph->setFmin(m_fMin);
   g_pWideGraph->setFmax(m_fMax);
 
-  if(m_mode=="JT9-1") on_actionJT9_1_triggered();
+  if(m_mode=="JT9") on_actionJT9_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
   if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
 
@@ -478,7 +478,7 @@ void MainWindow::readSettings()
                                  "PaletteAFMHot",false).toBool());
   ui->actionBlue->setChecked(settings.value(
                                  "PaletteBlue",false).toBool());
-  m_mode=settings.value("Mode","JT9-1").toString();
+  m_mode=settings.value("Mode","JT9").toString();
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
@@ -1977,6 +1977,14 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 
   int nfreq=int(t4.at(3).toFloat());
   g_pWideGraph->setQSOfreq(nfreq);       //Set Rx freq
+  if(t4.at(4)=="-") {
+    m_modeTx="JT9";
+    ui->pbTxMode->setText("TX " + m_modeTx);
+  }
+  if(t4.at(4)=="#") {
+    m_modeTx="JT65";
+    ui->pbTxMode->setText("TX " + m_modeTx);
+  }
   QString firstcall=t4.at(5);
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down or
@@ -2397,7 +2405,8 @@ void MainWindow::acceptQSO2(bool accepted)
 
 void MainWindow::on_actionJT9_1_triggered()
 {
-  m_mode="JT9-1";
+  m_mode="JT9";
+  m_modeTx="JT9";
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
@@ -2409,11 +2418,13 @@ void MainWindow::on_actionJT9_1_triggered()
   lab4->setText(m_mode);
   ui->actionJT9_1->setChecked(true);
   g_pWideGraph->setFmax(m_fMax);
+  ui->pbTxMode->setEnabled(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
 {
   m_mode="JT65";
+  m_modeTx="JT65";
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
@@ -2425,11 +2436,13 @@ void MainWindow::on_actionJT65_triggered()
   lab4->setText(m_mode);
   ui->actionJT65->setChecked(true);
   g_pWideGraph->setFmax(m_fMax);
+  ui->pbTxMode->setEnabled(false);
 }
 
 void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
+  m_modeTx="JT9";
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
@@ -2441,6 +2454,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   lab4->setText(m_mode);
   ui->actionJT9_JT65->setChecked(true);
   g_pWideGraph->setFmax(m_fMax);
+  ui->pbTxMode->setEnabled(true);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -2864,4 +2878,15 @@ void MainWindow::on_actionLockTxFreq_triggered(bool checked)
 {
   m_lockTxFreq=checked;
   g_pWideGraph->m_lockTxFreq=checked;
+}
+
+void MainWindow::on_pbTxMode_clicked()
+{
+  if(m_modeTx=="JT9") {
+    m_modeTx="JT65";
+  } else {
+    m_modeTx="JT9";
+  }
+  QString t="Tx " + m_modeTx;
+  ui->pbTxMode->setText(t);
 }

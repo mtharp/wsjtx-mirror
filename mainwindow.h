@@ -98,7 +98,8 @@ private slots:
   void on_actionAFMHot_triggered();
   void on_actionBlue_triggered();
   void on_actionJT9_1_triggered();
-
+  void on_actionJT65_triggered();
+  void on_actionJT9_JT65_triggered();
   void on_TxFreqSpinBox_valueChanged(int arg1);
   void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
@@ -152,14 +153,10 @@ private slots:
   void on_pbT2R_clicked();
   void acceptQSO2(bool accepted);
   void on_bandComboBox_activated(int index);
-
   void on_readFreq_clicked();
-
   void on_actionLockTxFreq_triggered(bool checked);
 
-  void on_actionJT65_triggered();
-
-  void on_actionJT9_JT65_triggered();
+  void on_pbTxMode_clicked();
 
 private:
     Ui::MainWindow *ui;

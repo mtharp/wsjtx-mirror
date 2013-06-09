@@ -2176,6 +2176,16 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
+      <item row="1" column="6">
+       <widget class="QPushButton" name="pbTxMode">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Tx JT9</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -2594,6 +2604,9 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionJT9_1">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
