@@ -12,6 +12,7 @@ subroutine decoder(ss,id2,nstandalone)
   logical ccfok(NSMAX)
   logical done(NSMAX)
   integer*2 id2(NTMAX*12000)
+  real*4 dd(NTMAX*12000)
   integer*1 i1SoftSymbols(207)
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfb,ntol,  &
        kin,nzhsym,nsave,nagain,ndepth,nrxlog,nfsample,datetime
@@ -167,6 +168,20 @@ subroutine decoder(ss,id2,nstandalone)
      call flush(6)
      if(nagain.ne.0) exit
   enddo
+
+!###
+  npts65=52*12000
+  dd(1:npts65)=id2(1:npts65)
+  newdat65=1
+  ntol65=100
+  nfa65=270
+  nfb65=2270
+  nfqso65=1270
+  nagain65=0
+  ndiskdat65=0
+  call jt65a(dd,npts65,newdat65,nutc,ntol65,nfa65,nfb65,nfqso65,nagain65,  &
+       ndiskdat65)
+!###
 
   write(*,1010) nsynced,ndecoded
 1010 format('<DecodeFinished>',2i4)

@@ -1,6 +1,6 @@
 subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
 
-!  Process id2() data to find and decode JT65 signals.
+!  Process dd() data to find and decode JT65 signals.
 
   parameter (NSZ=3413)
   parameter (NZMAX=60*12000)
@@ -69,8 +69,11 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
            nfreq=nint(freq)
            s2db=10.0*log10(sync2) - 40             !### empirical ###
            nsync2=nint(s2db)
-           write(*,1010) nutc,nsync2,dt,nfreq,decoded,nflip,newdat
-1010       format(i4.4,i6,f6.1,i6,2x,a22,3x,2i3)
+!           write(*,1010) nutc,nsync2,dt,nfreq,decoded,nflip,newdat
+!1010       format(i4.4,i6,f6.1,i6,2x,a22,3x,2i3)
+           decoded='# '//decoded(1:20)
+           write(*,1010) nutc,nsync2,nsync2,dt,freq,0,decoded
+1010       format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22)
            freq0=freq
            sync10=sync1
            i2=min(NSZ,i+10)                !### ??? ###

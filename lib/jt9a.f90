@@ -19,7 +19,8 @@ subroutine jt9a
   call getcwd(cwd)
   open(12,file='timer.out',status='unknown')
 
-  limtrace=0
+!  limtrace=0
+  limtrace=-1                            !Disable all calls to timer()
   lu=12
   i1=attach_jt9()
 
