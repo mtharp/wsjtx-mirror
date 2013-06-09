@@ -8,7 +8,7 @@ subroutine flat2(s,nz,ref)
   ia=nsmo+1
   ib=nz-nsmo-1
   do i=ia,ib
-     call pctile(s(i-nsmo),2*nsmo+1,25,ref(i))
+     call pctile(s(i-nsmo),2*nsmo+1,5,ref(i))
   enddo
 
   ref(:ia-1)=ref(ia)

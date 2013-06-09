@@ -20,8 +20,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   include 'constants.f90'
   real*4 w3(MAXFFT3)
   real*4 s(NSMAX)
-  real*4 ref(NSMAX)
-  real*4 refsum(NSMAX)
+  real*4 scale(NSMAX)
   real*4 ssum(NSMAX)
   real*4 xc(0:MAXFFT3-1)
   complex cx(0:MAXFFT3/2)
@@ -45,13 +44,18 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
         w3(i)=2.0*(sin(i*pi/nfft3))**2         !Window for nfft3 spectrum
      enddo
      nfft3z=nfft3
+     nh=NSMAX/2
+     alpha=1.1
+     do i=1,NSMAX
+        x=alpha*float(i)/nh - 1.0 + 2.6
+        scale(i)=10.0**x
+     enddo
   endif
 
   if(k.lt.k0) then                             !Start a new data block
      ja=0
      ssum=0.
      ihsym=0
-     refsum=0.
      if(ndiskdat.eq.0) id2(k+1:)=0   !Needed to prevent "ghosts". Not sure why.
   endif
   gain=10.0**(0.05*ingain)
@@ -97,10 +101,9 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
      s(i)=sx
   enddo
 
-  call flat2(s,iz,ref)
-  refsum=refsum+ref
-  s=0.2*s/ref
-  savg=0.2*ssum/refsum
+!  s=0.05*s/ref
+  s=scale*s
+  savg=scale*ssum/ihsym
 
 900 npts8=k/8
 
