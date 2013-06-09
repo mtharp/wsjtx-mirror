@@ -97,11 +97,8 @@ private slots:
   void on_logQSOButton_clicked();
   void on_actionAFMHot_triggered();
   void on_actionBlue_triggered();
-  void on_actionJT9_2_triggered();
   void on_actionJT9_1_triggered();
-  void on_actionJT9_5_triggered();
-  void on_actionJT9_30_triggered();
-  void on_actionJT9_10_triggered();
+
   void on_TxFreqSpinBox_valueChanged(int arg1);
   void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
@@ -159,6 +156,10 @@ private slots:
   void on_readFreq_clicked();
 
   void on_actionLockTxFreq_triggered(bool checked);
+
+  void on_actionJT65_triggered();
+
+  void on_actionJT9_JT65_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -310,6 +311,7 @@ private:
     QString m_palette;
     QString m_dateTime;
     QString m_mode;
+    QString m_modeTx;
     QString m_fname;
     QString m_rpt;
     QString m_rptSent;

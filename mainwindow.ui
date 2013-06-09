@@ -2280,10 +2280,8 @@ p, li { white-space: pre-wrap; }
      <string>Mode</string>
     </property>
     <addaction name="actionJT9_1"/>
-    <addaction name="actionJT9_2"/>
-    <addaction name="actionJT9_5"/>
-    <addaction name="actionJT9_10"/>
-    <addaction name="actionJT9_30"/>
+    <addaction name="actionJT65"/>
+    <addaction name="actionJT9_JT65"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSetup"/>
@@ -2599,7 +2597,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>JT9-1</string>
+    <string>JT9</string>
    </property>
   </action>
   <action name="actionJT9_2">
@@ -2812,6 +2810,22 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Tx freq locked to Rx freq</string>
+   </property>
+  </action>
+  <action name="actionJT65">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>JT65</string>
+   </property>
+  </action>
+  <action name="actionJT9_JT65">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>JT9+JT65</string>
    </property>
   </action>
  </widget>

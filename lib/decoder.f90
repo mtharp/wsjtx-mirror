@@ -34,28 +34,8 @@ subroutine decoder(ss,id2,nstandalone)
   ndecoded=0
   nsps=0
 
-  if(ntrMinutes.eq.1) then
-     nsps=6912
-     df3=1500.0/2048.0
-     fmt='(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22)'
-  else if(ntrMinutes.eq.2) then
-     nsps=15360
-     df3=1500.0/2048.0
-     fmt='(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22)'
-  else if(ntrMinutes.eq.5) then
-     nsps=40960
-     df3=1500.0/6144.0
-     fmt='(i4.4,i4,i5,f6.1,f8.1,i4,3x,a22)'
- else if(ntrMinutes.eq.10) then
-     nsps=82944
-     df3=1500.0/12288.0
-     fmt='(i4.4,i4,i5,f6.1,f8.2,i4,3x,a22)'
-  else if(ntrMinutes.eq.30) then
-     nsps=252000
-     df3=1500.0/32768.0
-     fmt='(i4.4,i4,i5,f6.1,f8.2,i4,3x,a22)'
-  endif
-  if(nsps.eq.0) stop 'Error: bad TRperiod'    !Better: return an error code###
+  nsps=6912                                   !Params for JT9-1
+  df3=1500.0/2048.0
 
   tstep=0.5*nsps/12000.0                      !Half-symbol step (seconds)
   done=.false.
@@ -148,8 +128,10 @@ subroutine decoder(ss,id2,nstandalone)
                  if(nqd.eq.0) ndecodes0=ndecodes0+1
                  if(nqd.eq.1) ndecodes1=ndecodes1+1
                  
-                 write(*,fmt) nutc,nsync,nsnr,xdt,freq,ndrift,msg
-                 write(13,fmt) nutc,nsync,nsnr,xdt,freq,ndrift,msg
+                 write(*,1000) nutc,nsnr,xdt,nint(freq),msg
+1000             format(i4.4,i4,f5.1,i5,1x,'-',1x,a22)
+                 write(13,1002) nutc,nsync,nsnr,xdt,freq,ndrift,msg
+1002             format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT9')
 
                  iaa=max(1,i-1)
                  ibb=min(NSMAX,i+22)
@@ -160,8 +142,6 @@ subroutine decoder(ss,id2,nstandalone)
                  done(iaa:ibb)=.true.              
                  call flush(6)
               endif
-           else
-!              write(38,3002) nutc,nqd,-99,i,freq,ndrift,ccfred(i),red2(i),schk,0
            endif
         endif
      enddo

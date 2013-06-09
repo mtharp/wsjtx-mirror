@@ -52,10 +52,9 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
 
   QActionGroup* modeGroup = new QActionGroup(this);
   ui->actionJT9_1->setActionGroup(modeGroup);
-  ui->actionJT9_2->setActionGroup(modeGroup);
-  ui->actionJT9_5->setActionGroup(modeGroup);
-  ui->actionJT9_10->setActionGroup(modeGroup);
-  ui->actionJT9_30->setActionGroup(modeGroup);
+  ui->actionJT65->setActionGroup(modeGroup);
+  ui->actionJT9_JT65->setActionGroup(modeGroup);
+
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -242,10 +241,9 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   g_pWideGraph->setFmax(m_fMax);
 
   if(m_mode=="JT9-1") on_actionJT9_1_triggered();
-  if(m_mode=="JT9-2") on_actionJT9_2_triggered();
-  if(m_mode=="JT9-5") on_actionJT9_5_triggered();
-  if(m_mode=="JT9-10") on_actionJT9_10_triggered();
-  if(m_mode=="JT9-30") on_actionJT9_30_triggered();
+  if(m_mode=="JT65") on_actionJT65_triggered();
+  if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
+
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(diskDat()));
@@ -1381,9 +1379,9 @@ void MainWindow::readFromStdout()                             //readFromStdout
       if(t.indexOf(" CQ ")>0) bg="#66ff66";                          //green
       if(m_myCall!="" and t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666"; //red
       bool bQSO=abs(t.mid(22,4).toInt() - g_pWideGraph->QSOfreq()) < 10;
-      QString t1=t.mid(0,5) + t.mid(10,4) + t.mid(15,5) + t.mid(22,4) +
-          t.mid(32);
-      t1=t1.replace("\n","").mid(0,t1.length()-4);
+//      QString t1=t.mid(0,5) + t.mid(10,4) + t.mid(15,5) + t.mid(22,4) +
+//          t.mid(32);
+      QString t1=t.replace("\n","").mid(0,t.length()-4);
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t1 + "</pre></td></tr></table>";
       if(bQSO) {
@@ -1979,15 +1977,15 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 
   int nfreq=int(t4.at(3).toFloat());
   g_pWideGraph->setQSOfreq(nfreq);       //Set Rx freq
-  QString firstcall=t4.at(4);
+  QString firstcall=t4.at(5);
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down or
   if((firstcall!=m_myCall) or m_lockTxFreq or ctrl) {
     ui->TxFreqSpinBox->setValue(nfreq);
   }
-  QString hiscall=t4.at(5);
+  QString hiscall=t4.at(6);
   QString hisgrid="";
-  if(t4.length()>=7) hisgrid=t4.at(6);
+  if(t4.length()>=8) hisgrid=t4.at(7);
   ui->dxCallEntry->setText(hiscall);
   ui->dxGridEntry->setText("");
   if(gridOK(hisgrid)) ui->dxGridEntry->setText(hisgrid);
@@ -2410,81 +2408,39 @@ void MainWindow::on_actionJT9_1_triggered()
   lab4->setStyleSheet("QLabel{background-color: #ff6ec7}");
   lab4->setText(m_mode);
   ui->actionJT9_1->setChecked(true);
-  //m_fMax=2000;
-  //ui->fMaxSpinBox->setValue(m_fMax);
   g_pWideGraph->setFmax(m_fMax);
 }
 
-void MainWindow::on_actionJT9_2_triggered()
+void MainWindow::on_actionJT65_triggered()
 {
-  m_mode="JT9-2";
+  m_mode="JT65";
   statusChanged();
-  m_TRperiod=120;
-  m_nsps=15360;
-  m_hsymStop=178;
+  m_TRperiod=60;
+  m_nsps=6912;                   //For symspec only
+  m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ffff00}");
   lab4->setText(m_mode);
-  ui->actionJT9_2->setChecked(true);
-  //m_fMax=2000;
-  //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setFmax(2000);
+  ui->actionJT65->setChecked(true);
+  g_pWideGraph->setFmax(m_fMax);
 }
 
-void MainWindow::on_actionJT9_5_triggered()
+void MainWindow::on_actionJT9_JT65_triggered()
 {
-  m_mode="JT9-5";
+  m_mode="JT9+JT65";
   statusChanged();
-  m_TRperiod=300;
-  m_nsps=40960;
-  m_hsymStop=172;
+  m_TRperiod=60;
+  m_nsps=6912;
+  m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ffa500}");
   lab4->setText(m_mode);
-  ui->actionJT9_5->setChecked(true);
-  //m_fMax=1300;
-  //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setFmax(1300);
-}
-
-void MainWindow::on_actionJT9_10_triggered()
-{
-  m_mode="JT9-10";
-  statusChanged();
-  m_TRperiod=600;
-  m_nsps=82944;
-  m_hsymStop=171;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #7fff00}");
-  lab4->setText(m_mode);
-  ui->actionJT9_10->setChecked(true);
-  //m_fMax=1150;
-  //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setFmax(1150);
-}
-
-void MainWindow::on_actionJT9_30_triggered()
-{
-  m_mode="JT9-30";
-  statusChanged();
-  m_TRperiod=1800;
-  m_nsps=252000;
-  m_hsymStop=167;
-  soundInThread.setPeriod(m_TRperiod,m_nsps);
-  soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #97ffff}");
-  lab4->setText(m_mode);
-  ui->actionJT9_30->setChecked(true);
-  //m_fMax=1050;
-  //ui->fMaxSpinBox->setValue(m_fMax);
-  g_pWideGraph->setFmax(1050);
+  ui->actionJT9_JT65->setChecked(true);
+  g_pWideGraph->setFmax(m_fMax);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)

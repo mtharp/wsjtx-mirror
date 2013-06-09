@@ -71,9 +71,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
            nsync2=nint(s2db)
 !           write(*,1010) nutc,nsync2,dt,nfreq,decoded,nflip,newdat
 !1010       format(i4.4,i6,f6.1,i6,2x,a22,3x,2i3)
-           decoded='# '//decoded(1:20)
-           write(*,1010) nutc,nsync2,nsync2,dt,freq,0,decoded
-1010       format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22)
+           write(*,1010) nutc,nsync2,dt,nfreq,decoded
+1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
            freq0=freq
            sync10=sync1
            i2=min(NSZ,i+10)                !### ??? ###
