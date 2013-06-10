@@ -15,7 +15,7 @@ subroutine decoder(ss,id2,nstandalone)
   real*4 dd(NTMAX*12000)
   integer*1 i1SoftSymbols(207)
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfb,ntol,  &
-       kin,nzhsym,nsave,nagain,ndepth,nrxlog,nfsample,datetime
+       kin,nzhsym,nsave,nagain,ndepth,ntxmode,nfsample,datetime
   common/tracer/limtrace,lu
   save
 
@@ -28,8 +28,15 @@ subroutine decoder(ss,id2,nstandalone)
   call timer('decoder ',0)
 
   open(13,file='decoded.txt',status='unknown')
+
+  npts65=52*12000
+  ntol65=100
+  if(ntxmode.eq.65) then
+     dd(1:npts65)=id2(1:npts65)
+     call jt65a(dd,npts65,newdat,nutc,ntol65,nfqso,nagain,ndiskdat)
+  endif
+
   ntrMinutes=ntrperiod/60
-  newdat=1
   nsynced=0
   ndecoded=0
   nsps=0
@@ -40,7 +47,6 @@ subroutine decoder(ss,id2,nstandalone)
   tstep=0.5*nsps/12000.0                      !Half-symbol step (seconds)
   done=.false.
 
-!  nf0=1000
   nf0=0
   ia=max(1,nint((nfa-nf0)/df3))
   ib=min(NSMAX,nint((nfb-nf0)/df3))
@@ -89,9 +95,7 @@ subroutine decoder(ss,id2,nstandalone)
         ccfok(ia1:ib1)=.false.
      endif
 
-     nRxLog=0
      fgood=0.
-
      do i=ia,ib
         f=(i-1)*df3
         if(done(i) .or. (.not.ccfok(i)) .or. (ccfred(i).lt.ccflim-1.0)) cycle
@@ -120,11 +124,6 @@ subroutine decoder(ss,id2,nstandalone)
               nsnr=nint(snrdb)
               ndrift=nint(drift/df3)
               
-!              write(38,3002) nutc,nqd,nsnr,i,freq,ndrift,ccfred(i),    &
-!                   red2(i),schk,nlim,msg
-!3002          format(i4.4,i2,i4,i5,f7.1,i4,f5.1,f6.1,f5.1,i8,1x,a22)
-!              call flush(38)
-
               if(msg.ne.'                      ') then
                  if(nqd.eq.0) ndecodes0=ndecodes0+1
                  if(nqd.eq.1) ndecodes1=ndecodes1+1
@@ -150,20 +149,12 @@ subroutine decoder(ss,id2,nstandalone)
      if(nagain.ne.0) exit
   enddo
 
-!###
-  npts65=52*12000
-  dd(1:npts65)=id2(1:npts65)
-  newdat65=1
-  ntol65=100
-  nfa65=270
-  nfb65=2270
-  nfqso65=1270
-  nagain65=0
-  ndiskdat65=0
-  call jt65a(dd,npts65,newdat65,nutc,ntol65,nfa65,nfb65,nfqso65,nagain65,  &
-       ndiskdat65)
-!###
+  if(ntxmode.eq.9) then
+     dd(1:npts65)=id2(1:npts65)
+     call jt65a(dd,npts65,newdat,nutc,ntol65,nfqso,nagain,ndiskdat)
+  endif
 
+!### JT65 is not yet producing info for nsynced, ndecoded.
   write(*,1010) nsynced,ndecoded
 1010 format('<DecodeFinished>',2i4)
   call flush(6)

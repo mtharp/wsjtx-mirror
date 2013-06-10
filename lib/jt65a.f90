@@ -1,4 +1,4 @@
-subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
+subroutine jt65a(dd,npts,newdat,nutc,ntol,nfqso,nagain,ndiskdat)
 
 !  Process dd() data to find and decode JT65 signals.
 
@@ -69,8 +69,6 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
            nfreq=nint(freq)
            s2db=10.0*log10(sync2) - 40             !### empirical ###
            nsync2=nint(s2db)
-!           write(*,1010) nutc,nsync2,dt,nfreq,decoded,nflip,newdat
-!1010       format(i4.4,i6,f6.1,i6,2x,a22,3x,2i3)
            write(*,1010) nutc,nsync2,dt,nfreq,decoded
 1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
            freq0=freq
@@ -79,10 +77,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
            done(i:i2)=.true.
         endif
      enddo
-     if(nagain.eq.1) go to 999
+     if(nagain.eq.1) exit
   enddo
-
-999 nagain=0
 
   return
 end subroutine jt65a

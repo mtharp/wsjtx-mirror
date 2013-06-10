@@ -78,23 +78,6 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
         fac=sqrt(min(30.0,1.0/ref(j)))
         ca(i)=fac * ca(i)
      enddo
-
-!###
-!     nadd=50
-!     iz=NFFT1/(2*nadd)
-!     df1=nadd*12000.0/NFFT1
-!     k=0
-!     do i=1,iz
-!        ss=0.
-!        do j=1,nadd
-!           k=k+1
-!           ss=ss + real(ca(k))**2 + aimag(ca(k))**2
-!        enddo
-!        write(81,3001) i*df1,ss,db(ss)
-!3001    format(f12.3,e12.3,f12.3)
-!     enddo
-!###        
-     newdat=0
   endif
 
 ! NB: f0 is the frequency at which we want our filter centered.

@@ -34,7 +34,7 @@ subroutine downsam9(id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
            s(i)=s(i)+real(c1(j))**2 + aimag(c1(j))**2
         enddo
      enddo
-     newdat=0
+!     newdat=0
   endif
 
   ndown=8*nsps8/16                         !Downsample factor

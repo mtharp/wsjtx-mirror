@@ -1,7 +1,7 @@
 subroutine fillcom(nutc0,ndepth0)
   character*20 datetime
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfb,ntol,  &
-       kin,nzhsym,nsave,nagain,ndepth,nrxlog,nfsample,datetime
+       kin,nzhsym,nsave,nagain,ndepth,ntxmode,nfsample,datetime
   save
 
   nutc=nutc0
@@ -17,7 +17,7 @@ subroutine fillcom(nutc0,ndepth0)
   nzhsym=173
   nsave=0
   ndepth=ndepth0
-  nrxlog=1
+  ntxmode=9
   nfsample=12000
   datetime="2013-Apr-16 15:13"
   

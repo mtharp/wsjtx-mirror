@@ -1287,7 +1287,8 @@ void MainWindow::decode()                                       //decode()
   jt9com_.ntol=3;
   if(jt9com_.nutc < m_nutc0) m_RxLog |= 1;  //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
-  jt9com_.nrxlog=m_RxLog;
+  jt9com_.ntxmode=9;
+  if(m_modeTx=="JT65") jt9com_.ntxmode=65;
   jt9com_.nfsample=12000;
   jt9com_.ntrperiod=m_TRperiod;
   m_nsave=0;
@@ -2380,7 +2381,7 @@ void MainWindow::on_logQSOButton_clicked()                 //Log QSO button
   logDlg->m_saveComments=m_saveComments;
   logDlg->m_txPower=m_txPower;
   logDlg->m_comments=m_logComments;
-  logDlg->initLogQSO(m_hisCall,m_hisGrid,m_mode,m_rptSent,m_rptRcvd,
+  logDlg->initLogQSO(m_hisCall,m_hisGrid,m_modeTx,m_rptSent,m_rptRcvd,
                      m_dateTimeQSO,m_dialFreq+m_txFreq/1.0e6,
                      m_myCall,m_myGrid,m_noSuffix,m_toRTTY,m_dBtoComments);
   connect(logDlg, SIGNAL(acceptQSO(bool)),this,SLOT(acceptQSO2(bool)));
@@ -2412,7 +2413,7 @@ void MainWindow::acceptQSO2(bool accepted)
 void MainWindow::on_actionJT9_1_triggered()
 {
   m_mode="JT9";
-  m_modeTx="JT9";
+  if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
@@ -2431,7 +2432,7 @@ void MainWindow::on_actionJT9_1_triggered()
 void MainWindow::on_actionJT65_triggered()
 {
   m_mode="JT65";
-  m_modeTx="JT65";
+  if(m_modeTx!="JT65") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
@@ -2450,7 +2451,7 @@ void MainWindow::on_actionJT65_triggered()
 void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
-  m_modeTx="JT9";
+  if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
