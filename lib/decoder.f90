@@ -11,11 +11,12 @@ subroutine decoder(ss,id2,nstandalone)
   real*4 red2(NSMAX)
   logical ccfok(NSMAX)
   logical done(NSMAX)
+  logical done65
   integer*2 id2(NTMAX*12000)
   real*4 dd(NTMAX*12000)
   integer*1 i1SoftSymbols(207)
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfb,ntol,  &
-       kin,nzhsym,nsave,nagain,ndepth,ntxmode,nfsample,datetime
+       kin,nzhsym,nsave,nagain,ndepth,ntxmode,nmode,datetime
   common/tracer/limtrace,lu
   save
 
@@ -31,10 +32,14 @@ subroutine decoder(ss,id2,nstandalone)
 
   npts65=52*12000
   ntol65=100
-  if(ntxmode.eq.65) then
+  done65=.false.
+  if(nmode.ge.65 .and. ntxmode.eq.65) then
      dd(1:npts65)=id2(1:npts65)
      call jt65a(dd,npts65,newdat,nutc,ntol65,nfqso,nagain,ndiskdat)
+     done65=.true.
   endif
+
+  if(nmode.eq.65) go to 800
 
   ntrMinutes=ntrperiod/60
   nsynced=0
@@ -149,13 +154,13 @@ subroutine decoder(ss,id2,nstandalone)
      if(nagain.ne.0) exit
   enddo
 
-  if(ntxmode.eq.9) then
+  if(nmode.ge.65 .and. (.not.done65)) then
      dd(1:npts65)=id2(1:npts65)
      call jt65a(dd,npts65,newdat,nutc,ntol65,nfqso,nagain,ndiskdat)
   endif
 
 !### JT65 is not yet producing info for nsynced, ndecoded.
-  write(*,1010) nsynced,ndecoded
+800 write(*,1010) nsynced,ndecoded
 1010 format('<DecodeFinished>',2i4)
   call flush(6)
   close(13)

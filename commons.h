@@ -26,7 +26,7 @@ extern struct {
   int nagain;
   int ndepth;
   int ntxmode;
-  int nfsample;
+  int nmode;
   char datetime[20];
 } jt9com_;
 

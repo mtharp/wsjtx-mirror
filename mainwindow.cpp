@@ -1292,7 +1292,9 @@ void MainWindow::decode()                                       //decode()
   m_nutc0=jt9com_.nutc;
   jt9com_.ntxmode=9;
   if(m_modeTx=="JT65") jt9com_.ntxmode=65;
-  jt9com_.nfsample=12000;
+  jt9com_.nmode=9;
+  if(m_mode=="JT65") jt9com_.nmode=65;
+  if(m_mode=="JT9+JT65") jt9com_.nmode=9+65;
   jt9com_.ntrperiod=m_TRperiod;
   m_nsave=0;
   if(m_saveSynced) m_nsave=1;
@@ -1389,6 +1391,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
       QString t1=t.replace("\n","").mid(0,t.length()-4);
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t1 + "</pre></td></tr></table>";
+      bool b65=t1.indexOf("#")==19;
       if(bQSO) {
         cursor = ui->decodedTextBrowser2->textCursor();
         cursor.movePosition(QTextCursor::End);
@@ -1397,7 +1400,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
         cursor.insertHtml(s);
         ui->decodedTextBrowser2->setTextCursor(cursor);
         m_QSOmsg=t1;
-        bool b65=t1.indexOf("#")==19;
         if(b65 and m_modeTx!="JT65") on_pbTxMode_clicked();
         if(!b65 and m_modeTx=="JT65") on_pbTxMode_clicked();
       }
@@ -1439,7 +1441,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
 
       int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
       bool okToPost=(nsec>50);
-
 #ifdef WIN32
       if(m_pskReporterInit and b and !m_diskData and okToPost) {
         int i1=msg.indexOf(" ");
@@ -1453,7 +1454,9 @@ void MainWindow::readFromStdout()                             //readFromStdout
         uint nfreq=1000000.0*m_dialFreq + nHz + 0.5;
         remote += "freq," + QString::number(nfreq);
         int nsnr=t.mid(10,3).toInt();
-        remote += ",mode,JT9,snr," + QString::number(nsnr) + ",,";
+        QString msgmode="JT9";
+        if(b65) msgmode="JT65";
+        remote += ",mode," + msgmode + ",snr," + QString::number(nsnr) + ",,";
 
         wchar_t tremote[256];
         remote.toWCharArray(tremote);
@@ -1541,6 +1544,7 @@ void MainWindow::guiUpdate()
 
   double tx1=0.0;
   double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;
+  if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
 
   if(!m_txFirst) {
     tx1 += m_TRperiod;
