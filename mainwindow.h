@@ -373,6 +373,9 @@ void symspec_(int* k, int* ntrperiod, int* nsps, int* ingain,
 void genjt9_(char* msg, int* ichk, char* msgsent, int itone[],
              int* itext, int len1, int len2);
 
+void gen65_(char* msg, int* ichk, char* msgsent, int itone[],
+             int* itext, int len1, int len2);
+
 bool stdmsg_(const char* msg, int len);
 
 void azdist_(char* MyGrid, char* HisGrid, double* utch, int* nAz, int* nEl,

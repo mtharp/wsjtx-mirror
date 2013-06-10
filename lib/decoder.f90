@@ -123,6 +123,7 @@ subroutine decoder(ss,id2,nstandalone)
 !              write(38,3002) nutc,nqd,nsnr,i,freq,ndrift,ccfred(i),    &
 !                   red2(i),schk,nlim,msg
 !3002          format(i4.4,i2,i4,i5,f7.1,i4,f5.1,f6.1,f5.1,i8,1x,a22)
+!              call flush(38)
 
               if(msg.ne.'                      ') then
                  if(nqd.eq.0) ndecodes0=ndecodes0+1
@@ -167,17 +168,9 @@ subroutine decoder(ss,id2,nstandalone)
 1010 format('<DecodeFinished>',2i4)
   call flush(6)
   close(13)
-!  call flush(14)
 
   call timer('decoder ',1)
   if(nstandalone.eq.0) call timer('decoder ',101)
-
-  call system_clock(iclock,iclock_rate,iclock_max)
-!  write(39,3001) nutc,nfreqs1,nfreqs0,ndecodes1,ndecodes0,       &
-!       float(iclock-iclock0)/iclock_rate
-!3001 format(5i8,f10.3)
-!  call flush(38)
-!  call flush(39)
 
   return
 end subroutine decoder

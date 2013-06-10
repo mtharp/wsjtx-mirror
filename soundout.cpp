@@ -7,7 +7,7 @@ extern "C" {
 }
 
 extern float gran();                  //Noise generator (for tests only)
-extern int itone[85];                 //Tx audio tones for 85 symbols
+extern int itone[126];                //Audio tones for all Tx symbols
 extern int icw[250];                  //Dits for CW ID
 extern int outBufSize;
 extern bool btxok;
@@ -48,6 +48,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   static short int i2;
   int isym,nspd;
   int xit=2000;
+
   udata->ncall++;
   if(udata->bRestart) {
  // Time according to this computer

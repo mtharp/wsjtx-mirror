@@ -15,7 +15,7 @@
 #include <QtConcurrent/QtConcurrentRun>
 #endif
 
-int itone[85];                        //Tx audio tones for 85 symbols
+int itone[126];                       //Audio tones for all Tx symbols
 int icw[250];                         //Dits for CW ID
 int outBufSize;
 int rc;
@@ -1378,9 +1378,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
       QString bg="white";
       if(t.indexOf(" CQ ")>0) bg="#66ff66";                          //green
       if(m_myCall!="" and t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666"; //red
-      bool bQSO=abs(t.mid(22,4).toInt() - g_pWideGraph->QSOfreq()) < 10;
-//      QString t1=t.mid(0,5) + t.mid(10,4) + t.mid(15,5) + t.mid(22,4) +
-//          t.mid(32);
+      bool bQSO=abs(t.mid(14,4).toInt() - g_pWideGraph->QSOfreq()) < 10;
       QString t1=t.replace("\n","").mid(0,t.length()-4);
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t1 + "</pre></td></tr></table>";
@@ -1594,7 +1592,8 @@ void MainWindow::guiUpdate()
 //    ba2msg(ba,msgsent);
     int len1=22;
     int ichk=0,itext=0;
-    genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
+    if(m_modeTx=="JT9") genjt9_(message,&ichk,msgsent,itone,&itext,len1,len1);
+    if(m_modeTx=="JT65") gen65_(message,&ichk,msgsent,itone,&itext,len1,len1);
     msgsent[22]=0;
     QString t=QString::fromLatin1(msgsent);
     if(m_tune) t="TUNE";
@@ -1812,6 +1811,7 @@ void MainWindow::startTx2()
     double snr=t.mid(1,5).toDouble();
     if(snr>0.0 or snr < -50.0) snr=99.0;
     soundOutThread.setTxSNR(snr);
+    soundOutThread.m_modeTx=m_modeTx;
     soundOutThread.start(QThread::HighestPriority);
     ui->xThermo->setValue(0.0);                         //Set Thermo to zero
     m_monitoring=false;
