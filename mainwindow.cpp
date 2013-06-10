@@ -1405,7 +1405,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
         ui->decodedTextBrowser->setTextCursor(cursor);
       }
 
-      QString msg=t.mid(34);
+      QString msg=t.mid(21);
       int i1=msg.indexOf("\r");
       if(i1>0) msg=msg.mid(0,i1-1) + "                      ";
       bool b=stdmsg_(msg.mid(0,22).toLatin1().constData(),22);
