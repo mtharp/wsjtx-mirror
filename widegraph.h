@@ -31,6 +31,7 @@ public:
   void   setFsample(int n);
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
+  void   setModeTx(QString modeTx);
   double fGreen();
 
   qint32 m_qsoFreq;
@@ -64,6 +65,8 @@ private:
   qint32 m_ntr0;
   qint32 m_fMin;
   qint32 m_fMax;
+
+  QString m_modeTx;
 
   Ui::WideGraph *ui;
 };

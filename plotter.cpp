@@ -258,7 +258,9 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
 
   x1=XfromFreq(m_fMin);
   int bw=9.0*12000.0/m_nsps;
+  if(m_modeTx=="JT65") bw=66.0*11025.0/4096.0;
   dx=XfromFreq(m_fMin+bw) - x1;
+//  qDebug() << "Plotter:" << bw << dx << m_modeTx;
 
   QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
   painter0.setPen(pen0);
@@ -537,4 +539,9 @@ void CPlotter::setTxFreq(int n)                                 //setTol()
   m_txFreq=n;
   DrawOverlay();
   update();
+}
+
+void CPlotter::setModeTx(QString modeTx)
+{
+  m_modeTx=modeTx;
 }

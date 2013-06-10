@@ -239,6 +239,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   g_pWideGraph->m_lockTxFreq=m_lockTxFreq;
   g_pWideGraph->setFmin(m_fMin);
   g_pWideGraph->setFmax(m_fMax);
+  g_pWideGraph->setModeTx(m_modeTx);
 
   if(m_mode=="JT9") on_actionJT9_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
@@ -479,6 +480,8 @@ void MainWindow::readSettings()
   ui->actionBlue->setChecked(settings.value(
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9").toString();
+  m_modeTx="JT9";
+  if(m_mode=="JT65") m_modeTx="JT65";
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
@@ -982,7 +985,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab4 = new QLabel("");
   lab4->setAlignment(Qt::AlignHCenter);
-  lab4->setMinimumSize(QSize(50,18));
+  lab4->setMinimumSize(QSize(60,18));
   lab4->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab4);
 
@@ -1390,6 +1393,9 @@ void MainWindow::readFromStdout()                             //readFromStdout
         cursor.insertHtml(s);
         ui->decodedTextBrowser2->setTextCursor(cursor);
         m_QSOmsg=t1;
+        bool b65=t1.indexOf("#")==19;
+        if(b65 and m_modeTx!="JT65") on_pbTxMode_clicked();
+        if(!b65 and m_modeTx=="JT65") on_pbTxMode_clicked();
       }
 
       if(jt9com_.nagain==0) {
@@ -1976,7 +1982,6 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   }
 
   int nfreq=int(t4.at(3).toFloat());
-  g_pWideGraph->setQSOfreq(nfreq);       //Set Rx freq
   if(t4.at(4)=="-") {
     m_modeTx="JT9";
     ui->pbTxMode->setText("TX " + m_modeTx);
@@ -1985,6 +1990,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
     m_modeTx="JT65";
     ui->pbTxMode->setText("TX " + m_modeTx);
   }
+  g_pWideGraph->setQSOfreq(nfreq);       //Set Rx freq
   QString firstcall=t4.at(5);
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down or
@@ -2413,11 +2419,12 @@ void MainWindow::on_actionJT9_1_triggered()
   m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ff6ec7}");
   lab4->setText(m_mode);
   ui->actionJT9_1->setChecked(true);
+  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setFmax(m_fMax);
+  g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
 }
 
@@ -2431,11 +2438,12 @@ void MainWindow::on_actionJT65_triggered()
   m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ffff00}");
   lab4->setText(m_mode);
   ui->actionJT65->setChecked(true);
+  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setFmax(m_fMax);
+  g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
 }
 
@@ -2449,11 +2457,12 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   lab4->setStyleSheet("QLabel{background-color: #ffa500}");
   lab4->setText(m_mode);
   ui->actionJT9_JT65->setChecked(true);
+  g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setFmax(m_fMax);
+  g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
 }
 
@@ -2889,4 +2898,5 @@ void MainWindow::on_pbTxMode_clicked()
   }
   QString t="Tx " + m_modeTx;
   ui->pbTxMode->setText(t);
+  g_pWideGraph->setModeTx(m_modeTx);
 }

@@ -64,6 +64,7 @@ public:
   void setFsample(int n);
   void setNsps(int ntrperiod, int nsps);
   void setTxFreq(int n);
+  void setModeTx(QString modeTx);
   double fGreen();
   void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
 
@@ -91,6 +92,8 @@ private:
   QSize   m_Size;
   QString m_Str;
   QString m_HDivText[483];
+  QString m_modeTx;
+
   bool    m_Running;
   bool    m_paintEventBusy;
   double  m_fGreen;

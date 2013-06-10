@@ -255,6 +255,15 @@ void WideGraph::setTxFreq(int n)
   ui->widePlot->setTxFreq(n);
 }
 
+void WideGraph::setModeTx(QString modeTx)
+{
+  m_modeTx=modeTx;
+//  qDebug() << "WideGraph:" << m_modeTx;
+  ui->widePlot->setModeTx(modeTx);
+  ui->widePlot->DrawOverlay();
+  ui->widePlot->update();
+}
+
 void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
 {
   ui->widePlot->m_bCurrent=false;
