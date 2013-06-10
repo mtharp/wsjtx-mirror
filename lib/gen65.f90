@@ -65,7 +65,7 @@ subroutine gen65(msg0,ichk,msgsent,itone,itext)
   do j=1,nsym
      if(nprc(j).eq.0) then
         k=k+1
-        itone(j)=sent(k)
+        itone(j)=sent(k)+2
      else
         itone(j)=0
      endif

@@ -49,7 +49,9 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   static int isym0=-999;
   static short int i2;
   int isym,nspd;
-  int xit=2000;
+
+  int xit=0;
+  if(udata->ntxfreq>2500) xit=2000;
 
   udata->ncall++;
   if(udata->bRestart) {
@@ -104,7 +106,6 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   }
 
   baud=12000.0/udata->dnsps;
-
   amp=32767.0;
   int i0=(udata->nsym-0.017)*4.0*udata->dnsps;
   int i1=udata->nsym*4.0*udata->dnsps;
