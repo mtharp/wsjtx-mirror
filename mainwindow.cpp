@@ -481,7 +481,10 @@ void MainWindow::readSettings()
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9").toString();
   m_modeTx="JT9";
-  if(m_mode=="JT65") m_modeTx="JT65";
+  if(m_mode=="JT65") {
+    m_modeTx="JT65";
+    ui->pbTxMode->setText(m_modeTx);
+  }
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
