@@ -1,4 +1,4 @@
-subroutine jt65a(dd,npts,newdat,nutc,ntol,nfqso,nagain,ndiskdat)
+subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
 
 !  Process dd() data to find and decode JT65 signals.
 

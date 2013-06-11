@@ -104,6 +104,7 @@ void CPlotter::draw(float swide[], int i0)             //draw()
 
 //  int iz=XfromFreq(2000.0);
   int iz=XfromFreq(6000.0);
+  m_fMax=FreqfromX(iz);
   for(int i=0; i<iz; i++) {
     if(i>iz) swide[i]=0;
     y=0.0;
@@ -270,7 +271,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawLine(x1,28,x2,28);
   painter0.drawLine(x2,24,x2,30);
 
-  QPen pen2(Qt::blue, 3);                //Mark the decoding range
+  QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider
   painter0.setPen(pen2);
   x1=XfromFreq(m_fMin);
   if(x1<2) x1=2;
@@ -280,13 +281,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawLine(x1,23,x2,23);
   painter0.drawLine(x2,23,x2-5,18);
   painter0.drawLine(x2,23,x2-5,28);
-  x2=XfromFreq(m_fMax);
-  x1=x2-30;
-//  pen2.setWidth(6);
-  painter0.drawLine(x2,18,x2,28);
-  painter0.drawLine(x1,23,x2,23);
-  painter0.drawLine(x1,23,x1+5,18);
-  painter0.drawLine(x1,23,x1+5,28);
+
 
   QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
   painter0.setPen(pen1);
@@ -363,10 +358,9 @@ int CPlotter::plotWidth(){return m_WaterfallPixmap.width();}
 void CPlotter::UpdateOverlay() {DrawOverlay();}
 void CPlotter::setDataFromDisk(bool b) {m_dataFromDisk=b;}
 
-void CPlotter::setRxRange(int fMin, int fMax)
+void CPlotter::setRxRange(int fMin)
 {
   m_fMin=fMin;
-  m_fMax=fMax;
 }
 
 void CPlotter::setBinsPerPixel(int n)                       // set nbpp
@@ -544,4 +538,9 @@ void CPlotter::setTxFreq(int n)                                 //setTol()
 void CPlotter::setModeTx(QString modeTx)
 {
   m_modeTx=modeTx;
+}
+
+int CPlotter::getFmax()
+{
+  return m_fMax;
 }

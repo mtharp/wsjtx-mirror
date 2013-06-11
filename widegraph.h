@@ -23,9 +23,8 @@ public:
   int    getFmax();
   float  fSpan();
   void   saveSettings();
-  void   setRxRange(int fMin, int fMax);
+  void   setRxRange(int fMin);
   void   setFmin(int n);
-  void   setFmax(int n);
   void   setFcal(int n);
   void   setPalette(QString palette);
   void   setFsample(int n);
@@ -54,7 +53,6 @@ private slots:
   void on_gainSpinBox_valueChanged(int arg1);
   void on_spec2dComboBox_currentIndexChanged(const QString &arg1);
   void on_fMinSpinBox_valueChanged(int n);
-  void on_fMaxSpinBox_valueChanged(int n);
 
 private:
   qint32 m_waterfallAvg;

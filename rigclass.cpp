@@ -139,6 +139,12 @@ int Rig::setFreq(freq_t freq, vfo_t vfo) {
   }
 }
 
+int Rig::setXit(shortfreq_t xit, vfo_t vfo)
+{
+  qDebug() <<"A" << int(vfo) << int(xit);
+  return rig_set_xit(theRig, vfo, xit);
+}
+
 freq_t Rig::getFreq(vfo_t vfo)
 {
   freq_t freq;

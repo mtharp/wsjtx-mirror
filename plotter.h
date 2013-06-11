@@ -53,7 +53,7 @@ public:
   void setNSpan(int n);
   void UpdateOverlay();
   void setDataFromDisk(bool b);
-  void setRxRange(int fMin, int fMax);
+  void setRxRange(int fMin);
   void setBinsPerPixel(int n);
   int  binsPerPixel();
   void setFQSO(int n, bool bf);
@@ -67,6 +67,7 @@ public:
   void setModeTx(QString modeTx);
   double fGreen();
   void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
+  int getFmax();
 
 signals:
   void freezeDecode1(int n);

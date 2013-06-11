@@ -101,7 +101,7 @@ void WideGraph::dataSink2(float s[], float df3, int ihsym,
 //    int w=ui->widePlot->plotWidth();
     int i0=-1;                            //###
     int i=i0;
-    int jz=1000.0/df3;
+    int jz=5000.0/(nbpp*df3);
     for (int j=0; j<jz; j++) {
       float sum=0;
       for (int k=0; k<nbpp; k++) {
@@ -196,9 +196,9 @@ void WideGraph::wideFreezeDecode(int n)
   emit freezeDecode2(n);
 }
 
-void WideGraph::setRxRange(int fMin, int fMax)
+void WideGraph::setRxRange(int fMin)
 {
-  ui->widePlot->setRxRange(fMin,fMax);
+  ui->widePlot->setRxRange(fMin);
   ui->widePlot->DrawOverlay();
   ui->widePlot->update();
 }
@@ -210,21 +210,16 @@ int WideGraph::getFmin()
 
 int WideGraph::getFmax()
 {
-  return m_fMax;
+  int n=ui->widePlot->getFmax();
+  if(n>5000) n=5000;
+  return n;
 }
 
 void WideGraph::setFmin(int n)
 {
   m_fMin = n;
   ui->fMinSpinBox->setValue(n);
-  setRxRange(m_fMin,m_fMax);
-}
-
-void WideGraph::setFmax(int n)
-{
-  m_fMax = n;
-  ui->fMaxSpinBox->setValue(n);
-  setRxRange(m_fMin,m_fMax);
+  setRxRange(m_fMin);
 }
 
 void WideGraph::setFcal(int n)
@@ -275,12 +270,7 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
 void WideGraph::on_fMinSpinBox_valueChanged(int n)
 {
   m_fMin=n;
-  setRxRange(m_fMin,m_fMax);
+  setRxRange(m_fMin);
 }
 
-void WideGraph::on_fMaxSpinBox_valueChanged(int n)
-{
-  m_fMax=n;
-  setRxRange(m_fMin,m_fMax);
-}
 

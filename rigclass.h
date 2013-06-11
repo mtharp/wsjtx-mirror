@@ -59,6 +59,7 @@ public:
   rmode_t getMode(pbwidth_t&, vfo_t vfo = RIG_VFO_CURR);
   int setVFO(vfo_t);
   vfo_t getVFO();
+  int setXit(shortfreq_t xit, vfo_t vfo);
 
   int setPTT (ptt_t ptt, vfo_t vfo = RIG_VFO_CURR);
   ptt_t getPTT (vfo_t vfo = RIG_VFO_CURR);

@@ -238,7 +238,6 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   g_pWideGraph->setTxFreq(m_txFreq);
   g_pWideGraph->m_lockTxFreq=m_lockTxFreq;
   g_pWideGraph->setFmin(m_fMin);
-  g_pWideGraph->setFmax(m_fMax);
   g_pWideGraph->setModeTx(m_modeTx);
 
   if(m_mode=="JT9") on_actionJT9_1_triggered();
@@ -354,7 +353,6 @@ void MainWindow::writeSettings()
     m_wideGraphGeom = g_pWideGraph->geometry();
     settings.setValue("WideGraphGeom",m_wideGraphGeom);
     m_fMin=g_pWideGraph->getFmin();
-    m_fMax=g_pWideGraph->getFmax();
   }
   settings.endGroup();
 
@@ -427,7 +425,6 @@ void MainWindow::writeSettings()
   settings.setValue("LogComments",m_logComments);
   settings.setValue("PSKantenna",m_pskAntenna);
   settings.setValue("Fmin",m_fMin);
-  settings.setValue("Fmax",m_fMax);
   settings.endGroup();
 }
 
@@ -564,7 +561,6 @@ void MainWindow::readSettings()
   m_logComments=settings.value("LogComments","").toString();
   m_pskAntenna=settings.value("PSKantenna","").toString();
   m_fMin=settings.value("fMin",3000).toInt();
-  m_fMax=settings.value("fMax",4000).toInt();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -2031,8 +2027,8 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   ui->rptSpinBox->setValue(rpt.toInt());
   genStdMsgs(rpt);
   if(t2.indexOf(m_myCall)>=0) {
-    if(t4.length()>=7 and !gridOK(t4.at(6))) {
-      QString r=t4.at(6);
+    if(t4.length()>=7 and !gridOK(t4.at(7))) {
+      QString r=t4.at(7);
       if(r.mid(0,3)=="RRR") {
         m_ntx=5;
         ui->txrb5->setChecked(true);
@@ -2431,7 +2427,6 @@ void MainWindow::on_actionJT9_1_triggered()
   lab4->setText(m_mode);
   ui->actionJT9_1->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setFmax(m_fMax);
   g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
 }
@@ -2450,7 +2445,6 @@ void MainWindow::on_actionJT65_triggered()
   lab4->setText(m_mode);
   ui->actionJT65->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setFmax(m_fMax);
   g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
 }
@@ -2469,7 +2463,6 @@ void MainWindow::on_actionJT9_JT65_triggered()
   lab4->setText(m_mode);
   ui->actionJT9_JT65->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
-  g_pWideGraph->setFmax(m_fMax);
   g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
 }
