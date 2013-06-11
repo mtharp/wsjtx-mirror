@@ -157,7 +157,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_saveDecoded=false;
   m_saveAll=false;
   m_sec0=-1;
-  m_palette="CuteSDR";
+  m_palette="Linrad";
   m_RxLog=1;                     //Write Date and Time to RxLog
   m_nutc0=9999;
   m_mode="JT9";

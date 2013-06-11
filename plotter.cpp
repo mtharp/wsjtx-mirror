@@ -109,7 +109,7 @@ void CPlotter::draw(float swide[], int i0)             //draw()
     if(i>iz) swide[i]=0;
     y=0.0;
     if(swide[i]>0.0) y = 10.0*log10(swide[i]);
-    int y1 = 5.0*gain*y + 10*m_plotZero;
+    int y1 = 5.0*gain*y + 10*(m_plotZero-4);
     if (y1<0) y1=0;
     if (y1>254) y1=254;
     if (swide[i]>1.e29) y1=255;
