@@ -39,6 +39,7 @@ public:
 signals:
   void freezeDecode2(int n);
   void f11f12(int n);
+  void setXIT2(int n);
 
 public slots:
   void wideFreezeDecode(int n);

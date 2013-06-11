@@ -1054,6 +1054,8 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
             SLOT(freezeDecode(int)));
     connect(g_pWideGraph, SIGNAL(f11f12(int)),this,
             SLOT(bumpFqso(int)));
+    connect(g_pWideGraph, SIGNAL(setXIT2(int)),this,
+            SLOT(setXIT(int)));
 //    connect(g_pWideGraph, SIGNAL(dialFreqChanged(double)),this,
 //            SLOT(dialFreqChanged2(double)));
   }
@@ -1266,6 +1268,7 @@ void MainWindow::freezeDecode(int n)                          //freezeDecode()
 
 void MainWindow::decode()                                       //decode()
 {
+  if(!m_dataAvailable) return;
   ui->DecodeButton->setStyleSheet(m_pbdecoding_style1);
   if(jt9com_.nagain==0 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
@@ -1534,7 +1537,6 @@ void MainWindow::guiUpdate()
   static char message[29];
   static char msgsent[29];
   static int nsendingsh=0;
-  int khsym=0;
   int ret=0;
   QString rt;
 
@@ -1790,7 +1792,6 @@ void MainWindow::guiUpdate()
       }
     }
 
-    m_hsym0=khsym;
     m_sec0=nsec;
   }
 
@@ -1989,10 +1990,12 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   if(t4.at(4)=="-") {
     m_modeTx="JT9";
     ui->pbTxMode->setText("TX " + m_modeTx);
+    g_pWideGraph->setModeTx(m_modeTx);
   }
   if(t4.at(4)=="#") {
     m_modeTx="JT65";
     ui->pbTxMode->setText("TX " + m_modeTx);
+    g_pWideGraph->setModeTx(m_modeTx);
   }
   g_pWideGraph->setQSOfreq(nfreq);       //Set Rx freq
   QString firstcall=t4.at(5);
@@ -2452,7 +2455,7 @@ void MainWindow::on_actionJT65_triggered()
 void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
-  if(m_modeTx!="JT9") on_pbTxMode_clicked();
+//  if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
@@ -2900,4 +2903,19 @@ void MainWindow::on_pbTxMode_clicked()
   QString t="Tx " + m_modeTx;
   ui->pbTxMode->setText(t);
   g_pWideGraph->setModeTx(m_modeTx);
+}
+
+void MainWindow::setXIT(int n)
+{
+  if(m_bRigOpen) {
+    int xit=-1000;
+    if(n>1000) xit=0;
+    if(n>2000) xit=1000;
+    if(n>3000) xit=2000;
+    if(n>4000) xit=3000;
+//    ret=rig->setXit((shortfreq_t)xit,RIG_VFO_TX);
+//    int ret=rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
+    rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
+//    qDebug() << "A" << ret << RIG_VFO_A << RIG_VFO_B << n << xit;
+  }
 }

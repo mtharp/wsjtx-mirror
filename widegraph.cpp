@@ -247,6 +247,7 @@ void WideGraph::setPeriod(int ntrperiod, int nsps)
 
 void WideGraph::setTxFreq(int n)
 {
+  emit setXIT2(n);
   ui->widePlot->setTxFreq(n);
 }
 

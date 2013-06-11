@@ -141,9 +141,25 @@ int Rig::setFreq(freq_t freq, vfo_t vfo) {
 
 int Rig::setXit(shortfreq_t xit, vfo_t vfo)
 {
-  qDebug() <<"A" << int(vfo) << int(xit);
   return rig_set_xit(theRig, vfo, xit);
 }
+
+int Rig::setVFO(vfo_t vfo)
+{
+  return rig_set_vfo(theRig, vfo);
+}
+
+ vfo_t Rig::getVFO()
+ {
+   vfo_t vfo;
+   rig_get_vfo(theRig, &vfo);
+   return vfo;
+ }
+
+ int Rig::setSplitFreq(freq_t tx_freq, vfo_t vfo)
+ {
+   return rig_set_split_freq(theRig, vfo, tx_freq);
+ }
 
 freq_t Rig::getFreq(vfo_t vfo)
 {
@@ -172,18 +188,6 @@ rmode_t Rig::getMode(pbwidth_t& width, vfo_t vfo) {
   rmode_t mode;
   rig_get_mode(theRig, vfo, &mode, &width);
   return mode;
-}
-
-int Rig::setVFO(vfo_t vfo)
-{
-  return rig_set_vfo(theRig, vfo);
-}
-
-vfo_t Rig::getVFO()
-{
-  vfo_t vfo;
-  rig_get_vfo(theRig, &vfo);
-  return vfo;
 }
 
 int Rig::setPTT(ptt_t ptt, vfo_t vfo)

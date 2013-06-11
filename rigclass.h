@@ -60,7 +60,7 @@ public:
   int setVFO(vfo_t);
   vfo_t getVFO();
   int setXit(shortfreq_t xit, vfo_t vfo);
-
+  int setSplitFreq(freq_t tx_freq, vfo_t vfo = RIG_VFO_CURR);
   int setPTT (ptt_t ptt, vfo_t vfo = RIG_VFO_CURR);
   ptt_t getPTT (vfo_t vfo = RIG_VFO_CURR);
 

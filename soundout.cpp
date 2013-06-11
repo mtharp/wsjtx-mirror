@@ -50,8 +50,11 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   static short int i2;
   int isym,nspd;
 
-  int xit=0;
-  if(udata->ntxfreq>2500) xit=2000;
+  int xit=-1000;
+  if(udata->ntxfreq>1000) xit=0;
+  if(udata->ntxfreq>2000) xit=1000;
+  if(udata->ntxfreq>3000) xit=2000;
+  if(udata->ntxfreq>4000) xit=2000;
 
   udata->ncall++;
   if(udata->bRestart) {

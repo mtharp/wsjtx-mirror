@@ -43,6 +43,7 @@ public slots:
   void readFromStdout();
   void readFromStderr();
   void jt9_error();
+  void setXIT(int n);
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -182,7 +183,7 @@ private:
     qint32  m_RxLog;
     qint32  m_nutc0;
     qint32  m_nrx;
-    qint32  m_hsym0;
+    qint32  m_hsym;
     qint32  m_paInDevice;
     qint32  m_paOutDevice;
     qint32  m_TRperiod;
