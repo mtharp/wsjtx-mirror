@@ -2627,6 +2627,7 @@ void MainWindow::on_bandComboBox_activated(int index)
     if(m_bRigOpen) {
       m_dontReadFreq=true;
       ret=rig->setFreq(MHz(m_dialFreq));
+      ret=rig->setSplitFreq(MHz(m_dialFreq),RIG_VFO_B);
       if(ret!=RIG_OK) {
         rt.sprintf("Set rig frequency failed:  %d",ret);
         msgBox(rt);
