@@ -35,10 +35,10 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   call interleave63(mrsym,-1)
   call interleave63(mrprob,-1)
 
-  ndec=0                                !1 for KV, 0 for BM
-  nemax=30                              !Was 200 (30)
-  maxe=8
-  xlambda=13.0                          !Was 12
+  ndec=1                             !1 for KV, 0 for BM
+  nemax=30                           !Max BM erasures
+  maxe=8                             !Max KV errors in 12 most reliable symbols
+  xlambda=10.0
 
   if(ndec.eq.1) then
      call graycode65(mr2sym,63,-1)

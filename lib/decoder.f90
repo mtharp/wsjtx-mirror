@@ -29,6 +29,7 @@ subroutine decoder(ss,id2,nstandalone)
   call timer('decoder ',0)
 
   open(13,file='decoded.txt',status='unknown')
+  open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
 
   npts65=52*12000
   ntol65=100
@@ -164,6 +165,7 @@ subroutine decoder(ss,id2,nstandalone)
 1010 format('<DecodeFinished>',2i4)
   call flush(6)
   close(13)
+  close(22)
 
   call timer('decoder ',1)
   if(nstandalone.eq.0) call timer('decoder ',101)

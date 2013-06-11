@@ -27,8 +27,8 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfqso,nagain,ndiskdat)
         fa=nfqso - ntol
         fb=nfqso + ntol
      else                             !Wideband decode at all freqs
-        fa=500.0
-        fb=2500.0
+        fa=200.0
+        fb=2700.0
      endif
      ia=max(51,nint(fa/df))
      ib=min(NSZ-51,nint(fb/df))
@@ -68,9 +68,13 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfqso,nagain,ndiskdat)
         if(decoded.ne.'                      ') then
            nfreq=nint(freq)
            s2db=10.0*log10(sync2) - 40             !### empirical ###
-           nsync2=nint(s2db)
-           write(*,1010) nutc,nsync2,dt,nfreq,decoded
+           nsnr=nint(s2db)
+           if(nsnr.lt.-30) nsnr=-30
+           if(nsnr.gt.-1) nsnr=-1
+           write(*,1010) nutc,nsnr,dt,nfreq,decoded
 1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
+           write(39,3010) nutc,decoded,sync1,s2db
+3010       format(i4.4,2x,a22,2x,2f6.1)
            freq0=freq
            sync10=sync1
            i2=min(NSZ,i+10)                !### ??? ###
@@ -80,5 +84,6 @@ subroutine jt65a(dd,npts,newdat,nutc,ntol,nfqso,nagain,ndiskdat)
      if(nagain.eq.1) exit
   enddo
 
+  call flush(39)
   return
 end subroutine jt65a
