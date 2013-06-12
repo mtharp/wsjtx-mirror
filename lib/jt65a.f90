@@ -39,6 +39,7 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
 
      do i=ia,ib                               !Search over freq range
         if(savg(i).lt.thresh0 .or. done(i)) cycle
+        if(done(i)) cycle
         freq=i*df
 
         call timer('ccf65   ',0)
@@ -52,16 +53,17 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
         thresh1=1.0
 !  Use lower thresh1 at fQSO
         if(nqd.eq.1 .and. ntol.le.100) thresh1=0.
+
 !  Is sync1 above threshold?
         if(sync1.lt.thresh1) cycle
 
 !  Keep only the best candidate within ftol.
-        if(freq-freq0.lt.ftol .or. sync1.lt.sync10) cycle
-        nflip=nint(flipk)
-        f0=i*df                   !Freq of detected sync tone (0-5000 Hz)
+!        if(freq-freq0.lt.ftol .or. sync1.lt.sync10) cycle
+        if(freq-freq0.lt.ftol) cycle
 
+        nflip=nint(flipk)
         call timer('decode1a',0)
-        call decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,   &
+        call decode1a(dd,npts,newdat,freq,nflip,mode65,nqd,   &
              nutc,ntol,sync2,a,dt,nkv,nhist,decoded)
         call timer('decode1a',1)
 

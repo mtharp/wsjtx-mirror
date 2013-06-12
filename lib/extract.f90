@@ -4,8 +4,9 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   character decoded*22
   integer era(51),dat4(12),indx(64)
   integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
-  logical first,ltext
-  data first/.true./,nsec1/0/
+  logical nokv,ltext
+  data nokv/.false./,nsec1/0/
+  data nbm/0/,nkv/0/
   save
 
   nfail=0
@@ -35,70 +36,73 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   call interleave63(mrsym,-1)
   call interleave63(mrprob,-1)
 
-  ndec=1                             !1 for KV, 0 for BM
-  nemax=30                           !Max BM erasures
+! Decode using Berlekamp-Massey algorithm
+  nemax=30                                         !Max BM erasures
+  call indexx(63,mrprob,indx)
+  do i=1,nemax
+     j=indx(i)
+     if(mrprob(j).gt.120) then
+        ne2=i-1
+        go to 2
+     endif
+     era(i)=j-1
+  enddo
+  ne2=nemax
+2 decoded='                      '
+  do nerase=0,ne2,2
+     call rs_decode(mrsym,era,nerase,dat4,ncount)
+     if(ncount.ge.0) then
+        call unpackmsg(dat4,decoded)
+        nbm=nbm+1
+        if(iand(dat4(10),8).ne.0) ltext=.true.
+        go to 900
+     endif
+  enddo
+
+! Berlekamp-Massey algorithm failed, try Koetter-Vardy
+
   maxe=8                             !Max KV errors in 12 most reliable symbols
   xlambda=10.0
+  call graycode65(mr2sym,63,-1)
+  call interleave63(mr2sym,-1)
+  call interleave63(mr2prob,-1)
 
-  if(ndec.eq.1) then
-     call graycode65(mr2sym,63,-1)
-     call interleave63(mr2sym,-1)
-     call interleave63(mr2prob,-1)
-
-     nsec1=nsec1+1
-     write(22,rec=1) nsec1,xlambda,maxe,200,mrsym,mrprob,mr2sym,mr2prob
-     call flush(22)
+  nsec1=nsec1+1
+  write(22,rec=1) nsec1,xlambda,maxe,200,mrsym,mrprob,mr2sym,mr2prob
+  call flush(22)
 !         call timer('kvasd   ',0)
 !#ifdef UNIX
 !         iret=system('./kvasd -q > dev_null')
 !#else
-     iret=system('kvasd -q > dev_null')
+  iret=system('kvasd -q > dev_null')
 !#endif
 !         call timer('kvasd   ',1)
-     if(iret.ne.0) then
-        if(first) write(*,1000) iret
-1000    format('Error in KV decoder, or no KV decoder present.'/     &
-             'Return code:',i8,'.  Will use BM algorithm.')
-        ndec=0
-        first=.false.
-        go to 20
-     endif
-
-     read(22,rec=2) nsec2,ncount,dat4
-     j=nsec2                !Silence compiler warning
-     decoded='                      '
-     ltext=.false.
-     if(ncount.ge.0) then
-        call unpackmsg(dat4,decoded)     !Unpack the user message
-        if(iand(dat4(10),8).ne.0) ltext=.true.
-        do i=2,12
-           if(dat4(i).ne.dat4(1)) go to 20
-        enddo
-        write(13,*) 'Bad decode?',nhist,nfail,ipk,' ',dat4,decoded
-        ncount=-1           !Suppress supposedly bogus decodes
-        decoded='                      '
-     endif
-  endif
-20 if(ndec.eq.0) then
-     call indexx(63,mrprob,indx)
-     do i=1,nemax
-        j=indx(i)
-        if(mrprob(j).gt.120) then
-           ne2=i-1
-           go to 2
-        endif
-        era(i)=j-1
-     enddo
-     ne2=nemax
-2    decoded='                      '
-     do nerase=0,ne2,2
-        call rs_decode(mrsym,era,nerase,dat4,ncount)
-        if(ncount.ge.0) then
-           call unpackmsg(dat4,decoded)
-           go to 900
-        endif
-     enddo
+  if(iret.ne.0) then
+     if(.not.nokv) write(*,1000) 
+1000 format('Error in KV decoder, or no KV decoder present.')
+     nokv=.true.
+     go to 900
   endif
 
-900 return
+  read(22,rec=2) nsec2,ncount,dat4
+  j=nsec2                !Silence compiler warning
+  decoded='                      '
+  ltext=.false.
+  if(ncount.ge.0) then
+     call unpackmsg(dat4,decoded)     !Unpack the user message
+     nkv=nkv+1
+     if(iand(dat4(10),8).ne.0) ltext=.true.
+!     do i=2,12
+!        if(dat4(i).ne.dat4(1)) go to 900
+!     enddo
+!     write(13,*) 'Bad decode?',nhist,nfail,ipk,' ',dat4,decoded
+!     ncount=-1           !Suppress supposedly bogus decodes
+!     decoded='                      '
+  endif
+
+900 continue
+  write(38,*) nbm,nkv
+  call flush(38)
+
+  return
 end subroutine extract
