@@ -73,6 +73,10 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
            if(nsnr.gt.-1) nsnr=-1
            write(*,1010) nutc,nsnr,dt,nfreq,decoded
 1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
+           ndrift=nint(a(2))
+           write(13,1012) nutc,nint(sync1),nsnr,dt,float(nfreq),ndrift,decoded
+1012       format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT65')
+
 !           write(39,3010) nutc,decoded,sync1,s2db
 !3010       format(i4.4,2x,a22,2x,2f6.1)
            freq0=freq
