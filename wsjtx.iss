@@ -1,6 +1,6 @@
 [Setup]
 AppName=wsjtx
-AppVerName=wsjtx Version 1.1.0 r3337
+AppVerName=wsjtx Version 1.1.0 r3380
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
 DefaultDirName=c:\wsjtx
 DefaultGroupName=wsjtx
@@ -10,6 +10,7 @@ Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\wsjtx.exe";         DestDir: "{app
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\jt9.exe";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx\lib\jt9code.exe";           DestDir: "{app}"
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\rigctl.exe";        DestDir: "{app}"
+Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\kvasd.exe";        DestDir: "{app}"
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\wsjt.ico";          DestDir: "{app}"
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\afmhot.dat";        DestDir: "{app}";
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\blue.dat";          DestDir: "{app}";
