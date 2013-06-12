@@ -75,8 +75,8 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
            if(nsnr.gt.-1) nsnr=-1
            write(*,1010) nutc,nsnr,dt,nfreq,decoded
 1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
-           write(39,3010) nutc,decoded,sync1,s2db
-3010       format(i4.4,2x,a22,2x,2f6.1)
+!           write(39,3010) nutc,decoded,sync1,s2db
+!3010       format(i4.4,2x,a22,2x,2f6.1)
            freq0=freq
            sync10=sync1
            i2=min(NSZ,i+10)                !### ??? ###
@@ -86,6 +86,6 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
      if(nagain.eq.1) exit
   enddo
 
-  call flush(39)
+!  call flush(39)
   return
 end subroutine jt65a

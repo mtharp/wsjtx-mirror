@@ -6,7 +6,6 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
   logical nokv,ltext
   data nokv/.false./,nsec1/0/
-  data nbm/0/,nkv/0/
   save
 
   nfail=0
@@ -53,7 +52,6 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
      call rs_decode(mrsym,era,nerase,dat4,ncount)
      if(ncount.ge.0) then
         call unpackmsg(dat4,decoded)
-        nbm=nbm+1
         if(iand(dat4(10),8).ne.0) ltext=.true.
         go to 900
      endif
@@ -90,7 +88,6 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   ltext=.false.
   if(ncount.ge.0) then
      call unpackmsg(dat4,decoded)     !Unpack the user message
-     nkv=nkv+1
      if(iand(dat4(10),8).ne.0) ltext=.true.
 !     do i=2,12
 !        if(dat4(i).ne.dat4(1)) go to 900
@@ -101,8 +98,6 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   endif
 
 900 continue
-  write(38,*) nbm,nkv
-  call flush(38)
 
   return
 end subroutine extract
