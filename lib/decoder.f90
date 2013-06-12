@@ -133,7 +133,7 @@ subroutine decoder(ss,id2,nstandalone)
                  if(nqd.eq.1) ndecodes1=ndecodes1+1
                  
                  write(*,1000) nutc,nsnr,xdt,nint(freq),msg
-1000             format(i4.4,i4,f5.1,i5,1x,'-',1x,a22)
+1000             format(i4.4,i4,f5.1,i5,1x,'@',1x,a22)
                  write(13,1002) nutc,nsync,nsnr,xdt,freq,ndrift,msg
 1002             format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT9')
 

@@ -39,7 +39,7 @@ WideGraph::WideGraph(QWidget *parent) :
   m_waterfallAvg = settings.value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->m_bCurrent=settings.value("Current",false).toBool();
-  ui->widePlot->m_bCumulative=settings.value("Cumulative",false).toBool();
+  ui->widePlot->m_bCumulative=settings.value("Cumulative",true).toBool();
   if(ui->widePlot->m_bCurrent) ui->spec2dComboBox->setCurrentIndex(0);
   if(ui->widePlot->m_bCumulative) ui->spec2dComboBox->setCurrentIndex(1);
   int nbpp=settings.value("BinsPerPixel",2).toInt();
