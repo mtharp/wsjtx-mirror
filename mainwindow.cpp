@@ -585,6 +585,7 @@ void MainWindow::dataSink(int k)
   static int npts8;
   static float px=0.0;
   static float df3;
+  static float slope;
 
   if(m_diskData) {
     jt9com_.ndiskdat=1;
@@ -594,7 +595,9 @@ void MainWindow::dataSink(int k)
 
 // Get power, spectrum, and ihsym
   trmin=m_TRperiod/60;
-  symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
+  slope=0.0;
+  if(g_pWideGraph!=NULL) slope=(float)g_pWideGraph->getSlope();
+  symspec_(&k,&trmin,&m_nsps,&m_inGain,&slope,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;

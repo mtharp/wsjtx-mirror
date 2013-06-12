@@ -1,4 +1,4 @@
-subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
+subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -27,7 +27,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   integer*2 id2
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,         &
        ntr,mousefqso,newdat,nfa,nfb,ntol,kin,nzhsym,nsynced,ndecoded
-  data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/
+  data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/,slope0/0.0/
   equivalence (xc,cx)
   save
 
@@ -38,18 +38,19 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
      ihsym=0
      go to 900                                 !Wait for enough samples to start
   endif
-  if(nfft3.ne.nfft3z) then                     !New nfft3, compute window
+
+  if(nfft3.ne.nfft3z .or. slope.ne.slope0) then    !New nfft3, compute window
      pi=4.0*atan(1.0)
      do i=1,nfft3
         w3(i)=2.0*(sin(i*pi/nfft3))**2         !Window for nfft3 spectrum
      enddo
      nfft3z=nfft3
      nh=NSMAX/2
-     alpha=1.1
      do i=1,NSMAX
-        x=alpha*float(i)/nh - 1.0 + 2.6
+        x=slope*float(i)/nh - 1.0 + 2.6
         scale(i)=10.0**x
      enddo
+     slope0=slope
   endif
 
   if(k.lt.k0) then                             !Start a new data block

@@ -46,6 +46,8 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->widePlot->setBinsPerPixel(nbpp);
   m_qsoFreq=settings.value("QSOfreq",1500).toInt();
   ui->widePlot->setFQSO(m_qsoFreq,true);
+  m_slope=settings.value("Slope",0.0).toDouble();
+  ui->slopeSpinBox->setValue(m_slope);
   settings.endGroup();
 }
 
@@ -72,6 +74,7 @@ void WideGraph::saveSettings()
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
   settings.setValue("BinsPerPixel",ui->widePlot->binsPerPixel());
   settings.setValue("QSOfreq",ui->widePlot->fQSO());
+  settings.setValue("Slope",m_slope);
   settings.endGroup();
 }
 
@@ -274,4 +277,18 @@ void WideGraph::on_fMinSpinBox_valueChanged(int n)
   setRxRange(m_fMin);
 }
 
+void WideGraph::on_slopeSpinBox_valueChanged(double d)
+{
+  m_slope=d;
+}
 
+void WideGraph::setSlope(double d)
+{
+  m_slope=d;
+  ui->slopeSpinBox->setValue(d);
+}
+
+double WideGraph::getSlope()
+{
+  return m_slope;
+}

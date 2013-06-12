@@ -68,13 +68,13 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   nsec1=nsec1+1
   write(22,rec=1) nsec1,xlambda,maxe,200,mrsym,mrprob,mr2sym,mr2prob
   call flush(22)
-!         call timer('kvasd   ',0)
-!#ifdef UNIX
-!         iret=system('./kvasd -q > dev_null')
-!#else
+  call timer('kvasd   ',0)
+#ifdef UNIX
+  iret=system('./kvasd -q > dev_null')
+#else
   iret=system('kvasd -q > dev_null')
-!#endif
-!         call timer('kvasd   ',1)
+#endif
+  call timer('kvasd   ',1)
   if(iret.ne.0) then
      if(.not.nokv) write(*,1000) 
 1000 format('Error in KV decoder, or no KV decoder present.')

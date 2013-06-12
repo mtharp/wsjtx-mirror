@@ -3,7 +3,7 @@ real function fchisq65(cx,npts,fsample,nflip,a,ccfmax,dtmax)
   parameter (NMAX=60*12000)          !Samples per 60 s
   complex cx(npts)
   real a(5)
-  complex w,wstep,za,zb,z
+  complex w,wstep,z
   real ss(3000)
   complex csx(0:NMAX/8)
   data twopi/6.283185307/a1,a2,a3/99.,99.,99./

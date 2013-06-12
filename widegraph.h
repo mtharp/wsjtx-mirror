@@ -31,6 +31,8 @@ public:
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
   void   setModeTx(QString modeTx);
+  void   setSlope(double d);
+  double getSlope();
   double fGreen();
 
   qint32 m_qsoFreq;
@@ -54,8 +56,11 @@ private slots:
   void on_gainSpinBox_valueChanged(int arg1);
   void on_spec2dComboBox_currentIndexChanged(const QString &arg1);
   void on_fMinSpinBox_valueChanged(int n);
+  void on_slopeSpinBox_valueChanged(double d);
 
 private:
+  double m_slope;
+
   qint32 m_waterfallAvg;
   qint32 m_fCal;
   qint32 m_fSample;

@@ -7,7 +7,7 @@ subroutine gen65(msg0,ichk,msgsent,itone,itext)
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received
   integer itone(126)
-  character*3 cok               !'   ' or 'OOO'
+!  character*3 cok               !'   ' or 'OOO'
   integer dgen(13)
   integer sent(63)
   logical text
@@ -54,11 +54,8 @@ subroutine gen65(msg0,ichk,msgsent,itone,itext)
      call graycode65(sent,63,1)          !Apply Gray code
   write(39,*) 'F'; flush(39)
      nsym=126                            !Symbols per transmission
-     nsps=4096
   else
      nsym=32
-     nsps=16384
-     nsendingsh=1                         !Flag for shorthand message
   endif
 
   k=0

@@ -5,7 +5,6 @@ subroutine decoder(ss,id2,nstandalone)
   include 'constants.f90'
   real ss(184,NSMAX)
   character*22 msg
-  character*80 fmt
   character*20 datetime
   real*4 ccfred(NSMAX)
   real*4 red2(NSMAX)
@@ -42,7 +41,6 @@ subroutine decoder(ss,id2,nstandalone)
 
   if(nmode.eq.65) go to 800
 
-  ntrMinutes=ntrperiod/60
   nsynced=0
   ndecoded=0
   nsps=0

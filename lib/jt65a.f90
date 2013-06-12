@@ -34,7 +34,6 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
      ib=min(NSZ-51,nint(fb/df))
 
      freq0=-999.
-     sync10=-999.
      thresh0=1.5
 
      do i=ia,ib                               !Search over freq range
@@ -58,7 +57,6 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
         if(sync1.lt.thresh1) cycle
 
 !  Keep only the best candidate within ftol.
-!        if(freq-freq0.lt.ftol .or. sync1.lt.sync10) cycle
         if(freq-freq0.lt.ftol) cycle
 
         nflip=nint(flipk)
@@ -78,7 +76,6 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
 !           write(39,3010) nutc,decoded,sync1,s2db
 !3010       format(i4.4,2x,a22,2x,2f6.1)
            freq0=freq
-           sync10=sync1
            i2=min(NSZ,i+10)                !### ??? ###
            done(i:i2)=.true.
         endif
