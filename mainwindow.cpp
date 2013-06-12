@@ -469,9 +469,9 @@ void MainWindow::readSettings()
     }
   }
   ui->actionCuteSDR->setChecked(settings.value(
-                                  "PaletteCuteSDR",true).toBool());
+                                  "PaletteCuteSDR",false).toBool());
   ui->actionLinrad->setChecked(settings.value(
-                                 "PaletteLinrad",false).toBool());
+                                 "PaletteLinrad",true).toBool());
   ui->actionAFMHot->setChecked(settings.value(
                                  "PaletteAFMHot",false).toBool());
   ui->actionBlue->setChecked(settings.value(

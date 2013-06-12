@@ -34,25 +34,19 @@ subroutine gen65(msg0,ichk,msgsent,itone,itext)
      message=message(i+1:)
   enddo
 
-  write(39,*) 'A'; flush(39)
   nspecial=0
 !  call chkmsg(message,cok,nspecial,flip)
   if(nspecial.eq.0) then
      call packmsg(message,dgen,text)     !Pack message into 72 bits
-     write(39,*) 'B'; flush(39)
      itext=0
      if(text) itext=1
      call unpackmsg(dgen,msgsent)        !Unpack to get message sent
-     write(39,*) 'C'; flush(39)
      if(ichk.ne.0) go to 999             !Return if checking only
 
      nsendingsh=0
      call rs_encode(dgen,sent)           !Apply Reed-Solomon code
-  write(39,*) 'D'; flush(39)
      call interleave63(sent,1)           !Apply interleaving
-  write(39,*) 'E'; flush(39)
      call graycode65(sent,63,1)          !Apply Gray code
-  write(39,*) 'F'; flush(39)
      nsym=126                            !Symbols per transmission
   else
      nsym=32
