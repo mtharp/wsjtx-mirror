@@ -495,7 +495,7 @@ void MainWindow::readSettings()
   m_saveSynced=ui->actionSave_synced->isChecked();
   m_saveDecoded=ui->actionSave_decoded->isChecked();
   m_saveAll=ui->actionSave_all->isChecked();
-  m_ndepth=settings.value("NDepth",2).toInt();
+  m_ndepth=settings.value("NDepth",3).toInt();
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
   m_kb8rq=settings.value("KB8RQ",false).toBool();
@@ -1990,7 +1990,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   }
 
   int nfreq=int(t4.at(3).toFloat());
-  if(t4.at(4)=="-") {
+  if(t4.at(4)=="@") {
     m_modeTx="JT9";
     ui->pbTxMode->setText("TX " + m_modeTx);
     g_pWideGraph->setModeTx(m_modeTx);
