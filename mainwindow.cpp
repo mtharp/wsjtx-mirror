@@ -189,6 +189,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   decodeBusy(false);
 
   ui->xThermo->setMaximumWidth(12);
+  ui->xThermo->setTextVisible(false);
   ui->labAz->setStyleSheet("border: 0px;");
   ui->labDist->setStyleSheet("border: 0px;");
 
@@ -299,8 +300,10 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
 #endif
 
 #ifdef UNIX
-  psk_Reporter = new PSK_Reporter(this);
-  psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
+  if(m_pskReporter) {
+    psk_Reporter = new PSK_Reporter(this);
+    psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
+  }
 #endif
 
   ui->label_9->setStyleSheet("QLabel{background-color: #aabec8}");
@@ -731,7 +734,12 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
 #endif
 
 #ifdef UNIX
-    psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
+    if(dlg.m_pskReporter != m_pskReporter) {
+      if(m_pskReporter) {
+        psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
+      }
+    }
+
 #endif
 
     m_pskReporter=dlg.m_pskReporter;
@@ -1041,6 +1049,13 @@ void MainWindow::on_actionOnline_Users_Guide_triggered()      //Display manual
 {
   QDesktopServices::openUrl(QUrl(
   "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_Users_Guide.pdf",
+                              QUrl::TolerantMode));
+}
+
+void MainWindow::on_actionQuick_Start_Guide_for_v1_1_triggered()
+{
+  QDesktopServices::openUrl(QUrl(
+  "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_1.1_Quick_Start.pdf",
                               QUrl::TolerantMode));
 }
 
@@ -1481,7 +1496,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
         }
       }
 #else
-      if(b and !m_diskData and okToPost) {
+      if(m_pskReporter b and !m_diskData and okToPost) {
         int i1=msg.indexOf(" ");
         QString c2=msg.mid(i1+1);
         int i2=c2.indexOf(" ");
@@ -1807,7 +1822,10 @@ void MainWindow::displayTxMsg(QString t)
       QString bg="yellow";
       QTextBlockFormat bf;
       QTextCursor cursor;
-      t=QDateTime::currentDateTimeUtc().toString("hhmmss Tx: ") + t;
+      QString t1="Tx@";
+      if(m_modeTx=="JT65") t1="Tx#";
+      t=QDateTime::currentDateTimeUtc().toString("hhmmss ") + t1 + \
+          " " + QString::number(m_txFreq) + " Hz: " + t;
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t + "</pre></td></tr></table>";
       cursor = ui->decodedTextBrowser2->textCursor();

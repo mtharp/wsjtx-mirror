@@ -159,6 +159,8 @@ private slots:
 
   void on_pbTxMode_clicked();
 
+  void on_actionQuick_Start_Guide_for_v1_1_triggered();
+
 private:
     Ui::MainWindow *ui;
 
