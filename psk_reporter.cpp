@@ -99,15 +99,6 @@ void PSK_Reporter::sendReport()
     // Get IP address for pskreporter.info and send report via UDP
     QHostInfo info = QHostInfo::fromName("report.pskreporter.info");
     m_udpSocket->writeDatagram(report,info.addresses().at(0),4739);
-
-    /*
-    qDebug() << header_h;
-    qDebug() << m_rxInfoDescriptor_h;
-    qDebug() << m_txInfoDescriptor_h;
-    qDebug() << rxInfoData_h;
-    qDebug() << txInfoData_h;
-    qDebug() << report.toHex();
-    */
 }
 
 

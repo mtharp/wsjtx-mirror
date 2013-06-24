@@ -2920,6 +2920,5 @@ void MainWindow::setXIT(int n)
 //    ret=rig->setXit((shortfreq_t)xit,RIG_VFO_TX);
 //    int ret=rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
     rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
-//    qDebug() << "A" << ret << RIG_VFO_A << RIG_VFO_B << n << xit;
   }
 }

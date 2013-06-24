@@ -56,14 +56,12 @@ FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui \
 RC_FILE = wsjtx.rc
 
 unix {
-#INCLUDEPATH += $$quote(/usr/include/qwt-qt4)
 LIBS += ../wsjtx/lib/libjt9.a
 LIBS += -lhamlib
-#LIBS += -lportaudio -lgfortran -lfftw3f -lqwt-qt4
+LIBS += -lportaudio -lgfortran -lfftw3f
 }
 
 win32 {
-#INCLUDEPATH += c:/qwt-6.0.1/include
 INCLUDEPATH += ../../hamlib-1.2.15.3/include
 LIBS += ../../hamlib-1.2.15.3/src/.libs/libhamlib.dll.a
 #LIBS += ../../hamlib-1.2.15.3/lib/gcc/libhamlib.dll.a
@@ -75,10 +73,5 @@ LIBS += ../wsjtx/libHRDInterface001.a
 LIBS += /users/joe/wsjt/QtSupport/palir-02.dll
 LIBS += libwsock32
 LIBS += C:/MinGW/lib/libf95.a
-#CONFIG(release) {
-#   LIBS += C:/qwt-6.0.1/lib/qwt.dll
-#} else {
-#   LIBS += C:/qwt-6.0.1/lib/qwtd.dll
-#   LIBS += -lusb
-#}
+
 }
