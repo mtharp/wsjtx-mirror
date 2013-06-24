@@ -1496,7 +1496,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
         }
       }
 #else
-      if(m_pskReporter b and !m_diskData and okToPost) {
+      if(m_pskReporter and b and !m_diskData and okToPost) {
         int i1=msg.indexOf(" ");
         QString c2=msg.mid(i1+1);
         int i2=c2.indexOf(" ");
