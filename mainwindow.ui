@@ -819,7 +819,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string>buttonGroup</string>
+                  <string notr="true">buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -853,7 +853,7 @@ p, li { white-space: pre-wrap; }
                   <bool>true</bool>
                  </property>
                  <attribute name="buttonGroup">
-                  <string>buttonGroup</string>
+                  <string notr="true">buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -884,7 +884,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string>buttonGroup</string>
+                  <string notr="true">buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1052,7 +1052,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string>buttonGroup</string>
+                  <string notr="true">buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1200,7 +1200,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string>buttonGroup</string>
+                  <string notr="true">buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -1231,7 +1231,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <attribute name="buttonGroup">
-                  <string>buttonGroup</string>
+                  <string notr="true">buttonGroup</string>
                  </attribute>
                 </widget>
                </item>
@@ -2084,12 +2084,6 @@ p, li { white-space: pre-wrap; }
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>16777215</height>
-           </size>
-          </property>
           <property name="text">
            <string>Report</string>
           </property>
@@ -2196,7 +2190,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>725</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
