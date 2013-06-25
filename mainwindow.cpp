@@ -300,10 +300,8 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
 #endif
 
 #ifdef UNIX
-  if(m_pskReporter) {
-    psk_Reporter = new PSK_Reporter(this);
-    psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
-  }
+  psk_Reporter = new PSK_Reporter(this);
+  psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
 #endif
 
   ui->label_9->setStyleSheet("QLabel{background-color: #aabec8}");
