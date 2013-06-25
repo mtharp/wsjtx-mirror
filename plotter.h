@@ -30,11 +30,16 @@ public:
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
   QColor  m_ColorTbl[256];
+
   bool    m_bCurrent;
   bool    m_bCumulative;
+  bool    m_lockTxFreq;
+
   int     m_plotZero;
   int     m_plotGain;
+
   float   m_fSpan;
+
   qint32  m_nSpan;
   qint32  m_binsPerPixel;
   qint32  m_fQSO;
@@ -97,14 +102,16 @@ private:
 
   bool    m_Running;
   bool    m_paintEventBusy;
+  bool    m_dataFromDisk;
+
   double  m_fGreen;
   double  m_fftBinWidth;
+
   qint64  m_StartFreq;
+
   qint32  m_dBStepSize;
   qint32  m_FreqUnits;
   qint32  m_hdivs;
-  bool    m_dataFromDisk;
-  char    m_sutc[6];
   qint32  m_line;
   qint32  m_fSample;
   qint32  m_i0;
@@ -119,6 +126,8 @@ private:
   qint32  m_txFreq;
   qint32  m_fMin;
   qint32  m_fMax;
+
+  char    m_sutc[6];
 
 private slots:
   void mousePressEvent(QMouseEvent *event);

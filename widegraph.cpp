@@ -288,6 +288,11 @@ void WideGraph::setSlope(double d)
   ui->slopeSpinBox->setValue(d);
 }
 
+void WideGraph::setLockTxFreq(bool b)
+{
+  m_lockTxFreq=b;
+  ui->widePlot->m_lockTxFreq=b;
+}
 double WideGraph::getSlope()
 {
   return m_slope;

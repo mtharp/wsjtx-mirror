@@ -19,15 +19,10 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
 ! Mix sync tone to baseband, low-pass filter, downsample to 1378.125 Hz
   dt00=dt
   call timer('filbig  ',0)
-  call filbig(dd,npts,f0,newdat,cx,n5)
+  call filbig(dd,npts,f0,newdat,cx,n5,sq0)
 
 ! NB: cx has sample rate 12000*77125/672000 = 1378.125 Hz
   call timer('filbig  ',1)
-  sq0=0.
-  do i=1,n5
-     sq0=sq0 + real(cx(i))**2 + aimag(cx(i))**2
-  enddo
-  sq0=sq0/n5
 
 ! Find best DF, f1, f2, and DT.  Start by downsampling to 344.53125 Hz
   call timer('fil6521 ',0)
@@ -55,7 +50,7 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
   call afc65b(c5x(i0),nz,fsample,nflip,a,ccfbest,dtbest)
   call timer('afc65b  ',1)
 
-  sync2=3.7*ccfbest/sq0
+  sync2=3.7e-4*ccfbest/sq0                    !Constant is empirical 
 
 ! Apply AFC corrections to the time-domain signal
 ! Now we are back to using the 1378.125 Hz sample rate, enough to 

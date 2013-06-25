@@ -405,7 +405,7 @@ void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
   int n=1;
   if(ctrl) n+=100;
   emit freezeDecode1(n);
-  if(ctrl) setTxFreq(m_fQSO);
+  if(ctrl or m_lockTxFreq) setTxFreq(m_fQSO);
 }
 
 void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click

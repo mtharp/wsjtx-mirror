@@ -1,13 +1,15 @@
-subroutine filbig(dd,npts,f0,newdat,c4a,n4)
+subroutine filbig(dd,npts,f0,newdat,c4a,n4,sq0)
 
 ! Filter and real data in array dd(npts), sampled at 12000 Hz.
 ! Output is complex, sampled at 1375.125 Hz.
 
   parameter (NSZ=3413)
   parameter (NFFT1=672000,NFFT2=77175)
+  parameter (NZ2=1000)
   real*4  dd(npts)                           !Input data
   complex ca(NFFT1)                          !FFT of input
   complex c4a(NFFT2)                         !Output data
+  real*4 s(NZ2)
   real*8 df
   real halfpulse(8)                 !Impulse response of filter (one sided)
   complex cfilt(NFFT2)                       !Filter (complex; imag = 0)
@@ -85,8 +87,8 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
 
   i0=nint(f0/df) + 1
   nh=nfft2/2
-  do i=1,nh                                !Copy data into c4a and c4b,
-     j=i0+i-1                              !and apply the filter function
+  do i=1,nh                                !Copy data into c4a and apply
+     j=i0+i-1                              !the filter function
      if(j.ge.1 .and. j.le.nfft1) then
         c4a(i)=rfilt(i)*ca(j)
      else
@@ -98,6 +100,17 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4)
      if(j.lt.1) j=j+nfft1                  !nfft1 was nfft2
      c4a(i)=rfilt(i)*ca(j)
   enddo
+
+  nadd=nfft2/NZ2
+  i=0
+  do j=1,NZ2
+     s(j)=0.
+     do n=1,nadd
+        i=i+1
+        s(j)=s(j) + real(c4a(i))**2 + aimag(c4a(i))**2
+     enddo
+  enddo
+  call pctile(s,NZ2,30,sq0)
 
 ! Do the short reverse transform, to go back to time domain.
   call timer('FFTsmall',0)

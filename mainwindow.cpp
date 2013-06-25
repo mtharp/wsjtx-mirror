@@ -237,7 +237,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   genStdMsgs(m_rpt);
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
-  g_pWideGraph->m_lockTxFreq=m_lockTxFreq;
+  g_pWideGraph->setLockTxFreq(m_lockTxFreq);
   g_pWideGraph->setFmin(m_fMin);
   g_pWideGraph->setModeTx(m_modeTx);
 
@@ -732,17 +732,14 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
       }
     }
 #endif
+    m_pskReporter=dlg.m_pskReporter;
 
 #ifdef UNIX
-    if(dlg.m_pskReporter != m_pskReporter) {
-      if(m_pskReporter) {
-        psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
-      }
+    if(m_pskReporter) {
+      psk_Reporter->setLocalStation(m_myCall,m_myGrid, "WSJT-X r" + rev.mid(6,4) );
     }
-
 #endif
 
-    m_pskReporter=dlg.m_pskReporter;
     m_After73=dlg.m_After73;
 
     if(dlg.m_restartSoundIn) {
@@ -2912,7 +2909,7 @@ void MainWindow::on_readFreq_clicked()
 void MainWindow::on_actionLockTxFreq_triggered(bool checked)
 {
   m_lockTxFreq=checked;
-  g_pWideGraph->m_lockTxFreq=checked;
+  g_pWideGraph->setLockTxFreq(m_lockTxFreq);
 }
 
 void MainWindow::on_pbTxMode_clicked()

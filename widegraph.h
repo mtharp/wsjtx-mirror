@@ -32,11 +32,11 @@ public:
   void   setTxFreq(int n);
   void   setModeTx(QString modeTx);
   void   setSlope(double d);
+  void   setLockTxFreq(bool b);
   double getSlope();
   double fGreen();
 
   qint32 m_qsoFreq;
-  bool   m_lockTxFreq;
 
 signals:
   void freezeDecode2(int n);
@@ -69,6 +69,8 @@ private:
   qint32 m_ntr0;
   qint32 m_fMin;
   qint32 m_fMax;
+
+  bool   m_lockTxFreq;
 
   QString m_modeTx;
 
