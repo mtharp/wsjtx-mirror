@@ -375,6 +375,7 @@ void MainWindow::writeSettings()
   settings.setValue("PaletteAFMHot",ui->actionAFMHot->isChecked());
   settings.setValue("PaletteBlue",ui->actionBlue->isChecked());
   settings.setValue("Mode",m_mode);
+  settings.setValue("ModeTx",m_modeTx);
   settings.setValue("SaveNone",ui->actionNone->isChecked());
   settings.setValue("SaveSynced",ui->actionSave_synced->isChecked());
   settings.setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
@@ -480,11 +481,8 @@ void MainWindow::readSettings()
   ui->actionBlue->setChecked(settings.value(
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9").toString();
-  m_modeTx="JT9";
-  if(m_mode=="JT65") {
-    m_modeTx="JT65";
-    ui->pbTxMode->setText(m_modeTx);
-  }
+  m_modeTx=settings.value("ModeTx","JT9").toString();
+  ui->pbTxMode->setText(m_modeTx);
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
