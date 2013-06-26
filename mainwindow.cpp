@@ -2924,7 +2924,6 @@ void MainWindow::on_pbTxMode_clicked()
 
 void MainWindow::setXIT(int n)
 {
-  qDebug() << "A" << n;
   if(m_bRigOpen) {
     int xit=-1000;
     if(n>1000) xit=0;
@@ -2939,5 +2938,8 @@ void MainWindow::setXIT(int n)
 
 void MainWindow::setFreq4(int rxFreq, int txFreq)
 {
-  qDebug() << "B" << rxFreq << txFreq;
+  m_rxFreq=rxFreq;
+  m_txFreq=txFreq;
+  ui->RxFreqSpinBox->setValue(m_rxFreq);
+  ui->TxFreqSpinBox->setValue(m_txFreq);
 }

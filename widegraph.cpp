@@ -297,5 +297,7 @@ double WideGraph::getSlope()
 
 void WideGraph::setFreq2(int rxFreq, int txFreq)
 {
+  m_rxFreq=rxFreq;
+  m_txFreq=txFreq;
   emit setFreq3(rxFreq,txFreq);
 }

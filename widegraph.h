@@ -36,6 +36,7 @@ public:
   double fGreen();
 
   qint32 m_rxFreq;
+  qint32 m_txFreq;
 
 signals:
   void freezeDecode2(int n);

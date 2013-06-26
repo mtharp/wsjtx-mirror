@@ -1831,7 +1831,7 @@ p, li { white-space: pre-wrap; }
          <string>  Hz</string>
         </property>
         <property name="prefix">
-         <string>Tx +</string>
+         <string>Tx  </string>
         </property>
         <property name="minimum">
          <number>200</number>
@@ -2195,10 +2195,10 @@ p, li { white-space: pre-wrap; }
          </size>
         </property>
         <property name="suffix">
-         <string> Hz</string>
+         <string>  Hz</string>
         </property>
         <property name="prefix">
-         <string>Rx +</string>
+         <string>Rx  </string>
         </property>
         <property name="minimum">
          <number>200</number>
