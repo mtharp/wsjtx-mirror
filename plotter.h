@@ -35,15 +35,12 @@ public:
   bool    m_bCumulative;
   bool    m_lockTxFreq;
 
-  int     m_plotZero;
-  int     m_plotGain;
-
   float   m_fSpan;
 
+  qint32  m_plotZero;
+  qint32  m_plotGain;
   qint32  m_nSpan;
   qint32  m_binsPerPixel;
-  qint32  m_fQSO;
-  qint32  m_fCal;
   qint32  m_w;
 
   void draw(float sw[], int i0);		//Update the waterfall
@@ -61,10 +58,9 @@ public:
   void setRxRange(int fMin);
   void setBinsPerPixel(int n);
   int  binsPerPixel();
-  void setFQSO(int n, bool bf);
-  void setFcal(int n);
+  void setRxFreq(int n, bool bf);
   void DrawOverlay();
-  int  fQSO();
+  int  rxFreq();
   void setPalette(QString palette);
   void setFsample(int n);
   void setNsps(int ntrperiod, int nsps);
@@ -76,6 +72,7 @@ public:
 
 signals:
   void freezeDecode1(int n);
+  void setFreq1(int rxFreq, int txFreq);
 
 protected:
   //re-implemented widget event handlers
@@ -123,6 +120,7 @@ private:
   qint32  m_h1;
   qint32  m_h2;
   qint32  m_TRperiod;
+  qint32  m_rxFreq;
   qint32  m_txFreq;
   qint32  m_fMin;
   qint32  m_fMax;

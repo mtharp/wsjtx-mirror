@@ -18,6 +18,9 @@ WideGraph::WideGraph(QWidget *parent) :
   connect(ui->widePlot, SIGNAL(freezeDecode1(int)),this,
           SLOT(wideFreezeDecode(int)));
 
+  connect(ui->widePlot, SIGNAL(setFreq1(int,int)),this,
+          SLOT(setFreq2(int,int)));
+
   m_fMin=3000;
   ui->fMinSpinBox->setValue(m_fMin);
 
@@ -44,8 +47,8 @@ WideGraph::WideGraph(QWidget *parent) :
   if(ui->widePlot->m_bCumulative) ui->spec2dComboBox->setCurrentIndex(1);
   int nbpp=settings.value("BinsPerPixel",2).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
-  m_qsoFreq=settings.value("QSOfreq",1500).toInt();
-  ui->widePlot->setFQSO(m_qsoFreq,true);
+  m_rxFreq=settings.value("RxFreq",1500).toInt();
+  ui->widePlot->setRxFreq(m_rxFreq,true);
   m_slope=settings.value("Slope",0.0).toDouble();
   ui->slopeSpinBox->setValue(m_slope);
   settings.endGroup();
@@ -73,7 +76,7 @@ void WideGraph::saveSettings()
   settings.setValue("Current",ui->widePlot->m_bCurrent);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
   settings.setValue("BinsPerPixel",ui->widePlot->binsPerPixel());
-  settings.setValue("QSOfreq",ui->widePlot->fQSO());
+  settings.setValue("RxFreq",ui->widePlot->rxFreq());
   settings.setValue("Slope",m_slope);
   settings.endGroup();
 }
@@ -167,16 +170,16 @@ void WideGraph::keyPressEvent(QKeyEvent *e)
   }
 }
 
-void WideGraph::setQSOfreq(int n)
+void WideGraph::setRxFreq(int n)
 {
-  m_qsoFreq=n;
-  ui->widePlot->setFQSO(m_qsoFreq,true);
-  if(m_lockTxFreq) setTxFreq(m_qsoFreq);
+  m_rxFreq=n;
+  ui->widePlot->setRxFreq(m_rxFreq,true);
+  if(m_lockTxFreq) setTxFreq(m_rxFreq);
 }
 
-int WideGraph::QSOfreq()
+int WideGraph::rxFreq()
 {
-  return ui->widePlot->fQSO();
+  return ui->widePlot->rxFreq();
 }
 
 int WideGraph::nSpan()
@@ -223,12 +226,6 @@ void WideGraph::setFmin(int n)
   m_fMin = n;
   ui->fMinSpinBox->setValue(n);
   setRxRange(m_fMin);
-}
-
-void WideGraph::setFcal(int n)
-{
-  m_fCal=n;
-  ui->widePlot->setFcal(n);
 }
 
 void WideGraph::setPalette(QString palette)
@@ -296,4 +293,9 @@ void WideGraph::setLockTxFreq(bool b)
 double WideGraph::getSlope()
 {
   return m_slope;
+}
+
+void WideGraph::setFreq2(int rxFreq, int txFreq)
+{
+  emit setFreq3(rxFreq,txFreq);
 }

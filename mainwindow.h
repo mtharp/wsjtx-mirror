@@ -44,6 +44,7 @@ public slots:
   void readFromStderr();
   void jt9_error();
   void setXIT(int n);
+  void setFreq4(int rxFreq, int txFreq);
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -156,10 +157,9 @@ private slots:
   void on_bandComboBox_activated(int index);
   void on_readFreq_clicked();
   void on_actionLockTxFreq_triggered(bool checked);
-
   void on_pbTxMode_clicked();
-
   void on_actionQuick_Start_Guide_for_v1_1_triggered();
+  void on_RxFreqSpinBox_valueChanged(int n);
 
 private:
     Ui::MainWindow *ui;
@@ -174,10 +174,11 @@ private:
     qint32  m_idInt;
     qint32  m_waterfallAvg;
     qint32  m_pttMethodIndex;
-    qint32  m_QSOfreq0;
     qint32  m_ntx;
     qint32  m_pttPort;
     qint32  m_timeout;
+    qint32  m_rxFreq;
+    qint32  m_rxFreq0;
     qint32  m_txFreq;
     qint32  m_setftx;
     qint32  m_ndepth;

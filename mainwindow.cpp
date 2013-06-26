@@ -241,6 +241,9 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   g_pWideGraph->setFmin(m_fMin);
   g_pWideGraph->setModeTx(m_modeTx);
 
+  connect(g_pWideGraph, SIGNAL(setFreq3(int,int)),this,
+          SLOT(setFreq4(int,int)));
+
   if(m_mode=="JT9") on_actionJT9_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
   if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
@@ -910,10 +913,10 @@ void MainWindow::bumpFqso(int n)                                 //bumpFqso()
   int i;
   bool ctrl = (n>=100);
   n=n%100;
-  i=g_pWideGraph->QSOfreq();
+  i=g_pWideGraph->rxFreq();
   if(n==11) i--;
   if(n==12) i++;
-  g_pWideGraph->setQSOfreq(i);
+  g_pWideGraph->setRxFreq(i);
   if(ctrl) {
     ui->TxFreqSpinBox->setValue(i);
     g_pWideGraph->setTxFreq(i);
@@ -1269,7 +1272,7 @@ void MainWindow::on_DecodeButton_clicked()                    //Decode request
 void MainWindow::freezeDecode(int n)                          //freezeDecode()
 {
   bool ctrl = (n>=100);
-  int i=g_pWideGraph->QSOfreq();
+  int i=g_pWideGraph->rxFreq();
   if(ctrl) {
     ui->TxFreqSpinBox->setValue(i);
     g_pWideGraph->setTxFreq(i);
@@ -1290,7 +1293,7 @@ void MainWindow::decode()                                       //decode()
     jt9com_.nutc=100*ihr + imin;
   }
 
-  jt9com_.nfqso=g_pWideGraph->QSOfreq();
+  jt9com_.nfqso=g_pWideGraph->rxFreq();
   jt9com_.ndepth=m_ndepth;
   jt9com_.ndiskdat=0;
   if(m_diskData) jt9com_.ndiskdat=1;
@@ -1397,7 +1400,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
       QString bg="white";
       if(t.indexOf(" CQ ")>0) bg="#66ff66";                          //green
       if(m_myCall!="" and t.indexOf(" "+m_myCall+" ")>0) bg="#ff6666"; //red
-      bool bQSO=abs(t.mid(14,4).toInt() - g_pWideGraph->QSOfreq()) < 10;
+      bool bQSO=abs(t.mid(14,4).toInt() - g_pWideGraph->rxFreq()) < 10;
       QString t1=t.replace("\n","").mid(0,t.length()-4);
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t1 + "</pre></td></tr></table>";
@@ -1464,7 +1467,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
       uint nfreq=1000000.0*m_dialFreq + nHz + 0.5;
       remote += "freq," + QString::number(nfreq);
       int nsnr=t.mid(5,3).toInt();
-      qDebug() << t << nHz << nfreq << nsnr;
       remote += ",mode," + msgmode + ",snr," + QString::number(nsnr) + ",,";
       wchar_t tremote[256];
       remote.toWCharArray(tremote);
@@ -1738,7 +1740,7 @@ void MainWindow::guiUpdate()
     ui->monitorButton->setStyleSheet("");
   }
 
-  lab3->setText("QSO Freq:  " + QString::number(g_pWideGraph->QSOfreq()));
+  lab3->setText("QSO Freq:  " + QString::number(g_pWideGraph->rxFreq()));
 
   if(m_startAnother) {
     m_startAnother=false;
@@ -2006,7 +2008,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
     ui->pbTxMode->setText("TX " + m_modeTx);
     g_pWideGraph->setModeTx(m_modeTx);
   }
-  g_pWideGraph->setQSOfreq(nfreq);       //Set Rx freq
+  g_pWideGraph->setRxFreq(nfreq);       //Set Rx freq
   QString firstcall=t4.at(5);
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down or
@@ -2486,6 +2488,11 @@ void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
   soundOutThread.setTxFreq(n);
 }
 
+void MainWindow::on_RxFreqSpinBox_valueChanged(int n)
+{
+//  m_
+}
+
 void MainWindow::on_actionQuickDecode_triggered()
 {
   m_ndepth=1;
@@ -2870,13 +2877,13 @@ void MainWindow::on_actionAllow_multiple_instances_triggered(bool checked)
 
 void MainWindow::on_pbR2T_clicked()
 {
-  int n=g_pWideGraph->QSOfreq();
+  int n=g_pWideGraph->rxFreq();
   ui->TxFreqSpinBox->setValue(n);
 }
 
 void MainWindow::on_pbT2R_clicked()
 {
-  g_pWideGraph->setQSOfreq(m_txFreq);
+  g_pWideGraph->setRxFreq(m_txFreq);
 }
 
 
@@ -2917,6 +2924,7 @@ void MainWindow::on_pbTxMode_clicked()
 
 void MainWindow::setXIT(int n)
 {
+  qDebug() << "A" << n;
   if(m_bRigOpen) {
     int xit=-1000;
     if(n>1000) xit=0;
@@ -2927,4 +2935,9 @@ void MainWindow::setXIT(int n)
 //    int ret=rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
     rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
   }
+}
+
+void MainWindow::setFreq4(int rxFreq, int txFreq)
+{
+  qDebug() << "B" << rxFreq << txFreq;
 }

@@ -27,7 +27,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_ScalePixmap = QPixmap(0,0);
   m_OverlayPixmap = QPixmap(0,0);
   m_Size = QSize(0,0);
-  m_fQSO = 1020;
+  m_rxFreq = 1020;
   m_line = 0;
   m_fSample = 12000;
   m_nsps=6912;
@@ -265,7 +265,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
 
   QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
   painter0.setPen(pen0);
-  x1=XfromFreq(m_fQSO);
+  x1=XfromFreq(m_rxFreq);
   x2=x1+dx;
   painter0.drawLine(x1,24,x1,30);
   painter0.drawLine(x1,28,x2,28);
@@ -375,43 +375,39 @@ int CPlotter::binsPerPixel()                                // get nbpp
   return m_binsPerPixel;
 }
 
-void CPlotter::setFQSO(int x, bool bf)                       //setFQSO()
+void CPlotter::setRxFreq(int x, bool bf)                       //setRxFreq()
 {
   if(bf) {
-    m_fQSO=x;         // x is freq in Hz
-    m_xClick=XfromFreq(m_fQSO);
+    m_rxFreq=x;         // x is freq in Hz
+    m_xClick=XfromFreq(m_rxFreq);
   } else {
     if(x<0) x=0;      // x is pixel number
     if(x>m_Size.width()) x=m_Size.width();
-    m_fQSO = int(FreqfromX(x)+0.5);
+    m_rxFreq=int(FreqfromX(x)+0.5);
     m_xClick=x;
   }
+  emit setFreq1(m_rxFreq,m_txFreq);
   DrawOverlay();
   update();
 }
 
-void CPlotter::setFcal(int n)                                  //setFcal()
-{
-  m_fCal=n;
-}
-
-int CPlotter::fQSO() {return m_fQSO;}                          //get fQSO
+int CPlotter::rxFreq() {return m_rxFreq;}                //get rxFreq
 
 void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
 {
   int x=event->x();
-  setFQSO(x,false);                               // Wideband waterfall
+  setRxFreq(x,false);                               // Wideband waterfall
   bool ctrl = (event->modifiers() & Qt::ControlModifier);
   int n=1;
   if(ctrl) n+=100;
   emit freezeDecode1(n);
-  if(ctrl or m_lockTxFreq) setTxFreq(m_fQSO);
+  if(ctrl or m_lockTxFreq) setTxFreq(m_rxFreq);
 }
 
 void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click
 {
 //  int x=event->x();
-//  setFQSO(x,false);
+//  setRxFreq(x,false);
   bool ctrl = (event->modifiers() & Qt::ControlModifier);
   int n=2;
   if(ctrl) n+=100;
@@ -531,6 +527,7 @@ void CPlotter::setNsps(int ntrperiod, int nsps)                                 
 void CPlotter::setTxFreq(int n)                                 //setTol()
 {
   m_txFreq=n;
+  emit setFreq1(m_rxFreq,m_txFreq);
   DrawOverlay();
   update();
 }

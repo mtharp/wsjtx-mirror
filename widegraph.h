@@ -15,8 +15,8 @@ public:
   ~WideGraph();
 
   void   dataSink2(float s[], float df3, int ihsym, int ndiskdata);
-  void   setQSOfreq(int n);
-  int    QSOfreq();
+  void   setRxFreq(int n);
+  int    rxFreq();
   int    nSpan();
   int    nStartFreq();
   int    getFmin();
@@ -25,7 +25,6 @@ public:
   void   saveSettings();
   void   setRxRange(int fMin);
   void   setFmin(int n);
-  void   setFcal(int n);
   void   setPalette(QString palette);
   void   setFsample(int n);
   void   setPeriod(int ntrperiod, int nsps);
@@ -36,15 +35,17 @@ public:
   double getSlope();
   double fGreen();
 
-  qint32 m_qsoFreq;
+  qint32 m_rxFreq;
 
 signals:
   void freezeDecode2(int n);
   void f11f12(int n);
   void setXIT2(int n);
+  void setFreq3(int rxFreq, int txFreq);
 
 public slots:
   void wideFreezeDecode(int n);
+  void setFreq2(int rxFreq, int txFreq);
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -62,7 +63,6 @@ private:
   double m_slope;
 
   qint32 m_waterfallAvg;
-  qint32 m_fCal;
   qint32 m_fSample;
   qint32 m_TRperiod;
   qint32 m_nsps;
