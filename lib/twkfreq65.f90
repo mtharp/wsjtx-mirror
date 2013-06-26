@@ -12,7 +12,7 @@ subroutine twkfreq65(c4aa,n5,a)
   s=2.0/n5
   do i=1,n5
      x=s*(i-x0)
-     if(mod(i,1000).eq.1) then
+     if(mod(i,100).eq.1) then
         p2=1.5*x*x - 0.5
         dphi=(a(1) + x*a(2) + p2*a(3)) * (twopi/1378.125)
         wstep=cmplx(cos(dphi),sin(dphi))

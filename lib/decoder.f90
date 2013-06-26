@@ -34,8 +34,8 @@ subroutine decoder(ss,id2,nstandalone)
   ntol65=20
   done65=.false.
   if(nmode.ge.65 .and. ntxmode.eq.65) then
-     dd(1:npts65)=id2(1:npts65)
-     call jt65a(dd,npts65,newdat,nutc,nfa,nfqso,ntol65,nagain,ndiskdat)
+     if(newdat.ne.0) dd(1:npts65)=id2(1:npts65)
+     call jt65a(dd,npts65,newdat,nutc,nfa,nfqso,ntol65,nagain,ndiskdat,ndecoded)
      done65=.true.
   endif
 
@@ -56,9 +56,11 @@ subroutine decoder(ss,id2,nstandalone)
   ib=min(NSMAX,nint((nfb-nf0)/df3))
   lag1=-(2.5/tstep + 0.9999)
   lag2=5.0/tstep + 0.9999
-  call timer('sync9   ',0)
-  call sync9(ss,nzhsym,lag1,lag2,ia,ib,ccfred,red2,ipk)
-  call timer('sync9   ',1)
+  if(newdat.ne.0) then
+     call timer('sync9   ',0)
+     call sync9(ss,nzhsym,lag1,lag2,ia,ib,ccfred,red2,ipk)
+     call timer('sync9   ',1)
+  endif
 
   nsps8=nsps/8
   df8=1500.0/nsps8
@@ -154,8 +156,8 @@ subroutine decoder(ss,id2,nstandalone)
   enddo
 
   if(nmode.ge.65 .and. (.not.done65)) then
-     dd(1:npts65)=id2(1:npts65)
-     call jt65a(dd,npts65,newdat,nutc,nfa,nfqso,ntol65,nagain,ndiskdat)
+     if(newdat.ne.0) dd(1:npts65)=id2(1:npts65)
+     call jt65a(dd,npts65,newdat,nutc,nfa,nfqso,ntol65,nagain,ndiskdat,ndecoded)
   endif
 
 !### JT65 is not yet producing info for nsynced, ndecoded.

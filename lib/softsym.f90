@@ -25,7 +25,7 @@ subroutine softsym(id2,npts8,nsps8,newdat,fpk,syncpk,snrdb,xdt,        &
   freq=fpk - a(1)
   drift=-2.0*a(2)
 
-  call twkfreq(c3,c5,nz3,fsample,a)   !Correct for deltaF, fDot, fDDot
+  call twkfreq(c3,c5,nz3,fsample,a)   !Correct for delta f, f1, f2 ==> a(1:3)
 
 ! Compute soft symbols (in scrambled order)
   call symspec2(c5,nz3,nsps8,nspsd,fsample,freq,drift,snrdb,schk,      &

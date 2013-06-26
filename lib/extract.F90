@@ -91,12 +91,6 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   if(ncount.ge.0) then
      call unpackmsg(dat4,decoded)     !Unpack the user message
      if(iand(dat4(10),8).ne.0) ltext=.true.
-!     do i=2,12
-!        if(dat4(i).ne.dat4(1)) go to 900
-!     enddo
-!     write(13,*) 'Bad decode?',nhist,nfail,ipk,' ',dat4,decoded
-!     ncount=-1           !Suppress supposedly bogus decodes
-!     decoded='                      '
   endif
 
 900 continue
