@@ -1494,7 +1494,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
         QString freq = QString::number(nfreq);
         QString snr= QString::number(nsnr);
         if(gridOK(g2)) {
-          qDebug() << c2 << g2 << freq << msgmode << snr;
           psk_Reporter->addRemoteStation(c2,g2,freq,msgmode,snr,
                    QString::number(QDateTime::currentDateTime().toTime_t()));
         }
