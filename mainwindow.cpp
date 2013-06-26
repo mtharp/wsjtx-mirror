@@ -2498,6 +2498,7 @@ void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
 void MainWindow::on_RxFreqSpinBox_valueChanged(int n)
 {
   m_rxFreq=n;
+  if(g_pWideGraph!=NULL) g_pWideGraph->setRxFreq(n);
   if(m_lockTxFreq) ui->TxFreqSpinBox->setValue(n);
 }
 
