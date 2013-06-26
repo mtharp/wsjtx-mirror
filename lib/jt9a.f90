@@ -45,12 +45,16 @@ subroutine jt9a
      go to 999
   endif
   p_jt9=>address_jt9()
+  call timer('jt9b    ',0)
   call jt9b(p_jt9,nbytes)
+  call timer('jt9b    ',1)
 
 100 inquire(file=trim(cwd)//'/.lock',exist=fileExists)
   if(fileExists) go to 10
   call sleep_msec(100)
   go to 100
 
-999 return
+999 call timer('jt9b    ',101)
+
+  return
 end subroutine jt9a

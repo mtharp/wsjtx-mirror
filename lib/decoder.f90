@@ -25,8 +25,6 @@ subroutine decoder(ss,id2,nstandalone)
   ndecodes0=0
   ndecodes1=0
 
-  call timer('decoder ',0)
-
   open(13,file='decoded.txt',status='unknown')
   open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
 
@@ -166,9 +164,6 @@ subroutine decoder(ss,id2,nstandalone)
   call flush(6)
   close(13)
   close(22)
-
-  call timer('decoder ',1)
-  if(nstandalone.eq.0) call timer('decoder ',101)
 
   return
 end subroutine decoder
