@@ -28,7 +28,6 @@ program jt65
 !  nfb=4000
   nfqso=933
   nagain=0
-  ndiskdat=1
 
   open(12,file='timer.out',status='unknown')
   open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
