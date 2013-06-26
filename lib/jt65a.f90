@@ -1,4 +1,4 @@
-subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
+subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndiskdat)
 
 !  Process dd() data to find and decode JT65 signals.
 
@@ -13,13 +13,15 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
   character decoded*22
   save
 
-  call timer('symsp65 ',0)
-  call symspec65(dd,npts,ss,nhsym,savg)    !Get normalized symbol spectra
-  call timer('symsp65 ',1)
+  if(newdat.ne.0) then
+     call timer('symsp65 ',0)
+     call symspec65(dd,npts,ss,nhsym,savg)    !Get normalized symbol spectra
+     call timer('symsp65 ',1)
+  endif
 
   df=12000.0/NFFT                     !df = 12000.0/16384 = 0.732 Hz
   ftol=15.0                           !Frequency tolerance (Hz)
-  mode65=1
+  mode65=1                            !Decoding JT65A only, for now.
   done=.false.
 
   do nqd=1,0,-1
@@ -27,8 +29,8 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
         fa=nfqso - ntol
         fb=nfqso + ntol
      else                             !Wideband decode at all freqs
-        fa=200.0
-        fb=2700.0
+        fa=200
+        fb=nfa
      endif
      ia=max(51,nint(fa/df))
      ib=min(NSZ-51,nint(fb/df))
@@ -38,7 +40,6 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
 
      do i=ia,ib                               !Search over freq range
         if(savg(i).lt.thresh0 .or. done(i)) cycle
-        if(done(i)) cycle
         freq=i*df
 
         call timer('ccf65   ',0)
@@ -60,27 +61,27 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nagain,ndiskdat)
         if(freq-freq0.lt.ftol) cycle
 
         nflip=nint(flipk)
-        call timer('decode1a',0)
-        call decode1a(dd,npts,newdat,freq,nflip,mode65,nqd,   &
-             nutc,ntol,sync2,a,dt,nkv,nhist,decoded)
-        call timer('decode1a',1)
+        call timer('decod65a',0)
+        call decode65a(dd,npts,newdat,freq,nflip,mode65,nqd,sync2,a,dt,   &
+             nkv,nhist,decoded)
+        call timer('decod65a',1)
 
         if(decoded.ne.'                      ') then
-           nfreq=nint(freq)
+           nfreq=nint(freq+a(1))
+           ndrift=nint(2.0*a(2))
            s2db=10.0*log10(sync2) - 40             !### empirical ###
            nsnr=nint(s2db)
            if(nsnr.lt.-30) nsnr=-30
            if(nsnr.gt.-1) nsnr=-1
            write(*,1010) nutc,nsnr,dt,nfreq,decoded
 1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
-           ndrift=nint(a(2))
            write(13,1012) nutc,nint(sync1),nsnr,dt,float(nfreq),ndrift,decoded
 1012       format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT65')
 
 !           write(39,3010) nutc,decoded,sync1,s2db
 !3010       format(i4.4,2x,a22,2x,2f6.1)
            freq0=freq
-           i2=min(NSZ,i+10)                !### ??? ###
+           i2=min(NSZ,i+15)                !### ??? ###
            done(i:i2)=.true.
         endif
      enddo

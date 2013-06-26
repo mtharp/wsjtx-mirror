@@ -1,7 +1,7 @@
 subroutine filbig(dd,npts,f0,newdat,c4a,n4,sq0)
 
-! Filter and real data in array dd(npts), sampled at 12000 Hz.
-! Output is complex, sampled at 1375.125 Hz.
+! Filter and downsample the real data in array dd(npts), sampled at 12000 Hz.
+! Output is complex, sampled at 1378.125 Hz.
 
   parameter (NSZ=3413)
   parameter (NFFT1=672000,NFFT2=77175)
@@ -24,7 +24,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4,sq0)
   common/refspec/dfref,ref(NSZ)
   save
 
-  if(npts.lt.0) go to 900
+  if(npts.lt.0) go to 900                    !Clean up at end of program
 
   if(first) then
      nflags=FFTW_ESTIMATE
@@ -63,7 +63,7 @@ subroutine filbig(dd,npts,f0,newdat,c4a,n4,sq0)
   endif
 
 ! When new data comes along, we need to compute a new "big FFT"
-! If we just have a new f0, continue with the existing ca and cb.
+! If we just have a new f0, continue with the existing data in ca.
 
   if(newdat.ne.0) then
      nz=min(npts,nfft1)

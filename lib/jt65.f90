@@ -24,8 +24,8 @@ program jt65
 
   newdat=1
   ntol=50
-  nfa=500
-  nfb=2500
+  nfa=2700
+  nfb=4000
   nfqso=933
   nagain=0
   ndiskdat=1
@@ -53,7 +53,7 @@ program jt65
      dd(npts+1:)=0.
 
      call timer('jt65a   ',0)
-     call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfb,nfqso,nagain,ndiskdat)
+     call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfqso,nagain,ndiskdat)
      call timer('jt65a   ',1)
   enddo
 

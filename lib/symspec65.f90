@@ -1,6 +1,6 @@
 subroutine symspec65(dd,npts,ss,nhsym,savg)
 
-! Compute symbol spectra at half-symbol steps
+! Compute JT65 symbol spectra at half-symbol steps
 
   parameter (NFFT=8192)
   parameter (NSZ=3413)                         !NFFT*5000/12000
@@ -35,8 +35,8 @@ subroutine symspec65(dd,npts,ss,nhsym,savg)
   enddo
   savg=savg/nhsym
 
-  call flat65(ss,nhsym,MAXHSYM,NSZ,ref)
-  dfref=df
+  call flat65(ss,nhsym,MAXHSYM,NSZ,ref)  !Flatten the 2d spectrum, saving
+  dfref=df                               ! the reference spectrum ref()
 
   savg=savg/ref
   do j=1,nhsym

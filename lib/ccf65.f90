@@ -61,31 +61,33 @@ subroutine ccf65(ss,nhsym,ssmax,sync1,dt1,flipk,syncshort,snr2,dt2)
   s(nhsym:NFFT)=0.
   call four2a(cs,NFFT,1,-1,0)               !Real-to-complex FFT
   do i=0,NH
-     cs2(i)=cs(i)*conjg(cpr2(i))            !Mult by complex FFT of pr2
+!     cs2(i)=cs(i)*conjg(cpr2(i))            !Mult by complex FFT of pr2
      cs(i)=cs(i)*conjg(cpr(i))              !Mult by complex FFT of pr
   enddo
   call four2a(cs,NFFT,1,1,-1)               !Complex-to-real inv-FFT
-  call four2a(cs2,NFFT,1,1,-1)              !Complex-to-real inv-FFT
+!  call four2a(cs2,NFFT,1,1,-1)              !Complex-to-real inv-FFT
 
   do lag=-11,54                             !Check for best JT65 sync
      j=lag
      if(j.lt.1) j=j+NFFT
      ccf(lag)=s(j)
-     if(abs(ccf(lag)).gt.ccfbest) then
-        ccfbest=abs(ccf(lag))
+!     if(abs(ccf(lag)).gt.ccfbest) then
+     if(ccf(lag).gt.ccfbest) then           !No inverted sync for use at HF
+!        ccfbest=abs(ccf(lag))
+        ccfbest=ccf(lag)
         lagpk=lag
         flipk=1.0
-        if(ccf(lag).lt.0.0) flipk=-1.0
+!        if(ccf(lag).lt.0.0) flipk=-1.0
      endif
   enddo
 
-  do lag=-11,54                             !Check for best shorthand
-     ccf2=s2(lag+28)
-     if(ccf2.gt.ccfbest2) then
-        ccfbest2=ccf2
-        lagpk2=lag
-     endif
-  enddo
+!  do lag=-11,54                             !Check for best shorthand
+!     ccf2=s2(lag+28)
+!     if(ccf2.gt.ccfbest2) then
+!        ccfbest2=ccf2
+!        lagpk2=lag
+!     endif
+!  enddo
 
 ! Find rms level on baseline of "ccfblue", for normalization.
   sum=0.
@@ -108,7 +110,8 @@ subroutine ccf65(ss,nhsym,ssmax,sync1,dt1,flipk,syncshort,snr2,dt2)
   call pctile(tmp1,nhsym,40,base)
   snr2=0.398107*ccfbest2/base                !### empirical
   syncshort=0.5*ccfbest2/rms - 4.0           !### better normalizer than rms?
-  dt2=(2.5 + lagpk2*(2048.0/11025.0))
+!  dt2=(2.5 + lagpk2*(2048.0/11025.0))
+  dt2=0.
 
   return
 end subroutine ccf65

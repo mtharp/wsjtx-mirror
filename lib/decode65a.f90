@@ -1,5 +1,5 @@
-subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
-     sync2,a,dt,nkv,nhist,decoded)
+subroutine decode65a(dd,npts,newdat,f0,nflip,mode65,nqd,sync2,a,dt,    &
+     nkv,nhist,decoded)
 
 ! Apply AFC corrections to a candidate JT65 signal, then decode it.
 
@@ -13,16 +13,16 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
   logical first
   character decoded*22
   data first/.true./,jjjmin/1000/,jjjmax/-1000/
-  data nutc0/-999/,nhz0/-9999999/
+  data nhz0/-9999999/
   save
 
 ! Mix sync tone to baseband, low-pass filter, downsample to 1378.125 Hz
   dt00=dt
   call timer('filbig  ',0)
   call filbig(dd,npts,f0,newdat,cx,n5,sq0)
+  call timer('filbig  ',1)
 
 ! NB: cx has sample rate 12000*77125/672000 = 1378.125 Hz
-  call timer('filbig  ',1)
 
 ! Find best DF, f1, f2, and DT.  Start by downsampling to 344.53125 Hz
   call timer('fil6521 ',0)
@@ -37,9 +37,10 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
   a(5)=dt00
   i0=nint((a(5)+0.5)*fsample) - 2 + nadd
   if(i0.lt.1) then
-     write(13,*) 'i0 too small in decode1a:',i0,f0
-     flush(13)
-     i0=1
+!     write(13,*) 'i0 too small in decode1a:',i0,f0
+!     flush(13)
+!     i0=1
+     stop
   endif
   nz=n6+1-i0
 
@@ -71,39 +72,25 @@ subroutine decode1a(dd,npts,newdat,f0,nflip,mode65,nqd,nutc,ntol,     &
   if(j.lt.0) j=0
 
   call timer('sh_ffts ',0)
-! Perhaps should try full-symbol-length FFTs even in B, C sub-modes?
-! (Tried this, found no significant difference in decodes.)
-
   do k=1,nsym
-!         do n=1,mode65
-     do n=1,1
-        do i=1,nfft
-           j=j+1
-           c5a(i)=cx(j)
-        enddo
-        call four2a(c5a,nfft,1,1,1)
-        if(n.eq.1) then
-           do i=1,66
-!                  s2(i,k)=real(c5a(i))**2 + aimag(c5a(i))**2
-              jj=i
-              if(mode65.eq.2) jj=2*i-1
-              if(mode65.eq.4) jj=4*i-3
-              s2(i,k)=real(c5a(jj))**2 + aimag(c5a(jj))**2
-           enddo
-        else
-           do i=1,66
-              s2(i,k)=s2(i,k) + real(c5a(i))**2 + aimag(c5a(i))**2
-           enddo
-        endif
+     do i=1,nfft
+        j=j+1
+        c5a(i)=cx(j)
+     enddo
+     call four2a(c5a,nfft,1,1,1)
+     do i=1,66
+        jj=i
+        if(mode65.eq.2) jj=2*i-1
+        if(mode65.eq.4) jj=4*i-3
+        s2(i,k)=real(c5a(jj))**2 + aimag(c5a(jj))**2
      enddo
   enddo
-
   call timer('sh_ffts ',1)
 
   call timer('dec65b  ',0)
-  call decode65b(s2,nflip,mode65,nqd,nkv,nhist,decoded)
+  call decode65b(s2,nflip,mode65,nkv,nhist,decoded)
   dt=dt00 + dtbest + 1.7
   call timer('dec65b  ',1)
 
   return
-end subroutine decode1a
+end subroutine decode65a

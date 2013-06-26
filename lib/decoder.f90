@@ -31,11 +31,11 @@ subroutine decoder(ss,id2,nstandalone)
   open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
 
   npts65=52*12000
-  ntol65=100
+  ntol65=20
   done65=.false.
   if(nmode.ge.65 .and. ntxmode.eq.65) then
      dd(1:npts65)=id2(1:npts65)
-     call jt65a(dd,npts65,newdat,nutc,nfa,nfb,nfqso,ntol65,nagain,ndiskdat)
+     call jt65a(dd,npts65,newdat,nutc,nfa,nfqso,ntol65,nagain,ndiskdat)
      done65=.true.
   endif
 
@@ -155,7 +155,7 @@ subroutine decoder(ss,id2,nstandalone)
 
   if(nmode.ge.65 .and. (.not.done65)) then
      dd(1:npts65)=id2(1:npts65)
-     call jt65a(dd,npts65,newdat,nutc,nfa,nfb,nfqso,ntol65,nagain,ndiskdat)
+     call jt65a(dd,npts65,newdat,nutc,nfa,nfqso,ntol65,nagain,ndiskdat)
   endif
 
 !### JT65 is not yet producing info for nsynced, ndecoded.

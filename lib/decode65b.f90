@@ -1,4 +1,4 @@
-subroutine decode65b(s2,nflip,mode65,nqd,nkv,nhist,decoded)
+subroutine decode65b(s2,nflip,mode65,nkv,nhist,decoded)
 
   real s2(66,126)
   real s3(64,63)
