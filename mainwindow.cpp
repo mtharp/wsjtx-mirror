@@ -1451,25 +1451,26 @@ void MainWindow::readFromStdout()                             //readFromStdout
 
       int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
       bool okToPost=(nsec>50);
+      QString msgmode="JT9";
+      if(b65) msgmode="JT65";
+      i1=msg.indexOf(" ");
+      QString c2=msg.mid(i1+1);
+      int i2=c2.indexOf(" ");
+      QString g2=c2.mid(i2+1,4);
+      c2=c2.mid(0,i2);
+      QString remote="call," + c2 + ",";
+      if(gridOK(g2)) remote += "gridsquare," + g2 + ",";
+      int nHz=t.mid(14,4).toInt();
+      uint nfreq=1000000.0*m_dialFreq + nHz + 0.5;
+      remote += "freq," + QString::number(nfreq);
+      int nsnr=t.mid(5,3).toInt();
+      qDebug() << t << nHz << nfreq << nsnr;
+      remote += ",mode," + msgmode + ",snr," + QString::number(nsnr) + ",,";
+      wchar_t tremote[256];
+      remote.toWCharArray(tremote);
+
 #ifdef WIN32
       if(m_pskReporterInit and b and !m_diskData and okToPost) {
-        int i1=msg.indexOf(" ");
-        QString c2=msg.mid(i1+1);
-        int i2=c2.indexOf(" ");
-        QString g2=c2.mid(i2+1,4);
-        c2=c2.mid(0,i2);
-        QString remote="call," + c2 + ",";
-        if(gridOK(g2)) remote += "gridsquare," + g2 + ",";
-        int nHz=t.mid(22,4).toInt();
-        uint nfreq=1000000.0*m_dialFreq + nHz + 0.5;
-        remote += "freq," + QString::number(nfreq);
-        int nsnr=t.mid(10,3).toInt();
-        QString msgmode="JT9";
-        if(b65) msgmode="JT65";
-        remote += ",mode," + msgmode + ",snr," + QString::number(nsnr) + ",,";
-
-        wchar_t tremote[256];
-        remote.toWCharArray(tremote);
 
         QString local="station_callsign#" + m_myCall + "#" +
             "my_gridsquare#" + m_myGrid + "#";
@@ -1490,18 +1491,13 @@ void MainWindow::readFromStdout()                             //readFromStdout
       }
 #else
       if(m_pskReporter and b and !m_diskData and okToPost) {
-        int i1=msg.indexOf(" ");
-        QString c2=msg.mid(i1+1);
-        int i2=c2.indexOf(" ");
-        QString g2=c2.mid(i2+1,4);
-        c2=c2.mid(0,i2);
-        int nHz=t.mid(22,4).toInt();
-        QString freq = QString::number((int)(1000000.0*m_dialFreq +
-                                             nHz + 0.5));
-        QString snr= QString::number(t.mid(10,3).toInt());
-        if(gridOK(g2))
-          psk_Reporter->addRemoteStation(c2,g2,freq,"JT9",snr,
+        QString freq = QString::number(nfreq);
+        QString snr= QString::number(nsnr);
+        if(gridOK(g2)) {
+          qDebug() << c2 << g2 << freq << msgmode << snr;
+          psk_Reporter->addRemoteStation(c2,g2,freq,msgmode,snr,
                    QString::number(QDateTime::currentDateTime().toTime_t()));
+        }
       }
 #endif
     }
