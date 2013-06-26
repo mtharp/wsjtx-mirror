@@ -43,7 +43,6 @@ subroutine gen65(msg0,ichk,msgsent,itone,itext)
      call unpackmsg(dgen,msgsent)        !Unpack to get message sent
      if(ichk.ne.0) go to 999             !Return if checking only
 
-     nsendingsh=0
      call rs_encode(dgen,sent)           !Apply Reed-Solomon code
      call interleave63(sent,1)           !Apply interleaving
      call graycode65(sent,63,1)          !Apply Gray code

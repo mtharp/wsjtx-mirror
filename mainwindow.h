@@ -178,7 +178,6 @@ private:
     qint32  m_pttPort;
     qint32  m_timeout;
     qint32  m_rxFreq;
-    qint32  m_rxFreq0;
     qint32  m_txFreq;
     qint32  m_setftx;
     qint32  m_ndepth;

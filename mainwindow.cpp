@@ -1,4 +1,4 @@
-//---------------------------------------------------------------- MainWindow
+//----------------------------------------------------------------- MainWindow
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "devsetup.h"
@@ -149,6 +149,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
   m_saveDir="/users/joe/wsjtx/install/save";
+  m_rxFreq=1500;
   m_txFreq=1500;
   m_setftx=0;
   m_loopall=false;
@@ -184,6 +185,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_secBandChanged=0;
   m_bMultipleOK=false;
   m_dontReadFreq=false;
+  m_lockTxFreq=false;
   ui->readFreq->setEnabled(false);
   m_QSOmsg="";
   decodeBusy(false);
@@ -236,6 +238,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
 
   genStdMsgs(m_rpt);
   on_actionWide_Waterfall_triggered();                   //###
+  g_pWideGraph->setRxFreq(m_rxFreq);
   g_pWideGraph->setTxFreq(m_txFreq);
   g_pWideGraph->setLockTxFreq(m_lockTxFreq);
   g_pWideGraph->setFmin(m_fMin);
@@ -385,6 +388,7 @@ void MainWindow::writeSettings()
   settings.setValue("KB8RQ",m_kb8rq);
   settings.setValue("MonitorOFF",m_monitorStartOFF);
   settings.setValue("DialFreq",m_dialFreq);
+  settings.setValue("RxFreq",m_rxFreq);
   settings.setValue("TxFreq",m_txFreq);
   settings.setValue("InGain",m_inGain);
   settings.setValue("PSKReporter",m_pskReporter);
@@ -491,6 +495,8 @@ void MainWindow::readSettings()
                                          "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
   m_dialFreq=settings.value("DialFreq",14.078).toDouble();
+  m_rxFreq=settings.value("RxFreq",1500).toInt();
+  ui->RxFreqSpinBox->setValue(m_rxFreq);
   m_txFreq=settings.value("TxFreq",1500).toInt();
   ui->TxFreqSpinBox->setValue(m_txFreq);
   soundOutThread.setTxFreq(m_txFreq);
@@ -2485,12 +2491,14 @@ void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
 {
   m_txFreq=n;
   if(g_pWideGraph!=NULL) g_pWideGraph->setTxFreq(n);
+  if(m_lockTxFreq) ui->RxFreqSpinBox->setValue(n);
   soundOutThread.setTxFreq(n);
 }
 
 void MainWindow::on_RxFreqSpinBox_valueChanged(int n)
 {
-//  m_
+  m_rxFreq=n;
+  if(m_lockTxFreq) ui->TxFreqSpinBox->setValue(n);
 }
 
 void MainWindow::on_actionQuickDecode_triggered()
