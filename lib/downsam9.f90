@@ -37,7 +37,7 @@ subroutine downsam9(id2,npts8,nsps8,newdat,nspsd,fpk,c2,nz2)
 !     newdat=0
   endif
 
-  ndown=8*nsps8/16                         !Downsample factor
+  ndown=8*nsps8/nspsd                      !Downsample factor
   nfft2=nfft1/ndown                        !Backward FFT length
   nh2=nfft2/2
   nf=nint(fpk)

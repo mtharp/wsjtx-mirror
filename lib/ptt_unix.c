@@ -68,7 +68,7 @@ int lp_ptt (int fd, int onoff);
 /* parport functions */
 
 int dev_is_parport(int fd);
-int ptt_parallel(int fd, int *ntx, int *iptt);
+int ptt_parallel(int fd, int ntx, int *iptt);
 int ptt_serial(int fd, int *ntx, int *iptt);
 
 int fd=-1;		/* Used for both serial and parallel */
@@ -370,10 +370,9 @@ lp_ptt (int fd, int onoff)
  * iptt		- pointer to fortran command status on or off
  */
 
-int
-ptt_parallel(int fd, int *ntx, int *iptt)
+int ptt_parallel(int fd, int ntx, int *iptt)
 {
-  if(*ntx) {
+  if(ntx) {
     lp_ptt(fd, 1);
     *iptt=1;
   }  else {

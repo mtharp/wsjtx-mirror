@@ -27,10 +27,11 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
   integer*2 id2
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,         &
        ntr,mousefqso,newdat,nfa,nfb,ntol,kin,nzhsym,nsynced,ndecoded
-  data rms/999.0/,k0/99999999/,ntrperiod0/0/,nfft3z/0/,slope0/0.0/
+  data rms/999.0/,k0/99999999/,nfft3z/0/,slope0/0.0/
   equivalence (xc,cx)
   save
 
+  if(ntrperiod.eq.-999) stop                   !Silence compiler warning
   nfft3=16384                                  !df=12000.0/16384 = 0.732422
   jstep=nsps/2                                 !Step size = half-symbol in id2()
   if(k.gt.NMAX) go to 900
