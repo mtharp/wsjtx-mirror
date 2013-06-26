@@ -54,9 +54,9 @@ subroutine setup65
            if (pr(m+n).gt.0.0) go to 20
         endif
      enddo
-     go to 22
+     cycle
 20   mref(k,2)=m+n
-22 enddo
+  enddo
 
 ! Now do it all again, using opposite logic on pr(i)
   k=0
