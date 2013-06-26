@@ -53,7 +53,7 @@ program jt65
      dd(npts+1:)=0.
 
      call timer('jt65a   ',0)
-     call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfqso,nagain,ndiskdat,ndecoded)
+     call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfqso,nagain,ndecoded)
      call timer('jt65a   ',1)
   enddo
 

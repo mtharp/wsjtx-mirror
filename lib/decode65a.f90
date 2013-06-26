@@ -1,4 +1,4 @@
-subroutine decode65a(dd,npts,newdat,f0,nflip,mode65,nqd,sync2,a,dt,    &
+subroutine decode65a(dd,npts,newdat,f0,nflip,mode65,sync2,a,dt,    &
      nkv,nhist,decoded)
 
 ! Apply AFC corrections to a candidate JT65 signal, then decode it.

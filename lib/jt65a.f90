@@ -1,4 +1,4 @@
-subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndiskdat,ndecoded)
+subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndecoded)
 
 !  Process dd() data to find and decode JT65 signals.
 
@@ -62,7 +62,7 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndiskdat,ndecoded)
 
         nflip=nint(flipk)
         call timer('decod65a',0)
-        call decode65a(dd,npts,newdat,freq,nflip,mode65,nqd,sync2,a,dt,   &
+        call decode65a(dd,npts,newdat,freq,nflip,mode65,sync2,a,dt,   &
              nkv,nhist,decoded)
         call timer('decod65a',1)
 
