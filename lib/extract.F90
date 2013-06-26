@@ -59,6 +59,8 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
 
 ! Berlekamp-Massey algorithm failed, try Koetter-Vardy
 
+  if(nokv) go to 900
+
   maxe=8                             !Max KV errors in 12 most reliable symbols
   xlambda=10.0
   call graycode65(mr2sym,63,-1)
