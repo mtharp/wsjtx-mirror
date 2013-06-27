@@ -372,10 +372,10 @@ void MainWindow::writeSettings()
   settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
   settings.setValue("SaveDir",m_saveDir);
-  if (Pa_GetDeviceInfo( m_paInDevice))  // store name, number may be different next time
-    settings.setValue("SoundInName", Pa_GetDeviceInfo( m_paInDevice)->name);
-  if (Pa_GetDeviceInfo( m_paOutDevice))  // store name, number may be different next time
-    settings.setValue("SoundOutName", Pa_GetDeviceInfo( m_paOutDevice)->name);
+  settings.setValue("SoundInIndex",m_nDevIn);
+  settings.setValue("paInDevice",m_paInDevice);
+  settings.setValue("SoundOutIndex",m_nDevOut);
+  settings.setValue("paOutDevice",m_paOutDevice);
   settings.setValue("PaletteCuteSDR",ui->actionCuteSDR->isChecked());
   settings.setValue("PaletteLinrad",ui->actionLinrad->isChecked());
   settings.setValue("PaletteAFMHot",ui->actionAFMHot->isChecked());
@@ -463,23 +463,22 @@ void MainWindow::readSettings()
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
   m_saveDir=settings.value("SaveDir",m_appDir + "/save").toString();
-
-  QString soundName = settings.value( "SoundInName", "default").toString();
-  for (m_paInDevice = Pa_GetDeviceCount() - 1; m_paInDevice >= 0; m_paInDevice--) {
-    if (Pa_GetDeviceInfo( m_paInDevice) && soundName == Pa_GetDeviceInfo( m_paInDevice)->name)
-      break;
-  }
-  if (m_paInDevice < 0) // no match for device name?
+  m_nDevIn = settings.value("SoundInIndex", 0).toInt();
+  m_paInDevice = settings.value("paInDevice", paNoDevice).toInt();
+  if (m_paInDevice == paNoDevice) { // no saved input device?
     m_paInDevice = Pa_GetDefaultInputDevice();
-
-  soundName = settings.value("SoundOutName", "default").toString();
-  for (m_paOutDevice = Pa_GetDeviceCount() - 1; m_paOutDevice >= 0; m_paOutDevice--) {
-    if (Pa_GetDeviceInfo( m_paOutDevice) && soundName == Pa_GetDeviceInfo( m_paOutDevice)->name)
-      break;
+    if (m_paInDevice == paNoDevice) { // no default input device?
+      m_paInDevice = 0;
+    }
   }
-  if (m_paOutDevice < 0) // no match for device name?
+  m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
+  m_paOutDevice = settings.value("paOutDevice", paNoDevice).toInt();
+  if (m_paOutDevice == paNoDevice) { // no saved output device?
     m_paOutDevice = Pa_GetDefaultOutputDevice();
-
+    if (m_paOutDevice == paNoDevice) { // no default output device?
+      m_paOutDevice = 0;
+    }
+  }
   ui->actionCuteSDR->setChecked(settings.value(
                                   "PaletteCuteSDR",false).toBool());
   ui->actionLinrad->setChecked(settings.value(
@@ -490,7 +489,7 @@ void MainWindow::readSettings()
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9").toString();
   m_modeTx=settings.value("ModeTx","JT9").toString();
-  ui->pbTxMode->setText("Tx "+m_modeTx);
+  ui->pbTxMode->setText(m_modeTx);
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
@@ -659,8 +658,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
   dlg.m_saveDir=m_saveDir;
-  dlg.m_paInDevice=m_paInDevice;
-  dlg.m_paOutDevice=m_paOutDevice;
+  dlg.m_nDevIn=m_nDevIn;
+  dlg.m_nDevOut=m_nDevOut;
   dlg.m_pskReporter=m_pskReporter;
   dlg.m_After73=m_After73;
   dlg.m_macro=m_macro;
@@ -700,7 +699,9 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
     m_saveDir=dlg.m_saveDir;
+    m_nDevIn=dlg.m_nDevIn;
     m_paInDevice=dlg.m_paInDevice;
+    m_nDevOut=dlg.m_nDevOut;
     m_paOutDevice=dlg.m_paOutDevice;
     m_macro=dlg.m_macro;
     m_dFreq=dlg.m_dFreq;
@@ -2006,6 +2007,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 
   int nfreq=int(t4.at(3).toFloat());
   if(t4.at(4)=="@") {
+
     m_modeTx="JT9";
     ui->pbTxMode->setText("TX " + m_modeTx);
     g_pWideGraph->setModeTx(m_modeTx);

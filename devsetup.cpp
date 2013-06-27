@@ -5,8 +5,8 @@
 #define MAXDEVICES 100
 
 extern double dFreq[16];
-qint32 g2_COMportOpen;
-qint32 g2_iptt;
+qint32  g2_iptt;
+qint32  g2_COMportOpen;
 
 //----------------------------------------------------------- DevSetup()
 DevSetup::DevSetup(QWidget *parent) :	QDialog(parent)
@@ -29,18 +29,12 @@ void DevSetup::initDlg()
 {
   int k,id;
   int numDevices=Pa_GetDeviceCount();
+
+  const PaDeviceInfo *pdi;
   int nchin;
   int nchout;
-  const PaDeviceInfo *pdi;
   char pa_device_name[128];
   char pa_device_hostapi[128];
-
-  QString m_appDir = QApplication::applicationDirPath();
-  QString inifile = m_appDir + "/wsjtx.ini";
-  QSettings settings(inifile, QSettings::IniFormat);
-  settings.beginGroup("Common");
-  QString catPortDriver = settings.value("CATdriver","None").toString();
-  settings.endGroup();
 
   k=0;
   for(id=0; id<numDevices; id++ )  {
@@ -48,8 +42,6 @@ void DevSetup::initDlg()
     nchin=pdi->maxInputChannels;
     if(nchin>0) {
       m_inDevList[k]=id;
-      if (id == m_paInDevice)
-        m_nDevIn = k;
       k++;
       sprintf((char*)(pa_device_name),"%s",pdi->name);
       sprintf((char*)(pa_device_hostapi),"%s",
@@ -87,8 +79,6 @@ void DevSetup::initDlg()
     nchout=pdi->maxOutputChannels;
     if(nchout>0) {
       m_outDevList[k]=id;
-      if (id == m_paOutDevice)
-        m_nDevOut = k;
       k++;
       sprintf((char*)(pa_device_name),"%s",pdi->name);
       sprintf((char*)(pa_device_hostapi),"%s",
@@ -148,6 +138,8 @@ void DevSetup::initDlg()
   ui.comboBoxSndOut->setCurrentIndex(m_nDevOut);
   ui.cbID73->setChecked(m_After73);
   ui.cbPSKReporter->setChecked(m_pskReporter);
+  m_paInDevice=m_inDevList[m_nDevIn];
+  m_paOutDevice=m_outDevList[m_nDevOut];
 
   enableWidgets();
 
@@ -186,7 +178,6 @@ void DevSetup::initDlg()
   ui.catPortComboBox->addItem("/dev/ttyUSB1");
   ui.catPortComboBox->addItem("/dev/ttyUSB2");
   ui.catPortComboBox->addItem("/dev/ttyUSB3");
-  ui.catPortComboBox->addItem(catPortDriver);
 
   ui.pttComboBox->addItem("/dev/ttyS0");
   ui.pttComboBox->addItem("/dev/ttyS1");
@@ -463,7 +454,7 @@ void DevSetup::on_testCATButton_clicked()
   }
 
   double fMHz=rig->getFreq(RIG_VFO_CURR)/1000000.0;
-  if(fMHz>0.03) {
+  if(fMHz>0.0) {
     t.sprintf("Rig control appears to be working.\nDial Frequency:  %.6f MHz",
               fMHz);
   } else {

@@ -169,6 +169,8 @@ private:
     qint64  m_msErase;
     qint64  m_secBandChanged;
 
+    qint32  m_nDevIn;
+    qint32  m_nDevOut;
     qint32  m_idInt;
     qint32  m_waterfallAvg;
     qint32  m_pttMethodIndex;
