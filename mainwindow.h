@@ -204,8 +204,6 @@ private:
     qint32  m_handshakeIndex;
     qint32  m_ncw;
     qint32  m_secID;
-    qint32  m_COMportOpen;
-    qint32  m_iptt;
     qint32  m_band;
     qint32  m_repeatMsg;
     qint32  m_watchdogLimit;

@@ -19,6 +19,8 @@ int itone[126];                       //Audio tones for all Tx symbols
 int icw[250];                         //Dits for CW ID
 int outBufSize;
 int rc;
+qint32  g_COMportOpen;
+qint32  g_iptt;
 static int nc1=1;
 wchar_t buffer[256];
 bool btxok;                           //True if OK to transmit
@@ -166,8 +168,8 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_TRperiod=60;
   m_inGain=0;
   m_dataAvailable=false;
-  m_iptt=0;
-  m_COMportOpen=0;
+  g_iptt=0;
+  g_COMportOpen=0;
   m_secID=0;
   m_promptToLog=false;
   m_blankLine=false;
@@ -488,7 +490,7 @@ void MainWindow::readSettings()
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9").toString();
   m_modeTx=settings.value("ModeTx","JT9").toString();
-  ui->pbTxMode->setText(m_modeTx);
+  ui->pbTxMode->setText("Tx "+m_modeTx);
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
@@ -1574,12 +1576,12 @@ void MainWindow::guiUpdate()
     }
 
     float fTR=float((nsec%m_TRperiod))/m_TRperiod;
-    if(m_iptt==0 and ((bTxTime and !btxMute and fTR<0.4) or m_tune )) {
+    if(g_iptt==0 and ((bTxTime and !btxMute and fTR<0.4) or m_tune )) {
       icw[0]=m_ncw;
 
 //Raise PTT
       if(m_catEnabled and m_bRigOpen and  m_pttMethodIndex==0) {
-        m_iptt=1;
+        g_iptt=1;
         if(m_pttData) ret=rig->setPTT(RIG_PTT_ON_DATA, RIG_VFO_CURR);
         if(!m_pttData) ret=rig->setPTT(RIG_PTT_ON_MIC, RIG_VFO_CURR);
         if(ret!=RIG_OK) {
@@ -1589,10 +1591,10 @@ void MainWindow::guiUpdate()
 
       }
       if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {  //DTR or RTS
-          ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
+          ptt(m_pttPort,1,&g_iptt,&g_COMportOpen);
       }
       if(m_pttMethodIndex==3) {                    //VOX
-        m_iptt=1;
+        g_iptt=1;
       }
       ptt1Timer->start(200);                       //Sequencer delay
     }
@@ -1602,7 +1604,7 @@ void MainWindow::guiUpdate()
   }
 
 // Calculate Tx tones when needed
-  if((m_iptt==1 && iptt0==0) || m_restart) {
+  if((g_iptt==1 && iptt0==0) || m_restart) {
     QByteArray ba;
     if(m_ntx == 1) ba=ui->tx1->text().toLocal8Bit();
     if(m_ntx == 2) ba=ui->tx2->text().toLocal8Bit();
@@ -1676,7 +1678,7 @@ void MainWindow::guiUpdate()
 
 
 // If PTT was just raised, start a countdown for raising TxOK:
-  if(m_iptt == 1 && iptt0 == 0) {
+  if(g_iptt == 1 && iptt0 == 0) {
       nc1=-9;    // TxDelay = 0.8 s
   }
   if(nc1 <= 0) {
@@ -1708,10 +1710,10 @@ void MainWindow::guiUpdate()
     if(m_tx2QSO and !m_tune) displayTxMsg(t);
   }
 
-  if(!btxok && btxok0 && m_iptt==1) stopTx();
+  if(!btxok && btxok0 && g_iptt==1) stopTx();
 
 // If btxok was just lowered, start a countdown for lowering PTT
-  if(!btxok && btxok0 && m_iptt==1) nc0=-11;  //RxDelay = 1.0 s
+  if(!btxok && btxok0 && g_iptt==1) nc0=-11;  //RxDelay = 1.0 s
   if(nc0 <= 0) {
     nc0++;
   }
@@ -1719,7 +1721,7 @@ void MainWindow::guiUpdate()
   if(nc0 == 0) {
     //Lower PTT
     if(m_catEnabled and m_bRigOpen and  m_pttMethodIndex==0) {
-      m_iptt=0;
+      g_iptt=0;
       ret=rig->setPTT(RIG_PTT_OFF, RIG_VFO_CURR);  //CAT control for PTT=0
       if(ret!=RIG_OK) {
         rt.sprintf("CAT control PTT failed:  %d",ret);
@@ -1727,14 +1729,14 @@ void MainWindow::guiUpdate()
       }
     }
     if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {  //DTR-RTS
-      ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
+      ptt(m_pttPort,0,&g_iptt,&g_COMportOpen);
     }
     if(m_pttMethodIndex==3) {                         //VOX
-      m_iptt=0;
+      g_iptt=0;
     }
   }
 
-  if(m_iptt == 0 && !btxok) {
+  if(g_iptt == 0 && !btxok) {
     // sending=""
     // nsendingsh=0
   }
@@ -1808,7 +1810,7 @@ void MainWindow::guiUpdate()
     m_sec0=nsec;
   }
 
-  iptt0=m_iptt;
+  iptt0=g_iptt;
   btxok0=btxok;
 }               //End of GUIupdate
 
@@ -1855,7 +1857,7 @@ void MainWindow::stopTx()
     soundOutThread.wait(3000);
   }
   m_transmitting=false;
-  m_iptt=0;
+  g_iptt=0;
   lab1->setStyleSheet("");
   lab1->setText("");
   ptt0Timer->start(200);                       //Sequencer delay
@@ -1877,7 +1879,7 @@ void MainWindow::stopTx2()
     }
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-    ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
+    ptt(m_pttPort,0,&g_iptt,&g_COMportOpen);
   }
   if(m_73TxDisable and m_sent73) on_stopTxButton_clicked();
 

@@ -5,6 +5,8 @@
 #define MAXDEVICES 100
 
 extern double dFreq[16];
+qint32 g2_COMportOpen;
+qint32 g2_iptt;
 
 //----------------------------------------------------------- DevSetup()
 DevSetup::DevSetup(QWidget *parent) :	QDialog(parent)
@@ -13,10 +15,10 @@ DevSetup::DevSetup(QWidget *parent) :	QDialog(parent)
   m_restartSoundIn=false;
   m_restartSoundOut=false;
   m_firstCall=true;
-  m_iptt=0;
+  g2_iptt=0;
   m_test=0;
   m_bRigOpen=false;
-  m_COMportOpen=0;
+  g2_COMportOpen=0;
 }
 
 DevSetup::~DevSetup()
@@ -27,12 +29,18 @@ void DevSetup::initDlg()
 {
   int k,id;
   int numDevices=Pa_GetDeviceCount();
-
-  const PaDeviceInfo *pdi;
   int nchin;
   int nchout;
+  const PaDeviceInfo *pdi;
   char pa_device_name[128];
   char pa_device_hostapi[128];
+
+  QString m_appDir = QApplication::applicationDirPath();
+  QString inifile = m_appDir + "/wsjtx.ini";
+  QSettings settings(inifile, QSettings::IniFormat);
+  settings.beginGroup("Common");
+  QString catPortDriver = settings.value("CATdriver","None").toString();
+  settings.endGroup();
 
   k=0;
   for(id=0; id<numDevices; id++ )  {
@@ -178,6 +186,7 @@ void DevSetup::initDlg()
   ui.catPortComboBox->addItem("/dev/ttyUSB1");
   ui.catPortComboBox->addItem("/dev/ttyUSB2");
   ui.catPortComboBox->addItem("/dev/ttyUSB3");
+  ui.catPortComboBox->addItem(catPortDriver);
 
   ui.pttComboBox->addItem("/dev/ttyS0");
   ui.pttComboBox->addItem("/dev/ttyS1");
@@ -454,7 +463,7 @@ void DevSetup::on_testCATButton_clicked()
   }
 
   double fMHz=rig->getFreq(RIG_VFO_CURR)/1000000.0;
-  if(fMHz>0.0) {
+  if(fMHz>0.03) {
     t.sprintf("Rig control appears to be working.\nDial Frequency:  %.6f MHz",
               fMHz);
   } else {
@@ -472,7 +481,7 @@ void DevSetup::on_testPTTButton_clicked()
 {
   m_test=1-m_test;
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-    ptt(m_pttPort,m_test,&m_iptt,&m_COMportOpen);
+    ptt(m_pttPort,m_test,&g2_iptt,&g2_COMportOpen);
   }
   if(m_pttMethodIndex==0 and !m_bRigOpen) {
     on_testCATButton_clicked();

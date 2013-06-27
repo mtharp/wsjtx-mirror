@@ -125,6 +125,7 @@ void CPlotter::draw(float swide[], int i0)             //draw()
       }
       y2=gain*6.0*log10(sum/m_binsPerPixel) - 10.0;
     }
+    y2 += m_plotZero;
     if(i==iz-1) painter2D.drawPolyline(LineBuf,j);
     LineBuf[j].setX(i);
     LineBuf[j].setY(m_h-(y2+0.8*m_h));

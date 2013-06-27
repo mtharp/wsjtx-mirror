@@ -70,7 +70,7 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndecoded)
            ndecoded=1
            nfreq=nint(freq+a(1))
            ndrift=nint(2.0*a(2))
-           s2db=10.0*log10(sync2) - 40             !### empirical ###
+           s2db=10.0*log10(sync2) - 38             !### empirical ###
            nsnr=nint(s2db)
            if(nsnr.lt.-30) nsnr=-30
            if(nsnr.gt.-1) nsnr=-1

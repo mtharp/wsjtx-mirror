@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QProcess>
 #include <QMessageBox>
+#include <QSettings>
 #include "ui_devsetup.h"
 #include "rigclass.h"
 
@@ -35,11 +36,9 @@ public:
   qint32  m_stopBits;
   qint32  m_stopBitsIndex;
   qint32  m_handshakeIndex;
-  qint32  m_iptt;
-  qint32  m_test;
-  qint32  m_COMportOpen;
   qint32  m_poll;
   qint32  m_tmp;
+  qint32  m_test;
 
   bool    m_restartSoundIn;
   bool    m_restartSoundOut;
