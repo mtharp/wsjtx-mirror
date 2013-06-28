@@ -1,9 +1,9 @@
 [Setup]
 AppName=wsjtx
-AppVerName=wsjtx Version 1.1.0 r3414
+AppVerName=wsjtx Version 1.1.0 r3417
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
-DefaultDirName=c:\wsjtx
-DefaultGroupName=wsjtx
+DefaultDirName=c:\wsjtx2
+DefaultGroupName=wsjtx2
 
 [Files]
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\wsjtx.exe";         DestDir: "{app}"
@@ -24,6 +24,6 @@ Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\save\Samples\130418_1742.wav";   D
 Source: "c:\Users\joe\wsjt_k1jt\wsjtx_install\save\Samples\130610_2343.wav";   DestDir: "{app}\save\Samples";
 
 [Icons]
-Name: "{group}\wsjtx";        Filename: "{app}\wsjtx.exe";   WorkingDir: {app}; IconFilename: {app}\wsjt.ico
-Name: "{userdesktop}\wsjtx";  Filename: "{app}\wsjtx.exe";   WorkingDir: {app}; IconFilename: {app}\wsjt.ico
+Name: "{group}\wsjtx2";        Filename: "{app}\wsjtx.exe";   WorkingDir: {app}; IconFilename: {app}\wsjt.ico
+Name: "{userdesktop}\wsjtx2";  Filename: "{app}\wsjtx.exe";   WorkingDir: {app}; IconFilename: {app}\wsjt.ico
 
