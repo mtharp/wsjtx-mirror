@@ -1,5 +1,6 @@
 #include "devsetup.h"
 #include <QDebug>
+#include <QSettings>
 #include <portaudio.h>
 
 #define MAXDEVICES 100
@@ -27,6 +28,13 @@ DevSetup::~DevSetup()
 
 void DevSetup::initDlg()
 {
+  QString m_appDir = QApplication::applicationDirPath();
+  QString inifile = m_appDir + "/wsjtx.ini";
+  QSettings settings(inifile, QSettings::IniFormat);
+  settings.beginGroup("Common");
+  QString catPortDriver = settings.value("CATdriver","None").toString();
+  settings.endGroup();
+
   int k,id;
   int numDevices=Pa_GetDeviceCount();
 
@@ -180,6 +188,7 @@ void DevSetup::initDlg()
   ui.catPortComboBox->addItem("/dev/ttyUSB1");
   ui.catPortComboBox->addItem("/dev/ttyUSB2");
   ui.catPortComboBox->addItem("/dev/ttyUSB3");
+  ui.catPortComboBox->addItem(catPortDriver);
 
   ui.pttComboBox->addItem("/dev/ttyS0");
   ui.pttComboBox->addItem("/dev/ttyS1");
