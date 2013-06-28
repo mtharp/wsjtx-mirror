@@ -42,6 +42,8 @@ void DevSetup::initDlg()
     nchin=pdi->maxInputChannels;
     if(nchin>0) {
       m_inDevList[k]=id;
+      if (id == m_paInDevice)
+        m_nDevIn = k;
       k++;
       sprintf((char*)(pa_device_name),"%s",pdi->name);
       sprintf((char*)(pa_device_hostapi),"%s",
@@ -79,6 +81,8 @@ void DevSetup::initDlg()
     nchout=pdi->maxOutputChannels;
     if(nchout>0) {
       m_outDevList[k]=id;
+      if (id == m_paOutDevice)
+        m_nDevOut = k;
       k++;
       sprintf((char*)(pa_device_name),"%s",pdi->name);
       sprintf((char*)(pa_device_hostapi),"%s",
@@ -138,8 +142,6 @@ void DevSetup::initDlg()
   ui.comboBoxSndOut->setCurrentIndex(m_nDevOut);
   ui.cbID73->setChecked(m_After73);
   ui.cbPSKReporter->setChecked(m_pskReporter);
-  m_paInDevice=m_inDevList[m_nDevIn];
-  m_paOutDevice=m_outDevList[m_nDevOut];
 
   enableWidgets();
 

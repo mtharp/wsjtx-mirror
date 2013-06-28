@@ -372,10 +372,19 @@ void MainWindow::writeSettings()
   settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
   settings.setValue("SaveDir",m_saveDir);
-  settings.setValue("SoundInIndex",m_nDevIn);
-  settings.setValue("paInDevice",m_paInDevice);
-  settings.setValue("SoundOutIndex",m_nDevOut);
-  settings.setValue("paOutDevice",m_paOutDevice);
+  char soundName[128];
+  if (Pa_GetDeviceInfo( m_paInDevice)) {  // store name, number may be different next time
+    snprintf( soundName, sizeof( soundName), "%s:%s",
+      Pa_GetHostApiInfo( Pa_GetDeviceInfo( m_paInDevice)->hostApi)->name,
+      Pa_GetDeviceInfo( m_paInDevice)->name);
+    settings.setValue("SoundInName", soundName);
+  }
+  if (Pa_GetDeviceInfo( m_paOutDevice)) {  // store name, number may be different next time
+    snprintf( soundName, sizeof( soundName), "%s:%s",
+      Pa_GetHostApiInfo( Pa_GetDeviceInfo( m_paOutDevice)->hostApi)->name,
+      Pa_GetDeviceInfo( m_paOutDevice)->name);
+    settings.setValue("SoundOutName", soundName);
+  }
   settings.setValue("PaletteCuteSDR",ui->actionCuteSDR->isChecked());
   settings.setValue("PaletteLinrad",ui->actionLinrad->isChecked());
   settings.setValue("PaletteAFMHot",ui->actionAFMHot->isChecked());
@@ -463,22 +472,36 @@ void MainWindow::readSettings()
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
   m_saveDir=settings.value("SaveDir",m_appDir + "/save").toString();
-  m_nDevIn = settings.value("SoundInIndex", 0).toInt();
-  m_paInDevice = settings.value("paInDevice", paNoDevice).toInt();
-  if (m_paInDevice == paNoDevice) { // no saved input device?
+
+  char soundName[128];
+  QString savedName = settings.value( "SoundInName", "default").toString();
+  for (m_paInDevice = Pa_GetDeviceCount() - 1; m_paInDevice >= 0; m_paInDevice--) {
+    snprintf( soundName, sizeof( soundName), "%s:%s",
+      Pa_GetHostApiInfo( Pa_GetDeviceInfo( m_paInDevice)->hostApi)->name,
+      Pa_GetDeviceInfo( m_paInDevice)->name);
+    if (savedName == soundName)
+      break;
+  }
+  if (m_paInDevice < 0) { // no match for device name?
     m_paInDevice = Pa_GetDefaultInputDevice();
-    if (m_paInDevice == paNoDevice) { // no default input device?
+    if (m_paInDevice == paNoDevice)  // no default input device?
       m_paInDevice = 0;
-    }
   }
-  m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
-  m_paOutDevice = settings.value("paOutDevice", paNoDevice).toInt();
-  if (m_paOutDevice == paNoDevice) { // no saved output device?
+
+  savedName = settings.value("SoundOutName", "default").toString();
+  for (m_paOutDevice = Pa_GetDeviceCount() - 1; m_paOutDevice >= 0; m_paOutDevice--) {
+    snprintf( soundName, sizeof( soundName), "%s:%s",
+      Pa_GetHostApiInfo( Pa_GetDeviceInfo( m_paOutDevice)->hostApi)->name,
+      Pa_GetDeviceInfo( m_paOutDevice)->name);
+    if (savedName == soundName)
+      break;
+  }
+  if (m_paOutDevice < 0) { // no match for device name?
     m_paOutDevice = Pa_GetDefaultOutputDevice();
-    if (m_paOutDevice == paNoDevice) { // no default output device?
+    if (m_paOutDevice == paNoDevice)  // no default output device?
       m_paOutDevice = 0;
-    }
   }
+
   ui->actionCuteSDR->setChecked(settings.value(
                                   "PaletteCuteSDR",false).toBool());
   ui->actionLinrad->setChecked(settings.value(
@@ -658,8 +681,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
   dlg.m_saveDir=m_saveDir;
-  dlg.m_nDevIn=m_nDevIn;
-  dlg.m_nDevOut=m_nDevOut;
+  dlg.m_paInDevice=m_paInDevice;
+  dlg.m_paOutDevice=m_paOutDevice;
   dlg.m_pskReporter=m_pskReporter;
   dlg.m_After73=m_After73;
   dlg.m_macro=m_macro;
@@ -699,9 +722,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
     m_saveDir=dlg.m_saveDir;
-    m_nDevIn=dlg.m_nDevIn;
     m_paInDevice=dlg.m_paInDevice;
-    m_nDevOut=dlg.m_nDevOut;
     m_paOutDevice=dlg.m_paOutDevice;
     m_macro=dlg.m_macro;
     m_dFreq=dlg.m_dFreq;
