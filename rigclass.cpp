@@ -174,8 +174,10 @@ freq_t Rig::getFreq(vfo_t vfo)
     return freq;
   } else
 #endif
-    {
-    rig_get_freq(theRig, vfo, &freq);
+  {
+    int iret=rig_get_freq(theRig, vfo, &freq);
+// iret should be 0.  Negative values mean rig_get_freq() failed.
+    if(iret<0) freq=-1.0;
     return freq;
   }
 }
