@@ -8,6 +8,9 @@
 #include <windows.h>
 #endif
 
+qint32 g2_iptt1;
+qint32 g2_nopen1;
+
 void getfile(QString fname, int ntrperiod)
 {
 
@@ -162,10 +165,9 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
   if((i3+i4+i5+i6+i9+i00)==-999) return 1;    //Silence compiler warning
   return 0;
 #else
-  int iptt1,nopen1;
-  ptt_(nport,ntx, &iptt1, &nopen1);
-  *iptt=iptt1;
-  *nopen=nopen1;
+  ptt_(nport,ntx, &g2_iptt1, &g2_nopen1);
+  *iptt=g2_iptt1;
+  *nopen=g2_nopen1;
   return 0;
 #endif
   if((nport+ntx+(*iptt)==-99999)) *nopen=0;   //Silence compiler warning
