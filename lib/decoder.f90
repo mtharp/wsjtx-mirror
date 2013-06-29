@@ -19,6 +19,10 @@ subroutine decoder(ss,id2,nstandalone)
   common/tracer/limtrace,lu
   save
 
+  write(71,*) nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfb,ntol,  &
+       kin,nzhsym,nsave,nagain,ndepth,ntxmode,nmode,datetime
+  call flush(71)
+
   call system_clock(iclock0,iclock_rate,iclock_max)           !###
   nfreqs0=0
   nfreqs1=0

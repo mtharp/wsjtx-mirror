@@ -35,11 +35,6 @@ program jt9
 
   limtrace=0
   lu=12
-  nfa=1000
-  nfb=2000
-  mousefqso=1500
-  newdat=1
-  ndiskdat=1
 
   do ifile=ifile1,nargs
      call getarg(ifile,infile)
@@ -78,10 +73,6 @@ program jt9
         call timer('jt9     ',0)
      endif
 
-!     do i=1,npts
-!        id2(i)=100.0*sin(6.283185307*1600.0*i/12000.0)
-!     enddo
-
      id2=0                               !??? Why is this necessary ???
 
      do iblk=1,npts/kstep
@@ -95,8 +86,7 @@ program jt9
 ! Emit signal readyForFFT
            ingain=0
            call timer('symspec ',0)
-           call symspec(k,ntrperiod,nsps,ingain,pxdb,s,ccfred,df3,  &
-                ihsym,nzap,slimit,lstrong,npts8)
+           call symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
            call timer('symspec ',1)
            nhsym0=nhsym
            if(ihsym.ge.173) go to 10
@@ -105,7 +95,7 @@ program jt9
 
 10   close(10)
      call fillcom(nutc0,ndepth)
-     call decoder(ss,c0,1)
+     call decoder(ss,id2,1)
   enddo
 
   call timer('jt9     ',1)
