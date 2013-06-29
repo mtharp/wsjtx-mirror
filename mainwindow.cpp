@@ -2864,7 +2864,10 @@ void MainWindow::rigOpen()
       msgBox("Rig init failure");
       return;
     }
-    QString sCATport="\\\\.\\" + m_catPort;    //Allow COM ports above 9
+    QString sCATport=m_catPort;
+#ifdef Win32
+    sCATport="\\\\.\\" + m_catPort;    //Allow COM ports above 9
+#endif
     rig->setConf("rig_pathname", sCATport.toLatin1().data());
     char buf[80];
     sprintf(buf,"%d",m_serialRate);

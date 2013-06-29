@@ -438,7 +438,11 @@ void DevSetup::on_testCATButton_clicked()
       msgBox("Rig init failure");
       return;
     }
-    rig->setConf("rig_pathname", m_catPort.toLatin1().data());
+    QString sCATport=m_catPort;
+#ifdef Win32
+    sCATport="\\\\.\\" + m_catPort;    //Allow COM ports above 9
+#endif
+    rig->setConf("rig_pathname", sCATport.toLatin1().data());
     char buf[80];
     sprintf(buf,"%d",m_serialRate);
     rig->setConf("serial_speed",buf);
