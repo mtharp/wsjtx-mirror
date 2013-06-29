@@ -479,7 +479,7 @@ void MainWindow::readSettings()
     snprintf( soundName, sizeof( soundName), "%s:%s",
       Pa_GetHostApiInfo( Pa_GetDeviceInfo( m_paInDevice)->hostApi)->name,
       Pa_GetDeviceInfo( m_paInDevice)->name);
-    if (savedName == soundName)
+    if ((savedName == soundName) && (Pa_GetDeviceInfo(m_paInDevice)->maxInputChannels > 0))
       break;
   }
   if (m_paInDevice < 0) { // no match for device name?
@@ -493,7 +493,7 @@ void MainWindow::readSettings()
     snprintf( soundName, sizeof( soundName), "%s:%s",
       Pa_GetHostApiInfo( Pa_GetDeviceInfo( m_paOutDevice)->hostApi)->name,
       Pa_GetDeviceInfo( m_paOutDevice)->name);
-    if (savedName == soundName)
+    if ((savedName == soundName) && (Pa_GetDeviceInfo(m_paOutDevice)->maxOutputChannels > 0))
       break;
   }
   if (m_paOutDevice < 0) { // no match for device name?
