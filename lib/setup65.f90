@@ -88,9 +88,9 @@ subroutine setup65
            if (pr(m+n).lt.0.0) go to 120
         endif
      enddo
-     go to 122
+     cycle
 120  mref2(k,2)=m+n
-122 enddo
+  enddo
 
   return
 end subroutine setup65

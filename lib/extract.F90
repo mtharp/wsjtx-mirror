@@ -84,7 +84,7 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
      go to 900
   endif
 
-  read(22,rec=2) nsec2,ncount,dat4
+  read(22,rec=2,err=900) nsec2,ncount,dat4
   j=nsec2                !Silence compiler warning
   decoded='                      '
   ltext=.false.

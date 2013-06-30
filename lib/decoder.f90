@@ -1,4 +1,4 @@
-subroutine decoder(ss,id2,nstandalone)
+subroutine decoder(ss,id2)
 
 ! Decoder for JT9.
 

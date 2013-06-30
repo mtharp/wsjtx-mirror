@@ -86,7 +86,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="acceptRichText">
            <bool>false</bool>
@@ -821,7 +821,7 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>buttonGroup</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -855,7 +855,7 @@ p, li { white-space: pre-wrap; }
                     <bool>true</bool>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>buttonGroup</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -886,7 +886,7 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>buttonGroup</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -1054,7 +1054,7 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>buttonGroup</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -1202,7 +1202,7 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>buttonGroup</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -1233,7 +1233,7 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>buttonGroup</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -2209,7 +2209,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2239,7 +2239,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionDeviceSetup"/>
     <addaction name="separator"/>
     <addaction name="actionMonitor_OFF_at_startup"/>
-    <addaction name="actionF4_sets_Tx6"/>
     <addaction name="actionConvert_JT9_x_to_RTTY"/>
     <addaction name="actionLog_dB_reports_to_Comments"/>
     <addaction name="actionPrompt_to_log_QSO"/>
@@ -2249,7 +2248,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionDouble_click_on_call_sets_Tx_Enable"/>
     <addaction name="action_73TxDisable"/>
     <addaction name="actionRunaway_Tx_watchdog"/>
-    <addaction name="actionTx2QSO"/>
     <addaction name="actionLockTxFreq"/>
     <addaction name="separator"/>
     <addaction name="menuAdvanced"/>

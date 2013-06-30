@@ -74,7 +74,6 @@ private slots:
   void on_actionOpen_next_in_directory_triggered();
   void on_actionDecode_remaining_files_in_directory_triggered();
   void on_actionDelete_all_wav_files_in_SaveDir_triggered();
-  void on_actionF4_sets_Tx6_triggered();
   void on_actionNone_triggered();
   void on_actionSave_all_triggered();
   void on_actionKeyboard_shortcuts_triggered();
@@ -147,7 +146,6 @@ private slots:
   void on_rptSpinBox_valueChanged(int n);
   void on_action_73TxDisable_triggered(bool checked);
   void on_actionRunaway_Tx_watchdog_triggered(bool checked);
-  void on_actionTx2QSO_triggered(bool checked);
   void killFile();
   void on_tuneButton_clicked();
   void on_actionAllow_multiple_instances_triggered(bool checked);
@@ -224,7 +222,6 @@ private:
     bool    m_saveDecoded;
     bool    m_saveAll;
     bool    m_widebandDecode;
-    bool    m_kb8rq;
     bool    m_call3Modified;
     bool    m_dataAvailable;
     bool    m_killAll;
@@ -249,7 +246,6 @@ private:
     bool    m_73TxDisable;
     bool    m_sent73;
     bool    m_runaway;
-    bool    m_tx2QSO;
     bool    m_tune;
     bool    m_bRigOpen;
     bool    m_bMultipleOK;

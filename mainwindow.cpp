@@ -396,7 +396,6 @@ void MainWindow::writeSettings()
   settings.setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("NDepth",m_ndepth);
-  settings.setValue("KB8RQ",m_kb8rq);
   settings.setValue("MonitorOFF",m_monitorStartOFF);
   settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("RxFreq",m_rxFreq);
@@ -431,7 +430,6 @@ void MainWindow::writeSettings()
   settings.setValue("QuickCall",m_quickCall);
   settings.setValue("73TxDisable",m_73TxDisable);
   settings.setValue("Runaway",m_runaway);
-  settings.setValue("Tx2QSO",m_tx2QSO);
   settings.setValue("MultipleOK",m_bMultipleOK);
   settings.setValue("DTRoff",m_bDTRoff);
   settings.setValue("pttData",m_pttData);
@@ -512,7 +510,8 @@ void MainWindow::readSettings()
                                  "PaletteBlue",false).toBool());
   m_mode=settings.value("Mode","JT9").toString();
   m_modeTx=settings.value("ModeTx","JT9").toString();
-  ui->pbTxMode->setText(m_modeTx);
+  if(m_mode=="JT9") ui->pbTxMode->setText("Tx JT9 @");
+  if(m_mode=="JT65") ui->pbTxMode->setText("Tx JT65 #");
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_synced->setChecked(settings.value(
                                         "SaveSynced",false).toBool());
@@ -531,8 +530,6 @@ void MainWindow::readSettings()
   m_ndepth=settings.value("NDepth",3).toInt();
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
-  m_kb8rq=settings.value("KB8RQ",false).toBool();
-  ui->actionF4_sets_Tx6->setChecked(m_kb8rq);
   m_monitorStartOFF=settings.value("MonitorOFF",false).toBool();
   ui->actionMonitor_OFF_at_startup->setChecked(m_monitorStartOFF);
   m_pskReporter=settings.value("PSKReporter",false).toBool();
@@ -577,8 +574,6 @@ void MainWindow::readSettings()
   ui->action_73TxDisable->setChecked(m_73TxDisable);
   m_runaway=settings.value("Runaway",false).toBool();
   ui->actionRunaway_Tx_watchdog->setChecked(m_runaway);
-  m_tx2QSO=settings.value("Tx2QSO",false).toBool();
-  ui->actionTx2QSO->setChecked(m_tx2QSO);
   m_bMultipleOK=settings.value("MultipleOK",false).toBool();
   ui->actionAllow_multiple_instances->setChecked(m_bMultipleOK);
   m_bDTRoff=settings.value("DTRoff",false).toBool();
@@ -883,10 +878,6 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
   case Qt::Key_F4:
     ui->dxCallEntry->setText("");
     ui->dxGridEntry->setText("");
-    if(m_kb8rq) {
-      m_ntx=6;
-      ui->txrb6->setChecked(true);
-    }
   case Qt::Key_F6:
     if(e->modifiers() & Qt::ShiftModifier) {
       on_actionDecode_remaining_files_in_directory_triggered();
@@ -1191,11 +1182,6 @@ void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
       if(i>10) dir.remove(fname);
     }
   }
-}
-
-void MainWindow::on_actionF4_sets_Tx6_triggered()                //F4 sets Tx6
-{
-  m_kb8rq = !m_kb8rq;
 }
 
 void MainWindow::on_actionNone_triggered()                    //Save None
@@ -1649,7 +1635,7 @@ void MainWindow::guiUpdate()
           << "  Transmitting " << m_dialFreq << " MHz  " << m_mode
           << ":  " << t << endl;
       f.close();
-      if(m_tx2QSO) displayTxMsg(t);
+      displayTxMsg(t);
     }
 
     QStringList w=t.split(" ",QString::SkipEmptyParts);
@@ -1723,7 +1709,7 @@ void MainWindow::guiUpdate()
           << ":  " << t << endl;
       f.close();
     }
-    if(m_tx2QSO and !m_tune) displayTxMsg(t);
+    if(!m_tune) displayTxMsg(t);
   }
 
   if(!btxok && btxok0 && g_iptt==1) stopTx();
@@ -2024,12 +2010,12 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   if(t4.at(4)=="@") {
 
     m_modeTx="JT9";
-    ui->pbTxMode->setText("TX " + m_modeTx);
+    ui->pbTxMode->setText("Tx JT9 @");
     g_pWideGraph->setModeTx(m_modeTx);
   }
   if(t4.at(4)=="#") {
     m_modeTx="JT65";
-    ui->pbTxMode->setText("TX " + m_modeTx);
+    ui->pbTxMode->setText("Tx JT65 #");
     g_pWideGraph->setModeTx(m_modeTx);
   }
   g_pWideGraph->setRxFreq(nfreq);       //Set Rx freq
@@ -2816,11 +2802,6 @@ void MainWindow::on_actionRunaway_Tx_watchdog_triggered(bool checked)
   m_runaway=checked;
 }
 
-void MainWindow::on_actionTx2QSO_triggered(bool checked)
-{
-  m_tx2QSO=checked;
-}
-
 void MainWindow::on_tuneButton_clicked()
 {
   if(m_tune) {
@@ -2945,11 +2926,11 @@ void MainWindow::on_pbTxMode_clicked()
 {
   if(m_modeTx=="JT9") {
     m_modeTx="JT65";
+    ui->pbTxMode->setText("Tx JT65 #");
   } else {
     m_modeTx="JT9";
+    ui->pbTxMode->setText("Tx JT9 @");
   }
-  QString t="Tx " + m_modeTx;
-  ui->pbTxMode->setText(t);
   g_pWideGraph->setModeTx(m_modeTx);
 }
 

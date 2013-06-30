@@ -95,7 +95,7 @@ program jt9
 
 10   close(10)
      call fillcom(nutc0,ndepth)
-     call decoder(ss,id2,1)
+     call decoder(ss,id2)
   enddo
 
   call timer('jt9     ',1)
