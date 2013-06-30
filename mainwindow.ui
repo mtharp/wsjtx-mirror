@@ -2751,7 +2751,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Convert JT9 to RTTY for logging</string>
+    <string>Convert mode to RTTY for logging</string>
    </property>
   </action>
   <action name="actionLog_dB_reports_to_Comments">

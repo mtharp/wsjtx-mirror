@@ -588,7 +588,7 @@ void MainWindow::readSettings()
   m_txPower=settings.value("TxPower","").toString();
   m_logComments=settings.value("LogComments","").toString();
   m_pskAntenna=settings.value("PSKantenna","").toString();
-  m_fMin=settings.value("fMin",3000).toInt();
+  m_fMin=settings.value("fMin",2500).toInt();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
