@@ -29,10 +29,8 @@
 class BACKEND_IMPEXP Rig {
 private:
   RIG* theRig;  // Global ref. to the rig
-#ifdef WIN32	// Ham Radio Deluxe and Commander only on Windows
   bool m_hrd;
   bool m_cmndr;
-#endif
   QString m_context;
 
 protected:
