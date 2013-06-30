@@ -290,7 +290,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
 
   ui->decodedTextLabel->setFont(ui->decodedTextBrowser2->font());
   ui->decodedTextLabel2->setFont(ui->decodedTextBrowser->font());
-  t="UTC  dB   DT Freq   Message";
+  t="UTC   dB   DT Freq   Message";
   ui->decodedTextLabel->setText(t);
   ui->decodedTextLabel2->setText(t);
 
@@ -1018,17 +1018,17 @@ void MainWindow::createStatusBar()                           //createStatusBar
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
 
+  lab3 = new QLabel("");
+  lab3->setAlignment(Qt::AlignHCenter);
+  lab3->setMinimumSize(QSize(60,18));
+  lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  statusBar()->addWidget(lab3);
+
   lab4 = new QLabel("");
   lab4->setAlignment(Qt::AlignHCenter);
-  lab4->setMinimumSize(QSize(60,18));
+  lab4->setMinimumSize(QSize(150,18));
   lab4->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab4);
-
-  lab5 = new QLabel("");
-  lab5->setAlignment(Qt::AlignHCenter);
-  lab5->setMinimumSize(QSize(150,18));
-  lab5->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  statusBar()->addWidget(lab5);
 }
 
 void MainWindow::on_actionExit_triggered()                     //Exit()
@@ -1646,7 +1646,7 @@ void MainWindow::guiUpdate()
     msgsent[22]=0;
     QString t=QString::fromLatin1(msgsent);
     if(m_tune) t="TUNE";
-    lab5->setText("Last Tx:  " + t);
+    lab4->setText("Last Tx:  " + t);
     if(m_restart) {
       QFile f("ALL.TXT");
       f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
@@ -1769,8 +1769,6 @@ void MainWindow::guiUpdate()
     ui->monitorButton->setStyleSheet("");
   }
 
-  lab3->setText("QSO Freq:  " + QString::number(g_pWideGraph->rxFreq()));
-
   if(m_startAnother) {
     m_startAnother=false;
     on_actionOpen_next_in_directory_triggered();
@@ -1841,10 +1839,10 @@ void MainWindow::displayTxMsg(QString t)
       QString bg="yellow";
       QTextBlockFormat bf;
       QTextCursor cursor;
-      QString t1="Tx@";
-      if(m_modeTx=="JT65") t1="Tx#";
-      t=QDateTime::currentDateTimeUtc().toString("hhmmss ") + t1 + \
-          " " + QString::number(m_txFreq) + " Hz: " + t;
+      QString t1=" @ ";
+      if(m_modeTx=="JT65") t1=" # ";
+      t=QDateTime::currentDateTimeUtc().toString("hhmm") + \
+          "  Tx       " + QString::number(m_txFreq) + t1 + t;
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t + "</pre></td></tr></table>";
       cursor = ui->decodedTextBrowser2->textCursor();
@@ -2467,8 +2465,8 @@ void MainWindow::on_actionJT9_1_triggered()
   m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #ff6ec7}");
-  lab4->setText(m_mode);
+  lab3->setStyleSheet("QLabel{background-color: #ff6ec7}");
+  lab3->setText(m_mode);
   ui->actionJT9_1->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setModeTx(m_modeTx);
@@ -2485,8 +2483,8 @@ void MainWindow::on_actionJT65_triggered()
   m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #ffff00}");
-  lab4->setText(m_mode);
+  lab3->setStyleSheet("QLabel{background-color: #ffff00}");
+  lab3->setText(m_mode);
   ui->actionJT65->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setModeTx(m_modeTx);
@@ -2503,8 +2501,8 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_hsymStop=173;
   soundInThread.setPeriod(m_TRperiod,m_nsps);
   soundOutThread.setPeriod(m_TRperiod,m_nsps);
-  lab4->setStyleSheet("QLabel{background-color: #ffa500}");
-  lab4->setText(m_mode);
+  lab3->setStyleSheet("QLabel{background-color: #ffa500}");
+  lab3->setText(m_mode);
   ui->actionJT9_JT65->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
   g_pWideGraph->setModeTx(m_modeTx);

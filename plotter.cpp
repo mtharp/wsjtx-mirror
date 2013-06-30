@@ -103,7 +103,7 @@ void CPlotter::draw(float swide[], int i0)             //draw()
   j=0;
 
 //  int iz=XfromFreq(2000.0);
-  int iz=XfromFreq(6000.0);
+  int iz=XfromFreq(5000.0);
   m_fMax=FreqfromX(iz);
   for(int i=0; i<iz; i++) {
     if(i>iz) swide[i]=0;
@@ -180,12 +180,16 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   double df = m_binsPerPixel*m_fftBinWidth;
   pixperdiv = m_freqPerDiv/df;
   y = m_h2 - m_h2/VERT_DIVS;
+  m_hdivs = w*df/m_freqPerDiv + 0.9999;
   for( int i=1; i<m_hdivs; i++)                   //draw vertical grids
   {
     x = (int)( (float)i*pixperdiv );
-    painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
-    painter.drawLine(x, 0, x , y);
-    painter.drawLine(x, m_h2-5, x , m_h2);
+    if(x >= 0 and x<=m_w) {
+//      qDebug() << m_binsPerPixel << df << m_freqPerDiv << m_hdivs << i << x;
+      painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
+      painter.drawLine(x, 0, x , y);
+      painter.drawLine(x, m_h2-5, x , m_h2);
+    }
   }
 
   pixperdiv = (float)m_h2 / (float)VERT_DIVS;
@@ -262,7 +266,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   int bw=9.0*12000.0/m_nsps;
   if(m_modeTx=="JT65") bw=66.0*11025.0/4096.0;
   dx=XfromFreq(m_fMin+bw) - x1;
-//  qDebug() << "Plotter:" << bw << dx << m_modeTx;
 
   QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
   painter0.setPen(pen0);
@@ -277,12 +280,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   x1=XfromFreq(m_fMin);
   if(x1<2) x1=2;
   x2=x1+30;
-//  pen2.setWidth(6);
-  painter0.drawLine(x1,18,x1,28);
-  painter0.drawLine(x1,23,x2,23);
-  painter0.drawLine(x2,23,x2-5,18);
-  painter0.drawLine(x2,23,x2-5,28);
-
+  painter0.drawLine(x1,8,x1,28);
 
   QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
   painter0.setPen(pen1);
