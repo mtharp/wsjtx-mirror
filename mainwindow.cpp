@@ -1014,12 +1014,6 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   lab3 = new QLabel("");
   lab3->setAlignment(Qt::AlignHCenter);
-  lab3->setMinimumSize(QSize(90,18));
-  lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  statusBar()->addWidget(lab3);
-
-  lab3 = new QLabel("");
-  lab3->setAlignment(Qt::AlignHCenter);
   lab3->setMinimumSize(QSize(60,18));
   lab3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab3);
