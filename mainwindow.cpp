@@ -1835,8 +1835,10 @@ void MainWindow::displayTxMsg(QString t)
       QTextCursor cursor;
       QString t1=" @ ";
       if(m_modeTx=="JT65") t1=" # ";
+      QString t2;
+      t2.sprintf("%4d",m_txFreq);
       t=QDateTime::currentDateTimeUtc().toString("hhmm") + \
-          "  Tx       " + QString::number(m_txFreq) + t1 + t;
+          "  Tx      " + t2 + t1 + t;
       QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
           bg + "\"><pre>" + t + "</pre></td></tr></table>";
       cursor = ui->decodedTextBrowser2->textCursor();
