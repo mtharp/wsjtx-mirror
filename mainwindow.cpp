@@ -2915,13 +2915,6 @@ void MainWindow::on_readFreq_clicked()
   if(ndiff!=0) dialFreqChanged2(fMHz);
 }
 
-
-void MainWindow::on_actionLockTxFreq_triggered(bool checked)
-{
-  m_lockTxFreq=checked;
-  g_pWideGraph->setLockTxFreq(m_lockTxFreq);
-}
-
 void MainWindow::on_pbTxMode_clicked()
 {
   if(m_modeTx=="JT9") {
@@ -2954,4 +2947,11 @@ void MainWindow::setFreq4(int rxFreq, int txFreq)
   m_txFreq=txFreq;
   ui->RxFreqSpinBox->setValue(m_rxFreq);
   ui->TxFreqSpinBox->setValue(m_txFreq);
+}
+
+void MainWindow::on_checkBox_clicked(bool checked)
+{
+  m_lockTxFreq=checked;
+  g_pWideGraph->setLockTxFreq(m_lockTxFreq);
+  if(m_lockTxFreq) on_pbR2T_clicked();
 }

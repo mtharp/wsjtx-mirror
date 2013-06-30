@@ -154,10 +154,11 @@ private slots:
   void acceptQSO2(bool accepted);
   void on_bandComboBox_activated(int index);
   void on_readFreq_clicked();
-  void on_actionLockTxFreq_triggered(bool checked);
   void on_pbTxMode_clicked();
   void on_actionQuick_Start_Guide_for_v1_1_triggered();
   void on_RxFreqSpinBox_valueChanged(int n);
+
+  void on_checkBox_clicked(bool checked);
 
 private:
     Ui::MainWindow *ui;
