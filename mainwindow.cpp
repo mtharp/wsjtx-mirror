@@ -1964,6 +1964,7 @@ void MainWindow::doubleClickOnCall2(bool shift, bool ctrl)
   doubleClickOnCall(shift,ctrl);
   m_decodedText2=false;
 }
+
 void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 {
   QTextCursor cursor;
@@ -2028,12 +2029,11 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   QString hiscall=t4.at(6);
   QString hisgrid="";
   if(t4.length()>=8) hisgrid=t4.at(7);
+  if(hiscall!=ui->dxCallEntry->text())   ui->dxGridEntry->setText("");
   ui->dxCallEntry->setText(hiscall);
-  ui->dxGridEntry->setText("");
   if(gridOK(hisgrid)) ui->dxGridEntry->setText(hisgrid);
   if(ui->dxGridEntry->text()=="") lookup();
   m_hisGrid=ui->dxGridEntry->text();
-
   int n = 60*t2.mid(0,2).toInt() + t2.mid(2,2).toInt();
   int nmod=n%(m_TRperiod/30);
   m_txFirst=(nmod!=0);
