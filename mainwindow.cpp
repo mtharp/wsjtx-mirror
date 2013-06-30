@@ -703,7 +703,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     rig->close();
     ui->readFreq->setStyleSheet("");
     ui->readFreq->setEnabled(false);
-    if(m_rig!=9999) delete rig;
+    if(m_rig<9900) delete rig;
     m_bRigOpen=false;
     m_catEnabled=false;
   }
@@ -737,7 +737,6 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_bDTRoff=dlg.m_bDTRoff;
     m_pttData=dlg.m_pttData;
     m_poll=dlg.m_poll;
-
 #ifdef WIN32
     if(dlg.m_pskReporter!=m_pskReporter) {
       if(dlg.m_pskReporter) {
@@ -2834,7 +2833,7 @@ void MainWindow::rigOpen()
   int ret;
   rig = new Rig();
 
-  if(m_rig != 9999) {
+  if(m_rig<9900) {
     if (!rig->init(m_rig)) {
       msgBox("Rig init failure");
       return;

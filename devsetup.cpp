@@ -129,6 +129,7 @@ void DevSetup::initDlg()
           this, SLOT(p4Error()));
   p4.start("rigctl -l");
   p4.waitForFinished(1000);
+  ui.rigComboBox->addItem("  9998 Commander");
   ui.rigComboBox->addItem("  9999 Ham Radio Deluxe");
 
   QPalette pal(ui.myCallEntry->palette());
@@ -293,7 +294,7 @@ void DevSetup::accept()
 
   if(m_bRigOpen) {
     rig->close();
-    if(m_rig!=9999) delete rig;
+    if(m_rig<9900) delete rig;
     m_bRigOpen=false;
   }
 
@@ -427,13 +428,13 @@ void DevSetup::on_testCATButton_clicked()
   if(!m_catEnabled) return;
   if(m_bRigOpen) {
     rig->close();
-    if(m_rig!=9999) delete rig;
+    if(m_rig<9900) delete rig;
     m_bRigOpen=false;
   }
 
   rig = new Rig();
 
-  if(m_rig != 9999) {
+  if(m_rig<9900) {
     if (!rig->init(m_rig)) {
       msgBox("Rig init failure");
       return;
@@ -540,7 +541,7 @@ void DevSetup::enableWidgets()
   ui.label_4->setEnabled(m_catEnabled);
   ui.label_47->setEnabled(m_catEnabled);
 
-  bool bSerial=m_catEnabled and (m_rig!=9999);
+  bool bSerial=m_catEnabled and (m_rig<9900);
   ui.catPortComboBox->setEnabled(bSerial);
   ui.serialRateComboBox->setEnabled(bSerial);
   ui.dataBitsComboBox->setEnabled(bSerial);
@@ -558,9 +559,9 @@ void DevSetup::enableWidgets()
   ui.pollSpinBox->setEnabled(m_catEnabled);
   bool b1=(m_pttMethodIndex==1 or m_pttMethodIndex==2);
   ui.pttComboBox->setEnabled(b1);
-  bool b2 = (m_catEnabled and m_pttMethodIndex==1 and m_rig!=9999) or
-            (m_catEnabled and m_pttMethodIndex==2 and m_rig!=9999);
-  bool b3 = (m_catEnabled and m_pttMethodIndex==0 and m_rig==9999);
+  bool b2 = (m_catEnabled and m_pttMethodIndex==1 and m_rig<9900) or
+            (m_catEnabled and m_pttMethodIndex==2 and m_rig<9900);
+  bool b3 = (m_catEnabled and m_pttMethodIndex==0 and m_rig>=9900);
 //  ui.testPTTButton->setEnabled(b1 or b2);
-  ui.testPTTButton->setEnabled(b1 or b2 or b3);  //Include PTT via HRD
+  ui.testPTTButton->setEnabled(b1 or b2 or b3);  //Include PTT via HRD or Commander
 }

@@ -78,9 +78,16 @@ int Rig::init(rig_model_t rig_model)
 }
 
 int Rig::open(int n) {
-#ifdef WIN32	// Ham radio Deluxe only on Windows
-  m_hrd=(n==9999);
-  if(m_hrd) {
+  m_hrd=false;
+  m_cmndr=false;
+  if(n<9900) {
+    if(n==-99999) return -1;                      //Silence compiler warning
+    return rig_open(theRig);
+  }
+
+#ifdef WIN32	              // Ham radio Deluxe or Commander (Windows only)
+  if(n==9999) {
+    m_hrd=true;
     bool bConnect=false;
     bConnect = HRDInterfaceConnect(L"localhost",7809);
     if(bConnect) {
@@ -92,12 +99,13 @@ int Rig::open(int n) {
       m_hrd=false;
       return -1;
     }
-  } else
-#endif
-  {
-    if(n==-99999) return -1;                 //Silence compiler warning
-    return rig_open(theRig);
   }
+  if(n==9998) {
+    qDebug() << "Commander Rig Open:";
+    return -1;
+  }
+#endif
+  return -1;
 }
 
 int Rig::close(void) {
