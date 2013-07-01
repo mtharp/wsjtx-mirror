@@ -29,6 +29,7 @@ public:
   void   setFsample(int n);
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
+  void   setMode(QString mode);
   void   setModeTx(QString modeTx);
   void   setSlope(double d);
   void   setLockTxFreq(bool b);
@@ -73,6 +74,7 @@ private:
 
   bool   m_lockTxFreq;
 
+  QString m_mode;
   QString m_modeTx;
 
   Ui::WideGraph *ui;

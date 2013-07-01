@@ -275,12 +275,14 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawLine(x1,28,x2,28);
   painter0.drawLine(x2,24,x2,30);
 
-  QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider
-  painter0.setPen(pen2);
-  x1=XfromFreq(m_fMin);
-  if(x1<2) x1=2;
-  x2=x1+30;
-  painter0.drawLine(x1,8,x1,28);
+  if(m_mode=="JT9+JT65") {
+    QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider
+    painter0.setPen(pen2);
+    x1=XfromFreq(m_fMin);
+    if(x1<2) x1=2;
+    x2=x1+30;
+    painter0.drawLine(x1,8,x1,28);
+  }
 
   QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
   painter0.setPen(pen1);
@@ -529,6 +531,11 @@ void CPlotter::setTxFreq(int n)                                 //setTol()
   emit setFreq1(m_rxFreq,m_txFreq);
   DrawOverlay();
   update();
+}
+
+void CPlotter::setMode(QString mode)
+{
+  m_mode=mode;
 }
 
 void CPlotter::setModeTx(QString modeTx)

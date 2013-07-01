@@ -244,6 +244,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   g_pWideGraph->setTxFreq(m_txFreq);
   g_pWideGraph->setLockTxFreq(m_lockTxFreq);
   g_pWideGraph->setFmin(m_fMin);
+  g_pWideGraph->setModeTx(m_mode);
   g_pWideGraph->setModeTx(m_modeTx);
 
   connect(g_pWideGraph, SIGNAL(setFreq3(int,int)),this,
@@ -1308,9 +1309,12 @@ void MainWindow::decode()                                       //decode()
   jt9com_.ndepth=m_ndepth;
   jt9com_.ndiskdat=0;
   if(m_diskData) jt9com_.ndiskdat=1;
-  jt9com_.nfa=g_pWideGraph->getFmin();
-  jt9com_.nfb=g_pWideGraph->getFmax();
-
+  int nfa=g_pWideGraph->getFmin();
+  int nfb=g_pWideGraph->getFmax();
+  if(m_mode=="JT9") nfa=200;                //decode from 0 to fmax
+  if(m_mode=="JT65") nfa=nfb;               //decode from 0 to fmax
+  jt9com_.nfa=nfa;
+  jt9com_.nfb=nfb;
   jt9com_.ntol=3;
   if(jt9com_.nutc < m_nutc0) m_RxLog |= 1;  //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
@@ -2453,6 +2457,7 @@ void MainWindow::on_actionJT9_1_triggered()
   lab3->setText(m_mode);
   ui->actionJT9_1->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
+  g_pWideGraph->setMode(m_mode);
   g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
 }
@@ -2471,6 +2476,7 @@ void MainWindow::on_actionJT65_triggered()
   lab3->setText(m_mode);
   ui->actionJT65->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
+  g_pWideGraph->setMode(m_mode);
   g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
 }
@@ -2489,6 +2495,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   lab3->setText(m_mode);
   ui->actionJT9_JT65->setChecked(true);
   g_pWideGraph->setPeriod(m_TRperiod,m_nsps);
+  g_pWideGraph->setMode(m_mode);
   g_pWideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
 }

@@ -34,7 +34,7 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndecoded)
      endif
      ia=max(51,nint(fa/df))
      ib=min(NSZ-51,nint(fb/df))
-
+     
      freq0=-999.
      thresh0=1.5
 

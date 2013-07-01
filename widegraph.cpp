@@ -251,10 +251,18 @@ void WideGraph::setTxFreq(int n)
   ui->widePlot->setTxFreq(n);
 }
 
+void WideGraph::setMode(QString mode)
+{
+  m_mode=mode;
+  ui->fMinSpinBox->setEnabled(m_mode=="JT9+JT65");
+  ui->widePlot->setMode(mode);
+  ui->widePlot->DrawOverlay();
+  ui->widePlot->update();
+}
+
 void WideGraph::setModeTx(QString modeTx)
 {
   m_modeTx=modeTx;
-//  qDebug() << "WideGraph:" << m_modeTx;
   ui->widePlot->setModeTx(modeTx);
   ui->widePlot->DrawOverlay();
   ui->widePlot->update();
