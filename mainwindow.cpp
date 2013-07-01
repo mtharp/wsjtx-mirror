@@ -61,7 +61,6 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
-  ui->actionSave_synced->setActionGroup(saveGroup);
   ui->actionSave_decoded->setActionGroup(saveGroup);
   ui->actionSave_all->setActionGroup(saveGroup);
 
@@ -157,7 +156,6 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_setftx=0;
   m_loopall=false;
   m_startAnother=false;
-  m_saveSynced=false;
   m_saveDecoded=false;
   m_saveAll=false;
   m_sec0=-1;
@@ -394,7 +392,6 @@ void MainWindow::writeSettings()
   settings.setValue("Mode",m_mode);
   settings.setValue("ModeTx",m_modeTx);
   settings.setValue("SaveNone",ui->actionNone->isChecked());
-  settings.setValue("SaveSynced",ui->actionSave_synced->isChecked());
   settings.setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("NDepth",m_ndepth);
@@ -516,8 +513,6 @@ void MainWindow::readSettings()
   if(m_mode=="JT9") ui->pbTxMode->setText("Tx JT9 @");
   if(m_mode=="JT65") ui->pbTxMode->setText("Tx JT65 #");
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
-  ui->actionSave_synced->setChecked(settings.value(
-                                        "SaveSynced",false).toBool());
   ui->actionSave_decoded->setChecked(settings.value(
                                          "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
@@ -527,7 +522,6 @@ void MainWindow::readSettings()
   m_txFreq=settings.value("TxFreq",1500).toInt();
   ui->TxFreqSpinBox->setValue(m_txFreq);
   soundOutThread.setTxFreq(m_txFreq);
-  m_saveSynced=ui->actionSave_synced->isChecked();
   m_saveDecoded=ui->actionSave_decoded->isChecked();
   m_saveAll=ui->actionSave_all->isChecked();
   m_ndepth=settings.value("NDepth",3).toInt();
@@ -1190,23 +1184,13 @@ void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
 
 void MainWindow::on_actionNone_triggered()                    //Save None
 {
-  m_saveSynced=false;
   m_saveDecoded=false;
   m_saveAll=false;
   ui->actionNone->setChecked(true);
 }
 
-void MainWindow::on_actionSave_synced_triggered()
-{
-  m_saveSynced=true;
-  m_saveDecoded=false;
-  m_saveAll=false;
-  ui->actionSave_synced->setChecked(true);
-}
-
 void MainWindow::on_actionSave_decoded_triggered()
 {
-  m_saveSynced=false;
   m_saveDecoded=true;
   m_saveAll=false;
   ui->actionSave_decoded->setChecked(true);
@@ -1214,7 +1198,6 @@ void MainWindow::on_actionSave_decoded_triggered()
 
 void MainWindow::on_actionSave_all_triggered()                //Save All
 {
-  m_saveSynced=false;
   m_saveDecoded=false;
   m_saveAll=true;
   ui->actionSave_all->setChecked(true);
@@ -1326,7 +1309,6 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="JT9+JT65") jt9com_.nmode=9+65;
   jt9com_.ntrperiod=m_TRperiod;
   m_nsave=0;
-  if(m_saveSynced) m_nsave=1;
   if(m_saveDecoded) m_nsave=2;
   jt9com_.nsave=m_nsave;
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);
@@ -1369,10 +1351,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
   while(proc_jt9.canReadLine()) {
     QByteArray t=proc_jt9.readLine();
     if(t.indexOf("<DecodeFinished>") >= 0) {
-      m_bsynced = (t.mid(19,1).toInt()==1);
       m_bdecoded = (t.mid(23,1).toInt()==1);
-      bool keepFile=m_saveAll or (m_saveSynced and m_bsynced) or
-          (m_saveDecoded and m_bdecoded);
+      bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
       if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
       jt9com_.nagain=0;
       jt9com_.ndiskdat=0;

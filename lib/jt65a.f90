@@ -63,7 +63,7 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndecoded)
         nflip=nint(flipk)
         call timer('decod65a',0)
         call decode65a(dd,npts,newdat,freq,nflip,mode65,sync2,a,dt,   &
-             nkv,nhist,decoded)
+             nbmkv,nhist,decoded)
         call timer('decod65a',1)
 
         if(decoded.ne.'                      ') then
@@ -76,8 +76,9 @@ subroutine jt65a(dd,npts,newdat,nutc,nfa,nfqso,ntol,nagain,ndecoded)
            if(nsnr.gt.-1) nsnr=-1
            write(*,1010) nutc,nsnr,dt,nfreq,decoded
 1010       format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
-           write(13,1012) nutc,nint(sync1),nsnr,dt,float(nfreq),ndrift,decoded
-1012       format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT65')
+           write(13,1012) nutc,nint(sync1),nsnr,dt,float(nfreq),ndrift,  &
+                decoded,nbmkv
+1012       format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT65',i4)
            freq0=freq
            i2=min(NSZ,i+15)                !### ??? ###
            done(i:i2)=.true.

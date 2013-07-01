@@ -1,4 +1,4 @@
-subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
+subroutine extract(s3,nadd,ncount,nhist,decoded,ltext,nbmkv)
 
   real s3(64,63)
   character decoded*22
@@ -8,6 +8,7 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   data nokv/.false./,nsec1/0/
   save
 
+  nbmkv=0
   nfail=0
 1 continue
   call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
@@ -53,6 +54,7 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
      if(ncount.ge.0) then
         call unpackmsg(dat4,decoded)
         if(iand(dat4(10),8).ne.0) ltext=.true.
+        nbmkv=1
         go to 900
      endif
   enddo
@@ -91,6 +93,7 @@ subroutine extract(s3,nadd,ncount,nhist,decoded,ltext)
   if(ncount.ge.0) then
      call unpackmsg(dat4,decoded)     !Unpack the user message
      if(iand(dat4(10),8).ne.0) ltext=.true.
+     nbmkv=2
   endif
 
 900 continue

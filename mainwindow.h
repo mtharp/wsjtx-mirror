@@ -102,7 +102,6 @@ private slots:
   void on_actionJT65_triggered();
   void on_actionJT9_JT65_triggered();
   void on_TxFreqSpinBox_valueChanged(int arg1);
-  void on_actionSave_synced_triggered();
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();
   void on_actionMediumDecode_triggered();
@@ -219,14 +218,12 @@ private:
     bool    m_auto;
     bool    m_restart;
     bool    m_startAnother;
-    bool    m_saveSynced;
     bool    m_saveDecoded;
     bool    m_saveAll;
     bool    m_widebandDecode;
     bool    m_call3Modified;
     bool    m_dataAvailable;
     bool    m_killAll;
-    bool    m_bsynced;
     bool    m_bdecoded;
     bool    m_monitorStartOFF;
     bool    m_pskReporter;

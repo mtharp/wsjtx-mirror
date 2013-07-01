@@ -2294,7 +2294,6 @@ p, li { white-space: pre-wrap; }
      <string>Save</string>
     </property>
     <addaction name="actionNone"/>
-    <addaction name="actionSave_synced"/>
     <addaction name="actionSave_decoded"/>
     <addaction name="actionSave_all"/>
    </widget>

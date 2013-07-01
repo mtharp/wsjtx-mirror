@@ -301,6 +301,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>110</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>Decode JT65 below this frequency, JT9 above</string>
          </property>
