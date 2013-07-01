@@ -27,13 +27,14 @@
 #include <QString>
 #include <QTcpSocket>
 
+extern QTcpSocket* socket;
+
 class BACKEND_IMPEXP Rig {
 private:
   RIG* theRig;  // Global ref. to the rig
   bool m_hrd;
   bool m_cmndr;
   QString m_context;
-  QTcpSocket* socket;
 
 
 protected:

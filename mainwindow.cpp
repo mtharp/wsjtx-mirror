@@ -33,6 +33,7 @@ WideGraph* g_pWideGraph = NULL;
 LogQSO* logDlg = NULL;
 Rig* rig = NULL;
 QTextEdit* pShortcuts;
+QTcpSocket* socket = new QTcpSocket(0);
 
 QString rev="$Rev$";
 QString Program_Title_Version="  WSJT-X   v1.1, r" + rev.mid(6,4) +

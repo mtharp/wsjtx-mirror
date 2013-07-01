@@ -101,20 +101,25 @@ int Rig::open(int n) {
     }
   }
   if(n==9998) {
-    socket = new QTcpSocket(0);
     socket->connectToHost(QHostAddress::LocalHost, 52002);
     if(!socket->waitForConnected(1000)) {
       return -1;
     }
-    qDebug() << "Connected to Commander";
-    qint32 nkHz=14076;
     QString t;
-    t.sprintf("<command:10>CmdSetFreq<parameters:17><xcvrfreq:5>%5d",nkHz);
+//    qint32 nkHz=14076;
+//    t.sprintf("<command:10>CmdSetFreq<parameters:17><xcvrfreq:5>%5d",nkHz);
+    t="<command:10>CmdGetFreq<parameters:0>";
     QByteArray ba = t.toLocal8Bit();
     const char* buf=ba.data();
     socket->write(buf);
-    socket->flush();
-    return 0;
+    socket->waitForReadyRead(1000);
+    QByteArray reply=socket->read(128);
+    if(reply.indexOf("<CmdFreq:10>")==0) {
+//      qDebug() << "Freq:" << reply;
+//      qDebug() << "Connected to Commander";
+      m_cmndr=true;
+      return 0;
+    }
   }
 #endif
   return -1;
@@ -152,9 +157,18 @@ int Rig::setFreq(freq_t freq, vfo_t vfo) {
     } else {
       return -1;
     }
+  } else if(m_cmndr) {
+    QString t;
+    qint32 nkHz=int(0.001*freq);
+    t.sprintf("<command:10>CmdSetFreq<parameters:17><xcvrfreq:5>%5d",nkHz);
+    QByteArray ba = t.toLocal8Bit();
+    const char* buf=ba.data();
+    socket->write(buf);
+    socket->waitForBytesWritten(1000);
+    return 0;
   } else
 #endif
-    {
+  {
     return rig_set_freq(theRig, vfo, freq);
   }
 }
@@ -169,17 +183,43 @@ int Rig::setVFO(vfo_t vfo)
   return rig_set_vfo(theRig, vfo);
 }
 
- vfo_t Rig::getVFO()
- {
-   vfo_t vfo;
-   rig_get_vfo(theRig, &vfo);
-   return vfo;
- }
+vfo_t Rig::getVFO()
+{
+  vfo_t vfo;
+  rig_get_vfo(theRig, &vfo);
+  return vfo;
+}
 
- int Rig::setSplitFreq(freq_t tx_freq, vfo_t vfo)
- {
-   return rig_set_split_freq(theRig, vfo, tx_freq);
- }
+int Rig::setSplitFreq(freq_t tx_freq, vfo_t vfo) {
+#ifdef WIN32	// Ham Radio Deluxe only on Windows
+  if(m_hrd) {
+    QString t;
+    int nhz=(int)tx_freq;
+    t=m_context + "Set Frequency-Hz " + QString::number(nhz);
+    const wchar_t* cmnd = (const wchar_t*) t.utf16();
+    const wchar_t* result=HRDInterfaceSendMessage(cmnd);
+    QString t2=QString::fromWCharArray (result,-1);
+    HRDInterfaceFreeString(result);
+    if(t2=="OK") {
+      return 0;
+    } else {
+      return -1;
+    }
+  } else if(m_cmndr) {
+    QString t;
+    qint32 nkHz=int(0.001*tx_freq);
+    t.sprintf("<command:12>CmdSetTxFreq<parameters:17><xcvrfreq:5>%5d",nkHz);
+    QByteArray ba = t.toLocal8Bit();
+    const char* buf=ba.data();
+    socket->write(buf);
+    socket->waitForBytesWritten(1000);
+    return 0;
+  } else
+#endif
+  {
+    return rig_set_split_freq(theRig, vfo, tx_freq);
+  }
+}
 
 freq_t Rig::getFreq(vfo_t vfo)
 {
@@ -192,6 +232,22 @@ freq_t Rig::getFreq(vfo_t vfo)
     HRDInterfaceFreeString(freqString);
     freq=t2.toDouble();
     return freq;
+  } else if(m_cmndr) {
+    QString t;
+    t="<command:10>CmdGetFreq<parameters:0>";
+    QByteArray ba = t.toLocal8Bit();
+    const char* buf=ba.data();
+    socket->write(buf);
+    socket->waitForReadyRead(1000);
+    QByteArray reply=socket->read(128);
+    QString t2(reply);
+    if(t2.indexOf("<CmdFreq:10>")==0) {
+      t2=t2.mid(12).replace(",","");
+      freq=1000.0*t2.toDouble();
+      return freq;
+    } else {
+      return -1.0;
+    }
   } else
 #endif
   {
