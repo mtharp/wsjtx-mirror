@@ -36,6 +36,8 @@
 #include <hamlib/rig.h>
 #include "rigclass.h"
 #include <QDebug>
+#include <QHostAddress>
+#include "client.h"
 
 
 static int hamlibpp_freq_event(RIG *rig, vfo_t vfo, freq_t freq, rig_ptr_t arg);
@@ -101,8 +103,22 @@ int Rig::open(int n) {
     }
   }
   if(n==9998) {
-    qDebug() << "Commander Rig Open:";
-    return -1;
+    /*
+    Client c;
+    c.connectToServer();
+    */
+    socket = new QTcpSocket(0);
+    socket->connectToHost(QHostAddress::LocalHost, 52002);
+    socket->waitForConnected();
+    qDebug() << "Connected to Commander";
+    qint32 nkHz=14076;
+    QString t;
+    t.sprintf("<command:10>CmdSetFreq<parameters:17><xcvrfreq:5>%5d",nkHz);
+    QByteArray ba = t.toLocal8Bit();
+    const char* buf=ba.data();
+    socket->write(buf);
+    socket->flush();
+    return 0;
   }
 #endif
   return -1;

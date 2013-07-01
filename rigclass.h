@@ -25,6 +25,7 @@
 #include <hamlib/rig.h>
 #include <iostream>
 #include <QString>
+#include <QTcpSocket>
 
 class BACKEND_IMPEXP Rig {
 private:
@@ -32,6 +33,8 @@ private:
   bool m_hrd;
   bool m_cmndr;
   QString m_context;
+  QTcpSocket* socket;
+
 
 protected:
 public:
