@@ -302,7 +302,7 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Minimum frequency for wideband decodes</string>
+          <string>Decode JT65 below this frequency, JT9 above</string>
          </property>
          <property name="suffix">
           <string>  JT9</string>

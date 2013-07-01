@@ -61,7 +61,7 @@ extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
 
   udata->ncall++;
   if( (statusFlags&paInputOverflow) != 0) {
-    qDebug() << "Input Overflow";
+    qDebug() << "Input Overflow in a2dCallback";
   }
   if(udata->bzero) {           //Start of a new Rx sequence
     udata->kin=0;              //Reset buffer pointer

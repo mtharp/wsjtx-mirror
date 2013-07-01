@@ -1706,6 +1706,7 @@ void MainWindow::guiUpdate()
     soundInThread.setMonitoring(false);
     btxok=true;
     m_transmitting=true;
+    ui->pbTxMode->setEnabled(false);
     if(!m_tune) {
       QFile f("ALL.TXT");
       f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
@@ -1855,6 +1856,7 @@ void MainWindow::startTx2()
     soundInThread.setMonitoring(false);
     btxok=true;
     m_transmitting=true;
+    ui->pbTxMode->setEnabled(false);
   }
 }
 
@@ -1865,6 +1867,7 @@ void MainWindow::stopTx()
     soundOutThread.wait(3000);
   }
   m_transmitting=false;
+  ui->pbTxMode->setEnabled(true);
   g_iptt=0;
   lab1->setStyleSheet("");
   lab1->setText("");
@@ -2013,9 +2016,12 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
     m_QSOmsg=t2;
   }
 
-  int nfreq=int(t4.at(3).toFloat());
-  if(t4.at(4)=="@") {
+  int nfreq=t4.at(3).toInt();
+  if(t4.at(1)=="Tx") nfreq=t4.at(2).toInt();
+  g_pWideGraph->setRxFreq(nfreq);       //Set Rx freq
+  if(t4.at(1)=="Tx") return;
 
+  if(t4.at(4)=="@") {
     m_modeTx="JT9";
     ui->pbTxMode->setText("Tx JT9 @");
     g_pWideGraph->setModeTx(m_modeTx);
@@ -2025,7 +2031,6 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
     ui->pbTxMode->setText("Tx JT65 #");
     g_pWideGraph->setModeTx(m_modeTx);
   }
-  g_pWideGraph->setRxFreq(nfreq);       //Set Rx freq
   QString firstcall=t4.at(5);
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down or
