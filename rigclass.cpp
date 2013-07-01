@@ -130,6 +130,9 @@ int Rig::close(void) {
   if(m_hrd) {
     HRDInterfaceDisconnect();
     return 0;
+  } else if(m_cmndr) {
+    socket->close();
+    return 0;
   } else
 #endif
     {
@@ -297,7 +300,6 @@ int Rig::setPTT(ptt_t ptt, vfo_t vfo)
     const char* buf=ba.data();
     socket->write(buf);
     socket->waitForBytesWritten(1000);
-    qDebug() << ptt;
     return 0;
   } else
 #endif
