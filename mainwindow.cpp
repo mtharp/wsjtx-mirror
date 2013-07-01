@@ -430,6 +430,7 @@ void MainWindow::writeSettings()
   settings.setValue("QuickCall",m_quickCall);
   settings.setValue("73TxDisable",m_73TxDisable);
   settings.setValue("Runaway",m_runaway);
+  settings.setValue("Tx2QSO",m_tx2QSO);
   settings.setValue("MultipleOK",m_bMultipleOK);
   settings.setValue("DTRoff",m_bDTRoff);
   settings.setValue("pttData",m_pttData);
@@ -574,6 +575,8 @@ void MainWindow::readSettings()
   ui->action_73TxDisable->setChecked(m_73TxDisable);
   m_runaway=settings.value("Runaway",false).toBool();
   ui->actionRunaway_Tx_watchdog->setChecked(m_runaway);
+  m_tx2QSO=settings.value("Tx2QSO",false).toBool();
+  ui->actionTx2QSO->setChecked(m_tx2QSO);
   m_bMultipleOK=settings.value("MultipleOK",false).toBool();
   ui->actionAllow_multiple_instances->setChecked(m_bMultipleOK);
   m_bDTRoff=settings.value("DTRoff",false).toBool();
@@ -582,7 +585,7 @@ void MainWindow::readSettings()
   m_logQSOgeom=settings.value("LogQSOgeom",QRect(500,400,424,283)).toRect();
   outBufSize=settings.value("OutBufSize",4096).toInt();
   m_lockTxFreq=settings.value("LockTxFreq",false).toBool();
-  ui->actionLockTxFreq->setChecked(m_lockTxFreq);
+  ui->cbTxLock->setChecked(m_lockTxFreq);
   m_saveTxPower=settings.value("SaveTxPower",false).toBool();
   m_saveComments=settings.value("SaveComments",false).toBool();
   m_txPower=settings.value("TxPower","").toString();
@@ -1634,7 +1637,7 @@ void MainWindow::guiUpdate()
           << "  Transmitting " << m_dialFreq << " MHz  " << m_mode
           << ":  " << t << endl;
       f.close();
-      displayTxMsg(t);
+      if(m_tx2QSO) displayTxMsg(t);
     }
 
     QStringList w=t.split(" ",QString::SkipEmptyParts);
@@ -1708,7 +1711,7 @@ void MainWindow::guiUpdate()
           << ":  " << t << endl;
       f.close();
     }
-    if(!m_tune) displayTxMsg(t);
+    if(m_tx2QSO and !m_tune) displayTxMsg(t);
   }
 
   if(!btxok && btxok0 && g_iptt==1) stopTx();
@@ -2948,9 +2951,14 @@ void MainWindow::setFreq4(int rxFreq, int txFreq)
   ui->TxFreqSpinBox->setValue(m_txFreq);
 }
 
-void MainWindow::on_checkBox_clicked(bool checked)
+void MainWindow::on_cbTxLock_clicked(bool checked)
 {
   m_lockTxFreq=checked;
   g_pWideGraph->setLockTxFreq(m_lockTxFreq);
   if(m_lockTxFreq) on_pbR2T_clicked();
+}
+
+void MainWindow::on_actionTx2QSO_triggered(bool checked)
+{
+  m_tx2QSO=checked;
 }

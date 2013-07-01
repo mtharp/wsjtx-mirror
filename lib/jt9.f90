@@ -6,8 +6,6 @@ program jt9
   include 'constants.f90'
   integer*4 ihdr(11)
   real*4 s(NSMAX)
-  real*4 ccfred(NSMAX)
-  logical*1 lstrong(0:1023)
   integer*2 id2
   character*80 arg,infile
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,       &

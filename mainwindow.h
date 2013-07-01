@@ -157,8 +157,8 @@ private slots:
   void on_pbTxMode_clicked();
   void on_actionQuick_Start_Guide_for_v1_1_triggered();
   void on_RxFreqSpinBox_valueChanged(int n);
-
-  void on_checkBox_clicked(bool checked);
+  void on_cbTxLock_clicked(bool checked);
+  void on_actionTx2QSO_triggered(bool checked);
 
 private:
     Ui::MainWindow *ui;
@@ -256,6 +256,7 @@ private:
     bool    m_lockTxFreq;
     bool    m_saveTxPower;
     bool    m_saveComments;
+    bool    m_tx2QSO;
 
     char    m_decoded[80];
 

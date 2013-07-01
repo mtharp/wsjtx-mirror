@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
+    <width>760</width>
     <height>552</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>750</width>
+    <width>760</width>
     <height>475</height>
    </size>
   </property>
@@ -2151,7 +2151,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item row="5" column="7">
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="cbTxLock">
         <property name="text">
          <string>Lock Tx=Rx</string>
         </property>
@@ -2220,7 +2220,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>750</width>
+     <width>760</width>
      <height>21</height>
     </rect>
    </property>
@@ -2260,6 +2260,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionDouble_click_on_call_sets_Tx_Enable"/>
     <addaction name="action_73TxDisable"/>
     <addaction name="actionRunaway_Tx_watchdog"/>
+    <addaction name="actionTx2QSO"/>
     <addaction name="separator"/>
     <addaction name="menuAdvanced"/>
    </widget>
@@ -2823,14 +2824,6 @@ p, li { white-space: pre-wrap; }
     <string>Runaway Tx watchdog</string>
    </property>
   </action>
-  <action name="actionTx2QSO">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Tx messages echoed to QSO window</string>
-   </property>
-  </action>
   <action name="actionAllow_multiple_instances">
    <property name="checkable">
     <bool>true</bool>
@@ -2869,6 +2862,14 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Shift+F1</string>
+   </property>
+  </action>
+  <action name="actionTx2QSO">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Tx messages to Rx Frequency window</string>
    </property>
   </action>
  </widget>
