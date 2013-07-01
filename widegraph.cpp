@@ -47,8 +47,6 @@ WideGraph::WideGraph(QWidget *parent) :
   if(ui->widePlot->m_bCumulative) ui->spec2dComboBox->setCurrentIndex(1);
   int nbpp=settings.value("BinsPerPixel",2).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
-  m_rxFreq=settings.value("RxFreq",1500).toInt();
-  ui->widePlot->setRxFreq(m_rxFreq,true);
   m_slope=settings.value("Slope",0.0).toDouble();
   ui->slopeSpinBox->setValue(m_slope);
   settings.endGroup();
@@ -76,7 +74,6 @@ void WideGraph::saveSettings()
   settings.setValue("Current",ui->widePlot->m_bCurrent);
   settings.setValue("Cumulative",ui->widePlot->m_bCumulative);
   settings.setValue("BinsPerPixel",ui->widePlot->binsPerPixel());
-  settings.setValue("RxFreq",ui->widePlot->rxFreq());
   settings.setValue("Slope",m_slope);
   settings.endGroup();
 }
