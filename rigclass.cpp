@@ -289,6 +289,16 @@ int Rig::setPTT(ptt_t ptt, vfo_t vfo)
     } else {
       return -1;
     }
+  } else if(m_cmndr) {
+    QString t;
+    if(ptt==0) t="<command:5>CmdRX<parameters:0>";
+    if(ptt>0) t="<command:5>CmdTX<parameters:0>";
+    QByteArray ba = t.toLocal8Bit();
+    const char* buf=ba.data();
+    socket->write(buf);
+    socket->waitForBytesWritten(1000);
+    qDebug() << ptt;
+    return 0;
   } else
 #endif
     {
