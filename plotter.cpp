@@ -163,7 +163,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   if(m_OverlayPixmap.isNull()) return;
   if(m_WaterfallPixmap.isNull()) return;
   int w = m_WaterfallPixmap.width();
-  int x,y,x1,x2,dx;
+  int x,y,x1,x2;
 //  int nHzDiv[11]={0,50,100,200,200,200,500,500,500,500,500};
   float pixperdiv;
 
@@ -185,7 +185,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   {
     x = (int)( (float)i*pixperdiv );
     if(x >= 0 and x<=m_w) {
-//      qDebug() << m_binsPerPixel << df << m_freqPerDiv << m_hdivs << i << x;
       painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
       painter.drawLine(x, 0, x , y);
       painter.drawLine(x, m_h2-5, x , m_h2);
@@ -262,15 +261,13 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     }
   }
 
-  x1=XfromFreq(m_fMin);
-  int bw=9.0*12000.0/m_nsps;
+  float bw=9.0*12000.0/m_nsps;
   if(m_modeTx=="JT65") bw=66.0*11025.0/4096.0;
-  dx=XfromFreq(m_fMin+bw) - x1;
 
   QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
   painter0.setPen(pen0);
   x1=XfromFreq(m_rxFreq);
-  x2=x1+dx;
+  x2=XfromFreq(m_rxFreq+bw);
   painter0.drawLine(x1,24,x1,30);
   painter0.drawLine(x1,28,x2,28);
   painter0.drawLine(x2,24,x2,30);
@@ -287,7 +284,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
   painter0.setPen(pen1);
   x1=XfromFreq(m_txFreq);
-  x2=x1+dx;
+  x2=XfromFreq(m_txFreq+bw);
   painter0.drawLine(x1,17,x1,21);
   painter0.drawLine(x1,17,x2,17);
   painter0.drawLine(x2,17,x2,21);
@@ -306,7 +303,7 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
 int CPlotter::XfromFreq(float f)                               //XfromFreq()
 {
 //  float w = m_WaterfallPixmap.width();
-  int x = (int) m_w * (f - m_StartFreq)/m_fSpan;
+  int x = int(m_w * (f - m_StartFreq)/m_fSpan + 0.5);
   if(x<0 ) return 0;
   if(x>m_w) return m_w;
   return x;
