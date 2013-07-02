@@ -1579,6 +1579,7 @@ void MainWindow::guiUpdate()
         }
 
       }
+
       if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {  //DTR or RTS
           ptt(m_pttPort,1,&g_iptt,&g_COMportOpen);
       }
@@ -1667,6 +1668,7 @@ void MainWindow::guiUpdate()
 
 
 // If PTT was just raised, start a countdown for raising TxOK:
+// NB: could be better implemented with a timer
   if(g_iptt == 1 && iptt0 == 0) {
       nc1=-9;    // TxDelay = 0.8 s
   }
@@ -1708,6 +1710,7 @@ void MainWindow::guiUpdate()
     nc0++;
   }
 
+/*
   if(nc0 == 0) {
     //Lower PTT
     if(m_catEnabled and m_bRigOpen and  m_pttMethodIndex==0) {
@@ -1730,6 +1733,7 @@ void MainWindow::guiUpdate()
     // sending=""
     // nsendingsh=0
   }
+*/
 
   if(m_monitoring) {
     ui->monitorButton->setStyleSheet(m_pbmonitor_style);
