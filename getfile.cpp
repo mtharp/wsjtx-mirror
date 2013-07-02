@@ -8,9 +8,6 @@
 #include <windows.h>
 #endif
 
-qint32 g2_iptt1;
-qint32 g2_nopen1;
-
 void getfile(QString fname, int ntrperiod)
 {
 
@@ -126,6 +123,7 @@ float gran()
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)
 {
+  qDebug() << "getfile ptt(), line 129:" << nport << ntx << *iptt << *nopen;
 #ifdef WIN32
   static HANDLE hFile;
   char s[10];
@@ -133,7 +131,7 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
 
   if(nport==0) {
     *iptt=ntx;
-    return(0);
+    return 0;
   }
 
   if(ntx && (!(*nopen))) {
@@ -163,11 +161,12 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
     *nopen=0;
   }
   if((i3+i4+i5+i6+i9+i00)==-999) return 1;    //Silence compiler warning
+  qDebug() << "getfile ptt(), line 167:" << nport << ntx << *iptt << *nopen;
   return 0;
 #else
-  ptt_(nport,ntx, &g2_iptt1, &g2_nopen1);
-  *iptt=g2_iptt1;
-  *nopen=g2_nopen1;
+  qDebug() << "getfile ptt(), line 170:" << nport << ntx << *iptt << *nopen;
+  ptt_(nport,ntx, iptt, nopen);
+  qDebug() << "getfile ptt(), line 172:" << nport << ntx << *iptt << *nopen;
   return 0;
 #endif
   if((nport+ntx+(*iptt)==-99999)) *nopen=0;   //Silence compiler warning

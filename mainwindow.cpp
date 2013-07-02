@@ -1537,10 +1537,11 @@ void MainWindow::guiUpdate()
 {
   static int iptt0=0;
   static bool btxok0=false;
-  static int nc0=1;
   static char message[29];
   static char msgsent[29];
   static int nsendingsh=0;
+  static int giptt00=-1;
+  static int gcomport00=-1;
   int ret=0;
   QString rt;
 
@@ -1581,7 +1582,8 @@ void MainWindow::guiUpdate()
       }
 
       if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {  //DTR or RTS
-          ptt(m_pttPort,1,&g_iptt,&g_COMportOpen);
+        ptt(m_pttPort,1,&g_iptt,&g_COMportOpen);
+        qDebug() << "guiUpdate, mainwindow line 1586):" << g_iptt << g_COMportOpen;
       }
       if(m_pttMethodIndex==3) {                    //VOX
         g_iptt=1;
@@ -1704,34 +1706,11 @@ void MainWindow::guiUpdate()
 
   if(!btxok && btxok0 && g_iptt==1) stopTx();
 
+/*
 // If btxok was just lowered, start a countdown for lowering PTT
   if(!btxok && btxok0 && g_iptt==1) nc0=-11;  //RxDelay = 1.0 s
   if(nc0 <= 0) {
     nc0++;
-  }
-
-/*
-  if(nc0 == 0) {
-    //Lower PTT
-    if(m_catEnabled and m_bRigOpen and  m_pttMethodIndex==0) {
-      g_iptt=0;
-      ret=rig->setPTT(RIG_PTT_OFF, RIG_VFO_CURR);  //CAT control for PTT=0
-      if(ret!=RIG_OK) {
-        rt.sprintf("CAT control PTT failed:  %d",ret);
-        msgBox(rt);
-      }
-    }
-    if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {  //DTR-RTS
-      ptt(m_pttPort,0,&g_iptt,&g_COMportOpen);
-    }
-    if(m_pttMethodIndex==3) {                         //VOX
-      g_iptt=0;
-    }
-  }
-
-  if(g_iptt == 0 && !btxok) {
-    // sending=""
-    // nsendingsh=0
   }
 */
 
@@ -1802,6 +1781,12 @@ void MainWindow::guiUpdate()
     m_sec0=nsec;
   }
 
+  if(g_iptt!=giptt00 or g_COMportOpen!=gcomport00) {
+    qDebug() << "guiUpdate line 1786:" << g_iptt << g_COMportOpen;
+    giptt00=g_iptt;
+    gcomport00=g_COMportOpen;
+  }
+
   iptt0=g_iptt;
   btxok0=btxok;
 }               //End of GUIupdate
@@ -1854,6 +1839,7 @@ void MainWindow::stopTx()
   m_transmitting=false;
   ui->pbTxMode->setEnabled(true);
   g_iptt=0;
+  qDebug() << "stopTx, mainwindow line 1834:" << g_iptt;
   lab1->setStyleSheet("");
   lab1->setText("");
   ptt0Timer->start(200);                       //Sequencer delay
@@ -1875,6 +1861,7 @@ void MainWindow::stopTx2()
     }
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
+    qDebug() << "stopTx2, mainwindow line 1857):" << g_iptt;
     ptt(m_pttPort,0,&g_iptt,&g_COMportOpen);
   }
   if(m_73TxDisable and m_sent73) on_stopTxButton_clicked();

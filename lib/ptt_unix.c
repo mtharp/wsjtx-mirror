@@ -171,6 +171,8 @@ ptt_serial(int fd, int *ntx, int *iptt)
     ioctl(fd, TIOCMBIC, &control);
     *iptt = 0;
   }
+  printf("ptt_serial: %d %d",*ntx,*iptt);
+  fflush(stdout);
   return(0);
 }
 
