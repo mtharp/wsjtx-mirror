@@ -836,32 +836,32 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
   {
   case Qt::Key_1:
     if(e->modifiers() & Qt::AltModifier) {
-      ui->txrb1->setChecked(true);
+      on_txb1_clicked();
       break;
     }
   case Qt::Key_2:
     if(e->modifiers() & Qt::AltModifier) {
-      ui->txrb2->setChecked(true);
+      on_txb2_clicked();
       break;
     }
   case Qt::Key_3:
     if(e->modifiers() & Qt::AltModifier) {
-      ui->txrb3->setChecked(true);
+      on_txb3_clicked();
       break;
     }
   case Qt::Key_4:
     if(e->modifiers() & Qt::AltModifier) {
-      ui->txrb4->setChecked(true);
+      on_txb4_clicked();
       break;
     }
   case Qt::Key_5:
     if(e->modifiers() & Qt::AltModifier) {
-      ui->txrb5->setChecked(true);
+      on_txb5_clicked();
       break;
     }
   case Qt::Key_6:
     if(e->modifiers() & Qt::AltModifier) {
-      ui->txrb6->setChecked(true);
+      on_txb6_clicked();
       break;
     }
   case Qt::Key_D:
