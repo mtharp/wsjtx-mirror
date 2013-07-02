@@ -189,6 +189,7 @@ MainWindow::MainWindow(QSharedMemory *shdmem, QWidget *parent) :
   m_lockTxFreq=false;
   ui->readFreq->setEnabled(false);
   m_QSOmsg="";
+  m_CATerror=false;
   decodeBusy(false);
 
   ui->xThermo->setMaximumWidth(12);
@@ -705,6 +706,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     if(m_rig<9900) delete rig;
     m_bRigOpen=false;
     m_catEnabled=false;
+    m_CATerror=false;
   }
 
   dlg.initDlg();
@@ -780,6 +782,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
 
   if(m_catEnabled) {
     rigOpen();
+  } else {
+    ui->readFreq->setStyleSheet("");
   }
 }
 
@@ -1775,6 +1779,8 @@ void MainWindow::guiUpdate()
                     int(1000000.0*fMHz));
           msgBox(rt);
           m_catEnabled=false;
+          ui->readFreq->setStyleSheet("QPushButton{background-color: red; \
+                                 border-width: 0px; border-radius: 5px;}");
         }
         int ndiff=1000000.0*(fMHz-m_dialFreq);
         if(ndiff!=0) dialFreqChanged2(fMHz);
@@ -2645,7 +2651,9 @@ void MainWindow::on_bandComboBox_activated(int index)
     if(m_bRigOpen) {
       m_dontReadFreq=true;
       ret=rig->setFreq(MHz(m_dialFreq));
-      ret=rig->setSplitFreq(MHz(m_dialFreq),RIG_VFO_B);
+//      ret=rig->setSplitFreq(MHz(m_dialFreq),RIG_VFO_B);
+      bumpFqso(11);
+      bumpFqso(12);
       if(ret!=RIG_OK) {
         rt.sprintf("Set rig frequency failed:  %d",ret);
         msgBox(rt);
@@ -2851,23 +2859,28 @@ void MainWindow::rigOpen()
   if(ret==RIG_OK) {
     m_bRigOpen=true;
     if(m_poll==0) ui->readFreq->setEnabled(true);
+    m_CATerror=false;
   } else {
     t="Open rig failed";
     msgBox(t);
     m_catEnabled=false;
     m_bRigOpen=false;
+    m_CATerror=true;
   }
 
+  qDebug() << "A" << m_bRigOpen << m_poll << m_CATerror;
   if(m_bRigOpen) {
     if(m_poll>0) {
-      ui->readFreq->setStyleSheet("QPushButton{background-color: red; \
+      ui->readFreq->setStyleSheet("QPushButton{background-color: #00ff00; \
                                   border-width: 0px; border-radius: 5px;}");
     } else {
       ui->readFreq->setStyleSheet("QPushButton{background-color: orange; \
-                                  border-width: 0px; border-radius: 5px;}");
+                                border-width: 0px; border-radius: 5px;}");
     }
-  } else {
-    ui->readFreq->setStyleSheet("");
+} else {
+if(m_CATerror) ui->readFreq->setStyleSheet("QPushButton{background-color: red; \
+                                   border-width: 0px; border-radius: 5px;}");
+if(!m_CATerror) ui->readFreq->setStyleSheet("");
   }
 }
 

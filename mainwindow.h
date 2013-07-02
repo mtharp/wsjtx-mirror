@@ -254,6 +254,7 @@ private:
     bool    m_saveTxPower;
     bool    m_saveComments;
     bool    m_tx2QSO;
+    bool    m_CATerror;
 
     char    m_decoded[80];
 
