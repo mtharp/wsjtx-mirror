@@ -1582,8 +1582,11 @@ void MainWindow::guiUpdate()
       }
 
       if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {  //DTR or RTS
+        qDebug() << "guiUpdate, line 1585:" << m_pttPort \
+                 << 1 << g_iptt << g_COMportOpen;
         ptt(m_pttPort,1,&g_iptt,&g_COMportOpen);
-        qDebug() << "guiUpdate, mainwindow line 1586):" << g_iptt << g_COMportOpen;
+        qDebug() << "guiUpdate, line 1588:" << m_pttPort \
+                 << 1 << g_iptt << g_COMportOpen;
       }
       if(m_pttMethodIndex==3) {                    //VOX
         g_iptt=1;
@@ -1782,7 +1785,7 @@ void MainWindow::guiUpdate()
   }
 
   if(g_iptt!=giptt00 or g_COMportOpen!=gcomport00) {
-    qDebug() << "guiUpdate line 1786:" << g_iptt << g_COMportOpen;
+    qDebug() << "guiUpdate line 1788:" << g_iptt << g_COMportOpen;
     giptt00=g_iptt;
     gcomport00=g_COMportOpen;
   }
@@ -1839,7 +1842,7 @@ void MainWindow::stopTx()
   m_transmitting=false;
   ui->pbTxMode->setEnabled(true);
   g_iptt=0;
-  qDebug() << "stopTx, mainwindow line 1834:" << g_iptt;
+  qDebug() << "stopTx, line 1845:" << g_iptt << g_COMportOpen;
   lab1->setStyleSheet("");
   lab1->setText("");
   ptt0Timer->start(200);                       //Sequencer delay
@@ -1861,7 +1864,7 @@ void MainWindow::stopTx2()
     }
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-    qDebug() << "stopTx2, mainwindow line 1857):" << g_iptt;
+    qDebug() << "stopTx2, line 1867):" << g_iptt << g_COMportOpen;
     ptt(m_pttPort,0,&g_iptt,&g_COMportOpen);
   }
   if(m_73TxDisable and m_sent73) on_stopTxButton_clicked();
