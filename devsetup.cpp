@@ -440,7 +440,7 @@ void DevSetup::on_testCATButton_clicked()
       return;
     }
     QString sCATport=m_catPort;
-#ifdef Win32
+#ifdef WIN32
     sCATport="\\\\.\\" + m_catPort;    //Allow COM ports above 9
 #endif
     rig->setConf("rig_pathname", sCATport.toLatin1().data());
