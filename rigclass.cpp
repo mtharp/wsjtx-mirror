@@ -7,7 +7,7 @@
  * Hamlib C++ interface is a frontend implementing wrapper functions.
  */
 
-/*
+/**
  *
  *  Hamlib C++ bindings - main file
  *  Copyright (c) 2001-2003 by Stephane Fillod
@@ -300,6 +300,7 @@ int Rig::setPTT(ptt_t ptt, vfo_t vfo)
     const char* buf=ba.data();
     socket->write(buf);
     socket->waitForBytesWritten(1000);
+//    qDebug() << ptt << buf;
     return 0;
   } else
 #endif

@@ -1763,7 +1763,7 @@ void MainWindow::guiUpdate()
     if(m_catEnabled and m_poll>0 and (nsec%m_poll)==0) {
       if(m_dontReadFreq) {
         m_dontReadFreq=false;
-      } else {
+      } else if(!m_transmitting) {
         double fMHz=rig->getFreq(RIG_VFO_CURR)/1000000.0;
         if(fMHz<0.0) {
           rt.sprintf("Rig control error %d\nFailed to read frequency.",
@@ -2894,6 +2894,7 @@ void MainWindow::on_pbT2R_clicked()
 
 void MainWindow::on_readFreq_clicked()
 {
+  if(m_transmitting) return;
   m_dontReadFreq=false;
   double fMHz=rig->getFreq(RIG_VFO_CURR)/1000000.0;
   if(fMHz<0.0) {
