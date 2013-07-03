@@ -2302,7 +2302,6 @@ p, li { white-space: pre-wrap; }
      <string>Help</string>
     </property>
     <addaction name="actionOnline_Users_Guide"/>
-    <addaction name="actionQuick_Start_Guide_for_v1_1"/>
     <addaction name="actionKeyboard_shortcuts"/>
     <addaction name="actionSpecial_mouse_commands"/>
     <addaction name="actionAbout"/>
@@ -2853,14 +2852,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>JT9+JT65</string>
-   </property>
-  </action>
-  <action name="actionQuick_Start_Guide_for_v1_1">
-   <property name="text">
-    <string>Quick-Start Guide for v1.1</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+F1</string>
    </property>
   </action>
   <action name="actionTx2QSO">

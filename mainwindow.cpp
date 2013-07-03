@@ -1060,14 +1060,7 @@ void MainWindow::msgBox(QString t)                             //msgBox
 void MainWindow::on_actionOnline_Users_Guide_triggered()      //Display manual
 {
   QDesktopServices::openUrl(QUrl(
-  "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_Users_Guide.pdf",
-                              QUrl::TolerantMode));
-}
-
-void MainWindow::on_actionQuick_Start_Guide_for_v1_1_triggered()
-{
-  QDesktopServices::openUrl(QUrl(
-  "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_1.1_Quick_Start.pdf",
+  "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_Users_Guide_v1.1.pdf",
                               QUrl::TolerantMode));
 }
 
@@ -1303,7 +1296,7 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="JT65") nfa=nfb;               //decode from 0 to fmax
   jt9com_.nfa=nfa;
   jt9com_.nfb=nfb;
-  jt9com_.ntol=3;
+  jt9com_.ntol=20;
   if(jt9com_.nutc < m_nutc0) m_RxLog |= 1;  //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
   jt9com_.ntxmode=9;
