@@ -131,7 +131,7 @@ float gran()
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)
 {
-  qDebug() << "getfile ptt(), line 129:" << nport << ntx << *iptt << *nopen;
+//  qDebug() << "getfile ptt(), line 129:" << nport << ntx << *iptt << *nopen;
 #ifdef WIN32
   static HANDLE hFile;
   char s[10];
@@ -169,10 +169,10 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
     *nopen=0;
   }
   if((i3+i4+i5+i6+i9+i00)==-999) return 1;    //Silence compiler warning
-  qDebug() << "getfile ptt(), line 167:" << nport << ntx << *iptt << *nopen;
+//  qDebug() << "getfile ptt(), line 167:" << nport << ntx << *iptt << *nopen;
   return 0;
 #else
-  qDebug() << "getfile ptt(), line 170:" << nport << ntx << *iptt << *nopen;
+//  qDebug() << "getfile ptt(), line 170:" << nport << ntx << *iptt << *nopen;
 //  ptt_(nport,ntx, iptt, nopen);
 
 //  int control=TIOCM_RTS | TIOCM_DTR;

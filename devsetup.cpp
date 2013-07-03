@@ -488,11 +488,9 @@ void DevSetup::on_testPTTButton_clicked()
 {
   m_test=1-m_test;
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-    qDebug() << "devsetup line 492:" << m_pttPort << m_test \
-             << &g2_iptt << &g2_COMportOpen;
+//    qDebug() << "devsetup line 492:" << m_pttPort << m_test << &g2_iptt << &g2_COMportOpen;
     ptt(m_pttPort,m_test,&g2_iptt,&g2_COMportOpen);
-    qDebug() << "devsetup line 494:" << m_pttPort << m_test \
-             << &g2_iptt << &g2_COMportOpen;
+//    qDebug() << "devsetup line 494:" << m_pttPort << m_test << &g2_iptt << &g2_COMportOpen;
   }
   if(m_pttMethodIndex==0 and !m_bRigOpen) {
     on_testCATButton_clicked();
