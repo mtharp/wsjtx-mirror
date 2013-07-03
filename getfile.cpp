@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <err.h>
 #endif
 
@@ -192,11 +193,10 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
     *nopen=1;
   } else {
     ioctl(fd, TIOCMBIC, &control);
+    close(fd);
     *iptt=0;
     *nopen=0;
   }
-
-  if(ntx==0) close(fd);
   return 0;
 #endif
   if((nport+ntx+(*iptt)==-99999)) *nopen=0;   //Silence compiler warning
