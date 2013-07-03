@@ -1,11 +1,18 @@
 #include "getfile.h"
 #include <QDir>
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 #ifdef WIN32
 #include <windows.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <err.h>
 #endif
 
 void getfile(QString fname, int ntrperiod)
@@ -165,8 +172,31 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
   return 0;
 #else
   qDebug() << "getfile ptt(), line 170:" << nport << ntx << *iptt << *nopen;
-  ptt_(nport,ntx, iptt, nopen);
-  qDebug() << "getfile ptt(), line 172:" << nport << ntx << *iptt << *nopen;
+//  ptt_(nport,ntx, iptt, nopen);
+
+//  int control=TIOCM_RTS | TIOCM_DTR;
+  int control = TIOCM_RTS;
+  static int fd;
+
+  if(*nopen==0) {
+    fd=open("/dev/ttyUSB0",O_RDWR | O_NONBLOCK);
+    if(fd<0) {
+      return -1;
+    }
+    *nopen=1;
+  }
+
+  if(ntx) {
+    ioctl(fd, TIOCMBIS, &control);
+    *iptt=1;
+    *nopen=1;
+  } else {
+    ioctl(fd, TIOCMBIC, &control);
+    *iptt=0;
+    *nopen=0;
+  }
+
+  if(ntx==0) close(fd);
   return 0;
 #endif
   if((nport+ntx+(*iptt)==-99999)) *nopen=0;   //Silence compiler warning
