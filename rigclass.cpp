@@ -244,8 +244,9 @@ freq_t Rig::getFreq(vfo_t vfo)
     socket->waitForReadyRead(1000);
     QByteArray reply=socket->read(128);
     QString t2(reply);
-    if(t2.indexOf("<CmdFreq:10>")==0) {
-      t2=t2.mid(12).replace(",","");
+    if(t2.indexOf("<CmdFreq:")==0) {
+      int i1=t2.indexOf(">");
+      t2=t2.mid(i1+1).replace(",","");
       freq=1000.0*t2.toDouble();
       return freq;
     } else {
