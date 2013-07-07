@@ -151,6 +151,9 @@ void DevSetup::initDlg()
   ui.comboBoxSndOut->setCurrentIndex(m_nDevOut);
   ui.cbID73->setChecked(m_After73);
   ui.cbPSKReporter->setChecked(m_pskReporter);
+  ui.cbSplit->setChecked(m_bSplit);
+  ui.cbXIT->setChecked(m_bXIT);
+  ui.cbXIT->setVisible(false);
 
   enableWidgets();
 
@@ -542,6 +545,8 @@ void DevSetup::enableWidgets()
   ui.testCATButton->setEnabled(m_catEnabled);
   ui.label_4->setEnabled(m_catEnabled);
   ui.label_47->setEnabled(m_catEnabled);
+  ui.cbSplit->setEnabled(m_catEnabled);
+  ui.cbXIT->setEnabled(m_catEnabled);
 
   bool bSerial=m_catEnabled and (m_rig<9900);
   ui.catPortComboBox->setEnabled(bSerial);
@@ -566,4 +571,16 @@ void DevSetup::enableWidgets()
   bool b3 = (m_catEnabled and m_pttMethodIndex==0 and m_rig>=9900);
 //  ui.testPTTButton->setEnabled(b1 or b2);
   ui.testPTTButton->setEnabled(b1 or b2 or b3);  //Include PTT via HRD or Commander
+}
+
+void DevSetup::on_cbSplit_toggled(bool checked)
+{
+  m_bSplit=checked;
+  if(m_bSplit and m_bXIT) ui.cbXIT->setChecked(false);
+}
+
+void DevSetup::on_cbXIT_toggled(bool checked)
+{
+  m_bXIT=checked;
+  if(m_bSplit and m_bXIT) ui.cbSplit->setChecked(false);
 }

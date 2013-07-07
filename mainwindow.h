@@ -254,6 +254,8 @@ private:
     bool    m_saveComments;
     bool    m_tx2QSO;
     bool    m_CATerror;
+    bool    m_bSplit;
+    bool    m_bXIT;
 
     char    m_decoded[80];
 

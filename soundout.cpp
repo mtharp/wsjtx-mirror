@@ -20,6 +20,7 @@ typedef struct   //Parameters sent to or received from callback function
   double dnsps;
   int    ntrperiod;
   int    ntxfreq;
+  int    xit;
   int    ncall;
   int    nsym;
   bool   txMute;
@@ -50,12 +51,6 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   static short int i2;
   int isym,nspd;
 
-  int xit=-1000;
-  if(udata->ntxfreq>1000) xit=0;
-  if(udata->ntxfreq>2000) xit=1000;
-  if(udata->ntxfreq>3000) xit=2000;
-  if(udata->ntxfreq>4000) xit=2000;
-
   udata->ncall++;
   if(udata->bRestart) {
  // Time according to this computer
@@ -75,7 +70,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
   }
 
   if(isym>=udata->nsym and icw[0]>0) {              //Output the CW ID
-    freq=udata->ntxfreq - xit;
+    freq=udata->ntxfreq - udata->xit;
     dphi=twopi*freq/48000.0;
 
 //    float wpm=20.0;
@@ -120,7 +115,7 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     isym=ic/(4.0*udata->dnsps);                   //Actual fsample=48000
     if(udata->btune) isym=0;                      //If tuning, send pure tone
     if(isym!=isym0) {
-      freq=udata->ntxfreq + itone[isym]*baud - xit;
+      freq=udata->ntxfreq + itone[isym]*baud - udata->xit;
       dphi=twopi*freq/48000.0;
       isym0=isym;
     }
@@ -182,6 +177,7 @@ void SoundOutThread::run()
   }
   udata.ntrperiod=m_TRperiod;
   udata.ntxfreq=m_txFreq;
+  udata.xit=m_xit;
   udata.ncall=0;
   udata.txMute=m_txMute;
   udata.bRestart=true;
@@ -251,6 +247,10 @@ void SoundOutThread::setTxFreq(int n)
   m_txFreq=n;
 }
 
+void SoundOutThread::setXIT(int n)
+{
+  m_xit=n;
+}
 
 void SoundOutThread::setTxSNR(double snr)
 {

@@ -444,6 +444,8 @@ void MainWindow::writeSettings()
   settings.setValue("LogComments",m_logComments);
   settings.setValue("PSKantenna",m_pskAntenna);
   settings.setValue("Fmin",m_fMin);
+  settings.setValue("TxSplit",m_bSplit);
+  settings.setValue("UseXIT",m_bXIT);
   settings.endGroup();
 }
 
@@ -589,6 +591,8 @@ void MainWindow::readSettings()
   m_logComments=settings.value("LogComments","").toString();
   m_pskAntenna=settings.value("PSKantenna","").toString();
   m_fMin=settings.value("fMin",2500).toInt();
+  m_bSplit=settings.value("TxSplit",false).toBool();
+  m_bXIT=settings.value("UseXit",false).toBool();
   settings.endGroup();
 
   if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
@@ -698,6 +702,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_bDTRoff=m_bDTRoff;
   dlg.m_pttData=m_pttData;
   dlg.m_poll=m_poll;
+  dlg.m_bSplit=m_bSplit;
+  dlg.m_bXIT=m_bXIT;
 
   if(m_bRigOpen) {
     rig->close();
@@ -738,6 +744,9 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_bDTRoff=dlg.m_bDTRoff;
     m_pttData=dlg.m_pttData;
     m_poll=dlg.m_poll;
+    m_bSplit=dlg.m_bSplit;
+    m_bXIT=dlg.m_bXIT;
+
 #ifdef WIN32
     if(dlg.m_pskReporter!=m_pskReporter) {
       if(dlg.m_pskReporter) {
@@ -2923,16 +2932,22 @@ void MainWindow::on_pbTxMode_clicked()
 
 void MainWindow::setXIT(int n)
 {
+  int ret;
+  int xit=0;
   if(m_bRigOpen) {
-    int xit=-1000;
+    xit=-1000;
     if(n>1000) xit=0;
     if(n>2000) xit=1000;
     if(n>3000) xit=2000;
     if(n>4000) xit=3000;
-//    ret=rig->setXit((shortfreq_t)xit,RIG_VFO_TX);
-//    int ret=rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
-    rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
+    if(m_bXIT) {
+      ret=rig->setXit((shortfreq_t)xit,RIG_VFO_TX);
+//      ret=rig->setSplitFreq(MHz(m_dialFreq),RIG_VFO_A);
+
+    }
+    if(m_bSplit) ret=rig->setSplitFreq(MHz(m_dialFreq)+xit,RIG_VFO_B);
   }
+  soundOutThread.setXIT(xit);
 }
 
 void MainWindow::setFreq4(int rxFreq, int txFreq)
