@@ -146,7 +146,8 @@ MainWindow::MainWindow(QWidget *parent) :
   m_secID=0;
   m_iptt=0;
   m_COMportOpen=0;
-
+  m_tBlank=1;
+  m_fBlank=1;
   ui->xThermo->setFillBrush(Qt::green);
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
@@ -290,6 +291,8 @@ void MainWindow::writeSettings()
   settings.setValue("StopBitsIndex",m_stopBitsIndex);
   settings.setValue("Handshake",m_handshake);
   settings.setValue("HandshakeIndex",m_handshakeIndex);
+  settings.setValue("TBlank",m_tBlank);
+  settings.setValue("FBlank",m_fBlank);
 
   settings.endGroup();
 }
@@ -373,7 +376,11 @@ void MainWindow::readSettings()
   m_stopBitsIndex=settings.value("StopBitsIndex",1).toInt();
   m_handshake=settings.value("Handshake","None").toString();
   m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
-
+  m_tBlank=settings.value("TBlank",1).toInt();
+  ui->tBlankSpinBox->setValue(m_tBlank);
+  ui->tBlankSpinBox->setVisible(false);
+  m_fBlank=settings.value("FBlank",1).toInt();
+  ui->fBlankSpinBox->setValue(m_fBlank);
   ui->bandComboBox->setCurrentIndex(m_band);
   settings.endGroup();
 
@@ -441,12 +448,18 @@ void MainWindow::dataSink(int k)
     if(m_diskData) {
       t2.sprintf(" -f %.6f ",f0m1500);
 
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
       if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
           m_path + '"';
     } else {
       cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
     }
+    QString t3=cmnd;
+    int i1=cmnd.indexOf("/wsprd ");
+    QString t4;
+    t4.sprintf("-t %.4f -b %.2f ",0.001*m_tBlank,0.01*m_fBlank);
+    cmnd=t3.mid(0,i1+7) + t4 + t3.mid(i1+7);
+    qDebug() << cmnd;
     p1.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
@@ -1366,4 +1379,14 @@ void MainWindow::on_TuneButton_clicked()
   } else {
     stopTx();
   }
+}
+
+void MainWindow::on_tBlankSpinBox_valueChanged(int n)
+{
+  m_tBlank=n;
+}
+
+void MainWindow::on_fBlankSpinBox_valueChanged(int n)
+{
+  m_fBlank=n;
 }

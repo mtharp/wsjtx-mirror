@@ -26,7 +26,7 @@ program wsprd
      go to 999
   endif
 
-  call wsprd_init(ntrminutes,f0,infile)
+  call wsprd_init(ntrminutes,f0,tblank,fblank,infile)
 
   open(13,file='ALL_WSPR.TXT',status='unknown',position='append')
   open(14,file='wsprd.out',status='unknown',position='append')
@@ -65,8 +65,7 @@ program wsprd
 ! WSPR-2: mix from nbfo +/- 100 Hz to baseband, downsample by 1/32
 ! WSPR-15: mix from (nbfo+112.5) +/- 12.5 Hz to baseband, downsample by 1/256
 
-     nadd=12
-     call blanker(id,npts,nadd)
+     if(fblank.gt.0.0) call blanker(id,npts,tblank,fblank)
      call mix162(id,npts,nbfo,c2,jz,ps)
   endif
 

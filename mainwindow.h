@@ -90,6 +90,8 @@ private slots:
   void on_actionSave_all_triggered();
   void uploadSpots();
   void uploadResponse(QString response);
+  void on_tBlankSpinBox_valueChanged(int n);
+  void on_fBlankSpinBox_valueChanged(int n);
 
 private:
     Ui::MainWindow *ui;
@@ -141,6 +143,8 @@ private:
     qint32  m_ncw;
     qint32  m_secID;
     qint32  m_COMportOpen;
+    qint32  m_tBlank;
+    qint32  m_fBlank;
 
     bool    m_receiving;
     bool    m_transmitting;

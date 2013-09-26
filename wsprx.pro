@@ -9,7 +9,7 @@ CONFIG   += qwt thread
 #CONFIG   += console
 
 TARGET = wsprx
-VERSION = 0.5
+VERSION = 0.8
 TEMPLATE = app
 
 win32 {
@@ -72,5 +72,5 @@ CONFIG(release) {
 } else {
    LIBS += C:/qwt-6.0.1/lib/qwtd.dll
 }
-LIBS += -lusb
+#LIBS += -lusb
 }
