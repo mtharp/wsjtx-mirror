@@ -64,6 +64,9 @@ program wsprd
      id(npts+1:60*ntrminutes*12000)=0
 ! WSPR-2: mix from nbfo +/- 100 Hz to baseband, downsample by 1/32
 ! WSPR-15: mix from (nbfo+112.5) +/- 12.5 Hz to baseband, downsample by 1/256
+
+     nadd=12
+     call blanker(id,npts,nadd)
      call mix162(id,npts,nbfo,c2,jz,ps)
   endif
 

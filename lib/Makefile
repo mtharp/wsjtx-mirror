@@ -29,7 +29,7 @@ OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
 	pctile.o ps162.o ptt.o savec2.o set.o sort.o ssort.o symspec.o \
 	sync162.o timf2.o twkfreq.o unpack50.o unpackcall.o \
 	unpackgrid.o unpackpfx.o wqdecode.o wqencode.o xfft.o \
-	mixlpf.o morse.o
+	mixlpf.o morse.o blanker.o
 
 libwspr.a: $(OBJS1)
 	ar cr libwspr.a $(OBJS1) 

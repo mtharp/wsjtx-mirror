@@ -1,12 +1,12 @@
-# Makefile for MinGW on Windows
+# Makefile for WSPRX, using MinGW on Windows
 # Windows re-direct:
 #   C> make > junk1 2>&1
 
 CC = gcc
 FC = g95
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
-CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
+FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss 
+CFLAGS = -I.
 
 # Default rules
 %.o: %.c
@@ -20,79 +20,33 @@ CFLAGS = -I. -fbounds-check -mno-stack-arg-probe
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt9.a jt9sim.exe jt9.exe jt9code.exe
+all:    libwspr.a wsprd.exe WSPRcode.exe
 
-OBJS1 = pctile.o graycode.o sort.o ssort.o \
-	unpackmsg.o igray.o unpackcall.o unpackgrid.o \
-	grid2k.o unpacktext.o getpfx2.o packmsg.o deg2grid.o \
-	packtext.o getpfx1.o packcall.o k2grid.o packgrid.o \
-	nchar.o four2a.o grid2deg.o pfxdump.o f77_wisdom.o \
-	symspec.o timf2.o analytic.o db.o genjt9.o \
-	packbits.o unpackbits.o encode232.o interleave9.o \
-	entail.o fano232.o gran.o spec9.o sync9.o decode9.o \
-	fil3.o redsync.o decoder.o grid2n.o n2grid.o timer.o \
-	decode9a.o getlags.o afc9.o fchisq.o twkfreq.o downsam9.o \
-	peakdt9.o symspec2.o
+OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
+	fchisq.o fil3c.o flat3.o four2a.o genwsprx.o grid2deg.o \
+	hash.o inter_mept.o mept162a.o mix162.o mix162a.o \
+	nchar.o nhash.o pack50.o packcall.o packgrid.o packpfx.o \
+	pctile.o ps162.o ptt.o savec2.o set.o sort.o ssort.o symspec.o \
+	sync162.o timf2.o twkfreq.o unpack50.o unpackcall.o \
+	unpackgrid.o unpackpfx.o wqdecode.o wqencode.o xfft.o \
+	mixlpf.o morse.o blanker.o
 
-libjt9.a: $(OBJS1)
-	ar cr libjt9.a $(OBJS1) 
-	ranlib libjt9.a
+libwspr.a: $(OBJS1)
+	ar cr libwspr.a $(OBJS1) 
+	ranlib libwspr.a
 
-OBJS2 = jt9.o jt9a.o ipcomm.o sec_midn.o cutil.o
-LIBS2 = -L'c:/QtSDK/Desktop/Qt/4.7.4/mingw/lib' -lQtCore4
-jt9.exe: $(OBJS2) libjt9.a
-	g++ -o jt9.exe $(OBJS2) $(LIBS2) libjt9.a ../libfftw3f_win.a \
-	c:/MinGW/lib/libf95.a
-	cp jt9.exe ../../wsprx_install
+OBJS2 = wsprd.o wsprd_init.o
 
-OBJS3 = jt9sim.o 
-jt9sim.exe: $(OBJS3) libjt9.a
-	$(FC) -o jt9sim.exe $(OBJS3) libjt9.a
+wsprd.exe: $(OBJS2) libwspr.a
+	$(FC) -o wsprd.exe $(FFLAGS) $(OBJS2) libwspr.a libfftw3f_win.a
+	cp wsprd.exe ../../wsprx_install
 
-OBJS4 = jt9code.o 
-jt9code.exe: $(OBJS4) libjt9.a
-	$(FC) -o jt9code.exe $(OBJS4) libjt9.a
-
-OBJS5 = jt9test.o 
-jt9test.exe: $(OBJS5) libjt9.a 
-	$(FC) -o jt9test.exe $(OBJS5) libjt9.a ../libfftw3f_win.a 
-
-INCPATH = -I'c:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtCore' \
-	 -I'c:/QtSDK/Desktop/Qt/4.7.4/mingw/include' \
-	 -I'c:/QtSDK/Desktop/Qt/4.7.4/mingw/include/ActiveQt' \
-	 -I'release' -I'.' -I'c:/QtSDK/Desktop/Qt/4.7.4/mingw/mkspecs/win32-g++'
-
-#jt9.o:	jt9.f90
-#	$(FC) -O0 -c jt9.f90
-
-sync9.o: sync9.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c sync9.f90
-
-spec9.o: spec9.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c spec9.f90
-
-peakdf9.o: peakdf9.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c peakdf9.f90
-
-peakdt9.o: peakdt9.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c peakdt9.f90
-
-jt9sim.o: jt9sim.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c jt9sim.f90
-
-genjt9.o: genjt9.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c genjt9.f90
-
-redsync.o: redsync.f90 jt9sync.f90
-	$(FC) $(FFLAGS) -c redsync.f90
-
-ipcomm.o: ipcomm.cpp
-	g++ -c $(INCPATH) ipcomm.cpp
-
-sec_midn.o: sec_midn.f90
-	$(FC) -c -fno-second-underscore sec_midn.f90
+OBJS3 = WSPRcode.o
+WSPRcode.exe: $(OBJS3) libwspr.a
+	$(FC) -o WSPRcode.exe $(FFLAGS) $(OBJS3) libwspr.a
+	cp WSPRcode.exe ../../wsprx_install
 
 .PHONY : clean
 
 clean:
-	rm -f *.o libjt9.a wsprx.exe jt9sim.exe jt9.exe jt9test.exe
+	rm -f *.o libwspr.a wsprd.exe
