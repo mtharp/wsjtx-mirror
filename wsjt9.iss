@@ -1,6 +1,6 @@
 [Setup]
 AppName=WSJT
-AppVerName=WSJT Version 9.4 r3031
+AppVerName=WSJT Version 9.5 r3281
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
 DefaultDirName={pf}\WSJT9
 DefaultGroupName=WSJT9
