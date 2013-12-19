@@ -42,8 +42,10 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->m_bCurrent=m_settings->value("Current",false).toBool();
   ui->widePlot->m_bCumulative=m_settings->value("Cumulative",true).toBool();
+  ui->widePlot->m_bLinearAvg=m_settings->value("LinearAvg",false).toBool();
   if(ui->widePlot->m_bCurrent) ui->spec2dComboBox->setCurrentIndex(0);
   if(ui->widePlot->m_bCumulative) ui->spec2dComboBox->setCurrentIndex(1);
+  if(ui->widePlot->m_bLinearAvg) ui->spec2dComboBox->setCurrentIndex(2);
   int nbpp=m_settings->value("BinsPerPixel",2).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
   m_slope=m_settings->value("Slope",0.0).toDouble();
@@ -94,6 +96,7 @@ void WideGraph::saveSettings()
   m_settings->setValue ("WaterfallAvg", ui->waterfallAvgSpinBox->value ());
   m_settings->setValue ("Current", ui->widePlot->m_bCurrent);
   m_settings->setValue ("Cumulative", ui->widePlot->m_bCumulative);
+  m_settings->setValue ("LinearAvg", ui->widePlot->m_bLinearAvg);
   m_settings->setValue ("BinsPerPixel", ui->widePlot->binsPerPixel ());
   m_settings->setValue ("Slope", m_slope);
   m_settings->setValue ("StartFreq", ui->widePlot->startFreq ());
@@ -278,8 +281,10 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
 {
   ui->widePlot->m_bCurrent=false;
   ui->widePlot->m_bCumulative=false;
+  ui->widePlot->m_bLinearAvg=false;
   if(arg1=="Current") ui->widePlot->m_bCurrent=true;
   if(arg1=="Cumulative") ui->widePlot->m_bCumulative=true;
+  if(arg1=="Linear Avg") ui->widePlot->m_bLinearAvg=true;
 }
 
 void WideGraph::on_fMinSpinBox_valueChanged(int n)

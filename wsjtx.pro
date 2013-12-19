@@ -68,13 +68,10 @@ SOURCES += killbyname.cpp
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h getfile.h \
             commons.h sleep.h displaytext.h logqso.h \
-            AudioDevice.hpp Detector.hpp Modulator.hpp psk_reporter.h rigclass.h \
-    signalmeter.h \
-    meterwidget.h \
-    logbook/logbook.h \
-    logbook/countrydat.h \
-    logbook/countriesworked.h \
-    logbook/adif.h
+            AudioDevice.hpp Detector.hpp Modulator.hpp \
+            psk_reporter.h rigclass.h signalmeter.h \
+            meterwidget.h logbook/logbook.h logbook/countrydat.h \
+            logbook/countriesworked.h logbook/adif.h
 
 
 FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui \
@@ -91,7 +88,6 @@ LIBS += -lfftw3f `$$F90 -print-file-name=libgfortran.so`
 win32 {
 INCLUDEPATH += ../../hamlib-1.2.15.3/include
 LIBS += ../../hamlib-1.2.15.3/src/.libs/libhamlib.dll.a
-#LIBS += ../../hamlib-1.2.15.3/lib/gcc/libhamlib.dll.a
 LIBS += ../wsjtx/lib/libjt9.a
 LIBS += ../wsjtx/libfftw3f_win.a
 LIBS += ../wsjtx/libpskreporter.a

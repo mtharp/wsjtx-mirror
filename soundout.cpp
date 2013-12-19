@@ -53,11 +53,13 @@ SoundOutput::SoundOutput (QIODevice * source)
   Q_ASSERT (source);
 }
 
-void SoundOutput::startStream (QAudioDeviceInfo const& device, unsigned channels, unsigned msBuffered)
+void SoundOutput::startStream (QAudioDeviceInfo const& device, \
+                               unsigned channels, unsigned msBuffered)
 {
   Q_ASSERT (0 < channels && channels < 3);
 
-  if (!m_stream || device != m_currentDevice || channels != static_cast<unsigned> (m_stream->format ().channelCount ()))
+  if (!m_stream || device != m_currentDevice ||
+      channels != static_cast<unsigned> (m_stream->format ().channelCount ()))
     {
       QAudioFormat format (device.preferredFormat ());
 
@@ -79,7 +81,8 @@ void SoundOutput::startStream (QAudioDeviceInfo const& device, unsigned channels
       audioError ();
       m_stream->setVolume (m_volume);
 
-      connect (m_stream.data(), &QAudioOutput::stateChanged, this, &SoundOutput::handleStateChanged);
+      connect (m_stream.data(), &QAudioOutput::stateChanged, this, \
+               &SoundOutput::handleStateChanged);
 
       m_currentDevice = device;
     }

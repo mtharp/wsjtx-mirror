@@ -2279,7 +2279,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>780</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2332,6 +2332,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionWide_Waterfall"/>
     <addaction name="separator"/>
+    <addaction name="actionAstronomical_data"/>
    </widget>
    <widget class="QMenu" name="menuDecode">
     <property name="title">
@@ -2672,6 +2673,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Show DXCC entity and worked B4 status</string>
+   </property>
+  </action>
+  <action name="actionAstronomical_data">
+   <property name="text">
+    <string>Astronomical data</string>
    </property>
   </action>
  </widget>

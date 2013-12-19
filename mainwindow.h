@@ -179,8 +179,9 @@ private slots:
   void on_actionTx2QSO_triggered(bool checked);  
   void on_cbPlus2kHz_toggled(bool checked);
   void on_outAttenuation_valueChanged (int);
+//  void on_actionAstronomical_data_triggered();
 
- private:
+private:
   Q_SIGNAL void startAudioOutputStream (QAudioDeviceInfo, unsigned channels, unsigned msBuffered);
   Q_SIGNAL void stopAudioOutputStream ();
 

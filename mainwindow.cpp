@@ -9,12 +9,11 @@
 #include "devsetup.h"
 #include "plotter.h"
 #include "about.h"
+//#include "astro.h"
 #include "widegraph.h"
 #include "sleep.h"
 #include "getfile.h"
 #include "logqso.h"
-
-
 
 #ifdef QT5
 #include <QtConcurrent/QtConcurrentRun>
@@ -29,6 +28,7 @@ qint32  g_COMportOpen;
 qint32  g_iptt;
 static int nc1=1;
 wchar_t buffer[256];
+//Astro*     g_pAstro = NULL;
 
 
 Rig* rig = NULL;
@@ -36,7 +36,7 @@ QTextEdit* pShortcuts;
 QTcpSocket* commanderSocket = new QTcpSocket(0);
 
 QString rev="$Rev$";
-QString Program_Title_Version="  WSJT-X   v1.2.1, r" + rev.mid(6,4) +
+QString Program_Title_Version="  WSJT-X   v1.3, r" + rev.mid(6,4) +
                               "    by K1JT";
 
 //-------------------------------------------------- MainWindow constructor
@@ -372,6 +372,7 @@ MainWindow::MainWindow(QSettings * settings, QSharedMemory *shdmem, QString *the
   ui->txrb6->setChecked(true);
   if(m_mode!="JT9" and m_mode!="JT65" and m_mode!="JT9+JT65") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
+//  on_actionAstronomical_data_triggered();
   m_wideGraph->setRxFreq(m_rxFreq);
   m_wideGraph->setTxFreq(m_txFreq);
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
@@ -1158,6 +1159,21 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
   m_wideGraph->show();
 }
 
+/*
+void MainWindow::on_actionAstronomical_data_triggered()
+{
+  if(g_pAstro==NULL) {
+    g_pAstro = new Astro(0);
+    g_pAstro->setWindowTitle("Astronomical Data");
+    Qt::WindowFlags flags = Qt::Dialog | Qt::WindowCloseButtonHint |
+        Qt::WindowMinimizeButtonHint;
+    g_pAstro->setWindowFlags(flags);
+    g_pAstro->setGeometry(m_astroGeom);
+  }
+  g_pAstro->show();
+}
+*/
+
 void MainWindow::on_actionOpen_triggered()                     //Open File
 {
   m_monitoring=false;
@@ -1172,6 +1188,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
     if(i>=0) {
       lab1->setStyleSheet("QLabel{background-color: #66ff66}");
       lab1->setText(" " + fname.mid(i,15) + " ");
+//      lab1->setText(" " + fname + " ");
     }
     on_stopButton_clicked();
     m_diskData=true;
