@@ -868,6 +868,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_poll=dlg.m_poll;
     m_EMEbandIndex=dlg.m_EMEbandIndex;
     m_toneMultIndex=dlg.m_toneMultIndex;
+    if(m_mode=="JT9W-1") m_toneSpacing=pow(2,m_toneMultIndex)*12000.0/6912.0;
     m_DTmin=dlg.m_DTmin;
     m_DTmax=dlg.m_DTmax;
 
@@ -1804,8 +1805,7 @@ void MainWindow::guiUpdate()
 
   if(nsec != m_sec0) {                                     //Once per second
     QDateTime t = QDateTime::currentDateTimeUtc();
-
-    int fQSO=144;
+    int fQSO=125;
     m_azelDir=m_appDir;
     g_pAstro->astroUpdate(t, m_myGrid, m_hisGrid, fQSO, m_setftx,
                           m_txFreq, m_azelDir);
@@ -2526,8 +2526,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_TRperiod=60;
   m_nsps=6912;
   m_hsymStop=173;
-  m_toneSpacing=32*12000.0/6912.0;  //55.5555... Hz
-//  m_toneSpacing=64*12000.0/6912.0;  //111.1111... Hz
+  m_toneSpacing=pow(2,m_toneMultIndex)*12000.0/6912.0;
   lab2->setStyleSheet("QLabel{background-color: #ff6ec7}");
   lab2->setText(m_mode);
   ui->actionJT9W_1->setChecked(true);
