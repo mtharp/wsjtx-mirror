@@ -1121,11 +1121,13 @@ void MainWindow::closeEvent(QCloseEvent * e)
 {
   writeSettings ();
   OnExit();
+  delete g_pAstro;                        //Is there a better way ?
   QMainWindow::closeEvent (e);
 }
 
 void MainWindow::OnExit()
 {
+//  g_pAstro->deleteLater();                    //???
   m_guiTimer.stop ();
   if(m_fname != "") killFile();
   m_killAll=true;

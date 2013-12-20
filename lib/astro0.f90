@@ -1,14 +1,14 @@
 subroutine astro0(nyear,month,nday,uth8,nfreq,mygrid,hisgrid,              &
      AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,ntsky,ndop,ndop00,    &
      dbMoon8,RAMoon8,DecMoon8,HA8,Dgrd8,sd8,poloffset8,xnr8,dfdt,dfdt0,    &
-     width1,width2,w501,w502,xlst8)
+     width1,width2,w501,w502,xlst8,techo8)
 
   parameter (DEGS=57.2957795130823d0)
   character*6 mygrid,hisgrid
   real*8 AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8
   real*8 dbMoon8,RAMoon8,DecMoon8,HA8,Dgrd8,xnr8,dfdt,dfdt0,dt
   real*8 sd8,poloffset8,day8,width1,width2,w501,w502,xlst8
-  real*8 uth8
+  real*8 uth8,techo8
   data uth8z/0.d0/
   save
 
@@ -16,16 +16,17 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,mygrid,hisgrid,              &
   call astro(nyear,month,nday,uth,nfreq,hisgrid,2,1,                 &
        AzSun,ElSun,AzMoon,ElMoon,ntsky,doppler00,doppler,            &
        dbMoon,RAMoon,DecMoon,HA,Dgrd,sd,poloffset,xnr,               &
-       day,xlon2,xlat2,xlst)
+       day,xlon2,xlat2,xlst,techo)
   AzMoonB8=AzMoon
   ElMoonB8=ElMoon
   call astro(nyear,month,nday,uth,nfreq,mygrid,1,1,                  &
        AzSun,ElSun,AzMoon,ElMoon,ntsky,doppler00,doppler,            &
        dbMoon,RAMoon,DecMoon,HA,Dgrd,sd,poloffset,xnr,               &
-       day,xlon1,xlat1,xlst)
+       day,xlon1,xlat1,xlst,techo)
 
   day8=day
   xlst8=xlst
+  techo8=techo
   call tm2(day8,xlat1,xlon1,xl1,b1)
   call tm2(day8,xlat2,xlon2,xl2,b2)
   call tm2(day8+1.d0/1440.0,xlat1,xlon1,xl1a,b1a)

@@ -1,7 +1,7 @@
 subroutine astro(nyear,month,nday,uth,nfreq,Mygrid,                    &
           NStation,MoonDX,AzSun,ElSun,AzMoon0,ElMoon0,                 &
           ntsky,doppler00,doppler,dbMoon,RAMoon,DecMoon,HA,Dgrd,sd,    &
-          poloffset,xnr,day,lon,lat,LST)
+          poloffset,xnr,day,lon,lat,LST,techo)
 
 ! Computes astronomical quantities for display and tracking.
 ! NB: may want to smooth the Tsky map to 10 degrees or so.
