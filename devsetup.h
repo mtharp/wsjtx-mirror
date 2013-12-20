@@ -32,6 +32,9 @@ public:
 
   void initDlg();
 
+  float   m_DTmin;
+  float   m_DTmax;
+
   qint32  m_idInt;
   qint32  m_pttMethodIndex;
   qint32  m_pttPort;
@@ -48,17 +51,22 @@ public:
   qint32  m_test;
   qint32  m_poll;
   qint32  m_tmp;
+  qint32  m_EMEband;
+  qint32  m_EMEbandIndex;
+  qint32  m_toneMult;
+  qint32  m_toneMultIndex;
+  qint32  m_astroFont;
 
   typedef QList<QAudioDeviceInfo> AudioDevices;
-  AudioDevices m_audioInputDevices; /* available input devices */
-  AudioDevices m_audioOutputDevices; /* available output devices */
-  QAudioDeviceInfo m_audioInputDevice; /* selected input device */
-  QAudioDeviceInfo m_audioOutputDevice; /* selected output device */
-  bool    m_restartSoundIn;
-  bool    m_restartSoundOut;
+  AudioDevices m_audioInputDevices;         // available input devices
+  AudioDevices m_audioOutputDevices;        // available output devices
+  QAudioDeviceInfo m_audioInputDevice;      // selected input device
+  QAudioDeviceInfo m_audioOutputDevice;     // selected output device
   AudioDevice::Channel m_audioInputChannel;
   AudioDevice::Channel m_audioOutputChannel;
 
+  bool    m_restartSoundIn;
+  bool    m_restartSoundOut;
   bool    m_pskReporter;
   bool    m_firstCall;
   bool    m_catEnabled;
@@ -112,6 +120,11 @@ private slots:
   void on_pttMethodComboBox_currentIndexChanged(int index);
   void on_cbSplit_toggled(bool checked);
   void on_cbXIT_toggled(bool checked);
+  void on_cbEMEband_activated(int index);
+  void on_cbBWmult_activated(int index);
+  void on_dtMinSpinBox_valueChanged(double arg1);
+  void on_dtMaxSpinBox_valueChanged(double arg1);
+  void on_astroFontSpinBox_valueChanged(int arg1);
 
 private:
   void loadAudioDevices (AudioDevices const&, QComboBox *, QAudioDeviceInfo const&, QAudioDeviceInfo const&);

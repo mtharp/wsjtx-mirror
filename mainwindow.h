@@ -214,6 +214,9 @@ private:
     double  m_toneSpacing;
     double  m_fSpread;
 
+    float   m_DTmin;
+    float   m_DTmax;
+
     qint64  m_msErase;
     qint64  m_secBandChanged;
 
@@ -269,6 +272,9 @@ private:
     qint32  m_poll;
     qint32  m_fMax;
     qint32  m_bad;
+    qint32  m_EMEbandIndex;
+    qint32  m_toneMultIndex;
+    qint32  m_astroFont;
 
     bool    m_monitoring;
     bool    m_btxok;		//True if OK to transmit

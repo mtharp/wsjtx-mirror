@@ -477,6 +477,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("IDint",m_idInt);
   m_settings->setValue("PTTmethod",m_pttMethodIndex);
   m_settings->setValue("PTTport",m_pttPort);
+  m_settings->setValue("AstroFont",m_astroFont);
   m_settings->setValue("SaveDir",m_saveDir);
   m_settings->setValue("SoundInName", m_audioInputDevice.deviceName ());
   m_settings->setValue("SoundOutName", m_audioOutputDevice.deviceName ());
@@ -539,6 +540,11 @@ void MainWindow::writeSettings()
   m_settings->setValue("UseXIT",m_bXIT);
   m_settings->setValue("XIT",m_XIT);
   m_settings->setValue("Plus2kHz",m_plus2kHz);
+  m_settings->setValue("EMEbandIndex",m_EMEbandIndex);
+  m_settings->setValue("ToneMultIndex",m_toneMultIndex);
+  m_settings->setValue("DTmin",m_DTmin);
+  m_settings->setValue("DTmax",m_DTmax);
+
   m_settings->endGroup();
 }
 
@@ -563,6 +569,7 @@ void MainWindow::readSettings()
   m_idInt=m_settings->value("IDint",0).toInt();
   m_pttMethodIndex=m_settings->value("PTTmethod",1).toInt();
   m_pttPort=m_settings->value("PTTport",0).toInt();
+  m_astroFont=m_settings->value("AstroFont",18).toInt();
   m_saveDir=m_settings->value("SaveDir",m_appDir + "/save").toString();
 
   {
@@ -685,6 +692,10 @@ void MainWindow::readSettings()
   m_XIT=m_settings->value("XIT",0).toInt();
 	m_plus2kHz=m_settings->value("Plus2kHz",false).toBool();
 	ui->cbPlus2kHz->setChecked(m_plus2kHz);
+  m_EMEbandIndex=m_settings->value("EMEbandIndex",0).toInt();
+  m_toneMultIndex=m_settings->value("ToneMultIndex",0).toInt();
+  m_DTmin=m_settings->value("DTmin",-2.5).toFloat();
+  m_DTmax=m_settings->value("DTmax",5.0).toFloat();
   m_settings->endGroup();
 
   // use these initialisation settings to tune the audio o/p bufefr
@@ -775,6 +786,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_idInt=m_idInt;
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
+  dlg.m_astroFont=m_astroFont;
   dlg.m_saveDir=m_saveDir;
   dlg.m_audioInputDevice = m_audioInputDevice;
   dlg.m_audioOutputDevice = m_audioOutputDevice;
@@ -804,6 +816,10 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_poll=m_poll;
   dlg.m_bSplit=m_bSplit;
   dlg.m_bXIT=m_bXIT;
+  dlg.m_EMEbandIndex=m_EMEbandIndex;
+  dlg.m_toneMultIndex=m_toneMultIndex;
+  dlg.m_DTmin=m_DTmin;
+  dlg.m_DTmax=m_DTmax;
 
   if(m_bRigOpen) {
     rig->close();
@@ -822,6 +838,8 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_idInt=dlg.m_idInt;
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
+    m_astroFont=dlg.m_astroFont;
+    if(g_pAstro->isVisible()) g_pAstro->setFontSize(m_astroFont);
     m_saveDir=dlg.m_saveDir;
     m_audioInputDevice = dlg.m_audioInputDevice;
     m_audioOutputDevice = dlg.m_audioOutputDevice;
@@ -848,6 +866,10 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_bRTS=dlg.m_bRTS;
     m_pttData=dlg.m_pttData;
     m_poll=dlg.m_poll;
+    m_EMEbandIndex=dlg.m_EMEbandIndex;
+    m_toneMultIndex=dlg.m_toneMultIndex;
+    m_DTmin=dlg.m_DTmin;
+    m_DTmax=dlg.m_DTmax;
 
 	//Band Settings
     ui->bandComboBox->clear();
@@ -1127,7 +1149,6 @@ void MainWindow::closeEvent(QCloseEvent * e)
 
 void MainWindow::OnExit()
 {
-//  g_pAstro->deleteLater();                    //???
   m_guiTimer.stop ();
   if(m_fname != "") killFile();
   m_killAll=true;
@@ -1179,7 +1200,7 @@ void MainWindow::on_actionAstronomical_data_triggered()
     g_pAstro->setWindowFlags(flags);
     g_pAstro->setGeometry(m_astroGeom);
   }
-  g_pAstro->setFontSize(18);
+  g_pAstro->setFontSize(m_astroFont);
   g_pAstro->show();
 }
 

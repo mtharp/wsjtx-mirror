@@ -5,6 +5,7 @@
 #include <iterator>
 #include <algorithm>
 #include <tr1/functional>
+#include <qmath.h>
 
 #include <QDebug>
 #include <QSettings>
@@ -89,6 +90,8 @@ void DevSetup::initDlg()
   ui->cbSplit->setChecked(m_bSplit and m_catEnabled);
   ui->cbXIT->setChecked(m_bXIT);
   ui->cbXIT->setVisible(false);
+  ui->dtMinSpinBox->setValue(m_DTmin);
+  ui->dtMaxSpinBox->setValue(m_DTmax);
 
   enableWidgets();
 
@@ -99,6 +102,9 @@ void DevSetup::initDlg()
   ui->handshakeComboBox->setCurrentIndex(m_handshakeIndex);
   ui->rbData->setChecked(m_pttData);
   ui->pollSpinBox->setValue(m_poll);
+  ui->cbEMEband->setCurrentIndex(m_EMEbandIndex);
+  ui->cbBWmult->setCurrentIndex(m_toneMultIndex);
+  ui->astroFontSpinBox->setValue(m_astroFont);
 
   // PY2SDR -- Per OS serial port names
   m_tmp=m_pttPort;
@@ -708,3 +714,33 @@ void DevSetup::enumerateRigs ()
   ui->rigComboBox->addItem ("Ham Radio Deluxe", 9999);
   ui->rigComboBox->setCurrentIndex (ui->rigComboBox->findData (m_rig));
 }
+
+
+
+void DevSetup::on_cbEMEband_activated(int index)
+{
+  m_EMEbandIndex=index;
+  m_EMEband=ui->cbEMEband->itemText(index).toInt();
+}
+
+void DevSetup::on_cbBWmult_activated(int index)
+{
+  m_toneMultIndex=index;
+  m_toneMult=pow(2,index);
+}
+
+void DevSetup::on_dtMinSpinBox_valueChanged(double arg1)
+{
+  m_DTmin=arg1;
+}
+
+void DevSetup::on_dtMaxSpinBox_valueChanged(double arg1)
+{
+  m_DTmax=arg1;
+}
+
+void DevSetup::on_astroFontSpinBox_valueChanged(int arg1)
+{
+  m_astroFont=ui->astroFontSpinBox->value();
+}
+
