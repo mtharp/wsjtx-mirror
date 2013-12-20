@@ -77,6 +77,10 @@ void Modulator::open (unsigned symbolsLength, double framesPerSymbol, \
 
 qint64 Modulator::readData (char * data, qint64 maxSize)
 {
+  static int j0=-1;
+  static double toneFrequency0;
+  double toneFrequency;
+
   Q_ASSERT (!(maxSize % static_cast<qint64> (bytesPerFrame ()))); // no torn frames
   Q_ASSERT (isOpen ());
 
@@ -162,16 +166,24 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
     for (unsigned i = 0; i < numFrames; ++i) {
       isym = m_tuning ? 0 : m_ic / (4.0 * m_nsps); //Actual fsample=48000
       if (isym != m_isym0) {
-        double toneFrequency = m_frequency + itone[isym] * baud;
-        int nfspread=0;
-        if(nfspread>0) {
-          float x1=(float)rand()/RAND_MAX;
-          float x2=(float)rand()/RAND_MAX;
-          toneFrequency += nfspread*(x1+x2-1.0);
+        if(m_toneSpacing==0.0) {
+          toneFrequency0=m_frequency + itone[isym]*baud;
+        } else {
+          toneFrequency0=m_frequency + itone[isym]*m_toneSpacing;
         }
-        m_dphi = m_twoPi * toneFrequency / m_frameRate;
+        m_dphi = m_twoPi * toneFrequency0 / m_frameRate;
         m_isym0 = isym;
       }
+
+      int j=m_ic/480;
+      if(m_fSpread>0.0 and j!=j0) {
+        float x1=(float)rand()/RAND_MAX;
+        float x2=(float)rand()/RAND_MAX;
+        toneFrequency = toneFrequency0 + 0.5*m_fSpread*(x1+x2-1.0);
+        m_dphi = m_twoPi * toneFrequency / m_frameRate;
+        j0=j;
+      }
+
       m_phi += m_dphi;
       if (m_phi > m_twoPi) m_phi -= m_twoPi;
       if (m_ic > i0) m_amp = 0.98 * m_amp;

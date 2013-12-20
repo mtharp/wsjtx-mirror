@@ -2366,6 +2366,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionJT9_1"/>
     <addaction name="actionJT65"/>
     <addaction name="actionJT9_JT65"/>
+    <addaction name="actionJT9W_1"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSetup"/>
@@ -2678,6 +2679,14 @@ p, li { white-space: pre-wrap; }
   <action name="actionAstronomical_data">
    <property name="text">
     <string>Astronomical data</string>
+   </property>
+  </action>
+  <action name="actionJT9W_1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>JT9W-1</string>
    </property>
   </action>
  </widget>
