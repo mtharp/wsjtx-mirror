@@ -86,6 +86,7 @@ void DevSetup::initDlg()
   ui->pttMethodComboBox->setCurrentIndex(m_pttMethodIndex);
   ui->saveDirEntry->setText(m_saveDir);
   ui->cbID73->setChecked(m_After73);
+  ui->cbDisplayAstroData->setChecked(m_bAstroData);
   ui->cbPSKReporter->setChecked(m_pskReporter);
   ui->cbSplit->setChecked(m_bSplit and m_catEnabled);
   ui->cbXIT->setChecked(m_bXIT);
@@ -715,8 +716,6 @@ void DevSetup::enumerateRigs ()
   ui->rigComboBox->setCurrentIndex (ui->rigComboBox->findData (m_rig));
 }
 
-
-
 void DevSetup::on_cbEMEband_activated(int index)
 {
   m_EMEbandIndex=index;
@@ -741,6 +740,11 @@ void DevSetup::on_dtMaxSpinBox_valueChanged(double arg1)
 
 void DevSetup::on_astroFontSpinBox_valueChanged(int arg1)
 {
+  if(arg1==-999) m_astroFont=18;   //silence compiler warning
   m_astroFont=ui->astroFontSpinBox->value();
 }
 
+void DevSetup::on_cbDisplayAstroData_toggled(bool checked)
+{
+  m_bAstroData=checked;
+}

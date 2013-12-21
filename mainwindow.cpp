@@ -30,7 +30,6 @@ static int nc1=1;
 wchar_t buffer[256];
 Astro*  g_pAstro = NULL;
 
-
 Rig* rig = NULL;
 QTextEdit* pShortcuts;
 QTcpSocket* commanderSocket = new QTcpSocket(0);
@@ -273,6 +272,7 @@ MainWindow::MainWindow(QSettings * settings, QSharedMemory *shdmem, QString *the
   m_QSOText.clear();
   m_CATerror=false;
   decodeBusy(false);
+  m_toneSpacing=0;
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
@@ -373,7 +373,8 @@ MainWindow::MainWindow(QSettings * settings, QSharedMemory *shdmem, QString *the
   if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and
       m_mode!="JT9+JT65") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
-  on_actionAstronomical_data_triggered();
+//  on_actionAstronomical_data_triggered();
+  if(m_bAstroData) on_actionAstronomical_data_triggered();
   m_wideGraph->setRxFreq(m_rxFreq);
   m_wideGraph->setTxFreq(m_txFreq);
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
@@ -464,8 +465,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("TxFirst",m_txFirst);
   m_settings->setValue("DXcall",ui->dxCallEntry->text());
   m_settings->setValue("DXgrid",ui->dxGridEntry->text());
-
-  if(g_pAstro->isVisible()) {
+  if(g_pAstro!=NULL and g_pAstro->isVisible()) {
     m_astroGeom = g_pAstro->geometry();
     m_settings->setValue("AstroGeom",m_astroGeom);
   }
@@ -498,6 +498,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("OutAttenuation", ui->outAttenuation->value ());
   m_settings->setValue("PSKReporter",m_pskReporter);
   m_settings->setValue("After73",m_After73);
+  m_settings->setValue("DisplayAstro",m_bAstroData);
   m_settings->setValue("Macros",m_macro);
   //Band Settings
   m_settings->setValue("BandFrequencies",m_dFreq);
@@ -633,6 +634,7 @@ void MainWindow::readSettings()
   ui->actionMonitor_OFF_at_startup->setChecked(m_monitorStartOFF);
   m_pskReporter=m_settings->value("PSKReporter",false).toBool();
   m_After73=m_settings->value("After73",false).toBool();
+  m_bAstroData=m_settings->value("DisplayAstro",false).toBool();
   m_macro=m_settings->value("Macros","TNX 73 GL").toStringList();
   //Band Settings
   m_dFreq=m_settings->value("BandFrequencies","").toStringList();
@@ -794,6 +796,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_audioOutputChannel = m_audioOutputChannel;
   dlg.m_pskReporter=m_pskReporter;
   dlg.m_After73=m_After73;
+  dlg.m_bAstroData=m_bAstroData;
   dlg.m_macro=m_macro;
   dlg.m_dFreq=m_dFreq;
   dlg.m_antDescription=m_antDescription;
@@ -839,7 +842,9 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
     m_astroFont=dlg.m_astroFont;
-    if(g_pAstro->isVisible()) g_pAstro->setFontSize(m_astroFont);
+    if(g_pAstro!=NULL and g_pAstro->isVisible()) {
+      g_pAstro->setFontSize(m_astroFont);
+    }
     m_saveDir=dlg.m_saveDir;
     m_audioInputDevice = dlg.m_audioInputDevice;
     m_audioOutputDevice = dlg.m_audioOutputDevice;
@@ -877,12 +882,11 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     ui->bandComboBox->addItems(dlg.m_bandDescription);
     ui->bandComboBox->setCurrentIndex(m_band);
     m_pskReporter=dlg.m_pskReporter;
-
     if(m_pskReporter) {
       psk_Reporter->setLocalStation(m_myCall, m_myGrid, m_antDescription[m_band], "WSJT-X r" + rev.mid(6,4) );
     }
-
     m_After73=dlg.m_After73;
+    m_bAstroData=dlg.m_bAstroData;
 
     if(dlg.m_restartSoundIn) {
       Q_EMIT stopAudioInputStream ();
@@ -1453,6 +1457,7 @@ void MainWindow::jt9_error(QProcess::ProcessError e)                            
 {
   if(!m_killAll) {
     msgBox("Error starting or running\n" + m_appDir + "/jt9 -s");
+    qDebug() << e;                           // silence compiler warning
     exit(1);
   }
 }
@@ -1807,8 +1812,8 @@ void MainWindow::guiUpdate()
     QDateTime t = QDateTime::currentDateTimeUtc();
     int fQSO=125;
     m_azelDir=m_appDir;
-    g_pAstro->astroUpdate(t, m_myGrid, m_hisGrid, fQSO, m_setftx,
-                          m_txFreq, m_azelDir);
+    if(g_pAstro!=NULL) g_pAstro->astroUpdate(t, m_myGrid, m_hisGrid, fQSO,
+                          m_setftx, m_txFreq, m_azelDir);
 
     if(m_transmitting) {
       if(nsendingsh==1) {
@@ -1866,7 +1871,6 @@ void MainWindow::startTx2()
     m_modulator.setWide9(m_toneSpacing, m_fSpread);
     t=ui->tx6->text();
     if(t.mid(0,1)=="#") snr=t.mid(1,5).toDouble();
-    qDebug() << "A" << m_toneSpacing << m_fSpread << snr;
     if(snr>0.0 or snr < -50.0) snr=99.0;
     transmit (snr);
     signalMeter->setValue(0);

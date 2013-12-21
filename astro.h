@@ -17,7 +17,8 @@ public:
   void astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
                    int fQSO, int nsetftx, int ntxFreq, QString azelDir);
   void setFontSize(int n);
-  ~Astro();
+//  ~Astro();
+  virtual ~Astro();
 
 private:
     Ui::Astro *ui;

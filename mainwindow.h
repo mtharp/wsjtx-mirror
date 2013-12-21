@@ -327,6 +327,7 @@ private:
     bool    m_bSplit;
     bool    m_bXIT;
     bool    m_plus2kHz;
+    bool    m_bAstroData;
 
     char    m_decoded[80];
 

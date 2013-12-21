@@ -24,13 +24,13 @@ unsigned const Modulator::m_nspd = 2048 + 512; // 22.5 WPM
 Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds, \
                       QObject * parent)
   : AudioDevice (parent)
+  , m_phi (0.0)
+  , m_framesSent (0)
   , m_frameRate (frameRate)
   , m_period (periodLengthInSeconds)
-  , m_framesSent (0)
   , m_state (Idle)
   , m_tuning (false)
   , m_muted (false)
-  , m_phi (0.)
 {
   qsrand (QDateTime::currentMSecsSinceEpoch()); // Initialize random seed
 }

@@ -77,6 +77,7 @@ public:
   bool    m_pttData;
   bool    m_bSplit;
   bool    m_bXIT;
+  bool    m_bAstroData;
 
   QString m_myCall;
   QString m_myGrid;
@@ -125,6 +126,7 @@ private slots:
   void on_dtMinSpinBox_valueChanged(double arg1);
   void on_dtMaxSpinBox_valueChanged(double arg1);
   void on_astroFontSpinBox_valueChanged(int arg1);
+  void on_cbDisplayAstroData_toggled(bool checked);
 
 private:
   void loadAudioDevices (AudioDevices const&, QComboBox *, QAudioDeviceInfo const&, QAudioDeviceInfo const&);
