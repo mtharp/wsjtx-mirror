@@ -6,7 +6,7 @@ subroutine audiodev(jdevin,jdevout,inbad,outbad)
 
   character cdevice*40,audiocaps*80
   integer inbad,outbad
-  integer nchin(0:40),nchout(0:40),inerr(0:40),outerr(0:40)
+  integer nchin(0:100),nchout(0:100),inerr(0:100),outerr(0:100)
   include 'acom1.f90'
 
   call padevsub(numdevs,ndefin,ndefout,nchin,nchout,inerr,outerr)
