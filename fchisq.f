@@ -38,10 +38,10 @@ C  Mix and integrate four channels
             p2=1.5*x*x - 0.5
 !           p3=2.5*(x**3) - 1.5*x
 !           p4=4.375*(x**4) - 3.75*(x**2) + 0.375
-            dphi1=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 1.5*baud)
-            dphi2=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 0.5*baud)
-            dphi3=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 0.5*baud)
-            dphi4=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 1.5*baud)
+            dphi1=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 1.5*baud)
+            dphi2=twopi*dt*(a(1) + x*a(2) + p2*a(3) + 0.5*baud)
+            dphi3=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 0.5*baud)
+            dphi4=twopi*dt*(a(1) + x*a(2) + p2*a(3) - 1.5*baud)
             ws1=cmplx(cos(dphi1),sin(dphi1))
             ws2=cmplx(cos(dphi2),sin(dphi2))
             ws3=cmplx(cos(dphi3),sin(dphi3))
@@ -91,6 +91,7 @@ C  Compute full-symbol powers at 1/16-symbol steps.
          ccfmax=ccf
          dtmax=lagpk*dtstep
       endif
+
 ! Reverse sign (and offset!) because we will be minimizing fchisq
       fchisq=-ccfmax + 100.0
 
