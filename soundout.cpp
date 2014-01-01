@@ -80,11 +80,13 @@ void SoundOutput::startStream (QAudioDeviceInfo const& device, \
       m_stream.reset (new QAudioOutput (device, format, this));
       audioError ();
       m_stream->setVolume (m_volume);
+      m_stream->setNotifyInterval(100);
 
       connect (m_stream.data(), &QAudioOutput::stateChanged, this, \
                &SoundOutput::handleStateChanged);
 
       m_currentDevice = device;
+//      qDebug() << "A" << m_volume << m_stream->notifyInterval();
     }
 
   //
@@ -100,7 +102,10 @@ void SoundOutput::startStream (QAudioDeviceInfo const& device, \
   // we have to set this before every start on the stream because the
   // Windows implementation seems to forget the buffer size after a
   // stop.
-  m_stream->setBufferSize (m_stream->format ().bytesForDuration ((msBuffered ? msBuffered : MS_BUFFERED) * 1000));
+  m_stream->setBufferSize (m_stream->format().bytesForDuration(
+                             (msBuffered ? msBuffered : MS_BUFFERED) * 1000));
+//  qDebug() << "B" << m_stream->bufferSize() << m_stream->periodSize() << m_stream->notifyInterval();
+
   m_stream->start (m_source);
   audioError ();
 }

@@ -81,6 +81,7 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
   static double toneFrequency0;
   double toneFrequency;
 
+  if(maxSize==0) return 0l;
   Q_ASSERT (!(maxSize % static_cast<qint64> (bytesPerFrame ()))); // no torn frames
   Q_ASSERT (isOpen ());
 
