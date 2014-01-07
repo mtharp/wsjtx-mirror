@@ -356,7 +356,7 @@ int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[],
 int padevsub_(int *idevin, int *idevout)
 {
   int numdev,ndefin,ndefout;
-  int nchin[41], nchout[41];
+  int nchin[101], nchout[101];
   int      i, devIdx;
   int      numDevices;
   const PaDeviceInfo *pdi;
