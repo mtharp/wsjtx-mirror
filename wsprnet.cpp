@@ -16,22 +16,26 @@ WSPRNet::WSPRNet(QObject *parent) :
   connect( uploadTimer, SIGNAL(timeout()), this, SLOT(work()));
 }
 
-void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq, QString tpct, QString dbm, QString version, QString fileName)
+void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq,
+                     QString mode, QString tpct, QString dbm, QString version,
+                     QString fileName)
 {
     m_call = call;
     m_grid = grid;
     m_rfreq = rfreq;
     m_tfreq = tfreq;
+    m_mode = mode;
     m_tpct = tpct;
     m_dbm = dbm;
     m_vers = version;
     m_file = fileName;
 
-    //qDebug() << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
+//    qDebug() << "mode: " << m_mode;
 
     // Open the wsprd.out file
     QFile wsprdOutFile(fileName);
-    if (!wsprdOutFile.open(QIODevice::ReadOnly | QIODevice::Text) || wsprdOutFile.size() == 0) {
+    if (!wsprdOutFile.open(QIODevice::ReadOnly | QIODevice::Text) ||
+            wsprdOutFile.size() == 0) {
         urlQueue.enqueue( wsprNetUrl + urlEncodeNoSpot());
         m_uploadType = 1;
         uploadTimer->start(200);
@@ -152,8 +156,10 @@ QString WSPRNet::urlEncodeNoSpot()
     queryString += "tqrg=" + m_tfreq + "&";
     queryString += "dbm=" + m_dbm + "&";
     queryString += "version=" +  m_vers;
+    if(m_mode=="WSPR-2") queryString += "mode=2";
+    if(m_mode=="WSPR-15") queryString += "mode=15";
 
-    //qDebug() << queryString;
+    qDebug() << queryString;
 
     return queryString;;
 }

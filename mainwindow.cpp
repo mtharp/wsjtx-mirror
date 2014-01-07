@@ -18,7 +18,7 @@ double dFreq[]={0.136,0.4742,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,
 
 WideGraph* g_pWideGraph = NULL;
 
-QString ver="0.8";
+QString ver="0.9";
 QString rev="$Rev$";
 QString Program_Title_Version="  WSPR-X   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
@@ -879,6 +879,7 @@ void MainWindow::uploadSpots()
                     m_myGrid,
                     rfreq,
                     tfreq,
+                    m_mode,
                     QString::number(m_TxOK ? m_pctx : 0),
                     QString::number(m_dBm),
                     Version,

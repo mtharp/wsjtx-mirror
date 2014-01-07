@@ -1,6 +1,6 @@
 [Setup]
 AppName=wsprx
-AppVerName=wsprx Version 0.8 r3058
+AppVerName=wsprx Version 0.8 r3575
 AppCopyright=Copyright (C) 2001-2013 by Joe Taylor, K1JT
 DefaultDirName=c:\wsprx
 DefaultGroupName=wsprx
