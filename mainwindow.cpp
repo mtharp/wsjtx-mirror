@@ -738,6 +738,8 @@ void MainWindow::dataSink(qint64 frames)
   slope=0.0;
   slope=(float)m_wideGraph->getSlope();
   int k (frames - 1);
+  jt9com_.nfa=m_wideGraph->nStartFreq();
+  jt9com_.nfb=m_wideGraph->getFmax();
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&slope,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;

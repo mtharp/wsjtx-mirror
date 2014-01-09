@@ -23,11 +23,11 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
   real*4 scale(NSMAX)
   real*4 ssum(NSMAX)
   real*4 xc(0:MAXFFT3-1)
-  real*4 tmp(NSMAX)
   complex cx(0:MAXFFT3/2)
   integer*2 id2
-  common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,   &
-       ntr,mousefqso,newdat,nfa,nfb,ntol,kin,nzhsym,nsynced,ndecoded
+  common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,         &
+       ntr,mousefqso,newdat,npts8a,nfa,nfsplit,nfb,ntol,kin,nzhsym,         &
+       nsave,nagain,ndepth,ntxmode,nmode,junk(5)
   common/jt9w/syellow(NSMAX)
   data rms/999.0/,k0/99999999/,nfft3z/0/,slope0/0.0/
   equivalence (xc,cx)
@@ -42,17 +42,22 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
      go to 900                                 !Wait for enough samples to start
   endif
 
-  if(nfft3.ne.nfft3z .or. slope.ne.slope0) then    !New nfft3, compute window
+  if(nfft3.ne.nfft3z .or. slope.ne.slope0) then
+! Compute new window and adjust scale factor
      pi=4.0*atan(1.0)
      do i=1,nfft3
         w3(i)=2.0*(sin(i*pi/nfft3))**2         !Window for nfft3 spectrum
      enddo
      nfft3z=nfft3
      nh=NSMAX/2
-     do i=1,NSMAX
-        x=slope*float(i)/nh - 1.0 + 2.6
-        scale(i)=10.0**x
-     enddo
+     if(abs(slope+0.1).gt.0.05) then
+        do i=1,NSMAX
+           x=slope*float(i)/nh - 1.0 + 2.6
+           scale(i)=10.0**x
+        enddo
+     else
+        scale=1.0
+     endif
      slope0=slope
   endif
 
@@ -105,10 +110,16 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
      s(i)=gain*sx
   enddo
 
-!  s=0.05*s/ref
   s=scale*s
   savg=scale*ssum/ihsym
 
+  if(abs(slope+0.1).lt.0.01) then
+     call flat3(s,iz,nfa,nfb,3,1.0,s)
+     call flat3(savg,iz,nfa,nfb,3,1.0,savg)
+     savg=7.0*savg
+  endif
+
+! The following needs updating, since we have already flattened savg.
   if(mod(n,10).eq.0 .or. n.ge.170) then
      mode4=36
      nsmo=min(10*mode4,150)
@@ -123,10 +134,6 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
      syellow=(50.0/(smax-smin))*(syellow-smin)
      where(syellow<0) syellow=0.
   endif
-
-!  if(n.eq.173) then
-!     write(81) iz,savg(1:iz)
-!  endif
 
 900 npts8=k/8
 

@@ -81,7 +81,7 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
   static double toneFrequency0;
   double toneFrequency;
 
-  if(maxSize==0) return 0l;
+  if(maxSize==0) return 0;
   Q_ASSERT (!(maxSize % static_cast<qint64> (bytesPerFrame ()))); // no torn frames
   Q_ASSERT (isOpen ());
 
@@ -90,7 +90,7 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
   qint16 * end (samples + numFrames * (bytesPerFrame () / sizeof (qint16)));
 
 //  qDebug () << "Modulator: " << numFrames << " requested, m_ic = " << m_ic << ", tune mode is " << m_tuning;
-
+//  qDebug() << "C" << maxSize << numFrames << bytesPerFrame();
   switch (m_state)
   {
   case Synchronizing:
