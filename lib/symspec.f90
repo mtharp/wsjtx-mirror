@@ -23,6 +23,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
   real*4 scale(NSMAX)
   real*4 ssum(NSMAX)
   real*4 xc(0:MAXFFT3-1)
+  real*4 tmp(NSMAX)
   complex cx(0:MAXFFT3/2)
   integer*2 id2
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,         &
@@ -113,27 +114,25 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
   s=scale*s
   savg=scale*ssum/ihsym
 
+  if(mod(n,10).eq.0) then
+     mode4=36
+     nsmo=min(10*mode4,150)
+     nsmo=4*nsmo
+     call flat1(savg,iz,nsmo,syellow)
+     if(mode4.ge.9) call smo(syellow,iz,tmp,mode4)
+     ia=500./df3
+     ib=2700.0/df3
+     smin=minval(syellow(ia:ib))
+     smax=maxval(syellow(1:iz))
+     syellow=(50.0/(smax-smin))*(syellow-smin)
+     where(syellow<0) syellow=0.
+  endif
+
   if(abs(slope+0.1).lt.0.01) then
      call flat3(s,iz,nfa,nfb,3,1.0,s)
      call flat3(savg,iz,nfa,nfb,3,1.0,savg)
      savg=7.0*savg
   endif
-
-! The following needs updating, since we have already flattened savg.
-!  if(mod(n,10).eq.0 .or. n.ge.170) then
-!     mode4=36
-!     nsmo=min(10*mode4,150)
-!     nsmo=4*nsmo
-!     call flat1(savg,iz,nsmo,syellow)
-!     if(mode4.ge.9) call smo(syellow,iz,tmp,mode4)
-
-!     ia=500./df3
-!     ib=2700.0/df3
-!     smin=minval(syellow(ia:ib))
-!     smax=maxval(syellow(1:iz))
-!     syellow=(50.0/(smax-smin))*(syellow-smin)
-!     where(syellow<0) syellow=0.
-!  endif
 
 900 npts8=k/8
 
