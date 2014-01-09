@@ -120,20 +120,20 @@ subroutine symspec(k,ntrperiod,nsps,ingain,slope,pxdb,s,df3,ihsym,npts8)
   endif
 
 ! The following needs updating, since we have already flattened savg.
-  if(mod(n,10).eq.0 .or. n.ge.170) then
-     mode4=36
-     nsmo=min(10*mode4,150)
-     nsmo=4*nsmo
-     call flat1(savg,iz,nsmo,syellow)
-     if(mode4.ge.9) call smo(syellow,iz,tmp,mode4)
+!  if(mod(n,10).eq.0 .or. n.ge.170) then
+!     mode4=36
+!     nsmo=min(10*mode4,150)
+!     nsmo=4*nsmo
+!     call flat1(savg,iz,nsmo,syellow)
+!     if(mode4.ge.9) call smo(syellow,iz,tmp,mode4)
 
-     ia=500./df3
-     ib=2700.0/df3
-     smin=minval(syellow(ia:ib))
-     smax=maxval(syellow(1:iz))
-     syellow=(50.0/(smax-smin))*(syellow-smin)
-     where(syellow<0) syellow=0.
-  endif
+!     ia=500./df3
+!     ib=2700.0/df3
+!     smin=minval(syellow(ia:ib))
+!     smax=maxval(syellow(1:iz))
+!     syellow=(50.0/(smax-smin))*(syellow-smin)
+!     where(syellow<0) syellow=0.
+!  endif
 
 900 npts8=k/8
 
