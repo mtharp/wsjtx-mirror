@@ -48,6 +48,7 @@ azeldir=StringVar()
 ntc=IntVar()
 fRIT=IntVar()
 dither=IntVar()
+cwSpeed=IntVar()
 temp=StringVar()
 wind=StringVar()
 pwr=StringVar()
@@ -57,6 +58,7 @@ histag=IntVar()
 genmsg=IntVar()
 
 ntc.set(1)
+cwSpeed.set(15)
 
 def resetgen():
     defaults()
@@ -254,11 +256,13 @@ fRIT_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='RIT (Hz):',
     entry_width=9,entry_textvariable=fRIT)
 dither_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Dither (Hz):',
     entry_width=9,entry_textvariable=dither)
+cwSpeedEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='CW Speed (WPM):',
+    entry_width=9,entry_textvariable=cwSpeed)
 ##dlatency_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Latency (s):',
 ##    entry_width=9,entry_textvariable=dlatency)
 
 widgets = (temp_prefix,aux_ra,aux_dec,azeldir_entry,ntc_entry, \
-           fRIT_entry,dither_entry)
+           fRIT_entry,dither_entry,cwSpeedEntry)
 for widget in widgets:
     widget.pack(padx=10,pady=2)
 Pmw.alignlabels(widgets)

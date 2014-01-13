@@ -2067,6 +2067,10 @@ def update():
     Audio.gcom2.hisgrid=(HisGrid.get()+(' '*6))[:6]
     Audio.gcom4.addpfx=(options.addpfx.get().lstrip().upper()+(' '*8))[:8]
     Audio.gcom2.ntxreq=ntx.get()
+    try:
+        Audio.gcom2.ncwspeed=options.cwSpeed.get()
+    except:
+        Audio.gcom2.ncwspeed=15
     tx=(tx1,tx2,tx3,tx4,tx5,tx6)
     Audio.gcom2.txmsg=(tx[ntx.get()-1].get()+(' '*28))[:28]
     Audio.gcom2.mode=(mode.get()+(' '*6))[:6]
@@ -2336,9 +2340,10 @@ bandmenu.add_radiobutton(label = '70', variable=nfreq,value=70)
 bandmenu.add_radiobutton(label = '144', variable=nfreq,value=144)
 bandmenu.add_radiobutton(label = '222', variable=nfreq,value=222)
 bandmenu.add_radiobutton(label = '432', variable=nfreq,value=432)
+bandmenu.add_radiobutton(label = '902', variable=nfreq,value=902)
 bandmenu.add_radiobutton(label = '1296', variable=nfreq,value=1296)
 bandmenu.add_radiobutton(label = '2304', variable=nfreq,value=2304)
-bandmenu.add_radiobutton(label = '3456', variable=nfreq,value=3456)
+bandmenu.add_radiobutton(label = '3400', variable=nfreq,value=3456)
 bandmenu.add_radiobutton(label = '5760', variable=nfreq,value=5760)
 bandmenu.add_radiobutton(label = '10368', variable=nfreq,value=10368)
 bandmenu.add_radiobutton(label = '24048', variable=nfreq,value=24048)
@@ -2859,6 +2864,7 @@ try:
         elif key == 'Ntc': options.ntc.set(value)
         elif key == 'fRIT': options.fRIT.set(value)
         elif key == 'Dither': options.dither.set(value)
+        elif key == 'CWspeed': options.cwSpeed.set(value)
 ##        elif key == 'Necho': options.necho.set(value)
 ##        elif key == 'Dlatency': options.dlatency.set(value)
         elif key == 'MyName': options.myname.set(value)
@@ -2984,6 +2990,7 @@ f.write("AzElDir " + str(options.azeldir.get()).replace(" ","#") + "\n")
 f.write("Ntc " + str(options.ntc.get()) + "\n")
 f.write("fRIT " + str(options.fRIT.get()) + "\n")
 f.write("Dither " + str(options.dither.get()) + "\n")
+f.write("CWspeed " + str(options.cwSpeed.get()) + "\n")
 ##f.write("Necho " + str(options.necho.get()) + "\n")
 ##f.write("Dlatency " + str(options.dlatency.get()) + "\n")
 f.write("HighPri " + str(options.HighPri.get()) + "\n")

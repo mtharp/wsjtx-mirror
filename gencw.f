@@ -1,4 +1,4 @@
-      subroutine gencw(msg,wpm0,freqcw,samfac,iwave,nwave)
+      subroutine gencw(msg,wpm0,freqcw,samfac,ntrperiod,iwave,nwave)
 
 C  Generates array iwave() containing an audio signal corresponding
 C  to an EME CW message.
@@ -17,9 +17,8 @@ C  to an EME CW message.
       s3='KK'
       call morse(s3,idat3,nz3)         !Encode 'KK'
 
-      b4=58.0*wpm0/1.2
+      b4=(ntrperiod-2)*wpm0/1.2
       b3=0.75*b4
-!      b1=0.25*b4
 
       nr1=1
       nr2=0

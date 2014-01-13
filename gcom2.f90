@@ -18,6 +18,7 @@ integer minwidth       !Minimum width index 'ich' for JT4       GUI
 integer ndecoding      !Decoder status (see decode2.f90)     GUI,Decoder
 integer ndecoding0     !Status on previous decode            GUI,Decoder
 integer mousebutton    !Which button was clicked?               GUI
+integer ncwspeed       !CW Speed                                GUI
 integer ndecdone       !Is decoder finished?                 GUI,Decoder
 integer npingtime      !Time in file of mouse-selected ping  GUI,Decoder
 integer npingtime2     !End time of mouse-selected ping      GUI,Decoder
@@ -109,9 +110,9 @@ character*22 t0msg
 parameter (ND2MAX=120*11025)
 common/gcom2/ps0(450),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,dlatency,fecho,degrade,iter,iyr,imo,ida, &
-     minwidth,ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,ndither, &
-     nsumecho,ndecdone,npingtime,npingtime2,ierr,lauto,mantx,         &
-     nrestart,ntr,ntxboth,nmsg,                                       &
+     minwidth,ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,       &
+     ndither,nsumecho,ncwspeed,ndecdone,npingtime,npingtime2,ierr,    &
+     lauto,mantx,nrestart,ntr,ntxboth,nmsg,                           &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,nzap,         &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,ndebug,nport,ndtr,mousedf,nlowbeacon,                      &
