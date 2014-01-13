@@ -26,14 +26,14 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="9.5 r" + "$Rev$"[6:-1]
+Version="9.6 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
-Title="  WSJT 9.5    r" + "$Rev$"[6:-1] + "     by K1JT"
+Title="  WSJT 9.6    r" + "$Rev$"[6:-1] + "     by K1JT"
 
 #See if we are running in Windows
 g.Win32=0
