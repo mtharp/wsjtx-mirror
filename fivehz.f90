@@ -146,10 +146,6 @@ subroutine fivehz
      endif
      tx2=txdelay + nwave/11025.0
      if(tx2.gt.(trperiod-2.0)) tx2=trperiod-tlatency-1.0
-  else if(mode(1:5).eq.'Diana') then
-     if(nwave.lt.126*2048) nwave=126*2048
-     tx2=txdelay + nwave/11025.0
-     if(tx2.gt.(trperiod-2.0)) tx2=trperiod-tlatency-1.0
   endif
 
   if(TxFirst.eq.0 .and. ntxboth.eq.0) then

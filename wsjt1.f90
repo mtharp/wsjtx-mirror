@@ -254,19 +254,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
           NFreeze,MouseDF,mousebutton,mode4,nafc,ndebug,psavg)
      psavg(65:)=0.
      go to 800
-  endif
-
-  if(mode.eq.10) then
-     jza=min(jz,11025*30)
-!     call dtrim(dat,jza,dat2,jzb)
-     call ana932(dat,jza,cdat,npts)          !Make downsampled analytic signal
-!     write(74) npts,cfile6,(cdat(j),j=1,npts)
-!     write(75) npts2,cfile6,(cfft(j),j=1,npts2)
-     call diana(cdat,npts,cfile6,MinSigdB,DFTolerance,NFreeze,MouseDF,     &
-          nafc,ccf,psavg)
-     go to 900
-  endif
-     
+  endif     
 
 ! We're in FSK441 or JTMS mode. Compute the 2D spectrum.
   MinWidth=40                            !Minimum width of pings, ms

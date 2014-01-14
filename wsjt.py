@@ -26,14 +26,14 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="9.6 r" + "$Rev$"[6:-1]
+Version="9.7 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
-Title="  WSJT 9.6    r" + "$Rev$"[6:-1] + "     by K1JT"
+Title="  WSJT 9.7    r" + "$Rev$"[6:-1] + "     by K1JT"
 
 #See if we are running in Windows
 g.Win32=0
@@ -242,9 +242,6 @@ def stopmon(event=NONE):
 def dbl_click_text(event):
     t=text.get('1.0',END)           #Entire contents of text box
     t1=text.get('1.0',CURRENT)      #Contents from start to mouse pointer
-    if mode.get()=='Diana':
-        report.delete(0,END)
-        report.insert(0,'OOO')
     if mode.get()[:3]=='JT4':
         dbl_click3_text(event)
     else:
@@ -261,13 +258,11 @@ def dbl_click3_text(event):
         if rpt[:1]=='-' and len(rpt)==2: rpt=rpt[0:1]+'0'+rpt[1:2]
         dbl_click_call(t,t1,rpt,event)
 
-    elif mode.get()[:5]=='ISCAT' or mode.get()=='Diana':
+    elif mode.get()[:5]=='ISCAT':
         t=text.get('1.0',END)           #Entire contents of text box
         t1=text.get('1.0',CURRENT)      #Contents from start to mouse pointer
         n=t1.rfind("\n")
         rpt=t1[n+12:n+15]
-        if mode.get()=='Diana':
-            rpt=t1[n+12:n+16]
         if rpt[0:1] == " ": rpt=rpt[1:]
         report.delete(0,END)
         report.insert(0,rpt)
@@ -748,20 +743,6 @@ def ModeISCAT_B(event=NONE):
         GenStdMsgs()
         erase()        
 
-#------------------------------------------------------ ModeDiana
-def ModeDiana(event=NONE):
-    global isync,isync_iscat
-    if g.mode != "Diana":
-        if lauto: toggleauto()
-        ModeJT65()
-        Audio.gcom1.trperiod=30
-        mode.set("Diana")
-        lab2.configure(text='FileID      Sync      dB        DT       DF    F1')
-        isync=1
-        lsync.configure(text=slabel+str(isync))
-        report.delete(0,END)
-        report.insert(0,'-20')
-
 #------------------------------------------------------ ModeCW
 def ModeCW(event=NONE):
     if g.mode != "CW":
@@ -1200,7 +1181,7 @@ def dectrperiod(event):
 def erase(event=NONE):
     graph1.delete(ALL)
     if mode.get()[:4]!="JT65" and mode.get()[:2]!="CW" and \
-            mode.get()[:3]!='JT4' and mode.get()!='Diana':
+            mode.get()[:3]!='JT4':
         graph2.delete(ALL)
     text.configure(state=NORMAL)
     text.delete('1.0',END)
@@ -1271,13 +1252,10 @@ def toggletxdf(event=NONE):
 #----------------------------------------------------- dtdf_change
 # Readout of graphical cursor location
 def dtdf_change(event):
-    if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or mode.get()=='Diana':
+    if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
         if event.y<40 and Audio.gcom2.nspecial==0:
             lab1.configure(text='Time (s)',bg="#33FFFF")   #light blue
-            if mode.get()=='Diana':
-                t="%.1f" % (4.458*event.x/500.0-0.6,)
-            else:
-                t="%.1f" % (12.0*event.x/500.0-2.0,)
+            t="%.1f" % (12.0*event.x/500.0-2.0,)
             lab6.configure(text=t,bg="#33FFFF")
         elif (event.y>=40 and event.y<95) or \
                  (event.y<95 and Audio.gcom2.nspecial>0):
@@ -1293,10 +1271,7 @@ def dtdf_change(event):
                 lab6.configure(text=t,bg="red")
         else:
             lab1.configure(text='Time (s)',bg='green')
-            if mode.get()=='Diana':
-                t="%.1f" % (event.x*30.0/500.0,)
-            else:
-                t="%.1f" % (53.0*event.x/500.0,)
+            t="%.1f" % (53.0*event.x/500.0,)
             lab6.configure(text=t,bg="green")
     elif mode.get()=='Echo':
         lab1.configure(text='DF (Hz)',bg='red')
@@ -1311,8 +1286,7 @@ def dtdf_change(event):
 def mouse_click_g1(event):
     global nopen
     if not nopen:
-        if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or \
-           mode.get()[:5]=='Diana':
+        if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
             Audio.gcom2.mousedf=int(Audio.gcom2.idf+(event.x-250)*2.4)
         else:
             if Audio.gcom2.ndecoding==0:              #If decoder is busy, ignore
@@ -1328,8 +1302,7 @@ def mouse_click_g1(event):
 
 #------------------------------------------------------ double-click_g1
 def double_click_g1(event):
-    if (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or \
-        mode.get()[:5]=='Diana') and Audio.gcom2.ndecoding==0:
+    if(mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4'):
         g.freeze_decode=1
     
 #------------------------------------------------------ mouse_up_g1
@@ -1370,7 +1343,7 @@ def GenStdMsgs(event=NONE):
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
     if mode.get()=="FSK441" or mode.get()[:5]=="ISCAT" or \
-       mode.get()=='JTMS' or mode.get()=='Diana' or mode.get()[:3]=='JT4':
+       mode.get()=='JTMS' or mode.get()[:3]=='JT4':
         r=report.get()
         tx1.insert(0,setmsg(options.tx1.get(),r))
         tx2.insert(0,setmsg(options.tx2.get(),r))
@@ -1433,7 +1406,7 @@ def GenAltMsgs(event=NONE):
     ToRadio.insert(0,t)
     if k2txb.get()!=0: ntx.set(1)
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
-    if (mode.get()[:4]=='JT65' or mode.get()=='Diana' or \
+    if (mode.get()[:4]=='JT65' or \
         mode.get()[:3]=='JT4') and ToRadio.get().find("/") == -1 and \
                options.MyCall.get().find("/") == -1:
         for m in (tx1, tx2, tx3, tx4, tx5, tx6):
@@ -1553,10 +1526,7 @@ def plot_large():
         for i in range(ngreen):             #Make xy list for green curve
             green=Audio.gcom2.green[i]
             n=int(105.0-yfac*green)
-            if mode.get()=='Diana':
-                xy.append(2*i)
-            else:
-                xy.append(i)
+            xy.append(i)
             xy.append(n)
         graph1.create_line(xy,fill="green")
 
@@ -1636,8 +1606,6 @@ def plot_large():
         if Audio.gcom2.ccf[0] != -9999.0:
             y=[]
             iz=65
-            if mode.get()=='Diana':
-                iz=96
             fac=500.0/iz
             for i in range(iz):             #Find ymax for blue curve
                 ccf=Audio.gcom2.ccf[i]
@@ -1779,7 +1747,7 @@ def update():
 
         if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4'\
                or mode.get()[:2]=='CW' or mode.get()=='Echo' \
-               or mode.get()=='Diana' or mode.get()=='Measure':
+               or mode.get()=='Measure':
             graph2.delete(ALL)
             graph2.create_text(80,13,anchor=CENTER,text="Moon",font=g2font)
             graph2.create_text(13,37,anchor=W, text="Az: %6.2f" % g.AzMoon,font=g2font)
@@ -1799,8 +1767,7 @@ def update():
         else:
             nmeas=0
 
-    if (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' \
-        or mode.get()=='Diana') and g.freeze_decode:
+    if (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4') and g.freeze_decode:
         itol=2
         ltol.configure(text='Tol    '+str(50))
         Audio.gcom2.dftolerance=50
@@ -1842,8 +1809,6 @@ def update():
             msg2.configure(bg='#00FF00')
         elif mode.get()[:5]=="ISCAT":
             msg2.configure(bg='#CCFFFF')
-        elif mode.get()[:5]=="Diana":
-            msg2.configure(bg='#CCFF00')
         elif mode.get()[:4]=="JTMS":
             msg2.configure(bg='#CC4444')
         elif mode.get()[:3]=="JT4":
@@ -2006,8 +1971,7 @@ def update():
 
         if mode.get()=='Echo':
             plot_echo()
-        elif mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or \
-                 mode.get()=='Diana':
+        elif mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
             plot_large()
         else:
             im.putdata(Audio.gcom2.b)
@@ -2095,9 +2059,6 @@ def update():
             Audio.gcom2.ntdecode=48
         else:
             Audio.gcom2.ntdecode=52
-##    if mode.get()=='Diana':
-##        Audio.gcom2.ntdecode=26
-
     try:
         Audio.gcom2.idinterval=options.IDinterval.get()
     except:
@@ -2247,17 +2208,10 @@ modemenu.add_radiobutton(label = 'JT4D', variable=mode, command = ModeJT4D)
 modemenu.add_radiobutton(label = 'JT4E', variable=mode, command = ModeJT4E)
 modemenu.add_radiobutton(label = 'JT4F', variable=mode, command = ModeJT4F)
 modemenu.add_radiobutton(label = 'JT4G', variable=mode, command = ModeJT4G)
+modemenu.add_radiobutton(label = 'JTMS', variable=mode, command = ModeJTMS)
 modemenu.add_radiobutton(label = 'CW', variable=mode, command = ModeCW)
 modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho)
 modemenu.add_radiobutton(label = 'Measure', variable=mode, command = ModeMeasure)
-
-try:
-    f=open(appdir+'/experimental','r')
-    modemenu.add_separator()
-    modemenu.add_radiobutton(label = 'JTMS', variable=mode, command = ModeJTMS)
-    modemenu.add_radiobutton(label = 'Diana', variable=mode, command = ModeDiana)
-except:
-    pass
 
 try:
     f=open(appdir+'/txboth','r')
@@ -2782,8 +2736,6 @@ try:
                 ModeISCAT_A()
             elif value=='ISCAT-B':
                 ModeISCAT_B()
-            elif value=='Diana':
-                ModeDiana()
             elif value=='JTMS':
                 ModeJTMS()
             elif value[:3]=='JT4':

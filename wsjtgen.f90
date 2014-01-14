@@ -115,8 +115,7 @@ subroutine wsjtgen
   LTone=2
 
   if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT4' .or.                &
-       mode(1:5).eq. 'ISCAT' .or. mode(1:4).eq.'JTMS' .or.           &
-       mode(1:5).eq. 'Diana') then
+       mode(1:5).eq. 'ISCAT' .or. mode(1:4).eq.'JTMS') then
      if(mode(1:4).eq.'JT65') then
 !  We're in JT65 mode.
         if(mode(5:5).eq.'A') mode65=1
@@ -144,8 +143,6 @@ subroutine wsjtgen
         call gen4(msg,mode4,samfacout,ntxdf,iwave,nwave,                  &
              sendingsh,msg22,nmsg0)
         msgsent=msg22
-     else if(mode(1:5).eq.'Diana') then
-        call gendiana(msg,nmsg,samfacout,iwave,nwave,msgsent,sendingsh)
      else
         stop 'Unknown Tx mode requested.'
      endif

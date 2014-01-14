@@ -25,7 +25,6 @@ subroutine decode3(d2,jz,istart,filename)
   if(mode(1:3).eq.'JT4') nmode=7
   if(mode(1:4).eq.'JTMS') nmode=8
   if(mode(1:5).eq.'ISCAT') nmode=9
-  if(mode(1:5).eq.'Diana') nmode=10
   sum=0.
   do i=1,jz
      sum=sum+d2(i)
@@ -81,7 +80,7 @@ subroutine decode3(d2,jz,istart,filename)
   
   nclearave=0
   nagain=0
-  if(mode(1:4).eq.'JT65' .or. mode(1:5).eq.'Diana' .or. mode(1:3).eq.'JT4') then
+  if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT4') then
      call pix2d65(d2d,jz)
   else if(mode.eq.'FSK441' .or. mode(1:4).eq.'JTMS') then
      nz=s2(1,1)
