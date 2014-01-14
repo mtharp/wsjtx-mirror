@@ -1030,7 +1030,7 @@ def usersguide(event=NONE):
 
 #------------------------------------------------------ wsjt9supp
 def wsjt9supp(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/WSJT_9.0_Supplement.pdf'
+    url='http://physics.princeton.edu/pulsar/K1JT/WSJT_9.7_Supplement.pdf'
     thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------- browser
