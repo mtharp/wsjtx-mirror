@@ -1,8 +1,8 @@
 [Setup]
 AppName=WSJT
-AppVerName=WSJT Version 9.6 r3634
+AppVerName=WSJT Version 9.7 r3636
 AppCopyright=Copyright (C) 2001-2014 by Joe Taylor, K1JT
-DefaultDirName={pf}\WSJT9
+DefaultDirName=C:\WSJT9
 DefaultGroupName=WSJT9
 
 [Files]
@@ -17,6 +17,7 @@ Source: "c:\Users\joe\wsjt\trunk\kvasd.dat";         DestDir: "{app}"; Flags: on
 Source: "c:\Users\joe\wsjt\trunk\wsjtrc.win";        DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\trunk\WSJT_User_600.pdf"; DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\trunk\WSJT_Quick_Reference.pdf"; DestDir: "{app}";
+Source: "c:\Users\joe\wsjt\trunk\WSJT_9.7_Supplement.pdf"; DestDir: "{app}";
 Source: "c:\Users\joe\wsjt\trunk\rxwav\samples\W8WN_010809_110400.WAV";  DestDir: "{app}\RxWav\Samples\"; Flags: onlyifdoesntexist
 Source: "c:\Users\joe\wsjt\trunk\dmet_10_-1_3.dat";  DestDir: "{app}"; Flags: onlyifdoesntexist
 
