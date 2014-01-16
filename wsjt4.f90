@@ -99,7 +99,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 200 kvqual=0
   if(ncount.ge.0) kvqual=1
   nqual=qual
-! if(ndiag.eq.0 .and. nqual.gt.10) nqual=10
   if(nqual.ge.nq1 .and.kvqual.eq.0) decoded=deepmsg
 
   ndf=nint(dfx)

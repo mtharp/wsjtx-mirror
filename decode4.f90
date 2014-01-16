@@ -42,7 +42,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
   istart=nint(dtx/dt)              !Start index for synced FFTs
   if(istart.lt.0) istart=0
   nchips=0
-  qbest=-1.e30
+  qbest=0.0
   deepmsg='                      '
   ichbest=-1
 
