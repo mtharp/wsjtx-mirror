@@ -1239,7 +1239,7 @@ void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
   int i,len;
   QFileInfo fi(m_path);
   QStringList list;
-  list= fi.dir().entryList().filter(".wav");
+  list= fi.dir().entryList().filter(".wav",Qt::CaseInsensitive);
   for (i = 0; i < list.size()-1; ++i) {
     if(i==list.size()-2) m_loopall=false;
     len=list.at(i).length();
