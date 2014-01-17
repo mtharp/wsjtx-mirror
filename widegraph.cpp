@@ -35,6 +35,8 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
   int n = m_settings->value("FreqSpan",2).toInt();
   int w = m_settings->value("PlotWidth",1000).toInt();
+  m_bFlatten=m_settings->value("Flatten",true).toBool();
+  ui->cbFlatten->setChecked(m_bFlatten);
   ui->widePlot->m_w=w;
   ui->freqSpanSpinBox->setValue(n);
   ui->widePlot->setNSpan(n);
@@ -42,14 +44,10 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->m_bCurrent=m_settings->value("Current",false).toBool();
   ui->widePlot->m_bCumulative=m_settings->value("Cumulative",true).toBool();
-  ui->widePlot->m_bLinearAvg=m_settings->value("LinearAvg",false).toBool();
   if(ui->widePlot->m_bCurrent) ui->spec2dComboBox->setCurrentIndex(0);
   if(ui->widePlot->m_bCumulative) ui->spec2dComboBox->setCurrentIndex(1);
-  if(ui->widePlot->m_bLinearAvg) ui->spec2dComboBox->setCurrentIndex(2);
   int nbpp=m_settings->value("BinsPerPixel",2).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
-  m_slope=m_settings->value("Slope",0.0).toDouble();
-  ui->slopeSpinBox->setValue(m_slope);
   ui->widePlot->setStartFreq(m_settings->value("StartFreq",0).toInt());
   ui->fStartSpinBox->setValue(ui->widePlot->startFreq());
   m_waterfallPalette=m_settings->value("WaterfallPalette","Default").toString();
@@ -96,12 +94,11 @@ void WideGraph::saveSettings()
   m_settings->setValue ("WaterfallAvg", ui->waterfallAvgSpinBox->value ());
   m_settings->setValue ("Current", ui->widePlot->m_bCurrent);
   m_settings->setValue ("Cumulative", ui->widePlot->m_bCumulative);
-  m_settings->setValue ("LinearAvg", ui->widePlot->m_bLinearAvg);
   m_settings->setValue ("BinsPerPixel", ui->widePlot->binsPerPixel ());
-  m_settings->setValue ("Slope", m_slope);
   m_settings->setValue ("StartFreq", ui->widePlot->startFreq ());
   m_settings->setValue ("WaterfallPalette", m_waterfallPalette);
   m_settings->setValue ("Fmin", m_fMin);
+  m_settings->setValue("Flatten",m_bFlatten);
   m_settings->endGroup ();
 }
 
@@ -281,10 +278,8 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
 {
   ui->widePlot->m_bCurrent=false;
   ui->widePlot->m_bCumulative=false;
-  ui->widePlot->m_bLinearAvg=false;
   if(arg1=="Current") ui->widePlot->m_bCurrent=true;
   if(arg1=="Cumulative") ui->widePlot->m_bCumulative=true;
-  if(arg1=="Linear Avg") ui->widePlot->m_bLinearAvg=true;
 }
 
 void WideGraph::on_fMinSpinBox_valueChanged(int n)
@@ -293,25 +288,10 @@ void WideGraph::on_fMinSpinBox_valueChanged(int n)
   setRxRange(m_fMin);
 }
 
-void WideGraph::on_slopeSpinBox_valueChanged(double d)
-{
-  m_slope=d;
-}
-
-void WideGraph::setSlope(double d)
-{
-  m_slope=d;
-  ui->slopeSpinBox->setValue(d);
-}
-
 void WideGraph::setLockTxFreq(bool b)
 {
   m_lockTxFreq=b;
   ui->widePlot->m_lockTxFreq=b;
-}
-double WideGraph::getSlope()
-{
-  return m_slope;
 }
 
 void WideGraph::setFreq2(int rxFreq, int txFreq)
@@ -368,4 +348,14 @@ void WideGraph::on_paletteComboBox_activated(const QString &palette)
 {
   m_waterfallPalette=palette;
   readPalette("Palettes/" + palette + ".pal");
+}
+
+void WideGraph::on_cbFlatten_toggled(bool b)
+{
+  m_bFlatten=b;
+}
+
+bool WideGraph::flatten()
+{
+  return m_bFlatten;
 }

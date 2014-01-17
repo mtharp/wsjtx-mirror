@@ -723,9 +723,9 @@ void MainWindow::dataSink(qint64 frames)
   static int nzap=0;
   static int trmin;
   static int npts8;
+  static int nflatten=0;
   static float px=0.0;
   static float df3;
-  static float slope;
 
   if(m_diskData) {
     jt9com_.ndiskdat=1;
@@ -735,12 +735,12 @@ void MainWindow::dataSink(qint64 frames)
 
 // Get power, spectrum, and ihsym
   trmin=m_TRperiod/60;
-  slope=0.0;
-  slope=(float)m_wideGraph->getSlope();
   int k (frames - 1);
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfb=m_wideGraph->getFmax();
-  symspec_(&k,&trmin,&m_nsps,&m_inGain,&slope,&px,s,&df3,&ihsym,&npts8);
+  nflatten=0;
+  if(m_wideGraph->flatten()) nflatten=1;
+  symspec_(&k,&trmin,&m_nsps,&m_inGain,&nflatten,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
@@ -1422,7 +1422,7 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nfSplit=m_wideGraph->getFmin();
   jt9com_.nfb=m_wideGraph->getFmax();
   jt9com_.ntol=20;
-  if(jt9com_.nutc < m_nutc0) m_RxLog |= 1;       //Date and Time to all.txt
+  if(jt9com_.nutc < m_nutc0) m_RxLog = 1;       //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
   jt9com_.ntxmode=9;
   if(m_modeTx=="JT65") jt9com_.ntxmode=65;
@@ -1494,7 +1494,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
       QFile f("ALL.TXT");
       f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
       QTextStream out(&f);
-      if(m_RxLog && 1) {
+      if(m_RxLog==1) {
         out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
             << "  " << m_dialFreq << " MHz  " << m_mode << endl;
         m_RxLog=0;
