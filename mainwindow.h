@@ -180,7 +180,8 @@ private slots:
   void on_cbPlus2kHz_toggled(bool checked);
   void on_outAttenuation_valueChanged (int);
   void on_actionAstronomical_data_triggered();
-
+  void on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered();
+  void getpfx();
   void on_actionJT9W_1_triggered();
 
 private:
@@ -392,6 +393,11 @@ private:
     QStringList m_dFreq;           // per band frequency in MHz as a string
     QStringList m_antDescription;  // per band antenna description
     QStringList m_bandDescription; // per band description
+    QStringList m_prefix;
+    QStringList m_suffix;
+
+    QHash<QString,bool> m_pfx;
+    QHash<QString,bool> m_sfx;
 
     QDateTime m_dateTimeQSO;
     QRect   m_astroGeom;
@@ -426,6 +432,7 @@ private:
     void rigOpen();
     void pollRigFreq();
     bool gridOK(QString g);
+    bool shortList(QString callsign);
     QString baseCall(QString t);
     void transmit (double snr = 99.);
 };

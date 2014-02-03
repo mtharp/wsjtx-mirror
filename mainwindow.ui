@@ -2358,6 +2358,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionKeyboard_shortcuts"/>
     <addaction name="actionSpecial_mouse_commands"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionShort_list_of_add_on_prefixes_and_suffixes"/>
    </widget>
    <widget class="QMenu" name="menuMode">
     <property name="title">
@@ -2603,6 +2604,9 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>Double-click on call sets Tx Enable</string>
    </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
   </action>
   <action name="action_73TxDisable">
    <property name="checkable">
@@ -2687,6 +2691,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>JT9W-1</string>
+   </property>
+  </action>
+  <action name="actionShort_list_of_add_on_prefixes_and_suffixes">
+   <property name="text">
+    <string>Short list of add-on prefixes and suffixes</string>
    </property>
   </action>
  </widget>

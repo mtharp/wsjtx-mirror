@@ -1,4 +1,5 @@
-//------------------------------------------------------------ MainWindow
+//---------------------------------------------------------- MainWindow
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -32,13 +33,14 @@ Astro*  g_pAstro = NULL;
 
 Rig* rig = NULL;
 QTextEdit* pShortcuts;
+QTextEdit* pPrefixes;
 QTcpSocket* commanderSocket = new QTcpSocket(0);
 
 QString rev="$Rev$";
 QString Program_Title_Version="  WSJT-X   v1.3, r" + rev.mid(6,4) +
                               "    by K1JT";
 
-//-------------------------------------------------- MainWindow constructor
+//--------------------------------------------------- MainWindow constructor
 // Multiple instances: new arg *thekey
 MainWindow::MainWindow(QSettings * settings, QSharedMemory *shdmem, QString *thekey,
                        qint32 fontSize2, qint32 fontWeight2, unsigned downSampleFactor,
@@ -367,6 +369,7 @@ MainWindow::MainWindow(QSettings * settings, QSharedMemory *shdmem, QString *the
       border-style: outset; border-width: 1px; border-radius: 5px; \
       border-color: black; min-width: 5em; padding: 3px;}";
 
+  getpfx();                               //Load the prefix/suffix dictionary
   genStdMsgs(m_rpt);
   m_ntx=6;
   ui->txrb6->setChecked(true);
@@ -1188,7 +1191,7 @@ void MainWindow::msgBox(QString t)                             //msgBox
 void MainWindow::on_actionOnline_Users_Guide_triggered()      //Display manual
 {
   QDesktopServices::openUrl(QUrl(
-  "http://www.physics.princeton.edu/pulsar/K1JT/WSJT-X_Users_Guide_v1.2.pdf",
+    "http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-toc2.html",
                               QUrl::TolerantMode));
 }
 
@@ -2184,9 +2187,10 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
   }
   QString hisBase=baseCall(hisCall);
   QString myBase=baseCall(m_myCall);
+
   QString t0=hisBase + " " + myBase + " ";
   t=t0 + m_myGrid.mid(0,4);
-  if(myBase!=m_myCall) t="DE " + m_myCall + " " + m_myGrid.mid(0,4);
+//  if(myBase!=m_myCall) t="DE " + m_myCall + " " + m_myGrid.mid(0,4);  //###
   msgtype(t, ui->tx1);
   if(rpt == "") {
     t=t+" OOO";
@@ -2202,12 +2206,33 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
     t=t0 + "RRR";
     msgtype(t, ui->tx4);
     t=t0 + "73";
-    if(myBase!=m_myCall) t="DE " + m_myCall + " 73";
+//    if(myBase!=m_myCall) t="DE " + m_myCall + " 73";                  //###
     msgtype(t, ui->tx5);
   }
 
   t="CQ " + m_myCall + " " + m_myGrid.mid(0,4);
   msgtype(t, ui->tx6);
+
+  if(m_myCall!=myBase) {
+    if(shortList(m_myCall)) {
+      t="CQ " + m_myCall;
+      msgtype(t, ui->tx6);
+    } else {
+      t="DE " + m_myCall + " " + m_myGrid.mid(0,4);
+      msgtype(t, ui->tx2);
+      t="DE " + m_myCall + " 73";
+      msgtype(t, ui->tx5);
+      t="CQ " + m_myCall + " " + m_myGrid.mid(0,4);
+      msgtype(t, ui->tx6);
+    }
+  } else {
+    if(hisCall!=hisBase) {
+      if(shortList(hisCall)) {
+        t=hisCall + " " + m_myCall;
+        msgtype(t, ui->tx2);
+      }
+    }
+  }
   m_ntx=1;
   ui->txrb1->setChecked(true);
   m_rpt=rpt;
@@ -2880,6 +2905,11 @@ void MainWindow::on_freeTextMsg_editingFinished()
 void MainWindow::on_actionDouble_click_on_call_sets_Tx_Enable_triggered(bool checked)
 {
   m_quickCall=checked;
+  if(checked) {
+    lab3->setText("Tx-Enable Armed");
+  } else {
+    lab3->setText("Tx-Enable Disarmed");
+  }
 }
 
 void MainWindow::on_rptSpinBox_valueChanged(int n)
@@ -3141,4 +3171,98 @@ void MainWindow::on_outAttenuation_valueChanged (int a)
   qreal dBAttn (a / 10.);      // slider interpreted as hundredths of a dB
   ui->outAttenuation->setToolTip (tr ("Transmit digital gain ") + (a ? QString::number (-dBAttn, 'f', 1) : "0") + "dB");
   Q_EMIT outAttenuationChanged (dBAttn);
+}
+
+void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
+{
+  pPrefixes = new QTextEdit(0);
+  pPrefixes->setReadOnly(true);
+  pPrefixes->setFontPointSize(10);
+  pPrefixes->setWindowTitle("Prefixes");
+  pPrefixes->setGeometry(QRect(45,50,565,450));
+  Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
+      Qt::WindowMinimizeButtonHint;
+  pPrefixes->setWindowFlags(flags);
+  QString prefixes = m_appDir + "/prefixes.txt";
+  QFile f(prefixes);
+  if(!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    msgBox("Cannot open " + prefixes);
+    return;
+  }
+  QTextStream s(&f);
+  QString t;
+  for(int i=0; i<100; i++) {
+    t=s.readLine();
+    pPrefixes->append(t);
+    if(s.atEnd()) break;
+  }
+  pPrefixes->show();
+}
+
+void MainWindow::getpfx()
+{
+  m_prefix <<"1A" <<"1S" <<"3A" <<"3B6" <<"3B8" <<"3B9" <<"3C" <<"3C0" \
+        <<"3D2" <<"3D2C" <<"3D2R" <<"3DA" <<"3V" <<"3W" <<"3X" <<"3Y" \
+        <<"3YB" <<"3YP" <<"4J" <<"4L" <<"4S" <<"4U1I" <<"4U1U" <<"4W" \
+        <<"4X" <<"5A" <<"5B" <<"5H" <<"5N" <<"5R" <<"5T" <<"5U" \
+        <<"5V" <<"5W" <<"5X" <<"5Z" <<"6W" <<"6Y" <<"7O" <<"7P" \
+        <<"7Q" <<"7X" <<"8P" <<"8Q" <<"8R" <<"9A" <<"9G" <<"9H" \
+        <<"9J" <<"9K" <<"9L" <<"9M2" <<"9M6" <<"9N" <<"9Q" <<"9U" \
+        <<"9V" <<"9X" <<"9Y" <<"A2" <<"A3" <<"A4" <<"A5" <<"A6" \
+        <<"A7" <<"A9" <<"AP" <<"BS7" <<"BV" <<"BV9" <<"BY" <<"C2" \
+        <<"C3" <<"C5" <<"C6" <<"C9" <<"CE" <<"CE0X" <<"CE0Y" <<"CE0Z" \
+        <<"CE9" <<"CM" <<"CN" <<"CP" <<"CT" <<"CT3" <<"CU" <<"CX" \
+        <<"CY0" <<"CY9" <<"D2" <<"D4" <<"D6" <<"DL" <<"DU" <<"E3" \
+        <<"E4" <<"EA" <<"EA6" <<"EA8" <<"EA9" <<"EI" <<"EK" <<"EL" \
+        <<"EP" <<"ER" <<"ES" <<"ET" <<"EU" <<"EX" <<"EY" <<"EZ" \
+        <<"F" <<"FG" <<"FH" <<"FJ" <<"FK" <<"FKC" <<"FM" <<"FO" \
+        <<"FOA" <<"FOC" <<"FOM" <<"FP" <<"FR" <<"FRG" <<"FRJ" <<"FRT" \
+        <<"FT5W" <<"FT5X" <<"FT5Z" <<"FW" <<"FY" <<"M" <<"MD" <<"MI" \
+        <<"MJ" <<"MM" <<"MU" <<"MW" <<"H4" <<"H40" <<"HA" \
+        <<"HB" <<"HB0" <<"HC" <<"HC8" <<"HH" <<"HI" <<"HK" <<"HK0A" \
+        <<"HK0M" <<"HL" <<"HM" <<"HP" <<"HR" <<"HS" <<"HV" <<"HZ" \
+        <<"I" <<"IS" <<"IS0" <<"J2" <<"J3" <<"J5" <<"J6" \
+        <<"J7" <<"J8" <<"JA" <<"JDM" <<"JDO" <<"JT" <<"JW" \
+        <<"JX" <<"JY" <<"K" <<"KG4" <<"KH0" <<"KH1" <<"KH2" <<"KH3" \
+        <<"KH4" <<"KH5" <<"KH5K" <<"KH6" <<"KH7" <<"KH8" <<"KH9" <<"KL" \
+        <<"KP1" <<"KP2" <<"KP4" <<"KP5" <<"LA" <<"LU" <<"LX" <<"LY" \
+        <<"LZ" <<"OA" <<"OD" <<"OE" <<"OH" <<"OH0" <<"OJ0" <<"OK" \
+        <<"OM" <<"ON" <<"OX" <<"OY" <<"OZ" <<"P2" <<"P4" <<"PA" \
+        <<"PJ2" <<"PJ7" <<"PY" <<"PY0F" <<"PT0S" <<"PY0T" <<"PZ" <<"R1F" \
+        <<"R1M" <<"S0" <<"S2" <<"S5" <<"S7" <<"S9" <<"SM" <<"SP" \
+        <<"ST" <<"SU" <<"SV" <<"SVA" <<"SV5" <<"SV9" <<"T2" <<"T30" \
+        <<"T31" <<"T32" <<"T33" <<"T5" <<"T7" <<"T8" <<"T9" <<"TA" \
+        <<"TF" <<"TG" <<"TI" <<"TI9" <<"TJ" <<"TK" <<"TL" \
+        <<"TN" <<"TR" <<"TT" <<"TU" <<"TY" <<"TZ" <<"UA" <<"UA2" \
+        <<"UA9" <<"UK" <<"UN" <<"UR" <<"V2" <<"V3" <<"V4" <<"V5" \
+        <<"V6" <<"V7" <<"V8" <<"VE" <<"VK" <<"VK0H" <<"VK0M" <<"VK9C" \
+        <<"VK9L" <<"VK9M" <<"VK9N" <<"VK9W" <<"VK9X" <<"VP2E" <<"VP2M" <<"VP2V" \
+        <<"VP5" <<"VP6" <<"VP6D" <<"VP8" <<"VP8G" <<"VP8H" <<"VP8O" <<"VP8S" \
+        <<"VP9" <<"VQ9" <<"VR" <<"VU" <<"VU4" <<"VU7" <<"XE" <<"XF4" \
+        <<"XT" <<"XU" <<"XW" <<"XX9" <<"XZ" <<"YA" <<"YB" <<"YI" \
+        <<"YJ" <<"YK" <<"YL" <<"YN" <<"YO" <<"YS" <<"YU" <<"YV" \
+        <<"YV0" <<"Z2" <<"Z3" <<"ZA" <<"ZB" <<"ZC4" <<"ZD7" <<"ZD8" \
+        <<"ZD9" <<"ZF" <<"ZK1N" <<"ZK1S" <<"ZK2" <<"ZK3" <<"ZL" <<"ZL7" \
+        <<"ZL8" <<"ZL9" <<"ZP" <<"ZS" <<"ZS8" <<"KC4" <<"E5";
+
+  m_suffix << "P" << "0" << "1" << "2" << "3" << "4" << "5" << "6" \
+         << "7" << "8" << "9" << "A";
+
+  for(int i=0; i<12; i++) {
+    m_sfx.insert(m_suffix[i],true);
+  }
+  for(int i=0; i<339; i++) {
+    m_pfx.insert(m_prefix[i],true);
+  }
+}
+
+bool MainWindow::shortList(QString callsign)
+{
+  int n=callsign.length();
+  int i1=callsign.indexOf("/");
+  Q_ASSERT(i1>0 and i1<n);
+  QString t1=callsign.mid(0,i1);
+  QString t2=callsign.mid(i1+1,n-i1-1);
+  bool b=(m_pfx.contains(t1) or m_sfx.contains(t2));
+  return b;
 }
