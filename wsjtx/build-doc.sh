@@ -22,7 +22,7 @@ no_col='\033[01;37m'
 # misc var's
 base_dir=$(pwd)
 src_dir="$base_dir/source"
-c_asciidoc="asciidoc -b xhtml11 -a max-width=1024px"    
+c_asciidoc="../asciidoc/asciidoc.py -b xhtml11 -a iconsdir="../icons" -a max-width=1024px"    
 script_name=$(basename $0)
 doc_version="1.3"
 
