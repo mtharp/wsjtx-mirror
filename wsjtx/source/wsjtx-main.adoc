@@ -34,8 +34,8 @@
 // DOWNLOAD links
 :cty_dat: http://www.country-files.com/cty/[here].
 :kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
-:osx_108: http://physics.princeton.edu/pulsar/K1JT/wsjtx_3nov13.tar.gz[ OS X 10.6, 10.7, and 10.8 ]
-:osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_29nov13.tar.gz[ OS X 10.9 ]
+:osx_108: http://physics.princeton.edu/pulsar/K1JT/wsjtx_01feb14.tar.gz[ OS X 10.6, 10.7, and 10.8 ]
+:osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_01feb14.tar.gz[ OS X 10.9 ]
 
 // MAIL-TO links
 :alex_efros: mailto:powerman@powerman.name[ Alex Efros ]
