@@ -7,6 +7,8 @@
 :badges:
 :icons:
 :numbered:
+:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
+:description: Software for Amateur Radio Weak-Signal Communication
 
 // If the list of links gets too long, we can add a url-file that is pulled
 // in when and where needed with the following:
