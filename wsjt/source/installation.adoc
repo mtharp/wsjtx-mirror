@@ -1,0 +1,10 @@
+// Numbered list
+. Download _WSJT_ from the {homepage}. Click on _WSJT_ at the left
+margin and then on the appropriate link(s) for your operating system.
+
+. Windows: Execute the downloaded file to install WSJT to a directory
+of your choice.  The default directory is C:\WSJT9.
+
+. Connect appropriate interface cables between your computer and
+radio.  For help with the hardware interface, refer to one of the many
+descriptions of other sound card modes such as PSK31.

@@ -1,0 +1,224 @@
+// Numbered list
+
+A large part of the skill required for effective use of WSJT is
+learning to use the decoders effectively.  To use the following
+tutorial you must first obtain the collection of sample wave files
+available at
+http://physics.princeton.edu/pulsar/K1JT/WSJT6_Samples.EXE (Windows)
+or http://physics.princeton.edu/pulsar/K1JT/WSJT6_Samples.tgz (Linux).
+These files contain on-the-air recordings of meteor pings in FSK441
+mode, pings and ionospheric scatter signals in JT6M mode, and EME
+signals in the JT65 modes.  The package of sample files is about 22 MB
+in size.  If you do not have a fast internet connection, you may wish
+to obtain the sample wave files on CD-ROM.  Instructions may be found
+at http://physics.princeton.edu/pulsar/K1JT/Download.htm.
+
+. If you have already installed and used a version of WSJT6, delete
+your WSJT.INI file or temporarily rename it to something else. This
+will ensure that you start the tutorial with everything in the default
+configuration.
+
+. Install the sample files to the RxWav subdirectory under your WSJT6
+installation directory.  You can do this by executing the file
+WSJT6_Samples.EXE (in Windows) or by extracting the tarfile
+WSJT6_Samples.tgz (in Linux or FreeBSD).
+
+. Double-click on the WSJT6 desktop icon to start the program in
+Windows.  In Linux, start the program by typing python -O wsjt.py.
+Position the main WSJT6 window conveniently on your screen.  You may
+ignore or minimize the other two windows for now.
+
+. By default WSJT starts in FSK441 mode (yellow label at bottom left
+of status bar).  Select menu item File | Open and navigate to
+subdirectory RxWav\Samples\FSK441 under your WSJT6 installation
+directory.  Double-click on the first file in this directory,
+K5CZD_050723_134100.WAV.  The file will be opened and a 2-dimensional
+spectrogram displayed in the main graphical area.  The decoder
+produces the following text in the main text box: 
+
+ 134100 27.4 220 6 26 -21 O1JT 26 K5CZD 2626 K1JT 27 K5CZ #6
+
+. According to the line of decoded text, this file contains a meteor
+``ping'' at t = 27.4 s, lasting 220 ms, with (S+N)/N = 6 dB.  You can
+see that K5CZD is sending K1JT the signal report ``26''.  In FSK441
+and JT6M modes it is not uncommon to see incorrect characters near
+both ends of decoded sequences, where the signal is weak.  Additional
+details on message structure and information reported by the decoders
+is presented later in this Guide.
+
+. Hit the F6 key (or select File | Open next in directory) to open and
+decode successive files in the FSK441 directory.  These files contain
+recordings of K8EB calling KB4BWW, KC0HLN calling CQ and then working
+K1JT, KM5ES working K1JT, KM5PO calling K1JT as a ``tailender,'' and
+finally N9EGT calling CQ.  With any of these files you should try
+left- and right-clicking on the pings to invoke the decoder at a
+particular location in the file.  You can also try clicking on pure
+noise, away from any ping; you should then see only garbage as decoded
+text.  You can click Erase or Decode at any time to clear the display
+areas and decode the most recently analyzed file again.
+
+. Open the first KC0HLN file again.  It produces the message 
+
+  001400  6.5  400 15 27  -21     2 CQ KC0HLN EN32 CQ KC0HLN E/31 GQ#GBYLE 
+
+. Double-click on the callsign KC0HLN in the text window, and watch what
+happens in the Tx message boxes.  The program is now ready for K1JT to
+answer this CQ.
+
+. Hit Shift-F7 to switch to JT6M mode (on Linux, use the Mode menu).
+Select File | Open, navigate to inside the subfolder
+RxWav\Samples\JT6M under your WSJT6 installation directory, and
+double-click on the AA9MY file.  You should see a message in which
+AA9MY is finishing a QSO by sending ``73 DE AA9MY'':
+
+  142300 15.1  1.2  -2  -15      9MY 73 DE AA9MF2
+
+. The AA9MY signal is rather weaker than those in the FSK441 examples.
+Try listening to any of the files using Windows Sound Recorder, to get
+a feeling for what they sound like.
+
+. Hit F6 to read and decode successive files in the JT6M directory.
+You should see AC5TM working K1SIX, AF4O working K1JT, and WA5UFH
+working K0AWU.  In several files the signals are inaudible or barely
+audible, yet still decodable.  The second AF4O file produces no
+decoded text by default, but try right-clicking at about t = 16.6 s.
+(The file time corresponding to the location of the mouse pointer is
+displayed in a green label at lower left of the plot area.)  You
+should be able to find several other examples of decodable text in
+flat regions on the green curve.  For example, try left-clicking at 
+t= 7.4 s or t = 9.8 s in the first AF4O file, or at t = 11.6 s in the
+second AF4O file.
+
+. Hit F8 to switch to mode JT65A and clear the Freeze setting.  You
+should now pay some attention to the SpecJT screen as well as the main
+WSJT6 screen.  (Select View | SpecJT if you have previously minimized
+or deleted it.)  If the SpecJT and WSJT6 windows overlap on your
+screen, you can reduce the vertical size of the SpecJT window so that
+only its top half shows.  Select speed 3 on the SpecJT window and
+check the following items on the SpecJT Options menu: Mark T/R
+boundaries, Flatten spectra, Mark JT65 tones only if Freeze is
+checked, and JT65 DF axis.  Select File | Open on the main screen,
+navigate to inside the JT65A directory, and double-click on the F9HS
+file name.  The SpecJT screen will show a messy spectrum cluttered
+with birdies at 100 Hz intervals and other interfering signals.
+However, the red curve in the main-screen graphical area shows a
+strong JT65 sync tone amongst the clutter, and the decoder produces
+
+ 074800 1 -23 2.7 363 5 * K1JT F9HS JN23 1 10
+
+. Double-click on F9HS in the text window.  You should see F9HS copied
+into the To Radio box; the database will be searched and the grid
+locator entered, if available; Tx messages will be generated for a QSO
+with F9HS, and the Tx message pointer will be set to message number 2
+so that a signal report will be sent.  During actual operation, all of
+this can take place in the few seconds near the end of a reception
+interval, before you start transmitting again.
+
+. Hit F6 to open the next file.  A smaller red spike appears, and you
+will see that G3FPQ is calling W7GJ:
+
+  131900  1  -25  1.5   42  3 *      W7GJ G3FPQ IO91            1   0
+
+. Hit Shift-F8 to select JT65B mode (use the Mode menu on Linux).
+Then select File | Open, navigate to inside the JT65B directory, and
+open the DL7UAE file.  The waterfall shows a strong birdie at DF = 783
+Hz and several weaker signals.  The ones at DF = 223 and DF = 244 Hz
+look most interesting because they show the ``speckled'' QSB typical
+of EME libration fading at 2 meters.  WSJT chooses the signal at DF =
+223 Hz as the most promising, and decodes it to reveal DL7UAE
+answering a CQ from K1JT.  
+
+  002400 6 -23 2.5 223 23 * K1JT DL7UAE JO62 1 10 
+
+. The red curve shows a second spike that looks almost as good as the
+DL7UAE signal (see picture on page 14).  Experiment to see if you can
+determine who else might be calling.  (The answer and how to find it
+are given below, in step 24.)
+
+. When you are ready to continue, clear Freeze and AFC (you may also
+want to click Erase and Clr Avg) and hit F6 to open the next file.
+The green curve shows some nasty SSB QRM starting at t = 5.3 s into
+the file.  (Again, you might want to listen to this file.)  Some
+rhythmic broadband noise is also present, showing clearly on the green
+line.  Fortunately, the waterfall looks nearly clean in the important
+JT65 spectral region, and WSJT has no problem decoding the signal at
+DF = -46 Hz.  EA5SE is sending K1JT the OOO signal report.  
+
+  000400 2 -25 2.9 -46 3 # K1JT EA5SE IM98 OOO 1 10 
+
+. Try double-clicking on the sync tone in the waterfall, or on the red
+spike in the main-screen graphics area.  Either action will
+automatically set DF to the selected frequency, Freeze on and Tol = 50
+Hz, and will then invoke the decoder.  You can see on the red curve
+that the sync-tone search range has been reduced to a range +/- 50 Hz
+around the selected frequency offset Freeze DF.  Take note of the
+colored tick marks on the frequency scale at the top of the SpecJT
+screen.  The leftmost vertical green mark shows the selected Freeze
+DF, and the horizontal band below it shows the range searched for a
+sync tone.  The other green tick marks the upper limit of the JT65
+data tones, and red ticks mark the frequencies that would be used for
+shorthand messages.
+
+. Hit F6 to open the next file.  You will see EA5SE sending K1JT the
+shorthand message RRR.  Magenta and orange curves in the main-screen
+graphics area show the measured spectra for the two distinct phases of
+the shorthand message cycle.  In the waterfall display you should see
+the alternating tones for RRR accurately aligned with the sync-tone
+marker and the second red marker.  Hit the F6 key once more to decode
+the final transmission of this QSO, with ES5SE sending 73 to K1JT.
+
+. Uncheck Freeze and hit F6 again.  The waterfall shows a likely sync
+tone with deep libration fading at DF = -22 Hz, and the decoder shows
+EI4DQ sending K1JT the OOO signal report.  Double-click on the sync
+tone in either window to lock him in, and hit F6 to open the next
+file.  Evidently EI4DQ has received the OOO report from K1JT and is
+now sending RO.
+
+. Clear the Freeze box, check AFC, and hit F6 again to open the next
+file.  Two birdies are in the passband, but WSJT ignores them and
+finds a valid sync tone at DF = 223 Hz, decoding IK1UWL sending an OOO
+report to K1JT.  Uncheck AFC and hit Decode; you will notice that the
+first of two numbers near the end of the decoded line changes from 1
+to 0, indicating that without AFC the Deep Search decoder is required
+to decode this file.  Double-click on the sync tone to lock in IK1UWL,
+and wait for the next transmission (i.e., hit F6 to read the next
+file).  IK1UWL has copied my RO, so he is sending RRR.  Note that this
+shorthand message is barely visible on the waterfall, but it is still
+decoded correctly.  K1JT would now send 73 to signify that the QSO is
+complete.
+
+. Clear the Freeze and AFC boxes and hit F6 to find RU1AA calling CQ.
+RU1AA has a big signal; his tones are easily audible in this file.  In
+the next several files K1JT works him quickly, despite two birdies
+that are drifting down through the JT65 signal passband.  Notice that
+as a reminder, decoded shorthand messages are always flagged with a
+``?'' mark unless you have turned Freeze on and set Tol to 100 Hz or
+less -- things that you should always do, for best results.  RU1AA
+ends the QSO by sending the message ``TNX JOE -14 73'' to tell K1JT
+that his signal peaked at -14 dB.  Since this message does not start
+with two callsigns (or CQ or QRZ plus one callsign) it is treated as a
+plain text message.  Such messages can convey no more than 13
+characters, so in this case the final ``73'' is truncated.
+
+. Clear the Freeze box and hit F6 to show another big Russian signal:
+RW1AY/1 is answering a CQ from K1JT.  Double-click on the sync tone
+(on either window) to lock it in, and then hit F6 to see the RO, 73,
+and -19TNXQSO 73 contents of the next three transmissions.
+
+. Were you able to decode the second station answering my CQ in the
+DL7UAE file?  If so, congratulations!  If not, clear Freeze and go
+back to File | Open and select the first file again.  Left-click on
+the smaller red spike, check Freeze on, and reduce Tol to 10 Hz.  Then
+hit Decode, and you should see SP6GWB calling K1JT with an excellent
+signal.  The DL7UAE and SP6GWB signals are separated by only 22 Hz, so
+most of their tones overlap in the 355 Hz passband of JT65B.
+Nevertheless, the decoder copies perfectly through the resulting QRM
+with the help of its robust error-correcting code.
+
+. While you have the DL7UAE file in memory, Freeze on, Tol = 10 Hz,
+and DF set on the smaller red spike, hit F2 to open the Setup |
+Options screen and enter your own call (or some other call) in place
+of K1JT in the My Call box.  Then dismiss the Options screen and try
+to decode the SP6GWB signal again.  You will surely fail, because for
+this message successful copy was obtained as a result from the Deep
+Search decoder, which is described further below.

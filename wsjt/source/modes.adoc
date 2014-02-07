@@ -1,0 +1,22 @@
+[horizontal]
+
+FSK441:: Designed for high speed meteor scatter.  Uses 4-tone
+frequency-shift keying (4-FSK) at 441 baud, character transmission
+rate 147 cps.
+
+JTMS:: New alternative for meteor scatter.  Uses minimum-shift keying
+(MSK) at 1378.125 baud, character transmission rate 197 cps.
+
+ISCAT:: Optimized for meteor and ionospheric scatter on 6 meters.  Uses
+42-FSK at 43.066 baud, character transmission rate 32.3 cps.
+
+JT65:: Designed for Earth-Moon-Earth (EME, ``moonbounce'') and weak
+troposcatter.  Uses structured messages, a Reed-Solomon (63,12)
+error-control code (ECC), and 65-FSK modulation at 2.69 baud.
+Character transmission rate is roughly 0.25 cps.
+
+JT4:: Designed for EME on microwave bands.  Uses structured messages,
+a K=32, r=1/2 convolutional code, and 4-FSK modulation at 4.375 baud.
+Character transmission rate is roughly 0.25 cps.
+
+CW:: for EME using timed, computer-generated transmissions

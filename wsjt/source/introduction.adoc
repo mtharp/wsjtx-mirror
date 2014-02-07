@@ -1,0 +1,5 @@
+WSJT is a computer program for amateur VHF/UHF communication using
+state of the art digital techniques.  It can help you to make contacts
+using fraction-of-a-second signals reflected from meteor trails, as
+well as steady signals more than 10 dB weaker than those needed for
+conventional CW.
