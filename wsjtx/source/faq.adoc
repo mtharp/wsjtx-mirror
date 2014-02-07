@@ -28,3 +28,10 @@ A few radios do not interact properly with the +hamlib+ calls used in
 _WSJT-X_.  We are working to resolve these issues.  In the meantime,
 you can run with *Polling interval* = 0, or control your radio through
 _DX Labs Commander_ or _Ham Radio Deluxe_.
+
+How should I configure _WSJT-X_ to run multiple instances?.::
+
+Each instance should be in its own folder if you wish to keep the ALL.TXT, *.log,
+and *.adi files properly sorted.
+
+If "Allow multiple instances" was *not* checked when _WSJT-X_ was last exited, the next program startup (in Windows only) will attempt to kill any running instances of the decoder back end, jt9.exe, before starting a new one.
