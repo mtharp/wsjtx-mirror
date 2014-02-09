@@ -98,7 +98,7 @@ sudo apt-get install libgfortran3:i386 libc6-i386
 
 mkdir -p ~/Projects/wsjtx-build && cd ~/Projects/wsjtx-build
 svn co svn://svn.berlios.de/wsjt/branches/wsjtx
-cd ./wsjtx/lib && make -f Makfile.linux
+cd ./wsjtx/lib && make -f Makefile.linux
 cd ../ && export QT_SELECT=qt5 && qmake
 j_c=$(grep -c ^processor /proc/cpuinfo) && make -j$j_c
 
