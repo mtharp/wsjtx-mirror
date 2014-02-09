@@ -324,7 +324,7 @@ fi
 # Check for file after build
 # TO-DO: Use associative array to validate build manifest
 function post_file_check() {
-if [[ $(ls -1 ./*.txt 2>/dev/null | wc -l) > 0 ]]
+if [[ $(ls -1 ./*.html 2>/dev/null | wc -l) > 0 ]]
 then
 	clear
 	echo -e ${C_Y}"Finished Building $display_name Documentation"${C_NC}
