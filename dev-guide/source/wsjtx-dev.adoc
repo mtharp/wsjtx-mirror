@@ -104,7 +104,7 @@ j_c=$(grep -c ^processor /proc/cpuinfo) && make -j$j_c
 
 # mv wsjtx_intall to the new rev-number
 rev_num=$(svn log -l1 |awk 'FNR==2 {print $1}')
-mv ./wsjtx_install ./wsjtx-$rev_num
+cd ../ && mv ./wsjtx_install ./wsjtx-$rev_num
 
 -----
 
@@ -116,11 +116,10 @@ Before running _WSJT-X_, download _kvasd_, and link required run files.
 
 [source,bash]
 -----
-# cd to the launch directory
+# cd and download set-up kvasd
+wget -P ./wsjtx http://www.physics.princeton.edu/pulsar/K1JT/kvasd
+chmod +x ./wsjtx/kvasd
 cd ./wsjtx-$rev_num
-
-wget http://www.physics.princeton.edu/pulsar/K1JT/kvasd
-chmod +x ./kvasd
 
 # IMPORTANT: You can copy or link the files / folders, but make sure
 # they are in the same directory as the wsjtx binary.

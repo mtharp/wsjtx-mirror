@@ -31,6 +31,7 @@ set -e
 #######################
 
 # Main variables
+SCRIPTVER="0.7.0"
 SCRIPTNAME=$(basename $0)
 BASEDIR=$(pwd)
 export PATH=$BASEDIR/asciidoc:$PATH
@@ -323,7 +324,7 @@ fi
 # Check for file after build
 # TO-DO: Use associative array to validate build manifest
 function post_file_check() {
-if [[ $(ls -1 ./*.html 2>/dev/null | wc -l) > 0 ]]
+if [[ $(ls -1 ./*.txt 2>/dev/null | wc -l) > 0 ]]
 then
 	clear
 	echo -e ${C_Y}"Finished Building $display_name Documentation"${C_NC}
@@ -333,9 +334,17 @@ then
 	return
 else
 	clear
-	echo -e ${C_R}"$display_name DOCS BUILD ERROR - No File(s) Found"
-	echo -e "Contact the Dev-Group: $DEVMAIL"
-	echo
+	echo -e ${C_R}"$display_name DOCS BUILD ERROR - No File(s) Found"${C_NC}
+	echo "Gathering System Information"
+	SYS_INFO=$(uname -a)
+	SVN_VER=$(svn log -l1 |awk 'FNR==2 {print $1}')
+	BASH_INFO=$(bash --version |awk 'NR==1')
+	echo "Script version: v$SCRIPTVER"
+	echo "SVN Version: $SVN_VER"
+	echo "$SYS_INFO"
+	echo "$BASH_VER"
+	echo "Please Email Info to WSJT Dev-Group: $DEVMAIL"
+	echo "Thank You."
 	exit 1
 fi
 } # End file check after build
@@ -354,7 +363,7 @@ function app_menu_help() {
 	echo 'All TOC Versions: ./build-doc.sh wsjtx all'
 	echo 'No TOC:           ./build-doc.sh wsjtx ntoc'
 	echo 'Top TOC Only:     ./build-doc.sh wsjtx toc1'
-	echo 'Left TOC only:    ./build-doc,sh wsjtx toc2'
+	echo 'Left TOC only:    ./build-doc.sh wsjtx toc2'
 	echo
 	echo 'The same method is used for all applications .'
 	echo 'For Help: ./build-doc.sh help'
