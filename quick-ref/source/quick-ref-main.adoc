@@ -116,7 +116,7 @@ _Cygwin Terminal_. To launch a terminal session, simply double click the
 desktop icon as you would any other Windows application.
 
 ==== Package Verification
-[source,bash]
+
 -----
 # one line per action
 python -V
@@ -135,7 +135,7 @@ CAUTION: If any package check returns with an error, resolve before
 continuing !!
 
 ==== Configure _Bash Environment_
-[source,bash]
+
 -----
 # Edit ./.bash_profile, uncomment if statement:
 nano ./.bash_profile
@@ -157,7 +157,6 @@ echo $PATH
 
 ==== Download and Configure _AsciiDoc_
 
-[source,bash]
 -----
 # one action per line
 cd ~/bin
@@ -179,7 +178,7 @@ asciidoc --version
 -----
 
 ==== Test build _WSJT-X User Guide_
-[source,bash]
+
 -----
 cd ~/Projects/documentation/wsjtx
 
@@ -189,7 +188,7 @@ cd ~/Projects/documentation/wsjtx && ./build-doc.sh toc2
 -----
 
 ==== Open _WSJT-X User Guide_ in a browser
-[source,bash]
+
 -----
 # for chromium
 cygstart chrope wsjtx-main-toc2.html
@@ -210,7 +209,7 @@ It is a good idea to always start from a fresh repository list, and to have the
 install up to date before adding new packages.
 
 ==== Install Dependencies
-[source,bash]
+
 -----
 # For Debian and relatives, update && Upgrade first
 sudo apt-get update && sudo apt-get upgrade
@@ -235,7 +234,7 @@ CAUTION: If any package check returns with an error, resolve before
 continuing !!
 
 ==== Check for Previous AsciiDoc Installation
-[source,bash]
+
 -----
 # check if AsciiDoc is already installed:
 asciidoc --version
@@ -246,7 +245,7 @@ sudo apt-get purge asciidoc
 -----
 
 ==== Add Directories and source profile
-[source,bash]
+
 -----
 mkdir -p $HOME/bin $HOME/Projects/documentation/wsjtx
 source ~/.bashrc && source ~/.profile
@@ -261,7 +260,7 @@ If need be, add the following to your shell profile, then source or
 log out / back in:
 
 ==== Add conditional to ~/.bashrc
-[source,bash]
+
 -----
 if [ -d "$HOME/bin" ]
 then
@@ -270,7 +269,7 @@ fi
 -----
 
 ==== Download and Configure _AsciiDoc_
-[source,bash]
+
 -----
 # one action per line
 cd ~/bin
@@ -292,7 +291,7 @@ asciidoc --version
 -----
 
 ==== Test build _WSJT-X User Guide_
-[source,bash]
+
 -----
 cd ~/Projects/documentation/wsjtx
 
@@ -302,7 +301,7 @@ cd ~/Projects/documentation/wsjtx && ./build-doc.sh toc2
 -----
 
 ==== Open _WSJT-X User Guide_ in a browser
-[source,bash]
+
 -----
 # for chromium
 chromium-browser wsjtx-main-toc2.html

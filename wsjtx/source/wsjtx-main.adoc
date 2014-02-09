@@ -222,12 +222,12 @@ include::runtime-files.adoc[]
 == Utility Programs
 include::utilities.adoc[]
 
-[[COMPILING]]
-== Compiling WSJT-X
-include::compiling.adoc[]
+// [[COMPILING]]
+// == Compiling WSJT-X
+// include::compiling.adoc[]
 
 [[ACK]]
-== Acknowledgments
+== Acknowledgements
 include::acknowledgements.adoc[]
 
 [appendix]
