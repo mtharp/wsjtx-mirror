@@ -43,7 +43,7 @@
 :alex_efros: mailto:powerman@powerman.name[ Alex Efros ]
 :devmail: mailto:wsjt-devel@lists.berlios.de[wsjt-devel]
 :stuart_rackman: mailto:srackham@gmail.com[ Stuart Rackham ]
-
+:joe_taylor: mailto:joe@princeton.edu[ K1JT ]
 
 // These [[xxxx]] labels are HTML anchors, and can be used to
 // navigate though the document easily: <<[INTRO],See Introduction]>> will
@@ -222,9 +222,9 @@ include::runtime-files.adoc[]
 == Utility Programs
 include::utilities.adoc[]
 
-// [[COMPILING]]
-// == Compiling WSJT-X
-// include::compiling.adoc[]
+[[COMPILING]]
+== Compiling WSJT-X
+include::compiling.adoc[]
 
 [[ACK]]
 == Acknowledgements
@@ -246,4 +246,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this documentation. If not, see link::http://www.gnu.org/licenses/[GNU GPL]
 
-Copyright (C) 2012-2014 Joseph H Taylor, Jr, K1JT.
+Copyright (C) 2012-2014 Joseph H Taylor, Jr, {joe_taylor}.
