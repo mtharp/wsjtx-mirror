@@ -1,12 +1,26 @@
 #!/usr/bin/env bash
 # Title           : build-doc.sh
-# Description     : WSJT Documentation Main Build Script
+# Description     : WSJT Documentation Main Build Script for *Nix
 # Author          : KI7MT
 # Email           : ki7mt@yahoo.com
-# Date            : FEB-02-2014
+# Date            : 2014
 # Version         : 0.7.0
 # Usage           : ./build-doc.sh [ option ]
 # Notes           : Requires: Python 2.7+, AsciiDoc, GNU Source Highlight
+# Copyright       : GPLv(3)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #==============================================================================
 
 # Exit on error
@@ -22,19 +36,17 @@ BASEDIR=$(pwd)
 export PATH=$BASEDIR/asciidoc:$PATH
 DEVMAIL="wsjt-devel@lists.berlios.de"
 ICONS_DIR="$(pwd)/icons"
-FUNC="$BASEDIR/functions"
 MAP65="$BASEDIR/map65"
 SIMJT="$BASEDIR/simjt"
 WSJT="$BASEDIR/wsjt"
 WSJTX="$BASEDIR/wsjtx"
 WSPR="$BASEDIR/wspr"
 WSPRX="$BASEDIR/wsprx"
-QREF="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=./icons -a max-width=1024px"
-DGUIDE="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=./icons -a max-width=1024px"
+DEVG="$BASEDIR/dev-guide"
+QUICKR="$BASEDIR/quick-ref"
 NTOC="asciidoc.py -b xhtml11 -a iconsdir=../icons -a max-width=1024px"
 TOC1="asciidoc.py -b xhtml11 -a toc -a iconsdir=../icons -a max-width=1024px"
 TOC2="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=../icons -a max-width=1024px"
-
 
 # Color variables
 C_R='\033[01;31m'	# red
@@ -44,7 +56,9 @@ C_C='\033[01;36m'	# cyan
 C_NC='\033[01;37m'	# no color
 
 # Array variables
-declare -a all_apps_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx')
+declare -a all_apps_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' \
+'quick-ref' 'dev-guide' )
+
 declare -a all_toc_ary=('build_ntoc' 'build_toc1' 'build_toc2')
 
 #######################
@@ -102,7 +116,7 @@ done
 trap - SIGINT SIGQUIT SIGTSTP
 exit 0
 }	
-	
+
 # Build All Guides
 function build_all_guides() {
 	clear
@@ -127,6 +141,8 @@ do
 		echo -e ${C_G}'.. map65-main-toc1.html'${C_NC}
 		build_toc2
 		echo -e ${C_G}'.. map65-main-toc2.html'${C_NC}
+		echo -e ${C_Y}'File(s) located in:' "$MAP65"${C_NC}
+		echo
 		
 		# SIMJT
 		echo -e ${C_C}'SimJT'${C_NC}
@@ -138,6 +154,8 @@ do
 		echo -e ${C_G}'.. simjt-main-toc1.html'${C_NC}
 		build_toc2
 		echo -e ${C_G}'.. simjt-main-toc2.html'${C_NC}
+		echo -e ${C_Y}'File(s) located in:' "$SIMJT"${C_NC}
+		echo
 		
 		# WSJT
 		echo -e ${C_C}'WSJT'${C_NC}
@@ -149,7 +167,9 @@ do
 		echo -e ${C_G}'.. wsjt-main-toc1.html'${C_NC}
 		build_toc2
 		echo -e ${C_G}'.. wsjt-main-toc2.html'${C_NC}
-			
+		echo -e ${C_Y}'File(s) located in:' "$WSJT"${C_NC}
+		echo
+		
 		# WSJTX
 		echo -e ${C_C}'WSJT-X'${C_NC}
 		app_name="wsjtx"
@@ -160,7 +180,8 @@ do
 		echo -e ${C_G}'.. wsjtx-main-toc1.html'${C_NC}
 		build_toc2
 		echo -e ${C_G}'.. wsjtx-main-toc2.html'${C_NC}
-		
+		echo -e ${C_Y}'File(s) located in:' "$WSJTX"${C_NC}
+		echo
 		
 		# WSPR
 		echo -e ${C_C}'WSPR'${C_NC}
@@ -172,7 +193,9 @@ do
 		echo -e ${C_G}'.. wspr-main-toc1.html'${C_NC}
 		build_toc2
 		echo -e ${C_G}'.. wspr-main-toc2.html'${C_NC}
-
+		echo -e ${C_Y}'File(s) located in:' "$WSPR"${C_NC}
+		echo
+		
 		# WSPR-X
 		echo -e ${C_C}'WSPR-X'${C_NC}
 		app_name="wsprx"
@@ -183,18 +206,24 @@ do
 		echo -e ${C_G}'.. wsprx-main-toc1.html'${C_NC}
 		build_toc2
 		echo -e ${C_G}'.. wsprx-main-toc2.html'${C_NC}
+		echo -e ${C_Y}'File(s) located in:' "$WSPRX"${C_NC}
+		echo
 		
 		# QUICK-REF
 		echo -e ${C_C}'Quick Reference'${C_NC}
-		cd "$BASEDIR"
+		cd "$BASEDIR/quick-ref"
 		quick_ref
 		echo -e ${C_G}'.. quick-reference.html'${C_NC}
+		echo -e ${C_Y}'File(s) located in:' "$QUICKR"${C_NC}
+		echo
 		
 		# DEV-GUIDE
 		echo -e ${C_C}'Development Guide'${C_NC}
-		cd "$BASEDIR"
+		cd "$BASEDIR/dev-guide"
 		dev_guide
-		echo -e ${C_G}'.. dev-guide.html'${C_NC}
+		echo -e ${C_G}'.. compiling_wsjtx_linux.html'${C_NC}
+		echo -e ${C_Y}'File(s) located in:' "$DEVG"${C_NC}
+		echo
 		return
 	;;
 	[Nn]* )
@@ -229,12 +258,12 @@ function build_toc2() {
 
 # Quick reference guide 
 function quick_ref() {
-    $TOC2 -o quick-reference.html ./source/quick-reference.adoc
+    $TOC2 -o quick-reference.html ./source/quick-ref-main.adoc
 } # End quick reference guide
 
 # Development Guide
 function dev_guide() {
-    $TOC2 -o dev-guide.html ./source/dev-guide.adoc
+    $TOC2 -o compiling_wsjtx_linux.html ./source/wsjtx-dev.adoc
 } # End development guide
 
 # Main wording
@@ -299,7 +328,7 @@ then
 	clear
 	echo -e ${C_Y}"Finished Building $display_name Documentation"${C_NC}
 	echo
-	echo -e ${C_C}"File(s) located in: $(pwd)"${C_NC}
+	echo -e ${C_Y}"File(s) located in: $(pwd)"${C_NC}
 	echo
 	return
 else
@@ -365,6 +394,7 @@ elif [[ $1 = "all" ]]
 elif [[ $1 = "quick-ref" ]]
 	then
 		display_name="Quick Reference"
+		cd "$QUICKR"
 		pre_file_check
 		clear
 		main_wording
@@ -375,10 +405,11 @@ elif [[ $1 = "quick-ref" ]]
 elif [[ $1 = "dev-guide" ]]
 	then
 		display_name="Development Guide"
+		cd "$DEVG"
 		pre_file_check
 		clear
 		main_wording
-		quick_ref
+		dev_guide
 		post_file_check
 
 # MAP65 build options
