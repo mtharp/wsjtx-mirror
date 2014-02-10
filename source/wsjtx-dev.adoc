@@ -1,49 +1,103 @@
 // Status=review
-// Temporary header until the de-guide-main.adoc is implemented
-= WSJT-X Developers Guide
+// Temporary header until the dev-guide-main.adoc is implemented
+= WSJT-X Compile From Source
 :Author: Joe Taylor, K1JT
 :Date: January 30, 2014
-:Revision: 1.3
 :badges:
 :icons:
 :numbered:
-:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
+:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
 :description: Software for Amateur Radio Weak-Signal Communication
+
+// web-links
+:gnu_gpl: http://www.gnu.org/licenses/[GNU GPL]
+:ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
+:ppa: http://en.wikipedia.org/wiki/Personal_Package_Archive[ PPA ]
+:berlios1: http://developer.berlios.de/projects/wsjt/[ berliOS ]
+:berlios2: http://developer.berlios.de/account/register.php[ berliOS Account ]
+
+// mail-to links
+:joe_taylor: mailto:joe@princeton.edu[Joe Taylor, K1JT ]
+:greg_beam: mailto:ki7mt@yahoo.com[ KI7MT ]
+:dev_mail_list: https://lists.berlios.de/mailman/listinfo/wsjt-devel[WSJT developers email list]
+
+// Download Links
+:svn: http://subversion.apache.org/packages.html#windows[ Download ]
+:cmake: http://www.cmake.org/cmake/resources/software.html[ Download ]
+:hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Main_Page[ Download ]
+:fftw3: http://www.fftw.org/download.html[ Download ]
+:qt5_framework: http://qt-project.org/downloads#qt-other[ Download ]
+:g95: http://www.fortran.com/the-fortran-company-homepage/whats-new/g95-windows-download/[Download]
 
 == Overview
 
-Under development
+This guide will demonstrate two methods of compiling from source, a 
+traditional _Makefile_ method, and a cross platform approach using
+CMake. Both methods can be used on either platform, however, environment
+adjustments must be taken into account, particularly with Makefile.MinGW.
 
-== Build Environment
+The Linux example will use Ubuntu 14.04 64-bit desktop and will
+demonstrate the _Makefile_ method. The Windows system is a Vista 64-bit
+desktop and use the CMake method.
 
-Under Development
+The commands used for installation and configuration are for the respective
+system. You will need to adjust accordingly for distributions within the same
+group.
+
+CAUTION: While WSJT-X development team provide both Makefile.linux and
+Makefile.MinGW for source compiling, it should be understood, this method of
+installation is for development testing only. There is no guarantee the build
+will be successful each revision, nor provide a stable binary if the build is
+successful. 
 
 == Subversion
 
-Under Development
+Both methods of installation require the same version control system to obtain
+the source code. To gain commit access, contact {joe_taylor}. You will also need
+a {berlios2}.
 
-== Source Compiling
 
-This section is under development. Please send feedback to 
-mailto:ki7mt@yahoo.com[KI7MT].
+* Windows (download and install):
 
-=== Linux Makefile
+[horizontal]
+Subversion Install:: {svn}
 
-CAUTION: The WSJT-X developers provide Makefile.linux for source compiling. It
-should be understood, this method of installation is for development testing
-only. There is no guarantee the build will be successful each revision, nor
-provide a stable binary if the build is successful. 
+* Linux
 
-The following process has been tested against Ubuntu 12.04 and 14.04-DEV 64-bit
-desktop installation. Additional Linux/BSD build guidance will be added as
-and when it becomes available.
+[horizontal]
+Subversion Install:: sudo apt-get install subversion
+
+* Normal Checkout
+
+[horizontal]
+Checkout:: svn co svn://svn.berlios.de/wsjt/branches/wsjtx
+
+* Developer Checkout
+
+[horizontal]
+Checkout:: +++svn co https://user@svn.berlios.de/svnroot/repos/wsjt/branches/wsjtx+++
+
+
+== Windows CMake Example
+
+The following tools are required to compile _WSJT-X_ using _CMake_:
+
+[horizontal]
+Qt5 SDK:: The UI framework {plus} MinGW Tool Chain: {qt5_framework}
+CMake:: Cross Platform Build System: {cmake}
+Hamlib:: Radio Control Libraries: {hamlib}
+FFTW3:: Discrete Fourier Transform (DFT): {fftw3}
+G95:: Fortran Compiler: {g95}
+Gfortran:: Alternate for G95, included in _Qt5 SDK_
+
+== Linux Makefile Example
 
 .Ubuntu 12.04 specific notes
-* Reference: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
-* Ubuntu 12.04 requires an [ PPA ] in order to download and install the required
+* Reference: {ubuntu_sdk}
+* Ubuntu 12.04 requires an {ppa} n order to download and install the required
 Qt5 libraries.
 
-==== For Ubuntu 12.04 Only
+=== For Ubuntu 12.04 Only
 [source,bash]
 -----
 # Add the following PPA, and upgrade your system
@@ -53,7 +107,7 @@ sudo apt-get dist-upgrade
 sudo apt-get install ubuntu-sdk
 -----
 
-==== Build dependencies
+=== Build dependencies
 [horizontal]
 +gcc+:: GNU C Compiler
 +g{plus}{plus}+:: GNU C{plus}{plus} Compiler
@@ -157,10 +211,6 @@ ldd ./kvasd
 ./wsjtx
 -----
 
-=== Linux, CMake Example
-
-Under Development
-
 [appendix]
 License
 -------
@@ -175,6 +225,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this documentation. If not, see link::http://www.gnu.org/licenses/[GNU GPL]
+along with this documentation. If not, see {gnu_gpl}
 
-Copyright (C) 2012-2014 Joseph H Taylor, Jr, K1JT.
+Copyright (C) 2001-2014 Joseph H Taylor, Jr, {joe_taylor}.
