@@ -1,103 +1,11 @@
-// Status=review
-// Temporary header until the dev-guide-main.adoc is implemented
-= WSJT-X Compile From Source
-:Author: Joe Taylor, K1JT
-:Date: January 30, 2014
-:badges:
-:icons:
-:numbered:
-:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
-:description: Software for Amateur Radio Weak-Signal Communication
-
-// web-links
-:gnu_gpl: http://www.gnu.org/licenses/[GNU GPL]
-:ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
-:ppa: http://en.wikipedia.org/wiki/Personal_Package_Archive[ PPA ]
-:berlios1: http://developer.berlios.de/projects/wsjt/[ berliOS ]
-:berlios2: http://developer.berlios.de/account/register.php[ berliOS Account ]
-
-// mail-to links
-:joe_taylor: mailto:joe@princeton.edu[Joe Taylor, K1JT ]
-:greg_beam: mailto:ki7mt@yahoo.com[ KI7MT ]
-:dev_mail_list: https://lists.berlios.de/mailman/listinfo/wsjt-devel[WSJT developers email list]
-
-// Download Links
-:svn: http://subversion.apache.org/packages.html#windows[ Download ]
-:cmake: http://www.cmake.org/cmake/resources/software.html[ Download ]
-:hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Main_Page[ Download ]
-:fftw3: http://www.fftw.org/download.html[ Download ]
-:qt5_framework: http://qt-project.org/downloads#qt-other[ Download ]
-:g95: http://www.fortran.com/the-fortran-company-homepage/whats-new/g95-windows-download/[Download]
-
-== Overview
-
-This guide will demonstrate two methods of compiling from source, a 
-traditional _Makefile_ method, and a cross platform approach using
-CMake. Both methods can be used on either platform, however, environment
-adjustments must be taken into account, particularly with Makefile.MinGW.
-
-The Linux example will use Ubuntu 14.04 64-bit desktop and will
-demonstrate the _Makefile_ method. The Windows system is a Vista 64-bit
-desktop and use the CMake method.
-
-The commands used for installation and configuration are for the respective
-system. You will need to adjust accordingly for distributions within the same
-group.
-
-CAUTION: While WSJT-X development team provide both Makefile.linux and
-Makefile.MinGW for source compiling, it should be understood, this method of
-installation is for development testing only. There is no guarantee the build
-will be successful each revision, nor provide a stable binary if the build is
-successful. 
-
-== Subversion
-
-Both methods of installation require the same version control system to obtain
-the source code. To gain commit access, contact {joe_taylor}. You will also need
-a {berlios2}.
-
-
-* Windows (download and install):
-
-[horizontal]
-Subversion Install:: {svn}
-
-* Linux
-
-[horizontal]
-Subversion Install:: sudo apt-get install subversion
-
-* Normal Checkout
-
-[horizontal]
-Checkout:: svn co svn://svn.berlios.de/wsjt/branches/wsjtx
-
-* Developer Checkout
-
-[horizontal]
-Checkout:: +++svn co https://user@svn.berlios.de/svnroot/repos/wsjt/branches/wsjtx+++
-
-
-== Windows CMake Example
-
-The following tools are required to compile _WSJT-X_ using _CMake_:
-
-[horizontal]
-Qt5 SDK:: The UI framework {plus} MinGW Tool Chain: {qt5_framework}
-CMake:: Cross Platform Build System: {cmake}
-Hamlib:: Radio Control Libraries: {hamlib}
-FFTW3:: Discrete Fourier Transform (DFT): {fftw3}
-G95:: Fortran Compiler: {g95}
-Gfortran:: Alternate for G95, included in _Qt5 SDK_
-
-== Linux Makefile Example
+=== Linux Makefile Example
 
 .Ubuntu 12.04 specific notes
 * Reference: {ubuntu_sdk}
-* Ubuntu 12.04 requires an {ppa} n order to download and install the required
+* Ubuntu 12.04 requires a {ppa} in order to download and install the required
 Qt5 libraries.
 
-=== For Ubuntu 12.04 Only
+==== For Ubuntu 12.04 Only
 [source,bash]
 -----
 # Add the following PPA, and upgrade your system
@@ -107,14 +15,14 @@ sudo apt-get dist-upgrade
 sudo apt-get install ubuntu-sdk
 -----
 
-=== Build dependencies
+==== Build dependencies
 [horizontal]
 +gcc+:: GNU C Compiler
 +g{plus}{plus}+:: GNU C{plus}{plus} Compiler
-+gfortran+:: GNU FOrtran or F90
++gfortran+:: GNU Fortran or F90
 +make+:: GNU Make
 +libqt5multimedia5-plugins+:: QT5 Media Plugins
-+libfftw3-dev+:: Fast Fourier Transformation
++libfftw3-dev+:: Fast Fourier Transforms
 +libpulse-dev+:: Headers and Files for Pulse AUdio
 +libhamlib-dev+:: Headers and Files for Hamlib
 +qtbase5-dev+:: QT5 Base Dev Files
@@ -126,8 +34,8 @@ sudo apt-get install ubuntu-sdk
 [source,bash]
 -----
 sudo apt-get install gcc g++ gfortran make libqt5multimedia5-plugins \
-libfftw3-dev libpulse-dev libhamlib-dev qtbase5-dev qtmultimedia5-dev \
-pulseaudio subversion
+  libfftw3-dev libpulse-dev libhamlib-dev qtbase5-dev qtmultimedia5-dev \
+  pulseaudio subversion
 -----
 
 .kvasd 32-bit dependencies
@@ -144,29 +52,37 @@ pulseaudio subversion
 sudo apt-get install libgfortran3:i386 libc6-i386
 -----
 
-.Set up and build
+.Setup and build
 [source,bash]
 -----
 # In a terminal Ctrl+Alt+T
 # Each line is seperate action - Copy & Paste
 
-mkdir -p ~/Projects/wsjtx-build && cd ~/Projects/wsjtx-build
+mkdir -p ~/Projects/wsjtx-build
+cd ~/Projects/wsjtx-build
 svn co svn://svn.berlios.de/wsjt/branches/wsjtx
-cd ./wsjtx/lib && make -f Makefile.linux
-cd ../ && export QT_SELECT=qt5 && qmake
-j_c=$(grep -c ^processor /proc/cpuinfo) && make -j$j_c
+cd ./wsjtx/lib 
+make -f Makefile.linux
+cd ../ 
+export QT_SELECT=qt5 
+qmake
+j_c=$(grep -c ^processor /proc/cpuinfo) 
+make -j$j_c
 
 # mv wsjtx_intall to the new rev-number
 rev_num=$(svn log -l1 |awk 'FNR==2 {print $1}')
-cd ../ && mv ./wsjtx_install ./wsjtx-$rev_num
+cd ../ 
+mv ./wsjtx_install ./wsjtx-$rev_num
 
 -----
 
-TIP: You should now have (3) files in ./wjstx-$rev_num (jt9, jt9code
-and wsjtx). By moving the directory, your ready for the next build cycle.
+TIP: You should now have three files in the +./wjstx-$rev_num+
+directory: +jt9+, +jt9code+ and +wsjtx+.  By moving the directory,
+you're ready for a subsequent build cycle.
 
 .Final configuraiton
-Before running _WSJT-X_, download _kvasd_, and link required run files.
+Before running _WSJT-X_, download _kvasd_ and link the required 
+runtime files.
 
 [source,bash]
 -----
@@ -175,7 +91,7 @@ wget -P ./wsjtx http://www.physics.princeton.edu/pulsar/K1JT/kvasd
 chmod +x ./wsjtx/kvasd
 cd ./wsjtx-$rev_num
 
-# IMPORTANT: You can copy or link the files / folders, but make sure
+# IMPORTANT: You can copy or link the files and folders, but make sure
 # they are in the same directory as the wsjtx binary.
 
 # Link or cp the following files & folders
@@ -211,20 +127,15 @@ ldd ./kvasd
 ./wsjtx
 -----
 
-[appendix]
-License
--------
-WSJT-X is free software: you can redistribute it and/or modify
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+=== Windows CMake Prerequisites
 
-WSJT-X is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+The following tools are required to compile _WSJT-X_ using _CMake_:
 
-You should have received a copy of the GNU General Public License
-along with this documentation. If not, see {gnu_gpl}
+[horizontal]
+Qt5 SDK:: The UI framework {plus} MinGW Tool Chain: {qt5_framework}
+CMake:: Cross Platform Build System: {cmake}
+Hamlib:: Radio Control Libraries: {hamlib}
+FFTW3:: Discrete Fourier Transform library: {fftw3}
+Gfortran:: Fortran compiler, included in _Qt5 SDK_
+G95:: Alternate for gfortran, if desired: {g95}
 
-Copyright (C) 2001-2014 Joseph H Taylor, Jr, {joe_taylor}.
