@@ -8,31 +8,13 @@
 // At some point, compiling_wsjtx_linux.html needs a name change to: wsjtx-dev.html
 // These files can only be built on Linux, dur to source-highlight being removed
 // From the windows build batch file.
-:compiling_windows: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/compiling_wsjtx_linux.html[Windows, Compiling from Source]
-:compiling_linux: link::http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/compiling_wsjtx_linux.html[Linux, Compiling from Source]
-:compiling_osx: link::http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/compiling_wsjtx_linux.html[OS X, Compiling from Source]
+:dev-guide: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html[WSJT Developers Guide]
 
 // mail-to links
-This section is under development. Please send feedback to 
-mailto:ki7mt@yahoo.com[KI7MT].
 
-CAUTION: The WSJT-X developers provide Makefile.linux for source compiling. It
-should be understood, this method of installation is for development testing
-only. There is no guarantee the build will be successful each revision, nor
-provide a stable binary if the build is successful. 
+A Developer's Guide for WSJT and its sister programs is itself under
+development.  The present draft contains full instructions for
+compiling _WSJT-X_ in Linux, and an outline of steps required in
+Windows.  
 
-// This needs to be written, this section is a blank section
-// Source file: dev-guide/source/wsjtx-dev.adoc
-=== Windows
-
-For Windows see: {compiling_windows}
-
-// This needs updating
-// Source file is: dev-guide/source/wsjtx-dev.adoc
-=== Linux
-For Windows see: {compiling_linux}
-
-// This needs to be written, this section is a blank section
-// Source file is: dev-guide/source/wsjtx-dev.adoc
-=== OS X
-For OS X see: {compiling_osx}
+{dev-guide}

@@ -264,7 +264,7 @@ function quick_ref() {
 
 # Development Guide
 function dev_guide() {
-	$TOC2 -o compiling_wsjtx_linux.html ./source/wsjtx-dev.adoc
+	$TOC2 -o wsjt-dev-guide.html ./source/dev-guide-main.adoc
 } # End development guide
 
 # Main wording
