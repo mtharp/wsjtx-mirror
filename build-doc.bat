@@ -39,7 +39,6 @@ exit /B 1
 REM -- Start WSJT Documentation Build
 TITLE WSJT Documentation Build v%VERS%
 SETLOCAL
-MODE con:cols=60 lines=20
 cd /d %~dp0
 
 REM -- Set-up folder variables
@@ -57,46 +56,48 @@ SET WSPRX=%BASEDIR%\wsprx
 SET NTOC=%ADOC% -b xhtml11 -a iconsdir=%ICOND% -a max-width=1024px
 SET TOC1=%ADOC% -b xhtml11 -a toc -a iconsdir=%ICOND% -a max-width=1024px
 SET TOC2=%ADOC% -b xhtml11 -a toc2 -a iconsdir=%ICOND% -a max-width=1024px
+SET APPS_ARRAY=(map65 quick-ref simjt wsjt wsjtx wspr wsprx )
 
 REM -- Start building documents
-REM -- TO-DO: loop through doc builds
 REM --        manifest checking
-REM --        input options
-REM --        menu select v.s direct build
+REM --        command-line input options
+call:head_wording
+call:function_TOC2
+call:tail_wording
+
+REM ----------------------
+REM -- Function Section --
+REM ----------------------
+
+REM -- Initial message wording
+:head_wording
 CLS
-ECHO Building WSJT Documentation
+ECHO WSJT Documentation Build
 ECHO.
-CD %MAP65%
-%TOC2% -o map65-main.html %MAP65%\source\map65-main.adoc
-ECHO ..Finished map65-main-toc2.html
+GOTO :eof
 
-CD %SIMJT%
-%TOC2% -o simjt-main-toc2.html %SIMJT%\source\simjt-main.adoc
-ECHO ..Finished simjt-main-toc2.html
-
-CD %WSJT%
-%TOC2% -o wsjtx-main-toc2.html %WSJT%\source\wsjt-main.adoc
-ECHO ..Finished wsjt-main-toc2.html
-
-CD %WSJTX%
-%TOC2% -o  wsjtx-main-toc2.html %WSJTX%\source\wsjtx-main.adoc
-ECHO ..Finished wsjtx-main-toc2.html
-
-CD %WSPR%
-%TOC2% -o  wspr-main-toc2.html %WSPR%\source\wspr-main.adoc
-ECHO ..Finished wspr-main-toc2.html
-
-CD %WSPRX%
-%TOC2% -o  wsprx-main-toc2.html %WSPRX%\source\wsprx-main.adoc
-ECHO ..Finished wsprx-main-toc2.html
-
-CD %QUICKR%
-%TOC2% -o quick-reference.html %QUICKR%\source\quick-ref-main.adoc
-ECHO ..Finished quick-reference.html
+REM -- End wording message
+:tail_wording
 ECHO.
-ECHO Completed Building WSJT Documentation
+ECHO Finished Building Documentation.
 ECHO.
 PAUSE
+GOTO :eof
 
+REM -- Main build loop
+:function_TOC2
+FOR %%a IN %APPS_ARRAY% DO (
+CD %BASEDIR%\%%a
+%TOC2% -o %%a-main-toc2.html source\%%a-main.adoc 
+ECHO .. %%a-main-toc2.html
+ECHO.
+)
+GOTO :eof
+
+REM -----------------
+REM -- End of File --
+REM -----------------
+
+:eof
 ENDLOCAL
 EXIT /B 0
