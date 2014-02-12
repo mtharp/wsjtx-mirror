@@ -10,41 +10,8 @@
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
 :description: Software for Amateur Radio Weak-Signal Communication
 
-// If the list of links gets too long, we can add a url-file that is pulled
-// in when and where needed with the following:
-// include::<file-name> for example: include::url-list.txt
-
-// WEB links - List is getting pretty long, time to use include::file-name ??
-:asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[ AsciiDoc User Guide ]
-:asciidoc_cheatsheet: http://powerman.name/doc/asciidoc[ AsciiDoc Cheatsheet ]
-:asciidoc_questions: http://www.methods.co.nz/asciidoc/faq.html[ AsciiDoc FAQ ]
-:debian: http://www.debian.org/[ Debian ]
-:cc_by_sa: http://creativecommons.org/licenses/by-sa/3.0/[ Commons Attribution-ShareAlike 3.0 Unported License ]
-:devsvn: http://developer.berlios.de/projects/wsjt/[wsjt-svn]
-:download: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[ Download Page ]
-:dxlcommander: http://www.dxlabsuite.com/commander/[ Commander ]
-:homepage: http://physics.princeton.edu/pulsar/K1JT/[ WSJT Home Page ]
-:hrd: http://www.hrdsoftwarellc.com/[ Ham Radio Deluxe ]
-:jtalert: http://ham-apps.com[JT-ALERT-X]
-:jt65protocol: http://physics.princeton.edu/pulsar/K1JT/JT65.pdf[QEX]
-:launchpadurl: https://launchpad.net/~jnogatch/+archive/wsjtx[ WSJT-X Linux Packages ]
-:ntpsetup: http://www.satsignal.eu/ntp/setup.html[Network Time Protocol Setup]
-:pskreporter: http://pskreporter.info/pskmap.html[PSK Reporter]
-:osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
-:wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[ WSJT-X ]
-:gnu_gpl: http://www.gnu.org/licenses/gpl.txt[GNU GPL]
-
-// DOWNLOAD links
-:cty_dat: http://www.country-files.com/cty/[here].
-:kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
-:osx_108: http://physics.princeton.edu/pulsar/K1JT/wsjtx_01feb14.tar.gz[ OS X 10.6, 10.7, and 10.8 ]
-:osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_01feb14.tar.gz[ OS X 10.9 ]
-
-// MAIL-TO links
-:alex_efros: mailto:powerman@powerman.name[ Alex Efros ]
-:devmail: mailto:wsjt-devel@lists.berlios.de[wsjt-devel]
-:stuart_rackman: mailto:srackham@gmail.com[ Stuart Rackham ]
-:joe_taylor: mailto:joe@princeton.edu[ K1JT ]
+// use global link file
+include::../../global/links.adoc[]
 
 // These [[xxxx]] labels are HTML anchors, and can be used to
 // navigate though the document easily: <<[INTRO],See Introduction]>> will
@@ -60,7 +27,7 @@ include::introduction.adoc[]
 
 [[SYSREQ]]
 == System Requirements
-include::system-requirments.adoc[]
+include::system-requirements.adoc[]
 
 [[INSTALL]]
 == Installation
@@ -83,8 +50,8 @@ include::install-mac.adoc[]
 // Note to developers. The URL http://developer.berlios.de/projects/wsjt/. is
 // to a very old src version of WSJT 5.7 or so. WSJTX is not listed at all.
 // Also, all the Qt4 stuff is now obsolete, and needs to be updated.
-// Instructions for source builds Win, \*Nix & Mac all need to be written / 
-// Rreviewd.
+// Instructions for source builds Win, +++*Nix+++ {amp} Mac all need to be written  
+// and Reviewed.
 
 [[SRC_CODE]]
 === Source Code
@@ -235,3 +202,4 @@ include::acknowledgements.adoc[]
 License
 -------
 include::../../global/license.adoc[]
+

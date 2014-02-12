@@ -1,5 +1,4 @@
 // Status=review
-// Temporary header until the dev-guide-main.adoc is implemented
 = Developer's Guide to WSJT and Related Programs
 //:Author: Joe Taylor, K1JT
 //:Date: {localdate}
@@ -9,26 +8,9 @@
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
 :description: Software for Amateur Radio Weak-Signal Communication
 
-// web-links
-:gnu_gpl: http://www.gnu.org/licenses/[GNU GPL]
-:ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
-:ppa: http://en.wikipedia.org/wiki/Personal_Package_Archive[ PPA ]
-:berlios1: http://developer.berlios.de/projects/wsjt/[ berliOS ]
-:berlios2: http://developer.berlios.de/account/register.php[ berliOS Account ]
+// use global link file
+include::../../global/links.adoc[]
 
-// mail-to links
-:joe_taylor: mailto:joe@princeton.edu[Joe Taylor, K1JT ]
-:greg_beam: mailto:ki7mt@yahoo.com[ KI7MT ]
-:dev_mail_list: https://lists.berlios.de/mailman/listinfo/wsjt-devel[WSJT developers email list]
-
-// Download Links
-:svn: http://subversion.apache.org/packages.html#windows[ Subversion ]
-:cmake: http://www.cmake.org/cmake/resources/software.html[ Download ]
-:hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Main_Page[ Download ]
-:fftw3: http://www.fftw.org/download.html[ Download ]
-:qt5_framework: http://qt-project.org/downloads#qt-other[ Download ]
-:g95: http://www.fortran.com/the-fortran-company-homepage/whats-new/g95-windows-download/[Download]
-:wsjt_svn: http://svn.berlios.de/wsvn/wsjt[ here ]
 == Overview
 
 The WSJT family of programs for weak-signal amateur radio
@@ -45,7 +27,7 @@ prerequisites for compiling it in Windows.  Similar procedures can be
 used for _MAP65_ and _WSPR-X_.  Instructions for the Python-based
 programs are yet to come.
 
-Please send feedback on this Guide to mailto:ki7mt@yahoo.com[KI7MT].
+Please send feedback on this Guide to {greg_beam}.
 
 == Source Code
 
@@ -93,8 +75,8 @@ that it will provide a stable executable program.
 == WSJT-X
 include::wsjtx-dev.adoc[]
 
-
 [appendix]
 License
 -------
 include::../../global/license.adoc[]
+
