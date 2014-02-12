@@ -21,7 +21,6 @@ REM GNU General Public License for more details.
 
 REM You should have received a copy of the GNU General Public License
 REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 REM -- Check if Python is available
 python -V >nul 2>nul
 IF %ERRORLEVEL% neq 9009 goto continue
@@ -39,14 +38,8 @@ exit /B 1
 REM -- Start WSJT Documentation Build
 TITLE WSJT Documentation Build v%VERS%
 SETLOCAL
-
-REM -- Get script base directory
 SET BASEDIR=%~dp0
-
-REM -- Strip trailing "\" from %BASEDIR%
 IF %BASEDIR:~-1%==\ SET BASEDIR=%BASEDIR:~0,-1%
-
-REM -- Set document path variables
 SET ADOC=%BASEDIR%\asciidoc\asciidoc.py
 SET ICOND=%BASEDIR%\icons
 SET TOC=%ADOC% -b xhtml11 -a toc2 -a iconsdir=%ICOND% -a max-width=1024px
@@ -55,14 +48,11 @@ SET SHORT_LIST=(map65 quick-ref simjt wsjt wspr wsprx )
 REM -- Start building documents
 call:head_wording
 CD %BASEDIR%\wsjtx
-ECHO Building wsjtx
+ECHO Building Special Version for wsjtx
 %TOC% -o wsjtx-main-toc2.html source\wsjtx-main.adoc
 ECHO .. wsjtx-main-toc2.html
 ECHO.
-CD %BASEDIR%
-call:function_TOC
-call:tail_wording
-GOTO :eof
+GOTO function_TOC
 
 REM ----------------------
 REM -- Function Section --
@@ -73,26 +63,26 @@ REM -- Initial message wording
 CLS
 ECHO WSJT Documentation Build
 ECHO.
-GOTO :eof
+GOTO eof
 
 REM -- End wording message
 :tail_wording
 ECHO.
 ECHO Finished Building Documentation.
 ECHO.
-PAUSE
 GOTO :eof
 
 REM -- Main build loop
 :function_TOC
+ECHO Building WSJT Documentation
 FOR %%a IN %SHORT_LIST% DO (
 CD %BASEDIR%\%%a
-ECHO Building %%a
 %TOC% -o %%a-main.html source\%%a-main.adoc 
 ECHO .. %%a-main.html
-ECHO.
 )
-GOTO :eof
+call:tail_wording
+PAUSE
+GOTO eof
 
 REM -----------------
 REM -- End of File --
