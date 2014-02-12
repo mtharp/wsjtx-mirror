@@ -1,9 +1,9 @@
 // Status=review
 // This is a comment line, anything with // is ignored at process time.
-= WSJT 9.7 User's Guide
-:Author: Joe Taylor, K1JT
-:Date: February 7, 2014, Copyright © 2001-2014
-:Revision: 0.1
+= WSJT 9.8 User's Guide
+//:Author: Joe Taylor, K1JT
+//:Date: February 7, 2014, Copyright © 2001-2014
+//:Revision: 0.1
 :badges:
 :icons:
 :numbered:
@@ -27,6 +27,10 @@
 :launchpadurl: https://launchpad.net/~jnogatch/+archive/wsjtx[ WSJT-X Linux Packages ]
 :ntpsetup: http://www.satsignal.eu/ntp/setup.html[Network Time Protocol Setup]
 :osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
+:samples_windows: http://physics.princeton.edu/pulsar/K1JT/WSJT_Samples.zip[ Windows ]
+:samples_linux: http://physics.princeton.edu/pulsar/K1JT/WSJT_Samples.tgz[ Linux ]
+
+
 
 // DOWNLOAD links
 :kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
@@ -43,9 +47,6 @@
 == Introduction
 include::introduction.adoc[]
 
-[[MODES]]
-include::modes.adoc[]
-
 [[SYSREQ]]
 == System Requirements
 include::system-requirements.adoc[]
@@ -61,3 +62,39 @@ include::setup.adoc[]
 [[TUTORIAL]]
 == Decoding Tutorial
 include::tutorial.adoc[]
+
+[[OPERATING]]
+== Operating with WSJT
+include::operating.adoc[]
+
+[[CONSOLE]]
+== Console Window
+include::console.adoc[]
+
+[[ASTRON]]
+== Astronomical Data
+include::astrodata.adoc[]
+
+[[CALl3]]
+== Callsign Database
+include::call3.adoc[]
+
+[[FONTS]]
+== Fonts
+include::fonts.adoc[]
+
+[[MENUS]]
+== Menus and the Setup | Options Screen
+include::menus.adoc[]
+
+[[CONTROLS]]
+== Alphabetical List of On-Screen Controls
+include::controls.adoc[]
+
+[[PROTOCOLS]]
+== Specifications of WSJT Protocols
+include::protocols.adoc[]
+
+[[ASTROCALC]]
+== Astronomical Calculations
+include::astrocalc.adoc[]

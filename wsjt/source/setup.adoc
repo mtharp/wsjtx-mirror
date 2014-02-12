@@ -1,93 +1,105 @@
-- To start WSJT on Windows, double-click on the desktop icon. On Linux
-or FreeBSD, type +python -O wsjt.py+ at the command prompt.  Three
-windows should appear on your screen.  For now, focus your attention
-on the main window labeled *WSJT 9.7*.
+- Start _WSJT_ in the normal way for your operating system.  Two
+windows should appear on your screen.  For now, focus your attention on
+the main window labeled *WSJT 9.7*.
 
 [[FigMainScreen]]
-image::images/wsjt9.7_main.png[align="center"] 
+image::images/wsjt9.7_main.png[align="center",width=650]
 
-- Select Options from the Setup menu.  Enter your callsign and grid
-locator.  In the box labeled PTT Port, on Windows enter the number of
-the serial port you will use for T/R control (for example 1 if you
-will use COM1).  Enter 0 if you will use VOX control (not recommended
-if you are running high power).  On Linux or FreeBSD enter the actual
-device name, for example /dev/ttyS0.
+- From the *Setup* menu, select *Options* to display the configuration
+screen.
 
 [[FigOptions]]
 image::images/options.png[align="center"] 
 
-- Dismiss the Options window, hit function key F7 to choose FSK441A
-mode, and select Open from the File menu.  Navigate to the
-RxWav\Samples folder in your WSJT home directory and open the file
-recorded from W8WN.  When this file has been decoded, your main screen
-should look something like the picture on page 4.  Try clicking with
-the right mouse button around the location of the ping at t = 18 s on
-the graphical display, and observe the decoded text that appears.  If
-you click on the static crashes around t = 1 s or elsewhere on the
-green line, you will see garbage text.  Click Erase to clear the text
-and graphical areas.  You can click Decode to decode the full file
+- Enter your callsign (*My Call*) and *Grid Locator*.  
+
+- In the box labeled *PTT Port*, on Windows enter the number of the
+serial port you will use for T/R control (for example 1 if you will
+use COM1).  Enter 0 if you will use VOX control (which is not
+recommended if you will be running high power).  On Linux or FreeBSD
+enter the actual device name, for example +/dev/ttyS0+.
+
+- Dismiss the *Options* window.
+
+- Choose *FSK441* from the *Mode* menu.
+
+- Select *Open* from the *File* menu.  
+
+- Navigate to the +RxWav\Samples+ folder in your _WSJT_ home directory
+and open the sample file W8WN_010809_110400.WAV.  When this file has
+been decoded, your main screen should look something like the
+main-window screen shot shown above.  Try clicking with the right
+mouse button around the location of the ping at t = 18 s on the
+graphical display, and observe the decoded text that appears.  If you
+click on the static crashes around t = 1 s or elsewhere on the green
+line, you may see garbage text.  Click *Erase* to clear the text and
+graphical areas.  You can click *Decode* to decode the full file
 again.
 
 - Take note of two numbers in the first panel of the status bar at
 lower left of the main screen.  After WSJT has been running for a
 minute or so they should stabilize at values close to 1.0000.  If both
-numbers are between 0.9995 and 1.0005, the input and output sampling
-rates of your soundcard are close to the nominal 11025 Hz.  If either
-number is outside this range, enter it as Rate in (first number) or
-Rate out (second number) on the Options screen.  WSJT will then make
-necessary adjustments for the incorrect hardware sampling rate or
-rates.
+numbers are between 0.9995 and 1.0005, the effective input and output
+sampling rates of your soundcard are close to the nominal 11025 Hz.
+If either number is outside this range, enter it as *Rate in* (first
+number) or *Rate out* (second number) on the *Setup | Options* screen.
+WSJT will then make necessary adjustments for the incorrect sampling
+rate or rates.
 
 - You will need a method of setting your computer clock to an accuracy
 of one second or better, and keeping it set.  Many operators use an
 internet-based clock-setting program, while others use a broadcast
-service such as GPS or WWVB.
+service such as GPS or WWVB.  The built-in Windows facility for time
+synchronization is usually not adequate. We recommend Meinberg NTP:
+see {ntpsetup} for downloading and installation
+instructions.
 
 .Adjusting Signal Levels
 
 - If your computer has more than one sound card, select the desired
-device numbers for Audio In and Audio Out.  The Console Window (see
-picture on page 17) offers a menu of choices.
+device numbers for *Audio In* and *Audio Out* on the *Options* screen.
+The black-background Console Window will offer a menu of choices.  
+Be sure to select a device offering at least 2 input channels and 2
+output channels -- for example, Audio devices number 1 and 4 in the
+following screen shot:
 
-- Turn on your radio and tune it to a clear frequency so that only
+[[FigConsole]]
+image::images/console.png[align="center"]
+
+- Turn on your radio and tune to a clear frequency so that only
 background noise is sent to the sound card.
 
-- Click Monitor to start audio sampling.
+- Click *Monitor* to start audio sampling.
 
-- Select Options | Rx volume control on the SpecJT screen to bring up
-the sound card input mixer.
+- Open the operating system's audio mixer and adjust its appropriate
+slider and/or your receiver gain control(s) to bring the signal level
+close to what WSJT considers ``0 dB,'' as indicated on the bar graph at
+lower right of the SpecJT screen.  The signal level is also displayed
+numerically on the status bar at bottom of the main window.
 
-- Adjust a slider on the audio mixer and/or your receiver gain
-control(s) to bring the signal level close to what WSJT considers ``0
-dB'' as indicated on the bar graph at lower right of the SpecJT screen.
-The signal level is also displayed on the status bar at bottom of the
-main WSJT window.
+- Select *FSK441* from the *Mode* menu.
 
-- Press F7 to enter FSK441A mode.
-
-- Select Options | Tx volume control to bring up the sound card output mixer.
-
-- Click the Tx1 button to be sure that T/R switching works and that
+- Click *Tx1* button to be sure that T/R switching works and that
 audio tones are being sent from the computer to your radio.
 
-- Adjust the slider on the audio mixer to get the proper audio signal
-level for your transmitter.
+- Adjust the appropriate slider on the audio mixer to get the proper
+audio signal level for your transmitter.
 
-.Amplifier Considerations
+_WSJT_ should now be set up and ready to operate.  Be aware, however,
+that _WSJT_ is a complicated program.  It has many operational
+nuances, especially ones having to do with the correct decoding of
+received signals.  If you are a new _WSJT_ user, it is strongly
+recommended that you work through the decoding tutorial in the next
+section.
 
-WSJT generates a single-frequency sine wave at any instant while
-transmitting.  Except during station identification, there is no ``key
-up'' time; signal amplitude is constant, and one tone changes to the
-next one in a phase-continuous manner.  As a result, WSJT does not
-require a high degree of linearity in your power amplifier. You can
-use a class C amplifier without generating unwanted sidebands or
-splatter.  Full amplitude transmissions lasting 30 seconds or longer
-will put more stress on your final amplifier than SSB or CW operation.
-If this would cause the amplifier to overheat, you should take
-appropriate action: reduce power or add another cooling fan or blower.
 
-WSJT should now be set up and ready to operate.  Be aware, however,
-that WSJT is a complicated program.  It has many operational nuances,
-especially ones having to do with the correct decoding of received
-signals.  If you are a new WSJT user, it is strongly recommended that
-you work through the decoding tutorial in the next section.
+CAUTION: WSJT generates a single-frequency sine wave at any instant while
+transmitting.  Except during CW ID there is no ``key up'' time; signal
+amplitude is constant, and one tone changes to the next one in a
+phase-continuous manner.  As a result, WSJT does not require a high
+degree of linearity in your power amplifier. You can use a class C
+amplifier without generating unwanted sidebands or splatter.  Full
+amplitude transmissions lasting 30 seconds or longer will put more
+stress on your final amplifier than SSB or CW operation.  If this
+would cause the amplifier to overheat, you should take appropriate
+action: reduce power or add another cooling fan or blower.

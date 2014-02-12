@@ -1,0 +1,111 @@
+.FSK441
+
+FSK441 uses four-tone frequency shift keying at 441 baud.  The
+frequencies of the audio tones are 882, 1323, 1764, and 2205 Hz.  Each
+encoded character uses three tone intervals and therefore requires
+3/441 seconds (approximately 2.3 ms) for transmission.  FSK441
+accommodates an alphabet of 43 characters, as listed in the table
+below: FSK441 character codes
+
+  1      001          H   120 
+  2      002          I   121 
+  3      003          J   122 
+  4      010          K   123 
+  5      011          L   130 
+  6      012          M   131 
+  7      013          N   132 
+  8      020          O   133 
+  9      021          P   200 
+  .      022          Q   201 
+  ,      023          R   202 
+  ?      030          S   203 
+  /      031          T   210 
+  #      032          U   211 
+<space>  033          V   212 
+  $      100          W   213 
+  A      101          X   220 
+  B      102          Y   221 
+  C      103          0   223 
+  D      110          E   230 
+  F      112          Z   231 
+  G      113 
+
+In the table the four tones have been labeled 0-3, representing the
+tones 882, 1323, 1764, and 2205 Hz.  For example, the letter T has the
+code 210 and is transmitted by sending sequentially the tones at 1764,
+1323, and 882 Hz. Note that the character <space> is encoded as 033,
+and that tone sequences starting with the highest tone (number 3) are
+not used at all.  It follows that if transmitted messages always
+include at least one space, a decoding algorithm can establish proper
+synchronization from the message content itself, with zero overhead.
+This encoding strategy is one of the secrets of the high efficiency of
+FSK441 for meteor scatter communications.
+
+The four possible single-tone character codes, namely 000, 111, 222,
+and 333, are reserved for special use as shorthand messages. When sent
+repeatedly, these reserved characters generate pure single-frequency
+carriers.  Their pings are easily recognized by the human ear and also
+by appropriate software.  The shorthand messages are defined to mean
+R26, R27, RRR, and 73, respectively.  These messages are frequently
+used in meteor scatter QSOs, after callsigns have been exchanged.
+They are not used in IARU Region 1, where activity levels are high
+enough that short messages should be accompanied by callsigns.
+
+.JT6M
+
+JT6M uses 44-tone FSK with a synchronizing tone and 43 possible data
+tones -- one for each character in the supported alphanumeric set, the
+same set used for FSK441. The sync tone is at 1102500/1024 = 1076.66
+Hz, and the 43 other possible tones are spaced at intervals of
+11025/512 = 21.53 HZ up to 2002.59 Hz.  Transmitted symbols are keyed
+at a rate of 21.53 baud, so each one lasts for 1/21.53 = 0.04644
+seconds. Every 3rd symbol is the sync tone, and each sync symbol is
+followed by two data symbols.  The transmission rate of user data is
+therefore (2/3)*21.53 = 14.4 characters per second.  The transmitted
+signal sounds a bit like piccolo music.
+
+.JT65
+
+A detailed description of the JT65 protocol was published in QEX for
+September-October, 2005 (see
+http://physics.princeton.edu/pulsar/K1JT/JT65.pdf).  Briefly stated,
+JT65 uses 60 s T/R sequences and carefully structured messages.
+Standard messages are compressed so that two callsigns and a grid
+locator can be transmitted with just 71 bits.  A 72nd bit serves as a
+flag to indicate that the message consists of arbitrary text (up to 13
+characters) instead of callsigns and a grid locator.  Special formats
+allow other information such as callsign prefixes (e.g., ZA/PA2CHR) or
+numerical signal reports (in dB) to be substituted for the grid
+locator.  The aim of source encoding is to compress the common
+messages used for EME QSOs into a minimum fixed number of bits.  After
+compression, a Reed Solomon (63,12) error-correcting code converts
+72-bit user messages into sequences of 63 six-bit channel symbols.
+
+JT65 requires tight synchronization of time and frequency between
+transmitter and receiver.  Each transmission is divided into 126
+contiguous time intervals or symbols, each of length 4096/11025 =
+0.372 s. Within each interval the waveform is a constant-amplitude
+sinusoid at one of 65 pre-defined frequencies, and frequency changes
+between intervals are accomplished in a phase-continuous manner.  Half
+of the channel symbols are devoted to a pseudo-random synchronizing
+vector interleaved with the encoded information symbols.  The sync
+vector allows calibration of relative time and frequency offsets
+between transmitter and receiver.  A transmission nominally begins at
+t = 1 s after the start of a UTC minute and finishes at t = 47.8 s.
+The synchronizing tone is at 11025*472/4096 = 1270.5 Hz, and is
+normally sent in each interval having a 1 in the following
+pseudo-random sequence:
+
+ 100110001111110101000101100100011100111101101111000110101011001
+ 101010100100000011000000011010010110101010011001001000011111111
+
+Encoded user information is transmitted during the 63 intervals not
+used for the sync tone. Each channel symbol generates a tone at
+frequency 1275.8 + 2.6917 Nm Hz, where N is the value (0 - 63) of the
+six-bit symbol, and m is 1, 2, or 4 for JT65 sub-modes A, B, or C.
+The signal report OOO is conveyed by reversing sync and data positions
+in the transmitted sequence.  Shorthand messages dispense with the
+sync vector and use intervals of 1.486 s (16,384 samples) for the
+alternating tones.  The lower frequency is always 1270.5 Hz, the same
+as that of the sync tone, and the frequency separation is 26.92 nm Hz
+with n = 2, 3, 4 for the messages RO, RRR, and 73.

@@ -1,0 +1,75 @@
+File
+
+ 
+
+Open: read and decode a previously recorded file stored on disk.  The file must be a standard wave file recorded in 8- or 16-bit monaural format with 11025 Hz sampling.  
+Open next in directory (F6): read and decode the next file after one already opened.
+Decode remaining files in directory (Shift-F6): sequentially read and decode all wave files following the one already opened.
+Delete all *.WAV files in RxWav: delete all *.WAV files in the RxWav subdirectory.  
+Erase ALL.TXT: erase the cumulative text file. 
+Exit: terminate the program.
+
+Setup | Options     (See screen picture on page 4.)
+My Call: Enter your callsign.
+Grid Locator: Enter your 6-digit grid locator.
+ID Interval (m): set time in minutes between automatic station identifications.  A value of zero disables the automatic identification.
+PTT Port: in Windows, set the COM (serial port) number that you will use for T/R control.  In Linux or FreeBSD, enter the device name of the serial or parallel port, for example /dev/ttyS0.
+Audio In, Audio Out: if you have more than one sound card, enter the desired audio device numbers here (see Console Window, page 17).
+Rate In:  if the first number in the lower-left status bar panel is outside the range 0.9995 to 1.0005, enter its stabilized value here.
+Rate Out: if the secondnumber in the lower-left status bar panel is outside the range 0.9995 to 1.0005, enter its stabilized value here.
+Distance unit: select miles or kilometers.
+Report/Grid: select either a signal report or your grid locator in the default FSK441 and JT6M message templates.
+NA/EU: select North American or European conventions for the default FSK441 and JT6M message templates.
+Reset defaults: insert default templates for generating standard FSK441 and JT6M messages.  The templates can be edited to suit your requirements.  Use %M to represent MyCall, %T for To radio, %R for signal report, %G for 4-digit grid locator, and %L for 6-digit grid locator.
+DXCC prefix: you can specify one additional add-on DXCC prefix to be used in standard JT65 messages.  This may be useful for DXpeditions, for example.
+Source RA, Source DEC: to have the program compute Az and El for an astronomical source, specify the current right ascension and declination in the formats hh:mm:ss, dd.dd.
+
+Other Setup Items
+ 
+Toggle size of text window: make the text window larger or smaller
+Generate messages for test tones: generate special Tx messages that will transmit fixed tones at any of the four FSK441 frequencies (A=882, B=1323, C=1764, D=2205 Hz) or at 1000 and 2000 Hz.  You can edit the last two messages to specify any audio frequency up to about 5000 Hz.
+F4 sets Tx6: if this item is checked, typing F4 to clear the To radio and Grid boxes will also have the effect of setting the Tx message number to 6.
+Double-click on callsign sets Tx First: if this item is checked, double-clicking on a callsign in the main text box will appropriately set or clear the Tx First box, depending on the time-stamp of the decoded message.
+GenStdMsgs sets Tx1: if this item is checked, clicking GenStdMsgs will have the additional effect of setting the Tx message number to 1. 
+
+View
+ 
+
+Mode
+ 
+
+Decode 
+ 
+Select desired decoding options for FSK441 and JT65 modes.  
+See page 15 for details.
+ 
+Save
+ 
+
+
+Band
+ 
+
+Help
+  
+ 
+Keyboard shortcuts 
+ 
+Special mouse commands
+  
+What message to send? 
+ 
+ 
+Available suffixes and add-on prefixes
+ 
+
+About WSJT 
+ 
+ 
+SpecJT Options
+ 
+
+Mark T/R boundaries: insert horizontal lines to indicate start times of JT65 transmit/receive intervals.
+Flatten spectra: apply a correction for shape of receiver bandpass before plotting waterfall spectra in JT65 mode.
+The remaining options on this menu should be self-explanatory.
+

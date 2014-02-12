@@ -1,0 +1,10 @@
+A console window is provided to accommodate startup messages and
+possible diagnostic messages for WSJT.  At startup the window should
+look something like the picture below.  If you have more than one
+sound card, information presented here will enable you to select the
+one to use for WSJT.  Enter the appropriate device numbers as Audio In
+and Audio Out on the Options screen.
+
+
+Console Window (image)
+ 

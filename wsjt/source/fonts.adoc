@@ -1,0 +1,18 @@
+You are offered some control over the fonts and colors used in _WSJT_.
+A text file named wsjtrc.win (on Windows) or wsjtrc (on Linux and
+FreeBSD) is supplied with the following contents:
+
+ *font:				Arial 8
+ *Label*font:			Arial 8
+ *Text*font:			"Courier New" 9
+ *background:			gray85
+ *Text*background:		white
+ *Entry*background:		white
+ *foreground:			black
+ *Listbox*foreground:	        RoyalBlue
+
+You can edit this file with a text editor (such as Windows Notepad).
+For example, to make the on-screen fonts slightly larger you can
+increase the numbers on the first three lines to 9, 9, and 10.  It
+might be wise to save a backup of the original file under a different
+name, in case you need to restore the original contents.

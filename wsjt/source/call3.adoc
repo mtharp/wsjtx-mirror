@@ -1,0 +1,7 @@
+As an operating convenience, WSJT makes use of a simple callsign
+database file named CALL3.TXT.  A default file is distributed with the
+program, but you will want to update the file yourself and perhaps
+modify it to suit your regional needs.  Current versions of the
+default file are maintained by DL8EBW and can be downloaded from
+http://www.dl8ebw.de/DATABASE/database.html.
+
