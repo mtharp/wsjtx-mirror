@@ -1,5 +1,5 @@
 // Link File to house all links
-// File Locaiton: ./doc/global/links.adoc
+// File Location: ./doc/global/links.adoc
 // Usage example: include::../../global/links.adoc[]
 // Keeping them in aplphabetic order helps see dupes
 :asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[ AsciiDoc User Guide ]

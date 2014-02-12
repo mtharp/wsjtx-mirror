@@ -1,5 +1,5 @@
 @ECHO OFF
-SET VERS=0.0.1-Alpha
+SET VERS=0.0.2-Alpha
 REM Description	: WSJT Documentation Build Script for Windows
 REM Title		: build-doc.bat
 REM Author      : KI7MT
@@ -49,25 +49,20 @@ IF %BASEDIR:~-1%==\ SET BASEDIR=%BASEDIR:~0,-1%
 REM -- Set document path variables
 SET ADOC=%BASEDIR%\asciidoc\asciidoc.py
 SET ICOND=%BASEDIR%\icons
-SET DEVG=%BASEDIR%\dev-guide
-SET QUICKR=%BASEDIR%\quick-ref
-SET MAP65=%BASEDIR%\map65
-SET SIMJT=%BASEDIR%\simjt
-SET WSJT=%BASEDIR%\wsjt
-SET WSJTX=%BASEDIR%\wsjtx
-SET WSPR=%BASEDIR%\wspr
-SET WSPRX=%BASEDIR%\wsprx
-SET NTOC=%ADOC% -b xhtml11 -a iconsdir=%ICOND% -a max-width=1024px
-SET TOC1=%ADOC% -b xhtml11 -a toc -a iconsdir=%ICOND% -a max-width=1024px
-SET TOC2=%ADOC% -b xhtml11 -a toc2 -a iconsdir=%ICOND% -a max-width=1024px
-SET APPS_ARRAY=(map65 quick-ref simjt wsjt wsjtx wspr wsprx )
+SET TOC=%ADOC% -b xhtml11 -a toc2 -a iconsdir=%ICOND% -a max-width=1024px
+SET SHORT_LIST=(map65 quick-ref simjt wsjt wspr wsprx )
 
 REM -- Start building documents
-REM --        manifest checking
-REM --        command-line input options
 call:head_wording
-call:function_TOC2
+CD %BASEDIR%\wsjtx
+ECHO Building wsjtx
+%TOC% -o wsjtx-main-toc2.html source\wsjtx-main.adoc
+ECHO .. wsjtx-main-toc2.html
+ECHO.
+CD %BASEDIR%
+call:function_TOC
 call:tail_wording
+GOTO :eof
 
 REM ----------------------
 REM -- Function Section --
@@ -89,11 +84,12 @@ PAUSE
 GOTO :eof
 
 REM -- Main build loop
-:function_TOC2
-FOR %%a IN %APPS_ARRAY% DO (
+:function_TOC
+FOR %%a IN %SHORT_LIST% DO (
 CD %BASEDIR%\%%a
-%TOC2% -o %%a-main-toc2.html source\%%a-main.adoc 
-ECHO .. %%a-main-toc2.html
+ECHO Building %%a
+%TOC% -o %%a-main.html source\%%a-main.adoc 
+ECHO .. %%a-main.html
 ECHO.
 )
 GOTO :eof
