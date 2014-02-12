@@ -46,7 +46,7 @@ subroutine horizspec(x,brightness,contrast,a)
      enddo
      if(nx.eq.7 .or. nx.eq.378 .or. nx.eq.750) then
 ! Put in yellow ticks at the standard tone frequencies for FSK441, or
-! at the sync-tone frequency for JT65.
+! at the sync-tone frequency for JT65, JT6M.
         do i=nx-4,nx
            if(mode.eq.'FSK441') then
               do n=2,5
@@ -55,6 +55,9 @@ subroutine horizspec(x,brightness,contrast,a)
               enddo
            else if(mode(1:4).eq.'JT65') then
               j=121-nint(1270.46/df)
+              a(i,j)=254
+           else if(mode.eq.'JT6M') then
+              j=121-nint(1076.66/df)
               a(i,j)=254
            endif
         enddo

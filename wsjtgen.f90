@@ -168,6 +168,12 @@ subroutine wsjtgen
      goto 900
   endif
 
+  if(mode(1:4).eq.'JT6M') then
+!  We're in JT6M mode.
+     call gen6m(msg,samfacout,iwave,nwave)
+     goto 900
+  endif
+
   if(mode(1:2).eq.'CW') then
 !  We're in CW mode
 !     wpm=15.
@@ -245,7 +251,8 @@ subroutine wsjtgen
   i=1
 910 nmsg=i
 
-  if(lcwid .and. (mode.eq.'FSK441' .or. mode(1:4).eq.'JTMS')) then
+  if(lcwid .and. (mode.eq.'FSK441' .or. mode(1:4).eq.'JTMS' .or.   &
+       mode(1:4).eq.'JT6M')) then
 !  Generate and insert the CW ID.
      wpm=25.
      freqcw=440.

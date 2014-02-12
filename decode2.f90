@@ -19,7 +19,13 @@ subroutine decode2
 !    5       d2a   Mouse pick, main window
 
   lenpick=22050                !Length of FSK441 mouse-picked region
+  if(mode(1:4).eq.'JT6M') then
+     lenpick=4*11025
+     if(mousebutton.eq.3) lenpick=10*11025
+  endif
+
   istart=1.0 + 11025*0.001*npingtime - lenpick/2
+  if(mode(1:4).eq.'JT6M') istart=istart+11025
   if(npingtime2.ge.npingtime+1000) then
      lenpick=11025*0.001*(npingtime2-npingtime)
      istart=1.0 + 11025*0.001*npingtime
@@ -82,6 +88,15 @@ subroutine decode2
              lenpick=lenpick*2.24
         if(mousebutton.eq.1 .or. (mode.eq.'FSK441' .and.              &
              mousebutton.eq.3)) jzz=lenpick
+
+!  This is a major kludge:
+        if(mode(1:4).eq.'JT6M') then          
+           jzz=4*11025
+           if(mousebutton.eq.3) jzz=10*11025
+        else
+           istart=istart + 3300 - jzz/2
+        endif
+
         if(abs(npingtime2-npingtime).lt.1000) then
            istart=istart + 3300 - jzz/2
            if(istart.lt.2) istart=2

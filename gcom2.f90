@@ -1,6 +1,6 @@
 ! Variable             Purpose                              Set in Thread
 !-------------------------------------------------------------------------
-real ps0               !Spectrum of best ping, FSK441/JTMS      Decoder
+real ps0               !Spectrum of best ping, FSK441/JTMS/JT6M Decoder
 real psavg             !Average spectrum                        Decoder
 real s2                !2d spectrum for horizontal waterfall    GUI
 real ccf               !CCF in time (blue curve)                Decoder
@@ -61,7 +61,7 @@ integer neme           !EME calls only in deep search?          GUI
 integer nsked          !Sked mode for deep search?              GUI
 integer naggressive    !Is "Aggressive decoding" checked?       GUI
 integer ntx2           !Is "No shorthands if Tx1" checked?      GUI
-integer nslim2         !2nd Decoder threshold for FSK441        GUI
+integer nslim2         !2nd Decoder threshold for FSK441/JT6M   GUI
 integer nagain         !Decode same file again?                 GUI
 integer nsavelast      !Save last file?                         GUI
 integer ntxdf          !Tx frequency offset                     GUI

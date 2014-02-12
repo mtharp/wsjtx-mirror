@@ -55,6 +55,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   nmode=1
   if(mode(1:4).eq.'JT65') nmode=2
   if(mode(1:4).eq.'Echo') nmode=3
+  if(mode(1:4).eq.'JT6M') nmode=4
   if(mode(1:2).eq.'CW') nmode=5
   if(mode(1:3).eq.'JT4') nmode=7
   if(mode(1:4).eq.'JTMS') nmode=8

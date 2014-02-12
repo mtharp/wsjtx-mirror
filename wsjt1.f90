@@ -29,8 +29,11 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
   logical LDecoded        !True if anything was decoded
   real s2(64,3100)        !2D spectral array
   real ccf(-5:540)        !X-cor function in JT65 mode (blue line)
+  real red(512)
   real ss1(-224:224)      !Magenta curve (for JT65 shorthands)
   real ss2(-224:224)      !Orange curve (for JT65 shorthands)
+  real yellow(216)
+  real yellow0(216)
   real fzap(200)
   real sumsq(600)
   integer resample
@@ -201,6 +204,67 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
           mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,                &
           nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
      goto 900
+  endif
+
+! If we're in JT6M mode, call the 6M decoding routines.
+  if(mode.eq.4) then
+     do i=1,jz                    !### Why is it level-sensitive?
+        dat(i)=dat(i)/25.0
+     enddo
+!           write(73) jz,nz,cfile6,(dat(j),j=1,jz)
+! For waterfall plot
+     call spec2d(dat,jz,nstep,s2,nchan,nz,psavg,sigma)
+     if(sigma.lt.0.0) basevb=-99.0
+     if(jz/11025.0.lt.3.9 .or. sigma.lt.0.0) go to 900
+
+     f0=1076.66
+     if(NFreeze.eq.1) f0=1076.66 + MouseDF
+     f00=f0
+     call syncf0(dat,jz,NFreeze,DFTolerance,jstart,f0,smax)
+     call synct(dat,jz,jstart,f0,smax)
+     call syncf1(dat,jz,jstart,f0,NFreeze,DFTolerance,smax,red)
+
+     do i=1,512
+        ccf(i-6)=dB(red(i))
+     enddo
+     df=11025./256.
+     do i=1,64
+        sum=0.
+        do k=8*i-7,8*i
+           sum=sum+red(k)
+        enddo
+        psavg(i)=5.0*sum
+        fac=1.0
+        freq=i*df
+        if(freq.gt.2500.0) fac=((freq-2500.)/20.0)**(-1.0)
+        psavg(i)=fac*psavg(i)
+        psavg(i+64)=0.001
+     enddo
+
+     jz=jz-jstart+1
+     nslim=MinSigdB
+     NFixLen=0
+
+! Call the decoder if DF is in range or Freeze is off.
+     if(NFreeze.eq.0 .or.                                              &
+               abs(f0-f00).lt.float(DFTolerance)) then
+        call decode6m(dat(jstart),jz,cfile6,nslim,istart,              &
+             NFixLen,lcum,f0,lumsg,npkept,yellow)
+     endif
+
+     if(pick) then
+        do i=1,216
+           ps0(i)=yellow0(i)
+        enddo
+     else
+        ps0(216)=yellow(216)
+        yellow0(216)=yellow(216)
+        do i=1,215
+           ps0(i)=2*yellow(i)
+           yellow0(i)=ps0(i)
+        enddo
+     endif
+     goto 800
   endif
 
   if(mode.eq.5) then

@@ -26,14 +26,14 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="9.7 r" + "$Rev$"[6:-1]
+Version="9.8 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
-Title="  WSJT 9.7    r" + "$Rev$"[6:-1] + "     by K1JT"
+Title="  WSJT 9.8    r" + "$Rev$"[6:-1] + "     by K1JT"
 
 #See if we are running in Windows
 g.Win32=0
@@ -61,6 +61,7 @@ isync=0
 isync441=1
 isync_iscat=1
 isync65=1
+isync6m=-10
 isync_save=0
 itol=5                                       #Default tol=400 Hz
 ntol=(10,25,50,100,200,400,600)              #List of available tolerances
@@ -743,6 +744,31 @@ def ModeISCAT_B(event=NONE):
         GenStdMsgs()
         erase()        
 
+#------------------------------------------------------ ModeJT6M
+def ModeJT6M(event=NONE):
+    global slabel,isync,isync6m,itol
+    if g.mode != "JT6M":
+        if lauto: toggleauto()
+        cleartext()
+        ModeFSK441()
+        lab2.configure(text='FileID            T      Width      dB        DF')
+        mode.set("JT6M")
+        isync=isync6m
+        lsync.configure(text=slabel+str(isync))
+        shmsg.configure(state=DISABLED)
+        cbzap.configure(state=NORMAL)
+        cbfreeze.configure(state=NORMAL)
+        itol=3
+        ltol.configure(text='Tol    '+str(ntol[itol]))
+        inctol()
+        nfreeze.set(1)
+        ntx.set(1)
+        Audio.gcom2.mousedf=0
+        GenStdMsgs()
+        erase()
+        
+
+
 #------------------------------------------------------ ModeCW
 def ModeCW(event=NONE):
     if g.mode != "CW":
@@ -867,14 +893,15 @@ WSJT is a weak signal communications program.  It supports
 these operating modes:
 
   1. FSK441 -  meteor scatter
-  2. ISCAT    -  for tropo- and iono-scatter, weak Es/F2 on 50 MHz
-                       (replaces JT6M)
-  3. JT65      -  for HF, EME, and troposcatter
-  4. JT4        -  HF, microwave beacons, 10 GHz EME and rainscatter
-  5. CW        -  15 WPM Morse code, messages structured for EME
-  6. Echo      -  EME Echo testing
+  2. JTMS   - fast mode for meteor scatter
+  3. ISCAT  -  for tropo- and iono-scatter, weak Es/F2 on 50 MHz
+  4. JT6M   - for meteor and ionospheric scatter on 50 MHz
+  5. JT65   -  for HF, EME, and troposcatter
+  6. JT4    -  HF, microwave beacons, 10 GHz EME and rainscatter
+  7. CW     -  15 WPM Morse code, messages structured for EME
+  8. Echo   -  EME Echo testing
 
-Copy (c) 2001-2011 by Joseph H. Taylor, Jr., K1JT, with
+Copy (c) 2001-2014 by Joseph H. Taylor, Jr., K1JT, with
 contributions from additional authors.  WSJT is Open Source 
 software, licensed under the GNU General Public License (GPL).
 Source code and programming information may be found at 
@@ -941,11 +968,11 @@ def mouse_commands(event=NONE):
     t="""
 Click on          Action
 --------------------------------------------------------
-Waterfall        FSK441, JTMS: click to decode region
+Waterfall        FSK441, JTMS, JT6M: click to decode region
                       JT65: Click to set DF for Freeze
                        Double-click to Freeze and Decode
 
-Main screen,     FSK441, JTMS, ISCAT: click to decode ping
+Main screen,     FSK441, JTMS, ISCAT, JT6M: click to decode ping
 graphics area    JT65: Click to set DF for Freeze
                            Double-click to Freeze and Decode
 
@@ -969,7 +996,7 @@ use the following standard procedures and *do not* exchange pertinent
 information by other means (e.g., internet, telephone, ...) while the
 QSO is in progress!
 
-FSK441, JTMS, or ISCAT:   If you have received
+FSK441, JTMS, ISCAT, JT6M:   If you have received
     ... less than both calls from the other station, send both calls.
     ... both calls, send both calls and your signal report.
     ... both calls and signal report, send R and your report.
@@ -1025,7 +1052,7 @@ VK7ABC K1JT RRR
 
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/WSJT_User_600.pdf'
+    url='http://physics.princeton.edu/pulsar/K1JT/doc/wsjt/'
     thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ wsjt9supp
@@ -1343,7 +1370,7 @@ def GenStdMsgs(event=NONE):
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
     if mode.get()=="FSK441" or mode.get()[:5]=="ISCAT" or \
-       mode.get()=='JTMS' or mode.get()[:3]=='JT4':
+       mode.get()=='JTMS' or mode.get()[:3]=='JT4' or mode.get()=="JT6M":
         r=report.get()
         tx1.insert(0,setmsg(options.tx1.get(),r))
         tx2.insert(0,setmsg(options.tx2.get(),r))
@@ -1649,6 +1676,8 @@ def plot_small():
         x=int(i*df*fac)
         xy.append(x)
         psavg=Audio.gcom2.psavg[i]
+        if mode.get()=="JT6M":
+            psavg=psavg + 27.959
         n=int(150.0-2*psavg)
         xy.append(n)
         if mode.get()=='FSK441' or mode.get()=="JTMS":
@@ -1657,7 +1686,9 @@ def plot_small():
             xy2.append(x)
             xy2.append(n)
     graph2.create_line(xy,fill="magenta")
-    if mode.get()=='FSK441' or mode.get()=="JTMS":
+    if mode.get()=='JT6M':
+        plot_yellow()
+    elif mode.get()=='FSK441' or mode.get()=="JTMS":
         graph2.create_line(xy2,fill="red")
         for i in range(4):
             x=(i+2)*441*fac
@@ -1668,30 +1699,30 @@ def plot_small():
         if i%2: ytop=115
         graph2.create_line([x,120,x,ytop],fill="white")
 
-###------------------------------------------------------ plot_yellow
-##def plot_yellow():
-##    nz=int(Audio.gcom2.ps0[215])
-##    if nz>10:
-##        y=[]
-##        for i in range(nz):             #Find ymax for yellow curve
-##            n=Audio.gcom2.ps0[i]
-##            y.append(n)
-##        ymax=max(y)
-##        fac=1.0
-##        if ymax>60: fac=60.0/ymax
-##        xy2=[]
-##        for i in range(nz):
-##            x=int(2.34*i)
-##            y=fac*Audio.gcom2.ps0[i] + 8
-##            n=int(85.0-y)
-##            xy2.append(x)
-##            xy2.append(n)
-##        graph1.create_line(xy2,fill="yellow")
+#------------------------------------------------------ plot_yellow
+def plot_yellow():
+    nz=int(Audio.gcom2.ps0[215])
+    if nz>10:
+        y=[]
+        for i in range(nz):             #Find ymax for yellow curve
+            n=Audio.gcom2.ps0[i]
+            y.append(n)
+        ymax=max(y)
+        fac=1.0
+        if ymax>60: fac=60.0/ymax
+        xy2=[]
+        for i in range(nz):
+            x=int(2.34*i)
+            y=fac*Audio.gcom2.ps0[i] + 8
+            n=int(85.0-y)
+            xy2.append(x)
+            xy2.append(n)
+        graph1.create_line(xy2,fill="yellow")
 
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
-           im,pim,cmap0,isync,isync441,isync_iscat,isync65,trxnoise0,     \
+           im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0,     \
            isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas
     
     utc=time.gmtime(time.time()+0.1*idsec)
@@ -1805,6 +1836,8 @@ def update():
             msg2.configure(bg='#FFFF00')
         elif mode.get()[:4]=="JT65":
             msg2.configure(bg='#00FFFF')
+        elif mode.get()=="JT6M":
+            msg2.configure(bg='#FF00FF')
         elif mode.get()=="CW":
             msg2.configure(bg='#00FF00')
         elif mode.get()[:5]=="ISCAT":
@@ -2009,6 +2042,7 @@ def update():
     g.mode=mode.get()
     g.report=report.get()
     if mode.get()=='FSK441' or mode.get()=='JTMS': isync441=isync
+    elif mode.get()=='JT6M': isync6m=isync
     elif mode.get()[:5]=="ISCAT": isync_iscat=isync
     elif mode.get()[:4]=='JT65': isync65=isync
     Audio.gcom1.txfirst=TxFirst.get()
@@ -2196,6 +2230,7 @@ else:
 modemenu.add_radiobutton(label = 'FSK441', variable=mode,command = ModeFSK441, state=NORMAL)
 modemenu.add_radiobutton(label = 'ISCAT-A', variable=mode, command = ModeISCAT_A)
 modemenu.add_radiobutton(label = 'ISCAT-B', variable=mode, command = ModeISCAT_B)
+modemenu.add_radiobutton(label = 'JT6M', variable=mode, command = ModeJT6M)
 modemenu.add_radiobutton(label = 'JT65A', variable=mode, command = ModeJT65A)
 modemenu.add_radiobutton(label = 'JT65B', variable=mode, command = ModeJT65B)
 modemenu.add_radiobutton(label = 'JT65C', variable=mode, command = ModeJT65C)
@@ -2730,6 +2765,8 @@ try:
                 ModeJT65B2()
             elif value=='JT65C2':
                 ModeJT65C2()
+            elif value=='JT6M':
+                ModeJT6M()
             elif value=='CW':
                 ModeCW()
             elif value=='ISCAT-A':
@@ -2833,6 +2870,7 @@ try:
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Band': nfreq.set(value)
         elif key == 'S441': isync441=int(value)
+        elif key == 'S6m': isync6m=int(value)
         elif key == 'Siscat': isync_iscat=int(value)
         elif key == 'Sync': isync65=int(value)
         elif key == 'Zap': nzap.set(value)
