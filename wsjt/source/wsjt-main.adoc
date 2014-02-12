@@ -29,8 +29,7 @@
 :osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
 :samples_windows: http://physics.princeton.edu/pulsar/K1JT/WSJT_Samples.zip[ Windows ]
 :samples_linux: http://physics.princeton.edu/pulsar/K1JT/WSJT_Samples.tgz[ Linux ]
-
-
+:call3: http://www.dl8ebw.de/DATABASE/database.html[ DL8EBW ]
 
 // DOWNLOAD links
 :kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
@@ -98,3 +97,7 @@ include::protocols.adoc[]
 [[ASTROCALC]]
 == Astronomical Calculations
 include::astrocalc.adoc[]
+
+[[ACKNOWLEDGMENTS]]
+== Acknowledgments
+include::acknowledgments.adoc[]

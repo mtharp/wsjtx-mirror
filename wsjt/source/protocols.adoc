@@ -1,12 +1,13 @@
-.FSK441
+=== FSK441
 
 FSK441 uses four-tone frequency shift keying at 441 baud.  The
 frequencies of the audio tones are 882, 1323, 1764, and 2205 Hz.  Each
 encoded character uses three tone intervals and therefore requires
 3/441 seconds (approximately 2.3 ms) for transmission.  FSK441
 accommodates an alphabet of 43 characters, as listed in the table
-below: FSK441 character codes
+below:
 
+-------------------------------
   1      001          H   120 
   2      002          I   121 
   3      003          J   122 
@@ -29,14 +30,15 @@ below: FSK441 character codes
   D      110          E   230 
   F      112          Z   231 
   G      113 
+-------------------------------
 
-In the table the four tones have been labeled 0-3, representing the
-tones 882, 1323, 1764, and 2205 Hz.  For example, the letter T has the
-code 210 and is transmitted by sending sequentially the tones at 1764,
+In the table the four tones are labeled 0-3, representing the tones
+882, 1323, 1764, and 2205 Hz.  For example, the letter T has the code
+210 and is transmitted by sending sequentially the tones at 1764,
 1323, and 882 Hz. Note that the character <space> is encoded as 033,
 and that tone sequences starting with the highest tone (number 3) are
-not used at all.  It follows that if transmitted messages always
-include at least one space, a decoding algorithm can establish proper
+not used.  It follows that if transmitted messages always include at
+least one space, a decoding algorithm can establish proper
 synchronization from the message content itself, with zero overhead.
 This encoding strategy is one of the secrets of the high efficiency of
 FSK441 for meteor scatter communications.
@@ -49,9 +51,9 @@ by appropriate software.  The shorthand messages are defined to mean
 R26, R27, RRR, and 73, respectively.  These messages are frequently
 used in meteor scatter QSOs, after callsigns have been exchanged.
 They are not used in IARU Region 1, where activity levels are high
-enough that short messages should be accompanied by callsigns.
+enough that messages should always be accompanied by callsigns.
 
-.JT6M
+=== JT6M
 
 JT6M uses 44-tone FSK with a synchronizing tone and 43 possible data
 tones -- one for each character in the supported alphanumeric set, the
@@ -59,22 +61,21 @@ same set used for FSK441. The sync tone is at 1102500/1024 = 1076.66
 Hz, and the 43 other possible tones are spaced at intervals of
 11025/512 = 21.53 HZ up to 2002.59 Hz.  Transmitted symbols are keyed
 at a rate of 21.53 baud, so each one lasts for 1/21.53 = 0.04644
-seconds. Every 3rd symbol is the sync tone, and each sync symbol is
+seconds. Every third symbol is the sync tone, and each sync symbol is
 followed by two data symbols.  The transmission rate of user data is
 therefore (2/3)*21.53 = 14.4 characters per second.  The transmitted
 signal sounds a bit like piccolo music.
 
-.JT65
+=== JT65
 
-A detailed description of the JT65 protocol was published in QEX for
-September-October, 2005 (see
-http://physics.princeton.edu/pulsar/K1JT/JT65.pdf).  Briefly stated,
-JT65 uses 60 s T/R sequences and carefully structured messages.
-Standard messages are compressed so that two callsigns and a grid
-locator can be transmitted with just 71 bits.  A 72nd bit serves as a
-flag to indicate that the message consists of arbitrary text (up to 13
+A detailed description of the JT65 protocol was published in
+{jt65protocol}.  for September-October, 2005.  Briefly stated, JT65
+uses 60 s T/R sequences and carefully structured messages.  Standard
+messages are compressed so that two callsigns and a grid locator can
+be transmitted with just 71 bits.  A 72nd bit serves as a flag to
+indicate that the message consists of arbitrary text (up to 13
 characters) instead of callsigns and a grid locator.  Special formats
-allow other information such as callsign prefixes (e.g., ZA/PA2CHR) or
+allow other information such as callsign prefixes (e.g., ZA/K1ABC) or
 numerical signal reports (in dB) to be substituted for the grid
 locator.  The aim of source encoding is to compress the common
 messages used for EME QSOs into a minimum fixed number of bits.  After

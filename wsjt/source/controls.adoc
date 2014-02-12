@@ -2,141 +2,113 @@ TIP: some controls are enabled only in certain operating modes.
 
 [horizontal]
 
-Add:: add the displayed callsign and grid locator to the database file
-CALL3.TXT.  If an entry for this callsign already exists, you will be
+*Add*:: Add the displayed callsign and grid locator to the database file
++CALL3.TXT+.  If an entry for this callsign already exists, you will be
 asked if you want to replace it.
 
-AFC:: enable automatic frequency control in the JT65 decoding algorithm.  
+*AFC*:: Enable automatic frequency control in the JT65 decoding algorithm.  
 
-Auto:: toggle on or off an automatic sequence of transmit and receive
+*Auto*:: Toggle on or off an automatic sequence of transmit and receive
 periods.
 
-Clear Avg:: erase text in average message box, and clear message
+*Clear Avg*:: Erase text in average message box, and clear message
 accumulator.
 
-Clip:: normally set to zero.  Increase its value to apply soft,
-moderate, or hard clipping to a signal before attempting to decode its
-message and to reduce the effects of static crashes, etc.
-
-Decode:: analyze the most recently recorded or opened file, perhaps
+*Decode*:: Analyze the most recently recorded or opened file, perhaps
 after one or more decoding parameters have been changed.
 
-Defaults:: reset parameters S, Sync, Clip, and Tol to default values.
-
-Dsec:: adjust UTC clock reading in 0.5 s increments to manually
+*Dsec*:: Adjust UTC clock reading in 0.5 s increments to manually
 resynchronize with UTC or with your QSO partner's computer.  (In
-general, it is best to keep the Windows clock set accurately and Dsec
+general, it is best to keep the Windows clock set accurately and *Dsec*
 set to zero.)
 
-Erase:: clear all information in main text boxes and graphical areas.
+*Erase*:: Clear all information in main text boxes and graphical areas.
 
-Exclude:: remove most recent recording from the average message
+*Exclude*:: Remove most recent recording from the average message
 accumulator.  Use this option when you are sure that the program has
-synchronized incorrectly (for example, because DF and/or DT differ
+synchronized incorrectly (for example, because *DF* and/or *DT* differ
 substantially from expected values) and you wish to avoid
 contaminating the average message with bad data.
 
-F1:: display a list of keyboard shortcuts.
+*F1*:: Display a list of keyboard shortcuts.
 
-Shift-F1:: display a list of special mouse commands.
+*Shift-F1*:: Display a list of special mouse commands.
 
-F2:: display the Options screen.
+*F2*:: Display the *Options* screen.
 
-F3:: toggle the status of Tx mute, which prevents switching into Tx
-mode.
+*F3*:: Toggle the status of *Tx mute*, which prevents switching into
+Tx mode.
 
-F4:: clear the To radio and Grid boxes.
+*F4*:: Clear the *To radio* and *Grid* boxes.
 
-F5:: display reminders about what message to send.
+*F5*:: Display reminders about what message to send.
 
-F6:: open and decode next wave file in selected directory.
+*F6*:: Open and decode next wave file in selected directory.
 
-F7:: set FSK441 mode.
+*Freeze*:: Search only frequencies within +/- *Tol* Hz 
+of *Freeze DF*.  *Freeze DF* can be adjusted by using the left/right 
+keyboard arrows.  In JT65 mode it can also be set by clicking on 
+the red spike or on the *SpecJT* waterfall display.
 
-Shift-F7:: set JT6M mode.
+*Gen Std Msgs*:: Fenerate standard messages for the mode in use.
 
-F8:: set JT65A mode.
-
-Shift-F8:: set JT65B mode.
-
-CTRL-F8:: set JT65C mode.
-
-F10:: toggle focus between SpecJT and the main WSJT screen.
-
-Freeze:: search only frequencies within +/-Tol Hz of Freeze DF.
-Freeze DF can be adjusted by using the left/right keyboard arrows.  In
-JT65 mode it can also be set by clicking on the red spike or on the
-SpecJT waterfall display.
-
-Gen Std Msgs:: generate standard messages for the mode in use.
-
-Include:: if signal level is greater than -33 dB, add most recent
-recording to average message accumulator even if Sync is less than
+*Include*:: If signal level is greater than -33 dB, add most recent
+recording to average message accumulator even if *Sync* is less than
 stated threshold.
 
-Log QSO:: click to add an entry for To radio to the simple log file
-WSJT.LOG.  Logged information includes date, time, callsign, locator,
+*Log QSO*:: Click to add an entry for *To radio* to the simple log file
++WSJT.LOG+.  Logged information includes date, time, callsign, locator,
 band, and mode.
 
-Lookup:: search database file CALL3.TXT for entry in To radio. If
-callsign is found, retrieve the station's grid locator and use it to
+*Lookup*:: Search database file +CALL3.TXT+ for entry in *To radio*. If
+callsign is found, retrieve the station's *Grid* locator and use it to
 calculate distance, azimuth, elevation, and Doppler shift.
 
-Monitor:: start a series of reception intervals, perhaps to monitor a
+*Monitor*:: Start a series of reception intervals, perhaps to monitor a
 calling frequency or to copy another station engaged in a QSO.
 
-NB:: blank short noise pulses from the received data before decoding.
+*Save*:: Save the most recently recorded file. 
 
-S:: set minimum signal level (in dB) that will be accepted as a ping.  
+*Stop*:: Terminate the *Monitor* sequence. 
 
-Save:: save the most recently recorded file. 
+*Sync*:: Set minimum signal level or synchronizing threshold. 
 
-Sh Msg:: enable transmission of FSK441 shorthand messages. 
+*Tol*:: Set decoder's tolerance (in Hz) to frequency offsets.  
 
-Sked:: check this box if you are running a schedule with a known
-station and do not wish to see any results from the deep search
-decoder that are not relevant to your QSO.
-
-Stop:: terminate the Monitor sequence. 
-
-Sync::  set synchronizing threshold (default = 1) for the JT65 decoder.
-
-Tol:: set decoder's tolerance (in Hz) to frequency offsets.  
-
-Tx1 - Tx6:: transmit the selected message.  Transmission will continue
+*Tx1 - Tx6*:: Transmit the selected message.  Transmission will continue
 until the end of the present Tx sequence.
 
-Tx First:: check this box if you want to transmit during the first
+*Tx First*:: Check this box if you want to transmit during the first
 period of the timed T/R cycle.  Uncheck it if your QSO partner is
 transmitting in the first period. ``First'' is defined as the first
 T/R interval of a UTC hour, and alternately thereafter.
 
-Tx Stop:: terminate a transmission and set Auto to off.
+*Tx Stop*:: Terminate a transmission and set *Auto* to OFF.
 
-Zap:: filter out birdies (narrowband signals of approximately constant
+*Zap*:: Filter out birdies (narrowband signals of approximately constant
 amplitude) before attempting to decode.
 
 .Main Screen Text Boxes
 [horizontal]
 
-Average Text:: displays average messages in JT65 mode.
+*Average Text*:: Displays average messages in JT65 mode.
 
-Decoded Text:: displays decoded messages and other signal information.
+*Decoded Text*:: Displays decoded messages and other signal information.
 
-Grid:: after a successful Lookup, displays the six-digit grid locator
-of the callsign in the To radio box.  You can also enter a grid
-locator manually.  If only four digits of the locator are known, add a
-space.
+*Grid*:: After a successful *Lookup*, displays *Grid* locator of the
+callsign in the *To radio* box.  You can also enter a locator
+manually.  
 
-Report:: in FSK441 and JT6M modes, enter the signal report you wish to
-send to the other station, then click GenStdMsgs.  Status Bar:: panels
-at the bottom of the WSJT screen display sample rate factors,
-operating mode, Freeze DF, Rx noise level, TR period, and T/R status,
-and the message being transmitted.
-
-Moon:: current azimuth and elevation of the moon at your location,
+*Moon*:: Current azimuth and elevation of the moon at your location,
 2-way EME Doppler shift between your location and the specified grid
 locator, and EME path degradation in dB for the selected band.
 
-To radio:: callsign of station being called.  Text entered in this box
+*Report*:: In FSK441, JTMS, ISCAT, and JT6M modes enter the signal
+report you wish to send to the other station, then click *GenStdMsgs*.
+
+*Status Bar*:: Panels at the bottom of the WSJT screen display
+sample-rate factors, operating mode, *Freeze DF*, *Rx noise* level,
+*TR period*, *T/R status*, and the message being transmitted.
+
+*To radio*:: Callsign of station being called.  Text entered in this box
 becomes leading part of recorded file names.

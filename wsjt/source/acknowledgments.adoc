@@ -1,0 +1,9 @@
+Particular thanks are due to Ralf Koetter and Alexander Vardy, whose
+research paper ``Soft-Decision Algebraic Decoding of Reed Solomon
+Codes,''( _IEEE Transactions on Information Theory_,'' vol. 49,
+pp. 2809-2825, 2003) introduced me to the powerful decoding algorithm
+now used in the JT65 modes.  Through their company CodeVector
+technologies, Koetter and Vardy granted a license to use their
+algorithm, protected under United States patent 6,634,007, for
+noncommercial purposes in amateur radio, and to adapt their computer
+code to this end.
