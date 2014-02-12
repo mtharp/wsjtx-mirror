@@ -5,7 +5,7 @@ REM Title		: build-doc.bat
 REM Author      : KI7MT
 REM Email       : ki7mt@yahoo.com
 REM Date        : 2014
-REM Usage       : ./build-doc.bat
+REM Usage       : [path-to]\doc\:>build-doc.bat
 REM Notes       : Requires: Python 2.6.5 thru 2.7.x
 REM Copyright   : GPLv(3)
 
@@ -30,7 +30,7 @@ ECHO *** Python Was Not Found ***
 ECHO.
 ECHO Please ensure Python is installed and in your System Path
 ECHO.
-ECHO Then run build-doc.bat again
+ECHO Then run %0 again
 ECHO.
 PAUSE
 exit /B 1
@@ -39,10 +39,14 @@ exit /B 1
 REM -- Start WSJT Documentation Build
 TITLE WSJT Documentation Build v%VERS%
 SETLOCAL
-cd /d %~dp0
 
-REM -- Set-up folder variables
-SET BASEDIR=%CD%
+REM -- Get script base directory
+SET BASEDIR=%~dp0
+
+REM -- Strip trailing "\" from %BASEDIR%
+IF %BASEDIR:~-1%==\ SET BASEDIR=%BASEDIR:~0,-1%
+
+REM -- Set document path variables
 SET ADOC=%BASEDIR%\asciidoc\asciidoc.py
 SET ICOND=%BASEDIR%\icons
 SET DEVG=%BASEDIR%\dev-guide
