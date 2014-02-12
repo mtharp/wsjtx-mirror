@@ -32,6 +32,7 @@
 :pskreporter: http://pskreporter.info/pskmap.html[PSK Reporter]
 :osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
 :wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[ WSJT-X ]
+:gnu_gpl: http://www.gnu.org/licenses/gpl.txt[GNU GPL]
 
 // DOWNLOAD links
 :cty_dat: http://www.country-files.com/cty/[here].
@@ -233,17 +234,4 @@ include::acknowledgements.adoc[]
 [appendix]
 License
 -------
-WSJT-X is free software: you can redistribute it and/or modify
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-WSJT-X is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this documentation. If not, see link::http://www.gnu.org/licenses/[GNU GPL]
-
-Copyright (C) 2012-2014 Joseph H Taylor, Jr, {joe_taylor}.
+include::../../global/license.adoc[]
