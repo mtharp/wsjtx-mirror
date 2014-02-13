@@ -1,16 +1,16 @@
 === Linux Makefile Example
 
-In order to build _WSJT-X_ form source, the install the following packages:
+In order to build _WSJT-X_ form source, install the following packages:
 
 ----------
 sudo apt-get install gcc g++ gfortran make libqt5multimedia5-plugins \
 libfftw3-dev libpulse-dev libhamlib-dev qtbase5-dev qtmultimedia5-dev \
-pulseaudio subversion install libgfortran3:i386 libc6-i386
+pulseaudio subversion libgfortran3:i386 libc6-i386
 ----------
 
-Adjust accordingly for you Linux distribution package manager.
+adjust install method to you distribution package manager.
 
-==== Dependency Descriptions
+==== WSJT-X Build and Run Dependencies
 [horizontal]
 +gcc+:: GNU C Compiler
 +g{plus}{plus}+:: GNU C{plus}{plus} Compiler
@@ -24,60 +24,76 @@ Adjust accordingly for you Linux distribution package manager.
 +qtmultimedia5-dev+:: Qt5 Multimedsia Dev Files
 +pulseaudio+:: Pulse Audio Sound Driver
 +subversion+:: Version Control Software
-+libgfortran.so.3+:: 32-Bit Fortran Library
-+libc.so.6+:: 32-bit C Library
-+libm.so.6+:: 32-bit C Library
-+libgcc_s.so.1libm.so.6+:: 32-bit C Library 
-+libquadmath.so.0+:: 32-Bit Quad-Precision Math Library
++libgfortran.so.3+:: Fortran Library
++libc.so.6+:: GCC C Library
++libm.so.6+:: GCC C Library
++libgcc_s.so.1libm.so.6+:: GCC C Library 
++libquadmath.so.0+:: Quad-Precision Math Library
 
-==== Set-Up Directories
-Open a terminal session Ctrl+Alt+T, then create the directory structure.
+==== Build Methods
+
+All commands are performed in a terminal, Ctrl+Alt+T. Follow the
+steps in the script, or perform an import to let the script do the
+build.
+
+==== Import Script
+*Copy & Paste* the scipt directly into a terminal window.
+
+IMPORTANT: You can perform the steps manually if desired. The script
+simply automates the manual steps. When importing the script, you will
+see two errors, this is expected as the repository has yet to be
+checked out.
+
+* Tested on Ubuntu 12.04 64-bit {amp} 14.04 64-bit
+* Copy from pass:[cat > ... to last EOL]
+* Pasting to the termainl creates a file called: wsjtx-compile.sh
 
 [source,bash]
----------
-mkdir -p ~/Projects/wsjtx-build
-cd ~/Projects/wsjtx-build
-----------
-
-==== Create Build Script
-*Copy & Paste* the following directly into a terminal window, and press *ENTER*
-
-IMPORTANT: You can perform the steps manually if desired. The script merely
-automates the manual tasks.
-
-[source,bash]
-----------
+----
 include::wsjtx-compile.txt[]
----------
+----
 
-.Change Permissions and Run Script
+==== Change Permissions and Run Script
 [source,bash]
-----------
-chmod +x ./wsjtx-compile.sh
-./wsjtx-compile.sh
----------
+-----
+chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh
+-----
 
 ==== KVASD Testing
-Before you run _WSJT-X_, ensure _KVASD_ has its required libraries.
+
+Before you launch _WSJT-X_, ensure _KVASD_ can run.
 
 [source,bash]
------
+---------
+# cd to the newly created wsjtx-rxxxx directory then: ./kvasd -v
 cd wsjtx-$rev_num
-ldd ./kvasd
+./kvasd -v
 
-# If there were no missing links, test _kvasd_
+# If sucessful, you should see the version number
+KVASD version 1.11
+
+# To see the copyright information
 ./kvasd
 
-# If successful, the K1JT copyright message will be displayed.
-
------
+---------
 
 ==== Run The New WSJT-X Binary
+[source,bash]
 ----------
+# When running from a terminal [ ./wsjtx ], the xterm remains open.
+# This is good for testing and chasing errors. Run WSJT-X with:
+
 ./wsjtx
+
+# You can also use a file manager. Browse to WSJT-X dir, and open
+# as you would any other program. Using this method to launch, you
+# should not see the terminal window.
+
 ----------
 
 === Windows CMake Example
+
+Under Development
 
 ==== Windows CMake Prerequisites
 
