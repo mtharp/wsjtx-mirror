@@ -1,18 +1,22 @@
-cat > ./wsjtx-compile.sh <<EOL
+cat > ./wsjtx-compile.sh << "EOL"
 #!/usr/bin/env bash
 
 # Part of the WSJT Documentation Project
-# Usage:  chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh 
+# Usage:  chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh
 
 set -e
-BASEDIR="$HOME/Projects/wsjtx-build"
-mkdir -p "$BASEDIR" && cd "$BASEDIR"
+# Edit if you want another location
+BUILD_DIR=~/Projects/wsjtx-build
+
+# No edits required beyond this point
+mkdir -p $BUILD_DIR
+cd $BUILD_DIR
 
 # CHECKOUT WSJT-X
 clear && echo 'Getting Latest WSJT-X Version'
 svn co svn://svn.berlios.de/wsjt/branches/wsjtx
 cd ./wsjtx
-rev_num=$(svn log -l1 |awk 'FNR==2 {print $1}')
+rev_num=$(grep -i "rev=" mainwindow.cpp |awk '{print $3}')
 
 # MAIKEFILE
 cd ./lib
@@ -20,13 +24,13 @@ make -f Makefile.linux
 
 # QMAKE && MAKE
 cd ../
-export QT_SELECT=qt5 
+export QT_SELECT=qt5
 qmake
-j_c=$(grep -c ^processor /proc/cpuinfo) 
+j_c=$(grep -c ^processor /proc/cpuinfo)
 make -j$j_c
 
 # MOVE WSJT-X FOLDER
-cd "$BASEDIR"
+cd ../
 mv ./wsjtx_install ./wsjtx-$rev_num
 cd ./wsjtx-$rev_num
 
