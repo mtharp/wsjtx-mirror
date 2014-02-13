@@ -1,0 +1,49 @@
+cat <<End-Build-Script > ./wsjtx-compile.sh
+#!/usr/bin/env bash
+
+# Part of the WSJT Documentation Project
+# Usage: ./wsjtx-compile.sh
+
+# Exit if error
+set -e
+
+# Checkout the branch
+svn co svn://svn.berlios.de/wsjt/branches/wsjtx
+
+# Change directories and make
+cd ./wsjtx/lib 
+make -f Makefile.linux
+
+# Change directories and qmake then make
+cd ../ 
+export QT_SELECT=qt5 
+qmake
+j_c=$(grep -c ^processor /proc/cpuinfo) 
+make -j$j_c
+
+# Move wsjtx_install to new rev-number
+rev_num=$(svn log -l1 |awk 'FNR==2 {print $1}')
+cd ../
+mv ./wsjtx_install ./wsjtx-$rev_num
+
+# cd and download set-up kvasd
+wget -P ./wsjtx http://www.physics.princeton.edu/pulsar/K1JT/kvasd
+chmod +x ./wsjtx/kvasd
+cd ./wsjtx-$rev_num
+
+# Link required files
+ln -s ../wsjtx/kvasd ./kvasd
+ln -s ../wsjtx/kvasd.dat ./kvasd.dat
+ln -s ../wsjtx/CALL3.TXT ./CALL3.TXT
+ln -s ../wsjtx/cty.dat ./cty.dat
+ln -s ../wsjtx/Palettes ./Palettes
+ln -s ../wsjtx/samples ./samples
+ln -s ../wsjtx/mouse_commands.txt ./mouse_commands.txt
+ln -s ../wsjtx/shortcuts.txt ./shortcuts.txt
+ln -s ../wsjtx/prefixes.txt ./prefixes.txt
+
+clear
+echo WSJTX-$rev_num Build Complete
+echo
+exit 0
+End-Build-Script

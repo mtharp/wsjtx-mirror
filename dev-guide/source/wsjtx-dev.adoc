@@ -1,21 +1,16 @@
 === Linux Makefile Example
 
-.Ubuntu 12.04 specific notes
-* Reference: {ubuntu_sdk}
-* Ubuntu 12.04 requires a {ppa} in order to download and install the required
-Qt5 libraries.
+In order to build _WSJT-X_ form source, the install the following packages:
 
-==== For Ubuntu 12.04 Only
-[source,bash]
------
-# Add the following PPA, and upgrade your system
-sudo add-apt-repository ppa:ubuntu-sdk-team/ppa
-sudo apt-get update
-sudo apt-get dist-upgrade
-sudo apt-get install ubuntu-sdk
------
+----------
+sudo apt-get install gcc g++ gfortran make libqt5multimedia5-plugins \
+libfftw3-dev libpulse-dev libhamlib-dev qtbase5-dev qtmultimedia5-dev \
+pulseaudio subversion install libgfortran3:i386 libc6-i386
+----------
 
-==== Build dependencies
+Adjust accordingly for you Linux distribution package manager.
+
+==== Dependency Descriptions
 [horizontal]
 +gcc+:: GNU C Compiler
 +g{plus}{plus}+:: GNU C{plus}{plus} Compiler
@@ -29,85 +24,41 @@ sudo apt-get install ubuntu-sdk
 +qtmultimedia5-dev+:: Qt5 Multimedsia Dev Files
 +pulseaudio+:: Pulse Audio Sound Driver
 +subversion+:: Version Control Software
++libgfortran.so.3+:: 32-Bit Fortran Library
++libc.so.6+:: 32-bit C Library
++libm.so.6+:: 32-bit C Library
++libgcc_s.so.1libm.so.6+:: 32-bit C Library 
++libquadmath.so.0+:: 32-Bit Quad-Precision Math Library
 
-.Install dependencies
+==== Set-Up Directories
+Open a terminal session Ctrl+Alt+T, then create the directory structure.
+
 [source,bash]
------
-sudo apt-get install gcc g++ gfortran make libqt5multimedia5-plugins \
-  libfftw3-dev libpulse-dev libhamlib-dev qtbase5-dev qtmultimedia5-dev \
-  pulseaudio subversion
------
-
-.kvasd 32-bit dependencies
-[horizontal]
-+libgfortran.so.3+:: from => libgfortran3:i386
-+libc.so.6+:: from => libc6-i386
-+libm.so.6+:: from => libc6-i386
-+libgcc_s.so.1+:: from => lib32gcc1:i386
-+libquadmath.so.0+:: from => lib32quadmath0
-
-.Install kvasd 32-bit dependencies
-[source,bash]
------
-sudo apt-get install libgfortran3:i386 libc6-i386
------
-
-.Setup and build
-[source,bash]
------
-# In a terminal Ctrl+Alt+T
-# Each line is seperate action - Copy & Paste
-
+---------
 mkdir -p ~/Projects/wsjtx-build
 cd ~/Projects/wsjtx-build
-svn co svn://svn.berlios.de/wsjt/branches/wsjtx
-cd ./wsjtx/lib 
-make -f Makefile.linux
-cd ../ 
-export QT_SELECT=qt5 
-qmake
-j_c=$(grep -c ^processor /proc/cpuinfo) 
-make -j$j_c
+----------
 
-# mv wsjtx_intall to the new rev-number
-rev_num=$(svn log -l1 |awk 'FNR==2 {print $1}')
-cd ../ 
-mv ./wsjtx_install ./wsjtx-$rev_num
+==== Create Build Script
+*Copy & Paste* the following directly into a terminal window, and press *ENTER*
 
------
-
-TIP: You should now have three files in the +./wjstx-$rev_num+
-directory: +jt9+, +jt9code+ and +wsjtx+.  By moving the directory,
-you're ready for a subsequent build cycle.
-
-.Final configuraiton
-Before running _WSJT-X_, download _kvasd_ and link the required 
-runtime files.
+IMPORTANT: You can perform the steps manually if desired. The script merely
+automates the manual tasks.
 
 [source,bash]
------
-# cd and download set-up kvasd
-wget -P ./wsjtx http://www.physics.princeton.edu/pulsar/K1JT/kvasd
-chmod +x ./wsjtx/kvasd
-cd ./wsjtx-$rev_num
+----------
+include::wsjtx-compile.txt[]
+---------
 
-# IMPORTANT: You can copy or link the files and folders, but make sure
-# they are in the same directory as the wsjtx binary.
+.Change Permissions and Run Script
+[source,bash]
+----------
+chmod +x ./wsjtx-compile.sh
+./wsjtx-compile.sh
+---------
 
-# Link or cp the following files & folders
-ln -s ../wsjtx/kvasd ./kvasd
-ln -s ../wsjtx/kvasd.dat ./kvasd.dat
-ln -s ../wsjtx/CALL3.TXT ./CALL3.TXT
-ln -s ../wsjtx/cty.dat ./cty.dat
-ln -s ../wsjtx/Palettes ./Palettes
-ln -s ../wsjtx/samples ./samples
-ln -s ../wsjtx/mouse_commands.txt ./mouse_commands.txt
-ln -s ../wsjtx/shortcuts.txt ./shortcuts.txt
-ln -s ../wsjtx/prefixes.txt ./prefixes.txt
------
-
-.Test kvasd
-Before you run _WSJT-X_, ensure _kvasd_ has its required libraries.
+==== KVASD Testing
+Before you run _WSJT-X_, ensure _KVASD_ has its required libraries.
 
 [source,bash]
 -----
@@ -117,17 +68,18 @@ ldd ./kvasd
 # If there were no missing links, test _kvasd_
 ./kvasd
 
-# If sucessful, the K1JT copyright message will be displayed.
+# If successful, the K1JT copyright message will be displayed.
 
 -----
 
-.Run the new binary
-[source,bash]
------
+==== Run The New WSJT-X Binary
+----------
 ./wsjtx
------
+----------
 
-=== Windows CMake Prerequisites
+=== Windows CMake Example
+
+==== Windows CMake Prerequisites
 
 The following tools are required to compile _WSJT-X_ using _CMake_:
 
