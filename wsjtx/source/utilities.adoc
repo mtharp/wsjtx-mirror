@@ -1,15 +1,16 @@
 // Status=review
 
-Utility programs +jt9code+ and +jt65code+ let you explore the
+Utility programs *+jt9code+* and *+jt65code+* let you explore the
 conversion of user-level messages into channel symbols or ``tone
-numbers,'' and back again into user-readable text.  These programs can
-be especially useful to someone designing a beacon generator for JT9
-or JT65, or for studying behavior of the error-control codes.
+numbers.'' These programs can be useful to someone designing a beacon
+generator for JT9 or JT65, or for studying behavior of the
+error-control codes.
 
 Channel-symbol values for JT9 run from 0 to 8, with 0 representing the
-sync tone.  The total number of symbols is 85.  To run +jt9code+,
-enter the program name followed by a JT9 message enclosed in quotes.
-In Windows the result might look like this:
+sync tone.  The total number of symbols in a transmitted message is
+85.  To run +jt9code+, enter the program name followed by a JT9
+message enclosed in quotes.  In Windows the command and program output
+might look like this:
 
  C:\WSJTX> jt9code "G0XYZ K1ABC FN42"
  Message:   G0XYZ K1ABC FN42
@@ -19,16 +20,15 @@ In Windows the result might look like this:
   5 8 7 7 2 0 4 6 6 6 7 6 0 1 8 8 5 7 2 5 1 5 0 4 0
  Decoded message: G0XYZ K1ABC FN42
 
-For the corresponding program +jt65code+ only the information-carrying
-channel symbols are shown, and the symbol values range from 0 to 63.
-Sync synbols lie two tone intervals below data tone 0, and the
-sequential locations of sync symbols are described in the
-<<JT65PRO,JT65 Protocol>> section of this Guide.
+For the corresponding program *+jt65code+* only the
+information-carrying channel symbols are shown, and the symbol values
+range from 0 to 63.  Sync synbols lie two tone intervals below data
+tone 0, and the sequential locations of sync symbols are described in
+the <<JT65PRO,JT65 Protocol>> section of this Guide.
 
-
-A typical execution of jt65code is shown below.  The program displays
-the packed message of 72 bits (shown as 12 six-bit symbol values),
-followed by the channel symbols:
+A typical execution of +jt65code+ is shown below.  The program
+displays the packed message of 72 bits, shown here as 12 six-bit
+symbol values, followed by the channel symbols:
 
  C:\WSJTX> jt65code "G0XYZ K1ABC FN42"
  Message:   G0XYZ K1ABC FN42
@@ -39,10 +39,10 @@ followed by the channel symbols:
     62 59  7 43 31 21 57 13 59 41 17 49 19 54 21 39 33 42 18  2 60
  Decoded message: G0XYZ K1ABC FN42
 
-For an interesting illustration of the power of the strong
-error-control coding in JT9 and JT65, try looking at the channel
-symbols after changing a single character in the message.  For
-example, change the grid locator from FN42 to FN43:
+For an illustration of the power of the strong error-control coding in
+JT9 and JT65, try looking at the channel symbols after changing a
+single character in the message.  For example, change the grid locator
+from +FN42+ to +FN43+ in the JT65 message:
 
  C:\Users\joe\wsjt\wsjtx_install>jt65code "G0XYZ K1ABC FN43"
  Message:   G0XYZ K1ABC FN43
