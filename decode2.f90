@@ -114,7 +114,9 @@ subroutine decode2
         istart=1
         call decode3(d2c,lenpick,istart,filename)
      else
-        call decode3(d2c(istart),jzz,istart,filename)
+        if(istart.ge.1 .and. istart+jzz.lt.ND2CMAX) then
+           call decode3(d2c(istart),jzz,istart,filename)
+        endif
      endif
 
   else if(ndecoding.eq.5) then
