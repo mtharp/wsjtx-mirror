@@ -37,16 +37,17 @@ steps in the script, or perform an import to let the script do the
 build.
 
 ==== Import Script
-*Copy & Paste* the scipt directly into a terminal window.
+*Copy & Paste* the scipt in terminal, then enter.
 
 IMPORTANT: You can perform the steps manually if desired. The script
-simply automates the manual steps. When importing the script, you will
-see two errors, this is expected as the repository has yet to be
-checked out.
+simply automates the manual steps.
 
 * Tested on Ubuntu 12.04 64-bit {amp} 14.04 64-bit
-* Copy from pass:[cat > ... to last EOL]
+* Copy from pass:[cat > ... to ... EOL ]
 * Pasting to the termainl creates a file called: wsjtx-compile.sh
+* You can edit the pass:[BUILD_DIR=" .. .."] if you want different
+build location.
+* No other edits should be required.
 
 [source,bash]
 ----
