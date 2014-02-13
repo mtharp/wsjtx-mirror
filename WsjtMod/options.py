@@ -176,7 +176,7 @@ mycall.component('entry').focus_set()
 
 f0=Frame(g1.interior(),width=100,height=15)
 ndtr=IntVar()
-Label(f0,text='PTT line:  ').pack(side=LEFT)
+Label(f0,text='PTT Line:  ').pack(side=LEFT)
 rb7=Radiobutton(f0,text='DTR',value=1,variable=ndtr)
 rb8=Radiobutton(f0,text='RTS',value=0,variable=ndtr)
 rb7.pack(anchor=W,side=LEFT,padx=2,pady=2)

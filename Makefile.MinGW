@@ -20,7 +20,7 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    WSJT9.EXE 
+all:    wsjt10.exe
 
 OBJS1 = JT65code.o nchar.o grid2deg.o packmsg.o packtext.o \
 	packcall.o packgrid.o unpackmsg.o unpacktext.o \
@@ -74,8 +74,8 @@ SRCS2F90 = wsjt1.f90 a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
 
 
 SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
-	indexx.f s2shape.f flat2.f gen65.f entail.f \
-	genmet.f chkmsg.f astro.f extract.f \
+	indexx.f s2shape.f flat2.f gen65.f entail.f decode6m.f \
+	genmet.f chkmsg.f astro.f extract.f gen6m.f \
 	gentone.f syncf0.f syncf1.f synct.f avemsg6m.f \
 	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f ping.f \
 	longx.f peakup.f sync.f detect.f avemsg65.f decode65.f demod64a.f \
@@ -93,9 +93,9 @@ SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
 SRCS2C   = resample.c ptt.c igray.c wrapkarn.c start_threads.c \
 	usleep.c fthread.c tmoonsub.c gran.c
 
-WSJT9.EXE: WsjtMod/Audio.pyd wsjt.spec
+wsjt10.exe: WsjtMod/Audio.pyd wsjt.spec
 	c:/python27/python c:/python27/pyinstaller-1.5.1/Build.py wsjt.spec
-	mv dist/wsjt.exe WSJT9.EXE
+	mv dist/wsjt.exe wsjt10.exe
 
 WsjtMod/Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
 	c:/python27/python c:/python27/scripts/f2py.py -c -I. \
@@ -150,4 +150,4 @@ decode_rs.o: decode_rs.c
 .PHONY : clean
 
 clean:
-	rm -f *.o JT65code.exe wsjt9.exe WsjtMod/Audio.pyd
+	rm -f *.o JT65code.exe wsjt10.exe WsjtMod/Audio.pyd

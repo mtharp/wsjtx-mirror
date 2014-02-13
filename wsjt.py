@@ -26,14 +26,14 @@ import thread
 import webbrowser
 
 root = Tk()
-Version="9.8 r" + "$Rev$"[6:-1]
+Version="10.0 r" + "$Rev$"[6:-1]
 print "******************************************************************"
 print "WSJT Version " + Version + ", by K1JT"
 print "Revision date: " + \
       "$Date$"[7:-1]
 print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
 
-Title="  WSJT 9.8    r" + "$Rev$"[6:-1] + "     by K1JT"
+Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
 
 #See if we are running in Windows
 g.Win32=0
@@ -2187,7 +2187,7 @@ setupmenu.add_checkbutton(label = 'Monitor ON at startup',variable=nmonitor)
 setupmenu.add_checkbutton(label = 'Low-Duty Beacon Mode',variable=nlowbeacon)
 setupmenu.add_checkbutton(label = 'Plot average JT4 spectrum',variable=jt4avg)
 setupmenu.add_separator()
-setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
+##setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Setup", menu=setupmenu)
 
@@ -2221,15 +2221,19 @@ else:
 # Can use the following to retrieve the state:
 # state=modemenu.entrycget(0,"state")
 
+modemenu.add_radiobutton(label = 'JTMS', variable=mode, command = ModeJTMS)
 modemenu.add_radiobutton(label = 'FSK441', variable=mode,command = ModeFSK441, state=NORMAL)
+modemenu.add_separator()
 modemenu.add_radiobutton(label = 'ISCAT-A', variable=mode, command = ModeISCAT_A)
 modemenu.add_radiobutton(label = 'ISCAT-B', variable=mode, command = ModeISCAT_B)
 modemenu.add_radiobutton(label = 'JT6M', variable=mode, command = ModeJT6M)
+modemenu.add_separator()
 modemenu.add_radiobutton(label = 'JT65A', variable=mode, command = ModeJT65A)
 modemenu.add_radiobutton(label = 'JT65B', variable=mode, command = ModeJT65B)
 modemenu.add_radiobutton(label = 'JT65C', variable=mode, command = ModeJT65C)
 modemenu.add_radiobutton(label = 'JT65B2', variable=mode, command = ModeJT65B2)
 modemenu.add_radiobutton(label = 'JT65C2', variable=mode, command = ModeJT65C2)
+modemenu.add_separator()
 modemenu.add_radiobutton(label = 'JT4A', variable=mode, command = ModeJT4A)
 modemenu.add_radiobutton(label = 'JT4B', variable=mode, command = ModeJT4B)
 modemenu.add_radiobutton(label = 'JT4C', variable=mode, command = ModeJT4C)
@@ -2237,7 +2241,7 @@ modemenu.add_radiobutton(label = 'JT4D', variable=mode, command = ModeJT4D)
 modemenu.add_radiobutton(label = 'JT4E', variable=mode, command = ModeJT4E)
 modemenu.add_radiobutton(label = 'JT4F', variable=mode, command = ModeJT4F)
 modemenu.add_radiobutton(label = 'JT4G', variable=mode, command = ModeJT4G)
-modemenu.add_radiobutton(label = 'JTMS', variable=mode, command = ModeJTMS)
+modemenu.add_separator()
 modemenu.add_radiobutton(label = 'CW', variable=mode, command = ModeCW)
 modemenu.add_radiobutton(label = 'Echo', variable=mode, command = ModeEcho)
 modemenu.add_radiobutton(label = 'Measure', variable=mode, command = ModeMeasure)
