@@ -1,9 +1,10 @@
 // Status=review
 // This is a comment line, anything with // is ignored at process time.
-= WSJT 9.8 User's Guide
+= WSJT User Guide +
+Version 10.0
 //:Author: Joe Taylor, K1JT
 //:Date: February 7, 2014, Copyright © 2001-2014
-//:Revision: 0.1
+//:Revision: 10.0
 :badges:
 :icons:
 :numbered:
@@ -42,6 +43,7 @@
 // == is level (2), section 1.0, === would mean section 1.1, === would
 // be section 1.1.1. This method is used throughout the document.
 
+
 [[INTRO]]
 == Introduction
 include::introduction.adoc[]
@@ -51,7 +53,7 @@ include::introduction.adoc[]
 include::system-requirements.adoc[]
 
 [[INSTALL]]
-== Installation (Windows)
+== Installation
 include::installation.adoc[]
 
 [[CONFIG]]
@@ -59,28 +61,28 @@ include::installation.adoc[]
 include::setup.adoc[]
 
 [[TUTORIAL]]
-== Decoding Tutorial
+== Basic Operating Tutorial
 include::tutorial.adoc[]
 
 [[OPERATING]]
-== Operating with WSJT
-include::operating.adoc[]
+== Making QSOs
+include::make-qso.adoc[]
 
+//////////
 [[CONSOLE]]
 == Console Window
 include::console.adoc[]
+///////////
 
 [[ASTRON]]
 == Astronomical Data
 include::astrodata.adoc[]
 
+/////////////
 [[CALl3]]
 == Callsign Database
 include::call3.adoc[]
-
-[[FONTS]]
-== Fonts
-include::fonts.adoc[]
+////////////
 
 [[MENUS]]
 == Menus and the Setup | Options Screen

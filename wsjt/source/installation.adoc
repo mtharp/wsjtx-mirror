@@ -1,16 +1,39 @@
-// Numbered list
+- Download _WSJT_ from the {homepage}. Click on _WSJT_ at the left
+margin and then on the appropriate link(s) for your operating system.
 
-. Direct your browser to the {homepage}, click on _WSJT_ at the left
-margin and then on the appropriate link(s) to download the _WSJT_
-installation package for your operating system.
-
-. On Windows, execute the downloaded file to install _WSJT_ to a
-directory of your choice.  The recommended default directory is
-C:\WSJT9.  (Note that in recent Windows versions, if you use a
-directory such as C:\Program Files\WSJT9 you will need to set some
-access permissions explicitly.)  For installation under Debian-based
-Linux distributions, see Appendix A.
-
-. Connect appropriate interface cables between your computer and
+- Connect appropriate interface cables between your computer and
 radio.  For help with the hardware interface, refer to one of the many
 descriptions of other sound card modes such as PSK31.
+
+[[INSTALL_WIN]]
+=== Windows
+
+- Execute the downloaded file and follow its installation 
+instructions.
+
+- Install _WSJT_ into its own directory rather than the conventional
+location +C:\Program Files\WSJT9+.  The suggested default directory is
++C:\WSJT9+.
+
+- All files relating to _WSJT_ will be stored in the chosen
+installation directory and its subdirectories. You can uninstall
+_WSJT_ by removing the installation directory and its contents.
+
+- The built-in Windows facility for time synchronization is usually
+not adequate.  We recommend Meinberg NTP: see {ntpsetup} for
+downloading and installation instructions.  
+
+CAUTION: If you are using a sound card that is also the Windows
+default audio device, be sure to turn off all Windows sounds so they
+are not transmitted over the air.
+
+
+[[INSTALL_UBU]]
+=== Linux
+
+Still to come ...
+
+[[INSTALL_OSX]]
+=== OS X
+
+Still to come ...

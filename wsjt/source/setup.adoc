@@ -1,89 +1,101 @@
-- Start _WSJT_ in the normal way for your operating system.  Two
-windows should appear on your screen.  For now, focus your attention on
-the main window labeled *WSJT 9.7*.
+=== Options Window
+- Start _WSJT_ and select *Options* from its *Setup* menu.  Enter
+the following information on the *Options* window:
 
-[[FigMainScreen]]
-image::images/wsjt9.7_main.png[align="center",width=650]
+- *My Call*: <Your Call Sign>
 
-- From the *Setup* menu, select *Options* to display the configuration
-screen.
+- *Grid Locator*: <Your 6-digit Maidenhead locator>
+
+- *ID Interval*: set the time interval for sending your CW identification. 
+Zero (0) means never.
+
+- *PTT port*: if you will use RTS or DTR for T/R control, choose a
+serial port.  On Windows enter the number of the port (for example 1
+if you will use COM1).  Enter 0 if you will use VOX control (not
+recommended if you will be running high power).  On Linux or FreeBSD
+enter the actual device name, for example +/dev/ttyS0+.
+
+- *PTT Line*: choose *DTR* or *RTS*.
+
+- *Distance unit*: choose miles or kilometers.
 
 [[FigOptions]]
 image::images/options.png[align="center"] 
 
-- Enter your callsign (*My Call*) and *Grid Locator*.  
-
-- In the box labeled *PTT Port*, on Windows enter the number of the
-serial port you will use for T/R control (for example 1 if you will
-use COM1).  Enter 0 if you will use VOX control (which is not
-recommended if you will be running high power).  On Linux or FreeBSD
-enter the actual device name, for example +/dev/ttyS0+.
-
-- Dismiss the *Options* window.
-
-- Choose *FSK441* from the *Mode* menu.
-
-- Select *Open* from the *File* menu.  
-
-- Navigate to the +RxWav\Samples+ folder in your _WSJT_ home directory
-and open the sample file W8WN_010809_110400.WAV.  When this file has
-been decoded, your main screen should look something like the
-main-window screen shot shown above.  Try clicking with the right
-mouse button around the location of the ping at t = 18 s on the
-graphical display, and observe the decoded text that appears.  If you
-click on the static crashes around t = 1 s or elsewhere on the green
-line, you may see garbage text.  Click *Erase* to clear the text and
-graphical areas.  You can click *Decode* to decode the full file
-again.
-
-- Take note of two numbers in the first panel of the status bar at
-lower left of the main screen.  After WSJT has been running for a
-minute or so they should stabilize at values close to 1.0000.  If both
-numbers are between 0.9995 and 1.0005, the effective input and output
-sampling rates of your soundcard are close to the nominal 11025 Hz.
-If either number is outside this range, enter it as *Rate in* (first
-number) or *Rate out* (second number) on the *Setup | Options* screen.
-WSJT will then make necessary adjustments for the incorrect sampling
-rate or rates.
-
-- You will need a method of setting your computer clock to an accuracy
-of one second or better, and keeping it set.  Many operators use an
-internet-based clock-setting program, while others use a broadcast
-service such as GPS or WWVB.  The built-in Windows facility for time
-synchronization is usually not adequate. We recommend Meinberg NTP:
-see {ntpsetup} for downloading and installation
-instructions.
-
-.Adjusting Signal Levels
-
-- If your computer has more than one sound card, select the desired
-device numbers for *Audio In* and *Audio Out* on the *Options* screen.
-The black-background Console Window will offer a menu of choices.  
-Be sure to select a device offering at least 2 input channels and 2
-output channels -- for example, Audio devices number 1 and 4 in the
+- The black-background console window labeled *WSJT 10* offers a menu
+of choices for *Audio In* and *Audio Out* devices.  On the *Options*
+screen, enter an *Audio Device* number that provides at least 2 input
+channels for *Audio In*, and at least 2 output channels for *Audio
+Our* -- for example, Audio devices number 1 and 4 selected from the
 following screen shot:
 
 [[FigConsole]]
 image::images/console.png[align="center"]
 
-- Turn on your radio and tune to a clear frequency so that only
-background noise is sent to the sound card.
+- You may now dismiss the *Options* screen and minimize the console
+window.
 
-- Click *Monitor* to start audio sampling.
+=== Main Window
 
-- Open the operating system's audio mixer and adjust its appropriate
-slider and/or your receiver gain control(s) to bring the signal level
-close to what WSJT considers ``0 dB,'' as indicated on the bar graph at
-lower right of the SpecJT screen.  The signal level is also displayed
+- Select *FSK441* from the *Mode* menu on the main window.
+
+- Select *Open* from the *File* menu and navigate to the
++RxWav\Samples+ folder in your _WSJT_ home directory. Open the sample
+file W8WN_010809_110400.wav.  Your main screen should look something
+like the image below.  Try clicking with the right mouse button around
+the location of the ping at time t = 18 s on the graphical display,
+and observe the decoded text that appears.  If you click on the static
+crashes around t = 1 s or elsewhere on the green line, you may see
+garbage text.  Click *Erase* to clear the text and graphical areas.
+You can click *Decode* to decode the full file again.
+
+[[FigMainScreen]]
+image::images/wsjt9.7_main.png[align="center",width=650]
+
+- Take note of two numbers in the first panel of the status bar at
+lower left of the main screen.  After _WSJT_ has been running for a
+minute or so they should stabilize at values close to 1.0000.  If both
+numbers are between 0.9995 and 1.0005, the effective input and output
+sampling rates of your soundcard are close to the nominal 11025 Hz.
+If either number is outside this range, enter it as *Rate in* (first
+number) or *Rate out* (second number) on the *Setup | Options* screen.
+_WSJT_ will then make necessary adjustments for the incorrect sampling
+rate or rates.
+
+
+=== Transceiver Setup
+.Receiver Noise Level
+
+- Turn on your radio, select *USB* (or *USB Data*) mode, and tune to a
+clear frequency so that only background noise is sent to the sound
+card.
+
+- If necessary, click the *Monitor* button on the _WSJT_ main window
+to start normal receive operation (button should be highlighted in
+[green]*GREEN*). 
+
+- Open the operating system's audio mixer and adjust its slider and/or
+your receiver gain control(s) to bring the signal level close to what
+_WSJT_ considers ``0 dB,'' as indicated on the bar graph at lower
+right of the *SpecJT* screen.  The signal level is also displayed
 numerically on the status bar at bottom of the main window.
 
-- Select *FSK441* from the *Mode* menu.
+.Transmitter Audio Level
 
-- Click *Tx1* button to be sure that T/R switching works and that
-audio tones are being sent from the computer to your radio.
+- Click *Generate messages for test tones* on the *Setup* menu.
 
-- Adjust the appropriate slider on the audio mixer to get the proper
-audio signal level for your transmitter.
+- Click the *Tx5* button to be sure that T/R switching works and that
+a continuous 1000 Hz audio tone is sent from the computer to your
+radio.
+
+- Listen to the generated audio tone using your radio’s *Monitor*
+facility. The transmitted tone should be smooth and continuous, with no
+clicks or glitches.
+
+- Adjust the appropriate slider on the operating system's audio mixer
+to get the proper audio signal level for your transmitter.
+
+- Click *TxStop* to end your test transmission. 
 
 _WSJT_ should now be set up and ready to operate.  Be aware, however,
 that _WSJT_ is a complicated program.  It has many operational
@@ -92,7 +104,7 @@ received signals.  If you are a new _WSJT_ user, it is strongly
 recommended that you work through the decoding tutorial in the next
 section.
 
-
+////////////////
 CAUTION: WSJT generates a single-frequency sine wave at any instant while
 transmitting.  Except during CW ID there is no ``key up'' time; signal
 amplitude is constant, and one tone changes to the next one in a
@@ -103,3 +115,27 @@ amplitude transmissions lasting 30 seconds or longer will put more
 stress on your final amplifier than SSB or CW operation.  If this
 would cause the amplifier to overheat, you should take appropriate
 action: reduce power or add another cooling fan or blower.
+//////////////
+
+[[FONTS]]
+=== Fonts
+
+You are offered some control over the fonts and colors used in _WSJT_.
+A text file named +wsjtrc.win+ (on Windows) or +wsjtrc+ (on Linux and
+FreeBSD) is supplied with the following contents:
+
+ *font:				Arial 8
+ *Label*font:			Arial 8
+ *Text*font:			"Courier New" 9
+ *background:			gray85
+ *Text*background:		white
+ *Entry*background:		white
+ *foreground:			black
+ *Listbox*foreground:	        RoyalBlue
+
+You can edit this file with a text editor (such as Windows Notepad).
+For example, to make the on-screen fonts slightly larger you can
+increase the numbers on the first three lines to 9, 9, and 10.  It
+might be wise to save a backup of the original file under a different
+name, in case you need to restore the original contents.
+

@@ -7,23 +7,28 @@ different types of propagation:
 
 [horizontal]
 
-FSK441:: For high speed meteor scatter.  Uses 4-tone frequency-shift
-keying (4-FSK) at 441 baud, with character transmission rate 147 cps.
-
-JTMS:: Alternative mode for meteor scatter.  Uses minimum-shift keying
+*JTMS*:: Alternative mode for meteor scatter.  Uses minimum-shift keying
 (MSK) at 1378.125 baud, character transmission rate 197 cps.
 
-ISCAT:: Optimized for meteor and ionospheric scatter on 6 meters.
+*FSK441*:: For high speed meteor scatter.  Uses 4-tone frequency-shift
+keying (4-FSK) at 441 baud, with character transmission rate 147 cps.
+
+*ISCAT*:: Optimized for meteor and ionospheric scatter on 6 meters.
 Uses 42-FSK at 21.53 or 43.07 baud, character transmission rate 16.15
 or 32.3 cps.
 
-JT65:: For Earth-Moon-Earth (EME, ``moonbounce'') and weak
+*JT6M*:: Optimized for meteor and ionospheric scatter on 6 meters.  
+Uses 44-FSK at 21.53 baud, character transmission rate 14.3 cps.
+
+*JT65*:: For Earth-Moon-Earth (EME, ``moonbounce'') and weak
 troposcatter.  Uses structured messages, a Reed-Solomon (63,12)
 error-control code (ECC), and 65-FSK modulation at 2.69 baud.
 Effective throughput is about 0.25 cps.
 
-JT4:: Designed for EME on microwave bands.  Uses structured messages,
+*JT4*:: Designed for EME on microwave bands.  Uses structured messages,
 a K=32, r=1/2 convolutional code, and 4-FSK modulation at 4.375 baud.
 Effective throughput is about 0.25 cps.
 
-CW:: For EME using timed, computer-generated transmissions
+*CW*:: For EME using timed, computer-generated transmissions.
+
+*Echo*:: For testing your own echoes from the Moon.

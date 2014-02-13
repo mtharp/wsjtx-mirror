@@ -72,10 +72,6 @@ include::configuration-txmacros.adoc[]
 === Band Settings Tab
 include::configuration-band-settings.adoc[]
 
-[[CONFIG_MAIN]]
-=== Main Window
-include::configuration-main-window.adoc[]
-
 [[FONTS]]
 === Font Sizes
 include::font-sizes.adoc[]

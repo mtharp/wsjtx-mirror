@@ -1,25 +1,28 @@
-In JT65 mode a blue-background text box presents data for tracking the
-moon, tuning your receiver, and estimating EME path degradation.  You
-can select menu item *View | Astronomical data* to see more such data
-in a separate window, as shown below.  The available information
-includes azimuth and elevation (*Az* and *El*) for the Moon, the Sun,
-and another astronomical source of your choice.  The right ascension
-(*RA*) and declination (*DEC*) for the additional astronomical source
-should be entered on the *Setup | Options* screen in the formats
-hh:mm:ss and dd.dd.  *Az* and *El* of the Moon are given for the
-location of the DX station, as well as for the home station.
-*Doppler* shift (in Hz) and the rate of change of Doppler shift,
-*df/dt*, in Hz/minute, are listed for two-way transmissions to and
-from the DX station and for self-echoes from the home station. *RA*
-and *DEC* are given for the moon.  All on-screen coordinates are in
-degrees except for *RA*, which is in hours and minutes.  *Tsky* gives
-the approximate galactic background temperature in the direction of
-the moon, scaled to the operating frequency *Freq*; *MNR* is the
-maximum non-reciprocity of the EME path in dB, owing to spatial
-polarization; *Dpol* is the spatial polarization offset, in degrees;
-*Dgrd* is an estimate of the total signal degradation in dB, relative to
-the best possible time when the moon is at perigee and in a cold part
-of the sky; and *SD* is the moon's semi-diameter in arc minutes.
+In JT65 and JT4 modes a small blue-background text box presents data
+for tracking the moon, tuning your receiver, and estimating EME path
+degradation.  You may select menu item *View | Astronomical data* to
+see more such data in a separate window, as shown below.  
 
 [[FigAstroData]]
 image::images/AstroData.png[align="center"]
+
+Available information includes azimuth and elevation (*Az* and *El*)
+for the Moon, the Sun, and another astronomical source of your choice.
+The right ascension (*RA*) and declination (*DEC*) for the additional
+astronomical source should be entered on the *Setup | Options* screen
+in the formats hh:mm:ss and dd.dd.  *Az* and *El* of the Moon are
+given for the location of the DX station, as well as for the home
+station.  *Doppler* shift (in Hz) and the rate of change of Doppler
+shift, *df/dt*, in Hz/minute, are listed for two-way transmissions to
+and from the DX station and for self-echoes from the home
+station. *RA* and *DEC* are given for the moon.  All on-screen
+coordinates are in degrees except for *RA*, which is in hours and
+minutes.  *Tsky* gives the approximate galactic background temperature
+in the direction of the moon, scaled to the operating frequency
+*Freq*; *MNR* is the maximum non-reciprocity of the EME path in dB,
+owing to spatial polarization; *Dpol* is the spatial polarization
+offset, in degrees; *Dgrd* is an estimate of the total signal
+degradation in dB, relative to the best possible time when the moon is
+at perigee and in a cold part of the sky; and *SD* is the moon's
+semi-diameter in arc minutes.
+

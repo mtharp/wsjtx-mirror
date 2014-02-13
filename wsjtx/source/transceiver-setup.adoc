@@ -37,7 +37,23 @@ the nominal JT9 dial frequency 2 kHz higher than the JT65 dial
 frequency, and the checkbox labeled *+2 kHz*, just below the *Band*
 selector, makes the appropriate settings easy.
 
-IMPORTANT: When you are finished with this Tutorial, don’t forget to
-re-enter your own callsign as +
-*My Call* on the *Setup | Configuration* screen.
+.Transmitter Audio Level
+
+
+* Click the *Tune* button on the main screen to switch the
+radio into transmit mode and generate a steady audio tone. 
+
+* Listen to the generated audio tone using your radio’s *Monitor*
+facility. The transmitted tone should be perfectly smooth, with no
+clicks or glitches.
+
+* Open the computer’s audio mixer controls for output or ``Playback''
+devices and adjust the volume slider downward from its maximum until
+the RF output from your transmitter falls by around ten percent.  This
+will be a good level for audio drive.
+
+* Alternatively, you can make the same adjustment using the digital
+slider labeled *Pwr* at the right edge of the main window.
+
+* Toggle the *Tune* button once more to stop your test transmission. 
 

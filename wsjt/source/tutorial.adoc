@@ -1,4 +1,3 @@
-// Numbered list
 
 A large part of the skill required for effective use of _WSJT_ is
 learning to use the decoders effectively.  To use the following
@@ -83,7 +82,7 @@ second AF4O file.
 . Switch to mode JT65A and clear the *Freeze* setting.  You should now
 pay some attention to the *SpecJT* screen as well as the main _WSJT_
 screen.  (Select *View | SpecJT* if you have previously minimized or
-deleted it.)  If the SpecJT and WSJT6 windows overlap on your screen,
+deleted it.)  If the SpecJT and _WSJT_ windows overlap on your screen,
 you can reduce the vertical size of the SpecJT window so that only its
 top half shows.  Select speed 3 on the SpecJT window and check the
 following items on the *SpecJT | Options* menu: *Mark T/R boundaries*,

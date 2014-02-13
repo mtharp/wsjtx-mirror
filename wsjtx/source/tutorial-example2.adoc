@@ -111,3 +111,7 @@ colors, and *Gain* sets the sensitivity for color changes.  For the
 receiver setup of this file good values are close to *Zero*=0,
 *Gain*=0.  Re-open the wave file after each change, to see the new
 results.
+
+IMPORTANT: When you are finished with this Tutorial, don’t forget to
+re-enter your own callsign as +
+*My Call* on the *Setup | Configuration* screen.
