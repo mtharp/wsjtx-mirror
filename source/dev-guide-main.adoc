@@ -1,5 +1,5 @@
 // Status=review
-= Developer's Guide to WSJT and Related Programs
+= pass:[Developer's] Guide to WSJT and Related Programs
 //:Author: Joe Taylor, K1JT
 //:Date: {localdate}
 :badges:
@@ -21,7 +21,7 @@ for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and use the Qt
 framework.  Most number-crunching in the WSJT programs is done in
 Fortran.
 
-This Developer's Guide is a work in progress.  We currently provide
+This pass:[Developer's] Guide is a work in progress.  We currently provide
 instructions for compiling _WSJT-X_ in Linux and we outline the
 prerequisites for compiling it in Windows.  Similar procedures can be
 used for _MAP65_ and _WSPR-X_.  Instructions for the Python-based
@@ -36,10 +36,10 @@ repository known as {berlios1}, under control of the version-control
 program {svn}.  You can install Subversion in Windows from the above
 link; in Linux use
 
-[source,bash]
------
+---------
 sudo apt-get install subversion 
------
+---------
+
 or an equivalent command for your Linux distribution.  
 
 You can browse the organization of files in the repository {wsjt_svn}.
@@ -52,18 +52,16 @@ program versions may be obtained from the +.../tags+ directory.
 You can do an anonymous checkout of source code for a specific program
 with a command of the following form:
 
-[source,bash]
------
+---------
 svn co svn://svn.berlios.de/wsjt/branches/wsjtx 
------
+---------
 
-If you are a member of the WSJT Devopment Group and have commit privileges
+If you are a member of the WSJT Development Group and have commit privileges
 to the repository, use a command like this one:
 
-[source,bash]
------
+---------
 svn co https://user@svn.berlios.de/svnroot/repos/wsjt/branches/wsjtx
------
+---------
 
 substituting your Berlios username for +user+.
 
