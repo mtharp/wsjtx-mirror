@@ -95,7 +95,7 @@ include::tutorial-example1.adoc[]
 === Sample File 2
 include::tutorial-example2.adoc[]
 
-[[TUT_XCVR]]
+[[TRANSCEIVER]]
 == Transceiver Setup
 include::transceiver-setup.adoc[]
 
