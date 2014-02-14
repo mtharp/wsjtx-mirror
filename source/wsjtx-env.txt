@@ -1,0 +1,18 @@
+@ECHO OFF
+REM - Custom CMD Window for WSJT-X Build using CMake
+REM -- Change color so users know this is *not* a normal CMD Window
+COLOR 1B
+TITLE WSJT-X Build Using CMake
+ECHO.
+ECHO Setup WSJT-X Build Enviroment
+ECHO - To Build Release: wsjtx-build-cmake.bat -r
+ECHO - To Build Debug  : wsjtx-build-cmake.bat -d
+ECHO.
+REM -- Be careful editing these variables, if wrong, the build will fail!
+SET BASED=C:\wsjt-env
+SET CMAKED=C:\wsjt-env\CMake\bin
+SET SVND=C:\wsjt-env\SlikSvn\bin
+SET QTD=C:\wsjt-env\Qt5\5.2.1\mingw48_32\bin;C:\wsjt-env\Qt5/Tools/mingw48_32\bin
+SET PATH=%BASED%;%CMAKED%;%SVND%;%QTD%;%PATH%
+CD /D %BASED%
+C:\Windows\System32\cmd.exe /A /Q

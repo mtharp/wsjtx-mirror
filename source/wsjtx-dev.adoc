@@ -2,83 +2,81 @@
 
 In order to build _WSJT-X_ form source, install the following packages:
 
+[source,shell]
 ----------
-sudo apt-get install gcc g++ gfortran make libqt5multimedia5-plugins \
-libfftw3-dev libpulse-dev libhamlib-dev qtbase5-dev qtmultimedia5-dev \
-pulseaudio subversion libgfortran3:i386 libc6-i386
+sudo apt-get install gcc g++ gfortran make libfftw3-dev \
+libpulse-dev libhamlib-dev qtbase5-dev  pulseaudio subversion \
+libgfortran3:i386 libc6-i386 libqt5multimedia5-plugins \
+qtmultimedia5-dev
 ----------
 
 adjust install method to you distribution package manager.
 
 ==== WSJT-X Build and Run Dependencies
 [horizontal]
-+gcc+:: GNU C Compiler
-+g{plus}{plus}+:: GNU C{plus}{plus} Compiler
-+gfortran+:: GNU Fortran or F90
-+make+:: GNU Make
-+libqt5multimedia5-plugins+:: QT5 Media Plugins
-+libfftw3-dev+:: Fast Fourier Transforms
-+libpulse-dev+:: Headers and Files for Pulse AUdio
-+libhamlib-dev+:: Headers and Files for Hamlib
-+qtbase5-dev+:: QT5 Base Dev Files
-+qtmultimedia5-dev+:: Qt5 Multimedsia Dev Files
-+pulseaudio+:: Pulse Audio Sound Driver
-+subversion+:: Version Control Software
-+libgfortran.so.3+:: Fortran Library
-+libc.so.6+:: GCC C Library
-+libm.so.6+:: GCC C Library
-+libgcc_s.so.1libm.so.6+:: GCC C Library 
-+libquadmath.so.0+:: Quad-Precision Math Library
++*gcc*+:: GNU C Compiler
++*g{plus}{plus}*+:: GNU C{plus}{plus} Compiler
++*gfortran*+:: GNU Fortran or F90
++*make*+:: GNU Make
++*libqt5multimedia5-plugins*+:: QT5 Media Plugins
++*libfftw3-dev*+:: Fast Fourier Transforms
++*libpulse-dev*+:: Headers and Files for Pulse AUdio
++*libhamlib-dev*+:: Headers and Files for Hamlib
++*qtbase5-dev*+:: QT5 Base Dev Files
++*qtmultimedia5-dev*+:: Qt5 Multimedsia Dev Files
++*pulseaudio*+:: Pulse Audio Sound Driver
++*subversion*+:: Version Control Software
++*libgfortran.so.3*+:: Fortran Library
++*libc.so.6*+:: GCC C Library
++*libm.so.6*+:: GCC C Library
++*libgcc_s.so.1libm.so.6*+:: GCC C Library 
++*libquadmath.so.0*+:: Quad-Precision Math Library
 
 ==== Build Methods
 
-All commands are performed in a terminal, Ctrl+Alt+T. Follow the
-steps in the script, or perform an import to let the script do the
-build.
+IMPORTANT: You can perform the steps manually if desired. Using the script
+automates the steps.
 
-==== Import Script
-*Copy & Paste* the scipt in terminal, then enter.
+* Open a terminal session, +*Ctrl{plus}Alt{plus}T*+
+* +*Copy {amp} Paste*+ the following block, then +*Enter*+ to save.
 
-IMPORTANT: You can perform the steps manually if desired. The script
-simply automates the manual steps.
-
-* Tested on Ubuntu 12.04 64-bit {amp} 14.04 64-bit
-* Copy from pass:[cat > ... to ... EOL ]
-* Pasting to the termainl creates a file called: wsjtx-compile.sh
-* You can edit the pass:[BUILD_DIR=" .. .."] if you want different
-build location.
-* No other edits should be required.
-
+[caption="Create Script: "]
+.wsjtx-compile.sh
 [source,bash]
-----
+----------
 include::wsjtx-compile.txt[]
-----
+----------
 
-==== Change Permissions and Run Script
+==== For Script Method, Change Permissions and Run
 [source,bash]
------
-chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh
------
+----------
+# CHANGE PERMISSION
+chmod +x ./wsjtx-compile.sh
 
-==== KVASD Testing
+# RUN SCRIPT
+./wsjtx-compile.sh
+----------
+
+==== Test KVASD
 
 Before you launch _WSJT-X_, ensure _KVASD_ can run.
 
 [source,bash]
----------
+----------
 # cd to the newly created wsjtx-rxxxx directory then: ./kvasd -v
 cd wsjtx-$rev_num
 ./kvasd -v
 
-# If sucessful, you should see the version number
+# If successful, you should see the version number
 KVASD version 1.11
 
 # To see the copyright information
 ./kvasd
 
----------
+----------
 
 ==== Run The New WSJT-X Binary
+
 [source,bash]
 ----------
 # When running from a terminal [ ./wsjtx ], the xterm remains open.
@@ -94,17 +92,131 @@ KVASD version 1.11
 
 === Windows CMake Example
 
-Under Development
+The critical portion of building _WSJT-X_ on Windows is setting up the
+environment and defining paths. Once complete, subsequent builds will be a two
+step build process; Open the wsjt-env terminal and run the build batch file.
 
-==== Windows CMake Prerequisites
+IMPORTANT: If you have one or more of the following packages installed, you will
+need to make adjustments +*wsjtx-env.bat*+. This guide assumes +*none*+ of the
+development dependencies have been installed.
 
-The following tools are required to compile _WSJT-X_ using _CMake_:
+==== Directory Setup
+* Open Windows CMD Terminal
+* Use the following commands to create the required folder structure
+
+[caption="Create Directory Structure:"]
+.C:\wsjt-env\.. .. ..
+----------
+REM -- One command per line, Copy and Paste
+
+c:
+mkdir wsjt-env\src wsjt-env\downloads wsjt-env\fftw3
+mkdir wsjt-env\wsjtx-build\Debug wsjt-env\wsjtx-build\Release
+mkdir wsjt-env\wsjtx-install\Debug wsjt-env\wsjtx-install\Release
+
+REM -- Close the CMD window
+----------
+
+==== Download Development Packages
+
+* Save the following packages to +*C:\wsjt-env\downloads*+
 
 [horizontal]
-Qt5 SDK:: The UI framework {plus} MinGW Tool Chain: {qt5_framework}
-CMake:: Cross Platform Build System: {cmake}
-Hamlib:: Radio Control Libraries: {hamlib}
-FFTW3:: Discrete Fourier Transform library: {fftw3}
-Gfortran:: Fortran compiler, included in _Qt5 SDK_
-G95:: Alternate for gfortran, if desired: {g95}
++*Qt5 SDK*+:: {qt5_framework} - Qt 5.2.1 Windows-32, (MinGW 4.8, OpenGL)
++*CMake*+:: {cmake} - Win32 Installer
++*Hamlib*+:: {hamlib} - Hamlib 1.2.15.3.zip
++*FFTW3*+:: {fftw3} - 32-bit version: fftw-3.3.3-dll32.zip
++*SVN*+:: {svn} - SilkSVN 1.8.5.x 32-bit
+
+==== QT5.2.1 Install
+* Run the Installer
+* Change Install Path to: +*C:\wsjt-env\Qt5*+
+* Check: Associate common files types with Qt Creator
+* Select Components: Use Default Selections
+* License Agreement, read and select
+* Start Menu: Use default selections, select next, then install
+* Go grab a coffee, this takes about +*5*+ minutes
+* At Finish, launch Qt Creator to verify it works, then exit.
+
+==== CMake Install
+* Run the Installer
+* Agree to Terms
+* Select: Do [red]*#not#* add to system PATH
+* Change Install Path to: +*C:\wsjt-env\CMake*+
+
+==== SilkSVN Install
+* Run the Installer
+* Agree to Terms
+* Change Install Path to: +*C:\wsjt-env\SlikSvn*+
+* Select Typical, then Install
+
+==== Extract Hamlib
+* Unzip folder hamlib-1.2.15.3.zip
+* Rename folder +*hamlib-win32-1.2.15.3 => hamlib*+
+* Move folder +*hamlib  =>  C:\wsjt-env\hamlib*+
+
+==== Extract FFTW3
+* [red]*#Caution#*: FFTW3 does *not* have a top level folder
+* Move +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3*+
+* Then extract in +*C:\wsjt-env\fftw3*+
+
+==== Setup WSJT-X Build Environment
+
+In this section, we will set up all the required path variables. If you followed
+the guide, this is a simple +*Copy {amp} Paste*+. At the completion of this
+section, +*wsjt-env.bat*+ will be your standard terminal used for building
+_WSJT-X_. You can make a desktop shortcut if desired, for quick access.
+
+* Browse to +*C:\wsjt-env*+ and create a file called: +*wsjt-env.bat*+
+* Open +*wsjt-env.bat*+ with a test editor, +*Copy {amp} Paste*+ the following
+block into +*wsjt-env.bat*+:
+
+[caption="Enviroment Script: "]
+.C:\wsjt-env\wsjtx-env.bat
+[source,shell]
+----------
+include::wsjtx-env.txt[]
+----------
+
+* Save and Exit.
+* CD to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open +*wsjtx-env.bat*+
+* Verify packages. At the prompt  +*C:\wsjt-env>*+  check pkg versions: 
+
+[horizontal]
++*qmake --version*+::  => Qmake version 3.0
++*cmake --version*+::  => CMake version 2.8.12
++*gcc --version*+::  => gcc 4.8.0
++*g{plus}{plus} --version*+::  => g++ 4.8.0
++*gfortran --version*+::  => GNU Fortran 4.8.0
++*svn --version*+::  => SVN version 1.8.5
+
+==== Create The CMake Tool-Chain File
+* Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-toolchain.cmake*+
+* Edit the file with a text editor. +*Copy {amp} Paste*+ the following block:
+
+[caption="Tool Chain: "]
+.C:\wsjt-env\wsjtx-toolchain.cmake
+[source,shell]
+----------
+include::wsjtx-toolchain.cmake[]
+----------
+
+==== Create The CMake Build Script
+* Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-build-cmake.bat*+
+* Edit the file with a text editor. +*Copy {amp} Paste*+ the following block:
+
+[caption="Build Script: "]
+.C:\wsjt-env\wsjtx-build-cmake.bat
+[source,shell]
+----------
+include::wsjtx-build-cmake.txt[]
+----------
+
+==== Test Run - Under Construction!
+
+Test Run 
+
+==== Final Notes - Under Construction
+
+
 
