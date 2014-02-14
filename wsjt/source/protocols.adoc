@@ -53,18 +53,85 @@ used in meteor scatter QSOs, after callsigns have been exchanged.
 They are not used in IARU Region 1, where activity levels are high
 enough that messages should always be accompanied by callsigns.
 
+=== JTMS
+
+JTMS uses Minimum Shift Keying (MSK) at 11025 / 8 = 1378.125 baud.
+Messages are free-form and have lengths 5,7,9,11,13,17,19,23 or 29
+characters, always padded with one or more trailing blanks.
+Characters are mapped to numerical values in the range 0 - 63
+according to position in the first line below.  (The second and third
+lines may be used to read off a value: for example, B has value 11
+and Z has value 35.)
+
+----
+ 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ./?-                 _     @
+           1         2         3         4         5         6
+ 0123456789012345678901234567890123456789012345678901234567890123
+----
+
+The 6-bit binary representation for each character value is augmented
+with an even-parity bit, and the 7-bit sequences are sent sequentially
+using audio frequency 1155.47 Hz to represent 0 and 1855.53 Hz to
+represent 1.  The sequence of tones for a message is transmitted
+repeatedly for a full transmission, maintaining phase continuity at
+all transitions between tones.
+
+JTMS implements single-tone messages in the same way as FSK441.
+Messages R26, R27, RRR and 73 are transmitted as pure tones of 882,
+1323 and 1764, and 2205 Hz respectively.  Pings from these
+transmissions are easily recognized by the human ear, easily seen on
+spectrum displays, and can be detected by appropriate software.
+
+=== ISCAT
+
+ISCAT messages are free-form, up to 28 characters in length.
+Modulation is 42-tone frequency-shift keying at 11025 / 512 = 21.533
+baud (ISCAT-A), or 11025 / 256 = 43.066 baud (ISCAT-B), and tone
+frequencies are spaced by an amount equat to the baud rate.  The
+available character set is
+
+----
+ 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ /.?@-
+----
+
+Transmissions consist of sequences of 24 symbols: a ``sync'' pattern
+of 4 symbols at tone numbers 0, 1, 3, and 2; then 2 symbols with tone
+number indicating the message length; and finally 18 symbols
+corresponding to the user's message, sent repeatedly character by
+character.  The message always starts with +@+, the
+beginning-of-message symbol.  The sync pattern and message-length
+indicator thus have a fixed repetition period, recurring every 24
+symbols.  Message information occurs periodically within the 18 symbol
+positions set aside for its use, repeating at its own natural length.
+
+For example, consider the user message +CQ WA9XYZ+.  With the +@+
+beginning-of-message symbol included, the message is 10 characters
+long.  Using the character sequence displayed above to indicate tone
+numbers, the transmitted message will therefore start out as shown in
+the first line below:
+
+----
+ 0132AA@CQ WA9XYZ@CQ WA9X0132AAYZ@CQ WA9XYZ@CQ W0132AAA9X ...
+ sync##                  sync##                 sync##
+----
+
+Note that the first six symbols (four for sync, two for message
+length) repeat every 24 symbols.  Within the 18 information-carrying
+symbols, the augmented user message +@CQ WA9XYZ+ repeats at its own
+natural length, 10 characters.  The resulting sequence is extended as
+many times as will fit into a Tx sequence.
+
 === JT6M
 
 JT6M uses 44-tone FSK with a synchronizing tone and 43 possible data
 tones -- one for each character in the supported alphanumeric set, the
-same set used for FSK441. The sync tone is at 1102500/1024 = 1076.66
+same set used for FSK441. The sync tone is at 1102500 / 1024 = 1076.66
 Hz, and the 43 other possible tones are spaced at intervals of
-11025/512 = 21.53 HZ up to 2002.59 Hz.  Transmitted symbols are keyed
+11025 / 512 = 21.53 HZ up to 2002.59 Hz.  Transmitted symbols are keyed
 at a rate of 21.53 baud, so each one lasts for 1/21.53 = 0.04644
 seconds. Every third symbol is the sync tone, and each sync symbol is
 followed by two data symbols.  The transmission rate of user data is
-therefore (2/3)*21.53 = 14.4 characters per second.  The transmitted
-signal sounds a bit like piccolo music.
+therefore (2/3)*21.53 = 14.4 characters per second.  
 
 === JT65
 
@@ -110,3 +177,26 @@ sync vector and use intervals of 1.486 s (16,384 samples) for the
 alternating tones.  The lower frequency is always 1270.5 Hz, the same
 as that of the sync tone, and the frequency separation is 26.92 nm Hz
 with n = 2, 3, 4 for the messages RO, RRR, and 73.
+
+=== JT4
+
+JT4 uses 72-bit structured messages nearly identical (at the user
+level) to those in JT65. Error control coding (ECC) uses a strong
+convolutional code with constraint length K=32, rate r=1/2, and a zero
+tail, leading to an encoded message length of (72+31) × 2 = 206
+information-carrying bits. Modulation is 4-tone frequency-shift keying
+at 11025 / 2520 = 4.375 baud.  The frequency spacing between tones and
+total bandwidth depends on the submode, JT4A through JT4G:
+
+----
+Mode   Spacing   BW 
+        (Hz)    (Hz)
+JT4A    4.375   17.5
+JT4B    8.75    35.0
+JT4C   17.5     70.0
+JT4D   39.375  157.5
+JT4E   78.75   315.0
+JT4F  157.5    630.0
+JT4G  315.0   1260.0
+----
+

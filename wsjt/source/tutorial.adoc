@@ -1,23 +1,64 @@
+=== Main Screen Basics
 
-A large part of the skill required for effective use of _WSJT_ is
-learning to use the decoders effectively.  To use the following
-tutorial you must first obtain the collection of sample wave files
-available for {samples_windows} or {samples_linux}.  These files
-contain on-the-air recordings of meteor pings in FSK441 mode and EME
-signals in JT65B mode.  
+To use _WSJT_ effectively you will need to gain some experience 
+and skill using the decoders.  To get started
 
-. Extract the files to a suitable location such as +..\RxWav\Samples+
+- Select *FSK441* from the *Mode* menu on the main window.
+
+- Select *File | Open*,navigate to the +RxWav\Samples+ folder in your
+_WSJT_ home directory, and open the sample file
++W8WN_010809_110400.wav+.  Your main screen should look something like
+the image below.  The larger graphical area displays a spectrogram in
+which time increases from left to right and frequency from bottom to
+top.  The green curve below the spectrogram shows total power over
+the full received bandwidth.  The smaller graphical area at right
+displays average spectra of the full record (magenta) and of the
+strongest detected ``ping'' (red).
+
+[[MainScreen]]
+image::images/wsjt9.7_main.png[align="center",width=650]
+
+- Click with the right mouse button around the location of the ping at
+time t = 18 s on the graphical display, and observe the decoded text
+that appears.
+
+- Click on the static crashes around t = 1 s or elsewhere on the green
+line.  You will probably see garbage text.  
+
+- Click *Erase* to clear the text and graphical areas.  
+
+- Click *Decode* to process the full 30-second segment again.
+
+- The sample files used in this tutorial were recorded by _WSJT_
+during normal on-the-air activity.  You will find it instructive to
+use Windows Media Player (or an equivalent program) to play these
+audio files and listen to the signals.  The example file
++W8WN_010809_110400.wav+ starts with a burst of summertime QRN, then
+nothing but background noise until a moderately strong burst of FSK441
+appears some 18 seconds later.
+
+=== Decoding Tutorial
+
+Decoding procedures are different for the various _WSJT_ modes, and it
+helps to practice with a new mode before using it on the air.  For the
+following tutorial you must first obtain the collection of sample wave
+files available for {samples_windows} or {samples_linux}.  These files
+contain recordings of real signals in typical on-the-air situations
+for each of the _WSJT_ modes.
+
+- Extract the files to a suitable location such as +..\RxWav\Samples+
 under your _WSJT_ installation directory.
 
-. If you have already installed and used a version of _WSJT_, delete
-your WSJT.INI file or temporarily rename it to something else. This
+- If you have already installed and used a version of _WSJT_, delete
+your +WSJT.INI+ file or temporarily rename it to something else. This
 will ensure that you start the tutorial with everything in the default
 configuration.
 
-. Start _WSJT_ and position the main window conveniently on your
+- Start _WSJT_ and position the main window conveniently on your
 screen.  You may ignore or minimize the other two windows for now.
 
-. By default _WSJT_ starts in FSK441 mode (yellow label at bottom left
+.FSK441
+- By default _WSJT_ starts in FSK441 mode (yellow label at bottom left
 of status bar).  Select menu item *File | Open* and navigate to
 subdirectory +...\RxWav\Samples\FSK441+ under your installation
 directory.  Double-click on the first file in this directory,
@@ -27,14 +68,14 @@ decoder produces the following text in the main text box:
 
  134100 27.4 220 6 26 -21 O1JT 26 K5CZD 2626 K1JT 27 K5CZ #6
 
-. According to the line of decoded text, this file contains a meteor
+- According to the line of decoded text, this file contains a meteor
 ``ping'' at t = 27.4 s, lasting 220 ms, with signal-plus-noise to
 noise ratio (S+N)/N = 6 dB.  You can see that K5CZD is sending K1JT
 the signal report ``26''.  In FSK441 mode it is not uncommon to see
 some incorrect characters, especially near the ends of decoded
 sequences where the signal is weak.  
 
-. Hit the *F6* key (or select *File | Open next in directory*) to open
+- Hit the *F6* key (or select *File | Open next in directory*) to open
 and decode successive files in the FSK441 directory.  These files
 contain recordings of K8EB calling KB4BWW, KC0HLN calling CQ and
 working K1JT, KM5ES working K1JT, KM5PO calling K1JT as a
@@ -46,14 +87,39 @@ garbage as decoded text.  You can click *Erase* or *Decode* at any
 time to clear the display areas and decode the most recently analyzed
 file again.
 
-. Open the first KC0HLN file again.  It produces the message 
+- Open the first KC0HLN file again.  It produces the message 
 
   001400  6.5  400 15 27  -21     2 CQ KC0HLN EN32 CQ KC0HLN ...
 
-. Double-click on the callsign KC0HLN in the text window, and observe
+- Double-click on the callsign KC0HLN in the text window, and observe
 what happens in the Tx message boxes.  The program is now ready for
 K1JT to answer the CQ from KC0HLN.
 
+.JTMS
+
+- Switch to *JTMS* mode and open each file in the +Samples\JTMS+
+subdirectory.  *JTMS* generally does a good job of finding and
+decoding pings on its own.  If the ping duration is sufficient for
+message repetitions to be recognizable, the decoder averages over them
+and appends an asterisk +*+ to the end of the decoded line.
+
+- You can also try clicking to decode, as in FSK441 mode.  For
+example, the short, weak ping at t=7.7 s in the second file decodes
+automatically as
+
+ 111730  7.7  100  3 16   15     SIY K1JT?N9VIX KT.T O2 
+
+- By clicking at about t=7.4 s you should be able to obtain the improved
+result 
+
+ 111730  7.7  120  3 26   15     K1JT?N5SIX               * 
+
+.ISCAT
+- Switch to *ISCAT-B* mode and open the first file in the +Samples\ISCAT-B+ 
+subdirectory.
+
+
+.JT6M
 . Select JT6M on the *Mode menu.  Then select *File | Open*, navigate
 to inside the subfolder +...RxWav\Samples\JT6M+ under your
 installation directory, and double-click on the AA9MY file.  You

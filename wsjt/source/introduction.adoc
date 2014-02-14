@@ -1,24 +1,24 @@
 WSJT is a computer program for amateur VHF/UHF communication using
-state of the art digital techniques.  It can help you to make contacts
+state-of-the-art digital techniques.  It can help you to make contacts
 using fraction-of-a-second signals reflected from meteor trails, as
-well as steady signals more than 10 dB weaker than those needed for
-conventional CW.  Distinct protocols or ``modes'' are provided for 
+well as steady signals more than 10 dB below the threshold of
+audibility.  Distinct protocols or ``modes'' are provided for
 different types of propagation:
 
 [horizontal]
 
-*JTMS*:: Alternative mode for meteor scatter.  Uses minimum-shift keying
-(MSK) at 1378.125 baud, character transmission rate 197 cps.
+*JTMS*:: For meteor scatter.  Uses minimum-shift keying (MSK) at
+1378.125 baud, with a character transmission rate 197 cps.
 
-*FSK441*:: For high speed meteor scatter.  Uses 4-tone frequency-shift
-keying (4-FSK) at 441 baud, with character transmission rate 147 cps.
+*FSK441*:: For meteor scatter.  Uses 4-tone frequency-shift keying
+(4-FSK) at 441 baud, character transmission rate 147 cps.
 
 *ISCAT*:: Optimized for meteor and ionospheric scatter on 6 meters.
 Uses 42-FSK at 21.53 or 43.07 baud, character transmission rate 16.15
 or 32.3 cps.
 
 *JT6M*:: Optimized for meteor and ionospheric scatter on 6 meters.  
-Uses 44-FSK at 21.53 baud, character transmission rate 14.3 cps.
+Uses 44-FSK at 21.53 baud, character transmission rate 14.4 cps.
 
 *JT65*:: For Earth-Moon-Earth (EME, ``moonbounce'') and weak
 troposcatter.  Uses structured messages, a Reed-Solomon (63,12)
@@ -31,4 +31,4 @@ Effective throughput is about 0.25 cps.
 
 *CW*:: For EME using timed, computer-generated transmissions.
 
-*Echo*:: For testing your own echoes from the Moon.
+*Echo*:: For testing echoes of your own signal from the Moon.

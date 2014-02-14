@@ -22,46 +22,31 @@ enter the actual device name, for example +/dev/ttyS0+.
 [[FigOptions]]
 image::images/options.png[align="center"] 
 
-- The black-background console window labeled *WSJT 10* offers a menu
-of choices for *Audio In* and *Audio Out* devices.  On the *Options*
-screen, enter an *Audio Device* number that provides at least 2 input
-channels for *Audio In*, and at least 2 output channels for *Audio
-Our* -- for example, Audio devices number 1 and 4 selected from the
-following screen shot:
+- The console window (black background) presents a list of the audio
+devices available on your system.  On the *Options* screen, set *Audio
+In* to the number of the desired input device and *Audio Out* to the
+number of the output device.  The chosen devices must offer at least
+two input (or output) channels.  For example, Audio devices number 1
+(input) and 4 (output) could be selected from the following screen
+shot.  Your selections will take effect the next time you start the
+program.
 
 [[FigConsole]]
 image::images/console.png[align="center"]
 
-- You may now dismiss the *Options* screen and minimize the console
-window.
-
-=== Main Window
-
-- Select *FSK441* from the *Mode* menu on the main window.
-
-- Select *Open* from the *File* menu and navigate to the
-+RxWav\Samples+ folder in your _WSJT_ home directory. Open the sample
-file W8WN_010809_110400.wav.  Your main screen should look something
-like the image below.  Try clicking with the right mouse button around
-the location of the ping at time t = 18 s on the graphical display,
-and observe the decoded text that appears.  If you click on the static
-crashes around t = 1 s or elsewhere on the green line, you may see
-garbage text.  Click *Erase* to clear the text and graphical areas.
-You can click *Decode* to decode the full file again.
-
-[[FigMainScreen]]
-image::images/wsjt9.7_main.png[align="center",width=650]
-
 - Take note of two numbers in the first panel of the status bar at
-lower left of the main screen.  After _WSJT_ has been running for a
-minute or so they should stabilize at values close to 1.0000.  If both
-numbers are between 0.9995 and 1.0005, the effective input and output
-sampling rates of your soundcard are close to the nominal 11025 Hz.
-If either number is outside this range, enter it as *Rate in* (first
-number) or *Rate out* (second number) on the *Setup | Options* screen.
-_WSJT_ will then make necessary adjustments for the incorrect sampling
-rate or rates.
+lower left of the main screen.  
 
+[[StatusBar]]
+image::images/StatusBar.png[align="center",width=650]
+
+ - After _WSJT_ has been running for a minute or so they should
+stabilize at values close to 1.0000.  If both numbers are between
+0.9995 and 1.0005, the effective input and output sampling rates of
+your soundcard are close to the nominal 11025 Hz.  If either number is
+outside this range, enter it as *Rate in* (first number) or *Rate out*
+(second number) on the *Setup | Options* screen.  _WSJT_ will then
+make necessary adjustments for the incorrect sampling rate or rates.
 
 === Transceiver Setup
 .Receiver Noise Level

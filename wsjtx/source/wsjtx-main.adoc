@@ -33,7 +33,7 @@ include::system-requirements.adoc[]
 == Installation
 
 - Download _WSJT-X_ from the {homepage}. Click on _WSJT-X_ at the left
-margin and then on the appropriate link(s) for your operating system.
+margin and then on the desired download link.
 
 [[INSTALL_WIN]]
 === Windows

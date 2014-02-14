@@ -1,8 +1,19 @@
 - SSB transceiver and antenna for one or more VHF/UHF/SHF bands
-- Computer running the Microsoft Windows, Linux, or FreeBSD operating system
+
+- Computer running the Microsoft Windows, Linux, FreeBSD, or OS X 
+operating system
+
 - 1 GHz or faster CPU and 128 MB of available RAM
+
 - Monitor with at least 800 x 600 resolution (more is better)
+
 - Sound card supported by your operating system
-- Computer-to-radio interface using a serial port to key your PTT line.
-- Audio connections between transceiver and sound card  
-- A means for synchronizing your computer clock to UTC
+
+- Computer-to-radio interface using a serial port for T/R switching,
+or VOX control
+
+- Audio input and output devices supported by the operating system
+
+- Audio or equivalent USB connections between transceiver and computer  
+
+- A means for synchronizing the computer clock to UTC within ±1 s

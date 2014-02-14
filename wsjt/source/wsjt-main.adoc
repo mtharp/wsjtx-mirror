@@ -61,7 +61,7 @@ include::installation.adoc[]
 include::setup.adoc[]
 
 [[TUTORIAL]]
-== Basic Operating Tutorial
+== Operating Tutorial
 include::tutorial.adoc[]
 
 [[OPERATING]]
@@ -93,7 +93,7 @@ include::menus.adoc[]
 include::controls.adoc[]
 
 [[PROTOCOLS]]
-== Specifications of WSJT Protocols
+== Protocols
 include::protocols.adoc[]
 
 [[ASTROCALC]]
