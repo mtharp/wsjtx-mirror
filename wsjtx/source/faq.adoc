@@ -35,3 +35,23 @@ Each instance must be executed from its own home directory.  Be sure to
 check *Advanced | Allow multiple instances* in the *Setup* menu
 for each one; then exit and restart the program.  This step need be
 done just once.
+
+Rig Cat does not set VFOA or VFOB to USB for any band I select. Why is that?::
+
+Automatic setting of USB for the selected band will depend on your rig manufacturer's implementation of Rig Cat.
+This is not standardized between manufacturers or even between rigs from a given manufacturer. 
+The workaround is to setup your rig for USB on all bands you intend to work before launching _WSJT-X_ , 
+as suggested in the _Pre-QSO Checklist_.
+
+How do I know what settings to use for Rig Cat and PTT?::
+
+Your rig manual will probably have these settings in a section for computer and TNC 
+interface specifications. These may also be detailed in a programmer's guide which is 
+usually offered as a downloadable file from your manufacturer's web site. As a last resort
+you can do a simple web search like "rig cat for _your_rig_model_" which should give you several 
+places to look. Note that if your rig does cat control and PTT on separate cables the port settings may 
+be different for each cable.
+
+
+ 
+
