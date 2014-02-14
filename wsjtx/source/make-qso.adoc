@@ -147,7 +147,6 @@ checklist:
 - Radio's Split mode selected or not, consistent with your choice 
   on *Station* tab of the *Setup | Configuration* window. Verify both VFOs
   are set to USB if your rig allows each VFO independent mode setting 
-- +2kHz checkbox selected if using Split mode operation 
- 
+
 IMPORTANT: Remember that JT9 and J65 generally do not require high
 power. Under most propagation conditions, QRP is the norm.
