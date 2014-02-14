@@ -1,0 +1,28 @@
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
+SETLOCAL ENABLEDELAYEDEXPANSION
+REM -- WSJT-X Windows Build Script Using CMake
+REM -- Part of the WSJT Documentation Project
+SET BASED=C:\wsjt-env
+SET SRCD=C:\wsjt-env\src
+SET BUILDD=C:\wsjt-env\wsjtx-build
+SET INSTALLD=C:\wsjt-env\wsjtx-install
+SET TCHAIN=C:\wsjt-env\wsjtx-toolchain.cmake
+SET CHECKOUT=svn co svn://svn.berlios.de/wsjt/branches/wsjtx
+IF /I [%1]==[-d] (
+SET OPTION=Debug && GOTO BUILD
+) ELSE (
+SET OPTION=Release && GOTO BUILD
+)
+:BUILD
+CD %SRCD%
+%CHECKOUT%
+CD %BUILDD%\%OPTION%
+cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/wsjtx
+CD %BUILDD%\%OPTION% && mingw32-make install
+CD %BASED%
+GOTO EOF
+:EOF
+ENDLOCAL
+EXIT /B 0

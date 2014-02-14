@@ -29,15 +29,15 @@
 
 // Download Links
 :cty_dat: http://www.country-files.com/cty/[here].
-:cmake: http://www.cmake.org/cmake/resources/software.html[ Download ]
-:fftw3: http://www.fftw.org/download.html[ Download ]
+:cmake: http://www.cmake.org/cmake/resources/software.html[Download]
+:fftw3: http://www.fftw.org/install/windows.html[Download]
 :g95: http://www.fortran.com/the-fortran-company-homepage/whats-new/g95-windows-download/[Download]
-:hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Main_Page[ Download ]
+:hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Download[Download]
 :kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
 :osx_108: http://physics.princeton.edu/pulsar/K1JT/wsjtx_01feb14.tar.gz[ OS X 10.6, 10.7, and 10.8 ]
 :osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_01feb14.tar.gz[ OS X 10.9 ]
-:qt5_framework: http://qt-project.org/downloads#qt-other[ Download ]
-:svn: http://subversion.apache.org/packages.html#windows[ Subversion ]
+:qt5_framework: http://qt-project.org/downloads[Download]
+:svn: http://subversion.apache.org/packages.html#windows[Subversion]
 :wsjt_svn: http://svn.berlios.de/wsvn/wsjt[ here ]
 
 // MAIL-TO links
