@@ -93,13 +93,19 @@ KVASD version 1.11
 === Windows CMake Example
 
 The critical portion of building _WSJT-X_ on Windows is setting up the
-environment and defining paths. Once complete, subsequent builds will be a two
-step build process; Open the +*wsjt-env terminal*+ and build with
-+*wsjtx-build-cmake.bat -r*+
+environment and defining paths. Once complete, subsequent builds can be
+accomplished in two steps:
+* Open the +*wsjt-env terminal*+
+* Build _WSJT-X with wsjtx-build-cmake.bat
 
-IMPORTANT: If you have one or more of the following packages installed, you will
-need to make adjustments +*wsjtx-env.bat*+. This guide assumes +*none*+ of the
-development dependencies have been installed.
+[source,shell]
+---------
++*wsjtx-build-cmake.bat -r*+
+---------
+
+IMPORTANT: With the exception of {svn}, The entire development environment is
+contained within: +*C:\wsjt-env*+. Using the +*wsjtx-env terminal*+, previous
+installs of +*QT*+ or +*CMake*+ should should not affect the build.
 
 ==== Directory Setup
 * Open Windows CMD Terminal
@@ -166,10 +172,10 @@ REM -- Close the CMD window
 In this section, we will set up all the required path variables. If you followed
 the guide, this is a simple +*Copy {amp} Paste*+. At the completion of this
 section, +*wsjt-env.bat*+ will be your standard terminal used for building
-_WSJT-X_. You can make a desktop shortcut if desired, for quick access.
+_WSJT-X_. For quick access, create a desktop shortcut.
 
 * Browse to +*C:\wsjt-env*+ and create a file called: +*wsjt-env.bat*+
-* Open +*wsjt-env.bat*+ with a test editor, +*Copy {amp} Paste*+ the following
+* Open +*wsjt-env.bat*+ with a text editor, +*Copy {amp} Paste*+ the following
 block into +*wsjt-env.bat*+:
 
 [caption="Enviroment Script: "]
@@ -191,11 +197,15 @@ include::wsjtx-env.txt[]
 +*gfortran --version*+::  => GNU Fortran 4.8.0
 +*svn --version*+::  => SVN version 1.8.5
 
+[[ENVIROMENT]]
+.WSJT Environment 
+image::images/wsjt-env.png[align="center"]
+
 ==== Create The CMake Tool-Chain File
 * Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-toolchain.cmake*+
-* Edit the file with a text editor. +*Copy {amp} Paste*+ the following block:
+* Open the file with a text editor. +*Copy {amp} Paste*+ the following block:
 
-[caption="Tool Chain: "]
+[caption="CMake Tool Chain File: "]
 .C:\wsjt-env\wsjtx-toolchain.cmake
 [source,shell]
 ----------
@@ -204,7 +214,7 @@ include::wsjtx-toolchain.cmake[]
 
 ==== Create The CMake Build Script
 * Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-build-cmake.bat*+
-* Edit the file with a text editor. +*Copy {amp} Paste*+ the following block:
+* Open the file with a text editor. +*Copy {amp} Paste*+ the following block:
 
 [caption="Build Script: "]
 .C:\wsjt-env\wsjtx-build-cmake.bat
