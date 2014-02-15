@@ -94,7 +94,8 @@ KVASD version 1.11
 
 The critical portion of building _WSJT-X_ on Windows is setting up the
 environment and defining paths. Once complete, subsequent builds will be a two
-step build process; Open the wsjt-env terminal and run the build batch file.
+step build process; Open the +*wsjt-env terminal*+ and build with
++*wsjtx-build-cmake.bat -r*+
 
 IMPORTANT: If you have one or more of the following packages installed, you will
 need to make adjustments +*wsjtx-env.bat*+. This guide assumes +*none*+ of the
@@ -212,11 +213,23 @@ include::wsjtx-toolchain.cmake[]
 include::wsjtx-build-cmake.txt[]
 ----------
 
-==== Test Run - Under Construction!
+==== Test Run
+* Browse to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open
++*wsjtx-env.bat*+.
+* In the terminal, type
 
-Test Run 
+[caption="Build: "]
+.Release Version
+[source,shell]
+---------
+wsjtx-build-cmake.bat
+---------
+* If everything processed as expected, your new build will be located in:
++*C:\wsjt-env\wsjtx-install\Release\bin*+
 
-==== Final Notes - Under Construction
-
-
-
+[caption="Build: "]
+.Debug Version
+[source,shell]
+---------
+wsjtx-build-cmake.bat -d
+---------
