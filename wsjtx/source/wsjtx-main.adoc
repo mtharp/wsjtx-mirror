@@ -9,6 +9,7 @@
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
 :description: Software for Amateur Radio Weak-Signal Communication
+:prog: WSJT-X
 
 // use global link file
 include::../../global/links.adoc[]

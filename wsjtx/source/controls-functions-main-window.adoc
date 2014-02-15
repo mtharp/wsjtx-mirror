@@ -3,7 +3,7 @@ The following buttons appear just under the decoded text windows on
 the main screen:
 
 //.Main UI Controls
-image::images/main-ui-controls.png[align="left",alt="Main UI Controls"]
+image::images/main-ui-controls.png[align="left",width=650,alt="Main UI Controls"]
 
 * *Log QSO* raises a dialog window pre-filled with known information
 about a QSO you have nearly completed.  You can edit or add to this

@@ -48,6 +48,28 @@ outside this range, enter it as *Rate in* (first number) or *Rate out*
 (second number) on the *Setup | Options* screen.  _WSJT_ will then
 make necessary adjustments for the incorrect sampling rate or rates.
 
+[[FONTS]]
+=== Fonts
+
+You are offered some control over the fonts and colors used in _WSJT_.
+A text file named +wsjtrc.win+ (on Windows) or +wsjtrc+ (on Linux and
+FreeBSD) is supplied with the following contents:
+
+ *font:				Arial 8
+ *Label*font:			Arial 8
+ *Text*font:			"Courier New" 9
+ *background:			gray85
+ *Text*background:		white
+ *Entry*background:		white
+ *foreground:			black
+ *Listbox*foreground:	        RoyalBlue
+
+You can edit this file with a text editor (such as Windows Notepad).
+For example, to make the on-screen fonts slightly larger you can
+increase the numbers on the first three lines to 9, 9, and 10.  It
+might be wise to save a backup of the original file under a different
+name, in case you need to restore the original contents.
+
 === Transceiver Setup
 .Receiver Noise Level
 
@@ -82,12 +104,9 @@ to get the proper audio signal level for your transmitter.
 
 - Click *TxStop* to end your test transmission. 
 
-_WSJT_ should now be set up and ready to operate.  Be aware, however,
-that _WSJT_ is a complicated program.  It has many operational
-nuances, especially ones having to do with the correct decoding of
-received signals.  If you are a new _WSJT_ user, it is strongly
-recommended that you work through the decoding tutorial in the next
-section.
+_WSJT_ should now be set up and ready to operate.  If you are a new
+_WSJT_ user, we strongly recommend that you work through the operating
+tutorial in the next section.
 
 ////////////////
 CAUTION: WSJT generates a single-frequency sine wave at any instant while
@@ -101,26 +120,4 @@ stress on your final amplifier than SSB or CW operation.  If this
 would cause the amplifier to overheat, you should take appropriate
 action: reduce power or add another cooling fan or blower.
 //////////////
-
-[[FONTS]]
-=== Fonts
-
-You are offered some control over the fonts and colors used in _WSJT_.
-A text file named +wsjtrc.win+ (on Windows) or +wsjtrc+ (on Linux and
-FreeBSD) is supplied with the following contents:
-
- *font:				Arial 8
- *Label*font:			Arial 8
- *Text*font:			"Courier New" 9
- *background:			gray85
- *Text*background:		white
- *Entry*background:		white
- *foreground:			black
- *Listbox*foreground:	        RoyalBlue
-
-You can edit this file with a text editor (such as Windows Notepad).
-For example, to make the on-screen fonts slightly larger you can
-increase the numbers on the first three lines to 9, 9, and 10.  It
-might be wise to save a backup of the original file under a different
-name, in case you need to restore the original contents.
 

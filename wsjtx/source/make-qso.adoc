@@ -39,10 +39,13 @@ for signal decodability are approximately –24 dB for JT65, –26 dB for
 JT9.
 
 *Free Text Messages*: Users often add some friendly chit-chat at the
-end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or 
-``5W VERT 73 GL'' are supported, up to a maximum of 13 characters
-(including spaces).  It should be obvious that the JT9 and JT65
-protocols are not well suited for extensive conversations or rag-chewing.
+end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or ``5W
+VERT 73 GL'' are supported, up to a maximum of 13 characters,
+including spaces.  (Normally you should avoid the character / in
+free-text nessages, since the program may try to interpret your
+construction as part of a compound callsign.)  It should be obvious
+that the JT9 and JT65 protocols are not well suited for extensive
+conversations or rag-chewing.
 
 === Compound Callsigns
 

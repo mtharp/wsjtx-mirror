@@ -1,4 +1,4 @@
-=== Main Screen Basics
+=== Main Window Basics
 
 To use _WSJT_ effectively you will need to gain some experience 
 and skill using the decoders.  To get started
@@ -15,7 +15,7 @@ the full received bandwidth.  The smaller graphical area at right
 displays average spectra of the full record (magenta) and of the
 strongest detected ``ping'' (red).
 
-[[MainScreen]]
+[[FigMainWindow]]
 image::images/wsjt9.7_main.png[align="center",width=650]
 
 - Click with the right mouse button around the location of the ping at
@@ -37,7 +37,7 @@ audio files and listen to the signals.  The example file
 nothing but background noise until a moderately strong burst of FSK441
 appears some 18 seconds later.
 
-=== Decoding Tutorial
+=== Decoding Details
 
 Decoding procedures are different for the various _WSJT_ modes, and it
 helps to practice with a new mode before using it on the air.  For the
@@ -56,6 +56,8 @@ configuration.
 
 - Start _WSJT_ and position the main window conveniently on your
 screen.  You may ignore or minimize the other two windows for now.
+
+==== Fast Modes
 
 .FSK441
 - By default _WSJT_ starts in FSK441 mode (yellow label at bottom left
@@ -145,6 +147,9 @@ flat regions on the green curve.  For example, try left-clicking at
 t = 7.4 s or t = 9.8 s in the first AF4O file, or at t = 11.6 s in the
 second AF4O file.
 
+==== Slow Modes
+
+.JT65A
 . Switch to mode JT65A and clear the *Freeze* setting.  You should now
 pay some attention to the *SpecJT* screen as well as the main _WSJT_
 screen.  (Select *View | SpecJT* if you have previously minimized or
@@ -175,6 +180,7 @@ will see that G3FPQ is calling W7GJ:
 
  131900 1 -25 1.5 42 3 * W7GJ G3FPQ IO91  1 0
 
+.JT65B
 . Select JT65B from the *Mode* menu.  Then select *File | Open*,
 navigate to inside the JT65B directory, and open the DL7UAE file.  The
 waterfall shows a strong birdie at DF = 783 Hz and several weaker
@@ -279,3 +285,6 @@ of K1JT in the My Call box.  Then dismiss the *Options* screen and try
 to decode the SP6GWB signal again.  You will surely fail, because for
 this message successful copy was obtained as a result from the Deep
 Search decoder, which is described further below.
+
+.JT4
+. Switch to mode JT4F and open the file +VK7MO...+
