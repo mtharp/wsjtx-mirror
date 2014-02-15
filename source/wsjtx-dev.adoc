@@ -23,7 +23,7 @@ adjust install method to you distribution package manager.
 +*libpulse-dev*+:: Headers and Files for Pulse AUdio
 +*libhamlib-dev*+:: Headers and Files for Hamlib
 +*qtbase5-dev*+:: QT5 Base Dev Files
-+*qtmultimedia5-dev*+:: Qt5 Multimedsia Dev Files
++*qtmultimedia5-dev*+:: Qt5 Multimedia Dev Files
 +*pulseaudio*+:: Pulse Audio Sound Driver
 +*subversion*+:: Version Control Software
 +*libgfortran.so.3*+:: Fortran Library
@@ -63,14 +63,14 @@ Before you launch _WSJT-X_, ensure _KVASD_ can run.
 
 [source,bash]
 ----------
-# cd to the newly created wsjtx-rxxxx directory then: ./kvasd -v
+# CHANGE DIRECTORY and RUN KVASD
 cd wsjtx-$rev_num
 ./kvasd -v
 
-# If successful, you should see the version number
+# SUCESSFUL RETURN
 KVASD version 1.11
 
-# To see the copyright information
+# VIEW COPYRGHT
 ./kvasd
 
 ----------
@@ -95,8 +95,9 @@ KVASD version 1.11
 The critical portion of building _WSJT-X_ on Windows is setting up the
 environment and defining paths. Once complete, subsequent builds can be
 accomplished in two steps:
-* Open the +*wsjt-env terminal*+
-* Build _WSJT-X with wsjtx-build-cmake.bat
+
+* Open +*wsjt-env CMD Terminal*+
+* Build _WSJT-X_ with +*wsjtx-build-cmake.bat*+
 
 [source,shell]
 ---------
@@ -104,25 +105,34 @@ wsjtx-build-cmake.bat -r
 ---------
 
 IMPORTANT: With the exception of {svn}, The entire development environment is
-contained within: +*C:\wsjt-env*+. Using the +*wsjtx-env terminal*+, previous
-installs of +*QT*+ or +*CMake*+ should should not affect the build.
+contained within: +*C:\wsjt-env*+. Using the +*wsjt-env CMD Terminal*+ method, any
+previous installation of +*QT*+ or +*CMake*+ should not be a problem to either
+environment.
 
 ==== Directory Setup
 * Open Windows CMD Terminal
-* Use the following commands to create the required folder structure
+* Issue the following commands to create the directory tree:
+* <<TREE,Figure-1>> is the visual tree.
 
-[caption="Create Directory Structure:"]
-.C:\wsjt-env\.. .. ..
+[[DIRECTORY]]
+.C:\wsjt-env\..
+[source,shell]
 ----------
-REM -- One command per line, Copy and Paste
-
+# OPEN WINDOWS CMD TERMINAL
+# ONE COMMAND PER LINE - Copy and Paste
 c:
-mkdir wsjt-env\src wsjt-env\downloads wsjt-env\fftw3
+mkdir wsjt-env\downloads wsjt-env\fftw3f wsjt-env\hamlib wsjt-env\src
 mkdir wsjt-env\wsjtx-build\Debug wsjt-env\wsjtx-build\Release
 mkdir wsjt-env\wsjtx-install\Debug wsjt-env\wsjtx-install\Release
 
-REM -- Close the CMD window
+# CLOSE CMD WINDOW
 ----------
+
+* You should end up with the following directory structure:
+
+[[TREE]]
+.WSJT Env Directory Tree 
+image::images/wsjt-env-tree.png[align="left"]
 
 ==== Download Development Packages
 
@@ -142,7 +152,7 @@ REM -- Close the CMD window
 * Select Components: Use Default Selections
 * License Agreement, read and select
 * Start Menu: Use default selections, select next, then install
-* Go grab a coffee, this takes about +*5*+ minutes
+* Go grab a coffee, this takes about +*5*+ minutes to install
 * At Finish, launch Qt Creator to verify it works, then exit.
 
 ==== CMake Install
@@ -156,6 +166,7 @@ REM -- Close the CMD window
 * Agree to Terms
 * Change Install Path to: +*C:\wsjt-env\SlikSvn*+
 * Select Typical, then Install
+* Note: All the SVN installers tested, added added itself to the system %PATH%
 
 ==== Extract Hamlib
 * Unzip folder hamlib-1.2.15.3.zip
@@ -164,47 +175,55 @@ REM -- Close the CMD window
 
 ==== Extract FFTW3
 * [red]*#Caution#*: FFTW3 does *not* have a top level folder
-* Move +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3*+
-* Then extract in +*C:\wsjt-env\fftw3*+
+* Move +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3f*+
+* Extract in +*C:\wsjt-env\fftw3f*+
 
 ==== Setup WSJT-X Build Environment
 
-In this section, we will set up all the required path variables. If you followed
-the guide, this is a simple +*Copy {amp} Paste*+. At the completion of this
-section, +*wsjt-env.bat*+ will be your standard terminal used for building
-_WSJT-X_. For quick access, create a desktop shortcut.
+If you followed this guide, the rest is +*Copy {amp} Paste*+. At the completion of
+this section, +*wsjt-env.bat*+ will be your _WSJT-X_ build terminal. For quick
+access, create a desktop shortcut.
 
 * Browse to +*C:\wsjt-env*+ and create a file called: +*wsjt-env.bat*+
 * Open +*wsjt-env.bat*+ with a text editor, +*Copy {amp} Paste*+ the following
-block into +*wsjt-env.bat*+:
+block:
+* Then Save and Exit.
 
-[caption="Enviroment Script: "]
+[caption="Environment Script: "]
 .C:\wsjt-env\wsjtx-env.bat
 [source,shell]
 ----------
 include::wsjtx-env.txt[]
 ----------
 
-* Save and Exit.
-* CD to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open +*wsjtx-env.bat*+
-* Verify packages. At the prompt  +*C:\wsjt-env>*+  check pkg versions: 
+* Change directories to: +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open
++*wsjt-env CMD Terminal*+
+* Check each package version below. Versions may very slightly, but each tool 
+should render a version number or the environment is not setup correctly. See
+<<TOOLS,Figure-2>> below.
+
+WARNING: You should not proceed until [red]*#all#* of the tools below render
+their version from within +*wsjt-env CMD Terminal+* 
 
 [horizontal]
-+*qmake --version*+::  => Qmake version 3.0
-+*cmake --version*+::  => CMake version 2.8.12
-+*gcc --version*+::  => gcc 4.8.0
-+*g{plus}{plus} --version*+::  => g++ 4.8.0
-+*gfortran --version*+::  => GNU Fortran 4.8.0
-+*svn --version*+::  => SVN version 1.8.5
++*cmake*+:: => CMake version 2.8.12
++*qmake*+:: => Qmake version 3.0
++*svn*+:: => SVN version 1.8.5
++*mingw32-make*+:: => Make version 4.8.0
++*gfortran*+:: => GNU Fortran 4.8.0
++*gcc*+:: => gcc 4.8.0
++*g{plus}{plus}*+:: => g++ 4.8.0
 
-[[ENVIROMENT]]
-.WSJT Environment 
+[[TOOLS]]
+.WSJT-X Build Tools 
 image::images/wsjt-env.png[align="left"]
 
 ==== Create The CMake Tool-Chain File
 * Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-toolchain.cmake*+
 * Open the file with a text editor. +*Copy {amp} Paste*+ the following block:
+* Then Save {amp} Exit.
 
+[[TOOLCHAIN]]
 [caption="CMake Tool Chain File: "]
 .C:\wsjt-env\wsjtx-toolchain.cmake
 [source,shell]
@@ -215,7 +234,9 @@ include::wsjtx-toolchain.cmake[]
 ==== Create The CMake Build Script
 * Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-build-cmake.bat*+
 * Open the file with a text editor. +*Copy {amp} Paste*+ the following block:
+* Then Save {amp} Exit
 
+[[CMAKEBUILD]]
 [caption="Build Script: "]
 .C:\wsjt-env\wsjtx-build-cmake.bat
 [source,shell]
@@ -225,7 +246,7 @@ include::wsjtx-build-cmake.txt[]
 
 ==== Test Run
 * Browse to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open
-+*wsjtx-env.bat*+.
++*wsjt-env.bat*+.
 * In the terminal, type
 
 [caption="Build: "]
@@ -234,8 +255,9 @@ include::wsjtx-build-cmake.txt[]
 ---------
 wsjtx-build-cmake.bat -r
 ---------
-* If everything processed as expected, your new build will be located in:
-+*C:\wsjt-env\wsjtx-install\Release\bin*+
+* New _WSJT-X_ Release Binary Location: +*C:\wsjt-env\wsjtx-install\Release\bin*+
+
+Note the [green]*#Release#\bin* directory
 
 [caption="Build: "]
 .Debug Version
@@ -243,3 +265,11 @@ wsjtx-build-cmake.bat -r
 ---------
 wsjtx-build-cmake.bat -d
 ---------
+
+* New _WSJT-X_ Debug Binary Location: +*C:\wsjt-env\wsjtx-install\Debug\bin*+
+
+Note the [green]*#Debug#\bin* directory
+
+=== QtCreator Setup
+
+Under Construction

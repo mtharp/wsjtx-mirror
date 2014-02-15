@@ -16,15 +16,18 @@ SET CPQT=Qt5Core.dll Qt5Gui.dll Qt5Multimedia.dll Qt5Network.dll Qt5Widgets.dll
 SET CPICU=icu*.dll
 SET CPLIB=libgcc_s_dw2-1.dll libgfortran-3.dll libstdc++-6.dll libquadmath-0.dll libwinpthread-1.dll
 SET RBCPY=ROBOCOPY /NS /NC /NFL /NDL /NP
+
 REM -- Start CMake Build
 IF /I [%1]==[-d] (SET OPTION=Debug) ELSE (SET OPTION=Release)
 CD %SRCD%
 %CHECKOUT%
 CD %BUILDD%\%OPTION%
+
 REM -- CMake && Make Install
 cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/wsjtx
 mingw32-make install
+
 REM -- Post Build File Copy
 CD %BASED%
 %RBCPY% %SRCD%\wsjtx %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* *.cmake
@@ -33,4 +36,4 @@ CD %BASED%
 GOTO EOF
 :EOF
 ENDLOCAL
-EXIT /B
+EXIT /B 0
