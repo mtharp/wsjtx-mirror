@@ -100,7 +100,7 @@ accomplished in two steps:
 
 [source,shell]
 ---------
-+*wsjtx-build-cmake.bat -r*+
+wsjtx-build-cmake.bat -r
 ---------
 
 IMPORTANT: With the exception of {svn}, The entire development environment is
@@ -199,7 +199,7 @@ include::wsjtx-env.txt[]
 
 [[ENVIROMENT]]
 .WSJT Environment 
-image::images/wsjt-env.png[align="center"]
+image::images/wsjt-env.png[align="left"]
 
 ==== Create The CMake Tool-Chain File
 * Browse to +*C:\wsjt-env*+, create a file called: +*wsjtx-toolchain.cmake*+
@@ -232,7 +232,7 @@ include::wsjtx-build-cmake.txt[]
 .Release Version
 [source,shell]
 ---------
-wsjtx-build-cmake.bat
+wsjtx-build-cmake.bat -r
 ---------
 * If everything processed as expected, your new build will be located in:
 +*C:\wsjt-env\wsjtx-install\Release\bin*+
