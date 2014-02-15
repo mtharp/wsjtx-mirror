@@ -10,39 +10,11 @@ Version 10.0
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
 :description: Software for Amateur Radio Weak-Signal Communication
+:prog: WSJT
 
-// If the list of links gets too long, we can add a url-file that is pulled
-// in when and where needed with the following:
-// include::<file-name> for example: include::url-list.txt
 
-// WEB links - List is getting pretty long, time to use include::file-name ??
-:asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[ AsciiDoc User Guide ]
-:asciidoc_cheatsheet: http://powerman.name/doc/asciidoc[ AsciiDoc Cheatsheet ]
-:asciidoc_questions: http://www.methods.co.nz/asciidoc/faq.html[ AsciiDoc FAQ ]
-:debian: http://www.debian.org/[ Debian ]
-:cc_by_sa: http://creativecommons.org/licenses/by-sa/3.0/[ Commons Attribution-ShareAlike 3.0 Unported License ]
-:devsvn: http://developer.berlios.de/projects/wsjt/[wsjt-svn]
-:download: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[ Download Page ]
-:homepage: http://physics.princeton.edu/pulsar/K1JT/[ WSJT Home Page ]
-:jt65protocol: http://physics.princeton.edu/pulsar/K1JT/JT65.pdf[QEX]
-:launchpadurl: https://launchpad.net/~jnogatch/+archive/wsjtx[ WSJT-X Linux Packages ]
-:ntpsetup: http://www.satsignal.eu/ntp/setup.html[Network Time Protocol Setup]
-:osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
-:samples_windows: http://physics.princeton.edu/pulsar/K1JT/WSJT_Samples.zip[ Windows ]
-:samples_linux: http://physics.princeton.edu/pulsar/K1JT/WSJT_Samples.tgz[ Linux ]
-:call3: http://www.dl8ebw.de/DATABASE/database.html[ DL8EBW ]
-
-// DOWNLOAD links
-:kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
-
-// These [[xxxx]] labels are HTML anchors, and can be used to
-// navigate though the document easily: <<[INTRO],See Introduction]>> will
-// place a hyper-link in your text to take you too the anchored section.
-// All major sections or points of interest should have one.
-
-// == is level (2), section 1.0, === would mean section 1.1, === would
-// be section 1.1.1. This method is used throughout the document.
-
+// use global link file
+include::../../global/links.adoc[]
 
 [[INTRO]]
 == Introduction
@@ -103,3 +75,8 @@ include::astrocalc.adoc[]
 [[ACKNOWLEDGMENTS]]
 == Acknowledgments
 include::acknowledgments.adoc[]
+
+[appendix]
+License
+-------
+include::../../global/license.adoc[]

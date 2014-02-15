@@ -180,7 +180,7 @@ transmitter and receiver. EME signals have propagation delays of about
 frequency errors, these effects contribute to the measured values of
 DT and DF.
 
-image::images/jt65.png[align="center"]
+//image::images/jt65.png[align="center"]
 
 JT65 is tolerant of frequency offsets up to +/-600 Hz.  Unless the
 red spike is close to the left or right edge of the plot area,
