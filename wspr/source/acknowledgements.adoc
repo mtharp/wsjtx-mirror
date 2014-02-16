@@ -1,0 +1,11 @@
+// Status=review
+
+Since 2005 the _WSJT_ project (including programs _WSJT_, _MAP65_,
+_WSPR_, _WSJT-X_, and _WSPR-X_) has been ``open source'', with all
+code licensed under the GNU Public License (GPL).  Many users of these
+programs, too numerous to mention here individually, have contributed
+suggestions and advice that have greatly aided the development of
+_WSJT_ and its sister programs.
+
+Many people have contributed to the success and popularity of WSPR. Members of 
+the WSJT Development Group, especially G4KLA, OH2GQC, VA3DB, W1BW, W6CQZ, and JCDutton have written code, particularly code addressing platform portability issues. The band-hopping features were first implemented by 4X6IZ. G3ZOD, LZ1BB, OZ1PIF, and VK3SB have spent many hours helping to debug beta releases and prepare distribution packages. G3ZOD drafted most of the troubleshooting hints in Appendix D of this manual. Many thanks to all for these efforts!
