@@ -33,7 +33,7 @@ equivalent program for your operating system) to play these audio
 files and listen to the signals.  The example file
 +W8WN_010809_110400.wav+ starts with a burst of summertime QRN and
 then has nothing but background noise until a moderately strong
-``ping'' -- a burst of FSK441 signal -- appears some 18 seconds later.
+ping -- a burst of FSK441 signal -- appears some 18 seconds later.
 
 To follow the full tutorial, which is strongly recommended, you must
 first obtain the collection of sample wave files available for
