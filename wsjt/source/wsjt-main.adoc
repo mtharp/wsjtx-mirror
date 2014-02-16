@@ -33,7 +33,7 @@ include::installation.adoc[]
 include::setup.adoc[]
 
 [[TUTORIAL]]
-== Operating Tutorial
+== Tutorial
 include::tutorial.adoc[]
 
 [[OPERATING]]
@@ -47,6 +47,10 @@ include::menus.adoc[]
 [[CONTROLS]]
 === Alphabetical List 
 include::controls.adoc[]
+
+[[ECHO]]
+== Echo Mode
+include::echo.adoc[]
 
 [[COOP_PGMS]]
 == Cooperating Programs
@@ -91,7 +95,5 @@ To be added
 == Acknowledgments
 include::acknowledgments.adoc[]
 
-[appendix]
-License
--------
+== License
 include::../../global/license.adoc[]

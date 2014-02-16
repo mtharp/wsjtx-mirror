@@ -1,0 +1,43 @@
+Echo mode allows you to make sensitive measurements of your own echoes
+from the moon, even when they are too weak to be heard. To use it,
+select *Echo* from the *Mode* menu, aim your antenna at the moon, pick
+a clear frequency, and toggle the *Auto* button to *ON*.  _WSJT_ will
+then start cycling through the following loop:
+
+1. Transmit a fixed tone for 2.0 s 
+2. Wait about 0.5 s for start of return echo 
+3. Record the received signal for 2.0 s 
+4. Analyze, average, and display the results 
+5. Repeat from step 1 
+
+At the start of each transmission the frequency of the transmitted
+tone can be offset randomly around a nominal value of 1500 Hz. A
+number in the entry field *Dither* (under *Miscellaneous* on 
+the *Setup | Options* screen) controls the magnitude of the random
+offset. The observed spectrum of each echo is shifted by the *Dither*
+amount before being accumulated into the average. (This procedure is
+very effective in minimizing the impact of birdies in the receiver
+passband. In the average spectrum, a fixed-frequency birdie is smeared
+out over a frequency range equal to the *Dither* value. For an example
+see the screen shot below: the red curve is the corrected echo
+spectrum, while the blue curve is the raw (uncorrected) data.
+
+ Insert figure here ...
+
+Information displayed in the main text box gives the number *N* of
+completed echo cycles, the average Level of receiver background noise
+in dB, the average echo strength *Sig* in dB, its measured frequency
+offset *DF* in Hz (after correction for Doppler shift), spectral
+*Width* of the echo in Hz, and a relative quality indicator *Q* on a
+0-10 scale. Background noise level is given with respect to the
+nominal 0 dB level used for all _WSJT_ modes. Signal strength is
+measured in dB relative to the noise power in a 2500 Hz passband. Low
+numbers for *Q* mean that an echo has not been detected, or is
+unreliable; for *Q*=0 the values of *DF* and *Width* are meaningless,
+and *Sig* may be considered an upper limit. Larger values of *Q* imply
+increasingly believable echo measurements. If you can hear your own
+lunar echoes, you will see reliable echo numbers within a few seconds
+after toggling *Auto ON*. If your echoes are 15 to 20 dB below the
+audible threshold you should get significant results within a minute
+or so.
+

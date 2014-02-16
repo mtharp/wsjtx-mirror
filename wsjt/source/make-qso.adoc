@@ -190,7 +190,7 @@ to -1 dB, while JT9 supports the extended range -50 to +49 dB.
 end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or ``5W
 VERT 73 GL'' are supported, up to a maximum of 13 characters,
 including spaces.  (Normally you should avoid the character / in
-free-text nessages, since the program may try to interpret your
+free-text messages, since the program may try to interpret your
 construction as part of a compound callsign.)  It should be obvious
 that the JT9 and JT65 protocols are not well suited for extensive
 conversations or rag-chewing.
@@ -412,3 +412,15 @@ compound callsigns are composed in the manner described above.
 Double-clicking on a line of decoded text may not always produce the
 desired result.
 
+=== CW Mode
+
+The _WSJT_ CW mode is provided as a convenience for operators
+attempting EME contacts using timed transmissions of 1, 2, or 2.5
+minutes duration. The program sends EME-style messages by keying an
+800 Hz audio tone, and takes care of the timing and T/R
+switching. Receiving is left up to you, the operator. Select the
+desired CW speed under *Miscellaneous* on the *Setup | Options*
+window, and the T/R period by right- or left-clicking on the label at
+bottom center of the main window. Present conventions typically use 1
+minute sequences on 50 MHz, either 1 or 2 minutes on 144 MHz, and 2.5
+minutes on 432 MHz and above.

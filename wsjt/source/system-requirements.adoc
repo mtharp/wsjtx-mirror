@@ -7,8 +7,6 @@ operating system
 
 - Monitor with at least 800 x 600 resolution (more is better)
 
-- Sound card supported by your operating system
-
 - Computer-to-radio interface using a serial port for T/R switching,
 or VOX control
 

@@ -49,7 +49,7 @@ of *Freeze DF*.  *Freeze DF* can be adjusted by using the left/right
 keyboard arrows.  In JT65 mode it can also be set by clicking on 
 the red spike or on the *SpecJT* waterfall display.
 
-*Gen Std Msgs*:: Fenerate standard messages for the mode in use.
+*Gen Std Msgs*:: Generate standard messages for the mode in use.
 
 *Include*:: If signal level is greater than -33 dB, add most recent
 recording to average message accumulator even if *Sync* is less than

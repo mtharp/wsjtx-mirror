@@ -87,7 +87,7 @@ enough that messages should always be accompanied by callsigns.
 ISCAT messages are free-form, up to 28 characters in length.
 Modulation is 42-tone frequency-shift keying at 11025 / 512 = 21.533
 baud (ISCAT-A), or 11025 / 256 = 43.066 baud (ISCAT-B), and tone
-frequencies are spaced by an amount equat to the baud rate.  The
+frequencies are spaced by an amount equal to the baud rate.  The
 available character set is
 
 ----
