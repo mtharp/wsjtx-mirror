@@ -140,7 +140,7 @@ desired result.
 === Pre-QSO Checklist
 
 Before attempting your first QSO with JT9 or JT65, be sure to go
-through the <<X15,Basic Tutorial>> above, as well as the following
+through the <<TUTORIAL,Basic Operating Tutorial>> above, as well as the following
 checklist:
 
 - Your callsign and grid locator set to correct values

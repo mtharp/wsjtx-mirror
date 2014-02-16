@@ -47,7 +47,7 @@ decoded next.  If you had selected *Tx JT9*, JT9 signals would have
 been decoded first.
 
 - Confirm that mouse-click behavior is similar to that described
-<<X13,earlier>>, in Example 1. The program automatically determines
+<<TUT_EX1,earlier>>, in Example 1. The program automatically determines
 the mode of each JT9 or JT65 signal.  
 
 TIP: When you double-click on a signal in the waterfall it will be
@@ -77,7 +77,7 @@ JT9 message from IZ0MIT:
 |=====================================
 
 - Scroll back in the *Band Activity* window and double-click on the
-message CQ DL7ACA JO40.  The program will set *Tx mode* to JT65 and Tx
+message CQ DL7ACA JO40. The program will set *Tx mode* to JT65 and Tx
 and Rx frequencies to that of DL7ACA, 975 Hz.  If you had checked
 *Double-click on call sets Tx Enable* on the *Setup* menu, the program
 would configure itself to start a QSO with DL7ACA.
@@ -113,5 +113,5 @@ receiver setup of this file good values are close to *Zero*=0,
 results.
 
 IMPORTANT: When you are finished with this Tutorial, don’t forget to
-re-enter your own callsign as +
-*My Call* on the *Setup | Configuration* screen.
+re-enter your own callsign +
+*My Call* in the *Setup | Configuration* screen.
