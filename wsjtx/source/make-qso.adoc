@@ -147,6 +147,7 @@ checklist:
 - PTT and CAT control (if used) properly configured and tested
 - Computer clock properly synchronized to UTC within ±1 s
 - Radio set to *USB* (upper sideband) mode
+- Radio filters centered and set to widest pass.
 - Radio's Split mode selected or not, consistent with your choice 
   on *Station* tab of the *Setup | Configuration* window. Verify both VFOs
   are set to USB if your rig allows each VFO independent mode setting 
