@@ -192,7 +192,7 @@ rb5.pack(anchor=W,side=LEFT,padx=2,pady=2)
 rb6.pack(anchor=W,side=LEFT,padx=2,pady=2)
 f1.pack()
 
-g2=Pmw.Group(root,tag_text="Message templates for FSK441, ISCAT, JT4")
+g2=Pmw.Group(root,tag_text="Templates (JTMS, FSK441, ISCAT, JT6M, JT4)")
 f2=Frame(g2.interior(),width=100,height=20)
 f2a=Frame(f2,width=50,height=20,bd=2,relief=GROOVE)
 f2a.pack(side=LEFT,padx=6,pady=6,fill=Y)
