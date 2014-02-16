@@ -1,30 +1,35 @@
-// Link File to house all links
-// File Location: ./doc/global/links.adoc
-// Usage example: include::../../global/links.adoc[]
-// Keeping them in aplphabetic order helps see dupes
-:asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[ AsciiDoc User Guide ]
-:asciidoc_cheatsheet: http://powerman.name/doc/asciidoc[ AsciiDoc Cheatsheet ]
-:asciidoc_questions: http://www.methods.co.nz/asciidoc/faq.html[ AsciiDoc FAQ ]
-:berlios1: http://developer.berlios.de/projects/wsjt/[ berliOS ]
-:berlios2: http://developer.berlios.de/account/register.php[ berliOS Account ]
-:debian: http://www.debian.org/[ Debian ]
-:dev_guide: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html[ Dev-Guide ]
-:cc_by_sa: http://creativecommons.org/licenses/by-sa/3.0/[ Commons Attribution-ShareAlike 3.0 Unported License ]
+////
+Multi-Line Comment Block Example
+Link File to hold all links
+File Location: ./doc/global/links.adoc
+Usage example: include::../../global/links.adoc[]
+Keeping them in alphabetic order helps see dupes
+////
+:asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[AsciiDoc User Guide]
+:asciidoc_cheatsheet: http://powerman.name/doc/asciidoc[AsciiDoc Cheatsheet]
+:asciidoc_questions: http://www.methods.co.nz/asciidoc/faq.html[AsciiDoc FAQ]
+:asciidoctor_style: http://asciidoctor.org/docs/asciidoc-writers-guide/#delimited-blocks[AsciiDoctor Styles Guide]
+:asciidoctor_syntax: http://asciidoctor.org/docs/asciidoc-writers-guide/#delimited-blocks[AsciiDoctor Syntax Guide]
+:berlios1: http://developer.berlios.de/projects/wsjt/[berliOS]
+:berlios2: http://developer.berlios.de/account/register.php[berliOS Account]
+:debian: http://www.debian.org/[Debian]
+:dev_guide: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html[Dev-Guide]
+:cc_by_sa: http://creativecommons.org/licenses/by-sa/3.0/[Commons Attribution-ShareAlike 3.0 Unported License]
 :devsvn: http://developer.berlios.de/projects/wsjt/[wsjt-svn]
-:devsvn1: http://developer.berlios.de/projects/wsjt/[ Devel-SVN ]
-:download: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[ Download Page ]
+:devsvn1: http://developer.berlios.de/projects/wsjt/[Devel-SVN]
+:download: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[Download Page]
 :dxlcommander: http://www.dxlabsuite.com/commander/[ Commander ]
 :gnu_gpl: http://www.gnu.org/licenses/gpl.txt[GNU GPL]
-:homepage: http://physics.princeton.edu/pulsar/K1JT/[ WSJT Home Page ]
-:hrd: http://www.hrdsoftwarellc.com/[ Ham Radio Deluxe ]
+:homepage: http://physics.princeton.edu/pulsar/K1JT/[WSJT Home Page]
+:hrd: http://www.hrdsoftwarellc.com/[Ham Radio Deluxe]
 :jtalert: http://ham-apps.com[JT-ALERT-X]
 :jt65protocol: http://physics.princeton.edu/pulsar/K1JT/JT65.pdf[QEX]
-:launchpadurl: https://launchpad.net/~jnogatch/+archive/wsjtx[ WSJT-X Linux Packages ]
+:launchpadurl: https://launchpad.net/~jnogatch/+archive/wsjtx[WSJT-X Linux Packages]
 :ntpsetup: http://www.satsignal.eu/ntp/setup.html[Network Time Protocol Setup]
 :osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
-:ppa: http://en.wikipedia.org/wiki/Personal_Package_Archive[ PPA ]
+:ppa: http://en.wikipedia.org/wiki/Personal_Package_Archive[PPA]
 :pskreporter: http://pskreporter.info/pskmap.html[PSK Reporter]
-:wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[ WSJT-X ]
+:wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[WSJT-X]
 :ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
 
 // Download Links
@@ -38,13 +43,13 @@
 :osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_01feb14.tar.gz[ OS X 10.9 ]
 :qt5_framework: http://qt-project.org/downloads[Download]
 :svn: http://subversion.apache.org/packages.html#windows[Subversion]
-:wsjt_svn: http://svn.berlios.de/wsvn/wsjt[ here ]
+:wsjt_svn: http://svn.berlios.de/wsvn/wsjt[here]
+:mstools: http://www.microsoft.com/en-us/download/details.aspx?id=17657[Download]
 
 // MAIL-TO links
-:alex_efros: mailto:powerman@powerman.name[ Alex Efros ]
+:alex_efros: mailto:powerman@powerman.name[Alex Efros]
 :devmail: mailto:wsjt-devel@lists.berlios.de[wsjt-devel]
-:stuart_rackman: mailto:srackham@gmail.com[ Stuart Rackham ]
-:joe_taylor: mailto:joe@princeton.edu[ K1JT ]
-:greg_beam: mailto:ki7mt@yahoo.com[ KI7MT ]
+:stuart_rackman: mailto:srackham@gmail.com[Stuart Rackham]
+:joe_taylor: mailto:joe@princeton.edu[K1JT]
+:greg_beam: mailto:ki7mt@yahoo.com[KI7MT]
 :dev_mail_list: https://lists.berlios.de/mailman/listinfo/wsjt-devel[WSJT developers email list]
-

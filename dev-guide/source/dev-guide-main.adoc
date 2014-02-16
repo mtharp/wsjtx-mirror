@@ -73,8 +73,17 @@ that it will provide a stable executable program.
 == WSJT-X
 include::wsjtx-dev.adoc[]
 
+////
+Note: [appendix] is a DocBook special section reference, but appears to be 
+working with the xhtml back-end processor. This is an auto-numbering block
+To add another appendix (before or after), simply add:
+
+[appendix]
+New Section Name
+----------------
+////
+
 [appendix]
 License
 -------
 include::../../global/license.adoc[]
-

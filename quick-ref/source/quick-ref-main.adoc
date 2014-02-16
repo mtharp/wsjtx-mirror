@@ -13,7 +13,7 @@ include::../../global/links.adoc[]
 
 == Introduction
 The purpose of this guide is to provide a quick reference to commonly
-used items while working with the _WSJT-X Documentation_ project.
+used items while working with the _WSJT Documentation_ project.
 
 IMPORTANT: This guide is currently under development.
 
@@ -21,21 +21,19 @@ IMPORTANT: This guide is currently under development.
 * {asciidoc_help} by {stuart_rackman}
 * {asciidoc_questions} by {stuart_rackman}
 * {asciidoc_cheatsheet} by {alex_efros}
+* {asciidoctor_style} by Asciidoctor Project 2014. 
+* {asciidoctor_syntax} by Asciidoctor Project 2014. 
 
 == AsciiDoc Installation
 
-Python is the only package required to buuld User Guide Documents.
+=== Windows
 
-To build the {dev_guide}, both _Python_ and _GNU Source Highlight_ are
-required.
+Being re-written
 
-=== Windows Setup
+=== Linux
 
-Add content
+Being re-written
 
-=== Linux Setup
-
-Add Content
 
 [appendix]
 License

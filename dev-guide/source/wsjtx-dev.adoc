@@ -1,16 +1,18 @@
+:prog: The pass:[Developer's] Guide
 === Linux Makefile Example
 
 In order to build _WSJT-X_ form source, install the following packages:
 
 [source,shell]
 ----------
+# DEBIAN, UBUNTU, MINT and FRIENDS
 sudo apt-get install gcc g++ gfortran make libfftw3-dev \
 libpulse-dev libhamlib-dev qtbase5-dev  pulseaudio subversion \
 libgfortran3:i386 libc6-i386 libqt5multimedia5-plugins \
 qtmultimedia5-dev
 ----------
 
-adjust install method to you distribution package manager.
+Adjust install method to you distribution package manager.
 
 ==== WSJT-X Build and Run Dependencies
 [horizontal]
@@ -47,7 +49,7 @@ automates the steps.
 include::wsjtx-compile.txt[]
 ----------
 
-==== For Script Method, Change Permissions and Run
+==== If Using The Script, Change Permission and Run
 [source,bash]
 ----------
 # CHANGE PERMISSION
@@ -144,8 +146,9 @@ image::images/wsjt-env-tree.png[align="left"]
 +*Hamlib*+:: {hamlib} - Hamlib 1.2.15.3.zip
 +*FFTW3*+:: {fftw3} - 32-bit version: fftw-3.3.3-dll32.zip
 +*SVN*+:: {svn} - SilkSVN 1.8.5.x 32-bit
++*MS Tools*+:: {mstools} - Microsoft Tool Kit
 
-==== QT5.2.1 Install
+.QT5.2.1 Install
 * Run the Installer
 * Change Install Path to: +*C:\wsjt-env\Qt5*+
 * Check: Associate common files types with Qt Creator
@@ -155,28 +158,35 @@ image::images/wsjt-env-tree.png[align="left"]
 * Go grab a coffee, this takes about +*5*+ minutes to install
 * At Finish, launch Qt Creator to verify it works, then exit.
 
-==== CMake Install
+.CMake Install
 * Run the Installer
 * Agree to Terms
 * Select: Do [red]*#not#* add to system PATH
 * Change Install Path to: +*C:\wsjt-env\CMake*+
 
-==== SilkSVN Install
+.SilkSVN Install
 * Run the Installer
 * Agree to Terms
 * Change Install Path to: +*C:\wsjt-env\SlikSvn*+
 * Select Typical, then Install
 * Note: All the SVN installers tested, added added itself to the system %PATH%
 
-==== Extract Hamlib
+.Extract Hamlib
 * Unzip folder hamlib-1.2.15.3.zip
 * Rename folder +*hamlib-win32-1.2.15.3 => hamlib*+
 * Move folder +*hamlib  =>  C:\wsjt-env\hamlib*+
 
-==== Extract FFTW3
+.Extract FFTW3
 * [red]*#Caution#*: FFTW3 does *not* have a top level folder
 * Move +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3f*+
 * Extract in +*C:\wsjt-env\fftw3f*+
+
+[[MSTOOLS,MS Tools]]
+.MS Tools - Win-XP
+* Windows Vista and beyond should not need this 
+* In a Windows CMD terminal c:\robocopy /?
+* If not installed, {mstools} first, then
+* Run the installer
 
 ==== Setup WSJT-X Build Environment
 
@@ -198,6 +208,8 @@ include::wsjtx-env.txt[]
 
 * Change directories to: +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open
 +*wsjt-env CMD Terminal*+
+* First test that MS RoboCopy is installed: C:\wsjt-env\robocopy /?
+* If RoboCopy option are dsplayed, continue, otherwise, install <<MSTOOLS,MS Tools>>
 * Check each package version below. Versions may very slightly, but each tool 
 should render a version number or the environment is not setup correctly. See
 <<TOOLS,Figure-2>> below.
@@ -269,7 +281,3 @@ wsjtx-build-cmake.bat -d
 * New _WSJT-X_ Debug Binary Location: +*C:\wsjt-env\wsjtx-install\Debug\bin*+
 
 Note the [green]*#Debug#\bin* directory
-
-=== QtCreator Setup
-
-Under Construction
