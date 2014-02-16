@@ -26,23 +26,19 @@ degradation in dB, relative to the best possible time when the moon is
 at perigee and in a cold part of the sky; and *SD* is the moon's
 semi-diameter in arc minutes.
 
-_WSJT_ carries out a number of astronomical calculations to provide
-tracking data for the sun and moon, Doppler shifts for EME signals,
-sky background temperatures, etc.  You may find it useful to know
-something about the nature and accuracy of these calculations.
-
-The state of the art for establishing three-dimensional locations of
-the sun, moon, and planets at a specified time is embodied in a
-numerical model of the solar system maintained at the Jet Propulsion
-Laboratory.  The model has been numerically integrated to produce
-tabular data that can be interpolated with very high accuracy.  For
-example, the celestial coordinates of the moon or a planet can be
-determined at a specified time to within about 0.0000003 degrees.
-Although the ephemeris tables and interpolation routines could easily
-be incorporated into _WSJT_, the accuracy provided would be overkill for
-our desired purposes.  Instead, _WSJT_ uses closed-form calculations
-based on a limited number of harmonic terms that have been fit to the
-high-accuracy data.
+You may find it useful to know something about the nature and accuracy
+of the astronomical calculations in _WSJT_.  The state of the art for
+establishing three-dimensional locations of the sun, moon, and planets
+at a specified time is embodied in a numerical model of the solar
+system maintained at the Jet Propulsion Laboratory.  The model has
+been numerically integrated to produce tabular data that can be
+interpolated with very high accuracy.  For example, the celestial
+coordinates of the moon or a planet can be determined at a specified
+time to within about 0.0000003 degrees.  Although the ephemeris tables
+and interpolation routines could easily be incorporated into _WSJT_,
+the accuracy provided would be overkill for our desired purposes.
+Instead, _WSJT_ uses closed-form calculations based on a limited
+number of harmonic terms that have been fit to the high-accuracy data.
 
 The precise algorithms used for solar and lunar positions were
 developed by Van Flandern and Pulkkinen (Astrophysical Journal

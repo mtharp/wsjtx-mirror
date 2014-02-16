@@ -48,13 +48,43 @@ include::menus.adoc[]
 === Alphabetical List 
 include::controls.adoc[]
 
+[[COOP_PGMS]]
+== Cooperating Programs
+TBD
+//include::coop_programs.adoc[]
+
 [[PROTOCOLS]]
 == Protocol Specifications
 include::protocols.adoc[]
 
+[[IMPLEMENTATION]]
+== Implementation Details
+To be added ...
+//include::implementation.adoc[]
+
+[[FAQs]]
+== Frequently Asked Questions
+To be added ...
+//include::faq.adoc[]
+
 [[ASTRODATA]]
 == Astronomical Data
 include::astrodata.adoc[]
+
+[[FILES]]
+== Directory Contents
+TBD
+
+=== Installed Files
+TBD
+
+=== Runtime Files
+TBD
+//include::files.adoc[]
+
+== Utility Programs
+To be added
+//include::utilities.adoc[]
 
 [[ACKNOWLEDGMENTS]]
 == Acknowledgments
