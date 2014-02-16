@@ -1,3 +1,32 @@
+=== JTMS
+
+JTMS uses Minimum Shift Keying (MSK) at 11025 / 8 = 1378.125 baud.
+Messages are free-form and have lengths 5,7,9,11,13,17,19,23 or 29
+characters, always padded with one or more trailing blanks.
+Characters are mapped to numerical values in the range 0 - 63
+according to position in the first line below.  (The second and third
+lines may be used to read off a value: for example, B has value 11
+and Z has value 35.)
+
+----
+ 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ./?-                 _     @
+           1         2         3         4         5         6
+ 0123456789012345678901234567890123456789012345678901234567890123
+----
+
+The 6-bit binary representation for each character value is augmented
+with an even-parity bit, and the 7-bit sequences are sent sequentially
+using audio frequency 1155.47 Hz to represent 0 and 1855.53 Hz to
+represent 1.  The sequence of tones for a message is transmitted
+repeatedly for a full transmission, maintaining phase continuity at
+all transitions between tones.
+
+JTMS implements single-tone messages in the same way as FSK441.
+Messages R26, R27, RRR and 73 are transmitted as pure tones of 882,
+1323 and 1764, and 2205 Hz respectively.  Pings from these
+transmissions are easily recognized by the human ear, easily seen on
+spectrum displays, and can be detected by appropriate software.
+
 === FSK441
 
 FSK441 uses four-tone frequency shift keying at 441 baud.  The
@@ -52,35 +81,6 @@ R26, R27, RRR, and 73, respectively.  These messages are frequently
 used in meteor scatter QSOs, after callsigns have been exchanged.
 They are not used in IARU Region 1, where activity levels are high
 enough that messages should always be accompanied by callsigns.
-
-=== JTMS
-
-JTMS uses Minimum Shift Keying (MSK) at 11025 / 8 = 1378.125 baud.
-Messages are free-form and have lengths 5,7,9,11,13,17,19,23 or 29
-characters, always padded with one or more trailing blanks.
-Characters are mapped to numerical values in the range 0 - 63
-according to position in the first line below.  (The second and third
-lines may be used to read off a value: for example, B has value 11
-and Z has value 35.)
-
-----
- 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ./?-                 _     @
-           1         2         3         4         5         6
- 0123456789012345678901234567890123456789012345678901234567890123
-----
-
-The 6-bit binary representation for each character value is augmented
-with an even-parity bit, and the 7-bit sequences are sent sequentially
-using audio frequency 1155.47 Hz to represent 0 and 1855.53 Hz to
-represent 1.  The sequence of tones for a message is transmitted
-repeatedly for a full transmission, maintaining phase continuity at
-all transitions between tones.
-
-JTMS implements single-tone messages in the same way as FSK441.
-Messages R26, R27, RRR and 73 are transmitted as pure tones of 882,
-1323 and 1764, and 2205 Hz respectively.  Pings from these
-transmissions are easily recognized by the human ear, easily seen on
-spectrum displays, and can be detected by appropriate software.
 
 === ISCAT
 

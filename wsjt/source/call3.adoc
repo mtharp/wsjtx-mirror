@@ -1,5 +1,0 @@
-As an operating convenience, _WSJT_ makes use of a simple callsign
-database file named +CALL3.TXT+.  A default file is distributed with
-the program, but you will want to update the file yourself and perhaps
-modify it to suit your regional needs.  
-

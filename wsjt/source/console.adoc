@@ -1,6 +1,0 @@
-A console window is provided to accommodate startup messages and
-possible diagnostic messages.  At startup the window should look
-something like the picture shown <<FigConsole,earlier>>.  If you have
-more than one sound card, information presented here will enable you
-to select the one to use for WSJT.  Enter the appropriate device
-numbers as *Audio In* and *Audio Out* on the *Setup | Options* screen.

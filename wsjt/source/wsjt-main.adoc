@@ -40,37 +40,21 @@ include::tutorial.adoc[]
 == Making QSOs
 include::make-qso.adoc[]
 
-//////////
-[[CONSOLE]]
-== Console Window
-include::console.adoc[]
-///////////
-
-[[ASTRON]]
-== Astronomical Data
-include::astrodata.adoc[]
-
-/////////////
-[[CALl3]]
-== Callsign Database
-include::call3.adoc[]
-////////////
-
 [[MENUS]]
-== Menus and the Setup | Options Screen
+== Controls & Functions
 include::menus.adoc[]
 
 [[CONTROLS]]
-== Alphabetical List of On-Screen Controls
+=== Alphabetical List 
 include::controls.adoc[]
 
 [[PROTOCOLS]]
-== Protocols
+== Protocol Specifications
 include::protocols.adoc[]
 
-[[ASTROCALC]]
-== Astronomical Calculations
-include::astrocalc.adoc[]
+[[ASTRODATA]]
+== Astronomical Data
+include::astrodata.adoc[]
 
 [[ACKNOWLEDGMENTS]]
 == Acknowledgments
