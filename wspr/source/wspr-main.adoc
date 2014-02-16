@@ -1,0 +1,187 @@
+// Status=review
+// This is a comment line, anything with // is ignored at process time.
+= WSPR 3.0 User Guide
+//:Author: Joe Taylor, K1JT
+//:Date: February 21, 2011
+:badges:
+:icons:
+:numbered:
+:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M WSPR WSJT-X WSPR-X
+:description: Software for Amateur Radio Weak-Signal Communication
+:prog: WSPR
+
+// use global link file
+include::../../global/links.adoc[]
+
+// These [[xxxx]] labels are HTML anchors, and can be used to
+// navigate though the document easily: <<[INTRO],See Introduction]>> will
+// place a hyper-link in your text to take you too the anchored section.
+// All major sections or points of interest should have one.
+
+// == is level (2), section 1.0, === would mean section 1.1, === would
+// be section 1.1.1. This method is used throughout the document.
+
+[[INTRO]]
+== Introduction
+include::introduction.adoc[]
+
+[[SYSREQ]]
+== System Requirements
+include::system-requirements.adoc[]
+
+[[COMPILING]]
+== Compiling WSPR
+include::compiling.adoc[]
+
+[[INSTALL]]
+== Installation
+
+- Download _WSJT-X_ from the {homepage}. Click on _WSJT-X_ at the left
+margin and then on the desired download link.
+
+[[INSTALL_WIN]]
+=== Windows
+include::install-windows.adoc[]
+
+[[INSTALL_UBU]]
+=== Linux
+include::install-ubuntu.adoc[]
+
+[[INSTALL_OSX]]
+=== OS X
+include::install-mac.adoc[]
+
+// Note to developers. The URL http://developer.berlios.de/projects/wsjt/. is
+// to a very old src version of WSJT 5.7 or so. WSJTX is not listed at all.
+// Also, all the Qt4 stuff is now obsolete, and needs to be updated.
+// Instructions for source builds Win, +++*Nix+++ {amp} Mac all need to be written  
+// and Reviewed.
+
+[[SRC_CODE]]
+=== Source Code
+include::install-from-source.adoc[]
+
+[[CONFIG]]
+== Setup and Configuration
+
+[[STATION]]
+=== Station Tab
+include::configuration-station.adoc[]
+
+[[BAND_SETTINGS]]
+=== Band Settings Tab
+include::configuration-band-settings.adoc[]
+
+[[FONTS]]
+=== Font Sizes
+include::font-sizes.adoc[]
+
+[[TUTORIAL]]
+== Basic Operating Tutorial
+
+[[TUT_MAIN]]
+=== Main Window Settings
+include::tutorial-main-window.adoc[]
+
+[[TUT_WIDE_GRAPH]]
+=== Wide Graph Settings
+include::tutorial-wide-graph-settings.adoc[]
+
+[[TUT_EX1]]
+=== Sample File 1
+include::tutorial-example1.adoc[]
+
+[[TUT_EX2]]
+=== Sample File 2
+include::tutorial-example2.adoc[]
+
+[[TRANSCEIVER]]
+== Transceiver Setup
+include::transceiver-setup.adoc[]
+
+[[MAKE_QSOS]]
+== Making QSOs
+include::make-qso.adoc[]
+
+[[CONTROLS]]
+== Controls & Functions
+
+[[CONTROLS_MAIN]]
+=== Main Window
+include::controls-functions-main-window.adoc[]
+
+[[CONTROLS_LEFT]]
+=== Misc Controls Left
+include::controls-functions-left.adoc[]
+
+[[CONTROLS_CENTER]]
+=== Misc Controls Center
+include::controls-functions-center.adoc[]
+
+[[STATUS_BAR]]
+=== Status Bar
+include::controls-functions-status-bar.adoc[]
+
+[[MENUS]]
+=== Menus
+include::controls-functions-menus.adoc[]
+
+[[SHORTCUTS]]
+=== Keyboard Shortcuts
+include::controls-functions-kb-shortcuts.adoc[]
+
+[[MOUSE_COMMANDS]]
+=== Mouse Commands
+include::controls-functions-special-mouse-cmds.adoc[]
+
+[[COOP_PGMS]]
+== Cooperating Programs
+To be added: brief descriptions of JTAlert and PSK Reporter and how
+to use them with _WSJT-X_.
+
+[[PROTOCOLS]]
+== Protocols
+
+[[JT9PRO]]
+=== The JT9 Protocol
+include::jt9-protocol.adoc[]
+
+[[TXRX]]
+== Some Implementation Details
+include::tx-rx.adoc[]
+
+//////////////////
+[[TROUBLE_SHOOTING]]
+== Troubleshooting
+To be added ...
+/////////////////
+
+[[FAQ]]
+== Frequently Asked Questions
+include::faq.adoc[]
+
+[[FILES]]
+== Directory Contents
+
+// Note to Dev-Team, this list of files needs to be updated.
+[[FILES1]]
+=== Installed Files
+include::installed-files.adoc[]
+
+[[FILES2]]
+=== Runtime Files
+include::runtime-files.adoc[]
+
+[[UTIL]]
+== Utility Programs
+include::utilities.adoc[]
+
+[[ACK]]
+== Acknowledgements
+include::acknowledgements.adoc[]
+
+[appendix]
+License
+-------
+include::../../global/license.adoc[]
+
