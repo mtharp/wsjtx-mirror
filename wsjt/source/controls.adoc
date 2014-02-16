@@ -1,7 +1,6 @@
 TIP: some controls are enabled only in certain operating modes.
 
 [horizontal]
-
 *Add*:: Add the displayed callsign and grid locator to the database file
 +CALL3.TXT+.  If an entry for this callsign already exists, you will be
 asked if you want to replace it.

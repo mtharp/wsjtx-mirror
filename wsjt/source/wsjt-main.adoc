@@ -87,6 +87,7 @@ To be added
 //include::utilities.adoc[]
 
 [[ACKNOWLEDGMENTS]]
+:numbered!:
 == Acknowledgments
 include::acknowledgments.adoc[]
 

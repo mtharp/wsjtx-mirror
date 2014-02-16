@@ -180,23 +180,39 @@ with n = 2, 3, 4 for the messages RO, RRR, and 73.
 
 === JT4
 
-JT4 uses 72-bit structured messages nearly identical (at the user
-level) to those in JT65. Error control coding (ECC) uses a strong
-convolutional code with constraint length K=32, rate r=1/2, and a zero
-tail, leading to an encoded message length of (72+31) × 2 = 206
-information-carrying bits. Modulation is 4-tone frequency-shift keying
-at 11025 / 2520 = 4.375 baud.  The frequency spacing between tones and
-total bandwidth depends on the submode, JT4A through JT4G:
+JT4 uses 72-bit structured messages nearly identical to those in
+JT65. Error control coding (ECC) uses a strong convolutional code with
+constraint length K=32, rate r=1/2, and a zero tail, leading to an
+encoded message length of (72+31) x 2 = 206 information-carrying
+bits. Modulation is 4-tone frequency-shift keying at 11025 / 2520 =
+4.375 baud.  The frequency spacing between tones and total bandwidth
+depends on the submode.
 
-----
-Mode   Spacing   BW 
-        (Hz)    (Hz)
-JT4A    4.375   17.5
-JT4B    8.75    35.0
-JT4C   17.5     70.0
-JT4D   39.375  157.5
-JT4E   78.75   315.0
-JT4F  157.5    630.0
-JT4G  315.0   1260.0
-----
 
+.Parameters of WSJT Fast Modes
+[width="90%",cols="h,9*",frame="topbot",options="header"]
+|============================================================================
+|Mode   |T/R (s)| Mod   |  FEC    |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
+|JTMS   | 15,30 | MSK   | parity  | 8  | 1378 | 689 | 2067 | 197 | -1
+|FSK441 | 15,30 | 4-FSK |         | 25 | 441  | 441 | 1764 | 147 | -1
+|ISCAT-A| 15,30 | 42-FSK|         |512 | 21.5 | 21.5| 905  | 16.5| -17
+|ISCAT-B| 15,30 | 42-FSK|         |256 | 43.1 | 43.1|1809  | 32.3| -17
+|============================================================================
+
+.Parameters of WSJT Slow Modes
+[width="90%",cols="h,9*",frame="topbot",options="header"]
+|============================================================================
+|Mode  |T/R (s)|Mod   |  FEC     |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
+|JT65A |  60   |65-FSK|RS(63,12) |4096| 2.69 | 2.69| 178  | 46.8| -25
+|JT65B |  60   |65-FSK|RS(63,12) |4096| 2.69 | 5.38| 355  | 46.8| -24
+|JT65C |  60   |65-FSK|RS(63,12) |4096| 2.69 |10.77| 711  | 46.8| -23
+|JT65B2|  30   |65-FSK|RS(63,12) |4096| 2.69 | 5.38| 355  | 46.8| -22
+|JT65C2|  30   |65-FSK|RS(63,12) |4096| 2.69 |10.77| 711  | 46.8| -21
+|JT4A  |  60   |4-FSK |K=32,r=1/2|2520| 4.375|4.375| 17.5 | 47.1| -23
+|JT4B  |  60   |4-FSK |K=32,r=1/2|2520| 4.375|8.75 | 35   | 47.1| -22
+|JT4C  |  60   |4-FSK |K=32,r=1/2|2520| 4.375|17.5 | 70   | 47.1| -21
+|JT4D  |  60   |4-FSK |K=32,r=1/2|2520| 4.375|39.4 | 158  | 47.1| -20
+|JT4E  |  60   |4-FSK |K=32,r=1/2|2520| 4.375|78.8 | 315  | 47.1| -19
+|JT4F  |  60   |4-FSK |K=32,r=1/2|2520| 4.375| 158 | 630  | 47.1| -18
+|JT4G  |  60   |4-FSK |K=32,r=1/2|2520| 4.375| 315 |1260  | 47.1| -17
+|============================================================================

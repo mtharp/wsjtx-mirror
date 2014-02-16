@@ -22,11 +22,11 @@ other conversational information) to signify that you are done.
 
 Slightly different procedures may be used in different parts of the
 world, or in the different operating modes.  Hitting the *F5* key will
-cause _WSJT_ to pop up a screen that reminds you of the recommended
+cause _WSJT_ to display a screen that reminds you of the recommended
 procedures.
 
 To prepare for making a QSO, enter the other station's callsign in the
-To radio box and click *Lookup* and *GenStdMsgs* to generate a
+*To radio* box and click *Lookup* and *GenStdMsgs* to generate a
 sequence of the commonly used messages.  If *Lookup* does not find the
 callsign in the database file CALL3.TXT, you may enter the grid
 locator manually.  Decide whether you or the other station will
@@ -38,87 +38,88 @@ messages while a transmission is in progress by clicking on one of the
 buttons *Tx1* to *Tx6*, to the right of the circles.
 
 Real-time spectral information is displayed graphically on the
-*SpecJT* screen.  Spectrograms scroll horizontally in the ``fast''
-modes (FSK441, JTMS, ISCAT, and JT6M) and vertically in the slow modes
-(JT4 and JT65). You can select one of several scrolling speeds at the
-top right of the SpecJT window.
+*SpecJT* screen.  Spectrograms normally scroll horizontally in the
+``fast'' modes (FSK441, JTMS, ISCAT, and JT6M) and vertically in the
+slow modes (JT4 and JT65). You can select one of several scrolling
+speeds at the top right of the *SpecJT* window.
 
-At the end of each receiving period, _WSJT_ displays various properties
-of a received signal on the main screen.  An example for JT6M mode
-is shown below.
-//, and examples for FSK441 and JT65 can be seen on pages 4 and 14 ###.  
-A green line in the main graphical area
-illustrates signal strength vs. time, and other lines or images
-display spectral information and synchronization results, depending on
-the mode.
+At the end of each receiving period, _WSJT_ enters a decode cycle and
+displays various properties of a received signal on the main screen.
+An example for JT6M mode is shown below.  //, and examples for FSK441
+and JT65 can be seen on pages 4 and 14 ###.  A green line in the main
+graphical area illustrates signal strength vs. time, and other lines
+or images display spectral information and synchronization results,
+depending on the mode.
 
 image::images/jt6m.png[align="center"]
 
 Decoded text appears in the large box below the graphical area and is
-also written to a cumulative output file, +ALL.TXT+.  The program's best
-estimate of *DF*, a detected signal's frequency offset, is included on
-each text line.  The accuracy of these estimates is about +/-25 Hz for
-FSK441 signals, +/-10 Hz for JT6M, and +/-3 Hz for JT65.  Within these
+also written to a cumulative output file, +ALL.TXT+.  The program's
+best estimate of *DF*, a detected signal's frequency offset, is
+included on each text line.  The accuracy of these estimates depends
+on the mode: approximately ±5 Hz for JTMS signals, ±25 Hz for
+FSK441, ±10 Hz for ISCAT and JT6M, and ±3 Hz for JT65.  Within these
 tolerances (and subject to the stability of oscillators and the
 propagation path) you should see consistent numbers in the *DF* column
-during any QSO that produces usable signals.  
+during any QSO that produces usable signals.
 
 Double-clicking on a callsign in either one of the decoded text
-windows will cause that callsign to be copied into the To radio box.
-The corresponding grid locator will be looked up in the database and
-the callsign inserted appropriately into the message boxes Tx1 and
-Tx2.  If the decoded text line includes CQ before the selected
-callsign, message Tx1 will be selected for your next transmission.
-Otherwise, Tx2 will be selected.  The status of Tx First may be
-changed if the time-stamp on the decoded message indicates this should
-be done and if *Double-click on callsign sets TxFirst* has been
-checked on the Setup menu.
-
+windows will cause that callsign to be copied into the *To radio* box.
+The corresponding *Grid* locator will be looked up in the database and
+the callsign inserted appropriately in Tx message boxes #1 and #2.  If
+the decoded text line includes CQ before the selected callsign,
+message Tx1 will be selected for your next transmission.  Otherwise,
+Tx2 will be selected.  If *Double-click on callsign sets TxFirst* has
+been checked on the *Setup* menu, the status of *Tx First* may be changed
+according to the time-stamp on the decoded message.
  
-=== FSK441 and JT6M
+=== Fast Modes
 
-The FSK441 and JT6M operating modes use 30 s periods for transmission
-and reception.  When a reception interval has finished the program
-looks for signal enhancements produced by short-lived reflections from
-meteor trails.  You can often hear such ``pings'' when they occur, and
-you will see them as spikes on the green line and brighter colors in
-the waterfall spectrum.  One or more lines of decoded text may result
-from each ping.  By clicking in the graphical area you can force a
-decoding attempt at a particular spot in a record.  You can also make
-the program decode in real time, just after hearing a ping, by
-clicking on the ping in the SpecJT display.
+The JTMS, FSK441, ISCAT, and JT6M operating modes generally use 30 s
+periods for transmission and reception.  When a reception interval has
+finished the program looks for signal enhancements produced by
+short-lived reflections from meteor trails or signal peaks from other
+types of scatter propagation.  Usable meteor ``pings'' are sudible
+when they occur, and you will see them as spikes on the green line and
+brighter colors in the scrolling spectrogram.  One or more lines of
+decoded text may result from each ping.  By clicking in the graphical
+area you can force a decoding attempt at a particular spot in a
+record.  You can also make the program decode in real time, just after
+hearing a signal enhancement, by clicking at the appropriate spot in
+the SpecJT display.
 
 _WSJT_ attempts to compensate for relative mistuning between
 transmitting and receiving stations.  By default the frequency search
-range is +/-400 Hz in FSK441 and JT6M modes. You can reduce the range
-by setting the value of *Tol* (for ``tolerance'') to a smaller value.
-Adjustments to the decoding parameters can be made at any time by
-right- or left-clicking on the parameter labels.  *Sync* sets the
-minimum strength (in dB) for acceptable pings. 
+range is ±400 Hz. You can reduce the tolerance range by setting the
+value of *Tol* to a smaller value.  Adjustments to the decoding
+parameters can be made at any time by right- or left-clicking on the
+parameter labels.  *S* or *Sync* sets the minimum level for acceptable
+signals.
 
-In the FSK441 and JT6M modes, if *DF* lies outside the range +/-100 Hz it
-will help to retune your receiver to compensate.  Do this with your
-transceiver's RIT control, or by using split Rx/Tx VFOs.  In JT6M mode
-you can accomplish the same thing by checking *Freeze* and using the
-keyboard right/left arrows to move *Freeze DF* (as displayed in the
-bottom-of-screen status bar) to the desired value.  In general you
-should not change your transmitting frequency during a QSO, since your
-partner will be trying to tune you in at the same time.  
+In FSK441 mode, if *DF* lies outside the range ±100 Hz it will help
+to retune your receiver to compensate.  Do this with your
+transceiver's RIT control, or by using split Rx/Tx VFOs.  In the JTMS,
+ISCAT, and JT6M modes you can accomplish the same thing by checking
+*Freeze* and using the keyboard right/left arrows to move *Freeze DF*
+(as displayed in the bottom-of-screen status bar) to the desired
+value.  In general you should not change your transmitting frequency
+during a QSO, since your partner will be trying to tune you in at the
+same time.
 
 In addition to the green line for overall signal strength, JT6M
 produces a yellow line showing the detected strength of a JT6M
-synchronizing tone (see illustration above).  JT6M attempts to
-decode both individual pings and an ``average message'' based on the
+synchronizing tone (see illustration above).  JT6M attempts to decode
+both individual enhancements and an ``average message'' based on the
 entire transmission, or selected portions thereof.  An average message
 is flagged with an asterisk at the right end of the decoded text line.
 Clicking with the left mouse button decodes a 4 s block of data near
 the mouse pointer, while the right button decodes a 10 s segment.  As
 in FSK441, with marginal signals you should experiment as necessary
-for best decoding.  JT6M can work with signals many dB weaker than
-those required for FSK441.  You will sometimes find that clicking on a
-smooth green line, even where nothing was heard and nothing can be
-seen, causes callsigns or other information to pop up out of the
-noise.  
+for best decoding.  ISCAT and JT6M can work with signals many dB
+weaker than those required for JTMS and FSK441.  You will sometimes
+find that clicking on a smooth green line, even where nothing was
+heard and nothing can be seen, causes callsigns or other information
+to pop up out of the noise.
 
 Standard messages in FSK441 and JT6M are generated with the aid of
 templates defined on the *Setup | Options* screen.  Default
@@ -129,11 +130,11 @@ restored when you restart _WSJT_.  Normal FSK441 and JT6M messages can
 contain any arbitrary text up to 28 characters.  The supported
 character set includes 0-9, A-Z, plus . , / # ? $ and <space>.  
 
-FSK441 and JTMS also provide a special shorthand format to transmit a
-few simple messages in a highly efficient way.  The supported
-shorthands are R26, R27, RRR, and 73; FSK441 and JTMS send pure tones
-at 882, 1323, 1764, or 2205 Hz to convey these messages. If activity
-levels are high enough that there could be some doubt about who has
+JTMS and FSK441 provide a special shorthand format to transmit a few
+simple messages in a highly efficient way.  The supported shorthands
+are R26, R27, RRR, and 73; FSK441 and JTMS send pure tones at 882,
+1323, 1764, or 2205 Hz to convey these messages. If activity levels
+are high enough that there could be some doubt about who has
 transmitted a shorthand message, it is better to use normal messages
 tagged with callsigns or portions thereof.  Check *Rx ST* and *Tx ST*
 enable single-tone messages.
@@ -150,12 +151,148 @@ something like the following:
 6.                  K1ABC W9XYZ 73
 ------------
 
-Shorthand messages R26, RRR and 73 could be substituted for messages
-4-6.  Step ahead to the next message in your sequence only when you
-have received your QSO partner's information from his sequence.
+Shorthand messages R26, RRR and 73 can be substituted for messages 4,
+5, and 6.  Step ahead to the next message in your sequence only when
+you have received your QSO partner's information from his sequence.
 
-=== JT65 
+=== Slow Modes
 
+The slow modes in _WSJT-X_ (JT65 and JT4) help to facilitate minimal
+QSOs by using short structured messages.  The process works best if
+you use these formats and follow standard operating practices.  The
+recommended basic QSO goes something like this:
+
+[width="90%",cols="3,7,12",options="header"]
+|=======================================
+|UTC|Transmitted Message|Comment
+|0001|CQ K1ABC FN42|K1ABC calls CQ
+|0002|K1ABC G0XYZ IO91|G0XYZ answers
+|0003|G0XYZ K1ABC -19|K1ABC sends report
+|0004|K1ABC G0XYZ R-22|G0XYZ sends acknowledgment and report
+|0005|G0XYZ K1ABC RRR|K1ABC sends acknowledgment
+|0006|K1ABC G0XYZ 73|G0XYZ sends 73
+|=======================================
+
+*Standard messages* consist of two callsigns (or CQ, QRZ, or DE and
+one callsign) followed by the transmitting station's grid locator, a
+signal report, R plus a signal report, or the final acknowledgements
+RRR or 73. JT65 and JT4 compress and encode these messages in a highly
+efficient and reliable way.  In uncompressed form they may contain as
+many as 18 characters.
+
+*Signal reports* are specified as signal-to-noise ratio (S/N) in dB,
+using a standard reference noise bandwidth of 2500 Hz.  Thus, in
+example message #0003 above, K1ABC is telling G0XYZ that his signal is
+19 dB below the noise power in bandwidth 2500 Hz.  In message #0004,
+G0XYZ acknowledges receipt of that report and responds with a -22 dB
+signal report.  JT65 reports are constrained to lie in the range -30
+to -1 dB, while JT9 supports the extended range -50 to +49 dB.
+
+TIP: Signals become visible on the waterfall around S/N = -26 dB and
+audible (to someone with very good hearing) around -15 dB. 
+
+*Free Text Messages*: Users often add some friendly chit-chat at the
+end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or ``5W
+VERT 73 GL'' are supported, up to a maximum of 13 characters,
+including spaces.  (Normally you should avoid the character / in
+free-text nessages, since the program may try to interpret your
+construction as part of a compound callsign.)  It should be obvious
+that the JT9 and JT65 protocols are not well suited for extensive
+conversations or rag-chewing.
+
+=== Compound Callsigns
+
+Compound callsigns such as xx/K1ABC or K1ABC/x are handled in
+one of two possible ways.
+
+.Type 1 Compound-Callsign Messages
+
+A list of about 350 of the most common prefixes and suffixes can be
+displayed from the *Help* menu.  A single compound callsign involving
+one item from this list can be used in place of the standard third
+message word (normally a locator, signal report, RRR, or 73).  Thus,
+the following examples are all acceptable *Type 1* messages with
+compound callsigns:
+
+ CQ ZA/K1ABC
+ CQ K1ABC/4
+ ZA/K1ABC G0XYZ
+ G0XYZ K1ABC/4
+
+The following messages are _not_ valid, because a third word is not
+permitted in a *Type 1* message:
+
+ ZA/K1ABC G0XYZ -22        #These messages will be sent
+ G0XYZ K1ABC/4 73          #without the third "word"
+
+A QSO between two stations using *Type 1* compound-callsign messages
+might look like this:
+
+----------------
+1.  CQ ZA/K1ABC
+2.                      ZA/K1ABC G0XYZ
+3.  G0XYZ K1ABC -19
+4.                      K1ABC G0XYZ R-22
+5.  G0XYZ K1ABC RRR
+6.                      K1ABC G0XYZ 73
+----------------
+
+Notice that both operators send and receive the full compound
+callsign in the first two transmissions.  After that, they omit the
+add-on prefix or suffix and use the standard structured messages.
+
+.Type 2 Compound-Callsign Messages
+
+Prefixes and suffixes _not_ found in the short displayable list can be
+handled with a *Type 2* message.  The compound callsign must be the
+second word in a two- or three-word message, and the first word must
+be CQ, DE, or QRZ.  Prefixes can be 1 to 4 characters, suffixes 1 to 3
+characters.  A third word conveying a locator, report, RRR, or 73 is
+permitted.  The following are valid *Type 2* messages with compound
+callsigns:
+
+ CQ W4/G0XYZ FM07
+ DE W4/G0XYZ -22
+ QRZ K1ABC/VE6 DO33
+
+In each case, the message is treated as *Type 2* because the add-on
+prefix or suffix is _not_ one of those in the fixed list.  Note
+that a second callsign is never permissible in these messages.
+
+TIP: Remember that during a transmission your transmitted message is
+always displayed in the first label on the *Status Bar*, highlighted
+in yellow.  It is displayed there exactly as another station would
+receive it.
+
+QSOs involving *Type 2* compound callsigns might look like either
+of the following sequences
+
+ CQ KP4/K1ABC FK68
+                     K1ABC G0XYZ IO91
+ G0XYZ K1ABC -19
+                     K1ABC G0XYZ R-22
+ G0XYZ K1ABC RRR
+                     K1ABC G0XYZ 73
+
+
+ CQ K1ABC FN42
+                     DE G0XYZ/W4 FM18
+ G0XYZ K1ABC -19
+                     K1ABC G0XYZ R-22
+ G0XYZ K1ABC RRR
+                     DE G0XYZ/W4 73
+
+Each operator sends his own compound callsign in the first (and
+possibly also last) transmission, as may be required by licensing
+authorities.  Subsequent transmissions may use the standard structured
+messages without callsign prefix or suffix.
+
+IMPORTANT: It's up to you, the operator, to ensure that messages with
+compound callsigns are composed in the manner described above.
+Double-clicking on a line of decoded text may not always produce the
+desired result.
+
+/////////////////
 JT65 has three sub-modes: JT65A, B, and C.  They are identical except
 for the spacing between transmitted tone frequencies; see
 <<PROTOCOLS,Specifications of WSJT Protocols>> for details.  JT65A is
@@ -182,7 +319,7 @@ DT and DF.
 
 //image::images/jt65.png[align="center"]
 
-JT65 is tolerant of frequency offsets up to +/-600 Hz.  Unless the
+JT65 is tolerant of frequency offsets up to ±600 Hz.  Unless the
 red spike is close to the left or right edge of the plot area,
 retuning with RIT is not necessary.  However on bands above 432 MHz,
 where EME Doppler shifts can amount to several kHz or more, you may
@@ -190,7 +327,7 @@ need to use RIT or split VFOs in order to acquire the desired signal.
 Once the program has synchronized on a JT65 signal, it's best to click
 on the red spike or on the sync tone in the SpecJT waterfall, check
 *Freeze*, and reduce *Tol* to 100 Hz or less.  Then, in subsequent
-decoding attempts, _WSJT_ will search a range of frequencies only +/-
+decoding attempts, _WSJT_ will search a range of frequencies only ±
 *Tol* Hz around the selected *Freeze DF*.
 
 In JT65 mode, double-clicking on the SpecJT waterfall or on the red
@@ -342,3 +479,4 @@ desired period by right- or left-clicking on the label at bottom
 center of the main window.  Present conventions typically use 1 minute
 sequences on 50 MHz, either 1 or 2 minutes on 144 MHz, and 2.5 minutes
 on 432 MHz and above.
+/////////////////
