@@ -20,13 +20,13 @@ the strongest detected ``ping'' (red).
 image::images/wsjt9.7_main.png[align="center",width=650]
 
 - Click with the right mouse button around the location of the ping at
-time t = 18 s on the graphical display, and observe the decoded text
-that appears.  (The file time corresponding to the location of the
-mouse pointer is displayed in a green label at lower left of the plot
-area.)
+time t = 19 s on the graphical display, and observe the decoded text
+that appears.  The time corresponding to the location of the mouse
+pointer is displayed in a green label at lower left of the main-window
+plot area.
 
 - Click on the static crashes around t = 1 s or elsewhere on the green
-line.  You will probably see garbage text.  
+line.  You will probably see garbage text, or nothing.
 
 - Use Windows Media Player (or the equivalent program for your
 operating system) to play this audio file and listen to the signal.
@@ -37,16 +37,16 @@ some 18 seconds later.
 To follow the full tutorial -- and it's strongly recommended that you
 should -- download the collection of sample wave files available for
 Windows or Linux.  These files contain recordings of real signals in
-typical on-the-air situations for each of the _WSJT_ modes.
+typical on-the-air situations, for each of the _WSJT_ modes.
 
 - Extract the files to a suitable location such as +..\RxWav\Samples+
 under your _WSJT_ installation directory.
 
-- Delete your +WSJT.INI+ file or temporarily rename it to something
-else. This will ensure that you start the tutorial with everything in
-the default configuration.
+- Exir _WSJT_ and then delete your +WSJT.INI+ file (or temporarily
+rename it to something else).  This will ensure that you start the
+tutorial with everything in the default configuration.
 
-- Start _WSJT_ and position the main window conveniently on your
+- Restart _WSJT_ and position the main window conveniently on your
 screen.
 
 === Fast Modes
@@ -67,20 +67,22 @@ sequences of length 30 s, with 15 s as an option.
 
 - Select *JTMS* from the *Mode* menu.
 
-- Set ping threshold *S* = 1 and frequency tolerance *Tol* = 25.
+- Set ping threshold *S* = 1 dB and frequency tolerance *Tol* = 25.
 These controls can be adjusted upward or downward by left- or
 right-clicking with the mouse.
 
 - Select menu item *File | Open*, navigate to subdirectory
 +...\RxWav\Samples\JTMS+ under your installation directory, and open
-either of the files there.  JTMS generally does a good job of finding
+one of the files there.  JTMS generally does a good job of finding
 and decoding *JTMS* pings by itself, and the message +K1JT N5SIX+ is
 correctly decoded for three different pings in each of these two
-files.  Each line of decoded text contains the starting time of the
-transmission (also used as the last part of the file name), the time
-*T* of each detected ping, the ping *Width* in ms, signal strength
-(S+N)/N in *dB*, signal report *Rpt*, and measured frequency
-offset *DF* in Hz.
+files.  
+
+- Each line of decoded text contains the starting time of the
+transmission (also used as the last part of the file name); the time
+*T* of each detected ping, relative to the start of the file; the ping
+*Width* in ms; signal strength (S+N)/N in *dB*; signal report *Rpt*;
+and measured frequency offset *DF* in Hz.
 
 TIP: If the ping duration is sufficient for message repetitions to be
 recognizable, the JTMS decoder attempts to average over them.  If it
@@ -88,24 +90,26 @@ considers the attempt successful, the average message is displayed
 with an asterisk +*+ appended at the end of line.
 
 - Note that *DF* for these signals is about +22 Hz.  Checking *Freeze*
-will force the decoder to cover only a specified range, *Freeze DF* 
-± *Tol*.  The value of *Freeze DF* is displayed in the *Status Bar*;
-it can be changed in ±5 Hz increments with function keys *F11*
-and *F12*.  Once you have identified the signal of a QSO partner, it
-is usually best to set *Freeze DF* to the signal's measured *DF* and
-to check the *Freeze* box.
+will force the decoder to cover only a specified range, *Freeze DF* ±
+*Tol*.  The value of *Freeze DF* is displayed in the *Status Bar*; it
+can be changed in ±5 Hz increments with function keys *F11* and
+*F12*.  Once you have identified the signal of a QSO partner, it is
+usually best to set *Freeze DF* close to the signal's measured *DF*
+and to check the *Freeze* box.
 
 - Experiment with different settings of *Freeze*, *Freeze DF*, and
 *Tol*.  Click *Decode* after each change to observe the results.
+The *Tol* setting is sometimes interpreted generously.
 
-- You can also click on the main-window spectrogram to decode signal
+- Try clicking on the main-window spectrogram to decode signal
 present at a particular time.  Such action will sometimes decode a
 signal that failed to decode automatically.
 
 .FSK441
 
-- Switch to FSK441 mode and open the file +K5CZD_050723_134100.wav+.
-The decoder produces the following text in the main text box:
+- Switch to FSK441 mode and open the file +K5CZD_050723_134100.wav+ in
+the +...\Samples\FSK441+ subdirectory.  The decoder produces the
+following text in the main text box:
 
 ----
   O1JT 26 K5CZD 2626 K1JT 27 K5CZ #6
@@ -123,12 +127,12 @@ and N9EGT calling CQ.  Try left- and right-clicking on pings in any of
 these files to invoke the decoder at a particular location in the
 file.
 
-- Try clicking on pure noise, away from any ping; you will then see
-only garbage as output.
+- Try clicking on pure noise, away from any ping; you should then see
+only garbage (or nothing) as output.
 
 - Click *Erase* at any time to clear the display areas.
 
-- Click *Decode* for a repeat analysis of the whole file.
+- Click *Decode* for repeat analysis of a whole file.
 
 - Open the first KC0HLN file again.  It produces the message +CQ
 KC0HLN EN32 CQ KC0HLN...+ (plus some garbage characters).
@@ -139,42 +143,42 @@ K1JT to answer the CQ from KC0HLN.
 .ISCAT
 
 - Switch to mode *ISCAT-B* and open any file in the
-+...\Samples\ISCAT-B+ subdirectory.  These files contain examples of
++...\Samples\ISCAT-B+ subdirectory.  These files contain recordings of
 ionospheric scatter signals on 6 meters.  The signals are inaudible
-most of the time, but they decode readily in each case.
+most of the time, but they decode readily nevertheless.
 
 - You can instruct the ISCAT decoder to concentrate on a particular
-portion of a received sequence.  Left-click to decode in a 4-second
-region centered on the mouse pointer.  Right-click to decode from 
-the beginning to the pointer.  Swipe with the left mouse button 
-depressed to decode over any desired range.  
+portion of a received sequence.  *Left-click* to decode in a 4-second
+region centered on the mouse pointer.  *Right-click* to decode from
+the beginning to the pointer.  *Swipe* with the left mouse button
+depressed to decode over any desired range.
 
-- Open the file +K0AWU_100714_120200.wav+.  The spectrogram shows
-little sign of any signal except for weak enhancements around t = 2.1
-and t = 5.5 s.  Nothing is visible (or audible) after about t = 8 s.
-Nevertheless, try a swipe-to-decode between, say, 9 and 25 s.  The
-message +THUNDER+ should be decoded.
+- *Open* the file +K0AWU_100714_120200.wav+.  The spectrogram shows
+little sign of any signal except for barely visible enhancements
+around t = 2.1 and t = 5.5 s.  Nothing is visible (or audible) after
+about t = 8 s.  Nevertheless, try a *Swipe* to decode between about 9
+and 25 s.  The message +THUNDER+ should be decoded.
 
 - Switch now to mode *ISCAT-A* and examine files in the
 +...\Samples\ISCAT-A+ subdirectory.  VK7MO and VK3HZ are completing a
 10 GHz QSO over a 600 km path, using low power, small dishes, and
 airplane-scatter propagation.  The signals are barely audible, if at
-all, but ISCAT decodes them flawlessly.
+all -- but ISCAT decodes them flawlessly.
 
 TIP: Usable ISCAT signals are often well below the noise, so signal
-strengths are given as S/N rather than (S+N)/N. 
+strengths are quoted as S/N rather than (S+N)/N. 
+
 ///////////
-at 50 MHz and
-below, but it may have significance at microwave frequencies.  The
-four numbers following each decoded message give the detected message
-length in characters (including the invisible beginning-of-message
-character); the worst-case confidence level for any character in the
-decoded message, on a 0-10 scale; the average confidence level for all
-characters in the message, on the same 0-10 scale; and the length in
-seconds of a selected data segment yielding highest confidence levels.
-These numbers have been useful in optimizing the ISCAT decoder; they
-may be removed in future.
+The four numbers following each decoded message give the detected
+message length in characters (including the invisible
+beginning-of-message character); the worst-case confidence level for
+any character in the decoded message, on a 0-10 scale; the average
+confidence level for all characters in the message, on the same 0-10
+scale; and the length in seconds of a selected data segment yielding
+highest confidence levels.  These numbers have been useful in
+optimizing the ISCAT decoder; they may be removed in future.
 ////////////
+
 .JT6M
 
 - Switch to mode JT6M and open file +AA9MY_030323_142300.wav+ in the
