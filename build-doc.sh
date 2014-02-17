@@ -4,7 +4,7 @@
 # Author          : KI7MT
 # Email           : ki7mt@yahoo.com
 # Date            : 2014
-# Version         : 0.8.0
+# Version         : 0.8.1
 # Usage           : ./build-doc.sh [ option ]
 # Notes           : Requires: Python 2.7+, AsciiDoc, GNU Source Highlight
 # Copyright       : GPLv(3)
@@ -36,7 +36,7 @@ set -e
 #######################
 
 # Main variables
-SCRIPTVER="0.8.0"
+SCRIPTVER="0.8.1"
 SCRIPTNAME=$(basename $0)
 BASEDIR=$(pwd)
 export PATH="$PATH:$BASEDIR/asciidoc"
@@ -227,7 +227,7 @@ function tail_wording() {
 # Check for file before building
 function pre_file_check() {
 
-if [[ $(ls -1 ./*.html 2>/dev/null | wc -l) > 0 ]]
+if test -e ./*.html
 then 
 
 while [ 1 ]
@@ -261,7 +261,8 @@ fi
 # Check for file after build
 # TO-DO: Use associative array to validate build manifest
 function post_file_check() {
-if [[ $(ls -1 ./*.html 2>/dev/null | wc -l) > 0 ]]
+
+if test -e ./*.html
   then
     clear
     echo -e ${C_Y}"Finished Building $display_name"${C_NC}
@@ -272,22 +273,22 @@ if [[ $(ls -1 ./*.html 2>/dev/null | wc -l) > 0 ]]
 
 else
 	clear
-	echo -e ${C_R}"$display_name DOCS BUILD ERROR - No File(s) Found"${C_NC}
+	echo -e ${C_R}"$display_name BUILD ERROR - No File(s) Found"${C_NC}
 	echo "Gathering System Information"
 	PY_VER=$(python -V)	
 	SYS_INFO=$(uname -a)
-	SVN_VER=$(svn log -l1 |awk 'FNR==2 {print $1}')
-	BASH_VER=$(bash --version |awk 'NR==1')
-	S_HIGH=$(source-highlight --version |awk 'NR==1')
+	SVN_VER=$(svn info | grep ^Revision)
+	BASH_VER=$(bash --version |awk 'FNR==1')
+	S_HIGH=$(source-highlight --version |awk 'FNR==1')
 	echo "Script version: v$SCRIPTVER"
-	echo "SVN Version: $SVN_VER"
+	echo "Repository Version: ${SVN_VER: -4}"
 	echo "$SYS_INFO"
 	echo "$BASH_VER"
 	echo "$S_HIGH"
 	echo
 	echo "Please Email Info to WSJT Dev-Group: $DEVMAIL"
 	echo "Provide as much detail as you can about the problem."
-	echo "Thank You."
+	echo -e "\nThank You."
 	echo
 	exit 1
 fi
