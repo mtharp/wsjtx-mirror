@@ -12,7 +12,6 @@ Version 10.0
 :description: Software for Amateur Radio Weak-Signal Communication
 :prog: WSJT
 
-
 // use global link file
 include::../../global/links.adoc[]
 
@@ -40,12 +39,9 @@ include::tutorial.adoc[]
 == Making QSOs
 include::make-qso.adoc[]
 
-[[MENUS]]
-== Controls & Functions
-include::menus.adoc[]
 
 [[CONTROLS]]
-=== Alphabetical List 
+== Controls & Functions
 include::controls.adoc[]
 
 [[ECHO]]
@@ -54,8 +50,7 @@ include::echo.adoc[]
 
 [[COOP_PGMS]]
 == Cooperating Programs
-TBD
-//include::coop_programs.adoc[]
+include::coop_programs.adoc[]
 
 [[PROTOCOLS]]
 == Protocol Specifications
@@ -63,13 +58,11 @@ include::protocols.adoc[]
 
 [[IMPLEMENTATION]]
 == Implementation Details
-To be added ...
-//include::implementation.adoc[]
+include::implementation.adoc[]
 
 [[FAQs]]
 == Frequently Asked Questions
-To be added ...
-//include::faq.adoc[]
+include::faq.adoc[]
 
 [[ASTRODATA]]
 == Astronomical Data
@@ -83,12 +76,10 @@ TBD
 TBD
 
 === Runtime Files
-TBD
-//include::files.adoc[]
+include::files.adoc[]
 
 == Utility Programs
-To be added
-//include::utilities.adoc[]
+include::utilities.adoc[]
 
 [[ACKNOWLEDGMENTS]]
 :numbered!:

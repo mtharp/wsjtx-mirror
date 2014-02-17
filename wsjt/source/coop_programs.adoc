@@ -1,0 +1,19 @@
+_WSJT_ writes an output file that can be used by another program to
+control your antenna positioners and perhaps other equipment.  The
+file is updated once per second; it contains four lines, as follows:
+
+------------
+18:33:35,353.8,-50.3,Moon
+18:33:35,207.7, 31.4,Sun
+18:33:35, 51.7, 51.4,Source
+  144,   142.0,    0.90,     8.8,    1.33,Doppler, R
+------------
+
+The first three lines list the current UTC in HH:MM:SS format followed
+by Azimuth and Elevation (in degrees) for the Sun, Moon, and another
+astronomical source.  You can specify Right Ascension and Declination
+for the additional source on the Setup | Options window.  Numbers on
+the fourth line give the operating frequency in MHz, Doppler shift to
+the DX station in Hz, rate of change of Doppler shift in Hz/minute,
+self Doppler and its rate of change, and finally a single letter R or
+T to specify whether _WSJT_ is receiving or transmitting.

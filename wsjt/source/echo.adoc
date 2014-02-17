@@ -1,8 +1,8 @@
 Echo mode allows you to make sensitive measurements of your own echoes
-from the moon, even when they are too weak to be heard. To use it,
-select *Echo* from the *Mode* menu, aim your antenna at the moon, pick
-a clear frequency, and toggle the *Auto* button to *ON*.  _WSJT_ will
-then start cycling through the following loop:
+from the moon, even when they are too weak to be heard.  Select *Echo*
+from the *Mode* menu, aim your antenna at the moon, pick a clear
+frequency, and toggle the *Auto ON*.  _WSJT_ will then cycle through
+the following loop every 6 seconds:
 
 1. Transmit a fixed tone for 2.0 s 
 2. Wait about 0.5 s for start of return echo 
@@ -22,7 +22,7 @@ out over a frequency range equal to the *Dither* value. For an example
 see the screen shot below: the red curve is the corrected echo
 spectrum, while the blue curve is the raw (uncorrected) data.
 
- Insert figure here ...
+image::images/echo.png[align="left",width=650,alt=""]
 
 Information displayed in the main text box gives the number *N* of
 completed echo cycles, the average Level of receiver background noise

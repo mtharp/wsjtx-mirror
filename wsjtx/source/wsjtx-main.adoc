@@ -108,7 +108,7 @@ include::make-qso.adoc[]
 == Controls & Functions
 
 [[CONTROLS_WIDE]]
-=== Wide Graph Controls
+=== Wide Graph
 include::controls-functions-wide-graph.adoc[]
 
 [[CONTROLS_MAIN]]
@@ -149,14 +149,14 @@ To be added: brief descriptions of JTAlert and PSK Reporter and how
 to use them with _WSJT-X_.
 
 [[PROTOCOLS]]
-== Protocols
+== Protocol Specifications
 
 [[JT65PRO]]
-=== The JT65 Protocol
+=== JT65
 include::jt65-protocol.adoc[]
 
 [[JT9PRO]]
-=== The JT9 Protocol
+=== JT9
 include::jt9-protocol.adoc[]
 
 [[JT65_JT9]]
@@ -164,7 +164,7 @@ include::jt9-protocol.adoc[]
 include::jt65-jt9-differences.adoc[]
 
 [[TXRX]]
-== Some Implementation Details
+== Implementation Details
 include::tx-rx.adoc[]
 
 //////////////////

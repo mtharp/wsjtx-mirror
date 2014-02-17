@@ -1,0 +1,89 @@
+JT65 and JT4 offer a number of submodes with different spacings
+between tone frequencies.  JT65A, with 2.69 Hz spacinf, is generally
+used at 50 MHz and below.  JT65B (5.38 Hz) is used on 144 and 432 MHz,
+and JT65C (10.77 Hz) on 1296 MHz.  The B and C submodes are slightly
+less sensitive than mode A, but progressively more tolerant of
+frequency drifts and Doppler spread.  In a similar way, JT4 submodes A
+through G offer tone spacings between 4.375 Hz and 315 Hz.  See the
+<<PROTOCOLS,Protocol Specifications>> section, especially
+<<SLOW_TAB,Table 2>>, for details.
+
+The JT65 and JT4 decoders use a multi-layered procedure.  If the fully
+general decoder fails, a deeper search can be made using a
+matched-filter approach.  The *Deep Search* decoder constructs a list
+of hypothetical messages by pairing each entry in the callsign
+database with CQ and with the home callsign of the user.  Each trial
+message is encoded as it would be done at the transmitter, including
+all of the forward error-control (FEC) symbols.  The resulting
+patterns are then tested for good match with the received wave file.
+Even a single-character mismatch will prevent a decoding from being
+achieved. You can define the list of likely callsigns in any way you
+choose.  A default callsign database named +CALL3.TXT+ is provided
+with _WSJT_, containing the calls of over 4800 stations known to have
+been active in weak-signal work on the VHF/UHF bands.  If you use the
+Deep Search decoder, keep your callsign list up to date and adapt it
+to your own requirements.
+
+In addition to *DT* and *DF*, decoded text lines provide information
+on the relative strength of synchronization, the average
+signal-to-noise ratio in dB relative to the noise power in 2500 Hz
+bandwidth, and *W*, the measured frequency width of the sync signal,
+in Hz.  A symbol following *W* indicates that an adequate level of
+synchronization has been achieved: +*+ will be displayed for a normal
+message, and +#+ for a message including the OOO signal report.  Two
+numbers appear at the end of each line.  The first tells whether the
+generalized soft-decision decoder succeeded (1) or failed (0).  The
+second number gives a relative confidence level on a 0 to 10 scale for
+results produced by the Deep Search decoder.  Shorthand messages do
+not produce these numbers.
+
+If a JT65 or JT4 transmission synchronizes correctly, its spectral
+information is added into an accumulating array.  Spectra from
+subsequent transmissions added into this array can make it possible to
+decode the average, even if individual transmissions were not
+decodable.  Results of such decoding attempts appear in the *Average
+Text* window.
+
+The *Deep Search* decoder necessarily has a gray area in which it
+finds a probable solution but may have only moderate confidence in it.
+In such cases the decoder appends a ? to the decoded text, and the
+operator must make the final decision as to whether the decoding is
+believable.  Be aware that because of the mathematical message
+structure, incorrect decodings will not differ from the correct one in
+only a few characters; more likely, they will contain wholly incorrect
+callsigns and grid locators.  As you gain experience in recognizing
+the graphical and numerical indications of proper message
+synchronization (*Sync*, *dB*, *DT*, *DF*, *W*, and the green, red,
+and blue curves in the graphical area), as well as the effects of
+birdies and other interference, you will become adept at recognizing
+and rejecting the occasional false decodes.  If it appears that an
+unexpected (and perhaps exotic) station is calling you, treat it with
+suspicion until you decode the message again in a subsequent
+transmission.  Random decoding errors will seldom repeat themselves.
+
+Several options are available for adjusting the JT65 decoding
+procedure to your liking.  If you check *Decode | JT65 | Only EME
+calls*, only a subset of callsigns in the database that include an
+EME flag will be used in the Deep Search procedure.  Check *No
+Shorthands if Tx 1* if you wish to suppress shorthand decodings when
+you are still transmitting the first Tx message.  The *Decode | JT65*
+sub-menu offers four options for the Deep Search decoder.  The first,
+*No Deep Search*, disables it entirely.  *Normal Deep Search* turns it
+on but suppresses output with confidence levels less than 3, and
+*Aggressive Deep Search* allows output down to level 1.  The last
+option, *Include Average in Aggressive Deep Search*, applies the Deep
+Search procedure to the accumulating average as well as the most
+recently received data. 
+
+JT65 shorthand messages are powerful because they can be decoded at
+signal levels about 5 dB below those required for standard messages.
+They can also be decoded by ear, or by eye directly from the SpecJT
+waterfall display.  If a message starts with RO, RRR, or 73 followed
+by one or more spaces, the shorthand format will be sent.  If the
+message satisfies the requirements for a structured message, the
+specified callsigns, CQ, QRZ, locator, report and/or prefix/suffix
+will be encoded and sent as entered.  With any other entry, 13
+characters of arbitrary text will be encoded and sent.  The actual
+message being transmitted is always displayed in the bottom right
+corner of the main screen.  Yellow highlighting indicates a standard
+message, blue a shorthand message, and red a plain text message.

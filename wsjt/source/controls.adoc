@@ -1,27 +1,32 @@
-TIP: some controls are enabled only in certain operating modes.
+=== Top Row
 
-[horizontal]
-*Add*:: Add the displayed callsign and grid locator to the database file
-+CALL3.TXT+.  If an entry for this callsign already exists, you will be
-asked if you want to replace it.
+The following buttons appear just under the decoded text windows on
+the main screen.  Note that some controls will appear only in certain
+operating modes.
 
-*AFC*:: Enable automatic frequency control in the JT65 decoding algorithm.  
+//.Main UI Controls
+image::images/MainButtons.png[align="left",width=650,alt="Main UI Controls"]
 
-*Auto*:: Toggle on or off an automatic sequence of transmit and receive
-periods.
+*Log QSO*:: Click to add an entry for *To radio* to the simple log file
++WSJT.LOG+.  Logged information includes date, time, callsign, locator,
+band, and mode.
 
-*Clear Avg*:: Erase text in average message box, and clear message
-accumulator.
+*Stop*:: Click to terminate *Monitor* mode.
+
+*Monitor*:: Start a series of reception intervals, perhaps to monitor a
+calling frequency or to copy another station engaged in a QSO.
 
 *Decode*:: Analyze the most recently recorded or opened file, perhaps
 after one or more decoding parameters have been changed.
 
-*Dsec*:: Adjust UTC clock reading in 0.5 s increments to manually
-resynchronize with UTC or with your QSO partner's computer.  (In
-general, it is best to keep the Windows clock set accurately and *Dsec*
-set to zero.)
-
 *Erase*:: Clear all information in main text boxes and graphical areas.
+
+*Clear Avg*:: Erase text in average message box, and clear message
+accumulator.
+
+*Include*:: If signal level is greater than -33 dB, add most recent
+recording to average message accumulator even if *Sync* is less than
+stated threshold.
 
 *Exclude*:: Remove most recent recording from the average message
 accumulator.  Use this option when you are sure that the program has
@@ -29,85 +34,125 @@ synchronized incorrectly (for example, because *DF* and/or *DT* differ
 substantially from expected values) and you wish to avoid
 contaminating the average message with bad data.
 
-*F1*:: Display a list of keyboard shortcuts.
+*Tx Stop*:: Terminate a transmission and set *Auto* to OFF.
 
-*Shift-F1*:: Display a list of special mouse commands.
+=== Left
+Controls related to the DX station and date and time are found at
+lower left of the main window:
 
-*F2*:: Display the *Options* screen.
+image::images/Main_Left.png[align="center",alt=""]
 
-*F3*:: Toggle the status of *Tx mute*, which prevents switching into
-Tx mode.
+*To radio*:: The callsign of a station you wish to contact.
 
-*F4*:: Clear the *To radio* and *Grid* boxes.
+*Grid*:: The Maidenhead locator (four or six characters) of the DX
+station.
 
-*F5*:: Display reminders about what message to send.
+*Lookup*:: Search database file +CALL3.TXT+ for entry in *To radio*. If
+callsign is found, retrieve the station's *Grid* locator and use it to
+calculate distance, azimuth, elevation, and Doppler shift.
 
-*F6*:: Open and decode next wave file in selected directory.
+*Add*:: Add the displayed callsign and grid locator to the database file
++CALL3.TXT+.  If an entry for this callsign already exists, you will be
+asked if you want to replace it.
+
+*Dsec*:: Adjust UTC clock reading in 0.5 s increments to manually
+resynchronize with UTC or with your QSO partner's computer.  (In
+general, it is best to keep the Windows clock set accurately and *Dsec*
+set to zero.)
+
+=== Center
+Near the center of the main window are controls frequencly used 
+during a QSO.  Some controls are available only in certain modes; 
+the following examples apply to modes JTMS (left) and JT4 (right):
+
+image::images/Main_Center.png[align="center",alt=""]
+
+[horizontal]
+*S*, *Sync*:: Set minimum signal level or synchronizing threshold for
+decoder.
+
+*Zap*:: Filter out birdies (narrowband signals of approximately constant
+amplitude) before attempting to decode.
+
+*Tol*:: Set decoder's tolerance (in Hz) to frequency offsets.  
+
+*AFC*:: Enable automatic frequency control to compensate for a
+drifting signal.
+
+*Rx ST*:: Enable decoding of shorthand (single-tone) messages.
 
 *Freeze*:: Search only frequencies within +/- *Tol* Hz 
 of *Freeze DF*.  *Freeze DF* can be adjusted by using the left/right 
 keyboard arrows.  In JT65 mode it can also be set by clicking on 
 the red spike or on the *SpecJT* waterfall display.
 
-*Gen Std Msgs*:: Generate standard messages for the mode in use.
-
-*Include*:: If signal level is greater than -33 dB, add most recent
-recording to average message accumulator even if *Sync* is less than
-stated threshold.
-
-*Log QSO*:: Click to add an entry for *To radio* to the simple log file
-+WSJT.LOG+.  Logged information includes date, time, callsign, locator,
-band, and mode.
-
-*Lookup*:: Search database file +CALL3.TXT+ for entry in *To radio*. If
-callsign is found, retrieve the station's *Grid* locator and use it to
-calculate distance, azimuth, elevation, and Doppler shift.
-
-*Monitor*:: Start a series of reception intervals, perhaps to monitor a
-calling frequency or to copy another station engaged in a QSO.
-
-*Save*:: Save the most recently recorded file. 
-
-*Stop*:: Terminate the *Monitor* sequence. 
-
-*Sync*:: Set minimum signal level or synchronizing threshold. 
-
-*Tol*:: Set decoder's tolerance (in Hz) to frequency offsets.  
-
-*Tx1 - Tx6*:: Transmit the selected message.  Transmission will continue
-until the end of the present Tx sequence.
+*MinW*:: Set the minimum Doppler spread or tone width assumed in JT4
+decoding process.
 
 *Tx First*:: Check this box if you want to transmit during the first
 period of the timed T/R cycle.  Uncheck it if your QSO partner is
 transmitting in the first period. ``First'' is defined as the first
 T/R interval of a UTC hour, and alternately thereafter.
 
-*Tx Stop*:: Terminate a transmission and set *Auto* to OFF.
+*Tx ST*:: Enable transmission of single-tone messages.
 
-*Zap*:: Filter out birdies (narrowband signals of approximately constant
-amplitude) before attempting to decode.
+*Rpt*:: Signal report to be inserted in generated messages.
 
-.Main Screen Text Boxes
+*Gen Msgs*:: Generate standard Tx messages for the active mode.
+
+*Auto*:: Toggle ON or OFF automatic sequences of transmit and receive
+periods.
+
+=== Right
+
+Controls for tranmitted messages appear at the right of the main
+window.  You can insert a desired message into any of the six entry
+fields.  The *Gen Msgs* button does this auromatically, in the
+appropriate format for the mode in use.  The message marked in one of
+the circles will be the one sent at the start of the next Tx sequence.
+You can start a message immediately by clicking one of the *Tx1*
+through *Tx6* buttons.
+
+image::images/Main_Right.png[align="center",alt=""]
+
+=== Menus
+==== File menu
+image::images/FileMenu.png[align="left",alt="File Menu"]
+
+==== Setup Menu
+image::images/SetupMenu.png[align="left",alt="Setup Menu"]
+
+==== View Menu
+image::images/ViewMenu.png[align="left",alt="Setup Menu"]
+
+==== Mode Menu
+image::images/ModeMenu.png[align="left",alt="Setup Menu"]
+
+==== Decode Menu
+image::images/DecodeMenu.png[align="left",alt="Setup Menu"]
+
+==== Save Menu
+image::images/SaveMenu.png[align="left",alt="Setup Menu"]
+
+==== Band Menu
+image::images/BandMenu.png[align="left",alt="Setup Menu"]
+
+==== Help Menu
+image::images/HelpMenu.png[align="left",alt="Setup Menu"]
+
+=== SpecJT
+
+image::images/SpecJT_Controls.png[align="left",width=650,alt="Setup Menu"]
+
 [horizontal]
+*BW*:: Toggle between options to display received bandwidth of 2 KHz
+or 4 kHz.
 
-*Average Text*:: Displays average messages in JT65 mode.
+*<*:: Move frequency scale left.
 
-*Decoded Text*:: Displays decoded messages and other signal information.
+*|*:: Return frequency scale to default position.
 
-*Grid*:: After a successful *Lookup*, displays *Grid* locator of the
-callsign in the *To radio* box.  You can also enter a locator
-manually.  
+*>*:: Move frequency scale right.
 
-*Moon*:: Current azimuth and elevation of the moon at your location,
-2-way EME Doppler shift between your location and the specified grid
-locator, and EME path degradation in dB for the selected band.
-
-*Report*:: In FSK441, JTMS, ISCAT, and JT6M modes enter the signal
-report you wish to send to the other station, then click *GenStdMsgs*.
-
-*Status Bar*:: Panels at the bottom of the WSJT screen display
-sample-rate factors, operating mode, *Freeze DF*, *Rx noise* level,
-*TR period*, *T/R status*, and the message being transmitted.
-
-*To radio*:: Callsign of station being called.  Text entered in this box
-becomes leading part of recorded file names.
+*Speed*:: Set the waterfall scrolling speed.  *H1* and *H2* set 
+horizontal scrolling.
