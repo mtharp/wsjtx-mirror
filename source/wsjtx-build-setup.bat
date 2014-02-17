@@ -5,14 +5,18 @@ SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 COLOR 1B
 TITLE WSJT-X CMake Build Setup
+
 SET TARGET=%~dp0
-REM -- To Set a difference install location, edit SET TARGET=%~dp0
+
+REM -- IMPORTANT:: To Set Install Location, edit SET TARGET=%~dp0 Above:
 REM -- Example(s): SET TARGET=C:\Users\ki7mt\Documents
-REM --             SET TARGET=F:\
+REM --             SET TARGET=D:\development
 REM --             SET TARGET=F:\
 REM --             SET TARGET=G:\tools
+REM --             SET TARGET=%~dp0  <-- will setup in it's current folder
+REM -- NOTE:       \wsjt-env  <-- will be appended to SET TARGET=
 
-REM - No Other Edits should be required
+REM - NO ADDITIONAL EDITS REQUIRED BEYOND THIS POINT
 IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
 SET BASED=%TARGET%\wsjt-env
 SET MK_LVL1=downloads fftw3f hamlib src
@@ -20,7 +24,7 @@ SET MK_LVL2=wsjtx-build\Debug wsjtx-build\Release
 SET MK_LVL3=wsjtx-install\Debug wsjtx-install\Release
 SET DIR_LIST=%MK_LVL1% %MK_LVL2% %MK_LVL3%
 
-REM -- Start Main Script
+REM -- START MAIN SCRIPT
 CLS
 ECHO -------------------------------
 ECHO WSJT-X CMake Build Script Setup
@@ -28,7 +32,7 @@ ECHO -------------------------------
 ECHO.
 IF NOT EXIST %BASED%\NUL (GOTO SETUPDIR) ELSE (GOTO DIRCHECK)
 
-REM -- Setup ALl Directory's
+REM -- SETUP ALL DIRECTORY'S
 :SETUPDIR
 ECHO %BASED% - Was Not Found, Creating Directory Structure
 C:
@@ -40,7 +44,7 @@ mkdir %%f
 ECHO.
 GOTO GETFILES
 
-REM -- Check All Base Directory's
+REM -- CHECK BASE DIRECTORY'S
 :DIRCHECK
 ECHO Checking Base Directory's
 FOR %%d IN (%DIR_LIST%) DO ( 
@@ -51,7 +55,7 @@ ECHO   %BASED%\%%d .. OK )
 )
 GOTO GETFILES
 
-REM -- Download Build Scripts
+REM -- DOWNLOAD BUILD SCRIPTS
 :GETFILES
 CD %BASED%
 ECHO.
