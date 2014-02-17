@@ -1,14 +1,13 @@
-cat > ./wsjtx-compile.sh << "EOL"
 #!/usr/bin/env bash
 
 # Part of the WSJT Documentation Project
 # Usage:  chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh
 
 set -e
-# Edit if you want another location
+# EDIT INSTALL LOCATION IS DESIRED
 BUILD_DIR=~/Projects/wsjtx-build
 
-# No edits required beyond this point
+# NO EDITS REQUIRED BEYOND THIS POINT
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 
@@ -49,5 +48,5 @@ clear
 echo WSJTX-$rev_num Build Complete
 echo
 exit 0
-EOL
+
 
