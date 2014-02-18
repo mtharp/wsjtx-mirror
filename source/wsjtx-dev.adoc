@@ -118,7 +118,7 @@ For this example, the following setup was used:
 [horizontal]
 +*OS*+:: Windows Vista 64 bit
 +*Install Path*+:: C:\
-+*Paths Tested+:: D:\, F:\ G:\tools (all passed)
++*Paths Tested*+:: D:\, F:\ G:\tools (all passed)
 +*Setup Method*+:: wsjtx-build-setup.bat
 +*Final Path*+:: C:\wsjt-env
 
@@ -127,12 +127,12 @@ For this example, the following setup was used:
 [horizontal]
 +*Windows CMD Terminal+*:: Standard Windows Command Terminal
 +*WSJT Env Terminal*+:: Command Termal With Paths Specific to WSJT Needs
-+*Setup Script*+:: Batch Ffile Used to Setup WSJT Env
-+*Build Script*+:: Batch Files Used to Build WSJT-X
++*Setup Script*+:: Batch File Used to Setup WSJT Env
++*Build Script*+:: Batch File Used to Build WSJT-X
 +*Tool Chain File*+:: CMake Configuration File Used by the Build Script
 
 The setup script provided will create the needed folder structure, download the
-build script +*(wsjtx-build-cmake.bat)*+ and _CMake Tool Chain_ file
+_Build Script_ +*(wsjtx-build-cmake.bat)*+ and _CMake Tool Chain_ file
 +*(wsjtx-toolchain.cmake)*+. You can save this script anywhere you like. Following
 this <<EXAMPLE,example>> will build the structure in <<TREE,Figure-2>>
 when the _Setup Script_ has been saved to +*C:\*+ directory.
@@ -222,7 +222,7 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
 * [red]*#Caution#*: FFTW3 does *not* have a top level folder
 * Copy +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3f*+
 * Extract in +*C:\wsjt-env\fftw3f*+ into +*c:\wsjt-env\fftw3f\*+
-* Delete +*fftw-3.3.3-dll32.zip
+* Delete +*fftw-3.3.3-dll32.zip*+
 
 .SilkSVN Install
 * Run the Installer
