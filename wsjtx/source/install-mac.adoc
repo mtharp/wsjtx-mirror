@@ -14,7 +14,8 @@ instructions on how to configure your system for _WSJT-X_.
 
 - Remember to use the Mac's *Audio MIDI Setup* utility as described in
 the +Readme+ file to configure your sound card for 48000 Hz,
-single-channel, 16-bit format.
+single-channel, 16-bit format.  Depending on your sound card you might
+have to change Audio In format to 48000 Hz two-channel, 16-bit.
 
 - Use *System Preferences* to select an external time source to keep
 your system clock synchronized to UTC.
