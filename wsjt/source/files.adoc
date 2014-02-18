@@ -9,6 +9,8 @@ be present in the installation directory:
 +KVASD_g95.EXE+:: Executable for Koetter-Vardy decoder
 +RxWav+:: Directory for saved *.wav files, and Samples
 +TSKY.DAT+:: Sky temperatures at 408 MHz
++jt4code.exe+:: Utility program illustrating JT4 encode/decode
++jt65code.exe+:: Utility program illustrating JT65 encode/decode
 +kvasd.dat+:: dummy data file for KVASD
 +libsamplerate.dll+:: resample library
 +unins000.dat+:: Uninstall data file
