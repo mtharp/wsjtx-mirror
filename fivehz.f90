@@ -191,7 +191,7 @@ subroutine fivehz
   endif
 
 ! Switch PTT line and TxOK appropriately
-  if(lauto.eq.1) then
+  if(lauto.eq.1 .and. mode.ne.'Measur') then
      if(txtime .and. iptt.eq.0 .and.          &
           mute.eq.0) i1=ptt(nport,pttport,1,ndtr,iptt)        !Raise PTT
      if(.not.txtime .or. mute.eq.1) TxOK=0                    !Lower TxOK
