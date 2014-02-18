@@ -33,3 +33,30 @@ Still to come ...
 === OS X
 
 Still to come ...
+
+[[SRC_CODE]]
+=== Source Code
+
+Source code is available from the public repository at {devsvn}. To
+compile the program you will need to install the following packages:
+
+- Subversion
+- Python 2.7, and the following Python packages
+** python-numpy
+** python-imaging-tk
+** python-pmw
+- gcc
+- gfortran or g95
+- fftw3
+- PortAudio
+- libsamplerate
+- MinGW (for Windows only)
+
+With Subversion installed, the full source code for _WSJT_ can be
+downloaded with the command:
+
+  svn co svn://svn.berlios.de/wsjt/trunk
+
+// Need further compiling Instructions
+For some basic instructions on building _WSJT_ from source code, see the
+section <<COMPILING,Compiling WSJT-X>> near the end of this Guide.

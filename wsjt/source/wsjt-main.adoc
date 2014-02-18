@@ -11,6 +11,8 @@ Version 10.0
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
 :description: Software for Amateur Radio Weak-Signal Communication
 :prog: WSJT
+:samples_zip: http://physics.princeton.edu/pulsar/K1JT/Samples_WSJT.zip[zip]
+:samples_tar: http://physics.princeton.edu/pulsar/K1JT/Samples_WSJT.tgz[tar]
 
 // use global link file
 include::../../global/links.adoc[]
@@ -48,6 +50,10 @@ include::controls.adoc[]
 == Echo Mode
 include::echo.adoc[]
 
+[[MEASURE]]
+== Measure Mode
+include::measure.adoc[]
+
 [[COOP_PGMS]]
 == Cooperating Programs
 include::coop_programs.adoc[]
@@ -70,16 +76,15 @@ include::astrodata.adoc[]
 
 [[FILES]]
 == Directory Contents
-TBD
-
-=== Installed Files
-TBD
-
-=== Runtime Files
 include::files.adoc[]
 
+[[UTILITIES]]
 == Utility Programs
 include::utilities.adoc[]
+
+[[COMPILING]]
+== Compiling WSJT
+include::compiling.adoc[]
 
 [[ACKNOWLEDGMENTS]]
 :numbered!:

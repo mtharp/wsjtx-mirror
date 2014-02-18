@@ -1,1 +1,33 @@
-To be added ...
+[[FILES1]]
+=== Installed Files
+
+After a clean install of _WSJT_ on Windows the following files should
+be present in the installation directory:
+
+[horizontal]
++CALL3.TXT+:: Callsign database
++KVASD_g95.EXE+:: Executable for Koetter-Vardy decoder
++RxWav+:: Directory for saved *.wav files, and Samples
++TSKY.DAT+:: Sky temperatures at 408 MHz
++kvasd.dat+:: dummy data file for KVASD
++libsamplerate.dll+:: resample library
++unins000.dat+:: Uninstall data file
++unins000.exe+:: Executable for uninstalling _WSJT_
++wsjt.ico+:: _WSJT_ icon
++wsjt10.exe+:: Executable for _WSJT_ Version 10.0
++wsjtrc.win+:: Font definitions
+
+
+=== Runtime Files
+
+Additional files will appear in the installation directory after the
+program has been run. These include the following:
+
+[horizontal]
++ALL.TXT+:: Log of all received and transmitted messages 
++FFT_plans.txt+:: Information about computer FFTs
++WSJT.INI+:: Saved configuration parameters
++azel.dat+:: Current coordinates for Moon and Sun
++decoded.ave+:: Decoded average messages
++decoded.txt+:: Decoded messages
++prefixes.txt+:: Prefixes and suffixes for Type 1 compound callsigns

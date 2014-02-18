@@ -42,10 +42,15 @@ Automatic setting of USB for a selected band will depend on your radio manufactu
 
 How do I know what settings to use for rig control (CAT) and PTT?::
 
-Your radio’s manual will have these settings in a section for computer setup, digital modes and TNC interface specifications. These may also be detailed in a programmer's guide which is usually offered as a downloadable file from your manufacturer's web site. As a last resort, you can do a simple web search like "rig cat for _your_rig_model_" which should give you several places to look. 
+Your radio's manual will have these settings in a section for computer
+setup, digital modes and TNC interface specifications. These may also
+be detailed in a programmer's guide which is usually offered as a
+downloadable file from the manufacturer's web site. As a last resort,
+do a web search for something like ``rig cat for _your_rig_model_''
+which should give you several places to look.
 
-TIP: Please note: if your rig uses CAT control and PTT control on separate cables, the port settings could very easily be different for each cable. In any event, there may be more than one settings configuration that works correctly. Some experimentation is likely to be necessary.
-
-
- 
-
+TIP: Please note: if your rig uses CAT control and PTT control on
+separate cables, the port settings could very easily be different for
+each cable. In any event, there may be more than one settings
+configuration that works correctly. Some experimentation is likely to
+be necessary.

@@ -1,4 +1,4 @@
-=== Options Window
+=== Options
 - Start _WSJT_ and select *Options* from the *Setup* menu.  Enter
 the following information:
 
@@ -28,7 +28,7 @@ audio devices available on your system.  On the *Options* screen, set
 to the number of the output device.  The chosen devices must offer at
 least two input or output channels.  For example, Audio devices
 number 1 (input) and 4 (output) could be selected from the following
-screen shot.  Your selections will take effect the next time you start
+screen image.  Your selections will take effect the next time you start
 the program.
 
 [[FigConsole]]
@@ -68,55 +68,4 @@ For example, to make the on-screen fonts slightly larger you can
 increase the numbers on the first three lines to 9, 9, and 10.  It
 might be wise to save a backup of the original file under a different
 name, in case you need to restore the original contents.
-
-=== Transceiver Setup
-.Receiver Noise Level
-
-- Turn on your radio, select *USB* (or *USB Data*) mode, and tune to a
-clear frequency so that only background noise is sent to the sound
-card.
-
-- If necessary, click the *Monitor* button on the _WSJT_ main window
-to start normal receive operation.  The button should be highlighted in
-[green]*GREEN*. 
-
-- Open the operating system's audio mixer and adjust its slider and/or
-your receiver gain control(s) to bring the signal level close to what
-_WSJT_ considers ``0 dB,'' as indicated on the bar graph at lower
-right of the *SpecJT* screen.  The signal level is also displayed
-as ``Rx noise'' on the status bar at bottom of the main window.
-
-.Transmitter Audio Level
-
-- Click *Generate messages for test tones* on the *Setup* menu.
-
-- Click the *Tx5* button to be sure that T/R switching works and that
-a continuous 1000 Hz audio tone is sent from the computer to your
-radio.
-
-- Listen to the generated audio tone using your radio’s *Monitor*
-facility. The transmitted tone should be smooth and continuous, with no
-clicks or glitches.
-
-- Adjust the appropriate slider on the operating system's audio mixer
-to get the proper audio signal level for your transmitter.
-
-- Click *TxStop* to end your test transmission. 
-
-_WSJT_ should now be set up and ready to operate.  If you are a new
-_WSJT_ user, we strongly recommend that you work through the operating
-tutorial in the next section.
-
-////////////////
-CAUTION: WSJT generates a single-frequency sine wave at any instant while
-transmitting.  Except during CW ID there is no ``key up'' time; signal
-amplitude is constant, and one tone changes to the next one in a
-phase-continuous manner.  As a result, WSJT does not require a high
-degree of linearity in your power amplifier. You can use a class C
-amplifier without generating unwanted sidebands or splatter.  Full
-amplitude transmissions lasting 30 seconds or longer will put more
-stress on your final amplifier than SSB or CW operation.  If this
-would cause the amplifier to overheat, you should take appropriate
-action: reduce power or add another cooling fan or blower.
-//////////////
 

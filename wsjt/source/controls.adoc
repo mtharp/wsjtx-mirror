@@ -1,40 +1,42 @@
 === Top Row
 
 The following buttons appear just under the decoded text windows on
-the main screen.  Note that some controls will appear only in certain
+the main screen.  Note that some controls appear only in certain
 operating modes.
 
-//.Main UI Controls
-image::images/MainButtons.png[align="left",width=650,alt="Main UI Controls"]
+image::images/MainButtons.png[align="left",width=650]
 
-*Log QSO*:: Click to add an entry for *To radio* to the simple log file
-+WSJT.LOG+.  Logged information includes date, time, callsign, locator,
-band, and mode.
+[horizontal] 
+*Log QSO*:: Click to add an entry for the callsign in To radio* to the
+*log file +WSJT.LOG+.  Logged information includes date, time,
+*callsign, locator, band, and mode.
 
 *Stop*:: Click to terminate *Monitor* mode.
 
-*Monitor*:: Start a series of reception intervals, perhaps to monitor a
-calling frequency or to copy another station engaged in a QSO.
+*Monitor*:: Start a series of reception intervals, perhaps to monitor
+a calling frequency or to copy another station engaged in a QSO.  The
+button is highlighted in [green]*GREEN* when *Monitor* is active.
 
 *Decode*:: Analyze the most recently recorded or opened file, perhaps
 after one or more decoding parameters have been changed.
 
-*Erase*:: Clear all information in main text boxes and graphical areas.
+*Erase*:: Clear all information in the main text boxes and graphical
+areas.
 
-*Clear Avg*:: Erase text in average message box, and clear message
+*Clear Avg*:: Erase text in average message box, and clear the message
 accumulator.
 
 *Include*:: If signal level is greater than -33 dB, add most recent
-recording to average message accumulator even if *Sync* is less than
-stated threshold.
+symbol sprectrum to the average message accumulator, even if *Sync* is
+less than stated threshold.
 
-*Exclude*:: Remove most recent recording from the average message
+*Exclude*:: Remove the most recent spectrum from the average message
 accumulator.  Use this option when you are sure that the program has
 synchronized incorrectly (for example, because *DF* and/or *DT* differ
 substantially from expected values) and you wish to avoid
-contaminating the average message with bad data.
+contaminating the average with bad data.
 
-*Tx Stop*:: Terminate a transmission and set *Auto* to OFF.
+*Tx Stop*:: Terminate a transmission and set *Auto Off*.
 
 === Left
 Controls related to the DX station and date and time are found at
@@ -44,32 +46,34 @@ image::images/Main_Left.png[align="center",alt=""]
 
 *To radio*:: The callsign of a station you wish to contact.
 
-*Grid*:: The Maidenhead locator (four or six characters) of the DX
-station.
+*Grid*:: The Maidenhead locator of the DX station, either four or six
+characters.
 
-*Lookup*:: Search database file +CALL3.TXT+ for entry in *To radio*. If
+*Lookup*:: Search database +CALL3.TXT+ for the entry in *To radio*. If
 callsign is found, retrieve the station's *Grid* locator and use it to
-calculate distance, azimuth, elevation, and Doppler shift.
+calculate distance, azimuth, and Doppler shift.
 
 *Add*:: Add the displayed callsign and grid locator to the database file
 +CALL3.TXT+.  If an entry for this callsign already exists, you will be
 asked if you want to replace it.
 
 *Dsec*:: Adjust UTC clock reading in 0.5 s increments to manually
-resynchronize with UTC or with your QSO partner's computer.  (In
-general, it is best to keep the Windows clock set accurately and *Dsec*
-set to zero.)
+synchronize with UTC or with your QSO partner's computer.  (In
+general, it is best to keep the computder clock set accurately and
+*Dsec* set to zero.)
 
 === Center
+
 Near the center of the main window are controls frequencly used 
 during a QSO.  Some controls are available only in certain modes; 
-the following examples apply to modes JTMS (left) and JT4 (right):
+the following images apply to modes JTMS (left) and JT4 (right):
 
 image::images/Main_Center.png[align="center",alt=""]
 
 [horizontal]
-*S*, *Sync*:: Set minimum signal level or synchronizing threshold for
-decoder.
+
+*S*, *Sync*:: Set minimum signal level for detection or synchronizing
+threshold.
 
 *Zap*:: Filter out birdies (narrowband signals of approximately constant
 amplitude) before attempting to decode.
@@ -81,18 +85,19 @@ drifting signal.
 
 *Rx ST*:: Enable decoding of shorthand (single-tone) messages.
 
-*Freeze*:: Search only frequencies within +/- *Tol* Hz 
-of *Freeze DF*.  *Freeze DF* can be adjusted by using the left/right 
-keyboard arrows.  In JT65 mode it can also be set by clicking on 
-the red spike or on the *SpecJT* waterfall display.
+*Freeze*:: Search only frequencies *Freeze DF* ± *Tol* Hz.  Adjust
+*Freeze DF* by using the *F11* and *F12* keys.  In JT65 and JT4 mode,
+*Freeze DF* can also be set by clicking on the red spike or on the SpecJT
+waterfall display.
 
-*MinW*:: Set the minimum Doppler spread or tone width assumed in JT4
-decoding process.
+*MinW*:: Set the minimum Doppler spread or tone width assumed for the
+JT4 decoding process.  (Letter D corresponds to the tone spacing of
+the JT4D submode, etc.)
 
-*Tx First*:: Check this box if you want to transmit during the first
-period of the timed T/R cycle.  Uncheck it if your QSO partner is
-transmitting in the first period. ``First'' is defined as the first
-T/R interval of a UTC hour, and alternately thereafter.
+*Tx First*:: Check this box to transmit during the first period of the
+timed T/R cycle.  Uncheck it if your QSO partner is transmitting in
+the first period. ``First'' is defined as the first T/R interval of a
+UTC hour, and alternately thereafter.
 
 *Tx ST*:: Enable transmission of single-tone messages.
 
@@ -100,8 +105,8 @@ T/R interval of a UTC hour, and alternately thereafter.
 
 *Gen Msgs*:: Generate standard Tx messages for the active mode.
 
-*Auto*:: Toggle ON or OFF automatic sequences of transmit and receive
-periods.
+*Auto*:: Toggle *On* or *Off* to start or stop automatic sequences of
+transmit and receive periods.
 
 === Right
 
@@ -139,6 +144,12 @@ image::images/BandMenu.png[align="left",alt="Setup Menu"]
 
 ==== Help Menu
 image::images/HelpMenu.png[align="left",alt="Setup Menu"]
+
+==== Keyboard Shortcuts
+image::images/KeyboardShortcuts.png[align="left"]
+
+==== Special Mouse Commands
+image::images/MouseCommands.png[align="left"]
 
 === SpecJT
 

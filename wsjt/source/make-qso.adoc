@@ -1,3 +1,47 @@
+=== Transceiver Setup
+.Receiver Noise Level
+
+- Turn on your radio, select *USB* (or *USB Data*) mode, and tune to a
+clear frequency so that only background noise is sent to the sound
+card.
+
+- If necessary, click the *Monitor* button on the _WSJT_ main window
+to start normal receive operation.  The button should be highlighted in
+[green]*GREEN*. 
+
+- Open the operating system's audio mixer and adjust its slider and/or
+your receiver gain control(s) to bring the signal level close to what
+_WSJT_ considers ``0 dB,'' as indicated on the bar graph at lower
+right of the *SpecJT* screen.  The signal level is also displayed
+as *Rx noise* on the status bar at bottom of the main window.
+
+.Transmitter Audio Level
+
+- Click *Generate messages for test tones* on the *Setup* menu.
+
+- Click the *Tx5* button to be sure that T/R switching works and that
+a continuous 1000 Hz audio tone is sent from the computer to your
+radio.
+
+- Listen to the generated audio tone using your radio's *Monitor*
+facility. The transmitted tone should be smooth and continuous, with no
+clicks or glitches.
+
+- Adjust the appropriate slider on the operating system's audio mixer
+to get the proper audio signal level for your transmitter.
+
+- Click *Tx Stop* to end your test transmission. 
+
+_WSJT_ should now be set up and ready to operate.  If you are a new
+_WSJT_ user, we strongly recommend that you work through the operating
+tutorial in the next section.
+
+CAUTION: Full amplitude transmissions lasting 30 seconds or longer put
+more stress on your final amplifier than SSB or CW operation.  If this
+would cause the amplifier to overheat, reduce power or provide better
+cooling.
+
+.Minimal QSO Information
 By longstanding tradition, a minimal valid QSO requires the exchange
 of callsigns, a signal report or some other information, and
 acknowledgments.  _WSJT_ is designed to facilitate making such minimal
@@ -25,8 +69,11 @@ world, or in the different operating modes.  Hitting the *F5* key will
 cause _WSJT_ to display a screen that reminds you of the recommended
 procedures.
 
+image::images/WhatMessage.png[align="center"]
+
+.QSO Procedures
 To prepare for making a QSO, enter the other station's callsign in the
-*To radio* box and click *Lookup* and *GenStdMsgs* to generate a
+*To radio* box and click *Lookup* and *Gen Msgs* to generate a
 sequence of the commonly used messages.  If *Lookup* does not find the
 callsign in the database file CALL3.TXT, you may enter the grid
 locator manually.  Decide whether you or the other station will
@@ -37,11 +84,11 @@ automatic sequence of transmission and reception intervals.  You can
 switch messages while a transmission is in progress by clicking on one
 of the buttons *Tx1* to *Tx6*, to the right of the circles.
 
-Real-time spectral information is displayed graphically on the
-*SpecJT* screen.  Spectrograms normally scroll horizontally in the
-``fast'' modes (FSK441, JTMS, ISCAT, and JT6M) and vertically in the
-slow modes (JT4 and JT65). You can select one of several scrolling
-speeds at the top right of the *SpecJT* window.
+Spectral information is displayed in real time on the *SpecJT* screen.
+Spectrograms normally scroll horizontally in the fast modes (FSK441,
+JTMS, ISCAT, and JT6M) and vertically in the slow modes (JT65 and
+JT4). You can choose different scrolling speeds at the top right of
+the *SpecJT* window.
 
 At the end of each receiving period, _WSJT_ enters a decode cycle and
 displays various properties of a received signal on the main screen.
@@ -56,8 +103,8 @@ Decoded text appears in the large box below the graphical area and is
 also written to a cumulative output file, +ALL.TXT+.  The program's
 best estimate of *DF*, a detected signal's frequency offset, is
 included on each text line.  The accuracy of these estimates depends
-on the mode: approximately ±5 Hz for JTMS signals, ±25 Hz for
-FSK441, ±10 Hz for ISCAT and JT6M, and ±3 Hz for JT65.  Within these
+on the mode: approximately ±7 Hz for JTMS signals, ±25 Hz for
+FSK441, ±20 Hz for ISCAT and JT6M, and ±3 Hz for JT65.  Within these
 tolerances (and subject to the stability of oscillators and the
 propagation path) you should see consistent numbers in the *DF* column
 during any QSO that produces usable signals.
@@ -66,8 +113,8 @@ Double-clicking on a callsign in either one of the decoded text
 windows will cause that callsign to be copied into the *To radio* box.
 The corresponding *Grid* locator will be looked up in the database and
 the callsign inserted in Tx message boxes #1 and #2.  If the decoded
-text line includes CQ before the selected callsign, message Tx1 will
-be selected for your next transmission.  Otherwise, Tx2 will be
+text line includes CQ before the selected callsign, message #1 will
+be selected for your next transmission.  Otherwise, #2 will be
 selected.  If *Double-click on callsign sets TxFirst* was checked on
 the *Setup* menu, the status of *Tx First* is set according to the
 time-stamp on the decoded message.
@@ -130,7 +177,7 @@ restored when you restart _WSJT_.  Normal fast-mode messages can
 contain any arbitrary text up to 28 characters.  The supported
 character set includes 0-9, A-Z, plus . , / # ? $ and <space>.
 
-JTMS and FSK441 provide a special shorthand format to transmit a few
+JTMS and FSK441 provide a special shorthand format to transmit four
 simple messages in a highly efficient way.  The supported shorthands
 are R26, R27, RRR, and 73; FSK441 and JTMS send pure tones at 882,
 1323, 1764, or 2205 Hz to convey these messages. If activity levels
@@ -140,163 +187,187 @@ tagged with callsigns or portions thereof.  Check *Rx ST* and *Tx ST*
 enable single-tone messages.
 
 A typical minimal QSO in one of the fast modes might look something
-like the following:
+like the sequence of transmissions below.  You should step ahead to
+the next message in your sequence only when you have received your QSO
+partner's information from his sequence.
 
 ------------
-1.  CQ K1ABC
-2.                     K1ABC W9XYZ
-3.  W9XYZ K1ABC 27 
-4.                     K1ABC W9XYZ R26 
-5.  W9XYZ K1ABC RRR
-6.                     K1ABC W9XYZ 73
+  1.  CQ K1ABC
+  2.                     K1ABC W9XYZ
+  3.  W9XYZ K1ABC 27 
+  4.                     K1ABC W9XYZ R26 
+  5.  W9XYZ K1ABC RRR
+  6.                     K1ABC W9XYZ 73
 ------------
 
 In North America, shorthand messages R26, RRR and 73 are often
-substituted for messages 4, 5, and 6.  Step ahead to the next message
-in your sequence only when you have received your QSO partner's
-information from his sequence.
+substituted for messages 4, 5, and 6, so the QSO would proceed
+like this:
+ 
+------------
+  1.  CQ K1ABC
+  2.                     K1ABC W9XYZ
+  3.  W9XYZ K1ABC 27 
+  4.                     R26 
+  5.  RRR
+  6.                     73
+------------
+
 
 === Slow Modes
 
-The slow modes in _WSJT-X_ (JT65 and JT4) help to facilitate minimal
+JT65 and JT4, the slow modes in _WSJT-X_, aim to facilitate minimal
 QSOs by using short structured messages.  The process works best if
 you use these formats and follow standard operating practices.  The
 recommended basic QSO goes something like this:
 
 ------------
-1.  CQ K1ABC FN42
-2.                    K1ABC G0XYZ IO91
-3.  G0XYZ K1ABC -19
-4.                    K1ABC G0XYZ R-22
-5.  G0XYZ K1ABC RRR
-6.                    K1ABC G0XYZ 73
+  1.  CQ K1ABC FN42
+  2.                    K1ABC G0XYZ IO91
+  3.  G0XYZ K1ABC -19
+  4.                    K1ABC G0XYZ R-22
+  5.  G0XYZ K1ABC RRR
+  6.                    K1ABC G0XYZ 73
 -------------
 
 *Standard messages* consist of two callsigns (or CQ, QRZ, or DE and
 one callsign) followed by the transmitting station's grid locator, a
 signal report, R plus a signal report, or the final acknowledgements
-RRR or 73. JT65 and JT4 compress and encode these messages in a highly
-efficient and reliable way.  In uncompressed form they may contain as
-many as 18 characters.
+RRR or 73. JT65 and JT4 compress and encode these standard messages in
+a highly efficient way, and strong error-control coding makes them
+very reliable.  In uncompressed form they may contain as many as 18
+characters.
 
 *Signal reports* are specified as signal-to-noise ratio (S/N) in dB,
 using a standard reference noise bandwidth of 2500 Hz.  Thus, in
-example message #0003 above, K1ABC is telling G0XYZ that his signal is
-19 dB below the noise power in bandwidth 2500 Hz.  In message #0004,
-G0XYZ acknowledges receipt of that report and responds with a -22 dB
-signal report.  JT65 reports are constrained to lie in the range -30
-to -1 dB, while JT9 supports the extended range -50 to +49 dB.
+example message #3 above, K1ABC is telling G0XYZ that his signal is 19
+dB below the noise power in bandwidth 2500 Hz.  In message #4, G0XYZ
+acknowledges receipt and responds with a -22 dB signal report.  JT65
+reports are constrained to lie in the range -30 to -1 dB, while JT9
+supports the extended range -50 to +49 dB.
 
-*Shorthand messages* are transmitted in JT65 mode as a sequence of
+*Shorthand messages* are transmitted in JT65 as a sequence of
 alternating tones, repeating approximately every 3 seconds.  Different
 tone spacings correspond to the shorthand messages RO, RRR, and 73;
-these messages are easily recognized on the waterfall and also by ear,
-when the signal is audible.  EME QSOs often use the shorthand messages, 
-and in that case a typical QSO proceeds like this:
+these messages can be easily recognized on the waterfall and also by
+ear.  EME QSOs often use the shorthand messages, and in that case a
+typical QSO proceeds like this:
 
 ------------
-1.  CQ K1ABC FN42
-2.                        K1ABC G0XYZ IO91
-3.  G0XYZ K1ABC FN42 OOO
-4.                        RO
-5.  RRR
-6.                        73
+  1.  CQ K1ABC FN42
+  2.                        K1ABC G0XYZ IO91
+  3.  G0XYZ K1ABC FN42 OOO
+  4.                        RO
+  5.  RRR
+  6.                        73
 -------------
 
-*Free text messages*: Users often add some friendly chit-chat at the
-end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or ``5W
-VERT 73 GL'' are supported, up to a maximum of 13 characters,
-including spaces.  (Normally you should avoid the character / in
-free-text messages, since the program may try to interpret your
-construction as part of a compound callsign.)  It should be obvious
-that the JT9 and JT65 protocols are not well suited for extensive
-conversations or rag-chewing.
+*Free text messages* are often used to convey some friendly chit-chat
+at the end of a QSO.  Arbitrary messages such as ``TNX ROBERT 73'' or
+``5W VERT 73 GL'' are supported, up to a maximum of 13 characters
+(including spaces).  It should be obvious that the JT9 and JT65
+protocols are not well suited for extensive conversations or
+rag-chewing.
 
-.Compound Callsigns
-
-Compound callsigns such as xx/K1ABC or K1ABC/x are handled in one of
+*Compound callsigns* such as xxx/K1ABC or K1ABC/x are handled in one of
 two possible ways.  A list of about 350 of the most common prefixes
-and suffixes can be displayed from the *Help* menu.  A single compound
-callsign involving one item from this list can be used in place of the
-standard third message word (normally a locator, signal report, RRR,
-or 73).  Thus, the following examples are all acceptable *Type 1*
-messages with compound callsigns:
+and suffixes can be displayed from the *Help* menu:
 
- CQ ZA/K1ABC
- CQ K1ABC/4
- ZA/K1ABC G0XYZ
- G0XYZ K1ABC/4
+image::images/prefixes.png[align="center"]
+
+A single compound callsign involving one item from this list can be
+used instead of a third message word in a structured message.  Thus,
+the following examples are all acceptable *Type 1* messages involving
+compound callsigns:
+
+-----------
+  CQ ZA/K1ABC
+  CQ K1ABC/4
+  ZA/K1ABC G0XYZ
+  G0XYZ K1ABC/4
+-----------
 
 The following messages are _not_ valid, because a third word is not
-permitted in a *Type 1* message:
+permitted in a *Type 1* compound-callsign message:
 
- ZA/K1ABC G0XYZ -22        #These messages will be sent
- G0XYZ K1ABC/4 73          #without the third "word"
+-----------
+  ZA/K1ABC G0XYZ -22        #These messages will be sent
+  G0XYZ K1ABC/4 73          #without the third "word"
+-----------
 
-A QSO between two stations using *Type 1* compound-callsign messages
-might look like this:
+A QSO involving a station using a *Type 1* compound callsign might
+look like this:
 
 ----------------
-1.  CQ ZA/K1ABC
-2.                      ZA/K1ABC G0XYZ
+  1.  CQ ZA/K1ABC
+  2.                      ZA/K1ABC G0XYZ
+  3.  G0XYZ K1ABC -19
+  4.                      K1ABC G0XYZ R-22
+  5.  G0XYZ K1ABC RRR
+  6.                      K1ABC G0XYZ 73
+----------------
+
+Notice that both operators send and receive the full compound
+callsign in their first transmission.  After that, they omit the
+add-on prefix or suffix and use the standard structured messages
+and base callsigns.
+
+*Type 2* compound callsigns involve a prefix or suffix _not_ found in
+the short displayable list.  In that case the compound callsign must
+be the second word in a two- or three-word message, the first word of
+which must be CQ, DE, or QRZ.  Prefixes can be 1 to 4 alphanumeric
+characters, suffixes 1 to 3 characters.  A third word conveying a
+locator, signal report, RRR, or 73 is permitted.  The following are
+valid *Type 2* messages with compound callsigns:
+
+----------
+  CQ W4/G0XYZ FM07
+  DE W4/G0XYZ -22
+  QRZ K1ABC/VE6 DO33
+----------
+
+In each case, the message is treated as *Type 2* because the add-on
+prefix or suffix is _not_ one of those in the fixed list displayed
+above.  Note that a second callsign is never permissible in 
+messages involvinf *Type 2* compound callsigns.
+
+QSOs involving *Type 2* compound callsigns might look like one
+of the following sequences
+
+----------
+1.  CQ KP4/K1ABC FK68
+2.                      K1ABC G0XYZ IO91
 3.  G0XYZ K1ABC -19
 4.                      K1ABC G0XYZ R-22
 5.  G0XYZ K1ABC RRR
 6.                      K1ABC G0XYZ 73
-----------------
-
-Notice that both operators send and receive the full compound
-callsign in the first two transmissions.  After that, they omit the
-add-on prefix or suffix and use the standard structured messages.
-
-Prefixes and suffixes _not_ found in the short displayable list can be
-handled with a *Type 2* message.  The compound callsign must be the
-second word in a two- or three-word message, and the first word must
-be CQ, DE, or QRZ.  Prefixes can be 1 to 4 characters, suffixes 1 to 3
-characters.  A third word conveying a locator, report, RRR, or 73 is
-permitted.  The following are valid *Type 2* messages with compound
-callsigns:
-
- CQ W4/G0XYZ FM07
- DE W4/G0XYZ -22
- QRZ K1ABC/VE6 DO33
-
-In each case, the message is treated as *Type 2* because the add-on
-prefix or suffix is _not_ one of those in the fixed list.  Note
-that a second callsign is never permissible in these messages.
-
-TIP: Remember that during a transmission your transmitted message is
-always displayed in the first label on the *Status Bar*, highlighted
-in yellow.  It is displayed there exactly as another station would
-receive it.
-
-QSOs involving *Type 2* compound callsigns might look like either
-of the following sequences
-
- CQ KP4/K1ABC FK68
-                     K1ABC G0XYZ IO91
- G0XYZ K1ABC -19
-                     K1ABC G0XYZ R-22
- G0XYZ K1ABC RRR
-                     K1ABC G0XYZ 73
+----------
 
 
- CQ K1ABC FN42
-                     DE G0XYZ/W4 FM18
- G0XYZ K1ABC -19
-                     K1ABC G0XYZ R-22
- G0XYZ K1ABC RRR
-                     DE G0XYZ/W4 73
+----------
+1.  CQ K1ABC FN42
+2.                      DE G0XYZ/W4 FM18
+3.  G0XYZ K1ABC -19
+4.                      K1ABC G0XYZ R-22
+5.  G0XYZ K1ABC RRR
+6.                      DE G0XYZ/W4 73
+----------
 
 Each operator sends his own compound callsign in the first (and
 possibly also last) transmission, as may be required by licensing
-authorities.  Subsequent transmissions may use the standard structured
+authorities.  Subsequent transmissions use the standard structured
 messages without callsign prefix or suffix.
 
 IMPORTANT: It's up to you, the operator, to ensure that messages with
 compound callsigns are composed in the manner described above.
 Double-clicking on a line of decoded text may not always produce the
-desired result.
+expected result.
+
+TIP: During a transmission your transmitted message is always
+displayed in the first label on the *Status Bar*, highlighted in
+color, displayed exactly as another station will receive it.  You can
+also experiment with compound callsigns using the <<UTILITIES,utility
+programs>> +jt65code+ and +jt4code+.
 
 === CW Mode
 
@@ -304,9 +375,9 @@ The _WSJT_ CW mode is provided as a convenience for operators
 attempting EME contacts using timed transmissions of 1, 2, or 2.5
 minutes duration. The program sends EME-style messages by keying an
 800 Hz audio tone, and takes care of the timing and T/R
-switching. Receiving is left up to you, the operator. Select the
-desired CW speed under *Miscellaneous* on the *Setup | Options*
-window, and the T/R period by right- or left-clicking on the label at
-bottom center of the main window. Present conventions typically use 1
-minute sequences on 50 MHz, either 1 or 2 minutes on 144 MHz, and 2.5
-minutes on 432 MHz and above.
+switching. Receiving is left up to you, the operator. Set the desired
+CW speed under *Miscellaneous* on the *Setup | Options* window, and
+the T/R period by right- or left-clicking on the label at bottom
+center of the main window. Present conventions typically use 1 minute
+sequences on 50 MHz, either 1 or 2 minutes on 144 MHz, and 2.5 minutes
+on 432 MHz and above.

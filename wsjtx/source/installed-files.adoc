@@ -1,7 +1,7 @@
 // Status=review
 
-After a clean install of _WSJT-X_ the following files should be
-present in the installation directory:
+After a clean install of _WSJT-X_ on Windows the following files
+should be present in the installation directory:
 
 [horizontal]
 +CALL3.TXT+:: Callsign database

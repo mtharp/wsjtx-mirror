@@ -2,30 +2,29 @@
 
 JTMS uses Minimum Shift Keying (MSK) at 11025 / 8 = 1378.125 baud.
 Messages are free-form and have lengths 5,7,9,11,13,17,19,23 or 29
-characters, always padded with one or more trailing blanks.
-Characters are mapped to numerical values in the range 0 - 63
+characters, padded when required with one or more trailing blanks.
+Characters are mapped to numerical values in the range 0 to 63
 according to position in the first line below.  (The second and third
-lines may be used to read off a value: for example, B has value 11
-and Z has value 35.)
+lines may be used to read off an index value: for example, B has the
+value 11 and ? is 38.)
 
 ----
- 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ./?-                 _     @
-           1         2         3         4         5         6
- 0123456789012345678901234567890123456789012345678901234567890123
+  0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ./?-
+            1         2         3         4
+  01234567890123456789012345678901234567890
 ----
 
 The 6-bit binary representation for each character value is augmented
-with an even-parity bit, and the 7-bit sequences are sent sequentially
-using audio frequency 1155.47 Hz to represent 0 and 1855.53 Hz to
-represent 1.  The sequence of tones for a message is transmitted
-repeatedly for a full transmission, maintaining phase continuity at
-all transitions between tones.
+with an even parity bit. The resulting 7-bit sequences are sent using
+audio frequency 1155.47 Hz to represent 0 and 1855.53 Hz to represent
+1.  A message is transmitted repeatedly for a full transmission,
+maintaining phase continuity at all transitions between tones.
 
-JTMS implements single-tone messages in the same way as FSK441.
-Messages R26, R27, RRR and 73 are transmitted as pure tones of 882,
-1323 and 1764, and 2205 Hz respectively.  Pings from these
-transmissions are easily recognized by the human ear, easily seen on
-spectrum displays, and can be detected by appropriate software.
+Four single-tone messages are defined in JTMS: R26, R27, RRR and 73.
+They are transmitted as pure tones of 882, 1323 and 1764, and 2205 Hz
+respectively.  Pings from these transmissions are easily recognized by
+the human ear, easily seen on spectrum displays, and readily detected
+by appropriate software.
 
 === FSK441
 
@@ -37,28 +36,28 @@ accommodates an alphabet of 43 characters, as listed in the table
 below:
 
 -------------------------------
-  1      001          H   120 
-  2      002          I   121 
-  3      003          J   122 
-  4      010          K   123 
-  5      011          L   130 
-  6      012          M   131 
-  7      013          N   132 
-  8      020          O   133 
-  9      021          P   200 
-  .      022          Q   201 
-  ,      023          R   202 
-  ?      030          S   203 
-  /      031          T   210 
-  #      032          U   211 
-<space>  033          V   212 
-  $      100          W   213 
-  A      101          X   220 
-  B      102          Y   221 
-  C      103          0   223 
-  D      110          E   230 
-  F      112          Z   231 
-  G      113 
+       1      001          H   120 
+       2      002          I   121 
+       3      003          J   122 
+       4      010          K   123 
+       5      011          L   130 
+       6      012          M   131 
+       7      013          N   132 
+       8      020          O   133 
+       9      021          P   200 
+       .      022          Q   201 
+       ,      023          R   202 
+       ?      030          S   203 
+       /      031          T   210 
+       #      032          U   211 
+     <space>  033          V   212 
+       $      100          W   213 
+       A      101          X   220 
+       B      102          Y   221 
+       C      103          0   223 
+       D      110          E   230 
+       F      112          Z   231 
+       G      113 
 -------------------------------
 
 In the table the four tones are labeled 0-3, representing the tones
@@ -86,7 +85,7 @@ enough that messages should always be accompanied by callsigns.
 
 ISCAT messages are free-form, up to 28 characters in length.
 Modulation is 42-tone frequency-shift keying at 11025 / 512 = 21.533
-baud (ISCAT-A), or 11025 / 256 = 43.066 baud (ISCAT-B), and tone
+baud (ISCAT-A), or 11025 / 256 = 43.066 baud (ISCAT-B).  Tone
 frequencies are spaced by an amount equal to the baud rate.  The
 available character set is
 
@@ -95,20 +94,20 @@ available character set is
 ----
 
 Transmissions consist of sequences of 24 symbols: a ``sync'' pattern
-of 4 symbols at tone numbers 0, 1, 3, and 2; then 2 symbols with tone
-number indicating the message length; and finally 18 symbols
-corresponding to the user's message, sent repeatedly character by
-character.  The message always starts with +@+, the
+of four symbols at tone numbers 0, 1, 3, and 2, followed by two
+symbols with tone number corresponding to the message length, and
+finally 18 symbols conveying the user's message, sent repeatedly
+character by character.  The message always starts with +@+, the
 beginning-of-message symbol.  The sync pattern and message-length
-indicator thus have a fixed repetition period, recurring every 24
-symbols.  Message information occurs periodically within the 18 symbol
-positions set aside for its use, repeating at its own natural length.
+indicator have a fixed repetition period, recurring every 24 symbols.
+Message information occurs periodically within the 18 symbol positions
+set aside for its use, repeating at its own natural length.
 
-For example, consider the user message +CQ WA9XYZ+.  With the +@+
-beginning-of-message symbol included, the message is 10 characters
-long.  Using the character sequence displayed above to indicate tone
-numbers, the transmitted message will therefore start out as shown in
-the first line below:
+For example, consider the user message +CQ WA9XYZ+.  Including the
+beginning-of-message symbol +@+, the message is 10 characters long.
+Using the character sequence displayed above to indicate tone numbers,
+the transmitted message will therefore start out as shown in the first
+line below:
 
 ----
  0132AA@CQ WA9XYZ@CQ WA9X0132AAYZ@CQ WA9XYZ@CQ W0132AAA9X ...
@@ -117,7 +116,7 @@ the first line below:
 
 Note that the first six symbols (four for sync, two for message
 length) repeat every 24 symbols.  Within the 18 information-carrying
-symbols, the augmented user message +@CQ WA9XYZ+ repeats at its own
+symbols in each 24, the user message +@CQ WA9XYZ+ repeats at its own
 natural length, 10 characters.  The resulting sequence is extended as
 many times as will fit into a Tx sequence.
 
@@ -125,29 +124,41 @@ many times as will fit into a Tx sequence.
 
 JT6M uses 44-tone FSK with a synchronizing tone and 43 possible data
 tones -- one for each character in the supported alphanumeric set, the
-same set used for FSK441. The sync tone is at 1102500 / 1024 = 1076.66
-Hz, and the 43 other possible tones are spaced at intervals of
-11025 / 512 = 21.53 HZ up to 2002.59 Hz.  Transmitted symbols are keyed
-at a rate of 21.53 baud, so each one lasts for 1/21.53 = 0.04644
-seconds. Every third symbol is the sync tone, and each sync symbol is
-followed by two data symbols.  The transmission rate of user data is
-therefore (2/3)*21.53 = 14.4 characters per second.  
+same set used for FSK441. The sync tone is at frequency 
+100 x 11025 / 1024 = 1076.66 Hz, and the 43 other possible tones are
+spaced at intervals of 11025 / 512 = 21.53 HZ up to 2002.59 Hz.
+Transmitted symbols are keyed at a rate of 21.53 baud, so each one
+lasts for 1/21.53 = 0.04644 seconds. Every third symbol is the sync
+tone.The transmission rate of user data is therefore 21.53 x (2/3) = 14.4
+characters per second.
+
+
+.Parameters of WSJT Fast Modes
+[width="90%",cols="h,9*",frame="topbot",options="header"]
+|============================================================================
+|Mode   |T/R (s)| Mod   |  FEC    |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
+|JTMS   | 15,30 | MSK   | parity  | 8  | 1378 | 689 | 2067 | 197 | -1
+|FSK441 | 15,30 | 4-FSK |         | 25 | 441  | 441 | 1764 | 147 | -1
+|ISCAT-A| 15,30 | 42-FSK|         |512 | 21.5 | 21.5| 905  | 16.5| -17
+|ISCAT-B| 15,30 | 42-FSK|         |256 | 43.1 | 43.1|1809  | 32.3| -17
+|JT6M   | 15,30 | 44-FSK|         |512 | 21.5 | 21.5| 947  | 14.4| -10
+|============================================================================
 
 === JT65
 
 A detailed description of the JT65 protocol was published in
-{jt65protocol}.  for September-October, 2005.  Briefly stated, JT65
-uses 60 s T/R sequences and carefully structured messages.  Standard
+{jt65protocol} for September-October 2005.  Briefly stated, JT65 uses
+60 s T/R sequences and carefully structured messages.  Standard
 messages are compressed so that two callsigns and a grid locator can
 be transmitted with just 71 bits.  A 72nd bit serves as a flag to
 indicate that the message consists of arbitrary text (up to 13
-characters) instead of callsigns and a grid locator.  Special formats
-allow other information such as callsign prefixes (e.g., ZA/K1ABC) or
-numerical signal reports (in dB) to be substituted for the grid
-locator.  The aim of source encoding is to compress the common
-messages used for EME QSOs into a minimum fixed number of bits.  After
-compression, a Reed Solomon (63,12) error-correcting code converts
-72-bit user messages into sequences of 63 six-bit channel symbols.
+characters).  Special formats allow other information such as add-on
+callsign prefixes or numerical signal reports to be substituted for
+the grid locator.  The aim of source encoding is to compress the
+common messages used for weak-signal QSOs into a minimum fixed number
+of bits.  After compression, a Reed Solomon (63,12) error-correcting
+code converts 72-bit user messages into sequences of 63 six-bit
+channel symbols.
 
 JT65 requires tight synchronization of time and frequency between
 transmitter and receiver.  Each transmission is divided into 126
@@ -160,14 +171,14 @@ vector interleaved with the encoded information symbols.  The sync
 vector allows calibration of relative time and frequency offsets
 between transmitter and receiver.  A transmission nominally begins at
 t = 1 s after the start of a UTC minute and finishes at t = 47.8 s.
-The synchronizing tone is at 11025*472/4096 = 1270.5 Hz, and is
+The synchronizing tone is at 11025 x 472 / 4096 = 1270.5 Hz, and is
 normally sent in each interval having a 1 in the following
 pseudo-random sequence:
 
  100110001111110101000101100100011100111101101111000110101011001
  101010100100000011000000011010010110101010011001001000011111111
 
-Encoded user information is transmitted during the 63 intervals not
+Encoded user information is transmitted during the 63 intervals _not_
 used for the sync tone. Each channel symbol generates a tone at
 frequency 1275.8 + 2.6917 Nm Hz, where N is the value (0 - 63) of the
 six-bit symbol, and m is 1, 2, or 4 for JT65 sub-modes A, B, or C.
@@ -188,16 +199,6 @@ bits. Modulation is 4-tone frequency-shift keying at 11025 / 2520 =
 4.375 baud.  The frequency spacing between tones and total bandwidth
 depends on the submode.
 
-
-.Parameters of WSJT Fast Modes
-[width="90%",cols="h,9*",frame="topbot",options="header"]
-|============================================================================
-|Mode   |T/R (s)| Mod   |  FEC    |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
-|JTMS   | 15,30 | MSK   | parity  | 8  | 1378 | 689 | 2067 | 197 | -1
-|FSK441 | 15,30 | 4-FSK |         | 25 | 441  | 441 | 1764 | 147 | -1
-|ISCAT-A| 15,30 | 42-FSK|         |512 | 21.5 | 21.5| 905  | 16.5| -17
-|ISCAT-B| 15,30 | 42-FSK|         |256 | 43.1 | 43.1|1809  | 32.3| -17
-|============================================================================
 
 [[SLOW_TAB]]
 .Parameters of WSJT Slow Modes
