@@ -1,0 +1,40 @@
+
+All source code for the WSJT programs is available at the open-source
+repository known as {berlios1}, under control of the version-control
+program {svn}.  You can install Subversion in Windows from the above
+link; in Linux use
+
+---------
+sudo apt-get install subversion 
+---------
+
+or an equivalent command for your Linux distribution.  
+
+You can browse the organization of files in the repository {wsjt_svn}.
+Code for program _WSJT_ lies in the +trunk+ directory, while code for
+the other programs is found in +.../branches/map65+,
++.../branches/wsjtx+, and +.../branches/wsprx+.  Various experimental
+branches may also exist, and snapshots of code for certain released
+program versions may be obtained from the +.../tags+ directory.
+
+You can do an anonymous checkout of source code for a specific program
+with a command of the following form:
+
+---------
+svn co svn://svn.berlios.de/wsjt/branches/wsjtx 
+---------
+
+If you are a member of the WSJT Development Group and have commit privileges
+to the repository, use a command like this one:
+
+---------
+svn co https://user@svn.berlios.de/svnroot/repos/wsjt/branches/wsjtx
+---------
+
+substituting your Berlios username for +user+.
+
+CAUTION: Please note: the HEAD of the SVN repository for any of these
+programs is likely to be an active development branch.  There is no
+guarantee that a build from every revision will be successful, nor
+that it will provide a stable executable program.
+
