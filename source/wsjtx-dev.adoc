@@ -12,7 +12,7 @@ libgfortran3:i386 libc6-i386 libqt5multimedia5-plugins \
 qtmultimedia5-dev
 ----------
 
-Adjust install method to you distribution package manager.
+Adjust install method to the distribution package manager.
 
 ==== WSJT-X Build and Run Dependencies
 [horizontal]
@@ -36,13 +36,15 @@ Adjust install method to you distribution package manager.
 
 ==== Build Methods
 
-IMPORTANT: You can perform the steps manually if desired. Using the script
-automates the steps.
+IMPORTANT: You can perform the steps <<MANUAL,manually>> if desired. Using the
+<<BUILDSH,script>> automates the steps.
 
 * Open a terminal session, +*Ctrl{plus}Alt{plus}T*+
-* Checkout the script from SVN using:
+* Checkout the build script from SVN:
 
+[[BUILDSH]]
 [source,shell]
+.SVN export wsjtx-build.sh
 ----------
 # SVN CHECKOUT WSJTX-COMPILE.SH
 
@@ -52,10 +54,12 @@ svn export svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-compile
 
 .Manual Entry
 * For manual entry, start at +*BUILD_DIR=~/Projects/wsjtx-build*+ and
-perform each step that does not start with start with "#" sign.
+perform each step that does not start with start with "#" sign. Use +Copy {amp}
+Paste+.
 
 .Using the Script
-* Using The Build Script, Change Permission and Run
+* Using The Build <<BUILDSH,Script>>, Change Permission and Run
+
 [source,bash]
 ----------
 # CHANGE PERMISSION
@@ -65,20 +69,19 @@ chmod +x ./wsjtx-compile.sh
 ./wsjtx-compile.sh
 ----------
 
-
-.wsjtx-compile.sh
+[[MANUAL]]
 [source,bash]
+.wsjtx-compile.sh
 ----------
 include::wsjtx-compile.sh[]
 ----------
-
-
 
 ==== Test KVASD
 
 Before you launch _WSJT-X_, ensure _KVASD_ can run.
 
 [source,bash]
+.KVASD Tests
 ----------
 # CHANGE DIRECTORY and RUN KVASD
 cd wsjtx-$rev_num
@@ -110,32 +113,42 @@ KVASD version 1.11
 === Windows CMake Example
 
 [[EXAMPLE]]
-This example will use the following setup:
+For this example, the following setup was used:
 
 [horizontal]
 +*OS*+:: Windows Vista 64 bit
 +*Install Path*+:: C:\
-+*Alternate Locations*+:: D:\, F:\ G:\tools were tested
++*Paths Tested+:: D:\, F:\ G:\tools (all passed)
 +*Setup Method*+:: wsjtx-build-setup.bat
 +*Final Path*+:: C:\wsjt-env
 
-A script is provided to setup the initial folder structure, download the
-build script +*(wsjtx-build-cmake.bat)*+ and _CMake_ tool chain file
-+*(wsjtx-toolchain.cmake)*+. You can save this script anywhere you like. Using the
-setup <<EXAMPLE,example>> will build the structure in <<TREE,Figure-2>> when
-the script is saved to +*C:\*+ directory.
+.Language Used In This Setcion
+
+[horizontal]
++*Windows CMD Terminal+*:: Standard Windows Command Terminal
++*WSJT Env Terminal*+:: Command Termal With Paths Specific to WSJT Needs
++*Setup Script*+:: Batch Ffile Used to Setup WSJT Env
++*Build Script*+:: Batch Files Used to Build WSJT-X
++*Tool Chain File*+:: CMake Configuration File Used by the Build Script
+
+The setup script provided will create the needed folder structure, download the
+build script +*(wsjtx-build-cmake.bat)*+ and _CMake Tool Chain_ file
++*(wsjtx-toolchain.cmake)*+. You can save this script anywhere you like. Following
+this <<EXAMPLE,example>> will build the structure in <<TREE,Figure-2>>
+when the _Setup Script_ has been saved to +*C:\*+ directory.
 
 ==== Setup Build Environment
 
 IMPORTANT: With the exception of {svn}, The entire development environment is
-contained within: +*C:\wsjt-env*+. Using the +*wsjt-env CMD Terminal*+ method,
-any previous installation of +*QT*+ or +*CMake*+ should not be a problem to
+contained within: +*C:\wsjt-env*+. Using the +*WSJT Env Terminal*+, previous
+installations of +*QT*+ or +*CMake*+ should not be pose a problem to
 either environment.
 
-* Open a Windows CMD Terminal and perform the following steps:
+* Open a _Windows CMD Terminal_ and perform the following steps:
 
 [[SETUP]]
 [source,shell]
+.Download and Run: wsjtx-build-setup.bat
 ---------
 # CHANGE DIRECTORY TO INSTALL LOCATION
 c:
@@ -146,21 +159,34 @@ svn export svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-build-s
 # RUN THE SETUP
 c:\wsjtx-build-setup.bat
 
-# CLOSE ALL CMD TERMINALS
+# WHEN COMPLETE, THE SETUP SCRIPT SHOULD EXIT && CLOSE THE TERMINAL
 ---------
 
-* If there were no errors, the tree should look <<TREE,Figure-1>>
-* To see the new tree: cd wsjt-snv {amp} tree
+* If there were no errors, the tree should look like <<TREE,Figure-1>>
+* To check the tree, browse to +*C:\wsjt-env*+, Double-Click or Right-Click
+{amp} Open +*wsjt-env.bat*+, _WSJT Env Terminal._
+* In _WSJT Env Terminal_
+
+[source,shell]
+----------
+# CHANGE DIRCTORY
+c:
+cd wsjt-env
+
+# RUN TREE
+tree
+----------
 
 [[TREE]]
 .WSJT Env Directory Tree 
 image::images/wsjt-env-tree.png[align="left"]
 
-
 ==== Download Development Packages
 
 * Save the following packages to +*C:\wsjt-env\downloads*+
-* The follow each section for specific on installation.
+* The follow each section for specific on installation
+* If Subversoin is already installed, and reachable from your PATH, you can
+skip SlikSVN download and install
 
 [horizontal]
 +*Qt5 SDK*+:: {qt5_framework} - Qt 5.2.1 Windows-32, (MinGW 4.8, OpenGL)
@@ -178,7 +204,7 @@ image::images/wsjt-env-tree.png[align="left"]
 * License Agreement, read and select
 * Start Menu: Use default selections, select next, then install
 * Go grab a coffee, this takes about +*5*+ minutes to install
-* At Finish, launch Qt Creator to verify it works, then exit.
+* At Finish, launch Qt Creator to verify it works, then exit
 
 .CMake Install
 * Run the Installer
@@ -187,46 +213,50 @@ image::images/wsjt-env-tree.png[align="left"]
 * Change Install Path to: +*C:\wsjt-env\CMake*+
 
 .Extract Hamlib
-* Unzip folder hamlib-1.2.15.3.zip
-* Rename folder +*hamlib-win32-1.2.15.3 => hamlib*+
-* Move folder +*hamlib  =>  C:\wsjt-env\hamlib*+
+* Unzip hamlib-1.2.15.3.zip
+* Copy the contents of +*hamlib-win32-1.2.15.3*+ into +*\hamlib*+. You should
+end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
+
 
 .Extract FFTW3
 * [red]*#Caution#*: FFTW3 does *not* have a top level folder
-* Move +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3f*+
-* Extract in +*C:\wsjt-env\fftw3f*+
+* Copy +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3f*+
+* Extract in +*C:\wsjt-env\fftw3f*+ into +*c:\wsjt-env\fftw3f\*+
+* Delete +*fftw-3.3.3-dll32.zip
 
 .SilkSVN Install
 * Run the Installer
 * Agree to Terms
 * Change Install Path to: +*C:\wsjt-env\SlikSvn*+
 * Select Typical, then Install
-* Note: All the SVN installers tested, added added itself to the system %PATH%
+* Note: All the SVN installers I tested, the installer added to the users
+%PATH%, without an option to selct Yes or No.
 
 [[MSTOOLS,MS Tools]]
 .MS Tools - Win-XP
 * Windows Vista and beyond should not need this 
-* In a Windows CMD terminal c:\robocopy /?
+* In a _Windows CMD Terminal_: +*c:\robocopy /?*+
 * If not installed, {mstools} first, then
 * Run the installer 
 
-==== Run WSJT ENV And Build WSJT-X
+==== Building WSJT-X with CMake
  
- * After installing the development packages, browse to +*C:\wsjt-env*+
- * Double click on +*wsjt-env-bat*+. If all packages are found, your WSJT Ent
- Terminal should list all the required package versions, see <<TOOLS,Figure-2>>.
+* After installing the development packages, browse to +*C:\wsjt-env*+
+* Double-Click or Right-Click {amp} Open +*wsjt-env.bat*+, _WSJT Env Terminal_.
+* If all packages are reachable, _WSJT Env Terminal_ should list the required
+_WSJT-X_ build packages and their respective versions, see <<TOOLS,Figure-2>>.
  
 [[TOOLS]]
 .WSJT-X Build Tools 
 image::images/wsjt-env.png[align="left"]
 
-* If any of the dependencies are missing, or the script cannot find the path,
-the give you a warning, stating which packages was not found, then exit.
+* If dependencies are missing, or the script cannot find a path, it should
+display a warning, list which package is missing, then exit.
 
 ==== Test Run
 * Browse to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open
-+*wsjt-env.bat*+.
-* In the terminal, type
++*wsjt-env.bat*+,_WSJT Env Terminal_.
+* In the terminal, type:
 
 [caption="Build: "]
 .Release Version
