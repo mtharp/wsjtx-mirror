@@ -1,4 +1,4 @@
-:prog: The pass:[Developer's] Guide
+:prog: The WSJTX Developer's Guide
 === Linux Makefile Example
 
 In order to build _WSJT-X_ form source, install the following packages:
