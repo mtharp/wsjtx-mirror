@@ -51,12 +51,6 @@ include::install-ubuntu.adoc[]
 === OS X
 include::install-mac.adoc[]
 
-// Note to developers. The URL http://developer.berlios.de/projects/wsjt/. is
-// to a very old src version of WSJT 5.7 or so. WSJTX is not listed at all.
-// Also, all the Qt4 stuff is now obsolete, and needs to be updated.
-// Instructions for source builds Win, +++*Nix+++ {amp} Mac all need to be written  
-// and Reviewed.
-
 [[SRC_CODE]]
 === Source Code
 include::install-from-source.adoc[]
@@ -72,12 +66,12 @@ include::configuration-station.adoc[]
 === Band Settings Tab
 include::configuration-band-settings.adoc[]
 
+[[TUTORIAL]]
+== Basic Operating Tutorial
+
 [[FONTS]]
 === Font Sizes
 include::font-sizes.adoc[]
-
-[[TUTORIAL]]
-== Basic Operating Tutorial
 
 [[TUT_MAIN]]
 === Main Window Settings
@@ -98,10 +92,6 @@ include::tutorial-example2.adoc[]
 [[TRANSCEIVER]]
 == Transceiver Setup
 include::transceiver-setup.adoc[]
-
-[[MAKE_QSOS]]
-== Making QSOs
-include::make-qso.adoc[]
 
 [[CONTROLS]]
 == Controls & Functions
@@ -141,10 +131,6 @@ to use them with _WSJT-X_.
 
 [[PROTOCOLS]]
 == Protocols
-
-[[JT9PRO]]
-=== The JT9 Protocol
-include::jt9-protocol.adoc[]
 
 [[TXRX]]
 == Some Implementation Details
