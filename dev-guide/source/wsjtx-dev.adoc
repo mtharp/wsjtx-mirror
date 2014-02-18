@@ -12,7 +12,7 @@ libgfortran3:i386 libc6-i386 libqt5multimedia5-plugins \
 qtmultimedia5-dev
 ----------
 
-Adjust install method to the distribution package manager.
+Adjust the install method to your distribution package manager.
 
 ==== WSJT-X Dependencies
 [horizontal]
