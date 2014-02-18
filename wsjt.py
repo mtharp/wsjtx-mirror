@@ -995,7 +995,7 @@ use the following standard procedures and *do not* exchange pertinent
 information by other means (e.g., internet, telephone, ...) while the
 QSO is in progress!
 
-FSK441, JTMS, ISCAT, JT6M:   If you have received
+JTMS, FSK441, ISCAT, JT6M:   If you have received
     ... less than both calls from the other station, send both calls.
     ... both calls, send both calls and your signal report.
     ... both calls and signal report, send R and your report.
@@ -1015,8 +1015,7 @@ JT65, JT4:   If you have received
     ... RRR, the QSO is complete.  However, the other station may not
 know this, so it is conventional to send 73 to signify that you are done.
 
-(Sending grid locators is conventional in JT65, but numerical signal
-reports may be substituted.)
+Nnumerical signal reports may be substituted for OOO and RO.
 """
     Label(screenf5,text=t,justify=LEFT).pack(padx=20)
     screenf5.focus_set()
