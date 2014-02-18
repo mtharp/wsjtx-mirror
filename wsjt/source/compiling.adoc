@@ -1,0 +1,12 @@
+:dev-guide: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html[present draft]
+
+// mail-to links
+
+A Developer's Guide for WSJT and its sister programs is in the works.
+The {dev-guide} contains full instructions for compiling
+_WSJT-X_ in Linux, and an outline of steps required in Windows.  The
+_WSJT_ user interface is programmed in Python (rather than Qt), so the
+required tools are somewhat different.  _WSJT_ can be built and used
+successfully on Windows, Linux, OS X, FreeBSD.  Instructions will be
+added here when time permits.
+

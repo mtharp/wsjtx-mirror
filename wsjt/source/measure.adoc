@@ -1,0 +1,13 @@
+Choose *Measure* from the mode menu and activate *Monitor* to perform
+measurements of relative noise power from your receiver.  The system
+will record audio for one second, compute the level of noise power,
+and display the result in dB relative to WSJT's standard level. This
+cycle is repeated every 2 seconds, with the results plotted as a green
+line and summary data displayed in the decoded text window.  You can
+use this mode to measure sun noise, antenna temperature, ground noise,
+preamp gain, and a host of other useful quantities relative to a
+chosen reference level. Be sure to disable the receiver AGC if you
+intend to use the mode for quantitative measurements. It would also be
+wise to make some test measurements (for example, using a calibrated
+attenuator) to confirm that the reported dB readings are reliable in
+your system as configured.
