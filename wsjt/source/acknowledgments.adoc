@@ -1,4 +1,10 @@
-Particular thanks are due to Ralf Koetter and Alexander Vardy, whose
+A number of WSJT users have put hundreds of hours into using and
+testing _WSJT_, finding bugs, and suggesting improvements.  
+Particular thanks are due to G3WDG, G4DEZ, G4IGO, IK0BZY, IK0SMG,
+IW4ARD, K0AWU, KI7MT, N5SIX, OE5MPL, OZ1PIF, VK3SO, VK4JMC, VK7MO,
+W5WVO, W8WN, and WA5UFH.  
+
+Special thanks are also due to Ralf Koetter and Alexander Vardy, whose
 research paper ``Soft-Decision Algebraic Decoding of Reed Solomon
 Codes,''( _IEEE Transactions on Information Theory_,'' vol. 49,
 pp. 2809-2825, 2003) introduced me to the powerful decoding algorithm
