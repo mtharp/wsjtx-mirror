@@ -14,7 +14,7 @@ qtmultimedia5-dev
 
 Adjust install method to the distribution package manager.
 
-==== WSJT-X Build and Run Dependencies
+==== WSJT-X Dependencies
 [horizontal]
 +*gcc*+:: GNU C Compiler
 +*g{plus}{plus}*+:: GNU C{plus}{plus} Compiler
@@ -54,8 +54,8 @@ svn export svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-compile
 
 .Manual Entry
 * For manual entry, start at +*BUILD_DIR=~/Projects/wsjtx-build*+ and
-perform each step that does not start with start with "#" sign. Use +Copy {amp}
-Paste+.
+perform each step that does not start with start with "#" sign. Use +*Copy {amp}
+Paste*+.
 
 .Using the Script
 * Using The Build <<BUILDSH,Script>>, Change Permission and Run
@@ -95,7 +95,7 @@ KVASD version 1.11
 
 ----------
 
-==== Run The New WSJT-X Binary
+==== Run WSJT-X
 
 [source,bash]
 ----------
@@ -118,11 +118,12 @@ For this example, the following setup was used:
 [horizontal]
 +*OS*+:: Windows Vista 64 bit
 +*Install Path*+:: C:\
-+*Paths Tested*+:: D:\, F:\ G:\tools (all passed)
-+*Setup Method*+:: wsjtx-build-setup.bat
++*Paths Tested*+:: +++D:\  F:\  G:\tools+++ (all passed)
 +*Final Path*+:: C:\wsjt-env
++*Setup Method*+:: wsjtx-build-setup.bat
++*Build Method*+:: wsjtx-build-cmake.bat
 
-.Language Used In This Setcion
+==== Language Used In This Section
 
 [horizontal]
 +*Windows CMD Terminal+*:: Standard Windows Command Terminal
@@ -131,41 +132,42 @@ For this example, the following setup was used:
 +*Build Script*+:: Batch File Used to Build WSJT-X
 +*Tool Chain File*+:: CMake Configuration File Used by the Build Script
 
-The setup script provided will create the needed folder structure, download the
-_Build Script_ +*(wsjtx-build-cmake.bat)*+ and _CMake Tool Chain_ file
-+*(wsjtx-toolchain.cmake)*+. You can save this script anywhere you like. Following
-this <<EXAMPLE,example>> will build the structure in <<TREE,Figure-2>>
-when the _Setup Script_ has been saved to +*C:\*+ directory.
+==== Environment Setup
 
-==== Setup Build Environment
+The setup script provided will create the needed folder structure, download the
++*Build Script (wsjtx-build-cmake.bat)*+ and +*CMake Tool Chain_ file
+(wsjtx-toolchain.cmake)*+. You can save this script anywhere you like. Following
+this <<EXAMPLE,example>> will build the structure in <<TREE,Figure-2>>
+when the +*Setup Script*+ has been saved to +*C:\*+ directory.
+
+In the future, this setup script will be ammended 
 
 IMPORTANT: With the exception of {svn}, The entire development environment is
 contained within: +*C:\wsjt-env*+. Using the +*WSJT Env Terminal*+, previous
 installations of +*QT*+ or +*CMake*+ should not be pose a problem to
 either environment.
 
-* Open a _Windows CMD Terminal_ and perform the following steps:
+* Open a +*Windows CMD Terminal*+ and perform the following steps:
 
 [[SETUP]]
 [source,shell]
-.Download and Run: wsjtx-build-setup.bat
 ---------
 # CHANGE DIRECTORY TO INSTALL LOCATION
 c:
 
-# SVN EXPORT WSJTX-BUILD-SETUP.BAT
+# SVN EXPORT
 svn export svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-build-setup.bat
 
-# RUN THE SETUP
+# RUN SETUP
 c:\wsjtx-build-setup.bat
 
-# WHEN COMPLETE, THE SETUP SCRIPT SHOULD EXIT && CLOSE THE TERMINAL
+# SETUP SCRIPT SHOULD EXIT
 ---------
 
 * If there were no errors, the tree should look like <<TREE,Figure-1>>
 * To check the tree, browse to +*C:\wsjt-env*+, Double-Click or Right-Click
-{amp} Open +*wsjt-env.bat*+, _WSJT Env Terminal._
-* In _WSJT Env Terminal_
+{amp} Open +*WSJT Env Terminal (wsjt-env.bat)*+
+* In +*WSJT Env Terminal*+
 
 [source,shell]
 ----------
@@ -217,7 +219,6 @@ skip SlikSVN download and install
 * Copy the contents of +*hamlib-win32-1.2.15.3*+ into +*\hamlib*+. You should
 end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
 
-
 .Extract FFTW3
 * [red]*#Caution#*: FFTW3 does *not* have a top level folder
 * Copy +*fftw-3.3.3-dll32.zip  =>  C:\wsjt-env\fftw3f*+
@@ -229,21 +230,21 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
 * Agree to Terms
 * Change Install Path to: +*C:\wsjt-env\SlikSvn*+
 * Select Typical, then Install
-* Note: All the SVN installers I tested, the installer added to the users
+* Note: All the SVN installers I tested, added itself to the users
 %PATH%, without an option to selct Yes or No.
 
 [[MSTOOLS,MS Tools]]
 .MS Tools - Win-XP
 * Windows Vista and beyond should not need this 
-* In a _Windows CMD Terminal_: +*c:\robocopy /?*+
-* If not installed, {mstools} first, then
+* In a +*Windows CMD Terminal*+: +*c:\robocopy /?*+
+* If not installed, {mstools}
 * Run the installer 
 
 ==== Building WSJT-X with CMake
  
 * After installing the development packages, browse to +*C:\wsjt-env*+
-* Double-Click or Right-Click {amp} Open +*wsjt-env.bat*+, _WSJT Env Terminal_.
-* If all packages are reachable, _WSJT Env Terminal_ should list the required
+* Double-Click or Right-Click {amp} Open +*WSJT Env Terminal (wsjt-env.bat)+.
+* If all packages are reachable, +*WSJT Env Terminal*+ should list the required
 _WSJT-X_ build packages and their respective versions, see <<TOOLS,Figure-2>>.
  
 [[TOOLS]]
@@ -254,27 +255,23 @@ image::images/wsjt-env.png[align="left"]
 display a warning, list which package is missing, then exit.
 
 ==== Test Run
-* Browse to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open
-+*wsjt-env.bat*+,_WSJT Env Terminal_.
+* Browse to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open 
++*WSJT Env Terminal (wsjt-env.bat)*+.
 * In the terminal, type:
 
-[caption="Build: "]
-.Release Version
+.Build Release version
 [source,shell]
 ---------
 wsjtx-build-cmake.bat -r
 ---------
-* New _WSJT-X_ Release Binary Location: +*C:\wsjt-env\wsjtx-install\Release\bin*+
+* _WSJT-X_ Release Binary Location: +*C:\wsjt-env\wsjtx-install\Release\bin*+
+* Note the [green]*#Release#\bin* directory
 
-Note the [green]*#Release#\bin* directory
-
-[caption="Build: "]
-.Debug Version
+.Build Debug version
 [source,shell]
 ---------
 wsjtx-build-cmake.bat -d
 ---------
 
-* New _WSJT-X_ Debug Binary Location: +*C:\wsjt-env\wsjtx-install\Debug\bin*+
-
-Note the [green]*#Debug#\bin* directory
+* _WSJT-X_ Debug Binary Location: +*C:\wsjt-env\wsjtx-install\Debug\bin*+
+* Note the [green]*#Debug#\bin* directory

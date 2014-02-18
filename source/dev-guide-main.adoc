@@ -1,7 +1,5 @@
 // Status=review
 = pass:[Developer's] Guide to WSJT and Related Programs
-//:Author: Joe Taylor, K1JT
-//:Date: {localdate}
 :badges:
 :icons:
 :numbered:
@@ -29,61 +27,58 @@ programs are yet to come.
 
 Please send feedback on this Guide to {greg_beam}.
 
+////
+[[BASEENV]]
+== Base Environment
+include::wsjt-dev-env.adoc[]
+Under Construction
+////
+
 == Source Code
+include::sourcecode-dev.adoc[]
 
-All source code for the WSJT programs is available at the open-source
-repository known as {berlios1}, under control of the version-control
-program {svn}.  You can install Subversion in Windows from the above
-link; in Linux use
+== Package Matrix
+include::pkgmatrix-dev.adoc[]
 
----------
-sudo apt-get install subversion 
----------
+////
+[[DOCSETUP]]
+== Documentation
+include::doc-dev.adoc[]
+Under Construction
 
-or an equivalent command for your Linux distribution.  
+[[MAP65]]
+== MAP-65
+include::map65-dev.adoc[]
+Under Construction
 
-You can browse the organization of files in the repository {wsjt_svn}.
-Code for program _WSJT_ lies in the +trunk+ directory, while code for
-the other programs is found in +.../branches/map65+,
-+.../branches/wsjtx+, and +.../branches/wsprx+.  Various experimental
-branches may also exist, and snapshots of code for certain released
-program versions may be obtained from the +.../tags+ directory.
+[[SIMJT]]
+== SIJT
+include::simjt-dev.adoc[]
+Under Construction
 
-You can do an anonymous checkout of source code for a specific program
-with a command of the following form:
+[[WSJT]]
+== WSJT
+include::wsjt-dev.adoc[]
+Under Construction
+////
 
----------
-svn co svn://svn.berlios.de/wsjt/branches/wsjtx 
----------
-
-If you are a member of the WSJT Development Group and have commit privileges
-to the repository, use a command like this one:
-
----------
-svn co https://user@svn.berlios.de/svnroot/repos/wsjt/branches/wsjtx
----------
-
-substituting your Berlios username for +user+.
-
-CAUTION: Please note: the HEAD of the SVN repository for any of these
-programs is likely to be an active development branch.  There is no
-guarantee that a build from every revision will be successful, nor
-that it will provide a stable executable program.
-
+[[WSJTX]]
 == WSJT-X
 include::wsjtx-dev.adoc[]
 
 ////
-Note: [appendix] is a DocBook special section reference, but appears to be 
-working with the xhtml back-end processor. This is an auto-numbering block
-To add another appendix (before or after), simply add:
+[[WSPR]]
+== WSPR
+include::wspr-dev.adoc[]
+Under Construction
 
-[appendix]
-New Section Name
-----------------
+[[WSPRX]]
+== WSPR-X
+include::wsprx-dev.adoc[]
+Under Construction
 ////
 
-[appendix]
+:numbered!:
 License
 -------
 include::../../global/license.adoc[]
