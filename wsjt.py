@@ -2510,7 +2510,7 @@ binclude=Button(iframe4c, text='Include',underline=0,
                 command=decode_include,padx=1,pady=1)
 bexclude=Button(iframe4c, text='Exclude',underline=1,
                 command=decode_exclude,padx=1,pady=1)
-btxstop=Button(iframe4c,text='TxStop',underline=4,command=txstop,
+btxstop=Button(iframe4c,text='Tx Stop',underline=4,command=txstop,
                 padx=1,pady=1)
 
 blogqso.pack(side=LEFT,expand=1,fill=X)
