@@ -1,5 +1,5 @@
 // Status=review
-= pass:[Developer's] Guide to WSJT and Related Programs
+= WSJT Developer's Guide
 :badges:
 :icons:
 :numbered:
@@ -14,18 +14,18 @@ include::../../global/links.adoc[]
 The WSJT family of programs for weak-signal amateur radio
 communication includes _WSJT_, _WSPR_, _MAP65_, _WSJT-X_, and
 _WSPR-X_.  User interfaces for _WSJT_ and _WSPR_ are written in
-Python, and build procedures for them are similar.  User interfaces
-for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and use the Qt
-framework.  Most number-crunching in the WSJT programs is done in
-Fortran.
+Python, and build procedures for these two programs are similar.  User
+interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and
+use the Qt framework, and they share most build procedures.  Most
+number-crunching in all of the WSJT programs is done in Fortran.
 
-This pass:[Developer's] Guide is a work in progress.  We currently provide
+This _Developer's Guide_ is a work in progress.  Instructions for the
+Python-based programs are still to come, but we do currently provide
 instructions for compiling _WSJT-X_ in Linux and we outline the
-prerequisites for compiling it in Windows.  Similar procedures can be
-used for _MAP65_ and _WSPR-X_.  Instructions for the Python-based
-programs are yet to come.
+prerequisites for compiling it in Windows.  Similar procedures to these
+can be used for building _MAP65_ and _WSPR-X_.
 
-Please send feedback on this Guide to {greg_beam}.
+Please send feedback on this _Guide_ to {greg_beam}.
 
 ////
 [[BASEENV]]
