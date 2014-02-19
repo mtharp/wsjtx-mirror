@@ -8,7 +8,7 @@ each of the respective sections.
 [[WINDOWSPKG]]
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
-|PACKAGE   |DOCS|WSJT|WSJT-X|WSPR|WSPR-X|MAP-65
+|Package   |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
 |CMake     |    |    |o     |    |      |      
 |FFTW3F    |    |x   |x     |x   |x     |x     
 |GNU SH    |x   |    |      |    |      |      
@@ -16,9 +16,9 @@ each of the respective sections.
 |MinGW     |    |x   |x     |x   |x     |x     
 |Portaudio |    |x   |x     |x   |x     |x     
 |Python    |x   |x   |      |x   |      |x     
-|QT5       |    |    |x     |    |      |      
-|QT4       |    |    |      |    |x     |x     
-|QWT       |    |    |      |x   |x     |      
+|Qt5       |    |    |x     |    |      |      
+|Qt4       |    |    |      |    |x     |x     
+|Qwt       |    |    |      |    |x     |x      
 |Subversion|x   |x   |x     |x   |x     |x     
 |=================================================
 
