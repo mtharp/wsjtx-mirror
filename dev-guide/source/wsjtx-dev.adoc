@@ -1,4 +1,4 @@
-:prog: The WSJTX Developer's Guide
+:prog: The WSJTX Developers Guide
 === Linux Makefile Example
 
 In order to build _WSJT-X_ form source, install the following packages:
@@ -47,11 +47,14 @@ IMPORTANT: You can perform the steps <<MANUAL,manually>> if desired. Using the
 .SVN export wsjtx-build.sh
 ----------
 # SVN CHECKOUT WSJTX-COMPILE.SH
+# Use Export to prevent .svn folder from downloading
+# Use Force to ensure that, if wsjtx-comple.sh exists, its updated
 
-svn export svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-compile.sh
+svn export --force svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-compile.sh
 
 ----------
 
+[[MANUAL]]
 .Manual Entry
 * For manual entry, start at +*BUILD_DIR=~/Projects/wsjtx-build*+ and
 perform each step that does not start with start with "#" sign. Use +*Copy {amp}

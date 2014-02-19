@@ -4,7 +4,7 @@
 # Usage:  chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh
 
 set -e
-# EDIT INSTALL LOCATION IS DESIRED
+# EDIT INSTALL LOCATION If DESIRED
 BUILD_DIR=~/Projects/wsjtx-build
 
 # NO EDITS REQUIRED BEYOND THIS POINT
@@ -30,6 +30,14 @@ make -j$j_c
 
 # MOVE WSJT-X FOLDER
 cd ../
+
+# Test for mutiple builds of same $rev_num
+# For manual entry, Copy & Paste from if .. fi as one command, then [ENTER]
+if test -d ./wsjtx-$rev_num
+then
+mv ./wsjtx-$rev_num ./wsjtx-$rev_num-$(date +%F-%H%M)
+fi
+
 mv ./wsjtx_install ./wsjtx-$rev_num
 cd ./wsjtx-$rev_num
 
