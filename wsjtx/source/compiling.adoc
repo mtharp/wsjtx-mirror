@@ -6,7 +6,7 @@
 // Web Links
 // Source File is: dev-guide/source/wsjtx-dev/wsjtx-dev.adoc
 // At some point, compiling_wsjtx_linux.html needs a name change to: wsjtx-dev.html
-// These files can only be built on Linux, dur to source-highlight being removed
+// These files can only be built on Linux, due to source-highlight being removed
 // From the windows build batch file.
 :dev-guide: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html[WSJT Developers Guide]
 

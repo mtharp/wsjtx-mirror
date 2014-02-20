@@ -29,14 +29,14 @@ include::introduction.adoc[]
 == System Requirements
 include::system-requirements.adoc[]
 
-[[COMPILING]]
-== Compiling WSPR
-include::compiling.adoc[]
+[[BASICINSTRUCTIONS]]
+== Basic Operating Instructions
+include::basicoperating.adoc[]
 
 [[INSTALL]]
 == Installation
 
-- Download _WSJT-X_ from the {homepage}. Click on _WSJT-X_ at the left
+- Download _WSPR_ from the {homepage}. Click on _WSPR_ at the left
 margin and then on the desired download link.
 
 [[INSTALL_WIN]]

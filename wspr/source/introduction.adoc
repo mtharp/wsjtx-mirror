@@ -1,9 +1,8 @@
 // Status=review
 
-_WSPR_ implements a protocol designed for probing potential propagation paths with low-power transmissions.  Normal transmissions carry a station's callsign, Maidenhead grid locator, and transmitter power in dBm.  The program can decode signals with S/N as low as -28 dB in a 2500 Hz bandwidth. Stations with internet access can automatically upload their reception reports to a central database called WSPRnet, which includes a mapping facility.  
+_WSPR_ (pronounced "whisper") stands for "Weak Signal Propagation Reporter." _WSPR_ implements a protocol designed for probing potential propagation paths with low-power transmissions. Normal transmissions carry a station's callsign, Maidenhead grid locator, and transmitter power in dBm.  The program can decode signals with S/N as low as -28 dB in a 2500 Hz bandwidth. Stations with internet access can automatically upload their reception reports to a central database called WSPRnet, which includes a mapping facility.  
 
-The entire WSJT-related effort is an open-source project, released under the GNU
-General Public License (GPL).  If you have programming or
+The entire WSJT-related effort is an open-source project, released under the GNU General Public License (GPL). If you have programming or
 documentation skills or would like to contribute to the project in
 other ways, please make your interests known to the development team.
 The project’s source-code repository can be found at {devsvn}, and
