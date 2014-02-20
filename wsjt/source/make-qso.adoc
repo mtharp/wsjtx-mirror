@@ -430,7 +430,7 @@ submodes:
 |D	|39.4
 |E	|78.8
 |F	|157.5
-|G	|157.5
+|G	|315
 |==================================
 
 The JT4 decoder tests increasing bin-widths, starting from the letter
