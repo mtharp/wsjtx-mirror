@@ -607,6 +607,8 @@ def ModeFSK441(event=NONE):
         nfreeze.set(0)
         shrx.grid(column=1,row=1,sticky='W',padx=2)
         shmsg.grid(column=1,row=0,sticky='W',padx=2)
+        shmsg.configure(state=NORMAL)
+        shrx.configure(state=NORMAL)
         report.grid(column=1,row=1,sticky='W',padx=7)
         labreport.grid(column=0,row=1,sticky='E',padx=0)
         if ltxdf: toggletxdf()
@@ -755,7 +757,8 @@ def ModeJT6M(event=NONE):
         mode.set("JT6M")
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
-        shmsg.configure(state=DISABLED)
+        shmsg.grid_forget()
+        shrx.grid_forget()
         cbzap.configure(state=NORMAL)
         cbfreeze.configure(state=NORMAL)
         itol=3

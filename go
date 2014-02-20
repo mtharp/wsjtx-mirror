@@ -1,1 +1,1 @@
-./configure --with-portaudio-include-dir=/home/joe/wsjt/trunk/portaudio-v19/include --with-portaudio-lib-dir=/home/joe/wsjt/trunk/portaudio-v19/lib/.libs
+./configure --with-portaudio-include-dir=/usr/include --with-portaudio-lib-dir=/usr/lib/i386-linux-gnu/
