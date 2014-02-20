@@ -391,7 +391,7 @@ Search decoder.
 - Switch to mode JT4F, go to subdirectory +...Samples\JT4F+, and open
 files +VK7MO_130217_105000.wav+ and +VK7MO_130217_105200.wav+
 sequentially.  These are recordings of the 10 GHz EME signal of VK7MO
-(70 cm dish, 10 W) made at G3WDG (2 m dish).  Nothing is visible on
+(77 cm dish, 40 W) made at G3WDG (3 m dish).  Nothing is visible on
 the SpecJT waterfall, and neither recording decodes by itself.  But
 _WSJT_ recognizes and saves the potentially usable symbol spectra from
 each file, and produces a perfect decode from their average.
