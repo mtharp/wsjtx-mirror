@@ -132,18 +132,6 @@ lasts for 1/21.53 = 0.04644 seconds. Every third symbol is the sync
 tone.The transmission rate of user data is therefore 21.53 x (2/3) = 14.4
 characters per second.
 
-
-.Parameters of WSJT Fast Modes
-[width="90%",cols="h,9*",frame="topbot",options="header"]
-|============================================================================
-|Mode   |T/R (s)| Mod   |  FEC    |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
-|JTMS   | 15,30 | MSK   | parity  | 8  | 1378 | 689 | 2067 | 197 | -1
-|FSK441 | 15,30 | 4-FSK |         | 25 | 441  | 441 | 1764 | 147 | -1
-|ISCAT-A| 15,30 | 42-FSK|         |512 | 21.5 | 21.5| 905  | 16.5| -17
-|ISCAT-B| 15,30 | 42-FSK|         |256 | 43.1 | 43.1|1809  | 32.3| -17
-|JT6M   | 15,30 | 44-FSK|         |512 | 21.5 | 21.5| 947  | 14.4| -10
-|============================================================================
-
 === JT65
 
 A detailed description of the JT65 protocol was published in
@@ -199,6 +187,18 @@ bits. Modulation is 4-tone frequency-shift keying at 11025 / 2520 =
 4.375 baud.  The frequency spacing between tones and total bandwidth
 depends on the submode.
 
+=== Summary
+
+.Parameters of WSJT Fast Modes
+[width="90%",cols="h,9*",frame="topbot",options="header"]
+|============================================================================
+|Mode   |T/R (s)| Mod   |  FEC    |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
+|JTMS   | 15,30 | MSK   | parity  | 8  | 1378 | 689 | 2067 | 197 | -1
+|FSK441 | 15,30 | 4-FSK |         | 25 | 441  | 441 | 1764 | 147 | -1
+|ISCAT-A| 15,30 | 42-FSK|         |512 | 21.5 | 21.5| 905  | 16.5| -17
+|ISCAT-B| 15,30 | 42-FSK|         |256 | 43.1 | 43.1|1809  | 32.3| -17
+|JT6M   | 15,30 | 44-FSK|         |512 | 21.5 | 21.5| 947  | 14.4| -10
+|============================================================================
 
 [[SLOW_TAB]]
 .Parameters of WSJT Slow Modes

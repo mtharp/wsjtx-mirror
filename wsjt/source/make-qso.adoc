@@ -368,6 +368,81 @@ displayed in the first label on the *Status Bar*, highlighted in
 color, displayed exactly as another station will receive it.  You can
 also experiment with compound callsigns using the <<UTILITIES,utility
 programs>> +jt65code+ and +jt4code+.
+ 
+=== JT4 at Microwaves
+
+To get the best out of JT4 on the upper microwave bands (in particular
+10 and 24 GHz), it has been found advantageous to use single tones for
+simple messages such as RRR and 73, after callsigns have been
+exchanged.  For this to work unambiguously, high frequency accuracy
+and stability are needed.  This can be accomplished using GPS locking
+and automatic Doppler correction on the EME path, as described in
+http://www.physics.princeton.edu/pulsar/K1JT/small_station_eme.pdf.
+The recommended mode for 10 and 24 GHz is JT4F.  The exchange of
+numerical signal reports in dB is also encouraged, to ensure that
+unknown information is exchanged.
+
+You can transmit a pure tone at frequency XXXX by entering +@XXXX+ in
+the active TX box.  The resulting signal has all its energy at a
+single frequency, so much easier to see on the waterfall.  With good
+calibration the frequency can be read directly from the waterfall.
+Once one aligns on the 1270 Hz +TUNE+ tone and checks Freeze on the
+main window there will be two red ticks on the waterfall, marking the
+RRR and 73 messages.  _WSJT_ also provides a facility to integrate
+spectra over a full transmission, to gain a further sensitivity
+improvement.  Check *Plot average JT4 spectrum* on the *Setup* menu.
+
+Single tones and their meanings are as follows:
+
+[horizontal]
+*1270 Hz*:: Tuning tone 
+*1000 Hz*:: please send messages
+*1500 Hz*:: RRR
+*1700 Hz*:: 73
+*2000 Hz*:: QRT
+
+You can insert these frequently used tones as templates on the
+*Setup | Options* window:
+
+image::images/jt4_Templates.png[align="center"]
+
+One small quirk is that if you double right click on the other
+station's callsign to pick up the report this will return the format
+to the standard (non-single tone) arrangement.  This is readily
+overcome by clicking on Gen Msgs when one is ready to TX single tones.
+
+This procedure has also proved effective for terrestrial contacts
+using JT4F on tropo-scatter, ducting, and rain-scatter.  
+
+.Setting *MinW*
+
+The *MinW* parameter allows settings of A to F.  The letters represent
+Doppler-spread widths corresponding to tone spacings of the JT4
+submodes:
+
+.Parameters of WSJT Fast Modes
+[width="40%",frame="topbot",options="header"]
+|==================================
+|Letter	|Width (Hz)
+|A	|4.4
+|B	|8.8
+|C	|17.5
+|D	|39.4
+|E	|78.8
+|F	|157.5
+|G	|157.5
+|==================================
+
+The JT4 decoder tests increasing bin-widths, starting from the letter
+set in *MinW*, to optimize decoding in relation to Doppler spread.
+It's generally best to set *MinW* one or two steps below the predicted
+full spreading, which for EME is available in the *Astronomical Data*
+window.  If the antenna beamwidth is smaller than the moon, actual
+spreading will be less.
+
+False decodes are rare at microwave frequencies, where there is little
+man-made noise.  You can safely set *Sync* to 0 to allow the program to 
+synchronize on the weakest signals.
 
 === CW Mode
 
