@@ -22,33 +22,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-//#if HAVE_STDIO_H
+#if HAVE_STDIO_H
 # include <stdio.h>
-//#endif
-//#if STDC_HEADERS
+#endif
+#if STDC_HEADERS
 # include <stdlib.h>
 # include <stddef.h>
-/*
+
 #else
 # if HAVE_STDLIB_H
 #  include <stdlib.h>
 # endif
 #endif
-*/
-//#if HAVE_UNISTD_H
-# include <unistd.h>
-//#endif
-//#if HAVE_SYS_IOCTL_H
-# include <sys/ioctl.h>
-//#endif
-//#if HAVE_FCNTL_H
-# include <fcntl.h>
-//#endif
 
-//#ifdef HAVE_LINUX_PPDEV_H
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+#if HAVE_SYS_IOCTL_H
+# include <sys/ioctl.h>
+#endif
+#if HAVE_FCNTL_H
+# include <fcntl.h>
+#endif
+
+#ifdef HAVE_LINUX_PPDEV_H
 # include <linux/ppdev.h>
 # include <linux/parport.h>
-//#endif
+#endif
 #ifdef HAVE_DEV_PPBUS_PPI_H
 # include <dev/ppbus/ppi.h>
 # include <dev/ppbus/ppbconf.h>
