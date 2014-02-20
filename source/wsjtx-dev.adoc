@@ -145,9 +145,9 @@ when the +*Setup Script*+ has been saved to +*C:\*+ directory.
 
 In the future, this setup script will be ammended 
 
-IMPORTANT: With the exception of {svn}, The entire development environment is
+IMPORTANT: With the exception of {svn}, the entire development environment is
 contained within: +*C:\wsjt-env*+. Using the +*WSJT Env Terminal*+, previous
-installations of +*QT*+ or +*CMake*+ should not be pose a problem to
+installations of +*Qt*+ or +*CMake*+ should not pose a problem to
 either environment.
 
 * Open a +*Windows CMD Terminal*+ and perform the following steps:
@@ -198,7 +198,7 @@ skip SlikSVN download and install
 +*CMake*+:: {cmake} - Win32 Installer
 +*Hamlib*+:: {hamlib} - Hamlib 1.2.15.3.zip
 +*FFTW3*+:: {fftw3} - 32-bit version: fftw-3.3.3-dll32.zip
-+*SVN*+:: {svn} - SilkSVN 1.8.5.x 32-bit
++*SVN*+:: {svn} - SlikSVN 1.8.5.x 32-bit
 +*MS Tools*+:: {mstools} - Microsoft Tool Kit
 
 .QT5.2.1 Install
@@ -220,7 +220,7 @@ skip SlikSVN download and install
 .Extract Hamlib
 * Unzip hamlib-1.2.15.3.zip
 * Copy the contents of +*hamlib-win32-1.2.15.3*+ into +*\hamlib*+. You should
-end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
+end up with: +*c:\wsjt-env\hamlib\bin hamlib\lib hamlib\include ..*+
 
 .Extract FFTW3
 * [red]*#Caution#*: FFTW3 does *not* have a top level folder
@@ -228,12 +228,12 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
 * Extract in +*C:\wsjt-env\fftw3f*+ into +*c:\wsjt-env\fftw3f\*+
 * Delete +*fftw-3.3.3-dll32.zip*+
 
-.SilkSVN Install
+.SlikSVN Install
 * Run the Installer
 * Agree to Terms
 * Change Install Path to: +*C:\wsjt-env\SlikSvn*+
 * Select Typical, then Install
-* Note: All the SVN installers I tested, added itself to the users
+* Note: Each SVN installer I tested, added itself to the users
 %PATH%, without an option to selct Yes or No.
 
 [[MSTOOLS,MS Tools]]
@@ -246,7 +246,7 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\bin hamlib\include ..*+
 ==== Building WSJT-X with CMake
  
 * After installing the development packages, browse to +*C:\wsjt-env*+
-* Double-Click or Right-Click {amp} Open +*WSJT Env Terminal (wsjt-env.bat)+.
+* Double-Click or Right-Click {amp} Open +(wsjt-env.bat)+.
 * If all packages are reachable, +*WSJT Env Terminal*+ should list the required
 _WSJT-X_ build packages and their respective versions, see <<TOOLS,Figure-2>>.
  
@@ -267,14 +267,11 @@ display a warning, list which package is missing, then exit.
 ---------
 wsjtx-build-cmake.bat -r
 ---------
-* _WSJT-X_ Release Binary Location: +*C:\wsjt-env\wsjtx-install\Release\bin*+
-* Note the [green]*#Release#\bin* directory
+* Location: +*C:\wsjt-env\wsjtx-install\Release\bin*+
 
 .Build Debug version
 [source,shell]
 ---------
 wsjtx-build-cmake.bat -d
 ---------
-
-* _WSJT-X_ Debug Binary Location: +*C:\wsjt-env\wsjtx-install\Debug\bin*+
-* Note the [green]*#Debug#\bin* directory
+* Location: +*C:\wsjt-env\wsjtx-install\Debug\bin*+

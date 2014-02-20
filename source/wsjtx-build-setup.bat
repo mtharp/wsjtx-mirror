@@ -63,7 +63,7 @@ ECHO Downloaing WSJT-X Build Files
 SET WSJTURL=svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source
 REM -- Use force to pull new updates from SVN
 SET CHECKOUT=svn export -q --force %WSJTURL%
-SET FILE_LIST=wsjtx-env.txt wsjtx-build-cmake.txt wsjtx-toolchain.cmake
+SET FILE_LIST=wsjtx-env.bat wsjtx-build-cmake.bat wsjtx-toolchain.cmake
 FOR %%f IN (%FILE_LIST%) DO (
 ECHO   downloading: %%f
 %CHECKOUT%/%%f %BASED%/
