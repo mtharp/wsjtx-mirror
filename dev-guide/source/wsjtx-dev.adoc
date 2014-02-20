@@ -189,7 +189,7 @@ image::images/wsjt-env-tree.png[align="left"]
 ==== Download Development Packages
 
 * Save the following packages to +*C:\wsjt-env\downloads*+
-* The follow each section for specific on installation
+* Then follow each section for installation
 * If Subversoin is already installed, and reachable from your PATH, you can
 skip SlikSVN download and install
 
