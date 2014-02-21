@@ -59,7 +59,7 @@ work before launching _WSJT-X_, as suggested in the <<TUT_XCVR,Transceiver Setup
 above.
 
 Question 9::
-How do I know what settings to use for rig control (CAT) and PTT?::
+How do I know what settings to use for rig control (CAT) and PTT?
 
 Your radios manual will have these settings in a section for computer
 setup, digital modes and TNC interface specifications. These may also
@@ -75,57 +75,52 @@ configuration that works correctly. Some experimentation is likely to
 be necessary.
 
 Question 10::
-How dows _WSHT-X use both VFOs when operating split mode?
+How does _WSJT-X_  use both  VFOs when operating in split mode?
 
-John Nelson, G4KLA explains it this way:
+Let's assume that split mode is set on _WSJT-X_ and the rig.  This is the normal mode of 
+operating. We also assume that {plus}2 kHz is not set and  that your receiver's bandwidth is at 
+least 4000 Hz.
 
-Lets assume that split mode is set on WSJTX and the rig.  This is the normal 
-mode of operating. We also assume that {plus}2 kHz is not set and  that your
-receivers bandwidth is at least 40 00 Hz.
+Using the 20M band as an example, let's observe the waterfall window while looking for 
+contacts.   VFO-A, our receiving VFO, will initially be set to 14.076MHz, the nominal calling 
+frequency for JT65.  We know _WSJT-X_ will always generate an audio signal in the range 
+1500Hz-2000Hz.  We now put the waterfall cursor between 1500Hz and 2000Hz at 1700Hz. 
+We then see VFO-B, our transmit VFO, will also be set to 14.0760MHz. That's because 
+1700Hz lies within the 1500Hz-2000Hz range, so no adjustment to the transmit frequency is 
+required.  Our signal out will be 14.076MHz {plus} 1700Hz, or 14.077700MHz, which is what would 
+show in the _WSJT-X_ log if we logged a QSO at these settings.
 
-Using the 20M band as an example, lets observe the waterfall window while
-looking for contacts. VFOA, our receiving VFO, will initially be set to 14.076 
-MHz, the nominal calling frequency for JT65.  We know _WSJTX_ will always
-generate an audio signal in the range 1500 Hz - ­2000  Hz.  We now put the
-waterfall cursor between 1500 Hz and 2000 Hz at 1700 Hz. We then see VFOB,
-our transmit VFO, will also be set to 14.0760 MHz. Thats because 1700 Hz lies
-within the 1500 Hz - ­2000 Hz range, so no adjustment to the transmit frequency
-is required.  Our signal out will be 14.076 MHz {plus} 1700 Hz, or 14.077700 MHz,
-which is what would show in the _WSJTX_ log if we logged a QSO at these settings.
+Now we put the cursor between 2000Hz-2500Hz at 2200Hz. We know the audio is still 
+generated in the 1500Hz-2000Hz range. But now we see the VFO-B transmit frequency is 
+increased by 500Hz to 14.0765MHz, which is necessary since the audio is between 1500Hz 
+and 2000Hz. The transmitted frequency will now  be 14.0765MHz {plus} 1700Hz, or 
+14.07820MHz.  
 
-Now we put the cursor between 2000 Hz-­2500 Hz at 2200 Hz. We know the audio is
-still generated in the 1500 Hz - ­2000 Hz range. But now we see the VFOB transmit
-frequency is increased by 500 Hz to 14.0765 MHz, which is necessary since the
-audio is between1500 Hz and 2000 Hz. The transmitted frequency will now  be
-14.0765 MHz {plus} 1700 Hz, or 14.077820 MHz.. 
+As a final example, let's consider what happens if the cursor is below the 1500Hz-2000Hz 
+range on the waterfall, for example 1200Hz.  VFO-B must be now be reduced 500Hz to 
+14.0755MHz to keep the transmitted audio in the 1500Hz-2000Hz range.  This time we use 
+14.0755MHz {plus} 1700Hz, or  14.077200 MHz. 
 
-As a final example, lets consider what happens if the cursor is below the 1500 
-Hz­ - 2000 Hz range on the waterfall, for example 1200Hz. VFOB must be now be
-reduced 500Hz to 14.0755MHz to keep the transmitted audio in the 1500 Hz - ­2000 Hz
-range.  This time we use 14.0755 MHz {plus} 1700 Hz, or  14.077200 MHz.
+That's great for JT65, but how does it work for JT9 split mode?
+ 
+Similar to the above, if you want to work JT9 and your cursor is, for example, at 3700Hz then 
+VFO-B will be reset to 14.078000MHz.    That is, 3700Hz - 1700Hz = 2000Hz {plus} 14.076MHz, or 
+14.078000MHz.   If you remember that the audio frequency is always in the range 1500-2000 
+then you can see that VFO-B must be adjusted to generate the correct transmitted frequency.
 
-Thats great for JT65, but how does it work for JT9 split mode?::
+Fine business for a rig with wide bandwidth, but mine is older and has a 2500Hz bandwidth. 
+How do I use split mode on my rig?
 
- Similar to the above, if you want to work JT9 and your cursor is, for example, 
-at 3700Hz then VFOB will be reset to 14.078000MHz.  That is, 
-3700 Hz - 1700Hz &#61; 2000Hz {plus} 14.076MHz, or 14.078000MHz. If you remember
-that the audio frequency is always in the range 1500 Hz­ 2000Hz then you can see
-that VFOB must be adjusted to generate the correct transmitted frequency.
+If your rig cannot be set to a received bandwidth 4000Hz, but is limited to 2500Hz, for example, 
+you still set the rig to split mode and _WSJT-X_ to Split Tx in the Station settings tab.  Since you 
+obviously cannot receive signals above 2500 Hz, if you want to operate primarily in the JT9 
+frequency range you will need to select the {plus}2 kHz button adjacent to the band selection pull-
+down. Then VFO-A will then be set up 2kHz to 14.078MHz.  The Waterfall display is relative to 
+the RX frequency, namely 14.078000MHz so that the JT9 Band is now between roughly 500Hz and 
+2500Hz on the waterfall display.  If the cursor is at 1700Hz, then the same calculations above 
+results in VFO-B being set to 14.078000MHz. 
 
-Fine business for a rig with wide bandwidth, but mine is older and has a 2500Hz 
-bandwidth. How do I use split mode on my rig?::
- 
-If your rig cannot be set to a received bandwidth 4000 Hz, but is limited to
-2500 Hz, for example, you still set the rig to split mode and _WSJT­X_ to
-Split Tx in the Station settings tab.  Since you obviously cannot receive signals
-above 2500 Hz, if you want to operate primarily in the JT9 frequency range you
-will need to select the {plus}2 kHz button adjacent to the band selection pull­down.
-Then VFO­A will then be set up 2 kHz to 14.078MHz.  The Waterfall display is
-relative to the RX frequency, namely 14.078000 MHz so that the JT9 Band is now
-between roughly 500 Hz and 2500 Hz on the waterfall display.  If the cursor is
-at 1700 Hz, then the same calculations above results in VFO­B being set to
-14.078000 MHz.
+It is important to note that you will ONLY use the {plus}2kHz option if (1) your receiver has limited 
+bandwidth AND (2) you want to operate in the JT9 band.   If you want to go back to operate on all 
+of JT65, simply uncheck the {plus}2 kHz option. 
 
-It is important to note that you will ONLY use the {plus}2kHz option if (1) your
-receiver has limited bandwidth AND (2) you want to operate in the JT9 band. If you
-want to go back to operate on all of JT65, simply uncheck the {plus}2 kHz option.   
