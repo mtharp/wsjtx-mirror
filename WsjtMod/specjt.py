@@ -17,7 +17,8 @@ try:
 except:
     from Numeric import zeros, multiarray
 #    print "specjt importing from Numeric"
-import Image, ImageTk, ImageDraw
+#import Image, ImageTk, ImageDraw
+from PIL import Image, ImageTk, ImageDraw
 from palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 #import wsjt                         #Is this OK to do?

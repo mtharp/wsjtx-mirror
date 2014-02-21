@@ -17,7 +17,9 @@ except:
     from Numeric import zeros
 #    print "importing from Numeric"
 import dircache
-import Image,ImageTk  #, ImageDraw
+#import Image,ImageTk  #, ImageDraw
+from PIL import Image
+from PIL import ImageTk
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
