@@ -1,12 +1,12 @@
 # Makefile for Windows
-# For re-direct:
-#   C> make > junk 2>&1
+# Re-direct stdout and stderr:     cmd.exe              bash
+#                              make > junk 2>&1      make &> junk
 
 CC = /mingw/bin/gcc
 FC = /mingw/bin/g95
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss
-CFLAGS = -I. -fbounds-check
+FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
+CFLAGS = -I. -DWIN32
 
 # Default rules
 %.o: %.c
@@ -20,92 +20,55 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    wsjt10.exe
+all:    libjt.a wsjt10.exe jt65code.exe jt4code.exe
 
-OBJS1 = JT65code.o nchar.o grid2deg.o packmsg.o packtext.o \
-	packcall.o packgrid.o unpackmsg.o unpacktext.o \
-	unpackcall.o unpackgrid.o deg2grid.o \
-	chkmsg.o getpfx1.o getpfx2.o k2grid.o grid2k.o \
-	interleave63.o graycode.o set.o igray.o \
-	init_rs.o encode_rs.o decode_rs.o \
-	wrapkarn.o
+OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
+	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \
+	bzap.o chk441.o chkhist.o chkmsg.o coord.o db.o dcoord.o \
+	decode1.o decode2.o decode3.o decode4.o decode65.o decode6m.o \
+	decode_rs.o decodems.o deep4.o deep65.o deg2grid.o demod64a.o \
+	detect.o dot.o dtrim.o echogen.o encode232.o encode4.o \
+	encode65.o encode_rs.o entail.o extract.o extract4.o fano.o \
+	fano232.o fil651.o fil652.o fil653.o fivehz.o flat1.o flat2.o \
+	flatten.o foldms.o four2a.o fthread.o ftpeak65.o ftsky.o gen4.o \
+	gen441.o gen65.o gen6m.o gencw.o gencwid.o geniscat.o genmet.o \
+	genms.o gentone.o geocentric.o geodist.o get_fname.o getmet4.o \
+	getpfx1.o getpfx2.o getsnr.o gran.o graycode.o grid2deg.o \
+	grid2k.o hipass.o horizspec.o hscroll.o igray.o indexx.o \
+	init_rs.o interleave4.o interleave63.o iscat.o jtaudio.o jtms.o \
+	k2grid.o lenms.o limit.o longx.o lpf1.o makepings.o match.o \
+	moon2.o moondop.o morse.o msdf.o msgtype.o mtdecode.o nchar.o \
+	nhash.o packcall.o packgrid.o packmsg.o packpfx.o packtext.o \
+	pctile.o peakup.o pfxdump.o ping.o pix2d.o pix2d65.o ps.o \
+	ps4.o ptt.o resample.o rfile.o rfile2.o s2shape.o savedata.o \
+	set.o setup65.o setupms.o short65.o slope.o smo.o smooth.o \
+	sort.o spec2d.o spec2d65.o spec441.o spread.o ssort.o \
+	start_threads.o stdecode.o sun.o symsync65.o sync.o sync4.o \
+	sync65.o syncf0.o syncf1.o synciscat.o syncms.o synct.o \
+	tab.o thnix.o tm2.o tmoonsub.o toxyz.o tweak1.o tweak2.o \
+	unpackcall.o unpackgrid.o unpackmsg.o unpackpfx.o unpacktext.o \
+	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
+	xcor4.o xfft.o xfft2.o 
 
-JT65code.exe: $(OBJS1)
-	$(FC) $(FFLAGS) -o JT65code.exe $(OBJS1)
+libjt.a: $(OBJS1)
+	ar cr libjt.a $(OBJS1)
+	ranlib libjt.a
 
-OBJS2C   = init_rs.o encode_rs.o decode_rs.o jtaudio.o fano.o \
-	tab.o nhash.o 
-
-OBJS4	= t60.o wsjt4.o sync4.o avemsg4.o decode4.o ps4.o flat1.o \
-	xcor4.o slope.o peakup.o db.o deep4.o getmet4.o extract4.o \
-	four2a.o pctile.o encode4.o interleave4.o fano232.o unpackmsg.o \
-	chkmsg.o packmsg.o entail.o encode232.o unpacktext.o unpackcall.o \
-	unpackgrid.o grid2k.o getpfx2.o packtext.o getpfx1.o packcall.o \
-	k2grid.o packgrid.o deg2grid.o grid2deg.o nchar.o sort.o ssort.o \
-	thnix_stub.o
-t60.exe:$(OBJS4)
-	$(FC) -o t60.exe $(OBJS4) libfftw3f_win.a 
-
-OBJS5	= t50.o getmu.o bessi0.o bessi1.o bessi.o gammln.o pdfChisq.o \
-	getmet4.o
-t50.exe:$(OBJS5)
-	$(FC) -o t50 $(OBJS5)
-
-OBJS6	= techo.o analytic.o four2b.o db.o
-techo.exe: $(OBJS6)
-	$(FC) -o techo.exe $(OBJS6) libfftw3f_win.a
-
-F2PYONLY = ftn_init ftn_quit audio_init spec getfile azdist0 astro0 chkt0
-
-SRCS2F90 = wsjt1.f90 a2d.f90 abc441.f90 astro0.f90 audio_init.f90 azdist0.f90 \
-	decode1.f90 decode2.f90 decode3.f90 ftn_init.f90 \
-	ftn_quit.f90 get_fname.f90 getfile.F90 horizspec.f90 hscroll.f90 \
-	pix2d.f90 pix2d65.f90 rfile.f90 savedata.f90 spec.f90 match.f90 \
-	wsjtgen.f90 fivehz.f90 chkt0.f90 deep65.f90 makepings.f90 \
-	packpfx.f90 unpackpfx.f90 genms.f90 decodems.f90 setupms.f90 \
-	thnix.f90 tweak1.f90 smo.f90 analytic.f90 geniscat.f90 synciscat.f90 \
-	iscat.f90 four2a.f90 hipass.f90 msdf.f90 syncms.f90 lenms.f90 \
-	jtms.f90 foldms.f90 avecho.f90 echogen.f90 alignmsg.f90 \
-	chk441.f90 gen441.f90 tm2.f90 ana932.f90 tweak2.f90 dtrim.f90 \
-	wsjt4.f90 decode4.f90 encode4.f90 getmet4.f90 extract4.f90 \
-	deep4.f90 avemsg4.f90 encode232.f90 fano232.f90 sync4.f90 \
-	xcor4.f90 gen4.f90 ps4.f90 interleave4.f90 rfile2.f90 \
-	spread.f90 
-
-
-SRCS2F77 = avesp2.f bzap.f spec441.f spec2d.f mtdecode.f stdecode.f \
-	indexx.f s2shape.f flat2.f gen65.f entail.f decode6m.f \
-	genmet.f chkmsg.f astro.f extract.f gen6m.f \
-	gentone.f syncf0.f syncf1.f synct.f avemsg6m.f \
-	set.f flatten.f db.f pctile.f sort.f ssort.f ps.f smooth.f ping.f \
-	longx.f peakup.f sync.f detect.f avemsg65.f decode65.f demod64a.f \
-	encode65.f chkhist.f flat1.f gencw.f \
-	gencwid.f msgtype.f getpfx1.f \
-	getpfx2.f getsnr.f graycode.f grid2k.f interleave63.f k2grid.f \
-	limit.f lpf1.f morse.f nchar.f packcall.f packgrid.f \
-	packmsg.f packtext.f setup65.f short65.f slope.f spec2d65.f \
-	sync65.f unpackcall.f unpackgrid.f unpackmsg.f unpacktext.f \
-	xcor.f xfft.f xfft2.f wsjt65.f azdist.f coord.f dcoord.f \
-	deg2grid.f dot.f ftsky.f geocentric.f GeoDist.f grid2deg.f \
-	moon2.f MoonDop.f sun.f toxyz.f pfxdump.f \
-	ftpeak65.f fil651.f fil652.f fil653.f symsync65.f 
-
-SRCS2C   = resample.c ptt.c igray.c wrapkarn.c start_threads.c \
-	usleep.c fthread.c tmoonsub.c gran.c
+F2PY90 = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 \
+	 getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
 
 wsjt10.exe: WsjtMod/Audio.pyd wsjt.spec
 	c:/python27/python c:/python27/pyinstaller-1.5.1/Build.py wsjt.spec
 	mv dist/wsjt.exe wsjt10.exe
 
-WsjtMod/Audio.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) 
+WsjtMod/Audio.pyd: libjt.a $(F2PY90)
 	c:/python27/python c:/python27/scripts/f2py.py -c -I. \
 	--quiet --fcompiler=g95 \
 	--opt="-cpp -fbounds-check -O2" \
 	--compiler=mingw32 \
-	$(OBJS2C) libportaudio.a libfftw3f_win.a libsamplerate.a \
+	libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a \
 	libpthreadGC2.a -lwinmm -m Audio \
-	only: $(F2PYONLY) : \
-	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
+	$(F2PY90)
 	mv Audio.pyd WsjtMod/Audio.pyd
 
 wsjt.spec: wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
@@ -113,29 +76,13 @@ wsjt.spec: wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 	c:/python27/python c:/python27/pyinstaller-1.5.1/makespec.py --icon \
 	   wsjt.ico --tk --onefile wsjt.py
 
-OBJS7 = jt4metrics.o gran.o
-jt4metrics.exe: $(OBJS7)
-	$(FC) -o jt4metrics.exe $(FFLAGS) $(OBJS7)
+OBJS2 = JT65code.o 
+jt65code.exe: $(OBJS2) libjt.a
+	$(FC) -o jt65code.exe $(OBJS2) libjt.a
 
-OBJS8 = simsync.o gran.o
-simsync.exe: $(OBJS8)
-	$(FC) -o simsync.exe $(FFLAGS) $(OBJS8)
-
-OBJS9 = jt4code.o packmsg.o entail.o encode232.o interleave4.o \
-	fano232.o unpackmsg.o packtext.o getpfx1.o packcall.o k2grid.o \
-	packgrid.o unpacktext.o unpackcall.o unpackgrid.o grid2k.o \
-	getpfx2.o nchar.o deg2grid.o grid2deg.o getmet4.o encode4.o \
-	chkmsg.o
-jt4code.exe: $(OBJS9)
-	$(FC) -o jt4code.exe $(FFLAGS) $(OBJS9)
-
-OBJS10 = simjt4.o gran.o packmsg.o entail.o encode232.o interleave4.o \
-	fano232.o unpackmsg.o packtext.o getpfx1.o packcall.o k2grid.o \
-	packgrid.o unpacktext.o unpackcall.o unpackgrid.o grid2k.o \
-	getpfx2.o nchar.o deg2grid.o grid2deg.o getmet4.o encode4.o \
-	chkmsg.o
-simjt4.exe: $(OBJS10)
-	$(FC) -o simjt4.exe $(FFLAGS) $(OBJS10)
+OBJS3 = jt4code.o 
+jt4code.exe: $(OBJS3)
+	$(FC) -o jt4code.exe $(OBJS3) libjt.a
 
 jtaudio.o: jtaudio.c
 	$(CC) $(CFLAGS) -c -DWin32 jtaudio.c
@@ -150,4 +97,4 @@ decode_rs.o: decode_rs.c
 .PHONY : clean
 
 clean:
-	rm -f *.o JT65code.exe wsjt10.exe WsjtMod/Audio.pyd
+	rm -f *.o libjt.a wsjt10.exe jt65code.exe jt4code.exe WsjtMod/Audio.pyd
