@@ -85,16 +85,6 @@ OBJS3 = jt4code.o
 jt4code.exe: $(OBJS3)
 	$(FC) -o jt4code.exe $(OBJS3) libjt.a
 
-jtaudio.o: jtaudio.c
-	$(CC) $(CFLAGS) -c -DWin32 jtaudio.c
-
-init_rs.o: init_rs.c
-	$(CC) $(CFLAGS) -c -DBIGSYM=1 init_rs.c
-encode_rs.o: encode_rs.c
-	$(CC) $(CFLAGS) -c -DBIGSYM=1 encode_rs.c
-decode_rs.o: decode_rs.c
-	$(CC) $(CFLAGS) -c -DBIGSYM=1 decode_rs.c
-
 .PHONY : clean
 
 clean:
