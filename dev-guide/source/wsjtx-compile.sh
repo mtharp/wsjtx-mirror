@@ -3,11 +3,11 @@
 # Part of the WSJT Documentation Project
 # Usage:  chmod +x ./wsjtx-compile.sh && ./wsjtx-compile.sh
 
+# EXIT IF ERRORS
 set -e
-# EDIT INSTALL LOCATION If DESIRED
-BUILD_DIR=~/Projects/wsjtx-build
 
-# NO EDITS REQUIRED BEYOND THIS POINT
+# SET WSJT-ENV DIRECTORY
+BUILD_DIR=~/wsjt-env/wsjtx-build
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 

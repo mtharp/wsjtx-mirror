@@ -6,26 +6,17 @@ SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 COLOR 1B
 TITLE WSJT Environment
-CLS
 REM -- Be careful with variables, if incorrect, WSJT Env Terminal will fail.
 SET TARGET=%~dp0
 IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
 SET BASED=%TARGET%
-SET CMAKED=%BASED%\CMake\bin
-SET SVND=%BASED%\SlikSvn\bin
-SET QTD=%BASED%\Qt5\5.2.1\mingw48_32\bin
-SET TOOLSD=%BASED%\Qt5/Tools/mingw48_32\bin
-SET PATH=%BASED%;%CMAKED%;%SVND%;%QTD%;%TOOLSD%;%PATH%
+SET SVND=%BASED%\subversion\bin
+SET PATH=%BASED%;%SVND%;%PATH%
 CD /D %BASED%
 
 REM -- CHECK REQUIRED TOOLS
-cmake --version >nul 2>null || SET APP=CMake && GOTO ERROR1
-qmake --version || SET APP=QMake && GOTO ERROR1
+CLS
 svn --version >nul 2>null || SET APP=SVN && GOTO ERROR1
-mingw32-make --version >nul 2>null || SET APP=Mingw32-Make && GOTO ERROR1
-gfortran --version >nul 2>null || SET APP=Gfortran && GOTO ERROR1
-gcc --version >nul 2>null || SET APP=GCC && GOTO ERROR1
-g++ --version >nul 2>null || SET APP=G++ && GOTO ERROR1
 GOTO CONTINUE
 
 REM - TOOL CHAIN ERROR MESSAGE
@@ -34,7 +25,7 @@ COLOR 1C
 CLS
 ECHO.
 ECHO ------------------------------
-ECHO       TOOL CHAIN ERROR
+ECHO       SVN NOT FOUND
 ECHO ------------------------------
 ECHO :: %APP%Was Not Found.
 ECHO.
@@ -49,17 +40,9 @@ EXIT /B 1
 REM - CONTUNE MAIN SCRIPT
 :CONTINUE
 CLS
-ECHO.
 ECHO ---------------------------
-ECHO Build Environment is Using
+ECHO    Welcome to WSJT Env
 ECHO ---------------------------
-  cmake --version |findstr "cmake"
-  qmake --version |findstr "QMake"
-  svn --version |findstr "svn,"
-  mingw32-make -v |findstr "Make"
-  gfortran --version |findstr "Built"
-  gcc --version |findstr "gcc"
-  g++ --version |findstr "g++"
 ECHO.
 ECHO To Build WSJT-X using CMake
 ECHO ---------------------------
