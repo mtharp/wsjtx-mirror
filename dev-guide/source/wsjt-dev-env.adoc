@@ -1,0 +1,56 @@
+
+Before you can start developing _WSJT_ applications, you must first set up your
+environment. The _{page}_ environment will use +*WSJT-ENV*+ as the containment
+area for all activity. Reason(s) for this containment are:
+
+* Establish a fixed structure to work from
+* Isolate the _{page}_ examples from host system installations
+* Produce repeatable results from application builds
+* Create an experimental area to test installation configuraitons
+* Minimize the installation footprint {amp} complexity v.s. Virtual Environments
+* Provide a functional environment for non-developer application testing
+
+_{page}_ examples use the same +*(path)*+ configuration throughout the guide:
+
+* +*For Linux / OS X*+, all scripts and build locations are relative to:
+	- +*$USER/wsjt-env*+
+
+//	
+
+* +*For Windows*+, all scripts, builds and package installations are relative to:
+	- +*(path)\wsjt-env*+
+	
+In all cases, +*wsjt-env*+ is added to the user spcified location, which becomes
+the +*(BASE)*+ path for all activity. 
+
+[[LINPATH]]
+.Linux / OS X Examples 
+[horizontal]
++User Selection $USER/+:: Final Path =>  /home/$USER/wsjt-env <= [green]#Recommended Locaiton#
++User Selection $USER/Projects/+:: Final Path =>  /home/$USER/Projects/wsjt-env
+
+[[WINPATH]]
+.Windows Examples
+[horizontal]
++User Selection C:\+:: Final Path =>  C:\wsjt-env <= [green]#Recomended Location#
++User Selection C:\Tools+:: Final Path => C:\Tools\wsjt-env
+
+IMPORTANT: For Windows, User v.s Administrator Permissions can be problomatic.
+Therefore, it is recommended that +(path)+ be located outside of %USER% space,
+and remain close to the dirve root(s) C:\  D:\  E:\ etc.
+
+
+[[PKGTYPE]]
+Development packags can be broken down into two groups:
+* Primary Support {amp} Development Packages +*(PSP)*+ / +*(SDK)*+
+* Library or Support Package +*(LIB)*+
+
+See <<WINDOWSPKG,Table-1>> for an over veiw of _WSJT_ application v.s. +(PKGS)+
+required +(PKGSdevelopment package
+
+[[WSJTENV]]
+=== Base Install
+
+Under Construction.
+
+
