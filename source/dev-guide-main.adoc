@@ -26,14 +26,15 @@ _WSJT-X_ in Linux and we outline the prerequisites for compiling it in Windows.
 Similar procedures to these can be used for building _MAP65_ and _WSPR-X_.
 
 ////
-Communications should be moved to a gloabl file to prevent rework / repeat in the
+Communications should be moved to a global file to prevent rework / repeat in the
 various guides.
-include::../global/comminication.adoc
+include::../global/communication.adoc
 ////
 
 == Communication
 
-The following are established communication channels with the WSJT group.
+The following are established General {amp} Development communication channels
+for the WSJT Group.
 
 .General Information
 * Main Site: {homepage}

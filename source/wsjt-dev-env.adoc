@@ -1,4 +1,4 @@
-
+[[BASE_ENV]]
 Before you can start developing _WSJT_ applications, you must first set up your
 environment. The _{page}_ environment will use +*WSJT-ENV*+ as the containment
 area for all activity. Reason(s) for this containment are:
@@ -6,51 +6,98 @@ area for all activity. Reason(s) for this containment are:
 * Establish a fixed structure to work from
 * Isolate the _{page}_ examples from host system installations
 * Produce repeatable results from application builds
-* Create an experimental area to test installation configuraitons
+* Create an experimental area to test installation configurations
 * Minimize the installation footprint {amp} complexity v.s. Virtual Environments
 * Provide a functional environment for non-developer application testing
 
-_{page}_ examples use the same +*(path)*+ configuration throughout the guide:
+=== Language {amp} Terms
 
-* +*For Linux / OS X*+, all scripts and build locations are relative to:
-	- +*$USER/wsjt-env*+
+The follwoing language is used throughout the {page}
 
+[horizontal]
++*WSJT Env Terminal*+:: Windows CMD Terminal set up specifically for WSJT work 
++*Windows CMD Terminal+*:: Standard Windows Command Terminal
++*XTerm+*:: X-Terminal in Linux, BSD and OS X
++*Setup Script*+:: Batch or Bash script used to set up WSJT environment
++*Build Script*+:: Batch or Bash Script used to build applications
++*Tool Chain File*+:: CMake configuration file used by build scripts
+
+[[PATHCFG]]
+=== Path Configuration 
+
+All _{page}_ examples use the same +*(path)*+ configuration throughout the guide:
+
+* +*LINUX*+, all scripts and build locations will be in:
+	- /home/$USER/wsjt-env <= [green]*#recommended location#*
+	- /home/$USER/Projects/wsjt-env - (alternative example)
 //	
+* +*WINDOWS*+, all scripts, build and package installations will be in:
+	- C:\wsjt-env <= [green]*#recommended location#*
+	- C:\Tools\wsjt-env - (alternative example)
 
-* +*For Windows*+, all scripts, builds and package installations are relative to:
-	- +*(path)\wsjt-env*+
-	
-In all cases, +*wsjt-env*+ is added to the user spcified location, which becomes
-the +*(BASE)*+ path for all activity. 
+IMPORTANT: The {page} will use the <<PATHCFG,recommended>> install locations
+for both *Windows and Linux.*	
 
-[[LINPATH]]
-.Linux / OS X Examples 
-[horizontal]
-+User Selection $USER/+:: Final Path =>  /home/$USER/wsjt-env <= [green]#Recommended Locaiton#
-+User Selection $USER/Projects/+:: Final Path =>  /home/$USER/Projects/wsjt-env
+[[WINBASESETUP]]
+=== Windows Base Setup
+The {page} will be using +*SlikSVN 32bit*+ as the example. If you already have
+{svn} installed, ensure that it is in your %PATH% and reachable from a Windows
+CMD Terminal, otherwise continue:
 
-[[WINPATH]]
-.Windows Examples
-[horizontal]
-+User Selection C:\+:: Final Path =>  C:\wsjt-env <= [green]#Recomended Location#
-+User Selection C:\Tools+:: Final Path => C:\Tools\wsjt-env
+* Open Windows CMD Terminal, then:
+[source,shell]
+----------
+# CHANGE DIRVE TO
+c:
 
-IMPORTANT: For Windows, User v.s Administrator Permissions can be problomatic.
-Therefore, it is recommended that +(path)+ be located outside of %USER% space,
-and remain close to the dirve root(s) C:\  D:\  E:\ etc.
+# MAKE DIRECTORY - (copy & paste)
+mkdir wsjt-env wsjt-env\subversion wsjt-env\downloads
 
+# CLOSE Windows CMD Terminal and CONTINUE
+----------
 
-[[PKGTYPE]]
-Development packags can be broken down into two groups:
-* Primary Support {amp} Development Packages +*(PSP)*+ / +*(SDK)*+
-* Library or Support Package +*(LIB)*+
+* Download {svn} to +*C:\wsjt-env\downloads*+
+* Run the Installer
+* End User Agreement: Agree to Terms
+* Change Install Path to: +*C:\wsjt-env\subversion*+
+* Choose Setup Type: Typical
+* Then Install, then Finish
 
-See <<WINDOWSPKG,Table-1>> for an over veiw of _WSJT_ application v.s. +(PKGS)+
-required +(PKGSdevelopment package
+IMPORTANT: Each SVN installer tested, added itself to the users %PATH%, without
+an option to select Yes or No. Be sure it is in your %PATH%
 
-[[WSJTENV]]
-=== Base Install
+* Open Windows CMD Terminal, then:
+[source,shell]
+----------
+# CHECK SUBVERSION
+svn --version
 
-Under Construction.
+# IF SUCESSFUL
+svn, version 1.8.5-SlikSvn-1/8/5-WIN32 .. .. ..
 
+# CLOSE CMD and PROCEED TO APPLICATION BUILD
+----------
 
+[[LINBASESETUP]]
+=== Linux Base Setup
+Most all Linux distributions have {svn} in their repositories. If SVN is
+already installed, ensure you can use it via X-Term with: svn --version,
+otherwise continue with setup:
+
+* Open X-Term Windows, Ctrl{plus}Alt{plus}T
+[source,shell]
+----------
+# DEBIAN, UBUNTU, MINT and FRIENDS
+# Note: Adjust install command to your particular pkg manager
+sudo apt-get install subversion
+
+# CHECK SVN IS FUNCTIONAL
+svn --version
+
+# SUCESSFUL RETURN - Note: Versions may very slightly
+svn, 1.7.14
+
+# EXIT X-TERM and PROCEED TO APPLICATION BUILD
+----------
+
+// END of WSJT-ENV SETUP
