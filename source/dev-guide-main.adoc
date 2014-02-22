@@ -1,10 +1,11 @@
 // Status=review
-= WSJT Developer's Guide
+= WSJT Developers Guide
 :badges:
 :icons:
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
 :description: Software for Amateur Radio Weak-Signal Communication
+:page: WSJT Developers Guide
 
 // use global link file
 include::../../global/links.adoc[]
@@ -17,22 +18,40 @@ _WSPR-X_.  User interfaces for _WSJT_ and _WSPR_ are written in
 Python, and build procedures for these two programs are similar.  User
 interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and
 use the Qt framework, and they share most build procedures.  Most
-number-crunching in all of the WSJT programs is done in Fortran.
+number-crunching in all of the _WSJT_ programs is done in Fortran.
 
-This _Developer's Guide_ is a work in progress.  Instructions for the
-Python-based programs are still to come, but we do currently provide
-instructions for compiling _WSJT-X_ in Linux and we outline the
-prerequisites for compiling it in Windows.  Similar procedures to these
-can be used for building _MAP65_ and _WSPR-X_.
-
-Please send feedback on this _Guide_ to {greg_beam}.
+The {page} is a work in progress.  Instructions for the Python-based programs
+are still to come, but we do currently provide instructions for compiling
+_WSJT-X_ in Linux and we outline the prerequisites for compiling it in Windows.
+Similar procedures to these can be used for building _MAP65_ and _WSPR-X_.
 
 ////
+Communications should be moved to a gloabl file to prevent rework / repeat in the
+various guides.
+include::../global/comminication.adoc
+////
+
+== Communication
+
+The following are established communication channels with the WSJT group.
+
+.General Information
+* Main Site: {homepage}
+* Development Site: http://developer.berlios.de/projects/wsjt/[Project Summary]
+
+.Development Related
+[horizontal]
+* Contact Project Manager, email: {joe_taylor}
+* Development Activity, Join: {dev_mail_list}
+* Repository Updates, Join: {dev_mail_svn}
+* Development Guide Feedback, email {greg_beam}
+
+.Community Related
+* Discussion Board: {wsjt_yahoo_group}
+
 [[BASEENV]]
 == Base Environment
 include::wsjt-dev-env.adoc[]
-Under Construction
-////
 
 == Source Code
 include::sourcecode-dev.adoc[]
