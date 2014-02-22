@@ -1,12 +1,17 @@
-# Makefile for Windows
+# Makefile for Windows with MinGW, using gcc gfortran python pyinstaller
+
 # Re-direct stdout and stderr:     cmd.exe              bash
 #                              make > junk 2>&1      make &> junk
 
-CC = C:/Qt/Qt5.2.0/Tools/mingw48_32/bin/gcc
-FC = C:/Qt/Qt5.2.0/Tools/mingw48_32/bin/gfortran
+CC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gcc
+FC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gfortran
+
+PYTHONDIR = c:/python27
+F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
+PYI = $(PYTHONDIR)/Scripts/pyinstaller
 
 FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
-CFLAGS = -I. -DHAVE_STRUCT_TIMESPEC
+CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
 %.o: %.c
@@ -50,6 +55,7 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
 	xcor4.o xfft.o xfft2.o 
 
+# Build the library libjt.a
 libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1)
 	ranlib libjt.a
@@ -57,24 +63,24 @@ libjt.a: $(OBJS1)
 F2PY90 = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 \
 	 getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
 
-wsjt10.exe: WsjtMod/Audio.pyd
-	pyinstaller --icon wsjt.ico --onefile --log-level=ERROR wsjt.py
-	mv dist/wsjt.exe wsjt10.exe
-
 WsjtMod/Audio.pyd: libjt.a $(F2PY90)
-	f2py.py -c -I. \
-	--quiet --fcompiler=gnu95 \
+	$(F2PY) -c -I. --quiet --fcompiler=gnu95 --compiler=mingw32 \
 	--opt="-cpp -fbounds-check -O2" \
-	--compiler=mingw32 \
 	libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a \
-	libpthreadGC2.a -lwinmm -m Audio \
-	$(F2PY90)
+	libpthreadGC2.a -lwinmm -m Audio $(F2PY90)
 	mv Audio.pyd WsjtMod/Audio.pyd
 
-OBJS2 = JT65code.o 
+# Build the wsjt10 executable
+wsjt10.exe: WsjtMod/Audio.pyd
+	$(PYI) --icon wsjt.ico --onefile --log-level=WARN wsjt.py
+	mv dist/wsjt.exe wsjt10.exe
+
+# Build jt65code
+OBJS2 = jt65code.o 
 jt65code.exe: $(OBJS2) libjt.a
 	$(FC) -o jt65code.exe $(OBJS2) libjt.a
 
+# Build jt4code
 OBJS3 = jt4code.o 
 jt4code.exe: $(OBJS3)
 	$(FC) -o jt4code.exe $(OBJS3) libjt.a
