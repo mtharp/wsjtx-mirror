@@ -1,119 +1,101 @@
 [qanda]
-Question 1::
-When I start _WSJT-X_ v1.3, it seems to run properly in receive mode, with
-signals appearing on the waterfall. However, *Decode* starts later than expected
-and nothing is decoded. Is this a sampling problem and how can I fix it?
+When I start _WSJT-X_ v1.3, it seems to run properly in receive mode, with signals appearing on the waterfall. However, *Decode* starts later than expected and nothing is decoded. Is this a sampling problem and how can I fix it?)::
 
-A: Some earlier soundcard drivers fail to work properly at 48 kHz sample
-rate, which is the default in _WSJT-X_ r3590 and above.  You can force _WSJT-X_
-to sample at 12000 Hz by inserting two lines at the end of file
-+wsjtx.ini+.  Using Windows Notepad, open the file +wsjtx.ini+ in your
-_WSJT-X_ installation directory. Then copy-and-paste the following
-two lines into the file, save the file, and restart _WSJT-X_?
+Some earlier soundcard drivers fail to work properly at 48 kHz sample
+rate, which is the default in _WSJT-X_ r3590 and above.  You can force
+_WSJT-X_ to sample at 12000 Hz by inserting two lines at the end of
+file +wsjtx.ini+.  Using a text editor such as Windows Notepad, open
+the file +wsjtx.ini+ in your _WSJT-X_ installation directory. Then
+copy-and-paste the following two lines into the file, save the file,
+and restart _WSJT-X_.
++
+-----
+  pass:[[Tune]]
+  Audio\DisableInputResampling=true
+-----
 
- pass:[[Tune]]
- Audio\DisableInputResampling=true
-
-Question 2::
-Why does the *Flatten* feature cause my displayed spectrum to curve steeply 
-upward near the edges, before falling where the radios IF filter cuts off?
+Why does the *Flatten* feature cause my displayed spectrum to curve steeply upward near the edges, before falling where the IF filter cuts off?::
 
 
-A: _WSJT-X_ does not expect a steep filter edge within the displayed
-passband, except perhaps a low-frequency cutoff below 200 Hz. Either use a
-wider IF filter or reduce the displayed passband by decreasing
-*Bins/Pixel*, increasing *Start*, and/or reducing the width of the
-*Wide Graph*.  You might also need to re-center the filters passband,
-if such control is available.
+_WSJT-X_ does not expect a steep filter edge within the displayed
+passband, except perhaps a low-frequency cutoff below 200 Hz. Either
+use a wider IF filter or reduce the displayed passband by decreasing
+*Bins/Pixel*, increasing *Start*, or reducing the width of the *Wide
+Graph*.  You might also choose to re-center the filter passband, if
+such control is available.
 
-Question 3::
-Occasionally, _WSJT-X_ unexpectedly quits. I have read this is because I set 
-*Polling interval* to a nonzero value. How can I fix this issue?
+Occasionally, _WSJT-X_ unexpectedly quits. I have read this is because I set *Polling interval* to a nonzero value. How can I fix this issue?::
 
-A few radios do not interact properly with the +hamlib+ library calls used in
-_WSJT-X_.  We are working to resolve these issues.  In the meantime,
-you can run with *Polling interval* = 0, or control your radio through
-_DX Labs Commander_ or _Ham Radio Deluxe_.
+A few radios do not interact properly with the +hamlib+ library calls
+used in _WSJT-X_.  We are working to resolve this and other
+CAT-control issues.  In the meantime you can run with *Polling
+interval* set to 0, or control your radio through _DX Labs Commander_
+or _Ham Radio Deluxe_.
 
-Question 4::
-How should I configure _WSJT-X_ to run multiple instances?
+How should I configure _WSJT-X_ to run multiple instances?::
 
-A: Each instance must be executed from its own home directory.  Be sure to 
-check *Advanced | Allow multiple instances* in the *Setup* menu
-for each one; then exit and restart the program.  This step need be
-done just once.
+Each instance must be executed from a separate directory.  Be sure to
+check *Advanced | Allow multiple instances* in the *Setup* menu for
+each one; then exit and restart the program.  This step needs be done
+just once.
 
-Question 5::
-_WSJT-X_ does not set my VFO (A or B, if available) to USB for any band I 
-select. Why is that?
+_WSJT-X_ does not set my VFO (A or B, if available) to USB on any band I select. Why is that?::
 
-A: Automatic setting of USB for a selected band will depend on your radio 
-manufacturers implementation of CAT (Computer Assisted Transceiver) control. 
-This is not standardized between manufacturers, or even between rigs from a 
-given manufacturer, which makes this feature difficult to implement. _WSJT-X_ 
-does not currently support setting USB mode at this time. The current best 
-practices workaround is to setup your VFO(s) to USB for all bands you intend to 
-work before launching _WSJT-X_, as suggested in the <<TUT_XCVR,Transceiver Setup>>,
-above.
+Automatic setting of mode for a selected band depends on your radio
+manufacturer's implementation of CAT control.  The details are not
+standardized between manufacturers, or even between rigs from a given
+manufacturer, so this feature is difficult to implement. _WSJT-X_ does
+not currently support setting USB mode. Set your VFO(s) to USB for all
+bands you intend to work before launching _WSJT-X_, as suggested in
+<<TUT_XCVR,Transceiver Setup>>, above.
 
-Question 6::
-How do I know what settings to use for rig control (CAT) and PTT?
+How do I know what settings to use for rig control (CAT) and PTT?::
 
-A: Your radio’s manual will have these settings in a section for computer
+Your radio’s manual will have these settings in a section for computer
 setup, digital modes and TNC interface specifications. These may also
 be detailed in a programmers guide which is usually offered as a
-downloadable file from the manufacturers web site. As a last resort,
-do a web search for something like ``rig cat for _your_rig_model_''
-which should give you several places to look.
+downloadable file from the manufacturer's web site.  Do a web search
+for something like ``rig cat for _your_rig_model_'' which should give
+you several places to look.
++
+If your rig uses CAT control and PTT control on separate cables, the
+port settings could very easily be different for each cable. You may
+find more than one settings configuration that works correctly. Some
+experimentation is likely to be necessary.
 
-TIP: Please note: if your rig uses CAT control and PTT control on
-separate cables, the port settings could very easily be different for
-each cable. In any event, there may be more than one settings
-configuration that works correctly. Some experimentation is likely to
-be necessary.
+How does _WSJT-X_ use both VFOs when operating in split mode?::
 
-Question 7::
-How does _WSJT-X_ use both VFOs when operating in split mode?
+Let's assume that *Split* mode is set on _WSJT-X_ and the rig.  We also
+assume that *{plus}2 kHz* is not set and that your receiver's bandwidth
+is at least 4000 Hz.
++
+Using the 20 m band as an example, let's observe the waterfall window
+while looking for contacts. VFO-A, the receiving VFO, will be set to
+14.076 MHz, the nominal calling frequency for JT65.  When
+transmitting, _WSJT-X_ will always generate an audio signal in the
+range 1500 - 2000 Hz.  Put the red Tx waterfall cursor at 1700 Hz.
+You should see VFO-B, the Tx VFO, also set to 14.0760 MHz. That's
+because 1700 Hz lies within the 1500 - 2000 Hz range, so no adjustment
+to the transmit frequency is required.  Our Tx signal will be at
+14.076 MHz {plus} 1700 Hz, or 14.077700 MHz, and this frequency will
+be shown in the _WSJT-X_ log if we log a QSO at these settings.
++
+Now move the Tx cursor to 2200 Hz.  _WSJT-X_ still wants to generate
+audio in the 1500 - 2000 Hz range, so the VFO-B frequency is increased
+to 14.0765 MHz. The transmitted frequency will be 14.0765 MHz {plus}
+1700 Hz, or 14.07820 MHz.
++
+Similarly, if the Tx cursor is set below the 1500 - 2000 Hz range,
+VFO-B must be set lower than 14.076 to keep the transmitted audio in
+the desired 1500 - 2000 Hz range.
 
-A: Let's assume that split mode is set on _WSJT-X_ and the rig.  This is the normal mode of operating. We also assume that {plus}2 kHz is not set and  that your receiver's bandwidth is at least 4000 Hz.
+My rig has only a single SSB filter, about 2700 Hz bandwidth.  Can I use split mode?::
 
-Using the 20M band as an example, let's observe the waterfall window while looking for 
-contacts. VFO-A, our receiving VFO, will initially be set to 14.076MHz, the nominal calling frequency for JT65.  We know _WSJT-X_ will always generate an audio signal in the range 1500Hz-2000Hz.  We now put the waterfall cursor between 1500Hz and 2000Hz at 1700Hz. 
-We then see VFO-B, our transmit VFO, will also be set to 14.0760MHz. That's because 
-1700Hz lies within the 1500Hz-2000Hz range, so no adjustment to the transmit frequency is 
-required.  Our signal out will be 14.076MHz {plus} 1700Hz, or 14.077700MHz, which is what would show in the _WSJT-X_ log if we logged a QSO at these settings.
-
-Now we put the cursor between 2000Hz-2500Hz at 2200Hz. We know the audio is still 
-generated in the 1500Hz-2000Hz range. But now we see the VFO-B transmit frequency is 
-increased by 500Hz to 14.0765MHz, which is necessary since the audio is between 1500Hz 
-and 2000Hz. The transmitted frequency will now  be 14.0765MHz {plus} 1700Hz, or 
-14.07820MHz.  
-
-As a final example, let's consider what happens if the cursor is below the 1500Hz-2000Hz 
-range on the waterfall, for example 1200Hz.  VFO-B must be now be reduced 500Hz to 
-14.0755MHz to keep the transmitted audio in the 1500Hz-2000Hz range.  This time we use 
-14.0755MHz {plus} 1700Hz, or  14.077200 MHz. 
-
-That's great for JT65, but how does it work for JT9 split mode?
- 
-Similar to the above, if you want to work JT9 and your cursor is, for example, at 3700Hz then 
-VFO-B will be reset to 14.078000MHz.    That is, 3700Hz - 1700Hz = 2000Hz {plus} 14.076MHz, or 
-14.078000MHz.   If you remember that the audio frequency is always in the range 1500-2000 
-then you can see that VFO-B must be adjusted to generate the correct transmitted frequency.
-
-Fine business for a rig with wide bandwidth, but mine is older and has a 2500Hz bandwidth. 
-How do I use split mode on my rig?
-
-If your rig cannot be set to a received bandwidth 4000Hz, but is limited to 2500Hz, for example, 
-you still set the rig to split mode and _WSJT-X_ to Split Tx in the Station settings tab.  Since you 
-obviously cannot receive signals above 2500 Hz, if you want to operate primarily in the JT9 
-frequency range you will need to select the {plus}2 kHz button adjacent to the band selection pull-
-down. Then VFO-A will then be set up 2kHz to 14.078MHz.  The Waterfall display is relative to 
-the RX frequency, namely 14.078000MHz so that the JT9 Band is now between roughly 500Hz and 
-2500Hz on the waterfall display.  If the cursor is at 1700Hz, then the same calculations above 
-results in VFO-B being set to 14.078000MHz. 
-
-It is important to note that you will ONLY use the {plus}2kHz option if (1) your receiver has limited 
-bandwidth AND (2) you want to operate in the JT9 band.   If you want to go back to operate on all 
-of JT65, simply uncheck the {plus}2 kHz option. 
+Set the radio to *Split* mode and _WSJT-X_ to *Split Tx*.  To operate
+primarily in the JT9 frequency range, check the *{plus}2 kHz*
+box. VFO-A will then be moved up to 14.078 MHz.  The JT9 subband now
+falls between about 500 Hz and 2000Hz on the waterfall display.  As
+described above, VFO-B will be adjusted so as to keep your Tx audio
+always between 1500 and 2000 Hz.  To operate JT65, simply uncheck the
+*{plus}2 kHz* option.
 
