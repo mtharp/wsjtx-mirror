@@ -70,7 +70,7 @@ chmod +x ./wsjtx-compile.sh
 
 [[MANUAL]]
 .Manual Entry
-* For manual entry, start at +*BUILD_DIR=~/Projects/wsjtx-build*+ and
+* For manual entry, start at +*BUILD_DIR=~/wsjt-env/wsjtx-build*+ and
 perform each step that does not start with start with "#" sign. Use +*Copy {amp}
 Paste*+.
 
@@ -189,11 +189,30 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\lib hamlib\include ..*+
 
 ==== Building WSJT-X with CMake
 
+* Check out the latest wsjt-env.bat file
+* Open WIndows CMD Terminal. As this is the frst checkout, We need the Windows 
+CMD Terminal, subsequent pull can be done from the WSJT Env Terminal. 
+
+[source,shell]
+----------
+# CHANGE DRIVE and DIRECTORIES
+c:
+cd wsjt-env
+
+# CHECK OUT LATEST WSJT-ENV FILE
+svn export --force svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjt-env.bat
+
+# CHECKOUT LATEST WSJTX-BUILD-CMAKE.BAT FILE
+svn export --force svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-build-cmake.bat
+
+# CLOSE TERMINAL
+----------
+
 * Browse to +*C:\wsjt-env*+, Double-Click or Right-Click {amp} Open 
 +*WSJT Env Terminal (wsjt-env.bat)*+.
 * In the terminal, type:
 
-IMPORTANT: When WSJT-X Build Script runs, if if cannot find one of the tools, an
+IMPORTANT: When WSJT-X Build Script runs, if it cannot find one of the tools, an
 error will be displayed. 
 
 .Build Release version

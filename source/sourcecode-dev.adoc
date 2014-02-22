@@ -1,14 +1,8 @@
 
 All source code for the WSJT programs is available at the open-source
 repository known as {berlios1}, under control of the version-control
-program {svn}.  You can install Subversion in Windows from the above
-link; in Linux use
-
----------
-sudo apt-get install subversion 
----------
-
-or an equivalent command for your Linux distribution.  
+program {svn}. For installing {svn}, see <<WINBASESETUP,Windows Base Setup>>
+and for Linux, see <<LINBASESETUP,Linux Base Setup>>.
 
 You can browse the organization of files in the repository {wsjt_svn}.
 Code for program _WSJT_ lies in the +trunk+ directory, while code for
@@ -37,4 +31,3 @@ CAUTION: Please note: the HEAD of the SVN repository for any of these
 programs is likely to be an active development branch.  There is no
 guarantee that a build from every revision will be successful, nor
 that it will provide a stable executable program.
-
