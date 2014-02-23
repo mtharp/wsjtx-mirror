@@ -29,34 +29,41 @@ include::introduction.adoc[]
 == System Requirements
 include::system-requirements.adoc[]
 
+[[INSTALL]]
+== Installation
+
+- The following installation instructions should help to guide you to the correct software for your system.  
+
+[[INSTALL_WIN]]
+=== Windows
+
+- Download _WSPR_ from the {wspr}. Click on the appropriate download link for Windows. Install the program by clicking on the downloaded file and follow the installation instructions. The result should have the installed the program in +C:\WSPR+. 
+
+[[INSTALL_OSX]]
+=== OS X
+
+- NH6Z has made a binary available for download. Download and follow his instructions {nh6z}. 
+
+[[INSTALL_UBU]]
+=== Linux
+
+- For Ubuntu and other recent 32-bit Debian-based systems, you can download an 
+installation file from another link on the {wspr}. To install and execute WSPR, put the downloaded file in your home directory and execute the following commands from a command-prompt window, if necessary substituting the correct revision number for the one shown:
+
+ $ sudo dpkg --instdir=. -i wspr_3.00r2319_i386.deb 
+ $ cd WSPR 
+ $ ./wspr  
+[[SRC_CODE]]
+=== Source Code
+include::install-from-source.adoc
+
+[[CONFIG]]
+== Setup and Configuration
+
 [[BASICINSTRUCTIONS]]
 == Basic Operating Instructions
 include::basicoperating.adoc[]
 
-[[INSTALL]]
-== Installation
-
-- Download _WSPR_ from the {homepage}. Click on _WSPR_ at the left
-margin and then on the desired download link.
-
-[[INSTALL_WIN]]
-=== Windows
-//include::install-windows.adoc[]
-
-[[INSTALL_UBU]]
-=== Linux
-//include::install-ubuntu.adoc[]
-
-[[INSTALL_OSX]]
-=== OS X
-//include::install-mac.adoc[]
-
-[[SRC_CODE]]
-=== Source Code
-//include::install-from-source.adoc[]
-
-[[CONFIG]]
-== Setup and Configuration
 [[ACK]]
 == Acknowledgements
 include::acknowledgements.adoc[]
@@ -65,4 +72,6 @@ include::acknowledgements.adoc[]
 License
 -------
 include::../../global/license.adoc[]
+
+
 
