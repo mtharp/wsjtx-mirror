@@ -41,6 +41,7 @@ Edit files as needed
 :ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
 :wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[WSJT-X]
 :wsjt_yahoo_group: https://groups.yahoo.com/neo/groups/wsjtgroup/info[Yahoo Group]
+:wspr: http://physics.princeton.edu/pulsar/K1JT/wspr.html[WSPR Home Page]
 
 // Download Links
 :cty_dat: http://www.country-files.com/cty/[here].
@@ -50,6 +51,7 @@ Edit files as needed
 :hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Download[Download]
 :kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
 :mstools: http://www.microsoft.com/en-us/download/details.aspx?id=17657[Download]
+:nh6z: http://www.nh6z.net/Amatuer_Radio_Station_NH6Z/Other_Peoples_Software.html[here]
 :osx_108: http://physics.princeton.edu/pulsar/K1JT/wsjtx_01feb14.tar.gz[ OS X 10.6, 10.7, and 10.8 ]
 :osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_01feb14.tar.gz[ OS X 10.9 ]
 :qt5_framework: http://qt-project.org/downloads[Download]

@@ -37,25 +37,25 @@ include::system-requirements.adoc[]
 [[INSTALL_WIN]]
 === Windows
 
-- Download _WSPR_ from the {wspr}. Click on the appropriate download link for Windows. Install the program by clicking on the downloaded file and follow the installation instructions. The result should have the installed the program in +C:\WSPR+. 
+- Download _WSPR_ from the . Click on the appropriate download link for Windows. Install the program by clicking on the downloaded file and follow the installation instructions. The result should have the installed the program in +C:\WSPR+. 
 
 [[INSTALL_OSX]]
 === OS X
 
-- NH6Z has made a binary available for download. Download and follow his instructions {nh6z}. 
+- NH6Z has made a binary available for download. Download and follow his instructions . 
 
 [[INSTALL_UBU]]
 === Linux
 
 - For Ubuntu and other recent 32-bit Debian-based systems, you can download an 
-installation file from another link on the {wspr}. To install and execute WSPR, put the downloaded file in your home directory and execute the following commands from a command-prompt window, if necessary substituting the correct revision number for the one shown:
+installation file from another link on the . To install and execute WSPR, put the downloaded file in your home directory and execute the following commands from a command-prompt window, if necessary substituting the correct revision number for the one shown:
 
  $ sudo dpkg --instdir=. -i wspr_3.00r2319_i386.deb 
  $ cd WSPR 
  $ ./wspr  
-[[SRC_CODE]]
-=== Source Code
-include::install-from-source.adoc
+//[[SRC_CODE]]
+//=== Source Code
+//include::install-from-source.adoc
 
 [[CONFIG]]
 == Setup and Configuration
