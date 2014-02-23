@@ -16,7 +16,7 @@ subroutine decode65(dat,npts,dtx,dfx,flip,ndepth,neme,                &
   common/tmp8/ mcode(63)
 !###
   include 'avecom.f90'
-  include 'prcom.h'
+  include 'prcom.f90'
 
   dt=2.0/11025.0                   !Sample interval (2x downsampled data)
   istart=nint(dtx/dt)              !Start index for synced FFTs

@@ -24,7 +24,7 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   integer nn(NPMAX),ns(NPMAX),nf(NPMAX),nl(NPMAX)
   real*8 plan(NPMAX)             !Actually should be i*8, but no matter
   data nplan/0/
-  include 'fftw3.f'
+  include 'fftw3.f90'
   save plan,nplan,nn,ns,nf,nl
 
   if(nfft.lt.0) go to 999
