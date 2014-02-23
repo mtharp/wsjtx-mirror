@@ -42,6 +42,7 @@ Edit files as needed
 :wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[WSJT-X]
 :wsjt_yahoo_group: https://groups.yahoo.com/neo/groups/wsjtgroup/info[Yahoo Group]
 :wspr: http://physics.princeton.edu/pulsar/K1JT/wspr.html[WSPR Home Page]
+:wsprnet: http://wsprnet.org/drupal/[WSPRnet]
 
 // Download Links
 :cty_dat: http://www.country-files.com/cty/[here].
