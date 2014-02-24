@@ -6,7 +6,8 @@
 CC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gcc
 FC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gfortran
 
-PYTHONDIR = c:/wsjt-env/python27
+#PYTHONDIR = c:/wsjt-env/python27
+PYTHONDIR = c:/python27
 F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
 PYI = $(PYTHONDIR)/Scripts/pyinstaller
 
@@ -82,7 +83,8 @@ wsjt10.exe: WsjtMod/Audio.pyd $(PYSRCS)
 # Build a single directory with all required files
 install: WsjtMod/Audio.pyd $(PYSRCS)
 	$(PYI) --distpath=install --icon wsjt.ico --log-level=WARN wsjt.py
-	cp libsamplerate.dll pthreadGC2.dll wsjt.ico TSKY.DAT install/wsjt
+	cp libsamplerate.dll pthreadGC2.dll install/wsjt
+	cp wsjt.ico TSKY.DAT CALL3.TXT wsjt10.bat install
 	mv install/wsjt/wsjt.exe install/wsjt/wsjt10.exe
 	mv install/wsjt/ install/wsjt10
 

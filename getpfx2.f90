@@ -1,7 +1,7 @@
       subroutine getpfx2(k0,callsign)
 
       character callsign*12
-      include 'pfx.f'
+      include 'pfx.f90'
       character addpfx*8
       common/gcom4/addpfx
 
