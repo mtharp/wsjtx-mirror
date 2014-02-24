@@ -1189,7 +1189,8 @@ def inctrperiod(event):
         if ncwtrperiod==120: ncwtrperiod=150
         if ncwtrperiod==60:  ncwtrperiod=120
         Audio.gcom1.trperiod=ncwtrperiod
-    elif mode.get()=="FSK441" or mode.get()=="JTMS" or mode.get()[:5]=="ISCAT":
+    elif mode.get()=="FSK441" or mode.get()=="JTMS" or \
+             mode.get()[:5]=="ISCAT" or mode.get()=="JT6M":
         if Audio.gcom1.trperiod==15: Audio.gcom1.trperiod=30
 
 #------------------------------------------------------ dectrperiod
@@ -1199,7 +1200,8 @@ def dectrperiod(event):
         if ncwtrperiod==120: ncwtrperiod=60
         if ncwtrperiod==150: ncwtrperiod=120
         Audio.gcom1.trperiod=ncwtrperiod
-    elif mode.get()=="FSK441" or mode.get()=="JTMS" or mode.get()[:5]=="ISCAT":
+    elif mode.get()=="FSK441" or mode.get()=="JTMS" or \
+         mode.get()[:5]=="ISCAT" or mode.get()=="JT6M":
         if Audio.gcom1.trperiod==30: Audio.gcom1.trperiod=15
 
 #------------------------------------------------------ erase
@@ -1889,7 +1891,8 @@ def update():
            bdecode.configure(text='*Decode*')
     msg5.configure(text="T/R Period: %d s" % (Audio.gcom1.trperiod,))
     if mode.get()=="CW": color='white'
-    elif mode.get()=='FSK441' or mode.get()=='JTMS' or mode.get()[:5]=='ISCAT':
+    elif mode.get()=='FSK441' or mode.get()=='JTMS' or \
+             mode.get()[:5]=='ISCAT' or mode.get()=="JT6M":
         if(Audio.gcom1.trperiod==15): color='yellow'
         else: color='white'
     else:

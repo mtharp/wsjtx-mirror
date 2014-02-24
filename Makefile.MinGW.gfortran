@@ -70,13 +70,17 @@ WsjtMod/Audio.pyd: libjt.a $(F2PY90)
 	libpthreadGC2.a -lwinmm -m Audio $(F2PY90)
 	mv Audio.pyd WsjtMod/Audio.pyd
 
+PYSRCS = wsjt.py WsjtMod/astro.py  WsjtMod/g.py WsjtMod/options.py \
+	 WsjtMod/palettes.py WsjtMod/Pmw.py WsjtMod/PmwBlt.py \
+	WsjtMod/PmwColor.py WsjtMod/smeter.py WsjtMod/specjt.py
+
 # Build the wsjt10 executable
-wsjt10.exe: WsjtMod/Audio.pyd
+wsjt10.exe: WsjtMod/Audio.pyd $(PYSRCS)
 	$(PYI) --icon wsjt.ico --onefile --log-level=WARN wsjt.py
 	mv dist/wsjt.exe wsjt10.exe
 
 # Build a single directory with all required files
-install: WsjtMod/Audio.pyd
+install: WsjtMod/Audio.pyd $(PYSRCS)
 	$(PYI) --distpath=install --icon wsjt.ico --log-level=WARN wsjt.py
 	cp libsamplerate.dll pthreadGC2.dll wsjt.ico TSKY.DAT install/wsjt
 	mv install/wsjt/wsjt.exe install/wsjt/wsjt10.exe
