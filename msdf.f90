@@ -51,19 +51,15 @@ subroutine msdf(cdat,npts,t2,nfft1,f0,nfreeze,mousedf,dftolerance,dfx,snrsq2)
   ja=nint(fa/df1)
   jb=nint(fb/df1)
 
-!  rewind 51
   smax=0.
+  jpk=t2                                    !Silence compiler warning
   do j=ja,jb
      k=j-j0-1
      if(ccf(k).gt.smax) then
         smax=ccf(k)
         jpk=j
      endif
-     f=0.5*k*df1
-!     write(51,3002) f,ccf(k)
-!3002 format(2f12.3)
   enddo
-!  call flush(51)
 
   fpk=(jpk-1)*df1  
   dfx=0.5*fpk-f0

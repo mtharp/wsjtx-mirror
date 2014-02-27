@@ -75,7 +75,7 @@ SoundIn( void *inputBuffer, void *outputBuffer,
   static int ia=0;
   static int ib=0;
   static int ncall=0;
-  static int nsec0=0;
+  //  static int nsec0=0;
   static double stime0=86400.0;
   int nsec;
   double stime;
@@ -123,7 +123,7 @@ SoundIn( void *inputBuffer, void *outputBuffer,
   if(ia >= data->nbuflen) ia=0;          //Wrap buffer pointer if necessary
   *data->iwrite = ia;                    //Save buffer pointer
   fivehz_();                             //Call fortran routine
-  nsec0=nsec;
+  //  nsec0=nsec;
   return 0;
 }
 

@@ -86,7 +86,6 @@ subroutine synciscat(cdat,npts,s0,jsym,df,DFTolerance,NFreeze,            &
   else if(mod(-idf1,2).eq.1) then
      idf1=idf1-1
   endif
-  dts4=nsps/(4.0*fsample)
 
   xsyncbest=0.
   do idf=idf1,idf2                         !Loop over fdot

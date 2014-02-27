@@ -35,7 +35,6 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
   real yellow(216)
   real yellow0(216)
   real fzap(200)
-  real sumsq(600)
   integer resample
   real*8 samfacin,samratio
   real dat2(NP2)
@@ -145,7 +144,6 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
         sum=sum+dat(k)**2
      enddo
      sum=sum/nstep
-     sumsq(j)=sum
   enddo
 
 

@@ -10,7 +10,7 @@ PYTHONDIR = c:/python27
 F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
 PYI = $(PYTHONDIR)/Scripts/pyinstaller
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
+FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall -Wno-precision-loss
 CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM
 
 # Default rules
@@ -25,7 +25,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt.a wsjt10.exe jt65code.exe jt4code.exe
+all:    libjt.a wsjt10.exe jt65code.exe jt4code.exe install
 
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \
@@ -85,7 +85,7 @@ install: WsjtMod/Audio.pyd $(PYSRCS)
 	cp libsamplerate.dll pthreadGC2.dll install/wsjt
 	cp wsjt.ico TSKY.DAT CALL3.TXT wsjt10.bat install
 	mv install/wsjt/wsjt.exe install/wsjt/wsjt10.exe
-	mv install/wsjt/ install/wsjt10
+	mv install/wsjt/ install/bin
 
 # Build jt65code
 OBJS2 = jt65code.o 
@@ -100,5 +100,5 @@ jt4code.exe: $(OBJS3)
 .PHONY : clean
 
 clean:
-	rm -f *.o libjt.a wsjt10.exe jt65code.exe jt4code.exe \
-	WsjtMod/Audio.pyd wsjt.spec
+	rm -rf *.o libjt.a wsjt10.exe jt65code.exe jt4code.exe \
+	WsjtMod/Audio.pyd install

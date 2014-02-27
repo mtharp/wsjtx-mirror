@@ -115,6 +115,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
   p1=-1.e30
   p2=-1.e30
+  ip1=1                                    !Silence compiler warning
   do k=1,ntot
      pp(k)=0.
      if(k.ge.2 .and. k.le.64 .and. flip.lt.0.0) cycle
@@ -150,7 +151,7 @@ subroutine deep65(s3,mode65,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 ! ### without optimization.  However, in Windows this is a colossal 
 ! ### pain because of the way F2PY wants to run the compile step.
 
-  if(mode65.eq.1) bias=max(1.12*p2,0.335)
+  bias=max(1.12*p2,0.335)
   if(mode65.eq.2) bias=max(1.08*p2,0.405)
   if(mode65.ge.4) bias=max(1.04*p2,0.505)
 

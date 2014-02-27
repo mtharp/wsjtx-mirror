@@ -8,7 +8,6 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
   real dat(NMAX)                          !Raw signal, 30 s at 11025 sps
   logical pick
   complex cdat(NMAX)                      !Analytic form of signal
-  character frag*28,frag0*29              !Message fragment to be matched
   complex cfrag(2100)                     !Complex waveform of message fragment
   complex z
   integer itone(84)                       !Generated tones for msg fragment
@@ -94,7 +93,6 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
      if(ss.gt.sbest) then
         sbest=ss
         ipk=i
-        amp=a/nsam
      endif
   enddo
   if(sbest.lt.sb0) go to 800            !Skip if not decodable FSK441 data

@@ -12,10 +12,7 @@ subroutine tweak1(ca,jz,f0,cb)
   w=1.d0
   dphi=twopi*f0/11025.d0
   wstep=cmplx(cos(dphi),sin(dphi))
-  x0=0.5*(jz+1)
-  s=2.0/jz
   do i=1,jz
-     x=s*(i-x0)
      w=w*wstep
      cb(i)=w*ca(i)
   enddo

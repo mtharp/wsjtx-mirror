@@ -4,6 +4,7 @@ function nchar(c)
 
   character c*1
 
+  n=36
   if(c.ge.'0' .and. c.le.'9') then
      n=ichar(c)-ichar('0')
   else if(c.ge.'A' .and. c.le.'Z') then

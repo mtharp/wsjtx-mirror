@@ -56,7 +56,6 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
         if(qual.gt.qbest) then
            qbest=qual
            deepbest=deepmsg
-           ichbest=k
         endif
         if(nch(k).ge.mode4) exit
      enddo

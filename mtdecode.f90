@@ -106,7 +106,6 @@ subroutine mtdecode(dat,jz,nz,MinSigdB,MinWidth,NFreeze,           &
      if(peak.ge.11.0) nstrength=7
      if(peak.ge.17.0) nstrength=8
      if(peak.ge.23.0) nstrength=9
-     npeak=peak
      nrpt=10*nwidth + nstrength
      t2=tstart + dt*(istart-1)
 

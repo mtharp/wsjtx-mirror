@@ -20,8 +20,9 @@ subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
   common/echo/xdop(2),techo,AzMoon,ElMoon,mjd
   save s1,s2,dop0
 
-  if(ibuf0.lt.1) print*,'IBUF0:',ibuf0
+!  if(ibuf0.lt.1) print*,'IBUF0:',ibuf0
   sq=0.
+  if(dlatency+ndither+necho+ntime.eq.-999) sq=1.   !Silence compiler warning
   k=2048*(ibuf0-1)  
   do i=1,14*2048
      k=k+1
@@ -44,10 +45,8 @@ subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
   doppler=2.0*xdop(1)
 !  if(nsave.ne.0) write(26) fname,ntime,dop0,doppler,d(1:28672)
 
-  dt=1.0/11025.0
   df=11025.0/32768.0
   istart=1
-  nz=14*2048 + 1 - istart
   x(1:28672)=d(istart:istart+28671)
   x(28673:)=0.0
   call xfft(x,32768)
@@ -92,6 +91,7 @@ subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
   call pctile(s2,tmp,600,84,x1)
   rms=x1-x0
   peak=-1.e30
+  ipk=1                                      !Silence compiler warning
   do i=1,600
      if(s2(i).gt.peak) then
         peak=s2(i)
@@ -115,7 +115,6 @@ subroutine avecho(fname,ntime,y1,ibuf0,ntc,necho,nfrit,ndither,      &
   enddo
 21 width=df*(ib-ia-1)
 
-  exchsig=-99.
   if(x0.gt.0.0) echosig=10.0*log10(peak/x0 - 1.0) - 35.7
   echodop=df*(ipk-300)
   snr=0.

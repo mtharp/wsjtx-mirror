@@ -23,11 +23,12 @@ subroutine jtms(dat,npts,cfile6,t2,mswidth,ndb,nrpt,Nfreeze,       &
   save first,cw,cwb
   save cdat                             !Fix its address, for four2
 
+  if(hiscall.eq.'dummy       ') first=.true.  !Silence compiler warning
   if(first) call setupms(cw,cwb)        !Calculate waveforms for codewords
   first=.false.
 
-  nsps=8                                !Samples per symbol
-  f0=1155.46875                         !Nominal frequency for bit=0
+!  nsps=8                                !Samples per symbol
+  f0=1155.46875                          !Nominal frequency for bit=0
   n=log(float(npts))/log(2.0) + 1.0
   nfft1=2**n                            !FFT length
   call analytic(dat,npts,nfft1,s,cdat)  !Convert to analytic signal
@@ -53,14 +54,7 @@ subroutine jtms(dat,npts,cfile6,t2,mswidth,ndb,nrpt,Nfreeze,       &
 
   call decodems(cdat,npts,cw,i1,nchar,s2,msg)   !Decode the message
 
-!  ia=1
-!  if(nchar.ge.40) ia=min(nchar/3,nchar-28)    
-!  ib=min(ia+28,nchar)                   !Can better limits ia, ib be found?
-!  print*,'A',ia,ib,nchar
-!  print*,msg(1:nchar)
-!  msg29=adjustl(msg(ia:ib))
   msg=adjustl(msg)
-  ib=min(nchar,45)
   ndf=nint(dfx)
   nchk=max(20,nint(1.5*msglen))
 

@@ -24,8 +24,16 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
   fsample=3100.78125                   !Sample rate after 9/32 downsampling
   nsps=144/mode4
 
-  bigworst=-1.e30
+  bigworst=-1.e30                      !Silence compiler warnings ...
   bigxsync=0.
+  nsigbig=0
+  msglenbig=0
+  ndf0big=0
+  nfdotbig=0
+  bigt2=0.
+  bigavg=0.
+  if(nmore.eq.-999) nsigbig=-1         !... to here
+
   last=.false.
   do inf=1,6                           !Loop over data-segment sizes
      nframes=2**inf

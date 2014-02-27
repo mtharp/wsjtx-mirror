@@ -9,7 +9,6 @@ subroutine geniscat(msg,nmsg,mode4,samfac,iwave,nwave,msgsent)
   integer itone(NSZ)
   character c*42
   real*8 twopi,dt,f0,f,df,pha,dpha,samfac
-  real*8 f1,ff,dph
   integer icos(4)                                !Costas array
   data icos/0,1,3,2/
   data nsync/4/,nlen/2/,ndat/18/
@@ -56,15 +55,12 @@ subroutine geniscat(msg,nmsg,mode4,samfac,iwave,nwave,msgsent)
 
   k=0
   pha=0.
-!  f1=-20.0*twopi/(11025.d0**2)
-!  kh=(nsym*nsps)/2                              !###
   do m=1,nsym                                    !Generate iwave
      f=f0 + itone(m)*df
      dpha=twopi*f*dt
      do i=1,nsps
         k=k+1
         pha=pha+dpha
-!        pha=pha+dpha + f1*(k-kh)                      !###
         iwave(k)=nint(32767.0*sin(pha))
      enddo
   enddo

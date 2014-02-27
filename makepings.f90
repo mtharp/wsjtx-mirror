@@ -5,6 +5,11 @@ subroutine makepings(iwave,nwave)
 
   iping0=-999
   dt=1.0/11025.0
+
+  w=1.                                         !Silence compiler warnings ...
+  t0=1.
+  amp=1.                                       !... to here
+
   do i=1,nwave
      iping=i/(3*11025)
      if(iping.ne.iping0) then

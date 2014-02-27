@@ -35,6 +35,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      ave2=' '
      ccfblue=0.
      ccfred=0.
+     if(ndiag.eq.-999) ave1='  '          !Silence compiler warning
      if(nspecial.eq.999) go to 900        !Silence compiler warning
   endif
 
@@ -138,8 +139,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
        avemsg2,nused2,nq1,nq2,neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2)
   nqual1=qual1
   nqual2=qual2
-! if(ndiag.eq.0 .and. nqual1.gt.10) nqual1=10
-! if(ndiag.eq.0 .and. nqual2.gt.10) nqual2=10
   nc1=0
   nc2=0
   if(ncount1.ge.0) nc1=1

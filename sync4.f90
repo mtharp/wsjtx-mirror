@@ -22,7 +22,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   equivalence (ipk1,ipk1a)
   data nch/1,2,4,9,18,36,72/
   save
-  freq(i)=(i-i0 + 3*mode4)*df
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 
 ! we have already downsampled the data by factor of 2.
@@ -33,6 +32,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   nsteps=jz/nq - 1
   df=0.5*11025.0/nfft
   psavg(1:nh)=0.
+  if(mode.eq.-999) width=0.                        !Silence compiler warning
 
   do j=1,nsteps                     !Compute spectrum for each step, get average
      k=(j-1)*nq + 1
@@ -169,6 +169,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   enddo
   width=(i-i1)*df
 
-999 return
+  return
 end subroutine sync4
 

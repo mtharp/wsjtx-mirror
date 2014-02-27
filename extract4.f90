@@ -18,11 +18,10 @@ subroutine extract4(sym0,nadd,ncount,decoded)
      first=.false.
   endif
 
-!  read(66,*) amp,ndelta,limit
-!  close(66)
   amp=30.0
   ndelta=50
   limit=50000
+  if(nadd.eq.-999) limit=limit+1         !Silence compiler warning
 
   ave0=sum(sym0)/207.0
   sym=sym0-ave0
@@ -47,7 +46,7 @@ subroutine extract4(sym0,nadd,ncount,decoded)
   call interleave4(symbol(2),-1)          !Remove the interleaving
 
   call fano232(symbol(2),nbits,mettab,ndelta,limit,data1,ncycles,metric,ncount)
-  nlim=ncycles/nbits
+!  nlim=ncycles/nbits
 
   if(ncount.ge.0) then
      do i=1,9

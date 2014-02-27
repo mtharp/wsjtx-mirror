@@ -20,6 +20,7 @@ subroutine lenms(r,npts,msglen)
      enddo
      call hipass(acf(8),kz-7,50)
 
+     kpk=1                              !Silence compiler warning
      do k=8,kz                          !Find acfmax, kpk
         if(acf(k).gt.acfmax) then
            acfmax=acf(k)
@@ -46,7 +47,6 @@ subroutine lenms(r,npts,msglen)
         if(acf(k).gt.acflim .and. acf(k).gt.amax2) then  
            amax2=acf(k)                 !Save best value >3.5 sigma
            msglen=np(i)                 !Save message length
-           kpk2=k
         endif
      enddo
 10   continue

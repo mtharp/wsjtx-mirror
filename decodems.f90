@@ -6,13 +6,14 @@ subroutine decodems(cdat,npts,cw,i1,nchar,s2,msg)
   complex cw(56,0:63)                  !Complex waveforms for codewords
   real s2(0:63,400)
   character msg*400
-  complex z,zmax
+  complex z
   character cc*64
 !                    1         2         3         4         5         6
 !          0123456789012345678901234567890123456789012345678901234567890123
   data cc/'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ./?-                 _     @'/
 
   msg=' '
+  kpk=0                                !Silence compiler warning
   do j=1,nchar                         !Find best match for each character
      ia=i1 + (j-1)*56
      smax=0.
@@ -27,7 +28,6 @@ subroutine decodems(cdat,npts,cw,i1,nchar,s2,msg)
         s2(k,j)=ss
         if(ss.gt.smax) then
            smax=ss
-           zmax=z
            kpk=kk
         endif
      enddo

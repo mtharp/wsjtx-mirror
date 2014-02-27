@@ -78,10 +78,7 @@ subroutine fivehz
         TxOK=0                              !Lower TxOK
         i1=ptt(nport,pttport,1,ndtr,iptt)   !Raise PTT
         call wsjtgen                        !Generate the waveform
-        t1a=s6
         n3=1
-!        if(ndebug.gt.0) write(*,3001) n3,s6,0.0,' Raise PTT'
-!3001    format(i1,2f7.2,10x,a)
         go to 10
      endif
 
@@ -89,44 +86,31 @@ subroutine fivehz
         TxOK=1
         t2a=s6                              !Save start time of Tx audio
         n3=2
-!        if(ndebug.gt.0) write(*,3001) n3,s6,s6-t1a,' Start Tx audio'
         go to 10
      endif
 
      if(n3.eq.2 .and. s6.gt.2.6) then
         TxOK=0                              !Stop Tx audio
-        t3a=s6
         n3=3
-!        if(ndebug.gt.0) write(*,3001) n3,s6,s6-t2a,' Stop Tx audio'
         go to 10
      endif
 
-!     if(n3.eq.3 .and. s6.gt.s6z) then
      if(n3.eq.3 .and. s6.gt.3.2) then
         i1=ptt(nport,pttport,0,ndtr,iptt)        !Lower PTT
-        t4a=s6
         n3=4
-!        if(ndebug.gt.0) write(*,3001) n3,s6,s6-t3a,' Lower PTT'
         go to 10
      endif
 
      if(n3.eq.4 .and. s6.ge.t2a+techo) then
-        t2az=t2a
-        f1z=f1
         ibuf0=ibuf
         t5a=s6
         n3=5
-!        if(ndebug.gt.0) write(*,3002) n3,s6,s6-t4a,ibuf0,' Start Rx'
-!3002    format(i1,2f7.2,i8,2x,a)
         go to 10
      endif
 
      if(n3.eq.5 .and. s6.gt.t5a+2.1) then
         ndecoding=1
-        t6a=s6
         n3=6
-!        if(ndebug.gt.0) write(*,3002) n3,s6,s6-t5a,ibuf,' Stop Rx'
-!        if(ndebug.gt.0) write(*,*)
         go to 10
      endif 
 

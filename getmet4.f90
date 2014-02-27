@@ -40,6 +40,7 @@ subroutine getmet4(mode,mettab)
        -9.966,-9.966,-9.966,-9.966,-9.966,-9.966,-9.966,-9.966/
   save
 
+  if(mode.eq.-99) xx0(0)=xx0(1)                !Silence compiler warning
   bias=0.5
   scale=10.0
   do i=0,255

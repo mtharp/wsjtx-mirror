@@ -82,7 +82,7 @@ subroutine gen4(message,mode4,samfac,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg)
      do i=22,1,-1
         if(msgsent(i:i).ne.' ') exit
      enddo
-10   msgsent=msgsent(1:i)//' OOO'
+     msgsent=msgsent(1:i)//' OOO'
   endif
   do i=22,1,-1
      if(msgsent(i:i).ne.' ') goto 20

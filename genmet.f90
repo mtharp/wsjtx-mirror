@@ -23,6 +23,7 @@ subroutine genmet(mode,mettab)
      mettab(i,0)=nint(scale*(d0-bias))
      mettab(i,1)=nint(scale*(d1-bias))
   enddo
+  if(junk.eq.-12345) mettab(0,0)=mettab(1,0)    !Silence compiler warning
 
   return
 end subroutine genmet

@@ -59,7 +59,6 @@ subroutine genms(msg28,samfac,iwave,cwave,isrch,nwave)
   f0=11025.d0/nsps                               ! 1575.0 Hz
   dfgen=0.5d0*f0                                 !  787.5 Hz
   foffset=1500.d0 - f0
-  t=0.d0
   k=0
   phi=0.d0
   nrpt=NMAX/(nsym*nsps)

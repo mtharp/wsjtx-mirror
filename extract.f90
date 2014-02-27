@@ -55,7 +55,7 @@ subroutine extract(s3,nadd,ncount,decoded)
      call flush(22)
      call cs_unlock
 
-     iret=system('KVASD_g95 -q >devnull')
+     iret=system('KVASD -q >devnull')
 
      call cs_lock('extract')
      if(iret.ne.0) then
@@ -67,6 +67,7 @@ subroutine extract(s3,nadd,ncount,decoded)
         go to 20
      endif
      read(22,rec=2,err=20) nsec2,ncount,dat4
+     if(ncount.lt.0) dat4(1)=nsec2          !Only to silence compiler warning!
 
      decoded='                      '
      if(ncount.ge.0) then

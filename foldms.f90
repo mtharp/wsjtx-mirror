@@ -24,6 +24,7 @@ subroutine foldms(s2,msglen,nchar,mycall,msg,msg29)
   enddo
 
   msg=' '
+  kpk=0                                  !Silence compiler warning
   do j=1,msglen
      smax=0.
      do k=0,40
