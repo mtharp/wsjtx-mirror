@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-#------------------------------------------------------------------- WSJT
+#-------------------------------------------------------------------- WSJT
 # $Date$ $Revision$
 #
 from Tkinter import *
 from tkFileDialog import *
-from WsjtMod import Pmw
+import Pmw
 import tkMessageBox
 from WsjtMod import g
 import os,time
