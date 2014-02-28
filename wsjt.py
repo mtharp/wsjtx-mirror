@@ -4,18 +4,13 @@
 #
 from Tkinter import *
 from tkFileDialog import *
-import Pmw
+from WsjtMod import Pmw
 import tkMessageBox
 from WsjtMod import g
 import os,time
 from WsjtMod import Audio
 from math import log10
-try:
-    from numpy.oldnumeric import zeros
-#    print "importing from numpy"
-except: 
-    from Numeric import zeros
-#    print "importing from Numeric"
+from numpy import zeros
 import dircache
 #import Image,ImageTk  #, ImageDraw
 from PIL import Image

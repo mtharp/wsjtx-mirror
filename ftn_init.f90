@@ -3,7 +3,7 @@
 !   10  wave files read from disk
 !   11  decoded.txt
 !   12  decoded.ave
-!   13  tsky.dat
+!   13
 !   14  azel.dat
 !   15  debug.txt
 !   16  c:/wsjt.reg 
@@ -65,23 +65,7 @@ subroutine ftn_init
   open(22,file=appdir(:iz)//'/kvasd.dat',access='direct',recl=1024,        &
        status='unknown')
 
-  call zero(nsky,180*180)
-  fname=appdir(:iz)//'/TSKY.DAT'
-
-  call rfile2(fname,nsky,129600,nr)
-  if(nr.ne.129600) go to 10
-  nsky4=nsky(1,1)
-  if (iabs(nsky4).gt.500) then
-     write(*,1000)
-1000 format('Converting TSKY.DAT')
-     do i=1,360
-        do j=1,180
-           nsky(i,j) = iswap_short(nsky(i,j))
-        enddo
-     enddo
-  endif
-
-10 call cs_unlock
+  call cs_unlock
   return
 
 910 print*,'Error opening DECODED.TXT'

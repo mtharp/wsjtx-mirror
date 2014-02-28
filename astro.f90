@@ -7,17 +7,32 @@ subroutine astro(nyear,month,nday,uth,nfreq,Mygrid,NStation,mode,   &
 ! NB: may want to smooth the Tsky map to 10 degrees or so.
 
   character*6 MyGrid,HisGrid
-  logical ltsky
   real LST
   real lat,lon
   real ldeg
-  integer*2 nsky
-  common/sky/ nsky(360,180)
+  integer*2 nt144(180)
   common/echo/xdop(2),techo,AzMoon,ElMoon,mjd
   data rad/57.2957795/
+  data nt144/                                            &
+       234, 246, 257, 267, 275, 280, 283, 286, 291, 298, &
+       305, 313, 322, 331, 341, 351, 361, 369, 376, 381, &
+       383, 382, 379, 374, 370, 366, 363, 361, 363, 368, &
+       376, 388, 401, 415, 428, 440, 453, 467, 487, 512, &
+       544, 579, 607, 618, 609, 588, 563, 539, 512, 482, &
+       450, 422, 398, 379, 363, 349, 334, 319, 302, 282, &
+       262, 242, 226, 213, 205, 200, 198, 197, 196, 197, &
+       200, 202, 204, 205, 204, 203, 202, 201, 203, 206, &
+       212, 218, 223, 227, 231, 236, 240, 243, 247, 257, &
+       276, 301, 324, 339, 346, 344, 339, 331, 323, 316, &
+       312, 310, 312, 317, 327, 341, 358, 375, 392, 407, &
+       422, 437, 451, 466, 480, 494, 511, 530, 552, 579, &
+       612, 653, 702, 768, 863,1008,1232,1557,1966,2385, &
+      2719,2924,3018,3038,2986,2836,2570,2213,1823,1461, &
+      1163, 939, 783, 677, 602, 543, 494, 452, 419, 392, &
+       373, 360, 353, 350, 350, 350, 350, 350, 350, 348, &
+       344, 337, 329, 319, 307, 295, 284, 276, 272, 272, &
+       273, 274, 274, 271, 266, 260, 252, 245, 238, 231/
   save
-
-  ltsky=nsky(1,1).eq.192
 
   call grid2deg(MyGrid,elon,lat)
   lon=-elon
@@ -40,9 +55,16 @@ subroutine astro(nyear,month,nday,uth,nfreq,Mygrid,NStation,mode,   &
 
   techo=2.0 * dist/2.99792458e5                 !Echo delay time
   doppler=-freq*vr/2.99792458e5                 !One-way Doppler
-  t408=ftsky(ldeg,bdeg)                         !Read sky map
-  tsky=t408*(408.0/nfreq)**2.6                  !Tsky for obs freq
-  if(ltsky.and.(tsky.lt.3.0)) tsky=3.0          !Minimum = 3 Kelvin
+
+  call coord(0.,0.,-1.570796,1.161639,RAMoon/rad,DecMoon/rad,el,eb)
+  longecl_half=nint(rad*el/2.0)
+  if(longecl_half.lt.1 .or. longecl_half.gt.180) longecl_half=180
+  t144=nt144(longecl_half)
+  tsky=(t144-2.7)*(144.0/nfreq)**2.6 + 2.7      !Tsky for obs freq
+
+!  t408=ftsky(ldeg,bdeg)                         !Read sky map
+!  tsky=t408*(408.0/nfreq)**2.6                  !Tsky for obs freq
+!  if(ltsky.and.(tsky.lt.3.0)) tsky=3.0          !Minimum = 3 Kelvin
 
   xdop(NStation)=doppler
   if(NStation.eq.2) then

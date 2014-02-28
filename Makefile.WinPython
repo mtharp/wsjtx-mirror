@@ -6,7 +6,7 @@
 CC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gcc
 FC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gfortran
 
-PYTHONDIR = c:/python27
+PYTHONDIR = c:/users/joe/WinPython-32bit-2.7.6.2/python-2.7.6
 F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
 PYI = $(PYTHONDIR)/Scripts/pyinstaller
 
@@ -27,7 +27,8 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt.a wsjt10.exe jt65code.exe jt4code.exe install
+all:    libjt.a wsjt10.exe jt65code.exe jt4code.exe 
+#install
 
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \

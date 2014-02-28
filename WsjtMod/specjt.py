@@ -10,14 +10,7 @@ import g
 import string
 import cPickle
 import tkMessageBox
-
-try:
-    from numpy.oldnumeric import zeros, multiarray
-#    print "specjt importing from numpy"
-except:
-    from Numeric import zeros, multiarray
-#    print "specjt importing from Numeric"
-#import Image, ImageTk, ImageDraw
+from numpy import zeros
 from PIL import Image, ImageTk, ImageDraw
 from palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
@@ -77,7 +70,7 @@ tol0=400
 ttot=0.0
 
 c=Canvas()
-a=zeros(225000,'s')
+a=zeros(225000,'i2')
 im=Image.new('P',(750,300))
 line0=Image.new('P',(750,1))      #Image fragment for top line of waterfall
 draw=ImageDraw.Draw(im)

@@ -1,1 +1,1 @@
-wsjt10\wsjt10
+bin\wsjt10
