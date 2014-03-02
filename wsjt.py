@@ -54,6 +54,7 @@ Audio.ftn_init()
 addpfx0=""
 first=1
 g.appdir=appdir
+g2font='"Lucida Console " 16'
 isync=0
 isync441=1
 isync_iscat=1
@@ -1718,7 +1719,7 @@ def plot_yellow():
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
            im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0,     \
-           isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas
+           isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas,g2font
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
@@ -1775,6 +1776,7 @@ def update():
                or mode.get()[:2]=='CW' or mode.get()=='Echo' \
                or mode.get()=='Measure':
             graph2.delete(ALL)
+            if g2font=="": g2font='"Lucida Console" 16'
             graph2.create_text(80,13,anchor=CENTER,text="Moon",font=g2font)
             graph2.create_text(13,37,anchor=W, text="Az: %6.2f" % g.AzMoon,font=g2font)
             graph2.create_text(13,61,anchor=W, text="El: %6.2f" % g.ElMoon,font=g2font)
