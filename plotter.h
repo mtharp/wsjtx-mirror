@@ -7,7 +7,7 @@
 #ifndef PLOTTER_H
 #define PLOTTER_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QFrame>
 #include <QImage>
 #include <cstring>

@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
-CONFIG   += qwt thread
+QT       += core gui network widgets
+CONFIG   += thread
 #CONFIG   += console
 
 TARGET = wsprx
@@ -36,7 +36,7 @@ SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     soundin.cpp soundout.cpp devsetup.cpp \
     widegraph.cpp getfile.cpp \
     getdev.cpp displaytext.cpp \
-    wsprnet.cpp
+    wsprnet.cpp meterwidget.cpp signalmeter.cpp
 
 win32 {
 SOURCES +=
@@ -45,32 +45,22 @@ SOURCES +=
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h getfile.h \
             commons.h displaytext.h \
-    wsprnet.h
-
-DEFINES += __cplusplus
+            wsprnet.h meterwidget.h signalmeter.h
 
 FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui
 
 RC_FILE = wsprx.rc
 
 unix {
-    INCLUDEPATH += $$quote(/usr/include/qwt-qt4)
     LIBS += ../wsprx/lib/libwspr.a
-    LIBS += /usr/lib/libqwt-qt4.so
     LIBS += -lportaudio -lgfortran -lfftw3f
 }
 
 win32 {
-INCLUDEPATH += c:/qwt-6.0.1/include
 LIBS += ../wsprx/lib/libwspr.a
 LIBS += ../wsprx/libfftw3f_win.a
 LIBS += ../QtSupport/palir-02.dll
 LIBS += libwsock32
 LIBS += C:/MinGW/lib/libf95.a
-CONFIG(release) {
-   LIBS += C:/qwt-6.0.1/lib/qwt.dll
-} else {
-   LIBS += C:/qwt-6.0.1/lib/qwtd.dll
-}
 #LIBS += -lusb
 }

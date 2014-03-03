@@ -6,7 +6,7 @@
 #include "about.h"
 #include "widegraph.h"
 #include "getfile.h"
-#include <portaudio.h>
+#include "portaudio.h"
 
 int itone[162];                       //Tx audio tones
 int icw[250];                         //Dits for CW ID
@@ -31,9 +31,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
   ui->setupUi(this);
 
+/*
 #ifdef WIN32
   freopen("wsprx.log","w",stderr);
 #endif
+*/
+
   on_EraseButton_clicked();
   ui->labUTC->setStyleSheet( \
         "QLabel { background-color : \
@@ -148,7 +151,10 @@ MainWindow::MainWindow(QWidget *parent) :
   m_COMportOpen=0;
   m_tBlank=1;
   m_fBlank=1;
-  ui->xThermo->setFillBrush(Qt::green);
+
+  signalMeter = new SignalMeter(ui->meterFrame);
+  signalMeter->resize(50, 160);
+  qDebug() << signalMeter->isVisible() << signalMeter->size();
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -311,7 +317,7 @@ void MainWindow::readSettings()
 
   settings.beginGroup("Common");
   m_myCall=settings.value("MyCall","").toString();
-  morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
+  morse_(m_myCall.toLatin1().data(),icw,&m_ncw,m_myCall.length());
   m_myGrid=settings.value("MyGrid","").toString();
   m_idInt=settings.value("IDint",0).toInt();
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
@@ -412,7 +418,7 @@ void MainWindow::dataSink(int k)
   t.sprintf(" Receiving: %5.1f dB ",px);
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
-  ui->xThermo->setValue((double)px);                    //Update thermometer
+  signalMeter->setValue(px);                   // Update signalmeter
   if(m_receiving || m_diskData) {
     g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
@@ -436,7 +442,7 @@ void MainWindow::dataSink(int k)
       watcher2->setFuture(*future2);
       int len1=m_c2name.length();
       char c2name[80];
-      strcpy(c2name,m_c2name.toAscii());
+      strcpy(c2name,m_c2name.toLatin1());
       savec2_(c2name,&m_TRseconds,&f0m1500,len1);
     }
 
@@ -502,7 +508,7 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   if(dlg.exec() == QDialog::Accepted) {
     m_myCall=dlg.m_myCall;
 
-//    morse_(m_myCall.toAscii().data(),icw,&m_ncw,m_myCall.length());
+//    morse_(m_myCall.toLatin1().data(),icw,&m_ncw,m_myCall.length());
     m_myGrid=dlg.m_myGrid;
     m_idInt=dlg.m_idInt;
     m_pttMethodIndex=dlg.m_pttMethodIndex;
@@ -1060,7 +1066,7 @@ void MainWindow::oneSec() {
           t.time().toString();
   ui->labUTC->setText(utc);
   if(!m_receiving and !m_diskData) {
-    ui->xThermo->setValue(0.0);
+    signalMeter->setValue(0);
   }
 }
 
@@ -1159,7 +1165,7 @@ void MainWindow::startTx()
     // Normal WSPR message
     message=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
   }
-  QByteArray ba=message.toAscii();
+  QByteArray ba=message.toLatin1();
   ba2msg(ba,msg);
   int len1=22;
   genwsprx_(msg,itone,len1);
@@ -1184,7 +1190,7 @@ void MainWindow::startTx()
   loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
   lab1->setText("Transmitting:  " + message);
-  ui->xThermo->setValue(0.0);                    //Update thermometer
+  signalMeter->setValue(0);
 }
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()

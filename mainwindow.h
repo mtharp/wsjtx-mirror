@@ -1,14 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include <QtGui>
+#include <QtWidgets>
 #include <QTimer>
 //#include <QUrl>
 #include <QtNetwork>
 #include <QDateTime>
 #include "soundin.h"
 #include "soundout.h"
+#include "signalmeter.h"
 #include "commons.h"
 #include "wsprnet.h"
+#include <QtConcurrent/QtConcurrent>
+#include <QDebug>
 
 //--------------------------------------------------------------- MainWindow
 namespace Ui {
@@ -215,6 +218,8 @@ private:
     QString m_catPort;
     QString m_handshake;
     QString m_cmnd;
+
+    SignalMeter *signalMeter;
 
     SoundInThread soundInThread;             //Instantiate the audio threads
     SoundOutThread soundOutThread;

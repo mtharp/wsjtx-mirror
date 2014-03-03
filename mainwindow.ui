@@ -249,52 +249,21 @@ p, li { white-space: pre-wrap; }
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLabel" name="label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QFrame" name="meterFrame">
+          <property name="enabled">
+           <bool>true</bool>
           </property>
-          <property name="maximumSize">
+          <property name="minimumSize">
            <size>
-            <width>16777215</width>
-            <height>26</height>
+            <width>50</width>
+            <height>0</height>
            </size>
           </property>
-          <property name="text">
-           <string>dB</string>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QwtThermo" name="xThermo" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>43</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="borderWidth" stdset="0">
-           <number>1</number>
-          </property>
-          <property name="maxValue" stdset="0">
-           <double>60.000000000000000</double>
-          </property>
-          <property name="minValue" stdset="0">
-           <double>0.000000000000000</double>
-          </property>
-          <property name="pipeWidth" stdset="0">
-           <number>8</number>
-          </property>
-          <property name="value" stdset="0">
-           <double>0.000000000000000</double>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
           </property>
          </widget>
         </item>
@@ -1425,11 +1394,6 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QwtThermo</class>
-   <extends>QWidget</extends>
-   <header>qwt_thermo.h</header>
-  </customwidget>
   <customwidget>
    <class>DisplayText</class>
    <extends>QTextBrowser</extends>
