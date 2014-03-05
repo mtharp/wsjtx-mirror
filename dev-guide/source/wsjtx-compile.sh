@@ -13,7 +13,7 @@ cd $BUILD_DIR
 
 # CHECKOUT WSJT-X
 clear && echo 'Getting Latest WSJT-X Version'
-svn co svn://svn.berlios.de/wsjt/branches/wsjtx
+svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
 cd ./wsjtx
 rev_num=$(grep -i "rev=" mainwindow.cpp |awk '{print $3}')
 
@@ -31,7 +31,7 @@ make -j$j_c
 # MOVE WSJT-X FOLDER
 cd ../
 
-# Test for mutiple builds of same $rev_num
+# Test for multiple builds of same $rev_num
 # For manual entry, Copy & Paste from if .. fi as one command, then [ENTER]
 if test -d ./wsjtx-$rev_num
 then

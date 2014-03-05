@@ -1,6 +1,6 @@
 
 All source code for the WSJT programs is available at the open-source
-repository known as {berlios1}, under control of the version-control
+repository known as {sourceforge}, under control of the version-control
 program {svn}. For installing {svn}, see <<WINBASESETUP,Windows Base Setup>>
 and for Linux, see <<LINBASESETUP,Linux Base Setup>>.
 
@@ -15,17 +15,17 @@ You can do an anonymous checkout of source code for a specific program
 with a command of the following form:
 
 ---------
-svn co svn://svn.berlios.de/wsjt/branches/wsjtx 
+svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
 ---------
 
 If you are a member of the WSJT Development Group and have commit privileges
 to the repository, use a command like this one:
 
 ---------
-svn co https://user@svn.berlios.de/svnroot/repos/wsjt/branches/wsjtx
+svn co svn+ssh://k1jt@svn.code.sf.net/p/wsjt/wsjt/trunk 
 ---------
 
-substituting your Berlios username for +user+.
+substituting your SourceForge username for +user+.
 
 CAUTION: Please note: the HEAD of the SVN repository for any of these
 programs is likely to be an active development branch.  There is no

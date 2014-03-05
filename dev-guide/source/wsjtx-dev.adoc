@@ -52,7 +52,7 @@ IMPORTANT: You can perform the steps <<MANUAL,manually>> if desired. Using the
 # Use Export to prevent .svn folder from downloading
 # Use Force to ensure that, if wsjtx-comple.sh exists, it gets updated
 
-svn export --force svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-compile.sh
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-compile.sh
 
 ----------
 
@@ -121,7 +121,7 @@ This example will build _WSJT-X_ using CMake. If you have not performed the
 <<BASE_ENV,Windows Base Setup>>, do so now or _WSJT-X_ build will fail.
 
 You can build both Debuug and Release Versions with the script. If no command
-line option is given, default is Releasae
+line option is given, default is Release
 
 * Open a WSJT ENV Terminal and perform the following steps:
 
@@ -200,10 +200,10 @@ c:
 cd wsjt-env
 
 # CHECK OUT LATEST WSJT-ENV FILE
-svn export --force svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjt-env.bat
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjt-env.bat
 
 # CHECKOUT LATEST WSJTX-BUILD-CMAKE.BAT FILE
-svn export --force svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source/wsjtx-build-cmake.bat
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-build-cmake.bat
 
 # CLOSE TERMINAL
 ----------

@@ -35,7 +35,7 @@ gfortran --version >nul 2>null || SET APP=Gfortran && GOTO ERROR1
 g++ --version >nul 2>null || SET APP=G++ && GOTO ERROR1
 
 REM -- SET WSJTX CHECKOUT
-SET WSJTXCO=svn co svn://svn.berlios.de/wsjt/branches/wsjtx
+SET WSJTXCO=svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
 
 REM -- SET FILES NEEDED AFTER:  mingw32-make install
 SET CPTXT=*.txt *.dat *.conf
@@ -58,7 +58,8 @@ IF NOT EXIST %APP_DIR%\NUL mkdir %APP_DIR%
 REM -- CHECKOUT TOOLCHAIN FILE - Still in %BASED%\wsjtx directory
 ECHO.
 ECHO Downloaing Latest ToolChain File
-SET WSJTURL=svn://svn.berlios.de/wsjt/branches/doc/dev-guide/source
+
+SET WSJTURL=svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source
 SET TCHAIN_FILE=wsjtx-toolchain.cmake
 REM -- Use force to pull new updates from SVN
 SET CHECKOUT=svn export -q --force %WSJTURL%
