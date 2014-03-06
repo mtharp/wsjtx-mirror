@@ -25,6 +25,7 @@ SET SVND=%BASED%\subversion\bin
 SET CMAKED=%BASED%\cmake\bin
 SET DLLD=%BASED%\qt5\5.2.1\mingw48_32\bin
 SET LIBD=%BASED%\qt5\Tools\mingw48_32\bin
+SET PLUG=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms
 SET PATH=%BASED%;%SRCD%;%BUILDD%;%INSTALLD%;%TCHAIN%;%SVND%;%CMAKED%;%DLLD%;%LIBD%;%PATH%
 
 REM -- CHECK TOOLS CAN GE REACHED
@@ -39,6 +40,7 @@ SET WSJTXCO=svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
 
 REM -- SET FILES NEEDED AFTER:  mingw32-make install
 SET CPTXT=*.txt *.dat *.conf
+SET CPLA=qwin*
 SET CPQT=Qt5Core.dll Qt5Gui.dll Qt5Multimedia.dll Qt5Network.dll Qt5Widgets.dll
 SET CPICU=icu*.dll
 SET CPLIB=libgcc_s_dw2-1.dll libgfortran-3.dll libstdc++-6.dll libquadmath-0.dll libwinpthread-1.dll
@@ -85,6 +87,7 @@ REM -- POST BUILD COPY
 CD %BASED%
 %RBCPY% %SRCD%\wsjtx %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* *.cmake
 %RBCPY% %DLLD% %INSTALLD%\%OPTION%\bin %CPICU% %CPQT%
+%RBCPY% %PLUG% %INSTALLD%\%OPTION%\bin\platforms %CPLA%
 %RBCPY% %LIBD% %INSTALLD%\%OPTION%\bin %CPLIB%
 GOTO EOF
 
