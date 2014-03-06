@@ -1,0 +1,43 @@
+:prog: The WSJT Developers Guide
+=== Windows Makefile
+
+This example will be using Windows, Makefile, MinGW Tool
+Chain and Python. Future releases will be in the form of
+an Software Development Kit (SDK) and provide a single
+download pre-configured for WSJT activity.
+
+If you have not performed the <<BASE_ENV,Windows Base Setup>>,
+do so now or _WSJT_ build will fail.
+
+[[MSINSTALL]]
+==== MSVC 2008 Express
+
+In order to prevent conflicts between MinGW, G95, Python27
+an numpy-1.8.0, we will be using Microsoft C/C{plus}{plus} compilers
+to add Numpy-1.8.0 to the base Python27 installation.
+
+TIP: If you have MSVC-2008 or MSVC-2010 already installed, 
+you can proceed to the <<PYSETUP,Python Instqallation>>.
+
+Under Construction
+
+
+[[MGWINSTALL]]
+==== MinGW Install
+
+Under Construction
+
+
+[[PYSETUP]]
+==== Python Installation
+
+Download the following packages to: +*c:\wsjt-env\downloads*+
+
+[horizontal]
++*Python 2.7.6*+:: {py_python27}
++*Python Numpy 1.8.0*+:: {py_numpy180}
++*Python Setup 2.2-win32*+:: {py_setup}
++*Python PIP 1.5.4-win32*+:: {py_pip}
++*Python PyWin 218.5-win32*+:: {py_pywin32}
+
+Under Construction
