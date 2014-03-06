@@ -1,5 +1,5 @@
-:prog: The WSJTX Developers Guide
-=== Linux Makefile Example
+:prog: The WSJT Developers Guide
+=== Linux Makefile
 
 This example uses Qmake and Makefile.Linux. In order to build _WSJT-X_ form
 source, install the following packages:
@@ -115,7 +115,7 @@ Run WSJT-X from the terminal
 
 ----------
 
-=== Windows CMake Example
+=== Windows CMake
 
 This example will build _WSJT-X_ using CMake. If you have not performed the
 <<BASE_ENV,Windows Base Setup>>, do so now or _WSJT-X_ build will fail.
@@ -153,7 +153,7 @@ mkdir cmake fftw3f hamlib qt5 src
 +*SVN*+:: {svn} - SlikSVN 1.8.5.x 32-bit
 +*MS Tools*+:: {mstools} - Microsoft Tool Kit
 
-.QT5.2.1 Install
+.QT5 Install
 * Run the Installer
 * Change Install Path to: +*C:\wsjt-env\Qt5*+
 * Check: Associate common files types with Qt Creator

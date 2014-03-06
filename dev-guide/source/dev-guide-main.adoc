@@ -33,12 +33,12 @@ include::../global/communication.adoc
 
 == Communication
 
-The following are established General {amp} Development communication channels
+The following are established General and Development communication channels
 for the WSJT Group.
 
 .General Information
 * Main Site: {homepage}
-* Development Site: http://developer.berlios.de/projects/wsjt/[Project Summary]
+* Development Site: {projsummary}
 
 .Development Related
 [horizontal]
@@ -75,12 +75,12 @@ Under Construction
 == SIJT
 include::simjt-dev.adoc[]
 Under Construction
+////
+
 
 [[WSJT]]
 == WSJT
 include::wsjt-dev.adoc[]
-Under Construction
-////
 
 [[WSJTX]]
 == WSJT-X

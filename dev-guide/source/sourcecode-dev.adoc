@@ -1,6 +1,6 @@
 
 All source code for the WSJT programs is available at the open-source
-repository known as {sourceforge}, under control of the version-control
+repository known as {sf_reg}, under control of the version-control
 program {svn}. For installing {svn}, see <<WINBASESETUP,Windows Base Setup>>
 and for Linux, see <<LINBASESETUP,Linux Base Setup>>.
 
