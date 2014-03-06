@@ -42,8 +42,8 @@ void DevSetup::initDlg()
       sprintf((char*)(pa_device_name),"%s",pdi->name);
       sprintf((char*)(pa_device_hostapi),"%s",
               Pa_GetHostApiInfo(pdi->hostApi)->name);
-#ifdef WIN32
       p1=(char*)"";
+#ifdef WIN32
       p=strstr(pa_device_hostapi,"MME");
       if(p!=NULL) p1=(char*)"MME";
       p=strstr(pa_device_hostapi,"Direct");
@@ -78,9 +78,9 @@ void DevSetup::initDlg()
       sprintf((char*)(pa_device_hostapi),"%s",
               Pa_GetHostApiInfo(pdi->hostApi)->name);
 
+      p1=(char*)"";
 #ifdef WIN32
 // Needs work to compile for Linux
-      p1=(char*)"";
       p=strstr(pa_device_hostapi,"MME");
 
       if(p!=NULL) p1=(char*)"MME";
