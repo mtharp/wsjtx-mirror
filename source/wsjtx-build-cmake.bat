@@ -4,7 +4,7 @@ REM -- Part of the WSJT Documentation Project
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 COLOR 1B
-TITLE WSJT-X CMake Build Script
+TITLE WSJT Applicaiton Build Script ( CMake )
 
 REM -- TEST DOUBLE CLICK
 FOR %%x IN (%cmdcmdline%) DO IF /I "%%~x"=="/c" SET GUI=1
@@ -18,77 +18,97 @@ REM -- SET BUILD TOOL PATHS
 SET APP_NAME=wsjtx
 SET APP_DIR=%BASED%\%APP_NAME%
 SET SRCD=%BASED%\src
-SET BUILDD=%BASED%\%APP_NAME%\wsjtx-build
-SET INSTALLD=%BASED%\%APP_NAME%\wsjtx-install
-SET TCHAIN=%BASED%\%APP_NAME%\wsjtx-toolchain.cmake
+SET BUILDD=%BASED%\%APP_NAME%\%APP_NAME%-build
+SET INSTALLD=%BASED%\%APP_NAME%\%APP_NAME%-install
+SET TCHAIN=%APP_NAME%-toolchain.cmake
+SET TCLOC=%BASED%\%TCHAIN%
 SET SVND=%BASED%\subversion\bin
 SET CMAKED=%BASED%\cmake\bin
 SET DLLD=%BASED%\qt5\5.2.1\mingw48_32\bin
 SET LIBD=%BASED%\qt5\Tools\mingw48_32\bin
 SET PLUG=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms
-SET PATH=%BASED%;%SRCD%;%BUILDD%;%INSTALLD%;%TCHAIN%;%SVND%;%CMAKED%;%DLLD%;%LIBD%;%PATH%
+SET DEVGSRC=svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source
+SET WSJTXCO=svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+SET JJ=%NUMBER_OF_PROCESSORS%
+SET PATH=%BASED%;%SRCD%;%BUILDD%;%INSTALLD%;%SVND%;%CMAKED%;%DLLD%;%LIBD%;%PATH%
 
-REM -- CHECK TOOLS CAN GE REACHED
+REM -- FILES NEEDED AFTER: mingw32-make -j%JJ% install
+SET CPTXT=*.txt *.dat *.conf
+SET CPLU=qwin*
+SET CPQT=Qt5Core.dll Qt5Gui.dll Qt5Multimedia.dll Qt5Network.dll Qt5Widgets.dll
+SET CPICU=icu*.dll
+SET CPLIB=libgcc_s_dw2-1.dll libgfortran-3.dll libstdc++-6.dll libquadmath-0.dll libwinpthread-1.dll
+SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP
+
+REM -- CHECK CRITICAL TOOLS CAN BE FOUND
 cmake --version >nul 2>null || SET APP=CMake && GOTO ERROR1
 svn --version >nul 2>null || SET APP=SVN && GOTO ERROR1
 mingw32-make --version >nul 2>null || SET APP=Mingw32-Make && GOTO ERROR1
 gfortran --version >nul 2>null || SET APP=Gfortran && GOTO ERROR1
 g++ --version >nul 2>null || SET APP=G++ && GOTO ERROR1
-
-REM -- SET WSJTX CHECKOUT
-SET WSJTXCO=svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
-
-REM -- SET FILES NEEDED AFTER:  mingw32-make install
-SET CPTXT=*.txt *.dat *.conf
-SET CPLA=qwin*
-SET CPQT=Qt5Core.dll Qt5Gui.dll Qt5Multimedia.dll Qt5Network.dll Qt5Widgets.dll
-SET CPICU=icu*.dll
-SET CPLIB=libgcc_s_dw2-1.dll libgfortran-3.dll libstdc++-6.dll libquadmath-0.dll libwinpthread-1.dll
-SET RBCPY=ROBOCOPY /NS /NC /NFL /NDL /NP
+DEL /Q null
 
 REM -- START MAIN BUILD
 CD %BASED%
 CLS
 ECHO -------------------------------
-ECHO WSJT-X CMake Build Script
+ECHO %APP_NAME% CMake Build Script
 ECHO -------------------------------
 ECHO.
-REM - Make sure WSJT-X Directories are there
+
+REM - USER CLI BUILD OPTION
+IF /I [%1]==[-d] (SET OPTION=Debug) ELSE (SET OPTION=Release)
+
+REM - CHECK %APP_NAME%\DIR
 IF NOT EXIST %SRCD%\NUL mkdir %SRCD%
 IF NOT EXIST %APP_DIR%\NUL mkdir %APP_DIR%
 
-REM -- CHECKOUT TOOLCHAIN FILE - Still in %BASED%\wsjtx directory
+REM -- TEST and/or CHECKOUT TOOLCHAIN FILE
+IF NOT EXIST %TCHAIN% (GOTO GETTC) ELSE (GOTO ASK)
+
+:ASK
+REM -- ASK TO OVERWRITE TOOL-CHAIN-FILE IF EXISTS
 ECHO.
-ECHO Downloaing Latest ToolChain File
+ECHO Overwrite Tool Chain File? ( Y/N )
+SET ANSWER=
+SET /P ANSWER=Type responce: %=%
+If /I "%ANSWER%"=="N" GOTO SKIPTC
+If /I "%ANSWER%"=="Y" (
+GOTO GETTC
+) ELSE (
+CLS
+ECHO.
+ECHO Please Answer With: ^( Y or N ^) & ECHO. & GOTO ASK
+)
 
-SET WSJTURL=svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source
-SET TCHAIN_FILE=wsjtx-toolchain.cmake
-REM -- Use force to pull new updates from SVN
-SET CHECKOUT=svn export -q --force %WSJTURL%
-ECHO   downloading: %TCHAIN_FILE%
-%CHECKOUT%/%TCHAIN_FILE% %BASED%/%APP_NAME%/
+:GETTC
+REM -- USE FORCE TO ENSURE OVERWRITE IF :ASK == YES
+ECHO Downloading: %TCHAIN%
+svn export --force %DEVGSRC%/%TCHAIN% %BASED%/
 
-REM - Set user build selection or default to Release
-IF /I [%1]==[-d] (SET OPTION=Debug) ELSE (SET OPTION=Release)
+:SKIPTC
+ECHO.
 CD %SRCD%
-ECHO   Checking out: %APP_NAME%
-ECHO.
+ECHO Checking out: %APP_NAME%
+
+REM -- CHECKOUT BRANCH
 %WSJTXCO%
 IF NOT EXIST %BUILDD%\%OPTION%\NUL mkdir %BUILDD%\%OPTION%
 CD %BUILDD%\%OPTION%
+ECHO Starting Build For: ^( %APP_NAME% ^)
+ECHO.
+cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCLOC% ^
+-DCMAKE_BUILD_TYPE=%OPTION% -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 
-cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
--DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/wsjtx
-
-REM -- MAKE INSTALL :: Builds to install\{Release, Debug}\bin
-mingw32-make -j4 install
+REM -- MAKE INSTALL: MAKE_INSTALL_PREFIX\install\{Release, Debug}\bin
+mingw32-make -j%JJ% install
 
 REM -- POST BUILD COPY
 CD %BASED%
-%RBCPY% %SRCD%\wsjtx %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* *.cmake
-%RBCPY% %DLLD% %INSTALLD%\%OPTION%\bin %CPICU% %CPQT%
-%RBCPY% %PLUG% %INSTALLD%\%OPTION%\bin\platforms %CPLA%
-%RBCPY% %LIBD% %INSTALLD%\%OPTION%\bin %CPLIB%
+%RBCP% %SRCD%\wsjtx %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* *.cmake
+%RBCP% %DLLD% %INSTALLD%\%OPTION%\bin %CPICU% %CPQT%
+%RBCP% %PLUG% %INSTALLD%\%OPTION%\bin\platforms %CPLU%
+%RBCP% %LIBD% %INSTALLD%\%OPTION%\bin %CPLIB%
 GOTO EOF
 
 REM - TOOL CHAIN ERROR MESSAGE
@@ -139,7 +159,7 @@ ECHO Rerun the build script after Exit.
 ECHO     If the problem continues
 ECHO     Contact: ki7mt@yahoo.com
 PAUSE
-CD /D %SRCD%\wsjtx
+CD /D %SRCD%\%APP_NAME%
 svn cleanup
 CLS
 ECHO -------------------------------
