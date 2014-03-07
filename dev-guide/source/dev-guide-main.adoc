@@ -52,49 +52,48 @@ for the WSJT Group.
 
 [[BASEENV]]
 == Base Environment
-include::wsjt-dev-env.adoc[]
+include::environment.adoc[]
 
 == Source Code
-include::sourcecode-dev.adoc[]
+include::sourcecode.adoc[]
 
 == Package Matrix
-include::pkgmatrix-dev.adoc[]
+include::pkgmatrix.adoc[]
 
 ////
 [[DOCSETUP]]
 == Documentation
-include::doc-dev.adoc[]
+include::doc.adoc[]
 Under Construction
 
 [[MAP65]]
 == MAP-65
-include::map65-dev.adoc[]
+include::map65.adoc[]
 Under Construction
 
 [[SIMJT]]
 == SIJT
-include::simjt-dev.adoc[]
+include::simjt.adoc[]
 Under Construction
-////
-
 
 [[WSJT]]
 == WSJT
-include::wsjt-dev.adoc[]
+include::wsjt.adoc[]
+////
 
 [[WSJTX]]
 == WSJT-X
-include::wsjtx-dev.adoc[]
+include::wsjtx.adoc[]
 
 ////
 [[WSPR]]
 == WSPR
-include::wspr-dev.adoc[]
+include::wspr.adoc[]
 Under Construction
 
 [[WSPRX]]
 == WSPR-X
-include::wsprx-dev.adoc[]
+include::wsprx.adoc[]
 Under Construction
 ////
 
