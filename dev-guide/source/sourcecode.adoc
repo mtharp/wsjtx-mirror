@@ -22,12 +22,20 @@ If you are a member of the WSJT Development Group and have commit privileges
 to the repository, use a command like this one:
 
 ---------
-svn co svn+ssh://k1jt@svn.code.sf.net/p/wsjt/wsjt/trunk 
+svn co svn+ssh://USER@svn.code.sf.net/p/wsjt/wsjt/trunk 
 ---------
 
-substituting your SourceForge username for +user+.
+substituting your SourceForge username for +USER+.
 
 CAUTION: Please note: the HEAD of the SVN repository for any of these
 programs is likely to be an active development branch.  There is no
 guarantee that a build from every revision will be successful, nor
 that it will provide a stable executable program.
+
+.Source Code Locations:
+[horizontal]
++*WSJT*+:: svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
++*WSJT-X*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
++*WSPR*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
++*WSPR-X*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
++*MAP65*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/map65

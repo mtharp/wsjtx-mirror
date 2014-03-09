@@ -7,7 +7,7 @@
 set -e
 
 # SETUP BASE DIR
-BASE_DIR=$HOME/Projects/wsjt-env
+BASE_DIR=$HOME/wsjt-env
 
 # MAKE DIRECTORY STRUCTURE
 mkdir -p $BASE_DIR/wsjtx/{build,install}/{Debug,Release}
