@@ -43,7 +43,7 @@ IF %BASEDIR:~-1%==\ SET BASEDIR=%BASEDIR:~0,-1%
 SET ADOC=%BASEDIR%\asciidoc\asciidoc.py
 SET ICOND=%BASEDIR%\icons
 SET TOC=%ADOC% -b xhtml11 -a toc2 -a iconsdir=%ICOND% -a max-width=1024px
-SET SHORT_LIST=(map65 quick-ref simjt wsjt wspr wsprx )
+SET SHORT_LIST=(map65 quick-ref simjt wsjt wspr wsprx dev-guide)
 
 REM -- Start building documents
 call:head_wording
