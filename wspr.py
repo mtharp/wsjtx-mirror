@@ -35,7 +35,7 @@ except:
     from Numeric import zeros
 import array
 import dircache
-import Image, ImageTk, ImageDraw
+from PIL import Image, ImageTk, ImageDraw
 from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *

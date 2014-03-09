@@ -1,9 +1,16 @@
-#Makefile for Windows and MinGW
-CC = /mingw/bin/gcc
-FC = /mingw/bin/g95
+# Makefile for Windows with MinGW, using gcc g95 python pyinstaller
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss
-CFLAGS = -I. -fbounds-check
+# Re-direct stdout and stderr:     cmd.exe              bash
+#                              make > junk 2>&1      make &> junk
+
+CC = gcc
+FC = g95
+PYTHONDIR = c:/python27
+F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
+PYI = $(PYTHONDIR)/Scripts/pyinstaller
+
+FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
+CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM
 
 # Default rules
 %.o: %.c
@@ -17,7 +24,7 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    WSPR.EXE fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe
+all:    wspr.exe fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe
 
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
@@ -63,9 +70,9 @@ OBJS3 = WSPRcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 WSPRcode.exe: $(OBJS3)
 	$(FC) -o WSPRcode.exe $(OBJS3)
 
-WSPR.EXE: WsprMod/w.pyd wspr.spec
-	c:/python27/python c:/python27/pyinstaller-1.5.1/Build.py wspr.spec
-	mv dist/wspr.exe WSPR.EXE
+wspr.exe: WsprMod/w.pyd wspr.py
+	$(PYI) --icon wsjt.ico --onefile --log-level=WARN wspr.py
+	mv dist/wspr.exe wspr.exe
 
 WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	c:/python27/python c:/python27/scripts/f2py.py -c -I. \
@@ -79,10 +86,10 @@ WsprMod/w.pyd: $(OBJS2C) $(SRCS2F90) $(SRCS2F77) $(SRCS2C) acom1.f90
 	$(SRCS2F90) $(SRCS2F77) $(SRCS2C)
 	mv w.pyd WsprMod/w.pyd
 
-wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py \
-	WsprMod/advanced.py WsprMod/iq.py WsprMod/hopping.py
-	c:/python27/python c:/python27/pyinstaller-1.5.1/makespec.py --icon \
-	  wsjt.ico --tk --onefile wspr.py
+#wspr.spec: wspr.py WsprMod/g.py WsprMod/options.py WsprMod/palettes.py \
+#	WsprMod/advanced.py WsprMod/iq.py WsprMod/hopping.py
+#	c:/python27/python c:/python27/pyinstaller-1.5.1/makespec.py --icon \
+#	  wsjt.ico --tk --onefile wspr.py
 
 fmt.exe: fmt.f90 fil1.f90 four2a.f peakup.f db.f sound.o 
 	$(FC) -o fmt.exe -ftrace=full fmt.f90 fil1.f90 four2a.f peakup.f db.f \
