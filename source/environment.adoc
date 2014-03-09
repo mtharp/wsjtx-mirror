@@ -15,11 +15,11 @@ area for all activity. Reason(s) for this containment are:
 The follwoing language is used throughout the {page}
 
 [horizontal]
-+*WSJT Env Terminal*+:: Windows CMD Terminal set up specifically for WSJT work 
++*WSJT Env Terminal*+:: Windows CMD Terminal specifically for WSJT work 
 +*Windows CMD Terminal+*:: Standard Windows Command Terminal
-+*XTerm+*:: X-Terminal in Linux, BSD and OS X
-+*Setup Script*+:: Batch or Bash script used to set up WSJT environment
-+*Build Script*+:: Batch or Bash Script used to build applications
++*X-Term+*:: X-Terminal for Linux, BSD and OS X
++*Setup Script*+:: Batch or Shell script used to set up WSJT environment
++*Build Script*+:: Batch or Shell Script used to build applications
 +*Tool Chain File*+:: CMake configuration file used by build scripts
 
 [[PATHCFG]]
@@ -33,7 +33,7 @@ All _{page}_ examples use the same +*(path)*+ configuration throughout the guide
 //	
 * +*WINDOWS*+, all scripts, build and package installations will be in:
 	- C:\wsjt-env <= [green]*#recommended location#*
-	- C:\Tools\wsjt-env - (alternative example)
+	- C:\Projects\wsjt-env - (alternative example)
 
 IMPORTANT: The {page} will use the <<PATHCFG,recommended>> install locations
 for both *Windows and Linux.*	
@@ -61,12 +61,9 @@ mkdir wsjt-env wsjt-env\subversion wsjt-env\downloads
 * End User Agreement: Agree to Terms
 * Change Install Path to: +*C:\wsjt-env\subversion*+
 * Choose Setup Type: Typical
-* Then Install, then Finish
-
-IMPORTANT: Each SVN installer tested, added itself to the users %PATH%, without
-an option to select Yes or No. Be sure it is in your %PATH%
-
+* Finish Install
 * Open Windows CMD Terminal, then:
+
 [source,shell]
 ----------
 # CHECK SUBVERSION
@@ -80,11 +77,12 @@ svn, version 1.8.5-SlikSvn-1/8/5-WIN32 .. .. ..
 
 [[LINBASESETUP]]
 === Linux Base Setup
-Most all Linux distributions have {svn} in their repositories. If SVN is
+Most Linux distributions have Subversion in their repositories. If SVN is
 already installed, ensure you can use it via X-Term with: svn --version,
 otherwise continue with setup:
 
-* Open X-Term Windows, Ctrl{plus}Alt{plus}T
+* Open X-Term Window
+
 [source,shell]
 ----------
 # DEBIAN, UBUNTU, MINT and FRIENDS
@@ -100,4 +98,3 @@ svn, 1.7.14
 # EXIT X-TERM and PROCEED TO APPLICATION BUILD
 ----------
 
-// END of WSJT-ENV SETUP

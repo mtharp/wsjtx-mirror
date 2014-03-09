@@ -9,12 +9,12 @@ source, install the following packages:
 ----------
 # DEBIAN, UBUNTU, MINT and FRIENDS
 
-# ADD QT5 PPA (Copy and Paste as "1" command in a terminal):
+# ADD QT5 PPA (Copy and Paste as "1" command in a X-Term):
 # This can take a while to install.
 sudo add-apt-repository ppa:ubuntu-sdk-team/ppa && sudo apt-get update && \
 sudo apt-get dist-upgrade && sudo apt-get install ubuntu-sdk
 
-# AFTER QT4/5 INSTALLATION (Copy and Paste as "1" command in a terminal):
+# AFTER QT4/5 INSTALLATION (Copy and Paste as "1" command in a X-Term):
 sudo apt-get install gcc g++ gfortran make libfftw3-dev \
 libpulse-dev hamlib libhamlib-dev pulseaudio subversion \
 libgfortran3:i386 libc6-i386 cmake
@@ -49,7 +49,7 @@ manually, use a text editor, open the file, and follow the steps.
 
 [[MAKEFILE]]
 .Script Method
-* Open a terminal, +*Ctrl{plus}Alt{plus}T*+
+* Open a X-Term
 * Checkout +*wsjtx-makefile.sh*+ from SVN:
 
 [source,shell]
@@ -82,14 +82,14 @@ chmod +x ./wsjtx-compile.sh
 
 [source,bash]
 ----------
-# When running from a terminal [ ./wsjtx ], the xterm remains open.
+# When running from a X-Term [ ./wsjtx ], the xterm remains open.
 # This is good for testing and chasing errors. Run WSJT-X with:
 
 ./wsjtx
 
 # You can also use a file manager. Browse to WSJT-X dir, and open
 # as you would any other program. Using this method to launch, you
-# should not see the terminal window.
+# should not see the X-Term window.
 
 ----------
 
@@ -104,7 +104,7 @@ manually, use a text editor, open the file, and follow the steps.
 
 [[CMAKE]]
 .Script Method
-* Open a terminal, +*Ctrl{plus}Alt{plus}T*+
+* Open a terminal
 * Checkout +*wsjtx-cmake.sh*+ from SVN:
 
 [source,shell]
@@ -135,7 +135,7 @@ chmod +x ./wsjtx-cmake.sh
 * +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
 
 [[CHKKVASD]]
-==== Test KVASD
+.Test KVASD
 
 Before you launch _WSJT-X_, ensure _KVASD_ can run.
 

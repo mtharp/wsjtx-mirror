@@ -16,7 +16,7 @@ each of the respective sections.
 |MinGW     |    |x   |x     |x   |x     |x     
 |Portaudio |    |x   |x     |x   |x     |x     
 |Python    |x   |x   |      |x   |      |x     
-|Qt5       |    |    |x     |    |      |      
+|Qt5       |    |    |x     |    |x     |x     
 |Subversion|x   |x   |x     |x   |x     |x     
 |=================================================
 
