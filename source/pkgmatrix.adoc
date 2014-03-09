@@ -17,8 +17,6 @@ each of the respective sections.
 |Portaudio |    |x   |x     |x   |x     |x     
 |Python    |x   |x   |      |x   |      |x     
 |Qt5       |    |    |x     |    |      |      
-|Qt4       |    |    |      |    |x     |x     
-|Qwt       |    |    |      |    |x     |x      
 |Subversion|x   |x   |x     |x   |x     |x     
 |=================================================
 
