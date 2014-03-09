@@ -4,15 +4,20 @@
 This example uses Qmake and Makefile.Linux. In order to build _WSJT-X_ form
 source, install the following packages:
 
+[[DEPS]]
 [source,shell]
 ----------
 # DEBIAN, UBUNTU, MINT and FRIENDS
-# Note: Adjust the install method to your distribution package manager.
 
+# ADD QT5 PPA (Copy and Paste as "1" command in a terminal):
+# This can take a while to install.
+sudo add-apt-repository ppa:ubuntu-sdk-team/ppa && sudo apt-get update && \
+sudo apt-get dist-upgrade && sudo apt-get install ubuntu-sdk
+
+# AFTER QT4/5 INSTALLATION (Copy and Paste as "1" command in a terminal):
 sudo apt-get install gcc g++ gfortran make libfftw3-dev \
-libpulse-dev libhamlib-dev qtbase5-dev  pulseaudio subversion \
-libgfortran3:i386 libc6-i386 libqt5multimedia5-plugins \
-qtmultimedia5-dev
+libpulse-dev hamlib libhamlib-dev pulseaudio subversion \
+libgfortran3:i386 libc6-i386 cmake
 
 ----------
 
@@ -38,49 +43,100 @@ qtmultimedia5-dev
 
 ==== Build Methods
 
-IMPORTANT: You can perform the steps <<MANUAL,manually>> if desired. Using the
-<<BUILDSH,script>> automates the steps.
+TIP: You can perform the steps manually if desired. Using
+the <<MAKEFILE,script>> is the preferred method. To perform the steps
+manually, use a text editor, open the file, and follow the steps.
 
-* Open a terminal session, +*Ctrl{plus}Alt{plus}T*+
-* Checkout the build script from SVN:
+[[MAKEFILE]]
+.Script Method
+* Open a terminal, +*Ctrl{plus}Alt{plus}T*+
+* Checkout +*wsjtx-makefile.sh*+ from SVN:
 
-[[BUILDSH]]
 [source,shell]
-.SVN export wsjtx-build.sh
 ----------
-# SVN CHECKOUT WSJTX-COMPILE.SH
-# Use Export to prevent .svn folder from downloading
-# Use Force to ensure that, if wsjtx-comple.sh exists, it gets updated
+# CO BUILD SCRIPT
+svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-makefile.sh
 
-svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-compile.sh
+# TO UPDATE THE BUILD SCRIPT: cd /to/script/location
+svn up
 
-----------
-
-.Using the Script
-* Using The Build <<BUILDSH,Script>>, Change Permission and Run
-
-[source,bash]
-----------
 # CHANGE PERMISSION
 chmod +x ./wsjtx-compile.sh
 
-# RUN SCRIPT
-./wsjtx-compile.sh
 ----------
 
-[[MANUAL]]
-.Manual Entry
-* For manual entry, start at +*BUILD_DIR=~/wsjt-env/wsjtx-build*+ and
-perform each step that does not start with start with "#" sign. Use +*Copy {amp}
-Paste*+.
+.To Build Release version
+[source,shell]
+---------
+./wsjtx-makefile.sh -r
+---------
 
-[[MANUAL]]
+.To Build Debug version
+[source,shell]
+---------
+./wsjtx-makefile.sh -d
+---------
+
+.WSJT-X Location
+* +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
+* Proceed to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
+
 [source,bash]
-.wsjtx-compile.sh
 ----------
-include::wsjtx-compile.sh[]
+# When running from a terminal [ ./wsjtx ], the xterm remains open.
+# This is good for testing and chasing errors. Run WSJT-X with:
+
+./wsjtx
+
+# You can also use a file manager. Browse to WSJT-X dir, and open
+# as you would any other program. Using this method to launch, you
+# should not see the terminal window.
+
 ----------
 
+=== Linux CMake
+
+This example uses CMake to build WSJT-X. The same dependencies apply. If
+you have not installed the <<DEPS,dependencies>>, do so before continuing.
+
+TIP: You can perform the steps manually if desired. Using
+the <<CMAKE,script>> is the preferred method. To perform the steps
+manually, use a text editor, open the file, and follow the steps.
+
+[[CMAKE]]
+.Script Method
+* Open a terminal, +*Ctrl{plus}Alt{plus}T*+
+* Checkout +*wsjtx-cmake.sh*+ from SVN:
+
+[source,shell]
+----------
+# CO BUILD SCRIPT
+svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-cmake.sh
+
+# TO UPDATE THE BUILD SCRIPT: cd /to/script/location
+svn up
+
+# CHANGE PERMISSION
+chmod +x ./wsjtx-cmake.sh
+
+----------
+
+.To Build Release version
+[source,shell]
+---------
+./wsjtx-cmake.sh -r
+---------
+
+.To Build Debug version
+[source,shell]
+---------
+./wsjtx-cmake.sh -d
+---------
+
+.WSJT-X Location
+* +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
+
+[[CHKKVASD]]
 ==== Test KVASD
 
 Before you launch _WSJT-X_, ensure _KVASD_ can run.
@@ -96,22 +152,6 @@ KVASD version 1.11
 
 # VIEW COPYRGHT
 ./kvasd
-
-----------
-
-==== Run WSJT-X
-Run WSJT-X from the terminal
-
-[source,bash]
-----------
-# When running from a terminal [ ./wsjtx ], the xterm remains open.
-# This is good for testing and chasing errors. Run WSJT-X with:
-
-./wsjtx
-
-# You can also use a file manager. Browse to WSJT-X dir, and open
-# as you would any other program. Using this method to launch, you
-# should not see the terminal window.
 
 ----------
 
