@@ -41,7 +41,7 @@ libgfortran3:i386 libc6-i386 cmake
 +*libgcc_s.so.1libm.so.6*+:: GCC C Library 
 +*libquadmath.so.0*+:: Quad-Precision Math Library
 
-==== Build Methods
+.Build Methods
 
 TIP: You can perform the steps manually if desired. Using
 the <<MAKEFILE,script>> is the preferred method. To perform the steps
@@ -55,10 +55,9 @@ manually, use a text editor, open the file, and follow the steps.
 [source,shell]
 ----------
 # CO BUILD SCRIPT
-svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-makefile.sh
-
-# TO UPDATE THE BUILD SCRIPT: cd /to/script/location
-svn up
+# use export to co a single file
+# use --force to make svn update the file if it exists
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-makefile.sh
 
 # CHANGE PERMISSION
 chmod +x ./wsjtx-compile.sh
@@ -111,10 +110,9 @@ manually, use a text editor, open the file, and follow the steps.
 [source,shell]
 ----------
 # CO BUILD SCRIPT
-svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-cmake.sh
-
-# TO UPDATE THE BUILD SCRIPT: cd /to/script/location
-svn up
+# use export to co a single file
+# use --force to make svn update the file if it exists
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-cmake.sh
 
 # CHANGE PERMISSION
 chmod +x ./wsjtx-cmake.sh
@@ -190,7 +188,6 @@ mkdir cmake fftw3f hamlib qt5 src
 +*CMake*+:: {cmake} - Win32 Installer
 +*Hamlib*+:: {hamlib} - Hamlib 1.2.15.3.zip
 +*FFTW3*+:: {fftw3} - 32-bit version: fftw-3.3.3-dll32.zip
-+*SVN*+:: {svn} - SlikSVN 1.8.5.x 32-bit
 +*MS Tools*+:: {mstools} - Microsoft Tool Kit
 
 .QT5 Install
@@ -227,7 +224,7 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\lib hamlib\include ..*+
 * If not installed, {mstools}
 * Run the installer 
 
-==== Building WSJT-X with CMake
+.Building WSJT-X with CMake
 
 * Check out the latest wsjt-env.bat file
 * Open WIndows CMD Terminal. As this is the frst checkout, We need the Windows 
