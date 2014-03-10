@@ -62,7 +62,7 @@ int th_decode_(void)
     decode_started=0;
   }
   iret1 = pthread_create(&decode_thread,NULL,(void *)decode_,&iarg1);
-  if(iret1==0) decode_started=time(NULL);
+  //  if(iret1==0) decode_started=time(NULL);
   return iret1;
 }
 
