@@ -94,9 +94,10 @@ install: WsprMod/w.pyd $(PYSRCS)
 	mv install/wspr/ install/bin
 
 
-fmt.exe: fmt.f90 fil1.f90 four2a.f peakup.f db.f sound.o 
-	$(FC) -o fmt.exe -ftrace=full fmt.f90 fil1.f90 four2a.f peakup.f db.f \
-	sound.o libportaudio.a c:\MinGW\lib\libwinmm.a libfftw3f_win.a
+fmt.exe: fmt.f90 fil1.f90 four2a.f90 peakup.f90 db.f90 sound.o 
+	$(FC) -o fmt.exe -ftrace=full fmt.f90 fil1.f90 four2a.f90 \
+	peakup.f90 db.f90 sound.o libportaudio.a c:\MinGW\lib\libwinmm.a \
+	libfftw3f_win.a
 
 fmtave.exe: fmtave.f90
 	$(FC) -o fmtave.exe fmtave.f90
