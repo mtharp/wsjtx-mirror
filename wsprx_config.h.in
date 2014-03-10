@@ -1,0 +1,4 @@
+#include "svnversion.h"
+
+#define WSPRX_VERSION_MAJOR @WSPRX_VERSION_MAJOR@
+#define WSPRX_VERSION_MINOR @WSPRX_VERSION_MINOR@
