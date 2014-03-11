@@ -143,7 +143,7 @@ add_custom_target (kvasd DEPENDS contrib/kvasd${CMAKE_EXECUTABLE_SUFFIX})
 qt5_wrap_ui (GENUISRCS ${UISRCS})
 
 add_executable (wsprx ${CXXSRCS} ${CSRCS} ${GENUISRCS} wsprx.rc)
-target_link_libraries (wsprx wsprximpl ${hamlib_LIBRARIES} ${fftw3f_LIBRARIES} C:/wsjt-env/src/map65/palir-02.dll )
+target_link_libraries (wsprx wsprximpl ${hamlib_LIBRARIES} ${fftw3f_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR}/palir-02.dll)
 if (WIN32)
   target_link_libraries (wsprx)
 endif (WIN32)
