@@ -125,8 +125,6 @@ no_beep=IntVar()
 npal=IntVar()
 npal.set(2)
 nparam=0
-ntrminutes=IntVar()
-ntrminutes0=0
 nsave=IntVar()
 nscroll=0
 nsec0=0
@@ -456,7 +454,6 @@ def df_readout(event):
     global fmid,nred
     nred=10
     df=12000/8192.0
-    if ntrminutes.get()==15: df=12000/65536.0
     nhz=1000000*fmid + (80.0-event.y)*df + 2
     nhz=int(nhz%1000)
     t="%3d Hz" % nhz
@@ -466,7 +463,6 @@ def df_readout(event):
 def set_tx_freq(event):
     global fmid
     df=12000/8192.0
-    if ntrminutes.get()==15: df=12000/65536.0
     nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
     fmhz=0.000001*nftx
     t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
@@ -479,43 +475,23 @@ def set_tx_freq(event):
 def draw_axis():
     global fmid
     c.delete(ALL)
-    if ntrminutes.get()==15: df=12000.0/65536.0
     nfmid=int(1.0e6*fmid + 0.5)%1000
 # Draw and label tick marks
-    if ntrminutes.get()==2:
-        df=12000.0/8192.0
-        for iy in range(-120,120,10):
-            j=80 - iy/df
-            i1=7
-            if (iy%50)==0:
-                i1=12
-                if (iy%100)==0: i1=15
-                n=nfmid+iy
-                if n<0: n=n+1000
-                c.create_text(27,j,text=str(n))
-            c.create_line(0,j,i1,j,fill='black')
-        iy=1000000.0*(ftx.get()-f0.get()) - 1500
-        if abs(iy)<=100:
-            j=80 - iy/df
-            c.create_line(0,j,13,j,fill='red',width=3)            
-
-    if ntrminutes.get()==15:
-        df=12000.0/65536.0
-        for iy in range(-15,15):
-            j=82 - iy/df
-            i1=7
+    df=12000.0/8192.0
+    for iy in range(-120,120,10):
+        j=80 - iy/df
+        i1=7
+        if (iy%50)==0:
+            i1=12
+            if (iy%100)==0: i1=15
             n=nfmid+iy
-            if (n%5)==0:
-                i1=12
-                if (n%10)==0: i1=15
-                if n<0: n=n+1000
-                c.create_text(27,j,text=str(n))
-            c.create_line(0,j,i1,j,fill='black')
-
-        iy=1000000.0*(ftx.get()-f0.get()) - 1612.5
-        if abs(iy)<=13:
-            j=80 - iy/df
-            c.create_line(0,j,13,j,fill='red',width=3)
+            if n<0: n=n+1000
+            c.create_text(27,j,text=str(n))
+        c.create_line(0,j,i1,j,fill='black')
+    iy=1000000.0*(ftx.get()-f0.get()) - 1500
+    if abs(iy)<=100:
+        j=80 - iy/df
+        c.create_line(0,j,13,j,fill='red',width=3)            
 
 #------------------------------------------------------ del_all
 def del_all():
@@ -711,7 +687,7 @@ def autolog(decodes):
                     tcall=tcall[1:n]
                 if tcall=='...': continue
                 dfreq=float(d['freq'])-w.acom1.f0b-0.001500
-                if abs(dfreq)>0.0001 and ntrminutes.get()==2:
+                if abs(dfreq)>0.0001:
                     print 'Frequency changed, no upload of spots'
                     continue
                 reportparams = urllib.urlencode({'function': 'wspr',
@@ -848,7 +824,7 @@ def update():
         receiving,transmitting,newdat,nscroll,newspec,scale0,offset0, \
         modpixmap0,tw,s0,c0,fmid,fmid0,loopall,ntr0,txmsg,iband0, \
         bandmap,bm,t0,nreject,gain,phdeg,ierr,itx0,timer1,ndecoding0, \
-        hopping0,ntune0,startup,nred,ntrminutes0
+        hopping0,ntune0,startup,nred
 
     tsec=time.time()
     utc=time.gmtime(tsec)
@@ -856,23 +832,18 @@ def update():
     nsec0=nsec
 
 # enable/disable the Band Hop check box
-    if ntrminutes.get()==2:
-        if hopping.hoppingconfigured.get()==1:
-            if hopping0!=1:
-                hopping0=1
-                bhopping.configure(state=NORMAL)
-        else:
-            if hopping0!=2:
-                hopping0=2
-                bhopping.configure(state=DISABLED)
+    if hopping.hoppingconfigured.get()==1:
+        if hopping0!=1:
+            hopping0=1
+            bhopping.configure(state=NORMAL)
     else:
-        hopping.hopping.set(0)
-        bhopping.configure(state=DISABLED)
-        hopping0=2
+        if hopping0!=2:
+            hopping0=2
+            bhopping.configure(state=DISABLED)
         
 # implement band happing if it was selected
     hopped=0
-    if not idle.get() and ntrminutes.get()==2:
+    if not idle.get():
         if hopping.hopping.get()==1:
             w.acom1.nfhopping=1        
             if w.acom1.nfhopok or startup:
@@ -911,7 +882,7 @@ def update():
         pass
 
     isec=utc[5]
-    trmin=ntrminutes.get()
+    trmin=2
     twait=trmin - (tsec % trmin)
 
     if iband.get()!=iband0 or advanced.fset.get():
@@ -1017,17 +988,6 @@ def update():
         gain=w.acom1.gain
         phdeg=57.2957795*w.acom1.phase
         nreject=int(w.acom1.reject)
-
-        if ntrminutes.get()!=ntrminutes0:
-            if ntrminutes.get()==2:
-                msg4.configure(text='WSPR-2',bg='green')
-                setupmenu.entryconfig(2,state=NORMAL)
-                setupmenu.entryconfig(3,state=NORMAL)
-            elif ntrminutes.get()==15:
-                msg4.configure(text='WSPR-15',bg='#00ffff')
-                setupmenu.entryconfig(2,state=DISABLED)
-                setupmenu.entryconfig(3,state=DISABLED)
-            ntrminutes0=ntrminutes.get()
 
 # this code block is executed ~5 times per second
 # NB: the digital gain control "ndgain" presently has cosmetic effect only.
@@ -1243,7 +1203,6 @@ def update():
     c0=sc2.get()
     try:
         fmid=f0.get() + 0.001500
-        if ntrminutes.get()==15: fmid=f0.get() + 0.0016115
     except:
         pass
 
@@ -1251,14 +1210,9 @@ def update():
         fmid0=fmid
 	ftx0=ftx.get()
         draw_axis()
-        if ntrminutes.get()==2:
-            lftx.configure(validate={'validator':'real',
-                'min':f0.get()+0.001500-0.000100,'minstrict':0,
-                'max':f0.get()+0.001500+0.000100,'maxstrict':0})
-        if ntrminutes.get()==15:
-            lftx.configure(validate={'validator':'real',
-                'min':f0.get()+0.0016115-0.0000125,'minstrict':0,
-                'max':f0.get()+0.0016115+0.0000125,'maxstrict':0})
+        lftx.configure(validate={'validator':'real',
+            'min':f0.get()+0.001500-0.000100,'minstrict':0,
+            'max':f0.get()+0.001500+0.000100,'maxstrict':0})
 
     w.acom1.ndebug=ndebug.get()
 
@@ -1312,9 +1266,7 @@ def update():
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
     w.acom1.ncoord=hopping.coord_bands.get()
-    w.acom1.ntrminutes=ntrminutes.get()
-    if(ntrminutes.get() != 2 and hopping.hoppingconfigured.get()==1):
-        hopping.hopping.set(0)
+    w.acom1.ntrminutes=2
 
     if g.ndevin.get()!= nin0 or g.ndevout.get()!=nout0:
         audio_config()
@@ -1401,7 +1353,6 @@ def save_params():
     t=str(options.rig.get().replace(" ","#"))
     f.write("Rig " + str(t.replace("\t","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
-    f.write("TRminutes " + str(ntrminutes.get()) + "\n")
     f.write("PctTx " + str(ipctx.get()) + "\n")
     f.write("DGain " + str(ndgain.get()) + "\n")
     f.write("Upload " + str(upload.get()) + "\n")
@@ -1501,7 +1452,7 @@ setupmenu.add_checkbutton(label = 'No beep when access to WSPRnet fails',
 viewbutton = Menubutton(mbar, text = 'View', )
 viewbutton.pack(side = LEFT)
 viewmenu = Menu(viewbutton, tearoff=0)
-viewbutton['menu'] = setupmenu
+viewbutton['menu'] = viewmenu
 viewmenu.palettes=Menu(setupmenu,tearoff=0)
 viewmenu.palettes.add_radiobutton(label='Gray0',command=pal_gray0,
             value=0,variable=npal)
@@ -1518,13 +1469,13 @@ viewmenu.palettes.add_radiobutton(label='AFMHot',command=pal_AFMHot,
 viewmenu.add_cascade(label = 'Palette',menu=viewmenu.palettes)
 
 #------------------------------------------------------ Mode menu
-modebutton = Menubutton(mbar, text = 'Mode')
-modebutton.pack(side = LEFT)
-modemenu = Menu(modebutton, tearoff=0)
-modebutton['menu'] = modemenu
-modemenu.add_radiobutton(label = 'WSPR-2', variable=ntrminutes,value=2)
-modemenu.add_radiobutton(label = 'WSPR-15', variable=ntrminutes,value=15)
-ntrminutes.set(2)
+##modebutton = Menubutton(mbar, text = 'Mode')
+##modebutton.pack(side = LEFT)
+##modemenu = Menu(modebutton, tearoff=0)
+##modebutton['menu'] = modemenu
+##modemenu.add_radiobutton(label = 'WSPR-2', variable=ntrminutes,value=2)
+##modemenu.add_radiobutton(label = 'WSPR-15', variable=ntrminutes,value=15)
+##ntrminutes.set(2)
 
 #------------------------------------------------------ Save menu
 savebutton = Menubutton(mbar, text = 'Save')
@@ -1733,9 +1684,9 @@ msg2=Message(iframe6, text='      ', width=300,relief=FLAT)
 msg2.pack(side=LEFT, fill=X, padx=1)
 msg3=Message(iframe6, text='      ',width=300,relief=FLAT)
 msg3.pack(side=LEFT, fill=X, padx=1)
-msg4=Message(iframe6, text='      ', width=300,relief=FLAT)
-msg4.pack(side=LEFT, fill=X, padx=1)
-balloon.configure(statuscommand=msg4)
+##msg4=Message(iframe6, text='      ', width=300,relief=FLAT)
+##msg4.pack(side=LEFT, fill=X, padx=1)
+##balloon.configure(statuscommand=msg4)
 
 msg5=Message(iframe6, text='      ', width=300,relief=FLAT)
 msg6=Message(iframe6, text='      ', width=400,relief=SUNKEN)
@@ -1814,7 +1765,6 @@ def readinit():
                 options.rig.set(t)
                 options.rignum.set(int(t[:4]))
             elif key == 'Nsave': nsave.set(value)
-            elif key == 'TRminutes': ntrminutes.set(value)
             elif key == 'Upload': upload.set(value)
             elif key == 'Idle': idle.set(value)
             elif key == 'Debug': ndebug.set(value)

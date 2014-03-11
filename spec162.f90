@@ -19,8 +19,8 @@ subroutine spec162(c2,jz,appdir,nappdir)
   enddo
 
   nadd=9
-  call zero(s,120*256)
-  call zero(savg,256)
+  s=0.
+  save=0.
   istep=nfft/2
   nsteps=(jz-nfft)/(nadd*istep)
   pixmap=appdir(:nappdir)//'/pixmap.dat'
@@ -29,7 +29,7 @@ subroutine spec162(c2,jz,appdir,nappdir)
   open(16,file=pixmap,access='stream',status='unknown',err=1)
   read(16,end=1) a
   go to 2
-1 call zero(a,NX*NY/2)
+1 a=0.
 
 2 nmove=nsteps+1
   call cs_unlock
@@ -46,7 +46,7 @@ subroutine spec162(c2,jz,appdir,nappdir)
   k=0
   do n=1,nsteps
      k=k+1
-     call zero(ss,256)
+     ss=0.
      do m=1,nadd
         i0=i0+istep
         do i=0,nfft-1

@@ -3,8 +3,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,ntrminutes,   &
 
 ! Encode an MEPT_JT message and generate the corresponding wavefile.
 
-!  parameter (NMAX=2*120*48000)     !Max length of wave file
-  parameter (NMAX=900*48000)    !Max length of wave file (no IQ mode in WSPR-15)
+  parameter (NMAX=2*120*48000)     !Max length of wave file
   character*22 message           !Message to be generated
   character*22 msg2
   character*80 appdir,alltxt
@@ -50,7 +49,7 @@ subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,ntrminutes,   &
 
 ! Set up necessary constants
   nsps=8192
-  if(ntrminutes.eq.15) nsps=65536
+!  if(ntrminutes.eq.15) nsps=65536
   tsymbol=4.d0*nsps/48000.d0
   dt=1.d0/48000.d0
   f0=1500 + ntxdf

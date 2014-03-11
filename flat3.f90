@@ -6,8 +6,10 @@ subroutine flat3(ss0,n,nsum)
   real ref(NZ)
   real tmp(NZ)
 
-  call move(ss0,ss(129),128)
-  call move(ss0(129),ss,128)
+  ss(1:128)=ss0(129:256)
+  ss(129:256)=ss0(1:128)
+!  call move(ss0,ss(129),128)
+!  call move(ss0(129),ss,128)
 
   nsmo=20
   base=50*(float(nsum)**1.5)
@@ -20,8 +22,10 @@ subroutine flat3(ss0,n,nsum)
      ss(i)=base*ss(i)/ref(i)
   enddo
 
-  call move(ss(129),ss0,128)
-  call move(ss,ss0(129),128)
+  ss0(1:128)=ss(129:256)
+  ss0(129:256)=ss(1:128)
+!  call move(ss(129),ss0,128)
+!  call move(ss,ss0(129),128)
 
   return
 end subroutine flat3

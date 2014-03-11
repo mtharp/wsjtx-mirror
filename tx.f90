@@ -4,7 +4,7 @@ subroutine tx
 
   integer system
 
-  parameter (NMAX2=900*48000)
+  parameter (NMAX2=120*48000)
   parameter (NMAX3=4.5*48000)
   character message*22,message0*22,call1*12,cdbm*3
   character*22 msg0,msg1,cwmsg

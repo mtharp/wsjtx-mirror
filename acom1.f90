@@ -1,5 +1,5 @@
-  parameter (NMAX=900*12000)                          !Max length of waveform
-  parameter (NZ=2*900*48000)
+  parameter (NMAX=120*12000)                          !Max length of waveform
+  parameter (NZ=2*120*48000)
   real*8 f0,f0a,f0b,ftx,tsec0
   logical ltest,receiving,transmitting
   character*80 infile,outfile,pttport,thisfile

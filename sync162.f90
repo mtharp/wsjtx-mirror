@@ -45,13 +45,13 @@ subroutine sync162(c2,jz,ps,sstf,kz)
   nsteps=jz/nq - 1
   df=375.0/nfft
   dt=1.0/375.0
-  call zero(psavg,NFFT+1)
+  psavg=0.
 
 ! Compute power spectrum for each step, and get average
   do j=1,nsteps
      k=(j-1)*nq + 1
      call ps162(c2(k),s2(-NH,j))
-     call add(psavg,s2(-NH,j),psavg,NFFT)
+     psavg = psavg + s2(-NH:NH,j)
   enddo
 
 ! Normalize and subtract baseline from psavg.
