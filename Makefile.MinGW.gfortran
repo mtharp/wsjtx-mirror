@@ -3,8 +3,11 @@
 # Re-direct stdout and stderr:     cmd.exe              bash
 #                              make > junk 2>&1      make &> junk
 
-CC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gcc
-FC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gfortran
+#CC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gcc
+#FC = c:/wsjt-env/Qt5/Tools/mingw48_32/bin/gfortran
+
+CC = gcc
+FC = gfortran
 
 PYTHONDIR = c:/python27
 F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
