@@ -1,1 +1,1 @@
-bin\wsjt10
+.\bin\python .\bin\wsjt.py

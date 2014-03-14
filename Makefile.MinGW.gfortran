@@ -86,11 +86,14 @@ wsjt10.exe: WsjtMod/Audio.pyd $(PYSRCS)
 
 # Build a single directory with all required files
 install: WsjtMod/Audio.pyd $(PYSRCS)
-	$(PYI) --distpath=install --icon wsjt.ico --log-level=WARN wsjt.py
-	cp pthreadGC2.dll install/wsjt
-	cp wsjt.ico CALL3.TXT wsjt10.bat install
-	mv install/wsjt/wsjt.exe install/wsjt/wsjt10.exe
-	mv install/wsjt/ install/bin
+	rm -rf install
+	mkdir install
+	mkdir install/bin
+	cp wsjt.py install/bin
+	cp -r WsjtMod install/bin
+	cp -r RxWav install
+	cp DLLs/* install/bin
+	cp CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt10.bat install
 
 # Build jt65code
 OBJS2 = jt65code.o 

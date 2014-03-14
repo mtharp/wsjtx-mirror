@@ -1,7 +1,9 @@
-mingw32-make -f Makefile.MinGW.gfortran wsjt10.exe 
-mingw32-make -f Makefile.MinGW.gfortran jt65code.exe 
-mingw32-make -f Makefile.MinGW.gfortran jt4code.exe 
-mingw32-make -f Makefile.MinGW.gfortran install
-copy kvasd.exe install\kvasd.exe
-copy kvasd.dat install\kvasd.dat
-rm -rf install/bin/_MEI/tcl/tzdata
+set INSTALLDIR=wsjt10
+rm -rf %INSTALLDIR%
+mkdir %INSTALLDIR%
+mkdir %INSTALLDIR%\bin
+cp wsjt.py %INSTALLDIR%/bin
+cp -r WsjtMod %INSTALLDIR%/bin
+cp -r RxWav %INSTALLDIR%
+cp DLLs/* %INSTALLDIR%/bin
+cp CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt10.bat %INSTALLDIR%
