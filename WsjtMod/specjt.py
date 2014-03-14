@@ -1,18 +1,18 @@
 #---------------------------------------------------- SpecJT
 # 2.2.08 Soundcontrol extended for Vista  DL3LST
-from Tkinter import *
+from tkinter import *
 import time
 import os
 import Pmw
-import smeter
-import Audio
-import g
+from . import smeter
+from . import Audio
+from . import g
 import string
-import cPickle
-import tkMessageBox
+import pickle
+import tkinter.messagebox
 from numpy import zeros
 from PIL import Image, ImageTk, ImageDraw
-from palettes import colormapblue, colormapgray0, colormapHot, \
+from .palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 #import wsjt                         #Is this OK to do?
 
@@ -106,12 +106,12 @@ def rx_volume():
             return
     t="WSJT cannot access mixer input control\non this platform.  Please invoke " + \
        "system\nmixer directly."
-    tkMessageBox.showwarning(message=t)
+    tkinter.messagebox.showwarning(message=t)
 
 #--------------------------------------------------- tx_volume  ..extended for Vista
 def tx_volume():
     for path in string.split(os.environ["PATH"], os.pathsep):
-        print path
+        print(path)
         file = os.path.join(path, "sndvol32") + ".exe"
         if os.path.exists(file):
             os.spawnv(os.P_NOWAIT, file, (file,))
@@ -150,13 +150,6 @@ def set_freezedf(event):
         Audio.gcom2.mousedf=n
     else:
         decode_request(event)
-
-#------------------------------------------------------ ftnstr
-def ftnstr(x):
-    y=""
-    for i in range(len(x)):
-        y=y+x[i]
-    return y
 
 #---------------------------------------------------- df_mark
 def df_mark():
@@ -326,7 +319,7 @@ def update():
             try:
                 im.paste(region,(0,n))          #Move waterfall down
             except:
-                print "Images did not match, continuing anyway."
+                print("Images did not match, continuing anyway.")
             for i in range(n):
                 line0.putdata(a[750*i:750*(i+1)])   #One row of pixels to line0
                 im.paste(line0,(0,i))               #Paste in new top line
@@ -358,7 +351,7 @@ def update():
             t=time.strftime("%H:%M:%S",time.gmtime(Audio.gcom2.ntime + \
                 0.1*Audio.gcom1.ndsec))
             graph1.create_text(5,110,anchor=W,text=t,fill=color)
-            t=g.filetime(g.ftnstr(Audio.gcom2.fnamea))
+            t=g.filetime(Audio.gcom2.fnamea.tostring())
             graph1.create_text(5,260,anchor=W,text=t,fill=color)
 
         newMinute=0
@@ -397,7 +390,7 @@ def update():
     Audio.gcom2.nlines=0
     Audio.gcom2.nflat=nflat.get()
     frange=nfr.get()*2000
-    if(fmid<>fmid0 or frange<>frange0):
+    if(fmid != fmid0 or frange != frange0):
         if fmid<1000*nfr.get(): fmid=1000*nfr.get()
         if fmid>5000-1000*nfr.get(): fmid=5000-1000*nfr.get()
 #        draw_axis()
@@ -475,16 +468,16 @@ frame = Frame(root)
 frame.pack()
 
 if (sys.platform != 'darwin'):
-   mbar = Frame(frame)
-   mbar.pack(fill = X)
-   sbar = mbar
-   button_width=1
+    mbar = Frame(frame)
+    mbar.pack(fill = X)
+    sbar = mbar
+    button_width=1
 else:
-   mbar = Menu(root)
-   root.config(menu=mbar)
-   sbar = Frame(frame)
-   sbar.pack(fill = X)
-   button_width=5
+    mbar = Menu(root)
+    root.config(menu=mbar)
+    sbar = Frame(frame)
+    sbar.pack(fill = X)
+    button_width=5
 
 # Tearoff menus make less sense under darwin
 use_tearoff = (sys.platform != 'darwin')
@@ -528,7 +521,7 @@ setupmenu.add_cascade(label = 'Palette',menu=setupmenu.palettes)
 setupmenu.add_checkbutton(label='Logarithmic scale',variable=logmap)
 
 if (sys.platform == 'darwin'):
-   mbar.add_cascade(label="Options", menu=setupmenu)
+    mbar.add_cascade(label="Options", menu=setupmenu)
 
 #------------------------------------------------- Freq and DF labels
 lab1=Label(sbar,padx=20,bd=0)
@@ -568,17 +561,17 @@ c.pack(side=TOP)
 Widget.bind(c,"<Shift-Button-1>",freq_range)
 Widget.bind(c,"<Shift-Button-2>",freq_range)
 if (sys.platform != 'darwin'):
-  Widget.bind(c,"<Shift-Button-3>",freq_range)
+    Widget.bind(c,"<Shift-Button-3>",freq_range)
 else:
-  Widget.bind(c,"<Shift-Button-2>",freq_range)
+    Widget.bind(c,"<Shift-Button-2>",freq_range)
 graph1=Canvas(iframe1, bg='black', width=750, height=300,bd=0,cursor='crosshair')
 graph1.pack(side=TOP)
 Widget.bind(graph1,"<Motion>",fdf_change)
 Widget.bind(graph1,"<Button-1>",set_freezedf)
 if (sys.platform != 'darwin'):
-  Widget.bind(graph1,"<Button-3>",decode_request)
+    Widget.bind(graph1,"<Button-3>",decode_request)
 else:
-  Widget.bind(graph1,"<Button-2>",decode_request)
+    Widget.bind(graph1,"<Button-2>",decode_request)
 Widget.bind(graph1,"<Double-Button-1>",freeze_decode)
 iframe1.pack(expand=1, fill=X)
 
@@ -634,8 +627,8 @@ try:
         elif key == 'Fmid': fmid=int(value)
         else: pass
 except:
-    print 'Error reading WSJT.INI, continuing with defaults.'
-    print key,value
+    print('Error reading WSJT.INI, continuing with defaults.')
+    print(key,value)
         
 #------------------------------------------------------  Select palette
 if g.cmap == "gray0":

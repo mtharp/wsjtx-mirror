@@ -65,8 +65,8 @@ subroutine decode65(dat,npts,dtx,dfx,flip,ndepth,neme,                &
      call smooth(ss,257)
      do i=-128,128
         ff=i*11025.0/(4096.0*256)
-        write(82,3001) ff,1000.0*ss(i),db(ss(i)/ss(0)),deepmsg
-3001    format(f9.4,2f12.3,2x,a22)
+!        write(82,3001) ff,1000.0*ss(i),db(ss(i)/ss(0)),deepmsg
+!3001    format(f9.4,2f12.3,2x,a22)
      enddo
   endif
 !###

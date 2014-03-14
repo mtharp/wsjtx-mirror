@@ -1,9 +1,10 @@
 import string
-import g
+import WsjtMod.g
+from PIL import ImagePalette
 
 # Several colormaps
 colormapblue =  """
-    0.0       0.0       0.0
+    0.0000    0.0000    0.0000
     0.0902    0.0902    0.2558
     0.1176    0.1176    0.2694
     0.1412    0.1412    0.2820
@@ -256,9 +257,9 @@ colormapblue =  """
     0.9804    0.9804    0.2208
     0.9843    0.9843    0.2020
     0.9882    0.9882    0.1800
-    1.0       0.0       0.0
-    1.0       1.0       0.0
-    0.0       1.000     0.0
+    1.0000    0.0000    0.0000
+    1.0000    1.0000    0.0000
+    0.0000    1.0000    0.0000
 """
 colormapgray0 =  """
     0.0000    0.0000    0.0000
@@ -514,9 +515,9 @@ colormapgray0 =  """
     0.9804    0.9804    0.9804
     0.9843    0.9843    0.9843
     0.9882    0.9882    0.9882
-    1.0       0.0       0.0
-    1.0       1.0       0.0
-    0.0       1.000    0.0
+    1.0000    0.0000    0.0000
+    1.0000    1.0000    0.0000
+    0.0000    1.0000    0.0000
 """
 
 colormapHot="""
@@ -773,9 +774,9 @@ colormapHot="""
     1.0000    1.0000    0.9412
     1.0000    1.0000    0.9529
     1.0000    1.0000    0.9647
-    1.0       0.0       0.0
-    1.0       1.0       0.0
-    0.0       1.000     0.0
+    1.0000    0.0000    0.0000
+    1.0000    1.0000    0.0000
+    0.0000    1.0000    0.0000
 """
 
 colormapAFMHot="""
@@ -1032,9 +1033,9 @@ colormapAFMHot="""
     1.0000    1.0000    0.9608
     1.0000    1.0000    0.9686
     1.0000    1.0000    0.9765
-    1.0       0.0       0.0
-    1.0       1.0       0.0
-    0.0       1.000     0.0
+    1.0000    0.0000    0.0000
+    1.0000    1.0000    0.0000
+    0.0000    1.0000    0.0000
 """
 colormapgray1 =  """
     1.0000    1.0000    1.0000
@@ -1290,9 +1291,9 @@ colormapgray1 =  """
     0.0196    0.0196    0.0196
     0.0157    0.0157    0.0157
     0.0118    0.0118    0.0118
-    1.0       0.0       0.0
-    1.0       1.0       0.0
-    0.0       1.000     0.0
+    1.0000    0.0000    0.0000
+    1.0000    1.0000    0.0000
+    0.0000    1.0000    0.0000
 """
 colormapLinrad =  """
     0.0000    0.0000    0.0000
@@ -1548,19 +1549,27 @@ colormapLinrad =  """
     1.0000    1.0000    1.0000
     1.0000    1.0000    1.0000
     1.0000    1.0000    1.0000
-    1.0       0.0       0.0
-    1.0       1.0       0.0
-    0.0       1.000     0.0
+    1.0000    0.0000    0.0000
+    1.0000    1.0000    0.0000
+    0.0000    1.0000    0.0000
 """
 
 #----------------------------------------------------- Colormap2Palette
 def Colormap2Palette(colormap=colormapLinrad):
-    """ convert a matlab type colormap to a PIL palette """
-    x = map(lambda x,colormap=colormap: int(string.atof(x)*255), string.split(colormap))
-    palette = [(0,0,0)] * 256
-    for i in range(len(x)/3):
-	palette[i] = (x[i*3], x[i*3+1], x[i*3+2])
-    palette = map(lambda a: chr(a[0])+chr(a[1])+chr(a[2]), palette)
-    palette = string.join(palette, "")
-    g.palette=palette
+    r=[]
+    g=[]
+    b=[]
+    for i in range(256):
+        j=31*i +1
+        t=colormap[j:j+10]
+        rr=int(255.0*float(t))
+        t=colormap[j+10:j+20]
+        gg=int(255.0*float(t))
+        t=colormap[j+20:j+30]
+        bb=int(255.0*float(t))
+        r.append(rr)
+        g.append(gg)
+        b.append(bb)
+    palette=ImagePalette.ImagePalette("RGB",r+g+b)
+    WsjtMod.g.palette=palette
     return palette

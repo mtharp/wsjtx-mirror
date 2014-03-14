@@ -2,16 +2,16 @@
 #------------------------------------------------------------------ WSJT
 # $Date$ $Revision$
 #
-from Tkinter import *
-from tkFileDialog import *
-from WsjtMod import Pmw
-import tkMessageBox
+from tkinter import *
+from tkinter.filedialog import *
+import Pmw
+import tkinter.messagebox
 from WsjtMod import g
 import os,time
 from WsjtMod import Audio
 from math import log10
 from numpy import zeros
-import dircache
+##import dircache
 #import Image,ImageTk  #, ImageDraw
 from PIL import Image
 from PIL import ImageTk
@@ -19,16 +19,16 @@ from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 import array
-import thread
+import _thread
 import webbrowser
 
 root = Tk()
 Version="10.0 r" + "$Rev$"[6:-1]
-print "******************************************************************"
-print "WSJT Version " + Version + ", by K1JT"
-print "Revision date: " + \
-      "$Date$"[7:-1]
-print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
+print("******************************************************************")
+print("WSJT Version " + Version + ", by K1JT")
+print("Revision date: " + \
+      "$Date$"[7:-1])
+print("Run date:   " + time.asctime(time.gmtime()) + " UTC")
 
 Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
 
@@ -219,7 +219,7 @@ def logqso(event=NONE):
     if g.nfreq==4: tf="3.5"
     t=t+","+ToRadio.get()+","+HisGrid.get()+","+tf+","+g.mode+"\n"
     t2="Please confirm making the following entry in WSJT.LOG:\n\n" + t
-    result=tkMessageBox.askyesno(message=t2)
+    result=tkinter.messagebox.askyesno(message=t2)
     if result:
         f=open(appdir+'/WSJT.LOG','a')
         f.write(t)
@@ -303,7 +303,7 @@ def dbl_click_call(t,t1,rpt,event):
         lookup()
         GenStdMsgs()
         if (mode.get()[:4]=='JT65' or \
-                mode.get()[:3]=='JT4') and rpt <> "OOO":
+                mode.get()[:3]=='JT4') and rpt != "OOO":
             n=tx1.get().rfind(" ")
             if n>=7: 
                 t2=tx1.get()[0:n+1]
@@ -373,8 +373,8 @@ def openfile(event=NONE):
     fname=askopenfilename(filetypes=[("Wave files","*.wav *.WAV")])
     if fname:
         Audio.getfile(fname,len(fname))
-        if Audio.gcom2.ierr: print 'Error ',Audio.gcom2.ierr, \
-           'when trying to read file',fname
+        if Audio.gcom2.ierr: print('Error ',Audio.gcom2.ierr, \
+           'when trying to read file',fname)
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
     os.chdir(appdir)
@@ -400,13 +400,13 @@ def opennext(event=NONE):
             fname=mrudir+"/"+lb[i+1]
 #            if not lauto: stopmon()
             Audio.getfile(fname,len(fname))
-            if Audio.gcom2.ierr: print 'Error ',Audio.gcom2.ierr, \
-               'when trying to read file',fname
+            if Audio.gcom2.ierr: print('Error ',Audio.gcom2.ierr, \
+               'when trying to read file',fname)
             mrudir=os.path.dirname(fname)
             fileopened=os.path.basename(fname)
         else:
             t="No more *.wav files in this directory."
-	    tkMessageBox.showwarning(message=t)
+            tkinter.messagebox.showwarning(message=t)
             ncall=0
             loopall=0
 
@@ -442,7 +442,7 @@ def stub(event=NONE):
 
 #------------------------------------------------------ MsgBox
 def MsgBox(t):
-    tkMessageBox._show(message=t)
+    tkinter.messagebox._show(message=t)
 
 #------------------------------------------------------ txstop
 def txstop(event=NONE):
@@ -484,7 +484,7 @@ def addtodb():
         hisgrid=HisGrid.get().strip()
         hc=hiscall
         NewEntry=hc + "," + hisgrid
-	result=tkMessageBox.askyesno(message="Is this station known to be active on EME?")
+        result=tkinter.messagebox.askyesno(message="Is this station known to be active on EME?")
         if result:
             NewEntry=NewEntry + ",EME,,"
         else:
@@ -493,7 +493,7 @@ def addtodb():
             f=open(appdir+'/CALL3.TXT','r')
             s=f.readlines()
         except:
-            print 'Error opening CALL3.TXT'
+            print('Error opening CALL3.TXT')
             s=""
         f.close()
         hc2=""
@@ -510,7 +510,7 @@ def addtodb():
                     modified=1
                 elif hc==hc2:
                     t=s[i] + "\n\n is already in CALL3.TXT\nDo you wish to replace this entry?"
-		    result=tkMessageBox.askyesno(message=t)
+                    result=tkinter.messagebox.askyesno(message=t)
                     if result:
                         i1=s[i].find(",")
                         i2=s[i].find(",",i1+1)
@@ -526,7 +526,7 @@ def addtodb():
             f.writelines(stmp)
             f.close()
         except:
-            print 'Error in opening or writing to CALL3.TMP'
+            print('Error in opening or writing to CALL3.TMP')
 
         if modified:
             if os.path.exists("CALL3.OLD"): os.remove("CALL3.OLD")
@@ -555,7 +555,7 @@ def whois(hiscall):
         s=f.readlines()
         f.close()
     except:
-        print 'Error when searching CALL3.TXT, or no such file present'
+        print('Error when searching CALL3.TXT, or no such file present')
         s=""
     for i in range(len(s)):
         if s[i][:2] != '//':
@@ -1052,7 +1052,7 @@ VK7ABC K1JT RRR
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/doc/wsjt/'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------- browser
 def browser(url):
@@ -1227,10 +1227,11 @@ def clear_avg(event=NONE):
 #------------------------------------------------------ delwav
 def delwav():
     t="Are you sure you want to delete\nall *.WAV files in the RxWav directory?"
-    result=tkMessageBox.askyesno(message=t)
+    result=tkinter.messagebox.askyesno(message=t)
     if result:
 # Make a list of *.wav files in RxWav
-        la=dircache.listdir(appdir+'/RxWav')
+##        la=dircache.listdir(appdir+'/RxWav')
+        la=[]
         lb=[]
         for i in range(len(la)):
             j=la[i].find(".wav") + la[i].find(".WAV")
@@ -1814,7 +1815,7 @@ def update():
     if g.rms > 0:
         n=int(20.0*log10(g.rms/770.0+0.01))
     else:
-        print "RMS noise:", g.rms, " out of range."
+        print("RMS noise:", g.rms, " out of range.")
     t="Rx noise:%3d dB" % (n,)
     if t!=trxnoise0:
         if n>=-10 and n<=10:
@@ -1823,7 +1824,7 @@ def update():
             msg4.configure(text=t,bg='red')
         trxnoise0=t
 
-    t=g.ftnstr(Audio.gcom2.decodedfile)
+    t=Audio.gcom2.decodedfile.tostring()
 #    i=t.rfind(".")
     i=g.rfnd(t,".")
     t=t[:i]
@@ -1885,7 +1886,7 @@ def update():
     if Audio.gcom2.ndecoding:       #Set button bg=light_blue while decoding
         bdecode.configure(bg='#66FFFF',activebackground='#66FFFF')
         if (sys.platform == 'darwin'):
-           bdecode.configure(text='*Decode*')
+            bdecode.configure(text='*Decode*')
     msg5.configure(text="T/R Period: %d s" % (Audio.gcom1.trperiod,))
     if mode.get()=="CW": color='white'
     elif mode.get()=='FSK441' or mode.get()=='JTMS' or \
@@ -1934,14 +1935,14 @@ def update():
     if Audio.gcom2.monitoring and not Audio.gcom1.transmitting:
         bmonitor.configure(bg='green')
         if (sys.platform == 'darwin'):
-           bmonitor.configure(text='*Monitor*')
+            bmonitor.configure(text='*Monitor*')
     else:
         bmonitor.configure(bg='gray85')    
         if (sys.platform == 'darwin'):
-           bmonitor.configure(text='Monitor')    
+            bmonitor.configure(text='Monitor')    
     if Audio.gcom1.transmitting:
         nmsg=int(Audio.gcom2.nmsg)
-        t=g.ftnstr(Audio.gcom2.sending)
+        t=Audio.gcom2.sending.tostring()
         if mode.get()=='Echo':
             t='ECHO TEST'
             nmsg=9
@@ -2010,7 +2011,7 @@ def update():
             graph1.delete(ALL)
 # NB: top two lines are probably invisible ...
             graph1.create_image(0,0,anchor='nw',image=pim)
-            t=g.filetime(g.ftnstr(Audio.gcom2.decodedfile))
+            t=g.filetime(Audio.gcom2.decodedfile.tostring())
             graph1.create_text(100,80,anchor=W,text=t,fill="white")
             if mode.get()[:5]=='ISCAT' and Audio.gcom2.npingtime>0:
                 if Audio.gcom2.npingtime2-Audio.gcom2.npingtime >= 1000:
@@ -2099,7 +2100,7 @@ def update():
 #    Audio.gcom1.txdelay=float('0'+options.TxDelay.get())
     Audio.gcom2.nslim2=isync-4
     if nshrx.get()==0 and (mode.get()=='FSK441' or mode.get()=='JTMS'):
-            Audio.gcom2.nslim2=99
+        Audio.gcom2.nslim2=99
     try:
         Audio.gcom2.nport=int(options.PttPort.get())
     except:
@@ -2134,23 +2135,23 @@ frame = Frame(root)
 
 #------------------------------------------------------ Menu Bar
 if (sys.platform != 'darwin'):
-   mbar = Frame(frame)
-   mbar.pack(fill = X)
+    mbar = Frame(frame)
+    mbar.pack(fill = X)
 else:
-   mbar = Menu(root)
-   root.config(menu=mbar)
+    mbar = Menu(root)
+    root.config(menu=mbar)
 
 # Tearoff menus make less sense under darwin
 use_tearoff = (sys.platform != 'darwin')
 
 #------------------------------------------------------ File Menu
 if (sys.platform != 'darwin'):
-   filebutton = Menubutton(mbar, text = 'File')
-   filebutton.pack(side = LEFT)
-   filemenu = Menu(filebutton, tearoff=0)
-   filebutton['menu'] = filemenu
+    filebutton = Menubutton(mbar, text = 'File')
+    filebutton.pack(side = LEFT)
+    filemenu = Menu(filebutton, tearoff=0)
+    filebutton['menu'] = filemenu
 else:
-   filemenu = Menu(mbar, tearoff=0)
+    filemenu = Menu(mbar, tearoff=0)
 filemenu.add('command', label = 'Open', command = openfile, \
              accelerator='Ctrl+O')
 filemenu.add('command', label = 'Open next in directory', command = opennext, \
@@ -2170,12 +2171,12 @@ if (sys.platform == 'darwin'):
 
 #------------------------------------------------------ Setup menu
 if (sys.platform != 'darwin'):
-   setupbutton = Menubutton(mbar, text = 'Setup')
-   setupbutton.pack(side = LEFT)
-   setupmenu = Menu(setupbutton, tearoff=0)
-   setupbutton['menu'] = setupmenu
+    setupbutton = Menubutton(mbar, text = 'Setup')
+    setupbutton.pack(side = LEFT)
+    setupmenu = Menu(setupbutton, tearoff=0)
+    setupbutton['menu'] = setupmenu
 else:   
-   setupmenu = Menu(mbar, tearoff=0)
+    setupmenu = Menu(mbar, tearoff=0)
 setupmenu.add('command', label = 'Options', command = options1, \
               accelerator='F2')
 setupmenu.add_separator()
@@ -2345,12 +2346,12 @@ if (sys.platform == 'darwin'):
 
 #------------------------------------------------------ Help menu
 if (sys.platform != 'darwin'):
-   helpbutton = Menubutton(mbar, text = 'Help')
-   helpbutton.pack(side = LEFT)
-   helpmenu = Menu(helpbutton, tearoff=0)
-   helpbutton['menu'] = helpmenu
+    helpbutton = Menubutton(mbar, text = 'Help')
+    helpbutton.pack(side = LEFT)
+    helpmenu = Menu(helpbutton, tearoff=0)
+    helpbutton['menu'] = helpmenu
 else:   
-   helpmenu = Menu(mbar, tearoff=0)
+    helpmenu = Menu(mbar, tearoff=0)
 helpmenu.add('command',label="Online User's Guide",command=usersguide)
 helpmenu.add('command', label = 'Keyboard shortcuts', command = shortcuts, \
              accelerator='F1')
@@ -2376,9 +2377,9 @@ Widget.bind(graph1,"<Button-1>",mouse_click_g1)
 Widget.bind(graph1,"<Double-Button-1>",double_click_g1)
 Widget.bind(graph1,"<ButtonRelease-1>",mouse_up_g1)
 if (sys.platform != 'darwin'):
-  Widget.bind(graph1,"<Button-3>",mouse_click_g1)
+    Widget.bind(graph1,"<Button-3>",mouse_click_g1)
 else:
-  Widget.bind(graph1,"<Button-2>",mouse_click_g1)
+    Widget.bind(graph1,"<Button-2>",mouse_click_g1)
 graph1.pack(side=LEFT)
 graph2=Canvas(iframe1, bg='black', width=150, height=120,cursor='crosshair')
 graph2.pack(side=LEFT)
@@ -2413,9 +2414,9 @@ iframe4 = Frame(frame, bd=1, relief=SUNKEN)
 text=Text(iframe4, height=6, width=80)
 text.bind('<Double-Button-1>',dbl_click_text)
 if (sys.platform != 'darwin'):
-  text.bind('<Double-Button-3>',dbl_click3_text)
+    text.bind('<Double-Button-3>',dbl_click3_text)
 else:
-  text.bind('<Double-Button-2>',dbl_click3_text)
+    text.bind('<Double-Button-2>',dbl_click3_text)
 text.bind('<Key>',textkey)
 
 root.bind_all('<F1>', shortcuts)
@@ -2575,9 +2576,9 @@ lsync=Label(f5b1, bg='white', fg='black', text='Sync   1', width=8, relief=RIDGE
 lsync.grid(column=0,row=0,padx=2,sticky='EW')
 Widget.bind(lsync,'<Button-1>',incsync)
 if (sys.platform != 'darwin'):
-  Widget.bind(lsync,'<Button-3>',decsync)
+    Widget.bind(lsync,'<Button-3>',decsync)
 else:
-  Widget.bind(lsync,'<Button-2>',decsync)
+    Widget.bind(lsync,'<Button-2>',decsync)
 cbzap=Checkbutton(f5b1,text='Zap',underline=0,variable=nzap)
 cbzap.grid(column=1,row=0,padx=2,sticky='W')
 shrx=Checkbutton(f5b1,text='Rx ST',variable=nshrx,command=restart2)
@@ -2604,13 +2605,13 @@ Widget.bind(ltol,'<Button-1>',inctol)
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(lMinW,'<Button-1>',incMinW)
 if (sys.platform != 'darwin'):
-   Widget.bind(ldsec,'<Button-3>',decdsec)
-   Widget.bind(ltol,'<Button-3>',dectol)
-   Widget.bind(lMinW,'<Button-3>',decMinW)
+    Widget.bind(ldsec,'<Button-3>',decdsec)
+    Widget.bind(ltol,'<Button-3>',dectol)
+    Widget.bind(lMinW,'<Button-3>',decMinW)
 else:
-   Widget.bind(ldsec,'<Button-2>',decdsec)
-   Widget.bind(ltol,'<Button-2>',dectol)
-   Widget.bind(lMinW,'<Button-2>',decMinW)
+    Widget.bind(ldsec,'<Button-2>',decdsec)
+    Widget.bind(ltol,'<Button-2>',dectol)
+    Widget.bind(lMinW,'<Button-2>',decMinW)
 
 #------------------------------------------------------ Tx parameters
 f5b2=Frame(f5b,bd=2,relief=GROOVE)
@@ -2710,9 +2711,9 @@ msg5.pack(side=LEFT, fill=X, padx=1)
 ##msg6.pack(side=LEFT, fill=X, padx=1)
 Widget.bind(msg5,'<Button-1>',inctrperiod)
 if (sys.platform != 'darwin'):
-  Widget.bind(msg5,'<Button-3>',dectrperiod)
+    Widget.bind(msg5,'<Button-3>',dectrperiod)
 else:
-  Widget.bind(msg5,'<Button-2>',dectrperiod)
+    Widget.bind(msg5,'<Button-2>',dectrperiod)
 msg7=Message(iframe6, text='                        ', width=300,relief=SUNKEN)
 msg7.pack(side=RIGHT, fill=X, padx=1)
 iframe6.pack(expand=1, fill=X, padx=4)
@@ -2844,11 +2845,11 @@ try:
         elif key == 'AuxRA': options.auxra.set(value)
         elif key == 'AuxDEC': options.auxdec.set(value)
         elif key == 'AzElDir':
-	    options.azeldir.set(value.replace("#"," "))
+            options.azeldir.set(value.replace("#"," "))
             try:
-		os.stat(options.azeldir.get())
-	    except:
-		options.azeldir.set(os.getcwd())
+                os.stat(options.azeldir.get())
+            except:
+                options.azeldir.set(os.getcwd())
         elif key == 'Ntc': options.ntc.set(value)
         elif key == 'fRIT': options.fRIT.set(value)
         elif key == 'Dither': options.dither.set(value)
@@ -2898,8 +2899,8 @@ try:
             if mode.get()[:2]=="CW": Audio.gcom1.trperiod=ncwtrperiod
         else: pass
 except:
-    print 'Error reading WSJT.INI, continuing with defaults.'
-    print key,value
+    print('Error reading WSJT.INI, continuing with defaults.')
+    print(key,value)
 
 g.mode=mode.get()
 if mode.get()=='FSK441' or mode.get()=='JTMS': isync=isync441
@@ -2944,10 +2945,10 @@ f.write("WSJTGeometry " + root_geom + "\n")
 f.write("Mode " + g.mode + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
-t=g.ftnstr(Audio.gcom2.hiscall)
+t=Audio.gcom2.hiscall.tostring().decode('utf-8')
 if t[:1]==" ": t="______"
 f.write("HisCall " + t + "\n")
-t=g.ftnstr(Audio.gcom2.hisgrid)
+t=Audio.gcom2.hisgrid.tostring().decode('utf-8')
 if t=="      ": t="XX00xx"
 f.write("HisGrid " + t + "\n")
 #f.write("RxDelay " + str(options.RxDelay.get()) + "\n")

@@ -1,7 +1,7 @@
 #------------------------------------------------------ astro
-from Tkinter import *
+from tkinter import *
 import Pmw
-import g
+from . import g
 
 def done():
     g.astro_geom0=root.geometry()
