@@ -22,11 +22,12 @@
 # reduced the load on the kernel, from a sustained 13% to essentially nothing.
 # These changes are also licensed under the GNU General Public License (GPL).
 
-from Tkinter import *
-from tkFileDialog import *
-import tkMessageBox
+from tkinter import *
+from tkinter.filedialog import *
+import tkinter.messagebox
 import os,time,sys
-from WsprMod import g,Pmw
+from WsprMod import g
+import Pmw
 from WsprMod import palettes
 from math import log10
 try:
@@ -34,7 +35,7 @@ try:
 except: 
     from Numeric import zeros
 import array
-import dircache
+##import dircache
 from PIL import Image, ImageTk, ImageDraw
 from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
@@ -46,15 +47,15 @@ import string
 from WsprMod import w
 from WsprMod import smeter
 import socket
-import urllib
-import thread
+import urllib.request, urllib.parse, urllib.error
+import _thread
 import webbrowser
 
 root = Tk()
 Version="4.0 r" + "$Rev$"[6:-2]
-print "******************************************************************"
-print "WSPR Version " + Version + ", by K1JT"
-print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
+print("******************************************************************")
+print("WSPR Version " + Version + ", by K1JT")
+print("Run date:   " + time.asctime(time.gmtime()) + " UTC")
 
 #See if we are running in Windows
 g.Win32=0
@@ -272,7 +273,7 @@ def opennext(event=NONE):
             tw=[t,] + tw
         else:
             t="No more *.wav files in this directory."
-            result=tkMessageBox.showwarning(message=t)
+            result=tkinter.messagebox.showwarning(message=t)
             ncall=0
             loopall=0
             
@@ -316,7 +317,7 @@ def stub(event=NONE):
 
 #------------------------------------------------------ MsgBox
 def MsgBox(t):
-    result=tkMessageBox.showwarning(message=t)
+    result=tkinter.messagebox.showwarning(message=t)
 
 #------------------------------------------------------ msgpos
 def msgpos():
@@ -397,22 +398,22 @@ def help(event=NONE):
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/WSPR_4.0_User.pdf'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ fmtguide
 def fmtguide(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/FMT_User.pdf'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ wsprnet
 def wsprnet(event=NONE):
     url='http://wsprnet.org/'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ homepage
 def homepage(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------- browser
 def browser(url):
@@ -466,7 +467,7 @@ def set_tx_freq(event):
     nftx=int(1000000.0*fmid + (80.0-event.y)*df) + 2
     fmhz=0.000001*nftx
     t="Please confirm setting Tx frequency to " + "%.06f MHz" % fmhz
-    result=tkMessageBox.askyesno(message=t)
+    result=tkinter.messagebox.askyesno(message=t)
     if result:
         ftx.set(0.000001*nftx)
         sftx.set('%.06f' % ftx.get())
@@ -504,7 +505,7 @@ def del_all():
 #------------------------------------------------------ delwav
 def delwav():
     t="Are you sure you want to delete\nall *.WAV files in the Save directory?"
-    result=tkMessageBox.askyesno(message=t)
+    result=tkinter.messagebox.askyesno(message=t)
     if result:
 # Make a list of *.wav files in Save
         la=dircache.listdir(appdir+'/save')
@@ -525,7 +526,7 @@ def rx_volume():
             return os.spawnv(os.P_NOWAIT, file, (file,) + (" -r",))
         except os.error:
             pass
-    raise os.error, "Cannot find "+file
+    raise os.error("Cannot find "+file)
 
 #--------------------------------------------------- tx_volume
 def tx_volume():
@@ -535,7 +536,7 @@ def tx_volume():
             return os.spawnv(os.P_NOWAIT, file, (file,))
         except os.error:
             pass
-    raise os.error, "Cannot find "+file
+    raise os.error("Cannot find "+file)
 
 #------------------------------------------------------ get_decoded
 def get_decoded():
@@ -619,7 +620,7 @@ def get_decoded():
 # Erase bandmap entirely
     bandmap=[]
 # Repopulate "bandmap" from "bm", which should not contain dupes.
-    for callsign,ft in bm.iteritems():
+    for callsign,ft in bm.items():
         if callsign!='...':
             ndf,tdecoded=ft
             tmin=int((time.time()%86400)/60)
@@ -656,7 +657,7 @@ def get_decoded():
 
     if upload.get():
         #Dispatch autologger thread.
-        thread.start_new_thread(autolog, (decodes,))
+        _thread.start_new_thread(autolog, (decodes,))
 
     if loopall: opennext()
 
@@ -688,9 +689,9 @@ def autolog(decodes):
                 if tcall=='...': continue
                 dfreq=float(d['freq'])-w.acom1.f0b-0.001500
                 if abs(dfreq)>0.0001:
-                    print 'Frequency changed, no upload of spots'
+                    print('Frequency changed, no upload of spots')
                     continue
-                reportparams = urllib.urlencode({'function': 'wspr',
+                reportparams = urllib.parse.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
                                                  'rqrg': str(f0.get()),
@@ -713,13 +714,13 @@ def autolog(decodes):
                 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
                 # The following opens a url and passes the reception report to the
                 # database insertion handler from W1BW:
-                urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
+                urlf = urllib.request.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
                 reply = urlf.readlines()
                 urlf.close()
         else:
             # No spots to report, so upload status message instead. --W1BW
-            reportparams = urllib.urlencode({'function': 'wsprstat',
+            reportparams = urllib.parse.urlencode({'function': 'wsprstat',
                                              'rcall': options.MyCall.get(),
                                              'rgrid': options.MyGrid.get(),
                                              'rqrg': str(fmid),
@@ -727,14 +728,14 @@ def autolog(decodes):
                                              'tqrg': sftx.get(),
                                              'dbm': str(options.dBm.get()),
                                              'version': Version})
-            urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
+            urlf = urllib.request.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
             reply = urlf.readlines()
             urlf.close()
     except:
         t=" UTC: attempted access to WSPRnet failed."
         if not no_beep.get(): t=t + "\a"
-        print time.asctime(time.gmtime()) + t
+        print(time.asctime(time.gmtime()) + t)
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
@@ -927,10 +928,10 @@ def update():
                 f.close()
 
                 cmd2=''
-                if os.path.exists('.\user_hardware.bat') or \
-                   os.path.exists('.\user_hardware.cmd') or \
-                   os.path.exists('.\user_hardware.exe'):
-                    cmd2='.\user_hardware ' + str(band[iband0])
+                if os.path.exists('.\\user_hardware.bat') or \
+                   os.path.exists('.\\user_hardware.cmd') or \
+                   os.path.exists('.\\user_hardware.exe'):
+                    cmd2='.\\user_hardware ' + str(band[iband0])
                 elif os.path.exists('./user_hardware'):
                     cmd2='./user_hardware ' + str(band[iband0])
                 if cmd2!='':
@@ -939,11 +940,11 @@ def update():
                     except:
                         ierr2=-1
                     if ierr2!=0:
-                        print 'Execution of "'+cmd2+'" failed.'
+                        print('Execution of "'+cmd2+'" failed.')
                         MsgBox('Execution of "'+cmd2+'" failed.\nEntering Idle mode.')
             else:
-                print 'Error attempting to set rig frequency.\a'
-                print cmd + '\a'
+                print('Error attempting to set rig frequency.\a')
+                print(cmd + '\a')
                 iband.set(iband0)
                 f0.set(freq0[iband.get()])
                 t="%.6f" % (f0.get(),)
@@ -971,7 +972,7 @@ def update():
     newsecond=0					# =1 if a new second
     if isec != isec0:                           #Do once per second
 # this code block is executed once per second
-	newsecond=1
+        newsecond=1
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         ldate.configure(text=t)
         root_geom=root.geometry()
@@ -1081,82 +1082,82 @@ def update():
     ntune=int(w.acom1.ntune)
     if ntune!=ntune0:
         ntune0=ntune
-	if ntune==0:
-	    btune.configure(bg='gray85')
-	    pctscale.configure(state=NORMAL)
-	else:
-	    pctscale.configure(state=DISABLED)
+        if ntune==0:
+            btune.configure(bg='gray85')
+            pctscale.configure(state=NORMAL)
+        else:
+            pctscale.configure(state=DISABLED)
 
 # set idle switch
     global ncal0
     ncal=w.acom1.ncal
     if ncal!=ncal0:
-    	ncal0=ncal
-	if ncal==0:
-	    advanced.bmeas.configure(bg='gray85')
-	else:
-	    idle.set(1)
+        ncal0=ncal
+        if ncal==0:
+            advanced.bmeas.configure(bg='gray85')
+        else:
+            idle.set(1)
 
     if ierr==0 and txmute.get()==0:
-      w.acom1.pctx=ipctx.get()
+        w.acom1.pctx=ipctx.get()
     else:
-      w.acom1.pctx=0
+        w.acom1.pctx=0
 
 # if mute is pressed turn TxNext gray and mute button red
     global txmute0
     if txmute.get()!=txmute0:
-    	txmute0=txmute.get()
-	if txmute0:
-	    w.acom1.pctx=0
-	    w.acom1.ntxnext=0
-	    bmute.configure(bg='red')
-	    btxnext.configure(state=DISABLED)
-	    btxnext.configure(bg='gray85')
-	else:
-	    bmute.configure(bg='gray85')
-	    btxnext.configure(state=NORMAL)
+        txmute0=txmute.get()
+        if txmute0:
+            w.acom1.pctx=0
+            w.acom1.ntxnext=0
+            bmute.configure(bg='red')
+            btxnext.configure(state=DISABLED)
+            btxnext.configure(bg='gray85')
+        else:
+            bmute.configure(bg='gray85')
+            btxnext.configure(state=NORMAL)
 
     w.acom1.idle=idle.get()
 
 # make idle button yellow if checked
     global idle0
     if idle0!=idle.get():
-    	idle0=idle.get()
-	if idle0==0:
-	    bidle.configure(bg='gray85')
-	else:
-	    bidle.configure(bg='yellow')
+        idle0=idle.get()
+        if idle0==0:
+            bidle.configure(bg='gray85')
+        else:
+            bidle.configure(bg='yellow')
 
     global btune0
     if w.acom1.transmitting or w.acom1.receiving or options.outbad.get():
         if btune0!=1:
-	    btune0=1
-	    btune.configure(state=DISABLED)
+            btune0=1
+            btune.configure(state=DISABLED)
     else:
         if btune0!=2:
-	    btune0=2
-	    btune.configure(state=NORMAL)
+            btune0=2
+            btune.configure(state=NORMAL)
 
     global advanced0
     if w.acom1.transmitting or w.acom1.receiving or twait < 6.0:
         if advanced0!=1:
-	    advanced0=1
-	    advanced.bmeas.configure(state=DISABLED)
+            advanced0=1
+            advanced.bmeas.configure(state=DISABLED)
     else:
         if advanced0!=2:
-	    advanced0=2
-	    advanced.bmeas.configure(state=NORMAL)
+            advanced0=2
+            advanced.bmeas.configure(state=NORMAL)
 
 # update the upload spots button color
     global upload0
     if upload.get()==1:
         if upload0!=1:
-	    upload0=1
-	    bupload.configure(bg='gray85')
+            upload0=1
+            bupload.configure(bg='gray85')
     else:
         if upload0!=2:
-	    upload0=2
-	    bupload.configure(bg='yellow')
+            upload0=2
+            bupload.configure(bg='yellow')
 
 # If new decoded text has appeared, display it.
     if w.acom1.ndecdone:
@@ -1175,29 +1176,29 @@ def update():
             newdat=1
             modpixmap0=modpixmap
     except:
-	newdat=0
+        newdat=0
 
     scale=math.pow(10.0,0.003*sc1.get())
     offset=0.3*sc2.get()
     if newdat or scale!= scale0 or offset!=offset0 or g.cmap!=g.cmap0:
-	im.putdata(a,scale,offset)              #Compute whole new image
-	if newdat:
-	    n=len(tw)
-	    for i in range(n-1,-1,-1):
-		x=465-39*i
-		draw.text((x,148),tw[i],fill=253)        #Insert time label
-		if i<len(fw):
-		    draw.text((x+10,1),fw[i],fill=253)   #Insert band label
+        im.putdata(a,scale,offset)              #Compute whole new image
+        if newdat:
+            n=len(tw)
+            for i in range(n-1,-1,-1):
+                x=465-39*i
+                draw.text((x,148),tw[i],fill=253)        #Insert time label
+                if i<len(fw):
+                    draw.text((x+10,1),fw[i],fill=253)   #Insert band label
 			       
-	pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
-	graph1.delete(ALL)
-	graph1.create_image(0,0+2,anchor='nw',image=pim)
-	g.ndecphase=2
-	newMinute=0
-	scale0=scale
-	offset0=offset
-	g.cmap0=g.cmap
-	newdat=0
+        pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
+        graph1.delete(ALL)
+        graph1.create_image(0,0+2,anchor='nw',image=pim)
+        g.ndecphase=2
+        newMinute=0
+        scale0=scale
+        offset0=offset
+        g.cmap0=g.cmap
+        newdat=0
 
     s0=sc1.get()
     c0=sc2.get()
@@ -1208,7 +1209,7 @@ def update():
 
     if fmid!=fmid0 or ftx.get()!=ftx0:
         fmid0=fmid
-	ftx0=ftx.get()
+        ftx0=ftx.get()
         draw_axis()
         lftx.configure(validate={'validator':'real',
             'min':f0.get()+0.001500-0.000100,'minstrict':0,
@@ -1244,11 +1245,11 @@ def update():
             options.cbdata._entryWidget['state']=DISABLED
             options.cbstop._entryWidget['state']=DISABLED
             options.cbhs._entryWidget['state']=DISABLED
-	if advanced1!=1:
-	    advanced1=1
-	    advanced.bsetfreq.configure(state=NORMAL)
-	    advanced.breadab.configure(state=NORMAL)
-	    advanced.enable_cal.configure(state=NORMAL)
+        if advanced1!=1:
+            advanced1=1
+            advanced.bsetfreq.configure(state=NORMAL)
+            advanced.breadab.configure(state=NORMAL)
+            advanced.enable_cal.configure(state=NORMAL)
     else:
         options.cat_port._entryWidget['state']=DISABLED
         options.lrignum._entryWidget['state']=DISABLED
@@ -1256,12 +1257,12 @@ def update():
         options.cbdata._entryWidget['state']=DISABLED
         options.cbstop._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
-	if advanced1!=2:
-	    advanced1=2
-	    advanced.bsetfreq.configure(state=DISABLED)
-	    advanced.breadab.configure(state=DISABLED)
-	    advanced.enable_cal.configure(state=DISABLED)
-	    advanced.encal.set(0)
+        if advanced1!=2:
+            advanced1=2
+            advanced.bsetfreq.configure(state=DISABLED)
+            advanced.breadab.configure(state=DISABLED)
+            advanced.enable_cal.configure(state=DISABLED)
+            advanced.encal.set(0)
 
     w.acom1.pttmode=(options.pttmode.get().strip()+'   ')[:3]
     w.acom1.ncat=options.cat_enable.get()
@@ -1275,36 +1276,36 @@ def update():
 
     global inbad0
     if inbad0!=options.inbad.get():
-	inbad0=options.inbad.get()
-	if inbad0==0:
-	    msg2.configure(text='',bg='gray85')
-	else:
-	    msg2.configure(text='Invalid audio input device.',bg='red')
+        inbad0=options.inbad.get()
+        if inbad0==0:
+            msg2.configure(text='',bg='gray85')
+        else:
+            msg2.configure(text='Invalid audio input device.',bg='red')
 
     global outbad0
     if outbad0!=options.outbad.get():
-	outbad0=options.outbad.get()
-	if outbad0==0:
-	    msg3.configure(text='',bg='gray85')
-	else:
-	    msg3.configure(text='Invalid audio output device.',bg='red')
+        outbad0=options.outbad.get()
+        if outbad0==0:
+            msg3.configure(text='',bg='gray85')
+        else:
+            msg3.configure(text='Invalid audio output device.',bg='red')
 
     if ndecoding0!=int(w.acom1.ndecoding):
-	ndecoding0=int(w.acom1.ndecoding)
-	if ndecoding0:
-	    msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
-	else:
-	    msg5.configure(text='',bg='gray85',relief=FLAT)
+        ndecoding0=int(w.acom1.ndecoding)
+        if ndecoding0:
+            msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
+        else:
+            msg5.configure(text='',bg='gray85',relief=FLAT)
 
     global encal0
     if encal0!=advanced.encal.get():
-	encal0=advanced.encal.get()
-	if encal0:
-	    advanced.A_entry.configure(entry_state=NORMAL,label_state=NORMAL)
-	    advanced.B_entry.configure(entry_state=NORMAL,label_state=NORMAL)
-	else:
-	    advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
-	    advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
+        encal0=advanced.encal.get()
+        if encal0:
+            advanced.A_entry.configure(entry_state=NORMAL,label_state=NORMAL)
+            advanced.B_entry.configure(entry_state=NORMAL,label_state=NORMAL)
+        else:
+            advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
+            advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
   
     timer1=ldate.after(200,update)
 
@@ -1714,7 +1715,7 @@ def readinit():
     try:
         for i in range(len(params)):
             if badlist.count(i)>0:
-                print 'Skipping bad entry in WSPR.INI:\a',params[i]
+                print('Skipping bad entry in WSPR.INI:\a',params[i])
                 continue
             key,value=params[i].split()
             if   key == 'WSPRGeometry': root.geometry(value)
