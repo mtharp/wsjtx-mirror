@@ -1,10 +1,10 @@
 #------------------------------------------------------------------ iq
-from Tkinter import *
+from tkinter import *
 import Pmw
-import g
-import w
+from WsprMod import g
+from WsprMod import w
 import time
-import tkMessageBox
+import tkinter.messagebox
 import pickle
 
 def done():

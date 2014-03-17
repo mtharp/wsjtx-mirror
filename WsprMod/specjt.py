@@ -1,22 +1,22 @@
 #---------------------------------------------------- SpecJT
-from Tkinter import *
+from tkinter import *
 import time
 import os
-import Pmw
-import smeter
+from . import Pmw
+from . import smeter
 #import Audio
-import g
+from . import g
 import string
-import cPickle
-import tkMessageBox
-import w
+import pickle
+import tkinter.messagebox
+from . import w
 
 try:
     from numpy.oldnumeric import zeros, multiarray
 except:
     from Numeric import zeros, multiarray
 import Image, ImageTk, ImageDraw
-from palettes import colormapblue, colormapgray0, colormapHot, \
+from .palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 #import wsjt                         #Is this OK to do?
 
@@ -107,7 +107,7 @@ def rx_volume():
             return
     t="WSJT cannot access mixer input control\non this platform.  Please invoke " + \
        "system\nmixer directly."
-    tkMessageBox.showwarning(message=t)
+    tkinter.messagebox.showwarning(message=t)
 
 #--------------------------------------------------- tx_volume  ..extended for Vista
 def tx_volume():
@@ -209,7 +209,7 @@ def update():
             try:
                 im.paste(region,(0,n))          #Move waterfall down
             except:
-                print "Images did not match, continuing anyway."
+                print("Images did not match, continuing anyway.")
             for i in range(n):
                 line0.putdata(a[750*i:750*(i+1)])   #One row of pixels to line0
                 im.paste(line0,(0,i))               #Paste in new top line
@@ -244,7 +244,7 @@ def update():
 ##    Audio.gcom2.nlines=0
 ##    Audio.gcom2.nflat=nflat.get()
     frange=nfr.get()*2000
-    if(fmid<>fmid0 or frange<>frange0):
+    if(fmid!=fmid0 or frange!=frange0):
         if fmid<1000*nfr.get(): fmid=1000*nfr.get()
         if fmid>5000-1000*nfr.get(): fmid=5000-1000*nfr.get()
 #        draw_axis()
@@ -446,8 +446,8 @@ try:
         elif key == 'Fmid': fmid=int(value)
         else: pass
 except:
-    print 'Error reading WSJT.INI in SpecJT, continuing with defaults.'
-    print key,value
+    print('Error reading WSJT.INI in SpecJT, continuing with defaults.')
+    print(key,value)
         
 #------------------------------------------------------  Select palette
 if g.cmap == "gray0":

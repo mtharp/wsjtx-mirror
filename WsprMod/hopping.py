@@ -1,10 +1,10 @@
 #------------------------------------------------------------------ iq
-from Tkinter import *
+from tkinter import *
 import Pmw
-import g
-import w
+from WsprMod import g
+from WsprMod import w
 import os,time
-import tkMessageBox
+import tkinter.messagebox
 from functools import partial
 
 def done():
@@ -32,13 +32,13 @@ hopping=IntVar()
 hopping.set(0)
 hoppingconfigured=IntVar()
 hoppingconfigured.set(0)
-bhopping   =range(len(bandlabels))
-shopping   =range(len(bandlabels))
-lhopping   =range(len(bandlabels))
-hoppingflag=range(len(bandlabels))
-hoppingpctx=range(len(bandlabels))
-btuneup    =range(len(bandlabels))
-tuneupflag =range(len(bandlabels))
+bhopping   =list(range(len(bandlabels)))
+shopping   =list(range(len(bandlabels)))
+lhopping   =list(range(len(bandlabels)))
+hoppingflag=list(range(len(bandlabels)))
+hoppingpctx=list(range(len(bandlabels)))
+btuneup    =list(range(len(bandlabels)))
+tuneupflag =list(range(len(bandlabels)))
 
 #-------------------------------------------------------- Create GUI widgets
 g1=Pmw.Group(root,tag_pyclass=None)
@@ -117,4 +117,4 @@ def restore_params(appdir):
                 tuneupflag[r].set(int(s[r][13:16]))
             globalupdate()
         except:
-            print 'Error reading hopping.ini.'
+            print('Error reading hopping.ini.')

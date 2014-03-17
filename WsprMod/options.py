@@ -1,7 +1,7 @@
 #------------------------------------------------------ options
-from Tkinter import *
+from tkinter import *
 import Pmw
-import g
+from WsprMod import g
 import math
 
 def done():

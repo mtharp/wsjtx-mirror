@@ -1,10 +1,10 @@
 #------------------------------------------------------ advanced
-from Tkinter import *
+from tkinter import *
 import Pmw
-import g
-import w
+from WsprMod import g
+from WsprMod import w
 import time
-import tkMessageBox
+import tkinter.messagebox
 
 def done():
     root.withdraw()
@@ -49,7 +49,7 @@ def readab(event=NONE):
         encal.set(1)
     except:
         t='Cannot open fcal.out, or invalid data in file'
-        result=tkMessageBox.showwarning(message=t)
+        result=tkinter.messagebox.showwarning(message=t)
         Acal.set(0.0)
         Bcal.set(0.0)
 
