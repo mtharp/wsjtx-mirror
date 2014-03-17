@@ -1,9 +1,5 @@
-set INSTALLDIR=wsjt10
+set INSTALLDIR=install
 rm -rf %INSTALLDIR%
 mkdir %INSTALLDIR%
 mkdir %INSTALLDIR%\bin
-cp wsjt.py %INSTALLDIR%/bin
-cp -r WsjtMod %INSTALLDIR%/bin
-cp -r RxWav %INSTALLDIR%
-cp DLLs/* %INSTALLDIR%/bin
-cp CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt10.bat %INSTALLDIR%
+c:\Python33\Scripts\cxfreeze --include-path=. --include-modules=Pmw wsjt.py --target-dir=%INSTALLDIR%\bin

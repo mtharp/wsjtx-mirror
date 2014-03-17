@@ -10,7 +10,6 @@ from . import g
 import string
 import pickle
 import tkinter.messagebox
-from numpy import zeros
 from PIL import Image, ImageTk, ImageDraw
 from .palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
@@ -70,7 +69,7 @@ tol0=400
 ttot=0.0
 
 c=Canvas()
-a=zeros(225000,'i2')
+##a=zeros(225000,'i2')
 im=Image.new('P',(750,300))
 line0=Image.new('P',(750,1))      #Image fragment for top line of waterfall
 draw=ImageDraw.Draw(im)
@@ -305,7 +304,7 @@ def update():
 # Don't calculate spectra for waterfall while decoding
     if Audio.gcom2.ndecoding==0 and \
            (Audio.gcom2.monitoring or Audio.gcom2.ndiskdat):
-        Audio.spec(brightness,contrast,logm,g0,nspeed,a) #Call Fortran routine spec
+        Audio.spec(brightness,contrast,logm,g0,nspeed) #Call Fortran routine spec
         newdat=Audio.gcom1.newdat                   #True if new data available
     else:
         newdat=0
@@ -321,11 +320,11 @@ def update():
             except:
                 print("Images did not match, continuing anyway.")
             for i in range(n):
-                line0.putdata(a[750*i:750*(i+1)])   #One row of pixels to line0
+                line0.putdata(Audio.gcom5.a[750*i:750*(i+1)])   #One row of pixels to line0
                 im.paste(line0,(0,i))               #Paste in new top line
             nscroll=nscroll+n
         else:                                   #A scale factor has changed
-            im.putdata(a)                       #Compute whole new image
+            im.putdata(Audio.gcom5.a)                       #Compute whole new image
             b0=brightness                       #Save scale values
             c0=contrast
             logm0=logm

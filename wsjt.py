@@ -10,9 +10,7 @@ from WsjtMod import g
 import os,time
 from WsjtMod import Audio
 from math import log10
-from numpy import zeros
-##import dircache
-#import Image,ImageTk  #, ImageDraw
+import numpy.core.multiarray         # Tell cxfreeze we need the numpy stuff
 from PIL import Image
 from PIL import ImageTk
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
@@ -118,7 +116,7 @@ tx6alt=""
 txsnrdb=99.
 TxFirst=IntVar()
 xypm=[]
-green=zeros(500,'f')
+green=[]
 im=Image.new('P',(500,120))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)

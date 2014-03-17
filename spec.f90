@@ -1,4 +1,4 @@
-subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
+subroutine spec(brightness,contrast,logmap,ngain,nspeed)
 !f2py threadsafe
 
 ! Called by SpecJT in its TopLevel Python code.  
@@ -9,7 +9,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   integer ngain                 !Digital gain for input audio
   integer nspeed                !Scrolling speed index
 ! Output:
-  integer*2 a(225000)           !Pixel values for 750 x 300 array
+!  integer*2 a(225000)          !Pixel values for 750 x 300 array (now in gcom5)
 
   real a0(225000)               !Save the last 300 spectra
   integer nstep(5)
@@ -22,6 +22,7 @@ subroutine spec(brightness,contrast,logmap,ngain,nspeed,a)
   include 'gcom2.f90'
   include 'gcom3.f90'
   include 'gcom4.f90'
+  include 'gcom5.f90'
   data jz/0/                    !Number of spectral lines available
   data nstep/15,10,5,2,1/       !Integration limits
   data first/.true./
