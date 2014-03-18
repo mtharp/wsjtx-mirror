@@ -8,20 +8,12 @@ mode_change=0
 showspecjt=0
 g2font='courier 16 bold'
 
-#------------------------------------------------------ ftnstr
-def ftnstr(x):
-    y=""
-    xs=x.tostring()
-    for i in range(len(xs)):
-        y=y+xs[i]
-    return y
-
 #------------------------------------------------------ filetime
 def filetime(t):
 #    i=t.rfind(".")
     i=rfnd(t,".")
     t=t[:i][-6:]
-    t=t[0:2]+":"+t[2:4]+":"+t[4:6]
+#    t=t[0:2]+":"+t[2:4]+":"+t[4:6]
     return t
 
 #------------------------------------------------------ rfnd

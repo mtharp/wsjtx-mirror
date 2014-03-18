@@ -121,13 +121,6 @@ def tx_volume():
             os.spawnv(os.P_NOWAIT, file, (file,))
             return
 
-#------------------------------------------------------ ftnstr
-def ftnstr(x):
-    y=""
-    for i in range(len(x)):
-        y=y+x[i]
-    return y
-
 #---------------------------------------------------- df_mark
 def df_mark():
     draw_axis()
