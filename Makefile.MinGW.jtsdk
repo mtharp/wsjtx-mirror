@@ -1,15 +1,16 @@
-﻿# Makefile for Windows, MinGW, Python33, CX_FREEZE, CLI Build Testing
+# Makefile for Windows with MinGW, using gcc gfortran python pyinstaller
 
 # Re-direct stdout and stderr:     cmd.exe              bash
 #                              make > junk 2>&1      make &> junk
 
 CC = gcc
 FC = gfortran
-F2PY = f2py
+
+F2PY = f2py.py
 
 FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall \
-		-Wno-conversion -Wno-character-truncation
-
+	-Wno-conversion -Wno-character-truncation
+       
 CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
@@ -24,9 +25,9 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt.a wsjt10.exe jt65code.exe jt4code.exe
+all:	libjt.a wsjt10.exe jt65code.exe jt4code.exe install
 
-OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
+OBJS1 = a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \
 	bzap.o chk441.o chkhist.o chkmsg.o coord.o db.o dcoord.o \
 	decode1.o decode2.o decode3.o decode4.o decode65.o decode6m.o \
@@ -53,42 +54,55 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	unpackcall.o unpackgrid.o unpackmsg.o unpackpfx.o unpacktext.o \
 	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
 	xcor4.o xfft.o xfft2.o 
-
+	
 # Build the library libjt.a
 libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1)
 	ranlib libjt.a
-
+	
 F2PY90 = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 \
-	 getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
-
+	getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
+	
 WsjtMod/Audio.pyd: libjt.a $(F2PY90)
 	$(F2PY) -c -I. --fcompiler=gnu95 --compiler=mingw32 \
 	--opt="-cpp -fbounds-check -O2" \
 	libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a \
 	libpthreadGC2.a -lwinmm -m Audio $(F2PY90)
 	mv Audio.pyd WsjtMod/Audio.pyd
-
-PYSRCS = wsjt.py WsjtMod/astro.py  WsjtMod/g.py WsjtMod/options.py \
+	
+PYSRCS = wsjt.py WsjtMod/astro.py WsjtMod/g.py WsjtMod/options.py \
 	WsjtMod/palettes.py WsjtMod/Pmw.py WsjtMod/PmwBlt.py \
 	WsjtMod/PmwColor.py WsjtMod/smeter.py WsjtMod/specjt.py
-
+	
 # Build the wsjt10 executable
 wsjt10.exe: WsjtMod/Audio.pyd $(PYSRCS)
 	$(PYI) --icon wsjt.ico --onefile --log-level=WARN wsjt.py
 	mv dist/wsjt.exe wsjt10.exe
-
+	
+# Build a single directory with all required files
+install: WsjtMod/Audio.pyd $(PYSRCS)
+	rm -rf install
+	mkdir install
+	mkdir install/bin
+	cp wsjt.py install/bin
+	cp -r WsjtMod install/bin
+	cp -r RxWav install
+	cp DLLs/* install/bin
+	cp CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt10.bat install
+	
 # Build jt65code
-OBJS2 = jt65code.o 
+OBJS2 = jt65code.o
 jt65code.exe: $(OBJS2) libjt.a
 	$(FC) -o jt65code.exe $(OBJS2) libjt.a
-
+	
 # Build jt4code
-OBJS3 = jt4code.o 
+OBJS3 = jt4code.o
 jt4code.exe: $(OBJS3)
 	$(FC) -o jt4code.exe $(OBJS3) libjt.a
 
-.PHONY : clean
+.PHONY: clean
 
 clean:
-	rm -rf *.o libjt.a wsjt10.exe jt65code.exe jt4code.exe WsjtMod/Audio.pyd
+	rm -rf *.o libjt.a wsjt10.exe jt65code.exe jt4code.exe \
+	WsjtMod/Audio.pyd install
+	
