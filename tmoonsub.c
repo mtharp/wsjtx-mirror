@@ -35,9 +35,11 @@ int isleap(int y);
 void tmoonsub_(double *day, double *glat, double *glong, double *moonalt, 
    double *mrv, double *l, double *b, double *paxis);
 
+/*
 static const char
 *usage = "  Usage: tmoon date[yyyymm] timz[+/-h.hh] long[+/-dddmm] lat[+/-ddmm]\n"
             "example: tmoon 200009 0 -00155 5230\n";
+*/
 
 /*
   getargs() gets the arguments from the command line, does some basic error
@@ -55,10 +57,12 @@ void getargs(int argc, char *argv[], int *y, int *m, double *tz,
 
   /* if not right number of arguments, then print example command line */
 
+  /*
   if (argc !=5) {
     fprintf(stderr, usage);
     exit(EXIT_FAILURE);
   }
+  */
 
   date = atoi(argv[1]);
   *y = date / 100;

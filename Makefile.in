@@ -1,3 +1,8 @@
+# Makefile for Linux
+
+# Re-direct stdout and stderr:     bash
+#                              make >& junk
+
 MV ?= mv
 CC ?= @CC@
 MKDIR ?= mkdir
@@ -15,7 +20,9 @@ CFLAGS += ${DEFS}
 CPPFLAGS += ${DEFS} -I.
 
 # WSJT specific Fortran flags
-#FFLAGS += -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
+FFLAGS += -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+       -Wno-character-truncation
+CFLAGS += -I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 #Audio:	WsjtMod/Audio.so 
 
@@ -40,7 +47,7 @@ LDFLAGS	+= -L${FC_LIB_PATH}
 
 PYTHON	?= @PYTHON@
 RM	?= @RM@
-F2PY	= @F2PY@
+F2PY	= f2py3.2
 
 OBJS1 = jt65code.o nchar.o grid2deg.o packmsg.o packtext.o \
 	packcall.o packgrid.o unpackmsg.o unpacktext.o unpackcall.o \

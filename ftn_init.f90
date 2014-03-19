@@ -21,7 +21,6 @@
 subroutine ftn_init
 !f2py threadsafe
 
-  character*1 fname*80
   include 'gcom1.f90'
   include 'gcom2.f90'
   include 'gcom3.f90'
