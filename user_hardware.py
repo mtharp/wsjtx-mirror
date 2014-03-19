@@ -35,4 +35,4 @@ stateIO=c_long(iodata2)
 err = windll.ljackuw.DigitalIO(byref(idnum),demo,byref(trisD),trisIO, \
             byref(stateD),byref(stateIO),updateDigital,byref(outputD))
 if err!=0:
-    print 'Error executing Labjack command'
+    print('Error executing Labjack command')

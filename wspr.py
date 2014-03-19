@@ -1041,7 +1041,7 @@ def update():
             receiving=1
             n=len(tw)
             if n>12: tw=tw[:n-1]
-            rxtime=w.acom1.rxtime.tostring()
+            rxtime=w.acom1.rxtime.tostring().decode('utf-8')
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
  
@@ -1069,7 +1069,7 @@ def update():
     t='Waiting to start'
     bgcolor='pink'
     if transmitting:
-        t='Txing: ' + w.acom1.sending.tostring()
+        t='Txing: ' + w.acom1.sending.tostring().decode('utf-8')
         bgcolor='yellow'
     if receiving:
         t='Receiving'
