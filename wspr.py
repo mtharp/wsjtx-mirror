@@ -856,7 +856,7 @@ def update():
                     ns1=ns % (10*120)
                     b=int(ns1/120) + 3
                     if b==12: b=2
-                    if hopping.hoppingflag[b].get()==0: b=-1
+                    if hopping.hoppingflag[int(b)].get()==0: b=-1
                 if b<0:                
                     found=False
                     while not found:
