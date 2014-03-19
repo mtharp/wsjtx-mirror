@@ -99,6 +99,7 @@ program fmt
      enddo
   
      smax=0.
+     ipk=ib                                  !Silence compiler warning
      do i=ia,ib                              !Find fpeak
         if(s(i).gt.smax) then
            smax=s(i)

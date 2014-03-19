@@ -35,7 +35,7 @@ OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	wspr0init.o
 
 wspr0.exe: $(OBJS1)
-	$(FC) -o wspr0 $(FFLAGS) $(OBJS1) libportaudio.a \
+	$(FC) ${FFLAGS} -o wspr0 $(FFLAGS) $(OBJS1) libportaudio.a \
 	   c:\MinGW\lib\libwinmm.a libfftw3f_win.a
 
 OBJS2 = WSPRcode.o deg2grid.o pack50.o packcall.o packgrid.o \
@@ -46,7 +46,7 @@ OBJS2 = WSPRcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 	packpfx.o unpackpfx.o cs_stubs.o fano232.o
 
 WSPRcode.exe: $(OBJS2)
-	$(FC) -o WSPRcode.exe $(OBJS2)
+	$(FC) ${FFLAGS} -o WSPRcode.exe $(OBJS2)
 
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
@@ -61,30 +61,29 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	unpackname.o unpackpfx.o unpackprop.o unpacktext2.o wfile5.o \
 	wqdecode.o wqencode.o wspr2.o xcor162.o xfft.o 
 
-# Build the library libjt.a
+# Build the library libwspr.a
 libwspr.a: $(OBJS3) acom1.f90 acom2.f90
 	ar cr libwspr.a $(OBJS3)
 	ranlib libwspr.a
 
-fmt.exe: fmt.f90 fil1.f90 four2a.f90 peakup.f90 db.f90 sound.o 
-	$(FC) -o fmt.exe fmt.f90 fil1.f90 four2a.f90 \
-	peakup.f90 db.f90 sound.o libportaudio.a c:\MinGW\lib\libwinmm.a \
-	libfftw3f_win.a
+fmt.exe: fmt.f90 libwspr.a
+	$(FC) ${FFLAGS} -o fmt.exe fmt.f90 $(OBJS3) libwspr.a libportaudio.a \
+	libwinmm.a libfftw3f_win.a libpthreadGC2.a
 
 fmtave.exe: fmtave.f90
-	$(FC) -o fmtave.exe fmtave.f90
+	$(FC) ${FFLAGS} -o fmtave.exe fmtave.f90
 
 fcal.exe: fcal.f90
-	$(FC) -o fcal.exe fcal.f90
+	$(FC) ${FFLAGS} -o fcal.exe fcal.f90
 
 fmeasure.exe: fmeasure.f90
-	$(FC) -o fmeasure.exe fmeasure.f90
+	$(FC) ${FFLAGS} -o fmeasure.exe fmeasure.f90
 
 sound.o: sound.c
 	$(CC) -c sound.c
 
 gmtime2.o: gmtime2.c
-	$(CC) -c -DWin32=1 gmtime2.c
+	$(CC) ${CFLAGS} -c -DWin32=1 gmtime2.c
 
 .PHONY : clean
 
