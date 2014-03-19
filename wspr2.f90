@@ -150,7 +150,7 @@ subroutine wspr2
      endif
   endif
 
-20 call msleep(200)
+  call msleep(200)
   go to 10
 
 30 outfile=cdate(3:8)//'_'//utctime(1:4)//'.'//'wav'

@@ -10,7 +10,8 @@ PYIDIR = c:/python27
 F2PY = $(PYTHONDIR)/python $(PYTHONDIR)/Scripts/f2py.py
 PYI = $(PYIDIR)/Scripts/pyinstaller
 
-FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -fno-second-underscore
+FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+       -Wno-character-truncation
 CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules

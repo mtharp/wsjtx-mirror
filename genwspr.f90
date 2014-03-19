@@ -1,12 +1,10 @@
-subroutine genwspr(message,ntxdf,ntune,snrdb,iqmode,iqtx,ntrminutes,   &
-     appdir,nappdir,msg2,jwave)
+subroutine genwspr(message,ntxdf,snrdb,iqmode,iqtx,ntrminutes,msg2,jwave)
 
 ! Encode an MEPT_JT message and generate the corresponding wavefile.
 
   parameter (NMAX=2*120*48000)     !Max length of wave file
   character*22 message           !Message to be generated
   character*22 msg2
-  character*80 appdir,alltxt
   integer*2 jwave(NMAX)          !Generated wave file
   parameter (MAXSYM=176)
   integer*1 symbol(MAXSYM)

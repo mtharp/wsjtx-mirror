@@ -37,6 +37,7 @@ subroutine tx
 1031 format(a6,1x,a4,f7.2,2x,a8)
   call flush(19)
 
+  iz=1                                     !Silence compiler warning
   if(pttmode.eq.'CAT') then
      if (nrig.eq.2509) then
         write(crig,'(i6)') nrig
@@ -127,8 +128,7 @@ subroutine tx
      snr0=snr
      iqmode0=iqmode
      iqtx0=iqtx
-     call genwspr(message,ntxdf,ntune,snr,iqmode,iqtx,ntrminutes,   &
-       appdir,nappdir,sending,jwave)
+     call genwspr(message,ntxdf,snr,iqmode,iqtx,ntrminutes,sending,jwave)
      newgen=1
   endif
   if(ntune.eq.0) then
