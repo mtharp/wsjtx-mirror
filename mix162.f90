@@ -2,7 +2,7 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
 
 ! Mix from "nbfo" +/- 100 Hz to baseband, and downsample by 1/32
 
-  parameter (NFFT1MAX=16*1024*1024)
+  parameter (NFFT1MAX=2*1024*1024)
   parameter (NH1MAX=NFFT1MAX/2)
   integer*2 id(npts)
   real x(NFFT1MAX)
@@ -12,8 +12,7 @@ subroutine mix162(id,npts,nbfo,c2,jz,ps)
   complex c2(0:65535)
   equivalence (x,c)
 
-  nfft1=NFFT1MAX
-  if(npts.le.120*12000) nfft1=2*1024*1024
+  nfft1=2*1024*1024
   nfft2=65536
   nh2=nfft2/2
   ndown=nfft1/nfft2

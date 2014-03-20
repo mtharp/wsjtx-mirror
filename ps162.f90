@@ -4,6 +4,7 @@ subroutine ps162(c2,s)
   complex c2(0:NFFT)
   real s(-NH:NH)
   complex c(0:NFFT)
+  common/fftcom2/c       !This keeps the absolute address of c() constant
 
   do i=0,NH-1
      c(i)=c2(i)

@@ -15,11 +15,11 @@ subroutine rx
   f0a=f0                                   !Save rx frequency at start
   ierr=soundin(ndevin,48000,kwave,4*npts,iqmode)
   if(f0a.ne.f0) then
-     call cs_lock('rx')
+!     call cs_lock('rx')
 !     write(70,*) 'Error in rx.f90 ',utctime,f0,f0a
 !     call flush(70)
      f0a=f0
-     call cs_unlock
+!     call cs_unlock
   endif
   nfhopok=1                                !Data acquisition done, can hop 
   if(ierr.ne.0) then

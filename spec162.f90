@@ -10,6 +10,7 @@ subroutine spec162(c2,jz,appdir,nappdir)
   real savg(0:255)
   integer*2 a(NX,NY)
   common/bcom/ntransmitted
+  common/fftcom/c       !This keeps the absolute address of c() constant
 
   nfft=256
   twopi=6.2831853
