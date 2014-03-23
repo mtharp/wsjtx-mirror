@@ -7,6 +7,7 @@
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
 :description: Software for Amateur Radio Weak-Signal Communication
+:prog: The Documentation Quick Reference Guide
 
 // use global link file
 include::../../global/links.adoc[]
@@ -15,8 +16,6 @@ include::../../global/links.adoc[]
 The purpose of this guide is to provide a quick reference to commonly
 used items while working with the _WSJT Documentation_ project.
 
-IMPORTANT: This guide is currently under development.
-
 == AsciiDoc Examples
 * {asciidoc_help} by {stuart_rackman}
 * {asciidoc_questions} by {stuart_rackman}
@@ -24,18 +23,7 @@ IMPORTANT: This guide is currently under development.
 * {asciidoctor_style} by Asciidoctor Project 2014. 
 * {asciidoctor_syntax} by Asciidoctor Project 2014. 
 
-== AsciiDoc Installation
-
-=== Windows
-
-Being re-written
-
-=== Linux
-
-Being re-written
-
-
-[appendix]
+:numbered!:
 License
 -------
 include::../../global/license.adoc[]

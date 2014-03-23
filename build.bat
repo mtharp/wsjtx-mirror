@@ -114,6 +114,7 @@ DOSKEY wsjtx=%BASED%\build-test.bat wsjtx
 DOSKEY wspr=%BASED%\build-test.bat wspr
 DOSKEY wsprx=%BASED%\build-test.bat wsprx
 DOSKEY map65=%BASED%\build-test.bat map65
+DOSKEY qref=%BASED%\build-test.bat qref
 DOSKEY devg=%BASED%\build-test.bat devg
 DOSKEY doc-help=%BASED%\build-test.bat help
 CLS
@@ -133,6 +134,7 @@ ECHO  Build WSPR ....... Type: wspr
 ECHO  Build WSPR-X ..... Type: wsprx
 ECHO  Build MAP65 ...... Type: map65
 ECHO  Build Dev Guide .. Type: devg
+ECHO  Build Quick Ref .. Type: qref
 ECHO.
 ECHO  For Help ......... Type: doc-help
 ECHO.
@@ -140,6 +142,6 @@ EXIT /B 0
 
 :EOF
 pause
-REM -- call:DOCHELP
+call:DOCHELP
 ENDLOCAL
 EXIT /B 0

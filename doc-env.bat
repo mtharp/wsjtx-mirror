@@ -20,6 +20,7 @@ DOSKEY wspr=%BASED%\build.bat wspr
 DOSKEY wsprx=%BASED%\build.bat wsprx
 DOSKEY map65=%BASED%\build.bat map65
 DOSKEY devg=%BASED%\build.bat devg
+DOSKEY qref=%BASED%\build.bat qref
 DOSKEY doc-help=%BASED%\build.bat help
 
 call %BASED%\build.bat help
