@@ -45,7 +45,6 @@ The {page} will be using +*SlikSVN 32bit*+ as the example. If you already have
 CMD Terminal, otherwise continue:
 
 * Open Windows CMD Terminal, then:
-[source,shell]
 ----------
 # CHANGE DIRVE TO
 c:
@@ -64,7 +63,6 @@ mkdir wsjt-env wsjt-env\subversion wsjt-env\downloads
 * Finish Install
 * Open Windows CMD Terminal, then:
 
-[source,shell]
 ----------
 # CHECK SUBVERSION
 svn --version
@@ -83,7 +81,6 @@ otherwise continue with setup:
 
 * Open X-Term Window
 
-[source,shell]
 ----------
 # DEBIAN, UBUNTU, MINT and FRIENDS
 # Note: Adjust install command to your particular pkg manager
@@ -97,4 +94,3 @@ svn, 1.7.14
 
 # EXIT X-TERM and PROCEED TO APPLICATION BUILD
 ----------
-
