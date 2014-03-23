@@ -5,7 +5,6 @@ This example uses Qmake and Makefile.Linux. In order to build _WSJT-X_ form
 source, install the following packages:
 
 [[DEPS]]
-[source,shell]
 ----------
 # DEBIAN, UBUNTU, MINT and FRIENDS
 
@@ -52,7 +51,6 @@ manually, use a text editor, open the file, and follow the steps.
 * Open a X-Term
 * Checkout +*wsjtx-makefile.sh*+ from SVN:
 
-[source,shell]
 ----------
 # CO BUILD SCRIPT
 # use export to co a single file
@@ -65,13 +63,11 @@ chmod +x ./wsjtx-compile.sh
 ----------
 
 .To Build Release version
-[source,shell]
 ---------
 ./wsjtx-makefile.sh -r
 ---------
 
 .To Build Debug version
-[source,shell]
 ---------
 ./wsjtx-makefile.sh -d
 ---------
@@ -80,7 +76,6 @@ chmod +x ./wsjtx-compile.sh
 * +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
 * Proceed to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
 
-[source,bash]
 ----------
 # When running from a X-Term [ ./wsjtx ], the xterm remains open.
 # This is good for testing and chasing errors. Run WSJT-X with:
@@ -107,7 +102,6 @@ manually, use a text editor, open the file, and follow the steps.
 * Open a terminal
 * Checkout +*wsjtx-cmake.sh*+ from SVN:
 
-[source,shell]
 ----------
 # CO BUILD SCRIPT
 # use export to co a single file
@@ -120,13 +114,11 @@ chmod +x ./wsjtx-cmake.sh
 ----------
 
 .To Build Release version
-[source,shell]
 ---------
 ./wsjtx-cmake.sh -r
 ---------
 
 .To Build Debug version
-[source,shell]
 ---------
 ./wsjtx-cmake.sh -d
 ---------
@@ -139,7 +131,6 @@ chmod +x ./wsjtx-cmake.sh
 
 Before you launch _WSJT-X_, ensure _KVASD_ can run.
 
-[source,bash]
 ----------
 # CHANGE DIRECTORY and RUN KVASD
 cd wsjtx-$rev_num
@@ -164,7 +155,6 @@ line option is given, default is Release
 * Open a WSJT ENV Terminal and perform the following steps:
 
 [[SETUP]]
-[source,shell]
 ---------
 # CHANGE DIRECTORY TO INSTALL LOCATION
 c:
@@ -230,7 +220,6 @@ end up with: +*c:\wsjt-env\hamlib\bin hamlib\lib hamlib\include ..*+
 * Open WIndows CMD Terminal. As this is the frst checkout, We need the Windows 
 CMD Terminal, subsequent pull can be done from the WSJT Env Terminal. 
 
-[source,shell]
 ----------
 # CHANGE DRIVE and DIRECTORIES
 c:
@@ -253,14 +242,12 @@ IMPORTANT: When WSJT-X Build Script runs, if it cannot find one of the tools, an
 error will be displayed. 
 
 .Build Release version
-[source,shell]
 ---------
 wsjtx-build-cmake.bat -r
 ---------
 * Location: +*C:\wsjt-env\wsjtx\wsjtx-install\Release\bin*+
 
 .Build Debug version
-[source,shell]
 ---------
 wsjtx-build-cmake.bat -d
 ---------
