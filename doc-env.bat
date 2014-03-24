@@ -23,6 +23,15 @@ DOSKEY devg=%BASED%\build.bat devg
 DOSKEY qref=%BASED%\build.bat qref
 DOSKEY doc-help=%BASED%\build.bat help
 
+REM -- DOSKEYS TO OPEN DOCS FORM COMMAND LINE
+DOSKEY wsjt=start explorer wsjt\wsjt-main.html
+DOSKEY wsjtx=start explorer wsjtx\wsjt-main-toc2.html
+DOSKEY wspr=start explorer wspr\wspr-main.html
+DOSKEY wsprx=start explorer wsprx\wsprx-main.html
+DOSKEY map65=start explorer map65\map65-main.html
+DOSKEY devg=start explorer dev-guide\dev-guide-main.html
+DOSKEY qref=start explorer quick-ref\quick-ref-main.html
+
 call %BASED%\build.bat help
 
 %WINDIR%\System32\cmd.exe /A /Q /K
