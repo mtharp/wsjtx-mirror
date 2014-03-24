@@ -1,40 +1,39 @@
 subroutine four2a(a,nfft,ndim,isign,iform)
 
-!     IFORM = 1, 0 or -1, as data is
-!     complex, real, or the first half of a complex array.  Transform
-!     values are returned in array DATA.  They are complex, real, or
-!     the first half of a complex array, as IFORM = 1, -1 or 0.
+! IFORM = 1, 0 or -1, as data is
+! complex, real, or the first half of a complex array.  Transform
+! values are returned in array DATA.  They are complex, real, or
+! the first half of a complex array, as IFORM = 1, -1 or 0.
 
-!     The transform of a real array (IFORM = 0) dimensioned N(1) by N(2)
-!     by ... will be returned in the same array, now considered to
-!     be complex of dimensions N(1)/2+1 by N(2) by ....  Note that if
-!     IFORM = 0 or -1, N(1) must be even, and enough room must be
-!     reserved.  The missing values may be obtained by complex conjugation.  
+! The transform of a real array (IFORM = 0) dimensioned N(1) by N(2)
+! by ... will be returned in the same array, now considered to
+! be complex of dimensions N(1)/2+1 by N(2) by ....  Note that if
+! IFORM = 0 or -1, N(1) must be even, and enough room must be
+! reserved.  The missing values may be obtained by complex conjugation.  
 
-!     The reverse transformation of a half complex array dimensioned
-!     N(1)/2+1 by N(2) by ..., is accomplished by setting IFORM
-!     to -1.  In the N array, N(1) must be the true N(1), not N(1)/2+1.
-!     The transform will be real and returned to the input array.
+! The reverse transformation of a half complex array dimensioned
+! N(1)/2+1 by N(2) by ..., is accomplished by setting IFORM
+! to -1.  In the N array, N(1) must be the true N(1), not N(1)/2+1.
+! The transform will be real and returned to the input array.
 
-  parameter (NPMAX=100)
+  parameter (NPMAX=200)
   parameter (NSMALL=16384)
   complex a(nfft)
   complex aa(NSMALL)
-  integer nn(NPMAX),ns(NPMAX),nf(NPMAX)
-  integer*8 plan(NPMAX),nl(NPMAX),nloc
-  data nplan/0/,npatience/1/
-!  data nplan/0/,npatience/0/
+  integer nn(NPMAX),ns(NPMAX),nf(NPMAX),nl(NPMAX)
+  integer*8 plan(NPMAX)             !Actually should be i*8, but no matter
+  data nplan/0/
   include 'fftw3.f90'
   save plan,nplan,nn,ns,nf,nl
 
-  if(nfft.lt.0) go to 999
+  if(nfft.lt.0 .or. ndim.lt.1) go to 999
 
   nloc=loc(a)
   do i=1,nplan
      if(nfft.eq.nn(i) .and. isign.eq.ns(i) .and.                     &
           iform.eq.nf(i) .and. nloc.eq.nl(i)) go to 10
   enddo
-  if(nplan.ge.NPMAX) stop 'Too many FFTW plans requested.'
+  if(nplan.ge.NPMAX) go to 999
   nplan=nplan+1
   i=nplan
   nn(i)=nfft
@@ -42,17 +41,15 @@ subroutine four2a(a,nfft,ndim,isign,iform)
   nf(i)=iform
   nl(i)=nloc
 
-  write(91,1999) nplan,nfft,isign,iform,nloc
-1999 format(5i12)
-  call flush(91)
-
 ! Planning: FFTW_ESTIMATE, FFTW_ESTIMATE_PATIENT, FFTW_MEASURE, 
 !            FFTW_PATIENT,  FFTW_EXHAUSTIVE
+  npatience=1
   nflags=FFTW_ESTIMATE
   if(npatience.eq.1) nflags=FFTW_ESTIMATE_PATIENT
   if(npatience.eq.2) nflags=FFTW_MEASURE
   if(npatience.eq.3) nflags=FFTW_PATIENT
   if(npatience.eq.4) nflags=FFTW_EXHAUSTIVE
+!  call cs_lock('four2a')
 
   if(nfft.le.NSMALL) then
      jz=nfft
@@ -61,6 +58,7 @@ subroutine four2a(a,nfft,ndim,isign,iform)
         aa(j)=a(j)
      enddo
   endif
+
   if(isign.eq.-1 .and. iform.eq.1) then
      call sfftw_plan_dft_1d(plan(i),nfft,a,a,FFTW_FORWARD,nflags)
   else if(isign.eq.1 .and. iform.eq.1) then
@@ -83,12 +81,21 @@ subroutine four2a(a,nfft,ndim,isign,iform)
 
 10 continue
   call sfftw_execute(plan(i))
+!  call cs_unlock
   return
 
 999 do i=1,nplan
-! The test is only to silence a compiler warning:
-     if(ndim.ne.-999) call sfftw_destroy_plan(plan(i))
+     call sfftw_destroy_plan(plan(i))
   enddo
+  if(ndim.lt.0 .or. nplan.ge.NPMAX) then
+     open(24,file='FFT_plans.txt',status='unknown')
+     do i=1,nplan
+        write(24,1999) i,nn(i),ns(i),nf(i),nl(i)
+1999    format(5i12)
+     enddo
+     call flush(24)
+     if(nplan.ge.NPMAX) stop 'Too many FFTW plans requested.'
+  endif
 
   return
 end subroutine four2a
