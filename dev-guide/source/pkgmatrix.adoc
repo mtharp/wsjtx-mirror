@@ -9,20 +9,18 @@ each of the respective sections.
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
 |Package   |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
-|CMake     |    |    |o     |    |      |      
-|FFTW3F    |    |x   |x     |x   |x     |x     
-|GNU SH    |x   |    |      |    |      |      
-|Hamlib    |    |    |x     |x   |x     |x     
-|MinGW     |    |x   |x     |x   |x     |x     
-|Portaudio |    |x   |x     |x   |x     |x     
-|Python    |x   |x   |      |x   |      |x     
-|Qt5       |    |    |x     |    |x     |x     
-|Subversion|x   |x   |x     |x   |x     |x     
+|CMake     |    |    |o     |    |o     |o
+|FFTW3F    |    |x   |x     |x   |x     |x
+|Hamlib    |    |    |x     |x   |x     |
+|mingw32   |    |x   |      |x   |      |   
+|mingw48_32|    |    |x     |    |x     |x
+|Portaudio |    |x   |      |x   |x     |x
+|Python3   |    |x   |      |x   |      |
+|Qt5       |    |    |x     |    |x     |x
+|Subversion|x   |x   |x     |x   |x     |x
 |=================================================
 
 .Package Comments
 [horizontal]
-+*Python*+:: Version 2.7{plus}
-+*MinGW*+:: GNU Tools pass:[4.8.0+] (gfortran, make, gcc, g{plus}{plus})
-+*GNU SH*+:: Source Highlighting for Documentation
-
++*mingw32*+:: mingw.org GNU 4.8.1 Tool Chain
++*mingw48_32*+:: QT5 Supplied GNU 4.8.0 Tool Chain
