@@ -1,9 +1,9 @@
 @ECHO OFF
-REM -- JTSDK-DOC Documentation Environment
+REM -- JTSDK-DOC Environment
 REM -- Part of the WSJT Documentation project
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
-COLOR 1B
+COLOR F0
 TITLE WSJT Documentation Environment
 
 SET TARGET=%~dp0
