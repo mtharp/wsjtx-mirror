@@ -1,1 +1,1 @@
-mingw32-make -f Makefile.MinGW.gfortran libwspr.a
+mingw32-make -f Makefile.jtsdk libwspr.a
