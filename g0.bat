@@ -1,1 +1,1 @@
-mingw32-make -f Makefile.MinGW.gfortran clean
+mingw32-make -f Makefile.jtsdk clean
