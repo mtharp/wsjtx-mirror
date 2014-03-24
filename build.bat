@@ -1,5 +1,5 @@
 @ECHO OFF
-REM -- WSJT Documentation Build Script - Windows
+REM -- JTSDK-DOC Windows Build Script
 REM -- Part of the WSJT Documentation Project
 
 REM -- Start WSJT Documentation Build
@@ -119,12 +119,11 @@ DOSKEY devg=%BASED%\build-test.bat devg
 DOSKEY doc-help=%BASED%\build-test.bat help
 CLS
 ECHO.
-ECHO __        ______      _ _____     ____   ___   ____ 
-ECHO \ \      / / ___^|    ^| ^|_   _^|   ^|  _ \ / _ \ / ___^|
-ECHO  \ \ /\ / /\___ \ _  ^| ^| ^| ^|_____^| ^| ^| ^| ^| ^| ^| ^|    
-ECHO   \ V  V /  ___) ^| ^|_^| ^| ^| ^|_____^| ^|_^| ^| ^|_^| ^| ^|___ 
-ECHO    \_/\_/  ^|____/ \___/  ^|_^|     ^|____/ \___/ \____^|
-ECHO.
+ECHO      _ _____ ____  ____  _  __     ____   ___   ____ 
+ECHO     ^| ^|_   _/ ___^|^|  _ \^| ^|/ /    ^|  _ \ / _ \ / ___^|
+ECHO  _  ^| ^| ^| ^| \___ \^| ^| ^| ^| ' /_____^| ^| ^| ^| ^| ^| ^| ^|    
+ECHO ^| ^|_^| ^| ^| ^|  ___) ^| ^|_^| ^| . \_____^| ^|_^| ^| ^|_^| ^| ^|___ 
+ECHO  \___/  ^|_^| ^|____/^|____/^|_^|\_\    ^|____/ \___/ \____^|
 ECHO.
 ECHO BUILD DOCUMENTATION
 ECHO ------------------------------------------------------
