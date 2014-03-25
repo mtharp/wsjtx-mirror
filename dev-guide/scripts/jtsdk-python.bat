@@ -1,0 +1,347 @@
+@ECHO OFF
+REM -- JTSDK Windows WSJT Build Script
+REM -- Part of the JTSDK Project
+SETLOCAL ENABLEEXTENSIONS
+SETLOCAL ENABLEDELAYEDEXPANSION
+COLOR 0A
+REM -- TEST DOUBLE CLICK
+FOR %%x IN (%cmdcmdline%) DO IF /I "%%~x"=="/c" SET GUI=1
+IF DEFINED GUI CALL GOTO DCLICK
+
+REM -- PATH VARS
+SET BASED=%~dp0
+SET SRCD=%BASED%\src
+SET TOOLS=%BASED%\tools
+SET MINGW=%BASED%\mingw32\bin
+SET SVND=%BASED%\subversion\bin
+SET SCRIPTS=%BASED%\tools\scripts
+SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\Tools\Scripts
+SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SRCD%;%SVND%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
+
+REM -- VARS USED IN PROCESS
+SET WSJTURL=svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
+SET WSPRURL=svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+SET JJ=%NUMBER_OF_PROCESSORS%
+SET python=%BASED%\Python33\python.exe
+SET f2py=%BASED%\Python33\Scripts\f2py.py
+GOTO MKSRCD
+
+REM - ENSURE ALL DIRS ARE PRESENT
+:MKSRCD
+IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
+
+REM -- FROM jtsdk-pyenv.bat FIELD $1 = %1
+:SELECT
+IF /I [%1]==[wsjt] (
+SET APP_NAME=wsjt
+SET APP_SRC=%SRCD%\trunk
+SET CHECKOUT=%WSJTURL%
+GOTO START
+) ELSE IF /I [%1]==[wspr] (
+SET APP_NAME=wspr
+SET APP_SRC=%SRCD%\wspr
+SET CHECKOUT=%WSPRURL%
+GOTO START
+) ELSE (GOTO UNSUPPORTED)
+GOTO START
+
+:START
+REM -- START MAIN BUILD
+CD %BASED%
+REM jht CLS
+ECHO -------------------------------
+ECHO ^( %APP_NAME% ^) Build Script
+ECHO -------------------------------
+ECHO.
+REM -- IF SRCD EXISTS, CHECK FOR PREVIOUS CO
+IF NOT EXIST %APP_SRC%\NUL (
+CD %SRCD%
+ECHO CHECKING OUT: ^( %APP_NAME% ^)
+ECHO.
+start /wait %CHECKOUT%
+ECHO.
+GOTO STARTBUILD
+) ELSE (GOTO ASKSVN)
+
+REM -- START WSPR BUILD
+:ASKSVN
+ECHO.
+ECHO Update from SVN Before Building? ^( y/n ^)
+SET ANSWER=
+ECHO.
+SET /P ANSWER=Type Response: %=%
+If /I "%ANSWER%"=="N" GOTO STARTBUILD
+If /I "%ANSWER%"=="Y" (
+GOTO SVNUPDATE
+) ELSE (
+REM jht CLS
+ECHO.
+ECHO Please Answer With: ^( Y or N ^)
+ECHO.
+GOTO ASKSVN
+)
+
+REM -- UPDATE WSJT FROM SVN
+:SVNUPDATE
+ECHO.
+ECHO UPDATING ^( %APP_SRC% ^ )
+ECHO.
+cd %APP_SRC%
+start /wait svn cleanup
+start /wait svn update
+ECHO.
+GOTO STARTBUILD
+
+REM -- START WSJT MAIN BUILD
+:STARTBUILD
+ECHO.
+ECHO STARTING BUILD FOR: ^( %APP_NAME% ^)
+ECHO.
+IF /I [%APP_NAME%]==[wsjt] (GOTO MAKEWSJT)
+IF /I [%APP_NAME%]==[wspr] (GOTO MAKEWSPR)
+
+REM -- BEGIN WSJT MAIN BUILD
+:MAKEWSJT
+REM -- g0.bat
+IF NOT EXIST %BASED%\%APP_NAME%\NUL mkdir %BASED%\%APP_NAME%
+CD /D %APP_SRC%
+ECHO.
+ECHO MAKE CLEAN
+ECHO.
+mingw32-make -f Makefile.jtsdk clean
+GOTO JTG1
+
+REM -- g1.bat
+REM -- STILL in %APP_SRC%
+:JTG1
+ECHO.
+ECHO BUILDING:: libjt.a, jt65code.exe, jt4code.exe
+ECHO.
+mingw32-make -f Makefile.jtsdk
+ECHO.
+ECHO Finished Building libjt.a, jt65code.exe, jt4code.exe
+ECHO.
+GOTO JTG2
+
+REM - g2.bat
+REM -- STILL in %APP_SRC%
+:JTG2
+ECHO.
+ECHO RUNNING:: F2PY
+ECHO.
+f2py -c -I. --fcompiler=gnu95 --compiler=mingw32 --f77exec=gfortran --f90exec=gfortran --opt="-cpp -fbounds-check -O2" libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a libpthreadGC2.a -lwinmm -m Audio ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90  getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
+mv Audio.pyd WsjtMod/Audio.pyd
+ECHO.
+GOTO JTG3
+
+REM -- g3.bat
+REM - CALL CXFREEZE AS IT DUMPS OUT OF MAIN BATCH AFTER COMPLETION
+REM -- STILL in %APP_SRC%
+:JTG3
+ECHO.
+ECHO RUNNING:: CX_FREEZE
+SET INSTALLDIR=install
+rm -rf %INSTALLDIR%
+mkdir %INSTALLDIR%
+mkdir %INSTALLDIR%\bin
+python %BASED%\Python33\Scripts\cxfreeze --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wsjt.py --target-dir=%INSTALLDIR%\bin
+REM jht CALL "%SCRIPTS%\wsjt-cxfreeze.bat"
+ECHO.
+GOTO JTG4
+
+REM - g4.bat
+REM -- STILL in %APP_SRC%
+:JTG4
+ECHO.
+ECHO Copying ^( %APP_NAME% ^) Files
+ECHO.
+REM -- CLEAN TZ & DEMO FILES, COPY REMAINING FILES
+set INSTALLDIR=install
+rm -rf %INSTALLDIR%/bin/tcl/tzdata
+rm -rf %INSTALLDIR%/bin/tk/demos
+cp -r RxWav %INSTALLDIR%
+cp CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt.bat %INSTALLDIR% 
+ECHO.
+GOTO REV_NUM
+REM -- FINISHED WSJT BUILD ---------------------------------
+
+REM -- START WSPR BUILD ------------------------------------
+REM -- g0.bat
+:MAKEWSPR
+cd %APP_SRC%
+IF NOT EXIST %BASED%\%APP_NAME%\NUL mkdir %BASED%\%APP_NAME%
+echo %PATH%
+ECHO.
+ECHO MAKE CLEAN
+ECHO.
+mingw32-make -f Makefile.jtsdk clean
+GOTO PRG1
+
+REM -- g1.bat
+REM -- STILL in %APP_SRC%
+:PRG1
+ECHO.
+ECHO BUILDING:: libwsper.a
+ECHO.
+mingw32-make -f Makefile.jtsdk libwspr.a
+GOTO PRG2
+
+REM -- g2.bat
+REM -- STILL in %APP_SRC%
+:PRG2
+ECHO.
+ECHO RUNNING:: F2PY
+ECHO.
+f2py -c -I. --fcompiler=gnu95 --compiler=mingw32 --f77exec=gfortran --f90exec=gfortran --opt="-cpp -fbounds-check -O2" libwspr.a libportaudio.a libfftw3f_win.a libsamplerate.a libpthreadGC2.a -lwinmm -m w wspr1.f90 getfile.f90 paterminate.f90 ftn_quit.f90 audiodev.f90
+mv w.pyd WsprMod/w.pyd
+ECHO.
+GOTO PRG3
+
+REM -- g3.bat
+REM -- STILL in %APP_SRC%
+:PRG3
+ECHO.
+ECHO BUILDING:: 
+ECHO.
+mingw32-make -f Makefile.jtsdk fmt.exe
+mingw32-make -f Makefile.jtsdk fmtave.exe
+mingw32-make -f Makefile.jtsdk fcal.exe
+mingw32-make -f Makefile.jtsdk fmeasure.exe
+mingw32-make -f Makefile.jtsdk wspr0.exe
+GOTO PRG4
+
+REM -- g4.bat
+REM -- STILL in %APP_SRC%
+:PRG4
+ECHO.
+ECHO RUNNING:: CX_FREEZE
+SET INSTALLDIR=install
+rm -rf %INSTALLDIR%
+mkdir %INSTALLDIR%
+mkdir %INSTALLDIR%\bin
+python %BASED%\Python33\Scripts\cxfreeze --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wspr.py --target-dir=%INSTALLDIR%\bin
+REM jht CALL %SCRIPTS%\wspr-cxfreeze.bat
+ECHO.
+GOTO PRG5
+
+REM -- g5.bat
+REM -- STILL in %APP_SRC%
+:PRG5
+ECHO.
+ECHO Copying ^( %APP_NAME% ^) Files
+ECHO.
+set INSTALLDIR=install
+rm -r %INSTALLDIR%/bin/tcl/tzdata
+rm -r %INSTALLDIR%/bin/tk/demos
+cp -r save %INSTALLDIR%
+cp wsjt.ico wsprrc.win hamlib_rig_numbers rigctl.exe wspr.bat %INSTALLDIR% 
+cp fcal.exe fmeasure.exe fmt.exe fmtave.exe wspr0.exe %INSTALLDIR%
+cp libhamlib-2.dll hamlib*.dll libusb0.dll %INSTALLDIR% 
+cp wsjt.ico wspr.bat %INSTALLDIR%
+GOTO REV_NUM
+REM -- FINISHED WSPR BUILD ---------------------------------
+
+REM -- GET SVN r NUMBER && COPY PKG TO %APP_NAME%
+REM -- STILL in %APP_SRC%
+:REV_NUM
+grep "$Revision:" %APP_NAME%.py |awk "{print $12}" > r.txt
+SET /P VER=<r.txt & rm r.txt
+IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+cp -r %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+GOTO ASKRUN
+
+REM - TOOL CHAIN ERROR MESSAGE
+:UNSUPPORTED
+COLOR 1E
+REM jht CLS
+ECHO.
+ECHO ----------------------------------------
+ECHO        UNSUPPORTED APPLICATION
+ECHO ----------------------------------------
+ECHO       ^( %1 ^) Is Unsupported
+ECHO.
+ECHO            WSJT and WSPR
+ECHO.
+ECHO      Are the Only Python Builds
+ECHO.
+ECHO        Please Check Your Entry
+ECHO.
+PAUSE
+GOTO EOF
+
+:SVNERROR1
+REM jht CLS
+ECHO -------------------------------
+ECHO       SVN Execution Error
+ECHO -------------------------------
+ECHO.
+ECHO Subversion returned with an error.
+ECHO    ~~ Performing Cleanup ~~
+ECHO Rerun the build script after Exit.
+ECHO     If the problem continues
+ECHO Contact: wsjt-devel@lists.berlios.de
+ECHO.
+PAUSE
+CD / D %APP_SRC%
+svn cleanup
+)
+REM jht CLS
+ECHO -------------------------------
+ECHO       Cleanup Complete
+ECHO -------------------------------
+ECHO.
+ECHO         Now exiting
+sleep 2
+GOTO EOF
+
+:ASKRUN
+ECHO Would You Like To Run %APP_NAME% Now? ^( y/n ^)
+ECHO.
+SET ANSWER=
+SET /P ANSWER=Type Response: %=%
+ECHO.
+If /I "%ANSWER%"=="Y" GOTO RUNAPP
+If /I "%ANSWER%"=="N" (
+REM jht CLS
+GOTO FINISHED
+) ELSE (
+REM jht CLS
+ECHO.
+ECHO Please Answer With: ^( y or n ^) & ECHO. & GOTO ASKRUN
+)
+GOTO EOF
+
+:RUNAPP
+ECHO.
+ECHO Starting: ^( %APP_NAME% ^)
+CD %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+START %APP_NAME%.bat & GOTO FINISHED
+
+:FINISHED
+REM -- STILL in %APP_SRC%
+REM jht CLS
+ECHO.
+ECHO -----------------------------------
+ECHO  %APP_NAME%-r%VER% Build Complete
+ECHO -----------------------------------
+ECHO.
+ECHO COPIED ... %APP_NAME%-r%VER%
+ECHO FROM ..... %APP_SRC%\%INSTALLDIR%
+ECHO TO ....... %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+REM -- GO BACK TO \JTSDK\
+CD /D %BASED%
+ECHO.
+pause
+REM jht CALL %SCRIPTS%\jtsdk-pyinfo.bat
+
+GOTO EOF
+
+REM -- WARN ON DOUBLE CLICK
+:DCLICK
+CALL %BASED%\tools\scripts\dclick-error.bat
+GOTO EOF
+
+:EOF
+COLOR 0A
+ENDLOCAL
+EXIT /B 0
