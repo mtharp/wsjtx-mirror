@@ -127,8 +127,7 @@ ECHO        is not Supported
 ECHO.
 ECHO.
 PAUSE
-CLS
-GOTO QTINFO
+CALL %SCRIPTS%\jtsdk-qtinfo.bat
 EXIT /B 0
 
 REM - DOUBLE-CLICK ERROR MESSAGE
