@@ -127,13 +127,13 @@ ECHO  \___/  ^|_^| ^|____/^|____/^|_^|\_\    ^|____/ \___/ \____^|
 ECHO.
 ECHO BUILD DOCUMENTATION
 ECHO ------------------------------------------------------
-ECHO  Build WSJT ....... Type: wsjt
-ECHO  Build WSJT-X ..... Type: wsjtx
-ECHO  Build WSPR ....... Type: wspr
-ECHO  Build WSPR-X ..... Type: wsprx
-ECHO  Build MAP65 ...... Type: map65
-ECHO  Build Dev Guide .. Type: devg
-ECHO  Build Quick Ref .. Type: qref
+ECHO  Build WSJT ....... Type: build wsjt
+ECHO  Build WSJT-X ..... Type: build wsjtx
+ECHO  Build WSPR ....... Type: build wspr
+ECHO  Build WSPR-X ..... Type: build wsprx
+ECHO  Build MAP65 ...... Type: build map65
+ECHO  Build Dev Guide .. Type: build devg
+ECHO  Build Quick Ref .. Type: build qref
 ECHO.
 ECHO  For Help ......... Type: doc-help
 ECHO.

@@ -3,7 +3,7 @@ REM -- JTSDK-DOC Environment
 REM -- Part of the WSJT Documentation project
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
-COLOR F0
+COLOR E0
 TITLE WSJT Documentation Environment
 
 SET TARGET=%~dp0
