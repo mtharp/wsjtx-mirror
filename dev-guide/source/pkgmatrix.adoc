@@ -1,5 +1,5 @@
 //
-The following matrix outlines the development package requirments for each
+The following matrix outlines the development package requirements for each
 application, including documentation. Application details are contained within
 each of the respective sections.
 
