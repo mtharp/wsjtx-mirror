@@ -19,28 +19,21 @@ SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\Tools\
 SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SRCD%;%SVND%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 
 REM -- VARS USED IN PROCESS
-SET WSJTURL=svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
-SET WSPRURL=svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET python=%BASED%\Python33\python.exe
 SET f2py=%BASED%\Python33\Scripts\f2py.py
-GOTO MKSRCD
-
-REM - ENSURE ALL DIRS ARE PRESENT
-:MKSRCD
-IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
+mkdir %BASED%\src %BASED%\wspr %BASED%\wsjt
+GOTO SELECT
 
 REM -- FROM jtsdk-pyenv.bat FIELD $1 = %1
 :SELECT
 IF /I [%1]==[wsjt] (
 SET APP_NAME=wsjt
 SET APP_SRC=%SRCD%\trunk
-SET CHECKOUT=%WSJTURL%
 GOTO START
 ) ELSE IF /I [%1]==[wspr] (
 SET APP_NAME=wspr
 SET APP_SRC=%SRCD%\wspr
-SET CHECKOUT=%WSPRURL%
 GOTO START
 ) ELSE (GOTO UNSUPPORTED)
 GOTO START
@@ -48,19 +41,14 @@ GOTO START
 :START
 REM -- START MAIN BUILD
 CD %BASED%
-REM jht CLS
 ECHO -------------------------------
 ECHO ^( %APP_NAME% ^) Build Script
 ECHO -------------------------------
 ECHO.
+
 REM -- IF SRCD EXISTS, CHECK FOR PREVIOUS CO
-IF NOT EXIST %APP_SRC%\NUL (
-CD %SRCD%
-ECHO CHECKING OUT: ^( %APP_NAME% ^)
-ECHO.
-start /wait %CHECKOUT%
-ECHO.
-GOTO STARTBUILD
+IF NOT EXIST %APP_SRC%\.svn\NUL (
+GOTO COMSG
 ) ELSE (GOTO ASKSVN)
 
 REM -- START WSPR BUILD
@@ -74,7 +62,6 @@ If /I "%ANSWER%"=="N" GOTO STARTBUILD
 If /I "%ANSWER%"=="Y" (
 GOTO SVNUPDATE
 ) ELSE (
-REM jht CLS
 ECHO.
 ECHO Please Answer With: ^( Y or N ^)
 ECHO.
@@ -87,7 +74,7 @@ ECHO.
 ECHO UPDATING ^( %APP_SRC% ^ )
 ECHO.
 cd %APP_SRC%
-start /wait svn cleanup
+start /wait svn cleanup 
 start /wait svn update
 ECHO.
 GOTO STARTBUILD
@@ -102,20 +89,12 @@ IF /I [%APP_NAME%]==[wspr] (GOTO MAKEWSPR)
 
 REM -- BEGIN WSJT MAIN BUILD
 :MAKEWSJT
-REM -- g0.bat
-IF NOT EXIST %BASED%\%APP_NAME%\NUL mkdir %BASED%\%APP_NAME%
+REM -- g1.bat
+REM -- CD into %APP_SRC% then start build
+:JTG1
 CD /D %APP_SRC%
 ECHO.
-REM ECHO MAKE CLEAN
-REM ECHO.
-REM mingw32-make -f Makefile.jtsdk clean
-GOTO JTG1
-
-REM -- g1.bat
-REM -- STILL in %APP_SRC%
-:JTG1
-ECHO.
-ECHO BUILDING:: libjt.a, jt65code.exe, jt4code.exe
+ECHO BUILDING^:: libjt.a, jt65code.exe, jt4code.exe
 ECHO.
 mingw32-make -f Makefile.jtsdk
 ECHO.
@@ -166,22 +145,13 @@ GOTO REV_NUM
 REM -- FINISHED WSJT BUILD ---------------------------------
 
 REM -- START WSPR BUILD ------------------------------------
-REM -- g0.bat
 :MAKEWSPR
-cd %APP_SRC%
-IF NOT EXIST %BASED%\%APP_NAME%\NUL mkdir %BASED%\%APP_NAME%
-echo %PATH%
-ECHO.
-REM ECHO MAKE CLEAN
-REM ECHO.
-REM mingw32-make -f Makefile.jtsdk clean
-GOTO PRG1
-
 REM -- g1.bat
-REM -- STILL in %APP_SRC%
+REM -- CD into %APP_SRC% then start build
 :PRG1
+cd %APP_SRC%
 ECHO.
-ECHO BUILDING:: libwsper.a
+ECHO BUILDING: libwsper.a
 ECHO.
 mingw32-make -f Makefile.jtsdk libwspr.a
 GOTO PRG2
@@ -201,7 +171,7 @@ REM -- g3.bat
 REM -- STILL in %APP_SRC%
 :PRG3
 ECHO.
-ECHO BUILDING:: 
+ECHO BUILDING: fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe 
 ECHO.
 mingw32-make -f Makefile.jtsdk fmt.exe
 mingw32-make -f Makefile.jtsdk fmtave.exe
@@ -227,7 +197,6 @@ GOTO PRG5
 REM -- g5.bat
 REM -- STILL in %APP_SRC%
 :PRG5
-ECHO.
 ECHO Copying ^( %APP_NAME% ^) Files
 ECHO.
 set INSTALLDIR=install
@@ -253,7 +222,7 @@ GOTO ASKRUN
 REM - TOOL CHAIN ERROR MESSAGE
 :UNSUPPORTED
 COLOR 1E
-REM jht CLS
+CLS
 ECHO.
 ECHO ----------------------------------------
 ECHO        UNSUPPORTED APPLICATION
@@ -285,7 +254,6 @@ PAUSE
 CD / D %APP_SRC%
 svn cleanup
 )
-REM jht CLS
 ECHO -------------------------------
 ECHO       Cleanup Complete
 ECHO -------------------------------
@@ -302,10 +270,8 @@ SET /P ANSWER=Type Response: %=%
 ECHO.
 If /I "%ANSWER%"=="Y" GOTO RUNAPP
 If /I "%ANSWER%"=="N" (
-REM jht CLS
 GOTO FINISHED
 ) ELSE (
-REM jht CLS
 ECHO.
 ECHO Please Answer With: ^( y or n ^) & ECHO. & GOTO ASKRUN
 )
@@ -319,7 +285,6 @@ START %APP_NAME%.bat & GOTO FINISHED
 
 :FINISHED
 REM -- STILL in %APP_SRC%
-REM jht CLS
 ECHO.
 ECHO -----------------------------------
 ECHO  %APP_NAME%-r%VER% Build Complete
@@ -332,13 +297,63 @@ REM -- GO BACK TO \JTSDK\
 CD /D %BASED%
 ECHO.
 pause
-REM jht CALL %SCRIPTS%\jtsdk-pyinfo.bat
-
 GOTO EOF
 
 REM -- WARN ON DOUBLE CLICK
 :DCLICK
-CALL %BASED%\tools\scripts\dclick-error.bat
+@ECHO OFF
+REM -- Double Click Error Message
+REM -- Part of the JTSDK Project
+CLS
+COLOR 1E
+ECHO -------------------------------
+ECHO     DOUBLE CLICK WARNING
+ECHO -------------------------------
+ECHO.
+ECHO  Please Use JTSDK-PY Enviroment
+ECHO.
+ECHO    %BASED%\jtsdk-pyenv.bat
+ECHO.
+PAUSE
+GOTO EOF
+
+:COMSG
+CLS
+ECHO ----------------------------------------
+ECHO %APP_SRC% Was Not Found
+ECHO ----------------------------------------
+ECHO.
+ECHO In order to build ^( %APP_NAME% ^) you
+ECHO must first perform a checkout from 
+ECHO SourceForge, then type: build %APP_NAME%
+ECHO.
+ECHO To Checkout ^( %APP_NAME% ^):
+ECHO Type: ^cd /d src
+ECHO.
+IF /I [%APP_NAME%]==[wsjt] (
+ECHO Anonymous, Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
+ECHO Developer, Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/trunk
+ECHO.
+ECHO NOTE: For Dev's change ^( %USERNAME% ^) to your Sourforge User Name
+ECHO.
+ECHO.
+GOTO COMSG1
+)
+IF /I [%APP_NAME%]==[wspr] (
+ECHO Anonymous, Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+ECHO Developer, Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+ECHO.
+ECHO NOTE: For Dev's change ^( %USERNAME% ^) to your Sourforge User Name.
+ECHO.
+ECHO.
+GOTO COMSG1
+)
+
+:COMSG1
+ECHO After checkout:
+ECHO Type: ^cd /d ..
+ECHO Then: build %APP_NAME%
+ECHO.
 GOTO EOF
 
 :EOF
