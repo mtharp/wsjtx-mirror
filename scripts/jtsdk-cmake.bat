@@ -43,7 +43,6 @@ SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
 SET SUPPORT=%BASED%\appsupport
 
-
 REM -- START MAIN BUILD
 CD %BASED%
 mkdir %SRCD%
@@ -54,14 +53,8 @@ ECHO -------------------------------
 ECHO.
 
 REM -- CHECK IN %APP_NAME\.svn IS PRESENT
-IF NOT EXIST %SRCD%\%APP_NAME%\NUL (
-ECHO.
-ECHO CHECKING OUT: ^( %APP_NAME% ^)
-ECHO.
-CD /D %SRCD%
-start /wait svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
-CD /D %BASED%
-GOTO BUILD
+IF NOT EXIST %SRCD%\%APP_NAME%\.svn\NUL (
+GOTO COMSG
 ) ELSE (
 GOTO SVNASK
 )
@@ -91,7 +84,7 @@ CD /D %BASED%
 ECHO.
 
 :BUILD
-IF NOT EXIST %BUILDD%\%OPTION%\NUL mkdir %BUILDD%\%OPTION%
+mkdir %BUILDD%\%OPTION%
 CD %BUILDD%\%OPTION%
 ECHO.
 ECHO Starting Build For: ^( %APP_NAME% ^)
@@ -135,7 +128,7 @@ ECHO.
 ECHO.
 PAUSE
 CLS
-CALL %SCRIPTS%\jtsdk-qtinfo.bat
+GOTO QTINFO
 EXIT /B 0
 
 REM - DOUBLE-CLICK ERROR MESSAGE
@@ -143,12 +136,12 @@ REM - DOUBLE-CLICK ERROR MESSAGE
 CLS
 @ECHO OFF
 ECHO -------------------------------
-ECHO        Execution Error
+ECHO       Execution Error
 ECHO -------------------------------
 ECHO.
 ECHO Please Run from JTSDK Enviroment
 ECHO.
-ECHO  Use: %~dp0\jtsdk-env.bat
+ECHO  Use: %~dp0\jtsdk-qtenv.bat
 ECHO.
 PAUSE
 GOTO EOF
@@ -207,8 +200,6 @@ SET /P ANSWER=Type Response: %=%
 ECHO.
 If /I "%ANSWER%"=="Y" GOTO RUNAPP
 If /I "%ANSWER%"=="N" (
-REM -- CLS
-REM -- CALL %SCRIPTS%\jtsdk-qtinfo.bat
 GOTO EOF
 ) ELSE (
 CLS
@@ -224,8 +215,31 @@ ECHO Starting: %APP_NAME%
 START %APP_NAME%.exe
 GOTO EOF
 
+:COMSG
+CLS
+ECHO ----------------------------------------
+ECHO %SRCD%\%APP_NAME% Was Not Found
+ECHO ----------------------------------------
+ECHO.
+ECHO In order to build ^( %APP_NAME% ^) you
+ECHO must first perform a checkout from 
+ECHO SourceForge, then type: build %APP_NAME%
+ECHO.
+ECHO To Checkout ^( %APP_NAME% ^):
+ECHO Type: ^cd /d src
+ECHO.
+ECHO Anonymous, Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+ECHO Developer, Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+ECHO.
+ECHO NOTE: For Dev's change ^( %USERNAME% ^) to your Sourforge User Name
+ECHO.
+ECHO After checkout:
+ECHO Type: ^cd /d ..
+ECHO Then: build %APP_NAME%
+ECHO.
+GOTO EOF
+
 :EOF
 CD /D %BASED%
-REM -- CALL %SCRIPTS%\jtsdk-qtinfo.bat
 ENDLOCAL
 EXIT /B 0
