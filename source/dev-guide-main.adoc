@@ -60,6 +60,9 @@ include::sourcecode.adoc[]
 == Package Matrix
 include::pkgmatrix.adoc[]
 
+== Build Matrix
+include::buildmatrix.adoc[]
+
 ////
 [[DOCSETUP]]
 == Documentation

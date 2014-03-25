@@ -1,0 +1,27 @@
+//
+The following matrix outlines the primary build method for
+each application. While there may be more than one build
+option per application, the primary method is used to
+distribute release versions, as such, should be up to date
+with the latest code changes.
+
+.Windows Build Matrix: x = Primary, o = Optional
+[[WINDOWSPKG]]
+[width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
+|=================================================
+|Method     |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
+|CMake      |    |    |x     |    |x     |x
+|Manual     |    |x   |      |x   |      |
+|Script     |x   |o   |o     |o   |o     |o
+|=================================================
+
+.Comments
+[horizontal]
+* *WSJT, WSPR*:
+** Makefile.jtsdk {plus} Build Scripts (batch files)
+** Manual: g0{plus}g1{plus}g2{plus}g3{plus}g4{plus}g5{plus}g6
+** JTSDK-PY: jtsdk-python.bat
+* *WSJT-X, WSPR-X, MAP65*
+** CMakeLists.txt {plus} Build Scripts (batch files)
+** CMakeLists.txt {plus} QtCreator Build Engine
+** JTSDK-QT: jtsdk-cmake.bat
