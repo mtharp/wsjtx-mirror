@@ -71,7 +71,7 @@ REM -- ASK TO UPDATE FROM SVN
 ECHO Update from SVN Before Building? ^( y/n ^)
 SET ANSWER=
 ECHO.
-SET /P ANSWER=Type Responce: %=%
+SET /P ANSWER=Type Response: %=%
 If /I "%ANSWER%"=="N" GOTO BUILD
 If /I "%ANSWER%"=="Y" (
 GOTO SVNUP
@@ -203,7 +203,7 @@ GOTO ASKRUN
 ECHO Would You Like To Run %APP_NAME% Now? ^( y/n ^)
 ECHO.
 SET ANSWER=
-SET /P ANSWER=Type Responce: %=%
+SET /P ANSWER=Type Response: %=%
 ECHO.
 If /I "%ANSWER%"=="Y" GOTO RUNAPP
 If /I "%ANSWER%"=="N" (
