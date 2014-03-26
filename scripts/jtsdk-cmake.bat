@@ -10,24 +10,11 @@ REM -- TEST DOUBLE CLICK
 FOR %%x IN (%cmdcmdline%) DO IF /I "%%~x"=="/c" SET GUI=1
 IF DEFINED GUI GOTO DCLICKERROR
 
-REM -- START MAIN SCRIPT
-SET TARGET=%~dp0
-IF %TARGET:~-1%==\ (SET BASED=%TARGET:~0,-1%) ELSE (SET BASED=%TARGET%) 
-
-REM -- USER INPUT FILED 1 = %1
-SET SUPPORTED=(map65 wsjtx wsprx)
-IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx
-) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx
-) ELSE IF /I [%1]==[map65] (SET APP_NAME=map65
-) ELSE (GOTO UNSUPPORTED)
-
-REM - USER INPUT FIELD 2 == %2
-IF /I [%2]==[-d] (SET OPTION=Debug) ELSE (SET OPTION=Release)
-
 REM -- SET PATH VARS
+SET BASED=%~dp0
+IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin
 SET CMAKD=%BASED%\cmake\bin
-SET HAMLIBD=%BASED%\hamlib
 SET GCCD=%BASED%\mingw48_32\bin
 SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
 SET SRCD=%BASED%\src
@@ -42,6 +29,17 @@ SET APP_DIR=%BASED%\%APP_NAME%
 SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
 SET SUPPORT=%BASED%\appsupport
+
+REM -- START MAIN SCRIPT
+REM -- USER INPUT FILED 1 = %1
+SET SUPPORTED=(map65 wsjtx wsprx)
+IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx
+) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx
+) ELSE IF /I [%1]==[map65] (SET APP_NAME=map65
+) ELSE (GOTO UNSUPPORTED)
+
+REM - USER INPUT FIELD 2 == %2
+IF /I [%2]==[-d] (SET OPTION=Debug) ELSE (SET OPTION=Release)
 
 REM -- START MAIN BUILD
 CD %BASED%
@@ -127,7 +125,8 @@ ECHO        is not Supported
 ECHO.
 ECHO.
 PAUSE
-CALL %SCRIPTS%\jtsdk-qtinfo.bat
+CLS
+GOTO QTINFO
 EXIT /B 0
 
 REM - DOUBLE-CLICK ERROR MESSAGE
@@ -224,18 +223,19 @@ ECHO In order to build ^( %APP_NAME% ^) you
 ECHO must first perform a checkout from 
 ECHO SourceForge, then type: build %APP_NAME%
 ECHO.
-ECHO To Checkout ^( %APP_NAME% ^):
-ECHO Type: ^cd /d src
+ECHO ANONYMOUS CHECKOUT ^( %APP_NAME% ^):
+ECHO  ^cd src
+ECHO  svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+ECHO  ^cd ..
+ECHO  build %APP_NAME%
 ECHO.
-ECHO Anonymous, Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
-ECHO Developer, Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+ECHO DEV CHECKOUT:
+ECHO  ^cd src
+ECHO  svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+ECHO  ^cd ..
+ECHO  build %APP_NAME%
 ECHO.
-ECHO NOTE: For Dev's change ^( %USERNAME% ^) to your Sourforge User Name
-ECHO.
-ECHO After checkout:
-ECHO Type: ^cd /d ..
-ECHO Then: build %APP_NAME%
-ECHO.
+ECHO DEV NOTE: Change ^( %USERNAME% ^) to your Sourforge User Name
 GOTO EOF
 
 :EOF
