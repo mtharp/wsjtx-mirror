@@ -23,7 +23,8 @@ REM -- VARS USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET python=%BASED%\Python33\python.exe
 SET f2py=%BASED%\Python33\Scripts\f2py.py
-IF NOT EXIST %BASED%\src mkdir %BASED%\src
+IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
+DEL /Q NUL
 GOTO SELECT
 
 REM -- FROM jtsdk-pyenv.bat FIELD $1 = %1
@@ -97,11 +98,9 @@ REM -- CD into %APP_SRC% then start build
 :JTG1
 CD /D %APP_SRC%
 ECHO.
-ECHO BUILDING^:: libjt.a, jt65code.exe, jt4code.exe
+ECHO BUILDING^: libjt.a, jt65code.exe, jt4code.exe
 ECHO.
 mingw32-make -f Makefile.jtsdk
-ECHO.
-ECHO Finished Building libjt.a, jt65code.exe, jt4code.exe
 ECHO.
 GOTO JTG2
 
@@ -239,30 +238,6 @@ ECHO.
 ECHO        Please Check Your Entry
 ECHO.
 PAUSE
-GOTO EOF
-
-:SVNERROR1
-REM jht CLS
-ECHO -------------------------------
-ECHO       SVN Execution Error
-ECHO -------------------------------
-ECHO.
-ECHO Subversion returned with an error.
-ECHO    ~~ Performing Cleanup ~~
-ECHO Rerun the build script after Exit.
-ECHO     If the problem continues
-ECHO Contact: wsjt-devel@lists.berlios.de
-ECHO.
-PAUSE
-CD / D %APP_SRC%
-svn cleanup
-)
-ECHO -------------------------------
-ECHO       Cleanup Complete
-ECHO -------------------------------
-ECHO.
-ECHO         Now exiting
-sleep 2
 GOTO EOF
 
 :ASKRUN

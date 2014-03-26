@@ -142,42 +142,6 @@ ECHO.
 PAUSE
 GOTO EOF
 
-REM - COMPILER ERRORS
-:BUILDRROR
-CLS
-@ECHO OFF
-ECHO -------------------------------
-ECHO          BUILD ERROR
-ECHO -------------------------------
-ECHO.
-ECHO    CMake Existed with Errors
-ECHO.
-PAUSE
-GOTO EOF
-
-:SVNERROR1
-CLS
-ECHO -------------------------------
-ECHO       SVN Execution Error
-ECHO -------------------------------
-ECHO.
-ECHO Subversion returned with an error.
-ECHO    ~~ Performing Cleanup ~~
-ECHO Rerun the build script after Exit.
-ECHO     If the problem continues
-ECHO     Contact: ki7mt@yahoo.com
-PAUSE
-CD /D %SRCD%\%APP_NAME%
-svn cleanup
-CLS
-ECHO -------------------------------
-ECHO       Cleanup Complete
-ECHO -------------------------------
-ECHO.
-ECHO         Now exiting
-sleep 2
-GOTO EOF
-
 :FINISHED
 ECHO.
 ECHO -------------------------------
