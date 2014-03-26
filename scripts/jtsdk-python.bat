@@ -10,6 +10,7 @@ IF DEFINED GUI CALL GOTO DCLICK
 
 REM -- PATH VARS
 SET BASED=%~dp0
+IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SRCD=%BASED%\src
 SET TOOLS=%BASED%\tools
 SET MINGW=%BASED%\mingw32\bin
@@ -22,7 +23,7 @@ REM -- VARS USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET python=%BASED%\Python33\python.exe
 SET f2py=%BASED%\Python33\Scripts\f2py.py
-mkdir %BASED%\src %BASED%\wspr %BASED%\wsjt
+IF NOT EXIST %BASED%\src mkdir %BASED%\src
 GOTO SELECT
 
 REM -- FROM jtsdk-pyenv.bat FIELD $1 = %1
@@ -48,6 +49,7 @@ ECHO.
 
 REM -- IF SRCD EXISTS, CHECK FOR PREVIOUS CO
 IF NOT EXIST %APP_SRC%\.svn\NUL (
+mkdir %BASED%\src
 GOTO COMSG
 ) ELSE (GOTO ASKSVN)
 
@@ -84,6 +86,7 @@ REM -- START WSJT MAIN BUILD
 ECHO.
 ECHO STARTING BUILD FOR: ^( %APP_NAME% ^)
 ECHO.
+IF NOT EXIST %BASED%\%APP_NAME% mkdir %BASED%\%APP_NAME%
 IF /I [%APP_NAME%]==[wsjt] (GOTO MAKEWSJT)
 IF /I [%APP_NAME%]==[wspr] (GOTO MAKEWSPR)
 
@@ -296,7 +299,6 @@ ECHO TO ....... %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
 REM -- GO BACK TO \JTSDK\
 CD /D %BASED%
 ECHO.
-pause
 GOTO EOF
 
 REM -- WARN ON DOUBLE CLICK
@@ -327,34 +329,36 @@ ECHO In order to build ^( %APP_NAME% ^) you
 ECHO must first perform a checkout from 
 ECHO SourceForge, then type: build %APP_NAME%
 ECHO.
-ECHO To Checkout ^( %APP_NAME% ^):
-ECHO Type: ^cd /d src
-ECHO.
+ECHO ANONYMOUS CHECKOUT ^( %APP_NAME% ^):
+ECHO  ^cd src
 IF /I [%APP_NAME%]==[wsjt] (
-ECHO Anonymous, Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
-ECHO Developer, Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/trunk
+ECHO  svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
+ECHO  ^cd ..
+ECHO  build %APP_NAME%
 ECHO.
-ECHO NOTE: For Dev's change ^( %USERNAME% ^) to your Sourforge User Name
+ECHO DEV CHECKOUT:
+ECHO  ^cd src
+ECHO  svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/trunk
+ECHO  ^cd ..
+ECHO  build %APP_NAME%
 ECHO.
-ECHO.
-GOTO COMSG1
+ECHO DEV NOTE: Change ^( %USERNAME% ^) to your Sourforge User Name
+GOTO EOF
 )
 IF /I [%APP_NAME%]==[wspr] (
-ECHO Anonymous, Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-ECHO Developer, Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+ECHO  svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+ECHO  ^cd ..
+ECHO  build %APP_NAME%
 ECHO.
-ECHO NOTE: For Dev's change ^( %USERNAME% ^) to your Sourforge User Name.
+ECHO DEV CHECKOUT:
+ECHO  ^cd src
+ECHO  svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+ECHO  ^cd ..
+ECHO  build %APP_NAME%
 ECHO.
-ECHO.
-GOTO COMSG1
-)
-
-:COMSG1
-ECHO After checkout:
-ECHO Type: ^cd /d ..
-ECHO Then: build %APP_NAME%
-ECHO.
+ECHO DEV NOTE: Change ^( %USERNAME% ^) to your Sourforge User Name.
 GOTO EOF
+)
 
 :EOF
 COLOR 0A
