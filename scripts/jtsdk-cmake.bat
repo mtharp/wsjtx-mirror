@@ -96,19 +96,22 @@ cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 
 REM -- target \JTSDK\%APP_NAME%\install\{Release, Debug}\bin
 mingw32-make -j%JJ% install
-GOTO CPFILES
+GOTO CHKCOPY
 
-REM -- POST BUILD COPY - BASED APP TYPE
-REM - NOTE: This is only needed for local folder builds, not
-REM         full CMake and deployment builds.
+REM -- FILE COPY NO LOGER REQUIRED FOR WSJT-X
+REM -- TO-DO: Fix WSPR-X and MAP65 CMakelists.txt
+REM           files to pull the required files that
+REM           the WSJT-X CMakelists.txt files does.
+:CHKCOPY
+IF /I [%1]==[wsjtx] (GOTO FINISHED) ELSE (GOTO CPFILES)
+
 :CPFILES
-REM SET CPTXT=*.txt *.dat *.conf *.ini
-REM SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
-REM %RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake*
-REM cp -r %SUPPORT%\%APP_NAME%\* %INSTALLD%\%OPTION%\bin
+SET CPTXT=*.txt *.dat *.conf *.ini
+SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
+%RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake*
+cp -r %SUPPORT%\%APP_NAME%\* %INSTALLD%\%OPTION%\bin
 cp -r %SUPPORT%\runtime\* %INSTALLD%\%OPTION%\bin
-
-REM -- MAKE NEEDED DIRECTORY
+REM -- MAKE DIRECTORY IF NEEDED
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
 mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
 GOTO FINISHED
