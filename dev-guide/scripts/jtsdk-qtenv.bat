@@ -11,7 +11,7 @@ SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin
 SET CMAKED=%BASED%\cmake\bin
-SET GCCD=%BASED%\mingw48_32\bin
+SET GCCD=%BASED%\qt5\Tools\mingw48_32\bin
 SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
 SET SRCD=%BASED%\src
 SET TOOLS=%BASED%\tools
