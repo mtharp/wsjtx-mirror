@@ -11,25 +11,20 @@ CONFIG   += thread
 TARGET = wsprx
 VERSION = 0.8
 TEMPLATE = app
-
-win32 {
-DEFINES = WIN32
 DESTDIR = ../wsprx_install
-F90 = g95
-g95.output = ${QMAKE_FILE_BASE}.o
-g95.commands = $$F90 -c -O2 -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
-g95.input = F90_SOURCES
-QMAKE_EXTRA_COMPILERS += g95
-}
 
-unix {
-DEFINES = UNIX
-DESTDIR = ../wsprx_install
 F90 = gfortran
 gfortran.output = ${QMAKE_FILE_BASE}.o
 gfortran.commands = $$F90 -c -O2 -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
 gfortran.input = F90_SOURCES
 QMAKE_EXTRA_COMPILERS += gfortran
+
+win32 {
+DEFINES = WIN32
+}
+
+unix {
+DEFINES = UNIX
 }
 
 SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
@@ -59,8 +54,8 @@ unix {
 win32 {
 LIBS += ../wsprx/lib/libwspr.a
 LIBS += ../wsprx/libfftw3f_win.a
-LIBS += ../QtSupport/palir-02.dll
+LIBS += ../wsprx/palir-02.dll
 LIBS += libwsock32
-LIBS += C:/MinGW/lib/libf95.a
+LIBS += -lgfortran
 #LIBS += -lusb
 }

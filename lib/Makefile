@@ -2,8 +2,8 @@
 # Windows re-direct:
 #   C> make > junk1 2>&1
 
-CC = gcc
-FC = g95
+CC  = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/gcc
+FC = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/gfortran
 
 FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss 
 CFLAGS = -I.
