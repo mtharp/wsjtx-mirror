@@ -46,31 +46,22 @@ Edit files as needed
 
 // Download Links
 :cty_dat: http://www.country-files.com/cty/[here].
-:cmake: http://www.cmake.org/cmake/resources/software.html[Download]
-:fftw3: http://www.fftw.org/install/windows.html[Download]
-:g95: http://www.fortran.com/the-fortran-company-homepage/whats-new/g95-windows-download/[Download]
-:hamlib: http://sourceforge.net/apps/mediawiki/hamlib/index.php?title=Download[Download]
+:jtsdk_doc: http://physics.princeton.edu/pulsar/K1JT/JTSDK-DOC.exe[Download]
+:jtsdk_py: http://physics.princeton.edu/pulsar/K1JT/JTSDK-PY.exe[Download]
+:jtsdk_qt: http://physics.princeton.edu/pulsar/K1JT/JTSDK-QT.exe[Download]
+
 :kvasd: http://physics.princeton.edu/pulsar/K1JT/kvasd[kvasd]
-:mstools: http://www.microsoft.com/en-us/download/details.aspx?id=17657[Download]
 :nh6z: http://www.nh6z.net/Amatuer_Radio_Station_NH6Z/Other_Peoples_Software.html[here]
 :osx_108: http://physics.princeton.edu/pulsar/K1JT/wsjtx_01feb14.tar.gz[ OS X 10.6, 10.7, and 10.8 ]
 :osx_109: http://physics.princeton.edu/pulsar/K1JT/wsjtx_10.9_01feb14.tar.gz[ OS X 10.9 ]
-:qt5_framework: http://qt-project.org/downloads[Download]
 :svn: http://subversion.apache.org/packages.html#windows[Subversion]
-
-:py_numpy180: https://sourceforge.net/projects/numpy/files/NumPy/1.8.0/[Download]
-:py_python27: http://www.python.org/downloads/[Download]
-:py_setup: http://www.lfd.uci.edu/~gohlke/pythonlibs/#setuptools[Download]
-:py_pip: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pip[Download]
-:py_pywin32: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pywin32[Download]
-
 :wsjt_svn: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/[here]
 
 // MAIL-TO links
 :alex_efros: mailto:powerman@powerman.name[Alex Efros]
 :devmail: mailto:wsjt-devel@lists.sourceforge.net[wsjt-devel]
 :dev_mail_list: http://sourceforge.net/mailarchive/forum.php?forum_name=wsjt-devel[WSJT developers email list]
-:dev_mail_svn: https://lists.berlios.de/pipermail/wsjt-svn/[WSJT SVN Archives]
+:dev_mail_svn: https://sourceforge.net/auth/subscriptions/[WSJT SVN Archives]
 :greg_beam: mailto:ki7mt@yahoo.com[KI7MT]
 :joe_taylor: mailto:joe@princeton.edu[K1JT]
 :stuart_rackman: mailto:srackham@gmail.com[Stuart Rackham]

@@ -1,77 +1,74 @@
 [[BASE_ENV]]
-Before you can start developing _WSJT_ applications, you must first set up your
-environment. The _{page}_ environment will use +*WSJT-ENV*+ as the containment
-area for all activity. Reason(s) for this containment are:
+Before you can start developing _WSJT_ applications, you must first 
+set up your environment. The _{page}_ environment will use the
+respective +*JTSDK*+ for Windows and +*WSJT-ENV*+ FOr Linux as the
+containment area for all activity. Reason(s) for this containment are:
 
 * Establish a fixed structure to work from
-* Isolate the _{page}_ examples from host system installations
+* Use the same tools across all applications
+* Isolate the build tools from system installations
 * Produce repeatable results from application builds
 * Create an experimental area to test installation configurations
-* Minimize the installation footprint {amp} complexity v.s. Virtual Environments
-* Provide a functional environment for non-developer application testing
+* Minimize the installation footprint and complexity v.s. Virtual Environments
+* Provide a functional environment for non-developers to build and test
 
 === Language {amp} Terms
 
-The follwoing language is used throughout the {page}
+The following language is used throughout the {page}
 
 [horizontal]
-+*WSJT Env Terminal*+:: Windows CMD Terminal specifically for WSJT work 
-+*Windows CMD Terminal+*:: Standard Windows Command Terminal
-+*X-Term+*:: X-Terminal for Linux, BSD and OS X
-+*Setup Script*+:: Batch or Shell script used to set up WSJT environment
++*JTSDK*+:: Software Development Kit
++*JTSDK Env*+:: Isolated Build Environment
++*CMD Terminal+*:: Standard Windows Command Terminal
 +*Build Script*+:: Batch or Shell Script used to build applications
 +*Tool Chain File*+:: CMake configuration file used by build scripts
++*X-Term+*:: X-Terminal for Linux, BSD and OS X
 
 [[PATHCFG]]
 === Path Configuration 
 
-All _{page}_ examples use the same +*(path)*+ configuration throughout the guide:
+The _{page}_  will use the following configuration throughout:
 
-* +*LINUX*+, all scripts and build locations will be in:
-	- /home/$USER/wsjt-env <= [green]*#recommended location#*
-	- /home/$USER/Projects/wsjt-env - (alternative example)
+* +*WINDOWS*+
+- All scripts, builds and package installations will be in:
+- C:\JTSDK-DOC
+- C:\JTSDK-PY
+- C:\JTSDK-QT
 //	
-* +*WINDOWS*+, all scripts, build and package installations will be in:
-	- C:\wsjt-env <= [green]*#recommended location#*
-	- C:\Projects\wsjt-env - (alternative example)
+* +*LINUX*+
+- - All scripts, builds and package installations will be in:
+- /home/$USER/wsjt-env
 
-IMPORTANT: The {page} will use the <<PATHCFG,recommended>> install locations
-for both *Windows and Linux.*	
+IMPORTANT: If you choose to install the JTSDKs in a different location
+from the recommendation, you will need to reconfigure, basically rebuild,
+the SDK from scratch in order for the builds to be successful.
 
 [[WINBASESETUP]]
 === Windows Base Setup
-The {page} will be using +*SlikSVN 32bit*+ as the example. If you already have
-{svn} installed, ensure that it is in your %PATH% and reachable from a Windows
-CMD Terminal, otherwise continue:
 
-* Open Windows CMD Terminal, then:
-----------
-# CHANGE DIRVE TO
-c:
+Setup and installation is straight forward. The .EXE files are self
+extracting 7z compressed files. Download the following:
 
-# MAKE DIRECTORY - (copy & paste)
-mkdir wsjt-env wsjt-env\subversion wsjt-env\downloads
+We will use +*JTSDK-DOC*+ as the example, but all three SDKs use the
+exact same process.
+.Download
+* +*JTSDK-DOC*+ .. {jtsdk_doc}
+* +*JTSDK-PY*+ ... {jtsdk_py}
+* +*JTSDK-QT*+ ... {jtsdk_qt}
 
-# CLOSE Windows CMD Terminal and CONTINUE
-----------
+.Install SDK
+* Double Click or Right Click and Open the download
+* Change path to: C:\
 
-* Download {svn} to +*C:\wsjt-env\downloads*+
-* Run the Installer
-* End User Agreement: Agree to Terms
-* Change Install Path to: +*C:\wsjt-env\subversion*+
-* Choose Setup Type: Typical
-* Finish Install
-* Open Windows CMD Terminal, then:
+image::images/7z-extract.png[]
 
-----------
-# CHECK SUBVERSION
-svn --version
+* Browse to C:\JTSDK-DOC
+* Open the batch called +*jtsdk-docenv.bat*+
+* Follow the instructions fo checkout from SVN.
 
-# IF SUCESSFUL
-svn, version 1.8.5-SlikSvn-1/8/5-WIN32 .. .. ..
-
-# CLOSE CMD and PROCEED TO APPLICATION BUILD
-----------
+.Removal / Uninstall
+* Delete C:\JTSDK-DOC 
+* Nothing is installed to the system or registry
 
 [[LINBASESETUP]]
 === Linux Base Setup
@@ -83,14 +80,16 @@ otherwise continue with setup:
 
 ----------
 # DEBIAN, UBUNTU, MINT and FRIENDS
-# Note: Adjust install command to your particular pkg manager
+
 sudo apt-get install subversion
 
 # CHECK SVN IS FUNCTIONAL
+
 svn --version
 
 # SUCESSFUL RETURN - Note: Versions may very slightly
+
 svn, 1.7.14
 
-# EXIT X-TERM and PROCEED TO APPLICATION BUILD
+# EXIT X-TERM
 ----------
