@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Title           : build-doc.sh
+# Title           : data-uri.sh
 # Description     : WSJT Documentation DATA-URI Script for *Nix
 # Author          : KI7MT
 # Email           : ki7mt@yahoo.com
@@ -317,8 +317,8 @@ trap clean_exit SIGINT SIGQUIT SIGTSTP
 
 # *********************** BUILD LOGIC ********************************
 # Logic: 
-# ./build-doc.sh $1
-# ./build-doc.sh [ app-name ]
+# ./data-uri.sh $1
+# ./data-uri.sh [ app-name ]
 # $1 Options: map65 simjt wsjt wsjtx wspr wsprx quick-ref dev-guide
 #
 # ********************************************************************
@@ -343,9 +343,9 @@ elif [[ $1 = "map65" ]]
 		pre_file_check
 		clear
 		main_wording
-    copy_image_folders
+		copy_image_folders
 		build_doc
-    remove_image_folders
+		remove_image_folders
 		post_file_check
 #
 # WSJT build
@@ -358,9 +358,9 @@ elif [[ $1 = "wsjt" ]]
 		pre_file_check
 		clear
 		main_wording
-    copy_image_folders
+		copy_image_folders
 		build_doc
-    remove_image_folders
+		remove_image_folders
 		post_file_check
 
 #
@@ -374,9 +374,9 @@ elif [[ $1 = "wsjtx" ]]
 		pre_file_check
 		clear
 		main_wording
-    copy_image_folders
+		copy_image_folders
 		build_doc
-    remove_image_folders
+		remove_image_folders
 		post_file_check
 #
 # WSPR build
@@ -389,9 +389,9 @@ elif [[ $1 = "wspr" ]]
 		pre_file_check
 		clear
 		main_wording
-    copy_image_folders
+		copy_image_folders
 		build_doc
-    remove_image_folders
+		remove_image_folders
 		post_file_check
 
 #
@@ -405,9 +405,9 @@ elif [[ $1 = "wsprx" ]]
 		pre_file_check
 		clear
 		main_wording
-    copy_image_folders
+		copy_image_folders
 		build_doc
-    remove_image_folders
+		remove_image_folders
 		post_file_check
 
 #
