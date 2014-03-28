@@ -21,20 +21,19 @@ use the Qt framework, and they share most build procedures.  Most
 number-crunching in all of the _WSJT_ programs is done in Fortran.
 
 Sowftware development kits are availble for Windows, and a build script 
-collections for Linux. The kits are described in their respective section.
-The following is a brief overview for each kit:
+collections for Linux. The kits are described in each of their respective
+sections. The following is a brief overview for each kit:
 
-*JTSDK-DOC*
-* Provides a self-contained collection of applicaitnos and scripts
-to build all _WSJT_ Documentation.
+.JTSDK-DOC
+* Provides applications and scripts to build all _WSJT_ documentation.
 
-*JTSDK-PY*
-* Provides a self-contained collection of applicaitnos and scripts
-to build +*Python*+ based _WSJT_ and _WSPR_.
+.JTSDK-PY
+* Provides applications and scripts to build *Python* based _WSJT_ and _WSPR_.
 
-*JTSDK-QT*
-* Provides a self-contained collection of applicaitnos and scripts
-to build +_*QT5*+ based _WSJT-X_, _WSPR-X_ and  _MAP65_.
+.JTSDK-QT
+* Provides applications and scripts to build *QT5* based _WSJT-X_, _WSPR-X_ and  _MAP65_.
+
+
 
 
 ////
