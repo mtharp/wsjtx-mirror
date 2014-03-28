@@ -63,7 +63,7 @@ GOTO GENERAL
 
 REM -- START BUILD OPTIONS
 REM -- SPECIAL WSJTX BUILD NAME
-REM --Change to: wsjtx-main.html after next WSJT-X APP Release
+REM -- Remove this section with WSJT-X v1.4.0 release
 :WSJTX
 CLS
 CD %BASED%\%DOC_NAME%
@@ -85,11 +85,10 @@ ECHO.
 GOTO EOF
 
 REM -- BUILD ALL DOCS
-
 :BUILD_ALL
 CLS
 REM -- SPECIAL WSJTX BUILD NAME
-REM --Change to: wsjtx-main.html after next WSJT-X APP Release
+REM -- Remove this section with WSJT-X v1.4.0 release
 CD %BASED%\wsjtx
 ECHO Building Special Version for ^( wsjtx ^)
 %TOC% -o wsjtx-main-toc2.html source\wsjtx-main.adoc
@@ -108,15 +107,6 @@ GOTO eof
 
 :DOCHELP
 @ECHO OFF
-REM -- DOSKEY BUILD COMMAND FROM ENV
-DOSKEY wsjt=%BASED%\build-test.bat wsjt
-DOSKEY wsjtx=%BASED%\build-test.bat wsjtx
-DOSKEY wspr=%BASED%\build-test.bat wspr
-DOSKEY wsprx=%BASED%\build-test.bat wsprx
-DOSKEY map65=%BASED%\build-test.bat map65
-DOSKEY qref=%BASED%\build-test.bat qref
-DOSKEY devg=%BASED%\build-test.bat devg
-DOSKEY doc-help=%BASED%\build-test.bat help
 CLS
 ECHO.
 ECHO      _ _____ ____  ____  _  __     ____   ___   ____ 
