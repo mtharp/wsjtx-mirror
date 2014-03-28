@@ -20,10 +20,22 @@ interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and
 use the Qt framework, and they share most build procedures.  Most
 number-crunching in all of the _WSJT_ programs is done in Fortran.
 
-The {page} is a work in progress.  Instructions for the Python-based programs
-are still to come, but we do currently provide instructions for compiling
-_WSJT-X_ in Linux and we outline the prerequisites for compiling it in Windows.
-Similar procedures to these can be used for building _MAP65_ and _WSPR-X_.
+Sowftware development kits are availble for Windows, and a build script 
+collections for Linux. The kits are described in their respective section.
+The following is a brief overview for each kit:
+
+*JTSDK-DOC*
+* Provides a self-contained collection of applicaitnos and scripts
+to build all _WSJT_ Documentation.
+
+*JTSDK-PY*
+* Provides a self-contained collection of applicaitnos and scripts
+to build +*Python*+ based _WSJT_ and _WSPR_.
+
+*JTSDK-QT*
+* Provides a self-contained collection of applicaitnos and scripts
+to build +_*QT5*+ based _WSJT-X_, _WSPR-X_ and  _MAP65_.
+
 
 ////
 Communications should be moved to a global file to prevent rework / repeat in the
@@ -62,6 +74,15 @@ include::pkgmatrix.adoc[]
 
 == Build Matrix
 include::buildmatrix.adoc[]
+
+== JTSDK-DOC
+include::jtsdk-doc.adoc[]
+
+== JTSDK-PY
+include::jtsdk-py.adoc[]
+
+== JTSDK-QT
+include::jtsdk-qt.adoc[]
 
 ////
 [[DOCSETUP]]

@@ -64,17 +64,12 @@ Edit files as needed
 :py_pip: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pip[Download]
 :py_pywin32: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pywin32[Download]
 
-
-
-
-
-
 :wsjt_svn: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/[here]
 
 // MAIL-TO links
 :alex_efros: mailto:powerman@powerman.name[Alex Efros]
-:devmail: mailto:wsjt-devel@lists.berlios.de[wsjt-devel]
-:dev_mail_list: https://lists.berlios.de/mailman/listinfo/wsjt-devel[WSJT developers email list]
+:devmail: mailto:wsjt-devel@lists.sourceforge.net[wsjt-devel]
+:dev_mail_list: http://sourceforge.net/mailarchive/forum.php?forum_name=wsjt-devel[WSJT developers email list]
 :dev_mail_svn: https://lists.berlios.de/pipermail/wsjt-svn/[WSJT SVN Archives]
 :greg_beam: mailto:ki7mt@yahoo.com[KI7MT]
 :joe_taylor: mailto:joe@princeton.edu[K1JT]
