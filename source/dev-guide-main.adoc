@@ -20,7 +20,7 @@ interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and
 use the Qt framework, and they share most build procedures.  Most
 number-crunching in all of the _WSJT_ programs is done in Fortran.
 
-Sowftware development kits are availble for Windows, and a build script 
+Software development kits are available for Windows, and a build script 
 collections for Linux. The kits are described in each of their respective
 sections. The following is a brief overview for each kit:
 
@@ -28,13 +28,16 @@ sections. The following is a brief overview for each kit:
 * Provides applications and scripts to build all _WSJT_ documentation.
 
 .JTSDK-PY
-* Provides applications and scripts to build *Python* based _WSJT_ and _WSPR_.
+* Provides applications and scripts to build *Python* based _WSJT_
+and _WSPR_.
 
 .JTSDK-QT
-* Provides applications and scripts to build *QT5* based _WSJT-X_, _WSPR-X_ and  _MAP65_.
+* Provides applications and scripts to build *QT5* based _WSJT-X_,
+_WSPR-X_ and  _MAP65_.
 
-
-
+TIP: Each kit is self contained, meaning, you should not have to install
+any software to the host system in order to build applications or
+documentation.
 
 ////
 Communications should be moved to a global file to prevent rework / repeat in the
@@ -56,13 +59,13 @@ for the WSJT Group.
 * Contact Project Manager, email: {joe_taylor}
 * Development Activity, Join: {dev_mail_list}
 * Repository Updates, Join: {dev_mail_svn}
-* Development Guide Feedback, email {greg_beam}
+* Development Guide Feedback, email: {greg_beam}
 
 .Community Related
 * Discussion Board: {wsjt_yahoo_group}
 
 [[BASEENV]]
-== Base Environment
+== Environment Setup
 include::environment.adoc[]
 
 == Source Code

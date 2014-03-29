@@ -1,7 +1,7 @@
 [[BASE_ENV]]
 Before you can start developing _WSJT_ applications, you must first 
-set up your environment. The _{page}_ environment will use the
-respective +*JTSDK*+ for Windows and +*WSJT-ENV*+ FOr Linux as the
+set up your environment. The {page} environment will use the
+respective *JTSDK* for Windows and *WSJT-ENV* for Linux as the
 containment area for all activity. Reason(s) for this containment are:
 
 * Establish a fixed structure to work from
@@ -27,7 +27,7 @@ The following language is used throughout the {page}
 [[PATHCFG]]
 === Path Configuration 
 
-The _{page}_  will use the following configuration throughout:
+The {page} will use the following configuration throughout:
 
 * +*WINDOWS*+
 - All scripts, builds and package installations will be in:
@@ -36,7 +36,7 @@ The _{page}_  will use the following configuration throughout:
 - C:\JTSDK-QT
 //	
 * +*LINUX*+
-- - All scripts, builds and package installations will be in:
+- All scripts, builds and package installations will be in:
 - /home/$USER/wsjt-env
 
 IMPORTANT: If you choose to install the JTSDKs in a different location
@@ -44,52 +44,48 @@ from the recommendation, you will need to reconfigure, basically rebuild,
 the SDK from scratch in order for the builds to be successful.
 
 [[WINBASESETUP]]
-=== Windows Base Setup
+== Windows
 
 Setup and installation is straight forward. The .EXE files are self
-extracting 7z compressed files. Download the following:
+extracting 7z compressed files. We will use +*JTSDK-DOC*+ as the
+example, but all three SDKs use the exact same process.
 
-We will use +*JTSDK-DOC*+ as the example, but all three SDKs use the
-exact same process.
-.Download
-* +*JTSDK-DOC*+ .. {jtsdk_doc}
-* +*JTSDK-PY*+ ... {jtsdk_py}
-* +*JTSDK-QT*+ ... {jtsdk_qt}
+=== SDK Download
 
-.Install SDK
+Download one or all of the following:
+
+[horizontal]
++*JTSDK-DOC*+:: {jtsdk_doc}
++*JTSDK-PY*+:: {jtsdk_py}
++*JTSDK-QT*+:: {jtsdk_qt}
+
+=== Installation
 * Double Click or Right Click and Open the download
 * Change path to: C:\
+* Click the Extract Button
 
 image::images/7z-extract.png[]
 
-* Browse to C:\JTSDK-DOC
-* Open the batch called +*jtsdk-docenv.bat*+
-* Follow the instructions fo checkout from SVN.
+* Browse to C:\JTSDK-*
+* Open the env batch file
+** For JTSDK-DOC, +*jtsdk-docenv.bat*+
+** For JTSDK-PY, +*jtsdk-pyenv.bat*+
+** For JTSDK-QT, +*jtsdk-qtenv.bat*+
+* Follow the instructions for SVN checkout
 
-.Removal / Uninstall
-* Delete C:\JTSDK-DOC 
+=== Uninstall
+* Delete C:\JTSDK-DOC -PY or -QT
 * Nothing is installed to the system or registry
 
 [[LINBASESETUP]]
-=== Linux Base Setup
-Most Linux distributions have Subversion in their repositories. If SVN is
-already installed, ensure you can use it via X-Term with: svn --version,
-otherwise continue with setup:
+== Linux
 
-* Open X-Term Window
+Under Construction
 
-----------
-# DEBIAN, UBUNTU, MINT and FRIENDS
+=== SDK Installation
 
-sudo apt-get install subversion
+Under Construction
 
-# CHECK SVN IS FUNCTIONAL
+=== Uninstall
 
-svn --version
-
-# SUCESSFUL RETURN - Note: Versions may very slightly
-
-svn, 1.7.14
-
-# EXIT X-TERM
-----------
+Under Construction
