@@ -129,7 +129,7 @@ ECHO.
 ECHO GENERATING: ^( %APP_NAME%.bat ^)
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
-DEL /Q %APP_NAME%.bat
+IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
 >%APP_NAME%.bat (
 ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK Project
