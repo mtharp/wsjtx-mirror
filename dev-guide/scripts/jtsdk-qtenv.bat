@@ -22,6 +22,7 @@ SET PATH=%BASED%;%SVND%;%CMAKED%;%HAMLIBD%;%FFTWD%;%GCCD%;%QT5D%;%SRCD%;%TOOLS%;
 CD /D %BASED%
 
 REM -- DOSKEY BUILD COMMAND
+DOSKEY checkout="%BASED%\jtsdk-cmakeco.bat" $1
 DOSKEY build="%BASED%\jtsdk-cmake.bat" $1 $2
 DOSKEY env-info=CALL %SCRIPTS%\jtsdk-qtinfo.bat
 

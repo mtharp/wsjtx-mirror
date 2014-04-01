@@ -8,11 +8,11 @@ SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 
 REM -- SET BASE PATH to "." & TRIM TRAILING "\" IF PRESENT
-SET TARGET=%~dp0
-IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
-SET BASED=%TARGET%
+REM SET TARGET=%~dp0
+REM IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
+REM SET BASED=%TARGET%
+REM SET PATH=%BASED%;%ICOND%
 SET ICOND=%BASED%\icons
-SET PATH=%BASED%;%ICOND%
 
 REM -- PROCESS VARS
 SET ADOC=%BASED%\asciidoc\asciidoc.exe
@@ -103,7 +103,7 @@ CD %BASED%\%%A
 ECHO .. Location: %BASED%\%%A\%%A-main.html
 )
 PAUSE
-GOTO eof
+GOTO EOF
 
 :DOCHELP
 @ECHO OFF
@@ -115,22 +115,27 @@ ECHO  _  ^| ^| ^| ^| \___ \^| ^| ^| ^| ' /_____^| ^| ^| ^| ^| ^| ^| ^|
 ECHO ^| ^|_^| ^| ^| ^|  ___) ^| ^|_^| ^| . \_____^| ^|_^| ^| ^|_^| ^| ^|___ 
 ECHO  \___/  ^|_^| ^|____/^|____/^|_^|\_\    ^|____/ \___/ \____^|
 ECHO.
-ECHO BUILD DOCUMENTATION
-ECHO ------------------------------------------------------
-ECHO  Build WSJT ....... Type: build wsjt
-ECHO  Build WSJT-X ..... Type: build wsjtx
-ECHO  Build WSPR ....... Type: build wspr
-ECHO  Build WSPR-X ..... Type: build wsprx
-ECHO  Build MAP65 ...... Type: build map65
-ECHO  Build Dev Guide .. Type: build devg
-ECHO  Build Quick Ref .. Type: build qref
 ECHO.
-ECHO  For Help ......... Type: doc-help
+ECHO BUILD WSJT DOCUMENTATION
+ECHO ------------------------------------------------------
+ECHO USAGE: build [document name]
+ECHO. 
+ECHO  build wsjt
+ECHO  build wsjtx
+ECHO  build wspr
+ECHO  build wsprx
+ECHO  build map65
+ECHO  build devg
+ECHO  build qref
+ECHO.
+ECHO ------------------------------------------------------
+ECHO.
+ECHO TO OPEN, Type:   [document name]
+ECHO HELP INFO, Type: doc-help
 ECHO.
 EXIT /B 0
 
 :EOF
-pause
 call:DOCHELP
 ENDLOCAL
 EXIT /B 0

@@ -28,8 +28,11 @@ REM -- START MAIN SCRIPT
 REM -- USER INPUT FILED 1 = %1
 SET SUPPORTED=(map65 wsjtx wsprx)
 IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx
+SET TCHAIN=%BASED%\jtsdk-toolchain.cmake
 ) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx
+SET TCHAIN=%BASED%\jtsdk-toolchain1.cmake
 ) ELSE IF /I [%1]==[map65] (SET APP_NAME=map65
+SET TCHAIN=%BASED%\jtsdk-toolchain1.cmake
 ) ELSE (GOTO UNSUPPORTED)
 
 REM - USER INPUT FIELD 2 == %2
@@ -38,7 +41,6 @@ IF /I [%2]==[-r] (SET OPTION=Release) ELSE (SET OPTION=Debug)
 
 REM - MISC VARS
 SET JJ=%NUMBER_OF_PROCESSORS%
-SET TCHAIN=%BASED%\jtsdk-toolchain.cmake
 SET APP_DIR=%BASED%\%APP_NAME%
 SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
@@ -102,9 +104,6 @@ mingw32-make -j%JJ% install
 GOTO CHKCOPY
 
 REM -- FILE COPY NO LOGER REQUIRED FOR WSJT-X
-REM -- TO-DO: Fix WSPR-X and MAP65 CMakelists.txt
-REM           files to pull the required files that
-REM           the WSJT-X CMakelists.txt files does.
 :CHKCOPY
 IF /I [%1]==[wsjtx] (GOTO GENBAT) ELSE (GOTO CPFILES)
 
@@ -114,6 +113,7 @@ SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
 %RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake*
 cp -r %SUPPORT%\%APP_NAME%\* %INSTALLD%\%OPTION%\bin
 cp -r %SUPPORT%\runtime\* %INSTALLD%\%OPTION%\bin
+
 REM -- MAKE DIRECTORY IF NEEDED
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
 mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
@@ -210,7 +210,7 @@ GOTO EOF
 :COMSG
 CLS
 ECHO ----------------------------------------
-ECHO %SRCD%\%APP_NAME% Was Not Found
+ECHO %APP_SRC% Was Not Found
 ECHO ----------------------------------------
 ECHO.
 ECHO In order to build ^( %APP_NAME% ^) you
@@ -218,10 +218,9 @@ ECHO must first perform a checkout from
 ECHO SourceForge, then type: build %APP_NAME%
 ECHO.
 ECHO ANONYMOUS CHECKOUT ^( %APP_NAME% ^):
-ECHO  ^cd src
-ECHO  svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
-ECHO  ^cd ..
-ECHO  build %APP_NAME%
+ECHO. 
+ECHO  Type: .....  checkout %APP_NAME%
+ECHO  Then Type:.. build %APP_NAME%
 ECHO.
 ECHO DEV CHECKOUT:
 ECHO  ^cd src
@@ -234,5 +233,4 @@ GOTO EOF
 
 :EOF
 CD /D %BASED%
-ENDLOCAL
 EXIT /B 0

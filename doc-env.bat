@@ -10,8 +10,9 @@ SET TARGET=%~dp0
 IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
 SET BASED=%TARGET%
 SET ASCID=%BASED%\asciidoc
-SET PATH=%BASED%;%PATH%
-Set PATH=%PATH%;c:\MinGW\msys\1.0\bin
+SET SVND=..\subversion\bin
+SET TOOLS=..\tools
+SET PATH=%BASED%;%SVND%;%TOOLS%;%WINDIR%\System32
 CD /D %BASED%
 
 REM -- DOSKEY BUILD COMMAND FROM ENV
@@ -33,6 +34,8 @@ DOSKEY map65=start explorer map65\map65-main.html
 DOSKEY devg=start explorer dev-guide\dev-guide-main.html
 DOSKEY qref=start explorer quick-ref\quick-ref-main.html
 
-call %BASED%\build.bat help
+REM -- UPDATE FROM PREVIOUS INSTALL
+DOSKEY update=CAll dev-guide\scripts\install-scripts.bat
 
+call %BASED%\build.bat help
 %WINDIR%\System32\cmd.exe /A /Q /K

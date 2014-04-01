@@ -13,7 +13,20 @@ SET SVND=%BASED%\subversion\bin
 SET TOOLS=%BASED%\tools
 SET PATH=%BASED%;%SVND%;%TOOLS%;%WINDIR%;%WINDIR%\System32
 CD /D %BASED%
+GOTO UPDATE
 
+:UPDATE
+IF /I [%1]==[update] (
+GOTO CHKSVN
+) ELSE (GOTO CONTINUE)
+
+:CHKSVN
+IF EXIST %BASED%\doc\dev-guide\scripts\install-scripts.bat (
+CALL %BASED%\doc\dev-guide\scripts\install-scripts.bat
+GOTO CONTNUE
+) ELSE (GOTO CONTINUE)
+
+:CONTINUE
 IF EXIST %BASED%\doc (
 call %BASED%\doc\doc-env.bat
 ) ELSE (
@@ -22,7 +35,7 @@ ECHO -----------------------------------
 ECHO     Doc Directory Not Found
 ECHO -----------------------------------
 ECHO.
-ECHO In order to use the build keys, you
+ECHO   In order to use JTSDK-DOC , you
 ECHO must firtst perform a checkout from
 ECHO SourceForge, then relaunch jtsdk-docenv.bat:
 ECHO.
