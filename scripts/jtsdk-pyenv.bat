@@ -17,8 +17,9 @@ SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\Tools\
 SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SVND%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 
 REM -- DOSKEY COMMANDS
-DOSKEY env-info=CALL %SCRIPTS%\jtsdk-pyinfo.bat
+DOSKEY checkout="%BASED%\jtsdk-pyco.bat" $1
 DOSKEY build="%BASED%\jtsdk-python.bat" $1
+DOSKEY env-info=CALL %SCRIPTS%\jtsdk-pyinfo.bat
 
 REM -- SVN MUST BE AVAILABLE AT STARTUP
 svn --version >nul 2>null || SET APP=SVN && GOTO ERROR1

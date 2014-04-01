@@ -305,13 +305,11 @@ ECHO must first perform a checkout from
 ECHO SourceForge, then type: build %APP_NAME%
 ECHO.
 ECHO ANONYMOUS CHECKOUT ^( %APP_NAME% ^):
-ECHO  ^cd src
+ECHO  Type: checkout %APP_NAME%
+ECHO  After Checkout, Type: build %APP_NAME%
 IF /I [%APP_NAME%]==[wsjt] (
-ECHO  svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
-ECHO  ^cd ..
-ECHO  build %APP_NAME%
 ECHO.
-ECHO DEV CHECKOUT:
+ECHO FOR DEV CHECKOUT:
 ECHO  ^cd src
 ECHO  svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/trunk
 ECHO  ^cd ..
@@ -321,11 +319,8 @@ ECHO DEV NOTE: Change ^( %USERNAME% ^) to your Sourforge User Name
 GOTO EOF
 )
 IF /I [%APP_NAME%]==[wspr] (
-ECHO  svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-ECHO  ^cd ..
-ECHO  build %APP_NAME%
 ECHO.
-ECHO DEV CHECKOUT:
+ECHO FOR DEV CHECKOUT:
 ECHO  ^cd src
 ECHO  svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
 ECHO  ^cd ..
