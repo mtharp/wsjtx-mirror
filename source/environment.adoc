@@ -1,39 +1,59 @@
 [[BASE_ENV]]
 Before you can start developing _WSJT_ applications, you must first 
-set up your environment. The {page} environment will use the
-respective *JTSDK* for Windows and *WSJT-ENV* for Linux as the
-containment area for all activity.
+set up your environment. The {page} will use the respective *JTSDK*
+for Windows and +*JTSDK-NIX*+ and *WSJT-ENV* for Linux as the
+containment area.
 
 .The containment area will provide:
 * A fixed structure to work from
-* Isolated build tools
+* System independent build tools
 * Produce repeatable results from application builds
-* Create an experimental area to test installations
+* Create an experimental area to test builds
+* Allow full testing without system installation
 * Minimize the footprint v.s. Virtual Environments
-* Provide a simply environment for non-developers to build and test
+* Provide build methods for non-developer testing
 
-Software development kits are provided for Windows and Linux. The kits
+Software development kits are provided for Windows and Linux. Each kit
 setup the environment described above. Details of each kit can be found
-at the end of the dev-guide. The kits are described as follows:
+at the end of the dev-guide.
+
+.NOTES
+* Each kit is self contained, you should not have to install
+any system level software.
+* All 5 main stream applications +*( WSJT, WSJT-X, WSPR, WSPR-X and MAP65 )+*
+can be build using the appropriate SDK.
+* If you already have the packages installed, the SDK will not interfere
+with your System Paths or use System Applications to perform builds.
 
 .JTSDK-DOC
-* Provides applications and scripts to build all _WSJT_ documentation.
+* +*JTSDK-DOC*+ contains: Subversion, GNU Tools and scripts to build
+all +*WSJT Documentation.*+.
+* For details, see <<JTSDKDOC,JTSDK-DOC>>.
+
+.JTSDK-DOC Main Menu
+image::images/jtsdk-doc-main.png[]
 
 .JTSDK-PY
-* Provides applications and scripts to build *Python* based _WSJT_
-and _WSPR_.
+* +*JTSDK-PY*+ contains Python3 ({plus} modules}, Subversion, GNU Tools
+and scripts required to build +*WSJT*+ and +*WSPR*+.
+* For details, see
+<<JTSDKDOC,JTSDK-PY>>.
+
+.JTSDK-PY Main Menu
+image::images/jtsdk-py-main.png[]
 
 .JTSDK-QT
-* Provides applications and scripts to build *QT5* based _WSJT-X_,
-_WSPR-X_ and  _MAP65_.
+* +*JTSDK-QT*+ contains QT5, CMake, Subversion, FFTW3, GNU Tools, 
+hamlib-1.2, Hamlib-3 and scripts to build +*WSJT-X*+, +*WSPR-X*+ and
++*MAP65*+.
+* For details, see <<JTSDKDOC,JTSDK-QT>>.
+
+.JTSDK-QT Main Menu
+image::images/jtsdk-qt-main.png[]
 
 .JTSDK-NIX
-* Provides QT5, Python3 ({plus} modules) and all required support
-dependencies.
-
-TIP: Each kit is self contained, meaning, you should not have to install
-any software on the host system in order to build applications or
-documentation.
+* Provides QT5, Python3 ({plus} modules), libraries and dependencies.
+* For details, see <<JTSDKNIX,JTSDK-NIX>>.
 
 [[PATHCFG]]
 === Path Configuration 
@@ -61,7 +81,7 @@ paths throughout:
 
 IMPORTANT: If you choose to install an SDK in a different location
 from the recommendation, you will need to reconfigure it, basically
-rebuild the SDK from scratch in order to maintain the proper relatave
+rebuild the SDK from scratch in order to maintain the proper relative
 paths.
 
 [[WINBASESETUP]]
@@ -98,32 +118,6 @@ image::images/7z-extract.png[]
 * Delete C:\JTSDK-DOC -PY or -QT
 * Nothing is installed to the system or registry
 
-=== JTSDK-DOC
-
-+*JTSDK-DOC*+ is a collection of applications and scripts used to build
-all +*WSJT*+ documentation. Detailed information is provided in
-<<JTSDKDOC,JTSDK-DOC>>.
-
-.JTSDK-DOC Main Menu
-image::images/jtsdk-doc-main.png[]
-
-=== JTSDK-PY
-
-+*JTSDK-PY*+ is a collection of applications and scripts used to build
-all +*WSJT*+ and +*WSPR*+ applicaitnos. Detailed information is
-provided in <<JTSDKDOC,JTSDK-PY>>.
-
-.JTSDY-PY Main Menu
-image::images/jtsdk-py-main.png[]
-
-=== JTSDK-QT
-
-+*JTSDK-QT*+ is a collection of applications and scripts used to build
-all +*WSJT-X*+, +*WSPR-X*+ and +*MAP65*+. Detailed information is
-provided in <<JTSDKDOC,JTSDK-QT>>.
-
-.JTSDK-QT Main Menu
-image::images/jtsdk-qt-main.png[]
 
 [[LINBASESETUP]]
 == Linux SDK
