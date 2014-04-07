@@ -1,43 +1,45 @@
+:page: The WSJT Developers Guide
+
 [[BASE_ENV]]
 Before you can start developing _WSJT_ applications, you must first 
-set up your environment. The {page} will use the respective *JTSDK*
-for Windows and +*JTSDK-NIX*+ and *WSJT-ENV* for Linux as the
-containment area.
+set up your environment. _{page}_ will use the respective *JTSDK*
+for both Windows and Linux as the containment area.
 
-.The containment area will provide:
+.The containment provides:
 * A fixed structure to work from
-* System independent build tools
-* Produce repeatable results from application builds
+* Provide system independent build tools
+* Produce repeatable results
 * Create an experimental area to test builds
 * Allow full testing without system installation
-* Minimize the footprint v.s. Virtual Environments
 * Provide build methods for non-developer testing
 
 Software development kits are provided for Windows and Linux. Each kit
-setup the environment described above. Details of each kit can be found
+provides the environment described above. Details of each kit can be found
 at the end of the dev-guide.
 
-.NOTES
+.JTSDK Notes
 * Each kit is self contained, you should not have to install
 any system level software.
 * All 5 main stream applications +*( WSJT, WSJT-X, WSPR, WSPR-X and MAP65 )+*
-can be build using the appropriate SDK.
-* If you already have the packages installed, the SDK will not interfere
-with your System Paths or use System Applications to perform builds.
+can be built using the appropriate SDK.
+* If you have one or more required packages already installed on the
+host system, the SDK will not interfere with your System Paths or use
+System Application to perform builds.
 
 .JTSDK-DOC
 * +*JTSDK-DOC*+ contains: Subversion, GNU Tools and scripts to build
-all +*WSJT Documentation.*+.
+all +*WSJT Documentation*+.
 * For details, see <<JTSDKDOC,JTSDK-DOC>>.
 
+[[DOCMENU]]
 .JTSDK-DOC Main Menu
 image::images/jtsdk-doc-main.png[]
 
+[[PYMENU]]
 .JTSDK-PY
 * +*JTSDK-PY*+ contains Python3 ({plus} modules}, Subversion, GNU Tools
 and scripts required to build +*WSJT*+ and +*WSPR*+.
-* For details, see
-<<JTSDKDOC,JTSDK-PY>>.
+* For details, see <<JTSDKDOC,JTSDK-PY>>.
 
 .JTSDK-PY Main Menu
 image::images/jtsdk-py-main.png[]
@@ -48,6 +50,7 @@ hamlib-1.2, Hamlib-3 and scripts to build +*WSJT-X*+, +*WSPR-X*+ and
 +*MAP65*+.
 * For details, see <<JTSDKDOC,JTSDK-QT>>.
 
+[[QTMENU]]
 .JTSDK-QT Main Menu
 image::images/jtsdk-qt-main.png[]
 
@@ -78,29 +81,28 @@ paths throughout:
 - Scripts, builds and package installations will be in:
 - /home/$USER/wsjt-env
 
-
-IMPORTANT: If you choose to install an SDK in a different location
-from the recommendation, you will need to reconfigure it, basically
-rebuild the SDK from scratch in order to maintain the proper relative
-paths.
-
-[[WINBASESETUP]]
+[[WININSTALL]]
 == Windows SDK
 
 Setup and installation is straight forward. The .EXE files are self
-extracting 7z compressed files. We will use +*JTSDK-DOC*+ as the
-example, but all three SDKs use the exact same process.
+extracting 7z compressed files. All three SDKs use the same process.
+
+WARNING: For Windows, the current update method for +*JTSDK-PY and 
+JTSDK-QT*+ is through +*JTSDK-DOC*+, and thus, is a mandatory install.
 
 === Download
-
-Download one or all of the following:
 
 [horizontal]
 +*JTSDK-DOC*+:: {jtsdk_doc}
 +*JTSDK-PY*+:: {jtsdk_py}
 +*JTSDK-QT*+:: {jtsdk_qt}
 
-=== Installation
+=== Install
+
+WARNING: If you choose to install an SDK in a different location
+from the recommendation, you will need to reconfigure it, basically,
+rebuild the SDK from scratch.
+
 * Double Click or Right Click and Open the download
 * Change path to: C:\
 * Click the Extract Button
@@ -114,12 +116,51 @@ image::images/7z-extract.png[]
 ** For JTSDK-QT, +*jtsdk-qtenv.bat*+
 * Follow the instructions for SVN checkout
 
+[[WINUPDATE]]
+=== Updates
+
+To update +*JTSDK-PY or JTSDK-QT*+, you must install +*JTSDK-DOC*+ and
+perform a checkout. Developer Checkout is *not* required.
+
+.Update or Checkout then Update
+* Open Windows CMD Terminal, and Type:
+-----
+C:\JTSDK-DOC\jtsdk-docenv.bat
+-----
+* To Update, just type:
+-----
+svn update
+
+then:
+
+update
+-----
+* If you need to checkout first:
+-----
+svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
+
+then:
+
+update
+-----
+* You can also browse too, and run +*install-scripts.bat*+ manually
+once you have performed an initial checkout.
+* To ensure you always have the latest scripts, always perform an 
+svn update  first, from C:\JTSDK-DOC\doc
+-----
+svn update
+-----
+* At this point, all three JTSDKs should be up to date, if installed.
+* A successful update should look like:
+
+.Master Script Update
+image::images/jtsdk-update.png[]
+
 === Uninstall
 * Delete C:\JTSDK-DOC -PY or -QT
 * Nothing is installed to the system or registry
 
-
-[[LINBASESETUP]]
+[[NIXINSTALL]]
 == Linux SDK
 
 Under Construction
@@ -128,7 +169,7 @@ Under Construction
 
 Under Construction
 
-=== Installation
+=== Install
 
 Under Construction
 

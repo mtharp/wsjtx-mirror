@@ -1,43 +1,50 @@
-:prog: The WSJT Developers Guide
-=== Windows Makefile
 
-This example will be using Windows, Makefile, MinGW Tool
-Chain and Python. Future releases will be in the form of
-an Software Development Kit (SDK) and provide a single
-download pre-configured for WSJT activity.
+=== Windows
 
-If you have not performed the <<BASE_ENV,Windows Base Setup>>,
-do so now or _WSJT_ build will fail.
+The preferred method of compiling _WSJT_ on Windows is using JTSDK-PY.
+If you have not *Installed and Updated* JTSDK-PY, you should do so before
+continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Updates>>
 
-[[MSINSTALL]]
-==== MSVC 2008 Express
+TIP: You can create a desktop shortcut to +*jtsdk-pyenv.bat*+ if
+desired. This can also be done for the final +*wsjt.exe*+.
 
-In order to prevent conflicts between MinGW, G95, Python27
-an numpy-1.8.0, we will be using Microsoft C/C{plus}{plus} compilers
-to add Numpy-1.8.0 to the base Python27 installation.
+.Compiling WSJT
+* Open Windows CMD terminal, at the prompt, type:
+-----
+C:\JTSDK-PY\jtsdk-pyenv.bat
+-----
+* You should be presented with <<PYMENU,Figure-1>>
+* At the Prompt, Type:
+-----
+build wsjt
+-----
+* If you have not checkout out _WSJT_ previously, you will be prompted
+to do so:
 
-TIP: If you have MSVC-2008 or MSVC-2010 already installed, 
-you can proceed to the <<PYSETUP,Python Instqallation>>.
+.WSJT Checkout Not Found
+image::images/jtsdk-wsjt-co.png[]
 
-Under Construction
+* Follow the prompts, to checkout Anonymous or Developer, the
+-----
+build wsjt
+-----
+* If this is a subsequent build, you will be asked to update from SVN.
+On a new checkout, select ( N for no dont update), if not new, it is 
+your choice.
 
+TIP: If the SVN update fails, for whatever reason, or there are errors
+during the build, simply re-run the build.
 
-[[MGWINSTALL]]
-==== MinGW Install
+* At build completion, you are presented with an option to
+run +*WSJT*+ now. Select ( Y to Run / N to Finish and Exit).
+* To manually run the newly built +*wsjtx.exe*, browse to:
+-----
+C:\JTSDK-PY\wsjt-rev_numnber
+-----
+* Double click on +*wsjt.exe*+.
+* The rev_numer will increase with each commit the developers make
+against +*wsjt+
 
-Under Construction
-
-
-[[PYSETUP]]
-==== Python Installation
-
-Download the following packages to: +*c:\wsjt-env\downloads*+
-
-[horizontal]
-+*Python 2.7.6*+:: {py_python27}
-+*Python Numpy 1.8.0*+:: {py_numpy180}
-+*Python Setup 2.2-win32*+:: {py_setup}
-+*Python PIP 1.5.4-win32*+:: {py_pip}
-+*Python PyWin 218.5-win32*+:: {py_pywin32}
+=== Linux
 
 Under Construction

@@ -65,8 +65,8 @@ svn co svn+ssh://USER@svn.code.sf.net/p/wsjt/wsjt/trunk
 
 Substitute your SourceForge username for +USER+.
 
-TIP: Due to the variations in user names, short cuts from within
-eash SDK are not provided.
+TIP: Due to the variations in user names, developer check-out shorts 
+not feasible, and must be manually entered.
 
 .Developer Checkout Locations:
 
