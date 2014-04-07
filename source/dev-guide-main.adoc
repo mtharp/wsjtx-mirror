@@ -20,25 +20,6 @@ interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and
 use the Qt framework, and they share most build procedures.  Most
 number-crunching in all of the _WSJT_ programs is done in Fortran.
 
-Software development kits are available for Windows, and a build script 
-collections for Linux. The kits are described in each of their respective
-sections. The following is a brief overview for each kit:
-
-.JTSDK-DOC
-* Provides applications and scripts to build all _WSJT_ documentation.
-
-.JTSDK-PY
-* Provides applications and scripts to build *Python* based _WSJT_
-and _WSPR_.
-
-.JTSDK-QT
-* Provides applications and scripts to build *QT5* based _WSJT-X_,
-_WSPR-X_ and  _MAP65_.
-
-TIP: Each kit is self contained, meaning, you should not have to install
-any software to the host system in order to build applications or
-documentation.
-
 ////
 Communications should be moved to a global file to prevent rework / repeat in the
 various guides.
@@ -76,15 +57,6 @@ include::pkgmatrix.adoc[]
 
 == Build Matrix
 include::buildmatrix.adoc[]
-
-== JTSDK-DOC
-include::jtsdk-doc.adoc[]
-
-== JTSDK-PY
-include::jtsdk-py.adoc[]
-
-== JTSDK-QT
-include::jtsdk-qt.adoc[]
 
 ////
 [[DOCSETUP]]
@@ -124,6 +96,21 @@ Under Construction
 ////
 
 :numbered!:
+[[JTSDKDOC]]
+JTSDK-DOC
+---------
+include::jtsdk-doc.adoc[]
+
+[[JTSDKPY]]
+JTSDK-PY
+--------
+include::jtsdk-py.adoc[]
+
+[[JTSDKQT]]
+JTSDK-QT
+--------
+include::jtsdk-qt.adoc[]
+
 License
 -------
 include::../../global/license.adoc[]
