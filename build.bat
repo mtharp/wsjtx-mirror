@@ -130,8 +130,8 @@ ECHO  build qref
 ECHO.
 ECHO ------------------------------------------------------
 ECHO.
-ECHO TO OPEN, Type:   [document name]
-ECHO HELP INFO, Type: doc-help
+ECHO To View, Type:  [document name]
+ECHO For Help, Type: doc-help
 ECHO.
 EXIT /B 0
 

@@ -28,8 +28,7 @@ include::../global/communication.adoc
 
 == Communication
 
-The following are established General and Development communication channels
-for the WSJT Group.
+The following are established communication channels for the WSJT Group.
 
 .General Information
 * Main Site: {homepage}
@@ -58,7 +57,6 @@ include::pkgmatrix.adoc[]
 == Build Matrix
 include::buildmatrix.adoc[]
 
-////
 [[DOCSETUP]]
 == Documentation
 include::doc.adoc[]
@@ -69,21 +67,16 @@ Under Construction
 include::map65.adoc[]
 Under Construction
 
-[[SIMJT]]
-== SIJT
-include::simjt.adoc[]
-Under Construction
-
 [[WSJT]]
 == WSJT
 include::wsjt.adoc[]
-////
+Under Construction
 
 [[WSJTX]]
 == WSJT-X
 include::wsjtx.adoc[]
+Under Construction
 
-////
 [[WSPR]]
 == WSPR
 include::wspr.adoc[]
@@ -93,7 +86,6 @@ Under Construction
 == WSPR-X
 include::wsprx.adoc[]
 Under Construction
-////
 
 :numbered!:
 [[JTSDKDOC]]
