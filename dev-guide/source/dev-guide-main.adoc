@@ -111,6 +111,11 @@ JTSDK-QT
 --------
 include::jtsdk-qt.adoc[]
 
+[[JTSDKNIX]]
+JTSDK-NIX
+--------
+include::jtsdk-nix.adoc[]
+
 License
 -------
 include::../../global/license.adoc[]
