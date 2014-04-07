@@ -10,8 +10,8 @@ SET TARGET=%~dp0
 IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
 SET BASED=%TARGET%
 SET ASCID=%BASED%\asciidoc
-SET SVND=..\subversion\bin
-SET TOOLS=..\tools
+SET SVND=%CD%\subversion\bin
+SET TOOLS=%CD%\tools
 SET PATH=%BASED%;%SVND%;%TOOLS%;%WINDIR%\System32
 CD /D %BASED%
 
