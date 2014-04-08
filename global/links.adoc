@@ -46,6 +46,7 @@ Edit files as needed
 
 // Download Links
 :cty_dat: http://www.country-files.com/cty/[here].
+:hamlib3: https://dl.dropboxusercontent.com/u/4192709/Hamlib-integration-wsjtx.zip[Download]
 :jtsdk_doc: http://physics.princeton.edu/pulsar/K1JT/JTSDK-DOC.exe[Download]
 :jtsdk_py: http://physics.princeton.edu/pulsar/K1JT/JTSDK-PY.exe[Download]
 :jtsdk_qt: http://physics.princeton.edu/pulsar/K1JT/JTSDK-QT.exe[Download]
