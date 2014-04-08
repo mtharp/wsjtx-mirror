@@ -1,4 +1,3 @@
-//
 The following matrix outlines the primary build method for
 each application. While there may be more than one build
 option per application, the primary method is used to
@@ -16,9 +15,14 @@ with the latest code changes.
 |Script     |x   |x   |x     |x   |x     |x
 |=================================================
 
-* *JTSDK-PY: WSJT, WSPR*
-** Makefile {plus} build scripts
+.COMMENTS
+[horizontal]
+*JTSDK-DOC*:: *( WSJT Documentation )*
+* Build scripts
 
-* *JTSDK-QT: WSJT-X, WSPR-X, MAP65*
-** CMake {plus} build scripts
-** Qmake {plus} QtCreator {plus} Makefile.MinGW (optional)
+*JTSDK-PY*:: *( WSJT WSPR )*
+* Makefile {plus} build scripts
+
+*JTSDK-QT*:: *( WSJT-X WSPR-X MAP65 )*
+* CMake {plus} build scripts
+* QtCreator {plus} Qmake {plus} Makefile.MinGW (optional)

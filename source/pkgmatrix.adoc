@@ -11,9 +11,9 @@ application, including documentation.
 |CMake     |    |    |x     |    |x     |x
 |FFTW3F    |    |x   |x     |x   |x     |x
 |Hamlib    |    |    |o     |x   |x     |
-|Hamlib3   |    |    |x     |    |      |
-|mingw32   |    |x   |      |x   |      |   
-|mingw48_32|    |    |x     |    |x     |x
+|Hamlib3   |    |    |x     |o   |o     |
+|Mingw32   |    |x   |      |x   |      |   
+|Mingw48_32|    |    |x     |    |x     |x
 |Portaudio |    |x   |      |x   |x     |x
 |Python3   |    |x   |      |x   |      |
 |Qt5       |    |    |x     |    |x     |x
@@ -22,6 +22,10 @@ application, including documentation.
 
 .COMMENTS
 [horizontal]
-+*mingw32*+:: mingw.org GNU 4.8.1 Tool Chain
-+*mingw48_32*+:: QT5 Supplied GNU 4.8.0 Tool Chain
-+*Hamlib3*+:: Hamlib3 is a custom build from Bill (G3WJS)
+*Mingw32*:: GNU 4.8.1 Tool Chain, provided by mingw.org
+*Mingw48_32*:: GNU 4.8.0 Tool Chain, provided by QT5
+*Hamlib*:: Current distro release 1.12.x
+*Hamlib3*:: Custom build from Bill Summerville, (G3WJS)
+* Hamlib3 is still under development
+* Potential release dates have yet to be announced
+* Use with WSPR and WSPR-X is experimental only

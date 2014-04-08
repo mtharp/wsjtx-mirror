@@ -30,6 +30,7 @@ their edits.
 * Fast build times
 * Best options for developers and application testers
 * Qt Debug warning messages tuned on by default
+* Links QT Debug libraires, which is only availble in Debug builds
 * Uses shared dependencies 
 * Dependencies must be in %PATH% *(use wsjtx-bat)*
 * Cannot build the Installer Package
@@ -54,11 +55,11 @@ methods, build the full install target with +*JTSDK-QT*+ for simplicity.
 **********************************************************************
 
 IMPORTANT: The current development branch of _WSJT-X_ is using a custom
-built set of Hamlib3 binaries. At some point, after official release
-from the Hamlib developers, we will shift all apps using Hamlib 1.12.x
-to Hamlib3. In the meantime, follow the special instruction for installing
-Hamlib3 into your JTSDK-QT directory, then continue with building.
-Hamlib3 will be included in the next JTSDK-QT release.
+built set of Hamlib3 binaries on Windows. At some point, after official
+release from the Hamlib developers, we will shift all apps using
+Hamlib 1.12.x to Hamlib3. In the meantime, follow the special instruction
+for installing Hamlib3 into your JTSDK-QT directory, then continue with
+building. Hamlib3 will be included in the next JTSDK-QT release if needed.
 
 * Hamlib3 {hamlib3}
 * Save the .zip file to a temporary location, then unzip
@@ -71,7 +72,7 @@ You should end up with *2* Hamlib directories:
 * C:\JTSDK-QT\hamlib3\mingw32
 
 This will allow _WSJT-X_ to use Hamlib3 and others to use Hamlib 1.12.x
-as needed. +
+as needed.
 
 **********************************************************************
 
@@ -132,7 +133,7 @@ run +*WSJT-X*+ now. Select ( Y to Run / N to Finish and Exit).
 C:\JTSDK-QT\wsjtx\install\Release\bin
 
 *For Debug*
-C:\JTSDK-QT\wsjtx\install\Release\bin
+C:\JTSDK-QT\wsjtx\install\Debug\bin
 
 ----
 ** Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
@@ -142,6 +143,7 @@ C:\JTSDK-QT\wsjtx\install\Release\bin
 
 Under Construction
 
+////
 === Linux CMake
 
 Under Construction
@@ -150,8 +152,6 @@ Under Construction
 
 Under Construction
 
-
-////
 
 This example uses Qmake and Makefile.Linux. In order to build _WSJT-X_ form
 source, install the following packages:
