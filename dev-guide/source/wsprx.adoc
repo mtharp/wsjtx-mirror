@@ -27,12 +27,12 @@ version, use the *( -r )* flag.
 
 .COMPILE WSPR-X
 
-** Open Windows CMD terminal, at the prompt, type,:
+* Open Windows CMD terminal, at the prompt, type,:
 ----
 C:\JTSDK-QT\jtsdk-qtenv.bat
 ----
-** You should be presented with <<QTMENU,Figure-3>>
-** At the Prompt, type,:
+* You should be presented with <<QTMENU,Figure-3>>
+* At the Prompt, type,:
 ----
 
 *For Debug*
@@ -46,13 +46,13 @@ build wsprx -r
 Note the ( -r for Release )
 
 ----
-** If you have not checked out _WSPR-X_ previously, you will be prompted
+* If you have not checked out _WSPR-X_ previously, you will be prompted
 to do so:
 
 .WSPR-X Checkout Not Found
 image::images/jtsdk-wsprx-co.png[]
 
-** Follow the prompts, Anonymous or Developer, then type,:
+* Follow the prompts, Anonymous or Developer, then type,:
 -----
 
 *For Debug*
@@ -73,9 +73,9 @@ your choice. If the SVN update fails, for whatever reason, or there are errors
 during the build, simply re-run the build, as sometimes Windows reacts
 faster than SVN can respond, or there is an SVN comms error.
 
-** At build completion, you are presented with an option to
+* At build completion, you are presented with an option to
 run +*WSPR-X*+ now. Select ( Y to Run / N to Finish and Exit).
-** To manually run the newly built +*wsprx.exe*+, browse to:
+* To manually run the newly built +*wsprx.exe*+, browse to:
 ----
 
 *For Release*
@@ -85,8 +85,8 @@ C:\JTSDK-QT\wsprx\install\Release\bin
 C:\JTSDK-QT\wsprx\install\Debug\bin
 
 ----
-** Double click on +*wspr.exe*+
-** At this time, WSPR-X does not need the envirmental batch file to run
+* Double click on +*wspr.exe*+
+* At this time, WSPR-X does not need the environment batch file to run
 in *Debug* mode. This will change as development of the CMake method
 progresses.
 

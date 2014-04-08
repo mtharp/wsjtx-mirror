@@ -78,12 +78,12 @@ as needed.
 
 .COMPILE WSJT-X
 
-** Open Windows CMD terminal, at the prompt, type,:
+* Open Windows CMD terminal, at the prompt, type,:
 ----
 C:\JTSDK-QT\jtsdk-qtenv.bat
 ----
-** You should be presented with <<QTMENU,Figure-3>>
-** At the Prompt, type,:
+* You should be presented with <<QTMENU,Figure-3>>
+* At the Prompt, type,:
 ----
 
 *For Debug*
@@ -97,13 +97,13 @@ build wsjtx -r
 Note the ( -r for Release )
 
 ----
-** If you have not checked out _WSJT-X_ previously, you will be prompted
+* If you have not checked out _WSJT-X_ previously, you will be prompted
 to do so:
 
 .WSJTX Checkout Not Found
 image::images/jtsdk-wsjtx-co.png[]
 
-** Follow the prompts, Anonymous or Developer, then type,:
+* Follow the prompts, Anonymous or Developer, then type,:
 -----
 
 *For Debug*
@@ -124,9 +124,9 @@ your choice. If the SVN update fails, for whatever reason, or there are errors
 during the build, simply re-run the build, as sometimes Windows reacts
 faster than SVN can respond, or there is an SVN comms error.
 
-** At build completion, you are presented with an option to
+* At build completion, you are presented with an option to
 run +*WSJT-X*+ now. Select ( Y to Run / N to Finish and Exit).
-** To manually run the newly built +*wsjtx.exe or wsjtx.bat*+, browse to:
+* To manually run the newly built +*wsjtx.exe or wsjtx.bat*+, browse to:
 ----
 
 *For Release*
@@ -136,7 +136,7 @@ C:\JTSDK-QT\wsjtx\install\Release\bin
 C:\JTSDK-QT\wsjtx\install\Debug\bin
 
 ----
-** Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
+* Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
 
 [[WINQMAKE]]
 === Windows Qmake
