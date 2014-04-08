@@ -16,6 +16,7 @@ Edit files as needed
 ////
 :asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[AsciiDoc User Guide]
 :asciidoc_cheatsheet: http://powerman.name/doc/asciidoc[AsciiDoc Cheatsheet]
+:asciidoc_syntax: http://xpt.sourceforge.net/techdocs/nix/tool/asciidoc-syn/ascs01-AsciiDocMarkupSyntaxQuickSummary/single/[AsciiDoc Syntax]
 :asciidoc_questions: http://www.methods.co.nz/asciidoc/faq.html[AsciiDoc FAQ]
 :asciidoctor_style: http://asciidoctor.org/docs/asciidoc-writers-guide/#delimited-blocks[AsciiDoctor Styles Guide]
 :asciidoctor_syntax: http://asciidoctor.org/docs/asciidoc-writers-guide/#delimited-blocks[AsciiDoctor Syntax Guide]

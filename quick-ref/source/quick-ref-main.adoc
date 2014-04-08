@@ -19,9 +19,10 @@ used items while working with the _WSJT Documentation_ project.
 == AsciiDoc Examples
 * {asciidoc_help} by {stuart_rackman}
 * {asciidoc_questions} by {stuart_rackman}
+* {asciidoc_syntax} from *SourceForge Tech Docs*
 * {asciidoc_cheatsheet} by {alex_efros}
 * {asciidoctor_style} by Asciidoctor Project 2014. 
-* {asciidoctor_syntax} by Asciidoctor Project 2014. 
+* {asciidoctor_syntax} by Asciidoctor Project 2014.
 
 :numbered!:
 License
