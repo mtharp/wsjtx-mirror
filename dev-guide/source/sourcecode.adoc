@@ -29,9 +29,8 @@ you cannot check-in your local updates to the repository.
 
 Each SDK has short cuts build in to simply the Anonymous checkouts.
 For example, to checkout +*WSJT*+, from the JTSDK-QT environment, type:
-
 -----
-cowsjt
+checkout wsjt
 -----
 
 You can also manually checkout +*WSJT*+, using

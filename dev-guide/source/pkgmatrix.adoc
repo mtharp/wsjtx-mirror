@@ -1,7 +1,6 @@
 //
 The following matrix outlines the development package requirements for each
-application, including documentation. Application details are contained within
-each of the respective sections.
+application, including documentation.
 
 // Needs verified by the developers.
 .Package Matrix: x = Required, o = Optional
@@ -9,9 +8,10 @@ each of the respective sections.
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
 |Package   |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
-|CMake     |    |    |o     |    |o     |o
+|CMake     |    |    |x     |    |x     |x
 |FFTW3F    |    |x   |x     |x   |x     |x
-|Hamlib    |    |    |x     |x   |x     |
+|Hamlib    |    |    |o     |x   |x     |
+|Hamlib3   |    |    |x     |    |      |
 |mingw32   |    |x   |      |x   |      |   
 |mingw48_32|    |    |x     |    |x     |x
 |Portaudio |    |x   |      |x   |x     |x
@@ -20,7 +20,8 @@ each of the respective sections.
 |Subversion|x   |x   |x     |x   |x     |x
 |=================================================
 
-.Package Comments
+.COMMENTS
 [horizontal]
 +*mingw32*+:: mingw.org GNU 4.8.1 Tool Chain
 +*mingw48_32*+:: QT5 Supplied GNU 4.8.0 Tool Chain
++*Hamlib3*+:: Hamlib3 is a custom build from Bill (G3WJS)

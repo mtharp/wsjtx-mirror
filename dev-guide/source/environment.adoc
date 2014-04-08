@@ -61,34 +61,30 @@ image::images/jtsdk-qt-main.png[]
 [[PATHCFG]]
 === Path Configuration 
 
-The {page} will use the respective SDK, and thus the following
-paths throughout:
+The {page} will use the respective SDK for all build activity, and
+thus the following paths throughout:
 
-* +*WINDOWS*+
-- Scripts, builds and package installations will be in:
-- C:\JTSDK-DOC
-- C:\JTSDK-PY
-- C:\JTSDK-QT
+.WINDOWS
+* Scripts and final builds will under:
+** C:\JTSDK-DOC
+** C:\JTSDK-PY
+** C:\JTSDK-QT
 
-//	
-
-* +*LINUX*+
-- JTSDK-NIX
-- /opt/jtsdk-nix
-
-// 
-
-- Scripts, builds and package installations will be in:
-- /home/$USER/wsjt-env
+.LINUX
+* JTSDK-NIX
+** /opt/jtsdk-nix
+//
+* Scripts and final builds will be under:
+** /home/$USER/wsjt-env
 
 [[WININSTALL]]
 == Windows SDK
 
-Setup and installation is straight forward. The .EXE files are self
-extracting 7z compressed files. All three SDKs use the same process.
+Setup and installation is straight forward. Each SDK is a self
+extracting 7z compressed file.
 
 WARNING: For Windows, the current update method for +*JTSDK-PY and 
-JTSDK-QT*+ is through +*JTSDK-DOC*+, and thus, is a mandatory install.
+JTSDK-QT*+ is through +*JTSDK-DOC*+, as such, is a mandatory install.
 
 === Download
 
@@ -107,20 +103,29 @@ rebuild the SDK from scratch.
 * Change path to: C:\
 * Click the Extract Button
 
+.Self Extracting 7z File
 image::images/7z-extract.png[]
 
-* Browse to C:\JTSDK-*
-* Open the env batch file
-** For JTSDK-DOC, +*jtsdk-docenv.bat*+
-** For JTSDK-PY, +*jtsdk-pyenv.bat*+
-** For JTSDK-QT, +*jtsdk-qtenv.bat*+
-* Follow the instructions for SVN checkout
+* Open a Windows CMD Terminal, then type,:
+----
+*For JTSDK-DOC*
+C:\JTSDK-DOC\jtsdk-docenv.bat
+
+*For JTSDK-PY*
+C:\JTSDK-PY\jtsdk-pyenv.bat
+
+*For JTSDK-QT*
+C:\JTSDK\jtsdk-qtenv.bat
+
+----
 
 [[WINUPDATE]]
 === Updates
 
 To update +*JTSDK-PY or JTSDK-QT*+, you must install +*JTSDK-DOC*+ and
-perform a checkout. Developer Checkout is *not* required.
+perform a checkout. Developer checkout is *not* required, although, if
+you intend to work on Documentation, use your Developer account v.s.
+Anonymous.
 
 .Update or Checkout then Update
 * Open Windows CMD Terminal, and Type:
@@ -131,7 +136,7 @@ C:\JTSDK-DOC\jtsdk-docenv.bat
 -----
 svn update
 
-then:
+then type,:
 
 update
 -----
@@ -139,25 +144,29 @@ update
 -----
 svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
 
-then:
+then type,:
 
 update
 -----
 * You can also browse too, and run +*install-scripts.bat*+ manually
 once you have performed an initial checkout.
 * To ensure you always have the latest scripts, always perform an 
-svn update  first, from C:\JTSDK-DOC\doc
+svn update  first;
 -----
+cd C:\JTSDK-DOC\doc
+
+then type,:
+
 svn update
 -----
 * At this point, all three JTSDKs should be up to date, if installed.
-* A successful update should look like:
+* A successful update should look similar to:
 
 .Master Script Update
 image::images/jtsdk-update.png[]
 
 === Uninstall
-* Delete C:\JTSDK-DOC -PY or -QT
+* Delete (C:\JTSDK-DOC) , (C:\JTSDK-PY) or (C:\JTSDK-QT)
 * Nothing is installed to the system or registry
 
 [[NIXINSTALL]]
