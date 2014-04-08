@@ -27,13 +27,13 @@ Anonymous checkouts allow you to build all documentation and
 applications using the same methods as the developers, however,
 you cannot check-in your local updates to the repository.
 
-Each SDK has short cuts build in to simply the Anonymous checkouts.
-For example, to checkout +*WSJT*+, from the JTSDK-QT environment, type:
+Each SDK has short-cuts built-in for Anonymous check-outs. For example,
+to check-out +*WSJT*+, from the JTSDK-PY environment, type:
 -----
 checkout wsjt
 -----
 
-You can also manually checkout +*WSJT*+, using
+You can also manually check-out +*WSJT*+, using
 -----
 svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
 -----
@@ -51,10 +51,10 @@ svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
 
 [[DEVCO]]
 === Developer
-In order to use the developer checkout or checkin process
+In order to use the developer check-out or check-in process
 
-* Create a Source Force User Account
-* Contact Joe Taylor, K1JT to be added to the Developer List.
+* Create a {sourceforge} User Account
+* Email {joe_taylor} to be added to the Developer List.
 
 Then, using +*WSJT*+ as the example:
 
@@ -64,7 +64,7 @@ svn co svn+ssh://USER@svn.code.sf.net/p/wsjt/wsjt/trunk
 
 Substitute your SourceForge username for +USER+.
 
-TIP: Due to the variations in user names, developer check-out shorts 
+TIP: Due to the variations in user names, developer check-out short-cuts 
 not feasible, and must be manually entered.
 
 .Developer Checkout Locations:
