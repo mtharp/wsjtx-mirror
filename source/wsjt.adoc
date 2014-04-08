@@ -9,41 +9,42 @@ TIP: You can create a desktop shortcut to +*jtsdk-pyenv.bat*+ if
 desired. This can also be done for the final +*wsjt.exe*+.
 
 .Compiling WSJT
-* Open Windows CMD terminal, at the prompt, type:
------
+
+** Open Windows CMD terminal, at the prompt, type
+----
 C:\JTSDK-PY\jtsdk-pyenv.bat
------
-* You should be presented with <<PYMENU,Figure-1>>
-* At the Prompt, Type:
------
+----
+** You should be presented with <<PYMENU,Figure-2>>
+** At the Prompt, type
+----
 build wsjt
------
-* If you have not checkout out _WSJT_ previously, you will be prompted
+----
+** If you have not checked out _WSJT_ previously, you will be prompted
 to do so:
 
 .WSJT Checkout Not Found
 image::images/jtsdk-wsjt-co.png[]
 
-* Follow the prompts, to checkout Anonymous or Developer, the
+** Follow the prompts, Anonymous or Developer, then
 -----
 build wsjt
 -----
-* If this is a subsequent build, you will be asked to update from SVN.
+
+TIP: If this is a subsequent build, you will be asked to update from SVN.
 On a new checkout, select ( N for no dont update), if not new, it is 
-your choice.
+your choice. If the SVN update fails, for whatever reason, or there are errors
+during the build, simply re-run the build, as sometimes Windows reacts
+faster than SVN can respond, or there is an SVN comms error.
 
-TIP: If the SVN update fails, for whatever reason, or there are errors
-during the build, simply re-run the build.
-
-* At build completion, you are presented with an option to
+** At build completion, you are presented with an option to
 run +*WSJT*+ now. Select ( Y to Run / N to Finish and Exit).
-* To manually run the newly built +*wsjtx.exe*, browse to:
------
+** To manually run the newly built +*wsjtx.exe*+, browse to:
+----
 C:\JTSDK-PY\wsjt-rev_numnber
------
-* Double click on +*wsjt.exe*+.
-* The rev_numer will increase with each commit the developers make
-against +*wsjt+
+----
+** Double click on +*wsjt.exe*+.
+*** The rev_numer will increase with each commit the developers make
+against the +*WSJT*+ trunk.
 
 === Linux
 

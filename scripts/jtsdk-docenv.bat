@@ -39,10 +39,13 @@ ECHO   In order to use JTSDK-DOC , you
 ECHO must firtst perform a checkout from
 ECHO SourceForge, then relaunch jtsdk-docenv.bat:
 ECHO.
-ECHO Anonymous .. Type: svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
-ECHO Developer .. Type: svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/doc
+ECHO ANONYMOUS CHECKOUT
+ECHO   svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
 ECHO.
-ECHO Note: For Dev's, replace %USERNAME% with your SorceForge User Name.
+ECHO FOR DEV CHECKOUT
+ECHO   svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/doc
+ECHO.
+ECHO DEV NOTE: Replace %USERNAME% with your SorceForge User Name.
 ECHO.
 pause
 ECHO.
