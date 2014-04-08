@@ -51,11 +51,11 @@ include::environment.adoc[]
 == Source Code
 include::sourcecode.adoc[]
 
-== Package Matrix
-include::pkgmatrix.adoc[]
-
 == Build Matrix
 include::buildmatrix.adoc[]
+
+== Package Matrix
+include::pkgmatrix.adoc[]
 
 [[DOCSETUP]]
 == Documentation

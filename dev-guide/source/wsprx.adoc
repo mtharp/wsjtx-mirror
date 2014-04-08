@@ -1,0 +1,106 @@
+:prog: The WSJT Developers Guide
+
+=== Windows CMake
+
+The preferred method of compiling _WSPR-X_ on Windows is using *JTSDK-QT*.
+If you have not *Installed and Updated* *JTSDK-QT*, you should do so before
+continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Update>>
+
+WARNING: As of this writing, the CMake build method is being updated to
+bring it more inline with _WSJT-X_ builds. Expect build anomalies
+until this method has been stabilized.
+
+[[WSJTCOMPILEOPTIONS]]
+.COMPILING OPTIONS
+Using *JTSDK-QT* for compiling _WSPR-X_, you can build two versions:
+
+* <<WSPRXCOMPILE,Debug>>
+* <<WSPRXCOMPILE,Release>>
+
+The CMake process for WSPR-X is not as sophisticated as that of _WSJT-X_.
+The process still uses *Debug* and *Release*, but the build times and
+final configuration are similar with the exception of adding Qt Debug
+capabilities. The default build is *Debug*. To build the *Release*
+version, use the *( -r )* flag.
+
+[[WSPRXCOMPILE]]
+
+.COMPILE WSPR-X
+
+** Open Windows CMD terminal, at the prompt, type,:
+----
+C:\JTSDK-QT\jtsdk-qtenv.bat
+----
+** You should be presented with <<QTMENU,Figure-3>>
+** At the Prompt, type,:
+----
+
+*For Debug*
+
+build wsprx
+
+*For Release*
+
+build wsprx -r
+
+Note the ( -r for Release )
+
+----
+** If you have not checked out _WSPR-X_ previously, you will be prompted
+to do so:
+
+.WSPR-X Checkout Not Found
+image::images/jtsdk-wsprx-co.png[]
+
+** Follow the prompts, Anonymous or Developer, then type,:
+-----
+
+*For Debug*
+
+build wsprx
+
+*For Release*
+
+build wsprx -r
+
+Note the ( -r for Release )
+
+-----
+
+TIP: If this is a subsequent build, you will be asked to update from SVN.
+On a new checkout, select ( N for do not update), if not new, it is 
+your choice. If the SVN update fails, for whatever reason, or there are errors
+during the build, simply re-run the build, as sometimes Windows reacts
+faster than SVN can respond, or there is an SVN comms error.
+
+** At build completion, you are presented with an option to
+run +*WSPR-X*+ now. Select ( Y to Run / N to Finish and Exit).
+** To manually run the newly built +*wsprx.exe*+, browse to:
+----
+
+*For Release*
+C:\JTSDK-QT\wsprx\install\Release\bin
+
+*For Debug*
+C:\JTSDK-QT\wsprx\install\Debug\bin
+
+----
+** Double click on +*wspr.exe*+
+** At this time, WSPR-X does not need the envirmental batch file to run
+in *Debug* mode. This will change as development of the CMake method
+progresses.
+
+[[WINQMAKE]]
+=== Windows Qmake
+
+Under Construction
+
+////
+=== Linux CMake
+
+Under Construction
+
+=== Linux Qmake
+
+Under Construction
+////
