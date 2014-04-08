@@ -10,12 +10,12 @@ desired. This can also be done for the final +*wspr.exe*+.
 
 .Compiling WSPR
 
-** Open Windows CMD terminal, at the prompt, type
+** Open Windows CMD terminal, at the prompt, type,:
 ----
 C:\JTSDK-PY\jtsdk-pyenv.bat
 ----
 ** You should be presented with <<PYMENU,Figure-2>>
-** At the Prompt, type
+** At the Prompt, type,:
 ----
 build wspr
 ----
@@ -25,7 +25,7 @@ to do so:
 .WSJT Checkout Not Found
 image::images/jtsdk-wspr-co.png[]
 
-** Follow the prompts, Anonymous or Developer, then
+** Follow the prompts, Anonymous or Developer, then type,:
 -----
 build wspr
 -----

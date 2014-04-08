@@ -211,7 +211,7 @@ GOTO EOF
 :COMSG
 CLS
 ECHO ----------------------------------------
-ECHO %APP_SRC% Was Not Found
+ECHO %SRCD%\%APP_NAME% Was Not Found
 ECHO ----------------------------------------
 ECHO.
 ECHO In order to build ^( %APP_NAME% ^) you
