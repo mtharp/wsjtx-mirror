@@ -37,7 +37,7 @@ image::images/jtsdk-doc-main.png[]
 
 [[PYMENU]]
 .JTSDK-PY
-* +*JTSDK-PY*+ contains Python3 ({plus} modules}, Subversion, GNU Tools
+* +*JTSDK-PY*+ contains Python3 ({plus} modules}, Subversion, Mingw32, GNU Tools
 and scripts required to build +*WSJT*+ and +*WSPR*+.
 * For details, see <<JTSDKDOC,JTSDK-PY>>.
 
@@ -45,7 +45,7 @@ and scripts required to build +*WSJT*+ and +*WSPR*+.
 image::images/jtsdk-py-main.png[]
 
 .JTSDK-QT
-* +*JTSDK-QT*+ contains QT5, CMake, Subversion, FFTW3, GNU Tools, 
+* +*JTSDK-QT*+ contains QT5, CMake, Subversion, FFTW3, Mingw48_32, GNU Tools, 
 hamlib-1.2, Hamlib-3 and scripts to build +*WSJT-X*+, +*WSPR-X*+ and
 +*MAP65*+.
 * For details, see <<JTSDKDOC,JTSDK-QT>>.
@@ -61,7 +61,7 @@ image::images/jtsdk-qt-main.png[]
 [[PATHCFG]]
 === Path Configuration 
 
-The {page} will use the respective SDK for all build activity, and
+{page} will use the respective SDK for all build activity, and
 thus the following paths throughout:
 
 .WINDOWS
@@ -83,8 +83,8 @@ thus the following paths throughout:
 Setup and installation is straight forward. Each SDK is a self
 extracting 7z compressed file.
 
-WARNING: For Windows, the current update method for +*JTSDK-PY and 
-JTSDK-QT*+ is through +*JTSDK-DOC*+, as such, is a mandatory install.
+WARNING: For Windows, the current update method for +*SDKs*+ is
+through +*JTSDK-DOC*+, as such, is a mandatory install.
 
 === Download
 
@@ -107,7 +107,9 @@ rebuild the SDK from scratch.
 image::images/7z-extract.png[]
 
 * Open a Windows CMD Terminal, then type,:
+* You can also browse to the env file, and double click
 ----
+
 *For JTSDK-DOC*
 C:\JTSDK-DOC\jtsdk-docenv.bat
 
@@ -120,25 +122,16 @@ C:\JTSDK\jtsdk-qtenv.bat
 ----
 
 [[WINUPDATE]]
-=== Updates
+=== Update
 
 To update +*JTSDK-PY or JTSDK-QT*+, you must install +*JTSDK-DOC*+ and
-perform a checkout. Developer checkout is *not* required, although, if
-you intend to work on Documentation, use your Developer account v.s.
-Anonymous.
+perform a checkout. Developer checkout is *not* required. If you intend
+to work on Documentation, use your Developer account v.s. Anonymous.
 
 .Update or Checkout then Update
 * Open Windows CMD Terminal, and Type:
 -----
 C:\JTSDK-DOC\jtsdk-docenv.bat
------
-* To Update, just type:
------
-svn update
-
-then type,:
-
-update
 -----
 * If you need to checkout first:
 -----
@@ -148,8 +141,16 @@ then type,:
 
 update
 -----
+* To Update, just type:
+-----
+svn update
+
+then type,:
+
+update
+-----
 * You can also browse too, and run +*install-scripts.bat*+ manually
-once you have performed an initial checkout.
+once you have performed an initial check-out.
 * To ensure you always have the latest scripts, always perform an 
 svn update  first;
 -----

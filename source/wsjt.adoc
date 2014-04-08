@@ -3,7 +3,7 @@
 
 The preferred method of compiling _WSJT_ on Windows is using JTSDK-PY.
 If you have not *Installed and Updated* JTSDK-PY, you should do so before
-continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Updates>>
+continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Update>>
 
 TIP: You can create a desktop shortcut to +*jtsdk-pyenv.bat*+ if
 desired. This can also be done for the final +*wsjt.exe*+.
@@ -31,7 +31,7 @@ build wsjt
 -----
 
 TIP: If this is a subsequent build, you will be asked to update from SVN.
-On a new checkout, select ( N for no dont update), if not new, it is 
+On a new checkout, select ( N for do not update), if not new, it is 
 your choice. If the SVN update fails, for whatever reason, or there are errors
 during the build, simply re-run the build, as sometimes Windows reacts
 faster than SVN can respond, or there is an SVN comms error.
