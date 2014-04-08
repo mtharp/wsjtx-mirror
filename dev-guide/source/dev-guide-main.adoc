@@ -60,7 +60,6 @@ include::buildmatrix.adoc[]
 [[DOCSETUP]]
 == Documentation
 include::doc.adoc[]
-Under Construction
 
 [[MAP65]]
 == MAP-65
@@ -70,17 +69,14 @@ Under Construction
 [[WSJT]]
 == WSJT
 include::wsjt.adoc[]
-Under Construction
 
 [[WSJTX]]
 == WSJT-X
 include::wsjtx.adoc[]
-Under Construction
 
 [[WSPR]]
 == WSPR
 include::wspr.adoc[]
-Under Construction
 
 [[WSPRX]]
 == WSPR-X
@@ -97,16 +93,19 @@ include::jtsdk-doc.adoc[]
 JTSDK-PY
 --------
 include::jtsdk-py.adoc[]
+Under Construction
 
 [[JTSDKQT]]
 JTSDK-QT
 --------
 include::jtsdk-qt.adoc[]
+Under Construction
 
 [[JTSDKNIX]]
 JTSDK-NIX
 --------
 include::jtsdk-nix.adoc[]
+Under Construction
 
 License
 -------

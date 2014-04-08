@@ -18,8 +18,8 @@ provides the environment described above. Details of each kit can be found
 at the end of the dev-guide.
 
 .JTSDK Notes
-* Each kit is self contained, you should not have to install
-any system level software.
+* Each kit is self contained, you should not have to install any system
+level software.
 * All 5 main stream applications +*( WSJT, WSJT-X, WSPR, WSPR-X and MAP65 )+*
 can be built using the appropriate SDK.
 * If you have one or more required packages already installed on the
@@ -125,15 +125,15 @@ C:\JTSDK\jtsdk-qtenv.bat
 === Update
 
 To update +*JTSDK-PY or JTSDK-QT*+, you must install +*JTSDK-DOC*+ and
-perform a checkout. Developer checkout is *not* required. If you intend
-to work on Documentation, use your Developer account v.s. Anonymous.
+perform a check-out. Developer check-out is *not* required, however, if
+you intend to work on Documentation, use your Developer account v.s. Anonymous.
 
-.Update or Checkout then Update
+.Update or Check-out then Update
 * Open Windows CMD Terminal, and Type:
 -----
 C:\JTSDK-DOC\jtsdk-docenv.bat
 -----
-* If you need to checkout first:
+* If you need to check-out first:
 -----
 svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
 
