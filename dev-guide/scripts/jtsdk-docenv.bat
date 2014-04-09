@@ -32,11 +32,11 @@ call %BASED%\doc\doc-env.bat
 ) ELSE (
 CLS
 ECHO -----------------------------------
-ECHO     Doc Directory Not Found
+ECHO      Doc Directory Not Found
 ECHO -----------------------------------
 ECHO.
 ECHO   In order to use JTSDK-DOC , you
-ECHO must firtst perform a checkout from
+ECHO must first perform a checkout from
 ECHO SourceForge, then relaunch jtsdk-docenv.bat:
 ECHO.
 ECHO ANONYMOUS CHECKOUT
@@ -45,7 +45,7 @@ ECHO.
 ECHO FOR DEV CHECKOUT
 ECHO   svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/doc
 ECHO.
-ECHO DEV NOTE: Replace %USERNAME% with your SorceForge User Name.
+ECHO DEV NOTE: Replace ^( %USERNAME% ^) with your SorceForge User Name.
 ECHO.
 pause
 ECHO.
