@@ -50,7 +50,7 @@ methods, build the full install target with +*JTSDK-QT*+ for simplicity.
 
 [[WSJTXCOMPILE]]
 
-.[red]#Special Hamlib3 Instructions#
+.[red]#Hamlib3 Special Instructions#
 
 **********************************************************************
 
@@ -77,7 +77,9 @@ as needed.
 
 **********************************************************************
 
-.[red]#OmniRig Special Requirement Instructions#
+[[OMNIRIG]]
+
+.[red]#OmniRig Special Instructions#
 
 **********************************************************************
 
@@ -92,7 +94,7 @@ download and install the latest from {dxatlas}
 * No other actions should be required.
 
 .To Uninstall
-* OniRig proveides an Uninstaller
+* OmniRig proveides an Uninstaller
 * Got to Start >> Programs >> Omni-Rig >> Uninstall Omni-Rig
 
 **********************************************************************

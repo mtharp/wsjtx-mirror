@@ -92,6 +92,10 @@ through +*JTSDK-DOC*+, as such, is a mandatory install.
 +*JTSDK-DOC*+:: {jtsdk_doc}
 +*JTSDK-PY*+:: {jtsdk_py}
 +*JTSDK-QT*+:: {jtsdk_qt}
++*Omni-Rig*+:: {omnirig} ( For WSKT-X Builds Only )
+* <<OMNIRIG,See Omni-Rig Special Instructions>>
++*Hamlib3*+:: {hamlib3} ( For WSKT-X Builds Only )
+* <<WSJTXCOMPILE, See Hamlib3 Special Instructions>>
 
 === Install
 
