@@ -3,7 +3,7 @@
 === Windows CMake
 
 The preferred method of compiling _WSPR-X_ on Windows is using *JTSDK-QT*.
-If you have not *Installed and Updated* *JTSDK-QT*, you should do so before
+If you have not *Installed and Updated* JTSDK-QT, you should do so before
 continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Update>>
 
 WARNING: As of this writing, the CMake build method is being updated to
@@ -90,12 +90,10 @@ C:\JTSDK-QT\wsprx\install\Debug\bin
 in *Debug* mode. This will change as development of the CMake method
 progresses.
 
+////
 [[WINQMAKE]]
 === Windows Qmake
 
-Under Construction
-
-////
 === Linux CMake
 
 Under Construction

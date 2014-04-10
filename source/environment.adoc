@@ -54,9 +54,11 @@ hamlib-1.2, Hamlib-3 and scripts to build +*WSJT-X*+, +*WSPR-X*+ and
 .JTSDK-QT Main Menu
 image::images/jtsdk-qt-main.png[]
 
+////
 .JTSDK-NIX
 * Provides QT5, Python3 ({plus} modules), libraries and dependencies.
 * For details, see <<JTSDKNIX,JTSDK-NIX>>.
+////
 
 [[PATHCFG]]
 === Path Configuration 
@@ -92,9 +94,9 @@ through +*JTSDK-DOC*+, as such, is a mandatory install.
 +*JTSDK-DOC*+:: {jtsdk_doc}
 +*JTSDK-PY*+:: {jtsdk_py}
 +*JTSDK-QT*+:: {jtsdk_qt}
-+*Omni-Rig*+:: {omnirig} ( For WSKT-X Builds Only )
++*Omni-Rig*+:: {omnirig} ( For WSJT-X CMake Builds Only )
 * <<OMNIRIG,See Omni-Rig Special Instructions>>
-+*Hamlib3*+:: {hamlib3} ( For WSKT-X Builds Only )
++*Hamlib3*+:: {hamlib3} ( For WSJT-X CMake Builds Only )
 * <<WSJTXCOMPILE, See Hamlib3 Special Instructions>>
 
 === Install
@@ -181,16 +183,18 @@ image::images/jtsdk-update.png[]
 * Nothing is installed to the system or registry
 
 **********************************************************************
-OmniRig Uninstall
+
+.[red]#Omni-Rig Uninstall#
 
 Due to recent changes in build requirements for _WSJT-X_, OmniRig
-must be installed to build Debug or Release version for _WSJT-X_. OmniRig
-comes with an "Uninstall Omni-Rig" program under Start >> Programs >>
-OmniRig.
+must be installed to build Debug or Release versions. OmniRig
+comes with an uninstall program located under:
+
+*Start >> Programs >> Omni-Rig >> Uninstall Omni-Rig*
 
 **********************************************************************
 
-
+////
 [[NIXINSTALL]]
 == Linux SDK
 
@@ -207,3 +211,4 @@ Under Construction
 === Uninstall
 
 Under Construction
+////

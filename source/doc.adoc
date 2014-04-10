@@ -39,7 +39,7 @@ DEV NOTE, Change ( USER ) to your SourceForge User Name
 -----
 
 TIP: Be sure to update JTSDK-DOC after checkout. Simply browse to and run:
-*c:\JTSDK-DOC\doc\dev-guide\scripts\install-scripts.bat*. Running the
+*C:\JTSDK-DOC\doc\dev-guide\scripts\install-scripts.bat*. Running the
 script will update all the SDKs you have installed.
 
 * Once you have checked-out / updated the documentation branch, you can
@@ -62,6 +62,9 @@ wsjt
 doc-help
 -----
 
+////
 === Linux Builds
 
 Under Construction
+
+////

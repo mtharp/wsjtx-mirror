@@ -1,5 +1,5 @@
 
-=== Windows
+=== Win Makefile
 
 The preferred method of compiling _WSJT_ on Windows is using JTSDK-PY.
 If you have not *Installed and Updated* JTSDK-PY, you should do so before
@@ -46,6 +46,8 @@ C:\JTSDK-PY\wsjt-rev_numnber
 * The rev_numer will increase with each commit the developers make
 against the +*WSJT*+ trunk.
 
+////
 === Linux
 
 Under Construction
+////

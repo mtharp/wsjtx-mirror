@@ -90,12 +90,13 @@ C:\JTSDK-QT\map65\install\Debug\bin
 in *Debug* mode. This will change as development of the CMake method
 progresses.
 
+
+////
 [[WINQMAKE]]
 === Windows Qmake
 
 Under Construction
 
-////
 === Linux CMake
 
 Under Construction
