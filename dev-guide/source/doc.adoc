@@ -37,8 +37,13 @@ svn co https://USER%@svn.code.sf.net/p/wsjt/wsjt/branches/doc
 DEV NOTE, Change ( USER ) to your SourceForge User Name
 
 -----
-* Once you have checked-out the documentation branch, you can build any
-of the documents with one command ( example uses wsjt ) type,:
+
+TIP: Be sure to update JTSDK-DOC after checkout. Simply browse to and run:
+*c:\JTSDK-DOC\doc\dev-guide\scripts\install-scripts.bat*. Running the
+script will update all the SDKs you have installed.
+
+* Once you have checked-out / updated the documentation branch, you can
+build any of the documents with one command ( example uses wsjt ) type,:
 -----
 build wsjt
 

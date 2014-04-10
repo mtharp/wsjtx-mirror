@@ -61,9 +61,10 @@ Hamlib 1.12.x to Hamlib3. In the meantime, follow the special instruction
 for installing Hamlib3 into your JTSDK-QT directory, then continue with
 building. Hamlib3 will be included in the next JTSDK-QT release if needed.
 
+.Install
 * Hamlib3 {hamlib3}
 * Save the .zip file to a temporary location, then unzip
-* Create directoty C:\JTSDK-QT\hamlib3
+* Create directory C:\JTSDK-QT\hamlib3
 * Copy directory (path)\hamlib\mingw32 to C:\JTSDK-QT\hamlib3\
 
 You should end up with *2* Hamlib directories:
@@ -73,6 +74,26 @@ You should end up with *2* Hamlib directories:
 
 This will allow _WSJT-X_ to use Hamlib3 and others to use Hamlib 1.12.x
 as needed.
+
+**********************************************************************
+
+.[red]#OmniRig Special Requirement Instructions#
+
+**********************************************************************
+
+IMPORTANT: OmniRig is another special requirement to build WSJT-X using
+CMake. This does *not* apply to Qmake builds. A binary installer is
+included with each SDK under C:\JTSDK-*\Tools. Alternatively, you can 
+download and install the latest from {dxatlas}
+
+.To Install
+* OmniRig {omnirig}
+* Extract .zip file and run the .exe file.
+* No other actions should be required.
+
+.To Uninstall
+* OniRig proveides an Uninstaller
+* Got to Start >> Programs >> Omni-Rig >> Uninstall Omni-Rig
 
 **********************************************************************
 
