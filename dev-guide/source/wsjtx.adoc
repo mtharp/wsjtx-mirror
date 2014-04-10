@@ -161,12 +161,14 @@ C:\JTSDK-QT\wsjtx\install\Debug\bin
 ----
 * Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
 
+
+////
+
 [[WINQMAKE]]
 === Windows Qmake
 
 Under Construction
 
-////
 === Linux CMake
 
 Under Construction
