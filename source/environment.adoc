@@ -124,9 +124,11 @@ C:\JTSDK\jtsdk-qtenv.bat
 [[WINUPDATE]]
 === Update
 
-To update +*JTSDK-PY or JTSDK-QT*+, you must install +*JTSDK-DOC*+ and
-perform a check-out. Developer check-out is *not* required, however, if
-you intend to work on Documentation, use your Developer account v.s. Anonymous.
+To update +*JTSDK-PY, JTSDK-QT*+, or +*JTSDK-DOC*+ you must install
++*JTSDK-DOC*+ and perform a check-out. Developer check-out is *not*
+required, however, if you intend to work on Documentation, use your
+Developer account v.s. Anonymous so you can *( check-in )* any edits
+you have made.
 
 .Update or Check-out then Update
 * Open Windows CMD Terminal, and Type:
@@ -154,11 +156,15 @@ once you have performed an initial check-out.
 * To ensure you always have the latest scripts, always perform an 
 svn update  first;
 -----
-cd C:\JTSDK-DOC\doc
+C:\JTSDK-DOC\jtsdk-doc-env.bat
+
+at the prompt type,:
+
+svn update
 
 then type,:
 
-svn update
+update
 -----
 * At this point, all three JTSDKs should be up to date, if installed.
 * A successful update should look similar to:
@@ -169,6 +175,17 @@ image::images/jtsdk-update.png[]
 === Uninstall
 * Delete (C:\JTSDK-DOC) , (C:\JTSDK-PY) or (C:\JTSDK-QT)
 * Nothing is installed to the system or registry
+
+**********************************************************************
+OmniRig Uninstall
+
+Due to recent changes in build requirements for _WSJT-X_, OmniRig
+must be installed to build Debug or Release version for _WSJT-X_. OmniRig
+comes with an "Uninstall Omni-Rig" program under Start >> Programs >>
+OmniRig.
+
+**********************************************************************
+
 
 [[NIXINSTALL]]
 == Linux SDK
