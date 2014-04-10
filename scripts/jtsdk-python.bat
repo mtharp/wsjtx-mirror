@@ -22,9 +22,7 @@ SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SRCD%;%SVND%;%TOOLS%;%SCRIPTS%;%WINDIR%;%
 REM -- VARS USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET python=%BASED%\Python33\python.exe
-SET f2py=%BASED%\Python33\Scripts\f2py.py
 IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
-DEL /Q NUL
 GOTO SELECT
 
 REM -- FROM jtsdk-pyenv.bat FIELD $1 = %1
@@ -77,7 +75,8 @@ ECHO.
 ECHO UPDATING ^( %APP_SRC% ^ )
 ECHO.
 cd %APP_SRC%
-start /wait svn cleanup 
+ECHO.
+start /wait svn cleanup
 start /wait svn update
 ECHO.
 GOTO STARTBUILD
@@ -98,7 +97,7 @@ REM -- CD into %APP_SRC% then start build
 :JTG1
 CD /D %APP_SRC%
 ECHO.
-ECHO BUILDING^: libjt.a, jt65code.exe, jt4code.exe
+ECHO BUILDING: ^( libjt.a, jt65code.exe, jt4code.exe ^)
 ECHO.
 mingw32-make -f Makefile.jtsdk
 ECHO.
@@ -108,7 +107,7 @@ REM - g2.bat
 REM -- STILL in %APP_SRC%
 :JTG2
 ECHO.
-ECHO RUNNING:: F2PY
+ECHO RUNNING: ^( F2PY ^)
 ECHO.
 python %BASED%\Python33\Scripts\f2py.py -c -I. --fcompiler=gnu95 --compiler=mingw32 --f77exec=gfortran --f90exec=gfortran --opt="-cpp -fbounds-check -O2" libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a libpthreadGC2.a -lwinmm -m Audio ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90  getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
 mv Audio.pyd WsjtMod/Audio.pyd
@@ -116,17 +115,15 @@ ECHO.
 GOTO JTG3
 
 REM -- g3.bat
-REM - CALL CXFREEZE AS IT DUMPS OUT OF MAIN BATCH AFTER COMPLETION
 REM -- STILL in %APP_SRC%
 :JTG3
 ECHO.
-ECHO RUNNING:: CX_FREEZE
+ECHO RUNNING: ^( CX_FREEZE ^)
 SET INSTALLDIR=install
 rm -rf %INSTALLDIR%
 mkdir %INSTALLDIR%
 mkdir %INSTALLDIR%\bin
 python %BASED%\Python33\Scripts\cxfreeze --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wsjt.py --target-dir=%INSTALLDIR%\bin
-REM jht CALL "%SCRIPTS%\wsjt-cxfreeze.bat"
 ECHO.
 GOTO JTG4
 
@@ -134,7 +131,7 @@ REM - g4.bat
 REM -- STILL in %APP_SRC%
 :JTG4
 ECHO.
-ECHO Copying ^( %APP_NAME% ^) Files
+ECHO COPYIING ^( %APP_NAME% ^) FILES
 ECHO.
 REM -- CLEAN TZ & DEMO FILES, COPY REMAINING FILES
 set INSTALLDIR=install
@@ -142,7 +139,6 @@ rm -rf %INSTALLDIR%/bin/tcl/tzdata
 rm -rf %INSTALLDIR%/bin/tk/demos
 cp -r RxWav %INSTALLDIR%
 cp CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt.bat %INSTALLDIR% 
-ECHO.
 GOTO REV_NUM
 REM -- FINISHED WSJT BUILD ---------------------------------
 
@@ -153,7 +149,7 @@ REM -- CD into %APP_SRC% then start build
 :PRG1
 cd %APP_SRC%
 ECHO.
-ECHO BUILDING: libwsper.a
+ECHO BUILDING: ^( libwsper.a ^)
 ECHO.
 mingw32-make -f Makefile.jtsdk libwspr.a
 GOTO PRG2
@@ -162,7 +158,7 @@ REM -- g2.bat
 REM -- STILL in %APP_SRC%
 :PRG2
 ECHO.
-ECHO RUNNING:: F2PY
+ ECHO RUNNING: ^( F2PY ^)
 ECHO.
 python %BASED%\Python33\Scripts\f2py.py -c -I. --fcompiler=gnu95 --compiler=mingw32 --f77exec=gfortran --f90exec=gfortran --opt="-cpp -fbounds-check -O2" libwspr.a libportaudio.a libfftw3f_win.a libsamplerate.a libpthreadGC2.a -lwinmm -m w wspr1.f90 getfile.f90 paterminate.f90 ftn_quit.f90 audiodev.f90
 mv w.pyd WsprMod/w.pyd
@@ -173,7 +169,7 @@ REM -- g3.bat
 REM -- STILL in %APP_SRC%
 :PRG3
 ECHO.
-ECHO BUILDING: fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe 
+ECHO BUILDING: ^( fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe  ^)
 ECHO.
 mingw32-make -f Makefile.jtsdk fmt.exe
 mingw32-make -f Makefile.jtsdk fmtave.exe
@@ -186,20 +182,19 @@ REM -- g4.bat
 REM -- STILL in %APP_SRC%
 :PRG4
 ECHO.
-ECHO RUNNING:: CX_FREEZE
+ECHO RUNNING: ^( CX_FREEZE ^)
 SET INSTALLDIR=install
 rm -rf %INSTALLDIR%
 mkdir %INSTALLDIR%
 mkdir %INSTALLDIR%\bin
 python %BASED%\Python33\Scripts\cxfreeze --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wspr.py --target-dir=%INSTALLDIR%\bin
-REM jht CALL %SCRIPTS%\wspr-cxfreeze.bat
 ECHO.
 GOTO PRG5
 
 REM -- g5.bat
 REM -- STILL in %APP_SRC%
 :PRG5
-ECHO Copying ^( %APP_NAME% ^) Files
+ECHO COPYING ^( %APP_NAME% ^) FILES
 ECHO.
 set INSTALLDIR=install
 rm -r %INSTALLDIR%/bin/tcl/tzdata
@@ -219,6 +214,24 @@ grep "$Revision:" %APP_NAME%.py |awk "{print $12}" > r.txt
 SET /P VER=<r.txt & rm r.txt
 IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
 cp -r %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+GOTO MAKEBAT
+
+REM -- GENERATE RUNTIME BATCH FILE
+:MAKEBAT
+SET FILENAME=%APP_NAME%.bat
+ECHO.
+ECHO GENERATING: ^( %APP_NAME%.bat ^)
+ECHO.
+CD /D %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
+>%APP_NAME%.bat (
+ECHO @ECHO OFF
+ECHO REM -- WSJT-WSPR batch File
+ECHO REM -- Part of the JTSDK Project
+ECHO COLOR 0A
+ECHO bin\%APP_NAME%.exe
+ECHO EXIT /B 0
+)
 GOTO ASKRUN
 
 REM - TOOL CHAIN ERROR MESSAGE
