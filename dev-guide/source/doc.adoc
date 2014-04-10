@@ -11,7 +11,7 @@ then perform the <<WINUPDATE,Update>>. This is all that is required.
 
 * Open Windows CMD terminal, at the prompt, type,:
 ----
-C:\JTSDK-DOC\jtsdk-doc.bat
+C:\JTSDK-DOC\jtsdk-docenv.bat
 ----
 * You should be presented with <<DOCMENU,Figure-1>>
 * If you have not checked out Docs previously, you will be prompted
