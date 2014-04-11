@@ -14,6 +14,7 @@ application, including documentation.
 |Hamlib3   |    |    |x     |o   |o     |
 |Mingw32   |    |x   |      |x   |      |   
 |Mingw48_32|    |    |x     |    |x     |x
+|Omni-Rig  |    |    |x     |    |      |
 |Portaudio |    |x   |      |x   |x     |x
 |Python3   |    |x   |      |x   |      |
 |Qt5       |    |    |x     |    |x     |x
@@ -29,3 +30,4 @@ application, including documentation.
 * Hamlib3 is still under development
 * Potential release dates have yet to be announced
 * Use with WSPR and WSPR-X is experimental only
+*Omni-Rig*:: Required to build WSJT-X using CMake
