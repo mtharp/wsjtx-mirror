@@ -1,5 +1,15 @@
 :prog: The WSJT Developers Guide
 
+_WSJT-X_ can be built on Windows, Linux and OS X. The primary method
+of build is using CMake with an optional Qmake {plus} Makefile using
+the UDE QtCreator. With CMake builds, you have two main options, and
+several sub-target options of build, see <<WSJTCOMPILEOPTIONS,compiling options>>
+for more details.
+
+Building on OS X is similar to that of Linux. The instructions to build
+are still under construction.
+
+[[WINCMAKE]
 === Windows CMake
 
 The preferred method of compiling _WSJT-X_ on Windows is using *JTSDK-QT*.
@@ -55,9 +65,9 @@ methods, build the full install target with +*JTSDK-QT*+ for simplicity.
 **********************************************************************
 
 IMPORTANT: The current development branch of _WSJT-X_ is using a custom
-built set of Hamlib3 binaries on Windows. At some point, after official
+built set of Hamlib3 binaries. At some point, after official
 release from the Hamlib developers, we will shift all apps using
-Hamlib 1.12.x to Hamlib3. In the meantime, follow the special instruction
+Hamlib 1.1.15 to Hamlib3. In the meantime, follow the special instruction
 for installing Hamlib3 into your JTSDK-QT directory, then continue with
 building. Hamlib3 will be included in the next JTSDK-QT release if needed.
 
@@ -162,137 +172,81 @@ C:\JTSDK-QT\wsjtx\install\Debug\bin
 * Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
 
 
-////
+=== Linux Builds
 
-[[WINQMAKE]]
-=== Windows Qmake
+Currently, there are two build methods for _WSJT-X_ on Linux:
 
-Under Construction
+* Using Cmake
+* Using Qmake
 
-=== Linux CMake
+Both builds can be done manually ( on the command line ) or automated
+via the provided Scripts. The Dev-Guide provides three scripts to
+accommodate the two builds:
 
-Under Construction
-
-=== Linux Qmake
-
-Under Construction
-
-
-This example uses Qmake and Makefile.Linux. In order to build _WSJT-X_ form
-source, install the following packages:
-
-[[DEPS]]
-----------
-# DEBIAN, UBUNTU, MINT and FRIENDS
-
-# ADD QT5 PPA (Copy and Paste as "1" command in a X-Term):
-# This can take a while to install.
-sudo add-apt-repository ppa:ubuntu-sdk-team/ppa && sudo apt-get update && \
-sudo apt-get dist-upgrade && sudo apt-get install ubuntu-sdk
-
-# AFTER QT4/5 INSTALLATION (Copy and Paste as "1" command in a X-Term):
-sudo apt-get install gcc g++ gfortran make libfftw3-dev \
-libpulse-dev hamlib libhamlib-dev pulseaudio subversion \
-libgfortran3:i386 libc6-i386 cmake
-
-----------
-
-==== WSJT-X Dependencies
 [horizontal]
-+*gcc*+:: GNU C Compiler
-+*g{plus}{plus}*+:: GNU C{plus}{plus} Compiler
-+*gfortran*+:: GNU Fortran or F90
-+*make*+:: GNU Make
-+*libqt5multimedia5-plugins*+:: QT5 Media Plugins
-+*libfftw3-dev*+:: Fast Fourier Transforms
-+*libpulse-dev*+:: Headers and Files for Pulse AUdio
-+*libhamlib-dev*+:: Headers and Files for Hamlib
-+*qtbase5-dev*+:: QT5 Base Dev Files
-+*qtmultimedia5-dev*+:: Qt5 Multimedia Dev Files
-+*pulseaudio*+:: Pulse Audio Sound Driver
-+*subversion*+:: Version Control Software
-+*libgfortran.so.3*+:: Fortran Library
-+*libc.so.6*+:: GCC C Library
-+*libm.so.6*+:: GCC C Library
-+*libgcc_s.so.1libm.so.6*+:: GCC C Library 
-+*libquadmath.so.0*+:: Quad-Precision Math Library
+*cmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using CMake
+*qmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using Qmake
+*hamlib3-build.sh*:: Bash script to checkout, update and build Hamlin3
 
-.Build Methods
+Both
 
-TIP: You can perform the steps manually if desired. Using
-the <<MAKEFILE,script>> is the preferred method. To perform the steps
-manually, use a text editor, open the file, and follow the steps.
+In order to build _WSJT-X_, manually or with the the provided build
+scripts, the following dependencies must be met:
 
-[[MAKEFILE]]
-.Script Method
-* Open a X-Term
-* Checkout +*wsjtx-makefile.sh*+ from SVN:
-
+[[LINUXDEPS]]
+.DEBIAN, UBUNTU, MINT and FRIENDS
 ----------
-# CO BUILD SCRIPT
-# use export to co a single file
-# use --force to make svn update the file if it exists
-svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-makefile.sh
 
-# CHANGE PERMISSION
-chmod +x ./wsjtx-compile.sh
+# Update Distribution
+sudo apt-get update && sudo apt-get upgrade
+
+# Install Dependencies (all one command)
+sudo apt-get install gcc g++ gfortran make libfftw3-dev \
+pulseaudio hamlib libhamlib-dev subversion libqt5multimedia5-plugins \
+qtbase5-dev qtmultimedia5-dev libgfortran3:i386 libc6-i386 cmake \
+git autoconf automake m4
 
 ----------
 
-.To Build Release version
----------
-./wsjtx-makefile.sh -r
----------
+[[NIXHAMLIB3]]
 
-.To Build Debug version
----------
-./wsjtx-makefile.sh -d
----------
+.[red]#Hamlib3 Compile Instructions#
 
-.WSJT-X Location
-* +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
-* Proceed to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
+**********************************************************************
 
-----------
-# When running from a X-Term [ ./wsjtx ], the xterm remains open.
-# This is good for testing and chasing errors. Run WSJT-X with:
+WARNING: The current development branch of _WSJT-X_ is using a custom
+built set of Hamlib3 binaries. The {page} provides a simple script
+to check-out, update then build Hamlib3 for you. This must be performed
+*prior* to building _WSJT-X_ with *CMake* If you have not done so, 
+install <<LINUXDEPS,required dependencies>> before continuing.
 
-./wsjtx
 
-# You can also use a file manager. Browse to WSJT-X dir, and open
-# as you would any other program. Using this method to launch, you
-# should not see the X-Term window.
 
-----------
+**********************************************************************
 
 === Linux CMake
 
-This example uses CMake to build WSJT-X. The same dependencies apply. If
-you have not installed the <<DEPS,dependencies>>, do so before continuing.
-
-TIP: You can perform the steps manually if desired. Using
-the <<CMAKE,script>> is the preferred method. To perform the steps
-manually, use a text editor, open the file, and follow the steps.
+This example uses CMake to build WSJT-X. If you have not installed the
+required <<DEPS,dependencies>>, do so before continuing.
 
 [[CMAKE]]
-.Script Method
+.Build With cmake-nix.sh
 * Open a terminal
-* Checkout +*wsjtx-cmake.sh*+ from SVN:
+* Checkout +*cmake-nix.sh*+ from SVN:
 
 ----------
-# CO BUILD SCRIPT
-# use export to co a single file
-# use --force to make svn update the file if it exists
-svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/wsjtx-cmake.sh
 
-# CHANGE PERMISSION
+# Checkout script
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/cmake-nix.sh
+
+# Change permissions
 chmod +x ./wsjtx-cmake.sh
 
 ----------
 
 .To Build Release version
 ---------
-./wsjtx-cmake.sh -r
+./cmake-nix.sh -r
 ---------
 
 .To Build Debug version
@@ -303,12 +257,61 @@ chmod +x ./wsjtx-cmake.sh
 .WSJT-X Location
 * +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
 
+TIP: Be sure to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
+
+=== Linux Qmake
+
+This example uses QMake to build WSJT-X. If you have not installed the
+required <<DEPS,dependencies>>, do so before continuing.
+
+[[CMAKE]]
+.Build With qmake-nix.sh
+* Open a terminal
+* Checkout +*qmake-nix.sh*+ from SVN:
+
+----------
+
+# Checkout script
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/qmake-nix.sh
+
+# Change permissions
+chmod +x ./qmake-nix.sh
+
+----------
+
+.To Build Release version
+---------
+./qmake-nix.sh -r
+---------
+
+.To Build Debug version
+---------
+./qmake-nix.sh -d
+---------
+
+.WSJT-X Location
+* +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
+
+TIP: Be sure to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
+
+----------
+
+# To Run, type:
+
+./wsjtx
+
+# You can also use a file manager. Browse to WSJT-X dir, and open
+# as you would any other program.
+
+----------
+
 [[CHKKVASD]]
 .Test KVASD
 
 Before you launch _WSJT-X_, ensure _KVASD_ can run.
 
 ----------
+
 # CHANGE DIRECTORY and RUN KVASD
 cd wsjtx-$rev_num
 ./kvasd -v
@@ -320,4 +323,3 @@ KVASD version 1.11
 ./kvasd
 
 ----------
-////

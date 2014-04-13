@@ -2,10 +2,9 @@
 
 === Windows
 
-The following matrix outlines the development package requirements for each
-application, including documentation.
+The following matrix outlines the *Windows* development package
+requirements for each application, including documentation.
 
-// Needs verified by the developers.
 .Package Matrix: x = Required, o = Optional
 [[WINDOWSPKG]]
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
@@ -26,14 +25,69 @@ application, including documentation.
 
 .COMMENTS
 [horizontal]
+*Hamlib*:: Current distro release 1.2.15.x
+*Hamlib3*:: Custom build from Bill Somerville, (G3WJS)
+* Hamlib3 is still under development
+* Potential release dates have yet to be announced
+* Use with WSPR and WSPR-X is experimental only
 *Mingw32*:: GNU 4.8.1 Tool Chain, provided by mingw.org
 *Mingw48_32*:: GNU 4.8.0 Tool Chain, provided by QT5
-*Hamlib*:: Current distro release 1.12.x
-*Hamlib3*:: Custom build from Bill Summerville, (G3WJS)
+*Omni-Rig*:: Required to build WSJT-X using CMake
+*Python3 Modules*:: WSJT and WSPR also require several Python Modules
+* Numpy (Numeric Python) v1.8.0{plus}
+* Pillow (Python Imaging) v2.3.0{plus}
+* Pmw (Python Megawidgets) v.2.0.0+ required for Python3
+* PyWin32 (Windows Extensions) 218.5{plus}, Python version specific
+* cx_Freeze (Builds Windows exe files), v4.3.2{plus}, Python3 version specific
+
+=== Linux
+
+The following matrix outlines the *Linux* development package
+requirements for each application, including documentation.
+
+Package names very between Linux distributions. Distro package names, 
+when known, are listed in the build section of each application. If
+you have a firm list of packages for your Linux distribution,
+send it to {devmail} for inclusion in the guide.
+
+.Package Matrix: x = Required, o = Optional
+[[LINUXPKG]]
+[width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
+|=================================================
+|Package    |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
+|CMake      |    |    |x     |    |x     |x
+|FFTW3F     |    |x   |x     |x   |x     |x
+|GNU Tools  |    |x   |x     |x   |x     |x
+|Hamlib     |    |    |o     |x   |x     |
+|Hamlib3    |    |    |x     |o   |o     |
+|Portaudio  |    |x   |      |x   |x     |x
+|Python3    |    |x   |      |x   |      |
+|Qt5        |    |    |x     |    |x     |x
+|Subversion |x   |x   |x     |x   |x     |x
+|=================================================
+
+WARNING: KVASD requires 32-Bit libc6. Some Linux distros
+call these multi-libs, others ia32-libs, some are individual libraries.
+If your using a 64-Bit OS the following 32-Bit libraries must be
+installed in addition too the package matrix requirements:
+
+.KVASD Requirements
+[horizontal]
+*libc.so.6*:: GCC C Library
+*libm.so.6*:: GCC C Library
+*libgcc_s.so.1libm.so.6*:: GCC C Library 
+*libquadmath.so.0*:: Quad-Precision Math Library
+
+.GENERAL COMMENTS
+[horizontal]
+*GNU Tools*:: For 64bit OS C/C++, Gfortran, Make, v4.8.0{plus}
+*Hamlib*:: Current distro release 1.2.15.x
+*Hamlib3*:: Custom build from Bill Somerville, (G3WJS)
 * Hamlib3 is still under development
 * Potential release dates have yet to be announced
 * Use with WSPR and WSPR-X is experimental only
 *Omni-Rig*:: Required to build WSJT-X using CMake
-
-=== Linux
-Under Construction
+*Python3 Modules*:: WSJT and WSPR also require several Python Modules
+* Numpy (Numeric Python) v1.8.0{plus}
+* Pillow (Python Imaging) v2.3.0{plus}
+* Pmw (Python Megawidgets) v.2.0.0+ required for Python3
