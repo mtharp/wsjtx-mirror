@@ -63,7 +63,7 @@ Edit files as needed
 
 // MAIL-TO links
 :alex_efros: mailto:powerman@powerman.name[Alex Efros]
-:bill_summerville: mailto:g4wjs@classdesign.com[G3WJS]
+:bill_somerville: mailto:g4wjs@classdesign.com[G3WJS]
 :devmail: mailto:wsjt-devel@lists.sourceforge.net[wsjt-devel]
 :dev_mail_list: http://sourceforge.net/mailarchive/forum.php?forum_name=wsjt-devel[WSJT developers email list]
 :dev_mail_svn: https://sourceforge.net/auth/subscriptions/[WSJT SVN Archives]

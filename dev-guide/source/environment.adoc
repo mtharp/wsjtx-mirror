@@ -3,19 +3,24 @@
 [[BASE_ENV]]
 Before you can start developing _WSJT_ applications, you must first 
 set up your environment. _{page}_ will use the respective *JTSDK*
-for both Windows and Linux as the containment area.
+on Windows and */home/$USER/wsjt-env* on Linux as the containment area.
 
 .The containment provides:
 * A fixed structure to work from
-* Provide system independent build tools
+* Provides system independent build tools (Windows Only)
 * Produce repeatable results
 * Create an experimental area to test builds
-* Allow full testing without system installation
+* Allows full testing without system installation (Windows Only)
 * Provide build methods for non-developer testing
 
-Software development kits are provided for Windows and Linux. Each kit
-provides the environment described above. Details of each kit can be found
-at the end of the dev-guide.
+For *Windows*, software development kits provide the containment. Each
+SDK provides the environment, plus all required tools to build a 
+particular application. Details of each kit can be found at the end of
+the Dev-Guide.
+
+For *Linux*, the containment area uses /home/$USER/wsjt-env to house
+the build scripts, any special libraries not provided by the
+distribution and the final application builds.
 
 .JTSDK Notes
 * Each kit is self contained, you should not have to install any system
@@ -24,7 +29,7 @@ level software.
 can be built using the appropriate SDK.
 * If you have one or more required packages already installed on the
 host system, the SDK will not interfere with your System Paths or use
-System Application to perform builds.
+System Applications to perform builds.
 
 .JTSDK-DOC
 * +*JTSDK-DOC*+ contains: Subversion, GNU Tools and scripts to build
@@ -54,17 +59,11 @@ hamlib-1.2, Hamlib-3 and scripts to build +*WSJT-X*+, +*WSPR-X*+ and
 .JTSDK-QT Main Menu
 image::images/jtsdk-qt-main.png[]
 
-////
-.JTSDK-NIX
-* Provides QT5, Python3 ({plus} modules), libraries and dependencies.
-* For details, see <<JTSDKNIX,JTSDK-NIX>>.
-////
 
 [[PATHCFG]]
 === Path Configuration 
 
-{page} will use the respective SDK for all build activity, and
-thus the following paths throughout:
+The following paths are used throughout {page}. 
 
 .WINDOWS
 * Scripts and final builds will under:
@@ -73,11 +72,14 @@ thus the following paths throughout:
 ** C:\JTSDK-QT
 
 .LINUX
-* JTSDK-NIX
-** /opt/jtsdk-nix
-//
-* Scripts and final builds will be under:
+* SRC, Builds, Support Libs and final binaries are in:
 ** /home/$USER/wsjt-env
+* App location:
+** /home/$USER/wsjt-env/$APP_NAME
+
+TIP: /home$USER/wsjt-env is recommended, and used in this guide. This
+keeps all _WSJT_ related activity together. The guide will also download
+the build scripts to this location.
 
 [[WININSTALL]]
 == Windows SDK
@@ -85,8 +87,8 @@ thus the following paths throughout:
 Setup and installation is straight forward. Each SDK is a self
 extracting 7z compressed file.
 
-WARNING: For Windows, the current update method for +*SDKs*+ is
-through +*JTSDK-DOC*+, as such, is a mandatory install.
+WARNING: The current update method for +*SDKs*+ is through +*JTSDK-DOC*+,
+as such, is a mandatory install.
 
 === Download
 
@@ -193,22 +195,3 @@ comes with an uninstall program located under:
 *Start >> Programs >> Omni-Rig >> Uninstall Omni-Rig*
 
 **********************************************************************
-
-////
-[[NIXINSTALL]]
-== Linux SDK
-
-Under Construction
-
-=== Download
-
-Under Construction
-
-=== Install
-
-Under Construction
-
-=== Uninstall
-
-Under Construction
-////
