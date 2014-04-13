@@ -162,7 +162,7 @@ once you have performed an initial check-out.
 * To ensure you always have the latest scripts, always perform an 
 svn update  first;
 -----
-C:\JTSDK-DOC\jtsdk-doc-env.bat
+C:\JTSDK-DOC\jtsdk-docenv.bat
 
 at the prompt type,:
 

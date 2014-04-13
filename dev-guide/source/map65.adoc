@@ -7,7 +7,7 @@ If you have not *Installed and Updated* *JTSDK-QT*, you should do so before
 continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Update>>
 
 WARNING: As of this writing, the CMake build method is being updated to
-bring it more inline with _MAP65_ builds. Expect build anomalies
+bring it more in-line with _MAP65_ builds. Expect build anomalies
 until this method has been stabilized.
 
 [[WSJTCOMPILEOPTIONS]]

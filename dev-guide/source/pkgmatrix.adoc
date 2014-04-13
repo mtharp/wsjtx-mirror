@@ -1,4 +1,7 @@
 //
+
+=== Windows
+
 The following matrix outlines the development package requirements for each
 application, including documentation.
 
@@ -31,3 +34,6 @@ application, including documentation.
 * Potential release dates have yet to be announced
 * Use with WSPR and WSPR-X is experimental only
 *Omni-Rig*:: Required to build WSJT-X using CMake
+
+=== Linux
+Under Construction
