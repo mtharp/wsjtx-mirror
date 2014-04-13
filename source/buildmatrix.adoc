@@ -1,3 +1,5 @@
+=== Windows
+
 The following matrix outlines the primary build method for
 each application. While there may be more than one build
 option per application, the primary method is used to
@@ -26,3 +28,7 @@ with the latest code changes.
 *JTSDK-QT*:: *( WSJT-X WSPR-X MAP65 )*
 * CMake {plus} build scripts
 * QtCreator {plus} Qmake {plus} Makefile.MinGW (optional)
+
+=== Linux
+Under Construction
+

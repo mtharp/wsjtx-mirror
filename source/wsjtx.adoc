@@ -11,7 +11,7 @@ used to build _WSJT-X_. Details for setting up QtCreator to build using
 this method are included in the <<JTSDKQT,JTSDK-QT Section>>.
 
 TIP: You can create a desktop shortcut to +*jtsdk-qtenv.bat*+ if
-desired. This can also be done for the final +*wsjtx.exe*+ for *Relese*
+desired. This can also be done for the final +*wsjtx.exe*+ for *Release*
 and +*wsjtx.bat*+ for *Debug*.
 
 [[WSJTCOMPILEOPTIONS]]
@@ -30,7 +30,7 @@ their edits.
 * Fast build times
 * Best options for developers and application testers
 * Qt Debug warning messages tuned on by default
-* Links QT Debug libraires, which is only availble in Debug builds
+* Links QT Debug libraries, which is only available in Debug builds
 * Uses shared dependencies 
 * Dependencies must be in %PATH% *(use wsjtx-bat)*
 * Cannot build the Installer Package
@@ -40,7 +40,7 @@ their edits.
 * Inscreased compiler optimization (-O3)
 * Qt Debug warning messages turned off
 * Relative paths are removed
-* Builds full install tree, non-system dependencies embeded {plus} qt.conf
+* Builds full install tree, non-system dependencies embedded {plus} qt.conf
 * Provides a stand-alone executable {plus} all required files
 
 TIP: If you need work on a sub-section or sub-target, you wish to
@@ -84,9 +84,9 @@ as needed.
 **********************************************************************
 
 IMPORTANT: OmniRig is another special requirement to build WSJT-X using
-CMake. This does *not* apply to Qmake builds. A binary installer is
-included with each SDK under C:\JTSDK-*\Tools. Alternatively, you can 
-download and install the latest from {dxatlas}
+CMake. A binary installer is included with each SDK under
+C:\JTSDK-*\tools. Alternatively, you can download and install the
+latest from {dxatlas}
 
 .To Install
 * OmniRig {omnirig}
