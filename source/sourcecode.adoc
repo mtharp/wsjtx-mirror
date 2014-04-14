@@ -1,8 +1,8 @@
 
 All source code for the WSJT programs is available through an open-source
 repository known as SourceForge, under control of the version-control
-program {svn}. Subversion is included in all three development kits.
-There si no need to install Subversion if you intend to build
+program {svn}. Subversion is included in all three *JTSDKs*.
+There is no need to install Subversion if you intend to build
 applications or documentation using the development kits.
 
 You can browse the organization of files in the repository {wsjt_svn}.

@@ -9,7 +9,6 @@ for more details.
 Building on OS X is similar to that of Linux. The instructions to build
 are still under construction.
 
-[[WINCMAKE]
 === Windows CMake
 
 The preferred method of compiling _WSJT-X_ on Windows is using *JTSDK-QT*.
@@ -18,7 +17,7 @@ continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Update>>
 
 Additionally, QtCreator {plus} Qmake {plus} Makefile.MinGW can be 
 used to build _WSJT-X_. Details for setting up QtCreator to build using
-this method are included in the <<JTSDKQT,JTSDK-QT Section>>.
+this method are included in the JTSDK-QT Section.
 
 TIP: You can create a desktop shortcut to +*jtsdk-qtenv.bat*+ if
 desired. This can also be done for the final +*wsjtx.exe*+ for *Release*
@@ -160,6 +159,7 @@ faster than SVN can respond, or there is an SVN comms error.
 * At build completion, you are presented with an option to
 run +*WSJT-X*+ now. Select ( Y to Run / N to Finish and Exit).
 * To manually run the newly built +*wsjtx.exe or wsjtx.bat*+, browse to:
+
 ----
 
 *For Release*
@@ -169,20 +169,22 @@ C:\JTSDK-QT\wsjtx\install\Release\bin
 C:\JTSDK-QT\wsjtx\install\Debug\bin
 
 ----
-* Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
 
+* Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
 
 === Linux Builds
 
 Currently, there are two build methods for _WSJT-X_ on Linux:
 
 * Using Cmake
-* Using Qmake
+* Using Qmake + Makefile (with or without QtCreator)
 
-Both builds can be done manually ( on the command line ) or automated
-via the provided Scripts. The Dev-Guide provides three scripts to
-accommodate the two builds:
+Both builds can be done manually ( on the command line ), automated
+via the provided scripts, or in the case oif Qmake, through QtCreator.
+The Dev-Guide provides three scripts to accommodate command line builds
+for both methods.
 
+.Linux Scripts
 [horizontal]
 *cmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using CMake
 *qmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using Qmake
@@ -207,8 +209,6 @@ qtbase5-dev qtmultimedia5-dev libgfortran3:i386 libc6-i386 cmake \
 git autoconf automake m4
 
 ----------
-
-[[NIXHAMLIB3]]
 
 .[red]#Hamlib3 Compile Instructions#
 
@@ -264,7 +264,6 @@ TIP: Be sure to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
 This example uses QMake to build WSJT-X. If you have not installed the
 required <<DEPS,dependencies>>, do so before continuing.
 
-[[CMAKE]]
 .Build With qmake-nix.sh
 * Open a terminal
 * Checkout +*qmake-nix.sh*+ from SVN:
