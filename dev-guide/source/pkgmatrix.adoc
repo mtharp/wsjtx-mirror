@@ -1,4 +1,21 @@
 //
+Generally, the package requirements are the same for Windows, Linux
+and OS X. The major differences between them is the Windows compiler
+requirement, Mingw32 or Mingw48_32 v.s. the standard GNU tools available
+in most all Linux or OS X.
+
+For *Windows*, it is possible, through the use of MSYS or Cygwin to 
+compile the required dependencies. However, it is highly recommended
+to use the Windows *JTSDKs* or pre-built binary installers from the
+respective developers.
+
+For *Linux* and *OS X*, with very few exceptions, all of the packages are
+available through their respective package managers, as such, is the recommended
+method of installation. Other than those distributions that use compiling
+as their primary install method (Arch, Gentoo, Slackware, and Friends), 
+compiling dependencies is unnecessary in most cases. If you need to
+compile a dependency from source, consult the respective website or
+details from within the package. Most are fairly straight forward.
 
 === Windows
 
@@ -9,21 +26,21 @@ requirements for each application, including documentation.
 [[WINDOWSPKG]]
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
-|Package   |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
-|CMake     |    |    |x     |    |x     |x
-|FFTW3F    |    |x   |x     |x   |x     |x
-|Hamlib    |    |    |o     |x   |x     |
-|Hamlib3   |    |    |x     |o   |o     |
-|Mingw32   |    |x   |      |x   |      |   
-|Mingw48_32|    |    |x     |    |x     |x
-|Omni-Rig  |    |    |x     |    |      |
-|Portaudio |    |x   |      |x   |x     |x
-|Python3   |    |x   |      |x   |      |
-|Qt5       |    |    |x     |    |x     |x
-|Subversion|x   |x   |x     |x   |x     |x
+|Package    |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
+|CMake      |    |    |x     |    |x     |x
+|FFTW3F     |    |x   |x     |x   |x     |x
+|Hamlib     |    |    |o     |x   |x     |
+|Hamlib3    |    |    |x     |o   |o     |
+|Mingw32    |    |x   |      |x   |      |   
+|Mingw48_32 |    |    |x     |    |x     |x
+|Omni-Rig   |    |    |x     |    |      |
+|Portaudio  |    |x   |      |x   |x     |x
+|Python3    |    |x   |      |x   |      |
+|Qt5        |    |    |x     |    |x     |x
+|Subversion |x   |x   |x     |x   |x     |x
 |=================================================
 
-.COMMENTS
+.Comments
 [horizontal]
 *Hamlib*:: Current distro release 1.2.15.x
 *Hamlib3*:: Custom build from Bill Somerville, (G3WJS)
@@ -48,7 +65,7 @@ requirements for each application, including documentation.
 Package names very between Linux distributions. Distro package names, 
 when known, are listed in the build section of each application. If
 you have a firm list of packages for your Linux distribution,
-send it to {devmail} for inclusion in the guide.
+send it to {devmail} for inclusion in {page}.
 
 .Package Matrix: x = Required, o = Optional
 [[LINUXPKG]]
@@ -61,6 +78,7 @@ send it to {devmail} for inclusion in the guide.
 |Hamlib     |    |    |o     |x   |x     |
 |Hamlib3    |    |    |x     |o   |o     |
 |Portaudio  |    |x   |      |x   |x     |x
+|Pulseaudio |    |    |x     |    |      |
 |Python3    |    |x   |      |x   |      |
 |Qt5        |    |    |x     |    |x     |x
 |Subversion |x   |x   |x     |x   |x     |x
@@ -78,7 +96,7 @@ installed in addition too the package matrix requirements:
 *libgcc_s.so.1libm.so.6*:: GCC C Library 
 *libquadmath.so.0*:: Quad-Precision Math Library
 
-.GENERAL COMMENTS
+.Comments
 [horizontal]
 *GNU Tools*:: For 64bit OS C/C++, Gfortran, Make, v4.8.0{plus}
 *Hamlib*:: Current distro release 1.2.15.x
@@ -87,6 +105,7 @@ installed in addition too the package matrix requirements:
 * Potential release dates have yet to be announced
 * Use with WSPR and WSPR-X is experimental only
 *Omni-Rig*:: Required to build WSJT-X using CMake
+*Pulseaudio*:: QT5 Runtime plug-in requirement
 *Python3 Modules*:: WSJT and WSPR also require several Python Modules
 * Numpy (Numeric Python) v1.8.0{plus}
 * Pillow (Python Imaging) v2.3.0{plus}
