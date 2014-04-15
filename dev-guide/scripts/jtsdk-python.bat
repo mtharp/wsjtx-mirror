@@ -123,7 +123,7 @@ SET INSTALLDIR=install
 rm -rf %INSTALLDIR%
 mkdir %INSTALLDIR%
 mkdir %INSTALLDIR%\bin
-python %BASED%\Python33\Scripts\cxfreeze.py --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wsjt.py --target-dir=%INSTALLDIR%\bin
+python %BASED%\Python33\Scripts\cxfreeze --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wsjt.py --target-dir=%INSTALLDIR%\bin
 ECHO.
 GOTO JTG4
 
@@ -187,7 +187,7 @@ SET INSTALLDIR=install
 rm -rf %INSTALLDIR%
 mkdir %INSTALLDIR%
 mkdir %INSTALLDIR%\bin
-python %BASED%\Python33\Scripts\cxfreeze.py --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wspr.py --target-dir=%INSTALLDIR%\bin
+python %BASED%\Python33\Scripts\cxfreeze --silent --icon=wsjt.ico --include-path=. --include-modules=Pmw wspr.py --target-dir=%INSTALLDIR%\bin
 ECHO.
 GOTO PRG5
 
