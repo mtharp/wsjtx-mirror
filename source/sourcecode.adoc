@@ -70,9 +70,9 @@ not feasible, and must be manually entered.
 .Developer Checkout Locations:
 
 [horizontal]
-+*DOCS*+:: svn{plus}ssh://USER@svn.code.sf.net/p/wsjt/wsjt/branches/doc
-+*WSJT*+:: svn{plus}ssh://USER@svn.code.sf.net/p/wsjt/wsjt/trunk
-+*WSJT-X*+:: svn{plus}ssh://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
-+*WSPR*+:: svn{plus}ssh://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-+*WSPR-X*+:: svn{plus}ssh://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
-+*MAP65*+:: svn{plus}ssh://USER@svn.code.sf.net/p/wsjt/wsjt/branches/map65
++*DOCS*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/doc
++*WSJT*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/trunk
++*WSJT-X*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
++*WSPR*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
++*WSPR-X*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
++*MAP65*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/map65

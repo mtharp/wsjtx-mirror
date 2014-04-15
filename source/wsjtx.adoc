@@ -66,7 +66,7 @@ methods, build the full install target with +*JTSDK-QT*+ for simplicity.
 IMPORTANT: The current development branch of _WSJT-X_ is using a custom
 built set of Hamlib3 binaries. At some point, after official
 release from the Hamlib developers, we will shift all apps using
-Hamlib 1.1.15 to Hamlib3. In the meantime, follow the special instruction
+Hamlib 1.2.15 to Hamlib3. In the meantime, follow the special instruction
 for installing Hamlib3 into your JTSDK-QT directory, then continue with
 building. Hamlib3 will be included in the next JTSDK-QT release if needed.
 
@@ -81,7 +81,7 @@ You should end up with *2* Hamlib directories:
 * C:\JTSDK-QT\hamlib
 * C:\JTSDK-QT\hamlib3\mingw32
 
-This will allow _WSJT-X_ to use Hamlib3 and others to use Hamlib 1.12.x
+This will allow _WSJT-X_ to use Hamlib3 and others to use Hamlib 1.2.15.x
 as needed.
 
 **********************************************************************

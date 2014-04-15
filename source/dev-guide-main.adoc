@@ -64,7 +64,6 @@ include::doc.adoc[]
 [[MAP65]]
 == MAP-65
 include::map65.adoc[]
-Under Construction
 
 [[WSJT]]
 == WSJT
@@ -81,7 +80,6 @@ include::wspr.adoc[]
 [[WSPRX]]
 == WSPR-X
 include::wsprx.adoc[]
-Under Construction
 
 :numbered!:
 ////

@@ -22,7 +22,7 @@ details from within the package. Most are fairly straight forward.
 The following matrix outlines the *Windows* development package
 requirements for each application, including documentation.
 
-.Package Matrix: x = Required, o = Optional
+.Windows Package Matrix: x = Required, o = Optional
 [[WINDOWSPKG]]
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
@@ -67,7 +67,7 @@ when known, are listed in the build section of each application. If
 you have a firm list of packages for your Linux distribution,
 send it to {devmail} for inclusion in {page}.
 
-.Package Matrix: x = Required, o = Optional
+.Linux Package Matrix: x = Required, o = Optional
 [[LINUXPKG]]
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
