@@ -24,6 +24,28 @@ DOSKEY env-info=CALL %SCRIPTS%\jtsdk-pyinfo.bat
 REM -- SVN MUST BE AVAILABLE AT STARTUP
 svn --version >nul 2>null || SET APP=SVN && GOTO ERROR1
 DEL /Q null
+GOTO PYP1
+
+REM -- REBASE CX_FREEZE PATHS
+:PYP1
+IF NOT EXIST %BASED%\Python33\Scripts\pyp1.txt (
+CLS
+ECHO.
+ECHO        Updating ^( cx_Freeze ^) Paths
+ECHO.
+ECHO This patch corrects cx_Freeze build paths.
+ECHO It should only be performed once. If you continue
+ECHO to see this message, contact the wsjt-devel group.
+ECHO.
+cd %BASED%\Python33\Scripts
+python cxfreeze-postinstall
+
+REM -- ADD PATCH MARKER
+touch %BASED%\Python33\Scripts\pyp1.txt
+ECHO Finished ...
+ECHO.
+pause
+)
 GOTO CONTINUE
 
 REM - TOOL CHAIN ERROR MESSAGE
