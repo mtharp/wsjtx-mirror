@@ -1,0 +1,36 @@
+#
+# Part of the JTSDK-NIX Project
+#
+
+# ---------------------clean up of signal catch---------------------------#
+
+# Sleep statments added for visual affects.
+
+function sig_catch_cleanup() {
+EXIT_STATUS="$?"
+
+if [[ "$EXIT_STATUS" == "0" ]]
+then
+   cleanexit
+
+else
+
+dialog --backtitle "$BACKTITLE" --title "$SIGCAUGHT" --infobox "$SIGCAUGHTMSG" 5 50
+	sleep 2
+
+dialog --backtitle "$BACKTITLE" --title "$CLEANTMP" --infobox "$CLEANTMPMSG" 5 50
+	rm -rf  ./tmp/
+	sleep 1
+
+dialog --backtitle "$BACKTITLE" --title "$RESETOPT" --infobox "$RESETOPTMSG" 5 50
+	unset_options
+	wait
+	clear
+
+	echo "Exit Status ""[ "$EXIT_STATUS" ]"
+	echo "Signal Catch Cleanup Complete"
+	trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
+	unset exit_status
+	exit
+fi
+} # end clean after signal catch

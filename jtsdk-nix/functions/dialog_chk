@@ -1,0 +1,31 @@
+#
+# Part of the JTSDK-NIX Project
+#
+
+#--------------------------dialog install check---------------------------#
+
+function dialog_chk() {
+INSTALLED=$(dialog --version |awk '{print $1}')
+
+if [[ $INSTALLED == Version: ]]; then
+   MSGCLIENT="dialog"
+
+elif [[ $INSTALLED != dialog ]]; then
+   MSGCLIENT="whiptail"
+   clear
+
+"$MSGCLIENT" --title "$DITITLE" --backtitle "$BACKTITLE" --msgbox "$DIMSG" 7 70
+   touch "$_LOGS"/install_log
+   sudo apt-get -qy install dialog | tee 2>>"$_LOGS"/install_log
+   wait
+   dialog --create-rc ~/.dialogrc
+   wait
+   cp "$_CONFIG"/debian.rc ~/.dialogrc
+   wait
+   clear
+
+dialog --title "$DISUCTITLE" --backtitle "$BACKTITLE" --msgbox "$DISUCMSG" 7 40
+sudo -k
+
+fi
+} # end dialog install check

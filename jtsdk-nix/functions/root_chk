@@ -1,0 +1,24 @@
+
+#-------------------------------root check--------------------------------#
+function root_chk() {
+local MSGCLIENT=""
+local TESTVAR=`(dpkg --get-selections dialog | awk '{print $1}')`
+
+if [[ $TESTVAR = "dialog" ]]
+then
+   MSGCLIENT="dialog"
+  else
+   MSGCLIENT="whiptail"
+fi
+clear
+
+if [[ $EUID = "0" ]]
+then
+"$MSGCLIENT" --title "$RCTITLE" --backtitle "$BACKTITLE" --msgbox "$RCMSG" 7 70
+clean_exit
+exit
+fi
+clear
+
+unset {TESTVAR,MSGCLIENT}
+} # end root_check

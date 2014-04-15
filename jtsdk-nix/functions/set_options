@@ -1,0 +1,11 @@
+
+# ---------------------------set options----------------------------------#
+# I use these options during development to catch silly errors. They are
+# not essential to the scripts themselves. The funcitons can be commented
+# out if desired.
+function set_options() {
+set -e                 # exit immediately on any error
+set -o pipefail        # pipeline fail retun exit status
+set -u                 # undefined variables
+} # end set flags
+

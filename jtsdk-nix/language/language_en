@@ -1,0 +1,54 @@
+#
+# Part of the JTSDK-NIX Project
+#
+
+#------------------------------backtitle lang-----------------------------#
+BACKTITLE="JTSDK-NIX"
+
+#-------------------------------root chk lang-----------------------------#
+RCTITLE="ROOT / SUDO CHECK FAILED"
+RCMSG="    WSJT-BUILD must be run as normal user, not root or sudo.\n\
+          Please run "$0" without "sudo" prefix"
+
+#--------------------------------dialog lang------------------------------#
+DITITLE="DIALOG INSTALL"
+DIMSG="       WSJT-BUILD Will now install Dialog Msg CLient"
+DISUCTITLE="DIALOG INSTALL COMPLETE"
+DISUCMSG="\n      Dialog Install Complete."
+
+#-------------------------------sig catch lang----------------------------#
+SIGCAUGHT="   SIGNAL CAUGHT"
+SIGCAUGHTMSG="\n   Signal Caught, Performing Cleanup Routine"
+CLEANTMP=" CLEANING TMP"
+CLEANTMPMSG="\n         Cleaning Up Temporary Files"
+RESETOPT=" RESET OPTIONS"
+RESETOPTMSG="\n         Restteing Used Bash Options"
+CLEANVAR=" CLEANING VARS"
+CLEANVARMSG="\n             Unset Used Variables"
+EXITWSDT="  EXIT WSJT-BUILD"
+EXITWSDTMSG="\n      Performing Shutdown Cleanup Routine"
+
+#------------------------------main menu lang-----------------------------#
+MMTITLE=" JTSDK-NIX BUILD MAIN MENU"
+MENUMSG="            Key the letter then hit [ENTER]\n\
+     Arrow Up/Dwn or '+' or '-' Keys to Navigate\n\n"
+
+#------------------------------help menu lang-----------------------------#
+HTITLE="HELP DOCUMENT"
+
+#--------------------------------main menu--------------------------------#
+touch ./tmp/MMenu.tmp
+cat << 'EOF' > ./tmp/MMenu.tmp 
+"A WSJT .... with Python3" "" \
+"B WSPR .... with Python3" "" \
+"C WSJT-X .. with CMake" "" \
+"D WSPR-X .. with CMake" "" \
+"F MAP65 ... with CMake" "" \
+"G WSJT-X .. with Qmake" "" \
+"H WSPR-X .. with Qmake" "" \
+"I MAP65 ... with Qmake" "" \
+"Z Build All Applicaions" "" \
+"EXIT" ""
+EOF
+
+
