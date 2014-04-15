@@ -180,15 +180,15 @@ Currently, there are two build methods for _WSJT-X_ on Linux:
 * Using Qmake + Makefile (with or without QtCreator)
 
 Both builds can be done manually ( on the command line ), automated
-via the provided scripts, or in the case oif Qmake, through QtCreator.
-The Dev-Guide provides three scripts to accommodate command line builds
+via the provided scripts, or in the case of Qmake, through QtCreator.
+{page} provides three scripts to accommodate command line builds
 for both methods.
 
 .Linux Scripts
 [horizontal]
 *cmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using CMake
 *qmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using Qmake
-*hamlib3-build.sh*:: Bash script to checkout, update and build Hamlin3
+*hamlib3-build.sh*:: Bash script to checkout, update and build Hamlib3
 
 Both
 
