@@ -47,7 +47,7 @@ cat << 'EOF' > ./tmp/MMenu.tmp
 "G WSJT-X .. with Qmake" "" \
 "H WSPR-X .. with Qmake" "" \
 "I MAP65 ... with Qmake" "" \
-"Z Build All Applicaions" "" \
+"Z Build All Applications" "" \
 "EXIT" ""
 EOF
 

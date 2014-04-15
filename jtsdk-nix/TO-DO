@@ -1,0 +1,15 @@
+TO-DO LIST
+----------
+
+* Add build script for Python33 PMW (manual install), required for WSJT and WSPR
+* Add build script for Hamlib3, required for WSJT-X
+* Add CMkae, QMake and Makefile (WSJT, WSPR) build scripts
+* Add pkg_check funciton
+* Add pkg_list_fedora pkg_list_arch pkg_list_slackware
+* Add wsjt-build-setup.sh
+* Update application manu_menu_help.txt
+
+*NEEDS*
+- Need definative list of packges for SLackware and Fedora
+- Arch list provided by Eric, N03M, need Python3 pkg_list
+

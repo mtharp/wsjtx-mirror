@@ -1,4 +1,4 @@
-UHR-DEV-TOOLS MAIN MENU HELP FILE
+JTSDK-NIX MAIN MENU HELP FILE
 
 Navigation:  You can  move  through the file by using the cursor, page-up, 
 page-down and HOME/END keys available on most keyboards.  If the lines are
