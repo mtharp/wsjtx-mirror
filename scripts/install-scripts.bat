@@ -33,6 +33,7 @@ ECHO Updating JTSDK-PY Scripts
 copy /Y %SCRIPTS%jtsdk-pyenv.bat %BASED%JTSDK-PY
 copy /Y %SCRIPTS%jtsdk-python.bat %BASED%JTSDK-PY
 copy /Y %SCRIPTS%jtsdk-pyco.bat %BASED%JTSDK-PY
+copy /Y %SCRIPTS%python33.dll %BASED%JTSDK-PY\Python33\DLLs
 ECHO.
 )
 

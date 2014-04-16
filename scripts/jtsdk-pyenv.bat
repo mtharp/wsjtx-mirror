@@ -13,7 +13,7 @@ SET TOOLS=%BASED%\tools
 SET MINGW=%BASED%\mingw32\bin
 SET SVND=%BASED%\subversion\bin
 SET SCRIPTS=%BASED%\tools\scripts
-SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\Tools\Scripts
+SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\DLLs;%BASED%\Python33\Tools\Scripts
 SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SVND%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 
 REM -- DOSKEY COMMANDS
