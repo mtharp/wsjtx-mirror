@@ -2,21 +2,21 @@
 # Part of the JTSDK-NIX Project
 #
 
-#------------------------------backtitle lang-----------------------------#
+#------------------------------backtitle lang----------------------------------#
 BACKTITLE="JTSDK-NIX"
 
-#-------------------------------root chk lang-----------------------------#
+#-------------------------------root chk lang----------------------------------#
 RCTITLE="ROOT / SUDO CHECK FAILED"
 RCMSG="    WSJT-BUILD must be run as normal user, not root or sudo.\n\
           Please run "$0" without "sudo" prefix"
 
-#--------------------------------dialog lang------------------------------#
+#--------------------------------dialog lang-----------------------------------#
 DITITLE="DIALOG INSTALL"
 DIMSG="       WSJT-BUILD Will now install Dialog Msg CLient"
 DISUCTITLE="DIALOG INSTALL COMPLETE"
 DISUCMSG="\n      Dialog Install Complete."
 
-#-------------------------------sig catch lang----------------------------#
+#-------------------------------sig catch lang---------------------------------#
 SIGCAUGHT="   SIGNAL CAUGHT"
 SIGCAUGHTMSG="\n   Signal Caught, Performing Cleanup Routine"
 CLEANTMP=" CLEANING TMP"
@@ -28,15 +28,19 @@ CLEANVARMSG="\n             Unset Used Variables"
 EXITWSDT="  EXIT WSJT-BUILD"
 EXITWSDTMSG="\n      Performing Shutdown Cleanup Routine"
 
-#------------------------------main menu lang-----------------------------#
+#--------------------------------main menu lang--------------------------------#
 MMTITLE=" JTSDK-NIX BUILD MAIN MENU"
 MENUMSG="            Key the letter then hit [ENTER]\n\
      Arrow Up/Dwn or '+' or '-' Keys to Navigate\n\n"
 
-#------------------------------help menu lang-----------------------------#
+#--------------------------------help menu lang--------------------------------#
 HTITLE="HELP DOCUMENT"
 
-#--------------------------------main menu--------------------------------#
+#-------------------------------under development------------------------------#
+UD=" UNDER DEVELOPMENT"
+UDMSG="\n       Build Method Under Development"
+
+#----------------------------------main menu-----------------------------------#
 touch ./tmp/MMenu.tmp
 cat << 'EOF' > ./tmp/MMenu.tmp 
 "A WSJT .... with Python3" "" \

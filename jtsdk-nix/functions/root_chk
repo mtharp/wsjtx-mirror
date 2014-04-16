@@ -1,5 +1,8 @@
+#
+# Part of the JTSDK-NIX Project
+#
 
-#-------------------------------root check--------------------------------#
+#----------------------------------root check----------------------------------#
 function root_chk() {
 local MSGCLIENT=""
 local TESTVAR=`(dpkg --get-selections dialog | awk '{print $1}')`

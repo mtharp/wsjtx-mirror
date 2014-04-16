@@ -53,6 +53,7 @@ _jj=$(grep -c ^processor /proc/cpuinfo)
 . $_FUNC/dialog_chk
 . $_FUNC/set_options
 . $_FUNC/unset_options
+. $_FUNC/under_development
 
 # Set a few traps to catch signals / interupts
 trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
@@ -76,7 +77,7 @@ _HELP="$_DOCS/main_menu_help.txt"
 while [ 0 ]; do
 
 dialog --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
-"$MMTITLE" --menu "$MENUMSG" 18 60 22 --file "$_TMP/MMenu.tmp" 2> "$_TMP"/selection
+"$MMTITLE" --menu "$MENUMSG" 18 60 22 --file "$_TMP/MMenu.tmp" 2> "$_TMP/selection"
 
 # get user selection
 MMSELECT="`cat $_TMP/selection |head -c 1`"
@@ -86,39 +87,37 @@ MMSELECT="`cat $_TMP/selection |head -c 1`"
 dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
      continue
 
-
    elif [[ $MMSELECT = "B" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+	under_development
+	continue
+
    elif [[ $MMSELECT = "C" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+	under_development	
+	continue
 
    elif [[ $MMSELECT = "D" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+	under_development
+	continue
 
    elif [[ $MMSELECT = "F" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+	under_development
+	continue
 
    elif [[ $MMSELECT = "G" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
-
+	under_development
+	continue
 
    elif [[ $MMSELECT = "H" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+	under_development
+	continue
 
    elif [[ $MMSELECT = "I" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+	under_development
+	continue
 
    elif [[ $MMSELECT = "Z" ]]; then
-dialog --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
-
+	under_development
+	continue
 
   elif [[ $MMSELECT = "E" ]]; then
    clean_exit
