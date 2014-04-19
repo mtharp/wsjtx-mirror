@@ -56,18 +56,11 @@ _jj=$(grep -c ^processor /proc/cpuinfo)
 . "$_FUNC"/clean_exit
 . "$_FUNC"/root_chk
 . "$_FUNC"/dialog_chk
-# . "$_FUNC"/setup_chk
+#. "$_FUNC"/setup_chk
 . "$_FUNC"/set_options
 . "$_FUNC"/unset_options
 . "$_FUNC"/under_development
 . "$_FUNC"/build_hamlib
-
-# distrobutions specific functions
-#. "$_FUNC"/arch_functions
-#. "$_FUNC"/fedora_functions
-#. "$_FUNC"/gentoo_functions
-#. "$_FUNC"/slackware_functions
-#. "$_FUNC"/ubuntu_functions
 
 # Set a few traps to catch signals / interupts
 trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
@@ -86,6 +79,13 @@ dialog_chk
 
 # setup main menu help doc var
 _HELP="$_DOCS/main_menu_help.txt"
+
+
+# distrobutions specific functions
+#. "$_FUNC"/arch_functions
+#. "$_FUNC"/fedora_functions
+#. "$_FUNC"/gentoo_functions
+#. "$_FUNC"/slackware_functions
 
 # start setup menu
 while [ 0 ]; do
@@ -120,7 +120,10 @@ if [[ $SMSELECT = "A" ]]; then
    elif [[ $SMSELECT = "U" ]]; then
 	# Ubuntu 1404, includes Lubuntu, Xubuntu
 	clear
-	build_hamlib
+	echo "Sourcing Ubuntu Setup Functions .."
+	. "$_FUNC"/ubuntu_functions
+	ubuntu_x86_64_list
+#	build_hamlib
 	continue
 
    elif [[ $SMSELECT = "H" ]]; then

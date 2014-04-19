@@ -4,20 +4,8 @@
 
 #------------------------------Ubuntu Functions--------------------------------#
 
-# check which version we are using
-function ub_distro_check() {
-
-# uname still best way to get arch ?
-_ARCH=$(uname -i)
-
-# ubuntu uses lsb_release 
-_DISTRIBUTOR=$( lsb_release -i |awk 'FNR==1 {print $3}')
-_RELEASE=$(lsb_release -r |awk '{print $2}')
-
-}
-
 # make base setup_dir is it doesnt not exist
-function ub_setup_marker() {
+function ubuntu_setup_marker() {
 
 if [[ -d ~/.local/share/applications/jtsdk-nix ]]; then
 echo "Setting up JTSDK-NIX configuration folder .."
@@ -26,40 +14,45 @@ fi
 
 }
 
-# get get original package list
-function ub_orig_pkg_list() {
-dpkg --get-selections > ~/.local/share/applications/jtsdk-nix/original_pkg.list
+# check which version we are using
+function ubuntu_distro_info() {
+
+# uname still best way to get arch ?
+echo "Getting UBuntu Information"
+_ARCH=$(uname -i)
+# ubuntu uses lsb_release 
+_DISTRIBUTOR=$(lsb_release -i |awk 'FNR==1 {print $3}' |tr [:upper:] [:lower:])
+_RELEASE=$(lsb_release -r |awk '{print $2}')
+
+echo "Setting Ubuntu Info Marker"
+cat > ~/.local/share/applications/jtsdk-nix/ubuntu.info.mkr <<EOL
+$_ARCH
+$_DISTRIBUTOR
+$_RELEASE
+EOL
+
 }
 
 # Ubuntu 64-Bit
-function ub1404_x86_64_list() {
-
-sudo apt-get install cmake dialog subversion clang-3.5 gfortran \
-libfftw3-dev git libgfortran3:i386 libusb-dev autoconf libtool \
-texinfo qt5-default qtmultimedia5-dev libqt5multimedia5-plugins \
-libsamplerate-dev portaudio19-dev python-virtualenv virtualenvwrapper
+function ubuntu_x86_64_list() {
+echo
+echo "Install WSJT Build Dependencies"
+sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_x86_64)
+touch ~/.local/share/applications/jtsdk-nix/x86_64_pkg_install.mkr
 
 }
 
 # Ubuntu 32-Bit
-function ub1404_x86_list() {
-
-sudo apt-get install cmake dialog subversion clang-3.5 gfortran \
-libfftw3-dev git libgfortran3:i386 libusb-dev autoconf libtool \
-texinfo qt5-default qtmultimedia5-dev libqt5multimedia5-plugins \
-libsamplerate-dev portaudio19-dev python-virtualenv virtualenvwrapper
+function ubuntu_x86_list() {
+echo "Install WSJT Build Dependencies"
+sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_x86)
+touch ~/.local/share/applications/jtsdk-nix/x86_pkg_install.mkr
 
 }
 
-# Python3 Setup Using Python3 (JTSDK-ENV) 
-function ub1404_pyenv_list() {
+# Python Megawidgets Build Pmw 2.0.0
+function ubuntu_x86_list() {
 
-# Add pip completion to ~/.bashrc
-pip completion --bash >> ~/.bashrc
-
-apt-get install python3-dev python-tk python3-imaging python3-imaging \
-python3-imaging-tk python-virtualenv python3-setuptools \
-python3-pip python3-numpy
+# Holding Place
 
 }
-

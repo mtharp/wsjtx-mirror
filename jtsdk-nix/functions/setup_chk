@@ -2,7 +2,7 @@
 # Part of the JTSDK-NIX Project
 # Check if basic setup has be performed
 
-#----------------------------------setup check---------------------------------#
+#-------------------------------setup chk--------------------------------------#
 
 function setup_chk() {
 local MSGCLIENT=""

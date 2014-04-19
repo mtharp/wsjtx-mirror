@@ -6,12 +6,14 @@
 
 function build_hamlib() {
 
-_GITV=$(dpkg --get-selections |grep git |awk 'FNR==1 {print $2}')
+local _GITV=$(dpkg --get-selections |grep git |awk 'FNR==1 {print $2}')
+local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib"
+_jj=$(grep -c ^processor /proc/cpuinfo)
 
 # checking for git
 	clear
 	echo "Checking Git .."
-if [[ _GITV == "git" ]]; then
+if [[ $_GITV == "install" ]]; then
 	echo "Found Git .. OK"
 
 else
@@ -27,31 +29,41 @@ else
 fi
 
 # Bills (G3WJS) Git Fork
-local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib g3wjs-hamlib"
-
+	cd "$_SRCD"
 	clear
 	echo
 	echo "BUILDING ( Hamlib )"
-	cd "$_SRCD"
 
 	# clone hamlib
-	echo "Cloning Hamlib from Bill's (G3WJS) Git Fork .. "
-	git clone "$_HAMLIBURL"
-	cd u-bsomervi-hamlib/
-
-	# checkout integration
-	echo "Checkout out integration .. "
-	git checkout integration
+	if [[ -d $_SRCD/g3wjs-hamlib ]]; then
+		cd $_SRCD/g3wjs-hamlib
+		echo "Updating Previous Hamlib Clone"	
+		git pull
+	else
+		echo
+		echo "Cloning G3WJS's Hamlib"
+		git clone "$_HAMLIBURL" g3wjs-hamlib
+	
+		# checkout integration
+		cd g3wjs-hamlib
+		echo "Checkout out integration .. "
+		git checkout integration
+	fi
 
 	# configure hamlib
-
-	mkdir -P "$_SRCD/build/hamlib"
-	cd "$_SRCD/build/hamlib"
-	"$_SRCD"/g3wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
-	make && make install
-	echo
-	echo "Finished Building Hamlib .."
-	echo
-	read -p "Press [Enter] continue .."
-	echo
+	if [[ -d $_SRCD/build/hamlib ]]; then
+		cd "$_SRCD"/build/hamlib
+		make clean
+	else
+		mkdir -p "$_SRCD"/build/hamlib
+		cd "$_SRCD"/build/hamlib
+		"$_SRCD"/g3wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
+		make -j$_JJ
+		make install
+		echo
+		echo "Finished Building Hamlib .."
+		echo
+		read -p "Press [Enter] continue .."
+		echo
+	fi
 }
