@@ -33,6 +33,9 @@ MMTITLE=" JTSDK-NIX BUILD MAIN MENU"
 MENUMSG="            Key the letter then hit [ENTER]\n\
      Arrow Up/Dwn or '+' or '-' Keys to Navigate\n\n"
 
+#--------------------------------setup menu lang-------------------------------#
+SMTITLE=" JTSDK-NIX SETUP MAIN MENU"
+
 #--------------------------------help menu lang--------------------------------#
 HTITLE="HELP DOCUMENT"
 
@@ -43,7 +46,7 @@ SETUPMSG="\n   In Order to use JTSDK-NIX, you must first run setup.sh \n\
 
 #-------------------------------under development------------------------------#
 UD=" UNDER DEVELOPMENT"
-UDMSG="\n       Build Method Under Development"
+UDMSG="\n      Build Selection is Under Development"
 
 #----------------------------------main menu-----------------------------------#
 touch ./tmp/MMenu.tmp
@@ -57,6 +60,18 @@ cat << 'EOF' > ./tmp/MMenu.tmp
 "H WSPR-X .. with Qmake" "" \
 "I MAP65 ... with Qmake" "" \
 "Z Build All Applications" "" \
+"EXIT" ""
+EOF
+
+#--------------------------------setup main menu-------------------------------#
+touch ./tmp/SMenu.tmp
+cat << 'EOF' > ./tmp/SMenu.tmp 
+"A Arch" "" \
+"F Fedora 20+" "" \
+"G Gentoo" "" \
+"S Slackware 14+" "" \
+"U Ubuntu 1404 & Friends" "" \
+"H Help File" "" \
 "EXIT" ""
 EOF
 

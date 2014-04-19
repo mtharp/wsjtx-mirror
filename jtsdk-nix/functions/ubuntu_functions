@@ -1,31 +1,11 @@
-#! /usr/bin/env bash
 #
-# Name			: ubuntu-setup.sh
-# Execution		: used by setup.sh for UBuntu systems
-# Author		: Greg, Beam, ki7mt -at- yahoo.com
-# Copyright		: Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
-# Contributors	: KI7MT
-#
-# ubuntu-setup.sh is part of the JTSDK-NIX project
-#
-# JTSDK-NIX is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation either version 3 of the License, or
-# (at your option) any later version. 
-#
-# JTSDK-NIX is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#------------------------------------------------------------------------------#
+# Part of the JTSDK-NIX Project
+# Function Library for Ubuntu setup
 
-set -e
+#------------------------------Ubuntu Functions--------------------------------#
 
 # check which version we are using
-function ubuntu_distro_check() {
+function ub_distro_check() {
 
 # uname still best way to get arch ?
 _ARCH=$(uname -i)
@@ -37,7 +17,7 @@ _RELEASE=$(lsb_release -r |awk '{print $2}')
 }
 
 # make base setup_dir is it doesnt not exist
-function setup_marker() {
+function ub_setup_marker() {
 
 if [[ -d ~/.local/share/applications/jtsdk-nix ]]; then
 echo "Setting up JTSDK-NIX configuration folder .."
@@ -47,13 +27,12 @@ fi
 }
 
 # get get original package list
-function original_pkg_list() {
+function ub_orig_pkg_list() {
 dpkg --get-selections > ~/.local/share/applications/jtsdk-nix/original_pkg.list
 }
 
-
 # Ubuntu 64-Bit
-function ub1404_x86_64() {
+function ub1404_x86_64_list() {
 
 sudo apt-get install cmake dialog subversion clang-3.5 gfortran \
 libfftw3-dev git libgfortran3:i386 libusb-dev autoconf libtool \
@@ -63,7 +42,7 @@ libsamplerate-dev portaudio19-dev python-virtualenv virtualenvwrapper
 }
 
 # Ubuntu 32-Bit
-function ub1404_x86() {
+function ub1404_x86_list() {
 
 sudo apt-get install cmake dialog subversion clang-3.5 gfortran \
 libfftw3-dev git libgfortran3:i386 libusb-dev autoconf libtool \
@@ -73,7 +52,7 @@ libsamplerate-dev portaudio19-dev python-virtualenv virtualenvwrapper
 }
 
 # Python3 Setup Using Python3 (JTSDK-ENV) 
-function python_env_setup() {
+function ub1404_pyenv_list() {
 
 # Add pip completion to ~/.bashrc
 pip completion --bash >> ~/.bashrc
@@ -83,6 +62,4 @@ python3-imaging-tk python-virtualenv python3-setuptools \
 python3-pip python3-numpy
 
 }
-
-
 

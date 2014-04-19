@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 #
-# Name			: JTSDK-NIX
-# Execution		: As normal user ./wsjt-build.sh
+# Name			: setup.sh
+# Execution		: ./setup.fh
 # Author		: Greg, Beam, ki7mt -at- yahoo.com
 # Copyright		: Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
 # Contributors	: KI7MT
@@ -18,7 +18,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+
+# error on exit
+set -e
 
 # set a reasonable initial window size
 printf '\e[8;28;100t'
@@ -47,17 +50,24 @@ _MKRD=~/.local/share/applications/jtsdk-nix
 _HAMLIBD="/home/$USER/Projects/jtsdk-nix/hamlib"
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
-# source functions and language
+# source general functions and language
 . "$_LANG"/language_en
 . "$_FUNC"/sig_catch_cleanup
 . "$_FUNC"/clean_exit
 . "$_FUNC"/root_chk
 . "$_FUNC"/dialog_chk
-. "$_FUNC"/setup_chk
+# . "$_FUNC"/setup_chk
 . "$_FUNC"/set_options
 . "$_FUNC"/unset_options
 . "$_FUNC"/under_development
-. "$_FUNC"/cmake_nix
+. "$_FUNC"/build_hamlib
+
+# distrobutions specific functions
+#. "$_FUNC"/arch_functions
+#. "$_FUNC"/fedora_functions
+#. "$_FUNC"/gentoo_functions
+#. "$_FUNC"/slackware_functions
+#. "$_FUNC"/ubuntu_functions
 
 # Set a few traps to catch signals / interupts
 trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
@@ -72,64 +82,53 @@ root_chk
 dialog_chk
 
 # initial setup marker check
-setup_chk
+# setup_chk
 
 # setup main menu help doc var
 _HELP="$_DOCS/main_menu_help.txt"
 
-# setup main menu
+# start setup menu
 while [ 0 ]; do
 
 dialog --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
-"$MMTITLE" --menu "$MENUMSG" 18 60 22 --file "$_TMP/MMenu.tmp" 2> "$_TMP/selection"
+"$SMTITLE" --menu "$MENUMSG" 16 60 22 --file "$_TMP/SMenu.tmp" 2> "$_TMP/setup_selection"
 
 # get user selection
-MMSELECT="`cat $_TMP/selection |head -c 1`"
+SMSELECT="`cat $_TMP/setup_selection |head -c 1`"
 
-# Used for help-section when ready
-# dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-
-# start main menu options
-if [[ $MMSELECT = "A" ]]; then
-	_APP_NAME=wsjtx
-	_OPTION=Release
-	cmake_nix
-	continue
-
-   elif [[ $MMSELECT = "B" ]]; then
+# start setup menu options
+if [[ $SMSELECT = "A" ]]; then
+	# Arch Current Build
 	under_development
 	continue
 
-   elif [[ $MMSELECT = "C" ]]; then
+   elif [[ $SMSELECT = "F" ]]; then
+	# Fedora-20+
+	under_development
+	continue
+
+   elif [[ $SMSELECT = "G" ]]; then
+	# Gentoo - Current Bild
 	under_development	
 	continue
 
-   elif [[ $MMSELECT = "D" ]]; then
-	under_development
+   elif [[ $SMSELECT = "S" ]]; then
+	# Slaskware 14.1+
+	under_development	
 	continue
 
-   elif [[ $MMSELECT = "F" ]]; then
-	under_development
+   elif [[ $SMSELECT = "U" ]]; then
+	# Ubuntu 1404, includes Lubuntu, Xubuntu
+	clear
+	build_hamlib
 	continue
 
-   elif [[ $MMSELECT = "G" ]]; then
-	under_development
+   elif [[ $SMSELECT = "H" ]]; then
+dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
 	continue
 
-   elif [[ $MMSELECT = "H" ]]; then
-	under_development
-	continue
-
-   elif [[ $MMSELECT = "I" ]]; then
-	under_development
-	continue
-
-   elif [[ $MMSELECT = "Z" ]]; then
-	under_development
-	continue
-
-  elif [[ $MMSELECT = "E" ]]; then
-   clean_exit
+  elif [[ $SMSELECT = "E" ]]; then
+	clean_exit
    fi
 done
 

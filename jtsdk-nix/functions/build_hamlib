@@ -1,13 +1,57 @@
 #
 # Part of the JTSDK-NIX Project
-#
+# Custom Hamlib Build from Bill (G3WJS) Fork
 
-#-----------------------------build_shutdown-----------------------------------#
+#------------------------------hamlib build------------------------------------#
+
 function build_hamlib() {
 
-# add steps
+_GITV=$(dpkg --get-selections |grep git |awk 'FNR==1 {print $2}')
 
+# checking for git
+	clear
+	echo "Checking Git .."
+if [[ _GITV == "git" ]]; then
+	echo "Found Git .. OK"
 
+else
+	echo
+	echo "GIT ERROR"
+	echo
+	echo "Git was not found, please check your installation"
+	echo "and ensure Git can be used from ( $USER ) account"
+	echo
+	read -p "Press [Enter] continue .."
+	echo
+	clean_exit
+fi
+
+# Bills (G3WJS) Git Fork
+local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib g3wjs-hamlib"
+
+	clear
+	echo
+	echo "BUILDING ( Hamlib )"
+	cd "$_SRCD"
+
+	# clone hamlib
+	echo "Cloning Hamlib from Bill's (G3WJS) Git Fork .. "
+	git clone "$_HAMLIBURL"
+	cd u-bsomervi-hamlib/
+
+	# checkout integration
+	echo "Checkout out integration .. "
+	git checkout integration
+
+	# configure hamlib
+
+	mkdir -P "$_SRCD/build/hamlib"
+	cd "$_SRCD/build/hamlib"
+	"$_SRCD"/g3wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
+	make && make install
+	echo
+	echo "Finished Building Hamlib .."
+	echo
+	read -p "Press [Enter] continue .."
+	echo
 }
-
-
