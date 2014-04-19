@@ -1,0 +1,13 @@
+#
+# Part of the JTSDK-NIX Project
+#
+
+#-----------------------------build_shutdown-----------------------------------#
+function build_hamlib() {
+
+# add steps
+
+
+}
+
+

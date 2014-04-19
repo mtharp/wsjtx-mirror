@@ -3,7 +3,8 @@ TO-DO LIST
 
 *SCRIPTS*
 * Add CMkae, QMake and Makefile (WSJT, WSPR) build scripts
-* Add wsjt-build-setup.sh
+* Add setup.sh
+* Add uninstall.sh
 
 *NEEDED INFO*
 - Packges for Slackware and Fedora
@@ -19,4 +20,5 @@ TO-DO LIST
 - dev_info (get dev info for use with checkouts, no PW's)
 - cmake_custom_options (options for to switch on/off various options)
 - intel_compilers_config (options for testing with Intel C/C++, iFort compiers)
-- uninstall.sh
+
+

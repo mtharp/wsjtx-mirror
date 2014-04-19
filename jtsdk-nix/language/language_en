@@ -36,6 +36,11 @@ MENUMSG="            Key the letter then hit [ENTER]\n\
 #--------------------------------help menu lang--------------------------------#
 HTITLE="HELP DOCUMENT"
 
+#--------------------------------setup check lang------------------------------#
+SETUPTITLE="  SETUP REQUIRED"
+SETUPMSG="\n   In Order to use JTSDK-NIX, you must first run setup.sh \n\
+     Select 'OK' then at command prompt run: ./setup.sh\n"
+
 #-------------------------------under development------------------------------#
 UD=" UNDER DEVELOPMENT"
 UDMSG="\n       Build Method Under Development"

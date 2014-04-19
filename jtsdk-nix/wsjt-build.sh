@@ -2,9 +2,9 @@
 #
 # Name			: JTSDK-NIX
 # Execution		: As normal user ./wsjt-build.sh
-# Author			: Greg, Beam, ki7mt -at- yahoo.com
+# Author		: Greg, Beam, ki7mt -at- yahoo.com
 # Copyright		: Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
-# Contributors : KI7MT
+# Contributors	: KI7MT
 #
 # JTSDK-NIX is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ _LANG="$BASED/language"
 _LOGS="$BASED/logs"
 _SRC="$BASED/src"
 _TMP="$BASED/tmp"
+_MKRD=~/.local/share/applications/jtsdk-nix
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source functions and language
@@ -51,6 +52,7 @@ _jj=$(grep -c ^processor /proc/cpuinfo)
 . $_FUNC/clean_exit
 . $_FUNC/root_chk
 . $_FUNC/dialog_chk
+. $_FUNC/setup_chk
 . $_FUNC/set_options
 . $_FUNC/unset_options
 . $_FUNC/under_development
@@ -68,7 +70,7 @@ root_chk
 dialog_chk
 
 # initial setup marker check
-# setup_check
+setup_chk
 
 # setup main menu help doc var
 _HELP="$_DOCS/main_menu_help.txt"
