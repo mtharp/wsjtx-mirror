@@ -20,17 +20,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
 
-# check which version we are using
-function setup_marker() {
-
-if [[ -d ~/.local/share/applications/jtsdk-nix ]]; then
-mkdir -p ~/.local/share/applications/jtsdk-nix
-fi
-
-}
-
+set -e
 
 # check which version we are using
 function ubuntu_distro_check() {
@@ -43,6 +35,22 @@ _DISTRIBUTOR=$( lsb_release -i |awk 'FNR==1 {print $3}')
 _RELEASE=$(lsb_release -r |awk '{print $2}')
 
 }
+
+# make base setup_dir is it doesnt not exist
+function setup_marker() {
+
+if [[ -d ~/.local/share/applications/jtsdk-nix ]]; then
+echo "Setting up JTSDK-NIX configuration folder .."
+mkdir -p ~/.local/share/applications/jtsdk-nix
+fi
+
+}
+
+# get get original package list
+function original_pkg_list() {
+dpkg --get-selections > ~/.local/share/applications/jtsdk-nix/original_pkg.list
+}
+
 
 # Ubuntu 64-Bit
 function ub1404_x86_64() {
@@ -63,7 +71,6 @@ texinfo qt5-default qtmultimedia5-dev libqt5multimedia5-plugins \
 libsamplerate-dev portaudio19-dev python-virtualenv virtualenvwrapper
 
 }
-
 
 # Python3 Setup Using Python3 (JTSDK-ENV) 
 function python_env_setup() {

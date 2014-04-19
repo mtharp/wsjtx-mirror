@@ -24,38 +24,40 @@
 printf '\e[8;28;100t'
 
 # set script path's
-cd "$(dirname ${BASH_SOURCE[0]})"
 BASED=$(pwd -P)
 
 # Using cmake and qmake directories allows for build comparison.
-# When Custom Compilers are uses (Intel, etc), additional folders should be
-# created by the build script
-mkdir -p $BASED/{tmp,src}
-mkdir -p $BASED/{wsjt,wspr}
-mkdir -p $BASED/{wsjtx,wsprx,map65}/qmake/install
-mkdir -p $BASED/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
+# Need to add support for multiple compilers {g++, intel, clang}
+mkdir -p "$BASED"/{tmp,src}
+mkdir -p "$BASED"/{wsjt,wspr}
+mkdir -p "$BASED"/{wsjtx,wsprx,map65}/qmake/install
+mkdir -p "$BASED"/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
 
-# set vars
+# main vars
 _CONFIG="$BASED/config"
 _DOCS="$BASED/docs"
 _FUNC="$BASED/functions"
 _LANG="$BASED/language"
 _LOGS="$BASED/logs"
-_SRC="$BASED/src"
+_SRCD="$BASED/src"
 _TMP="$BASED/tmp"
 _MKRD=~/.local/share/applications/jtsdk-nix
+
+# process vars
+_HAMLIBD="/home/$USER/Projects/jtsdk-nix/hamlib"
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source functions and language
-. $_LANG/language_en
-. $_FUNC/sig_catch_cleanup
-. $_FUNC/clean_exit
-. $_FUNC/root_chk
-. $_FUNC/dialog_chk
-. $_FUNC/setup_chk
-. $_FUNC/set_options
-. $_FUNC/unset_options
-. $_FUNC/under_development
+. "$_LANG"/language_en
+. "$_FUNC"/sig_catch_cleanup
+. "$_FUNC"/clean_exit
+. "$_FUNC"/root_chk
+. "$_FUNC"/dialog_chk
+. "$_FUNC"/setup_chk
+. "$_FUNC"/set_options
+. "$_FUNC"/unset_options
+. "$_FUNC"/under_development
+. "$_FUNC"/cmake_nix
 
 # Set a few traps to catch signals / interupts
 trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
@@ -85,9 +87,11 @@ dialog --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
 MMSELECT="`cat $_TMP/selection |head -c 1`"
 
 # start main menu options
-   if [[ $MMSELECT = "A" ]]; then
-dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-     continue
+if [[ $MMSELECT = "A" ]]; then
+	_APP_NAME=wsjtx
+	_OPTION=Release
+	cmake_nix
+	continue
 
    elif [[ $MMSELECT = "B" ]]; then
 	under_development
@@ -118,7 +122,7 @@ dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$
 	continue
 
    elif [[ $MMSELECT = "Z" ]]; then
-	under_development
+dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
 	continue
 
   elif [[ $MMSELECT = "E" ]]; then
