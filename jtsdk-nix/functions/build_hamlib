@@ -28,24 +28,24 @@ else
 	clean_exit
 fi
 
-# Bills (G3WJS) Git Fork
+# Bills (G4WJS) Git Fork
 	cd "$_SRCD"
 	clear
 	echo
 	echo "BUILDING ( Hamlib )"
 
 	# clone hamlib
-	if [[ -d $_SRCD/g3wjs-hamlib ]]; then
-		cd $_SRCD/g3wjs-hamlib
+	if [[ -d $_SRCD/g4wjs-hamlib ]]; then
+		cd $_SRCD/g4wjs-hamlib
 		echo "Updating Previous Hamlib Clone"	
 		git pull
 	else
 		echo
 		echo "Cloning G3WJS's Hamlib"
-		git clone "$_HAMLIBURL" g3wjs-hamlib
+		git clone "$_HAMLIBURL" g4wjs-hamlib
 	
 		# checkout integration
-		cd g3wjs-hamlib
+		cd g4wjs-hamlib
 		echo "Checkout out integration .. "
 		git checkout integration
 	fi
@@ -57,7 +57,7 @@ fi
 	else
 		mkdir -p "$_SRCD"/build/hamlib
 		cd "$_SRCD"/build/hamlib
-		"$_SRCD"/g3wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
+		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
 		make -j$_JJ
 		make install
 		echo

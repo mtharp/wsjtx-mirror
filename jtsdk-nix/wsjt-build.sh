@@ -44,7 +44,7 @@ _TMP="$BASED/tmp"
 _MKRD=~/.local/share/applications/jtsdk-nix
 
 # process vars
-_HAMLIBD="/home/$USER/Projects/jtsdk-nix/hamlib"
+_HAMLIBD="$BASED/hamlib"
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source functions and language
