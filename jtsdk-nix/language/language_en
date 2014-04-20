@@ -67,10 +67,10 @@ EOF
 touch ./tmp/SMenu.tmp
 cat << 'EOF' > ./tmp/SMenu.tmp 
 "A Arch" "" \
-"F Fedora 20+" "" \
+"F Fedora" "" \
 "G Gentoo" "" \
 "S Slackware 14+" "" \
-"U Ubuntu 1404 & Friends" "" \
+"U Ubuntu" "" \
 "H Help File" "" \
 "EXIT" ""
 EOF

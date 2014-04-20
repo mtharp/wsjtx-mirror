@@ -8,10 +8,8 @@ function build_hamlib() {
 
 local _GITV=$(dpkg --get-selections |grep git |awk 'FNR==1 {print $2}')
 local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib"
-local declare -a hamlib-bin=('rigctl' 'rigctld' 'rigmem' 'rigsmtr' 'rigswr' 'rotctl' 'rotctlf')
-local declare -a hamlib-lib=('libhamlib.a' 'libhamlib++.a')
-_jj=$(grep -c ^processor /proc/cpuinfo)
-
+local _INSTALLD="$HOME/.local/share/applications/hamlib"
+_LOG=$BASED/logs/hamlib-build.log
 
 # checking for git
 	clear
@@ -31,75 +29,88 @@ else
 	clean_exit
 fi
 
+echo "Starting Hamlib Build" > $_LOG
+echo "--------------------------------------------------------------------------" > $_LOG
+echo  > $_LOG
+
+# start build log
+(
 # Bills (G4WJS) Git Fork
+	if [[ -f $_LOG ]]; then
+		mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
+		touch $_LOG
+	else
+		touch $_LOG
+	fi
+
 	cd "$_SRCD"
 	clear
 	echo
 	echo "BUILDING ( Hamlib )"
 
-	# clone hamlib
-	if [[ -d $_SRCD/g4wjs-hamlib ]]; then
-		cd $_SRCD/g4wjs-hamlib
-		echo "Updating Previous Hamlib Clone"	
-		git pull
-	else
+	# clone or update hamlib
+	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
 		echo
 		echo "Cloning G3WJS's Hamlib"
 		git clone "$_HAMLIBURL" g4wjs-hamlib
 	
 		# checkout integration
+		echo "Checkout out integration .. "	
 		cd g4wjs-hamlib
-		echo "Checkout out integration .. "
 		git checkout integration
+
+	else
+		cd $_SRCD/g4wjs-hamlib
+		echo "Updating Previous Hamlib Clone"	
+		git pull
 	fi
 
 	# configure hamlib
 	if [[ -d $_SRCD/build/hamlib ]]; then
 		cd "$_SRCD"/build/hamlib
-		make clean
+		make -s clean
+		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+		make -s -j$(grep -c ^processor /proc/cpuinfo)
+		make -s install
+		sleep 1
 	else
 		mkdir -p "$_SRCD"/build/hamlib
 		cd "$_SRCD"/build/hamlib
-		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
-		make -j$_JJ
-		make install
+		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+		make -s -j$(grep -c ^processor /proc/cpuinfo)
+		make -s install
 		sleep 1
 	fi
 
 	echo
 	echo "Performing Post Build Check"
-	echo "Checking $BASED/hamlib/bin files"
-	touch $_TMP/counter
+	echo
+	rm -rf $_TMP/counter && touch $_TMP/counter
 
-	# check hamlib bin
-	for f in "${hamlib-bin[@]}"
-		do
-			if [[ -f cd $BASED/hamlib/$f ]]; then
-				echo $f is ... OK
-				echo $F >> $_TMP/counter
-				sleep 1
-			else
-				echo $f is ... MISSING
-			fi
-	done
-	echo "Checking $BASED/hamlib/lib files"
+	# check thaat files exist at least
+	while read f; do
+		if [[ -f $_INSTALLD/$f ]]; then
+			echo $f is ... OK
+			echo $f >> $_TMP/counter
+		else
+			echo $f is ... MISSING
+		fi
+	done < $_CFG/pkg_list_hamlib
 
-	# check hamlib bin
-	for f in "${hamlib-lib[@]}"
-		do
-			if [[ -f cd $BASED/hamlib/$f ]]; then
-				echo $f is ... OK
-				echo $F >> $_TMP/counter
-				sleep 1
-			else
-				echo $f is ... MISSING
-			fi
-	done
+) 2>&1 | tee -a $_LOG # end build log
 
 	# get counter info
 	_LINES=$(wc -l < "$_TMP/counter")
-	if [[ $_LINES -eq "9" ]]; then
-		echo "All critical Hamlib files were were found"
+	if [[ $_LINES -ge "18" ]]; then
+		echo
+		echo "All Critical Files Found"
+		echo "To Review the build log, see:"
+		echo
+		echo $BASED/logs/hamlib-build.log
+		echo
+		echo "Finished Building Hamlib"
+		echo
+		read -p "Press [Enter] to continue .."
 	else
 		echo
 		echo "Something went wrong with the build."
@@ -112,24 +123,5 @@ fi
 		echo
 		read -p "Press [Enter] to continue ..."
 		clean_exit
-	fi
-
-	echo "Checking all files .."
-	find $BASED/hamlib -type d -print | wc -l > /dev/null 2>&1
-
-
-	if [[ $? -ge "14" ]]; then
-		echo 
-		echo "Finished Building Hamlib .."
-		echo
-		read -p "Press [Enter] to continue .."
-	else
-		echo
-		echo "There are some anomalies in the build,"
-		echo "but do not appear critical. If you have"
-		echo "trouble with rig control, consider"
-		echo "re-building Hamlib3 manually"
-		echo
-		read -p "Press [Enter] to continue .."
 	fi
 }

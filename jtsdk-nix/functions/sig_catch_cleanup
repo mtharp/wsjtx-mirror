@@ -11,7 +11,7 @@ EXIT_STATUS="$?"
 
 if [[ "$EXIT_STATUS" == "0" ]]
 then
-   cleanexit
+   clean_exit
 
 else
 

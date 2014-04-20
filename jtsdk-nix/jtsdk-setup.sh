@@ -37,17 +37,17 @@ mkdir -p "$BASED"/{wsjtx,wsprx,map65}/qmake/install
 mkdir -p "$BASED"/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
 
 # main vars
-_CONFIG="$BASED/config"
+_CFG="$BASED/config"
 _DOCS="$BASED/docs"
 _FUNC="$BASED/functions"
 _LANG="$BASED/language"
 _LOGS="$BASED/logs"
 _SRCD="$BASED/src"
 _TMP="$BASED/tmp"
-_MKRD=~/.local/share/applications/jtsdk-nix
+_MKRD="$HOME"/.local/share/applications/jtsdk-nix
 
 # process vars
-_HAMLIBD="/home/$USER/Projects/jtsdk-nix/hamlib"
+_HAMLIBD="$BASED/hamlib"
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source general functions and language
@@ -60,7 +60,6 @@ _jj=$(grep -c ^processor /proc/cpuinfo)
 . "$_FUNC"/set_options
 . "$_FUNC"/unset_options
 . "$_FUNC"/under_development
-. "$_FUNC"/build_hamlib
 
 # Set a few traps to catch signals / interupts
 trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
@@ -74,18 +73,8 @@ root_chk
 # checking for package dialog
 dialog_chk
 
-# initial setup marker check
-# setup_chk
-
 # setup main menu help doc var
 _HELP="$_DOCS/main_menu_help.txt"
-
-
-# distrobutions specific functions
-#. "$_FUNC"/arch_functions
-#. "$_FUNC"/fedora_functions
-#. "$_FUNC"/gentoo_functions
-#. "$_FUNC"/slackware_functions
 
 # start setup menu
 while [ 0 ]; do
@@ -97,35 +86,84 @@ dialog --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
 SMSELECT="`cat $_TMP/setup_selection |head -c 1`"
 
 # start setup menu options
+
+#-------------------------------Arch Linux ------------------------------------#
 if [[ $SMSELECT = "A" ]]; then
 	# Arch Current Build
 	under_development
 	continue
 
+#---------------------------------Fedora---------------------------------------#
    elif [[ $SMSELECT = "F" ]]; then
 	# Fedora-20+
 	under_development
 	continue
 
+#---------------------------------Fedora---------------------------------------#
    elif [[ $SMSELECT = "G" ]]; then
 	# Gentoo - Current Bild
 	under_development	
 	continue
 
+#---------------------------------Slackware------------------------------------#
    elif [[ $SMSELECT = "S" ]]; then
 	# Slaskware 14.1+
 	under_development	
 	continue
 
+#---------------------------------Ubuntu---------------------------------------#
    elif [[ $SMSELECT = "U" ]]; then
-	# Ubuntu 1404, includes Lubuntu, Xubuntu
-	clear
-	echo "Sourcing Ubuntu Setup Functions .."
-	. "$_FUNC"/ubuntu_functions
-	ubuntu_x86_64_list
-#	build_hamlib
+		# Ubuntu 1404, includes Lubuntu, Xubuntu
+		clear
+		echo "JTSDK-NIOX SETUP"
+		source "$_FUNC"/ubuntu_functions
+		ubuntu_setup_marker
+		ubuntu_distro_info
+		echo
+		echo 'Distribution .. '"$_DISTRIBUTOR"
+		echo 'Release ....... '"$_RELEASE"
+		echo 'Arch .......... '"$_ARCH"
+		echo
+		echo "The following packages with be Checked or Installed"
+		echo
+		cat $_CFG/pkg_list_ubuntu_$(uname -m) | column
+		echo
+
+		# moment of truth, install or no :-)
+		while [ 1 ]
+		do
+			echo
+			read -p "Start Installation? [ Y/N ]: " yn
+			case $yn in
+			[Yy]* )
+				echo
+				echo "Installing Packages for $_DISTRIBUTOR $_RELEASE $_ARCH"
+				echo
+				ubuntu_pkg_list
+				echo
+				read -p "Install complete, press [Enter] to continue"
+				break ;;
+			[Nn]* )
+				break ;;
+			* )
+				clear
+				echo "Please use "Y" yes or "N" No."
+			;;
+			esac
+		done
+
+		echo
+		echo "Performing post installation package check"
+		echo
+		echo "Post install package check complete"
+		echo
+		echo "Setting up Hamlib"
+		source "$_FUNC"/build_hamlib
+		sleep 1
+		build_hamlib
 	continue
 
+#-----------------------------------Help---------------------------------------#
    elif [[ $SMSELECT = "H" ]]; then
 dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
 	continue

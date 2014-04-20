@@ -6,26 +6,19 @@
 
 # make base setup_dir is it doesnt not exist
 function ubuntu_setup_marker() {
-
-if [[ -d ~/.local/share/applications/jtsdk-nix ]]; then
-echo "Setting up JTSDK-NIX configuration folder .."
-mkdir -p ~/.local/share/applications/jtsdk-nix
-fi
-
+	mkdir -p $_MKRD
 }
 
 # check which version we are using
 function ubuntu_distro_info() {
 
-# uname still best way to get arch ?
-echo "Getting UBuntu Information"
-_ARCH=$(uname -i)
-# ubuntu uses lsb_release 
-_DISTRIBUTOR=$(lsb_release -i |awk 'FNR==1 {print $3}' |tr [:upper:] [:lower:])
+touch $_MKRD/ubuntu.info.mkr
+_DISTRIBUTOR=$(lsb_release -i |awk 'FNR==1 {print $3}')
 _RELEASE=$(lsb_release -r |awk '{print $2}')
+_ARCH=$(uname -m)
 
-echo "Setting Ubuntu Info Marker"
-cat > ~/.local/share/applications/jtsdk-nix/ubuntu.info.mkr <<EOL
+# ubuntu uses lsb_release 
+cat > $_MKRD/ubuntu.info.mkr <<EOL
 $_ARCH
 $_DISTRIBUTOR
 $_RELEASE
@@ -33,26 +26,32 @@ EOL
 
 }
 
-# Ubuntu 64-Bit
-function ubuntu_x86_64_list() {
+# package installation
+function ubuntu_pkg_list() {
+
+# pre-install pkg list
+dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
+
+# start installation
+echo "Currently in Simulation Mode with [ -s ] "
+echo "No actual installation will take place"
 echo
-echo "Install WSJT Build Dependencies"
-sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_x86_64)
-touch ~/.local/share/applications/jtsdk-nix/x86_64_pkg_install.mkr
+sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+touch $_MKRD/$(uname -m)_pkg_install.mkr
+
+# post-install pkg list
+dpkg --get-selections > $_MKRD/$USER-post-pkg-list
 
 }
 
-# Ubuntu 32-Bit
-function ubuntu_x86_list() {
-echo "Install WSJT Build Dependencies"
-sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_x86)
-touch ~/.local/share/applications/jtsdk-nix/x86_pkg_install.mkr
+# package installation
+function post_install_pkg_chk() {
+
+echo "Just to keep set -e happy"
 
 }
 
-# Python Megawidgets Build Pmw 2.0.0
-function ubuntu_x86_list() {
 
-# Holding Place
 
-}
+
+
