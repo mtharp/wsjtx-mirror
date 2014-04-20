@@ -63,11 +63,8 @@ echo "STARTING BUILD for ( $_APP_NAME-$rev_num )"
 echo
 cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD" \
 -D CMAKE_BUILD_TYPE="$_OPTION" \
--D WSJT_STANDARD_FILE_LOCATIONS=OFF \
 -D CMAKE_INSTALL_PREFIX="$_INSTALLD/$_OPTION" "$_SRCD/$_APP_NAME"
 cmake --build . --target install -- -kj
-
-}
 
 echo
 echo "Finished Building $_APP_NAME"

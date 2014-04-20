@@ -8,7 +8,10 @@ function build_hamlib() {
 
 local _GITV=$(dpkg --get-selections |grep git |awk 'FNR==1 {print $2}')
 local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib"
+local declare -a hamlib-bin=('rigctl' 'rigctld' 'rigmem' 'rigsmtr' 'rigswr' 'rotctl' 'rotctlf')
+local declare -a hamlib-lib=('libhamlib.a' 'libhamlib++.a')
 _jj=$(grep -c ^processor /proc/cpuinfo)
+
 
 # checking for git
 	clear
@@ -60,10 +63,73 @@ fi
 		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$BASED"/hamlib --disable-shared
 		make -j$_JJ
 		make install
+		sleep 1
+	fi
+
+	echo
+	echo "Performing Post Build Check"
+	echo "Checking $BASED/hamlib/bin files"
+	touch $_TMP/counter
+
+	# check hamlib bin
+	for f in "${hamlib-bin[@]}"
+		do
+			if [[ -f cd $BASED/hamlib/$f ]]; then
+				echo $f is ... OK
+				echo $F >> $_TMP/counter
+				sleep 1
+			else
+				echo $f is ... MISSING
+			fi
+	done
+	echo "Checking $BASED/hamlib/lib files"
+
+	# check hamlib bin
+	for f in "${hamlib-lib[@]}"
+		do
+			if [[ -f cd $BASED/hamlib/$f ]]; then
+				echo $f is ... OK
+				echo $F >> $_TMP/counter
+				sleep 1
+			else
+				echo $f is ... MISSING
+			fi
+	done
+
+	# get counter info
+	_LINES=$(wc -l < "$_TMP/counter")
+	if [[ $_LINES -eq "9" ]]; then
+		echo "All critical Hamlib files were were found"
+	else
 		echo
+		echo "Something went wrong with the build."
+		echo "The build script will exit. Check the"
+		echo "build log,. located in:"
+		echo
+		echo $BASED/logs/hamlib-build.log
+		echo 
+		echo "to investigate the cause."
+		echo
+		read -p "Press [Enter] to continue ..."
+		clean_exit
+	fi
+
+	echo "Checking all files .."
+	find $BASED/hamlib -type d -print | wc -l > /dev/null 2>&1
+
+
+	if [[ $? -ge "14" ]]; then
+		echo 
 		echo "Finished Building Hamlib .."
 		echo
-		read -p "Press [Enter] continue .."
+		read -p "Press [Enter] to continue .."
+	else
 		echo
+		echo "There are some anomalies in the build,"
+		echo "but do not appear critical. If you have"
+		echo "trouble with rig control, consider"
+		echo "re-building Hamlib3 manually"
+		echo
+		read -p "Press [Enter] to continue .."
 	fi
 }
