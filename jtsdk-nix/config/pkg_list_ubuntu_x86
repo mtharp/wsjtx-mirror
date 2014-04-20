@@ -1,4 +1,5 @@
 cmake
+bison
 dialog
 subversion
 clang-3.5

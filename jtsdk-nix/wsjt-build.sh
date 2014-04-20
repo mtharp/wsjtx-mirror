@@ -24,7 +24,7 @@
 printf '\e[8;28;100t'
 
 # set script path's
-BASED=$(pwd -P)
+BASED=$(dirname $(readlink -f $0))
 
 # Using cmake and qmake directories allows for build comparison.
 # Need to add support for multiple compilers {g++, intel, clang}
@@ -44,7 +44,7 @@ _TMP="$BASED/tmp"
 _MKRD=~/.local/share/applications/jtsdk-nix
 
 # process vars
-_HAMLIBD="$BASED/hamlib"
+_HAMLIBD="$_MKRD/hamlib"
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source functions and language
@@ -81,7 +81,7 @@ _HELP="$_DOCS/main_menu_help.txt"
 while [ 0 ]; do
 
 dialog --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
-"$MMTITLE" --menu "$MENUMSG" 18 60 22 --file "$_TMP/MMenu.tmp" 2> "$_TMP/selection"
+"$MMTITLE" --menu "$MENUMSG" 16 60 22 --file "$_TMP/MMenu.tmp" 2> "$_TMP/selection"
 
 # get user selection
 MMSELECT="`cat $_TMP/selection |head -c 1`"
@@ -112,17 +112,17 @@ if [[ $MMSELECT = "A" ]]; then
 	under_development
 	continue
 
-   elif [[ $MMSELECT = "G" ]]; then
-	under_development
-	continue
+#   elif [[ $MMSELECT = "G" ]]; then
+#	under_development
+#	continue
 
-   elif [[ $MMSELECT = "H" ]]; then
-	under_development
-	continue
+#  elif [[ $MMSELECT = "H" ]]; then
+#	under_development
+#	continue
 
-   elif [[ $MMSELECT = "I" ]]; then
-	under_development
-	continue
+#   elif [[ $MMSELECT = "I" ]]; then
+#	under_development
+#	continue
 
    elif [[ $MMSELECT = "Z" ]]; then
 	under_development

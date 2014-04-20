@@ -36,7 +36,7 @@ dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
 echo "Currently in Simulation Mode with [ -s ] "
 echo "No actual installation will take place"
 echo
-sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+sudo apt-get update && sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
 touch $_MKRD/$(uname -m)_pkg_install.mkr
 
 # post-install pkg list

@@ -22,7 +22,7 @@ _INSTALLD="$_BASED/$_APP_NAME/cmake/install/$_OPTION"
 cd $_SRCD
 
 # svn co if not exist, else update
-if [[ ! -d $_SRCD/$_APP_NAME -o ! -d $_SRCD/$_APP_NAME/.svn ]]; then
+if [[ ! -d $_SRCD/$_APP_NAME ]] || [[ ! -d $_SRCD/$_APP_NAME/.svn ]]; then
 	echo
 	echo "Checking Out New Version of ( $_APP_NAME ) "
 	svn co "$_SVNURL/$_APP_NAME"
@@ -38,11 +38,10 @@ else
 			clear
 			echo "Updating ( $_APP_NAME ) .."${C_NC}
 			svn update	
-			done
-			exit 0
+			break
 		;;
 		[Nn]* )
-			exit 0
+			break
 		;;
 		* )
 			clear

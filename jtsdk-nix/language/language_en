@@ -7,12 +7,12 @@ BACKTITLE="JTSDK-NIX"
 
 #-------------------------------root chk lang----------------------------------#
 RCTITLE="ROOT / SUDO CHECK FAILED"
-RCMSG="    WSJT-BUILD must be run as normal user, not root or sudo.\n\
+RCMSG="    JTSDK-NIX must be run as normal user, not root or sudo.\n\
           Please run "$0" without "sudo" prefix"
 
 #--------------------------------dialog lang-----------------------------------#
 DITITLE="DIALOG INSTALL"
-DIMSG="       WSJT-BUILD Will now install Dialog Msg CLient"
+DIMSG="        JTSDK-NIX Will now install Dialog Msg CLient"
 DISUCTITLE="DIALOG INSTALL COMPLETE"
 DISUCMSG="\n      Dialog Install Complete."
 
@@ -51,14 +51,11 @@ UDMSG="\n      Build Selection is Under Development"
 #----------------------------------main menu-----------------------------------#
 touch ./tmp/MMenu.tmp
 cat << 'EOF' > ./tmp/MMenu.tmp 
-"A WSJT .... with Python3" "" \
-"B WSPR .... with Python3" "" \
+"A WSJT .... with Py3" "" \
+"B WSPR .... with Py3" "" \
 "C WSJT-X .. with CMake" "" \
 "D WSPR-X .. with CMake" "" \
 "F MAP65 ... with CMake" "" \
-"G WSJT-X .. with Qmake" "" \
-"H WSPR-X .. with Qmake" "" \
-"I MAP65 ... with Qmake" "" \
 "Z Build All Applications" "" \
 "EXIT" ""
 EOF
@@ -69,7 +66,7 @@ cat << 'EOF' > ./tmp/SMenu.tmp
 "A Arch" "" \
 "F Fedora" "" \
 "G Gentoo" "" \
-"S Slackware 14+" "" \
+"S Slackware" "" \
 "U Ubuntu" "" \
 "H Help File" "" \
 "EXIT" ""

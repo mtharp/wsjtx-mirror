@@ -1,6 +1,6 @@
 #
 # Part of the JTSDK-NIX Project
-# Custom Hamlib Build from Bill (G3WJS) Fork
+# Custom Hamlib Build from Bill (G4\WJS) Fork
 
 #------------------------------hamlib build------------------------------------#
 
@@ -11,49 +11,36 @@ local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib"
 local _INSTALLD="$HOME/.local/share/applications/hamlib"
 _LOG=$BASED/logs/hamlib-build.log
 
-# checking for git
+
+# git check local function
+function git_check() {
 	clear
 	echo "Checking Git .."
-if [[ $_GITV == "install" ]]; then
-	echo "Found Git .. OK"
 
-else
-	echo
-	echo "GIT ERROR"
-	echo
-	echo "Git was not found, please check your installation"
-	echo "and ensure Git can be used from ( $USER ) account"
-	echo
-	read -p "Press [Enter] continue .."
-	echo
-	clean_exit
-fi
-
-echo "Starting Hamlib Build" > $_LOG
-echo "--------------------------------------------------------------------------" > $_LOG
-echo  > $_LOG
-
-# start build log
-(
-# Bills (G4WJS) Git Fork
-	if [[ -f $_LOG ]]; then
-		mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
-		touch $_LOG
+	if [[ $_GITV == "install" ]]; then
+		echo "Found Git .. OK"
 	else
-		touch $_LOG
+		echo
+		echo "GIT ERROR"
+		echo
+		echo "Git was not found, please check your installation"
+		echo "and ensure Git can be used from ( $USER ) account"
+		echo
+		read -p "Press [Enter] continue .."
+		echo
+		clean_exit
 	fi
+}
 
-	cd "$_SRCD"
-	clear
-	echo
-	echo "BUILDING ( Hamlib )"
+# check local git clone is up to date
+function update_chk() {
 
-	# clone or update hamlib
+# clone or update hamlib
 	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
 		echo
-		echo "Cloning G3WJS's Hamlib"
-		git clone "$_HAMLIBURL" g4wjs-hamlib
-	
+		echo "Cloning G4WJS's Hamlib"
+		git clone "$_HAMLIBURL" g4wjs-hamlib	
+
 		# checkout integration
 		echo "Checkout out integration .. "	
 		cd g4wjs-hamlib
@@ -61,33 +48,25 @@ echo  > $_LOG
 
 	else
 		cd $_SRCD/g4wjs-hamlib
-		echo "Updating Previous Hamlib Clone"	
-		git pull
+		_GITSTATUS=$(git status -uno |awk 'FNR==2 {print $4}')
+	
+		if [[ $_GITSTATUS == "up-to-date" ]]; then
+			echo "Local Hamlib Fork is up to date"
+		else
+			echo "Local Hamlib Fork requires updates"
+			git pull
+		fi
 	fi
+}
 
-	# configure hamlib
-	if [[ -d $_SRCD/build/hamlib ]]; then
-		cd "$_SRCD"/build/hamlib
-		make -s clean
-		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
-		make -s -j$(grep -c ^processor /proc/cpuinfo)
-		make -s install
-		sleep 1
-	else
-		mkdir -p "$_SRCD"/build/hamlib
-		cd "$_SRCD"/build/hamlib
-		"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
-		make -s -j$(grep -c ^processor /proc/cpuinfo)
-		make -s install
-		sleep 1
-	fi
+# post build test-1 local function
+function post_build_test1() {
 
-	echo
-	echo "Performing Post Build Check"
+	echo '[1]' "Test-1 (file check)"
 	echo
 	rm -rf $_TMP/counter && touch $_TMP/counter
 
-	# check thaat files exist at least
+	# check that files exist at least
 	while read f; do
 		if [[ -f $_INSTALLD/$f ]]; then
 			echo $f is ... OK
@@ -97,17 +76,14 @@ echo  > $_LOG
 		fi
 	done < $_CFG/pkg_list_hamlib
 
-) 2>&1 | tee -a $_LOG # end build log
 
-	# get counter info
+# get counter info
 	_LINES=$(wc -l < "$_TMP/counter")
 	if [[ $_LINES -ge "18" ]]; then
 		echo
 		echo "All Critical Files Found"
 		echo "To Review the build log, see:"
-		echo
-		echo $BASED/logs/hamlib-build.log
-		echo
+		echo "  $BASED/logs/hamlib-build.log"
 		echo "Finished Building Hamlib"
 		echo
 		read -p "Press [Enter] to continue .."
@@ -122,6 +98,98 @@ echo  > $_LOG
 		echo "to investigate the cause."
 		echo
 		read -p "Press [Enter] to continue ..."
+	fi
+}
+
+# rigctl test2
+function post_build_test2() {
+
+	echo
+	echo '[2]'"Test-2 (rigctl check)"
+	echo
+	_TEST2=$($_INSTALLD/bin/rigctl -m1 f)
+
+	if [[ $_TEST2 == "145000000" ]]; then
+		echo "Rig Controll ... ok"
+	else
+		echo "Rig Controll .. FAILED"
+		echo "The build script will exit. Check the"
+		echo "build log,. located in:"
+		echo
+		echo $BASED/logs/hamlib-build.log
+		echo 
+		echo "to investigate the cause."
+		echo 
+		read -p "Press [Enter] to continue ..."
 		clean_exit
 	fi
+}
+
+# update and build
+function update_and_build() {
+
+	cd "$_SRCD"/build/hamlib
+	make -s clean
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	make -s install
+}
+
+# START MAIN 
+# start build log
+(
+echo "Starting Hamlib Build"
+echo "--------------------------------------------------------------------------"
+echo
+if [[ -f $_LOG ]]; then
+	mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
+	touch $_LOG
+else
+	touch $_LOG
+fi
+
+cd "$_SRCD"
+clear
+echo "Checking Local Hamlib Fork"
+update_chk
+
+# configure hamlib
+if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "145000000" ]]; then
+	while [ 1 ]
+	do
+		echo
+		read -p "Hamlib Seems Ok, Rebuild Anyway [ Y/N ]: " yn
+		case $yn in
+		[Yy]* )
+			echo
+			update_and_build
+			post_build_test1
+			post_build_test2
+			break ;;
+		[Nn]* )
+			break ;;
+		* )
+			clear
+			echo "Please use "Y" yes or "N" No."
+		;;
+		esac
+	done
+
+else
+	mkdir -p "$_SRCD"/build/hamlib
+	cd "$_SRCD"/build/hamlib
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	make -s install
+	sleep 1
+
+	echo
+	echo "Performing Post Build Check"
+	echo '---------------------------'
+	echo
+	post_build_test1
+	post_build_test2
+fi
+) 2>&1 | tee -a $_LOG # end build log
+
 }

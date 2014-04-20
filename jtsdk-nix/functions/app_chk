@@ -1,0 +1,37 @@
+#
+# Part of the JTSDK-NIX Project
+# Critical Dependency Check
+#
+#--------------------------------app check-------------------------------------#
+
+function app_chk() {
+	# system utils
+	export LC_ALL=C
+	_BASH=$(bash --version |awk 'FNR==1 {print $4}')
+	_BINUTILS=$(ld --version | head -n1 | cut -d" " -f3-)
+	_BISON=$(bison --version | head -n1)
+	_BZ2=$( bzip2 --version 2>&1 < /dev/null |awk 'FNR==1 {print $7}')
+	_COREUTILS=$(chown --version |awk 'FNR==1 {print $4}')
+	_FIND=$(find --version |awk 'FNR {print $4}')
+	_DIFF=$(diff --version |awk 'FNR==1 {print $4}')
+	_PATCH=$(patch --version |awk 'FNR==1 {print $4}')
+	_GREP=$(grep --version |awk 'FNR==1 {print $4}')
+	_GZIP=$(grep --version |awk 'FNR==1 {print $4}')	
+	
+	# compiler relates
+	_GCC=$(gcc --version |awk 'FNR==1 {print $4}')
+	_GPP=$(g++ --version |awk 'FNR==1 {print $4}')
+	_CLANG=$(clang --version |awk 'FNR==1 {print $9}' |cut -c 1-3)
+	_LDDN=$(ldd --version |awk 'FNR==1 {print $3}') 
+	_LDDV=$(ldd --version |awk 'FNR==1 {print $5}')
+ 	_M4=$(m4 --version |awk 'FNR==1 {print $4}')
+	_MAKE=$(make --version |awk 'FNR==1 {print $3}')
+	_SED=$(sed --version |awk 'FNR==1 {print $4}')
+	_TAR=$(tar --version |awk 'FNR==1 {print $4}')
+	_XZ=$(xz --version |awk 'FNR==1 {print $4}')
+
+	# QT related
+
+	# Python related
+
+

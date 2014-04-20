@@ -27,7 +27,7 @@ set -e
 printf '\e[8;28;100t'
 
 # set script path's
-BASED=$(pwd -P)
+BASED=$(dirname $(readlink -f $0))
 
 # Using cmake and qmake directories allows for build comparison.
 # Need to add support for multiple compilers {g++, intel, clang}
@@ -99,9 +99,9 @@ if [[ $SMSELECT = "A" ]]; then
 	under_development
 	continue
 
-#---------------------------------Fedora---------------------------------------#
+#---------------------------------Gentoo---------------------------------------#
    elif [[ $SMSELECT = "G" ]]; then
-	# Gentoo - Current Bild
+	# Gentoo - Current Build
 	under_development	
 	continue
 
@@ -115,7 +115,7 @@ if [[ $SMSELECT = "A" ]]; then
    elif [[ $SMSELECT = "U" ]]; then
 		# Ubuntu 1404, includes Lubuntu, Xubuntu
 		clear
-		echo "JTSDK-NIOX SETUP"
+		echo "JTSDK-NIX SETUP"
 		source "$_FUNC"/ubuntu_functions
 		ubuntu_setup_marker
 		ubuntu_distro_info
@@ -124,7 +124,7 @@ if [[ $SMSELECT = "A" ]]; then
 		echo 'Release ....... '"$_RELEASE"
 		echo 'Arch .......... '"$_ARCH"
 		echo
-		echo "The following packages with be Checked or Installed"
+		echo "The following packages with be Checked and / or Installed"
 		echo
 		cat $_CFG/pkg_list_ubuntu_$(uname -m) | column
 		echo
@@ -155,6 +155,7 @@ if [[ $SMSELECT = "A" ]]; then
 		echo
 		echo "Performing post installation package check"
 		echo
+		echo # post_inctall_check
 		echo "Post install package check complete"
 		echo
 		echo "Setting up Hamlib"
