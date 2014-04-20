@@ -24,7 +24,7 @@
 set -e
 
 # set a reasonable initial window size
-printf '\e[8;28;100t'
+printf '\e[8;35;100t'
 
 # set script path's
 BASED=$(dirname $(readlink -f $0))
@@ -74,7 +74,7 @@ root_chk
 dialog_chk
 
 # setup main menu help doc var
-_HELP="$_DOCS/main_menu_help.txt"
+_HELP="$_DOCS/setup_menu_help.txt"
 
 # start setup menu
 while [ 0 ]; do
@@ -152,13 +152,25 @@ if [[ $SMSELECT = "A" ]]; then
 			esac
 		done
 
-		echo
-		echo "Performing post installation package check"
-		echo
-		echo # post_inctall_check
-		echo "Post install package check complete"
-		echo
-		echo "Setting up Hamlib"
+		#clear
+		#echo '-------------------------------------------'	
+		#echo "Performing Post Installation Package Checks"
+		#echo '-------------------------------------------'
+		#source "$_FUNC"/post_install_chk
+		#sleep 1
+		# post_install_chk
+		#clear
+		#echo '-------------------------------------------'	
+		#echo "Performing Pmw-2.0.0 Iinstallaiton"
+		#echo '-------------------------------------------'
+		#echo "Performing Pmw-2.0.0 Installaiton"
+		#source "$_FUNC"/build_pmw
+		#sleep 1
+		#pmw_build
+		clear
+		echo '-------------------------------------------'	
+		echo "Performing Hamlib 3.0 Installation"
+		echo '-------------------------------------------'
 		source "$_FUNC"/build_hamlib
 		sleep 1
 		build_hamlib

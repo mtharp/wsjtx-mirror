@@ -38,11 +38,11 @@ function update_chk() {
 # clone or update hamlib
 	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
 		echo
-		echo "Cloning G4WJS's Hamlib"
+		echo "Cloning G4WJS's Hamlib (this a can a few minutes)"
 		git clone "$_HAMLIBURL" g4wjs-hamlib	
 
 		# checkout integration
-		echo "Checkout out integration .. "	
+		echo "Checkout Integration"	
 		cd g4wjs-hamlib
 		git checkout integration
 
@@ -51,7 +51,7 @@ function update_chk() {
 		_GITSTATUS=$(git status -uno |awk 'FNR==2 {print $4}')
 	
 		if [[ $_GITSTATUS == "up-to-date" ]]; then
-			echo "Local Hamlib Fork is up to date"
+			echo "Local Hamlib Fork Looks Up-To-Date"
 		else
 			echo "Local Hamlib Fork requires updates"
 			git pull
@@ -62,14 +62,14 @@ function update_chk() {
 # post build test-1 local function
 function post_build_test1() {
 
-	echo '[1]' "Test-1 (file check)"
 	echo
+	echo '[1]' "Test-1 (file check)"
 	rm -rf $_TMP/counter && touch $_TMP/counter
 
 	# check that files exist at least
 	while read f; do
 		if [[ -f $_INSTALLD/$f ]]; then
-			echo $f is ... OK
+			echo .. $f ... OK
 			echo $f >> $_TMP/counter
 		else
 			echo $f is ... MISSING
@@ -80,20 +80,15 @@ function post_build_test1() {
 # get counter info
 	_LINES=$(wc -l < "$_TMP/counter")
 	if [[ $_LINES -ge "18" ]]; then
-		echo
 		echo "All Critical Files Found"
-		echo "To Review the build log, see:"
-		echo "  $BASED/logs/hamlib-build.log"
-		echo "Finished Building Hamlib"
 		echo
-		read -p "Press [Enter] to continue .."
 	else
 		echo
 		echo "Something went wrong with the build."
 		echo "The build script will exit. Check the"
-		echo "build log,. located in:"
+		echo "build log."
 		echo
-		echo $BASED/logs/hamlib-build.log
+		echo "Log: $BASED/logs/hamlib-build.log"
 		echo 
 		echo "to investigate the cause."
 		echo
@@ -104,13 +99,14 @@ function post_build_test1() {
 # rigctl test2
 function post_build_test2() {
 
-	echo
-	echo '[2]'"Test-2 (rigctl check)"
-	echo
+	echo '[2]' "Test-2 (rigctl check)"
 	_TEST2=$($_INSTALLD/bin/rigctl -m1 f)
 
 	if [[ $_TEST2 == "145000000" ]]; then
-		echo "Rig Controll ... ok"
+		echo ".. Rig Controll ... ok"
+		echo '.. Tested With: rigctl -m1 f <= results => 145000000'
+		echo
+		read -p "Press [Enter] to continue ..."
 	else
 		echo "Rig Controll .. FAILED"
 		echo "The build script will exit. Check the"
@@ -133,6 +129,16 @@ function update_and_build() {
 	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
 	make -s -j$(grep -c ^processor /proc/cpuinfo)
 	make -s install
+}
+
+# new build
+function new_build() {
+	mkdir -p "$_SRCD"/build/hamlib
+	cd "$_SRCD"/build/hamlib
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	make -s install
+
 }
 
 # START MAIN 
@@ -163,6 +169,10 @@ if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "1450000
 		[Yy]* )
 			echo
 			update_and_build
+			clear
+			echo '---------------------------'	
+			echo "Performing Post Build Check"
+			echo '---------------------------'
 			post_build_test1
 			post_build_test2
 			break ;;
@@ -176,17 +186,11 @@ if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "1450000
 	done
 
 else
-	mkdir -p "$_SRCD"/build/hamlib
-	cd "$_SRCD"/build/hamlib
-	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
-	make -s -j$(grep -c ^processor /proc/cpuinfo)
-	make -s install
-	sleep 1
-
-	echo
+	new_build
+	clear
+	echo '---------------------------'	
 	echo "Performing Post Build Check"
 	echo '---------------------------'
-	echo
 	post_build_test1
 	post_build_test2
 fi

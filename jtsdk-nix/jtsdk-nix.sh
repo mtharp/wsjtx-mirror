@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 #
 # Name			: JTSDK-NIX
-# Execution		: As normal user ./wsjt-build.sh
+# Execution		: As normal user ./jtsdk-nix.sh
 # Author		: Greg, Beam, ki7mt -at- yahoo.com
 # Copyright		: Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
 # Contributors	: KI7MT
