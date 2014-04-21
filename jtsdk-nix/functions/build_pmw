@@ -1,6 +1,6 @@
 #
 # Part of the JTSDK-NIX Project
-# Build Python-pmw-2.0.0 form source
+# Build Python Pmw-2.0.0 from source
 
 #--------------------------------pmw build-------------------------------------#
 
@@ -11,7 +11,7 @@ local _FILE=Pmw-2.0.0.tar.gz
 local _MD5A="c7c3f26c4f5abaa99807edefee578fc0"
 local _LOG=$BASED/logs/pmw-build.log
 
-# NOTE: the download pulls the PyPi compliant version pf Pmw, and includes
+# NOTE: the download pulls the PyPi compliant version of Pmw, and includes
 # both Pmw-2.0.0 and Pmw-1.3.3. WSJT projects use Python3, as such, Pmw-2.0.0
 # is required.
 
@@ -117,7 +117,7 @@ cd $_SRCD/Pmw-2.0.0
 echo ".. installing pmw2 and setting uninstall marker"
 sudo python3 setup.py install --record $_MKRD/pmw2-install.mkr
 
-# change ownershop to $USER after install
+# change ownership to $USER after install
 echo ".. changing ownership of Folders and File to $USER"
 cd ..
 sudo chown -R $USER:$USER ./Pmw-2.0.0
@@ -133,7 +133,7 @@ pip3 list | tee -a > $_MKRD/pip3-list.mkr 2>&1
 _PMWV=$(grep ^Pmw < $_MKRD/pip3-list.mkr |awk '{print $1}')
 
 if [[ $_PMWV = "Pmw" ]];then
-		echo "Pmw Installation Complete"
+	echo "Pmw Installation Complete"
 else
 	echo
 	echo "Pmw Installation Error"

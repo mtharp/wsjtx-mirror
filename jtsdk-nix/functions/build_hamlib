@@ -1,6 +1,6 @@
 #
 # Part of the JTSDK-NIX Project
-# Custom Hamlib Build from Bill (G4\WJS) Fork
+# Custom Hamlib Build from Bill (G4WJS) Fork
 
 #------------------------------hamlib build------------------------------------#
 
@@ -59,7 +59,7 @@ function update_chk() {
 	fi
 }
 
-# post build test-1 local function
+# post build test-1 (file check)
 function post_build_test1() {
 
 	echo
@@ -96,7 +96,7 @@ function post_build_test1() {
 	fi
 }
 
-# rigctl test2
+# post build test2 (rigctl test)
 function post_build_test2() {
 
 	echo '[2]' "Test-2 (rigctl check)"

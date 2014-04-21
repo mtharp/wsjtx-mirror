@@ -41,10 +41,11 @@ _LANG="$BASED/language"
 _LOGS="$BASED/logs"
 _SRCD="$BASED/src"
 _TMP="$BASED/tmp"
-_MKRD=~/.local/share/applications/jtsdk-nix
+_MKRD="$HOME"/.local/share/applications/jtsdk-nix
 
 # process vars
-_HAMLIBD="$_MKRD/hamlib"
+_HAMLIBD=/home/$USER/.local/share/applications/hamlib
+_ADOCD=/home/$USER/.local/share/applications/asciidoc
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source functions and language
@@ -91,9 +92,7 @@ MMSELECT="`cat $_TMP/selection |head -c 1`"
 
 # start main menu options
 if [[ $MMSELECT = "A" ]]; then
-	_APP_NAME=wsjtx
-	_OPTION=Release
-	cmake_nix
+	under_development
 	continue
 
    elif [[ $MMSELECT = "B" ]]; then
@@ -101,7 +100,9 @@ if [[ $MMSELECT = "A" ]]; then
 	continue
 
    elif [[ $MMSELECT = "C" ]]; then
-	under_development	
+	_APP_NAME=wsjtx
+	_OPTION=Release
+	cmake_nix
 	continue
 
    elif [[ $MMSELECT = "D" ]]; then

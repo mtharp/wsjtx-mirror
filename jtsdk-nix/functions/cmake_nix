@@ -15,8 +15,8 @@ _SVNURL=svn://svn.code.sf.net/p/wsjt/wsjt/branches
 
 # build and install directories
 _OPTION=Release
-_BUILDD="$_BASED/$_APP_NAME/cmake/build/$_OPTION"
-_INSTALLD="$_BASED/$_APP_NAME/cmake/install/$_OPTION"
+_BUILDD="$BASED/$_APP_NAME/cmake/build/$_OPTION"
+_INSTALLD="$BASED/$_APP_NAME/cmake/install/$_OPTION"
 
 # start main build
 cd $_SRCD
@@ -36,7 +36,7 @@ else
 		case $yn in
 		[Yy]* )
 			clear
-			echo "Updating ( $_APP_NAME ) .."${C_NC}
+			echo "Updating ( $_APP_NAME ) .."
 			svn update	
 			break
 		;;
@@ -45,7 +45,7 @@ else
 		;;
 		* )
 			clear
-			echo -e ${C_Y}"Please use "Y" yes or "N" No."${C_NC}
+			echo "Please use "Y" yes or "N" No."
 		;;
 		esac
 	done
@@ -60,7 +60,7 @@ cd $_BUILDD
 echo
 echo "STARTING BUILD for ( $_APP_NAME-$rev_num )"
 echo
-cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD" \
+cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD;$_ADOCD" \
 -D CMAKE_BUILD_TYPE="$_OPTION" \
 -D CMAKE_INSTALL_PREFIX="$_INSTALLD/$_OPTION" "$_SRCD/$_APP_NAME"
 cmake --build . --target install -- -kj
