@@ -1,0 +1,152 @@
+#
+# Part of the JTSDK-NIX Project
+# Build Python-pmw-2.0.0 form source
+
+#--------------------------------pmw build-------------------------------------#
+
+function build_pmw() {
+
+local _URL="http://softlayer-dal.dl.sourceforge.net/project/pmw/Pmw-2.0.0.tar.gz"
+local _FILE=Pmw-2.0.0.tar.gz
+local _MD5A="c7c3f26c4f5abaa99807edefee578fc0"
+local _LOG=$BASED/logs/pmw-build.log
+
+# NOTE: the download pulls the PyPi compliant version pf Pmw, and includes
+# both Pmw-2.0.0 and Pmw-1.3.3. WSJT projects use Python3, as such, Pmw-2.0.0
+# is required.
+
+# download Pmw2
+function download_pmw() {
+	cd $_SRCD
+	wget -r --tries=5 $_URL -O $_SRCD/Pmw-2.0.0.tar.gz
+}
+
+# md5sum Pmw download
+function md5sum_pmw () {
+
+	if [[ -f $_SRCD/Pmw-2.0.0.tar.gz ]]; then
+		_MD5B=$(md5sum $_SRCD/Pmw-2.0.0.tar.gz |awk '{print $1}')
+		echo "MD5A Checksum is: "$_MD5A
+		echo "MD5B Checksum is: "$_MD5B
+	else
+		clear
+		echo
+		echo "The Automated Pmw-2.0.0 Download .. FAILED"
+		echo "In order to continue, you need to manually download"
+		echo "Pmw-2.0.0 before continuing."
+		echo
+		echo "For Details, see $_LOG"
+		echo
+		echo "Actoiins to Take:"
+		echo " [1] Download PMW:" $_URL
+		echo " [2] Save to: $_SRCD"
+		echo " [3] Re-Run setup.sh"
+		echo
+		echo "Setup will now exit."
+		echo
+		read -p "Press [Enter] to continue ..."
+		clean_exit
+	fi
+
+	if [[ $_MD5B = $_MD5A ]]; then
+		_MD5C=OK
+		echo "MD5SUM is ..." $_MD5C
+		sleep 2
+	else
+		echo "MD5A" $_MD5A
+		echo "MD5B" $MD5B
+		echo "Do No Match"
+		echo "For Details, see $_LOG"
+		echo
+		echo "Actoiins to Take:"
+		echo " [1] Download PMW:" $_URL
+		echo " [2] Save to: $_SRCD"
+		echo " [3] Re-Run setup.sh"
+		echo
+		echo "Setup will now exit."
+		echo
+		read -p "Press [Enter] to continue ..."
+		clean_exit
+	fi
+}
+
+# pmw uninstall
+function remove_pmw() {
+	for i in $(less $_MKRD/pmw2-install.mkr)
+	do
+		sudo rm $i
+	done
+}
+
+# START MAIN 
+# start build log
+(
+echo
+if [[ -f $_LOG ]]; then
+	mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
+	touch $_LOG
+else
+	touch $_LOG
+fi
+
+cd "$_SRCD"
+clear
+echo "Downloading Pmw From Sourceforge"
+download_pmw
+md5sum_pmw
+
+# test python3 version
+_PYV=$(python3 -V |awk '{print $2}')
+if [[ $_PYV > "3.3.0" ]];then
+	echo ".. Python Version is .. OK"
+else
+	echo "Python3 => 3.3.0 was Not Found"
+	echo "Please ensure you have have Python verson 3.3.0 or"
+	echo "later installed on your system before continuing"
+	break
+	clean_exit
+fi
+
+# unpack and install Pmw2
+echo .. unpacking pmw2
+cd $_SRCD
+tar -xzvf Pmw-2.0.0.tar.gz
+cd $_SRCD/Pmw-2.0.0
+
+# we need sudo here to install system wide:
+echo ".. installing pmw2 and setting uninstall marker"
+sudo python3 setup.py install --record $_MKRD/pmw2-install.mkr
+
+# change ownershop to $USER after install
+echo ".. changing ownership of Folders and File to $USER"
+cd ..
+sudo chown -R $USER:$USER ./Pmw-2.0.0
+sudo chown $USER:$USER $_MKRD/pmw2-install.mkr
+
+# reset sudo to ask for user PW if needed again
+echo ".. resetting sudo PW"
+sudo -k
+
+# verify Pmw instlled cporrectly
+echo ".. verify Pmw2 install"
+pip3 list | tee -a > $_MKRD/pip3-list.mkr 2>&1
+_PMWV=$(grep ^Pmw < $_MKRD/pip3-list.mkr |awk '{print $1}')
+
+if [[ $_PMWV = "Pmw" ]];then
+		echo "Pmw Installation Complete"
+else
+	echo
+	echo "Pmw Installation Error"
+	echo "There appears to have been an Pmw install problem."
+	echo "Please check the build log for details:"
+	echo
+	echo $BASED/logs/pmw-build.log
+	echo 
+	echo "to investigate the cause."
+	echo 
+	read -p "Press [Enter] to continue ..."
+	clean_exit
+fi
+) 2>&1 | tee -a $_LOG # end pmw log
+
+}

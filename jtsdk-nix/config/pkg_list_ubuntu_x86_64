@@ -5,6 +5,7 @@ subversion
 clang-3.5
 gfortran
 libfftw3-dev
+g++
 git
 libgfortran3:i386
 libusb-dev

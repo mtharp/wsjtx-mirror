@@ -38,7 +38,7 @@ function update_chk() {
 # clone or update hamlib
 	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
 		echo
-		echo "Cloning G4WJS's Hamlib (this a can a few minutes)"
+		echo "Cloning G4WJS's Hamlib (this a can take few minutes, be patient)"
 		git clone "$_HAMLIBURL" g4wjs-hamlib	
 
 		# checkout integration
@@ -144,9 +144,6 @@ function new_build() {
 # START MAIN 
 # start build log
 (
-echo "Starting Hamlib Build"
-echo "--------------------------------------------------------------------------"
-echo
 if [[ -f $_LOG ]]; then
 	mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
 	touch $_LOG

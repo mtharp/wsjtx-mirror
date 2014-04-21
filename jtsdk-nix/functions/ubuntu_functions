@@ -33,10 +33,17 @@ function ubuntu_pkg_list() {
 dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
 
 # start installation
-echo "Currently in Simulation Mode with [ -s ] "
-echo "No actual installation will take place"
+# echo "Currently in Simulation Mode with [ -s ] "
+# echo "No actual installation will take place"
+
+echo "This is the real deal, so be sure your ready :-)"
 echo
-sudo apt-get update && sudo apt-get -s install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+sudo apt-get update && sudo apt-get install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+
+# re-set sudo to prompt user for PW is if used again
+sudo -k
+
+# set package installation complete mkr
 touch $_MKRD/$(uname -m)_pkg_install.mkr
 
 # post-install pkg list
@@ -47,7 +54,7 @@ dpkg --get-selections > $_MKRD/$USER-post-pkg-list
 # package installation
 function post_install_pkg_chk() {
 
-echo "Just to keep set -e happy"
+echo "Just to keep set -e happy" > /dev/null 2>&1
 
 }
 

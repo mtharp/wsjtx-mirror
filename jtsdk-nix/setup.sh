@@ -159,14 +159,13 @@ if [[ $SMSELECT = "A" ]]; then
 		#source "$_FUNC"/post_install_chk
 		#sleep 1
 		# post_install_chk
-		#clear
-		#echo '-------------------------------------------'	
-		#echo "Performing Pmw-2.0.0 Iinstallaiton"
-		#echo '-------------------------------------------'
-		#echo "Performing Pmw-2.0.0 Installaiton"
-		#source "$_FUNC"/build_pmw
-		#sleep 1
-		#pmw_build
+		clear
+		echo '-------------------------------------------'	
+		echo "Performing Pmw-2.0.0 Installation"
+		echo '-------------------------------------------'
+		source "$_FUNC"/build_pmw
+		sleep 1
+		build_pmw
 		clear
 		echo '-------------------------------------------'	
 		echo "Performing Hamlib 3.0 Installation"
