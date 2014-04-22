@@ -19,7 +19,6 @@ local _LOG=$BASED/logs/pmw-build.log
 function download_pmw() {
 	cd $_SRCD
 	wget -q -r --tries=5 $_URL -O $_SRCD/Pmw-2.0.0.tar.gz
-	wait $!
 }
 
 # md5sum Pmw download
@@ -110,7 +109,7 @@ else
 fi
 
 # unpack and install Pmw2
-echo .. unpacking pmw2
+echo ".. unpacking pmw2"
 cd $_SRCD
 tar -xzvf Pmw-2.0.0.tar.gz
 cd $_SRCD/Pmw-2.0.0

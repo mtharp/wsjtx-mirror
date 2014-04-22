@@ -39,14 +39,18 @@ function update_chk() {
 # clone or update hamlib
 	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
 		echo
+		echo ".. Hamlib3 was not fouud"
 		echo ".. Cloning G4WJS's Hamlib (this a can take few minutes, be patient)"
+		echo
 		git clone "$_HAMLIBURL" g4wjs-hamlib	
 
 		# checkout integration
+		echo
 		echo ".. Checkout Integration"	
+		echo
 		cd g4wjs-hamlib
 		git checkout integration
-
+		echo
 	else
 		cd $_SRCD/g4wjs-hamlib
 		_GITSTATUS=$(git status -uno |awk 'FNR==2 {print $4}')
@@ -87,12 +91,10 @@ function post_build_test1() {
 		echo
 		echo "Something went wrong with the build."
 		echo "The build script will exit. Check the"
-		echo "build log."
+		echo "build log to investigate possible cause."
 		echo
-		echo "Log: $BASED/logs/hamlib-build.log"
+		echo "Log: $_LOGS/hamlib-build.log"
 		echo 
-		echo "to investigate the cause."
-		echo
 		read -p "Press [Enter] to continue ..."
 	fi
 }
@@ -124,22 +126,53 @@ function post_build_test2() {
 
 # update and build
 function update_and_build() {
-
+	echo "-------------------------------------------"
+	echo "Updating G4WJS Fork of Hamlib3"
+	echo "-------------------------------------------"
+	echo
 	cd "$_SRCD"/build/hamlib
+	echo ".. Running Make Clean"
+	echo
 	make -s clean
+	echo
+	echo ".. Cleanup complete"
+	echo ".. Starting Configure Process"
+	echo
 	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	echo
+	echo ".. Configure Process Complete"
+	echo ".. Starting Make Process"
+	echo
 	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	echo
+	echo ".. Make Process Complete"
+	echo ".. Installing Hamlib3 to:"
+	echo ".. $_INSTALLD"
 	make -s install
 }
 
 # new build
 function new_build() {
+
+	echo "-------------------------------------------"
+	echo "Building G4WJS Fork of Hamlib3"
+	echo "-------------------------------------------"
+	echo
 	mkdir -p "$_SRCD"/build/hamlib
 	cd "$_SRCD"/build/hamlib
+	echo ".. Starting Configure Process"
+	echo
 	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	echo
+	echo ".. Configuration Complete"
+	echo ".. Starting Make Process"
+	echo
 	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	echo
+	echo ".. Make Process Complete"
+	echo ".. Installing Hamlib3 to:"
+	echo ".. $_INSTALLD"
 	make -s install
-
 }
 
 # START MAIN 

@@ -27,6 +27,16 @@ if [[ ! -d $_SRCD/$_APP_NAME ]] || [[ ! -d $_SRCD/$_APP_NAME/.svn ]]; then
 	echo "Checking Out New Version of ( $_APP_NAME ) "
 	svn co "$_SVNURL/$_APP_NAME"
 
+	# patch for CMakeLists.txt portaudio on Linux
+	# not conventional, but it works :-)
+	if [[ $_APP_NAME == "wsprx" ]]; then
+		echo
+		echo "Patching CMakeLists.txt For Portaudio"
+		cd $_SRCD/$_APP_NAME
+		cp $_CFG/wsprx.p1 .
+		patch -u CMakeLists.txt wsprx.p1
+		rm wsprx.p1
+	fi
 else
 	# Yy / Nn answer to update from svn	
 	while [ 1 ]
@@ -36,13 +46,29 @@ else
 		case $yn in
 		[Yy]* )
 			clear
-			echo "Updating ( $_APP_NAME ) .."
-			svn update	
-			break
-		;;
+			cd $_SRCD/$_APP_NAME 
+			echo "Updating ( $_APP_NAME )"
+			svn update
+
+			# patch for CMakeLists.txt portaudio on Linux
+			# check if port audio is applied
+			if [[ $_APP_NAME == "wsprx" ]]; then
+				_P1=$(awk 'FNR==1 {print $2}' < CMakeLists.txt)
+
+				if [[ $_P1 != "wsprx.p1" ]]; then
+					cd $_SRCD/$_APP_NAME
+					cp -r $_CFG/wsprx.p1 .
+					echo
+					echo "Applying Patch to CMakeLists.txt For Portaudio"
+					patch -u CMakeLists.txt wsprx.p1
+					rm wsprx.p1
+				fi
+
+			fi
+
+			break ;;
 		[Nn]* )
-			break
-		;;
+			break ;;
 		* )
 			clear
 			echo "Please use "Y" yes or "N" No."
@@ -61,19 +87,41 @@ echo
 echo "STARTING BUILD for ( $_APP_NAME-$rev_num )"
 echo
 
-# set CMAKE_PREFIX_PATH based on applicaitons
-cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD;$_ADOCD" \
--D  WSJT_SKIP_MANPAGES=ON \
--D CMAKE_BUILD_TYPE="$_OPTION" \
--D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-cmake --build . --target install -- -kj
+# Need to add CMake Menu for option selection
+
+# for wsjtx
+if [[ $_APP_NAME == "wsjtx" ]]; then
+	cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD;$_ADOCD" \
+	-D  WSJT_SKIP_MANPAGES=ON \
+	-D CMAKE_BUILD_TYPE="$_OPTION" \
+	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
+	cmake --build . --target install -- -kj
+
+# for wsprx
+# builds ok, but has audio select and rig control issues
+elif [[ $_APP_NAME == "wsprx" ]]; then
+	cmake -D CMAKE_BUILD_TYPE="$_OPTION" \
+	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
+	cmake --build . --target install -- -kj
+
+# for map65
+# fails to build wiht CMake
+elif [[ $_APP_NAME == "map65" ]]; then
+	cmake -D CMAKE_BUILD_TYPE="$_OPTION" \
+	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
+	cmake --build . --target install -- -kj
+
+else
+	echo "nothing to be done" > /dev/null 2>&1
+fi
 
 echo
 echo "Finished Building $_APP_NAME"
 echo "Build Location: $_INSTALLD"
+echo "Please Make a note of the install location"
 echo
+read -p "Press [Enter] to continue .."
 
-exit 0
 } # end cmake_nix
 
 

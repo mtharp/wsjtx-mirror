@@ -77,7 +77,7 @@ dialog_chk
 setup_chk
 
 # setup main menu help doc var
-_HELP="$BASED/README"
+_HELP="$_BASED/README"
 
 # setup main menu
 while [ 0 ]; do
@@ -107,12 +107,16 @@ if [[ $MMSELECT = "A" ]]; then
 
 # WSPR-X w/CMake
    elif [[ $MMSELECT = "D" ]]; then
-	under_development
+	_APP_NAME=wsprx
+	_OPTION=Release
+	cmake_nix
 	continue
 
 # MAP65 w/CMake
    elif [[ $MMSELECT = "F" ]]; then
-	under_development
+	_APP_NAME=map65
+	_OPTION=Release
+	cmake_nix
 	continue
 
 # Qmake builds need Makefile Verification

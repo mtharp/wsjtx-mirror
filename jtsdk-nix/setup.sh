@@ -155,19 +155,7 @@ rm -r $_LOGS/setup.log && touch $_LOGS/setup.log
 			read -p "Is it OK to Start The Installation? [ Y/N ]: " yn
 			case $yn in
 			[Yy]* )
-				# perform update and upgraded first
-				echo "Updating System Before Pkg Installation"
-				echo
-				sudo apt-get update && sudo apt-get -y upgrade
-				echo
-				echo "Installing Packages for $_DISTRIBUTOR $_RELEASE $_ARCH"
-				echo
 				ubuntu_pkg_list
-				echo
-				# reset sudo to ask for user PW if needed again
-				echo "Changing back to normal user"
-				sudo -k
-				read -p "Install complete, press [Enter] to continue"
 				break ;;
 			[Nn]* )
 				echo
@@ -198,7 +186,7 @@ rm -r $_LOGS/setup.log && touch $_LOGS/setup.log
 		if [[ $_PMWSTATUS == "Pmw" ]]; then
 			echo ".. Pmw (2.0.0) Is Installed"
 			echo
-			read -p "Press [Enter] to continue"
+			read -p "Press [Enter] to continue with setup"
 			echo
 		else
 			source "$_FUNC"/build_pmw

@@ -9,6 +9,7 @@ git
 libfftw3-dev
 libgfortran3:i386
 libhamlib-dev
+libhamlib-utils
 libqt5multimedia5-plugins
 libsamplerate0-dev
 libtool

@@ -2,8 +2,7 @@ TO-DO LIST
 ----------
 
 *SCRIPTS*
-* Add CMkae, QMake and Makefile (WSJT, WSPR) build scripts
-* Add setup.sh
+* Add CMake, QMake and Makefile (WSJT, WSPR) build scripts
 * Add uninstall.sh
 
 *NEEDED INFO*
@@ -12,13 +11,17 @@ TO-DO LIST
 
 *FUNCTIONS*
 - setup_check (test for previous setup, if == 0 run setup)
-- git_config (input form for developer info)
 - pkg_check (dpkg --get-selectsion > original_pkg_list.txt)
-- install_deps (install deltas between needed and original)
-- install_hamlib3 (download, update, build and install jtsdk copy / local )
-- install_python_pmw (pmw download 2.0, python setup.py install)
 - dev_info (get dev info for use with checkouts, no PW's)
 - cmake_custom_options (options for to switch on/off various options)
-- intel_compilers_config (options for testing with Intel C/C++, iFort compiers)
+- Uninstall for Pmw2.0
 
+*ISSUES*
+- WSPR-X builds with CMake & Qmake, but I uses default audio.
+- MAP65 is failing on both CMake and Qmake, both need work.
+- cx-freeze failes build with Python3.4 and cxfreeze 4.3.2
+
+*WISH LIST*
+- intel_compilers_config (options for testing with Intel C/C++, iFort compiers)
+- cxfreeze or equal for python3.4
 

@@ -29,32 +29,55 @@ EOL
 # package installation
 function ubuntu_pkg_list() {
 
-# pre-install pkg list
-dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
+# keep all original pkg-lists for later cat && uninstall
+# for use with re-running setup, update && install packages
+	if [[ -f $_MKRD/$USER-orig-pkg-list ]]; then
+		mv $_MKRD/$USER-orig-pkg-list $_MKRD/$USER-orig-pkg-list-$(date +%Y-%m-%d.%H:%M)
+	fi
 
-# start installation
-# echo "Currently in Simulation Mode with [ -s ] "
-# echo "No actual installation will take place"
+# make new pkg list
+	dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
 
-echo "This is the real deal, so be sure your ready :-)"
-echo
-sudo apt-get update && sudo apt-get install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+# perform update and upgrade first
+# Update, Upgrade and Installation appoval from
+# user is granted in main menu selection
+	echo ".. Updating System Before Pkg Installation"
+	echo ".. Sudo is required for this action, please enter your password:"
+	echo
+	sudo apt-get update && sudo apt-get -y upgrade
+	echo
+	echo ".. Installing Packages for $_DISTRIBUTOR $_RELEASE $_ARCH"
+	echo
+	echo
+	sudo apt-get -y install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+	echo
 
-# re-set sudo to prompt user for PW is if used again
-sudo -k
+# reset sudo to ask for user PW if needed again
+	echo ".. Installation complete"
+	echo ".. Changing back to normal user"
+	sudo -k
+	echo
+	read -p "Press [Enter] to continue with setup"
 
 # set package installation complete mkr
-touch $_MKRD/$(uname -m)_pkg_install.mkr
+	touch $_MKRD/$(uname -m)_pkg_install.mkr
 
-# post-install pkg list
-dpkg --get-selections > $_MKRD/$USER-post-pkg-list
+# keep all original post-pkg-lists for later cat && uninstall
+# for use with re-running setup, update && install packages
+	if [[ -f $_MKRD/$USER-post-pkg-list ]]; then
+		mv $_MKRD/$USER-post-pkg-list $_MKRD/$USER-orig-pkg-list-$(date +%Y-%m-%d.%H:%M)
+	fi
+
+# now create new mkr
+	dpkg --get-selections > $_MKRD/$USER-post-pkg-list
 
 }
 
 # package installation
 function post_install_pkg_chk() {
 
-echo "Just to keep set -e happy" > /dev/null 2>&1
+# still working on application versions, so
+	echo "Just to keep set -e happy" > /dev/null 2>&1
 
 }
 
