@@ -18,7 +18,8 @@ local _LOG=$BASED/logs/pmw-build.log
 # download Pmw2
 function download_pmw() {
 	cd $_SRCD
-	wget -r --tries=5 $_URL -O $_SRCD/Pmw-2.0.0.tar.gz
+	wget -q -r --tries=5 $_URL -O $_SRCD/Pmw-2.0.0.tar.gz
+	wait $!
 }
 
 # md5sum Pmw download
@@ -71,6 +72,7 @@ function md5sum_pmw () {
 }
 
 # pmw uninstall
+# this function needs updating / verifying
 function remove_pmw() {
 	for i in $(less $_MKRD/pmw2-install.mkr)
 	do
@@ -124,7 +126,7 @@ sudo chown -R $USER:$USER ./Pmw-2.0.0
 sudo chown $USER:$USER $_MKRD/pmw2-install.mkr
 
 # reset sudo to ask for user PW if needed again
-echo ".. resetting sudo PW"
+echo ".. changing back to normal user"
 sudo -k
 
 # verify Pmw instlled cporrectly

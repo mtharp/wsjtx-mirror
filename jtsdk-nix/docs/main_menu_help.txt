@@ -1,14 +1,9 @@
 JTSDK-NIX MAIN MENU HELP FILE
 
-Navigation:  You can  move  through the file by using the cursor, page-up, 
-page-down and HOME/END keys available on most keyboards.  If the lines are
-too long to be displayed in the box, the  LEFT/RIGHT keys can be used to 
-scroll the text region horizontally. You may also use vi-style keys h, j, 
-k, l in place of the cursor keys, and B or N in place of the page-up and 
-page-down keys.  Scroll up/down using vi-style 'k' and 'j', or arrow keys.
-For more convenience, vi-style forward and backward searching functions
-are also provided.
-
+NAVIGATION:  You can  move  through the file by using the cursor, page-up, 
+page-down, arrow UP/DWN and HOME/END keys available on most keyboards.
+If the lines are too long to be displayed in the box, the LEFT/RIGHT keys
+can be used to scroll the text region horizontally.
 
 Description:  Add something clever here.
 

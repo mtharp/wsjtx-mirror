@@ -24,29 +24,30 @@
 printf '\e[8;28;100t'
 
 # set script path's
-BASED=$(dirname $(readlink -f $0))
+_BASED=$(dirname $(readlink -f $0))
 
 # Using cmake and qmake directories allows for build comparison.
 # Need to add support for multiple compilers {g++, intel, clang}
-mkdir -p "$BASED"/{tmp,src}
-mkdir -p "$BASED"/{wsjt,wspr}
-mkdir -p "$BASED"/{wsjtx,wsprx,map65}/qmake/install
-mkdir -p "$BASED"/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
+mkdir -p "$_BASED"/{tmp,src}
+mkdir -p "$_BASED"/{wsjt,wspr}
+mkdir -p "$_BASED"/{wsjtx,wsprx,map65}/qmake/install
+mkdir -p "$_BASED"/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
 
-# main vars
-_CONFIG="$BASED/config"
-_DOCS="$BASED/docs"
-_FUNC="$BASED/functions"
-_LANG="$BASED/language"
-_LOGS="$BASED/logs"
-_SRCD="$BASED/src"
-_TMP="$BASED/tmp"
-_MKRD="$HOME"/.local/share/applications/jtsdk-nix
+# path vars
+_CFG="$_BASED/config"
+_DOCS="$_BASED/docs"
+_FUNC="$_BASED/functions"
+_LANG="$_BASED/language"
+_LOGS="$_BASED/logs"
+_SRCD="$_BASED/src"
+_TMP="$_BASED/tmp"
+_MKRD=/home/$USER/.local/share/applications/jtsdk-nix
 
 # process vars
+# - Hamlib   == Hamlib Fork from G4WJS, required for WSJT-X
+# - AsciiDoc == 8.6.9, current release (simple unzip from source)
 _HAMLIBD=/home/$USER/.local/share/applications/hamlib
 _ADOCD=/home/$USER/.local/share/applications/asciidoc
-_jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source functions and language
 . "$_LANG"/language_en
@@ -72,11 +73,11 @@ root_chk
 # checking for package dialog
 dialog_chk
 
-# initial setup marker check
+# initial setup marker / sanity check
 setup_chk
 
 # setup main menu help doc var
-_HELP="$_DOCS/main_menu_help.txt"
+_HELP="$BASED/README"
 
 # setup main menu
 while [ 0 ]; do
@@ -85,33 +86,36 @@ dialog --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
 "$MMTITLE" --menu "$MENUMSG" 16 60 22 --file "$_TMP/MMenu.tmp" 2> "$_TMP/selection"
 
 # get user selection
-MMSELECT="`cat $_TMP/selection |head -c 1`"
+MMSELECT=$(head -c 1 < $_TMP/selection)
 
-# Used for help-section when ready
-# dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
-
-# start main menu options
+# WSJT w/Python3
 if [[ $MMSELECT = "A" ]]; then
 	under_development
 	continue
 
+# WSPR w/Python3
    elif [[ $MMSELECT = "B" ]]; then
 	under_development
 	continue
 
+# WSJT-X w/CMake
    elif [[ $MMSELECT = "C" ]]; then
 	_APP_NAME=wsjtx
 	_OPTION=Release
 	cmake_nix
 	continue
 
+# WSPR-X w/CMake
    elif [[ $MMSELECT = "D" ]]; then
 	under_development
 	continue
 
+# MAP65 w/CMake
    elif [[ $MMSELECT = "F" ]]; then
 	under_development
 	continue
+
+# Qmake builds need Makefile Verification
 
 #   elif [[ $MMSELECT = "G" ]]; then
 #	under_development
@@ -125,10 +129,18 @@ if [[ $MMSELECT = "A" ]]; then
 #	under_development
 #	continue
 
+# All Apps
    elif [[ $MMSELECT = "Z" ]]; then
 	under_development
 	continue
 
+# All Apps
+   elif [[ $MMSELECT = "H" ]]; then
+
+dialog --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$_HELP" 20 80
+	continue
+
+# Exit JTSDK-NIX
   elif [[ $MMSELECT = "E" ]]; then
    clean_exit
    fi

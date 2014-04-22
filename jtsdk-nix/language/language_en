@@ -58,6 +58,7 @@ cat << 'EOF' > ./tmp/MMenu.tmp
 "D WSPR-X .. with CMake" "" \
 "F MAP65 ... with CMake" "" \
 "Z Build All Applications" "" \
+"HELP" "" \
 "EXIT" ""
 EOF
 

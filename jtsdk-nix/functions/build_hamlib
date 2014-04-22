@@ -35,14 +35,15 @@ function git_check() {
 # check local git clone is up to date
 function update_chk() {
 
+	echo ".. Checking Local Hamlib Fork"
 # clone or update hamlib
 	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
 		echo
-		echo "Cloning G4WJS's Hamlib (this a can take few minutes, be patient)"
+		echo ".. Cloning G4WJS's Hamlib (this a can take few minutes, be patient)"
 		git clone "$_HAMLIBURL" g4wjs-hamlib	
 
 		# checkout integration
-		echo "Checkout Integration"	
+		echo ".. Checkout Integration"	
 		cd g4wjs-hamlib
 		git checkout integration
 
@@ -51,9 +52,9 @@ function update_chk() {
 		_GITSTATUS=$(git status -uno |awk 'FNR==2 {print $4}')
 	
 		if [[ $_GITSTATUS == "up-to-date" ]]; then
-			echo "Local Hamlib Fork Looks Up-To-Date"
+			echo ".. Local Hamlib Fork Looks Up-To-Date"
 		else
-			echo "Local Hamlib Fork requires updates"
+			echo ".. Local Hamlib Fork requires updates"
 			git pull
 		fi
 	fi
@@ -152,8 +153,6 @@ else
 fi
 
 cd "$_SRCD"
-clear
-echo "Checking Local Hamlib Fork"
 update_chk
 
 # configure hamlib
@@ -161,12 +160,12 @@ if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "1450000
 	while [ 1 ]
 	do
 		echo
-		read -p "Hamlib Seems Ok, Rebuild Anyway [ Y/N ]: " yn
-		case $yn in
+		read -p "Hamlib Seems Ok, Rebuild Anyway [ Y/N ]:" yn
+				case $yn in
 		[Yy]* )
 			echo
 			update_and_build
-			clear
+			echo
 			echo '---------------------------'	
 			echo "Performing Post Build Check"
 			echo '---------------------------'
@@ -174,6 +173,7 @@ if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "1450000
 			post_build_test2
 			break ;;
 		[Nn]* )
+			echo			
 			break ;;
 		* )
 			clear
@@ -184,7 +184,7 @@ if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "1450000
 
 else
 	new_build
-	clear
+	echo
 	echo '---------------------------'	
 	echo "Performing Post Build Check"
 	echo '---------------------------'

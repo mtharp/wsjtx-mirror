@@ -1,0 +1,34 @@
+= JTSDK-NIX v1.0.0
+
+== INTRODUCITON
+
+JTSDK-NIX is a collection of Bash scripts designed to assist
+users in building (compiling) the various WSJT applicaitons
+used by Amateur Radio Operators. For detailed information
+regaurding the applications themselves, see
+
+WSJT Home Page:
+http://www.physics.princeton.edu/pulsar/K1JT/
+
+This document serves a quick start guide only. For full
+instruction, see:
+
+Program Development:
+www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html
+
+== SYSTEM REQUIRMENTS
+
+== INSTALLATION
+
+== UPDATES
+
+== UNINSTALL
+
+
+
+
+
+
+
+
+
