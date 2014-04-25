@@ -1946,7 +1946,7 @@ def update():
             t='ECHO TEST'
             nmsg=9
             Audio.gcom2.ntxnow=0
-        t="Txing:  "+t[:nmsg]
+        t="Txing:  " + str(t[:nmsg])
         bgcolor='yellow'
         if Audio.gcom2.sendingsh==1:  bgcolor='#66FFFF'    #Shorthand (lt blue)
         if Audio.gcom2.sendingsh==-1: bgcolor='red'        #Plain Text
