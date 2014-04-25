@@ -757,10 +757,11 @@ def ModeJT6M(event=NONE):
         shrx.grid_forget()
         cbzap.configure(state=NORMAL)
         cbfreeze.configure(state=NORMAL)
+        cbfreeze.grid(column=0,row=2,padx=4,sticky='W')
         itol=3
         ltol.configure(text='Tol    '+str(ntol[itol]))
         inctol()
-        nfreeze.set(1)
+        nfreeze.set(0)
         ntx.set(1)
         Audio.gcom2.mousedf=0
         GenStdMsgs()

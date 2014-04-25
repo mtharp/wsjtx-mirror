@@ -241,7 +241,8 @@ def set_frange():
 
 #---------------------------------------------------- decode_request
 def decode_request(event):
-    if (g.mode=='FSK441' or g.mode=='JTMS') and nspeed0.get()>5:
+    if (g.mode=='FSK441' or g.mode=='JTMS' or g.mode=='JT6M') and \
+        nspeed0.get()>5:
 # If decoder is busy or we are not monitoring, ignore request
         if Audio.gcom2.ndecoding==0 and Audio.gcom2.monitoring:
             Audio.gcom2.mousebutton=event.num       #Left=1, Right=3
