@@ -348,11 +348,13 @@ def update():
         if nspeed>5:
             color="white"
             if g.cmap=="gray1": color="black"
-            t=time.strftime("%H:%M:%S",time.gmtime(Audio.gcom2.ntime + \
+            t1=time.strftime("%H:%M:%S",time.gmtime(Audio.gcom2.ntime + \
                 0.1*Audio.gcom1.ndsec))
-            graph1.create_text(5,110,anchor=W,text=t,fill=color)
-            t=g.filetime(Audio.gcom2.fnamea.tostring())
-            graph1.create_text(5,260,anchor=W,text=t,fill=color)
+            graph1.create_text(5,110,anchor=W,text=t1,fill=color)
+            t2=g.filetime(Audio.gcom2.fnamea.tostring().decode('ascii'))
+            if(t2[0]!='\x00'):
+                t2=t2[0:2]+':'+t2[2:4]+':'+t2[4:6]
+                graph1.create_text(5,260,anchor=W,text=t2,fill=color)
 
         newMinute=0
         new30=0

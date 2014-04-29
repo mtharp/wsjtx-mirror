@@ -1941,12 +1941,12 @@ def update():
             bmonitor.configure(text='Monitor')    
     if Audio.gcom1.transmitting:
         nmsg=int(Audio.gcom2.nmsg)
-        t=Audio.gcom2.sending.tostring()
+        t0=Audio.gcom2.sending.tostring().decode('ascii')
         if mode.get()=='Echo':
             t='ECHO TEST'
             nmsg=9
             Audio.gcom2.ntxnow=0
-        t="Txing:  " + str(t[:nmsg])
+        t="Txing:  " + str(t0[:nmsg])
         bgcolor='yellow'
         if Audio.gcom2.sendingsh==1:  bgcolor='#66FFFF'    #Shorthand (lt blue)
         if Audio.gcom2.sendingsh==-1: bgcolor='red'        #Plain Text
@@ -2010,7 +2010,8 @@ def update():
             graph1.delete(ALL)
 # NB: top two lines are probably invisible ...
             graph1.create_image(0,0,anchor='nw',image=pim)
-            t=g.filetime(Audio.gcom2.decodedfile.tostring())
+            t=g.filetime(Audio.gcom2.decodedfile.tostring().decode('ascii'))
+            t=t[0:2]+':'+t[2:4]+':'+t[4:6]
             graph1.create_text(100,80,anchor=W,text=t,fill="white")
             if mode.get()[:5]=='ISCAT' and Audio.gcom2.npingtime>0:
                 if Audio.gcom2.npingtime2-Audio.gcom2.npingtime >= 1000:
