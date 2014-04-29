@@ -5,12 +5,13 @@
 # Build Python3 Numpy-1.8.1 from source
 # pre-req: LAPACK and ATLAS
 
-#--------------------------------pmw build-------------------------------------#
+#------------------------------numpy build-------------------------------------#
 
 function build_numpy() {
 
 set -e
 
+(
 _PKG_NAME=numpy
 _FILE=numpy-1.8.1.tar.gz
 _URL="http://softlayer-dal.dl.sourceforge.net/project/numpy/NumPy/1.8.1/numpy-1.8.1.tar.gz"
@@ -30,12 +31,12 @@ else
 	clean_exit
 fi
 
-# Download Pmw-2.0.0
+# Download Numpy-1.8.1
 echo ".. downloiading $_FILE from Sourceforge"
 cd $_SRCD
 wget -q -r --tries=5 $_URL -O $_SRCD/$_FILE
 
-# unpack and install Pmw2
+# unpack and install Numpy
 echo ".. unpacking $_FILE"
 cd $_SRCD
 tar -xzvf $_FILE
@@ -56,7 +57,7 @@ else
 	echo "For Details, see $_LOGS/setup.log"
 	echo
 	echo "Actoiins to Take:"
-	echo " [1] Download PMW:" $_URL
+	echo " [1] Download Numpy:" $_URL
 	echo " [2] Save to: $_SRCD"
 	echo " [3] Re-Run setup.sh"
 	echo
@@ -76,17 +77,19 @@ else
 	echo "Do No Match"
 	echo "For Details, see $_LOG"
 	echo
-	echo "Actoiins to Take:"
-	echo " [1] Download PMW:" $_URL
+	echo "Actions To Take:"
+	echo " [1] Download Numpy:" $_URL
 	echo " [2] Save to: $_SRCD"
 	echo " [3] Re-Run setup.sh"
 	echo
 	echo "Setup will now exit."
 	echo
 	read -p "Press [Enter] to continue ..."
+	) 2>&1 | tee -a $_LOGS/$_PKG_NAME-setup.log
 	clean_exit
 fi
 
+(
 # we need sudo here to install system wide:
 # This can take a while, and is the highest potentical failure point.
 #
@@ -112,23 +115,24 @@ sudo chown $USER:$USER $_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
 echo ".. changing back to normal user"
 sudo -k
 
-# verify Pmw instlled correctly
-echo ".. verifying Pmw2 install"
+# verify Numpy instlled correctly
+echo ".. verifying Numpy install"
 pip3 list | tee -a > $_MKRD/$_PKG_NAME/pip3-list.mkr 2>&1
-_PMWV=$(grep ^Pmw < $_MKRD/$_PKG_NAME/pip3-list.mkr |awk '{print $1}')
+_NUMP=$(grep ^numpy < $_MKRD/$_PKG_NAME/pip3-list.mkr |awk '{print $1}')
 
-if [[ $_PMWV = "Pmw" ]];then
-	echo "Pmw Installation Complete"
+if [[ $_NUMP = "numpy" ]];then
+	echo "Numpy Installation Complete"
 	rm $_MKRD/$_PKG_NAME/pip3-list.mkr
 else
 	echo
-	echo "Pmw Installation Error"
-	echo "There appears to have been an Pmw install problem."
+	echo "Numpy Installation Error"
+	echo "There appears to have been an Numpy install problem."
 	echo "Please check the build log for details:"
 	echo
 	echo "Location: $_LOGS/$_PKG_NAME-setup.log"
 	echo 
 	read -p "Press [Enter] to continue ..."
+	) 2>&1 | tee -a $_LOGS/$_PKG_NAME-setup.log
 	clean_exit
 fi
 }
