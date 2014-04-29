@@ -27,6 +27,19 @@ EOL
 }
 
 # package installation
+function ubuntu_pkg_chk() {
+
+touch $_TMP/install_list.txt
+for line in $(< ./config/pkg_list_ubuntu_$(uname -m)); do
+_STATUS=$(apt-cache policy $line |awk 'FNR==2 {print $2}')
+if [[ $_STATUS == "" ]];then 
+	echo $line >> $_TMP/install_list.txt
+fi
+done
+
+}
+
+# package installation
 function ubuntu_pkg_list() {
 
 # keep all original pkg-lists for later cat && uninstall
@@ -38,18 +51,19 @@ function ubuntu_pkg_list() {
 # make new pkg list
 	dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
 
+
 # perform update and upgrade first
 # Update, Upgrade and Installation appoval from
 # user is granted in main menu selection
 	echo ".. Updating System Before Pkg Installation"
 	echo ".. Sudo is required for this action, please enter your password:"
 	echo
-	sudo apt-get update && sudo apt-get -y upgrade
+	sudo apt-get update
 	echo
 	echo ".. Installing Packages for $_DISTRIBUTOR $_RELEASE $_ARCH"
 	echo
 	echo
-	sudo apt-get -y install $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+	sudo apt-get -y install $(< $_TMP/install_list.txt)
 	echo
 
 # reset sudo to ask for user PW if needed again
@@ -57,7 +71,6 @@ function ubuntu_pkg_list() {
 	echo ".. Changing back to normal user"
 	sudo -k
 	echo
-	read -p "Press [Enter] to continue with setup"
 
 # set package installation complete mkr
 	touch $_MKRD/$(uname -m)_pkg_install.mkr
@@ -70,14 +83,6 @@ function ubuntu_pkg_list() {
 
 # now create new mkr
 	dpkg --get-selections > $_MKRD/$USER-post-pkg-list
-
-}
-
-# package installation
-function post_install_pkg_chk() {
-
-# still working on application versions, so
-	echo "Just to keep set -e happy" > /dev/null 2>&1
 
 }
 

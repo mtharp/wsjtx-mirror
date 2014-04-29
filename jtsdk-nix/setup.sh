@@ -117,117 +117,234 @@ if [[ $SMSELECT = "A" ]]; then
 # Start setup logging sub-process
 # this logs everything to ./logs/setup.log
 # other sections also have individual logs 
-rm -r $_LOGS/setup.log && touch $_LOGS/setup.log
-		clear
-(
-		# Ubuntu 1404, includes Lubuntu, Xubuntu
-		echo "-------------------------------------------"
-		echo "JTSDK-NIX SETUP"
-		echo "-------------------------------------------"
-		source "$_FUNC"/ubuntu_functions
-		ubuntu_setup_marker
-		ubuntu_distro_info
-		echo
-		echo 'Distribution .. '"$_DISTRIBUTOR"
-		echo 'Release ....... '"$_RELEASE"
-		echo 'Arch .......... '"$_ARCH"
-		echo
-		echo "Answering [ YES ] Will Perform The Following Actions"
-		echo
-		echo "[1] Update Repository List(s)"
-		echo "[2] Perform a Normal System Upgrade ( NOT dist-upgrade )"
-		echo "[3] Check and / or Install the Listed Packages"
-		echo
-		echo "From APT Manual: If an undesirable situation, such as"
-		echo "changing a held package, trying to install a unauthenticated"
-		echo "package or removing an essential package occurs then apt-get"
-		echo "will abort, thus exiting from JTSDK-NIX setup."
-		echo
-		echo "PACKAGES TO BE INSTALLED"
-		echo "------------------------"
-		cat $_CFG/pkg_list_ubuntu_$(uname -m) | column
-		echo
+	rm -r $_LOGS/setup.log && touch $_LOGS/setup.log
+	source "$_FUNC"/ubuntu_functions	
+	clear
 
-		# moment of truth, install or no :-)
-		while [ 1 ]
-		do
-			echo
-			read -p "Is it OK to Start The Installation? [ Y/N ]: " yn
-			case $yn in
-			[Yy]* )
-				ubuntu_pkg_list
-				break ;;
-			[Nn]* )
-				echo
-				break ;;
-			* )
-				clear
-				echo "Please use "Y" yes or "N" No."
-			;;
-			esac
-		done
 
-		# Section Under Construciton
-		#clear
-		#echo '-------------------------------------------'	
-		#echo "Performing Post Installation Package Checks"
-		#echo '-------------------------------------------'
-		#source "$_FUNC"/post_install_chk
-		#sleep 1
-		# post_install_chk
+# pre-installation check
+	clear
+	(
+	echo "------------------------------------------------"
+	echo "JTSD-NIX Setup - $(date)"
+	echo "------------------------------------------------"
+	echo
+	) 2>&1 | tee -a $_LOGS/setup.log
+
+	# pre-installation check
+	(
+	echo "------------------------------------------------"
+	echo " Checking Existing Packages"
+	echo "------------------------------------------------"
+	ubuntu_pkg_chk
+	echo 'Done'
+	echo	
+	) 2>&1 | tee -a $_LOGS/setup.log
+
+	# Ubuntu 1404, includes Lubuntu, Xubuntu
+	echo "------------------------------------------------"
+	echo " JTSDK-NIX SETUP"
+	echo "------------------------------------------------"
+	ubuntu_setup_marker
+	ubuntu_distro_info
+	echo
+	echo 'Distribution .... '"$_DISTRIBUTOR"
+	echo '  Release ....... '"$_RELEASE"
+	echo '  Arch .......... '"$_ARCH"
+	echo
+	echo "Answering [ YES ] Will Perform The Following Actions"
+	echo "  [1] Update Repository List(s)"
+	echo "  [2] Check or Install Listed Packages + Dependencies"
+	echo "  [3] *NO* System Upgrades will be performed"
+	echo
+	echo "From APT Manual: If an undesirable situation, such as"
+	echo "changing a held package, trying to install a unauthenticated"
+	echo "package or removing an essential package occurs then apt-get"
+	echo "will abort, thus exiting from JTSDK-NIX setup."
+	echo
+	echo "PACKAGES TO BE INSTALLED"
+	echo "------------------------"
+	
+	if [[ $(wc -l < $_TMP/install_list.txt) -eq "0" ]]; then
 		echo
-		echo '-------------------------------------------'	
-		echo "Performing Pmw-2.0.0 Installation"
-		echo '-------------------------------------------'
-		echo ".. Checking for Previous Pmw Installation"
-		 _PMWSTATUS=$(pip3 list |grep Pmw |head -c 3)
-		wait
+		echo ".. No Packages Needed"
+		echo
+	else
+		echo
+		pr -l 1 -t -5 < $_TMP/install_list.txt
+		echo
+	fi
 
-		if [[ $_PMWSTATUS == "Pmw" ]]; then
-			echo ".. Pmw (2.0.0) Is Installed"
-			echo
-			read -p "Press [Enter] to continue with setup"
-			echo
-		else
-			source "$_FUNC"/build_pmw
-			sleep 1
-			build_pmw
+	# start installation loop
+	while [ 1 ]
+	do
+		echo
+		read -p "Is it OK to Start The Installation? [ Y/N ]: " yn
+		case $yn in
+		[Yy]* )
+
+			# package installation
 			clear
-		fi
+			(
+			echo "------------------------------------------------"
+			echo " Package List Installation"
+			echo "------------------------------------------------"
+			ubuntu_pkg_list
+			echo
+			read -p "Press [Enter] to continue.."
+			) 2>&1 | tee -a $_LOGS/setup.log
+			
+			# pmw-2.0.0 installation
+			clear
+			(
+			echo "------------------------------------------------"
+			echo " Pmw-2.0.0 Installation"
+			echo "------------------------------------------------"
 
-		# hamlib3 installaiton		
-		echo
-		echo '-------------------------------------------'	
-		echo "Performing Hamlib 3.0 Installation"
-		echo '-------------------------------------------'
-		source "$_FUNC"/build_hamlib
-		build_hamlib
-		
-		# If we got this far, we should eb able to build apps
-		echo
-		echo '-------------------------------------------'	
-		echo " JTSDK-NIX $_DISTRIBUTOR Setup is Finished"
-		echo '-------------------------------------------'
-		echo
-		echo "If everything went without error, you should be"
-		echo "be able to build applications"
-		echo
-		echo "All Logs saved to:"
-		echo "$_LOGS"
-		echo
-		echo "To Build APplicaitnos, at Command Prompt: type,"
-		echo
-		echo "./jtsdk-nix.sh"
-		echo
-		echo "Then select the application you'd like to build"
-		echo
-		echo "NOTE: During JTSDK-NIX development, not all"
-		echo "applicaitons will be available. If an app is"
-		echo "unavailble, a message will be display at selection"
-		echo
-) 2>&1 | tee -a $_LOGS/setup.log # end stup log
-		read -p "Press [Enter] to exit setup"
-		continue
+			# at some point, move this section to a general non-distro spccific
+			# funciton and expand the conditionals, at present, it just checks
+			# for the two makrker files, then a simple count test
+			_PKG_NAME=pmw2
+			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
+			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
+
+
+			if [[ -f $_INSTALL_MKR ]]; then
+				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
+			else 
+				var1="0"
+			fi
+
+			if [[ -f $_FILE_COUNT_MKR ]]; then
+				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
+			else 
+				var2="0"
+			fi
+
+			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
+				echo ".. found previous install marker"
+				echo ".. verifying file count"
+				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
+				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
+
+				if (( $var1 == $var2 )); then
+					echo ".. file count seems ok. no need for re-install"
+				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
+					echo ".. pip3 check seems ok, no need for re-install"
+				else
+					echo ".. file count was wrong, re-installing"
+					source $_FUNC/build_pmw
+					build-pmw
+				fi
+
+			else
+				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
+				source $_FUNC/build_pmw
+				build_pmw
+			fi
+
+			echo
+			read -p "Press [Enter] to continue.."
+			) 2>&1 | tee -a $_LOGS/setup.log
+
+			# python numpy 1-8.1 installation
+			clear
+			(
+			echo "------------------------------------------------"
+			echo " Numpy-1.8.1 Installation"
+			echo "------------------------------------------------"
+
+			_PKG_NAME=numpy
+			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
+			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
+
+			if [[ -f $_INSTALL_MKR ]]; then
+				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
+			else 
+				var1="0"
+			fi
+
+			if [[ -f $_FILE_COUNT_MKR ]]; then
+				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
+			else 
+				var2="0"
+			fi
+
+			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
+				echo ".. found previous install marker"
+				echo ".. verifying file count"
+				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
+				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
+
+				if (( $var1 == $var2 )); then
+					echo ".. file count seems ok. no need for re-install"
+				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
+					echo ".. pip3 check seems ok, no need for re-install"
+				else
+					echo ".. file count was wrong, re-installing"
+					source $_FUNC/build_numpy
+					build_numpy
+				fi
+
+			else
+				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
+				source $_FUNC/build_numpy
+				build_numpy
+			fi
+
+			echo
+			read -p "Press [Enter] to continue.."
+			) 2>&1 | tee -a $_LOGS/setup.log
+
+
+			# hamlib3 special installaiton
+			clear
+			(
+			echo
+			echo '------------------------------------------------'	
+			echo " Checlking Hamlib 3.0 Installation"
+			echo '------------------------------------------------'
+			source "$_FUNC"/build_hamlib
+			build_hamlib
+			echo
+			read -p "Press [Enter] to continue.."
+			) 2>&1 | tee -a $_LOGS/setup.log
+
+			# If we got this far, we should be able to build apps
+			clear
+			echo
+			echo '------------------------------------------------'	
+			echo " JTSDK-NIX $_DISTRIBUTOR Setup is Finished"
+			echo '------------------------------------------------'
+			echo
+			echo "If everything went without error, you should be"
+			echo "be able to build applications"
+			echo
+			echo "All Logs saved to:"
+			echo "$_LOGS"
+			echo
+			echo "To Build APplicaitnos, at Command Prompt: type,"
+			echo
+			echo "./jtsdk-nix.sh"
+			echo
+			echo "Then select the application you'd like to build"
+			echo
+			echo "NOTE: During JTSDK-NIX development, not all"
+			echo "applicaitons will be available. If an app is"
+			echo "unavailble, a message will be display at selection"
+			echo
+			read -p "Press [Enter] to exit setup"
+			break ;;
+		[Nn]* )
+			echo
+			break ;;
+		* )
+			clear
+			echo "Please use "Y" yes or "N" No."
+		;;
+		esac
+	done
+	continue
 
 #-----------------------------------Help---------------------------------------#
    elif [[ $SMSELECT = "H" ]]; then

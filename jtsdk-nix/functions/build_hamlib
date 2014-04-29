@@ -109,7 +109,7 @@ function post_build_test2() {
 		echo ".. Rig Controll ... ok"
 		echo '.. Tested With: rigctl -m1 f <= results => 145000000'
 		echo
-		read -p "Press [Enter] to continue ..."
+
 	else
 		echo "Rig Controll .. FAILED"
 		echo "The build script will exit. Check the"
