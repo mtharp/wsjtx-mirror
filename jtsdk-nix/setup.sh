@@ -302,7 +302,7 @@ if [[ $SMSELECT = "A" ]]; then
 			(
 			echo
 			echo '------------------------------------------------'	
-			echo " Checlking Hamlib 3.0 Installation"
+			echo " Checking Hamlib 3.0 Installation"
 			echo '------------------------------------------------'
 			source "$_FUNC"/build_hamlib
 			build_hamlib

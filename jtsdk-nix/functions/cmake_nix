@@ -11,7 +11,7 @@ echo
 echo "STARTING BUILD FOR ( $_APP_NAME )"
 
 # WSJT-X, WSPR-X adn MAP65 all live in /branches
-_SVNURL=svn://svn.code.sf.net/p/wsjt/wsjt/branches
+_SVNURL=https://svn.code.sf.net/p/wsjt/wsjt/branches
 
 # build and install directories
 _OPTION=Release

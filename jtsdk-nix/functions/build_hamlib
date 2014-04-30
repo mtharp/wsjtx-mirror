@@ -177,7 +177,6 @@ function new_build() {
 
 # START MAIN 
 # start build log
-(
 if [[ -f $_LOG ]]; then
 	mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
 	touch $_LOG
@@ -224,6 +223,5 @@ else
 	post_build_test1
 	post_build_test2
 fi
-) 2>&1 | tee -a $_LOG # end build log
 
 }
