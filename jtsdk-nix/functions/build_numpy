@@ -11,7 +11,6 @@ function build_numpy() {
 
 set -e
 
-(
 _PKG_NAME=numpy
 _FILE=numpy-1.8.1.tar.gz
 _URL="http://softlayer-dal.dl.sourceforge.net/project/numpy/NumPy/1.8.1/numpy-1.8.1.tar.gz"
@@ -85,11 +84,9 @@ else
 	echo "Setup will now exit."
 	echo
 	read -p "Press [Enter] to continue ..."
-	) 2>&1 | tee -a $_LOGS/$_PKG_NAME-setup.log
 	clean_exit
 fi
 
-(
 # we need sudo here to install system wide:
 # This can take a while, and is the highest potentical failure point.
 #
@@ -132,7 +129,6 @@ else
 	echo "Location: $_LOGS/$_PKG_NAME-setup.log"
 	echo 
 	read -p "Press [Enter] to continue ..."
-	) 2>&1 | tee -a $_LOGS/$_PKG_NAME-setup.log
 	clean_exit
 fi
 }

@@ -1,4 +1,3 @@
-= WSPR FMT User Guide
 //:Author: Joe Taylor, K1JT
 //:Date: January 30, 2014
 //:Revision: 1.3
@@ -9,9 +8,8 @@
 :description: Software for Amateur Radio Weak-Signal Communication
 :prog: WFMT
 
-== Accurate Frequency Measurements
-with your WSPR Setup
 
+= WSPR FMT User Guide
 Joe Taylor, K1JT
 Last updated: November 4, 2010
 
@@ -30,7 +28,7 @@ for using WSPR, including CAT control. With this technique you won’t need a GP
 rubidium oscillator, high-accuracy frequency counter, or any other expensive laboratory-grade
 equipment.
 
-The FMT tools go a long way toward automating the calibration of your radio and making
+The *FMT* tools go a long way toward automating the calibration of your radio and making
 frequency measurements with it. However, obtaining good results still requires you to think
 carefully about what you are doing, and why. These instructions should help to set you off on
 the right path.
@@ -55,30 +53,32 @@ Verify that the executable programs fmt, fmtave, fcal and fmeasure are present b
 entering each program name at the command prompt. Messages in response to these
 commands give simple guides to their required command syntax:
 
+.Example: fmt
 -----
-1C:\Radio\wspr> fmt
-Usage:
-fmt <kHz> <0|1> <offset> <range> <tsec> <call>
+C:\Radio\wspr> fmt
+Usage: fmt ``<kHz> <0|1> <offset> <range> <tsec> <call>''
 -----
 
-Example: fmt 10000
-1
-1500
-100
-30
-WWV
+.Example: fmt 10000 1 1500 100 30 WWV
+-----
 C:\Radio\wspr> fmtave
-Usage:
-fmtave <infile>
-Example: fmtave fmt.all
+Usage: fmtave <infile>
+-----
+
+.Example: fmtave fmt.all*
+-----
 C:\Radio\wspr> fcal
-Usage:
-fcal <infile>
-Example: fcal fmtave.out
+Usage: fcal <infile>
+-----
+
+.Example: fcal fmtave.out*
+-----
 C:\Radio\wspr> fmeasure
-Usage:
-fmeasure <infile>
-Example: fmeasure fmtave.out
+Usage: fmeasure <infile>
+-----
+
+.Example: fmeasure fmtave.out
+
 Program fmt requires six parameters after the program name — a nominal frequency in kHz,
 a flag (0 or 1) to indicate whether this is a calibration measurement, the desired offset in Hz,
 search range in Hz above and below the nominal offset, specified duration of measurement in
@@ -86,148 +86,35 @@ seconds, and callsign. For example, to make a 30-second calibration measurement 
 WWV 10 MHz signal, offsetting your receiver so that the WWV carrier provides an expected
 beat note of 1500 Hz and searching over a range ± 100 Hz from that audio frequency, use the
 command:
-C:\Radio\wspr> fmt 10000 1 1500 100 30 WWV
+
+.C:\Radio\wspr> fmt 10000 1 1500 100 30 WWV
+
 In response to this command, program fmt will set the radio’s dial to 9.998500 MHz and
 acquire audio for 30 seconds. The audio signal is then analyzed in overlapping segments
 about 6 s long, spaced by about 3 s. For each segment the program prints a line similar to
 those in the following table:
-UTC
-Freq CAL Offset fMeas
-DF
-Level
-S/N Call
-(kHz) ?
-(Hz)
-(Hz)
-(Hz)
-(dB) (dB)
-------------------------------------------------------------------
-15:34:44 10000 1 1500 1516.339
-16.339
-5.3
-44.5 WWV
-15:34:47 10000 1 1500 1516.491
-16.491
-9.1
-46.3 WWV
-15:34:49 10000 1 1500 1516.493
-16.493
-8.4
-48.0 WWV
-15:34:52 10000 1 1500 1516.317
-16.317
-6.7
-42.3 WWV
-15:34:55 10000 1 1500 1516.302
-16.302
-6.7
-44.5 WWV
-15:34:58 10000 1 1500 1516.500
-16.500
-7.2
-40.5 WWV
-15:35:00 10000 1 1500 1515.917
-15.917
-4.4
-41.3 WWV
-15:35:03 10000 1 1500 1515.745
-15.745
-5.2
-40.8 WWV
-15:35:06 10000 1 1500 1516.523
-16.523
-6.6
-41.0 WWV
-15:35:09 10000 1 1500 1516.423
-16.423
-5.4
-43.2 WWV
+
+.FMT Data
+-----
+include::fmt.all.txt[]
+-----
+
+.Explanation
 Here fMeas is the observed frequency of the beat note and DF = fMeas - Offset is the
 measured dial error. Output from fmt also appears (without column headings) in the file
 2fmt.out — which is started afresh at each program invocation — and in fmt.all, where it
 accumulates until you explicitly delete the file.
-As described in Appendix C of the WSPR 2.0 User’s Guide, to calibrate your radio you should
+
+As described in Appendix C of the WSPR 4.0 User’s Guide, to calibrate your radio you should
 make a number of measurements like this example, over a range of frequencies. This process
 can be automated by executing a Windows batch file or Linux shell script similar to the
 following one, which I call gocal.bat:
-C:\Radio\wspr> type gocal.bat
-fmt
-fmt
-fmt
-fmt
-fmt
-fmt
-fmt
-fmt
-fmt
-fmt
-fmt
-660
-880
-1210
-2500
-3330
-5000
-7850
-10000
-14670
-15000
-20000
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1500
-1500
-1500
-1500
-1500
-1500
-1500
-1500
-1500
-1500
-1500
-100
-100
-100
-100
-100
-100
-100
-100
-100
-100
-100
-30
-30
-30
-30
-30
-30
-30
-30
-30
-30
-30
-WFAN
-WCBS
-WPHT
-WWV
-CHU
-WWV
-CHU
-WWV
-CHU
-WWV
-WWV
+
+.Wiondows Bat File ( C:\Radio\wspr> type gocal.bat)
+-----
+include::gocal.bat.txt[]
+-----
+
 In Linux the name of the script is simply gocal (without the extension), but the contents are
 the same. Executing the batch file causes calibration sequences to be run for each of a
 number of stations whose frequency calibration you have good reason to trust. For this
@@ -240,234 +127,14 @@ After typing gocal at the command prompt you should see the output from fmt for 
 in the file, and the measurements will accumulate in fmt.all. Here’s an abbreviated copy of
 fmt.all obtained by executing gocal.bat at my station one afternoon (the column
 headings were added by hand):
-UTC
-Freq CAL Offset fMeas
-DF
-Level
-S/N Call
-(kHz) ?
-(Hz)
-(Hz)
-(Hz)
-(dB) (dB)
-------------------------------------------------------------------
-15:41:51
-660 1 1500 1503.103
-3.103
-1.5
-54.4 WFAN
-15:41:54
-660 1 1500 1503.103
-3.103
-1.7
-54.1 WFAN
-15:41:56
-660 1 1500 1503.103
-3.103
-2.1
-53.6 WFAN
-...
-15:42:22
-880 1 1500 1503.459
-3.459
-1.8
-56.4 WCBS
-15:42:25
-880 1 1500 1503.460
-3.460
-2.6
-55.5 WCBS
-15:42:27
-880 1 1500 1503.459
-3.459
-1.5
-56.6 WCBS
-...
-15:42:53
-1210 1 1500 1503.850
-3.850
-1.0
-56.6 WPHT
-15:42:56
-1210 1 1500 1503.851
-3.851
--0.8
-58.4 WPHT
-315:42:58
-...
-15:43:23
-15:43:26
-15:43:28
-...
-15:43:54
-15:43:57
-15:43:59
-...
-15:44:25
-15:44:28
-15:44:30
-...
-15:44:55
-15:44:58
-15:45:00
-...
-15:45:26
-15:45:29
-15:45:31
-...
-15:45:57
-15:46:00
-15:46:02
-...
-15:46:27
-15:46:30
-15:46:32
-...
-15:46:58
-15:47:01
-15:47:03
-...
-1210 1 1500 1503.849 3.849 0.5 57.2
-WPHT
-2500
-2500
-2500 1
-1
-1 1500
-1500
-1500 1559.336
-1403.312
-1418.310 59.336
--96.688
--81.690 -4.1
--3.9
--4.1 9.7
-7.8
-8.1 WWV
-WWV
-WWV
-3330
-3330
-3330 1
-1
-1 1500
-1500
-1500 1506.960
-1506.961
-1506.960 6.960
-6.961
-6.960 1.4
-0.5
-0.1 65.2
-65.7
-65.7 CHU
-CHU
-CHU
-5000
-5000
-5000 1
-1
-1 1500
-1500
-1500 1509.350
-1509.345
-1509.342 9.350
-9.345
-9.342 0.7
-0.5
-0.9 27.5
-27.4
-28.5 WWV
-WWV
-WWV
-7850
-7850
-7850 1
-1
-1 1500
-1500
-1500 1513.547
-1513.550
-1513.556 13.547
-13.550
-13.556 17.1
-15.5
-17.1 58.6
-60.0
-58.4 CHU
-CHU
-CHU
-10000
-10000
-10000 1
-1
-1 1500
-1500
-1500 1516.681
-1516.656
-1516.789 16.681
-16.656
-16.789 6.7
-4.8
-6.6 46.2
-42.8
-49.0 WWV
-WWV
-WWV
-14670
-14670
-14670 1
-1
-1 1500
-1500
-1500 1523.601
-1523.066
-1523.660 23.601
-23.066
-23.660 -3.4
--3.4
--3.5 28.6
-31.0
-30.3 CHU
-CHU
-CHU
-15000
-15000
-15000 1
-1
-1 1500
-1500
-1500 1523.940
-1523.818
-1523.832 23.940
-23.818
-23.832 5.1
-4.5
-1.7 49.2
-53.1
-50.5 WWV
-WWV
-WWV
-20000
-20000
-20000 1
-1
-1 1500
-1500
-1500 1530.897
-1530.793
-1530.779 30.897
-30.793
-30.779 22.3
-22.1
-22.1 35.6
-33.4
-36.9 WWV
-WWV
-WWV
-*
-*
-*
+
+.Full FMT Run
+
+
+
+
+
+
 Notice that the DF measurements for a particular station usually agree to within a few tenths of
 a Hz. In addition, they generally increase (or decrease) in proportion to the station frequency.
 In mid-afternoon I can’t hear WWV at 2.5 MHz, so those entries in this particular example are
@@ -495,7 +162,7 @@ Call
 (Hz)
 ?
 (Hz)
----------------------------------------------------
+
 0.660
 3.103
 1
@@ -554,7 +221,10 @@ Resid Call
 (Hz)
 (MHz)
 (Hz)
-------------------------------------------------
+
+
+
+
 0.660
 3.103
 0.660003103
@@ -649,6 +319,7 @@ Analyzing your Data
 So... now it’s time to analyze your data. To provide an example for this last step, let’s imagine
 that the WWV signal at 5 MHz was a station of unknown frequency, rather than a calibrator.
 To effect this change I edited one line in the file fmtave.out described above, changing
+-----
 5.000
 9.343 1 10 0.00 15:44:25 WWV
 9.343 0 10 0.00 15:44:25 WWV
