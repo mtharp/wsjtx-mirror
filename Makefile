@@ -6,23 +6,23 @@
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
 MV			?= 	mv
-RM			?=	@RM@
+RM			?=	/bin/rm
 MKDIR		?= 	mkdir
 INSTALL		=	install
 
-CC			?=	@CC@
-FFLAGS		=	@FFLAGS@
-LDFLAGS		=	@LDFLAGS@
-LIBS		=	@LIBS@ -lfftw3f
-CPPFLAGS	=	@CPPFLAGS@
-CFLAGS		=	@CFLAGS@
-PREFIX		=	@PREFIX@
+CC			?=	gcc
+FFLAGS		=	-g -O2 -fno-range-check -ffixed-line-length-none -Wall -fbounds-check -fno-second-underscore -fPIC
+LDFLAGS		=	-L/usr/lib/x86_64-linux-gnu -L/usr/local/lib 
+LIBS		=	 -lpthread  -lportaudio -lfftw3f
+CPPFLAGS	=	-I/usr/include -I/usr/local/include 
+CFLAGS		=	 -Wall -O0 -g  -Wall -O0 -g
+PREFIX		=	/usr/local/
 
 # WSPR specific compiler flags
 FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation 
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
 
-DEFS		=	@DEFS@
+DEFS		=	-DPACKAGE_NAME=\"wspr\" -DPACKAGE_TARNAME=\"wspr\" -DPACKAGE_VERSION=\"4.0\" -DPACKAGE_STRING=\"wspr\ 4.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DFC_LIB_PATH=\"/usr/lib/gcc/x86_64-linux-gnu/4.8/\" -DFC=\"gfortran\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_ERRNO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIBGEN_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_WAIT_H=1 -DHAVE_LINUX_PPDEV_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SYSLOG_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 -DTIME_WITH_SYS_TIME=1 -DSTRING_WITH_STRINGS=1 -DNDEBUG=1
 CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
@@ -41,15 +41,15 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-OS			=	@OS@
-FC			=	@FC@
-FCV			=	@FCV@
-FC_LIB_PATH	+=	@FC_LIB_PATH@
+OS			=	Linux
+FC			=	gfortran
+FCV			=	gnu95
+FC_LIB_PATH	+=	/usr/lib/gcc/x86_64-linux-gnu/4.8/
 LDFLAGS		+=	-L${FC_LIB_PATH}
 
-PYTHON		?=	@PYTHON@
-RM			?=	@RM@
-F2PY		?=	@F2PY@
+PYTHON		?=	/usr/bin/python3
+RM			?=	/bin/rm
+F2PY		?=	/usr/local/bin/f2py3
 
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 

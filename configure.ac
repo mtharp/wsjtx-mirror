@@ -7,7 +7,7 @@ dnl This should be a svn hook instead.
 dnl Sneakier way to get a Version into setup.py
 AC_COPYRIGHT([$Id$])
 
-AC_INIT([wspr],[1.11])
+AC_INIT([wspr],[4.0])
 fail=0
 
 AC_PREFIX_DEFAULT(/usr/local/)
@@ -24,8 +24,10 @@ dnl Lets guess at some likely places for extra libs/includes XXX -db
 CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
-FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none\
-			-Wall -fbounds-check -fno-second-underscore -fPIC"
+
+FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none \
+-Wall -fbounds-check -fno-second-underscore -fPIC"
+
 FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC"
 #-Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 
@@ -58,7 +60,6 @@ if test ! -z "$CFLAGS"; then
 	CFLAGS="$CFLAGS $CFLAGS"
 fi
 
-
 AC_ISC_POSIX
 AC_C_INLINE
 AC_PROG_GCC_TRADITIONAL
@@ -83,9 +84,9 @@ dnl Checks for header files.
 
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([inttypes.h stdint.h sys/resource.h sys/param.h errno.h \
-sys/syslog.h stddef.h libgen.h sys/wait.h wait.h stdio.h termios.h \
-sys/resource.h linux/ppdev.h dev/ppbus/ppi.h sys/stat.h fcntl.h sys/ioctl.h ])
+AC_CHECK_HEADERS([errno.h fcntl.h inttypes.h libgen.h stdint.h stddef.h stdio.h \
+termios.h wait.h dev/ppbus/ppi.h linux/ppdev.h sys/ioctl.h sys/resource.h \
+sys/resource.h sys/param.h sys/stat.h sys/syslog.h sys/time.h sys/wait.h])
 
 AC_HEADER_TIME
 
@@ -154,7 +155,7 @@ if test -z $FC ; then
 fi
 
 if test "$F2PY" = ""; then
-	AC_SUBST(F2PY, "python f2py.py")
+	AC_SUBST(F2PY, "python3 f2py3.py")
 fi
 
 dnl 
@@ -178,9 +179,12 @@ if test $HAS_PORTAUDIO -eq 1; then
 	AC_DEFINE(HAS_PORTAUDIO_LIB, 1, )
 else
 	fail=1
-	echo "This program needs portaudio v19 to compile."
-	echo "Please use --with-portaudio-include-dir= and"
-	echo " --with-portaudio-lib-dir= to set the paths."
+	echo "Portaudio-v19 is required by $PACKAGE_NAME $"
+	echo
+	echo "Please use:"
+	echo "--with-portaudio-include-dir=/path/to/pa"
+	echo "--with-portaudio-lib-dir=/path/to/pa/libs"
+	echo
 fi
 
 dnl
@@ -190,20 +194,17 @@ if test $fail -eq 1; then
 	AC_MSG_ERROR([Please check error messages and install missing packages.])
 fi
 
+dnl do summary
+echo
+echo "-------------------------------------------"
+echo "Configuration Summary"
+echo "-------------------------------------------"
+echo ""
 if test $g95 = "yes"; then
-	echo "Using g95 as fortran compiler.";
+echo "Fcomplier: ...... $g95";
+elif test $gfortran = "yes"; then
+echo "Fcomplier: ...... $gfortran";
 fi
-
-if test $gfortran = "yes"; then
-	echo "Using gfortran as fortran compiler.";
-fi
-
-echo
-
-echo
-echo "Compiling $PACKAGE_NAME $PACKAGE_VERSION"
-echo
-
-echo "Installing into: $prefix"
-
+echo "Package: ........ WSPR 4.0"
+echo "Install Prefix: . $prefix"
 echo
