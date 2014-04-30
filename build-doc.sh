@@ -4,9 +4,9 @@
 # Author          : KI7MT
 # Email           : ki7mt@yahoo.com
 # Date            : 2014
-# Version         : 0.8.1
 # Usage           : ./build-doc.sh [ option ]
-# Notes           : Requires: Python 2.7+, AsciiDoc, GNU Source Highlight
+# Notes           : Requires:	Python 2.5 <=> 2.7.6, AsciiDoc, rsync
+#								bash 4.0+
 # Copyright       : GPLv(3)
 #
 # This program is free software: you can redistribute it and/or modify
@@ -23,36 +23,40 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #==============================================================================
 
-# TO-DO:
-# - When the next WSJT-X is released:
-# -- a. add WSJT-X to short_list array
-# -- b. remove WSJT-X Special build function
-
 # Exit on error
 set -e
 
-#######################
-# Variables           #
-#######################
-
+################################################################################
+# Variables                                                                    #
+################################################################################
 # Main variables
-SCRIPTVER="0.8.1"
-SCRIPTNAME=$(basename $0)
-BASEDIR=$(pwd)
-export PATH="$PATH:$BASEDIR/asciidoc"
+SCRIPTVER="0.9.0"
+BASEDIR=$(dirname $(readlink -f $0))
 DEVMAIL="wsjt-devel@lists.berlios.de"
 MAP65="$BASEDIR/map65"
 SIMJT="$BASEDIR/simjt"
 WSJT="$BASEDIR/wsjt"
 WSJTX="$BASEDIR/wsjtx"
 WSPR="$BASEDIR/wspr"
+WFMT="$BASEDIR/wfmt"
 WSPRX="$BASEDIR/wsprx"
 DEVG="$BASEDIR/dev-guide"
-QUICKR="$BASEDIR/quick-ref"
-TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=../icons -a max-width=1024px"
-declare -a all_apps_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' \
-'quick-ref' 'dev-guide' )
-declare -a short_list=('map65' 'simjt' 'wsjt' 'wspr' 'wsprx')
+QREF="$BASEDIR/quick-ref"
+export PATH="$BASEDIR/asciidoc:$PATH"
+ICONSDIR="$BASEDIR/icons"
+
+# non-data-uri builds (linked css, images, js)
+TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
+
+# data-uri builds (embedded images, css, js)
+DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
+
+# build manpage (under construction)
+# data-uri builds (embedded images, css, js)
+# MTOC="a2x.py --format=manpage --doctype=manpage --no-xmllint"
+
+# all available documents
+declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wfmt' 'wsprx' 'quick-ref' 'dev-guide')
 
 # Color variables
 C_R='\033[01;31m'		# red
@@ -61,11 +65,11 @@ C_Y='\033[01;33m'		# yellow
 C_C='\033[01;36m'		# cyan
 C_NC='\033[01;37m'		# no color
 
-#######################
-# Functions           #
-#######################
+################################################################################
+# Functions                                                                    #
+################################################################################
 
-# clean-exit
+# clean-exit -------------------------------------------------------------------
 function clean_exit() {
 	clear
 	echo -e ${C_R}'*** SIGNAL CAUGHT, PERFORMING CLEAN EXIT ***'${C_NC}
@@ -73,33 +77,35 @@ function clean_exit() {
 	echo -e ${C_Y}'Removing Temorary Folders'${C_NC}
 
 	# Delete any /tmp folders 
-	for i in "${all_apps_ary[@]}"
+	for i in "${doc_ary[@]}"
 		do
 			cd "$BASEDIR"
 			TMP="$BASEDIR/$i/tmp"
-			echo -e ${C_C}". Cleaning $TMP"${C_NC}
+			echo -e ${C_C}".. cleaning $TMP"${C_NC}
 			rm -rf "$TMP"
 	done
 
-# Yy / Nn answer on removing HTML files	
+# ask to remove *.html files	
 while [ 1 ]
 do
 	echo
-	read -p "Remove HTML Files? [ Yy /Nn ]: " yn
+	read -p "Remove HTML Files? [ Y /N ]: " yn
 	case $yn in
 	[Yy]* )
 		clear
 		echo -e ${C_Y}"Removing All HTML Files ... "${C_NC}
-		for i in "${all_apps_ary[@]}"
+
+		# loop through all docs
+		for i in "${doc_ary[@]}"
 		do
 			cd "$BASEDIR"
 			clean_dir="$BASEDIR/$i"
-			echo -e ${C_C}". Cleaning $clean_dir/*.html"${C_NC}
+			echo -e ${C_C}".. cleaning $clean_dir/*.html"${C_NC}
 			rm -rf "$clean_dir"/*.html
 			cd "$BASEDIR"
 		done
 		echo
-		echo -e ${C_G}"Done .. Now Exiting"${C_NC}
+		echo -e ${C_G}".. cleaning complete, now exiting"${C_NC}
 		echo
 		exit 0
 	;;
@@ -112,119 +118,106 @@ do
 	;;
 	esac
 done
-trap - SIGINT SIGQUIT SIGTSTP
+trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
 exit 0
 }	
 
-# Build All Guides
+# Build All Documentation ------------------------------------------------------
 function build_all_guides() {
 	clear
-	pre_file_check
+	echo
 	echo -e ${C_Y}"Building All WSJT Documentation"${C_NC}
 	echo
 
-while [ 1 ]
-do
-	read -p "Please confirm to start building? [ Yy / Nn ]: " yn
-	case $yn in
-	[Yy]* )
-		clear
-		echo -e ${C_Y}"Building All WSJT Documentation"${C_NC}
-
-		# Short List Loop: map65 simjt wsjt wspr wsprx
-		for f in "${short_list[@]}"
+	while [ 1 ]
+	do
+		for f in "${doc_ary[@]}"
 		do
 			app_name="$f"
-			dir_=$(echo $f | tr [:lower:] [:upper:])
-			cd "$dir_"
-			echo -e ${C_C}"Building $dir_"${C_NC}
-			build_doc
-			echo -e ${C_G}". $app_name-main.html"${C_NC}
+			cd "$f/"
+			if [[ $doc_type == "D" ]]
+			then
+				echo -e ${C_C}".. building data-uri version for ( $f )"${C_NC}
+				copy_image_folders
+				build_ddoc
+				remove_image_folders
+			fi
+			if [[ $doc_type == "L" ]]
+			then
+				echo -e ${C_C}".. building linked version for ( $f )"${C_NC}
+				build_doc
+			fi
 			cd "$BASEDIR"
 		done
-
-		# WSJT-X: special build until the next application release
-		# Must keep wsjtx-main-toc2.html as it's ahrd coded in the app.
-		echo -e ${C_C}'Building WSJT-X'${C_NC}
-		app_name="wsjtx"
-		cd "$WSJTX"
-		build_wsjtx
-		echo -e ${C_G}". wsjtx-main-toc2.html"${C_NC}
-
-		# QUICK-REF
-		echo -e ${C_C}'Building Quick Reference'${C_NC}
-		cd "$BASEDIR/quick-ref"
-		quick_ref
-		echo -e ${C_G}". quick-reference.html"${C_NC}
-		
-		# DEV-GUIDE
-		echo -e ${C_C}'Building Development Guide'${C_NC}
-		cd "$BASEDIR/dev-guide"
-		dev_guide
-		echo -e ${C_G}".dev-guide-main.html"${C_NC}
 		echo
 		echo -e ${C_Y}'Finished Building All Documentation'${C_NC}
-		return
-	;;
-	[Nn]* )
-		clear
-		echo -e ${C_Y}"Ok, returning to the shell"${C_NC}
 		echo
-		return
-	;;
-	* )
-		clear
-		echo -e ${C_Y}"Please answer with "Y" yes or "N" No."${C_NC}
-		echo
-	;;
-	esac
-done
+	break
+	done
 }
 
-# Special build for wsjtx-main-toc2.html
-function build_wsjtx() {
-	$TOC -o $app_name-main-toc2.html ./source/$app_name-main.adoc
- } # End build document string
-
-# Build documents
+# Build linked html documents --------------------------------------------------
 function build_doc() {
 	$TOC -o $app_name-main.html ./source/$app_name-main.adoc
- } # End build document string
+}
+ 
+# Build data-uri (embedded css, images, js ) documents -------------------------
+function build_ddoc() {
 
-# Build Quick Reference Guide 
-function quick_ref() {
-	$TOC -o quick-reference.html ./source/quick-ref-main.adoc
-} # End Quick Reference Guide
+	$DTOC -o $app_name-main.html ./source/$app_name-main.adoc
 
-# Build Developer's Guide
-function dev_guide() {
-	$TOC -o wsjt-dev-guide.html ./source/dev-guide-main.adoc
-} # End Developer's Guide
+}
 
-# Main wording
+# Build manpages ---------------------------------------------------------------
+function build_man() {
+
+	# * Need input and output method
+	# * Mmanpages should reside in source trees, but there's no
+	#   reason they cannot be build externally, then updates the 
+	#   source tree file as a fully formated manpage.
+	$MTOC -o $app_name.1 ./source/$app_name.1.txt
+
+}
+
+# Copy Images & Icons Dir to $app_name -----------------------------------------
+function copy_image_folders() {
+# data-uri does not like rpaths and wants the incos and images under ./source
+# rsync is just easier to use than cp, mkdir etc and it excludes
+# .svn easier
+
+mkdir -p $BASEDIR/$app_name/source/images
+rsync -aq --exclude=.svn $BASEDIR/$app_name/images/ $BASEDIR/$app_name/source/images
+}
+
+# Remove Images & Icons Dir to $app_name ---------------------------------------
+function remove_image_folders() {
+# remove all the files we used for data-uri building
+
+rm -r $BASEDIR/$app_name/source/images
+}
+
+# Main wording -----------------------------------------------------------------
 function main_wording() {
+
 	echo -e ${C_Y}"Building $display_name\n"${C_NC}
+
 } # End main wording
 
-# Quick reference guide wording
-function quick_ref_wording() {
-	echo -e ${C_Y}"Building Quick Reference Guide\n"${C_NC}
-} # End quick reference guide wording
-
-# Development guide wording
-function dev_guide_wording() {
-	echo -e ${C_Y}"Building Development Guide\n"${C_NC}
-} # End development guide wording
-
+# Location wording -------------------------------------------------------------
 function location_wording() {
+
 	echo -e ${C_Y}"$display_name file saved to:"${C_NC}${C_C} "$base_dir/$app_name" ${C_NC}
+
 }
 
+# Tail wording -----------------------------------------------------------------
 function tail_wording() {
+
 	echo -e ${C_G}"Finished Building All Guides\n"${C_NC}
+
 }
 
-# Check for file before building
+# Check for file before building -----------------------------------------------
 function pre_file_check() {
 
 if test -e ./*.html
@@ -239,7 +232,7 @@ do
 	case $yn in
 	[Yy]* )
 		clear
-		echo -e ${C_Y}"Removing old html files ... "${C_NC}
+		echo -e ${C_Y}".. removing old files ... "${C_NC}
 		sleep 1
 		rm ./*.html
 		return
@@ -256,10 +249,9 @@ do
 done
 
 fi
-} # End check for files before building
+}
 
-# Check for file after build
-# TO-DO: Use associative array to validate build manifest
+# Check for file after build ---------------------------------------------------
 function post_file_check() {
 
 if test -e ./*.html
@@ -294,36 +286,37 @@ else
 fi
 } # End file check after build
 
-# Main help menu
+# Main help menu ---------------------------------------------------------------
 function app_menu_help() {
 	clear
 	echo -e ${C_G}"WSJT DOCUMENTATION HELP MENU\n"${C_NC}
-	echo 'USAGE: build-doc.sh [ option ]'
+	echo 'USAGE: [ build-doc.sh] [ option ]'
 	echo
-	echo 'OPTION: All map65 simjt wsjt wsjtx wspr wsprx'
-	echo '        quick-ref dev-guide help'
+	echo 'OPTION: All map65 simjt wsjt wsjtx'
+	echo '        wspr wsprx wfmt devg qref help'
 	echo
-	echo 'Example(s):'
-	echo 'Build All Guides:  ./build-doc.sh all'
-	echo 'Build WSJT-X Only: ./build-doc.sh wsjtx'
+	echo 'Build Linked:'
+	echo '---------------------------'
+	echo 'All .....: ./build-doc.sh all'
+	echo 'WSJT-X...: ./build-doc.sh wsjtx'
 	echo
-	echo 'The same method is used for all applications.'
+	echo 'Build Data URI (Stand Alone)'
+	echo '----------------------------'
+	echo 'All .....: ./build-doc.sh dall'
+	echo 'WSJT-X...: ./build-doc.sh dwsjtx'
+	echo
+	echo 'The same method is used for all documentaion.'
+	echo 'The prtefix "d" designates data-uri or a stand'
+	echo 'version of the document'
+	echo
 } # End main menu help
 
-#######################
-# start the main script
-#######################
+################################################################################
+# start the main script                                                        #
+################################################################################
 
 # Trap Ctrl+C, Ctrl+Z and quit signals
-trap clean_exit SIGINT SIGQUIT SIGTSTP
-
-# **************************** NEW BUILD LOGIC *********************************
-# Logic: 
-# ./build-doc.sh $1
-# ./build-doc.sh [ app-name ]
-# $1 Options: map65 simjt wsjt wsjtx wspr wsprx quick-ref dev-guide
-#
-# ******************************************************************************
+trap clean_exit SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
 
 # Display help if $1 is "" or "help" 
 if [[ $1 = "" ]] || [[ $1 = "help" ]]
@@ -331,34 +324,76 @@ if [[ $1 = "" ]] || [[ $1 = "help" ]]
     app_menu_help
 
 # Build All Guides
+# Linked version
 elif [[ $1 = "all" ]]
 	then
-		build_all_guides	
+	doc_type=L
+	build_all_guides
 
-# Quick Reference Guide
-elif [[ $1 = "quick-ref" ]]
+# Build All Guides 
+# embedded css, images, js
+elif [[ $1 = "dall" ]]
+	then
+	doc_type=D
+	build_all_guides
+
+
+# Quick Reference Guides -------------------------------------------------------
+# Linked version
+elif [[ $1 = "qref" ]]
 	then
 		display_name="Quick Reference"
-		cd "$QUICKR"
+		app_name="quick-ref"
+		cd "$QREF"
 		pre_file_check
 		clear
 		main_wording
-		quick_ref
+		build_doc
 		post_file_check
 
-# Development Guide
-elif [[ $1 = "dev-guide" ]]
+# embedded css, images, js
+elif [[ $1 = "dqref" ]]
+	then
+		display_name="Quick Reference data-uri"
+		app_name="quick-ref"
+		cd "$QREF"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# Development Guide -----------------------------------------------------------
+# Linked versoin
+elif [[ $1 = "devg" ]]
 	then
 		display_name="WSJT Developer's Guide"
+		app_name="dev-guide"
 		cd "$DEVG"
 		pre_file_check
 		clear
 		main_wording
-		dev_guide
+		build_doc
 		post_file_check
 
-# MAP65 build
-#
+# embedded css, images, js
+elif [[ $1 = "ddevg" ]]
+	then
+		display_name="WSJT Developer's Guide data-uri"
+		app_name="dev-guide"
+		cd "$DEVG"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# MAP65 build ------------------------------------------------------------------
+# Linked version
 elif [[ $1 = "map65" ]]
 	then
 		display_name="MAP65"
@@ -369,10 +404,23 @@ elif [[ $1 = "map65" ]]
 		main_wording
 		build_doc
 		post_file_check
-
-#
-# SimJT build
-#
+		
+# embedded css, images, js
+elif [[ $1 = "dmap65" ]]
+	then
+		display_name="MAP65 data-uri"
+		app_name="map65"
+		cd "$MAP65"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+		
+# SimJT build ------------------------------------------------------------------
+# Linked version
 elif [[ $1 = "simjt" ]]
 	then
 		display_name="SimJT"
@@ -384,9 +432,22 @@ elif [[ $1 = "simjt" ]]
 		build_doc
 		post_file_check
 
-#
-# WSJT build
-#
+# embedded css, images, js
+elif [[ $1 = "dsimjt" ]]
+	then
+		display_name="SimJT data-uri"
+		app_name="simjt"
+		cd "$SIMJT"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# WSJT build -------------------------------------------------------------------
+# Linked versoin
 elif [[ $1 = "wsjt" ]]
 	then
 		display_name="WSJT"
@@ -398,9 +459,22 @@ elif [[ $1 = "wsjt" ]]
 		build_doc
 		post_file_check
 
-#
-# WSJT-X build
-#
+# embedded css, images, js
+elif [[ $1 = "wsjt" ]]
+	then
+		display_name="WSJT"
+		app_name="wsjt"
+		cd "$WSJT"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# WSJT-X build -----------------------------------------------------------------
+# Linked version
 elif [[ $1 = "wsjtx" ]]
 	then
 		display_name="WSJT-X"
@@ -412,9 +486,22 @@ elif [[ $1 = "wsjtx" ]]
 		build_doc
 		post_file_check
 
-#
-# WSPR build
-#
+# embedded css, images, js
+elif [[ $1 = "dwsjtx" ]]
+	then
+		display_name="WSJT-X data-uri"
+		app_name="wsjtx"
+		cd "$WSJTX"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# WSPR build -------------------------------------------------------------------
+# Linked version
 elif [[ $1 = "wspr" ]]
 	then
 		display_name="WSPR"
@@ -426,9 +513,49 @@ elif [[ $1 = "wspr" ]]
 		build_doc
 		post_file_check
 
-#
-# WSPR-X build
-#
+# embedded css, images, js
+elif [[ $1 = "dwspr" ]]
+	then
+		display_name="WSPR data-uri"
+		app_name="wspr"
+		cd "$WSPR"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+		
+# WSPR-FMT build ---------------------------------------------------------------
+# Linked version
+elif [[ $1 = "wfmt" ]]
+	then
+		display_name="WFMT"
+		app_name="wfmt"
+		cd "$WFMT"
+		pre_file_check
+		clear
+		main_wording
+		build_doc
+		post_file_check
+
+# embedded css, images, js
+elif [[ $1 = "dwfmt" ]]
+	then
+		display_name="WFMT"
+		app_name="wfmt"
+		cd "$WFMT"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+		
+# WSPR-X build -----------------------------------------------------------------
+# Linked version
 elif [[ $1 = "wsprx" ]]
 	then
 		display_name="WSPR-X"
@@ -440,9 +567,21 @@ elif [[ $1 = "wsprx" ]]
 		build_doc
 		post_file_check
 
-#
-# Anything else for $1 do help
-#
+# embedded css, images, js
+elif [[ $1 = "dwsprx" ]]
+	then
+		display_name="WSPR-X data-uri"
+		app_name="wsprx"
+		cd "$WSPRX"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# Anything else for $1 do help -------------------------------------------------
 else
 	cd "$BASEDIR"
 	app_menu_help
