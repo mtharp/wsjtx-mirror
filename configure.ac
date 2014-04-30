@@ -6,11 +6,11 @@ dnl AC_PREREQ(2.61)
 dnl Sneaky way to get an Id tag into the configure script
 AC_COPYRIGHT([$Id$])
 
-AC_INIT([wsjt],[7.04])
-
+AC_INIT([wsjt],[10.0])
 fail=0
 
 AC_PREFIX_DEFAULT("/usr/local")
+
 
 OLD_CFLAGS="$CFLAGS"
 dnl Checks for programs.
@@ -25,11 +25,11 @@ dnl Lets guess at some likely places for extra libs/includes XXX -db
 CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
 LIBS=" -lpthread ${LIBS}"
-FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none\
-			-Wall -fbounds-check -fno-second-underscore -fPIC"
+FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none \
+-Wall -fbounds-check -fno-second-underscore -fPIC"
+
 FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC"
 #-Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
-
 
 AX_CHECK_GFORTRAN
 AX_CHECK_PORTAUDIO
@@ -85,9 +85,11 @@ dnl Checks for header files.
 
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([inttypes.h stdint.h sys/resource.h sys/param.h errno.h \
-sys/syslog.h stddef.h libgen.h sys/wait.h wait.h stdio.h termios.h \
-sys/resource.h linux/ppdev.h dev/ppbus/ppi.h sys/stat.h fcntl.h sys/ioctl.h ])
+AC_CHECK_HEADERS([fcntl.h float.h inttypes.h limits.h stddef.h stdint.h \
+stdlib.h string.h sys/ioctl.h sys/param.h sys/time.h unistd.hinttypes.h \
+stdint.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h libgen.h \
+sys/wait.h wait.h stdio.h termios.h sys/resource.h linux/ppdev.h dev/ppbus/ppi.h \
+sys/stat.h fcntl.h sys/ioctl.h ])
 
 AC_HEADER_TIME
 
@@ -174,9 +176,12 @@ if test $HAS_PORTAUDIO -eq 1; then
 	AC_DEFINE(HAS_PORTAUDIO_LIB, 1, )
 else
 	fail=1
-	echo "This program needs portaudio v19 to compile."
-	echo "Please use --with-portaudio-include-dir= and"
-	echo " --with-portaudio-lib-dir= to set the paths."
+	echo "Portaudio-v19 is required by $PACKAGE_NAME $"
+	echo
+	echo "Please use:"
+	echo "--with-portaudio-include-dir=/path/to/pa"
+	echo "--with-portaudio-lib-dir=/path/to/pa/libs"
+	echo
 fi
 
 if test $HAS_FFTW3_H -eq 1; then
@@ -191,7 +196,12 @@ if test $HAS_FFTW3FLIBS -eq 1; then
 	AC_DEFINE(HAS_FFTW3FLIBS, 1, )
 else
 	fail=1
-	echo "You are missing the fortran shim libs in libfftw3."
+	echo 
+	echo "FFTW3 Libs are required by $PACKAGE_NAME $"
+	echo
+	echo "Check your distrobution, and install the appropriate"
+	echo "libraries"
+	echo
 fi
 
 if test "$F2PY" = ""; then
@@ -219,20 +229,26 @@ AC_OUTPUT
 
 dnl do summary
 echo
-echo "***************"
-
-
+echo "-------------------------------------------"
+echo "Configuration Summary"
+echo "-------------------------------------------"
+echo ""
 if test $g95 = "yes"; then
-	echo "Using g95 as fortran compiler.";
+echo "Fcomplier: ...... $g95";
 elif test $gfortran = "yes"; then
-	echo "Using gfortran as fortran compiler.";
+echo "Fcomplier: ...... $gfortran";
 fi
-
+echo "Package: ........ WSJT 10.0"
+echo "Install Prefix: . $prefix"
+echo
 echo
 
-echo "Compiling $PACKAGE_NAME $version"
-echo
 
-echo "Installing into: $prefix"
 
-echo
+
+
+
+
+
+
+
