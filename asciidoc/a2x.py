@@ -42,12 +42,12 @@ ENV = None
 # External executables.
 ASCIIDOC = 'asciidoc'
 XSLTPROC = 'xsltproc'
-DBLATEX = 'dblatex'         # pdf generation.
-FOP = 'fop'                 # pdf generation (--fop option).
-W3M = 'w3m'                 # text generation.
-LYNX = 'lynx'               # text generation (if no w3m).
-XMLLINT = 'xmllint'         # Set to '' to disable.
-EPUBCHECK = 'epubcheck'     # Set to '' to disable.
+DBLATEX = ''      # pdf generation.
+FOP = ''          # pdf generation (--fop option).
+W3M = ''          # text generation.
+LYNX = ''         # text generation (if no w3m).
+XMLLINT = ''      # Set to '' to disable.
+EPUBCHECK = ''    # Set to '' to disable.
 # External executable default options.
 ASCIIDOC_OPTS = ''
 DBLATEX_OPTS = ''
