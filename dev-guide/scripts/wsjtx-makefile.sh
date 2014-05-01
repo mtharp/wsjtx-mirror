@@ -16,7 +16,7 @@ clear && echo Creating WSJT Environment
 
 # CHECKOUT WSJT-X
 echo Getting Latest WSJT-X Version
-svn co -r 3834 svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx $SRC_DIR/wsjtx
+svn co -r 3834 https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx $SRC_DIR/wsjtx
 
 # GET CURRENT REVISION NUMBER
 rev_num=$(grep -i "rev=" $SRC_DIR/wsjtx/mainwindow.cpp |awk '{print $3}')

@@ -22,7 +22,7 @@ fi
 
 # CHECK OUT LATEST WSJT-X
 echo Checking out WSJT-X From SourceForge
-svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx $BASE_DIR/src/wsjtx/
+svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx $BASE_DIR/src/wsjtx/
 
 # CD TO BUILD DIRECTORY
 cd $BASE_DIR/wsjtx/build/$OPTION

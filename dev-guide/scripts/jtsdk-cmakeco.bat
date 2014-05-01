@@ -23,7 +23,7 @@ IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx &GOTO BRANCHCO
 :BRANCHCO
 CD /D %SRCD%
 ECHO CHECKING OUT ^( %APP_NAME% ^)
-start /wait svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+start /wait svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
 CD %BASED%
 GOTO FINISHED
 )
