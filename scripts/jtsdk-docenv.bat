@@ -10,7 +10,7 @@ REM -- SET PATH VARS
 SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin
-SET TOOLS=%BASED%\tools
+SET TOOLS=%BASED%\tools;%BASED%\tools\bin;%BASED%\tools\include;%BASED%\tools\lib
 SET PATH=%BASED%;%SVND%;%TOOLS%;%WINDIR%;%WINDIR%\System32
 CD /D %BASED%
 GOTO UPDATE
