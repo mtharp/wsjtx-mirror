@@ -1,0 +1,108 @@
+WSPR(1)
+=======
+:doctype: manpage
+
+
+NAME
+----
+wspr, fmt, fmtave, fcal, fmeasure - Weak Signal Propagation Reporter
+
+
+FILE UNDER CONSTRUCTION
+
+
+SYNOPSIS
+--------
+*wspr*     	['OPTIONS'] 'FILE'
+*fmt*      	['OPTIONS'] 'FILE'
+*fmtave*   	['OPTIONS'] 'FILE'
+*fcal*     	['OPTIONS'] 'FILE'
+*fmeasure* 	['OPTIONS'] 'FILE'
+
+
+DESCRIPTION
+-----------
+*wspr* (pronounced "whisper") stands for "Weak Signal Propagation
+Reporter." The WSPR software is designed for probing potential radio
+propagation paths using low-power beacon-like transmissions.
+
+*fmt* Sets the dial frequency of a CAT-controlled radio and performs
+a sequence of measurements of the strongest resulting audio tone near a 
+specified offset frequency. Input parameters are taken from the command line,
+and output goes to files fmt.out and fmt.all. The latter file is cumulative.
+
+*fmtave* Averages data found in a specified file having the format of fmt.all
+
+*fcal* Calculates a best-fit straight line for a data saved in fmtave.out.
+Results are saved in file fcal.out.
+
+*fmeasure* Calculates the properly calibrated frequency of each test signal
+found in file fmtave.out. Results are saved in file fmeasure.out, and these
+are the numbers you should report if you are entering the Frequency Measuring
+Test.
+
+
+OPTIONS
+-------
+*-a, --attribute*='SOMETHING'::
+
+*-b, --backend*='SOMETHING-ELSE'::
+
+*-c, --conf-file*='WSPR.INI'::
+
+*-d, --doctype*='MANPAGE'::
+
+
+PLUGIN COMMANDS
+---------------
+If there are any
+
+
+EXIT STATUS
+-----------
+*0*::
+    Success
+
+*1*::
+    Failure
+
+
+BUGS
+----
+See the WSPR distribution BUGS file.
+
+
+AUTHOR
+------
+WSPR was originally written by Joeseh Taylo, K1JT. Many people have
+contributed to the project.
+
+
+EDITOR
+------
+Greg Beam, KI7MT <ki7mt@yahoo.com>
+
+
+RESOURCES
+---------
+SourceForge: <http://sourceforge.net/p/wsjt/wsjt/>
+
+Main web site: <http://www.physics.princeton.edu/pulsar/K1JT/>
+
+
+SEE ALSO
+--------
+wsjt(1), wsjtx(1), wsprx(1), wsprx(1), map65(1), kvasd(1), jt9(1) 
+
+
+COPYING
+-------
+Copyright \(C) 2002-2014 Joesph Taylor.
+FMT is free software: you can redistribute it and/or modify under the terms of
+the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+FMT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE. See the GNU General Public License for more details.
+
