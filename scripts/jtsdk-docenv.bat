@@ -40,7 +40,7 @@ ECHO must first perform a checkout from
 ECHO SourceForge, then relaunch jtsdk-docenv.bat:
 ECHO.
 ECHO ANONYMOUS CHECKOUT
-ECHO   svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
+ECHO   svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/doc
 ECHO.
 ECHO FOR DEV CHECKOUT
 ECHO   svn co https://%USERNAME%@svn.code.sf.net/p/wsjt/wsjt/branches/doc

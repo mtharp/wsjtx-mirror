@@ -13,7 +13,7 @@ cd $BUILD_DIR
 
 # CHECKOUT WSJT-X
 clear && echo 'Getting Latest WSJT-X Version'
-svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
+svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
 cd ./wsjtx
 rev_num=$(grep -i "rev=" mainwindow.cpp |awk '{print $3}')
 
