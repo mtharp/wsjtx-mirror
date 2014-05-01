@@ -1,0 +1,9 @@
+TO-DO
+
+* Need to bounce the file list of .f, *.a, *.h, pthread etc against the other
+apps to ensure we're using same things unless otherwise needed.
+* There's several Makefiles, should we descide on one Path for Windows and
+another for *Nix/BSD, Mac?
+* I dont know what huser_hardware.bat/.py are for, maybe they are Joe's to set specific
+antennas based on the band section.
+
