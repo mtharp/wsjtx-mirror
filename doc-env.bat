@@ -19,6 +19,7 @@ REM -- DOSKEY BUILD COMMAND FROM ENV
 DOSKEY wsjt=%BASED%\build.bat wsjt
 DOSKEY wsjtx=%BASED%\build.bat wsjtx
 DOSKEY wspr=%BASED%\build.bat wspr
+DOSKEY wfmt=%BASED%\build.bat wfmt
 DOSKEY wsprx=%BASED%\build.bat wsprx
 DOSKEY map65=%BASED%\build.bat map65
 DOSKEY devg=%BASED%\build.bat devg
@@ -29,6 +30,7 @@ REM -- DOSKEYS TO OPEN DOCS FORM COMMAND LINE
 DOSKEY wsjt=start explorer wsjt\wsjt-main.html
 DOSKEY wsjtx=start explorer wsjtx\wsjt-main-toc2.html
 DOSKEY wspr=start explorer wspr\wspr-main.html
+DOSKEY wfmt=start explorer wfmt\wfmt-main.html
 DOSKEY wsprx=start explorer wsprx\wsprx-main.html
 DOSKEY map65=start explorer map65\map65-main.html
 DOSKEY devg=start explorer dev-guide\dev-guide-main.html

@@ -1,57 +1,73 @@
 //:Author: Joe Taylor, K1JT
-//:Date: January 30, 2014
-//:Revision: 1.3
+//:Date: May 1, 2014
 :badges:
 :icons:
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
 :description: Software for Amateur Radio Weak-Signal Communication
-:prog: WFMT
+:prog: FMT
 
 
 = WSPR FMT User Guide
 Joe Taylor, K1JT
-Last updated: November 4, 2010
+Last updated: May 1, 2014
 
 == Introduction
-The popular program WSPR, ―Weak Signal Propagation Reporter,‖ has drawn new attention to
-the importance of frequency accuracy and stability in weak-signal amateur radio
-communications. Appendix C of the WSPR 2.0 User’s Guide explains how to calibrate your
-modern transceiver so that you can know your own frequency and measure the frequency of
-other over-the-air signals with accuracies better than one Hertz. Using FMT — a package of
-new software tools described below — you can adapt these techniques to make
-measurements for other purposes, including the ARRL’s Frequency Measuring Test. The next
-running of this friendly competition is November 10-11, 2010 — less than two weeks away, as I
-write. Measurements made with your standard WSPR setup can be good enough to put you in
-the top tier of contestants in the Frequency Measuring Test. You will need a transceiver set up
-for using WSPR, including CAT control. With this technique you won’t need a GPS receiver,
-rubidium oscillator, high-accuracy frequency counter, or any other expensive laboratory-grade
-equipment.
+The popular program _WSPR_, ―Weak Signal Propagation Reporter, has 
+drawn new attention to the importance of frequency accuracy and
+stability in weak-signal amateur radio communications. Appendix C
+of the WSPR 2.0 User’s Guide explains how to calibrate your modern
+transceiver so that you can know your own frequency and measure the
+frequency of other over-the-air signals with accuracies better than
+one Hertz. Using *FMT* — a package of new software tools described
+below — you can adapt these techniques to make measurements for other
+purposes, including the ARRL’s Frequency Measuring Test. The next 
+running of this friendly competition is November 10-11, 2010 — less
+than two weeks away, as I write. Measurements made with your standard
+WSPR setup can be good enough to put you in the top tier of contestants
+in the Frequency Measuring Test. You will need a transceiver set up for
+using WSPR, including CAT control. With this technique you won’t need
+a GPS receiver, rubidium oscillator, high-accuracy frequency counter,
+or any other expensive laboratory-grade equipment.
 
-The *FMT* tools go a long way toward automating the calibration of your radio and making
-frequency measurements with it. However, obtaining good results still requires you to think
-carefully about what you are doing, and why. These instructions should help to set you off on
-the right path.
+The *FMT* tools go a long way toward automating the calibration of
+your radio and making frequency measurements with it. However, 
+obtaining good results still requires you to think carefully about
+what you are doing, and why. These instructions should help to set you
+off on the right path.
 
 == Software Installation
-The FMT software is packaged with the latest WSPR release, which can be downloaded from
-the WSJT Home Page. Click on WSPR at the left margin, and then on the appropriate link
-under Downloads. Install the program in the usual way for your operating system. If you are
-using Vista or Windows 7, I recommend installing to a directory such as C:\Radio\WSPR rather
-than the default location C:\Program Files\WSPR.
-Calibrating Your Radio
-The FMT software tools are driven from the command line. (If you’re not comfortable working
-from the command line, you’ll have a bit more to learn. If you must have a GUI-driven
-program, you might need to look elsewhere.) Verify that WSPR 2.11 works correctly and is
-properly configured for your soundcard and for CAT control of your radio. Execute at least one
-band-change command within WSPR, to be sure that your radio obeys CAT commands.
-WSPR 2.11 will create a file fmt.ini containing parameters that fmt needs for CAT and
-soundcard control.
+The *FMT* software is packaged with the latest _WSPR_ release, which
+can be downloaded from the WSJT Home Page. Click on WSPR at the left
+margin, and then on the appropriate link under Downloads. Install the
+program in the usual way for your operating system. If you are using
+Vista or Windows 7, I recommend installing to a directory such as:
+-----
+C:\Radio\WSPR
+-----
 
-Open a command-prompt window and cd to the directory where you installed WSPR 2.11.
-Verify that the executable programs fmt, fmtave, fcal and fmeasure are present by
-entering each program name at the command prompt. Messages in response to these
-commands give simple guides to their required command syntax:
+rather than the default location:
+
+-----
+C:\Program Files\WSPR.
+-----
+
+== Calibrating Your Radio
+The *FMT* software tools are driven from the command line. (If you are
+not comfortable working from the command line, you’ll have a bit more
+to learn. If you must have a GUI-driven program, you might need to
+look elsewhere.) Verify that _WSPR 4.00_ works correctly and is
+properly configured for your sound card and for CAT control of your
+radio. Execute at least one band-change command within WSPR, to be
+sure that your radio obeys CAT commands. _WSPR 4.00 will create a file
+*fmt.ini* containing parameters that *fmt* needs for CAT and sound card
+control.
+
+Open a command-prompt window and cd to the directory where you installed
+_WSPR 4.0_ Verify that the executable programs *fmt*, *fmtave*, *fcal*
+and *fmeasure* are present by entering each program name at the command
+prompt. Messages in response to these commands give simple guides to
+their required command syntax:
 
 .Example: fmt
 -----
@@ -78,26 +94,26 @@ Usage: fmeasure <infile>
 -----
 
 .Example: fmeasure fmtave.out
+Program *fmt* requires six parameters after the program name — a nominal
+frequency in kHz, a flag (0 or 1) to indicate whether this is a
+calibration measurement, the desired offset in Hz, search range in Hz
+above and below the nominal offset, specified duration of measurement in
+seconds, and callsign. For example, to make a 30-second calibration 
+measurement of the WWV 10 MHz signal, offsetting your receiver so that
+the WWV carrier provides an expected beat note of 1500 Hz and searching
+over a range ± 100 Hz from that audio frequency, use the command:
 
-Program fmt requires six parameters after the program name — a nominal frequency in kHz,
-a flag (0 or 1) to indicate whether this is a calibration measurement, the desired offset in Hz,
-search range in Hz above and below the nominal offset, specified duration of measurement in
-seconds, and callsign. For example, to make a 30-second calibration measurement of the
-WWV 10 MHz signal, offsetting your receiver so that the WWV carrier provides an expected
-beat note of 1500 Hz and searching over a range ± 100 Hz from that audio frequency, use the
-command:
-
-.C:\Radio\wspr> fmt 10000 1 1500 100 30 WWV
-
-In response to this command, program fmt will set the radio’s dial to 9.998500 MHz and
-acquire audio for 30 seconds. The audio signal is then analyzed in overlapping segments
-about 6 s long, spaced by about 3 s. For each segment the program prints a line similar to
-those in the following table:
-
-.FMT Data
 -----
-include::fmt.all.txt[]
+C:\Radio\wspr> fmt 10000 1 1500 100 30 WWV
 -----
+In response to this command, program *fmt* will set the radio’s dial to
+9.998500 MHz and acquire audio for 30 seconds. The audio signal is then
+analysed in overlapping segments about 6 s long, spaced by about 3 s.
+For each segment the program prints a line similar to those in the 
+following table:
+
+.FMT All Data
+image::images/gocal.jpg[]
 
 .Explanation
 Here fMeas is the observed frequency of the beat note and DF = fMeas - Offset is the
@@ -108,268 +124,200 @@ accumulates until you explicitly delete the file.
 As described in Appendix C of the WSPR 4.0 User’s Guide, to calibrate your radio you should
 make a number of measurements like this example, over a range of frequencies. This process
 can be automated by executing a Windows batch file or Linux shell script similar to the
-following one, which I call gocal.bat:
+following one, which I call *gocal.bat*:
 
-.Wiondows Bat File ( C:\Radio\wspr> type gocal.bat)
+.Gocal.bat
 -----
-include::gocal.bat.txt[]
+Windows Bat File ( C:\JTSDK-PY\wspr\wspr-r3907 > type gocal.bat )
+
+fmt   660 1 1500 100 30  WFAN
+fmt   880 1 1500 100 30  WCBS
+fmt  1210 1 1500 100 30  WPHT
+fmt  2500 1 1500 100 30  WWV
+fmt  3330 1 1500 100 30  CHU
+fmt  5000 1 1500 100 30  WWV
+fmt  7850 1 1500 100 30  CHU
+fmt 10000 1 1500 100 30  WWV
 -----
 
-In Linux the name of the script is simply gocal (without the extension), but the contents are
-the same. Executing the batch file causes calibration sequences to be run for each of a
-number of stations whose frequency calibration you have good reason to trust. For this
-example I used local AM broadcast stations WFAN (660), WCBS (880), WPHT (1210), and the
-HF standard-frequency transmissions of WWV and CHU. Use gocal as a template and make
-your own batch file using stations you can receive well at the relevant time of day. You don’t
-need as many calibration stations as shown in the example, but be sure to use enough to
-cover a range of frequencies from the AM broadcast band up through at least 10 MHz.
-After typing gocal at the command prompt you should see the output from fmt for each line
-in the file, and the measurements will accumulate in fmt.all. Here’s an abbreviated copy of
-fmt.all obtained by executing gocal.bat at my station one afternoon (the column
+In Linux the name of the script is simply gocal (without the extension),
+but the contents are the same. Executing the batch file causes
+calibration sequences to be run for each of a number of stations whose
+frequency calibration you have good reason to trust. For this example
+I used local AM broadcast stations WFAN (660), WCBS (880), WPHT (1210),
+and the HF standard-frequency transmissions of WWV and CHU. Use *gocal*
+as a template and make your own batch file using stations you can
+receive well at the relevant time of day. You do not need as many 
+calibration stations as shown in the example, but be sure to use enough
+to cover a range of frequencies from the AM broadcast band up through
+at least 10 MHz. After typing *gocal* at the command prompt you should
+see the output from *fmt* for each line in the file, and the measurements
+will accumulate in *fmt.all*. Here’s an abbreviated copy of *fmt.all*
+obtained by executing *gocal.bat* at my station one afternoon (the column
 headings were added by hand):
 
 .Full FMT Run
+image::images/gocal.jpg[]
 
-
-
-
-
-
-Notice that the DF measurements for a particular station usually agree to within a few tenths of
-a Hz. In addition, they generally increase (or decrease) in proportion to the station frequency.
-In mid-afternoon I can’t hear WWV at 2.5 MHz, so those entries in this particular example are
-garbage. They should be deleted from the file before further processing. A rough guide to
-potentially questionable entries is provided by the S/N measurement, and an end-of-line
-asterisk flags any measurement with S/N < 20 dB. You must learn to recognize and remove
+Notice that the DF measurements for a particular station usually agree
+to within a few tenths of a Hz. In addition, they generally increase
+(or decrease) in proportion to the station frequency. In mid-afternoon
+I can not hear WWV at 2.5 MHz, so those entries in this particular
+example are garbage. They should be deleted from the file before further
+processing. A rough guide to potentially questionable entries is
+provided by the S/N measurement, and an end-of-line asterisk flags any
+measurement with S/N < 20 dB. You must learn to recognize and remove
 spurious measurements from the table.
-Use Windows Notepad (or your favorite text editor) to delete any bad lines from fmt.all.
-After this is done, run program fmtave on it to average all valid measurements for each
-calibration station. Your screen should look something like the output reproduced on the next
-page. The same output (without column headings) will appear in file fmtave.out. In this
-table N is the number of valid measurements at each frequency, and rms is the root-mean-
-square scatter of individual measurements of DF about the quoted average. Any entry in the
-4rms column larger than a few tenths of a Hz is a likely indicator of problems with the
-measurement.
-C:\Radio\wspr> fmtave fmt.all
-Freq
-DF
-CAL
-N
-rms
-UTC
-Call
-(kHz)
-(Hz)
-?
-(Hz)
 
-0.660
-3.103
-1
-10
-0.00 15:41:51 WFAN
-0.880
-3.459
-1
-10
-0.00 15:42:22 WCBS
-1.210
-3.850
-1
-10
-0.00 15:42:53 WPHT
-3.330
-6.960
-1
-10
-0.00 15:43:54 CHU
-5.000
-9.343
-1
-10
-0.00 15:44:25 WWV
-7.850 13.559
-1
-10
-0.02 15:44:55 CHU
-10.000 16.772
-1
-10
-0.11 15:45:26 WWV
-14.670 23.245
-1
-10
-0.25 15:45:57 CHU
-15.000 23.824
-1
-10
-0.05 15:46:27 WWV
-20.000 30.834
-1
-10
-0.07 15:46:58 WWV
+Use Windows Notepad (or your favourite text editor) to delete any bad
+lines from *fmt.all*. After this is done, run program *fmtave* on it to
+average all valid measurements for each calibration station. Your screen
+should look something like the output reproduced on the next page.
+
+The same output (without column headings) will appear in file 
+*fmtave.out*. In this table N is the number of valid measurements at
+each frequency, and rms is the root-mean-square scatter of individual
+measurements of DF about the quoted average. Any entry in the 4rms 
+column larger than a few tenths of a Hz is a likely indicator of
+problems with the measurement.
+
+.FMT Out Data
+image::images/fmtave.jpg[]
+
 Your next step is to fit a straight-line calibration function to the sequence of measurement pairs
 (Freq, DF) appearing in the first two columns of fmtave.out. As described in Appendix C
 of the User’s Guide, you can do this by executing the program fcal, passing it the name of
 the file containing your averaged calibration measurements:
+
+-----
 C:\Radio\wspr> fcal fmtave.out
-Freq
-DF
-Meas Freq
-Resid Call
-(MHz)
-(Hz)
-(MHz)
-(Hz)
+-----
 
+.Fmtave.out
+image::images/fcal.jpg[]
 
+Any lines that have 0 (zero) in column 3 of file fmtave.out are ignored
+when calculating the calibration parameters. Column 3 of the on-screen
+output from program fcal gives the frequency of each calibrating station,
+ according to your uncalibrated radio. Column 4 is the difference
+ between your corrected measurement and the nominal station frequency
+ — in other words, the residual dial 5error, in Hz, after applying
+ your radio’s calibration function. The last two lines of output give 
+the intercept A and slope B of the straight-line calibration function,
+and the estimated uncertainties of A and B. (These are the constants
+that should be entered on the Setup | Advanced screen of WSPR. They
+are written into file fcal.out, and you can enter them automatically,
+the next time you start WSPR, by clicking on ―Read A and B from 
+*fcal.out* on the Setup | Advanced screen.) The calibration constants
+will also be used in the final step of making FMT measurements.
 
+.Advanced Settings
+image::images/fmt-correction.jpg[]
 
-0.660
-3.103
-0.660003103
--0.036 WFAN
-0.880
-3.459
-0.880003459
-0.004 WCBS
-1.210
-3.850
-1.210003850
--0.080 WPHT
-3.330
-6.960
-3.330006960
--0.019 CHU
-5.000
-9.343
-5.000009343
--0.038 WWV
-7.850
-13.559
-7.850013559
-0.078 CHU
-10.000
-16.772 10.000016772
-0.199 WWV
-14.670
-23.245 14.670023245
--0.045 CHU
-15.000
-23.824 15.000023824
-0.059 WWV
-20.000
-30.834 20.000030834
--0.123 WWV
-A:
-err:
-2.19 Hz
-0.05
-B:
-1.4384 ppm
-0.0047
-StdDev:
-0.097 Hz
-Any lines that have 0 (zero) in column 3 of file fmtave.out are ignored when calculating the
-calibration parameters.
-Column 3 of the on-screen output from program fcal gives the frequency of each calibrating
-station, according to your uncalibrated radio. Column 4 is the difference between your
-corrected measurement and the nominal station frequency — in other words, the residual dial
-5error, in Hz, after applying your radio’s calibration function. The last two lines of output give
-the intercept A and slope B of the straight-line calibration function, and the estimated
-uncertainties of A and B. (These are the constants that should be entered on the Setup |
-Advanced screen of WSPR. They are written into file fcal.out, and you can enter them
-automatically, the next time you start WSPR, by clicking on ―Read A and B from fcal.out‖ on
-the Setup | Advanced screen.) The calibration constants will also be used in the final step of
-making FMT measurements.
-The graph plotted below illustrates the excellent fit of the straight line DF = A + Bf to the
-averaged measurements in the example file fmtave.out. The scatter of measurements
-about the fitted line is approximately 0.1 Hz — just as it should be, according to the calculated
-standard deviation 0.097 Hz, shown above.
-6Suggested Procedure for the ARRL Frequency Measuring Test
-The November 2010 Frequency Measuring test extends over seven 15-minute intervals, each
-providing a different test signal. W8SKE will transmit an unmodulated carrier on about 7055
-and 3575 kHz, K5CM on 3578 and 1844, WA6ZTY on 7097, and W6OQI on 7067 and 3567.
-See http://www.arrl.org/files/file/W1AW/Other%20FMT%20files/FMT.pdf for additional details
-about the Frequency Measuring Test.
-To avoid the possibility of typing errors at crucial times, I recommend preparing batch files with
-names equal to the starting UTC of each test segment. For example, my first file for the
-November 2010 FMT will be named 0230.bat (or simply 0230 in Linux) and will contain this
-single command line:
+The graph plotted below illustrates the excellent fit of the straight
+line DF = A + Bf to the averaged measurements in the example file
+fmtave.out. The scatter of measurements about the fitted line is 
+approximately 0.1 Hz — just as it should be, according to the calculated
+standard deviation 0.097 Hz, shown above. Suggested Procedure for the
+ARRL Frequency Measuring Test The November 2010 Frequency Measuring
+test extends over seven 15-minute intervals, each providing a different
+test signal. W8SKE will transmit an unmodulated carrier on about 7055
+and 3575 kHz, K5CM on 3578 and 1844, WA6ZTY on 7097, and W6OQI on 7067
+and 3567. See http://www.arrl.org/files/file/W1AW/Other%20FMT%20files/FMT.pdf
+for additional details about the Frequency Measuring Test.
+
+To avoid the possibility of typing errors at crucial times, I recommend
+preparing batch files with names equal to the starting UTC of each test
+segment. For example, my first file for the November 2010 FMT will be
+named 0230.bat (or simply 0230 in Linux) and will contain this single
+command line:
+
+-----
 fmt 7055 0 1500 1000 180 W8SKE
+-----
+
 Typing 0230 at the command prompt will run fmt for three minutes, producing 64 frequency
 measurements of the strongest carrier found between 7054 and 7056 kHz. Similar batch files
 should be prepared in advance for each of the other test signals.
+
 My overall recipe for measurements in the FMT thus involves the following steps:
-1.
-2.
-3.
-4.
-5.
-Delete or rename any existing file fmt.all.
-Run the batch file gocal.
-Use batch files to run fmt for each station, during its three key-down minutes.
-Run gocal again.
-Make a backup copy of fmt.all, naming it something like fmt.all.nov2010.
-Running gocal both before and after your test measurements lets you test your radio’s
-calibration stability. Note: you should turn it on and leave it on for at least 24 hours before the
-test, to minimize any possible thermal drift.
-After making your backup file copy — step 5 above — your measurement tasks are complete!
-Analyzing your Data
-So... now it’s time to analyze your data. To provide an example for this last step, let’s imagine
-that the WWV signal at 5 MHz was a station of unknown frequency, rather than a calibrator.
-To effect this change I edited one line in the file fmtave.out described above, changing
+. Delete or rename any existing file fmt.all.
+. Run the batch file gocal.
+. Use batch files to run fmt for each station, during its three key-down minutes.
+. Run gocal again.
+. Make a backup copy of fmt.all, naming it something like fmt.all.nov2010.
+
+Running gocal both before and after your test measurements lets you
+test your radios calibration stability. 
+
+TIP: You should turn your rig on and leave it on for at least 24 hours
+before the test, to minimize any possible thermal drift.
+
+After making your backup file copy — step 5 above — your measurement
+tasks are complete! Analyzing your Data So... now it is time to analyze
+your data. To provide an example for this last step, lets imagine that
+the WWV signal at 5 MHz was a station of unknown frequency, rather than
+a calibrator. To effect this change I edited one line in the file
+*fmtave.out* described above, changing:
+
 -----
-5.000
-9.343 1 10 0.00 15:44:25 WWV
-9.343 0 10 0.00 15:44:25 WWV
+5.000 9.343 1 10 0.00 15:44:25 WWV
+
 to
-5.000
-(Your own measurements made during the Frequency Measuring Test will already have
-created lines in file fmtave.out with zeros in column 3, indicating that they are to be treated
-as unknown frequencies.) Your final step is now a simple one: run the program fmeasure on
-your averaged measurements, as illustrated on the next page.
-7C:\Radio\wspr> fmeasure fmtave.out
------
-Freq
-DF
-A+B*f
-Corrected
-(MHz)
-(Hz)
-(Hz)
-(MHz)
-5.000
-9.343
-9.381
-4.999999962
+
+5.000 9.343 0 10 0.00 15:44:25 WWV
 -----
 
-The output will also be saved in file fmeasure.out. Column 3 is the interpolated value of
-your radio’s dial error at the frequency of the test signal. Column 4 is what you’ve been waiting
-for, your best estimate of the true frequency of the test signal. In this case, the one ―unknown‖
-frequency was measured to be 4.999999962 MHz — just 38 milliHertz below the correct value
-5.000000000 MHz.
+(Your own measurements made during the Frequency Measuring Test will
+already have created lines in file fmtave.out with zeros in column 3,
+indicating that they are to be treated as unknown frequencies.)
+
+. Your final step is now a simple one:
+* Run the program *fmeasure* on your averaged measurements, as
+illustrated on the next page.
+
+-----
+C:\Radio\wspr> fmeasure fmtave.out
+-----
+
+.FMT Ave 3-Site Using Cal = 0
+image::images/fmtave0.jpg[]
+
+The output will also be saved in file *fmeasure.out*. Column 3 is the
+interpolated value of your radio’s dial error at the frequency of the
+test signal. Column 4 is what you’ve been waiting for, your best
+estimate of the true frequency of the test signal. In this case, the 
+one ―unknown frequency was measured to be 4.999999962 MHz — just 38
+milliHertz below the correct value 5.000000000 MHz.
 
 == Individual Program Functions
 To summarize: each of the utility programs and batch files in the FMT package performs a
 single function. Here they are again, in brief:
-1. fmt – Sets the dial frequency of a CAT-controlled radio and performs a sequence of
+. *fmt* – Sets the dial frequency of a CAT-controlled radio and performs a sequence of
 measurements of the strongest resulting audio tone near a specified offset frequency.
 Input parameters are taken from the command line, and output goes to files fmt.out
 and fmt.all. The latter file is cumulative.
-2. gocal – Batch file, must be edited to your specific needs. Executes program fmt for
-a number of specified frequency-calibration stations. Output will accumulate in file
-fmt.all.
-3. 0230, 0245, ... – Optional batch files that you prepare in advance to execute program
-fmt for each key-down measurement interval in the ARRL Frequency Measuring Test.
-Each invocation of fmt will append more lines to fmt.all.
-4. fmtave – Averages data found in a specified file having the format of fmt.all.
-Output goes to file fmtave.out.
-5. fcal – Calculates a best-fit straight line for a data saved in fmtave.out. Results are
-saved in file fcal.out.
-6. fmeasure – Calculates the properly calibrated frequency of each test signal found in
-file fmtave.out. Results are saved in file fmeasure.out, and these are the numbers
-you should report if you are entering the Frequency Measuring Test.
-8
 
+. *gocal* – Batch file, must be edited to your specific needs. Executes program fmt for
+a number of specified frequency-calibration stations. Output will
+accumulate in file *fmt.all*.
+
+. 0230, 0245, ... – Optional batch files that you prepare in advance
+to execute program *fmt* for each key-down measurement interval in
+the ARRL Frequency Measuring Test. Each invocation of *fmt* will 
+_append_ more lines to *fmt.all*.
+
+. *fmtave* – Averages data found in a specified file having the format
+of *fmt.all*. Output goes to file *fmtave.out*.
+
+. *fcal* – Calculates a best-fit straight line for a data saved in 
+*fmtave.out*. Results are saved in file *fcal.out*.
+
+. *fmeasure* – Calculates the properly calibrated frequency of each
+test signal found in file *fmtave.out*. Results are saved in file
+*fmeasure.out*, and these are the numbers you should report if you are
+entering the Frequency Measuring Test.
+
+License
+-------
+include::../../global/license.adoc[]

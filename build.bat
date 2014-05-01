@@ -17,7 +17,7 @@ SET ICOND=%BASED%\icons
 REM -- PROCESS VARS
 SET ADOC=%BASED%\asciidoc\asciidoc.exe
 SET TOC=%ADOC% -b xhtml11 -a toc2 -a iconsdir=../icons -a max-width=1024px
-SET BUILD_LIST=(dev-guide map65 quick-ref simjt wsjt wspr wsprx)
+SET BUILD_LIST=(dev-guide map65 quick-ref simjt wsjt wspr wfmt wsprx)
 
 REM -- USER INPUT CONDITIONALS
 IF /I [%1]==[wsjtx] (SET DOC_NAME=wsjtx &GOTO WSJTX
@@ -55,6 +55,10 @@ GOTO GENERAL
 CLS &ECHO.
 SET DOC_NAME=wspr
 GOTO GENERAL
+) ELSE IF /I [%1]==[wfmt] (
+CLS &ECHO.
+SET DOC_NAME=wfmt
+GOTO GENERAL
 ) ELSE IF /I [%1]==[wsprx] (
 CLS &ECHO.
 SET DOC_NAME=wsprx
@@ -70,7 +74,10 @@ CD %BASED%\%DOC_NAME%
 ECHO Building Special Version for ^( wsjtx ^)
 %TOC% -o wsjtx-main-toc2.html source\wsjtx-main.adoc
 ECHO.
-ECHO .. Location: %BASED%\wsjtx\wsjtx-main-toc2.html
+ECHO  Finished building ^( %DOC_NAME% ^)
+ECHO  Location: %BASED%\wsjtx\wsjtx-main-toc2.html
+ECHO.
+ECHO  To Open, At The Promt, Type: %DOC_NAME%
 ECHO.
 PAUSE
 GOTO EOF
@@ -80,7 +87,13 @@ REM -- BUILD USER SELECT DOCUMENT $1 == %1
 CD %BASED%\%DOC_NAME%
 ECHO Building ^( %DOC_NAME% ^)
 %TOC% -o %DOC_NAME%-main.html source\%DOC_NAME%-main.adoc
-ECHO .. Location: %BASED%\%DOC_NAME%\%DOC_NAME%-main.html
+ECHO.
+ECHO  Finished building ^( %DOC_NAME% ^)
+ECHO  Location: %BASED%\%DOC_NAME%\%DOC_NAME%-main.html
+ECHO.
+ECHO  To Open, At The Promt, Type: %DOC_NAME%
+ECHO.
+PAUSE
 ECHO.
 GOTO EOF
 
@@ -123,6 +136,7 @@ ECHO.
 ECHO  build wsjt
 ECHO  build wsjtx
 ECHO  build wspr
+ECHO  build wfmt
 ECHO  build wsprx
 ECHO  build map65
 ECHO  build devg
