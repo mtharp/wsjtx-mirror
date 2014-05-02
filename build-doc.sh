@@ -29,6 +29,7 @@ set -e
 ################################################################################
 # Variables                                                                    #
 ################################################################################
+
 # Main variables
 SCRIPTVER="0.9.0"
 BASEDIR=$(exec pwd)
@@ -42,21 +43,21 @@ WFMT="$BASEDIR/wfmt"
 WSPRX="$BASEDIR/wsprx"
 DEVG="$BASEDIR/dev-guide"
 QREF="$BASEDIR/quick-ref"
-export PATH="$BASEDIR/asciidoc:$PATH"
 ICONSDIR="$BASEDIR/icons"
+export PATH="$BASEDIR/asciidoc:$PATH"
 
-# non-data-uri builds (linked css, images, js)
+# Link build (linked css, images, js)
 TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
 
-# data-uri builds (embedded images, css, js)
+# data-uri build (embedded images, css, js)
 DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
 
 # build manpage (under construction)
 # data-uri builds (embedded images, css, js)
-# MTOC="a2x.py --format=manpage --doctype=manpage --no-xmllint"
+# MTOC="a2x.py --format=manpage --doctype=manpage --no-xmllint -o $OUPUT_FILE $INPUT_FILE"
 
 # all available documents
-declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wfmt' 'wsprx' 'quick-ref' 'dev-guide')
+declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide')
 
 # Color variables
 C_R='\033[01;31m'		# red
@@ -127,8 +128,6 @@ function build_all_guides() {
 	clear
 	echo
 	echo -e ${C_Y}"Building All WSJT Documentation"${C_NC}
-	echo
-
 	while [ 1 ]
 	do
 		for f in "${doc_ary[@]}"
@@ -156,7 +155,7 @@ function build_all_guides() {
 	done
 }
 
-# Build linked html documents --------------------------------------------------
+# Build linked (css, images, js) html documents --------------------------------
 function build_doc() {
 	$TOC -o $app_name-main.html ./source/$app_name-main.adoc
 }
@@ -172,8 +171,8 @@ function build_ddoc() {
 function build_man() {
 
 	# * Need input and output method
-	# * Mmanpages should reside in source trees, but there's no
-	#   reason they cannot be build externally, then updates the 
+	# * Manpages should reside in source trees, but there's no
+	#   reason they cannot be built externally, then update the 
 	#   source tree file as a fully formated manpage.
 	$MTOC -o $app_name.1 ./source/$app_name.1.txt
 
@@ -181,19 +180,20 @@ function build_man() {
 
 # Copy Images & Icons Dir to $app_name -----------------------------------------
 function copy_image_folders() {
-# data-uri does not like rpaths and wants the incos and images under ./source
-# rsync is just easier to use than cp, mkdir etc and it excludes
-# .svn easier
 
+# data-uri does not like rpaths and wants the images at the ./source file level
+# rsync is just easier to use than cp etc and it excludes .svn easier
 mkdir -p $BASEDIR/$app_name/source/images
 rsync -aq --exclude=.svn $BASEDIR/$app_name/images/ $BASEDIR/$app_name/source/images
+
 }
 
 # Remove Images & Icons Dir to $app_name ---------------------------------------
 function remove_image_folders() {
-# remove all the files we used for data-uri building
 
+# remove all the files we used for data-uri building
 rm -r $BASEDIR/$app_name/source/images
+
 }
 
 # Main wording -----------------------------------------------------------------
@@ -201,7 +201,7 @@ function main_wording() {
 
 	echo -e ${C_Y}"Building $display_name\n"${C_NC}
 
-} # End main wording
+}
 
 # Location wording -------------------------------------------------------------
 function location_wording() {
@@ -284,7 +284,32 @@ else
 	echo
 	exit 1
 fi
-} # End file check after build
+}
+
+
+# Clean Folders ----------------------------------------------------------------
+function clean_up() {
+	# Delete any /tmp folders then remove HTML files
+	# suitable for use before sommit code changes to SVN
+	clear
+	echo
+	echo -e ${C_Y}'Cleaning Temp Folders and HTML Files'${C_NC}
+	echo
+	for i in "${doc_ary[@]}"
+		do
+			cd "$BASEDIR"
+			TMP="$BASEDIR/$i/tmp"
+			clean_dir="$BASEDIR/$i"
+			echo -e ${C_C}".. cleaning ( $i ) tmp && *.html"${C_NC}
+			# clean the folders
+			rm -rf "$TMP"
+			# clean html files
+			rm -rf "$clean_dir"/*.html
+	done
+	echo
+	echo -e ${C_Y}'Finished Cleaning Up'${C_NC}
+	echo
+}
 
 # Main help menu ---------------------------------------------------------------
 function app_menu_help() {
@@ -293,23 +318,29 @@ function app_menu_help() {
 	echo 'USAGE: [ build-doc.sh] [ option ]'
 	echo
 	echo 'OPTION: All map65 simjt wsjt wsjtx'
-	echo '        wspr wsprx wfmt devg qref help'
+	echo '        wspr wsprx wfmt devg qref help clean'
 	echo
 	echo 'BUILD LINKED:'
-	echo '-------------------------------'
-	echo 'All .....: ./build-doc.sh all'
-	echo 'WSJT-X...: ./build-doc.sh wsjtx'
+	echo '-----------------------------------'
+	echo '  All .....: ./build-doc.sh all'
+	echo '  WSJT-X...: ./build-doc.sh wsjtx'
 	echo
 	echo 'BUILD DATA-URI - (Stand Alone)'
-	echo '------------------------------'
-	echo 'All .....: ./build-doc.sh dall'
-	echo 'WSJT-X...: ./build-doc.sh dwsjtx'
+	echo '----------------------------------'
+	echo '  All .....: ./build-doc.sh dall'
+	echo '  WSJT-X...: ./build-doc.sh dwsjtx'
 	echo
+	echo 'CLEAN FOLDERS & FILES'
+	echo '----------------------------------'
+	echo '  All .....: ./build-doc.sh clean'
+	echo
+	echo 'NOTE(s)'
+	echo '----------------------------------'
 	echo 'The same method is used for all documentaion.'
 	echo 'The prefix "d" designates data-uri or a stand'
 	echo 'alone version of the document'
 	echo
-} # End main menu help
+}
 
 ################################################################################
 # start the main script                                                        #
@@ -323,6 +354,11 @@ if [[ $1 = "" ]] || [[ $1 = "help" ]]
   then
     app_menu_help
 
+# Clean files & Folders
+elif [[ $1 = "clean" ]]
+	then
+	clean_up
+	
 # Build All Guides
 # Linked version
 elif [[ $1 = "all" ]]

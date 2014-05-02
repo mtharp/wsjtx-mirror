@@ -1,13 +1,37 @@
 = WSJT Documentation Change Log
 
-Version 0.9.0
-Date:	2014-03-30
-Author: Greg Beam <ki7mt@yahoo.com>
+== TO-DO:
+* Add provision to build Manpages without installing half the Ubuntu
+  repository to accomplish it, as it's not necessary (*Nix, Win32).
+* Single build function for each type, html, manpage, data-uri. (*Nix, Win32)
+* Build asciidoc.exe with Python27 base64 mime type support (Win32)
+* Add Windows clean_up function to build.bat (Win32)
+
+
+== Version 0.9.1
+by KI7MT, <ki7mt@yahoo.com>
+
+* Fixed BASDIR=$(exec pwd) as POSIX doesnt' like readlink (*Nix)
+* added clean_up function, removes all $app_name/tmp & *.html files/folders (*Nix)
+* updated help menu (*Nix)
+* added version number to Windows script (*Nix)
+* Tested a2x.exe on Wwindows, all passed (Win32)
+* added wfmt (WSPR FMT) builds (*Nix, Win32)
+
+. For clean_up: ./build-doc.sh clean (*Nix)
+
+* NOTE:	Windows builds cannot buld data-uri due to the limited embedded Python
+		intreputer in asciidoc.exe, basically, it needs base64 mime tpyes
+		which were not compiled into the .exe. I've added to the to-do list.
+
+
+== Version 0.9.0
+by KI7MT, <ki7mt@yahoo.com>
 
 * Only Affects Linux
-* combined data-uri and build-doc scripts (Linux)
-* removed special WSJT-X build instruction (Linux)
-* added WSPR-FMT documentation (Linux), needs updating
+* combined data-uri and build-doc scripts (*Nix)
+* removed special WSJT-X build instruction (*Nix)
+* added WSPR-FMT documentation (*Nix), needs updating
 * changed build declaration for dev-guide and quick-ref
   to match windows:
   ./build-doc.sh devg .. or .. ./build-doc.sh qref
@@ -17,7 +41,3 @@ Author: Greg Beam <ki7mt@yahoo.com>
 * updated trap signals
 * convert dev-guide images from .jpg to .png
 
-TO-DO:
-* Add provision to build Manpages without installing half the Ubuntu
-  repository to accomplish it, as it's not necessary.
-* Single build function for each type, html, manpage, data-uri
