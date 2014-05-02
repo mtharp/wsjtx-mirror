@@ -27,7 +27,7 @@ set -e
 printf '\e[8;40;120t'
 
 # set script path's
-BASED=$(dirname $(readlink -f $0))
+BASED=$(exec pwd)
 
 # Using cmake and qmake directories allows for build comparison.
 # Need to add support for multiple compilers {g++, intel, clang}
@@ -47,7 +47,7 @@ _TMP="$BASED/tmp"
 _MKRD="$HOME"/.local/share/applications/jtsdk-nix
 
 # process vars
-_HAMLIBD="$BASED/hamlib"
+_HAMLIBD="$HOME/.local/share/applications/hamlib"
 _jj=$(grep -c ^processor /proc/cpuinfo)
 
 # source general functions and language
@@ -56,7 +56,6 @@ _jj=$(grep -c ^processor /proc/cpuinfo)
 . "$_FUNC"/clean_exit
 . "$_FUNC"/root_chk
 . "$_FUNC"/dialog_chk
-#. "$_FUNC"/setup_chk
 . "$_FUNC"/set_options
 . "$_FUNC"/unset_options
 . "$_FUNC"/under_development
@@ -118,7 +117,7 @@ if [[ $SMSELECT = "A" ]]; then
 # this logs everything to ./logs/setup.log
 # other sections also have individual logs 
 	rm -r $_LOGS/setup.log && touch $_LOGS/setup.log
-	source "$_FUNC"/ubuntu_functions	
+	source "$_FUNC"/functions_ubuntu
 	clear
 
 

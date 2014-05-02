@@ -24,7 +24,7 @@
 printf '\e[8;28;100t'
 
 # set script path's
-_BASED=$(dirname $(readlink -f $0))
+_BASED=$(exec pwd)
 
 # Using cmake and qmake directories allows for build comparison.
 # Need to add support for multiple compilers {g++, intel, clang}
@@ -90,12 +90,16 @@ MMSELECT=$(head -c 1 < $_TMP/selection)
 
 # WSJT w/Python3
 if [[ $MMSELECT = "A" ]]; then
-	under_development
+	_APP_NAME=wsjt
+	_APP_SRC="$_SRCD/trunk"
+	python_nix
 	continue
 
 # WSPR w/Python3
-   elif [[ $MMSELECT = "B" ]]; then
-	under_development
+elif [[ $MMSELECT = "B" ]]; then
+	_APP_NAME=wspr
+	_APP_SRC="$_SRCD/wspr"
+	python_nix
 	continue
 
 # WSJT-X w/CMake
@@ -118,20 +122,6 @@ if [[ $MMSELECT = "A" ]]; then
 	_OPTION=Release
 	cmake_nix
 	continue
-
-# Qmake builds need Makefile Verification
-
-#   elif [[ $MMSELECT = "G" ]]; then
-#	under_development
-#	continue
-
-#  elif [[ $MMSELECT = "H" ]]; then
-#	under_development
-#	continue
-
-#   elif [[ $MMSELECT = "I" ]]; then
-#	under_development
-#	continue
 
 # All Apps
    elif [[ $MMSELECT = "Z" ]]; then

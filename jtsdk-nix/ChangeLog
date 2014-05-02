@@ -1,0 +1,11 @@
+
+Current Development Version: JTSDK-NIX
+
+2014-04-02  Greg Beam <ki7mt@yahoo.com>
+
+* Updated BASEDIR=$(exec pwd) to be more POSIX friendly
+* Updated hamlib3 HAMLIBDIR="$HOME/.local/share/applications/hamlib"
+* Updated distro functions names to function_$DISTRO
+* Added python_nix build script
+* Updated jtsdk-nix.sh
+
