@@ -49,6 +49,7 @@ ntc=IntVar()
 fRIT=IntVar()
 dither=IntVar()
 cwSpeed=IntVar()
+trackWarn=IntVar()
 temp=StringVar()
 wind=StringVar()
 pwr=StringVar()
@@ -258,11 +259,13 @@ dither_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Dither (Hz):',
     entry_width=9,entry_textvariable=dither)
 cwSpeedEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='CW Speed (WPM):',
     entry_width=9,entry_textvariable=cwSpeed)
+trackWarnEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Track warn (min):',
+    entry_width=17,entry_textvariable=trackWarn)
 ##dlatency_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Latency (s):',
 ##    entry_width=9,entry_textvariable=dlatency)
 
 widgets = (temp_prefix,aux_ra,aux_dec,azeldir_entry,ntc_entry, \
-           fRIT_entry,dither_entry,cwSpeedEntry)
+           fRIT_entry,dither_entry,cwSpeedEntry,trackWarnEntry)
 for widget in widgets:
     widget.pack(padx=10,pady=2)
 Pmw.alignlabels(widgets)

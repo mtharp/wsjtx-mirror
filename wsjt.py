@@ -111,6 +111,8 @@ ShOK=IntVar()
 slabel="Sync   "
 textheight=7
 ToRadio0=""
+trackWarn0=0
+trackWarn1=0
 trxnoise0=""
 tx6alt=""
 txsnrdb=99.
@@ -1715,17 +1717,46 @@ def plot_yellow():
             xy2.append(n)
         graph1.create_line(xy2,fill="yellow")
 
+#------------------------------------------------------ trackWarning
+def trackWarning():
+    global trackWarn0,trackWarn1,idWarn
+    lWarn.configure(bg="red",text="Track")
+    if trackWarn0>0:
+        trackWarn1=1
+        idWarn=lWarn.after(60000*trackWarn0,trackWarning)
+
+#------------------------------------------------------ trackOK
+def trackOK(event):
+    global trackWarn0,trackWarn1,idWarn
+    trackWarn1=0
+    lWarn.after_cancel(idWarn)
+    if trackWarn0>0:
+        idWarn=lWarn.after(60000*trackWarn0,trackWarning)
+
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
-           im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0,     \
-           isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas,g2font
+           im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0, \
+           isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas,g2font,           \
+           trackWarn0,trackWarn1
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
 
     if isec != isec0:                           #Do once per second
         isec0=isec
+        if trackWarn0==0: trackWarn1=0
+        trackWarn1=-trackWarn1
+        if trackWarn1==1:
+            lWarn.configure(bg="red",text="Track",relief=RIDGE)
+        if trackWarn1==-1:
+            lWarn.configure(bg="gray85",text="Track",relief=RIDGE)
+        if trackWarn1==0:
+            lWarn.configure(bg="gray85",text="",relief=FLAT)
+        if options.trackWarn.get() != trackWarn0:
+            trackWarn0=options.trackWarn.get()
+            if trackWarn0>0: trackWarning()
+
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         Audio.gcom2.utcdate=t[:12]
         Audio.gcom2.iyr=utc[0]
@@ -2562,7 +2593,9 @@ ldate=Label(f5a, bg='black', fg='yellow', width=11, bd=4,
         justify=CENTER, font=(font1,16))
 ldate.grid(column=0,columnspan=2,row=3,rowspan=2,padx=2,pady=2)
 
-ldsec=Label(f5a, bg='white', fg='black', text='Dsec  0.0', width=8, relief=RIDGE)
+lWarn=Label(f5a,bg='gray85',fg='black',text='',width=9,relief=FLAT)
+lWarn.grid(column=2,row=3,ipadx=3,padx=2,pady=0)
+ldsec=Label(f5a,bg='white',fg='black',text='Dsec  0.0',width=9,relief=RIDGE)
 ldsec.grid(column=2,row=4,ipadx=3,padx=2,pady=0)
 
 f5a.pack(side=LEFT,expand=1,fill=BOTH)
@@ -2602,6 +2635,7 @@ lMinW.grid(column=0,row=2,padx=2,sticky='EW')
 ##sbtol.grid(column=0,row=5)
 ##jtol.set(200)
 Widget.bind(ltol,'<Button-1>',inctol)
+Widget.bind(lWarn,'<Button-1>',trackOK)
 Widget.bind(ldsec,'<Button-1>',incdsec)
 Widget.bind(lMinW,'<Button-1>',incMinW)
 if (sys.platform != 'darwin'):
@@ -2854,6 +2888,7 @@ try:
         elif key == 'fRIT': options.fRIT.set(value)
         elif key == 'Dither': options.dither.set(value)
         elif key == 'CWspeed': options.cwSpeed.set(value)
+        elif key == 'TrackWarn': options.trackWarn.set(value)
 ##        elif key == 'Necho': options.necho.set(value)
 ##        elif key == 'Dlatency': options.dlatency.set(value)
         elif key == 'MyName': options.myname.set(value)
@@ -2981,6 +3016,7 @@ f.write("Ntc " + str(options.ntc.get()) + "\n")
 f.write("fRIT " + str(options.fRIT.get()) + "\n")
 f.write("Dither " + str(options.dither.get()) + "\n")
 f.write("CWspeed " + str(options.cwSpeed.get()) + "\n")
+f.write("TrackWarn " + str(options.trackWarn.get()) + "\n")
 ##f.write("Necho " + str(options.necho.get()) + "\n")
 ##f.write("Dlatency " + str(options.dlatency.get()) + "\n")
 f.write("HighPri " + str(options.HighPri.get()) + "\n")
