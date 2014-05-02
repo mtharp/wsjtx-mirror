@@ -9,6 +9,8 @@ MV			?= 	mv
 RM			?=	/bin/rm
 MKDIR		?= 	mkdir
 INSTALL		=	install
+PYTHON		?=	/usr/bin/python3
+F2PY		?=	/usr/local/bin/f2py3
 
 CC			?=	gcc
 FFLAGS		=	-g -O2 -fno-range-check -ffixed-line-length-none -Wall -fbounds-check -fno-second-underscore -fPIC
@@ -47,15 +49,10 @@ FCV			=	gnu95
 FC_LIB_PATH	+=	/usr/lib/gcc/x86_64-linux-gnu/4.8/
 LDFLAGS		+=	-L${FC_LIB_PATH}
 
-PYTHON		?=	/usr/bin/python3
-RM			?=	/bin/rm
-F2PY		?=	/usr/local/bin/f2py3
-
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	$(FC) ${FFLAGS} -o wspr0 $(FFLAGS) ${OBJS1} libwspr.a \
-	libportaudio.a libfftw3f.a
+	$(FC) ${FFLAGS} -o wspr0 $(FFLAGS) ${OBJS1} libwspr.a libportaudio.a libfftw3f.a
 
 wsprcode: wsprcode.o thnix_stub.o
 	$(FC) -o wsprcode wsprcode.o thnix_stub.o libwspr.a
@@ -107,9 +104,10 @@ install: WsprMod/w.so
 
 .PHONY : clean
 clean:
-	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
-	    WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal fmeasure wspr0
+	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
+	WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal fmeasure wspr0
 	${RM} -rf build/
 
 distclean:
 	${RM} -f config.log config.status Makefile
+	${RM} -r autom4*
