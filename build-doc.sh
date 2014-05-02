@@ -6,7 +6,7 @@
 # Date            : 2014
 # Usage           : ./build-doc.sh [ option ]
 # Notes           : Requires:	Python 2.5 <=> 2.7.6, AsciiDoc, rsync
-#								bash 4.0+
+#								bash 4.0+ (may work on earlier bash ersions)
 # Copyright       : GPLv(3)
 #
 # This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ set -e
 ################################################################################
 # Main variables
 SCRIPTVER="0.9.0"
-BASEDIR=$(dirname $(readlink -f $0))
+BASEDIR=$(exec pwd)
 DEVMAIL="wsjt-devel@lists.berlios.de"
 MAP65="$BASEDIR/map65"
 SIMJT="$BASEDIR/simjt"
@@ -295,19 +295,19 @@ function app_menu_help() {
 	echo 'OPTION: All map65 simjt wsjt wsjtx'
 	echo '        wspr wsprx wfmt devg qref help'
 	echo
-	echo 'Build Linked:'
-	echo '---------------------------'
+	echo 'BUILD LINKED:'
+	echo '-------------------------------'
 	echo 'All .....: ./build-doc.sh all'
 	echo 'WSJT-X...: ./build-doc.sh wsjtx'
 	echo
-	echo 'Build Data URI (Stand Alone)'
-	echo '----------------------------'
+	echo 'BUILD DATA-URI - (Stand Alone)'
+	echo '------------------------------'
 	echo 'All .....: ./build-doc.sh dall'
 	echo 'WSJT-X...: ./build-doc.sh dwsjtx'
 	echo
 	echo 'The same method is used for all documentaion.'
-	echo 'The prtefix "d" designates data-uri or a stand'
-	echo 'version of the document'
+	echo 'The prefix "d" designates data-uri or a stand'
+	echo 'alone version of the document'
 	echo
 } # End main menu help
 
