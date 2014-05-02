@@ -260,7 +260,7 @@ dither_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Dither (Hz):',
 cwSpeedEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='CW Speed (WPM):',
     entry_width=9,entry_textvariable=cwSpeed)
 trackWarnEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Track warn (min):',
-    entry_width=17,entry_textvariable=trackWarn)
+    entry_width=9,entry_textvariable=trackWarn)
 ##dlatency_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Latency (s):',
 ##    entry_width=9,entry_textvariable=dlatency)
 
