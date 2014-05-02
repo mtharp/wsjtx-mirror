@@ -6,11 +6,11 @@
 # a digital soundcard mode optimized for beacon-like
 # transmissions on the LF, MF, and HF bands.
 #
-# Copyright (c) 2008-2012 by Joseph H. Taylor, Jr., K1JT, with
+# Copyright (c) 2008-2014 by Joseph H. Taylor, Jr., K1JT, with
 # contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
 # Open Source software, licensed under the GNU General Public
 # License (GPL).  Source code and programming information may
-# be found at http://developer.berlios.de/projects/wsjt/.
+# be found at http://sourceforge.net/projects/wsjt/.
 #
 # Revision for MacOsX 10.6.8 by KE6HDU
 # Apparently the tK library has a leak on MacOsX, so every extra call
@@ -341,11 +341,11 @@ Propagation Reporter".  The program generates and decodes
 a digital soundcard mode optimized for beacon-like
 transmissions on the LF, MF, and HF bands.
 
-Copyright (c) 2008-2011 by Joseph H. Taylor, Jr., K1JT, with
+Copyright (c) 2008-2014 by Joseph H. Taylor, Jr., K1JT, with
 contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
 Open Source software, licensed under the GNU General Public
 License (GPL).  Source code and programming information may
-be found at http://developer.berlios.de/projects/wsjt/.
+be found at http://sourceforge.net/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     t="Revision date: " + \

@@ -1,0 +1,84 @@
+Installation Instructions for WSPR 4.0
+--------------------------------------
+
+The following is a brief installation guide using Linux as the example. WSPR
+can be built on Windows (using MinGW+MSYS / JTSDK-PY), and on Mac OSX 10.6/7
+using the repsective Makefile.
+
+
+BASIC LINUX INSTRUCTIONS: (Linux Example x86_64 System):
+-----------------------------------------------------------
+To compile WSPR, as a minimum, you will need the following:
+
+	* A C, C++ and gfortran compiler.
+	  The GNU Tool chaines tested: 4.8.1/2. 4.9.x has not been tested
+	* GNU Autotools: autoconf, make, libtool
+	* Portaudio-19
+	* FFTW 3.3+
+	* Samplerate Library.
+	* Python3.2+
+	* Numeric Python (F2PY-3.2+)
+	* PIL, (Python Imaging Library)
+	* Tcl\TK (8.6.1 or Later)
+	* Hamlib 1.2.15.3+ (If rig control is desired)
+
+NOTE: Where possible, install dev / header packages.
+
+The default install location is /usr/local, however, you can run WSPR
+from the source tree after make. You can also change the install target
+locaiton using the following configure parameter:
+
+--prefix=/desired/install/path
+
+You will also need a paths to Portaudio Libs and Lib-Dir if not picked up
+by the configure script:
+
+--with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu
+--with-portaudio-include-dir=/usr/include
+
+On dual python systems, you need to specify Python3+ and F2PY3+ locations:
+
+PYTHON=/usr/bin/python3
+F2PY=/usr/local/bin/f2py3
+
+To see a full list of options,use: ./configure --help
+
+
+CONFIGURE && MAKE (x86_64 *Nix System)
+--------------------------------------
+
+	autoconf
+	./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu \
+	--with-portaudio-include-dir=/usr/include \
+	PYTHON=/usr/bin/python3 \
+	F2PY=/usr/local/bin/f2py3
+	
+
+At this point, you can run WSPR from the source tree with:
+
+python3 -O wspr.py
+
+
+FINAL MAKE INSTALL
+------------------
+
+To install WSPR into system directories (for all users)
+
+Note: you need root or RootSudo for this step:
+
+sudo make install
+
+or
+
+root make install
+
+
+CLEAN BUILD TREE:
+-----------------
+make clean
+
+CLEAN FOR DISTRIBUTION:
+-----------------------
+make distclean
+
+

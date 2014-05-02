@@ -1,9 +1,23 @@
-WSPR-4.0
+AUTHOR: Joseph Taylor
+CALLSIGN: K1JT
 
-WSPR (pronounced "whisper") stands for "Weak Signal
-Propagation Reporter".  The program generates and decodes
-a digital soundcard mode optimized for beacon-like
-transmissions on the LF, MF, and HF bands.
+AUTHOR: John Nelson
+CALLSIGN: G4KLA
+
+AUTHOR:
+CALLSIGN: KE6HDU
+
+AUTHOR:
+CALLSIGN: W1BW
+
+AUTHOR: 
+CALLSIGN: VA3DB
+
+AUTHOR: 
+CALLSIGN: 4X6IZ
+
+Authors can be contacted on the wsjt-devel mailing list or
+through the WSJT Yahoo Group.
 
 PROJECT INFORMATION:
 -------------------
@@ -12,3 +26,8 @@ PROJECT INFORMATION:
 - Mailing List: ......... wsjt-devel@lists.sourceforge.net
 - Project Source Code: .. http://sourceforge.net/projects/wsjt/
 - Yahoo Group: .......... https://groups.yahoo.com/neo/groups/wsjtgroup/info
+
+
+
+
+

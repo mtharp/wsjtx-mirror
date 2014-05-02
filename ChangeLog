@@ -1,0 +1,16 @@
+
+Current Development Version: WSPR-4.0
+
+2014-04-02  Greg Beam <ki7mt@yahoo.com>
+
+* Updated wspr.py copyright dates (2008-2014)
+* Updated Project Source URL's
+* Added autotool scripts to build-aux (config.guess, sub, missing etc)
+* Updated configure.ac to includ wspr/build-aux dir
+* Added authoer information as available, still needs updating
+* Added TO-DO, INSTALL, README, COPYING and COPYRIGHT files to /wspr
+* Added basic Install instructions for *Nix. Need Mac OSX 10.6/7 instrctions
+  using Makefile.10.6
+* Removed DEB folder as it should not be in the upstream srource tree. There
+were no files in the folder.
+

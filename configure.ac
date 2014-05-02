@@ -10,6 +10,7 @@ AC_COPYRIGHT([$Id$])
 AC_INIT([wspr],[4.0])
 fail=0
 
+AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT(/usr/local/)
 
 OLD_CFLAGS="$CFLAGS"
