@@ -1753,9 +1753,10 @@ def update():
             lWarn.configure(bg="gray85",text="Track",relief=RIDGE)
         if trackWarn1==0:
             lWarn.configure(bg="gray85",text="",relief=FLAT)
-        if options.trackWarn.get() != trackWarn0:
-            trackWarn0=options.trackWarn.get()
-            if trackWarn0>0: trackWarning()
+        if options.trackWarn.get() != "":
+            if int(options.trackWarn.get()) != trackWarn0:
+                trackWarn0=int(options.trackWarn.get())
+                if trackWarn0>0: trackWarning()
 
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         Audio.gcom2.utcdate=t[:12]
@@ -3016,7 +3017,7 @@ f.write("Ntc " + str(options.ntc.get()) + "\n")
 f.write("fRIT " + str(options.fRIT.get()) + "\n")
 f.write("Dither " + str(options.dither.get()) + "\n")
 f.write("CWspeed " + str(options.cwSpeed.get()) + "\n")
-f.write("TrackWarn " + str(options.trackWarn.get()) + "\n")
+f.write("TrackWarn " + options.trackWarn.get() + "\n")
 ##f.write("Necho " + str(options.necho.get()) + "\n")
 ##f.write("Dlatency " + str(options.dlatency.get()) + "\n")
 f.write("HighPri " + str(options.HighPri.get()) + "\n")
