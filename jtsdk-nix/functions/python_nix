@@ -1,0 +1,88 @@
+#
+# Part of the JTSDK-NIX Project
+# Python build function for ( WSJT and WSPR using auto tools)
+
+#-------------------------------python_nix-------------------------------------#
+
+function python_nix() {
+# WSPR uses /branches WSJT uses /trunk
+_WSPRURL=https://svn.code.sf.net/p/wsjt/wsjt/branches
+_WSJTURL=https://svn.code.sf.net/p/wsjt
+
+# USAGE - Because we're in two fifferent locaitons
+# _APP_NAME=wspr
+# _APP_SRC=$_SRCD/wspr
+# _APP_NAME=wsjt
+# _APP_SRC=$_SRCD/trunk
+
+clear
+echo
+echo "STARTING BUILD FOR ( $_APP_NAME )"
+
+# $_APP_SRC is set from the main menu jtsdk-nix.sh when select tool build
+# svn co if not exist, else update
+if [[ ! -d $_APP_SRC ]] || [[ ! -d $_APP_SRC/.svn ]]; then
+	echo
+	echo "Checking Out New Version of ( $_APP_NAME ) "
+	
+	# For WSJT
+	if [[ $_APP_NAME == wsjt ]]; then
+		svn co "$_WSJTURL/trunk"
+	fi
+
+	# For WSPR
+	if [[ $_APP_NAME == wspr ]]; then
+		svn co "$_WSPRURL/$_APP_NAME"
+	fi
+else
+	# Yy / Nn answer to update from svn	
+	while [ 1 ]
+	do
+		echo
+		read -p "Update from SVN Before Building? [ Y/N ]: " yn
+		case $yn in
+		[Yy]* )
+			clear
+			cd $_APP_SRC 
+			echo "Updating ( $_APP_NAME )"
+			svn cleanup && svn update
+			break ;;
+		[Nn]* )
+			break ;;
+		* )
+			clear
+			echo "Please use "Y" yes or "N" No."
+		;;
+		esac
+	done
+fi
+
+# get svn revision number
+cd "$_APP_SRC"
+rev_num=$(svn log -l 1 |awk 'FNR==2 {print $1}')
+
+echo
+echo "STARTING BUILD for ( $_APP_NAME-$rev_num )"
+echo
+
+# clean source tree
+make clean && make distclean
+
+# Need to add portaudio find function
+autoconf && ./configure --prefix="$BASED/$_APP_NAME" \
+PYTHON=/usr/bin/python3 F2PY=/usr/local/bin/f2py3 && \
+make && make install
+
+echo
+echo "Finished Building $_APP_NAME"
+echo "Build Location: $BASED/$_APP_NAME"
+echo "Please Make a note of the install location"
+echo
+echo "To Run, Type: python3 -O $_APP_NAME.py"
+echo
+read -p "Press [Enter] to continue .."
+cd $BASED
+
+} # end python_nix
+
+
