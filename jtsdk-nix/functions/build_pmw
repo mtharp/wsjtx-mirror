@@ -36,7 +36,7 @@ fi
 # Download Pmw-2.0.0
 echo ".. downloading $_FILE from Sourceforge"
 cd $_SRCD
-wget -q -r --tries=5 $_URL -O $_SRCD/$_FILE
+wget -q -r --tries=5 $_URL -O $_FILE
 
 # unpack and install Pmw2
 echo ".. unpacking $_FILE"

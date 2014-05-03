@@ -2,7 +2,6 @@ TO-DO LIST
 ----------
 
 *SCRIPTS*
-* Add CMake, QMake and Makefile (WSJT, WSPR) build scripts
 * Add uninstall.sh
 
 *NEEDED INFO*
@@ -15,13 +14,16 @@ TO-DO LIST
 - dev_info (get dev info for use with checkouts, no PW's)
 - cmake_custom_options (options for to switch on/off various options)
 - Uninstall for Pmw2.0
+- Uninstall for Numpy-1.8.1
 
 *ISSUES*
-- WSPR-X builds with CMake & Qmake, but I uses default audio.
-- MAP65 is failing on both CMake and Qmake, both need work.
+- WSPR-X builds with CMake & Qmake, but I uses default audio issues.
+- MAP65 and WSPR-X need fftw, hamlib and audio seach functions added
+- MAP65 and WSPR-X need CmakeLists.txt updated for libs
+- MAP65 is failing on both CMake and Qmake, both needs work.
 - cx-freeze failes build with Python3.4 and cxfreeze 4.3.2
+- Need to update WSJT configure.ac and makefile.in to find portaudio properly.
 
 *WISH LIST*
 - intel_compilers_config (options for testing with Intel C/C++, iFort compiers)
 - cxfreeze or equal for python3.4
-

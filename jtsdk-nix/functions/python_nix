@@ -70,11 +70,12 @@ echo
 # clean source tree
 make clean && make distclean
 
-# Need to add portaudio find function
-autoconf && ./configure --prefix="$_BASED/$_APP_NAME" \
---with-portaudio-lib-dir=/home/$USER/.local/share/applications/portaudio/lib \
---with-portaudio-include-dir=/home/$USER/.local/share/applications/portaudio/include \
-PYTHON=/usr/bin/python3 F2PY=/usr/local/bin/f2py3 && \
+# Configure - using/usr/local as current default
+autoconf && ./configure \
+PYTHON=/usr/bin/python3 \
+F2PY=/usr/local/bin/f2py3
+
+# Just run make for now, make install after beta testing
 make
 
 echo
