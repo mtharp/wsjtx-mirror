@@ -29,6 +29,13 @@ DEFS		=	@DEFS@
 CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
+OS			:= $(shell uname -s)
+			ifeq ($(OS),Darwin)
+				MVSO := ${MV} w.so WsprMod/w.so
+			else
+				MVSO := ${MV} w.*.so WsprMod/w.so
+			endif
+
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
 # wsprcode
 
@@ -96,7 +103,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	-m w ${F2PYSRCS}
 	
 	${MKDIR} -p build/lib/WsprMod
-	${MV} w.*.so WsprMod/w.so
+	${MVSO}
 
 install: WsprMod/w.so
 	${RM} -rf build/
