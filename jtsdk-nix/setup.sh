@@ -245,7 +245,19 @@ if [[ $SMSELECT = "A" ]]; then
 			echo
 			read -p "Press [Enter] to continue.."
 			) 2>&1 | tee -a $_LOGS/setup.log
-
+			
+			
+			# Portaudio19-dev build
+			clear
+			(
+			echo "------------------------------------------------"
+			echo " Portaudio19 Installation"
+			echo "------------------------------------------------"
+			source "$_FUNC"/build_pa
+			build_pa
+			echo
+			) 2>&1 | tee -a $_LOGS/portaudio-build.log
+			
 			# python numpy 1-8.1 installation
 			clear
 			(
@@ -306,7 +318,6 @@ if [[ $SMSELECT = "A" ]]; then
 			source "$_FUNC"/build_hamlib
 			build_hamlib
 			echo
-			read -p "Press [Enter] to continue.."
 			) 2>&1 | tee -a $_LOGS/setup.log
 
 			# If we got this far, we should be able to build apps

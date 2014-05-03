@@ -60,6 +60,7 @@ _ADOCD=/home/$USER/.local/share/applications/asciidoc
 . "$_FUNC"/unset_options
 . "$_FUNC"/under_development
 . "$_FUNC"/cmake_nix
+. "$_FUNC"/python_nix
 
 # Set a few traps to catch signals / interupts
 trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP

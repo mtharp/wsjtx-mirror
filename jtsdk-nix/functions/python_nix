@@ -6,8 +6,8 @@
 
 function python_nix() {
 # WSPR uses /branches WSJT uses /trunk
-_WSPRURL=https://svn.code.sf.net/p/wsjt/wsjt/branches
-_WSJTURL=https://svn.code.sf.net/p/wsjt
+_WSPRURL="https://svn.code.sf.net/p/wsjt/wsjt/branches"
+_WSJTURL="https://ki7mt@svn.code.sf.net/p/wsjt/wsjt"
 
 # USAGE - Because we're in two fifferent locaitons
 # _APP_NAME=wspr
@@ -27,11 +27,13 @@ if [[ ! -d $_APP_SRC ]] || [[ ! -d $_APP_SRC/.svn ]]; then
 	
 	# For WSJT
 	if [[ $_APP_NAME == wsjt ]]; then
+		cd $_SRCD
 		svn co "$_WSJTURL/trunk"
 	fi
 
 	# For WSPR
 	if [[ $_APP_NAME == wspr ]]; then
+		cd $_SRCD
 		svn co "$_WSPRURL/$_APP_NAME"
 	fi
 else
@@ -69,19 +71,21 @@ echo
 make clean && make distclean
 
 # Need to add portaudio find function
-autoconf && ./configure --prefix="$BASED/$_APP_NAME" \
+autoconf && ./configure --prefix="$_BASED/$_APP_NAME" \
+--with-portaudio-lib-dir=/home/$USER/.local/share/applications/portaudio/lib \
+--with-portaudio-include-dir=/home/$USER/.local/share/applications/portaudio/include \
 PYTHON=/usr/bin/python3 F2PY=/usr/local/bin/f2py3 && \
-make && make install
+make
 
 echo
 echo "Finished Building $_APP_NAME"
-echo "Build Location: $BASED/$_APP_NAME"
+echo "Build Location: $_BASED/$_APP_NAME"
 echo "Please Make a note of the install location"
 echo
 echo "To Run, Type: python3 -O $_APP_NAME.py"
 echo
 read -p "Press [Enter] to continue .."
-cd $BASED
+cd $_BASED
 
 } # end python_nix
 
