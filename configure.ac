@@ -18,19 +18,20 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_LANG(C)
 AC_PROG_F77
+
 dnl Make sure autoconf doesn't interfere with cflags -jmallett
 CFLAGS="$OLD_CFLAGS"
 
 dnl Lets guess at some likely places for extra libs/includes XXX -db
-CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
-LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
-LIBS=" -lpthread ${LIBS}"
+CPPFLAGS="-I/usr/lib -I/usr/include -I/usr/x86_64-linux-gnu -I/usr/lib/i386-linux-gnu -I/usr/local/include ${CPPFLAGS}"
+LDFLAGS="-L/usr/lib -L/usr/include -L/usr/x86_64-linux-gnu -L/usr/lib/i386-linux-gnu -L/usr/local/lib  ${LDFLAGS}"
+LIBS="-lpthread -lportaudio -lfftw3f ${LIBS}"
 
-FFLAGS_GFORTRAN="${FFLAGS} -fno-range-check -ffixed-line-length-none \
--Wall -fbounds-check -fno-second-underscore -fPIC"
+FFLAGS_GFORTRAN="${FFLAGS} -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64"
 
-FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC"
-#-Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
+# No longer in use
+# FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
+# -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC
 
 AX_CHECK_GFORTRAN
 AX_CHECK_PORTAUDIO
@@ -82,17 +83,26 @@ OS=`uname`
 AC_SUBST(OS, "${OS}")
 
 dnl Checks for header files.
-
 AC_HEADER_STDC
 
 AC_CHECK_HEADERS([errno.h fcntl.h inttypes.h libgen.h stdint.h stddef.h stdio.h \
 termios.h wait.h dev/ppbus/ppi.h linux/ppdev.h sys/ioctl.h sys/resource.h \
 sys/resource.h sys/param.h sys/stat.h sys/syslog.h sys/time.h sys/wait.h])
 
-AC_HEADER_TIME
+# We need proper m4 search functions, but this will stop configure if the
+# headers are not found.
+AC_CHECK_HEADERS([samplerate.h],
+                  [break],
+                  [AC_MSG_ERROR([Samplerate headers not found, try installing libsamplerate-dev])])
 
-AC_CHECK_HEADER([samplerate.h], [HAS_SAMPLERATE_H=1], [HAS_SAMPLERATE_H=0])
-
+AC_CHECK_HEADERS([portaudio.h],
+                  [break],
+                  [AC_MSG_ERROR([Portaudio headers not found, try installing portaudio19-dev])])
+                  
+AC_CHECK_HEADERS([fftw3.h],
+                  [break],
+                  [AC_MSG_ERROR([FFTW headers not found, try installing libfftw3-dev])])
+                  
 dnl See whether we can include both string.h and strings.h.
 AC_CACHE_CHECK([whether string.h and strings.h may both be included],
 gcc_cv_header_string,
@@ -107,7 +117,6 @@ gcc_cv_header_string,
 if test "$gcc_cv_header_string" = "yes"; then
 	AC_DEFINE(STRING_WITH_STRINGS, 1, [Define to 1 if string.h may be included along with strings.h])
 fi
-
 
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - wsjt will not compile without it **])])
@@ -170,24 +179,6 @@ AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
 dnl do summary
-
-echo
-echo
-
-if test $HAS_PORTAUDIO -eq 1; then
-	AC_DEFINE(HAS_PORTAUDIO, 1, )
-	AC_DEFINE(HAS_PORTAUDIO_H, 1, )
-	AC_DEFINE(HAS_PORTAUDIO_LIB, 1, )
-else
-	fail=1
-	echo "Portaudio-v19 is required by $PACKAGE_NAME $"
-	echo
-	echo "Please use:"
-	echo "--with-portaudio-include-dir=/path/to/pa"
-	echo "--with-portaudio-lib-dir=/path/to/pa/libs"
-	echo
-fi
-
 dnl
 dnl If fail a pre-requisite then fail
 dnl
@@ -209,3 +200,4 @@ fi
 echo "Package: ........ WSPR 4.0"
 echo "Install Prefix: . $prefix"
 echo
+

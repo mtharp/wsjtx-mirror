@@ -1,6 +1,21 @@
 
 Current Development Version: WSPR-4.0
 
+2014-04-03  Greg Beam <ki7mt@yahoo.com>
+
+* Added John's (G4KLA) Mac Install notes to INSTALL
+* Moved Makefile.CVF to /archive (its using Python2.3)
+* Moved Makefile.MinGW to /archive (using Py27 and hard codes)
+* Moved Makefile.MinGW.gfortran to /archive (using Py27 and hard codes)
+* Moved LICENSE.TXT to /archive, have COPYING and COPYRIGHT /wspr
+* Added header checks for Portaudio19, Samplerate and FFTW3. If not found
+  configure breaks, and suggests installing the dev packages.
+* Added more -I and -L search paths to find required libs and directories.
+* Added  John's (G4KLA) suggestion -m64 to FFLAGS on configure.ac
+* Consolidated configure.ac and Makefile.in FFLAGS
+* Trying a fix for w.-cpython-3*.so changed to ${MV} w.*.so WsprMod/w.so
+
+
 2014-04-02  Greg Beam <ki7mt@yahoo.com>
 
 * Updated wspr.py copyright dates (2008-2014)
@@ -12,5 +27,6 @@ Current Development Version: WSPR-4.0
 * Added basic Install instructions for *Nix. Need Mac OSX 10.6/7 instrctions
   using Makefile.10.6
 * Removed DEB folder as it should not be in the upstream srource tree. There
-were no files in the folder.
+  were no files in the folder.
+* Joe updated default 600m freq. 0.474200
 

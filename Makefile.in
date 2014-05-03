@@ -15,16 +15,17 @@ F2PY		?=	@F2PY@
 CC			?=	@CC@
 FFLAGS		=	@FFLAGS@
 LDFLAGS		=	@LDFLAGS@
-LIBS		=	@LIBS@ -lfftw3f
+LIBS		=	@LIBS@
 CPPFLAGS	=	@CPPFLAGS@
 CFLAGS		=	@CFLAGS@
 PREFIX		=	@PREFIX@
 
 # WSPR specific compiler flags
-FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation 
+FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
 
 DEFS		=	@DEFS@
+
 CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
@@ -95,7 +96,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	-m w ${F2PYSRCS}
 	
 	${MKDIR} -p build/lib/WsprMod
-	${MV} w.cpython-3*.so WsprMod/w.so
+	${MV} w.*.so WsprMod/w.so
 
 install: WsprMod/w.so
 	${RM} -rf build/

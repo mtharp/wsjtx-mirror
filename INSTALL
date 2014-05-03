@@ -36,7 +36,7 @@ by the configure script:
 --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu
 --with-portaudio-include-dir=/usr/include
 
-On dual python systems, you need to specify Python3+ and F2PY3+ locations:
+On dual Python systems, you need to specify Python3+ and F2PY3+ locations:
 
 PYTHON=/usr/bin/python3
 F2PY=/usr/local/bin/f2py3
@@ -80,5 +80,46 @@ make clean
 CLEAN FOR DISTRIBUTION:
 -----------------------
 make distclean
+
+
+BASIC MAC OSX INSTALLATION INSTUCTIONS (Example 10.7)
+-----------------------------------------------------
+
+You need to be familiar with command line operations using
+the Terminal window and with downloading and installing
+libraries.
+
+Apple provide python 2.x as part of the system but this must
+be upgraded to python 3.4.  Use pip3.4 to install numpy, 
+Pillow and Pmw.   Follow installation guides from 
+www.python.org.  Python3.4 will be installed in
+/Library/Frameworks/Python.framework/
+
+It is important that references to python should then be
+to python3.4 and not the earlier version of python.  Watch
+out for Apple's use of soft links to the earlier versions
+found in /System/Library/Frameworks/Python.framework.   These
+should be disabled.
+
+You will also need portaudio v19 as well as fftw libraries
+from www.portaudio.org and www.fftw.org respectively.  
+
+Then, in the wspr directory:
+
+configure --with-portaudio-include-dir=/usr/local/include \
+  --with-portaudio-lib-dir=/usr/local/lib
+
+Check the new Makefile carefully to see that the correct
+references to python3.4 and the new f2py are made. Then
+
+   make
+
+You might have to move Audio.so to WsjtMod manually.
+
+Thereafter     python wspr.py   should execute.
+
+Additional guidance from  g4kla at rmnjmn.demon.co.uk
+
+
 
 

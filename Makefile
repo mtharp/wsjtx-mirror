@@ -13,18 +13,19 @@ PYTHON		?=	/usr/bin/python3
 F2PY		?=	/usr/local/bin/f2py3
 
 CC			?=	gcc
-FFLAGS		=	-g -O2 -fno-range-check -ffixed-line-length-none -Wall -fbounds-check -fno-second-underscore -fPIC
-LDFLAGS		=	-L/usr/lib/x86_64-linux-gnu -L/usr/local/lib 
-LIBS		=	 -lpthread  -lportaudio -lfftw3f
-CPPFLAGS	=	-I/usr/include -I/usr/local/include 
+FFLAGS		=	-g -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64
+LDFLAGS		=	-L/usr/lib -L/usr/include -L/usr/x86_64-linux-gnu -L/usr/lib/i386-linux-gnu -L/usr/local/lib  
+LIBS		=	-lpthread -lportaudio -lfftw3f 
+CPPFLAGS	=	-I/usr/lib -I/usr/include -I/usr/x86_64-linux-gnu -I/usr/lib/i386-linux-gnu -I/usr/local/include 
 CFLAGS		=	 -Wall -O0 -g  -Wall -O0 -g
 PREFIX		=	/usr/local/
 
 # WSPR specific compiler flags
-FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation 
+FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
 
-DEFS		=	-DPACKAGE_NAME=\"wspr\" -DPACKAGE_TARNAME=\"wspr\" -DPACKAGE_VERSION=\"4.0\" -DPACKAGE_STRING=\"wspr\ 4.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DFC_LIB_PATH=\"/usr/lib/gcc/x86_64-linux-gnu/4.8/\" -DFC=\"gfortran\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_ERRNO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIBGEN_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_WAIT_H=1 -DHAVE_LINUX_PPDEV_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SYSLOG_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 -DTIME_WITH_SYS_TIME=1 -DSTRING_WITH_STRINGS=1 -DNDEBUG=1
+DEFS		=	-DPACKAGE_NAME=\"wspr\" -DPACKAGE_TARNAME=\"wspr\" -DPACKAGE_VERSION=\"4.0\" -DPACKAGE_STRING=\"wspr\ 4.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DFC_LIB_PATH=\"/usr/lib/gcc/x86_64-linux-gnu/4.8/\" -DFC=\"gfortran\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_ERRNO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIBGEN_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_WAIT_H=1 -DHAVE_LINUX_PPDEV_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SYSLOG_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 -DHAVE_SAMPLERATE_H=1 -DHAVE_PORTAUDIO_H=1 -DHAVE_FFTW3_H=1 -DSTRING_WITH_STRINGS=1 -DNDEBUG=1
+
 CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
@@ -95,7 +96,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	-m w ${F2PYSRCS}
 	
 	${MKDIR} -p build/lib/WsprMod
-	${MV} w.cpython-3*.so WsprMod/w.so
+	${MV} w.*.so WsprMod/w.so
 
 install: WsprMod/w.so
 	${RM} -rf build/
