@@ -5,20 +5,20 @@
 
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
-MV			?= 	mv
-RM			?=	@RM@
-MKDIR		?= 	mkdir
 INSTALL		=	install
+PREFIX		=	@PREFIX@
+MV			?= 	@MV@
+RM			?=	@RM@
+MKDIR		?= 	@MKDIR@
 PYTHON		?=	@PYTHON@
 F2PY		?=	@F2PY@
 
 CC			?=	@CC@
 FFLAGS		=	@FFLAGS@
 LDFLAGS		=	@LDFLAGS@
-LIBS		=	@LIBS@
 CPPFLAGS	=	@CPPFLAGS@
 CFLAGS		=	@CFLAGS@
-PREFIX		=	@PREFIX@
+LIBS		=	@LIBS@
 
 # WSPR specific compiler flags
 FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64
@@ -29,7 +29,9 @@ DEFS		=	@DEFS@
 CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
+# Copy w.so based on OS
 OS			:= $(shell uname -s)
+
 			ifeq ($(OS),Darwin)
 				MVSO := ${MV} w.so WsprMod/w.so
 			else

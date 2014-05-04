@@ -1,6 +1,15 @@
 
 Current Development Version: WSPR-4.0
 
+
+2014-04-03  Greg Beam <ki7mt@yahoo.com>
+
+* Updated aclocal.m4 to search alternative for portaudio paths.
+* Removed alternative path search from configure.ac
+* Add sanity tests back in now that aclocal.m4 has better search paths
+* Minor Makefile.ion edits
+
+
 2014-04-03  Greg Beam <ki7mt@yahoo.com>
 
 * Added John's (G4KLA) Mac Install notes to INSTALL

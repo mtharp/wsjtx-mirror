@@ -3,20 +3,7 @@ WSPR-4.0 TO-DO List
 * Need to bounce the file list of .f, *.a, *.h, pthread etc against the other
   apps to ensure we're using same things unless otherwise needed.
 
-* There's several Makefiles, should we describe one Path for Windows and
-  another for *Nix/BSD, Mac? Is Makefile.gfortran and .MinGW still used? If
-  not, can we move them to wspr/archive ? 
-
-* Is Makefile.CVF and Makefile.12.6 accurate ? Are they maually edited as
-I dont see autoconf tools setup for them.
-
 * What is huser_hardware.bat/.py used for? Are they Joe's tools ?
-
-* Update documentation links in wspr.py
-
-* Update all autotools scripts to latest versions
-
-* Need Mac OSX 10.6/7 Install instructions added to INSTALL file
 
 * Need JTSDK-PY Instructions added to INSTALL file
 
@@ -27,3 +14,14 @@ I dont see autoconf tools setup for them.
 * Need (Win32) and (*Nix) /lib directory and update configure.ac amd Makefile.in
   accordinly.
 
+* Add aclocal.m4 search macros for FFTW, Samplerate, Python3 and F2PY3
+
+* Add m4 macro Hamlib options, ask user, add status
+
+Completed:
+
+John (G4LKA)
+* Need Mac OSX 10.6/7 Install instructions added to INSTALL file
+
+Greg (KI7MT)
+* Update documentation links in wspr.py

@@ -1,13 +1,13 @@
 dnl {{{ ax_check_gfortran
 AC_DEFUN([AX_CHECK_GFORTRAN],[
 
-AC_ARG_ENABLE(g95,
-AC_HELP_STRING([--enable-g95],[Use G95 compiler if available.]),
-[g95=$enableval], [g95=no])
-
 AC_ARG_ENABLE(gfortran,
 AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
 [gfortran=$enableval], [gfortran=no])
+
+AC_ARG_ENABLE(g95,
+AC_HELP_STRING([--enable-g95],[Use G95 compiler if available.]),
+[g95=$enableval], [g95=no])
 
 dnl
 dnl Pick up FC from the environment if present
@@ -23,6 +23,7 @@ if test -n $[{FC}] ; then
        		FC_LIB_PATH=`$[{FC}] -print-file-name=`
 		g95=no
 		gfortran=yes
+		fcname="gfortran"
 		FFLAGS="$[{FFLAGS_GFORTRAN}]"
 		FCV="gnu95"
 	else
@@ -74,7 +75,7 @@ AC_PATH_PROG(G95, g95)
 AC_PATH_PROG(GFORTRAN, $[{gfortran_name}])
 
 if test ! -z $[{GFORTRAN}] ; then
-	echo "*** gfortran compiler found at $[{GFORTRAN}]"
+	echo "* gfortran compiler found at $[{GFORTRAN}]"
 	if test "$[{gfortran}]" = yes; then
        		FC_LIB_PATH=`$[{GFORTRAN}] -print-file-name=`
 		FC=`basename $[{GFORTRAN}]`
@@ -83,11 +84,11 @@ if test ! -z $[{GFORTRAN}] ; then
 		FCV="gnu95"
 	fi
 else
-	echo "*** No gfortran compiler found"
+	echo "* No gfortran compiler found"
 fi
 
 if test ! -z $[{G95}] ; then
-	echo "*** g95 compiler found at $[{G95}]"
+	echo "* g95 compiler found at $[{G95}]"
 	if test "$[{g95}]" = yes; then
        		FC_LIB_PATH=`$[{G95}] -print-file-name=`
 		FC=`basename $[{G95}]`
@@ -96,7 +97,7 @@ if test ! -z $[{G95}] ; then
 		FCV=$[{FCV_G95}]
 	fi
 else
-	echo "*** No g95 compiler found"
+	echo "* No g95 compiler found"
 fi
 
 dnl
@@ -111,6 +112,7 @@ if test -z $[{FC}] ; then
 	        FC=`basename $[{GFORTRAN}]`
 		g95=no
 		gfortran=yes
+		fcname="gfortran"
 		FFLAGS="$[{FFLAGS_GFORTRAN}]"
 		FCV="gnu95"
 	elif test ! -z $G95 ; then
@@ -121,6 +123,7 @@ if test -z $[{FC}] ; then
 	        FC=`basename $[{G95}]`
 		g95=yes
 		gfortran=no
+		fcname="g95"
 		FFLAGS="$[{FFLAGS_G95}]"
 		FCV=$[{FCV_G95}]
 	fi
@@ -144,9 +147,17 @@ HAS_PORTAUDIO=0
 
 AC_MSG_CHECKING([for a v19 portaudio ])
 
-portaudio_lib_dir="/usr/lib"
+dnl Look in more places for portaudio.h
 portaudio_include_dir="/usr/include"
+pa_include_dir1="/usr/local/include"
 
+dnl Look in more places for libportaudio.{a.so}
+portaudio_lib_dir="/usr/lib"
+pa_lib_dir1="/usr/local/lib"
+pa_lib_dir2="/usr/lib/x86_64-linux-gnu"
+pa_lib_dir3="/usr/lib/i386-linux-gnu"
+
+dnl User Supplied ARGS
 AC_ARG_WITH([portaudio-include-dir],
 AC_HELP_STRING([--with-portaudio-include-dir=<path>],
     [path to portaudio include files]),
@@ -157,60 +168,60 @@ AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
     [path to portaudio lib files]),
     [portaudio_lib_dir=$with_portaudio_lib_dir])
 
+# dnl If not User Supplied ARGS, look in alternative locations
 if test -e $[{portaudio_include_dir}]/portaudio.h; then
 	HAS_PORTAUDIO_H=1
+
+elif test -e $[{pa_include_dir1}]/portaudio.h; then
+	HAS_PORTAUDIO_H=1
+	portaudio_include_dir="$[{pa_include_dir1}]"
+
+else 
+	HAS_PORTAUDIO_H=0
+
 fi
 
-if test -e $[{portaudio_lib_dir}]/libportaudio.so \
-    -o -e $[{portaudio_lib_dir}]/libportaudio.a;then
+dnl Test for lib directories (4) possible locaitons
+dnl We can add more as ndded.
+
+# Testing Traditional Location First
+if test -e $[{portaudio_lib_dir}]/libportaudio.so -o -e $[{portaudio_lib_dir}]/libportaudio.a;then
 	HAS_PORTAUDIO_LIB=1
+
+# Testing Alternate Location: /usr/local/lib
+elif test -e $[{pa_lib_dir1}]/libportaudio.so -o -e $[{pa_lib_dir1}]/libportaudio.a;then
+	HAS_PORTAUDIO_LIB=1
+	portaudio_lib_dir="$[{pa_lib_dir1}]"
+
+# Testing Alternate /usr/lib/x86_64-linux-gnu
+elif test -e $[{pa_lib_dir2}]/libportaudio.so -o -e $[{pa_lib_dir2}]/libportaudio.a;then
+	HAS_PORTAUDIO_LIB=1
+	portaudio_lib_dir="$[{pa_lib_dir2}]"
+
+# Testing Alternate /usr/lib/i386-linux-gnu
+elif test -e $[{pa_lib_dir3}]/libportaudio.so -o -e $[{pa_lib_dir3}]/libportaudio.a;then
+	HAS_PORTAUDIO_LIB=1
+	portaudio_lib_dir="$[{pa_lib_dir3}]"
+
+else
+	HAS_PORTAUDIO_LIB=0
+
 fi
 
+# Setting HAS_POERTAUDIO 
 if test $[{HAS_PORTAUDIO_H}] -eq 1 -a $[{HAS_PORTAUDIO_LIB}] -eq 1; then
+	
+	CPPFLAGS="-I$[{portaudio_include_dir}] $[{CPPFLAGS}]"
 	LDFLAGS="-L$[{portaudio_lib_dir}] $[{LDFLAGS}]"
 	LIBS="$[{LIBS}] -lportaudio"
-	CPPFLAGS="-I$[{portaudio_include_dir}] $[{CPPFLAGS}]"
-	AC_CHECK_LIB(portaudio, Pa_GetVersion, \
-		[HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
+
+	dnl Check Portaudio Version
+	AC_CHECK_LIB([portaudio], [Pa_GetVersion], [HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
+
 	if test $[{HAS_PORTAUDIO_VERSION}] -eq 0; then
 		AC_MSG_RESULT([This is likely portaudio v18; you need portaudio v19])
 	else
 		HAS_PORTAUDIO=1
-	fi
-else
-	AC_MSG_RESULT([portaudio not found trying FreeBSD paths ])
-	portaudio_lib_dir="/usr/local/lib/portaudio2"
-	portaudio_include_dir="/usr/local/include/portaudio2"
-dnl
-dnl Try again to make sure portaudio dirs are valid
-dnl
-	AC_MSG_CHECKING([for a v19 portaudio in FreeBSD paths.])
-	HAS_PORTAUDIO_H=0
-	HAS_PORTAUDIO_LIB=0
-
-	if test -e $[{portaudio_include_dir}]/portaudio.h; then
-		HAS_PORTAUDIO_H=1
-	fi
-
-	if test -e $[{portaudio_lib_dir}]/libportaudio.so \
-	    -o -e $[{portaudio_lib_dir}]/libportaudio.a;then
-		HAS_PORTAUDIO_LIB=1
-	fi
-
-	if test $[{HAS_PORTAUDIO_H}] -eq 1 -a $[{HAS_PORTAUDIO_LIB}] -eq 1; then
-		AC_MSG_RESULT([found portaudio in FreeBSD paths, double checking it is v19 ])
-		LDFLAGS="-L$[{portaudio_lib_dir}] $[{LDFLAGS}]"
-		LIBS="$[{LIBS}] -lportaudio"
-		CPPFLAGS="-I$[{portaudio_include_dir}] $[{CPPFLAGS}]"
-		AC_CHECK_LIB(portaudio, Pa_GetVersion, \
-			[HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
-		if test $[{HAS_PORTAUDIO_VERSION}] -eq 0; then
-			AC_MSG_RESULT([How did you end up with a portaudio v18 here?])
-		else
-			AC_MSG_RESULT([found v19])
-			HAS_PORTAUDIO=1
-			HAS_PORTAUDIO_H=1
-		fi
 	fi
 fi
 
