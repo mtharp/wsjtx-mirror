@@ -5,6 +5,7 @@
 
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
+OS			:= $(shell uname -s)
 INSTALL		=	install
 PREFIX		=	@PREFIX@
 MV			?= 	@MV@
@@ -21,8 +22,16 @@ CFLAGS		=	@CFLAGS@
 LIBS		=	@LIBS@
 
 # WSPR specific compiler flags
-FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64
+
+
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
+ifeq ($(OS),Darwin)
+	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+					-Wno-character-truncation -fPIC -m64
+else
+	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+					-Wno-character-truncation -fPIC
+endif
 
 DEFS		=	@DEFS@
 
@@ -30,13 +39,11 @@ CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
 # Copy w.so based on OS
-OS			:= $(shell uname -s)
-
-			ifeq ($(OS),Darwin)
-				MVSO := ${MV} w.so WsprMod/w.so
-			else
-				MVSO := ${MV} w.*.so WsprMod/w.so
-			endif
+ifeq ($(OS),Darwin)
+	MVSO := ${MV} w.so WsprMod/w.so
+else
+	MVSO := ${MV} w.*.so WsprMod/w.so
+endif
 
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
 # wsprcode
@@ -119,5 +126,7 @@ clean:
 	${RM} -rf build/
 
 distclean:
-	${RM} -f config.log config.status Makefile
+	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI audio_caps \
+	autoscan.log configure.scan decoded.txt hopping.ini fmt.ini pixmap.dat \
+	wspr.log
 	${RM} -r autom4*

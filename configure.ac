@@ -1,22 +1,23 @@
 dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
-dnl AC_PREREQ(2.61)
-
 dnl This should be a svn hook instead.
 dnl Sneakier way to get a Version into setup.py
+AC_PREREQ([2.69])
 AC_COPYRIGHT([$Id$])
-
-AC_INIT([wspr],[4.0] )
+AC_INIT([WSPR], [4.0], [ki7mt@yahoo.com])
 fail=0
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT(/usr/local/)
 
-dnl Checks for programs.
+# Checks for programs.
 AC_PROG_CC
-AC_LANG(C)
-AC_PROG_F77
+AC_LANG([C])
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl Updated aclocal.m4 to find search alternative locations. Libs are only
 dnl added is aclocal.m4 finds them.
@@ -24,18 +25,24 @@ CFLAGS="-Wall -O0"
 CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/lib ${LDFLAGS}"
 LIBS="-lpthread ${LIBS}"
-FFLAGS_GFORTRAN="${FFLAGS} -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation -fPIC -m64"
-FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore -fPIC -m64"
+FFLAGS_GFORTRAN="${FFLAGS} -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+-Wno-character-truncation -fPIC"
+FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore \
+-fPIC"
 
 dnl Check which fortran - macro from aclocal.m4
 AX_CHECK_GFORTRAN
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([gettimeofday strchr])
 
 dnl find portaudio libs and include directories - macro from aclocal.m4
 AX_CHECK_PORTAUDIO
 
 dnl test for Darwin compilers
 if test "$ac_cv_c_compiler_gnu" = yes; then
-	AC_MSG_CHECKING(if $CC is Apple GCC)
+	AC_MSG_CHECKING([if $CC is Apple GCC])
 	
 	if expr "`$CC -v 2>&1 | tail -1`" : ".*Apple" >/dev/null; then
 		AppleGCC=yes
@@ -87,32 +94,29 @@ AC_SUBST(OS, "${OS}")
 
 dnl Checks for header files.
 AC_HEADER_STDC
+AC_HEADER_DIRENT
 AC_HEADER_TIME
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_INT64_T
+AC_TYPE_INT8_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
+AC_TYPE_UINT8_T
 
-AC_CHECK_HEADERS([errno.h fcntl.h inttypes.h libgen.h stdint.h stddef.h stdio.h \
-termios.h wait.h dev/ppbus/ppi.h linux/ppdev.h sys/ioctl.h sys/resource.h \
-sys/resource.h sys/param.h sys/stat.h sys/syslog.h sys/time.h sys/wait.h])
+AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
+ppdev.h ppi.h stddef.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h \
+sys/ioctl.h sys/ioctl.h sys/param.h sys/param.h sys/resource.h sys/resource.h \
+sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
+
+AC_CHECK_HEADERS([samplerate.h], [HAS_SAMPLERATE_H=1], [HAS_SAMPLERATE_H=0])
+AC_CHECK_LIB([samplerate], [src_simple], [HAS_SAMPLERATE_L=1], [HAS_SAMPLERATE_L=0])
 
 AC_CHECK_HEADERS([fftw3.h], [HAS_FFTW3_H=1], [HAS_FFTW3_H=0])
-AC_CHECK_HEADERS([samplerate.h], [HAS_SAMPLERATE_H=1], [HAS_SAMPLERATE_H=0])
-
-dnl See whether we can include both string.h and strings.h.
-AC_CACHE_CHECK([whether string.h and strings.h may both be included],
-gcc_cv_header_string,
-[
-	AC_COMPILE_IFELSE(
-	[#include <string.h>
-	#include <strings.h>], 
-	[gcc_cv_header_string=yes],
-	[gcc_cv_header_string=no])
-])
-
-if test "$gcc_cv_header_string" = "yes"; then
-	AC_DEFINE(STRING_WITH_STRINGS, 1, [Define to 1 if string.h may be included along with strings.h])
-fi
-
-dnl Check for stdarg.h - if we can't find it, halt configure
-AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - wsjt will not compile without it **])])
+AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [HAS_FFTW3_L=1], [HAS_FFTW3_L=0])
 
 dnl Debug-related options
 dnl =====================
@@ -153,11 +157,21 @@ if test -z $FC ; then
 	echo "You need g95 or gfortran to compile this program!"
 fi
 
-dnl test for smaplerate
+dnl test smaplerate
 if test $HAS_SAMPLERATE_H -eq 0; then
+	echo 
+	echo "Samplerate Headers are required by $PACKAGE_NAME $"
+	echo
+	echo "Check your distribution, and install the appropriate"
+	echo "development packkage"
+	echo
+elif test $HAS_SAMPLERATE_L -eq 0; then
 	fail=1
-	echo "You need to install the samplerate library"
-
+	echo "Samplerate Libs are required by $PACKAGE_NAME $"
+	echo
+	echo "Check your distribution, and install the appropriate"
+	echo "development libraries"
+	echo
 dnl add to ${LIBS}
 else
 	AC_DEFINE(HAS_SAMPLERATE_H, 1, )
@@ -169,20 +183,28 @@ dnl test fftw3
 if test $HAS_FFTW3_H -eq 0; then
 	fail=1
 	echo 
-	echo "FFTW3 Libs are required by $PACKAGE_NAME $"
+	echo "FFTW3 Headers are required by $PACKAGE_NAME $"
 	echo
-	echo "Check your distrobution, and install the appropriate"
-	echo "libraries"
+	echo "Check your distribution, and install the appropriate"
+	echo "development package"
 	echo
 
+elif test $HAS_FFTW3_L -eq 0; then
+	fail=1
+	echo "FFTW3 Single Libs are required by $PACKAGE_NAME $"
+	echo
+	echo "Check your distribution, and install the appropriate"
+	echo "libraries"
+	echo
 else
-	AC_DEFINE(HAS_FFTW3_H, 1,)
+	AC_DEFINE([HAS_FFTW3_L], 1,)
+	AC_DEFINE([HAS_FFTW3_H], 1,)
 	LIBS="${LIBS} -lfftw3f"
 	fftw3stats="OK"
 fi
 
-dnl test portsudio status
-if test $HAS_PORTAUDIO -eq 1; then
+dnl test portsudio
+if test $HAS_PORTAUDIO -eq "1"; then
 	AC_DEFINE(HAS_PORTAUDIO, 1,)
 	AC_DEFINE(HAS_PORTAUDIO_H, 1,)
 	AC_DEFINE(HAS_PORTAUDIO_LIB, 1,)
@@ -193,13 +215,13 @@ else
 	fail=1
 	echo "Portaudio-v19 is required by $PACKAGE_NAME $"
 	echo
-	echo "Standard locations wehre checked. If you have"
+	echo "Standard locations were checked. If you have"
 	echo "Portaudio installed in a non-standard location,"
 	echo "add the following to ./configure:"
 	echo "--with-portaudio-include-dir=/path/to/pa"
 	echo "--with-portaudio-lib-dir=/path/to/pa/libs"
 	echo
-	echo "The re-run ./configure"
+	echo "Then re-run ./configure"
 	echo
 fi
 
@@ -253,13 +275,4 @@ echo "Portaudio Libs: .. $portaudio_lib_dir"
 echo "Portaudio Inc: ... $portaudio_include_dir"
 echo "Install Prefix: .. $prefix"
 echo
-
-
-
-
-
-
-
-
-
 

@@ -1,13 +1,25 @@
 
 Current Development Version: WSPR-4.0
 
+2014-04-04 (2)  Greg Beam <ki7mt@yahoo.com>
 
-2014-04-03  Greg Beam <ki7mt@yahoo.com>
+* ran autoscan and updated configure.ac
+* Added FFTW AC_CHECK_LIB
+* Added Samplerate AC_CHECK_LIB
+* Updated header checks
+* Removed uneeded header check
+* Updated distclean to include files / folders created at runtime
+* Added MALLOC and FUNCTONS checks
+* Added conditional -fPIC -m64 for Darwin, -fPIC for else.
+* Built and ran from clean build, no errors, only a few unused var warnings.
+
+
+2014-04-04 (1)  Greg Beam <ki7mt@yahoo.com>
 
 * Updated aclocal.m4 to search alternative for portaudio paths.
 * Removed alternative path search from configure.ac
 * Add sanity tests back in now that aclocal.m4 has better search paths
-* Minor Makefile.ion edits
+* Minor Makefile.in edits
 
 
 2014-04-03  Greg Beam <ki7mt@yahoo.com>

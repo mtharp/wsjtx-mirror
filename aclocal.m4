@@ -1,13 +1,15 @@
 dnl {{{ ax_check_gfortran
+
+dnl ----------------------------------------------------------------------------
 AC_DEFUN([AX_CHECK_GFORTRAN],[
 
-AC_ARG_ENABLE(gfortran,
-AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
-[gfortran=$enableval], [gfortran=no])
-
-AC_ARG_ENABLE(g95,
+AC_ARG_ENABLE([g95],
 AC_HELP_STRING([--enable-g95],[Use G95 compiler if available.]),
 [g95=$enableval], [g95=no])
+
+AC_ARG_ENABLE([gfortran],
+AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
+[gfortran=$enableval], [gfortran=no])
 
 dnl
 dnl Pick up FC from the environment if present
@@ -18,12 +20,12 @@ FCV=""
 
 if test -n $[{FC}] ; then
 	gfortran_name_part=`echo $[{FC}] | cut -c 1-8`
-	if test $[{gfortran_name_part}] = "gfortran" ; then
+	if test -n $[{gfortran_name_part}] = "gfortran" ; then
 		gfortran_name=$[{FC}]
        		FC_LIB_PATH=`$[{FC}] -print-file-name=`
 		g95=no
 		gfortran=yes
-		fcname="gfortran"
+		fcname=gfortran
 		FFLAGS="$[{FFLAGS_GFORTRAN}]"
 		FCV="gnu95"
 	else
@@ -67,7 +69,7 @@ dnl
 dnl look for gfortran if nothing else was given
 dnl
 
-if test -z $[gfortran_name] ; then
+if test -z $[{gfortran_name}] ; then
 	gfortran_name="gfortran"
 fi
 
@@ -137,7 +139,7 @@ AC_SUBST(FCV, "${FCV}")
 
 ])dnl }}}
 
-
+dnl ----------------------------------------------------------------------------
 dnl {{{ ax_check_portaudio
 AC_DEFUN([AX_CHECK_PORTAUDIO],[
 
