@@ -1197,7 +1197,7 @@ def update_nogui():
                 if hopping.coord_bands.get()==1:
                     ns=nsec % 86400
                     ns1=ns % (10*120)
-                    b=ns1/120 + 3
+                    b=int(ns1/120) + 3
                     if b==12: b=2
                     if hopping.hoppingflag[b].get()==0: b=-1
                 if b<0:                
