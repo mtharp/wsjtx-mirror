@@ -1,6 +1,21 @@
 
 Current Development Version: JTSDK-NIX
 
+2014-04-05 Greg Beam <ki7mt@yahoo.com>
+
+* Updated pkg_list_ubuntu x86 & x86_64
+* Now using repo package of python3-numpy
+* Default install location for f2py3 is /usr/bin
+* Still seeing: #defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+  warnings. Not sure if this is a Ubuntu config or Numpy issue.
+  It does not seem to bother WSPR or WSJT
+* Using the standard distro install is the best way to go if at
+  all possible.
+* For now, build_numpy is commented out in jtsdk-nix/setup.sh. Will
+* leave build_numpy in /functions as other distro's may make use of it.
+* From a fresh Ubuntu 14.04 install, all went without error. Building of
+  WSPR (current SVN) was 100%, only a few unused var messages. No errors
+
 2014-04-02  Greg Beam <ki7mt@yahoo.com>
 
 * Removed build_pa function, no longer needed.

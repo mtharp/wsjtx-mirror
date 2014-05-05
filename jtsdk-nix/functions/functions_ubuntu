@@ -11,7 +11,6 @@ function ubuntu_setup_marker() {
 
 # check which version we are using
 function ubuntu_distro_info() {
-
 touch $_MKRD/ubuntu.info.mkr
 _DISTRIBUTOR=$(lsb_release -i |awk 'FNR==1 {print $3}')
 _RELEASE=$(lsb_release -r |awk '{print $2}')
@@ -23,18 +22,20 @@ $_ARCH
 $_DISTRIBUTOR
 $_RELEASE
 EOL
-
 }
 
 # package installation
 function ubuntu_pkg_chk() {
-
 touch $_TMP/install_list.txt
-for line in $(< ./config/pkg_list_ubuntu_$(uname -m)); do
-_STATUS=$(apt-cache policy $line |awk 'FNR==2 {print $2}')
-if [[ $_STATUS == "" ]];then 
-	echo $line >> $_TMP/install_list.txt
-fi
+
+for line in $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+do
+	_STATUS=$(apt-cache policy $line |awk 'FNR==2 {print $2}')
+
+	if [[ $_STATUS == "(none)" ]]; then 
+		echo $line >> $_TMP/install_list.txt
+	fi
+
 done
 
 }

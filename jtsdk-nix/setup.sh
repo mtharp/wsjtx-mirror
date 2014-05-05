@@ -120,7 +120,6 @@ if [[ $SMSELECT = "A" ]]; then
 	source "$_FUNC"/functions_ubuntu
 	clear
 
-
 # pre-installation check
 	clear
 	(
@@ -128,6 +127,7 @@ if [[ $SMSELECT = "A" ]]; then
 	echo "JTSD-NIX Setup - $(date)"
 	echo "------------------------------------------------"
 	echo
+	ubuntu_setup_marker
 	) 2>&1 | tee -a $_LOGS/setup.log
 
 	# pre-installation check
@@ -144,12 +144,11 @@ if [[ $SMSELECT = "A" ]]; then
 	echo "------------------------------------------------"
 	echo " JTSDK-NIX SETUP"
 	echo "------------------------------------------------"
-	ubuntu_setup_marker
 	ubuntu_distro_info
 	echo
-	echo 'Distribution .... '"$_DISTRIBUTOR"
-	echo '  Release ....... '"$_RELEASE"
-	echo '  Arch .......... '"$_ARCH"
+	echo "	Distribution .... $_DISTRIBUTOR"
+	echo "  Release ......... $_RELEASE"
+	echo "  Arch ............ $_ARCH"
 	echo
 	echo "Answering [ YES ] Will Perform The Following Actions"
 	echo "  [1] Update Repository List(s)"
@@ -247,54 +246,52 @@ if [[ $SMSELECT = "A" ]]; then
 			) 2>&1 | tee -a $_LOGS/setup.log
 			
 			# python numpy 1-8.1 installation
-			clear
-			(
-			echo "------------------------------------------------"
-			echo " Numpy-1.8.1 Installation"
-			echo "------------------------------------------------"
+#			clear
+#			(
+#			echo "------------------------------------------------"
+#			echo " Numpy-1.8.1 Installation"
+#			echo "------------------------------------------------"
 
-			_PKG_NAME=numpy
-			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
-			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
+#			_PKG_NAME=numpy
+#			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
+#			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
 
-			if [[ -f $_INSTALL_MKR ]]; then
-				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
-			else 
-				var1="0"
-			fi
+#			if [[ -f $_INSTALL_MKR ]]; then
+#				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
+#			else 
+#				var1="0"
+#			fi
 
-			if [[ -f $_FILE_COUNT_MKR ]]; then
-				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
-			else 
-				var2="0"
-			fi
+#			if [[ -f $_FILE_COUNT_MKR ]]; then
+#				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
+#			else 
+#				var2="0"
+#			fi
 
-			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
-				echo ".. found previous install marker"
-				echo ".. verifying file count"
-				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
-				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
+#			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
+#				echo ".. found previous install marker"
+#				echo ".. verifying file count"
+#				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
+#				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
 
-				if (( $var1 == $var2 )); then
-					echo ".. file count seems ok. no need for re-install"
-				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
-					echo ".. pip3 check seems ok, no need for re-install"
-				else
-					echo ".. file count was wrong, re-installing"
-					source $_FUNC/build_numpy
-					build_numpy
-				fi
+#				if (( $var1 == $var2 )); then
+#					echo ".. file count seems ok. no need for re-install"
+#				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
+#					echo ".. pip3 check seems ok, no need for re-install"
+#				else
+#					echo ".. file count was wrong, re-installing"
+#					source $_FUNC/build_numpy
+#					build_numpy
+#				fi
 
-			else
-				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
-				source $_FUNC/build_numpy
-				build_numpy
-			fi
+#			else
+#				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
+#				source $_FUNC/build_numpy
+#				build_numpy
+#			fi
 
-			echo
-			read -p "Press [Enter] to continue.."
-			) 2>&1 | tee -a $_LOGS/setup.log
-
+#			echo
+#			read -p "Press [Enter] to continue.."
 
 			# hamlib3 special installaiton
 			clear
