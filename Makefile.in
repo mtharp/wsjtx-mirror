@@ -22,15 +22,17 @@ CFLAGS		=	@CFLAGS@
 LIBS		=	@LIBS@
 
 # WSPR specific compiler flags
-
-
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
+
+# OS Specific Vars
 ifeq ($(OS),Darwin)
 	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
 					-Wno-character-truncation -fPIC -m64
+	MVSO	:= ${MV} w.so WsprMod/w.so
 else
 	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
 					-Wno-character-truncation -fPIC
+	MVSO	:= ${MV} w.*.so WsprMod/w.so
 endif
 
 DEFS		=	@DEFS@
@@ -38,12 +40,6 @@ DEFS		=	@DEFS@
 CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
-# Copy w.so based on OS
-ifeq ($(OS),Darwin)
-	MVSO := ${MV} w.so WsprMod/w.so
-else
-	MVSO := ${MV} w.*.so WsprMod/w.so
-endif
 
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
 # wsprcode
