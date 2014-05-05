@@ -1,3 +1,4 @@
+# pylint: disable=wildcard-import,bad-whitespace
 #--------------------------------------------------------------------- WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
@@ -16,31 +17,28 @@
 # Apparently the tK library has a leak on MacOsX, so every extra call
 # to that library has been suppressed.  This reduced memory use from
 # 100KB/second to the point where memory is only lost when the window
-# is updated for some reason.  This sort of loss is typically 100KB per 2 minutes
-# or about 100 times slower than the original.  You can reduce even that
-# by decreasing the sensitivity to noise changes.  This change also greatly
-# reduced the load on the kernel, from a sustained 13% to essentially nothing.
-# These changes are also licensed under the GNU General Public License (GPL).
+# is updated for some reason.  This sort of loss is typically 100KB per
+# 2 minutes or about 100 times slower than the original.  You can reduce
+# even that by decreasing the sensitivity to noise changes.  This change
+# also greatly reduced the load on the kernel, from a sustained 13% to
+# essentially nothing. These changes are also licensed under the
+# GNU General Public License (GPL).
 
 from tkinter import *
 from tkinter.filedialog import *
 import tkinter.messagebox
-import os,time,sys
+import os, time, sys
 from WsprMod import g
 import Pmw
 from WsprMod import palettes
 from math import log10
-try:
-    from numpy.oldnumeric import zeros
-except: 
-    from Numeric import zeros
+from numpy.oldnumeric import zeros
 import array
 ##import dircache
 from PIL import Image, ImageTk, ImageDraw
 from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
-import array
 import random
 import math
 import string
@@ -81,8 +79,8 @@ from WsprMod import iq
 from WsprMod import hopping
 
 #------------------------------------------------------ Global variables
-advanced0=999
-advanced1=999
+adv0=999
+adv1=999
 band=[-1,600,160,80,60,40,30,20,17,15,12,10,6,4,2,0]
 bandmap=[]
 bm={}
@@ -238,7 +236,7 @@ def openfile(event=NONE):
 def stop_loopall(event=NONE):
     global loopall
     loopall=0
-    
+
 #------------------------------------------------------ opennext
 def opennext(event=NONE):
     global ncall,fileopened,loopall,mrudir,tw,ndecoding0
@@ -276,7 +274,7 @@ def opennext(event=NONE):
             result=tkinter.messagebox.showwarning(message=t)
             ncall=0
             loopall=0
-            
+
 #------------------------------------------------------ decodeall
 def decodeall(event=NONE):
     global loopall
@@ -325,7 +323,7 @@ def msgpos():
     t=g[1:]
     x=int(t[:t.index("+")])          # + 70
     y=int(t[t.index("+")+1:])        # + 70
-    return "+%d+%d" % (x,y)    
+    return "+%d+%d" % (x,y)
 
 #------------------------------------------------------ about
 def about(event=NONE):
@@ -353,7 +351,7 @@ be found at http://sourceforge.net/projects/wsjt/.
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
 
-#------------------------------------------------------ 
+#------------------------------------------------------
 def help(event=NONE):
     about=Toplevel(root)
     about.geometry(msgpos())
@@ -492,7 +490,7 @@ def draw_axis():
     iy=1000000.0*(ftx.get()-f0.get()) - 1500
     if abs(iy)<=100:
         j=80 - iy/df
-        c.create_line(0,j,13,j,fill='red',width=3)            
+        c.create_line(0,j,13,j,fill='red',width=3)
 
 #------------------------------------------------------ del_all
 def del_all():
@@ -508,7 +506,7 @@ def delwav():
     result=tkinter.messagebox.askyesno(message=t)
     if result:
 # Make a list of *.wav files in Save
-        la=dircache.listdir(appdir+'/save')
+        la=os.listdir(appdir+'/save')
         lb=[]
         for i in range(len(la)):
             j=la[i].find(".wav") + la[i].find(".WAV")
@@ -518,30 +516,10 @@ def delwav():
             fname=appdir+'/save/'+lb[i]
             os.remove(fname)
 
-#--------------------------------------------------- rx_volume
-def rx_volume():
-    for path in string.split(os.environ["PATH"], os.pathsep):
-        file = os.path.join(path, "sndvol32") + ".exe"
-        try:
-            return os.spawnv(os.P_NOWAIT, file, (file,) + (" -r",))
-        except os.error:
-            pass
-    raise os.error("Cannot find "+file)
-
-#--------------------------------------------------- tx_volume
-def tx_volume():
-    for path in string.split(os.environ["PATH"], os.pathsep):
-        file = os.path.join(path, "sndvol32") + ".exe"
-        try:
-            return os.spawnv(os.P_NOWAIT, file, (file,))
-        except os.error:
-            pass
-    raise os.error("Cannot find "+file)
-
 #------------------------------------------------------ get_decoded
 def get_decoded():
     global bandmap,bm,newdat,loopall
-    
+
 # Get lines from decoded.txt and parse each into an associative array
     try:
         f=open(appdir+'/decoded.txt',mode='r')
@@ -599,7 +577,8 @@ def get_decoded():
         nfmid=int(1.0e6*fmid)%1000
         for d in decodes:
             text.insert(END, "%4s %3s %4s %10s %2s %s\n" % \
-                (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],' '.join(d['msg'])))
+                (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],\
+                 ' '.join(d['msg'])))
             try:
                 callsign=d['call']
                 tmin=60*int(d['time'][0:2]) + int(d['time'][2:4])
@@ -628,9 +607,9 @@ def get_decoded():
             if tdiff<0: tdiff=tdiff+1440
 # Insert info in "bandmap" only if age is less than one hour
             if w.acom1.ndiskdat==1: tdiff=2
-            if tdiff < 60:                        #60 minutes 
+            if tdiff < 60:                        #60 minutes
                 bandmap.append((ndf,callsign,tdecoded))
-    
+
 # Once more, erase the bm{} dictionary, then repopulate it from "bandmap"
     bm={}
     iz=len(bandmap)
@@ -673,8 +652,8 @@ def autolog(decodes):
         # Any spots to upload?
         if len(decodes) > 0:
             for d in decodes:
-                # now to format as a string to use for autologger upload using urlencode
-                # so we get a string formatted for http get/put operations:
+        # now to format as a string to use for autologger upload using urlencode
+        # so we get a string formatted for http get/put operations:
                 m=d['msg']
                 tcall=m[0]
                 if d['type2']:
@@ -705,15 +684,15 @@ def autolog(decodes):
                                                  'tgrid': tgrid,
                                                  'dbm': dbm,
                                                  'version': Version})
-                # reportparams now contains a properly formed http request string for
-                # the agreed upon format between W6CQZ and N8FQ.
-                # any other data collection point can be added as desired if it conforms
-                # to the 'standard format' defined above.
-                # The following opens a url and passes the reception report to the database
-                # insertion handler for W6CQZ:
-                #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
-                # The following opens a url and passes the reception report to the
-                # database insertion handler from W1BW:
+# reportparams now contains a properly formed http request string for
+# the agreed upon format between W6CQZ and N8FQ.
+# any other data collection point can be added as desired if it conforms
+# to the 'standard format' defined above.
+# The following opens a url and passes the reception report to the database
+# insertion handler for W6CQZ:
+#   urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
+# The following opens a url and passes the reception report to the
+# database insertion handler from W1BW:
                 urlf = urllib.request.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
                 reply = urlf.readlines()
@@ -724,7 +703,7 @@ def autolog(decodes):
                                              'rcall': options.MyCall.get(),
                                              'rgrid': options.MyGrid.get(),
                                              'rqrg': str(fmid),
-                                             'tpct': str(ipctx.get()), 
+                                             'tpct': str(ipctx.get()),
                                              'tqrg': sftx.get(),
                                              'dbm': str(options.dBm.get()),
                                              'version': Version})
@@ -779,7 +758,6 @@ def put_params(param3=NONE):
     dbm=pwrlist[ibest]
     options.dBm.set(dbm)
     w.acom1.ndbm=dbm
-        
     w.acom1.ntxfirst=ntxfirst.get()
     w.acom1.nsave=nsave.get()
     try:
@@ -841,12 +819,12 @@ def update():
         if hopping0!=2:
             hopping0=2
             bhopping.configure(state=DISABLED)
-        
+
 # implement band happing if it was selected
     hopped=0
     if not idle.get():
         if hopping.hopping.get()==1:
-            w.acom1.nfhopping=1        
+            w.acom1.nfhopping=1
             if w.acom1.nfhopok or startup:
                 w.acom1.nfhopok=0
                 startup=0
@@ -857,7 +835,7 @@ def update():
                     b=int(ns1/120) + 3
                     if b==12: b=2
                     if hopping.hoppingflag[int(b)].get()==0: b=-1
-                if b<0:                
+                if b<0:
                     found=False
                     while not found:
                         b = random.randint(1,len(hopping.bandlabels)-1)
@@ -910,7 +888,7 @@ def update():
                 cmd="rigctl -m %d -r %s -s %d -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %d" % \
                      (options.rignum.get(),options.CatPort.get(), \
                       options.serial_rate.get(),options.databits.get(), \
-                      options.stopbits.get(),options.serial_handshake.get(), nHz)
+                      options.stopbits.get(),options.serial_handshake.get(),nHz)
             ierr=os.system(cmd)
             if ierr==0:
                 ierr2=0
@@ -941,7 +919,8 @@ def update():
                         ierr2=-1
                     if ierr2!=0:
                         print('Execution of "'+cmd2+'" failed.')
-                        MsgBox('Execution of "'+cmd2+'" failed.\nEntering Idle mode.')
+                        MsgBox('Execution of "'+cmd2+ \
+                               '" failed.\nEntering Idle mode.')
             else:
                 print('Error attempting to set rig frequency.\a')
                 print(cmd + '\a')
@@ -1011,15 +990,15 @@ def update():
     if w.acom1.receiving==0:
         t=''
         r=FLAT
-        
+
     if isec!=isec0:
         msg1.configure(text=t,relief=r)
         isec0=isec
-    
+
     dbave=dbave + ndgain.get()
     if not receiving: dbave=0
     sm.updateProgress(newValue=dbave,newColor=smcolor)
-    
+
     if nred>0:
         nred=nred-1
         if nred==0: lab02.configure(text="",bg='gray85')
@@ -1044,7 +1023,7 @@ def update():
             rxtime=w.acom1.rxtime.tostring().decode('utf-8')
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
- 
+
             global fw
             if n>12: fw=fw[:n-1]
             fw=[hopping.bandlabels[ iband.get()][:-2],] + fw
@@ -1138,14 +1117,14 @@ def update():
             btune0=2
             btune.configure(state=NORMAL)
 
-    global advanced0
+    global adv0
     if w.acom1.transmitting or w.acom1.receiving or twait < 6.0:
-        if advanced0!=1:
-            advanced0=1
+        if adv0!=1:
+            adv0=1
             advanced.bmeas.configure(state=DISABLED)
     else:
-        if advanced0!=2:
-            advanced0=2
+        if adv0!=2:
+            adv0=2
             advanced.bmeas.configure(state=NORMAL)
 
 # update the upload spots button color
@@ -1189,7 +1168,7 @@ def update():
                 draw.text((x,148),tw[i],fill=253)        #Insert time label
                 if i<len(fw):
                     draw.text((x+10,1),fw[i],fill=253)   #Insert band label
-			       
+
         pim=ImageTk.PhotoImage(im)              #Convert Image to PhotoImage
         graph1.delete(ALL)
         graph1.create_image(0,0+2,anchor='nw',image=pim)
@@ -1230,7 +1209,7 @@ def update():
     else:
         options.ptt_port._entryWidget['state']=NORMAL
 
-    global advanced1
+    global adv1
     if options.cat_enable.get():
         options.lrignum._entryWidget['state']=NORMAL
         if options.cat_port.get() != 'USB':
@@ -1245,8 +1224,8 @@ def update():
             options.cbdata._entryWidget['state']=DISABLED
             options.cbstop._entryWidget['state']=DISABLED
             options.cbhs._entryWidget['state']=DISABLED
-        if advanced1!=1:
-            advanced1=1
+        if adv1!=1:
+            adv1=1
             advanced.bsetfreq.configure(state=NORMAL)
             advanced.breadab.configure(state=NORMAL)
             advanced.enable_cal.configure(state=NORMAL)
@@ -1257,8 +1236,8 @@ def update():
         options.cbdata._entryWidget['state']=DISABLED
         options.cbstop._entryWidget['state']=DISABLED
         options.cbhs._entryWidget['state']=DISABLED
-        if advanced1!=2:
-            advanced1=2
+        if adv1!=2:
+            adv1=2
             advanced.bsetfreq.configure(state=DISABLED)
             advanced.breadab.configure(state=DISABLED)
             advanced.enable_cal.configure(state=DISABLED)
@@ -1304,9 +1283,11 @@ def update():
             advanced.A_entry.configure(entry_state=NORMAL,label_state=NORMAL)
             advanced.B_entry.configure(entry_state=NORMAL,label_state=NORMAL)
         else:
-            advanced.A_entry.configure(entry_state=DISABLED,label_state=DISABLED)
-            advanced.B_entry.configure(entry_state=DISABLED,label_state=DISABLED)
-  
+            advanced.A_entry.configure(entry_state=DISABLED, \
+                                       label_state=DISABLED)
+            advanced.B_entry.configure(entry_state=DISABLED, \
+                                       label_state=DISABLED)
+
     timer1=ldate.after(200,update)
 
 #------------------------------------------------------ audio_config
@@ -1350,7 +1331,8 @@ def save_params():
     f.write("SerialRate " + str(options.serial_rate.get()) + "\n")
     f.write("DataBits " + str(options.databits.get()) + "\n")
     f.write("StopBits " + str(options.stopbits.get()) + "\n")
-    f.write("Handshake " + options.serial_handshake.get().replace(" ","#")  + "\n")
+    f.write("Handshake " + options.serial_handshake.get().replace(" ","#") \
+            + "\n")
     t=str(options.rig.get().replace(" ","#"))
     f.write("Rig " + str(t.replace("\t","#"))[:46] + "\n")
     f.write("Nsave " + str(nsave.get()) + "\n")
@@ -1442,7 +1424,7 @@ setupmenu.add('command', label = 'Advanced', command = advanced1,
 setupmenu.add('command', label = 'IQ Mode', command = iq1,
               accelerator='F8')
 setupmenu.add('command', label = 'Band Hopping', command = hopping1,
-              accelerator='F9')              
+              accelerator='F9')
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Always start in Idle mode',
                           variable=start_idle)
@@ -1573,7 +1555,8 @@ balloon.bind(sc2,"Contrast")
 bupload=Checkbutton(iframe2,text='Upload spots',justify=RIGHT,variable=upload)
 balloon.bind(bupload,"Check to send spots to WSPRnet.org")
 bupload.place(x=330,y=12, anchor='e')
-bhopping=Checkbutton(iframe2,text='Band Hop',justify=RIGHT,variable=hopping.hopping)
+bhopping=Checkbutton(iframe2,text='Band Hop',justify=RIGHT, \
+                     variable=hopping.hopping)
 bhopping.place(x=445,y=12, anchor='e')
 bhopping.configure(state=DISABLED)
 balloon.bind(bhopping,"Check to band hop; configure in Setup->Band Hopping")
@@ -1590,6 +1573,7 @@ lf0=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Dial:',
         validate='real')
 lftx=Pmw.EntryField(g1.interior(),labelpos=W,label_text='Tx: ',
         value=10.140000,entry_textvariable=sftx,entry_width=12,validate='real')
+
 widgets = (lf0,lftx)
 for widget in widgets:
     widget.pack(side=TOP,padx=5,pady=4)
@@ -1610,10 +1594,12 @@ ipctx.set(0)
 g2.pack(side=LEFT,fill=BOTH,expand=0,padx=10,pady=6)
 #------------------------------------------------------ Special controls
 g3=Pmw.Group(iframe2a,tag_text='Special')
-bidle=Checkbutton(g3.interior(),text='Idle       ',justify=RIGHT,variable=idle,width=5)
+bidle=Checkbutton(g3.interior(),text='Idle       ',justify=RIGHT, \
+                  variable=idle,width=5)
 bidle.grid(row=0,column=1,padx=4,pady=3)
 balloon.bind(bidle,"Check for no automatic T/R sequences")
-bmute=Checkbutton(g3.interior(),text='Tx Mute',justify=RIGHT,variable=txmute,width=5)
+bmute=Checkbutton(g3.interior(),text='Tx Mute',justify=RIGHT, \
+                  variable=txmute,width=5)
 bmute.grid(row=1,column=1,padx=4,pady=3)
 balloon.bind(bmute,"Check for no Tx")
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,width=9)
@@ -1622,16 +1608,13 @@ balloon.bind(btune,"Transmit for number of seconds set by Tx fraction slider")
 btxnext=Button(g3.interior(), text='Tx Next',underline=3,command=txnext,width=9)
 btxnext.grid(row=0,column=0,padx=2,pady=3)
 balloon.bind(btxnext,"Make the next 2-minute period a transmission")
-
-##bstoptx=Button(g3.interior(), text='Stop Tx',underline=0,command=stoptx,width=9)
-##bstoptx.grid(row=1,column=1,padx=2,pady=3)
-
 g3.pack(side=LEFT,fill=X,expand=0,padx=10,pady=1)
 
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, text='UTC        dB        DT             Freq             Drift')
+lab2=Label(iframe2, \
+           text='UTC        dB        DT             Freq             Drift')
 lab2.place(x=210,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
@@ -1760,7 +1743,8 @@ def readinit():
             elif key == 'SerialRate': options.serial_rate.set(int(value))
             elif key == 'DataBits': options.databits.set(int(value))
             elif key == 'StopBits': options.stopbits.set(int(value))
-            elif key == 'Handshake': options.serial_handshake.set(value.replace("#"," ") )
+            elif key == 'Handshake': options.serial_handshake.set( \
+                value.replace("#"," ") )
             elif key == 'Rig':
                 t=value.replace("#"," ")
                 options.rig.set(t)
@@ -1831,7 +1815,7 @@ if r<0:
     options1()
 else:
     options.lcall._entryFieldEntry['background']='white'
-    
+
 r=options.chkgrid(options.MyGrid.get())
 if r<0:
     options.lgrid._entryFieldEntry['background']='pink'
