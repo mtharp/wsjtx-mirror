@@ -1,8 +1,6 @@
 # Makefile for Linux
-
 # Re-direct stdout and stderr:	bash
-#								make >& junk
-
+#				make >& junk
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
 OS			:=	@OS@
@@ -28,18 +26,18 @@ CPPFLAGS	+=	${DEFS} -I.
 # OS Specific Vars
 ifeq (${host_os},*darwin*)
 	MVSO	:= ${MV} w.so WsprMod/w.so
-	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
-					-Wno-character-truncation -fPIC -m64
+	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall \
+	-Wno-conversion -Wno-character-truncation -fPIC -m64
 else
 	MVSO	:= ${MV} w.*.so WsprMod/w.so
-	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
-					-Wno-character-truncation -fPIC
+	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall \
+	-Wno-conversion -Wno-character-truncation -fPIC
 endif
 
 DEFS		:=	@DEFS@
 
 # WSPR CODE
-all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
+all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 
 
 # Default rules
@@ -57,14 +55,15 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a libportaudio.a libfftw3f.a
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a \
+	-lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
 	${FC} -o wsprcode wsprcode.o thnix_stub.o libwspr.a
 
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
-	fthread.o gencwid.o genwspr.o geodist.o getrms.o getutc.o \
+	fthread.o gencwid.o genmept.o genwspr.o geodist.o getrms.o getutc.o \
 	gmtime2.o gran.o grid2deg.o hash.o inter_mept.o iqdemod.o \
 	mept162.o mix162.o morse.o msgtrim.o nchar.o nhash.o pack50.o \
 	packcall.o packgrid.o packname.o packpfx.o packprop.o packtext2.o \
@@ -101,6 +100,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 
 	${MKDIR} -p build/lib/WsprMod
 	${MVSO}
+	cp WsprMod/w.so WsprModNoGui/w.so
 
 install: WsprMod/w.so
 	${RM} -rf build/
@@ -109,12 +109,13 @@ install: WsprMod/w.so
 
 .PHONY : clean
 clean:
-	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo WsprMod/w.so \
-	WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal fmeasure wspr0
+	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
+	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal \
+	fmeasure wspr0
 	${RM} -rf build/
 
 distclean:
-	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI audio_caps \
-	autoscan.log configure.scan decoded.txt hopping.ini fmt.ini pixmap.dat \
-	wspr.log
+	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI \
+	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
+	fmt.ini pixmap.dat wspr.log
 	${RM} -r autom4*
