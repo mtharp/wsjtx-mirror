@@ -147,7 +147,7 @@ HAS_PORTAUDIO_H=0
 HAS_PORTAUDIO_LIB=0
 HAS_PORTAUDIO=0
 
-AC_MSG_CHECKING([for a v19 portaudio ])
+AC_MSG_CHECKING([for Portaudio])
 
 dnl Look in more places for portaudio.h
 portaudio_include_dir="/usr/include"
@@ -227,4 +227,5 @@ if test $[{HAS_PORTAUDIO_H}] -eq 1 -a $[{HAS_PORTAUDIO_LIB}] -eq 1; then
 	fi
 fi
 
-])dnl }}}
+])
+

@@ -1,6 +1,15 @@
 
 Current Development Version: WSPR-4.0
 
+
+2014-04-05 Greg Beam <ki7mt@yahoo.com>
+
+* Removed AX_ISC_POSIX, was for obsolete hardware
+* Combined Makefile.in ieq statments
+* Added AC_CANONICAL_HOST for $host_os
+* Removed duplicate flags from Makefile.in
+
+
 2014-04-04 (2)  Greg Beam <ki7mt@yahoo.com>
 
 * ran autoscan and updated configure.ac

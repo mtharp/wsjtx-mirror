@@ -1,11 +1,9 @@
 dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
-dnl This should be a svn hook instead.
-dnl Sneakier way to get a Version into setup.py
 AC_PREREQ([2.69])
 AC_COPYRIGHT([$Id$])
-AC_INIT([WSPR], [4.0], [ki7mt@yahoo.com])
+AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net])
 fail=0
 
 AC_CONFIG_AUX_DIR([build-aux])
@@ -18,6 +16,7 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_USE_SYSTEM_EXTENSIONS
+AC_CANONICAL_HOST
 
 dnl Updated aclocal.m4 to find search alternative locations. Libs are only
 dnl added is aclocal.m4 finds them.
@@ -25,10 +24,6 @@ CFLAGS="-Wall -O0"
 CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
 LDFLAGS="-L/usr/lib ${LDFLAGS}"
 LIBS="-lpthread ${LIBS}"
-FFLAGS_GFORTRAN="${FFLAGS} -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
--Wno-character-truncation -fPIC"
-FFLAGS_G95="${FFLAGS} -Wall -Wno-precision-loss -fbounds-check -fno-second-underscore \
--fPIC"
 
 dnl Check which fortran - macro from aclocal.m4
 AX_CHECK_GFORTRAN
@@ -90,7 +85,7 @@ AC_PATH_PROG(F2PY, f2py3)
 AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
 OS=`uname`
-AC_SUBST(OS, "${OS}")
+AC_SUBST(OS, "${host_os}")
 
 dnl Checks for header files.
 AC_HEADER_STDC

@@ -5,44 +5,42 @@
 
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
-OS			:= $(shell uname -s)
+OS			:=	@OS@
+MV			:= 	@MV@
+RM			:=	@RM@
+MKDIR		:= 	@MKDIR@
 INSTALL		=	install
-PREFIX		=	@PREFIX@
-MV			?= 	@MV@
-RM			?=	@RM@
-MKDIR		?= 	@MKDIR@
+PREFIX		:=	@PREFIX@
+
+CC			:=	@CC@
+FC			:=	@FC@
+FCV			:=	@FCV@
+FC_LIB_PATH	+=	@FC_LIB_PATH@
+
 PYTHON		?=	@PYTHON@
 F2PY		?=	@F2PY@
 
-CC			?=	@CC@
-FFLAGS		=	@FFLAGS@
-LDFLAGS		=	@LDFLAGS@
-CPPFLAGS	=	@CPPFLAGS@
-CFLAGS		=	@CFLAGS@
-LIBS		=	@LIBS@
-
-# WSPR specific compiler flags
+# Libs and Flags
+LIBS		:=	@LIBS@
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
-
-# OS Specific Vars
-ifeq ($(OS),Darwin)
-	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
-					-Wno-character-truncation -fPIC -m64
-	MVSO	:= ${MV} w.so WsprMod/w.so
-else
-	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
-					-Wno-character-truncation -fPIC
-	MVSO	:= ${MV} w.*.so WsprMod/w.so
-endif
-
-DEFS		=	@DEFS@
-
-CFLAGS		+=	${DEFS}
 CPPFLAGS	+=	${DEFS} -I.
 
+# OS Specific Vars
+ifeq (${host_os},*darwin*)
+	MVSO	:= ${MV} w.so WsprMod/w.so
+	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+					-Wno-character-truncation -fPIC -m64
+else
+	MVSO	:= ${MV} w.*.so WsprMod/w.so
+	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
+					-Wno-character-truncation -fPIC
+endif
 
+DEFS		:=	@DEFS@
+
+# WSPR CODE
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
-# wsprcode
+
 
 # Default rules
 %.o: %.c
@@ -56,19 +54,13 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-OS			=	@OS@
-FC			=	@FC@
-FCV			=	@FCV@
-FC_LIB_PATH	+=	@FC_LIB_PATH@
-LDFLAGS		+=	-L${FC_LIB_PATH}
-
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	$(FC) ${FFLAGS} -o wspr0 $(FFLAGS) ${OBJS1} libwspr.a libportaudio.a libfftw3f.a
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a libportaudio.a libfftw3f.a
 
 wsprcode: wsprcode.o thnix_stub.o
-	$(FC) -o wsprcode wsprcode.o thnix_stub.o libwspr.a
+	${FC} -o wsprcode wsprcode.o thnix_stub.o libwspr.a
 
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
@@ -84,21 +76,21 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	wqdecode.o wqencode.o wspr2.o xcor162.o xfft.o 
 
 # Build the library libwspr.a
-libwspr.a: $(OBJS3) acom1.f90 acom2.f90
-	ar cr libwspr.a $(OBJS3)
+libwspr.a: ${OBJS3} acom1.f90 acom2.f90
+	ar cr libwspr.a ${OBJS3}
 	ranlib libwspr.a
 
 fmt: fmt.f90 libwspr.a
-	$(FC) -o fmt fmt.f90 libwspr.a -lfftw3f -lportaudio
+	${FC} -o fmt fmt.f90 libwspr.a -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
-	$(FC) -o fmtave fmtave.f90
+	${FC} -o fmtave fmtave.f90
 
 fcal: fcal.f90
-	$(FC) -o fcal fcal.f90
+	${FC} -o fcal fcal.f90
 
 fmeasure: fmeasure.f90
-	$(FC) -o fmeasure fmeasure.f90
+	${FC} -o fmeasure fmeasure.f90
 
 F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
