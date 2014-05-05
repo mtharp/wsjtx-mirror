@@ -978,7 +978,7 @@ def update():
             receiving=1
             n=len(tw)
             if n>12: tw=tw[:n-1]
-            rxtime=g.ftnstr(w.acom1.rxtime)
+            rxtime=w.acom1.rxtime.tostring().decode('utf-8')
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
  
@@ -1005,7 +1005,7 @@ def update():
     t='Waiting to start'
     bgcolor='pink'
     if transmitting:
-        t='Txing: '+g.ftnstr(w.acom1.sending)
+        t='Txing: ' + w.acom1.sending.tostring().decode('utf-8')
         bgcolor='yellow'
     if receiving:
         t='Receiving'
@@ -1310,7 +1310,7 @@ def update_nogui():
         isec0=isec
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         #ldate.configure(text=t)
-        print(t)
+#        print(t)
         #root_geom=root.geometry()
         utchours=utc[3]+utc[4]/60.0 + utc[5]/3600.0
         try:
@@ -1350,7 +1350,7 @@ def update_nogui():
         #    t=''
         #    r=FLAT
         #msg1.configure(text=t,bg=bg,relief=r)
-        print(t)
+#        print(t)
         if not receiving: dbave=0
         #sm.updateProgress(newValue=dbave,newColor=smcolor)
 
@@ -1371,7 +1371,7 @@ def update_nogui():
             receiving=1
             n=len(tw)
             if n>12: tw=tw[:n-1]
-            rxtime=g.ftnstr(w.acom1.rxtime)
+            rxtime=w.acom1.rxtime.tostring().decode('utf-8')
             rxtime=rxtime[:2] + ':' + rxtime[2:]
             tw=[rxtime,] + tw
  
@@ -1398,7 +1398,7 @@ def update_nogui():
     t='Waiting to start'
     bgcolor='pink'
     if transmitting:
-        t='Txing: '+g.ftnstr(w.acom1.sending)
+        t='Txing: ' + w.acom1.sending.tostring().decode('utf-8')
         bgcolor='yellow'
     if receiving:
         t='Receiving'
