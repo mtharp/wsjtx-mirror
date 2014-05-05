@@ -1,4 +1,5 @@
-import g
+#import g
+from WsprModNoGui import g
 from tkrep import *
 
 ptt_port=IntVar()

@@ -1,5 +1,7 @@
-import w
-import g
+#import w
+#import g
+from WsprModNoGui import g
+from WsprModNoGui import w
 from tkrep import *
 import pickle
 

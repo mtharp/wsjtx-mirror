@@ -98,7 +98,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" thnix.o ${LDFLAGS} ${LIBS} libwspr.a \
 	-m w ${F2PYSRCS}
-	
+
 	${MKDIR} -p build/lib/WsprMod
 	${MVSO}
 

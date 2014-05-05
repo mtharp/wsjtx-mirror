@@ -1,5 +1,5 @@
 import os,time
-import g
+from . import g
 from tkrep import *
 
 bandlabels=['dummy','600 m','160 m','80 m','60 m','40 m','30 m',\
@@ -12,13 +12,13 @@ hopping=IntVar()
 hopping.set(0)
 hoppingconfigured=IntVar()
 hoppingconfigured.set(0)
-bhopping   =range(len(bandlabels))
-shopping   =range(len(bandlabels))
-lhopping   =range(len(bandlabels))
-hoppingflag=range(len(bandlabels))
-hoppingpctx=range(len(bandlabels))
-btuneup    =range(len(bandlabels))
-tuneupflag =range(len(bandlabels))
+bhopping   =list(range(len(bandlabels)))
+shopping   =list(range(len(bandlabels)))
+lhopping   =list(range(len(bandlabels)))
+hoppingflag=list(range(len(bandlabels)))
+hoppingpctx=list(range(len(bandlabels)))
+btuneup    =list(range(len(bandlabels)))
+tuneupflag =list(range(len(bandlabels)))
 
 for r in range(1,16):
     hoppingflag[r] = IntVar()
@@ -52,4 +52,4 @@ def restore_params(appdir):
                 tuneupflag[r].set(int(s[r][13:16]))
             globalupdate()
         except:
-            print 'Error reading hopping.ini.'
+            print('Error reading hopping.ini.')

@@ -11,14 +11,11 @@ from WsprMod import palettes
 from WsprModNoGui import g
 #from WsprModNoGui import tkrep 
 from math import log10
-try:
-    from numpy.oldnumeric import zeros
-except: 
-    from Numeric import zeros
+from numpy.oldnumeric import zeros
 import array
-import dircache
 #import Image, ImageTk, ImageDraw
-import Image, ImageDraw
+#import Image, ImageDraw
+from PIL import Image, ImageDraw
 from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
@@ -29,18 +26,18 @@ import string
 from WsprMod import w
 # from WsprMod import smeter
 import socket
-import urllib
-import thread
+import urllib.request, urllib.parse, urllib.error
+import _thread
 import webbrowser
 
 # root = Tk()
 Version="3.00_r" + "$Rev: 2326 $"[6:-2]
-print "******************************************************************"
-print "WSPR Version " + Version + ", by K1JT"
-print "Run date:   " + time.asctime(time.gmtime()) + " UTC"
+print("******************************************************************")
+print("WSPR Version " + Version + ", by K1JT")
+print("Run date:   " + time.asctime(time.gmtime()) + " UTC")
 
 #See if we are running in Windows
-print 'setting g.Win32'
+print('setting g.Win32')
 g.Win32=0
 if sys.platform=="win32":
     g.Win32=1
@@ -361,22 +358,22 @@ def help(event=NONE):
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/WSPR_3.0_User.pdf'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ fmtguide
 def fmtguide(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/FMT_User.pdf'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ wsprnet
 def wsprnet(event=NONE):
     url='http://wsprnet.org/'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ homepage
 def homepage(event=NONE):
     url='http://physics.princeton.edu/pulsar/K1JT/'
-    thread.start_new_thread(browser,(url,))
+    _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------- browser
 def browser(url):
@@ -468,7 +465,7 @@ def delwav():
     result=tkMessageBox.askyesno(message=t)
     if result:
 # Make a list of *.wav files in Save
-        la=dircache.listdir(appdir+'/save')
+        la=os.listdir(appdir+'/save')
         lb=[]
         for i in range(len(la)):
             j=la[i].find(".wav") + la[i].find(".WAV")
@@ -486,7 +483,7 @@ def rx_volume():
             return os.spawnv(os.P_NOWAIT, file, (file,) + (" -r",))
         except os.error:
             pass
-    raise os.error, "Cannot find "+file
+    raise os.error("Cannot find "+file)
 
 #--------------------------------------------------- tx_volume
 def tx_volume():
@@ -496,7 +493,7 @@ def tx_volume():
             return os.spawnv(os.P_NOWAIT, file, (file,))
         except os.error:
             pass
-    raise os.error, "Cannot find "+file
+    raise os.error("Cannot find "+file)
 
 #------------------------------------------------------ get_decoded
 def get_decoded():
@@ -560,8 +557,8 @@ def get_decoded():
         for d in decodes:
             #text.insert(END, "%4s %3s %4s %10s %2s %s\n" % \
             #    (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],' '.join(d['msg'])))
-            print "%4s %3s %4s %10s %2s %s\n" % \
-                 (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],' '.join(d['msg']))
+            print("%4s %3s %4s %10s %2s %s\n" % \
+                 (d['time'],d['snr'],d['dt'],d['freq'],d['drift'],' '.join(d['msg'])))
             try:
                 callsign=d['call']
                 tmin=60*int(d['time'][0:2]) + int(d['time'][2:4])
@@ -582,7 +579,7 @@ def get_decoded():
 # Erase bandmap entirely
     bandmap=[]
 # Repopulate "bandmap" from "bm", which should not contain dupes.
-    for callsign,ft in bm.iteritems():
+    for callsign,ft in bm.items():
         if callsign!='...':
             ndf,tdecoded=ft
             tmin=int((time.time()%86400)/60)
@@ -619,7 +616,7 @@ def get_decoded():
 
     if upload.get():
         #Dispatch autologger thread.
-        thread.start_new_thread(autolog, (decodes,))
+        _thread.start_new_thread(autolog, (decodes,))
 
     if loopall: opennext()
 
@@ -651,9 +648,9 @@ def autolog(decodes):
                 if tcall=='...': continue
                 dfreq=float(d['freq'])-w.acom1.f0b-0.001500
                 if abs(dfreq)>0.0001:
-                    print 'Frequency changed, no upload of spots'
+                    print('Frequency changed, no upload of spots')
                     continue
-                reportparams = urllib.urlencode({'function': 'wspr',
+                reportparams = urllib.parse.urlencode({'function': 'wspr',
                                                  'rcall': options.MyCall.get(),
                                                  'rgrid': options.MyGrid.get(),
                                                  'rqrg': str(f0.get()),
@@ -676,13 +673,13 @@ def autolog(decodes):
                 #                urlf = urllib.urlopen("http://jt65.w6cqz.org/rbc.php?%s" % reportparams)
                 # The following opens a url and passes the reception report to the
                 # database insertion handler from W1BW:
-                urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
+                urlf = urllib.request.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
                 reply = urlf.readlines()
                 urlf.close()
         else:
             # No spots to report, so upload status message instead. --W1BW
-            reportparams = urllib.urlencode({'function': 'wsprstat',
+            reportparams = urllib.parse.urlencode({'function': 'wsprstat',
                                              'rcall': options.MyCall.get(),
                                              'rgrid': options.MyGrid.get(),
                                              'rqrg': str(fmid),
@@ -690,14 +687,14 @@ def autolog(decodes):
                                              'tqrg': sftx.get(),
                                              'dbm': str(options.dBm.get()),
                                              'version': Version})
-            urlf = urllib.urlopen("http://wsprnet.org/post?%s" \
+            urlf = urllib.request.urlopen("http://wsprnet.org/post?%s" \
                                   % reportparams)
             reply = urlf.readlines()
             urlf.close()
     except:
         t=" UTC: attempted access to WSPRnet failed."
         if not no_beep.get(): t=t + "\a"
-        print time.asctime(time.gmtime()) + t
+        print(time.asctime(time.gmtime()) + t)
 
 #------------------------------------------------------ put_params
 def put_params(param3=NONE):
@@ -877,10 +874,10 @@ def update():
                 f.close()
 
                 cmd2=''
-                if os.path.exists('.\user_hardware.bat') or \
-                   os.path.exists('.\user_hardware.cmd') or \
-                   os.path.exists('.\user_hardware.exe'):
-                    cmd2='.\user_hardware ' + str(band[iband0])
+                if os.path.exists('.\\user_hardware.bat') or \
+                   os.path.exists('.\\user_hardware.cmd') or \
+                   os.path.exists('.\\user_hardware.exe'):
+                    cmd2='.\\user_hardware ' + str(band[iband0])
                 elif os.path.exists('./user_hardware'):
                     cmd2='./user_hardware ' + str(band[iband0])
                 if cmd2!='':
@@ -889,11 +886,11 @@ def update():
                     except:
                         ierr2=-1
                     if ierr2!=0:
-                        print 'Execution of "'+cmd2+'" failed.'
+                        print('Execution of "'+cmd2+'" failed.')
                         MsgBox('Execution of "'+cmd2+'" failed.\nEntering Idle mode.')
             else:
-                print 'Error attempting to set rig frequency.\a'
-                print cmd + '\a'
+                print('Error attempting to set rig frequency.\a')
+                print(cmd + '\a')
                 iband.set(iband0)
                 f0.set(freq0[iband.get()])
                 t="%.6f" % (f0.get(),)
@@ -1268,10 +1265,10 @@ def update_nogui():
                 f.close()
 
                 cmd2=''
-                if os.path.exists('.\user_hardware.bat') or \
-                   os.path.exists('.\user_hardware.cmd') or \
-                   os.path.exists('.\user_hardware.exe'):
-                    cmd2='.\user_hardware ' + str(band[iband0])
+                if os.path.exists('.\\user_hardware.bat') or \
+                   os.path.exists('.\\user_hardware.cmd') or \
+                   os.path.exists('.\\user_hardware.exe'):
+                    cmd2='.\\user_hardware ' + str(band[iband0])
                 elif os.path.exists('./user_hardware'):
                     cmd2='./user_hardware ' + str(band[iband0])
                 if cmd2!='':
@@ -1280,11 +1277,11 @@ def update_nogui():
                     except:
                         ierr2=-1
                     if ierr2!=0:
-                        print 'Execution of "'+cmd2+'" failed.'
+                        print('Execution of "'+cmd2+'" failed.')
                         MsgBox('Execution of "'+cmd2+'" failed.\nEntering Idle mode.')
             else:
-                print 'Error attempting to set rig frequency.\a'
-                print cmd + '\a'
+                print('Error attempting to set rig frequency.\a')
+                print(cmd + '\a')
                 iband.set(iband0)
                 f0.set(freq0[iband.get()])
                 t="%.6f" % (f0.get(),)
@@ -1313,7 +1310,7 @@ def update_nogui():
         isec0=isec
         t=time.strftime('%Y %b %d\n%H:%M:%S',utc)
         #ldate.configure(text=t)
-        print t
+        print(t)
         #root_geom=root.geometry()
         utchours=utc[3]+utc[4]/60.0 + utc[5]/3600.0
         try:
@@ -1353,7 +1350,7 @@ def update_nogui():
         #    t=''
         #    r=FLAT
         #msg1.configure(text=t,bg=bg,relief=r)
-        print t
+        print(t)
         if not receiving: dbave=0
         #sm.updateProgress(newValue=dbave,newColor=smcolor)
 
@@ -1408,7 +1405,7 @@ def update_nogui():
         bgcolor='green'
     if t!=t0:
         #msg6.configure(text=t,bg=bgcolor)
-        print t
+        print(t)
         t0=t
     #if w.acom1.ntune==0:
         #btune.configure(bg='gray85')
@@ -1548,16 +1545,16 @@ def update_nogui():
         None
     else:
         #msg2.configure(text='Invalid audio input device.',bg='red')
-        print 'Invalid audio input device.'
+        print('Invalid audio input device.')
     if options.outbad.get()==0:
         #msg3.configure(text='',bg='gray85')
         None
     else:
         #msg3.configure(text='Invalid audio output device.',bg='red')
-        print 'Invalid audio output device.'
+        print('Invalid audio output device.')
     if w.acom1.ndecoding:
         #msg5.configure(text='Decoding',bg='#66FFFF',relief=SUNKEN)
-        print 'Decoding'
+        print('Decoding')
     else:
         #msg5.configure(text='',bg='gray85',relief=FLAT)
         None
@@ -1579,10 +1576,10 @@ def audio_config():
     options.outbad.set(outbad)
     if inbad or outbad:
         w.acom1.ndevsok=0
-        print 'Bad audio devices!'
+        print('Bad audio devices!')
         #options1()
     else:
-        print 'Audio config ok'
+        print('Audio config ok')
         w.acom1.ndevsok=1
 
 #------------------------------------------------------ save_params
@@ -1689,7 +1686,7 @@ def readinit():
     try:
         for i in range(len(params)):
             if badlist.count(i)>0:
-                print 'Skipping bad entry in WSPR.INI:\a',params[i]
+                print('Skipping bad entry in WSPR.INI:\a',params[i])
                 continue
             key,value=params[i].split()
             if   key == 'WSPRGeometry': root.geometry(value)
