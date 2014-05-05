@@ -50,6 +50,6 @@ def restore_params(appdir):
                 hoppingflag[r].set(int(s[r][6:7]))
                 hoppingpctx[r].set(int(s[r][8:13]))
                 tuneupflag[r].set(int(s[r][13:16]))
-            globalupdate()
+#            globalupdate()
         except:
             print('Error reading hopping.ini.')
