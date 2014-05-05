@@ -200,9 +200,9 @@ set INSTALLDIR=install
 rm -r %INSTALLDIR%/bin/tcl/tzdata
 rm -r %INSTALLDIR%/bin/tk/demos
 cp -r save %INSTALLDIR%
-cp wsjt.ico wsprrc.win hamlib_rig_numbers rigctl.exe wspr.bat %INSTALLDIR% 
+cp wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat %INSTALLDIR% 
 cp fcal.exe fmeasure.exe fmt.exe fmtave.exe wspr0.exe %INSTALLDIR%
-cp libhamlib-2.dll hamlib*.dll libusb0.dll %INSTALLDIR% 
+cp -r hamlib/* %INSTALLDIR% 
 cp wsjt.ico wspr.bat %INSTALLDIR%
 GOTO REV_NUM
 REM -- FINISHED WSPR BUILD ---------------------------------
