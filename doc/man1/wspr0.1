@@ -1,0 +1,183 @@
+'\" t
+.\"     Title: wspr0
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/06/2014
+.\"    Manual: WSPR0 Man Page
+.\"    Source: AsciiDoc 1.0
+.\"  Language: English
+.\"
+.TH "WSPR0" "1" "05/06/2014" "AsciiDoc 1\&.0" "WSPR0 Man Page"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+wspr0 \- limited command\-line WSPR
+.SH "SYNOPSIS"
+.sp
+\fBwspr0\fR [OPTIONS]
+.SH "DESCRIPTION"
+.sp
+\fB\fIwspr0\fR\fR is a simple command\-line version of \fB\fIWSPR\fR\fR with no frills, no graphics and no GUI\&. Many advanced features of the full WSPR program, including I/Q mode, frequency hopping, and automatic uploading of spots to <www\&.wsprnet\&.org>, are not included\&. \fBwspr0\fR is intended for specialized uses where its easy compilation, small memory requirements can be advantageous\&.
+.SH "OPTIONS"
+.PP
+\fB\-t\fR
+.RS 4
+Run in 100% Tx mode\&. (Default is Rx mode\&.)
+.RE
+.PP
+\fB\-b\fR
+.RS 4
+Pseudo\-random selection of Rx and Tx cycles\&.
+.RE
+.PP
+\fB\-D\fR file1\&.wav file1\&.wav
+.RS 4
+Open and decode one or more wav files\&.
+.RE
+.PP
+\fB\-m\fR
+.RS 4
+Run in WSPR\-15 mode (default is WSPR\-2)
+.RE
+.PP
+\fB\-n\fR n
+.RS 4
+Number of files to be generated
+.RE
+.PP
+\fB\-o\fR outfile
+.RS 4
+Output filename overrides default nnnnnn\&.
+.RE
+.PP
+\fB\-p\fR n
+.RS 4
+PTT port
+.RE
+.PP
+\fB\-P\fR n
+.RS 4
+Transmitting percent (default=25)
+.RE
+.PP
+\fB\-s\fR x
+.RS 4
+SNR of generated data, dB (default 100)
+.RE
+.PP
+\fB\-x\fR
+.RS 4
+Generate test file(s) with 10 signals in each
+.RE
+.PP
+\fB\-X\fR
+.RS 4
+Generate list of audio tones for this message
+.RE
+.SH "DEFAULTS"
+.sp
+By default, the \fIcallsign\fR, \fIgrid locator\fR and \fIpower\-level\fR for the transmitted message are taken from file \fBwspr0\&.def\fR\&. These may be overridden by using the following options:
+.PP
+\fB\-c\fR call
+.RS 4
+Your stations call sign
+.RE
+.PP
+\fB\-g\fR grid
+.RS 4
+4 Digit grid location
+.RE
+.PP
+\fB\-d\fR dBm
+.RS 4
+Your transmit power, in dbm
+.RE
+.SH "FREQUENCIES"
+.PP
+\fB\-f\fR x
+.RS 4
+Transceiver dial frequency is x (MHz)
+.RE
+.PP
+\fB\-F\fR x
+.RS 4
+Center frequency of transmission is x (MHz)
+.RE
+.PP
+\fB\-a\fR x
+.RS 4
+Audio frequency of transmission is x (Hz)
+.RE
+.SH "EXAMPLES"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+wspr0 \-t                      # Transmit default message
+wspr0 \-t \-s \-22 \-o test\&.wav   # Generate a test file
+wspr0 \-t \-s \-25 \-n 3          # Generate three test files
+wspr0 \-b                      # Randomized T/R sequences
+wspr0 \-f 14\&.0956              # Rx only, on 20m::
+wspr0 \-D 00001\&.wav 00002\&.wav  # Decode these two files
+.fi
+.if n \{\
+.RE
+.\}
+.SH "BUGS"
+.sp
+If find a bug or suspect \fB\fIwpsr0\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
+.SH "SEE ALSO"
+.sp
+wspr(1), wspr\-fmt(1), wspr\-fmtave(1), wspr\-fcal(1), wspr\-fmeasure(1)
+.SH "AUTHORS"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Joe Taylor, K1JT, <joe@princeton\&.edu> \&.\&. Original Content Providor
+Greg Beam, KI7MT, <ki7mt@yahoo\&.com> \&.\&.\&.\&. Manpage Editor
+.fi
+.if n \{\
+.RE
+.\}
+.SH "RESOURCES"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Project Site: \&.\&.\&. <http://sourceforge\&.net/projects/wsjt/>
+Main web site: \&.\&. <http://www\&.physics\&.princeton\&.edu/pulsar/K1JT/>
+
+For more information see:
+<www\&.physics\&.princeton\&.edu/pulsar/K1JT/WSPR0_Instructions\&.TXT>
+.fi
+.if n \{\
+.RE
+.\}
+.SH "COPYING"
+.sp
+Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
+.sp
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\&.
+.sp
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.

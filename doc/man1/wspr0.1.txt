@@ -1,0 +1,136 @@
+:doctype: manpage
+:man source: AsciiDoc
+:man version: 1.0
+:man manual: WSPR0 Man Page
+= wspr0(1)
+
+== NAME
+
+wspr0 - limited command-line WSPR
+
+== SYNOPSIS
+
+*wspr0* [OPTIONS]
+
+
+== DESCRIPTION
+
+*'wspr0'* is a simple command-line version of *'WSPR'* with no frills,
+no graphics and no GUI.  Many advanced features of the full WSPR
+program, including I/Q mode, frequency hopping, and automatic
+uploading of spots to <www.wsprnet.org>, are not included. *wspr0* is
+intended for specialized uses where its easy compilation, small memory
+requirements can be advantageous.
+
+
+== OPTIONS
+
+*-t*::
+	Run in 100% Tx mode. (Default is Rx mode.)
+
+*-b*::
+	Pseudo-random selection of Rx and Tx cycles.
+
+*-D* file1.wav file1.wav::
+	Open and decode one or more wav files.
+
+*-m*::
+	Run in WSPR-15 mode (default is WSPR-2)
+
+*-n* n::
+	Number of files to be generated
+
+*-o* outfile::
+	Output filename overrides default nnnnnn.
+
+*-p* n::
+	PTT port
+*-P* n::
+	Transmitting percent (default=25)
+
+*-s* x::
+	SNR of generated data, dB (default 100)
+
+*-x*::
+	Generate test file(s) with 10 signals in each
+
+*-X*::
+	Generate list of audio tones for this message
+
+== DEFAULTS
+
+By default, the 'callsign', 'grid locator' and 'power-level'
+for the transmitted message are taken from file *wspr0.def*.
+These may be overridden by using the following options:
+
+*-c* call::
+	Your stations call sign
+
+*-g* grid::
+	4 Digit grid location
+
+*-d* dBm::
+	Your transmit power, in dbm
+
+
+== FREQUENCIES
+
+*-f* x::
+	Transceiver dial frequency is x (MHz)
+
+*-F* x::
+	Center frequency of transmission is x (MHz)
+
+*-a* x::
+	Audio frequency of transmission is x (Hz)
+
+== EXAMPLES
+-----
+wspr0 -t                      # Transmit default message
+wspr0 -t -s -22 -o test.wav   # Generate a test file
+wspr0 -t -s -25 -n 3          # Generate three test files
+wspr0 -b                      # Randomized T/R sequences
+wspr0 -f 14.0956              # Rx only, on 20m::
+wspr0 -D 00001.wav 00002.wav  # Decode these two files
+-----
+
+== BUGS
+
+If find a bug or suspect *'wpsr0'* is not acting as you think it should,
+send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
+
+
+== SEE ALSO
+
+wspr(1), wspr-fmt(1), wspr-fmtave(1), wspr-fcal(1), wspr-fmeasure(1)
+
+
+== AUTHORS
+-----
+Joe Taylor, K1JT, <joe@princeton.edu> .. Original Content Providor
+Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Editor
+-----
+
+== RESOURCES
+-----
+Project Site: ... <http://sourceforge.net/projects/wsjt/>
+Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
+
+For more information see:
+<www.physics.princeton.edu/pulsar/K1JT/WSPR0_Instructions.TXT>
+-----
+
+== COPYING
+
+Copyright \(C) 2014 Joseph H Taylor, Jr, K1JT
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+

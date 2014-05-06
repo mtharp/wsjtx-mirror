@@ -1,24 +1,17 @@
-WSPR(1)
-=======
 :doctype: manpage
+:man source: AsciiDoc
+:man version: 1.0
+:man manual: WSPR Man Page
+= wspr(1)
+
+== NAME
+
+wspr - fmt, fmtave, fcal, fmeasure, wpsr0, - Weak Signal Propagation Reporter
 
 
-NAME
-----
-wspr, fmt, fmtave, fcal, fmeasure - Weak Signal Propagation Reporter
+== SYNOPSIS
 
-
-FILE UNDER CONSTRUCTION
-
-
-SYNOPSIS
---------
-*wspr*     	['OPTIONS'] 'FILE'
-*fmt*      	['OPTIONS'] 'FILE'
-*fmtave*   	['OPTIONS'] 'FILE'
-*fcal*     	['OPTIONS'] 'FILE'
-*fmeasure* 	['OPTIONS'] 'FILE'
-
+*wpsr* [OPTIONS]
 
 DESCRIPTION
 -----------
@@ -42,67 +35,53 @@ are the numbers you should report if you are entering the Frequency Measuring
 Test.
 
 
-OPTIONS
--------
-*-a, --attribute*='SOMETHING'::
+== OPTIONS
 
-*-b, --backend*='SOMETHING-ELSE'::
+-----
+*wspr0*    ['OPTIONS'] 'FILE'
+*fmt*      ['OPTIONS'] 'FILE'
+*fmtave*   ['OPTIONS'] 'FILE'
+*fcal*     ['OPTIONS'] 'FILE'
+*fmeasure* ['OPTIONS'] 'FILE'
+-----
 
-*-c, --conf-file*='WSPR.INI'::
+== BUGS
 
-*-d, --doctype*='MANPAGE'::
-
-
-PLUGIN COMMANDS
----------------
-If there are any
-
-
-EXIT STATUS
------------
-*0*::
-    Success
-
-*1*::
-    Failure
+If find a bug or suspect *'wpsr'* is not acting as you think it should,
+send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
 
 
-BUGS
-----
-See the WSPR distribution BUGS file.
+== SEE ALSO
+
+wspr0(1), wspr-fmt(1), wspr-fmtave(1), wspr-fcal(1), wspr-fmeasure(1)
 
 
-AUTHOR
-------
-WSPR was originally written by Joeseh Taylo, K1JT. Many people have
-contributed to the project.
+== AUTHORS
+-----
+Joe Taylor, K1JT, <joe@princeton.edu> .. Original Content Providor
+Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Editor
+-----
 
+== RESOURCES
+-----
+Project Site: ... <http://sourceforge.net/projects/wsjt/>
+Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
 
-EDITOR
-------
-Greg Beam, KI7MT <ki7mt@yahoo.com>
+For more information see:
+<http://www.physics.princeton.edu/pulsar/K1JT/WSPR_2.0_User.pdf>
+-----
 
+== COPYING
 
-RESOURCES
----------
-SourceForge: <http://sourceforge.net/p/wsjt/wsjt/>
+Copyright \(C) 2014 Joseph H Taylor, Jr, K1JT
 
-Main web site: <http://www.physics.princeton.edu/pulsar/K1JT/>
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-
-SEE ALSO
---------
-wsjt(1), wsjtx(1), wsprx(1), wsprx(1), map65(1), kvasd(1), jt9(1) 
-
-
-COPYING
--------
-Copyright \(C) 2002-2014 Joesph Taylor.
-FMT is free software: you can redistribute it and/or modify under the terms of
-the GNU General Public License as published by the Free Software Foundation,
-either version 3 of the License, or (at your option) any later version.
-
-FMT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE. See the GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 

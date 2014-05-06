@@ -1,6 +1,14 @@
 
 Current Development Version: WSPR-4.0
 
+2014-04-06 Greg Beam <ki7mt@yahoo.com>
+
+* Added WSPR0 Manpage
+* Updated WSPR manpage, now builds with AsciiDoc
+* Still need content updates for WSPR Manpage source file
+* Added both compiled Manpages to SVN + WSPR0 Source File
+* WSPR0 transfer from text file needs verification / review
+
 2014-04-05 (2) Greg Beam <ki7mt@yahoo.com>
 
 * added conditional LDFLAGS to configure.ac
