@@ -1,7 +1,19 @@
 
 Current Development Version: WSPR-4.0
 
-2014-04-06 Greg Beam <ki7mt@yahoo.com>
+2014-04-06 (2) Greg Beam <ki7mt@yahoo.com>
+
+* Moved FFTW3 and Samplerate functions to aclocal.m4
+* Added independent LDFLAG addidtions for each libreary
+  as they may be in different locations
+* removed Makfile, as it's made with ./configure
+* To Build:
+
+	./autoconf -i
+	./configure
+	./make
+
+2014-04-06 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Added WSPR0 Manpage
 * Updated WSPR manpage, now builds with AsciiDoc

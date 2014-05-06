@@ -6,7 +6,6 @@
 OS			:=	@OS@
 MV			:= 	@MV@
 RM			:=	@RM@
-CAT			:=	@CAT@
 MKDIR		:= 	@MKDIR@
 INSTALL		=	install
 PREFIX		:=	@PREFIX@
@@ -15,7 +14,6 @@ CC			:=	@CC@
 FC			:=	@FC@
 FCV			:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
-LDFLAGS		+=	@LDFLAGS@
 
 PYTHON		?=	@PYTHON@
 F2PY		?=	@F2PY@
@@ -24,6 +22,7 @@ F2PY		?=	@F2PY@
 LIBS		:=	@LIBS@
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
 CPPFLAGS	+=	${DEFS} -I.
+LDFLAGS		+=	@LDFLAGS@
 
 # OS Specific Vars
 ifeq (${host_os},*darwin*)

@@ -9,45 +9,14 @@ fail=0
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT(/usr/local/)
 AC_CANONICAL_HOST
-# Checks for programs.
+
+dnl checks for programs.
 AC_PROG_CC
 AC_LANG([C])
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_USE_SYSTEM_EXTENSIONS
-
-dnl test for lib locations
-if test -d /usr/local/lib ; then
-	LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
-fi
-
-dnl test for lib locations
-if test -d /lib ; then
-		LDFLAGS="-L/lib ${LDFLAGS}"
-fi
-
-dnl test for lib locations
-if test -d /usr/lib ; then
-	LDFLAGS="-L/usr/lib ${LDFLAGS}"
-fi
-
-dnl Updated aclocal.m4 to find search alternative locations. Libs are only
-dnl added is aclocal.m4 finds them.
-CFLAGS="-Wall -O0"
-CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
-LDFLAGS="${LDFLAGS}"
-LIBS="-lpthread ${LIBS}"
-
-dnl Check which fortran - macro from aclocal.m4
-AX_CHECK_GFORTRAN
-
-# Checks for library functions.
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS([gettimeofday strchr])
-
-dnl find portaudio libs and include directories - macro from aclocal.m4
-AX_CHECK_PORTAUDIO
 
 dnl test for Darwin compilers
 if test "$ac_cv_c_compiler_gnu" = yes; then
@@ -117,11 +86,43 @@ ppdev.h ppi.h stddef.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h \
 sys/ioctl.h sys/ioctl.h sys/param.h sys/param.h sys/resource.h sys/resource.h \
 sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
 
-AC_CHECK_HEADERS([samplerate.h], [HAS_SAMPLERATE_H=1], [HAS_SAMPLERATE_H=0])
-AC_CHECK_LIB([samplerate], [src_simple], [HAS_SAMPLERATE_L=1], [HAS_SAMPLERATE_L=0])
+# Checks for libraries and functions.
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([gettimeofday strchr])
 
-AC_CHECK_HEADERS([fftw3.h], [HAS_FFTW3_H=1], [HAS_FFTW3_H=0])
-AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [HAS_FFTW3_L=1], [HAS_FFTW3_L=0])
+dnl test for lib locations
+if test -d /usr/local/lib ; then
+	LDFLAGS="-L/usr/local/lib ${LDFLAGS}"
+fi
+
+dnl test for lib locations
+if test -d /lib ; then
+		LDFLAGS="-L/lib ${LDFLAGS}"
+fi
+
+dnl test for lib locations
+if test -d /usr/lib ; then
+	LDFLAGS="-L/usr/lib ${LDFLAGS}"
+fi
+
+dnl Check which fortran - ( aclocal.m4 )
+AX_CHECK_GFORTRAN
+
+dnl check samplerate - ( aclocal.m4 )
+AX_CHECK_SAMPLERATE
+
+dnl check portaudio - ( aclocal.m4 )
+AX_CHECK_FFTW3
+
+dnl check portaudio - ( aclocal.m4 )
+AX_CHECK_PORTAUDIO
+
+dnl added is aclocal.m4 finds them.
+CFLAGS="-Wall -O0"
+CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
+LIBS="-lpthread ${LIBS}"
+LDFLAGS="${PALDFLAGS} ${SRLDFLAGS} ${FFLDFLAGS} ${LDFLAGS}"
+
 
 dnl Debug-related options
 dnl =====================
@@ -160,54 +161,58 @@ if test -z $FC ; then
 	echo "You need gfortran to compile this program!"
 fi
 
-dnl test smaplerate
-if test $HAS_SAMPLERATE_H -eq 0; then
-	echo 
-	echo "Samplerate Headers are required by $PACKAGE_NAME $"
-	echo
-	echo "Check your distribution, and install the appropriate"
-	echo "development packkage"
-	echo
-elif test $HAS_SAMPLERATE_L -eq 0; then
-	fail=1
-	echo "Samplerate Libs are required by $PACKAGE_NAME $"
-	echo
-	echo "Check your distribution, and install the appropriate"
-	echo "development libraries"
-	echo
-dnl add to ${LIBS}
+dnl test samplerate
+if test $HAS_SAMPLERATE -eq 1; then
+	AC_DEFINE(HAS_SAMPLERATE, 1,)
+	AC_DEFINE(HAS_SAMPLERATE_H, 1,)
+	AC_DEFINE(HAS_SAMPLERATE_LIB, 1,)
+	srstatus="OK"
+
+dnl We couldn't find sample, the libs failed or it's the wrong version
 else
-	AC_DEFINE(HAS_SAMPLERATE_H, 1, )
-	LIBS="${LIBS} -lsamplerate"
-	sampleratestatus="OK"
+	fail=1
+	echo
+	echo "Samplerate-dev is required by $PACKAGE_NAME $"
+	echo
+	echo "Standard locations were checked, and not found."
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: samplerate-dev"
+	echo "[2] Build samplerate from source, install to: /usr/local"
+	echo "[3] Confiure with samplerate with non-standard paths:"
+	echo
+	echo './configure --with-samplerate-include-dir=/path/to/samplerate.h \'
+	echo '--with-samplerate-lib-dir=/path/to/pa/libsamplerate.so'
+	echo
 fi
 
-dnl test fftw3
-if test $HAS_FFTW3_H -eq 0; then
-	fail=1
-	echo 
-	echo "FFTW3 Headers are required by $PACKAGE_NAME $"
-	echo
-	echo "Check your distribution, and install the appropriate"
-	echo "development package"
-	echo
+dnl test samplerate
+if test $HAS_FFTW3 -eq 1; then
+	AC_DEFINE(HAS_FFTW3, 1,)
+	AC_DEFINE(HAS_FFTW3_H, 1,)
+	AC_DEFINE(HAS_FFTW3_LIB, 1,)
+	ffstatus="OK"
 
-elif test $HAS_FFTW3_L -eq 0; then
-	fail=1
-	echo "FFTW3 Single Libs are required by $PACKAGE_NAME $"
-	echo
-	echo "Check your distribution, and install the appropriate"
-	echo "libraries"
-	echo
+dnl We couldn't find FFTW, the libs failed
 else
-	AC_DEFINE([HAS_FFTW3_L], 1,)
-	AC_DEFINE([HAS_FFTW3_H], 1,)
-	LIBS="${LIBS} -lfftw3f"
-	fftw3stats="OK"
+	fail=1
+	echo
+	echo "FFTW3 is required by $PACKAGE_NAME $"
+	echo
+	echo "Standard locations were checked, and not found."
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: libfftw3-dev"
+	echo "[2] Build FFTW3 from source, install to: /usr/local"
+	echo "[3] Confiure with FFTW with non-standard paths:"
+	echo
+	echo './configure --with-fftw3-include-dir=/path/to/fftw3.h \'
+	echo '--with-fftw3-lib-dir=/path/to/pa/libfftw3f.so'
+	echo
 fi
 
 dnl test portsudio
-if test $HAS_PORTAUDIO -eq "1"; then
+if test $HAS_PORTAUDIO -eq 1; then
 	AC_DEFINE(HAS_PORTAUDIO, 1,)
 	AC_DEFINE(HAS_PORTAUDIO_H, 1,)
 	AC_DEFINE(HAS_PORTAUDIO_LIB, 1,)
@@ -222,14 +227,13 @@ else
 	echo "Standard locations were checked, and not found."
 	echo
 	echo "Possible Solutions:"
-	echo "[1] Install your distro Version of: portaudio19-dev"
+	echo "[1] Install your distro version of: portaudio19-dev"
 	echo "[2] Build portaudio from source, install to: /usr/local"
 	echo "[3] Confiure with portaudio non-standard paths:"
 	echo
 	echo './configure --with-portaudio-include-dir=/path/to/portaudio.h \'
-	echo '--with-portaudio-lib-dir=/path/to/pa/libs'
+	echo '--with-portaudio-lib-dir=/path/to/pa/libportaudio.so'
 	echo
-	
 fi
 
 dnl This needs work, how to select python3, pyhton27 f2py or f2py3??
@@ -267,9 +271,9 @@ echo "Configuration Summary"
 echo "-------------------------------------------"
 echo
 echo "Package: ......... WSPR 4.0"
-echo "Fcomplier: ....... $fcname";
-echo "Samplerate: ...... $sampleratestatus"
-echo "FFTW3: ........... $fftw3stats"
+echo "Fcomplier: ....... $fcname"
+echo "Samplerate: ...... $srstatus"
+echo "FFTW3: ........... $srstatus"
 echo "Portaudio: ....... $pastatus"
 echo "Portaudio Libs: .. $portaudio_lib_dir"
 echo "Portaudio Inc: ... $portaudio_include_dir"
