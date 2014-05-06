@@ -6,6 +6,7 @@
 OS			:=	@OS@
 MV			:= 	@MV@
 RM			:=	@RM@
+CAT			:=	@CAT@
 MKDIR		:= 	@MKDIR@
 INSTALL		=	install
 PREFIX		:=	@PREFIX@
@@ -14,6 +15,7 @@ CC			:=	@CC@
 FC			:=	@FC@
 FCV			:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
+LDFLAGS		+=	@LDFLAGS@
 
 PYTHON		?=	@PYTHON@
 F2PY		?=	@F2PY@
@@ -39,7 +41,6 @@ DEFS		:=	@DEFS@
 # WSPR CODE
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 
-
 # Default rules
 %.o: %.c
 	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
@@ -55,8 +56,7 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a \
-	-lfftw3f -lportaudio
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
 	${FC} -o wsprcode wsprcode.o thnix_stub.o libwspr.a
@@ -97,7 +97,6 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" thnix.o ${LDFLAGS} ${LIBS} libwspr.a \
 	-m w ${F2PYSRCS}
-
 	${MKDIR} -p build/lib/WsprMod
 	${MVSO}
 	cp WsprMod/w.so WsprModNoGui/w.so

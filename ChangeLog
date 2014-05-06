@@ -1,8 +1,14 @@
 
 Current Development Version: WSPR-4.0
 
+2014-04-05 (2) Greg Beam <ki7mt@yahoo.com>
 
-2014-04-05 Greg Beam <ki7mt@yahoo.com>
+* added conditional LDFLAGS to configure.ac
+* updated the audio message
+* added @LDFLAGS@ to makefile.in as it was missing.
+* minor text edits here and there
+
+2014-04-05 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Removed AX_ISC_POSIX, was for obsolete hardware
 * Combined Makefile.in ieq statments

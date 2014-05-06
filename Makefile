@@ -6,6 +6,7 @@
 OS			:=	linux-gnu
 MV			:= 	/bin/mv
 RM			:=	/bin/rm
+CAT			:=	@CAT@
 MKDIR		:= 	/bin/mkdir
 INSTALL		=	install
 PREFIX		:=	/usr/local/
@@ -13,10 +14,11 @@ PREFIX		:=	/usr/local/
 CC			:=	gcc
 FC			:=	gfortran
 FCV			:=	gnu95
-FC_LIB_PATH	+=	/usr/lib/gcc/i686-linux-gnu/4.8/
+FC_LIB_PATH	+=	/usr/lib/gcc/x86_64-linux-gnu/4.8/
+LDFLAGS		+=	-L/usr/lib/x86_64-linux-gnu -L/usr/lib -L/lib -L/usr/local/lib 
 
 PYTHON		?=	/usr/bin/python3
-F2PY		?=	/usr/local/bin/f2py3
+F2PY		?=	/usr/bin/f2py3
 
 # Libs and Flags
 LIBS		:=	-lpthread  -lportaudio -lsamplerate -lfftw3f
@@ -34,11 +36,10 @@ else
 	-Wno-conversion -Wno-character-truncation -fPIC
 endif
 
-DEFS		:=	-DPACKAGE_NAME=\"WSPR\" -DPACKAGE_TARNAME=\"wspr\" -DPACKAGE_VERSION=\"4.0\" -DPACKAGE_STRING=\"WSPR\ 4.0\" -DPACKAGE_BUGREPORT=\"wsjt-devel@lists.sourceforge.net\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -D__EXTENSIONS__=1 -D_ALL_SOURCE=1 -D_GNU_SOURCE=1 -D_POSIX_PTHREAD_SEMANTICS=1 -D_TANDEM_SOURCE=1 -DFC_LIB_PATH=\"/usr/lib/gcc/i686-linux-gnu/4.8/\" -DFC=\"gfortran\" -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1 -DHAVE_GETTIMEOFDAY=1 -DHAVE_STRCHR=1 -DSTDC_HEADERS=1 -DHAVE_DIRENT_H=1 -DTIME_WITH_SYS_TIME=1 -DHAVE_ERRNO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_FCNTL_H=1 -DHAVE_FLOAT_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIBGEN_H=1 -DHAVE_LIMITS_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SYSLOG_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_UNISTD_H=1 -DHAVE_WAIT_H=1 -DHAVE_SAMPLERATE_H=1 -DHAVE_FFTW3_H=1 -DNDEBUG=1 -DHAS_SAMPLERATE_H=1 -DHAS_FFTW3_L=1 -DHAS_FFTW3_H=1 -DHAS_PORTAUDIO=1 -DHAS_PORTAUDIO_H=1 -DHAS_PORTAUDIO_LIB=1
+DEFS		:=	-DPACKAGE_NAME=\"WSPR\" -DPACKAGE_TARNAME=\"wspr\" -DPACKAGE_VERSION=\"4.0\" -DPACKAGE_STRING=\"WSPR\ 4.0\" -DPACKAGE_BUGREPORT=\"wsjt-devel@lists.sourceforge.net\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -D__EXTENSIONS__=1 -D_ALL_SOURCE=1 -D_GNU_SOURCE=1 -D_POSIX_PTHREAD_SEMANTICS=1 -D_TANDEM_SOURCE=1 -DFC_LIB_PATH=\"/usr/lib/gcc/x86_64-linux-gnu/4.8/\" -DFC=\"gfortran\" -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1 -DHAVE_GETTIMEOFDAY=1 -DHAVE_STRCHR=1 -DSTDC_HEADERS=1 -DHAVE_DIRENT_H=1 -DTIME_WITH_SYS_TIME=1 -DHAVE_ERRNO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_FCNTL_H=1 -DHAVE_FLOAT_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIBGEN_H=1 -DHAVE_LIMITS_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SYSLOG_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_UNISTD_H=1 -DHAVE_WAIT_H=1 -DHAVE_SAMPLERATE_H=1 -DHAVE_FFTW3_H=1 -DNDEBUG=1 -DHAS_SAMPLERATE_H=1 -DHAS_FFTW3_L=1 -DHAS_FFTW3_H=1 -DHAS_PORTAUDIO=1 -DHAS_PORTAUDIO_H=1 -DHAS_PORTAUDIO_LIB=1
 
 # WSPR CODE
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
-
 
 # Default rules
 %.o: %.c
@@ -55,8 +56,7 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a \
-	-lfftw3f -lportaudio
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
 	${FC} -o wsprcode wsprcode.o thnix_stub.o libwspr.a
@@ -97,7 +97,6 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" thnix.o ${LDFLAGS} ${LIBS} libwspr.a \
 	-m w ${F2PYSRCS}
-
 	${MKDIR} -p build/lib/WsprMod
 	${MVSO}
 	cp WsprMod/w.so WsprModNoGui/w.so
