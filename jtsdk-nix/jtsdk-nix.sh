@@ -106,10 +106,9 @@ elif [[ $MMSELECT = "B" ]]; then
 
 # WSJT-X w/CMake
    elif [[ $MMSELECT = "C" ]]; then
-	under_development
-#	_APP_NAME=wsjtx
-#	_OPTION=Release
-#	cmake_nix
+	_APP_NAME=wsjtx
+	_OPTION=Release
+	cmake_nix
 	continue
 
 # WSPR-X w/CMake
