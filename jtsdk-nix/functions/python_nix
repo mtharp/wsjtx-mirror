@@ -71,11 +71,8 @@ echo
 make clean && make distclean
 
 # Configure - using/usr/local as current default
-autoconf && ./configure \
-PYTHON=/usr/bin/python3 \
-F2PY=/usr/local/bin/f2py3
-
-# Just run make for now, make install after beta testing
+autoconf -i
+./configure
 make
 
 echo

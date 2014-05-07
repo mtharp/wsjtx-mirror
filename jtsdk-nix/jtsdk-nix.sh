@@ -91,9 +91,10 @@ MMSELECT=$(head -c 1 < $_TMP/selection)
 
 # WSJT w/Python3
 if [[ $MMSELECT = "A" ]]; then
-	_APP_NAME=wsjt
-	_APP_SRC="$_SRCD/trunk"
-	python_nix
+	under_development
+#	_APP_NAME=wsjt
+#	_APP_SRC="$_SRCD/trunk"
+#	python_nix
 	continue
 
 # WSPR w/Python3
@@ -105,23 +106,26 @@ elif [[ $MMSELECT = "B" ]]; then
 
 # WSJT-X w/CMake
    elif [[ $MMSELECT = "C" ]]; then
-	_APP_NAME=wsjtx
-	_OPTION=Release
-	cmake_nix
+	under_development
+#	_APP_NAME=wsjtx
+#	_OPTION=Release
+#	cmake_nix
 	continue
 
 # WSPR-X w/CMake
    elif [[ $MMSELECT = "D" ]]; then
-	_APP_NAME=wsprx
-	_OPTION=Release
-	cmake_nix
+	under_development
+#	_APP_NAME=wsprx
+#	_OPTION=Release
+#	cmake_nix
 	continue
 
 # MAP65 w/CMake
    elif [[ $MMSELECT = "F" ]]; then
-	_APP_NAME=map65
-	_OPTION=Release
-	cmake_nix
+	under_development
+#	_APP_NAME=map65
+#	_OPTION=Release
+#	cmake_nix
 	continue
 
 # All Apps
