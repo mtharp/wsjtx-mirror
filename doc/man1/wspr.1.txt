@@ -45,15 +45,11 @@ Test.
 *fmeasure* ['OPTIONS'] 'FILE'
 -----
 
+
 == BUGS
 
 If find a bug or suspect *'wpsr'* is not acting as you think it should,
 send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
-
-
-== SEE ALSO
-
-wspr0(1), wspr-fmt(1), wspr-fmtave(1), wspr-fcal(1), wspr-fmeasure(1)
 
 
 == AUTHORS
@@ -70,6 +66,12 @@ Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
 For more information see:
 <http://www.physics.princeton.edu/pulsar/K1JT/WSPR_2.0_User.pdf>
 -----
+
+
+== SEE ALSO
+
+wspr0(1), wspr-fmt(1), wspr-fmtave(1), wspr-fcal(1), wspr-fmeasure(1)
+
 
 == COPYING
 

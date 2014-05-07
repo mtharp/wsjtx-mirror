@@ -1,70 +1,84 @@
+--------------------------------------
 Installation Instructions for WSPR 4.0
 --------------------------------------
 
 The following is a brief installation guide using Linux as the example. WSPR
-can be built on Windows (using MinGW+MSYS / JTSDK-PY), and on Mac OSX 10.6/7
-using the repsective Makefile.
+can be built on Windows (using MinGW+MSYS / JTSDK-PY), Mac OSX 10.6/7,
+and most Linux variants, provided the dependencies are met.
 
-
-BASIC LINUX INSTRUCTIONS: (Linux Example x86_64 System):
------------------------------------------------------------
+REQUIRED DEPENDENCIES
+---------------------
 To compile WSPR, as a minimum, you will need the following:
 
-	* A C, C++ and gfortran compiler.
-	  The GNU Tool chaines tested: 4.8.1/2. 4.9.x has not been tested
-	* GNU Autotools: autoconf, make, libtool
-	* Portaudio-19
-	* FFTW 3.3+
-	* Samplerate Library.
+	* A C/C++ and gfortran compiler
+	* GNU Autotools: autoconf, make
+	* Portaudio-19-dev
+	* FFTW 3.3+-dev
+	* Samplerate Development Library.
 	* Python3.2+
-	* Numeric Python (F2PY-3.2+)
+	* Numeric Python (Numpy), provides F2PY-3.2+
 	* PIL, (Python Imaging Library)
-	* Tcl\TK (8.6.1 or Later)
+	* Python-tk (Tcl\TK 8.6.1 or Later)
 	* Hamlib 1.2.15.3+ (If rig control is desired)
 
-NOTE: Where possible, install dev / header packages.
+NOTE: Where possible, install development header packages. Consult your
+distribuntion documentation for package names.
 
-The default install location is /usr/local, however, you can run WSPR
-from the source tree after make. You can also change the install target
-locaiton using the following configure parameter:
 
---prefix=/desired/install/path
+INSTALL PREFIX
+--------------
+The default install location is /usr/local. You can change the
+install locaiton using the following configuration parameter:
 
-You will also need a paths to Portaudio Libs and Lib-Dir if not picked up
-by the configure script:
+Example:
 
---with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu
+./configure --prefix=/home/$USER/wspr
+
+
+NON-STANDARD LIBRARY LOCATIONS
+------------------------------
+The configure script will search standard Linux header and library locaitons
+for FFTW3, Samplerate and Portaudio19. If it cannot locate and test the 
+required packages, you will be prompted to supply the locations:
+
+Example:
+
+./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu
 --with-portaudio-include-dir=/usr/include
 
-On dual Python systems, you need to specify Python3+ and F2PY3+ locations:
 
-PYTHON=/usr/bin/python3
-F2PY=/usr/local/bin/f2py3
+DUAL-PYTHON SYSTEMS
+--------------------
+On dual Python systems, you need to specify Python3 and F2PY3 locations:
 
-To see a full list of options,use: ./configure --help
+Example:
+
+./configure PYTHON=/usr/bin/python3 F2PY=/usr/local/bin/f2py3
 
 
-CONFIGURE && MAKE (x86_64 *Nix System)
---------------------------------------
+CONFIGURE && MAKE
+-----------------
+To configure and build WSPR, type the following:
 
-	autoconf
-	./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu \
-	--with-portaudio-include-dir=/usr/include \
-	PYTHON=/usr/bin/python3 \
-	F2PY=/usr/local/bin/f2py3
-	
 
-At this point, you can run WSPR from the source tree with:
+./autogen.sh
+
+
+Note: You can re-run ./configure any time after a sucessfull ./autogen.sh run.
+To see available configure options, type:
+
+./configure --help
+
+
+RUN WPSR
+--------
 
 python3 -O wspr.py
 
 
-FINAL MAKE INSTALL
-------------------
-
-To install WSPR into system directories (for all users)
-
-Note: you need root or RootSudo for this step:
+MAKE INSTALL
+------------
+To install WSPR system wide (for all users):
 
 sudo make install
 
@@ -73,12 +87,13 @@ or
 root make install
 
 
-CLEAN BUILD TREE:
------------------
+CLEAN THE BUILD TREE
+--------------------
 make clean
 
-CLEAN FOR DISTRIBUTION:
------------------------
+
+CLEAN FOR DISTRIBUTION
+----------------------
 make distclean
 
 
@@ -98,7 +113,7 @@ www.python.org.  Python3.4 will be installed in
 It is important that references to python should then be
 to python3.4 and not the earlier version of python.  Watch
 out for Apple's use of soft links to the earlier versions
-found in /System/Library/Frameworks/Python.framework.   These
+found in /System/Library/Frameworks/Python.framework. These
 should be disabled.
 
 You will also need portaudio v19 as well as fftw libraries

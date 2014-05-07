@@ -1,6 +1,15 @@
 
 Current Development Version: WSPR-4.0
 
+2014-04-07 Greg Beam <ki7mt@yahoo.com>
+
+* Added autogen.sh
+* Removed config file as autoconf -i generates it
+* Updated INSTALL.txt
+* Updated make distclean fmt generated files
+* Updated man pages
+
+
 2014-04-06 (2) Greg Beam <ki7mt@yahoo.com>
 
 * Moved FFTW3 and Samplerate functions to aclocal.m4
