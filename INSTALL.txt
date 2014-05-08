@@ -19,10 +19,17 @@ To compile WSPR, as a minimum, you will need the following:
 	* Numeric Python (Numpy), provides F2PY-3.2+
 	* PIL, (Python Imaging Library)
 	* Python-tk (Tcl\TK 8.6.1 or Later)
-	* Hamlib 1.2.15.3+ (If rig control is desired)
+	* Hamlib 1.2.15.x (or current distro verson
 
 NOTE: Where possible, install development header packages. Consult your
 distribuntion documentation for package names.
+
+Example: For Ubuntu 14.04, install the following:
+
+sudo apt-get install autoconf autotools build-essential gfortran libtool \
+libtool libfftw3-dev libgfortran3:i386 libusb-dev libhamlib-dev libhamlib-utils \
+libsamplerate0-dev portaudio19-dev python3-setuptools python3-dev python3-imaging \
+python3-imaging-tk python3-pip python3-tk python3-numpy texinfo
 
 
 INSTALL PREFIX

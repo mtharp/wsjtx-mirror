@@ -63,7 +63,7 @@ AC_PATH_PROG(PYTHON, python3)
 AC_PATH_PROG(F2PY, f2py3)
 AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
-OS=`uname`
+dnl OS=`uname`
 AC_SUBST(OS, "${host_os}")
 
 dnl Checks for header files.
@@ -121,7 +121,7 @@ dnl added is aclocal.m4 finds them.
 CFLAGS="-Wall -O0"
 CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
 LIBS="-lpthread ${LIBS}"
-LDFLAGS="${PALDFLAGS} ${SRLDFLAGS} ${FFLDFLAGS} ${LDFLAGS}"
+LDFLAGS="${LDFLAGS}"
 
 
 dnl Debug-related options
@@ -129,9 +129,9 @@ dnl =====================
 
 AC_ARG_ENABLE(clobber,
 AC_HELP_STRING([--enable-clobber], [Don't preserve old binaries on make install]),
-[clobber=$enableval], [clobber=no])
+[clobber="${enableval}"], [clobber=no])
 
-if test "$clobber" = yes; then
+if test "${clobber}" = yes; then
 	AC_SUBST(CLOBBER, yes)
 fi
 
@@ -139,24 +139,24 @@ AC_ARG_ENABLE(assert,
 AC_HELP_STRING([--enable-assert],[Enable assert().]),
 [assert=$enableval], [assert=no])
 
-if test "$assert" = no; then
+if test "${assert}" = no; then
 	AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])
 fi
 
-if test "$prefix" = "NONE"; then 
-	prefix=${ac_default_prefix}
+if test "${prefix}" = "NONE"; then 
+	prefix="${ac_default_prefix}"
 else
 
 dnl remove trainling slash if present "/"
 prefix=`echo ${prefix%/}`
-AC_DEFINE_UNQUOTED(PREFIX, "$prefix", [Prefix where WSPR is installed.])
+AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Prefix where WSPR will be installed.])
 	
 fi
 
 dnl sanity tests.
 dnl =============
 
-if test -z $FC ; then
+if test -z "${FC}"; then
 	fail=1
 	echo "You need gfortran to compile this program!"
 fi
@@ -187,9 +187,8 @@ else
 fi
 
 dnl test samplerate
-if test $HAS_FFTW3 -eq 1; then
+if test "${HAS_FFTW3}" -eq 1; then
 	AC_DEFINE(HAS_FFTW3, 1,)
-	AC_DEFINE(HAS_FFTW3_H, 1,)
 	AC_DEFINE(HAS_FFTW3_LIB, 1,)
 	ffstatus="OK"
 
@@ -197,7 +196,7 @@ dnl We couldn't find FFTW, the libs failed
 else
 	fail=1
 	echo
-	echo "FFTW3 is required by $PACKAGE_NAME $"
+	echo "FFTW3 Libs are required by $PACKAGE_NAME"
 	echo
 	echo "Standard locations were checked, and not found."
 	echo
@@ -206,13 +205,12 @@ else
 	echo "[2] Build FFTW3 from source, install to: /usr/local"
 	echo "[3] Confiure with FFTW with non-standard paths:"
 	echo
-	echo './configure --with-fftw3-include-dir=/path/to/fftw3.h \'
-	echo '--with-fftw3-lib-dir=/path/to/pa/libfftw3f.so'
+	echo './configure --with-fftw3-lib-dir=/path/to/pa/libfftw3f.so'
 	echo
 fi
 
 dnl test portsudio
-if test $HAS_PORTAUDIO -eq 1; then
+if test "${HAS_PORTAUDIO}" -eq 1; then
 	AC_DEFINE(HAS_PORTAUDIO, 1,)
 	AC_DEFINE(HAS_PORTAUDIO_H, 1,)
 	AC_DEFINE(HAS_PORTAUDIO_LIB, 1,)
@@ -241,6 +239,9 @@ dnl Need m4 module to sort all this out.
 dnl For now, should specify:
 dnl F2PY=/path/to/f2py3
 dnl or add f2py3 to svn
+dnl Python Version:
+dnl python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'
+dnl 
 if test "$F2PY" = ""; then
 	echo "You are missing f2py3, trying local copy."
 	F2PY="f2py3"
@@ -260,7 +261,7 @@ dnl do summary
 dnl
 dnl If fail a pre-requisite then fail
 dnl
-if test $fail -eq 1; then
+if test "${fail}" -eq 1; then
 	AC_MSG_ERROR([Please check error messages and install missing packages.])
 fi
 
@@ -270,13 +271,13 @@ echo "-------------------------------------------"
 echo "Configuration Summary"
 echo "-------------------------------------------"
 echo
-echo "Package: ......... WSPR 4.0"
-echo "Fcomplier: ....... $fcname"
-echo "Samplerate: ...... $srstatus"
-echo "FFTW3: ........... $srstatus"
-echo "Portaudio: ....... $pastatus"
-echo "Portaudio Libs: .. $portaudio_lib_dir"
-echo "Portaudio Inc: ... $portaudio_include_dir"
-echo "Install Prefix: .. $prefix"
+echo " Package: ......... WSPR 4.0"
+echo " Fcomplier: ....... ${fcname}"
+echo " Samplerate: ...... ${srstatus}"
+echo " FFTW3: ........... ${srstatus}"
+echo " Portaudio: ....... ${pastatus}"
+echo " Portaudio Libs: .. ${portaudio_lib_dir}"
+echo " Portaudio Inc: ... ${portaudio_include_di}r"
+echo " Install Prefix: .. ${prefix}"
 echo
 

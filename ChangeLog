@@ -1,6 +1,16 @@
 
 Current Development Version: WSPR-4.0
 
+
+2014-04-07 Greg Beam <ki7mt@yahoo.com>
+
+* Cleaned up paramater expansion
+* Removed fftw.h search, header file not used
+* minor edits to autogen.sh
+* updated distclean
+* minor edits to INSTALL.txt
+
+
 2014-04-07 Greg Beam <ki7mt@yahoo.com>
 
 * Added autogen.sh

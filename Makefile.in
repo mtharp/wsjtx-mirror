@@ -115,6 +115,6 @@ clean:
 distclean:
 	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
-	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fcal.out \
+	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
 	pixmap.dat wspr.log configure
-	${RM} -r autom4*
+	${RM} -rf ./autom4* ./__pycache__

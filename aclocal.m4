@@ -34,9 +34,9 @@ dnl ===========================================================================
 dnl {{{ ax_check_gfortran
 AC_DEFUN([AX_CHECK_GFORTRAN],[
 
-AC_ARG_ENABLE([g95],
-AC_HELP_STRING([--enable-g95],[Use G95 compiler if available.]),
-[g95=$enableval], [g95=no])
+dnl AC_ARG_ENABLE([g95],
+dnl AC_HELP_STRING([--enable-g95],[Use G95 compiler if available.]),
+dnl [g95=$enableval], [g95=no])
 
 AC_ARG_ENABLE([gfortran],
 AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
@@ -49,18 +49,18 @@ dnl
 
 FCV=""
 
-if test -n $[{FC}] ; then
-	gfortran_name_part=`echo $[{FC}] | cut -c 1-8`
-	if test -n $[{gfortran_name_part}] = "gfortran" ; then
-		gfortran_name=$[{FC}]
-   		FC_LIB_PATH=`$[{FC}] -print-file-name=`
+if test -n ${FC} ; then
+	gfortran_name_part=`echo ${FC} | cut -c 1-8`
+	if test -n ${gfortran_name_part} = "gfortran" ; then
+		gfortran_name=${FC}
+   		FC_LIB_PATH=`${FC} -print-file-name=`
 		g95=no
 		gfortran=yes
 		fcname=gfortran
-		FFLAGS="$[{FFLAGS_GFORTRAN}]"
-		FCV="gnu95"
+		FFLAGS="${FFLAGS_GFORTRAN}"
+		FCV=gnu95
 	else
-		unset $[{FC}]
+		unset ${FC}
 	fi
 fi
 
@@ -85,13 +85,13 @@ dnl
 dnl Pick up current gfortran from ports infrastructure for fbsd
 dnl
         FreeBSD*)
-		if test -z $[{gfortran_name}] ; then
+		if test -z ${gfortran_name} ; then
 			gfortran_name=`grep FC: /usr/ports/Mk/bsd.gcc.mk | head -1 |awk '{print $[2]}'`
 		fi
-		FCV_G95="g95"
+		FCV_G95=g95
 	;;
 	*)
-		FCV_G95="g95"
+		FCV_G95=g95
 		AC_MSG_RESULT(no)
 	;;
 esac
@@ -100,35 +100,35 @@ dnl
 dnl look for gfortran if nothing else was given
 dnl
 
-if test -z $[{gfortran_name}] ; then
-	gfortran_name="gfortran"
+if test -z ${gfortran_name}; then
+	gfortran_name=gfortran
 fi
 
 AC_PATH_PROG(G95, g95)
 AC_PATH_PROG(GFORTRAN, $[{gfortran_name}])
 
-if test ! -z $[{GFORTRAN}] ; then
-	echo "Gfortran found at $[{GFORTRAN}]"
+if test ! -z ${GFORTRAN}; then
+	echo "Gfortran found at ${GFORTRAN}"
 
-	if test "$[{gfortran}]" = yes; then
-   		FC_LIB_PATH=`$[{GFORTRAN}] -print-file-name=`
-		FC=`basename $[{GFORTRAN}]`
+	if test "${gfortran}" = yes; then
+   		FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
+		FC=`basename ${GFORTRAN}`
 		g95=no
-		FFLAGS="$[{FFLAGS_GFORTRAN}]"
-		FCV="gnu95"
+		FFLAGS="${FFLAGS_GFORTRAN}"
+		FCV=gnu95
 	fi
 else
 	echo "** No gfortran compiler found **"
 fi
 
-if test ! -z $[{G95}] ; then
-	echo "* g95 compiler found at $[{G95}]"
-	if test "$[{g95}]" = yes; then
-       	FC_LIB_PATH=`$[{G95}] -print-file-name=`
-		FC=`basename $[{G95}]`
+if test ! -z ${G95} ; then
+	echo "* g95 compiler found at ${G95}"
+	if test "${g95}" = yes; then
+       	FC_LIB_PATH=`${G95} -print-file-name=`
+		FC=`basename ${G95}`
 		gfortran=no
-		FFLAGS="$[{FFLAGS_G95}]"
-		FCV=$[{FCV_G95}]
+		FFLAGS="${FFLAGS_G95}"
+		FCV="${FCV_G95}"
 	fi
 else
 	echo "G95 Not required, so not checking"
@@ -137,29 +137,29 @@ fi
 dnl
 dnl if FC is not set by now, pick a compiler for user
 dnl
-if test -z $[{FC}] ; then
-	if test ! -z $[{GFORTRAN}] ; then
-		if test "$[{g95}]" = yes; then
+if test -z ${FC} ; then
+	if test ! -z ${GFORTRAN}; then
+		if test "${g95}" = yes; then
 			echo "You enabled g95, but no g95 compiler found, defaulting to gfortran instead"
 		fi
-       	FC_LIB_PATH=`$[{GFORTRAN}] -print-file-name=`
-	    FC=`basename $[{GFORTRAN}]`
+       	FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
+	    FC=`basename ${GFORTRAN}`
 		g95=no
 		gfortran=yes
-		fcname="gfortran"
-		FFLAGS="$[{FFLAGS_GFORTRAN}]"
-		FCV="gnu95"
+		fcname=gfortran
+		FFLAGS="${FFLAGS_GFORTRAN}"
+		FCV=gnu95
 	elif test ! -z $G95 ; then
-		if test "$[{gfortran}]" = yes; then
+		if test "${gfortran}" = yes; then
 			echo "You enabled gfortran, but no gfortran compiler found, defaulting to g95 instead"
 		fi
-       		FC_LIB_PATH=`$[{G95}] -print-file-name=`
-	        FC=`basename $[{G95}]`
+       		FC_LIB_PATH=`${G95} -print-file-name=`
+	        FC=`basename ${G95}`
 		g95=yes
 		gfortran=no
-		fcname="g95"
-		FFLAGS="$[{FFLAGS_G95}]"
-		FCV=$[{FCV_G95}]
+		fcname=g95
+		FFLAGS="${FFLAGS_G95}"
+		FCV="${FCV_G95}"
 	fi
 fi
 
@@ -204,10 +204,10 @@ AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
     [portaudio_lib_dir=$with_portaudio_lib_dir])
 
 # dnl If not User Supplied ARGS, look in alternative locations
-if test -e $[{portaudio_include_dir}]/portaudio.h; then
+if test -e ${portaudio_include_dir}/portaudio.h; then
 	HAS_PORTAUDIO_H=1
 
-elif test -e $[{pa_include_dir1}]/portaudio.h; then
+elif test -e ${pa_include_dir1}/portaudio.h; then
 	HAS_PORTAUDIO_H=1
 else 
 	HAS_PORTAUDIO_H=0
@@ -217,34 +217,34 @@ dnl Test for lib directories (4) locaitons
 dnl We can add more as ndded.
 
 # Testing Traditional Location First
-if test -e $[{portaudio_lib_dir}]/libportaudio.so -o -e $[{portaudio_lib_dir}]/libportaudio.a;then
+if test -e ${portaudio_lib_dir}/libportaudio.so -o -e ${portaudio_lib_dir}/libportaudio.a; then
 	HAS_PORTAUDIO_LIB=1
 
 # Testing Alternate Location: /usr/local/lib
-elif test -e $[{pa_lib_dir1}]/libportaudio.so -o -e $[{pa_lib_dir1}]/libportaudio.a;then
+elif test -e ${pa_lib_dir1}/libportaudio.so -o -e ${pa_lib_dir1}/libportaudio.a; then
 	HAS_PORTAUDIO_LIB=1
-	portaudio_lib_dir="$[{pa_lib_dir1}]"
+	portaudio_lib_dir="${pa_lib_dir1}"
 
 # Testing Alternate /usr/lib/x86_64-linux-gnu
-elif test -e $[{pa_lib_dir2}]/libportaudio.so -o -e $[{pa_lib_dir2}]/libportaudio.a;then
+elif test -e $[{pa_lib_dir2}]/libportaudio.so -o -e $[{pa_lib_dir2}]/libportaudio.a; then
 	HAS_PORTAUDIO_LIB=1
-	portaudio_lib_dir="$[{pa_lib_dir2}]"
+	portaudio_lib_dir="${pa_lib_dir2}"
 
 # Testing Alternate /usr/lib/i386-linux-gnu
-elif test -e $[{pa_lib_dir3}]/libportaudio.so -o -e $[{pa_lib_dir3}]/libportaudio.a;then
+elif test -e ${pa_lib_dir3}/libportaudio.so -o -e ${pa_lib_dir3}/libportaudio.a; then
 	HAS_PORTAUDIO_LIB=1
-	portaudio_lib_dir="$[{pa_lib_dir3}]"
+	portaudio_lib_dir="${pa_lib_dir3}"
 
 else
 	HAS_PORTAUDIO_LIB=0
 fi
 
 # Setting HAS_PORTAUDIO 
-if test $[{HAS_PORTAUDIO_H}] -eq 1 -a $[{HAS_PORTAUDIO_LIB}] -eq 1; then
+if test ${HAS_PORTAUDIO_H} -eq 1 -a ${HAS_PORTAUDIO_LIB} -eq 1; then
 
-	CPPFLAGS="-I$[{portaudio_include_dir}] $[{CPPFLAGS}]"
-	LDFLAGS="-L$[{portaudio_lib_dir}] $[{LDFLAGS}]"
-	LIBS="$[{LIBS}] -lportaudio"
+	CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
+	LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
+	LIBS="${LIBS} -lportaudio"
 
 	dnl Check Portaudio Version
 	AC_CHECK_LIB([portaudio], [Pa_GetVersion], [HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
@@ -295,9 +295,9 @@ AC_HELP_STRING([--with-samplerate-lib-dir=<path>],
 if test -e $[{samplerate_include_dir}]/samplerate.h; then
 	HAS_SAMPLERATE_H=1
 
-elif test -e $[{sr_include_dir1}]/samplerate.h; then
+elif test -e ${sr_include_dir1}/samplerate.h; then
 	HAS_SAMPLERATE_H=1
-	samplerate_include_dir="$[{sr_include_dir1}]"
+	samplerate_include_dir="${sr_include_dir1}"
 else 
 	HAS_SAMPLERATE_H=0
 fi
@@ -306,34 +306,34 @@ dnl Test for lib directories (4) locaitons
 dnl We can add more as ndded.
 
 # Testing Traditional Location First
-if test -e $[{samplerate_lib_dir}]/libsamplerate.so -o -e $[{samplerate_lib_dir}]/libsamplerate.a; then
+if test -e ${samplerate_lib_dir}/libsamplerate.so -o -e ${samplerate_lib_dir}/libsamplerate.a; then
 	HAS_SAMPLERATE_LIB=1
 
 # Testing Alternate Location: /usr/local/lib
-elif test -e $[{sr_lib_dir1}]/libsamplerate.so -o -e $[{sr_lib_dir1}]/libsamplerate.a; then
+elif test -e ${sr_lib_dir1}/libsamplerate.so -o -e ${sr_lib_dir1}/libsamplerate.a; then
 	HAS_SAMPLERATE_LIB=1
-	samplerate_lib_dir="$[{sr_lib_dir1}]"
+	samplerate_lib_dir="${sr_lib_dir1}"
 
 # Testing Alternate /usr/lib/x86_64-linux-gnu
-elif test -e $[{sr_lib_dir2}]/libsamplerate.so -o -e $[{sr_lib_dir2}]/libsamplerate.a; then
+elif test -e ${sr_lib_dir2}/libsamplerate.so -o -e ${sr_lib_dir2}/libsamplerate.a; then
 	HAS_SAMPLERATE_LIB=1
 	samplerate_lib_dir="$[{sr_lib_dir2}]"
 
 # Testing Alternate /usr/lib/i386-linux-gnu
-elif test -e $[{pa_lib_dir3}]/libsamplerate.so -o -e $[{pa_lib_dir3}]/libsamplerate.a; then
+elif test -e ${pa_lib_dir3}/libsamplerate.so -o -e ${pa_lib_dir3}/libsamplerate.a; then
 	HAS_SAMPLERATE_LIB=1
-	samplerate_lib_dir="$[{sr_lib_dir3}]"
+	samplerate_lib_dir="${sr_lib_dir3}"
 
 else
 	HAS_SAMPLERATE_LIB=0
 fi
 
 # Setting HAS_SAMPLERATE
-if test $[{HAS_SAMPLERATE_H}] -eq 1 -a $[{HAS_SAMPLERATE_LIB}] -eq 1; then
+if test ${HAS_SAMPLERATE_H} -eq 1 -a ${HAS_SAMPLERATE_LIB} -eq 1; then
 
-	CPPFLAGS="-I$[{samplerate_include_dir}] $[{CPPFLAGS}]"
-	LDFLAGS="-L$[{samplerate_lib_dir}] $[{LDFLAGS}]"
-	LIBS="$[{LIBS}] -lsamplerate"
+	CPPFLAGS="-I${samplerate_include_dir} ${CPPFLAGS}"
+	LDFLAGS="-L${samplerate_lib_dir} ${LDFLAGS}"
+	LIBS="${LIBS} -lsamplerate"
 
 	dnl Check Portaudio Version
 	AC_CHECK_LIB([samplerate], [src_simple], [HAS_SAMPLERATE_LIB=1], [HAS_SAMPLERATE_LIB=0])
@@ -351,16 +351,11 @@ dnl ----------------------------------------------------------------------------
 dnl {{{ ax_check_fftw3
 AC_DEFUN([AX_CHECK_FFTW3],[
 
-HAS_FFTW3_H=0
 HAS_FFTW3_LIB=0
 HAS_FFTW3=0
 
 dnl uncomment to use custom message
 dnl AC_MSG_CHECKING([FFTW3])
-
-dnl Look in more places for fftw3.
-fftw3_include_dir="/usr/include"
-ff_include_dir1="/usr/local/include"
 
 dnl Look in more places for libfftw3f.{a.so}
 fftw3_lib_dir="/usr/lib"
@@ -369,59 +364,43 @@ ff_lib_dir2="/usr/lib/x86_64-linux-gnu"
 ff_lib_dir3="/usr/lib/i386-linux-gnu"
 
 dnl User Supplied ARGS
-AC_ARG_WITH([samplerate-include-dir],
-AC_HELP_STRING([--with-fftw3-include-dir=<path>],
-    [path to fftw3 include files]),
-    [fftw3_include_dir=$with_fftw3_include_dir])
-
 AC_ARG_WITH([fftw3-lib-dir],
 AC_HELP_STRING([--with-fftw3-lib-dir=<path>],
     [path to fftw3 lib files]),
     [fftw3_lib_dir=$with_samplerate_lib_dir])
 
-# dnl If not User Supplied ARGS, look in alternative locations
-if test -e $[{fftw3_include_dir}]/fftw3.h; then
-	HAS_FFTW3_H=1
-
-elif test -e $[{sr_include_dir1}]/fftw3.h; then
-	HAS_FFTW3_H=1
-	fftw3_include_dir="$[{sr_include_dir1}]"
-else 
-	HAS_FFTW3_H=0
-fi
-
 dnl Test for lib directories (4) locaitons
 dnl We can add more as ndded.
 
 # Testing Traditional Location First
-if test -e $[{fftw3_lib_dir}]/libfftw3f.so -o -e $[{fftw3_lib_dir}]/libfftw3f.a; then
+if test -e ${fftw3_lib_dir}/libfftw3f.so -o -e ${fftw3_lib_dir}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
 
 # Testing Alternate Location: /usr/local/lib
-elif test -e $[{ff_lib_dir1}]/libfftw3f.so -o -e $[{ff_lib_dir1}]/libfftw3f.a; then
+elif test -e ${ff_lib_dir1}/libfftw3f.so -o -e ${ff_lib_dir1}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
-	fftw3_lib_dir="$[{sr_lib_dir1}]"
+	fftw3_lib_dir="${sr_lib_dir1}"
 
 # Testing Alternate /usr/lib/x86_64-linux-gnu
-elif test -e $[{ff_lib_dir2}]/libfftw3f.so -o -e $[{ff_lib_dir2}]/libfftw3f.a; then
+elif test -e ${ff_lib_dir2}/libfftw3f.so -o -e ${ff_lib_dir2}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
-	fftw3_lib_dir="$[{sr_lib_dir2}]"
+	fftw3_lib_dir="${sr_lib_dir2}"
 
 # Testing Alternate /usr/lib/i386-linux-gnu
-elif test -e $[{ff_lib_dir3}]/libfftw3f.so -o -e $[{pa_lib_dir3}]/libfftw3f.a; then
+elif test -e ${ff_lib_dir3}/libfftw3f.so -o -e ${pa_lib_dir3}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
-	fftw3_lib_dir="$[{sr_lib_dir3}]"
+	fftw3_lib_dir="${sr_lib_dir3}"
 
 else
 	HAS_FFTW3_LIB=0
 fi
 
 # Setting HAS_SAMPLERATE
-if test $[{HAS_FFTW3_H}] -eq 1 -a $[{HAS_FFTW3_LIB}] -eq 1; then
+if test "${HAS_FFTW3_LIB}" -eq 1; then
 
-	CPPFLAGS="-I$[{fftw3_include_dir}] $[{CPPFLAGS}]"
-	LDFLAGS="-L$[{fftw3_lib_dir}] $[{LDFLAGS}]"
-	LIBS="$[{LIBS}] -lfftw3f"
+	CPPFLAGS="-I${fftw3_include_dir} ${CPPFLAGS}"
+	LDFLAGS="-L${fftw3_lib_dir} ${LDFLAGS}"
+	LIBS="${LIBS} -lfftw3f"
 
 	dnl Check Portaudio Version
 	AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [HAS_FFTW3_L=1], [HAS_FFTW3_L=0])

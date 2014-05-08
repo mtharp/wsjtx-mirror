@@ -60,11 +60,11 @@ do
 		$_BASED/configure
 			echo "Finished creating Makefile, To build $_PROJECT, type:"
 			echo
-			echo "make"
+			echo " make"
 			echo
 			echo "After build, to run $_PROJECT, type:"
 			echo
-			echo "python3 -O wspr.py"
+			echo " python3 -O wspr.py"
 			echo
 	exit 0
 	;;
