@@ -45,7 +45,7 @@ if test ! -z "$CFLAGS"; then
 	CFLAGS="$CFLAGS"
 fi
 
-dnl standard m4 checkes
+dnl standard m4 checks
 AC_C_INLINE
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_MAKE_SET
@@ -81,14 +81,15 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 
-AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
-ppdev.h ppi.h stddef.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h \
-sys/ioctl.h sys/ioctl.h sys/param.h sys/param.h sys/resource.h sys/resource.h \
-sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
-
 # Checks for libraries and functions.
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday strchr])
+
+AC_CHECK_HEADERS_ONCE([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
+linux/ppdev.h dev/ppbus/ppi.h pthread.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h \
+sys/ioctl.h sys/ioctl.h sys/param.h sys/param.h sys/resource.h sys/stat.h \
+sys/syslog.h sys/time.h sys/wait.h termios.h unistd.hinttypes.h \
+wait.h])
 
 dnl test for lib locations
 if test -d /usr/local/lib ; then
@@ -277,7 +278,7 @@ echo " Samplerate: ...... ${srstatus}"
 echo " FFTW3: ........... ${srstatus}"
 echo " Portaudio: ....... ${pastatus}"
 echo " Portaudio Libs: .. ${portaudio_lib_dir}"
-echo " Portaudio Inc: ... ${portaudio_include_di}r"
+echo " Portaudio Inc: ... ${portaudio_include_dir}"
 echo " Install Prefix: .. ${prefix}"
 echo
 

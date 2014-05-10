@@ -6,44 +6,45 @@
 
 == NAME
 
-wspr - fmt, fmtave, fcal, fmeasure, wpsr0, - Weak Signal Propagation Reporter
+wspr - Weak Signal Propagation Reporter
 
 
 == SYNOPSIS
 
-*wpsr* [OPTIONS]
+*wpsr*, *wspr0* [OPTIONS], *fmt* [OPTIONS], *fmtave* [FILE], *fcal* [FILE],
+*fmeasure*	[FILE]
 
-DESCRIPTION
------------
-*wspr* (pronounced "whisper") stands for "Weak Signal Propagation
-Reporter." The WSPR software is designed for probing potential radio
-propagation paths using low-power beacon-like transmissions.
+== PROGRAMS
 
-*fmt* Sets the dial frequency of a CAT-controlled radio and performs
-a sequence of measurements of the strongest resulting audio tone near a 
+There are (6) programs associated with *WSPR*:
+
+*WSPR* - (pronounced "whisper") stands for "Weak Signal Propagation
+Reporter". The WSPR software is designed for probing potential radio
+propagation paths using low-power beacon-like transmissions. *WSPR* does
+not take command-line auguemnts, simply run the applicaiton and setup your
+stations parameters.
+
+*WSPR0* - is a simple command-line version of WSPR with no frills,
+no graphics and no GUI.  Many advanced features of the full WSPR
+program, including I/Q mode, frequency hopping, and automatic
+uploading of spots to WSPRnet.org, are not included.  *wspr0* is 
+intended for specialized uses where its easy compilation, small memory
+requirements, etc., can be advantageous.
+
+*FMT* - Sets the dial frequency of a CAT-controlled radio and performs
+a sequence of measurements for the strongest resulting audio tone near a 
 specified offset frequency. Input parameters are taken from the command line,
 and output goes to files fmt.out and fmt.all. The latter file is cumulative.
 
-*fmtave* Averages data found in a specified file having the format of fmt.all
+*FMTAVE* - Averages data found in a specified file having the format of fmt.all
 
-*fcal* Calculates a best-fit straight line for a data saved in fmtave.out.
+*FCAL* - Calculates a best-fit straight line for a data saved in fmtave.out.
 Results are saved in file fcal.out.
 
-*fmeasure* Calculates the properly calibrated frequency of each test signal
+*FMEASURE* - Calculates the properly calibrated frequency of each test signal
 found in file fmtave.out. Results are saved in file fmeasure.out, and these
 are the numbers you should report if you are entering the Frequency Measuring
 Test.
-
-
-== OPTIONS
-
------
-*wspr0*    ['OPTIONS'] 'FILE'
-*fmt*      ['OPTIONS'] 'FILE'
-*fmtave*   ['OPTIONS'] 'FILE'
-*fcal*     ['OPTIONS'] 'FILE'
-*fmeasure* ['OPTIONS'] 'FILE'
------
 
 
 == BUGS

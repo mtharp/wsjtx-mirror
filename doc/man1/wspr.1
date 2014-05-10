@@ -2,12 +2,12 @@
 .\"     Title: wspr
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 05/06/2014
+.\"      Date: 05/09/2014
 .\"    Manual: WSPR Man Page
 .\"    Source: AsciiDoc 1.0
 .\"  Language: English
 .\"
-.TH "WSPR" "1" "05/06/2014" "AsciiDoc 1\&.0" "WSPR Man Page"
+.TH "WSPR" "1" "05/09/2014" "AsciiDoc 1\&.0" "WSPR Man Page"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,42 +28,28 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-wspr \- fmt, fmtave, fcal, fmeasure, wpsr0, \- Weak Signal Propagation Reporter
+wspr \- Weak Signal Propagation Reporter
 .SH "SYNOPSIS"
 .sp
-\fBwpsr\fR [OPTIONS]
-.SH "DESCRIPTION"
+\fBwpsr\fR, \fBwspr0\fR [OPTIONS], \fBfmt\fR [OPTIONS], \fBfmtave\fR [FILE], \fBfcal\fR [FILE], \fBfmeasure\fR [FILE]
+.SH "PROGRAMS"
 .sp
-\fBwspr\fR (pronounced "whisper") stands for "Weak Signal Propagation Reporter\&." The WSPR software is designed for probing potential radio propagation paths using low\-power beacon\-like transmissions\&.
+There are (6) programs associated with \fBWSPR\fR:
 .sp
-\fBfmt\fR Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements of the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, and output goes to files fmt\&.out and fmt\&.all\&. The latter file is cumulative\&.
+\fBWSPR\fR \- (pronounced "whisper") stands for "Weak Signal Propagation Reporter"\&. The WSPR software is designed for probing potential radio propagation paths using low\-power beacon\-like transmissions\&. \fBWSPR\fR does not take command\-line auguemnts, simply run the applicaiton and setup your stations parameters\&.
 .sp
-\fBfmtave\fR Averages data found in a specified file having the format of fmt\&.all
+\fBWSPR0\fR \- is a simple command\-line version of WSPR with no frills, no graphics and no GUI\&. Many advanced features of the full WSPR program, including I/Q mode, frequency hopping, and automatic uploading of spots to WSPRnet\&.org, are not included\&. \fBwspr0\fR is intended for specialized uses where its easy compilation, small memory requirements, etc\&., can be advantageous\&.
 .sp
-\fBfcal\fR Calculates a best\-fit straight line for a data saved in fmtave\&.out\&. Results are saved in file fcal\&.out\&.
+\fBFMT\fR \- Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements for the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, and output goes to files fmt\&.out and fmt\&.all\&. The latter file is cumulative\&.
 .sp
-\fBfmeasure\fR Calculates the properly calibrated frequency of each test signal found in file fmtave\&.out\&. Results are saved in file fmeasure\&.out, and these are the numbers you should report if you are entering the Frequency Measuring Test\&.
-.SH "OPTIONS"
+\fBFMTAVE\fR \- Averages data found in a specified file having the format of fmt\&.all
 .sp
-.if n \{\
-.RS 4
-.\}
-.nf
-*wspr0*    [\*(AqOPTIONS\*(Aq] \*(AqFILE\*(Aq
-*fmt*      [\*(AqOPTIONS\*(Aq] \*(AqFILE\*(Aq
-*fmtave*   [\*(AqOPTIONS\*(Aq] \*(AqFILE\*(Aq
-*fcal*     [\*(AqOPTIONS\*(Aq] \*(AqFILE\*(Aq
-*fmeasure* [\*(AqOPTIONS\*(Aq] \*(AqFILE\*(Aq
-.fi
-.if n \{\
-.RE
-.\}
+\fBFCAL\fR \- Calculates a best\-fit straight line for a data saved in fmtave\&.out\&. Results are saved in file fcal\&.out\&.
+.sp
+\fBFMEASURE\fR \- Calculates the properly calibrated frequency of each test signal found in file fmtave\&.out\&. Results are saved in file fmeasure\&.out, and these are the numbers you should report if you are entering the Frequency Measuring Test\&.
 .SH "BUGS"
 .sp
 If find a bug or suspect \fB\fIwpsr\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
-.SH "SEE ALSO"
-.sp
-wspr0(1), wspr\-fmt(1), wspr\-fmtave(1), wspr\-fcal(1), wspr\-fmeasure(1)
 .SH "AUTHORS"
 .sp
 .if n \{\
@@ -91,6 +77,9 @@ For more information see:
 .if n \{\
 .RE
 .\}
+.SH "SEE ALSO"
+.sp
+wspr0(1), wspr\-fmt(1), wspr\-fmtave(1), wspr\-fcal(1), wspr\-fmeasure(1)
 .SH "COPYING"
 .sp
 Copyright (C) 2014 Joseph H Taylor, Jr, K1JT

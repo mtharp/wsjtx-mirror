@@ -15,7 +15,7 @@ wspr0 - limited command-line WSPR
 
 == DESCRIPTION
 
-*'wspr0'* is a simple command-line version of *'WSPR'* with no frills,
+'*wspr0*' - is a simple command-line version of *'WSPR'* with no frills,
 no graphics and no GUI.  Many advanced features of the full WSPR
 program, including I/Q mode, frequency hopping, and automatic
 uploading of spots to <www.wsprnet.org>, are not included. *wspr0* is
@@ -25,14 +25,37 @@ requirements can be advantageous.
 
 == OPTIONS
 
-*-t*::
-	Run in 100% Tx mode. (Default is Rx mode.)
+
+By default, the 'callsign', 'grid locator' and 'power-level'
+for the transmitted message are taken from file *wspr0.def*.
+These may be overridden by using the following options:
+
+
+*-a* x::
+	Audio frequency of transmission is x (Hz)
 
 *-b*::
 	Pseudo-random selection of Rx and Tx cycles.
 
+*-c* call::
+	Your stations call sign
+
 *-D* file1.wav file1.wav::
 	Open and decode one or more wav files.
+
+*-d* dBm::
+	Your transmit power, in dbm
+
+
+*-F* x::
+	Center frequency of transmission is x (MHz)
+
+*-f* x::
+	Transceiver dial frequency is x (MHz)
+
+
+*-g* grid::
+	4 Digit grid location
 
 *-m*::
 	Run in WSPR-15 mode (default is WSPR-2)
@@ -45,11 +68,15 @@ requirements can be advantageous.
 
 *-p* n::
 	PTT port
+
 *-P* n::
 	Transmitting percent (default=25)
 
 *-s* x::
 	SNR of generated data, dB (default 100)
+
+*-t*::
+	Run in 100% Tx mode. (Default is Rx mode.)
 
 *-x*::
 	Generate test file(s) with 10 signals in each
@@ -57,32 +84,7 @@ requirements can be advantageous.
 *-X*::
 	Generate list of audio tones for this message
 
-== DEFAULTS
 
-By default, the 'callsign', 'grid locator' and 'power-level'
-for the transmitted message are taken from file *wspr0.def*.
-These may be overridden by using the following options:
-
-*-c* call::
-	Your stations call sign
-
-*-g* grid::
-	4 Digit grid location
-
-*-d* dBm::
-	Your transmit power, in dbm
-
-
-== FREQUENCIES
-
-*-f* x::
-	Transceiver dial frequency is x (MHz)
-
-*-F* x::
-	Center frequency of transmission is x (MHz)
-
-*-a* x::
-	Audio frequency of transmission is x (Hz)
 
 == EXAMPLES
 -----

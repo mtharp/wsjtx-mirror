@@ -1,11 +1,16 @@
-#./fmt   550 1 1500 100 30  KBOW
-#./fmt   580 1 1500 100 30  KANA
-#./fmt   680 1 1500 100 30  KKGR
-./fmt  1240 1 1500 100 30  KBLL
-.#/fmt  1340 1 1500 100 30  KCAP
+# Example stations, edit for you location
+#
+# To remove stations form list, add a "#" in
+# front of the stations:
+# 
+# # ./fmt 15000 1 1500 100 30  WWV
+#
+# Station List
+./fmt   550 1 1500 100 30  KBOW
+./fmt   580 1 1500 100 30  KANA
+./fmt   950 1 1500 100 30  KMTX
 ./fmt  2500 1 1500 100 30  WWV
-#./fmt  3330 1 1500 100 30  CHU
-#./fmt  5000 1 1500 100 30  WWV
+./fmt  5000 1 1500 100 30  WWV
 ./fmt  7850 1 1500 100 30  CHU
 ./fmt 10000 1 1500 100 30  WWV
-
+#./fmt 15000 1 1500 100 30  WWV

@@ -2,12 +2,12 @@
 .\"     Title: wspr0
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 05/06/2014
+.\"      Date: 05/09/2014
 .\"    Manual: WSPR0 Man Page
 .\"    Source: AsciiDoc 1.0
 .\"  Language: English
 .\"
-.TH "WSPR0" "1" "05/06/2014" "AsciiDoc 1\&.0" "WSPR0 Man Page"
+.TH "WSPR0" "1" "05/09/2014" "AsciiDoc 1\&.0" "WSPR0 Man Page"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,12 +34,14 @@ wspr0 \- limited command\-line WSPR
 \fBwspr0\fR [OPTIONS]
 .SH "DESCRIPTION"
 .sp
-\fB\fIwspr0\fR\fR is a simple command\-line version of \fB\fIWSPR\fR\fR with no frills, no graphics and no GUI\&. Many advanced features of the full WSPR program, including I/Q mode, frequency hopping, and automatic uploading of spots to <www\&.wsprnet\&.org>, are not included\&. \fBwspr0\fR is intended for specialized uses where its easy compilation, small memory requirements can be advantageous\&.
+\fI\fBwspr0\fR\fR \- is a simple command\-line version of \fB\fIWSPR\fR\fR with no frills, no graphics and no GUI\&. Many advanced features of the full WSPR program, including I/Q mode, frequency hopping, and automatic uploading of spots to <www\&.wsprnet\&.org>, are not included\&. \fBwspr0\fR is intended for specialized uses where its easy compilation, small memory requirements can be advantageous\&.
 .SH "OPTIONS"
+.sp
+By default, the \fIcallsign\fR, \fIgrid locator\fR and \fIpower\-level\fR for the transmitted message are taken from file \fBwspr0\&.def\fR\&. These may be overridden by using the following options:
 .PP
-\fB\-t\fR
+\fB\-a\fR x
 .RS 4
-Run in 100% Tx mode\&. (Default is Rx mode\&.)
+Audio frequency of transmission is x (Hz)
 .RE
 .PP
 \fB\-b\fR
@@ -47,9 +49,34 @@ Run in 100% Tx mode\&. (Default is Rx mode\&.)
 Pseudo\-random selection of Rx and Tx cycles\&.
 .RE
 .PP
+\fB\-c\fR call
+.RS 4
+Your stations call sign
+.RE
+.PP
 \fB\-D\fR file1\&.wav file1\&.wav
 .RS 4
 Open and decode one or more wav files\&.
+.RE
+.PP
+\fB\-d\fR dBm
+.RS 4
+Your transmit power, in dbm
+.RE
+.PP
+\fB\-F\fR x
+.RS 4
+Center frequency of transmission is x (MHz)
+.RE
+.PP
+\fB\-f\fR x
+.RS 4
+Transceiver dial frequency is x (MHz)
+.RE
+.PP
+\fB\-g\fR grid
+.RS 4
+4 Digit grid location
 .RE
 .PP
 \fB\-m\fR
@@ -82,6 +109,11 @@ Transmitting percent (default=25)
 SNR of generated data, dB (default 100)
 .RE
 .PP
+\fB\-t\fR
+.RS 4
+Run in 100% Tx mode\&. (Default is Rx mode\&.)
+.RE
+.PP
 \fB\-x\fR
 .RS 4
 Generate test file(s) with 10 signals in each
@@ -90,40 +122,6 @@ Generate test file(s) with 10 signals in each
 \fB\-X\fR
 .RS 4
 Generate list of audio tones for this message
-.RE
-.SH "DEFAULTS"
-.sp
-By default, the \fIcallsign\fR, \fIgrid locator\fR and \fIpower\-level\fR for the transmitted message are taken from file \fBwspr0\&.def\fR\&. These may be overridden by using the following options:
-.PP
-\fB\-c\fR call
-.RS 4
-Your stations call sign
-.RE
-.PP
-\fB\-g\fR grid
-.RS 4
-4 Digit grid location
-.RE
-.PP
-\fB\-d\fR dBm
-.RS 4
-Your transmit power, in dbm
-.RE
-.SH "FREQUENCIES"
-.PP
-\fB\-f\fR x
-.RS 4
-Transceiver dial frequency is x (MHz)
-.RE
-.PP
-\fB\-F\fR x
-.RS 4
-Center frequency of transmission is x (MHz)
-.RE
-.PP
-\fB\-a\fR x
-.RS 4
-Audio frequency of transmission is x (Hz)
 .RE
 .SH "EXAMPLES"
 .sp
@@ -144,9 +142,6 @@ wspr0 \-D 00001\&.wav 00002\&.wav  # Decode these two files
 .SH "BUGS"
 .sp
 If find a bug or suspect \fB\fIwpsr0\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
-.SH "SEE ALSO"
-.sp
-wspr(1), wspr\-fmt(1), wspr\-fmtave(1), wspr\-fcal(1), wspr\-fmeasure(1)
 .SH "AUTHORS"
 .sp
 .if n \{\
@@ -174,6 +169,9 @@ For more information see:
 .if n \{\
 .RE
 .\}
+.SH "SEE ALSO"
+.sp
+wspr(1), wspr\-fmt(1), wspr\-fmtave(1), wspr\-fcal(1), wspr\-fmeasure(1)
 .SH "COPYING"
 .sp
 Copyright (C) 2014 Joseph H Taylor, Jr, K1JT

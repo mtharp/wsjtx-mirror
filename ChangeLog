@@ -2,6 +2,12 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-09 Greg Beam <ki7mt@yahoo.com>
+
+* Fix type in configure.ac
+* Added some updates to man pages
+
+
 2014-04-07 Greg Beam <ki7mt@yahoo.com>
 
 * Cleaned up paramater expansion
