@@ -14,29 +14,10 @@ dnl checks for programs.
 AC_PROG_CC
 AC_LANG([C])
 AC_PROG_CXX
+AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_USE_SYSTEM_EXTENSIONS
-
-dnl test for Darwin compilers
-if test "$ac_cv_c_compiler_gnu" = yes; then
-	AC_MSG_CHECKING([if $CC is Apple GCC])
-	
-	if expr "`$CC -v 2>&1 | tail -1`" : ".*Apple" >/dev/null; then
-		AppleGCC=yes
-	else
-		AppleGCC=no
-	fi
-
-	AC_MSG_RESULT($AppleGCC)
-
-	CFLAGS="$CFLAGS -Wall -O0"
-fi
-
-dnl If we support -g, use it!
-if test "$ac_cv_prog_cc_g" = yes; then
-		CFLAGS="-Wall -O0 -g"
-fi
 
 dnl jdc -- If CFLAGS is defined, best use it everywhere...
 dnl NOTE: jv says it must be added to the *END*, because things like
@@ -63,7 +44,6 @@ AC_PATH_PROG(PYTHON, python3)
 AC_PATH_PROG(F2PY, f2py3)
 AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
-dnl OS=`uname`
 AC_SUBST(OS, "${host_os}")
 
 dnl Checks for header files.
@@ -84,12 +64,10 @@ AC_TYPE_UINT8_T
 # Checks for libraries and functions.
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday strchr])
-
-AC_CHECK_HEADERS_ONCE([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
-linux/ppdev.h dev/ppbus/ppi.h pthread.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h \
-sys/ioctl.h sys/ioctl.h sys/param.h sys/param.h sys/resource.h sys/stat.h \
-sys/syslog.h sys/time.h sys/wait.h termios.h unistd.hinttypes.h \
-wait.h])
+AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
+linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h stdint.h stdint.h \
+stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h \
+sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.hinttypes.h wait.h])
 
 dnl test for lib locations
 if test -d /usr/local/lib ; then
@@ -119,10 +97,9 @@ dnl check portaudio - ( aclocal.m4 )
 AX_CHECK_PORTAUDIO
 
 dnl added is aclocal.m4 finds them.
-CFLAGS="-Wall -O0"
 CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
-LIBS="-lpthread ${LIBS}"
-LDFLAGS="${LDFLAGS}"
+LIBS="${LIBS}"
+LDFLAGS="${LDFLAGS} -lpthread"
 
 
 dnl Debug-related options

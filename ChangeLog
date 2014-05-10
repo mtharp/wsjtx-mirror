@@ -2,6 +2,12 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-10 Greg Beam <ki7mt@yahoo.com>
+
+* cleanup pthread_mutex warnings
+* add -pthread to Makefile.in and configure.ac
+* make sure idef for windows was in place
+
 2014-04-09 Greg Beam <ki7mt@yahoo.com>
 
 * Fix type in configure.ac

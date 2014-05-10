@@ -20,18 +20,19 @@ F2PY		?=	@F2PY@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
-CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
-CPPFLAGS	+=	${DEFS} -I.
+CPPFLAGS	+=	${DEFS}
 LDFLAGS		+=	@LDFLAGS@
 
 # OS Specific Vars
 ifeq (${host_os},*darwin*)
 	MVSO	:= ${MV} w.so WsprMod/w.so
-	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall \
+	CFLAGS	+= -Wall -O0 -fPIC -m64
+	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
 	-Wno-conversion -Wno-character-truncation -fPIC -m64
 else
 	MVSO	:= ${MV} w.*.so WsprMod/w.so
-	FFLAGS	+= -O2 -fbounds-check -fno-second-underscore -Wall \
+	CFLAGS	+= -fPIC
+	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
 	-Wno-conversion -Wno-character-truncation -fPIC
 endif
 
@@ -55,10 +56,10 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -pthread -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
-	${FC} -o wsprcode wsprcode.o thnix_stub.o libwspr.a
+	${FC} -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
 
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
@@ -79,7 +80,7 @@ libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 	ranlib libwspr.a
 
 fmt: fmt.f90 libwspr.a
-	${FC} -o fmt fmt.f90 libwspr.a -lfftw3f -lportaudio
+	${FC} -o fmt fmt.f90 libwspr.a -pthread -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
 	${FC} -o fmtave fmtave.f90
@@ -109,12 +110,12 @@ install: WsprMod/w.so
 clean:
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal \
-	fmeasure wspr0
+	fmeasure wspr0 WsprModNoGui/w.so
 	${RM} -rf build/
 
 distclean:
 	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
-	pixmap.dat wspr.log configure
+	pixmap.dat wspr.log configure WsprModNoGui/w.so
 	${RM} -rf ./autom4* ./__pycache__

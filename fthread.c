@@ -6,12 +6,12 @@
 * Adapted from code by V. Ganesh
 */
 #include <stdio.h>
-#ifdef WIN32
-#include "pthread_w32.h"
-#else
-#include <pthread.h>
-#endif
 #include <stdlib.h>
+#ifdef Win32
+   #include "pthread_w32.h"
+#else
+   #include <pthread.h>
+#endif
 
 // Create a new fortran thread through a subroutine.
 void fthread_create_(void *(*thread_func)(void *), pthread_t *theThread) 
