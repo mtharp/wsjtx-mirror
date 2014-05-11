@@ -46,6 +46,7 @@ _LOGS="$BASED/logs"
 _SRCD="$BASED/src"
 _TMP="$BASED/tmp"
 _MKRD="$HOME"/.local/share/applications/jtsdk-nix
+_VER=$(awk 'FNR==2 {print $6}' setup.sh)
 
 # process vars
 _HAMLIBD="$HOME/.local/share/applications/hamlib"
@@ -125,7 +126,7 @@ if [[ $SMSELECT = "A" ]]; then
 	clear
 	(
 	echo "------------------------------------------------"
-	echo "JTSD-NIX Setup - $(date)"
+	echo "JTSD-NIX Setup - v$_VER"
 	echo "------------------------------------------------"
 	echo
 	ubuntu_setup_marker
@@ -147,9 +148,9 @@ if [[ $SMSELECT = "A" ]]; then
 	echo "------------------------------------------------"
 	ubuntu_distro_info
 	echo
-	echo "	Distribution .... $_DISTRIBUTOR"
-	echo "  Release ......... $_RELEASE"
-	echo "  Arch ............ $_ARCH"
+	echo " Distribution .... $_DISTRIBUTOR"
+	echo " Release ......... $_RELEASE"
+	echo " Arch ............ $_ARCH"
 	echo
 	echo "Answering [ YES ] Will Perform The Following Actions"
 	echo "  [1] Update Repository List(s)"

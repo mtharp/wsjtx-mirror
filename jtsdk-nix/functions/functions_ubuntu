@@ -52,11 +52,9 @@ function ubuntu_pkg_list() {
 # make new pkg list
 	dpkg --get-selections > $_MKRD/$USER-orig-pkg-list
 
-
-# perform update and upgrade first
-# Update, Upgrade and Installation appoval from
-# user is granted in main menu selection
-	echo ".. Updating System Before Pkg Installation"
+# Perform update first, *no* upgrade is performed.
+# Installation approval is granted in main menu selection
+	echo ".. Updating System Package Lists Before Installation"
 	echo ".. Sudo is required for this action, please enter your password:"
 	echo
 	sudo apt-get update
@@ -64,6 +62,7 @@ function ubuntu_pkg_list() {
 	echo ".. Installing Packages for $_DISTRIBUTOR $_RELEASE $_ARCH"
 	echo
 	echo
+	# Using -y as the user approved the package list earlier
 	sudo apt-get -y install $(< $_TMP/install_list.txt)
 	echo
 
