@@ -4,11 +4,10 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
 AC_COPYRIGHT([$Id$])
 AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net])
-fail=0
-
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT(/usr/local/)
 AC_CANONICAL_HOST
+
 
 dnl checks for programs.
 AC_PROG_CC
@@ -19,12 +18,6 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_USE_SYSTEM_EXTENSIONS
 
-dnl jdc -- If CFLAGS is defined, best use it everywhere...
-dnl NOTE: jv says it must be added to the *END*, because things like
-dnl "gcc -O9 -O2" will result in -O2 getting preference.  How stupid.
-if test ! -z "$CFLAGS"; then
-	CFLAGS="$CFLAGS"
-fi
 
 dnl standard m4 checks
 AC_C_INLINE
@@ -46,6 +39,7 @@ AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
 AC_SUBST(OS, "${host_os}")
 
+
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_DIRENT
@@ -61,13 +55,6 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 
-# Checks for libraries and functions.
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS([gettimeofday strchr])
-AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
-linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h stdint.h stdint.h \
-stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h \
-sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.hinttypes.h wait.h])
 
 dnl test for lib locations
 if test -d /usr/local/lib ; then
@@ -84,6 +71,20 @@ if test -d /usr/lib ; then
 	LDFLAGS="-L/usr/lib ${LDFLAGS}"
 fi
 
+dnl added is aclocal.m4 finds them.
+CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
+LIBS="${LIBS}"
+LDFLAGS="${LDFLAGS} -lpthread"
+
+# Checks for libraries and functions.
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([gettimeofday strchr])
+AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
+linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h stdint.h stdint.h \
+stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h \
+sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
+
+
 dnl Check which fortran - ( aclocal.m4 )
 AX_CHECK_GFORTRAN
 
@@ -96,61 +97,37 @@ AX_CHECK_FFTW3
 dnl check portaudio - ( aclocal.m4 )
 AX_CHECK_PORTAUDIO
 
-dnl added is aclocal.m4 finds them.
-CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
-LIBS="${LIBS}"
-LDFLAGS="${LDFLAGS} -lpthread"
 
+dnl test gfortran
+dnl ----------------------------------------------------------------------------
+if test "${HAS_GFORTRAN}" -eq 1; then
+	AC_DEFINE([HAS_GFORTRAN], [1],)
+	AC_DEFINE([HAS_GFORTRAN_LIB], [1],)
 
-dnl Debug-related options
-dnl =====================
-
-AC_ARG_ENABLE(clobber,
-AC_HELP_STRING([--enable-clobber], [Don't preserve old binaries on make install]),
-[clobber="${enableval}"], [clobber=no])
-
-if test "${clobber}" = yes; then
-	AC_SUBST(CLOBBER, yes)
-fi
-
-AC_ARG_ENABLE(assert,
-AC_HELP_STRING([--enable-assert],[Enable assert().]),
-[assert=$enableval], [assert=no])
-
-if test "${assert}" = no; then
-	AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])
-fi
-
-if test "${prefix}" = "NONE"; then 
-	prefix="${ac_default_prefix}"
+dnl We could not find Gfortran
 else
-
-dnl remove trainling slash if present "/"
-prefix=`echo ${prefix%/}`
-AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Prefix where WSPR will be installed.])
-	
-fi
-
-dnl sanity tests.
-dnl =============
-
-if test -z "${FC}"; then
-	fail=1
-	echo "You need gfortran to compile this program!"
+	echo
+	echo "Gfortran is required to build $PACKAGE_NAME"
+	echo
+	echo "Standard locations were checked, and not found."
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: gfortran"
+	echo
 fi
 
 dnl test samplerate
+dnl ----------------------------------------------------------------------------
 if test $HAS_SAMPLERATE -eq 1; then
-	AC_DEFINE(HAS_SAMPLERATE, 1,)
-	AC_DEFINE(HAS_SAMPLERATE_H, 1,)
-	AC_DEFINE(HAS_SAMPLERATE_LIB, 1,)
+	AC_DEFINE([HAS_SAMPLERATE], [1],)
+	AC_DEFINE([HAS_SAMPLERATE_H], [1],)
+	AC_DEFINE([HAS_SAMPLERATE_LIB], [1],)
 	srstatus="OK"
 
-dnl We couldn't find sample, the libs failed or it's the wrong version
+dnl We could not find Samplerate, the libs failed or it's the wrong version
 else
-	fail=1
 	echo
-	echo "Samplerate-dev is required by $PACKAGE_NAME $"
+	echo "Samplerate-dev is required to build $PACKAGE_NAME"
 	echo
 	echo "Standard locations were checked, and not found."
 	echo
@@ -164,17 +141,17 @@ else
 	echo
 fi
 
-dnl test samplerate
+dnl test fftw
+dnl ----------------------------------------------------------------------------
 if test "${HAS_FFTW3}" -eq 1; then
-	AC_DEFINE(HAS_FFTW3, 1,)
-	AC_DEFINE(HAS_FFTW3_LIB, 1,)
+	AC_DEFINE([HAS_FFTW3], [1],)
+	AC_DEFINE([HAS_FFTW3_LIB], [1],)
 	ffstatus="OK"
 
 dnl We couldn't find FFTW, the libs failed
 else
-	fail=1
 	echo
-	echo "FFTW3 Libs are required by $PACKAGE_NAME"
+	echo "FFTW3 Libs are required to build $PACKAGE_NAME"
 	echo
 	echo "Standard locations were checked, and not found."
 	echo
@@ -187,18 +164,18 @@ else
 	echo
 fi
 
-dnl test portsudio
+dnl test portaudio
+dnl ----------------------------------------------------------------------------
 if test "${HAS_PORTAUDIO}" -eq 1; then
-	AC_DEFINE(HAS_PORTAUDIO, 1,)
-	AC_DEFINE(HAS_PORTAUDIO_H, 1,)
-	AC_DEFINE(HAS_PORTAUDIO_LIB, 1,)
+	AC_DEFINE([HAS_PORTAUDIO], [1],)
+	AC_DEFINE([HAS_PORTAUDIO_H], [1],)
+	AC_DEFINE([HAS_PORTAUDIO_LIB], [1],)
 	pastatus="OK"
 
 dnl We couldn't find portadio, the libs failed or it's the wrong version
 else
-	fail=1
 	echo
-	echo "Portaudio-v19 is required by $PACKAGE_NAME $"
+	echo "Portaudio-v19 is required to build $PACKAGE_NAME"
 	echo
 	echo "Standard locations were checked, and not found."
 	echo
@@ -212,6 +189,7 @@ else
 	echo
 fi
 
+dnl ----------------------------------------------------------------------------
 dnl This needs work, how to select python3, pyhton27 f2py or f2py3??
 dnl Need m4 module to sort all this out.
 dnl For now, should specify:
@@ -226,6 +204,7 @@ if test "$F2PY" = ""; then
 fi
 
 dnl 
+dnl ----------------------------------------------------------------------------
 AC_SUBST(PREFIX, "${prefix}")
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
@@ -236,26 +215,17 @@ AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
 dnl do summary
-dnl
-dnl If fail a pre-requisite then fail
-dnl
-if test "${fail}" -eq 1; then
-	AC_MSG_ERROR([Please check error messages and install missing packages.])
-fi
-
-dnl do summary
+dnl ----------------------------------------------------------------------------
 echo
 echo "-------------------------------------------"
 echo "Configuration Summary"
 echo "-------------------------------------------"
 echo
 echo " Package: ......... WSPR 4.0"
-echo " Fcomplier: ....... ${fcname}"
+echo " Fcomplier: ....... ${FC}"
 echo " Samplerate: ...... ${srstatus}"
-echo " FFTW3: ........... ${srstatus}"
+echo " FFTW3: ........... ${ffstatus}"
 echo " Portaudio: ....... ${pastatus}"
-echo " Portaudio Libs: .. ${portaudio_lib_dir}"
-echo " Portaudio Inc: ... ${portaudio_include_dir}"
 echo " Install Prefix: .. ${prefix}"
 echo
 

@@ -34,133 +34,14 @@ dnl ===========================================================================
 dnl {{{ ax_check_gfortran
 AC_DEFUN([AX_CHECK_GFORTRAN],[
 
-dnl AC_ARG_ENABLE([g95],
-dnl AC_HELP_STRING([--enable-g95],[Use G95 compiler if available.]),
-dnl [g95=$enableval], [g95=no])
+dnl Check gfortran can perform a basic function
+AC_CHECK_LIB([gfortran], [_gfortran_st_write], [HAS_GFORTRAN=1], [HAS_GFORTRAN=0])
 
-AC_ARG_ENABLE([gfortran],
-AC_HELP_STRING([--enable-gfortran],[Use gfortran compiler if available.]),
-[gfortran=$enableval], [gfortran=no])
-
-dnl
-dnl Pick up FC from the environment if present
-dnl I'll add a test to confirm this is a gfortran later -db
-dnl
-
-FCV=""
-
-if test -n ${FC} ; then
-	gfortran_name_part=`echo ${FC} | cut -c 1-8`
-	if test -n ${gfortran_name_part} = "gfortran" ; then
-		gfortran_name=${FC}
-   		FC_LIB_PATH=`${FC} -print-file-name=`
-		g95=no
-		gfortran=yes
-		fcname=gfortran
-		FFLAGS="${FFLAGS_GFORTRAN}"
-		FCV=gnu95
-	else
-		unset ${FC}
-	fi
-fi
-
-dnl
-dnl Note regarding the apparent silliness with FCV.
-dnl The FCV value for g95 might be system dependent, this is
-dnl still to be fully explored. If not, then the FCV_G95
-dnl stuff can go away. -db
-dnl
-
-AC_MSG_CHECKING([uname -s])
-case `uname -s` in
-	CYGWIN*)
-		AC_MSG_RESULT(Cygwin)
-		CYGWIN=yes
-	;;
-	SunOS*)
-		AC_MSG_RESULT(SunOS or Solaris)
-		AC_DEFINE(__EXTENSIONS__, 1, [This is needed to use strtok_r on Solaris.])
-	;;
-dnl
-dnl Pick up current gfortran from ports infrastructure for fbsd
-dnl
-        FreeBSD*)
-		if test -z ${gfortran_name} ; then
-			gfortran_name=`grep FC: /usr/ports/Mk/bsd.gcc.mk | head -1 |awk '{print $[2]}'`
-		fi
-		FCV_G95=g95
-	;;
-	*)
-		FCV_G95=g95
-		AC_MSG_RESULT(no)
-	;;
-esac
-
-dnl
-dnl look for gfortran if nothing else was given
-dnl
-
-if test -z ${gfortran_name}; then
-	gfortran_name=gfortran
-fi
-
-AC_PATH_PROG(G95, g95)
-AC_PATH_PROG(GFORTRAN, $[{gfortran_name}])
-
-if test ! -z ${GFORTRAN}; then
-	echo "Gfortran found at ${GFORTRAN}"
-
-	if test "${gfortran}" = yes; then
-   		FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
-		FC=`basename ${GFORTRAN}`
-		g95=no
-		FFLAGS="${FFLAGS_GFORTRAN}"
-		FCV=gnu95
-	fi
-else
-	echo "** No gfortran compiler found **"
-fi
-
-if test ! -z ${G95} ; then
-	echo "* g95 compiler found at ${G95}"
-	if test "${g95}" = yes; then
-       	FC_LIB_PATH=`${G95} -print-file-name=`
-		FC=`basename ${G95}`
-		gfortran=no
-		FFLAGS="${FFLAGS_G95}"
-		FCV="${FCV_G95}"
-	fi
-else
-	echo "G95 Not required, so not checking"
-fi
-
-dnl
-dnl if FC is not set by now, pick a compiler for user
-dnl
-if test -z ${FC} ; then
-	if test ! -z ${GFORTRAN}; then
-		if test "${g95}" = yes; then
-			echo "You enabled g95, but no g95 compiler found, defaulting to gfortran instead"
-		fi
-       	FC_LIB_PATH=`${GFORTRAN} -print-file-name=`
-	    FC=`basename ${GFORTRAN}`
-		g95=no
-		gfortran=yes
-		fcname=gfortran
-		FFLAGS="${FFLAGS_GFORTRAN}"
-		FCV=gnu95
-	elif test ! -z $G95 ; then
-		if test "${gfortran}" = yes; then
-			echo "You enabled gfortran, but no gfortran compiler found, defaulting to g95 instead"
-		fi
-       		FC_LIB_PATH=`${G95} -print-file-name=`
-	        FC=`basename ${G95}`
-		g95=yes
-		gfortran=no
-		fcname=g95
-		FFLAGS="${FFLAGS_G95}"
-		FCV="${FCV_G95}"
-	fi
+# Setting HAS_GFORTRAN
+if test ${HAS_GFORTRAN} -eq 1; then
+	FC=gfortran
+	FCV=gnu95
+	FC_LIB_PATH=`${FC} -print-file-name=`
 fi
 
 AC_DEFINE_UNQUOTED(FC_LIB_PATH, "${FC_LIB_PATH}", [Path to fortran libs.])
@@ -179,8 +60,6 @@ HAS_PORTAUDIO_H=0
 HAS_PORTAUDIO_LIB=0
 HAS_PORTAUDIO=0
 
-dnl uncomment to use custom message
-dnl AC_MSG_CHECKING([Portaudio])
 
 dnl Look in more places for portaudio.h
 portaudio_include_dir="/usr/include"
@@ -239,14 +118,14 @@ else
 	HAS_PORTAUDIO_LIB=0
 fi
 
-# Setting HAS_PORTAUDIO 
+# Setting HAS_PORTAUDIO
 if test ${HAS_PORTAUDIO_H} -eq 1 -a ${HAS_PORTAUDIO_LIB} -eq 1; then
 
 	CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
 	LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
 	LIBS="${LIBS} -lportaudio"
 
-	dnl Check Portaudio Version
+	dnl Check Portaudio can perform a basic function
 	AC_CHECK_LIB([portaudio], [Pa_GetVersion], [HAS_PORTAUDIO_VERSION=1], [HAS_PORTAUDIO_VERSION=0])
 
 	if test $[{HAS_PORTAUDIO_VERSION}] -eq 0; then
@@ -258,6 +137,7 @@ fi
 
 ])dnl }}}
 
+
 dnl ----------------------------------------------------------------------------
 dnl {{{ ax_check_samplerate
 AC_DEFUN([AX_CHECK_SAMPLERATE],[
@@ -265,9 +145,6 @@ AC_DEFUN([AX_CHECK_SAMPLERATE],[
 HAS_SAMPLERATE_H=0
 HAS_SAMPLERATE_LIB=0
 HAS_PORTAUDIO=0
-
-dnl uncomment to use custom message
-dnl AC_MSG_CHECKING([Samplerate])
 
 dnl Look in more places for portaudio.h
 samplerate_include_dir="/usr/include"
@@ -335,7 +212,7 @@ if test ${HAS_SAMPLERATE_H} -eq 1 -a ${HAS_SAMPLERATE_LIB} -eq 1; then
 	LDFLAGS="-L${samplerate_lib_dir} ${LDFLAGS}"
 	LIBS="${LIBS} -lsamplerate"
 
-	dnl Check Portaudio Version
+	dnl Check Samplrate can perform a basic funciton
 	AC_CHECK_LIB([samplerate], [src_simple], [HAS_SAMPLERATE_LIB=1], [HAS_SAMPLERATE_LIB=0])
 
 	if test $[{HAS_SAMPLERATE_LIB}] -eq 0; then
@@ -347,15 +224,13 @@ fi
 
 ])dnl }}}
 
+
 dnl ----------------------------------------------------------------------------
 dnl {{{ ax_check_fftw3
 AC_DEFUN([AX_CHECK_FFTW3],[
 
 HAS_FFTW3_LIB=0
 HAS_FFTW3=0
-
-dnl uncomment to use custom message
-dnl AC_MSG_CHECKING([FFTW3])
 
 dnl Look in more places for libfftw3f.{a.so}
 fftw3_lib_dir="/usr/lib"
@@ -395,17 +270,17 @@ else
 	HAS_FFTW3_LIB=0
 fi
 
-# Setting HAS_SAMPLERATE
+# Setting FFTW HAS_FFTW3
 if test "${HAS_FFTW3_LIB}" -eq 1; then
 
 	CPPFLAGS="-I${fftw3_include_dir} ${CPPFLAGS}"
 	LDFLAGS="-L${fftw3_lib_dir} ${LDFLAGS}"
 	LIBS="${LIBS} -lfftw3f"
 
-	dnl Check Portaudio Version
+	dnl Check FFTW can perform  a basic function
 	AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [HAS_FFTW3_L=1], [HAS_FFTW3_L=0])
 
-	if test $[{HAS_FFTW3_LIB}] -eq 0; then
+	if test ${HAS_FFTW3_LIB} -eq 0; then
 		AC_MSG_RESULT([Check libfftw3-dev is installed.])
 	else
 		HAS_FFTW3=1

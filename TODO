@@ -14,9 +14,11 @@ WSPR-4.0 TO-DO List
 * Need (Win32) and (*Nix) /lib directory and update configure.ac amd Makefile.in
   accordinly.
 
-* Add aclocal.m4 search macros for FFTW, Samplerate, Python3 and F2PY3
+* Add aclocal.m4 search macros for Python3 and F2PY3
 
 * Add m4 macro Hamlib options, ask user, add status
+
+
 
 Completed:
 
@@ -25,3 +27,4 @@ John (G4LKA)
 
 Greg (KI7MT)
 * Update documentation links in wspr.py
+* Add aclocal.m4 search macros for FFTW, Samplerate, Portaudio
