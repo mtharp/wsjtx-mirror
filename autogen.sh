@@ -1,5 +1,7 @@
 #!/bin/sh
-
+#
+# SVN	: $Id$
+#
 # Run ./autogen.sh to build configure and Makeflie
 
 set -e

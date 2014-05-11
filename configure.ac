@@ -76,7 +76,7 @@ CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
 LIBS="${LIBS}"
 LDFLAGS="${LDFLAGS} -lpthread"
 
-# Checks for libraries and functions.
+# Checks for headers and functions
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday strchr])
 AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
@@ -85,7 +85,7 @@ stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/reso
 sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
 
 
-dnl Check which fortran - ( aclocal.m4 )
+dnl Check gortran - ( aclocal.m4 )
 AX_CHECK_GFORTRAN
 
 dnl check samplerate - ( aclocal.m4 )
@@ -172,7 +172,7 @@ if test "${HAS_PORTAUDIO}" -eq 1; then
 	AC_DEFINE([HAS_PORTAUDIO_LIB], [1],)
 	pastatus="OK"
 
-dnl We couldn't find portadio, the libs failed or it's the wrong version
+dnl We couldn't find Portadio, the libs failed or it's the wrong version
 else
 	echo
 	echo "Portaudio-v19 is required to build $PACKAGE_NAME"
