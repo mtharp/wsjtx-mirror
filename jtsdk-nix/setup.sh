@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
-#
+# SVN			: $Id$ 
+# 
 # Name			: setup.sh
 # Execution		: ./setup.fh
 # Author		: Greg, Beam, ki7mt -at- yahoo.com

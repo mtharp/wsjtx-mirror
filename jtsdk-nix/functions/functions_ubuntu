@@ -28,7 +28,7 @@ EOL
 function ubuntu_pkg_chk() {
 touch $_TMP/install_list.txt
 
-for line in $(< $_CFG/pkg_list_ubuntu_$(uname -m))
+for line in $(< $_CFG/pkg_list_ubuntu)
 do
 	_STATUS=$(apt-cache policy $line |awk 'FNR==2 {print $2}')
 
