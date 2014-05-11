@@ -15,9 +15,12 @@ _WSJTURL="https://ki7mt@svn.code.sf.net/p/wsjt/wsjt"
 # _APP_NAME=wsjt
 # _APP_SRC=$_SRCD/trunk
 
+rm -r $_LOGS/$_APP_NAME-build.log && touch $_LOGS/$_APP_NAME-build.log
 clear
+(
 echo
 echo "STARTING BUILD FOR ( $_APP_NAME )"
+
 
 # $_APP_SRC is set from the main menu jtsdk-nix.sh when select tool build
 # svn co if not exist, else update
@@ -62,29 +65,152 @@ fi
 # get svn revision number
 cd "$_APP_SRC"
 rev_num=$(svn log -l 1 |awk 'FNR==2 {print $1}')
-
 echo
-echo "STARTING BUILD for ( $_APP_NAME-$rev_num )"
+echo "------------------------------------------------"
+echo "Starting Build for ( $_APP_NAME-$rev_num )"
+echo "------------------------------------------------"
 echo
 
 # clean source tree
-make clean && make distclean
+echo
+echo "------------------------------------------------"
+echo "Removing old build files"
+echo "------------------------------------------------"
+echo
+if [[ -f Makefile ]]
+then
+	make clean
+	echo
+	echo ".. Done"
+fi
 
-# Configure - using/usr/local as current default
+# Clean all files, make dist-clean
+echo
+echo "------------------------------------------------"
+echo "Making the source tree distribution clean"
+echo "------------------------------------------------"
+echo
+if [[ -f Makefile ]]
+then
+	make distclean
+	echo
+	echo ".. Done"
+fi
+
+# Run Autoconf to generate configure script
+echo
+echo "------------------------------------------------"
+echo "Running ( autoconf ) to generate configure"
+echo "------------------------------------------------"
 autoconf -i
+echo
+echo ".. Done"
+
+# Run configure to build Makefile
+echo
+echo "------------------------------------------------"
+echo "Running Configure"
+echo "------------------------------------------------"
 ./configure
+echo
+echo ".. Done"
+
+# Run Makefile
+echo
+echo "------------------------------------------------"
+echo "Running make for all targets"
+echo "------------------------------------------------"
 make
 
+#
+## Add Manifest Check here ...
+#
+
+# Run Makefile
 echo
-echo "Finished Building $_APP_NAME"
-echo "Build Location: $_BASED/$_APP_NAME"
-echo "Please Make a note of the install location"
+echo "------------------------------------------------"
+echo "Copying ( $_APP_NAME ) to $_APP_NAME-$rev_num"
+echo "------------------------------------------------"
+
+# Make test for previous build based on rev_num
+
+if [[ -d $_BASED/$_APP_NAME/$_APP_NAME-$rev_num ]]
+then
+	mv $_BASED/$_APP_NAME/$_APP_NAME-$rev_num \
+	$_BASED/$_APP_NAME/$_APP_NAME-$rev_num-$(date +%F-%H%M)
+
+	mkdir -p $_BASED/$_APP_NAME/$_APP_NAME-$rev_num
+
+else
+	mkdir -p $_BASED/$_APP_NAME/$_APP_NAME-$rev_num
+fi
+
+# Copy files over to install directory
+_INSTALLD="$_BASED/$_APP_NAME/$_APP_NAME-$rev_num"
+
+if [[ $_APP_NAME = "wspr" ]]
+then
+	cd "$_APP_SRC"
+	cp -rv doc/ save/ WsprMod/ "$_INSTALLD"/
+	cp -rv ./fcal ./fmeasure ./fmt ./fmtave \
+	./wspr0 ./wsprcode ./gocal ./hamlib_rig* \
+	./*.py "$_INSTALLD"
+	echo
+	echo ".. Done"
+
+elif [[ $_APP_NAME = "wsjt" ]]
+then
+	echo " ( $_APP_NAME ) is still under construction"
+	echo "Under Conscruction"
+	read -p "Press [ Enter ] to continue"
+	exit 0	
+else
+	echo "Unknown application, exiting build script"
+	echo
+	read -p "Press [ Enter ] to continue"
+	exit 1
+fi
+
+# Create wspr run script
 echo
-echo "To Run, Type: python3 -O $_APP_NAME.py"
+echo "------------------------------------------------"
+echo "Creating ( $_APP_NAME ) run script"
+echo "------------------------------------------------"
+cd $_BASED/$_APP_NAME/$_APP_NAME-$rev_num
+
+cat << EOF > ./$_APP_NAME.sh
+#!/usr/bin/env bash
+
+# Part of the JTSDK-NIX Project
+# Usage:  ./$_APP_NAME.sh
+
+# EXIT IF ERRORS
+set -e
+
+# Change Directory to 
+env PYTHONPATH=$(exec pwd) python3 -O ./wspr.py
+
+EOF
 echo
-read -p "Press [Enter] to continue .."
+echo ".. Done"
+# Finished, disply user message
 cd $_BASED
+echo
+echo "------------------------------------------------"
+echo "Finished Building ( $_APP_NAME-$rev_num )"
+echo "------------------------------------------------"
+echo
+echo "Location .....: $_BASED/$_APP_NAME/$_APP_NAME-$rev_num"
+echo "Build Log ....: $_LOGS/$_APP_NAME-build.log"
+echo
+echo "TO-RUN, TYPE..: cd $_BASED/$_APP_NAME/$_APP_NAME-$rev_num"
+echo "THEN, TYPE ...: ./wspr.sh"
+echo 
+echo
+) 2>&1 | tee -a $_LOGS/$_APP_NAME-build.log
+
+read -p "Press [Enter] to continue .."
+
 
 } # end python_nix
-
 
