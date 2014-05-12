@@ -9,15 +9,13 @@ function python_nix() {
 _WSPRURL="https://svn.code.sf.net/p/wsjt/wsjt/branches"
 _WSJTURL="https://ki7mt@svn.code.sf.net/p/wsjt/wsjt"
 
-# USAGE - Because we're in two fifferent locaitons
-# _APP_NAME=wspr
-# _APP_SRC=$_SRCD/wspr
-# _APP_NAME=wsjt
-# _APP_SRC=$_SRCD/trunk
-
+# Remove old build log
 rm -r $_LOGS/$_APP_NAME-build.log && touch $_LOGS/$_APP_NAME-build.log
-clear
+
+# Start sub-shell for logging
 (
+
+# start the build steps
 echo
 echo "STARTING BUILD FOR ( $_APP_NAME )"
 
@@ -131,6 +129,7 @@ echo
 echo "------------------------------------------------"
 echo "Copying ( $_APP_NAME ) to $_APP_NAME-$rev_num"
 echo "------------------------------------------------"
+echo
 
 # Make test for previous build based on rev_num
 
@@ -154,7 +153,8 @@ then
 	cp -rv doc/ save/ WsprMod/ "$_INSTALLD"/
 	cp -rv ./fcal ./fmeasure ./fmt ./fmtave \
 	./wspr0 ./wsprcode ./gocal ./hamlib_rig* \
-	./*.py "$_INSTALLD"
+	./Pmw*.py ./setup.py ./tkrep.py ./user_hardware.py \
+	./wspr.py "$_INSTALLD"
 	echo
 	echo ".. Done"
 
@@ -191,9 +191,22 @@ set -e
 env PYTHONPATH=$(exec pwd) python3 -O ./wspr.py
 
 EOF
-echo
-echo ".. Done"
-# Finished, disply user message
+
+if [[ -f $_APP_NAME.sh ]]
+then 
+	chmod +x $_APP_NAME.sh
+	echo
+	echo ".. Done"
+else
+	echo "Failed to create ( $_APP_NAME.sh )"
+	echo "Check Build log for details"
+	echo
+	echo "Build Log ....: $_LOGS/$_APP_NAME-build.log"
+	echo
+	exit 1
+fi
+
+# Finished, display user message
 cd $_BASED
 echo
 echo "------------------------------------------------"
