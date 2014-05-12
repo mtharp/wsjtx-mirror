@@ -29,12 +29,10 @@ AC_PATH_PROG(CP, cp)
 AC_PATH_PROG(MKDIR, mkdir)
 AC_PATH_PROG(MV, mv)
 AC_PATH_PROG(LN, ln)
+AC_PATH_PROG(AWK, awk)
 AC_PATH_PROG(SED, sed)
 AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(LD, ld)
-AC_PATH_PROG(TEST, [test], [test])
-AC_PATH_PROG(PYTHON, python3)
-AC_PATH_PROG(F2PY, f2py3)
 AC_SUBST(VERSION, "${version}")
 AC_MSG_CHECKING([OS])
 AC_SUBST(OS, "${host_os}")
@@ -54,6 +52,12 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([gettimeofday strchr])
+AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
+linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h stdint.h stdint.h \
+stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h \
+sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
 
 
 dnl test for lib locations
@@ -76,14 +80,11 @@ CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
 LIBS="${LIBS}"
 LDFLAGS="${LDFLAGS} -lpthread"
 
-# Checks for headers and functions
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS([gettimeofday strchr])
-AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
-linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h stdint.h stdint.h \
-stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h \
-sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
+dnl Check Python Version - ( aclocal.m4 )
+AX_CHECK_PYTHON
 
+dnl Check F2PY - ( aclocal.m4 )
+AX_CHECK_F2PY
 
 dnl Check gortran - ( aclocal.m4 )
 AX_CHECK_GFORTRAN
@@ -96,6 +97,55 @@ AX_CHECK_FFTW3
 
 dnl check portaudio - ( aclocal.m4 )
 AX_CHECK_PORTAUDIO
+
+dnl test python3
+dnl ----------------------------------------------------------------------------
+if test "${HAS_PYTHON3A}" -eq 1; then
+	AC_SUBST(PYTHON, python)
+
+elif test "${HAS_PYTHON3B}" -eq 1; then
+	AC_SUBST(PYTHON, python3)
+
+dnl We could not find Python3
+else
+	echo
+	echo "Python v3.2+ is required to build $PACKAGE_NAME"
+	echo
+	echo "Standard locations were checked, and not found."
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: Python v3.2x"
+	echo "[2] Add Python3 to your system paths"
+	echo "[3] Confiure with Python3 non-standard paths:"
+	echo
+	echo './configure --with-python3=/path/to/samplerate.h'
+	echo 
+fi
+
+dnl test f2py v2.0
+dnl ----------------------------------------------------------------------------
+if test "${HAS_F2PYA}" -eq 1; then
+	AC_SUBST(F2PY, f2py)
+
+elif test "${HAS_F2PYB}" -eq 1; then
+	AC_SUBST(F2PY, f2py3)
+
+dnl We could not find f2py
+else
+	echo
+	echo "F2PY v2.0 (Numpy 1.8.1+) is required to build $PACKAGE_NAME"
+	echo
+	echo "Standard locations were checked, and not found."
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: Python3 Numpy 1.8.1+"
+	echo "[2] Add F2PY v2.0 to your system paths"
+	echo "[3] Build Numpy from source & add to your system paths"
+	echo "[4] Confiure with F2PY v2.0 non-standard paths:"
+	echo
+	echo './configure --with-f2py3=/path/to/f2py3'
+	echo 
+fi
 
 
 dnl test gfortran
@@ -189,28 +239,12 @@ else
 	echo
 fi
 
-dnl ----------------------------------------------------------------------------
-dnl This needs work, how to select python3, pyhton27 f2py or f2py3??
-dnl Need m4 module to sort all this out.
-dnl For now, should specify:
-dnl F2PY=/path/to/f2py3
-dnl or add f2py3 to svn
-dnl Python Version:
-dnl python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'
-dnl 
-if test "$F2PY" = ""; then
-	echo "You are missing f2py3, trying local copy."
-	F2PY="f2py3"
-fi
-
-dnl 
+dnl Subsitutions
 dnl ----------------------------------------------------------------------------
 AC_SUBST(PREFIX, "${prefix}")
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
-AC_SUBST(CFLAGS)
-AC_SUBST(FFLAGS)
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
@@ -222,6 +256,8 @@ echo "Configuration Summary"
 echo "-------------------------------------------"
 echo
 echo " Package: ......... WSPR 4.0"
+echo " Python3: ......... ${pylocation}"
+echo " F2py v2.0: ....... ${f2pylocation}"
 echo " Fcomplier: ....... ${FC}"
 echo " Samplerate: ...... ${srstatus}"
 echo " FFTW3: ........... ${ffstatus}"

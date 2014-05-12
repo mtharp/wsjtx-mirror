@@ -3,20 +3,20 @@
 #				make >& junk
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
-OS			:=	@OS@
-MV			:= 	@MV@
-RM			:=	@RM@
-MKDIR		:= 	@MKDIR@
-INSTALL		=	install
+OS		:=	@OS@
+MV		:=	@MV@
+RM		:=	@RM@
+MKDIR		:=	@MKDIR@
+INSTALL	=	install
 PREFIX		:=	@PREFIX@
 
-CC			:=	@CC@
-FC			:=	@FC@
-FCV			:=	@FCV@
+CC		:=	@CC@
+FC		:=	@FC@
+FCV		:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
-PYTHON		?=	@PYTHON@
-F2PY		?=	@F2PY@
+PYTHON		:=	@PYTHON@
+F2PY		:=	@F2PY@
 
 # Libs and Flags
 LIBS		:=	@LIBS@

@@ -4,6 +4,13 @@ Current Development Version: WSPR-4.0
 
 2014-04-11 Greg Beam <ki7mt@yahoo.com>
 
+* Added Python3 macro to aclocal.m3
+* added F2PY macro to aclocal.m4
+* other smalle test edits.
+
+
+2014-04-11 Greg Beam <ki7mt@yahoo.com>
+
 * removed g95 checks as they're no longer needed
 * added basic gfortran check to aclocal.m4
 * tested builds on Win32 and Linux

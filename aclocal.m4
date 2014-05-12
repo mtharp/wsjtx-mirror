@@ -3,12 +3,13 @@ dnl
 dnl	SYNOPSIS
 dnl
 dnl	AX_CHECK_GFORTRAN, AX_CHECK_SAMPLERATE, AX_CHECK_PORTAUDIO, AX_CHECK_FFTW3
+dnl AX_CHECK_PYTHON AX_CHECK_F2PY
 dnl
 dnl	DESCRIPTION
 dnl
-dnl 	This set of macros checks for G95 or Gfortran, then the required header
-dnl		files for each required applicaiton. If present, performs a simple
-dnl		library check to ensure it's functional
+dnl 	This set of macros checks for Gfortran, Python v3+, F2PY then the
+dnl		required header files for each required applicaiton. If present,
+dnl		performs a simple library check to ensure it's functional
 dnl
 dnl	AUTHORS
 dnl		Diane Bruce, VA3DB	
@@ -31,6 +32,94 @@ dnl		GNU General Public License for more details.
 dnl
 dnl ===========================================================================
 
+dnl {{{ ax_check_python
+AC_DEFUN([AX_CHECK_PYTHON],[
+
+HAS_PYTHON3=0
+
+dnl Try to get python version
+AC_MSG_CHECKING([for Python3 using: python])
+PYCHECK=`python -c "import sys; ver = sys.version.split ()[[0]]; print (ver >= '3.2.0')"`
+
+# Check if python3 is called using "python"
+if test "$PYCHECK" != "True"; then
+	AC_MSG_RESULT([no])
+	HAS_PYTHON3A=0
+else
+	AC_MSG_RESULT([yes])
+	HAS_PYTHON3A=1
+	pylocation=`which python`
+fi
+
+# Check if python3 is called by using "python3" v.s. "python"
+if test "${HAS_PYTHON3}" -eq 0; then
+AC_MSG_CHECKING([for Python3 using: python3])
+PYCHECK=`python3 -c "import sys; ver = sys.version.split ()[[0]]; print (ver >= '3.2.0')"`
+
+	if test "$PYCHECK" != "True"; then
+		AC_MSG_RESULT([no])
+		HAS_PYTHON3B=0
+
+		AC_ARG_WITH([python3-dir],
+		AC_HELP_STRING([--with-python3=<path>],
+	    [path to python3]),
+	    [python3_dir=$with_python3])
+
+	else
+		AC_MSG_RESULT([yes])
+		HAS_PYTHON3B=1
+		pylocation=`which python3`
+	fi
+fi
+
+])dnl }}}
+
+
+dnl ----------------------------------------------------------------------------
+dnl {{{ ax_check_f2py
+AC_DEFUN([AX_CHECK_F2PY],[
+
+HAS_F2PY=0
+
+dnl Try to get f2py
+AC_MSG_CHECKING([for F2PY using: f2py])
+F2PYCHECK=`f2py -v  > /dev/null 2>&1`
+
+# Check if f2py3 is called using "f2py"
+if test "$?" != "0"; then
+	AC_MSG_RESULT([no])
+	HAS_F2PYA=0
+else
+	AC_MSG_RESULT([yes])
+	HAS_F2PYA=1
+	f2pylocation=`which f2py`
+fi
+
+# Check if f2py is called by using "f2py3" v.s. "f2py"
+if test "${HAS_F2PY}" -eq 0; then
+AC_MSG_CHECKING([for F2PY using: f2py3])
+F2PYCHECK=`f2py3 -v > /dev/null 2>&1`
+
+	if test "$?" != "0"; then
+		AC_MSG_RESULT([no])
+		HAS_F2PYB=0
+
+		AC_ARG_WITH([f2py3-dir],
+		AC_HELP_STRING([--with-f2py3=<path>],
+	    [path to f2py3]),
+	    [f2py3_dir=$with_f2py3])
+
+	else
+		AC_MSG_RESULT([yes])
+		HAS_F2PYB=1
+		f2pylocation=`which f2py3`
+	fi
+fi
+
+])dnl }}}
+
+
+dnl ----------------------------------------------------------------------------
 dnl {{{ ax_check_gfortran
 AC_DEFUN([AX_CHECK_GFORTRAN],[
 
