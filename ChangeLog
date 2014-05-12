@@ -2,9 +2,16 @@
 Current Development Version: WSPR-4.0
 
 
-2014-04-11 Greg Beam <ki7mt@yahoo.com>
+2014-04-11 (1) Greg Beam <ki7mt@yahoo.com>
 
-* Added Python3 macro to aclocal.m3
+* General edits, typo's etc.
+* Corrected message error logic
+* Built and test WSPR, FMT, WSP0, all run well.
+
+
+2014-04-11 (1) Greg Beam <ki7mt@yahoo.com>
+
+* Added Python3 macro to aclocal.m4
 * added F2PY macro to aclocal.m4
 * other smalle test edits.
 

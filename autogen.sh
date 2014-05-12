@@ -29,8 +29,7 @@ echo "to generate configure script."
 echo
 
 # Generate configure script from configure.ac and aclocal.m4
-
-autoconf -i
+autoconf -f -i
 
 if test -s ./configure; then
 	echo "Finished generating configure script."

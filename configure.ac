@@ -7,6 +7,7 @@ AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT(/usr/local/)
 AC_CANONICAL_HOST
+FAIL=0
 
 
 dnl checks for programs.
@@ -75,7 +76,7 @@ if test -d /usr/lib ; then
 	LDFLAGS="-L/usr/lib ${LDFLAGS}"
 fi
 
-dnl added is aclocal.m4 finds them.
+dnl added if aclocal.m4 finds them.
 CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
 LIBS="${LIBS}"
 LDFLAGS="${LDFLAGS} -lpthread"
@@ -108,6 +109,7 @@ elif test "${HAS_PYTHON3B}" -eq 1; then
 
 dnl We could not find Python3
 else
+	FAIL=1
 	echo
 	echo "Python v3.2+ is required to build $PACKAGE_NAME"
 	echo
@@ -132,6 +134,7 @@ elif test "${HAS_F2PYB}" -eq 1; then
 
 dnl We could not find f2py
 else
+	FAIL=1
 	echo
 	echo "F2PY v2.0 (Numpy 1.8.1+) is required to build $PACKAGE_NAME"
 	echo
@@ -156,6 +159,7 @@ if test "${HAS_GFORTRAN}" -eq 1; then
 
 dnl We could not find Gfortran
 else
+	FAIL=1
 	echo
 	echo "Gfortran is required to build $PACKAGE_NAME"
 	echo
@@ -176,6 +180,7 @@ if test $HAS_SAMPLERATE -eq 1; then
 
 dnl We could not find Samplerate, the libs failed or it's the wrong version
 else
+	FAIL=1
 	echo
 	echo "Samplerate-dev is required to build $PACKAGE_NAME"
 	echo
@@ -200,6 +205,7 @@ if test "${HAS_FFTW3}" -eq 1; then
 
 dnl We couldn't find FFTW, the libs failed
 else
+	FAIL=1
 	echo
 	echo "FFTW3 Libs are required to build $PACKAGE_NAME"
 	echo
@@ -224,6 +230,7 @@ if test "${HAS_PORTAUDIO}" -eq 1; then
 
 dnl We couldn't find Portadio, the libs failed or it's the wrong version
 else
+	FAIL=1
 	echo
 	echo "Portaudio-v19 is required to build $PACKAGE_NAME"
 	echo
@@ -255,7 +262,11 @@ echo "-------------------------------------------"
 echo "Configuration Summary"
 echo "-------------------------------------------"
 echo
-echo " Package: ......... WSPR 4.0"
+if test ${FAIL} != 0; then
+echo "** Check ERRORS before running: make **"
+echo
+fi
+echo " Package: ......... WSPR $version"
 echo " Python3: ......... ${pylocation}"
 echo " F2py v2.0: ....... ${f2pylocation}"
 echo " Fcomplier: ....... ${FC}"
