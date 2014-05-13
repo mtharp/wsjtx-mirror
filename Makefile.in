@@ -3,7 +3,8 @@
 #				make >& junk
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
-VERSION		:=	4.0
+PROGRAM		:=	@PROGRAM@
+VERSION		:=	@VERSION@
 OS		:=	@OS@
 MV		:=	@MV@
 RM		:=	@RM@
@@ -21,17 +22,17 @@ F2PY		:=	@F2PY@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
-CPPFLAGS	+=	${DEFS}
+CPPFLAGS	+=	${DEFS} -DVERSION=\"$(VERSION)\" -DPROGRAM=\"$(PROGRAM)\"
 LDFLAGS		+=	@LDFLAGS@
 
 # OS Specific Vars
 ifeq (${host_os},*darwin*)
-	MVSO	:= ${MV} w.so WsprMod/w.so
+	MVSO	= ${MV} w.so WsprMod/w.so
 	CFLAGS	+= -Wall -O0 -fPIC -m64
 	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
 	-Wno-conversion -Wno-character-truncation -fPIC -m64
 else
-	MVSO	:= ${MV} w.*.so WsprMod/w.so
+	MVSO	= ${MV} w*.so WsprMod/w.so
 	CFLAGS	+= -fPIC
 	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
 	-Wno-conversion -Wno-character-truncation -fPIC
@@ -42,14 +43,17 @@ DEFS		:=	@DEFS@
 # WSPR Targets
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 	@echo ""
-	@echo "WSPR ${VERSION} build finished !!"
-	@echo "To Run, type .........: @PYTHON@ -O wspr.py"
-	@echo "To Install, type .....: make install"
-	@echo "Install Location .....: @PREFIX@"
+	@echo "---------------------------------------------"
+	@echo "${PROGRAM} ${VERSION} Make Summary"
+	@echo "---------------------------------------------"
+	@echo ""	
+	@echo " To Run, type .........: @PYTHON@ -O wspr.py"
+	@echo " To Install, type .....: make install"
+	@echo " Install Location .....: @PREFIX@"
 	@echo ""
-	@echo "Clean & Rebuild"
-	@echo "To Clean, type .......: make clean"
-	@echo "To Dist Clean, type ..: make distclean"
+	@echo " Clean & Rebuild"
+	@echo " To Clean, type .......: make clean"
+	@echo " To Dist Clean, type ..: make distclean"
 	@echo ""
 
 # Default rules

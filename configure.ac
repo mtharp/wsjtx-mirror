@@ -7,7 +7,9 @@ AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT([$HOME/wspr])
 AC_CANONICAL_HOST
-FAIL=0
+_VER="4.0"
+_PROG="WSPR"
+FAIL="0"
 
 dnl checks for programs.
 AC_PROG_CC
@@ -172,7 +174,7 @@ fi
 
 dnl test samplerate
 dnl ----------------------------------------------------------------------------
-if test $HAS_SAMPLERATE -eq 1; then
+if test "$HAS_SAMPLERATE" -eq 1; then
 	AC_DEFINE([HAS_SAMPLERATE], [1],)
 	AC_DEFINE([HAS_SAMPLERATE_H], [1],)
 	AC_DEFINE([HAS_SAMPLERATE_LIB], [1],)
@@ -258,6 +260,8 @@ AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
 AC_SUBST(PREFIX, "${prefix}")
+AC_SUBST(VERSION, "${_VER}")
+AC_SUBST(PROGRAM, "${_PROG}")
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
@@ -265,14 +269,14 @@ dnl do summary
 dnl ----------------------------------------------------------------------------
 echo
 echo "-------------------------------------------"
-echo "Configuration Summary"
+echo " Configuration Summary"
 echo "-------------------------------------------"
 echo
-if test ${FAIL} != 0; then
+if test "${FAIL}" != 0; then
 echo "** Check ERRORS before running: make **"
 echo
 fi
-echo ' Package: ......... WSPR '"$version"
+echo " Package: ......... ${PROGRAM} ${VERSION}"
 echo " Python3: ......... ${pylocation}"
 echo " F2py v2.0: ....... ${f2pylocation}"
 echo " Fcomplier: ....... ${FC}"

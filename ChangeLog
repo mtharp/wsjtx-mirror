@@ -2,7 +2,17 @@
 Current Development Version: WSPR-4.0
 
 
-2014-04-12 Greg Beam <ki7mt@yahoo.com>
+2014-04-13 (2) Greg Beam <ki7mt@yahoo.com>
+
+* Updated Makefile.in based on feedback from Chuck WA7KGX
+  regaurding ${MV} := w*.so v.s. w.*.so
+* Added PROGRAM and VERSION configure.ac and Makefile.in
+* Added build-aux/ to wspr-dist.sh
+* Updated README in /wspr/doc/man1 (AsciiDoc Tips)
+* Updated autogen.sh for additional checks
+
+
+2014-04-13 (1) Greg Beam <ki7mt@yahoo.com>
 
 * fix a potential issue with Makefile.in FC v.s.FCV
 * Add wspr-dist.sh script to build tar.gz file

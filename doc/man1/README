@@ -1,46 +1,60 @@
 
 WSPR manpages are build using AsciiDoc (a2x). You do not need LaTex, DocBook,
-A-A-P etc,
+A-A-P etc.
+
 
 REQUIEMENTS
 -----------
-* Python	(installed on most *Nix systems)
+* Python2.7 (installed on most *Nix systems)
 * xslproc	(in most repo inventories)
 * AsciiDoc
 
-DOWNLOAD
---------
-* http://iweb.dl.sourceforge.net/project/asciidoc/asciidoc/8.6.9/asciidoc-8.6.9.tar.gz
+Note: AsciiDoc reuires Python2.5 <=> 2.7 and will not run on Python3.x
 
 
-INSTALL XSL
------------
+INSTALL XSLPROC
+---------------
 * sudo apt-get install xslproc
-* mkdir ~/bin <== can be anywhere really
-* cd ~/bin and untart AsciiDoc
-* Add the following to ~/bashrc:
-* PATH=~/path/to/install/asciidoc:~/bin:$PATH <== path to where you co ../branches/doc/.. ..
 
-UPDATE BASHRC
--------------
-* export $PATH
-* source ~/.bashrc && source ~/.profile <== or logout / back in
+Note: edit xslproc to match your distribution
 
 
-LINK ASCIIDOC to BIN
---------------------
-* cd ~/bin
-- ln -s ~/path/to/install/asciidoc.py ./asciidoc
-- ln -s ~/path/to/install/asciidoc/a2x.py ./a2x
+DOWNLOAD && EXIT a2x.py
+-----------------------
+* http://iweb.dl.sourceforge.net/project/asciidoc/asciidoc/8.6.9/asciidoc-8.6.9.tar.gz
+* tar -xzvf asciidoc-8.6.9.tar.gz
+* cd asciidoc-8.6.9
+* EDIT: a2x.py, and change the following lines to match:
+
+# External executables.
+ASCIIDOC = 'asciidoc'
+XSLTPROC = 'xsltproc'
+DBLATEX = ''         # pdf generation.
+FOP = ''             # pdf generation (--fop option).
+W3M = ''             # text generation.
+LYNX = ''            # text generation (if no w3m).
+XMLLINT = ''         # Set to '' to disable.
+EPUBCHECK = ''       # Set to '' to disable.
+
+Save && Exit
+
+
+INSTALL ASCIIDOC
+----------------
+./configure
+make && sudo make install
+
+Finished.
 
 
 BUILD MANPAGES
 --------------
-* cd ~/wspr/doc/man1/wsjtx.1.txt .
+* cd ~/wspr/doc/man1
 * a2x --doctype manpage --format manpage --no-xmllint wspr.1.txt
 
 
 READ MANPAGES
 -------------
-man wsjtx.1
+man ./wsjtx.1
+
 

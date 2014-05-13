@@ -1,19 +1,25 @@
 #!/usr/bin/env bash
 #
 #
-# Script to create wpsr-${version}-linux.tar.gz
+# Script to create ${name}-${version}-linux.tar.gz
 #
 # USAGE: wspr-dist.sh [NAME] [VERSION]
 # 
 # Example: ./wspr-dist.sh wspr 4.0
 #
-# Generates: wspr-4.0.tar.gz
-#
+# Generates ......: wspr-4.0.tar.gz
+# File Location ..: $(src-path)/wspr/dist
+
+set -e
 
 _NAME=$1
 _VER=$2
+_BASED=$(exec pwd)
+_TARNAME="$_NAME-$_VER-linux.tar.gz"
+_DISTD=$_BASED/dist
+_SCRIPT=$(basename "$0")
+_MANIFEST=wspr-manifest.in
 
-set -e
 # test $1
 if [[ -z $_NAME ]]; then
 	echo
@@ -28,51 +34,44 @@ if [[ -z $_NAME ]]; then
 	exit 1
 fi
 
-_BASED=$(exec pwd)
-_TARNAME="$_NAME-$_VER-linux.tar.gz"
-_DISTD=$_BASED/dist
-_SCRIPT=$(basename "$0")
-
-# look for manifest file
-if [[ -f $_BASED/$_NAME-manifest.in ]]; then
-
-	echo " ..have manifest"
-else
-	echo
-	echo "wspr-manifest.in is missing!, cannot continue."
-	echo
-	exit 1
-fi
-
 # start main
 clear
 echo
 echo "$_SCRIPT Started Creating ( $_NAME-$_VER ) Tarball"
 echo
 
+# look for manifest file
+if [[ -f $_BASED/$_MANIFEST ]]; then
+
+	echo " ..found $_MANIFEST"
+else
+	echo
+	echo "$_MANIFEST is missing!, cannot continue."
+	echo
+	exit 1
+fi
+
 # make dist diirectory
 if [[ -d $_DISTD/$_NAME ]]; then
-	echo " ..removing old distributions directory"
 	rm -r $_DISTD/$_NAME && mkdir -p $_DISTD/$_NAME
-	echo " ..new directory created: $_DISTD/$_NAME"
+	echo " ..created build directory: $_DISTD/$_NAME"
 else
-	echo " ..new directory created: $_DISTD/$_NAME"
+	echo " ..created build directory: $_DISTD/$_NAME"
 	mkdir -p $_DISTD/$_NAME
 fi
 
 # start copying files & folders
 cp -r save/ WsprMod/ WsprModNoGui/ build-aux/ $_DISTD/$_NAME
 
-
 # remove any .dll's from WsprMod
 echo " ..removing any .dll files"
-rm $_DISTD/$_NAME/WsprMod/*.dll 
+find $_DISTD/$_NAME/ -maxdepth 2 -type f -name "*.dll" -delete 
 
 # copy man pages
 cp -r doc/man1/ $_DISTD/$_NAME
 
 # start copy loop
-for line in $(< $_NAME-manifest.in)
+for line in $(< $_MANIFEST)
 do
 	if [[ -f $line ]]; then
 		cp "$line" $_DISTD/$_NAME
@@ -85,12 +84,33 @@ do
 	fi
 done
 
+# check $_DISTD/$_NAME exists and is not empty
+_FOLDEZISE=$(du -sk $_DISTD/$_NAME | cut -f1)
+
+if [[ -d $_DISTD/$_NAME ]] && [[ $_FOLDERSIZE -ge "0" ]]; then
+	echo " ..copying complete, build dir size: $_FOLDEZISE kb "
+else
+		echo
+		echo "Build Folder Error"
+		echo 
+		echo "The folder size is odd or it is missing."
+		echo "Please Verify the file list and re-run $_SCRIPT"
+		echo
+		exit 1
+fi
+
 # start building the tarball
-echo " ..copying complete, building tar file"
+# check that $_NAME folder actally exists before running tar
 cd $_DISTD
 
-# check that $_NAME folder actally exists before running tar
 if [[ -d $_DISTD/$_NAME ]]; then
+
+	# remove old file if exists
+	if [[ -f $_TARNAME ]]; then
+	echo " ..removing previous build"
+	fi
+
+	echo " ..building new tar file"
 	export GZIP=-9
 	tar -czf $_TARNAME ./$_NAME
 else
@@ -143,7 +163,7 @@ _FILESIZE=$(du -k "$_TARNAME" | cut -f1)
 _FILEPATH=$(readlink -e $_TARNAME)
 echo
 echo "----------------------------------------------"
-echo " Package Summary for $_TARNAME"
+echo " Summary for $_TARNAME"
 echo "----------------------------------------------"
 echo
 echo "Created ....: $_TARNAME"
@@ -152,5 +172,9 @@ echo "MD5SUM: ....: $_MD5"
 echo "SHASUM .....: $_SHA"
 echo "Location ...: $_FILEPATH"
 echo
+
+# change directories back to $_BASED
+cd $_BASED
+
 exit 0
 
