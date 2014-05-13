@@ -25,7 +25,6 @@ fi
 clear
 echo
 echo "Running ( autoconf -i ) to process configure.ac"
-echo "to generate configure script."
 echo
 
 # Generate configure script from configure.ac and aclocal.m4
@@ -41,15 +40,11 @@ else
 fi
 	echo
 	echo "Autogen is about to run configure to generate the"
-	echo "Makefile. Command line options are available for $_PROJECT"
-	echo "build. If you would like to see the options"
-	echo "or need to add configuration paths, select ( N ) and"
-	echo "autogen.sh will list options, then exit. Otherwise"
-	echo "Type ( Y ) to create Makefile without options"
+	echo "Makefile."
 	echo
-	echo "At any time, to re-list options, at the prompt, type:"
+	echo "To see additional configuration options, select ( N ),"
+	echo "then type ..: ./configure --help"
 	echo
-	echo "./configure --help"
 	echo
 while [ 1 ]
 do
@@ -57,21 +52,14 @@ do
 	case $yn in
 	[Yy]* )
 		echo "Running configure script .. generating Makefile"
-		# run ./configure
 		$_BASED/configure
 			echo "Finished creating Makefile, To build $_PROJECT, type:"
 			echo
 			echo " make"
 			echo
-			echo "After build, to run $_PROJECT, type:"
-			echo
-			echo " python3 -O wspr.py"
-			echo
 	exit 0
 	;;
 	[Nn]* )
-		clear
-		$_BASED/configure --help
 		exit 0
 	;;
 	* )

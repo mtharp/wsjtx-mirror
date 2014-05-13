@@ -2,11 +2,45 @@
 Current Development Version: WSPR-4.0
 
 
-2014-04-11 (1) Greg Beam <ki7mt@yahoo.com>
+2014-04-12 Greg Beam <ki7mt@yahoo.com>
+
+* Added simplle install / uninstall targets
+* Users should *NOT* install to /usr/local because
+  Coreutils installs a program named "fmt", a command
+  line text formating tool, and WSPR also has a program called
+  "fmt", used for callibration and running the ARRL FMT tests.
+
+  Until this is resolved, it's recommended to install to
+  the users home directories $HOME/wspr, which is the default
+  set in configure.ac.
+
+* Additionally, to run WSPR from /usr/local, we need a wspr.sh
+  script (same as WSJT uses), which can be automated during
+  make to account for python3 locations ++ user --prefix selections.
+  
+* TO BUILD && INSTALL
+
+- svn checkout ../wspr
+- ./autogen.sh
+- make && make install
+
+  by default: WSPR installs in $HOME/wspr
+  
+* UNINSTALL
+
+- make uninstall
+
+- Removes the WSPR directory. If the user created prefix folders
+  ($HOME/testing/wspr), for safety reason, uninstall will not
+  remove "../testing, only ../testing/wspr which is set in the
+  Makefile as ${PREFIX}
+
+
+2014-04-11 (2) Greg Beam <ki7mt@yahoo.com>
 
 * General edits, typo's etc.
 * Corrected message error logic
-* Built and test WSPR, FMT, WSP0, all run well.
+* Built and tested WSPR, FMT, WSPR0, all run well.
 
 
 2014-04-11 (1) Greg Beam <ki7mt@yahoo.com>

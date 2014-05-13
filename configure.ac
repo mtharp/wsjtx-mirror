@@ -5,10 +5,9 @@ AC_PREREQ([2.69])
 AC_COPYRIGHT([$Id$])
 AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net])
 AC_CONFIG_AUX_DIR([build-aux])
-AC_PREFIX_DEFAULT(/usr/local/)
+AC_PREFIX_DEFAULT([$HOME/wspr])
 AC_CANONICAL_HOST
 FAIL=0
-
 
 dnl checks for programs.
 AC_PROG_CC
@@ -55,10 +54,11 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday strchr])
-AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h limits.h \
-linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h stdint.h stdint.h \
-stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h \
-sys/stat.h sys/syslog.h sys/time.h sys/wait.h termios.h unistd.h wait.h])
+AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h inttypes.h libgen.h \
+limits.h linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h stddef.h \
+stdint.h stdint.h stdio.h stdlib.h string.h strings.h sys/ioctl.h sys/ioctl.h \
+sys/param.h sys/resource.h sys/stat.h sys/syslog.h sys/time.h sys/wait.h \
+termios.h unistd.h wait.h])
 
 
 dnl test for lib locations
@@ -248,10 +248,16 @@ fi
 
 dnl Subsitutions
 dnl ----------------------------------------------------------------------------
-AC_SUBST(PREFIX, "${prefix}")
+
+dnl check install prefix
+if test "$prefix" = "NONE"; then
+   prefix=$ac_default_prefix
+fi
+
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
 AC_SUBST(LIBS, "${LIBS}")
+AC_SUBST(PREFIX, "${prefix}")
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
@@ -266,7 +272,7 @@ if test ${FAIL} != 0; then
 echo "** Check ERRORS before running: make **"
 echo
 fi
-echo " Package: ......... WSPR $version"
+echo ' Package: ......... WSPR '"$version"
 echo " Python3: ......... ${pylocation}"
 echo " F2py v2.0: ....... ${f2pylocation}"
 echo " Fcomplier: ....... ${FC}"
@@ -275,4 +281,3 @@ echo " FFTW3: ........... ${ffstatus}"
 echo " Portaudio: ....... ${pastatus}"
 echo " Install Prefix: .. ${prefix}"
 echo
-

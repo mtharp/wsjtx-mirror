@@ -3,16 +3,17 @@
 #				make >& junk
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
+VERSION		:=	4.0
 OS		:=	@OS@
 MV		:=	@MV@
 RM		:=	@RM@
+CP		:=	@CP@
 MKDIR		:=	@MKDIR@
-INSTALL	=	install
 PREFIX		:=	@PREFIX@
 
 CC		:=	@CC@
 FC		:=	@FC@
-FCV		:=	@FCV@
+FC		:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
 PYTHON		:=	@PYTHON@
@@ -38,8 +39,18 @@ endif
 
 DEFS		:=	@DEFS@
 
-# WSPR CODE
+# WSPR Targets
 all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
+	@echo ""
+	@echo "WSPR ${VERSION} build finished !!"
+	@echo "To Run, type .........: @PYTHON@ -O wspr.py"
+	@echo "To Install, type .....: make install"
+	@echo "Install Location .....: @PREFIX@"
+	@echo ""
+	@echo "Clean & Rebuild"
+	@echo "To Clean, type .......: make clean"
+	@echo "To Dist Clean, type ..: make distclean"
+	@echo ""
 
 # Default rules
 %.o: %.c
@@ -79,6 +90,7 @@ libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 	ar cr libwspr.a ${OBJS3}
 	ranlib libwspr.a
 
+# Build FMT Applications
 fmt: fmt.f90 libwspr.a
 	${FC} -o fmt fmt.f90 libwspr.a -pthread -lfftw3f -lportaudio
 
@@ -91,29 +103,55 @@ fcal: fcal.f90
 fmeasure: fmeasure.f90
 	${FC} -o fmeasure fmeasure.f90
 
+# SRC for w.so
 F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
+# Build W.SO & MV to WsprMod then CP to WsprMosNoGui
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" thnix.o ${LDFLAGS} ${LIBS} libwspr.a \
 	-m w ${F2PYSRCS}
-	${MKDIR} -p build/lib/WsprMod
 	${MVSO}
 	cp WsprMod/w.so WsprModNoGui/w.so
 
-install: WsprMod/w.so
-	${RM} -rf build/
-	${PYTHON} setup.py install
-	${INSTALL} wspr ${PREFIX}/bin
+# Install to $HOME/wpsr
+install:
+	@clear
+	@echo "-----------------------------------"
+	@echo "        Installing WSPR"
+	@echo "-----------------------------------"
+	@echo ""
+	@${MKDIR} -p ${PREFIX}
+	@${CP} -r doc/ save/ WsprMod/ WsprModNoGui/ ${PREFIX}
+	@${CP} -r ./fcal ./fmeasure ./fmt ./fmtave \
+	./wspr0 ./wsprcode ./gocal ./hamlib_rig* ./Pmw*.py \
+	./tkrep.py ./wspr_nogui.py ./wspr.py ${PREFIX}
+	@echo "Finished Installing WSPR."
+	@echo ""
+	@echo "To run WSPR ..: cd ${PREFIX}"
+	@echo "Then type, ...: @PYTHON@ -O wspr.py"
+	@echo ""
 
-.PHONY : clean
-clean:
+# Uninstall / Delete $HOME/wspr directory
+uninstall:
+	@echo ""
+	@echo "** WARNING **, this will delete the WSPR directory."
+	@echo "Make sure you have saved all the files you wish"
+	@echo "to keep (WSPR.INI, fcal.out, decodes etc.)."
+	@echo ""
+	@read -p 'Delete WSPR Directory? (y/n)' REPLY; \
+	[ $$REPLY = "y" ] || [ $$REPLY = "Y" ]; then \
+	${RM} -r ${PREFIX}; \
+	fi
+
+.PHONY: clean distclean
+clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal \
 	fmeasure wspr0 WsprModNoGui/w.so
 	${RM} -rf build/
 
-distclean:
+distclean :
 	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
