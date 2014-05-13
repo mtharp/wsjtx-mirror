@@ -13,7 +13,7 @@ PREFIX		:=	@PREFIX@
 
 CC		:=	@CC@
 FC		:=	@FC@
-FC		:=	@FCV@
+FCV		:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
 PYTHON		:=	@PYTHON@

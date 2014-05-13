@@ -4,6 +4,13 @@ Current Development Version: WSPR-4.0
 
 2014-04-12 Greg Beam <ki7mt@yahoo.com>
 
+* fix a potential issue with Makefile.in FC v.s.FCV
+* Add wspr-dist.sh script to build tar.gz file
+* add manifest file for use wiht wspr-dist.sh
+
+
+2014-04-12 Greg Beam <ki7mt@yahoo.com>
+
 * Added simplle install / uninstall targets
 * Users should *NOT* install to /usr/local because
   Coreutils installs a program named "fmt", a command
