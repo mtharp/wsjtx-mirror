@@ -2,6 +2,15 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-13 (3) Greg Beam <ki7mt@yahoo.com>
+
+* change makefile in, yet again, to try an resolve ${MVSO}
+  as w*.so does not work. w.*.so is ok, as is w.so for Mac.
+  there are several ways of doing this.
+* More updates to wspr-dist.sh
+* Updated INSTALL.TXT
+
+
 2014-04-13 (2) Greg Beam <ki7mt@yahoo.com>
 
 * Updated Makefile.in based on feedback from Chuck WA7KGX

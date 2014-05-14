@@ -9,6 +9,7 @@ OS		:=	@OS@
 MV		:=	@MV@
 RM		:=	@RM@
 CP		:=	@CP@
+SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
 PREFIX		:=	@PREFIX@
 
@@ -32,7 +33,7 @@ ifeq (${host_os},*darwin*)
 	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
 	-Wno-conversion -Wno-character-truncation -fPIC -m64
 else
-	MVSO	= ${MV} w*.so WsprMod/w.so
+	MVSO	= ${MV} w.*.so WsprMod/w.so
 	CFLAGS	+= -fPIC
 	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
 	-Wno-conversion -Wno-character-truncation -fPIC

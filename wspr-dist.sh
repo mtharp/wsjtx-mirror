@@ -34,6 +34,13 @@ if [[ -z $_NAME ]]; then
 	exit 1
 fi
 
+function re_run() {
+	echo
+	echo "Check the build script for accuracy, and re-run $_SCRIPT"
+	echo
+	exit 1
+}
+
 # start main
 clear
 echo
@@ -44,6 +51,7 @@ echo
 if [[ -f $_BASED/$_MANIFEST ]]; then
 
 	echo " ..found $_MANIFEST"
+
 else
 	echo
 	echo "$_MANIFEST is missing!, cannot continue."
@@ -95,8 +103,7 @@ else
 		echo 
 		echo "The folder size is odd or it is missing."
 		echo "Please Verify the file list and re-run $_SCRIPT"
-		echo
-		exit 1
+		re_run
 fi
 
 # start building the tarball
@@ -117,10 +124,7 @@ else
 	echo
 	echo "Folder Error !"
 	echo "Could not find $_DISTD/$_NAME"
-	echo
-	echo "Check the build script for accuracy, and re-run $_SCRIPT"
-	echo
-	exit 1
+	re_run
 fi
 
 # test the tar ball was built, and is not "0" in size
@@ -130,10 +134,7 @@ else
 	echo
 	echo "Tar File Error"
 	echo "$_TARNAME is missing or has a value of '0'"
-	echo
-	echo "Check the build script for accuracy, and re-run $_SCRIPT"
-	echo
-	exit 1
+	re_run
 fi
 	
 # perform MD5 && SHA sums on the file
@@ -146,10 +147,7 @@ else
 	echo
 	echo "Checksum Error"
 	echo "SHA or MD5 failed to create a hash"
-	echo
-	echo "Check the build script for accuracy, and re-run $_SCRIPT"
-	echo
-	exit 1
+	re_run
 fi
 
 # removing build directory
