@@ -37,6 +37,11 @@ AC_DEFUN([AX_CHECK_PYTHON],[
 
 HAS_PYTHON3=0
 
+AC_ARG_WITH([python3-dir],
+	AC_HELP_STRING([--with-python3=<Path to Python3>],
+	[Provide path t Python3]),
+	[python3_dir=$with_python3])
+
 # Try to get python version
 AC_MSG_CHECKING([for Python3 using: python])
 PYCHECK=`python -c "import sys; ver = sys.version.split ()[[0]]; print (ver >= '3.2.0')"`
@@ -60,10 +65,6 @@ PYCHECK=`python3 -c "import sys; ver = sys.version.split ()[[0]]; print (ver >= 
 		AC_MSG_RESULT([no])
 		HAS_PYTHON3B=0
 
-		AC_ARG_WITH([python3-dir],
-		AC_HELP_STRING([--with-python3=<path>],
-		[path to python3]),
-		[python3_dir=$with_python3])
 	else
 		AC_MSG_RESULT([yes])
 		HAS_PYTHON3B=1
@@ -79,6 +80,11 @@ dnl {{{ ax_check_f2py
 AC_DEFUN([AX_CHECK_F2PY],[
 
 HAS_F2PY=0
+
+AC_ARG_WITH([f2py3-dir],
+	AC_HELP_STRING([--with-f2py3=<Path to F2PY3>],
+	[Provide path to f2py3]),
+	[f2py3_dir=$with_f2py3])
 
 # Try to get f2py
 AC_MSG_CHECKING([for F2PY using: f2py])
@@ -103,10 +109,6 @@ F2PYCHECK=`f2py3 -v > /dev/null 2>&1`
 		AC_MSG_RESULT([no])
 		HAS_F2PYB=0
 
-		AC_ARG_WITH([f2py3-dir],
-		AC_HELP_STRING([--with-f2py3=<path>],
-		[path to f2py3]),
-		[f2py3_dir=$with_f2py3])
 	else
 		AC_MSG_RESULT([yes])
 		HAS_F2PYB=1
@@ -121,6 +123,11 @@ dnl ----------------------------------------------------------------------------
 dnl {{{ ax_check_gfortran
 AC_DEFUN([AX_CHECK_GFORTRAN],[
 
+AC_ARG_WITH([gfortran-lib-dir],
+	AC_HELP_STRING([--with-gfortran-lib-dir=<path>],
+	[Provide path to Lib Gfortran]),
+	[gfortran_lib_dir=$with_gfortran_lib_dir])
+
 # Check gfortran can perform a basic function
 AC_CHECK_LIB([gfortran], [_gfortran_st_write], [HAS_GFORTRAN=1], [HAS_GFORTRAN=0])
 
@@ -128,10 +135,6 @@ if test ${HAS_GFORTRAN} -eq 0; then
 	AC_MSG_RESULT([no])
 	HAS_GFORTRAN=0
 
-	AC_ARG_WITH([gfortran-dir],
-	AC_HELP_STRING([--with-gfortran-dir=<path>],
-	[path to gfortran]),
-	[portaudio_dir=$with_portaudio_include_dir])
 else
 	FC=gfortran
 	FCV=gnu95
@@ -153,6 +156,16 @@ AC_DEFUN([AX_CHECK_PORTAUDIO],[
 HAS_PORTAUDIO_H=0
 HAS_PORTAUDIO_LIB=0
 HAS_PORTAUDIO=0
+
+AC_ARG_WITH([portaudio-include-dir],
+	AC_HELP_STRING([--with-portaudio-include-dir=<path>],
+	[path to portaudio include files]),
+	[portaudio_include_dir=$with_portaudio_include_dir])
+
+AC_ARG_WITH([portaudio-lib-dir],
+	AC_HELP_STRING([--with-portaudio-lib-dir=<Path to Portaudio Libs>],
+	[Provide path to Portaudio lib files]),
+	[portaudio_lib_dir=$with_portaudio_lib_dir])
 
 # Look in more places for portaudio.h
 portaudio_include_dir="/usr/include"
@@ -184,7 +197,7 @@ elif test -e ${pa_lib_dir1}/libportaudio.so -o -e ${pa_lib_dir1}/libportaudio.a;
 	portaudio_lib_dir="${pa_lib_dir1}"
 
 # Testing Alternate /usr/lib/x86_64-linux-gnu
-elif test -e $[{pa_lib_dir2}]/libportaudio.so -o -e $[{pa_lib_dir2}]/libportaudio.a; then
+elif test -e ${pa_lib_dir2}/libportaudio.so -o -e ${pa_lib_dir2}/libportaudio.a; then
 	HAS_PORTAUDIO_LIB=1
 	portaudio_lib_dir="${pa_lib_dir2}"
 
@@ -204,15 +217,6 @@ AC_CHECK_LIB([portaudio], [Pa_GetVersion], [HAS_PORTAUDIO_VERSION=1], [HAS_PORTA
 	if test $[{HAS_PORTAUDIO_VERSION}] -eq 0; then
 		HAS_PORTAUDIO=0
 
-		AC_ARG_WITH([portaudio-include-dir],
-		AC_HELP_STRING([--with-portaudio-include-dir=<path>],
-		    [path to portaudio include files]),
-		    [portaudio_include_dir=$with_portaudio_include_dir])
-
-		AC_ARG_WITH([portaudio-lib-dir],
-		AC_HELP_STRING([--with-portaudio-lib-dir=<path>],
-		    [path to portaudio lib files]),
-		    [portaudio_lib_dir=$with_portaudio_lib_dir])
 	else
 		HAS_PORTAUDIO=1
 		CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
@@ -232,18 +236,24 @@ HAS_SAMPLERATE_H=0
 HAS_SAMPLERATE_LIB=0
 HAS_PORTAUDIO=0
 
+
+AC_ARG_WITH([samplerate-include-dir],
+	AC_HELP_STRING([--with-samplerate-include-dir=<path>],
+	[Provide path to Samplerate include files]),
+	[samplerate_include_dir=$with_samplerate_include_dir])
+
+AC_ARG_WITH([samplerate-lib-dir],
+	AC_HELP_STRING([--with-samplerate-lib-dir=<Path to Samplerate Libs>],
+	[Provide path to Samplerate lib files]),
+	[samplerate_lib_dir=$with_samplerate_lib_dir])
+
+
 # Look in more places for samplerate.h
 samplerate_include_dir="/usr/include"
 sr_include_dir1="/usr/local/include"
 
-# Look in more places for libsamplerate.{a.so}
-samplerate_lib_dir="/usr/lib"
-sr_lib_dir1="/usr/local/lib"
-sr_lib_dir2="/usr/lib/x86_64-linux-gnu"
-sr_lib_dir3="/usr/lib/i386-linux-gnu"
-
 # If not User Supplied ARGS, look in alternative locations
-if test -e $[{samplerate_include_dir}]/samplerate.h; then
+if test -e ${samplerate_include_dir}/samplerate.h; then
 	HAS_SAMPLERATE_H=1
 
 elif test -e ${sr_include_dir1}/samplerate.h; then
@@ -252,6 +262,12 @@ elif test -e ${sr_include_dir1}/samplerate.h; then
 else 
 	HAS_SAMPLERATE_H=0
 fi
+
+# Look in more places for libsamplerate.{a.so}
+samplerate_lib_dir="/usr/lib"
+sr_lib_dir1="/usr/local/lib"
+sr_lib_dir2="/usr/lib/x86_64-linux-gnu"
+sr_lib_dir3="/usr/lib/i386-linux-gnu"
 
 # Testing Traditional Location First
 if test -e ${samplerate_lib_dir}/libsamplerate.so -o -e ${samplerate_lib_dir}/libsamplerate.a; then
@@ -265,10 +281,10 @@ elif test -e ${sr_lib_dir1}/libsamplerate.so -o -e ${sr_lib_dir1}/libsamplerate.
 # Testing Alternate /usr/lib/x86_64-linux-gnu
 elif test -e ${sr_lib_dir2}/libsamplerate.so -o -e ${sr_lib_dir2}/libsamplerate.a; then
 	HAS_SAMPLERATE_LIB=1
-	samplerate_lib_dir="$[{sr_lib_dir2}]"
+	samplerate_lib_dir="${sr_lib_dir2}"
 
 # Testing Alternate /usr/lib/i386-linux-gnu
-elif test -e ${pa_lib_dir3}/libsamplerate.so -o -e ${pa_lib_dir3}/libsamplerate.a; then
+elif test -e ${sr_lib_dir3}/libsamplerate.so -o -e ${sr_lib_dir3}/libsamplerate.a; then
 	HAS_SAMPLERATE_LIB=1
 	samplerate_lib_dir="${sr_lib_dir3}"
 else
@@ -280,18 +296,10 @@ if test ${HAS_SAMPLERATE_H} -eq 1 -a ${HAS_SAMPLERATE_LIB} -eq 1; then
 
 	dnl Check Samplrate can perform a basic funciton
 	AC_CHECK_LIB([samplerate], [src_simple], [HAS_SAMPLERATE_LIB=1], [HAS_SAMPLERATE_LIB=0])
+
 	if test $[{HAS_SAMPLERATE_LIB}] -eq 0; then
 		HAS_SAMPLERATE=0
 
-		AC_ARG_WITH([samplerate-include-dir],
-		AC_HELP_STRING([--with-samplerate-include-dir=<path>],
-		[path to samplerate include files]),
-		[samplerate_include_dir=$with_samplerate_include_dir])
-
-		AC_ARG_WITH([samplerate-lib-dir],
-		AC_HELP_STRING([--with-samplerate-lib-dir=<path>],
-		[path to samplerate lib files]),
-		[samplerate_lib_dir=$with_samplerate_lib_dir])
 	else
 		HAS_SAMPLERATE=1
 		CPPFLAGS="-I${samplerate_include_dir} ${CPPFLAGS}"
@@ -310,11 +318,17 @@ AC_DEFUN([AX_CHECK_FFTW3],[
 HAS_FFTW3_LIB=0
 HAS_FFTW3=0
 
+AC_ARG_WITH([fftw3-lib-dir],
+	AC_HELP_STRING([--with-fftw3-lib-dir=<Path to FFTW3 Libs>],
+	[Provide path to FFTW lib files]),
+	[fftw3_lib_dir=$with_fftw3_lib_dir])
+
 dnl Look in more places for libfftw3f.{a.so}
 fftw3_lib_dir="/usr/lib"
 ff_lib_dir1="/usr/local/lib"
 ff_lib_dir2="/usr/lib/x86_64-linux-gnu"
 ff_lib_dir3="/usr/lib/i386-linux-gnu"
+ff_lib_dir4="/usr/lib64"
 
 # If not User Supplied ARGS, look in alternative locations
 if test -e ${fftw3_lib_dir}/libfftw3f.so -o -e ${fftw3_lib_dir}/libfftw3f.a; then
@@ -323,20 +337,26 @@ if test -e ${fftw3_lib_dir}/libfftw3f.so -o -e ${fftw3_lib_dir}/libfftw3f.a; the
 # Testing Alternate Location: /usr/local/lib
 elif test -e ${ff_lib_dir1}/libfftw3f.so -o -e ${ff_lib_dir1}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
-	fftw3_lib_dir="${sr_lib_dir1}"
+	fftw3_lib_dir="${ff_lib_dir1}"
 
 # Testing Alternate /usr/lib/x86_64-linux-gnu
 elif test -e ${ff_lib_dir2}/libfftw3f.so -o -e ${ff_lib_dir2}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
-	fftw3_lib_dir="${sr_lib_dir2}"
+	fftw3_lib_dir="${ff_lib_dir2}"
 
 # Testing Alternate /usr/lib/i386-linux-gnu
-elif test -e ${ff_lib_dir3}/libfftw3f.so -o -e ${pa_lib_dir3}/libfftw3f.a; then
+elif test -e ${ff_lib_dir3}/libfftw3f.so -o -e ${ff_lib_dir3}/libfftw3f.a; then
 	HAS_FFTW3_LIB=1
-	fftw3_lib_dir="${sr_lib_dir3}"
+	fftw3_lib_dir="${ff_lib_dir3}"
+
+# Testing Alternate /usr/lib/i386-linux-gnu
+elif test -e ${ff_lib_dir4}/libfftw3f.so -o -e ${ff_lib_dir4}/libfftw3f.a; then
+	HAS_FFTW3_LIB=1
+	fftw3_lib_dir="${ff_lib_dir4}"
 
 else
 	HAS_FFTW3_LIB=0
+
 fi
 
 # Test a simple FFTW function
@@ -348,10 +368,6 @@ if test "${HAS_FFTW3_LIB}" -eq 1; then
 	if test ${HAS_FFTW3_LIB} -eq 0; then
 		HAS_FFTW3=0
 
-		AC_ARG_WITH([fftw3-lib-dir],
-		AC_HELP_STRING([--with-fftw3-lib-dir=<path>],
-		[path to fftw3 lib files]),
-		[fftw3_lib_dir=$with_samplerate_lib_dir])
 	else
 		HAS_FFTW3=1
 		CPPFLAGS="-I${fftw3_include_dir} ${CPPFLAGS}"

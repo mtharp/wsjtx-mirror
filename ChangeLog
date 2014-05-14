@@ -2,6 +2,15 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-14 Greg Beam <ki7mt@yahoo.com>
+
+* Added WSJT site info to makefile.in & configure.ac
+* Added additional LDFLAG locations if found. This
+  may help with odd system configurations.
+* Fixed several bad path vars that may have been
+  causing issues finding Libs.
+
+
 2014-04-13 (3) Greg Beam <ki7mt@yahoo.com>
 
 * change makefile in, yet again, to try an resolve ${MVSO}

@@ -3,9 +3,17 @@
 #				make >& junk
 # Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
 
+# Program Infomation
 PROGRAM		:=	@PROGRAM@
 VERSION		:=	@VERSION@
+BUGS		:=	@BUGS@
+WEB		:=	@WEB@
+
+# System Information
 OS		:=	@OS@
+CPU		:=	@CPU@
+
+# General Information
 MV		:=	@MV@
 RM		:=	@RM@
 CP		:=	@CP@
@@ -13,17 +21,19 @@ SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
 PREFIX		:=	@PREFIX@
 
+# Compiler Information
 CC		:=	@CC@
 FC		:=	@FC@
 FCV		:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
+# Python Information
 PYTHON		:=	@PYTHON@
 F2PY		:=	@F2PY@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
-CPPFLAGS	+=	${DEFS} -DVERSION=\"$(VERSION)\" -DPROGRAM=\"$(PROGRAM)\"
+CPPFLAGS	+=	${DEFS}
 LDFLAGS		+=	@LDFLAGS@
 
 # OS Specific Vars
@@ -39,6 +49,7 @@ else
 	-Wno-conversion -Wno-character-truncation -fPIC
 endif
 
+# Config Definitions
 DEFS		:=	@DEFS@
 
 # WSPR Targets
@@ -48,16 +59,19 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 	@echo "${PROGRAM} ${VERSION} Make Summary"
 	@echo "---------------------------------------------"
 	@echo ""	
-	@echo " To Run, type .........: @PYTHON@ -O wspr.py"
+	@echo " To Run, type .........: ${PYTHON} -O wspr.py"
 	@echo " To Install, type .....: make install"
-	@echo " Install Location .....: @PREFIX@"
+	@echo " Install Location .....: ${PREFIX}"
 	@echo ""
 	@echo " Clean & Rebuild"
 	@echo " To Clean, type .......: make clean"
 	@echo " To Dist Clean, type ..: make distclean"
 	@echo ""
+	@echo " Website ..............: ${WEB}"
+	@echo " Report Bugs To .......: ${BUGS}"
+	@echo ""
 
-# Default rules
+# Default Rules
 %.o: %.c
 	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
 %.o: %.f
@@ -69,6 +83,7 @@ all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
+# Objects
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
@@ -90,7 +105,7 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	unpackname.o unpackpfx.o unpackprop.o unpacktext2.o wfile5.o \
 	wqdecode.o wqencode.o wspr2.o xcor162.o xfft.o 
 
-# Build the library libwspr.a
+# Build Library: libwspr.a
 libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 	ar cr libwspr.a ${OBJS3}
 	ranlib libwspr.a
@@ -111,7 +126,7 @@ fmeasure: fmeasure.f90
 # SRC for w.so
 F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
-# Build W.SO & MV to WsprMod then CP to WsprMosNoGui
+# Build W.SO & MV to WsprMod then CP to WsprModNoGui
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" thnix.o ${LDFLAGS} ${LIBS} libwspr.a \
@@ -119,7 +134,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	${MVSO}
 	cp WsprMod/w.so WsprModNoGui/w.so
 
-# Install to $HOME/wpsr
+# Install to ${PREXIX}
 install:
 	@clear
 	@echo "-----------------------------------"
@@ -134,10 +149,10 @@ install:
 	@echo "Finished Installing WSPR."
 	@echo ""
 	@echo "To run WSPR ..: cd ${PREFIX}"
-	@echo "Then type, ...: @PYTHON@ -O wspr.py"
+	@echo "Then type, ...: ${PYTHON} -O wspr.py"
 	@echo ""
 
-# Uninstall / Delete $HOME/wspr directory
+# Uninstall / Delete ${PREFIX} Directory
 uninstall:
 	@echo ""
 	@echo "** WARNING **, this will delete the WSPR directory."
@@ -149,6 +164,7 @@ uninstall:
 	${RM} -r ${PREFIX}; \
 	fi
 
+# Cleanup Source Tree
 .PHONY: clean distclean
 clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \

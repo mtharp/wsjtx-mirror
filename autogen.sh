@@ -52,11 +52,7 @@ do
 	case $yn in
 	[Yy]* )
 		$_BASED/configure
-		echo "Finished creating Makefile, To build $_PROGRAM, type:"
-		echo
-		echo " make"
-		echo
-	exit 0
+		exit 0
 	;;
 	[Nn]* )
 		exit 0
