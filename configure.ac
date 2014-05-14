@@ -87,8 +87,8 @@ fi
 
 dnl functions add to flags if found
 CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
-LIBS="${LIBS}"
-LDFLAGS="${LDFLAGS} -lpthread"
+LIBS="-lpthread ${LIBS}"
+LDFLAGS="${LDFLAGS}"
 
 dnl Check Python Version - ( aclocal.m4 )
 AX_CHECK_PYTHON
@@ -121,6 +121,7 @@ elif test "${HAS_PYTHON3B}" -eq 1; then
 
 dnl We could not find Python3
 else
+	pylocation="FAILED!!"	
 	FAIL=1
 	echo
 	echo "Python v3.2+ is required to build $PACKAGE_NAME"
@@ -144,6 +145,7 @@ elif test "${HAS_F2PYB}" -eq 1; then
 
 dnl We could not find F2py
 else
+	f2pylocation="FAILED!!"
 	FAIL=1
 	echo
 	echo "F2PY v2.0 (Numpy 1.8.1+) is required to build $PACKAGE_NAME"
@@ -166,6 +168,7 @@ if test "${HAS_GFORTRAN}" -eq 1; then
 
 dnl We could not find Gfortran
 else
+	FC="FAILED!!"
 	FAIL=1
 	echo
 	echo "Gfortran is required to build $PACKAGE_NAME"
@@ -187,6 +190,7 @@ if test "$HAS_SAMPLERATE" -eq 1; then
 
 dnl We could not find Samplerate
 else
+	srstatus="FAILED!!"
 	FAIL=1
 	echo
 	echo "Samplerate-dev is required to build $PACKAGE_NAME"
@@ -210,6 +214,7 @@ if test "${HAS_FFTW3}" -eq 1; then
 
 dnl We couldn't find FFTW, the libs failed
 else
+	ffstatus="FAILED!!"
 	FAIL=1
 	echo
 	echo "FFTW3 Libs were not found"
@@ -234,6 +239,7 @@ if test "${HAS_PORTAUDIO}" -eq 1; then
 dnl We couldn't find Portadio, the libs failed or it's the wrong version
 else
 	FAIL=1
+	pastatus="FAILED!!"
 	echo
 	echo "Portaudio-v19 was not found"
 	echo
@@ -263,38 +269,36 @@ AC_SUBST(PROGRAM, "${PACKAGE_NAME}")
 AC_SUBST(VERSION, "${PACKAGE_VERSION}")
 AC_SUBST(BUGS, "${PACKAGE_BUGREPORT}")
 AC_SUBST(WEB, "${PACKAGE_URL}")
-
-if test "${FAIL}" != 0; then
-	echo "** Configure failed to create Makefile **"
-	echo
-else
-
-# output only if everything pases
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
-dnl do summary
-dnl ----------------------------------------------------------------------------
+if test "${FAIL}" != 0; then
 	echo
-	echo "-------------------------------------------"
-	echo " Configuration Summary"
-	echo "-------------------------------------------"
-	echo
-	echo " Package: .........: ${PROGRAM} ${VERSION}"
-	echo " Python3: .........: ${pylocation}"
-	echo " F2py v2.0: .......: ${f2pylocation}"
-	echo " Fcomplier: .......: ${FC}"
-	echo " Samplerate: ......: ${srstatus}"
-	echo " FFTW3: ...........: ${ffstatus}"
-	echo " Portaudio: .......: ${pastatus}"
-	echo " Install Prefix: ..: ${prefix}"
-	echo
-	echo " Website ..........: ${WEB}"
-	echo " Report Bugs To ...: ${BUGS}"
-	echo
-	echo "Finished creating Makefile, To build $_PROGRAM, type:"
-	echo
-	echo " make"
+	echo "** Configure failed! Check Errors **"
 	echo
 fi
+
+dnl do summary
+dnl ----------------------------------------------------------------------------
+echo
+echo "-------------------------------------------"
+echo " Configuration Summary"
+echo "-------------------------------------------"
+echo
+echo " Package: .........: ${PROGRAM} ${VERSION}"
+echo " Python3: .........: ${pylocation}"
+echo " F2py v2.0: .......: ${f2pylocation}"
+echo " Fcomplier: .......: ${FC}"
+echo " Samplerate: ......: ${srstatus}"
+echo " FFTW3: ...........: ${ffstatus}"
+echo " Portaudio: .......: ${pastatus}"
+echo " Install Prefix: ..: ${prefix}"
+echo
+echo " Website ..........: ${WEB}"
+echo " Report Bugs To ...: ${BUGS}"
+echo
+echo "Finished creating Makefile, To build $_PROGRAM, type:"
+echo
+echo " make"
+echo
 

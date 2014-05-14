@@ -2,7 +2,13 @@
 Current Development Version: WSPR-4.0
 
 
-2014-04-14 Greg Beam <ki7mt@yahoo.com>
+2014-04-14 (2) Greg Beam <ki7mt@yahoo.com>
+
+* Generate Makefile, even though configure fails.
+* Add indicators as to what failed in Make Summary.
+
+
+2014-04-14 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Added WSJT site info to makefile.in & configure.ac
 * Added additional LDFLAG locations if found. This
