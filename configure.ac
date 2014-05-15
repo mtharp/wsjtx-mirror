@@ -25,6 +25,8 @@ AC_PROG_GCC_TRADITIONAL
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PATH_PROG(RM, rm)
+AC_PATH_PROG(TR, tr)
+AC_PATH_PROG(SORT, sort)
 AC_PATH_PROG(CP, cp)
 AC_PATH_PROG(MKDIR, mkdir)
 AC_PATH_PROG(MV, mv)
@@ -85,11 +87,6 @@ if test -d /usr/lib ; then
 	LDFLAGS="-L/usr/lib ${LDFLAGS}"
 fi
 
-dnl functions add to flags if found
-CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
-LIBS="-lpthread ${LIBS}"
-LDFLAGS="${LDFLAGS}"
-
 dnl Check Python Version - ( aclocal.m4 )
 AX_CHECK_PYTHON
 
@@ -107,6 +104,37 @@ AX_CHECK_FFTW3
 
 dnl check portaudio - ( aclocal.m4 )
 AX_CHECK_PORTAUDIO
+
+
+dnl functions add to flags if found
+LIBS="-lpthread${LIBS}"
+CPPFLAGS="-I/usr/include -I/usr/local/include ${CPPFLAGS}"
+UNIQUE=$(echo "${FFLD} ${SRLD} ${PALD} ${LDFLAGS}" |tr ' ' '\n'| sort -su |tr '\n' ' ')
+LDFLAGS="${UNIQUE}"
+
+# OS specfic flags
+if test "${host_os}" = *darwin* ; then
+	MVSO="${MV} w.so WsprMod/w.so"
+	CFLAGS="-Wall -O0 -fPIC -m64"
+	FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIC -m64"
+	FCOPT="-cpp -fbounds-check -O2"
+else
+	MVSO="${MV} w.*.so WsprMod/w.so"
+	CFLAGS="-fPIC"
+	FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIC"
+	FCOPT="-cpp -fbounds-check -O2"
+fi
+
+# Flag / cmd substitutions
+AC_SUBST(LIBS, "${LIBS}")
+AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
+AC_SUBST(LDFLAGS, "${LDFLAGS}")
+AC_SUBST(MVSO, "${MVSO}")
+AC_SUBST(CFLAGS, "${CFLAGS}")
+AC_SUBST(FFLAGS, "${FFLAGS}")
+AC_SUBST(FCOPT, "${FCOPT}")
 
 dnl set failure flag for dependency tests
 FAIL="0"
@@ -166,7 +194,7 @@ if test "${HAS_GFORTRAN}" -eq 1; then
 	AC_DEFINE([HAS_GFORTRAN], [1],)
 	AC_DEFINE([HAS_GFORTRAN_LIB], [1],)
 
-dnl We could not find Gfortran
+dnl if we could not find Gfortran
 else
 	FC="FAILED!!"
 	FAIL=1
@@ -188,7 +216,7 @@ if test "$HAS_SAMPLERATE" -eq 1; then
 	AC_DEFINE([HAS_SAMPLERATE_LIB], [1],)
 	srstatus="OK"
 
-dnl We could not find Samplerate
+dnl if we could not find Samplerate, or failed simple test
 else
 	srstatus="FAILED!!"
 	FAIL=1
@@ -205,14 +233,14 @@ else
 	echo
 fi
 
-dnl test fftw
+dnl if test fftw
 dnl ----------------------------------------------------------------------------
 if test "${HAS_FFTW3}" -eq 1; then
 	AC_DEFINE([HAS_FFTW3], [1],)
 	AC_DEFINE([HAS_FFTW3_LIB], [1],)
 	ffstatus="OK"
 
-dnl We couldn't find FFTW, the libs failed
+dnl if we couldn't find FFTW, or failed simple test
 else
 	ffstatus="FAILED!!"
 	FAIL=1
@@ -236,7 +264,7 @@ if test "${HAS_PORTAUDIO}" -eq 1; then
 	AC_DEFINE([HAS_PORTAUDIO_LIB], [1],)
 	pastatus="OK"
 
-dnl We couldn't find Portadio, the libs failed or it's the wrong version
+dnl if we could not find Portadio, or failed simple test
 else
 	FAIL=1
 	pastatus="FAILED!!"
@@ -253,7 +281,7 @@ else
 	echo
 fi
 
-dnl Subsitutions
+dnl substitutions
 dnl ----------------------------------------------------------------------------
 
 dnl check install prefix
@@ -261,9 +289,6 @@ if test "$prefix" = "NONE"; then
    prefix=$ac_default_prefix
 fi
 
-AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
-AC_SUBST(LDFLAGS, "${LDFLAGS}")
-AC_SUBST(LIBS, "${LIBS}")
 AC_SUBST(PREFIX, "${prefix}")
 AC_SUBST(PROGRAM, "${PACKAGE_NAME}")
 AC_SUBST(VERSION, "${PACKAGE_VERSION}")

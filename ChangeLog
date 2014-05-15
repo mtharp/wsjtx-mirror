@@ -2,6 +2,21 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-15 commit r4144 Greg Beam <ki7mt@yahoo.com>
+
+* Updated Makefile.in, moved flag options to configure.ac based $host_os 
+  to where they should be, rather than in the Makefile.
+* Updated variables in Makefile.in
+* Moved LDFLAG update to after libs & header check
+* Sort Unique LDFLAG paths, remove duplicates
+
+2014-04-14 commit r4142 Joe Taylor <joe@princeton.edu>
+
+* Fixed -pthread issue with wspr0 thnix_stub file.
+* Added compile w/out -Wall for thnix_stub to prevent
+  warning messages during build.
+
+
 2014-04-14 (2) Greg Beam <ki7mt@yahoo.com>
 
 * Generate Makefile, even though configure fails.

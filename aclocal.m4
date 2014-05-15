@@ -220,7 +220,7 @@ AC_CHECK_LIB([portaudio], [Pa_GetVersion], [HAS_PORTAUDIO_VERSION=1], [HAS_PORTA
 	else
 		HAS_PORTAUDIO=1
 		CPPFLAGS="-I${portaudio_include_dir} ${CPPFLAGS}"
-		LDFLAGS="-L${portaudio_lib_dir} ${LDFLAGS}"
+		PALD="-L${portaudio_lib_dir}"
 		LIBS="${LIBS} -lportaudio"
 	fi
 fi
@@ -303,7 +303,7 @@ if test ${HAS_SAMPLERATE_H} -eq 1 -a ${HAS_SAMPLERATE_LIB} -eq 1; then
 	else
 		HAS_SAMPLERATE=1
 		CPPFLAGS="-I${samplerate_include_dir} ${CPPFLAGS}"
-		LDFLAGS="-L${samplerate_lib_dir} ${LDFLAGS}"
+		SRLD="-L${samplerate_lib_dir}"
 		LIBS="${LIBS} -lsamplerate"
 	fi
 fi
@@ -371,7 +371,7 @@ if test "${HAS_FFTW3_LIB}" -eq 1; then
 	else
 		HAS_FFTW3=1
 		CPPFLAGS="-I${fftw3_include_dir} ${CPPFLAGS}"
-		LDFLAGS="-L${fftw3_lib_dir} ${LDFLAGS}"
+		FFLD="-L${fftw3_lib_dir}"
 		LIBS="${LIBS} -lfftw3f"
 	fi
 fi

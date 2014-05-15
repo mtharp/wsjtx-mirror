@@ -18,6 +18,7 @@ MV		:=	@MV@
 RM		:=	@RM@
 CP		:=	@CP@
 SHELL		:=	@SHELL@
+MVSO	:= @MVSO@
 MKDIR		:=	@MKDIR@
 PREFIX		:=	@PREFIX@
 
@@ -35,19 +36,9 @@ F2PY		:=	@F2PY@
 LIBS		:=	@LIBS@
 CPPFLAGS	+=	${DEFS}
 LDFLAGS		+=	@LDFLAGS@
-
-# OS Specific Vars
-ifeq (${host_os},*darwin*)
-	MVSO	= ${MV} w.so WsprMod/w.so
-	CFLAGS	+= -Wall -O0 -fPIC -m64
-	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
-	-Wno-conversion -Wno-character-truncation -fPIC -m64
-else
-	MVSO	= ${MV} w.*.so WsprMod/w.so
-	CFLAGS	+= -fPIC
-	FFLAGS	+= -O2 -Wall -fbounds-check -fno-second-underscore \
-	-Wno-conversion -Wno-character-truncation -fPIC
-endif
+CFLAGS		+=	@CFLAGS@
+FFLAGS		+=	@FFLAGS@
+FCOPT		+=	@FCOPT@
 
 # Config Definitions
 DEFS		:=	@DEFS@
@@ -131,9 +122,8 @@ F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
 # Build W.SO & MV to WsprMod then CP to WsprModNoGui
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
-	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
-	--opt="-cpp -fbounds-check -O2" thnix.o ${LDFLAGS} ${LIBS} libwspr.a \
-	-m w ${F2PYSRCS}
+	${F2PY} -c --fcompiler=${FC} --f77exec=${FC} --f90exec=${FC} \
+	--opt="${FCOPT}" thnix.o ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MVSO}
 	cp WsprMod/w.so WsprModNoGui/w.so
 
@@ -173,9 +163,8 @@ clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal \
 	fmeasure wspr0 WsprModNoGui/w.so
-	${RM} -rf build/
 
-distclean :
+distclean: clean
 	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
