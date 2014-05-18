@@ -2,6 +2,29 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-17 commit r4146 Greg Beam <ki7mt@yahoo.com>
+
+* Fixed typo's in configure.ac + minor edits
+* Minor edits & updates to wspr-dist.sh
+* Added make dist: target to Makfile.in
+
+  Requires: bash and readlink
+
+  [USAGE]
+  ./autogen.sh
+  make dist
+  
+  Creates: ../wspr/dist/WSPR-4.0-linux.tar.gz
+  
+  Name and version are taken from @PROGRAM@ and @VERSION@, which is
+  set in configure.ac header. If you want to change the filename,
+  call the script directly from a shell.
+
+  Note: After running make dist, you will need to run
+  autogen.sh again, as make dist performs a distclean before
+  building the tar.gz file, just in case something slips by.
+  
+  
 2014-04-17 commit r4145 Greg Beam <ki7mt@yahoo.com>
 
 * Simplify the header and lib checks

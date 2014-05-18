@@ -116,7 +116,10 @@ To configure or reconfigure, then build WSPR, type the following:
 Note: You can re-run ./configure any time after a sucessfull ./autogen.sh run.
 To see available configure options, type:
 
-./configure --help
+./configure --help=short
+
+Note the use of --help=short, as that will list the configurable options
+which are enabled in configure.ac
 
 
 MAKE INSTALL

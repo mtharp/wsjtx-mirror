@@ -34,7 +34,7 @@ if test -s ./configure; then
 	echo " ..Autoconf will now build the Makefile"
 	echo
 	echo "To see additional configuration options, at the prompt, "
-	echo "type: ./configure --help"
+	echo "type: ./configure --help=short"
 	echo
 	read -p "Press any key to start ..." justgo
 else

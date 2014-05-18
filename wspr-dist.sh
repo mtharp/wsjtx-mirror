@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 #
-#
 # Script to create ${name}-${version}-linux.tar.gz
 #
 # USAGE: wspr-dist.sh [NAME] [VERSION]
 # 
-# Example: ./wspr-dist.sh wspr 4.0
+# Example1 cmd line: ./wspr-dist.sh wspr 4.0
+# Example2 Makefile: make dist
 #
 # Generates ......: wspr-4.0.tar.gz
 # File Location ..: $(src-path)/wspr/dist
+#
 
 set -e
 
@@ -44,7 +45,7 @@ function re_run() {
 # start main
 clear
 echo
-echo "$_SCRIPT Started Creating ( $_NAME-$_VER ) Tarball"
+echo "Creating ( $_NAME-$_VER ) Distribution Tarball"
 echo
 
 # look for manifest file
@@ -61,7 +62,7 @@ fi
 
 # make dist diirectory
 if [[ -d $_DISTD/$_NAME ]]; then
-	rm -r $_DISTD/$_NAME && mkdir -p $_DISTD/$_NAME
+	rm -r "$_DISTD/$_NAME" && mkdir -p "$_DISTD/$_NAME"
 	echo " ..created build directory: $_DISTD/$_NAME"
 else
 	echo " ..created build directory: $_DISTD/$_NAME"
@@ -69,20 +70,20 @@ else
 fi
 
 # start copying files & folders
-cp -r save/ WsprMod/ WsprModNoGui/ build-aux/ $_DISTD/$_NAME
+cp -r save/ WsprMod/ WsprModNoGui/ build-aux/ "$_DISTD/$_NAME"
 
 # remove any .dll's from WsprMod
 echo " ..removing any .dll files"
-find $_DISTD/$_NAME/ -maxdepth 2 -type f -name "*.dll" -delete 
+find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete 
 
 # copy man pages
-cp -r doc/man1/ $_DISTD/$_NAME
+cp -r doc/man1/ "$_DISTD/$_NAME"
 
 # start copy loop
 for line in $(< $_MANIFEST)
 do
 	if [[ -f $line ]]; then
-		cp "$line" $_DISTD/$_NAME
+		cp "$line" "$_DISTD/$_NAME"
 	else 
 		echo
 		echo "Missing Manifest File $line"
@@ -119,7 +120,7 @@ if [[ -d $_DISTD/$_NAME ]]; then
 
 	echo " ..building new tar file"
 	export GZIP=-9
-	tar -czf $_TARNAME ./$_NAME
+	tar -czf "$_TARNAME" ./"$_NAME"
 else
 	echo
 	echo "Folder Error !"
@@ -172,7 +173,7 @@ echo "Location ...: $_FILEPATH"
 echo
 
 # change directories back to $_BASED
-cd $_BASED
+cd "$_BASED"
 
 exit 0
 

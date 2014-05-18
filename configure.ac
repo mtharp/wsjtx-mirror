@@ -11,7 +11,7 @@ AC_PREFIX_DEFAULT([$HOME/wspr])
 AC_CANONICAL_HOST
 
 dnl ----------------------------------------------------------------------------
-dnl check compiler programs
+dnl check compilers
 dnl ----------------------------------------------------------------------------
 OCFLAGS="$CFLAGS"
 AC_PROG_CC
@@ -228,7 +228,7 @@ fi
 
 
 dnl ----------------------------------------------------------------------------
-dnl check gfortran basic funciton
+dnl check gfortran
 dnl ----------------------------------------------------------------------------
 
 AC_CHECK_LIB([gfortran], [_gfortran_st_write], [], [])
@@ -257,7 +257,7 @@ if test "$ac_cv_lib_portaudio_Pa_Initialize" = "yes"; then
 		LIBS="-lportaudio ${LIBS}"
 fi
 
-# if header and libs found, set HAVE_PORTAUDIO
+# if headers and libs found, set define
 if test "$ac_cv_header_portaudio_h" = "yes" -a "$ac_cv_lib_portaudio_Pa_Initialize" = "yes"; then
 	HAVE_PORTAUDIO=1
 	AC_DEFINE([HAVE_PORTAUDIO_H], [1], [Portaudio Header])
@@ -301,16 +301,16 @@ fi
 
 
 dnl ----------------------------------------------------------------------------
-dnl cosolidate flags - (remove dupes if any)
+dnl consolidate flags - (remove dupes if any)
 dnl ----------------------------------------------------------------------------
 
-_LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'| sort -su |tr '\n' ' ')
+_LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LIBS="$_LBU"
 
-_LDU=$(echo "$LDFLAGS" |tr ' ' '\n'| sort -su |tr '\n' ' ')
+_LDU=$(echo "$LDFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LDFLAGS="$_LDU"
 
-_CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'| sort -su |tr '\n' ' ')
+_CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 CPPFLAGS="$_CPPU"
 
 # OS specfic flags
@@ -342,6 +342,7 @@ if test "$HAVE_PY3" = "no"; then
 	echo "[2] Add Python3.2+ to your system paths"
 	echo "[3] Include Python3.2+:"
 	echo
+	echo 'Example:'
 	echo './configure --with-python3="/home/$USER/test/python3"'
 fi
 
@@ -392,11 +393,11 @@ dnl ----------------------------------------------------------------------------
 dnl report samplerate
 dnl ----------------------------------------------------------------------------
 
-if test "$HAVE_SAMPLERATE" = "1"; then
+if test ${HAVE_SAMPLERATE} -eq 1; then
 	srstatus="OK"
 else
-	FAIL=yes
 	srstatus="FAILED!!"
+	FAIL=yes
 	echo
 	echo "Samplerate-dev is required to build $PACKAGE_NAME"
 	echo
@@ -413,7 +414,7 @@ dnl ----------------------------------------------------------------------------
 dnl report fftw
 dnl ----------------------------------------------------------------------------
 
-if test "$HAVE_FFTW3_LIB" = "1"; then
+if test ${HAVE_FFTW3_LIB} -eq 1; then
 	ffstatus="OK"
 else
 	ffstatus="FAILED!!"
@@ -434,7 +435,7 @@ dnl ----------------------------------------------------------------------------
 dnl report portaudio
 dnl ----------------------------------------------------------------------------
 
-if test "$HAVE_PORTAUDIO" = "1"; then
+if test ${HAVE_PORTAUDIO} -eq 1; then
 	pastatus="OK"
 else
 	FAIL=yes

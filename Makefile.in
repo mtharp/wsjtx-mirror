@@ -157,15 +157,18 @@ uninstall:
 	fi
 
 # Cleanup Source Tree
-.PHONY: clean distclean
+.PHONY: clean distclean dist
 clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal \
 	fmeasure wspr0 WsprModNoGui/w.so
 
 distclean: clean
-	${RM} -f config.log config.status Makefile ALL_WSPR.TXT WSPR.INI \
+	${RM} -f config.log config.status Makefile ALL_WSPR*.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
 	pixmap.dat wspr.log configure WsprModNoGui/w.so
-	${RM} -rf ./autom4* ./__pycache__
+	${RM} -rf ./autom4* ./__pycache__ ./dist
+
+dist: distclean
+	${SHELL} ./wspr-dist.sh @PROGRAM@ @VERSION@
