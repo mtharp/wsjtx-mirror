@@ -2,6 +2,27 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-17 commit r4145 Greg Beam <ki7mt@yahoo.com>
+
+* Simplify the header and lib checks
+* Consolidate configure.ac and aclocal.m4
+* Moved aclocal.m4 to archive/
+* Updated wspr-manifest.in for aclocal.m4 change
+* Updated INSTALL.TXT
+* Fix typo on ${FCV} in makefile.in
+* Try ${MV} w*.so once again.
+
+For non-standard locations (Libs & Headers): 
+
+Example:
+./configure LDFLAGS='-L/home/user/test/lib' CPPFLAGS='-I/home/user/test/lib'
+
+For Python3 and / or f2py:
+
+Example:
+./configure --with-python3='/usr/local/bin/python3' --with-f2py='/opt/bin/f2py'
+
+
 2014-04-15 commit r4144 Greg Beam <ki7mt@yahoo.com>
 
 * Updated Makefile.in, moved flag options to configure.ac based $host_os 

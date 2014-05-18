@@ -16,7 +16,7 @@ autoconf --version > /dev/null 2>&1
 if test "$?" -eq 1; then 
 	clear
 	echo
-	echo "You must have autoreconf installed to compile $_PROGRAM."
+	echo "You must have autoconf installed to compile $_PROGRAM."
 	echo "Install the appropriate package for your distribution,"
 	echo
 	exit 1
@@ -25,41 +25,24 @@ fi
 clear
 echo
 echo "Running ( autoconf -f -i ) to process configure.ac"
-echo
 
 # Generate configure script from configure.ac and aclocal.m4
 autoconf -f -i
 
 if test -s ./configure; then
-	echo "Finished generating configure script."
+	echo " ..Finished"
+	echo " ..Autoconf will now build the Makefile"
+	echo
+	echo "To see additional configuration options, at the prompt, "
+	echo "type: ./configure --help"
+	echo
+	read -p "Press any key to start ..." justgo
 else
 	echo "There was a problem generating the configure script"
 	echo "Check config.status for details."	
 	echo
 	exit 1
 fi
-	echo
-	echo "Autogen is about to run configure to generate the"
-	echo "Makefile with default options."
-	echo
-	echo "To see additional configuration options, select ( N ),"
-	echo "then type ..: ./configure --help"
-	echo
-	echo
-while [ 1 ]
-do
-	read -p "Continue with configure? [ Y / N ]: " yn
-	case $yn in
-	[Yy]* )
-		$_BASED/configure
-		exit 0
-	;;
-	[Nn]* )
-		exit 0
-	;;
-	* )
-		clear
-		echo "Please use 'Y' yes or 'N' No."
-	;;
-	esac
-done
+$_BASED/configure
+
+exit 0

@@ -1,53 +1,55 @@
---------------------------------------
-Installation Instructions for WSPR 4.0
---------------------------------------
+-------------------------------------------------
+Build and Installation Instructions for WSPR 4.0
+-------------------------------------------------
 
-The following is a brief installation guide using Linux as the example. WSPR
-can be built on Windows (using MinGW+MSYS / JTSDK-PY), Mac OSX 10.6/7,
-and most Linux variants, provided the dependencies are met. Package names can
-very considerably between distributions. Consult your package manager for the
-appropriate package names.
+The following outlines basic installation instructions for Linux and Mac.
+
 
 REQUIRED DEPENDENCIES
 ---------------------
-To compile WSPR, as a minimum, you will need the following:
+To compile WSPR, you will need the following packages / applications:
 
 	* A C/C++ and gfortran compiler
 	* GNU Autotools: autoconf, make
 	* Portaudio-19-dev
-	* FFTW 3.3+-dev
+	* FFTW 3.3+-dev (only libraries (.so are required)
 	* Samplerate Development Library.
 	* Python3.2+
 	* Numeric Python (Numpy 1.8.1+), providing F2PY v2.0
 	* PIL, (Python Imaging Library)
 	* Python-tk (Tcl\TK 8.6.1 or Later)
-	* Hamlib 1.2.15.x (or current distro verson
-
-NOTE: Where possible, install development header packages.
+	* Optional: Hamlib 1.2.15.x (or current distro verson) for rig control
 
 Example: For Ubuntu 14.04, the following packages are required:
 
 sudo apt-get install autoconf autotools build-essential gfortran libtool \
-libtool libfftw3-dev libgfortran3:i386 libusb-dev libhamlib-dev libhamlib-utils \
+libfftw3-dev libgfortran3:i386 libusb-dev libhamlib-dev libhamlib-utils \
 libsamplerate0-dev portaudio19-dev python3-setuptools python3-dev python3-imaging \
 python3-imaging-tk python3-pip python3-tk python3-numpy texinfo
+
+You may be able to slim the list down my selctive installation, but the above
+provides a solid base to start with.
 
 
 INSTALL
 -------
-To build and install, issue the foolowing:
+To build and install, issue the following:
 
 ./autogen.sh
 
 make && make install
 
-The install target default is $HOME/wspr To run WSPR,
 
-cd $HOME/wspr
+RUN WPSR
+--------
+To run WSPR after build, cd to ../wspr and:
 
 python3 -O wspr.py
 
-Additional options / methods are explained below.
+Note: If your default python is python3, and called by issuing python,
+then change to:
+
+python -O wspr.py
 
 
 INSTALL PREFIX
@@ -57,7 +59,7 @@ install locaiton using the following configuration parameter:
 
 Example:
 
-./configure --prefix=/$HOME/testing/wspr
+./configure --prefix=$HOME/test/wspr
 
 Note: Due to confliucting file names with "fmt", it's *not* advisable
 to install WSPR to /usr/local as Coreutils also has an application
@@ -70,38 +72,37 @@ The configure script will search standard Linux header and library locaitons
 for FFTW3, Samplerate and Portaudio19. If it cannot locate and test the 
 required packages, you will be prompted to supply the locations:
 
-Example:
+Example - (header location):
+./configure CPPFLAGS="-I$HOME/test/portaudio/include"
 
-./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu
---with-portaudio-include-dir=/usr/include
+Note the " .. " for parameter expansion for $HOME
 
-Note: Provisions for Samplerate and FFTW3F also use this input method
-if needed.
 
-If used, make sure you system ldconfig has been updated to find non-standard
-library or header files.
+Example - (library location):
+./configure LDFLAGS='-L/home/user-name/test/portaudio/lib'
 
-*CAUTION*
+Note ' .. ' no parameter expansion needed
 
-Multi-Build systems need to proceed with caution. Setting the default lib
-directory if fine, as long as all the library / header files can be found for
-*all* dependencies. A typical Linux system wil use /usr/lib for 32-bit and
-may define /usr/lib/amd64 or /usr/ib/x86_64 or the like, but not all 
-dependencies may be 64-bit, and thus, you may run into trouble finding libs if
-your system does not account for this through ldconig. Consult your distribution
-documentation for more information regaurding ldconfig and the various
-locations where libraries are installed.
+NOTE: When using CPPFLAGS or LDFLAGS, use absolute paths, for example:
+
+-I/home/$USER/test/portaudio/include *not* ==> ~/test/portaudio/include
+
+or
+
+-L$HOME/test/portaudio/lib *not* ==> ~/test/portaudio/lib
 
 
 MULTI-PYTHON SYSTEMS
 --------------------
 On dual Python systems, you *may* need to specify Python3 and F2PY3 locations.
-The configure scripts tests for both Python3 and F2PY, but if you system has
-unique installation locations, the following may be helpful:
+The configure scripts tests for both Python3 and F2PY, but if your system has
+unique install locations, the following may be helpful:
 
 Example:
+./configure --with-python3='/usr/bin/python3' --with-f2py='/usr/local/bin/f2py3'
 
-./configure PYTHON=/usr/bin/python3 F2PY=/usr/local/bin/f2py3
+Note: if you build a custom Python3x, make sure you include PIL, TK and Numpy
+(F2PY).
 
 
 CONFIGURE && MAKE
@@ -116,18 +117,6 @@ Note: You can re-run ./configure any time after a sucessfull ./autogen.sh run.
 To see available configure options, type:
 
 ./configure --help
-
-
-RUN WPSR
---------
-To run WSPR after build, cd to ../wspr and:
-
-python3 -O wspr.py
-
-Note: If your default python is python3, and called by issuing python,
-then change to:
-
-python -O wspr.py
 
 
 MAKE INSTALL
@@ -187,8 +176,19 @@ from www.portaudio.org and www.fftw.org respectively.
 
 Then, in the wspr directory:
 
-configure --with-portaudio-include-dir=/usr/local/include \
-  --with-portaudio-lib-dir=/usr/local/lib
+Example - (library location):
+./configure LDFLAGS='-L/home/user-name/test/portaudio/lib'
+
+Note ' .. ' no parameter expansion needed
+
+NOTE: When using CPPFLAGS or LDFLAGS, use absolute paths, for example:
+
+-I/home/$USER/test/portaudio/include *not* ==> ~/test/portaudio/include
+
+or
+
+-L$HOME/test/portaudio/lib *not* ==> ~/test/portaudio/lib
+
 
 Check the new Makefile carefully to see that the correct
 references to python3.4 and the new f2py are made. Then

@@ -14,11 +14,10 @@ OS		:=	@OS@
 CPU		:=	@CPU@
 
 # General Information
+CP		:=	@CP@
 MV		:=	@MV@
 RM		:=	@RM@
-CP		:=	@CP@
 SHELL		:=	@SHELL@
-MVSO	:= @MVSO@
 MKDIR		:=	@MKDIR@
 PREFIX		:=	@PREFIX@
 
@@ -122,10 +121,10 @@ F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
 # Build W.SO & MV to WsprMod then CP to WsprModNoGui
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
-	${F2PY} -c --fcompiler=${FC} --f77exec=${FC} --f90exec=${FC} \
+	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
 	--opt="${FCOPT}" thnix.o ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
-	${MVSO}
-	cp WsprMod/w.so WsprModNoGui/w.so
+	${MV} w*.so WsprMod/w.so
+	${CP} WsprMod/w.so WsprModNoGui/w.so
 
 # Install to ${PREXIX}
 install:
