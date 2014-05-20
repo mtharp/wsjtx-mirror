@@ -9,6 +9,8 @@ AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PREFIX_DEFAULT([$HOME/wspr])
 AC_CANONICAL_HOST
+AC_CANONICAL_BUILD
+
 
 dnl ----------------------------------------------------------------------------
 dnl check compilers
@@ -202,7 +204,6 @@ if test "$HAVE_F2PY" = "no"; then
 		AC_DEFINE([HAVE_F2PY], [1])
 		AC_DEFINE_UNQUOTED([F2PY], ["${F2PY}"], [Path to F2PY])
 		AC_SUBST([F2PY], ["${F2PY}"])
-		AC_MSG_RESULT([yes])
 		AC_MSG_RESULT([yes v${F2PYV}])
 	fi
 fi
@@ -245,6 +246,8 @@ else
 	AC_DEFINE_UNQUOTED([FC], ["${FC}"], [Gfortran Compiler])
 	AC_SUBST([FC], ["${FC}"])
 	AC_SUBST([FCV], ["${FCV}"])
+	AC_DEFINE([HAVE_GFORTRAN], [1],)
+	AC_DEFINE([HAVE_GFORTRAN_LIB], [1],)
 fi
 
 
@@ -362,6 +365,7 @@ if test "$HAVE_F2PY" = "no"; then
 	echo "[2] Add F2PY v2.0 to your system paths"
 	echo "[3] Include F2PY:"
 	echo
+	echo 'Example:'
 	echo './configure --with-f2py="/home/$USER/test/f2py"'
 	echo 
 fi
@@ -370,12 +374,7 @@ dnl ----------------------------------------------------------------------------
 dnl report gfortran
 dnl ----------------------------------------------------------------------------
 
-if test ${HAVE_GFORTRAN} -eq 1; then
-	AC_DEFINE([HAVE_GFORTRAN], [1],)
-	AC_DEFINE([HAVE_GFORTRAN_LIB], [1],)
-
-# if we could not find Gfortran
-else
+if test ${HAVE_GFORTRAN} -ne 1; then
 	FC="FAILED!!"
 	FAIL=yes
 	echo
@@ -405,6 +404,7 @@ else
 	echo "[1] Install your distro version of: Samplerate-dev"
 	echo "[2] Confiure Samplerate with non-standard paths:"
 	echo
+	echo 'Example:'
 	echo './configure CPPFLAGS="-I/home/$USER/test/samplerate/include"'
 	echo 'LDFLAGS="-L/home/$USER/test/samplerate/lib"'
 	echo

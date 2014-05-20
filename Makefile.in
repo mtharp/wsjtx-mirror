@@ -168,7 +168,7 @@ distclean: clean
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
 	pixmap.dat wspr.log configure WsprModNoGui/w.so
-	${RM} -rf ./autom4* ./__pycache__ ./dist
+	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
 
 dist: distclean
 	${SHELL} ./wspr-dist.sh @PROGRAM@ @VERSION@

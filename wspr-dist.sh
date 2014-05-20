@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Script to create ${name}-${version}-linux.tar.gz
+# Script to create ${name}-${version}.tar.gz
 #
 # USAGE: wspr-dist.sh [NAME] [VERSION]
 # 
@@ -13,13 +13,15 @@
 
 set -e
 
-_NAME=$1
+_NAME=$(echo $1 |tr [:upper:] [:lower:])
 _VER=$2
 _BASED=$(exec pwd)
-_TARNAME="$_NAME-$_VER-linux.tar.gz"
-_DISTD=$_BASED/dist
 _SCRIPT=$(basename "$0")
+_TARNAME="$_NAME-$_VER.tar.gz"
 _MANIFEST=wspr-manifest.in
+_DISTD="$_BASED/dist"
+_DOC="$_DISTD/$_NAME/doc"
+_MAN="$_DISTD/$_NAME/manpages"
 
 # test $1
 if [[ -z $_NAME ]]; then
@@ -70,14 +72,24 @@ else
 fi
 
 # start copying files & folders
-cp -r save/ WsprMod/ WsprModNoGui/ build-aux/ "$_DISTD/$_NAME"
+if [[ -d WsprMod/__pycache__ ]]
+then 
+	rm -r WsprMod/__pycache__
+fi 
+
+cp -r save/ WsprMod/ build-aux/ "$_DISTD/$_NAME"
 
 # remove any .dll's from WsprMod
 echo " ..removing any .dll files"
-find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete 
+find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete
+
+# copy full documentation
+mkdir -p "$_DOC"
+cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx "$_DOC"
 
 # copy man pages
-cp -r doc/man1/ "$_DISTD/$_NAME"
+mkdir -p "$_MAN"
+cp -r doc/man1/wspr.1 doc/man1/wspr0.1 "$_MAN"
 
 # start copy loop
 for line in $(< $_MANIFEST)
@@ -109,7 +121,7 @@ fi
 
 # start building the tarball
 # check that $_NAME folder actally exists before running tar
-cd $_DISTD
+cd "$_DISTD"
 
 if [[ -d $_DISTD/$_NAME ]]; then
 
@@ -154,7 +166,7 @@ fi
 # removing build directory
 if [[ -f $_TARNAME ]]; then
 	echo " ..removing build directory"
-	rm -r $_DISTD/$_NAME
+	rm -r "$_DISTD/$_NAME"
 fi
 
 # print summary

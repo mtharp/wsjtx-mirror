@@ -2,6 +2,14 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-17 commit r4147 Greg Beam <ki7mt@yahoo.com>
+
+* minor configure.ac updates
+* mindor update to Makefile.in
+* Updated wspr-dist.sh to be more selecive on files, and create
+  a doc & manpage directory
+
+
 2014-04-17 commit r4146 Greg Beam <ki7mt@yahoo.com>
 
 * Fixed typo's in configure.ac + minor edits
