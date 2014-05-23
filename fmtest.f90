@@ -1,4 +1,4 @@
-program fmt
+program fmtest
 
 ! Conduct measurements for ARRL Frequency Measuring Test, etc.
 
@@ -23,8 +23,8 @@ program fmt
 
   nargs=iargc()
   if(nargs.ne.6) then
-     print*,'Usage:   fmt <kHz> <0|1> <offset> <range> <tsec> <call>'
-     print*,'Example: fmt 10000   1    1500     100      30    WWV'
+     print*,'Usage:   fmtest <kHz> <0|1> <offset> <range> <tsec> <call>'
+     print*,'Example: fmtest 10000   1    1500     100      30    WWV'
      go to 999
   endif
   call getarg(1,arg)
@@ -143,5 +143,5 @@ program fmt
 
 910 print*,'Cannot open file: fmt.ini'
 
-999 end program fmt
+999 end program fmtest
 

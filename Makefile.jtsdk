@@ -22,7 +22,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libwspr.a wspr.exe fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe
+all:    libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe
 
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
@@ -66,8 +66,8 @@ libwspr.a: $(OBJS3) acom1.f90 acom2.f90
 	ar cr libwspr.a $(OBJS3)
 	ranlib libwspr.a
 
-fmt.exe: fmt.f90 libwspr.a
-	$(FC) ${FFLAGS} -o fmt.exe fmt.f90 $(OBJS3) libwspr.a libportaudio.a \
+fmtest.exe: fmtest.f90 libwspr.a
+	$(FC) ${FFLAGS} -o fmtest.exe fmtest.f90 $(OBJS3) libwspr.a libportaudio.a \
 	libwinmm.a libfftw3f_win.a libpthreadGC2.a
 
 fmtave.exe: fmtave.f90
@@ -88,5 +88,5 @@ gmtime2.o: gmtime2.c
 .PHONY : clean
 
 clean:
-	rm -rf *.o libwspr.a wspr.exe fmt.exe fmtave.exe fcal.exe \
+	rm -rf *.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
 	fmeasure.exe wspr0.exe install
