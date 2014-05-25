@@ -2,12 +2,12 @@
 .\"     Title: wspr
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 05/09/2014
+.\"      Date: 05/24/2014
 .\"    Manual: WSPR Man Page
-.\"    Source: AsciiDoc 1.0
+.\"    Source: \ \& Version 4.0
 .\"  Language: English
 .\"
-.TH "WSPR" "1" "05/09/2014" "AsciiDoc 1\&.0" "WSPR Man Page"
+.TH "WSPR" "1" "05/24/2014" "\ \& Version 4\&.0" "WSPR Man Page"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,16 +31,26 @@
 wspr \- Weak Signal Propagation Reporter
 .SH "SYNOPSIS"
 .sp
-\fBwpsr\fR, \fBwspr0\fR [OPTIONS], \fBfmt\fR [OPTIONS], \fBfmtave\fR [FILE], \fBfcal\fR [FILE], \fBfmeasure\fR [FILE]
+\fBwspr\fR \- "Pronounced Whisper", does not take command\-line options\&. To run from the command\-line:
+.sp
+.nf
+After Install
+Open terminal, cd ~/\&.wspr, then type \&.\&.: wspr
+
+After Install & Called Using Python
+Open terminal, cd ~/\&.wspr, then type \&.\&.: python3 \-O wspr\&.py
+.fi
+.sp
+For more information see \fBdocumentation\fR\&.
 .SH "PROGRAMS"
 .sp
 There are (6) programs associated with \fBWSPR\fR:
 .sp
-\fBWSPR\fR \- (pronounced "whisper") stands for "Weak Signal Propagation Reporter"\&. The WSPR software is designed for probing potential radio propagation paths using low\-power beacon\-like transmissions\&. \fBWSPR\fR does not take command\-line auguemnts, simply run the applicaiton and setup your stations parameters\&.
+\fBWSPR\fR \- Stands for "Weak Signal Propagation Reporter"\&. The WSPR software is designed for probing potential radio propagation paths using low\-power beacon\-like transmissions\&. \fBWSPR\fR does not take command\-line augments, simply run the application and setup your stations parameters\&.
 .sp
 \fBWSPR0\fR \- is a simple command\-line version of WSPR with no frills, no graphics and no GUI\&. Many advanced features of the full WSPR program, including I/Q mode, frequency hopping, and automatic uploading of spots to WSPRnet\&.org, are not included\&. \fBwspr0\fR is intended for specialized uses where its easy compilation, small memory requirements, etc\&., can be advantageous\&.
 .sp
-\fBFMT\fR \- Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements for the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, and output goes to files fmt\&.out and fmt\&.all\&. The latter file is cumulative\&.
+\fBFMTEST\fR \- Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements for the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, and output goes to files fmt\&.out and fmt\&.all\&. The latter file is cumulative\&.
 .sp
 \fBFMTAVE\fR \- Averages data found in a specified file having the format of fmt\&.all
 .sp
@@ -49,14 +59,14 @@ There are (6) programs associated with \fBWSPR\fR:
 \fBFMEASURE\fR \- Calculates the properly calibrated frequency of each test signal found in file fmtave\&.out\&. Results are saved in file fmeasure\&.out, and these are the numbers you should report if you are entering the Frequency Measuring Test\&.
 .SH "BUGS"
 .sp
-If find a bug or suspect \fB\fIwpsr\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
+If you find a bug or suspect \fB\fIwspr\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
 .SH "AUTHORS"
 .sp
 .if n \{\
 .RS 4
 .\}
 .nf
-Joe Taylor, K1JT, <joe@princeton\&.edu> \&.\&. Original Content Providor
+Joe Taylor, K1JT, <joe@princeton\&.edu> \&.\&. Original Content Provider
 Greg Beam, KI7MT, <ki7mt@yahoo\&.com> \&.\&.\&.\&. Manpage Editor
 .fi
 .if n \{\
@@ -70,20 +80,20 @@ Greg Beam, KI7MT, <ki7mt@yahoo\&.com> \&.\&.\&.\&. Manpage Editor
 .nf
 Project Site: \&.\&.\&. <http://sourceforge\&.net/projects/wsjt/>
 Main web site: \&.\&. <http://www\&.physics\&.princeton\&.edu/pulsar/K1JT/>
-
-For more information see:
-<http://www\&.physics\&.princeton\&.edu/pulsar/K1JT/WSPR_2\&.0_User\&.pdf>
+Documentation: \&.\&. <http://www\&.physics\&.princeton\&.edu/pulsar/K1JT/wspr\-main\&.html>
 .fi
 .if n \{\
 .RE
 .\}
 .SH "SEE ALSO"
 .sp
-wspr0(1), wspr\-fmt(1), wspr\-fmtave(1), wspr\-fcal(1), wspr\-fmeasure(1)
+wspr0(1), fmtest(1)
 .SH "COPYING"
 .sp
-Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
+Copyright \(co 2014 Joseph H Taylor, Jr, K1JT
 .sp
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\&.
 .sp
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.sp
+GPL version 3 or later http://gnu\&.org/licenses/gpl\&.html\&.

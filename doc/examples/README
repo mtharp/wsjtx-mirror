@@ -1,0 +1,13 @@
+WSPR FMTest EXAMPLES
+
+General Process:
+
+1. Edit gocal stations, then run ./gocal
+2. ftmave fmt.all
+3. fcal fmtave.out
+
+Output Files"
+fmt.out .....: Raw data after running gocal
+fmtave.out ..: Output file after running: ./fmtave fmt.all
+fcal.out ....: Output file after running: ./fcal fmtave.out
+fcal.out ....: Input file used by WSPR > Setup > Advanced > Read A and B

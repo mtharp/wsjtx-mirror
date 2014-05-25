@@ -1,7 +1,8 @@
 :doctype: manpage
-:man source: AsciiDoc
-:man version: 1.0
 :man manual: WSPR Man Page
+:man date: {date}
+:man version: Version 4.0
+
 = wspr(1)
 
 == NAME
@@ -11,18 +12,25 @@ wspr - Weak Signal Propagation Reporter
 
 == SYNOPSIS
 
-*wpsr*, *wspr0* [OPTIONS], *fmt* [OPTIONS], *fmtave* [FILE], *fcal* [FILE],
-*fmeasure*	[FILE]
+*wspr* - "Pronounced Whisper", does not take command-line options. To run from the
+command-line:
+-----
+After Install
+Open terminal, cd ~/.wspr, then type ..: wspr
+
+After Install & Called Using Python
+Open terminal, cd ~/.wspr, then type ..: python3 -O wspr.py
+-----
+For more information see <<X1,*documentation*>>. 
+
 
 == PROGRAMS
 
 There are (6) programs associated with *WSPR*:
 
-*WSPR* - (pronounced "whisper") stands for "Weak Signal Propagation
-Reporter". The WSPR software is designed for probing potential radio
-propagation paths using low-power beacon-like transmissions. *WSPR* does
-not take command-line auguemnts, simply run the applicaiton and setup your
-stations parameters.
+*WSPR* - Stands for "Weak Signal Propagation Reporter". The WSPR software is
+designed for probing potential radio propagation paths using low-power beacon-like transmissions. *WSPR* does not take command-line augments, simply run the
+application and setup your stations parameters.
 
 *WSPR0* - is a simple command-line version of WSPR with no frills,
 no graphics and no GUI.  Many advanced features of the full WSPR
@@ -31,7 +39,7 @@ uploading of spots to WSPRnet.org, are not included.  *wspr0* is
 intended for specialized uses where its easy compilation, small memory
 requirements, etc., can be advantageous.
 
-*FMT* - Sets the dial frequency of a CAT-controlled radio and performs
+*FMTEST* - Sets the dial frequency of a CAT-controlled radio and performs
 a sequence of measurements for the strongest resulting audio tone near a 
 specified offset frequency. Input parameters are taken from the command line,
 and output goes to files fmt.out and fmt.all. The latter file is cumulative.
@@ -49,34 +57,33 @@ Test.
 
 == BUGS
 
-If find a bug or suspect *'wpsr'* is not acting as you think it should,
+If you find a bug or suspect *'wspr'* is not acting as you think it should,
 send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
 
 
 == AUTHORS
 -----
-Joe Taylor, K1JT, <joe@princeton.edu> .. Original Content Providor
+Joe Taylor, K1JT, <joe@princeton.edu> .. Original Content Provider
 Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Editor
 -----
 
+[[X1]]
 == RESOURCES
 -----
 Project Site: ... <http://sourceforge.net/projects/wsjt/>
 Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
-
-For more information see:
-<http://www.physics.princeton.edu/pulsar/K1JT/WSPR_2.0_User.pdf>
+Documentation: .. <http://www.physics.princeton.edu/pulsar/K1JT/wspr-main.html>
 -----
 
 
 == SEE ALSO
 
-wspr0(1), wspr-fmt(1), wspr-fmtave(1), wspr-fcal(1), wspr-fmeasure(1)
+wspr0(1), fmtest(1)
 
 
 == COPYING
 
-Copyright \(C) 2014 Joseph H Taylor, Jr, K1JT
+Copyright &copy; 2014 Joseph H Taylor, Jr, K1JT
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -88,3 +95,4 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
+GPL version 3 or later <http://gnu.org/licenses/gpl.html>.

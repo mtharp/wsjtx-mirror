@@ -21,7 +21,7 @@ _TARNAME="$_NAME-$_VER.tar.gz"
 _MANIFEST=wspr-manifest.in
 _DISTD="$_BASED/dist"
 _DOC="$_DISTD/$_NAME/doc"
-_MAN="$_DISTD/$_NAME/manpages"
+_MAN1="$_DISTD/$_NAME/man1"
 
 # test $1
 if [[ -z $_NAME ]]; then
@@ -85,11 +85,11 @@ find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete
 
 # copy full documentation
 mkdir -p "$_DOC"
-cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx "$_DOC"
+cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx /doc/examples "$_DOC"
 
 # copy man pages
-mkdir -p "$_MAN"
-cp -r doc/man1/wspr.1 doc/man1/wspr0.1 "$_MAN"
+mkdir -p "$_MAN1"
+cp -r manpages/man1/*.1 "$_MAN1/"
 
 # start copy loop
 for line in $(< $_MANIFEST)

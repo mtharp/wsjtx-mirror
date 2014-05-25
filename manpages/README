@@ -49,12 +49,18 @@ Finished.
 
 BUILD MANPAGES
 --------------
-* cd ~/wspr/doc/man1
+
+Example: to produce wspr.1 manpage
+
+* cd ~/wspr/manpages
 * a2x --doctype manpage --format manpage --no-xmllint wspr.1.txt
+* mv wspr.1 ./man1/
+
+View New Manpage: man man1/wspr.1
 
 
 READ MANPAGES
 -------------
-man ./wsjtx.1
+man ~/wspr/manpages/man1/wspr.1
 
 

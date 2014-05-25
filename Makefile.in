@@ -104,8 +104,8 @@ libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 	ranlib libwspr.a
 
 # Build FMT Applications
-fmt: fmt.f90 libwspr.a
-	${FC} -o fmt fmt.f90 libwspr.a -pthread -lfftw3f -lportaudio
+fmtest: fmtest.f90 libwspr.a
+	${FC} -o fmtest fmtest.f90 libwspr.a -pthread -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
 	${FC} -o fmtave fmtave.f90
@@ -135,7 +135,7 @@ install:
 	@echo ""
 	@${MKDIR} -p ${PREFIX}
 	@${CP} -r doc/ save/ WsprMod/ WsprModNoGui/ ${PREFIX}
-	@${CP} -r ./fcal ./fmeasure ./fmt ./fmtave \
+	@${CP} -r ./fcal ./fmeasure ./fmtest ./fmtave \
 	./wspr0 ./wsprcode ./gocal ./hamlib_rig* ./Pmw*.py \
 	./tkrep.py ./wspr_nogui.py ./wspr.py ${PREFIX}
 	@echo "Finished Installing WSPR."
@@ -160,14 +160,14 @@ uninstall:
 .PHONY: clean distclean dist
 clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
-	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmt fmtave fcal \
-	fmeasure wspr0 WsprModNoGui/w.so
+	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmtest fmtave fcal \
+	fmeasure wspr0
 
 distclean: clean
-	${RM} -f config.log config.status Makefile ALL_WSPR*.TXT WSPR.INI \
+	${RM} -f config.log config.status ALL_WSPR*.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
-	pixmap.dat wspr.log configure WsprModNoGui/w.so
+	pixmap.dat wspr.log
 	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
 
 dist: distclean

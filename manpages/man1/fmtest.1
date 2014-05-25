@@ -1,0 +1,116 @@
+'\" t
+.\"     Title: fmtest
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/24/2014
+.\"    Manual: FMTest Man Page
+.\"    Source: \ \& Version 4.0
+.\"  Language: English
+.\"
+.TH "FMTEST" "1" "05/24/2014" "\ \& Version 4\&.0" "FMTest Man Page"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+fmtest \- Frequency Measurement Testing
+.SH "SYNOPSIS"
+.sp
+\fBfmtest\fR [kHz] [0|1] [offset] [range] [tsec] [call]
+.sp
+Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements of the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, or specified in gocal script, and the output goes to files fmt\&.out\&. All 6 parameters are required\&. See \fBResources\fR for full documentaton and examples\&.
+.SH "DESCRIPTION"
+.PP
+\fBkhz\fR
+.RS 4
+Dial frequency in Kilohertz
+.RE
+.PP
+\fB0|1\fR
+.RS 4
+\fB0\fR
+for measuring unknown frequencies,
+\fB1\fR
+for known frequency\&. For rig calibration
+\fB1\fR
+should be used, as
+\fB0\fR
+is for the use with the
+\fBARRL FMT\fR
+tests\&.
+.RE
+.PP
+\fBoffset\fR
+.RS 4
+Frequency offset to measure, in khz
+.RE
+.PP
+\fBrange\fR
+.RS 4
+Range of frequency measurement, in khz
+.RE
+.PP
+\fBtsec\fR
+.RS 4
+Length of time to measure, in seconds
+.RE
+.PP
+\fBcall\fR
+.RS 4
+Station callsign, WWV for example
+.RE
+.SH "BUGS"
+.sp
+If you find a bug or suspect \fB\fIfmtest\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
+.SH "AUTHORS"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Joe Taylor, K1JT, <joe@princeton\&.edu> \&.\&. Original Content Provider
+Greg Beam, KI7MT, <ki7mt@yahoo\&.com> \&.\&.\&.\&. Manpage Editor
+.fi
+.if n \{\
+.RE
+.\}
+.SH "RESOURCES"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Project Site: \&.\&.\&. <http://sourceforge\&.net/projects/wsjt/>
+Main web site: \&.\&. <http://www\&.physics\&.princeton\&.edu/pulsar/K1JT/>
+Documentation: \&.\&. <http://physics\&.princeton\&.edu/pulsar/K1JT/fmt\-main\&.html>
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.sp
+wspr(1), fmtave(1), fmeasure(1), fcal(1)
+.SH "COPYING"
+.sp
+Copyright \(co 2014 Joseph H Taylor, Jr, K1JT
+.sp
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\&.
+.sp
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.sp
+GPL version 3 or later http://gnu\&.org/licenses/gpl\&.html\&.

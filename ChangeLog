@@ -2,10 +2,31 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-24 commit r4149 Greg Beam <ki7mt@yahoo.com>
+
+* Update Makefile.in for fmtest.f90 changes
+* Edit Makefile.in and remove configure & Makefile
+  from clean && distclean targets
+* Added mapnpages for all /usr/bin binaries:
+  wspr, wspr0, fmtest, fmtave, fcal, fmeasure
+* Update gocal script
+* Added doc/examples for FMT documentation
+* Moved man-page sources to wspr/manpages
+* Moved built manpages to: wspr/manpages/man1
+* Update wspr-dist.sh to accomidate all changes
+
+
+TO-DO:
+* Update installation to use GNU install
+* Move binaries to /usr/bin
+* Move remaining files to /usr/share/wpsr
+* Add runtime wspr.sh script to copy files to $HOME/.wspr
+
+
 2014-04-17 commit r4147 Greg Beam <ki7mt@yahoo.com>
 
 * minor configure.ac updates
-* mindor update to Makefile.in
+* minor update to Makefile.in
 * Updated wspr-dist.sh to be more selecive on files, and create
   a doc & manpage directory
 

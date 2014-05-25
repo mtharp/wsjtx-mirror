@@ -1,0 +1,86 @@
+:doctype: manpage
+:man manual: FMTest Man Page
+:man version: Version 4.0
+
+= fmtest(1)
+
+== NAME
+
+fmtest - Frequency Measurement Testing
+
+
+== SYNOPSIS
+
+*fmtest* [kHz] [0|1] [offset] [range] [tsec] [call]
+
+Sets the dial frequency of a CAT-controlled radio and performs
+a sequence of measurements of the strongest resulting audio tone near a
+specified offset frequency. Input parameters are taken from the command
+line, or specified in gocal script, and the output goes to files fmt.out.
+All 6 parameters are required. See *Resources* for full documentaton and examples.
+
+
+== DESCRIPTION
+
+*khz*::
+Dial frequency in Kilohertz
+
+*0|1*::
+*0* for measuring unknown frequencies, *1* for known frequency. For rig
+calibration *1* should be used, as *0* is for the use with the *ARRL FMT*
+tests.
+
+*offset*::
+Frequency offset to measure, in khz
+
+*range*::
+Range of frequency measurement, in khz
+
+*tsec*::
+Length of time to measure, in seconds
+
+*call*::
+Station callsign, WWV for example
+
+
+== BUGS
+
+If you find a bug or suspect *'fmtest'* is not acting as you think it should,
+send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
+
+
+== AUTHORS
+-----
+Joe Taylor, K1JT, <joe@princeton.edu> .. Original Content Provider
+Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Editor
+-----
+
+
+== RESOURCES
+-----
+Project Site: ... <http://sourceforge.net/projects/wsjt/>
+Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
+Documentation: .. <http://physics.princeton.edu/pulsar/K1JT/fmt-main.html>
+-----
+
+
+== SEE ALSO
+
+wspr(1), fmtave(1), fmeasure(1), fcal(1)
+
+
+== COPYING
+
+Copyright &copy; 2014 Joseph H Taylor, Jr, K1JT
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
