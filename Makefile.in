@@ -14,12 +14,24 @@ OS		:=	@OS@
 CPU		:=	@CPU@
 
 # General Information
+AR		:=	@AR@
 CP		:=	@CP@
+LN		:= @LN@
 MV		:=	@MV@
 RM		:=	@RM@
+CHOWN		:=	@CHOWN@
+CHMOD		:=	@CHMOD@
 SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
 PREFIX		:=	@PREFIX@
+UNLINK		:=	@UNLINK@
+INATALL		:=	install
+
+# Install locations
+BINDIR		:=	/usr/bin
+DOCDIR		:=	/usr/share/wspr/doc
+MANDIR		:=	/usr/share/man/man1
+SHARED		:=	/usr/share/wspr
 
 # Compiler Information
 CC		:=	@CC@
@@ -43,22 +55,18 @@ FCOPT		+=	@FCOPT@
 DEFS		:=	@DEFS@
 
 # WSPR Targets
-all:	libwspr.a thnix.o WsprMod/w.so fmt fmtave fcal fmeasure wsprcode wspr0
+all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 	@echo ""
 	@echo "---------------------------------------------"
-	@echo "${PROGRAM} ${VERSION} Make Summary"
+	@echo " ${PROGRAM} ${VERSION} Make Summary"
 	@echo "---------------------------------------------"
 	@echo ""	
-	@echo " To Run, type .........: ${PYTHON} -O wspr.py"
 	@echo " To Install, type .....: make install"
-	@echo " Install Location .....: ${PREFIX}"
+	@echo " Then, type, ..........: wspr"
 	@echo ""
 	@echo " Clean & Rebuild"
 	@echo " To Clean, type .......: make clean"
 	@echo " To Dist Clean, type ..: make distclean"
-	@echo ""
-	@echo " Website ..............: ${WEB}"
-	@echo " Report Bugs To .......: ${BUGS}"
 	@echo ""
 
 # Default Rules
@@ -100,7 +108,7 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 
 # Build Library: libwspr.a
 libwspr.a: ${OBJS3} acom1.f90 acom2.f90
-	ar cr libwspr.a ${OBJS3}
+	${AR} cr libwspr.a ${OBJS3}
 	ranlib libwspr.a
 
 # Build FMT Applications
@@ -119,55 +127,69 @@ fmeasure: fmeasure.f90
 # SRC for w.so
 F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
-# Build W.SO & MV to WsprMod then CP to WsprModNoGui
+# Build W.SO & MV to WsprMod/
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
 	--opt="${FCOPT}" thnix.o ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
-	${CP} WsprMod/w.so WsprModNoGui/w.so
 
 # Install to ${PREXIX}
 install:
 	@clear
 	@echo "-----------------------------------"
-	@echo "        Installing WSPR"
+	@echo "      Installing ${PROGRAM}"
 	@echo "-----------------------------------"
 	@echo ""
-	@${MKDIR} -p ${PREFIX}
-	@${CP} -r doc/ save/ WsprMod/ WsprModNoGui/ ${PREFIX}
-	@${CP} -r ./fcal ./fmeasure ./fmtest ./fmtave \
-	./wspr0 ./wsprcode ./gocal ./hamlib_rig* ./Pmw*.py \
-	./tkrep.py ./wspr_nogui.py ./wspr.py ${PREFIX}
-	@echo "Finished Installing WSPR."
+	@${MKDIR} -p ${DOCDIR}/examples
+	@${MKDIR} -p ${SHARED}/{save/Samples,WsprMod}
+	@install -m 755 --strip fmtest fcal fmeasure fmtave wspr0 wsprcode ${BINDIR}
+	@install -m 644 manpages/man1/*.1 ${MANDIR}
+	@install -m 644 doc/WSPR0_Instructions.TXT doc/WSPR_4.0_User.docx ${DOCDIR}
+	@install -m 644 save/Samples/* ${SHARED}/save/Samples/
+	@install -d save/ ${SHARED}
+	@install -m 755 ./gocal ./Pmw*.py ./tkrep.py ./wspr.py ./wspr.sh ${SHARED}
+	@install -m 644 ./hamlib_rig* ${SHARED}
+	@install -m 755 WsprMod/* ${SHARED}/WsprMod/
+	@${LN} -sf ${SHARED}/wspr.sh /usr/local/bin/wspr
+	@${CP} -r doc/examples/* ${DOCDIR}/examples/
+	@${CHMOD} -R 644 ${DOCDIR}/examples/*
+	@${RM} -r ${SHARED}/WsprMod/*.dll
+	@echo "Finished Installing ${PROGRAM}"
 	@echo ""
-	@echo "To run WSPR ..: cd ${PREFIX}"
-	@echo "Then type, ...: ${PYTHON} -O wspr.py"
+	@echo "..To run, type..: wspr"
+	@echo ""
+	@echo "..Website ......: ${WEB}"
+	@echo "..Report Bugs ..: ${BUGS}"
 	@echo ""
 
-# Uninstall / Delete ${PREFIX} Directory
+# Uninstall system files
 uninstall:
+	@clear
+	@echo "--------------------------------------"
+	@echo "       Uninstalling WSPR"
+	@echo "--------------------------------------"
+	@echo ".. Removing Installed files"
+	@${RM} -rf /usr/share/wspr/* /usr/local/bin/wspr.sh
+	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
+	@${RM} -f ${MANDIR}/{wspr.1.gz,wspr0.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
+	@${RM} -f ${PREFIX}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
+	@${RM} -rf ${PREFIX}/{WsprMod/,save/,doc/,*.py,hamlib*,*.sh,gocal}
+	@echo ".. User files remain in: ${PREFIX}"
+	@echo ".. To remove, type ....: rm -R ${PREFIX}"
 	@echo ""
-	@echo "** WARNING **, this will delete the WSPR directory."
-	@echo "Make sure you have saved all the files you wish"
-	@echo "to keep (WSPR.INI, fcal.out, decodes etc.)."
-	@echo ""
-	@read -p 'Delete WSPR Directory? (y/n)' REPLY; \
-	[ $$REPLY = "y" ] || [ $$REPLY = "Y" ]; then \
-	${RM} -r ${PREFIX}; \
-	fi
 
 # Cleanup Source Tree
 .PHONY: clean distclean dist
 clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
-	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode fmtest fmtave fcal \
-	fmeasure wspr0
+	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode wspr0 fmtest fmtave fcal \
+	fmeasure
 
 distclean: clean
 	${RM} -f config.log config.status ALL_WSPR*.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
-	pixmap.dat wspr.log
+	pixmap.dat wspr.log configure Makefile
 	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
 
 dist: distclean

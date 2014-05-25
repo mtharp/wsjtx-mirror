@@ -32,11 +32,9 @@ autoconf -f -i
 if test -s ./configure; then
 	echo " ..Finished"
 	echo " ..Autoconf will now build the Makefile"
+	echo " ..Running ./configure to generate Makefile"
 	echo
-	echo "To see additional configuration options, at the prompt, "
-	echo "type: ./configure --help=short"
-	echo
-	read -p "Press any key to start ..." justgo
+	sleep 1
 else
 	echo "There was a problem generating the configure script"
 	echo "Check config.status for details."	

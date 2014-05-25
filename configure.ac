@@ -7,7 +7,7 @@ AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AC_PREFIX_DEFAULT([$HOME/wspr])
+AC_PREFIX_DEFAULT([$HOME/.wspr])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 
@@ -33,7 +33,8 @@ AC_C_INLINE
 AC_PATH_PROG([AR], [ar])
 AC_PATH_PROG([AWK], [awk])
 AC_PATH_PROG([CP], [cp])
-AC_PATH_PROG([CR], [cr])
+AC_PATH_PROG([CHOWN], [chown])
+AC_PATH_PROG([CHMOD], [chmod])
 AC_PATH_PROG([LD], [ld])
 AC_PATH_PROG([LN], [ln])
 AC_PATH_PROG([MKDIR], [mkdir])
@@ -347,6 +348,10 @@ if test "$HAVE_PY3" = "no"; then
 	echo
 	echo 'Example:'
 	echo './configure --with-python3="/home/$USER/test/python3"'
+else
+	# add python3 path to wspr.sh script
+	sed -i '/wspr.py/d' wspr.sh
+	echo "$PY3_PATH -O wspr.py" >> wspr.sh
 fi
 
 

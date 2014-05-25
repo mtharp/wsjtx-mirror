@@ -21,7 +21,8 @@ _TARNAME="$_NAME-$_VER.tar.gz"
 _MANIFEST=wspr-manifest.in
 _DISTD="$_BASED/dist"
 _DOC="$_DISTD/$_NAME/doc"
-_MAN1="$_DISTD/$_NAME/man1"
+_EXAMPLES="$_DISTD/$_NAME/doc/examples"
+_MAN1="$_DISTD/$_NAME/manpages"
 
 # test $1
 if [[ -z $_NAME ]]; then
@@ -84,8 +85,14 @@ echo " ..removing any .dll files"
 find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete
 
 # copy full documentation
-mkdir -p "$_DOC"
-cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx /doc/examples "$_DOC"
+echo " ..copying documentation"
+mkdir -p $_DOC
+cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx "$_DOC/"
+
+# copy fmt examples
+echo " ..copying examples"
+mkdir -p $_EXAMPLES
+cp -r doc/examples/* "$_EXAMPLES/"
 
 # copy man pages
 mkdir -p "$_MAN1"

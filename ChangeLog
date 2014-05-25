@@ -2,6 +2,24 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-24 commit r4150 Greg Beam <ki7mt@yahoo.com>
+
+* Updated install / uninstall
+* All binaries are now in /usr/bin
+* All docs are in /usr/share/wspr/doc
+* All manpages are in /usr/share/man/man1
+* Added wspr.sh script, links all needed files to $HOME/.wspr @ runtime
+* Uninstall leaves user config files v.s. deleting them.
+* Current svn builds and runs from .deb files generated with pbuilder
+  (i386 && amd64) chroot enviroments.
+
+To build and run:
+
+  autogeh.sh
+  make && sudo make install
+  wspr
+
+
 2014-04-24 commit r4149 Greg Beam <ki7mt@yahoo.com>
 
 * Update Makefile.in for fmtest.f90 changes

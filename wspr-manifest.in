@@ -31,7 +31,7 @@ fil1.f90
 flat3.f90
 fmeasure.f90
 fmtave.f90
-fmt.f90
+fmtest.f90
 fmtiq.f90
 fold1pps.f90
 four2a.f90
@@ -122,6 +122,7 @@ wqdecode.f90
 wqencode.f90
 write_wav.f90
 wsjt.ico
+wspr.sh
 wspr0.f90
 wspr0init.f90
 wspr0_rx.f90
