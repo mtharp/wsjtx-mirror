@@ -2,7 +2,21 @@
 Current Development Version: WSPR-4.0
 
 
-2014-04-24 commit r4150 Greg Beam <ki7mt@yahoo.com>
+2014-04-26 commit r4152 Greg Beam <ki7mt@yahoo.com>
+
+* Fix permission issues using ln -s
+* Update the user install script
+* Fix up paths in configure.ac and Makefile.in
+* Fix docs location to /usr/share/doc/wspr v.s wspr/doc
+
+TO-DO
+* Create standard size icons 16x16, 48x48, 64x64..128x128  etc etc
+* Add icons to /usr/share/pixmaps /usr/share/icons .. .. ..
+* Add wspr.desktop file /usr/share/applications
+* Fix wspr.py so it uses *Nix xbm or png when running on *Nix v.s. wsjt.ico
+
+
+2014-04-25 commit r4151 Greg Beam <ki7mt@yahoo.com>
 
 * Updated install / uninstall
 * All binaries are now in /usr/bin
@@ -20,7 +34,7 @@ To build and run:
   wspr
 
 
-2014-04-24 commit r4149 Greg Beam <ki7mt@yahoo.com>
+2014-04-24 commit r4150 Greg Beam <ki7mt@yahoo.com>
 
 * Update Makefile.in for fmtest.f90 changes
 * Edit Makefile.in and remove configure & Makefile

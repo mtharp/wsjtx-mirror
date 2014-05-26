@@ -1,27 +1,20 @@
 #!/usr/bin/env bash
 #
-# Shell Script wrapper to copy wspr files to $HOME/.wspr
-#
+# Shell script wrapper to update or copy files from the system install
+
 set -e
 
 # set dir's
-_BASED="/home/$USER/.wspr"
-_SHARED=/usr/share/wspr
-_BINDIR=/usr/bin
+_HOMEDIR="/home/$USER/.wspr"
 
-if [ ! -d "$_BASED" ]; then
-	mkdir -p "$_BASED"/.wspr
-fi
+# make a few dir's
+mkdir -p $_HOMEDIR/doc
 
-# cp "link" runtime files
-ln -sf /usr/bin/fmtest "$_BASED"/fmtest
-ln -sf /usr/bin/fmeasure "$_BASED"/fmeasure
-ln -sf /usr/bin/fcal "$_BASED"/fcal
-ln -sf /usr/bin/fmtave "$_BASED"/fmtave
-ln -sf /usr/bin/wspr0 "$_BASED"/wspr0
-ln -sf /usr/bin/wsprcode "$_BASED"/wsprcode
-cp -rsf /usr/share/wspr/* "$_BASED"/
+# update files only if newer
+cp -uR /usr/share/wspr/* $_HOMEDIR
+cp -uR /usr/share/doc/wspr/{examples/,*.TXT,*.docx} $_HOMEDIR/doc/
+cp -uR /usr/share/doc/wspr/{AUTHORS,README,INSTALL.txt,NEWS,BUGS} $_HOMEDIR/
 
-# cd to .wspr and run: py location updated form configure.ac
-cd $_BASED
+# run: py location updated fron configure.ac
+cd $_HOMEDIR
 /usr/bin/python3 -O wspr.py

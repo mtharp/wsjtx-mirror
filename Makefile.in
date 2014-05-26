@@ -16,22 +16,23 @@ CPU		:=	@CPU@
 # General Information
 AR		:=	@AR@
 CP		:=	@CP@
-LN		:= @LN@
+LN		:=	@LN@
 MV		:=	@MV@
 RM		:=	@RM@
 CHOWN		:=	@CHOWN@
 CHMOD		:=	@CHMOD@
 SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
-PREFIX		:=	@PREFIX@
 UNLINK		:=	@UNLINK@
-INATALL		:=	install
 
 # Install locations
-BINDIR		:=	/usr/bin
-DOCDIR		:=	/usr/share/wspr/doc
-MANDIR		:=	/usr/share/man/man1
-SHARED		:=	/usr/share/wspr
+USER		:=	@USER@
+INATALL		:=	install
+HOMEDIR		:=	@HOMEDIR@
+BINDIR		:=	@BINDIR@
+SHARED		:=	@SHARED@
+DOCDIR		:=	@DOCDIR@
+MANDIR		:=	@MANDIR@
 
 # Compiler Information
 CC		:=	@CC@
@@ -56,18 +57,18 @@ DEFS		:=	@DEFS@
 
 # WSPR Targets
 all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
-	@echo ""
-	@echo "---------------------------------------------"
+	@echo ''
+	@echo '---------------------------------------------'
 	@echo " ${PROGRAM} ${VERSION} Make Summary"
-	@echo "---------------------------------------------"
-	@echo ""	
-	@echo " To Install, type .....: make install"
-	@echo " Then, type, ..........: wspr"
-	@echo ""
-	@echo " Clean & Rebuild"
-	@echo " To Clean, type .......: make clean"
-	@echo " To Dist Clean, type ..: make distclean"
-	@echo ""
+	@echo '---------------------------------------------'
+	@echo ''	
+	@echo ' To Install, type .....: make install'
+	@echo ' Then, type, ..........: wspr'
+	@echo ''
+	@echo ' Clean & Rebuild'
+	@echo ' To Clean, type .......: make clean'
+	@echo ' To Dist Clean, type ..: make distclean'
+	@echo ''
 
 # Default Rules
 %.o: %.c
@@ -133,50 +134,52 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	--opt="${FCOPT}" thnix.o ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
 
-# Install to ${PREXIX}
-install:
+# Install target wspr
+install:	wspr
 	@clear
-	@echo "-----------------------------------"
+	@echo '-----------------------------------'
 	@echo "      Installing ${PROGRAM}"
-	@echo "-----------------------------------"
-	@echo ""
+	@echo '-----------------------------------'
+	@echo ''
 	@${MKDIR} -p ${DOCDIR}/examples
 	@${MKDIR} -p ${SHARED}/{save/Samples,WsprMod}
 	@install -m 755 --strip fmtest fcal fmeasure fmtave wspr0 wsprcode ${BINDIR}
 	@install -m 644 manpages/man1/*.1 ${MANDIR}
 	@install -m 644 doc/WSPR0_Instructions.TXT doc/WSPR_4.0_User.docx ${DOCDIR}
 	@install -m 644 save/Samples/* ${SHARED}/save/Samples/
-	@install -d save/ ${SHARED}
-	@install -m 755 ./gocal ./Pmw*.py ./tkrep.py ./wspr.py ./wspr.sh ${SHARED}
+	@install -m 755 ./{gocal,Pmw*.py,tkrep.py,wspr.py,wspr.sh} ${SHARED}
+	@install -m 644 ./{AUTHORS,README,INSTALL.txt,NEWS,BUGS} ${DOCDIR} 
 	@install -m 644 ./hamlib_rig* ${SHARED}
 	@install -m 755 WsprMod/* ${SHARED}/WsprMod/
-	@${LN} -sf ${SHARED}/wspr.sh /usr/local/bin/wspr
+	@${LN} -sf ${SHARED}/wspr.sh ${BINDIR}/wspr
 	@${CP} -r doc/examples/* ${DOCDIR}/examples/
 	@${CHMOD} -R 644 ${DOCDIR}/examples/*
-	@${RM} -r ${SHARED}/WsprMod/*.dll
 	@echo "Finished Installing ${PROGRAM}"
-	@echo ""
-	@echo "..To run, type..: wspr"
-	@echo ""
+	@echo ''
+	@echo '..To run, type..: wspr'
+	@echo ''
 	@echo "..Website ......: ${WEB}"
 	@echo "..Report Bugs ..: ${BUGS}"
-	@echo ""
+	@echo ''
 
 # Uninstall system files
 uninstall:
 	@clear
-	@echo "--------------------------------------"
-	@echo "       Uninstalling WSPR"
-	@echo "--------------------------------------"
-	@echo ".. Removing Installed files"
-	@${RM} -rf /usr/share/wspr/* /usr/local/bin/wspr.sh
-	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
-	@${RM} -f ${MANDIR}/{wspr.1.gz,wspr0.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
-	@${RM} -f ${PREFIX}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
-	@${RM} -rf ${PREFIX}/{WsprMod/,save/,doc/,*.py,hamlib*,*.sh,gocal}
-	@echo ".. User files remain in: ${PREFIX}"
-	@echo ".. To remove, type ....: rm -R ${PREFIX}"
-	@echo ""
+	@echo '--------------------------------------'
+	@echo "       Uninstalling ${PROGRAM}"
+	@echo '--------------------------------------'
+	@echo '.. Removing Installed files'
+	@echo ''
+	@${RM} -r /usr/share/wspr
+	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode,wspr}
+	@${RM} -f ${MANDIR}/{wspr.1,wspr0.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
+	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
+	@${RM} -rf ${HOMEDIR}/{WsprMod/,save/,doc/,*.py,hamlib*,*.sh,gocal,*cache*}
+	@${RM} -f ${HOMEDIR}/{AUTHORS,README,INSTALL.txt,NEWS,BUGS}
+	@echo '' 
+	@echo ".. User files remain in: ${HOMEDIR}"
+	@echo ".. To remove, type ....: rm -R ${HOMEDIR}"
+	@echo ''
 
 # Cleanup Source Tree
 .PHONY: clean distclean dist

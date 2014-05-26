@@ -6,10 +6,20 @@ AC_COPYRIGHT([$Id$])
 AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
 
+dnl ----------------------------------------------------------------------------
+dnl path vars
+dnl ----------------------------------------------------------------------------
+
 AC_CONFIG_AUX_DIR([build-aux])
-AC_PREFIX_DEFAULT([$HOME/.wspr])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
+AC_SUBST([USER], ["$USER"])
+AC_SUBST([HOMEDIR], ["/home/${USER}/.wspr"])
+AC_SUBST([PREFIX], [/usr])
+AC_SUBST([BINDIR], [/usr/bin])
+AC_SUBST([SHARED], [/usr/share/wspr])
+AC_SUBST([MANDIR], [/usr/share/man/man1])
+AC_SUBST([DOCDIR], [/usr/share/doc/wspr])
 
 
 dnl ----------------------------------------------------------------------------
@@ -462,10 +472,6 @@ dnl ----------------------------------------------------------------------------
 dnl substitutions
 dnl ----------------------------------------------------------------------------
 
-if test "$prefix" = "NONE"; then
-   prefix=$ac_default_prefix
-fi
-
 AC_SUBST([BUGS], ["$PACKAGE_BUGREPORT"])
 AC_SUBST([CFLAGS], ["$CFLAGS"])
 AC_SUBST([CPPFLAGS], ["$CPPFLAGS"])
@@ -502,7 +508,7 @@ echo " Fcomplier: .......: ${FC}"
 echo " Samplerate: ......: ${srstatus}"
 echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"
-echo " Install Prefix: ..: ${prefix}"
+echo " Install Prefix: ..: ${HOMEDIR}"
 echo
 echo " Website ..........: ${WEB}"
 echo " Report Bugs To ...: ${BUGS}"
