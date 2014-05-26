@@ -1,0 +1,60 @@
+:doctype: manpage
+:man manual: WSPRcode Man Page
+:man version: Version 4.0
+
+= wsprcode(1)
+
+
+== NAME
+
+wsprcode - This program provides examples of the source encoding, convolutional
+error-control coding, bit and symbol ordering, and synchronizing
+information contained in WSPR messages.
+
+
+== Usage
+
+*wsprcode* "message"
+
+
+== BUGS
+
+If you find a bug or suspect *'wsprcode'* is not acting as you think it should,
+send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
+
+
+== AUTHORS
+-----
+Joe Taylor, K1JT, <joe@princeton.edu> .. Original Content Provider
+Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Editor
+-----
+
+
+== RESOURCES
+-----
+Project Site: ... <http://sourceforge.net/projects/wsjt/>
+Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
+Documentation: .. <http://physics.princeton.edu/pulsar/K1JT/fmt-main.html>
+-----
+
+
+== SEE ALSO
+
+wspr(1), wspr0(1), fmtest(1), fmtave(1), fmeasure(1), fcal(1)
+
+
+== COPYING
+
+Copyright &copy; 2014 Joseph H Taylor, Jr, K1JT
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
