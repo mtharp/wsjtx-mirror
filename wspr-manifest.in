@@ -121,7 +121,6 @@ wfile5.f90
 wqdecode.f90
 wqencode.f90
 write_wav.f90
-wsjt.ico
 wspr.sh
 wspr0.f90
 wspr0init.f90

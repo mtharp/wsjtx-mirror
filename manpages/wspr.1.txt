@@ -12,25 +12,28 @@ wspr - Weak Signal Propagation Reporter
 
 == SYNOPSIS
 
-*wspr* - "Pronounced Whisper", does not take command-line options. To run from the
-command-line:
+*wspr* - "Pronounced Whisper", does not take command-line options. To run
+from the command-line:
 -----
-After Install
-Open terminal, cd ~/.wspr, then type ..: wspr
+After Install, to run WSPR:
 
-After Install & Called Using Python
-Open terminal, cd ~/.wspr, then type ..: python3 -O wspr.py
+Applications Menu
+Applications > HamRadio > WSPR
+
+From Unity Dash
+Dash > WSPR > Click on the Globe
+
+Command Line
+Open terminal, type..: wspr
 -----
-For more information see <<X1,*documentation*>>. 
 
 
 == PROGRAMS
 
-There are (6) programs associated with *WSPR*:
+There are (7) programs associated with *WSPR*
 
-*WSPR* - Stands for "Weak Signal Propagation Reporter". The WSPR software is
-designed for probing potential radio propagation paths using low-power beacon-like transmissions. *WSPR* does not take command-line augments, simply run the
-application and setup your stations parameters.
+*WSPR* - The program generates and decodes a digital soundcard mode
+optimized for beacon-like transmissions on the LF, MF, and HF bands
 
 *WSPR0* - is a simple command-line version of WSPR with no frills,
 no graphics and no GUI.  Many advanced features of the full WSPR
@@ -53,6 +56,10 @@ Results are saved in file fcal.out.
 found in file fmtave.out. Results are saved in file fmeasure.out, and these
 are the numbers you should report if you are entering the Frequency Measuring
 Test.
+
+*WSPRCODE* - This program provides examples of the source encoding,
+convolutional error-control coding, bit and symbol ordering, and 
+synchronizing information contained in WSPR messages.
 
 
 == BUGS
@@ -78,7 +85,7 @@ Documentation: .. <http://www.physics.princeton.edu/pulsar/K1JT/wspr-main.html>
 
 == SEE ALSO
 
-wspr0(1), fmtest(1)
+wspr0(1), fmtest(1), wsprcode(1)
 
 
 == COPYING

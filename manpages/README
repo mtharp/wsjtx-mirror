@@ -19,7 +19,7 @@ INSTALL XSLPROC
 Note: edit xslproc to match your distribution
 
 
-DOWNLOAD && EXIT a2x.py
+DOWNLOAD && EDIT a2x.py
 -----------------------
 * http://iweb.dl.sourceforge.net/project/asciidoc/asciidoc/8.6.9/asciidoc-8.6.9.tar.gz
 * tar -xzvf asciidoc-8.6.9.tar.gz

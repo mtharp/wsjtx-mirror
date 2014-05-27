@@ -2,6 +2,18 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-27 commit r4154 Greg Beam <ki7mt@yahoo.com>
+
+* Update wspr manpage
+* fix -x permissions on gocal and fcal.f90
+* remove wsjt.ico from wspr-manifest.in
+
+
+2014-04-26 commit r4153 Greg Beam <ki7mt@yahoo.com>
+
+* Add manpage for wsprcode
+
+
 2014-04-26 commit r4152 Greg Beam <ki7mt@yahoo.com>
 
 * Fix permission issues using ln -s
