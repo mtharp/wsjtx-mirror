@@ -40,7 +40,7 @@ fi
 
 function re_run() {
 	echo
-	echo "Check the build script for accuracy, and re-run $_SCRIPT"
+	echo "Check the build script for accuracy, then re-run $_SCRIPT"
 	echo
 	exit 1
 }
@@ -52,7 +52,7 @@ echo "Creating ( $_NAME-$_VER ) Distribution Tarball"
 echo
 
 # look for manifest file
-if [[ -f $_BASED/$_MANIFEST ]]; then
+if [ -f "$_BASED/$_MANIFEST" ]; then
 
 	echo " ..found $_MANIFEST"
 
@@ -64,7 +64,7 @@ else
 fi
 
 # make dist diirectory
-if [[ -d $_DISTD/$_NAME ]]; then
+if [ -d "$_DISTD/$_NAME" ]; then
 	rm -r "$_DISTD/$_NAME" && mkdir -p "$_DISTD/$_NAME"
 	echo " ..created build directory: $_DISTD/$_NAME"
 else
@@ -73,11 +73,13 @@ else
 fi
 
 # start copying files & folders
-if [[ -d WsprMod/__pycache__ ]]
+if [ -d WsprMod/__pycache__ ]
 then 
 	rm -r WsprMod/__pycache__
 fi 
 
+# copying required folders
+echo " ..copying folders"
 cp -r save/ WsprMod/ build-aux/ "$_DISTD/$_NAME"
 
 # remove any .dll's from WsprMod
@@ -86,11 +88,12 @@ find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete
 
 # copy full documentation
 echo " ..copying documentation"
-mkdir -p $_DOC
+mkdir -p "$_DOC"
 cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx "$_DOC/"
+cp -r ./AUTHORS ./INSTALL.txt ./NEWS ./README "$_DOC/"
 
 # copy fmt examples
-echo " ..copying examples"
+echo " ..copying FMT examples"
 mkdir -p $_EXAMPLES
 cp -r doc/examples/* "$_EXAMPLES/"
 
@@ -101,7 +104,7 @@ cp -r manpages/man1/*.1 "$_MAN1/"
 # start copy loop
 for line in $(< $_MANIFEST)
 do
-	if [[ -f $line ]]; then
+	if [ -f "$line" ]; then
 		cp "$line" "$_DISTD/$_NAME"
 	else 
 		echo
@@ -114,15 +117,16 @@ done
 
 # check $_DISTD/$_NAME exists and is not empty
 _FOLDEZISE=$(du -sk $_DISTD/$_NAME | cut -f1)
+_SIZE=$(($_FOLDEZISE))
 
-if [[ -d $_DISTD/$_NAME ]] && [[ $_FOLDERSIZE -ge "0" ]]; then
+if test -d "$_DISTD/$_NAME" -a "$_SIZE" -ge "5000"; then
 	echo " ..copying complete, build dir size: $_FOLDEZISE kb "
 else
 		echo
 		echo "Build Folder Error"
 		echo 
-		echo "The folder size is odd or it is missing."
-		echo "Please Verify the file list and re-run $_SCRIPT"
+		echo "The folder size is odd ( $_SIZE kb), expected => ( 6000 kb )."
+		echo "Please Verify the list and:"
 		re_run
 fi
 
@@ -130,10 +134,10 @@ fi
 # check that $_NAME folder actally exists before running tar
 cd "$_DISTD"
 
-if [[ -d $_DISTD/$_NAME ]]; then
+if [ -d "$_DISTD/$_NAME" ]; then
 
 	# remove old file if exists
-	if [[ -f $_TARNAME ]]; then
+	if [ -f "$_TARNAME" ]; then
 	echo " ..removing previous build"
 	fi
 
@@ -148,7 +152,7 @@ else
 fi
 
 # test the tar ball was built, and is not "0" in size
-if [[ -f $_DISTD/$_TARNAME ]] && [[ $(ls -l $_TARNAME |awk '{print $5}') -ge "0" ]]; then
+if [ -f "$_DISTD/$_TARNAME" ] && [ $(ls -l "$_TARNAME" |awk '{print $5}') -ge "0" ]; then
 	echo " ..$_TARNAME is present and seems ok"
 else
 	echo
@@ -161,7 +165,7 @@ fi
 _MD5=$(md5sum $_TARNAME |awk '{print $1}')
 _SHA=$(shasum $_TARNAME |awk '{print $1}')
 
-if [[ -n $_MD5 ]] && [[ -n $_SHA ]]; then
+if [ -n "$_MD5" ] && [ -n "$_SHA" ]; then
 	echo " ..finished checksums"
 else
 	echo
@@ -171,14 +175,14 @@ else
 fi
 
 # removing build directory
-if [[ -f $_TARNAME ]]; then
+if [ -f "$_TARNAME" ]; then
 	echo " ..removing build directory"
 	rm -r "$_DISTD/$_NAME"
 fi
 
 # print summary
 _FILESIZE=$(du -k "$_TARNAME" | cut -f1)
-_FILEPATH=$(readlink -e $_TARNAME)
+_FILEPATH=$(exec pwd -P)
 echo
 echo "----------------------------------------------"
 echo " Summary for $_TARNAME"
@@ -188,7 +192,7 @@ echo "Created ....: $_TARNAME"
 echo "File Size ..: $_FILESIZE kb"
 echo "MD5SUM: ....: $_MD5"
 echo "SHASUM .....: $_SHA"
-echo "Location ...: $_FILEPATH"
+echo "Location ...: $_FILEPATH/$_TARNAME"
 echo
 
 # change directories back to $_BASED

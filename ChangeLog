@@ -2,6 +2,12 @@
 Current Development Version: WSPR-4.0
 
 
+2014-04-28 commit r4155 Greg Beam <ki7mt@yahoo.com>
+
+* Update wspr-dist.sh for Mac and other distros
+* Added files to copy section.
+
+
 2014-04-27 commit r4154 Greg Beam <ki7mt@yahoo.com>
 
 * Update wspr manpage
