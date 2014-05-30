@@ -14,7 +14,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 AC_SUBST([USER], ["$USER"])
-AC_SUBST([HOMEDIR], ["/home/${USER}/.wspr"])
+AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
 AC_SUBST([PREFIX], [/usr])
 AC_SUBST([BINDIR], [/usr/bin])
 AC_SUBST([SHARED], [/usr/share/wspr])
@@ -91,7 +91,7 @@ if test -d "/usr/local/lib"; then LDFLAGS="-L/usr/local/lib ${LDFLAGS}"; fi
 if test -d "/usr/lib/x86_64-linux-gnu"; then LDFLAGS="-L/usr/lib/x86_64-linux-gnu ${LDFLAGS}"; fi
 if test -d "/usr/lib/i386-linux-gnu"; then LDFLAGS="-L/usr/lib/i386-linux-gnu ${LDFLAGS}"; fi
 if test -d "/usr/lib"; then LDFLAGS="-L/usr/lib ${LDFLAGS}"; fi
-
+if test -d "/usr/lib/arm-linux-gnueabihf"; then LDFLAGS="-L/usr/lib/arm-linux-gnueabihf ${LDFLAGS}"; fi
 
 dnl ----------------------------------------------------------------------------
 dnl find Python3
@@ -327,12 +327,20 @@ LDFLAGS="$_LDU"
 _CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 CPPFLAGS="$_CPPU"
 
-# OS specfic flags
+# for Darwin
 if test "${host_os}" = *darwin* ; then
 	CFLAGS="-Wall -O0 -fPIC -m64"
-	FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+	FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC -m64"
 	FCOPT="-cpp -fbounds-check -O2"
+
+# for armv6/7
+elif test "${host_os}" = *gnueabihf* ; then
+	CFLAGS="-Wall -O0 -g -Wall -mfloat-abi=hard -fPIC"
+	FFLAGS="-O2 -fno-range-check -ffixed-line-length-none -Wall \
+-Wno-character-truncation -Wno-conversion -Wtabs -mfloat-abi=hard -fPIC"
+
+# for general Linux
 else
 	CFLAGS="-fPIC"
 	FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \

@@ -10,11 +10,11 @@
 # Station List
 
 # local stations, edit to suit location
-./fmtest   550 1 1500 100 30  KBOW
-./fmtest   580 1 1500 100 30  KANA
-./fmtest   950 1 1500 100 30  KMTX
-./fmtest  2500 1 1500 100 30  WWV
-./fmtest  5000 1 1500 100 30  WWV
-./fmtest  7850 1 1500 100 30  CHU
-./fmtest 10000 1 1500 100 30  WWV
-./fmtest 15000 1 1500 100 30  WWV
+fmtest   550 1 1500 100 30  KBOW
+fmtest   580 1 1500 100 30  KANA
+fmtest   950 1 1500 100 30  KMTX
+fmtest  2500 1 1500 100 30  WWV
+fmtest  5000 1 1500 100 30  WWV
+fmtest  7850 1 1500 100 30  CHU
+fmtest 10000 1 1500 100 30  WWV
+fmtest 15000 1 1500 100 30  WWV
