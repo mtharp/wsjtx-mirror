@@ -322,7 +322,7 @@ _LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LIBS="$_LBU"
 
 _LDU=$(echo "$LDFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
-LDFLAGS="$_LDU"
+LDFLAGS=" -Wl,--as-needed $_LDU"
 
 _CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 CPPFLAGS="$_CPPU"
@@ -332,13 +332,13 @@ case "${host_os}" in
 		FCOPT="-cpp -fbounds-check -O2"
 			case "${host_cpu}" in
 				*armv6* )
-					CFLAGS="-Wall -O0 -g -mfloat-abi=hard -fPIC"
-					FFLAGS="-O2 1234 -fno-range-check -ffixed-line-length-none -Wall \
+					CFLAGS="-Wall -O0 -mfloat-abi=hard -fPIC -m64"
+					FFLAGS="-O2 -fno-range-check -ffixed-line-length-none -Wall \
 -Wno-character-truncation -Wno-conversion -Wtabs -mfloat-abi=hard -fPIC"
 				;;
 				*x86_64* )
 					CFLAGS="-fPIC"
-					FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
+					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
 				;;
 				*i386* )
