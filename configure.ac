@@ -327,26 +327,34 @@ LDFLAGS="$_LDU"
 _CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 CPPFLAGS="$_CPPU"
 
-# for Darwin
-if test "${host_os}" = *darwin* ; then
-	CFLAGS="-Wall -O0 -fPIC -m64"
-	FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
--Wno-conversion -Wno-character-truncation -fPIC -m64"
-	FCOPT="-cpp -fbounds-check -O2"
-
-# for armv6/7
-elif test "${host_os}" = *gnueabihf* ; then
-	CFLAGS="-Wall -O0 -g -Wall -mfloat-abi=hard -fPIC"
-	FFLAGS="-O2 -fno-range-check -ffixed-line-length-none -Wall \
+case "${host_os}" in
+	*linux* )
+		FCOPT="-cpp -fbounds-check -O2"
+			case "${host_cpu}" in
+				*armv6* )
+					CFLAGS="-Wall -O0 -g -mfloat-abi=hard -fPIC"
+					FFLAGS="-O2 1234 -fno-range-check -ffixed-line-length-none -Wall \
 -Wno-character-truncation -Wno-conversion -Wtabs -mfloat-abi=hard -fPIC"
-
-# for general Linux
-else
-	CFLAGS="-fPIC"
-	FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+				;;
+				*x86_64* )
+					CFLAGS="-fPIC"
+					FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
-	FCOPT="-cpp -fbounds-check -O2"
-fi
+				;;
+				*i386* )
+					CFLAGS="-fPIC"
+					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIC"
+				;;
+			esac
+		;;
+	 *-*-darwin-* )
+		FCOPT="-cpp -fbounds-check -O2"
+		CFLAGS="-Wall -O0 -fPIC -m64"
+		FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIC -m64"
+	;;
+esac
 
 
 dnl ----------------------------------------------------------------------------
