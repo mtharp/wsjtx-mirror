@@ -169,9 +169,9 @@ REM -- g3.bat
 REM -- STILL in %APP_SRC%
 :PRG3
 ECHO.
-ECHO BUILDING: ^( fmt.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe  ^)
+ECHO BUILDING: ^( fmtest.exe fmtave.exe fcal.exe fmeasure.exe wspr0.exe  ^)
 ECHO.
-mingw32-make -f Makefile.jtsdk fmt.exe
+mingw32-make -f Makefile.jtsdk fmtest.exe
 mingw32-make -f Makefile.jtsdk fmtave.exe
 mingw32-make -f Makefile.jtsdk fcal.exe
 mingw32-make -f Makefile.jtsdk fmeasure.exe
@@ -201,7 +201,7 @@ rm -r %INSTALLDIR%/bin/tcl/tzdata
 rm -r %INSTALLDIR%/bin/tk/demos
 cp -r save %INSTALLDIR%
 cp wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat %INSTALLDIR% 
-cp fcal.exe fmeasure.exe fmt.exe fmtave.exe wspr0.exe %INSTALLDIR%
+cp fcal.exe fmeasure.exe fmtest.exe fmtave.exe wspr0.exe %INSTALLDIR%
 cp -r hamlib/* %INSTALLDIR% 
 cp wsjt.ico wspr.bat %INSTALLDIR%
 GOTO REV_NUM
