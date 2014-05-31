@@ -81,14 +81,11 @@ all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-thnix_stub.o: thnix_stub.f90
-	${FC} ${FFLAGS} -c thnix_stub.f90
-
 # Objects
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -pthread -lfftw3f -lportaudio
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
 	${FC} ${FFLAGS} -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
@@ -113,7 +110,7 @@ libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 
 # Build FMT Applications
 fmtest: fmtest.f90 libwspr.a
-	${FC} ${FFLAGS} -o fmtest fmtest.f90 libwspr.a -pthread -lfftw3f -lportaudio
+	${FC} ${FFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
 	${FC} ${FFLAGS} -o fmtave fmtave.f90
@@ -134,7 +131,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	${MV} w*.so WsprMod/w.so
 
 # Install target wspr
-install:	wspr
+install:
 	@clear
 	@echo '-----------------------------------'
 	@echo "      Installing ${PROGRAM}"
@@ -173,7 +170,7 @@ uninstall:
 	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode,wspr}
 	@${RM} -f ${MANDIR}/{wspr.1,wspr0.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
 	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
-	@${RM} -rf ${HOMEDIR}/{WsprMod/,save/,doc/,*.py,hamlib*,*.sh,gocal,*cache*}
+	@${RM} -rf ${HOMEDIR}/{WsprMod/,save/,doc/,*.py,hamlib*,*.sh,*.dat,gocal,*cache*}
 	@${RM} -f ${HOMEDIR}/{AUTHORS,README,INSTALL.txt,NEWS,BUGS}
 	@echo '' 
 	@echo ".. User files remain in: ${HOMEDIR}"

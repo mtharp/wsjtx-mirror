@@ -338,7 +338,7 @@ case "${host_os}" in
 				;;
 				*x86_64* )
 					CFLAGS="-fPIC"
-					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+					FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
 				;;
 				*i386* )
@@ -347,15 +347,17 @@ case "${host_os}" in
 -Wno-conversion -Wno-character-truncation -fPIC"
 				;;
 			esac
-		;;
-	 *-*-darwin-* )
+	;;
+	*-*-darwin-* )
 		FCOPT="-cpp -fbounds-check -O2"
 		CFLAGS="-Wall -O0 -fPIC -m64"
 		FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC -m64"
 	;;
+	*)
+		AC_MSG_ERROR([Unsupported System: ${host_os}.])
+	;;
 esac
-
 
 dnl ----------------------------------------------------------------------------
 dnl report Python
