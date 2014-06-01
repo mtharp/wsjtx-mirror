@@ -322,7 +322,7 @@ _LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LIBS="$_LBU"
 
 _LDU=$(echo "$LDFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
-LDFLAGS=" -Wl,--as-needed $_LDU"
+LDFLAGS="$_LDU"
 
 _CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 CPPFLAGS="$_CPPU"
@@ -338,7 +338,7 @@ case "${host_os}" in
 				;;
 				*x86_64* )
 					CFLAGS="-fPIC"
-					FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
+					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
 				;;
 				*i386* )

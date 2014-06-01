@@ -2,7 +2,18 @@
 Current Development Version: WSPR-4.0
 
 
-2014-04-31 commit r4161 Greg Beam <ki7mt@yahoo.com>
+2014-04-31 (2) commit r4161 Greg Beam <ki7mt@yahoo.com>
+
+* Restored to original, removed tests.
+* Debian build system warns about unused symbols, UBuntu 
+  builds system automatically removes them. Tried several
+  itterations but f2py will not accept -Wl, --as-needed,
+  sees it as unknows flags.
+* Current state builds on: Debian sid 32/64, Ubuntu trusy 32/64
+  and saucy 32/64
+* The messages from Debian build server are just notifications.
+
+2014-04-31 (1) commit r4161 Greg Beam <ki7mt@yahoo.com>
 
 * More flag updates for configure.ac and Makfile.in
 * Previous commits added limited support for armv6 (RaspberryPi) based
