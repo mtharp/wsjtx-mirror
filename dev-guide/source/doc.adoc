@@ -10,9 +10,11 @@ then perform the <<WINUPDATE,Update>>. This is all that is required.
 .BUILDING DOCUMENTATION
 
 * Open Windows CMD terminal, at the prompt, type,:
+
 ----
 C:\JTSDK-DOC\jtsdk-docenv.bat
 ----
+
 * You should be presented with <<DOCMENU,Figure-1>>
 * If you have not checked out Docs previously, you will be prompted
 to do so:
@@ -25,17 +27,17 @@ should use the Developer check-out. If you do not have Developer access and
 would like to work on documentation, see the <<DEVCO,Developer Section>>.
 
 * Follow the prompts, Anonymous or Developer, type,:
+
 -----
 *For Anonymous Checkout*
 
-svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
+svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/doc
 
 *For Developers*
 
-svn co https://USER%@svn.code.sf.net/p/wsjt/wsjt/branches/doc
+svn co https://user%@svn.code.sf.net/p/wsjt/wsjt/branches/doc
 
 DEV NOTE, Change ( USER ) to your SourceForge User Name
-
 -----
 
 TIP: Be sure to update JTSDK-DOC after checkout. Simply browse to and run:
@@ -44,20 +46,23 @@ script will update all the SDKs you have installed.
 
 * Once you have checked-out / updated the documentation branch, you can
 build any of the documents with one command ( example uses wsjt ) type,:
+
 -----
 build wsjt
 
 *Document Location, per example*
 C:\JTSDK-DOC\doc\wsjt\wsjt-main.html
-
 -----
+
 * Then view the document, type,:
+
 -----
 wsjt
 -----
 
 .DOCUMENT HELP
 * The main screen is the help screen, if you need to re-list it type,:
+
 -----
 doc-help
 -----

@@ -6,11 +6,12 @@
 
 function python_nix() {
 # WSPR uses /branches WSJT uses /trunk
+clear
 _WSPRURL="https://svn.code.sf.net/p/wsjt/wsjt/branches"
-_WSJTURL="https://ki7mt@svn.code.sf.net/p/wsjt/wsjt"
+_WSJTURL="https://svn.code.sf.net/p/wsjt/wsjt"
 
 # Remove old build log
-rm -r $_LOGS/$_APP_NAME-build.log && touch $_LOGS/$_APP_NAME-build.log
+rm -rf $_LOGS/$_APP_NAME-build.log && touch $_LOGS/$_APP_NAME-build.log
 
 # Start sub-shell for logging
 (
@@ -69,161 +70,94 @@ echo "Starting Build for ( $_APP_NAME-$rev_num )"
 echo "------------------------------------------------"
 echo
 
-# clean source tree
-echo
-echo "------------------------------------------------"
-echo "Removing old build files"
-echo "------------------------------------------------"
-echo
-if [[ -f Makefile ]]
+if [[ -f "./Makefile" ]]
 then
-	make clean
+	# clean source tree
 	echo
-	echo ".. Done"
-fi
-
-# Clean all files, make dist-clean
-echo
-echo "------------------------------------------------"
-echo "Making the source tree distribution clean"
-echo "------------------------------------------------"
-echo
-if [[ -f Makefile ]]
-then
+	echo "------------------------------------------------"
+	echo "Removing old build files"
+	echo "------------------------------------------------"
+	echo
 	make distclean
 	echo
 	echo ".. Done"
+	sleep 1
 fi
 
-# Run Autoconf to generate configure script
-echo
-echo "------------------------------------------------"
-echo "Running ( autoconf ) to generate configure"
-echo "------------------------------------------------"
-autoconf -i
-echo
-echo ".. Done"
 
-# Run configure to build Makefile
-echo
-echo "------------------------------------------------"
-echo "Running Configure"
-echo "------------------------------------------------"
-./configure
-echo
-echo ".. Done"
-
-# Run Makefile
-echo
-echo "------------------------------------------------"
-echo "Running make for all targets"
-echo "------------------------------------------------"
-make
-
-#
-## Add Manifest Check here ...
-#
-
-# Run Makefile
-echo
-echo "------------------------------------------------"
-echo "Copying ( $_APP_NAME ) to $_APP_NAME-$rev_num"
-echo "------------------------------------------------"
-echo
-
-# Make test for previous build based on rev_num
-
-if [[ -d $_BASED/$_APP_NAME/$_APP_NAME-$rev_num ]]
+if [[ -f "./configure.ac" ]]
 then
-	mv $_BASED/$_APP_NAME/$_APP_NAME-$rev_num \
-	$_BASED/$_APP_NAME/$_APP_NAME-$rev_num-$(date +%F-%H%M)
 
-	mkdir -p $_BASED/$_APP_NAME/$_APP_NAME-$rev_num
-
-else
-	mkdir -p $_BASED/$_APP_NAME/$_APP_NAME-$rev_num
-fi
-
-# Copy files over to install directory
-_INSTALLD="$_BASED/$_APP_NAME/$_APP_NAME-$rev_num"
-
-if [[ $_APP_NAME = "wspr" ]]
-then
-	cd "$_APP_SRC"
-	cp -rv doc/ save/ WsprMod/ "$_INSTALLD"/
-	cp -rv ./fcal ./fmeasure ./fmt ./fmtave \
-	./wspr0 ./wsprcode ./gocal ./hamlib_rig* \
-	./Pmw*.py ./setup.py ./tkrep.py ./user_hardware.py \
-	./wspr.py "$_INSTALLD"
+	# Run Autoconf to generate configure script
 	echo
-	echo ".. Done"
-
-elif [[ $_APP_NAME = "wsjt" ]]
-then
-	echo " ( $_APP_NAME ) is still under construction"
-	echo "Under Conscruction"
-	read -p "Press [ Enter ] to continue"
-	exit 0	
-else
-	echo "Unknown application, exiting build script"
-	echo
-	read -p "Press [ Enter ] to continue"
-	exit 1
-fi
-
-# Create wspr run script
-echo
-echo "------------------------------------------------"
-echo "Creating ( $_APP_NAME ) run script"
-echo "------------------------------------------------"
-cd $_BASED/$_APP_NAME/$_APP_NAME-$rev_num
-
-cat << EOF > ./$_APP_NAME.sh
-#!/usr/bin/env bash
-
-# Part of the JTSDK-NIX Project
-# Usage:  ./$_APP_NAME.sh
-
-# EXIT IF ERRORS
-set -e
-
-# Change Directory to 
-env PYTHONPATH=$(exec pwd) python3 -O ./wspr.py
-
-EOF
-
-if [[ -f $_APP_NAME.sh ]]
-then 
-	chmod +x $_APP_NAME.sh
+	echo "------------------------------------------------"
+	echo "Running ( autoconf ) to generate configure"
+	echo "------------------------------------------------"
+	sleep 1
+	./autogen.sh
 	echo
 	echo ".. Done"
 else
-	echo "Failed to create ( $_APP_NAME.sh )"
-	echo "Check Build log for details"
 	echo
-	echo "Build Log ....: $_LOGS/$_APP_NAME-build.log"
+	echo "------------------------------------------------"
+	echo " Autotools Error"
+	echo "------------------------------------------------"
+	echo
+	echo "Cannot find configure.ac"
+	echo "Check $_LOGS/$_APP_NAME-build.log"
 	echo
 	exit 1
 fi
 
-# Finished, display user message
-cd $_BASED
-echo
-echo "------------------------------------------------"
-echo "Finished Building ( $_APP_NAME-$rev_num )"
-echo "------------------------------------------------"
-echo
-echo "Location .....: $_BASED/$_APP_NAME/$_APP_NAME-$rev_num"
-echo "Build Log ....: $_LOGS/$_APP_NAME-build.log"
-echo
-echo "TO-RUN, TYPE..: cd $_BASED/$_APP_NAME/$_APP_NAME-$rev_num"
-echo "THEN, TYPE ...: ./wspr.sh"
+if [[ $? = "0" ]]; then
+	# Run Makefile
+	echo
+	echo "------------------------------------------------"
+	echo "Running make for all targets"
+	echo "------------------------------------------------"
+	make
+else
+	echo
+	echo "------------------------------------------------"
+	echo " Error Running Autoconf"
+	echo "------------------------------------------------"
+	echo
+	echo "An Error occured creating the Makefile"
+	echo "Check VBuild Log: $_LOGS/$_APP_NAME-build.log"
+	echo
+	break
+fi
+
+# Yy / Nn answer to update from svn	
+while [ 1 ]
+do
+	echo
+	read -p "Do you want to install $_APP_NAME ? [ Y/N ]: " yn
+	case $yn in
+	[Yy]* )
+		sudo make install
+		# Finished, display user message
+		cd $_BASED
+		echo "..Location ....: /home/$USER/.$_APP_NAME"
+		echo "..Build Log ...: $_LOGS/$_APP_NAME-build.log"
+		echo
+		echo "To Uniinstall $_APP_NAME"
+		echo "cd /home/$USER/.$_APP_NAME"
+		echo "sudo make uninstall"
+		echo
+		read -p "Press [Enter] to continue .."
+		break ;;
+	[Nn]* )
+		break ;;
+	* )
+		clear
+		echo "Please use "Y" yes or "N" No."
+	;;
+	esac
+done
 echo 
 echo
 ) 2>&1 | tee -a $_LOGS/$_APP_NAME-build.log
-
-read -p "Press [Enter] to continue .."
-
 
 } # end python_nix
 

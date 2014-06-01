@@ -99,9 +99,9 @@ if [[ $MMSELECT = "A" ]]; then
 
 # WSPR w/Python3
 elif [[ $MMSELECT = "B" ]]; then
-#	_APP_NAME=wspr
-#	_APP_SRC="$_SRCD/wspr"
-	under_development
+	_APP_NAME=wspr
+	_APP_SRC="$_SRCD/wspr"
+	python_nix
 	continue
 
 # WSJT-X w/CMake
