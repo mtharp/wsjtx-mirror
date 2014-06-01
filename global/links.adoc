@@ -25,6 +25,7 @@ Edit files as needed
 :dev_guide: http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjt-dev-guide.html[Dev-Guide]
 :devsvn1: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/[Devel-SVN]
 :devsvn: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/[wsjt-svn]
+:dimension4: http://www.thinkman.com/dimension4/[Dimension4]
 :download: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[Download Page]
 :dxatlas: http://www.dxatlas.com/[Afreet Software, Inc.]
 :dxlcommander: http://www.dxlabsuite.com/commander/[ Commander ]

@@ -72,7 +72,7 @@ include::iqsetup.adoc[]
 include::advanced-setup.adoc[]
 
 [[SPECIALMESSAGES]]
-== Special Message Formats
+== Special MSG Formats
 include::special-messages.adoc[]
 
 [[BANDHOPPING]]
@@ -87,24 +87,28 @@ include::wspr-cli.adoc[]
 == WSPR Net
 include::wspr-net.adoc[]
 
+// Appendix-A
 [appendix]
 [[CONVERSION]]
 Conversion Tables
 -----------------
 include::conversion-tables.adoc[]
 
+// Appendix-B
 [appendix]
 [[PROTOCOL]]
 WSPR Protocol Specs
 -------------------
 include::wspr-protocol-specs.adoc[]
 
+// Appendix-C
 [appendix]
 [[FREQCAL]]
-Frequency Caliubration
+Frequency Calibration
 ----------------------
 include::freq-calibration.adoc[]
 
+// Appendic-D
 [appendix]
 [[TROUBLESHOOTING]]
 == Troubleshooting

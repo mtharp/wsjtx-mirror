@@ -1,1 +1,39 @@
-Under Development
+// Insert station parameter Image here
+
+[[PARAMETERS]]
+The *Station parameters* dialog can be called from the *Setup* menu or by typing
+*F2*. Compound callsigns such as PJ4/K1ABC, W7/VE3DEF, and even WA2XYZ/37 are 
+permitted but should be used only when necessary.  Doubly compounded callsigns
+such as PJ4/K1ABC/P are not supported.  (See <<PROTOCOL,Appendix B>> forfurther
+details on message structure.)  As illustrated in the example at left, it is
+permissible to use one serial port for T/R switching (via the DTR or RTS line)
+and a second  serial port for CAT control of the radio’s dial frequency. Consult
+the operators manual for your radio to determine correct parameters for CAT 
+control, including *Serial rate, Data bits, Stop bits*, and *Handshake* method.
+With the exception of callsign and grid locator, it is generally best to use
+values from the drop-down lists rather than typing parameters from the keyboard.
+
+=== Reciever Control
+
+[[RCVRCONTROL]]
+For best performance the background noise level going into the computer should
+be set to show approximately 0 dB on the _{prog}_ status bar.  Deviations as large
+as ±20 dB from the nominal 0 dB level will not affect _{prog}_ decoding capability
+significantly.  The idea is to have the baseline noise level high enough for
+quantization noise to be negligible, but low enough to give adequate dynamic
+range. Signal levels reported for each _{prog}_ decodes are the measured ratio of
+signal power to average noise power, scaled to a reference bandwidth of 2500 Hz.
+Within broad limits, this ratio is independent of the measured Rx noise level
+
+Under most conditions a receiver bandwidth normal for voice SSB communication,
+say 2.4 kHz, is a good choice.   Narrower bandwidths are perfectly acceptable if
+you have problems with strong signals well outside the 200 Hz _{prog}_ passband. 
+There is no particular advantage in using a bandwidth as small as 200 Hz, 
+however, since _{prog}_ does all necessary narrow-band filtering in software.
+
+Usually it is not critical whether AGC is on or off.  A good default procedure
+is to leave it on, and set the desired audio level by reducing the RF gain. In
+effect this means that AGC will be activated only when very strong signals are
+present in the passband.  [red]*Slow-recovery AGC* settings are generally
+[red]*not desirable* for _{prog}_.
+
