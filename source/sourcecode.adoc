@@ -35,17 +35,17 @@ checkout wsjt
 
 You can also manually check-out +*WSJT*+, using
 -----
-svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk
+svn co https://svn.code.sf.net/p/wsjt/wsjt/trunk
 -----
 
 .Anonymous Source Code Locations:
 [horizontal]
-+*DOCS*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc
-+*WSJT*+:: svn://svn.code.sf.net/p/wsjt/wsjt/trunk
-+*WSJT-X*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
-+*WSPR*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-+*WSPR-X*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
-+*MAP65*+:: svn://svn.code.sf.net/p/wsjt/wsjt/branches/map65
++*DOCS*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/doc
++*WSJT*+:: https://svn.code.sf.net/p/wsjt/wsjt/trunk
++*WSJT-X*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
++*WSPR*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
++*WSPR-X*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
++*MAP65*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/map65
 
 //
 
@@ -59,7 +59,7 @@ In order to use the developer check-out or check-in process
 Then, using +*WSJT*+ as the example:
 
 ---------
-svn co svn+ssh://USER@svn.code.sf.net/p/wsjt/wsjt/trunk 
+svn co https://user@svn.code.sf.net/p/wsjt/wsjt/trunk 
 ---------
 
 Substitute your SourceForge username for +USER+.
@@ -70,9 +70,9 @@ not feasible, and must be manually entered.
 .Developer Checkout Locations:
 
 [horizontal]
-+*DOCS*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/doc
-+*WSJT*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/trunk
-+*WSJT-X*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
-+*WSPR*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-+*WSPR-X*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
-+*MAP65*+:: https://USER@svn.code.sf.net/p/wsjt/wsjt/branches/map65
++*DOCS*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/doc
++*WSJT*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/trunk
++*WSJT-X*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
++*WSPR*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
++*WSPR-X*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
++*MAP65*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/map65

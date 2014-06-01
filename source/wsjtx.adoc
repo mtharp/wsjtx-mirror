@@ -111,13 +111,15 @@ latest from {dxatlas}
 .COMPILE WSJT-X
 
 * Open Windows CMD terminal, at the prompt, type,:
+
 ----
 C:\JTSDK-QT\jtsdk-qtenv.bat
 ----
+
 * You should be presented with <<QTMENU,Figure-3>>
 * At the Prompt, type,:
-----
 
+-----
 *For Debug*
 
 build wsjtx
@@ -127,8 +129,8 @@ build wsjtx
 build wsjtx -r
 
 Note the ( -r for Release )
+-----
 
-----
 * If you have not checked out _WSJT-X_ previously, you will be prompted
 to do so:
 
@@ -136,8 +138,8 @@ to do so:
 image::images/jtsdk-wsjtx-co.png[]
 
 * Follow the prompts, Anonymous or Developer, then type,:
------
 
+-----
 *For Debug*
 
 build wsjtx
@@ -147,7 +149,6 @@ build wsjtx
 build wsjtx -r
 
 Note the ( -r for Release )
-
 -----
 
 TIP: If this is a subsequent build, you will be asked to update from SVN.
@@ -172,7 +173,10 @@ C:\JTSDK-QT\wsjtx\install\Debug\bin
 
 * Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
 
+
+/////
 === Linux Builds
+Under Develipment
 
 Currently, there are two build methods for _WSJT-X_ on Linux:
 
@@ -322,3 +326,4 @@ KVASD version 1.11
 ./kvasd
 
 ----------
+/////
