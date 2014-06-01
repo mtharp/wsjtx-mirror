@@ -1,8 +1,14 @@
 
 Current Development Version: WSPR-4.0
 
+2014-05-01 commit r4162 Greg Beam <ki7mt@yahoo.com>
 
-2014-04-31 (2) commit r4161 Greg Beam <ki7mt@yahoo.com>
+* Update safe arm6v CFLAGS
+* Flags tested with remote users
+* Remove -m64, was an oversite leaving it in.
+* Fix month num in change log.
+
+2014-05-31 (2) commit r4161 Greg Beam <ki7mt@yahoo.com>
 
 * Restored to original, removed tests.
 * Debian build system warns about unused symbols, UBuntu 
@@ -13,7 +19,7 @@ Current Development Version: WSPR-4.0
   and saucy 32/64
 * The messages from Debian build server are just notifications.
 
-2014-04-31 (1) commit r4161 Greg Beam <ki7mt@yahoo.com>
+2014-05-31 (1) commit r4161 Greg Beam <ki7mt@yahoo.com>
 
 * More flag updates for configure.ac and Makfile.in
 * Previous commits added limited support for armv6 (RaspberryPi) based
@@ -27,30 +33,30 @@ Current Development Version: WSPR-4.0
 * Removed the stub target as we need fflags for Mac anyway
   so wanrings of unused vars is back but, they are not hurting anything.
 
-2014-04-28 commit r4155 Greg Beam <ki7mt@yahoo.com>
+2014-05-28 commit r4155 Greg Beam <ki7mt@yahoo.com>
 
 * Added FFLAGS to direct call targets
 * Update Mac FFLAGS for -m64
 * Added armv6 CFLAGS and FFLAGS
 * Edited gocal script, removed the ./
 
-2014-04-28 commit r4155 Greg Beam <ki7mt@yahoo.com>
+2014-05-28 commit r4155 Greg Beam <ki7mt@yahoo.com>
 
 * Update wspr-dist.sh for Mac and other distros
 * Added files to copy section.
 
-2014-04-27 commit r4154 Greg Beam <ki7mt@yahoo.com>
+2014-05-27 commit r4154 Greg Beam <ki7mt@yahoo.com>
 
 * Update wspr manpage
 * fix -x permissions on gocal and fcal.f90
 * remove wsjt.ico from wspr-manifest.in
 
-2014-04-26 commit r4153 Greg Beam <ki7mt@yahoo.com>
+2014-05-26 commit r4153 Greg Beam <ki7mt@yahoo.com>
 
 * Add manpage for wsprcode
 
 
-2014-04-26 commit r4152 Greg Beam <ki7mt@yahoo.com>
+2014-05-26 commit r4152 Greg Beam <ki7mt@yahoo.com>
 
 * Fix permission issues using ln -s
 * Update the user install script
@@ -64,7 +70,7 @@ TO-DO
 * Fix wspr.py so it uses *Nix xbm or png when running on *Nix v.s. wsjt.ico
 
 
-2014-04-25 commit r4151 Greg Beam <ki7mt@yahoo.com>
+2014-05-25 commit r4151 Greg Beam <ki7mt@yahoo.com>
 
 * Updated install / uninstall
 * All binaries are now in /usr/bin
@@ -82,7 +88,7 @@ To build and run:
   wspr
 
 
-2014-04-24 commit r4150 Greg Beam <ki7mt@yahoo.com>
+2014-05-24 commit r4150 Greg Beam <ki7mt@yahoo.com>
 
 * Update Makefile.in for fmtest.f90 changes
 * Edit Makefile.in and remove configure & Makefile
@@ -103,7 +109,7 @@ TO-DO:
 * Add runtime wspr.sh script to copy files to $HOME/.wspr
 
 
-2014-04-17 commit r4147 Greg Beam <ki7mt@yahoo.com>
+2014-05-17 commit r4147 Greg Beam <ki7mt@yahoo.com>
 
 * minor configure.ac updates
 * minor update to Makefile.in
@@ -111,7 +117,7 @@ TO-DO:
   a doc & manpage directory
 
 
-2014-04-17 commit r4146 Greg Beam <ki7mt@yahoo.com>
+2014-05-17 commit r4146 Greg Beam <ki7mt@yahoo.com>
 
 * Fixed typo's in configure.ac + minor edits
 * Minor edits & updates to wspr-dist.sh
@@ -134,7 +140,7 @@ TO-DO:
   building the tar.gz file, just in case something slips by.
   
   
-2014-04-17 commit r4145 Greg Beam <ki7mt@yahoo.com>
+2014-05-17 commit r4145 Greg Beam <ki7mt@yahoo.com>
 
 * Simplify the header and lib checks
 * Consolidate configure.ac and aclocal.m4
@@ -155,7 +161,7 @@ Example:
 ./configure --with-python3='/usr/local/bin/python3' --with-f2py='/opt/bin/f2py'
 
 
-2014-04-15 commit r4144 Greg Beam <ki7mt@yahoo.com>
+2014-05-15 commit r4144 Greg Beam <ki7mt@yahoo.com>
 
 * Updated Makefile.in, moved flag options to configure.ac based $host_os 
   to where they should be, rather than in the Makefile.
@@ -163,20 +169,20 @@ Example:
 * Moved LDFLAG update to after libs & header check
 * Sort Unique LDFLAG paths, remove duplicates
 
-2014-04-14 commit r4142 Joe Taylor <joe@princeton.edu>
+2014-05-14 commit r4142 Joe Taylor <joe@princeton.edu>
 
 * Fixed -pthread issue with wspr0 thnix_stub file.
 * Added compile w/out -Wall for thnix_stub to prevent
   warning messages during build.
 
 
-2014-04-14 (2) Greg Beam <ki7mt@yahoo.com>
+2014-05-14 (2) Greg Beam <ki7mt@yahoo.com>
 
 * Generate Makefile, even though configure fails.
 * Add indicators as to what failed in Make Summary.
 
 
-2014-04-14 (1) Greg Beam <ki7mt@yahoo.com>
+2014-05-14 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Added WSJT site info to makefile.in & configure.ac
 * Added additional LDFLAG locations if found. This
@@ -185,7 +191,7 @@ Example:
   causing issues finding Libs.
 
 
-2014-04-13 (3) Greg Beam <ki7mt@yahoo.com>
+2014-05-13 (3) Greg Beam <ki7mt@yahoo.com>
 
 * change makefile in, yet again, to try an resolve ${MVSO}
   as w*.so does not work. w.*.so is ok, as is w.so for Mac.
@@ -194,7 +200,7 @@ Example:
 * Updated INSTALL.TXT
 
 
-2014-04-13 (2) Greg Beam <ki7mt@yahoo.com>
+2014-05-13 (2) Greg Beam <ki7mt@yahoo.com>
 
 * Updated Makefile.in based on feedback from Chuck WA7KGX
   regaurding ${MV} := w*.so v.s. w.*.so
@@ -204,14 +210,14 @@ Example:
 * Updated autogen.sh for additional checks
 
 
-2014-04-13 (1) Greg Beam <ki7mt@yahoo.com>
+2014-05-13 (1) Greg Beam <ki7mt@yahoo.com>
 
 * fix a potential issue with Makefile.in FC v.s.FCV
 * Add wspr-dist.sh script to build tar.gz file
 * add manifest file for use wiht wspr-dist.sh
 
 
-2014-04-12 Greg Beam <ki7mt@yahoo.com>
+2014-05-12 Greg Beam <ki7mt@yahoo.com>
 
 * Added simplle install / uninstall targets
 * Users should *NOT* install to /usr/local because
@@ -245,21 +251,21 @@ Example:
   Makefile as ${PREFIX}
 
 
-2014-04-11 (2) Greg Beam <ki7mt@yahoo.com>
+2014-05-11 (2) Greg Beam <ki7mt@yahoo.com>
 
 * General edits, typo's etc.
 * Corrected message error logic
 * Built and tested WSPR, FMT, WSPR0, all run well.
 
 
-2014-04-11 (1) Greg Beam <ki7mt@yahoo.com>
+2014-05-11 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Added Python3 macro to aclocal.m4
 * added F2PY macro to aclocal.m4
 * other smalle test edits.
 
 
-2014-04-11 Greg Beam <ki7mt@yahoo.com>
+2014-05-11 Greg Beam <ki7mt@yahoo.com>
 
 * removed g95 checks as they're no longer needed
 * added basic gfortran check to aclocal.m4
@@ -267,19 +273,19 @@ Example:
 * fixed typo's 
 
 
-2014-04-10 Greg Beam <ki7mt@yahoo.com>
+2014-05-10 Greg Beam <ki7mt@yahoo.com>
 
 * cleanup pthread_mutex warnings
 * add -pthread to Makefile.in and configure.ac
 * make sure idef for windows was in place
 
-2014-04-09 Greg Beam <ki7mt@yahoo.com>
+2014-05-09 Greg Beam <ki7mt@yahoo.com>
 
 * Fix type in configure.ac
 * Added some updates to man pages
 
 
-2014-04-07 Greg Beam <ki7mt@yahoo.com>
+2014-05-07 Greg Beam <ki7mt@yahoo.com>
 
 * Cleaned up paramater expansion
 * Removed fftw.h search, header file not used
@@ -288,7 +294,7 @@ Example:
 * minor edits to INSTALL.txt
 
 
-2014-04-07 Greg Beam <ki7mt@yahoo.com>
+2014-05-07 Greg Beam <ki7mt@yahoo.com>
 
 * Added autogen.sh
 * Removed config file as autoconf -i generates it
@@ -297,7 +303,7 @@ Example:
 * Updated man pages
 
 
-2014-04-06 (2) Greg Beam <ki7mt@yahoo.com>
+2014-05-06 (2) Greg Beam <ki7mt@yahoo.com>
 
 * Moved FFTW3 and Samplerate functions to aclocal.m4
 * Added independent LDFLAG addidtions for each libreary
@@ -309,7 +315,7 @@ Example:
 	./configure
 	./make
 
-2014-04-06 (1) Greg Beam <ki7mt@yahoo.com>
+2014-05-06 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Added WSPR0 Manpage
 * Updated WSPR manpage, now builds with AsciiDoc
@@ -317,14 +323,14 @@ Example:
 * Added both compiled Manpages to SVN + WSPR0 Source File
 * WSPR0 transfer from text file needs verification / review
 
-2014-04-05 (2) Greg Beam <ki7mt@yahoo.com>
+2014-05-05 (2) Greg Beam <ki7mt@yahoo.com>
 
 * added conditional LDFLAGS to configure.ac
 * updated the audio message
 * added @LDFLAGS@ to makefile.in as it was missing.
 * minor text edits here and there
 
-2014-04-05 (1) Greg Beam <ki7mt@yahoo.com>
+2014-05-05 (1) Greg Beam <ki7mt@yahoo.com>
 
 * Removed AX_ISC_POSIX, was for obsolete hardware
 * Combined Makefile.in ieq statments
@@ -332,7 +338,7 @@ Example:
 * Removed duplicate flags from Makefile.in
 
 
-2014-04-04 (2)  Greg Beam <ki7mt@yahoo.com>
+2014-05-04 (2)  Greg Beam <ki7mt@yahoo.com>
 
 * ran autoscan and updated configure.ac
 * Added FFTW AC_CHECK_LIB
@@ -345,7 +351,7 @@ Example:
 * Built and ran from clean build, no errors, only a few unused var warnings.
 
 
-2014-04-04 (1)  Greg Beam <ki7mt@yahoo.com>
+2014-05-04 (1)  Greg Beam <ki7mt@yahoo.com>
 
 * Updated aclocal.m4 to search alternative for portaudio paths.
 * Removed alternative path search from configure.ac
@@ -353,7 +359,7 @@ Example:
 * Minor Makefile.in edits
 
 
-2014-04-03  Greg Beam <ki7mt@yahoo.com>
+2014-05-03  Greg Beam <ki7mt@yahoo.com>
 
 * Added John's (G4KLA) Mac Install notes to INSTALL
 * Moved Makefile.CVF to /archive (its using Python2.3)
@@ -368,7 +374,7 @@ Example:
 * Trying a fix for w.-cpython-3*.so changed to ${MV} w.*.so WsprMod/w.so
 
 
-2014-04-02  Greg Beam <ki7mt@yahoo.com>
+2014-05-02  Greg Beam <ki7mt@yahoo.com>
 
 * Updated wspr.py copyright dates (2008-2014)
 * Updated Project Source URL's
