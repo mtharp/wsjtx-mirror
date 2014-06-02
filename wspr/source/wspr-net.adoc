@@ -1,1 +1,12 @@
-Under Development
+To access the features of WSPRnet, point your browser to {wsprnet}. This 
+excellent site is designed and maintained by *Bruce Walker, W1BW*.  It provides
+a chat facility, band-by-band counts of stations reporting WSPR spots 
+(or reported by others) in the past ten minutes, a world-wide map showing active
+_{prog}_ stations and propagation paths, an interface to the historical database,
+and statistical summaries derived from the data.  The map can be zoomed and
+panned, and you can set various criteria to determine which spots are shown.
+An example of the world-wide map is shown below, and the {wsprnet} home screen
+on the next page.
+
+*INSERT WSPRNET IMAGE HERE*
+

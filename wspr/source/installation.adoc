@@ -20,7 +20,7 @@ instructions {nh6z}.
 [[INSTALL_UBU]]
 === Linux
 
-* For Ubuntu and other recent 32/64 bit Dbian-based systems, you can download
+* For Ubuntu and other recent 32/64 bit Debian-based systems, you can download
 an installation file from another link on the {wspr}. To install and execute
 _WSPR_, put the downloaded file in your home directory and execute the following
 commands from a command-prompt window, if necessary substituting the correct

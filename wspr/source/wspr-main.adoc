@@ -72,12 +72,16 @@ include::iqsetup.adoc[]
 include::advanced-setup.adoc[]
 
 [[SPECIALMESSAGES]]
-== Special MSG Formats
+== Special MSG Format
 include::special-messages.adoc[]
 
 [[BANDHOPPING]]
 == Band Hopping
 include::band-hopping.adoc[]
+
+[[MODE15]]
+== WSPR-15 Mode
+include::wspr15-mode.adoc[]
 
 [[WSPRCLI]]
 == WSPR Command Line
@@ -87,25 +91,23 @@ include::wspr-cli.adoc[]
 == WSPR Net
 include::wspr-net.adoc[]
 
+:numbered!:
 // Appendix-A
 [appendix]
 [[CONVERSION]]
-Conversion Tables
------------------
+== Conversions
 include::conversion-tables.adoc[]
 
 // Appendix-B
 [appendix]
 [[PROTOCOL]]
-WSPR Protocol Specs
--------------------
+== Protocol Specs
 include::wspr-protocol-specs.adoc[]
 
 // Appendix-C
 [appendix]
 [[FREQCAL]]
-Frequency Calibration
-----------------------
+== Freq Cal
 include::freq-calibration.adoc[]
 
 // Appendic-D
@@ -114,13 +116,11 @@ include::freq-calibration.adoc[]
 == Troubleshooting
 include::faq.adoc[]
 
-:numbered!:
 [[ACK]]
 == Acknowledgements
 include::acknowledgements.adoc[]
 
 [[LICENSE]]
-License
--------
+== License
 include::../../global/license.adoc[]
 

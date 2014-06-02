@@ -1,1 +1,131 @@
-Under Development
+The digital frequency readouts of modern synthesized radios depend on a master
+oscillator for their accuracy.  If the frequency of this oscillator is off by
+even a few parts per million (ppm), it can significantly degrade the accuracy
+of your _{prog}_ spots and transmitting frequencies.  _{prog}_ 4.0 has built-in
+facilities that can help you measure and enable calibration constants for your
+radio, all done with software.
+
+.Quick two-frequency calibration procedure
+The following procedure should work for most modern radios.  You will need 
+access to two signals of known frequency — ideally one at a low frequency, say
+3 MHz or less, and one at least several times higher.  Good choices in North 
+America would be WWV at 2.5 and 10 MHz, as illustrated below.  In other parts 
+of the world you can probably still access WWV at 10 MHz, and for a low frequency
+you could use a standard AM broadcast station.  Many other choices are possible,
+of course.
+
+. Put receiver in USB mode with RIT off, dial frequency f~1~ = 2.500 MHz 
+(or whatever the known station frequency may be).  The receiver should be 
+thoroughly warmed up.
+. Turn on RIT, set it to –1500 Hz
+. With _{prog}_ running in *Idle* mode, click *Measure an audio frequency* on the
+<<ADVSETUP,Advanced>> dialog screen.
+. Subtract 1500 Hz from the measured audio frequency reported by _{prog}_ in the
+console window, and record the result as dial error d1.
+. Repeat steps 1–4 for a second standard-frequency station. You should now have
+two pairs of numbers: (f~1~, d~1~) and (f~2~, d~2~).  Note that f~1~, f~2~ are
+in MHz but d~1~, d~2~ are in Hz.
+. Now solve the following pair of simultaneous linear equations (which you
+learned how to do when in high school):
+** d1 = A {plus} B f~1~
+** d2 = A {plus} B f~2~
+
+ The desired calibration constants are given by
+
+** B = (d~2~ - d~1~) / (f~2~ - f~1~)
+** A = d~1~ - B f~1~
+
+ Example with numbers:
+ The audio frequency measurements with my TS-2000 were 1505.49 Hz on the 2.5 MHz
+ WWV signal, and 1515.01 Hz on the 10 MHz signal, thus:
+
+** f~1~ = 2.5
+** d~1~ = 1505.49 – 1500 = 5.49
+** f~2~ = 10.0
+** d~2~ = 1515.01 – 1500 = 15.01
+
+ These values yield the results:
+
+** B = (15.01 – 5.49) / (10.0 – 2.5) = 1.269 ppm
+** A = d~1~ – B f~1~ = 2.32 Hz
+
+. Alternatively, A and B can be calculated by using the fcal program (see the 
+following section “More thorough calibration".
+
+. When satisfied that your results are repeatable and reliable, enter the 
+computed values of *A* and *B* in then <<ADVSETUP,Advanced dialog>>.
+
+.More thorough calibration
+The figure reproduced below illustrates the results of about an hour’s work with
+my Kenwood TS-2000.  I made measurements as described in steps 1–4 above, and 
+repeated them for 68 different stations.  The first 8 of these were the 
+standard-frequency broadcasts of WWV (US) at 2.500, 5.000, 10.000, 15.000, and
+20.000 MHz and CHU (Canada) at 3.330, 7.850, and 14.670 MHz.  These measurements
+are plotted as filled circles in the graph.  It’s easy to see that measurements
+of the eight standard-frequency signals make an extremely good fit to a straight
+line.
+
+[[DIALEROR]]
+.Straight Line Fit
+image::images/dial-error.png[align="left"]
+
+The remaining measurements were made for standard AM and shortwave broadcast
+stations, chosen more or less at random.  In North America, assigned frequencies
+of AM broadcast stations are integer multiples of 10 kHz.  Most shortwave 
+broadcast stations also follow this pattern, although some are at odd integer
+multiples of 5 kHz.  Useful stations are those that give measured audio frequencies
+close to 1500 Hz when the radio dial is set at the appropriate round number and
+RIT is set at –1500 Hz.  Measurements for the 60 broadcast stations are plotted
+as small crosses in the figure.  By my measurements, about two-thirds of the 
+broadcast stations are within 1 Hz of their assigned frequency (a few are off by
+as much as 5–10 Hz).  By rejecting the more discrepant measurements, you could
+calibrate reasonably well by using these or a similar group of broadcast stations.
+
+
+A simple command-line program fcal is included with your _{prog}_ installation. An
+example data file containing my own measurements of WWV and CHU is also included
+as the file fcal.dat.  If you are comfortable running computer programs from the
+command line, open a Command Prompt window, change to the _{prog}_ installation 
+directory, and type the command “fcal fcal.dat”.  The results should look like
+this:
+
+-----
+C:\Radio\WSPR> fcal fcal.dat
+    Freq      DF     Meas Freq     Resid  Call
+   (MHz)     (Hz)      (MHz)        (Hz)
+==============================================
+   2.500    5.490   2.500005490    0.102
+   3.330    6.410   3.330006410   -0.048
+   5.000    8.610   5.000008610    0.000
+   7.850   12.270   7.850012270   -0.012
+  10.000   15.010  10.000015010   -0.042
+  14.670   21.060  14.670021060   -0.009
+  15.000   21.420  15.000021420   -0.074
+  20.000   28.020  20.000028020    0.083
+
+A:    2.17 Hz    B:   1.2885 ppm    StdDev:  0.067 Hz
+err:  0.05            0.0040
+-----
+
+Parameter A (measured in Hz) is the intercept of the best-fit straight line
+with the y-axis; B is the slope of the line, measured in parts per million.
+These results show that for my TS‑2000 the best-fit calibration constants are 
+A=2.17 ± 0.05 Hz and B = 1.289 ± 0.004 ppm.  The standard deviation of the 
+measurements about the fitted line is less than 0.1 Hz, which shows that the 
+measurements are very good and a linear correction to the radio’s dial frequency
+should be reliable.
+
+You can use the file fcal.dat as a guide for preparing a file with your own
+calibration measurements.  To obtain values for *A* and *B*, use your file name as
+a command-line argument to program fcal, for example:
+
+ C:\Program Files\WSPR> fcal mycal.dat
+ 
+Click the button labeled *Read A and B from fcal.out* to transfer the fitted
+values to the entry fields for *A* and *B*.
+ 
+ 
+ 
+
+
+

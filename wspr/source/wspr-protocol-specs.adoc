@@ -1,1 +1,133 @@
-Under Development
+* Standard message: callsign {plus} 4-digit locator {plus} dBm 
+
+  K1ABC FN20 37
+
+* Messages with a compound callsign and/or 6-digit locator use a 
+two-transmission sequence.  The first transmission carries compound callsign
+and power level, or standard callsign, 4-digit locator, and power level; 
+the second transmission carries a hashed callsign, 6-digit locator, and power
+level, for example:
+
+ PJ4/K1ABC 37           K1ABC FN42 37
+ <PJ4/K1ABC> FK52UD 37  <K1ABC> FN42AX 37
+
+* Add-on prefixes can be up to three alphanumeric characters; add-on suffixes
+can be a single letter or one or two digits.
+
+* Standard message components after lossless compression:
+
+ 28 bits for callsign, 15 for locator, 7 for power level, 50 bits total.
+ 
+TIP: Further details are contained in the source code, available at {devsvn}
+
+* Forward error correction (FEC): convolutional code with constraint length
+K=32, rate r=1/2.
+
+* Number of binary channel symbols: nsym = (50+K-1)2 = 162.
+
+  Keying rate: WSPR-2, 12000/8192 = 1.4648 baud
+               WSPR-15, 12000/65536 = 0.1831 baud. 
+
+* Modulation: continuous phase 4-FSK, tone separation 1.4648 Hz (WSPR-2) or
+0.1831 Hz (WSPR-15).
+
+* Occupied bandwidth: about 6 Hz (WSPR-2), 0.73 Hz (WSPR-15)
+
+* Synchronization: 162-bit pseudo-random sync vector. 
+
+* Data structure: each channel symbol conveys one sync bit (LSB) and one data bit (MSB). 
+
+* Duration of transmission:
+
+ 162 8192/12000 = 110.6s (WSPR-2)
+ 162 65536/12000 = 884.7 s (WSPR-15)
+ 
+* Transmissions nominally start one second into an even UTC minute, ie:
+ 
+ hh:00:01, hh:02:01 … (WSPR-2) or one second into an even quarter-hour
+ hh:00:01, hh:15:01 … (WSPR-15).
+
+* Minimum S/N for reception: around –28 dB on the WSJT scale (2500 Hz reference
+bandwidth) for (WSPR-2), –37 dB for (WSPR-15).
+
+.Further details on the structure of WSPR Messages
+At the user level, _{prog}_ messages can have one of three possible formats 
+illustrated by the following examples:
+
+ Type 1:  K1ABC FN42 37
+ Type 2:  PJ4/K1ABC 37
+ Type 3:  <PJ4/K1ABC> FK52UD 37
+
+*Type 1* messages contain a standard callsign, a 4-character Maidenhead grid 
+locator, and power level in dBm.  Power levels will be rounded so as to fall in
+the sequence 0, 3, 7, 10, 13, …, 60.  Type 2 messages omit the grid locator but
+include a compound callsign, while type 3 messages replace the callsign with a
+15-bit hash code and include a 6-character locator as well as the power level. 
+Lossless compression techniques squeeze all three message types into exactly 50
+bits of user information.  Standard callsigns require 28 bits and 4-character
+grid locators 15 bits.  In Type 1 messages, the remaining 7 bits convey the power
+level.  In message types 2 and 3 these 7 bits convey power level (in the 
+restricted range 0 to 60 dBm) along with an extension or re-definition of the 
+fields normally used for callsign and locator.  Together, these compression 
+techniques amount to “source encoding” the user message into the smallest possible
+number of bits.
+
+After source encoding, redundancy is added in the form of a strong error 
+correcting code (ECC). _{prog}_ uses a convolutional code with constraint 
+length K=32 and rate r=1/2. The convolution procedure extends the 50 user 
+bits into a total of (50 {plus} K – 1) × 2 = 162 one-bit symbols. Interleaving
+is applied to scramble the order of these symbols, thereby minimizing the effect
+of short bursts of errors in reception that might be caused by QSB, QRM, or QRN.
+The data symbols are combined with an equal number of synchronizing symbols, a
+pseudo-random pattern of 0’s and 1’s.  The 2-bit combination for each symbol is
+the quantity that determines which of four possible tones to transmit in any 
+particular symbol interval.  Data information is taken as the most significant
+bit, sync information the least significant.  Thus, on a 0 – 3 scale, the tone 
+for a given symbol is twice the value (0 or 1) of the data bit, plus the sync bit.
+
+Some arbitrary choices define further details of message packing and the 
+ordering of channel symbols.  These choices are best described with actual 
+examples, and by referring to the source code.  To make it easy for others to 
+implement the _{prog}_ protocol, a Fortran program has been written to illustrate 
+the encoding and decoding procedure and provide examples of each stage in the 
+process.  A compiled version of this program for Windows is available at 
+{wspr_code}, and full source code can be found in the WSJT repository.
+An example of program invocation and output for the message “K1ABC FN42 37” is
+shown on the next page. A _{prog}_ transmitter should generate frequencies
+corresponding to the numbers given for channel  symbols, where 0 is the lowest
+frequency tone and 3 the highest.
+
+.WSPRcode Example:
+-----
+C:\wspr> WSPRcode "K1ABC FN42 37"
+Message: K1ABC FN42 37
+
+Source-encoded message (50 bits, hex): F7 0C 23 8B 0D 19 40
+
+Data symbols:
+      1 1 0 0 1 0 0 0 0 0 1 0 0 1 0 1 1 1 0 0 0 1 1 1 0 1 1 1 1 0
+      1 0 0 0 1 1 0 0 1 1 1 1 0 0 1 1 1 1 0 0 0 1 1 1 1 0 0 1 1 0
+      1 1 0 1 1 1 0 1 1 0 1 0 1 0 0 1 0 0 1 0 1 0 1 1 0 1 1 0 0 1
+      1 1 1 0 1 1 1 0 1 0 1 0 1 0 0 0 1 1 0 1 0 0 0 1 1 1 0 1 1 0
+      1 0 1 1 1 0 1 1 1 0 0 0 0 0 0 1 1 0 0 1 1 1 1 1 1 0 1 1 1 1
+      1 1 1 1 1 0 0 1 0 1 1 1
+
+Sync symbols:
+      1 1 0 0 0 0 0 0 1 0 0 0 1 1 1 0 0 0 1 0 0 1 0 1 1 1 1 0 0 0
+      0 0 0 0 1 0 0 1 0 1 0 0 0 0 0 0 1 0 1 1 0 0 1 1 0 1 0 0 0 1
+      1 0 1 0 0 0 0 1 1 0 1 0 1 0 1 0 1 0 0 1 0 0 1 0 1 1 0 0 0 1
+      1 0 1 0 1 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 1 1 1 0 1 1 0 0 1 1
+      0 1 0 0 0 1 1 1 0 0 0 0 0 1 0 1 0 0 1 1 0 0 0 0 0 0 0 1 1 0
+      1 0 1 1 0 0 0 1 1 0 0 0
+
+Channel symbols:
+      3 3 0 0 2 0 0 0 1 0 2 0 1 3 1 2 2 2 1 0 0 3 2 3 1 3 3 2 2 0
+      2 0 0 0 3 2 0 1 2 3 2 2 0 0 2 2 3 2 1 1 0 2 3 3 2 1 0 2 2 1
+      3 2 1 2 2 2 0 3 3 0 3 0 3 0 1 2 1 0 2 1 2 0 3 2 1 3 2 0 0 3
+      3 2 3 0 3 2 2 0 3 0 2 0 2 0 1 0 2 3 0 2 1 1 1 2 3 3 0 2 3 1
+      2 1 2 2 2 1 3 3 2 0 0 0 0 1 0 3 2 0 1 3 2 2 2 2 2 0 2 3 3 2
+      3 2 3 3 2 0 0 3 1 2 2 2
+
+Decoded message: K1ABC FN42 37            ntype: 37
+-----
+
