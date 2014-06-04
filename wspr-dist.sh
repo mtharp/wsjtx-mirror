@@ -89,8 +89,7 @@ find "$_DISTD/$_NAME/" -maxdepth 2 -type f -name "*.dll" -delete
 # copy full documentation
 echo " ..copying documentation"
 mkdir -p "$_DOC"
-cp -r doc/WSPR0_4.0_Users_Guide.txt doc/WSPR_4.0_User.docx "$_DOC/"
-cp -r ./AUTHORS ./INSTALL.txt ./NEWS ./README "$_DOC/"
+cp -r ./AUTHORS ./NEWS ./README "$_DOC/"
 
 # copy fmt examples
 echo " ..copying FMT examples"

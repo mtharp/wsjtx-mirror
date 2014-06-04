@@ -25,13 +25,12 @@ SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
 
 # Install locations
-USER		:=	@USER@
 INATALL		:=	install
-HOMEDIR		:=	@HOMEDIR@
 BINDIR		:=	@BINDIR@
-SHARED		:=	@SHARED@
 DOCDIR		:=	@DOCDIR@
 MANDIR		:=	@MANDIR@
+SHARED		:=	@SHARED@
+WSPRLIB		:=	@WSPRLIB@
 
 # Compiler Information
 CC		:=	@CC@
@@ -138,15 +137,15 @@ install:
 	@echo '-----------------------------------'
 	@echo ''
 	@${MKDIR} -p ${DOCDIR}/examples
-	@${MKDIR} -p ${SHARED}/{save/Samples,WsprMod}
+	@${MKDIR} -p ${SHARED}/{save/Samples}
+	@${MKDIR} -p ${LIBDIR}/WsprMod
 	@install -m 755 --strip fmtest fcal fmeasure fmtave wspr0 wsprcode ${BINDIR}
 	@install -m 644 manpages/man1/*.1 ${MANDIR}
-	@install -m 644 doc/WSPR0_Instructions.TXT doc/WSPR_4.0_User.docx ${DOCDIR}
 	@install -m 644 save/Samples/* ${SHARED}/save/Samples/
 	@install -m 755 ./{gocal,Pmw*.py,tkrep.py,wspr.py,wspr.sh} ${SHARED}
-	@install -m 644 ./{AUTHORS,README,INSTALL.txt,NEWS,BUGS} ${DOCDIR} 
+	@install -m 644 ./{AUTHORS,README,NEWS,COPYING,COPYRIGHT} ${DOCDIR} 
 	@install -m 644 ./hamlib_rig* ${SHARED}
-	@install -m 755 WsprMod/* ${SHARED}/WsprMod/
+	@install -m 755 WsprMod/* ${WSPRLIB}
 	@${LN} -sf ${SHARED}/wspr.sh ${BINDIR}/wspr
 	@${CP} -r doc/examples/* ${DOCDIR}/examples/
 	@${CHMOD} -R 644 ${DOCDIR}/examples/*
@@ -166,12 +165,13 @@ uninstall:
 	@echo '--------------------------------------'
 	@echo '.. Removing Installed files'
 	@echo ''
-	@${RM} -r /usr/share/wspr
+	@${RM} -r ${SHARED}
+	@${RM} -r ${WSPRLIB}
 	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode,wspr}
 	@${RM} -f ${MANDIR}/{wspr.1,wspr0.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
 	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
 	@${RM} -rf ${HOMEDIR}/{WsprMod/,save/,doc/,*.py,hamlib*,*.sh,*.dat,gocal,*cache*}
-	@${RM} -f ${HOMEDIR}/{AUTHORS,README,INSTALL.txt,NEWS,BUGS}
+	@${RM} -f ${HOMEDIR}/{AUTHORS,README,NEWS,COPYING.COPYRIGHT}
 	@echo '' 
 	@echo ".. User files remain in: ${HOMEDIR}"
 	@echo ".. To remove, type ....: rm -R ${HOMEDIR}"

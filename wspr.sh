@@ -12,9 +12,9 @@ mkdir -p $_HOMEDIR/doc
 
 # update files only if newer
 cp -uR /usr/share/wspr/* $_HOMEDIR
-cp -uR /usr/share/doc/wspr/{examples/,*.TXT,*.docx} $_HOMEDIR/doc/
-cp -uR /usr/share/doc/wspr/{AUTHORS,README,INSTALL.txt,NEWS,BUGS} $_HOMEDIR/
+cp -uR /usr/share/doc/wspr/* $_HOMEDIR/
+cp -uR /usr/lib/wspr/* $_HOMEDIR
 
-# run: py location updated fron configure.ac
+# run: py location updated by configure.ac
 cd $_HOMEDIR
 /usr/bin/python3 -O wspr.py

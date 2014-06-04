@@ -2,12 +2,12 @@
 .\"     Title: wspr
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 05/27/2014
+.\"      Date: 06/04/2014
 .\"    Manual: WSPR Man Page
 .\"    Source: \ \& Version 4.0
 .\"  Language: English
 .\"
-.TH "WSPR" "1" "05/27/2014" "\ \& Version 4\&.0" "WSPR Man Page"
+.TH "WSPR" "1" "06/04/2014" "\ \& Version 4\&.0" "WSPR Man Page"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,37 +31,28 @@
 wspr \- Weak Signal Propagation Reporter
 .SH "SYNOPSIS"
 .sp
-\fBwspr\fR \- "Pronounced Whisper", does not take command\-line options\&. To run from the command\-line:
+\fBwspr\fR \- "Pronounced Whisper", does not take command\-line options\&. To run \fBwspr\fR from a terminal:
 .sp
 .nf
-After Install, to run WSPR:
-
-Applications Menu
-Applications > HamRadio > WSPR
-
-From Unity Dash
-Dash > WSPR > Click on the Globe
-
-Command Line
 Open terminal, type\&.\&.: wspr
 .fi
 .SH "PROGRAMS"
 .sp
-There are (7) programs associated with \fBWSPR\fR
+There are (7) programs associated with \fB\fIwspr\fR\fR
 .sp
-\fBWSPR\fR \- The program generates and decodes a digital soundcard mode optimized for beacon\-like transmissions on the LF, MF, and HF bands
+\fBwspr\fR \- The program generates and decodes a digital soundcard mode optimized for beacon\-like transmissions on the LF, MF, and HF bands
 .sp
-\fBWSPR0\fR \- is a simple command\-line version of WSPR with no frills, no graphics and no GUI\&. Many advanced features of the full WSPR program, including I/Q mode, frequency hopping, and automatic uploading of spots to WSPRnet\&.org, are not included\&. \fBwspr0\fR is intended for specialized uses where its easy compilation, small memory requirements, etc\&., can be advantageous\&.
+\fBwspr0\fR \- is a simple command\-line version of WSPR with no frills, no graphics and no GUI\&. Many advanced features of the full \fB\fIwspr\fR\fR program, including I/Q mode, frequency hopping, and automatic uploading of spots to WSPRnet\&.org, are not included\&. \fB\fIwspr0\fR\fR is intended for specialized uses where its easy compilation, small memory requirements, etc\&., can be advantageous\&.
 .sp
-\fBFMTEST\fR \- Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements for the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, and output goes to files fmt\&.out and fmt\&.all\&. The latter file is cumulative\&.
+\fBfmtest\fR \- Sets the dial frequency of a CAT\-controlled radio and performs a sequence of measurements for the strongest resulting audio tone near a specified offset frequency\&. Input parameters are taken from the command line, and output goes to files fmt\&.out and fmt\&.all\&. The latter file is cumulative\&.
 .sp
-\fBFMTAVE\fR \- Averages data found in a specified file having the format of fmt\&.all
+\fBfmtave\fR \- Averages data found in a specified file having the format of fmt\&.all
 .sp
-\fBFCAL\fR \- Calculates a best\-fit straight line for a data saved in fmtave\&.out\&. Results are saved in file fcal\&.out\&.
+\fBfcal\fR \- Calculates a best\-fit straight line for a data saved in fmtave\&.out\&. Results are saved in file fcal\&.out\&.
 .sp
-\fBFMEASURE\fR \- Calculates the properly calibrated frequency of each test signal found in file fmtave\&.out\&. Results are saved in file fmeasure\&.out, and these are the numbers you should report if you are entering the Frequency Measuring Test\&.
+\fBfmeasure\fR \- Calculates the properly calibrated frequency of each test signal found in file fmtave\&.out\&. Results are saved in file fmeasure\&.out, and these are the numbers you should report if you are entering the Frequency Measuring Test\&.
 .sp
-\fBWSPRCODE\fR \- This program provides examples of the source encoding, convolutional error\-control coding, bit and symbol ordering, and synchronizing information contained in WSPR messages\&.
+\fBwsprcode\fR \- This program provides examples of the source encoding, convolutional error\-control coding, bit and symbol ordering, and synchronizing information contained in \fB\fIwspr\fR\fR messages\&.
 .SH "BUGS"
 .sp
 If you find a bug or suspect \fB\fIwspr\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>

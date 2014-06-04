@@ -13,53 +13,44 @@ wspr - Weak Signal Propagation Reporter
 == SYNOPSIS
 
 *wspr* - "Pronounced Whisper", does not take command-line options. To run
-from the command-line:
+*wspr* from a terminal:
 -----
-After Install, to run WSPR:
-
-Applications Menu
-Applications > HamRadio > WSPR
-
-From Unity Dash
-Dash > WSPR > Click on the Globe
-
-Command Line
 Open terminal, type..: wspr
 -----
 
 
 == PROGRAMS
 
-There are (7) programs associated with *WSPR*
+There are (7) programs associated with *'wspr'*
 
-*WSPR* - The program generates and decodes a digital soundcard mode
+*wspr* - The program generates and decodes a digital soundcard mode
 optimized for beacon-like transmissions on the LF, MF, and HF bands
 
-*WSPR0* - is a simple command-line version of WSPR with no frills,
-no graphics and no GUI.  Many advanced features of the full WSPR
+*wspr0* - is a simple command-line version of WSPR with no frills,
+no graphics and no GUI.  Many advanced features of the full *'wspr'*
 program, including I/Q mode, frequency hopping, and automatic
-uploading of spots to WSPRnet.org, are not included.  *wspr0* is 
+uploading of spots to WSPRnet.org, are not included.  *'wspr0'* is 
 intended for specialized uses where its easy compilation, small memory
 requirements, etc., can be advantageous.
 
-*FMTEST* - Sets the dial frequency of a CAT-controlled radio and performs
+*fmtest* - Sets the dial frequency of a CAT-controlled radio and performs
 a sequence of measurements for the strongest resulting audio tone near a 
 specified offset frequency. Input parameters are taken from the command line,
 and output goes to files fmt.out and fmt.all. The latter file is cumulative.
 
-*FMTAVE* - Averages data found in a specified file having the format of fmt.all
+*fmtave* - Averages data found in a specified file having the format of fmt.all
 
-*FCAL* - Calculates a best-fit straight line for a data saved in fmtave.out.
+*fcal* - Calculates a best-fit straight line for a data saved in fmtave.out.
 Results are saved in file fcal.out.
 
-*FMEASURE* - Calculates the properly calibrated frequency of each test signal
+*fmeasure* - Calculates the properly calibrated frequency of each test signal
 found in file fmtave.out. Results are saved in file fmeasure.out, and these
 are the numbers you should report if you are entering the Frequency Measuring
 Test.
 
-*WSPRCODE* - This program provides examples of the source encoding,
+*wsprcode* - This program provides examples of the source encoding,
 convolutional error-control coding, bit and symbol ordering, and 
-synchronizing information contained in WSPR messages.
+synchronizing information contained in *'wspr'* messages.
 
 
 == BUGS

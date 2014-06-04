@@ -1,7 +1,26 @@
 
 Current Development Version: WSPR-4.0
 
-2014-05-01 commit r4162 Greg Beam <ki7mt@yahoo.com>
+2014-06-04 commit r4168 Greg Beam <ki7mt@yahoo.com>
+
+* Updated wspr.1 manpage
+* Updated wspr-dist.sh to reflect doc location changes
+* Update Makefile.in make install target (updated directories)
+* Update configure.ac to add /usr/lib/wspr
+* Moved WSPR_4.0_User.docx to wpsr/archive as it's now in AsciiDoc format in SVN
+* Moved WSPR_Announcement.txt to wspr/archive
+* Moved WSPR_Quick_Start.TXT top ../archive
+* Moved WSPR0_Instructions.TXT and User_Guide to ../archive
+* Moved wspr_no_gui.txt to archive, needs adding to SVN AsciiDoc format if it's
+  to be published formally.
+
+TO-DO:
+* Consolidate WSPR0_User_Guide and WSPR0_Instructions then add to SVN AsciiDoc
+  Format. Should be sync'd with the published online document.
+* Add Wspr_NoGui.py instructions somewhere ; seperate doc, in WSPR Guide?
+
+
+2014-06-01 commit r4162 Greg Beam <ki7mt@yahoo.com>
 
 * Update safe arm6v CFLAGS
 * Flags tested with remote users
