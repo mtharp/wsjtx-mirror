@@ -118,7 +118,7 @@ done
 _FOLDEZISE=$(du -sk $_DISTD/$_NAME | cut -f1)
 _SIZE=$(($_FOLDEZISE))
 
-if test -d "$_DISTD/$_NAME" -a "$_SIZE" -ge "5000"; then
+if test -d "$_DISTD/$_NAME" -a "$_SIZE" -ge "3500"; then
 	echo " ..copying complete, build dir size: $_FOLDEZISE kb "
 else
 		echo
