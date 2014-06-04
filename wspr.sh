@@ -8,7 +8,7 @@ set -e
 _HOMEDIR="/home/$USER/.wspr"
 
 # make a few dir's
-mkdir -p $_HOMEDIR/doc
+mkdir -p $_HOMEDIR
 
 # update files only if newer
 cp -uR /usr/share/wspr/* $_HOMEDIR
