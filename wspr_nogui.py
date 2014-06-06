@@ -1,6 +1,33 @@
 #------------------------------------------------------------------ WSPR
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision: 2326 $
 #
+#
+# This file is part of the WSPR_NoGui.py application
+#
+# File Name:    wspr_nogui.py
+# Source:       http://sourceforge.net/projects/wsjt/
+# Contributors: 4X6IZ, K1JT
+#
+# Description:  This is a version of wspr.py with all the GUI calls stipped out
+#
+# Copyright (C) 2008-2014 Joseph Taylor, K1JT
+# License: GNU GPL v3
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+# Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#------------------------------------------------------------------------------
+
 #from Tkinter import *
 #from tkFileDialog import *
 #import tkMessageBox
@@ -31,7 +58,7 @@ import _thread
 import webbrowser
 
 # root = Tk()
-Version="3.00_r" + "$Rev: 2326 $"[6:-2]
+Version="4.00_r" + "$Rev: 4171 $"[6:-2]
 print("******************************************************************")
 print("WSPR Version " + Version + ", by K1JT")
 print("Run date:   " + time.asctime(time.gmtime()) + " UTC")
@@ -301,11 +328,11 @@ Propagation Reporter".  The program generates and decodes
 a digital soundcard mode optimized for beacon-like
 transmissions on the LF, MF, and HF bands.
 
-Copyright (c) 2008-2010 by Joseph H. Taylor, Jr., K1JT, with
-contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
-Open Source software, licensed under the GNU General Public
-License (GPL).  Source code and programming information may
-be found at http://developer.berlios.de/projects/wsjt/.
+Copyright (c) 2008-2014 by Joseph H. Taylor, Jr., K1JT, with
+contributions from VA3DB, G4KLA, W1BW, 4X6IZ, KE6HDU and KI7MT.
+WSPR is Open Source software, licensed under the GNU General Public
+License (GPL-3).  Source code and programming information may
+be found at http://sourceforge.net/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     t="Revision date: " + \

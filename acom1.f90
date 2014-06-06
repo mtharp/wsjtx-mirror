@@ -1,3 +1,28 @@
+!-------------------------------------------------------------------------------
+!
+! This file is part of the WSPR application, Weak Signal Propogation Reporter
+!
+! File Name:    acom1.f90
+! Description:
+!
+! Copyright (C) 2001-2014 Joseph Taylor, K1JT
+! License: GNU GPL v3+
+!
+! This program is free software; you can redistribute it and/or modify it under
+! the terms of the GNU General Public License as published by the Free Software
+! Foundation; either version 3 of the License, or (at your option) any later
+! version.
+!
+! This program is distributed in the hope that it will be useful, but WITHOUT
+! ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+! FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+! details.
+!
+! You should have received a copy of the GNU General Public License along with
+! this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+! Street, Fifth Floor, Boston, MA 02110-1301, USA.
+!
+!-------------------------------------------------------------------------------
   parameter (NMAX=120*12000)                          !Max length of waveform
   parameter (NZ=2*120*48000)
   real*8 f0,f0a,f0b,ftx,tsec0

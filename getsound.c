@@ -7,7 +7,7 @@
  *
  * This program uses the PortAudio Portable Audio Library.
  * For more information see: http://www.portaudio.com
- * Copyright (c) 1999-2000 Ross Bencina and Phil Burk
+ * Copyright (c) 1999-2006 Ross Bencina and Phil Burk
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -32,7 +32,7 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>

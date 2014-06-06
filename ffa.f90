@@ -1,5 +1,27 @@
-subroutine ffa(dat,ndim,npts,ip,prof,pmax,pk,ipk)
-
+!-------------------------------------------------------------------------------
+!
+! This file is part of the WSPR application, Weak Signal Propogation Reporter
+!
+! File Name:    ffa.f90
+! Description:
+!
+! Copyright (C) 2001-2014 Joseph Taylor, K1JT
+! License: GNU GPL v3
+!
+! This program is free software; you can redistribute it and/or modify it under
+! the terms of the GNU General Public License as published by the Free Software
+! Foundation; either version 3 of the License, or (at your option) any later
+! version.
+!
+! This program is distributed in the hope that it will be useful, but WITHOUT
+! ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+! FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+! details.
+!
+! You should have received a copy of the GNU General Public License along with
+! this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+! Street, Fifth Floor, Boston, MA 02110-1301, USA.
+!
 ! Copyright (C) 1995 by Peter Mueller, MPIfR.   peter@mpifr-bonn.mpg.de
 !
 ! Permission to use, copy, modify, and distribute this software and its
@@ -8,12 +30,15 @@ subroutine ffa(dat,ndim,npts,ip,prof,pmax,pk,ipk)
 ! copyright notice and this permission notice appear in supporting
 ! documentation.  This software is provided "as is" without express or
 ! implied warranty.
-
+!
 !     dat(1:npts)           Raw data
 !     ip                    Period is between ip and ip+1
 !     prof(1:ip)            Folded profile   
 !     pmax                  Best period
 !     xmax                  Peak of profile
+!
+!-------------------------------------------------------------------------------
+subroutine ffa(dat,ndim,npts,ip,prof,pmax,pk,ipk)
 
   implicit real*4 (a-h,o-z)
   real puls(NDIM)

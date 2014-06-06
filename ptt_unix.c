@@ -1,27 +1,36 @@
 /*
- * WSJT is Copyright (c) 2001-2006 by Joseph H. Taylor, Jr., K1JT, 
- * and is licensed under the GNU General Public License (GPL).
+*-------------------------------------------------------------------------------
+ *
+ * This file is part of the WSPR application, Weak Signal Propogation Reporter
+ *
+ * File Name:    ptt_unix.c
+ * Description:
  *
  * Code used from cwdaemon for parallel port ptt only.
- *
  * cwdaemon - morse sounding daemon for the parallel or serial port
- * Copyright (C) 2002 -2005 Joop Stakenborg <pg4i@amsat.org>
- *                       and many authors, see the AUTHORS file.
+ * Copyright: 2002-2005 Joop Stakenborg <pg4i@amsat.org>
+ * Many authors contributed to this file, see the AUTHORS file.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Copyright (C) 2001-2014 Joseph Taylor, K1JT
+ * License: GNU GPL v3+
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Library General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+*-------------------------------------------------------------------------------
+*/
+
 #if HAVE_STDIO_H
 # include <stdio.h>
 #endif

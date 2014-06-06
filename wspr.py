@@ -1,29 +1,47 @@
 # pylint: disable=wildcard-import,bad-whitespace
-#--------------------------------------------------------------------- WSPR
+#------------------------------------------------------------------------------
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
-# WSPR (pronounced "whisper") stands for "Weak Signal
-# Propagation Reporter".  The program generates and decodes
-# a digital soundcard mode optimized for beacon-like
-# transmissions on the LF, MF, and HF bands.
+# This file is part of the WSPR application, Weak Signal Propogation Reporter
 #
-# Copyright (c) 2008-2014 by Joseph H. Taylor, Jr., K1JT, with
-# contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
-# Open Source software, licensed under the GNU General Public
-# License (GPL).  Source code and programming information may
-# be found at http://sourceforge.net/projects/wsjt/.
+# File Name:    wspr.py
+# Source:       http://sourceforge.net/projects/wsjt/
+# Contributors: K1JT, VA3DB, G4KLA, W1BW, 4X6IZ, KE6HDU and KI7MT
+#
+# Description:  WSPR (pronounced "whisper") stands for "Weak Signal
+#               Propagation Reporter".  The program generates and decodes
+#               a digital soundcard mode optimized for beacon-like
+#               transmissions on the LF, MF, and HF bands.
+#
+# Copyright (C) 2008-2014 Joseph Taylor, K1JT
+# License: GNU GPL v3
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+# Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # Revision for MacOsX 10.6.8 by KE6HDU
-# Apparently the tK library has a leak on MacOsX, so every extra call
-# to that library has been suppressed.  This reduced memory use from
-# 100KB/second to the point where memory is only lost when the window
-# is updated for some reason.  This sort of loss is typically 100KB per
-# 2 minutes or about 100 times slower than the original.  You can reduce
-# even that by decreasing the sensitivity to noise changes.  This change
-# also greatly reduced the load on the kernel, from a sustained 13% to
-# essentially nothing. These changes are also licensed under the
-# GNU General Public License (GPL).
-
+#  Apparently the tK library has a leak on MacOsX, so every extra call
+#  to that library has been suppressed.  This reduced memory use from
+#  100KB/second to the point where memory is only lost when the window
+#  is updated for some reason.  This sort of loss is typically 100KB per
+#  2 minutes or about 100 times slower than the original.  You can reduce
+#  even that by decreasing the sensitivity to noise changes.  This change
+#  also greatly reduced the load on the kernel, from a sustained 13% to
+#  essentially nothing. These changes are also licensed under the
+#  GNU General Public License (GPL).
+#
+#------------------------------------------------------------------------------
 from tkinter import *
 from tkinter.filedialog import *
 import tkinter.messagebox
@@ -340,9 +358,9 @@ a digital soundcard mode optimized for beacon-like
 transmissions on the LF, MF, and HF bands.
 
 Copyright (c) 2008-2014 by Joseph H. Taylor, Jr., K1JT, with
-contributions from VA3DB, G4KLA, W1BW, and 4X6IZ.  WSPR is
-Open Source software, licensed under the GNU General Public
-License (GPL).  Source code and programming information may
+contributions from VA3DB, G4KLA, W1BW, 4X6IZ, KE6HDU and KI7MT.
+WSPR is Open Source software, licensed under the GNU General Public
+License (GPL-3).  Source code and programming information may
 be found at http://sourceforge.net/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)

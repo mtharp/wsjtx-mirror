@@ -1,6 +1,25 @@
 
 Current Development Version: WSPR-4.0
 
+2014-06-05 commit r4171 Greg Beam <ki7mt@yahoo.com>
+
+* Added copyright headers to .py .c and .py files (GNU GPL-3)
+* Moved old f2py.py to ./archive/
+* Moved wspr_nogui.txt to WsprNoGui/
+* Moved old DFINC.MAK to ./archive/
+* Updated AUTHORS
+* Updated wspr.py with latest revision number after edits.
+* Updated setup.py, although it's not being used much at the moment.
+* Updated wspr_nogui.py revison number after edits
+* Added copyright headers to all wspr_nogui.py files in WsprModNoGui/
+* Removed tkrep.py fron wspr-manifest.in as its not needed for WSPR
+* ran licensecheck dev script against all files.
+* Added descriptions to some of the .f90 files, needs work still.
+* Tested build from ./autogen.sh make && make install
+
+NOTE: t1.f90 and wwv.f90 appear similar, neither seem to be used on Linux or
+Windows in either Makefile.in or Makefile.jtsdk
+
 2014-06-04 commit r4168 Greg Beam <ki7mt@yahoo.com>
 
 * Updated wspr.1 manpage

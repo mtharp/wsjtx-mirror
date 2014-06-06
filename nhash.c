@@ -1,7 +1,38 @@
 /*
--------------------------------------------------------------------------------
-lookup3.c, by Bob Jenkins, May 2006, Public Domain.
+ *-------------------------------------------------------------------------------
+ *
+ * This file is part of the WSPR application, Weak Signal Propogation Reporter
+ *
+ * File Name:   nhash.c
+ * Description: Functions to produce 32-bit hashes for hash table lookup
+ *
+ * Copyright (C) 2008-2014 Joseph Taylor, K1JT
+ * License: GNU GPL v3+
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * Files: lookup3.c
+ * Copyright: Copyright (C) 2006 Bob Jenkins <bob_jenkins@burtleburtle.net>
+ * License: public-domain
+ *  You may use this code any way you wish, private, educational, or commercial.
+ *  It's free.
+ *
+ *-------------------------------------------------------------------------------
+*/
 
+/*
 These are functions for producing 32-bit hashes for hash table lookup.
 hashword(), hashlittle(), hashlittle2(), hashbig(), mix(), and final() 
 are externally useful functions.  Routines to test the hash are included 
@@ -31,8 +62,8 @@ Why is this so big?  I read 12 bytes at a time into 3 4-byte integers,
 then mix those integers.  This is fast (you can do a lot more thorough
 mixing with 12*3 instructions on 3 integers than you can with 3 instructions
 on 1 byte), but shoehorning those bytes into integers efficiently is messy.
--------------------------------------------------------------------------------
 */
+
 #define SELF_TEST 1
 
 #include <stdio.h>      /* defines printf for tests */
