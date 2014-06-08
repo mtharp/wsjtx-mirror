@@ -73,7 +73,7 @@ Edit files as needed
 :alex_efros: mailto:powerman@powerman.name[Alex Efros]
 :bill_somerville: mailto:g4wjs@classdesign.com[G4WJS]
 :devmail: mailto:wsjt-devel@lists.sourceforge.net[wsjt-devel]
-:dev_mail_list: http://sourceforge.net/mailarchive/forum.php?forum_name=wsjt-devel[WSJT developers email list]
+:dev_mail_list: http://sourceforge.net/mailarchive/forum.php?forum_name=wsjt-devel[WSJT Developers Email List]
 :dev_mail_svn: https://sourceforge.net/auth/subscriptions/[WSJT SVN Archives]
 :greg_beam: mailto:ki7mt@yahoo.com[KI7MT]
 :joe_taylor: mailto:joe@princeton.edu[K1JT]

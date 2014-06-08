@@ -1,5 +1,5 @@
-* The following installation instructions should help to guide you to the
-correct software for your system.
+The following installation instructions should help to guide you to the
+correct software for your system:
 
 [[INSTALL_WIN]]
 === Windows

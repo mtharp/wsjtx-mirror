@@ -14,24 +14,23 @@ include::../../global/links.adoc[]
 == Introduction
 include::introduction.adoc[]
 
-// This should be ammended to include:../../globals/communication.adoc
+// This should be amended to include:../../globals/communication.adoc
 [[INTRO]]
-== Communication
-The following are established communication channels for the Wspr Group.
+== Contact Us
+The following are the established communication channels for the WSPR Group:
 
 .General Information
 * Main Site: {homepage}
 * Development Site: {projsummary}
 
 .Development Related
-[horizontal]
-* Project Manager, email: {joe_taylor}
+* Project Manager, Email: {joe_taylor}
 * Development Activity, Join: {dev_mail_list}
 * Repository Updates, Join: {dev_mail_svn}
 
 .Community Related
 * WSPR Discussion Board: {wsjt_yahoo_group}
-* WSPR Network: {wsprnet}
+* WSPR Spotting Network: {wsprnet}
 * FMT Information: {fmt_arrl}
 * FMT Discussion Board: {fmt_group}
 * FMT Coordination: {fmt_k5cm}

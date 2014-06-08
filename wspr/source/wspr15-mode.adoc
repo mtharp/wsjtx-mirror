@@ -1,7 +1,7 @@
 _WSPR-15_ is an experimental mode intended for use with extremely weak signals
 on the MF and LF bands.  In effect, everything is slowed down by a factor of 8
-relative to the normal WSPR mode (which is now also called WSPR-2, when 
-confusion might otherwise arise).  Keying rate and tone separation in WSPR-15 
+relative to the normal _WSPR_ mode (which is now also called _WSPR-2_, when 
+confusion might otherwise arise). Keying rate and tone separation in _WSPR-15_ 
 are 0.183 baud and 0.183 Hz, respectively; the total bandwidth is 0.732 Hz, and
 the weakest decodable signals have S/N around –37 dB in a 2500 Hz reference 
 bandwidth. _WSPR-15_ does not presently support I/Q mode or band hopping.
@@ -9,13 +9,13 @@ bandwidth. _WSPR-15_ does not presently support I/Q mode or band hopping.
 When used with standard SSB transceivers, _WSPR-2_ uses audio frequencies in the
 range 1400-1600 Hz for both transmission and reception. Signal frequencies are
 therefore above the transceiver’s dial frequency by amounts somewhere in that
-200 Hz range.  To avoid QRM between the two sub-modes, _WSPR-15_ uses audio 
+200 Hz range. To avoid QRM between the two sub-modes, _WSPR-15_ uses audio 
 frequencies in the range 1600-1625 Hz, just above the nominal _WSPR-2_ sub-band.
 
-To operate in the experimental mode, select WSPR-15 from the Mode menu.  
+To operate in the experimental mode, select _WSPR-15_ from the Mode menu.  
 The scale in the graphics area will change to show a 25 Hz range that extends
 from 1600 to 1625 Hz above the dial frequency.  (If the Rx BFO frequency has 
-been set to something other than1500 Hz on the *Setup | Advanced menu*, the active
+been set to something other than 1500 Hz on the *Setup | Advanced menu*, the active
 Rx frequency range extends from f~BFO~ {plus} 100 to f~BFO~ {plus} 125 Hz.)
 As in _WSPR-2_ mode, you can select a Tx frequency by double-clicking at the
 appropriate frequency in the graphics area.  In nearly all other ways, _WSPR-15_

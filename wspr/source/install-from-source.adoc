@@ -1,12 +1,12 @@
 
 The following are general instructions for compiling _{prog}_ from source
-code. For detailed instructions, see {dev_guide}.
+code. For detailed instructions, please see the {dev_guide}.
 
-_{prog}_ source code is available {wspr_svn}, the public repository at
+_{prog}_ source code is available {wspr_svn}, which is the public repository at
 {devsvn}. To compile the program you will need to install the following packages:
 
-TIP: Package names very considerably between the various Linux / Mac / BSD
-adn Windows versions, consult your distrobution package manager for the
+TIP: Package names very considerably between the various Linux / OS X / BSD
+and Windows versions; consult your distribution package manager for the
 appropriate packages.
 
 * Subversion
@@ -19,8 +19,8 @@ appropriate packages.
 python3-imaging-tk, autoconf, autotools-dev
 * hamlib utils
 
-.*Nix / Mac OSX
-* Open a command ternaim (X-Term) and issue the following commands:
+.*Nix / Mac OS X
+* Open a command terminal (X-Term) and issue the following commands:
 
  $ svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
 

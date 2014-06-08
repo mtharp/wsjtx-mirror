@@ -3,7 +3,7 @@
 
 - Select *File | Open* and navigate to
 +...\save\samples\130418_1742.wav+ under the _WSJT-X_ installation
-directory.  When the file opens you should see something similar to
+directory. When the file opens you should see something similar to
 the to the following screen shot:
 
 [[X12]]
