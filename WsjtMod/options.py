@@ -60,6 +60,7 @@ genmsg=IntVar()
 
 ntc.set(1)
 cwSpeed.set(15)
+trackWarn.set('0')
 
 def resetgen():
     defaults()
