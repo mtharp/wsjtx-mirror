@@ -17,7 +17,7 @@ compile the program you will need to install the following packages:
 With Subversion installed, the full source code for _WSJT-X_ can be
 downloaded with the command:
 
-  svn co svn://svn.berlios.de/wsjt/branches/wsjtx 
+  svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx 
 
 // Need further compiling Instructions
 For some basic instructions on building _WSJT-X_ from source code, see the

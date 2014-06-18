@@ -26,6 +26,10 @@ include::../../global/links.adoc[]
 == Introduction
 include::introduction.adoc[]
 
+[[CONTACT]]
+== Contact Us
+include::../../global/communication.adoc[]
+
 [[SYSREQ]]
 == System Requirements
 include::system-requirements.adoc[]
@@ -33,7 +37,7 @@ include::system-requirements.adoc[]
 [[INSTALL]]
 == Installation
 
-- Download _WSJT-X_ from the {homepage}. Click on _WSJT-X_ at the left
+- Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link located on the left
 margin and then on the desired download link.
 
 [[INSTALL_WIN]]

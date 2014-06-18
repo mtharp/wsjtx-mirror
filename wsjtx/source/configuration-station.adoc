@@ -1,4 +1,6 @@
 // Status=review
+[[FIG_CONFIG_STATION]]
+image::images/r3666-config-screen-80.png[align="center",alt="Configuration Screen"]
 - Start _WSJT-X_ and select *Configuration* from its *Setup* menu.  Enter
 the following information:
 
@@ -32,9 +34,6 @@ requirement as +CATdriver=<yourdriver>+ (for example,
 can configure _WSJT-X_ to communicate with the radio through that
 program.  Entries for these programs appear at the end of the
 drop-down list of supported rigs.
-
-[[FIG_CONFIG_STATION]]
-image::images/r3666-config-screen-80.png[align="center",alt="Configuration Screen"]
 
 Leave *Split Tx* unchecked for now. If you are using CAT control, most
 radios will allow you to set *PTT method* = CAT.  Some radios support

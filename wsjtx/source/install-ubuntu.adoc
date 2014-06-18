@@ -1,9 +1,9 @@
 // Status=review
 
 - Installation packages for Ubuntu 12.04, 12.10, 13.04, 13.10 are
-maintained by AC6SL and available at {launchpadurl}.
+maintained by AC6SL and are made available from his {launchpadurl} page.
 
-- If you have not before obtained packages from the Personal Package
+- If you have not previously obtained packages from the Personal Package
 Archive (PPA) at the above link, open a terminal window and execute
 the following command:
 
