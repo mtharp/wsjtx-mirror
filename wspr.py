@@ -1617,7 +1617,7 @@ bidle=Checkbutton(g3.interior(),text='Idle       ',justify=RIGHT, \
 bidle.grid(row=0,column=1,padx=4,pady=3)
 balloon.bind(bidle,"Check for no automatic T/R sequences")
 bmute=Checkbutton(g3.interior(),text='Tx Mute',justify=RIGHT, \
-                  variable=txmute,width=5)
+                  variable=txmute,width=7)
 bmute.grid(row=1,column=1,padx=4,pady=3)
 balloon.bind(bmute,"Check for no Tx")
 btune=Button(g3.interior(), text='Tune',underline=0,command=tune,width=9)
@@ -1631,9 +1631,14 @@ g3.pack(side=LEFT,fill=X,expand=0,padx=10,pady=1)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
-lab2=Label(iframe2, \
-           text='UTC        dB        DT             Freq             Drift')
-lab2.place(x=210,y=6, anchor='w')
+if g.Win32:
+    lab2=Label(iframe2,font=("Courier New",10), \
+               text='UTC  dB   DT    Freq   Drift')
+    lab2.place(x=208,y=6, anchor='w')
+else:
+    lab2=Label(iframe2,font=("Courier New",12), \
+               text='UTC  dB   DT    Freq   Drift')
+    lab2.place(x=198,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
 #-------------------------------------------------------- UTC, etc
