@@ -68,21 +68,25 @@ include::install-from-source.adoc[]
 [[CONFIG]]
 == Setup and Configuration
 
-[[STATION]]
-=== Station Tab
+[[GENERAL]]
+=== General Tab
 include::configuration-station.adoc[]
+
+[[RADIO]]
+=== Radio Tab
+include::configuration-radio.adoc[]
 
 [[TXMACROS]]
 === Tx Macros Tab
 include::configuration-txmacros.adoc[]
 
 [[BAND_SETTINGS]]
-=== Band Settings Tab
+=== Frequencies Tab
 include::configuration-band-settings.adoc[]
 
-[[FONTS]]
-=== Font Sizes
-include::font-sizes.adoc[]
+//[[FONTS]]
+//=== Font Sizes
+//include::font-sizes.adoc[]
 
 [[TUTORIAL]]
 == Basic Operating Tutorial
