@@ -66,6 +66,7 @@ import socket
 import urllib.request, urllib.parse, urllib.error
 import _thread
 import webbrowser
+import tkinter.font
 
 root = Tk()
 Version="4.0 r" + "$Rev$"[6:-2]
@@ -1631,13 +1632,10 @@ g3.pack(side=LEFT,fill=X,expand=0,padx=10,pady=1)
 iframe2a.pack(expand=1, fill=X, padx=1)
 
 iframe2 = Frame(frame, bd=1, relief=FLAT,height=15)
+lab2=Label(iframe2,text='UTC  dB   DT    Freq   Drift')
 if g.Win32:
-    lab2=Label(iframe2,font=("Courier New",10), \
-               text='UTC  dB   DT    Freq   Drift')
     lab2.place(x=208,y=6, anchor='w')
 else:
-    lab2=Label(iframe2,font=("Courier New",12), \
-               text='UTC  dB   DT    Freq   Drift')
     lab2.place(x=198,y=6, anchor='w')
 iframe2.pack(expand=1, fill=X, padx=4)
 
@@ -1914,6 +1912,8 @@ t="%.6f" % (f0.get(),)
 sf0.set(t)
 t="%.6f" % (ftx.get(),)
 sftx.set(t)
+font2=tkinter.font.Font(font=text['font'])
+lab2.config(font=font2)
 
 ldate.after(100,update)
 ldate.after(100,audio_config)
