@@ -57,6 +57,7 @@ isync=0
 isync441=1
 isync_iscat=1
 isync65=1
+isync4=1
 isync6m=-10
 isync_save=0
 itol=5                                       #Default tol=400 Hz
@@ -794,8 +795,9 @@ def ModeCW(event=NONE):
 
 #------------------------------------------------------ ModeJT4
 def ModeJT4():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT65()
+    isync=isync4
     lMinW.grid(column=0,row=2,padx=2,sticky='EW')
     report.grid(column=1,row=1,sticky='W',padx=7)
     labreport.grid(column=0,row=1,sticky='E',padx=0)
@@ -807,7 +809,7 @@ def ModeJT4():
 
 #------------------------------------------------------ ModeJT4A
 def ModeJT4A():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4A")
     Audio.gcom2.mode4=1
@@ -815,42 +817,42 @@ def ModeJT4A():
 
 #------------------------------------------------------ ModeJT4B
 def ModeJT4B():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4B")
     Audio.gcom2.mode4=2
 
 #------------------------------------------------------ ModeJT4C
 def ModeJT4C():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4C")
     Audio.gcom2.mode4=4
 
 #------------------------------------------------------ ModeJT4D
 def ModeJT4D():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4D")
     Audio.gcom2.mode4=9
 
 #------------------------------------------------------ ModeJT4E
 def ModeJT4E():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4E")
     Audio.gcom2.mode4=18
 
 #------------------------------------------------------ ModeJT4F
 def ModeJT4F():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4F")
     Audio.gcom2.mode4=36
 
 #------------------------------------------------------ ModeJT4G
 def ModeJT4G():
-    global slabel,isync,isync65,textheight,itol
+    global slabel,isync,isync4,textheight,itol
     ModeJT4()
     mode.set("JT4G")
     Audio.gcom2.mode4=72
@@ -1738,7 +1740,7 @@ def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
            im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0, \
            isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas,g2font,           \
-           trackWarn0,trackWarn1
+           trackWarn0,trackWarn1,isync4
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
@@ -2076,6 +2078,7 @@ def update():
     elif mode.get()=='JT6M': isync6m=isync
     elif mode.get()[:5]=="ISCAT": isync_iscat=isync
     elif mode.get()[:4]=='JT65': isync65=isync
+    elif mode.get()[:3]=='JT4': isync4=isync
     Audio.gcom1.txfirst=TxFirst.get()
     try:
         Audio.gcom1.samfacin=options.samfacin.get()
@@ -2909,6 +2912,7 @@ try:
         elif key == 'S6m': isync6m=int(value)
         elif key == 'Siscat': isync_iscat=int(value)
         elif key == 'Sync': isync65=int(value)
+        elif key == 'Sync4': isync4=int(value)
         elif key == 'Zap': nzap.set(value)
         elif key == 'NAFC': nafc.set(value)
         elif key == 'nshrx': nshrx.set(value)
@@ -2946,6 +2950,7 @@ elif mode.get()[:5]=="ISCAT":
     if mode.get()[6:7]=='B': Audio.gcom2.mode4=2
 elif mode.get()[:4]=='JT65': isync=isync65
 elif mode.get()[:3]=='JT4':
+    isync=isync4
     if mode.get()[3:4]=='A': Audio.gcom2.mode4=1
     if mode.get()[3:4]=='B': Audio.gcom2.mode4=2
     if mode.get()[3:4]=='C': Audio.gcom2.mode4=4
@@ -3032,6 +3037,7 @@ f.write("Band " + str(nfreq.get()) + "\n")
 f.write("S441 " + str(isync441) + "\n")
 f.write("Siscat " + str(isync_iscat) + "\n")
 f.write("Sync " + str(isync65) + "\n")
+f.write("Sync4 " + str(isync4) + "\n")
 f.write("Zap " + str(nzap.get()) + "\n")
 f.write("NAFC " + str(nafc.get()) + "\n")
 f.write("nshrx " + str(nshrx.get()) + "\n")
