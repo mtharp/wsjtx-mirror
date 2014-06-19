@@ -40,6 +40,9 @@ include::system-requirements.adoc[]
 - Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link located on the left
 margin and then on the desired download link.
 
+CAUTION: If you are using a sound card that is also your computer’s
+default audio device, please be sure to turn off all system sounds so as to prevent their transmission via your station.
+
 [[INSTALL_WIN]]
 === Windows
 include::install-windows.adoc[]
