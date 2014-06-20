@@ -19,6 +19,7 @@ typedef struct
   int    *Transmitting;
   int    *nwave;
   int    *nmode;
+  int    *nright;
   int    *trperiod;
   int     nbuflen;
   int     nfs;
@@ -109,14 +110,22 @@ SoundIn( void *inputBuffer, void *outputBuffer,
     //increment buffer pointers only if data available
     ia=*data->iwrite;
     ib=*data->ibuf;
-    ib++;                               //Increment ibuf
+    ib++;                                  //Increment ibuf
     if(ib>1024) ib=1; 
     *data->ibuf=ib;
     data->tbuf[ib-1]=stime;
-    for(i=0; i<framesPerBuffer; i++) {
-      data->y1[ia] = (*in++);
-      data->y2[ia] = (*in++);
-      ia++;
+    if(*data->nright==0) {                 //Use left channel for input
+      for(i=0; i<framesPerBuffer; i++) {
+	data->y1[ia] = (*in++);
+	data->y2[ia] = (*in++);
+	ia++;
+      }
+    } else {                               //Use right channel
+      for(i=0; i<framesPerBuffer; i++) {
+	data->y2[ia] = (*in++);
+	data->y1[ia] = (*in++);
+	ia++;
+      }
     }
   }
 
@@ -195,7 +204,7 @@ SoundOut( void *inputBuffer, void *outputBuffer,
 }
 
 /*******************************************************************/
-int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[], 
+int jtaudio_(int *ndevin, int *ndevout, int *nright, short y1[], short y2[], 
 	     int *nbuflen, int *iwrite, short iwave[], 
 	     int *nwave, int *nfsample, int *nsamperbuf,
 	     int *TRPeriod, int *TxOK, int *ndebug,
@@ -226,6 +235,7 @@ int jtaudio_(int *ndevin, int *ndevout, short y1[], short y2[],
   data.y2 = y2;
   data.nbuflen = *nbuflen;
   data.nmode = nmode;
+  data.nright = nright;
   data.nwave = nwave;
   data.iwave = iwave;
   data.nfs = nSampleRate;

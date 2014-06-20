@@ -2118,6 +2118,7 @@ def update():
     Audio.gcom2.neme=neme.get()
     Audio.gcom2.ndepth=ndepth.get()
     Audio.gcom2.ndtr=options.ndtr.get()
+    Audio.gcom2.nright=options.rightAudio.get()
     if mode.get()=='CW':
         Audio.gcom2.ntdecode=56
     elif mode.get()=='JT65B2' or mode.get()=='JT65C2':
@@ -2871,6 +2872,7 @@ try:
             Audio.gcom1.devout_name=(options.DevoutName.get()+(' '*12))[:12]
         elif key == 'SamFacIn': options.samfacin.set(value)
         elif key == 'SamFacOut': options.samfacout.set(value)
+        elif key == 'RightAudio': options.rightAudio.set(value)
         elif key == 'Template1': options.Template1.set(value.replace("_"," "))
         elif key == 'Template2': options.Template2.set(value.replace("_"," "))
         elif key == 'Template3': options.Template3.set(value.replace("_"," "))
@@ -3002,6 +3004,7 @@ f.write("MsgStyle " + str(options.ireport.get()) + "\n")
 f.write("Region " + str(options.iregion.get()) + "\n")
 f.write("AudioIn " + options.DevinName.get() + "\n")
 f.write("AudioOut " + options.DevoutName.get() + "\n")
+f.write("RightAudio " + str(options.rightAudio.get()) + "\n")
 f.write("SamFacIn " + str(options.samfacin.get()) + "\n")
 f.write("SamFacOut " + str(options.samfacout.get()) + "\n")
 if options.Template6.get()=="": options.Template6.set("_")

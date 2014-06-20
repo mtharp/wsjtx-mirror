@@ -34,6 +34,7 @@ integer nrestart       !True if transmission should restart  GUI,SoundIn
 integer ntr            !Are we in 2nd sequence?                 SoundIn
 integer ntxboth        !Transmit both sequqnces?                GUI
 integer nmsg           !Length of Tx message                    SoundIn
+integer nright         !Use right (not left) audio input channel GUI
 integer nsave          !Which files to save?                    GUI
 integer nadd5          !Prepend 5 sec of 0's before decoding?   GUI 
 integer dftolerance    !DF tolerance (Hz)                       GUI
@@ -112,7 +113,7 @@ common/gcom2/ps0(450),psavg(450),s2(64,3100),ccf(-5:540),             &
      green(500),ngreen,dgain,dlatency,fecho,degrade,iter,iyr,imo,ida, &
      minwidth,ndecoding,ndecoding0,mousebutton,ntc,necho,nfrit,       &
      ndither,nsumecho,ncwspeed,ndecdone,npingtime,npingtime2,ierr,    &
-     lauto,mantx,nrestart,ntr,ntxboth,nmsg,                           &
+     lauto,mantx,nrestart,ntr,ntxboth,nmsg,nright,                    &
      nsave,nadd5,dftolerance,LDecoded,rxdone,monitoring,nzap,         &
      nsavecum,minsigdb,nclearave,newdat2,nfreeze,nafc,nmode,mode65,   &
      mode4,ndebug,nport,ndtr,mousedf,nlowbeacon,                      &
