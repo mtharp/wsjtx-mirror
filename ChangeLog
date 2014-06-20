@@ -1,6 +1,14 @@
 
 Current Development Version: WSPR-4.0
 
+2014-06-20 commit r4191 Greg Beam <ki7mt@yahoo.com>
+
+* correct file names in copyright hearders of a few files
+* updated Makefile.in; change ln -s to mv -T for wspr.sh script
+* Updated install / uninstall targets
+* Bump wspr.py version to r4191, no other edits made to wspr.py
+
+
 2014-06-05 commit r4171 Greg Beam <ki7mt@yahoo.com>
 
 * Added copyright headers to .py .c and .py files (GNU GPL-3)
@@ -19,6 +27,7 @@ Current Development Version: WSPR-4.0
 
 NOTE: t1.f90 and wwv.f90 appear similar, neither seem to be used on Linux or
 Windows in either Makefile.in or Makefile.jtsdk
+
 
 2014-06-04 commit r4168 Greg Beam <ki7mt@yahoo.com>
 

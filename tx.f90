@@ -2,7 +2,7 @@
 !
 ! This file is part of the WSPR application, Weak Signal Propogation Reporter
 !
-! File Name:    twkfreq.f90
+! File Name:    tx.f90
 ! Description:  Make one transmission of a WSPR message, or an unmodulated
 !               "Tune" sequence
 !

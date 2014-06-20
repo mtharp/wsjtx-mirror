@@ -2,7 +2,7 @@
 !
 ! This file is part of the WSPR application, Weak Signal Propogation Reporter
 !
-! File Name:    ccd.f90
+! File Name:    ccf.f90
 ! Description:
 !
 ! Copyright (C) 2001-2014 Joseph Taylor, K1JT

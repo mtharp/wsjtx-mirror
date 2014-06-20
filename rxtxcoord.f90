@@ -2,7 +2,7 @@
 !
 ! This file is part of the WSPR application, Weak Signal Propogation Reporter
 !
-! File Name:    rxtxrecord.f90
+! File Name:    rxtxcoord.f90
 ! Description:  Determine Rx or Tx in coordinated hopping mode
 !
 ! Copyright (C) 2001-2014 Joseph Taylor, K1JT
