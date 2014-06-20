@@ -1,29 +1,32 @@
 
-Normal _{prog}_ messages consist of a callsign, 4-digit grid locator, and power
-level in dBm.  These messages are always preferred when appropriate.  However,
-compound callsigns (i.e., callsigns with add-on prefix or suffix) cannot fit 
-into the 28 bits allocated in a standard message.  Similarly, 6-digit locators
-cannot fit into 15 bits.  Messages using these components are therefore sent 
-using a two-transmission sequence.  For example, if the callsign is PJ4/K1ABC,
-the 6-digit grid locator is FK52UD, and the power level 37 dBm, the following
-messages will be sent in alternating transmissions:
+Normal _{prog}_ messages consist of a callsign, 4-digit grid locator,
+and power level in dBm.  These messages are always preferred when
+appropriate.  However, compound callsigns (i.e., callsigns with add-on
+prefix or suffix) cannot fit into the 28 bits allocated in a standard
+message.  Similarly, 6-digit locators cannot fit into 15 bits.
+Messages using these components are therefore sent using a
+two-transmission sequence.  For example, if the callsign is PJ4/K1ABC,
+the 6-digit grid locator is FK52UD, and the power level 37 dBm, the
+following messages will be sent in alternating transmissions:
 
  PJ4/K1ABC 37 
- <PJ4/K1ABC> FK52UD 37
+ <PJ4/K1ABC> FK52UD 37
 
-If you have special need to use a 6-digit locator with a normal callsign, check
-the box *Force transmission of 6-digit locator*.  If the callsign is K1ABC, the
-6-digit grid locator FN42AX, and the power level 37 dBm, the following messages
+If you have special need to use a 6-digit locator with a normal
+callsign, check the box *Force transmission of 6-digit locator* on the
+*Advanced* setup screen.  If the callsign is K1ABC, the 6-digit grid
+locator FN42AX, and the power level 37 dBm, the following messages
 will then be sent in alternating transmissions:
 
  K1ABC FN42 37 
- <K1ABC> FN42AX 37
+ <K1ABC> FN42AX 37
 
-Callsigns enclosed in angle brackets are actually sent as 15-bit hash codes.
-If such a code is received by another station before the full callsign has been
-received, it will be displayed as <...> on the decoded text line.  Once the full
-callsign has been received, the decoder will thereafter recognize the hash code
-and fill in the blanks.  Two very different callsigns might have the same hash
-code, but the 15-bit hash-code length ensures that in practice such collisions
-will be rare.
+Callsigns enclosed in angle brackets are actually sent as 15-bit hash
+codes.  If such a code is received by another station before the full
+callsign has been received, it will be displayed as <...> on the
+decoded text line.  Once the full callsign has been received, the
+decoder will thereafter recognize the hash code and fill in the
+blanks.  Two very different callsigns might have the same hash code,
+but the 15-bit hash-code length ensures that in practice such hashing
+collisions will be rare.
 

@@ -1,9 +1,10 @@
-Some special-purpose applications can benefit from a simple implementation of
-the WSPR protocol in a program driven from the command line.  The standard _{prog}_
-4.0 distribution includes a simple program “wspr0” for this purpose.  As
-distributed, *wspr0* always uses the system default audio devices and it does not
-implement automatic uploading of spots, rig control, *I/Q mode*, or *band hopping*.
-The program runs in a single thread. Its source code is easy to modify as 
-desired for particular  applications. Full operational details are described
-in an accompanying document, {wspr0_guide}.
+Some special-purpose applications can benefit from a simple
+implementation of the WSPR protocol in a program driven from the
+command line.  The standard _{prog}_ 4.0 distribution includes a
+simple program _WSPR0_ for this purpose.  As distributed, _WSPR0_
+always uses the system default audio devices and it does not implement
+automatic uploading of spots, rig control, I/Q mode, or band hopping.
+The program runs in a single thread. Its source code is easy to modify
+as desired for particular applications. Full operational details are
+described in an accompanying document, {wspr0_guide}.
 

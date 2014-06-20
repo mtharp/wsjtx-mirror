@@ -1,16 +1,19 @@
 
-_{prog}_ (pronounced "whisper") stands for "Weak Signal Propagation Reporter."
-_WSPR_ implements a protocol designed for probing potential propagation paths
-using low-power transmissions. Normal transmissions carry a station's callsign,
-Maidenhead grid locator, and transmitter power in dBm. The program can decode
-signals with S/N as low as -28 dB within a 2500 Hz bandwidth. Stations with internet
-access can automatically upload their reception reports to a central database
-called {wsprnet}, which includes a mapping facility.  
+_{prog}_ (pronounced ``whisper'') stands for Weak Signal Propagation
+Reporter.  _WSPR_ implements a protocol designed for probing potential
+propagation paths using low-power transmissions. Normal transmissions
+carry a station's callsign, grid locator, and transmitter power in
+dBm. The program can decode signals with S/N as low as -28 dB in a
+2500 Hz bandwidth. Stations with internet access can automatically
+upload their reception reports to a central database called {wsprnet},
+with a mapping facility, archival storage, and many other features.
 
-The entire WSJT-related effort is an open-source project, released under the GNU
-General Public License (GPL v3). If you have programming or documentation skills
-or would like to contribute to the project in other ways, please make your
-interests known to the development team. The project’s source-code repository
-can be found at {devsvn}, and most communication among the developers takes
-place on the email reflector {devmail}.
+Like its sister programs _WSJT_, _MAP65_, _WSJT-X_, and _WSPR-X_,
+_{prog}_ is part of an open-source project released under the GNU
+General Public License (GPL v3). If you have programming or
+documentation skills or would like to contribute to the project in
+other ways, please make your interests known to the development
+team. The project’s source-code repository is {devsvn}, and most
+communication among the developers takes place on the email reflector
+{devmail}.
 

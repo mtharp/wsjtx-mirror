@@ -1,48 +1,57 @@
-// insert band hopping image here
+_{prog}_ 4.0 allows those with CAT-controlled radios to investigate
+propagation on many bands without user intervention.  
 
-_{prog}_ 4.0 allows those with CAT-controlled radios to investigate propagation
-on bands without user intervention.  Coordinated *hopping enables* a sizable group
-of stations around the world to move together from band to band, thereby 
-maximizing the chances of identifying open propagation paths.
+- Select *Band Hopping* on the Setup menu or type *F9*, and you'll see
+the screen shown below.  You can select any mix of active bands and
+Tx fractions.  If you then check *Band Hop* in the main window,
+_{prog}_ will switch bands randomly after each 2-minute interval.  If
+the box labeled *Tuneup* is checked for a particular band, _{prog}_
+will transmit an unmodulated carrier for several seconds just after
+switching to that band and before the normal Rx or Tx period starts.
+This feature can be used to activate an automatic antenna tuner (ATU)
+to tune a multi-band antenna to the newly selected band.  Check the
+box *Coordinated hopping* to enable sequential hopping through as many
+as ten bands, according to the schedule shown in the table below.
 
-Select *Band Hopping* on the Setup menu or type *F9*, and you'll see the screen
-shown at left.  You can select any mix of active bands and Tx fractions.  If
-you then check *Band Hop* in the main window, _{prog}_ will switch bands randomly
-after each 2-minute interval.  If the box labeled *Tuneup* is checked for a
-particular band, _{prog}_ will transmit an unmodulated carrier for several seconds
-just after switching to that band and before the normal Rx or Tx period starts.
-This feature can be used to activate an automatic antenna tuner (ATU) to tune a
-multi-band antenna to the newly selected band.  Check the box *Coordinated hopping*
-to enable sequential hopping through as many as ten bands, according to the 
-schedule shown in the table below.
+[[FigBandHopping]]
+image::images/BandHopping.png[align="center"] 
 
+*Coordinated
+hopping* enables a sizable group of stations around the world to move
+together from band to band, thereby maximizing the chances of
+identifying open propagation paths.
 
-*INSERT BAND HOPPING TABLE HERE*
+ Band (m)   160  80  60  40  30  20  17  15  12  10
+ UTC Minute  00  02  04  06  08  10  12  14  16  18
+             20  22  24  26  28  30  32  34  36  38
+             40  42  44  46  48  50  52  54  56  58 
 
-The band-selection schedule repeats starting at UTC minutes 20 and 40, for a
-total of three full ten-band sequences in each hour.  If the designated band
-for a given time slot has not been checked as active, a random choice is made
-among the active bands.  The algorithm for choosing whether to receive or 
-transmit guarantees at least one transmission on each active band every two
-hours.  If all ten bands are active, up to three transmissions may be made on
-a given band in a two hour period. 
+The band-selection schedule repeats starting at UTC minutes 20 and 40,
+for a total of three full ten-band sequences in each hour.  If the
+designated band for a given time slot has not been checked as active,
+a random choice is made among the active bands.  The algorithm for
+choosing whether to receive or transmit guarantees at least one
+transmission on each active band every two hours. If all ten bands are
+active, up to three transmissions may be made on a given band in a two
+hour period.
 
-Depending on your station and antenna setup, band changes might require other
-switching besides retuning your radio.  To make this possible in an automated
-way, whenever _{prog}_ executes a successful band-change command to a CAT-controlled
-radio, it looks for a file named user_hardware.bat, user_hardware.cmd, 
-user_hardware.exe, or user_hardware in the working directory.  If one of these
-is found, _{prog}_ tries to execute the command
+Depending on your station and antenna setup, band changes might
+require other switching besides retuning your radio. To make this
+possible in an automated way, whenever _{prog}_ executes a successful
+band-change command to a CAT-controlled radio, it looks for a file
+named +user_hardware.bat+, +user_hardware.cmd+, +user_hardware.exe+,
+or +user_hardware+ in the working directory. If one of these is found,
+_{prog}_ tries to execute the command
 
- user_hardware nnn
- 
-where *nnn* is the band-designation wavelength in meters.  You will need to write
-your own program, script, or batch file to do the necessary switching at your
-station.  I wrote a simple Python program for this purpose.  One of my antennas
-is an all-band dipole fed with open-wire line through a 4:1 current balun and
-an automatic ATU.  Other antennas include a shunt-fed tower for 160 m and a 
-tri-band trap dipole for 20, 15, and 10 m.  The desired antenna is selected
-automatically, by band.  When the all-band dipole is selected, the ATU adjusts
-itself during the several seconds just before a transmission or reception period
-begins.
+ user_hardware nnn 
 
+where *nnn* is the band-designation wavelength in meters.  You will
+need to write your own program, script, or batch file to do the
+necessary switching at your station. I wrote a simple Python program
+for this purpose. One of my antennas is an all-band dipole fed with
+open-wire line through a 4:1 current balun and an automatic ATU. Other
+antennas include a shunt-fed tower for 160 m and a tri-band trap
+dipole for 20, 15, and 10 m. The desired antenna is selected
+automatically, by band.  When the all-band dipole is selected, the ATU
+adjusts itself during the several seconds just before a transmission
+or reception period begins.

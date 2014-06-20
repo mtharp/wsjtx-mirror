@@ -1,100 +1,114 @@
-// Insert I-Q Mode image here
+=== Basic Parameters
 
-I-Q mode is intended for use with direct conversion receivers or transceivers
-like the SoftRock.  To use such a radio select *PTT method* = CAT and *Rig 
-number* = 2509 on the <<PARAMETERS,Setup | Station Parameters>> screen.
-Then select IQ Mode from the Setup menu, which will display the screen shown below.
+- I-Q mode is intended for use with direct conversion receivers or
+transceivers like the SoftRock.  To use such a radio select *PTT
+method* = CAT and *Rig number* = 2509 on the *Setup | Station
+Parameters* screen.  Then select IQ Mode from the Setup menu or type
+*F8*, which will display the screen shown below.
 
-Depending on how you have wired your SoftRock, you may or may not need to check
-*Reverse Rx I,Q*  or *Reverse Tx I,Q*.  Mine does not need these boxes checked. 
-The parameter *Fiq (Hz)* determines the frequency offset between *Dial frequency*
-specified on the _{prog}_ main screen and the frequency (times 1/4) of the 
-SoftRocks Si570 programmable oscillator.  The default value for *Fiq* is 12000 Hz;
-this puts the 200 Hz _{prog}_ band 12 kHz above mid-band.  For example, when 
-operating on the 30 m band you might set *Dial frequency* = 10.1387 MHz and Fiq 
-= 12000 Hz.  These settings result in a commanded Si570 frequency of 
-(10.138700–0.012000) × 4 = 40.506800 MHz.
+[[FigIQmode]]
+image::images/IQmode.png[align="center"] 
 
-You will probably need to calibrate the frequencies produced by your Si570
-oscillator.  Use the procedure outlined in <<FREQCAL,Appendix C>>.
+- Depending on how you have wired your SoftRock, you may or may not
+need to check *Reverse Rx I,Q* or *Reverse Tx I,Q*. The parameter *Fiq
+(Hz)* determines the frequency offset between *Dial frequency*
+specified on the _{prog}_ main screen and the frequency (times 1/4) of
+the SoftRock's Si570 programmable oscillator. The default value for
+*Fiq* is 12000 Hz; this puts the 200 Hz _{prog}_ band 12 kHz above
+mid-band.  For example, when operating on the 30 m band you might set
+*Dial frequency* = 10.1387 MHz and *Fiq* = 12000 Hz.  These settings
+result in a commanded Si570 frequency of (10.138700–0.012000) × 4 =
+40.506800 MHz.
 
-TIP: Remember that for most effective use of _{prog}_, you will want your frequencies
-correct to within a few Hz.
+- You will probably need to calibrate the frequencies produced by your
+Si570 oscillator.  Use the procedure outlined in <<FREQCAL,Appendix
+C>>.
 
-If your direct conversion receiver has a fixed local oscillator frequency, 
-compute the value of Fiq from the equation:
+TIP: Remember that for most effective use of _{prog}_, you will want
+your frequencies to be correct within a few Hz.
 
-+f~iq~ = f~dial~ – f~LO~ – f~BFO~ {plus} 1500.+
+- If your direct conversion receiver has a fixed local oscillator
+frequency, compute the value of Fiq from the equation below.  Be sure
+all values are in Hz, and remember that (unless you have changed it)
+the BFO frequency is 1500 Hz so the last two terms will cancel.
 
-Be sure all values are in Hz, and remember that (unless you have changed it) the
-BFO frequency is 1500 Hz so the last two terms cancel.
+ +f~iq~ = f~dial~ – f~LO~ – f~BFO~ {plus} 1500.+
 
 === Image Rejection
 
-_{prog} 4.0_ includes facilities for optimizing image rejection on transmit and
-receive.  You should start by establishing whether *Reverse Rx I,Q* or *Reverse
-Tx I,Q* need to be checked.  (With these boxes unchecked, the assumed routing of
-in-phase and  quadrature signals to the soundcard is “I=Left, Q=right.”)  A 
-typical SoftRock should exhibit around 30 dB of unwanted sideband rejection 
-without further adjustment.  However, rejections of 60 dB or more can easily be
-achieved in _{prog}_.  Here’s how.
+_{prog} 4.0_ includes facilities for optimizing image rejection on
+transmit and receive.  You should start by establishing whether
+*Reverse Rx I,Q* or *Reverse Tx I,Q* need to be checked.  (With these
+boxes unchecked, the assumed routing of in-phase and quadrature
+signals to the soundcard is “I=Left, Q=right.”)  A typical SoftRock
+should exhibit around 30 dB of unwanted sideband rejection without
+further adjustment.  However, rejections of 60 dB or more can easily
+be achieved in _{prog}_.  Here’s how.
 
-To adjust Tx image rejection you need a separate communications receiver:
+To adjust Tx image rejection you need a separate communications
+receiver:
 
-* Start _{prog}_, select the desired band, check the *Idle* box, set *Tx fraction*
-to 100%, and click the *Tune* button. _{prog}_ will send a series of long dashes at the 
-selected frequency.
-* Tune in the main signal on the separate receiver; then find the unwanted image,
-which will be offset in frequency by twice the sum of Fiq and the Rx BFO frequency.
+* Start _{prog}_, select the desired band, check the *Idle* box, set
+*Tx fraction* to 100%, and click the *Tune* button. _{prog}_ will send
+a series of long dashes at the selected frequency.  * Tune in the main
+signal on the separate receiver; then find the unwanted image, which
+will be offset in frequency by twice the sum of Fiq and the Rx BFO
+frequency.
 
-(For the example setup described above, the image is 27 kHz below the desired
-signal.)
+(For the example setup described above, the image is 27 kHz below the
+desired signal.)
 
-* While listening to the unwanted image, slowly adjust the sliders labeled 
-*Tx I/Q Balance* and *Tx Phase* on the *Setup | I-Q Mode* screen, seeking a null.
+* While listening to the unwanted image, slowly adjust the sliders
+labeled *Tx I/Q Balance* and *Tx Phase* on the *Setup | I-Q Mode*
+*screen, seeking a null.
 
-There are two sliders for each parameter — the upper one for coarse adjustments,
-the lower for fine. New settings are applied at the start of each transmitted dash.
+There are two sliders for each parameter — the upper one for coarse
+adjustments, the lower for fine. New settings are applied at the start
+of each transmitted dash.
 
-* When you have found the best null you may exit _{prog}_. The program will remember
-your last settings of *Tx I/Q Balance* and *Tx Phase*.
+* When you have found the best null you may exit _{prog}_. The program
+will remember your last settings of *Tx I/Q Balance* and *Tx Phase*.
 
-Rx image rejection is accomplished in a semi-automatic way. With another
-transmitter or stable signal generator, generate a moderately strong signal
-inside (or within ± 500 Hz of) the 200 Hz _{prog}_ band you will be receiving.
+Rx image rejection is accomplished in a semi-automatic way. With
+another transmitter or stable signal generator, generate a moderately
+strong signal inside (or within ± 500 Hz of) the 200 Hz _{prog}_ band
+you will be receiving.
 
 * Start _{prog}_, clear the Idle box, and set *Tx fraction* to 0.
-* After a reception interval starts, check the box *Adjust Rx phasing* and watch
-the numbers labeled *Bal* and *Pha* converge to stable values. This may take 30
-seconds or so. You may then uncheck Adjust phasing and check *Apply Rx phasing
-corrections*.
 
-The measured phasing parameters will then be applied to received signals at the end
-of each Rx interval. With this procedure, unwanted sideband suppression should
-be better than 60 dB. An example is illustrated by the following screen shot
-showing the _{prog}_ waterfall for two successive Rx intervals.
+* After a reception interval starts, check the box *Adjust Rx phasing*
+and watch the numbers labeled *Bal* and *Pha* converge to stable
+values. This may take 30 seconds or so. You may then uncheck Adjust
+phasing and check *Apply Rx phasing corrections*.
 
-// Insert decode window image here
+The measured phasing parameters will then be applied to received
+signals at the end of each Rx interval. With this procedure, unwanted
+sideband suppression should be better than 60 dB. An example is
+illustrated by the following screen shot showing the _{prog}_
+waterfall for two successive Rx
 
-At the start of the first interval the signal generator was set near the center
-of the _{prog}_ band, producing the bright unmodulated carrier just above 200 Hz. 
+[[FigIQmode]]
+image::images/Image_Rejection.png[align="center"] 
 
-* *Adjust Rx phasing* was checked at t = 10 s and unchecked at  t = 50 s, by which
-time the *Bal* and *Pha* numbers had stabilized.
-* At t = 60 s, halfway through the 2-minute Rx interval, the signal generator
-was moved 27 kHz lower, to the image frequency.  The partially suppressed image
-is visible on the waterfall just below 200 Hz.
+At the start of the first interval the signal generator was set near
+the center of the _{prog}_ band, producing the bright unmodulated
+carrier just above 200 Hz.
 
-(The small frequency offset is twice the error in the SoftRock’s LO frequency
-setting.)
+* *Adjust Rx phasing* was checked at t = 10 s and unchecked at t = 50
+s, by which time the *Bal* and *Pha* numbers had stabilized.  * At t =
+60 s, halfway through the 2-minute Rx interval, the signal generator
+was moved 27 kHz lower, to the image frequency.  The partially
+suppressed image is visible on the waterfall just below 200 Hz.  (The
+small frequency offset is twice the error in the SoftRock’s LO
+frequency setting.)
 
-* During the second Rx interval, the box *Apply Rx phasing corrections* was
-checked. As shown in the second waterfall segment, the newly determined phasing
-parameters suppress the unwanted signal enough to make it completely invisible.
-The measured suppression was more than 70 dB.
+* During the second Rx interval, the box *Apply Rx phasing
+corrections* was checked. As shown in the second waterfall segment,
+the newly determined phasing parameters suppress the unwanted signal
+enough to make it completely invisible.  The measured suppression was
+more than 70 dB.
 
-* I-Q Phasing and balance parameters are saved and restored on a “per band” basis.
-Use button *Save for this Band* to save settings you have determined for the 
-current band.  You can make those settings the default for all bands by clicking
-*Save for all bands*.
-
+* I-Q Phasing and balance parameters are saved and restored on a “per
+band” basis.  Use button *Save for this Band* to save settings you
+have determined for the current band.  You can make those settings the
+default for all bands by clicking *Save for all bands*.

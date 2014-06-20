@@ -2,41 +2,44 @@
 // Note, DOcBook, HTML nor xhtml can do text wrap around images,
 // which is a shame, as the original document looked nioce that way.
 
-The *Advanced* dialog can be called up from the *Setup* menu or by typing *F7*.
-If your licensing authority requires callsign identification in Morse code at
-specified intervals, you may set the interval in the *CW ID* field.  Your 
-callsign will then be sent in CW at the end of WSPR transmissions, at the
-specified interval. Because CW at 25 wpm uses several times more bandwidth
-than a WSPR signal, it is strongly recommended that you not use the *CW ID*
-feature unless required to
-do so.
-
-Users of homebrew receiving equipment may require a different BFO frequency than
-the standard 1500 Hz used for SSB transceivers.  You can enter a nonstandard
-value in the field labeled *Rx BFO (Hz)*.
-
-
-Many modern transceivers use a master oscillator from which most other 
-frequencies are synthesized.  If the master oscillator is slightly off 
-frequency, all dial readings may be high or low in a predictable way.  
-<<FREQCAL,Appendix C>> outlines a simple procedure for determining whether
-your radio can be calibrated in this way, and if so how to determine the
-calibration constants *A* and *B*.  Then, if you are using CAT control, you can
-improve the accuracy of your transmitted and received frequencies by entering
-these values and checking *Enable frequency correction* on the Advanced setup
-screen.  Frequencies sent to the radio will then be adjusted according to your
-calibration constants.  The button labeled *Measure an audio* frequency may be
-useful in determining values for *A* and *B*.  See <<FREQCAL,Appendix C>> for
-details. If using CAT control, you can force a frequency-setting command by
-clicking *Update rig frequency*.
-
-=== TX Audio Level
-
-As shown in the screen shot above, a slider control allows you to reduce your
-Tx audio signal by a specified amount.  The normal setting for full output is
-0 dB (slider all the way to the right).  You can reduce power by up to 30 dB by
-moving the slider to the left.  Changes take effect at the start of the next
-transmission.  It may be convenient to adjust this slider by setting *Tx 
-fraction* to 100% and clicking the *Tune* button to produce a series of transmitted
+- The *Advanced* dialog can be called up from the *Setup* menu or by
+typing *F7*.  As shown in the screen shot below, a slider control
+allows you to reduce your Tx audio signal by a specified amount.  The
+normal setting for full output is 0 dB (slider all the way to the
+right).  You can reduce power by up to 30 dB by moving the slider to
+the left.  Changes take effect at the start of the next transmission.
+It may be convenient to adjust this slider by setting *Tx fraction* to
+100% and clicking the *Tune* button to produce a series of transmitted
 dashes.  Each dash will then reflect any new slider setting.
+
+[[FigAdvanced]]
+image::images/advanced.png[align="center"] 
+
+- If your licensing authority requires callsign identification in
+Morse code at specified intervals, you may set the interval in the *CW
+ID (min)* field.  Your callsign will then be sent in CW at the end of
+WSPR transmissions, at the specified interval. Because CW at 25 wpm
+uses several times more bandwidth than a WSPR signal, it is strongly
+recommended that you not use the *CW ID* feature unless required to do
+so.
+
+- Users of homebrew receiving equipment may require a different BFO
+frequency than the standard 1500 Hz used for SSB transceivers.  You
+can enter a nonstandard value in the field labeled *Rx BFO (Hz)*.
+
+- Many modern transceivers use a master oscillator from which most
+other frequencies are synthesized.  If the master oscillator is
+slightly off frequency, all dial readings may be high or low in a
+predictable way.  <<FREQCAL,Appendix C>> outlines a simple procedure
+for determining whether your radio can be calibrated in this way, and
+if so how to determine the calibration constants *A* and *B*.  Then,
+if you are using CAT control, you can improve the accuracy of your
+transmitted and received frequencies by entering these values and
+checking *Enable frequency correction* on the *Advanced* setup screen.
+Frequencies sent to the radio will then be adjusted according to your
+calibration constants.  The button labeled *Measure an audio*
+frequency may be useful in determining values for *A* and *B*.  See
+<<FREQCAL,Appendix C>> for details. If using CAT control, you can
+force a frequency-setting command by clicking *Update rig frequency*.
+
 

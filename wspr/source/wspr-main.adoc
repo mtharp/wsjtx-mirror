@@ -1,3 +1,6 @@
+= WSPR User Guide
+Version 4.0
+
 :badges:
 :icons:
 :numbered:
@@ -5,35 +8,12 @@
 :description: Software for Amateur Radio Weak-Signal Communication
 :prog: WSPR
 
-= WSPR User Guide
-
 // use global link file
 include::../../global/links.adoc[]
 
 [[INTRO]]
 == Introduction
 include::introduction.adoc[]
-
-// This should be amended to include:../../globals/communication.adoc
-[[INTRO]]
-== Contact Us
-The following are the established communication channels for the WSPR Group:
-
-.General Information
-* Main Site: {homepage}
-* Development Site: {projsummary}
-
-.Development Related
-* Project Manager, Email: {joe_taylor}
-* Development Activity, Join: {dev_mail_list}
-* Repository Updates, Join: {dev_mail_svn}
-
-.Community Related
-* WSPR Discussion Board: {wsjt_yahoo_group}
-* WSPR Spotting Network: {wsprnet}
-* FMT Information: {fmt_arrl}
-* FMT Discussion Board: {fmt_group}
-* FMT Coordination: {fmt_k5cm}
 
 [[SYSREQ]]
 == System Requirements
@@ -43,58 +23,47 @@ include::system-requirements.adoc[]
 == Installation
 include::installation.adoc[]
 
-[[SRC_CODE]]
-=== Source Code Install
-include::install-from-source.adoc[]
-
-//[[CONFIG]]
-//== Setup and Configuration
+[[CONFIG]]
+== Setup and Configuration
+include::setup.adoc[]
 
 [[BASICINSTRUCTIONS]]
 == Basic Operation
-include::basicoperating.adoc[]
-
-[[DETAILS]]
-== Additional Details
-include::additional-details.adoc[]
-
-[[STATIONPARAM]]
-== Station Parameters
-include::station-parameters.adoc[]
-
-[[IQSETUP]]
-== I/Q Setup
-include::iqsetup.adoc[]
+include::basic-operating.adoc[]
 
 [[ADVSETUP]]
 == Advanced Setup
 include::advanced-setup.adoc[]
 
+[[IQSETUP]]
+== I-Q Mode
+include::iqsetup.adoc[]
+
 [[SPECIALMESSAGES]]
-== Special MSG Format
+== Special Messages
 include::special-messages.adoc[]
 
 [[BANDHOPPING]]
 == Band Hopping
 include::band-hopping.adoc[]
 
-[[MODE15]]
-== WSPR-15 Mode
-include::wspr15-mode.adoc[]
+//[[MODE15]]
+//== WSPR-15 Mode
+//include::wspr15-mode.adoc[]
 
 [[WSPRCLI]]
 == WSPR Command Line
 include::wspr-cli.adoc[]
 
 [[WSPRNET]]
-== WSPR Net
+== WSPRnet
 include::wspr-net.adoc[]
 
 :numbered!:
 // Appendix-A
 [appendix]
 [[CONVERSION]]
-== Conversions
+== Watts to dBm
 include::conversion-tables.adoc[]
 
 // Appendix-B
@@ -114,6 +83,27 @@ include::freq-calibration.adoc[]
 [[TROUBLESHOOTING]]
 == Troubleshooting
 include::faq.adoc[]
+
+// This should be amended to include:../../globals/communication.adoc
+[[INTRO]]
+== Contact Us
+The following are the established communication channels for the WSPR Group:
+
+.General Information
+* Main Site: {homepage}
+* Development Site: {projsummary}
+
+.Development Related
+* Project Manager, Email: {joe_taylor}
+* Development Activity, Join: {dev_mail_list}
+* Repository Updates, Join: {dev_mail_svn}
+
+.Community Related
+* WSJT discussion board: {wsjt_yahoo_group}
+* WSPR spotting network: {wsprnet}
+* FMT (Frequency Measuring Test) Information: {fmt_arrl}
+* FMT Discussion Board: {fmt_group}
+* FMT Coordination: {fmt_k5cm}
 
 [[ACK]]
 == Acknowledgements

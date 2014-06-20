@@ -1,0 +1,116 @@
+Confirm proper operation of the _{prog}_ decoder by opening a sample
+audio file recorded by _{prog}_. Select *File | Open*, navigate to the
++...\save\Samples+ directory under the installation directory, and
+open the file +091022_0436.wav+.  A total of six _{prog}_ signals
+should be decoded, and your screen should look like the image
+below. You might find it interesting to listen to the sample file
+using Windows Sound Recorder or a similar utility program. The
+_{prog}_ signals are barely audible, if audible at all, and the
+recording includes many atmospheric static crashes... and yet _{prog}_
+decodes the signals without errors.
+
+[[FigSampleFile]]
+image::images/Sample_File_Decoded.png[align="center"] 
+
+To prepare for on-the-air operation, proceed as follows:
+
+- Select an operating band from the *Band* menu. The default _{prog}_
+frequency will appear in the Dial frequency box. For example, you
+should see 10.138700 MHz for the 30 m band. Set your transceiver to
+this frequency in USB mode, or a USB-based data mode. If you have
+enabled CAT control, frequency setting should occur
+automatically. Select a desired Tx frequency by double-clicking
+somewhere in the graphical display area. Available Tx frequencies fall
+in the range 1400–1600 Hz above the dial frequency. Clicking near the
+bottom of the graphical area gives a frequency near the lower limit,
+and clicking near the top puts you near the upper limit.
+
+- _{prog}_ uses two-minute time slots for transmitting and
+receiving. The slider labeled *Tx fraction* sets the average proportion
+of time allocated for transmitting.  The default setting of 20% is a
+good compromise under most conditions: it means that you will
+transmit approximately once every ten minutes and receive the rest of
+the time. The exact T/R sequence will be randomized so as to maximize
+your chances of receiving other _{prog}_ stations. For receive-only
+operation, set the *Tx fraction* slider to zero.
+
+- While in *Idle* mode, you may click the *Tune* button to produce a
+short unmodulated test transmission. Duration of the transmission (in
+seconds) is set by the Tx fraction slider.
+
+- If you have internet access and wish to upload your reports automatically to
+{wsprnet}, check the box labeled *Upload spots*.
+
+- Be sure that your computer clock is correct to within about ±1 second. 
+
+- To begin normal operation, clear the *Idle* checkbox. _{prog}_ will
+then begin a receive sequence at the start of the next even-numbered
+UTC minute. After reception has started, use the computer’s sound
+mixer and/or the volume controls on your radio or soundcard interface
+to adjust the audio level (lower left corner of main _{prog}_ screen)
+to about midscale. 
+
+- At the end of each reception interval, the waterfall will update and
+any decoded _{prog}_ messages will appear in the main text window.
+The decoder looks for all detectable _{prog}_ signals in a 200 Hz
+passband and displays its results in a waterfall spectrogram, a text
+window, and a Band Map.  The spectrogram covers a narrow frequency
+range (about 200 Hz) in the vertical direction; the last three digits
+of the received frequency, in Hz, are displayed on a scale at right.
+Time runs from left to right in the spectrogram.  On a typical
+computer screen each two-minute interval is a strip about 1 cm wide.
+The times of your own transmissions are denoted by thin green vertical
+lines in the spectrogram.
+
+[[FigSpectrogram]]
+image::images/Spectrogram.png[align="center"] 
+
+- Each decoded _{prog}_ signal produces text showing the UTC, measured
+signal-to-noise ratio in dB (in a 2500 Hz reference bandwidth), time
+offset DT in seconds, measured frequency in MHz, drift rate in
+Hz/minute, and the decoded message.  Time offsets greater than about
+±2 seconds indicate a significant timing error at transmitter or
+receiver, or possibly both.  For best performance your computer clock
+should be kept accurate to within ±1 second.  Apparent frequency
+drifts greater than ±1 Hz per minute can usually be traced to the
+transmitter, and should be corrected if possible.  Of course, receiver
+drifts could also contribute to a measured drift — but they are easily
+recognized because nearly all signals will then appear to drift by the
+same amount.
+
+[[FigDecodedText]]
+image::images/Decoded_Text.png[align="center"] 
+
+- Color coding is used in the Band Map to indicate elapsed time since
+a station was decoded.  Calls in red have been seen within 15 minutes
+of the last line of decoded text; yellow callsigns are 15-30 minutes
+old, light gray 30-45 minutes, and darker gray 45-60 minutes.
+Callsigns more than an hour older than the most recent one are deleted
+from the Band Map.
+
+[[FigBandMap]]
+image::images/Band_Map.png[align="center"] 
+
+- For best performance the background noise level going into the
+computer should be set to show approximately midscale on the
+"thermometer" scale at lower left.  Deviations as large as ±20 dB from
+nominal will not affect _{prog}_ decoding capability significantly.
+The idea is to have the baseline noise level high enough for
+quantization noise to be negligible, but low enough to give adequate
+dynamic range. Signal levels reported for each _{prog}_ decode are the
+measured ratio of signal power to average baseline noise power, scaled
+to a reference bandwidth of 2500 Hz.  Within broad limits, this ratio
+is independent of the level setting.
+
+- Under most conditions a receiver bandwidth normal for voice SSB
+communication, say 2.4 kHz, is a good choice.  Narrower bandwidths are
+perfectly acceptable if you have problems with strong signals well
+outside the 200 Hz _{prog}_ passband.  There is no particular
+advantage in using a bandwidth as small as 200 Hz, however, since
+_{prog}_ does all necessary narrow-band filtering in software.
+
+- Usually it is not critical whether AGC is on or off.  A good default
+procedure is to leave it on, and set the desired audio level by
+reducing the RF gain. In effect this means that AGC will be activated
+only when very strong signals are present in the passband.
+Slow-recovery AGC settings are generally not desirable for _{prog}_.
