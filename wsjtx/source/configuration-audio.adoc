@@ -1,1 +1,3 @@
+// Status=review
+image::images/r4148-audio-ui.png[align="center",alt="Configuration Screen"]
 - Select the devices you will use for *Audio In* and *Audio Out*.
