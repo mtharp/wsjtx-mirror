@@ -1,0 +1,13 @@
+// Status=review
+[[FIG_CONFIG_RPT]]
+image::images/r4148-rpt-ui.png[align="center",alt="Configuration Screen"]
+
+Logging
+
+* *PSK Reporter*: check to enable sending reception reports to the
+{pskreporter} mapping facility.* 
+
+"Log dB comments to log".  This places the signal report I receive from the other station in the log book section of WSJT-X
+
+"Prompt me to log QSO" .  With this option enabled, when I send my 73 message, or my free text message, the log book pops up and reminds to log the QSO
+

@@ -37,7 +37,7 @@ include::system-requirements.adoc[]
 [[INSTALL]]
 == Installation
 
-- Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link located on the left
+Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link located on the left
 margin and then on the desired download link.
 
 CAUTION: If you are using a sound card that is also your computer’s
@@ -76,9 +76,17 @@ include::configuration-station.adoc[]
 === Radio Tab
 include::configuration-radio.adoc[]
 
+//[[AUDIO]]
+//=== Audio Tab
+//include::configuration-audio.adoc[]
+
 [[TXMACROS]]
 === Tx Macros Tab
 include::configuration-txmacros.adoc[]
+
+//[[LOGGING]]
+//=== Reporting Tab
+//include::configuration-rpt.adoc[]
 
 [[BAND_SETTINGS]]
 === Frequencies Tab

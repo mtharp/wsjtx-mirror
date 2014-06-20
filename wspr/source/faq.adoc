@@ -40,9 +40,9 @@ dialog?
 reception period should be at least –10 dB. If it is very low, e.g. –30 dB, you 
 might need to adjust the volume level in your computer operating system 
 and/or receiver. 
-* Are any stations active on the selected band? For new users, 30 m is a good 
+* Are any stations active on the selected band? For new users, the 30 meter band is a good 
 starting band as it generally has high activity and good propagation. Check 
-the {wsprnet_activity} to see how many stations are active on a band,
+the {wsprnet_activity} to see both how many stations are active on a band,
 and where they are located.
 * Is your receiver is on the correct frequency and in USB mode? The readout 
 frequency should be the one given in the Dial box. Use a standard-frequency 
@@ -106,7 +106,7 @@ Hardware and parity = Even, the Handshake line should read
 
  Hardware –C serial_parity=Even
 
-* Some radios(e.g.,YaesuFT-450,FT-950,andFlexRadio3000)do not like the default
+* Some radios(e.g.,YaesuFT-450, FT-950, and FlexRadio3000)do not like the default
 timing parameters used by the rigctl program. CAT control of these radios requires
 the following text on the Handshake line:
 

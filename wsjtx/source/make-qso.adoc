@@ -1,10 +1,10 @@
 // Status=review
 === Standard Exchange
-By longstanding tradition, a minimal valid QSO requires the exchange
+By longstanding tradition, a minimally valid QSO requires the exchange
 of callsigns, a signal report or some other information, and
 acknowledgments.  _WSJT-X_ is designed to facilitate making such
-minimal QSOs using short, structured messages.  The process works best
-if you use these formats and follow standard operating practices.  The
+minimal QSOs using short, structured messages. The process works best
+if you use these formats and follow standard operating practices. The
 recommended basic QSO goes something like this:
 
 [width="90%",cols="3,7,12",options="header"]
@@ -46,11 +46,11 @@ free-text nessages, since the program may try to interpret your
 construction as part of a compound callsign.)  It should be obvious
 that the JT9 and JT65 protocols are not well suited for extensive
 conversations or rag-chewing.
-
+[[COMP-CALL]]
 === Compound Callsigns
 
 Compound callsigns such as xx/K1ABC or K1ABC/x are handled in
-one of two possible ways.
+one of two possible ways:
 
 .Type 1 Compound-Callsign Messages
 

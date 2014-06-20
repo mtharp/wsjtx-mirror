@@ -1,0 +1,1 @@
+- Select the devices you will use for *Audio In* and *Audio Out*.

@@ -1,5 +1,5 @@
 [qanda]
-When I start _WSJT-X_ v1.3, it seems to run properly in receive mode, with signals appearing on the waterfall. However, *Decode* starts later than expected and nothing is decoded. Is this a sampling problem and how can I fix it?)::
+When I start _WSJT-X_ v1.3, it seems to run properly in receive mode, with signals appearing on the waterfall. However, *Decode* starts later than expected and nothing is decoded. Is this a sampling problem and how can I fix it?::
 
 Some earlier soundcard drivers fail to work properly at 48 kHz sample
 rate, which is the default in _WSJT-X_ r3590 and above.  You can force
