@@ -10,25 +10,30 @@ REQUIRED DEPENDENCIES
 To compile WSPR, you will need the following packages / applications:
 
 	* A C/C++ and gfortran compiler
-	* GNU Autotools: autoconf, make
+	* GNU Autotools: autoconf, make, autotools-dev (config.guess, config.sub, insatall.sh)
 	* Portaudio-19-dev
-	* FFTW 3.3+-dev (only libraries (.so are required)
+	* FFTW 3.3+-dev (only libraries *.so are required)
 	* Samplerate Development Library.
 	* Python3.2+
-	* Numeric Python (Numpy 1.8.1+), providing F2PY v2.0
-	* PIL, (Python Imaging Library)
+	* Numeric Python (Numpy 1.8.1+), providing F2PY v2.0 built against Python3
+	* PIL, (Python Imaging Library, somtimes referred to as PILLOW)
 	* Python-tk (Tcl\TK 8.6.1 or Later)
+	* Python Imiaging Tk
 	* Optional: Hamlib 1.2.15.x (or current distro verson) for rig control
 
 Example: For Ubuntu 14.04, the following packages are required:
 
-sudo apt-get install autoconf autotools gfortran libfftw3-dev libusb-dev \
+sudo apt-get install autoconf autotools-dev gfortran libfftw3-dev libusb-dev \
 libhamlib-dev libhamlib-utils libsamplerate0-dev portaudio19-dev python3-dev \
-python3-imaging python3-tk python3-numpy
+python3-imaging python3-imaging-tk python3-tk python3-numpy
 
 You may be able to slim the list down by selctive installation, but the above
 provides a solid base to start with.
 
+NOTE: if you have python-numpy (based on Python27) installed, you should remove
+it unless it is needed for other Numeric Python applications:
+
+sudo apt-get remove python-numpy
 
 INSTALL
 -------
@@ -55,10 +60,6 @@ Example:
 
 ./configure --prefix=$HOME/test/wspr
 
-Note: Due to confliucting file names with "fmt", it's *not* advisable
-to install WSPR to /usr/local as Coreutils also has an application
-called "fmt.
-
 
 NON-STANDARD LIBRARY LOCATIONS
 ------------------------------
@@ -67,6 +68,7 @@ for FFTW3, Samplerate and Portaudio19. If it cannot locate and test the
 required packages, you will be prompted to supply the locations:
 
 Example - (header location):
+
 ./configure CPPFLAGS="-I$HOME/test/portaudio/include"
 
 Note the " .. " for parameter expansion for $HOME
@@ -200,7 +202,4 @@ You might have to move Audio.so to WsjtMod manually.
 Thereafter     python wspr.py   should execute.
 
 Additional guidance from  g4kla at rmnjmn.demon.co.uk
-
-
-
 
