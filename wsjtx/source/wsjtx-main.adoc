@@ -68,6 +68,12 @@ include::install-from-source.adoc[]
 [[CONFIG]]
 == Setup and Configuration
 
+After installing WSJT-X, the user must configure the program with some basic information. There are six different areas, or “tabs,” which are located under the main *Configuration* menu: _General_, _Radio_, _Audio_, _Tx Macros_, _Reporting_ and _Frequencies_. Some of these tabs contain options which are are necessary to input or select (i.e. your Call Sign and Grid Square in the *_General tab_*, for instance) for operation of the program. Some are options which must be chosen with a mind towards your station, such as those found in the _Radio_ and _Audio_ tabs. The remaining tabs, _Tx Macros_, _Reporting_ and _Frequencies_, though no less important, are mostly ancillary and designed for the user to further customize their station to their operating style and needs.
+
+The following chapter has been designed with a picture of a particular tab, along with a list of options available to the user, delineated by section, under that particular tab. Finally, each particular option is accompanied by a brief definition of what the option does or does not do. 
+
+Many, if not most, problems using _WSJT-X_ can be resolved by careful study of the configuration settings. Please review the following in order to maximize your enjoyment of _WSJT-X_.
+
 [[GENERAL]]
 === General Tab
 include::configuration-station.adoc[]
