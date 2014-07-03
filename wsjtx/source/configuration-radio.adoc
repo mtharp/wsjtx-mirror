@@ -1,4 +1,5 @@
 // Status=review
+Let us now turn our attention to the *_Radio Tab_*, the second Tab under the *Configuration* menu. This section focuses on CAT control between your radio and _WSJT-X_.
 [[FIG_CONFIG_RADIO]]
 image::images/r4148-cat-ui.png[align="center",alt="Radio Screen"]
 

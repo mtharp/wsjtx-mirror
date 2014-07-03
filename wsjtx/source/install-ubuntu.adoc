@@ -1,6 +1,6 @@
 // Status=review
 
-- Installation packages for Ubuntu 12.04, 12.10, 13.04, 13.10 are
+Installation packages for Ubuntu 12.04, 12.10, 13.04, 13.10 are
 maintained by AC6SL and are made available from his {launchpadurl} page.
 
 - If you have not previously obtained packages from the Personal Package
