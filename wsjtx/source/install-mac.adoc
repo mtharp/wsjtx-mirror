@@ -18,3 +18,5 @@ have to change Audio In format to 48000 Hz two-channel, 16-bit.
 
 - Use *System Preferences* to select an external time source to keep
 your system clock synchronized to UTC.
+
+- Should you choose to use the integrated logger, you can locate your logs, and other writeable files, using the following path: +$HOME/Library/ApplicationSupport/WSJT-X+
