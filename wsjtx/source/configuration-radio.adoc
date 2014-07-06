@@ -5,7 +5,7 @@ image::images/r4148-cat-ui.png[align="center",alt="Radio Screen"]
 
 First, select your radio using the *Rig* menu. _None_ may be selected if no CAT control is available or desired. If {dxlcommander} or {hrd} is selected, then the "Network Server" may be left blank in order to access the default instance on the local machine. If these programs are running on a different machine and/or port, that can specified. Hover over the text to see details about how to change these settings in a tool tip.
 
-Of course, this tab behaves differently if network or inter-program communications are selected as opposed to direct CAT control via Hamlib.
+Of course, this tab behaves differently if network or inter-program communications are selected as opposed to direct CAT control via Hamlib:
 
 * *OmniRig Rig 1* or *OmniRig Rig 2* may be selected to connect to an _OmniRig_ server on the same machine (this is only available on Windows since it uses a Microsoft proprietary communications protocol).
 * *Hamlib Net rigctl* may be selected to use the Hamlib "rigctld" radio server, like {dxlcommander} and {hrd}. This has a default "Network Server" which will work on the local machine and so can normally be left blank.
@@ -16,8 +16,7 @@ The Poll Interval option has changed in v1.4.
 
 In the _CAT Control_ section:
 
-* Select the *Serial Port* connected to your station’s radio. The _Serial Port Parameters_ are largely standardized: _Baud Rate_, _Data Bits_, _Stop Bits_ and _Handshake_. These settings need to match the radio requirements and can be found in the operating manual for your radio. It is best to select the highest working baud rate available on the rig and to also select the shortest poll interval. This combination will give the smoothest feedback. If the baud rate is set too low, then a longer poll interval may be required to avoid a backlog of CAT serial port traffic. The _Handshake_ option must be set correctly: many Kenwood rigs require hardware handshaking to access the CAT port, for instance. XON/XOFF flow control is available as an option; however, as no current radio requires this particular form of communication, it is most likely not the right option for your station, but is included in case your radio requires this option. Lastly, in the _Force Control Settings_, the RTS & DTR check boxes select which serial control line is used to key the rig. This setting depends upon the interface hardware configuration.
-
+* Select the *Serial Port* connected to your station’s radio. The _Serial Port Parameters_ are largely standardized: _Baud Rate_, _Data Bits_, _Stop Bits_ and _Handshake_. These settings need to match the radio requirements and can be found in the operating manual for your radio. It is best to select the highest working baud rate available on the rig and to also select the shortest poll interval. This combination will give the smoothest feedback. If the baud rate is set too low, then a longer poll interval may be required to avoid a backlog of CAT serial port traffic. The _Handshake_ option must be set correctly: many Kenwood rigs require hardware handshaking to access the CAT port, for instance. XON/XOFF flow control is available as an option; however, as no current radio requires this particular form of communication, it is most likely not the right option for your station, but is included in case your radio requires this option. Lastly, in the _Force Control Settings_, the RTS & DTR check boxes select which serial control line is raised high, or in other words, left on. Wether you will need this particular setting depends upon the interface hardware configuration of your station. These boxes should only be checked if you are certain that the interface hardware configuration of your station requires a constant voltage on one of these serial lines for operating power.
 
 In the _PTT Method_ section, like the _CAT Control_ one, has an editable box which allows a user defined non-standard port name. It is only available when a non-CAT/non-VOX PTT setting is selected. This box only appears for non-network rig control options. It is editable so there is no longer any need to hack the .INI file to support non-standard serial port device names. The last user edited value is saved between sessions. 
 
@@ -40,12 +39,5 @@ The _Split Operation_ section contains the following three options:
 
 Lastly, in the bottom right hand corner of the *Radio* tab, there are two buttons. Their function is as follows:
     
-* *Test CAT*: This button will turn green if communications via CAT between the radio and _WSJT-X_ are established. It will turn red and an error message box will occur if there is a problem. This error is generic and will also pop up if a CAT error or anomaly occurs in normal operation. This error message will show further details of the error and allows the user to retry the CAT command or go to the configuration dialog to adjust configuration settings. CAT errors that are not retried are fatal; unlike v1.3, where split operation was disabled and the user could continue, but the rig could be left in an a state that lead to incorrect operation.
-* *Test PTT*: This toggle button functions like the Test CAT button, except it checks whether or not the PTT setup between the radio and _WSJT-X_ works appropriately.
-
-
-TIP: If you need an additional item in the list of devices for the
-CAT port, edit the configuration file +wsjtx.ini+ and add your
-requirement as +CATdriver=<yourdriver>+ (for example, 
-+CATdriver=/dev/tty.usbserial+) in the group of entries marked
-+[Common]+.
+* *Test CAT*: This toggle button will turn green if communications via CAT between the radio and _WSJT-X_ are established. It will turn red and an error message box will occur if there is a problem. This error is generic and will also pop up if a CAT error or anomaly occurs in normal operation. This error message will show further details of the error and allows the user to retry the CAT command or go to the configuration dialog to adjust configuration settings. CAT errors that are not retried are fatal; unlike v1.3, where split operation was disabled and the user could continue, but the rig could be left in an a state that lead to incorrect operation.
+* *Test PTT*: This toggle button functions like the *Test CAT* button above, except it toggles the PTT circuit between RX and TX, which helps the operator determine if the PTT circuit is in good working order and configured appropriately.
