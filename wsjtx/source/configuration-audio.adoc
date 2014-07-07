@@ -1,3 +1,5 @@
 // Status=review
-image::images/r4148-audio-ui.png[align="center",alt="Configuration Screen"]
+image::images/r4148-audio-ui.png[align="center",alt=“WSJT-X Audio Configuration Screen"]
 - Select the devices you will use for *Audio In* and *Audio Out*.
+
+Save Directory: For all writeable files, such as the log, you may select the location in which you’d like to store them.

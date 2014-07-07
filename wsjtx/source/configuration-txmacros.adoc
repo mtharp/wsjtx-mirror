@@ -1,9 +1,11 @@
 // Status=review
 
-*Tx Macros* are an aid for sending commonly used free-text messages.
-To enable a pull-down selection, add your custom messages to the entry
-fields provided. In either JT65 or JT9, the maximum free-text message length
-is 13 characters, including spaces.
+*Tx Macros* are an aid designed for sending free-text messages instead of those automatically generated for you in the *Main Window*. While understanding that JT65 and JT9 are not conversational modes, you can substitute any number of messages as you see fit that communicate further information than what is required for a minimally valid QSO.
+To add your custom message(s), simply enter your message in the text box at the top of the tab and click _Add_ to incorporate your new message to the entry fields provided; similarly, if you no longer wish to use a particular macro, simply select the message from the list and click _Delete_. Some suggestions you may wish to include could be messages such as: “FB SIG 73 GL”, “BIG SIG 73 GL”, “RR THX 73 GL” and so on. 
+
+In either JT65 or JT9, the maximum free-text message length is 13 characters, including spaces. Please be aware of this limitation as you craft your messages.
 
 [[FigTxMacros]]
 image::images/r4148-txmac-ui.png[align="center",alt="Tx Macros Screen"]
+
+You can access your macros from the *Main Window* screen by clicking on the “2” Tab in the Generated Message Box area, selecting “Free Msg” and then using the drop down menu to select the message you’d like to send.

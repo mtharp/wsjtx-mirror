@@ -1,7 +1,7 @@
 // Status=review
 Let us now turn our attention to the *_Radio Tab_*, the second Tab under the *Configuration* menu. This section focuses on CAT control between your radio and _WSJT-X_. 
 [[FIG_CONFIG_RADIO]]
-image::images/r4148-cat-ui.png[align="center",alt="Radio Screen"]
+image::images/r4148-cat-ui.png[align="center",alt=“WSJT-X Radio Configuration Screen"]
 
 First, select your radio using the *Rig* menu. _None_ may be selected if no CAT control is available or desired. If {dxlcommander} or {hrd} is selected, then the "Network Server" may be left blank in order to access the default instance on the local machine. If these programs are running on a different machine and/or port, that can specified. Hover over the text to see details about how to change these settings in a tool tip.
 
@@ -23,7 +23,7 @@ In the _PTT Method_ section, like the _CAT Control_ one, has an editable box whi
 * *PTT Method*: choose from _RTS_, _DTR_, _CAT_, or _VOX_. _VOX_ is clearly the simplest set up using the presence of synthesized audio from the sound card to key the radio. This can be used when no serial port or CAT capability is available. Obviously, the rig needs to be in VOX mode (however, some interfaces have a facility to generate a PTT signal when audio is being input to the radio) for this to work. 
 * Select a *Serial Port*: The PTT serial port may be the same one as the CAT serial port or any other serial port on the system.   
 
-In the _Transmit Audio Source_ section, you have the option to choose between *Rear/Data* or *Front/Mic*. Some radios support two types of PTT assertion via CAT control: one takes audio input from the Mic connector, while the other takes audio input from a rear-panel Data connector. Read your rig and audio-interface (if used) manuals and then choose the appropriate selection in this box. 
+In the _Transmit Audio Source_ section, you have the option to choose between *Rear/Data* or *Front/Mic*. Some radios support of two types of PTT assertion via CAT control (and some support both): one takes audio input from the Mic connector, while the other takes audio input from a rear-panel Data connector. Read your rig and audio-interface (if used) manuals and then choose the appropriate selection in this box. 
 
 A brand new feature in _WSJT-X_ v1.4 has been introduced as the _Mode_ setting. It is a convenience feature to ensure the radio is in the right mode for _WSJT-X_ operation. 
 
