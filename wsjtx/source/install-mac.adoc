@@ -8,7 +8,7 @@ interchangeable.
 ** {osx_108}
 ** {osx_109}
 
-- Double-click on the desktop icon to see a new folder, +WSJT-X+.
+- Double-click on the desktop icon to create and view a new folder, +WSJT-X+.
 Double-click on this folder and locate the included +Readme+ file. Review the file carefully, as it provides detailed instructions on how to configure your particular system for _WSJT-X_.
 
 - Remember to use the Mac's *Audio MIDI Setup* utility as described in

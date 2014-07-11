@@ -8,4 +8,8 @@ antenna information will be included with reception reports to
 [[FIG_BAND_SETTINGS]]
 image::images/r4148-freq-ui.png[align="center",alt="Frequency Screen"]
 
-- Click *OK* to dismiss the *Configuration* window.
+- In the *Working Frequencies* section, you can add a frequency to the list by right-clicking in the _Frequency_ box and selecting “Insert.” In the dialogue box, simply input the frequency you desire. Note that _WSJT-X_ recognizes amateur band frequencies and will output “OOB” for “Out Of Band,” in the description next to the input frequency.
+
+- In order to edit your *Station Information*, again, simply right-click in the Station Information box and select “Insert.” You can add _Band_, _Offset_ and _Antenna Description_ information as desired.
+
+Once you have configured all the settings to your liking, click *OK* to dismiss the *Configuration* window. You are now setup to operate and make _WSJT-X_ contacts!

@@ -1,13 +1,18 @@
 // Status=review
 [[FIG_CONFIG_RPT]]
-image::images/r4148-rpt-ui.png[align="center",alt="Configuration Screen"]
+image::images/r4148-rpt-ui.png[align="center",alt="Reporting Screen"]
 
-Logging
+In the _Logging_ section, there are the following four options regarding keeping a log of your contacts:
 
-"Prompt me to log QSO" .  With this option enabled, when I send my 73 message, or my free text message, the log book pops up and reminds to log the QSO
+* *Prompt me to log QSO*: With this option enabled, when I send either my 73 message or my free text message, the log book pops up and reminds to log the QSO. If this option is left unchecked, _WSJT-X_ will not prompt you to log the contact.
 
-"Log dB comments to log".  This places the signal report I receive from the other station in the log book section of WSJT-X
+* *Convert mode to RTTY*: Some contests do not recognize _WSJT-X_ contacts by the mode listed in the log, i.e., JT65 or JT9. In that case, you can convert the mode in the log to RTTY in order to get credit for your digital contact.
 
+* *dB reports to comments*: This places the received signal report from the other station in the log book section of _WSJT-X_.
 
-* *PSK Reporter*: check to enable sending reception reports to the
-{pskreporter} mapping facility.* 
+* *Clear DX call and grid after logging*: After logging a contact, this option clears the call and grid boxes.
+
+In the _Network_ box, there is the following option:
+
+* *Enable PSK Reporter Spotting*: Check to enable sending reception reports to the
+{pskreporter} mapping facility. 
