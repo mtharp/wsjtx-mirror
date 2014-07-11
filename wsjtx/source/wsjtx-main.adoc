@@ -70,7 +70,7 @@ include::install-from-source.adoc[]
 //include::compiling.adoc[]
 
 [[CONFIG]]
-== Setup and Configuration
+== WSJT-X Setup and Configuration
 
 After installing WSJT-X, the user must configure the program with some basic information. There are six different areas, or “tabs,” which are located under the main *Configuration* menu: _General_, _Radio_, _Audio_, _Tx Macros_, _Reporting_ and _Frequencies_. Some of these tabs contain options which are are necessary to input or select (i.e. your Call Sign and Grid Square in the *_General Tab_*, for instance) for operation of the program. Some are options which must be chosen with a mind towards your station, such as those found in the _Radio_ and _Audio_ tabs. The remaining tabs, _Tx Macros_, _Reporting_ and _Frequencies_, though no less important, are mostly ancillary and designed for the user to further customize _WSJT-X_ to better integrate with their station, operating style and reporting needs.
 
@@ -106,6 +106,10 @@ include::configuration-band-settings.adoc[]
 //=== Font Sizes
 //include::font-sizes.adoc[]
 
+[[TRANSCEIVER]]
+== Transceiver Setup
+include::transceiver-setup.adoc[]
+
 [[TUTORIAL]]
 == Basic Operating Tutorial
 
@@ -124,10 +128,6 @@ include::tutorial-example1.adoc[]
 [[TUT_EX2]]
 === Sample File 2
 include::tutorial-example2.adoc[]
-
-[[TRANSCEIVER]]
-== Transceiver Setup
-include::transceiver-setup.adoc[]
 
 [[MAKE_QSOS]]
 == Making QSOs
@@ -177,6 +177,10 @@ include::controls-functions-special-mouse-cmds.adoc[]
 To be added: brief descriptions of JTAlert and PSK Reporter and how
 to use them with _WSJT-X_.
 
+[[FAQ]]
+== Frequently Asked Questions
+include::faq.adoc[]
+
 [[PROTOCOLS]]
 == Protocol Specifications
 
@@ -201,10 +205,6 @@ include::tx-rx.adoc[]
 == Troubleshooting
 To be added ...
 /////////////////
-
-[[FAQ]]
-== Frequently Asked Questions
-include::faq.adoc[]
 
 [[FILES]]
 == Directory Contents
