@@ -6,11 +6,11 @@ In the _Logging_ section, there are the following four options regarding keeping
 
 * *Prompt me to log QSO*: With this option enabled, when I send either my 73 message or my free text message, the log book pops up and reminds to log the QSO. If this option is left unchecked, _WSJT-X_ will not prompt you to log the contact.
 
-* *Convert mode to RTTY*: Some contests do not recognize _WSJT-X_ contacts by the mode listed in the log, i.e., JT65 or JT9. In that case, you can convert the mode in the log to RTTY in order to get credit for your digital contact.
+* *Convert mode to RTTY*: Some logging programs do not recognize _WSJT-X_ modes as listed in the _WSJT-X_ produced log, i.e., JT65 or JT9. In that case, you can convert the mode in the log to RTTY in order to get credit for your digital contact.
 
-* *dB reports to comments*: This places the received signal report from the other station in the log book section of _WSJT-X_.
+* *dB reports to comments*: Some logging programs are inflexible in accepting non RST style signal reports. If you have such a program, select this option to place a comment field in the _WSJT-X_ log; this will keep the signal reports you exchange during a contact by placing them in the _Comments_ field. When you import your _WSJT-X_ log to your logging program, you will then have your signal reports intact and ready for QSLing. 
 
-* *Clear DX call and grid after logging*: After logging a contact, this option clears the call and grid boxes.
+* *Clear DX call and grid after logging*: After logging a contact, this option clears the the previous QSO partners callsign from generated messages.
 
 In the _Network_ box, there is the following option:
 

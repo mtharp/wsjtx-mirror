@@ -1,11 +1,11 @@
 // Status=review
 image::images/r4148-audio-ui.png[align="center",alt="WSJT-X Audio Configuration Screen"]
 
-* *Soundcard*: Select the devices you will use for *Audio In* and *Audio Out*, along with the proper audio channel, which in most cases, is _Mono_, instead of _Left_ or _Right_. However, some audio setups may require such a configuration, and it is left to the user to determine the appropriate selection.
+* *Soundcard*: Select the devices you will use for _Audio Input_ and _Audio Output_, along with the proper audio channel, which in most cases, is _Mono_, instead of _Left_ or _Right_. However, some audio setups may require such a configuration, and it is left to the user to determine the appropriate selection. 
 
-* *Save Directory*: If you have elected to save your received transmissions for further study, this is the directory in which they will be located. You can select to either save your received transmissions (decoded or not) or only decoded transmissions by using the main *Save* menu, located on the *Main Screen* menu bar at the top.
+* *Save Directory*: If you have elected to save your received periods for further study, this is the directory in which they will be located. The files will be saved as uncompressed .WAV files. To enable this feature, please see <<SAVE-WAV,below>>.
 
 //* *JT9W Settings*:
-//Bandwidth Multiplier
-//DT Min
-//DT Max
+//* *Bandwidth Multiplier*:
+//* *DT Min*:
+//* *DT Max*:

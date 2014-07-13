@@ -1,15 +1,25 @@
 // Status=review
 
-The *Frequencies* tab allows you to define the default frequency and
-enter a brief description of your antenna for each amateur band. The
+The *Frequencies* tab allows you to define the default frequency, offset and
+a brief description of your antenna for each amateur band. The
 antenna information will be included with reception reports to
 {pskreporter}, if enabled in the *Reporting* Tab.
+
+When _WSJT-X_ is freshly installed, the _Working Frequencies_ table comes pre-populated with the currently agreed upon HF working frequencies for JT65. The user can tailor this list, the results of which will be reflected on the *Main Window* screen, by either removing frequencies that they don't intend to use or adding any other frequencies that they do wish to have. More than one frequency on a band is allowed. 
+
+The rows in the table may be sorted in ascending or descending order of frequency by clicking the appropriate column heading. The table supports extended selections for multiple deletions and dragging rows.
 
 [[FIG_BAND_SETTINGS]]
 image::images/r4148-freq-ui.png[align="center",alt="Frequency Screen"]
 
-- In the *Working Frequencies* section, you can add a frequency to the list by right-clicking in the _Frequency_ box and selecting “Insert.” In the dialogue box, simply input the frequency you desire. Note that _WSJT-X_ recognizes amateur band frequencies and will output “OOB” for “Out Of Band,” in the description next to the input frequency.
+- In the _Working Frequencies_ section, you can add a frequency to the list by right-clicking in the _Frequency_ box and selecting “Insert;” if you’d like to delete a frequency, you use the same process, except select “Delete” instead. In the dialogue box, simply input the frequency you desire. Note that _WSJT-X_ recognizes amateur bands and any frequencies not within them will output “OOB” for “Out Of Band,” in the description next to the frequency. This entire table may also be dragged and dropped onto the _Station Information_ table below to initialize that table for entry of antenna descriptions and transverter offsets, if required.
 
-- In order to edit your *Station Information*, again, simply right-click in the Station Information box and select “Insert.” You can add _Band_, _Offset_ and _Antenna Description_ information as desired.
+- In order to edit your _Station Information_, again, simply right-click in the Station Information box and select “Insert.” You can add _Band_, _Offset_ and _Antenna Description_ information as desired. You will note that it is easier to simply drag one of the options from the _Working Frequencies_ section and edit it to your requirements. While the _Band_ and _Antenna Description_ functions are evident by their names, the _Offset_ function is not as clear. It’s purpose is for correct frequency readout and frequency setting when the station setup involves a transverter. The offset is applied to the frequency just before a frequency setting CAT command and in the reverse direction when interpreting a CAT frequency status query from the rig. The _Offset_ allows the user wide latitude when experimenting with VHF/UHF/Microwave bands, and also takes into account the new VLF bands which are usually reached with a transverter, as well. 
+
+Some further notes on manipulating the _Station Information_ table:
+
+* The table may be sorted by any of its columns by clicking the column heading, either in ascending or descending order. The table also supports extended selections for deletions via the right click pop up menu "Delete" menu action.
+
+* The _Antenna Description_ may be dragged and dropped from one band to another which simplifies set up when multiple bands share an antenna.
 
 Once you have configured all the settings to your liking, click *OK* to dismiss the *Configuration* window. You are now setup to operate and make _WSJT-X_ contacts!
