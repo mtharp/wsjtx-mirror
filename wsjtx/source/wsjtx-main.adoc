@@ -76,6 +76,8 @@ After installing WSJT-X, the user must configure the program with some basic inf
 
 The following chapter has been designed with a picture of a particular tab, along with a list of options available to the user, delineated by section, under that particular tab. Finally, each particular option is accompanied by a brief definition of what the option does or does not do. 
 
+After this chapter, we will then review how to properly set up a transceiver to take full advantage of _WSJT-X_. Obviously, the two configuration topics are closely related and will undoubtedly reference each other. Where appropriate, internal links have been created to help the user navigate back and forth between relevant topics.
+
 Many, if not most, problems using _WSJT-X_ can be resolved by careful study of the configuration settings. Please review the following in order to maximize your enjoyment of _WSJT-X_.
 
 [[GENERAL]]
@@ -174,8 +176,7 @@ include::controls-functions-special-mouse-cmds.adoc[]
 
 [[COOP_PGMS]]
 == Cooperating Programs
-To be added: brief descriptions of JTAlert and PSK Reporter and how
-to use them with _WSJT-X_.
+include::coop-prgrms.adoc[]
 
 [[FAQ]]
 == Frequently Asked Questions
