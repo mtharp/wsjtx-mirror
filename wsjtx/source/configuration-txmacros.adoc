@@ -1,20 +1,8 @@
 // Status=review
-
-*Tx Macros* are an aid designed for sending free-text messages instead of those automatically generated for you in the *Main Window*. While understanding that JT65 and JT9 are not conversational modes, you can substitute any number of messages as you see fit that communicate further information than what is required for a minimally valid QSO. This menu has the following features:
-
-- To add your custom message(s), simply enter your message in the text box at the top of the tab and click _Add_ to incorporate your new message to the entry fields provided; similarly, if you no longer wish to use a particular macro, simply select the message from the list and click _Delete_. Some suggestions you may wish to include could be messages such as: “FB SIG 73 GL”, “BIG SIG 73 GL”, “RR THX 73 GL” and so on. 
-
-- Multiple macros can be deleted at once by making an extended selection of those you no longer require, then right-clicking to get the pop-up delete menu item.
-
-- The order of macros (as displayed in this tab and in the *Main Window*) can be changed by dragging and dropping the macros in the configuration dialog list. You can either drag and drop one macro at a time, or you can choose an extended selection that can also be dragged and dropped.
-
 [[FigTxMacros]]
 image::images/r4148-txmac-ui.png[align="center",alt="Tx Macros Screen"]
 
-You can access your macros from the *Main Window* screen by clicking on the “2” Tab in the *Generated Message Box* area, selecting _Free Msg_ and then using the drop down menu to select the message you’d like to send.
-
-image::images/freemsg.png[align="center",alt="Tx Macros Free Message"]
-
-New TX macros can also be inserted into the list by simply pressing the ENTER key after typing a new one into _either_ of the *Main Window* free text box line edits (i.e. _Gen msg_ or _Free msg_).
-
-In either JT65 or JT9, the maximum free-text message length is 13 characters, including spaces. Please be aware of this limitation as you craft your messages.
+*Tx Macros* are an aid designed for sending free-text messages that
+you use frequently.  To add a new message, enter your desired text (up
+to 13 characters) in the entry field at top, then click *Add*.  To
+remove an unwanted message, click on the message and then on *Delete*.

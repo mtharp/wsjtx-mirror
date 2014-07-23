@@ -1,17 +1,10 @@
 [qanda]
-When I start _WSJT-X_ v1.3, it seems to run properly in receive mode, with signals appearing on the waterfall. However, *Decode* starts later than expected and nothing is decoded. Is this a sampling problem and how can I fix it?::
+I am running WSJT-X under Windows and using the integrated logging facility.  Where has the system put my log file?::
 
-Some earlier soundcard drivers fail to work properly at 48 kHz sample
-rate, which is the default in _WSJT-X_ r3590 and above.  You can force
-_WSJT-X_ to sample at 12000 Hz by inserting two lines at the end of
-file +wsjtx.ini+.  Using a text editor such as Windows Notepad, open
-the file +wsjtx.ini+ in your _WSJT-X_ installation directory. Then
-copy-and-paste the following two lines into the file, save the file,
-and restart _WSJT-X_.
+Logs and other writeable files will be found in the directory 
 +
 -----
-  pass:[[Tune]]
-  Audio\DisableInputResampling=true
+ %APPDATA%\..\Local\WSJT-X
 -----
 
 Why does the *Flatten* feature cause my displayed spectrum to curve steeply upward near the edges, before falling where the IF filter cuts off?::

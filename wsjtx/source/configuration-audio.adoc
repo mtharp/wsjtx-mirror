@@ -1,11 +1,16 @@
 // Status=review
 image::images/r4148-audio-ui.png[align="center",alt="WSJT-X Audio Configuration Screen"]
 
-* *Soundcard*: Select the devices you will use for _Audio Input_ and _Audio Output_, along with the proper audio channel, which in most cases, is _Mono_, instead of _Left_ or _Right_. However, some audio setups may require such a configuration, and it is left to the user to determine the appropriate selection. 
+- _Soundcard_: Select the devices to be used for audio _Input_ and
+_Output_.  Normally the *Mono* settings will suffuce, but in special
+cases you may choose to select *Left*, *Right*, or *Both* stereo
+channels.
 
-* *Save Directory*: If you have elected to save your received periods for further study, this is the directory in which they will be located. The files will be saved as uncompressed .WAV files. To enable this feature, please see <<SAVE-WAV,below>>.
+- _Save Directory_: _WSJT-X_ can save received audio as +.wav+ files.
+A default directory for these files is provided, but you can select
+another location if desired.
 
-//* *JT9W Settings*:
-//* *Bandwidth Multiplier*:
-//* *DT Min*:
-//* *DT Max*:
+- _JT9W Settings_: JT9W is an experimental mode designed for EME on the
+microwave bands.  Values of *Bandwidth Multiplier* greater than 1 increase
+the tone spacing, and you can select nonstandard values for the range
+of DT values to be searched by the decoder.

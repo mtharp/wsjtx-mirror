@@ -26,9 +26,11 @@ include::../../global/links.adoc[]
 == Introduction
 include::introduction.adoc[]
 
+////
 [[CONTACT]]
 == Contact Us
 include::../../global/communication.adoc[]
+////
 
 [[SYSREQ]]
 == System Requirements
@@ -37,11 +39,12 @@ include::system-requirements.adoc[]
 [[INSTALL]]
 == Installation
 
-Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link located on the left
-margin and then select the desired download link.
+Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link
+at the left margin and then select the desired download link.
 
 CAUTION: If you are using a sound card that is also your computer’s
-default audio device, please be sure to turn off all system sounds so as to prevent their transmission via your station.
+default audio device, be sure to turn off all system sounds to prevent
+transmitting them over the air.
 
 [[INSTALL_WIN]]
 === Windows
@@ -55,53 +58,38 @@ include::install-ubuntu.adoc[]
 === OS X
 include::install-mac.adoc[]
 
-// Note to developers. The URL http://developer.berlios.de/projects/wsjt/. is
-// to a very old src version of WSJT 5.7 or so. WSJTX is not listed at all.
-// Also, all the Qt4 stuff is now obsolete, and needs to be updated.
-// Instructions for source builds Win, +++*Nix+++ {amp} Mac all need to be written  
-// and Reviewed.
-
 [[SRC_CODE]]
 === Source Code
 include::install-from-source.adoc[]
 
-//[[COMPILING]]
-//=== Compiling WSJT-X
-//include::compiling.adoc[]
+[[CONFIG]] 
+== Initial Configuration
 
-[[CONFIG]]
-== WSJT-X Setup and Configuration
-
-After installing WSJT-X, the user must configure the program with some basic information. There are six different areas, or “tabs,” which are located under the main *Configuration* menu: _General_, _Radio_, _Audio_, _Tx Macros_, _Reporting_ and _Frequencies_. Some of these tabs contain options which are are necessary to input or select (i.e. your Call Sign and Grid Square in the *_General Tab_*, for instance) for operation of the program. Some are options which must be chosen with a mind towards your station, such as those found in the _Radio_ and _Audio_ tabs. The remaining tabs, _Tx Macros_, _Reporting_ and _Frequencies_, though no less important, are mostly ancillary and designed for the user to further customize _WSJT-X_ to better integrate with their station, operating style and reporting needs.
-
-The following chapter has been designed with a picture of a particular tab, along with a list of options available to the user, delineated by section, under that particular tab. Finally, each particular option is accompanied by a brief definition of what the option does or does not do. 
-
-After this chapter, we will then review how to properly set up a transceiver to take full advantage of _WSJT-X_. Obviously, the two configuration topics are closely related and will undoubtedly reference each other. Where appropriate, internal links have been created to help the user navigate back and forth between relevant topics.
-
-Many, if not most, problems using _WSJT-X_ can be resolved by careful study of the configuration settings. Please review the following in order to maximize your enjoyment of _WSJT-X_.
+Open the *Configuration* window from the *File* menu or by typing
+*F2*.  
 
 [[GENERAL]]
-=== General Tab
-include::configuration-station.adoc[]
+=== General
+include::configuration-general.adoc[]
 
 [[RADIO]]
-=== Radio Tab
+=== Radio
 include::configuration-radio.adoc[]
 
 [[AUDIO]]
-=== Audio Tab
+=== Audio
 include::configuration-audio.adoc[]
 
 [[TXMACROS]]
-=== Tx Macros Tab
+=== Tx Macros
 include::configuration-txmacros.adoc[]
 
 [[LOGGING]]
-=== Reporting Tab
+=== Reporting
 include::configuration-rpt.adoc[]
 
 [[BAND_SETTINGS]]
-=== Frequencies Tab
+=== Frequencies
 include::configuration-band-settings.adoc[]
 
 //[[FONTS]]
@@ -174,9 +162,14 @@ include::controls-functions-kb-shortcuts.adoc[]
 === Mouse Commands
 include::controls-functions-special-mouse-cmds.adoc[]
 
+[[CONFIG_DETAILS]]
+== Configuration Details
+include::config-details.adoc[]
+
 [[COOP_PGMS]]
 == Cooperating Programs
-include::coop-prgrms.adoc[]
+To be added: brief descriptions of JTAlert and PSK Reporter and how
+to use them with _WSJT-X_.
 
 [[FAQ]]
 == Frequently Asked Questions

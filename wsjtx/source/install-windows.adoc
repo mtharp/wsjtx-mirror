@@ -1,5 +1,5 @@
 // Status=review
-Execute the downloaded file and follow the installation instructions below:
+Execute the downloaded file and follow these instructions:
 
 - Install _WSJT-X_ into its own directory rather than in the conventional
 location +C:\Program Files\WSJTX+. The suggested default directory is
@@ -17,6 +17,4 @@ downloading and installation instructions.
 To ensure that this will be so when running under recent versions of
 Windows, open the system's *Sound* control panel and select in turn the
 *Recording* and *Playback* tabs. Click on *Properties*, then
-*Advanced*, and select “16 bit, 48000 Hz (DVD Quality).”
-
-- Should you choose to use the integrated logger, you can locate your logs, and other writeable files, using the following path: +%APPDATA%\..\Local\WSJT-X+
+*Advanced*, and select *16 bit, 48000 Hz (DVD Quality)*.

@@ -42,8 +42,9 @@ include::../global/system-requirements.adoc
 - Computer running Windows (XP or later), Linux, or OS X
 - 1.5 GHz or faster CPU and 100 MB of available memory
 - Monitor with at least 1024 x 780 resolution (more is better)
-- Computer-to-radio interface using a (virtual) serial port for T/R switching or CAT 
-control or VOX, as is needed for your radio to computer setup
-- Audio input and output devices supported by the operating system, capable of 48 kHz sample rate
+- Computer-to-radio interface using a serial port for T/R switching, 
+  or CAT control, or VOX, as required for your radio-to-computer setup
+- Audio input and output devices supported by the operating system and 
+  capable of 48 kHz sample rate
 - Audio or equivalent USB connections between transceiver and computer  
 - A means for synchronizing the computer clock to UTC within ±1 second
