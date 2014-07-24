@@ -7,7 +7,7 @@ directory. When the file opens you should see something similar to
 the to the following screen shot:
 
 [[X12]]
-image::images/r3666-main-ui-80.png[align="center",alt="Main UI and Wide Graph"]
+image::images/main-ui-1.4.png[align="center",alt="Main UI and Wide Graph"]
 
 .Decoding Overview
 

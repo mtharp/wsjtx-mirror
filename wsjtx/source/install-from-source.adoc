@@ -4,12 +4,12 @@ Source code for _WSJT-X_ is available from a public repository at
 {devsvn}. To compile the program you will need to install the
 following packages:
 
-- Subversion
-- Qt 5.x
-- g++
-- gfortran
+- Subversion 1.8 or later
+- Qt 5.2 or later
+- g++ 4.8 or later
+- gfortran 4.8 or later
 - fftw3
-- hamlib
+- hamlib3
 - MinGW (for Windows only)
 
 With Subversion installed, the WSJT-X source code can be downloaded

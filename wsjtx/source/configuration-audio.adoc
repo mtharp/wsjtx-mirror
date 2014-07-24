@@ -3,10 +3,9 @@ Select the *Audio* tab to configure your sound system.
 
 image::images/r4148-audio-ui.png[align="center",alt="WSJT-X Audio Configuration Screen"]
 
-- _Soundcard_: Select the devices to be used for audio *Input* and
-*Output*.  The *Mono* settings will normally suffice, but in special
-cases you can choose to select *Left*, *Right*, or *Both* stereo
-channels.
+- _Soundcard_: Select the audio devices to be used for *Input* and
+*Output*.  Usually the *Mono* settings will suffice, but in special
+cases you can choose *Left*, *Right*, or *Both* stereo channels.
 
 IMPORTANT: If you are using a sound card that is also your computer's
 default audio device, be sure to turn off all system sounds to prevent
@@ -18,8 +17,9 @@ can select another location if desired.
 
 - _JT9W Settings_: JT9W is an experimental mode designed for EME on
 the microwave bands.  Values of *Bandwidth Multiplier* greater than 1
-increase the tone spacing.  You can select nonstandard values of *DT
-min* and *DT max* to define the range of DT searched by the decoder.
+increase the tone spacing.  You can also select nonstandard values of
+*DT min* and *DT max* to define the range of DT searched by the
+decoder.
 
 IMPORTANT: JT9W mode is presently enabled only in special test versions
 of _WSJT-X_.

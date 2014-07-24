@@ -1,8 +1,8 @@
 // Status=review
 // This is a comment line, anything with // is ignored at process time.
 = WSJT-X User Guide
-//:Date: July 23, 2014
-//:Revision: 1.4
+:Date: July 24, 2014
+:Revision: 1.4
 :badges:
 :icons:
 :numbered:
@@ -58,11 +58,12 @@ include::install-mac.adoc[]
 include::install-from-source.adoc[]
 
 [[CONFIG]] 
-== Quick-Start Configuration
+== Configuration
 
-Open the *Configuration* window from the *File* menu or by typing
-*F2*.  The following sections describe setup optiions available on
-each of six tabs selectable near the top of the window.
+Open the *Configuration* window by selecting *Settings* from the
+*File* menu, or by typing *F2*.  The following sections describe setup
+optiions available on each of six tabs selectable near the top of the
+window.
 
 [[GENERAL]]
 === General
@@ -119,8 +120,8 @@ include::tutorial-example2.adoc[]
 == Making QSOs
 include::make-qso.adoc[]
 
-[[CONTROLS]]
-== Controls & Functions
+[[COMMAND_REF]]
+== Command Reference
 
 [[CONTROLS_WIDE]]
 === Wide Graph
@@ -157,10 +158,6 @@ include::controls-functions-kb-shortcuts.adoc[]
 [[MOUSE_COMMANDS]]
 === Mouse Commands
 include::controls-functions-special-mouse-cmds.adoc[]
-
-[[CONFIG_DETAILS]]
-== Configuration Details
-include::config-details.adoc[]
 
 [[COOP_PGMS]]
 == Cooperating Programs

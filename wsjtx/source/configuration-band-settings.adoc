@@ -13,17 +13,17 @@ frequency in MHz, and hit *Enter* on the keyboard. The program will
 format your frequency value appropriately and add a band designator.
 
 - To add a new entry, right-click anywhere on the frequency table and
-select *Insert*.  Enter a frequency (in MHz) in the popup box, then
+select *Insert*.  Enter a frequency in MHz in the popup box, then
 click *OK*.  Note that the table may include more than one frequency
 for a given band.
 
 - To delete an entry, right-click it and select *Delete*.
 
 _Station Information_: You can save *Band*, *Offset* and *Antenna
-Description* information for your station.  Antenna information will
-be included in receprion reports sent to {pskreporter}.  By default
-the *Offset* for each band is 0.  Nonzero frequency offsets may be
-added if (for example) a transverter is in use.
+Description* information for your station.  The antenna information
+will be included in reception reports sent to {pskreporter}.  By
+default the frequency *Offset* for each band is 0.  Nonzero offsets
+may be added if (for example) a transverter is in use.
 
 When all settings have been configured to your liking, click *OK* to
 dismiss the *Configuration* window. 
