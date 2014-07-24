@@ -6,7 +6,7 @@ If necessary, select the *General* tab on the *Configuration* window.
 Under _Station Details_, enter your call sign and 4-digit or 6-digit
 grid locator.  This information will be sufficient for initial tests.
 
-If you understand what they mean you may also choose to select some of
-the _Display_ or _Behavior_ options.  Otherwise you may return to
-these selections later.  For details see the section on
+If you understand what they mean you may wish to select some of the
+_Display_ or _Behavior_ options.  Otherwise you may return to these
+selections later; for additional information see 
 <<CONFIG_DETAILS,Configuration Details>>.

@@ -2,8 +2,8 @@
 [[FIG_CONFIG_RPT]]
 image::images/r4148-rpt-ui.png[align="center",alt="Reporting Screen"]
 
-- _Logging_: Choose any desired options from this list.  For detailed
-descriptions see the section on <<CONFIG_DETAILS,Configuration Details>>.
+- _Logging_: Choose any desired options from this group.  For detailed
+descriptions of their effects, see <<CONFIG_DETAILS,Configuration Details>>.
 
 - _Network_: Check *Enable PSK Reporter Spotting* to send reception
 reports to the {pskreporter} mapping facility.

@@ -1,4 +1,5 @@
 // Status=review
+// Q: are these instructions up-to-date for WSJT-X v1.4?
 
 Two different packages are available for _WSJT-X_: one for OS X
 10.6 through 10.8, and one for OS X 10.9. The two packages are _not_
@@ -19,4 +20,7 @@ have to change Audio In format to 48000 Hz two-channel, 16-bit.
 - Use *System Preferences* to select an external time source to keep
 your system clock synchronized to UTC.
 
+////
+// Q: move to FAQ section?
 - Should you choose to use the integrated logger, you can locate your logs, and other writeable files, using the following path: +$HOME/Library/ApplicationSupport/WSJT-X+
+////

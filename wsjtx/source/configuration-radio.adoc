@@ -1,14 +1,14 @@
 // Status=review
 
-_WSJT-X_ offers full CAT (Computer Aided Transceiver) control of the
+_WSJT-X_ offers CAT (Computer Aided Transceiver) control of the
 relevant features of most modern transceivers.  To configure the
-program for your radio, select the *Radio Tab* on the *Configuration*
-window.
+program for your radio, select the *Radio* tab.
 
-image::images/RadioTab.png[align="center",alt="Radio Tab"]
+//image::images/RadioTab.png[align="center",alt="Radio Tab"]
+image::images/r4148-cat-ui.png[align="center",alt="Radio Tab"]
 
 ////
-CAUTION: Unless you have selected *Monitor off at startup* under the
+IMPORTANT: Unless you have selected *Monitor off at startup* under the
 above tab, _WSJT-X_ expects to seize exclusive rig control upon
 startup. You can prevent this by either selecting that option or by
 selecting the *Monitor* button on the main window and toggle it. Once
@@ -22,30 +22,30 @@ operating mode while leaving _WSJT-X_ on in the background, simply
 toggle the *Monitor* button so that _WSJT-X_ is no longer active.
 ////
 
-- Select your radio from the dropdown *Rig* list. Alternatively, you
-may select *DX Lab Suite Commander*, *Ham Radio Deluxe*, *Hamlib NET
-rigctl*, or *OmniRig* if your radio is already configured for control
-by one of those programs.  Select *None* if CAT control is not
-desired.
+- Select your radio type from the drop-down list labeled
+*Rig*. Alternatively, you may select *DX Lab Suite Commander*, *Ham
+Radio Deluxe*, *Hamlib NET rigctl*, or *OmniRig* if you have already
+configured things for control by one of those programs.  Select *None*
+if you do not wish to use CAT control.
 
 - If *DX Lab Suite Commander*, *Ham Radio Deluxe*, or *Hamlib Net
-rigctl* was selected the entry field immediately under _CAT Control_
+rigctl* is selected, the entry field immediately under _CAT Control_
 is relabeled *Network Server*.  Leave this field blank to access the
-default instance of your control program on the same computer. If the
-control program runs on a different machine and/or port, you can
-specify it here.  Hover the mouse pointer over the entry field for
-formatting details.
+default instance of your control program, on the same computer. If the
+control program runs on a different machine and/or port, specify it
+here.  Hover the mouse pointer over the entry field to see the
+required formatting details.
 
 - Select *OmniRig Rig 1* or *OmniRig Rig 2* to connect to an _OmniRig_
-server running on the same computer. _OmniRig_ is available only for
-Windows.
+server running on the same computer.  Note that _OmniRig_ is available
+only under Windows.
 
-- Set *Poll Interval (s)* to the desired interval at which _WSJT-X_
-will query your radio.  For most radios a small number (say, 1 – 3
-s) is suitable.  
+- Set *Poll Interval* to the desired interval for _WSJT-X_ to query
+your radio.  For most radios a small number (say, 1 – 3 seconds) is
+suitable.
 
-- _CAT Control_: If controlling the radio directly rather than though
-another program, make the following settings:
+- _CAT Control_: To have _WSJT-X_ control the radio directly rather
+than though another program, make the following settings:
 
 * Select the *Serial Port* used to communicate with your radio. 
 
@@ -53,30 +53,36 @@ another program, make the following settings:
 *Stop Bits*, and *Handshake* method.  Consult your radio's user guide
 for the proper parameter values.
 
-* _Force Control Settings_: A few station setups require the *RTS*
-and/or *DTR* control lines to be forced high.  Check these boxes under
-only if you are sure they are needed.
+* _Force Control Lines_: A few station setups require the serial
+port's *RTS* and/or *DTR* control lines to be forced high.  Check
+these boxes only if you are sure they are needed.
 
 - _PTT Method_: select *VOX*, *CAT*, *DTR*, or *RTS* as the desired
 method for T/R switching.  If your choice is *DTR*, or *RTS*, select
-gthe desired serial port.
+the desired serial port.
 
 - _Transmit Audio Source_: some radios permit you to choose the
 connector that will accept Tx audio.  If this choice is available,
 select *Rear/Data* or *Front/Mic*.
 
-- _Mode_: _WSJT-X_ uses upper sideband for transmitting and receiving.
-Select *USB* for most radios, or *Data/Pkt* if your radio uses Data
-mode to enable the rear-panel audio line input.  Select *None* if you
-do not want _WSJT-X_ to change the radio's Mode setting.
+- _Mode_: _WSJT-X_ uses upper sideband mode for both transmitting and
+receiving.  Select *USB* mode for most radios, or *Data/Pkt* if your
+radio offers such an option and uses it to enable the rear-panel audio
+line input.  Select *None* if you do not want _WSJT-X_ to change the
+radio's Mode setting.
 
-- _Split Operation_: Select *Rig* to have _WSJT-X_ set your radio to
-Split mode or *None* if you want to do this setting manually.  For radios
-that do not support Split mode, select *Fake It* to have _WSJT-X_ 
-adjust the rig frequency just before switching between Rx and Tx.
+- _Split Operation_: Significant advantages result from using *Split*
+mode, if your radio permits it.  If it does not, _WSJT-X_ can simulate
+such behavior.  Either method will result in a cleaner transmitted
+signal, by keeping the Tx audio always in the range 1500 to 2000 Hz
+and changing the Tx frequency as necessary to compensate.  Select
+*Rig* to use the radio's Split mode, or *Fake It* to have _WSJT-X_
+adjust the VFO frequency as needed, just before T/R switching.  Choose
+*None* if you do not wish to use split operation.
 
 When all required settings have been made, click *Test CAT* to test
-communication between _WSJT-X_ and the radio.  The button turns green
-if proper communication is established.  Failure turns the button red
-and displays an error message.  Toggle the *Test PTT* button to test
-your selected method of T/R control.
+communication between _WSJT-X_ and your radio.  The button turns green
+if proper communication is established.  Communication failure turns
+the button red and displays an error message.  After a succesful
+CAT test, toggle the *Test PTT* button to ensure that your selected 
+method of T/R control is working properly.

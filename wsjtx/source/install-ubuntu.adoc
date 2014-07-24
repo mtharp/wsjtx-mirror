@@ -19,5 +19,9 @@ in the same directory as the executable binaries +wsjtx+ and
 +jt9+. Normally (after you have run the script +/usr/bin/wsjtx+ at
 least once) this directory will be +$HOME/.wsjtx+.
 
+////
+// Move to FAQ section?
 - Should you choose to use the integrated logger, you can locate your logs, and other writeable files, using the following path: +$HOME/.local/share/WSJT-X+
+////
+
 // Add instructions about ntpd and sound setup.

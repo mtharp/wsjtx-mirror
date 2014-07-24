@@ -7,18 +7,18 @@ following packages:
 - Subversion
 - Qt 5.x
 - g++
-- gfortran or g95
+- gfortran
 - fftw3
 - hamlib
 - MinGW (for Windows only)
 
-With Subversion installed, the full source can be downloaded with the
-command:
+With Subversion installed, the WSJT-X source code can be downloaded
+with the command:
 
-+svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx+
+ svn co svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
 
 A Developer’s Guide for _WSJT_ and its sister programs is currently
 under development. The present draft contains full instructions for
 compiling _WSJT-X_ in Linux, along with an outline of steps required
-to compile the program in Windows. Please visit the {dev_guide} for
-further hints, tips and instruction.
+to compile the program in Windows.  Consult the {dev_guide} for
+further hints, tips, and instructions.
