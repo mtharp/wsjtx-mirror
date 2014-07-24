@@ -46,7 +46,7 @@ Edit files as needed
 :sourceforge: https://sourceforge.net/user/registration[SourceForge]
 :ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
 :wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[WSJT-X]
-:wsjt_yahoo_group: https://groups.yahoo.com/neo/groups/wsjtgroup/info[Yahoo Group]
+:wsjt_yahoo_group: https://groups.yahoo.com/neo/groups/wsjtgroup/info[WSJTgroup]
 :wspr: http://physics.princeton.edu/pulsar/K1JT/wspr.html[WSPR Home Page]
 :wsprnet: http://wsprnet.org/drupal/[WSPRnet]
 :wsprnet_activity: http://wsprnet.org/drupal/wsprnet/activity[WSPRnet Activity page]
