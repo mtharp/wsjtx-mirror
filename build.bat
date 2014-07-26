@@ -18,11 +18,10 @@ SET ICOND=%BASED%\icons
 REM -- PROCESS VARS
 SET ADOC=%BASED%\asciidoc\asciidoc.exe
 SET TOC=%ADOC% -b xhtml11 -a toc2 -a iconsdir=../icons -a max-width=1024px
-SET BUILD_LIST=(dev-guide map65 quick-ref simjt wsjt wspr wfmt wsprx)
+SET BUILD_LIST=(dev-guide map65 quick-ref simjt wsjt wsjtx wspr wfmt wsprx)
 
 REM -- USER INPUT CONDITIONALS
-IF /I [%1]==[wsjtx] (SET DOC_NAME=wsjtx &GOTO WSJTX
-) ELSE IF /I [%1]==[help] (
+IF /I [%1]==[help] (
 CLS &ECHO.
 GOTO DOCHELP
 ) ELSE IF /I [%1]==[all] (
@@ -52,6 +51,10 @@ GOTO GENERAL
 CLS &ECHO.
 SET DOC_NAME=wsjt
 GOTO GENERAL
+) ELSE IF /I [%1]==[wsjtx] (
+CLS &ECHO.
+SET DOC_NAME=wsjtx
+GOTO GENERAL
 ) ELSE IF /I [%1]==[wspr] (
 CLS &ECHO.
 SET DOC_NAME=wspr
@@ -65,23 +68,6 @@ CLS &ECHO.
 SET DOC_NAME=wsprx
 GOTO GENERAL 
 ) ELSE (GOTO DOCHELP)
-
-REM -- START BUILD OPTIONS
-REM -- SPECIAL WSJTX BUILD NAME
-REM -- Remove this section with WSJT-X v1.4.0 release
-:WSJTX
-CLS
-CD %BASED%\%DOC_NAME%
-ECHO Building Special Version for ^( wsjtx ^)
-%TOC% -o wsjtx-main-toc2.html source\wsjtx-main.adoc
-ECHO.
-ECHO  Finished building ^( %DOC_NAME% ^)
-ECHO  Location: %BASED%\wsjtx\wsjtx-main-toc2.html
-ECHO.
-ECHO  To Open, At The Promt, Type: %DOC_NAME%
-ECHO.
-PAUSE
-GOTO EOF
 
 REM -- BUILD USER SELECT DOCUMENT $1 == %1
 :GENERAL
@@ -101,16 +87,8 @@ GOTO EOF
 REM -- BUILD ALL DOCS
 :BUILD_ALL
 CLS
-REM -- SPECIAL WSJTX BUILD NAME
-REM -- Remove this section with WSJT-X v1.4.0 release
-CD %BASED%\wsjtx
-ECHO Building Special Version for ^( wsjtx ^)
-%TOC% -o wsjtx-main-toc2.html source\wsjtx-main.adoc
-ECHO .. Location: %BASED%\wsjtx\wsjtx-main-toc2.html
-ECHO.
-
 REM -- LOOP FOR REMAINING DOCUMENTS
-ECHO Building ^( ALL Other ^) Documentation
+ECHO Building ^( ALL ^) Documentation
 FOR %%A IN %BUILD_LIST% DO (
 CD %BASED%\%%A
 %TOC% -o %%A-main.html source\%%A-main.adoc 
@@ -132,16 +110,16 @@ ECHO.
 ECHO.
 ECHO BUILD WSJT DOCUMENTATION
 ECHO ------------------------------------------------------
-ECHO USAGE: build [document name]
+ECHO USAGE: build.bat [document name] or "all" for all docs.
 ECHO. 
-ECHO  build wsjt
-ECHO  build wsjtx
-ECHO  build wspr
-ECHO  build wfmt
-ECHO  build wsprx
-ECHO  build map65
-ECHO  build devg
-ECHO  build qref
+ECHO  build.bat wsjt
+ECHO  build.bat wsjtx
+ECHO  build.bat wspr
+ECHO  build.bat wsprx
+ECHO  build.bat wfmt
+ECHO  build.bat map65
+ECHO  build.bat devg
+ECHO  build.bat qref
 ECHO.
 ECHO ------------------------------------------------------
 ECHO.
