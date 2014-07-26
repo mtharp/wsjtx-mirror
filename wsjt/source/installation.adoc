@@ -1,8 +1,8 @@
-- Download _WSJT_ from the {homepage}. Click on _WSJT_ at the left
-margin and then on the desired download link.
-
 [[INSTALL_WIN]]
 === Windows
+
+- Download _WSJT_ from the {homepage}. Click on _WSJT_ at the left
+margin and then on the desired download link.
 
 - Execute the downloaded file and follow its installation 
 instructions.
@@ -41,7 +41,7 @@ Source code is available from the public repository at {devsvn}. To
 compile the program you will need to install the following packages:
 
 - Subversion
-- Python 2.7, and the following Python packages
+- Python 3.x, and the following Python packages
 ** python-numpy
 ** python-imaging-tk
 ** python-pmw

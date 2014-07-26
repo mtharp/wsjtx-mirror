@@ -67,31 +67,27 @@ window.
 
 [[GENERAL]]
 === General
-include::configuration-general.adoc[]
+include::settings-general.adoc[]
 
 [[RADIO]]
 === Radio
-include::configuration-radio.adoc[]
+include::settings-radio.adoc[]
 
 [[AUDIO]]
 === Audio
-include::configuration-audio.adoc[]
+include::settings-audio.adoc[]
 
 [[TXMACROS]]
 === Tx Macros
-include::configuration-txmacros.adoc[]
+include::settings-txmacros.adoc[]
 
 [[LOGGING]]
 === Reporting
-include::configuration-rpt.adoc[]
+include::settings-reporting.adoc[]
 
 [[BAND_SETTINGS]]
 === Frequencies
-include::configuration-band-settings.adoc[]
-
-//[[FONTS]]
-//=== Font Sizes
-//include::font-sizes.adoc[]
+include::settings-frequencies.adoc[]
 
 [[TRANSCEIVER]]
 == Transceiver Setup

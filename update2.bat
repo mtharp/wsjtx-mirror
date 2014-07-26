@@ -1,0 +1,16 @@
+cd \JTSDK-PY\src\wspr
+ECHO WSPR
+svn up
+cd \JTSDK-PY\src\trunk
+ECHO WSJT
+svn up
+cd \JTSDK-QT\src\map65
+ECHO MAP65
+svn up
+cd \JTSDK-QT\src\wsjtx
+ECHO WSJTX
+svn up
+cd \JTSDK-QT\src\wsprx
+ECHO WSPRX
+svn up
+cd \JTSDK-DOC\doc

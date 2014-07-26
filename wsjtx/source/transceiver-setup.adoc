@@ -1,8 +1,8 @@
 // Status=review
 .Receiver Noise Level
 
-- Click the *Monitor* button to return to normal receive operation.  The 
-button should be highlighted in [green]*GREEN*.
+- Click the *Monitor* button to return to normal receive operation
+(button highlighted in [green]*GREEN*).
 
 - Be sure your transceiver is set to *USB* (or *USB Data*) mode.
 
@@ -17,17 +17,17 @@ range will be best with this slider not too far from its mid-point.
 - If your transceiver offers more than one bandwidth setting in USB
 mode, choose the widest one possible, up to about 5 kHz.  This choice
 has the desirable effect of allowing the *Wide Graph* to display the
-JT65 and JT9 sub-bands simultaneously on most HF bands.  For more
-details see the <<TUTORIAL,Tutorial>> section.
+JT65 and JT9 sub-bands simultaneously on most HF bands.  Further 
+details are provided in the <<TUTORIAL,Tutorial>> section.
 
 - If you have only a standard SSB filter you won’t be able to display
-more than about 2.7 kHz bandwidth.  Depending on the dial frequency
-setting, you can still have the full sub-band for one mode (JT65 or
-JT9) and part of the sub-band for the other mode available on screen.
-Some experimentation may be necessary.
+more than about 2.7 kHz bandwidth.  Depending on the exact dial
+frequency setting, you can display the full sub-band typically used
+for one mode (JT65 or JT9) and part of the sub-band for the other
+mode.
 
 - Of course, you might prefer to concentrate on one mode at a time,
-setting your dial frequency to (say) 14.076 for JT65 and 14.078 for
+setting your dial frequency to (say) 14.076 for JT65 or 14.078 for
 JT9.  Present conventions have the nominal JT9 dial frequency 2 kHz
 higher than the JT65 dial frequency.  A checkbox labeled *+2 kHz*,
 just below the *Band* selector, makes the appropriate frequency
