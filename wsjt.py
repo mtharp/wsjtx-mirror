@@ -1506,7 +1506,6 @@ def plot_echo():
     ymax=max(y1+y2)
     yfac=0.15
     if ymax>80.0/yfac: yfac=80.0/ymax
-    print(ymax,yfac)
     xy1=[]
     xy2=[]
     fac=500.0/446.0
