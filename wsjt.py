@@ -1302,8 +1302,7 @@ def dtdf_change(event):
             lab6.configure(text=t,bg="green")
     elif mode.get()=='Echo':
         lab1.configure(text='DF (Hz)',bg='red')
-##        t="%d" % int((event.x-250),)
-        t="%d" % int(0.3365*(event.x-250),)
+        t="%d" % int(0.336456*(446.0/500.0)*(event.x-250),)
         lab6.configure(text=t,bg="red")
     else:
         t="%.1f" % (event.x*30.0/500.0,)
@@ -1499,18 +1498,19 @@ def plot_echo():
     graph1.delete(ALL)
     y1=[]
     y2=[]
-    for i in range(446):        #Find ymax for magenta/orange curves
+    for i in range(446):        #Find ymax for red and blue curves
         ss1=Audio.gcom2.ss1[i+1]
-        y1.append(ss1)
+        y1.append(ss1)          #Blue
         ss2=Audio.gcom2.ss2[i+1]
-        y2.append(ss2)
+        y2.append(ss2)          #Red
     ymax=max(y1+y2)
-    yfac=0.5
+    yfac=0.15
     if ymax>80.0/yfac: yfac=80.0/ymax
+    print(ymax,yfac)
     xy1=[]
     xy2=[]
     fac=500.0/446.0
-    for i in range(446):        #Make xy list for magenta/orange curves
+    for i in range(446):        #Make xy lists for red and blue curves
         x=i*fac
         ss1=Audio.gcom2.ss1[i+1]
         n=int(90.0-yfac*ss1) + 20
@@ -1521,7 +1521,7 @@ def plot_echo():
         xy2.append(x)
         xy2.append(n)
     graph1.create_line(xy1,fill='#33FFFF')            #Light blue
-    graph1.create_line(xy2,fill="red")
+    graph1.create_line(xy2,fill="red")                #Red
 
 #------------------------------------------------------ plot_meas
 def plot_meas(nmeas,db):
@@ -1977,7 +1977,7 @@ def update():
         nmsg=int(Audio.gcom2.nmsg)
         t0=Audio.gcom2.sending.tostring().decode('ascii')
         if mode.get()=='Echo':
-            t='ECHO TEST'
+            t0='ECHO TEST'
             nmsg=9
             Audio.gcom2.ntxnow=0
         t="Txing:  " + str(t0[:nmsg])
