@@ -1,5 +1,5 @@
 # pylint: disable=wildcard-import,bad-whitespace
-#----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
 # This file is part of the WSPR application, Weak Signal Propogation Reporter

@@ -27,7 +27,7 @@ program fmtest
 
 ! Conduct measurements for ARRL Frequency Measuring Test, etc.
 
-  parameter (NMAX=180*48000)                 !Max length of 48 kHz waveform
+  parameter (NMAX=600*48000)                 !Max length of 48 kHz waveform
   parameter (NMAX2=NMAX/4)                   !Max length at 12 kHz
   parameter (NFFT=65536)
   parameter (NH=NFFT/2)
