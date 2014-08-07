@@ -51,7 +51,7 @@ program fmtave
   n=0
   do i=1,99999
      read(10,*,end=10) cutc,nkHz,ncal,noffset,faudio,df,dblevel,snr,callsign
-     if(nkHz.ne.nkHz0 .and. i.ne.1) then
+     if((nkHz.ne.nkHz0 .or. callsign.ne.callsign0) .and. i.ne.1) then
         ave=sum/n
         rms=0.d0
         if(n.gt.1) then
