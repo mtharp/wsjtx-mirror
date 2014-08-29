@@ -1,6 +1,12 @@
 
 Current Development Version: WSPR-4.0
 
+2014-08-29 commit r4232 Greg Beam <ki7mt@yahoo.com>
+
+* Added README file for Windows Hamlib folder
+* Updated manpage README
+* Added simple manpage generation script
+
 2014-06-20 commit r4191 Greg Beam <ki7mt@yahoo.com>
 
 * correct file names in copyright hearders of a few files

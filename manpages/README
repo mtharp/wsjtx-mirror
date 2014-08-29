@@ -59,6 +59,25 @@ Example: to produce wspr.1 manpage
 View New Manpage: man man1/wspr.1
 
 
+MANPAGE BUILD SCRIPT
+--------------------
+
+A manpage build script is also provided. You can build one or all manpages
+with a single command. 
+
+Build Single manpage:
+
+* cd ./wspr/manpages
+* ./build-man.sh wspr
+
+Build all WSPR manpages:
+
+* cd ./wspr/manpages
+* ./build-man.sh all
+
+For Script Help, type: ./build-man.sh
+
+
 READ MANPAGES
 -------------
 man ~/wspr/manpages/man1/wspr.1
