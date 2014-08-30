@@ -6,7 +6,7 @@
 # Description:  Python3 setup and installation script
 # 
 # Copyright (C) 2001-2014 Joseph Taylor, K1JT
-# License: GNU GPL v3
+# License: GPL-3+
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -46,7 +46,7 @@ communication under extreme weak-signal conditions.
 ''',
 	author='Joe Taylor',
 	author_email='joe@Princeton.EDU',
-	license='GPL-3',
+	license='GPL-3+',
 	url='http://physics.princeton.edu/pulsar/K1JT',
 	scripts=['wspr.py'],
 	      packages=['WsprMod'],

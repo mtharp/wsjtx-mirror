@@ -7,7 +7,7 @@
  * Description: Functions to produce 32-bit hashes for hash table lookup
  *
  * Copyright (C) 2008-2014 Joseph Taylor, K1JT
- * License: GNU GPL v3+
+ * License: GPL-3+
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
