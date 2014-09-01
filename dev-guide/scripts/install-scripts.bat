@@ -24,6 +24,7 @@ copy /Y %SCRIPTS%jtsdk-qtenv.bat %BASED%JTSDK-QT
 copy /Y %SCRIPTS%jtsdk-toolchain.cmake %BASED%JTSDK-QT
 copy /Y %SCRIPTS%jtsdk-toolchain1.cmake %BASED%JTSDK-QT
 copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT
+copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts
 ECHO.
 )
 
