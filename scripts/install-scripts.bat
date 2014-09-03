@@ -6,8 +6,8 @@ REM **************************************************************************
 
 REM -- TO-DO
 ::     * Add checkout script to each SDK on next release
-::     * Add JSDK-* Core Application Update Method
-COLOR 0F
+::     * Add JTSDK-* Core Application Update Method
+COLOR 0E
 CLS
 ECHO ^******************************
 ECHO      MASTER SCRIPT UPDATE
@@ -16,38 +16,80 @@ ECHO.
 SETLOCAL
 SET BASED=c:\
 SET SCRIPTS=c:\JTSDK-DOC\doc\dev-guide\scripts\
+
 REM -- JTSDK-QT SCRIPTS
 IF EXIST %BASED%JTSDK-QT (
-ECHO Updating JTSDK-QT Scripts
-copy /Y %SCRIPTS%jtsdk-cmake.bat %BASED%JTSDK-QT
-copy /Y %SCRIPTS%jtsdk-qtenv.bat %BASED%JTSDK-QT
-copy /Y %SCRIPTS%jtsdk-toolchain.cmake %BASED%JTSDK-QT
-copy /Y %SCRIPTS%jtsdk-toolchain1.cmake %BASED%JTSDK-QT
-copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT
-copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts
-ECHO.
+ECHO UPDATE JTSDK-QT
+ECHO .. Updating Scripts
+copy /Y %SCRIPTS%jtsdk-cmake.bat %BASED%JTSDK-QT >nul
+copy /Y %SCRIPTS%jtsdk-qtenv.bat %BASED%JTSDK-QT >nul
+copy /Y %SCRIPTS%jtsdk-toolchain.cmake %BASED%JTSDK-QT  >nul
+copy /Y %SCRIPTS%jtsdk-toolchain1.cmake %BASED%JTSDK-QT >nul
+copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT >nul
+copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts >nul
+copy /Y %SCRIPTS%jtsdk-qtbuild-help.bat %BASED%JTSDK-QT\tools\scripts >nul
 )
+GOTO PKGCONFIG
+
+REM -- Conditional Install for Pkg-Config-lite v0.28
+:PKGCONFIG
+ECHO .. Checking For Pkg-Config Installation
+IF NOT EXIST %BASED%JTSDK-QT\tools\pkg-config.exe (
+cd C:\JTSDK-DOC\doc\dev-guide\scripts
+ECHO .. Not Found, Installing Pkg-Config v0.28
+cp pkg-config.7z C:\JTSDK-QT\tools
+cd C:\JTSDK-QT\tools
+7z x pkg-config.7z > nul
+ECHO .. Cleaning Up After Pkg-Config Install
+rm pkg-config.7z
+ECHO .. Finished Pkg-Config Installation
+cd C:\JTSDK-DOC\doc
+)
+GOTO NSIS
+
+REM -- Conditional Install for NSIS Installer Package
+:NSIS
+ECHO .. Checking For NSIS Package Installation
+IF NOT EXIST C:\JTSDK-QT\NSIS\makensis.exe (
+cd C:\JTSDK-DOC\doc\dev-guide\scripts
+ECHO .. Not Found, Installing NSIS v0.03a2
+cp NSIS.7z C:\JTSDK-QT\
+cd C:\JTSDK-QT
+7z x NSIS.7z > nul
+ECHO .. Cleaning Up After Install
+rm NSIS.7z > nul
+cd C:\JTSDK-DOC\doc
+ECHO .. Finished NSIS Installation
+)
+ECHO Done
+GOTO JTSDKPY
 
 REM -- JTSDK-PY SCRIPTS
+:JTSDKPY
 IF EXIST %BASED%JTSDK-PY (
-ECHO Updating JTSDK-PY Scripts
-copy /Y %SCRIPTS%jtsdk-pyenv.bat %BASED%JTSDK-PY
-copy /Y %SCRIPTS%jtsdk-python.bat %BASED%JTSDK-PY
-copy /Y %SCRIPTS%jtsdk-pyco.bat %BASED%JTSDK-PY
-copy /Y %SCRIPTS%python33.dll %BASED%JTSDK-PY\Python33\DLLs
 ECHO.
+ECHO UPDATE JTSDK-PY
+ECHO .. Updating Scripts
+copy /Y %SCRIPTS%jtsdk-pyenv.bat %BASED%JTSDK-PY > nul
+copy /Y %SCRIPTS%jtsdk-python.bat %BASED%JTSDK-PY > nul
+copy /Y %SCRIPTS%jtsdk-pyco.bat %BASED%JTSDK-PY > nul
+copy /Y %SCRIPTS%python33.dll %BASED%JTSDK-PY\Python33\DLLs > nul
+ECHO Done
 )
+GOTO JTSDKDOC
 
 REM -- JYSDK-DOC SCRIPTS
+:JTSDKDOC
 IF EXIST %BASED%JTSDK-DOC (
-ECHO Updating JTSDK-DOC Scripts
-copy /Y %SCRIPTS%jtsdk-docenv.bat %BASED%JTSDK-DOC
+ECHO.
+ECHO UPDATE JTSDK-DOC
+ECHO .. Updating Scripts
+copy /Y %SCRIPTS%jtsdk-docenv.bat %BASED%JTSDK-DOC > nul
+ECHO Done
 ECHO.
 )
 GOTO EOF
 
 :EOF
-COLOR
-pause
 ENDLOCAL
 EXIT /B 0

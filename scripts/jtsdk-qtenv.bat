@@ -13,18 +13,21 @@ SET SVND=%BASED%\subversion\bin
 SET CMAKED=%BASED%\cmake\bin
 SET HAMLIBD=%BASED%\hamlib3\mingw32\bin
 SET FFTWD=%BASED%\fftw3f
+SET NSISD=%BASED%\NSIS
 SET GCCD=%BASED%\qt5\Tools\mingw48_32\bin
 SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
 SET SRCD=%BASED%\src
 SET TOOLS=%BASED%\tools
 SET SCRIPTS=%TOOLS%\scripts
-SET PATH=%BASED%;%SVND%;%CMAKED%;%HAMLIBD%;%FFTWD%;%GCCD%;%QT5D%;%SRCD%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
+SET PATH=%BASED%;%SVND%;%CMAKED%;%HAMLIBD%;%FFTWD%;%GCCD%;%NSISD%;%QT5D%;%SRCD%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 CD /D %BASED%
 
 REM -- DOSKEY BUILD COMMAND
 DOSKEY checkout="%BASED%\jtsdk-cmakeco.bat" $1
 DOSKEY build="%BASED%\jtsdk-cmake.bat" $1 $2
 DOSKEY env-info=CALL %SCRIPTS%\jtsdk-qtinfo.bat
+DOSKEY build-help=CALL %SCRIPTS%\jtsdk-qtbuild-help.bat
+DOSKEY vinfo=CALL %SCRIPTS%\script-versions.bat
 
 REM -- CHECK CRITICAL TOOLS CAN BE FOUND
 svn --version >nul 2>null || SET APP=SVN && GOTO ERROR1

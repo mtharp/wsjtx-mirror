@@ -8,32 +8,43 @@ ECHO      _ _____ ____  ____  _  __      ___ _____
 ECHO     ^| ^|_   _/ ___^|^|  _ \^| ^|/ /     / _ \_   _^|
 ECHO  _  ^| ^| ^| ^| \___ \^| ^| ^| ^| ' /_____^| ^| ^| ^|^| ^|  
 ECHO ^| ^|_^| ^| ^| ^|  ___) ^| ^|_^| ^| . \_____^| ^|_^| ^|^| ^|  
-ECHO  \___/  ^|_^| ^|____/^|____/^|_^|\_\     \__\_\^|_^|  
+ECHO  \___/  ^|_^| ^|____/^|____/^|_^|\_\     \__\_\^|_^| v1.0
 ECHO.
-ECHO.                               
-ECHO BUILD APPLICATIONS: ^( WSJTX WSPRX MAP65 ^)
+ECHO.
+ECHO BUILD APPLICATIONS: ^( WSJT-X WSPR-X MAP65 ^)
 ECHO ---------------------------------------------------------
-ECHO  Build Release .... Type: build wsjtx -r
-ECHO  Build Debug ...... Type: build wsjtx
-ECHO  ENV Info ......... Tupe: env-info
 ECHO.
-ECHO COMPILER ENV (mingw32)
+ECHO USAGE:  build ^(app_name^) ^(type^)
+ECHO.
+ECHO  App Names ...... wsjtx wsprx map65
+ECHO  Release Types .. rconfig rinstall package
+ECHO  Debug Types .... dconfig dinstall
+ECHO  Build Help ..... build-help
+ECHO.
+ECHO COMPILER INFO (mingw48_32)
 ECHO ---------------------------------------------------------
 g++.exe --version |grep Built |awk "{print $7}" >g.v & set /p CVER=<g.v & rm g.v
-ECHO  C^+^+ ....... %CVER%
 gfortran.exe --version |grep MinGW |awk "{print $8}" >g.v & set /p GFOR=<g.v & rm g.v
-ECHO  GFortran .. %GFOR%
 mingw32-make --version |grep Make |awk "{print $3}" >g.v & set /p GNMK=<g.v & rm g.v
+ECHO  C^+^+ ....... %CVER%
+ECHO  GFortran .. %GFOR%
 ECHO  GNU Make .. %GNMK%
 ECHO.
-ECHO QT5 BASE ENV
+ECHO CRITICAL APP INFO
 ECHO ---------------------------------------------------------
-qmake --version |awk "FNR==1 {print $3}" >q.m & set /p QMV=<q.m & rm q.m
-ECHO  QMake ..... %QMV%
-qmake --version |awk "FNR==2 {print $4}" >q.m & set /p QTV=<q.m & rm q.m
-ECHO  QT5 ....... %QTV%
 cmake --version |awk "{print $3}" >c.m & set /p CMV=<c.m & rm c.m
-ECHO  Cmake...... %CMV%
+cpack --version |awk "{print $3}" >c.p & set /p CPV=<c.p & rm c.p
+qmake --version |awk "FNR==2 {print $4}" >q.m & set /p QTV=<q.m & rm q.m
+qmake --version |awk "FNR==1 {print $3}" >q.m & set /p QMV=<q.m & rm q.m
+makensis.exe /VERSION  >n.m & set /p NSM=<n.m & rm n.m
+pkg-config --version >p.c & set /p PKG=<p.c & rm p.c
+ECHO  Cmake ..... %CMV%
+ECHO  Cpack ..... %CPV%
+ECHO  QT5 ....... %QTV%
+ECHO  QMake ..... %QMV%
+ECHO  NSIS ...... %NSM%
+ECHO  Pkg-Cfg ... %PKG%
 ECHO.
+
 ENDLOCAL
 EXIT /B 0
