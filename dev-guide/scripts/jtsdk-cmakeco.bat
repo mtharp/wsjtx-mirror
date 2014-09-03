@@ -11,7 +11,8 @@ SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin
 SET SRCD=%BASED%\src
-SET PATH=%BASED%;%SVND%;%SRCD%;%WINDIR%\System32
+SET SCRIPTS=%TOOLS%\scripts
+SET PATH=%BASED%;%SVND%;%SCRIPTS%;%SRCD%;%WINDIR%\System32
 GOTO CHKAPP
 
 :CHKAPP
@@ -22,17 +23,22 @@ IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx &GOTO BRANCHCO
 
 :BRANCHCO
 CD /D %SRCD%
-ECHO CHECKING OUT ^( %APP_NAME% ^)
+CLS
+ECHO.
+ECHO -----------------------------------------------------------------
+ECHO Checking Out ^( %APP_NAME% ^) From SVN
+ECHO -----------------------------------------------------------------
 start /wait svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
 CD %BASED%
-GOTO FINISHED
+ECHO.
+ECHO Checkout complete. The next screen shows available build options.
+ECHO.
+PAUSE
+GOTO FINISH
 )
 
-:FINISHED
-ECHO.
-ECHO To Build ^( %APP_NAME% ^)
-ECHO Type: build %APP_NAME%
-ECHO.
+:FINISH
+CALL %SCRIPTS%\jtsdk-qtbuild-help.bat
 GOTO EOF
 
 REM - UNSUPPORTED APPLICATION CHECKOUT
