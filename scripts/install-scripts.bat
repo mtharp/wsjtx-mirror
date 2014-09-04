@@ -17,9 +17,15 @@ SETLOCAL
 SET BASED=c:\
 SET SCRIPTS=c:\JTSDK-DOC\doc\dev-guide\scripts\
 
+REM -- Skip JTSDK-QT update if not located in C:\JTSDK-QT
+ECHO UPDATE JTSDK-QT
+IF NOT EXIST %BASED%JTSDK-QT (
+ECHO .. Did not find ^( C:\JTSDK-QT ^), skipping update
+GOTO JTSDKPY
+)
+
 REM -- JTSDK-QT SCRIPTS
 IF EXIST %BASED%JTSDK-QT (
-ECHO UPDATE JTSDK-QT
 ECHO .. Updating Scripts
 copy /Y %SCRIPTS%jtsdk-cmake.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-qtenv.bat %BASED%JTSDK-QT >nul
@@ -66,9 +72,16 @@ GOTO JTSDKPY
 
 REM -- JTSDK-PY SCRIPTS
 :JTSDKPY
-IF EXIST %BASED%JTSDK-PY (
 ECHO.
 ECHO UPDATE JTSDK-PY
+
+REM -- Skip JTSDK-PY Update if not located in C:\JTSDK-PY
+IF NOT EXIST %BASED%JTSDK-PY (
+ECHO .. Did not find ^( C:\JTSDK-PY ^), skipping update
+GOTO JTSDKDOC
+)
+
+IF EXIST %BASED%JTSDK-PY (
 ECHO .. Updating Scripts
 copy /Y %SCRIPTS%jtsdk-pyenv.bat %BASED%JTSDK-PY > nul
 copy /Y %SCRIPTS%jtsdk-python.bat %BASED%JTSDK-PY > nul
@@ -77,6 +90,12 @@ copy /Y %SCRIPTS%python33.dll %BASED%JTSDK-PY\Python33\DLLs > nul
 ECHO Done
 )
 GOTO JTSDKDOC
+
+REM -- Skip JTSDK-DOC update if not located in C:\JTSDK-DOC
+IF NOT EXIST %BASED%JTSDK-PY (
+ECHO .. Did not find ^( C:\JTSDK-DOC ^), skipping update
+GOTO EOF
+)
 
 REM -- JYSDK-DOC SCRIPTS
 :JTSDKDOC
