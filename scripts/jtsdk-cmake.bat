@@ -118,7 +118,7 @@ CLS
 CD %BUILDD%\%OPTION%
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO  Configuring %OPTION% Build Tree For: ^( %APP_NAME% ^)
+ECHO Configuring %OPTION% Build Tree For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
 cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
@@ -126,29 +126,29 @@ cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO  Finished %OPTION% Build Tree Configuration for: ^( %APP_NAME% ^)
+ECHO Finished %OPTION% Build Tree Configuration for: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-ECHO -- BASE BUILD CONFIGURATION
-ECHO    Package ............ %APP_NAME%
-ECHO    Type ............... %OPTION%
-ECHO    Build Directory .... %BUILDD%\%OPTION%
-ECHO    Build Option List .. %BUILDD%\%OPTION%\CmakeCache.txt
-ECHO    Target Directory ... %INSTALLD%\%OPTION%
+ECHO BASE BUILD CONFIGURATION
+ECHO   Package ............ %APP_NAME%
+ECHO   Type ............... %OPTION%
+ECHO   Build Directory .... %BUILDD%\%OPTION%
+ECHO   Build Option List .. %BUILDD%\%OPTION%\CmakeCache.txt
+ECHO   Target Directory ... %INSTALLD%\%OPTION%
 ECHO.
-ECHO -- LIST ALL BUILD CONFIG OPTIONS
-ECHO    cat %BUILDD%\%OPTION%\CmakeCache.txt ^| less
-ECHO    :: Arrow Up / Down to dcroll through the list
-ECHO    :: Type ^(H^) for help with search commands
-ECHO    :: Type ^(Ctrl+C then Q^) to exit
+ECHO LIST ALL BUILD CONFIG OPTIONS
+ECHO   cat %BUILDD%\%OPTION%\CmakeCache.txt ^| less
+ECHO   :: Arrow Up / Down to dcroll through the list
+ECHO   :: Type ^(H^) for help with search commands
+ECHO   :: Type ^(Ctrl+C then Q^) to exit
 ECHO.
-ECHO -- TO BUILD INSTALL TARGET
-ECHO    cd %BUILDD%\%OPTION%
-ECHO    cmake --build . --target install
+ECHO TO BUILD INSTALL TARGET
+ECHO   cd %BUILDD%\%OPTION%
+ECHO   cmake --build . --target install
 ECHO.
-ECHO --TO BUILD WINDOWS NSIS INSTALLER
-ECHO    cd %BUILDD%\%OPTION%
-ECHO    cmake --build . --target package
+ECHO TO BUILD WINDOWS NSIS INSTALLER
+ECHO   cd %BUILDD%\%OPTION%
+ECHO   cmake --build . --target package
 ECHO.
 GOTO EOF
 
@@ -242,7 +242,6 @@ ECHO -----------------------------------------------------------------
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
 IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
-ECHO.
 
 REM - RESET HAMLIB DIR for MAP65 & WSPRX
 IF NOT [%APP_NAME%]==[wsjtx] (SET HAMLIBD=%BASED%\hamlib\bin)
@@ -253,24 +252,19 @@ ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK Project
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
-ECHO ECHO.
 ECHO SET PATH=%BASED%;%HAMLIBD%;%FFTWD%;%GCCD%;%QT5D%
-ECHO ECHO.
 ECHO START %APP_NAME%.exe
-ECHO ECHO.
 ECHO ENDLOCAL
 ECHO EXIT /B 0
 )
 
 IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_FINISH
-) ELSE ( GOTO RELEASE_FINISH )
+) ELSE ( GOTO FINISH )
 
 :DEBUG_FINISH
 ECHO BUILD SUMMARY
-ECHO -----------------------------------------------------------------
-ECHO.
-ECHO  Build Tree Location .. %BUILDD%\%OPTION%
-ECHO  Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.bat
+ECHO   Build Tree Location .. %BUILDD%\%OPTION%
+ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.bat
 ECHO.
 ECHO NOTE: When Running ^( %APP_NAME% ^) Debug versions, please use
 ECHO       the provided  ^( %APP_NAME%.bat ^) file as this sets up
@@ -302,12 +296,9 @@ START %APP_NAME%.bat
 GOTO EOF
 
 :FINISH
-ECHO.
 ECHO BUILD SUMMARY
-ECHO -----------------------------------------------------------------
-ECHO.
-ECHO  Build Tree Location .. %BUILDD%\%OPTION%
-ECHO  Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.exe
+ECHO   Build Tree Location .. %BUILDD%\%OPTION%
+ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.exe
 ECHO.
 PAUSE
 GOTO ASK_FINISH_RUN
