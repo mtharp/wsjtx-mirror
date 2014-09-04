@@ -25,12 +25,6 @@ include::../../global/links.adoc[]
 == Introduction
 include::introduction.adoc[]
 
-////
-[[CONTACT]]
-== Contact Us
-include::../../global/communication.adoc[]
-////
-
 [[SYSREQ]]
 == System Requirements
 include::system-requirements.adoc[]
@@ -58,12 +52,11 @@ include::install-mac.adoc[]
 include::install-from-source.adoc[]
 
 [[CONFIG]] 
-== Configuration
+== Settings
 
-Open the *Configuration* window by selecting *Settings* from the
-*File* menu, or by typing *F2*.  The following sections describe setup
-optiions available on each of six tabs selectable near the top of the
-window.
+Select *Settings* from the *File* menu or by typing *F2*.  The
+following sections describe setup optiions available on each of six
+tabs selectable near the top of the window.
 
 [[GENERAL]]
 === General

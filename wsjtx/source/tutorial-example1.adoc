@@ -1,25 +1,30 @@
 // Status=review
+
+For this step and the next, you may want to pretend you are K1JT
+by entering that callsign temporarily as *My Call* on the 
+*Settings | General* tab.  Your results should then be identical to
+those shown in the screen shot below.
+
 .Open a Wave File:
 
-- Select *File | Open* and navigate to
-+...\save\samples\130418_1742.wav+ under the _WSJT-X_ installation
-directory. When the file opens you should see something similar to
-the to the following screen shot:
+- Select *File | Open* and select the file
++...\save\samples\130418_1742.wav+. When the file opens you should see
+something similar to the to the following screen shot:
 
 [[X12]]
 image::images/main-ui-1.4.png[align="center",alt="Main UI and Wide Graph"]
 
 .Decoding Overview
 
-Notice the [green]*GREEN* and [red]*RED* markers on the waterfall
-frequency scale.  Decoding takes place at the end of a receive
-sequence and is organized in two stages.  The first decodes take place
-at the selected Rx frequency, indicated by the [green]*GREEN* marker
-on the waterfall scale.  Results appear in both the left (*Band
-Activity*) and right (*Rx Frequency*) text windows on the main
-screen. The program then finds and decodes all signals in the selected
-mode(s) over the displayed frequency range. The [red]*RED* marker
-indicates your Tx frequency.
+Notice the [green]*GREEN* and [red]*RED* markers on the Wide Graph
+(waterfall) frequency scale.  Decoding takes place at the end of a
+receive sequence and is organized in two stages.  The first decodes
+take place at the selected Rx frequency, indicated by the
+[green]*GREEN* marker on the waterfall scale.  Results appear in both
+the left (*Band Activity*) and right (*Rx Frequency*) text windows on
+the main screen. The program then finds and decodes all signals in the
+selected mode(s) over the displayed frequency range. The [red]*RED*
+marker indicates your Tx frequency.
 
 Seven JT9 signals are present in the example file, all decodable.
 When this file was recorded KF4RWA was finishing a QSO with K1JT.
@@ -29,11 +34,6 @@ Frequency* window. The *Band Activity* window shows this message plus
 all decodes at other frequencies.  Lines containing CQ are highlighted
 in [green]*GREEN*, and lines with *My Call* (in this case K1JT) in
 [red]*RED*.
-
-TIP: For this step and the next, you may want to pretend you are K1JT
-by entering that callsign temporarily as *My Call* on the <<X11,*Setup
-| Configuration*>> screen.  Your results should then be identical to
-those shown in the screen shot above.
 
 [[X13]]
 .Decoding Controls

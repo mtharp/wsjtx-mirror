@@ -9,7 +9,7 @@ image::images/misc-main-ui.png[align="center",alt="Mist Menu Items"]
 
 * A drop-down list of bands at upper left lets you select the
 operating band and sets dial frequency to a value taken from
-the *Default Frequencies* tab on the *Setup | Configuration* screen.
+the *Frequencies* tab on the *Settings* window.
 If CAT control is active the radio's dial frequency will be set
 accordingly; if not, you must tune the radio manually.
 

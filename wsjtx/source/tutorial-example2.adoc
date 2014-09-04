@@ -63,7 +63,7 @@ window.
 
 [width="70%",cols="3,^3,^3,^4,^4,30",options="header"]
 |=================================
-|UTC|db|dt|Freq|Mode|Message
+|UTC|dB|DT|Freq|Mode|Message
 |2343|-7|0.3|815|#|KK4DSD W7VP -16
 |=================================
 
@@ -72,7 +72,7 @@ JT9 message from IZ0MIT:
 
 [width="70%",cols="3,^3,^3,^4,^4,30",options="header"]
 |=====================================
-|UTC|db|dt|Freq|Mode|Message
+|UTC|dB|DT|Freq|Mode|Message
 |2343|-7|0.3|3196|@|WB8QPG IZ0MIT -11
 |=====================================
 
@@ -112,6 +112,5 @@ receiver setup of this file good values are close to *Zero*=0,
 *Gain*=0.  Re-open the wave file after each change, to see the new
 results.
 
-IMPORTANT: When you are finished with this Tutorial, don’t forget to
-re-enter your own callsign +
-*My Call* in the *Setup | Configuration* screen.
+IMPORTANT: When finished with this Tutorial, don’t forget to re-enter
+your own callsign as *My Call* on the *Settings | General* tab.

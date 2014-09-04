@@ -22,32 +22,31 @@ recommended basic QSO goes something like this:
 one callsign) followed by the transmitting station’s grid locator, a
 signal report, R plus a signal report, or the final acknowledgements
 RRR or 73.  These messages are compressed and encoded in a highly
-efficient and reliable way, and in uncompressed form may contain 
-as many as 18 characters.
+efficient and reliable way.  In uncompressed form as displayed
+on-screen, they may contain as many as 18 characters.
 
 *Signal reports* are specified as signal-to-noise ratio (S/N) in dB,
 using a standard reference noise bandwidth of 2500 Hz.  Thus, in
-example message #0003 above, K1ABC is telling G0XYZ that his signal is
-19 dB below the noise power in bandwidth 2500 Hz.  In message #0004,
-G0XYZ acknowledges receipt of that report and responds with a –22 dB
-signal report.  JT65 reports are constrained to lie in the range –30
-to –1 dB, while JT9 supports the extended range –50 to +49 dB.
+example message at UTC 0003 above, K1ABC is telling G0XYZ that his
+signal is 19 dB below the noise power in bandwidth 2500 Hz.  In the
+message at 0004, G0XYZ acknowledges receipt of that report and
+responds with a –22 dB signal report.  JT65 reports are constrained to
+lie in the range –30 to –1 dB, and values are significantly compressed
+above about -10 dB.  JT9 supports the extended range –50 to +49 dB and
+assigns more reliable numbers to relatively strong signals.
 
 TIP: Signals become visible on the waterfall around S/N = –26 dB and
 audible (to someone with very good hearing) around –15 dB. Thresholds
-for signal decodability are approximately –24 dB for JT65, –26 dB for
-JT9.
+for decodability are around –24 dB for JT65, –26 dB for JT9.
 
 *Free Text Messages*: Users often add some friendly chit-chat at the
 end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or ``5W
 VERT 73 GL'' are supported, up to a maximum of 13 characters,
-including spaces.  (Normally you should avoid the character / in
-free-text nessages, since the program may try to interpret your
-construction as part of a compound callsign.)  It should be obvious
+including spaces.  Normally you should avoid the character / in
+free-text nessages, as the program might then try to interpret your
+construction as part of a compound callsign.  It should be obvious
 that the JT9 and JT65 protocols are not well suited for extensive
-conversations or rag-chewing.
-[[COMP-CALL]]
-=== Compound Callsigns
+conversations or rag-chewing.  [[COMP-CALL]] === Compound Callsigns
 
 Compound callsigns such as xx/K1ABC or K1ABC/x are handled in
 one of two possible ways:
@@ -82,19 +81,19 @@ might look like this:
  G0XYZ K1ABC RRR
                      K1ABC G0XYZ 73
 
-Notice that both operators send and receive the full compound
-callsign in the first two transmissions.  After that, they omit the
-add-on prefix or suffix and use the standard structured messages.
+Notice that the full compound callsign is sent and received in the
+first two transmissions.  After that, the operators omit the add-on
+prefix or suffix and use the standard structured messages.
 
 .Type 2 Compound-Callsign Messages
 
 Prefixes and suffixes _not_ found in the short displayable list can be
-handled with a *Type 2* message.  The compound callsign must be the
-second word in a two- or three-word message, and the first word must
-be CQ, DE, or QRZ.  Prefixes can be 1 to 4 characters, suffixes 1 to 3
-characters.  A third word conveying a locator, report, RRR, or 73 is
-permitted.  The following are valid *Type 2* messages with compound
-callsigns:
+handled with a *Type 2* message.  In this case the compound callsign
+must be the second word in a two- or three-word message, and the first
+word must be CQ, DE, or QRZ.  Prefixes can be 1 to 4 characters,
+suffixes 1 to 3 characters.  A third word conveying a locator, report,
+RRR, or 73 is permitted.  The following are valid *Type 2* messages
+with compound callsigns:
 
  CQ W4/G0XYZ FM07
  DE W4/G0XYZ -22
@@ -106,8 +105,9 @@ that a second callsign is never permissible in these messages.
 
 TIP: Remember that during a transmission your transmitted message is
 always displayed in the first label on the *Status Bar*, highlighted
-in yellow.  It is displayed there exactly as another station would
-receive it.
+in yellow.  It is displayed there exactly as another station will
+receive it.  Be sure to check that you are actually transmitting the
+message you wish to send!
 
 QSOs involving *Type 2* compound callsigns might look like either
 of the following sequences
@@ -147,10 +147,10 @@ checklist:
 - PTT and CAT control (if used) properly configured and tested
 - Computer clock properly synchronized to UTC within ±1 s
 - Radio set to *USB* (upper sideband) mode
-- Radio filters centered and set to widest pass.
+- Radio filters centered and set to widest available passband (up to 5 kHz).
 - Radio's Split mode selected or not, consistent with your choice 
-  on *Station* tab of the *Setup | Configuration* window. Verify both VFOs
-  are set to USB if your rig allows each VFO independent mode setting 
+  on the *Radio* tab of the *Settings* window. Verify both VFOs
+  are set to USB if your rig allows each VFO an independent mode setting.
 
 IMPORTANT: Remember that JT9 and J65 generally do not require high
-power. Under most propagation conditions, QRP is the norm.
+power. Under most HF propagation conditions, QRP is the norm.

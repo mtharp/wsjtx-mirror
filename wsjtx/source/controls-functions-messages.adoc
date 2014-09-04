@@ -19,8 +19,8 @@ mid-stream will slightly reduce the chance of a correct decode, but it
 is usually OK if done in the first 10 s of a transmission.
 
 * Right-clicking on the entry field for message #5 pops up a list of
-free-text messages entered on the *Setup | Configuration | Tx Macros*
-screen.  Select any of your pre-stored messages by using the left
+free-text messages entered on the *Settings | Tx Macros* tab.
+Select any of your pre-stored messages by using the left
 mouse button.
 
 The second arrangement of controls for generating and selecting

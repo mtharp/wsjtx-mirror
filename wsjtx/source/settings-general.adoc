@@ -1,12 +1,12 @@
 // Status=review
 [[FIG_CONFIG_STATION]]
-image::images/r4148-config-ui.png[align="center",alt="Configuration Screen"]
+image::images/settings-ui.png[align="center",alt="Settings Window"]
 
-If necessary, select the *General* tab on the *Configuration* window.
-Under _Station Details_, enter your call sign and 4-digit or 6-digit
-grid locator.  This information will be sufficient for initial tests.
+Select the *General* tab on the *Settings* window.  Under _Station
+Details_, enter your call sign and 4-digit or 6-digit grid locator.
+This information will be sufficient for initial tests.
 
-If you understand what they mean, you might wish to select some of the
-_Display_ or _Behavior_ options at this time.  Otherwise you may
-return to these selections later.  For additional information see the
-<<COMMAND_REF,Command Reference>> section.
+Meanings of the remaining options on the *General* tab will become
+self-explanatory after you have made some QSOs using _WSJT-X_.  You
+may return to set these options later.
+

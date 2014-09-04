@@ -27,13 +27,13 @@ toggle the *Monitor* button so that _WSJT-X_ is no longer active.
 
 - Alternatively, if you have configured your station for control by
 *DX Lab Suite Commander*, *Ham Radio Deluxe*, *Hamlib NET rigctl*, or
-*OmniRig*, you may select one of those program names.  In that case
-the entry field immediately under _CAT Control_ will be relabeled
+*OmniRig*, you may select one of those program names.  In those cases
+the entry field immediately under _CAT Control_ will be relabeled as
 *Network Server*.  Leave this field blank to access the default
-instance of your control program, on the same computer. If the control
-program runs on a different machine and/or port, specify it here.
-Hover the mouse pointer over the entry field to see the required
-formatting details.
+instance of your control program, running on the same computer. If the
+control program runs on a different machine and/or port, specify it
+here.  Hover the mouse pointer over the entry field to see the
+required formatting details.
 
 - Select *OmniRig Rig 1* or *OmniRig Rig 2* to connect to an _OmniRig_
 server running on the same computer.  Note that _OmniRig_ is available

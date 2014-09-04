@@ -26,4 +26,4 @@ default the frequency *Offset* for each band is zero.  Nonzero offsets
 may be added if (for example) a transverter is in use.
 
 When all settings have been configured to your liking, click *OK* to
-dismiss the *Configuration* window. 
+dismiss the *Settings* window. 
