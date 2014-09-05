@@ -39,14 +39,20 @@ TIP: Signals become visible on the waterfall around S/N = –26 dB and
 audible (to someone with very good hearing) around –15 dB. Thresholds
 for decodability are around –24 dB for JT65, –26 dB for JT9.
 
-*Free Text Messages*: Users often add some friendly chit-chat at the
-end of a QSO.  Free-format messages such as ``TNX ROBERT 73'' or ``5W
-VERT 73 GL'' are supported, up to a maximum of 13 characters,
-including spaces.  Normally you should avoid the character / in
-free-text nessages, as the program might then try to interpret your
-construction as part of a compound callsign.  It should be obvious
-that the JT9 and JT65 protocols are not well suited for extensive
-conversations or rag-chewing.  [[COMP-CALL]] === Compound Callsigns
+=== Free Text Messages
+
+Users often add some friendly chit-chat at the end of a QSO.
+Free-format messages such as ``TNX ROBERT 73'' or ``5W VERT 73 GL''
+are supported, up to a maximum of 13 characters, including spaces.
+In general you should avoid the character / in free-text nessages, as
+the program may then try to interpret your construction as part of a
+compound callsign.  
+
+TIP: It should be obvious that the JT9 and JT65 protocols are not well
+suited for extensive conversations or rag-chewing.
+
+[[COMP-CALL]] 
+=== Compound Callsigns
 
 Compound callsigns such as xx/K1ABC or K1ABC/x are handled in
 one of two possible ways:
