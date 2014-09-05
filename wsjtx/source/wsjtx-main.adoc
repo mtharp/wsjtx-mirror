@@ -140,18 +140,14 @@ include::controls-functions-status-bar.adoc[]
 === Menus
 include::controls-functions-menus.adoc[]
 
-[[SHORTCUTS]]
-=== Keyboard Shortcuts
-include::controls-functions-kb-shortcuts.adoc[]
-
-[[MOUSE_COMMANDS]]
-=== Mouse Commands
-include::controls-functions-special-mouse-cmds.adoc[]
+[[PLATFORM]]
+== Platform Dependencies
+include::platform-dependencies.adoc[]
 
 [[COOP_PGMS]]
 == Cooperating Programs
-To be added: brief descriptions of JTAlert and PSK Reporter and how
-to use them with _WSJT-X_.
+To be added: brief descriptions of _JTAlert-X_ and _PSK Reporter_, and
+how to use them with _WSJT-X_.
 
 [[FAQ]]
 == Frequently Asked Questions
@@ -176,23 +172,11 @@ include::jt65-jt9-differences.adoc[]
 == Implementation Details
 include::tx-rx.adoc[]
 
-//////////////////
+////
 [[TROUBLE_SHOOTING]]
 == Troubleshooting
-To be added ...
-/////////////////
-
-[[FILES]]
-== Directory Contents
-
-// Note to Dev-Team, this list of files needs to be updated.
-[[FILES1]]
-=== Installed Files
-include::installed-files.adoc[]
-
-[[FILES2]]
-=== Runtime Files
-include::runtime-files.adoc[]
+To be added (?) ...
+////
 
 [[UTIL]]
 == Utility Programs
@@ -202,8 +186,7 @@ include::utilities.adoc[]
 == Acknowledgements
 include::acknowledgements.adoc[]
 
-[appendix]
-License
--------
+[[LICENSE]]
+== License
 include::../../global/license.adoc[]
 

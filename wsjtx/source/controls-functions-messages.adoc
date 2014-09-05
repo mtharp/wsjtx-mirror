@@ -16,12 +16,17 @@ Tx sequence) by clicking on the circle under *Next*.
 * To change to a specified Tx message immediately, click on a
 rectangular button under the *Now* label.  Changing a Tx message in
 mid-stream will slightly reduce the chance of a correct decode, but it
-is usually OK if done in the first 10 s of a transmission.
+is usually OK if done in the first 10-15 s of a transmission.
 
 * Right-clicking on the entry field for message #5 pops up a list of
 free-text messages entered on the *Settings | Tx Macros* tab.
 Select any of your pre-stored messages by using the left
 mouse button.
+
+* All six Tx message fields are editable.  You can modify an
+automatically generated message or enter a desired message, keeping in
+mind the strict limits on message content.  See <<PROTOCOLS,Protocol
+Specifications>> for details.
 
 The second arrangement of controls for generating and selecting
 Tx messages appears on *Tab 2* of the Message Control Panel:

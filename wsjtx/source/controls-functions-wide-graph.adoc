@@ -28,8 +28,11 @@ waterfall colors.  Values around 0 for both parameters are usually
 about right, depending on the input signal level and your own
 preferences.
 
-- *Palette* lets you select from a wide range of waterfall color
-palettes.
+- A dropdown list below the *Palette* label lets you select from a
+wide range of waterfall color palettes.  
+
+- Click *Adjust* to activate a window that allows you to create a
+user-defined palette.
 
 - Check *Flatten* if you want _WSJT-X_ to compensate for a sloping or
 uneven response across the received passband.

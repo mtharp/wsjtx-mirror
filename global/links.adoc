@@ -53,7 +53,7 @@ Edit files as needed
 :wspr0_guide: http://www.physics.princeton.edu/pulsar/K1JT/WSPR0_Instructions.TXT[WSPR0 Guide]
 
 // Download Links
-:cty_dat: http://www.country-files.com/cty/[here].
+:cty_dat: http://www.country-files.com/cty/[here]
 :hamlib3: https://dl.dropboxusercontent.com/u/4192709/Hamlib-integration-wsjtx.zip[Download]
 :jtsdk_doc: http://physics.princeton.edu/pulsar/K1JT/JTSDK-DOC.exe[Download]
 :jtsdk_py: http://physics.princeton.edu/pulsar/K1JT/JTSDK-PY.exe[Download]

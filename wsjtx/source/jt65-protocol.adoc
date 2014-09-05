@@ -4,15 +4,15 @@ JT65 was designed for making minimal QSOs via EME (``moon-bounce'') on
 the VHF and UHF bands. A detailed description of the protocol and its
 implementation in program _WSJT_ was published in {jt65protocol} for
 September-October, 2005. Briefly stated, JT65 uses 60 s T/R sequences
-and carefully structured messages. Standard messages are compressed
-so that two callsigns and a grid locator can be transmitted with just
-71 bits.  A 72nd bit serves as a flag to indicate that the message
+and carefully structured messages. Standard messages are compressed so
+that two callsigns and a grid locator can be transmitted with just 71
+bits.  A 72nd bit serves as a flag to indicate that the message
 consists of arbitrary text (up to 13 characters) instead of callsigns
 and a grid locator.  Special formats allow other information such as
 add-on callsign prefixes (e.g., ZA/K1ABC) or numerical signal reports
-(in dB) to be substituted for the grid locator. The aim of source
-encoding is to compress the common messages used for minimally valid QSOs into
-a minimum fixed number of bits. After compression, a Reed Solomon
+(in dB) to be substituted for the grid locator. The basic aim is to
+compress the common messages used for minimally valid QSOs into a
+minimum fixed number of bits. After compression, a Reed Solomon
 (63,12) error-control code converts 72-bit user messages into
 sequences of 63 six-bit channel symbols.
 
@@ -38,7 +38,7 @@ Encoded user information is transmitted during the 63 intervals not
 used for the sync tone. Each channel symbol generates a tone at
 frequency 1275.8 + 2.6917 × N × m Hz, where N is the value of the
 six-bit symbol, 0 ≤ N ≤ 63, and m is 1, 2, or 4 for JT65 sub-modes A,
-B, or C.  
+B, or C.  JT65A is the submode always used at HF.
 
 For EME (but, conventionally, not on the HF bands) the signal report OOO
 is sometimes used instead of numerical signal reports. It is conveyed

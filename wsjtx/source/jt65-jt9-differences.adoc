@@ -1,11 +1,10 @@
 // Status=review
 
-To users already familiar with JT65, the most striking difference
-between the two modes is the much smaller occupied bandwidth of JT9:
-15.6 Hz, compared with 177.6 Hz for JT65A.  Transmissions in the two
-modes are essentially the same length, and both modes use exactly 72
-bits to carry message information. At the user level the two modes
-support nearly identical message structures.
+The most striking difference between JT65 and JT9 is the much smaller
+occupied bandwidth of JT9: 15.6 Hz, compared with 177.6 Hz for JT65A.
+Transmissions in the two modes are essentially the same length, and
+both modes use exactly 72 bits to carry message information. At the
+user level the two modes support nearly identical message structures.
 
 JT65 signal reports are constrained to the range –1 to –30 dB. This
 range is more than adequate for EME purposes, but not really enough
@@ -28,13 +27,13 @@ produce extremely low false-decode rates.
 Early experience suggests that under most HF propagation conditions
 the two modes have comparable reliability. The tone spacing of JT9 is
 about two-thirds that of JT65, so in some disturbed ionospheric
-conditions in the higher portion of the HF spectrum, JT65 may do
-better. 
+conditions in the higher portion of the HF spectrum, JT65 may perform
+better.
 
 JT9 is an order of magnitude better in spectral efficiency. On a busy
-HF band, we often find the 2-kHz-wide JT65 sub-band filled
-wall-to-wall with signals. Ten times as many JT9 signals can fit into
-the same frequency range, without overlap.
+HF band, the conventional 2-kHz-wide JT65 sub-band is often filled
+with overlapping signals. Ten times as many JT9 signals can fit into
+the same frequency range, without collisions.
 
 JT65 signals often decode correctly even when they overlap. Such
 behavior is much less likely with JT9 signals, which fill their occupied

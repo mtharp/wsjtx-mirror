@@ -9,7 +9,6 @@ Logs and other writeable files will be found in the directory
 
 Why does the *Flatten* feature cause my displayed spectrum to curve steeply upward near the edges, before falling where the IF filter cuts off?::
 
-
 _WSJT-X_ does not expect a steep filter edge within the displayed
 passband, except perhaps a low-frequency cutoff below 200 Hz. Either
 use a wider IF filter or reduce the displayed passband by decreasing
@@ -17,13 +16,10 @@ use a wider IF filter or reduce the displayed passband by decreasing
 Graph*.  You might also choose to re-center the filter passband, if
 such control is available.
 
-Occasionally, _WSJT-X_ unexpectedly quits. I have read this is because I set *Polling interval* to a nonzero value. How can I fix this issue?::
+CAT control does not seem to work with my radio.::
 
 A few radios do not interact properly with the +hamlib+ library calls
-used in _WSJT-X_.  We are working to resolve this and other
-CAT-control issues.  In the meantime you can run with *Polling
-interval* set to 0, or control your radio through _DX Labs Commander_
-or _Ham Radio Deluxe_.
+used by _WSJT-X_.  We are working to resolve these issues.  
 
 How should I configure _WSJT-X_ to run multiple instances?::
 

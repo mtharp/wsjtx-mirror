@@ -7,22 +7,22 @@ main window:
 //.Misc Controls Left
 image::images/misc-main-ui.png[align="center",alt="Mist Menu Items"]
 
-* A drop-down list of bands at upper left lets you select the
-operating band and sets dial frequency to a value taken from
-the *Frequencies* tab on the *Settings* window.
-If CAT control is active the radio's dial frequency will be set
-accordingly; if not, you must tune the radio manually.
+* A drop-down list of frequencies and bands at upper left lets you
+select the operating band and sets dial frequency to a value taken
+from the *Frequencies* tab on the *Settings* window.  If CAT control
+is active the radio's dial frequency will be set accordingly; if not,
+you must tune the radio manually.
 
 * If you are using CAT control, a small colored square appears in
-green if the CAT control is two-way between _WSJT-X_ and your radio, or
-orange if the control is only from program to radio.  (You can request
-a one-time interrogation of the radio’s dial frequency by clicking on
-the orange square.) The square becomes red if you have requested CAT
-control but communication with the radio has been lost.  If the
-locator *Dx Grid* is known, the great-circle azimuth and distance are
+green if the CAT control is activated and functional.  The square
+becomes red if you have requested CAT control but communication with
+the radio has been lost.  If *DX Grid* is a valid Maidenhead locator,
+its great-circle azimuth and distance from your location are
 displayed.
 
 * The program can maintain a database of callsigns and locators for
 future reference.  Click *Add* to insert the present call and locator
 in the database; click *Lookup* to retrieve the locator for a
-previously stored call.
+previously stored call.  This feature is mainly useful for situations
+in which the number of active stations is modest and reasonably
+stable, such as EME (Earth-Moon-Earth) communication.

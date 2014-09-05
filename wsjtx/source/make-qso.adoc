@@ -148,7 +148,7 @@ checklist:
 - Computer clock properly synchronized to UTC within ±1 s
 - Radio set to *USB* (upper sideband) mode
 - Radio filters centered and set to widest available passband (up to 5 kHz).
-- Radio's Split mode selected or not, consistent with your choice 
+- Radio's Split mode activated or not, consistent with your choice 
   on the *Radio* tab of the *Settings* window. Verify both VFOs
   are set to USB if your rig allows each VFO an independent mode setting.
 

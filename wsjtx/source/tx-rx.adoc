@@ -4,7 +4,11 @@
 Immediately before the start of a transmission _WSJT-X_ encodes a
 user's message and computes the sequence of tones to be sent.  The
 audio waveform is computed on-the-fly, sending 16-bit integer samples
-to the audio output device at a 48000 Hz rate.  
+to the audio output device at a 48000 Hz rate.  Generated JT65 and JT9
+signals have continuous phase and constant amplitude, and there are no
+key clicks.  The transmitter's power amplifier need not be highly
+linear.
+
 
 .Receiving
 
@@ -12,6 +16,8 @@ _WSJT-X_ acquires 16-bit integer samples from the audio input device
 at a 48000 Hz rate and immediately downsamples the stream to 12000 Hz.
 Spectra from overlapping segments are computed for the waterfall
 display and saved at intervals of 0.188 s, half the JT9 symbol length.
+
+.Decoding
 
 At the end of a reception sequence, about 50 seconds into the UTC
 minute, received data samples are forwarded to the decoder.  For
@@ -21,9 +27,7 @@ displayed frequency range.  Each decoding pass can be described as a
 sequence of discrete blocks.  The functional blocks are different
 for the JT65 and JT9 modes.
 
-.Decoding
-
-The basic decoding algorithm for JT65 mode was described in the
+The basic decoding algorithm for JT65 mode is described in the 2005
 {jt65protocol} paper.  The following list summarizes the corresponding
 algorithm for JT9 mode. Blocks are labeled here with the names of
 functional procedures in the code.
@@ -41,7 +45,7 @@ Then, at the frequency of each plausible candidate:
 +peakdt9+::   Using sync symbols, time-align to start of JT9 symbol 
             sequence
 
-+afc9+::    Measure frequency offset and any possible drift
++afc9+::    Measure frequency offset and possible drift
 
 +twkfreq+::   Remove frequency offset and drift
 
@@ -49,11 +53,11 @@ Then, at the frequency of each plausible candidate:
             symbols, using the time- and frequency-aligned data;
             transform to yield 206 single-bit soft symbols
 
-+interleave9+:: Remove single-bit symbol interleaving imposed at the
++interleave9+:: Remove single-bit interleaving imposed at the
 	    transmitter
 
 +decode9+::   Retrieve a 72-bit user message using the sequential
-            Fano algorithm for convolutional codes
+            Fano algorithm 
 
 
 +unpackmsg+:: Unpack a human-readable message from the 72-bit 
@@ -63,12 +67,11 @@ Decoding of clean JT9 signals in a white-noise background starts to
 fail below signal-to-noise ratio -25 dB and reaches 50% copy at -26
 dB.
 
-With marginal or unrecognizable signals the sequential decoding
-algorithm can take exponentially long times.  If the +sync9+ step in
-the above sequence finds many seemingly worthy candidate signals, and
-if many of them turn out to be undecodable the decoding loop can take
-an inconveniently long time.  For this reason the step labeled
-+decode9+ is programmed to ``time out'' and report failure if it is
-taking too long.  The choices *Fast | Normal | Deepest* on the Decode
-menu provide the user with a three-step adjustment of this timeout
-limit.
+With marginal or unrecognizable signals the sequential Fano algorithm
+can take exponentially long times.  If the +sync9+ step in the above
+sequence finds many seemingly worthy candidate signals and many of
+them turn out to be undecodable, the decoding loop can take an
+inconveniently long time.  For this reason the step labeled +decode9+
+is programmed to ``time out'' and report failure if it is taking too
+long.  The choices *Fast | Normal | Deepest* on the *Decode* menu
+provide the user with a three-step adjustment of this timeout limit.

@@ -18,7 +18,4 @@ numbered 1, 2, 5, 10, 16, 23, 33, 35, 51, 52, 55, 60, 66, 73, 83, and
 Each symbol lasts for 6912 sample intervals at 12000 samples per
 second, or about 0.576 seconds. Tone spacing of the 9-FSK modulation is
 12000/6912 = 1.736 Hz, the inverse of the symbol duration. The total
-occupied bandwidth is 9 × 1.736 = 15.6 Hz. A generated JT9 signal has
-continuous phase and constant amplitude, and there are no key clicks.
-The transmitter's power amplifier need not be highly linear.
-
+occupied bandwidth is 9 × 1.736 = 15.6 Hz. 
