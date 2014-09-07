@@ -1,13 +1,33 @@
-# Makefile for Windows with MinGW, using gcc gfortran
+# Makefile for Windows JTSDK-PY: Python3, F2PY, MinGW, gcc and gfortran
 
 # Re-direct stdout and stderr:     cmd.exe              bash
 #                              make > junk 2>&1      make &> junk
 
-CC = gcc
-FC = gfortran
+# Note: Update SVN number for release version.
+NAME = WSJT
+VER = 10
+OS = Win32
 
+# Tool & Installer Related Paths
+CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
+FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
+MKD = C:/JTSDK-PY/tools/mkdir.exe
+RMD = C:/JTSDK-PY/tools/rmdir.exe
+RM = C:/JTSDK-PY/tools/rm.exe
+CP = C:/JTSDK-PY/tools/cp.exe
+ISCC = C:/JTSDK-PY/inno5/ISCC.exe
+ISS = C:/JTSDK-PY/src/trunk/wsjt10a.iss
+INSTALLDIR = C:/JTSDK-PY/src/trunk/install
+PACKAGEDIR = C:/JTSDK-PY/src/trunk/package
+
+# Python Related Paths
+PYTHON = C:/JTSDK-PY/Python33/python.exe
+F2PY = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/f2py.py
+CXFR = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/cxfreeze.py
+
+# Compiler Flags
 FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
-       -Wno-character-truncation
+	-Wno-character-truncation
 CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
@@ -22,8 +42,10 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libjt.a jt65code.exe jt4code.exe
+# WSJT Targets
+all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd install
 
+# Build OBJ1 for libjt.a
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \
 	bzap.o chk441.o chkhist.o chkmsg.o coord.o db.o dcoord.o \
@@ -57,15 +79,55 @@ libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1)
 	ranlib libjt.a
 
+# Build jtj5code.exe
 OBJS2 = jt65code.o 
 jt65code.exe: $(OBJS2) libjt.a
 	$(FC) -o jt65code.exe $(OBJS2) libjt.a
 
+# Build jt4code.exe
 OBJS3 = jt4code.o 
-jt4code.exe: $(OBJS3)
+jt4code.exe: $(OBJS3) libjt.a
 	$(FC) -o jt4code.exe $(OBJS3) libjt.a
 
-.PHONY : clean
+# Audio.pyd SRC
+F2PYSRC = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 \
+	getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
+
+# Build Audio.pyd
+WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
+	$(F2PY) -c -I. \
+	--quiet --fcompiler=gnu95 \
+	--compiler=mingw32 --f77exec=gfortran \
+	--f90exec=gfortran --opt="-cpp -fbounds-check -O2" \
+	libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a \
+	libpthreadGC2.a -lwinmm -m Audio $(F2PYSRC)
+	mv Audio.pyd WsjtMod/Audio.pyd
+
+# Run CX_Freeze to build Audio.pyd and install WSJT. 
+# NOTE: CX_Freeze creates the $(INSTALLDIR), so there is no need
+# for an additional MKDIR command before invocation.
+install: all
+	rm -f $(INSTALLDIR)/bin
+	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
+	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
+	rm -rf $(INSTALLDIR)/bin/tcl/tzdata
+	rm -rf $(INSTALLDIR)/bin/tk/demos
+	$(CP) -r RxWav $(INSTALLDIR)
+	$(CP) CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt.bat $(INSTALLDIR)
+
+# /O = Installer output directory
+# /F = .iss file name
+# The other vars are from the top of the Makefile.
+# Output: C:\JTSDK-PY\src\trunk\package\wsjt10-win32-r4255.exe
+# Optional: Super Quiet w/Only errors, add "/Q[p]" before /O
+package: install
+	rm -f $(PACKAGEDIR)
+	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)$(VER)-$(OS)" /cc $(ISS)
+
+.PHONY : clean distclean
 
 clean:
-	rm *.o libjt.a jt65code.exe jt4code.exe
+	rm -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
+
+distclean: clean
+	rm -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDK-PY	
