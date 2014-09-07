@@ -2,6 +2,7 @@
 SETLOCAL
 REM -- JTSDK-QT BUILD HELP
 REM -- Part of the JTSDK Project
+SET LANG=en_US
 CLS
 ECHO.                               
 ECHO -----------------------------------------------------------------

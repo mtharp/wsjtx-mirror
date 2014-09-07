@@ -7,6 +7,7 @@ COLOR 0B
 TITLE JTSDK-QT Development Environment
 
 REM -- SET PATH VARS
+SET LANG=en_US
 SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin

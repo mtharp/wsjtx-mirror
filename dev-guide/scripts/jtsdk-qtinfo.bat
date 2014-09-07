@@ -2,6 +2,7 @@
 SETLOCAL
 REM -- JTSDK-QT ENV Info
 REM -- Part of the JTSDK Project
+SET LANG=en_US
 SET MINGW=%BASED%\qt5\Tools\mingw32\bin\
 CLS
 ECHO      _ _____ ____  ____  _  __      ___ _____ 
