@@ -39,12 +39,13 @@ qmake --version |awk "FNR==2 {print $4}" >q.m & set /p QTV=<q.m & rm q.m
 qmake --version |awk "FNR==1 {print $3}" >q.m & set /p QMV=<q.m & rm q.m
 makensis.exe /VERSION  >n.m & set /p NSM=<n.m & rm n.m
 pkg-config --version >p.c & set /p PKG=<p.c & rm p.c
-ECHO  Cmake ..... %CMV%
-ECHO  Cpack ..... %CPV%
-ECHO  QT5 ....... %QTV%
-ECHO  QMake ..... %QMV%
-ECHO  NSIS ...... %NSM%
-ECHO  Pkg-Cfg ... %PKG%
+ECHO  Cmake ...... %CMV%
+ECHO  Cpack ...... %CPV%
+ECHO  QT5 ........ %QTV%
+ECHO  QMake ...... %QMV%
+ECHO  NSIS ....... %NSM%
+ECHO  InnoSetup .. 5.5.4a
+ECHO  Pkg-Cfg .... %PKG%
 ECHO.
 
 ENDLOCAL

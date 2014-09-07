@@ -11,8 +11,9 @@ SET LANG=en_US
 SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin
+SET INNOD=%BASED%\inno5
 SET TOOLS=%BASED%\tools;%BASED%\tools\bin;%BASED%\tools\include;%BASED%\tools\lib
-SET PATH=%BASED%;%SVND%;%TOOLS%;%WINDIR%;%WINDIR%\System32
+SET PATH=%BASED%;%SVND%;%INNOD%;%TOOLS%;%WINDIR%;%WINDIR%\System32
 CD /D %BASED%
 GOTO UPDATE
 
