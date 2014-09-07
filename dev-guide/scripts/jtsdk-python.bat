@@ -323,7 +323,7 @@ ECHO.
 ECHO  App Names ...... WSJT WSPR
 ECHO.
 ECHO  WSJT Targets ... libjt.a jt65code.exe jt4code.exe
-ECHO                   jtaudio install package
+ECHO                   WsjtMod/Audio.pyd install package
 ECHO.
 ECHO  WSPR Targets ... wspr0.exe WSPRcode.exe libwspr.a fmtest
 ECHO                   fmtave fcal fmeasure sound gmtime2
