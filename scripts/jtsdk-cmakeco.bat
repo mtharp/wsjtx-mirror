@@ -7,6 +7,7 @@ FOR %%x IN (%cmdcmdline%) DO IF /I "%%~x"=="/c" SET GUI=1
 IF DEFINED GUI CALL GOTO DCLICK
 
 REM -- SET PATHS
+SET LANG=en_US
 SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
 SET SVND=%BASED%\subversion\bin

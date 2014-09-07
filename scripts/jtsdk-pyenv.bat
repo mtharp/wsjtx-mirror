@@ -9,17 +9,20 @@ TITLE JTSDK-PY Environment
 REM -- SET BASE PATH to "." & TRIM TRAILING "\" IF PRESENT
 SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
+SET LANG=en_US
 SET TOOLS=%BASED%\tools
 SET MINGW=%BASED%\mingw32\bin
 SET SVND=%BASED%\subversion\bin
+SET INNOD=%BASED%\inno5
 SET SCRIPTS=%BASED%\tools\scripts
 SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\DLLs;%BASED%\Python33\Tools\Scripts
-SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SVND%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
+SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SVND%;%TOOLS%;%INNOD%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 
 REM -- DOSKEY COMMANDS
 DOSKEY checkout="%BASED%\jtsdk-pyco.bat" $1
-DOSKEY build="%BASED%\jtsdk-python.bat" $1
+DOSKEY build="%BASED%\jtsdk-python.bat" $1 $2
 DOSKEY env-info=CALL %SCRIPTS%\jtsdk-pyinfo.bat
+DOSKEY make=C:\JTSDK-PY\mingw32\bin\mingw32-make $*
 
 REM -- SVN MUST BE AVAILABLE AT STARTUP
 svn --version >nul 2>null || SET APP=SVN && GOTO ERROR1

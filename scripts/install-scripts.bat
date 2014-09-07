@@ -21,11 +21,10 @@ REM -- Skip JTSDK-QT update if not located in C:\JTSDK-QT
 ECHO UPDATE JTSDK-QT
 IF NOT EXIST %BASED%JTSDK-QT (
 ECHO .. Did not find ^( C:\JTSDK-QT ^), skipping update
-GOTO JTSDKPY
+GOTO JTSDK_PY
 )
 
-REM -- JTSDK-QT SCRIPTS
-IF EXIST %BASED%JTSDK-QT (
+REM -- Update JTSDK-QT Scripts
 ECHO .. Updating Scripts
 copy /Y %SCRIPTS%jtsdk-cmake.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-qtenv.bat %BASED%JTSDK-QT >nul
@@ -34,15 +33,15 @@ copy /Y %SCRIPTS%jtsdk-toolchain1.cmake %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts >nul
 copy /Y %SCRIPTS%jtsdk-qtbuild-help.bat %BASED%JTSDK-QT\tools\scripts >nul
-)
-GOTO PKGCONFIG
+GOTO PKG_CONFIG_INSTALL
 
-REM -- Conditional Install for Pkg-Config-lite v0.28
-:PKGCONFIG
-ECHO .. Checking For Pkg-Config Installation
+REM -- Install Pkg-Config-lite v0.28
+:PKG_CONFIG_INSTALL
+ECHO .. Checking For Pkg-Config
 IF NOT EXIST %BASED%JTSDK-QT\tools\pkg-config.exe (
+ECHO .. Pkg-Config Was Not Found
+ECHO .. Installing Pkg-Config v0.28
 cd C:\JTSDK-DOC\doc\dev-guide\scripts
-ECHO .. Not Found, Installing Pkg-Config v0.28
 cp pkg-config.7z C:\JTSDK-QT\tools
 cd C:\JTSDK-QT\tools
 7z x pkg-config.7z > nul
@@ -51,62 +50,111 @@ rm pkg-config.7z
 ECHO .. Finished Pkg-Config Installation
 cd C:\JTSDK-DOC\doc
 )
-GOTO NSIS
+GOTO NSIS_INSTALL
 
-REM -- Conditional Install for NSIS Installer Package
-:NSIS
-ECHO .. Checking For NSIS Package Installation
+REM -- Install NSIS Installer
+:NSIS_INSTALL
+ECHO .. Checking For NSIS
 IF NOT EXIST C:\JTSDK-QT\NSIS\makensis.exe (
 cd C:\JTSDK-DOC\doc\dev-guide\scripts
-ECHO .. Not Found, Installing NSIS v0.03a2
+ECHO .. NSIS Was Not Found
+ECHO .. Installing NSIS v0.03a2
 cp NSIS.7z C:\JTSDK-QT\
 cd C:\JTSDK-QT
 7z x NSIS.7z > nul
-ECHO .. Cleaning Up After Install
 rm NSIS.7z > nul
 cd C:\JTSDK-DOC\doc
 ECHO .. Finished NSIS Installation
 )
-ECHO Done
-GOTO JTSDKPY
+GOTO INNO_QT
 
+REM -- Install InnoSetup Installer
+:INNO_QT
+ECHO .. Checking For InnoSetup
+IF NOT EXIST C:\JTSDK-QT\inno5\ISCC.exe (
+ECHO .. InnoSetup Was Not Found
+ECHO .. Installing InnoSetup 5.5.4a
+cd C:\JTSDK-DOC\doc\dev-guide\scripts
+cp inno5.7z  C:\JTSDK-QT\
+cd C:\JTSDK-QT
+7z x inno5.7z > nul
+rm inno5.7z > nul
+cd C:\JTSDK-DOC\doc
+ECHO .. Finished InnoSetup Installation
+)
+ECHO .. Done
+GOTO JTSDK_PY
+
+REM ------------------------------------------------------------------
 REM -- JTSDK-PY SCRIPTS
-:JTSDKPY
+REM ------------------------------------------------------------------
+:JTSDK_PY
 ECHO.
 ECHO UPDATE JTSDK-PY
 
 REM -- Skip JTSDK-PY Update if not located in C:\JTSDK-PY
 IF NOT EXIST %BASED%JTSDK-PY (
 ECHO .. Did not find ^( C:\JTSDK-PY ^), skipping update
-GOTO JTSDKDOC
+GOTO JTSDK_DOC
 )
 
-IF EXIST %BASED%JTSDK-PY (
+REM -- Update JTSDK-PY Scripts
 ECHO .. Updating Scripts
 copy /Y %SCRIPTS%jtsdk-pyenv.bat %BASED%JTSDK-PY > nul
 copy /Y %SCRIPTS%jtsdk-python.bat %BASED%JTSDK-PY > nul
 copy /Y %SCRIPTS%jtsdk-pyco.bat %BASED%JTSDK-PY > nul
+copy /Y %SCRIPTS%jtsdk-pyinfo.bat %BASED%JTSDK-PY\tools\scripts > nul
 copy /Y %SCRIPTS%python33.dll %BASED%JTSDK-PY\Python33\DLLs > nul
-ECHO Done
-)
-GOTO JTSDKDOC
+GOTO INNO_PY
 
+REM -- Install NSIS Installer
+:INNO_PY
+ECHO .. Checking For InnoSetup
+IF NOT EXIST C:\JTSDK-PY\inno5\ISCC.exe (
+ECHO .. InnoSetup Was Not Found
+ECHO .. Installing InnoSetup 5.5.4a
+cd C:\JTSDK-DOC\doc\dev-guide\scripts
+cp inno5.7z  C:\JTSDK-PY\
+cd C:\JTSDK-PY
+7z x inno5.7z > nul
+rm inno5.7z > nul
+cd C:\JTSDK-DOC\doc
+ECHO .. Finished InnoSetp Installation
+)
+ECHO .. Done
+GOTO JTSDK_DOC
+
+REM ------------------------------------------------------------------
 REM -- Skip JTSDK-DOC update if not located in C:\JTSDK-DOC
-IF NOT EXIST %BASED%JTSDK-PY (
+REM ------------------------------------------------------------------
+:JTSDK_DOC
+ECHO.
+ECHO UPDATE JTSDK-DOC
+IF NOT EXIST %BASED%JTSDK-DOC (
 ECHO .. Did not find ^( C:\JTSDK-DOC ^), skipping update
 GOTO EOF
 )
 
-REM -- JYSDK-DOC SCRIPTS
-:JTSDKDOC
-IF EXIST %BASED%JTSDK-DOC (
-ECHO.
-ECHO UPDATE JTSDK-DOC
+REM -- Update JYSDK-DOC Scripts
 ECHO .. Updating Scripts
 copy /Y %SCRIPTS%jtsdk-docenv.bat %BASED%JTSDK-DOC > nul
-ECHO Done
-ECHO.
+GOTO INNO_DOC
+
+REM -- Install NSIS Installer for DOCS (Future use)
+:INNO_DOC
+ECHO .. Checking For InnoSetup
+IF NOT EXIST C:\JTSDK-DOC\inno5\ISCC.exe (
+ECHO .. InnoSetup Was Not Found
+ECHO .. Installing InnoSetup 5.5.4a
+cd C:\JTSDK-DOC\doc\dev-guide\scripts
+cp inno5.7z  C:\JTSDK-DOC\
+cd C:\JTSDK-DOC
+7z x inno5.7z > nul
+rm inno5.7z > nul
+cd C:\JTSDK-DOC\doc
+ECHO .. Finished NSIS Installation
 )
+ECHO .. Done
 GOTO EOF
 
 :EOF
