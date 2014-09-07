@@ -17,6 +17,7 @@ SET ICOND=%BASED%\icons
 
 REM -- PROCESS VARS
 SET ADOC=%BASED%\asciidoc\asciidoc.exe
+SET INNOD=%BASED%\inno5
 SET TOC=%ADOC% -b xhtml11 -a toc2 -a iconsdir=../icons -a max-width=1024px
 SET BUILD_LIST=(dev-guide map65 quick-ref simjt wsjt wsjtx wspr wfmt wsprx)
 

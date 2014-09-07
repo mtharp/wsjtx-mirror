@@ -15,6 +15,7 @@ SET CMAKED=%BASED%\cmake\bin
 SET HAMLIBD=%BASED%\hamlib3\mingw32\bin
 SET FFTWD=%BASED%\fftw3f
 SET NSISD=%BASED%\NSIS
+SET INNOD=%BASED%\inno5
 SET GCCD=%BASED%\qt5\Tools\mingw48_32\bin
 SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
 SET SRCD=%BASED%\src
