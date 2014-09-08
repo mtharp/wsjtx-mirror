@@ -3,24 +3,29 @@
 # Re-direct stdout and stderr:     cmd.exe              bash
 #                              make > junk 2>&1      make &> junk
 
-# Note: Update SVN number for release version.
+# Application Information
 NAME = WSJT
 VER = 10
 OS = Win32
 
-# Tool & Installer Related Paths
+# Tool Chain
+AR = C:/JTSDK-PY/mingw32/bin/ar.exe
 CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
 FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
-MKD = C:/JTSDK-PY/tools/mkdir.exe
-RMD = C:/JTSDK-PY/tools/rmdir.exe
-RM = C:/JTSDK-PY/tools/rm.exe
+RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib
+
+# Misc Tools & Files
 CP = C:/JTSDK-PY/tools/cp.exe
+MV = C:/JTSDK-PY/tools/mv.exe
+RM = C:/JTSDK-PY/tools/rm.exe
 ISCC = C:/JTSDK-PY/inno5/ISCC.exe
 ISS = C:/JTSDK-PY/src/trunk/wsjt10a.iss
+
+# Output Paths
 INSTALLDIR = C:/JTSDK-PY/src/trunk/install
 PACKAGEDIR = C:/JTSDK-PY/src/trunk/package
 
-# Python Related Paths
+# Python Paths
 PYTHON = C:/JTSDK-PY/Python33/python.exe
 F2PY = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/f2py.py
 CXFR = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/cxfreeze.py
@@ -32,17 +37,17 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
 %.o: %.c
-	${CC} ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 %.o: %.f
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.F
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.f90
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.F90
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 
-# WSJT Targets
+# Build Targets
 all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd install
 
 # Build OBJ1 for libjt.a
@@ -76,10 +81,10 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 
 # Build the library libjt.a
 libjt.a: $(OBJS1)
-	ar cr libjt.a $(OBJS1)
-	ranlib libjt.a
+	$(AR) cr libjt.a $(OBJS1)
+	$(RANLIB) libjt.a
 
-# Build jtj5code.exe
+# Build jt65code.exe
 OBJS2 = jt65code.o 
 jt65code.exe: $(OBJS2) libjt.a
 	$(FC) -o jt65code.exe $(OBJS2) libjt.a
@@ -101,26 +106,25 @@ WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
 	--f90exec=gfortran --opt="-cpp -fbounds-check -O2" \
 	libjt.a libportaudio.a libfftw3f_win.a libsamplerate.a \
 	libpthreadGC2.a -lwinmm -m Audio $(F2PYSRC)
-	mv Audio.pyd WsjtMod/Audio.pyd
+	$(MV) Audio.pyd WsjtMod/Audio.pyd
 
-# Run CX_Freeze to build Audio.pyd and install WSJT. 
-# NOTE: CX_Freeze creates the $(INSTALLDIR), so there is no need
-# for an additional MKDIR command before invocation.
+# Run CX_Freeze to install WSJT to $(INSTALLDIR)
+# CX_Freeze creates the $(INSTALLDIR) if not present.
 install:
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
 	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
 	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
-	$(CP) -r RxWav $(INSTALLDIR)
-	$(CP) CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt.bat $(INSTALLDIR)
+	$(CP) -ur RxWav $(INSTALLDIR)
+	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
 
 # /O = Installer output directory
 # /F = .iss file name
 # The other vars are from the top of the Makefile.
-# Output: C:\JTSDK-PY\src\trunk\package\wsjt10-win32-r4255.exe
-# Optional: Super Quiet w/Only errors, add "/Q[p]" before /O
+# Output: C:\JTSDK-PY\src\trunk\package\WSJT10-Win32.exe
+# Optional: Super Quiet, with errors only, add "/Q[p]" before /O
+# ISCC creates $(PACKAGEDIR) if not present.
 package:
-	$(RM) -rf $(PACKAGDIR)
 	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)$(VER)-$(OS)" /cc $(ISS)
 
 .PHONY : clean distclean
