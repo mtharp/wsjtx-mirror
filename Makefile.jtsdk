@@ -106,12 +106,11 @@ WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
 # Run CX_Freeze to build Audio.pyd and install WSJT. 
 # NOTE: CX_Freeze creates the $(INSTALLDIR), so there is no need
 # for an additional MKDIR command before invocation.
-install: all
-	rm -f $(INSTALLDIR)/bin
+install:
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
 	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
-	rm -rf $(INSTALLDIR)/bin/tcl/tzdata
-	rm -rf $(INSTALLDIR)/bin/tk/demos
+	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
+	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -r RxWav $(INSTALLDIR)
 	$(CP) CALL3.TXT kvasd.dat kvasd.exe wsjt.ico wsjt.bat $(INSTALLDIR)
 
@@ -120,14 +119,14 @@ install: all
 # The other vars are from the top of the Makefile.
 # Output: C:\JTSDK-PY\src\trunk\package\wsjt10-win32-r4255.exe
 # Optional: Super Quiet w/Only errors, add "/Q[p]" before /O
-package: install
-	rm -f $(PACKAGEDIR)
+package:
+	$(RM) -rf $(PACKAGDIR)
 	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)$(VER)-$(OS)" /cc $(ISS)
 
 .PHONY : clean distclean
 
 clean:
-	rm -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
+	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
 
 distclean: clean
-	rm -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDK-PY	
+	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDK-PY	
