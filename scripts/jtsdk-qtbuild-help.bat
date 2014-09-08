@@ -21,7 +21,9 @@ ECHO  rconfig ........ Configure Release Build Tree
 ECHO  rinstall ....... Build Release Install Target
 ECHO  dconfig ........ Configure Debug Build Tree
 ECHO  dinstall ....... Build Debug Install Target
-ECHO  package ........ Build NSIS Installer ^( WSJT-X Only ^)
+ECHO  package ........ Build Win32 Installer
+ECHO.
+ECHO NOTE: MAP65 ^& WSPR-X Package Builds are ^( Experimental ^)
 ECHO.
 ECHO EXAMPLE ^( WSJT-X Release ^):
 ECHO -----------------------------------------------------------------
@@ -31,13 +33,14 @@ ECHO.
 ECHO Build Install Target:
 ECHO  Type:  build wsjtx rinstall
 ECHO.
-ECHO Build NSIS Installer
+ECHO Build Win32 Installer
 ECHO  Type:  build wsjtx package
 ECHO.
 ECHO NOTE: Building the ^( package ^) target will automatically
-ECHO       build everthing needed to produce the NSIS Installer.
-ECHO       Likewise, building ^( rinstall ^) will build everything
-ECHO       needed to produce a fully functional app. 
+ECHO       build everthing needed to produce the Win32 Installer.
+ECHO       Likewise, building ^( rinstall or dinstall ^) will build
+ECHO       everything needed to produce a fully functional app to
+ECHO       run from a local directory.
 ECHO.
 
 ENDLOCAL

@@ -56,7 +56,7 @@ SET BTREE=true
 SET BINSTALL=true
 ) ELSE ( GOTO BADTYPE )
 
-REM - MISC VARS
+REM - VARIABLES USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET APP_DIR=%BASED%\%APP_NAME%
 SET BUILDD=%BASED%\%APP_NAME%\build
@@ -64,16 +64,19 @@ SET INSTALLD=%BASED%\%APP_NAME%\install
 SET PACKAGED=%BASED%\%APP_NAME%\package
 SET SUPPORT=%BASED%\appsupport
 SET WSJTXPKG=wsjtx-1.4.0-win32.exe
+SET WSPRX_ISS=%SRCD%\wsprx\wsprx-jtsdk.iss
+SET MAP65_ISS=%SRCD%\map65\map65-jtsdk.iss
 
 REM ------------------------------------------------------------------
 REM -- START MAIN BUILD
 REM ------------------------------------------------------------------
+CLS
 CD %BASED%
 IF NOT EXIST %SRCD%\NUL mkdir %SRCD%
 IF NOT EXIST %BUILDD%\%OPTION%\NUL mkdir %BUILDD%\%OPTION%
 IF NOT EXIST %INSTALLD%\%OPTION%\NUL mkdir %INSTALLD%\%OPTION%
 IF NOT EXIST %PACKAGED%\NUL mkdir %PACKAGED%
-CLS
+
 ECHO -------------------------------
 ECHO %APP_NAME% CMake Build Script
 ECHO -------------------------------
@@ -182,8 +185,6 @@ REM ------------------------------------------------------------------
 REM -- BUILD NSIS INSTALLER
 REM ------------------------------------------------------------------
 ) ELSE IF [%BPKG%]==[true] (
-IF /I [%APP_NAME%]==[wsprx] (GOTO PKGMSG )
-IF /I [%APP_NAME%]==[map65] (GOTO PKGMSG )
 CLS
 CD %BUILDD%\%OPTION%
 ECHO.
@@ -195,24 +196,57 @@ REM - Ensure Build Tree is Configured
 cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+IF /I [%1]==[wsjtx] ( GOTO NSIS_PKG )
+IF /I [%1]==[wsprx] ( GOTO INNO_PKG )
+IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
-REM - Build the Installer
-:BUILDPKG
+REM - NSIS Build Win32 Installer
+:NSIS_PKG
 cmake --build . --target package
-IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO PKGERROR )
+IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
+GOTO FINISH_PKG
+
+REM - InnoSetup Build Win32 Installer
+:INNO_PKG
+IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS% )
+IF /I [%1]==[map65] (SET ISS=%MAP65_ISS% )
+cmake --build . --target install
+ECHO.
+ECHO .. Copying Additional Files ^( %APP_NAME% ^)
+ECHO.
+SET CPTXT=*.txt *.dat *.conf *.ini *.ico 
+SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
+%RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake*
+XCOPY %SUPPORT%\%APP_NAME%\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
+XCOPY %SUPPORT%\runtime\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
+mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
+ECHO.
+ECHO .. Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
+ECHO.
+%INNOD%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
+IF NOT ERRORLEVEL 0 ( GOTO INNO_BUILD_ERROR )
+IF NOT EXIST %PACKAGED%\%APP_NAME%-Win32.exe ( GOTO INNO_BUILD_ERROR )
+GOTO FINISH_PKG
+
+:FINISH_PKG
 ECHO.
 ECHO -----------------------------------------------------------------
 ECHO Finished Installer Build For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
+IF /I [%APP_NAME%]==[wsjtx] (
 ECHO Installer Name ...... %WSJTXPKG%
 ECHO Installer Location .. %PACKAGED%\%WSJTXPKG%
+) ELSE (
+ECHO Installer Name ...... %APP_NAME%-Win32.exe
+ECHO Installer Location .. %PACKAGED%\%APP_NAME%-Win32.exe
+)
 ECHO.
 ECHO To Install the package, browse to Installer Location, and
 ECHO run as you normally do to install Windows applications.
 ECHO.
-PAUSE
 GOTO EOF
 ) ELSE ( GOTO UNSUPPORTED )
 
@@ -223,17 +257,18 @@ REM ------------------------------------------------------------------
 IF /I [%1]==[wsjtx] ( GOTO POSTBUILD2 ) ELSE ( GOTO CPFILES )
 
 :POSTBUILD2
-IF /I [%OPTION%]==[Debug] ( GOTO MAKEBAT ) ELSE ( GOTO FINISH )
+IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
 
 :CPFILES
 SET CPTXT=*.txt *.dat *.conf *.ini
 SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
-%RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake*
-cp -r %SUPPORT%\%APP_NAME%\* %INSTALLD%\%OPTION%\bin
-cp -r %SUPPORT%\runtime\* %INSTALLD%\%OPTION%\bin
+%RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* README
+XCOPY %SUPPORT%\%APP_NAME%\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
+XCOPY %SUPPORT%\runtime\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
 mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
-GOTO MAKEBAT
+IF /I [%OPTION%]==[Debug] ( GOTO MAKEBAT ) ELSE ( GOTO FINISH )
+GOTO EOF
 
 :MAKEBAT
 SET FILENAME=%APP_NAME%.bat
@@ -259,9 +294,7 @@ ECHO START %APP_NAME%.exe
 ECHO ENDLOCAL
 ECHO EXIT /B 0
 )
-
-IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_FINISH
-) ELSE ( GOTO FINISH )
+IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_FINISH ) ELSE ( GOTO FINISH )
 
 :DEBUG_FINISH
 ECHO BUILD SUMMARY
@@ -395,7 +428,9 @@ ECHO    rconfig ...... Configure Release Build Tree
 ECHO    rinstall ..... Build Release Install Target
 ECHO    dconfig ...... Configure Debug Build Tree
 ECHO    dinstall ..... Build Debug Install Target
-ECHO    package ...... Build NSIS Installer ^( WSJT-X Only ^)
+ECHO    package ...... Build Win32 Installer
+ECHO.
+ECHO  NOTE: MAP65 ^& WSPR-X Package Builds are ^( Experimental ^)
 ECHO.
 ECHO EXAMPLES
 ECHO ----------------------------------------------------------
@@ -408,7 +443,6 @@ ECHO.
 ECHO Build NSIS Installer
 ECHO   Type:  build wsjtx package
 ECHO.
-PAUSE
 GOTO EOF
 
 REM -- Unsupported Build Type
@@ -429,7 +463,10 @@ ECHO    rconfig ...... Configure Release Build Tree
 ECHO    rinstall ..... Build Release Install Target
 ECHO    dconfig ...... Configure Debug Build Tree
 ECHO    dinstall ..... Build Debug Install Target
-ECHO    package ...... Build NSIS Installer ^( WSJT-X Only ^)
+ECHO    package ...... Build Win32 Installer
+ECHO.
+ECHO  NOTE: MAP65 ^& WSPR-X Package Builes are ^( Experimental ^)
+ECHO.
 ECHO.
 ECHO EXAMPLES
 ECHO ----------------------------------------------------------
@@ -442,7 +479,6 @@ ECHO.
 ECHO Build NSIS Installer
 ECHO   Type:  build wsjtx package
 ECHO.
-PAUSE
 GOTO EOF
 
 REM -- Unsupported Installer Build
@@ -470,9 +506,8 @@ ECHO.
 PAUSE
 GOTO EOF
 
-REM -- Installer Build Error Message
-:PKGERROR
-CLS
+REM -- NSIS Installer Build Error Message
+:NSIS_BUILD_ERROR
 ECHO.
 ECHO -----------------------------------------------------------------
 ECHO                    INSTALLER BUILD ERROR
@@ -487,7 +522,21 @@ ECHO  Check the Cmake logs for any errors, or correct any build
 ECHO  script issues that were obverved and try to rebuild the package.
 ECHO.
 ECHO.
-PAUSE
+GOTO EOF
+
+REM -- InnoSetup Installer Build Error Message
+:INNO_BUILD_ERROR
+ECHO.
+ECHO -----------------------------------------------------------------
+ECHO                    INSTALLER BUILD ERROR
+ECHO -----------------------------------------------------------------
+ECHO.
+ECHO  There was a problem building ^( App: %1%  Target: %2 ^)
+ECHO.
+ECHO  Check the screen for error messages, correct, then try to
+ECHO  re-build ^( App: %1%  Target: %2 ^)
+ECHO.
+ECHO.
 GOTO EOF
 
 :EOF
