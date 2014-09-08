@@ -22,8 +22,8 @@ recommended basic QSO goes something like this:
 one callsign) followed by the transmitting station’s grid locator, a
 signal report, R plus a signal report, or the final acknowledgements
 RRR or 73.  These messages are compressed and encoded in a highly
-efficient and reliable way.  In uncompressed form as displayed
-on-screen, they may contain as many as 18 characters.
+efficient and reliable way.  In uncompressed form (as displayed
+on-screen) they may contain as many as 22 characters.
 
 *Signal reports* are specified as signal-to-noise ratio (S/N) in dB,
 using a standard reference noise bandwidth of 2500 Hz.  Thus, in

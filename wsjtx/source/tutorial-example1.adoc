@@ -16,7 +16,7 @@ image::images/main-ui-1.4.png[align="center",alt="Main UI and Wide Graph"]
 
 .Decoding Overview
 
-Notice the red abd green and markers on the Wide Graph (waterfall)
+Notice the red and green and markers on the Wide Graph (waterfall)
 frequency scale.  Decoding takes place at the end of a receive
 sequence and is organized in two stages.  The first decodes take place
 at the selected Rx frequency, indicated by the green marker on the
