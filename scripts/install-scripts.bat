@@ -105,6 +105,7 @@ copy /Y %SCRIPTS%jtsdk-python.bat %BASED%JTSDK-PY > nul
 copy /Y %SCRIPTS%jtsdk-pyco.bat %BASED%JTSDK-PY > nul
 copy /Y %SCRIPTS%jtsdk-pyinfo.bat %BASED%JTSDK-PY\tools\scripts > nul
 copy /Y %SCRIPTS%python33.dll %BASED%JTSDK-PY\Python33\DLLs > nul
+copy /Y %SCRIPTS%msvcr100.dll %BASED%JTSDK-PY\Python33\DLLs > nul
 GOTO INNO_PY
 
 REM -- Install NSIS Installer
