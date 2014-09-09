@@ -12,7 +12,7 @@ OS = Win32
 AR = C:/JTSDK-PY/mingw32/bin/ar.exe
 CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
 FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
-RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib
+RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib.exe
 
 # Misc Tools & Files
 CP = C:/JTSDK-PY/tools/cp.exe
@@ -115,8 +115,9 @@ install:
 	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
 	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
+	$(CP) -u jt65code.exe jt4code.exe CALL3.TXT kvasd.exe \
+	kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
-	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
 
 # /O = Installer output directory
 # /F = .iss file name
@@ -125,7 +126,7 @@ install:
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
-	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)$(VER)-$(OS)" /cc $(ISS)
+	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
 
 .PHONY : clean distclean
 
