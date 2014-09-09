@@ -13,6 +13,7 @@ Source: "c:\JTSDK-PY\src\wspr\install\*"; DestDir: "{app}"; Flags: recursesubdir
 Name: "{group}\WSPR4";                   Filename: "{app}\wspr.bat";    WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
 Name: "{group}\WSPR Command Line";       Filename: "{app}\fmt-env.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
 Name: "{group}\Fmtest Suite";            Filename: "{app}\fmt-env.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
+Name: "{group}\WSPRcode";                Filename: "{app}\fmt-env.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
 Name: "{userdesktop}\WSPR4";             Filename: "{app}\wspr.bat";    WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
 Name: {group}\Uninstall\Uninstall WSPR4; Filename: {uninstallexe}
 

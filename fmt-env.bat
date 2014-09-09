@@ -17,7 +17,7 @@ ECHO -----------------------------------------------------------------
 ECHO  Welcome to WSJT's FMTEST / WSPR0 Tool Suite
 ECHO -----------------------------------------------------------------
 ECHO.
-ECHO  Available Apps: fmtest fmtave fmeasure fcal wspr0
+ECHO  Available Apps: fmtest fmtave fmeasure fcal wspr0 wsprcode
 ECHO.
 ECHO  For Help, type: ^( app-name ^) then ENTER
 ECHO.
