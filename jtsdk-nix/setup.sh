@@ -5,6 +5,7 @@
 # Execution		: ./setup.fh
 # Author		: Greg, Beam, ki7mt -at- yahoo.com
 # Copyright		: Copyright (C) 2014 Joseph H Taylor, Jr, K1JT
+# License       : GPL-3+
 # Contributors	: KI7MT
 #
 # JTSDK-NIX is free software: you can redistribute it and/or modify
@@ -34,8 +35,10 @@ BASED=$(exec pwd)
 # Need to add support for multiple compilers {g++, intel, clang}
 mkdir -p "$BASED"/{tmp,src}
 mkdir -p "$BASED"/{wsjt,wspr}
-mkdir -p "$BASED"/{wsjtx,wsprx,map65}/qmake/install
 mkdir -p "$BASED"/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
+
+# Do we need Qmake builds for {wsjtx,wsprx,map65} ??
+# mkdir -p "$BASED"/{wsjtx,wsprx,map65}/qmake/install
 
 # main vars
 _CFG="$BASED/config"
@@ -143,6 +146,7 @@ if [[ $SMSELECT = "A" ]]; then
 	) 2>&1 | tee -a $_LOGS/setup.log
 
 	# Ubuntu 1404, includes Lubuntu, Xubuntu
+	# Need to add provision for Mint v17 and friends
 	echo "------------------------------------------------"
 	echo " JTSDK-NIX SETUP"
 	echo "------------------------------------------------"
@@ -195,38 +199,40 @@ if [[ $SMSELECT = "A" ]]; then
 			) 2>&1 | tee -a $_LOGS/setup.log
 			
 			# pmw-2.0.0 installation
+            # should move this to a generic function at some point
 			clear
 			(
 			echo "------------------------------------------------"
 			echo " Pmw-2.0.0 Installation"
 			echo "------------------------------------------------"
 
-			# at some point, move this section to a general non-distro spccific
-			# funciton and expand the conditionals, at present, it just checks
-			# for the two makrker files, then a simple count test
 			_PKG_NAME=pmw2
 			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
 			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
 
 
-			if [[ -f $_INSTALL_MKR ]]; then
+            # get the file count from file-count marker
+    		if [[ -f $_INSTALL_MKR ]]; then
 				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
 			else 
 				var1="0"
 			fi
 
+            # get the file count form the install-marker
 			if [[ -f $_FILE_COUNT_MKR ]]; then
 				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
 			else 
 				var2="0"
 			fi
 
+            # test if the file counts match
 			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
 				echo ".. found previous install marker"
 				echo ".. verifying file count"
 				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
 				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
 
+                # if file counts match, all is ok
 				if (( $var1 == $var2 )); then
 					echo ".. file count seems ok. no need for re-install"
 				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
@@ -236,7 +242,8 @@ if [[ $SMSELECT = "A" ]]; then
 					source $_FUNC/build_pmw
 					build-pmw
 				fi
-
+            
+            # if no file count / markers, install Pmw
 			else
 				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
 				source $_FUNC/build_pmw
@@ -247,55 +254,7 @@ if [[ $SMSELECT = "A" ]]; then
 			read -p "Press [Enter] to continue.."
 			) 2>&1 | tee -a $_LOGS/setup.log
 			
-			# python numpy 1-8.1 installation
-#			clear
-#			(
-#			echo "------------------------------------------------"
-#			echo " Numpy-1.8.1 Installation"
-#			echo "------------------------------------------------"
-
-#			_PKG_NAME=numpy
-#			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
-#			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
-
-#			if [[ -f $_INSTALL_MKR ]]; then
-#				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
-#			else 
-#				var1="0"
-#			fi
-
-#			if [[ -f $_FILE_COUNT_MKR ]]; then
-#				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
-#			else 
-#				var2="0"
-#			fi
-
-#			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
-#				echo ".. found previous install marker"
-#				echo ".. verifying file count"
-#				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
-#				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
-
-#				if (( $var1 == $var2 )); then
-#					echo ".. file count seems ok. no need for re-install"
-#				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
-#					echo ".. pip3 check seems ok, no need for re-install"
-#				else
-#					echo ".. file count was wrong, re-installing"
-#					source $_FUNC/build_numpy
-#					build_numpy
-#				fi
-
-#			else
-#				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
-#				source $_FUNC/build_numpy
-#				build_numpy
-#			fi
-
-#			echo
-#			read -p "Press [Enter] to continue.."
-
-			# hamlib3 special installaiton
+			# G4WJS hamlib3 special install
 			clear
 			(
 			echo
@@ -320,7 +279,7 @@ if [[ $SMSELECT = "A" ]]; then
 			echo "All Logs saved to:"
 			echo "$_LOGS"
 			echo
-			echo "To Build APplicaitnos, at Command Prompt: type,"
+			echo "To Build Applicaitnos, at Command Prompt: type,"
 			echo
 			echo "./jtsdk-nix.sh"
 			echo

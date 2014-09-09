@@ -10,7 +10,7 @@ clear
 echo
 echo "STARTING BUILD FOR ( $_APP_NAME )"
 
-# WSJT-X, WSPR-X adn MAP65 all live in /branches
+# WSJT-X, WSPR-X and MAP65 all live in /branches
 _SVNURL=https://svn.code.sf.net/p/wsjt/wsjt/branches
 
 # build and install directories
@@ -92,24 +92,24 @@ echo
 # for wsjtx
 if [[ $_APP_NAME == "wsjtx" ]]; then
 	cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD;$_ADOCD" \
-	-D  WSJT_SKIP_MANPAGES=ON \
+	-D  WSJT_SKIP_MANPAGES=off \
 	-D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-	cmake --build . --target install -- -kj
+	cmake --build . --target install
 
 # for wsprx
 # builds ok, but has audio select and rig control issues
 elif [[ $_APP_NAME == "wsprx" ]]; then
 	cmake -D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-	cmake --build . --target install -- -kj
+	cmake --build . --target install
 
 # for map65
 # fails to build wiht CMake
 elif [[ $_APP_NAME == "map65" ]]; then
 	cmake -D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-	cmake --build . --target install -- -kj
+	cmake --build . --target install
 
 else
 	echo "nothing to be done" > /dev/null 2>&1
