@@ -163,14 +163,14 @@ ECHO BUILDING: ^( %APP_NAME% %TARGET% ^)
 IF /I [%1]==[wsjt] (
 IF EXIST "libjt.a" (
 ECHO.
-ECHO .. Performing make clean first
+ECHO .. Performing make distclean first
 ECHO.
 mingw32-make -f Makefile.jtsdk distclean
 ))
 IF /I [%1]==[wspr] (
 IF EXIST "libwspr.a" (
 ECHO.
-ECHO .. Performing make clean first
+ECHO .. Performing make distclean first
 ECHO.
 mingw32-make -f Makefile.jtsdk distclean
 ))
@@ -302,7 +302,7 @@ IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
 ECHO .. InnoSetup Exit Status: ^( %ERRORLEVEL% ^) is OK
 ECHO .. Performing Dist-Clean After Build
 ECHO.
-REM mingw32-make -f Makefile.jtsdk distclean
+mingw32-make -f Makefile.jtsdk distclean
 ECHO.
 GOTO FINISHED
 
