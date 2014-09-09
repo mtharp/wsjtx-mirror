@@ -11,7 +11,11 @@ COLOR 0B
 TITLE FMTEST Environment
 
 REM -- SETUP PATHS
-SET PATH=%PATH%;%~dp0\bin
+PATH;
+COPY /N /Y /B bin\libgcc* .
+COPY /N /Y /B bin\libquad* .
+COPY /N /Y /B bin\libgfortran* . 
+COPY /N /Y /B bin\pthreadGC2* .
 CLS
 ECHO -----------------------------------------------------------------
 ECHO  Welcome to WSJT's FMTEST / WSPR0 Tool Suite
