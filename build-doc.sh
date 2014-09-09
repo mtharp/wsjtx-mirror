@@ -496,7 +496,7 @@ elif [[ $1 = "wsjt" ]]
 		post_file_check
 
 # embedded css, images, js
-elif [[ $1 = "wsjt" ]]
+elif [[ $1 = "dwsjt" ]]
 	then
 		display_name="WSJT"
 		app_name="wsjt"
