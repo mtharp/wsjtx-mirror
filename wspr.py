@@ -414,7 +414,7 @@ def help(event=NONE):
 
 #------------------------------------------------------ usersguide
 def usersguide(event=NONE):
-    url='http://physics.princeton.edu/pulsar/K1JT/WSPR_4.0_User.pdf'
+    url='http://physics.princeton.edu/pulsar/K1JT/doc/wspr/wspr-main.html'
     _thread.start_new_thread(browser,(url,))
 
 #------------------------------------------------------ fmtguide
