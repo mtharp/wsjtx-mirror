@@ -3,24 +3,29 @@
 # Re-direct stdout and stderr:     cmd.exe              bash
 #                              make > junk 2>&1      make &> junk
 
-# Base Information
+# Application Information
 NAME = WSPR
 VER = 4.0
 OS = Win32
 
-# Tool & Installer Related Paths
+# Tool & Chain
+AR = C:/JTSDK-PY/mingw32/bin/ar.exe
 CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
 FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
-MKD = C:/JTSDK-PY/tools/mkdir.exe
-RMD = C:/JTSDK-PY/tools/rmdir.exe
-RM = C:/JTSDK-PY/tools/rm.exe
+RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib.exe
+
+# Misc Tools & Files
 CP = C:/JTSDK-PY/tools/cp.exe
+MV = C:/JTSDK-PY/tools/mv.exe
+RM = C:/JTSDK-PY/tools/rm.exe
 ISCC = C:/JTSDK-PY/inno5/ISCC.exe
 ISS = C:/JTSDK-PY/src/wspr/wspr4a.iss
+
+# Output Paths
 INSTALLDIR = C:/JTSDK-PY/src/wspr/install
 PACKAGEDIR = C:/JTSDK-PY/src/wspr/package
 
-# Python Related Paths
+# Python Paths
 PYTHON = C:/JTSDK-PY/Python33/python.exe
 F2PY = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/f2py.py
 CXFR = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/cxfreeze.py
@@ -32,19 +37,21 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
 %.o: %.c
-	${CC} ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 %.o: %.f
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.F
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.f90
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.F90
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 
+# Build Targets
 all:	libwspr.a fmtest.exe fmtave.exe fcal.exe fmeasure.exe \
 	WSPRcode.exe wspr0.exe WsprMod/w.pyd install
 
+# Build OBJ1 for wspr0.exe
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	cs_stubs.o genmept.o wqencode.o wqdecode.o inter_mept.o \
 	encode232.o gran.o packcall.o packgrid.o pack50.o packpfx.o \
@@ -60,6 +67,7 @@ wspr0.exe: $(OBJS1)
 	$(FC) $(FFLAGS) -o wspr0 $(FFLAGS) $(OBJS1) libportaudio.a \
 	libwinmm.a libfftw3f_win.a
 
+# Build OBJ2 for WSPRcode.exe
 OBJS2 = wsprcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 	unpack50.o unpackcall.o unpackgrid.o nchar.o \
 	grid2deg.o wqencode.o wqdecode.o nhash.o hash.o \
@@ -70,7 +78,8 @@ OBJS2 = wsprcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 # WSPR Code example program
 WSPRcode.exe: $(OBJS2)
 	$(FC) $(FFLAGS) -o WSPRcode.exe $(OBJS2)
-	
+
+# Build OBJ3 for libwspr.a
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
 	fthread.o gencwid.o genwspr.o geodist.o getrms.o getutc.o \
@@ -86,29 +95,35 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 
 # Build the library libwspr.a
 libwspr.a: $(OBJS3) acom1.f90 acom2.f90
-	ar cr libwspr.a $(OBJS3)
-	ranlib libwspr.a
+	$(AR) cr libwspr.a $(OBJS3)
+	$(RANLIB) libwspr.a
 
+# Build fmtest.exe
 fmtest.exe: fmtest.f90 libwspr.a
-	$(FC) ${FFLAGS} -o fmtest.exe fmtest.f90 $(OBJS3) libwspr.a libportaudio.a \
+	$(FC) $(FFLAGS) -o fmtest.exe fmtest.f90 $(OBJS3) libwspr.a libportaudio.a \
 	libwinmm.a libfftw3f_win.a libpthreadGC2.a
 
+# Build fmtave.exe
 fmtave.exe: fmtave.f90
 	$(FC) $(FFLAGS) -o fmtave.exe fmtave.f90
 
+# Build fcal.exe
 fcal.exe: fcal.f90
 	$(FC) $(FFLAGS) -o fcal.exe fcal.f90
 
+# Build fmeasure.exe
 fmeasure.exe: fmeasure.f90
 	$(FC) $(FFLAGS) -o fmeasure.exe fmeasure.f90
 
+# Build sound.o
 sound.o: sound.c
 	$(CC) -c sound.c
 
+# Build gmtime2.o
 gmtime2.o: gmtime2.c
 	$(CC) $(CFLAGS) -c -DWin32=1 gmtime2.c
 
-# F2PY SRC for WsprMod/w.pyd
+# w.pyd SRC
 F2PYSRC = wspr1.f90 getfile.f90 paterminate.f90 ftn_quit.f90 audiodev.f90
 
 # WSPR Audio
@@ -118,36 +133,34 @@ WsprMod/w.pyd: libwspr.a $(F2PYSRC)
 	--opt="-cpp -fbounds-check -O2" \
 	libwspr.a libportaudio.a libfftw3f_win.a libsamplerate.a \
 	libpthreadGC2.a -lwinmm -m w $(F2PYSRC)
-	mv w.pyd WsprMod/w.pyd
+	$(MV) w.pyd WsprMod/w.pyd
 
-# Install WSPR
-install: all
-	rm -rf $(INSTALLDIR)/bin
+# Run CX_Freeze to install WSPR to $(INSTALLDIR)
+# CX_Freeze creates the $(INSTALLDIR) if not present.
+install:
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
 	--include-modules=Pmw wspr.py --target-dir=$(INSTALLDIR)\bin
-	rm -rf $(INSTALLDIR)/bin/tcl/tzdata
-	rm -rf $(INSTALLDIR)/bin/tk/demos
-	cp -r save $(INSTALLDIR)
-	cp wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat $(INSTALLDIR)
-	cp fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe wspr0.exe $(INSTALLDIR)
-	cp -r hamlib/* $(INSTALLDIR)
-	cp wsjt.ico wspr.bat $(INSTALLDIR)
-	cp -r WsprMod $(INSTALLDIR)
-	
+	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
+	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
+	$(CP) -u wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat \
+	fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe \
+	wspr0.exe wsjt.ico wspr.bat fmt-env.bat gocal.bat $(INSTALLDIR)
+	$(CP) -ur save WsprMod hamlib/* $(INSTALLDIR)
+
 # /O = Installer output directory
 # /F = .iss file name
 # The other vars are from the top of the Makefile.
-# Output: C:\JTSDK-PY\src\wspr\package\wspr-1.4-win32-rxxxx.exe
-# Optional: Super Quiet w/Only errors, add "/Q[p]" before /O
-package: install
-	rm -rf $(PACKAGEDIR)
+# Output: C:\JTSDK-PY\src\wspr\package\WSPR-4.0-Win32.exe
+# Optional: Super Quiet, with errors only, add "/Q[p]" before /O
+# ISCC creates $(PACKAGEDIR) if not present.
+package:
 	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
 
 .PHONY : clean distclean
 
 clean:
-	rm -rf *.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
+	$(RM) -rf *.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
 	fmeasure.exe WSPRcode.exe wspr0.exe install WsprMod/w.pyd
 
 distclean: clean
-	rm -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDY-PY
+	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDY-PY
