@@ -10,9 +10,9 @@ DefaultGroupName=WSJT\WSJT10
 Source: "c:\JTSDK-PY\src\trunk\install\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
-Name: "{group}\WSJT10";          Filename: "{app}\wsjt.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
-Name: "{userdesktop}\WSJT10";    Filename: "{app}\wsjt.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
-Name: {group}\Uninstall WSJT10;  Filename: {uninstallexe}
+Name: "{group}\WSJT10";                   Filename: "{app}\wsjt.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
+Name: "{userdesktop}\WSJT10";             Filename: "{app}\wsjt.bat"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
+Name: {group}\Uninstall\Uninstall WSJT10; Filename: {uninstallexe}
 
 [Run]
 Filename: "{app}\wsjt.bat"; Description: "Launch WSJT"; Flags: postinstall nowait unchecked

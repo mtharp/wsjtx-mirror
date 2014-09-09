@@ -23,6 +23,7 @@ MV = C:/JTSDK-PY/tools/mv.exe
 RM = C:/JTSDK-PY/tools/rm.exe
 ISCC = C:/JTSDK-PY/inno5/ISCC.exe
 ISS = C:/JTSDK-PY/src/trunk/wsjt10a.iss
+MSVCR = C:/JTSDK-PY/Python33/DLLs/msvcr100.dll
 
 # Output Paths
 INSTALLDIR = C:/JTSDK-PY/src/trunk/install
@@ -120,12 +121,14 @@ install:
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
-	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(INSTALLDIR)/bin
+	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 
 # /O = Installer output directory
-# /F = .iss file name
+# /F = Win32 output file name
+# /cc = Compiler command
+# $(ISS) = .iss file name
 # The other vars are from the top of the Makefile.
-# Output: C:\JTSDK-PY\src\trunk\package\WSJT10-Win32.exe
+# Output: C:\JTSDK-PY\src\trunk\package\WSPR-10-Win32.exe
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
