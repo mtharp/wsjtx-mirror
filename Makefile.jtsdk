@@ -23,6 +23,7 @@ MV = C:/JTSDK-PY/tools/mv.exe
 RM = C:/JTSDK-PY/tools/rm.exe
 ISCC = C:/JTSDK-PY/inno5/ISCC.exe
 ISS = C:/JTSDK-PY/src/wspr/wspr4a.iss
+MSVCR = C:/JTSDK-PY/Python33/DLLs/msvcr100.dll
 
 # Output Paths
 INSTALLDIR = C:/JTSDK-PY/src/wspr/install
@@ -150,7 +151,7 @@ install:
 	fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe \
 	wspr0.exe fmt-env.bat gocal.bat $(INSTALLDIR)
 	$(CP) -ur save WsprMod hamlib/* $(INSTALLDIR)
-	$(CP) -u $(FLIBS) $(INSTALLDIR)/bin
+	$(CP) -u $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 
 # /O = Installer output directory
 # /F = Win32 output file name
