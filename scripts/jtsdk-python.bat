@@ -302,7 +302,7 @@ IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
 ECHO .. InnoSetup Exit Status: ^( %ERRORLEVEL% ^) is OK
 ECHO .. Performing Dist-Clean After Build
 ECHO.
-mingw32-make -f Makefile.jtsdk distclean
+REM mingw32-make -f Makefile.jtsdk distclean
 ECHO.
 GOTO FINISHED
 
