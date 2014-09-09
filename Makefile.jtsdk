@@ -14,6 +14,9 @@ CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
 FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
 RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib.exe
 
+# Fortran libs
+FLIBS = C:/JTSDK-PY/mingw32/bin/libgfortran-3.dll C:/JTSDK-PY/mingw32/bin/libquadmath-0.dll
+
 # Misc Tools & Files
 CP = C:/JTSDK-PY/tools/cp.exe
 MV = C:/JTSDK-PY/tools/mv.exe
@@ -62,7 +65,7 @@ OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 	pctile.o fchisq.o db.o fano232.o sort.o ssort.o ccf2.o \
 	wspr0init.o
 
-# WPSR0 Command Line WSPR
+# Build WPSR0 Command Line WSPR
 wspr0.exe: $(OBJS1)
 	$(FC) $(FFLAGS) -o wspr0 $(FFLAGS) $(OBJS1) libportaudio.a \
 	libwinmm.a libfftw3f_win.a
@@ -75,7 +78,7 @@ OBJS2 = wsprcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 	encode232.o inter_mept.o packprop.o unpackprop.o \
 	packpfx.o unpackpfx.o cs_stubs.o fano232.o
 
-# WSPR Code example program
+# Build WSPR Code example program
 WSPRcode.exe: $(OBJS2)
 	$(FC) $(FFLAGS) -o WSPRcode.exe $(OBJS2)
 
@@ -123,12 +126,13 @@ sound.o: sound.c
 gmtime2.o: gmtime2.c
 	$(CC) $(CFLAGS) -c -DWin32=1 gmtime2.c
 
-# w.pyd SRC
+# WSPR Audio w.pyd SRC
 F2PYSRC = wspr1.f90 getfile.f90 paterminate.f90 ftn_quit.f90 audiodev.f90
 
-# WSPR Audio
+# Build WSPR Audio w.pyd
 WsprMod/w.pyd: libwspr.a $(F2PYSRC)
-	$(F2PY) -c -I. --fcompiler=gnu95 --compiler=mingw32 \
+	$(F2PY) -c -I. \
+	--quiet --fcompiler=gnu95 --compiler=mingw32 \
 	--f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" \
 	libwspr.a libportaudio.a libfftw3f_win.a libsamplerate.a \
@@ -144,11 +148,14 @@ install:
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat \
 	fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe \
-	wspr0.exe wsjt.ico wspr.bat fmt-env.bat gocal.bat $(INSTALLDIR)
+	wspr0.exe fmt-env.bat gocal.bat $(INSTALLDIR)
 	$(CP) -ur save WsprMod hamlib/* $(INSTALLDIR)
+	$(CP) -u $(FLIBS) $(INSTALLDIR)/bin
 
 # /O = Installer output directory
-# /F = .iss file name
+# /F = Win32 output file name
+# /cc = Compiler command
+# $(ISS) = .iss file name
 # The other vars are from the top of the Makefile.
 # Output: C:\JTSDK-PY\src\wspr\package\WSPR-4.0-Win32.exe
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
