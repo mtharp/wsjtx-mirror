@@ -14,6 +14,9 @@ CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
 FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
 RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib.exe
 
+# Fortran libs
+FLIBS = C:/JTSDK-PY/mingw32/bin/libgfortran-3.dll C:/JTSDK-PY/mingw32/bin/libquadmath-0.dll
+
 # Misc Tools & Files
 CP = C:/JTSDK-PY/tools/cp.exe
 MV = C:/JTSDK-PY/tools/mv.exe
@@ -115,9 +118,9 @@ install:
 	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
 	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
-	$(CP) -u jt65code.exe jt4code.exe CALL3.TXT kvasd.exe \
-	kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
+	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
+	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(INSTALLDIR)/bin
 
 # /O = Installer output directory
 # /F = .iss file name

@@ -26,7 +26,7 @@ program jt4code
 
   nargs=iargc()
   if(nargs.ne.1) then
-     print*,'Usage: JT65code "message"'
+     print*,'Usage: JT4code "message"'
      go to 999
   endif
   call getmet4(7,mettab)
