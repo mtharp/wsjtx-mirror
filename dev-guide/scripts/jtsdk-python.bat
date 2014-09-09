@@ -132,7 +132,6 @@ GOTO COMSG
 
 REM -- START WSPR BUILD
 :ASK_SVN
-ECHO.
 ECHO Update from SVN Before Building? ^( y/n ^)
 SET ANSWER=
 ECHO.
@@ -143,7 +142,6 @@ GOTO SVN_UPDATE
 ) ELSE (
 ECHO.
 ECHO Please Answer With: ^( Y or N ^)
-ECHO.
 GOTO ASK_SVN
 )
 
@@ -151,12 +149,9 @@ REM -- UPDATE WSJT FROM SVN
 :SVN_UPDATE
 ECHO.
 ECHO UPDATING ^( %APP_SRC% ^ )
-ECHO.
 cd %APP_SRC%
-ECHO.
 start /wait svn cleanup
 start /wait svn update
-ECHO.
 GOTO START_BUILD
 
 REM -- START MAIN BUILD PROCESS
@@ -164,15 +159,29 @@ REM -- START MAIN BUILD PROCESS
 ECHO.
 IF NOT EXIST %BASED%\%APP_NAME% mkdir %BASED%\%APP_NAME%
 CD /D %APP_SRC%
-ECHO.
 ECHO BUILDING: ^( %APP_NAME% %TARGET% ^)
+IF /I [%1]==[wsjt] (
+IF EXIST "libjt.a" (
+ECHO.
+ECHO .. Performing make clean first
+ECHO.
+mingw32-make -f Makefile.jtsdk distclean
+))
+IF /I [%1]==[wspr] (
+IF EXIST "libwspr.a" (
+ECHO.
+ECHO .. Performing make clean first
+ECHO.
+mingw32-make -f Makefile.jtsdk distclean
+))
+ECHO.
+ECHO .. Running mingw32-make to Build The Install Target
 ECHO.
 mingw32-make -f Makefile.jtsdk
 ECHO.
-ECHO -----------------------------------------------------------------
-ECHO Makefile Exit Status: %ERRORLEVEL%
-ECHO -----------------------------------------------------------------
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
+ECHO Makefile Exit Status: ^( %ERRORLEVEL% ^) is OK
+ECHO.
 IF /I [%TARGET%]==[install] (
 GOTO REV_NUM
 ) ELSE IF /I [%TARGET%]==[package] ( 
@@ -185,26 +194,25 @@ CD /D %APP_SRC%
 ECHO.
 ECHO BUILDING: ^( %APP_NAME% Win32 Installer ^)
 ECHO.
+ECHO .. Running mingw32-make To Build The Win32 Installer
+ECHO.
 mingw32-make -f Makefile.jtsdk package
 ECHO.
-ECHO -----------------------------------------------------------------
-ECHO Makefile Exit Status: %ERRORLEVEL%
-ECHO -----------------------------------------------------------------
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
+ECHO Makefile Exit Status: ^( %ERRORLEVEL% ^) is OK
 ECHO.
 GOTO REV_NUM
 
-REM -- GET SVN r NUMBER && COPY PKG TO %APP_NAME%
+REM -- GET SVN r NUMBER
 REM -- STILL in %APP_SRC%
 :REV_NUM
 ECHO .. Getting SVN version number
 svn -qv status %APP_NAME%.py |awk "{print $2}" > r.txt
 SET /P VER=<r.txt & rm r.txt
 
-REM -- Package just needs the SVN Number for the name.
+REM -- Package just needs the SVN Number for the folder name.
 IF /I [%TARGET%]==[package] ( GOTO PKG_FINISH )
-
-ECHO .. Copy build files to final location
+ECHO .. Copying build files to final location
 IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% ( 
 rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER% )
 ECHO.
@@ -283,14 +291,20 @@ GOTO EOF
 
 REM -- FINISHED INSTALL OR PACKAGE TARGET BUILDS
 :PKG_FINISH
+ECHO .. Copying build files to final location
+IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% ( 
+rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER% )
 ECHO.
-ECHO -----------------------------------------------------------------
-ECHO  Finished InnoSetup for: ^( %APP_NAME%-r%VER% ^)
-ECHO -----------------------------------------------------------------
+XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER% /I /E /Y /q
+XCOPY %PACKAGEDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER% /I /E /Y /q
 ECHO.
-CD /D %BASED%
+IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
+ECHO .. InnoSetup Exit Status: ^( %ERRORLEVEL% ^) is OK
+ECHO .. Performing Dist-Clean After Build
 ECHO.
-GOTO EOF
+mingw32-make -f Makefile.jtsdk distclean
+ECHO.
+GOTO FINISHED
 
 REM -- FINISHED INSTALL OR PACKAGE TARGET BUILDS
 :FINISHED
@@ -299,13 +313,8 @@ ECHO -----------------------------------------------------------------
 ECHO  %APP_NAME%-r%VER% Build Complete
 ECHO -----------------------------------------------------------------
 ECHO.
-ECHO Folder Name .. %APP_NAME%-r%VER%
-ECHO SRC .......... %APP_SRC%
-ECHO Source ....... %INSTALLDIR%
-ECHO Destination .. %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
-IF /I [%TARGET%]==[package] (
-ECHO Installer .... %PACKAGEDIR%\%APP_NAME%-Win32-r%VER%.exe
-)
+ECHO Source Dir ... %APP_SRC%
+ECHO Package Dir .. %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
 CD /D %BASED%
 ECHO.
 GOTO EOF
@@ -356,11 +365,6 @@ SET TARGET=sound.o
 GOTO START
 ) ELSE IF /I [%2]==[w.pyd] (
 SET TARGET=WsprMod/w.pyd
-
-
-
-
-
 
 REM - USER INPUT UNSUPPORTED APPLICATION
 :UNSUPPORTED_APP
@@ -451,9 +455,15 @@ ECHO -----------------------------------------------------------------
 ECHO  Compiler Build Warning
 ECHO -----------------------------------------------------------------
 ECHO. 
-ECHO  mingw32-make exited with a non (0) build status. Check and or 
+ECHO  mingw32-make exited with a non-(0) build status. Check and or 
 ECHO  correct the error, perform a clean, then re-make the target.
-ECHO
+ECHO.
+ECHO  Possible Solution:
+ECHO  cd %APP_ARC%
+ECHO  make -f Makefile.jtsdk distclean
+ECHO.
+ECHO  Then rebuild your target.
+ECHO.
 COLOR 0A
 ENDLOCAL
 EXIT /B %ERRORLEVEL%
