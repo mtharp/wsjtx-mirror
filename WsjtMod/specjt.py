@@ -96,29 +96,29 @@ def pal_AFMHot():
     im.putpalette(Colormap2Palette(colormapAFMHot),"RGB")
 
 #--------------------------------------------------- Command button routines
-#--------------------------------------------------- rx_volume
-def rx_volume():
-    for path in string.split(os.environ["PATH"], os.pathsep):
-        file = os.path.join(path, "sndvol32") + ".exe"
-        if os.path.exists(file):
-            os.spawnv(os.P_NOWAIT, file, (file,) + (" -r",))
-            return
-    t="WSJT cannot access mixer input control\non this platform.  Please invoke " + \
-       "system\nmixer directly."
-    tkinter.messagebox.showwarning(message=t)
-
-#--------------------------------------------------- tx_volume  ..extended for Vista
-def tx_volume():
-    for path in string.split(os.environ["PATH"], os.pathsep):
-        print(path)
-        file = os.path.join(path, "sndvol32") + ".exe"
-        if os.path.exists(file):
-            os.spawnv(os.P_NOWAIT, file, (file,))
-            return
-        file = os.path.join(path, "sndvol") + ".exe"
-        if os.path.exists(file):
-            os.spawnv(os.P_NOWAIT, file, (file,))
-            return
+###--------------------------------------------------- rx_volume
+##def rx_volume():
+##    for path in string.split(os.environ["PATH"], os.pathsep):
+##        file = os.path.join(path, "sndvol32") + ".exe"
+##        if os.path.exists(file):
+##            os.spawnv(os.P_NOWAIT, file, (file,) + (" -r",))
+##            return
+##    t="WSJT cannot access mixer input control\non this platform.  Please invoke " + \
+##       "system\nmixer directly."
+##    tkinter.messagebox.showwarning(message=t)
+##
+###--------------------------------------------------- tx_volume  ..extended for Vista
+##def tx_volume():
+##    for path in string.split(os.environ["PATH"], os.pathsep):
+##        print(path)
+##        file = os.path.join(path, "sndvol32") + ".exe"
+##        if os.path.exists(file):
+##            os.spawnv(os.P_NOWAIT, file, (file,))
+##            return
+##        file = os.path.join(path, "sndvol") + ".exe"
+##        if os.path.exists(file):
+##            os.spawnv(os.P_NOWAIT, file, (file,))
+##            return
 
 #---------------------------------------------------- fdf_change
 # Readout of graphical cursor location
@@ -498,9 +498,9 @@ setupmenu.add_checkbutton(label='Flatten spectra',variable=nflat)
 setupmenu.add_checkbutton(label='Mark JT65 tones only if Freeze is checked',
             variable=nmark)
 setupmenu.add_separator()
-setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
-setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
-setupmenu.add_separator()
+##setupmenu.add('command', label = 'Rx volume control', command = rx_volume)
+##setupmenu.add('command', label = 'Tx volume control', command = tx_volume)
+##setupmenu.add_separator()
 setupmenu.add_radiobutton(label='Frequency axis',command=df_mark,
             value=0,variable=naxis)
 setupmenu.add_radiobutton(label='JT65 DF axis',command=df_mark,
