@@ -267,10 +267,10 @@ XCOPY %SUPPORT%\%APP_NAME%\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
 XCOPY %SUPPORT%\runtime\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
 mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
-IF /I [%OPTION%]==[Debug] ( GOTO MAKEBAT ) ELSE ( GOTO FINISH )
+IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
 GOTO EOF
 
-:MAKEBAT
+:DEBUG_MAKEBAT
 SET FILENAME=%APP_NAME%.bat
 ECHO.
 ECHO -----------------------------------------------------------------
@@ -331,6 +331,7 @@ START %APP_NAME%.bat
 GOTO EOF
 
 :FINISH
+ECHO.
 ECHO BUILD SUMMARY
 ECHO   Build Tree Location .. %BUILDD%\%OPTION%
 ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.exe
