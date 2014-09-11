@@ -1,0 +1,227 @@
+#
+# Part of the JTSDK-NIX Project
+# Custom Hamlib Build from Bill (G4WJS) Fork
+
+#------------------------------hamlib build------------------------------------#
+
+function build_hamlib() {
+
+local _GITV=$(dpkg --get-selections |grep git |awk 'FNR==1 {print $2}')
+local _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib"
+local _INSTALLD="$HOME/.local/share/applications/hamlib"
+_LOG=$BASED/logs/hamlib-build.log
+
+
+# git check local function
+function git_check() {
+	clear
+	echo "Checking Git .."
+
+	if [[ $_GITV == "install" ]]; then
+		echo "Found Git .. OK"
+	else
+		echo
+		echo "GIT ERROR"
+		echo
+		echo "Git was not found, please check your installation"
+		echo "and ensure Git can be used from ( $USER ) account"
+		echo
+		read -p "Press [Enter] continue .."
+		echo
+		clean_exit
+	fi
+}
+
+# check local git clone is up to date
+function update_chk() {
+
+	echo ".. Checking Local Hamlib Fork"
+# clone or update hamlib
+	if [[ ! -d $_SRCD/g4wjs-hamlib ]]; then
+		echo
+		echo ".. Hamlib3 was not fouud"
+		echo ".. Cloning G4WJS's Hamlib (this a can take few minutes, be patient)"
+		echo
+		git clone "$_HAMLIBURL" g4wjs-hamlib	
+
+		# checkout integration
+		echo
+		echo ".. Checkout Integration"	
+		echo
+		cd g4wjs-hamlib
+		git checkout integration
+		echo
+	else
+		cd $_SRCD/g4wjs-hamlib
+		_GITSTATUS=$(git status -uno |awk 'FNR==2 {print $4}')
+	
+		if [[ $_GITSTATUS == "up-to-date" ]]; then
+			echo ".. Local Hamlib Fork Looks Up-To-Date"
+		else
+			echo ".. Local Hamlib Fork requires updates"
+			git pull
+		fi
+	fi
+}
+
+# post build test-1 (file check)
+function post_build_test1() {
+
+	echo
+	echo '[1]' "Test-1 (file check)"
+	rm -rf $_TMP/counter && touch $_TMP/counter
+
+	# check that files exist at least
+	while read f; do
+		if [[ -f $_INSTALLD/$f ]]; then
+			echo .. $f ... OK
+			echo $f >> $_TMP/counter
+		else
+			echo $f is ... MISSING
+		fi
+	done < $_CFG/pkg_list_hamlib
+
+
+# get counter info
+	_LINES=$(wc -l < "$_TMP/counter")
+	if [[ $_LINES -ge "18" ]]; then
+		echo "All Critical Files Found"
+		echo
+	else
+		echo
+		echo "Something went wrong with the build."
+		echo "The build script will exit. Check the"
+		echo "build log to investigate possible cause."
+		echo
+		echo "Log: $_LOGS/hamlib-build.log"
+		echo 
+		read -p "Press [Enter] to continue ..."
+	fi
+}
+
+# post build test2 (rigctl test)
+function post_build_test2() {
+
+	echo '[2]' "Test-2 (rigctl check)"
+	_TEST2=$($_INSTALLD/bin/rigctl -m1 f)
+
+	if [[ $_TEST2 == "145000000" ]]; then
+		echo ".. Rig Controll ... ok"
+		echo '.. Tested With: rigctl -m1 f <= results => 145000000'
+		echo
+
+	else
+		echo "Rig Controll .. FAILED"
+		echo "The build script will exit. Check the"
+		echo "build log,. located in:"
+		echo
+		echo $BASED/logs/hamlib-build.log
+		echo 
+		echo "to investigate the cause."
+		echo 
+		read -p "Press [Enter] to continue ..."
+		clean_exit
+	fi
+}
+
+# update and build
+function update_and_build() {
+	echo "-------------------------------------------"
+	echo "Updating G4WJS Fork of Hamlib3"
+	echo "-------------------------------------------"
+	echo
+	cd "$_SRCD"/build/hamlib
+	echo ".. Running Make Clean"
+	echo
+	make -s clean
+	echo
+	echo ".. Cleanup complete"
+	echo ".. Starting Configure Process"
+	echo
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	echo
+	echo ".. Configure Process Complete"
+	echo ".. Starting Make Process"
+	echo
+	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	echo
+	echo ".. Make Process Complete"
+	echo ".. Installing Hamlib3 to:"
+	echo ".. $_INSTALLD"
+	make -s install
+}
+
+# new build
+function new_build() {
+
+	echo "-------------------------------------------"
+	echo "Building G4WJS Fork of Hamlib3"
+	echo "-------------------------------------------"
+	echo
+	mkdir -p "$_SRCD"/build/hamlib
+	cd "$_SRCD"/build/hamlib
+	echo ".. Starting Configure Process"
+	echo
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	echo
+	echo ".. Configuration Complete"
+	echo ".. Starting Make Process"
+	echo
+	make -s -j$(grep -c ^processor /proc/cpuinfo)
+	echo
+	echo ".. Make Process Complete"
+	echo ".. Installing Hamlib3 to:"
+	echo ".. $_INSTALLD"
+	make -s install
+}
+
+# START MAIN 
+# start build log
+if [[ -f $_LOG ]]; then
+	mv $_LOG $_LOG-$(date +"%Y%m%d%H%M")
+	touch $_LOG
+else
+	touch $_LOG
+fi
+
+cd "$_SRCD"
+update_chk
+
+# configure hamlib
+if [[ -d $_SRCD/build/hamlib ]] && [[ $($_INSTALLD/bin/rigctl -m1 f) == "145000000" ]]; then
+	while [ 1 ]
+	do
+		echo
+		read -p "Hamlib Seems Ok, Rebuild Anyway [ Y/N ]:" yn
+				case $yn in
+		[Yy]* )
+			echo
+			update_and_build
+			echo
+			echo '---------------------------'	
+			echo "Performing Post Build Check"
+			echo '---------------------------'
+			post_build_test1
+			post_build_test2
+			break ;;
+		[Nn]* )
+			echo			
+			break ;;
+		* )
+			clear
+			echo "Please use "Y" yes or "N" No."
+		;;
+		esac
+	done
+
+else
+	new_build
+	echo
+	echo '---------------------------'	
+	echo "Performing Post Build Check"
+	echo '---------------------------'
+	post_build_test1
+	post_build_test2
+fi
+
+}

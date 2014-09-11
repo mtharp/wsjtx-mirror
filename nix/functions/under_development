@@ -1,0 +1,11 @@
+#
+# Part of the JTSDK-NIX Project
+#
+
+#--------------------------------under development-----------------------------#
+function under_development() {
+
+dialog --backtitle "$BACKTITLE" --title "$UD" --msgbox "$UDMSG" 7 50
+
+}
+

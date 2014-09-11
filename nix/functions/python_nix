@@ -1,0 +1,163 @@
+#
+# Part of the JTSDK-NIX Project
+# Python build function for ( WSJT and WSPR using auto tools)
+
+#-------------------------------python_nix-------------------------------------#
+
+function python_nix() {
+# WSPR uses /branches WSJT uses /trunk
+clear
+_WSPRURL="https://svn.code.sf.net/p/wsjt/wsjt/branches"
+_WSJTURL="https://svn.code.sf.net/p/wsjt/wsjt"
+
+# Remove old build log
+rm -rf $_LOGS/$_APP_NAME-build.log && touch $_LOGS/$_APP_NAME-build.log
+
+# Start sub-shell for logging
+(
+
+# start the build steps
+echo
+echo "STARTING BUILD FOR ( $_APP_NAME )"
+
+
+# $_APP_SRC is set from the main menu jtsdk-nix.sh when select tool build
+# svn co if not exist, else update
+if [[ ! -d $_APP_SRC ]] || [[ ! -d $_APP_SRC/.svn ]]; then
+	echo
+	echo "Checking Out New Version of ( $_APP_NAME ) "
+	
+	# For WSJT
+	if [[ $_APP_NAME == wsjt ]]; then
+		cd $_SRCD
+		svn co "$_WSJTURL/trunk"
+	fi
+
+	# For WSPR
+	if [[ $_APP_NAME == wspr ]]; then
+		cd $_SRCD
+		svn co "$_WSPRURL/$_APP_NAME"
+	fi
+else
+	# Yy / Nn answer to update from svn	
+	while [ 1 ]
+	do
+		echo
+		read -p "Update from SVN Before Building? [ Y/N ]: " yn
+		case $yn in
+		[Yy]* )
+			clear
+			cd $_APP_SRC 
+			echo "Updating ( $_APP_NAME )"
+			svn cleanup && svn update
+			break ;;
+		[Nn]* )
+			break ;;
+		* )
+			clear
+			echo "Please use "Y" yes or "N" No."
+		;;
+		esac
+	done
+fi
+
+# get svn revision number
+cd "$_APP_SRC"
+rev_num=$(svn log -l 1 |awk 'FNR==2 {print $1}')
+echo
+echo "------------------------------------------------"
+echo "Starting Build for ( $_APP_NAME-$rev_num )"
+echo "------------------------------------------------"
+echo
+
+if [[ -f "./Makefile" ]]
+then
+	# clean source tree
+	echo
+	echo "------------------------------------------------"
+	echo "Removing old build files"
+	echo "------------------------------------------------"
+	echo
+	make distclean
+	echo
+	echo ".. Done"
+	sleep 1
+fi
+
+
+if [[ -f "./configure.ac" ]]
+then
+
+	# Run Autoconf to generate configure script
+	echo
+	echo "------------------------------------------------"
+	echo "Running ( autoconf ) to generate configure"
+	echo "------------------------------------------------"
+	sleep 1
+	./autogen.sh
+	echo
+	echo ".. Done"
+else
+	echo
+	echo "------------------------------------------------"
+	echo " Autotools Error"
+	echo "------------------------------------------------"
+	echo
+	echo "Cannot find configure.ac"
+	echo "Check $_LOGS/$_APP_NAME-build.log"
+	echo
+	exit 1
+fi
+
+if [[ $? = "0" ]]; then
+	# Run Makefile
+	echo
+	echo "------------------------------------------------"
+	echo "Running make for all targets"
+	echo "------------------------------------------------"
+	make
+else
+	echo
+	echo "------------------------------------------------"
+	echo " Error Running Autoconf"
+	echo "------------------------------------------------"
+	echo
+	echo "An Error occured creating the Makefile"
+	echo "Check VBuild Log: $_LOGS/$_APP_NAME-build.log"
+	echo
+	break
+fi
+
+# Yy / Nn answer to update from svn	
+while [ 1 ]
+do
+	echo
+	read -p "Do you want to install $_APP_NAME ? [ Y/N ]: " yn
+	case $yn in
+	[Yy]* )
+		sudo make install
+		# Finished, display user message
+		cd $_BASED
+		echo "..Location ....: /home/$USER/.$_APP_NAME"
+		echo "..Build Log ...: $_LOGS/$_APP_NAME-build.log"
+		echo
+		echo "To Uniinstall $_APP_NAME"
+		echo "cd /home/$USER/.$_APP_NAME"
+		echo "sudo make uninstall"
+		echo
+		read -p "Press [Enter] to continue .."
+		break ;;
+	[Nn]* )
+		break ;;
+	* )
+		clear
+		echo "Please use "Y" yes or "N" No."
+	;;
+	esac
+done
+echo 
+echo
+) 2>&1 | tee -a $_LOGS/$_APP_NAME-build.log
+
+} # end python_nix
+

@@ -1,0 +1,30 @@
+#
+# Part of the JTSDK-NIX Project
+#
+
+#-----------------------------normal shutdown-----------------------------#
+function clean_exit() {
+local EXIT_STATUS=$?
+
+dialog --backtitle "$BACKTITLE" --title "$EXITWSDT" --infobox "$EXITWSDTMSG" 5 50
+   sleep 2
+
+dialog --backtitle "$BACKTITLE" --title "$CLEANTMP" --infobox "$CLEANTMPMSG" 5 50
+   rm -r $_TMP
+   wait
+   sleep 1
+
+dialog --backtitle "$BACKTITLE" --title "$RESETOPT" --infobox "$RESETOPTMSG" 5 50
+	unset_options
+   wait
+   sleep 1
+	clear
+
+   echo "Exit Status ""[ "$EXIT_STATUS" ]"
+   echo "Clean Exit Complete."
+   trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
+   unset EXIT_STATUS
+
+exit
+
+} # clean exit

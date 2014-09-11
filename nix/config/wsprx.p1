@@ -1,0 +1,49 @@
+--- ../src/wsprx/CMakeLists.txt	2014-04-22 05:27:31.512330420 -0600
++++ CMakeLists.txt	2014-04-22 05:26:38.872328603 -0600
+@@ -1,3 +1,4 @@
++# wsprx.p1 JTSDK-NIX, Fix portaudio includes
+ cmake_minimum_required (VERSION 2.8.9)
+ 
+ project (wsprx C CXX Fortran)
+@@ -73,6 +74,13 @@
+ find_library (hamlib_LIBRARIES NAMES hamlib hamlib-2 PATH_SUFFIXES msvc gcc)
+ include_directories (${hamlib_INCLUDES})
+ 
++#
++# portaudio setup
++#
++find_path (portaudio_INCLUDES portaudio.h)
++find_library (portaudio_LIBRARIES NAMES portaudio)
++include_directories (${portaudio_INCLUDES})
++
+ if (WIN32)
+    find_library (hamlib_RUNTIME NAMES hamlib hamlib-2 PATH_SUFFIXES bin)
+    get_filename_component (_hamlib_runtime_path "${hamlib_RUNTIME}" PATH)
+@@ -80,7 +88,6 @@
+    find_library (usb_RUNTIME NAMES usb0 PATH_SUFFIXES bin)
+ endif (WIN32)
+ 
+-
+ #
+ # Qt5 setup
+ #
+@@ -143,15 +150,17 @@
+ qt5_wrap_ui (GENUISRCS ${UISRCS})
+ 
+ add_executable (wsprx ${CXXSRCS} ${CSRCS} ${GENUISRCS} wsprx.rc)
+-target_link_libraries (wsprx wsprximpl ${hamlib_LIBRARIES} ${fftw3f_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR}/palir-02.dll)
++# target_link_libraries (wsprx wsprximpl ${hamlib_LIBRARIES} ${fftw3f_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR}/palir-02.dll)
++target_link_libraries (wsprx wsprximpl ${hamlib_LIBRARIES} ${fftw3f_LIBRARIES} ${portaudio_LIBRARIES})
++
+ if (WIN32)
+   target_link_libraries (wsprx)
+   set_target_properties (wsprx PROPERTIES LINK_FLAGS_RELEASE "${LINKER_FLAGS_RELEASE} -mwindows")
+ endif (WIN32)
++
+ add_dependencies (wsprx kvasd)
+ qt5_use_modules (wsprx Widgets Multimedia OpenGL)
+ 
+-
+ install (
+   TARGETS wsprx
+   RUNTIME DESTINATION bin

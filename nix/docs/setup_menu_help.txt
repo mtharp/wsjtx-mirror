@@ -1,0 +1,30 @@
+== JTSDK-NIX SETUP HELP FILE ==
+
+NAVIGATION:  You can  move  through the file by using the cursor, page-up, 
+page-down, arrow UP/DWN and HOME/END keys available on most keyboards.
+If the lines are too long to be displayed in the box, the LEFT/RIGHT keys
+can be used to scroll the text region horizontally.
+
+DESCRIPTION: Installs Dependencies, Build Pmw-2.0.0, Build Hamlib, for both
+x86 and x86_64 systems.
+
+SPECIAL NOTES: Setup is designed for the lastest stable releases of each
+distribution (where applicable). No attempt has been made to provide
+backward compatability (backports) at this time.
+
+Chapters:
+
+* Arch
+ . Under Construction
+
+* Fedora
+ . Under Construction
+
+* Gentoo
+ . Under Construction
+
+* Slackware
+ . Under Construction
+
+* Ubuntu
+ . Under Construction
