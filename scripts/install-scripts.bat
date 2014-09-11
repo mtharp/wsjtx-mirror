@@ -67,7 +67,6 @@ cd C:\JTSDK-DOC\doc
 ECHO .. Finished NSIS Installation
 )
 GOTO INNO_QT
-
 REM -- Install InnoSetup Installer
 :INNO_QT
 ECHO .. Checking For InnoSetup
@@ -81,6 +80,23 @@ cd C:\JTSDK-QT
 rm inno5.7z > nul
 cd C:\JTSDK-DOC\doc
 ECHO .. Finished InnoSetup Installation
+)
+GOTO HAMLIB3_UPDATE
+
+REM -- Install Updated Version of Hamlib3 from ( G4WJS )
+:HAMLIB3_UPDATE
+ECHO .. Checking Hamlib3
+IF NOT EXIST C:\JTSDK-QT\hamlib3\april-2014.txt (
+ECHO .. Latest Version Was Not Found
+ECHO .. Installing Hamlib3 April-2014 Build
+cd C:\JTSDK-DOC\doc\dev-guide\scripts
+cp hamlib3.7z C:\JTSDK-QT\
+cd C:\JTSDK-QT
+rm -rf C:\JTSDK-QT\hamlib3
+7z x hamlib3.7z > nul
+rm hamlib3.7z > nul
+cd C:\JTSDK-DOC\doc
+ECHO .. Finished Hamlib3 Update
 )
 ECHO .. Done
 GOTO JTSDK_PY
