@@ -327,7 +327,7 @@ ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_DEBUG_RUN
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
 ECHO .. Starting: ^( %APP_NAME% ^) in Debug Mode
-START %APP_NAME%.bat
+CALL %APP_NAME%.bat
 GOTO EOF
 
 :FINISH
@@ -358,8 +358,7 @@ ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_FINISH_RUN
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
 ECHO .. Starting: ^( %APP_NAME% ^) in Debug Mode
-START %APP_NAME%.exe
-EXIT /B 0
+CALL %APP_NAME%.exe
 )
 GOTO EOF
 
