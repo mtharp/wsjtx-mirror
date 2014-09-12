@@ -50,7 +50,7 @@ from WsprMod import g
 import Pmw
 from WsprMod import palettes
 from math import log10
-from numpy.oldnumeric import zeros
+import numpy.core.multiarray
 import array
 ##import dircache
 from PIL import Image, ImageTk, ImageDraw
