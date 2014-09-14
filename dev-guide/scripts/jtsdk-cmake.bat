@@ -12,20 +12,21 @@ IF DEFINED GUI GOTO DCLICKERROR
 
 REM -- SET PATH VARS
 SET LANG=en_US
-SET BASED=%~dp0
-IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
+SET BASED=C:\JTSDK-QT
 SET SVND=%BASED%\subversion\bin
 SET CMAKD=%BASED%\cmake\bin
 SET HAMLIBD=%BASED%\hamlib3\mingw32\bin
+SET HAMLIBLIBD=%BASED%\hamlib3\mingw32\lib
 SET FFTWD=%BASED%\fftw3f
 SET NSISD=%BASED%\NSIS
 SET INNOD=%BASED%\inno5
 SET GCCD=%BASED%\qt5\Tools\mingw48_32\bin
 SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
+SET QTP=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms
 SET SRCD=%BASED%\src
 SET TOOLS=%BASED%\tools
 SET SCRIPTS=%TOOLS%\scripts
-SET PATH=%BASED%;%SVND%;%CMAKED%;%HAMLIBD%;%FFTWD%;%GCCD%;%NSISD%;%INNOD%;%QT5D%;%SRCD%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
+SET PATH=%BASED%;%SVND%;%CMAKED%;%HAMLIBD%;%HAMLIBLIBD%;%FFTWD%;%GCCD%;%NSISD%;%INNOD%;%QT5D%;%QTP%;%SRCD%;%TOOLS%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 
 REM ------------------------------------------------------------------
 REM -- START MAIN SCRIPT
@@ -257,7 +258,35 @@ REM ------------------------------------------------------------------
 IF /I [%1]==[wsjtx] ( GOTO POSTBUILD2 ) ELSE ( GOTO CPFILES )
 
 :POSTBUILD2
-IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
+IF /I [%OPTION%]==[Debug] ( GOTO CPFILES_WSJTX ) ELSE ( GOTO FINISH )
+
+:CPFILES_WSJTX
+IF NOT EXIST %INSTALLD%\%OPTION%\lib (
+MKDIR %INSTALLD%\%OPTION%\lib
+)
+IF NOT EXIST %INSTALLD%\%OPTION%\lib\plugins\platforms (
+MKDIR %INSTALLD%\%OPTION%\lib\plugins\platforms
+)
+REM -- GCC, FFTW & HAMLIB
+ECHO -- Copying GCC Runtime DLL's to: %INSTALLD%\%OPTION%\bin
+CD %GCCD% & XCOPY *.dll %INSTALLD%\%OPTION%\bin /Y /Q > nul
+ECHO -- Copying FTW3F Runtime DLLss to: %INSTALLD%\%OPTION%\bin
+CD %FFTWD% & XCOPY *.dll %INSTALLD%\%OPTION%\bin /Y /Q > nul
+ECHO -- Copying Hamlib3 Library To: %INSTALLD%\%OPTION%\lib
+CD %HAMLIBLIBD% & XCOPY *.a %INSTALLD%\%OPTION%\lib /Y /Q > nul
+
+REM - QT5 LIBS
+ECHO -- Copying QT5 Runtime DLL's to: %INSTALLD%\%OPTION%\bin
+CD %QT5D%
+XCOPY icu* %INSTALLD%\%OPTION%\bin /Y /Q > nul
+COPY /Y Qt5Core.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Gui.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Multimedia.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Network.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Widgets.dll %INSTALLD%\%OPTION%\bin > nul
+ECHO -- Copying QT5 Qwindows DLL to: %INSTALLD%\%OPTION%\lib\plugins\platforms
+CD %QTP% & COPY /Y qwindows.dll %INSTALLD%\%OPTION%\lib\plugins\platforms > nul
+GOTO DEBUG_MAKEBAT
 
 :CPFILES
 SET CPTXT=*.txt *.dat *.conf *.ini
@@ -274,15 +303,32 @@ GOTO EOF
 SET FILENAME=%APP_NAME%.bat
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO Finished %OPTION% Install Target For: ^( %APP_NAME% ^)
+ECHO Finished Building %OPTION% Install Target For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
+IF NOT [%APP_NAME%]==[wsjtx] ( GOTO OTHER_MAKEBAT )
+
+REM - WSJT-X Debug BAT FILE
+:WSJTX_MAKEBAT
 CD /D %INSTALLD%\%OPTION%\bin
 IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
+>%APP_NAME%.bat (
+ECHO @ECHO OFF
+ECHO REM -- Debug Batch File
+ECHO REM -- Part of the JTSDK Project
+ECHO SETLOCAL ENABLEEXTENSIONS
+ECHO SETLOCAL ENABLEDELAYEDEXPANSION
+ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%INSTALLD%\%OPTION%\lib
+ECHO CALL %APP_NAME%.exe
+ECHO ENDLOCAL
+ECHO EXIT /B 0
+)
 
-REM - RESET HAMLIB DIR for MAP65 & WSPRX
-IF NOT [%APP_NAME%]==[wsjtx] (SET HAMLIBD=%BASED%\hamlib\bin)
-
+REM - WSPR-X & MAP65 Debug BAT FILE
+:OTHER_MAKBAT
+CD /D %INSTALLD%\%OPTION%\bin
+IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
+SET HAMLIBD=%BASED%\hamlib\bin
 >%APP_NAME%.bat (
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
@@ -290,7 +336,7 @@ ECHO REM -- Part of the JTSDK Project
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
 ECHO SET PATH=%BASED%;%HAMLIBD%;%FFTWD%;%GCCD%;%QT5D%
-ECHO CALL %APP_NAME%.bat
+ECHO CALL %APP_NAME%.exe
 ECHO ENDLOCAL
 ECHO EXIT /B 0
 )
@@ -305,7 +351,6 @@ ECHO NOTE: When Running ^( %APP_NAME% ^) Debug versions, please use
 ECHO       the provided  ^( %APP_NAME%.bat ^) file as this sets up
 ECHO       environment variables and support file paths.
 ECHO.
-PAUSE
 GOTO ASK_DEBUG_RUN
 
 :ASK_DEBUG_RUN
@@ -326,7 +371,7 @@ ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_DEBUG_RUN
 :RUN_DEBUG
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
-ECHO .. Starting: ^( %APP_NAME% ^) in Debug Mode
+ECHO .. Starting: ^( %APP_NAME% ^) in Release Mode
 CALL %APP_NAME%.bat
 GOTO EOF
 
@@ -357,7 +402,7 @@ ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_FINISH_RUN
 :RUN_INSTALL
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
-ECHO .. Starting: ^( %APP_NAME% ^) in Debug Mode
+ECHO .. Starting: ^( %APP_NAME% ^) in Release Mode
 CALL %APP_NAME%.exe
 )
 GOTO EOF
