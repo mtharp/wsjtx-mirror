@@ -87,12 +87,12 @@ sys/time.h sys/wait.h termios.h unistd.h wait.h])
 dnl ----------------------------------------------------------------------------
 dnl add additional lib paths
 dnl ----------------------------------------------------------------------------
-if test -d "/usr/lib64"; then LDFLAGS="-L/usr/lib64 ${LDFLAGS}"; fi
-if test -d "/usr/local/lib"; then LDFLAGS="-L/usr/local/lib ${LDFLAGS}"; fi
-if test -d "/usr/lib/x86_64-linux-gnu"; then LDFLAGS="-L/usr/lib/x86_64-linux-gnu ${LDFLAGS}"; fi
-if test -d "/usr/lib/i386-linux-gnu"; then LDFLAGS="-L/usr/lib/i386-linux-gnu ${LDFLAGS}"; fi
-if test -d "/usr/lib"; then LDFLAGS="-L/usr/lib ${LDFLAGS}"; fi
-if test -d "/usr/lib/arm-linux-gnueabihf"; then LDFLAGS="-L/usr/lib/arm-linux-gnueabihf ${LDFLAGS}"; fi
+if test -d "/usr/lib64"; then LIBDIR="/usr/lib64 ${LIBDIR}"; fi
+if test -d "/usr/local/lib"; then LIBDIR="/usr/local/lib ${LIBDIR}"; fi
+if test -d "/usr/lib/x86_64-linux-gnu"; then LIBDIR="/usr/lib/x86_64-linux-gnu ${LIBDIR}"; fi
+if test -d "/usr/lib/i386-linux-gnu"; then LIBDIR="/usr/lib/i386-linux-gnu ${LIBDIR}"; fi
+if test -d "/usr/lib"; then LIBDIR="/usr/lib ${LIBDIR}"; fi
+if test -d "/usr/lib/arm-linux-gnueabihf"; then LIBDIR="/usr/lib/arm-linux-gnueabihf ${LIBDIR}"; fi
 
 dnl ----------------------------------------------------------------------------
 dnl find Python3
@@ -322,8 +322,8 @@ dnl ----------------------------------------------------------------------------
 _LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LIBS="$_LBU"
 
-_LDU=$(echo "$LDFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
-LDFLAGS="$_LDU"
+_LDU=$(echo "$LIBDIR" |tr ' ' '\n'|sort -su |tr '\n' ' ')
+LIBDIR="$_LDU"
 
 _CPPU=$(echo "-I/usr/include -I/usr/local/include $CPPFLAGS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 CPPFLAGS="$_CPPU"
@@ -440,7 +440,7 @@ else
 	echo
 	echo 'Example:'
 	echo './configure CPPFLAGS="-I/home/$USER/test/samplerate/include"'
-	echo 'LDFLAGS="-L/home/$USER/test/samplerate/lib"'
+	echo 'LIBDIR="/home/$USER/test/samplerate/lib"'
 	echo
 fi
 
@@ -460,7 +460,7 @@ else
 	echo "[1] Install your distro version of: libfftw3-dev"
 	echo "[2] Confiure FFTW with non-standard paths:"
 	echo
-	echo './configure LDFLAGS="-L/home/$USER/test/fftw3/lib"'
+	echo './configure LIBDIR="/home/$USER/test/fftw3/lib"'
 	echo
 fi
 
@@ -482,7 +482,7 @@ else
 	echo "[2] Confiure portaudio with non-standard paths:"
 	echo
 	echo './configure CPPFLAGS="-I/home/$USER/test/portaudio/include"'
-	echo 'LDFLAGS="-L/home/$USER/test/portaudio/lib"'
+	echo 'LIBDIR="/home/$USER/test/portaudio/lib"'
 	echo
 fi
 
@@ -496,7 +496,7 @@ AC_SUBST([CFLAGS], ["$CFLAGS"])
 AC_SUBST([CPPFLAGS], ["$CPPFLAGS"])
 AC_SUBST([FCOPT], ["$FCOPT"])
 AC_SUBST([FFLAGS], ["$FFLAGS"])
-AC_SUBST([LDFLAGS], ["$LDFLAGS"])
+AC_SUBST([LIBDIR], ["$LIBDIR"])
 AC_SUBST([LIBS], ["$LIBS"])
 AC_SUBST([PREFIX], ["$prefix"])
 AC_SUBST([PROGRAM], ["$PACKAGE_NAME"])

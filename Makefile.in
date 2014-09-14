@@ -7,31 +7,31 @@
 PROGRAM		:=	@PROGRAM@
 VERSION		:=	@VERSION@
 BUGS		:=	@BUGS@
-WEB		:=	@WEB@
+WEB         :=	@WEB@
 
 # System Information
 OS		:=	@OS@
 CPU		:=	@CPU@
 
-# General Information
+# General Use Tools
 AR		:=	@AR@
 CP		:=	@CP@
 LN		:=	@LN@
 MV		:=	@MV@
 RM		:=	@RM@
-CHOWN		:=	@CHOWN@
-CHMOD		:=	@CHMOD@
-SHELL		:=	@SHELL@
-MKDIR		:=	@MKDIR@
+CHOWN	:=	@CHOWN@
+CHMOD	:=	@CHMOD@
+SHELL	:=	@SHELL@
+MKDIR	:=	@MKDIR@
 
 # Install locations
 INATALL		:=	install
-BINDIR		:=	@BINDIR@
-DOCDIR		:=	@DOCDIR@
-HOMEDIR		:=	@HOMEDIR@
-MANDIR		:=	@MANDIR@
-SHARED		:=	@SHARED@
-WSPRLIB		:=	@WSPRLIB@
+BINDIR		:=	$(DESTDIR)@BINDIR@
+DOCDIR		:=	$(DESTDIR)@DOCDIR@
+HOMEDIR		:=	$(DESTDIR)@HOMEDIR@
+MANDIR		:=	$(DESTDIR)@MANDIR@
+SHARED		:=	$(DESTDIR)@SHARED@
+WSPRLIB		:=	$(DESTDIR)@WSPRLIB@
 
 # Compiler Information
 CC		:=	@CC@
@@ -45,8 +45,8 @@ F2PY		:=	@F2PY@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
+LIBDIR      +=	@LIBDIR@
 CPPFLAGS	+=	${DEFS}
-LDFLAGS		+=	@LDFLAGS@
 CFLAGS		+=	@CFLAGS@
 FFLAGS		+=	@FFLAGS@
 FCOPT		+=	@FCOPT@
@@ -127,7 +127,7 @@ F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 # Build W.SO & MV to WsprMod/
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
-	--opt="${FCOPT}" thnix.o ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
+	--opt="${FCOPT}" thnix.o ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
 
 # Install target wspr
@@ -137,6 +137,8 @@ install:
 	@echo "      Installing ${PROGRAM}"
 	@echo '-----------------------------------'
 	@echo ''
+	@${MKDIR} -p ${BINDIR}
+	@${MKDIR} -p ${MANDIR}
 	@${MKDIR} -p ${DOCDIR}/examples
 	@${MKDIR} -p ${SHARED}/save/Samples
 	@${MKDIR} -p ${WSPRLIB}/WsprMod
@@ -170,12 +172,11 @@ uninstall:
 	@${RM} -r ${SHARED}
 	@${RM} -r ${WSPRLIB}
 	@${RM} -r ${DOCDIR}
-	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode,wspr}
-	@${RM} -f ${MANDIR}/{wspr.1,wspr0.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
+	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr*}
+	@${RM} -f ${MANDIR}/{wspr*.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
 	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
 	@${RM} -rf ${HOMEDIR}/{WsprMod/,examples/,save/,doc/,*.py,hamlib*,*.sh,*.dat,wsprrc,gocal,*cache*}
 	@${RM} -rf ${HOMEDIR}/{AUTHORS,README,NEWS,COPYING,COPYRIGHT}
-	
 	@echo '' 
 	@echo ".. User files remain in: ${HOMEDIR}"
 	@echo ".. To remove, type ....: rm -R ${HOMEDIR}"

@@ -7,8 +7,8 @@
 # Example1 cmd line: ./wspr-dist.sh wspr 4.0
 # Example2 Makefile: make dist
 #
-# Generates ......: wspr-4.0.tar.gz
-# File Location ..: $(src-path)/wspr/dist
+# Generates .......: wspr-4.0.tar.gz
+# File Location ...: $(src-path)/wspr/dist
 #
 
 set -e
@@ -22,7 +22,7 @@ _MANIFEST=wspr-manifest.in
 _DISTD="$_BASED/dist"
 _DOC="$_DISTD/$_NAME/doc"
 _EXAMPLES="$_DISTD/$_NAME/doc/examples"
-_MAN1="$_DISTD/$_NAME/manpages"
+_MAN1="$_DISTD/$_NAME/manpages/man1"
 
 # test $1
 if [[ -z $_NAME ]]; then
@@ -118,6 +118,8 @@ done
 _FOLDEZISE=$(du -sk $_DISTD/$_NAME | cut -f1)
 _SIZE=$(($_FOLDEZISE))
 
+# Note: The size values are estimated and should be adjusted
+#       if significant additions are made to manifest.in / SVN
 if test -d "$_DISTD/$_NAME" -a "$_SIZE" -ge "3500"; then
 	echo " ..copying complete, build dir size: $_FOLDEZISE kb "
 else
