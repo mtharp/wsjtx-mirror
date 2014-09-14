@@ -271,7 +271,7 @@ REM -- GCC, FFTW & HAMLIB
 ECHO -- Copying GCC Runtime DLL's to: %INSTALLD%\%OPTION%\bin
 REM --GCC Libs
 CD %GCCD%
-COPY /Y libgcc_2_dw2-1.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin > nul
 COPY /Y "libstdc++-6.dll" %INSTALLD%\%OPTION%\bin > nul
 COPY /Y libwinpthread-1.dll %INSTALLD%\%OPTION%\bin > nul
 COPY /Y libgfortran-3.dll %INSTALLD%\%OPTION%\bin > nul
@@ -280,7 +280,7 @@ COPY /Y libquadmath-0.dll %INSTALLD%\%OPTION%\bin > nul
 REM - FFTW3
 ECHO -- Copying FTW3F Runtime DLL's to: %INSTALLD%\%OPTION%\bin
 CD %FFTWD%
-COPY /Y libfftw3-3f.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y libfftw3f-3.dll %INSTALLD%\%OPTION%\bin > nul
 
 REM - HAMLIB
 ECHO -- Copying Hamlib3 Library To: %INSTALLD%\%OPTION%\lib
@@ -319,6 +319,7 @@ IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
 GOTO EOF
 
 :DEBUG_MAKEBAT
+ECHO -- Generating Debug Batch File for ^( %APP_NAME% ^ )
 SET FILENAME=%APP_NAME%.bat
 ECHO.
 ECHO -----------------------------------------------------------------
@@ -335,7 +336,7 @@ IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK Project
-TITLE JTSDK-QT Debug Terminal
+ECHO TITLE JTSDK-QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
 ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%INSTALLD%\%OPTION%\lib
@@ -343,6 +344,7 @@ ECHO CALL %APP_NAME%.exe
 ECHO ENDLOCAL
 ECHO EXIT /B 0
 )
+GOTO DEBUG_FINISH
 
 REM - WSPR-X & MAP65 Debug BAT FILE
 :OTHER_MAKBAT
@@ -353,7 +355,7 @@ SET HAMLIBD=%BASED%\hamlib\bin
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK Project
-TITLE JTSDK-QT Debug Terminal
+ECHO TITLE JTSDK-QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
 ECHO SET PATH=%BASED%;%HAMLIBD%;%FFTWD%;%GCCD%;%QT5D%
