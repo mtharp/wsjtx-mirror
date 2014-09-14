@@ -269,23 +269,42 @@ MKDIR %INSTALLD%\%OPTION%\lib\plugins\platforms
 )
 REM -- GCC, FFTW & HAMLIB
 ECHO -- Copying GCC Runtime DLL's to: %INSTALLD%\%OPTION%\bin
-CD %GCCD% & XCOPY *.dll %INSTALLD%\%OPTION%\bin /Y /Q > nul
-ECHO -- Copying FTW3F Runtime DLLss to: %INSTALLD%\%OPTION%\bin
-CD %FFTWD% & XCOPY *.dll %INSTALLD%\%OPTION%\bin /Y /Q > nul
+REM --GCC Libs
+CD %GCCD%
+COPY /Y libgcc_2_dw2-1.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y "libstdc++-6.dll" %INSTALLD%\%OPTION%\bin > nul
+COPY /Y libwinpthread-1.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y libgfortran-3.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y libquadmath-0.dll %INSTALLD%\%OPTION%\bin > nul
+
+REM - FFTW3
+ECHO -- Copying FTW3F Runtime DLL's to: %INSTALLD%\%OPTION%\bin
+CD %FFTWD%
+COPY /Y libfftw3-3f.dll %INSTALLD%\%OPTION%\bin > nul
+
+REM - HAMLIB
 ECHO -- Copying Hamlib3 Library To: %INSTALLD%\%OPTION%\lib
-CD %HAMLIBLIBD% & XCOPY *.a %INSTALLD%\%OPTION%\lib /Y /Q > nul
+CD %HAMLIBLIBD%
+COPY /Y libhamlib.a %INSTALLD%\%OPTION%\lib > nul
 
 REM - QT5 LIBS
 ECHO -- Copying QT5 Runtime DLL's to: %INSTALLD%\%OPTION%\bin
 CD %QT5D%
 XCOPY icu* %INSTALLD%\%OPTION%\bin /Y /Q > nul
 COPY /Y Qt5Core.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Cored.dll %INSTALLD%\%OPTION%\bin > nul
 COPY /Y Qt5Gui.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Guid.dll %INSTALLD%\%OPTION%\bin > nul
 COPY /Y Qt5Multimedia.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Multimediad.dll %INSTALLD%\%OPTION%\bin > nul
 COPY /Y Qt5Network.dll %INSTALLD%\%OPTION%\bin > nul
+COPY /Y Qt5Networkd.dll %INSTALLD%\%OPTION%\bin > nul
 COPY /Y Qt5Widgets.dll %INSTALLD%\%OPTION%\bin > nul
-ECHO -- Copying QT5 Qwindows DLL to: %INSTALLD%\%OPTION%\lib\plugins\platforms
-CD %QTP% & COPY /Y qwindows.dll %INSTALLD%\%OPTION%\lib\plugins\platforms > nul
+COPY /Y Qt5Widgetsd.dll %INSTALLD%\%OPTION%\bin > nul
+ECHO -- Copying QT5 Qwindows DLL's to: %INSTALLD%\%OPTION%\lib\plugins\platforms
+CD %QTP%
+COPY /Y qwindows.dll %INSTALLD%\%OPTION%\lib\plugins\platforms > nul
+COPY /Y qwindowsd.dll %INSTALLD%\%OPTION%\lib\plugins\platforms > nul
 GOTO DEBUG_MAKEBAT
 
 :CPFILES
@@ -316,6 +335,7 @@ IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK Project
+TITLE JTSDK-QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
 ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%INSTALLD%\%OPTION%\lib
@@ -333,6 +353,7 @@ SET HAMLIBD=%BASED%\hamlib\bin
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK Project
+TITLE JTSDK-QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
 ECHO SET PATH=%BASED%;%HAMLIBD%;%FFTWD%;%GCCD%;%QT5D%
@@ -371,7 +392,7 @@ ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_DEBUG_RUN
 :RUN_DEBUG
 ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
-ECHO .. Starting: ^( %APP_NAME% ^) in Release Mode
+ECHO .. Starting: ^( %APP_NAME% ^) in Debug Mode
 CALL %APP_NAME%.bat
 GOTO EOF
 
