@@ -12,13 +12,28 @@ dnl ----------------------------------------------------------------------------
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
-AC_SUBST([USER], ["$USER"])
-AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
-AC_SUBST([BINDIR], [/usr/bin])
-AC_SUBST([WSPRLIB], [/usr/lib/wspr])
-AC_SUBST([SHARED], [/usr/share/wspr])
-AC_SUBST([MANDIR], [/usr/share/man/man1])
-AC_SUBST([DOCDIR], [/usr/share/doc/wspr])
+
+# enable configurable prefix path
+AC_PREFIX_DEFAULT("/usr")
+if test "$prefix" = "NONE"; then 
+	prefix=${ac_default_prefix}
+fi
+
+DOCDIR="$prefix"/share/doc/wspr
+MANDIR="$prefix"/share/man/man1
+
+AC_ARG_WITH([docdir],
+AC_HELP_STRING([--with-docdir=PATH], [path to documentuments]), [docdir=$with_docdir])
+if test -n "$with_docdir"; then
+	AC_SUBST([DOCDIR], ["$with_docdir"])
+fi
+
+AC_ARG_WITH([mandir],
+AC_HELP_STRING([--with-mandir=PATH], [path to manpages]), [mandir=$with_mandir])
+if test -n "$with_docdir"; then
+	AC_SUBST([MANDIR], ["$with_mandir"])
+fi
+
 
 
 dnl ----------------------------------------------------------------------------
@@ -334,16 +349,19 @@ case "${host_os}" in
 					CFLAGS="-O2 -march=armv6j -mfpu=vfp -mfloat-abi=hard -fpic"
 					FFLAGS="-O2 -Wall -fno-range-check -ffixed-line-length-none \
 -Wno-character-truncation -Wno-conversion -Wtabs -mfloat-abi=hard -fPIC"
+					LDFLAGS="-Wl,-O1 -Wl,--as-needed"						
 				;;
 				*x86_64* )
 					CFLAGS="-fPIC"
 					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
+					LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 				;;
 				*i386* )
 					CFLAGS="-fPIC"
 					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
+					LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 				;;
 			esac
 	;;
@@ -352,6 +370,7 @@ case "${host_os}" in
 		CFLAGS="-Wall -O0 -fPIC -m64"
 		FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
+		LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 	;;
 	*)
 		AC_MSG_ERROR([Unsupported System: ${host_os}.])
@@ -489,17 +508,23 @@ dnl ----------------------------------------------------------------------------
 dnl substitutions
 dnl ----------------------------------------------------------------------------
 
+AC_SUBST([PREFIX], ["$prefix"])
 AC_SUBST([BUGS], ["$PACKAGE_BUGREPORT"])
-AC_SUBST([CFLAGS], ["$CFLAGS"])
-AC_SUBST([CPPFLAGS], ["$CPPFLAGS"])
-AC_SUBST([FCOPT], ["$FCOPT"])
-AC_SUBST([FFLAGS], ["$FFLAGS"])
-AC_SUBST([LIBDIR], ["$LIBDIR"])
-AC_SUBST([LIBS], ["$LIBS"])
-AC_SUBST([PREFIX], ["$PREFIX"])
 AC_SUBST([PROGRAM], ["$PACKAGE_NAME"])
 AC_SUBST([VERSION], ["$PACKAGE_VERSION"])
 AC_SUBST([WEB], ["$PACKAGE_URL"])
+AC_SUBST([CFLAGS], ["$CFLAGS"])
+AC_SUBST([CPPFLAGS], ["$CPPFLAGS"])
+AC_SUBST([FFLAGS], ["$FFLAGS"])
+AC_SUBST([LDFLAGS], ["$LDFLAGS"])
+AC_SUBST([FCOPT], ["$FCOPT"])
+AC_SUBST([LIBDIR], ["$LIBDIR"])
+AC_SUBST([SHARED], ["$PREFIX"/share/wspr])
+AC_SUBST([WSPRLIB], ["$PREFIX"/lib/wspr])
+AC_SUBST([BINDIR], ["$PREFIX"/bin])
+AC_SUBST([LIBS], ["$LIBS"])
+AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
+AC_SUBST([USER], ["$USER"])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
@@ -527,6 +552,7 @@ echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"
 echo " Website ..........: ${WEB}"
 echo " Report Bugs To ...: ${BUGS}"
+echo " Install prefix ...: ${PREFIX}"
 echo
 echo " Finished creating Makefile"
 echo

@@ -49,6 +49,7 @@ LIBDIR      +=	@LIBDIR@
 CPPFLAGS	+=	${DEFS}
 CFLAGS		+=	@CFLAGS@
 FFLAGS		+=	@FFLAGS@
+LDFLAGS		+=	@LDFLAGS@
 FCOPT		+=	@FCOPT@
 
 # Config Definitions
@@ -66,8 +67,8 @@ all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 	@echo '  Then, type ...: wspr'
 	@echo ''
 	@echo ' Clean & Rebuild'
-	@echo ' To Clean, type .......: make clean'
-	@echo ' To Dist Clean, type ..: make distclean'
+	@echo '  To Clean, type .......: make clean'
+	@echo '  To Dist Clean, type ..: make distclean'
 	@echo ''
 
 # Default Rules
@@ -86,10 +87,10 @@ all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
+	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${LDFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
-	${FC} ${FFLAGS} -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
+	${FC} ${FFLAGS} ${LDFLAGS} -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
 
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
@@ -128,7 +129,7 @@ F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 # Build W.SO & MV to WsprMod/
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
-	--opt="${FCOPT}" thnix.o ${LIBS} libwspr.a -m w ${F2PYSRCS}
+	--opt="${FCOPT} ${LDFLAGS}" thnix.o ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
 
 # Install target wspr

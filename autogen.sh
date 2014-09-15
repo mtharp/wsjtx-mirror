@@ -67,6 +67,18 @@ else
 	echo
 	exit 1
 fi
-$_BASED/configure
+
+if test -z "$*"; then
+	echo "Using  ./configure with defauly arguments"
+	echo "If you wish  change paramaters, use $0 command line."
+	echo
+	sleep 1
+else
+	echo "Using ./configure $@"
+	echo
+	sleep 1
+fi
+
+$_BASED/configure "$@"
 
 exit 0

@@ -65,16 +65,6 @@ To run WSPR after build, type:
  wspr
 
 
-INSTALL PREFIX
---------------
-The default install location is $HOME/.wspr. You can change the
-install location using the following configuration parameter:
-
-Example:
-
-./configure --prefix=$HOME/test/wspr
-
-
 NON-STANDARD LIBRARY LOCATIONS
 ------------------------------
 The configure script will search standard Linux header and library locations
