@@ -92,7 +92,7 @@ echo
 # for wsjtx
 if [[ $_APP_NAME == "wsjtx" ]]; then
 	cmake -D CMAKE_PREFIX_PATH:PATH="$_HAMLIBD;$_ADOCD" \
-	-D  WSJT_SKIP_MANPAGES=off \
+	-D  WSJT_SKIP_MANPAGES=ON \
 	-D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
 	cmake --build . --target install

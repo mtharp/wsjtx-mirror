@@ -183,7 +183,7 @@ if [[ $SMSELECT = "A" ]]; then
 	while [ 1 ]
 	do
 		echo
-		read -p "Is it OK to Start The Installation? [ Y/N ]: " yn
+		read -p "Is it OK to Start To Continue Installation? [ Y/N ]: " yn
 		case $yn in
 		[Yy]* )
 
@@ -194,62 +194,6 @@ if [[ $SMSELECT = "A" ]]; then
 			echo " Package List Installation"
 			echo "------------------------------------------------"
 			ubuntu_pkg_list
-			echo
-			read -p "Press [Enter] to continue.."
-			) 2>&1 | tee -a $_LOGS/setup.log
-			
-			# pmw-2.0.0 installation
-            # should move this to a generic function at some point
-			clear
-			(
-			echo "------------------------------------------------"
-			echo " Pmw-2.0.0 Installation"
-			echo "------------------------------------------------"
-
-			_PKG_NAME=pmw2
-			_FILE_COUNT_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-file-count
-			_INSTALL_MKR=$_MKRD/$_PKG_NAME/$_PKG_NAME-install.mkr
-
-
-            # get the file count from file-count marker
-    		if [[ -f $_INSTALL_MKR ]]; then
-				var1=$(awk '{print $1}' < $_FILE_COUNT_MKR)
-			else 
-				var1="0"
-			fi
-
-            # get the file count form the install-marker
-			if [[ -f $_FILE_COUNT_MKR ]]; then
-				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
-			else 
-				var2="0"
-			fi
-
-            # test if the file counts match
-			if (( $var1 == $var2 )) && (( $var1 > "0" )); then
-				echo ".. found previous install marker"
-				echo ".. verifying file count"
-				var1=$(awk 'FNR==1 {print $1}' < $_FILE_COUNT_MKR)
-				var2=$(wc -l < $_INSTALL_MKR |awk '{print $1}')
-
-                # if file counts match, all is ok
-				if (( $var1 == $var2 )); then
-					echo ".. file count seems ok. no need for re-install"
-				elif [[ $(pip3 list | grep Pmw |awk '{print $1}') == "Pmw" ]]; then
-					echo ".. pip3 check seems ok, no need for re-install"
-				else
-					echo ".. file count was wrong, re-installing"
-					source $_FUNC/build_pmw
-					build-pmw
-				fi
-            
-            # if no file count / markers, install Pmw
-			else
-				echo ".. $_PKG_NAME Was not found, performing a new install of $_PKG_NAME"
-				source $_FUNC/build_pmw
-				build_pmw
-			fi
-
 			echo
 			read -p "Press [Enter] to continue.."
 			) 2>&1 | tee -a $_LOGS/setup.log
