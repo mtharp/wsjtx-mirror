@@ -89,7 +89,7 @@ Note the " .. " for parameter expansion for $HOME
 
 
 Example - (library location):
-./configure LIBDIR='/home/user-name/test/portaudio/lib'
+./configure LIBDIR='-L/home/user-name/test/portaudio/lib'
 
 Note ' .. ' no parameter expansion will occur
 
@@ -223,7 +223,7 @@ from www.portaudio.org and www.fftw.org respectively.
 Then, in the wspr directory:
 
 Example - (library location):
-./configure LIBDIR='/home/user-name/test/portaudio/lib'
+./configure LIBDIR='-L/home/user-name/test/portaudio/lib'
 
 Note ' .. ' no parameter expansion needed
 

@@ -61,8 +61,9 @@ all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 	@echo " ${PROGRAM} ${VERSION} Make Summary"
 	@echo '---------------------------------------------'
 	@echo ''	
-	@echo ' To Install, type .....: sudo make install'
-	@echo ' Then, type, ..........: wspr'
+	@echo " To Install ${PROGRAM}"
+	@echo '  Type .........: sudo make install'
+	@echo '  Then, type ...: wspr'
 	@echo ''
 	@echo ' Clean & Rebuild'
 	@echo ' To Clean, type .......: make clean'
@@ -155,6 +156,7 @@ install:
 	@${CHMOD} -R 644 ${DOCDIR}/examples/*
 	@echo "Finished Installing ${PROGRAM}"
 	@echo ''
+	@echo "Location: ${BINDIR}"
 	@echo '..To run, type..: wspr'
 	@echo ''
 	@echo "..Website ......: ${WEB}"

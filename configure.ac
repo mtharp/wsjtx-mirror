@@ -9,13 +9,11 @@ AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
 dnl ----------------------------------------------------------------------------
 dnl path vars
 dnl ----------------------------------------------------------------------------
-
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 AC_SUBST([USER], ["$USER"])
 AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
-AC_SUBST([PREFIX], [/usr])
 AC_SUBST([BINDIR], [/usr/bin])
 AC_SUBST([WSPRLIB], [/usr/lib/wspr])
 AC_SUBST([SHARED], [/usr/share/wspr])
@@ -87,12 +85,12 @@ sys/time.h sys/wait.h termios.h unistd.h wait.h])
 dnl ----------------------------------------------------------------------------
 dnl add additional lib paths
 dnl ----------------------------------------------------------------------------
-if test -d "/usr/lib64"; then LIBDIR="/usr/lib64 ${LIBDIR}"; fi
-if test -d "/usr/local/lib"; then LIBDIR="/usr/local/lib ${LIBDIR}"; fi
-if test -d "/usr/lib/x86_64-linux-gnu"; then LIBDIR="/usr/lib/x86_64-linux-gnu ${LIBDIR}"; fi
-if test -d "/usr/lib/i386-linux-gnu"; then LIBDIR="/usr/lib/i386-linux-gnu ${LIBDIR}"; fi
-if test -d "/usr/lib"; then LIBDIR="/usr/lib ${LIBDIR}"; fi
-if test -d "/usr/lib/arm-linux-gnueabihf"; then LIBDIR="/usr/lib/arm-linux-gnueabihf ${LIBDIR}"; fi
+if test -d "/usr/lib64"; then LIBDIR="-L/usr/lib64 ${LIBDIR}"; fi
+if test -d "/usr/local/lib"; then LIBDIR="-L/usr/local/lib ${LIBDIR}"; fi
+if test -d "/usr/lib/x86_64-linux-gnu"; then LIBDIR="-L/usr/lib/x86_64-linux-gnu ${LIBDIR}"; fi
+if test -d "/usr/lib/i386-linux-gnu"; then LIBDIR="-L/usr/lib/i386-linux-gnu ${LIBDIR}"; fi
+if test -d "/usr/lib"; then LIBDIR="-L/usr/lib ${LIBDIR}"; fi
+if test -d "/usr/lib/arm-linux-gnueabihf"; then LIBDIR="-L/usr/lib/arm-linux-gnueabihf ${LIBDIR}"; fi
 
 dnl ----------------------------------------------------------------------------
 dnl find Python3
@@ -498,7 +496,7 @@ AC_SUBST([FCOPT], ["$FCOPT"])
 AC_SUBST([FFLAGS], ["$FFLAGS"])
 AC_SUBST([LIBDIR], ["$LIBDIR"])
 AC_SUBST([LIBS], ["$LIBS"])
-AC_SUBST([PREFIX], ["$prefix"])
+AC_SUBST([PREFIX], ["$PREFIX"])
 AC_SUBST([PROGRAM], ["$PACKAGE_NAME"])
 AC_SUBST([VERSION], ["$PACKAGE_VERSION"])
 AC_SUBST([WEB], ["$PACKAGE_URL"])
@@ -527,12 +525,14 @@ echo " Fcomplier: .......: ${FC}"
 echo " Samplerate: ......: ${srstatus}"
 echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"
-echo " Install Prefix: ..: ${HOMEDIR}"
-echo
 echo " Website ..........: ${WEB}"
 echo " Report Bugs To ...: ${BUGS}"
 echo
-echo "Finished creating Makefile, To build $_PROGRAM, type:"
+echo " Finished creating Makefile"
 echo
-echo " make"
+echo " To build and install $PROGRAM, type"
 echo
+echo " make && sudo make install"
+echo
+echo
+
