@@ -175,8 +175,8 @@ uninstall:
 	@${RM} -r ${SHARED}
 	@${RM} -r ${WSPRLIB}
 	@${RM} -r ${DOCDIR}
-	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wspr*}
-	@${RM} -f ${MANDIR}/{wspr*.1*,fmtest.1*,fmtave.1*,fmeasure.1*,fcal.1*}
+	@${RM} -f ${BINDIR}/{fmtest,fcal,fmeasure,fmtave,wsprcode wspr}
+	@${RM} -f ${MANDIR}/{wspr.1,fmtest.1,fmtave.1,fmeasure.1,fcal.1}
 	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
 	@${RM} -rf ${HOMEDIR}/{WsprMod/,examples/,save/,doc/,*.py,hamlib*,*.sh,*.dat,wsprrc,gocal,*cache*}
 	@${RM} -rf ${HOMEDIR}/{AUTHORS,README,NEWS,COPYING,COPYRIGHT}
