@@ -116,13 +116,13 @@ fmtest: fmtest.f90 libwspr.a
 	${FC} ${FFLAGS} ${LDFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
-	${FC} ${FFLAGS} -o fmtave fmtave.f90
+	${FC} ${FFLAGS} ${LDFLAGS} -o fmtave fmtave.f90
 
 fcal: fcal.f90
-	${FC} ${FFLAGS} -o fcal fcal.f90
+	${FC} ${FFLAGS} ${LDFLAGS} -o fcal fcal.f90
 
 fmeasure: fmeasure.f90
-	${FC} ${FFLAGS} -o fmeasure fmeasure.f90
+	${FC} ${FFLAGS} ${LDFLAGS} -o fmeasure fmeasure.f90
 
 # SRC for w.so
 F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
@@ -145,6 +145,8 @@ install:
 	@${MKDIR} -p ${DOCDIR}/examples
 	@${MKDIR} -p ${SHARED}/save/Samples
 	@${MKDIR} -p ${WSPRLIB}/WsprMod
+	@${MKDIR} -p ${SHARED}/../applications
+	@${MKDIR} -p ${SHARED}/../pixmaps
 	@install -m 755 --strip fmtest fcal fmeasure fmtave wspr0 wsprcode ${BINDIR}
 	@install -m 644 manpages/man1/*.1 ${MANDIR}
 	@install -m 644 save/Samples/* ${SHARED}/save/Samples/
@@ -152,8 +154,8 @@ install:
 	@install -m 644 ./{AUTHORS,README,NEWS,COPYING,COPYRIGHT} ${DOCDIR} 
 	@install -m 644 ./hamlib_rig* ${SHARED}
 	@install -m 755 WsprMod/* ${WSPRLIB}/WsprMod
-	@install -m 644 ./wspr.desktop /usr/share/applications
-	@install -m 644 ./wspr.xpm /usr/share/pixmaps/
+	@install -m 644 ./wspr.desktop ${SHARED}/../applications
+	@install -m 644 ./wspr.xpm ${SHARED}/../pixmaps/
 	@${MV} -T ${SHARED}/wspr.sh ${BINDIR}/wspr
 	@${CHMOD} 755 ${BINDIR}/wspr
 	@${CP} -r doc/examples/* ${DOCDIR}/examples/
@@ -183,8 +185,8 @@ uninstall:
 	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
 	@${RM} -rf ${HOMEDIR}/{WsprMod/,examples/,save/,doc/,*.py,hamlib*,*.sh,*.dat,wsprrc,gocal,*cache*}
 	@${RM} -rf ${HOMEDIR}/{AUTHORS,README,NEWS,COPYING,COPYRIGHT}
-	@${RM} -f /usr/share/applications/wspr.desktop
-	@${RM} -f /usr/share/pixmaps/wspr.xpm
+	@${RM} -f ${SHARED}/../applications/wspr.desktop
+	@${RM} -f ${SHARED}/../pixmaps/wspr.xpm
 	@echo '' 
 	@echo ".. User files remain in: ${HOMEDIR}"
 	@echo ".. To remove, type ....: rm -R ${HOMEDIR}"

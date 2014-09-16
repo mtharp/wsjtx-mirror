@@ -2,10 +2,10 @@
 Version=1.0
 Type=Application
 Name=WSPR v4.0
-Comment=Weak Signal Propogation Reporter
+Comment=Weak Signal Propagation Reporter
 Exec=/usr/bin/wspr
 Terminal=false
 Categories=HamRadio;Audio;AudioVideo;
-Keywords=Scientific;Hamradio;Radio;Signal;Propogation;Whisper;WSPR;WSJT;
+Keywords=Scientific;Hamradio;Radio;Signal;Propagation;Whisper;WSPR;WSJT;
 Icon=wspr
 StartupWMClass=Tk
