@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propogation Reporter
+# This file is part of the WSPR application, Weak Signal Propagation Reporter
 #
 # SVN	: $Id$
 #

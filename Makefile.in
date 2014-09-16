@@ -11,19 +11,19 @@ BUGS		:=	@BUGS@
 WEB         :=	@WEB@
 
 # System Information
-OS		:=	@OS@
-CPU		:=	@CPU@
+OS			:=	@OS@
+CPU			:=	@CPU@
 
 # General Use Tools
-AR		:=	@AR@
-CP		:=	@CP@
-LN		:=	@LN@
-MV		:=	@MV@
-RM		:=	@RM@
-CHOWN	:=	@CHOWN@
-CHMOD	:=	@CHMOD@
-SHELL	:=	@SHELL@
-MKDIR	:=	@MKDIR@
+AR			:=	@AR@
+CP			:=	@CP@
+LN			:=	@LN@
+MV			:=	@MV@
+RM			:=	@RM@
+CHOWN		:=	@CHOWN@
+CHMOD		:=	@CHMOD@
+SHELL		:=	@SHELL@
+MKDIR		:=	@MKDIR@
 
 # Install locations
 INATALL		:=	install
@@ -35,9 +35,9 @@ SHARED		:=	$(DESTDIR)@SHARED@
 WSPRLIB		:=	$(DESTDIR)@WSPRLIB@
 
 # Compiler Information
-CC		:=	@CC@
-FC		:=	@FC@
-FCV		:=	@FCV@
+CC			:=	@CC@
+FC			:=	@FC@
+FCV			:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
 # Python Information
@@ -152,6 +152,8 @@ install:
 	@install -m 644 ./{AUTHORS,README,NEWS,COPYING,COPYRIGHT} ${DOCDIR} 
 	@install -m 644 ./hamlib_rig* ${SHARED}
 	@install -m 755 WsprMod/* ${WSPRLIB}/WsprMod
+	@install -m 644 ./wspr.desktop /usr/share/applications
+	@install -m 644 ./wspr.xpm /usr/share/pixmaps/
 	@${MV} -T ${SHARED}/wspr.sh ${BINDIR}/wspr
 	@${CHMOD} 755 ${BINDIR}/wspr
 	@${CP} -r doc/examples/* ${DOCDIR}/examples/
@@ -181,6 +183,8 @@ uninstall:
 	@${RM} -f ${HOMEDIR}/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode}
 	@${RM} -rf ${HOMEDIR}/{WsprMod/,examples/,save/,doc/,*.py,hamlib*,*.sh,*.dat,wsprrc,gocal,*cache*}
 	@${RM} -rf ${HOMEDIR}/{AUTHORS,README,NEWS,COPYING,COPYRIGHT}
+	@${RM} -f /usr/share/applications/wspr.desktop
+	@${RM} -f /usr/share/pixmaps/wspr.xpm
 	@echo '' 
 	@echo ".. User files remain in: ${HOMEDIR}"
 	@echo ".. To remove, type ....: rm -R ${HOMEDIR}"

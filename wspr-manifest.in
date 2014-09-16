@@ -129,6 +129,8 @@ wspr1.f90
 wspr2.f90
 wsprcode.f90
 wspr_nogui.py
+wspr.desktop
+wspr.xpm
 wspr.py
 wsprrc
 wspr_rxtest.f90
