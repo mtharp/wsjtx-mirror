@@ -421,7 +421,7 @@ fi
 #  report gfortran
 # ------------------------------------------------------------------------------
 
-if test ${HAVE_GFORTRAN} -ne 1; then
+if test ${HAVE_GFORTRAN} -eq 0; then
 	echo
 	echo "CONFIGURATION ERROR"
 	echo
