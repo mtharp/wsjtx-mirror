@@ -183,7 +183,7 @@ if [[ $SMSELECT = "A" ]]; then
 	while [ 1 ]
 	do
 		echo
-		read -p "Is it OK to Start To Continue Installation? [ Y/N ]: " yn
+		read -p "Is it OK to Continue Installation? [ Y/N ]: " yn
 		case $yn in
 		[Yy]* )
 
