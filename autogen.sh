@@ -39,7 +39,8 @@ _PROGRAM=WSPR
 cd $_BASED
 
 autoconf --version > /dev/null 2>&1
-if test "$?" -eq 1; then 
+if test "$?" -eq 1; then
+# message if autoconf was found or not "0"=OK, "1"= Not Reachable
 	clear
 	echo
 	echo "You must have autoconf installed to compile $_PROGRAM."
@@ -55,6 +56,7 @@ echo "Running ( autoconf -f -i ) to process configure.ac"
 # Generate configure script from configure.ac and aclocal.m4
 autoconf -f -i
 
+# simple test for the configure script, after running autogen.sh
 if test -s ./configure; then
 	echo " ..Finished"
 	echo " ..Autoconf will now build the Makefile"
@@ -62,18 +64,23 @@ if test -s ./configure; then
 	echo
 	sleep 1
 else
+# message if configure was not found
 	echo "There was a problem generating the configure script"
 	echo "Check config.status for details."	
 	echo
 	exit 1
 fi
 
+# message if no arguments were presented
 if test -z "$*"; then
-	echo "Using  ./configure with defauly arguments"
-	echo "If you wish  change paramaters, use $0 command line."
+	echo "Using  ./configure with default arguments"
+	echo
+	echo "If you wish  change paramaters, add the arguments"
+	echo "to use $0 command line."
 	echo
 	sleep 1
 else
+# List user input arguments
 	echo "Using ./configure $@"
 	echo
 	sleep 1

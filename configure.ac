@@ -6,19 +6,22 @@ AC_COPYRIGHT([$Id$])
 AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
 
-dnl ----------------------------------------------------------------------------
-dnl path vars
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  path vars
+# ------------------------------------------------------------------------------
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 
-# enable configurable prefix path
+dnl enable configurable prefix path
 AC_PREFIX_DEFAULT("/usr")
 if test "$prefix" = "NONE"; then 
 	prefix=${ac_default_prefix}
 fi
 
+# ------------------------------------------------------------------------------
+#  user input paths
+# ------------------------------------------------------------------------------
 DOCDIR="$prefix"/share/doc/wspr
 MANDIR="$prefix"/share/man/man1
 
@@ -34,11 +37,9 @@ if test -n "$with_docdir"; then
 	AC_SUBST([MANDIR], ["$with_mandir"])
 fi
 
-
-
-dnl ----------------------------------------------------------------------------
-dnl check compilers
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  check compilers
+# ------------------------------------------------------------------------------
 OCFLAGS="$CFLAGS"
 AC_PROG_CC
 AC_PROG_CXX
@@ -50,9 +51,9 @@ AC_PROG_MAKE_SET
 AC_USE_SYSTEM_EXTENSIONS
 CFLAGS="$OCFLAGS"
 
-dnl ----------------------------------------------------------------------------
-dnl check standard apps
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# check standard apps
+# ------------------------------------------------------------------------------
 AC_C_INLINE
 AC_PATH_PROG([AR], [ar])
 AC_PATH_PROG([AWK], [awk])
@@ -72,9 +73,9 @@ AC_PATH_PROG([TR], [tr])
 AC_SUBST([OS], ["$host_os"])
 AC_SUBST([CPU], ["$host_cpu"])
 
-dnl ----------------------------------------------------------------------------
-dnl check headers
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  check headers
+# ------------------------------------------------------------------------------
 AC_HEADER_STDC
 AC_HEADER_DIRENT
 AC_HEADER_TIME
@@ -97,9 +98,9 @@ sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h sys/stat.h sys/syslog.h \
 sys/time.h sys/wait.h termios.h unistd.h wait.h])
 
 
-dnl ----------------------------------------------------------------------------
-dnl add additional lib paths
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  add additional lib paths
+# ----------------------------------------------------------------------------
 if test -d "/usr/lib64"; then LIBDIR="-L/usr/lib64 ${LIBDIR}"; fi
 if test -d "/usr/local/lib"; then LIBDIR="-L/usr/local/lib ${LIBDIR}"; fi
 if test -d "/usr/lib/x86_64-linux-gnu"; then LIBDIR="-L/usr/lib/x86_64-linux-gnu ${LIBDIR}"; fi
@@ -107,9 +108,9 @@ if test -d "/usr/lib/i386-linux-gnu"; then LIBDIR="-L/usr/lib/i386-linux-gnu ${L
 if test -d "/usr/lib"; then LIBDIR="-L/usr/lib ${LIBDIR}"; fi
 if test -d "/usr/lib/arm-linux-gnueabihf"; then LIBDIR="-L/usr/lib/arm-linux-gnueabihf ${LIBDIR}"; fi
 
-dnl ----------------------------------------------------------------------------
-dnl find Python3
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  find Python3
+# ------------------------------------------------------------------------------
 
 HAVE_PY3=no
 
@@ -179,9 +180,9 @@ if test "$HAVE_PY3" = "no"; then
 	fi
 fi
 
-dnl ----------------------------------------------------------------------------
-dnl find that pesky f2py program
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  find f2py
+# ------------------------------------------------------------------------------
 
 HAVE_F2PY=no
 
@@ -252,10 +253,9 @@ if test "$HAVE_F2PY" = "no"; then
 	fi
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl check gfortran
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  check gfortran
+# ------------------------------------------------------------------------------
 
 AC_CHECK_LIB([gfortran], [_gfortran_st_write], [], [])
 
@@ -275,10 +275,9 @@ else
 	AC_DEFINE([HAVE_GFORTRAN_LIB], [1],)
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl check portaudio
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  check portaudio
+# ------------------------------------------------------------------------------
 
 AC_CHECK_LIB([portaudio], [Pa_Initialize], [], [])
 if test "$ac_cv_lib_portaudio_Pa_Initialize" = "yes"; then
@@ -293,9 +292,9 @@ if test "$ac_cv_header_portaudio_h" = "yes" -a "$ac_cv_lib_portaudio_Pa_Initiali
 fi
 
 
-dnl ----------------------------------------------------------------------------
-dnl check fftw3
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  check fftw3
+# ------------------------------------------------------------------------------
 
 AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [], [])
 
@@ -310,9 +309,9 @@ if test "$ac_cv_lib_fftw3f_sfftw_destroy_plan_" = "yes"; then
 fi
 
 
-dnl ----------------------------------------------------------------------------
-dnl check samplerate
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  check samplerate
+# ------------------------------------------------------------------------------
 
 AC_CHECK_LIB([samplerate], [src_simple], [], [])
 
@@ -327,10 +326,9 @@ if test "$ac_cv_header_samplerate_h" = "yes" -a "$ac_cv_lib_samplerate_src_simpl
 	AC_DEFINE([HAVE_SAMPLERATE_LIB], [1], [Samplerate Lib])
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl consolidate flags - (remove dupes if any)
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  consolidate flags - ( remove dupes and sort )
+# ------------------------------------------------------------------------------
 
 _LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LIBS="$_LBU"
@@ -377,13 +375,11 @@ case "${host_os}" in
 	;;
 esac
 
-dnl ----------------------------------------------------------------------------
-dnl report Python
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  report Python
+# ------------------------------------------------------------------------------
 
 if test "$HAVE_PY3" = "no"; then
-	pylocation="FAILED!!"	
-	FAIL=yes
 	echo
 	echo "Python v3.2+ is required to build $PACKAGE_NAME"
 	echo
@@ -394,20 +390,19 @@ if test "$HAVE_PY3" = "no"; then
 	echo
 	echo 'Example:'
 	echo './configure --with-python3="/home/$USER/test/python3"'
+	echo
+	exit 1
 else
 	# add python3 path to wspr.sh script
 	sed -i '/wspr.py/d' wspr.sh
 	echo "$PY3_PATH -O wspr.py" >> wspr.sh
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl report f2py
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  report f2py
+# ------------------------------------------------------------------------------
 
 if test "$HAVE_F2PY" = "no"; then
-	f2pylocation="FAILED!!"
-	FAIL=yes
 	echo
 	echo "F2PY v2.0 (Numpy 1.8.1+) is required to build $PACKAGE_NAME"
 	echo
@@ -419,15 +414,16 @@ if test "$HAVE_F2PY" = "no"; then
 	echo 'Example:'
 	echo './configure --with-f2py="/home/$USER/test/f2py"'
 	echo 
+	exit 1
 fi
 
-dnl ----------------------------------------------------------------------------
-dnl report gfortran
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  report gfortran
+# ------------------------------------------------------------------------------
 
 if test ${HAVE_GFORTRAN} -ne 1; then
-	FC="FAILED!!"
-	FAIL=yes
+	echo
+	echo "CONFIGURATION ERROR"
 	echo
 	echo "Gfortran is required to build $PACKAGE_NAME"
 	echo
@@ -435,41 +431,41 @@ if test ${HAVE_GFORTRAN} -ne 1; then
 	echo
 	echo "Possible Solutions:"
 	echo "[1] Install your distro version of: gfortran"
+	echo "[2] On x86_64 systems, ensure you include x86 / i386 libgfortran"
 	echo
+	exit 1
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl report samplerate
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  report samplerate
+# ------------------------------------------------------------------------------
 
 if test ${HAVE_SAMPLERATE} -eq 1; then
 	srstatus="OK"
 else
-	srstatus="FAILED!!"
-	FAIL=yes
+	echo "CONFIGURATION ERROR"
 	echo
 	echo "Samplerate-dev is required to build $PACKAGE_NAME"
 	echo
 	echo "Possible Solutions:"
-	echo "[1] Install your distro version of: Samplerate-dev"
+	echo "[1] Install your distro version of: Saplerate - Libs & Headers"
 	echo "[2] Confiure Samplerate with non-standard paths:"
 	echo
 	echo 'Example:'
-	echo './configure CPPFLAGS="-I/home/$USER/test/samplerate/include"'
+	echo './configure CPPFLAGS="-I/home/$USER/test/samplerate/include" \'
 	echo 'LIBDIR="/home/$USER/test/samplerate/lib"'
 	echo
+	exit 1
 fi
 
-dnl ----------------------------------------------------------------------------
-dnl report fftw
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  report fftw
+# ------------------------------------------------------------------------------
 
 if test ${HAVE_FFTW3_LIB} -eq 1; then
 	ffstatus="OK"
 else
-	ffstatus="FAILED!!"
-	FAIL=yes
+	echo "CONFIGURATION ERROR"
 	echo
 	echo "FFTW3 Libs were not found"
 	echo
@@ -479,18 +475,17 @@ else
 	echo
 	echo './configure LIBDIR="/home/$USER/test/fftw3/lib"'
 	echo
+	exit 1
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl report portaudio
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  report portaudio
+# ------------------------------------------------------------------------------
 
 if test ${HAVE_PORTAUDIO} -eq 1; then
 	pastatus="OK"
 else
-	FAIL=yes
-	pastatus="FAILED"
+	echo "CONFIGURATION ERROR"
 	echo
 	echo "Portaudio-v19 was not found"
 	echo
@@ -498,15 +493,15 @@ else
 	echo "[1] Install your distro version of: portaudio19-dev"
 	echo "[2] Confiure portaudio with non-standard paths:"
 	echo
-	echo './configure CPPFLAGS="-I/home/$USER/test/portaudio/include"'
+	echo './configure CPPFLAGS="-I/home/$USER/test/portaudio/include" \'
 	echo 'LIBDIR="/home/$USER/test/portaudio/lib"'
 	echo
+	exit 1
 fi
 
-
-dnl ----------------------------------------------------------------------------
-dnl substitutions
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  substitutions
+# ------------------------------------------------------------------------------
 
 AC_SUBST([PREFIX], ["$prefix"])
 AC_SUBST([BUGS], ["$PACKAGE_BUGREPORT"])
@@ -528,21 +523,15 @@ AC_SUBST([USER], ["$USER"])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
-
-dnl ----------------------------------------------------------------------------
-dnl configure summary
-dnl ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+#  configure summary
+# ------------------------------------------------------------------------------
 
 echo
 echo "-------------------------------------------"
 echo " Configuration Summary"
 echo "-------------------------------------------"
 echo
-if test "$FAIL" = "yes"; then
-	echo
-	echo "** Configure Warning, Check Errors **"
-	echo
-fi
 echo " Package: .........: ${PROGRAM} ${VERSION}"
 echo " Python3: .........: ${PYTHON}"
 echo " F2py: ............: ${F2PY}"
@@ -561,4 +550,3 @@ echo
 echo " make && sudo make install"
 echo
 echo
-
