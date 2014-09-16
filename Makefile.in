@@ -1,7 +1,8 @@
 # Makefile for Linux
-# Re-direct stdout and stderr:	bash
-#				make >& junk
-# Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
+# Re-direct stdout and stderr:		bash
+#								make >& junk
+#
+# Prerequisites: Python 3.x, numpy-1.8.1+, PIL, Portaudio, Samplerate, FFTW
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -112,7 +113,7 @@ libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 
 # Build FMT Applications
 fmtest: fmtest.f90 libwspr.a
-	${FC} ${FFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
+	${FC} ${FFLAGS} ${LDFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
 	${FC} ${FFLAGS} -o fmtave fmtave.f90

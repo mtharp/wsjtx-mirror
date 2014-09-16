@@ -83,7 +83,7 @@ else
 # List user input arguments
 	echo "Using ./configure $@"
 	echo
-	sleep 1
+	sleep 2
 fi
 
 $_BASED/configure "$@"
