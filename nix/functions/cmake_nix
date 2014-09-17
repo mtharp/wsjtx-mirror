@@ -95,7 +95,7 @@ if [[ $_APP_NAME == "wsjtx" ]]; then
 	-D  WSJT_SKIP_MANPAGES=ON \
 	-D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-	cmake --build . --target install
+	cmake --build . --target install --clean-first -- -kj
 
 # for wsprx
 # builds ok, but has audio select and rig control issues

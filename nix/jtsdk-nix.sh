@@ -21,7 +21,7 @@
 #-------------------------------------------------------------------------#
 
 # set a reasonable initial window size
-printf '\e[8;28;100t'
+#printf '\e[8;28;100t'
 
 # set script path's
 _BASED=$(exec pwd)
@@ -79,6 +79,12 @@ setup_chk
 
 # setup main menu help doc var
 _HELP="$_BASED/README"
+
+# add clean up for all generated content
+if [[ $1 = "clean" ]]; then
+	rm -rf ./logs/*.log ./src ./tmp ./map65 ./wsjt ./wsjtx ./wspr ./wsprx
+	exit 0
+fi
 
 # setup main menu
 while [ 0 ]; do
