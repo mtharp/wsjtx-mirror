@@ -1,0 +1,13 @@
+prefix=C:/JTSDK-QT/hamlib3/mingw32
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Hamlib
+Description: Library to control radio and rotator equipment.
+URL: http://www.hamlib.org
+Version: 3.0~Git-G4WJS-April-2014
+Requires.private: 
+Cflags: -I${includedir} 
+Libs: -L${libdir} -lhamlib
+Libs.private: -lws2_32 

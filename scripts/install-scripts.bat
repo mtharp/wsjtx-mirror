@@ -16,6 +16,7 @@ ECHO.
 SETLOCAL
 SET BASED=c:\
 SET SCRIPTS=c:\JTSDK-DOC\doc\dev-guide\scripts\
+SET HAMLIBPC=C:\JTSDK-QT\hamlib3\mingw32\lib\pkgconfig\hamlib.pc
 
 REM -- Skip JTSDK-QT update if not located in C:\JTSDK-QT
 ECHO UPDATE JTSDK-QT
@@ -33,6 +34,7 @@ copy /Y %SCRIPTS%jtsdk-toolchain1.cmake %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts >nul
 copy /Y %SCRIPTS%jtsdk-qtbuild-help.bat %BASED%JTSDK-QT\tools\scripts >nul
+copy /Y %SCRIPTS%hamlib.pc %BASED%JTSDK-QT\hamlib3\mingw32\lib\pkgconfig >nul
 GOTO PKG_CONFIG_INSTALL
 
 REM -- Install Pkg-Config-lite v0.28
@@ -47,8 +49,8 @@ cd C:\JTSDK-QT\tools
 7z x pkg-config.7z > nul
 ECHO .. Cleaning Up After Pkg-Config Install
 rm pkg-config.7z
-ECHO .. Finished Pkg-Config Installation
 cd C:\JTSDK-DOC\doc
+ECHO .. Finished Pkg-Config Installation
 )
 GOTO NSIS_INSTALL
 
@@ -67,6 +69,7 @@ cd C:\JTSDK-DOC\doc
 ECHO .. Finished NSIS Installation
 )
 GOTO INNO_QT
+
 REM -- Install InnoSetup Installer
 :INNO_QT
 ECHO .. Checking For InnoSetup
@@ -95,6 +98,7 @@ cd C:\JTSDK-QT
 rm -rf C:\JTSDK-QT\hamlib3
 7z x hamlib3.7z > nul
 rm hamlib3.7z > nul
+copy /Y %SCRIPTS%hamlib.pc %BASED%JTSDK-QT\hamlib3\mingw32\lib\pkgconfig >nul
 cd C:\JTSDK-DOC\doc
 ECHO .. Finished Hamlib3 Update
 )
