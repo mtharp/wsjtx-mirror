@@ -35,8 +35,8 @@ F2PY = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/f2py.py
 CXFR = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/cxfreeze.py
 
 # Compiler Flags
-FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
-	-Wno-character-truncation
+FFLAGS = -O2 -DWIN32 -DWin32 -fbounds-check -fno-second-underscore -Wall \
+       -Wno-conversion -Wno-character-truncation
 CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
