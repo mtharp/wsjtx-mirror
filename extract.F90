@@ -55,7 +55,11 @@ subroutine extract(s3,nadd,ncount,decoded)
      call flush(22)
      call cs_unlock
 
-     iret=system('KVASD -q >devnull')
+#ifdef WIN32
+     iret=system('.\\KVASD -q >devnull')
+#else
+     iret=system('./KVASD -q >devnull')
+#endif
 
      call cs_lock('extract')
      if(iret.ne.0) then
