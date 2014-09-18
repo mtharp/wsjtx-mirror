@@ -47,9 +47,9 @@ program fmeasure
 
   write(*,1000) 
   write(12,1000) 
-1000 format('    Freq     DF     A+B*f     Corrected'/        &
-            '   (MHz)    (Hz)    (Hz)        (MHz)'/        &
-            '----------------------------------------')       
+1000 format('    Freq     DF     A+B*f     Corrected  Offset'/        &
+            '   (MHz)    (Hz)    (Hz)        (MHz)      (Hz)'/        &
+            '-----------------------------------------------')       
   i=0
   do j=1,9999
      read(10,1010,end=999) line
@@ -59,9 +59,10 @@ program fmeasure
         read(line,*,err=5) f,df
         dial_error=a + b*f
         fcor=f + 1.d-6*df - 1.d-6*dial_error
-        write(*,1020) f,df,dial_error,fcor
-        write(12,1020) f,df,dial_error,fcor
-1020    format(3f8.3,f15.9)     
+        offset_hz=1.d6*(fcor-f)
+        write(*,1020)  f,df,dial_error,fcor,offset_hz
+        write(12,1020) f,df,dial_error,fcor,offset_hz
+1020    format(3f8.3,f15.9,f8.2)
      endif
 5    continue
   enddo
