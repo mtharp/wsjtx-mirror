@@ -300,7 +300,7 @@ def dbl_click_call(t,t1,rpt,event):
             nsec=60*int(t1[i3+2:i3+4]) + int(t1[i3+4:i3+6])
         except:
             nsec=0
-        if setseq.get(): TxFirst.set((nsec/Audio.gcom1.trperiod)%2)
+        if setseq.get(): TxFirst.set(int((nsec/Audio.gcom1.trperiod)%2))
         lookup()
         GenStdMsgs()
         if (mode.get()[:4]=='JT65' or \
