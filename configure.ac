@@ -33,7 +33,7 @@ fi
 
 AC_ARG_WITH([mandir],
 AC_HELP_STRING([--with-mandir=PATH], [path to manpages]), [mandir=$with_mandir])
-if test -n "$with_docdir"; then
+if test -n "$with_mandir"; then
 	AC_SUBST([MANDIR], ["$with_mandir"])
 fi
 
