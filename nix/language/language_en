@@ -54,7 +54,7 @@ touch ./tmp/MMenu.tmp
 cat << 'EOF' > ./tmp/MMenu.tmp 
 "A WSJT .... With Python3" "" \
 "B WSPR .... With Python3" "" \
-"C WSJT-X .. Install Releaset" "" \
+"C WSJT-X .. Install Release" "" \
 "D WSPR-X .. Install Release" "" \
 "F MAP65 ... Install Release" "" \
 "HELP" "" \

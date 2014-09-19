@@ -15,8 +15,8 @@ _SVNURL=https://svn.code.sf.net/p/wsjt/wsjt/branches
 
 # build and install directories
 _OPTION=Release
-_BUILDD="$_BASED/$_APP_NAME/cmake/build/$_OPTION"
-_INSTALLD="$_BASED/$_APP_NAME/cmake/install/$_OPTION"
+_BUILDD="$_BASED/$_APP_NAME/build/$_OPTION"
+_INSTALLD="$_BASED/$_APP_NAME/install/$_OPTION"
 
 # start main build
 cd $_SRCD
@@ -102,14 +102,14 @@ if [[ $_APP_NAME == "wsjtx" ]]; then
 elif [[ $_APP_NAME == "wsprx" ]]; then
 	cmake -D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-	cmake --build . --target install
+	cmake --build . --target install -- -kj
 
 # for map65
 # fails to build wiht CMake
 elif [[ $_APP_NAME == "map65" ]]; then
 	cmake -D CMAKE_BUILD_TYPE="$_OPTION" \
 	-D CMAKE_INSTALL_PREFIX="$_INSTALLD" "$_SRCD/$_APP_NAME"
-	cmake --build . --target install
+	cmake --build . --target install -- -kj
 
 else
 	echo "nothing to be done" > /dev/null 2>&1
