@@ -52,12 +52,11 @@ UDMSG="\n      Build Selection is Under Development"
 #----------------------------------main menu-----------------------------------#
 touch ./tmp/MMenu.tmp
 cat << 'EOF' > ./tmp/MMenu.tmp 
-"A WSJT .... with Py3" "" \
-"B WSPR .... with Py3" "" \
-"C WSJT-X .. with CMake" "" \
-"D WSPR-X .. with CMake" "" \
-"F MAP65 ... with CMake" "" \
-"Z Build All Applications" "" \
+"A WSJT .... With Python3" "" \
+"B WSPR .... With Python3" "" \
+"C WSJT-X .. Install Releaset" "" \
+"D WSPR-X .. Install Release" "" \
+"F MAP65 ... Install Release" "" \
 "HELP" "" \
 "EXIT" ""
 EOF

@@ -20,8 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------#
 
-# set a reasonable initial window size
-#printf '\e[8;28;100t'
+set -e
 
 # set script path's
 _BASED=$(exec pwd)
@@ -29,9 +28,9 @@ _BASED=$(exec pwd)
 # Using cmake and qmake directories allows for build comparison.
 # Need to add support for multiple compilers {g++, intel, clang}
 mkdir -p "$_BASED"/{tmp,src}
+mkdir -p "$_BASED"/src/{wsjt,wsjtx,wspr,wsprx,map65}
 mkdir -p "$_BASED"/{wsjt,wspr}
-mkdir -p "$_BASED"/{wsjtx,wsprx,map65}/qmake/install
-mkdir -p "$_BASED"/{wsjtx,wsprx,map65}/cmake/{build,install}/{Debug,Release}
+mkdir -p "$_BASED"/{wsjtx,wsprx,map65}/{build,install}/{Debug,Release}
 
 # path vars
 _CFG="$_BASED/config"
@@ -91,10 +90,9 @@ MMSELECT=$(head -c 1 < $_TMP/selection)
 
 # WSJT w/Python3
 if [[ $MMSELECT = "A" ]]; then
-	under_development
-#	_APP_NAME=wsjt
-#	_APP_SRC="$_SRCD/trunk"
-#	python_nix
+	_APP_NAME=wsjt
+	_APP_SRC="$_SRCD/wsjt"
+	python_nix
 	continue
 
 # WSPR w/Python3
@@ -128,9 +126,9 @@ elif [[ $MMSELECT = "B" ]]; then
 	continue
 
 # All Apps
-   elif [[ $MMSELECT = "Z" ]]; then
-	under_development
-	continue
+#   elif [[ $MMSELECT = "Z" ]]; then
+#	under_development
+#	continue
 
 # All Apps
    elif [[ $MMSELECT = "H" ]]; then

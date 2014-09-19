@@ -3,40 +3,41 @@
 # Python build function for ( WSJT and WSPR using auto tools)
 
 #-------------------------------python_nix-------------------------------------#
-
 function python_nix() {
-# WSPR uses /branches WSJT uses /trunk
+# WSPR uses /branches/wspr WSJT is in wsjt/wsjt//trunk
 clear
-_WSPRURL="https://svn.code.sf.net/p/wsjt/wsjt/branches"
-_WSJTURL="https://svn.code.sf.net/p/wsjt/wsjt"
+_WSPRURL="https://svn.code.sf.net/p/wsjt/wsjt/branches/wspr"
+_WSJTURL="https://svn.code.sf.net/p/wsjt/wsjt/trunk"
 
 # Remove old build log
 rm -rf $_LOGS/$_APP_NAME-build.log && touch $_LOGS/$_APP_NAME-build.log
 
-# Start sub-shell for logging
-(
-
 # start the build steps
+clear
 echo
-echo "STARTING BUILD FOR ( $_APP_NAME )"
-
+echo "------------------------------------------------"
+echo " STARTING BUILD for ( $_APP_NAME )"
+echo "------------------------------------------------"
+echo
 
 # $_APP_SRC is set from the main menu jtsdk-nix.sh when select tool build
 # svn co if not exist, else update
-if [[ ! -d $_APP_SRC ]] || [[ ! -d $_APP_SRC/.svn ]]; then
+if [[ ! -d $_APP_SRC/.svn ]]
+then
 	echo
-	echo "Checking Out New Version of ( $_APP_NAME ) "
+	echo "Checking Out New Version of $_APP_NAME"
+	cd $_APP_SRC
 	
-	# For WSJT
-	if [[ $_APP_NAME == wsjt ]]; then
-		cd $_SRCD
-		svn co "$_WSJTURL/trunk"
+	# if app is WSJT
+	if [[ $_APP_NAME == "wsjt" ]]
+	then
+		svn co $_WSJTURL .
 	fi
-
-	# For WSPR
-	if [[ $_APP_NAME == wspr ]]; then
-		cd $_SRCD
-		svn co "$_WSPRURL/$_APP_NAME"
+	
+	# if app is WSJT
+	if [[ $_APP_NAME == "wspr" ]]
+	then
+		svn co $_WSPRURL .
 	fi
 else
 	# Yy / Nn answer to update from svn	
@@ -63,44 +64,93 @@ fi
 
 # get svn revision number
 cd "$_APP_SRC"
-rev_num=$(svn log -l 1 |awk 'FNR==2 {print $1}')
-echo
-echo "------------------------------------------------"
-echo "Starting Build for ( $_APP_NAME-$rev_num )"
-echo "------------------------------------------------"
-echo
+rev_num=$(svn info |grep "Rev:" |awk '{print $4}')
 
+# start the main build
+echo
+echo "------------------------------------------------"
+echo " START CONFIGURATION ( $_APP_NAME-$rev_num )"
+echo "------------------------------------------------"
+
+# clean source tree
 if [[ -f "./Makefile" ]]
 then
-	# clean source tree
-	echo
-	echo "------------------------------------------------"
-	echo "Removing old build files"
-	echo "------------------------------------------------"
+	echo ".. Running make distclean"
 	echo
 	make distclean
 	echo
 	echo ".. Done"
+	echo
 	sleep 1
 fi
 
-
+# Run Autoconf to generate configure and Makefile
 if [[ -f "./configure.ac" ]]
 then
+	# libportaudio location message
+	_RELNAME=$(lsb_release -i |awk '{print $3}')
+	if [[ $_RELNAME != "Ubuntu" ]]
+	then
+		echo
+		echo "Portaudio Libs and Header Location Warning"
+		echo
+		echo "The default path for the build script uses:"
+		echo
+		echo "For x86 32bit:"
+		echo "--with-portaudio-lib-dir=/usr/lib/i386-linux-gnu"
+		echo
+		echo "For x86_64 64bit"
+		echo "--with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu"
+		echo
+		echo "If configure fails, you may have to build $_APP_NAME"
+		echo "manually, and provide the appropriate location(s)"
+		echo "for both Headers ( *.h ) and Libs ( *.so* )"
+		echo
+		echo "For Example:"
+		echo "cd $_APP_SRD"
+		echo './configure \'
+		echo '--with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu \'
+		echo '--with-portaudio-include-dir=/usr/include \'
+		echo 'PYTHON=/usr/bin/python3 \'
+		echo 'F2PY=/usr/bin/f2py3'
+		echo
+		echo "Then run make"
+		echo
+		read -p "Press [Enter] to continue .."
+	fi
 
-	# Run Autoconf to generate configure script
-	echo
-	echo "------------------------------------------------"
-	echo "Running ( autoconf ) to generate configure"
-	echo "------------------------------------------------"
-	sleep 1
-	./autogen.sh
-	echo
-	echo ".. Done"
+	# run autogen.sh for WSPR
+	if [[ $_APP_NAME == wspr ]]
+	then
+		./autogen.sh
+		echo
+		echo ".. Done"
+	else
+
+	# run configure only for WSJT
+	# to ensure Python, F2PY and Portaudio are set correctly,
+	# add them to configure:
+
+		# configure portaudio libs based on ARCH
+
+		if [[ $(uname -m) == "i386" ]]
+		then
+			./configure --with-portaudio-lib-dir=/usr/lib/i386-linux-gnu \
+			--with-portaudio-include-dir=/usr/include \
+			PYTHON=/usr/bin/python3 \
+			F2PY=/usr/bin/f2py3
+	
+		else
+			./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu \
+			--with-portaudio-include-dir=/usr/include \
+			PYTHON=/usr/bin/python3 \
+			F2PY=/usr/bin/f2py3
+		fi
+	fi
 else
 	echo
 	echo "------------------------------------------------"
-	echo " Autotools Error"
+	echo " Configure Error"
 	echo "------------------------------------------------"
 	echo
 	echo "Cannot find configure.ac"
@@ -109,55 +159,77 @@ else
 	exit 1
 fi
 
-if [[ $? = "0" ]]; then
+# run make
+if [[ $? = "0" ]]
+then
 	# Run Makefile
 	echo
 	echo "------------------------------------------------"
-	echo "Running make for all targets"
+	echo " RUNNING make for $_APP_NAME"
 	echo "------------------------------------------------"
 	make
-else
-	echo
-	echo "------------------------------------------------"
-	echo " Error Running Autoconf"
-	echo "------------------------------------------------"
-	echo
-	echo "An Error occured creating the Makefile"
-	echo "Check VBuild Log: $_LOGS/$_APP_NAME-build.log"
-	echo
-	break
 fi
 
-# Yy / Nn answer to update from svn	
-while [ 1 ]
-do
-	echo
-	read -p "Do you want to install $_APP_NAME ? [ Y/N ]: " yn
-	case $yn in
-	[Yy]* )
-		sudo make install
-		# Finished, display user message
-		cd $_BASED
-		echo "..Location ....: /home/$USER/.$_APP_NAME"
-		echo "..Build Log ...: $_LOGS/$_APP_NAME-build.log"
+# if make eit status == "0"
+if [[ $? == "0" ]]
+then 
+	if [[ $_APP_NAME == "wspr" ]]
+	then
+		# Yy / Nn answer to update from svn	
+		while [ 1 ]
+		do
+			echo
+			read -p "Do you want to install $_APP_NAME ? [ Y/N ]: " yn
+			case $yn in
+			[Yy]* )
+				sudo make install
+				# Finished, display user message
+				cd $_BASED
+				echo "..Location ....: /home/$USER/.$_APP_NAME"
+				echo "..Build Log ...: $_LOGS/$_APP_NAME-build.log"
+				echo
+				echo "To Uniinstall $_APP_NAME"
+				echo "cd $_APP_SRC"
+				echo "sudo make uninstall"
+				echo
+				read -p "Press [Enter] to continue .."
+				break ;;
+			[Nn]* )
+				echo
+				echo "To run ( $_APP_NAME )"
+				echo "cd $_APP_SRC"
+				echo
+				echo "python3 -O $_APP_NAME.py"
+				echo
+				read -p "Press [Enter] to continue .."
+				break ;;
+			* )
+				clear
+				echo "Please use "Y" yes or "N" No."
+			;;
+			esac
+		done
+	else
 		echo
-		echo "To Uniinstall $_APP_NAME"
-		echo "cd /home/$USER/.$_APP_NAME"
-		echo "sudo make uninstall"
+		echo '------------------------------------------------'
+		echo "Finished Building ( $_APP_NAME )"
+		echo '------------------------------------------------'
+		echo
+		echo "To run ( $_APP_NAME )"
+		echo "cd $_APP_SRC"
+		echo
+		echo "python3 -O $_APP_NAME.py"
 		echo
 		read -p "Press [Enter] to continue .."
-		break ;;
-	[Nn]* )
-		break ;;
-	* )
-		clear
-		echo "Please use "Y" yes or "N" No."
-	;;
-	esac
-done
-echo 
-echo
-) 2>&1 | tee -a $_LOGS/$_APP_NAME-build.log
-
+	fi
+else
+	echo
+	echo "There was a problem building $_APP_NAME"
+	echo
+	echo "Check the screen messages, and / or the build"
+	echo "log for details"	
+	echo
+	exit 1
+fi
 } # end python_nix
 
