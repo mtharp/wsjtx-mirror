@@ -120,17 +120,16 @@ then
 	fi
 
 	# run autogen.sh for WSPR
-	if [[ $_APP_NAME == wspr ]]
+	if [[ $_APP_NAME == "wspr" ]]
 	then
 		./autogen.sh
 		echo
 		echo ".. Done"
 	else
 
-	# run configure only for WSJT
-	# to ensure Python, F2PY and Portaudio are set correctly,
-	# add them to configure:
-
+		# run configure only for WSJT
+		# to ensure Python, F2PY and Portaudio are set correctly,
+		# add them to configure:
 		# configure portaudio libs based on ARCH
 
 		if [[ $(uname -m) == "i386" ]]
@@ -139,9 +138,16 @@ then
 			--with-portaudio-include-dir=/usr/include \
 			PYTHON=/usr/bin/python3 \
 			F2PY=/usr/bin/f2py3
-	
-		else
-			./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu \
+
+		elif [[ $(uname -m) == "i686" ]]
+		then
+    		./configure --with-portaudio-lib-dir=/usr/lib/i386-linux-gnu \
+			--with-portaudio-include-dir=/usr/include \
+			PYTHON=/usr/bin/python3 \
+			F2PY=/usr/bin/f2py3
+
+        else
+		    ./configure --with-portaudio-lib-dir=/usr/lib/x86_64-linux-gnu \
 			--with-portaudio-include-dir=/usr/include \
 			PYTHON=/usr/bin/python3 \
 			F2PY=/usr/bin/f2py3
