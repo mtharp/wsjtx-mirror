@@ -11,7 +11,6 @@ calobs.f90
 ccf2.f90
 ccf.f90
 chklevel.f90
-clean.f90
 configure.ac
 conv232.f90
 COPYING
