@@ -1,7 +1,7 @@
 ; NOTE: AppVerName needs updating at release / beta release time.
 [Setup]
 AppName=WSJT
-AppVerName=WSJT Version 10.0 r4227
+AppVerName=WSJT Version 10.0 r4336
 AppCopyright=Copyright (C) 2001-2014 by Joe Taylor, K1JT
 DefaultDirName=C:\WSJT\WSJT10
 DefaultGroupName=WSJT\WSJT10
