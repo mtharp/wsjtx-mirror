@@ -64,7 +64,7 @@ SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
 SET PACKAGED=%BASED%\%APP_NAME%\package
 SET SUPPORT=%BASED%\appsupport
-SET WSJTXPKG=wsjtx-1.4.0-win32.exe
+SET WSJTXPKG=wsjtx-1.4.0-rc1-win32.exe
 SET WSPRX_ISS=%SRCD%\wsprx\wsprx-jtsdk.iss
 SET MAP65_ISS=%SRCD%\map65\map65-jtsdk.iss
 
