@@ -130,6 +130,7 @@ ECHO.
 cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO -----------------------------------------------------------------
 ECHO Finished %OPTION% Build Tree Configuration for: ^( %APP_NAME% ^)
@@ -150,11 +151,11 @@ ECHO   :: Type ^(Ctrl+C then Q^) to exit
 ECHO.
 ECHO TO BUILD INSTALL TARGET
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target install
+ECHO   cmake --build . --target install -- -j%JJ%
 ECHO.
 ECHO TO BUILD WINDOWS NSIS INSTALLER
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target package
+ECHO   cmake --build . --target package -- -j%JJ%
 ECHO.
 GOTO EOF
 
@@ -175,11 +176,13 @@ ECHO.
 cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
-ECHO .. Stating Install Target build for ^( %APP_NAME% ^)
+ECHO .. Starting Install Target build for ^( %APP_NAME% ^)
 ECHO.
 REM -- Build Install Target
-cmake --build . --target install
+cmake --build . --target install -- -j%JJ%
+IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 GOTO POSTBUILD1
 
 REM ------------------------------------------------------------------
@@ -197,13 +200,14 @@ REM - Ensure Build Tree is Configured
 cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 IF /I [%1]==[wsjtx] ( GOTO NSIS_PKG )
 IF /I [%1]==[wsprx] ( GOTO INNO_PKG )
 IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
 REM - NSIS Build Win32 Installer
 :NSIS_PKG
-cmake --build . --target package
+cmake --build . --target package -- -j%JJ%
 IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
 GOTO FINISH_PKG
@@ -212,7 +216,8 @@ REM - InnoSetup Build Win32 Installer
 :INNO_PKG
 IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS% )
 IF /I [%1]==[map65] (SET ISS=%MAP65_ISS% )
-cmake --build . --target install
+cmake --build . --target install -- -j%JJ%
+IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Copying Additional Files ^( %APP_NAME% ^)
 ECHO.
@@ -227,7 +232,7 @@ ECHO.
 ECHO .. Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
 ECHO.
 %INNOD%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
-IF NOT ERRORLEVEL 0 ( GOTO INNO_BUILD_ERROR )
+IF ERRORLEVEL 1 ( GOTO INNO_BUILD_ERROR )
 IF NOT EXIST %PACKAGED%\%APP_NAME%-Win32.exe ( GOTO INNO_BUILD_ERROR )
 GOTO FINISH_PKG
 
@@ -572,6 +577,21 @@ ECHO  %INSTALLD%\%OPTION%\%APP_NAME%.exe
 ECHO.
 ECHO.
 PAUSE
+GOTO EOF
+
+REM -- General Error Message for CMake
+:CMAKE_ERROR
+ECHO.
+ECHO -----------------------------------------------------------------
+ECHO                    CMAKE BUILD ERROR
+ECHO -----------------------------------------------------------------
+ECHO.
+ECHO  There was a problem building ^( App: %1%  Target: %2 ^)
+ECHO.
+ECHO  Check the screen for error messages, correct, then try to
+ECHO  re-build ^( App: %1%  Target: %2 ^)
+ECHO.
+ECHO.
 GOTO EOF
 
 REM -- NSIS Installer Build Error Message
