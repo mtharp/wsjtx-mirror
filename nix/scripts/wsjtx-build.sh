@@ -105,6 +105,9 @@ then
 else
 	git clone "$_HAMLIBURL" g4wjs-hamlib
 	exit_status
+	cd $_G4WJS_GIT
+	git checkout integration
+	exit_status
 fi
 
 # clone G4WJS hamlib3
