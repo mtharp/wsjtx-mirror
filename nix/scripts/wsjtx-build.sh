@@ -23,7 +23,7 @@ else
 fi
 
 # other paths and vars
-_OPTION=Relesae
+_OPTION=Release
 _HAMLIBURL="git://git.code.sf.net/u/bsomervi/hamlib"
 _BASED=$(exec pwd)
 _BUILDD="$_BASED/$_APP_NAME/build/$_OPTION"
@@ -195,7 +195,7 @@ echo
 echo "If we got this far, things are probably ok"
 echo
 echo "To Run ......: $_APP_NAME"
-echo " ............: cd  $_INSTALLD"
+echo " ............: cd  $_INSTALLD/bin"
 echo "Then type ...: ./wsjtx"
 echo
 echo
