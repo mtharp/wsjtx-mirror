@@ -3,23 +3,23 @@
 # Description: Simplified build script for WSJT-X
 #
 # USAGE: ./wsjtx-build.sh $1
-# Example: ./wsjtx-build.sh rc1
+# Example: ./wsjtx-build.sh rc
 #
 # exit on error
 set -e
 _SELECTION=$1
 
-if [ "$_SELECTION" == "rc1" ];
+if [ "$_SELECTION" == "rc" ];
 then
 	# RELEASE CANDIDATE BRANCH
 	_WSJTXURL="https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx-1.4"
 	_APP_SRC_NAME="wsjtx-1.4"
-	_APP_NAME="wsjtx-1.4.0-rc1"
+	_APP_NAME="wsjtx-1.4.0"
 else 
 	# HEAD OF DEVELOPMENT BRANCH
 	_WSJTXURL="https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx"
 	_APP_SRC_NAME="wsjtx"
-	_APP_NAME="wsjtx"
+	_APP_NAME="wsjtx-dev"
 fi
 
 # other paths and vars
@@ -131,7 +131,7 @@ echo '-------------------------------------------'
 echo ' RUN MAKE'
 echo '-------------------------------------------'
 echo
-make -s -j$(grep -c ^processor /proc/cpuinfo)
+make -s
 exit_status
 
 # make install
@@ -186,7 +186,7 @@ echo " BUILDING ( $_APP_NAME )"
 echo '-------------------------------------------'
 echo
 cd "$_BUILDD"
-cmake --build . --target install --clean-first -- -kj
+cmake --build . --target install --clean-first
 exit_status
 
 # Finished
