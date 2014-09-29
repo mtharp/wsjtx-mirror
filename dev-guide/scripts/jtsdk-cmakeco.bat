@@ -18,8 +18,7 @@ GOTO CHKAPP
 
 :CHKAPP
 IF /I [%1]==[wsjtx-1.4] (SET APP_NAME=wsjtx-1.4 &GOTO RC_CHECKOUT
-) ELSE IF /I [%1]==[wsjtx] (SET APP_NAME=wsprx &GOTO OTHER_CO
-) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx &GOTO OTHER_CO
+) ELSE IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx &GOTO OTHER_CO
 ) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx &GOTO OTHER_CO
 ) ELSE IF /I [%1]==[map65] (SET APP_NAME=map65 &GOTO OTHER_CO
 ) ELSE (GOTO UNSUPPORTEDCO)
