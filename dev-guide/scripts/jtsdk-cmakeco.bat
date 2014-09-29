@@ -17,28 +17,43 @@ SET PATH=%BASED%;%SVND%;%SCRIPTS%;%SRCD%;%WINDIR%\System32
 GOTO CHKAPP
 
 :CHKAPP
-IF /I [%1]==[wsjtx] (SET APP_NAME=wsjtx &GOTO BRANCHCO
-) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx &GOTO BRANCHCO
-) ELSE IF /I [%1]==[map65] (SET APP_NAME=map65 &GOTO BRANCHCO
+IF /I [%1]==[wsjtx-1.4] (SET APP_NAME=wsjtx-1.4 &GOTO RC_CHECKOUT
+) ELSE IF /I [%1]==[wsjtx] (SET APP_NAME=wsprx &GOTO OTHER_CO
+) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx &GOTO OTHER_CO
+) ELSE IF /I [%1]==[wsprx] (SET APP_NAME=wsprx &GOTO OTHER_CO
+) ELSE IF /I [%1]==[map65] (SET APP_NAME=map65 &GOTO OTHER_CO
 ) ELSE (GOTO UNSUPPORTEDCO)
 
-:BRANCHCO
+:RC_CHECKOUT
 CD /D %SRCD%
 CLS
 ECHO.
 ECHO -----------------------------------------------------------------
+ECHO Checking Out Release Candidate for ^( %APP_NAME% ^)
+ECHO -----------------------------------------------------------------
+start /wait svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+GOTO NEXT
+
+:OTHER_CO
+ECHO -----------------------------------------------------------------
 ECHO Checking Out ^( %APP_NAME% ^) From SVN
 ECHO -----------------------------------------------------------------
 start /wait svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/%APP_NAME%
+GOTO NEXT
+
+:NEXT
 CD %BASED%
 ECHO.
 ECHO Checkout complete. The next screen shows available build options.
 ECHO.
 PAUSE
 GOTO FINISH
-)
 
 :FINISH
+IF /I [%1]==[wsjtx-1.4] (
+CALL %SCRIPTS%\jtsdk-wsjtxrc-help.bat
+GOTO EOF
+)
 CALL %SCRIPTS%\jtsdk-qtbuild-help.bat
 GOTO EOF
 

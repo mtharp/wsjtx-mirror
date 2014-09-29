@@ -27,6 +27,7 @@ CD /D %BASED%
 REM -- DOSKEY BUILD COMMAND
 DOSKEY checkout="%BASED%\jtsdk-cmakeco.bat" $1
 DOSKEY build="%BASED%\jtsdk-cmake.bat" $1 $2
+DOSKEY wsjtxrc="%BASED%\jtsdk-wsjtxrc.bat" $1
 DOSKEY env-info=CALL %SCRIPTS%\jtsdk-qtinfo.bat
 DOSKEY build-help=CALL %SCRIPTS%\jtsdk-qtbuild-help.bat
 DOSKEY vinfo=CALL %SCRIPTS%\script-versions.bat
