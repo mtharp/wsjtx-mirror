@@ -34,14 +34,13 @@ copy /Y %SCRIPTS%jtsdk-toolchain1.cmake %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts >nul
 copy /Y %SCRIPTS%jtsdk-qtbuild-help.bat %BASED%JTSDK-QT\tools\scripts >nul
-copy /Y %SCRIPTS%hamlib.pc %BASED%JTSDK-QT\hamlib3\mingw32\lib\pkgconfig >nul
 copy /Y %SCRIPTS%jtsdk-wsjtxrc.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-wsjtxrc-help.bat %BASED%JTSDK-QT\tools\scripts >nul
 GOTO PKG_CONFIG_INSTALL
 
 REM -- Install Pkg-Config-lite v0.28
 :PKG_CONFIG_INSTALL
-ECHO .. Checking For Pkg-Config
+ECHO .. Checking Pkg-Config
 IF NOT EXIST %BASED%JTSDK-QT\tools\pkg-config.exe (
 ECHO .. Pkg-Config Was Not Found
 ECHO .. Installing Pkg-Config v0.28
@@ -58,7 +57,7 @@ GOTO NSIS_INSTALL
 
 REM -- Install NSIS Installer
 :NSIS_INSTALL
-ECHO .. Checking For NSIS
+ECHO .. Checking NSIS
 IF NOT EXIST C:\JTSDK-QT\NSIS\makensis.exe (
 cd C:\JTSDK-DOC\doc\dev-guide\scripts
 ECHO .. NSIS Was Not Found
@@ -74,7 +73,7 @@ GOTO INNO_QT
 
 REM -- Install InnoSetup Installer
 :INNO_QT
-ECHO .. Checking For InnoSetup
+ECHO .. Checking InnoSetup
 IF NOT EXIST C:\JTSDK-QT\inno5\ISCC.exe (
 ECHO .. InnoSetup Was Not Found
 ECHO .. Installing InnoSetup 5.5.4a
@@ -91,18 +90,15 @@ GOTO HAMLIB3_UPDATE
 REM -- Install Updated Version of Hamlib3 from ( G4WJS )
 :HAMLIB3_UPDATE
 ECHO .. Checking Hamlib3
-IF NOT EXIST C:\JTSDK-QT\hamlib3\april-2014.txt (
-ECHO .. Latest Version Was Not Found
-ECHO .. Installing Hamlib3 April-2014 Build
+IF NOT EXIST C:\JTSDK-QT\hamlib3\build-date-09-29-14 (
+ECHO .. Updating Hamlib3 To Latest Build: 09-29-2014
 cd C:\JTSDK-DOC\doc\dev-guide\scripts
 cp hamlib3.7z C:\JTSDK-QT\
 cd C:\JTSDK-QT
 rm -rf C:\JTSDK-QT\hamlib3
 7z x hamlib3.7z > nul
 rm hamlib3.7z > nul
-copy /Y %SCRIPTS%hamlib.pc %BASED%JTSDK-QT\hamlib3\mingw32\lib\pkgconfig >nul
 cd C:\JTSDK-DOC\doc
-ECHO .. Finished Hamlib3 Update
 )
 ECHO .. Done
 GOTO JTSDK_PY
@@ -132,7 +128,7 @@ GOTO INNO_PY
 
 REM -- Install NSIS Installer
 :INNO_PY
-ECHO .. Checking For InnoSetup
+ECHO .. Checking InnoSetup
 IF NOT EXIST C:\JTSDK-PY\inno5\ISCC.exe (
 ECHO .. InnoSetup Was Not Found
 ECHO .. Installing InnoSetup 5.5.4a
@@ -165,7 +161,7 @@ GOTO INNO_DOC
 
 REM -- Install NSIS Installer for DOCS (Future use)
 :INNO_DOC
-ECHO .. Checking For InnoSetup
+ECHO .. Checking InnoSetup
 IF NOT EXIST C:\JTSDK-DOC\inno5\ISCC.exe (
 ECHO .. InnoSetup Was Not Found
 ECHO .. Installing InnoSetup 5.5.4a
