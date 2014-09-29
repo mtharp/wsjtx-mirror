@@ -1,0 +1,25 @@
+// Status=review
+
+* For Debian, Ubuntu, and other Debian-based systems:
+** 32-bit: {debian32}
+- To install: +sudo dpkg -i wsjtx_1.4.0-rc2_i386.deb+
+- Uninstall:  +sudo dpkg -P wsjtx+
+** 64-bit: {debian64}
+- To install: +sudo dpkg -i wsjtx_1.4.0-rc2_amd64.deb+
+- Uninstall:  +sudo dpkg -P wsjtx+
+
+
+* For Fedora, Red Hat, and other rpm-based systems:
+** 32-bit: {fedora32}
+- To install: +sudo rpm -i wsjtx-1.4.0-rc2_i686.rpm+
+- Uninstall: +sudo rpm -e wsjtx+
+** 64-bit: {fedora64}
+- To install: +sudo rpm -i wsjtx-1.4.0-rc2_x86_64.rpm+
+- Uninstall: +sudo rpm -e wsjtx+
+
+////
+// Move to FAQ section?
+- Should you choose to use the integrated logger, you can locate your logs, and other writeable files, using the following path: +$HOME/.local/share/WSJT-X+
+////
+
+// Add instructions about ntpd and sound setup.

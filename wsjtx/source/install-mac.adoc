@@ -1,26 +1,18 @@
-// Status=review
-// Q: are these instructions up-to-date for WSJT-X v1.4?
+// These instructions are up-to-date for WSJT-X v1.4
 
-Two different packages are available for _WSJT-X_: one for OS X
-10.6 through 10.8, and one for OS X 10.9. The two packages are _not_
-interchangeable.
+* OS X 10.7, 10.8: {osx_107} 
+* OS X 10.9: {osx_109}
 
-- Select the correct package for your version of OS X (if you are unsure about which version you should choose, you can find the necessary information by clicking on the Apple menu in the upper left hand corner of your desktop and selecting, “About This Mac,” which will display your OS version) and download it to your desktop.
-** {osx_108}
-** {osx_109}
+Double-click on the dmg file and consult the +ReadMe+ file provided
+therein.  Read its important installation notes before proceeding
+further.
 
-- Double-click on the desktop icon to create and view a new folder, +WSJT-X+.
-Double-click on this folder and locate the included +Readme+ file. Review the file carefully, as it provides detailed instructions on how to configure your particular system for _WSJT-X_.
+If you have already installed a previous version, you can retain it by
+changing its name in the *Applications* folder (say, from _WSJT-X_ to
+_WSJT-X_previous_).  You can then proceed to the installation phase.
 
-- Remember to use the Mac's *Audio MIDI Setup* utility as described in
-the +Readme+ file to configure your sound card for 48000 Hz,
-single-channel, 16-bit format.  Depending on your sound card you might
-have to change Audio In format to 48000 Hz two-channel, 16-bit.
+Remember to use the Mac's *Audio MIDI Setup* utility to configure
+your sound card for 48000 Hz, two-channel, 16-bit format.
 
-- Use *System Preferences* to select an external time source to keep
+Use *System Preferences* to select an external time source to keep
 your system clock synchronized to UTC.
-
-////
-// Q: move to FAQ section?
-- Should you choose to use the integrated logger, you can locate your logs, and other writeable files, using the following path: +$HOME/Library/ApplicationSupport/WSJT-X+
-////

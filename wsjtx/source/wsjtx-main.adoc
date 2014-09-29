@@ -1,7 +1,7 @@
 // Status=review
 // This is a comment line, anything with // is ignored at process time.
 = WSJT-X User Guide
-:Date: September 25, 2014
+:Date: September 29, 2014
 :Revision: 1.4
 :badges:
 :icons:
@@ -32,19 +32,20 @@ include::system-requirements.adoc[]
 [[INSTALL]]
 == Installation
 
-Download _WSJT-X_ from the {homepage}. Click on the _WSJT-X_ link
-at the left margin and then select the desired download link.
+Installation packages are found on the the {homepage}. Click on the
+_WSJT-X_ link at the left margin, and then select the appropriate
+package for your operating system.
 
 [[INSTALL_WIN]]
 === Windows
 include::install-windows.adoc[]
 
-[[INSTALL_UBU]]
+[[INSTALL_LINUX]]
 === Linux
-include::install-ubuntu.adoc[]
+include::install-linux.adoc[]
 
 [[INSTALL_OSX]]
-=== OS X
+=== Macintosh OS X
 include::install-mac.adoc[]
 
 [[SRC_CODE]]
