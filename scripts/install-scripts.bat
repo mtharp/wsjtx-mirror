@@ -35,6 +35,8 @@ copy /Y %SCRIPTS%jtsdk-cmakeco.bat %BASED%JTSDK-QT >nul
 copy /Y %SCRIPTS%jtsdk-qtinfo.bat %BASED%JTSDK-QT\tools\scripts >nul
 copy /Y %SCRIPTS%jtsdk-qtbuild-help.bat %BASED%JTSDK-QT\tools\scripts >nul
 copy /Y %SCRIPTS%hamlib.pc %BASED%JTSDK-QT\hamlib3\mingw32\lib\pkgconfig >nul
+copy /Y %SCRIPTS%jtsdk-wsjtxrc.bat %BASED%JTSDK-QT >nul
+copy /Y %SCRIPTS%jtsdk-wsjtxrc-help.bat %BASED%JTSDK-QT\tools\scripts >nul
 GOTO PKG_CONFIG_INSTALL
 
 REM -- Install Pkg-Config-lite v0.28

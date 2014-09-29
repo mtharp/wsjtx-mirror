@@ -1,9 +1,8 @@
-# JTSDK-QT Tool-Chain File
+# JTSDK-QT Tool-Chain File For Hamlib3 Builds
 # Part of the JTSDK Project
 SET (CMAKE_SYSTEM_NAME Windows)
 SET (BASED /JTSDK-QT)
 SET (QTDIR /qt5/5.2.1/mingw48_32)
-# SET (HAMLIB /hamlib)
 SET (HAMLIB /hamlib3/mingw32)
 SET (FFTW /fftw3f)
 SET (CMAKE_PREFIX_PATH ${QTDIR} ${FFTW} ${FFTW} ${HAMLIB} ${HAMLIB}/bin)
