@@ -138,7 +138,10 @@ function update_and_build() {
 	echo ".. Cleanup complete"
 	echo ".. Starting Configure Process"
 	echo
-	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" \
+	--disable-winradio --disable-shared --enable-static \
+	--without-cxx-binding LDFLAGS="-s -Wl,-gc-sections" \
+	CFLAGS="-fdata-sections -ffunction-sections"
 	echo
 	echo ".. Configure Process Complete"
 	echo ".. Starting Make Process"
@@ -162,7 +165,10 @@ function new_build() {
 	cd "$_SRCD"/build/hamlib
 	echo ".. Starting Configure Process"
 	echo
-	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" --disable-winradio --disable-shared
+	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" \
+	--disable-winradio --disable-shared --enable-static \
+	--without-cxx-binding LDFLAGS="-s -Wl,-gc-sections" \
+	CFLAGS="-fdata-sections -ffunction-sections"
 	echo
 	echo ".. Configuration Complete"
 	echo ".. Starting Make Process"
