@@ -122,7 +122,7 @@ $_G4WJS_GIT/autogen.sh --prefix="$_G4WJS_HAMLIB3" \
 --disable-winradio --without-cxx-binding \
 --disable-shared --enable-static  \
 CFLAGS="-fdata-sections -ffunction-sections" \
-LDFLAGS="-Wl,--gc-sections"
+LDFLAGS="-s -Wl,--gc-sections"
 exit_status
 
 # run make file
