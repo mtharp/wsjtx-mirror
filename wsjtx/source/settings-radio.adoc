@@ -67,8 +67,9 @@ select *Rear/Data* or *Front/Mic*.
 - _Mode_: _WSJT-X_ uses upper sideband mode for both transmitting and
 receiving.  Select *USB*, or choose *Data/Pkt* if your radio offers
 such an option and uses it to enable the rear-panel audio line input.
-Select *None* if you do not want _WSJT-X_ to change the radio's Mode
-setting.
+Some radios also offer wider and/or flatter passbands when set to
+*Data/Pkt* mode.  Select *None* if you do not want _WSJT-X_ to change
+the radio's Mode setting.
 
 - _Split Operation_: Significant advantages result from using *Split*
 mode (separate VFOs for Rx and Tx) if your radio supports it.  If it

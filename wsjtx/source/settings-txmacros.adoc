@@ -12,3 +12,5 @@ characters) in the entry field at top, then click *Add*.
 - To remove an unwanted message, click on the message and then on
 *Delete*.
 
+- You can reorder your macro messages by using drag-and-drop. The
+new order will be preserved over program invocations.

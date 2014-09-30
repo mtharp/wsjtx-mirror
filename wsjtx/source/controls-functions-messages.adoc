@@ -18,15 +18,15 @@ rectangular button under the *Now* label.  Changing a Tx message in
 mid-stream will slightly reduce the chance of a correct decode, but it
 is usually OK if done in the first 10-15 s of a transmission.
 
-* Right-clicking on the entry field for message #5 pops up a list of
-free-text messages entered on the *Settings | Tx Macros* tab.
-Select any of your pre-stored messages by using the left
-mouse button.
-
 * All six Tx message fields are editable.  You can modify an
 automatically generated message or enter a desired message, keeping in
 mind the strict limits on message content.  See <<PROTOCOLS,Protocol
 Specifications>> for details.
+
+* Click on the pull-down arrow for message #5 to select one of the
+pre-stored free-text messages entered on the *Settings | Tx Macros*
+tab.  Pressing *Enter* on a modified message #5 automatically adds
+that message to the stored macros.
 
 The second arrangement of controls for generating and selecting
 Tx messages appears on *Tab 2* of the Message Control Panel:
@@ -36,11 +36,18 @@ image::images/new-msg-box.png[align="center",alt="New Message Menu"]
 
 With this setup you normally follow a top-to-bottom sequence of
 transmissions from the left column if you are calling CQ, or the right
-column if answering a CQ.  Clicking a button puts the appropriate
-message in the *Gen Msg* box.  If you are already transmitting, it
-changes the Tx message immediately.  You can enter anything (up to 13
-characters) in the *Free Msg* box.  Right-clicking on this entry field
-pops up your previously defined list of *Tx Macros*.
+column if answering a CQ.  
+
+* Clicking a button puts the appropriate message in the *Gen Msg* box.
+If you are already transmitting, the Tx message is changed
+immediately.
+
+* Both message fields are editable.  You can enter and transmit
+anything (up to 13 characters) in the *Free Msg* box.
+
+* Click on the pull-down arrow in the *Free Msg* box to select a
+pre-stored macro.  Pressing *Enter* on a modified message here
+automatically adds that message to the table of stored macros.
 
 IMPORTANT: During a transmission the actual message being sent always
 appears highlighted in yellow in the first box of the status bar

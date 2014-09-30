@@ -25,5 +25,15 @@ will be included in reception reports sent to {pskreporter}.  By
 default the frequency *Offset* for each band is zero.  Nonzero offsets
 may be added if (for example) a transverter is in use.
 
-When all settings have been configured to your liking, click *OK* to
-dismiss the *Settings* window. 
+- For a simple setup approach you might want to delete any unwanted
+bands -- for example, bands where you have no equipment.  Then click
+on a *Frequency* entry and type *Ctrl+A* to ``select all,'' and
+drag-and-drop the entries onto the _Station Information_ table.  You
+can then add any transverter offsets and antenna details.
+
+- To avoid typing the same information multiple times, you can
+drag-and-drop entries between the lines of the _Station Information_
+table.
+
+- When all settings have been configured to your liking, click *OK* to
+dismiss the *Settings* window.

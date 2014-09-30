@@ -2,7 +2,7 @@
 .Receiver Noise Level
 
 - Click the *Monitor* button to return to normal receive operation.
-The button will be highlighted in [green]*GREEN*.
+The button will be highlighted in green.
 
 - Be sure your transceiver is set to *USB* (or *USB Data*) mode.
 
