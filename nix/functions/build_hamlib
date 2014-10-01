@@ -140,7 +140,7 @@ function update_and_build() {
 	echo
 	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" \
 	--disable-winradio --disable-shared --enable-static \
-	--without-cxx-binding LDFLAGS="-s -Wl,-gc-sections" \
+	--without-cxx-binding LDFLAGS="-Wl,-gc-sections" \
 	CFLAGS="-fdata-sections -ffunction-sections"
 	echo
 	echo ".. Configure Process Complete"
@@ -151,7 +151,7 @@ function update_and_build() {
 	echo ".. Make Process Complete"
 	echo ".. Installing Hamlib3 to:"
 	echo ".. $_INSTALLD"
-	make -s install
+	make -s install-strip
 }
 
 # new build
@@ -167,7 +167,7 @@ function new_build() {
 	echo
 	"$_SRCD"/g4wjs-hamlib/autogen.sh --prefix="$_INSTALLD" \
 	--disable-winradio --disable-shared --enable-static \
-	--without-cxx-binding LDFLAGS="-s -Wl,-gc-sections" \
+	--without-cxx-binding LDFLAGS="-Wl,-gc-sections" \
 	CFLAGS="-fdata-sections -ffunction-sections"
 	echo
 	echo ".. Configuration Complete"
@@ -178,7 +178,7 @@ function new_build() {
 	echo ".. Make Process Complete"
 	echo ".. Installing Hamlib3 to:"
 	echo ".. $_INSTALLD"
-	make -s install
+	make -s install-strip
 }
 
 # START MAIN 

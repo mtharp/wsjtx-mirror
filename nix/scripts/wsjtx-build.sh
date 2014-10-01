@@ -122,7 +122,7 @@ $_G4WJS_GIT/autogen.sh --prefix="$_G4WJS_HAMLIB3" \
 --disable-winradio --without-cxx-binding \
 --disable-shared --enable-static  \
 CFLAGS="-fdata-sections -ffunction-sections" \
-LDFLAGS="-s -Wl,--gc-sections"
+LDFLAGS="-Wl,--gc-sections"
 exit_status
 
 # run make file
@@ -140,7 +140,7 @@ echo '-------------------------------------------'
 echo ' INSTALL HAMLIB'
 echo '-------------------------------------------'
 echo
-make -s install
+make -s install-strip
 exit_status
 
 # run hamlib test
