@@ -22,7 +22,7 @@ SET NSISD=%BASED%\NSIS
 SET INNOD=%BASED%\inno5
 SET GCCD=%BASED%\qt5\Tools\mingw48_32\bin
 SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
-SET QTP=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms
+SET QTP=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms;%BASED%\qt5\5.2.1\mingw48_32\plugins\accessible
 SET SRCD=%BASED%\src
 SET TOOLS=%BASED%\tools
 SET SCRIPTS=%TOOLS%\scripts
@@ -264,54 +264,7 @@ REM ------------------------------------------------------------------
 IF /I [%1]==[wsjtx] ( GOTO POSTBUILD2 ) ELSE ( GOTO CPFILES )
 
 :POSTBUILD2
-IF /I [%OPTION%]==[Debug] ( GOTO CPFILES_WSJTX ) ELSE ( GOTO FINISH )
-
-:CPFILES_WSJTX
-IF NOT EXIST %INSTALLD%\%OPTION%\lib (
-MKDIR %INSTALLD%\%OPTION%\lib
-)
-IF NOT EXIST %INSTALLD%\%OPTION%\lib\plugins\platforms (
-MKDIR %INSTALLD%\%OPTION%\lib\plugins\platforms
-)
-REM -- GCC, FFTW & HAMLIB
-ECHO -- Copying GCC Runtime DLL's to: %INSTALLD%\%OPTION%\bin
-REM --GCC Libs
-CD %GCCD%
-COPY /Y libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y "libstdc++-6.dll" %INSTALLD%\%OPTION%\bin > nul
-COPY /Y libwinpthread-1.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y libgfortran-3.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y libquadmath-0.dll %INSTALLD%\%OPTION%\bin > nul
-
-REM - FFTW3
-ECHO -- Copying FTW3F Runtime DLL's to: %INSTALLD%\%OPTION%\bin
-CD %FFTWD%
-COPY /Y libfftw3f-3.dll %INSTALLD%\%OPTION%\bin > nul
-
-REM - HAMLIB
-ECHO -- Copying Hamlib3 Library To: %INSTALLD%\%OPTION%\lib
-CD %HAMLIBLIBD%
-COPY /Y libhamlib.a %INSTALLD%\%OPTION%\lib > nul
-
-REM - QT5 LIBS
-ECHO -- Copying QT5 Runtime DLL's to: %INSTALLD%\%OPTION%\bin
-CD %QT5D%
-XCOPY icu* %INSTALLD%\%OPTION%\bin /Y /Q > nul
-COPY /Y Qt5Core.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Cored.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Gui.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Guid.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Multimedia.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Multimediad.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Network.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Networkd.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Widgets.dll %INSTALLD%\%OPTION%\bin > nul
-COPY /Y Qt5Widgetsd.dll %INSTALLD%\%OPTION%\bin > nul
-ECHO -- Copying QT5 Qwindows DLL's to: %INSTALLD%\%OPTION%\lib\plugins\platforms
-CD %QTP%
-COPY /Y qwindows.dll %INSTALLD%\%OPTION%\lib\plugins\platforms > nul
-COPY /Y qwindowsd.dll %INSTALLD%\%OPTION%\lib\plugins\platforms > nul
-GOTO DEBUG_MAKEBAT
+IF /I [%OPTION%]==[Debug] ( GOTO WSJTX_MAKEBAT ) ELSE ( GOTO FINISH )
 
 :CPFILES
 SET CPTXT=*.txt *.dat *.conf *.ini
@@ -336,6 +289,8 @@ IF NOT [%APP_NAME%]==[wsjtx] ( GOTO OTHER_MAKEBAT )
 
 REM - WSJT-X Debug BAT FILE
 :WSJTX_MAKEBAT
+ECHO -- Generating Batch File for ^( %APP_NAME% ^ )
+ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
 IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
 >%APP_NAME%.bat (
@@ -345,7 +300,7 @@ ECHO REM -- Part of the JTSDK Project
 ECHO TITLE JTSDK-QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS
 ECHO SETLOCAL ENABLEDELAYEDEXPANSION
-ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%INSTALLD%\%OPTION%\lib
+ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%FFTWD%;%GCCD%;%QT5D%;%QTP%;%HAMLIBD%;%HAMLIBLIBD%
 ECHO CALL %APP_NAME%.exe
 ECHO ENDLOCAL
 ECHO EXIT /B 0
