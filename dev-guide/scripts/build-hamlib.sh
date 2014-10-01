@@ -70,7 +70,7 @@ cd ~/g4wjs-hamlib/build
 CC=C:/JTSDK-QT/qt5/Tools/mingw48_32/bin/gcc \
 CXX=C:/JTSDK-QT/qt5/Tools/mingw48_32/bin/g++ \
 CFLAGS="-fdata-sections -ffunction-sections" \
-LDFLAGS="-s -Wl,--gc-sections"
+LDFLAGS="-Wl,--gc-sections"
 exit_status
 
 # Make clean check
@@ -100,7 +100,7 @@ echo "  INSTALLING HAMLIB3"
 echo "----------------------------------------------------------------"
 echo
 
-make -s install
+make -s install-strip
 exit_status
 touch C:/JTSDK-QT/hamlib3/build-date-"$today"
 exit_status
