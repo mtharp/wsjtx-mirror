@@ -1,12 +1,4 @@
 [qanda]
-I am running WSJT-X under Windows and using the integrated logging facility.  Where has the system put my log file?::
-
-Logs and other writeable files will normally be found in the directory 
-+
------
- C:\Users\username\AppData\Local\WSJT-X
------
-
 Why does the *Flatten* feature cause my displayed spectrum to curve steeply upward near the edges, before falling where the IF filter cuts off?::
 
 _WSJT-X_ does not expect a steep filter edge within the displayed
@@ -22,11 +14,14 @@ My rig has only a single SSB filter, about 2700 Hz bandwidth.  Can I use split m
 Set the radio to *Split* mode and _Split Operation_ to *Rig* (or if
 necessary, *Fake It*) on the *Settings | Radio* tab.  To operate
 primarily in the JT9 frequency range, check the *{plus}2 kHz*
-box. VFO-A will then be moved up to 14.078 MHz.  The JT9 subband now
+box. VFO-A will then be moved up to 14.078 MHz.  The JT9 sub-band now
 falls between about 500 Hz and 2000Hz on the waterfall display.  As
 described above, VFO-B will be adjusted so as to keep your Tx audio
 always between 1500 and 2000 Hz.  To operate JT65, simply uncheck the
-*{plus}2 kHz* option.
+*{plus}2 kHz* option.  If your rig has an IF shift control or
+equivalent (``passband tuning''), you can operate as if you had 4 kHz
+Rx bandwidth and use the IF shift control to focus on any 2.7 kHz
+portion of the JT65 and JT9 sub-bands.
 
 How should I configure _WSJT-X_ to run multiple instances?::
 

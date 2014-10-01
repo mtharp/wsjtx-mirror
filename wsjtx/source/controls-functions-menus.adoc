@@ -9,6 +9,13 @@ items are listed at the right.
 ==== File menu
 image::images/file-menu.png[align="left",alt="File Menu"]
 
+==== WSJT-X menu
+image::images/MacAppMenu.png[align="left",alt="Mac App Menu"]
+
+On Macintosh, *Settings* (otherwise found on the *File* menu) appears
+here instead, labeled as *Preferences*, and *About WSJT-X* appears
+here rather than on the *Help* menu.
+
 [[VIEW_MENU]]
 ==== View Menu
 image::images/view-menu.png[align="left",alt="View Menu"]

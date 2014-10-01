@@ -42,7 +42,8 @@ column if answering a CQ.
 If you are already transmitting, the Tx message is changed
 immediately.
 
-* Both message fields are editable.  You can enter and transmit
+//* Both message fields are editable.  You can enter and transmit
+* You can enter and transmit
 anything (up to 13 characters) in the *Free Msg* box.
 
 * Click on the pull-down arrow in the *Free Msg* box to select a
