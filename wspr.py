@@ -657,7 +657,9 @@ def get_decoded():
         #Dispatch autologger thread.
         _thread.start_new_thread(autolog, (decodes,))
 
-    if loopall: opennext()
+    if loopall:
+        time.sleep(0.2)
+        opennext()
 
 #------------------------------------------------------ autologger
 def autolog(decodes):
