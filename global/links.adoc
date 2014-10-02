@@ -40,7 +40,7 @@ Edit files as needed
 :homepage: http://physics.princeton.edu/pulsar/K1JT/[WSJT Home Page]
 :hrd: http://www.hrdsoftwarellc.com/[Ham Radio Deluxe]
 :jt65protocol: http://physics.princeton.edu/pulsar/K1JT/JT65.pdf[QEX]
-:jtalert: http://ham-apps.com[JT-ALERT-X]
+:jtalert: http://hamapps.com[JT-ALERT-X]
 //:launchpadurl: https://launchpad.net/~jnogatch/+archive/wsjtx[WSJT-X Linux Packages]
 :ntpsetup: http://www.satsignal.eu/ntp/setup.html[Network Time Protocol Setup]
 :osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]

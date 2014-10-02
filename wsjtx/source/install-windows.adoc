@@ -8,8 +8,7 @@ location +C:\Program Files\WSJTX+.  Suggested installation directories are
 +C:\WSJTX+ or +C:\WSJT\WSJTX+.
 
 - All program files relating to _WSJT-X_ will be stored in the chosen
-installation directory and its subdirectories. You can uninstall
-_WSJT-X_ by removing the installation directory and its contents.
+installation directory and its subdirectories. 
 
 - Logs and other writeable files will normally be found in the 
 directory +C:\Users\<username>\AppData\Local\WSJT-X+.
@@ -23,3 +22,7 @@ To ensure that this will be so when running under recent versions of
 Windows, open the system's *Sound* control panel and select in turn the
 *Recording* and *Playback* tabs. Click on *Properties*, then
 *Advanced*, and select *16 bit, 48000 Hz (DVD Quality)*.
+
+- You can uninstall _WSJT-X_ by clicking its *Uninstall* link in the
+Windows *Start* menu, or by using *Uninstall a Program* on the
+Windows Control Panel.

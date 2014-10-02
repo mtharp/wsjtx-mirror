@@ -55,9 +55,9 @@ include::install-from-source.adoc[]
 [[CONFIG]] 
 == Settings
 
-Select *Settings* from the *File* menu or by typing *F2*.  The
-following sections describe setup optiions available on each of six
-tabs selectable near the top of the window.
+Select *Settings* from the *File* menu or by typing *F2* (on
+Macintosh, *Cmd+,*).  The following sections describe setup optiions
+available on each of six tabs selectable near the top of the window.
 
 [[GENERAL]]
 === General
