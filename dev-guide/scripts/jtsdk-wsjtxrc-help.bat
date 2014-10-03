@@ -19,7 +19,7 @@ ECHO.
 ECHO EXAMPLES
 ECHO ----------------------------------------------------------
 ECHO Configure Build Tree:
-ECHO   Type: wsjtx rconfig
+ECHO   Type: wsjtxrc rconfig
 ECHO.
 ECHO Build Install Target:
 ECHO   Type:  wsjtxrc rinstall
