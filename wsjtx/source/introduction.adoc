@@ -12,7 +12,7 @@ weak-signal conditions. They use nearly identical message structure
 and source encoding.  JT65 was designed for EME (“moonbounce”) on the
 VHF/UHF bands and has also proven very effective for worldwide QRP
 communication on the HF bands.  JT9 is optimized for the LF, MF, and
-the HF bands up to 14 MHz.  It is about 2 dB more sensitive than JT65
+lower HF bands.  It is about 2 dB more sensitive than JT65
 while using less than 10% of the bandwidth. Both modes use one-minute
 timed sequences of alternating transmission and reception, so a
 minimal QSO takes four to six minutes — two or three transmissions by
