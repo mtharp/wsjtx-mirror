@@ -57,7 +57,7 @@ FCOPT		+=	@FCOPT@
 DEFS		:=	@DEFS@
 
 # WSPR Targets
-all:	libwspr.a thnix.o WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
+all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 	@echo ''
 	@echo '---------------------------------------------'
 	@echo " ${PROGRAM} ${VERSION} Make Summary"
@@ -102,7 +102,7 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 	padevsub.o pctile.o peakup.o phasetx.o ps162.o ptt_unix.o rx.o \
 	rxtxcoord.o set.o sort.o sound.o spec162.o speciq.o ssort.o \
 	start_threads.o startdec.o startrx.o starttx.o sync162.o \
-	twkfreq.o tx.o unpack50.o unpackcall.o unpackgrid.o \
+	twkfreq.o tx.o thnix.o unpack50.o unpackcall.o unpackgrid.o \
 	unpackname.o unpackpfx.o unpackprop.o unpacktext2.o wfile5.o \
 	wqdecode.o wqencode.o wspr2.o xcor162.o xfft.o 
 
