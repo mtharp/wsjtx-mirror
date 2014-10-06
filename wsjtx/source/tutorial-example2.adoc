@@ -43,7 +43,7 @@ see them all):
 image::images/decodes.png[align="center"]
 
 Since the Tx mode was set to *Tx JT65*, signals in that mode were
-decoded next.  If you had selected *Tx JT9*, JT9 signals would have
+decoded first.  If you had selected *Tx JT9*, JT9 signals would have
 been decoded first.
 
 - Confirm that mouse-click behavior is similar to that described
