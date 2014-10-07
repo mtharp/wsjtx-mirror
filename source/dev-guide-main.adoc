@@ -1,5 +1,5 @@
-// Status=review
 = WSJT Developers Guide
+:revision: v1.0
 :badges:
 :icons:
 :numbered:
@@ -15,10 +15,10 @@ include::../../global/links.adoc[]
 The WSJT family of programs for weak-signal amateur radio
 communication includes _WSJT_, _WSPR_, _MAP65_, _WSJT-X_, and
 _WSPR-X_.  User interfaces for _WSJT_ and _WSPR_ are written in
-Python, and build procedures for these two programs are similar.  User
-interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are written in C++ and
-use the Qt framework, and they share most build procedures.  Most
-number-crunching in all of the _WSJT_ programs is done in Fortran.
+Python. User interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are
+written in C++ and use the Qt5 framework. The build process, when 
+the JTSDK(s), is similar for all 5 applications. Most number-crunching
+in all of the _WSJT_ programs is done in Fortran.
 
 ////
 Communications should be moved to a global file to prevent rework / repeat in the
@@ -36,9 +36,9 @@ The following are established communication channels for the WSJT Group.
 
 .Development Related
 [horizontal]
-* Contact Project Manager, email: {joe_taylor}
-* Development Activity, Join: {dev_mail_list}
-* Repository Updates, Join: {dev_mail_svn}
+* Project Manager, email: {joe_taylor}
+* Development Mailing List, join: {dev_mail_list}
+* Repository Updates, join: {dev_mail_svn}
 * Development Guide Feedback, email: {greg_beam}
 
 .Community Related
