@@ -1,9 +1,10 @@
 
 All source code for the WSJT programs is available through an open-source
 repository known as SourceForge, under control of the version-control
-program {svn}. Subversion is included in all three *JTSDKs*.
-There is no need to install Subversion if you intend to build
-applications or documentation using the development kits.
+program {svn}. Subversion is included in all three Software Development
+Kits *(SDK)*. There is no need to install Subversion if you intend to
+build applications or documentation using the appropriate development
+kit.
 
 You can browse the organization of files in the repository {wsjt_svn}.
 Code for program _WSJT_ lies in the +trunk+ directory, while code for
@@ -65,7 +66,7 @@ svn co https://user@svn.code.sf.net/p/wsjt/wsjt/trunk
 Substitute your SourceForge username for +USER+.
 
 TIP: Due to the variations in user names, developer check-out short-cuts 
-not feasible, and must be manually entered.
+are not possible, and must be manually entered.
 
 .Developer Checkout Locations:
 
@@ -76,3 +77,40 @@ not feasible, and must be manually entered.
 +*WSPR*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
 +*WSPR-X*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
 +*MAP65*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/map65
+
+[[RC]]
+=== Release Candidates
+Often, release candidates *(RC)* are provided for *Alpha* or *Beta* testing.
+Where feasible, the *(SDK)* provides a method of build for each candidate.
+
+The posted *(RC)* is tested against the *SDK {revision}* and should
+perform the build correctly. Back-porting, due to the many variables
+involved, is not possible at this time. If you need an older version
+of a particular application, the best advice would be to use a 
+previously posted binary installer or the <<TAG, tagged branch>>.
+
+.Release Candidate Locations
+The following uses _WSJT-X_ as an example. Note the URL differences. At
+the time of this writing, the current release candidate is _WSJT-X v1.4 RC2_.
+Pulling the release candidate branch will get you the *Next (RC)* in
+the branch, in this case *(RC3)*, not *(RC2)*.
+
+---------
+
+Base URL: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/
+
+../wsjtx-1.4 ..: would pull WSJT-X v1.4 *(RCx)*
+../wsjtx ......: would pull WSJT-X v1.5.0 *(RC1)*
+
+---------
+
+To pull {wsjtx_rc2_tag}, use the <<TAG,Tagged RC2 Branch>>.
+
+[[TAG]]
+=== Tagged Releases
+A tagged version of a particular application is frozen, both in terms of
+the tool set used to build it, and the feature set it provides. Additional
+bug fixes or feature enhancements are sent upstream to the development
++trunk+ or +branch+. As such, the respective *(SDK)* may or may not be able
+to re-build all +tagged versions+. correctly. Future releases of the respective 
+*(SDK)* may allow for this type of regression / back-porting activity.

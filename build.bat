@@ -3,7 +3,7 @@ REM -- JTSDK-DOC Windows Build Script
 REM -- Part of the WSJT Documentation Project
 
 REM -- Start WSJT Documentation Build
-TITLE WSJT Documentation Envirnoment
+TITLE JTSDK-DOC Development Environment
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 SET SCRIPTVER=0.9.1
@@ -79,7 +79,11 @@ ECHO.
 ECHO  Finished building ^( %DOC_NAME% ^)
 ECHO  Location: %BASED%\%DOC_NAME%\%DOC_NAME%-main.html
 ECHO.
-ECHO  To Open, At The Promt, Type: %DOC_NAME%
+IF /I [%1]==[devg] (
+ECHO  To Open, Type: devg
+) else (
+ECHO  To Open, Type: %DOC_NAME%
+)
 ECHO.
 PAUSE
 ECHO.
