@@ -2,9 +2,10 @@
 
 Utility programs *+jt9code+* and *+jt65code+* let you explore the
 conversion of user-level messages into channel symbols or ``tone
-numbers.'' These programs can be useful to someone designing a beacon
-generator for JT9 or JT65, or for studying behavior of the
-error-control codes.
+numbers,'' and back again.  These programs can be useful to someone
+designing a beacon generator for JT9 or JT65, for understanding the
+permissible structure of transmitted messages, and for studying
+behavior of the error-control codes.
 
 Channel-symbol values for JT9 run from 0 to 8, with 0 representing the
 sync tone.  The total number of symbols in a transmitted message is
