@@ -4,7 +4,7 @@ REM -- Part of the WSJT Documentation project
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 COLOR 0E
-TITLE WSJT Documentation Environment
+TITLE JTSDK-DOC Development Environment
 
 SET TARGET=%~dp0
 IF %TARGET:~-1%==\ SET TARGET=%TARGET:~0,-1%
