@@ -70,11 +70,12 @@ ExternalProject_Add (wsjtx
   LOG_INSTALL 1
   STEP_TARGETS build install package
   )
+ExternalProject_Get_Property (wsjtx BINARY_DIR)
 ExternalProject_Add_Step (wsjtx package
   COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target package
   COMMAND echo "Built hamlib from branch/tag: ${hamlib_TAG}"
   COMMAND echo "Built WSJT-X from: ${WSJTX_TAG}"
-  COMMAND echo "Package(s) generated in ${OUTPUT_DIR}."
+  COMMAND echo "Package(s) generated in ${BINARY_DIR}."
   COMMENT "Generating package."
   DEPENDEES build
   )
