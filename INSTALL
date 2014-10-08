@@ -1,0 +1,63 @@
+WSJT-X Installation
+===================
+
+To build WSJT-X you need some prerequisite tools and libraries.
+
+On Linux:
+
+   build-essentials
+   gcc-4.8.2 or clang-3.4
+   g++-4.8.2 or clang-3.4
+   gfortran-4.8.2
+   CMake-2.8.9
+   git
+   svn
+
+   Qt5.2.1 or newer libmultimedia-dev and its prerequisites
+   libfftw3-single-dev and its prerequsites
+   libusb-0.1-dev
+
+Out of source builds are stringly recommended.
+
+Create a  build directory somewhere  and cd  to it then  configure the
+build as follows:
+
+    mkdir <build-dir-path>
+    cd <build-dir-path>
+    cmake <source-dir-path>
+
+By default  the build will install  the application in '/usr',  if you
+want to install it somewhere else e.g. under your own account, you can
+specify   the    install   prefix   as   a    configuration   variable
+(CMAKE_INSTALL_PREFIX):
+
+    cmake -D CMAKE_INSTALL_PREFIX=~/.local <source-dir-path>
+
+You may build  a specific version by specifying the  tag in the WSJT-X
+repository  e.g. wsjtx-1.4.0-rc2  by specifying  it as  a variable  to
+configure:
+
+    cmake -D WSJTX_TAG=tags/wsjtx-1.4.0-rc2 <source-dir-path>
+
+Once configured the package can be built as follows:
+
+    cmake --build <build-dir-path>
+
+If you  are a package maintainer  you can specify an  alternate target
+that generates  a suitable package  for the  system you run  the build
+on. It  is recommended  to to this  even if you  choose to  unwrap the
+package to  adjust the  settings or contents  before building  a final
+package. The alternate target is 'package' and is build as follows:
+
+    cmake --build <build-dir-path> --target package
+
+If the build  is successful the location of the  built package(s) will
+be displayed at teh end of the output.
+
+Other targets available include:
+
+     hamlib   		- just build the hamlib intermediate library
+
+     wsjtx-build	- stop after building WSJT-X
+
+     wsjtx-install	- stop after installing WSJT-X
