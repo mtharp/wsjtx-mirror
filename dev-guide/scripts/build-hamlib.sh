@@ -13,7 +13,7 @@
 set -e
 
 # Date, build and tool-chain paths
-today=$(date +"%m-%d-%y")
+today=$(date +"%d-%b-%y"-"%H%M")
 PATH="/c/JTSDK-QT/qt5/Tools/mingw48_32/bin:$PATH"
 mkdir -p ~/g4wjs-hamlib/build
 
@@ -24,16 +24,16 @@ INSTALLPREFIX=C:/JTSDK-QT/hamlib3/mingw32
 # Simple exit on error function
 function exit_status() {
 
-	if [[ "$?" != "0" ]];
+	if [[ $? != 0 ]];
 	then
 		exit 1
 	fi
 }
 
 echo
-echo "----------------------------------------------------------------"
-echo "  CLONE G4WJS HAMLIB3 & CHECKOUT INTEGRATION"
-echo "----------------------------------------------------------------"
+echo '----------------------------------------------------------------'
+echo '  CLONE G4WJS HAMLIB3 & CHECKOUT INTEGRATION'
+echo '----------------------------------------------------------------'
 echo
 echo ".. Be patient, this can take a few minutes"
 echo 
@@ -43,8 +43,10 @@ then
 	cd ~/g4wjs-hamlib/src
 	git pull
 	git checkout integration
+	exit_status
 else
 	cd ~/g4wjs-hamlib
+	if [ -d ~/g4wjs-hamlib/src ]; then rm -rf ~/g4wjs-hamlib/src ; fi
 	git clone git://git.code.sf.net/u/bsomervi/hamlib src
 	exit_status
 	cd ~/g4wjs-hamlib/src
@@ -53,11 +55,11 @@ else
 fi
 
 echo
-echo "----------------------------------------------------------------"
-echo "  RUN AUTOGEN TO CONFIGURE THE BUILD"
-echo "----------------------------------------------------------------"
+echo '----------------------------------------------------------------'
+echo '  RUN AUTOGEN TO CONFIGURE THE BUILD'
+echo '----------------------------------------------------------------'
 echo
-echo ".. Be patient, this can take a few minutes"
+echo '.. Be patient, this can take a few minutes'
 echo
 
 # Running autogen.sh to configure the build. No need to run configure
@@ -70,7 +72,7 @@ cd ~/g4wjs-hamlib/build
 CC=C:/JTSDK-QT/qt5/Tools/mingw48_32/bin/gcc \
 CXX=C:/JTSDK-QT/qt5/Tools/mingw48_32/bin/g++ \
 CFLAGS="-fdata-sections -ffunction-sections" \
-LDFLAGS="-Wl,--gc-sections"
+LDFLAGS="-s -Wl,--gc-sections"
 exit_status
 
 # Make clean check
@@ -86,29 +88,29 @@ fi
 
 # Run Make
 echo
-echo "----------------------------------------------------------------"
+echo '----------------------------------------------------------------'
 echo '  RUNNING MAKE'
-echo "----------------------------------------------------------------"
+echo '----------------------------------------------------------------'
 echo
 make -s
 exit_status
 
 # Run Make Install
 echo
-echo "----------------------------------------------------------------"
-echo "  INSTALLING HAMLIB3"
-echo "----------------------------------------------------------------"
+echo '----------------------------------------------------------------'
+echo '  INSTALLING HAMLIB3'
+echo '----------------------------------------------------------------'
 echo
 
 make -s install-strip
 exit_status
-touch C:/JTSDK-QT/hamlib3/build-date-"$today"
+touch C:/JTSDK-QT/hamlib3/build-date-$today
 exit_status
 
 echo
-echo "----------------------------------------------------------------"
-echo "  FINISHED HAMLIB3 BUILD"
-echo "----------------------------------------------------------------"
+echo '----------------------------------------------------------------'
+echo '  FINISHED HAMLIB3 BUILD'
+echo '----------------------------------------------------------------'
 echo 
 echo "Install Location: $INSTALLPREFIX"
 echo
