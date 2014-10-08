@@ -1,5 +1,5 @@
 = WSJT Developers Guide
-:revision: v1.0
+:revision: 1.0
 :badges:
 :icons:
 :numbered:
@@ -16,44 +16,22 @@ The WSJT family of programs for weak-signal amateur radio
 communication includes _WSJT_, _WSPR_, _MAP65_, _WSJT-X_, and
 _WSPR-X_.  User interfaces for _WSJT_ and _WSPR_ are written in
 Python. User interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are
-written in C++ and use the Qt5 framework. The build process, when 
+written in C{plus}{plus} and use the Qt5 framework. The build process, when 
 the JTSDK(s), is similar for all 5 applications. Most number-crunching
 in all of the _WSJT_ programs is done in Fortran.
-
-////
-Communications should be moved to a global file to prevent rework / repeat in the
-various guides.
-include::../global/communication.adoc
-////
-
-== Communication
-
-The following are established communication channels for the WSJT Group.
-
-.General Information
-* Main Site: {homepage}
-* Development Site: {projsummary}
-
-.Development Related
-[horizontal]
-* Project Manager, email: {joe_taylor}
-* Development Mailing List, join: {dev_mail_list}
-* Repository Updates, join: {dev_mail_svn}
-* Development Guide Feedback, email: {greg_beam}
-
-.Community Related
-* Discussion Board: {wsjt_yahoo_group}
-
-== Source Code
-include::sourcecode.adoc[]
 
 [[BASEENV]]
 == Environment Setup
 include::environment.adoc[]
 
+== Source Code
+include::sourcecode.adoc[]
+
+[[BUILDMATRIX]]
 == Build Matrix
 include::buildmatrix.adoc[]
 
+[[PKGMATRIX]]
 == Package Matrix
 include::pkgmatrix.adoc[]
 
@@ -82,6 +60,13 @@ include::wspr.adoc[]
 include::wsprx.adoc[]
 
 :numbered!:
+
+== Contact US
+include::../../global/communication.adoc[]
+
+== License
+include::../../global/license.adoc[]
+
 ////
 [[JTSDKDOC]]
 JTSDK-DOC
@@ -107,6 +92,3 @@ include::jtsdk-nix.adoc[]
 Under Construction
 ////
 
-License
--------
-include::../../global/license.adoc[]

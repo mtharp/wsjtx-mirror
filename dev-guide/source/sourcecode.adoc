@@ -18,9 +18,10 @@ programs is likely to be an active development branch.  There is no
 guarantee that a build from every revision will be successful, nor
 that it will provide a stable executable program.
 
-.CHECKOUT METHODS
-There are two methods for checking out source code, <<ANONCO,Anonymous>>
-and <<DEVCO,Developer>>. 
+=== Checkout Methods
+There are two primary methods for checking out source code, <<ANONCO,Anonymous>>
+and <<DEVCO,Developer>>. Additional checkouts are provided by way of
+<<RC,Release Candidates>> and <<TAG,Tagged Releases>>.
 
 [[ANONCO]]
 === Anonymous
@@ -83,28 +84,27 @@ are not possible, and must be manually entered.
 Often, release candidates *(RC)* are provided for *Alpha* or *Beta* testing.
 Where feasible, the *(SDK)* provides a method of build for each candidate.
 
-The posted *(RC)* is tested against the *SDK {revision}* and should
-perform the build correctly. Back-porting, due to the many variables
-involved, is not possible at this time. If you need an older version
-of a particular application, the best advice would be to use a 
+The posted *(RC)* is tested against the *JTSDK-(QT,PY) {revision}* and
+should perform the build correctly. Back-porting, due to the many
+variables involved, is not possible at this time. If you need an older
+version of a particular application, the best advice would be to use a 
 previously posted binary installer or the <<TAG, tagged branch>>.
 
 .Release Candidate Locations
 The following uses _WSJT-X_ as an example. Note the URL differences. At
 the time of this writing, the current release candidate is _WSJT-X v1.4 RC2_.
 Pulling the release candidate branch will get you the *Next (RC)* in
-the branch, in this case *(RC3)*, not *(RC2)*.
+the branch, in this case *(RC3)*, not *(RC2)*. To pull {wsjtx_rc2_tag},
+use the <<TAG,Tagged RC2 Branch>>.
 
 ---------
 
-Base URL: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/
+Base URL: https://svn.code.sf.net/p/wsjt/wsjt/branches/
 
-../wsjtx-1.4 ..: would pull WSJT-X v1.4 *(RCx)*
-../wsjtx ......: would pull WSJT-X v1.5.0 *(RC1)*
+../wsjtx-1.4 ..: would pull WSJT-X v1.4 (RCx)
+../wsjtx ......: would pull WSJT-X v1.5.0 (RC1)
 
 ---------
-
-To pull {wsjtx_rc2_tag}, use the <<TAG,Tagged RC2 Branch>>.
 
 [[TAG]]
 === Tagged Releases
@@ -112,5 +112,15 @@ A tagged version of a particular application is frozen, both in terms of
 the tool set used to build it, and the feature set it provides. Additional
 bug fixes or feature enhancements are sent upstream to the development
 +trunk+ or +branch+. As such, the respective *(SDK)* may or may not be able
-to re-build all +tagged versions+. correctly. Future releases of the respective 
+to re-build all tagged version correctly. Future releases of the respective 
 *(SDK)* may allow for this type of regression / back-porting activity.
+
+Tagged branches can be found at:
+
+---------
+
+Base URL: https://svn.code.sf.net/p/wsjt/wsjt/tags
+
+../wsjtx-1.4.0-rc2 ..: would pull WSJT-X v1.4 (RC2)
+
+---------
