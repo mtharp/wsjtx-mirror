@@ -3,8 +3,7 @@ All source code for the WSJT programs is available through an open-source
 repository known as SourceForge, under control of the version-control
 program {svn}. Subversion is included in all three Software Development
 Kits *(SDK)*. There is no need to install Subversion if you intend to
-build applications or documentation using the appropriate development
-kit.
+build applications or documentation using the *(SDKs)*.
 
 You can browse the organization of files in the repository {wsjt_svn}.
 Code for program _WSJT_ lies in the +trunk+ directory, while code for
@@ -29,25 +28,25 @@ Anonymous checkouts allow you to build all documentation and
 applications using the same methods as the developers, however,
 you cannot check-in your local updates to the repository.
 
-Each SDK has short-cuts built-in for Anonymous check-outs. For example,
-to check-out +*WSJT*+, from the JTSDK-PY environment, type:
+Each *(SDK)* has short-cuts built-in for Anonymous check-outs. For example,
+to check-out _WSJT_, from the JTSDK-PY environment, type:
 -----
 checkout wsjt
 -----
 
-You can also manually check-out +*WSJT*+, using
+You can also manually check-out _WSJT_, using
 -----
 svn co https://svn.code.sf.net/p/wsjt/wsjt/trunk
 -----
 
-.Anonymous Source Code Locations:
+.Anonymous Source Code Locations (URLs):
 [horizontal]
-+*DOCS*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/doc
-+*WSJT*+:: https://svn.code.sf.net/p/wsjt/wsjt/trunk
-+*WSJT-X*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
-+*WSPR*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-+*WSPR-X*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
-+*MAP65*+:: https://svn.code.sf.net/p/wsjt/wsjt/branches/map65
+*WSJT*:: https://svn.code.sf.net/p/wsjt/wsjt/trunk
+*WSJT-X*:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
+*WSPR*:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+*WSPR-X*:: https://svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
+*MAP65*:: https://svn.code.sf.net/p/wsjt/wsjt/branches/map65
+*DOCS*:: https://svn.code.sf.net/p/wsjt/wsjt/branches/doc
 
 //
 
@@ -58,39 +57,38 @@ In order to use the developer check-out or check-in process
 * Create a {sourceforge} User Account
 * Email {joe_taylor} to be added to the Developer List.
 
-Then, using +*WSJT*+ as the example:
+Then, using _WSJT_ as the example:
 
 ---------
 svn co https://user@svn.code.sf.net/p/wsjt/wsjt/trunk 
 ---------
 
-Substitute your SourceForge username for +USER+.
+Substitute your SourceForge username for *user*.
 
-TIP: Due to the variations in user names, developer check-out short-cuts 
-are not possible, and must be manually entered.
+TIP: Due to the variations in user names, developer check-out
+short-cuts are not possible, and must be manually entered.
 
-.Developer Checkout Locations:
-
+.Developer Checkout Locations (URLs):
 [horizontal]
-+*DOCS*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/doc
-+*WSJT*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/trunk
-+*WSJT-X*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
-+*WSPR*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
-+*WSPR-X*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
-+*MAP65*+:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/map65
+*WSJT*:: https://user@svn.code.sf.net/p/wsjt/wsjt/trunk
+*WSJT-X*:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx
+*WSPR*:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wspr
+*WSPR-X*:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/wsprx
+*MAP65*:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/map65
+*DOCS*:: https://user@svn.code.sf.net/p/wsjt/wsjt/branches/doc
 
 [[RC]]
 === Release Candidates
 Often, release candidates *(RC)* are provided for *Alpha* or *Beta* testing.
 Where feasible, the *(SDK)* provides a method of build for each candidate.
 
-The posted *(RC)* is tested against the *JTSDK-(QT,PY) {revision}* and
-should perform the build correctly. Back-porting, due to the many
-variables involved, is not possible at this time. If you need an older
-version of a particular application, the best advice would be to use a 
-previously posted binary installer or the <<TAG, tagged branch>>.
+The posted *(RC)* is tested against the *(SDK)* and should perform the
+build correctly. Back-porting, due to the many variables involved,
+is not possible at this time. If you need an older version of a
+particular application, the best advice would be to use a previously
+posted binary installer or the <<TAG, Tagged Branch>>.
 
-.Release Candidate Locations
+.Release Candidate Locations (URLs):
 The following uses _WSJT-X_ as an example. Note the URL differences. At
 the time of this writing, the current release candidate is _WSJT-X v1.4 RC2_.
 Pulling the release candidate branch will get you the *Next (RC)* in
@@ -101,21 +99,32 @@ use the <<TAG,Tagged RC2 Branch>>.
 
 Base URL: https://svn.code.sf.net/p/wsjt/wsjt/branches/
 
-../wsjtx-1.4 ..: would pull WSJT-X v1.4 (RCx)
-../wsjtx ......: would pull WSJT-X v1.5.0 (RC1)
+../wsjtx-1.4 ..: would pull WSJT-X v1.4 (RCx) next release version
+../wsjtx ......: would pull WSJT-X v1.5 (RC1) devel version
 
 ---------
 
 [[TAG]]
 === Tagged Releases
-A tagged version of a particular application is frozen, both in terms of
-the tool set used to build it, and the feature set it provides. Additional
-bug fixes or feature enhancements are sent upstream to the development
-+trunk+ or +branch+. As such, the respective *(SDK)* may or may not be able
-to re-build all tagged version correctly. Future releases of the respective 
-*(SDK)* may allow for this type of regression / back-porting activity.
+A tagged version of a particular application is frozen, both in terms
+of the tool set used to build it, and the feature set it provides.
+Additional bug fixes or feature enhancements are sent upstream to the
+development +trunk+ or +branch+. As such, the respective *(SDK)* may
+or may not be able to re-build historical tagged branches correctly.
+Future releases of the respective *(SDK)* may allow for this type of
+regression / back-porting activity.
 
-Tagged branches can be found at:
+.Available Tag Locations (URLs):
+[horizontal]
+*WSJT*:: https://svn.code.sf.net/p/wsjt/wsjt/tag/release-5.9.2
+*WSPR*:: https://svn.code.sf.net/p/wsjt/wsjt/tag/wspr212
+*WSJT-X*:: https://svn.code.sf.net/p/wsjt/wsjt/tag/wsjtx-1.3
+*WSJT-X*:: https://svn.code.sf.net/p/wsjt/wsjt/tag/wsjtx-1.4.0-rc1
+*WSJT-X*:: https://svn.code.sf.net/p/wsjt/wsjt/tag/wsjtx-1.4.0-rc2
+
+IMPORTANT: In general, unless you have a specific need for an earlier
+version, you should *always* use the latest tagged release version for
+a given application.
 
 ---------
 
