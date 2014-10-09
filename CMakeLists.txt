@@ -49,10 +49,10 @@ ExternalProject_Add (hamlib
   CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
   BUILD_COMMAND ${MAKE_EXECUTABLE} all
   INSTALL_COMMAND ${MAKE_EXECUTABLE} install-strip
-  LOG_UPDATE 1
-  LOG_CONFIGURE 1
-  LOG_BUILD 1
-  LOG_INSTALL 1
+#  LOG_UPDATE 1
+#  LOG_CONFIGURE 1
+#  LOG_BUILD 1
+#  LOG_INSTALL 1
   )
 
 ExternalProject_Get_Property (hamlib INSTALL_DIR)
@@ -64,10 +64,10 @@ ExternalProject_Add (wsjtx
   -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-  LOG_UPDATE 1
-  LOG_CONFIGURE 1
-  LOG_BUILD 1
-  LOG_INSTALL 1
+#  LOG_UPDATE 1
+#  LOG_CONFIGURE 1
+#  LOG_BUILD 1
+#  LOG_INSTALL 1
   STEP_TARGETS build install package
   )
 ExternalProject_Get_Property (wsjtx BINARY_DIR)
