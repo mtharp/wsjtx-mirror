@@ -49,10 +49,10 @@ ExternalProject_Add (hamlib
   CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
   BUILD_COMMAND ${MAKE_EXECUTABLE} all
   INSTALL_COMMAND ${MAKE_EXECUTABLE} install-strip
-#  LOG_UPDATE 1
-#  LOG_CONFIGURE 1
-#  LOG_BUILD 1
-#  LOG_INSTALL 1
+  LOG_UPDATE 1
+  LOG_CONFIGURE 1
+  LOG_BUILD 1
+  LOG_INSTALL 1
   )
 
 ExternalProject_Get_Property (hamlib INSTALL_DIR)
@@ -64,11 +64,11 @@ ExternalProject_Add (wsjtx
   -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-#  LOG_UPDATE 1
-#  LOG_CONFIGURE 1
-#  LOG_BUILD 1
+  LOG_UPDATE 1
+  LOG_CONFIGURE 1
+  LOG_BUILD 1
 #  LOG_INSTALL 1
-  STEP_TARGETS build install package
+  STEP_TARGETS build install package package_source
   )
 ExternalProject_Get_Property (wsjtx BINARY_DIR)
 ExternalProject_Add_Step (wsjtx package
@@ -79,3 +79,18 @@ ExternalProject_Add_Step (wsjtx package
   COMMENT "Generating package."
   DEPENDEES build
   )
+ExternalProject_Add_Step (wsjtx package_source
+  COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target package_source
+  COMMAND echo "Built hamlib from branch/tag: ${hamlib_TAG}"
+  COMMAND echo "Built WSJT-X from: ${WSJTX_TAG}"
+  COMMAND echo "Package(s) generated in ${BINARY_DIR}."
+  COMMENT "Generating package."
+  DEPENDEES build
+  )
+set_target_properties (wsjtx PROPERTIES EXCLUDE_FROM_ALL 1)
+
+# export traditional targets
+add_custom_target (build ALL DEPENDS wsjtx-build)
+add_custom_target (install DEPENDS wsjtx-install)
+add_custom_target (package DEPENDS wsjtx-package)
+add_custom_target (package_source DEPENDS wsjtx-package_source)

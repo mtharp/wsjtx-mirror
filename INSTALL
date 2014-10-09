@@ -43,6 +43,10 @@ Once configured the package can be built as follows:
 
     cmake --build <build-dir-path>
 
+To install the application at the install prefix:
+
+    cmake --build <build-dir-path> --target install
+
 If you  are a package maintainer  you can specify an  alternate target
 that generates  a suitable package  for the  system you run  the build
 on. It  is recommended  to to this  even if you  choose to  unwrap the
@@ -58,6 +62,8 @@ Other targets available include:
 
      hamlib   		- just build the hamlib intermediate library
 
-     wsjtx-build	- stop after building WSJT-X
+     build		- stop after building WSJT-X (default target)
 
-     wsjtx-install	- stop after installing WSJT-X
+     install		- stop after installing WSJT-X
+
+     package_source	- build source packages in several formats
