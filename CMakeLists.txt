@@ -46,6 +46,7 @@ include (ExternalProject)
 ExternalProject_Add (hamlib
   GIT_REPOSITORY git://git.code.sf.net/u/bsomervi/hamlib
   GIT_TAG ${hamlib_TAG}
+  UPDATE_COMMAND ""
   CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
   BUILD_COMMAND ${MAKE_EXECUTABLE} all
   INSTALL_COMMAND ${MAKE_EXECUTABLE} install-strip
@@ -67,7 +68,6 @@ ExternalProject_Add (wsjtx
   LOG_UPDATE 1
   LOG_CONFIGURE 1
   LOG_BUILD 1
-#  LOG_INSTALL 1
   STEP_TARGETS build install package package_source
   )
 ExternalProject_Get_Property (wsjtx BINARY_DIR)
