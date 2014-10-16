@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=WSJT-KVASD v1.0
+Comment=WSJT KVASD Utilities
+Exec=/usr/bin/wsjt-kvasd
+Terminal=true
+Categories=HamRadio;Audio;AudioVideo;
+Keywords=Scientific;Hamradio;Radio;Signal;Propogation;Whisper;WSJT;KVASD;
+Icon=wsjt-kvasd.xpm
+
