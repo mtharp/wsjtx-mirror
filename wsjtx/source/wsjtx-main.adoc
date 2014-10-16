@@ -3,7 +3,10 @@
 = WSJT-X User Guide
 //:Date: October 1, 2014
 :Revision: 1.4
-:badges:
+// For web-pages, adding :badges: is ok, but is a security issue for
+// package building .deb, .rpm, etc as it exposes the IP address and the images
+// are non-free, so can't be included as part of the Debian package.
+// :badges:
 :icons:
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
