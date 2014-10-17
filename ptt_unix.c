@@ -1,7 +1,7 @@
 /*
 *-------------------------------------------------------------------------------
  *
- * This file is part of the WSPR application, Weak Signal Propogation Reporter
+ * This file is part of the WSPR application, Weak Signal Propagation Reporter
  *
  * File Name:    ptt_unix.c
  * Description:
@@ -12,7 +12,7 @@
  * Many authors contributed to this file, see the AUTHORS file.
  *
  * Copyright (C) 2001-2014 Joseph Taylor, K1JT
- * License: GPL-3+
+ * License: GPL-3
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software

@@ -1,5 +1,19 @@
 
-Current Development Version: WSPR-4.0
+Current Development Version: WSPR-4.0 r4522
+
+2014-10-16 commit r4252 Greg Beam <ki7mt@yahoo.com>
+
+* Verified Manifest.in list for wspr-dist.sh
+* Correct spelling errors and GPL-3 in headers.
+* Move thnix.o to OBJ2 and out of the ALL line in Makefile
+  This causes build warnings, but no errors.
+* Updated TODO list and README files.
+* Updated wspr.py About Revision Date:
+* Updated wspr.sh, use $LOGNAME v.s. $USER
+* Updated wspr.desktop file (should work in XFCE, LXDE, GNOME Panel, etc)
+* Updated wspra.iss to r4522
+* Updated wsrp-dist.sh header
+* Merged wspr/TODO and wspr/doc/README
 
 2014-08-29 commit r4232 Greg Beam <ki7mt@yahoo.com>
 

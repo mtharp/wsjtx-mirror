@@ -1,14 +1,14 @@
 !-------------------------------------------------------------------------------
 !
-! This file is part of the WSPR application, Weak Signal Propogation Reporter
+! This file is part of the WSPR application, Weak Signal Propagation Reporter
 !
 ! File Name:    wsprcode.f90
 ! Description:  This program provides examples of the source encoding,
-!               convolutional error-control coding, bit and symbol ordering,
+!               convulsional error-control coding, bit and symbol ordering,
 !               and synchronizing information contained in WSPR messages.
 !
 ! Copyright (C) 2001-2014 Joseph Taylor, K1JT
-! License: GPL-3+
+! License: GPL-3
 !
 ! This program is free software; you can redistribute it and/or modify it under
 ! the terms of the GNU General Public License as published by the Free Software

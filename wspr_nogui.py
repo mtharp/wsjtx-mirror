@@ -8,10 +8,10 @@
 # Source:       http://sourceforge.net/projects/wsjt/
 # Contributors: 4X6IZ, K1JT
 #
-# Description:  This is a version of wspr.py with all the GUI calls stipped out
+# Description:  This is a version of wspr.py with all the GUI calls stripped out
 #
 # Copyright (C) 2008-2014 Joseph Taylor, K1JT
-# License: GPL-3+
+# License: GPL-3
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software

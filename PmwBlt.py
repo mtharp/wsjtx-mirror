@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propogation Reporter
+# This file is part of the WSPR application, Weak Signal Propagation Reporter
 #
 # File Name:    PmwBlt.py
 # Description:  Python interface to some of the commands of the 2.4 version of the

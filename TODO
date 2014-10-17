@@ -1,24 +1,20 @@
 WSPR-4.0 TO-DO List
+-------------------
 
 * Need to bounce the file list of .f, *.a, *.h, pthread etc against the other
-  apps to ensure we're using same things unless otherwise needed.
-
-* What is huser_hardware.bat/.py used for? Are they Joe's tools ?
-
-* Need JTSDK-PY Instructions added to INSTALL file
-
-* wspr.1.txt manpage needs updating
-
-* Need to add FMT instructions to manpage
+  apps to ensure we're using same things unless otherwise needed. - Long Term Upstream Project
 
 * Need (Win32) and (*Nix) /lib directory and update configure.ac amd Makefile.in
-  accordinly.
+  accordinly. -Long Term Upstream Project
 
-* Add aclocal.m4 search macros for Python3 and F2PY3
+* Descide what stays and what goes the wpsr/archive/folder, the rest can go into
+  the Doc System. -Long Term Upstream Project
 
-* Add m4 macro Hamlib options, ask user, add status
+* WSPR 4.0 Guide needs updating. Needs Screenshots and general polish,
+  AsciiDoc Format. -Long Term Upstream Project
 
-
+* WSPR0 document(s) User_Guide and Instructions needs to be synced with the
+  files posted on the web-site, then updated in AsciiDoc format. -Long Term Upstream Project
 
 Completed:
 
@@ -26,5 +22,13 @@ John (G4LKA)
 * Need Mac OSX 10.6/7 Install instructions added to INSTALL file
 
 Greg (KI7MT)
-* Update documentation links in wspr.py
-* Add aclocal.m4 search macros for FFTW, Samplerate, Portaudio
+* Update documentation links in wspr.py -Done
+* Add aclocal.m4 search macros for FFTW, Samplerate, Portaudio -Done
+* What is huser_hardware.bat/.py used for? Are they Joe's tools ? -Personal Use
+* wspr.1.txt manpage needs updating -Done
+* Need to add FMT instructions to manpage -Done
+* Add aclocal.m4 search macros for Python3 and F2PY3 -Done
+* Need JTSDK-PY Instructions added to INSTALL file -Not Needed
+* Add m4 macro Hamlib options, ask user, add status -Not Needed
+* Need to add a copyright file to list all the (c) from things like samplerate,
+  portaudio etc. -Done for Distro packaging

@@ -1,13 +1,13 @@
 /*
  *-------------------------------------------------------------------------------
  *
- * This file is part of the WSPR application, Weak Signal Propogation Reporter
+ * This file is part of the WSPR application, Weak Signal Propagation Reporter
  *
  * File Name:   nhash.c
  * Description: Functions to produce 32-bit hashes for hash table lookup
  *
  * Copyright (C) 2008-2014 Joseph Taylor, K1JT
- * License: GPL-3+
+ * License: GPL-3
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software

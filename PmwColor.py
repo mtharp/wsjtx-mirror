@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propogation Reporter
+# This file is part of the WSPR application, Weak Signal Propagation Reporter
 #
 # File Name:    PmwColor.py
 # Description:  Functions for converting colors and modifying the color scheme of

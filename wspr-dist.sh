@@ -1,18 +1,36 @@
 #!/usr/bin/env bash
 #
-# Script to create ${name}-${version}.tar.gz
+# Title			: wspr-dist.sh
+# Version		: 1.0.0
+# Author		: Greg, Beam, ki7mt -at- yahoo.com
+# Description	: Script to create ${name}-${version}.tar.gz
+# Usage			: wspr-dist.sh [NAME] [VERSION]
+# Example		: ./wspr-dist.sh wspr 4.0
 #
-# USAGE: wspr-dist.sh [NAME] [VERSION]
-# 
-# Example1 cmd line: ./wspr-dist.sh wspr 4.0
-# Example2 Makefile: make dist
+# Generates		: wspr-4.0.tar.gz
+# File Location	: $(src-path)/wspr/dist
 #
-# Generates .......: wspr-4.0.tar.gz
-# File Location ...: $(src-path)/wspr/dist
+# Copyright		: Copyright (C) 2014 Greg Beam, KI7MT
+# License		: GPL-3
 #
+# wspr-dist.sh is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation either version 3 of the License, or
+# (at your option) any later version. 
+#
+# wspr-dist.sh is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#------------------------------------------------------------------------------#
 
+# exit on error
 set -e
 
+# process variables
 _NAME=$(echo $1 |tr [:upper:] [:lower:])
 _VER=$2
 _BASED=$(exec pwd)

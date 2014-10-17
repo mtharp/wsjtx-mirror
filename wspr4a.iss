@@ -1,7 +1,7 @@
 ; NOTE: AppVerName needs updating at release / beta release time.
 [Setup]
 AppName=WSPR
-AppVerName=WSPR Version 4.0 r4233
+AppVerName=WSPR Version 4.0 r4522
 AppCopyright=Copyright (C) 2001-2014 by Joe Taylor, K1JT
 DefaultDirName=C:\WSJT\WSPR4
 DefaultGroupName=WSJT\WSPR4

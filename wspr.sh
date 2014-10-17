@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propogation Reporter
+# This file is part of the WSPR application, Weak Signal Propagation Reporter
 #
 # File Name:    wspr.sh
 # Description:  Shell script wrapper to update or copy files from system install
 # 
 # Copyright (C) 2001-2014 Joseph Taylor, K1JT
-# License: GPL-3+
+# License: GPL-3
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -27,7 +27,7 @@
 set -e
 
 # set dir's
-_HOMEDIR="/home/$USER/.wspr"
+_HOMEDIR="/home/$LOGNAME/.wspr"
 
 # make a few dir's
 mkdir -p $_HOMEDIR

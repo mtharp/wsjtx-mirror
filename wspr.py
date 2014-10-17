@@ -2,7 +2,7 @@
 #----------------------------------------------------------------------------
 # $Date: 2008-03-17 08:29:04 -0400 (Mon, 17 Mar 2008) $ $Revision$
 #
-# This file is part of the WSPR application, Weak Signal Propogation Reporter
+# This file is part of the WSPR application, Weak Signal Propagation Reporter
 #
 # File Name:    wspr.py
 # Source:       http://sourceforge.net/projects/wsjt/
@@ -10,11 +10,11 @@
 #
 # Description:  WSPR (pronounced "whisper") stands for "Weak Signal
 #               Propagation Reporter".  The program generates and decodes
-#               a digital soundcard mode optimized for beacon-like
+#               a digital sound card mode optimized for beacon-like
 #               transmissions on the LF, MF, and HF bands.
 #
 # Copyright (C) 2008-2014 Joseph Taylor, K1JT
-# License: GPL-3+
+# License: GPL-3
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -366,7 +366,7 @@ be found at http://sourceforge.net/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     t="Revision date: " + \
-      "$Date: 2010-09-17 13:03:38 -0400 (Fri, 17 Sep 2010) $"[7:-1]
+      "$Date: 2014-10-16 22:41:00 -0600 (Thu, 16 Oct 2014) $"[7:-1]
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
 
