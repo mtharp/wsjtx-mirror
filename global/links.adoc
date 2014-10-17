@@ -60,6 +60,7 @@ d). Edit lines as needed. Keeping them in alphabetic order help see dupes.
 //:launchpadac6sl: https://launchpad.net/~jnogatch/+archive/wsjtx[WSJT-X Linux Packages]
 :launchpadki7mt: https://launchpad.net/~ki7mt[KI7MT PPA's]
 :ntpsetup: http://www.satsignal.eu/ntp/setup.html[Network Time Protocol Setup]
+:msys_url: http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/[MSYS Download]
 :osx_instructions: http://physics.princeton.edu/pulsar/K1JT/OSX_Readme[here]
 :ppa: http://en.wikipedia.org/wiki/Personal_Package_Archive[PPA]
 :projsummary: http://sourceforge.net/projects/wsjt/[Project Summary]
@@ -90,7 +91,6 @@ d). Edit lines as needed. Keeping them in alphabetic order help see dupes.
 :wsjtx_rc2_tag: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/tags/wsjtx-1.4.0-rc2/[Tag: WSJT-X v1.4 RC2]
 :wspr_code: http://physics.princeton.edu/pulsar/K1JT/WSPRcode.exe[WSPRcode.exe]
 :wspr_svn: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/wspr/[here]
-
 
 // MAIL-TO links
 :alex_efros: mailto:powerman@powerman.name[Alex Efros]

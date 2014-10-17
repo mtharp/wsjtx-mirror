@@ -59,55 +59,6 @@ methods, build the full install target with +*JTSDK-QT*+ for simplicity.
 
 [[WSJTXCOMPILE]]
 
-.[red]#Hamlib3 Special Instructions#
-
-**********************************************************************
-
-IMPORTANT: The current development branch of _WSJT-X_ is using a custom
-built set of Hamlib3 binaries. At some point, after official
-release from the Hamlib developers, we will shift all apps using
-Hamlib 1.2.15 to Hamlib3. In the meantime, follow the special instruction
-for installing Hamlib3 into your JTSDK-QT directory, then continue with
-building. Hamlib3 will be included in the next JTSDK-QT release if needed.
-
-.Install
-* Hamlib3 {hamlib3}
-* Save the .zip file to a temporary location, then unzip
-* Create directory C:\JTSDK-QT\hamlib3
-* Copy directory (path)\hamlib\mingw32 to C:\JTSDK-QT\hamlib3\
-
-You should end up with *2* Hamlib directories:
-
-* C:\JTSDK-QT\hamlib
-* C:\JTSDK-QT\hamlib3\mingw32
-
-This will allow _WSJT-X_ to use Hamlib3 and others to use Hamlib 1.2.15.x
-as needed.
-
-**********************************************************************
-
-[[OMNIRIG]]
-
-.[red]#OmniRig Special Instructions#
-
-**********************************************************************
-
-IMPORTANT: OmniRig is another special requirement to build WSJT-X using
-CMake. A binary installer is included with each SDK under
-C:\JTSDK-*\tools. Alternatively, you can download and install the
-latest from {dxatlas}
-
-.To Install
-* OmniRig {omnirig}
-* Extract .zip file and run the .exe file.
-* No other actions should be required.
-
-.To Uninstall
-* OmniRig proveides an Uninstaller
-* Got to Start >> Programs >> Omni-Rig >> Uninstall Omni-Rig
-
-**********************************************************************
-
 .COMPILE WSJT-X
 
 * Open Windows CMD terminal, at the prompt, type,:
@@ -122,13 +73,13 @@ C:\JTSDK-QT\jtsdk-qtenv.bat
 -----
 *For Debug*
 
-build wsjtx
+build wsjtx dinstall
 
 *For Release*
 
-build wsjtx -r
+build wsjtx rinstall
 
-Note the ( -r for Release )
+Note the ( *r* for Release )
 -----
 
 * If you have not checked out _WSJT-X_ previously, you will be prompted
@@ -142,13 +93,13 @@ image::images/jtsdk-wsjtx-co.png[]
 -----
 *For Debug*
 
-build wsjtx
+build wsjtx dinstall
 
 *For Release*
 
-build wsjtx -r
+build wsjtx rinsrall
 
-Note the ( -r for Release )
+Note the ( *r* for Release )
 -----
 
 TIP: If this is a subsequent build, you will be asked to update from SVN.

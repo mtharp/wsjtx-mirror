@@ -117,8 +117,7 @@ as such, is a [red]#mandatory install#.
 +*JTSDK-QT*+:: {jtsdk_qt}
 +*Omni-Rig*+:: {omnirig} ( For WSJT-X CMake Builds Only )
 * <<OMNIRIG,See Omni-Rig Special Instructions>>
-+*Hamlib3*+:: {hamlib3} ( For WSJT-X CMake Builds Only )
-* <<WSJTXCOMPILE, See Hamlib3 Special Instructions>>
++*Hamlib3*+:: <<HAMLIB3, See Hamlib3 Special Instructions>>
 
 === Install
 
@@ -215,7 +214,44 @@ MSYS is not included as part of Windows JTSDK v{revision} series. The
 following packages and associated build-script have been tested,
 and currently employed to build Hamlib3 present in JTSDK-QT.
 
-ADD-INSTRUCTIONS-HERE
+These instructions are still being tested, but have provided stable
+builds when using the MSYS form the link below, and the build script.
+
+Be forewarned, the script will install the newly build Hamlib3 to your
+JTSDK-QT\hamlib3 directory. If for whatever reason, you want to revert
+to the version provided by the *(SDK)*, simply delete the folder, and
+update from *JTSDK-DOC*
+
+//
+
+.Custom Hamlib3 Build With MSYS
+[horizontal]
++*SF Site*+:: {msys_url}
++*Download File*+:: msys{plus}7za{plus}wget{plus}svn{plus}git{plus}mercurial{plus}cvs-rev13.7z 2013-05-15
+
+//
+
+* Extract to: C:\msys32
+* Browse to C:\msys32\msys and run the msys.bat shortcut.
+* You may want to close, then re-open the msys.bat after your first run,
+as the batch file creates all the required user profiles.
+* Re-Open C:\msys32\msys\msys.bat
+* At the log in prompt, type the following command (all on one line):
+//
+----------
+svn export --force https://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/scripts/build-hamlib.sh
+----------
+//
+IMPORTANT: This next step, depending on your *Single Core* CPU speed, can
+take a long time to perform, upwards for 5 to 7 minutes.
+
+//
+
+* At the prompt, type: *./build-hamlib.sh*
+* After successful completion of the build, you should have a new marker
+in *C:\JTSDK-QT\hamlib3* that says something like: *build-date-<date>,*
+where date is the date from your Windows Date and Time.
+* From this point, build _WSJT-X_ as you normally would.
 
 **********************************************************************
 
