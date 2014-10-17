@@ -10,7 +10,7 @@
 # PACKAGE: msys+7za+wget+svn+git+mercurial+cvs-rev13.7z 2013-05-15
 
 # To get get the changes made from a previous date to today, in the 
-# shell type, ( changing --since=<date> as needed
+# shell type, ( changing --since=<date> as needed )
 #
 # mkdir -p ~/g4wjs-hamlib/build
 # git clone git://git.code.sf.net/u/bsomervi/hamlib src
