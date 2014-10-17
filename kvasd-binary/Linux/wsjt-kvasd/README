@@ -1,12 +1,12 @@
 WSJT-KVASD
 ----------
 
-WSJT-KVASD is a set of scripts / functions to mangae the installation and
-removal of the KVASD decoder used in WSJT, WSJT-X and WSPR-X from
+WSJT-KVASD is a set of scripts / functions to manage the Installation, Removal
+and Testing of the KVASD decoder used with WSJT, WSJT-X and WSPR-X from
 Joseph H, Tayolor, K1JT.
 
 The KVASD binary itself "is not" part of this package, as such, does not
 violate FOSS.
 
-Project URL: http://physics.princeton.edu/pulsar/k1jt/devel.html
+
 
