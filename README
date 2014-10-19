@@ -1,0 +1,12 @@
+KVASD Installer
+---------------
+
+KVASD Installer is a set of scripts / functions to manage the Installation, Removal
+and Testing of the KVASD decoder used with WSJT, WSJT-X and WSPR-X from
+Joseph H, Tayolor, K1JT.
+
+The KVASD binary itself "is not" part of this package, as such, does not
+violate FOSS.
+
+
+

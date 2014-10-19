@@ -1,0 +1,110 @@
+:doctype: manpage
+:man manual: KVASD Installer Man Page
+:man date: {date}
+:man version: Version 1.11.0
+
+= kvasd-installer(1)
+
+== NAME
+
+kvasd-installer - Install, Remove and Test the KVASD, Algebraic Soft-Decision
+Decoder for RS(63,12)_6.
+
+== SYNOPSIS
+
+*KVASD-Installer* - The KVASD decoder is non-FOSS binary only. As as such,
+it cannot be included with open source Linux distributions. KVASD-Installer
+provides a means in which to 'Install', 'Remove' and 'Test' the decoder.
+To run *wsjt-kvasd*:
+ 
+-----
+Open terminal, type..: kvasd-installer
+-----
+
+== PROGRAMS
+
+There is (1) script associated with *'kvasd-installer'*, it provides (3)
+primary functions:
+
+*INSTALL* - To install the KVASD decoder, select Install from the main menu.
+If you have not done so already, you will be asked to agree to the End User
+License Agreement ( EULA ). If you do not < Accept > the EULA, the script
+will display a message, retun you to the main menu.
+ 
+ *NOTE* - Although the binary is free to use in Ham Radio, the user must accept
+          the terms laid out in the EULA before the script will install the binary.
+ 
+After reading and accepting the ( EULA ), the script with look for KVASD
+first in /usr/bin, if not found, it will download the latest version from SVN.
+If it is found, it will run a few simple tests to verify its functionality.
+
+To install the KVASD binary, select Install from the Main Menu. This
+will go through a series of tests, and eventually install KVASD in the
+system folder /usr/bin
+ 
+ 'NOTE': - You should NOT run this script as Root, or Sudo, as it writes tmp
+           files to the user directory. The only action that requires Root or
+           Sudo is the actual installing of the binary, at which time you will
+           be prompted for your Root / Sudo password.
+
+
+*REMOVE* - To remove KVASD, select Remove from the Main Menu. This only removes
+the KVASD binary. If you want to remove WSJT-KVASD ( the package ),
+use your package manager to remove it:
+ 
+.........
+sudo apt-get remove kvasd-installer
+
+Or to purge all files, including the KVASD binary:
+
+sudo apt-get purge kvasd-installer
+.........
+
+
+*TEST DECODER* - Test runs a few very simple tests to ensure it is functional
+on the system. If you installed WSJT-KVASD from either a PPA or your
+distribution package manager, all the required dependencies should be revolved
+for you.
+ 
+The Following Tests Will Be Run:
+* Base path test to ensure KVASD is installed to /usr/bin
+* Version test to ensure KVASD can render the version number
+* LDD test to verify all the required libs are installed
+
+To run the preset test, select Test Decoder from the Main Menu.
+
+
+== BUGS
+
+If you find a bug or suspect *kvasd-installer* is not acting as you think it should,
+send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
+
+
+== AUTHORS
+-----
+Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Editor
+-----
+
+[[X1]]
+== RESOURCES
+-----
+Project Site: ... <http://sourceforge.net/projects/wsjt/>
+Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
+-----
+
+
+== COPYING
+
+Copyright &copy; 2014 Greg Beam, KI7MT
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+GPL version 3 or later <http://gnu.org/licenses/gpl.html>.

@@ -1,0 +1,128 @@
+'\" t
+.\"     Title: kvasd-installer
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 10/18/2014
+.\"    Manual: KVASD Installer Man Page
+.\"    Source: \ \& Version 1.11.0
+.\"  Language: English
+.\"
+.TH "KVASD\-INSTALLER" "1" "10/18/2014" "\ \& Version 1\&.11\&.0" "KVASD Installer Man Page"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+kvasd-installer \- Install, Remove and Test the KVASD, Algebraic Soft\-Decision Decoder for RS(63,12)_6\&.
+.SH "SYNOPSIS"
+.sp
+\fBKVASD\-Installer\fR \- The KVASD decoder is non\-FOSS binary only\&. As as such, it cannot be included with open source Linux distributions\&. KVASD\-Installer provides a means in which to \fIInstall\fR, \fIRemove\fR and \fITest\fR the decoder\&. To run \fBwsjt\-kvasd\fR:
+.sp
+.nf
+Open terminal, type\&.\&.: kvasd\-installer
+.fi
+.SH "PROGRAMS"
+.sp
+There is (1) script associated with \fB\fIkvasd\-installer\fR\fR, it provides (3) primary functions:
+.sp
+\fBINSTALL\fR \- To install the KVASD decoder, select Install from the main menu\&. If you have not done so already, you will be asked to agree to the End User License Agreement ( EULA )\&. If you do not < Accept > the EULA, the script will display a message, retun you to the main menu\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+*NOTE* \- Although the binary is free to use in Ham Radio, the user must accept
+         the terms laid out in the EULA before the script will install the binary\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+After reading and accepting the ( EULA ), the script with look for KVASD first in /usr/bin, if not found, it will download the latest version from SVN\&. If it is found, it will run a few simple tests to verify its functionality\&.
+.sp
+To install the KVASD binary, select Install from the Main Menu\&. This will go through a series of tests, and eventually install KVASD in the system folder /usr/bin
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\*(AqNOTE\*(Aq: \- You should NOT run this script as Root, or Sudo, as it writes tmp
+          files to the user directory\&. The only action that requires Root or
+          Sudo is the actual installing of the binary, at which time you will
+          be prompted for your Root / Sudo password\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBREMOVE\fR \- To remove KVASD, select Remove from the Main Menu\&. This only removes the KVASD binary\&. If you want to remove WSJT\-KVASD ( the package ), use your package manager to remove it:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sudo apt\-get remove kvasd\-installer
+
+Or to purge all files, including the KVASD binary:
+
+sudo apt\-get purge kvasd\-installer
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBTEST DECODER\fR \- Test runs a few very simple tests to ensure it is functional on the system\&. If you installed WSJT\-KVASD from either a PPA or your distribution package manager, all the required dependencies should be revolved for you\&.
+.sp
+The Following Tests Will Be Run: * Base path test to ensure KVASD is installed to /usr/bin * Version test to ensure KVASD can render the version number * LDD test to verify all the required libs are installed
+.sp
+To run the preset test, select Test Decoder from the Main Menu\&.
+.SH "BUGS"
+.sp
+If you find a bug or suspect \fBkvasd\-installer\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
+.SH "AUTHORS"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Greg Beam, KI7MT, <ki7mt@yahoo\&.com> \&.\&.\&.\&. Manpage Editor
+.fi
+.if n \{\
+.RE
+.\}
+.SH "RESOURCES"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Project Site: \&.\&.\&. <http://sourceforge\&.net/projects/wsjt/>
+Main web site: \&.\&. <http://www\&.physics\&.princeton\&.edu/pulsar/K1JT/>
+.fi
+.if n \{\
+.RE
+.\}
+.SH "COPYING"
+.sp
+Copyright \(co 2014 Greg Beam, KI7MT
+.sp
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\&.
+.sp
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.sp
+GPL version 3 or later http://gnu\&.org/licenses/gpl\&.html\&.
