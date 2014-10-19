@@ -25,18 +25,18 @@
 set -e
 
 # base variables
-APP_NAME='WSJT-KVASD'
+APP_NAME='KVASD Installer'
 MSGCLIENT='dialog'
 MD5_1="28a6f8ba2efc3df02af2a781bd3ab654"
 
 # path variables
-BASED="/home/$LOGNAME/.local/share/wsjt-kvasd"
+BASED="/home/$LOGNAME/.local/share/kvasd-installer"
 LOG="$BASED"/logs
 TMP="$BASED"/tmp
 INSTALL_DIR=/usr/bin
 
 # process variables
-HELP="$TMP"/wsjt_kvasd_help.txt
+HELP="$TMP"/kvasd-installer_help.txt
 EULA="$TMP"/wsjt_kvasd_eula.txt
 KVASD_URL='svn://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux/kvasd'
 
@@ -462,7 +462,7 @@ READ EULA
  main menu. Use the Arrow and Page keys to navigate.
 
 EOF_HELP
-) > "$TMP"/wsjt_kvasd_help.txt 
+) > "$TMP"/kvasd-installer_help.txt 
 
 } # end make help
 
