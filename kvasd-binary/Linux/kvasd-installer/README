@@ -1,7 +1,7 @@
-WSJT-KVASD
-----------
+KVASD Installer
+---------------
 
-WSJT-KVASD is a set of scripts / functions to manage the Installation, Removal
+KVASD Installer is a set of scripts / functions to manage the Installation, Removal
 and Testing of the KVASD decoder used with WSJT, WSJT-X and WSPR-X from
 Joseph H, Tayolor, K1JT.
 

@@ -1,5 +1,5 @@
-WSJT-KVASD - To Do List
------------------------
+KVASD Installer - To Do List
+----------------------------
 
 * Add additinal tests for kvasd decoder, post install
 * Update package to use KVASD v1.12

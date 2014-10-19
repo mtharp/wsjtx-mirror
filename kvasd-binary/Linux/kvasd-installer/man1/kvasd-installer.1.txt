@@ -1,29 +1,29 @@
 :doctype: manpage
-:man manual: WSJT-KVASD Man Page
+:man manual: KVASD Installer Man Page
 :man date: {date}
-:man version: Version 1.0.0
+:man version: Version 1.11.0
 
-= wjst-kvasd(1)
+= kvasd-installer(1)
 
 == NAME
 
-wsjt-kvasd - Install, Remove and Test the KVASD, Algebraic Soft-Decision
+kvasd-installer - Install, Remove and Test the KVASD, Algebraic Soft-Decision
 Decoder for RS(63,12)_6.
 
 == SYNOPSIS
 
-*WSJT-KVASD* - The KVASD decoder is non-FOSS binary only. As as such,
-it cannot be included with open source Linux distributions. WSJT-KVASD
+*KVASD-Installer* - The KVASD decoder is non-FOSS binary only. As as such,
+it cannot be included with open source Linux distributions. KVASD-Installer
 provides a means in which to 'Install', 'Remove' and 'Test' the decoder.
 To run *wsjt-kvasd*:
  
 -----
-Open terminal, type..: wsjt-kvasd
+Open terminal, type..: kvasd-installer
 -----
 
 == PROGRAMS
 
-There is (1) script associated with *'wsjt-kvasd'*, it provides (3)
+There is (1) script associated with *'kvasd-installer'*, it provides (3)
 primary functions:
 
 *INSTALL* - To install the KVASD decoder, select Install from the main menu.
@@ -53,11 +53,11 @@ the KVASD binary. If you want to remove WSJT-KVASD ( the package ),
 use your package manager to remove it:
  
 .........
-sudo apt-get remove wsjt-kvasd
+sudo apt-get remove kvasd-installer
 
 Or to purge all files, including the KVASD binary:
 
-sudo apt-get purge wsjt-kvasd
+sudo apt-get purge kvasd-installer
 .........
 
 
@@ -68,7 +68,7 @@ for you.
  
 The Following Tests Will Be Run:
 * Base path test to ensure KVASD is installed to /usr/bin
-* Version test to ensure KVASD can renderthe version number
+* Version test to ensure KVASD can render the version number
 * LDD test to verify all the required libs are installed
 
 To run the preset test, select Test Decoder from the Main Menu.
@@ -76,7 +76,7 @@ To run the preset test, select Test Decoder from the Main Menu.
 
 == BUGS
 
-If you find a bug or suspect *'wsjt-kvasd'* is not acting as you think it should,
+If you find a bug or suspect *kvasd-installer* is not acting as you think it should,
 send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
 
 

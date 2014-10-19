@@ -1,13 +1,13 @@
 '\" t
-.\"     Title: wjst-kvasd
+.\"     Title: kvasd-installer
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 10/14/2014
-.\"    Manual: WSJT-KVASD Man Page
-.\"    Source: \ \& Version 1.0.0
+.\"      Date: 10/18/2014
+.\"    Manual: KVASD Installer Man Page
+.\"    Source: \ \& Version 1.11.0
 .\"  Language: English
 .\"
-.TH "WJST\-KVASD" "1" "10/14/2014" "\ \& Version 1\&.0\&.0" "WSJT\-KVASD Man Page"
+.TH "KVASD\-INSTALLER" "1" "10/18/2014" "\ \& Version 1\&.11\&.0" "KVASD Installer Man Page"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,17 +28,17 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-wsjt-kvasd \- Install, Remove and Test the KVASD, Algebraic Soft\-Decision Decoder for RS(63,12)_6\&.
+kvasd-installer \- Install, Remove and Test the KVASD, Algebraic Soft\-Decision Decoder for RS(63,12)_6\&.
 .SH "SYNOPSIS"
 .sp
-\fBWSJT\-KVASD\fR \- The KVASD decoder is non\-FOSS binary only\&. As as such, it cannot be included with open source Linux distributions\&. WSJT\-KVASD provides a means in which to \fIInstall\fR, \fIRemove\fR and \fITest\fR the decoder\&. To run \fBwsjt\-kvasd\fR:
+\fBKVASD\-Installer\fR \- The KVASD decoder is non\-FOSS binary only\&. As as such, it cannot be included with open source Linux distributions\&. KVASD\-Installer provides a means in which to \fIInstall\fR, \fIRemove\fR and \fITest\fR the decoder\&. To run \fBwsjt\-kvasd\fR:
 .sp
 .nf
-Open terminal, type\&.\&.: wsjt\-kvasd
+Open terminal, type\&.\&.: kvasd\-installer
 .fi
 .SH "PROGRAMS"
 .sp
-There is (1) script associated with \fB\fIwsjt\-kvasd\fR\fR, it provides (3) primary functions:
+There is (1) script associated with \fB\fIkvasd\-installer\fR\fR, it provides (3) primary functions:
 .sp
 \fBINSTALL\fR \- To install the KVASD decoder, select Install from the main menu\&. If you have not done so already, you will be asked to agree to the End User License Agreement ( EULA )\&. If you do not < Accept > the EULA, the script will display a message, retun you to the main menu\&.
 .sp
@@ -76,11 +76,11 @@ To install the KVASD binary, select Install from the Main Menu\&. This will go t
 .RS 4
 .\}
 .nf
-sudo apt\-get remove wsjt\-kvasd
+sudo apt\-get remove kvasd\-installer
 
 Or to purge all files, including the KVASD binary:
 
-sudo apt\-get purge wsjt\-kvasd
+sudo apt\-get purge kvasd\-installer
 .fi
 .if n \{\
 .RE
@@ -88,12 +88,12 @@ sudo apt\-get purge wsjt\-kvasd
 .sp
 \fBTEST DECODER\fR \- Test runs a few very simple tests to ensure it is functional on the system\&. If you installed WSJT\-KVASD from either a PPA or your distribution package manager, all the required dependencies should be revolved for you\&.
 .sp
-The Following Tests Will Be Run: * Base path test to ensure KVASD is installed to /usr/bin * Version test to ensure KVASD can renderthe version number * LDD test to verify all the required libs are installed
+The Following Tests Will Be Run: * Base path test to ensure KVASD is installed to /usr/bin * Version test to ensure KVASD can render the version number * LDD test to verify all the required libs are installed
 .sp
 To run the preset test, select Test Decoder from the Main Menu\&.
 .SH "BUGS"
 .sp
-If you find a bug or suspect \fB\fIwsjt\-kvasd\fR\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
+If you find a bug or suspect \fBkvasd\-installer\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
 .SH "AUTHORS"
 .sp
 .if n \{\
