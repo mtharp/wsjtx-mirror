@@ -102,8 +102,9 @@ RRR, or 73 is permitted.  The following are valid *Type 2* messages
 with compound callsigns:
 
  CQ W4/G0XYZ FM07
- DE W4/G0XYZ -22
  QRZ K1ABC/VE6 DO33
+ DE W4/G0XYZ -22
+ DE W4/G0XYZ 73
 
 In each case, the message is treated as *Type 2* because the add-on
 prefix or suffix is _not_ one of those in the fixed list.  Note
@@ -118,12 +119,12 @@ message you wish to send!
 QSOs involving *Type 2* compound callsigns might look like either
 of the following sequences
 
- CQ KP4/K1ABC FK68
+ CQ K1ABC/VE1 FN75
                      K1ABC G0XYZ IO91
  G0XYZ K1ABC –19
                      K1ABC G0XYZ R–22
  G0XYZ K1ABC RRR
-                     K1ABC G0XYZ 73
+                     K1ABC/VE1 73
 
 
  CQ K1ABC FN42
