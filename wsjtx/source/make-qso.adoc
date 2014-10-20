@@ -103,7 +103,10 @@ with compound callsigns:
 
  CQ W4/G0XYZ FM07
  QRZ K1ABC/VE6 DO33
+ DE W4/G0XYZ FM18
  DE W4/G0XYZ -22
+ DE W4/G0XYZ R-22
+ DE W4/G0XYZ RRR
  DE W4/G0XYZ 73
 
 In each case, the message is treated as *Type 2* because the add-on
