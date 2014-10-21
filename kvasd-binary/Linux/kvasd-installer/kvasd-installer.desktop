@@ -1,11 +1,11 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Kvasd Installer v1.11
-Comment=WSJT KVASD Utility
-Exec=/usr/bin/wsjt-kvasd
+Name=KVASD Installer v1.11
+Comment=KVASD Utility
+Exec=/usr/bin/kvasd-installer
 Terminal=true
 Categories=Network;Audio;HamRadio;
 OnlyShowIn=GNOME;KDE;XFCE;LXDE;UNITY
-Keywords=Scientific;Hamradio;Radio;Signal;Propogation;Whisper;WSJT;KVASD;
+Keywords=Scientific;Hamradio;Radio;Signal;Propogation;Whisper;WSJT;WSJTX;MAP65;KVASD;
 Icon=kvasd-installer.xpm
