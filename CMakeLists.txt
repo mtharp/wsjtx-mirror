@@ -11,12 +11,13 @@ For a tag use tags/<tag-name> e.g. tags/wsjtx-1.4.0-rc2
 
 For a branch use branches/<branch-name> e.g. branches/wsjtx-1.4
 
-The special value of 'LOCAL' is also accepted, if set the build expects the
-sources to be found in a directory src in the three files 'hamlib.tgz',
-'wsjtx.tgz' and, 'wsjtx-main.html'. This value is to be used where build hosts
-do not allow source downloads using Subversion, git or cURL as part of the build.
-"
-  )
+The  WSJTX_TAG option  is  only used  if the  directory  'src' is  not
+present.   If the  'src' directory  is present  the build  expects the
+sources to be found in it  consisting of the three files 'hamlib.tgz',
+'wsjtx.tgz'  and, 'wsjtx-main.html'.   This 'src'  directory is  to be
+used where build hosts do not allow source downloads using Subversion,
+git or cURL as  part of the build. See the 'source'  target for how to
+generate a suitable source tarball." )
 
 
 #
@@ -38,7 +39,7 @@ endif (NOT APPLE)
 #
 # work out what we want to build
 #
-if (NOT WSJTX_TAG STREQUAL "LOCAL")
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
   # one day this needs to change to the hamlib git master
   set (hamlib_repo git://git.code.sf.net/u/bsomervi/hamlib)
 
@@ -75,10 +76,11 @@ if (NOT WSJTX_TAG STREQUAL "LOCAL")
     message (STATUS "Building WSJT-X branch: ${WSJTX_TAG}")
     message (STATUS "hamlib branch: ${hamlib_TAG}")
   endif (NOT __prefix STREQUAL branches)
-else (NOT WSJTX_TAG STREQUAL "LOCAL")
+else (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
   # location of downloaded User Guide in LOCAL build source tree
   set (wsjtx_user_guide_directory_url -D WSJT_MANUAL_DIRECTORY:STRING=file://${CMAKE_CURRENT_SOURCE_DIR}/src)
-endif (NOT WSJTX_TAG STREQUAL "LOCAL")
+endif (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
 
 include (ExternalProject)
 
@@ -187,14 +189,14 @@ add_custom_target (source
   COMMENT "
 Generating the WSJT-X superbuild self-contained source tarball ${__suffix}.tgz
 
-To use this tarball, transfer it to the target build host, un-tar it, configure with
-the CMake option WSJTX_TAG=LOCAL and CMAKE_INSTALL_PREFIX if required (default is /usr),
-then build and install. For example:
+To use this  tarball, transfer it to the target  build host, un-tar it
+and, configure  it including  a CMAKE_INSTALL_PREFIX if  required (the
+default is /usr), then build and install. For example:
 
     $ tar xzf ${__suffix}.tgx
     $ mkdir build
     $ cd build
-    $ cmake -D WSJTX_TAG=LOCAL ../${__suffix}
+    $ cmake ../${__suffix}
     $ cmake --build .
     $ sudo cmake --build . --target install
 

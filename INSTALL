@@ -52,11 +52,9 @@ Making a Self-Contained Source Tarball
 ======================================
 
 If you  are restricted  to local  files only on  your build  host, for
-example  a build  server with  restricted or  no Internet  access, the
-build script  can be configured in  a local mode by  setting the CMake
-option WSJTX_TAG to a value of "LOCAL":
-
-    $ cmake -D WSJTX_TAG=LOCAL <source-dir-path>
+example  a build  server  with  restricted or  no  Internet access,  a
+special source tarball can be  generated which contains all the source
+files needed rather than fetching them from the VCS at build time.
 
 In this mode you must augment  the source directory with the following
 files:
@@ -67,13 +65,13 @@ files:
 
 You should not do this  augmentation manually, the build script should
 be used in advance  on a host with Internet access  to make a suitable
-source  tarball for  use in  a  LOCAL build.   To do  this you  simply
+source  tarball for  use in  a  local build.   To do  this you  simply
 configure as  for a  normal build  selecting the  version you  wish to
 build using  the WSJTX_TAG variable  as above, then make  the 'source'
 target.  This  does a  build to  verify the  validity of  the upstream
 sources then packages  the project source along with  the extra source
 files above.   If this completes  successfully, a tarball that  can be
-used for a LOCAL build is automatically built. For example:
+used for a local build is automatically built. For example:
 
     $ mkdir ~/build/wsjtx
     $ cd ~/build/wsjtx
@@ -82,14 +80,14 @@ used for a LOCAL build is automatically built. For example:
 
 The  above commands,  if  successful,  will produce  'wsjtx-1.4.0.tgz'
 which is  a source  tarball ready for  use on another  system to  do a
-LOCAL build, for example:
+local build, for example:
 
     $ mkdir ~/build
     $ cd ~/build
     $ tar xzf wsjtx-1.4.0.tgz
     $ mkdir build
     $ cd build
-    $ cmake -D WSJTX_TAG=LOCAL ../wsjtx-1.4.0
+    $ cmake ../wsjtx-1.4.0
     $ cmake --build .
     $ sudo cmake --build . --target install
 
