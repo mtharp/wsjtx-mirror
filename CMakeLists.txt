@@ -37,6 +37,16 @@ endif (NOT APPLE)
 
 
 #
+# function to read and extract MD5 hashes from a file
+#
+function (read_md5sum file result_variable)
+  file (READ ${file}.md5sum md5sum)
+  string (REGEX REPLACE "^([^ ]+).*$" "\\1" md5sum ${md5sum})
+  set (${result_variable} ${md5sum} PARENT_SCOPE)
+endfunction (read_md5sum)
+
+
+#
 # work out what we want to build
 #
 if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
@@ -79,6 +89,15 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
 else (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
   # location of downloaded User Guide in LOCAL build source tree
   set (wsjtx_user_guide_directory_url -D WSJT_MANUAL_DIRECTORY:STRING=file://${CMAKE_CURRENT_SOURCE_DIR}/src)
+  read_md5sum (src/hamlib.tgz hamlib_md5sum)
+  read_md5sum (src/wsjtx.tgz wsjtx_md5sum)
+
+  set (user-guide ${CMAKE_CURRENT_SOURCE_DIR}/src/wsjtx-main.html)
+  read_md5sum (${user-guide} user-guide_md5sum)
+  file (MD5 ${user-guide} md5sum)
+  if (NOT md5sum STREQUAL user-guide_md5sum)
+    message (FATAL_ERROR "Checksum mismatch on ${user-guide}")
+  endif (NOT md5sum STREQUAL user-guide_md5sum)
 endif (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 
@@ -93,10 +112,13 @@ ExternalProject_Add (hamlib
   GIT_REPOSITORY ${hamlib_repo}
   GIT_TAG ${hamlib_TAG}
   URL ${CMAKE_CURRENT_SOURCE_DIR}/src/hamlib.tgz
+  URL_HASH MD5=${hamlib_md5sum}
   UPDATE_COMMAND ""
   CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
   BUILD_COMMAND ${MAKE_EXECUTABLE} all
   INSTALL_COMMAND ${MAKE_EXECUTABLE} install-strip
+  LOG_DOWNLOAD 1
+  LOG_UPDATE 1
   LOG_UPDATE 1
   LOG_CONFIGURE 1
   LOG_BUILD 1
@@ -107,15 +129,16 @@ ExternalProject_Add (hamlib
 # custom target to make a hamlib source tarball
 #
 ExternalProject_Get_Property (hamlib SOURCE_DIR)
+ExternalProject_Get_Property (hamlib TMP_DIR)
 add_custom_target (hamlib_sources
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/hamlib
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/hamlib
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/hamlib/.git
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/src
-  COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_SOURCE_DIR}/src/hamlib.tgz ${CMAKE_CURRENT_BINARY_DIR}/hamlib
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/hamlib
+  COMMAND ${CMAKE_COMMAND} -E make_directory hamlib
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} hamlib
+  COMMAND ${CMAKE_COMMAND} -E remove_directory hamlib/.git
+  COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_BINARY_DIR}/hamlib.tgz hamlib
+  COMMAND ${CMAKE_COMMAND} -E remove_directory hamlib
+  WORKING_DIRECTORY ${TMP_DIR}
   DEPENDS hamlib
-  COMMENT "Generating and embedding the hamlib upstream source tarball"
+  COMMENT "Generating the hamlib upstream source tarball"
   )
 
 
@@ -129,11 +152,13 @@ ExternalProject_Add (wsjtx
   SVN_REPOSITORY ${wsjtx_repo}
   UPDATE_COMMAND ${wsjtx_update_command}
   URL ${CMAKE_CURRENT_SOURCE_DIR}/src/wsjtx.tgz
+  URL_HASH MD5=${wsjtx_md5sum}
   CMAKE_ARGS
   -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   ${wsjtx_user_guide_directory_url}
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+  LOG_DOWNLOAD 1
   LOG_UPDATE 1
   LOG_CONFIGURE 1
   LOG_BUILD 1
@@ -161,16 +186,17 @@ add_custom_target (package DEPENDS wsjtx-package)
 # custom target to make WSJT-X source tarball
 #
 ExternalProject_Get_Property (wsjtx SOURCE_DIR)
+ExternalProject_Get_Property (wsjtx TMP_DIR)
 add_custom_target (wsjtx_sources
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/wsjtx
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/wsjtx
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/wsjtx/.svn
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/src
-  COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_SOURCE_DIR}/src/wsjtx.tgz ${CMAKE_CURRENT_BINARY_DIR}/wsjtx
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/wsjtx
-  COMMAND ${CMAKE_COMMAND} -E copy ${BINARY_DIR}/contrib/wsjtx-main.html ${CMAKE_CURRENT_SOURCE_DIR}/src
+  COMMAND ${CMAKE_COMMAND} -E make_directory wsjtx
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} wsjtx
+  COMMAND ${CMAKE_COMMAND} -E remove_directory wsjtx/.svn
+  COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_BINARY_DIR}/wsjtx.tgz wsjtx
+  COMMAND ${CMAKE_COMMAND} -E remove_directory wsjtx
+  COMMAND ${CMAKE_COMMAND} -E copy ${BINARY_DIR}/contrib/wsjtx-main.html ${CMAKE_CURRENT_BINARY_DIR}/
+  WORKING_DIRECTORY ${TMP_DIR}
   DEPENDS wsjtx-build
-  COMMENT "Generating and embedding the WSJT-X upstream source tarball"
+  COMMENT "Generating the WSJT-X upstream source tarball"
   )
 
 
@@ -179,12 +205,20 @@ add_custom_target (wsjtx_sources
 # a local build
 #
 add_custom_target (source
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/${__suffix}
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/${__suffix}
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/${__suffix}/.svn
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/${__suffix}/.git
-  COMMAND ${CMAKE_COMMAND} -E tar czf ${__suffix}.tgz ${CMAKE_CURRENT_BINARY_DIR}/${__suffix}
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/${__suffix}
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${__suffix}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR} ${__suffix}
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${__suffix}/.svn
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${__suffix}/.git
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${__suffix}/src
+  COMMAND ${CMAKE_COMMAND} -E rename hamlib.tgz ${__suffix}/src/hamlib.tgz
+  COMMAND ${CMAKE_COMMAND} -E rename wsjtx.tgz ${__suffix}/src/wsjtx.tgz
+  COMMAND ${CMAKE_COMMAND} -E rename wsjtx-main.html ${__suffix}/src/wsjtx-main.html
+  COMMAND ${CMAKE_COMMAND} -E md5sum ${__suffix}/src/hamlib.tgz > ${__suffix}/src/hamlib.tgz.md5sum
+  COMMAND ${CMAKE_COMMAND} -E md5sum ${__suffix}/src/wsjtx.tgz > ${__suffix}/src/wsjtx.tgz.md5sum
+  COMMAND ${CMAKE_COMMAND} -E md5sum ${__suffix}/src/wsjtx-main.html > ${__suffix}/src/wsjtx-main.html.md5sum
+  COMMAND ${CMAKE_COMMAND} -E tar czf ${__suffix}.tgz ${__suffix}
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${__suffix}
+  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
   DEPENDS hamlib_sources wsjtx_sources
   COMMENT "
 Generating the WSJT-X superbuild self-contained source tarball ${__suffix}.tgz
