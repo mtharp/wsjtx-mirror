@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.9 FATAL_ERROR)
+cmake_minimum_required (VERSION 2.8.10 FATAL_ERROR)
 
 project (wsjt-superbuild)
 
@@ -156,15 +156,21 @@ ExternalProject_Add (wsjtx
   CMAKE_ARGS
   -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+  ${WSJTX_EXTRA_CMAKE_OPTIONS}
   ${wsjtx_user_guide_directory_url}
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
   LOG_DOWNLOAD 1
   LOG_UPDATE 1
   LOG_CONFIGURE 1
   LOG_BUILD 1
-  STEP_TARGETS build install package
+  STEP_TARGETS user_manual configure build install
   )
 ExternalProject_Get_Property (wsjtx BINARY_DIR)
+ExternalProject_Add_Step (wsjtx user_manual
+  COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target user_manual
+  COMMENT "Generating WSJT-X User Guide."
+  DEPENDEES configure
+  )
 ExternalProject_Add_Step (wsjtx package
   COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target package
   COMMAND echo "Built hamlib from branch/tag: ${hamlib_TAG}"
@@ -195,7 +201,7 @@ add_custom_target (wsjtx_sources
   COMMAND ${CMAKE_COMMAND} -E remove_directory wsjtx
   COMMAND ${CMAKE_COMMAND} -E copy ${BINARY_DIR}/contrib/wsjtx-main.html ${CMAKE_CURRENT_BINARY_DIR}/
   WORKING_DIRECTORY ${TMP_DIR}
-  DEPENDS wsjtx-build
+  DEPENDS wsjtx-user_manual
   COMMENT "Generating the WSJT-X upstream source tarball"
   )
 
