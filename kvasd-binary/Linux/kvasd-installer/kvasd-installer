@@ -1,19 +1,20 @@
 #! /usr/bin/env bash
 #
-# Title			: WSJT-KVASD
+# Title			: KVASD-Installer
 # Version		: 1.0.0
-# Execution		: wsjtx-kvasd 
-# Author		: Greg, Beam, ki7mt -at- yahoo.com
+# Execution		: kvasd-installer
 # Requirements	: Bash (>= 4.3), awk, gnu core utils, dialog
-# Copyright		: Copyright (C) 2014 Greg Beam, KI7MT
-# License		: GPL v3
 #
-# WSJT-KVASD is free software: you can redistribute it and/or modify
+# Author		: Greg, Beam, ki7mt -at- yahoo.com
+# Copyright		: Copyright (C) 2014 Greg Beam, KI7MT
+# License		: GPL-3
+#
+# KVASD-Installer is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation either version 3 of the License, or
 # (at your option) any later version. 
 #
-# WSJT-KVASD is distributed in the hope that it will be useful,
+# KVASD-Installer is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -31,13 +32,13 @@ MD5_1="28a6f8ba2efc3df02af2a781bd3ab654"
 
 # path variables
 BASED="/home/$LOGNAME/.local/share/kvasd-installer"
-LOG="$BASED"/logs
+#LOG="$BASED"/logs
 TMP="$BASED"/tmp
 INSTALL_DIR=/usr/bin
 
 # process variables
 HELP="$TMP"/kvasd-installer_help.txt
-EULA="$TMP"/wsjt_kvasd_eula.txt
+EULA="$TMP"/kvasd_eula.txt
 KVASD_URL='svn://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux/kvasd'
 
 #*******************************************************************************
@@ -50,7 +51,7 @@ BACKTITLE="WSJT KVASD Utility"
 # root check
 RCTITLE="ROOT / SUDO CHECK FAILED"
 RCMSG="   $APP_NAME must be run as normal user, not root or sudo.\n\
-          Please run $APP_NAME without "sudo" prefix"
+          Please run $APP_NAME without [ sudo ] prefix"
 
 # signal catch
 SIGCAUGHT="  SIGNAL CAUGHT"
@@ -64,12 +65,8 @@ CLEANTMPMSG="\n         Cleaning Up Temporary Files"
 RESETOPT=" RESET OPTIONS"
 RESETOPTMSG="\n         Restteing Used Bash Options"
 
-# clean vars
-CLEANVAR=" CLEANING VARS"
-CLEANVARMSG="\n             Unset Used Variables"
-
 # shutdown routine
-EXITWSDT=" EXIT $APP_NAME"
+EXITWSDT="    EXIT $APP_NAME"
 EXITWSDTMSG="\n      Performing Shutdown Cleanup Routine"
 
 # main menu
@@ -90,8 +87,8 @@ EULAMSG=" \n   To Install KVASD, you must accept the\n\
       End User License Agreement (EULA).\n"
 
 EULACANCEL="\n   You decided *NOT* to accept the (EULA)\n\
-   If you change your mind, select KVASD\n   Install from the menu, then < Accept >."
-MSGBOXNAV="\n              DOCUMENT NAVIGATION\n\n\
+   If you change your mind, select Install\n   decoder from the menu, then < Accept >."
+MSGBOXNAV="\n               DOCUMENT NAVIGATION\n\n\
       The Next screen will display the:\n\n\
    KVASD End User License Agreement ( EULA )\n\n\
   To navigate the document, use the UP/DWN Arrow\n\
@@ -153,7 +150,7 @@ $MSGCLIENT --backtitle "$BACKTITLE" --title "$UD" --msgbox "$UDMSG" 7 50
 sig_catch_cleanup() {
 EXIT_STATUS="$?"
 
-if [[ "$EXIT_STATUS" == "0" ]]
+if [ "$EXIT_STATUS" == "0" ]
 then
    clean_exit
 else
@@ -162,20 +159,20 @@ $MSGCLIENT --backtitle "$BACKTITLE" --title "$SIGCAUGHT" --infobox "$SIGCAUGHTMS
 	sleep 2
 
 $MSGCLIENT --backtitle "$BACKTITLE" --title "$CLEANTMP" --infobox "$CLEANTMPMSG" 5 50
-	rm -f  "$TMP"/*.txt ; rm -f "$TMP"/*.tmp ; rm -f "$TMP"/selection*
+	rm -f  "$TMP"/* "$TMP"/.dialog*
 	sleep 1
 
 $MSGCLIENT --backtitle "$BACKTITLE" --title "$RESETOPT" --infobox "$RESETOPTMSG" 5 50
 	unset_options
 	wait
 	clear
-	echo "Exit Status ""[ "$EXIT_STATUS" ]"
+	echo 'Exit Status '"[ $EXIT_STATUS ]"
 	echo "Signal Catch Cleanup Complete"
 	trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
 	unset exit_status
 	exit
 fi
-} # end cleanup afer signal
+} # end cleanup after signal
 
 
 # clean exit ------------------------------------------------------------------#
@@ -186,8 +183,7 @@ $MSGCLIENT --backtitle "$BACKTITLE" --title "$EXITWSDT" --infobox "$EXITWSDTMSG"
    sleep 1
 
 $MSGCLIENT --backtitle "$BACKTITLE" --title "$CLEANTMP" --infobox "$CLEANTMPMSG" 5 50
-   rm -f  "$TMP"/* "$TMP"/.dialogrc
-   wait
+   rm -f  "$TMP"/* "$TMP"/.dialog*
    sleep 1
 
 $MSGCLIENT --backtitle "$BACKTITLE" --title "$RESETOPT" --infobox "$RESETOPTMSG" 5 50
@@ -195,7 +191,7 @@ $MSGCLIENT --backtitle "$BACKTITLE" --title "$RESETOPT" --infobox "$RESETOPTMSG"
 	wait
 	sleep 1
 	clear
-	echo "Exit Status ""[ "$EXIT_STATUS" ]"
+	echo 'Exit Status '"[ $EXIT_STATUS ]"
 	echo "Clean Exit Complete."
 	trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
 	unset EXIT_STATUS
@@ -229,7 +225,7 @@ if [ -f "$BASED"/accept-kvasd-eula ]; then
 	echo "-------------------------------------------"
 	echo " [ $LOGNAME ] Accepted (EULA)"
 	echo "-------------------------------------------"
-	TAG=$(cat $BASED/accept-kvasd-eula |tail -1) 
+	TAG=$(tail -1 < "$BASED"/accept-kvasd-eula) 
 	echo ".. Acceptance Tag: $TAG" 
 else
 	# display navigation commands
@@ -245,15 +241,15 @@ else
 	--yesno "$EULAMSG" 8 50) ; [ "$?" = "1" ]; then
 	"$MSGCLIENT" --title "$EULATITLE" --backtitle "$BACKTITLE" --msgbox "$EULACANCEL" 9 50
 	continue
-	
+
 	else
-		touch $BASED/accept-kvasd-eula && echo $LOGNAME-$(date +"%F-%H%M") >> $BASED/accept-kvasd-eula
+		touch "$BASED"/accept-kvasd-eula && echo "$LOGNAME-$(date +"%F-%H%M")" >> "$BASED"/accept-kvasd-eula
 		clear
 		echo ""
 		echo "-------------------------------------------"
 		echo " [ $LOGNAME ] Accepted (EULA)"
 		echo "-------------------------------------------"
-		TAG=$(cat "$BASED"/accept-kvasd-eula |tail -1)
+		TAG=$(tail -1 < "$BASED"/accept-kvasd-eula)
 		echo ".. Acceptance Tag: $TAG" 
 	fi
 fi
@@ -292,15 +288,18 @@ svn export --force "$KVASD_URL" "$TMP"/kvasd > /dev/null 2>&1
 # test the download
 if [ -x "$TMP"/kvasd ] ; then
 	echo ".. Download Complete, KVASD is executable"
-	KVASD_VERSION=$($TMP/kvasd -v)
-elif [ -f "$TMP"/kvasd ] ; then
+elif [ -f "$TMP"/kvasd ]; then
 	echo ".. Download complted, but KVASD is *NOT* executable"
 	echo ".. The Execute bit will be set at install."
+elif [ "$TMP"/kvasd -v > /dev/null 2>&1 = "0" ]; then
+	KVASD_VERSION=$("$TMP"/kvasd -v)
+	echo "$KVASD_VERSION"
 else
 	fatal_error_msg
 	clean_exit
 fi
-}
+
+} # end download KVASD binary
 
 
 # check md5sum for kvasd binary -----------------------------------------------#
@@ -384,8 +383,8 @@ fi
 fatal_error_msg() {
 	echo " FATAL ERROR: The download failed. Possible Causes:"
 	echo " [1] The download failed"
-	echo " [2] KVASD binsry is currupt"
-	echo " [3] KVASD dependencies are not met"
+	echo " [2] KVASD binary is currupt"
+	echo " [3] KVASD libgfortran3:i386 dependencies are not met"
 	echo ""
 	echo " $APP_NAME cannot continue"
 	echo ""
@@ -405,20 +404,19 @@ touch "$HELP"
 (
 cat <<'EOF_HELP'
 
-                     WSJT-KVASD MAIN MENU HELP FILE
+                    KVASD-Installer MAIN MENU HELP FILE
 
 NAVIGATION
+
  You can  move  through the Help File by using the Page Up/Dwn, Arrow Up/Dwn
  and Tab Key to select. This is all text based documents.
  
-INSTALL
- To install the KVASD decoder, select Install from the main menu. If you
- have not done so already, you will be asked to agree to the End User
+INSTALL decoder
+
+ To install the KVASD decoder, select Install decoder from the main menu.
+ If you have not already done so, you will be asked to agree to the End User
  License Agreement ( EULA ). If you do not < Accept > the EULA, the script
- will display a message, retun you to the main menu.
- 
- NOTE: Although the binary is free to use in Ham Radio, the user must accpet
- the terms laid out in the EULA before the script will install the binary.
+ will display a message, return you to the main menu.
  
  After reading and accepting the ( EULA ), the script with look for KVASD
  first in /usr/bin, if not found, it will download the latest version from SVN.
@@ -433,21 +431,23 @@ INSTALL
  is the actual installing of the binary, at which time you will be prompted
  for your Root / Sudo password.
 
-REMOVE
+REMOVE decoder
+
  To remove KVASD, select Remove from the Main Menu. This only removes
- the KVASD binary. If you want to remove WSJT-KVASD ( the package ),
+ the KVASD binary. If you want to remove kvasd-installer ( the package ),
  use your package manager to remove it:
  
- sudo apt-get remove wsjt-kvasd
+ sudo apt-get remove kvasd-installer
  
  Or to purge all files, including the KVASD binary:
  
- sudo apt-get purge wsjt-kvasd
+ sudo apt-get purge kvasd-installer
  
 
-TEST KVASD
+TEST KVASD decoder
+
  Test KVASD runs a few very simple tests to ensure it is functional on the
- system. If you installed WSJT-KVASD from either a PPA or your distribution
+ system. If you installed KVASD-Installer from either a PPA or your distribution
  package manager, all the required dependencies should be revolved for you.
  
  The Following Tests Will Be Run:
@@ -458,6 +458,7 @@ TEST KVASD
  To run the preset test, select Test Decoder from the Main Menu.
 
 READ EULA
+
  To Read the KVASD End User License Agreement, select Read EULA from the
  main menu. Use the Arrow and Page keys to navigate.
 
@@ -531,7 +532,7 @@ NO WARRANTIES
  purpose, or noninfringement. The entire risk arising out of use or
  performance of KVASD remains with you.
 EOF_EULA
-) > "$TMP"/wsjt_kvasd_eula.txt
+) > "$TMP"/kvasd_eula.txt
 
 }
 
@@ -617,10 +618,10 @@ make_dialogrc
 # make menu
 make_menu
 
-# setup main menu help doc var
+# setup main menu help doc
 make_help
 
-# setup main menu help doc var
+# setup (EULA) end user license agreement
 make_eula
 
 # setup main menu
@@ -630,7 +631,7 @@ $MSGCLIENT --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
 "$MMTITLE" --menu "$MENUMSG" 14 60 22 --file "$TMP/MMenu.txt" 2> "$TMP/selection"
 
 # get user selection
-MMSELECT=$(head -c 1 < $TMP/selection)
+MMSELECT=$(head -c 1 < "$TMP"/selection)
 
 # install
 if [[ $MMSELECT = "I" ]]; then
@@ -656,12 +657,13 @@ if [[ $MMSELECT = "I" ]]; then
 	# install the binary
 	if [ -f "$TMP"/md5sum-ok.txt ] ; then
 		echo ".. Installing KVASD to /usr/bin"
-		sudo install -m 755 $TMP/kvasd $INSTALL_DIR/kvasd > /dev/null 2>&1
+		sudo install -m 755 "$TMP"/kvasd $INSTALL_DIR/kvasd > /dev/null 2>&1
 		sudo -k
 	fi
 
 	# test kvasd in /usr/bin/
 	if (/usr/bin/kvasd -v > /dev/null 2>&1) ; [ "$?" = "0" ] ; then
+		KVASD_VERSION=$(/usr/bin/kvasd -v)
 		echo ".. KVASD looks to be working properly"
 		echo ".. Results: $KVASD_VERSION"
 		echo ""
