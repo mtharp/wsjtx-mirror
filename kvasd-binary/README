@@ -1,0 +1,12 @@
+This is where binaries of kvasd can be found.
+
+The directories Windows,  Linux, Darwin are used by  older versions of
+WSJT-X builds and only need to contain kvasd v1.11.
+
+The directories in the format  `uname -s`-`uname -p` are more specific
+and cover  architectures as well  as platforms. These must  contain at
+least kvasd v1.12 binaries since features of it are required by WSJT-X
+at least.
+
+Each v1.12 binary called kvasd or  kvasd.exe must sit alongside an MD5
+checksum file named kvasd.md5 or kvasd.exe.md5 respectively.
