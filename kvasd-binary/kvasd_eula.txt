@@ -1,0 +1,61 @@
+Description: KVASD, Algebraic Soft-Decision Decoder for RS(63,12)_6
+END-USER LICENSE AGREEMENT FOR KVASD
+ .
+ IMPORTANT-READ CAREFULLY: This End-User License Agreement ("EULA") is
+ a legal agreement between you (either an individual or a single
+ entity) and Joseph H Taylor, Jr., K1JT, for use of the software
+ program "KVASD".  By exercising your rights to make and use copies of
+ KVASD, you agree to be bound by the terms of this EULA. If you do not
+ agree to the terms of this EULA, you may not use KVASD.
+ .
+ LICENSE
+ KVASD is protected by copyright laws and international copyright
+ treaties, as well as other intellectual property laws and
+ treaties. KVASD is provided free of charge, but may be used only
+ under the terms of this license.
+
+ .
+ 1. GRANT OF LICENSE. This EULA grants you the following rights:
+ .
+  - Installation and Use. You may install and use an unlimited number
+    of copies of KVASD.
+  - Reproduction and Distribution. You may reproduce and distribute an
+    unlimited number of copies of KVASD, provided that each copy shall
+    be a true and complete copy, and shall be accompanied by a copy of
+    this EULA. Copies of KVASD may not be distributed for profit.
+ .
+ 2. DESCRIPTION OF OTHER RIGHTS AND LIMITATIONS.
+ .
+  - You may not reverse engineer, decompile, or disassemble KVASD.
+  - You may permanently transfer all of your rights under this EULA,
+    provided the recipient agrees to the terms of this EULA.
+ .  
+ 3. PATENT. The soft-decision Reed-Solomon decoder in KVASD uses an
+ algorithm developed by R. Koetter and A. Vardy and protected under
+ United States Patent number 6,634,007.
+ .
+ 4. COPYRIGHT. KVASD is protected by copyright laws and international
+ treaty provisions.  All title and copyrights in and to KVASD are
+ owned by Joseph H. Taylor, Jr. or by CodeVector Technologies, LLC.
+ You must treat KVASD like any other copyrighted material.
+ .
+ NO WARRANTIES. KVASD is provided "as is" without warranty of any
+ kind, either express or implied, including, without limitation, the
+ implied warranties or merchantability, fitness for a particular
+ purpose, or noninfringement. The entire risk arising out of use or
+ performance of KVASD remains with you.
+
+Template: kvasd-eula
+Type: boolean
+Default: false
+Description: Do you accept the EULA license terms?
+ In order to install this package, you must accept the license terms
+ provided above.  Not accepting will cancel the installation.
+
+Template: kvasd-eula
+Type: error
+Description: Declined "KVASD EULA "
+ If you do not agree to the "KVASD EULA " license terms you cannot
+ install this software.
+ .
+ The installation of this package will be canceled.
