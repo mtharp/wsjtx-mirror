@@ -3,7 +3,7 @@
 # Title			: KVASD-Installer
 # Version		: 1.0.0
 # Execution		: kvasd-installer
-# Requirements	: Bash (>= 4.3), awk, gnu core utils, dialog
+# Requirements	: Bash (>= 4.3), awk, gnu core utils, wget, curl, dialog
 #
 # Author		: Greg, Beam, ki7mt -at- yahoo.com
 # Copyright		: Copyright (C) 2014 Greg Beam, KI7MT
@@ -28,10 +28,10 @@ set -e
 # base variables
 APP_NAME='KVASD Installer'
 MSGCLIENT='dialog'
-MD5_1="28a6f8ba2efc3df02af2a781bd3ab654"
 
 # path variables
 BASED="/home/$LOGNAME/.local/share/kvasd-installer"
+
 #LOG="$BASED"/logs
 TMP="$BASED"/tmp
 INSTALL_DIR=/usr/bin
@@ -39,7 +39,7 @@ INSTALL_DIR=/usr/bin
 # process variables
 HELP="$TMP"/kvasd-installer_help.txt
 EULA="$TMP"/kvasd_eula.txt
-KVASD_URL='svn://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux/kvasd'
+
 
 #*******************************************************************************
 # LANGUAGE                                                                     *
@@ -595,6 +595,43 @@ fi
 
 }
 
+# system check and set deccoder seection --------------------------------------#
+sys_chk() {
+
+# part pkginfo.txt file for AC_CANONICAL_HOST info, and *not* rely on uname -a
+ARCH_CHK=$(grep 'CPU' < /usr/share/kvasd-installer/pkginfo.txt |awk '{print $2}')
+
+# Set the KVASD_URL and MD5 sum, based on HOST + ARCH, derived from configure.ac
+case "$ARCH_CHK" in
+	*x86_64* )
+		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-x86_64/kvasd'
+		MD5_1="703e519e256b51be9703283fe40048de"
+	;;
+
+	*i686* )
+		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
+		MD5_1="e43b0a42681c1f5129de4714e5606712"
+	;;
+
+	*i386* )
+		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
+		MD5_1="e43b0a42681c1f5129de4714e5606712"
+	;;
+
+	*arm* ) # Only has 32 bit version of KVASD available
+		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
+		MD5_1="2c306a35a34cec909553c90d3ae8e1b0"
+	;;
+
+	* )
+		echo ''
+		echo " I'm Sorry, but ${OS_CHECK} is unsupportd at this time"
+		read -p 'Press [ ENTER ] to exit KVASD-Installer'
+		clean_exit
+	;;
+esac
+
+} # end KVASD_URL set
 
 #*******************************************************************************
 # MAIN SCRIPT                                                                  *
@@ -608,6 +645,9 @@ set_options
 
 # check if user is root, if yes, warn & exit
 root_chk
+
+# set correct decoder for the system
+sys_chk
 
 # make directories
 make_dirs

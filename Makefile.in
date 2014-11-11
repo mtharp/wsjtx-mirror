@@ -1,0 +1,126 @@
+# Makefile for Linux
+# Re-direct stdout and stderr:		bash
+#								make >& junk
+#
+# Prerequisites: GNU coreutils, dialog, libgfortran, wget
+
+# Program Infomation
+PROGRAM		:=	@PROGRAM@
+VERSION		:=	@VERSION@
+BUGS		:=	@BUGS@
+WEB         :=	@WEB@
+
+# System Information
+OS			:=	@_OS@
+CPU			:=	@_CPU@
+VENDOR		:=	@_VENDOR@
+
+# General Use Tools
+CP			:=	@CP@
+MV			:=	@MV@
+RM			:=	@RM@
+SHELL		:=	@SHELL@
+MKDIR		:=	@MKDIR@
+INATALL		:=	@INSTALL@
+TOUCH		:=	@TOUCH@
+
+# Install locations
+BINDIR		:=	$(DESTDIR)@BINDIR@
+DOCDIR		:=	$(DESTDIR)@DOCDIR@
+MANDIR		:=	$(DESTDIR)@MANDIR@
+SHARED		:=	$(DESTDIR)@SHARED@
+PKGINFO		:=	./pkginfo.txt
+
+# Compiler Information
+FC			:=	@FC@
+FCV			:=	@FCV@
+FC_LIB_PATH	+=	@FC_LIB_PATH@
+
+# Config Definitions
+DEFS		:=	@DEFS@
+
+# KVASD-Install targets
+all:	pkginfo
+
+pkginfo:
+	@echo ''
+	@echo '-----------------------------------'
+	@echo '  Updating PKG Info File'
+	@echo '-----------------------------------'
+	@if test -f $(PKGINFO) ; then rm -f $(PKGINFO) ; fi
+	@echo '..Generaring PKG Info File'
+	@$(TOUCH) $(PKGINFO)
+	@echo "PROGRAM..: @PROGRAM@" >> $(PKGINFO)
+	@echo "VERSION..: @VERSION@" >> $(PKGINFO)
+	@echo "OS.......: @_OS@" >> $(PKGINFO)
+	@echo "CPU......: @_CPU@" >> $(PKGINFO)
+	@echo "VENDOR....: @_VENDOR@" >> $(PKGINFO)
+	@echo "..Finished"
+	@echo ''
+	@echo "..To Install, Type: sudo make install"
+	@echo ''
+
+# Install target wspr
+install:
+	@clear
+	@echo '-----------------------------------'
+	@echo "  Installing ${PROGRAM}"
+	@echo '-----------------------------------'
+	@echo ''
+	@${MKDIR} -p ${BINDIR}
+	@${MKDIR} -p ${SHARED}
+	@${MKDIR} -p ${DOCDIR}
+	@${MKDIR} -p ${MANDIR}
+	@${MKDIR} -p ${SHARED}/../applications
+	@${MKDIR} -p ${SHARED}/../pixmaps
+	@install -m 644 $(PKGINFO) $(SHARED)
+	@install -m 755 ./kvasd-installer ${BINDIR}
+	@install -m 644 man1/*.1 ${MANDIR}
+	@install -m 644 ./{BUGS,README,TODO,COPYING,COPYRIGHT} ${DOCDIR} 
+	@install -m 644 ./kvasd-installer.desktop ${SHARED}/../applications
+	@install -m 644 ./kvasd-installer.xpm ${SHARED}/../pixmaps/
+	@echo "Finished Installing ${PROGRAM}"
+	@echo "Location: ${BINDIR}"
+	@echo 'To run, type..: kvasd-installer'
+	@echo ''
+	@echo "Website ......: ${WEB}"
+	@echo "Report Bugs ..: ${BUGS}"
+	@echo ''
+
+# Uninstall system files
+uninstall:
+	@clear
+	@echo '--------------------------------------'
+	@echo "  Uninstalling ${PROGRAM}"
+	@echo '--------------------------------------'
+	@echo ''
+	@echo ' ..Removing Installed files'
+	@${RM} -r ${SHARED}
+	@${RM} -r ${DOCDIR}
+	@${RM} -rf ${BINDIR}/kvasd-installer
+	@${RM} -rf ${MANDIR}/kvasd-installer.1
+	@${RM} -rf ${SHARED}/../applications/kvasd-installer.desktop
+	@${RM} -rf ${SHARED}/../pixmaps/kvinstaller.xpm
+	@${RM} -rf ${SHARED}/$(PKGINFO)
+	@echo " ..Some files may stil exist in ..: ${HOME}/.local/share/kvasd-installer"
+	@echo " ..To remove them, type ..........: rm -rf ${HOME}/.local/share/kvasd-installer"
+	@echo ''
+
+# Cleanup Source Tree
+.PHONY: clean
+
+clean :
+	${RM} -rf $(PKGINFO) config.log config.status configure.scan autoscan.log ./autom4* ./kvasd
+		
+distclean: clean
+	@clear
+	@echo '--------------------------------------'
+	@echo "   Removing All GNU/Make Components"
+	@echo '--------------------------------------'
+	@echo ''
+	${RM} -f config.log config.status autoscan.log configure.scan configure Makefile
+	${RM} -rf $(PKGINFO) ./autom4* ./kvasd
+	@echo ''
+	@echo ' ..Finished distclean'
+	@echo ''
+

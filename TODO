@@ -1,11 +1,7 @@
 KVASD Installer - To Do List
 ----------------------------
 
-* Add additinal tests for kvasd decoder, post install
-* Update package to use KVASD v1.12
 * Evaluate the use of 32 & 64 bit binaries
-* Update Test Decoder for v1.12
 * Verify that menu items get added to Gnome, Xfce, Lxde desktops if used.
 * Setup a location to use Debian Watch-File
-* Update / tidy up the manpage
 
