@@ -120,6 +120,7 @@ install:
 	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
+	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 
