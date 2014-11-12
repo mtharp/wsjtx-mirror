@@ -78,7 +78,7 @@ install:
 	@install -m 644 man1/*.1 ${MANDIR}
 	@install -m 644 ./{BUGS,README,TODO,COPYING,COPYRIGHT} ${DOCDIR} 
 	@install -m 644 ./kvasd-installer.desktop ${SHARED}/../applications
-	@install -m 644 ./kvasd-installer.xpm ${SHARED}/../pixmaps/
+	@install -m 644 ./icons/kvasd-installer.xpm ${SHARED}/../pixmaps/
 	@echo "Finished Installing ${PROGRAM}"
 	@echo "Location: ${BINDIR}"
 	@echo 'To run, type..: kvasd-installer'
@@ -100,7 +100,7 @@ uninstall:
 	@${RM} -rf ${BINDIR}/kvasd-installer
 	@${RM} -rf ${MANDIR}/kvasd-installer.1
 	@${RM} -rf ${SHARED}/../applications/kvasd-installer.desktop
-	@${RM} -rf ${SHARED}/../pixmaps/kvinstaller.xpm
+	@${RM} -rf ${SHARED}/../pixmaps/kvasd-installer.xpm
 	@${RM} -rf ${SHARED}/$(PKGINFO)
 	@echo " ..Some files may stil exist in ..: ${HOME}/.local/share/kvasd-installer"
 	@echo " ..To remove them, type ..........: rm -rf ${HOME}/.local/share/kvasd-installer"
