@@ -46,7 +46,7 @@ EULA="$TMP"/kvasd_eula.txt
 #*******************************************************************************
 
 # backtitle
-BACKTITLE="WSJT KVASD Utility"
+BACKTITLE="WSJT KVASD Utility v1.12"
 
 # root check
 RCTITLE="ROOT / SUDO CHECK FAILED"
