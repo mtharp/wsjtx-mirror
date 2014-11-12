@@ -599,8 +599,13 @@ fi
 sys_chk() {
 
 # part pkginfo.txt file for AC_CANONICAL_HOST info, and *not* rely on uname -a
-ARCH_CHK=$(grep 'CPU' < /usr/share/kvasd-installer/pkginfo.txt |awk '{print $2}')
-
+if [ -f "/usr/share/kvasd-installer/pkginfo.txt" ]; 
+then 
+	ARCH_CHK=$(grep 'CPU' < /usr/share/kvasd-installer/pkginfo.txt |awk '{print $2}')
+else
+	ARCH_CHK=$(uname -p)
+fi
+	
 # Set the KVASD_URL and MD5 sum, based on HOST + ARCH, derived from configure.ac
 case "$ARCH_CHK" in
 	*x86_64* )
