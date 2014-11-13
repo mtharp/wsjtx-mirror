@@ -90,8 +90,8 @@ GOTO HAMLIB3_UPDATE
 REM -- Install Updated Version of Hamlib3 from ( G4WJS )
 :HAMLIB3_UPDATE
 ECHO .. Checking Hamlib3
-IF NOT EXIST C:\JTSDK-QT\hamlib3\build-date-09-29-14 (
-ECHO .. Updating Hamlib3 To Latest Build: 09-29-2014
+IF NOT EXIST C:\JTSDK-QT\hamlib3\build-date-13-11-2014 (
+ECHO .. Updating Hamlib3 To Latest Build: 13-NOV-2014
 cd C:\JTSDK-DOC\doc\dev-guide\scripts
 cp hamlib3.7z C:\JTSDK-QT\
 cd C:\JTSDK-QT
