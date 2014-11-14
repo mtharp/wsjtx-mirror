@@ -17,3 +17,8 @@ Most of the color palettes for the _WSJT-X_ waterfall were copied from
 the excellent, well documented, open-source program _fldigi_, by *W1HKJ*
 and friends.
 
+We use development tools and libraries from many sources, and we
+particularly wish to acknowledge the importance of the GNU Compiler
+Collection from the Free Software Foundation, the "clang" compiler
+from LLVM at the University of Illinois, and the FFTW package by
+Matteo Frigo and Steven G. Johnson.
