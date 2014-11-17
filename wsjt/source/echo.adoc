@@ -1,8 +1,8 @@
-Echo mode allows you to make sensitive measurements of your own echoes
-from the moon, even when they are too weak to be heard.  Select *Echo*
-from the *Mode* menu, aim your antenna at the moon, pick a clear
-frequency, and toggle *Auto ON*.  _WSJT_ will then cycle through
-the following loop every 6 seconds:
+Echo mode allows you to make sensitive measurements of your own lunar
+echoes, even when they are too weak to be heard.  Select *Echo* from
+the *Mode* menu, aim your antenna at the moon, pick a clear frequency,
+and toggle *Auto ON*.  _WSJT_ will then cycle through the following
+loop every 6 seconds:
 
 1. Transmit a fixed tone for 2.0 s 
 2. Wait about 0.5 s for start of return echo 
@@ -10,19 +10,33 @@ the following loop every 6 seconds:
 4. Analyze, average, and display the results 
 5. Repeat from step 1 
 
-At the start of each transmission the frequency of the transmitted
-tone can be offset randomly around a nominal value of 1500 Hz. A
-number in the entry field *Dither* (under *Miscellaneous* on 
-the *Setup | Options* screen) controls the magnitude of the random
-offset. The observed spectrum of each echo is shifted by the *Dither*
-amount before being accumulated into the average. This procedure is
-very effective in minimizing the impact of birdies in the receiver
-passband. In the average spectrum, a fixed-frequency birdie is smeared
-out over a frequency range equal to the *Dither* value. For an example
-see the screen shot below: the red curve is the corrected echo
-spectrum, while the blue curve is the raw (uncorrected) data.
+The program compensates for Doppler shift automatically, so your
+return echo should always fall at the center of the plot area, as in
+the screen shot below.  However, on bands higher than 144 MHz it is
+usually necessary to use split VFOs or RIT and to inform the program
+that you are doing so, to ensure that the echo falls within the
+limited receiver passband.  For example, when this screen shot was
+made the predicted Doppler shift at 432 MHz was -802 Hz.  Entry field
+*RIT (Hz)* on the *Setup | Options* window was set to a nearby round
+number, 800 Hz, and the transceiver's RIT control was set at the same
+value.
 
 image::images/echo.png[align="left",width=650,alt=""]
+
+A nonzero entry for *Dither (Hz)* instructs the program to offset the
+frequencies of successive echo pulses randomly, with a specified range
+around the nominal value 1500 Hz. The observed spectrum of each echo
+is shifted by the randomized dither amount before being accumulated
+into the average displayed in the red curve. This procedure is very
+effective in minimizing the impact of birdies in the receiver
+passband. In the average (red) spectrum, a fixed-frequency birdie will
+be smeared out over a frequency range equal to the *Dither* value. For
+comparison, the blue curve displays the echo data uncorrected for
+dithering.  In the above screen shot the peaks in the blue curve
+correspond to seven individual 2-second transmissions, which were
+dithered over a 50 Hz range.  Birdies will be spread slightly in the
+blue spectrum owing to gradual changes in Doppler shift, but they will
+not be affected by the dithering.
 
 Information displayed in the main text box gives the number *N* of
 completed echo cycles, the average *Level* of receiver background
@@ -39,5 +53,8 @@ of *Q* imply increasingly believable echo measurements. If you can
 hear your own lunar echoes, you will see reliable echo numbers within
 a few seconds after toggling *Auto ON*. If your echoes are 15 to 20 dB
 below the audible threshold you should get significant results within
-a minute or so.
+a minute or less.  (Remember, though, that Faraday rotation can make
+the echo's linear polarization angle different from that of the
+transmitting antenna.)
+
 
