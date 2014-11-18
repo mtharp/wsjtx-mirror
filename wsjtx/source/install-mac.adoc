@@ -1,7 +1,7 @@
 // These instructions are up-to-date for WSJT-X v1.4
 
+* OS X 10.9, 10.10: {osx_109}
 * OS X 10.7, 10.8: {osx_107} 
-* OS X 10.9: {osx_109}
 
 * After downloading it to your desktopo, double-click on the dmg file
 and consult its +ReadMe+ file for important installation notes.
