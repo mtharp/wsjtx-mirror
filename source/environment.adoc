@@ -86,7 +86,7 @@ The following paths are used throughout {page}.
 * Example: C:\JTSDK-QT\wsjtx
 
 .LINUX
-* Souorce, Build and Install folders are in:
+* Source, Build and Install folders are in:
 ** /home/$USER/jtsdk/$APPNAME
 * Support packages, ( Hamlib3, Pmw, etc ) will reside in the
 top level of JTSDK. This is to prevent issues with system level package
