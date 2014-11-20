@@ -1,4 +1,4 @@
-# Makefile for WSPRX, using MinGW on Windows
+# Makefile for Echo, using MinGW on Windows
 # Windows re-direct:
 #   C> make > junk1 2>&1
 
@@ -20,7 +20,7 @@ CFLAGS = -I.
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libwspr.a wsprd.exe WSPRcode.exe
+all:    libecho.a
 
 OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
 	fchisq.o fil3c.o flat3.o four2a.o genwsprx.o grid2deg.o \
@@ -31,22 +31,11 @@ OBJS1 = ccf2.o db.o decode162.o deg2grid.o encode232.o fano232.o \
 	unpackgrid.o unpackpfx.o wqdecode.o wqencode.o xfft.o \
 	mixlpf.o morse.o blanker.o
 
-libwspr.a: $(OBJS1)
-	ar cr libwspr.a $(OBJS1) 
-	ranlib libwspr.a
-
-OBJS2 = wsprd.o wsprd_init.o
-
-wsprd.exe: $(OBJS2) libwspr.a
-	$(FC) -o wsprd.exe $(FFLAGS) $(OBJS2) libwspr.a libfftw3f_win.a
-	cp wsprd.exe ../../wsprx_install
-
-OBJS3 = WSPRcode.o
-WSPRcode.exe: $(OBJS3) libwspr.a
-	$(FC) -o WSPRcode.exe $(FFLAGS) $(OBJS3) libwspr.a
-	cp WSPRcode.exe ../../wsprx_install
+libecho.a: $(OBJS1)
+	ar cr libecho.a $(OBJS1) 
+	ranlib libecho.a
 
 .PHONY : clean
 
 clean:
-	rm -f *.o libwspr.a wsprd.exe
+	rm -f *.o libecho.a

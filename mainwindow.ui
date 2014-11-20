@@ -311,79 +311,57 @@ p, li { white-space: pre-wrap; }
             <height>16777215</height>
            </size>
           </property>
+          <property name="currentText">
+           <string>50</string>
+          </property>
           <item>
            <property name="text">
-            <string>2200 m</string>
+            <string>50</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>630 m</string>
+            <string>144</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>160 m</string>
+            <string>220</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>80 m</string>
+            <string>432</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>60 m</string>
+            <string>902</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>40 m</string>
+            <string>1296</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>30 m</string>
+            <string>2304</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>20 m</string>
+            <string>3400</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>17 m</string>
+            <string>5760</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>15 m</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>12 m</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>10 m</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>6 m</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>4 m</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>2 m</string>
+            <string>10368</string>
            </property>
           </item>
           <item>
@@ -412,51 +390,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="1" column="4" colspan="2">
-         <widget class="QPushButton" name="TxNextButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>70</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Tx Next</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="3">
-         <widget class="QPushButton" name="startRxButton">
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>70</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Start Rx</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
+        <item row="1" column="0">
          <widget class="QLabel" name="lab10">
           <property name="minimumSize">
            <size>
@@ -475,81 +409,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="2" column="3" colspan="2">
-         <widget class="QCheckBox" name="cbUpload">
-          <property name="text">
-           <string>Upload Spots</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QSpinBox" name="sbPctTx">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>79</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="suffix">
-           <string>  %</string>
-          </property>
-          <property name="maximum">
-           <number>100</number>
-          </property>
-          <property name="value">
-           <number>25</number>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="5">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Blanker</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>TX Pct:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="5">
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>30</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="5" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="lab2">
           <property name="minimumSize">
            <size>
@@ -568,17 +428,26 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="4" column="3">
-         <widget class="QCheckBox" name="cbIdle">
-          <property name="enabled">
-           <bool>true</bool>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="fBlankSpinBox">
+          <property name="maximumSize">
+           <size>
+            <width>90</width>
+            <height>16777215</height>
+           </size>
           </property>
-          <property name="text">
-           <string>Idle</string>
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>50000</number>
+          </property>
+          <property name="singleStep">
+           <number>100</number>
           </property>
          </widget>
         </item>
-        <item row="5" column="3">
+        <item row="3" column="3">
          <widget class="QCheckBox" name="cbTxEnable">
           <property name="enabled">
            <bool>true</bool>
@@ -588,7 +457,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="3" column="1">
          <widget class="QLineEdit" name="txFreqLineEdit">
           <property name="enabled">
            <bool>false</bool>
@@ -610,42 +479,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="4" column="5">
-         <widget class="QSpinBox" name="fBlankSpinBox">
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="suffix">
-           <string> %</string>
-          </property>
-          <property name="maximum">
-           <number>20</number>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="dialFreqLineEdit">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>10.138700</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
+        <item row="1" column="1">
          <widget class="QSpinBox" name="sbTxAudio">
           <property name="maximumSize">
            <size>
@@ -708,17 +542,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="3" column="3">
-         <widget class="QCheckBox" name="cbBandHop">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Band Hop</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="lab1">
           <property name="minimumSize">
            <size>
@@ -733,7 +557,7 @@ p, li { white-space: pre-wrap; }
            </size>
           </property>
           <property name="text">
-           <string>Dial (MHz):</string>
+           <string>RIT (Hz)</string>
           </property>
          </widget>
         </item>
@@ -750,30 +574,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </spacer>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>TX Pwr:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="dBmComboBox">
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="5">
+        <item row="3" column="5">
          <widget class="QSpinBox" name="tBlankSpinBox">
           <property name="maximumSize">
            <size>
@@ -789,6 +590,50 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="value">
            <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QPushButton" name="startRxButton">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Start Rx</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
+         <widget class="QPushButton" name="TxNextButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Tx Next</string>
           </property>
          </widget>
         </item>
@@ -811,13 +656,6 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
-    <addaction name="actionOpen_next_in_directory"/>
-    <addaction name="actionDecode_remaining_files_in_directory"/>
-    <addaction name="separator"/>
-    <addaction name="actionDelete_all_wav_files_in_SaveDir"/>
-    <addaction name="actionErase_wsjtx_rx_log"/>
-    <addaction name="separator"/>
     <addaction name="actionSave_user_parameters"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -867,7 +705,6 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Mode</string>
     </property>
-    <addaction name="actionWSPR_2"/>
     <addaction name="actionWSPR_15"/>
    </widget>
    <addaction name="menuFile"/>
@@ -907,55 +744,9 @@ p, li { white-space: pre-wrap; }
     <string>Shift+F10</string>
    </property>
   </action>
-  <action name="actionBand_Map">
-   <property name="text">
-    <string>Band Map</string>
-   </property>
-  </action>
-  <action name="actionMessages">
-   <property name="text">
-    <string>Messages</string>
-   </property>
-  </action>
   <action name="actionWide_Waterfall">
    <property name="text">
     <string>Waterfall</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="text">
-    <string>Open</string>
-   </property>
-  </action>
-  <action name="actionOpen_next_in_directory">
-   <property name="text">
-    <string>Open next in directory</string>
-   </property>
-   <property name="shortcut">
-    <string>F6</string>
-   </property>
-  </action>
-  <action name="actionDecode_remaining_files_in_directory">
-   <property name="text">
-    <string>Decode remaining files in directory</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+F6</string>
-   </property>
-  </action>
-  <action name="actionDelete_all_wav_files_in_SaveDir">
-   <property name="text">
-    <string>Delete all *.wav and *.c2 files in Save Directory</string>
-   </property>
-  </action>
-  <action name="actionErase_Band_Map_and_Messages">
-   <property name="text">
-    <string>Erase Band Map and Messages</string>
-   </property>
-  </action>
-  <action name="actionErase_wsjtx_rx_log">
-   <property name="text">
-    <string>Erase ALL_WSPR.TXT</string>
    </property>
   </action>
   <action name="actionLinrad">
@@ -978,38 +769,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>CuteSDR</string>
-   </property>
-  </action>
-  <action name="actionFind_Delta_Phi">
-   <property name="text">
-    <string>Find Delta Phi</string>
-   </property>
-  </action>
-  <action name="actionF4_sets_Tx6">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>F4 sets Tx6</string>
-   </property>
-  </action>
-  <action name="actionNo_shorthands_if_Tx1">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>No shorthand decodes if Tx1</string>
-   </property>
-  </action>
-  <action name="actionQuickDecode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Quick</string>
    </property>
   </action>
   <action name="actionNone">
@@ -1090,74 +849,6 @@ p, li { white-space: pre-wrap; }
     <string>F1</string>
    </property>
   </action>
-  <action name="actionKeyboard_shortcuts">
-   <property name="text">
-    <string>Keyboard shortcuts</string>
-   </property>
-  </action>
-  <action name="actionSpecial_mouse_commands">
-   <property name="text">
-    <string>Special mouse commands</string>
-   </property>
-  </action>
-  <action name="actionAvailable_suffixes_and_add_on_prefixes">
-   <property name="text">
-    <string>Available suffixes and add-on-prefixes</string>
-   </property>
-  </action>
-  <action name="actionErase_wsjtx_tx_log">
-   <property name="text">
-    <string>Erase wsjtx_tx.log</string>
-   </property>
-  </action>
-  <action name="actionJT65A">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>JT65A</string>
-   </property>
-  </action>
-  <action name="actionJT65B">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>JT65B</string>
-   </property>
-  </action>
-  <action name="actionJT65C">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>JT65C</string>
-   </property>
-  </action>
-  <action name="actionI_Q_Calibration">
-   <property name="text">
-    <string>I/Q Calibration</string>
-   </property>
-   <property name="shortcut">
-    <string>F7</string>
-   </property>
-  </action>
-  <action name="actionAdjust_IQ_Calibration">
-   <property name="text">
-    <string>Adjust I/Q Calibration</string>
-   </property>
-  </action>
-  <action name="actionApply_IQ_Calibration">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Apply I/Q Calibration</string>
-   </property>
-  </action>
   <action name="actionAFMHot">
    <property name="checkable">
     <bool>true</bool>
@@ -1172,22 +863,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Blue</string>
-   </property>
-  </action>
-  <action name="actionFUNcube_Dongle">
-   <property name="text">
-    <string>FUNcube Dongle Settings</string>
-   </property>
-  </action>
-  <action name="actionWSPR_2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>WSPR-2</string>
    </property>
   </action>
   <action name="actionWSPR_15">
@@ -1210,164 +885,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>WSPR-30</string>
-   </property>
-  </action>
-  <action name="actionMediumDecode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Normal</string>
-   </property>
-  </action>
-  <action name="actionDeepestDecode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Deepest</string>
-   </property>
-  </action>
-  <action name="actionMonitor_OFF_at_startup">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Monitor OFF at startup</string>
-   </property>
-  </action>
-  <action name="action2200_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>2200 m</string>
-   </property>
-  </action>
-  <action name="action630_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>630 m</string>
-   </property>
-  </action>
-  <action name="action160_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>160 m</string>
-   </property>
-  </action>
-  <action name="action80_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>80 m</string>
-   </property>
-  </action>
-  <action name="action60_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>60 m</string>
-   </property>
-  </action>
-  <action name="action40_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>40 m</string>
-   </property>
-  </action>
-  <action name="action30_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>30 m</string>
-   </property>
-  </action>
-  <action name="action20_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>20 m</string>
-   </property>
-  </action>
-  <action name="action17_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>17 m</string>
-   </property>
-  </action>
-  <action name="action15_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>15 m</string>
-   </property>
-  </action>
-  <action name="action12_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>12 m</string>
-   </property>
-  </action>
-  <action name="action10_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>10 m</string>
-   </property>
-  </action>
-  <action name="action6_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>6 m</string>
-   </property>
-  </action>
-  <action name="action4_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>4 m</string>
-   </property>
-  </action>
-  <action name="action2_m">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>2 m</string>
-   </property>
-  </action>
-  <action name="actionOther">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Other</string>
    </property>
   </action>
   <action name="actionSave_user_parameters">

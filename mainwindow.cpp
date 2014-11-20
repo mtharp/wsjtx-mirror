@@ -20,7 +20,7 @@ WideGraph* g_pWideGraph = NULL;
 
 QString ver="0.9";
 QString rev="$Rev$";
-QString Program_Title_Version="  WSPR-X   v" + ver + "  r" + rev.mid(6,4) +
+QString Program_Title_Version="  ECHO-X   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
 QString Version=ver + "_r" + rev.mid(6,4);
 
@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->actionBlue->setActionGroup(paletteGroup);
 
   QActionGroup* modeGroup = new QActionGroup(this);
-  ui->actionWSPR_2->setActionGroup(modeGroup);
   ui->actionWSPR_15->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
@@ -154,17 +153,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
-  qDebug() << signalMeter->isVisible() << signalMeter->size();
-
-  for(int i=0; i<28; i++)  {                      //Initialize dBm values
-    float dbm=(10.0*i)/3.0 - 30.0;
-    int ndbm=0;
-    if(dbm<0) ndbm=int(dbm-0.5);
-    if(dbm>=0) ndbm=int(dbm+0.5);
-    QString t;
-    t.sprintf("%d dBm",ndbm);
-    ui->dBmComboBox->addItem(t);
-  }
+//  qDebug() << signalMeter->isVisible() << signalMeter->size();
 
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
@@ -176,7 +165,6 @@ MainWindow::MainWindow(QWidget *parent) :
   g_pWideGraph->setTxFreq(m_txFreq);
   g_pWideGraph->setBFO(m_BFO);
   g_pWideGraph->setDialFreq(m_dialFreq);
-  if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
   if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
@@ -241,7 +229,7 @@ MainWindow::~MainWindow()
 //-------------------------------------------------------- writeSettings()
 void MainWindow::writeSettings()
 {
-  QString inifile = m_appDir + "/wsprx.ini";
+  QString inifile = m_appDir + "/echox.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("MainWindow");
@@ -306,7 +294,7 @@ void MainWindow::writeSettings()
 //---------------------------------------------------------- readSettings()
 void MainWindow::readSettings()
 {
-  QString inifile = m_appDir + "/wsprx.ini";
+  QString inifile = m_appDir + "/echox.ini";
   QSettings settings(inifile, QSettings::IniFormat);
   settings.beginGroup("MainWindow");
   restoreGeometry(settings.value("geometry").toByteArray());
@@ -349,23 +337,17 @@ void MainWindow::readSettings()
   m_dialFreq=settings.value("DialFreq",10.1387).toDouble();
   QString t;
   t.sprintf("%.6f ",m_dialFreq);
-  ui->dialFreqLineEdit->setText(t);
   soundOutThread.setTxFreq(m_txFreq);
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
   m_uploadSpots=settings.value("UploadSpots",false).toBool();
-  ui->cbUpload->setChecked(m_uploadSpots);
-  if(!m_uploadSpots) ui->cbUpload->setStyleSheet(
-              "QCheckBox{background-color: yellow}");
   m_TxOK=settings.value("TxEnable",false).toBool();
   ui->cbTxEnable->setChecked(m_TxOK);
   ui->TuneButton->setEnabled(m_TxOK);
   m_pctx=settings.value("PctTx",25).toInt();
   m_rxavg=1.0;
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
-  ui->sbPctTx->setValue(m_pctx);
   m_dBm=settings.value("dBm",37).toInt();
-  ui->dBmComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
   m_band=settings.value("Iband",6).toInt();
   m_grid6=settings.value("Grid6",false).toBool();
   m_BFO=settings.value("BFO",1500).toInt();
@@ -583,11 +565,6 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
   case Qt::Key_F3:
     btxMute=!btxMute;
     break;
-  case Qt::Key_F6:
-    if(e->modifiers() & Qt::ShiftModifier) {
-      on_actionDecode_remaining_files_in_directory_triggered();
-    }
-    break;
   }
 }
 
@@ -656,7 +633,7 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 {
   if(g_pWideGraph==NULL) {
     g_pWideGraph = new WideGraph(0);
-    g_pWideGraph->setWindowTitle("WSPR-X Waterfall");
+    g_pWideGraph->setWindowTitle("ECHO-X Waterfall");
     g_pWideGraph->setGeometry(m_wideGraphGeom);
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;
@@ -667,65 +644,12 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
   g_pWideGraph->show();
 }
 
-void MainWindow::on_actionOpen_triggered()                     //Open File
-{
-  m_receiving=false;
-  soundInThread.setReceiving(false);
-  m_RxOK=false;
-  QString fname;
-  fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
-                                       "WSPR Files (*.wav *.c2)");
-  if(fname != "") {
-    m_path=fname;
-    int i;
-    i=fname.indexOf(".wav") - 11;
-    if(i>=0) {
-      lab1->setStyleSheet("QLabel{background-color: #66ff66}");
-      lab1->setText(" " + fname.mid(i,15) + " ");
-    }
-    on_cbIdle_toggled(true);
-    m_diskData=true;
-    *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
-    watcher1->setFuture(*future1);         // call diskDat() when done
-  }
-}
-
 void MainWindow::freezeDecode(int n)                          //freezeDecode()
 {
   m_txFreq=g_pWideGraph->txFreq();
   ui->sbTxAudio->setValue(m_txFreq);
 }
-
-void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
-{
-  int i,len;
-  QFileInfo fi(m_path);
-  QStringList list;
-//  list= fi.dir().entryList().filter(".wav");
-  list= fi.dir().entryList();
-  for (i = 0; i < list.size()-1; ++i) {
-    if(i==list.size()-2) m_loopall=false;
-    len=list.at(i).length();
-    if(list.at(i)==m_path.right(len)) {
-      int n=m_path.length();
-      QString fname=m_path.replace(n-len,len,list.at(i+1));
-      m_path=fname;
-      if(fname.indexOf(".wav")>1 or fname.indexOf(".c2")>1) {
-        m_diskData=true;
-        *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
-        watcher1->setFuture(*future1);
-        return;
-      }
-    }
-  }
-}
                                                    //Open all remaining files
-void MainWindow::on_actionDecode_remaining_files_in_directory_triggered()
-{
-  m_loopall=true;
-  on_actionOpen_next_in_directory_triggered();
-}
-
 void MainWindow::diskDat()                                   //diskDat()
 {
   int k;
@@ -748,29 +672,6 @@ void MainWindow::diskDat()                                   //diskDat()
 
 void MainWindow::diskWriteFinished()                       //diskWriteFinished
 {
-}
-
-//Delete ../save/*.wav, *.c2
-void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
-{
-  int i;
-  QString fname;
-  int ret = QMessageBox::warning(this, "Confirm Delete",
-      "Are you sure you want to delete all *.wav and *.c2 files in\n" +
-       QDir::toNativeSeparators(m_saveDir) + " ?",
-       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-  if(ret==QMessageBox::Yes) {
-    QDir dir(m_saveDir);
-    QStringList files=dir.entryList(QDir::Files);
-    QList<QString>::iterator f;
-    for(f=files.begin(); f!=files.end(); ++f) {
-      fname=*f;
-      i=(fname.indexOf(".wav"));
-      if(i>1) dir.remove(fname);
-      i=(fname.indexOf(".c2"));
-      if(i>1) dir.remove(fname);
-    }
-  }
 }
 
 void MainWindow::on_actionNone_triggered()                    //Save None
@@ -982,23 +883,6 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
   ui->decodedTextBrowser->clear();
 }
 
-
-void MainWindow::on_actionWSPR_2_triggered()
-{
-  m_mode="WSPR-2";
-  m_TRseconds=120;
-  m_nsps=8192;
-  m_nseqdone=114;
-  m_hsymStop=int(2.0*m_nseqdone*12000.0/m_nsps);
-  soundInThread.setPeriod(m_TRseconds,m_nsps);
-  soundOutThread.setPeriod(m_TRseconds,m_nsps);
-  g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
-  lab2->setStyleSheet("QLabel{background-color: #ffff00}");
-  lab2->setText("WSPR-2");
-  ui->actionWSPR_2->setChecked(true);
-  if(m_transmitting) stopTx();
-}
-
 void MainWindow::on_actionWSPR_15_triggered()
 {
   m_mode="WSPR-15";
@@ -1073,7 +957,12 @@ void MainWindow::oneSec() {
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
-  int nsec=int(tsec());
+  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
+  double tsec=0.001*ms;
+  int nsec=tsec;
+  double t2p=fmod(tsec,6.0);
+
+//  qDebug() << "A" << t2p;
   m_nseq = nsec % m_TRseconds;
   if(nsec != m_sec0) {
     oneSec();
@@ -1116,7 +1005,7 @@ void MainWindow::guiUpdate()
     soundInThread.setReceiving(false);
   }
 
-}
+} //End of guiUpdate()
 
 void MainWindow::startRx()
 {
@@ -1127,19 +1016,6 @@ void MainWindow::startRx()
     loggit("Start Rx");
     m_nrx=m_nrx-1;
   }
-}
-
-double MainWindow::tsec()
-{
-  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
-  return 0.001*ms;
-}
-
-void MainWindow::on_sbPctTx_valueChanged(int arg1)
-{
-  m_pctx=ui->sbPctTx->value();
-  m_rxavg=1.0;
-  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
 }
 
 void MainWindow::startTx()
@@ -1256,56 +1132,12 @@ void MainWindow::stopTx2()
   }
 }
 
-void MainWindow::on_cbIdle_toggled(bool b)
-{
-  m_idle=b;
-  ui->cbIdle->setChecked(b);
-  if(b) {
-    ui->cbIdle->setStyleSheet("QCheckBox{background-color: yellow}");
-  } else {
-    ui->cbIdle->setStyleSheet("");
-  }
-}
-
 void MainWindow::on_cbTxEnable_toggled(bool b)
 {
   m_TxOK=b;
   ui->TuneButton->setEnabled(m_TxOK);
   btxok=b;
   if(!m_TxOK and m_transmitting) stopTx();
-}
-
-void MainWindow::on_dialFreqLineEdit_editingFinished()
-{
-  m_dialFreq=ui->dialFreqLineEdit->text().toDouble();
-  if(g_pWideGraph!=NULL) g_pWideGraph->setDialFreq(m_dialFreq);
-}
-
-void MainWindow::on_txFreqLineEdit_editingFinished()
-{
-  double txMHz=ui->txFreqLineEdit->text().toDouble();
-  m_txFreq=int(1.0e6 * (txMHz-m_dialFreq) + 0.5);
-}
-
-void MainWindow::on_cbUpload_toggled(bool b)
-{
-  m_uploadSpots=b;
-  if(b) {
-    ui->cbUpload->setStyleSheet("");
-  } else {
-    ui->cbUpload->setStyleSheet("QCheckBox{background-color: yellow}");
-  }
-}
-
-void MainWindow::on_cbBandHop_toggled(bool b)
-{
-  m_bandHop=b;
-}
-
-void MainWindow::on_dBmComboBox_currentIndexChanged(const QString &arg1)
-{
-  int i1=arg1.indexOf(" ");
-  m_dBm=arg1.mid(0,i1).toInt();
 }
 
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)
@@ -1315,7 +1147,6 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
   if(g_pWideGraph!=NULL) g_pWideGraph->setDialFreq(m_dialFreq);
   QString t;
   t.sprintf("%.6f ",m_dialFreq);
-  ui->dialFreqLineEdit->setText(t);
   t.sprintf("%.6f",m_dialFreq+0.000001*m_txFreq);
   ui->txFreqLineEdit->setText(t);
   if(m_catEnabled) {
@@ -1344,10 +1175,6 @@ void MainWindow::on_sbTxAudio_valueChanged(int n)
 {
   m_txFreq=n;
   soundOutThread.setTxFreq(m_txFreq);
-  double x=ui->dialFreqLineEdit->text().toDouble()+0.000001*m_txFreq;
-  QString t;
-  t.sprintf("%.6f",x);
-  ui->txFreqLineEdit->setText(t);
 }
 
 void MainWindow::on_startRxButton_clicked()
@@ -1377,7 +1204,6 @@ void MainWindow::on_TuneButton_clicked()
 {
   m_tuning=!m_tuning;
   if(m_tuning) {
-    on_cbIdle_toggled(true);
     m_receiving=false;
     ui->TuneButton->setStyleSheet(m_tune_style);
     m_tuning=true;
