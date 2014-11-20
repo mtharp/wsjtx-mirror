@@ -112,9 +112,6 @@ void DevSetup::initDlg()
   p4.start("rigctl -l");
   p4.waitForFinished(1000);
 
-  ui.myCallEntry->setText(m_myCall);
-  ui.myGridEntry->setText(m_myGrid);
-  ui.idIntSpinBox->setValue(m_idInt);
   ui.pttMethodComboBox->setCurrentIndex(m_pttMethodIndex);
   ui.pttComboBox->setCurrentIndex(m_pttPort);
   ui.saveDirEntry->setText(m_saveDir);
@@ -122,7 +119,6 @@ void DevSetup::initDlg()
   ui.comboBoxSndOut->setCurrentIndex(m_nDevOut);
   m_paInDevice=m_inDevList[m_nDevIn];
   m_paOutDevice=m_outDevList[m_nDevOut];
-  ui.cbGrid6->setChecked(m_grid6);
   ui.cbEnableCAT->setChecked(m_catEnabled);
   ui.catPortComboBox->setEnabled(m_catEnabled);
   ui.rigComboBox->setEnabled(m_catEnabled);
@@ -139,8 +135,6 @@ void DevSetup::initDlg()
   ui.handshakeComboBox->setCurrentIndex(m_handshakeIndex);
 
   QString t;
-  t.sprintf("%d",m_BFO);
-  ui.bfoLineEdit->setText(t);
 }
 
 //------------------------------------------------------- accept()
@@ -156,9 +150,6 @@ void DevSetup::accept()
   if(m_nDevOut!=ui.comboBoxSndOut->currentIndex() or
      m_paOutDevice!=m_outDevList[m_nDevOut]) m_restartSoundOut=true;
 
-  m_myCall=ui.myCallEntry->text();
-  m_myGrid=ui.myGridEntry->text();
-  m_idInt=ui.idIntSpinBox->value();
   m_pttMethodIndex=ui.pttMethodComboBox->currentIndex();
   m_pttPort=ui.pttComboBox->currentIndex();
   m_saveDir=ui.saveDirEntry->text();
@@ -175,29 +166,6 @@ void DevSetup::accept()
   m_handshakeIndex=ui.handshakeComboBox->currentIndex();
 
   QDialog::accept();
-}
-
-void DevSetup::on_myCallEntry_editingFinished()
-{
-  QString t=ui.myCallEntry->text();
-  ui.myCallEntry->setText(t.toUpper());
-}
-
-void DevSetup::on_myGridEntry_editingFinished()
-{
-  QString t=ui.myGridEntry->text();
-  t=t.mid(0,4).toUpper()+t.mid(4,2).toLower();
-  ui.myGridEntry->setText(t);
-}
-
-void DevSetup::on_bfoLineEdit_editingFinished()
-{
-  m_BFO=ui.bfoLineEdit->text().toInt();
-}
-
-void DevSetup::on_cbGrid6_toggled(bool b)
-{
-  m_grid6=b;
 }
 
 void DevSetup::on_cbEnableCAT_toggled(bool b)
@@ -280,11 +248,6 @@ void DevSetup::msgBox(QString t)                             //msgBox
 {
   msgBox0.setText(t);
   msgBox0.exec();
-}
-
-void DevSetup::on_idIntSpinBox_valueChanged(int n)
-{
-  m_idInt=n;
 }
 
 void DevSetup::on_pttMethodComboBox_activated(int index)

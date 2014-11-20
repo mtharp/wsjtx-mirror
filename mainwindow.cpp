@@ -20,7 +20,7 @@ WideGraph* g_pWideGraph = NULL;
 
 QString ver="0.9";
 QString rev="$Rev$";
-QString Program_Title_Version="  ECHO-X   v" + ver + "  r" + rev.mid(6,4) +
+QString Program_Title_Version="  ECHO   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
 QString Version=ver + "_r" + rev.mid(6,4);
 
@@ -462,8 +462,6 @@ void MainWindow::showStatusMessage(const QString& statusMsg)
 void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
 {
   DevSetup dlg(this);
-  dlg.m_myCall=m_myCall;
-  dlg.m_myGrid=m_myGrid;
   dlg.m_idInt=m_idInt;
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
@@ -471,7 +469,6 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
   dlg.m_nDevIn=m_nDevIn;
   dlg.m_nDevOut=m_nDevOut;
   dlg.m_grid6=m_grid6;
-  dlg.m_BFO=m_BFO;
   dlg.m_catEnabled=m_catEnabled;
   dlg.m_rig=m_rig;
   dlg.m_rigIndex=m_rigIndex;
@@ -488,10 +485,6 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
-    m_myCall=dlg.m_myCall;
-
-//    morse_(m_myCall.toLatin1().data(),icw,&m_ncw,m_myCall.length());
-    m_myGrid=dlg.m_myGrid;
     m_idInt=dlg.m_idInt;
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
@@ -501,7 +494,6 @@ void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
     m_nDevOut=dlg.m_nDevOut;
     m_paOutDevice=dlg.m_paOutDevice;
     m_grid6=dlg.m_grid6;
-    m_BFO=dlg.m_BFO;
     g_pWideGraph->setBFO(m_BFO);
     m_catEnabled=dlg.m_catEnabled;
     m_rig=dlg.m_rig;
@@ -633,7 +625,7 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 {
   if(g_pWideGraph==NULL) {
     g_pWideGraph = new WideGraph(0);
-    g_pWideGraph->setWindowTitle("ECHO-X Waterfall");
+    g_pWideGraph->setWindowTitle("ECHO Waterfall");
     g_pWideGraph->setGeometry(m_wideGraphGeom);
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;
@@ -649,7 +641,7 @@ void MainWindow::freezeDecode(int n)                          //freezeDecode()
   m_txFreq=g_pWideGraph->txFreq();
   ui->sbTxAudio->setValue(m_txFreq);
 }
-                                                   //Open all remaining files
+
 void MainWindow::diskDat()                                   //diskDat()
 {
   int k;

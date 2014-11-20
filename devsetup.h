@@ -23,7 +23,6 @@ public:
   qint32  m_outDevList[100];
   qint32  m_paInDevice;
   qint32  m_paOutDevice;
-  qint32  m_BFO;
   qint32  m_catPortIndex;
   qint32  m_rig;
   qint32  m_rigIndex;
@@ -40,11 +39,8 @@ public:
   bool    m_grid6;
   bool    m_catEnabled;
 
-  QString m_myCall;
-  QString m_myGrid;
   QString m_saveDir;
   QString m_azelDir;
-  QString m_dxccPfx;
   QString m_catPort;
   QString m_handshake;
 
@@ -59,10 +55,6 @@ public slots:
   void p4Error();
 
 private slots:
-  void on_myCallEntry_editingFinished();
-  void on_myGridEntry_editingFinished();
-  void on_bfoLineEdit_editingFinished();
-  void on_cbGrid6_toggled(bool b);
   void on_cbEnableCAT_toggled(bool b);
   void on_rigComboBox_activated(int index);
   void on_catPortComboBox_activated(int index);
@@ -70,8 +62,6 @@ private slots:
   void on_dataBitsComboBox_activated(int index);
   void on_stopBitsComboBox_activated(int index);
   void on_handshakeComboBox_activated(int index);
-  void on_idIntSpinBox_valueChanged(int n);
-
   void on_pttMethodComboBox_activated(int index);
 
 private:
