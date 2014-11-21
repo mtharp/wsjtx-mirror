@@ -94,26 +94,16 @@ MainWindow::MainWindow(QWidget *parent) :
   m_waterfallAvg = 1;
   btxMute=false;
   btxok=false;
-  m_restart=false;
   m_transmitting=false;
-  m_tuning=false;
-  m_myCall="K1JT";
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
-  m_saveDir="/users/joe/wsprx/install/save";
   m_txFreq=1500;
-  m_loopall=false;
-  m_startAnother=false;
   m_sec0=-1;
   m_palette="CuteSDR";
   m_mode="WSPR-2";
   m_inGain=0;
-  m_hopping=false;
-  m_rxdone=false;
-  m_idle=false;
   m_RxOK=true;
   m_TxOK=false;
-  m_txnext=false;
   m_grid6=false;
   m_band=6;
   m_rig=-1;
@@ -189,12 +179,10 @@ void MainWindow::writeSettings()
   settings.endGroup();
 
   settings.beginGroup("Common");
-  settings.setValue("MyCall",m_myCall);
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("IDint",m_idInt);
   settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
-  settings.setValue("SaveDir",m_saveDir);
   settings.setValue("SoundInIndex",m_nDevIn);
   settings.setValue("paInDevice",m_paInDevice);
   settings.setValue("SoundOutIndex",m_nDevOut);
@@ -243,12 +231,10 @@ void MainWindow::readSettings()
   settings.endGroup();
 
   settings.beginGroup("Common");
-  m_myCall=settings.value("MyCall","").toString();
   m_myGrid=settings.value("MyGrid","").toString();
   m_idInt=settings.value("IDint",0).toInt();
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
-  m_saveDir=settings.value("SaveDir",m_appDir + "/save").toString();
   m_nDevIn = settings.value("SoundInIndex", 0).toInt();
   m_paInDevice = settings.value("paInDevice",0).toInt();
   m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
@@ -317,7 +303,7 @@ void MainWindow::dataSink(int k)
   lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
   if(m_receiving) {
-    g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
+    g_pWideGraph->dataSink2(s,df3,ihsym,false);
   }
 
   if(ihsym == 999) {
@@ -328,7 +314,6 @@ void MainWindow::dataSink(int k)
 
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
-    m_rxdone=true;
     loggit("Start Decoder");
   }
   soundInThread.m_dataSinkBusy=false;
@@ -346,7 +331,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
   dlg.m_idInt=m_idInt;
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
-  dlg.m_saveDir=m_saveDir;
   dlg.m_nDevIn=m_nDevIn;
   dlg.m_nDevOut=m_nDevOut;
   dlg.m_grid6=m_grid6;
@@ -369,7 +353,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_idInt=dlg.m_idInt;
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
-    m_saveDir=dlg.m_saveDir;
     m_nDevIn=dlg.m_nDevIn;
     m_paInDevice=dlg.m_paInDevice;
     m_nDevOut=dlg.m_nDevOut;
@@ -524,7 +507,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       lab3->setStyleSheet("");
       lab3->setText("");
       loggit("Decoder Finished");
-      m_startAnother=m_loopall;
       return;
     } else {
       int n=t.length();
@@ -627,7 +609,7 @@ void MainWindow::guiUpdate()
   }
 
   int nstop=2;
-  if(!m_tuning) {   //Reached sequence end time?
+  if(1) {   //Reached sequence end time?
     if(m_transmitting) stopTx();
     m_transmitting=false;
     m_receiving=false;

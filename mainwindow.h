@@ -90,23 +90,11 @@ private:
 
     bool    m_receiving;
     bool    m_transmitting;
-    bool    m_tuning;
-    bool    m_diskData;
-    bool    m_loopall;
     bool    m_auto;
-    bool    m_restart;
-    bool    m_startAnother;
-    bool    m_bdecoded;
-    bool    m_rxdone;
-    bool    m_idle;
-    bool    m_txnext;
-    bool    m_hopping;
     bool    m_RxOK;
     bool    m_TxOK;
     bool    m_grid6;
     bool    m_catEnabled;
-
-    char    m_decoded[80];
 
     QRect   m_wideGraphGeom;
 
@@ -127,27 +115,22 @@ private:
     QFutureWatcher<void>* watcher3;
 
     QProcess p1;
-    QProcess p2;
     QProcess p3;
 
     QTimer* ptt0Timer;
     QTimer* ptt1Timer;
 
     QString m_path;
-    QString m_myCall;
-    QString m_myGrid;
     QString m_appDir;
-    QString m_saveDir;
     QString m_palette;
     QString m_dateTime;
     QString m_mode;
-    QString m_fname;
-    QString m_c2name;
+    QString m_cmnd;
     QString m_txNext_style;
     QString m_tune_style;
     QString m_catPort;
     QString m_handshake;
-    QString m_cmnd;
+    QString m_myGrid;
 
     SignalMeter *signalMeter;
 
