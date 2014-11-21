@@ -76,12 +76,6 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
       i2=32767.0*sin(phi);
       j=(ic-ic0)/nspd;
       if(icw[j]==0) i2=0;
-      if(udata->txsnrdb < 0.0) {
-        int i4=fac*(gran() + i2*snr/32768.0);
-        if(i4>32767) i4=32767;
-        if(i4<-32767) i4=-32767;
-        i2=i4;
-      }
       if(!btxok or btxMute)  i2=0;
       *wptr++ = i2;                   //left
 #ifdef unix
@@ -105,12 +99,6 @@ extern "C" int d2aCallback(const void *inputBuffer, void *outputBuffer,
     phi += dphi;
     if(phi>twopi) phi -= twopi;
     i2=32767.0*sin(phi);
-    if(udata->txsnrdb < 0.0) {
-      int i4=fac*(gran() + i2*snr/32768.0);
-      if(i4>32767) i4=32767;
-      if(i4<-32767) i4=-32767;
-      i2=i4;
-    }
     if(!btxok or btxMute)  i2=0;
     *wptr++ = i2;                   //left
 #ifdef unix

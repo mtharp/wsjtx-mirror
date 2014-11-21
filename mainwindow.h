@@ -2,14 +2,10 @@
 #define MAINWINDOW_H
 #include <QtWidgets>
 #include <QTimer>
-//#include <QUrl>
-#include <QtNetwork>
 #include <QDateTime>
 #include "soundin.h"
 #include "soundout.h"
 #include "signalmeter.h"
-#include "commons.h"
-#include "wsprnet.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QDebug>
 
@@ -32,14 +28,10 @@ public slots:
   void dataSink(int k);
   void diskDat();
   void diskWriteFinished();
-  void freezeDecode(int n);
   void guiUpdate();
   void p1ReadFromStdout();
   void p1ReadFromStderr();
   void p1Error();
-  void p2ReadFromStdout();
-  void p2ReadFromStderr();
-  void p2Error();
   void p3ReadFromStdout();
   void p3ReadFromStderr();
   void p3Error();
@@ -59,30 +51,19 @@ private slots:
   void on_actionOnline_Users_Guide_triggered();
   void on_actionWide_Waterfall_triggered();
   void on_actionNone_triggered();
-  void on_EraseButton_clicked();
+  void on_eraseButton_clicked();
   void on_actionAFMHot_triggered();
   void on_actionBlue_triggered();
   void on_actionWSPR_15_triggered();
   void on_inGain_valueChanged(int n);
-  void on_TxNextButton_clicked();
-  void onNetworkReply(QNetworkReply* reply);
-  void on_cbTxEnable_toggled(bool b);
   void startTx2();
   void stopTx();
   void stopTx2();
   void loggit(QString t);
-  void p2Start();
   void on_bandComboBox_currentIndexChanged(int n);
-  void on_sbTxAudio_valueChanged(int n);
-  void on_startRxButton_clicked();
-  void on_TuneButton_clicked();
   void on_actionSave_wav_triggered();
   void on_actionSave_c2_triggered();
   void on_actionSave_all_triggered();
-  void uploadSpots();
-  void uploadResponse(QString response);
-  void on_tBlankSpinBox_valueChanged(int n);
-  void on_fBlankSpinBox_valueChanged(int n);
 
 private:
     Ui::MainWindow *ui;
@@ -152,9 +133,6 @@ private:
     bool    m_hopping;
     bool    m_RxOK;
     bool    m_TxOK;
-    bool    m_uploadSpots;
-    bool    m_uploading;
-    bool    m_bandHop;
     bool    m_grid6;
     bool    m_catEnabled;
 
@@ -178,18 +156,12 @@ private:
     QFutureWatcher<void>* watcher2;
     QFutureWatcher<void>* watcher3;
 
-    QNetworkReply* reply;
-    QNetworkAccessManager* mNetworkManager;
     QProcess p1;
     QProcess p2;
     QProcess p3;
 
     QTimer* ptt0Timer;
     QTimer* ptt1Timer;
-    QTimer* uploadTimer;
-    QTimer* tuneTimer;
-
-    WSPRNet *wsprNet;
 
     QString m_path;
     QString m_myCall;

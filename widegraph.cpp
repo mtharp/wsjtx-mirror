@@ -1,6 +1,5 @@
 #include "widegraph.h"
 #include "ui_widegraph.h"
-#include "commons.h"
 
 #define NSMAX 1366
 

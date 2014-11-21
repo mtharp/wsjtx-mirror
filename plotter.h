@@ -11,7 +11,6 @@
 #include <QFrame>
 #include <QImage>
 #include <cstring>
-#include "commons.h"
 
 #define VERT_DIVS 7	//specify grid screen divisions
 #define HORZ_DIVS 20

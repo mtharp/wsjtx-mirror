@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 */
 
-  on_EraseButton_clicked();
+  on_eraseButton_clicked();
   ui->labUTC->setStyleSheet( \
         "QLabel { background-color : \
         black; color : yellow; border: 3px ridge gray}");
@@ -73,23 +73,12 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(&p1, SIGNAL(error(QProcess::ProcessError)),
           this, SLOT(p1Error()));
 
-  connect(&p2, SIGNAL(readyReadStandardOutput()),
-                    this, SLOT(p2ReadFromStdout()));
-  connect(&p2, SIGNAL(readyReadStandardError()),
-          this, SLOT(p2ReadFromStderr()));
-  connect(&p2, SIGNAL(error(QProcess::ProcessError)),
-          this, SLOT(p2Error()));
-
   connect(&p3, SIGNAL(readyReadStandardOutput()),
                     this, SLOT(p3ReadFromStdout()));
   connect(&p3, SIGNAL(readyReadStandardError()),
           this, SLOT(p3ReadFromStderr()));
   connect(&p3, SIGNAL(error(QProcess::ProcessError)),
           this, SLOT(p3Error()));
-
-  mNetworkManager = new QNetworkAccessManager(this);
-  QObject::connect(mNetworkManager, SIGNAL(finished(QNetworkReply*)),
-                   this, SLOT(onNetworkReply(QNetworkReply*)));
 
   QTimer *guiTimer = new QTimer(this);
   connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
@@ -100,13 +89,6 @@ MainWindow::MainWindow(QWidget *parent) :
   ptt1Timer = new QTimer(this);
   ptt1Timer->setSingleShot(true);
   connect(ptt1Timer, SIGNAL(timeout()), this, SLOT(startTx2()));
-  tuneTimer = new QTimer(this);
-  tuneTimer->setSingleShot(true);
-  connect(tuneTimer, SIGNAL(timeout()), this, SLOT(stopTx()));
-  uploadTimer = new QTimer(this);
-  uploadTimer->setSingleShot(true);
-  //connect(uploadTimer, SIGNAL(timeout()), this, SLOT(p2Start()));
-  connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
 
   m_auto=false;
   m_waterfallAvg = 1;
@@ -138,7 +120,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_nrx=1;
   m_ntx=0;
   m_txnext=false;
-  m_uploading=false;
   m_grid6=false;
   m_band=6;
   m_nseq=0;
@@ -174,12 +155,6 @@ MainWindow::MainWindow(QWidget *parent) :
   watcher2 = new QFutureWatcher<void>;
   connect(watcher2, SIGNAL(finished()),this,SLOT(diskWriteFinished()));
 
-  /*
-  future3 = new QFuture<void>;
-  watcher3 = new QFutureWatcher<void>;
-  connect(watcher3, SIGNAL(finished()),this,SLOT(uploadFinished()));
-  */
-
   m_txNext_style="QPushButton{background-color: #00ff00; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
       border-color: black; padding: 4px;}";
@@ -200,15 +175,9 @@ MainWindow::MainWindow(QWidget *parent) :
   if(ui->actionAFMHot->isChecked()) on_actionAFMHot_triggered();
   if(ui->actionBlue->isChecked()) on_actionBlue_triggered();
 
-  ui->legendLabel->setFont(ui->decodedTextBrowser->font());
-  //                        2058   -9  -0.4   14.097140    0   HS0ZKM        OK03     37
-  ui->legendLabel->setText(" UTC   dB    DT        Freq   DF   Call          Grid    dBm");
+  //ui->legendLabel->setFont(ui->decodedTextBrowser->font());
+  //ui->legendLabel->setText(" UTC   dB    DT        Freq   DF   Call          Grid    dBm");
 
-  wsprNet = new WSPRNet(this);
-  //connect( ui->wsprnet_pushButton, SIGNAL(clicked()), this, SLOT(uploadSpots()));
-  connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
-
-  freezeDecode(2);
 }                                          // End of MainWindow constructor
 
 //--------------------------------------------------- MainWindow destructor
@@ -265,7 +234,6 @@ void MainWindow::writeSettings()
   settings.setValue("TxFreq",m_txFreq);
   settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("InGain",m_inGain);
-  settings.setValue("UploadSpots",m_uploadSpots);
   settings.setValue("TxEnable",m_TxOK);
   settings.setValue("PctTx",m_pctx);
   settings.setValue("dBm",m_dBm);
@@ -340,10 +308,7 @@ void MainWindow::readSettings()
   soundOutThread.setTxFreq(m_txFreq);
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
-  m_uploadSpots=settings.value("UploadSpots",false).toBool();
   m_TxOK=settings.value("TxEnable",false).toBool();
-  ui->cbTxEnable->setChecked(m_TxOK);
-  ui->TuneButton->setEnabled(m_TxOK);
   m_pctx=settings.value("PctTx",25).toInt();
   m_rxavg=1.0;
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
@@ -365,10 +330,7 @@ void MainWindow::readSettings()
   m_handshake=settings.value("Handshake","None").toString();
   m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
   m_tBlank=settings.value("TBlank",1).toInt();
-  ui->tBlankSpinBox->setValue(m_tBlank);
-  ui->tBlankSpinBox->setVisible(false);
   m_fBlank=settings.value("FBlank",1).toInt();
-  ui->fBlankSpinBox->setValue(m_fBlank);
   ui->bandComboBox->setCurrentIndex(m_band);
   settings.endGroup();
 
@@ -386,12 +348,6 @@ void MainWindow::dataSink(int k)
   static int ihsym=0;
   static float px=0.0;
   static float df3;
-
-  if(m_diskData) {
-    datcom_.ndiskdat=1;
-  } else {
-    datcom_.ndiskdat=0;
-  }
 
 // Get power, spectrum, and ihsym
   symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
@@ -420,8 +376,6 @@ void MainWindow::dataSink(int k)
             t2 + ".wav";
       m_c2name=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
             t2 + ".c2";
-      *future2 = QtConcurrent::run(savewav, m_fname, m_TRseconds);
-      watcher2->setFuture(*future2);
       int len1=m_c2name.length();
       char c2name[80];
       strcpy(c2name,m_c2name.toLatin1());
@@ -630,16 +584,9 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;
     g_pWideGraph->setWindowFlags(flags);
-    connect(g_pWideGraph, SIGNAL(freezeDecode2(int)),this,
-            SLOT(freezeDecode(int)));
+
   }
   g_pWideGraph->show();
-}
-
-void MainWindow::freezeDecode(int n)                          //freezeDecode()
-{
-  m_txFreq=g_pWideGraph->txFreq();
-  ui->sbTxAudio->setValue(m_txFreq);
 }
 
 void MainWindow::diskDat()                                   //diskDat()
@@ -699,14 +646,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       lab3->setStyleSheet("");
       lab3->setText("");
       loggit("Decoder Finished");
-      if(m_uploadSpots and (m_band==m_RxStartBand)) {
-        float x=rand()/((double)RAND_MAX + 1);
-        int msdelay=20000*x;
-        uploadTimer->start(msdelay);                         //Upload delay
-      } else {
-        QFile f("wsprd.out");
-        if(f.exists()) f.remove();
-      }
       if(m_save!=1 and m_save!=3 and !m_diskData) {
         QFile savedWav(m_fname);
         savedWav.remove();
@@ -766,88 +705,6 @@ void MainWindow::p1Error()                                     //p1Error
   msgBox("Error starting or running\n" + m_appDir + "/wsprd");
 }
 
-void MainWindow::uploadSpots()
-{
-    if(m_uploading)
-        return;
-
-    QString rfreq = QString("%1").arg(m_dialFreq + 0.001500, 0, 'f', 6);
-    QString tfreq = QString("%1").arg(0.000001 * m_txFreq + m_dialFreq, 0, 'f', 6);
-
-    wsprNet->upload(m_myCall,
-                    m_myGrid,
-                    rfreq,
-                    tfreq,
-                    m_mode,
-                    QString::number(m_TxOK ? m_pctx : 0),
-                    QString::number(m_dBm),
-                    Version,
-                    m_appDir + "/wsprd.out");
-    loggit("Start WSPRNet Upload");
-    m_uploading = true;
-    lab3->setStyleSheet("QLabel{background-color:yellow}");
-    lab3->setText("Uploading Spots");
-}
-
-void MainWindow::uploadResponse(QString response)
-{
-    //qDebug() << ">>> " << response;
-    if (response == "done") {
-        m_uploading=false;
-        lab3->setStyleSheet("");
-        lab3->setText("");
-    } else if (response == "Upload Failed") {
-        m_uploading=false;
-        lab3->setStyleSheet("");
-        lab3->setText(response);
-    } else {
-        lab3->setText(response);
-    }
-}
-
-void MainWindow::p2Start()
-{
-  if(m_uploading) return;
-  QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
-      "/wsprd.out -F call=" + m_myCall + " -F grid=" + m_myGrid;
-  cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
-  loggit("Start curl");
-  m_uploading=true;
-  lab3->setStyleSheet("QLabel{background-color:yellow}");
-  lab3->setText("Uploading Spots");
-  p2.start(cmnd);
-}
-
-void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
-{
-  while(p2.canReadLine()) {
-    QString t(p2.readLine());
-    if(t.indexOf("spot(s) added") > 0) {
-      QFile f("wsprd.out");
-      f.remove();
-    }
-  }
-  lab3->setStyleSheet("");
-  lab3->setText("");
-  m_uploading=false;
-}
-
-void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
-{
-  QByteArray t=p2.readAllStandardError();
-  if(t.length()>0) {
-    loggit(t);
-//    msgBox(t);
-  }
-  m_uploading=false;
-}
-
-void MainWindow::p2Error()                                     //p2rror
-{
-  msgBox("Error attempting to start curl.");
-  m_uploading=false;
-}
-
 void MainWindow::p3ReadFromStdout()                        //p3readFromStdout
 {
   QByteArray t=p3.readAllStandardOutput();
@@ -870,7 +727,7 @@ void MainWindow::p3Error()                                     //p3rror
 }
 
 
-void MainWindow::on_EraseButton_clicked()                          //Erase
+void MainWindow::on_eraseButton_clicked()                          //Erase
 {
   ui->decodedTextBrowser->clear();
 }
@@ -894,46 +751,6 @@ void MainWindow::on_actionWSPR_15_triggered()
 void MainWindow::on_inGain_valueChanged(int n)
 {
   m_inGain=n;
-}
-
-void MainWindow::on_TxNextButton_clicked()
-{
-  /* The following was for testing direct access to WSPRnet:
-  QString t("http://wsprnet.org/post?function=wsprstat&rcall=K1JT&");
-  t += "rgrid=FN20qi&rqrg=10.140200&tpct=0&tqrg=10.140200&dbm=20&";
-  t += "version=" + Version;
-  QUrl url(t);
-//  qDebug() << "A" << t;
-  reply = mNetworkManager->get(QNetworkRequest(url));
-  */
-  m_txnext=!m_txnext;
-  if(m_txnext) ui->TxNextButton->setStyleSheet(m_txNext_style);
-  if(!m_txnext) ui->TxNextButton->setStyleSheet("");
-}
-
-void MainWindow::onNetworkReply(QNetworkReply* reply)
-{
-  qDebug() << "Network Reply:" << reply->error();
-  QString replyString;
-  if(reply->error() == QNetworkReply::NoError) {
-    int httpstatuscode = reply->attribute(
-          QNetworkRequest::HttpStatusCodeAttribute).toUInt();
-    qDebug() << "http status code:" << httpstatuscode;
-    switch(httpstatuscode)
-    {
-    case 0:                                   //RESPONSE_OK:
-      if (reply->isReadable()) {
-  //Assuming this is a human readable file replyString now contains the file
-        replyString = QString::fromUtf8(reply->readAll().data());
-        qDebug() << "Network reply string:" << replyString;
-      }
-      break;
-    default:
-      //httpstatuscode is nonzero...
-      break;
-    }
-  }
-  reply->deleteLater();
 }
 
 void MainWindow::oneSec() {
@@ -979,7 +796,7 @@ void MainWindow::guiUpdate()
 
       m_ntr=-1;                         //This says we will have transmitted
       m_txnext=false;
-      ui->TxNextButton->setStyleSheet("");
+      ui->txEnableButton->setStyleSheet("");
       startTx();                        //Start a normal Tx sequence
     } else {
       m_ntr=1;
@@ -1102,7 +919,6 @@ void MainWindow::stopTx()
   m_transmitting=false;
   lab1->setStyleSheet("");
   lab1->setText("");
-  ui->TuneButton->setStyleSheet("");
   ptt0Timer->start(200);                       //Sequencer delay
   loggit("Stop Tx");
 //  startRx();
@@ -1124,23 +940,10 @@ void MainWindow::stopTx2()
   }
 }
 
-void MainWindow::on_cbTxEnable_toggled(bool b)
-{
-  m_TxOK=b;
-  ui->TuneButton->setEnabled(m_TxOK);
-  btxok=b;
-  if(!m_TxOK and m_transmitting) stopTx();
-}
-
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)
 {
   m_band=n;
   m_dialFreq=dFreq[n];
-  if(g_pWideGraph!=NULL) g_pWideGraph->setDialFreq(m_dialFreq);
-  QString t;
-  t.sprintf("%.6f ",m_dialFreq);
-  t.sprintf("%.6f",m_dialFreq+0.000001*m_txFreq);
-  ui->txFreqLineEdit->setText(t);
   if(m_catEnabled) {
     int nHz=int(1000000.0*m_dialFreq + 0.5);
     QString cmnd1,cmnd3;
@@ -1163,18 +966,6 @@ QString MainWindow::rig_command()
   return cmnd1+cmnd2;
 }
 
-void MainWindow::on_sbTxAudio_valueChanged(int n)
-{
-  m_txFreq=n;
-  soundOutThread.setTxFreq(m_txFreq);
-}
-
-void MainWindow::on_startRxButton_clicked()
-{
-  m_RxOK=true;
-  startRx();
-}
-
 void MainWindow::loggit(QString t)
 {
 /*
@@ -1190,28 +981,4 @@ void MainWindow::loggit(QString t)
         //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
     f.write(t);
     */
-}
-
-void MainWindow::on_TuneButton_clicked()
-{
-  m_tuning=!m_tuning;
-  if(m_tuning) {
-    m_receiving=false;
-    ui->TuneButton->setStyleSheet(m_tune_style);
-    m_tuning=true;
-    startTx();
-    itone[0]=-1;
-  } else {
-    stopTx();
-  }
-}
-
-void MainWindow::on_tBlankSpinBox_valueChanged(int n)
-{
-  m_tBlank=n;
-}
-
-void MainWindow::on_fBlankSpinBox_valueChanged(int n)
-{
-  m_fBlank=n;
 }
