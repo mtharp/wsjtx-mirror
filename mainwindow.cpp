@@ -13,12 +13,11 @@ int icw[250];                         //Dits for CW ID
 bool btxok;                           //True if OK to transmit
 bool btxMute;
 double outputLatency;                 //Latency in seconds
-double dFreq[]={0.136,0.4742,1.8366,3.5926,5.2872,7.0386,10.1387,14.0956,
-           18.1046,21.0946,24.9246,28.1246,50.293,70.091,144.489,0.0};
-
+double dFreq[]={50.190,144.125,222.070,432.070,1296.070,2304.100,
+                3400.100,5760.100,10368.000,24000.100};
 WideGraph* g_pWideGraph = NULL;
 
-QString ver="0.9";
+QString ver="0.5";
 QString rev="$Rev$";
 QString Program_Title_Version="  ECHO   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
@@ -30,12 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
   ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
-
-/*
-#ifdef WIN32
-  freopen("wsprx.log","w",stderr);
-#endif
-*/
 
   on_eraseButton_clicked();
   ui->labUTC->setStyleSheet( \
@@ -112,7 +105,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
-//  qDebug() << signalMeter->isVisible() << signalMeter->size();
 
   PaError paerr=Pa_Initialize();                    //Initialize Portaudio
   if(paerr!=paNoError) {
@@ -294,6 +286,7 @@ void MainWindow::dataSink(int k)
   static float px=0.0;
   static float df3;
 
+  qDebug() << "A" << k;
 // Get power, spectrum, and ihsym
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
   if(ihsym <=0) return;
@@ -503,43 +496,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
   QString t1;
   while(p1.canReadLine()) {
     QString t(p1.readLine());
-    if(t.indexOf("<DecodeFinished>") >= 0) {
-      lab3->setStyleSheet("");
-      lab3->setText("");
-      loggit("Decoder Finished");
-      return;
-    } else {
-      int n=t.length();
-      t=t.mid(0,n-2) + "                                                  ";
-      t.remove(QRegExp("\\s+$"));
-      QStringList rxFields = t.split(QRegExp("\\s+"));
-      //qDebug() << "++> Rx: " << rxFields;
-      QString rxLine;
-      if ( rxFields.count() == 8 ) {
-          rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
-                  .arg(rxFields.at(0), 4)
-                  .arg(rxFields.at(1), 4)
-                  .arg(rxFields.at(2), 5)
-                  .arg(rxFields.at(3), 11)
-                  .arg(rxFields.at(4), 4)
-                  .arg(rxFields.at(5), -12)
-                  .arg(rxFields.at(6), -6)
-                  .arg(rxFields.at(7), 3);
-      } else if ( rxFields.count() == 7 ) { // Type 2 message
-          rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
-                  .arg(rxFields.at(0), 4)
-                  .arg(rxFields.at(1), 4)
-                  .arg(rxFields.at(2), 5)
-                  .arg(rxFields.at(3), 11)
-                  .arg(rxFields.at(4), 4)
-                  .arg(rxFields.at(5), -12)
-                  .arg("", -6)
-                  .arg(rxFields.at(6), 3);
-      } else {
-          rxLine = t;
-      }
-      ui->decodedTextBrowser->append(rxLine);
-    }
+    ui->decodedTextBrowser->append(t);
   }
 }
 
@@ -606,10 +563,10 @@ void MainWindow::guiUpdate()
   if(nsec != m_sec0) {
     oneSec();
     m_sec0=nsec;
+    qDebug() << "B" << t2p << soundInThread.isRunning() << m_receiving;
   }
 
-  int nstop=2;
-  if(1) {   //Reached sequence end time?
+  if(0) {   //Reached sequence end time?
     if(m_transmitting) stopTx();
     m_transmitting=false;
     m_receiving=false;
@@ -740,13 +697,11 @@ void MainWindow::loggit(QString t)
   QDateTime t2 = QDateTime::currentDateTimeUtc();
   qDebug() << t2.time().toString("hh:mm:ss.zzz") << t
            << m_catEnabled << (int)m_catEnabled;
-*/
-
-  /*
   QFile f("wsprx.log");
   if(f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
     //    message=MyCall + MyGrid + "ndbm";
         //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
     f.write(t);
-    */
+*/
+  qDebug() << t;
 }

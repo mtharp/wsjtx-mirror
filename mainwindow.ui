@@ -36,348 +36,8 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QFormLayout" name="formLayout">
-    <property name="fieldGrowthPolicy">
-     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-    </property>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0" colspan="2">
-         <widget class="QComboBox" name="bandComboBox">
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="currentText">
-           <string>50 MHz</string>
-          </property>
-          <item>
-           <property name="text">
-            <string>50 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>144 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>222 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>432 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>902 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>1296 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>2304 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>3400 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>5760 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>10368 MHz</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Other</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="measureButton">
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>70</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Measure</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QSpinBox" name="sbRIT">
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="suffix">
-           <string>  Hz</string>
-          </property>
-          <property name="prefix">
-           <string>RIT:  </string>
-          </property>
-          <property name="minimum">
-           <number>-20000</number>
-          </property>
-          <property name="maximum">
-           <number>20000</number>
-          </property>
-          <property name="singleStep">
-           <number>100</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="eraseButton">
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>70</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&amp;Erase</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="2">
-         <widget class="QSpinBox" name="sbDither">
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="suffix">
-           <string>  Hz</string>
-          </property>
-          <property name="prefix">
-           <string>Dither:  </string>
-          </property>
-          <property name="maximum">
-           <number>100</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QPushButton" name="clearAvgButton">
-          <property name="text">
-           <string>Clear Avg</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0" colspan="2">
-         <widget class="QSpinBox" name="sbTavg">
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="suffix">
-           <string>  m</string>
-          </property>
-          <property name="prefix">
-           <string>Tavg:  </string>
-          </property>
-          <property name="maximum">
-           <number>20</number>
-          </property>
-          <property name="value">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QPushButton" name="txEnableButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>70</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Tx Enable</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="2">
-         <widget class="QPushButton" name="stopButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>70</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Stop</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QFrame" name="meterFrame">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSlider" name="inGain">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>10</width>
-              <height>160</height>
-             </size>
-            </property>
-            <property name="minimum">
-             <number>-50</number>
-            </property>
-            <property name="maximum">
-             <number>50</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="5" column="1" colspan="2">
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QLabel" name="labUTC">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>130</width>
-              <height>60</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>160</width>
-              <height>60</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
-            </property>
-            <property name="lineWidth">
-             <number>2</number>
-            </property>
-            <property name="midLineWidth">
-             <number>0</number>
-            </property>
-            <property name="text">
-             <string>2012 Dec 12
- 01:23:45 </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="legendLabel">
         <property name="sizePolicy">
@@ -527,6 +187,369 @@ p, li { white-space: pre-wrap; }
          <bool>false</bool>
         </property>
        </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0" colspan="3">
+         <widget class="QComboBox" name="bandComboBox">
+          <property name="maximumSize">
+           <size>
+            <width>90</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="currentText">
+           <string>50 MHz</string>
+          </property>
+          <item>
+           <property name="text">
+            <string>50 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>144 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>222 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>432 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>902 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1296 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2304 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3400 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>5760 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>10368 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Other</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="measureButton">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Measure</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QSpinBox" name="sbRIT">
+          <property name="maximumSize">
+           <size>
+            <width>90</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="suffix">
+           <string>  Hz</string>
+          </property>
+          <property name="prefix">
+           <string>RIT:  </string>
+          </property>
+          <property name="minimum">
+           <number>-20000</number>
+          </property>
+          <property name="maximum">
+           <number>20000</number>
+          </property>
+          <property name="singleStep">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QPushButton" name="eraseButton">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Erase</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QSpinBox" name="sbDither">
+          <property name="maximumSize">
+           <size>
+            <width>90</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="suffix">
+           <string>  Hz</string>
+          </property>
+          <property name="prefix">
+           <string>Dither:  </string>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QPushButton" name="clearAvgButton">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Clear Avg</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="3">
+         <widget class="QSpinBox" name="sbTavg">
+          <property name="maximumSize">
+           <size>
+            <width>90</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="suffix">
+           <string>  m</string>
+          </property>
+          <property name="prefix">
+           <string>Tavg:  </string>
+          </property>
+          <property name="maximum">
+           <number>20</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3">
+         <widget class="QPushButton" name="txEnableButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Tx Enable</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string> Grid:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>FN20qi</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="3">
+         <widget class="QPushButton" name="stopButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QFrame" name="meterFrame">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="inGain">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>10</width>
+              <height>160</height>
+             </size>
+            </property>
+            <property name="minimum">
+             <number>-50</number>
+            </property>
+            <property name="maximum">
+             <number>50</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="5" column="2" colspan="2">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="labUTC">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>160</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="lineWidth">
+             <number>2</number>
+            </property>
+            <property name="midLineWidth">
+             <number>0</number>
+            </property>
+            <property name="text">
+             <string>2012 Dec 12
+ 01:23:45 </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
