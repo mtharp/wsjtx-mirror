@@ -26,8 +26,6 @@ public slots:
   void showSoundInError(const QString& errorMsg);
   void showStatusMessage(const QString& statusMsg);
   void dataSink(int k);
-  void diskDat();
-  void diskWriteFinished();
   void guiUpdate();
   void p1ReadFromStdout();
   void p1ReadFromStderr();
@@ -49,20 +47,15 @@ private slots:
   void on_actionCuteSDR_triggered();
   void on_actionOnline_Users_Guide_triggered();
   void on_actionWide_Waterfall_triggered();
-  void on_actionNone_triggered();
   void on_eraseButton_clicked();
   void on_actionAFMHot_triggered();
   void on_actionBlue_triggered();
-  void on_actionWSPR_15_triggered();
   void on_inGain_valueChanged(int n);
   void startTx2();
   void stopTx();
   void stopTx2();
   void loggit(QString t);
   void on_bandComboBox_currentIndexChanged(int n);
-  void on_actionSave_wav_triggered();
-  void on_actionSave_c2_triggered();
-  void on_actionSave_all_triggered();
   void on_actionSettings_triggered();
 
 private:
@@ -77,31 +70,11 @@ private:
     qint32  m_pttMethodIndex;
     qint32  m_pttPort;
     qint32  m_txFreq;
-    qint32  m_sec0;
-    qint32  m_RxLog;
-    qint32  m_nutc0;
-    qint32  m_nrx;
-    qint32  m_hsym0;
     qint32  m_paInDevice;
     qint32  m_paOutDevice;
-    qint32  m_NBslider;
-    qint32  m_TRseconds;
-    qint32  m_nsps;
-    qint32  m_hsymStop;
     qint32  m_inGain;
-    qint32  m_nsave;
-    qint32  m_nseq;
-    qint32  m_ncal;
-    qint32  m_ntr;
-    qint32  m_ntx;
-    qint32  m_nseqdone;
-    qint32  m_pctx;
     qint32  m_iptt;
-    qint32  m_dBm;
     qint32  m_band;
-    qint32  m_save;
-    qint32  m_BFO;
-    qint32  m_RxStartBand;
     qint32  m_catPortIndex;
     qint32  m_rig;
     qint32  m_rigIndex;
@@ -112,11 +85,8 @@ private:
     qint32  m_stopBits;
     qint32  m_stopBitsIndex;
     qint32  m_handshakeIndex;
-    qint32  m_ncw;
-    qint32  m_secID;
     qint32  m_COMportOpen;
-    qint32  m_tBlank;
-    qint32  m_fBlank;
+    qint32  m_sec0;
 
     bool    m_receiving;
     bool    m_transmitting;

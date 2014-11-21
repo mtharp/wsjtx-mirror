@@ -531,18 +531,6 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
    </layout>
-   <zorder>legendLabel</zorder>
-   <zorder>decodedTextBrowser</zorder>
-   <zorder>bandComboBox</zorder>
-   <zorder>measureButton</zorder>
-   <zorder>eraseButton</zorder>
-   <zorder>stopButton</zorder>
-   <zorder>txEnableButton</zorder>
-   <zorder>clearAvgButton</zorder>
-   <zorder>sbRIT</zorder>
-   <zorder>sbDither</zorder>
-   <zorder>sbTavg</zorder>
-   <zorder>meterFrame</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -599,7 +587,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string> About WSPR-X</string>
+    <string> About Echo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F1</string>

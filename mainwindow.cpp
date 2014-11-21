@@ -104,33 +104,21 @@ MainWindow::MainWindow(QWidget *parent) :
   m_txFreq=1500;
   m_loopall=false;
   m_startAnother=false;
-  m_save=0;
   m_sec0=-1;
   m_palette="CuteSDR";
-  m_RxLog=1;                     //Write Date and Time to RxLog
-  m_nutc0=9999;
   m_mode="WSPR-2";
-  m_TRseconds=120;
   m_inGain=0;
   m_hopping=false;
   m_rxdone=false;
   m_idle=false;
   m_RxOK=true;
   m_TxOK=false;
-  m_nrx=1;
-  m_ntx=0;
   m_txnext=false;
   m_grid6=false;
   m_band=6;
-  m_nseq=0;
-  m_ntr=0;
-  m_BFO=1500;
   m_rig=-1;
-  m_secID=0;
   m_iptt=0;
   m_COMportOpen=0;
-  m_tBlank=1;
-  m_fBlank=1;
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
@@ -144,16 +132,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
-  g_pWideGraph->setBFO(m_BFO);
   g_pWideGraph->setDialFreq(m_dialFreq);
-  if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
-  future1 = new QFuture<void>;
-  watcher1 = new QFutureWatcher<void>;
-  connect(watcher1, SIGNAL(finished()),this,SLOT(diskDat()));
-
-  future2 = new QFuture<void>;
-  watcher2 = new QFutureWatcher<void>;
-  connect(watcher2, SIGNAL(finished()),this,SLOT(diskWriteFinished()));
 
   m_txNext_style="QPushButton{background-color: #00ff00; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
@@ -168,7 +147,6 @@ MainWindow::MainWindow(QWidget *parent) :
   soundOutThread.setTxFreq(m_txFreq);
   m_receiving=true;                        //Start with Rx ON
   soundInThread.setReceiving(true);
-  m_diskData=false;
 
   if(ui->actionLinrad->isChecked()) on_actionLinrad_triggered();
   if(ui->actionCuteSDR->isChecked()) on_actionCuteSDR_triggered();
@@ -230,16 +208,12 @@ void MainWindow::writeSettings()
   settings.setValue("SaveWav",ui->actionSave_wav->isChecked());
   settings.setValue("SaveC2",ui->actionSave_c2->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
-  settings.setValue("NBslider",m_NBslider);
   settings.setValue("TxFreq",m_txFreq);
   settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("InGain",m_inGain);
   settings.setValue("TxEnable",m_TxOK);
-  settings.setValue("PctTx",m_pctx);
-  settings.setValue("dBm",m_dBm);
   settings.setValue("Grid6",m_grid6);
   settings.setValue("Iband",m_band);
-  settings.setValue("BFO",m_BFO);
   settings.setValue("catEnabled",m_catEnabled);
   settings.setValue("Rig",m_rig);
   settings.setValue("RigIndex",m_rigIndex);
@@ -253,9 +227,6 @@ void MainWindow::writeSettings()
   settings.setValue("StopBitsIndex",m_stopBitsIndex);
   settings.setValue("Handshake",m_handshake);
   settings.setValue("HandshakeIndex",m_handshakeIndex);
-  settings.setValue("TBlank",m_tBlank);
-  settings.setValue("FBlank",m_fBlank);
-
   settings.endGroup();
 }
 
@@ -273,7 +244,6 @@ void MainWindow::readSettings()
 
   settings.beginGroup("Common");
   m_myCall=settings.value("MyCall","").toString();
-  morse_(m_myCall.toLatin1().data(),icw,&m_ncw,m_myCall.length());
   m_myGrid=settings.value("MyGrid","").toString();
   m_idInt=settings.value("IDint",0).toInt();
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
@@ -296,11 +266,6 @@ void MainWindow::readSettings()
   ui->actionSave_wav->setChecked(settings.value("SaveWav",false).toBool());
   ui->actionSave_c2->setChecked(settings.value("SaveC2",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
-  m_save=0;
-  if(ui->actionSave_wav->isChecked()) m_save=1;
-  if(ui->actionSave_c2->isChecked()) m_save=2;
-  if(ui->actionSave_all->isChecked()) m_save=3;
-  m_NBslider=settings.value("NBslider",40).toInt();
   m_txFreq=settings.value("TxFreq",1500).toInt();
   m_dialFreq=settings.value("DialFreq",10.1387).toDouble();
   QString t;
@@ -309,13 +274,9 @@ void MainWindow::readSettings()
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
   m_TxOK=settings.value("TxEnable",false).toBool();
-  m_pctx=settings.value("PctTx",25).toInt();
   m_rxavg=1.0;
-  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
-  m_dBm=settings.value("dBm",37).toInt();
   m_band=settings.value("Iband",6).toInt();
   m_grid6=settings.value("Grid6",false).toBool();
-  m_BFO=settings.value("BFO",1500).toInt();
   m_catEnabled=settings.value("catEnabled",false).toBool();
   m_rig=settings.value("Rig",214).toInt();
   m_rigIndex=settings.value("RigIndex",100).toInt();
@@ -329,8 +290,6 @@ void MainWindow::readSettings()
   m_stopBitsIndex=settings.value("StopBitsIndex",1).toInt();
   m_handshake=settings.value("Handshake","None").toString();
   m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
-  m_tBlank=settings.value("TBlank",1).toInt();
-  m_fBlank=settings.value("FBlank",1).toInt();
   ui->bandComboBox->setCurrentIndex(m_band);
   settings.endGroup();
 
@@ -350,59 +309,27 @@ void MainWindow::dataSink(int k)
   static float df3;
 
 // Get power, spectrum, and ihsym
-  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
+//  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
   if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
-  if(m_receiving || m_diskData) {
+  if(m_receiving) {
     g_pWideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
-  if(ihsym == m_hsymStop) {
+  if(ihsym == 999) {
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-    double f0m1500=m_dialFreq + 0.000001*(m_BFO - 1500);
+//    double f0m1500=m_dialFreq + 0.000001*(m_BFO - 1500);
     QString t2;
-
-    if(!m_diskData) {                        //Always save; may delete later
-      int ihr=t.time().toString("hh").toInt();
-      int imin=t.time().toString("mm").toInt();
-      imin=imin - (imin%(m_TRseconds/60));
-      t2.sprintf("%2.2d%2.2d",ihr,imin);
-      m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
-            t2 + ".wav";
-      m_c2name=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
-            t2 + ".c2";
-      int len1=m_c2name.length();
-      char c2name[80];
-      strcpy(c2name,m_c2name.toLatin1());
-      savec2_(c2name,&m_TRseconds,&f0m1500,len1);
-    }
 
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
     m_rxdone=true;
     loggit("Start Decoder");
-    QString cmnd;
-    if(m_diskData) {
-      t2.sprintf(" -f %.6f ",f0m1500);
-
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
-      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
-          m_path + '"';
-    } else {
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
-    }
-    QString t3=cmnd;
-    int i1=cmnd.indexOf("/wsprd ");
-    QString t4;
-    t4.sprintf("-t %.4f -b %.2f ",0.001*m_tBlank,0.01*m_fBlank);
-    cmnd=t3.mid(0,i1+7) + t4 + t3.mid(i1+7);
-    qDebug() << cmnd;
-    p1.start(QDir::toNativeSeparators(cmnd));
   }
   soundInThread.m_dataSinkBusy=false;
 }
@@ -448,7 +375,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_nDevOut=dlg.m_nDevOut;
     m_paOutDevice=dlg.m_paOutDevice;
     m_grid6=dlg.m_grid6;
-    g_pWideGraph->setBFO(m_BFO);
     m_catEnabled=dlg.m_catEnabled;
     m_rig=dlg.m_rig;
     m_rigIndex=dlg.m_rigIndex;
@@ -589,54 +515,6 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
   g_pWideGraph->show();
 }
 
-void MainWindow::diskDat()                                   //diskDat()
-{
-  int k;
-  int kstep=m_nsps/2;
-  m_diskData=true;
-  k=m_path.length();
-  if(m_path.mid(k-4,-1)==".wav") {
-    for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
-      k=(n+1)*kstep;
-      dataSink(k);
-      if(n%10 == 1 or n == m_hsymStop) qApp->processEvents(); //Keep GUI alive
-    }
-  } else {
-    lab3->setStyleSheet("QLabel{background-color:cyan}");
-    lab3->setText("Decoding");
-    QString cmnd='"' + m_appDir + '"' + "/wsprd " + m_path + '"';
-    p1.start(QDir::toNativeSeparators(cmnd));
-  }
-}
-
-void MainWindow::diskWriteFinished()                       //diskWriteFinished
-{
-}
-
-void MainWindow::on_actionNone_triggered()                    //Save None
-{
-  m_save=0;
-  ui->actionNone->setChecked(true);
-}
-
-void MainWindow::on_actionSave_wav_triggered()
-{
-  m_save=1;
-  ui->actionSave_wav->setChecked(true);
-}
-
-void MainWindow::on_actionSave_c2_triggered()
-{
-  m_save=2;
-  ui->actionSave_c2->setChecked(true);
-}
-
-void MainWindow::on_actionSave_all_triggered()                //Save All
-{
-  m_save=3;
-  ui->actionSave_all->setChecked(true);
-}
-
 void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 {
   QString t1;
@@ -646,17 +524,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       lab3->setStyleSheet("");
       lab3->setText("");
       loggit("Decoder Finished");
-      if(m_save!=1 and m_save!=3 and !m_diskData) {
-        QFile savedWav(m_fname);
-        savedWav.remove();
-      }
-      if(m_save!=2 and m_save!=3 and !m_diskData) {
-        int i1=m_fname.indexOf(".wav");
-        QString sc2=m_fname.mid(0,i1) + ".c2";
-        QFile savedC2(sc2);
-        savedC2.remove();
-      }
-      m_RxLog=0;
       m_startAnother=m_loopall;
       return;
     } else {
@@ -732,22 +599,6 @@ void MainWindow::on_eraseButton_clicked()                          //Erase
   ui->decodedTextBrowser->clear();
 }
 
-void MainWindow::on_actionWSPR_15_triggered()
-{
-  m_mode="WSPR-15";
-  m_TRseconds=900;
-  m_nsps=65536;
-  m_nseqdone=890;
-  m_hsymStop=int(2.0*m_nseqdone*12000.0/m_nsps);
-  soundInThread.setPeriod(m_TRseconds,m_nsps);
-  soundOutThread.setPeriod(m_TRseconds,m_nsps);
-  g_pWideGraph->setPeriod(m_TRseconds,m_nsps);
-  lab2->setStyleSheet("QLabel{background-color: #ee82ee}");
-  lab2->setText("WSPR-15");
-  ui->actionWSPR_15->setChecked(true);
-  if(m_transmitting) stopTx();
-}
-
 void MainWindow::on_inGain_valueChanged(int n)
 {
   m_inGain=n;
@@ -758,9 +609,7 @@ void MainWindow::oneSec() {
   QString utc = t.date().toString("yyyy MMM dd") + " \n " +
           t.time().toString();
   ui->labUTC->setText(utc);
-  if(!m_receiving and !m_diskData) {
-    signalMeter->setValue(0);
-  }
+  if(!m_receiving) signalMeter->setValue(0);
 }
 
 //------------------------------------------------------------- //guiUpdate()
@@ -772,45 +621,16 @@ void MainWindow::guiUpdate()
   double t2p=fmod(tsec,6.0);
 
 //  qDebug() << "A" << t2p;
-  m_nseq = nsec % m_TRseconds;
   if(nsec != m_sec0) {
     oneSec();
     m_sec0=nsec;
   }
 
-  if(m_nseq==0 and !m_idle and !m_receiving and !m_transmitting and
-     m_ntr==0) {
-    if(m_pctx==0) m_nrx=1;             //Always receive if pctx=0
-
-    if(m_TxOK and (m_pctx>0) and (m_txnext or ((m_nrx==0) and (m_ntr!=-1))) or
-       (m_TxOK and (m_pctx==100))) {
-
-//This will be a normal Tx sequence. Compute # of Rx's that will follow.
-      float x=(float)rand()/RAND_MAX;
-      if(m_pctx<50) {
-        m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
-      } else {
-        m_nrx=0;
-        if(x<m_rxavg) m_nrx=1;
-      }
-
-      m_ntr=-1;                         //This says we will have transmitted
-      m_txnext=false;
-      ui->txEnableButton->setStyleSheet("");
-      startTx();                        //Start a normal Tx sequence
-    } else {
-      m_ntr=1;
-      m_RxStartBand=m_band;
-      startRx();                        //Start a normal Rx sequence
-    }
-  }
-
-  int nstop=m_nseqdone + m_ncw*3072.0/48000.0 - 2.0;
-  if(!m_tuning and (m_nseq >= nstop)) {   //Reached sequence end time?
+  int nstop=2;
+  if(!m_tuning) {   //Reached sequence end time?
     if(m_transmitting) stopTx();
     m_transmitting=false;
     m_receiving=false;
-    m_ntr=0;
     soundInThread.setReceiving(false);
   }
 
@@ -821,47 +641,13 @@ void MainWindow::startRx()
   if(m_RxOK) {
     m_receiving=true;
     soundInThread.setReceiving(true);
-    m_ntr=1;
     loggit("Start Rx");
-    m_nrx=m_nrx-1;
   }
 }
 
 void MainWindow::startTx()
 {
-  static char msg[23];
-  int nmin;
-  QString sdBm,msg1,msg0,message;
 
-  sdBm.sprintf(" %d",m_dBm);
-  m_ntx=1-m_ntx;
-  int i2=m_myCall.indexOf("/");
-  if(i2>0 or m_grid6) {
-    // This is a "type 2" WSPR message
-    if(i2<0) {
-      msg1=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
-    } else {
-      msg1=m_myCall + sdBm;
-    }
-    msg0="<" + m_myCall + "> " + m_myGrid + sdBm;
-    if(m_ntx==0) message=msg0;
-    if(m_ntx==1) message=msg1;
-  } else {
-    // Normal WSPR message
-    message=m_myCall + " " + m_myGrid.mid(0,4) + sdBm;
-  }
-  QByteArray ba=message.toLatin1();
-  ba2msg(ba,msg);
-  int len1=22;
-  genwsprx_(msg,itone,len1);
-  icw[0]=0;
-  if(m_idInt>0) {
-    nmin=(m_sec0-m_secID)/60;
-    if(nmin >= m_idInt) {
-      icw[0]=m_ncw;
-      m_secID=m_sec0;
-    }
-  }
 //Raise PTT
   if(m_pttMethodIndex==0) {
     m_cmnd=rig_command() + " T 1";
@@ -874,7 +660,7 @@ void MainWindow::startTx()
   ptt1Timer->start(200);                       //Sequencer delay
   loggit("Start Tx");
   lab1->setStyleSheet("QLabel{background-color: #ff0000}");
-  lab1->setText("Transmitting:  " + message);
+  lab1->setText("Transmitting");
   signalMeter->setValue(0);
 }
 
