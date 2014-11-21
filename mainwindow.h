@@ -42,7 +42,6 @@ protected:
   virtual bool eventFilter(QObject *object, QEvent *event);
 
 private slots:
-  void on_actionDeviceSetup_triggered();
   void on_actionExit_triggered();
   void on_actionAbout_triggered();
   void OnExit();
@@ -64,6 +63,7 @@ private slots:
   void on_actionSave_wav_triggered();
   void on_actionSave_c2_triggered();
   void on_actionSave_all_triggered();
+  void on_actionSettings_triggered();
 
 private:
     Ui::MainWindow *ui;

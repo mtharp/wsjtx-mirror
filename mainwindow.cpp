@@ -413,7 +413,7 @@ void MainWindow::showSoundInError(const QString& errorMsg)
 void MainWindow::showStatusMessage(const QString& statusMsg)
  {statusBar()->showMessage(statusMsg);}
 
-void MainWindow::on_actionDeviceSetup_triggered()               //Setup Dialog
+void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
 {
   DevSetup dlg(this);
   dlg.m_idInt=m_idInt;
