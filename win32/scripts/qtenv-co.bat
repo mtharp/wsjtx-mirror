@@ -2,7 +2,7 @@
 :: Name .........: qtenv-co.bat
 :: Project ......: Part of the JTSDK v2.0.0 Project
 :: Description ..: Batch file to check out WSJT-X/RC, WSPR-X and MAP65
-:: Project URL ..: http://sourceforge.net/projects/jtsdk 
+:: Project URL ..: http://sourceforge.net/projects/wsjt/ 
 :: Usage ........: This file is run from within pyenv.bat
 :: 
 :: Author .......: Greg, Beam, KI7MT, <ki7mt@yahoo.com>

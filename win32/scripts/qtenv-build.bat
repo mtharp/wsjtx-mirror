@@ -2,7 +2,7 @@
 :: Name .........: qtenv-build.bat
 :: Project ......: Part of the JTSDK v2.0.0 Project
 :: Description ..: Build WSJT-X, WSPR and MAP65
-:: Project URL ..: http://sourceforge.net/projects/jtsdk 
+:: Project URL ..: http://sourceforge.net/projects/wsjt/ 
 :: Usage ........: This file is run from within qtenv.bat
 ::
 :: Author .......: Greg, Beam, KI7MT, <ki7mt@yahoo.com>
