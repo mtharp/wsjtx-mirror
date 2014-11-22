@@ -1,0 +1,2 @@
+alias co-help="/scripts/cyg32-co-help.sh && cd $HOME"
+alias build-help='/scripts/cyg32-build-help.sh'

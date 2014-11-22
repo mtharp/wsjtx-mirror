@@ -1,0 +1,18 @@
+# These variables are used in various JTSDK shell (Bash) scripts
+# Example Usage:
+#
+# echo -e ${C_Y}"TEXT TO DISPLAY\n"${C_NC}
+#
+# Would print, in YELLOW: TEXT TO DISPLAY 
+# Note the \n added a carrage return, or new line
+# These are all "Foreground" colors, and render best on
+# a "Black Background" ${C_NC} turns the coloring back OFF
+#
+# For additional colors, see: http://tldp.org/LDP/abs/html/sample-bashrc.html
+
+# Foreground colors
+C_R='\033[01;31m'		# red
+C_G='\033[01;32m'		# green
+C_Y='\033[01;33m'		# yellow
+C_C='\033[01;36m'		# cyan
+C_NC='\033[01;37m'		# no color

@@ -1,0 +1,10 @@
+     _ _____ ___ ___  _  __   __  __ _____   _____ 
+  _ | |_   _/ __|   \| |/ /__|  \/  / __\ \ / / __|
+ | || | | | \__ \ |) | ' <___| |\/| \__ \\ V /\__ \
+  \__/  |_| |___/___/|_|\_\  |_|  |_|___/ |_| |___/ v2.0.0
+
+  Reprint This Screen, type ..: msys-help
+  Build Hamlib3, type ........: build-hamlib3
+  Build FFTW, type ...........: build-fftw
+  Build Samplerate, type .....: build-samplerate
+    
