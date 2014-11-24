@@ -1,0 +1,11 @@
+#------------------------------------------------------------------------------#
+# KI7MT <ki7mt@yahoo.com> Edits:
+# * Added this file to setup reasonable mintty defaults
+#------------------------------------------------------------------------------#
+BoldAsFont=no
+Transparency=off
+Font=DejaVu Sans Mono
+FontHeight=10
+Columns=82
+Rows=33
+ScrollbackLines=100000
