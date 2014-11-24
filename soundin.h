@@ -5,22 +5,16 @@
 #include <QDebug>
 
 
-// Thread gets audio data from soundcard and signals when a buffer of
-// specified size is available.
+// Reads audio data from soundcard
 class SoundInThread : public QThread
 {
   Q_OBJECT
-  bool quitExecution;           // if true, thread exits gracefully
 
 protected:
   virtual void run();
 
 public:
-  bool m_dataSinkBusy;
-
-  SoundInThread():
-    quitExecution(false),
-    m_dataSinkBusy(false)
+  SoundInThread()
   {
   }
 
@@ -36,7 +30,6 @@ signals:
   void status(const QString& message);
 
 public slots:
-  void quit();
 
 private:
   double m_SamFacIn;                    //(Input sample rate)/12000.0

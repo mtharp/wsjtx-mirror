@@ -126,7 +126,7 @@ MainWindow::~MainWindow()
     soundInThread.wait(3000);
   }
   if (soundOutThread.isRunning()) {
-    soundOutThread.quitExecution=true;
+    soundOutThread.quit();
     soundOutThread.wait(3000);
   }
   delete ui;
@@ -264,7 +264,6 @@ void MainWindow::dataSink(int k)
     lab3->setText("Decoding");
     loggit("Start Decoder");
   }
-  soundInThread.m_dataSinkBusy=false;
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -328,7 +327,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     }
 
     if(dlg.m_restartSoundOut) {
-      soundOutThread.quitExecution=true;
       soundOutThread.wait(1000);
       soundOutThread.setOutputDevice(m_paOutDevice);
     }
@@ -395,6 +393,7 @@ void MainWindow::closeEvent(QCloseEvent*)
 
 void MainWindow::OnExit()
 {
+  Pa_Terminate();
   g_pWideGraph->saveSettings();
   qApp->exit(0);                                      // Exit the event loop
 }
@@ -498,7 +497,7 @@ void MainWindow::guiUpdate()
 
   m_s6=fmod(tsec,6.0);
 
-  qDebug() << "A" << s6z << m_s6 << nstate << soundOutThread.isRunning();
+//  qDebug() << "A" << s6z << m_s6 << nstate << soundOutThread.isRunning();
 
   if(!m_auto and (nstate<=0 or nstate>=6)) goto done;
 
@@ -567,7 +566,6 @@ done:
 void MainWindow::startTx2()
 {
   if(!soundOutThread.isRunning()) {
-    soundOutThread.setTxSNR(99.0);
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
     loggit("Start Tx2");
