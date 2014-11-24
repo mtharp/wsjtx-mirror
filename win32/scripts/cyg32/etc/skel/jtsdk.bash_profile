@@ -51,4 +51,3 @@ fi
 
 # Setup the prompt
 export PS1='\[\033]0;JTSDK Documentation Development Environment\007\033[32m\]\u@\h\[\033[33m\w\033[0m\]$ '
- 
