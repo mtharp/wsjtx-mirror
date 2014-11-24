@@ -21,18 +21,14 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_hdivs = HORZ_DIVS;
   m_Running = false;
   m_paintEventBusy=false;
-  m_WaterfallPixmap = QPixmap(0,0);
   m_2DPixmap = QPixmap(0,0);
   m_ScalePixmap = QPixmap(0,0);
   m_OverlayPixmap = QPixmap(0,0);
   m_Size = QSize(0,0);
   m_TxFreq = 1500;
   m_line = 0;
-  m_fSample = 12000;
-  m_nsps=15360;
   m_dBStepSize=10;
-  m_Percent2DScreen = 30;	//percent of screen used for 2D display
-  m_transmitted=false;
+  m_Percent2DScreen = 100;	//percent of screen used for 2D display
 }
 
 CPlotter::~CPlotter() { }                                      // Destructor
@@ -59,18 +55,15 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
     m_2DPixmap.fill(Qt::black);
-    m_WaterfallPixmap = QPixmap(m_Size.width(), m_h1);
     m_OverlayPixmap = QPixmap(m_Size.width(), m_h2);
     m_OverlayPixmap.fill(Qt::black);
 
-    m_WaterfallPixmap.fill(Qt::black);
     m_2DPixmap.fill(Qt::black);
     m_ScalePixmap = QPixmap(m_w,30);
     m_ScalePixmap.fill(Qt::white);
 
     m_fSpan=m_w*m_fftBinWidth;
     m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
-    if(m_nsps==65536) m_StartFreq=20 * int((1612.5-0.5*m_fSpan)/20.0 + 0.5);
   }
   DrawOverlay();
 }
@@ -81,7 +74,6 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=true;
   QPainter painter(this);
   painter.drawPixmap(0,0,m_ScalePixmap);
-  painter.drawPixmap(0,30,m_WaterfallPixmap);
   painter.drawPixmap(0,m_h1,m_2DPixmap);
   m_paintEventBusy=false;
 }
@@ -94,8 +86,6 @@ void CPlotter::draw(float swide[])                                //draw()
   double gain = pow(10.0,0.05*(m_plotGain+7));
 
 //move current data down one line (must do this before attaching a QPainter object)
-  m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
-  QPainter painter1(&m_WaterfallPixmap);
   m_2DPixmap = m_OverlayPixmap.copy(0,0,m_w,m_h2);
   QPainter painter2D(&m_2DPixmap);
 
@@ -106,25 +96,9 @@ void CPlotter::draw(float swide[])                                //draw()
   bool strong0=false;
   bool strong=false;
   int i0=(m_StartFreq-1000)/m_fftBinWidth;
-  if(m_nsps==65536) i0=(m_StartFreq-1550)/m_fftBinWidth;
 
   for(int i=0; i<m_w; i++) {
-    strong=false;
-    if(swide[i0+i]<0) {
-      strong=true;
-      swide[i0+i]=-swide[i0+i];
-    }
     y = 10.0*log10(swide[i0+i]);
-    int y1 = 5.0*gain*y + 10*m_plotZero;
-    if (y1<0) y1=0;
-    if (y1>254) y1=254;
-    if (swide[i0+i]>1.e29) y1=255;
-    if(y1==255 and m_transmitted) {
-      painter1.setPen(Qt::red);
-    } else {
-      painter1.setPen(m_ColorTbl[y1]);
-    }
-    painter1.drawPoint(i,0);
     y2 = 0.4*gain*y - 15;
     y2=y2*float(m_h)/540.0;
     if(strong != strong0 or i==m_w-1) {
@@ -138,33 +112,15 @@ void CPlotter::draw(float swide[])                                //draw()
     LineBuf[j].setY(m_h-(y2+0.8*m_h));
     j++;
   }
-  m_transmitted=false;
 
   if(swide[0]>1.0e29) m_line=0;
   m_line++;
-  if(m_line == 13) {
-    UTCstr();
-    painter1.setPen(Qt::white);
-    painter1.drawText(5,10,m_sutc);
-  }
   update();                              //trigger a new paintEvent
-}
-
-void CPlotter::UTCstr()
-{
-  int ihr,imin;
-  qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
-  imin=ms/60000;
-  ihr=imin/60;
-  imin=imin % 60;
-  imin=imin - (imin % (m_TRperiod/60));
-  sprintf(m_sutc,"%2.2d:%2.2d",ihr,imin);
 }
 
 void CPlotter::DrawOverlay()                                 //DrawOverlay()
 {
-  if(m_OverlayPixmap.isNull() or m_WaterfallPixmap.isNull() or
-     m_dialFreq==0) return;
+  if(m_OverlayPixmap.isNull() or m_2DPixmap.isNull()) return;
 //  int w = m_WaterfallPixmap.width();
   int x,y;
 
@@ -188,7 +144,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   float pixPerHdiv = m_freqPerDiv/m_fftBinWidth;
   float pixPerVdiv = float(m_h2)/float(VERT_DIVS);
 
-  m_RFHz=int(1000000.0*m_dialFreq+m_StartFreq + 0.5) % 1000;
   m_hdivs = m_w*m_fftBinWidth/m_freqPerDiv + 0.9999;
 
   painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
@@ -256,21 +211,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     }
   }
 
-  QPen pen0(Qt::green, 3);              //Mark decoding range with green line
-  painter0.setPen(pen0);
-  int x1,x2;
-  if(m_nsps==8192) {
-    x=XfromFreq(1500);
-    x1=x - 100/m_fftBinWidth;
-    x2=x + 100/m_fftBinWidth;
-  } else {
-    x=XfromFreq(1612.5);
-    x1=x - 12.5/m_fftBinWidth;
-    x2=x + 12.5/m_fftBinWidth;
-  }
-  pen0.setWidth(6);
-  painter0.drawLine(x1,28,x2,28);
-
   QPen pen1(Qt::red, 3);                         //Mark Tx Freq with red tick
   painter0.setPen(pen1);
   x = XfromFreq(m_TxFreq);
@@ -282,11 +222,7 @@ void CPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
 {
   float freq;
   for(int i=0; i<=m_hdivs; i++) {
-    if(m_bRFscale) {
-      freq=int(m_RFHz + m_BFO - 1500 + i*m_freqPerDiv) % 1000;
-    } else {
-      freq=m_StartFreq + m_BFO - 1500 + i*m_freqPerDiv;
-    }
+    freq=m_StartFreq + i*m_freqPerDiv;
     m_HDivText[i].setNum((int)freq);
   }
 }
@@ -329,136 +265,5 @@ int CPlotter::getPlotGain()                               //getPlotGain()
   return m_plotGain;
 }
 
-int CPlotter::plotWidth(){return m_WaterfallPixmap.width();}
+int CPlotter::plotWidth(){return m_2DPixmap.width();}
 void CPlotter::UpdateOverlay() {DrawOverlay();}
-void CPlotter::setDataFromDisk(bool b) {m_dataFromDisk=b;}
-
-void CPlotter::setTxFreq(int x, bool bf)                       //setTxFreq()
-{
-  if(bf) {
-    m_TxFreq=x;         // x is freq in Hz
-    m_xClick=XfromFreq(m_TxFreq);
-  } else {
-    if(x<0) x=0;      // x is pixel number
-    if(x>m_Size.width()) x=m_Size.width();
-    m_TxFreq = int(FreqfromX(x)+0.5);
-    m_xClick=x;
-  }
-  DrawOverlay();
-  update();
-}
-
-int CPlotter::TxFreq() {return m_TxFreq;}                        //TxFreq()
-
-void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
-{
-  bool ctrl = (event->modifiers() & Qt::ControlModifier);
-  if(ctrl) {
-    int x=event->x();
-    setTxFreq(x,false);
-    emit freezeDecode1(1);                  //### ???
-  }
-}
-
-void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click
-{
-  int x=event->x();
-  setTxFreq(x,false);
-  emit freezeDecode1(2);                  //### ???
-}
-
-void CPlotter::setPalette(QString palette)                      //setPalette()
-{
-  if(palette=="Linrad") {
-    float twopi=6.2831853;
-    float r,g,b,phi,x;
-    for(int i=0; i<256; i++) {
-      r=0.0;
-      if(i>105 and i<=198) {
-        phi=(twopi/4.0) * (i-105.0)/(198.0-105.0);
-        r=sin(phi);
-      } else if(i>=198) {
-          r=1.0;
-      }
-
-      g=0.0;
-      if(i>35 and i<198) {
-        phi=(twopi/4.0) * (i-35.0)/(122.5-35.0);
-        g=0.625*sin(phi);
-      } else if(i>=198) {
-        x=(i-186.0);
-        g=-0.014 + 0.0144*x -0.00007*x*x +0.000002*x*x*x;
-        if(g>1.0) g=1.0;
-      }
-
-      b=0.0;
-      if(i<=117) {
-        phi=(twopi/2.0) * i/117.0;
-        b=0.4531*sin(phi);
-      } else if(i>186) {
-        x=(i-186.0);
-        b=-0.014 + 0.0144*x -0.00007*x*x +0.000002*x*x*x;
-        if(b>1.0) b=1.0;
-      }
-      m_ColorTbl[i].setRgb(int(255.0*r),int(255.0*g),int(255.0*b));
-    }
-    m_ColorTbl[255].setRgb(255,255,100);
-
-  }
-
-  if(palette=="CuteSDR") {
-      for( int i=0; i<256; i++) {
-      if( (i<43) )
-        m_ColorTbl[i].setRgb( 0,0, 255*(i)/43);
-      if( (i>=43) && (i<87) )
-        m_ColorTbl[i].setRgb( 0, 255*(i-43)/43, 255 );
-      if( (i>=87) && (i<120) )
-        m_ColorTbl[i].setRgb( 0,255, 255-(255*(i-87)/32));
-      if( (i>=120) && (i<154) )
-        m_ColorTbl[i].setRgb( (255*(i-120)/33), 255, 0);
-      if( (i>=154) && (i<217) )
-        m_ColorTbl[i].setRgb( 255, 255 - (255*(i-154)/62), 0);
-      if( (i>=217)  )
-        m_ColorTbl[i].setRgb( 255, 0, 128*(i-217)/38);
-    }
-    m_ColorTbl[255].setRgb(255,255,100);
-  }
-
-  if(palette=="Blue") {
-    FILE* fp=fopen("blue.dat","r");
-    int n,r,g,b;
-    float xr,xg,xb;
-    for(int i=0; i<256; i++) {
-      fscanf(fp,"%d%f%f%f",&n,&xr,&xg,&xb);
-      r=255.0*xr + 0.5;
-      g=255.0*xg + 0.5;
-      b=255.0*xb + 0.5;
-      m_ColorTbl[i].setRgb(r,g,b);
-    }
-  }
-
-  if(palette=="AFMHot") {
-    FILE* fp=fopen("afmhot.dat","r");
-    int n,r,g,b;
-    float xr,xg,xb;
-    for(int i=0; i<256; i++) {
-      fscanf(fp,"%d%f%f%f",&n,&xr,&xg,&xb);
-      r=255.0*xr + 0.5;
-      g=255.0*xg + 0.5;
-      b=255.0*xb + 0.5;
-      m_ColorTbl[i].setRgb(r,g,b);
-    }
-  }
-}
-
-void CPlotter::setNsps(int ntrperiod, int nsps)                                  //setNSpan()
-{
-  m_TRperiod=ntrperiod;
-  m_nsps=nsps;
-  m_fftBinWidth=4.0*1500.0/m_nsps;
-  m_fSpan=m_w*m_fftBinWidth;
-  m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
-  if(m_nsps==65536) m_StartFreq=10 * int((1612.5-0.5*m_fSpan)/10.0 + 0.5);
-  DrawOverlay();                         //Redraw scales and ticks
-  update();                              //trigger a new paintEvent}
-}

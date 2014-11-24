@@ -98,11 +98,10 @@ MainWindow::MainWindow(QWidget *parent) :
   readSettings();		             //Restore user's setup params
 
   on_actionWide_Waterfall_triggered();                   //###
-  g_pWideGraph->setTxFreq(m_txFreq);
 
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
-  connect(watcher1, SIGNAL(finished()),this,SLOT(echoSpec()));
+//  connect(watcher1, SIGNAL(finished()),this,SLOT(echoSpec()));
 
   m_txEnable_style="QPushButton{background-color: #ff0000; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
