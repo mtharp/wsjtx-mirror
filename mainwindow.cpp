@@ -36,13 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
         black; color : yellow; border: 3px ridge gray}");
 
   QActionGroup* modeGroup = new QActionGroup(this);
-  ui->actionWSPR_15->setActionGroup(modeGroup);
-
-  QActionGroup* saveGroup = new QActionGroup(this);
-  ui->actionNone->setActionGroup(saveGroup);
-  ui->actionSave_wav->setActionGroup(saveGroup);
-  ui->actionSave_c2->setActionGroup(saveGroup);
-  ui->actionSave_all->setActionGroup(saveGroup);
+//  ui->actionWSPR_15->setActionGroup(modeGroup);
 
   setWindowTitle(Program_Title_Version);
   connect(&soundInThread, SIGNAL(readyForFFT(int)),
@@ -69,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   QTimer *guiTimer = new QTimer(this);
   connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
-  guiTimer->start(100);                            //Don't change the 100 ms!
+  guiTimer->start(50);                            //Don't change the 100 ms!
   ptt0Timer = new QTimer(this);
   ptt0Timer->setSingleShot(true);
   connect(ptt0Timer, SIGNAL(timeout()), this, SLOT(stopTx2()));
@@ -110,11 +104,11 @@ MainWindow::MainWindow(QWidget *parent) :
       border-style: outset; border-width: 1px; border-radius: 3px; \
       border-color: black; padding: 4px;}";
   soundInThread.setInputDevice(m_paInDevice);
-  soundInThread.start(QThread::HighestPriority);
+//  soundInThread.start(QThread::HighestPriority);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
-  m_receiving=true;                        //Start with Rx ON
-  soundInThread.setReceiving(true);
+//  m_receiving=true;                        //Start with Rx ON
+//  soundInThread.setReceiving(true);
 }                                          // End of MainWindow constructor
 
 //--------------------------------------------------- MainWindow destructor
@@ -149,7 +143,6 @@ void MainWindow::writeSettings()
 
   settings.beginGroup("Common");
   settings.setValue("MyGrid",m_myGrid);
-  settings.setValue("IDint",m_idInt);
   settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
   settings.setValue("SoundInIndex",m_nDevIn);
@@ -157,10 +150,6 @@ void MainWindow::writeSettings()
   settings.setValue("SoundOutIndex",m_nDevOut);
   settings.setValue("paOutDevice",m_paOutDevice);
   settings.setValue("Mode",m_mode);
-  settings.setValue("SaveNone",ui->actionNone->isChecked());
-  settings.setValue("SaveWav",ui->actionSave_wav->isChecked());
-  settings.setValue("SaveC2",ui->actionSave_c2->isChecked());
-  settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("TxFreq",m_txFreq);
   settings.setValue("InGain",m_inGain);
   settings.setValue("TxEnable",m_TxOK);
@@ -196,17 +185,12 @@ void MainWindow::readSettings()
 
   settings.beginGroup("Common");
   m_myGrid=settings.value("MyGrid","").toString();
-  m_idInt=settings.value("IDint",0).toInt();
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
   m_nDevIn = settings.value("SoundInIndex", 0).toInt();
   m_paInDevice = settings.value("paInDevice",0).toInt();
   m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
   m_paOutDevice = settings.value("paOutDevice",0).toInt();
-  ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
-  ui->actionSave_wav->setChecked(settings.value("SaveWav",false).toBool());
-  ui->actionSave_c2->setChecked(settings.value("SaveC2",false).toBool());
-  ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
   m_txFreq=settings.value("TxFreq",1500).toInt();
   m_txFreq=1500.0;
   soundOutThread.setTxFreq(m_txFreq);
@@ -275,7 +259,6 @@ void MainWindow::showStatusMessage(const QString& statusMsg)
 void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
 {
   DevSetup dlg(this);
-  dlg.m_idInt=m_idInt;
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
   dlg.m_nDevIn=m_nDevIn;
@@ -297,7 +280,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
-    m_idInt=dlg.m_idInt;
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
     m_nDevIn=dlg.m_nDevIn;
@@ -318,18 +300,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_stopBitsIndex=dlg.m_stopBitsIndex;
     m_handshake=dlg.m_handshake;
     m_handshakeIndex=dlg.m_handshakeIndex;
-
-    if(dlg.m_restartSoundIn) {
-      soundInThread.quit();
-      soundInThread.wait(1000);
-      soundInThread.setInputDevice(m_paInDevice);
-      soundInThread.start(QThread::HighestPriority);
-    }
-
-    if(dlg.m_restartSoundOut) {
-      soundOutThread.wait(1000);
-      soundOutThread.setOutputDevice(m_paOutDevice);
-    }
   }
 }
 
@@ -516,7 +486,7 @@ void MainWindow::guiUpdate()
 
 //Wait 0.2 s, then send a 2.2 s Tx pulse
     ptt1Timer->start(200);                       //Sequencer delay
-    loggit("Start Tx");
+    loggit("Tx1");
     lab1->setStyleSheet("QLabel{background-color: #ff0000}");
     lab1->setText("Transmitting");
     signalMeter->setValue(0);
@@ -537,7 +507,7 @@ void MainWindow::guiUpdate()
     lab1->setText("");
 // Wait 0.2 s, then lower PTT and start the Rx sequence
     ptt0Timer->start(200);                       //Sequencer delay
-    loggit("Stop Tx");
+    loggit("TxOff");
     nstate=2;
     goto done;
   }
@@ -568,13 +538,12 @@ void MainWindow::startTx2()
   if(!soundOutThread.isRunning()) {
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
-    loggit("Start Tx2");
+    loggit("Tx2");
   }
 }
 
 void MainWindow::stopTx2()
 {
-  loggit("Stop Tx2");
 //Lower PTT
   if(m_pttMethodIndex==0) {
     m_cmnd=rig_command() + " T 0";
@@ -584,18 +553,10 @@ void MainWindow::stopTx2()
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
   }
-  startRx();
-  m_receiving=true;
+  soundInThread.start();
   soundInThread.setReceiving(true);
-}
-
-void MainWindow::startRx()
-{
-  if(m_RxOK) {
-    m_receiving=true;
-    soundInThread.setReceiving(true);
-    loggit("Start Rx");
-  }
+  loggit("Rx");
+  m_receiving=true;
 }
 
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)

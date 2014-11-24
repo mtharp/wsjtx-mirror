@@ -62,7 +62,6 @@ private:
 
     qint32  m_nDevIn;
     qint32  m_nDevOut;
-    qint32  m_idInt;
     qint32  m_pttMethodIndex;
     qint32  m_pttPort;
     qint32  m_txFreq;
@@ -138,7 +137,6 @@ private:
     void updateStatusBar();
     void msgBox(QString t);
     void oneSec();
-    void startRx();
     QString rig_command();
 };
 
