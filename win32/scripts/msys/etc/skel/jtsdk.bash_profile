@@ -1,13 +1,18 @@
-# The copy in your home directory (~/.bash_profile) is yours, please
-# feel free to customise it as you see fit, as JTSDK will not change
-# it after initial setup.
+# This file is installed when you you first create and account
+# by running C:\JTSDK\msys-env. Subsequent SVN updates "Will Not"
+# Overwrite this file.
 
-# source the users bashrc if it exists
+# SOURCE USER BASHRC FILE
 if [ -f "${HOME}/.bashrc" ] ; then
   source "${HOME}/.bashrc"
 fi
 
-# Set PATH so it includes user's private bin if it exists
+# USER ALIAS FILE
+if [ -f "${HOME}/.bash_aliases" ]; then
+  source "${HOME}/.bash_aliases"
+fi
+
+# SOURCE USER PRIVATE
 if [ -d "${HOME}/bin" ] ; then
   PATH="${HOME}/bin:${PATH}"
 fi

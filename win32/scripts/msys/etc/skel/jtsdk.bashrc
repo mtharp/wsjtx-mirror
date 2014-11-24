@@ -1,8 +1,14 @@
-# User dependent .bashrc file
+# This file is installed when you you first create and account
+# by running C:\JTSDK\msys-env. Subsequent SVN updates "Will Not"
+# Overwrite this file.
+
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-# Shell Options
+#-------------------------------------------------------------------------------
+# SHELL OPTIONS
+#-------------------------------------------------------------------------------
+
 # Don't wait for job termination notification
 set -o notify
 
@@ -19,7 +25,9 @@ shopt -s histappend
 # for example, cd /vr/lgo/apaache would find /var/log/apache
 shopt -s cdspell
 
-# Completion options
+#-------------------------------------------------------------------------------
+# BASH COMPLETION OPTIONS
+#-------------------------------------------------------------------------------
 # These completion tuning parameters change the default behavior of bash_completion:
 
 # Define to access remotely checked-out files over passwordless ssh for CVS
@@ -35,11 +43,9 @@ COMP_TAR_INTERNAL_PATHS=1
 # Any completions you add in ~/.bash_completion are sourced last.
 [[ -f /etc/bash_completion ]] && . /etc/bash_completion
 
-# Aliases
-if [ -f "${HOME}/.bash_aliases" ]; then
-  source "${HOME}/.bash_aliases"
-fi
-
+#-------------------------------------------------------------------------------
+# BASH SHELL COLOR OPTIONS
+#-------------------------------------------------------------------------------
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'

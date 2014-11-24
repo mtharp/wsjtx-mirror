@@ -33,6 +33,7 @@ SET SCR=%BASED%\scripts
 SET PATH=%BASED%;%TOOLS%;%SCR%;%WINDIR%\System32
 CD /D %BASED%
 
+CLS
 ECHO ^*****************************
 ECHO    UPDATTING JTSDK %VERSION%
 ECHO ^*****************************
@@ -85,12 +86,11 @@ IF NOT EXIST %BASED%\cyg32\NUL (
 ECHO ..Did Not Find ^( C:\JTSDK\cyg32 ^), skipping update
 GOTO UPDATE_FFTW3F
 )
-ECHO .. Updating JTSDK-CYG32 RC Files
+ECHO ..Updating JTSDK-CYG32 RC Files
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.bash_profile %BASED%\cyg32\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.bashrc %BASED%\cyg32\etc\skel\.bashrc >nul
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.inputrc %BASED%\cyg32\etc\skel\.inputrc >nul
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.minttyrc %BASED%\cyg32\etc\skel\.minttyrc >nul
-COPY /Y %SCR%\cyg32\etc\skel\jtsdk.profile %BASED%\cyg32\etc\skel\.profile >nul
 GOTO UPDATE_FFTW3F
 
 REM -- UPDATE FFTW3F -----------------------------------------------------------
@@ -145,7 +145,7 @@ IF NOT EXIST %BASED%\msys\NUL (
 ECHO ..Did Not Find ^( C:\JTSDK\msys ^), skipping update
 GOTO UPDATE_NSIS
 )
-ECHO .. Updating JTSDK-MSYS RC Files
+ECHO ..Updating JTSDK-MSYS RC Files
 COPY /Y %SCR%\msys\etc\skel\jtsdk.bash_profile %BASED%\msys\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.bashrc %BASED%\msys\etc\skel\.bashrc >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.inputrc %BASED%\msys\etc\skel\.inputrc >nul

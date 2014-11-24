@@ -1,2 +1,52 @@
+# CAUTION: This fill is updated each time the user updates from SVN. If you
+#          want custom local alias commands, use the file located in your
+#          $HOME directory: $HOME/.bash_alias. This file is sourced "Last"
+#          so any commands with the same name, listed to exported elsewhere, 
+#          will be superseded.
+
+#-------------------------------------------------------------------------------
+# GENERAL USE COMMANDS
+#-------------------------------------------------------------------------------
 alias co-help="/scripts/cyg32-co-help.sh && cd $HOME"
+alias adv-help="/scripts/cyg32-adv-help.sh && cd $HOME"
 alias build-help='/scripts/cyg32-build-help.sh'
+alias checkout-doc="cd $HOME && svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/doc"
+alias lista='cat /scripts/cyg32-doc-alias.txt |less'
+
+#-------------------------------------------------------------------------------
+# UPDATE && STATUS COMMANDS
+#-------------------------------------------------------------------------------
+alias update-all="cd $HOME/doc svn update"
+alias ss='svn status |grep "?"'
+
+#-------------------------------------------------------------------------------
+# ADVANCED BUILD COMMANDS ( requires doc checkout in $HOME directory )
+#-------------------------------------------------------------------------------
+
+# ALL DOCS
+alias build-dall="cd $HOME/doc && ./build-doc.sh dall"
+alias build-all="cd $HOME/doc && ./build-doc.sh all"
+
+# WSJT-X
+alias build-dwsjtx="cd $HOME/doc && ./build-doc.sh dwsjtx"
+alias build-dwsjtx="cd $HOME/doc && ./build-doc.sh wsjtx"
+
+# WSJT
+alias build-dwsjt="cd $HOME/doc && ./build-doc.sh dwsjt"
+alias build-wsjt="cd $HOME/doc && ./build-doc.sh wsjt"
+
+# WSPR
+alias build-dwspr="cd $HOME/doc && ./build-doc.sh dwspr"
+alias build-wspr="cd $HOME/doc && ./build-doc.sh wspr"
+
+# WSPR-X
+alias build-dwsprx="cd $HOME/doc && ./build-doc.sh dwsprx"
+alias build-wsprx="cd $HOME/doc && ./build-doc.sh wsprx"
+
+# MAP65
+alias build-dmap65="cd $HOME/doc && ./build-doc.sh dmap65"
+alias build-map65="cd $HOME/doc && ./build-doc.sh wsprx"
+
+# BUILD DEV-GUIDE
+alias build-ddevg="cd $HOME/doc && ./build-doc.sh ddevg"
+alias build-devg="cd $HOME/doc && ./build-doc.sh devg"
