@@ -51,25 +51,27 @@ GOTO UPDATE_MSYS
 )
 
 REM -- Update JTSDK\cyg32 elements
-ECHO .. Updating CYG32
-%CP% -uR %SCR%\etc\skel\jtsdk.bash_profile %BASED%\cyg32\etc\skel\.bash_profile >nul
-%CP% -uR %SCR%\etc\skel\jtsdk.bashrc %BASED%\cyg32\etc\skel\.bashrc >nul
-%CP% -uR %SCR%\etc\skel\jtsdk.inputrc %BASED%\cyg32\etc\skel\.inputrc >nul
-%CP% -uR %SCR%\etc\skel\jtsdk.minttyrc %BASED%\cyg32\etc\skel\.minttyrc >nul
-%CP% -uR %SCR%\etc\skel\jtsdk.profile %BASED%\cyg32\etc\skel\.profile >nul
+ECHO .. Updating JTSDK-CYG32
+%CP% -uR %SCR%\cyg32\etc\skel\jtsdk.bash_profile %BASED%\cyg32\etc\skel\.bash_profile >nul
+%CP% -uR %SCR%\cyg32\etc\skel\jtsdk.bashrc %BASED%\cyg32\etc\skel\.bashrc >nul
+%CP% -uR %SCR%\cyg32\etc\skel\jtsdk.inputrc %BASED%\cyg32\etc\skel\.inputrc >nul
+%CP% -uR %SCR%\cyg32\etc\skel\jtsdk.minttyrc %BASED%\cyg32\etc\skel\.minttyrc >nul
+%CP% -uR %SCR%\cyg32\etc\skel\jtsdk.profile %BASED%\cyg32\etc\skel\.profile >nul
 
 REM -- Update JTSDK\msys elements
 IF NOT EXIST %BASED%JTSDK\msys (
 ECHO ..Did Not Find ^( C:\JTSDK\msys ^), skipping update
 GOTO FINISHED
 )
-ECHO .. Updating MSYS
-
+ECHO .. Updating JTSDK-MSYS
+%CP% -uR %SCR%\msys\etc\skel\jtsdk.bash_profile %BASED%\cyg32\etc\skel\.bash_profile >nul
+%CP% -uR %SCR%\msys\etc\skel\jtsdk.bashrc %BASED%\cyg32\etc\skel\.bashrc >nul
+%CP% -uR %SCR%\msys\etc\skel\jtsdk.inputrc %BASED%\cyg32\etc\skel\.inputrc >nul
+%CP% -uR %SCR%\msys\etc\skel\jtsdk.minttyrc %BASED%\cyg32\etc\skel\.minttyrc >nul
 GOTO FINISHED
 
-
 :FINISHED
-ECHO FInished All Updates
+ECHO Finished All Updates
 GOTO EOF
 
 :EOF
