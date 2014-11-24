@@ -35,12 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
         "QLabel { background-color : \
         black; color : yellow; border: 3px ridge gray}");
 
-  QActionGroup* paletteGroup = new QActionGroup(this);
-  ui->actionCuteSDR->setActionGroup(paletteGroup);
-  ui->actionLinrad->setActionGroup(paletteGroup);
-  ui->actionAFMHot->setActionGroup(paletteGroup);
-  ui->actionBlue->setActionGroup(paletteGroup);
-
   QActionGroup* modeGroup = new QActionGroup(this);
   ui->actionWSPR_15->setActionGroup(modeGroup);
 
@@ -84,7 +78,6 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ptt1Timer, SIGNAL(timeout()), this, SLOT(startTx2()));
 
   m_auto=false;
-  m_waterfallAvg = 1;
   btxMute=false;
   btxok=false;
   m_transmitting=false;
@@ -92,8 +85,6 @@ MainWindow::MainWindow(QWidget *parent) :
   m_appDir = QApplication::applicationDirPath();
   m_txFreq=1500;
   m_sec0=-1;
-  m_palette="CuteSDR";
-  m_mode="WSPR-2";
   m_inGain=0;
   m_RxOK=true;
   m_TxOK=false;
@@ -114,30 +105,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
-  g_pWideGraph->setDialFreq(m_dialFreq);
 
-  m_txNext_style="QPushButton{background-color: #00ff00; \
+  m_txEnable_style="QPushButton{background-color: #ff0000; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
       border-color: black; padding: 4px;}";
-  m_tune_style="QPushButton{background-color: #ff0000; \
-      border-style: outset; border-width: 1px; border-radius: 3px; \
-      border-color: black; padding: 4px;}";
-
   soundInThread.setInputDevice(m_paInDevice);
   soundInThread.start(QThread::HighestPriority);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
   m_receiving=true;                        //Start with Rx ON
   soundInThread.setReceiving(true);
-
-  if(ui->actionLinrad->isChecked()) on_actionLinrad_triggered();
-  if(ui->actionCuteSDR->isChecked()) on_actionCuteSDR_triggered();
-  if(ui->actionAFMHot->isChecked()) on_actionAFMHot_triggered();
-  if(ui->actionBlue->isChecked()) on_actionBlue_triggered();
-
-  //ui->legendLabel->setFont(ui->decodedTextBrowser->font());
-  //ui->legendLabel->setText(" UTC   dB    DT        Freq   DF   Call          Grid    dBm");
-
 }                                          // End of MainWindow constructor
 
 //--------------------------------------------------- MainWindow destructor
@@ -179,17 +156,12 @@ void MainWindow::writeSettings()
   settings.setValue("paInDevice",m_paInDevice);
   settings.setValue("SoundOutIndex",m_nDevOut);
   settings.setValue("paOutDevice",m_paOutDevice);
-  settings.setValue("PaletteCuteSDR",ui->actionCuteSDR->isChecked());
-  settings.setValue("PaletteLinrad",ui->actionLinrad->isChecked());
-  settings.setValue("PaletteAFMHot",ui->actionAFMHot->isChecked());
-  settings.setValue("PaletteBlue",ui->actionBlue->isChecked());
   settings.setValue("Mode",m_mode);
   settings.setValue("SaveNone",ui->actionNone->isChecked());
   settings.setValue("SaveWav",ui->actionSave_wav->isChecked());
   settings.setValue("SaveC2",ui->actionSave_c2->isChecked());
   settings.setValue("SaveAll",ui->actionSave_all->isChecked());
   settings.setValue("TxFreq",m_txFreq);
-  settings.setValue("DialFreq",m_dialFreq);
   settings.setValue("InGain",m_inGain);
   settings.setValue("TxEnable",m_TxOK);
   settings.setValue("Grid6",m_grid6);
@@ -231,23 +203,12 @@ void MainWindow::readSettings()
   m_paInDevice = settings.value("paInDevice",0).toInt();
   m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
   m_paOutDevice = settings.value("paOutDevice",0).toInt();
-  ui->actionCuteSDR->setChecked(settings.value(
-                                  "PaletteCuteSDR",true).toBool());
-  ui->actionLinrad->setChecked(settings.value(
-                                 "PaletteLinrad",false).toBool());
-  ui->actionAFMHot->setChecked(settings.value(
-                                 "PaletteAFMHot",false).toBool());
-  ui->actionBlue->setChecked(settings.value(
-                                 "PaletteBlue",false).toBool());
-  m_mode=settings.value("Mode","WSPR-2").toString();
   ui->actionNone->setChecked(settings.value("SaveNone",true).toBool());
   ui->actionSave_wav->setChecked(settings.value("SaveWav",false).toBool());
   ui->actionSave_c2->setChecked(settings.value("SaveC2",false).toBool());
   ui->actionSave_all->setChecked(settings.value("SaveAll",false).toBool());
   m_txFreq=settings.value("TxFreq",1500).toInt();
-  m_dialFreq=settings.value("DialFreq",10.1387).toDouble();
-  QString t;
-  t.sprintf("%.6f ",m_dialFreq);
+  m_txFreq=1500.0;
   soundOutThread.setTxFreq(m_txFreq);
   m_inGain=settings.value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
@@ -270,12 +231,6 @@ void MainWindow::readSettings()
   m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
   ui->bandComboBox->setCurrentIndex(m_band);
   settings.endGroup();
-
-  if(!ui->actionLinrad->isChecked() && !ui->actionCuteSDR->isChecked() &&
-    !ui->actionAFMHot->isChecked() && !ui->actionBlue->isChecked()) {
-    on_actionLinrad_triggered();
-    ui->actionLinrad->setChecked(true);
-  }
 }
 
 //-------------------------------------------------------------- dataSink()
@@ -286,7 +241,7 @@ void MainWindow::dataSink(int k)
   static float px=0.0;
   static float df3;
 
-  qDebug() << "A" << k;
+//  qDebug() << "A" << k;
 // Get power, spectrum, and ihsym
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
   if(ihsym <=0) return;
@@ -378,26 +333,6 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
       soundOutThread.setOutputDevice(m_paOutDevice);
     }
   }
-}
-
-void MainWindow::on_actionLinrad_triggered()                 //Linrad palette
-{
-  if(g_pWideGraph != NULL) g_pWideGraph->setPalette("Linrad");
-}
-
-void MainWindow::on_actionCuteSDR_triggered()                //CuteSDR palette
-{
-  if(g_pWideGraph != NULL) g_pWideGraph->setPalette("CuteSDR");
-}
-
-void MainWindow::on_actionAFMHot_triggered()
-{
-  if(g_pWideGraph != NULL) g_pWideGraph->setPalette("AFMHot");
-}
-
-void MainWindow::on_actionBlue_triggered()
-{
-  if(g_pWideGraph != NULL) g_pWideGraph->setPalette("Blue");
 }
 
 void MainWindow::on_actionAbout_triggered()                  //Display "About"
@@ -554,101 +489,89 @@ void MainWindow::oneSec() {
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
+  static int nstate=0;
+  static double s6z=-99.0;
+
   qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
   double tsec=0.001*ms;
   int nsec=tsec;
-  double t2p=fmod(tsec,6.0);
 
-//  qDebug() << "A" << t2p;
+  m_s6=fmod(tsec,6.0);
+
+  qDebug() << "A" << s6z << m_s6 << nstate << soundOutThread.isRunning();
+
+  if(!m_auto and (nstate<=0 or nstate>=6)) goto done;
+
+// When m_s6 has wrapped back to zero, start a new cycle.
+  if(m_s6<s6z) {
+
+//Raise PTT
+    if(m_pttMethodIndex==0) {
+      m_cmnd=rig_command() + " T 1";
+      p3.start(m_cmnd);
+      p3.waitForFinished();
+    }
+    if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
+      ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
+    }
+
+//Wait 0.2 s, then send a 2.2 s Tx pulse
+    ptt1Timer->start(200);                       //Sequencer delay
+    loggit("Start Tx");
+    lab1->setStyleSheet("QLabel{background-color: #ff0000}");
+    lab1->setText("Transmitting");
+    signalMeter->setValue(0);
+    nstate=1;
+    goto done;
+  }
+
+  if(nstate==1 and m_s6>2.4) {
+//Tx pulse is finished.
+/*
+    if (soundOutThread.isRunning()) {
+      soundOutThread.quitExecution=true;
+      soundOutThread.wait(3000);
+    }
+*/
+    m_transmitting=false;
+    lab1->setStyleSheet("");
+    lab1->setText("");
+// Wait 0.2 s, then lower PTT and start the Rx sequence
+    ptt0Timer->start(200);                       //Sequencer delay
+    loggit("Stop Tx");
+    nstate=2;
+    goto done;
+  }
+
+done:
   if(nsec != m_sec0) {
     oneSec();
     m_sec0=nsec;
-    qDebug() << "B" << t2p << soundInThread.isRunning() << m_receiving;
+//    qDebug() << "oneSec:" << m_s6 << soundInThread.isRunning() << m_receiving;
   }
 
+/*
   if(0) {   //Reached sequence end time?
     if(m_transmitting) stopTx();
     m_transmitting=false;
     m_receiving=false;
     soundInThread.setReceiving(false);
   }
-
+*/
+  s6z=m_s6;
+  m_sec0=nsec;
+//  if(specReady) ...
 } //End of guiUpdate()
 
-void MainWindow::startRx()
-{
-  if(m_RxOK) {
-    m_receiving=true;
-    soundInThread.setReceiving(true);
-    loggit("Start Rx");
-  }
-}
-
-void MainWindow::startTx()
-{
-
-//Raise PTT
-  if(m_pttMethodIndex==0) {
-    m_cmnd=rig_command() + " T 1";
-    p3.start(m_cmnd);
-    p3.waitForFinished();
-  }
-  if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-    ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
-  }
-  ptt1Timer->start(200);                       //Sequencer delay
-  loggit("Start Tx");
-  lab1->setStyleSheet("QLabel{background-color: #ff0000}");
-  lab1->setText("Transmitting");
-  signalMeter->setValue(0);
-}
-
-void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
-{
-  int iz=ba.length();
-  for(int i=0;i<22; i++) {
-    if(i<iz) {
-      message[i]=ba[i];
-    } else {
-      message[i]=32;
-    }
-  }
-  message[22]=0;
-}
-
+//------------------------------------------------------------- startTx2()
 void MainWindow::startTx2()
 {
   if(!soundOutThread.isRunning()) {
-    double snr=99.0;
-    QFile f("test.snr");
-    if(f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      char c[20];
-      f.readLine(c,sizeof(c));
-      QString t=QString(c);
-      snr=t.toDouble();
-    }
-    soundOutThread.setTxSNR(snr);
+    soundOutThread.setTxSNR(99.0);
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
     loggit("Start Tx2");
   }
-}
-
-void MainWindow::stopTx()
-{
-  g_pWideGraph->setTxed();
-  if (soundOutThread.isRunning()) {
-    soundOutThread.quitExecution=true;
-    soundOutThread.wait(3000);
-  }
-  m_transmitting=false;
-  lab1->setStyleSheet("");
-  lab1->setText("");
-  ptt0Timer->start(200);                       //Sequencer delay
-  loggit("Stop Tx");
-//  startRx();
-  m_receiving=true;
-  soundInThread.setReceiving(true);
 }
 
 void MainWindow::stopTx2()
@@ -663,12 +586,24 @@ void MainWindow::stopTx2()
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
   }
+  startRx();
+  m_receiving=true;
+  soundInThread.setReceiving(true);
+}
+
+void MainWindow::startRx()
+{
+  if(m_RxOK) {
+    m_receiving=true;
+    soundInThread.setReceiving(true);
+    loggit("Start Rx");
+  }
 }
 
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)
 {
   m_band=n;
-  m_dialFreq=dFreq[n];
+/*
   if(m_catEnabled) {
     int nHz=int(1000000.0*m_dialFreq + 0.5);
     QString cmnd1,cmnd3;
@@ -678,6 +613,7 @@ void MainWindow::on_bandComboBox_currentIndexChanged(int n)
     p3.start(m_cmnd);
     p3.waitForFinished();
   }
+*/
 }
 
 QString MainWindow::rig_command()
@@ -703,5 +639,18 @@ void MainWindow::loggit(QString t)
         //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
     f.write(t);
 */
-  qDebug() << t;
+  qDebug() << "loggit" << m_s6 << t;
 }
+
+void MainWindow::on_txEnableButton_clicked()
+
+{
+  m_auto = !m_auto;
+  if(m_auto) {
+    ui->txEnableButton->setStyleSheet(m_txEnable_style);
+  } else {
+    m_TxOK=false;
+    ui->txEnableButton->setStyleSheet("");
+  }
+}
+

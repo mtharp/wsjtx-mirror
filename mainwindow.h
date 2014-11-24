@@ -43,30 +43,26 @@ private slots:
   void on_actionExit_triggered();
   void on_actionAbout_triggered();
   void OnExit();
-  void on_actionLinrad_triggered();
-  void on_actionCuteSDR_triggered();
   void on_actionOnline_Users_Guide_triggered();
   void on_actionWide_Waterfall_triggered();
   void on_eraseButton_clicked();
-  void on_actionAFMHot_triggered();
-  void on_actionBlue_triggered();
   void on_inGain_valueChanged(int n);
   void startTx2();
-  void stopTx();
   void stopTx2();
   void loggit(QString t);
   void on_bandComboBox_currentIndexChanged(int n);
   void on_actionSettings_triggered();
+  void on_txEnableButton_clicked();
 
 private:
     Ui::MainWindow *ui;
 
-    double  m_dialFreq;
+    double  m_s6;
     float   m_rxavg;
+
     qint32  m_nDevIn;
     qint32  m_nDevOut;
     qint32  m_idInt;
-    qint32  m_waterfallAvg;
     qint32  m_pttMethodIndex;
     qint32  m_pttPort;
     qint32  m_txFreq;
@@ -122,12 +118,10 @@ private:
 
     QString m_path;
     QString m_appDir;
-    QString m_palette;
     QString m_dateTime;
     QString m_mode;
     QString m_cmnd;
-    QString m_txNext_style;
-    QString m_tune_style;
+    QString m_txEnable_style;
     QString m_catPort;
     QString m_handshake;
     QString m_myGrid;
@@ -145,13 +139,9 @@ private:
     void msgBox(QString t);
     void oneSec();
     void startRx();
-    void startTx();
-    void ba2msg(QByteArray ba, char* message);
     QString rig_command();
 };
 
-extern void getfile(QString fname, int ntrperiod);
-extern void savewav(QString fname, int ntrperiod);
 extern void getDev(int* numDevices,char hostAPI_DeviceName[][50],
                    int minChan[], int maxChan[],
                    int minSpeed[], int maxSpeed[]);
@@ -162,9 +152,6 @@ extern "C" {
 //----------------------------------------------------- C and Fortran routines
 void symspec_(int* k, int* nsps, int* nbfo, int* ingain, float* px,
               float s[], float* df3, int* nhsym);
-void genwsprx_(char* msg, int itone[], int len1);
-void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq, int len1);
-void morse_(char* msg, int* icw, int* ncw, int len);
 }
 
 #endif // MAINWINDOW_H
