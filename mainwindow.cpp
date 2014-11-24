@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //  ui->actionWSPR_15->setActionGroup(modeGroup);
 
   setWindowTitle(Program_Title_Version);
-  connect(&soundInThread, SIGNAL(readyForFFT(int)),
+  connect(&soundInThread, SIGNAL(dataReady(int)),
              this, SLOT(dataSink(int)));
   connect(&soundInThread, SIGNAL(error(QString)), this,
           SLOT(showSoundInError(QString)));
@@ -99,6 +99,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
   on_actionWide_Waterfall_triggered();                   //###
   g_pWideGraph->setTxFreq(m_txFreq);
+
+  future1 = new QFuture<void>;
+  watcher1 = new QFutureWatcher<void>;
+  connect(watcher1, SIGNAL(finished()),this,SLOT(echoSpec()));
 
   m_txEnable_style="QPushButton{background-color: #ff0000; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
@@ -220,34 +224,19 @@ void MainWindow::readSettings()
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink(int k)
 {
-  static float s[1366];
-  static int ihsym=0;
-  static float px=0.0;
-  static float df3;
+  float px;
+  float s[6000];
+  qDebug() << "dataSink" << k;
 
-//  qDebug() << "A" << k;
-// Get power, spectrum, and ihsym
+// Get spectrum, power
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
-  if(ihsym <=0) return;
   QString t;
   t.sprintf(" Receiving: %5.1f dB ",px);
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
-  if(m_receiving) {
-    g_pWideGraph->dataSink2(s,df3,ihsym,false);
-  }
-
-  if(ihsym == 999) {
-    QDateTime t = QDateTime::currentDateTimeUtc();
-    m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-//    double f0m1500=m_dialFreq + 0.000001*(m_BFO - 1500);
-    QString t2;
-
-    lab3->setStyleSheet("QLabel{background-color:cyan}");
-    lab3->setText("Decoding");
-    loggit("Start Decoder");
-  }
+//  *future1 = QtConcurrent::run(echoSpec,k);
+//  watcher1->setFuture(*future1);         // call diskDat() when done
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -458,7 +447,6 @@ void MainWindow::oneSec() {
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
-  static int nstate=0;
   static double s6z=-99.0;
 
   qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
@@ -467,12 +455,12 @@ void MainWindow::guiUpdate()
 
   m_s6=fmod(tsec,6.0);
 
-//  qDebug() << "A" << s6z << m_s6 << nstate << soundOutThread.isRunning();
+//  qDebug() << "A" << s6z << m_s6 << m_state << soundOutThread.isRunning();
 
-  if(!m_auto and (nstate<=0 or nstate>=6)) goto done;
+//  if(!m_auto and (m_state<=0 or m_state>=6)) goto done;
 
 // When m_s6 has wrapped back to zero, start a new cycle.
-  if(m_s6<s6z) {
+  if(m_auto and m_s6<s6z) {
 
 //Raise PTT
     if(m_pttMethodIndex==0) {
@@ -490,11 +478,11 @@ void MainWindow::guiUpdate()
     lab1->setStyleSheet("QLabel{background-color: #ff0000}");
     lab1->setText("Transmitting");
     signalMeter->setValue(0);
-    nstate=1;
+    m_state=1;
     goto done;
   }
 
-  if(nstate==1 and m_s6>2.4) {
+  if(m_state==1 and m_s6>2.4) {
 //Tx pulse is finished.
 /*
     if (soundOutThread.isRunning()) {
@@ -508,7 +496,8 @@ void MainWindow::guiUpdate()
 // Wait 0.2 s, then lower PTT and start the Rx sequence
     ptt0Timer->start(200);                       //Sequencer delay
     loggit("TxOff");
-    nstate=2;
+    m_state=2;
+    if(!m_auto) m_state=0;
     goto done;
   }
 

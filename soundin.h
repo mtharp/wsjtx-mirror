@@ -25,7 +25,7 @@ public:
   double samFacIn();
 
 signals:
-  void readyForFFT(int k);
+  void dataReady(int k);
   void error(const QString& message);
   void status(const QString& message);
 

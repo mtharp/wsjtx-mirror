@@ -33,6 +33,7 @@ public slots:
   void p3ReadFromStdout();
   void p3ReadFromStderr();
   void p3Error();
+//  void echoSpec();
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -82,6 +83,7 @@ private:
     qint32  m_handshakeIndex;
     qint32  m_COMportOpen;
     qint32  m_sec0;
+    qint32  m_state;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -103,11 +105,7 @@ private:
     QMessageBox msgBox0;
 
     QFuture<void>* future1;
-    QFuture<void>* future2;
-    QFuture<void>* future3;
     QFutureWatcher<void>* watcher1;
-    QFutureWatcher<void>* watcher2;
-    QFutureWatcher<void>* watcher3;
 
     QProcess p1;
     QProcess p3;

@@ -54,6 +54,7 @@ void SoundInThread::run()                           //SoundInThread::run()
     qDebug() << "Audio input failed";
   }
   qDebug() << "Now do the spectrum analysis...";
+  emit dataReady(LENGTH);
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
 }
