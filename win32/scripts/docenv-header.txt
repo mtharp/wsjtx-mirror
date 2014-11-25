@@ -6,5 +6,5 @@
  For JTSDK-DOC Help, type ..: jtsdk-help
  For BUILD-HELP, type ......: build-help
  For CO-HELP, type .........: co-help
- 
+ To Checkout, type .........: checkout-doc 
  

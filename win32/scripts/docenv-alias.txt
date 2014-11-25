@@ -13,11 +13,17 @@ alias build-help="/scripts/docenv-build--help"
 alias checkout-doc="cd $HOME && svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/doc"
 alias lista='less -FX /scripts/docenv-alias.txt'
 
+
+
 #-------------------------------------------------------------------------------
-# UPDATE && STATUS COMMANDS
+# SVN COMMANDS
 #-------------------------------------------------------------------------------
-alias update-all="cd $HOME/doc svn update"
-alias ss='svn status |grep "?"'
+alias svnu="cd $HOME/doc && svn update"
+alias ss='svn status'						# Normal SVN status
+alias sv='svn status |grep -v "?"'			# List files not under SVN control
+alias sa='svn status |grep -v "A"'			# List Added files only
+alias sm='svn status |grep -v "M"'			# List Modified files only
+alias sd='svn status |grep -v "D"'			# List Deleted files only
 
 #-------------------------------------------------------------------------------
 # ALIAS BUILD COMMANDS ( requires doc checkout in $HOME/doc directory )
@@ -29,7 +35,7 @@ alias build-all="cd $HOME/doc && ./build-doc.sh all"
 
 # WSJT-X
 alias build-dwsjtx="cd $HOME/doc && ./build-doc.sh dwsjtx"
-alias build-dwsjtx="cd $HOME/doc && ./build-doc.sh wsjtx"
+alias build-wsjtx="cd $HOME/doc && ./build-doc.sh wsjtx"
 
 # WSJT
 alias build-dwsjt="cd $HOME/doc && ./build-doc.sh dwsjt"
@@ -49,16 +55,19 @@ alias build-wsprx="cd $HOME/doc && ./build-doc.sh wsprx"
 
 # MAP65
 alias build-dmap65="cd $HOME/doc && ./build-doc.sh dmap65"
-alias build-map65="cd $HOME/doc && ./build-doc.sh wsprx"
+alias build-map65="cd $HOME/doc && ./build-doc.sh map65"
 
 # BUILD SIMJT
-alias build-dsimjt="cd $HOME/doc && ./build-doc.sh dsimjt
+alias build-dsimjt="cd $HOME/doc && ./build-doc.sh dsimjt"
 alias build-simjt="cd $HOME/doc && ./build-doc.sh simjt"
 
 # BUILD DEV-GUIDE
-alias build-ddevg="cd $HOME/doc && ./build-doc.sh ddev-guide"
-alias build-devg="cd $HOME/doc && ./build-doc.sh dev-guide"
+alias build-ddevg="cd $HOME/doc && ./build-doc.sh ddevg"
+alias build-devg="cd $HOME/doc && ./build-doc.sh devg"
 
-# BUILD DEV-GUIDE
-alias build-dqref="cd $HOME/doc && ./build-doc.sh dquick-ref"
-alias build-qref="cd $HOME/doc && ./build-doc.sh quick-ref"
+# BUILD QUICK REF GUIDE
+alias build-dqref="cd $HOME/doc && ./build-doc.sh dqref"
+alias build-qref="cd $HOME/doc && ./build-doc.sh qref"
+
+# BUILD CLEAN
+alias build-clean="cd $HOME/doc && ./build-doc.sh clean"

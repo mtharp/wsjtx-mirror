@@ -36,8 +36,8 @@ if [ -f "${HOME}/.bash_aliases" ]; then
 fi
 
 # MSYS-ENV ALIAS FILE
-if [ -f /scripts/cyg32-doc-alias.txt ]; then
-  source /scripts/cyg32-doc-alias.txt
+if [ -f /scripts/docenv-alias.txt ]; then
+  source /scripts/docenv-alias.txt
 fi
 
 # Display JTSDK header
@@ -45,7 +45,7 @@ if [ -f "$HOME/.initial-setup" ]
 then 
 	rm -f "$HOME/.initial-setup"
 else
-	/scripts/cyg32-header.sh
+	/scripts/docenv-header.sh
 fi
 
 # Setup the prompt
