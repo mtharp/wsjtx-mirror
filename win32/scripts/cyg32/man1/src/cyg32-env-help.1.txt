@@ -1,4 +1,0 @@
-TO-DO
-* Convert cyg32-co-help.txt >> cyg32-env-help.1 man-page
-* Convert cyg32-build-help.sh >> cyg32-env-help.1 man-page
-* Update cyg32-header with new alias to use man v.s. text file

@@ -2,9 +2,6 @@
 # by running C:\JTSDK\msys-env. Subsequent SVN updates "Will Not"
 # Overwrite this file.
 
-# SET LANG
-export LANG=$(locale -uU)
-
 # Source bashrc file
 if [ -f "${HOME}/.bashrc" ] ; then
   source "${HOME}/.bashrc"

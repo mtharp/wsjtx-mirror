@@ -1,3 +1,61 @@
-TO-DO
-* Use msysenv-help.1 man-page as the help file
-* Update msys-header with new alias to use man v.s. text file
+:doctype: manpage
+:man manual: JTSDK-MSYS Man Page
+:man date: {date}
+:man version: Version 2.0.0
+
+= wspr(1)
+
+== NAME
+
+JTSDK-MSYS - WSJT MSYS Development Environment
+
+
+== SYNOPSIS
+
+
+== DESCRIPTION
+
+
+== OPTIONS
+
+
+== BUGS
+
+
+If you find a bug or suspect *'JTSDK-MSYS'* is not acting as you think it should,
+send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
+
+
+== AUTHORS
+-----
+Greg Beam, KI7MT, <ki7mt@yahoo.com> .... Manpage Author
+-----
+
+
+== RESOURCES
+-----
+Project Site: ... <http://sourceforge.net/projects/wsjt/>
+Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
+-----
+
+
+== SEE ALSO
+
+qtenv-help(1), pyenv-help(1), docenv-help(1)
+
+
+== COPYING
+
+Copyright &copy; 2014 Joseph H Taylor, Jr, K1JT
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+GPL version 3 or later <http://gnu.org/licenses/gpl.html>.

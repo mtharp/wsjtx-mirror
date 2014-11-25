@@ -1,5 +1,5 @@
 :doctype: manpage
-:man manual: JTSDK-QT Man Page
+:man manual: JTSDK-DOC Man Page
 :man date: {date}
 :man version: Version 2.0.0
 
@@ -7,7 +7,7 @@
 
 == NAME
 
-JTSDK-QT - WSJT QT5 Development Environment
+JTSDK-DOC - WSJT Documentation Development Environment
 
 
 == SYNOPSIS
@@ -22,7 +22,7 @@ JTSDK-QT - WSJT QT5 Development Environment
 == BUGS
 
 
-If you find a bug or suspect *'JTSDK-QT'* is not acting as you think it should,
+If you find a bug or suspect *'JTSDK-DOC'* is not acting as you think it should,
 send an email with as much detail as possible to: <wsjt-devel@lists.sourceforge.net>
 
 
@@ -41,7 +41,7 @@ Main web site: .. <http://www.physics.princeton.edu/pulsar/K1JT/>
 
 == SEE ALSO
 
-docenv-help(1), pyenv-help(1), msysenv-help(1)
+qtenv-help(1), pyenv-help(1), msysenv-help(1)
 
 
 == COPYING
