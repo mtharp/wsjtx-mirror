@@ -1,4 +1,4 @@
-#include "getfile.h"
+#include "echospec.h"
 #include <QDir>
 #include <stdio.h>
 #include <stdlib.h>

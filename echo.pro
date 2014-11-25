@@ -29,17 +29,19 @@ DEFINES = UNIX
 
 SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     soundin.cpp soundout.cpp devsetup.cpp \
-    widegraph.cpp getfile.cpp \
+    widegraph.cpp \
     getdev.cpp displaytext.cpp \
-    meterwidget.cpp signalmeter.cpp
+    meterwidget.cpp signalmeter.cpp \
+    echospec.cpp
 
 win32 {
 SOURCES +=
 }
 
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
-            about.h devsetup.h widegraph.h getfile.h \
-            displaytext.h meterwidget.h signalmeter.h
+            about.h devsetup.h widegraph.h \
+            displaytext.h meterwidget.h signalmeter.h \
+    echospec.h
 
 FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui
 

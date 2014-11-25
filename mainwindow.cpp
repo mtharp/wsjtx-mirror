@@ -5,7 +5,7 @@
 #include "plotter.h"
 #include "about.h"
 #include "widegraph.h"
-#include "getfile.h"
+#include "echospec.h"
 #include "portaudio.h"
 
 int itone[162];                       //Tx audio tones
