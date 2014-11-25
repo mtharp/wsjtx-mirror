@@ -87,8 +87,9 @@ ECHO ..Did Not Find ^( C:\JTSDK\cyg32 ^), skipping update
 GOTO UPDATE_FFTW3F
 )
 ECHO ..Updating JTSDK-CYG32 RC Files
-COPY /Y %SCR%\cyg32\etc\skel\jtsdk.bash_profile %BASED%\cyg32\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.bashrc %BASED%\cyg32\etc\skel\.bashrc >nul
+COPY /Y %SCR%\cyg32\etc\skel\jtsdk.bash_aliases %BASED%\cyg32\etc\skel\.bash_aliases >nul
+COPY /Y %SCR%\cyg32\etc\skel\jtsdk.bash_profile %BASED%\cyg32\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.inputrc %BASED%\cyg32\etc\skel\.inputrc >nul
 COPY /Y %SCR%\cyg32\etc\skel\jtsdk.minttyrc %BASED%\cyg32\etc\skel\.minttyrc >nul
 GOTO UPDATE_FFTW3F
@@ -146,8 +147,9 @@ ECHO ..Did Not Find ^( C:\JTSDK\msys ^), skipping update
 GOTO UPDATE_NSIS
 )
 ECHO ..Updating JTSDK-MSYS RC Files
-COPY /Y %SCR%\msys\etc\skel\jtsdk.bash_profile %BASED%\msys\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.bashrc %BASED%\msys\etc\skel\.bashrc >nul
+COPY /Y %SCR%\msys\etc\skel\jtsdk.bash_aliases %BASED%\msys\etc\skel\.bash_aliases >nul
+COPY /Y %SCR%\msys\etc\skel\jtsdk.bash_profile %BASED%\msys\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.inputrc %BASED%\msys\etc\skel\.inputrc >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.minttyrc %BASED%\msys\etc\skel\.minttyrc >nul
 GOTO UPDATE_NSIS

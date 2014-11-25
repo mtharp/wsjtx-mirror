@@ -81,23 +81,23 @@ export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls' # Ignore the ls command as well
 # application.  To override the alias instruction use a \ before, ie
 # \rm will call the real rm not the alias.
 
-# Interactive operation...
+# INTERACTIVE OPTIONS
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
-# Default to human readable figures
+# DEFAULT HUMAN READABLE DU COMMANDS
 alias df='df -h'
 alias du='du -h'
 
-# Misc :)
+# MISC COLOR ITEMS
 alias less='less -r'                          # raw control characters
 alias whence='type -a'                        # where, of a sort
 alias grep='grep --color'                     # show differences in colour
 alias egrep='egrep --color=auto'              # show differences in colour
 alias fgrep='fgrep --color=auto'              # show differences in colour
 
-# Some shortcuts for different directory listings
+# DIRECTORY LISTING + COLOR
 alias ls='ls -hF --color=tty'                 # classify files in colour
 alias dir='ls --color=auto --format=vertical'
 alias vdir='ls --color=auto --format=long'
@@ -105,15 +105,11 @@ alias ll='ls -l'                              # long list
 alias la='ls -A'                              # all but . and ..
 alias l='ls -CF'                              #
 
+# COLOR FOR MAN-PAGES
+export MANPAGER="/usr/bin/most -s"
+
 #--------------------------------------------------------------------#
 # KI7MT <ki7mt@yahoo.com> Edits:
 # Comment: JTSDK will also source aliases from:
 #          /scripts/cyg32-doc-alias.txt
 #--------------------------------------------------------------------#
-
-# Umask
-# /etc/profile sets 022, removing write perms to group + others.
-# Set a more restrictive umask: i.e. no exec perms for others:
-# umask 027
-# Paranoid: neither group nor others have any perms:
-# umask 077

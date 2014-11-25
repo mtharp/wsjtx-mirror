@@ -1,4 +1,4 @@
-# CAUTION: This fill is updated each time the user updates from SVN. If you
+# CAUTION: This file is updated each time the user updates from SVN. If you
 #          want custom local alias commands, use the file located in your
 #          $HOME directory: $HOME/.bash_alias. This file is sourced "Last"
 #          so any commands with the same name, listed to exported elsewhere, 

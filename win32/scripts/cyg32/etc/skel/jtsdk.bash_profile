@@ -1,3 +1,6 @@
+# This file is installed when you first create and account
+# by running C:\JTSDK\cyg32-env. Subsequent SVN updates "Will Not"
+# Overwrite this file.
 
 # SET LANG
 export LANG=$(locale -uU)
