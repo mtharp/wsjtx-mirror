@@ -19,7 +19,6 @@ void SoundOutThread::run()
   static double phi=0.0;
   static double dphi;
   static double freq;
-  static double fac;
   short int buffer[FRAMES_PER_BUFFER];
 
   outParam.device=m_nDevOut;                 //Output device number

@@ -1,3 +1,4 @@
+#include "commons.h"
 #include "widegraph.h"
 #include "ui_widegraph.h"
 
@@ -50,10 +51,8 @@ void WideGraph::saveSettings()
   settings.endGroup();
 }
 
-void WideGraph::dataSink2(float s[], float df3, int ihsym, int ndiskdata)
+void WideGraph::dataSink2()
 {
-  static float splot[NSMAX];
-  static float swide[2048];
 //    ui->widePlot->draw(swide);
 }
 

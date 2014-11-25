@@ -41,7 +41,7 @@ SOURCES +=
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h \
             displaytext.h meterwidget.h signalmeter.h \
-    echospec.h
+            echospec.h commons.h
 
 FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui
 

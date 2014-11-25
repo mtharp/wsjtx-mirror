@@ -8,6 +8,12 @@
 #include <windows.h>
 #endif
 
+void echospec()
+{
+  qDebug() << "echospec";
+// call fortran here ...
+}
+
 int ptt(int nport, int ntx, int* iptt, int* nopen)
 {
 #ifdef WIN32
@@ -54,6 +60,7 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
   if(i9==0) return -(CLRBREAK);
   if(i00==0) return -10;
   */
+  if((i3+i4+i5+i6+i9+i00)==-99) return 1;    // Silence compiler warning
   return 0;
 #endif
 }

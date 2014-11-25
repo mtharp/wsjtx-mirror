@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include <QDebug>
-
+#include "commons.h"
 
 // Reads audio data from soundcard
 class SoundInThread : public QThread

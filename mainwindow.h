@@ -3,6 +3,7 @@
 #include <QtWidgets>
 #include <QTimer>
 #include <QDateTime>
+#include "commons.h"
 #include "soundin.h"
 #include "soundout.h"
 #include "signalmeter.h"
@@ -33,7 +34,7 @@ public slots:
   void p3ReadFromStdout();
   void p3ReadFromStderr();
   void p3Error();
-//  void echoSpec();
+  void specReady();
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -142,7 +143,7 @@ extern void getDev(int* numDevices,char hostAPI_DeviceName[][50],
                    int minChan[], int maxChan[],
                    int minSpeed[], int maxSpeed[]);
 extern int ptt(int nport, int itx, int* iptt, int* nopen);
-
+extern void echospec();
 
 extern "C" {
 //----------------------------------------------------- C and Fortran routines

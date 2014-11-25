@@ -2,14 +2,16 @@
 #include <stdexcept>
 
 #define FRAMES_PER_BUFFER 4096
-#define LENGTH 106496               //26*4096
 
 extern "C" {
 #include <portaudio.h>
+/*
 extern struct {
-  float savg[1366];
   short int d2[LENGTH];
+  float red[2000];
+  float blue[2000];
 } datcom_;                          //This is "common/datcom/..." in fortran
+*/
 }
 
 void SoundInThread::run()                           //SoundInThread::run()

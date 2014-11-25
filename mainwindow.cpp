@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
-//  connect(watcher1, SIGNAL(finished()),this,SLOT(echoSpec()));
+  connect(watcher1, SIGNAL(finished()),this,SLOT(specReady()));
 
   m_txEnable_style="QPushButton{background-color: #ff0000; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
@@ -221,8 +221,6 @@ void MainWindow::readSettings()
 void MainWindow::dataSink(int k)
 {
   float px;
-  float s[6000];
-  qDebug() << "dataSink" << k;
 
 // Get spectrum, power
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
@@ -231,8 +229,13 @@ void MainWindow::dataSink(int k)
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
-//  *future1 = QtConcurrent::run(echoSpec);
-//  watcher1->setFuture(*future1);         // call diskDat() when done
+  *future1 = QtConcurrent::run(echospec);
+  watcher1->setFuture(*future1);         // call specReady when done
+}
+
+void MainWindow::specReady()
+{
+  qDebug() << "specReady";
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)

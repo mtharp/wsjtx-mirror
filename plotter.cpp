@@ -28,7 +28,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_TxFreq = 1500;
   m_line = 0;
   m_dBStepSize=10;
-  m_Percent2DScreen = 100;	//percent of screen used for 2D display
+  m_Percent2DScreen = 89;	//percent of screen used for 2D display
 }
 
 CPlotter::~CPlotter() { }                                      // Destructor
@@ -63,7 +63,7 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_ScalePixmap.fill(Qt::white);
 
     m_fSpan=m_w*m_fftBinWidth;
-    m_StartFreq=100 * int((1500-0.5*m_fSpan)/100.0 + 0.5);
+    m_StartFreq=100 * int((-0.5*m_fSpan)/100.0 - 0.5);
   }
   DrawOverlay();
 }
