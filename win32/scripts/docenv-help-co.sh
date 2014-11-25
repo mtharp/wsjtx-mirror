@@ -1,6 +1,6 @@
 #!/bin/bash.exe
 #
-# Title ........: docenv-co-help.sh
+# Title ........: docenv-help-co.sh
 # Project ......: Part of the JTSDK v2.0.0 Project
 # Description ..: Help File For Checking Out WSJT Documentation
 # Project URL ..: http://sourceforge.net/projects/wsjt/
@@ -10,12 +10,12 @@
 # Copyright ....: Copyright (C) 2014 Joe Taylor, K1JT
 # License ......: GPL-3
 #
-# docenv-co-help.sh is free software: you can redistribute it
+# docenv-help-co.sh is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation either version 3 of the
 # License, or (at your option) any later version. 
 #
-# docenv-co-help.sh is distributed in the hope that it will be
+# docenv-help-co.sh is distributed in the hope that it will be
 # useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 # of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -32,26 +32,22 @@ source /scripts/color-variables
 
 # Display Document Help Help Message
 clear
-echo -e ${C_Y}"DOCUMENT CHECKOUT HELP"${C_NC}
+echo -e ${C_Y}"JTSDK-DOC CHECKOUT HELP PAGE"${C_NC}
+echo '  In order to build WSJT Documentation, you'
+echo '  must first perform a checkout from'
+echo '  WSJT @ SourceForge'
 echo ''
-echo ' In order to build WSJT Documentation, you'
-echo ' must first perform a checkout from'
-echo ' WSJT @ SourceForge'
+echo -e ${C_C}"ANONYMOUS CHECKOUT"${C_NC}
+echo '  Type: checkout-doc'
 echo ''
-echo -e ${C_C} "ANONYMOUS CHECKOUT"${C_NC}
-echo ' -------------------'
-echo ' Type: checkout-doc'
+echo -e ${C_C}"DEVELOPER CHECKOUT"${C_NC}
+echo "  cd $HOME"
+echo "  svn co https://$USER@svn.code.sf.net/p/wsjt/wsjt/branches/doc"
 echo ''
-echo -e ${C_C} "DEVELOPER CHECKOUT"${C_NC}
-echo ' ------------------'
-echo " cd $HOME"
-echo " svn co https://$USER@svn.code.sf.net/p/wsjt/wsjt/branches/doc"
+echo -e "  Replace [ ${C_Y}$USER${C_NC} ] with your SorceForge User Name."
 echo ''
-echo -e " Replace [ ${C_Y}$USER${C_NC} ] with your SorceForge User Name."
-echo ''
-echo -e ${C_C} "BUILD COMMANDS"${C_NC}
-echo ' ------------------'
-echo ' To List build commands, type: build-help'
-echo ''
+echo -e ${C_C}"BUILD COMMANDS"${C_NC}
+echo '  To List build commands, type ..: help-build'
+echo '  To List Short-Cuts, type ......: lista'
 
 exit 0

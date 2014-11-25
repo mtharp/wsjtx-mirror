@@ -3,8 +3,9 @@
  | || | | | \__ \ |) | ' <___| |) | (_) | (__ 
   \__/  |_| |___/___/|_|\_\  |___/ \___/ \___| v2.0.0
                                               
- For JTSDK-DOC Help, type ..: jtsdk-help
- For BUILD-HELP, type ......: build-help
- For CO-HELP, type .........: co-help
- To Checkout, type .........: checkout-doc 
+ For JTSDK-DOC Help, type ..: help-jtsdk
+ For BUILD-HELP, type ......: help-build
+ For CO-HELP, type .........: help-co
+ Checkout Docs, type .......: checkout-doc 
+ List Short-Cut Commands ...: lista
  
