@@ -107,11 +107,8 @@ MainWindow::MainWindow(QWidget *parent) :
       border-style: outset; border-width: 1px; border-radius: 3px; \
       border-color: black; padding: 4px;}";
   soundInThread.setInputDevice(m_paInDevice);
-//  soundInThread.start(QThread::HighestPriority);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
-//  m_receiving=true;                        //Start with Rx ON
-//  soundInThread.setReceiving(true);
 }                                          // End of MainWindow constructor
 
 //--------------------------------------------------- MainWindow destructor
@@ -234,7 +231,7 @@ void MainWindow::dataSink(int k)
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
-//  *future1 = QtConcurrent::run(echoSpec,k);
+//  *future1 = QtConcurrent::run(echoSpec);
 //  watcher1->setFuture(*future1);         // call diskDat() when done
 }
 
@@ -473,7 +470,7 @@ void MainWindow::guiUpdate()
 
 //Wait 0.2 s, then send a 2.2 s Tx pulse
     ptt1Timer->start(200);                       //Sequencer delay
-    loggit("Tx1");
+//    loggit("Tx1");
     lab1->setStyleSheet("QLabel{background-color: #ff0000}");
     lab1->setText("Transmitting");
     signalMeter->setValue(0);
@@ -494,7 +491,7 @@ void MainWindow::guiUpdate()
     lab1->setText("");
 // Wait 0.2 s, then lower PTT and start the Rx sequence
     ptt0Timer->start(200);                       //Sequencer delay
-    loggit("TxOff");
+//    loggit("TxOff");
     m_state=2;
     if(!m_auto) m_state=0;
     goto done;
@@ -526,7 +523,7 @@ void MainWindow::startTx2()
   if(!soundOutThread.isRunning()) {
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
-    loggit("Tx2");
+//    loggit("Tx2");
   }
 }
 
@@ -541,9 +538,9 @@ void MainWindow::stopTx2()
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
   }
-  soundInThread.start();
+  soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
-  loggit("Rx");
+//  loggit("Rx");
   m_receiving=true;
 }
 

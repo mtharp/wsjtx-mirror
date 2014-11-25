@@ -31,7 +31,6 @@ void SoundInThread::run()                           //SoundInThread::run()
     emit error("PortAudio says requested soundcard format not supported.");
 //    return;
   }
-  qDebug() << "Start audio input";
   paerr=Pa_OpenStream(
         &inStream,               //Input stream
         &inParam,                //Input parameters
@@ -53,7 +52,6 @@ void SoundInThread::run()                           //SoundInThread::run()
   if(paerr!=paNoError) {
     qDebug() << "Audio input failed";
   }
-  qDebug() << "Now do the spectrum analysis...";
   emit dataReady(LENGTH);
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
