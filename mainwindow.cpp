@@ -12,6 +12,7 @@ int itone[162];                       //Tx audio tones
 int icw[250];                         //Dits for CW ID
 bool btxok;                           //True if OK to transmit
 bool btxMute;
+double inputLatency;                  //Latency in seconds
 double outputLatency;                 //Latency in seconds
 double dFreq[]={50.190,144.125,222.070,432.070,1296.070,2304.100,
                 3400.100,5760.100,10368.000,24000.100};
@@ -39,12 +40,13 @@ MainWindow::MainWindow(QWidget *parent) :
 //  ui->actionWSPR_15->setActionGroup(modeGroup);
 
   setWindowTitle(Program_Title_Version);
-  connect(&soundInThread, SIGNAL(dataReady(int)),
-             this, SLOT(dataSink(int)));
+  connect(&soundInThread, SIGNAL(dataReady(int)),this, SLOT(dataSink(int)));
   connect(&soundInThread, SIGNAL(error(QString)), this,
           SLOT(showSoundInError(QString)));
   connect(&soundInThread, SIGNAL(status(QString)), this,
           SLOT(showStatusMessage(QString)));
+  connect(&soundOutThread, SIGNAL(endTx()),this, SLOT(stopTx()));
+
   createStatusBar();
 
   connect(&p1, SIGNAL(readyReadStandardOutput()),
@@ -168,6 +170,7 @@ void MainWindow::writeSettings()
   settings.setValue("StopBitsIndex",m_stopBitsIndex);
   settings.setValue("Handshake",m_handshake);
   settings.setValue("HandshakeIndex",m_handshakeIndex);
+  settings.setValue("Dither",ui->sbDither->value());
   settings.endGroup();
 }
 
@@ -214,6 +217,7 @@ void MainWindow::readSettings()
   m_handshake=settings.value("Handshake","None").toString();
   m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
   ui->bandComboBox->setCurrentIndex(m_band);
+  ui->sbDither->setValue(settings.value("Dither",1500).toInt());
   settings.endGroup();
 }
 
@@ -452,12 +456,7 @@ void MainWindow::guiUpdate()
   qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
   double tsec=0.001*ms;
   int nsec=tsec;
-
   m_s6=fmod(tsec,6.0);
-
-//  qDebug() << "A" << s6z << m_s6 << m_state << soundOutThread.isRunning();
-
-//  if(!m_auto and (m_state<=0 or m_state>=6)) goto done;
 
 // When m_s6 has wrapped back to zero, start a new cycle.
   if(m_auto and m_s6<s6z) {
@@ -471,65 +470,39 @@ void MainWindow::guiUpdate()
     if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
       ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
     }
-
 //Wait 0.2 s, then send a 2.2 s Tx pulse
     ptt1Timer->start(200);                       //Sequencer delay
-//    loggit("Tx1");
     lab1->setStyleSheet("QLabel{background-color: #ff0000}");
     lab1->setText("Transmitting");
     signalMeter->setValue(0);
-    m_state=1;
-    goto done;
   }
 
-  if(m_state==1 and m_s6>2.4) {
-//Tx pulse is finished.
-/*
-    if (soundOutThread.isRunning()) {
-      soundOutThread.quitExecution=true;
-      soundOutThread.wait(3000);
-    }
-*/
-    m_transmitting=false;
-    lab1->setStyleSheet("");
-    lab1->setText("");
-// Wait 0.2 s, then lower PTT and start the Rx sequence
-    ptt0Timer->start(200);                       //Sequencer delay
-//    loggit("TxOff");
-    m_state=2;
-    if(!m_auto) m_state=0;
-    goto done;
-  }
-
-done:
   if(nsec != m_sec0) {
     oneSec();
     m_sec0=nsec;
-//    qDebug() << "oneSec:" << m_s6 << soundInThread.isRunning() << m_receiving;
   }
-
-/*
-  if(0) {   //Reached sequence end time?
-    if(m_transmitting) stopTx();
-    m_transmitting=false;
-    m_receiving=false;
-    soundInThread.setReceiving(false);
-  }
-*/
   s6z=m_s6;
-  m_sec0=nsec;
-//  if(specReady) ...
 } //End of guiUpdate()
 
 //------------------------------------------------------------- startTx2()
 void MainWindow::startTx2()
 {
-  if(!soundOutThread.isRunning()) {
-    soundOutThread.start(QThread::HighPriority);
-    m_transmitting=true;
-    qDebug() << "Tx audio" << m_s6;
-//    loggit("Tx2");
-  }
+  double r = ((double) rand() / (RAND_MAX));
+  int freq=1500.0 + (r-0.5)*ui->sbDither->value();
+  soundOutThread.setTxFreq(freq);
+  soundOutThread.start(QThread::HighPriority);
+  m_transmitting=true;
+  qDebug() << "Tx audio" << m_s6 << r << freq;
+}
+
+void MainWindow::stopTx()
+{
+//Tx pulse is finished.
+  m_transmitting=false;
+  lab1->setStyleSheet("");
+  lab1->setText("");
+// Wait 0.1 s, then lower PTT and start the Rx sequence
+  ptt0Timer->start(100);                       //Sequencer delay
 }
 
 void MainWindow::stopTx2()

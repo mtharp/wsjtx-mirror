@@ -194,7 +194,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QComboBox" name="bandComboBox">
           <property name="maximumSize">
            <size>
-            <width>90</width>
+            <width>100</width>
             <height>16777215</height>
            </size>
           </property>
@@ -281,7 +281,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="sbRIT">
           <property name="maximumSize">
            <size>
-            <width>90</width>
+            <width>100</width>
             <height>16777215</height>
            </size>
           </property>
@@ -328,7 +328,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="sbDither">
           <property name="maximumSize">
            <size>
-            <width>90</width>
+            <width>100</width>
             <height>16777215</height>
            </size>
           </property>
@@ -363,7 +363,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="sbTavg">
           <property name="maximumSize">
            <size>
-            <width>90</width>
+            <width>100</width>
             <height>16777215</height>
            </size>
           </property>

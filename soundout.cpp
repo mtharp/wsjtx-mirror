@@ -1,6 +1,6 @@
 #include "soundout.h"
 
-#define FRAMES_PER_BUFFER 4096
+#define FRAMES_PER_BUFFER 1024
 
 extern "C" {
 #include <portaudio.h>
@@ -53,13 +53,14 @@ void SoundOutThread::run()
     qDebug() << "Failed to start audio output stream.";
     exit(1);
   }
-  const PaStreamInfo* p=Pa_GetStreamInfo(outStream);
-  outputLatency = p->outputLatency;
+
+//  const PaStreamInfo* p=Pa_GetStreamInfo(outStream);
+//  outputLatency = p->outputLatency;
+//  qDebug() << "Output latency" << outputLatency;
 
   int nbufs=2.2*48000.0/FRAMES_PER_BUFFER + 0.5;
   phi=0.0;
-  freq=1500.0;
-  dphi=twopi*freq/48000.0;
+  dphi=twopi*m_txFreq/48000.0;
   for(int ibuf=0; ibuf<nbufs; ibuf++) {
     for(int i=0 ; i<FRAMES_PER_BUFFER; i++ )  {
       phi += dphi;
@@ -75,6 +76,7 @@ void SoundOutThread::run()
 
   Pa_StopStream(outStream);
   Pa_CloseStream(outStream);
+  emit endTx();
 }
 
 void SoundOutThread::setOutputDevice(int n)      //setOutputDevice()

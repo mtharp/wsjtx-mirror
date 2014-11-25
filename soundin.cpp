@@ -1,18 +1,13 @@
 #include "soundin.h"
 #include <stdexcept>
 
-#define FRAMES_PER_BUFFER 4096
+#define FRAMES_PER_BUFFER 1024
 
 extern "C" {
 #include <portaudio.h>
-/*
-extern struct {
-  short int d2[LENGTH];
-  float red[2000];
-  float blue[2000];
-} datcom_;                          //This is "common/datcom/..." in fortran
-*/
 }
+
+extern double inputLatency;
 
 void SoundInThread::run()                           //SoundInThread::run()
 {
@@ -50,13 +45,17 @@ void SoundInThread::run()                           //SoundInThread::run()
     return;
   }
 
+//  const PaStreamInfo* p=Pa_GetStreamInfo(inStream);
+//  inputLatency = p->inputLatency;
+//  qDebug() << "Input latency" << inputLatency;
+
   paerr=Pa_ReadStream(inStream,datcom_.d2,LENGTH);
   if(paerr!=paNoError) {
     qDebug() << "Audio input failed";
   }
-  emit dataReady(LENGTH);
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
+  emit dataReady(LENGTH);
 }
 
 void SoundInThread::setInputDevice(int n)                  //setInputDevice()

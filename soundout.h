@@ -24,6 +24,9 @@ public:
   void setOutputDevice(qint32 n);
   void setTxFreq(int n);
 
+signals:
+  void endTx();
+
 // Private members
 private:
   qint32  m_nDevOut;            //Output device number

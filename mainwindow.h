@@ -35,6 +35,7 @@ public slots:
   void p3ReadFromStderr();
   void p3Error();
   void specReady();
+  void stopTx();
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );

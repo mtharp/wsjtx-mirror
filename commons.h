@@ -5,6 +5,7 @@
 extern "C" {
 extern struct {
   short int d2[LENGTH];
+  float f0;
   float red[2000];
   float blue[2000];
 } datcom_;                          //This is "common/datcom/..." in fortran
