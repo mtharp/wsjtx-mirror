@@ -10,7 +10,6 @@
 
 void echospec()
 {
-  qDebug() << "echospec";
 // call fortran here ...
 }
 

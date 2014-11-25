@@ -220,8 +220,15 @@ void MainWindow::readSettings()
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink(int k)
 {
-  float px;
 
+  qDebug() << "echospec" << m_s6;
+  *future1 = QtConcurrent::run(echospec);
+  watcher1->setFuture(*future1);               // call specReady() when done
+}
+
+void MainWindow::specReady()
+{
+  float px;
 // Get spectrum, power
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
   QString t;
@@ -229,13 +236,7 @@ void MainWindow::dataSink(int k)
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
   lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
-  *future1 = QtConcurrent::run(echospec);
-  watcher1->setFuture(*future1);         // call specReady when done
-}
-
-void MainWindow::specReady()
-{
-  qDebug() << "specReady";
+  qDebug() << "specReady" << m_s6;
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -526,6 +527,7 @@ void MainWindow::startTx2()
   if(!soundOutThread.isRunning()) {
     soundOutThread.start(QThread::HighPriority);
     m_transmitting=true;
+    qDebug() << "Tx audio" << m_s6;
 //    loggit("Tx2");
   }
 }
@@ -543,6 +545,7 @@ void MainWindow::stopTx2()
   }
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
+  qDebug() << "Receiving" << m_s6;
 //  loggit("Rx");
   m_receiving=true;
 }

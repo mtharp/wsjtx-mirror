@@ -1,6 +1,6 @@
 #ifndef COMMONS_H
 #define COMMONS_H
-#define LENGTH 106496               //26*4096
+#define LENGTH 110592               //27*4096
 
 extern "C" {
 extern struct {
