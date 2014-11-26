@@ -30,7 +30,8 @@ SET VERSION=2.0.0
 SET BASED=C:\JTSDK
 SET SCR=%BASED%\scripts
 SET SVND=%BASED%\subversion\bin
-SET PATH=%BASED%;%SVND%;%SCR%;%WINDIR%\System32
+SET QT5=%BASED%\qt5\bin
+SET PATH=%BASED%;%SVND%;%SCR%;%QT5%;%WINDIR%\System32
 
 :: Make sure we can find C:\JTSDK
 IF NOT EXIST %BASED%\NUL (
@@ -77,7 +78,6 @@ GOTO ASK_SVN
 ECHO.
 ECHO UPDATING ^( JTSDK-%VERSION% ^ )
 CD /D %BASED%
-start /wait svn cleanup
 start /wait svn update
 IF ERRORLEVEL 1 GOTO SVN_ERROR1
 GOTO UPDATE_CMAKE
@@ -100,34 +100,34 @@ REM ----------------------------------------------------------------------------
 :UPDATE_CYG32
 CD /D %SCR%\cyg32
 ECHO ^** CYG32 ^**
-ECHO   ..Running Cygwin Setup To Check Installation
+ECHO    ..Running Cygwin Setup To Check Installation
 
 :: Look for the JTSDK installer script
-IF NOT EXIST %SCR%\cyg32\jtsdk-cyg32-install.bat\NUL (
+IF NOT EXIST "%SCR%\cyg32\jtsdk-cyg32-install.bat" (
+ECHO    ..Could not find %SCR%\cyg32\jtsdk-cyg32-install.bat
 SET ERRORLEVEL=Could Not Find JTSDK CYG32 Installer Script
 GOTO CYG32_ERROR1
 )
-ECHO ..Found Installer Script: jtsdk-cyg32-install.bat
+ECHO    ..Found Installer Script ..: jtsdk-cyg32-install.bat
 
 :: Look for Cygwin Installer .EXE
-IF NOT EXIST %SCR%\cyg32\cygwin-setup.x86.exe\NUL (
+IF NOT EXIST "%SCR%\cyg32\cyg32-setup-x86.exe" (
+ECHO    ..Could not find %SCR%\cyg32\cyg32-setup-x86.exe
 SET ERRORLEVEL=Could Not Find Cygwin Installer
 GOTO CYG32_ERROR1
 )
-ECHO ..Found Cygwin Setup Executable: cygwin-setup-x86.exe
-
+ECHO    ..Found Cyg32 Setup .......: cyg32-setup-x86.exe
 :: Look for Cygwin Installer .EXE
-IF EXIST %BASED%\cyg32\Cygwin.bat\NUL (
-ECHO ..Found previous CYG32 installation, running update
+IF EXIST "%BASED%\cyg32\Cygwin.bat" (
+ECHO    ..Found previous CYG32 installation, checking for updates
 CD /D %SCR%\cyg32
 CALL jtsdk-cyg32-install.bat >nul
-GOTO UPDATE_CYG32_RC
+GOTO UPDATE_CYG_RC
 )
 
 :: Perform Full Install as Cygwin.bat was not found
-ECHO ..Installaing ^( cyg32 ^)
+ECHO    ..Performing New CYG32 Install
 CD /D %SCR%\cyg32
-ECHO ..Performing New CYG32 installation
 CALL jtsdk-cyg32-install.bat >nul
 GOTO UPDATE_CYG_RC
 
@@ -137,17 +137,16 @@ REM    By removing them after install, it forces a re-generation and thus,
 REM    installing rc files located in /etc/skel which are configured
 REM    for JTSDK use. They could be added to /etc/defaults which is a
 REM    TO-DO item for JTSDK v2.1.0
-ECHO ..Resetting Group and User Files
-IF EXIST %BASED%\cyg32\etc\group\NUL ( DEL /F /Q %BASED%\cyg32\etc\group >nul )
-IF EXIST %BASED%\cyg32\etc\passwd\NUL ( DEL /F /Q %BASED%\cyg32\etc\passwd >nul )
+ECHO    ..Updating Group Files
+IF EXIST "%BASED%\cyg32\etc\group" ( DEL /F /Q %BASED%\cyg32\etc\group >nul )
+IF EXIST "%BASED%\cyg32\etc\passwd" ( DEL /F /Q %BASED%\cyg32\etc\passwd >nul )
 
-ECHO   ..Updating ETC and RC Files
+ECHO    ..Updating ETC and RC Files
 :: SKEL DIRECTORY CHECK
 IF NOT EXIST %BASED%\cyg32\etc\skel\NUL (
-ECHO ..Added Directory: %BASED%\cyg32\etc\skel
+ECHO   ..Added Directory: %BASED%\cyg32\etc\skel
 MKDIR %BASED%\cyg32\etc\skel 2> NUL
 )
-ECHO ..Updating ETC and RC Files
 
 :: Main /etc files
 COPY /Y %SCR%\cyg32\etc\jtsdk.fstab %BASED%\cyg32\etc\fstab >nul
@@ -167,7 +166,7 @@ REM  FFTW UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_FFTW3F
 ECHO ^** FFTW ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_HAMLIB2
 
@@ -176,7 +175,7 @@ REM  HAMLIB-2 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_HAMLIB2
 ECHO ^** HAMLIB2 ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_HAMLIB3
 
@@ -185,7 +184,7 @@ REM  HAMLIB-3 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_HAMLIB3
 ECHO ^** HAMLIB3 ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_INNO5
 
@@ -194,7 +193,7 @@ REM  INNO5 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_INNO5
 ECHO ^** INNO5 ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_MINGW32
 
@@ -203,7 +202,7 @@ REM  MINGW32 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_MINGW32
 ECHO ^** MINGW32 ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_MSYS
 
@@ -212,18 +211,19 @@ REM  MSYS UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_MSYS
 ECHO ^** MSYS ^**
-ECHO   ..Updating ETC and RC Files
 
 :: SKEL DIRECTORY CHECK
-IF NOT EXIST %BASED%\cyg32\etc\skel\NUL (
-ECHO ..Added Directory: %BASED%\cyg32\etc\skel
-MKDIR %BASED%\cyg32\etc\skel 2> NUL
+IF NOT EXIST %BASED%\msys\etc\skel\NUL (
+ECHO    ..Added Directory: %BASED%\msys\etc\skel
+MKDIR %BASED%\msys\etc\skel 2> NUL
 )
-ECHO ..Updating ETC and RC Files
+ECHO    ..Updating ETC and RC Files
+IF EXIST "%BASED%\msys\etc\fstab" ( DEL /F /Q %BASED%\msys\etc\fstab >nul )
+IF EXIST "%BASED%\msys\etc\profile" ( DEL /F /Q %BASED%\msys\etc\profile >nul )
 
 :: Update /etc files
-COPY /Y %SCR%\msys\etc\jtsdk.fstab %BASED%\msys\etc\skel\fstab >nul
-COPY /Y %SCR%\msys\etc\jtsdk.profile %BASED%\msys\etc\skel\profile >nul
+COPY /Y %SCR%\msys\etc\jtsdk.fstab %BASED%\msys\etc\fstab >nul
+COPY /Y %SCR%\msys\etc\jtsdk.profile %BASED%\msys\etc\profile >nul
 
 :: Update /etc/skel files
 COPY /Y %SCR%\msys\etc\skel\jtsdk.bashrc %BASED%\msys\etc\skel\.bashrc >nul
@@ -231,6 +231,7 @@ COPY /Y %SCR%\msys\etc\skel\jtsdk.bash_aliases %BASED%\msys\etc\skel\.bash_alias
 COPY /Y %SCR%\msys\etc\skel\jtsdk.bash_profile %BASED%\msys\etc\skel\.bash_profile >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.inputrc %BASED%\msys\etc\skel\.inputrc >nul
 COPY /Y %SCR%\msys\etc\skel\jtsdk.minttyrc %BASED%\msys\etc\skel\.minttyrc >nul
+ECHO.
 GOTO UPDATE_NSIS
 
 REM ----------------------------------------------------------------------------
@@ -238,7 +239,7 @@ REM  NSIS UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_NSIS
 ECHO ^** NSIS ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_PYTHON33
 
@@ -247,7 +248,7 @@ REM  PYTHON33 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_PYTHON33
 ECHO ^** PYTHON33 ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_QT5
 
@@ -256,7 +257,16 @@ REM  QT5 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_QT5
 ECHO ^** QT5 ^**
-ECHO   ..No updates needed
+IF NOT EXIST "%BASED%\qt5\qtbinpatcher.done" (
+ECHO    ..Rebasing QT5 Installation
+CD /D %BASED%\qt5
+CALL qtbinpatcher
+COPY /Y NUL %BASED%\qt5\qtbinpatcher.done >nul
+CD /D %BASED%
+ECHO.
+GOTO UPDATE_SVN
+)
+ECHO    ..No updates needed
 ECHO.
 GOTO UPDATE_SVN
 
@@ -265,15 +275,14 @@ REM  PYTHON33 UPDATE
 REM ----------------------------------------------------------------------------
 :UPDATE_SVN
 ECHO ^** SUBVERSION ^**
-ECHO   ..No updates needed
+ECHO    ..No updates needed
 ECHO.
-GOTO EOF
+GOTO FINISHED
 
 :FINISHED
 ECHO.
 ECHO Finished JTSDK-%VERSION% Post Install Updates
 ECHO.
-pause
 GOTO EOF
 
 :EOF
@@ -312,9 +321,8 @@ ECHO.
 ECHO  Before Re-Running:
 ECHO   [1] Check Internet Connectivity
 ECHO   [2] Run: svn cleanup
-ECHO       from ^( C:\JTSDK ^) directory
+ECHO       from ^( %BASED% ^) directory
 ECHO.
-PAUSE
 ENDLOCAL
 EXIT /B 1
 
@@ -325,8 +333,8 @@ ECHO ----------------------------------
 ECHO  CYG32 INSTALL SCRIPTS NOT FOUND
 ECHO ----------------------------------
 ECHO.
-ECHO Post install as unable to find
-ECHO the requored crpts to install or
+ECHO Post install was unable to find
+ECHO the required scripts to install or
 ECHO update CYG32.
 ECHO.
 ECHO Possible Solutions:
@@ -335,6 +343,5 @@ ECHO      checkout from SVN
 ECHO  [2] Check JTSDK installation for
 ECHO      install errors
 ECHO.
-PAUSE
 ENDLOCAL
 EXIT /B 1

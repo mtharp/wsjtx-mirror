@@ -49,5 +49,6 @@ echo ''
 echo -e ${C_C}"BUILD COMMANDS"${C_NC}
 echo '  To List build commands, type ..: help-build'
 echo '  To List Short-Cuts, type ......: lista'
+echo ''
 
 exit 0

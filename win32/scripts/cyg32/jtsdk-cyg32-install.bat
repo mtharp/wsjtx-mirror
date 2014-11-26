@@ -30,7 +30,7 @@ SET LANG=en_US
 
 :: SET VARIABLES
 SET BASED=C:\JTSDK
-SET CYINSTALLER=cygwin-setup-x86.exe
+SET CYINSTALLER=cyg32-setup-x86.exe
 SET CYARCH=x86
 SET CYINSTALLD=%BASED%\cyg32
 SET CYPKGD=%BASED%\scripts\cyg32\downloads
@@ -42,8 +42,8 @@ SET PATH=%BASED%;%WINDIR%\System32
 :: START INSTALL
 IF NOT EXIST %BASED%\scripts\cyg32\NUL (
 SET ERRORLEVEL=Script Directory Not Found
-ECHO ..Could not find script directory.
-ECHO ..Cyg32 ^*WILL NOT^* be installed
+ECHO   ..Could not find script directory.
+ECHO   ..Cyg32 ^*WILL NOT^* be installed
 GOTO ERROR1
 )
 
@@ -55,18 +55,18 @@ ECHO ------------------------------------------------------
 
 :: INSTALL DIRECTORY CHECK
 IF NOT EXIST %CYINSTALLD%\NUL (
-ECHO ..Added Directory: %CYINSTALLD% 
+ECHO   ..Added Directory: %CYINSTALLD% 
 MKDIR %CYINSTALLD% 2> NUL
 )
 
 :: PACKAGE DIRECTORY CHECK
 IF NOT EXIST %CYPKGD%\NUL (
-ECHO ..Added Directory: %CYPKGD% 
+ECHO   ..Added Directory: %CYPKGD% 
 MKDIR %CYPKGD% 2> NUL
 )
 
 :: RUN THE CYGWIN INSTALLER
-ECHO ..Sending Preset Parameters to Installer
+ECHO   ..Sending Preset Parameters to Installer
 %CYINSTALLER% %CYOPT% -a %CYARCH% -s %CYSITE% -l "%CYPKGD%" -R "%CYINSTALLD%" -P %CYPKGS% >nul
 IF ERRORLEVEL 1 GOTO INSTALLERROR
 GOTO CHECK
