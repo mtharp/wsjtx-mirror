@@ -1,0 +1,15 @@
+# For a description of the file format, see the Users Guide
+# http://cygwin.com/cygwin-ug-net/using.html#mount-table
+# This is default anyway:
+
+#------------------------------------------------------------------------------#
+# KI7MT mod:
+# * remove the cygdrive prefix
+# * add /scripts mount point
+#------------------------------------------------------------------------------#
+
+# Default Examples
+# none /cygdrive cygdrive binary,posix=0,user 0 0
+
+none / cygdrive binary,posix=0,user 0 0
+C:/JTSDK/scripts /scripts ntfs text,posix=0 0 0
