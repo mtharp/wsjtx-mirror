@@ -4,7 +4,7 @@
 # Version ......: 3.3.4
 # Description ..: Build FFTW Static Libs from source
 # Project URL ..: http://www.fftw.org/download.html
-# Usage ........: ./msys-build-fftw.sh
+# Usage ........: ./msys-build-fftw.sh or alias build-fftw
 #
 # Author .......: Greg, Beam, KI7MT, <ki7mt@yahoo.com>
 # Copyright ....: Copyright (C) 2014 Joe Taylor, K1JT
@@ -28,17 +28,17 @@
 set -e
 today=$(date +"%d-%m-%Y")
 
+# Source color options
+source /scripts/color-variables
+
 # General use Vars and colour
 export PATH="/c/JTSDK/qt5/bin:$PATH"
 TC='C:/JTSDK/qt5/bin'
-SRC=/c/JTSDK/src/win32
+URL='https://sourceforge.net/projects/jtsdk/files/2.0.0/src/fftw-3.3.4.tar.gz'
+SRC=~/src
 
-# Foreground colours
-C_R='\033[01;31m'		# red
-C_G='\033[01;32m'		# green
-C_Y='\033[01;33m'		# yellow
-C_C='\033[01;36m'		# cyan
-C_NC='\033[01;37m'		# no color
+# Manually set mumber of pcrocessors
+JJ=4
 
 # Package Information
 PREFIX="C:/JTSDK/fftw3f/static" 
@@ -48,9 +48,8 @@ PKG_VER='3.3.4'
 PKG_ARCHIVE='fftw-3.3.4.tar.gz'
 PKG_WEBSITE='http://www.fftw.org/'
 PKG_DOWNLOAD='http://www.fftw.org/download.html'
-TOOL_CHAIN='Mingw32 GNU 4.8.1'
 
-# Function -----------------------------------------------------------
+# Tool-Chain Check -------------------------------------------------------------
 tool_check() {
 echo ''
 echo '---------------------------------------------------------------'
@@ -69,11 +68,10 @@ do
 	then 
 		echo -en " $i check" && echo -e ${C_R}' FAILED'${C_NC}
 		echo ''
-		echo ' If you have not sourced one of the two options, try'
-		echo ' that first, otherwise set you path correctly:'
+		echo ' Check your tool-chain path is set correctly:'
 		echo ''
-		echo ' [ 1 ] For the QT5 Tool Chain type, ..: source-qt5'
-		echo ' [ 2 ] For MinGW Tool-Chain, type ....: source-mingw32'
+		echo ' For QT5 ....: export PATH="/c/JTSDK/qt5/bin:$PATH"'
+		echo ' For MinGW ..: export PATH="/c/JTSDK/mingw32/bin:$PATH"'
 		echo ''
 		exit 1
 	else
@@ -87,8 +85,19 @@ echo -e ' Binutils ver .. '${C_G}"$(ranlib --version |awk 'FNR==1')"${C_NC}
 echo -e ' Libtool ver ... '${C_G}"$(libtool --version |awk 'FNR==1')"${C_NC}
 echo -e ' Pkg-Config  ... '${C_G}"$(pkg-config --version)"${C_NC}
 
-}
-# End Function -------------------------------------------------------
+} # End Tool-Chain Check
+
+# Download Error Message -------------------------------------------------------
+download_error() {
+	echo ''
+	echo -e ${C_R}"DOWNLOAD ERROR"${C_NC}
+	echo ''
+	echo " $0 was unable to download $PKG_ARCHIVE"
+	echo ' Check your connection or the script for errors'
+	echo ''
+	cd $HOME
+	exit 1
+} # End Download Error Message
 
 # Run Tool Check
 clsb
@@ -108,20 +117,34 @@ else
 	exit 1
 fi
 
+# Download FFTW source
+echo ''
+echo '---------------------------------------------------------------'
+echo -e ${C_Y} " DOWNLOADING [ $PKG_NAME ]"${C_NC}
+echo '---------------------------------------------------------------'
+echo ''
+mkdir -p ~/src && cd ~/src
+cd ~/src
+echo "..Downloading $PKG_ARCHIVE"
+# -sS is for quiet mode, -L is to allow the Sourceforge Re-Direct
+curl -sS -L $URL > $PKG_ARCHIVE
+if [ "$?" != "0" ]; then download_error ; fi
+echo '..Finished'
+echo ''
+
 # Unpack archive
 echo ''
 echo '---------------------------------------------------------------'
 echo -e ${C_Y} " UNPACKING [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
-cd $HOME
-mkdir -p ~/src/win32 && cd ~/src
+mkdir -p ~/src/win32 && cd $SRC
 if [ -d ~/src/win32/$PKG_NAME ] ; then rm -rf ~/src/win32/$PKG_NAME ; fi
 
 # Unpack archive
-echo " Unpacking $PKG_NAME"
-tar -xf $SRC/$PKG_ARCHIVE -C ~/src/win32/
-echo ' Finished'
+echo "..Unpacking $PKG_ARCHIVE"
+tar -xf ~/src/$PKG_ARCHIVE -C ~/src/win32/
+echo '..Finished'
 echo ''
 
 # Run configure
@@ -130,7 +153,7 @@ echo '---------------------------------------------------------------'
 echo -e ${C_Y} " CONFIGURING [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
-echo ' This can take a several minutes to complete'
+echo ' This can take a several minutes ( 15+ ) to complete'
 echo -en " Build Type: " && echo -e ${C_G}'Static'${C_NC}
 echo ''
 
@@ -148,7 +171,8 @@ echo '---------------------------------------------------------------'
 echo -e ${C_Y} " RUNNING MAKE ALL FOR [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
-make
+# To Make parallel, use:  make -s -j$JJ
+make -s
 
 # Run make install
 echo ''
@@ -165,42 +189,38 @@ then
 
 	echo ''
 	echo '---------------------------------------------------------------'
-	echo -e ${C_Y} " ADDING README DOC [ README.$PKG_NAME ] "${C_NC}
+	echo -e ${C_Y} " ADDING BUILD INFO [ $PKG_NAME.build.info ] "${C_NC}
 	echo '---------------------------------------------------------------'
 	echo ''
-	echo '  Adding Readme'
+	echo '..Adding build info'
 
 # Generate Readme file
 # Ensure this matches the top of the page
 (
-cat <<'EOF_README'
+cat <<'EOF_BUILD-INFO'
 
 # Package Information
-
 PREFIX="C:/JTSDK/fftw3f/static" 
 BUILDER='Greg Beam, KI7MT <ki7mt@yahoo.com>'
 PKG_NAME=fftw-3.3.4
 PKG_VER='3.3.4'
 PKG_ARCHIVE='fftw-3.3.4.tar.gz'
 PKG_WEBSITE='http://www.fftw.org/'
-PKG_DOWNLOAD='http://www.fftw.org/download.html'
-TOOL_CHAIN='Mingw32 GNU 4.8.1'
+PKG_DOWNLOAD='https://sourceforge.net/projects/jtsdk/files/2.0.0/src/fftw-3.3.4.tar.gz'
 
 # Configure Options <single-percision>:
-
 ./configure --prefix=$PREFIX --with-our-malloc16 --with-windows-f77-mangling \
 --enable-static --disable-shared --enable-threads --with-combined-threads \
 --enable-float --enable-sse2 --enable-avx --with-incoming-stack-boundary=2
 
 # Build Commands
-
-make
+make -s -j$JJ
 make install
 
-EOF_README
+EOF_BUILD-INFO
 ) > $PREFIX/$PKG_NAME.build.info
 
-	echo '  Finished'
+	echo '..Finished'
 
 fi
 
@@ -224,3 +244,5 @@ else
 	echo ''
 	exit 1
 fi
+
+exit 0
