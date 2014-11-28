@@ -1,0 +1,26 @@
+
+ __       __   ______      _____  ________      __    __ 
+|  \  _  |  \ /      \    |     \|        \    |  \  |  \
+| $$ / \ | $$|  $$$$$$\    \$$$$$ \$$$$$$$$    | $$  | $$
+| $$/  $\| $$| $$___\$$      | $$   | $$ ______ \$$\/  $$
+| $$  $$$\ $$ \$$    \  __   | $$   | $$|      \ >$$  $$ 
+| $$ $$\$$\$$ _\$$$$$$\|  \  | $$   | $$ \$$$$$$/  $$$$\ 
+| $$$$  \$$$$|  \__| $$| $$__| $$   | $$       |  $$ \$$\
+| $$$    \$$$ \$$    $$ \$$    $$   | $$       | $$  | $$
+ \$$      \$$  \$$$$$$   \$$$$$$     \$$        \$$   \$$
+                                                         
+                                                         
+                                                         
+By: Joe Taylor, K1JT
+
+See:
+
+https://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/wsjtx/AUTHORS
+
+for the WSJT-X authors and:
+
+https://sourceforge.net/p/hamlib/code/ci/master/tree/AUTHORS
+
+for the authors of the Hamlib library and tools.
+
+CMake scripts originally authored by Bill Somerville, G4WJS.
