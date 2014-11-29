@@ -3,7 +3,7 @@
  | || | | | \__ \ |) | ' <___| |\/| \__ \\ V /\__ \
   \__/  |_| |___/___/|_|\_\  |_|  |_|___/ |_| |___/ v2.0.0
                                                    
-  Reprint This Screen, type ..: jtsdk-help
   Build Hamlib3, type ........: build-hamlib3
+  List Short-Cut Commands ....: lista
   Note: Be sure to update script variables as appropriate
 
