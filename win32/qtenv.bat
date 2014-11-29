@@ -56,6 +56,16 @@ DOSKEY wsjtxrc="%SCR%\qtenv-wsjtxrc.bat" $1
 DOSKEY env-info=CALL %SCR%\qtenv-info.bat
 DOSKEY build-help=CALL %SCR%\qtenv-build-help.bat
 DOSKEY vinfo=CALL %SCR%\qtenv-version.bat
+
+:: SVN POWER-USER COMMANDS
+DOSKEY ss="%BIN%\svn.exe" status
+DOSKEY sv="%BIN%\svn.exe" status ^|grep "?"
+DOSKEY sa="%BIN%\svn.exe" status ^|grep "A"
+DOSKEY sm="%BIN%\svn.exe" status ^|grep "M"
+DOSKEY sd="%BIN%\svn.exe" status ^|grep "D"
+DOSKEY log="%BIN%\svn.exe" log -l $*
+DOSKEY logv="%BIN%\svn.exe" log -v -l $*
+
 CALL %SCR%\qtenv-info.bat
 IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
 GOTO EOF

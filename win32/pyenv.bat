@@ -45,11 +45,21 @@ SET SVND=%BASED%\subversion\bin
 SET PATH=%BASED%;%MGW%;%PYP%;%PYS%;%PYD%;%BIN%;%INNO%;%SCR%;%SVND%;%WINDIR%\System32
 CD /D %BASED%
 
-:: DOSKEY COMMANDS
+:: GENERAL USE DOSKEY COMMANDS
 DOSKEY checkout="%SCR%\pyenv-co.bat" $1
 DOSKEY build="%SCR%\pyenv-build.bat" $1 $2
 DOSKEY env-info=CALL %SCR%\pyenv-info.bat
 DOSKEY make=C:\JTSDK\mingw32\bin\mingw32-make $*
+
+:: SVN POWER-USER COMMANDS
+DOSKEY ss="%BIN%\svn.exe" status
+DOSKEY sv="%BIN%\svn.exe" status ^|grep "?"
+DOSKEY sa="%BIN%\svn.exe" status ^|grep "A"
+DOSKEY sm="%BIN%\svn.exe" status ^|grep "M"
+DOSKEY sd="%BIN%\svn.exe" status ^|grep "D"
+DOSKEY log="%BIN%\svn.exe" log -l $*
+DOSKEY logv="%BIN%\svn.exe" log -v -l $*
+
 CALL %SCR%\pyenv-info.bat
 IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
 GOTO EOF
