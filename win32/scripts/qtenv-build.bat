@@ -203,8 +203,7 @@ IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Starting Install Target build for ^( %APP_NAME% ^)
 ECHO.
-mingw32-make -j%JJ% install
-:: cmake --build . --target package -- -j%JJ%
+cmake --build . --target install -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 GOTO POSTBUILD1
 
@@ -232,8 +231,7 @@ IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
-mingw32-make -j%JJ% package
-:: cmake --build . --target package -- -j%JJ%
+cmake --build . --target package -- -j%JJ%
 IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
 GOTO FINISH_PKG
@@ -243,8 +241,7 @@ GOTO FINISH_PKG
 :INNO_PKG
 IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS% )
 IF /I [%1]==[map65] (SET ISS=%MAP65_ISS% )
-mingw32-make -j%JJ% install
-:: cmake --build . --target install -- -j%JJ%
+cmake --build . --target install -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Copying Additional Files ^( %APP_NAME% ^)

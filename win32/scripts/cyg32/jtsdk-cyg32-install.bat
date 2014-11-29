@@ -36,7 +36,7 @@ SET CYINSTALLD=%BASED%\cyg32
 SET CYPKGD=%BASED%\scripts\cyg32\downloads
 SET CYSITE=http://cygwin.mirrors.pair.com/
 SET CYOPT=-B -q -D -L -X -g -N -d -o
-SET CYPKGS=mintty,python,subversion,ncurses,source-highlight,python-pygments,most
+SET CYPKGS=mintty,python,subversion,ncurses,source-highlight,python-pygments,most,rsync
 SET PATH=%BASED%;%WINDIR%\System32
 
 :: START INSTALL
