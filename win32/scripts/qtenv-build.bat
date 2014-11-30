@@ -174,11 +174,11 @@ ECHO   :: Type ^(Ctrl+C then Q^) to exit
 ECHO.
 ECHO TO BUILD INSTALL TARGET
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target install -- -j%JJ%
+ECHO   cmake --build . --target install --clean-first -- -j%JJ%
 ECHO.
 ECHO TO BUILD WINDOWS NSIS INSTALLER
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target package -- -j%JJ%
+ECHO   cmake --build . --target package --clean-first -- -j%JJ%
 ECHO.
 GOTO EOF
 
@@ -203,7 +203,7 @@ IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Starting Install Target build for ^( %APP_NAME% ^)
 ECHO.
-cmake --build . --target install -- -j%JJ%
+cmake --build . --target install --clean-first -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 GOTO POSTBUILD1
 
@@ -231,7 +231,7 @@ IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
-cmake --build . --target package -- -j%JJ%
+cmake --build . --target package --clean-first -- -j%JJ%
 IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
 GOTO FINISH_PKG
@@ -241,7 +241,7 @@ GOTO FINISH_PKG
 :INNO_PKG
 IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS% )
 IF /I [%1]==[map65] (SET ISS=%MAP65_ISS% )
-cmake --build . --target install -- -j%JJ%
+cmake --build . --target install --clean-first -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Copying Additional Files ^( %APP_NAME% ^)
@@ -409,7 +409,6 @@ ECHO BUILD SUMMARY
 ECHO   Build Tree Location .. %BUILDD%\%OPTION%
 ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.exe
 ECHO.
-PAUSE
 GOTO ASK_FINISH_RUN
 
 
@@ -458,7 +457,6 @@ ECHO Please Run from JTSDK Enviroment
 ECHO.
 ECHO          qtenv.bat
 ECHO.
-PAUSE
 GOTO EOF
 
 
@@ -586,7 +584,6 @@ ECHO  Then, browse too, and run:
 ECHO  %INSTALLD%\%OPTION%\%APP_NAME%.exe
 ECHO.
 ECHO.
-PAUSE
 GOTO EOF
 
 

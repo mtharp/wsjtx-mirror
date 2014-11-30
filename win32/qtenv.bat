@@ -31,9 +31,10 @@ SET LANG=en_US
 COLOR 0B
 
 :: PATH VARIABLES
+SET LIBRARY_PATH=
 SET BASED=C:\JTSDK
 SET CMK=%BASED%\cmake\bin
-SET BIN=%BASED%\tools\bin
+SET TOOLS=%BASED%\tools\bin
 SET HL3=%BASED%\hamlib3\bin
 SET FFT=%BASED%\fftw3f
 SET NSI=%BASED%\nsis
@@ -45,8 +46,7 @@ SET QT5P=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms
 SET SCR=%BASED%\scripts
 SET SRCD=%BASED%\src
 SET SVND=%BASED%\subversion\bin
-SET LIBRARY_PATH=""
-SET PATH=%BASED%;%CMK%;%BIN%;%HL3%;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%NSI%;%INO%;%SRCD%;%SCR%;%SVND%;%WINDIR%;%WINDIR%\System32
+SET PATH=%BASED%;%CMK%;%TOOLS%;%HL3%;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%NSI%;%INO%;%SRCD%;%SCR%;%SVND%;%WINDIR%;%WINDIR%\System32
 CD /D %BASED%
 
 :: DOSKEY COMMANDS
@@ -58,13 +58,13 @@ DOSKEY build-help=CALL %SCR%\qtenv-build-help.bat
 DOSKEY vinfo=CALL %SCR%\qtenv-version.bat
 
 :: SVN POWER-USER COMMANDS
-DOSKEY ss="%BIN%\svn.exe" status
-DOSKEY sv="%BIN%\svn.exe" status ^|grep "?"
-DOSKEY sa="%BIN%\svn.exe" status ^|grep "A"
-DOSKEY sm="%BIN%\svn.exe" status ^|grep "M"
-DOSKEY sd="%BIN%\svn.exe" status ^|grep "D"
-DOSKEY log="%BIN%\svn.exe" log -l $*
-DOSKEY logv="%BIN%\svn.exe" log -v -l $*
+DOSKEY ss="svn.exe" $* status
+DOSKEY sv="svn.exe" $* status ^|grep "?"
+DOSKEY sa="svn.exe" $* status ^|grep "A"
+DOSKEY sm="svn.exe" $* status ^|grep "M"
+DOSKEY sd="svn.exe" $* status ^|grep "D"
+DOSKEY log="svn.exe" log -l $*
+DOSKEY logv="svn.exe" log -v -l $*
 
 CALL %SCR%\qtenv-info.bat
 IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src

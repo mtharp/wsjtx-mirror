@@ -41,7 +41,7 @@ SET LANG=en_US
 SET LIBRARY_PATH=""
 SET BASED=C:\JTSDK
 SET SRCD=%BASED%\src
-SET BIN=%BASED%\tools\bin
+SET TOOLS=%BASED%\tools\bin
 SET MGW=%BASED%\mingw32\bin
 SET INNO=%BASED%\inno5
 SET SCR=%BASED%\scripts
@@ -49,13 +49,13 @@ SET PYP=%BASED%\Python33
 SET PYS=%BASED%\Python33\Scripts
 SET PYD=%BASED%\Python33\DLLs
 SET SVND=%BASED%\subversion\bin
-SET PATH=%BASED%;%MGW%;%PYP%;%PYS%;%PYD%;%BIN%;%SRCD%;%INNO%;%SCR%;%WINDIR%\System32
+SET PATH=%BASED%;%MGW%;%PYP%;%PYS%;%PYD%;%TOOLS%;%SRCD%;%INNO%;%SCR%;%WINDIR%\System32
 
 
 :: VARS USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
-SET CP=%BIN%\cp.exe
-SET MV=%BIN%\mv.exe
+SET CP=%TOOLS%\cp.exe
+SET MV=%TOOLS%\mv.exe
 GOTO SELECT
 
 
@@ -64,14 +64,14 @@ GOTO SELECT
 IF /I [%1]==[wsjt] (
 SET APP_NAME=wsjt
 SET APP_SRC=%SRCD%\trunk
-SET INSTALLDIR=%SRCD%\trunk\install
-SET PACKAGEDIR=%SRCD%\trunk\package
+SET INSTALLDIR=%BASED%\wsjt\install
+SET PACKAGEDIR=%BASED%\wsjt\package
 GOTO WSJT_OPT2
 ) ELSE IF /I [%1]==[wspr] (
 SET APP_NAME=wspr
 SET APP_SRC=%SRCD%\wspr
-SET INSTALLDIR=%SRCD%\wspr\install
-SET PACKAGEDIR=%SRCD%\wspr\package
+SET INSTALLDIR=%BASED%\wspr\install
+SET PACKAGEDIR=%BASED%\wspr\package
 GOTO WSPR_OPT2
 ) ELSE IF /I [%1]==[help] (
 GOTO BUILD_HELP
@@ -206,21 +206,21 @@ IF EXIST "libjt.a" (
 ECHO.
 ECHO .. Performing make distclean first
 ECHO.
-mingw32-make -f Makefile.jtsdk distclean
+mingw32-make -f Makefile.jtsdk2 distclean
 ))
 IF /I [%1]==[wspr] (
 IF EXIST "libwspr.a" (
 ECHO.
 ECHO .. Performing make distclean first
 ECHO.
-mingw32-make -f Makefile.jtsdk distclean
+mingw32-make -f Makefile.jtsdk2 distclean
 ))
 ECHO.
 ECHO -----------------------------------------------------------------
 ECHO   Running mingw32-make to Build The Install Target
 ECHO -----------------------------------------------------------------
 ECHO.
-mingw32-make -f Makefile.jtsdk
+mingw32-make -f Makefile.jtsdk2
 ECHO.
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
 ECHO -----------------------------------------------------------------
@@ -242,7 +242,7 @@ ECHO BUILDING: ^( %APP_NAME% Win32 Installer ^)
 ECHO.
 ECHO .. Running mingw32-make To Build The Win32 Installer
 ECHO.
-mingw32-make -f Makefile.jtsdk package
+mingw32-make -f Makefile.jtsdk2 package
 ECHO.
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
 ECHO Makefile Exit Status: ^( %ERRORLEVEL% ^) is OK
@@ -361,7 +361,7 @@ IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
 ECHO .. InnoSetup Exit Status: ^( %ERRORLEVEL% ^) is OK
 ECHO .. Performing Dist-Clean After Build
 ECHO.
-mingw32-make -f Makefile.jtsdk distclean
+mingw32-make -f Makefile.jtsdk2 distclean
 ECHO.
 GOTO FINISHED
 
@@ -408,14 +408,14 @@ ECHO EXAMPLE ^( WSJT ^):
 ECHO -----------------------------------------------------------------
 ECHO Build Install Target:
 ECHO  Script Usage .. build wsjt install
-ECHO  Command Line .. make -f Makefile.jtsdk install
+ECHO  Command Line .. make -f Makefile.jtsdk2 install
 ECHO.
 ECHO Build Installer Package:
 ECHO  Script Usage .. build wsjt package
-ECHO  Command Line .. make -f Makefile.jtsdk package
+ECHO  Command Line .. make -f Makefile.jtsdk2 package
 ECHO.
 ECHO Build Multiple Targets ^( Command Line Only ^)
-ECHO  CLI ........... make -f Makefile.jtsdk libjt.a jt65code.exe
+ECHO  CLI ........... make -f Makefile.jtsdk2 libjt.a jt65code.exe
 ECHO.
 GOTO EOF
 ) ELSE IF /I [%2]==[sound] (
@@ -526,7 +526,7 @@ ECHO  correct the error, perform a clean, then re-make the target.
 ECHO.
 ECHO  Possible Solution:
 ECHO  cd %APP_SRC%
-ECHO  make -f Makefile.jtsdk distclean
+ECHO  make -f Makefile.jtsdk2 distclean
 ECHO.
 ECHO  Then rebuild your target.
 ECHO.

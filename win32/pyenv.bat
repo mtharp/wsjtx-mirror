@@ -26,15 +26,14 @@
 :: ENVIRONMENT
 @ECHO OFF
 TITLE JTSDK Python Development Environment
-SETLOCAL ENABLEEXTENSIONS
-SETLOCAL ENABLEDELAYEDEXPANSION
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 SET LANG=en_US
 COLOR 0A
 
 :: PATH VARIABLES
-SET LIBRARY_PATH=""
+SET LIBRARY_PATH=
 SET BASED=C:\JTSDK
-SET BIN=%BASED%\tools\bin
+SET TOOLS=%BASED%\tools\bin
 SET MGW=%BASED%\mingw32\bin
 SET INNO=%BASED%\inno5
 SET SCR=%BASED%\scripts
@@ -42,7 +41,7 @@ SET PYP=%BASED%\Python33
 SET PYS=%BASED%\Python33\Scripts
 SET PYD=%BASED%\Python33\DLLs
 SET SVND=%BASED%\subversion\bin
-SET PATH=%BASED%;%MGW%;%PYP%;%PYS%;%PYD%;%BIN%;%INNO%;%SCR%;%SVND%;%WINDIR%\System32
+SET PATH=%BASED%;%MGW%;%PYP%;%PYS%;%PYD%;%TOOLS%;%INNO%;%SCR%;%SVND%;%WINDIR%\System32
 CD /D %BASED%
 
 :: GENERAL USE DOSKEY COMMANDS
@@ -52,13 +51,13 @@ DOSKEY env-info=CALL %SCR%\pyenv-info.bat
 DOSKEY make=C:\JTSDK\mingw32\bin\mingw32-make $*
 
 :: SVN POWER-USER COMMANDS
-DOSKEY ss="%BIN%\svn.exe" status
-DOSKEY sv="%BIN%\svn.exe" status ^|grep "?"
-DOSKEY sa="%BIN%\svn.exe" status ^|grep "A"
-DOSKEY sm="%BIN%\svn.exe" status ^|grep "M"
-DOSKEY sd="%BIN%\svn.exe" status ^|grep "D"
-DOSKEY log="%BIN%\svn.exe" log -l $*
-DOSKEY logv="%BIN%\svn.exe" log -v -l $*
+DOSKEY ss="svn.exe" $* status
+DOSKEY sv="svn.exe" $* status ^|grep "?"
+DOSKEY sa="svn.exe" $* status ^|grep "A"
+DOSKEY sm="svn.exe" $* status ^|grep "M"
+DOSKEY sd="svn.exe" $* status ^|grep "D"
+DOSKEY log="svn.exe" log -l $*
+DOSKEY logv="svn.exe" log -v -l $*
 
 CALL %SCR%\pyenv-info.bat
 IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
