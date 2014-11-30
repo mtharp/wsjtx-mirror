@@ -32,8 +32,8 @@ today=$(date +"%d-%m-%Y")
 source /scripts/color-variables
 
 # General use Vars and colour
-export PATH="/c/JTSDK/qt5/bin:$PATH"
-TC='C:/JTSDK/qt5/bin'
+export PATH="/c/JTSDK/qt5/mingw48_32/bin:$PATH"
+TC='C:/JTSDK/qt5/Tools/mingw48_32/bin'
 URL='https://sourceforge.net/projects/jtsdk/files/2.0.0/src/fftw-3.3.4.tar.gz'
 SRC=~/src
 
@@ -49,7 +49,12 @@ PKG_ARCHIVE='fftw-3.3.4.tar.gz'
 PKG_WEBSITE='http://www.fftw.org/'
 PKG_DOWNLOAD='http://www.fftw.org/download.html'
 
-# Tool-Chain Check -------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
+#  FUNCTIONS
+# ------------------------------------------------------------------------------- 
+
+# Tool-Chain Check
 tool_check() {
 echo ''
 echo '---------------------------------------------------------------'
@@ -87,7 +92,7 @@ echo -e ' Pkg-Config  ... '${C_G}"$(pkg-config --version)"${C_NC}
 
 } # End Tool-Chain Check
 
-# Download Error Message -------------------------------------------------------
+# Download Error Message
 download_error() {
 	echo ''
 	echo -e ${C_R}"DOWNLOAD ERROR"${C_NC}
@@ -98,6 +103,11 @@ download_error() {
 	cd $HOME
 	exit 1
 } # End Download Error Message
+
+
+# -------------------------------------------------------------------------------
+#  MAIN SCRIPT
+# ------------------------------------------------------------------------------- 
 
 # Run Tool Check
 clsb

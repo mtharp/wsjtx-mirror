@@ -29,21 +29,50 @@ set -e
 
 # General use Vars and colour
 today=$(date +"%d-%m-%Y")
-source /scripts/color-variables
+URL1='http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/pa_stable_v19_20140130.tgz'
+URL2='http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/dx9mgw.tar.gz'
+
+# Manually set mumber of pcrocessors
+JJ=4
+
+# Source color options
+C_R='\033[01;31m'		# red
+C_G='\033[01;32m'		# green
+C_Y='\033[01;33m'		# yellow
+C_C='\033[01;36m'		# cyan
+C_NC='\033[01;37m'		# no color
 
 # Package Variables
-export PATH="/mingw32:$PATH"
-TC="/mingw32"
-SRC=~/src && mkdir -p $SRC/win32
-PREFIX="C:/JTSDK/usr/local"
-PKG_NAME=portaudio
-PKG_ARCHIVE='pa_stable_v19_20140130.tgz' # Name as downloaded from site
-PKG_VER='v19_20140130'                   # Package version from tar file name
+if [ $(uname -s) != "Linux" ]; then
+	export PATH="/c/JTSDK/qt5/Tools/mingw48_32/bin:$PATH"
+	TC='C:/JTSDK/qt5/Tools/mingw48_32/bin'
+fi
+
+# download and build dirs
+if [ ! -d ~/src/win32 ] ; then mkdir ~/src/win32 ; fi
+
+# PA Package Information
+PREFIX="$HOME/win32/portaudio/static" 
+BUILDER='Greg Beam, KI7MT <ki7mt@yahoo.com>'
+PKG_NAME='portaudio'
+PKG_VER='20140130-SVN-1919'
+PKG_ARCHIVE='pa_stable_v19_20140130.tgz'
+PKG_WEBSITE='http://www.portaudio.com/'
+PKG_DOWNLOAD='http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src'
+# DX9 Package Information
+PKG_NAME1='dx9mgw'
+PKG_VER1='dx9mgw'
+PKG_ARCHIVE1='dx9mgw.tar.gz'
+PKG_WEBSITE1='http://alleg.sourceforge.net/'
+PKG_DOWNLOAD1='http://sourceforge.net/projects/jtsdk/files/win32/2.0.0'
 
 
-# Function -----------------------------------------------------------
+# -------------------------------------------------------------------------------
+#  FUNCTIONS
+# ------------------------------------------------------------------------------- 
+
+# Tool-Chain Check
 tool_check() {
-echo ''
 echo '---------------------------------------------------------------'
 echo -e ${C_Y}" Setting Up to build [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
@@ -81,10 +110,28 @@ echo " Tool Chain looks ready for compiling"
 echo ''
 
 }
-# End Function -------------------------------------------------------
+# End Function
+
+# Download Error Message
+download_error() {
+	echo ''
+	echo -e ${C_R}"DOWNLOAD ERROR"${C_NC}
+	echo ''
+	echo " $0 was unable to download $PKG_ARCHIVE"
+	echo ' Check your connection or the script for errors'
+	echo ''
+	cd $HOME
+	exit 1
+} # End Download Error Message
+
+
+# -----------------------------------------------------------------------------
+#  MAIN SCRIPT
+# ----------------------------------------------------------------------------- 
+
 
 # Run Tool Check
-clsb
+clear
 tool_check
 
 if [ "$?" = "1" ];
@@ -95,16 +142,56 @@ then
 	exit 1
 fi
 
-# Unpack archive
+# PA Download Source
+echo ''
+echo '---------------------------------------------------------------'
+echo -e ${C_Y} " DOWNLOADING PACKAGES "${C_NC}
+echo '---------------------------------------------------------------'
+echo ''
+mkdir -p ~/src && cd ~/src
+cd ~/src
+echo "..Downloading Portaudio"
+# -sS is for quiet mode, -L is to allow the Sourceforge Re-Direct
+curl -sS -L -O http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/pa_stable_v19_20140130.tgz
+if [ "$?" != "0" ]; then download_error ; fi
+echo '..Finished'
+echo ''
+
+# DX9 Download Source
+echo "..Downloading DX9 Headers"
+# -sS is for quiet mode, -L is to allow the Sourceforge Re-Direct
+curl -sS -L -O http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/dx9mgw.tar.gz
+if [ "$?" != "0" ]; then download_error ; fi
+echo '..Finished'
+echo ''
+
+# DX9 Unpack
+echo ''
+echo '---------------------------------------------------------------'
+echo -e ${C_Y} " UNPACKING [ $PKG_NAME1 ]"${C_NC}
+echo '---------------------------------------------------------------'
+echo ''
+
+cd ~/src
+if [ -f ./$PKG_ARCHIVE1 ]; then
+	tar -xf $PKG_ARCHIVE1 -C ~/src/win32/
+	echo '  Finished Unpacking'
+else
+	echo "Could not find [ $PKG_ARCHIVE1 ]"
+	echo "$(basename $0) will now exit .."
+	echo ''
+	exit 1
+fi
+
+# PA Unpack
 echo ''
 echo '---------------------------------------------------------------'
 echo -e ${C_Y} " UNPACKING [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
 
-cd $SRC
-if [ -f ./$PKG_ARCHIVE ];
-then
+cd ~/src
+if [ -f ./$PKG_ARCHIVE ]; then
 	tar -xf $PKG_ARCHIVE -C ~/src/win32/
 	echo '  Finished Unpacking'
 else
@@ -122,28 +209,28 @@ echo '---------------------------------------------------------------'
 echo ''
 echo '  This can take a several minutes to complete'
 echo ''
+
 # Package Variables
-cd $SRC/win32/$PKG_NAME
+cd ~/src/win32/$PKG_NAME
+
+# For Linux Cross Compiling, requires mingw32 packages
+# PREFIX=$HOME/win32
+# export AR=i586-mingw32msvc-ar
+# export CC=i586-mingw32msvc-gcc
+# export CXX=i586-mingw32msvc-g++
+# export RANLIB=i586-mingw32msvc-ranlib
+# export CROSSCFG='--build=x86_64-pc-none --host=i586-mingw32msvc'
+# export LINKCFG='--enable-static --disable-shared'
+# ./configure --prefix=$PREFIX $CROSSCFG $LINKCFG --with-winapi=wmme,directx --with-dxdir=../dx9mgw
 
 ./configure --prefix=C:/JTSDK/usr/local \
---build=i686-pc-mingw32 --host=i686-pc-mingw32 \
---disable-shared --enable-static CC=/mingw32/gcc.exe \
-CXX=/mingw32/g++.exe --with-winapi=wmme,directx --with-dxdir=../dx9mgw
+--build=i686-pc-mingw32 \
+--host=i686-pc-mingw32 \
+--disable-shared --enable-static \
+CC=$TC/gcc.exe \
+CXX=$TC/g++.exe \
+--with-winapi=wmme,directx --with-dxdir=../dx9mgw
 
-
-
-# Make clean check, only if Makefile present
-# if [[ -f $SRC/win32/$PKG_NAME/Makefile ]];
-# then
-	# echo ''
-	# echo '--------------------------------------------------------------'
-	# echo -e ${C_Y} ' RUNNING MAKE CLEAN'${C_NC}
-	# echo '--------------------------------------------------------------'
-	# echo ''
-	# mingw32-make clean 
-# fi
-
-# Run make
 echo ''
 echo '---------------------------------------------------------------'
 echo -e ${C_Y} " RUNNING MAKE ALL FOR [ $PKG_NAME $PKG_VER ]"${C_NC}
@@ -158,6 +245,57 @@ echo -e ${C_Y} " INSTALLING [ $PKG_NAME $PKG_VER ] "${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
 make install
+
+# Generate Readme if build finishes .. OK ..
+if [ $? = "0" ];
+then
+	if [ -f $PREFIX/README.$PKG_NAME ]; then rm -f $PREFIX/README.$PKG_NAME ; fi
+
+	echo ''
+	echo '---------------------------------------------------------------'
+	echo -e ${C_Y} " ADDING BUILD INFO [ $PKG_NAME.build.info ] "${C_NC}
+	echo '---------------------------------------------------------------'
+	echo ''
+	echo '..Adding build info'
+
+# Generate Readme file
+# Ensure this matches the top of the page
+(
+cat <<'EOF_BUILD-INFO'
+
+# PA Package Information
+PREFIX="$HOME/win32/portaudio/static" 
+BUILDER='Greg Beam, KI7MT <ki7mt@yahoo.com>'
+PKG_NAME='portaudio'
+PKG_VER='20140130-SVN-1919'
+PKG_ARCHIVE='pa_stable_v19_20140130.tgz'
+PKG_WEBSITE='http://www.portaudio.com/'
+PKG_DOWNLOAD='http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src'
+# DX9 Package Information
+PKG_NAME1='dx9mgw'
+PKG_VER1='dx9mgw'
+PKG_ARCHIVE1='dx9mgw.tar.gz'
+PKG_WEBSITE1='http://alleg.sourceforge.net/'
+PKG_DOWNLOAD1='http://sourceforge.net/projects/jtsdk/files/win32/2.0.0'
+
+./configure --prefix=C:/JTSDK/usr/local \
+--build=i686-pc-mingw32 \
+--host=i686-pc-mingw32 \
+--disable-shared --enable-static \
+CC=$TC/gcc.exe \
+CXX=$TC/g++.exe \
+--with-winapi=wmme,directx --with-dxdir=../dx9mgw
+
+# Build Commands
+make -s
+make install
+
+EOF_BUILD-INFO
+) > $PREFIX/$PKG_NAME.build.info
+
+	echo '..Finished'
+
+fi
 
 # Finished
 echo ''
