@@ -39,13 +39,13 @@ SET PATH=%BASED%;%SVND%;%TOOLS%;%WINDIR%\System32
 :: Power-User Commands, add as many as you like
 DOSKEY clear=cls
 DOSKEY ls=dir
-DOSKEY ss="%SVND%\svn.exe" status
-DOSKEY sv="%SVND%\svn.exe" status ^|grep "?"
-DOSKEY sa="%SVND%\svn.exe" status ^|grep "A"
-DOSKEY sm="%SVND%\svn.exe" status ^|grep "M"
-DOSKEY sd="%SVND%\svn.exe" status ^|grep "D"
-DOSKEY log="%SVND%\svn.exe" log -l $*
-DOSKEY logv="%SVND%\svn.exe" log -v -l $*
+DOSKEY ss="svn.exe" $* status
+DOSKEY sv="svn.exe" $* status ^|grep "?"
+DOSKEY sa="svn.exe" $* status ^|grep "A"
+DOSKEY sm="svn.exe" $* status ^|grep "M"
+DOSKEY sd="svn.exe" $* status ^|grep "D"
+DOSKEY log="svn.exe" log -l $*
+DOSKEY logv="svn.exe" log -v -l $*
 
 :: UPDATE & UPGRADE COMMANDS
 DOSKEY update="%SVND%\svn.exe" $* export --force %URL1%
