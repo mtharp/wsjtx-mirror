@@ -92,8 +92,10 @@ if [ -z "${PROFILEREAD+true}" ] ; then
   # If the home directory doesn't exist, create it.
   if [ ! -d "${HOME}" ]; then
     if mkdir -p "${HOME}"; then
-      echo "New User Setup: Copying skeleton files."
-      echo
+		echo '-----------------------------------------------------------'
+		echo " JTSDK-DOC - Setting Up User Files"
+		echo '-----------------------------------------------------------'
+		echo ''
       if ! cd /etc/skel; then
         echo "WARNING: Failed attempt to cd into /etc/skel!"
       else
@@ -211,10 +213,7 @@ mkpasswd )
   mkgroup -l > /etc/group
   touch "$HOME/.initial-setup" 
   echo ''
-  echo -en ${C_G}'New User Setup Complete:' && echo -en ${C_R}" -->> RESTART REQUIRED <<--\n"${C_NC}
-  echo ''
-  echo "In order for your new [ $USER ] account to be completed,"
-  echo 'you need to Re-Start C:\JTSDK\docenv'
+  echo -en ${C_G}'JTSDK-DOC - Setup Complete:' && echo -en ${C_R}" -->> RESTART REQUIRED <<--\n"${C_NC}
   echo ''
   echo 'At the prompt, type: exit, then re-launch C:\JTSDK\docenv'
   echo ''

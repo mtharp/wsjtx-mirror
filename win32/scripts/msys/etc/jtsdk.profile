@@ -48,8 +48,9 @@ if [ ! -d "$HOME" ]; then
 	# Copy all profiles
 	clsb
 	echo '-----------------------------------------------------------'
-	echo " Setting up $HOME"
+	echo " JTSDK-MSYS - Setting Up User Files"
 	echo '-----------------------------------------------------------'
+	echo ''
 	cp /etc/skel/.bashrc "$HOME"/.bashrc && echo "..installing: JTSDK bashrc to $HOME/.bashrc"
 	cp /etc/skel/.bash_aliases "$HOME"/.bash_aliases && echo "..installing: JTSDK bash_aliases to $HOME/.bash_aliases"
 	cp /etc/skel/.bash_profile "$HOME"/.bash_profile && echo "..installing: JTSDK bash_bashrc to $HOME/.bash_profile"
@@ -83,10 +84,7 @@ if [ ! -f "$HOME"/.initial-setup ] ; then
 	C_NC='\033[01;37m'		# no color
 
 	echo ''
-	echo -en ${C_G}'New User Setup Complete:' && echo -en ${C_R}" -->> RESTART REQUIRED <<--\n"${C_NC}
-	echo ''
-	echo "In order for your new [ $LOGNAME ] account to be completed,"
-	echo 'you need to Re-Start JTSDK-MSYS'
+	echo -en ${C_G}'JTSDK-MSYS - Setup Complete:' && echo -en ${C_R}" -->> RESTART REQUIRED <<--\n"${C_NC}
 	echo ''
 	echo 'At the prompt, type: exit, then re-launch JTSDK-MSYS'
 	echo ''
