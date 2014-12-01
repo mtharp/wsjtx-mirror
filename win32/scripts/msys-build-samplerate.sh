@@ -29,8 +29,8 @@ set -e
 today=$(date +"%d-%m-%Y")
 
 # General use Vars and colour
-export PATH="/c/JTSDK/qt5/bin:$PATH"
-TC='C:/JTSDK/qt5/bin'
+export PATH="/c/JTSDK/qt5/Tools/mingw48_32/bin:$PATH"
+TC='C:/JTSDK/qt5/Tools/mingw48_32/bin'
 SRC=/c/JTSDK/src/win32
 
 # Foreground colours

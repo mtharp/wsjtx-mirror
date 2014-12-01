@@ -32,8 +32,8 @@ today=$(date +"%d-%m-%Y")
 source /scripts/color-variables
 
 # General use Vars and colour
-export PATH="/c/JTSDK/qt5/mingw48_32/bin:$PATH"
-TC='C:/JTSDK/qt5/Tools/mingw48_32/bin'
+export PATH="/c/JTSDK/qt5/Tools/mingw48_32/bin:$PATH"
+TC='C:/JTSDK/qt5/Tools/Tools/mingw48_32/bin'
 URL='https://sourceforge.net/projects/jtsdk/files/2.0.0/src/fftw-3.3.4.tar.gz'
 SRC=~/src
 

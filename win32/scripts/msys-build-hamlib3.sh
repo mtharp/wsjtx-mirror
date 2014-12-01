@@ -63,8 +63,8 @@ PKG_NAME=Hamlib3
 today=$(date +"%d-%m-%Y")
 
 # Tool-Chain Variables - Adjust to suit your QT5 Tool-Chain Locations
-export PATH="/c/JTSDK/qt5/mingw48_32/bin:$PATH"
-TC='C:/JTSDK/qt5/mingw48_32/bin'
+export PATH="/c/JTSDK/qt5/Tools/mingw48_32/bin:$PATH"
+TC='C:/JTSDK/qt5/Tools/mingw48_32/bin'
 PREFIX='C:/JTSDK/hamlib3'
 
 # Foreground colours
