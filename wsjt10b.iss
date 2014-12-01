@@ -3,8 +3,8 @@
 #define MyAppVersion "10.0"
 #define MyAppPublisher "Greg Beam, KI7MT"
 #define MyAppCopyright "Copyright (C) 2001-2014 by Joe Taylor, K1JT"
-#define MyAppURL "http://physics.princeton.edu/pulsar/k1jt/"
-#define WsjtGroupURL "https://groups.yahoo.com/neo/groups/wsjtgroup/info
+#define MyAppURL "http://physics.princeton.edu/pulsar/k1jt/doc/wsjt/"
+#define WsjtGroupURL "https://groups.yahoo.com/neo/groups/wsjtgroup/info"
 
 [Setup]
 AppName={#MyAppName}
