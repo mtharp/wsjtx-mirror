@@ -5,7 +5,7 @@
 
 # Application Information
 NAME = WSJT
-VER = 10
+VER = 10.0
 OS = Win32
 SDK = C:/JTSDK
 
@@ -24,7 +24,7 @@ CP = $(SDK)/tools/bin/cp.exe
 MV = $(SDK)/tools/bin/mv.exe
 RM = $(SDK)/tools/bin/rm.exe
 ISCC = $(SDK)/inno5/ISCC.exe
-ISS = $(SDK)/src/trunk/wsjt10a.iss
+ISS = $(SDK)/src/trunk/wsjt10b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
 
 # Output Paths
@@ -34,12 +34,17 @@ PACKAGEDIR = $(SDK)/wsjt/package
 # Python Paths
 PYTHON = $(SDK)/Python33/python.exe
 F2PY = $(PYTHON) $(SDK)/Python33/Scripts/f2py.py
-CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze.py
+CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze
 
 # Compiler Flags
 FFLAGS = -O2 -DWIN32 -DWin32 -fbounds-check -fno-second-underscore -Wall \
        -Wno-conversion -Wno-character-truncation
-CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
+	   
+# Without using -DHAVE_STRUCT_TIMESPEC we don't get already declared warnings
+# during the build ( pthread_w32.h ). This is just a test, so if things don't work
+# correctly, add  -DHAVE_STRUCT_TIMESPEC back in.
+# CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
+CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM
 
 # Default rules
 %.o: %.c
@@ -135,7 +140,8 @@ install:
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
-	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
+	$(RM) -rf $(PACKAGEDIR)
+	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
 
 .PHONY : clean distclean
 
