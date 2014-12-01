@@ -48,15 +48,15 @@ DOSKEY log="svn.exe" log -l $*
 DOSKEY logv="svn.exe" log -v -l $*
 
 :: UPDATE & UPGRADE COMMANDS
-DOSKEY update="%SVND%\svn.exe" $* export --force %URL1%
+DOSKEY update="%SVND%\svn.exe" $* export --force %URL1% >nul 2>&1
 DOSKEY upgrade="postinstall.bat" $* upgrade
 
 :: Start Main Script
 CD /D %BASED%
 CLS
-ECHO -------------------------------------------------
-ECHO  General Maintenance & Upgrades
-ECHO -------------------------------------------------
+ECHO ---------------------------------------------------------
+ECHO  JTSDK General Maintenance Environment
+ECHO ---------------------------------------------------------
 ECHO.
 ECHO  ^* Provides Access To: Subversion an Gnu Tools
 ECHO  ^* Upgrades JTSDK Main Scripts and Packages when needed
@@ -69,7 +69,7 @@ ECHO  GENERAL: MAINTENANCE
 ECHO   With this env, you have access to all the Gnu
 ECHO   Tools plus subversion. It can be used to perform
 ECHO   most any task needed by the SDK. There are no
-ECHO   Tool-Chains or Frameworks in the ^*PATH^*
+ECHO   Tool-Chains or Frameworks ( Qt / Python ) in ^*PATH^*
 ECHO.
 
 %COMSPEC% /A /Q /K
