@@ -11,7 +11,7 @@ COLOR 0B
 TITLE FMTEST Environment
 
 REM -- SETUP PATHS
-PATH;
+PATH=.;.\bin
 COPY /N /Y /B bin\libgcc* .
 COPY /N /Y /B bin\libquad* .
 COPY /N /Y /B bin\libgfortran* . 

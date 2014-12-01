@@ -23,7 +23,7 @@ CP = $(SDK)/tools/bin/cp.exe
 MV = $(SDK)/tools/bin/mv.exe
 RM = $(SDK)/tools/bin/rm.exe
 ISCC = $(SDK)/inno5/ISCC.exe
-ISS = $(SDK)/src/wspr/wspr4a.iss
+ISS = $(SDK)/src/wspr/wspr4b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
 
 # Output Paths
@@ -33,12 +33,17 @@ PACKAGEDIR = $(SDK)/wspr/package
 # Python Paths
 PYTHON = $(SDK)/Python33/python.exe
 F2PY = $(PYTHON) $(SDK)/Python33/Scripts/f2py.py
-CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze.py
+CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze
 
 # Compiler Flags
 FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
 	-Wno-character-truncation
-CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
+
+# Without using -DHAVE_STRUCT_TIMESPEC we dont get already declared warnings
+# during the build ( pthread_w32.h ). This is just a test, so if thigns dont work
+# correctly, add  -DHAVE_STRUCT_TIMESPEC back in.
+# CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
+CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM
 
 # Default rules
 %.o: %.c
@@ -163,7 +168,8 @@ install:
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
-	$(ISCC) /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
+	$(RM) -rf $(PACKAGEDIR)
+	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
 
 .PHONY : clean distclean
 
