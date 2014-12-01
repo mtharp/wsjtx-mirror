@@ -305,6 +305,9 @@ ECHO  Batch File ...: %BASED%\%APP_NAME%\%APP_NAME%-r%VER%\%APP_NAME%.bat
 IF EXIST "%BASED%\%APP_NAME%\package\WSPR-4.0-Win32.exe" ( 
 ECHO  Package ......: %BASED%\%APP_NAME%\package\WSPR-4.0-Win32.exe
 )
+IF EXIST "%BASED%\%APP_NAME%\package\WSJT-10.0-Win32.exe" ( 
+ECHO  Package ......: %BASED%\%APP_NAME%\package\WSJT-10.0-Win32.exe
+)
 CD /D %BASED%
 ECHO.
 GOTO EOF
