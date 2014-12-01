@@ -92,7 +92,7 @@ SET PACKAGED=%BASED%\%APP_NAME%\package
 SET SUPPORT=%BASED%\appsupport
 SET WSJTXPKG=wsjtx-1.4.0-rc1-win32.exe
 SET WSPRX_ISS=%SRCD%\wsprx\wsprx-jtsdk.iss
-SET MAP65_ISS=%SRCD%\map65\map65-jtsdk.iss
+SET MAP65_ISS=%SRCD%\map65\map65b.iss
 
 :: START MAIN BUILD
 CLS
@@ -239,28 +239,45 @@ GOTO FINISH_PKG
 
 :: INNO PACKAGE ( WSPR-X and MAP65 )
 :INNO_PKG
-IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS% )
-IF /I [%1]==[map65] (SET ISS=%MAP65_ISS% )
 cmake --build . --target install --clean-first -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
-ECHO .. Copying Additional Files ^( %APP_NAME% ^)
+ECHO ..Copying Additional Files ^( %APP_NAME% ^)
+
+:: This Is the same as copy files for install, need a longer term fix as this
+:: is redundant.
+IF /I [%1]==[map65] (SET ISS=%MAP65_ISS%
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples ( mkdir %INSTALLD%\%OPTION%\bin\save\Samples )
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\platforms ( mkdir %INSTALLD%\%OPTION%\bin\platforms )
+:: QT5 Runtime
+XCOPY /Y /R %QT5D%\icudt51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuin51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuuc51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Core.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Gui.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Network.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Widgets.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5P%\qwindows.dll %INSTALLD%\%OPTION%\bin\platforms >nul
+:: GCC Runtime
+XCOPY /Y /R %FFT%\libfftw3f-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+:: KVASD and palir Runtime
+XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
+)
+:: Build The Installer
+ECHO ..Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
 ECHO.
-SET CPTXT=*.txt *.dat *.conf *.ini *.ico 
-SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
-%RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake*
-XCOPY %SUPPORT%\%APP_NAME%\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
-XCOPY %SUPPORT%\runtime\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
-IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
-mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
-ECHO.
-ECHO .. Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
-ECHO.
-%INNOD%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
+
+%INO%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
 IF ERRORLEVEL 1 ( GOTO INNO_BUILD_ERROR )
+
 IF NOT EXIST %PACKAGED%\%APP_NAME%-Win32.exe ( GOTO INNO_BUILD_ERROR )
 GOTO FINISH_PKG
-
 
 :: FINISHED PACKAGE MESSAGE
 :FINISH_PKG
@@ -293,24 +310,39 @@ REM ----------------------------------------------------------------------------
 :POSTBUILD1
 IF /I [%1]==[wsjtx] ( GOTO POSTBUILD2 ) ELSE ( GOTO CPFILES )
 
-
 :: POST BUILD ( WSPR-X and MAP65 )
 :POSTBUILD2
 IF /I [%OPTION%]==[Debug] ( GOTO WSJTX_MAKEBAT ) ELSE ( GOTO FINISH )
 
-
-:: COPY FILES ( WSPR and MAP65 )
+:: COPY FILES ( WSPR-X and MAP65 )
 :CPFILES
-SET CPTXT=*.txt *.dat *.conf *.ini
-SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
-%RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* README
-XCOPY %SUPPORT%\%APP_NAME%\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
-XCOPY %SUPPORT%\runtime\*.* %INSTALLD%\%OPTION%\bin /I /S /E /Y /q
-IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples (
-mkdir %INSTALLD%\%OPTION%\bin\save\Samples)
+ECHO ..Copying Support files for ^( %APP_NAME % ^)
+:: MAP65 COPY ROUTINE
+IF /I [%1]==[map65] (
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples ( mkdir %INSTALLD%\%OPTION%\bin\save\Samples )
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\platforms ( mkdir %INSTALLD%\%OPTION%\bin\platforms )
+:: QT5 Runtime
+XCOPY /Y /R %QT5D%\icudt51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuin51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuuc51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Core.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Gui.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Network.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Widgets.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5P%\qwindows.dll %INSTALLD%\%OPTION%\bin\platforms >nul
+:: GCC Runtime
+XCOPY /Y /R %FFT%\libfftw3f-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+:: KVASD and palir Runtime
+XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
+)
 IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
 GOTO EOF
-
 
 :: DEBUG MAKE BATCH FILE 
 :DEBUG_MAKEBAT
@@ -323,7 +355,6 @@ ECHO -----------------------------------------------------------------
 ECHO.
 IF NOT [%APP_NAME%]==[wsjtx] ( GOTO OTHER_MAKEBAT )
 
-
 :: DEBUG BATCH FILE ( WSJT-X )
 :WSJTX_MAKEBAT
 ECHO -- Generating Batch File for ^( %APP_NAME% ^ )
@@ -333,7 +364,7 @@ IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
 >%APP_NAME%.bat (
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
-ECHO REM -- Part of the JTSDK Project
+ECHO REM -- Part of the JTSDK v2.0 Project
 ECHO TITLE JTSDK QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%HL3%;%HL3%\lib
@@ -343,25 +374,24 @@ ECHO EXIT /B 0
 )
 GOTO DEBUG_FINISH
 
-
 :: DEBUG BATCH FILE ( WSPR-X and MAP65 )
 :OTHER_MAKEBAT
+ECHO -- Generating Batch File for ^( %APP_NAME% ^ )
+ECHO.
 CD /D %INSTALLD%\%OPTION%\bin
 IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
-SET HAMLIBD=%BASED%\hamlib\bin
 >%APP_NAME%.bat (
 ECHO @ECHO OFF
 ECHO REM -- Debug Batch File
-ECHO REM -- Part of the JTSDK Project
-ECHO TITLE JTSDK-QT Debug Terminal
+ECHO REM -- Part of the JTSDK v2.0 Project
+ECHO TITLE JTSDK QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
-ECHO SET PATH=%BASED%;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%HL2%;%HL2%\lib
+ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%HL2%;%HL2%\lib
 ECHO CALL %APP_NAME%.exe
 ECHO ENDLOCAL
 ECHO EXIT /B 0
 )
 IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_FINISH ) ELSE ( GOTO FINISH )
-
 
 :: DISPLAY DEBUG_FINISHED MESSAGE
 :DEBUG_FINISH
