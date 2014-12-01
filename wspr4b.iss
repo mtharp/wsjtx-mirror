@@ -6,7 +6,7 @@
 #define MyAppURL "http://physics.princeton.edu/pulsar/k1jt/"
 #define MyFmtURL "http://physics.princeton.edu/pulsar/K1JT/FMT_User.pdf"
 #define WsprNetURL "http://wsprnet.org/drupal/wsprnet/map"
-#define WsjtGroupURL "https://groups.yahoo.com/neo/groups/wsjtgroup/info
+#define WsjtGroupURL "https://groups.yahoo.com/neo/groups/wsjtgroup/info"
 
 [Setup]
 AppName={#MyAppName}
