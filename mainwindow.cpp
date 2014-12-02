@@ -232,7 +232,7 @@ void MainWindow::dataSink(int k)
 
 void MainWindow::specReady()
 {
-  float px;
+  float px=0.0;
 // Get spectrum, power
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
   QString t;
@@ -489,6 +489,7 @@ void MainWindow::startTx2()
 {
   double r = ((double) rand() / (RAND_MAX));
   int freq=1500.0 + (r-0.5)*ui->sbDither->value();
+//  datcom_.f0=float(freq);
   soundOutThread.setTxFreq(freq);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;
@@ -577,3 +578,10 @@ void MainWindow::on_txEnableButton_clicked()
   }
 }
 
+
+void MainWindow::on_stopButton_clicked()
+{
+  if(m_auto) {
+    on_txEnableButton_clicked();
+  }
+}

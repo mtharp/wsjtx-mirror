@@ -56,6 +56,7 @@ private slots:
   void on_bandComboBox_currentIndexChanged(int n);
   void on_actionSettings_triggered();
   void on_txEnableButton_clicked();
+  void on_stopButton_clicked();
 
 private:
     Ui::MainWindow *ui;
