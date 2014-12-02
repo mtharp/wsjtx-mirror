@@ -67,7 +67,6 @@ SET TCHAIN=%SCR%\wsprx-toolchain.cmake
 SET TCHAIN=%SCR%\map65-toolchain.cmake
 ) ELSE ( GOTO BADNAME )
 
-
 :: USER INPUT FIELD 2 == %2
 :: SET RELEASE, DEBUG, and TARGET BASED ON USER INPUT
 IF /I [%2]==[rconfig] (SET OPTION=Release
@@ -82,7 +81,6 @@ SET BTREE=true
 SET BINSTALL=true
 ) ELSE ( GOTO BADTYPE )
 
-
 :: VARIABLES USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET APP_DIR=%BASED%\%APP_NAME%
@@ -91,7 +89,7 @@ SET INSTALLD=%BASED%\%APP_NAME%\install
 SET PACKAGED=%BASED%\%APP_NAME%\package
 SET SUPPORT=%BASED%\appsupport
 SET WSJTXPKG=wsjtx-1.4.0-rc1-win32.exe
-SET WSPRX_ISS=%SRCD%\wsprx\wsprx-jtsdk.iss
+SET WSPRX_ISS=%SRCD%\wsprx\wsprxb.iss
 SET MAP65_ISS=%SRCD%\map65\map65b.iss
 
 :: START MAIN BUILD
@@ -111,7 +109,6 @@ GOTO COMSG
 GOTO SVNASK
 )
 
-
 :: ASK USER UPDATE FROM SVN
 :SVNASK
 ECHO Update from SVN Before Building? ^( y/n ^)
@@ -126,7 +123,6 @@ CLS
 ECHO.
 ECHO Please Answer With: ^( Y or N ^) & ECHO. & GOTO SVNASK
 )
-
 
 :: UPDATE IF USER SAID YES TO UPDATE
 :SVNUP
@@ -149,7 +145,7 @@ ECHO -----------------------------------------------------------------
 ECHO Configuring %OPTION% Build Tree For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_COLOR_MAKEFILE:BOOL="OFF" ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
@@ -195,7 +191,7 @@ ECHO -----------------------------------------------------------------
 ECHO.
 ECHO .. Configuring %OPTION% Build Tree
 ECHO.
-cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_COLOR_MAKEFILE:BOOL="OFF" ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
@@ -206,7 +202,6 @@ ECHO.
 cmake --build . --target install --clean-first -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 GOTO POSTBUILD1
-
 
 REM ----------------------------------------------------------------------------
 REM  BUILD INSTALLER ( BPKG ) --
@@ -219,7 +214,7 @@ ECHO -----------------------------------------------------------------
 ECHO Building Installer Package For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -DCMAKE_COLOR_MAKEFILE:BOOL="OFF" ^
 -DCMAKE_BUILD_TYPE=%OPTION% ^
 -DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
@@ -228,7 +223,6 @@ IF /I [%1]==[wsjtx] ( GOTO NSIS_PKG )
 IF /I [%1]==[wsprx] ( GOTO INNO_PKG )
 IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
-
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
 cmake --build . --target package --clean-first -- -j%JJ%
@@ -236,16 +230,17 @@ IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
 GOTO FINISH_PKG
 
-
 :: INNO PACKAGE ( WSPR-X and MAP65 )
 :INNO_PKG
 cmake --build . --target install --clean-first -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
-ECHO.
-ECHO ..Copying Additional Files ^( %APP_NAME% ^)
+ECHO -- Copying Package Support Files for ^( %APP_NAME% ^)
 
-:: This Is the same as copy files for install, need a longer term fix as this
-:: is redundant.
+REM ----------------------------------------------------------------------------
+REM -- MAP65 PACKAGE COPY ROUTINE
+REM    Needs to be added to CMakeLists.txt
+REM ----------------------------------------------------------------------------
+:MAP65_PACKAGE_COPY
 IF /I [%1]==[map65] (SET ISS=%MAP65_ISS%
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples ( mkdir %INSTALLD%\%OPTION%\bin\save\Samples )
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\platforms ( mkdir %INSTALLD%\%OPTION%\bin\platforms )
@@ -269,8 +264,39 @@ XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 )
+
+REM ----------------------------------------------------------------------------
+REM -- WSPR-X PACKAGE COPY ROUTINE
+REM    Needs to be added to CMakeLists.txt
+REM ----------------------------------------------------------------------------
+:WSPRX_PACKAGE_COPY
+IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS%
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples ( mkdir %INSTALLD%\%OPTION%\bin\save\Samples )
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\platforms ( mkdir %INSTALLD%\%OPTION%\bin\platforms )
+:: QT5 Runtime
+XCOPY /Y /R %QT5D%\icudt51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuin51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuuc51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Core.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Gui.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Network.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Widgets.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5P%\qwindows.dll %INSTALLD%\%OPTION%\bin\platforms >nul
+:: GCC Runtime
+XCOPY /Y /R %FFT%\libfftw3f-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
+:: KVASD and palir Runtime
+XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
+)
 :: Build The Installer
-ECHO ..Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
+ECHO -- Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
 ECHO.
 
 %INO%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
@@ -305,7 +331,6 @@ REM ----------------------------------------------------------------------------
 REM  POST BUILD ACTIVITIES
 REM ----------------------------------------------------------------------------
 
-
 :: POST BUILD FOR WSJT-X
 :POSTBUILD1
 IF /I [%1]==[wsjtx] ( GOTO POSTBUILD2 ) ELSE ( GOTO CPFILES )
@@ -316,8 +341,14 @@ IF /I [%OPTION%]==[Debug] ( GOTO WSJTX_MAKEBAT ) ELSE ( GOTO FINISH )
 
 :: COPY FILES ( WSPR-X and MAP65 )
 :CPFILES
-ECHO ..Copying Support files for ^( %APP_NAME % ^)
-:: MAP65 COPY ROUTINE
+ECHO -- Copying Install Support Files for ^( %APP_NAME% ^)
+
+REM ----------------------------------------------------------------------------
+REM -- MAP65 INSTALL COPY ROUTINE
+REM    Needs to be added to CMakeLists.txt
+REM ----------------------------------------------------------------------------
+
+:MAP65_INSTALL_COPY
 IF /I [%1]==[map65] (
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples ( mkdir %INSTALLD%\%OPTION%\bin\save\Samples )
 IF NOT EXIST %INSTALLD%\%OPTION%\bin\platforms ( mkdir %INSTALLD%\%OPTION%\bin\platforms )
@@ -341,6 +372,39 @@ XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 )
+
+REM ----------------------------------------------------------------------------
+REM -- WSPR-X INSTALLL COPY ROUTINE
+REM    Needs to be added to CMakeLists.txt
+REM ----------------------------------------------------------------------------
+:WSPRX_INSTALL_COPY
+IF /I [%1]==[wsprx] (
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\save\Samples ( mkdir %INSTALLD%\%OPTION%\bin\save\Samples )
+IF NOT EXIST %INSTALLD%\%OPTION%\bin\platforms ( mkdir %INSTALLD%\%OPTION%\bin\platforms )
+:: QT5 Runtime
+XCOPY /Y /R %QT5D%\icudt51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuin51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\icuuc51.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Core.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Gui.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Network.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5D%\Qt5Widgets.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %QT5P%\qwindows.dll %INSTALLD%\%OPTION%\bin\platforms >nul
+:: GCC Runtime
+XCOPY /Y /R %FFT%\libfftw3f-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
+:: KVASD and palir Runtime
+XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
+)
+
+:: CHECK IF DEBUG 
 IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
 GOTO EOF
 
@@ -367,7 +431,7 @@ ECHO REM -- Debug Batch File
 ECHO REM -- Part of the JTSDK v2.0 Project
 ECHO TITLE JTSDK QT Debug Terminal
 ECHO SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
-ECHO SET PATH=%INSTALLD%\%OPTION%\bin;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%HL3%;%HL3%\lib
+ECHO SET PATH=.;.\bin;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%HL3%;%HL3%\lib
 ECHO CALL %APP_NAME%.exe
 ECHO ENDLOCAL
 ECHO EXIT /B 0
@@ -405,7 +469,6 @@ ECHO       environment variables and support file paths.
 ECHO.
 GOTO ASK_DEBUG_RUN
 
-
 :: ASK USER IF THEY WANT TO RUN THE APP, DEBUG MODE
 :ASK_DEBUG_RUN
 ECHO.
@@ -422,7 +485,6 @@ ECHO.
 ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_DEBUG_RUN
 )
 
-
 :: RUN APP, DEBUG MODE
 :RUN_DEBUG
 ECHO.
@@ -430,7 +492,6 @@ CD /D %INSTALLD%\%OPTION%\bin
 ECHO .. Starting: ^( %APP_NAME% ^) in Debug Mode
 CALL %APP_NAME%.bat
 GOTO EOF
-
 
 :: DISPLAY FINISH MESSAGE
 :FINISH
@@ -440,7 +501,6 @@ ECHO   Build Tree Location .. %BUILDD%\%OPTION%
 ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\%APP_NAME%.exe
 ECHO.
 GOTO ASK_FINISH_RUN
-
 
 :: ASK USER IF THEY WANT TO RUN THE APP
 :ASK_FINISH_RUN
@@ -459,7 +519,6 @@ ECHO.
 ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_FINISH_RUN
 )
 
-
 :: RUN APP
 :RUN_INSTALL
 ECHO.
@@ -469,11 +528,9 @@ CALL %APP_NAME%.exe
 )
 GOTO EOF
 
-
 REM ----------------------------------------------------------------------------
-REM  POST BUILD
+REM  MESSAGE SECTIONS
 REM ----------------------------------------------------------------------------
-
 
 :: DOUBLE-CLICK ERROR MESSAGE
 :DOUBLE_CLICK_ERROR
@@ -488,7 +545,6 @@ ECHO.
 ECHO          qtenv.bat
 ECHO.
 GOTO EOF
-
 
 :: SVN CHECKOUT MESSAGE 
 :COMSG
@@ -517,7 +573,6 @@ ECHO OPTIONAL
 ECHO  Build Installer Package: .. build %APP_NAME% package
 ECHO.
 GOTO EOF
-
 
 :: UNSUPPORTED APPLICATION NAME
 :BADNAME
@@ -553,7 +608,6 @@ ECHO Build NSIS Installer
 ECHO   Type:  build wsjtx package
 ECHO.
 GOTO EOF
-
 
 :: UNSUPPORTED BUILD TYPE
 :BADTYPE
@@ -591,7 +645,6 @@ ECHO   Type:  build wsjtx package
 ECHO.
 GOTO EOF
 
-
 :: UNSUPPORTED INSTALLER TYPE
 :PKGMSG
 CLS
@@ -616,7 +669,6 @@ ECHO.
 ECHO.
 GOTO EOF
 
-
 :: GENERAL CMAKE ERROR MESSAGE
 :CMAKE_ERROR
 ECHO.
@@ -631,7 +683,6 @@ ECHO  re-build ^( App: %1%  Target: %2 ^)
 ECHO.
 ECHO.
 GOTO EOF
-
 
 :: NSIS INSTALLER BUILD ERROR MESSAGE
 :NSIS_BUILD_ERROR
@@ -651,7 +702,6 @@ ECHO.
 ECHO.
 GOTO EOF
 
-
 :: INNO SETUOP BUILD ERROR MESSAGE
 :INNO_BUILD_ERROR
 ECHO.
@@ -666,7 +716,6 @@ ECHO  re-build ^( App: %1%  Target: %2 ^)
 ECHO.
 ECHO.
 GOTO EOF
-
 
 :: END QTENV-BUILD.BAT
 :EOF
