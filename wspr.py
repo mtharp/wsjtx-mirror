@@ -366,7 +366,7 @@ be found at http://sourceforge.net/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
     t="Revision date: " + \
-      "$Date: 2014-10-16 22:41:00 -0600 (Thu, 16 Oct 2014) $"[7:-1]
+      "$Date: 2014-12-02 10:40:00 -0600 (Tue, 02 Dec 2014) $"[7:-1]
     Label(about,text=t,justify=LEFT).pack(padx=20)
     about.focus_set()
 
