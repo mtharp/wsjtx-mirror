@@ -1,0 +1,42 @@
+__        __ ____   ____   ____  
+\ \      / // ___| |  _ \ |  _ \ 
+ \ \ /\ / / \___ \ | |_) || |_) |
+  \ V  V /   ___) ||  __/ |  _ < 
+   \_/\_/   |____/ |_|    |_| \_\ v4.0
+
+
+Thanks to:
+
+	The GNU Compiler Collection (http://gcc.gnu.org) that allows us to
+compile and link C++, Fortran and C code to the latest Standards and
+with high quality optimization.
+
+	The  MinGW project (http://www.mingw.org) that ports the gcc
+compilers and related GNU tools to the MS Windows environment allowing
+a high quality  C++, Fortran and C application to  be portable between
+native MS Windows and other platforms such as Linux and Apple Mac.
+
+	The FFTW library (http://www.fftw.org) without which the efficient
+generation of discrete fast Fourier transformations essential to the
+decoding DSP algorithms of WSJT-X would  be a considerable part of the
+project.
+
+Python project (http://python.org) ... < need wording >
+
+Pmw project (http://pmw.sourceforge.net/) ... < need wording >
+
+Tcl/Tk project (http://www.tcl.tk/) ... < need wording >
+
+InnoSetup project (http://www.jrsoftware.org/isinfo.php) ... < need wording >
+
+Numpy project (http://www.numpy.org/) ... < need wording >
+
+Portaudio project (http://www.portaudio.com/) ... < need wording >
+
+Samplerate project (http://www.mega-nerd.com/SRC/) ... < need wording >
+
+CX-Freeze project (http://cx-freeze.sourceforge.net/) ... < need wording >
+
+Christoph Gohlke for Python Modules (http://www.lfd.uci.edu/~gohlke/pythonlibs/) ... < need wording >
+
+Sourceforge project (http://sourceforge.net) ... < need wording >

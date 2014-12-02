@@ -19,16 +19,20 @@ CALLSIGN: VA3DB
 AUTHOR: 
 CALLSIGN: 4X6IZ
 
+AUTHOR: Greg Beam <ki7mt@yahoo.com>
+CALLSIGN: KI7MT
+
 Authors can be contacted on the wsjt-devel mailing list or
-through the WSJT Yahoo Group.
+through the WSJT Yahoo Group. Also, See About informaiton
+under HELP >> About WSPR
 
 PROJECT INFORMATION:
 -------------------
-- Project Manager: ...... Joe Taylor, K1JT, joe -AT- princeton -DOT- edu
-- Project Web Site: ..... http://physics.princeton.edu/pulsar/K1JT/
-- Mailing List: ......... wsjt-devel@lists.sourceforge.net
-- Project Source Code: .. http://sourceforge.net/projects/wsjt/
-- Yahoo Group: .......... https://groups.yahoo.com/neo/groups/wsjtgroup/info
+Project Manager: ...... Joe Taylor, K1JT, joe -AT- princeton -DOT- edu
+Project Web Site: ..... http://physics.princeton.edu/pulsar/K1JT/
+Mailing List: ......... wsjt-devel@lists.sourceforge.net
+Project Source Code: .. http://sourceforge.net/projects/wsjt/
+Yahoo Group: .......... https://groups.yahoo.com/neo/groups/wsjtgroup/info
 
 
 

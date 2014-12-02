@@ -155,7 +155,8 @@ install:
 	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat \
 	fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe \
-	wspr0.exe fmt-env.bat gocal.bat $(INSTALLDIR)
+	wspr0.exe fmt-env.bat gocal.bat AUTHORS BUGS COPYING INSTALL \
+	NEWS README THANKS $(INSTALLDIR)
 	$(CP) -ur save WsprMod hamlib/* $(INSTALLDIR)
 	$(CP) -u $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 
