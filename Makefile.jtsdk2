@@ -176,7 +176,7 @@ package:
 
 clean:
 	$(RM) -rf *.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
-	fmeasure.exe WSPRcode.exe wspr0.exe install WsprMod/w.pyd
+	fmeasure.exe WSPRcode.exe wspr0.exe WsprMod/w.pyd
 
 distclean: clean
 	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDK
