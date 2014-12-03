@@ -259,6 +259,7 @@ XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 :: KVASD and palir Runtime
 XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
@@ -288,6 +289,7 @@ XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
 :: KVASD and palir Runtime
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
@@ -367,6 +369,7 @@ XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 :: KVASD and palir Runtime
 XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
@@ -396,6 +399,7 @@ XCOPY /Y /R %GCCD%\libgfortran-3.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
 :: KVASD and palir Runtime
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
