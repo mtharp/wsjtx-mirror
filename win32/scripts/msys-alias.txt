@@ -1,4 +1,4 @@
-alias help-msys='clsb && cat /scripts/msys-header.txt'
+alias help-msys='/scripts/msys-alias-list.sh'
 alias build-hamlib3='/scripts/msys-build-hamlib3.sh'
 alias build-fftw='/scripts/msys-build-fftw.sh'
 alias build-samplerate='/scripts/msys-build-samplerate.sh'

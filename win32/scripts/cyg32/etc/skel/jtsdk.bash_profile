@@ -2,8 +2,8 @@
 # by running C:\JTSDK\cyg32-env. Subsequent SVN updates "Will Not"
 # Overwrite this file.
 
-# SET LANG
-export LANG=$(locale -uU)
+# Set LANG
+export LANG=en_US.UTF-8
 
 # Source bashrc file
 if [ -f "${HOME}/.bashrc" ] ; then
