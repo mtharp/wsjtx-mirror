@@ -1,9 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2011-07-07T08:39:24
-#
-#-------------------------------------------------
-
 QT       += core gui network widgets
 CONFIG   += thread
 #CONFIG   += console
@@ -33,6 +27,7 @@ SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     getdev.cpp displaytext.cpp \
     meterwidget.cpp signalmeter.cpp \
     echospec.cpp astro.cpp
+#    avecho.f90
 
 win32 {
 SOURCES +=

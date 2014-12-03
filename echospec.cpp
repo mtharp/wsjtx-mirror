@@ -10,7 +10,15 @@
 
 void echospec()
 {
-// call fortran here ...
+  QString fname="echo.dat";
+  char name[80];
+  strcpy(name,fname.toLatin1());
+  FILE* fp=fopen(name,"wb");
+  if(fp != NULL) {
+    fwrite(&datcom_.d2,1,sizeof(datcom_),fp);   //Save data to disk
+    fclose(fp);
+  }
+  // call fortran here to compute spectra ...
 }
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)
@@ -51,15 +59,20 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
     *iptt=0;
     *nopen=0;
   }
-  /*
-  if(i3==0) return -(SETRTS);
-  if(i4==0) return -(CLRRTS);
-  if(i5==0) return -(SETDTR);
-  if(i6==0) return -(CLRDTR);
-  if(i9==0) return -(CLRBREAK);
-  if(i00==0) return -10;
-  */
   if((i3+i4+i5+i6+i9+i00)==-99) return 1;    // Silence compiler warning
   return 0;
 #endif
+}
+
+void savedat(void)
+{
+  QString fname="echo.dat";
+  char name[80];
+  strcpy(name,fname.toLatin1());
+  FILE* fp=fopen(name,"wb");
+
+  if(fp != NULL) {
+    fwrite(&datcom_.d2,2,LENGTH+8,fp);
+    fclose(fp);
+  }
 }

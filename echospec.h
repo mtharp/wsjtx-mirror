@@ -8,5 +8,10 @@
 
 void echospec();
 int ptt(int nport, int ntx, int* iptt, int* nopen);
+void savedat(void);
 
+extern "C" {
+//----------------------------------------------------- C and Fortran routines
+void subtest_(int* a, int* b, int* c);
+}
 #endif // GETFILE_H

@@ -23,7 +23,6 @@ Astro::~Astro()
 
 void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
 {
-  static int ntxFreq0=-99;
   static bool astroBusy=false;
   char cc[300];
   double azsun,elsun,azmoon,elmoon,azmoondx,elmoondx;
@@ -37,7 +36,6 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
   int nhr=t.time().hour();
   int nmin=t.time().minute();
   double sec=t.time().second() + 0.001*t.time().msec();
-  int isec=sec;
   double uth=nhr + nmin/60.0 + sec/3600.0;
   int nfreq=freq+0.5;
   if(nfreq<10 or nfreq > 50000) nfreq=144;
@@ -50,7 +48,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
             &dgrd, &poloffset, &xnr, 6, 6);
     astroBusy=false;
   }
-
+  datcom_.ndop=ndop;
   sprintf(cc,
           "Az:    %6.1f\n"
           "El:    %6.1f\n"
@@ -61,7 +59,6 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
           "Dgrd:  %6.1f",
           azmoon,elmoon,ndop00,decmoon,nfreq,ntsky,dgrd);
   ui->astroTextBrowser->setText(" "+ date + "\nUTC: " + utc + "\n" + cc);
-
 }
 
 void Astro::setFontSize(int n)

@@ -5,9 +5,17 @@
 extern "C" {
 extern struct {
   short int d2[LENGTH];
-  float f0;
-  float red[2000];
-  float blue[2000];
+  int ndop;
+  int ntc;
+  int necho;
+  int nfrit;
+  int ndither;
+  int nsave;
+  int nsum;
+  int nclearave;
+  float f1;
+  float red[1000];
+  float blue[1000];
 } datcom_;                          //This is "common/datcom/..." in fortran
 }
 

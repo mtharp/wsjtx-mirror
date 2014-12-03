@@ -497,7 +497,7 @@ void MainWindow::startTx2()
 {
   double r = ((double) rand() / (RAND_MAX));
   int freq=1500.0 + (r-0.5)*ui->sbDither->value();
-//  datcom_.f0=float(freq);
+  datcom_.f1=float(freq);
   soundOutThread.setTxFreq(freq);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;

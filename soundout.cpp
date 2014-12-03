@@ -18,7 +18,6 @@ void SoundOutThread::run()
   static double twopi=2.0*3.141592653589793238462;
   static double phi=0.0;
   static double dphi;
-  static double freq;
   short int buffer[FRAMES_PER_BUFFER];
 
   outParam.device=m_nDevOut;                 //Output device number
