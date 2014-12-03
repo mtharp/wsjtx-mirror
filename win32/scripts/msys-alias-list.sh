@@ -30,7 +30,7 @@ set -e
 # Source Color Variables
 source /scripts/color-variables
 
-clear
+clsb
 echo -e ${C_Y}"JTSDK-MSYS ALIAS LIST ( short-cuts )\n"${C_NC}
 echo 'USAGE: [ command ]'
 echo ''
