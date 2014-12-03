@@ -10,13 +10,22 @@
 
 void echospec()
 {
+  double sq=0.0;
+  for(int i=0; i<LENGTH; i++) {
+    double x=double(datcom_.d2[i]);
+    sq += x*x;
+  }
+  datcom_.snrdb = float(10.0*log10(sq/LENGTH));
+
+//Save raw data to disk.
   QString fname="echo.dat";
   char name[80];
   strcpy(name,fname.toLatin1());
   FILE* fp=fopen(name,"wb");
   if(fp != NULL) {
-    fwrite(&datcom_.d2,1,sizeof(datcom_),fp);   //Save data to disk
+    fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
     fclose(fp);
+    qDebug() << "dB:" << datcom_.snrdb;
   }
   // call fortran here to compute spectra ...
 }
