@@ -21,7 +21,7 @@ Astro::~Astro()
     delete ui;
 }
 
-void Astro::astroUpdate(QDateTime t, QString mygrid)
+void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
 {
   static int ntxFreq0=-99;
   static bool astroBusy=false;
@@ -39,8 +39,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid)
   double sec=t.time().second() + 0.001*t.time().msec();
   int isec=sec;
   double uth=nhr + nmin/60.0 + sec/3600.0;
-//  int nfreq=(int)datcom_.fcenter;
-  int nfreq=432;
+  int nfreq=freq+0.5;
   if(nfreq<10 or nfreq > 50000) nfreq=144;
 
   if(!astroBusy) {
@@ -57,9 +56,10 @@ void Astro::astroUpdate(QDateTime t, QString mygrid)
           "El:    %6.1f\n"
           "Dop:   %6d\n"
           "Dec:   %6.1f\n"
+          "Freq:  %6d\n"
           "Tsky:  %6d\n"
           "Dgrd:  %6.1f",
-          azmoon,elmoon,ndop00,decmoon,ntsky,dgrd);
+          azmoon,elmoon,ndop00,decmoon,nfreq,ntsky,dgrd);
   ui->astroTextBrowser->setText(" "+ date + "\nUTC: " + utc + "\n" + cc);
 
 }

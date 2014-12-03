@@ -198,6 +198,9 @@ p, li { white-space: pre-wrap; }
             <height>16777215</height>
            </size>
           </property>
+          <property name="editable">
+           <bool>false</bool>
+          </property>
           <property name="currentText">
            <string>50 MHz</string>
           </property>
@@ -623,57 +626,6 @@ p, li { white-space: pre-wrap; }
   <action name="actionWide_Waterfall">
    <property name="text">
     <string>Waterfall</string>
-   </property>
-  </action>
-  <action name="action50">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>50</string>
-   </property>
-  </action>
-  <action name="action144">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>144</string>
-   </property>
-  </action>
-  <action name="action222">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>222</string>
-   </property>
-  </action>
-  <action name="action432">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>432</string>
-   </property>
-  </action>
-  <action name="action1296">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>1296</string>
-   </property>
-  </action>
-  <action name="action2304">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>2304</string>
    </property>
   </action>
   <action name="actionOnline_Users_Guide">

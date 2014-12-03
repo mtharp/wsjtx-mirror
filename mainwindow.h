@@ -26,7 +26,7 @@ public:
 public slots:
   void showSoundInError(const QString& errorMsg);
   void showStatusMessage(const QString& statusMsg);
-  void dataSink(int k);
+  void dataSink();
   void guiUpdate();
   void p1ReadFromStdout();
   void p1ReadFromStderr();
@@ -62,13 +62,14 @@ private:
     Ui::MainWindow *ui;
 
     double  m_s6;
+    double  m_freq;
+
     float   m_rxavg;
 
     qint32  m_nDevIn;
     qint32  m_nDevOut;
     qint32  m_pttMethodIndex;
     qint32  m_pttPort;
-    qint32  m_txFreq;
     qint32  m_paInDevice;
     qint32  m_paOutDevice;
     qint32  m_inGain;
@@ -76,6 +77,7 @@ private:
     qint32  m_band;
     qint32  m_catPortIndex;
     qint32  m_rig;
+    qint32  m_txFreq;
     qint32  m_rigIndex;
     qint32  m_serialRate;
     qint32  m_serialRateIndex;

@@ -14,7 +14,7 @@ class Astro : public QWidget
 
 public:
   explicit Astro(QWidget *parent = 0);
-  void astroUpdate(QDateTime t, QString mygrid);
+  void astroUpdate(QDateTime t, QString mygrid, double freq);
   void setFontSize(int n);
   ~Astro();
 

@@ -15,8 +15,6 @@ bool btxok;                           //True if OK to transmit
 bool btxMute;
 double inputLatency;                  //Latency in seconds
 double outputLatency;                 //Latency in seconds
-double dFreq[]={50.190,144.125,222.070,432.070,1296.070,2304.100,
-                3400.100,5760.100,10368.000,24000.100};
 
 Astro*     g_pAstro = NULL;
 WideGraph* g_pWideGraph = NULL;
@@ -39,11 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
         "QLabel { background-color : \
         black; color : yellow; border: 3px ridge gray}");
 
-  QActionGroup* modeGroup = new QActionGroup(this);
-//  ui->actionWSPR_15->setActionGroup(modeGroup);
-
   setWindowTitle(Program_Title_Version);
-  connect(&soundInThread, SIGNAL(dataReady(int)),this, SLOT(dataSink(int)));
+  connect(&soundInThread, SIGNAL(dataReady(int)),this, SLOT(dataSink()));
   connect(&soundInThread, SIGNAL(error(QString)), this,
           SLOT(showSoundInError(QString)));
   connect(&soundInThread, SIGNAL(status(QString)), this,
@@ -236,9 +231,10 @@ void MainWindow::readSettings()
 }
 
 //-------------------------------------------------------------- dataSink()
-void MainWindow::dataSink(int k)
+void MainWindow::dataSink()
 {
-
+  lab1->setStyleSheet("");
+  lab1->setText("");
   qDebug() << "echospec" << m_s6;
   *future1 = QtConcurrent::run(echospec);
   watcher1->setFuture(*future1);               // call specReady() when done
@@ -249,10 +245,6 @@ void MainWindow::specReady()
   float px=0.0;
 // Get spectrum, power
 //  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
-  QString t;
-  t.sprintf(" Receiving: %5.1f dB ",px);
-  lab1->setStyleSheet("QLabel{background-color: #00ff00}");
-  lab1->setText(t);
   signalMeter->setValue(px);                   // Update signalmeter
   qDebug() << "specReady" << m_s6;
 }
@@ -338,10 +330,9 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)  //eventFilter()
 
 void MainWindow::createStatusBar()                           //createStatusBar
 {
-  lab1 = new QLabel("Receiving");
+  lab1 = new QLabel("");
   lab1->setAlignment(Qt::AlignHCenter);
-  lab1->setMinimumSize(QSize(150,18));
-  lab1->setStyleSheet("QLabel{background-color: #00ff00}");
+  lab1->setMinimumSize(QSize(100,18));
   lab1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(lab1);
 
@@ -370,6 +361,8 @@ void MainWindow::closeEvent(QCloseEvent*)
 
 void MainWindow::OnExit()
 {
+  soundInThread.terminate();
+  soundOutThread.terminate();
   Pa_Terminate();
   g_pWideGraph->saveSettings();
   qApp->exit(0);                                      // Exit the event loop
@@ -443,7 +436,6 @@ void MainWindow::p3Error()                                     //p3rror
   msgBox("Error attempting to run rigctl.\n\n"+m_cmnd);
 }
 
-
 void MainWindow::on_eraseButton_clicked()                          //Erase
 {
   ui->decodedTextBrowser->clear();
@@ -460,7 +452,7 @@ void MainWindow::oneSec() {
           t.time().toString();
   ui->labUTC->setText(utc);
   if(!m_receiving) signalMeter->setValue(0);
-  g_pAstro->astroUpdate(t, m_myGrid);
+  g_pAstro->astroUpdate(t, m_myGrid, m_freq);
 }
 
 //------------------------------------------------------------- //guiUpdate()
@@ -533,6 +525,10 @@ void MainWindow::stopTx2()
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
   }
+  QString t;
+  t.sprintf(" Receiving ");
+  lab1->setStyleSheet("QLabel{background-color: #00ff00}");
+  lab1->setText(t);
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
   qDebug() << "Receiving" << m_s6;
@@ -542,17 +538,9 @@ void MainWindow::stopTx2()
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)
 {
   m_band=n;
-/*
-  if(m_catEnabled) {
-    int nHz=int(1000000.0*m_dialFreq + 0.5);
-    QString cmnd1,cmnd3;
-    cmnd1=rig_command();
-    cmnd3.sprintf(" F %d",nHz);
-    m_cmnd=cmnd1 + cmnd3;
-    p3.start(m_cmnd);
-    p3.waitForFinished();
-  }
-*/
+  QString t=ui->bandComboBox->currentText();
+  int i=t.indexOf(" MHz");
+  m_freq=t.mid(0,i).toDouble();
 }
 
 QString MainWindow::rig_command()
@@ -567,7 +555,6 @@ QString MainWindow::rig_command()
 }
 
 void MainWindow::on_txEnableButton_clicked()
-
 {
   m_auto = !m_auto;
   if(m_auto) {
@@ -577,7 +564,6 @@ void MainWindow::on_txEnableButton_clicked()
     ui->txEnableButton->setStyleSheet("");
   }
 }
-
 
 void MainWindow::on_stopButton_clicked()
 {
