@@ -4,6 +4,7 @@
 #include "devsetup.h"
 #include "plotter.h"
 #include "about.h"
+#include "astro.h"
 #include "widegraph.h"
 #include "echospec.h"
 #include "portaudio.h"
@@ -16,6 +17,8 @@ double inputLatency;                  //Latency in seconds
 double outputLatency;                 //Latency in seconds
 double dFreq[]={50.190,144.125,222.070,432.070,1296.070,2304.100,
                 3400.100,5760.100,10368.000,24000.100};
+
+Astro*     g_pAstro = NULL;
 WideGraph* g_pWideGraph = NULL;
 
 QString ver="0.5";
@@ -100,6 +103,8 @@ MainWindow::MainWindow(QWidget *parent) :
   readSettings();		             //Restore user's setup params
 
   on_actionWide_Waterfall_triggered();                   //###
+  on_actionAstronomical_data_triggered();
+  g_pAstro->setFontSize(m_astroFont);
 
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
@@ -137,6 +142,12 @@ void MainWindow::writeSettings()
   settings.beginGroup("MainWindow");
   settings.setValue("geometry", saveGeometry());
   settings.setValue("MRUdir", m_path);
+
+  if(g_pAstro->isVisible()) {
+    m_astroGeom = g_pAstro->geometry();
+    settings.setValue("AstroGeom",m_astroGeom);
+  }
+
   if(g_pWideGraph->isVisible()) {
     m_wideGraphGeom = g_pWideGraph->geometry();
     settings.setValue("WideGraphGeom",m_wideGraphGeom);
@@ -147,6 +158,7 @@ void MainWindow::writeSettings()
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
+  settings.setValue("AstroFont",m_astroFont);
   settings.setValue("SoundInIndex",m_nDevIn);
   settings.setValue("paInDevice",m_paInDevice);
   settings.setValue("SoundOutIndex",m_nDevOut);
@@ -181,6 +193,7 @@ void MainWindow::readSettings()
   QSettings settings(inifile, QSettings::IniFormat);
   settings.beginGroup("MainWindow");
   restoreGeometry(settings.value("geometry").toByteArray());
+  m_astroGeom = settings.value("AstroGeom", QRect(71,390,227,403)).toRect();
   m_wideGraphGeom = settings.value("WideGraphGeom", \
                                    QRect(45,30,726,301)).toRect();
   m_path = settings.value("MRUdir", m_appDir + "/save").toString();
@@ -190,6 +203,7 @@ void MainWindow::readSettings()
   m_myGrid=settings.value("MyGrid","").toString();
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
+  m_astroFont=settings.value("AstroFont",20).toInt();
   m_nDevIn = settings.value("SoundInIndex", 0).toInt();
   m_paInDevice = settings.value("paInDevice",0).toInt();
   m_nDevOut = settings.value("SoundOutIndex", 0).toInt();
@@ -446,6 +460,7 @@ void MainWindow::oneSec() {
           t.time().toString();
   ui->labUTC->setText(utc);
   if(!m_receiving) signalMeter->setValue(0);
+  g_pAstro->astroUpdate(t, m_myGrid);
 }
 
 //------------------------------------------------------------- //guiUpdate()
@@ -460,6 +475,7 @@ void MainWindow::guiUpdate()
 
 // When m_s6 has wrapped back to zero, start a new cycle.
   if(m_auto and m_s6<s6z) {
+
 
 //Raise PTT
     if(m_pttMethodIndex==0) {
@@ -520,7 +536,6 @@ void MainWindow::stopTx2()
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
   qDebug() << "Receiving" << m_s6;
-//  loggit("Rx");
   m_receiving=true;
 }
 
@@ -551,21 +566,6 @@ QString MainWindow::rig_command()
   return cmnd1+cmnd2;
 }
 
-void MainWindow::loggit(QString t)
-{
-/*
-  QDateTime t2 = QDateTime::currentDateTimeUtc();
-  qDebug() << t2.time().toString("hh:mm:ss.zzz") << t
-           << m_catEnabled << (int)m_catEnabled;
-  QFile f("wsprx.log");
-  if(f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
-    //    message=MyCall + MyGrid + "ndbm";
-        //linetx = yymmdd + hhmm + ftx(f11.6) + "  Transmitting on "
-    f.write(t);
-*/
-  qDebug() << "loggit" << m_s6 << t;
-}
-
 void MainWindow::on_txEnableButton_clicked()
 
 {
@@ -584,4 +584,17 @@ void MainWindow::on_stopButton_clicked()
   if(m_auto) {
     on_txEnableButton_clicked();
   }
+}
+
+void MainWindow::on_actionAstronomical_data_triggered()
+{
+  if(g_pAstro==NULL) {
+    g_pAstro = new Astro(0);
+    g_pAstro->setWindowTitle("Astronomical Data");
+    Qt::WindowFlags flags = Qt::Dialog | Qt::WindowCloseButtonHint |
+        Qt::WindowMinimizeButtonHint;
+    g_pAstro->setWindowFlags(flags);
+    g_pAstro->setGeometry(m_astroGeom);
+  }
+  g_pAstro->show();
 }

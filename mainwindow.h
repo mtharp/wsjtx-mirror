@@ -52,11 +52,11 @@ private slots:
   void on_inGain_valueChanged(int n);
   void startTx2();
   void stopTx2();
-  void loggit(QString t);
   void on_bandComboBox_currentIndexChanged(int n);
   void on_actionSettings_triggered();
   void on_txEnableButton_clicked();
   void on_stopButton_clicked();
+  void on_actionAstronomical_data_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -87,6 +87,7 @@ private:
     qint32  m_COMportOpen;
     qint32  m_sec0;
     qint32  m_state;
+    qint32  m_astroFont;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -96,6 +97,7 @@ private:
     bool    m_grid6;
     bool    m_catEnabled;
 
+    QRect   m_astroGeom;
     QRect   m_wideGraphGeom;
 
     QLabel* lab1;                            // labels in status bar

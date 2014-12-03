@@ -32,7 +32,7 @@ SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     widegraph.cpp \
     getdev.cpp displaytext.cpp \
     meterwidget.cpp signalmeter.cpp \
-    echospec.cpp
+    echospec.cpp astro.cpp
 
 win32 {
 SOURCES +=
@@ -41,9 +41,9 @@ SOURCES +=
 HEADERS  += mainwindow.h plotter.h soundin.h soundout.h \
             about.h devsetup.h widegraph.h \
             displaytext.h meterwidget.h signalmeter.h \
-            echospec.h commons.h
+            echospec.h commons.h astro.h
 
-FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui
+FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui astro.ui
 
 RC_FILE = echo.rc
 
@@ -56,6 +56,7 @@ win32 {
 LIBS += ../echo/lib/libecho.a
 LIBS += ../echo/libfftw3f_win.a
 LIBS += ../echo/palir-02.dll
+LIBS += ../map65/libm65/libastro.a
 LIBS += libwsock32
 LIBS += -lgfortran
 #LIBS += -lusb

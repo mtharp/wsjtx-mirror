@@ -583,6 +583,7 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
     <addaction name="actionWide_Waterfall"/>
+    <addaction name="actionAstronomical_data"/>
     <addaction name="separator"/>
     <addaction name="menuWaterfall_palette"/>
    </widget>
@@ -694,6 +695,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>F2</string>
+   </property>
+  </action>
+  <action name="actionAstronomical_data">
+   <property name="text">
+    <string>Astronomical data</string>
    </property>
   </action>
  </widget>
