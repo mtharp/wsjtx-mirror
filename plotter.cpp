@@ -15,8 +15,8 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   setAttribute(Qt::WA_OpaquePaintEvent, false);
   setAttribute(Qt::WA_NoSystemBackground, true);
 
-  m_StartFreq = 1000;
-  m_fftBinWidth=1500.0/2048.0;
+  m_StartFreq = -200;
+  m_fftBinWidth=48000.0/131072.0;
   m_fSpan=1000.0;
   m_hdivs = HORZ_DIVS;
   m_Running = false;
@@ -64,6 +64,7 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 
     m_fSpan=m_w*m_fftBinWidth;
     m_StartFreq=100 * int((-0.5*m_fSpan)/100.0 - 0.5);
+    qDebug() << "D" << m_fSpan << m_StartFreq;
   }
   DrawOverlay();
 }
@@ -78,43 +79,38 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=false;
 }
 
-void CPlotter::draw(float swide[])                                //draw()
+void CPlotter::draw(float blue[], float red[])                                //draw()
 {
-  int j,y2;
-  float y;
+  int j,y;
 
-  double gain = pow(10.0,0.05*(m_plotGain+7));
-
-//move current data down one line (must do this before attaching a QPainter object)
-  m_2DPixmap = m_OverlayPixmap.copy(0,0,m_w,m_h2);
   QPainter painter2D(&m_2DPixmap);
-
-  painter2D.setPen(Qt::green);
-
+  QRect tmp(0,0,m_w,m_h2);
+  painter2D.fillRect(tmp,Qt::black);
   QPoint LineBuf[MAX_SCREENSIZE];
+  QPen penBlue(Qt::blue,1);
+  QPen penRed(Qt::red,1);
   j=0;
-  bool strong0=false;
-  bool strong=false;
-  int i0=(m_StartFreq-1000)/m_fftBinWidth;
+  int i0=1000 + int(m_StartFreq/m_fftBinWidth);
 
+  painter2D.setPen(penBlue);
+  j=0;
   for(int i=0; i<m_w; i++) {
-    y = 10.0*log10(swide[i0+i]);
-    y2 = 0.4*gain*y - 15;
-    y2=y2*float(m_h)/540.0;
-    if(strong != strong0 or i==m_w-1) {
-      painter2D.drawPolyline(LineBuf,j);
-      j=0;
-      strong0=strong;
-      if(strong0) painter2D.setPen(Qt::red);
-      if(!strong0) painter2D.setPen(Qt::green);
-    }
+    y = m_h2 - (m_h/10.0)*blue[i0+i] - 5;
     LineBuf[j].setX(i);
-    LineBuf[j].setY(m_h-(y2+0.8*m_h));
+    LineBuf[j].setY(y);
     j++;
   }
+  painter2D.drawPolyline(LineBuf,j);
 
-  if(swide[0]>1.0e29) m_line=0;
-  m_line++;
+  painter2D.setPen(penRed);
+  j=0;
+  for(int i=0; i<m_w; i++) {
+    y = m_h2 - (m_h/10.0)*red[i0+i] - 5;
+    LineBuf[j].setX(i);
+    LineBuf[j].setY(y);
+    j++;
+  }
+  painter2D.drawPolyline(LineBuf,j);
   update();                              //trigger a new paintEvent
 }
 

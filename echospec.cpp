@@ -15,7 +15,7 @@ void echospec()
     double x=double(datcom_.d2[i]);
     sq += x*x;
   }
-  datcom_.snrdb = float(10.0*log10(sq/LENGTH));
+  datcom_.rms = sqrt(sq/LENGTH);
 
 //Save raw data to disk.
   QString fname="echo.dat";
@@ -25,9 +25,15 @@ void echospec()
   if(fp != NULL) {
     fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
     fclose(fp);
-    qDebug() << "dB:" << datcom_.snrdb;
+/*
+    qDebug() << "A" << datcom_.nsum << datcom_.ndop << datcom_.nfrit \
+             << datcom_.f1 << datcom_.nclearave << datcom_.rms;
+*/
   }
-  // call fortran here to compute spectra ...
+
+  avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,&datcom_.f1,     \
+      &datcom_.nsum,&datcom_.nclearave,&datcom_.rms,&datcom_.blue[0],  \
+      &datcom_.red[0]);
 }
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)

@@ -11,6 +11,8 @@ int ptt(int nport, int ntx, int* iptt, int* nopen);
 
 extern "C" {
 //----------------------------------------------------- C and Fortran routines
-void subtest_(int* a, int* b, int* c);
+
+void avecho_( short id2[], int* ndop, int* nfrit, float* f1, int* nsum,
+              int* nclearave, float* rms, float blue[], float red[]);
 }
 #endif // GETFILE_H

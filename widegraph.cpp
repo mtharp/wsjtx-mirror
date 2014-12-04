@@ -51,9 +51,9 @@ void WideGraph::saveSettings()
   settings.endGroup();
 }
 
-void WideGraph::dataSink2()
+void WideGraph::plotSpec(float blue[], float red[])
 {
-//    ui->widePlot->draw(swide);
+  ui->widePlot->draw(blue,red);
 }
 
 

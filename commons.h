@@ -14,9 +14,9 @@ extern struct {
   int nsum;
   int nclearave;
   float f1;
-  float snrdb;
-  float red[1000];
-  float blue[1000];
+  float rms;
+  float red[2000];
+  float blue[2000];
 } datcom_;                          //This is "common/datcom/..." in fortran
 }
 

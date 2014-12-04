@@ -6,7 +6,7 @@ program tstecho
   common/datcom/id2(LENGTH),ndop,ntc,necho,nfrit,ndither,nsave,nsum,    &
        nclearave,f1,snrdb,red0(1000),blue0(1000)
 
-  open(10,file='echo.dat',status='old',access='stream')
+  open(10,file='echo_1.dat',status='old',access='stream')
 
   nclearave=1
   nsum=0
@@ -27,7 +27,7 @@ program tstecho
   do i=1,2000
      freq=(i-1000)*df
      write(15,1100) freq,blue(i),red(i)
-1100 format(f10.3,2e12.3)
+1100 format(3f10.3)
   enddo
 
 999 end program tstecho

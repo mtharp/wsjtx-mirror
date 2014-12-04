@@ -26,8 +26,8 @@ SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     widegraph.cpp \
     getdev.cpp displaytext.cpp \
     meterwidget.cpp signalmeter.cpp \
-    echospec.cpp astro.cpp
-#    avecho.f90
+    echospec.cpp astro.cpp \
+    avecho.f90 pctile.f90 sort.f90 ssort.f90 smo121.f90
 
 win32 {
 SOURCES +=

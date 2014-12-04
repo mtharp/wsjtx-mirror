@@ -242,11 +242,10 @@ void MainWindow::dataSink()
 
 void MainWindow::specReady()
 {
-  float px=0.0;
-// Get spectrum, power
-//  symspec_(&k, &m_nsps, &m_BFO, &m_inGain, &px, s, &df3, &ihsym);
+  float px=20.0*log10(datcom_.rms)- 20.0;
   signalMeter->setValue(px);                   // Update signalmeter
-  qDebug() << "specReady" << m_s6;
+  g_pWideGraph->plotSpec(&datcom_.blue[0],&datcom_.red[0]);
+  qDebug() << "specReady" << m_s6 << px;
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)

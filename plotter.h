@@ -31,7 +31,7 @@ public:
   int     m_plotZero;
   int     m_plotGain;
 
-  void draw(float sw[]);		               //Update the waterfall
+  void draw(float blue[], float red[]);		               //Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);
   int  getPlotZero();

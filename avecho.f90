@@ -1,10 +1,12 @@
-subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,rms,blue,red)
+subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,rms,blue0,red0)
 
   parameter (LENGTH=27*4096)
   parameter (NFFT=131072,NH=NFFT/2)
   integer*2 id2(LENGTH)                   !Buffer for Rx data
   real blue(2000)      !Avg spectrum relative to initial Doppler echo freq
   real red(2000)      !Avg spectrum with Dither and changing Doppler removed
+  real blue0(2000)
+  real red0(2000)
   integer nsum      !Number of integrations
   real dop0         !Doppler shift for initial integration (Hz)
   real doppler      !Doppler shift for current integration (Hz)
@@ -51,8 +53,22 @@ subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,rms,blue,red)
 
   do i=1,2000
      blue(i)=blue(i) + s(ia+i-1000)  !Center at initial doppler freq
-     red(i)=red(i) + s(ib+i-1000)  !Center at expected echo freq
+     red(i)=red(i) + s(ib+i-1000)    !Center at expected echo freq
   enddo
+
+  call pctile(red,200,50,r0)
+  call pctile(red(1800),200,50,r1)
+
+  do i=1,2000
+     y=r0 + (r1-r0)*(i-100.0)/1800.0
+     blue0(i)=blue(i)/y
+     red0(i)=red(i)/y
+  enddo
+  bluemax=maxval(blue0)
+  redmax=maxval(red0)
+  fac=10.0/max(bluemax,redmax,10.0)
+  blue0=fac*blue0
+  red0=fac*red0
 
 900 return
 end subroutine avecho
