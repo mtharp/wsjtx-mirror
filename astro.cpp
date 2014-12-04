@@ -40,6 +40,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
   int nfreq=freq+0.5;
   if(nfreq<10 or nfreq > 50000) nfreq=144;
 
+  qDebug() << mygrid;
   if(!astroBusy) {
     astroBusy=true;
     astrosub_(&nyear, &month, &nday, &uth, &nfreq, mygrid.toLatin1(),

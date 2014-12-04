@@ -4,9 +4,9 @@ program tstecho
   integer*2 id2
   real blue(2000),red(2000)
   common/datcom/id2(LENGTH),ndop,ntc,necho,nfrit,ndither,nsave,nsum,    &
-       nclearave,f1,snrdb,red0(1000),blue0(1000)
+       nclearave,f1,snrdb,red0(2000),blue0(2000)
 
-  open(10,file='echo_1.dat',status='old',access='stream')
+  open(10,file='echo_3.dat',status='old',access='stream')
 
   nclearave=1
   nsum=0

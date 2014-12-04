@@ -451,6 +451,7 @@ void MainWindow::oneSec() {
           t.time().toString();
   ui->labUTC->setText(utc);
   if(!m_receiving) signalMeter->setValue(0);
+  datcom_.nfrit = ui->sbRIT->value();
   g_pAstro->astroUpdate(t, m_myGrid, m_freq);
 }
 
