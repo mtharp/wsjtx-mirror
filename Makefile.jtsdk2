@@ -39,12 +39,7 @@ CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze
 # Compiler Flags
 FFLAGS = -O2 -DWIN32 -DWin32 -fbounds-check -fno-second-underscore -Wall \
        -Wno-conversion -Wno-character-truncation
-	   
-# Without using -DHAVE_STRUCT_TIMESPEC we don't get already declared warnings
-# during the build ( pthread_w32.h ). This is just a test, so if things don't work
-# correctly, add  -DHAVE_STRUCT_TIMESPEC back in.
-# CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
-CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM
+CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Default rules
 %.o: %.c
