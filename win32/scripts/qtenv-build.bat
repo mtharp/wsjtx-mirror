@@ -240,7 +240,7 @@ IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
-cmake --build . --target package -- -j%JJ%
+cmake --build . --target package --clean-first -- -j%JJ%
 
 IF NOT EXIST %BUILDD%\%OPTION%\*win32.exe ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\*win32.exe %PACKAGED%

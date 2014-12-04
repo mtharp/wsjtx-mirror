@@ -128,8 +128,9 @@ ECHO -----------------------------------------------------------------
 ECHO Configuring RC Build Tree For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-cmake -G "MinGW Makefiles" -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+cmake -G "MinGW Makefiles" -Wno-dev -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -D WSJT_INCLUDE_KVASD=ON ^
+-D CMAKE_COLOR_MAKEFILE=OFF ^
 -D CMAKE_BUILD_TYPE=%OPTION% ^
 -D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
@@ -147,7 +148,7 @@ ECHO   Target Directory ... %INSTALLD%\%OPTION%
 ECHO.
 ECHO TO BUILD INSTALL TARGET
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target install --clean-first -- -j%JJ%
+ECHO   cmake --build . --target install -- -j%JJ%
 ECHO.
 ECHO TO BUILD WINDOWS NSIS INSTALLER
 ECHO   cd %BUILDD%\%OPTION%
@@ -168,8 +169,9 @@ ECHO -----------------------------------------------------------------
 ECHO.
 ECHO .. Configuring Release Candidate Build Tree
 ECHO.
-cmake -G "MinGW Makefiles" -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+cmake -G "MinGW Makefiles" -Wno-dev -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -D WSJT_INCLUDE_KVASD=ON ^
+-D CMAKE_COLOR_MAKEFILE=OFF ^
 -D CMAKE_BUILD_TYPE=%OPTION% ^
 -D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
@@ -191,7 +193,8 @@ ECHO -----------------------------------------------------------------
 ECHO Building RC Win32 Installer For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-cmake -G "MinGW Makefiles" -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+cmake -G "MinGW Makefiles" -Wno-dev -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-D CMAKE_COLOR_MAKEFILE=OFF ^
 -D CMAKE_BUILD_TYPE=%OPTION% ^
 -D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
@@ -199,7 +202,7 @@ GOTO NSIS_PKG
 
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
-cmake --build . --target package -- -j%JJ%
+cmake --build . --target package --clean-first -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO NSIS_BUILD_ERROR )
 ls -al %BUILDD%\%OPTION%\*-win32.exe |gawk "{print $8}" >p.k & SET /P WSJTXPKG=<p.k & rm p.k
 CD %BUILDD%\%OPTION%

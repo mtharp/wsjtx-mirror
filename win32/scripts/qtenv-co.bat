@@ -45,7 +45,6 @@ SET SVND=%BASED%\subversion\bin
 SET PATH=%BASED%;%BIN%;%SRCD%;%SCR%;%SVND%;%WINDIR%\System32
 GOTO CHK_APP
 
-
 :: CHECK IF APPLICATION NAME IF SUPPORTED
 :CHK_APP
 IF /I [%1]==[wsjtx-1.4] (SET APP_NAME=wsjtx-1.4 &GOTO WSJTX_RC
@@ -53,7 +52,6 @@ IF /I [%1]==[wsjtx-1.4] (SET APP_NAME=wsjtx-1.4 &GOTO WSJTX_RC
 ) ELSE IF /I [%1]==[wsprx] ( SET APP_NAME=wsprx & GOTO OTHER_CO
 ) ELSE IF /I [%1]==[map65] ( SET APP_NAME=map65 & GOTO OTHER_CO
 ) ELSE ( GOTO UNSUPPORTED_CO )
-
 
 :: PERFORM WSPR CHECKOUT
 :WSJTX_RC
@@ -91,7 +89,6 @@ ECHO.
 PAUSE
 GOTO FINISHED
 
-
 :: FINISHED CHECKOUT MESSAGE
 :FINISHED
 ECHO.
@@ -99,26 +96,24 @@ call %SCR%\qtenv-build-help.bat
 ECHO.
 GOTO EOF
 
-
 :: UNSUPPORTED APPLICATION CHECKOUT
 :UNSUPPORTED_CO
 CLS
 ECHO.
 ECHO ----------------------------------------
-ECHO         UNSUPPORTED CHECKOUT
+ECHO          UNSUPPORTED CHECKOUT
 ECHO ----------------------------------------
 ECHO.
 ECHO       ^( %1 ^) Is Unsupported
 ECHO.
-ECHO         Only WSJT and WSPR
+ECHO Only WSJT-X, WSJTX-1.4, WSPR-X and MAP65
 ECHO.
-ECHO            Are Supported 
+ECHO             Are Supported 
 ECHO.
-ECHO        Please Check Your Entry
+ECHO         Please Check Your Entry
 ECHO.
 PAUSE
 GOTO EOF
-
 
 :: WARN ON DOUBLE CLICK
 :DOUBLE_CLICK_ERROR
