@@ -21,7 +21,7 @@ void echospec()
   QString fname="echo.dat";
   char name[80];
   strcpy(name,fname.toLatin1());
-  FILE* fp=fopen(name,"wb");
+  FILE* fp=fopen(name,"ab");
   if(fp != NULL) {
     fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
     fclose(fp);
@@ -71,17 +71,4 @@ int ptt(int nport, int ntx, int* iptt, int* nopen)
   if((i3+i4+i5+i6+i9+i00)==-99) return 1;    // Silence compiler warning
   return 0;
 #endif
-}
-
-void savedat(void)
-{
-  QString fname="echo.dat";
-  char name[80];
-  strcpy(name,fname.toLatin1());
-  FILE* fp=fopen(name,"wb");
-
-  if(fp != NULL) {
-    fwrite(&datcom_.d2,2,LENGTH+8,fp);
-    fclose(fp);
-  }
 }

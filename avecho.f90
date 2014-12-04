@@ -1,4 +1,4 @@
-subroutine avecho(id2,doppler)
+subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave)
 !subroutine avecho(id2,ibuf0,ntc,necho,nfrit,ndither,nsave,f1,nsum,   &
 !     nclearave,ss1,ss2)
 
@@ -19,16 +19,16 @@ subroutine avecho(id2,doppler)
   equivalence (x,c)
   save s1,s2,dop0
 
+  doppler=ndop
   sq=0.
-  k=2048*(ibuf0-1)  
   do i=1,LENGTH
-     x(i)=id2(k)
+     x(i)=id2(i)
      sq=sq + x(i)*x(i)
   enddo
-
-  sigdB=-99.0
-  if(sq.gt.0.0) sigdB=10.0*log10((sq/LENGTH))
-  if(sigdB.lt.-99.0) sigdB=-99.0
+  rms=sqrt(sq/LENGTH)
+  sigdb=-99.0
+  if(sq.gt.0.0) sigdb=10.0*log10((sq/LENGTH))
+  if(sigdb.lt.-99.0) sigdb=-99.0
 
   if(nclearave.ne.0) nsum=0
   nclearave=0
@@ -38,18 +38,12 @@ subroutine avecho(id2,doppler)
      s2=0.
   endif
 
-!###
-  write(31) dop0,doppler,x
-  call flush(31)
-  if(doppler.ne.-999999.0) return
-!###
-
+  x(LENGTH+1:)=0.
+  x=x/LENGTH
+  call four2a(x,NFFT,1,-1,0)
   df=48000.0/NFFT
-!  call xfft(x,32768)
-
-  fac=1.e-9
   do i=1,8192
-     s(i)=fac * (real(c(i))**2 + aimag(c(i))**2)
+     s(i)=real(c(i))**2 + aimag(c(i))**2
   enddo
 
   fnominal=1500.0           !Nominal audio frequency w/o doppler or dither
@@ -59,78 +53,32 @@ subroutine avecho(id2,doppler)
   if(ia.gt.7590 .or. ib.gt.7590) go to 900
 
   nsum=nsum+1
-  if(ntc.lt.1) ntc=1
-  u=1.0/nsum
-  if(nsum.gt.ntc) u=1.0/ntc
+
+!  if(ntc.lt.1) ntc=1
+!  u=1.0/nsum
+!  if(nsum.gt.ntc) u=1.0/ntc
   do i=1,600
-     s1(i)=(1.0-u)*s1(i) + u*s(ia+i-300)  !Center at initial doppler freq
-     s2(i)=(1.0-u)*s2(i) + u*s(ib+i-300)  !Center at expected echo freq
+!     s1(i)=(1.0-u)*s1(i) + u*s(ia+i-300)  !Center at initial doppler freq
+!     s2(i)=(1.0-u)*s2(i) + u*s(ib+i-300)  !Center at expected echo freq
+     s1(i)=s1(i) + s(ia+i-300)  !Center at initial doppler freq
+     s2(i)=s2(i) + s(ib+i-300)  !Center at expected echo freq
      j=i-300
      if(abs(j).le.224) then
         ss1(j)=s1(i)
         ss2(j)=s2(i)
      endif
   enddo
-  if(nsave.ne.0) then
-     open(25,file=fname,status='unknown')
-     do i=1,600
-        write(25,3001) (i-300)*df,s1(i),s2(i)
-3001    format(f10.3,2f12.3)
-     enddo
-     call flush(25)
-     close(25)
-     call cs_unlock
-  endif
 
-  call pctile(s2,tmp,600,50,x0)
-  call pctile(s2,tmp,600,84,x1)
-  rms=x1-x0
-  peak=-1.e30
-  ipk=1                                      !Silence compiler warning
-  do i=1,600
-     if(s2(i).gt.peak) then
-        peak=s2(i)
-        ipk=i
-     endif
+  call smo121(ss2,449)
+  rewind 14
+  do i=-224,224
+     write(14,1100) i*df,ss1(i),ss2(i)
+1100 format(f10.3,2e12.3)
   enddo
 
-  s2half=0.5*(peak-x0) + x0
+  write(*,3001) nsum,ndop,nfrit,nclearave,f1,sigdb,rms
+3001 format(4i6,3f8.1)
 
-  ia=ipk
-  ib=ipk
-  do i=1,100
-     if((ipk-i).lt.1) go to 11
-     ia=ipk-i
-     if(s2(ia).le.s2half) goto 11
-  enddo
-11 do i=1,100
-     if((ipk+i).gt.600) go to 21
-     ib=ipk+i
-     if(s2(ib).le.s2half) goto 21
-  enddo
-21 width=df*(ib-ia-1)
-
-  if(x0.gt.0.0) echosig=10.0*log10(peak/x0 - 1.0) - 35.7
-  echodop=df*(ipk-300)
-  snr=0.
-  if(rms.gt.0.0) snr=(peak-x0)/rms
-
-  NQual=(snr-2.5)/2.5
-  if(nsum.lt.12)  NQual=(snr-3)/3
-  if(nsum.lt.8)   NQual=(snr-3)/4
-  if(nsum.lt.4)   NQual=(snr-4)/5
-  if(nsum.lt.2)   NQual=0
-  if(NQual.lt.0)  NQual=0
-  if(NQual.gt.10) NQual=10
-
-  call cs_lock('avecho')
-  rewind 11
-  write(11,1010) nsum,sigdB,echosig,echodop,width,azmoon,elmoon,NQual
-1010 format(i4,f6.1,f7.1,f8.1,3f6.1,i4)
-  write(21,1010) nsum,sigdB,echosig,echodop,width,azmoon,elmoon,NQual
-  call flush(11)
-  call flush(21)
-  call cs_unlock
 
 900 return
 end subroutine avecho
