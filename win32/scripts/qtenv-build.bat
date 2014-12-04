@@ -88,7 +88,6 @@ SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
 SET PACKAGED=%BASED%\%APP_NAME%\package
 SET SUPPORT=%BASED%\appsupport
-SET WSJTXPKG=wsjtx-1.4.0-rc1-win32.exe
 SET WSPRX_ISS=%SRCD%\wsprx\wsprxb.iss
 SET MAP65_ISS=%SRCD%\map65\map65b.iss
 
@@ -146,9 +145,9 @@ ECHO Configuring %OPTION% Build Tree For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
 cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
--DCMAKE_COLOR_MAKEFILE:BOOL="OFF" ^
--DCMAKE_BUILD_TYPE=%OPTION% ^
--DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+-D CMAKE_COLOR_MAKEFILE=OFF ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO -----------------------------------------------------------------
@@ -192,9 +191,9 @@ ECHO.
 ECHO .. Configuring %OPTION% Build Tree
 ECHO.
 cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
--DCMAKE_COLOR_MAKEFILE:BOOL="OFF" ^
--DCMAKE_BUILD_TYPE=%OPTION% ^
--DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+-D CMAKE_COLOR_MAKEFILE=OFF ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Starting Install Target build for ^( %APP_NAME% ^)
@@ -215,9 +214,10 @@ ECHO Building Installer Package For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
 cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
--DCMAKE_COLOR_MAKEFILE:BOOL="OFF" ^
--DCMAKE_BUILD_TYPE=%OPTION% ^
--DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+-D CMAKE_COLOR_MAKEFILE=OFF ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 IF /I [%1]==[wsjtx] ( GOTO NSIS_PKG )
 IF /I [%1]==[wsprx] ( GOTO INNO_PKG )
@@ -226,8 +226,9 @@ IF /I [%1]==[map65] ( GOTO INNO_PKG )
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
 cmake --build . --target package --clean-first -- -j%JJ%
-IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
-mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
+
+IF NOT EXIST %BUILDD%\%OPTION%\*win32.exe ( GOTO NSIS_BUILD_ERROR )
+mv -u %BUILDD%\%OPTION%\*win32.exe %PACKAGED%
 GOTO FINISH_PKG
 
 :: INNO PACKAGE ( WSPR-X and MAP65 )
@@ -297,13 +298,15 @@ XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
 )
-:: Build The Installer
+REM -- Build The Installer
 ECHO -- Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
 ECHO.
 
 %INO%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
 IF ERRORLEVEL 1 ( GOTO INNO_BUILD_ERROR )
 
+REM -- We can use the installer name here, as we state the output
+REM    name and location with /O and /F to ISCC. ISCC adds the .exe
 IF NOT EXIST %PACKAGED%\%APP_NAME%-Win32.exe ( GOTO INNO_BUILD_ERROR )
 GOTO FINISH_PKG
 
@@ -314,20 +317,13 @@ ECHO -----------------------------------------------------------------
 ECHO Finished Installer Build For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-IF /I [%APP_NAME%]==[wsjtx] (
-ECHO Installer Name ...... %WSJTXPKG%
-ECHO Installer Location .. %PACKAGED%\%WSJTXPKG%
-) ELSE (
-ECHO Installer Name ...... %APP_NAME%-Win32.exe
-ECHO Installer Location .. %PACKAGED%\%APP_NAME%-Win32.exe
-)
+ECHO  Installer Location ..: %PACKAGED%
 ECHO.
-ECHO To Install the package, browse to Installer Location, and
-ECHO run as you normally do to install Windows applications.
+ECHO  To Install the package, browse to Installer Location, and
+ECHO  run as you normally do to install Windows applications.
 ECHO.
 GOTO EOF
 ) ELSE ( GOTO UNSUPPORTED )
-
 
 REM ----------------------------------------------------------------------------
 REM  POST BUILD ACTIVITIES
