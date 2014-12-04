@@ -87,7 +87,6 @@ SET APP_DIR=%BASED%\%APP_NAME%
 SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
 SET PACKAGED=%BASED%\%APP_NAME%\package
-SET SUPPORT=%BASED%\appsupport
 SET WSPRX_ISS=%SRCD%\wsprx\wsprxb.iss
 SET MAP65_ISS=%SRCD%\map65\map65b.iss
 
@@ -144,10 +143,18 @@ ECHO -----------------------------------------------------------------
 ECHO Configuring %OPTION% Build Tree For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
+IF /I [%1]==[wsjtx] (
+cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-D WSJT_INCLUDE_KVASD=ON ^
+-D CMAKE_COLOR_MAKEFILE=OFF ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+) ELSE (
 cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -D CMAKE_COLOR_MAKEFILE=OFF ^
 -D CMAKE_BUILD_TYPE=%OPTION% ^
 -D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+)
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO -----------------------------------------------------------------
@@ -169,11 +176,11 @@ ECHO   :: Type ^(Ctrl+C then Q^) to exit
 ECHO.
 ECHO TO BUILD INSTALL TARGET
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target install --clean-first -- -j%JJ%
+ECHO   cmake --build . --target install -- -j%JJ%
 ECHO.
 ECHO TO BUILD WINDOWS NSIS INSTALLER
 ECHO   cd %BUILDD%\%OPTION%
-ECHO   cmake --build . --target package --clean-first -- -j%JJ%
+ECHO   cmake --build . --target package -- -j%JJ%
 ECHO.
 GOTO EOF
 
@@ -190,15 +197,23 @@ ECHO -----------------------------------------------------------------
 ECHO.
 ECHO .. Configuring %OPTION% Build Tree
 ECHO.
+IF /I [%1]==[wsjtx] (
+cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-D WSJT_INCLUDE_KVASD=ON ^
+-D CMAKE_COLOR_MAKEFILE=OFF ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+) ELSE (
 cmake -G "MinGW Makefiles" -Wno-dev -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
 -D CMAKE_COLOR_MAKEFILE=OFF ^
 -D CMAKE_BUILD_TYPE=%OPTION% ^
 -D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+)
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Starting Install Target build for ^( %APP_NAME% ^)
 ECHO.
-cmake --build . --target install --clean-first -- -j%JJ%
+cmake --build . --target install -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 GOTO POSTBUILD1
 
@@ -225,7 +240,7 @@ IF /I [%1]==[map65] ( GOTO INNO_PKG )
 
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
-cmake --build . --target package --clean-first -- -j%JJ%
+cmake --build . --target package -- -j%JJ%
 
 IF NOT EXIST %BUILDD%\%OPTION%\*win32.exe ( GOTO NSIS_BUILD_ERROR )
 mv -u %BUILDD%\%OPTION%\*win32.exe %PACKAGED%
@@ -233,9 +248,9 @@ GOTO FINISH_PKG
 
 :: INNO PACKAGE ( WSPR-X and MAP65 )
 :INNO_PKG
-cmake --build . --target install --clean-first -- -j%JJ%
+cmake --build . --target install -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
-ECHO -- Copying Package Support Files for ^( %APP_NAME% ^)
+ECHO -- Installing: Additional Support Files for ^( %APP_NAME% ^)
 
 REM ----------------------------------------------------------------------------
 REM -- MAP65 PACKAGE COPY ROUTINE
@@ -261,10 +276,14 @@ XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
-:: KVASD and palir Runtime
-XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
+:: Add Misc files
+XCOPY /Y /R %BUILDD%\%OPTION%\contrib\* %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %BASED%\mingw32\bin\mingwm10.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
+DEL /Q %INSTALLD%\%OPTION%\bin\in.dat >nul
 )
 
 REM ----------------------------------------------------------------------------
@@ -292,7 +311,7 @@ XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
-:: KVASD and palir Runtime
+:: Add Misc files
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
@@ -339,7 +358,7 @@ IF /I [%OPTION%]==[Debug] ( GOTO WSJTX_MAKEBAT ) ELSE ( GOTO FINISH )
 
 :: COPY FILES ( WSPR-X and MAP65 )
 :CPFILES
-ECHO -- Copying Install Support Files for ^( %APP_NAME% ^)
+ECHO -- Installing: Aditional Support Files for ^( %APP_NAME% ^)
 
 REM ----------------------------------------------------------------------------
 REM -- MAP65 INSTALL COPY ROUTINE
@@ -366,10 +385,14 @@ XCOPY /Y /R %GCCD%\libquadmath-0.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
-:: KVASD and palir Runtime
-XCOPY /Y /R %BUILDD%\%OPTION%\contrib\kvasd.exe %INSTALLD%\%OPTION%\bin >nul>nul
+:: Add Misc files
+XCOPY /Y /R %BUILDD%\%OPTION%\contrib\* %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %BASED%\mingw32\bin\mingwm10.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
+DEL /Q %INSTALLD%\%OPTION%\bin\in.dat >nul
 )
 
 REM ----------------------------------------------------------------------------
@@ -397,7 +420,7 @@ XCOPY /Y /R "%GCCD%\libstdc++-6.dll" %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
-:: KVASD and palir Runtime
+:: Add Misc files
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul

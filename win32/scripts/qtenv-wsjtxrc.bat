@@ -25,32 +25,33 @@
 
 :: ENVIRONMENT
 @ECHO OFF
-SETLOCAL ENABLEEXTENSIONS
-SETLOCAL ENABLEDELAYEDEXPANSION
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 SET LANG=en_US
+COLOR 0B
 
-
-:: TEST DOUBLE CLICK
+:: TEST DOUBLE CLICK, if YES, GOTO ERROR MESSAGE
 FOR %%x IN (%cmdcmdline%) DO IF /I "%%~x"=="/c" SET GUI=1
 IF DEFINED GUI CALL GOTO DOUBLE_CLICK_ERROR
 
-
 :: PATH VARIABLES
-SET LANG=en_US
-SET LIBRARY_PATH=""
 SET BASED=C:\JTSDK
 SET CMK=%BASED%\cmake\bin
 SET BIN=%BASED%\tools\bin
+SET HL2=%BASED%\hamlib\bin
 SET HL3=%BASED%\hamlib3\bin
 SET FFT=%BASED%\fftw3f
-SET NSI=%BASED%\NSIS
+SET NSI=%BASED%\nsis
 SET INO=%BASED%\inno5
-SET QT5=%BASED%\qt5\bin
-SET QTP=%BASED%\qt5\plugins\platforms;%BASED%\qt5\plugins\accessible
+SET GCCD=%BASED%\qt5\Tools\mingw48_32\bin
+SET QT5D=%BASED%\qt5\5.2.1\mingw48_32\bin
+SET QT5A=%BASED%\qt5\5.2.1\mingw48_32\plugins\accessible
+SET QT5P=%BASED%\qt5\5.2.1\mingw48_32\plugins\platforms
 SET SCR=%BASED%\scripts
 SET SRCD=%BASED%\src
 SET SVND=%BASED%\subversion\bin
-SET PATH=%BASED%;%CMK%;%BIN%;%HL3%;%FFT%;%QT5%;%QTP%;%NSI%;%INO%;%SRCD%;%SCR%;%SVND%;%WINDIR%\System32
+SET LIBRARY_PATH=""
+SET PATH=%BASED%;%CMK%;%BIN%;%HL3%;%HL2%;%FFT%;%GCCD%;%QT5D%;%QT5A%;%QT5P%;%NSI%;%INO%;%SRCD%;%SCR%;%SVND%;%WINDIR%;%WINDIR%\System32
+CD /D %BASED%
 
 :: USER INPUT FILED 1 = %1
 IF /I [%1]==[rconfig] (SET OPTION=Release
@@ -60,7 +61,6 @@ SET BINSTALL=true
 ) ELSE IF /I [%1]==[package] (SET OPTION=Release
 SET BPKG=true
 ) ELSE ( GOTO BADTYPE )
-
 
 :: VARIABLES USED IN PROCESS
 SET APP_NAME=wsjtx-1.4
@@ -73,6 +73,7 @@ SET JJ=%NUMBER_OF_PROCESSORS%
 REM ----------------------------------------------------------------------------
 REM  START MAIN SCRIPT
 REM ----------------------------------------------------------------------------
+
 CLS
 CD %BASED%
 IF NOT EXIST %SRCD%\NUL mkdir %SRCD%
@@ -89,7 +90,6 @@ GOTO COMSG
 GOTO SVNASK
 )
 
-
 :: ASK USER UPDATE FROM SVN
 :SVNASK
 ECHO Update from SVN Before Building? ^( y/n ^)
@@ -105,7 +105,6 @@ ECHO.
 ECHO Please Answer With: ^( Y or N ^) & ECHO. & GOTO SVNASK
 )
 
-
 :: UPDATE IF USER SAID YES TO UPDATE
 :SVNUP
 ECHO.
@@ -116,10 +115,10 @@ start /wait svn update
 CD /D %BASED%
 ECHO.
 
-
 REM ----------------------------------------------------------------------------
 REM  CONFIGURE BUILD TREE ( BTREE )
 REM ----------------------------------------------------------------------------
+
 :BUILD
 IF [%BTREE%]==[true] (
 CLS
@@ -130,6 +129,7 @@ ECHO Configuring RC Build Tree For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
 cmake -G "MinGW Makefiles" -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-D WSJT_INCLUDE_KVASD=ON ^
 -D CMAKE_BUILD_TYPE=%OPTION% ^
 -D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
@@ -163,14 +163,15 @@ CLS
 CD %BUILDD%\%OPTION%
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO Building RC For: ^( %APP_NAME% ^)
+ECHO Building RC Install Target For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
 ECHO .. Configuring Release Candidate Build Tree
 ECHO.
-cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
--DCMAKE_BUILD_TYPE=%OPTION% ^
--DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+cmake -G "MinGW Makefiles" -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-D WSJT_INCLUDE_KVASD=ON ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 ECHO.
 ECHO .. Starting Release Candidate Install
@@ -187,15 +188,14 @@ CLS
 CD %BUILDD%\%OPTION%
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO Building RC Installer For: ^( %APP_NAME% ^)
+ECHO Building RC Win32 Installer For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-cmake -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
--DCMAKE_BUILD_TYPE=%OPTION% ^
--DCMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
+cmake -G "MinGW Makefiles" -D CMAKE_TOOLCHAIN_FILE=%TCHAIN% ^
+-D CMAKE_BUILD_TYPE=%OPTION% ^
+-D CMAKE_INSTALL_PREFIX=%INSTALLD%/%OPTION% %SRCD%/%APP_NAME%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
 GOTO NSIS_PKG
-
 
 :: NSIS PACKAGE ( WSJT-X / Win32 ONLY)
 :NSIS_PKG
@@ -206,7 +206,6 @@ CD %BUILDD%\%OPTION%
 MOVE /Y %WSJTXPKG% %PACKAGED% > nul
 CD %BASED%
 GOTO FINISH_PKG
-
 
 :: FINISHED PACKAGE MESSAGE
 :FINISH_PKG
@@ -223,7 +222,6 @@ ECHO run as you normally do to install Windows applications.
 ECHO.
 GOTO EOF
 
-
 :: DISPLAY FINISH MESSAGE
 :FINISH
 ECHO.
@@ -233,7 +231,6 @@ ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\wsjtx.exe
 ECHO.
 PAUSE
 GOTO ASK_FINISH_RUN
-
 
 :: ASK USER IF THEY WANT TO RUN THE APP
 :ASK_FINISH_RUN
@@ -251,7 +248,6 @@ CLS
 ECHO.
 ECHO   Please Answer With: ^( y or n ^) & ECHO. & GOTO ASK_FINISH_RUN
 )
-
 
 :: RUN APP
 :RUN_INSTALL
