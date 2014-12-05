@@ -65,7 +65,6 @@ SET BUILDD=%BASED%\%APP_NAME%\build
 SET INSTALLD=%BASED%\%APP_NAME%\install
 SET PACKAGED=%BASED%\%APP_NAME%\package
 SET SUPPORT=%BASED%\appsupport
-SET WSJTXPKG=wsjtx-1.4.0-rc1-win32.exe
 SET WSPRX_ISS=%SRCD%\wsprx\wsprx-jtsdk.iss
 SET MAP65_ISS=%SRCD%\map65\map65-jtsdk.iss
 
@@ -209,8 +208,8 @@ IF /I [%1]==[map65] ( GOTO INNO_PKG )
 REM - NSIS Build Win32 Installer
 :NSIS_PKG
 cmake --build . --target package -- -j%JJ%
-IF NOT EXIST %BUILDD%\%OPTION%\%WSJTXPKG% ( GOTO NSIS_BUILD_ERROR )
-mv -u %BUILDD%\%OPTION%\%WSJTXPKG% %PACKAGED%
+IF NOT EXIST %BUILDD%\%OPTION%\*win32.exe ( GOTO NSIS_BUILD_ERROR )
+mv -u %BUILDD%\%OPTION%\*win32.exe %PACKAGED%
 GOTO FINISH_PKG
 
 REM - InnoSetup Build Win32 Installer
@@ -219,8 +218,7 @@ IF /I [%1]==[wsprx] (SET ISS=%WSPRX_ISS% )
 IF /I [%1]==[map65] (SET ISS=%MAP65_ISS% )
 cmake --build . --target install -- -j%JJ%
 IF ERRORLEVEL 1 ( GOTO CMAKE_ERROR )
-ECHO.
-ECHO .. Copying Additional Files ^( %APP_NAME% ^)
+ECHO -- Installing: Additional Support Files for ^( %APP_NAME% ^)
 ECHO.
 SET CPTXT=*.txt *.dat *.conf *.ini *.ico 
 SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
@@ -234,6 +232,9 @@ ECHO .. Building Win32 Installer ^( %APP_NAME%-Win32.exe ^)
 ECHO.
 %INNOD%\ISCC.exe /O"%PACKAGED%" /F"%APP_NAME%-Win32" /cc %ISS%
 IF ERRORLEVEL 1 ( GOTO INNO_BUILD_ERROR )
+
+REM -- We can use the installer name here, as we state the output
+REM    name and location with /O and /F to ISCC. ISCC adds the .exe
 IF NOT EXIST %PACKAGED%\%APP_NAME%-Win32.exe ( GOTO INNO_BUILD_ERROR )
 GOTO FINISH_PKG
 
@@ -243,16 +244,10 @@ ECHO -----------------------------------------------------------------
 ECHO Finished Installer Build For: ^( %APP_NAME% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
-IF /I [%APP_NAME%]==[wsjtx] (
-ECHO Installer Name ...... %WSJTXPKG%
-ECHO Installer Location .. %PACKAGED%\%WSJTXPKG%
-) ELSE (
-ECHO Installer Name ...... %APP_NAME%-Win32.exe
-ECHO Installer Location .. %PACKAGED%\%APP_NAME%-Win32.exe
-)
+ECHO  Installer Location ..: %PACKAGED%
 ECHO.
-ECHO To Install the package, browse to Installer Location, and
-ECHO run as you normally do to install Windows applications.
+ECHO  To Install the package, browse to Installer Location, and
+ECHO  run as you normally do to install Windows applications.
 ECHO.
 GOTO EOF
 ) ELSE ( GOTO UNSUPPORTED )
@@ -267,6 +262,7 @@ IF /I [%1]==[wsjtx] ( GOTO POSTBUILD2 ) ELSE ( GOTO CPFILES )
 IF /I [%OPTION%]==[Debug] ( GOTO WSJTX_MAKEBAT ) ELSE ( GOTO FINISH )
 
 :CPFILES
+ECHO -- Installing: Additional Support Files for ^( %APP_NAME% ^)
 SET CPTXT=*.txt *.dat *.conf *.ini
 SET RBCP=ROBOCOPY /NS /NC /NFL /NDL /NP /NJS /NJH
 %RBCP% %SRCD%\%APP_NAME% %INSTALLD%\%OPTION%\bin %CPTXT% /XF CMake* README
@@ -278,7 +274,7 @@ IF /I [%OPTION%]==[Debug] ( GOTO DEBUG_MAKEBAT ) ELSE ( GOTO FINISH )
 GOTO EOF
 
 :DEBUG_MAKEBAT
-ECHO -- Generating Debug Batch File for ^( %APP_NAME% ^ )
+ECHO -- Generating: Debug Batch File for ^( %APP_NAME% ^ )
 SET FILENAME=%APP_NAME%.bat
 ECHO.
 ECHO -----------------------------------------------------------------
@@ -558,9 +554,7 @@ ECHO                    INSTALLER BUILD ERROR
 ECHO -----------------------------------------------------------------
 ECHO.
 ECHO  There was a problem building the package, or the script
-ECHO  could not find:
-ECHO.
-ECHO  %BUILDD%\%OPTION%\%WSJTXPKG%
+ECHO  could not find the installer.
 ECHO.
 ECHO  Check the Cmake logs for any errors, or correct any build
 ECHO  script issues that were obverved and try to rebuild the package.
