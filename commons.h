@@ -6,8 +6,6 @@ extern "C" {
 extern struct {
   short int d2[LENGTH];
   int ndop;
-  int ntc;
-  int necho;
   int nfrit;
   int nsmo;
   int nsum;
@@ -18,8 +16,8 @@ extern struct {
   float snrdb;
   float dfreq;
   float width;
-  float red[2000];
   float blue[2000];
+  float red[2000];
 } datcom_;                          //This is "common/datcom/..." in fortran
 }
 

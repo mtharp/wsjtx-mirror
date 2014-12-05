@@ -13,9 +13,10 @@ subroutine avecho(id2,ndop,nfrit,nsmo,nsum,nclearave,nqual,        &
   real doppler      !Doppler shift for current integration (Hz)
   real s(8192)
   real x(NFFT)
+  integer ipkv(1)
   complex c(0:NH)
-  equivalence (x,c)
-  save dop0
+  equivalence (x,c),(ipk,ipkv)
+  save dop0,blue,red
 
   doppler=ndop
   sq=0.
@@ -66,15 +67,18 @@ subroutine avecho(id2,ndop,nfrit,nsmo,nsum,nclearave,nqual,        &
      red0(i)=red(i)/y
   enddo
   bluemax=maxval(blue0)
+  ipkv=maxloc(blue0)
   redmax=maxval(red0)
   fac=10.0/max(bluemax,redmax,10.0)
   blue0=fac*blue0
   red0=fac*red0
 
-  do i=1,nsmo
-    call smo121(red0,2000)
-    call smo121(blue0,2000)
-  enddo
+  if(nsmo.ge.1) then
+    do i=1,nsmo
+      call smo121(red0,2000)
+      call smo121(blue0,2000)
+    enddo
+  endif
 
 900 return
 end subroutine avecho
