@@ -283,7 +283,8 @@ XCOPY /Y /R %BASED%\mingw32\bin\mingwm10.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
-DEL /Q %INSTALLD%\%OPTION%\bin\in.dat >nul
+XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %HL2%\rigctld.exe %INSTALLD%\%OPTION%\bin >nul
 )
 
 REM ----------------------------------------------------------------------------
@@ -392,7 +393,8 @@ XCOPY /Y /R %BASED%\mingw32\bin\mingwm10.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\*.dat %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\LICENSE_WHEATLEY.txt %INSTALLD%\%OPTION%\bin >nul
-DEL /Q %INSTALLD%\%OPTION%\bin\in.dat >nul
+XCOPY /Y /R %HL2%\rigctl.exe %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %HL2%\rigctld.exe %INSTALLD%\%OPTION%\bin >nul
 )
 
 REM ----------------------------------------------------------------------------
