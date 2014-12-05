@@ -278,6 +278,7 @@ XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 :: Add Misc files
 XCOPY /Y /R %BUILDD%\%OPTION%\contrib\* %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\resources\* %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %BASED%\mingw32\bin\mingwm10.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
@@ -388,6 +389,7 @@ XCOPY /Y /R %GCCD%\libwinpthread-1.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %GCCD%\libgcc_s_dw2-1.dll %INSTALLD%\%OPTION%\bin >nul
 :: Add Misc files
 XCOPY /Y /R %BUILDD%\%OPTION%\contrib\* %INSTALLD%\%OPTION%\bin >nul
+XCOPY /Y /R %SRCD%\%APP_NAME%\resources\* %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\palir-02.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %BASED%\mingw32\bin\mingwm10.dll %INSTALLD%\%OPTION%\bin >nul
 XCOPY /Y /R %SRCD%\%APP_NAME%\wsjt.ico %INSTALLD%\%OPTION%\bin >nul
