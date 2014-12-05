@@ -56,7 +56,6 @@ void WideGraph::plotSpec(float blue[], float red[])
   ui->widePlot->draw(blue,red);
 }
 
-
 void WideGraph::on_zeroSpinBox_valueChanged(int value)
 {
   ui->widePlot->setPlotZero(value);

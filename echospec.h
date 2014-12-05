@@ -13,6 +13,7 @@ extern "C" {
 //----------------------------------------------------- C and Fortran routines
 
 void avecho_( short id2[], int* ndop, int* nfrit, float* f1, int* nsum,
-              int* nclearave, float* rms, float blue[], float red[]);
+              int* nclearave, int* nqual, float* rms, float* snrdb,
+              float* dfreq, float* width, float blue[], float red[]);
 }
 #endif // GETFILE_H

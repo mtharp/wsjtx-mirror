@@ -13,8 +13,12 @@ extern struct {
   int nsave;
   int nsum;
   int nclearave;
+  int nqual;
   float f1;
   float rms;
+  float snrdb;
+  float dfreq;
+  float width;
   float red[2000];
   float blue[2000];
 } datcom_;                          //This is "common/datcom/..." in fortran

@@ -17,6 +17,7 @@ void echospec()
   }
   datcom_.rms = sqrt(sq/LENGTH);
 
+/*
 //Save raw data to disk.
   QString fname="echo.dat";
   char name[80];
@@ -25,15 +26,12 @@ void echospec()
   if(fp != NULL) {
     fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
     fclose(fp);
-/*
-    qDebug() << "A" << datcom_.nsum << datcom_.ndop << datcom_.nfrit \
-             << datcom_.f1 << datcom_.nclearave << datcom_.rms;
-*/
   }
-
+*/
   avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,&datcom_.f1,     \
-      &datcom_.nsum,&datcom_.nclearave,&datcom_.rms,&datcom_.blue[0],  \
-      &datcom_.red[0]);
+      &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,                 \
+      &datcom_.rms,&datcom_.snrdb,&datcom_.dfreq,&datcom_.width,       \
+      &datcom_.blue[0],&datcom_.red[0]);
 }
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)

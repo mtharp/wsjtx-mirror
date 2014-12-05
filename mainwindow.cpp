@@ -241,7 +241,7 @@ void MainWindow::dataSink()
 {
   lab1->setStyleSheet("");
   lab1->setText("");
-  qDebug() << "echospec" << m_s6;
+//  qDebug() << "echospec" << m_s6;
   *future1 = QtConcurrent::run(echospec);
   watcher1->setFuture(*future1);               // call specReady() when done
 }
@@ -251,7 +251,12 @@ void MainWindow::specReady()
   float px=20.0*log10(datcom_.rms)- 20.0;
   signalMeter->setValue(px);                   // Update signalmeter
   g_pWideGraph->plotSpec(&datcom_.blue[0],&datcom_.red[0]);
-  qDebug() << "specReady" << m_s6 << px;
+//  qDebug() << "specReady" << m_s6 << px;
+  QString t;
+  t.sprintf("%3d %5.1f %5.1f %5.1f %5.1f %3d",
+            datcom_.nsum,datcom_.rms,datcom_.snrdb,datcom_.dfreq,
+            datcom_.width,datcom_.nqual);
+  ui->decodedTextBrowser->append(t);
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -444,6 +449,7 @@ void MainWindow::p3Error()                                     //p3rror
 void MainWindow::on_eraseButton_clicked()                          //Erase
 {
   ui->decodedTextBrowser->clear();
+  datcom_.nclearave=1;
 }
 
 void MainWindow::on_inGain_valueChanged(int n)
@@ -473,7 +479,6 @@ void MainWindow::guiUpdate()
 
 // When m_s6 has wrapped back to zero, start a new cycle.
   if(m_auto and m_s6<s6z) {
-
 
 //Raise PTT
     if(m_pttMethodIndex==0) {
@@ -507,7 +512,7 @@ void MainWindow::startTx2()
   soundOutThread.setTxFreq(freq);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;
-  qDebug() << "Tx audio" << m_s6 << r << freq;
+//  qDebug() << "Tx audio" << m_s6 << r << freq;
 }
 
 void MainWindow::stopTx()
@@ -537,7 +542,7 @@ void MainWindow::stopTx2()
   lab1->setText(t);
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
-  qDebug() << "Receiving" << m_s6;
+//  qDebug() << "Receiving" << m_s6;
   m_receiving=true;
 }
 

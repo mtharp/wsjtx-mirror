@@ -63,8 +63,8 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_ScalePixmap.fill(Qt::white);
 
     m_fSpan=m_w*m_fftBinWidth;
-    m_StartFreq=100 * int((-0.5*m_fSpan)/100.0 - 0.5);
-    qDebug() << "D" << m_fSpan << m_StartFreq;
+    m_StartFreq=50 * int((-0.5*m_fSpan)/50.0 - 0.5);
+//    qDebug() << "D" << m_fSpan << m_StartFreq;
   }
   DrawOverlay();
 }
@@ -82,6 +82,7 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
 void CPlotter::draw(float blue[], float red[])                                //draw()
 {
   int j,y;
+  double gain = pow(10.0,(m_plotGain/20.0));
 
   QPainter painter2D(&m_2DPixmap);
   QRect tmp(0,0,m_w,m_h2);
@@ -96,7 +97,7 @@ void CPlotter::draw(float blue[], float red[])                                //
   painter2D.setPen(penBlue);
   j=0;
   for(int i=0; i<m_w; i++) {
-    y = m_h2 - (m_h/10.0)*blue[i0+i] - 5;
+    y = m_h2 - gain*(m_h/10.0)*blue[i0+i] - 5 - m_plotZero;
     LineBuf[j].setX(i);
     LineBuf[j].setY(y);
     j++;
@@ -106,7 +107,7 @@ void CPlotter::draw(float blue[], float red[])                                //
   painter2D.setPen(penRed);
   j=0;
   for(int i=0; i<m_w; i++) {
-    y = m_h2 - (m_h/10.0)*red[i0+i] - 5;
+    y = m_h2 - gain*(m_h/10.0)*red[i0+i] - 5 - m_plotZero;
     LineBuf[j].setX(i);
     LineBuf[j].setY(y);
     j++;
@@ -132,12 +133,8 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter.setBrush(Qt::SolidPattern);
 
   m_fSpan = m_w*m_fftBinWidth;
-  int n=m_fSpan/10;
-  m_freqPerDiv=10;
-  if(n>25) m_freqPerDiv=50;
-  if(n>70) m_freqPerDiv=100;
-  if(n>140) m_freqPerDiv=200;
-  if(n>310) m_freqPerDiv=500;
+  m_freqPerDiv=20;
+  if(m_fSpan>250) m_freqPerDiv=50;
   float pixPerHdiv = m_freqPerDiv/m_fftBinWidth;
   float pixPerVdiv = float(m_h2)/float(VERT_DIVS);
 

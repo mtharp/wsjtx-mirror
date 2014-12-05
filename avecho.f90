@@ -1,4 +1,5 @@
-subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,rms,blue0,red0)
+subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,nqual,rms,sigdb,   &
+     dfreq,width,blue0,red0)
 
   parameter (LENGTH=27*4096)
   parameter (NFFT=131072,NH=NFFT/2)
