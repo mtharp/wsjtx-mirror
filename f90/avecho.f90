@@ -1,5 +1,5 @@
-subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,nqual,rms,sigdb,   &
-     dfreq,width,blue0,red0)
+subroutine avecho(id2,ndop,nfrit,nsmo,nsum,nclearave,nqual,        &
+     f1,rms,sigdb,dfreq,width,blue0,red0)
 
   parameter (LENGTH=27*4096)
   parameter (NFFT=131072,NH=NFFT/2)
@@ -70,6 +70,11 @@ subroutine avecho(id2,ndop,nfrit,f1,nsum,nclearave,nqual,rms,sigdb,   &
   fac=10.0/max(bluemax,redmax,10.0)
   blue0=fac*blue0
   red0=fac*red0
+
+  do i=1,nsmo
+    call smo121(red0,2000)
+    call smo121(blue0,2000)
+  enddo
 
 900 return
 end subroutine avecho

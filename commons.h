@@ -9,8 +9,7 @@ extern struct {
   int ntc;
   int necho;
   int nfrit;
-  int ndither;
-  int nsave;
+  int nsmo;
   int nsum;
   int nclearave;
   int nqual;

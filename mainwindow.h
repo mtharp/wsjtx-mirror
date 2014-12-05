@@ -61,6 +61,8 @@ private slots:
 
   void on_sbRIT_valueChanged(int arg1);
 
+  void on_sbSmooth_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 
@@ -94,6 +96,7 @@ private:
     qint32  m_state;
     qint32  m_astroFont;
     qint32  m_RIT;
+    qint32  m_smooth;
 
     bool    m_receiving;
     bool    m_transmitting;
