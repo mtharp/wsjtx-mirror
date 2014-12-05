@@ -337,9 +337,7 @@ ECHO                    INSTALLER BUILD ERROR
 ECHO -----------------------------------------------------------------
 ECHO.
 ECHO  There was a problem building the package, or the script
-ECHO  could not find:
-ECHO.
-ECHO  %BUILDD%\%OPTION%\%WSJTXPKG%
+ECHO  could not find the installer.
 ECHO.
 ECHO  Check the Cmake logs for any errors, or correct any build
 ECHO  script issues that were obverved and try to rebuild the package.
