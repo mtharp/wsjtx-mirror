@@ -57,6 +57,9 @@ private slots:
   void on_txEnableButton_clicked();
   void on_stopButton_clicked();
   void on_actionAstronomical_data_triggered();
+  void on_locator_editingFinished();
+
+  void on_sbRIT_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;
@@ -90,6 +93,7 @@ private:
     qint32  m_sec0;
     qint32  m_state;
     qint32  m_astroFont;
+    qint32  m_RIT;
 
     bool    m_receiving;
     bool    m_transmitting;

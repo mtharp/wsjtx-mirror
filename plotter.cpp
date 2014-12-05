@@ -87,7 +87,8 @@ void CPlotter::draw(float blue[], float red[])                                //
   QRect tmp(0,0,m_w,m_h2);
   painter2D.fillRect(tmp,Qt::black);
   QPoint LineBuf[MAX_SCREENSIZE];
-  QPen penBlue(Qt::blue,1);
+//  QPen penBlue(Qt::blue,1);
+  QPen penBlue(QColor(0,255,255),1);
   QPen penRed(Qt::red,1);
   j=0;
   int i0=1000 + int(m_StartFreq/m_fftBinWidth);

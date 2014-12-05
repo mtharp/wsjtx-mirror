@@ -417,7 +417,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="4" column="1" colspan="2">
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="locator">
           <property name="maximumSize">
            <size>
             <width>50</width>

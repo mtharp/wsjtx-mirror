@@ -178,6 +178,8 @@ void MainWindow::writeSettings()
   settings.setValue("Handshake",m_handshake);
   settings.setValue("HandshakeIndex",m_handshakeIndex);
   settings.setValue("Dither",ui->sbDither->value());
+  settings.setValue("MyGrid",m_myGrid);
+  settings.setValue("RIT",m_RIT);
   settings.endGroup();
 }
 
@@ -227,6 +229,10 @@ void MainWindow::readSettings()
   m_handshakeIndex=settings.value("HandshakeIndex",0).toInt();
   ui->bandComboBox->setCurrentIndex(m_band);
   ui->sbDither->setValue(settings.value("Dither",1500).toInt());
+  m_myGrid=settings.value("MyGrid","FN20qi").toString();
+  ui->locator->setText(m_myGrid);
+  m_RIT=settings.value("RIT",0).toInt();
+  ui->sbRIT->setValue(m_RIT);
   settings.endGroup();
 }
 
@@ -583,4 +589,14 @@ void MainWindow::on_actionAstronomical_data_triggered()
     g_pAstro->setGeometry(m_astroGeom);
   }
   g_pAstro->show();
+}
+
+void MainWindow::on_locator_editingFinished()
+{
+  m_myGrid=ui->locator->text();
+}
+
+void MainWindow::on_sbRIT_valueChanged(int arg1)
+{
+  m_RIT=arg1;
 }
