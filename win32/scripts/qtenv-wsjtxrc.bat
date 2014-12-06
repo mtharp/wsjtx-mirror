@@ -231,14 +231,12 @@ ECHO.
 ECHO BUILD SUMMARY
 ECHO   Build Tree Location .. %BUILDD%\%OPTION%
 ECHO   Install Location ..... %INSTALLD%\%OPTION%\bin\wsjtx.exe
-ECHO.
-PAUSE
 GOTO ASK_FINISH_RUN
 
 :: ASK USER IF THEY WANT TO RUN THE APP
 :ASK_FINISH_RUN
 ECHO.
-ECHO  Would You Like To Run %APP_NAME% Now? ^( y/n ^)
+ECHO   Would You Like To Run %APP_NAME% Now? ^( y/n ^)
 ECHO.
 SET ANSWER=
 SET /P ANSWER=Type Response: %=%

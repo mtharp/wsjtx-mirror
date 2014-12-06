@@ -179,7 +179,6 @@ GOTO ASK_SVN
 ECHO.
 ECHO UPDATING ^( %APP_SRC% ^ )
 cd %APP_SRC%
-start /wait svn cleanup
 start /wait svn update
 GOTO START_BUILD
 
