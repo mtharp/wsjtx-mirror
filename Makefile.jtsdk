@@ -7,32 +7,33 @@
 NAME = WSPR
 VER = 4.0
 OS = Win32
+SDK = C:/JTSDK-PY
 
 # Tool & Chain
-AR = C:/JTSDK-PY/mingw32/bin/ar.exe
-CC = C:/JTSDK-PY/mingw32/bin/gcc.exe
-FC = C:/JTSDK-PY/mingw32/bin/gfortran.exe
-RANLIB = C:/JTSDK-PY/mingw32/bin/ranlib.exe
+AR = $(SDK)/mingw32/bin/ar.exe
+CC = $(SDK)/mingw32/bin/gcc.exe
+FC = $(SDK)/mingw32/bin/gfortran.exe
+RANLIB = $(SDK)/mingw32/bin/ranlib.exe
 
 # Fortran libs
-FLIBS = C:/JTSDK-PY/mingw32/bin/libgfortran-3.dll C:/JTSDK-PY/mingw32/bin/libquadmath-0.dll
+FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll
 
 # Misc Tools & Files
-CP = C:/JTSDK-PY/tools/cp.exe
-MV = C:/JTSDK-PY/tools/mv.exe
-RM = C:/JTSDK-PY/tools/rm.exe
-ISCC = C:/JTSDK-PY/inno5/ISCC.exe
-ISS = C:/JTSDK-PY/src/wspr/wspr4a.iss
-MSVCR = C:/JTSDK-PY/Python33/DLLs/msvcr100.dll
+CP = $(SDK)/tools/cp.exe
+MV = $(SDK)/tools/mv.exe
+RM = $(SDK)/tools/rm.exe
+ISCC = $(SDK)/inno5/ISCC.exe
+ISS = $(SDK)/src/wspr/wspr4a.iss
+MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
 
 # Output Paths
-INSTALLDIR = C:/JTSDK-PY/src/wspr/install
-PACKAGEDIR = C:/JTSDK-PY/src/wspr/package
+INSTALLDIR = $(SDK)/wspr/install
+PACKAGEDIR = $(SDK)/wspr/package
 
 # Python Paths
-PYTHON = C:/JTSDK-PY/Python33/python.exe
-F2PY = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/f2py.py
-CXFR = $(PYTHON) C:/JTSDK-PY/Python33/Scripts/cxfreeze.py
+PYTHON = $(SDK)/Python33/python.exe
+F2PY = $(PYTHON) $(SDK)/Python33/Scripts/f2py.py
+CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze.py
 
 # Compiler Flags
 FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion \
@@ -159,7 +160,7 @@ install:
 # /cc = Compiler command
 # $(ISS) = .iss file name
 # The other vars are from the top of the Makefile.
-# Output: C:\JTSDK-PY\src\wspr\package\WSPR-4.0-Win32.exe
+# Output: C:\JTSDK-PY\wspr\package\WSPR-4.0-Win32.exe
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:

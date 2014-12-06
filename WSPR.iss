@@ -1,3 +1,4 @@
+; This is an old ISS file, not sure it's being used. GB
 [Setup]
 AppName=WSPR
 AppVerName=WSPR Version 4.0 r2873
