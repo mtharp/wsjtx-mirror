@@ -274,7 +274,7 @@ GOTO EOF
 :RUN_APP
 ECHO.
 ECHO Starting: ^( %APP_NAME% ^)
-CD %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+CD /D %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER%
 START %APP_NAME%.bat & GOTO EOF
 
 REM ----------------------------------------------------------------------------
@@ -446,11 +446,11 @@ REM -- Final folder creation error message
 :COPY_ERROR
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO  Error Creating ^( %APP_NAME%-r%VER% ^)
+ECHO  Error Creating ^( %APP_NAME%-r%SVN_VER% ^)
 ECHO -----------------------------------------------------------------
 ECHO. 
 ECHO  An error occured when trying to copy the build to it's final
-ECHO  location: C:\JTSDK-PY\%APP_NAME%\%APP_NAME%-r%VER%
+ECHO  location: C:\JTSDK-PY\%APP_NAME%\%APP_NAME%-r%SVN_VER%
 ECHO.
 ECHO  If the probblems continues, please contact the wsjt-dev group.
 ECHO.
