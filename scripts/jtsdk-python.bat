@@ -4,11 +4,12 @@ REM -- Part of the JTSDK Project
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 COLOR 0A
-REM -- TEST DOUBLE CLICK
+
+:: TEST DOUBLE CLICK
 FOR %%x IN (%cmdcmdline%) DO IF /I "%%~x"=="/c" SET GUI=1
 IF DEFINED GUI CALL GOTO DCLICK
 
-REM -- PATH VARS
+:: PATH VARS
 SET LANG=en_US
 SET BASED=%~dp0
 IF %BASED:~-1%==\ SET BASED=%BASED:~0,-1%
@@ -22,7 +23,7 @@ SET LIBRARY_PATH=""
 SET PYTHONPATH=%BASED%\Python33;%BASED%\Python33\Scripts;%BASED%\Python33\DLLs;%BASED%\Python33\Tools\Scripts
 SET PATH=%BASED%;%MINGW%;%PYTHONPATH%;%SRCD%;%SVND%;%TOOLS%;%INNOD%;%SCRIPTS%;%WINDIR%;%WINDIR%\System32
 
-REM -- VARS USED IN PROCESS
+:: VARS USED IN PROCESS
 SET JJ=%NUMBER_OF_PROCESSORS%
 SET python=%BASED%\Python33\python.exe
 SET CP=%TOOLS%\cp.exe
@@ -30,25 +31,25 @@ SET MV=%TOOLS%\mv.exe
 IF NOT EXIST %BASED%\src\NUL mkdir %BASED%\src
 GOTO SELECT
 
-REM -- SET WSJT or WSPR
+:: SET WSJT or WSPR
 :SELECT
 IF /I [%1]==[wsjt] (
 SET APP_NAME=wsjt
 SET APP_SRC=%SRCD%\trunk
-SET INSTALLDIR=%SRCD%\trunk\install
-SET PACKAGEDIR=%SRCD%\trunk\package
+SET INSTALLDIR=%BASED%\wsjt\install
+SET PACKAGEDIR=%BASED%\wsjt\package
 GOTO WSJT_OPT2
 ) ELSE IF /I [%1]==[wspr] (
 SET APP_NAME=wspr
 SET APP_SRC=%SRCD%\wspr
-SET INSTALLDIR=%SRCD%\wspr\install
-SET PACKAGEDIR=%SRCD%\wspr\package
+SET INSTALLDIR=%BASED%\wspr\install
+SET PACKAGEDIR=%BASED%\wspr\package
 GOTO WSPR_OPT2
 ) ELSE IF /I [%1]==[help] (
 GOTO BUILD_HELP
 ) ELSE ( GOTO UNSUPPORTED_APP )
 
-REM -- WSJT USER INPUT FIELD $2 == %2 ^( %TARGET% ^)
+:: WSJT USER INPUT FIELD $2 == %2 ^( %TARGET% ^)
 :WSJT_OPT2
 IF /I [%2]==[] (
 SET TARGET=install
@@ -73,7 +74,7 @@ SET TARGET=WsjtMod/Audio.pyd
 GOTO START
 ) ELSE ( GOTO UNSUPPORTED_TARGET )
 
-REM -- WSPR USER INPUT FIELD $2 == %2 ^( %TARGET% ^)
+:: WSPR USER INPUT FIELD $2 == %2 ^( %TARGET% ^)
 :WSPR_OPT2
 IF /I [%2]==[] (
 SET TARGET=install
@@ -117,21 +118,21 @@ GOTO START
 ) ELSE ( GOTO UNSUPPORTED_TARGET )
 
 :START
-REM -- START MAIN BUILD
+:: START MAIN BUILD
 CD %BASED%
 CLS
 ECHO -----------------------------------------------------------------
-ECHO  Starting Build for ^( %APP_NAME% %TARGET% Target ^)
+ECHO  Starting Build for ^( %APP_NAME% %TARGET% ^)
 ECHO -----------------------------------------------------------------
 ECHO.
 
-REM -- IF SRCD EXISTS, CHECK FOR PREVIOUS CO
+:: IF SRCD EXISTS, CHECK FOR PREVIOUS CO
 IF NOT EXIST %APP_SRC%\.svn\NUL (
 mkdir %BASED%\src
 GOTO COMSG
 ) ELSE (GOTO ASK_SVN)
 
-REM -- START WSPR BUILD
+:: START WSPR BUILD
 :ASK_SVN
 ECHO Update from SVN Before Building? ^( y/n ^)
 SET ANSWER=
@@ -146,42 +147,29 @@ ECHO Please Answer With: ^( Y or N ^)
 GOTO ASK_SVN
 )
 
-REM -- UPDATE WSJT FROM SVN
+:: UPDATE WSJT FROM SVN
 :SVN_UPDATE
 ECHO.
 ECHO UPDATING ^( %APP_SRC% ^ )
 cd %APP_SRC%
-start /wait svn cleanup
 start /wait svn update
 GOTO START_BUILD
 
-REM -- START MAIN BUILD PROCESS
+:: START MAIN BUILD PROCESS
 :START_BUILD
 ECHO.
-IF NOT EXIST %BASED%\%APP_NAME% mkdir %BASED%\%APP_NAME%
+IF NOT EXIST %BASED%\%APP_NAME%\NUL ( mkdir %BASED%\%APP_NAME% )
 CD /D %APP_SRC%
-ECHO BUILDING: ^( %APP_NAME% %TARGET% ^)
-IF /I [%1]==[wsjt] (
-IF EXIST "libjt.a" (
-ECHO.
-ECHO .. Performing make distclean first
-ECHO.
-mingw32-make -f Makefile.jtsdk distclean
-))
-IF /I [%1]==[wspr] (
-IF EXIST "libwspr.a" (
-ECHO.
-ECHO .. Performing make distclean first
-ECHO.
-mingw32-make -f Makefile.jtsdk distclean
-))
-ECHO.
-ECHO .. Running mingw32-make to Build The Install Target
+ECHO ..Performing make clean first
+mingw32-make -f Makefile.jtsdk clean >nul 2>&1
+ECHO ..Running mingw32-make To Build ^( %TARGET% ^) Target
 ECHO.
 mingw32-make -f Makefile.jtsdk
 ECHO.
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
-ECHO Makefile Exit Status: ^( %ERRORLEVEL% ^) is OK
+ECHO -----------------------------------------------------------------
+ECHO   MAKEFILE EXIT STATUS: ^( %ERRORLEVEL% ^) is OK
+ECHO -----------------------------------------------------------------
 ECHO.
 IF /I [%TARGET%]==[install] (
 GOTO REV_NUM
@@ -189,49 +177,32 @@ GOTO REV_NUM
 GOTO MAKE_PACKAGE
 ) ELSE ( GOTO SINGLE_FINISHED )
 
-REM -- BEGIN WSJT MAIN BUILD
+:: BEGIN MAIN BUILD
 :MAKE_PACKAGE
 CD /D %APP_SRC%
 ECHO.
-ECHO BUILDING: ^( %APP_NAME% Win32 Installer ^)
-ECHO.
-ECHO .. Running mingw32-make To Build The Win32 Installer
-ECHO.
-mingw32-make -f Makefile.jtsdk package
-ECHO.
+ECHO ..Running InnoSetup for: ^( %APP_NAME% ^)
+mingw32-make -s -f Makefile.jtsdk package
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
-ECHO Makefile Exit Status: ^( %ERRORLEVEL% ^) is OK
-ECHO.
 GOTO REV_NUM
 
-REM -- GET SVN r NUMBER
-REM -- STILL in %APP_SRC%
+:: GET SVN r NUMBER, STILL in %APP_SRC%
 :REV_NUM
-ECHO .. Getting SVN version number
-svn -qv status %APP_NAME%.py |awk "{print $2}" > r.txt
-SET /P VER=<r.txt & rm r.txt
-
-REM -- Package just needs the SVN Number for the folder name.
+ECHO ..Getting SVN Revision Information
+svn info %APP_SRC% |grep Revision |awk "{print $2}" >r.txt
+SET /P SVN_VER=<r.txt & rm r.txt
+:: CREATE THE SVN VERSION COPY FOR HISTORICAL REFERENCE
 IF /I [%TARGET%]==[package] ( GOTO PKG_FINISH )
-ECHO .. Copying build files to final location
-IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% ( 
+ECHO ..Copying files to install directory
+IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% ( 
 rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER% )
-ECHO.
-XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER% /I /E /Y /q
-ECHO.
-ECHO BUILD FOLDER LOCATIONS
-ECHO   Source: %INSTALLDIR%
-ECHO   Destination: %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
-ECHO.
+XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% /I /E /Y /q >/nul
 IF ERRORLEVEL 0 ( GOTO MAKEBAT ) ELSE ( GOTO COPY_ERROR )
 
-REM -- GENERATE RUNTIME BATCH FILE
+:: GENERATE RUNTIME BATCH FILE
 :MAKEBAT
-SET FILENAME=%APP_NAME%.bat
-ECHO.
-ECHO GENERATING: ^( %APP_NAME%.bat ^)
-ECHO.
-CD /D %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+CD /D %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER%
+ECHO ..Generating Batch File
 IF EXIST %APP_NAME%.bat (DEL /Q %APP_NAME%.bat)
 >%APP_NAME%.bat (
 ECHO @ECHO OFF
@@ -241,9 +212,76 @@ ECHO COLOR 0A
 ECHO bin\%APP_NAME%.exe
 ECHO EXIT /B 0
 )
+ECHO.
+GOTO FINISHED
+
+REM -- SINGLE TARGET BUILD MESSAGE
+:SINGLE_FINISHED
+ECHO.
+ECHO .. Finished building ^( %APP_NAME% %TARGET% ^)
+ECHO.
+GOTO EOF
+
+REM -- FINISHED INSTALL OR PACKAGE TARGET BUILDS
+:PKG_FINISH
+ECHO ..Copying files to install direcotry
+IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% ( 
+rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% )
+XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% /I /E /Y /q >nul
+IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
+ECHO ..Finisned InnoSetup
+ECHO ..Exit Status: ^( %ERRORLEVEL% ^) is OK
+GOTO FINISHED
+
+:: FINISHED INSTALL OR PACKAGE TARGET BUILDS
+:FINISHED
+CD /D %BASED%
+ECHO.
+ECHO -----------------------------------------------------------------
+ECHO   ^( %APP_NAME%-r%VER% ^) BUILD COMPLETE
+ECHO -----------------------------------------------------------------
+ECHO.
+ECHO  Source Dir ....: %APP_SRC%
+ECHO  Install Dir ...: %INSTALLDIR%
+ECHO  Revision Dir ..: %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER%
+:: IF INSTALL, PRINT BATCH FILE PAT
+IF /I [%TARGET%]==[install] ( 
+ECHO  Batch File ....: %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER%\%APP_NAME%.bat
+)
+:: IF PACKAGE, PRINT PACKAGE LOCATION
+IF /I [%TARGET%]==[package] (
+ECHO  Package Dir ...: %PACKAGEDIR%
+)
 GOTO ASKRUN
 
-REM - TOOL CHAIN ERROR MESSAGE
+:: ASK TO RUN THE LAST BUILD
+:ASKRUN
+ECHO.
+ECHO  Would You Like To Run %APP_NAME% Now? ^( y/n ^)
+ECHO.
+SET ANSWER=
+SET /P ANSWER=Type Response: %=%
+ECHO.
+If /I "%ANSWER%"=="Y" GOTO RUN_APP
+If /I "%ANSWER%"=="N" (
+GOTO EOF
+) ELSE (
+ECHO.
+ECHO  Please Answer With: ^( y or n ^) & ECHO. & GOTO ASKRUN
+)
+GOTO EOF
+
+:RUN_APP
+ECHO.
+ECHO Starting: ^( %APP_NAME% ^)
+CD %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+START %APP_NAME%.bat & GOTO EOF
+
+REM ----------------------------------------------------------------------------
+REM  MESSAGE SECTION
+REM ----------------------------------------------------------------------------
+
+:: TOOL CHAIN ERROR MESSAGE
 :UNSUPPORTED
 COLOR 1E
 CLS
@@ -262,65 +300,7 @@ ECHO.
 PAUSE
 GOTO EOF
 
-:ASKRUN
-ECHO Would You Like To Run %APP_NAME% Now? ^( y/n ^)
-ECHO.
-SET ANSWER=
-SET /P ANSWER=Type Response: %=%
-ECHO.
-If /I "%ANSWER%"=="Y" GOTO RUN_APP
-If /I "%ANSWER%"=="N" (
-GOTO FINISHED
-) ELSE (
-ECHO.
-ECHO Please Answer With: ^( y or n ^) & ECHO. & GOTO ASKRUN
-)
-GOTO EOF
-
-:RUN_APP
-ECHO.
-ECHO Starting: ^( %APP_NAME% ^)
-CD %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
-START %APP_NAME%.bat & GOTO FINISHED
-
-REM -- SINGLE TARGET BUILD MESSAGE
-:SINGLE_FINISHED
-ECHO.
-ECHO .. Finished building ^( %APP_NAME% %TARGET% ^)
-ECHO.
-GOTO EOF
-
-REM -- FINISHED INSTALL OR PACKAGE TARGET BUILDS
-:PKG_FINISH
-ECHO .. Copying build files to final location
-IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% ( 
-rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER% )
-ECHO.
-XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER% /I /E /Y /q
-XCOPY %PACKAGEDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER% /I /E /Y /q
-ECHO.
-IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
-ECHO .. InnoSetup Exit Status: ^( %ERRORLEVEL% ^) is OK
-ECHO .. Performing Dist-Clean After Build
-ECHO.
-mingw32-make -f Makefile.jtsdk distclean
-ECHO.
-GOTO FINISHED
-
-REM -- FINISHED INSTALL OR PACKAGE TARGET BUILDS
-:FINISHED
-ECHO.
-ECHO -----------------------------------------------------------------
-ECHO  %APP_NAME%-r%VER% Build Complete
-ECHO -----------------------------------------------------------------
-ECHO.
-ECHO Source Dir ... %APP_SRC%
-ECHO Package Dir .. %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
-CD /D %BASED%
-ECHO.
-GOTO EOF
-
-REM - HELP MENU FOR BUILD OPTIONS
+:: HELP MENU FOR BUILD OPTIONS
 :BUILD_HELP
 CLS
 ECHO.                               
@@ -459,13 +439,6 @@ ECHO.
 ECHO  mingw32-make exited with a non-(0) build status. Check and or 
 ECHO  correct the error, perform a clean, then re-make the target.
 ECHO.
-ECHO  Possible Solution:
-ECHO  cd %APP_ARC%
-ECHO  make -f Makefile.jtsdk distclean
-ECHO.
-ECHO  Then rebuild your target.
-ECHO.
-COLOR 0A
 ENDLOCAL
 EXIT /B %ERRORLEVEL%
 
@@ -485,7 +458,12 @@ COLOR 0A
 ENDLOCAL
 EXIT /B %ERRORLEVEL%
 
+REM ----------------------------------------------------------------------------
+REM  END OF JTSDK-PYTHON.BAT
+REM ----------------------------------------------------------------------------
+
 :EOF
 COLOR 0A
 ENDLOCAL
+
 EXIT /B 0
