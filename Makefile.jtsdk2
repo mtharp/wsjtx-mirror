@@ -144,4 +144,4 @@ clean:
 	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
 
 distclean: clean
-	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDK/	
+	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR)
