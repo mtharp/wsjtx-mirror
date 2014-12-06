@@ -195,7 +195,7 @@ SET /P SVN_VER=<r.txt & rm r.txt
 IF /I [%TARGET%]==[package] ( GOTO PKG_FINISH )
 ECHO ..Copying files to install directory
 IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% ( 
-rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER% )
+rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% >nul 2>&1 )
 XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%SVN_VER% /I /E /Y /q >/nul
 IF ERRORLEVEL 0 ( GOTO MAKEBAT ) ELSE ( GOTO COPY_ERROR )
 
@@ -238,7 +238,7 @@ GOTO FINISHED
 CD /D %BASED%
 ECHO.
 ECHO -----------------------------------------------------------------
-ECHO   ^( %APP_NAME%-r%VER% ^) BUILD COMPLETE
+ECHO   ^( %APP_NAME%-r%SVN_VER% ^) BUILD COMPLETE
 ECHO -----------------------------------------------------------------
 ECHO.
 ECHO  Source Dir ....: %APP_SRC%
