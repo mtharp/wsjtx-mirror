@@ -188,7 +188,6 @@ GOTO START_BUILD
 ECHO.
 IF NOT EXIST %BASED%\%APP_NAME%\NUL ( mkdir %BASED%\%APP_NAME% )
 CD /D %APP_SRC%
-ECHO ..Building: ^( %APP_NAME% %TARGET% ^)
 ECHO ..Performing make clean first
 mingw32-make -f Makefile.jtsdk2 clean >nul 2>&1
 ECHO ..Running mingw32-make To Build ^( %TARGET% ^) Target
@@ -210,9 +209,7 @@ GOTO MAKE_PACKAGE
 :MAKE_PACKAGE
 CD /D %APP_SRC%
 ECHO.
-ECHO Running InnoSetup for: ^( %APP_NAME% ^)
-ECHO.
-ECHO ..Start building the package
+ECHO..Running InnoSetup for: ^( %APP_NAME% ^)
 mingw32-make -s -f Makefile.jtsdk2 package
 IF ERRORLEVEL 1 ( GOTO BUILD_ERROR )
 GOTO REV_NUM
@@ -225,7 +222,7 @@ SET /P VER=<r.txt & rm r.txt
 
 :: PACKAGE JUST NEEDS THE SVN NUMBER FOR FOLDER NAME
 IF /I [%TARGET%]==[package] ( GOTO PKG_FINISH )
-ECHO ..Copying build files
+ECHO ..Copying files to install directory
 IF EXIST %BASED%\%APP_NAME%\%APP_NAME%-r%VER% ( 
 rm -r %BASED%\%APP_NAME%\%APP_NAME%-r%VER% )
 XCOPY %INSTALLDIR% %BASED%\%APP_NAME%\%APP_NAME%-r%VER% /I /E /Y /q >/nul
@@ -244,35 +241,7 @@ ECHO COLOR 0A
 ECHO bin\%APP_NAME%.exe
 ECHO EXIT /B 0
 )
-GOTO ASKRUN
-
-:: ASK USER IF THEY WANT TO RUN THE APP
-:ASKRUN
-ECHO.
-ECHO -----------------------------------------------------------------
-ECHO   RUN ^( %APP_NAME% ^)
-ECHO -----------------------------------------------------------------
-ECHO.
-ECHO ..Would You Like To Run %APP_NAME% Now? ^( y/n ^)
-ECHO.
-SET ANSWER=
-SET /P ANSWER=Type Response: %=%
-ECHO.
-If /I "%ANSWER%"=="Y" GOTO RUN_APP
-If /I "%ANSWER%"=="N" (
 GOTO FINISHED
-) ELSE (
-ECHO.
-ECHO ..Please Answer With: ^( y or n ^) & ECHO. & GOTO ASKRUN
-)
-GOTO EOF
-
-:: RUN THE APP IFF USER ANSWERED YES ABOVE
-:RUN_APP
-ECHO.
-ECHO ..Starting: ^( %APP_NAME% ^)
-CD %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
-START %APP_NAME%.bat & GOTO FINISHED
 
 :: SINGLE TARGET BUILD MESSAGE
 :SINGLE_FINISHED
@@ -312,7 +281,36 @@ ECHO  Package ......: %BASED%\%APP_NAME%\package\WSJT-10.0-Win32.exe
 )
 CD /D %BASED%
 ECHO.
+GOTO ASKRUN
+
+:: ASK USER IF THEY WANT TO RUN THE APP
+:ASKRUN
+ECHO.
+ECHO  Would You Like To Run %APP_NAME% Now? ^( y/n ^)
+ECHO.
+SET ANSWER=
+SET /P ANSWER=Type Response: %=%
+ECHO.
+If /I "%ANSWER%"=="Y" GOTO RUN_APP
+If /I "%ANSWER%"=="N" (
 GOTO EOF
+) ELSE (
+ECHO.
+ECHO ..Please Answer With: ^( y or n ^) & ECHO. & GOTO ASKRUN
+)
+GOTO EOF
+
+:: RUN THE APP IFF USER ANSWERED YES ABOVE
+:RUN_APP
+ECHO.
+ECHO ..Starting: ^( %APP_NAME% ^)
+CD %BASED%\%APP_NAME%\%APP_NAME%-r%VER%
+START %APP_NAME%.bat & GOTO EOF
+
+
+REM ----------------------------------------------------------------------------
+REM  MESSAGE SECTION
+REM ----------------------------------------------------------------------------
 
 :: TOOL CHAIN ERROR MESSAGE
 :UNSUPPORTED
@@ -495,7 +493,9 @@ COLOR 0A
 ENDLOCAL
 EXIT /B %ERRORLEVEL%
 
-:: END OF PYENV-BUILD.BAT
+REM ----------------------------------------------------------------------------
+REM  END OF PYENV-BUILD>BAT
+REM ----------------------------------------------------------------------------
 :EOF
 CD /D %BASED%
 ENDLOCAL
