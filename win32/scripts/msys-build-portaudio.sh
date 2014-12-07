@@ -29,7 +29,7 @@ set -e
 
 # General use Vars and colour
 today=$(date +"%d-%m-%Y")
-URL1='http:https://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/portaudio/pa_stable_v19_20140130.tgz'
+URL1='https://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/portaudio/pa_stable_v19_20140130.tgz'
 URL2='https://sourceforge.net/projects/jtsdk/files/win32/2.0.0/src/directx/dx9mgw.tar.gz'
 
 # Manually set mumber of pcrocessors
