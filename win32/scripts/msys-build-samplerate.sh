@@ -28,10 +28,12 @@
 set -e
 today=$(date +"%d-%m-%Y")
 
-# General use Vars and colour
-export PATH="/c/JTSDK/qt5/Tools/mingw48_32/bin:$PATH"
+# MSYS Package Variables
 TC='C:/JTSDK/qt5/Tools/mingw48_32/bin'
-SRC=/c/JTSDK/src/win32
+export PATH="/c/JTSDK/qt5/Tools/mingw48_32/bin:$PATH"
+
+# Create Build Directories
+mkdir -p $HOME/src/win32
 
 # Foreground colours
 C_R='\033[01;31m'		# red
@@ -41,6 +43,7 @@ C_C='\033[01;36m'		# cyan
 C_NC='\033[01;37m'		# no color
 
 # Package Information
+# Note: PREFIX is set for JTSDK v2
 PREFIX="C:/JTSDK/samplerate" 
 BUILDER='Greg Beam, KI7MT <ki7mt@yahoo.com>'
 PKG_NAME=libsamplerate-0.1.8
@@ -48,7 +51,8 @@ PKG_VER='0.1.8'
 PKG_ARCHIVE='libsamplerate-0.1.8.tar.gz'
 PKG_WEBSITE='http://www.mega-nerd.com/SRC/index.html'
 PKG_DOWNLOAD='http://www.mega-nerd.com/SRC/download.html'
-TOOL_CHAIN='Mingw32 GNU 4.8.1'
+TOOL_CHAIN='QT5 Tool-Chain mingw48_32 GNU 4.8.0'
+PKG_DOWNLOAD='http://www.mega-nerd.com/SRC/libsamplerate-0.1.8.tar.gz'
 
 # Function -----------------------------------------------------------
 tool_check() {
@@ -88,7 +92,6 @@ echo -e ' Libtool ver ... '${C_G}"$(libtool --version |awk 'FNR==1')"${C_NC}
 echo -e ' Pkg-Config  ... '${C_G}"$(pkg-config --version)"${C_NC}
 
 }
-# End Function -------------------------------------------------------
 
 # Run Tool Check
 clsb
@@ -108,21 +111,26 @@ else
 	exit 1
 fi
 
-# Unpack archive
+# Download Samplerate Source
+echo ''
+echo '---------------------------------------------------------------'
+echo -e ${C_Y} " DOWNLOADING PACKAGES "${C_NC}
+echo '---------------------------------------------------------------'
+echo ''
+cd $HOME/src
+echo "..DOWNLOADING SAMPLERATE"
+rm -rf ./$PKG_ARCHIVE
+curl -sS -L $PKG_DOWNLOAD > $PKG_ARCHIVE
+echo '..Finished'
+
+# Unpack Samplerate
 echo ''
 echo '---------------------------------------------------------------'
 echo -e ${C_Y} " UNPACKING [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
-cd $HOME
-mkdir -p ~/src/win32 && cd ~/src
-if [ -d ~/src/win32/$PKG_NAME ] ; then rm -rf ~/src/win32/$PKG_NAME ; fi
-
-# Unpack archive
-echo " Unpacking $PKG_NAME"
-tar -xf $SRC/$PKG_ARCHIVE -C ~/src/win32/
-echo ' Finished'
-echo ''
+tar -xf $PKG_ARCHIVE -C ~/src/win32/
+echo '  Finished Unpacking'
 
 # Run configure
 echo ''
@@ -134,12 +142,12 @@ echo ' This can take a several minutes to complete'
 echo -en " Build Type: " && echo -e ${C_G}'Static'${C_NC}
 echo ''
 
-# Package Variables
+# CD To Source Directory
 cd ~/src/win32/$PKG_NAME
 
-# Single Precision
-./configure --prefix=$PREFIX --enable-static --disable-shared \
---disable-fftw --disable-sndfile
+# Configure
+./configure --prefix="$PREFIX" --build=i686-pc-mingw32 --host=i686-pc-mingw32 \
+--enable-static --disable-shared --disable-fftw --disable-sndfile
 
 # Run make
 echo ''
@@ -147,7 +155,7 @@ echo '---------------------------------------------------------------'
 echo -e ${C_Y} " RUNNING MAKE ALL FOR [ $PKG_NAME ]"${C_NC}
 echo '---------------------------------------------------------------'
 echo ''
-make
+make -s
 
 # Run make install
 echo ''
@@ -158,23 +166,15 @@ echo ''
 make install
 
 # Generate Readme if build finishes .. OK ..
-if [ $? = "0" ];
-then
-	if [ -f $PREFIX/README.$PKG_NAME ]; then rm -f $PREFIX/README.$PKG_NAME ; fi
-
-	echo ''
-	echo '---------------------------------------------------------------'
-	echo -e ${C_Y} " ADDING README DOC [ README.$PKG_NAME ] "${C_NC}
-	echo '---------------------------------------------------------------'
-	echo ''
-	echo '  Adding Readme'
-
-# Generate Readme file
-# Ensure this matches the top of the page
+rm -f $PREFIX/README.$PKG_NAME
+echo ''
+echo '---------------------------------------------------------------'
+echo -e ${C_Y} " ADDING README DOC [ README.$PKG_NAME ] "${C_NC}
+echo '---------------------------------------------------------------'
+echo ''
+echo '  Adding Readme'
 (
 cat <<'EOF_README'
-
-# Package Information
 
 # Package Information
 PREFIX="C:/JTSDK/samplerate" 
@@ -183,43 +183,31 @@ PKG_NAME=libsamplerate-0.1.8
 PKG_VER='0.1.8'
 PKG_ARCHIVE='libsamplerate-0.1.8.tar.gz'
 PKG_WEBSITE='http://www.mega-nerd.com/SRC/index.html'
-PKG_DOWNLOAD='http://www.mega-nerd.com/SRC/download.html'
-TOOL_CHAIN='Mingw32 GNU 4.8.1'
+PKG_DOWNLOAD='http://www.mega-nerd.com/SRC/libsamplerate-0.1.8.tar.gz'
+TOOL_CHAIN='QT5 Tool-Chain mingw48_32 GNU 4.8.0'
 
-# Configure Options <single-percision>:
-
+# Configure Options
 ./configure --prefix=$PREFIX --enable-static --disable-shared \
 --disable-fftw --disable-sndfile
 
 # Build Commands
-
 make
 make install
 
 EOF_README
 ) > $PREFIX/$PKG_NAME.build.info
 
-	echo '  Finished'
-
-fi
+echo '  Finished'
 
 # Finished
-if [ "$?" = "0" ];
-then
-	echo ''
-	echo '----------------------------------------------------------------'
-	echo -e ${C_G} "  FINISHED INSTALLING [ $PKG_NAME ]"${C_NC}
-	echo '----------------------------------------------------------------'
-	echo ''
-	touch C:/JTSDK/samplerate/build-date-$today
-	echo "Install Location: $PREFIX"
-	echo ''
-	exit 0
-else
-	echo -e ${C_G} 'BUILD ERRORS OCCURED'${C_NC}
-	echo "Check the screen and correct errors"
-	echo ''
-	echo "Exiting [ $0 ] with Status [ 1 ]"
-	echo ''
-	exit 1
-fi
+echo ''
+echo '----------------------------------------------------------------'
+echo -e ${C_G} "  FINISHED INSTALLING [ $PKG_NAME ]"${C_NC}
+echo '----------------------------------------------------------------'
+echo ''
+touch $PREFIX/build-date-$today
+echo "Install Location: $PREFIX"
+echo ''
+cd $HOME
+
+exit 0
