@@ -2,7 +2,7 @@ QT       += core gui network widgets
 CONFIG   += thread
 #CONFIG   += console
 
-TARGET = echox
+TARGET = emecho
 VERSION = 0.8
 TEMPLATE = app
 DESTDIR = ../echo_install

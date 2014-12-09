@@ -21,7 +21,7 @@ WideGraph* g_pWideGraph = NULL;
 
 QString ver="0.5";
 QString rev="$Rev$";
-QString Program_Title_Version="  ECHO   v" + ver + "  r" + rev.mid(6,4) +
+QString Program_Title_Version="  EMEcho   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";
 QString Version=ver + "_r" + rev.mid(6,4);
 
@@ -78,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_transmitting=false;
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
+  m_saveDir = m_appDir + "/save";
   m_txFreq=1500;
   m_sec0=-1;
   m_inGain=0;
@@ -133,7 +134,7 @@ MainWindow::~MainWindow()
 //-------------------------------------------------------- writeSettings()
 void MainWindow::writeSettings()
 {
-  QString inifile = m_appDir + "/echox.ini";
+  QString inifile = m_appDir + "/emecho.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("MainWindow");
@@ -155,6 +156,7 @@ void MainWindow::writeSettings()
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("PTTmethod",m_pttMethodIndex);
   settings.setValue("PTTport",m_pttPort);
+  settings.setValue("SaveDir",m_saveDir);
   settings.setValue("AstroFont",m_astroFont);
   settings.setValue("SoundInIndex",m_nDevIn);
   settings.setValue("paInDevice",m_paInDevice);
@@ -183,13 +185,14 @@ void MainWindow::writeSettings()
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("RIT",m_RIT);
   settings.setValue("Costas27",m_Costas);
+  settings.setValue("Save",m_bSave);
   settings.endGroup();
 }
 
 //---------------------------------------------------------- readSettings()
 void MainWindow::readSettings()
 {
-  QString inifile = m_appDir + "/echox.ini";
+  QString inifile = m_appDir + "/emecho.ini";
   QSettings settings(inifile, QSettings::IniFormat);
   settings.beginGroup("MainWindow");
   restoreGeometry(settings.value("geometry").toByteArray());
@@ -203,6 +206,7 @@ void MainWindow::readSettings()
   m_myGrid=settings.value("MyGrid","").toString();
   m_pttMethodIndex=settings.value("PTTmethod",1).toInt();
   m_pttPort=settings.value("PTTport",0).toInt();
+  m_saveDir=settings.value("SaveDir",m_appDir + "/save").toString();
   m_astroFont=settings.value("AstroFont",20).toInt();
   m_nDevIn = settings.value("SoundInIndex", 0).toInt();
   m_paInDevice = settings.value("paInDevice",0).toInt();
@@ -222,6 +226,8 @@ void MainWindow::readSettings()
   ui->rb27->setChecked(m_Costas);
   soundOutThread.setCostas(m_Costas);
   m_catEnabled=settings.value("catEnabled",false).toBool();
+  m_bSave=settings.value("Save",false).toBool();
+  ui->actionSave_data->setChecked(m_bSave);
   m_rig=settings.value("Rig",214).toInt();
   m_rigIndex=settings.value("RigIndex",100).toInt();
   m_catPort=settings.value("CATport","None").toString();
@@ -248,7 +254,6 @@ void MainWindow::dataSink()
 {
   lab1->setStyleSheet("");
   lab1->setText("");
-//  qDebug() << "echospec" << m_s6;
   *future1 = QtConcurrent::run(echospec);
   watcher1->setFuture(*future1);               // call specReady() when done
 }
@@ -277,6 +282,7 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
   DevSetup dlg(this);
   dlg.m_pttMethodIndex=m_pttMethodIndex;
   dlg.m_pttPort=m_pttPort;
+  dlg.m_saveDir=m_saveDir;
   dlg.m_nDevIn=m_nDevIn;
   dlg.m_nDevOut=m_nDevOut;
   dlg.m_grid6=m_grid6;
@@ -298,6 +304,7 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
   if(dlg.exec() == QDialog::Accepted) {
     m_pttMethodIndex=dlg.m_pttMethodIndex;
     m_pttPort=dlg.m_pttPort;
+    m_saveDir=dlg.m_saveDir;
     m_nDevIn=dlg.m_nDevIn;
     m_paInDevice=dlg.m_paInDevice;
     m_nDevOut=dlg.m_nDevOut;
@@ -402,7 +409,7 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 {
   if(g_pWideGraph==NULL) {
     g_pWideGraph = new WideGraph(0);
-    g_pWideGraph->setWindowTitle("ECHO Waterfall");
+    g_pWideGraph->setWindowTitle("EMEcho Waterfall");
     g_pWideGraph->setGeometry(m_wideGraphGeom);
     Qt::WindowFlags flags = Qt::WindowCloseButtonHint |
         Qt::WindowMinimizeButtonHint;
@@ -622,4 +629,50 @@ void MainWindow::on_rbCW_toggled(bool checked)
 void MainWindow::on_rb27_toggled(bool checked)
 {
   m_Costas=checked;
+}
+
+
+void MainWindow::on_actionSave_data_triggered(bool checked)
+{
+  m_bSave=checked;
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+  m_auto=false;
+  QString fname;
+  fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
+                                       "WSPR Files (*.wav *.c2)");
+  if(fname != "") {
+    m_path=fname;
+    int i;
+    i=fname.indexOf(".eco") - 11;
+    if(i>=0) {
+      lab1->setStyleSheet("QLabel{background-color: #66ff66}");
+      lab1->setText(" " + fname.mid(i,15) + " ");
+    }
+//    *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
+//    watcher1->setFuture(*future1);         // call diskDat() when done
+    qDebug() << m_path;
+  }
+}
+
+void MainWindow::on_actionDelete_eco_files_triggered()
+{
+  int i;
+  QString fname;
+  int ret = QMessageBox::warning(this, "Confirm Delete",
+      "Are you sure you want to delete all *.eco files in\n" +
+       QDir::toNativeSeparators(m_saveDir) + " ?",
+       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+  if(ret==QMessageBox::Yes) {
+    QDir dir(m_saveDir);
+    QStringList files=dir.entryList(QDir::Files);
+    QList<QString>::iterator f;
+    for(f=files.begin(); f!=files.end(); ++f) {
+      fname=*f;
+      i=(fname.indexOf(".eco"));
+      if(i>1) dir.remove(fname);
+    }
+  }
 }

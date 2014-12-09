@@ -59,10 +59,11 @@ private slots:
   void on_actionAstronomical_data_triggered();
   void on_locator_editingFinished();
   void on_sbRIT_valueChanged(int arg1);
-
   void on_rbCW_toggled(bool checked);
-
   void on_rb27_toggled(bool checked);
+  void on_actionSave_data_triggered(bool checked);
+  void on_actionOpen_triggered();
+  void on_actionDelete_eco_files_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -107,6 +108,7 @@ private:
     bool    m_grid6;
     bool    m_catEnabled;
     bool    m_Costas;
+    bool    m_bSave;
 
     QRect   m_astroGeom;
     QRect   m_wideGraphGeom;
@@ -131,6 +133,7 @@ private:
 
     QString m_path;
     QString m_appDir;
+    QString m_saveDir;
     QString m_dateTime;
     QString m_mode;
     QString m_cmnd;
