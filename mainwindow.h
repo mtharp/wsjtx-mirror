@@ -60,6 +60,10 @@ private slots:
   void on_locator_editingFinished();
   void on_sbRIT_valueChanged(int arg1);
 
+  void on_rbCW_toggled(bool checked);
+
+  void on_rb27_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
 
@@ -102,6 +106,7 @@ private:
     bool    m_TxOK;
     bool    m_grid6;
     bool    m_catEnabled;
+    bool    m_Costas;
 
     QRect   m_astroGeom;
     QRect   m_wideGraphGeom;

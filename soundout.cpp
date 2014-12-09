@@ -64,8 +64,10 @@ void SoundOutThread::run()
   dphi=twopi*m_txFreq/48000.0;
   double df27=48000.0/4096.0;
   for(int ibuf=0; ibuf<nbufs; ibuf++) {
-    int j=ibuf/4;
-    dphi=twopi*(m_txFreq+df27*(ic27[j]-14))/48000.0;
+    if(m_Costas) {
+      int j=ibuf/4;
+      dphi=twopi*(m_txFreq+df27*(ic27[j]-14))/48000.0;
+    }
     for(int i=0 ; i<FRAMES_PER_BUFFER; i++ )  {
       phi += dphi;
       if(phi>twopi) phi -= twopi;
@@ -93,3 +95,9 @@ void SoundOutThread::setTxFreq(int n)
 {
   m_txFreq=n;
 }
+
+void SoundOutThread::setCostas(bool b)
+{
+  m_Costas=b;
+}
+

@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_auto=false;
   btxMute=false;
   btxok=false;
+  m_Costas=false;
   m_transmitting=false;
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
@@ -111,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
   soundInThread.setInputDevice(m_paInDevice);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
+  soundOutThread.setCostas(m_Costas);
 }                                          // End of MainWindow constructor
 
 //--------------------------------------------------- MainWindow destructor
@@ -180,6 +182,7 @@ void MainWindow::writeSettings()
   settings.setValue("Dither",ui->sbDither->value());
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("RIT",m_RIT);
+  settings.setValue("Costas27",m_Costas);
   settings.endGroup();
 }
 
@@ -214,6 +217,10 @@ void MainWindow::readSettings()
   m_rxavg=1.0;
   m_band=settings.value("Iband",6).toInt();
   m_grid6=settings.value("Grid6",false).toBool();
+  m_Costas=settings.value("Costas27",false).toBool();
+  ui->rbCW->setChecked(!m_Costas);
+  ui->rb27->setChecked(m_Costas);
+  soundOutThread.setCostas(m_Costas);
   m_catEnabled=settings.value("catEnabled",false).toBool();
   m_rig=settings.value("Rig",214).toInt();
   m_rigIndex=settings.value("RigIndex",100).toInt();
@@ -510,6 +517,7 @@ void MainWindow::startTx2()
   int freq=1500.0 + (r-0.5)*ui->sbDither->value();
   datcom_.f1=float(freq);
   soundOutThread.setTxFreq(freq);
+  soundOutThread.setCostas(m_Costas);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;
 //  qDebug() << "Tx audio" << m_s6 << r << freq;
@@ -604,4 +612,14 @@ void MainWindow::on_locator_editingFinished()
 void MainWindow::on_sbRIT_valueChanged(int arg1)
 {
   m_RIT=arg1;
+}
+
+void MainWindow::on_rbCW_toggled(bool checked)
+{
+  m_Costas=!checked;
+}
+
+void MainWindow::on_rb27_toggled(bool checked)
+{
+  m_Costas=checked;
 }
