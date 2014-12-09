@@ -7,7 +7,6 @@ extern struct {
   short int d2[LENGTH];
   int ndop;
   int nfrit;
-  int nsmo;
   int nsum;
   int nclearave;
   int nqual;

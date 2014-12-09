@@ -259,5 +259,14 @@ int CPlotter::getPlotGain()                               //getPlotGain()
   return m_plotGain;
 }
 
+void CPlotter::setSmooth(int n)                               //setSmooth()
+{
+  m_smooth=n;
+}
+
+int CPlotter::getSmooth()                                    //getSmooth()
+{
+  return m_smooth;
+}
 int CPlotter::plotWidth(){return m_2DPixmap.width();}
 void CPlotter::UpdateOverlay() {DrawOverlay();}

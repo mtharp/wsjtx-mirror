@@ -20,6 +20,7 @@ public:
 private slots:
   void on_zeroSpinBox_valueChanged(int arg1);
   void on_gainSpinBox_valueChanged(int arg1);
+  void on_smoothSpinBox_valueChanged(int n);
 
 private:
 

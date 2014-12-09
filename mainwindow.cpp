@@ -180,7 +180,6 @@ void MainWindow::writeSettings()
   settings.setValue("Dither",ui->sbDither->value());
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("RIT",m_RIT);
-  settings.setValue("Smooth",m_smooth);
   settings.endGroup();
 }
 
@@ -234,8 +233,6 @@ void MainWindow::readSettings()
   ui->locator->setText(m_myGrid);
   m_RIT=settings.value("RIT",0).toInt();
   ui->sbRIT->setValue(m_RIT);
-  m_smooth=settings.value("Smooth",0).toInt();
-  ui->sbSmooth->setValue(m_smooth);
   settings.endGroup();
 }
 
@@ -244,7 +241,6 @@ void MainWindow::dataSink()
 {
   lab1->setStyleSheet("");
   lab1->setText("");
-  datcom_.nsmo=m_smooth;
 //  qDebug() << "echospec" << m_s6;
   *future1 = QtConcurrent::run(echospec);
   watcher1->setFuture(*future1);               // call specReady() when done
@@ -608,9 +604,4 @@ void MainWindow::on_locator_editingFinished()
 void MainWindow::on_sbRIT_valueChanged(int arg1)
 {
   m_RIT=arg1;
-}
-
-void MainWindow::on_sbSmooth_valueChanged(int arg1)
-{
-  m_smooth=arg1;
 }

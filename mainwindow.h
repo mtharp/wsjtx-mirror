@@ -58,10 +58,7 @@ private slots:
   void on_stopButton_clicked();
   void on_actionAstronomical_data_triggered();
   void on_locator_editingFinished();
-
   void on_sbRIT_valueChanged(int arg1);
-
-  void on_sbSmooth_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

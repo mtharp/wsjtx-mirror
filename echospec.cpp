@@ -28,7 +28,7 @@ void echospec()
     fclose(fp);
   }
 */
-  avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,&datcom_.nsmo,
+  avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,
       &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
       &datcom_.f1,&datcom_.rms,&datcom_.snrdb,&datcom_.dfreq,
       &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);

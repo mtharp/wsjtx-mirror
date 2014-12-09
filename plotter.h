@@ -28,10 +28,11 @@ public:
   float   m_fSpan;
   qint32  m_TxFreq;
   qint32  m_w;
-  int     m_plotZero;
-  int     m_plotGain;
+  qint32  m_plotZero;
+  qint32  m_plotGain;
+  qint32  m_smooth;
 
-  void draw(float blue[], float red[]);		               //Update the waterfall
+  void draw(float blue[], float red[]);		              //Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);
   int  getPlotZero();
@@ -40,6 +41,9 @@ public:
   int  plotWidth();
   void UpdateOverlay();
   void DrawOverlay();
+  void setSmooth(int n);
+  int  getSmooth();
+
 //  void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
 
 protected:
@@ -62,7 +66,9 @@ private:
   QString m_HDivText[483];
 
   double  m_fftBinWidth;
+
   qint64  m_StartFreq;
+
   qint32  m_dBStepSize;
   qint32  m_hdivs;
   qint32  m_line;
@@ -71,6 +77,7 @@ private:
   qint32  m_h;
   qint32  m_h1;
   qint32  m_h2;
+
   bool    m_Running;
   bool    m_paintEventBusy;
 

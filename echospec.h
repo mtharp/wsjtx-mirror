@@ -12,7 +12,7 @@ int ptt(int nport, int ntx, int* iptt, int* nopen);
 extern "C" {
 //----------------------------------------------------- C and Fortran routines
 
-void avecho_( short id2[], int* ndop, int* nfrit, int* nsmo, int* nsum,
+void avecho_( short id2[], int* ndop, int* nfrit, int* nsum,
               int* nclearave, int* nqual, float* f1, float* rms,
               float* snrdb, float* dfreq, float* width,
               float blue[], float red[]);

@@ -26,8 +26,7 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->widePlot->setPlotGain(settings.value("PlotGain", 0).toInt());
   ui->zeroSpinBox->setValue(ui->widePlot->getPlotZero());
   ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
-  int w = settings.value("PlotWidth",1000).toInt();
-  ui->widePlot->m_w=w;
+  ui->smoothSpinBox->setValue(settings.value("Smooth",0).toInt());
   settings.endGroup();
 }
 
@@ -47,7 +46,7 @@ void WideGraph::saveSettings()
   settings.beginGroup("WideGraph");
   settings.setValue("PlotZero",ui->widePlot->m_plotZero);
   settings.setValue("PlotGain",ui->widePlot->m_plotGain);
-  settings.setValue("PlotWidth",ui->widePlot->plotWidth());
+  settings.setValue("Smooth",ui->widePlot->m_smooth);
   settings.endGroup();
 }
 
@@ -64,4 +63,9 @@ void WideGraph::on_zeroSpinBox_valueChanged(int value)
 void WideGraph::on_gainSpinBox_valueChanged(int value)
 {
   ui->widePlot->setPlotGain(value);
+}
+
+void WideGraph::on_smoothSpinBox_valueChanged(int n)
+{
+  ui->widePlot->setSmooth(n);
 }

@@ -18,6 +18,8 @@ void SoundOutThread::run()
   static double twopi=2.0*3.141592653589793238462;
   static double phi=0.0;
   static double dphi;
+  static int ic27[27]={1,3,7,15,2,5,11,23,18,8,17,6,13,27,26,24,20,12,
+                       25,22,16,4,9,19,10,21,14};
   short int buffer[FRAMES_PER_BUFFER];
 
   outParam.device=m_nDevOut;                 //Output device number
@@ -57,10 +59,13 @@ void SoundOutThread::run()
 //  outputLatency = p->outputLatency;
 //  qDebug() << "Output latency" << outputLatency;
 
-  int nbufs=2.2*48000.0/FRAMES_PER_BUFFER + 0.5;
+  int nbufs=(27*4096)/FRAMES_PER_BUFFER;
   phi=0.0;
   dphi=twopi*m_txFreq/48000.0;
+  double df27=48000.0/4096.0;
   for(int ibuf=0; ibuf<nbufs; ibuf++) {
+    int j=ibuf/4;
+    dphi=twopi*(m_txFreq+df27*(ic27[j]-14))/48000.0;
     for(int i=0 ; i<FRAMES_PER_BUFFER; i++ )  {
       phi += dphi;
       if(phi>twopi) phi -= twopi;
