@@ -3,20 +3,20 @@ program tstecho
   parameter (LENGTH=27*4096)
   integer*2 id2
   real blue(2000),red(2000)
-  common/datcom/id2(LENGTH),ndop,ntc,necho,nfrit,ndither,nsave,nsum,    &
-       nclearave,f1,snrdb,red0(2000),blue0(2000)
+  common/datcom/id2(LENGTH),ndop,nfrit,nsum,nclearave,nqual,f1,rms,   &
+       snrdb,dfreq,width,blue0(2000),red0(2000)
 
-  open(10,file='echo_3.dat',status='old',access='stream')
+  open(10,file='echo_4.dat',status='old',access='stream')
 
   nclearave=1
   nsum=0
 
   do iping=1,999
-     read(10,end=100) id2,ndop,ntc,necho,nfrit,ndither,nsave,nsum0,     &
-          nclearave0,f1,snrdb,red0,blue0
-     nfrit=200
-     call avecho(id2,ndop,nfrit,f1,nsum,nclearave,rms,blue,red)
-  write(*,3001) nsum,ndop,nfrit,nclearave,f1,rms
+     read(10,end=100) id2,ndop,nfrit,nsum0,nclearave0,nqual,f1,rms,   &
+          snrdb,dfreq,width,blue0,red0
+     call avecho(id2,ndop,nfrit,nsum,nclearave,nqual,                 &
+          f1,rms,sigdb,dfreq,width,blue,red)
+     write(*,3001) nsum,ndop,nfrit,nclearave,f1,rms
 3001 format(4i6,2f8.1)
   enddo
 

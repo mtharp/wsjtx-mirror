@@ -602,6 +602,7 @@ p, li { white-space: pre-wrap; }
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionRead_next_data_in_file"/>
     <addaction name="actionSave_data"/>
     <addaction name="actionDelete_eco_files"/>
     <addaction name="separator"/>
@@ -703,7 +704,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -712,6 +713,14 @@ p, li { white-space: pre-wrap; }
   <action name="actionDelete_eco_files">
    <property name="text">
     <string>Delete all *.eco files in Save directory</string>
+   </property>
+  </action>
+  <action name="actionRead_next_data_in_file">
+   <property name="text">
+    <string>Read next data in file</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
    </property>
   </action>
  </widget>

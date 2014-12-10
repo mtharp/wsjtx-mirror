@@ -18,6 +18,7 @@ double outputLatency;                 //Latency in seconds
 
 Astro*     g_pAstro = NULL;
 WideGraph* g_pWideGraph = NULL;
+FILE*      fp = NULL;
 
 QString ver="0.5";
 QString rev="$Rev$";
@@ -263,7 +264,6 @@ void MainWindow::specReady()
   float px=20.0*log10(datcom_.rms)- 20.0;
   signalMeter->setValue(px);                   // Update signalmeter
   g_pWideGraph->plotSpec(&datcom_.blue[0],&datcom_.red[0]);
-//  qDebug() << "specReady" << m_s6 << px;
   QString t;
   t.sprintf("%3d %5.1f %5.1f %5.1f %5.1f %3d",
             datcom_.nsum,datcom_.rms,datcom_.snrdb,datcom_.dfreq,
@@ -529,7 +529,6 @@ void MainWindow::startTx2()
   soundOutThread.setCostas(m_Costas);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;
-//  qDebug() << "Tx audio" << m_s6 << r << freq;
 }
 
 void MainWindow::stopTx()
@@ -561,7 +560,6 @@ void MainWindow::stopTx2()
   lab1->setText(t);
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
-//  qDebug() << "Receiving" << m_s6;
   m_receiving=true;
 }
 
@@ -646,18 +644,20 @@ void MainWindow::on_actionOpen_triggered()
   m_auto=false;
   QString fname;
   fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
-                                       "WSPR Files (*.wav *.c2)");
+                                       "WSPR Files (*.eco)");
   if(fname != "") {
-    m_path=fname;
-    int i;
-    i=fname.indexOf(".eco") - 11;
-    if(i>=0) {
-      lab1->setStyleSheet("QLabel{background-color: #66ff66}");
-      lab1->setText(" " + fname.mid(i,15) + " ");
+    char name[80];
+    strcpy(name,fname.toLatin1());
+    fp=fopen(name,"rb");
+    if(fp != NULL) {
+//      for(int i=0; i<1; i++) {
+      int nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
+//      if(nbytes<sizeof(datcom_)) break;
+      dataSink();
+//      }
+//      fclose(fp);
     }
-//    *future1 = QtConcurrent::run(getfile, fname, m_TRseconds);
-//    watcher1->setFuture(*future1);         // call diskDat() when done
-    qDebug() << m_path;
+
   }
 }
 
@@ -677,6 +677,22 @@ void MainWindow::on_actionDelete_eco_files_triggered()
       fname=*f;
       i=(fname.indexOf(".eco"));
       if(i>1) dir.remove(fname);
+    }
+  }
+}
+
+void MainWindow::on_measureButton_clicked()
+{
+}
+
+void MainWindow::on_actionRead_next_data_in_file_triggered()
+{
+  if(fp != NULL) {
+    int nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
+    if(nbytes == sizeof(datcom_)) {
+      dataSink();
+    } else {
+      fclose(fp);
     }
   }
 }

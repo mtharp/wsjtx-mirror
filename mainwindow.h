@@ -65,6 +65,10 @@ private slots:
   void on_actionOpen_triggered();
   void on_actionDelete_eco_files_triggered();
 
+  void on_measureButton_clicked();
+
+  void on_actionRead_next_data_in_file_triggered();
+
 private:
     Ui::MainWindow *ui;
 
