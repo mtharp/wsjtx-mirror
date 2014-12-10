@@ -8,6 +8,7 @@
 
 void echospec();
 int ptt(int nport, int ntx, int* iptt, int* nopen);
+int ptt_(int *nport, int *ntx, int *iptt);
 
 extern "C" {
 //----------------------------------------------------- C and Fortran routines

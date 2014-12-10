@@ -501,7 +501,9 @@ void MainWindow::guiUpdate()
       p3.waitForFinished();
     }
     if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-      ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
+//      ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
+      static int n1=1;
+      ptt_(&m_pttPort,&n1,&m_iptt);
     }
 //Wait 0.2 s, then send a 2.2 s Tx pulse
     ptt1Timer->start(200);                       //Sequencer delay
@@ -549,7 +551,9 @@ void MainWindow::stopTx2()
     p3.waitForFinished();
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-    ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
+//    ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
+    static int n0=0;
+    ptt_(&m_pttPort,&n0,&m_iptt);
   }
   QString t;
   t.sprintf(" Receiving ");
