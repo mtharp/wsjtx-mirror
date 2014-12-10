@@ -263,7 +263,7 @@ void MainWindow::specReady()
 {
   float px=20.0*log10(datcom_.rms)- 20.0;
   signalMeter->setValue(px);                   // Update signalmeter
-  g_pWideGraph->plotSpec(&datcom_.blue[0],&datcom_.red[0]);
+  g_pWideGraph->plotSpec();
   QString t;
   t.sprintf("%3d %5.1f %5.1f %5.1f %5.1f %3d",
             datcom_.nsum,datcom_.rms,datcom_.snrdb,datcom_.dfreq,

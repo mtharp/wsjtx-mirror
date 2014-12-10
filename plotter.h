@@ -32,7 +32,7 @@ public:
   qint32  m_plotGain;
   qint32  m_smooth;
 
-  void draw(float blue[], float red[]);		              //Update the waterfall
+  void draw();		              //Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);
   int  getPlotZero();
@@ -83,4 +83,9 @@ private:
 
 };
 
+extern "C" {
+//--------------------------------------------------- C and Fortran routines
+
+void smo121_(float x[], int* npts);
+}
 #endif // PLOTTER_H

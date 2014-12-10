@@ -14,7 +14,7 @@ public:
   explicit WideGraph(QWidget *parent = 0);
   ~WideGraph();
 
-  void   plotSpec(float blue[], float red[]);
+  void   plotSpec();
   void   saveSettings();
 
 private slots:

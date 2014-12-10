@@ -1,4 +1,5 @@
 #include "plotter.h"
+#include "commons.h"
 #include <math.h>
 #include <QDebug>
 
@@ -67,6 +68,7 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 //    qDebug() << "D" << m_fSpan << m_StartFreq;
   }
   DrawOverlay();
+  draw();
 }
 
 void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
@@ -79,9 +81,10 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=false;
 }
 
-void CPlotter::draw(float blue[], float red[])                                //draw()
+void CPlotter::draw()                                       //draw()
 {
-  int j,y;
+  int i,j,y;
+  float blue[2000],red[2000];
   double gain = pow(10.0,(m_plotGain/20.0));
 
   QPainter painter2D(&m_2DPixmap);
@@ -93,10 +96,22 @@ void CPlotter::draw(float blue[], float red[])                                //
   QPen penRed(Qt::red,1);
   j=0;
   int i0=1000 + int(m_StartFreq/m_fftBinWidth);
+  for(i=0; i<2000; i++) {
+    blue[i]=datcom_.blue[i];
+    red[i]=datcom_.red[i];
+  }
+
+  if(m_smooth>0) {
+    for(i=0; i<m_smooth; i++) {
+      int n2000=2000;
+      smo121_(blue,&n2000);
+      smo121_(red,&n2000);
+    }
+  }
 
   painter2D.setPen(penBlue);
   j=0;
-  for(int i=0; i<m_w; i++) {
+  for(i=0; i<m_w; i++) {
     y = m_h2 - gain*(m_h/10.0)*blue[i0+i] - 5 - m_plotZero;
     LineBuf[j].setX(i);
     LineBuf[j].setY(y);

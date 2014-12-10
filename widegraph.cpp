@@ -50,22 +50,25 @@ void WideGraph::saveSettings()
   settings.endGroup();
 }
 
-void WideGraph::plotSpec(float blue[], float red[])
+void WideGraph::plotSpec()
 {
-  ui->widePlot->draw(blue,red);
+  ui->widePlot->draw();
 }
 
 void WideGraph::on_zeroSpinBox_valueChanged(int value)
 {
   ui->widePlot->setPlotZero(value);
+  ui->widePlot->draw();
 }
 
 void WideGraph::on_gainSpinBox_valueChanged(int value)
 {
   ui->widePlot->setPlotGain(value);
+  ui->widePlot->draw();
 }
 
 void WideGraph::on_smoothSpinBox_valueChanged(int n)
 {
   ui->widePlot->setSmooth(n);
+  ui->widePlot->draw();
 }
