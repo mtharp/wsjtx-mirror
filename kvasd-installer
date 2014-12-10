@@ -623,9 +623,14 @@ case "$ARCH_CHK" in
 		MD5_1="e43b0a42681c1f5129de4714e5606712"
 	;;
 
-	*arm* ) # Only has 32 bit version of KVASD available
+	*armv6* ) # Only has 32 bit version of KVASD available
 		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
 		MD5_1="2c306a35a34cec909553c90d3ae8e1b0"
+	;;
+	
+	*armv7* ) # Only has 32 bit version of KVASD available
+	KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armv7l/kvasd'
+	MD5_1="9e18289ae42d56ecec1036f90d1a4859"
 	;;
 
 	* )
