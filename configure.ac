@@ -349,6 +349,12 @@ case "${host_os}" in
 -Wno-character-truncation -Wno-conversion -Wtabs -mfloat-abi=hard -fPIC"
 					LDFLAGS="-Wl,-O1 -Wl,--as-needed"						
 				;;
+				*armv7* )
+					CFLAGS="-fpic"
+					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIC"
+					LDFLAGS=""						
+				;;
 				*x86_64* )
 					CFLAGS="-fPIC"
 					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
