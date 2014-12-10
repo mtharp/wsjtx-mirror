@@ -129,7 +129,7 @@
        <number>0</number>
       </property>
       <property name="text">
-       <string>  N   Level   Sig   DF   Width    Q</string>
+       <string>  N   Level   Sig     DF   Width   Q  </string>
       </property>
       <property name="textFormat">
        <enum>Qt::PlainText</enum>

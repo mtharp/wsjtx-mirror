@@ -693,6 +693,8 @@ void MainWindow::on_actionRead_next_data_in_file_triggered()
       dataSink();
     } else {
       fclose(fp);
+      fp=NULL;
+      msgBox("End of echo data.");
     }
   }
 }

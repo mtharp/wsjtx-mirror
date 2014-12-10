@@ -85,13 +85,13 @@ void CPlotter::draw()                                       //draw()
 {
   int i,j,y;
   float blue[2000],red[2000];
-  double gain = pow(10.0,(m_plotGain/20.0));
+  float gain = pow(10.0,(m_plotGain/20.0));
 
+  if(m_2DPixmap.size().width()==0) return;
   QPainter painter2D(&m_2DPixmap);
   QRect tmp(0,0,m_w,m_h2);
   painter2D.fillRect(tmp,Qt::black);
   QPoint LineBuf[MAX_SCREENSIZE];
-//  QPen penBlue(Qt::blue,1);
   QPen penBlue(QColor(0,255,255),1);
   QPen penRed(Qt::red,1);
   j=0;
@@ -112,7 +112,7 @@ void CPlotter::draw()                                       //draw()
   painter2D.setPen(penBlue);
   j=0;
   for(i=0; i<m_w; i++) {
-    y = m_h2 - gain*(m_h/10.0)*blue[i0+i] - 5 - m_plotZero;
+    y = 0.9*m_h2 - gain*(m_h/10.0)*(blue[i0+i]-1.0) - m_plotZero;
     LineBuf[j].setX(i);
     LineBuf[j].setY(y);
     j++;
@@ -122,7 +122,7 @@ void CPlotter::draw()                                       //draw()
   painter2D.setPen(penRed);
   j=0;
   for(int i=0; i<m_w; i++) {
-    y = m_h2 - gain*(m_h/10.0)*red[i0+i] - 5 - m_plotZero;
+    y = 0.9*m_h2 - gain*(m_h/10.0)*(red[i0+i]-1.0) - m_plotZero;
     LineBuf[j].setX(i);
     LineBuf[j].setY(y);
     j++;
