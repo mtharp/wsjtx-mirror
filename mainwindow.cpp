@@ -9,6 +9,10 @@
 #include "echospec.h"
 #include "portaudio.h"
 
+extern "C" {
+  void   fil4_(qint16*, qint32*, qint16*, qint32*);
+}
+
 int itone[162];                       //Tx audio tones
 int icw[250];                         //Dits for CW ID
 bool btxok;                           //True if OK to transmit
@@ -254,8 +258,16 @@ void MainWindow::readSettings()
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink()
 {
+  static int n1=RXLENGTH1;
+  static int n2=0;
+
+  //  qDebug() << "4. Rx done:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   lab1->setStyleSheet("");
   lab1->setText("");
+  if(!m_diskData) {
+    fil4_(&datcom_.d2a[0],&n1,&datcom_.d2[0],&n2);
+    qDebug() << "A" << n2;
+  }
   bool bSave=m_bSave and !m_diskData;
   *future1 = QtConcurrent::run(echospec,bSave,m_fname);
   watcher1->setFuture(*future1);               // call specReady() when done
@@ -267,12 +279,16 @@ void MainWindow::specReady()
     on_stopButton_clicked();
     msgBox("Cannot create file\n" + m_fname);
   }
+
   float px=20.0*log10(datcom_.rms)- 20.0;
   signalMeter->setValue(px);                   // Update signalmeter
   g_pWideGraph->plotSpec();
+//  qDebug() << "5. Spectrum plotted:" << QDateTime::currentMSecsSinceEpoch() % 6000;
+  float level=-99.0;
+  if(datcom_.rms>0.0) level=10.0*log10(double(datcom_.rms)) - 20.0;
   QString t;
   t.sprintf("%3d %5.1f %5.1f %5.1f %5.1f %3d",
-            datcom_.nsum,datcom_.rms,datcom_.snrdb,datcom_.dfreq,
+            datcom_.nsum,level,datcom_.snrdb,datcom_.dfreq,
             datcom_.width,datcom_.nqual);
   ui->decodedTextBrowser->append(t);
 }
@@ -507,9 +523,7 @@ void MainWindow::guiUpdate()
       p3.waitForFinished();
     }
     if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-//      ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
-      static int n1=1;
-      ptt_(&m_pttPort,&n1,&m_iptt);
+      ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
     }
 //Wait 0.2 s, then send a 2.2 s Tx pulse
     ptt1Timer->start(200);                       //Sequencer delay
@@ -535,11 +549,14 @@ void MainWindow::startTx2()
   soundOutThread.setCostas(m_Costas);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;
+//  qDebug() << "1. Start Tx audio:" << QDateTime::currentMSecsSinceEpoch() % 6000;
+
 }
 
 void MainWindow::stopTx()
 {
 //Tx pulse is finished.
+//  qDebug() << "2. Tx audio finished:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   m_transmitting=false;
   lab1->setStyleSheet("");
   lab1->setText("");
@@ -556,9 +573,7 @@ void MainWindow::stopTx2()
     p3.waitForFinished();
   }
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
-//    ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
-    static int n0=0;
-    ptt_(&m_pttPort,&n0,&m_iptt);
+    ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
   }
   QString t;
   t.sprintf(" Receiving ");
@@ -567,6 +582,7 @@ void MainWindow::stopTx2()
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
   m_receiving=true;
+//  qDebug() << "3. Start Rx:" << QDateTime::currentMSecsSinceEpoch() % 6000;
 }
 
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)
@@ -660,7 +676,7 @@ void MainWindow::on_actionOpen_triggered()
     strcpy(name,fname.toLatin1());
     fp=fopen(name,"rb");
     if(fp != NULL) {
-      int nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
+      uint nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
       if(nbytes<sizeof(datcom_)) return;
       m_diskData=true;
       dataSink();

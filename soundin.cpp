@@ -49,13 +49,13 @@ void SoundInThread::run()                           //SoundInThread::run()
 //  inputLatency = p->inputLatency;
 //  qDebug() << "Input latency" << inputLatency;
 
-  paerr=Pa_ReadStream(inStream,datcom_.d2,LENGTH);
+  paerr=Pa_ReadStream(inStream,datcom_.d2a,RXLENGTH1);
   if(paerr!=paNoError) {
     qDebug() << "Audio input failed";
   }
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
-  emit dataReady(LENGTH);
+  emit dataReady(RXLENGTH1);
 }
 
 void SoundInThread::setInputDevice(int n)                  //setInputDevice()
