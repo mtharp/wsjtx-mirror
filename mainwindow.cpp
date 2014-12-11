@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
   on_actionAstronomical_data_triggered();
   g_pAstro->setFontSize(m_astroFont);
 
-  future1 = new QFuture<void>;
+  future1 = new QFuture<bool>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(specReady()));
 
@@ -255,12 +255,16 @@ void MainWindow::dataSink()
 {
   lab1->setStyleSheet("");
   lab1->setText("");
-  *future1 = QtConcurrent::run(echospec);
+  *future1 = QtConcurrent::run(echospec,m_bSave,m_fname);
   watcher1->setFuture(*future1);               // call specReady() when done
 }
 
 void MainWindow::specReady()
 {
+  if(m_bSave and !future1->result()) {
+    on_stopButton_clicked();
+    msgBox("Cannot create file\n" + m_fname);
+  }
   float px=20.0*log10(datcom_.rms)- 20.0;
   signalMeter->setValue(px);                   // Update signalmeter
   g_pWideGraph->plotSpec();
@@ -586,6 +590,9 @@ void MainWindow::on_txEnableButton_clicked()
 {
   m_auto = !m_auto;
   if(m_auto) {
+    QDateTime t = QDateTime::currentDateTimeUtc();
+    m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
+        t.time().toString("hhmmss") + ".eco";
     ui->txEnableButton->setStyleSheet(m_txEnable_style);
   } else {
     m_TxOK=false;

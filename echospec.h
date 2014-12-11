@@ -4,9 +4,10 @@
 #include <QFile>
 #include <QDebug>
 #include <QMessageBox>
+#include <QDateTime>
 #include "commons.h"
 
-void echospec();
+bool echospec(bool bSave, QString fname);
 int ptt(int nport, int ntx, int* iptt, int* nopen);
 int ptt_(int *nport, int *ntx, int *iptt);
 

@@ -64,9 +64,7 @@ private slots:
   void on_actionSave_data_triggered(bool checked);
   void on_actionOpen_triggered();
   void on_actionDelete_eco_files_triggered();
-
   void on_measureButton_clicked();
-
   void on_actionRead_next_data_in_file_triggered();
 
 private:
@@ -126,7 +124,7 @@ private:
 
     QMessageBox msgBox0;
 
-    QFuture<void>* future1;
+    QFuture<bool>* future1;
     QFutureWatcher<void>* watcher1;
 
     QProcess p1;
@@ -138,6 +136,7 @@ private:
     QString m_path;
     QString m_appDir;
     QString m_saveDir;
+    QString m_fname;
     QString m_dateTime;
     QString m_mode;
     QString m_cmnd;
@@ -165,7 +164,7 @@ extern void getDev(int* numDevices,char hostAPI_DeviceName[][50],
                    int minChan[], int maxChan[],
                    int minSpeed[], int maxSpeed[]);
 extern int ptt(int nport, int itx, int* iptt, int* nopen);
-extern void echospec();
+extern bool echospec(bool bSave);
 
 extern "C" {
 //----------------------------------------------------- C and Fortran routines

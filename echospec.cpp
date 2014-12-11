@@ -8,8 +8,9 @@
 #include <windows.h>
 #endif
 
-void echospec()
+bool echospec(bool bSave, QString fname)
 {
+  bool dataWritten=false;
   double sq=0.0;
   for(int i=0; i<LENGTH; i++) {
     double x=double(datcom_.d2[i]);
@@ -17,21 +18,24 @@ void echospec()
   }
   datcom_.rms = sqrt(sq/LENGTH);
 
-/*
-//Save raw data to disk.
-  QString fname="echo.dat";
-  char name[80];
-  strcpy(name,fname.toLatin1());
-  FILE* fp=fopen(name,"ab");
-  if(fp != NULL) {
-    fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
-    fclose(fp);
+  if(bSave) {
+    qDebug() << fname;
+    char name[80];
+    strcpy(name,fname.toLatin1());
+    FILE* fp=fopen(name,"ab");
+    if(fp != NULL) {
+      fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
+      dataWritten=true;
+      fclose(fp);
+    }
   }
-*/
+
   avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,
       &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
       &datcom_.f1,&datcom_.rms,&datcom_.snrdb,&datcom_.dfreq,
       &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);
+
+  return dataWritten;
 }
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)
