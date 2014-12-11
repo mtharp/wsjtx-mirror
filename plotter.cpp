@@ -109,15 +109,17 @@ void CPlotter::draw()                                       //draw()
     }
   }
 
-  painter2D.setPen(penBlue);
-  j=0;
-  for(i=0; i<m_w; i++) {
-    y = 0.9*m_h2 - gain*(m_h/10.0)*(blue[i0+i]-1.0) - m_plotZero;
-    LineBuf[j].setX(i);
-    LineBuf[j].setY(y);
-    j++;
+  if(m_blue) {
+    painter2D.setPen(penBlue);
+    j=0;
+    for(i=0; i<m_w; i++) {
+      y = 0.9*m_h2 - gain*(m_h/10.0)*(blue[i0+i]-1.0) - m_plotZero;
+      LineBuf[j].setX(i);
+      LineBuf[j].setY(y);
+      j++;
+    }
+    painter2D.drawPolyline(LineBuf,j);
   }
-  painter2D.drawPolyline(LineBuf,j);
 
   painter2D.setPen(penRed);
   j=0;

@@ -22,6 +22,8 @@ private slots:
   void on_gainSpinBox_valueChanged(int arg1);
   void on_smoothSpinBox_valueChanged(int n);
 
+  void on_cbBlue_toggled(bool checked);
+
 private:
 
   Ui::WideGraph *ui;

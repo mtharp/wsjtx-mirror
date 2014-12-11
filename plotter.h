@@ -31,6 +31,7 @@ public:
   qint32  m_plotZero;
   qint32  m_plotGain;
   qint32  m_smooth;
+  bool    m_blue;
 
   void draw();		              //Update the waterfall
   void SetRunningState(bool running);

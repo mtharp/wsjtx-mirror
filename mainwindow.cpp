@@ -77,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
   btxok=false;
   m_Costas=false;
   m_transmitting=false;
+  m_diskData=false;
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
   m_saveDir = m_appDir + "/save";
@@ -255,13 +256,14 @@ void MainWindow::dataSink()
 {
   lab1->setStyleSheet("");
   lab1->setText("");
-  *future1 = QtConcurrent::run(echospec,m_bSave,m_fname);
+  bool bSave=m_bSave and !m_diskData;
+  *future1 = QtConcurrent::run(echospec,bSave,m_fname);
   watcher1->setFuture(*future1);               // call specReady() when done
 }
 
 void MainWindow::specReady()
 {
-  if(m_bSave and !future1->result()) {
+  if(m_bSave and !m_diskData and !future1->result()) {
     on_stopButton_clicked();
     msgBox("Cannot create file\n" + m_fname);
   }
@@ -594,6 +596,7 @@ void MainWindow::on_txEnableButton_clicked()
     m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
         t.time().toString("hhmmss") + ".eco";
     ui->txEnableButton->setStyleSheet(m_txEnable_style);
+    m_diskData=false;
   } else {
     m_TxOK=false;
     ui->txEnableButton->setStyleSheet("");
@@ -657,14 +660,11 @@ void MainWindow::on_actionOpen_triggered()
     strcpy(name,fname.toLatin1());
     fp=fopen(name,"rb");
     if(fp != NULL) {
-//      for(int i=0; i<1; i++) {
       int nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
-//      if(nbytes<sizeof(datcom_)) break;
+      if(nbytes<sizeof(datcom_)) return;
+      m_diskData=true;
       dataSink();
-//      }
-//      fclose(fp);
     }
-
   }
 }
 

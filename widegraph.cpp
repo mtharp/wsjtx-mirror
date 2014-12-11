@@ -72,3 +72,9 @@ void WideGraph::on_smoothSpinBox_valueChanged(int n)
   ui->widePlot->setSmooth(n);
   ui->widePlot->draw();
 }
+
+void WideGraph::on_cbBlue_toggled(bool checked)
+{
+  ui->widePlot->m_blue=checked;
+  ui->widePlot->draw();
+}

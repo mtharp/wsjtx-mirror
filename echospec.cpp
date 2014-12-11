@@ -19,7 +19,6 @@ bool echospec(bool bSave, QString fname)
   datcom_.rms = sqrt(sq/LENGTH);
 
   if(bSave) {
-    qDebug() << fname;
     char name[80];
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");

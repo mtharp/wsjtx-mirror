@@ -104,6 +104,7 @@ private:
 
     bool    m_receiving;
     bool    m_transmitting;
+    bool    m_diskData;
     bool    m_auto;
     bool    m_RxOK;
     bool    m_TxOK;
