@@ -38,7 +38,8 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
   double sec=t.time().second() + 0.001*t.time().msec();
   double uth=nhr + nmin/60.0 + sec/3600.0;
   int nfreq=freq+0.5;
-  if(nfreq<0 or nfreq > 50000) nfreq=144;
+  if(nfreq<1) nfreq=1;
+  if(nfreq > 50000) nfreq=144;
 
   if(!astroBusy) {
     astroBusy=true;
@@ -46,6 +47,11 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
             mygrid.toLatin1(), &azsun, &elsun, &azmoon, &elmoon,
             &azmoondx, &elmoondx, &ntsky, &ndop, &ndop00,&ramoon, &decmoon,
             &dgrd, &poloffset, &xnr, 6, 6);
+    if(nfreq<=1) {                            //Do this a better way!
+      ntsky=0;
+      ndop00=0;
+      nfreq=0;
+    }
     astroBusy=false;
   }
   datcom_.ndop=ndop;
