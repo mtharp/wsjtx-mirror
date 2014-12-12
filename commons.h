@@ -10,9 +10,9 @@ extern struct {
   int ndop;
   int nfrit;
   int nsum;
+  float f1;
   int nclearave;
   int nqual;
-  float f1;
   float rms;
   float snrdb;
   float dfreq;
