@@ -18,7 +18,7 @@ WideGraph::WideGraph(QWidget *parent) :
 
 //Restore user's settings
   QString inifile(QApplication::applicationDirPath());
-  inifile += "/echox.ini";
+  inifile += "/emecho.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("WideGraph");
@@ -40,7 +40,7 @@ void WideGraph::saveSettings()
 {
 //Save user's settings
   QString inifile(QApplication::applicationDirPath());
-  inifile += "/echox.ini";
+  inifile += "/emecho.ini";
   QSettings settings(inifile, QSettings::IniFormat);
 
   settings.beginGroup("WideGraph");

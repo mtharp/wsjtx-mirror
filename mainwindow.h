@@ -67,6 +67,8 @@ private slots:
   void on_measureButton_clicked();
   void on_actionRead_next_data_in_file_triggered();
 
+  void on_actionRead_all_remaining_records_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -112,6 +114,7 @@ private:
     bool    m_catEnabled;
     bool    m_Costas;
     bool    m_bSave;
+    bool    m_loopall;
 
     QRect   m_astroGeom;
     QRect   m_wideGraphGeom;

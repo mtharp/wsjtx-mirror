@@ -91,7 +91,8 @@ MainWindow::MainWindow(QWidget *parent) :
   m_RxOK=true;
   m_TxOK=false;
   m_grid6=false;
-  m_band=6;
+  m_loopall=false;
+  m_band=3;
   m_rig=-1;
   m_iptt=0;
   m_COMportOpen=0;
@@ -288,6 +289,7 @@ void MainWindow::specReady()
             datcom_.nsum,level,datcom_.snrdb,datcom_.dfreq,
             datcom_.width,datcom_.nqual);
   ui->decodedTextBrowser->append(t);
+  if(m_loopall) on_actionRead_next_data_in_file_triggered();
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -622,6 +624,7 @@ void MainWindow::on_stopButton_clicked()
   if(m_auto) {
     on_txEnableButton_clicked();
   }
+  m_loopall=false;
 }
 
 void MainWindow::on_actionAstronomical_data_triggered()
@@ -716,7 +719,14 @@ void MainWindow::on_actionRead_next_data_in_file_triggered()
     } else {
       fclose(fp);
       fp=NULL;
-      msgBox("End of echo data.");
+      if(!m_loopall) msgBox("End of echo data.");
+      m_loopall=false;
     }
   }
+}
+
+void MainWindow::on_actionRead_all_remaining_records_triggered()
+{
+  m_loopall=true;
+  on_actionRead_next_data_in_file_triggered();
 }

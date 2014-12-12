@@ -129,7 +129,7 @@
        <number>0</number>
       </property>
       <property name="text">
-       <string>  N   Level   Sig     DF   Width   Q  </string>
+       <string>  N  Level   Sig     DF   Width   Q  </string>
       </property>
       <property name="textFormat">
        <enum>Qt::PlainText</enum>
@@ -608,6 +608,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionRead_next_data_in_file"/>
+    <addaction name="actionRead_all_remaining_records"/>
     <addaction name="actionSave_data"/>
     <addaction name="actionDelete_eco_files"/>
     <addaction name="separator"/>
@@ -722,10 +723,18 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRead_next_data_in_file">
    <property name="text">
-    <string>Read next data in file</string>
+    <string>Read next record</string>
    </property>
    <property name="shortcut">
     <string>F6</string>
+   </property>
+  </action>
+  <action name="actionRead_all_remaining_records">
+   <property name="text">
+    <string>Read all remaining records</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
    </property>
   </action>
  </widget>
