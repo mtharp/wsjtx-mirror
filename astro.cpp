@@ -59,11 +59,12 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
           "Az:    %6.1f\n"
           "El:    %6.1f\n"
           "Dop:   %6d\n"
+          "Techo: %6.2f\n"
           "Dec:   %6.1f\n"
           "Freq:  %6d\n"
           "Tsky:  %6d\n"
           "Dgrd:  %6.1f",
-          azmoon,elmoon,ndop00,decmoon,nfreq,ntsky,dgrd);
+          azmoon,elmoon,ndop00,echocom_.techo,decmoon,nfreq,ntsky,dgrd);
   ui->astroTextBrowser->setText(" "+ date + "\nUTC: " + utc + "\n" + cc);
 }
 

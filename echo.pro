@@ -29,7 +29,7 @@ SOURCES += main.cpp mainwindow.cpp plotter.cpp about.cpp \
     echospec.cpp astro.cpp
 
 SOURCES += f90/avecho.f90 f90/pctile.f90 f90/sort.f90 f90/ssort.f90 \
-           f90/smo121.f90 f90/fil4.f90
+           f90/smo121.f90 f90/fil4.f90 f90/four2a.f90 f90/commons.f90
 
 win32 {
 SOURCES +=
@@ -50,7 +50,6 @@ unix {
 }
 
 win32 {
-LIBS += ../echo/lib/libecho.a
 LIBS += ../echo/libfftw3f_win.a
 LIBS += ../echo/palir-02.dll
 LIBS += ../map65/libm65/libastro.a
