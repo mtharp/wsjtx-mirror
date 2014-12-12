@@ -23,7 +23,7 @@ public:
 public:
   void setOutputDevice(qint32 n);
   void setTxFreq(int n);
-  void setCostas(bool b);
+  void setCostas(int n);
 
 signals:
   void endTx();
@@ -32,7 +32,7 @@ signals:
 private:
   qint32  m_nDevOut;            //Output device number
   qint32  m_txFreq;
-  bool    m_Costas;
+  qint32  m_Costas;
 };
 
 #endif

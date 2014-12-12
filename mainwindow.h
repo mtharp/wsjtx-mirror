@@ -103,6 +103,7 @@ private:
     qint32  m_astroFont;
     qint32  m_RIT;
     qint32  m_smooth;
+    qint32  m_Costas;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -112,7 +113,6 @@ private:
     bool    m_TxOK;
     bool    m_grid6;
     bool    m_catEnabled;
-    bool    m_Costas;
     bool    m_bSave;
     bool    m_loopall;
 

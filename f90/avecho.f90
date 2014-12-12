@@ -1,8 +1,9 @@
 subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
      f1,rms0,snrdb,dfreq,width,blue0,red0)
 
-  integer RXLENGTH2
+  integer RXLENGTH2,TXLENGTH2
   parameter (RXLENGTH2=33792)             !33*1024
+  parameter (TXLENGTH2=27648)             !27*1024
   parameter (NFFT=32768,NH=NFFT/2)
   integer*2 id2(RXLENGTH2)                !Buffer for Rx data
   real blue(2000)     !Avg spectrum relative to initial Doppler echo freq
@@ -21,11 +22,12 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
 
   doppler=ndop
   sq=0.
-  do i=1,NFFT
-     x(i)=id2(i)
+  i00=2000
+  do i=1,TXLENGTH2
+     x(i)=id2(i+i00)
      sq=sq + x(i)*x(i)
   enddo
-  rms0=sqrt(sq/NFFT)
+  rms0=sqrt(sq/TXLENGTH2)
 
   if(nclearave.ne.0) nsum=0
   nclearave=0
@@ -35,8 +37,8 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
      red=0.
   endif
 
-!  x(RXLENGTH2+1:)=0.
-  x=x/NFFT
+  x(TXLENGTH2+1:)=0.
+  x=x/TXLENGTH2
   call four2a(x,NFFT,1,-1,0)
   df=12000.0/NFFT
   do i=1,8192

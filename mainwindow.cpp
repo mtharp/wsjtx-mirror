@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_auto=false;
   btxMute=false;
   btxok=false;
-  m_Costas=false;
+  m_Costas=0;
   m_transmitting=false;
   m_diskData=false;
   m_myGrid="FN20qi";
@@ -228,9 +228,9 @@ void MainWindow::readSettings()
   m_rxavg=1.0;
   m_band=settings.value("Iband",6).toInt();
   m_grid6=settings.value("Grid6",false).toBool();
-  m_Costas=settings.value("Costas27",false).toBool();
-  ui->rbCW->setChecked(!m_Costas);
-  ui->rb27->setChecked(m_Costas);
+  m_Costas=settings.value("Costas27",false).toInt();
+  ui->rbCW->setChecked(m_Costas==0);
+  ui->rb27->setChecked(m_Costas>0);
   soundOutThread.setCostas(m_Costas);
   m_catEnabled=settings.value("catEnabled",false).toBool();
   m_bSave=settings.value("Save",false).toBool();
@@ -344,6 +344,9 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_stopBitsIndex=dlg.m_stopBitsIndex;
     m_handshake=dlg.m_handshake;
     m_handshakeIndex=dlg.m_handshakeIndex;
+
+    if(dlg.m_restartSoundIn) soundInThread.setInputDevice(m_paInDevice);
+    if(dlg.m_restartSoundOut) soundOutThread.setOutputDevice(m_paOutDevice);
   }
 }
 
@@ -653,12 +656,12 @@ void MainWindow::on_sbRIT_valueChanged(int arg1)
 
 void MainWindow::on_rbCW_toggled(bool checked)
 {
-  m_Costas=!checked;
+  if(checked) m_Costas=0;
 }
 
 void MainWindow::on_rb27_toggled(bool checked)
 {
-  m_Costas=checked;
+  if(checked) m_Costas=4;
 }
 
 
