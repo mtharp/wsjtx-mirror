@@ -204,8 +204,13 @@ p, li { white-space: pre-wrap; }
              <bool>false</bool>
             </property>
             <property name="currentText">
-             <string>50 MHz</string>
+             <string>0 MHz</string>
             </property>
+            <item>
+             <property name="text">
+              <string>0 MHz</string>
+             </property>
+            </item>
             <item>
              <property name="text">
               <string>50 MHz</string>

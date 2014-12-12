@@ -91,45 +91,47 @@ void CPlotter::draw()                                       //draw()
   QPainter painter2D(&m_2DPixmap);
   QRect tmp(0,0,m_w,m_h2);
   painter2D.fillRect(tmp,Qt::black);
-  QPoint LineBuf[MAX_SCREENSIZE];
-  QPen penBlue(QColor(0,255,255),1);
-  QPen penRed(Qt::red,1);
-  j=0;
-  int i0=1000 + int(m_StartFreq/m_fftBinWidth);
-  for(i=0; i<2000; i++) {
-    blue[i]=datcom_.blue[i];
-    red[i]=datcom_.red[i];
-  }
-
-  if(m_smooth>0) {
-    for(i=0; i<m_smooth; i++) {
-      int n2000=2000;
-      smo121_(blue,&n2000);
-      smo121_(red,&n2000);
-    }
-  }
-
-  if(m_blue) {
-    painter2D.setPen(penBlue);
+  if(datcom_.nclearave==0) {
+    QPoint LineBuf[MAX_SCREENSIZE];
+    QPen penBlue(QColor(0,255,255),1);
+    QPen penRed(Qt::red,1);
     j=0;
-    for(i=0; i<m_w; i++) {
-      y = 0.9*m_h2 - gain*(m_h/10.0)*(blue[i0+i]-1.0) - m_plotZero;
+    int i0=1000 + int(m_StartFreq/m_fftBinWidth);
+    for(i=0; i<2000; i++) {
+      blue[i]=datcom_.blue[i];
+      red[i]=datcom_.red[i];
+    }
+
+    if(m_smooth>0) {
+      for(i=0; i<m_smooth; i++) {
+        int n2000=2000;
+        smo121_(blue,&n2000);
+        smo121_(red,&n2000);
+      }
+    }
+
+    if(m_blue) {
+      painter2D.setPen(penBlue);
+      j=0;
+      for(i=0; i<m_w; i++) {
+        y = 0.9*m_h2 - gain*(m_h/10.0)*(blue[i0+i]-1.0) - m_plotZero;
+        LineBuf[j].setX(i);
+        LineBuf[j].setY(y);
+        j++;
+      }
+      painter2D.drawPolyline(LineBuf,j);
+    }
+
+    painter2D.setPen(penRed);
+    j=0;
+    for(int i=0; i<m_w; i++) {
+      y = 0.9*m_h2 - gain*(m_h/10.0)*(red[i0+i]-1.0) - m_plotZero;
       LineBuf[j].setX(i);
       LineBuf[j].setY(y);
       j++;
     }
     painter2D.drawPolyline(LineBuf,j);
   }
-
-  painter2D.setPen(penRed);
-  j=0;
-  for(int i=0; i<m_w; i++) {
-    y = 0.9*m_h2 - gain*(m_h/10.0)*(red[i0+i]-1.0) - m_plotZero;
-    LineBuf[j].setX(i);
-    LineBuf[j].setY(y);
-    j++;
-  }
-  painter2D.drawPolyline(LineBuf,j);
   update();                              //trigger a new paintEvent
 }
 

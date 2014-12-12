@@ -38,7 +38,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
   double sec=t.time().second() + 0.001*t.time().msec();
   double uth=nhr + nmin/60.0 + sec/3600.0;
   int nfreq=freq+0.5;
-  if(nfreq<10 or nfreq > 50000) nfreq=144;
+  if(nfreq<0 or nfreq > 50000) nfreq=144;
 
   if(!astroBusy) {
     astroBusy=true;

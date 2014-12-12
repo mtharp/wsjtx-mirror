@@ -264,10 +264,7 @@ void MainWindow::dataSink()
   //  qDebug() << "4. Rx done:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   lab1->setStyleSheet("");
   lab1->setText("");
-  if(!m_diskData) {
-    fil4_(&datcom_.d2a[0],&n1,&datcom_.d2[0],&n2);
-    qDebug() << "A" << n2;
-  }
+  if(!m_diskData) fil4_(&datcom_.d2a[0],&n1,&datcom_.d2[0],&n2);
   bool bSave=m_bSave and !m_diskData;
   *future1 = QtConcurrent::run(echospec,bSave,m_fname);
   watcher1->setFuture(*future1);               // call specReady() when done
@@ -486,6 +483,7 @@ void MainWindow::on_eraseButton_clicked()                          //Erase
 {
   ui->decodedTextBrowser->clear();
   datcom_.nclearave=1;
+  if(g_pWideGraph!=NULL) g_pWideGraph->plotSpec();
 }
 
 void MainWindow::on_inGain_valueChanged(int n)
