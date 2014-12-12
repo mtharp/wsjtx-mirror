@@ -670,12 +670,13 @@ void MainWindow::on_actionOpen_triggered()
   fname=QFileDialog::getOpenFileName(this, "Open File", m_path,
                                        "WSPR Files (*.eco)");
   if(fname != "") {
+    m_path=fname;
     char name[80];
     strcpy(name,fname.toLatin1());
     fp=fopen(name,"rb");
     if(fp != NULL) {
-      uint nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
-      if(nbytes<sizeof(datcom_)) return;
+      uint nbytes=fread(datcom_.d2,1,67600,fp);
+      if(nbytes!=67600) return;
       m_diskData=true;
       dataSink();
     }
@@ -709,8 +710,8 @@ void MainWindow::on_measureButton_clicked()
 void MainWindow::on_actionRead_next_data_in_file_triggered()
 {
   if(fp != NULL) {
-    int nbytes=fread(datcom_.d2,1,sizeof(datcom_),fp);
-    if(nbytes == sizeof(datcom_)) {
+    int nbytes=fread(datcom_.d2,1,67600,fp);
+    if(nbytes == 67600) {
       dataSink();
     } else {
       fclose(fp);
