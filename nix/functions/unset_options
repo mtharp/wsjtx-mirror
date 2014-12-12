@@ -1,8 +1,0 @@
-
-# --------------------------unset options---------------------------------#
-function unset_options() {
-set +e
-set +o pipefail
-set +u
-} # end unset flags
-
