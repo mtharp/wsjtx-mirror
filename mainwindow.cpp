@@ -285,7 +285,7 @@ void MainWindow::specReady()
   float level=-99.0;
   if(datcom_.rms>0.0) level=10.0*log10(double(datcom_.rms)) - 20.0;
   QString t;
-  t.sprintf("%3d %5.1f %5.1f %5.1f %5.1f %3d",
+  t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
             datcom_.nsum,level,datcom_.snrdb,datcom_.dfreq,
             datcom_.width,datcom_.nqual);
   ui->decodedTextBrowser->append(t);
@@ -485,6 +485,7 @@ void MainWindow::on_eraseButton_clicked()                          //Erase
 {
   ui->decodedTextBrowser->clear();
   datcom_.nclearave=1;
+  datcom_.nsum=0;
   if(g_pWideGraph!=NULL) g_pWideGraph->plotSpec();
 }
 
@@ -678,9 +679,12 @@ void MainWindow::on_actionOpen_triggered()
     strcpy(name,fname.toLatin1());
     fp=fopen(name,"rb");
     if(fp != NULL) {
+      int n=datcom_.nsum;
       uint nbytes=fread(datcom_.d2,1,67600,fp);
       if(nbytes!=67600) return;
+      datcom_.nsum=n;
       m_diskData=true;
+      datcom_.nclearave=1;
       dataSink();
     }
   }
@@ -713,7 +717,9 @@ void MainWindow::on_measureButton_clicked()
 void MainWindow::on_actionRead_next_data_in_file_triggered()
 {
   if(fp != NULL) {
+    int n=datcom_.nsum;
     int nbytes=fread(datcom_.d2,1,67600,fp);
+    datcom_.nsum=n;
     if(nbytes == 67600) {
       dataSink();
     } else {

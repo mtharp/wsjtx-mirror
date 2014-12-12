@@ -1,5 +1,5 @@
 subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
-     f1,rms,sigdb,dfreq,width,blue0,red0)
+     f1,rms0,snrdb,dfreq,width,blue0,red0)
 
   integer RXLENGTH2
   parameter (RXLENGTH2=33792)             !33*1024
@@ -25,10 +25,7 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
      x(i)=id2(i)
      sq=sq + x(i)*x(i)
   enddo
-  rms=sqrt(sq/NFFT)
-  sigdb=-99.0
-  if(sq.gt.0.0) sigdb=10.0*log10((sq/NFFT))
-  if(sigdb.lt.-99.0) sigdb=-99.0
+  rms0=sqrt(sq/NFFT)
 
   if(nclearave.ne.0) nsum=0
   nclearave=0
@@ -62,15 +59,53 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
   call pctile(red,200,50,r0)
   call pctile(red(1800),200,50,r1)
 
+  sum=0.
+  sq=0.
   do i=1,2000
      y=r0 + (r1-r0)*(i-100.0)/1800.0
      blue0(i)=blue(i)/y
      red0(i)=red(i)/y
+     if(i.le.500 .or. i.ge.1501) then
+        sum=sum+red0(i)
+        sq=sq + (red0(i)-1.0)**2
+     endif
   enddo
-  bluemax=maxval(blue0)
-  ipkv=maxloc(blue0)
+  ave=sum/1000.0
+  rms=sqrt(sq/1000.0)
+
   redmax=maxval(red0)
-  fac=10.0/max(bluemax,redmax,10.0)
+  ipkv=maxloc(red0)
+  fac=10.0/max(redmax,10.0)
+  dfreq=(ipk-1000)*df
+  snr=(redmax-ave)/rms
+  halfmax=0.5*(redmax-ave) + ave
+
+  snrdb=-99.0
+  if(ave.gt.0.0) snrdb=10.0*log10(redmax/ave - 1.0) - 35.7
+
+  ia=ipk
+  ib=ipk
+  do i=1,100
+     if((ipk-i).lt.1) go to 11
+     ia=ipk-i
+     if(red0(ia).le.halfmax) goto 11
+  enddo
+11 do i=1,100
+     if((ipk+i).gt.600) go to 21
+     ib=ipk+i
+     if(red0(ib).le.halfmax) goto 21
+  enddo
+21 width=df*(ib-ia-1)
+
+  nqual=(snr-2.5)/2.5
+  if(nsum.lt.12)  nqual=(snr-3)/3
+  if(nsum.lt.8)   nqual=(snr-3)/4
+  if(nsum.lt.4)   nqual=(snr-4)/5
+  if(nsum.lt.2)   nqual=0
+  if(nqual.lt.0)  nqual=0
+  if(nqual.gt.10) nqual=10
+
+! Scale for plotting
   blue0=fac*blue0
   red0=fac*red0
 
