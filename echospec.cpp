@@ -23,7 +23,7 @@ bool echospec(bool bSave, QString fname)
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
-      fwrite(&datcom_.d2,1,sizeof(datcom_),fp);
+      fwrite(&datcom_.d2,1,67600,fp);
       dataWritten=true;
       fclose(fp);
     }
