@@ -5,13 +5,21 @@ program test27
   complex ctx(NTX)
   complex crx(NRX)
   complex z
-  real rx(2*NRX)
-  real f1                           !Generated audio frequency
+  character arg*8
   real*8 dt,pha,dpha,twopi,f,df
   integer ic27(27)
   data ic27/1,3,7,15,2,5,11,23,18,8,17,6,13,27,26,24,20,12,25,22,   &
        16,4,9,19,10,21,14/
-  equivalence (rx,crx)
+
+  nargs=iargc()
+  if(nargs.ne.2) then
+     print*,'Usage: test27 <n1> <snrdb>'
+     go to 999
+  endif
+  call getarg(1,arg)
+  read(arg,*) n1
+  call getarg(2,arg)
+  read(arg,*) snrdb
 
   twopi=8*atan(1.d0)
   dt=1.d0/12000.d0
@@ -32,19 +40,30 @@ program test27
      enddo
   enddo
 
-  call random_number(rx)
-  crx(501:500+NTX)=crx(501:500+NTX) + 10.0*ctx
+  do i=1,NRX
+     x=0.707*gran()
+     y=0.707*gran()
+     crx(i)=cmplx(x,y)
+  enddo
 
-  do lag=0,1000,10
-     z=0.
-     do i=1,NTX
-        z=z + conjg(ctx(i))*crx(i+lag)
+  fac=10.0**(0.05*snrdb)
+  crx(501:500+NTX)=crx(501:500+NTX) + fac*ctx
+
+  n2=NTX/n1
+  nlag=10
+  
+  do lag=0,6000/nlag
+     s=0.
+     do j=1,n1
+        z=0.
+        do i=1,n2
+           z=z + conjg(ctx(i)) * crx(i+lag*nlag)
+        enddo
+        s=s + abs(z)
      enddo
-     s=abs(z)
-     write(*,1010) dt*lag,s,z
-     write(13,1010) dt*lag,s,z
+!     write(*,1010) dt*lag,s
+     write(13,1010) dt*(nlag*lag-500),s
 1010 format(f12.6,3f12.1)
   enddo
 
-  return
-end program test27
+999 end program test27
