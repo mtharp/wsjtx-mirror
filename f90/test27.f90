@@ -65,7 +65,8 @@ program test27
         do i=1,nadd
            z=z + conjg(ctx(i)) * crx(i+lag*nlag)
         enddo
-        s=s + abs(z)
+        x=abs(z)
+        s=s + x*x
      enddo
      ccf(lag)=s
      t=dt*(nlag*lag-500)
