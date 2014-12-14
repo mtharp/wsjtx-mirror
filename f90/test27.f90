@@ -91,7 +91,7 @@ program test27
   do lag=0,lagmax
      t=dt*(nlag*lag-500)     
      write(13,1010) t,ccf(lag)
-1010 format(f12.6,3f12.1)
+1010 format(f12.6,f12.3)
   enddo
 
   print*,lagmax,sum,sq,ave,rms
