@@ -1,7 +1,7 @@
 # Makefile for Windows JTSDK v2.0.0: Python3, F2PY, MinGW, gcc and gfortran
 
-# Re-direct stdout and stderr:     cmd.exe              bash
-#                              make > junk 2>&1      make &> junk
+# Re-direct stdout and stderr:     cmd.exe
+#                              make > junk 2>&1
 
 # Application Information
 NAME = WSJT
@@ -138,7 +138,23 @@ package:
 	$(RM) -rf $(PACKAGEDIR)
 	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
 
-.PHONY : clean distclean
+.PHONY : list-targets clean distclean
+list-targets:
+	@cls
+	@echo --------------------------------------
+	@echo  $(NAME) Build Targets
+	@echo --------------------------------------
+	@echo. 
+	@echo  libjt.a  ........... WSJT Library
+	@echo  jt65code.exe ....... JT65 code test app
+	@echo  jt4code.exe ........ JT4 code test app
+	@echo  WsjtMod/Audio.pyd .. Audio Library for WSJT
+	@echo. install ............ Build and Install WSJT
+	@echo  package ............ Build Win32 Installer
+	@echo. 
+	@echo  At the prompt, type:
+	@echo  make -f Makefile.jtsdk2 ^<target-name^>
+	@echo.
 
 clean:
 	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
