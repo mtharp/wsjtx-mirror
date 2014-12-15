@@ -52,7 +52,7 @@ unix {
 win32 {
 LIBS += ../echo/libfftw3f_win.a
 LIBS += ../echo/palir-02.dll
-LIBS += ../echo/libastro.a
+LIBS += ../echo/f90/libastro.a
 LIBS += libwsock32
 LIBS += -lgfortran
 #LIBS += -lusb

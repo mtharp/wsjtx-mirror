@@ -95,8 +95,6 @@ program test27
 1010 format(f12.6,f12.3)
   enddo
 
-  print*,lagmax,sum,sq,ave,rms
-
   write(*,1000) n27,nsps,tsym,df,27*df,snr
 1000 format('n27:',i2,'   nsps:',i5,'   tsym:',f6.3,'   df:',f7.3,  &
           '   BW:',f7.1,'   S/N:',f6.1)
