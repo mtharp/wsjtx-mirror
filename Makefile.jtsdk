@@ -126,7 +126,7 @@ sound.o: sound.c
 
 # Build gmtime2.o
 gmtime2.o: gmtime2.c
-	$(CC) $(CFLAGS) -c -DWin32=1 gmtime2.c
+	$(CC) $(CFLAGS) -c gmtime2.c
 
 # WSPR Audio w.pyd SRC
 F2PYSRC = wspr1.f90 getfile.f90 paterminate.f90 ftn_quit.f90 audiodev.f90
@@ -160,13 +160,35 @@ install:
 # /cc = Compiler command
 # $(ISS) = .iss file name
 # The other vars are from the top of the Makefile.
-# Output: C:\JTSDK-PY\wspr\package\WSPR-4.0-Win32.exe
+# Output: $(SDK)\wspr\package\WSPR-4.0-Win32.exe
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
 	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
 
-.PHONY : clean distclean
+.PHONY : list-targets clean distclean
+list-targets:
+	@cls
+	@echo --------------------------------------
+	@echo  $(NAME) Build Targets
+	@echo --------------------------------------
+	@echo. 
+	@echo  libwspr.a  ..... WPSR Library
+	@echo  fmtest.exe ..... FMTest App
+	@echo  fmtave.exe ..... Ave app for FMTest
+	@echo  fcal.exe ....... Cal app for FMTest
+	@echo  fmeasure.exe ... Measure app for FMTest
+	@echo  souncd.o ....... Compile sounce.c
+	@echo  gettime.o ...... COmpile gettime.c
+	@echo  WSPRcode.exe ... WSPR code testing App
+	@echo  wspr0.exe  ..... Command Line WSPR
+	@echo  WsprMod/w.pyd .. Audio Library for WSPR
+	@echo. install ........ Build and Install WSPR
+	@echo  package ........ Build Win32 Installer
+	@echo. 
+	@echo  At the prompt, type:
+	@echo  make -f Makefile.jtsdk ^<target-name^>
+	@echo.
 
 clean:
 	$(RM) -rf *.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
