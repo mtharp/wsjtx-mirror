@@ -27,7 +27,8 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
   char cc[300];
   double azsun,elsun,azmoon,elmoon,azmoondx,elmoondx;
   double ramoon,decmoon,dgrd,poloffset,xnr;
-  int ntsky,ndop,ndop00;
+  float doppler,doppler00,techo;
+  int ntsky;
   QString date = t.date().toString("yyyy MMM dd");
   QString utc = t.time().toString();
   int nyear=t.date().year();
@@ -45,26 +46,30 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
     astroBusy=true;
     astrosub_(&nyear, &month, &nday, &uth, &nfreq, mygrid.toLatin1(),
             mygrid.toLatin1(), &azsun, &elsun, &azmoon, &elmoon,
-            &azmoondx, &elmoondx, &ntsky, &ndop, &ndop00,&ramoon, &decmoon,
-            &dgrd, &poloffset, &xnr, 6, 6);
+            &azmoondx, &elmoondx, &ntsky, &doppler, &doppler00,&ramoon, &decmoon,
+            &dgrd, &poloffset, &xnr, &techo, 6, 6);
     if(nfreq<=1) {                            //Do this a better way!
       ntsky=0;
-      ndop00=0;
+      doppler00=0;
       nfreq=0;
     }
     astroBusy=false;
   }
-  datcom_.ndop=ndop;
+  if(doppler>=0) {
+    datcom_.ndop=int(doppler+0.5);
+  } else {
+    datcom_.ndop=int(doppler-0.5);
+  }
   sprintf(cc,
           "Az:    %6.1f\n"
           "El:    %6.1f\n"
-          "Dop:   %6d\n"
+          "Dop: %8.1f\n"
           "Techo: %6.2f\n"
           "Dec:   %6.1f\n"
           "Freq:  %6d\n"
           "Tsky:  %6d\n"
           "Dgrd:  %6.1f",
-          azmoon,elmoon,ndop00,echocom_.techo,decmoon,nfreq,ntsky,dgrd);
+          azmoon,elmoon,doppler00,techo,decmoon,nfreq,ntsky,dgrd);
   ui->astroTextBrowser->setText(" "+ date + "\nUTC: " + utc + "\n" + cc);
 }
 

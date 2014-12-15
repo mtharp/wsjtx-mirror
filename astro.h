@@ -26,9 +26,9 @@ extern "C" {
   void astrosub_(int* nyear, int* month, int* nday, double* uth, int* nfreq,
      const char* mygrid, const char* hisgrid, double* azsun,
      double* elsun, double* azmoon, double* elmoon, double* azmoondx,
-     double* elmoondx, int* ntsky, int* ndop, int* ndop00,
+     double* elmoondx, int* ntsky, float* dop, float* doppler00,
      double* ramoon, double* decmoon, double* dgrd, double* poloffset,
-     double* xnr, int len1, int len2);
+     double* xnr, float* techo, int len1, int len2);
 }
 
 #endif // ASTRO_H

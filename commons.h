@@ -22,6 +22,7 @@ extern struct {
   short int d2a[RXLENGTH1];
 } datcom_;                          //This is "common/datcom/..." in fortran
 
+/*
 extern struct {
   float xdop[2];
   float techo;
@@ -29,6 +30,7 @@ extern struct {
   float ElMoon;
   int mjd;
 } echocom_;                          //This is "common/echocom/..." in fortran
+*/
 }
 
 #endif // COMMONS_H

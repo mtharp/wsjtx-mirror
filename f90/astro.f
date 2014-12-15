@@ -1,7 +1,7 @@
       subroutine astro(nyear,month,nday,uth,nfreq,Mygrid,
      +     NStation,MoonDX,AzSun,ElSun,AzMoon0,ElMoon0,
      +     ntsky,doppler00,doppler,dbMoon,RAMoon,DecMoon,HA,Dgrd,sd,
-     +     poloffset,xnr,day,lon,lat,LST)
+     +     poloffset,xnr,day,lon,lat,LST,techo)
 
 C  Computes astronomical quantities for display and tracking.
 C  NB: may want to smooth the Tsky map to 10 degrees or so.
@@ -11,8 +11,8 @@ C  NB: may want to smooth the Tsky map to 10 degrees or so.
       real lat,lon
       integer*2 nt144(180)
 
-      common/echocom/xdop(2),techo,AzMoon,ElMoon,mjd
-!      real xdop(2)
+!      common/echocom/xdop(2),techo,AzMoon,ElMoon,mjd
+      real xdop(2)
 
       data rad/57.2957795/
       data nt144/
