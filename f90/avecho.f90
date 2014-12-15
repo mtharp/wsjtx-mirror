@@ -85,20 +85,6 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
   snrdb=-99.0
   if(ave.gt.0.0) snrdb=10.0*log10(redmax/ave - 1.0) - 35.7
 
-  ia=ipk
-  ib=ipk
-  do i=1,100
-     if((ipk-i).lt.1) go to 11
-     ia=ipk-i
-     if(red0(ia).le.halfmax) goto 11
-  enddo
-11 do i=1,100
-     if((ipk+i).gt.600) go to 21
-     ib=ipk+i
-     if(red0(ib).le.halfmax) goto 21
-  enddo
-21 width=df*(ib-ia-1)
-
   nqual=(snr-2.5)/2.5
   if(nsum.lt.12)  nqual=(snr-3)/3
   if(nsum.lt.8)   nqual=(snr-3)/4
@@ -110,6 +96,23 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
 ! Scale for plotting
   blue0=fac*blue0
   red0=fac*red0
+
+  sum=0.
+  do i=ipk,ipk+300
+     if(red0(i).lt.1.0) exit
+     sum=sum+(red0(i)-1.0)
+  enddo
+  do i=ipk-1,ipk-300,-1
+     if(red0(i).lt.1.0) exit
+     sum=sum+(red0(i)-1.0)
+  enddo
+  bins=sum/(red0(ipk)-1.0)
+  width=df*bins
+  nsmo=max(1.0,0.5*bins)
+
+  do i=1,nsmo
+     call smo121(red0,2000)
+  enddo
 
 900 return
 end subroutine avecho
