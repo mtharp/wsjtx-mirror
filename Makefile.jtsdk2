@@ -8,6 +8,7 @@ NAME = WSPR
 VER = 4.0
 OS = Win32
 SDK = C:/JTSDK
+SRCD = $(SDK)/src/wspr
 
 # Tool & Chain
 AR = $(SDK)/mingw32/bin/ar.exe
@@ -18,10 +19,11 @@ RANLIB = $(SDK)/mingw32/bin/ranlib.exe
 # Fortran libs
 FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll
 
-# Misc Tools & Files
+# Misc Tools & Files & Paths
 CP = $(SDK)/tools/bin/cp.exe
 MV = $(SDK)/tools/bin/mv.exe
 RM = $(SDK)/tools/bin/rm.exe
+MKDIR = $(SDK)/tools/bin/mkdir.exe
 ISCC = $(SDK)/inno5/ISCC.exe
 ISS = $(SDK)/src/wspr/wspr4b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
@@ -54,7 +56,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Build Targets
 all:	libwspr.a fmtest.exe fmtave.exe fcal.exe fmeasure.exe \
-	WSPRcode.exe wspr0.exe WsprMod/w.pyd install
+	WSPRcode.exe wspr0.exe WsprMod/w.pyd
 
 # Build OBJ1 for wspr0.exe
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
@@ -69,6 +71,9 @@ OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
 
 # Build WPSR0 Command Line WSPR
 wspr0.exe: $(OBJS1)
+	@echo.
+	@echo  Compiling wspr0.exe
+	@echo ------------------------------
 	$(FC) $(FFLAGS) -o wspr0 $(FFLAGS) $(OBJS1) libportaudio.a \
 	libwinmm.a libfftw3f_win.a
 
@@ -82,6 +87,9 @@ OBJS2 = wsprcode.o deg2grid.o pack50.o packcall.o packgrid.o \
 
 # Build WSPR Code example program
 WSPRcode.exe: $(OBJS2)
+	@echo.
+	@echo  Compiling WSPRcode.exe
+	@echo ------------------------------
 	$(FC) $(FFLAGS) -o WSPRcode.exe $(OBJS2)
 
 # Build OBJ3 for libwspr.a
@@ -100,24 +108,39 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 
 # Build the library libwspr.a
 libwspr.a: $(OBJS3) acom1.f90 acom2.f90
+	@echo.
+	@echo  Compiling libwspr.a
+	@echo ------------------------------
 	$(AR) cr libwspr.a $(OBJS3)
 	$(RANLIB) libwspr.a
 
 # Build fmtest.exe
 fmtest.exe: fmtest.f90 libwspr.a
+	@echo.
+	@echo  Compiling FMTest.exe
+	@echo ------------------------------
 	$(FC) $(FFLAGS) -o fmtest.exe fmtest.f90 $(OBJS3) libwspr.a libportaudio.a \
 	libwinmm.a libfftw3f_win.a libpthreadGC2.a
 
 # Build fmtave.exe
 fmtave.exe: fmtave.f90
+	@echo.
+	@echo  Compiling FMTave.exe
+	@echo ------------------------------
 	$(FC) $(FFLAGS) -o fmtave.exe fmtave.f90
 
 # Build fcal.exe
 fcal.exe: fcal.f90
+	@echo.
+	@echo  Compiling Fcal
+	@echo ------------------------------
 	$(FC) $(FFLAGS) -o fcal.exe fcal.f90
 
 # Build fmeasure.exe
 fmeasure.exe: fmeasure.f90
+	@echo.
+	@echo  Compiling Fmeasure
+	@echo ------------------------------
 	$(FC) $(FFLAGS) -o fmeasure.exe fmeasure.f90
 
 # Build sound.o
@@ -133,6 +156,9 @@ F2PYSRC = wspr1.f90 getfile.f90 paterminate.f90 ftn_quit.f90 audiodev.f90
 
 # Build WSPR Audio w.pyd
 WsprMod/w.pyd: libwspr.a $(F2PYSRC)
+	@echo.
+	@echo  RUN F2PY for w.pyd
+	@echo ------------------------------
 	$(F2PY) -c -I. \
 	--quiet --fcompiler=gnu95 --compiler=mingw32 \
 	--f77exec=gfortran --f90exec=gfortran \
@@ -144,17 +170,30 @@ WsprMod/w.pyd: libwspr.a $(F2PYSRC)
 # Run CX_Freeze to install WSPR to $(INSTALLDIR)
 # CX_Freeze creates the $(INSTALLDIR) if not present.
 install:
+	@echo.
+	@echo  RUN CX_FREEZE
+	@echo --------------------------------------
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
 	--include-modules=Pmw wspr.py --target-dir=$(INSTALLDIR)\bin
-	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
-	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
+	@echo.
+	@echo  INSTALL ADDITIONAL FILES
+	@echo --------------------------------------
+	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
+	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u wsjt.ico wsprrc.win hamlib_rig_numbers wspr.bat \
 	fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe \
 	wspr0.exe fmt-env.bat gocal.bat AUTHORS BUGS COPYING \
 	INSTALL.txt NEWS README THANKS $(INSTALLDIR)
 	$(CP) -ur save WsprMod hamlib/* $(INSTALLDIR)
 	$(CP) -u $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
-
+	@echo.
+	@echo  INSTALL SUMMARY
+	@echo --------------------------------------
+	@echo  Package ......: $(NAME)
+	@echo  Version ......: $(VER)
+	@echo  Source .......: $(SRCD)
+	@echo  Install Dir ..: $(INSTALLDIR)
+	
 # /O = Installer output directory
 # /F = Win32 output file name
 # /cc = Compiler command
@@ -162,10 +201,22 @@ install:
 # The other vars are from the top of the Makefile.
 # Output: $(SDK)\wspr\package\WSPR-4.0-Win32.exe
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
-# ISCC creates $(PACKAGEDIR) if not present.
-package: install
-	$(RM) -rf $(PACKAGEDIR)
+package:
+	@echo.
+	@echo  BUILDING INSTALLER with InnoSetup
+	@echo --------------------------------------
+	@$(RM) -rf $(PACKAGEDIR)
+	@$(MKDIR) -p $(PACKAGEDIR)
 	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
+	@echo.
+	@echo  WIN32 PACKAGE SUMMARY
+	@echo --------------------------------------
+	@echo  Package ..........: $(NAME)
+	@echo  Version ..........: $(VER)
+	@echo  Source ...........: $(SRCD)
+	@echo  Install Dir ......: $(INSTALLDIR)
+	@echo  Win32 Installer ..: $(PACKAGEDIR)/$(NAME)-$(VER)-$(OS).exe
+	@echo.
 
 .PHONY : list-targets clean distclean 
 list-targets:
@@ -186,6 +237,8 @@ list-targets:
 	@echo  WsprMod/w.pyd .. Audio Library for WSPR
 	@echo. install ........ Build and Install WSPR
 	@echo  package ........ Build Win32 Installer
+	@echo  clean .......... Clean SRC directory
+	@echo  distclean ...... Clean SRC, Install & Package Dirs
 	@echo. 
 	@echo  At the prompt, type:
 	@echo  make -f Makefile.jtsdk ^<target-name^>
@@ -196,4 +249,4 @@ clean:
 	fmeasure.exe WSPRcode.exe wspr0.exe WsprMod/w.pyd
 
 distclean: clean
-	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) ./JTSDK
+	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) $(SRCD)/JTSDK
