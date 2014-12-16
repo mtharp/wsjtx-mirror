@@ -9,7 +9,6 @@ VER = 10.0
 OS = Win32
 SDK = C:/JTSDK
 
-
 # Tool Chain
 AR = $(SDK)/mingw32/bin/ar.exe
 CC = $(SDK)/mingw32/bin/gcc.exe
@@ -19,13 +18,16 @@ RANLIB = $(SDK)/mingw32/bin/ranlib.exe
 # Fortran libs
 FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll
 
-# Misc Tools & Files
+# Misc Tools & Files & Folders
+SRCD = $(SDK)/src/trunk
+ISS = $(SRCD)/wsjt10b.iss
 CP = $(SDK)/tools/bin/cp.exe
 MV = $(SDK)/tools/bin/mv.exe
 RM = $(SDK)/tools/bin/rm.exe
+MKDIR = $(SDK)/tools/bin/mkdir.exe
 ISCC = $(SDK)/inno5/ISCC.exe
-ISS = $(SDK)/src/trunk/wsjt10b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
+
 
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
@@ -54,7 +56,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 	$(FC) $(FFLAGS) -c $<
 
 # Build Targets
-all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd install
+all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd
 
 # Build OBJ1 for libjt.a
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
@@ -87,17 +89,26 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 
 # Build the library libjt.a
 libjt.a: $(OBJS1)
+	@echo.
+	@echo  Compiling libjt.a
+	@echo ------------------------------
 	$(AR) cr libjt.a $(OBJS1)
 	$(RANLIB) libjt.a
 
 # Build jt65code.exe
 OBJS2 = jt65code.o 
 jt65code.exe: $(OBJS2) libjt.a
+	@echo.
+	@echo  Compiling jt65code.exe
+	@echo ------------------------------
 	$(FC) -o jt65code.exe $(OBJS2) libjt.a
 
 # Build jt4code.exe
 OBJS3 = jt4code.o 
 jt4code.exe: $(OBJS3) libjt.a
+	@echo.
+	@echo  Compiling jt4code.exe
+	@echo ------------------------------
 	$(FC) -o jt4code.exe $(OBJS3) libjt.a
 
 # Audio.pyd SRC
@@ -106,6 +117,9 @@ F2PYSRC = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 \
 
 # Build Audio.pyd
 WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
+	@echo.
+	@echo  RUN F2PY for Audio.pyd
+	@echo ------------------------------
 	$(F2PY) -c -I. \
 	--quiet --fcompiler=gnu95 \
 	--compiler=mingw32 --f77exec=gfortran \
@@ -117,15 +131,28 @@ WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
 # Run CX_Freeze to install WSJT to $(INSTALLDIR)
 # CX_Freeze creates the $(INSTALLDIR) if not present.
 install:
+	@echo.
+	@echo  RUN CX_FREEZE
+	@echo --------------------------------------
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
 	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
-	$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
-	$(RM) -rf $(INSTALLDIR)/bin/tk/demos
+	@echo.
+	@echo  INSTALL ADDITIONAL FILES
+	@echo --------------------------------------
+	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
+	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
-
+	@echo.
+	@echo  INSTALL SUMMARY
+	@echo --------------------------------------
+	@echo  Package ......: $(NAME)
+	@echo  Version ......: $(VER)
+	@echo  Source .......: $(SRCD)
+	@echo  Install Dir ..: $(INSTALLDIR)
+	
 # /O = Installer output directory
 # /F = Win32 output file name
 # /cc = Compiler command
@@ -135,8 +162,21 @@ install:
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
-	$(RM) -rf $(PACKAGEDIR)
+	@echo.
+	@echo  BUILDING INSTALLER with InnoSetup
+	@echo --------------------------------------
+	@$(RM) -rf $(PACKAGEDIR)
+	@$(MKDIR) -p $(PACKAGEDIR)
 	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
+	@echo.
+	@echo  WIN32 PACKAGE SUMMARY
+	@echo --------------------------------------
+	@echo  Package ..........: $(NAME)
+	@echo  Version ..........: $(VER)
+	@echo  Source ...........: $(SRCD)
+	@echo  Install Dir ......: $(INSTALLDIR)
+	@echo  Win32 Installer ..: $(PACKAGEDIR)/$(NAME)-$(VER)-$(OS).exe
+	@echo.
 
 .PHONY : list-targets clean distclean
 list-targets:
@@ -151,6 +191,8 @@ list-targets:
 	@echo  WsjtMod/Audio.pyd .. Audio Library for WSJT
 	@echo. install ............ Build and Install WSJT
 	@echo  package ............ Build Win32 Installer
+	@echo  clean .............. Clean SRC directory
+	@echo  distclean .......... Clean SRC, Install & Package Dirs
 	@echo. 
 	@echo  At the prompt, type:
 	@echo  make -f Makefile.jtsdk2 ^<target-name^>
@@ -160,4 +202,4 @@ clean:
 	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
 
 distclean: clean
-	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR)
+	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) $(SRCD)/JTSDK
