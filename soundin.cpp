@@ -11,15 +11,16 @@ extern double inputLatency;
 
 void SoundInThread::run()                           //SoundInThread::run()
 {
-
   if (m_net) {
-//    qDebug() << "Start inputUDP()";
+    qDebug() << "Start input from MAP65";
     inputUDP();
-//    qDebug() << "Finished inputUDP()";
+    qDebug() << "Finished input from MAP65()";
     return;
   }
 
 //---------------------------------------------------- Soundcard Setup
+  qDebug() << "Start input from soundcard";
+
   PaError paerr;
   PaStreamParameters inParam;
   PaStream *inStream;
@@ -64,6 +65,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
   emit dataReady(RXLENGTH1);
+  qDebug() << "Finished input from soundcard";
 }
 
 void SoundInThread::setInputDevice(int n)                  //setInputDevice()
@@ -146,6 +148,7 @@ void SoundInThread::inputUDP()
     }
   }
 
+  qDebug() << "B" << b.iblk << b.nrx << k;
 //            emit readyForFFT(k);         //Signal to compute new FFTs
   delete udpSocket;
 }
