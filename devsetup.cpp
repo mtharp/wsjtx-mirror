@@ -126,6 +126,9 @@ void DevSetup::initDlg()
   ui.dataBitsComboBox->setEnabled(m_catEnabled);
   ui.stopBitsComboBox->setEnabled(m_catEnabled);
   ui.handshakeComboBox->setEnabled(m_catEnabled);
+  ui.rbMAP65->setChecked(m_network);
+  ui.rbSoundCard->setChecked(!m_network);
+  ui.comboBoxSndIn->setEnabled(!m_network);
 
   ui.rigComboBox->setCurrentIndex(m_rigIndex);
   ui.catPortComboBox->setCurrentIndex(m_catPortIndex);
@@ -144,7 +147,8 @@ void DevSetup::accept()
   // Check to see whether SoundInThread must be restarted,
   // and save user parameters.
 
-  if(m_nDevIn!=ui.comboBoxSndIn->currentIndex() or
+  if(m_network!=ui.rbMAP65->isChecked() or
+     m_nDevIn!=ui.comboBoxSndIn->currentIndex() or
      m_paInDevice!=m_inDevList[m_nDevIn]) m_restartSoundIn=true;
 
   if(m_nDevOut!=ui.comboBoxSndOut->currentIndex() or
@@ -153,6 +157,7 @@ void DevSetup::accept()
   m_pttMethodIndex=ui.pttMethodComboBox->currentIndex();
   m_pttPort=ui.pttComboBox->currentIndex();
   m_saveDir=ui.saveDirEntry->text();
+  m_network=ui.rbMAP65->isChecked();
   m_nDevIn=ui.comboBoxSndIn->currentIndex();
   m_paInDevice=m_inDevList[m_nDevIn];
   m_nDevOut=ui.comboBoxSndOut->currentIndex();
@@ -253,4 +258,14 @@ void DevSetup::msgBox(QString t)                             //msgBox
 void DevSetup::on_pttMethodComboBox_activated(int index)
 {
   m_pttMethodIndex=index;
+}
+
+void DevSetup::on_rbSoundCard_toggled(bool checked)
+{
+
+}
+
+void DevSetup::on_rbMAP65_toggled(bool checked)
+{
+
 }

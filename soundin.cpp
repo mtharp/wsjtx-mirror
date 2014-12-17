@@ -12,6 +12,13 @@ extern double inputLatency;
 void SoundInThread::run()                           //SoundInThread::run()
 {
 
+  if (m_net) {
+//    qDebug() << "Start inputUDP()";
+    inputUDP();
+//    qDebug() << "Finished inputUDP()";
+    return;
+  }
+
 //---------------------------------------------------- Soundcard Setup
   PaError paerr;
   PaStreamParameters inParam;
@@ -89,4 +96,56 @@ double SoundInThread::samFacIn()
 qint64 SoundInThread::rxStartTime()
 {
   return m_rxStartTime;
+}
+
+void SoundInThread::setNetwork(bool b)                          //setNetwork()
+{
+  m_net = b;
+}
+
+//--------------------------------------------------------------- inputUDP()
+void SoundInThread::inputUDP()
+{
+  udpSocket = new QUdpSocket();
+  if(!udpSocket->bind(m_udpPort,QUdpSocket::ShareAddress) )
+  {
+    emit error(tr("UDP Socket bind failed."));
+    return;
+  }
+
+  // Set this socket's total buffer space for received UDP packets
+  int v=141600;
+  ::setsockopt(udpSocket->socketDescriptor(), SOL_SOCKET, SO_RCVBUF,
+               (char *)&v, sizeof(v));
+
+//  bool qe = quitExecution;
+  struct linradBuffer {
+    double cfreq;
+    int msec;
+    float userfreq;
+    int iptr;
+    quint16 iblk;
+    qint8 nrx;
+    char iusb;
+    double d8[174];
+  } b;
+
+  int k=0;
+
+  // Main loop for input of UDP packets over the network:
+  for(int ipkt=0; ipkt<3107; ipkt++) {
+    if (!udpSocket->hasPendingDatagrams()) {
+      msleep(2);                  // Sleep if no packet available
+    } else {
+      int nBytesRead = udpSocket->readDatagram((char *)&b,1416);
+      if (nBytesRead != 1416) qDebug() << "UDP Read Error:" << nBytesRead;
+
+//      qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
+      int nsam=-1;
+      recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
+    }
+  }
+
+//            emit readyForFFT(k);         //Signal to compute new FFTs
+  delete udpSocket;
 }

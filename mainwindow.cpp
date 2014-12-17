@@ -324,6 +324,7 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
   dlg.m_stopBitsIndex=m_stopBitsIndex;
   dlg.m_handshake=m_handshake;
   dlg.m_handshakeIndex=m_handshakeIndex;
+  dlg.m_network=m_network;
 
   dlg.initDlg();
   if(dlg.exec() == QDialog::Accepted) {
@@ -348,8 +349,12 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_stopBitsIndex=dlg.m_stopBitsIndex;
     m_handshake=dlg.m_handshake;
     m_handshakeIndex=dlg.m_handshakeIndex;
+    m_network=dlg.m_network;
 
-    if(dlg.m_restartSoundIn) soundInThread.setInputDevice(m_paInDevice);
+    if(dlg.m_restartSoundIn) {
+      soundInThread.setNetwork(m_network);
+      soundInThread.setInputDevice(m_paInDevice);
+    }
     if(dlg.m_restartSoundOut) soundOutThread.setOutputDevice(m_paOutDevice);
   }
 }

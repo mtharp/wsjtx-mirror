@@ -38,6 +38,7 @@ public:
   bool    m_restartSoundOut;
   bool    m_grid6;
   bool    m_catEnabled;
+  bool    m_network;
 
   QString m_saveDir;
   QString m_azelDir;
@@ -63,6 +64,10 @@ private slots:
   void on_stopBitsComboBox_activated(int index);
   void on_handshakeComboBox_activated(int index);
   void on_pttMethodComboBox_activated(int index);
+
+  void on_rbSoundCard_toggled(bool checked);
+
+  void on_rbMAP65_toggled(bool checked);
 
 private:
   void msgBox(QString t);

@@ -117,6 +117,7 @@ private:
     bool    m_grid6;
     bool    m_catEnabled;
     bool    m_bSave;
+    bool    m_network;
 
     QRect   m_astroGeom;
     QRect   m_wideGraphGeom;
