@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_RxOK=true;
   m_TxOK=false;
   m_grid6=false;
-  m_loopall=false;
+  m_loopall=0;
   m_band=3;
   m_rig=-1;
   m_iptt=0;
@@ -263,6 +263,10 @@ void MainWindow::dataSink()
   static int n2=0;
 
   //  qDebug() << "4. Rx done:" << QDateTime::currentMSecsSinceEpoch() % 6000;
+  qint64 msTx = soundOutThread.txStartTime() % 6000;
+  qint64 msRx = soundInThread.rxStartTime() % 6000;
+  qDebug() << "Tx to Rx delay:" << msRx-msTx;
+
   lab1->setStyleSheet("");
   lab1->setText("");
   if(!m_diskData) fil4_(&datcom_.d2a[0],&n1,&datcom_.d2[0],&n2);
@@ -289,7 +293,7 @@ void MainWindow::specReady()
             datcom_.nsum,level,datcom_.snrdb,datcom_.dfreq,
             datcom_.width,datcom_.nqual);
   ui->decodedTextBrowser->append(t);
-  if(m_loopall) on_actionRead_next_data_in_file_triggered();
+  if(m_loopall>0) on_actionRead_next_data_in_file_triggered();
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -628,7 +632,7 @@ void MainWindow::on_stopButton_clicked()
   if(m_auto) {
     on_txEnableButton_clicked();
   }
-  m_loopall=false;
+  m_loopall=0;
 }
 
 void MainWindow::on_actionAstronomical_data_triggered()
@@ -725,17 +729,24 @@ void MainWindow::on_actionRead_next_data_in_file_triggered()
     datcom_.nsum=n;
     if(nbytes == 67600) {
       dataSink();
+      m_loopall--;
     } else {
       fclose(fp);
       fp=NULL;
-      if(!m_loopall) msgBox("End of echo data.");
-      m_loopall=false;
+      if(m_loopall==0) msgBox("End of echo data.");
+      m_loopall=0;
     }
   }
 }
 
 void MainWindow::on_actionRead_all_remaining_records_triggered()
 {
-  m_loopall=true;
+  m_loopall=9999999;
+  on_actionRead_next_data_in_file_triggered();
+}
+
+void MainWindow::on_actionRead10_triggered()
+{
+  m_loopall=10;
   on_actionRead_next_data_in_file_triggered();
 }

@@ -44,6 +44,7 @@ void SoundInThread::run()                           //SoundInThread::run()
     emit error("Failed to start audio input stream.");
     return;
   }
+  m_rxStartTime = QDateTime::currentMSecsSinceEpoch();
 
 //  const PaStreamInfo* p=Pa_GetStreamInfo(inStream);
 //  inputLatency = p->inputLatency;
@@ -83,4 +84,9 @@ int SoundInThread::mstep()
 double SoundInThread::samFacIn()
 {
   return m_SamFacIn;
+}
+
+qint64 SoundInThread::rxStartTime()
+{
+  return m_rxStartTime;
 }

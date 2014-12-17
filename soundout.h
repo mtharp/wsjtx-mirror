@@ -24,12 +24,14 @@ public:
   void setOutputDevice(qint32 n);
   void setTxFreq(int n);
   void setCostas(int n);
+  qint64 txStartTime();
 
 signals:
   void endTx();
 
 // Private members
 private:
+  qint64  m_txStartTime;
   qint32  m_nDevOut;            //Output device number
   qint32  m_txFreq;
   qint32  m_Costas;

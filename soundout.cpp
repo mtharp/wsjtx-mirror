@@ -55,6 +55,8 @@ void SoundOutThread::run()
     exit(1);
   }
 
+  m_txStartTime = QDateTime::currentMSecsSinceEpoch();
+
 //  const PaStreamInfo* p=Pa_GetStreamInfo(outStream);
 //  outputLatency = p->outputLatency;
 //  qDebug() << "Output latency" << outputLatency;
@@ -101,3 +103,7 @@ void SoundOutThread::setCostas(int n)
   m_Costas=n;
 }
 
+qint64 SoundOutThread::txStartTime()
+{
+  return m_txStartTime;
+}

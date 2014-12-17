@@ -23,6 +23,7 @@ public:
   void setPeriod(int ntrperiod, int nsps);
   int  mstep();
   double samFacIn();
+  qint64 rxStartTime();
 
 signals:
   void dataReady(int k);
@@ -33,6 +34,7 @@ public slots:
 
 private:
   double m_SamFacIn;                    //(Input sample rate)/12000.0
+  qint64  m_rxStartTime;
   qint32 m_step;
   qint32 m_nDevIn;
   qint32 m_TRperiod;

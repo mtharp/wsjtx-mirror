@@ -69,6 +69,8 @@ private slots:
 
   void on_actionRead_all_remaining_records_triggered();
 
+  void on_actionRead10_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -104,6 +106,7 @@ private:
     qint32  m_RIT;
     qint32  m_smooth;
     qint32  m_Costas;
+    qint32  m_loopall;
 
     bool    m_receiving;
     bool    m_transmitting;
@@ -114,7 +117,6 @@ private:
     bool    m_grid6;
     bool    m_catEnabled;
     bool    m_bSave;
-    bool    m_loopall;
 
     QRect   m_astroGeom;
     QRect   m_wideGraphGeom;

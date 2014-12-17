@@ -608,6 +608,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionRead_next_data_in_file"/>
+    <addaction name="actionRead10"/>
     <addaction name="actionRead_all_remaining_records"/>
     <addaction name="actionSave_data"/>
     <addaction name="actionDelete_eco_files"/>
@@ -735,6 +736,14 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Shift+F6</string>
+   </property>
+  </action>
+  <action name="actionRead10">
+   <property name="text">
+    <string>Read next 10 records</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
    </property>
   </action>
  </widget>
