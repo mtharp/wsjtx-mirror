@@ -144,7 +144,7 @@ void SoundInThread::inputUDP()
     } else {
       int nBytesRead = udpSocket->readDatagram((char *)&b,1416);
       if (nBytesRead != 1416) qDebug() << "UDP Read Error:" << nBytesRead;
-      if(iblk0 != 0 and b.iblk-iblk0 != 1) qDebug() << "Linrad block error" << iblk0 << b.iblk;
+      if(k != 0 and b.iblk-iblk0 != 1) qDebug() << "Linrad block error" << iblk0 << b.iblk;
       iblk0=b.iblk;
 
 //      qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
@@ -154,7 +154,7 @@ void SoundInThread::inputUDP()
     }
   }
 
-  qDebug() << "B" << b.iblk << b.nrx << k;
+  qDebug() << "Completed input from MAP65" << k;
 //            emit readyForFFT(k);         //Signal to compute new FFTs
   delete udpSocket;
 }

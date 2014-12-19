@@ -129,7 +129,6 @@ void DevSetup::initDlg()
   ui.rbMAP65->setChecked(m_network);
   ui.rbSoundCard->setChecked(!m_network);
   ui.comboBoxSndIn->setEnabled(!m_network);
-
   ui.rigComboBox->setCurrentIndex(m_rigIndex);
   ui.catPortComboBox->setCurrentIndex(m_catPortIndex);
   ui.serialRateComboBox->setCurrentIndex(m_serialRateIndex);
@@ -262,10 +261,12 @@ void DevSetup::on_pttMethodComboBox_activated(int index)
 
 void DevSetup::on_rbSoundCard_toggled(bool checked)
 {
-
+  m_network=!checked;
 }
 
 void DevSetup::on_rbMAP65_toggled(bool checked)
 {
+  m_network=checked;
+  ui.comboBoxSndIn->setEnabled(!m_network);
 
 }
