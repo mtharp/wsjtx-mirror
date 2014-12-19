@@ -37,6 +37,18 @@ if test -n "$with_mandir"; then
 	AC_SUBST([MANDIR], ["$with_mandir"])
 fi
 
+AC_ARG_WITH([f2py],
+AC_HELP_STRING([--with-f2py=PATH], [path to f2py]), [f2py=$with_f2py])
+if test -n "$with_f2py"; then
+	AC_SUBST([F2PY], ["$with_f2py"])
+fi
+
+AC_ARG_WITH([python3],
+AC_HELP_STRING([--with-python3=PATH], [path to python3]), [python3=$with_python3])
+if test -n "$with_python3"; then
+	AC_SUBST([PY3], ["$with_python3"])
+fi
+
 # ------------------------------------------------------------------------------
 #  check compilers
 # ------------------------------------------------------------------------------
@@ -116,7 +128,7 @@ HAVE_PY3=no
 
 # check with-enable first
 AC_MSG_CHECKING([Python3 --with-python3])
-AC_ARG_WITH([f2py], [  --with-python3=PATH     path to: ../python3],
+AC_ARG_WITH([python3], [  --with-python3=PATH     path to: ../python3],
 PY3="$withval")
 
 # if --with-python3 is not empty
