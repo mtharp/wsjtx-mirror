@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
   btxok=false;
   m_Costas=0;
   m_transmitting=false;
+  m_network=false;
   m_diskData=false;
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
@@ -117,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_txEnable_style="QPushButton{background-color: #ff0000; \
       border-style: outset; border-width: 1px; border-radius: 3px; \
       border-color: black; padding: 4px;}";
+  soundInThread.setNetwork(m_network);
   soundInThread.setInputDevice(m_paInDevice);
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
@@ -193,6 +195,7 @@ void MainWindow::writeSettings()
   settings.setValue("RIT",m_RIT);
   settings.setValue("Costas27",m_Costas);
   settings.setValue("Save",m_bSave);
+  settings.setValue("MAP65",m_network);
   settings.endGroup();
 }
 
@@ -233,6 +236,7 @@ void MainWindow::readSettings()
   ui->rb27->setChecked(m_Costas>0);
   soundOutThread.setCostas(m_Costas);
   m_catEnabled=settings.value("catEnabled",false).toBool();
+  m_network=settings.value("MAP65",false).toBool();
   m_bSave=settings.value("Save",false).toBool();
   ui->actionSave_data->setChecked(m_bSave);
   m_rig=settings.value("Rig",214).toInt();

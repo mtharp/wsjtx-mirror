@@ -12,14 +12,14 @@ extern double inputLatency;
 void SoundInThread::run()                           //SoundInThread::run()
 {
   if (m_net) {
-    qDebug() << "Start input from MAP65";
+//    qDebug() << "Start input from MAP65";
     inputUDP();
-    qDebug() << "Finished input from MAP65()";
+//    qDebug() << "Finished input from MAP65()";
     return;
   }
 
 //---------------------------------------------------- Soundcard Setup
-  qDebug() << "Start input from soundcard";
+//  qDebug() << "Start input from soundcard";
 
   PaError paerr;
   PaStreamParameters inParam;
@@ -65,7 +65,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
   emit dataReady(RXLENGTH1);
-  qDebug() << "Finished input from soundcard";
+//  qDebug() << "Finished input from soundcard";
 }
 
 void SoundInThread::setInputDevice(int n)                  //setInputDevice()
@@ -109,8 +109,10 @@ void SoundInThread::setNetwork(bool b)                          //setNetwork()
 void SoundInThread::inputUDP()
 {
   udpSocket = new QUdpSocket();
+  m_udpPort=50004;
   if(!udpSocket->bind(m_udpPort,QUdpSocket::ShareAddress) )
   {
+    qDebug() << "UDP Socket bind failed.";
     emit error(tr("UDP Socket bind failed."));
     return;
   }
@@ -132,19 +134,23 @@ void SoundInThread::inputUDP()
     double d8[174];
   } b;
 
+  quint16 iblk0=0;
   int k=0;
 
   // Main loop for input of UDP packets over the network:
-  for(int ipkt=0; ipkt<3107; ipkt++) {
+  for(int ipkt=0; ipkt<3107; ) {
     if (!udpSocket->hasPendingDatagrams()) {
       msleep(2);                  // Sleep if no packet available
     } else {
       int nBytesRead = udpSocket->readDatagram((char *)&b,1416);
       if (nBytesRead != 1416) qDebug() << "UDP Read Error:" << nBytesRead;
+      if(iblk0 != 0 and b.iblk-iblk0 != 1) qDebug() << "Linrad block error" << iblk0 << b.iblk;
+      iblk0=b.iblk;
 
 //      qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
       int nsam=-1;
       recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
+      ipkt++;
     }
   }
 
