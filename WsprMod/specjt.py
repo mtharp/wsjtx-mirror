@@ -34,10 +34,6 @@ import pickle
 import tkinter.messagebox
 from . import w
 
-try:
-    from numpy.oldnumeric import zeros, multiarray
-except:
-    from Numeric import zeros, multiarray
 import Image, ImageTk, ImageDraw
 from .palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
@@ -94,7 +90,6 @@ tol0=400
 ttot=0.0
 
 c=Canvas()
-a=zeros(225000,'s')
 im=Image.new('P',(750,300))
 line0=Image.new('P',(750,1))      #Image fragment for top line of waterfall
 draw=ImageDraw.Draw(im)
