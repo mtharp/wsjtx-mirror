@@ -198,7 +198,7 @@ fi
 
 HAVE_F2PY=no
 
-# check with-enable first
+# check with-f2py first
 AC_MSG_CHECKING([F2PY --with-f2py])
 AC_ARG_WITH([f2py], [  --with-f2py=PATH        path to: ../f2py ../f2py3],
 F2PY="$withval")
@@ -269,13 +269,24 @@ fi
 #  check gfortran
 # ------------------------------------------------------------------------------
 
+gfortran="gfortran"
+AC_MSG_CHECKING([gfortran --with-gfortran])
+AC_ARG_WITH([gfortran], [  --with-gfortran=PATH     path to: ../gfortran],])
+
+# if --with-gfortran is not empty
+if test -n ${withval}; then
+	gfortran="${withval}"
+	gfpath=`${gfortran} --print-file-name=|awk -F/ '{print $1 "/" $2 "/" $3 "/" $4 "/" $5}'`
+	LDFLAGS="-L${gfpath} ${LDFLAGS}"
+fi
+
 AC_CHECK_LIB([gfortran], [_gfortran_st_write], [], [])
 
 if test "$ac_cv_lib_gfortran__gfortran_st_write" != "yes"; then
 	HAVE_GFORTRAN=0
 else
 	HAVE_GFORTRAN=1
-	FC=gfortran
+	FC=${gfortran}
 	FCV=gnu95
 	FC_LIB_PATH=`${FC} -print-file-name=`
 	AC_DEFINE_UNQUOTED([FC_LIB_PATH], ["${FC_LIB_PATH}"], [Path to Gfortran libs.])
@@ -290,6 +301,21 @@ fi
 # ------------------------------------------------------------------------------
 #  check portaudio
 # ------------------------------------------------------------------------------
+HAVE_PORTAUDIO=0
+#
+# This unpleasant hack due to FreeBSD supporting both portaudio2 (v19+)
+# and older portaudio. Many programs depend on older. Sorry :-( - db
+#
+
+case "${host_os}" in
+	*freebsd* )
+	AC_SUBST([PORTAUDIO_INCLUDE], ["-I/usr/local/include/portaudio2"])
+	AC_SUBST([PORTAUDIO_LIBDIR], ["-L/usr/local/lib/portaudio2"])
+	LDFLAGS="-L/usr/local/lib/portaudio2 ${LDFLAGS}"
+	;;
+	*)
+	;;
+esac
 
 AC_CHECK_LIB([portaudio], [Pa_Initialize], [], [])
 if test "$ac_cv_lib_portaudio_Pa_Initialize" = "yes"; then
@@ -303,11 +329,23 @@ if test "$ac_cv_header_portaudio_h" = "yes" -a "$ac_cv_lib_portaudio_Pa_Initiali
 	AC_DEFINE([HAVE_PORTAUDIO_LIB], [1], [Portaudio Lib])
 fi
 
+#
+# Ensure FreeBSD picks up the right portaudio -db
+#
+case "${host_os}" in
+	*freebsd* )
+	AC_SUBST([PORTAUDIO_INCLUDE], ["-I/usr/local/include/portaudio2"])
+	AC_SUBST([PORTAUDIO_LIBDIR], ["-L/usr/local/lib/portaudio2"])
+	LDFLAGS="-L/usr/local/lib/portaudio2 ${LDFLAGS}"
+	;;
+	*)
+	;;
+esac
 
 # ------------------------------------------------------------------------------
 #  check fftw3
 # ------------------------------------------------------------------------------
-
+HAVE_FFTW3_LIB=0
 AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [], [])
 
 if test "$ac_cv_lib_fftw3f_sfftw_destroy_plan_" = "yes"; then
@@ -325,12 +363,14 @@ fi
 #  check samplerate
 # ------------------------------------------------------------------------------
 
+HAVE_SAMPLERATE=0
 AC_CHECK_LIB([samplerate], [src_simple], [], [])
 
 if test "$ac_cv_lib_samplerate_src_simple" = "yes"; then
 	LIBS="-lsamplerate ${LIBS}"
 fi
 
+echo ac_cv_header_samplerate_h = ${ac_cv_header_samplerate_h}
 # if headers and libs found, set define
 if test "$ac_cv_header_samplerate_h" = "yes" -a "$ac_cv_lib_samplerate_src_simple" = "yes"; then
 	HAVE_SAMPLERATE=1
@@ -388,6 +428,10 @@ case "${host_os}" in
 -Wno-conversion -Wno-character-truncation -fPIC"
 		LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 	;;
+	*freebsd* )
+		CFLAGS="${CFLAGS} -fpic"
+		FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIC"	;;
 	*)
 		AC_MSG_ERROR([Unsupported System: ${host_os}.])
 	;;
@@ -410,10 +454,10 @@ if test "$HAVE_PY3" = "no"; then
 	echo './configure --with-python3="/home/$USER/test/python3"'
 	echo
 	exit 1
-else
+#else
 	# add python3 path to wspr.sh script
-	sed -i '/wspr.py/d' wspr.sh
-	echo "$PY3_PATH -O wspr.py" >> wspr.sh
+#	sed -i '/wspr.py/d' wspr.sh
+#	echo "$PY3_PATH -O wspr.py" >> wspr.sh
 fi
 
 # ------------------------------------------------------------------------------
@@ -538,7 +582,7 @@ AC_SUBST([BINDIR], ["$PREFIX"/bin])
 AC_SUBST([LIBS], ["$LIBS"])
 AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
 AC_SUBST([USER], ["$USER"])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile wspr.sh])
 AC_OUTPUT
 
 # ------------------------------------------------------------------------------
@@ -553,7 +597,7 @@ echo
 echo " Package: .........: ${PROGRAM} ${VERSION}"
 echo " Python3: .........: ${PYTHON}"
 echo " F2py: ............: ${F2PY}"
-echo " Fcomplier: .......: ${FC}"
+echo " Fcompiler: .......: ${FC}"
 echo " Samplerate: ......: ${srstatus}"
 echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"

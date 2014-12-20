@@ -26,13 +26,13 @@ SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
 
 # Install locations
-INATALL		:=	install
-BINDIR		:=	$(DESTDIR)@BINDIR@
-DOCDIR		:=	$(DESTDIR)@DOCDIR@
-HOMEDIR		:=	$(DESTDIR)@HOMEDIR@
-MANDIR		:=	$(DESTDIR)@MANDIR@
-SHARED		:=	$(DESTDIR)@SHARED@
-WSPRLIB		:=	$(DESTDIR)@WSPRLIB@
+INSTALL		:=	install
+BINDIR		:=	@BINDIR@
+DOCDIR		:=	@DOCDIR@
+HOMEDIR		:=	@HOMEDIR@
+MANDIR		:=	@MANDIR@
+SHARED		:=	@SHARED@
+WSPRLIB		:=	@WSPRLIB@
 
 # Compiler Information
 CC			:=	@CC@
@@ -52,6 +52,8 @@ CFLAGS		+=	@CFLAGS@
 FFLAGS		+=	@FFLAGS@
 LDFLAGS		+=	@LDFLAGS@
 FCOPT		+=	@FCOPT@
+PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
+PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
 # Config Definitions
 DEFS		:=	@DEFS@
@@ -74,15 +76,15 @@ all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 
 # Default Rules
 %.o: %.c
-	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
+	${CC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${CPPFLAGS} -c $<
 %.o: %.f
-	${FC} ${FFLAGS} -c $<
+	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} -c $<
 %.o: %.F
-	${FC} ${FFLAGS} -c $<
+	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} -c $<
 %.o: %.f90
-	${FC} ${FFLAGS} -c $<
+	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} -c $<
 %.o: %.F90
-	${FC} ${FFLAGS} -c $<
+	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} -c $<
 
 # Prevent compiler warnings ( r4142 commit )
 thnix_stub.o: thnix_stub.f90
@@ -117,13 +119,13 @@ libwspr.a: ${OBJS3} acom1.f90 acom2.f90
 
 # Build FMT Applications
 fmtest: fmtest.f90 libwspr.a
-	${FC} ${FFLAGS} ${LDFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
+	${FC} ${CFLAGS} ${FFLAGS} ${PORTAUDIO_LIBDIR} ${LDFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
-	${FC} ${FFLAGS} ${LDFLAGS} -o fmtave fmtave.f90
+	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} ${PORTAUDIO_LIBDIR} ${LDFLAGS} -o fmtave fmtave.f90
 
 fcal: fcal.f90
-	${FC} ${FFLAGS} ${LDFLAGS} -o fcal fcal.f90
+	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} ${PORTAUDIO_LIBDIR} ${LDFLAGS} -o fcal fcal.f90
 
 fmeasure: fmeasure.f90
 	${FC} ${FFLAGS} ${LDFLAGS} -o fmeasure fmeasure.f90
@@ -134,7 +136,7 @@ F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 # Build W.SO & MV to WsprMod/
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
-	--opt="${FCOPT} ${LDFLAGS}" thnix.o ${LIBS} libwspr.a -m w ${F2PYSRCS}
+	--opt="${FCOPT} thnix.o ${PORTAUDIO_LIBDIR} ${LDFLAGS}" ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
 
 # Install target wspr
@@ -144,26 +146,31 @@ install:
 	@echo "      Installing ${PROGRAM}"
 	@echo '-----------------------------------'
 	@echo ''
-	@${MKDIR} -p ${BINDIR}
-	@${MKDIR} -p ${MANDIR}
-	@${MKDIR} -p ${DOCDIR}/examples
-	@${MKDIR} -p ${SHARED}/save/Samples
-	@${MKDIR} -p ${WSPRLIB}/WsprMod
-	@${MKDIR} -p ${SHARED}/../applications
-	@${MKDIR} -p ${SHARED}/../pixmaps
-	@install -m 755 --strip fmtest fcal fmeasure fmtave wspr0 wsprcode ${BINDIR}
-	@install -m 644 manpages/man1/*.1 ${MANDIR}
-	@install -m 644 save/Samples/* ${SHARED}/save/Samples/
-	@install -m 755 ./{gocal,Pmw*.py,wspr.py,wspr.sh,wsprrc} ${SHARED}
-	@install -m 644 ./{AUTHORS,README,NEWS,COPYING,COPYRIGHT} ${DOCDIR} 
-	@install -m 644 ./hamlib_rig* ${SHARED}
-	@install -m 755 WsprMod/* ${WSPRLIB}/WsprMod
-	@install -m 644 ./wspr.desktop ${SHARED}/../applications
-	@install -m 644 ./wspr.xpm ${SHARED}/../pixmaps/
-	@${MV} -T ${SHARED}/wspr.sh ${BINDIR}/wspr
-	@${CHMOD} 755 ${BINDIR}/wspr
-	@${CP} -r doc/examples/* ${DOCDIR}/examples/
-	@${CHMOD} -R 644 ${DOCDIR}/examples/*
+	@${MKDIR} -p ${DESTDIR}${BINDIR}
+	@${MKDIR} -p ${DESTDIR}${MANDIR}
+	@${MKDIR} -p ${DESTDIR}${DOCDIR}/examples
+	@${MKDIR} -p ${DESTDIR}${SHARED}
+	@${MKDIR} -p ${DESTDIR}${SHARED}/save/Samples
+	@${MKDIR} -p ${DESTDIR}${WSPRLIB}/WsprMod
+	@${MKDIR} -p ${DESTDIR}${SHARED}/../applications
+	@${MKDIR} -p ${DESTDIR}${SHARED}/../pixmaps
+	@install -m 755 fmtest fcal fmeasure fmtave wspr0 wsprcode ${DESTDIR}${BINDIR}
+	@strip	${DESTDIR}${BINDIR}/fmtest ${DESTDIR}${BINDIR}/fcal \
+		${DESTDIR}${BINDIR}/fmeasure ${DESTDIR}${BINDIR}/fmtave \
+		${DESTDIR}${BINDIR}/wspr0 ${DESTDIR}${BINDIR}/wsprcode
+	@install -m 644 manpages/man1/*.1 ${DESTDIR}${MANDIR}
+	@install -m 644 save/Samples/* ${DESTDIR}${SHARED}/save/Samples/
+	@install -m 755 gocal Pmw*.py wspr.py wspr.sh wsprrc ${DESTDIR}${SHARED}
+	@install -m 644 AUTHORS	README NEWS COPYING COPYRIGHT ${DESTDIR}${DOCDIR}
+	@install -m 644 hamlib_rig* ${DESTDIR}${SHARED}
+	@install -m 755 WsprMod/* ${DESTDIR}${WSPRLIB}/WsprMod
+	@install -m 644 wspr.desktop ${DESTDIR}${SHARED}/../applications
+	@install -m 644 wspr.desktop ${DESTDIR}${SHARED}/applications
+	@install -m 644 wspr.xpm ${DESTDIR}${SHARED}/../pixmaps/
+	@${CP}	 wspr.sh ${DESTDIR}${BINDIR}/wspr
+	@${CHMOD} 755 ${DESTDIR}${BINDIR}/wspr
+	@${CP} -r doc/examples/* ${DESTDIR}${DOCDIR}/examples/
+	@${CHMOD} -R 644 ${DESTDIR}${DOCDIR}/examples/*
 	@echo "Finished Installing ${PROGRAM}"
 	@echo ''
 	@echo "Location: ${BINDIR}"
