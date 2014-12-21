@@ -94,7 +94,7 @@ thnix_stub.o: thnix_stub.f90
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
-	${FC} ${FFLAGS} -o wspr0 ${FFLAGS} ${LDFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
+	${FC} ${PORTAUDIO_LIBDIR} ${FFLAGS} -o wspr0 ${FFLAGS} ${LDFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
 	${FC} ${FFLAGS} ${LDFLAGS} -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
@@ -136,7 +136,7 @@ F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 # Build W.SO & MV to WsprMod/
 WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
 	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
-	--opt="${FCOPT} thnix.o ${PORTAUDIO_LIBDIR} ${LDFLAGS}" ${LIBS} libwspr.a -m w ${F2PYSRCS}
+	--opt="${FCOPT}" thnix.o ${PORTAUDIO_LIBDIR} ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
 
 # Install target wspr
