@@ -26,27 +26,47 @@ DOCDIR="$prefix"/share/doc/wspr
 MANDIR="$prefix"/share/man/man1
 
 AC_ARG_WITH([docdir],
-AC_HELP_STRING([--with-docdir=PATH], [path to documentuments]), [docdir=$with_docdir])
+AC_HELP_STRING([--with-docdir=DIR], [Path to documentation]), [docdir=$with_docdir])
 if test -n "$with_docdir"; then
 	AC_SUBST([DOCDIR], ["$with_docdir"])
 fi
 
 AC_ARG_WITH([mandir],
-AC_HELP_STRING([--with-mandir=PATH], [path to manpages]), [mandir=$with_mandir])
+AC_HELP_STRING([--with-mandir=DIR], [Path to manpages]), [mandir=$with_mandir])
 if test -n "$with_mandir"; then
 	AC_SUBST([MANDIR], ["$with_mandir"])
 fi
 
-AC_ARG_WITH([f2py],
-AC_HELP_STRING([--with-f2py=PATH], [path to f2py]), [f2py=$with_f2py])
-if test -n "$with_f2py"; then
-	AC_SUBST([F2PY], ["$with_f2py"])
-fi
+# ------------------------------------------------------------------------------
+#  Enable Optimization ( none | native )
+# ------------------------------------------------------------------------------
+flag_status=default
 
-AC_ARG_WITH([python3],
-AC_HELP_STRING([--with-python3=PATH], [path to python3]), [python3=$with_python3])
-if test -n "$with_python3"; then
-	AC_SUBST([PY3], ["$with_python3"])
+AC_ARG_ENABLE([flags],
+AC_HELP_STRING([--enable-flags=ARG], [=native or =none]), [flags=$enable_flags])
+if test -n "${enable_flags}"; then
+	case "${enable_flags}" in
+		none )
+			OPT_FLAGS=""
+			flag_status=${OPT_FLAGS}
+		;;
+		native )
+			OPT_FLAGS="-mtune=native"
+			flag_status=${OPT_FLAGS}
+			AC_MSG_RESULT([Using Optimization: "${enable_flags}"])
+		;;
+		* )
+		echo "Unsupported Optimization: ${enable_flags}"
+		echo
+		echo 'Only "none or native" are supported at this time'
+		echo
+		echo 'Example:'
+		echo './autogen.sh --enable-optimization=native'
+		echo './configure --enable-optimization=native'
+		echo
+		exit 1
+		;;
+	esac
 fi
 
 # ------------------------------------------------------------------------------
@@ -127,9 +147,9 @@ if test -d "/usr/lib/arm-linux-gnueabihf"; then LIBDIR="-L/usr/lib/arm-linux-gnu
 HAVE_PY3=no
 
 # check with-enable first
+AC_ARG_WITH([python3],
+AC_HELP_STRING([--with-python3=DIR], [Path to python3]), [PY3=$with_python3])
 AC_MSG_CHECKING([Python3 --with-python3])
-AC_ARG_WITH([python3], [  --with-python3=PATH     path to: ../python3],
-PY3="$withval")
 
 # if --with-python3 is not empty
 if test -n "$PY3"; then
@@ -199,9 +219,9 @@ fi
 HAVE_F2PY=no
 
 # check with-f2py first
+AC_ARG_WITH([python3],
+AC_HELP_STRING([--with-f2py=DIR], [Path to f2py | f2py3]), [PY3=$with_f2py])
 AC_MSG_CHECKING([F2PY --with-f2py])
-AC_ARG_WITH([f2py], [  --with-f2py=PATH        path to: ../f2py ../f2py3],
-F2PY="$withval")
 
 # if --with-f2py is not empty
 if test -n "$F2PY"; then
@@ -270,15 +290,24 @@ fi
 # ------------------------------------------------------------------------------
 
 gfortran="gfortran"
-AC_MSG_CHECKING([gfortran --with-gfortran])
-AC_ARG_WITH([gfortran], [  --with-gfortran=PATH     path to: ../gfortran],])
-
-# if --with-gfortran is not empty
-if test -n ${withval}; then
-	gfortran="${withval}"
-	gfpath=`${gfortran} --print-file-name=|awk -F/ '{print $1 "/" $2 "/" $3 "/" $4 "/" $5}'`
-	LDFLAGS="-L${gfpath} ${LDFLAGS}"
-fi
+#
+# Sames as portadio, use case for FreeBSD to prevent Linux shell errors. -gb
+#
+case "${host_os}" in
+	*freebsd* )
+		# if --with-gfortran is not empty
+		AC_ARG_WITH([gfortran],
+		AC_HELP_STRING([--with-gfortran=DIR], [Path to gfortran]), [gfortran=$with_gfortran])
+		AC_MSG_CHECKING([F2PY --with-f2py])
+		if test -n ${with_gfortran}; then
+			gfortran="${with_gfortran}"
+			gfpath=`${gfortran} --print-file-name=|awk -F/ '{print $1 "/" $2 "/" $3 "/" $4 "/" $5}'`
+			LDFLAGS="-L${gfpath} ${LDFLAGS}"
+		fi
+	;;
+	*)
+	;;
+esac
 
 AC_CHECK_LIB([gfortran], [_gfortran_st_write], [], [])
 
@@ -370,7 +399,6 @@ if test "$ac_cv_lib_samplerate_src_simple" = "yes"; then
 	LIBS="-lsamplerate ${LIBS}"
 fi
 
-echo ac_cv_header_samplerate_h = ${ac_cv_header_samplerate_h}
 # if headers and libs found, set define
 if test "$ac_cv_header_samplerate_h" = "yes" -a "$ac_cv_lib_samplerate_src_simple" = "yes"; then
 	HAVE_SAMPLERATE=1
@@ -396,28 +424,24 @@ case "${host_os}" in
 		FCOPT="-cpp -fbounds-check -O2"
 			case "${host_cpu}" in
 				*armv6* )
-					CFLAGS="-O2 -march=armv6j -mfpu=vfp -mfloat-abi=hard -fpic"
-					FFLAGS="-O2 -Wall -fno-range-check -ffixed-line-length-none \
+					CFLAGS="${OPT_FLAGS} -O2 -march=armv6j -mfpu=vfp -mfloat-abi=hard -fpic"
+					FFLAGS="${OPT_FLAGS} -O2 -Wall -fno-range-check -ffixed-line-length-none \
 -Wno-character-truncation -Wno-conversion -Wtabs -mfloat-abi=hard -fPIC"
-					LDFLAGS="-Wl,-O1 -Wl,--as-needed"						
 				;;
 				*armv7* )
-					CFLAGS="-fpic"
-					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+					CFLAGS="${OPT_FLAGS} -fpic"
+					FFLAGS="${OPT_FLAGS} -O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
-					LDFLAGS=""						
 				;;
 				*x86_64* )
-					CFLAGS="-fPIC"
-					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+					CFLAGS="${OPT_FLAGS} -fPIC"
+					FFLAGS="${OPT_FLAGS} -O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
-					LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 				;;
 				*i386* )
-					CFLAGS="-fPIC"
-					FFLAGS="-O2 -Wall -fbounds-check -fno-second-underscore \
+					CFLAGS="${OPT_FLAGS} -fPIC"
+					FFLAGS="${OPT_FLAGS} -O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
-					LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 				;;
 			esac
 	;;
@@ -431,7 +455,8 @@ case "${host_os}" in
 	*freebsd* )
 		CFLAGS="${CFLAGS} -fpic"
 		FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
--Wno-conversion -Wno-character-truncation -fPIC"	;;
+-Wno-conversion -Wno-character-truncation -fPIC"
+	;;
 	*)
 		AC_MSG_ERROR([Unsupported System: ${host_os}.])
 	;;
@@ -451,13 +476,10 @@ if test "$HAVE_PY3" = "no"; then
 	echo "[3] Include Python3.2+:"
 	echo
 	echo 'Example:'
+	echo './autogen.sh --with-python3="/home/$USER/test/python3"'
 	echo './configure --with-python3="/home/$USER/test/python3"'
 	echo
 	exit 1
-#else
-	# add python3 path to wspr.sh script
-#	sed -i '/wspr.py/d' wspr.sh
-#	echo "$PY3_PATH -O wspr.py" >> wspr.sh
 fi
 
 # ------------------------------------------------------------------------------
@@ -474,6 +496,7 @@ if test "$HAVE_F2PY" = "no"; then
 	echo "[3] Include F2PY:"
 	echo
 	echo 'Example:'
+	echo './autogen.sh --with-f2py="/home/$USER/test/f2py"'
 	echo './configure --with-f2py="/home/$USER/test/f2py"'
 	echo 
 	exit 1
@@ -494,6 +517,11 @@ if test ${HAVE_GFORTRAN} -eq 0; then
 	echo "Possible Solutions:"
 	echo "[1] Install your distro version of: gfortran"
 	echo "[2] On x86_64 systems, ensure you include x86 / i386 libgfortran"
+	echo "[3] Include Gfortran:"
+	echo
+	echo 'Example:'
+	echo './autogen.sh --with-gfortran=/path./to/gfortran'
+	echo './configure --with-f2py=/path./to/gfortran'
 	echo
 	exit 1
 fi
@@ -595,9 +623,11 @@ echo " Configuration Summary"
 echo "-------------------------------------------"
 echo
 echo " Package: .........: ${PROGRAM} ${VERSION}"
+echo " Optimization .....: ${flag_status}"
 echo " Python3: .........: ${PYTHON}"
 echo " F2py: ............: ${F2PY}"
 echo " Fcompiler: .......: ${FC}"
+echo " FC Lib Path ......: ${FC_LIB_PATH}"
 echo " Samplerate: ......: ${srstatus}"
 echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"

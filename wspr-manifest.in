@@ -119,7 +119,7 @@ wfile5.f90
 wqdecode.f90
 wqencode.f90
 write_wav.f90
-wspr.sh
+wspr.sh.in
 wspr0.f90
 wspr0init.f90
 wspr0_rx.f90

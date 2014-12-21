@@ -1,5 +1,27 @@
 
-Current Development Version: WSPR-4.0 r4522
+Current Development Version: WSPR-4.0 r4727
+
+2014-12-21 commit 4846 Greg Beam <ki7mt@yahoo.com>
+
+* Added FreeBSD gfortran check to case statment.
+* Fixed the f2py / python3 --with-xxx enable statments
+* Updated ./configre --help=short messages
+* removed wspr.sh as it's now being generaged by a Makeile
+* Updated wspr-manifest.in
+* Updated the autogen.sh script ( minor screen message edits )
+* added comment section to the Makefile so we can easily see which targets
+being built.
+* Added simple compiler flag enable to add -mtune=native to CF and FF. The
+default build =none or no additional flags. This is only for testing.
+* Removed the LDFLAGS I was testing on Infastructure Server builds.
+* Updated messages and correted a few typo's here and there.
+
+TO-DO
+* We need to look at all the duplicate CF and FF flags delarations to see
+if they are really needed.
+* Need safe, proven CF and FF flags for Armv6 / Armv7.
+* Would be good to get update on Mac as to the curent build status, if 
+things are ok?, not ok?
 
 2014-10-16 commit r4252 Greg Beam <ki7mt@yahoo.com>
 

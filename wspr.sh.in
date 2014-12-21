@@ -32,9 +32,9 @@ os=`uname`
 copyur() {
         for f in $1/*;do
                 if [ $f -nt `basename $f` ]; then
-			if [ ! -d `basename $f` ]; then
-	                        cp $f .
-			fi
+					if [ ! -d `basename $f` ]; then
+						cp $f .
+					fi
                 fi
         done
 }

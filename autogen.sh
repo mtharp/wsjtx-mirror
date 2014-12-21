@@ -58,13 +58,13 @@ autoconf -f -i
 
 # simple test for the configure script, after running autogen.sh
 if test -s ./configure; then
-	echo " ..Finished"
-	echo " ..Autoconf will now build the Makefile"
-	echo " ..Running ./configure to generate Makefile"
-	echo
+	echo "Finished"
+	echo "Autoconf will now build the Makefile"
+	echo "Running ./configure to generate Makefile"
 	sleep 1
 else
 # message if configure was not found
+	echo
 	echo "There was a problem generating the configure script"
 	echo "Check config.status for details."	
 	echo

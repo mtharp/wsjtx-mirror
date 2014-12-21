@@ -88,15 +88,24 @@ all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
 
 # Prevent compiler warnings ( r4142 commit )
 thnix_stub.o: thnix_stub.f90
+	@echo
+	@echo Build thnix_stub
+	@echo --------------------
 	${FC} -c thnix_stub.f90
 
 # Objects
 OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
 
 wspr0:  ${OBJS1}
+	@echo
+	@echo Build wspr0
+	@echo --------------------
 	${FC} ${PORTAUDIO_LIBDIR} ${FFLAGS} -o wspr0 ${FFLAGS} ${LDFLAGS} ${OBJS1} libwspr.a -lfftw3f -lportaudio
 
 wsprcode: wsprcode.o thnix_stub.o
+	@echo
+	@echo Build wsprcode
+	@echo --------------------
 	${FC} ${FFLAGS} ${LDFLAGS} -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
 
 OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
@@ -114,27 +123,45 @@ OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
 
 # Build Library: libwspr.a
 libwspr.a: ${OBJS3} acom1.f90 acom2.f90
+	@echo
+	@echo Build libwspr library
+	@echo -----------------------------
 	${AR} cr libwspr.a ${OBJS3}
 	ranlib libwspr.a
 
 # Build FMT Applications
 fmtest: fmtest.f90 libwspr.a
+	@echo
+	@echo Build Fmtest
+	@echo --------------------
 	${FC} ${CFLAGS} ${FFLAGS} ${PORTAUDIO_LIBDIR} ${LDFLAGS} -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
 
 fmtave: fmtave.f90
+	@echo
+	@echo Build Fmtave
+	@echo --------------------
 	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} ${PORTAUDIO_LIBDIR} ${LDFLAGS} -o fmtave fmtave.f90
 
 fcal: fcal.f90
+	@echo
+	@echo Build Fcal
+	@echo --------------------
 	${FC} ${PORTAUDIO_INCLUDE} ${CFLAGS} ${FFLAGS} ${PORTAUDIO_LIBDIR} ${LDFLAGS} -o fcal fcal.f90
 
 fmeasure: fmeasure.f90
+	@echo
+	@echo Build Fmeasure
+	@echo --------------------
 	${FC} ${FFLAGS} ${LDFLAGS} -o fmeasure fmeasure.f90
 
 # SRC for w.so
 F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
 
 # Build W.SO & MV to WsprMod/
-WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90 
+WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
+	@echo
+	@echo RUN F2PY w.so
+	@echo --------------------
 	${F2PY} -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
 	--opt="${FCOPT}" thnix.o ${PORTAUDIO_LIBDIR} ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
@@ -208,7 +235,7 @@ uninstall:
 clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode wspr0 fmtest fmtave fcal \
-	fmeasure
+	fmeasure wspr.sh
 
 distclean: clean
 	${RM} -f config.log config.status ALL_WSPR*.TXT WSPR.INI \
