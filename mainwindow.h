@@ -118,6 +118,7 @@ private:
     bool    m_catEnabled;
     bool    m_bSave;
     bool    m_network;
+    bool    m_transmitted;
 
     QRect   m_astroGeom;
     QRect   m_wideGraphGeom;
@@ -163,7 +164,6 @@ private:
     void createStatusBar();
     void updateStatusBar();
     void msgBox(QString t);
-    void oneSec();
     QString rig_command();
 };
 

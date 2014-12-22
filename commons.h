@@ -19,8 +19,14 @@ extern struct {
   float width;
   float blue[2000];
   float red[2000];
-  short int d2a[RXLENGTH1];
+//  short int d2a[RXLENGTH1];
 } datcom_;                          //This is "common/datcom/..." in fortran
+
+extern struct {
+  short int d2a[576000];
+  int k;
+  int kstop;
+} d2com_;
 
 /*
 extern struct {

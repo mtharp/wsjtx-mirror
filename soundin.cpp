@@ -7,6 +7,58 @@ extern "C" {
 #include <portaudio.h>
 }
 
+typedef struct
+{
+  int kin;          //Parameters sent to/from the portaudio callback function
+  int ncall;
+  bool bzero;
+  bool receiving;
+} paUserData;
+
+//--------------------------------------------------------------- a2dCallback
+extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
+                         unsigned long framesToProcess,
+                         const PaStreamCallbackTimeInfo* timeInfo,
+                         PaStreamCallbackFlags statusFlags,
+                         void *userData )
+
+// This routine called by the PortAudio engine when samples are available.
+// It may be called at interrupt level, so don't do anything
+// that could mess up the system like calling malloc() or free().
+
+{
+  paUserData *udata=(paUserData*)userData;
+  (void) outputBuffer;          //Prevent unused variable warnings.
+  (void) timeInfo;
+  (void) userData;
+  int nbytes,k;
+
+  udata->ncall++;
+  if( (statusFlags & paInputOverflow) != 0) {
+    qDebug() << "Input Overflow";
+  }
+  if(udata->bzero) {
+    udata->kin=0;              //Reset buffer pointer
+    udata->bzero=false;
+  }
+
+  nbytes=2*framesToProcess;        //Bytes per frame
+  if(udata->kin+framesToProcess >= 12*48000) udata->kin=0;
+  k=udata->kin;
+  memcpy(&d2com_.d2a[k],inputBuffer,nbytes);      //Copy all samples to d2a
+
+  double sq=0.0;
+  for(int i=0; i<framesToProcess; i++) {
+    double x=double(datcom_.d2[k+i]);
+    sq += x*x;
+  }
+  datcom_.rms = sqrt(sq/framesToProcess);
+
+  udata->kin += framesToProcess;
+  d2com_.k=udata->kin;
+  return paContinue;
+}
+
 extern double inputLatency;
 
 void SoundInThread::run()                           //SoundInThread::run()
@@ -18,12 +70,17 @@ void SoundInThread::run()                           //SoundInThread::run()
     return;
   }
 
+  quitExecution = false;
+
 //---------------------------------------------------- Soundcard Setup
 //  qDebug() << "Start input from soundcard";
 
   PaError paerr;
   PaStreamParameters inParam;
   PaStream *inStream;
+  paUserData udata;
+
+  udata.kin=0;                              //Buffer pointer
 
   inParam.device=m_nDevIn;                  //### Input Device Number ###
   inParam.channelCount=1;                   //Number of analog channels
@@ -42,10 +99,9 @@ void SoundInThread::run()                           //SoundInThread::run()
         NULL,                    //No output parameters
         48000.0,                 //Sample rate
         FRAMES_PER_BUFFER,       //Frames per buffer
-//        paClipOff+paDitherOff,        //No clipping or dithering
         paClipOff,               //No clipping
-        NULL,                    //No callback, use blobking API
-        NULL);                   //No userData
+        a2dCallback,             //Input callback routine
+        &udata);                 //userData
 
   paerr=Pa_StartStream(inStream);
   if(paerr<0) {
@@ -58,20 +114,45 @@ void SoundInThread::run()                           //SoundInThread::run()
 //  inputLatency = p->inputLatency;
 //  qDebug() << "Input latency" << inputLatency;
 
-  paerr=Pa_ReadStream(inStream,datcom_.d2a,RXLENGTH1);
-  if(paerr!=paNoError) {
-    qDebug() << "Audio input failed";
+  bool qe = quitExecution;
+  int nsec,nsec0=-1;
+  int ns12,ns12z=12;
+  qint64 ms0 = QDateTime::currentMSecsSinceEpoch();
+
+//---------------------------------------------- Soundcard input loop
+  while (!qe) {
+    qe = quitExecution;
+    if (qe) break;
+    udata.receiving=m_receiving;
+    qint64 ms = QDateTime::currentMSecsSinceEpoch();
+    ms=ms % 86400000;
+    nsec = ms/1000;             // Time according to this computer
+    ns12=nsec % 12;
+
+// Reset buffer pointer at start of a new 12-second interval
+    if(ns12 < ns12z) udata.bzero=true;
+    ns12z=ns12;
+/*
+    if(nsec != nsec0) {
+      qDebug() << "A" << ns12 << udata.kin;
+      nsec0=nsec;
+    }
+*/
+    msleep(10);
   }
   Pa_StopStream(inStream);
   Pa_CloseStream(inStream);
-  emit dataReady(RXLENGTH1);
-//  qDebug() << "Finished input from soundcard";
 }
 
 void SoundInThread::setInputDevice(int n)                  //setInputDevice()
 {
   if (isRunning()) return;
   this->m_nDevIn=n;
+}
+
+void SoundInThread::quit()                                       //quit()
+{
+  quitExecution = true;
 }
 
 void SoundInThread::setReceiving(bool b)                    //setReceiving()

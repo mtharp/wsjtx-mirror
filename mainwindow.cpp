@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   QTimer *guiTimer = new QTimer(this);
   connect(guiTimer, SIGNAL(timeout()), this, SLOT(guiUpdate()));
-  guiTimer->start(50);                            //Don't change the 100 ms!
+  guiTimer->start(10);
   ptt0Timer = new QTimer(this);
   ptt0Timer->setSingleShot(true);
   connect(ptt0Timer, SIGNAL(timeout()), this, SLOT(stopTx2()));
@@ -83,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_transmitting=false;
   m_network=false;
   m_diskData=false;
+  m_transmitted=false;
   m_myGrid="FN20qi";
   m_appDir = QApplication::applicationDirPath();
   m_saveDir = m_appDir + "/save";
@@ -120,6 +121,8 @@ MainWindow::MainWindow(QWidget *parent) :
       border-color: black; padding: 4px;}";
   soundInThread.setNetwork(m_network);
   soundInThread.setInputDevice(m_paInDevice);
+  soundInThread.start(QThread::HighestPriority);
+
   soundOutThread.setOutputDevice(m_paOutDevice);
   soundOutThread.setTxFreq(m_txFreq);
   soundOutThread.setCostas(m_Costas);
@@ -263,17 +266,22 @@ void MainWindow::readSettings()
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink()
 {
-  static int n1=RXLENGTH1;
-  static int n2=0;
+//  static int n1=260000;              //260000/48000 = 5.417 s
+//  static int n2=0;
 
   //  qDebug() << "4. Rx done:" << QDateTime::currentMSecsSinceEpoch() % 6000;
-  qint64 msTx = soundOutThread.txStartTime() % 6000;
-  qint64 msRx = soundInThread.rxStartTime() % 6000;
-  qDebug() << "Tx to Rx delay:" << msRx-msTx;
-
   lab1->setStyleSheet("");
   lab1->setText("");
-  if(!m_diskData) fil4_(&datcom_.d2a[0],&n1,&datcom_.d2[0],&n2);
+
+  int k0=0;
+  float x=float(d2com_.kstop)/48000.0;
+  if(x>6.0) {
+    x=x-6.0;
+    k0=576000/2;
+  }
+
+  d2com_.kstop=d2com_.k;
+//  if(!m_diskData) fil4_(&d2com_.d2a[k0],&n1,&datcom_.d2[0],&n2);
   bool bSave=m_bSave and !m_diskData;
   *future1 = QtConcurrent::run(echospec,bSave,m_fname);
   watcher1->setFuture(*future1);               // call specReady() when done
@@ -356,8 +364,11 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_network=dlg.m_network;
 
     if(dlg.m_restartSoundIn) {
-      soundInThread.setNetwork(m_network);
+      soundInThread.quit();
+      soundInThread.wait(300);
       soundInThread.setInputDevice(m_paInDevice);
+      soundInThread.setNetwork(m_network);
+      soundInThread.start(QThread::HighestPriority);
     }
     if(dlg.m_restartSoundOut) soundOutThread.setOutputDevice(m_paOutDevice);
   }
@@ -422,6 +433,8 @@ void MainWindow::closeEvent(QCloseEvent*)
 
 void MainWindow::OnExit()
 {
+  soundInThread.quit();
+  soundInThread.wait(300);
   soundInThread.terminate();
   soundOutThread.terminate();
   Pa_Terminate();
@@ -510,16 +523,6 @@ void MainWindow::on_inGain_valueChanged(int n)
   m_inGain=n;
 }
 
-void MainWindow::oneSec() {
-  QDateTime t = QDateTime::currentDateTimeUtc();
-  QString utc = t.date().toString("yyyy MMM dd") + " \n " +
-          t.time().toString();
-  ui->labUTC->setText(utc);
-  if(!m_receiving) signalMeter->setValue(0);
-  datcom_.nfrit = ui->sbRIT->value();
-  g_pAstro->astroUpdate(t, m_myGrid, m_freq);
-}
-
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
@@ -530,9 +533,15 @@ void MainWindow::guiUpdate()
   int nsec=tsec;
   m_s6=fmod(tsec,6.0);
 
+//  qDebug() << "a" << m_s6 << s6z << m_s6-s6z;
 // When m_s6 has wrapped back to zero, start a new cycle.
   if(m_auto and m_s6<s6z) {
 
+    if(m_fname=="") {
+      QDateTime t = QDateTime::currentDateTimeUtc();
+      m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
+          t.time().toString("hhmmss") + ".eco";
+    }
 //Raise PTT
     if(m_pttMethodIndex==0) {
       m_cmnd=rig_command() + " T 1";
@@ -542,15 +551,26 @@ void MainWindow::guiUpdate()
     if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
       ptt(m_pttPort,1,&m_iptt,&m_COMportOpen);
     }
-//Wait 0.2 s, then send a 2.2 s Tx pulse
+//Wait 0.2 s, then send a 2.304 s Tx pulse
     ptt1Timer->start(200);                       //Sequencer delay
     lab1->setStyleSheet("QLabel{background-color: #ff0000}");
     lab1->setText("Transmitting");
     signalMeter->setValue(0);
   }
 
+  if(m_transmitted and m_s6 > 5.4) {
+    m_transmitted=false;
+    dataSink();
+  }
+
   if(nsec != m_sec0) {
-    oneSec();
+    QDateTime t = QDateTime::currentDateTimeUtc();
+    QString utc = t.date().toString("yyyy MMM dd") + " \n " +
+        t.time().toString();
+    ui->labUTC->setText(utc);
+    if(!m_receiving) signalMeter->setValue(0);
+    datcom_.nfrit = ui->sbRIT->value();
+    g_pAstro->astroUpdate(t, m_myGrid, m_freq);
     m_sec0=nsec;
   }
   s6z=m_s6;
@@ -592,6 +612,7 @@ void MainWindow::stopTx2()
   if(m_pttMethodIndex==1 or m_pttMethodIndex==2) {
     ptt(m_pttPort,0,&m_iptt,&m_COMportOpen);
   }
+  m_transmitted=true;
   QString t;
   t.sprintf(" Receiving ");
   lab1->setStyleSheet("QLabel{background-color: #00ff00}");
@@ -625,9 +646,7 @@ void MainWindow::on_txEnableButton_clicked()
 {
   m_auto = !m_auto;
   if(m_auto) {
-    QDateTime t = QDateTime::currentDateTimeUtc();
-    m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
-        t.time().toString("hhmmss") + ".eco";
+    m_fname="";
     ui->txEnableButton->setStyleSheet(m_txEnable_style);
     m_diskData=false;
   } else {

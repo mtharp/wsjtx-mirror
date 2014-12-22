@@ -11,19 +11,21 @@
 bool echospec(bool bSave, QString fname)
 {
   bool dataWritten=false;
-  double sq=0.0;
-  for(int i=0; i<RXLENGTH2; i++) {
-    double x=double(datcom_.d2[i]);
-    sq += x*x;
+
+  int k0=0;
+  float x=float(d2com_.kstop)/48000.0;
+  if(x>6.0) {
+    x=x-6.0;
+    k0=576000/2;
   }
-  datcom_.rms = sqrt(sq/RXLENGTH2);
+  qDebug() << "a" << d2com_.k << d2com_.kstop << x << k0;
 
   if(bSave) {
     char name[80];
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
-      fwrite(&datcom_.d2,1,67600,fp);
+      fwrite(&d2com_.d2a[k0],2,260000,fp);
       dataWritten=true;
       fclose(fp);
     }

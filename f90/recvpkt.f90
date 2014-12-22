@@ -4,6 +4,7 @@ subroutine recvpkt(nsam,nblock2,userx_no,k,buf4,buf8,buf16)
 
   parameter (NSMAX=60*96000)          !Total sample intervals per minute
   parameter (NFFT=32768)
+  integer*2 id2
   integer*1 userx_no
   real*4 d4,buf4(*)                   !(348)
   real*8 d8,buf8(*)                   !(174)
@@ -12,6 +13,7 @@ subroutine recvpkt(nsam,nblock2,userx_no,k,buf4,buf8,buf16)
   real*4 xd(4),yd(2)
   real*8 fcenter
   common/datcom2/dd(4,270309)
+  common/d2com/id2(576000)
   equivalence (kd,d4)
   equivalence (jd,d8,yd)
   equivalence (xd,c16)

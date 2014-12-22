@@ -16,12 +16,14 @@
 class SoundInThread : public QThread
 {
   Q_OBJECT
+  bool quitExecution;           // if true, thread exits gracefully
 
 protected:
   virtual void run();
 
 public:
-  SoundInThread()
+  SoundInThread():
+    quitExecution(false)
   {
   }
 
@@ -39,6 +41,7 @@ signals:
   void status(const QString& message);
 
 public slots:
+  void quit();
 
 private:
   void inputUDP();
