@@ -8,7 +8,7 @@ program tst2
   complex c(0:65536)
   equivalence (x,c)
 
-  open(10,file='save/141222_190836.eco',status='old',access='stream')
+  open(10,file='save/141222_212036.eco',status='old',access='stream')
 
   nadd=512
   nh=nadd/2
@@ -22,8 +22,11 @@ program tst2
   nblks=NZ/nadd
   n1=nblks/25
 
-  do iping=1,1
-     read(10,end=999) id2
+  do iping=1,9999
+     read(10,end=999) ndop,nfrit,nsum,nclearave,nqual,f1,rms,snrdb,dfreq,  &
+          width,id2
+     k0=0
+     s0=0.
      sq=0.
      k=0
        do n=1,nblks
@@ -36,9 +39,18 @@ program tst2
         t=(n*nadd)/48000.0
         if(n.lt.n1) sq=sq + abs(z)
         if(n.eq.n1) fac=1.0/(sq/n1)
-        write(13,1010) t,abs(z),fac*abs(z)
+        s=fac*abs(z)
+        write(13,1010) t,abs(z),s
 1010    format(3f10.3)
+        if(s.gt.10.0 .and. s0.gt.10.0 .and. k0.eq.0) then
+           k0=k
+           ss0=s
+        endif
+        s0=s
      enddo
+
+     write(*,1000) iping,ndop,nfrit,f1,fac,ss0,k0/48000.0
+1000 format(i5,2i8,f10.1,3f10.3)
 
      x=id2(1:131072)
      nfft=131072
