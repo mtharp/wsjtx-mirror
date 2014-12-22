@@ -18,25 +18,29 @@ To compile WSPR, you will need the following packages / applications:
 	* Numeric Python (Numpy 1.8.1+), providing F2PY v2.0 built against Python3
 	* PIL, (Python Imaging Library, sometimes referred to as PILLOW)
 	* Python-tk (Tcl\TK 8.6.1 or Later)
-	* Python Imaging Tk (Pil or Pillow)
+	* Python Imaging, Tk Dependant
 	* Optional: Hamlib 1.2.15.x (or current distro version) for rig control
 
 Example: For Ubuntu 14.04 amd64 system install, the following packages
 would make be a good start:
 
-sudo apt-get install autoconf autotools-dev build-essential gfortran libtool
+sudo apt-get -y install autoconf autotools-dev build-essential gfortran libtool
 libfftw3-dev libusb-dev libhamlib-dev libhamlib-utils libsamplerate0-dev
-portaudio19-dev python3-dev python3-tk python3-imaging-tk python3-pip
-python3-numpy
+portaudio19-dev python3-dev python3-tk python3-pil python3-pil.imagetk 
+python3-imaging-tk python3-pip python3-numpy
 
 NOTES:
-- Python Imaging and the related package names can be tricky depending
-your version of *Nix. For example, python3-imaging-tk installs / sets up the
-Python Imaging Library (Pillow, a modified version of PIL). Your Linux
-distro may be different.
+ [1] Python Imaging (Pil), Python3 Imgaging Tk dependant and the related package
+names can be tricky depending your version of *Nix. For example, python3-imaging-tk
+installs / sets up the Python Imaging Library (Pillow, a modified version of PIL).
+Your Linux distro may be different, but to be safe, install them both.
 
-- You may be able to slim the list down by selective installation, but the above
+ [2] You may be able to slim the list down by selective installation, but the above
 provides a solid base to start with.
+
+ [3] Portaudio is a packages that can cause problems on various distrobutions
+like Mac OSX, FreeBSD etc, as they have portaudio v18 instaled by default, and
+you must like against v19, so follow the instructions in the respective setion.
 
 IMPORTANT F2PY NOTE
 - If you have python-numpy (based on Python27) installed, you should remove

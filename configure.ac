@@ -445,12 +445,11 @@ case "${host_os}" in
 				;;
 			esac
 	;;
-	*-*-darwin-* )
+	*darwin* )
 		FCOPT="-cpp -fbounds-check -O2"
 		CFLAGS="-Wall -O0 -fPIC -m64"
 		FFLAGS="-O2 -m64 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
-		LDFLAGS="-Wl,-O1 -Wl,--as-needed"
 	;;
 	*freebsd* )
 		CFLAGS="${CFLAGS} -fpic"
