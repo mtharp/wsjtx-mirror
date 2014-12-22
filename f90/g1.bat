@@ -1,0 +1,1 @@
+gfortran -o /JTSDK-QT/src/echo_install/tst2.exe -O2 -Wall -fbounds-check tst2.f90 four2a.f90 ../libfftw3f_win.a

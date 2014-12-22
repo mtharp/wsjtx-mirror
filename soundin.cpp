@@ -49,11 +49,11 @@ extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
 
   double sq=0.0;
   for(int i=0; i<framesToProcess; i++) {
-    double x=double(datcom_.d2[k+i]);
+    double x=double(d2com_.d2a[k+i]);
     sq += x*x;
   }
+//  if(sq>0.0) qDebug() << "b" << k << sq;
   datcom_.rms = sqrt(sq/framesToProcess);
-
   udata->kin += framesToProcess;
   d2com_.k=udata->kin;
   return paContinue;

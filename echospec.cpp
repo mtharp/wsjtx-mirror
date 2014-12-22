@@ -18,7 +18,7 @@ bool echospec(bool bSave, QString fname)
     x=x-6.0;
     k0=576000/2;
   }
-  qDebug() << "a" << d2com_.k << d2com_.kstop << x << k0;
+//  qDebug() << "a" << d2com_.k << d2com_.kstop << x << k0;
 
   if(bSave) {
     char name[80];

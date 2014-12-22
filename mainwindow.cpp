@@ -294,8 +294,7 @@ void MainWindow::specReady()
     msgBox("Cannot create file\n" + m_fname);
   }
 
-  float px=20.0*log10(datcom_.rms)- 20.0;
-  signalMeter->setValue(px);                   // Update signalmeter
+
   g_pWideGraph->plotSpec();
 //  qDebug() << "5. Spectrum plotted:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   float level=-99.0;
@@ -563,6 +562,9 @@ void MainWindow::guiUpdate()
     dataSink();
   }
 
+  float px=20.0*log10(datcom_.rms)- 20.0;
+  signalMeter->setValue(px);                   // Update signalmeter
+
   if(nsec != m_sec0) {
     QDateTime t = QDateTime::currentDateTimeUtc();
     QString utc = t.date().toString("yyyy MMM dd") + " \n " +
@@ -571,6 +573,7 @@ void MainWindow::guiUpdate()
     if(!m_receiving) signalMeter->setValue(0);
     datcom_.nfrit = ui->sbRIT->value();
     g_pAstro->astroUpdate(t, m_myGrid, m_freq);
+//    qDebug() << "a" << datcom_.rms << px;
     m_sec0=nsec;
   }
   s6z=m_s6;
