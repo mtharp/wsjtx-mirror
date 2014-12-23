@@ -106,7 +106,7 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
   enddo
   bins=sum/(red(ipk)-1.0)
   width=df*bins
-  nsmo=max(1.0,0.5*bins)
+  nsmo=max(0.0,0.25*bins)
 
   do i=1,nsmo
      call smo121(red,2000)

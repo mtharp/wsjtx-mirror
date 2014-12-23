@@ -3,10 +3,21 @@ program tstecho
   parameter (LENGTH=27*4096)
   integer*2 id2(260000)
   real blue(2000),red(2000)
+  character*40 infile
 
-  open(10,file='e:/141223_152106.eco',status='old',access='stream')
+  nargs=iargc()
+  if(nargs.ne.1) then
+     print*,'Usage: tstecho <infile>'
+     go to 999
+  endif
+  call getarg(1,infile)
 
-  nclearave=1
+  open(10,file=infile,status='old',access='stream',err=1)
+  go to 10
+1 print*,'Cannot open ',infile
+  go to 999
+
+10  nclearave=1
   nsum=0
 
   do iping=1,999
