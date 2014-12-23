@@ -129,6 +129,7 @@ void DevSetup::initDlg()
   ui.rbMAP65->setChecked(m_network);
   ui.rbSoundCard->setChecked(!m_network);
   ui.comboBoxSndIn->setEnabled(!m_network);
+  m_network0=m_network;
   ui.rigComboBox->setCurrentIndex(m_rigIndex);
   ui.catPortComboBox->setCurrentIndex(m_catPortIndex);
   ui.serialRateComboBox->setCurrentIndex(m_serialRateIndex);
@@ -146,7 +147,7 @@ void DevSetup::accept()
   // Check to see whether SoundInThread must be restarted,
   // and save user parameters.
 
-  if(m_network!=ui.rbMAP65->isChecked() or
+  if(m_network!=m_network0 or
      m_nDevIn!=ui.comboBoxSndIn->currentIndex() or
      m_paInDevice!=m_inDevList[m_nDevIn]) m_restartSoundIn=true;
 

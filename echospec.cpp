@@ -25,7 +25,8 @@ bool echospec(bool bSave, QString fname)
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
-      fwrite(&d2com_.d2a[k0],2,260000,fp);
+      fwrite(&datcom_.ndop,4,10,fp);             //Header info
+      fwrite(&d2com_.d2a[k0],2,260000,fp);       //Raw Rx data
       dataWritten=true;
       fclose(fp);
     }

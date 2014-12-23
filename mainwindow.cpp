@@ -363,6 +363,7 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_network=dlg.m_network;
 
     if(dlg.m_restartSoundIn) {
+      qDebug() << "Restart SoundIn";
       soundInThread.quit();
       soundInThread.wait(300);
       soundInThread.setInputDevice(m_paInDevice);

@@ -39,6 +39,7 @@ public:
   bool    m_grid6;
   bool    m_catEnabled;
   bool    m_network;
+  bool    m_network0;
 
   QString m_saveDir;
   QString m_azelDir;

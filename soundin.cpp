@@ -64,7 +64,7 @@ extern double inputLatency;
 void SoundInThread::run()                           //SoundInThread::run()
 {
   if (m_net) {
-//    qDebug() << "Start input from MAP65";
+    qDebug() << "Start input from MAP65";
     inputUDP();
 //    qDebug() << "Finished input from MAP65()";
     return;
@@ -73,7 +73,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   quitExecution = false;
 
 //---------------------------------------------------- Soundcard Setup
-//  qDebug() << "Start input from soundcard";
+  qDebug() << "Start input from soundcard";
 
   PaError paerr;
   PaStreamParameters inParam;
@@ -132,12 +132,12 @@ void SoundInThread::run()                           //SoundInThread::run()
 // Reset buffer pointer at start of a new 12-second interval
     if(ns12 < ns12z) udata.bzero=true;
     ns12z=ns12;
-/*
+
     if(nsec != nsec0) {
-      qDebug() << "A" << ns12 << udata.kin;
+      qDebug() << "Soundcard" << ns12 << udata.kin;
       nsec0=nsec;
     }
-*/
+
     msleep(10);
   }
   Pa_StopStream(inStream);
@@ -203,7 +203,7 @@ void SoundInThread::inputUDP()
   ::setsockopt(udpSocket->socketDescriptor(), SOL_SOCKET, SO_RCVBUF,
                (char *)&v, sizeof(v));
 
-//  bool qe = quitExecution;
+  bool qe = quitExecution;
   struct linradBuffer {
     double cfreq;
     int msec;
@@ -217,9 +217,13 @@ void SoundInThread::inputUDP()
 
   quint16 iblk0=0;
   int k=0;
+  int nsec,nsec0=-1;
+  int ns12,ns12z=12;
 
   // Main loop for input of UDP packets over the network:
-  for(int ipkt=0; ipkt<3107; ) {
+  while (!qe) {
+    qe = quitExecution;
+    if (qe) break;
     if (!udpSocket->hasPendingDatagrams()) {
       msleep(2);                  // Sleep if no packet available
     } else {
@@ -228,10 +232,22 @@ void SoundInThread::inputUDP()
       if(k != 0 and b.iblk-iblk0 != 1) qDebug() << "Linrad block error" << iblk0 << b.iblk;
       iblk0=b.iblk;
 
-//      qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
+      qint64 ms = QDateTime::currentMSecsSinceEpoch();
+      ms=ms % 86400000;
+      nsec = ms/1000;             // Time according to this computer
+      ns12=nsec % 12;
+
+  // Reset buffer pointer at start of a new 12-second interval
+      if(ns12 < ns12z) k=0;
+      ns12z=ns12;
+
+      if(nsec != nsec0) {
+        qDebug() << "MAP65" << ns12 << k;
+        nsec0=nsec;
+      }
+
       int nsam=-1;
       recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
-      ipkt++;
     }
   }
 
