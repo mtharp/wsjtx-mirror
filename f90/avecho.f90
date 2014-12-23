@@ -1,9 +1,11 @@
 subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
-     f1,rms0,snrdb,dfreq,width,blue,red)
+     f1,rms0,sigdb,snr,dfreq,width,blue,red)
 
+  integer TXLENGTH
+  parameter (TXLENGTH=110592)          !27*4096
   parameter (NFFT=131072,NH=NFFT/2)
   integer*2 id2(260000)                !Buffer for Rx data
-  real sa(2000)     !Avg spectrum relative to initial Doppler echo freq
+  real sa(2000)      !Avg spectrum relative to initial Doppler echo freq
   real sb(2000)      !Avg spectrum with Dither and changing Doppler removed
   real blue(2000)
   real red(2000)
@@ -19,12 +21,12 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
 
   doppler=ndop
   sq=0.
-  i00=2000
-  do i=1,TXLENGTH2
-     x(i)=id2(i+i00)
+  i0=nint(2.6*48000)
+  do i=1,TXLENGTH
+     x(i)=id2(i+i0)
      sq=sq + x(i)*x(i)
   enddo
-  rms0=sqrt(sq/TXLENGTH2)
+  rms0=sqrt(sq/TXLENGTH)
 
   if(nclearave.ne.0) nsum=0
   nclearave=0
@@ -34,10 +36,10 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
      sb=0.
   endif
 
-  x(TXLENGTH2+1:)=0.
-  x=x/TXLENGTH2
+  x(TXLENGTH+1:)=0.
+  x=x/TXLENGTH
   call four2a(x,NFFT,1,-1,0)
-  df=12000.0/NFFT
+  df=48000.0/NFFT
   do i=1,8192
      s(i)=real(c(i))**2 + aimag(c(i))**2
   enddo
@@ -51,7 +53,7 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
   nsum=nsum+1
 
   do i=1,2000
-     sa(i)=sa(i) + s(ia+i-1000)  !Center at initial doppler freq
+     sa(i)=sa(i) + s(ia+i-1000)    !Center at initial doppler freq
      sb(i)=sb(i) + s(ib+i-1000)    !Center at expected echo freq
   enddo
 
@@ -78,14 +80,14 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
   dfreq=(ipk-1000)*df
   snr=(redmax-ave)/rms
 
-  snrdb=-99.0
-  if(ave.gt.0.0) snrdb=10.0*log10(redmax/ave - 1.0) - 35.7
+  sigdb=-99.0
+  if(ave.gt.0.0) sigdb=10.0*log10(redmax/ave - 1.0) - 35.7
 
-  nqual=(snr-2.5)/2.5
-  if(nsum.lt.12)  nqual=(snr-3)/3
-  if(nsum.lt.8)   nqual=(snr-3)/4
-  if(nsum.lt.4)   nqual=(snr-4)/5
-  if(nsum.lt.2)   nqual=0
+  nqual=0
+  if(nsum.ge.2 .and. nsum.lt.4)  nqual=(snr-4)/5
+  if(nsum.ge.4 .and. nsum.lt.8)  nqual=(snr-3)/4
+  if(nsum.ge.8 .and. nsum.lt.12) nqual=(snr-3)/3
+  if(nsum.ge.12) nqual=(snr-2.5)/2.5
   if(nqual.lt.0)  nqual=0
   if(nqual.gt.10) nqual=10
 

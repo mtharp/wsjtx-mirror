@@ -23,7 +23,12 @@ program tst2
   nblks=NZ/nadd
   n1=nblks/25
 
-  do iping=1,9999
+  do iping=1,1
+     read(10,end=999) ndop,nfrit,nsum,nclearave,nqual,f1,rms,snrdb,dfreq,  &
+          width,id2
+  enddo
+
+  do iping=1,1
      read(10,end=999) ndop,nfrit,nsum,nclearave,nqual,f1,rms,snrdb,dfreq,  &
           width,id2
      k0=0
