@@ -27,6 +27,12 @@ extern struct {
   int kstop;
 } d2com_;
 
+extern struct {
+  float dd[4608000];                //12*96000*4
+  int k;
+  int kstop;
+} r4com_;
+
 /*
 extern struct {
   float xdop[2];

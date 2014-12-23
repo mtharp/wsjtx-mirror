@@ -12,7 +12,7 @@ subroutine recvpkt(nsam,nblock2,userx_no,k,buf4,buf8,buf16)
   integer*2 jd(4),kd(2),nblock2
   real*4 xd(4),yd(2)
   real*8 fcenter
-  common/datcom2/dd(4,270309)
+  common/r4com/dd(4,1152000)
   common/d2com/id2(576000)
   equivalence (kd,d4)
   equivalence (jd,d8,yd)
@@ -67,7 +67,7 @@ subroutine recvpkt(nsam,nblock2,userx_no,k,buf4,buf8,buf16)
         enddo
      endif
   endif
-  if(userx_no.ne.-2 .or. k.gt.270309) stop 'recvpkt'
+!  if(userx_no.ne.-2 .or. k.gt.270309) stop 'recvpkt'
 
   return
 end subroutine recvpkt
