@@ -8,35 +8,43 @@
 #include <windows.h>
 #endif
 
-bool echospec(bool bSave, QString fname)
+bool echospec(bool bSave, QString fname, bool bnetwork)
 {
   bool dataWritten=false;
 
   int k0=0;
-  float x=float(d2com_.kstop)/48000.0;
-  if(x>6.0) {
-    x=x-6.0;
-    k0=576000/2;
+  if(bnetwork) {
+    if(r4com_.kstop > 6*96000) k0=6*4*96000;
+    qDebug() << "a" << r4com_.k << r4com_.kstop << k0;
+  } else {
+    if(d2com_.kstop > 6*48000) k0=6*48000;
+    qDebug() << "b" << d2com_.k << d2com_.kstop << k0;
   }
-//  qDebug() << "a" << d2com_.k << d2com_.kstop << x << k0;
 
   if(bSave) {
     char name[80];
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
-      fwrite(&datcom_.ndop,4,10,fp);             //Header info
-      fwrite(&d2com_.d2a[k0],2,260000,fp);       //Raw Rx data
+      fwrite(&datcom_.ndop,4,10,fp);               //Header info
+      if(bnetwork) {
+        fwrite(&r4com_.dd[k0],4,4*520000,fp);      //Raw MAP65 data
+      } else {
+        fwrite(&d2com_.d2a[k0],2,260000,fp);       //Raw soundcard data
+      }
       dataWritten=true;
       fclose(fp);
     }
   }
 
-  avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,
-      &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
-      &datcom_.f1,&datcom_.rms,&datcom_.snrdb,&datcom_.dfreq,
-      &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);
-
+  if(bnetwork) {
+ // avecho65()
+  } else {
+    avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,
+        &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
+        &datcom_.f1,&datcom_.rms,&datcom_.snrdb,&datcom_.dfreq,
+        &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);
+  }
   return dataWritten;
 }
 

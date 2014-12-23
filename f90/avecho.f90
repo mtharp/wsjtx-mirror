@@ -1,11 +1,8 @@
 subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
      f1,rms0,snrdb,dfreq,width,blue,red)
 
-  integer RXLENGTH2,TXLENGTH2
-  parameter (RXLENGTH2=33792)             !33*1024
-  parameter (TXLENGTH2=27648)             !27*1024
-  parameter (NFFT=32768,NH=NFFT/2)
-  integer*2 id2(RXLENGTH2)                !Buffer for Rx data
+  parameter (NFFT=131072,NH=NFFT/2)
+  integer*2 id2(260000)                !Buffer for Rx data
   real sa(2000)     !Avg spectrum relative to initial Doppler echo freq
   real sb(2000)      !Avg spectrum with Dither and changing Doppler removed
   real blue(2000)

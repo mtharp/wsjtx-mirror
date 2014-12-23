@@ -22,13 +22,13 @@ extern struct {
 } datcom_;                          //This is "common/datcom/..." in fortran
 
 extern struct {
-  short int d2a[576000];
+  short int d2a[576000];            //12*48000
   int k;
   int kstop;
 } d2com_;
 
 extern struct {
-  float dd[4608000];                //12*96000*4
+  float dd[4608000];                //12*4*96000
   int k;
   int kstop;
 } r4com_;

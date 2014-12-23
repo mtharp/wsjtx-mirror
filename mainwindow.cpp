@@ -283,7 +283,7 @@ void MainWindow::dataSink()
   d2com_.kstop=d2com_.k;
 //  if(!m_diskData) fil4_(&d2com_.d2a[k0],&n1,&datcom_.d2[0],&n2);
   bool bSave=m_bSave and !m_diskData;
-  *future1 = QtConcurrent::run(echospec,bSave,m_fname);
+  *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network);
   watcher1->setFuture(*future1);               // call specReady() when done
 }
 
@@ -363,7 +363,7 @@ void MainWindow::on_actionSettings_triggered()                  //Setup Dialog
     m_network=dlg.m_network;
 
     if(dlg.m_restartSoundIn) {
-      qDebug() << "Restart SoundIn";
+      m_auto=false;
       soundInThread.quit();
       soundInThread.wait(300);
       soundInThread.setInputDevice(m_paInDevice);

@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include "commons.h"
 
-bool echospec(bool bSave, QString fname);
+bool echospec(bool bSave, QString fname, bool bnetwork);
 int ptt(int nport, int ntx, int* iptt, int* nopen);
 
 extern "C" {

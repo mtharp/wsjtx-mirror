@@ -8,7 +8,8 @@ program tst2
   complex c(0:65536)
   equivalence (x,c)
 
-  open(10,file='save/141222_212036.eco',status='old',access='stream')
+!  open(10,file='save/141222_212036.eco',status='old',access='stream')
+  open(10,file='e:/141223_152106.eco',status='old',access='stream')
 
   nadd=512
   nh=nadd/2
@@ -52,8 +53,13 @@ program tst2
      write(*,1000) iping,ndop,nfrit,f1,fac,ss0,k0/48000.0
 1000 format(i5,2i8,f10.1,3f10.3)
 
-     x=id2(1:131072)
      nfft=131072
+!     ia=1
+     ia=int(2.7*48000)
+     ib=int(ia+2.3*48000)
+     n=ib-ia+1
+     x(1:n)=id2(ia:ib)
+     x(n+1:)=0.
      call four2a(x,nfft,1,-1,0)
      df=48000.0/nfft
      iz=int(3000.0/df)
