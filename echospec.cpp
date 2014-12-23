@@ -42,10 +42,12 @@ bool echospec(bool bSave, QString fname, bool bnetwork)
   if(bnetwork) {
  // avecho65()
   } else {
+    float snr=0;
     avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,
         &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
-        &datcom_.f1,&datcom_.rms,&datcom_.snrdb,&datcom_.dfreq,
+        &datcom_.f1,&datcom_.rms,&datcom_.sigdb,&snr,&datcom_.dfreq,
         &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);
+    qDebug() << "A" << datcom_.sigdb << snr;
   }
   return dataWritten;
 }

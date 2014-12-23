@@ -272,14 +272,14 @@ void MainWindow::dataSink()
   //  qDebug() << "4. Rx done:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   lab1->setStyleSheet("");
   lab1->setText("");
-
+/*
   int k0=0;
   float x=float(d2com_.kstop)/48000.0;
   if(x>6.0) {
     x=x-6.0;
     k0=576000/2;
   }
-
+*/
   d2com_.kstop=d2com_.k;
 //  if(!m_diskData) fil4_(&d2com_.d2a[k0],&n1,&datcom_.d2[0],&n2);
   bool bSave=m_bSave and !m_diskData;
@@ -301,7 +301,7 @@ void MainWindow::specReady()
   if(datcom_.rms>0.0) level=10.0*log10(double(datcom_.rms)) - 20.0;
   QString t;
   t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
-            datcom_.nsum,level,datcom_.snrdb,datcom_.dfreq,
+            datcom_.nsum,level,datcom_.sigdb,datcom_.dfreq,
             datcom_.width,datcom_.nqual);
   ui->decodedTextBrowser->append(t);
   if(m_loopall>0) on_actionRead_next_data_in_file_triggered();

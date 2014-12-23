@@ -48,7 +48,7 @@ extern "C" int a2dCallback( const void *inputBuffer, void *outputBuffer,
   memcpy(&d2com_.d2a[k],inputBuffer,nbytes);      //Copy all samples to d2a
 
   double sq=0.0;
-  for(int i=0; i<framesToProcess; i++) {
+  for(uint i=0; i<framesToProcess; i++) {
     double x=double(d2com_.d2a[k+i]);
     sq += x*x;
   }
@@ -117,7 +117,7 @@ void SoundInThread::run()                           //SoundInThread::run()
   bool qe = quitExecution;
   int nsec,nsec0=-1;
   int ns12,ns12z=12;
-  qint64 ms0 = QDateTime::currentMSecsSinceEpoch();
+//  qint64 ms0 = QDateTime::currentMSecsSinceEpoch();
 
 //---------------------------------------------- Soundcard input loop
   while (!qe) {

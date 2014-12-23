@@ -15,7 +15,7 @@ extern "C" {
 
 void avecho_( short id2[], int* ndop, int* nfrit, int* nsum,
               int* nclearave, int* nqual, float* f1, float* rms,
-              float* snrdb, float* dfreq, float* width,
+              float* sigdb, float* snr, float* dfreq, float* width,
               float blue[], float red[]);
 }
 #endif // GETFILE_H

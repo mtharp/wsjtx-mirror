@@ -13,7 +13,7 @@ extern struct {
   int nqual;
   float f1;
   float rms;
-  float snrdb;
+  float sigdb;
   float dfreq;
   float width;
   float blue[2000];
