@@ -134,7 +134,7 @@ void SoundInThread::run()                           //SoundInThread::run()
     ns12z=ns12;
 
     if(nsec != nsec0) {
-      qDebug() << "Soundcard" << ns12 << udata.kin;
+//      qDebug() << "Soundcard" << ns12 << udata.kin;
       nsec0=nsec;
     }
 

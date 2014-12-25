@@ -16,14 +16,15 @@ bool echospec(bool bSave, QString fname, bool bnetwork)
   if(bnetwork) {
     if(r4com_.kstop > 6*96000) k0=6*4*96000;
     datcom_.nqual=1000;
-    qDebug() << "a" << r4com_.k << r4com_.kstop << k0;
+    qDebug() << "a" << r4com_.kstop << k0;
   } else {
     datcom_.nqual=0;
     if(d2com_.kstop > 6*48000) k0=6*48000;
-    qDebug() << "b" << d2com_.k << d2com_.kstop << k0;
+    qDebug() << "b1" << d2com_.kstop << k0;
   }
 
   if(bSave) {
+    qDebug() << "b2";
     char name[80];
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
@@ -43,11 +44,11 @@ bool echospec(bool bSave, QString fname, bool bnetwork)
  // avecho65()
   } else {
     float snr=0;
-    avecho_(&datcom_.d2[0],&datcom_.ndop,&datcom_.nfrit,
+    avecho_(&d2com_.d2a[k0],&datcom_.ndop,&datcom_.nfrit,
         &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
         &datcom_.f1,&datcom_.rms,&datcom_.sigdb,&snr,&datcom_.dfreq,
         &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);
-    qDebug() << "A" << datcom_.sigdb << snr;
+    qDebug() << "b3" << k0 << datcom_.sigdb << snr;
   }
   return dataWritten;
 }

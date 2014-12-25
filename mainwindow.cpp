@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
         black; color : yellow; border: 3px ridge gray}");
 
   setWindowTitle(Program_Title_Version);
-  connect(&soundInThread, SIGNAL(dataReady(int)),this, SLOT(dataSink()));
+//  connect(&soundInThread, SIGNAL(dataReady(int)),this, SLOT(dataSink()));
   connect(&soundInThread, SIGNAL(error(QString)), this,
           SLOT(showSoundInError(QString)));
   connect(&soundInThread, SIGNAL(status(QString)), this,
@@ -281,7 +281,7 @@ void MainWindow::dataSink()
   }
 */
   d2com_.kstop=d2com_.k;
-//  if(!m_diskData) fil4_(&d2com_.d2a[k0],&n1,&datcom_.d2[0],&n2);
+  if(m_diskData) d2com_.kstop=260000;
   bool bSave=m_bSave and !m_diskData;
   *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network);
   watcher1->setFuture(*future1);               // call specReady() when done
@@ -294,7 +294,7 @@ void MainWindow::specReady()
     msgBox("Cannot create file\n" + m_fname);
   }
 
-
+  qDebug() << "a1";
   g_pWideGraph->plotSpec();
 //  qDebug() << "5. Spectrum plotted:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   float level=-99.0;
@@ -719,8 +719,10 @@ void MainWindow::on_actionOpen_triggered()
     fp=fopen(name,"rb");
     if(fp != NULL) {
       int n=datcom_.nsum;
-      uint nbytes=fread(datcom_.d2,1,67600,fp);
-      if(nbytes!=67600) return;
+      fread(&datcom_.ndop,4,10,fp);
+      uint nbytes=fread(d2com_.d2a,2,260000,fp);
+      qDebug() << "c1" << nbytes;
+      if(nbytes!=260000) return;
       datcom_.nsum=n;
       m_diskData=true;
       datcom_.nclearave=1;
@@ -757,9 +759,11 @@ void MainWindow::on_actionRead_next_data_in_file_triggered()
 {
   if(fp != NULL) {
     int n=datcom_.nsum;
-    int nbytes=fread(datcom_.d2,1,67600,fp);
+    fread(&datcom_.ndop,4,10,fp);
+    uint nbytes=fread(d2com_.d2a,2,260000,fp);
+    qDebug() << "c2" << nbytes;
     datcom_.nsum=n;
-    if(nbytes == 67600) {
+    if(nbytes == 260000) {
       dataSink();
       m_loopall--;
     } else {
