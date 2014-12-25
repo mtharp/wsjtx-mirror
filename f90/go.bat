@@ -1,1 +1,1 @@
-gfortran -o /JTSDK-QT/src/echo_install/tstecho.exe -O2 tstecho.f90 four2a.f90 avecho.f90 smo121.f90 pctile.f90 sort.f90 ssort.f90 ../libfftw3f_win.a
+gfortran -o /JTSDK-QT/src/echo_install/tstecho.exe -O2 tstecho.f90 four2a.f90 avecho.f90 avecho65.f90 txtone.f90 smo121.f90 pctile.f90 sort.f90 ssort.f90 ../libfftw3f_win.a
