@@ -33,7 +33,7 @@ program tstecho
      else
         read(10) cc
         dop=ndop
-        call avecho65(cc,dop,t0,f1a)
+        call avecho65(cc,dop,iping,t0,f1a)
      write(*,3002) nsum0,ndop,nclearave0,t0,f1,f1a,rms,sigdb,snr,    &
           width,nqual
 3002 format(2i6,i3,f8.3,2f9.1,4f7.1,i4)

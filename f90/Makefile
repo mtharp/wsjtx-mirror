@@ -30,7 +30,7 @@ libastro.a: $(OBJS1)
 	ranlib libastro.a
 
 OBJS2 = tstecho.o four2a.o avecho.o avecho65.o txtone.o smo121.o \
-	pctile.o sort.o ssort.o cspec.o
+	pctile.o sort.o ssort.o cspec.o polfit.o
 
 tstecho.exe: $(OBJS2)
 	$(FC) -o tstecho.exe $(OBJS2) ../libfftw3f_win.a

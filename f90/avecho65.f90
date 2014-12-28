@@ -1,4 +1,4 @@
-subroutine avecho65(cc,dop,t0,f1a)
+subroutine avecho65(cc,dop,iping,t0,f1a)
 
   parameter (NZ=520000,NZH=NZ/2,NTX=27*8192)
   parameter (NFFT=256*1024)
@@ -6,9 +6,10 @@ subroutine avecho65(cc,dop,t0,f1a)
   complex cx(0:NFFT-1),cy(0:NFFT-1)
   complex csx(-1000:1000),csy(-1000:1000)
   real*4 sx(-1000:1000),sy(-1000:1000)
+  real*4 ss(18,18)
   logical first
   data fsample/96000.0/,first/.true./
-  save first,sx,sy
+  save first,sx,sy,ss
 
   if(first) then
      sx=0.
@@ -39,18 +40,25 @@ subroutine avecho65(cc,dop,t0,f1a)
   call cspec(cy,fdop,csy)
 
   df=fsample/NFFT
+  smax=0.
   rewind 25
-  do i=-1000,1000
+  do i=-200,200
      f=i*df
      xx=real(csx(i))**2 + aimag(csx(i))**2
      yy=real(csy(i))**2 + aimag(csy(i))**2
      sx(i)=sx(i) + xx
      sy(i)=sy(i) + yy
-     write(26,3001) f,xx,yy
+!     write(26,3001) f,xx,yy
      write(25,3001) f,sx(i),sy(i)
 3001 format(f10.3,2e12.3)
+     if(sx(i).gt.smax .or. sy(i).gt.smax) then
+        smax=max(sx(i),sy(i))
+        i0=i
+     endif
   enddo
   flush(25)
+
+  call polfit(csx,csy,iping,i0,ss)
 
   return
 end subroutine avecho65
