@@ -187,299 +187,205 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item row="1" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0" colspan="2">
-           <widget class="QComboBox" name="bandComboBox">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-            <property name="currentText">
-             <string>0 MHz</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>0 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>50 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>144 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>222 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>432 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>902 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1296 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>2304 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>3400 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>5760 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>10368 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Other</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="maximumSize">
-             <size>
-              <width>40</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string> Grid:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="locator">
-            <property name="maximumSize">
-             <size>
-              <width>52</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>FN20qi</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QSpinBox" name="sbRIT">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="suffix">
-             <string>  Hz</string>
-            </property>
-            <property name="prefix">
-             <string>RIT:  </string>
-            </property>
-            <property name="minimum">
-             <number>-20000</number>
-            </property>
-            <property name="maximum">
-             <number>20000</number>
-            </property>
-            <property name="singleStep">
-             <number>100</number>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QSpinBox" name="sbDither">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="suffix">
-             <string>  Hz</string>
-            </property>
-            <property name="prefix">
-             <string>Dither:  </string>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QRadioButton" name="rbCW">
-              <property name="text">
-               <string>CW</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="rb27">
-              <property name="text">
-               <string>27 x 27</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0" colspan="2">
+         <widget class="QComboBox" name="bandComboBox">
+          <property name="maximumSize">
            <size>
-            <width>18</width>
-            <height>20</height>
+            <width>100</width>
+            <height>16777215</height>
            </size>
           </property>
-         </spacer>
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+          <property name="currentText">
+           <string>0 MHz</string>
+          </property>
+          <item>
+           <property name="text">
+            <string>0 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>50 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>144 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>222 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>432 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>902 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1296 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2304 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3400 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>5760 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>10368 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Other</string>
+           </property>
+          </item>
+         </widget>
         </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="measureButton">
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label">
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string> Grid:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="locator">
+          <property name="maximumSize">
+           <size>
+            <width>52</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>FN20qi</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QSpinBox" name="sbRIT">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="suffix">
+           <string>  Hz</string>
+          </property>
+          <property name="prefix">
+           <string>RIT:  </string>
+          </property>
+          <property name="minimum">
+           <number>-20000</number>
+          </property>
+          <property name="maximum">
+           <number>20000</number>
+          </property>
+          <property name="singleStep">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <widget class="QSpinBox" name="sbDither">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="suffix">
+           <string>  Hz</string>
+          </property>
+          <property name="prefix">
+           <string>Dither:  </string>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QSpinBox" name="sbDphi">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="suffix">
+           <string>  deg</string>
+          </property>
+          <property name="prefix">
+           <string>Dphi:   </string>
+          </property>
+          <property name="minimum">
+           <number>-180</number>
+          </property>
+          <property name="maximum">
+           <number>180</number>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QRadioButton" name="rbCW">
             <property name="text">
-             <string>Measure</string>
+             <string>CW</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="eraseButton">
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
+          <item>
+           <widget class="QRadioButton" name="rb27">
             <property name="text">
-             <string>&amp;Erase</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="clearAvgButton">
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Clear Avg</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="txEnableButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Tx Enable</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="stopButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Stop</string>
+             <string>27 x 27</string>
             </property>
            </widget>
           </item>
@@ -487,7 +393,125 @@ p, li { white-space: pre-wrap; }
         </item>
        </layout>
       </item>
-      <item>
+      <item row="0" column="1">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>18</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="2">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="measureButton">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Measure</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="eraseButton">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Erase</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="clearAvgButton">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Clear Avg</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="txEnableButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Tx Enable</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QPushButton" name="stopButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -592,6 +616,11 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
    </layout>
+   <zorder>legendLabel</zorder>
+   <zorder>decodedTextBrowser</zorder>
+   <zorder>rb27</zorder>
+   <zorder>rbCW</zorder>
+   <zorder>sbDphi</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

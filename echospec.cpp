@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif
 
-bool echospec(bool bSave, QString fname, bool bnetwork)
+bool echospec(bool bSave, QString fname, bool bnetwork, float dphi)
 {
   bool dataWritten=false;
 
@@ -26,7 +26,7 @@ bool echospec(bool bSave, QString fname, bool bnetwork)
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
-      fwrite(&datcom_.ndop,4,10,fp);               //Header info
+      fwrite(&datcom_.dop,4,10,fp);                //Header info
       if(bnetwork) {
         fwrite(&r4com_.dd[k0],4,4*520000,fp);      //Raw MAP65 data
       } else {
@@ -38,31 +38,30 @@ bool echospec(bool bSave, QString fname, bool bnetwork)
   }
 
   if(bnetwork) {
-    float dop=float(datcom_.ndop);
+    float dop=float(datcom_.dop);
     int i00=4;
-    float dphi=88.0;
     float t0=0.0;
     float f1a=0.0;
     float dl=0.0;
     float dc=0.0;
     float pol=0.0;
     float delta=0.0;
+    float snr=0.0;
+    float rms1=0.0;
+    float rms2=0.0;
     datcom_.nsum=datcom_.nsum % 20;
 
     avecho65_(&r4com_.dd[k0], &dop, &datcom_.nsum, &i00, &dphi, &t0,
-              &f1a, &dl, &dc, &pol, &delta,
+              &f1a, &dl, &dc, &pol, &delta, &rms1, &rms2, &snr,
+              &datcom_.sigdb, &datcom_.dfreq, &datcom_.width,
               &datcom_.red[0], &datcom_.blue[0]);
 
     datcom_.nclearave=0;
-    datcom_.rms=100.0;
-    datcom_.sigdb=datcom_.red[1004];
-    datcom_.dfreq=i00*96000.0/(256*1024);
-    datcom_.width=0.0;
-    datcom_.nqual=3;
-
+    datcom_.nqual=int(snr+0.5);
+    datcom_.rms=0.5*(rms1+rms2);
   } else {
     float snr=0;
-    avecho_(&d2com_.d2a[k0],&datcom_.ndop,&datcom_.nfrit,
+    avecho_(&d2com_.d2a[k0],&datcom_.dop,&datcom_.nfrit,
         &datcom_.nsum,&datcom_.nclearave,&datcom_.nqual,
         &datcom_.f1,&datcom_.rms,&datcom_.sigdb,&snr,&datcom_.dfreq,
         &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);

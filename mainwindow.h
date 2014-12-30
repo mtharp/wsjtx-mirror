@@ -71,6 +71,8 @@ private slots:
 
   void on_actionRead10_triggered();
 
+  void on_sbDphi_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 
@@ -107,6 +109,7 @@ private:
     qint32  m_smooth;
     qint32  m_Costas;
     qint32  m_loopall;
+    qint32  m_Dphi;
 
     bool    m_receiving;
     bool    m_transmitting;

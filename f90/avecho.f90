@@ -1,4 +1,4 @@
-subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
+subroutine avecho(id2,dop,nfrit,nsum,nclearave,nqual,        &
      f1,rms0,sigdb,snr,dfreq,width,blue,red)
 
   integer TXLENGTH
@@ -17,9 +17,15 @@ subroutine avecho(id2,ndop,nfrit,nsum,nclearave,nqual,        &
   integer ipkv(1)
   complex c(0:NH)
   equivalence (x,c),(ipk,ipkv)
+  equivalence (dop1,ndop)                         !###
   save dop0,sa,sb
 
-  doppler=ndop
+!###
+  dop1=dop
+  dop=ndop
+!###
+
+  doppler=dop
   sq=0.
   i0=nint(2.6*48000)
   do i=1,TXLENGTH

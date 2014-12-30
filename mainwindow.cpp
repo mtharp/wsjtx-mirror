@@ -196,6 +196,7 @@ void MainWindow::writeSettings()
   settings.setValue("Dither",ui->sbDither->value());
   settings.setValue("MyGrid",m_myGrid);
   settings.setValue("RIT",m_RIT);
+  settings.setValue("Dphi",m_Dphi);
   settings.setValue("Costas27",m_Costas);
   settings.setValue("Save",m_bSave);
   settings.setValue("MAP65",m_network);
@@ -260,21 +261,20 @@ void MainWindow::readSettings()
   ui->locator->setText(m_myGrid);
   m_RIT=settings.value("RIT",0).toInt();
   ui->sbRIT->setValue(m_RIT);
+  m_Dphi=settings.value("Dphi",0).toInt();
+  ui->sbDphi->setValue(m_Dphi);
   settings.endGroup();
 }
 
 //-------------------------------------------------------------- dataSink()
 void MainWindow::dataSink()
 {
-//  static int n1=260000;              //260000/48000 = 5.417 s
-//  static int n2=0;
-
   lab1->setStyleSheet("");
   lab1->setText("");
   d2com_.kstop=d2com_.k;
   if(m_diskData) d2com_.kstop=260000;
   bool bSave=m_bSave and !m_diskData;
-  *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network);
+  *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network,float(m_Dphi));
   watcher1->setFuture(*future1);               // call specReady() when done
 }
 
@@ -287,11 +287,18 @@ void MainWindow::specReady()
 
   g_pWideGraph->plotSpec();
   float level=-99.0;
-  if(datcom_.rms>0.0) level=10.0*log10(double(datcom_.rms)) - 20.0;
   QString t;
-  t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
-            datcom_.nsum,level,datcom_.sigdb,datcom_.dfreq,
-            datcom_.width,datcom_.nqual);
+  if(m_network) {
+    if(datcom_.rms>0.0) level=20.0*log10(double(datcom_.rms));
+    t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
+              datcom_.nsum,level,datcom_.sigdb,datcom_.dfreq,
+              datcom_.width,datcom_.nqual);
+  } else {
+    if(datcom_.rms>0.0) level=20.0*log10(double(datcom_.rms)) - 20.0;
+    t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
+              datcom_.nsum,level,datcom_.sigdb,datcom_.dfreq,
+              datcom_.width,datcom_.nqual);
+  }
   ui->decodedTextBrowser->append(t);
   if(m_loopall>0) on_actionRead_next_data_in_file_triggered();
 }
@@ -551,7 +558,8 @@ void MainWindow::guiUpdate()
     dataSink();
   }
 
-  float px=20.0*log10(datcom_.rms)- 20.0;
+  float px=20.0*log10(datcom_.rms);
+  if(!m_network) px=px-20.0;
   signalMeter->setValue(px);                   // Update signalmeter
 
   if(nsec != m_sec0) {
@@ -702,7 +710,7 @@ void MainWindow::on_actionOpen_triggered()
     fp=fopen(name,"rb");
     if(fp != NULL) {
       int n=datcom_.nsum;
-      fread(&datcom_.ndop,4,10,fp);
+      fread(&datcom_.dop,4,10,fp);
       uint nread;
       /*
       nbytes=fread(d2com_.d2a,2,260000,fp);
@@ -750,7 +758,7 @@ void MainWindow::on_actionRead_next_data_in_file_triggered()
 {
   if(fp != NULL) {
     int n=datcom_.nsum;
-    fread(&datcom_.ndop,4,10,fp);
+    fread(&datcom_.dop,4,10,fp);
     uint nread;
     if(m_network) {
       nread=fread(r4com_.dd,4,4*520000,fp);      //Raw MAP65 data
@@ -781,4 +789,9 @@ void MainWindow::on_actionRead10_triggered()
 {
   m_loopall=10;
   on_actionRead_next_data_in_file_triggered();
+}
+
+void MainWindow::on_sbDphi_valueChanged(int arg1)
+{
+  m_Dphi=arg1;
 }

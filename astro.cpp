@@ -49,17 +49,13 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
             &azmoondx, &elmoondx, &ntsky, &dop, &dop00,&ramoon, &decmoon,
             &dgrd, &poloffset, &xnr, &techo, &width1, 6, 6);
     doppler=dop00;
+    datcom_.dop=dop00;
     if(nfreq<=1) {                            //Do this a better way!
       ntsky=0;
       doppler=0;
       nfreq=0;
     }
     astroBusy=false;
-  }
-  if(doppler>=0) {
-    datcom_.ndop=int(doppler+0.5);
-  } else {
-    datcom_.ndop=int(doppler-0.5);
   }
   sprintf(cc,
           "Az:    %6.1f\n"

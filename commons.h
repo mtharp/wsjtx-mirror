@@ -6,7 +6,7 @@
 
 extern "C" {
 extern struct {
-  int ndop;
+  float dop;
   int nfrit;
   int nsum;
   int nclearave;
