@@ -269,17 +269,8 @@ void MainWindow::dataSink()
 //  static int n1=260000;              //260000/48000 = 5.417 s
 //  static int n2=0;
 
-  //  qDebug() << "4. Rx done:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   lab1->setStyleSheet("");
   lab1->setText("");
-/*
-  int k0=0;
-  float x=float(d2com_.kstop)/48000.0;
-  if(x>6.0) {
-    x=x-6.0;
-    k0=576000/2;
-  }
-*/
   d2com_.kstop=d2com_.k;
   if(m_diskData) d2com_.kstop=260000;
   bool bSave=m_bSave and !m_diskData;
@@ -294,9 +285,7 @@ void MainWindow::specReady()
     msgBox("Cannot create file\n" + m_fname);
   }
 
-  qDebug() << "a1";
   g_pWideGraph->plotSpec();
-//  qDebug() << "5. Spectrum plotted:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   float level=-99.0;
   if(datcom_.rms>0.0) level=10.0*log10(double(datcom_.rms)) - 20.0;
   QString t;
@@ -533,7 +522,6 @@ void MainWindow::guiUpdate()
   int nsec=tsec;
   m_s6=fmod(tsec,6.0);
 
-//  qDebug() << "a" << m_s6 << s6z << m_s6-s6z;
 // When m_s6 has wrapped back to zero, start a new cycle.
   if(m_auto and m_s6<s6z) {
 
@@ -574,7 +562,6 @@ void MainWindow::guiUpdate()
     if(!m_receiving) signalMeter->setValue(0);
     datcom_.nfrit = ui->sbRIT->value();
     g_pAstro->astroUpdate(t, m_myGrid, m_freq);
-//    qDebug() << "a" << datcom_.rms << px;
     m_sec0=nsec;
   }
   s6z=m_s6;
@@ -590,14 +577,11 @@ void MainWindow::startTx2()
   soundOutThread.setCostas(m_Costas);
   soundOutThread.start(QThread::HighPriority);
   m_transmitting=true;
-//  qDebug() << "1. Start Tx audio:" << QDateTime::currentMSecsSinceEpoch() % 6000;
-
 }
 
 void MainWindow::stopTx()
 {
 //Tx pulse is finished.
-//  qDebug() << "2. Tx audio finished:" << QDateTime::currentMSecsSinceEpoch() % 6000;
   m_transmitting=false;
   lab1->setStyleSheet("");
   lab1->setText("");
@@ -624,7 +608,6 @@ void MainWindow::stopTx2()
   soundInThread.start(QThread::HighPriority);
   soundInThread.setReceiving(true);
   m_receiving=true;
-//  qDebug() << "3. Start Rx:" << QDateTime::currentMSecsSinceEpoch() % 6000;
 }
 
 void MainWindow::on_bandComboBox_currentIndexChanged(int n)
@@ -720,9 +703,17 @@ void MainWindow::on_actionOpen_triggered()
     if(fp != NULL) {
       int n=datcom_.nsum;
       fread(&datcom_.ndop,4,10,fp);
-      uint nbytes=fread(d2com_.d2a,2,260000,fp);
-      qDebug() << "c1" << nbytes;
+      uint nread;
+      /*
+      nbytes=fread(d2com_.d2a,2,260000,fp);
       if(nbytes!=260000) return;
+      */
+      if(m_network) {
+        nread=fread(r4com_.dd,4,4*520000,fp);      //Raw MAP65 data
+        r4com_.kstop=0;
+      } else {
+        nread=fread(d2com_.d2a,2,260000,fp);       //Raw soundcard data
+      }
       datcom_.nsum=n;
       m_diskData=true;
       datcom_.nclearave=1;
@@ -760,10 +751,15 @@ void MainWindow::on_actionRead_next_data_in_file_triggered()
   if(fp != NULL) {
     int n=datcom_.nsum;
     fread(&datcom_.ndop,4,10,fp);
-    uint nbytes=fread(d2com_.d2a,2,260000,fp);
-    qDebug() << "c2" << nbytes;
+    uint nread;
+    if(m_network) {
+      nread=fread(r4com_.dd,4,4*520000,fp);      //Raw MAP65 data
+      r4com_.kstop=0;
+    } else {
+      nread=fread(d2com_.d2a,2,260000,fp);       //Raw soundcard data
+    }
     datcom_.nsum=n;
-    if(nbytes == 260000) {
+    if(nread == 260000 or nread == 2080000) {
       dataSink();
       m_loopall--;
     } else {

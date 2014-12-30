@@ -65,7 +65,6 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 
     m_fSpan=m_w*m_fftBinWidth;
     m_StartFreq=50 * int((-0.5*m_fSpan)/50.0 - 0.5);
-//    qDebug() << "D" << m_fSpan << m_StartFreq;
   }
   DrawOverlay();
   draw();

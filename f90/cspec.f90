@@ -21,13 +21,5 @@ subroutine cspec(c,fdop,cs)
   i0=nint((fdop+48000.0)/df)
   cs=ct(i0-1000:i0+1000)
 
-!  rewind 24
-!  do i=0,NFFT-1
-!     s(i)=s(i) + real(ct(i))**2 + aimag(ct(i))**2
-!     write(24,3001) i*df-48000.0,s(i)
-!3001 format(f10.3,e12.3)
-!  enddo
-!  call flush(24)
-
   return
 end subroutine cspec

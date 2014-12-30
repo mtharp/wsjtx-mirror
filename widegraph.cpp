@@ -27,6 +27,8 @@ WideGraph::WideGraph(QWidget *parent) :
   ui->zeroSpinBox->setValue(ui->widePlot->getPlotZero());
   ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
   ui->smoothSpinBox->setValue(settings.value("Smooth",0).toInt());
+  ui->widePlot->m_blue=settings.value("BlueCurve",false).toBool();
+  ui->cbBlue->setChecked(ui->widePlot->m_blue);
   settings.endGroup();
 }
 
@@ -47,6 +49,7 @@ void WideGraph::saveSettings()
   settings.setValue("PlotZero",ui->widePlot->m_plotZero);
   settings.setValue("PlotGain",ui->widePlot->m_plotGain);
   settings.setValue("Smooth",ui->widePlot->m_smooth);
+  settings.setValue("BlueCurve",ui->widePlot->m_blue);
   settings.endGroup();
 }
 

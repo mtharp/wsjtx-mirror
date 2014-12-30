@@ -64,9 +64,7 @@ extern double inputLatency;
 void SoundInThread::run()                           //SoundInThread::run()
 {
   if (m_net) {
-    qDebug() << "Start input from MAP65";
     inputUDP();
-//    qDebug() << "Finished input from MAP65()";
     return;
   }
 

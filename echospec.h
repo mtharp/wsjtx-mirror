@@ -17,5 +17,9 @@ void avecho_( short id2[], int* ndop, int* nfrit, int* nsum,
               int* nclearave, int* nqual, float* f1, float* rms,
               float* sigdb, float* snr, float* dfreq, float* width,
               float blue[], float red[]);
+
+void avecho65_(float dd[], float* dop, int* iping, int* i00, float* dphi,
+               float* t0, float* f1a, float* dl, float* dc,
+               float* pol, float* delta, float red[], float blue[]);
 }
 #endif // GETFILE_H
