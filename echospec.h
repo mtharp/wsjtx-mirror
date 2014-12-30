@@ -7,7 +7,8 @@
 #include <QDateTime>
 #include "commons.h"
 
-bool echospec(bool bSave, QString fname, bool bnetwork, float dphi);
+bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
+              bool diskData);
 int ptt(int nport, int ntx, int* iptt, int* nopen);
 
 extern "C" {
@@ -18,7 +19,8 @@ void avecho_( short id2[], float* dop, int* nfrit, int* nsum,
               float* sigdb, float* snr, float* dfreq, float* width,
               float blue[], float red[]);
 
-void avecho65_(float dd[], float* dop, int* iping, int* i00, float* dphi,
+void avecho65_(float dd[], float* dop, int* iping, float* techo,
+               float* fspread, float* fsample, int* i00, float* dphi,
                float* t0, float* f1a, float* dl, float* dc,
                float* pol, float* delta, float* rms1, float* rms2,
                float* snr, float* sigdb, float* dfreq, float* width,

@@ -31,6 +31,13 @@ extern struct {
   float dd[4608000];                //12*4*96000
   int k;
   int kstop;
+  float techo;
+  float fspread;
+  float fsample;
+  float dl;
+  float dc;
+  float pol;
+  float delta;
 } r4com_;
 
 /*

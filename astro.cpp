@@ -50,6 +50,9 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, double freq)
             &dgrd, &poloffset, &xnr, &techo, &width1, 6, 6);
     doppler=dop00;
     datcom_.dop=dop00;
+    r4com_.techo=techo;
+    r4com_.fspread=width1;
+    r4com_.fsample=96000.0;
     if(nfreq<=1) {                            //Do this a better way!
       ntsky=0;
       doppler=0;

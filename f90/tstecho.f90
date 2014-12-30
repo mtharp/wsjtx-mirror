@@ -43,8 +43,11 @@ program tstecho
         ndop0=ndop
 !###
 !        if(mod(iping,10).eq.1) nn=0
-        call avecho65(cc,ndop0,nn,i00,dphi,t0,f1a,dl,dc,pol,delta,     &
-             rms1,rms2,snr,sigdb,dfreq,width,red,blue)
+        techo=2.44
+        fspread=2.0
+        fsample=96000.0
+        call avecho65(cc,ndop0,nn,techo,fspread,fsample,i00,dphi,t0,f1a,    &
+             dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue)
      write(*,3002) nn,ndop,nclearave0,t0,f1,f1a,dl,dc,pol,delta
 3002 format(i3,i6,i2,f8.3,2f9.1,2f7.2,2f7.1)
 !...,rms,sigdb,snr,width,nqual, ...?

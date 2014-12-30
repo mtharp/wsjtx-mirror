@@ -8,7 +8,8 @@
 #include <windows.h>
 #endif
 
-bool echospec(bool bSave, QString fname, bool bnetwork, float dphi)
+bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
+              bool diskData)
 {
   bool dataWritten=false;
 
@@ -21,13 +22,14 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi)
     if(d2com_.kstop > 6*48000) k0=6*48000;
   }
 
-  if(bSave) {
+  if(bSave and !diskData) {
     char name[80];
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
       fwrite(&datcom_.dop,4,10,fp);                //Header info
       if(bnetwork) {
+        fwrite(&r4com_.techo,4,3,fp);              //More header info
         fwrite(&r4com_.dd[k0],4,4*520000,fp);      //Raw MAP65 data
       } else {
         fwrite(&d2com_.d2a[k0],2,260000,fp);       //Raw soundcard data
@@ -49,12 +51,19 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi)
     float snr=0.0;
     float rms1=0.0;
     float rms2=0.0;
+    float techo=r4com_.techo;
+    float fspread=r4com_.fspread;
+    if(diskData) {                          //###
+      techo=2.44;
+      fspread=2.0;
+    }
     datcom_.nsum=datcom_.nsum % 20;
 
-    avecho65_(&r4com_.dd[k0], &dop, &datcom_.nsum, &i00, &dphi, &t0,
-              &f1a, &dl, &dc, &pol, &delta, &rms1, &rms2, &snr,
-              &datcom_.sigdb, &datcom_.dfreq, &datcom_.width,
-              &datcom_.red[0], &datcom_.blue[0]);
+    avecho65_(&r4com_.dd[k0], &dop, &datcom_.nsum, &techo,
+              &fspread, &r4com_.fsample, &i00, &dphi, &t0,
+              &f1a, &r4com_.dl, &r4com_.dc, &r4com_.pol, &r4com_.delta,
+              &rms1, &rms2, &snr, &datcom_.sigdb, &datcom_.dfreq,
+              &datcom_.width, &datcom_.red[0], &datcom_.blue[0]);
 
     datcom_.nclearave=0;
     datcom_.nqual=int(snr+0.5);

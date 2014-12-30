@@ -274,7 +274,8 @@ void MainWindow::dataSink()
   d2com_.kstop=d2com_.k;
   if(m_diskData) d2com_.kstop=260000;
   bool bSave=m_bSave and !m_diskData;
-  *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network,float(m_Dphi));
+  *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network,
+                               float(m_Dphi),m_diskData);
   watcher1->setFuture(*future1);               // call specReady() when done
 }
 
@@ -289,11 +290,13 @@ void MainWindow::specReady()
   float level=-99.0;
   QString t;
   if(m_network) {
+    ui->legendLabel->setText("  N Level   dB    DF   Width   Pol  S/N  ");
     if(datcom_.rms>0.0) level=20.0*log10(double(datcom_.rms));
-    t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
+    t.sprintf("%3d %4.1f %4.1f %4.1f %5.1f %4d %3d",
               datcom_.nsum,level,datcom_.sigdb,datcom_.dfreq,
-              datcom_.width,datcom_.nqual);
+              datcom_.width,int(r4com_.pol),datcom_.nqual);
   } else {
+    ui->legendLabel->setText("  N  Level   S/N     DF   Width   Q  ");
     if(datcom_.rms>0.0) level=20.0*log10(double(datcom_.rms)) - 20.0;
     t.sprintf("%3d %5.1f %5.1f %6.1f %5.1f %3d",
               datcom_.nsum,level,datcom_.sigdb,datcom_.dfreq,
