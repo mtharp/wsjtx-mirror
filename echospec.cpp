@@ -47,16 +47,19 @@ bool echospec(bool bSave, QString fname, bool bnetwork)
     float dc=0.0;
     float pol=0.0;
     float delta=0.0;
+    datcom_.nsum=datcom_.nsum % 20;
 
     avecho65_(&r4com_.dd[k0], &dop, &datcom_.nsum, &i00, &dphi, &t0,
               &f1a, &dl, &dc, &pol, &delta,
               &datcom_.red[0], &datcom_.blue[0]);
+
     datcom_.nclearave=0;
     datcom_.rms=100.0;
     datcom_.sigdb=datcom_.red[1004];
     datcom_.dfreq=i00*96000.0/(256*1024);
     datcom_.width=0.0;
     datcom_.nqual=3;
+
   } else {
     float snr=0;
     avecho_(&d2com_.d2a[k0],&datcom_.ndop,&datcom_.nfrit,

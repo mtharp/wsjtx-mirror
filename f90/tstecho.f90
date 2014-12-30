@@ -24,6 +24,7 @@ program tstecho
   nsum=0
   dphi=88.0                                       !Expected phase difference
   i00=4                                           !Expected i0
+  nn=0
 
   do iping=1,999
      read(10,end=100) ndop,nfrit,nsum0,nclearave0,nqual0,f1,rms,        &
@@ -38,9 +39,9 @@ program tstecho
      else
         read(10) cc                               !Read MAP65 data
         dop=ndop
-        nn=iping-1
+        if(mod(iping,10).eq.1) nn=0
         call avecho65(cc,dop,nn,i00,dphi,t0,f1a,dl,dc,pol,delta,red,blue)
-     write(*,3002) iping,ndop,nclearave0,t0,f1,f1a,dl,dc,pol,delta
+     write(*,3002) nn,ndop,nclearave0,t0,f1,f1a,dl,dc,pol,delta
 3002 format(i3,i6,i2,f8.3,2f9.1,2f7.2,2f7.1)
 !...,rms,sigdb,snr,width,nqual, ...?
      df=96000.0/(256*1024)

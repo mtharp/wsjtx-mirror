@@ -1,14 +1,14 @@
 subroutine astro0(nyear,month,nday,uth8,nfreq,mygrid,hisgrid,              &
-     AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,ntsky,ndop,ndop00,    &
+     AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,ntsky,dop8,dop008,    &
      dbMoon8,RAMoon8,DecMoon8,HA8,Dgrd8,sd8,poloffset8,xnr8,dfdt,dfdt0,    &
-     width1,width2,w501,w502,xlst8,techo8,doppler8)
+     width1,width2,w501,w502,xlst8,techo8)
 
   parameter (DEGS=57.2957795130823d0)
   character*6 mygrid,hisgrid
   real*8 AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8
   real*8 dbMoon8,RAMoon8,DecMoon8,HA8,Dgrd8,xnr8,dfdt,dfdt0,dt
   real*8 sd8,poloffset8,day8,width1,width2,w501,w502,xlst8
-  real*8 uth8,techo8,doppler8
+  real*8 uth8,techo8,dop8,dop008
   data uth8z/0.d0/
   save
 
@@ -61,9 +61,8 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,mygrid,hisgrid,              &
   sd8=sd
   poloffset8=poloffset
   xnr8=xnr
-  ndop=nint(doppler)
-  ndop00=nint(doppler00)
-  doppler8=doppler00
+  dop8=doppler
+  dop008=doppler00
 
   if(uth8z.eq.0.d0) then
      uth8z=uth8-1.d0/3600.d0

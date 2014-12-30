@@ -1,4 +1,4 @@
-subroutine avecho65(cc,dop,iping,i00,dphi,t0,f1a,dl,dc,pol,delta,red,blue)
+subroutine avecho65(cc,dop,nn,i00,dphi,t0,f1a,dl,dc,pol,delta,red,blue)
 
   parameter (NZ=520000,NZH=NZ/2,NTX=27*8192)
   parameter (NFFT=256*1024)
@@ -8,19 +8,17 @@ subroutine avecho65(cc,dop,iping,i00,dphi,t0,f1a,dl,dc,pol,delta,red,blue)
   complex z
   real*4 sx(-1000:1000),sy(-1000:1000)
   real blue(2000),red(2000)
-  logical first
-  data fsample/96000.0/,first/.true./
-  save first,sx,sy
+  data fsample/96000.0/
+  save sx,sy
   abs2(z)=real(z)*real(z) + aimag(z)*aimag(z)
 
-  if(first) then
-     iping=0
+  print*,"B",nn
+  if(nn.eq.0) then
      sx=0.
      sy=0.
-     first=.false.
   endif
 
-  iping=iping+1
+  nn=nn+1
   cx(0:NZH-1)=cc(1,1:NZH)
   cy(0:NZH-1)=cc(2,1:NZH)
 
@@ -50,7 +48,7 @@ subroutine avecho65(cc,dop,iping,i00,dphi,t0,f1a,dl,dc,pol,delta,red,blue)
   enddo
 
   i0=i00
-  call polfit(csx,csy,iping,i0,dphi,dl,dc,pol,delta,red,blue)
+  call polfit(csx,csy,nn,i0,dphi,dl,dc,pol,delta,red,blue)
 
   return
 end subroutine avecho65
