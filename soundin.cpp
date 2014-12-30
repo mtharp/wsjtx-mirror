@@ -239,11 +239,12 @@ void SoundInThread::inputUDP()
       if(ns12 < ns12z) k=0;
       ns12z=ns12;
 
+/*
       if(nsec != nsec0) {
         qDebug() << "MAP65" << ns12 << k;
         nsec0=nsec;
       }
-
+*/
       int nsam=-1;
       recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
     }
