@@ -11,14 +11,10 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   real blue(2000),red(2000)
   integer ipkv(1)
   equivalence (ipk,ipkv)
-  equivalence (dop1,ndop)                         !###
   save sx,sy
   abs2(z)=real(z)*real(z) + aimag(z)*aimag(z)
 
-!###
-  dop1=dop
-  dop=ndop
-!###
+!  print*,'D',dop
 
   if(nn.eq.0) then
      sx=0.
@@ -28,6 +24,11 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   nn=nn+1
   cx(0:NZH-1)=cc(1,1:NZH)
   cy(0:NZH-1)=cc(2,1:NZH)
+
+  do i=0,96000
+     write(71,3001) i/96000.0,cx(i),cy(i)
+3001 format(f10.6,4e12.3)
+  enddo
 
   call txtone(cx,tx,f1x)
   call txtone(cy,ty,f1y)
@@ -53,9 +54,9 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   call cspec(cx,fdop,csx)
   call cspec(cy,fdop,csy)
 
-  open(21,file='emecho.dat',status='unknown',access='stream',position='append')
-  write(21) dop,techo,fspread,dphi,csx,csy
-  close(21)
+!  open(21,file='emecho.dat',status='unknown',access='stream',position='append')
+!  write(21) dop,techo,fspread,dphi,csx,csy
+!  close(21)
 
 !### Do the following only when nn=1 ??  Or only on "first" call ??
   smax=0.

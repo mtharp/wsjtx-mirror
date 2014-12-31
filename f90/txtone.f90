@@ -8,8 +8,8 @@ subroutine txtone(c,t0,f1a)
 
   ia=nint(0.25*96000)
   ib=nint(0.35*96000)
-
   rms=sqrt(real(dot_product(c(ia:ib),conjg(c(ia:ib))))/(ib-ia+1))
+
   ia=nint(0.35*96000)
   ib=nint(0.5*96000)
   n=0
