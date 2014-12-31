@@ -213,6 +213,7 @@ void SoundInThread::inputUDP()
 */
       int nsam=-1;
       recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
+      r4com_.k=k;
     }
   }
 

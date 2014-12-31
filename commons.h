@@ -39,16 +39,6 @@ extern struct {
   float pol;
   float delta;
 } r4com_;
-
-/*
-extern struct {
-  float xdop[2];
-  float techo;
-  float AzMoon;
-  float ElMoon;
-  int mjd;
-} echocom_;                          //This is "common/echocom/..." in fortran
-*/
 }
 
 #endif // COMMONS_H

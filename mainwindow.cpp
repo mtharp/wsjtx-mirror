@@ -275,6 +275,8 @@ void MainWindow::dataSink()
   lab1->setText("");
   d2com_.kstop=d2com_.k;
   if(m_diskData) d2com_.kstop=260000;
+  r4com_.kstop=r4com_.k;
+  if(m_diskData) r4com_.kstop=260000;
   bool bSave=m_bSave and !m_diskData;
   *future1 = QtConcurrent::run(echospec,bSave,m_fname,m_network,
                                float(m_Dphi),m_diskData);

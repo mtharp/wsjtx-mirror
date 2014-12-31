@@ -21,6 +21,7 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   endif
 
   nn=nn+1
+  if(nn.gt.100) nn=1
   cx(0:NZH-1)=cc(1,1:NZH)
   cy(0:NZH-1)=cc(2,1:NZH)
 
@@ -28,7 +29,6 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   call txtone(cy,ty,f1y)
   t0=(tx+ty)/2.0
   f1a=(f1x+f1y)/2.0
-  techo=2.44
   istart=nint((t0+techo)*fsample)
   cx(0:NTX-1)=cc(1,istart:istart+NTX-1)
   cx(NTX:)=0.
@@ -105,9 +105,9 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   npol=nint(pol)
   ndelta=nint(delta)
   rms1=min(99.9,rms1)
-  rms2=min(99.9,rms)
+  rms2=min(99.9,rms2)
   write(20,1010) nn,ndphi,t0,nf1a,dl,dc,npol,ndelta,rms1,rms2,snr,sigdb,dfreq,width
-1010 format(i3,i4,f5.2,i7,2f5.1,i4,i4,3f5.1,f6.1,f6.1,f5.1)
+1010 format(i3,i4,f5.2,i7,2f5.1,i4,i5,2f5.1,2f6.1,f6.1,f5.1)
   close(20)
 
   return

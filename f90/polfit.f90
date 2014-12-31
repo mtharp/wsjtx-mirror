@@ -2,7 +2,7 @@ subroutine polfit(csx,csy,nn,i0,dphi,dl,dc,pol,delta,red,blue)
 
   parameter (NFFT=256*1024)
   complex csx(-1000:1000),csy(-1000:1000)
-  complex cpx(-1000:1000,20),cpy(-1000:1000,20)
+  complex cpx(-1000:1000,100),cpy(-1000:1000,100)
   complex w,z
   real px(-1000:1000),py(-1000:1000)
   real blue(2000),red(2000)
@@ -54,7 +54,7 @@ subroutine polfit(csx,csy,nn,i0,dphi,dl,dc,pol,delta,red,blue)
   cpx(-1000:1000,nn)=csx
   cpy(-1000:1000,nn)=csy
 
-!  if(nn.lt.20) return
+!  if(nn.lt.100) return
 
   fx=1.0/sqrt(sum0x/nn)
   fy=1.0/sqrt(sum0y/nn)

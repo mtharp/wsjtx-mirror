@@ -13,9 +13,12 @@ subroutine txtone(c,t0,f1a)
      ia=(i-1)*96
      ib=ia+95
      s(i)=sum(real(c(ia:ib)*conjg(c(ia:ib))))
-     ss=ss+s(i)
-     if(i.eq.100) base=ss/100.0
+     write(71,3001) i,0.001*i,s(i),base
+3001 format(i10,f10.3,2e12.3)
+     if(i.gt.900) ss=ss+s(i)
   enddo
+  flush(71)
+  base=ss/100.0
 
   do i=1000,1,-1
      if(s(i).lt.0.2*base) exit
