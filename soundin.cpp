@@ -6,6 +6,7 @@
 extern "C" {
 #include <portaudio.h>
 }
+extern bool bstartup;
 
 typedef struct
 {
@@ -67,9 +68,7 @@ void SoundInThread::run()                           //SoundInThread::run()
     inputUDP();
     return;
   }
-
   quitExecution = false;
-
 //---------------------------------------------------- Soundcard Setup
   qDebug() << "Start input from soundcard";
 
@@ -142,6 +141,86 @@ void SoundInThread::run()                           //SoundInThread::run()
   Pa_CloseStream(inStream);
 }
 
+//--------------------------------------------------------------- inputUDP()
+void SoundInThread::inputUDP()
+{
+  udpSocket = new QUdpSocket();
+  m_udpPort=50004;
+  if(!udpSocket->bind(m_udpPort,QUdpSocket::ShareAddress) )
+  {
+    qDebug() << "UDP Socket bind failed.";
+    emit error(tr("UDP Socket bind failed."));
+    return;
+  }
+
+  // Set this socket's total buffer space for received UDP packets
+  int v=141600;
+  ::setsockopt(udpSocket->socketDescriptor(), SOL_SOCKET, SO_RCVBUF,
+               (char *)&v, sizeof(v));
+
+  bool qe = quitExecution;
+  struct linradBuffer {
+    double cfreq;
+    int msec;
+    float userfreq;
+    int iptr;
+    quint16 iblk;
+    qint8 nrx;
+    char iusb;
+    double d8[174];
+  } b;
+
+  quint16 iblk0=0;
+  int k=0;
+  int nsec,nsec0=-1;
+  int ns12,ns12z=12;
+  int ns6,ns6z=6;
+
+  // Main loop for input of UDP packets over the network:
+  while (!qe) {
+    qe = quitExecution;
+    if (qe) break;
+    if (!udpSocket->hasPendingDatagrams()) {
+      msleep(2);                  // Sleep if no packet available
+    } else {
+      int nBytesRead = udpSocket->readDatagram((char *)&b,1416);
+      if (nBytesRead != 1416) qDebug() << "UDP Read Error:" << nBytesRead;
+      if(k != 0 and b.iblk-iblk0 != 1 and b.iblk != 0) {
+        qDebug() << "Linrad block error" << iblk0 << b.iblk;
+      }
+      iblk0=b.iblk;
+
+      qint64 ms = QDateTime::currentMSecsSinceEpoch();
+      ms=ms % 86400000;
+      nsec = ms/1000;             // Time according to this computer
+      ns12=nsec % 12;
+
+  // Reset buffer pointer at start of a new 12-second interval
+      if(ns12 < ns12z) k=0;
+      if(bstartup and (ns6 < ns6z)) {
+        k=0;
+        bstartup=false;
+      }
+      ns12z=ns12;
+      ns6z=ns6;
+      ns6=nsec % 6;
+
+/*
+      if(nsec != nsec0) {
+        qDebug() << "SoundIn" << bstartup << k;
+        nsec0=nsec;
+      }
+*/
+      int nsam=-1;
+      recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
+    }
+  }
+
+  qDebug() << "Completed input from MAP65" << k;
+//            emit readyForFFT(k);         //Signal to compute new FFTs
+  delete udpSocket;
+}
+
 void SoundInThread::setInputDevice(int n)                  //setInputDevice()
 {
   if (isRunning()) return;
@@ -182,75 +261,4 @@ qint64 SoundInThread::rxStartTime()
 void SoundInThread::setNetwork(bool b)                          //setNetwork()
 {
   m_net = b;
-}
-
-//--------------------------------------------------------------- inputUDP()
-void SoundInThread::inputUDP()
-{
-  udpSocket = new QUdpSocket();
-  m_udpPort=50004;
-  if(!udpSocket->bind(m_udpPort,QUdpSocket::ShareAddress) )
-  {
-    qDebug() << "UDP Socket bind failed.";
-    emit error(tr("UDP Socket bind failed."));
-    return;
-  }
-
-  // Set this socket's total buffer space for received UDP packets
-  int v=141600;
-  ::setsockopt(udpSocket->socketDescriptor(), SOL_SOCKET, SO_RCVBUF,
-               (char *)&v, sizeof(v));
-
-  bool qe = quitExecution;
-  struct linradBuffer {
-    double cfreq;
-    int msec;
-    float userfreq;
-    int iptr;
-    quint16 iblk;
-    qint8 nrx;
-    char iusb;
-    double d8[174];
-  } b;
-
-  quint16 iblk0=0;
-  int k=0;
-  int nsec,nsec0=-1;
-  int ns12,ns12z=12;
-
-  // Main loop for input of UDP packets over the network:
-  while (!qe) {
-    qe = quitExecution;
-    if (qe) break;
-    if (!udpSocket->hasPendingDatagrams()) {
-      msleep(2);                  // Sleep if no packet available
-    } else {
-      int nBytesRead = udpSocket->readDatagram((char *)&b,1416);
-      if (nBytesRead != 1416) qDebug() << "UDP Read Error:" << nBytesRead;
-      if(k != 0 and b.iblk-iblk0 != 1) qDebug() << "Linrad block error" << iblk0 << b.iblk;
-      iblk0=b.iblk;
-
-      qint64 ms = QDateTime::currentMSecsSinceEpoch();
-      ms=ms % 86400000;
-      nsec = ms/1000;             // Time according to this computer
-      ns12=nsec % 12;
-
-  // Reset buffer pointer at start of a new 12-second interval
-      if(ns12 < ns12z) k=0;
-      ns12z=ns12;
-
-/*
-      if(nsec != nsec0) {
-        qDebug() << "MAP65" << ns12 << k;
-        nsec0=nsec;
-      }
-*/
-      int nsam=-1;
-      recvpkt_(&nsam, &b.iblk, &b.nrx, &k, b.d8, b.d8, b.d8);
-    }
-  }
-
-  qDebug() << "Completed input from MAP65" << k;
-//            emit readyForFFT(k);         //Signal to compute new FFTs
-  delete udpSocket;
 }

@@ -14,7 +14,6 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   save sx,sy
   abs2(z)=real(z)*real(z) + aimag(z)*aimag(z)
 
-!  print*,'D',dop
 
   if(nn.eq.0) then
      sx=0.
@@ -24,11 +23,6 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   nn=nn+1
   cx(0:NZH-1)=cc(1,1:NZH)
   cy(0:NZH-1)=cc(2,1:NZH)
-
-  do i=0,96000
-     write(71,3001) i/96000.0,cx(i),cy(i)
-3001 format(f10.6,4e12.3)
-  enddo
 
   call txtone(cx,tx,f1x)
   call txtone(cy,ty,f1y)
@@ -77,7 +71,7 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   sq2=dot_product(red(1501:1900)-ave,red(1501:1900)-ave)
   rms=sqrt(min(sq1,sq2)/399.0)
   redmax=maxval(red(950:1050))
-  snr=(redmax-ave)/rms
+  snr=min(99.9,(redmax-ave)/rms)
   ipkv=maxloc(red(951:1050))+950
   df=fsample/NFFT
   dfreq=(ipk-1001)*df
@@ -98,8 +92,22 @@ subroutine avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,     &
   if(ave.gt.0.0) sigdb=10.0*log10(redmax/ave - 1.0) - 35.7
 
   open(20,file='emecho.txt',status='unknown',access='append')
-  write(20,1010) nn,nint(dphi),t0,nint(f1a),dl,dc,nint(pol),nint(delta),rms1,rms2,snr,sigdb,dfreq,width
-1010 format(i3,i4,f5.2,i6,2f5.1,i4,i3,3f5.1,f6.1,2f5.1)
+!  write(20,1010) nn,nint(dphi),t0,nint(f1a),dl,dc,nint(pol),nint(delta),rms1,rms2,snr,sigdb,dfreq,width
+!1010 format(i3,i4,f5.2,i6,2f5.1,i4,i3,3f5.1,f6.1,2f5.1)
+  ndphi=nint(dphi)
+  nf1a=nint(f1a)
+  npol=nint(pol)
+  ndelta=nint(delta)
+!  write(20,1010) nn,ndphi,t0,nf1a,dl,dc,npol,ndelta,rms1,rms2,snr,sigdb,dfreq,width
+!1010 format(i3,i4,f5.2,i6,2f5.1,i4,i4,3f5.1,f6.1,f6.1,f5.1)
+  ndphi=nint(dphi)
+  nf1a=nint(f1a)
+  npol=nint(pol)
+  ndelta=nint(delta)
+  rms1=min(99.9,rms1)
+  rms2=min(99.9,rms)
+  write(20,1010) nn,ndphi,t0,nf1a,dl,dc,npol,ndelta,rms1,rms2,snr,sigdb,dfreq,width
+1010 format(i3,i4,f5.2,i7,2f5.1,i4,i4,3f5.1,f6.1,f6.1,f5.1)
   close(20)
 
   return

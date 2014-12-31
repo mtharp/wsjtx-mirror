@@ -5,19 +5,22 @@ subroutine txtone(c,t0,f1a)
   parameter (NTX=27*8192)
   complex c(0:520000-1)
   complex ct(0:NFFT-1)
+  real s(1000)
 
-  ia=nint(0.25*96000)
-  ib=nint(0.35*96000)
-  rms=sqrt(real(dot_product(c(ia:ib),conjg(c(ia:ib))))/(ib-ia+1))
-
-  ia=nint(0.35*96000)
-  ib=nint(0.5*96000)
-  n=0
-  do i=ia,ib
-     if(abs(c(i)).gt.100.0*rms) n=n+1
-     if(n.gt.100) exit
+  ss=0.
+  base=0.
+  do i=1,1000
+     ia=(i-1)*96
+     ib=ia+95
+     s(i)=sum(real(c(ia:ib)*conjg(c(ia:ib))))
+     ss=ss+s(i)
+     if(i.eq.100) base=ss/100.0
   enddo
-  t0=i/96000.0
+
+  do i=1000,1,-1
+     if(s(i).lt.0.2*base) exit
+  enddo
+  t0=0.001*i + 0.02
   i0=nint(t0*96000.0)
 
   fac=1.0/NFFT

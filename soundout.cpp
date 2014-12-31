@@ -5,7 +5,6 @@
 extern "C" {
 #include <portaudio.h>
 }
-
 extern bool btxok;
 extern bool btxMute;
 extern double outputLatency;

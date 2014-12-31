@@ -17,6 +17,7 @@ int itone[162];                       //Tx audio tones
 int icw[250];                         //Dits for CW ID
 bool btxok;                           //True if OK to transmit
 bool btxMute;
+bool bstartup;
 double inputLatency;                  //Latency in seconds
 double outputLatency;                 //Latency in seconds
 
@@ -79,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_auto=false;
   btxMute=false;
   btxok=false;
+  bstartup=false;
   m_Costas=0;
   m_transmitting=false;
   m_network=false;
@@ -647,6 +649,7 @@ void MainWindow::on_txEnableButton_clicked()
     m_fname="";
     ui->txEnableButton->setStyleSheet(m_txEnable_style);
     m_diskData=false;
+    bstartup=true;
   } else {
     m_TxOK=false;
     ui->txEnableButton->setStyleSheet("");

@@ -27,7 +27,7 @@ program tstecho
   nn=0
   map65=1
 
-  do iping=1,1
+  do iping=1,999
      if(map65.eq.0) then
         read(10,end=100) ndop,nfrit,nsum0,nclearave0,nqual0,f1,rms,        &
           snrdb,dfreq,width
@@ -54,8 +54,8 @@ program tstecho
 !        if(mod(iping,10).eq.1) nn=0
         call avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,    &
              dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue)
-     write(*,3002) nn,ndop,nclearave0,t0,f1,f1a,dl,dc,pol,delta
-3002 format(i3,i6,i2,f8.3,2f9.1,2f7.2,2f7.1)
+     write(*,3002) nn,dop,t0,f1,f1a,dl,dc,pol,delta,sigdb,snr
+3002 format(i3,f8.1,f8.3,2f9.1,2f7.2,4f7.1)
 !...,rms,sigdb,snr,width,nqual, ...?
      df=96000.0/(256*1024)
      endif
@@ -66,10 +66,10 @@ program tstecho
 !  call smo121(red,2000)
 !  call smo121(blue,2000)
 
-  do i=1,2000
-     freq=(i-1001)*df
-     write(15,1100) freq,red(i),blue(i)
-1100 format(3f10.3)
-  enddo
+!  do i=1,2000
+!     freq=(i-1001)*df
+!     write(15,1100) freq,red(i),blue(i)
+!1100 format(3f10.3)
+!  enddo
 
 999 end program tstecho
