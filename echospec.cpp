@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif
 
-bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
+QString echospec(bool bSave, QString fname, bool bnetwork, float dphi,
               bool diskData)
 {
   bool dataWritten=false;
@@ -38,7 +38,6 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
     }
   }
 
-
   if(bnetwork) {
     float dop=float(datcom_.dop);
     int i00=4;
@@ -58,17 +57,23 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
       fspread=2.0;
     }
     datcom_.nsum=datcom_.nsum % 20;        //###
+    char outline[60];
+    int len=60;
 
     avecho65_(&r4com_.dd[k0], &r4com_.nutc, &r4com_.naz, &r4com_.nel,
               &dop, &datcom_.nsum, &techo,
               &fspread, &r4com_.fsample, &i00, &dphi, &t0,
               &f1a, &r4com_.dl, &r4com_.dc, &r4com_.pol, &r4com_.delta,
               &rms1, &rms2, &snr, &datcom_.sigdb, &datcom_.dfreq,
-              &datcom_.width, &datcom_.red[0], &datcom_.blue[0]);
+              &datcom_.width, &datcom_.red[0], &datcom_.blue[0],
+              &outline[0], len);
 
     datcom_.nclearave=0;
     datcom_.nqual=int(snr+0.5);
     datcom_.rms=0.5*(rms1+rms2);
+    outline[59]=0;
+    QString out = QString(QLatin1String(outline));
+    return out;
   } else {
     float snr=0;
     avecho_(&d2com_.d2a[k0],&datcom_.dop,&datcom_.nfrit,
@@ -76,7 +81,7 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
         &datcom_.f1,&datcom_.rms,&datcom_.sigdb,&snr,&datcom_.dfreq,
         &datcom_.width,&datcom_.blue[0],&datcom_.red[0]);
   }
-  return dataWritten;
+  return "";                  //###
 }
 
 int ptt(int nport, int ntx, int* iptt, int* nopen)

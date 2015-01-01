@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include "commons.h"
 
-bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
+QString echospec(bool bSave, QString fname, bool bnetwork, float dphi,
               bool diskData);
 int ptt(int nport, int ntx, int* iptt, int* nopen);
 
@@ -25,6 +25,6 @@ void avecho65_(float dd[], int* nutc, int* naz, int* nel,
                float* t0, float* f1a, float* dl, float* dc,
                float* pol, float* delta, float* rms1, float* rms2,
                float* snr, float* sigdb, float* dfreq, float* width,
-               float red[], float blue[]);
+               float red[], float blue[], char outline[], int len);
 }
 #endif // GETFILE_H

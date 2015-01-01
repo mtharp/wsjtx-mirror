@@ -135,7 +135,7 @@ private:
 
     QMessageBox msgBox0;
 
-    QFuture<bool>* future1;
+    QFuture<QString>* future1;
     QFutureWatcher<void>* watcher1;
 
     QProcess p1;

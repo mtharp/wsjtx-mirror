@@ -6,26 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>370</height>
+    <width>770</width>
+    <height>378</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>590</width>
+    <width>770</width>
     <height>370</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>590</width>
-    <height>2048</height>
+    <width>1024</width>
+    <height>1024</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -129,7 +129,7 @@
        <number>0</number>
       </property>
       <property name="text">
-       <string>  N  Level   S/N     DF   Width   Q  </string>
+       <string>  UTC    N  Az  El  dB  S/N   DF    W  Pol   d    Lin  Circ  </string>
       </property>
       <property name="textFormat">
        <enum>Qt::PlainText</enum>
@@ -142,21 +142,21 @@
     <item row="1" column="0">
      <widget class="DisplayText" name="decodedTextBrowser">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
       <property name="minimumSize">
        <size>
-        <width>350</width>
+        <width>520</width>
         <height>280</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>1000</width>
-        <height>16777215</height>
+        <height>1000</height>
        </size>
       </property>
       <property name="font">
@@ -616,18 +616,13 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
    </layout>
-   <zorder>legendLabel</zorder>
-   <zorder>decodedTextBrowser</zorder>
-   <zorder>rb27</zorder>
-   <zorder>rbCW</zorder>
-   <zorder>sbDphi</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>590</width>
+     <width>770</width>
      <height>21</height>
     </rect>
    </property>

@@ -1,5 +1,6 @@
 subroutine avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
-     t0,f1a,dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue)
+     t0,f1a,dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue,       &
+     outline)
 
   parameter (NZ=520000,NZH=NZ/2,NTX=27*8192)
   parameter (NFFT=256*1024)
@@ -9,6 +10,7 @@ subroutine avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
   complex z
   real*4 sx(-1000:1000),sy(-1000:1000)
   real blue(2000),red(2000)
+  character outline*60
   integer ipkv(1)
   equivalence (ipk,ipkv)
   save sx,sy,nhdr
@@ -100,7 +102,6 @@ subroutine avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
   sigdb=-99.0
   if(ave.gt.0.0) sigdb=10.0*log10(redmax/ave - 1.0) - 35.7
 
-  open(20,file='emecho.txt',status='unknown',access='append')
   ndphi=nint(dphi)
   nf1a=nint(f1a)
   npol=nint(pol)
@@ -108,15 +109,17 @@ subroutine avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
   ndb=nint(sigdb)
   nsnr=nint(snr)
 
+  open(20,file='emecho.txt',status='unknown',access='append')
   if(nhdr.eq.1) write(20,1000) ndphi
 1000 format(/'dPhi:',i5/'  UTC    N  Az  El  dB  S/N   DF    W  Pol   d    Lin  Circ Teme   Dop   Spread T0   F1a  Rx Ry'/  &
           95('-'))
   nhdr=0
-
   write(20,1010) nutc,nn,naz,nel,ndb,nsnr,dfreq,width,npol,ndelta,dl,dc,   &
        techo,dop,fspread,t0,0.001*f1a,nint(rms1),nint(rms2)
 1010 format(i6.6,i4,4i4,2f6.1,i4,i5,2f6.2,f5.2,f8.1,f6.1,f5.2,f6.1,2i3)
   close(20)
+
+  write(outline,1010) nutc,nn,naz,nel,ndb,nsnr,dfreq,width,npol,ndelta,dl,dc
 
   return
 end subroutine avecho65

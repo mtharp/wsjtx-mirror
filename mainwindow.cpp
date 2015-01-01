@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
   on_actionAstronomical_data_triggered();
   g_pAstro->setFontSize(m_astroFont);
 
-  future1 = new QFuture<bool>;
+  future1 = new QFuture<QString>;
   watcher1 = new QFutureWatcher<void>;
   connect(watcher1, SIGNAL(finished()),this,SLOT(specReady()));
 
@@ -285,12 +285,13 @@ void MainWindow::dataSink()
 
 void MainWindow::specReady()
 {
-  if(m_bSave and !m_diskData and !future1->result()) {
-    on_stopButton_clicked();
-    msgBox("Cannot create file\n" + m_fname);
-  }
-
+  QString out=future1->result();
+  ui->legendLabel->setText(
+        "  UTC    N  Az  El  dB  S/N   DF    W  Pol   d    Lin  Circ  ");
+  ui->decodedTextBrowser->setFontPointSize(10);
+  ui->decodedTextBrowser->append(out);
   g_pWideGraph->plotSpec();
+  /*
   float level=-99.0;
   QString t;
   if(m_network) {
@@ -307,6 +308,7 @@ void MainWindow::specReady()
               datcom_.width,datcom_.nqual);
   }
   ui->decodedTextBrowser->append(t);
+  */
   if(m_loopall>0) on_actionRead_next_data_in_file_triggered();
 }
 
@@ -538,16 +540,17 @@ void MainWindow::guiUpdate()
 
 // When m_s6 has wrapped back to zero, start a new cycle.
   if(m_auto and m_s6<s6z) {
+    QDateTime t = QDateTime::currentDateTimeUtc();
 
     if(m_fname=="") {
-      QDateTime t = QDateTime::currentDateTimeUtc();
       m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
           t.time().toString("hhmmss") + ".eco";
-      int nhr=t.time().hour();
-      int nmin=t.time().minute();
-      int nsec=t.time().second();
-      r4com_.nutc=10000*nhr+100*nmin+nsec;
     }
+    int nhr=t.time().hour();
+    int nmin=t.time().minute();
+    int nsec=t.time().second();
+    r4com_.nutc=10000*nhr+100*nmin+nsec;
+
 //Raise PTT
     if(m_pttMethodIndex==0) {
       m_cmnd=rig_command() + " T 1";
