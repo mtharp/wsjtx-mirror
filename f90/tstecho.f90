@@ -22,12 +22,13 @@ program tstecho
 
 10  nclearave=1
   nsum=0
-  dphi=88.0                                       !Expected phase difference
+  dphi=0.0                                        !Expected phase difference
   i00=4                                           !Expected i0
   nn=0
   map65=1
+  nhdr=1
 
-  do iping=1,999
+  do iping=1,1
      if(map65.eq.0) then
         read(10,end=100) ndop,nfrit,nsum0,nclearave0,nqual0,f1,rms,        &
           snrdb,dfreq,width
@@ -51,25 +52,28 @@ program tstecho
                 snrdb,dfreq,width,techo,fspread,fsample
         endif
         read(10) cc                               !Read MAP65 data
-!        if(mod(iping,10).eq.1) nn=0
-        call avecho65(cc,dop,nn,techo,fspread,fsample,i00,dphi,t0,f1a,    &
-             dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue)
-     write(*,3002) nn,dop,t0,f1,f1a,dl,dc,pol,delta,sigdb,snr
-3002 format(i3,f8.1,f8.3,2f9.1,2f7.2,4f7.1)
-!...,rms,sigdb,snr,width,nqual, ...?
-     df=96000.0/(256*1024)
+        if(mod(iping,20).eq.1) nn=0
+        nutc=0                                    !###
+        naz=0                                     !###
+        nel=0                                     !###
+        call avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
+             t0,f1a,dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue)
+
+        ndb=nint(sigdb)
+        nsnr=nint(snr)
+        npol=nint(pol)
+        ndelta=nint(delta)
+
+        if(nhdr.eq.1) write(*,1000)
+1000    format(/'  UTC    N  Az  El  dB  S/N   DF    W  Pol   d    Lin  Circ Teme   Dop   Spread'/79('-'))
+        nhdr=0
+        write(*,1010) nutc,nn,naz,nel,ndb,nsnr,dfreq,width,npol,ndelta,dl,dc, &
+             techo,dop,fspread
+1010    format(i6.6,i4,4i4,2f6.1,i4,i5,2f6.2,f5.2,f8.1,f6.1)
+
      endif
   enddo
 
 100 continue
-
-!  call smo121(red,2000)
-!  call smo121(blue,2000)
-
-!  do i=1,2000
-!     freq=(i-1001)*df
-!     write(15,1100) freq,red(i),blue(i)
-!1100 format(3f10.3)
-!  enddo
 
 999 end program tstecho

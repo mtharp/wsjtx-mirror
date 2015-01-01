@@ -543,6 +543,10 @@ void MainWindow::guiUpdate()
       QDateTime t = QDateTime::currentDateTimeUtc();
       m_fname=m_saveDir + "/" + t.date().toString("yyMMdd") + "_" +
           t.time().toString("hhmmss") + ".eco";
+      int nhr=t.time().hour();
+      int nmin=t.time().minute();
+      int nsec=t.time().second();
+      r4com_.nutc=10000*nhr+100*nmin+nsec;
     }
 //Raise PTT
     if(m_pttMethodIndex==0) {
@@ -718,16 +722,18 @@ void MainWindow::on_actionOpen_triggered()
     fp=fopen(name,"rb");
     if(fp != NULL) {
       int n=datcom_.nsum;
-      fread(&datcom_.dop,4,10,fp);
+
       uint nread;
       /*
       nbytes=fread(d2com_.d2a,2,260000,fp);
       if(nbytes!=260000) return;
       */
       if(m_network) {
+        nread=fread(&r4com_.k,4,12,fp);
         nread=fread(r4com_.dd,4,4*520000,fp);      //Raw MAP65 data
         r4com_.kstop=0;
       } else {
+        nread=fread(&datcom_.dop,4,10,fp);
         nread=fread(d2com_.d2a,2,260000,fp);       //Raw soundcard data
       }
       datcom_.nsum=n;

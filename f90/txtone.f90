@@ -1,4 +1,4 @@
-subroutine txtone(c,t0,f1a)
+subroutine txtone(c,t0,f1a,smax)
 
   parameter (NZH=260000)                !2.7 * 96000
   parameter (NFFT=256*1024)

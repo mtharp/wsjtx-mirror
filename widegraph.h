@@ -18,11 +18,10 @@ public:
   void   saveSettings();
 
 private slots:
-  void on_zeroSpinBox_valueChanged(int arg1);
-  void on_gainSpinBox_valueChanged(int arg1);
   void on_smoothSpinBox_valueChanged(int n);
-
   void on_cbBlue_toggled(bool checked);
+  void on_gainSlider_valueChanged(int value);
+  void on_zeroSlider_valueChanged(int value);
 
 private:
 

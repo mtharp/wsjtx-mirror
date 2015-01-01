@@ -16,7 +16,6 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
   int k0=0;
   if(bnetwork) {
     if(r4com_.kstop > 6*96000) k0=6*4*96000;
-    qDebug() << "AA" << r4com_.kstop << k0;
   } else {
     datcom_.nqual=0;
     if(d2com_.kstop > 6*48000) k0=6*48000;
@@ -27,11 +26,11 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
     strcpy(name,fname.toLatin1());
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
-      fwrite(&datcom_.dop,4,10,fp);                //Header info
       if(bnetwork) {
-        fwrite(&r4com_.techo,4,3,fp);              //More header info
+        fwrite(&r4com_.techo,4,12,fp);              //More header info
         fwrite(&r4com_.dd[k0],4,4*520000,fp);      //Raw MAP65 data
       } else {
+        fwrite(&datcom_.dop,4,10,fp);                //Header info
         fwrite(&d2com_.d2a[k0],2,260000,fp);       //Raw soundcard data
       }
       dataWritten=true;
@@ -58,9 +57,10 @@ bool echospec(bool bSave, QString fname, bool bnetwork, float dphi,
       techo=2.44;
       fspread=2.0;
     }
-    datcom_.nsum=datcom_.nsum % 20;
+    datcom_.nsum=datcom_.nsum % 20;        //###
 
-    avecho65_(&r4com_.dd[k0], &dop, &datcom_.nsum, &techo,
+    avecho65_(&r4com_.dd[k0], &r4com_.nutc, &r4com_.naz, &r4com_.nel,
+              &dop, &datcom_.nsum, &techo,
               &fspread, &r4com_.fsample, &i00, &dphi, &t0,
               &f1a, &r4com_.dl, &r4com_.dc, &r4com_.pol, &r4com_.delta,
               &rms1, &rms2, &snr, &datcom_.sigdb, &datcom_.dfreq,

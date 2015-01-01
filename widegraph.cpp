@@ -24,8 +24,8 @@ WideGraph::WideGraph(QWidget *parent) :
   settings.beginGroup("WideGraph");
   ui->widePlot->setPlotZero(settings.value("PlotZero", 0).toInt());
   ui->widePlot->setPlotGain(settings.value("PlotGain", 0).toInt());
-  ui->zeroSpinBox->setValue(ui->widePlot->getPlotZero());
-  ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
+  ui->zeroSlider->setValue(ui->widePlot->getPlotZero());
+  ui->gainSlider->setValue(ui->widePlot->getPlotGain());
   ui->smoothSpinBox->setValue(settings.value("Smooth",0).toInt());
   ui->widePlot->m_blue=settings.value("BlueCurve",false).toBool();
   ui->cbBlue->setChecked(ui->widePlot->m_blue);
@@ -58,18 +58,6 @@ void WideGraph::plotSpec()
   ui->widePlot->draw();
 }
 
-void WideGraph::on_zeroSpinBox_valueChanged(int value)
-{
-  ui->widePlot->setPlotZero(value);
-  ui->widePlot->draw();
-}
-
-void WideGraph::on_gainSpinBox_valueChanged(int value)
-{
-  ui->widePlot->setPlotGain(value);
-  ui->widePlot->draw();
-}
-
 void WideGraph::on_smoothSpinBox_valueChanged(int n)
 {
   ui->widePlot->setSmooth(n);
@@ -79,5 +67,17 @@ void WideGraph::on_smoothSpinBox_valueChanged(int n)
 void WideGraph::on_cbBlue_toggled(bool checked)
 {
   ui->widePlot->m_blue=checked;
+  ui->widePlot->draw();
+}
+
+void WideGraph::on_gainSlider_valueChanged(int value)
+{
+  ui->widePlot->setPlotGain(value);
+  ui->widePlot->draw();
+}
+
+void WideGraph::on_zeroSlider_valueChanged(int value)
+{
+  ui->widePlot->setPlotZero(value);
   ui->widePlot->draw();
 }

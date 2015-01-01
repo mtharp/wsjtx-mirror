@@ -19,7 +19,8 @@ void avecho_( short id2[], float* dop, int* nfrit, int* nsum,
               float* sigdb, float* snr, float* dfreq, float* width,
               float blue[], float red[]);
 
-void avecho65_(float dd[], float* dop, int* iping, float* techo,
+void avecho65_(float dd[], int* nutc, int* naz, int* nel,
+               float* dop, int* iping, float* techo,
                float* fspread, float* fsample, int* i00, float* dphi,
                float* t0, float* f1a, float* dl, float* dc,
                float* pol, float* delta, float* rms1, float* rms2,

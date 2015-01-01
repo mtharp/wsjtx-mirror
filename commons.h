@@ -31,6 +31,9 @@ extern struct {
   float dd[4608000];                //12*4*96000
   int k;
   int kstop;
+  int nutc;
+  int naz;
+  int nel;
   float techo;
   float fspread;
   float fsample;
