@@ -25,7 +25,7 @@ Astro*     g_pAstro = NULL;
 WideGraph* g_pWideGraph = NULL;
 FILE*      fp = NULL;
 
-QString ver="0.5";
+QString ver="0.8";
 QString rev="$Rev$";
 QString Program_Title_Version="  EMEcho   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";

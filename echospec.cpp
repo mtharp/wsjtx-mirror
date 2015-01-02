@@ -27,7 +27,7 @@ QString echospec(bool bSave, QString fname, bool bnetwork, float dphi,
     FILE* fp=fopen(name,"ab");
     if(fp != NULL) {
       if(bnetwork) {
-        fwrite(&r4com_.techo,4,12,fp);              //More header info
+        fwrite(&r4com_.nutc,4,8,fp);               //Header info
         fwrite(&r4com_.dd[k0],4,4*520000,fp);      //Raw MAP65 data
       } else {
         fwrite(&datcom_.dop,4,10,fp);                //Header info

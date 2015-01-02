@@ -7,6 +7,10 @@ program tstecho
   complex cc(2,520000)                  !Raw data from MAP65
   real blue(2000),red(2000)
   character*40 infile
+  character outline*60
+  integer junk(9)
+  real*8 uth8,AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,     &
+       dop8,dop008,RAMoon8,DecMoon8,Dgrd8,poloffset8,xnr8,techo8,width1
 
   nargs=iargc()
   if(nargs.ne.1) then
@@ -22,11 +26,17 @@ program tstecho
 
 10  nclearave=1
   nsum=0
-  dphi=0.0                                        !Expected phase difference
-  i00=4                                           !Expected i0
+  dphi=-40.0                                        !Expected phase difference
+  i00=0                                             !Expected i0
   nn=0
   map65=1
   nhdr=1
+
+!###
+  ih=00
+  im=25
+  is=-6
+!###
 
   do iping=1,1
      if(map65.eq.0) then
@@ -48,16 +58,41 @@ program tstecho
            dop=ndop
            ndop0=ndop
         else
-           read(10,end=100) dop,nfrit,nsum0,nclearave0,nqual0,f1,rms,        &
-                snrdb,dfreq,width,techo,fspread,fsample
+!###
+!           read(10,end=100) dop,nfrit,nsum0,nclearave0,nqual0,f1,rms,        &
+!                snrdb,dfreq,width,techo,fspread,fsample
+           read(10,end=100) techo,fspread,fsample,junk
+
+           nyear=2015
+           month=1
+           nday=2
+           uth8=00 + 25.d0/60.d0 + (03.d0+(iping-1.d0)*6.d0)/3600.d0 
+           nfreq=144
+           call astrosub(nyear,month,nday,uth8,nfreq,'FN20qi','FN20qi',    &
+                AzSun8,ElSun8,AzMoon8,ElMoon8,AzMoonB8,ElMoonB8,ntsky,     &
+                dop8,dop008,RAMoon8,DecMoon8,Dgrd8,poloffset8,xnr8,techo8, &
+                width1)
+           dop=dop8
+           naz=nint(azmoon8)
+           nel=nint(elmoon8)
+           is=is+6
+           if(is.eq.60) then
+              is=0
+              im=im+1
+           endif
+           if(im.eq.60) then
+              im=0
+              ih=ih+1
+           endif
+           nutc=ih*10000 + im*100 + is
+!           print*,nutc,azmoon8,elmoon8,dop
+!###
         endif
         read(10) cc                               !Read MAP65 data
-        if(mod(iping,20).eq.1) nn=0
-        nutc=0                                    !###
-        naz=0                                     !###
-        nel=0                                     !###
+        if(mod(iping,10).eq.1) nn=0
         call avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
-             t0,f1a,dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue)
+             t0,f1a,dl,dc,pol,delta,rms1,rms2,snr,sigdb,dfreq,width,red,blue, &
+             outline)
 
         ndb=nint(sigdb)
         nsnr=nint(snr)

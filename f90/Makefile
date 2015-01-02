@@ -33,7 +33,7 @@ OBJS2 = tstecho.o four2a.o avecho.o avecho65.o txtone.o smo121.o \
 	pctile.o sort.o ssort.o cspec.o polfit.o
 
 tstecho.exe: $(OBJS2)
-	$(FC) -o tstecho.exe $(OBJS2) ../libfftw3f_win.a
+	$(FC) -o tstecho.exe $(OBJS2) libastro.a ../libfftw3f_win.a
 	cp tstecho.exe /JTSDK-QT/src/echo_install
 
 .PHONY : clean

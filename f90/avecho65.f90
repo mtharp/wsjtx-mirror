@@ -36,8 +36,8 @@ subroutine avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
      t0=ty
      f1a=f1y
   endif
-  write(*,3101) smy/smx,tx,ty,f1x,f1y,f1a
-3101 format('B',f8.1,2f8.3,3f9.1)
+!  write(*,3101) smy/smx,tx,ty,f1x,f1y,f1a
+!3101 format('B',f8.1,2f8.3,3f9.1)
   istart=nint((t0+techo)*fsample)
   iz2=min(NZ-1,istart+NTX-1)
   iz1=iz2-istart

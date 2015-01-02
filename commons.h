@@ -35,8 +35,10 @@ extern struct {
   int naz;
   int nel;
   float techo;
+  float dop;
   float fspread;
   float fsample;
+  float dphi;
   float dl;
   float dc;
   float pol;
