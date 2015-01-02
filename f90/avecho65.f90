@@ -59,9 +59,9 @@ subroutine avecho65(cc,nutc,naz,nel,dop,nn,techo,fspread,fsample,i00,dphi,  &
   call cspec(cx,fdop,csx)
   call cspec(cy,fdop,csy)
 
-!  open(21,file='emecho.dat',status='unknown',access='stream',position='append')
-!  write(21) nutc,naz,nel,dop,techo,fspread,csx,csy
-!  close(21)
+  open(21,file='emecho.dat',status='unknown',access='stream',position='append')
+  write(21) nutc,naz,nel,dop,techo,fspread,csx,csy
+  close(21)
 
 !### Do the following only when nn=1 ??  Or only on "first" call ??
   smax=0.

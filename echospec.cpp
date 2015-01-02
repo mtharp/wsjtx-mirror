@@ -56,7 +56,7 @@ QString echospec(bool bSave, QString fname, bool bnetwork, float dphi,
       techo=2.44;
       fspread=2.0;
     }
-    datcom_.nsum=datcom_.nsum % 20;        //###
+    datcom_.nsum=datcom_.nsum % 10;        //###
     char outline[60];
     int len=60;
 
