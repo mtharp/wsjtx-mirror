@@ -219,8 +219,8 @@ fi
 HAVE_F2PY=no
 
 # check with-f2py first
-AC_ARG_WITH([python3],
-AC_HELP_STRING([--with-f2py=DIR], [Path to f2py | f2py3]), [PY3=$with_f2py])
+AC_ARG_WITH([f2py],
+AC_HELP_STRING([--with-f2py=DIR], [Path to f2py | f2py3]), [F2PY=$with_f2py])
 AC_MSG_CHECKING([F2PY --with-f2py])
 
 # if --with-f2py is not empty
