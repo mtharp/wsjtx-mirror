@@ -305,6 +305,17 @@ case "${host_os}" in
 			LDFLAGS="-L${gfpath} ${LDFLAGS}"
 		fi
 	;;
+	*darwin* )
+		# if --with-gfortran is not empty
+		AC_ARG_WITH([gfortran],
+		AC_HELP_STRING([--with-gfortran=DIR], [Path to gfortran]), [gfortran=$with_gfortran])
+		AC_MSG_CHECKING([F2PY --with-f2py])
+		if test -n ${with_gfortran}; then
+			gfortran="${with_gfortran}"
+			gfpath=`${gfortran} --print-file-name=|awk -F/ '{print $1 "/" $2 "/" $3 "/" $4 "/" $5}'`
+			LDFLAGS="-L${gfpath} ${LDFLAGS}"
+		fi
+	;;
 	*)
 	;;
 esac
