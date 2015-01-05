@@ -18,7 +18,7 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libastro.a tstecho.exe
+all:    libastro.a tstecho.exe polecho.exe
 
 
 OBJS1 = astrosub.o astro0.o astro.o tm2.o grid2deg.o sun.o moondop.o \
@@ -35,6 +35,12 @@ OBJS2 = tstecho.o four2a.o avecho.o avecho65.o txtone.o smo121.o \
 tstecho.exe: $(OBJS2)
 	$(FC) -o tstecho.exe $(OBJS2) libastro.a ../libfftw3f_win.a
 	cp tstecho.exe /JTSDK-QT/src/echo_install
+
+OBJS3 = polecho.o polfit2.o pctile.o sort.o ssort.o 
+
+polecho.exe: $(OBJS3)
+	$(FC) -o polecho.exe $(OBJS3) 
+	cp polecho.exe /JTSDK-QT/src/echo_install
 
 .PHONY : clean
 
