@@ -103,7 +103,7 @@ WsjtMod/Audio.so: libjt.a ${F2PYSRCS}
 	audio_init.f90 spec.f90 getfile.f90 azdist0.f90 \
 	astro0.f90 chkt0.f90
 	
-	${MV} Audio.cpython-3*.so WsjtMod/Audio.so
+	${MV} Audio*.so WsjtMod/Audio.so
 
 .PHONY : clean
 clean:
