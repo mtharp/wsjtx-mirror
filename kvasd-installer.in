@@ -1,20 +1,20 @@
 #! /usr/bin/env bash
 #
-# Title			: KVASD-Installer
-# Version		: 1.0.0
+# Title			: @PROGRAM@
+# Version		: @VERSION@
 # Execution		: kvasd-installer
-# Requirements	: Bash (>= 4.3), awk, gnu core utils, wget, curl, dialog
+# Requirements	: Bash (>= 4.3), awk, GNU Core Utils, wget, dialog
 #
-# Author		: Greg, Beam, ki7mt -at- yahoo.com
-# Copyright		: Copyright (C) 2014 Greg Beam, KI7MT
-# License		: GPL-3
+# Author		: @AUTHORS@
+# Copyright		: @COPYRIGHT@
+# License		: @LICENSE@
 #
-# KVASD-Installer is free software: you can redistribute it and/or modify
+# @PROGRAM@ is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation either version 3 of the License, or
 # (at your option) any later version. 
 #
-# KVASD-Installer is distributed in the hope that it will be useful,
+# @PROGRAM@ is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -26,15 +26,15 @@
 set -e
 
 # base variables
-APP_NAME='KVASD Installer'
+APP_NAME='@PROGRAM@'
 MSGCLIENT='dialog'
 
 # path variables
-BASED="/home/$LOGNAME/.local/share/kvasd-installer"
+BASED=@HOMEDIR@
 
 #LOG="$BASED"/logs
-TMP="$BASED"/tmp
-INSTALL_DIR=/usr/bin
+TMP=@HOMEDIR@/tmp
+BINDIR=@BINDIR@
 
 # process variables
 HELP="$TMP"/kvasd-installer_help.txt
@@ -46,12 +46,12 @@ EULA="$TMP"/kvasd_eula.txt
 #*******************************************************************************
 
 # backtitle
-BACKTITLE="WSJT KVASD Utility v1.12"
+BACKTITLE="WSJT KVASD Utility @VERSION@"
 
 # root check
 RCTITLE="ROOT / SUDO CHECK FAILED"
-RCMSG="   $APP_NAME must be run as normal user, not root or sudo.\n\
-          Please run $APP_NAME without [ sudo ] prefix"
+RCMSG="   @PROGRAM@ must be run as normal user, not root or sudo.\n\
+          Please run @PROGRAM@ without [ sudo ] prefix"
 
 # signal catch
 SIGCAUGHT="  SIGNAL CAUGHT"
@@ -66,7 +66,7 @@ RESETOPT=" RESET OPTIONS"
 RESETOPTMSG="\n         Restteing Used Bash Options"
 
 # shutdown routine
-EXITWSDT="    EXIT $APP_NAME"
+EXITWSDT="    EXIT @PROGRAM@"
 EXITWSDTMSG="\n      Performing Shutdown Cleanup Routine"
 
 # main menu
@@ -319,10 +319,10 @@ kvasd_md5sun_chk() {
 		echo " [2] The MD5 check function is in error"
 		echo " [3] The script incorrectly validated md5sum"
 		echo ""
-		echo " $APP_NAME Cannot Ccontinue"
+		echo " @PROGRAM@ Cannot Ccontinue"
 		echo ""
 		echo ""
-		read -p "Press [ ENTER ], to EXIT $APP_NAME"
+		read -p "Press [ ENTER ], to EXIT @PROGRAM@"
 	fi
 } # end check md5sum for kvasd binary
 
@@ -334,9 +334,9 @@ clear
 echo "-------------------------------------------"
 echo " Removing KVASD Decoder"
 echo "-------------------------------------------"
-if [ -f "$INSTALL_DIR"/kvasd ]; then
+if [ -f "$BINDIR"/kvasd ]; then
 	echo ".. Found KVASD in /usr/bin .." 
-	sudo rm $INSTALL_DIR/kvasd
+	sudo rm $BINDIR/kvasd
 	if [ $? = "0" ]; then echo ".. KVASD Removed" && sudo -k ; fi
 else
 	echo ".. KVASD was not found in /usr/bin"
@@ -386,11 +386,11 @@ fatal_error_msg() {
 	echo " [2] KVASD binary is currupt"
 	echo " [3] KVASD libgfortran3:i386 dependencies are not met"
 	echo ""
-	echo " $APP_NAME cannot continue"
+	echo " @PROGRAM@ cannot continue"
 	echo ""
 	echo "See $LOGS for more details"
 	echo ""
-	read -p "Press [ ENTER ], to EXIT $APP_NAME"
+	read -p "Press [ ENTER ], to EXIT @PROGRAM@"
 } # end fatal error messsage
 
 
@@ -599,8 +599,7 @@ fi
 sys_chk() {
 
 # part pkginfo.txt file for AC_CANONICAL_HOST info, and *not* rely on uname -a
-if [ -f "/usr/share/kvasd-installer/pkginfo.txt" ]; 
-then 
+if [ -f '/usr/share/kvasd-installer/pkginfo.txt' ]; then 
 	ARCH_CHK=$(grep 'CPU' < /usr/share/kvasd-installer/pkginfo.txt |awk '{print $2}')
 else
 	ARCH_CHK=$(uname -p)
@@ -610,33 +609,33 @@ fi
 case "$ARCH_CHK" in
 	*x86_64* )
 		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-x86_64/kvasd'
-		MD5_1="703e519e256b51be9703283fe40048de"
+		MD5_1='703e519e256b51be9703283fe40048de'
 	;;
 
 	*i686* )
 		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
-		MD5_1="e43b0a42681c1f5129de4714e5606712"
+		MD5_1='e43b0a42681c1f5129de4714e5606712'
 	;;
 
-	*i386* )
+	*i386*|*i586* )
 		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
-		MD5_1="e43b0a42681c1f5129de4714e5606712"
+		MD5_1='e43b0a42681c1f5129de4714e5606712'
 	;;
 
 	*armv6* ) # Only has 32 bit version of KVASD available
 		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
-		MD5_1="2c306a35a34cec909553c90d3ae8e1b0"
+		MD5_1='2c306a35a34cec909553c90d3ae8e1b0'
 	;;
 	
 	*armv7* ) # Only has 32 bit version of KVASD available
 	KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armv7l/kvasd'
-	MD5_1="9e18289ae42d56ecec1036f90d1a4859"
+	MD5_1='9e18289ae42d56ecec1036f90d1a4859'
 	;;
 
 	* )
 		echo ''
 		echo " I'm Sorry, but ${OS_CHECK} is unsupportd at this time"
-		read -p 'Press [ ENTER ] to exit KVASD-Installer'
+		read -p 'Press [ ENTER ] to exit @PROGRAM@'
 		clean_exit
 	;;
 esac
@@ -684,7 +683,7 @@ $MSGCLIENT --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
 MMSELECT=$(head -c 1 < "$TMP"/selection)
 
 # install
-if [[ $MMSELECT = "I" ]]; then
+if [ "$MMSELECT" = "I" ]; then
 
 	# check user accept eula
 	accept_eula
@@ -707,7 +706,7 @@ if [[ $MMSELECT = "I" ]]; then
 	# install the binary
 	if [ -f "$TMP"/md5sum-ok.txt ] ; then
 		echo ".. Installing KVASD to /usr/bin"
-		sudo install -m 755 "$TMP"/kvasd $INSTALL_DIR/kvasd > /dev/null 2>&1
+		sudo install -m 755 "$TMP"/kvasd "$BINDIR"/kvasd > /dev/null 2>&1
 		sudo -k
 	fi
 
@@ -733,26 +732,26 @@ if [[ $MMSELECT = "I" ]]; then
 	fi
 
 # remove
-elif [[ $MMSELECT = "R" ]]; then
+elif [ "$MMSELECT" = "R" ]; then
 	remove_kvasd
 	continue
 
 # test decoder
-elif [[ $MMSELECT = "T" ]]; then
+elif [ "$MMSELECT" = "T" ]; then
 	basic_kvasd_test
 	continue
 
 # read EULA
-elif [[ $MMSELECT = "E" ]]; then
+elif [ "$MMSELECT" = "E" ]; then
 $MSGCLIENT --exit-label DONE --backtitle "$BACKTITLE" --title "$EULATITLE" --textbox "$EULA" 20 80
 	continue
 
 # read help file
-elif [[ $MMSELECT = "H" ]]; then
+elif [ "$MMSELECT" = "H" ]; then
 $MSGCLIENT --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$HELP" 20 80
 	continue
 
-elif [[ $MMSELECT = "X" ]]; then
+elif [ "$MMSELECT" = "X" ]; then
    clean_exit
 fi
 done
