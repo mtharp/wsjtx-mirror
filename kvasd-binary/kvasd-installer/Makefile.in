@@ -7,6 +7,9 @@
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
 VERSION		:=	@VERSION@
+AUTHORS		:=	@AUTHORS@
+COPYRIGHT	:=	@COPYRIGHT@
+LICENSE		:=	@LICENSE@
 BUGS		:=	@BUGS@
 WEB         :=	@WEB@
 
@@ -31,24 +34,27 @@ SHARED		:=	@SHARED@
 HOMEDIR		:=	@HOMEDIR@
 PKGINFO		:=	./pkginfo.txt
 
-# KVASD-Install targets
+# Install targets
 all:	pkginfo
 
 pkginfo:
 	@echo ''
 	@echo '-----------------------------------'
-	@echo '  Updating PKG Info File'
+	@echo '  Update PKG Info File'
 	@echo '-----------------------------------'
 	@if test -f $(PKGINFO) ; then rm -f $(PKGINFO) ; fi
 	@echo '..Generaring PKG Info File'
 	@$(TOUCH) $(PKGINFO)
-	@echo "PROGRAM..: @PROGRAM@" >> $(PKGINFO)
-	@echo "VERSION..: @VERSION@" >> $(PKGINFO)
-	@echo "OS.......: @_OS@" >> $(PKGINFO)
-	@echo "CPU......: @_CPU@" >> $(PKGINFO)
-	@echo "VENDOR....: @_VENDOR@" >> $(PKGINFO)
+	@echo "PROGRAM.....: @PROGRAM@" >> $(PKGINFO)
+	@echo "VERSION.....: @VERSION@" >> $(PKGINFO)
+	@echo "OS..........: @_OS@" >> $(PKGINFO)
+	@echo "CPU.........: @_CPU@" >> $(PKGINFO)
+	@echo "COPYRIGHT ..: @COPYRIGHT@" >> $(PKGINFO)
+	@echo "AUTHORS.....: @AUTHORS@" >> $(PKGINFO)
+	@echo "LICENSE.....: @LICENSE@" >> $(PKGINFO)
+	@echo "BUGS........: @BUGS@" >> $(PKGINFO)
+	@echo "WEB.........: @WEB@" >> $(PKGINFO)	
 	@echo "..Finished"
-	@echo ''
 	@echo "..To Install, Type: sudo make install"
 	@echo ''
 
