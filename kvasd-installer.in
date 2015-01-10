@@ -25,6 +25,10 @@
 
 set -e
 
+# system info
+OS=@_OS@
+ARCH=@_CPU@
+
 # base variables
 APP_NAME='@PROGRAM@'
 MSGCLIENT='dialog'
@@ -303,7 +307,7 @@ fi
 
 
 # check md5sum for kvasd binary -----------------------------------------------#
-kvasd_md5sun_chk() {
+kvasd_md5sum_chk() {
 
 	MD5_2=$(md5sum "$TMP"/kvasd | awk '{print $1}')
 	
@@ -382,9 +386,9 @@ fi
 # fatal error message ---------------------------------------------------------#
 fatal_error_msg() {
 	echo " FATAL ERROR: The download failed. Possible Causes:"
-	echo " [1] The download failed"
+	echo " [1] Server or Local Internet Problems"
 	echo " [2] KVASD binary is currupt"
-	echo " [3] KVASD libgfortran3:i386 dependencies are not met"
+	echo " [3] KVASD dependencies are not met"
 	echo ""
 	echo " @PROGRAM@ cannot continue"
 	echo ""
@@ -554,7 +558,7 @@ use_colors = ON
 screen_color = (CYAN,BLUE,ON)
 shadow_color = (BLACK,BLACK,ON)
 dialog_color = (BLACK,WHITE,OFF)
-title_color = (RED,WHITE,ON)
+title_color = (BLUE,WHITE,ON)
 border_color = (WHITE,WHITE,ON)
 button_active_color = (WHITE,BLUE,ON)
 button_inactive_color = (BLACK,WHITE,OFF)
@@ -598,43 +602,72 @@ fi
 # system check and set deccoder seection --------------------------------------#
 sys_chk() {
 
-# part pkginfo.txt file for AC_CANONICAL_HOST info, and *not* rely on uname -a
-if [ -f '/usr/share/kvasd-installer/pkginfo.txt' ]; then 
-	ARCH_CHK=$(grep 'CPU' < /usr/share/kvasd-installer/pkginfo.txt |awk '{print $2}')
-else
-	ARCH_CHK=$(uname -p)
-fi
+# NOTE(s):
+# 1. Main Binary URL: https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary
+# 2. The KVASD binaries rarely change. Hard codeing the URLS and / or the 
+#    MD5SUMS is a risk, and should be monitored for change.
+# 3. To remove the risk, a function to download the binary and md5 file
+#    could be used.
+
+# OS from configure.ac
+case "$OS" in
+	*linux* )
+		# ARCH information from configure.ac
+		case "$ARCH" in
+			*x86_64* )
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-x86_64/kvasd'
+				MD5_1='703e519e256b51be9703283fe40048de'
+			;;
+
+			*i386*|*i586*|*i686* )
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
+				MD5_1='e43b0a42681c1f5129de4714e5606712'
+			;;
+
+			*armv6* ) # According to the README, this KVASD binary is not 1.12
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
+				MD5_1='2c306a35a34cec909553c90d3ae8e1b0'
+			;;
+
+			*armv7* )
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armv7l/kvasd'
+				MD5_1='9e18289ae42d56ecec1036f90d1a4859'
+			;;
+		esac
+	;;
+
+	*darwin* )
+		case "$ARCH" in
+			*x86_64* )
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Darwin-x86_64/kvasd'
+				MD5_1='e179cf5f5853c6678cd68762189d9f30'
+			;;
+
+			*i386*|*i586*|*i686* )
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Darwin-i386/kvasd'
+				MD5_1='7631138f828b80f684708446f370d2e9'
+			;;
+		esac
+	;;
+
+# Need to find which KVASD binary is used for *BSD
+#	*freebsd* )
+#		case "$ARCH" in
+#			*x86_64* )
+#				KVASD_URL=''
+#				MD5_1=''
+#			;;
+#
+#			*i386*|i586*|*i686* )
+#				KVASD_URL=''
+#				MD5_1=''
+#			;;
+#		esac
+#	;;
 	
-# Set the KVASD_URL and MD5 sum, based on HOST + ARCH, derived from configure.ac
-case "$ARCH_CHK" in
-	*x86_64* )
-		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-x86_64/kvasd'
-		MD5_1='703e519e256b51be9703283fe40048de'
-	;;
-
-	*i686* )
-		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
-		MD5_1='e43b0a42681c1f5129de4714e5606712'
-	;;
-
-	*i386*|*i586* )
-		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-i686/kvasd'
-		MD5_1='e43b0a42681c1f5129de4714e5606712'
-	;;
-
-	*armv6* ) # Only has 32 bit version of KVASD available
-		KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
-		MD5_1='2c306a35a34cec909553c90d3ae8e1b0'
-	;;
-	
-	*armv7* ) # Only has 32 bit version of KVASD available
-	KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armv7l/kvasd'
-	MD5_1='9e18289ae42d56ecec1036f90d1a4859'
-	;;
-
 	* )
 		echo ''
-		echo " I'm Sorry, but ${OS_CHECK} is unsupportd at this time"
+		echo " I'm Sorry, but $OS is unsupportd at this time"
 		read -p 'Press [ ENTER ] to exit @PROGRAM@'
 		clean_exit
 	;;
@@ -700,7 +733,7 @@ if [ "$MMSELECT" = "I" ]; then
 
 	# check md5sum
 	if [ -f "$TMP"/download-ok.txt ] ; then
-		kvasd_md5sun_chk
+		kvasd_md5sum_chk
 	fi	
 
 	# install the binary

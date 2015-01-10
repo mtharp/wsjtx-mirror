@@ -6,7 +6,7 @@ AC_INIT([KVASD Installer],[1.12.0],[wsjt-devel@lists.sourceforge.net],[],
 [http://physics.princeton.edu/pulsar/k1jt/devel.html])
 AC_CONFIG_AUX_DIR([build-aux])
 AUTHORS="Greg Beam, Joseph H Taylor, and others"
-COPYRIGHT="Copyright (C) 2014 Joseph H Taylor, Jr, K1JT"
+COPYRIGHT="Copyright (C) 2014-2015 Joseph H Taylor, Jr, K1JT"
 LICENSE='GPL-3+'
 
 # ------------------------------------------------------------------------------
@@ -88,6 +88,8 @@ AC_SUBST([BUGS], ["$PACKAGE_BUGREPORT"])
 AC_SUBST([PROGRAM], ["$PACKAGE_NAME"])
 AC_SUBST([VERSION], ["$PACKAGE_VERSION"])
 AC_SUBST([LICENSE], ["$LICENSE"])
+AC_SUBST([AUTHORS], ["$AUTHORS"])
+AC_SUBST([COPYRIGHT], ["$COPYRIGHT"])
 AC_SUBST([WEB], ["$PACKAGE_URL"])
 AC_SUBST([SHARED], ["$PREFIX"/share/kvasd-installer])
 AC_SUBST([BINDIR], ["$PREFIX"/bin])
