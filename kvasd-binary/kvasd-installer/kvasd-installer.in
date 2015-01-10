@@ -43,7 +43,7 @@ BINDIR=@BINDIR@
 # process variables
 HELP="$TMP"/kvasd-installer_help.txt
 EULA="$TMP"/kvasd_eula.txt
-
+PKGINFO=@HOMEDIR@/pkg-info.txt
 
 #*******************************************************************************
 # LANGUAGE                                                                     *
@@ -98,6 +98,8 @@ MSGBOXNAV="\n               DOCUMENT NAVIGATION\n\n\
   To navigate the document, use the UP/DWN Arrow\n\
   keys. Press [ ENTER ] when you are finished."
 
+# system / package information
+SYSINFO="  @PROGRAM@ Information"
 
 #*******************************************************************************
 # FUNCTIONS                                                                    *
@@ -212,6 +214,7 @@ cat << 'EOF' > "$TMP/MMenu.txt"
 "I Install decoder" "" \
 "R Remove decoder" "" \
 "T Test decoder" "" \
+"S System Info" "" \
 "E Read EULA" "" \
 "H HELP" "" \
 "X EXIT" ""
@@ -675,6 +678,29 @@ esac
 
 } # end KVASD_URL set
 
+#  generate package info file --------------------------------------------------#
+make_pkg_info() {
+
+if test [ ! -f $PKGINFO ] ; then
+	touch "$PKGINFO"
+(
+cat <<'EOF_PKGINFO'
+PROGRAM.....: @PROGRAM@
+VERSION.....: @VERSION@
+OS..........: @_OS@
+CPU.........: @_CPU@
+COPYRIGHT ..: @COPYRIGHT@
+AUTHORS.....: @AUTHORS@
+LICENSE.....: @LICENSE@
+BUGS........: @BUGS@
+WEB.........: @WEB@
+EOF_PKGINFO
+) > "$PKGINFO"
+
+fi
+
+} # end package info file
+
 #*******************************************************************************
 # MAIN SCRIPT                                                                  *
 #*******************************************************************************
@@ -706,11 +732,14 @@ make_help
 # setup (EULA) end user license agreement
 make_eula
 
+# make package info file
+make_pkg_info
+
 # setup main menu
 while [ 0 ]; do
 
 $MSGCLIENT --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
-"$MMTITLE" --menu "$MENUMSG" 14 60 22 --file "$TMP/MMenu.txt" 2> "$TMP/selection"
+"$MMTITLE" --menu "$MENUMSG" 15 60 22 --file "$TMP/MMenu.txt" 2> "$TMP/selection"
 
 # get user selection
 MMSELECT=$(head -c 1 < "$TMP"/selection)
@@ -776,12 +805,17 @@ elif [ "$MMSELECT" = "T" ]; then
 
 # read EULA
 elif [ "$MMSELECT" = "E" ]; then
-$MSGCLIENT --exit-label DONE --backtitle "$BACKTITLE" --title "$EULATITLE" --textbox "$EULA" 20 80
+$MSGCLIENT --exit-label BACK --backtitle "$BACKTITLE" --title "$EULATITLE" --textbox "$EULA" 20 80
+	continue
+
+# display system info
+elif [ "$MMSELECT" = "S" ]; then
+$MSGCLIENT --exit-label BACK --backtitle "$BACKTITLE" --title "$SYSINFO" --textbox "$PKGINFO" 14 70
 	continue
 
 # read help file
 elif [ "$MMSELECT" = "H" ]; then
-$MSGCLIENT --exit-label DONE --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$HELP" 20 80
+$MSGCLIENT --exit-label BACK --backtitle "$BACKTITLE" --title "$HTITLE" --textbox "$HELP" 20 80
 	continue
 
 elif [ "$MMSELECT" = "X" ]; then
