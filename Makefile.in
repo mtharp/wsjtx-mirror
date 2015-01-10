@@ -32,30 +32,19 @@ DOCDIR		:=	@DOCDIR@
 MANDIR		:=	@MANDIR@
 SHARED		:=	@SHARED@
 HOMEDIR		:=	@HOMEDIR@
-PKGINFO		:=	./pkginfo.txt
 
 # Install targets
-all:	pkginfo
+all:	make-message
 
-pkginfo:
+make-message:
 	@echo ''
 	@echo '-----------------------------------'
-	@echo '  Update PKG Info File'
+	@echo '  Nothing To Do for Make'
 	@echo '-----------------------------------'
-	@if test -f $(PKGINFO) ; then rm -f $(PKGINFO) ; fi
-	@echo '..Generaring PKG Info File'
-	@$(TOUCH) $(PKGINFO)
-	@echo "PROGRAM.....: @PROGRAM@" >> $(PKGINFO)
-	@echo "VERSION.....: @VERSION@" >> $(PKGINFO)
-	@echo "OS..........: @_OS@" >> $(PKGINFO)
-	@echo "CPU.........: @_CPU@" >> $(PKGINFO)
-	@echo "COPYRIGHT ..: @COPYRIGHT@" >> $(PKGINFO)
-	@echo "AUTHORS.....: @AUTHORS@" >> $(PKGINFO)
-	@echo "LICENSE.....: @LICENSE@" >> $(PKGINFO)
-	@echo "BUGS........: @BUGS@" >> $(PKGINFO)
-	@echo "WEB.........: @WEB@" >> $(PKGINFO)	
-	@echo "..Finished"
-	@echo "..To Install, Type: sudo make install"
+	@echo ''
+	@echo ' To Install @PROGRAM@, type:'
+	@echo ''
+	@echo ' sudo make install'
 	@echo ''
 
 # Install target wspr
@@ -71,7 +60,6 @@ install:
 	@${MKDIR} -p $(DESTDIR)$(MANDIR)
 	@${MKDIR} -p $(DESTDIR)$(SHARED)/../applications
 	@${MKDIR} -p $(DESTDIR)$(SHARED)/../pixmaps
-	@install -m 644 $(PKGINFO) $(DESTDIR)$(SHARED)
 	@install -m 755 ./kvasd-installer $(DESTDIR)$(BINDIR)
 	@install -m 644 man1/*.1 $(DESTDIR)$(MANDIR)
 	@install -m 644 ./{BUGS,README,TODO,COPYING,COPYRIGHT} $(DESTDIR)$(DOCDIR)
@@ -99,8 +87,10 @@ uninstall:
 	@${RM} -rf $(DESTDIR)$(SHARED)/../applications/kvasd-installer.desktop
 	@${RM} -rf $(DESTDIR)$(SHARED)/../pixmaps/kvasd-installer.xpm
 	@${RM} -rf $(DESTDIR)$(SHARED)/$(PKGINFO)
+	@echo ' Finished'
+	@echo ''
 	@echo " Some files may exist in ..: @HOMEDIR@"
-	@echo " To remove them, type .....: rm -rf @HOMEDIR@"
+	@echo " To remove, type ..........: rm -rf @HOMEDIR@"
 	@echo ''
 
 # Cleanup Source Tree

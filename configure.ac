@@ -36,7 +36,7 @@ BINDIR="$prefix"/bin
 SHARED="$prefix"/share/kvasd-installer
 DOCDIR="$prefix"/share/doc/kvasd-installer
 MANDIR="$prefix"/share/man/man1
-HOMEDIR=/home/$LOGNAME/.local/share/kvasd-installer
+HOMEDIR="/home/$LOGNAME/.local/share/kvasd-installer"
 
 AC_ARG_WITH([docdir],
 AC_HELP_STRING([--with-docdir=PATH], [path to documentuments]), [docdir=$with_docdir])
@@ -49,7 +49,6 @@ AC_HELP_STRING([--with-mandir=PATH], [path to manpages]), [mandir=$with_mandir])
 if test -n "$with_mandir"; then
 	AC_SUBST([MANDIR], ["$with_mandir"])
 fi
-
 
 # ------------------------------------------------------------------------------
 # check for standard apps
@@ -109,14 +108,18 @@ echo "-------------------------------------------"
 echo " Configuration Summary"
 echo "-------------------------------------------"
 echo ''
-echo " Package: .........: ${PROGRAM} ${VERSION}"
-echo " Install prefix ...: ${PREFIX}"
-echo " Name of OS .......: ${_OS}"
-echo " Name of CPU ......: ${_CPU}"
-echo " Website ..........: ${WEB}"
-echo " Report Bugs To ...: ${BUGS}"
+echo " Program ...........: ${PROGRAM} ${VERSION}"
+echo " Version ...........: ${VERSION}"
+echo " OS ................: ${_OS}"
+echo " CPU ...............: ${_CPU}"
+echo " Copyright .........: $COPYRIGHT"
+echo " Authors ...........: $AUTHORS"
+echo " License ...........: $LICENSE"
+echo " Website ...........: ${WEB}"
+echo " Report Bugs To ....: ${BUGS}"
 echo ''
-echo " To Build $PROGRAM, type:  make"
+echo " Instal Prefix .....: ${PREFIX}"
+echo ' To Install, type ..: sudo make install'
 echo ''
 echo ''
 
