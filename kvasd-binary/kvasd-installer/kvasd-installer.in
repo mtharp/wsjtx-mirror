@@ -34,16 +34,14 @@ APP_NAME='@PROGRAM@'
 MSGCLIENT='dialog'
 
 # path variables
-BASED=@HOMEDIR@
-
-#LOG="$BASED"/logs
-TMP=@HOMEDIR@/tmp
+BASED="/home/$USER/.local/share/applications"
+TMP="$BASED"/tmp
 BINDIR=@BINDIR@
 
 # process variables
+PKGINFO=@SHARED@/pkg-info.txt
 HELP="$TMP"/kvasd-installer_help.txt
 EULA="$TMP"/kvasd_eula.txt
-PKGINFO=@HOMEDIR@/pkg-info.txt
 
 #*******************************************************************************
 # LANGUAGE                                                                     *
@@ -678,29 +676,6 @@ esac
 
 } # end KVASD_URL set
 
-#  generate package info file --------------------------------------------------#
-make_pkg_info() {
-
-if test [ ! -f $PKGINFO ] ; then
-	touch "$PKGINFO"
-(
-cat <<'EOF_PKGINFO'
-PROGRAM.....: @PROGRAM@
-VERSION.....: @VERSION@
-OS..........: @_OS@
-CPU.........: @_CPU@
-COPYRIGHT ..: @COPYRIGHT@
-AUTHORS.....: @AUTHORS@
-LICENSE.....: @LICENSE@
-BUGS........: @BUGS@
-WEB.........: @WEB@
-EOF_PKGINFO
-) > "$PKGINFO"
-
-fi
-
-} # end package info file
-
 #*******************************************************************************
 # MAIN SCRIPT                                                                  *
 #*******************************************************************************
@@ -714,11 +689,11 @@ set_options
 # check if user is root, if yes, warn & exit
 root_chk
 
-# set correct decoder for the system
-sys_chk
-
 # make directories
 make_dirs
+
+# set correct decoder for the system
+sys_chk
 
 # make directories
 make_dialogrc
@@ -732,8 +707,7 @@ make_help
 # setup (EULA) end user license agreement
 make_eula
 
-# make package info file
-make_pkg_info
+# mkdir home directories
 
 # setup main menu
 while [ 0 ]; do

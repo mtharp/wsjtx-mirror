@@ -32,6 +32,7 @@ DOCDIR		:=	@DOCDIR@
 MANDIR		:=	@MANDIR@
 SHARED		:=	@SHARED@
 HOMEDIR		:=	@HOMEDIR@
+PKGINFO		:=	./pkg-info.txt
 
 # Install targets
 all:	make-message
@@ -62,6 +63,7 @@ install:
 	@${MKDIR} -p $(DESTDIR)$(SHARED)/../pixmaps
 	@install -m 755 ./kvasd-installer $(DESTDIR)$(BINDIR)
 	@install -m 644 man1/*.1 $(DESTDIR)$(MANDIR)
+	@install -m 644 $(PKGINFO) $(DESTDIR)$(SHARED)
 	@install -m 644 ./{BUGS,README,TODO,COPYING,COPYRIGHT} $(DESTDIR)$(DOCDIR)
 	@install -m 644 ./kvasd-installer.desktop $(DESTDIR)$(SHARED)/../applications
 	@install -m 644 ./icons/kvasd-installer.xpm $(DESTDIR)$(SHARED)/../pixmaps/
@@ -96,20 +98,16 @@ uninstall:
 # Cleanup Source Tree
 .PHONY: clean
 
-clean :
-	${RM} -rf ./autom4*
-	$(RM) -f $(PKGINFO) config.log config.status configure.scan autoscan.log \
-	kvasd-installer kvasd
-		
-distclean: clean
+clean:
 	@clear
 	@echo '--------------------------------------'
-	@echo "   Removing All GNU/Make Components"
+	@echo ' Removing All Generated Components'
 	@echo '--------------------------------------'
 	@echo ''
-	${RM} -f config.log config.status autoscan.log configure.scan configure Makefile
-	${RM} -rf $(PKGINFO) ./autom4*
+	$(RM) -f $(PKGINFO) config.log config.status configure.scan autoscan.log \
+	kvasd-installer configure Makefile
+	${RM} -rf ./autom4*
 	@echo ''
-	@echo ' ..Finished distclean'
+	@echo ' Finished distclean'
 	@echo ''
 

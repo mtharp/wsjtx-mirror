@@ -63,6 +63,7 @@ AC_PATH_PROG([RM], [rm])
 AC_PATH_PROG([SED], [sed])
 AC_PATH_PROG([SHELL], [bash])
 AC_PATH_PROG([TOUCH], [touch])
+AC_PATH_PROG([TEE], [tee])
 
 
 # ------------------------------------------------------------------------------
@@ -78,6 +79,11 @@ if test "$DIALOG" = no ; then
 	echo ''
 	exit 1
 fi
+
+# generate pkg-info.txt file
+if test -f ./pkg-info.txt ; then rm -f ./pkg-info.txt ; fi
+touch ./pkg-info.txt 
+PKGINFO='./pkg-info.txt'
 
 # ------------------------------------------------------------------------------
 #  substitutions
@@ -99,7 +105,6 @@ kvasd-installer
 ])
 AC_OUTPUT
 
-
 # ------------------------------------------------------------------------------
 #  configure summary
 # ------------------------------------------------------------------------------
@@ -108,15 +113,15 @@ echo "-------------------------------------------"
 echo " Configuration Summary"
 echo "-------------------------------------------"
 echo ''
-echo " Program ...........: ${PROGRAM} ${VERSION}"
-echo " Version ...........: ${VERSION}"
-echo " OS ................: ${_OS}"
-echo " CPU ...............: ${_CPU}"
-echo " Copyright .........: $COPYRIGHT"
-echo " Authors ...........: $AUTHORS"
-echo " License ...........: $LICENSE"
-echo " Website ...........: ${WEB}"
-echo " Report Bugs To ....: ${BUGS}"
+echo " Program ...........: ${PROGRAM} ${VERSION}" |tee -a "$PKGINFO"
+echo " Version ...........: ${VERSION}" |tee -a "$PKGINFO"
+echo " OS ................: ${_OS}" |tee -a "$PKGINFO"
+echo " CPU ...............: ${_CPU}" |tee -a "$PKGINFO"
+echo " Copyright .........: $COPYRIGHT" |tee -a "$PKGINFO"
+echo " Authors ...........: $AUTHORS" |tee -a "$PKGINFO"
+echo " License ...........: $LICENSE" |tee -a "$PKGINFO"
+echo " Website ...........: ${WEB}" |tee -a "$PKGINFO"
+echo " Report Bugs To ....: ${BUGS}" |tee -a "$PKGINFO"
 echo ''
 echo " Instal Prefix .....: ${PREFIX}"
 echo ' To Install, type ..: sudo make install'
