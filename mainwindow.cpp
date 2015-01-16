@@ -17,6 +17,7 @@ int itone[162];                       //Tx audio tones
 int icw[250];                         //Dits for CW ID
 bool btxok;                           //True if OK to transmit
 bool btxMute;
+
 bool bstartup;
 double inputLatency;                  //Latency in seconds
 double outputLatency;                 //Latency in seconds
@@ -25,7 +26,7 @@ Astro*     g_pAstro = NULL;
 WideGraph* g_pWideGraph = NULL;
 FILE*      fp = NULL;
 
-QString ver="0.8";
+QString ver="0.8.2";
 QString rev="$Rev$";
 QString Program_Title_Version="  EMEcho   v" + ver + "  r" + rev.mid(6,4) +
                               "    by K1JT";

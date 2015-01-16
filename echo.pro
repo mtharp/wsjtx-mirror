@@ -47,7 +47,6 @@ FORMS    += mainwindow.ui about.ui devsetup.ui widegraph.ui astro.ui
 RC_FILE = echo.rc
 
 unix {
-    LIBS += ../echo/lib/libecho.a
     LIBS += -lportaudio -lgfortran -lfftw3f
 }
 

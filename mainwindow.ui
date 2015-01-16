@@ -261,6 +261,11 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <property name="text">
+            <string>24048 MHz</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>Other</string>
            </property>
           </item>

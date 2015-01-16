@@ -22,7 +22,7 @@ subroutine MoonDop(nyear,month,nday,uth4,lon4,lat4,RAMoon4,        &
   logical km
 
   data rad/57.2957795130823d0/,twopi/6.28310530717959d0/
-  
+
   km=.true.
   dlat=lat4/rad
   dlong1=lon4/rad

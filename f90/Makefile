@@ -1,7 +1,7 @@
 # Makefile for MinGW on Windows
-CC  = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/gcc
-FC = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/gfortran
-CXX = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/g++
+CC  = c:/JTSDK/Qt5/Tools/mingw48_32/bin/gcc
+FC = c:/JTSDK/Qt5/Tools/mingw48_32/bin/gfortran
+CXX = c:/JTSDK/Qt5/Tools/mingw48_32/bin/g++
 
 FFLAGS = -O2 -fbounds-check -Wall -fno-second-underscore
 CFLAGS = -I. -fbounds-check
@@ -18,12 +18,12 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libastro.a tstecho.exe polecho.exe
+all:    libastro.a tstecho.exe polecho.exe echodop.exe
 
 
 OBJS1 = astrosub.o astro0.o astro.o tm2.o grid2deg.o sun.o moondop.o \
 	coord.o dot.o moon2.o tmoonsub.o toxyz.o geocentric.o \
-	dcoord.o
+	dcoord.o 
 
 libastro.a: $(OBJS1)
 	ar cr libastro.a $(OBJS1)
@@ -32,15 +32,22 @@ libastro.a: $(OBJS1)
 OBJS2 = tstecho.o four2a.o avecho.o avecho65.o txtone.o smo121.o \
 	pctile.o sort.o ssort.o cspec.o polfit.o
 
-tstecho.exe: $(OBJS2)
+tstecho.exe: $(OBJS2) libastro.a
 	$(FC) -o tstecho.exe $(OBJS2) libastro.a ../libfftw3f_win.a
-	cp tstecho.exe /JTSDK-QT/src/echo_install
+	cp tstecho.exe /JTSDK/src/echo_install
 
 OBJS3 = polecho.o polfit2.o pctile.o sort.o ssort.o 
 
-polecho.exe: $(OBJS3)
+polecho.exe: $(OBJS3) libastro.a
 	$(FC) -o polecho.exe $(OBJS3) 
-	cp polecho.exe /JTSDK-QT/src/echo_install
+	cp polecho.exe /JTSDK/src/echo_install
+
+OBJS4 = echodop.o
+
+echodop.exe: $(OBJS4) libastro.a
+	$(FC) -o echodop.exe $(OBJS4) libastro.a
+	cp echodop.exe /JTSDK/src/echo_install
+
 
 .PHONY : clean
 
