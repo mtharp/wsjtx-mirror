@@ -18,8 +18,7 @@ CFLAGS = -I. -fbounds-check
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libastro.a tstecho.exe polecho.exe echodop.exe
-
+all:    libastro.a tstecho.exe polecho.exe echodop.exe testmoon3.exe
 
 OBJS1 = astrosub.o astro0.o astro.o tm2.o grid2deg.o sun.o moondop.o \
 	coord.o dot.o moon2.o tmoonsub.o toxyz.o geocentric.o \
@@ -48,8 +47,13 @@ echodop.exe: $(OBJS4) libastro.a
 	$(FC) -o echodop.exe $(OBJS4) libastro.a
 	cp echodop.exe /JTSDK/src/echo_install
 
+OBJS5 = testmoon3.o grid2deg.o deg2grid.o jplsubs.o geocentric.o \
+	ephem.o libration.o 
+testmoon3.exe: $(OBJS5) libsla1.a
+	$(FC) -o testmoon3 $(OBJS5) libsla.a libastro.a
+	cp testmoon3.exe /JTSDK/src/echo_install
 
 .PHONY : clean
 
 clean:
-	rm -f *.o libm65.a m65.exe jt65code.exe
+	rm -f *.o
