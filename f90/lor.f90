@@ -37,6 +37,7 @@ program lor
   chisqr0=1.e30
   do iter=1,20
      call curfit(x,y,sigmay,nz,nterms,mode,a,deltaa,sigmaa,lambda,yfit,chisqr)
+     a(4)=abs(a(4))
      if(nverbose.ne.0) write(*,1020) iter,a,chisqr,lambda
 1020    format(i6,5f8.3,f9.3,f10.6)
      if(chisqr/chisqr0.ge.0.999d0) exit
