@@ -1,7 +1,7 @@
 # Makefile for MinGW on Windows
-CC  = c:/JTSDK/Qt5/Tools/mingw48_32/bin/gcc
-FC = c:/JTSDK/Qt5/Tools/mingw48_32/bin/gfortran
-CXX = c:/JTSDK/Qt5/Tools/mingw48_32/bin/g++
+CC  = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/gcc
+FC = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/gfortran
+CXX = c:/JTSDK-QT/Qt5/Tools/mingw48_32/bin/g++
 
 FFLAGS = -O2 -fbounds-check -Wall -fno-second-underscore
 CFLAGS = -I. -fbounds-check
@@ -55,7 +55,7 @@ testmoon3.exe: $(OBJS5) libsla1.a
 	$(FC) -o testmoon3 $(OBJS5) libsla.a libastro.a
 	cp testmoon3.exe /JTSDK/src/echo_install
 
-OBJS6 = lor.o functn.o curfit.o fchisq.o fderiv.o gran.o
+OBJS6 = lor.o functn.o curfit.o fchisq.o fderiv.o matinv.o gran.o
 lor.exe: $(OBJS6)
 	$(FC) -o lor.exe $(OBJS6)
 
