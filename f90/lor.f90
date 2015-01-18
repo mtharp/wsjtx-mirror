@@ -30,16 +30,17 @@ program lor
   chisqr0=1.e30
   do iter=1,20
      call curfit(x,y,sigmay,nz,nterms,mode,a,deltaa,sigmaa,lambda,yfit,chisqr)
-     write(*,1020) iter,a,lambda,chisqr
-1020 format(i2,5f8.3,f10.6,f9.3)
+     write(*,1020) iter,a,chisqr,lambda
+1020 format(i2,5f8.3,f9.3,f10.6)
      if(chisqr/chisqr0.ge.0.999d0) exit
      chisqr0=chisqr
   enddo
 
      write(*,1030) 
-     write(*,1030) a,lambda,chisqr
-     write(*,1030) sigmaa,lambda,chisqr
-1030 format(2x5f8.3,f10.6,f9.3)
+     write(*,1030) a,chisqr
+     write(*,1030) sigmaa
+     write(*,1030) a-a0
+1030 format(2x5f8.3,f9.3)
 
   do i=1,NZ
      write(14,1040) x(i),y(i),yfit(i)
