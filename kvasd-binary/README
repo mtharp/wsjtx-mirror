@@ -10,3 +10,9 @@ at least.
 
 Each v1.12 binary called kvasd or  kvasd.exe must sit alongside an MD5
 checksum file named kvasd.md5 or kvasd.exe.md5 respectively.
+
+For the Darwin versions,  the executables  SHALL BE PREPROCESSED using 
+install_name_tool  to  reference  all  dylibs  using  the  psuedo path 
+'@executable_path/' so they are suitable for inclusion into the WSJT-X 
+application bundle in the path  ../Contents/MacOS/  which is where the 
+libgcc support dylibs reside.
