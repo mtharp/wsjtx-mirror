@@ -1,6 +1,32 @@
+::----------------------------------------------------------------------------::
+:: Name .........: build.bat
+:: Project ......: Part of the JTSDK v1.0.0 Project
+:: Description ..: WSJT Documentation Main Build Script for Windows
+:: Project URL ..: http://sourceforge.net/projects/wsjt/
+::
+:: Author .......: Greg, Beam, KI7MT, <ki7mt@yahoo.com>
+:: Copyright ....: Copyright (C) 2014-2015 Joe Taylor, K1JT
+:: License ......: GPL-3
+::
+:: Comment ......: This script is used with JTSDK v1 for Windows via the
+::                 JTSDK-DOC environment. It will not function properly
+::                 with JTSDK v2.
+::
+:: build.bat is free software: you can redistribute it and/or modify it
+:: under the terms of the GNU General Public License as published by the Free
+:: Software Foundation either version 3 of the License, or (at your option) any
+:: later version. 
+::
+:: build.bat is distributed in the hope that it will be useful, but WITHOUT
+:: ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+:: FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+:: details.
+::
+:: You should have received a copy of the GNU General Public License
+:: along with this program.  If not, see <http://www.gnu.org/licenses/>.
+::----------------------------------------------------------------------------::
+
 @ECHO OFF
-REM -- JTSDK-DOC Windows Build Script
-REM -- Part of the WSJT Documentation Project
 
 REM -- Start WSJT Documentation Build
 TITLE JTSDK-DOC Development Environment

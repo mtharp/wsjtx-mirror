@@ -1,27 +1,58 @@
 #!/usr/bin/env bash
-# Title           : build-doc.sh
-# Description     : WSJT Documentation Main Build Script for *Nix
-# Author          : KI7MT
-# Email           : ki7mt@yahoo.com
-# Date            : 2014
-# Usage           : ./build-doc.sh [ option ]
-# Notes           : Requires:	Python 2.5 <=> 2.7.6, AsciiDoc, rsync
-#								bash 4.0+ (may work on earlier bash ersions)
-# Copyright       : GPLv(3)
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# Title ........: build-doc.sh
+# Description ..: WSJT Documentation Main Build Script for Win32/Linux
+# Project URL ..: http://sourceforge.net/projects/wsjt/
+# Requires .....: Python 2.5 <=> 2.7, AsciiDoc, rsync, Awk, Bash, Coreutils
+#
+# Author .......: Greg, Beam, KI7MT, <ki7mt@yahoo.com>
+# Copyright ....: Copyright (C) 2014-2015 Joe Taylor, K1JT
+# License ......: GPL-3
+#
+# Comment ......: This script is used with JTSDK v2 for Windows via the
+#                 JTSDK-DOC environment (Cyg32) and should work as a stand
+#                 alone script on Linux provided the package requirments
+#                 are met.
+#
+# build-doc.sh is free software: you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation either version 3 of the License, or (at your option) any
+# later version. 
+#
+# build-doc.sh is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#==============================================================================
+
+################################################################################
+
+# BASIC USAGE
+#
+# [ build-doc.sh] [ option ]
+#
+# OPTIONS: All map65 simjt wsjt wsjtx wspr wsprx wfmt devg qref help clean
+#
+# BUILD LINKED
+#  All .....: ./build-doc.sh all
+#  WSJT-X...: ./build-doc.sh wsjtx
+#
+# BUILD DATA-URI - (Stand Alone)
+#	All .....: ./build-doc.sh dall
+#   WSJT-X ..: ./build-doc.sh dwsjtx
+#
+# CLEAN FOLDERS & FILES
+#  All .....: ./build-doc.sh clean
+#
+# NOTE(s)
+#  The same method is used for all documentaion.
+#  The prefix "d" designates data-uri or a stand
+#  alone version of the document
+#
+################################################################################
+
 
 # Exit on error
 set -e
@@ -76,6 +107,7 @@ function clean_exit() {
 	echo -e ${C_R}'*** SIGNAL CAUGHT, PERFORMING CLEAN EXIT ***'${C_NC}
 	echo
 	echo -e ${C_Y}'Removing Temorary Folders'${C_NC}
+	echo
 
 	# Delete any /tmp folders 
 	for i in "${doc_ary[@]}"
@@ -95,7 +127,7 @@ do
 	[Yy]* )
 		clear
 		echo -e ${C_Y}"Removing All HTML Files ... "${C_NC}
-
+		echo
 		# loop through all docs
 		for i in "${doc_ary[@]}"
 		do
@@ -106,11 +138,14 @@ do
 			cd "$BASEDIR"
 		done
 		echo
-		echo -e ${C_G}".. cleaning complete, now exiting"${C_NC}
+		echo -e ${C_Y}"Clean up complete"${C_NC}
 		echo
 		exit 0
 	;;
 	[Nn]* )
+		echo
+		echo -e ${C_Y}"Exiting build script without cleaning"${C_NC}
+		echo
 		exit 0
 	;;
 	* )
@@ -128,6 +163,7 @@ function build_all_guides() {
 	clear
 	echo
 	echo -e ${C_Y}"Building All WSJT Documentation"${C_NC}
+	echo
 	while [ 1 ]
 	do
 		for f in "${doc_ary[@]}"
@@ -307,7 +343,7 @@ function clean_up() {
 			rm -rf "$clean_dir"/*.html
 	done
 	echo
-	echo -e ${C_Y}'Finished Cleaning Up'${C_NC}
+	echo -e ${C_Y}'Finished Clean up'${C_NC}
 	echo
 }
 
