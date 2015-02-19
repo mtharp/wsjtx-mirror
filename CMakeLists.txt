@@ -233,7 +233,7 @@ To use this  tarball, transfer it to the target  build host, un-tar it
 and, configure  it including  a CMAKE_INSTALL_PREFIX if  required (the
 default is /usr), then build and install. For example:
 
-    $ tar xzf ${__suffix}.tgx
+    $ tar xzf ${__suffix}.tgz
     $ mkdir build
     $ cd build
     $ cmake ../${__suffix}
