@@ -1,0 +1,71 @@
+
+While there may be more than one build option per application, the
+primary method is used to distribute release versions, as such, should
+be up to date with the latest code changes. {page} uses the primary build
+method in all *JTSDKs* and *build-scripts*, as such, should provide fairly
+stable builds.
+
+=== Windows
+
+The following matrix outlines the *Windows* primary build method for each
+application. 
+
+.Windows Build Matrix: x = Primary, o = Optional
+[width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
+|=================================================
+|Method     |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
+|CMake      |    |    |x     |    |x     |x
+|Qmake      |    |    |o     |    |o     |o
+|Makefile   |    |x   |      |x   |      |
+|Script     |x   |x   |x     |x   |x     |x
+|=================================================
+
+.Comments
+[horizontal]
+*JTSDK-DOC*:: *( WSJT Documentation )*
+* Build scripts
+
+*JTSDK-PY*:: *( WSJT WSPR )*
+* Makefile {plus} build scripts
+
+*JTSDK-QT*:: *( WSJT-X WSPR-X MAP65 )*
+* CMake {plus} build scripts
+* QtCreator {plus} Qmake {plus} Makefile.MinGW (optional)
+
+=== Linux
+
+The following matrix outlines the *Linux* primary build method for each
+application.
+
+The Linux build methods are being updated by the developers as time
+allows. Expect frequent updates and build anomalies as these updates progress.
+
+.Linux Build Matrix: x = Primary, o = Optional
+[width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
+|=================================================
+|Method     |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
+|CMake      |    |    |x     |    |x     |x
+|Qmake      |    |    |o     |    |o     |o
+|Makefile   |    |x   |      |x   |      |
+|Script     |x   |x   |x     |x   |x     |x
+|=================================================
+
+.Comments
+Long term, the goal is to improve the CMake build methods for
+WSPR-X and MAP65 and add CMake build methods for WSJT and WSPR,
+eventually having CMake as the primary build method. Qmake {plus}
+Makefile.linux will still be maintained to all for QtCreator builds.
+
+WSJT and WSPR require significant Python updates from Python 2.7 to
+Python 3.x plus new modules in order to build properly. Care should
+be taken when adding Python3 {plus} modules to an existing Python 2.7 
+Linux distribution. Using Python VENV is a safe approach one may
+consider.
+
+.Build Status
+[horizontal]
+*WSJT*:: Methods being updated. Requires Python3 + New Modules
+*WSJT-X*:: Build fine with CMake, requires Hamlib3
+*WSPR*:: Methods being updated. Requires Python3 + New Modules
+*WSPR-X*:: Builds fine with CMake, requires CMakefiles.txt modification
+*MAP65*:: Builds with CMake.

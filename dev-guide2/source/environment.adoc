@@ -282,7 +282,6 @@ latest from {dxatlas}
 * Delete (C:\JTSDK-DOC) , (C:\JTSDK-PY) or (C:\JTSDK-QT)
 * Nothing is installed to the system or registry
 
-////
 [[LINUXSDK]]
 == Linux SDK
 At the time of this writing, the *Linux SDK* is still being writting.
@@ -303,4 +302,3 @@ A Debian package installer ( .deb ) will be provided by way of a
 Personal Package Archive (PPA), with the hopes it will eventually be
 included in Debian proper. This will allow for normal package installation
 by the system package manager ( apt-get, aptitude, Gdebi, etc).
-////

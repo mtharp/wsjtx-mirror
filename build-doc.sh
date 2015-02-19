@@ -73,22 +73,24 @@ WSPR="$BASEDIR/wspr"
 WFMT="$BASEDIR/wfmt"
 WSPRX="$BASEDIR/wsprx"
 DEVG="$BASEDIR/dev-guide"
+DEVG2="$BASEDIR/dev-guide2"
 QREF="$BASEDIR/quick-ref"
-ICONSDIR="$BASEDIR/icons"
+ICONSDIR="../icons"
+DICONSDIR="$BASEDIR/icons"
 export PATH="$BASEDIR/asciidoc:$PATH"
 
 # Link build (linked css, images, js)
 TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
 
 # data-uri build (embedded images, css, js)
-DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
+DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$DICONSDIR -a max-width=1024px"
 
 # build manpage (under construction)
 # data-uri builds (embedded images, css, js)
 # MTOC="a2x.py --format=manpage --doctype=manpage --no-xmllint -o $OUPUT_FILE $INPUT_FILE"
 
 # all available documents
-declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide')
+declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide' 'dev-guide2')
 
 # Color variables
 C_R='\033[01;31m'		# red
@@ -295,7 +297,7 @@ if test -e ./*.html
     clear
     echo -e ${C_Y}"Finished Building $display_name"${C_NC}
     echo
-    echo -e ${C_Y}"File(s) located in: $(pwd)"${C_NC}
+    echo -e ${C_Y}"File Location: $(pwd)"${C_NC}
     echo
     return
 
@@ -353,8 +355,8 @@ function app_menu_help() {
 	echo -e ${C_G}"WSJT DOCUMENTATION HELP MENU\n"${C_NC}
 	echo 'USAGE: [ build-doc.sh] [ option ]'
 	echo
-	echo 'OPTION: All map65 simjt wsjt wsjtx'
-	echo '        wspr wsprx wfmt devg qref help clean'
+	echo 'OPTION: All map65 simjt wsjt wsjtx wspr wsprx'
+	echo '        wfmt devg devg2 qref help clean'
 	echo
 	echo 'BUILD LINKED:'
 	echo '-----------------------------------'
@@ -390,7 +392,7 @@ if [[ $1 = "" ]] || [[ $1 = "help" ]]
   then
     app_menu_help
 
-# Clean files & Folders
+# Clean Files & Folders
 elif [[ $1 = "clean" ]]
 	then
 	clean_up
@@ -402,7 +404,7 @@ elif [[ $1 = "all" ]]
 	doc_type=L
 	build_all_guides
 
-# Build All Guides 
+# Build All Documentation
 # embedded css, images, js
 elif [[ $1 = "dall" ]]
 	then
@@ -437,11 +439,11 @@ elif [[ $1 = "dqref" ]]
 		remove_image_folders
 		post_file_check
 
-# Development Guide -----------------------------------------------------------
-# Linked versoin
+# Development Guide for JTSDK v1.0.0 -------------------------------------------
+# Linked version
 elif [[ $1 = "devg" ]]
 	then
-		display_name="WSJT Developer's Guide"
+		display_name="WSJT Developer's Guide for JTSDK v1"
 		app_name="dev-guide"
 		cd "$DEVG"
 		pre_file_check
@@ -453,9 +455,36 @@ elif [[ $1 = "devg" ]]
 # embedded css, images, js
 elif [[ $1 = "ddevg" ]]
 	then
-		display_name="WSJT Developer's Guide data-uri"
+		display_name="WSJT Developer's Guide data-uri for JTSDK v1"
 		app_name="dev-guide"
 		cd "$DEVG"
+		pre_file_check
+		clear
+		main_wording
+		copy_image_folders
+		build_ddoc
+		remove_image_folders
+		post_file_check
+
+# Development Guide for JTSDK v2.0.0 -------------------------------------------
+# Linked version
+elif [[ $1 = "devg2" ]]
+	then
+		display_name="WSJT Developer's Guide for JTSDK v2"
+		app_name="dev-guide2"
+		cd "$DEVG2"
+		pre_file_check
+		clear
+		main_wording
+		build_doc
+		post_file_check
+
+# embedded css, images, js
+elif [[ $1 = "ddevg2" ]]
+	then
+		display_name="WSJT Developer's Guide data-uri for JTSDK v2"
+		app_name="dev-guide2"
+		cd "$DEVG2"
 		pre_file_check
 		clear
 		main_wording

@@ -48,7 +48,7 @@ C_NC='\033[01;37m'		# no color
 
 # document folder names. the names must match the folders actual name
 declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt'
-'quick-ref' 'dev-guide')
+'quick-ref' 'dev-guide' 'dev-guide2')
 
 ################################################################################
 # Functions                                                                    #

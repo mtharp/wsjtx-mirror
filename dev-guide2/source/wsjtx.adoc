@@ -1,0 +1,280 @@
+:prog: The WSJT Developers Guide
+
+_WSJT-X_ can be built on Windows, Linux and OS X. The primary method
+of build is using CMake with an optional Qmake {plus} Makefile using
+the UDE QtCreator. With CMake builds, you have two main options, and
+several sub-target options of build, see <<WSJTCOMPILEOPTIONS,compiling options>>
+for more details.
+
+Building on OS X is similar to that of Linux. The instructions to build
+are still under construction.
+
+=== Windows CMake
+
+The preferred method of compiling _WSJT-X_ on Windows is using *JTSDK-QT*.
+If you have not *Installed and Updated* *JTSDK-QT*, you should do so before
+continuing, see <<WININSTALL,Windows Install>> and <<WINUPDATE,Update>>
+
+Additionally, QtCreator {plus} Qmake {plus} Makefile.MinGW can be 
+used to build _WSJT-X_. Details for setting up QtCreator to build using
+this method are included in the JTSDK-QT Section.
+
+TIP: You can create a desktop shortcut to +*jtsdk-qtenv.bat*+ if
+desired. This can also be done for the final +*wsjtx.exe*+ for *Release*
+and +*wsjtx.bat*+ for *Debug*.
+
+[[WSJTCOMPILEOPTIONS]]
+.COMPILING OPTIONS
+Using *JTSDK-QT* for compiling _WSJT-X_, you can build two versions:
+
+* <<WSJTXCOMPILE,Debug>>
+* <<WSJTXCOMPILE,Release>>
+
+Due to the quick turn-around (seconds rather than minutes), *Debug*
+is the default *JTSDK-QT* build. *Debug* is better suited to developers
+who are adding or modifying code and need a quick build check to test
+their edits.
+
+.Debug Features
+* Fast build times
+* Best options for developers and application testers
+* Qt Debug warning messages tuned on by default
+* Links QT Debug libraries, which is only available in Debug builds
+* Uses shared dependencies 
+* Dependencies must be in %PATH% *(use wsjtx-bat)*
+* Cannot build the Installer Package
+
+.Release Features
+* Slower build times (3 to 5 minutes on Windows is not unusual)
+* Inscreased compiler optimization (-O3)
+* Qt Debug warning messages turned off
+* Relative paths are removed
+* Builds full install tree, non-system dependencies embedded {plus} qt.conf
+* Provides a stand-alone executable {plus} all required files
+
+TIP: If you need work on a sub-section or sub-target, you wish to
+use <<WINQMAKE,QtCreator {plus} Qmake>> or manually build the targets with
+*CMake* command line options. If your unfamiliar either of these two
+methods, build the full install target with +*JTSDK-QT*+ for simplicity.
+
+[[WSJTXCOMPILE]]
+
+.COMPILE WSJT-X
+
+* Open Windows CMD terminal, at the prompt, type,:
+
+----
+C:\JTSDK-QT\jtsdk-qtenv.bat
+----
+
+* You should be presented with <<QTMENU,Figure-3>>
+* At the Prompt, type,:
+
+-----
+*For Debug*
+
+build wsjtx dinstall
+
+*For Release*
+
+build wsjtx rinstall
+
+Note the ( *r* for Release )
+-----
+
+* If you have not checked out _WSJT-X_ previously, you will be prompted
+to do so:
+
+.WSJTX Checkout Not Found
+image::images/jtsdk-wsjtx-co.png[]
+
+* Follow the prompts, Anonymous or Developer, then type,:
+
+-----
+*For Debug*
+
+build wsjtx dinstall
+
+*For Release*
+
+build wsjtx rinsrall
+
+Note the ( *r* for Release )
+-----
+
+TIP: If this is a subsequent build, you will be asked to update from SVN.
+On a new checkout, select ( N for do not update), if not new, it is 
+your choice. If the SVN update fails, for whatever reason, or there are errors
+during the build, simply re-run the build, as sometimes Windows reacts
+faster than SVN can respond, or there is an SVN comms error.
+
+* At build completion, you are presented with an option to
+run +*WSJT-X*+ now. Select ( Y to Run / N to Finish and Exit).
+* To manually run the newly built +*wsjtx.exe or wsjtx.bat*+, browse to:
+
+----
+
+*For Release*
+C:\JTSDK-QT\wsjtx\install\Release\bin
+
+*For Debug*
+C:\JTSDK-QT\wsjtx\install\Debug\bin
+
+----
+
+* Double click on +*wsjtx.exe*+ for *Release* or +*wsjtx.bat*+ for *Debug*
+
+
+/////
+=== Linux Builds
+Under Develipment
+
+Currently, there are two build methods for _WSJT-X_ on Linux:
+
+* Using Cmake
+* Using Qmake + Makefile (with or without QtCreator)
+
+Both builds can be done manually ( on the command line ), automated
+via the provided scripts, or in the case of Qmake, through QtCreator.
+{page} provides three scripts to accommodate command line builds
+for both methods.
+
+.Linux Scripts
+[horizontal]
+*cmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using CMake
+*qmake-nix.sh*:: Builds WSJT-X, WSPR-X and MAP65 using Qmake
+*hamlib3-build.sh*:: Bash script to checkout, update and build Hamlib3
+
+Both
+
+In order to build _WSJT-X_, manually or with the the provided build
+scripts, the following dependencies must be met:
+
+[[LINUXDEPS]]
+.DEBIAN, UBUNTU, MINT and FRIENDS
+----------
+
+# Update Distribution
+sudo apt-get update && sudo apt-get upgrade
+
+# Install Dependencies (all one command)
+sudo apt-get install gcc g++ gfortran make libfftw3-dev \
+pulseaudio hamlib libhamlib-dev subversion libqt5multimedia5-plugins \
+qtbase5-dev qtmultimedia5-dev libgfortran3:i386 libc6-i386 cmake \
+git autoconf automake m4
+
+----------
+
+.[red]#Hamlib3 Compile Instructions#
+
+**********************************************************************
+
+WARNING: The current development branch of _WSJT-X_ is using a custom
+built set of Hamlib3 binaries. The {page} provides a simple script
+to check-out, update then build Hamlib3 for you. This must be performed
+*prior* to building _WSJT-X_ with *CMake* If you have not done so, 
+install <<LINUXDEPS,required dependencies>> before continuing.
+
+
+
+**********************************************************************
+
+=== Linux CMake
+
+This example uses CMake to build WSJT-X. If you have not installed the
+required <<DEPS,dependencies>>, do so before continuing.
+
+[[CMAKE]]
+.Build With cmake-nix.sh
+* Open a terminal
+* Checkout +*cmake-nix.sh*+ from SVN:
+
+----------
+
+# Checkout script
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/cmake-nix.sh
+
+# Change permissions
+chmod +x ./wsjtx-cmake.sh
+
+----------
+
+.To Build Release version
+---------
+./cmake-nix.sh -r
+---------
+
+.To Build Debug version
+---------
+./wsjtx-cmake.sh -d
+---------
+
+.WSJT-X Location
+* +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
+
+TIP: Be sure to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
+
+=== Linux Qmake
+
+This example uses QMake to build WSJT-X. If you have not installed the
+required <<DEPS,dependencies>>, do so before continuing.
+
+.Build With qmake-nix.sh
+* Open a terminal
+* Checkout +*qmake-nix.sh*+ from SVN:
+
+----------
+
+# Checkout script
+svn export --force svn://svn.code.sf.net/p/wsjt/wsjt/branches/doc/dev-guide/source/qmake-nix.sh
+
+# Change permissions
+chmod +x ./qmake-nix.sh
+
+----------
+
+.To Build Release version
+---------
+./qmake-nix.sh -r
+---------
+
+.To Build Debug version
+---------
+./qmake-nix.sh -d
+---------
+
+.WSJT-X Location
+* +*/home/$USER/Projects/wsjt-env/wsjtx-$rev_num*+
+
+TIP: Be sure to <<CHKKVASD,check Kvasd>> then run _WSJT-X_
+
+----------
+
+# To Run, type:
+
+./wsjtx
+
+# You can also use a file manager. Browse to WSJT-X dir, and open
+# as you would any other program.
+
+----------
+
+[[CHKKVASD]]
+.Test KVASD
+
+Before you launch _WSJT-X_, ensure _KVASD_ can run.
+
+----------
+
+# CHANGE DIRECTORY and RUN KVASD
+cd wsjtx-$rev_num
+./kvasd -v
+
+# SUCESSFUL RETURN
+KVASD version 1.11
+
+# VIEW COPYRGHT
+./kvasd
+
+----------
+/////

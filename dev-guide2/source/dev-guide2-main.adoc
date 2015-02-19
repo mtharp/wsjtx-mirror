@@ -1,0 +1,94 @@
+= WSJT Developers Guide
+:revision: 1.0
+:badges:
+:icons:
+:numbered:
+:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
+:description: Software for Amateur Radio Weak-Signal Communication
+:page: WSJT Developers Guide
+
+// use global link file
+include::../../global/links.adoc[]
+
+== Overview
+
+The WSJT family of programs for weak-signal amateur radio
+communication includes _WSJT_, _WSPR_, _MAP65_, _WSJT-X_, and
+_WSPR-X_.  User interfaces for _WSJT_ and _WSPR_ are written in
+Python. User interfaces for _MAP65_, _WSJT-X_, and _WSPR-X_ are
+written in C{plus}{plus} and use the Qt5 framework. The build process, when 
+the JTSDK(s), is similar for all 5 applications. Most number-crunching
+in all of the _WSJT_ programs is done in Fortran.
+
+[[BASEENV]]
+== Environment Setup
+include::environment.adoc[]
+
+== Source Code
+include::sourcecode.adoc[]
+
+[[BUILDMATRIX]]
+== Build Matrix
+include::buildmatrix.adoc[]
+
+[[PKGMATRIX]]
+== Package Matrix
+include::pkgmatrix.adoc[]
+
+[[DOCSETUP]]
+== Documentation
+include::doc.adoc[]
+
+[[MAP65]]
+== MAP-65
+include::map65.adoc[]
+
+[[WSJT]]
+== WSJT
+include::wsjt.adoc[]
+
+[[WSJTX]]
+== WSJT-X
+include::wsjtx.adoc[]
+
+[[WSPR]]
+== WSPR
+include::wspr.adoc[]
+
+[[WSPRX]]
+== WSPR-X
+include::wsprx.adoc[]
+
+:numbered!:
+
+== Contact US
+include::../../global/communication.adoc[]
+
+== License
+include::../../global/license.adoc[]
+
+////
+[[JTSDKDOC]]
+JTSDK-DOC
+---------
+include::jtsdk-doc.adoc[]
+
+[[JTSDKPY]]
+JTSDK-PY
+--------
+include::jtsdk-py.adoc[]
+Under Construction
+
+[[JTSDKQT]]
+JTSDK-QT
+--------
+include::jtsdk-qt.adoc[]
+Under Construction
+
+[[JTSDKNIX]]
+JTSDK-NIX
+--------
+include::jtsdk-nix.adoc[]
+Under Construction
+////
+
