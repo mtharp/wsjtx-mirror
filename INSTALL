@@ -26,8 +26,8 @@ On Linux:
    git
    svn
 
-   Qt5.2.1 or newer libmultimedia-dev and its prerequisites
-   libfftw3-single-dev and its prerequsites
+   Qt5.2.1  or newer,  qt5libmultimedia-dev, qt5libserialport-dev  and
+   their  prerequisites   libfftw3-single-dev  and   its  prerequsites
    libusb-0.1-dev
 
 Out of source builds are strongly recommended.
@@ -112,11 +112,13 @@ CMAKE_INSTALL_PREFIX in the configure step above.
 Basic Package Building
 ======================
 
-If you  are a package maintainer  you can specify an  alternate target
-that generates  a suitable package  for the  system you run  the build
-on. It  is recommended  to do this  even if you  choose to  unwrap the
-package to  adjust the  settings or contents  before building  a final
-package. The alternate target is 'package' and is build as follows:
+If you  are a  package maintainer  you will  probably use  the install
+target  above  along   with  tools  and  utilities   specific  to  the
+distribution you  are packaging  for. Alternatively, this  package can
+generate basic installation packages using  the CPack utility. You can
+specify an alternate target that  generates a suitable package for the
+system you run the build on.  The alternate target is 'package' and is
+built as follows:
 
     $ cmake --build <build-dir-path> --target package
 
