@@ -61,8 +61,8 @@ if test -n "${enable_flags}"; then
 		echo 'Only "none or native" are supported at this time'
 		echo
 		echo 'Example:'
-		echo './autogen.sh --enable-optimization=native'
-		echo './configure --enable-optimization=native'
+		echo './autogen.sh --enable-flags=native'
+		echo './configure --enable-flags=native'
 		echo
 		exit 1
 		;;
@@ -647,8 +647,8 @@ echo " Install prefix ...: ${PREFIX}"
 echo
 echo " Finished creating Makefile"
 echo
-echo " To build and install $PROGRAM, type"
+echo " To build $PROGRAM, type"
 echo
-echo " make && sudo make install"
+echo " make"
 echo
 echo
