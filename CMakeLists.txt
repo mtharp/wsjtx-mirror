@@ -53,8 +53,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
   # one day this needs to change to the hamlib git master
   set (hamlib_repo git://git.code.sf.net/u/bsomervi/hamlib)
 
-  set (wsjtx_repo svn://svn.code.sf.net/p/wsjt/wsjt/branches/wsjtx)
-  set (wsjtx_update_command ${SVN_EXECUTABLE} switch ^/${WSJTX_TAG})
+  set (wsjtx_repo svn://svn.code.sf.net/p/wsjt/wsjt/${WSJTX_TAG})
 
   string (FIND ${WSJTX_TAG} / __pos REVERSE)
 
@@ -150,7 +149,6 @@ ExternalProject_Get_Property (hamlib INSTALL_DIR)
 ExternalProject_Add (wsjtx
   DEPENDS hamlib
   SVN_REPOSITORY ${wsjtx_repo}
-  UPDATE_COMMAND ${wsjtx_update_command}
   URL ${CMAKE_CURRENT_SOURCE_DIR}/src/wsjtx.tgz
   URL_HASH MD5=${wsjtx_md5sum}
   CMAKE_ARGS
