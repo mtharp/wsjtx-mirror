@@ -2,7 +2,7 @@
 # Re-direct stdout and stderr:		bash
 #								make >& junk
 #
-# Prerequisites: GNU coreutils, dialog, wget
+# Prerequisites: GNU coreutils, dialog, wget, awk, autoconf >= 2.68
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -39,20 +39,19 @@ all:	make-message
 
 make-message:
 	@echo ''
-	@echo '-----------------------------------'
-	@echo '  Nothing To Do for Make'
-	@echo '-----------------------------------'
+	@echo '------------------------------------------------'
+	@echo ' Nothing To Do For Make'
+	@echo '------------------------------------------------'
 	@echo ''
-	@echo ' To Install @PROGRAM@, type:'
+	@echo ' To Install @PROGRAM@, type..: sudo make install'
 	@echo ''
-	@echo ' sudo make install'
 	@echo ''
 
 # Install target wspr
 install:
 	@clear
 	@echo '-----------------------------------'
-	@echo "  Installing @PROGRAM@"
+	@echo " Installing @PROGRAM@"
 	@echo '-----------------------------------'
 	@echo ''
 	@${MKDIR} -p $(DESTDIR)$(BINDIR)
@@ -67,18 +66,18 @@ install:
 	@install -m 644 ./{BUGS,README,TODO,COPYING,COPYRIGHT} $(DESTDIR)$(DOCDIR)
 	@install -m 644 ./kvasd-installer.desktop $(DESTDIR)$(SHARED)/../applications
 	@install -m 644 ./icons/kvasd-installer.xpm $(DESTDIR)$(SHARED)/../pixmaps/
-	@echo "Install Location ..: $(DESTDIR)$(BINDIR)"
-	@echo 'To run, type ......: kvasd-installer'
+	@echo " Install Location ..: $(DESTDIR)$(BINDIR)"
+	@echo ' To run, type ......: kvasd-installer'
 	@echo ''
-	@echo "Website ...........: @WEB@"
-	@echo "Report Bugs .......: @BUGS@"
+	@echo " Website ...........: @WEB@"
+	@echo " Report Bugs .......: @BUGS@"
 	@echo ''
 
 # Uninstall system files
 uninstall:
 	@clear
 	@echo '--------------------------------------'
-	@echo "  Uninstalling @PROGRAM@"
+	@echo " Uninstalling @PROGRAM@"
 	@echo '--------------------------------------'
 	@echo ''
 	@echo ' Removing Installed files'

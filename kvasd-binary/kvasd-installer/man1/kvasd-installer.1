@@ -2,12 +2,12 @@
 .\"     Title: kvasd-installer
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 10/18/2014
+.\"      Date: 02/27/2015
 .\"    Manual: KVASD Installer Man Page
-.\"    Source: \ \& Version 1.11.0
+.\"    Source: \ \& Version 1.12
 .\"  Language: English
 .\"
-.TH "KVASD\-INSTALLER" "1" "10/18/2014" "\ \& Version 1\&.11\&.0" "KVASD Installer Man Page"
+.TH "KVASD\-INSTALLER" "1" "02/27/2015" "\ \& Version 1\&.12" "KVASD Installer Man Page"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,31 +31,20 @@
 kvasd-installer \- Install, Remove and Test the KVASD, Algebraic Soft\-Decision Decoder for RS(63,12)_6\&.
 .SH "SYNOPSIS"
 .sp
-\fBKVASD\-Installer\fR \- The KVASD decoder is non\-FOSS binary only\&. As as such, it cannot be included with open source Linux distributions\&. KVASD\-Installer provides a means in which to \fIInstall\fR, \fIRemove\fR and \fITest\fR the decoder\&. To run \fBwsjt\-kvasd\fR:
+\fIKVASD\-Installer\fR \- The KVASD decoder is a non\-FOSS binary\&. As as such, it cannot be included with most Linux distributions\&. KVASD\-Installer provides a means in which to \fIInstall\fR, \fIRemove\fR and \fITest\fR the decoder\&.
+.sp
+To run \fIkvasd\-installer\fR:
 .sp
 .nf
-Open terminal, type\&.\&.: kvasd\-installer
+Open a terminal, then type\&.\&.: kvasd\-installer
 .fi
 .SH "PROGRAMS"
 .sp
-There is (1) script associated with \fB\fIkvasd\-installer\fR\fR, it provides (3) primary functions:
+\fBKVASD\-Installer\fR provides (3) primary functions:
 .sp
-\fBINSTALL\fR \- To install the KVASD decoder, select Install from the main menu\&. If you have not done so already, you will be asked to agree to the End User License Agreement ( EULA )\&. If you do not < Accept > the EULA, the script will display a message, retun you to the main menu\&.
-.sp
-.if n \{\
-.RS 4
-.\}
-.nf
-*NOTE* \- Although the binary is free to use in Ham Radio, the user must accept
-         the terms laid out in the EULA before the script will install the binary\&.
-.fi
-.if n \{\
-.RE
-.\}
+\fIINSTALL\fR \- To install the KVASD decoder, select install from the main menu\&. If you have not done so already, you will be asked to agree to the End User License Agreement ( EULA )\&. If you do not < Accept > the ( EULA ), the script will display a message, and return you to the main menu\&.
 .sp
 After reading and accepting the ( EULA ), the script with look for KVASD first in /usr/bin, if not found, it will download the latest version from SVN\&. If it is found, it will run a few simple tests to verify its functionality\&.
-.sp
-To install the KVASD binary, select Install from the Main Menu\&. This will go through a series of tests, and eventually install KVASD in the system folder /usr/bin
 .sp
 .if n \{\
 .RS 4
@@ -70,27 +59,21 @@ To install the KVASD binary, select Install from the Main Menu\&. This will go t
 .RE
 .\}
 .sp
-\fBREMOVE\fR \- To remove KVASD, select Remove from the Main Menu\&. This only removes the KVASD binary\&. If you want to remove WSJT\-KVASD ( the package ), use your package manager to remove it:
+\fIREMOVE\fR \- To remove KVASD, select Remove from the Main Menu\&. This only removes the KVASD binary\&. If you want to remove the kvasd\-installer package, use your package manager:
 .sp
 .if n \{\
 .RS 4
 .\}
 .nf
 sudo apt\-get remove kvasd\-installer
-
-Or to purge all files, including the KVASD binary:
-
-sudo apt\-get purge kvasd\-installer
 .fi
 .if n \{\
 .RE
 .\}
 .sp
-\fBTEST DECODER\fR \- Test runs a few very simple tests to ensure it is functional on the system\&. If you installed WSJT\-KVASD from either a PPA or your distribution package manager, all the required dependencies should be revolved for you\&.
+\fITEST DECODER\fR \- Test decoder runs a few very simple tests to ensure it is functional on the system\&. If you installed kvasd\-installer from either a PPA or your distribution package manager, all the required dependencies should be revolved for you\&.
 .sp
 The Following Tests Will Be Run: * Base path test to ensure KVASD is installed to /usr/bin * Version test to ensure KVASD can render the version number * LDD test to verify all the required libs are installed
-.sp
-To run the preset test, select Test Decoder from the Main Menu\&.
 .SH "BUGS"
 .sp
 If you find a bug or suspect \fBkvasd\-installer\fR is not acting as you think it should, send an email with as much detail as possible to: <wsjt\-devel@lists\&.sourceforge\&.net>
