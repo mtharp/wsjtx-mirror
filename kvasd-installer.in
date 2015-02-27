@@ -784,7 +784,7 @@ $MSGCLIENT --exit-label BACK --backtitle "$BACKTITLE" --title "$EULATITLE" --tex
 
 # display system info
 elif [ "$MMSELECT" = "S" ]; then
-$MSGCLIENT --exit-label BACK --backtitle "$BACKTITLE" --title "$SYSINFO" --textbox "$PKGINFO" 14 70
+$MSGCLIENT --exit-label BACK --backtitle "$BACKTITLE" --title "$SYSINFO" --textbox "$PKGINFO" 14 80
 	continue
 
 # read help file

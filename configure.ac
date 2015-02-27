@@ -2,12 +2,12 @@
 # Process this file with autoconf to create configure. -*- autoconf -*-
 # ------------------------------------------------------------------------------
 AC_PREREQ([2.69])
-AC_INIT([KVASD Installer],[1.12.0],[wsjt-devel@lists.sourceforge.net],[],
+AC_INIT([KVASD Installer],[1.12],[wsjt-devel@lists.sourceforge.net],[],
 [http://physics.princeton.edu/pulsar/k1jt/devel.html])
 AC_CONFIG_AUX_DIR([build-aux])
 AUTHORS="Greg Beam, Joseph H Taylor, and others"
 COPYRIGHT="Copyright (C) 2014-2015 Joseph H Taylor, Jr, K1JT"
-LICENSE='GPL-3+'
+LICENSE='GPL-3'
 
 # ------------------------------------------------------------------------------
 #  canonical host information
