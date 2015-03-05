@@ -303,8 +303,7 @@ def dbl_click_call(t,t1,rpt,event):
         if setseq.get(): TxFirst.set(int((nsec/Audio.gcom1.trperiod)%2))
         lookup()
         GenStdMsgs()
-        if (mode.get()[:4]=='JT65' or \
-                mode.get()[:3]=='JT4') and rpt != "OOO":
+        if mode.get()[:4]=='JT65' and rpt != "OOO":
             n=tx1.get().rfind(" ")
             if n>=7: 
                 t2=tx1.get()[0:n+1]
@@ -580,6 +579,8 @@ def ModeFSK441(event=NONE):
     if g.mode != "FSK441":
         if lauto: toggleauto()
         mode.set("FSK441")
+        g.mode=mode.get()
+        options.resetgen()
         cleartext()
         Audio.gcom1.trperiod=30
         lab2.configure(text='FileID            T      Width    dB  Rpt       DF')
@@ -624,6 +625,7 @@ def ModeFSK441(event=NONE):
 #------------------------------------------------------ ModeJT65
 def ModeJT65():
     global slabel,isync,isync65,textheight,itol
+    options.resetgen()
     cleartext()
     lab2.configure(text='FileID      Sync      dB        DT       DF    W')
     lab4.configure(fg='gray85')
@@ -668,8 +670,9 @@ def ModeJT65():
 def ModeJT65A(event=NONE):
     if g.mode != "JT65A":
         if lauto: toggleauto()
-        ModeJT65()
         mode.set("JT65A")
+        g.mode=mode.get()
+        ModeJT65()
         btxdf.grid(column=1,row=0,sticky='EW',padx=4)
 
 
@@ -678,6 +681,7 @@ def ModeJT65B(event=NONE):
     if g.mode != "JT65B":
         if lauto: toggleauto()
         mode.set("JT65B")
+        g.mode=mode.get()
         ModeJT65()
 
 #------------------------------------------------------ ModeJT65B2
@@ -685,6 +689,7 @@ def ModeJT65B2(event=NONE):
     if g.mode != "JT65B2":
         if lauto: toggleauto()
         mode.set("JT65B2")
+        g.mode=mode.get()
         ModeJT65()
         Audio.gcom1.trperiod=30
 
@@ -693,6 +698,7 @@ def ModeJT65C(event=NONE):
     if g.mode != "JT65C":
         if lauto: toggleauto()
         mode.set("JT65C")
+        g.mode=mode.get()
         ModeJT65()
 
 #------------------------------------------------------ ModeJT65C2
@@ -700,6 +706,7 @@ def ModeJT65C2(event=NONE):
     if g.mode != "JT65C2":
         if lauto: toggleauto()
         mode.set("JT65C2")
+        g.mode=mode.get()
         ModeJT65()
         Audio.gcom1.trperiod=30
 
@@ -710,7 +717,9 @@ def ModeJTMS(event=NONE):
     ModeFSK441()
     cbfreeze.grid(column=0,row=2,padx=4,sticky='W')
     mode.set("JTMS")
-    
+    g.mode=mode.get()
+    options.resetgen()
+
 #------------------------------------------------------ ModeISCAT_A
 def ModeISCAT_A(event=NONE):
     ModeISCAT_B()
@@ -726,6 +735,8 @@ def ModeISCAT_B(event=NONE):
         ModeFSK441()
         slabel="Sync   "
         mode.set("ISCAT-B")
+        g.mode=mode.get()
+        options.resetgen()
         lab2.configure(text='FileID       Sync    dB      DT       DF       F1')
         isync=isync_iscat
         lsync.configure(text=slabel+str(isync))
@@ -754,6 +765,8 @@ def ModeJT6M(event=NONE):
         ModeFSK441()
         lab2.configure(text='FileID            T      Width      dB        DF')
         mode.set("JT6M")
+        g.mode=mode.get()
+        options.resetgen()
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
         shmsg.grid_forget()
@@ -797,15 +810,13 @@ def ModeCW(event=NONE):
 def ModeJT4():
     global slabel,isync,isync4,textheight,itol
     ModeJT65()
+    mode.set("JT4A")
+    g.mode=mode.get()
+    options.resetgen()
     isync=isync4
     lMinW.grid(column=0,row=2,padx=2,sticky='EW')
     report.grid(column=1,row=1,sticky='W',padx=7)
     labreport.grid(column=0,row=1,sticky='E',padx=0)
-
-#    bclravg.pack_forget()
-#    binclude.pack_forget()
-#    bexclude.pack_forget()
-
 
 #------------------------------------------------------ ModeJT4A
 def ModeJT4A():
@@ -1369,6 +1380,7 @@ def GenStdMsgs(event=NONE):
     Audio.gcom2.hiscall=(ToRadio.get()+(' '*12))[:12]
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
+##    options.resetgen()
     if mode.get()=="FSK441" or mode.get()[:5]=="ISCAT" or \
        mode.get()=='JTMS' or mode.get()[:3]=='JT4' or mode.get()=="JT6M":
         r=report.get()
@@ -1424,7 +1436,7 @@ def GenStdMsgs(event=NONE):
         tx4.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [RRR]")
         tx5.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [73]")
         tx6.insert(0,"[CQ " + options.MyCall.get() + "]")
-    
+
 #------------------------------------------------------ GenAltMsgs
 def GenAltMsgs(event=NONE):
     global altmsg,tx6alt
