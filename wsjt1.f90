@@ -195,12 +195,11 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
         jztest=jztest/2
         i1=0
      endif
-!     write(74) jz,cfile6,(dat(j),j=1,jz)
      if(jz.ge.jztest) call wsjt65(dat(i1+1),jz-i1,cfile6,                &
           NClearAve,MinSigdB,DFTolerance,NFreeze,NAFC,mode65,nfast,Nseg, &
           MouseDF2,NAgain,ndepth,neme,idf,idfsh,                         &
           mycall,hiscall,hisgrid,lumsg,lcum,nspecial,ndf,                &
-          nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh)
+          nstest,dfsh,snrsh,NSyncOK,ccf,psavg,ndiag,nwsh,ps0)
      goto 900
   endif
 

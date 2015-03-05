@@ -1,5 +1,5 @@
 subroutine sync65(dat,jz,DFTolerance,NFreeze,MouseDF,mode65,nfast,   &
-     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width)
+     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT65 data, finding the best-fit DT and DF.  
 ! NB: at this stage, submodes ABC are processed in the same way.
@@ -10,6 +10,7 @@ subroutine sync65(dat,jz,DFTolerance,NFreeze,MouseDF,mode65,nfast,   &
   parameter (NSMAX=320)            !Max number of half-symbol steps
   integer DFTolerance              !Range of DF search
   real dat(jz)
+  real ps0(450)
   real psavg(NHMAX)                !Average spectrum of whole record
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
@@ -40,6 +41,12 @@ subroutine sync65(dat,jz,DFTolerance,NFreeze,MouseDF,mode65,nfast,   &
   enddo
 
   call flat1(psavg,33,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten the spectra
+
+!  if(mode4.ge.9) call smo(psavg,nh,tmp,mode4/4)
+  i0=123
+  do i=1,450
+     ps0(i)=5.0*(psavg(i0+2*i) + psavg(i0+2*i+1) - 2.0)
+  enddo
 
 ! Find the best frequency channel for CCF
 !      famin= 670.46

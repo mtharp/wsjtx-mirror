@@ -38,7 +38,7 @@ subroutine gen4(message,mode4,samfac,ntxdf,iwave,nwave,sendingsh,msgsent,nmsg)
 
   call chkmsg(message,cok,nspecial,flip)
   call packmsg(message,dgen)  !Pack 72-bit message into 12 six-bit symbols
-  if(ngrid.ge.32402 .and. ngrid.le.32464) flip=-1.0   !Use #-sync for reports
+  if(ngrid.ge.32402 .and. ngrid.le.32462) flip=-1.0   !Use #-sync for reports
   call entail(dgen,data0)
   call unpackmsg(dgen,msgsent)
 

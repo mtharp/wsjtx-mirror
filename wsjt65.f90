@@ -2,7 +2,7 @@ subroutine wsjt65(dat,npts,cfile6,NClearAve,MinSigdB,                 &
        DFTolerance,NFreeze,NAFC,mode65,nfast,Nseg,MouseDF,NAgain,     &
        ndepth,neme,idf,idfsh,mycall,hiscall,hisgrid,                  &
        lumsg,lcum,nspecial,ndf,nstest,dfsh,                           &
-       snrsh,NSyncOK,ccfblue,ccfred,ndiag,nwsh)
+       snrsh,NSyncOK,ccfblue,ccfred,ndiag,nwsh,ps0)
 
 ! Orchestrates the process of decoding JT65 messages, using data that
 ! have been 2x downsampled.  The search for shorthand messages has
@@ -20,6 +20,7 @@ subroutine wsjt65(dat,npts,cfile6,NClearAve,MinSigdB,                 &
   character*12 hiscall
   character*6 hisgrid
   real ccfblue(-5:540),ccfred(-224:224)
+  real ps0(450)
   integer itf(2,9)
   include 'avecom.f90'
   data first/.true./,ns10/0/,ns20/0/
@@ -54,7 +55,7 @@ subroutine wsjt65(dat,npts,cfile6,NClearAve,MinSigdB,                 &
 
 ! Attempt to synchronize: look for sync tone, get DF and DT.
   call sync65(dat,npts,DFTolerance,NFreeze,MouseDF,mode65,nfast,     &
-       dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width)
+       dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
   csync=' '
   decoded='                      '
   deepmsg='                      '

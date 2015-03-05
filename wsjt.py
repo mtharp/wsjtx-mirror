@@ -1288,7 +1288,8 @@ def dtdf_change(event):
                  (event.y<95 and Audio.gcom2.nspecial>0):
          
             idf=Audio.gcom2.idf
-            if mode.get()[:3]=='JT4' and event.y<67 and jt4avg.get():
+            if (mode.get()[:3]=='JT4' or mode.get()[:4]=='JT65') and \
+                    event.y<67 and jt4avg.get():
                 lab1.configure(text='DF (Hz)',bg='yellow')
                 t="%d" % int(idf+2400.0*event.x/500.0-1200.0,)
                 lab6.configure(text=t,bg="yellow")
@@ -1611,7 +1612,7 @@ def plot_large():
             if Audio.gcom2.nspecial==4: t="73"
             graph1.create_text(x2+3,93,anchor=W,text=t,fill="yellow")
 
-        if mode.get()[:3]=='JT4' and jt4avg.get():
+        if (mode.get()[:3]=='JT4' or mode.get()[:4]=='JT65') and jt4avg.get():
             y=[]
             for i in range(446):                #Find ymax for yellow curve
                 ps0=Audio.gcom2.ps0[i+1]
@@ -1622,7 +1623,8 @@ def plot_large():
             xy=[]
             fac=500.0/446.0
             for i in range(446):                #Make xy list for yellow curve
-                x=i*500.0/548.571 + 47                      #empirical
+                x=i*500.0/548.571 + 47          #empirical, JT4
+                if mode.get()[:4]=='JT65': x=i*500.0/446.0
                 ps0=Audio.gcom2.ps0[i+1]
                 n=int(90.0-yfac*ps0)
                 xy.append(x)
@@ -2225,7 +2227,7 @@ setupmenu.add_checkbutton(label = 'Gen Msgs sets Tx1',variable=k2txb)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Monitor ON at startup',variable=nmonitor)
 setupmenu.add_checkbutton(label = 'Low-Duty Beacon Mode',variable=nlowbeacon)
-setupmenu.add_checkbutton(label = 'Plot average JT4 spectrum',variable=jt4avg)
+setupmenu.add_checkbutton(label = 'Plot aveage spectrum (yellow)',variable=jt4avg)
 setupmenu.add_separator()
 ##setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 if (sys.platform == 'darwin'):
