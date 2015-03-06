@@ -57,7 +57,7 @@ isync=0
 isync441=1
 isync_iscat=1
 isync65=1
-isync4=1
+isync4=0
 isync6m=-10
 isync_save=0
 itol=5                                       #Default tol=400 Hz
@@ -824,6 +824,7 @@ def ModeJT4A():
     ModeJT4()
     mode.set("JT4A")
     Audio.gcom2.mode4=1
+    if iMinW>1: setMinW(1)
     btxdf.grid(column=1,row=0,sticky='EW',padx=4)
 
 #------------------------------------------------------ ModeJT4B
@@ -832,6 +833,7 @@ def ModeJT4B():
     ModeJT4()
     mode.set("JT4B")
     Audio.gcom2.mode4=2
+    if iMinW>2: setMinW(1)
 
 #------------------------------------------------------ ModeJT4C
 def ModeJT4C():
@@ -839,6 +841,7 @@ def ModeJT4C():
     ModeJT4()
     mode.set("JT4C")
     Audio.gcom2.mode4=4
+    if iMinW>3: setMinW(1)
 
 #------------------------------------------------------ ModeJT4D
 def ModeJT4D():
@@ -846,6 +849,7 @@ def ModeJT4D():
     ModeJT4()
     mode.set("JT4D")
     Audio.gcom2.mode4=9
+    if iMinW>4: setMinW(1)
 
 #------------------------------------------------------ ModeJT4E
 def ModeJT4E():
@@ -853,6 +857,7 @@ def ModeJT4E():
     ModeJT4()
     mode.set("JT4E")
     Audio.gcom2.mode4=18
+    if iMinW>5: setMinW(2)
 
 #------------------------------------------------------ ModeJT4F
 def ModeJT4F():
@@ -860,6 +865,7 @@ def ModeJT4F():
     ModeJT4()
     mode.set("JT4F")
     Audio.gcom2.mode4=36
+    if iMinW>6: setMinW(3)
 
 #------------------------------------------------------ ModeJT4G
 def ModeJT4G():
@@ -1164,6 +1170,14 @@ def decMinW(event):
     if iMinW>1 : iMinW=iMinW-1
     lMinW.configure(text='MinW   ' + chr(ord('A')+iMinW-1))
                     
+#------------------------------------------------------ setMinW
+def setMinW(n):
+    global iMinW
+    if n<1: n=1
+    if n>7: n=7
+    iMinW=n
+    lMinW.configure(text='MinW  ' + chr(ord('A')+n-1))
+
 #------------------------------------------------------ incdsec
 def incdsec(event):
     global idsec
@@ -1301,8 +1315,11 @@ def dtdf_change(event):
             idf=Audio.gcom2.idf
             if (mode.get()[:3]=='JT4' or mode.get()[:4]=='JT65') and \
                     event.y<67 and jt4avg.get():
-                lab1.configure(text='DF (Hz)',bg='yellow')
-                t="%d" % int(idf+2400.0*event.x/500.0-1200.0,)
+                lab1.configure(text='F (Hz)',bg='yellow')
+                n=int(idf+2400.0*event.x/500.0-1200.0,)
+                if mode.get()[:3]=='JT4': n=n+1270
+                if mode.get()[:4]=='JT65': n=n+1541
+                t="%d" % n
                 lab6.configure(text=t,bg="yellow")
             else:
                 lab1.configure(text='DF (Hz)',bg='red')
