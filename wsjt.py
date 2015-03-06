@@ -814,6 +814,7 @@ def ModeJT4():
     g.mode=mode.get()
     options.resetgen()
     isync=isync4
+    lsync.configure(text=slabel+str(isync))
     lMinW.grid(column=0,row=2,padx=2,sticky='EW')
     report.grid(column=1,row=1,sticky='W',padx=7)
     labreport.grid(column=0,row=1,sticky='E',padx=0)
@@ -2820,6 +2821,7 @@ try:
     for i in range(len(params)):
         key,value=params[i].split()
         if   key == 'WSJTGeometry': root.geometry(value)
+        elif key == 'MinW': iMinW=int(value)
         elif key == 'Mode':
             mode.set(value)
             if value=='FSK441':
@@ -2844,8 +2846,20 @@ try:
                 ModeISCAT_B()
             elif value=='JTMS':
                 ModeJTMS()
-            elif value[:3]=='JT4':
-                ModeJT4()
+            elif value[:4]=='JT4A':
+                ModeJT4A()
+            elif value[:4]=='JT4B':
+                ModeJT4B()
+            elif value[:4]=='JT4C':
+                ModeJT4C()
+            elif value[:4]=='JT4D':
+                ModeJT4D()
+            elif value[:4]=='JT4E':
+                ModeJT4E()
+            elif value[:4]=='JT4F':
+                ModeJT4F()
+            elif value[:4]=='JT4G':
+                ModeJT4G()
             elif value=='Echo':
                 ModeEcho()
             elif value=='Measure':
@@ -2957,7 +2971,6 @@ try:
         elif key == 'LowBeacon': nlowbeacon.set(value)
         elif key == 'JT4avg': jt4avg.set(value)
         elif key == 'Monitor': nmonitor.set(value)
-        elif key == 'MinW': iMinW=int(value)
         
         elif key == 'HisCall':
             Audio.gcom2.hiscall=(value+' '*12)[:12]
@@ -3015,6 +3028,7 @@ from WsjtMod import specjt
 f=open(appdir+'/WSJT.INI',mode='a')
 root_geom=root_geom[root_geom.index("+"):]
 f.write("WSJTGeometry " + root_geom + "\n")
+f.write("MinW " + str(iMinW) + "\n")
 f.write("Mode " + g.mode + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
@@ -3083,7 +3097,6 @@ f.write("Debug " + str(ndebug.get()) + "\n")
 f.write("LowBeacon " + str(nlowbeacon.get()) + "\n")
 f.write("JT4avg " + str(jt4avg.get()) + "\n")
 f.write("Monitor " + str(nmonitor.get()) + "\n")
-f.write("MinW " + str(iMinW) + "\n")
 #f.write("TRPeriod " + str(Audio.gcom1.trperiod) + "\n")
 mrudir2=mrudir.replace(" ","#")
 f.write("MRUDir " + mrudir2 + "\n")

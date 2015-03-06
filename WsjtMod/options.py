@@ -79,7 +79,7 @@ def defaults():
         tx5.delete(0,END)
         tx5.insert(0,'@1700 (73)')
         tx6.delete(0,END)
-        tx6.insert(0,'CQ %M %G')
+        tx6.insert(0,'@1270 (TUNE)')
     else:
         t=''
         if mytag.get()==1: t=' %S'
