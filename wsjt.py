@@ -256,6 +256,9 @@ def dbl_click3_text(event):
         rpt=t1[n+12:n+15]
         if rpt[0:1] == " ": rpt=rpt[1:]
         if rpt[:1]=='-' and len(rpt)==2: rpt=rpt[0:1]+'0'+rpt[1:2]
+        if mode.get()[:3]=='JT4':
+            report.delete(0,END)
+            report.insert(0,rpt)
         dbl_click_call(t,t1,rpt,event)
 
     elif mode.get()[:5]=='ISCAT':
