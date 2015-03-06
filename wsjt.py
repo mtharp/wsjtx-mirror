@@ -2257,7 +2257,7 @@ setupmenu.add_checkbutton(label = 'Gen Msgs sets Tx1',variable=k2txb)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Monitor ON at startup',variable=nmonitor)
 setupmenu.add_checkbutton(label = 'Low-Duty Beacon Mode',variable=nlowbeacon)
-setupmenu.add_checkbutton(label = 'Plot aveage spectrum (yellow)',variable=jt4avg)
+setupmenu.add_checkbutton(label = 'Plot average spectrum (yellow)',variable=jt4avg)
 setupmenu.add_separator()
 ##setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 if (sys.platform == 'darwin'):
