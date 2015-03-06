@@ -184,7 +184,13 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionJT9W_1->setActionGroup(modeGroup);
   ui->actionJT65->setActionGroup(modeGroup);
   ui->actionJT9_JT65->setActionGroup(modeGroup);
-
+  ui->actionJT4A->setActionGroup(modeGroup);
+  ui->actionJT4B->setActionGroup(modeGroup);
+  ui->actionJT4C->setActionGroup(modeGroup);
+  ui->actionJT4D->setActionGroup(modeGroup);
+  ui->actionJT4E->setActionGroup(modeGroup);
+  ui->actionJT4F->setActionGroup(modeGroup);
+  ui->actionJT4G->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -2562,6 +2568,25 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
 }
+
+void MainWindow::on_actionJT4A_triggered()
+{
+  m_mode="JT4A";
+  statusChanged();
+  m_TRperiod=60;
+  m_nsps=6912;                   //For symspec only
+  m_hsymStop=173;
+  m_toneSpacing=0.0;
+  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
+  mode_label->setText(m_mode);
+  ui->actionJT4A->setChecked(true);
+  qDebug() << "A" << m_mode;
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
+  m_wideGraph->setMode(m_mode);
+  m_wideGraph->setModeTx(m_modeTx);
+  ui->pbTxMode->setEnabled(false);
+}
+
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
 {

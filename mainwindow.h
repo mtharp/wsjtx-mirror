@@ -132,6 +132,7 @@ private slots:
   void on_actionJT9_1_triggered();
   void on_actionJT65_triggered();
   void on_actionJT9_JT65_triggered();
+  void on_actionJT4A_triggered();
   void on_TxFreqSpinBox_valueChanged(int arg1);
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();

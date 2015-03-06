@@ -17,7 +17,7 @@ QMAKE_CXXFLAGS += -std=c++11
 DEFINES += PROJECT_MANUAL="'\"http://www.physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main.html\"'"
 
 isEmpty (DESTDIR) {
-DESTDIR = ../wsjtx_install
+DESTDIR = ../wsjtx_exp_install
 }
 
 isEmpty (HAMLIB_DIR) {
@@ -130,6 +130,10 @@ LIBS += -lfftw3f $$system($$F90 -print-file-name=libgfortran.so)
 
 win32 {
 INCLUDEPATH += $${HAMLIB_DIR}/include
+INCLUDEPATH += C:\JTSDK\wsjtx_exp\build\Release
+INCLUDEPATH += C:\JTSDK\hamlib3\include
+INCLUDEPATH += C:\JTSDK\qt5\5.2.1\mingw48_32\include\QtSerialPort
+
 LIBS += -L$${HAMLIB_DIR}/lib -lhamlib
 LIBS += -L./lib -lastro -ljt9
 LIBS += -L$${FFTW3_DIR} -lfftw3f-3

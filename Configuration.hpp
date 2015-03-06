@@ -2,6 +2,7 @@
 #define CONFIGURATION_HPP_
 
 #include <QObject>
+#include <QFont>
 
 #include "Radio.hpp"
 #include "AudioDevice.hpp"
