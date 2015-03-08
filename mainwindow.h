@@ -29,7 +29,6 @@
 #include "Modulator.hpp"
 #include "decodedtext.h"
 
-
 #define NUM_JT65_SYMBOLS 126
 #define NUM_JT9_SYMBOLS 85
 #define NUM_CW_SYMBOLS 250
@@ -37,7 +36,6 @@
 
 extern int volatile itone[NUM_JT65_SYMBOLS]; //Audio tones for all Tx symbols
 extern int volatile icw[NUM_CW_SYMBOLS];	    //Dits for CW ID
-
 
 //--------------------------------------------------------------- MainWindow
 namespace Ui {
@@ -132,7 +130,7 @@ private slots:
   void on_actionJT9_1_triggered();
   void on_actionJT65_triggered();
   void on_actionJT9_JT65_triggered();
-  void on_actionJT4A_triggered();
+  void on_actionJT4_triggered();
   void on_TxFreqSpinBox_valueChanged(int arg1);
   void on_actionSave_decoded_triggered();
   void on_actionQuickDecode_triggered();
@@ -174,11 +172,11 @@ private slots:
   void on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered();
   void getpfx();
   void on_actionJT9W_1_triggered();
-
   void band_changed (Frequency);
   void monitor (bool);
   void stop_tuning ();
   void auto_tx_mode (bool);
+  void on_submodeComboBox_currentIndexChanged(int index);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -206,7 +204,8 @@ private:
   bool m_multiple;
   QSettings * m_settings;
 
-  QScopedPointer<Ui::MainWindow> ui;
+//  QScopedPointer<Ui::MainWindow> ui;
+  Ui::MainWindow * ui;
 
   // other windows
   Configuration m_config;

@@ -1,7 +1,6 @@
 //-------------------------------------------------------- MainWindow
 
 #include "mainwindow.h"
-
 #include <cinttypes>
 #include <cstdlib>
 
@@ -184,13 +183,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionJT9W_1->setActionGroup(modeGroup);
   ui->actionJT65->setActionGroup(modeGroup);
   ui->actionJT9_JT65->setActionGroup(modeGroup);
-  ui->actionJT4A->setActionGroup(modeGroup);
-  ui->actionJT4B->setActionGroup(modeGroup);
-  ui->actionJT4C->setActionGroup(modeGroup);
-  ui->actionJT4D->setActionGroup(modeGroup);
-  ui->actionJT4E->setActionGroup(modeGroup);
-  ui->actionJT4F->setActionGroup(modeGroup);
-  ui->actionJT4G->setActionGroup(modeGroup);
+  ui->actionJT4->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -469,6 +462,7 @@ MainWindow::~MainWindow()
   QByteArray cfname=fname.toLocal8Bit();
   fftwf_export_wisdom_to_filename(cfname);
   m_audioThread->wait ();
+  delete ui, ui=0;
 }
 
 //-------------------------------------------------------- writeSettings()
@@ -2569,9 +2563,9 @@ void MainWindow::on_actionJT9_JT65_triggered()
   ui->pbTxMode->setEnabled(true);
 }
 
-void MainWindow::on_actionJT4A_triggered()
+void MainWindow::on_actionJT4_triggered()
 {
-  m_mode="JT4A";
+  m_mode="JT4";
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
@@ -2579,7 +2573,7 @@ void MainWindow::on_actionJT4A_triggered()
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   mode_label->setText(m_mode);
-  ui->actionJT4A->setChecked(true);
+  ui->actionJT4->setChecked(true);
   qDebug() << "A" << m_mode;
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
@@ -3099,6 +3093,11 @@ void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
   m_prefixes->showNormal();
 }
 
+void MainWindow::on_submodeComboBox_currentIndexChanged(int index)
+{
+  qDebug() << "A" << index;
+}
+
 void MainWindow::getpfx()
 {
   m_prefix <<"1A" <<"1S" <<"3A" <<"3B6" <<"3B8" <<"3B9" <<"3C" <<"3C0" \
@@ -3234,3 +3233,4 @@ void MainWindow::transmitDisplay (bool transmitting)
         }
     }
 }
+

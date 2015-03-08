@@ -2265,6 +2265,25 @@ list. The list can be maintained in Settings (F2).</string>
         </property>
        </widget>
       </item>
+      <item row="6" column="6">
+       <widget class="QComboBox" name="submodeComboBox">
+        <item>
+         <property name="text">
+          <string>Submode:  JT65A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Submode:  JT65B</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Submode:  JT65C</string>
+         </property>
+        </item>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -2336,23 +2355,11 @@ list. The list can be maintained in Settings (F2).</string>
     <property name="title">
      <string>Mode</string>
     </property>
-    <widget class="QMenu" name="menuJT4">
-     <property name="title">
-      <string>JT4</string>
-     </property>
-     <addaction name="actionJT4A"/>
-     <addaction name="actionJT4B"/>
-     <addaction name="actionJT4C"/>
-     <addaction name="actionJT4D"/>
-     <addaction name="actionJT4E"/>
-     <addaction name="actionJT4F"/>
-     <addaction name="actionJT4G"/>
-    </widget>
     <addaction name="actionJT9_1"/>
     <addaction name="actionJT65"/>
     <addaction name="actionJT9_JT65"/>
     <addaction name="actionJT9W_1"/>
-    <addaction name="menuJT4"/>
+    <addaction name="actionJT4"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -2706,42 +2713,12 @@ list. The list can be maintained in Settings (F2).</string>
     <string>Open log directory</string>
    </property>
   </action>
-  <action name="actionJT4A">
+  <action name="actionJT4">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>JT4A</string>
-   </property>
-  </action>
-  <action name="actionJT4B">
-   <property name="text">
-    <string>JT4B</string>
-   </property>
-  </action>
-  <action name="actionJT4C">
-   <property name="text">
-    <string>JT4C</string>
-   </property>
-  </action>
-  <action name="actionJT4D">
-   <property name="text">
-    <string>JT4D</string>
-   </property>
-  </action>
-  <action name="actionJT4E">
-   <property name="text">
-    <string>JT4E</string>
-   </property>
-  </action>
-  <action name="actionJT4F">
-   <property name="text">
-    <string>JT4F</string>
-   </property>
-  </action>
-  <action name="actionJT4G">
-   <property name="text">
-    <string>JT4G</string>
+    <string>JT4</string>
    </property>
   </action>
  </widget>
