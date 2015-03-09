@@ -13,7 +13,7 @@ class DisplayText : public QTextEdit
 public:
     explicit DisplayText(QWidget *parent = 0);
 
-    void insertLineSpacer();
+    void insertLineSpacer(QString tt);
     void displayDecodedText(DecodedText decodedText, QString myCall, bool displayDXCCEntity,
                             LogBook logBook, QColor color_CQ, QColor color_MyCall,
                             QColor color_DXCC, QColor color_NewCall);

@@ -1377,11 +1377,13 @@ void MainWindow::readFromStdout()                             //readFromStdout
             msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
           }
 
-        if(m_config.insert_blank () && m_blankLine)
-          {
-            ui->decodedTextBrowser->insertLineSpacer();
-            m_blankLine=false;
-          }
+        if(m_config.insert_blank () && m_blankLine) {
+          QString band = " " + ADIF::bandFromFrequency ((m_dialFreq +
+                                             ui->TxFreqSpinBox->value ()) / 1.e6);
+          band = band.rightJustified(40, '-');
+          ui->decodedTextBrowser->insertLineSpacer(band);
+          m_blankLine=false;
+        }
 
         DecodedText decodedtext;
         decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);

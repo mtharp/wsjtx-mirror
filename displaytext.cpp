@@ -22,11 +22,10 @@ void DisplayText::mouseDoubleClickEvent(QMouseEvent *e)
   QTextEdit::mouseDoubleClickEvent(e);
 }
 
-void DisplayText::insertLineSpacer()
+void DisplayText::insertLineSpacer(QString tt)
 {
-    QString tt="----------------------------------------";
-    QString bg="#d3d3d3";
-    _insertText(tt,bg);
+  QString bg="#d3d3d3";
+  _insertText(tt,bg);
 }
 
 void DisplayText::_insertText(const QString text, const QString bg)
