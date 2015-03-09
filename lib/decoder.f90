@@ -10,13 +10,14 @@ subroutine decoder(ss,id2)
   integer*2 id2(NTMAX*12000)
   real*4 dd(NTMAX*12000)
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfsplit,nfb,    &
-       ntol,kin,nzhsym,nsave,nagain,ndepth,ntxmode,nmode,datetime
+       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,datetime
   common/tracer/limtrace,lu
   integer onlevel(0:10)
   common/tracer_priv/level,onlevel
   !$omp threadprivate(/tracer_priv/)
   save
 
+  write(78,*) 'nsubmode:',nsubmode; flush(78)
   rms=sqrt(dot_product(float(id2(300000:310000)),                            &
                        float(id2(300000:310000)))/10000.0)
   if(rms.lt.2.0) go to 800 
