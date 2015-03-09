@@ -177,6 +177,7 @@ private slots:
   void stop_tuning ();
   void auto_tx_mode (bool);
   void on_submodeComboBox_currentIndexChanged(int index);
+  void on_minWspinBox_valueChanged(int n);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -251,6 +252,8 @@ private:
   qint32  m_repeatMsg;
   qint32  m_watchdogLimit;
   qint32  m_astroFont;
+  qint32  m_nSubMode;
+  qint32  m_minW;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

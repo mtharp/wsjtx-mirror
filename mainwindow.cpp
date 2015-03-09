@@ -488,6 +488,8 @@ void MainWindow::writeSettings()
   m_settings->setValue("NDepth",m_ndepth);
   m_settings->setValue("RxFreq",ui->RxFreqSpinBox->value ());
   m_settings->setValue("TxFreq",ui->TxFreqSpinBox->value ());
+  m_settings->setValue("minW",ui->minWspinBox->value ());
+  m_settings->setValue("SubMode",ui->submodeComboBox->currentIndex ());
   m_settings->setValue ("DialFreq", QVariant::fromValue(m_lastMonitoredFrequency));
   m_settings->setValue("InGain",m_inGain);
   m_settings->setValue("OutAttenuation", ui->outAttenuation->value ());
@@ -540,6 +542,8 @@ void MainWindow::readSettings()
                                                        "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
+  ui->minWspinBox->setValue(m_settings->value("minW",10).toInt());
+  ui->submodeComboBox->setCurrentIndex(m_settings->value("SubMode",0).toInt());
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
@@ -3234,3 +3238,8 @@ void MainWindow::transmitDisplay (bool transmitting)
     }
 }
 
+
+void MainWindow::on_minWspinBox_valueChanged(int n)
+{
+  qDebug() << "B" << n;
+}

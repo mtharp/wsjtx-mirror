@@ -106,6 +106,8 @@ public:
   bool watchdog () const;
   bool TX_messages () const;
   bool split_mode () const;
+  bool enable_VHF_features () const;
+  bool decode_at_52s () const;
   Bands * bands ();
   FrequencyList * frequencies ();
   StationList * stations ();
