@@ -130,7 +130,7 @@ subroutine wsjt65(dat,npts,cfile6,NClearAve,MinSigdB,                 &
   if(nstest.gt.0) jdf=ndf
 
   call cs_lock('wsjt65')
-  write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,nint(width),csync,   &
+  write(line,1010) cfile6,nsync,nsnr,dtx-0.3,jdf,nint(width),csync,   &
        special,decoded(1:19),cooo,kvqual,nqual
 1010 format(a6,i3,i5,f5.1,i5,i3,1x,a1,1x,a5,a19,1x,a3,i4,i4)
 
