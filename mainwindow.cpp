@@ -454,7 +454,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
 
   ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
   ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
-
+  m_hsymStop=173;
+  if(m_config.decode_at_52s()) m_hsymStop=181;
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
   ui->actionJT9W_1->setEnabled (false);
 #endif
@@ -638,6 +639,8 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.npts8=(ihsym*m_nsps)/16;
     jt9com_.newdat=1;
     jt9com_.nagain=0;
+    if(!m_config.decode_at_52s()) m_hsymStop=173;
+    if(m_config.decode_at_52s()) m_hsymStop=181;
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
@@ -2513,6 +2516,7 @@ void MainWindow::on_actionJT9_1_triggered()
   m_TRperiod=60;
   m_nsps=6912;
   m_hsymStop=173;
+  if(m_config.decode_at_52s()) m_hsymStop=181;
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
   mode_label->setText(m_mode);
   m_toneSpacing=0.0;
@@ -2533,6 +2537,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_TRperiod=60;
   m_nsps=6912;
   m_hsymStop=173;
+  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=pow(2,m_config.jt9w_bw_mult ())*12000.0/6912.0;
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
   mode_label->setText(m_mode);
@@ -2553,6 +2558,7 @@ void MainWindow::on_actionJT65_triggered()
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
   m_hsymStop=173;
+  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   mode_label->setText(m_mode);
@@ -2584,6 +2590,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_TRperiod=60;
   m_nsps=6912;
   m_hsymStop=173;
+  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffa500}");
   mode_label->setText(m_mode);
@@ -2603,7 +2610,8 @@ void MainWindow::on_actionJT4_triggered()
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
-  m_hsymStop=173;
+  m_hsymStop=181;
+//  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   mode_label->setText(m_mode);

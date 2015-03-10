@@ -160,7 +160,7 @@ program jt9
 2    nsps=0
      if(ntrperiod.eq.1)  then
         nsps=6912
-        nzhsym=173
+        nzhsym=181
      else if(ntrperiod.eq.2)  then
         nsps=15360
         nzhsym=178
@@ -201,7 +201,9 @@ program jt9
            call symspec(k,ntrperiod,nsps,ingain,nflatten,pxdb,s,df3,ihsym,npts8)
            call timer('symspec ',1)
            nhsym0=nhsym
-           if(ihsym.ge.173) go to 10
+!           write(77,*) 'a',nhsym,ihsym; flush(77)
+           if(ihsym.ge.181) exit
+!           if(ihsym.ge.173) exit
         endif
      enddo
 

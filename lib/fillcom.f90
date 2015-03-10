@@ -17,7 +17,7 @@ subroutine fillcom(nutc0,ndepth0,nrxfreq,mode,tx9,flow,fsplit,fhigh)
   nfb=fhigh
   ntol=3
   kin=1024
-  nzhsym=173
+  nzhsym=181
   ndepth=ndepth0
   if (tx9) then
     ntxmode=9
