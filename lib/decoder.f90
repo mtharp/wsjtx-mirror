@@ -17,7 +17,7 @@ subroutine decoder(ss,id2)
   !$omp threadprivate(/tracer_priv/)
   save
 
-  write(78,*) 'nsubmode:',nsubmode; flush(78)
+  write(78,*) 'Aa',nsubmode; flush(78)
   rms=sqrt(dot_product(float(id2(300000:310000)),                            &
                        float(id2(300000:310000)))/10000.0)
   if(rms.lt.2.0) go to 800 
@@ -57,7 +57,8 @@ subroutine decoder(ss,id2)
      nf1=nfa
      nf2=nfb
      call timer('jt65a   ',0)
-     call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nagain,ndecoded)
+     call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,   &
+          nsubmode,nagain,ndecoded)
      call timer('jt65a   ',1)
   else
 ! We're decoding JT9 or should do this mode first

@@ -341,6 +341,7 @@ set (wsjt_FSRCS
   lib/unpackgrid.f90
   lib/unpackmsg.f90
   lib/unpacktext.f90
+  lib/wav12.f90
   lib/zplot9.f90
   )
 

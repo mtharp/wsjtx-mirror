@@ -176,7 +176,7 @@ private slots:
   void monitor (bool);
   void stop_tuning ();
   void auto_tx_mode (bool);
-  void on_submodeComboBox_currentIndexChanged(int index);
+  void on_submodeComboBox_currentIndexChanged(int n);
   void on_MinW_comboBox_currentIndexChanged(int n);
 
 private:
@@ -246,7 +246,6 @@ private:
   qint32  m_hsymStop;
   qint32  m_len1;
   qint32  m_inGain;
-  qint32  m_nsave;
   qint32  m_ncw;
   qint32  m_secID;
   qint32  m_repeatMsg;

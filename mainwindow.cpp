@@ -336,6 +336,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->readFreq->setEnabled(false);
   m_QSOText.clear();
   decodeBusy(false);
+  m_MinW=0;
+  m_nSubMode=0;
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
@@ -546,8 +548,10 @@ void MainWindow::readSettings()
                                                        "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
-  ui->MinW_comboBox->setCurrentIndex(m_settings->value("MinW",0).toInt());
-  ui->submodeComboBox->setCurrentIndex(m_settings->value("SubMode",0).toInt());
+  m_MinW=m_settings->value("MinW",0).toInt();
+  ui->MinW_comboBox->setCurrentIndex(m_MinW);
+  m_nSubMode=m_settings->value("SubMode",0).toInt();
+  ui->submodeComboBox->setCurrentIndex(m_nSubMode);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
@@ -1308,9 +1312,7 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="JT65") jt9com_.nmode=65;
   if(m_mode=="JT9+JT65") jt9com_.nmode=9+65;  // = 74
   jt9com_.ntrperiod=m_TRperiod;
-  m_nsave=0;
-  if(m_saveDecoded) m_nsave=2;
-  jt9com_.nsave=m_nsave;
+  jt9com_.nsubmode=m_nSubMode;
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);
 
   //newdat=1  ==> this is new data, must do the big FFT
@@ -1514,8 +1516,8 @@ void MainWindow::decodeBusy(bool b)                             //decodeBusy()
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
-  static int nsec0=0;
   static int iptt0=0;
+  static int nsec0=0;
   static bool btxok0=false;
   static char message[29];
   static char msgsent[29];
@@ -3113,9 +3115,6 @@ void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
 void MainWindow::on_submodeComboBox_currentIndexChanged(int n)
 {
   m_nSubMode=n;
-  bool b=(m_nSubMode==1);
-//  qDebug() << "A" << n << m_nSubMode << b;
-  ui->MinW_comboBox->setVisible(b);
 }
 
 void MainWindow::getpfx()
@@ -3257,5 +3256,4 @@ void MainWindow::transmitDisplay (bool transmitting)
 void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
 {
   m_MinW=n;
-//  qDebug() << "B" << m_MinW << m_nSubMode;
 }

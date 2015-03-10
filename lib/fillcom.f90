@@ -11,14 +11,13 @@ subroutine fillcom(nutc0,ndepth0,nrxfreq,mode,tx9,flow,fsplit,fhigh)
   ntrperiod=60
   nfqso=nrxfreq
   newdat=1
-  npts8=-74736
+  npts8=74736
   nfa=flow
   nfsplit=fsplit
   nfb=fhigh
   ntol=3
   kin=1024
   nzhsym=173
-!  nsave=0
   ndepth=ndepth0
   if (tx9) then
     ntxmode=9

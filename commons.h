@@ -21,7 +21,7 @@ extern struct FortranCommon {
   int ntol;                         //+/- decoding range around fQSO (Hz)
   int kin;
   int nzhsym;
-  int nsave;
+  int nsubmode;
   int nagain;
   int ndepth;
   int ntxmode;
