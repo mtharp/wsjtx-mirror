@@ -450,6 +450,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_config.transceiver_online (true);
   on_monitorButton_clicked (!m_config.monitor_off_at_startup ());
 
+  bool enable_VHF_0=m_config.enable_VHF_features();
+  ui->submodeComboBox->setVisible(enable_VHF_0);
+  ui->MinW_comboBox->setVisible(enable_VHF_0);
+
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
   ui->actionJT9W_1->setEnabled (false);
 #endif
@@ -488,7 +492,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("NDepth",m_ndepth);
   m_settings->setValue("RxFreq",ui->RxFreqSpinBox->value ());
   m_settings->setValue("TxFreq",ui->TxFreqSpinBox->value ());
-  m_settings->setValue("minW",ui->minWspinBox->value ());
+  m_settings->setValue("minW",ui->MinW_comboBox->currentIndex ());
   m_settings->setValue("SubMode",ui->submodeComboBox->currentIndex ());
   m_settings->setValue ("DialFreq", QVariant::fromValue(m_lastMonitoredFrequency));
   m_settings->setValue("InGain",m_inGain);
@@ -542,7 +546,7 @@ void MainWindow::readSettings()
                                                        "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
-  ui->minWspinBox->setValue(m_settings->value("minW",10).toInt());
+  ui->MinW_comboBox->setCurrentIndex(m_settings->value("MinW",0).toInt());
   ui->submodeComboBox->setCurrentIndex(m_settings->value("SubMode",0).toInt());
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
@@ -692,8 +696,11 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       }
 
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
-
       displayDialFrequency ();
+
+      bool enable_VHF_0=m_config.enable_VHF_features();
+      ui->submodeComboBox->setVisible(enable_VHF_0);
+      ui->MinW_comboBox->setVisible(enable_VHF_0);
     }
 
   setXIT (ui->TxFreqSpinBox->value ());
@@ -1507,6 +1514,7 @@ void MainWindow::decodeBusy(bool b)                             //decodeBusy()
 //------------------------------------------------------------- //guiUpdate()
 void MainWindow::guiUpdate()
 {
+  static int nsec0=0;
   static int iptt0=0;
   static bool btxok0=false;
   static char message[29];
@@ -1528,6 +1536,10 @@ void MainWindow::guiUpdate()
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
   bool bTxTime = ((t2p >= tx1) and (t2p < tx2)) or m_tune;
+
+  if(nsec != nsec0) {
+    nsec0=nsec;
+  }
 
   if(m_auto or m_tune) {
 
@@ -2580,7 +2592,6 @@ void MainWindow::on_actionJT4_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   mode_label->setText(m_mode);
   ui->actionJT4->setChecked(true);
-  qDebug() << "A" << m_mode;
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -3099,9 +3110,12 @@ void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
   m_prefixes->showNormal();
 }
 
-void MainWindow::on_submodeComboBox_currentIndexChanged(int index)
+void MainWindow::on_submodeComboBox_currentIndexChanged(int n)
 {
-  qDebug() << "A" << index;
+  m_nSubMode=n;
+  bool b=(m_nSubMode==1);
+//  qDebug() << "A" << n << m_nSubMode << b;
+  ui->MinW_comboBox->setVisible(b);
 }
 
 void MainWindow::getpfx()
@@ -3240,8 +3254,8 @@ void MainWindow::transmitDisplay (bool transmitting)
     }
 }
 
-
-void MainWindow::on_minWspinBox_valueChanged(int n)
+void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
 {
-  qDebug() << "B" << n;
+  m_MinW=n;
+//  qDebug() << "B" << m_MinW << m_nSubMode;
 }
