@@ -31,7 +31,6 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   df=12000.0/NFFT                     !df = 12000.0/16384 = 0.732 Hz
   ftol=16.0                           !Frequency tolerance (Hz)
   mode65=2**nsubmode
-  write(78,*) 'Bb',mode65; flush(78)
   done=.false.
   freq0=-999.
 

@@ -40,10 +40,17 @@ void getfile(QString fname, int ntrperiod)
 
   FILE* fp=fopen(name,"rb");
 
-  int i0=fname.indexOf(".wav");
+  int i1=fname.lastIndexOf("/");
+  QString baseName=fname.mid(i1+1);
+//  qDebug() << baseName << baseName.length();
+
+  int i0=fname.indexOf(".wav",0,Qt::CaseInsensitive);
   jt9com_.nutc=0;
-  if(i0>0) jt9com_.nutc=100*fname.mid(i0-4,2).toInt() +
-      fname.mid(i0-2,2).toInt();
+  if(i0>0) {
+    int n=4;
+    if(baseName.length()!=15) n=6;
+    jt9com_.nutc=100*fname.mid(i0-n,2).toInt() + fname.mid(i0-n+2,2).toInt();
+  }
   int npts=ntrperiod*12000;
   memset(jt9com_.d2,0,2*npts);
 

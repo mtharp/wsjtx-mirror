@@ -1102,13 +1102,10 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
                                      "WSJT Files (*.wav)");
   if(fname != "") {
     m_path=fname;
-    int i;
-    i=fname.indexOf(".wav") - 11;
-    if(i>=0) {
-      tx_status_label->setStyleSheet("QLabel{background-color: #66ff66}");
-      tx_status_label->setText(" " + fname.mid(i,15) + " ");
-      //      lab1->setText(" " + fname + " ");
-    }
+    int i1=fname.lastIndexOf("/");
+    QString baseName=fname.mid(i1+1);
+    tx_status_label->setStyleSheet("QLabel{background-color: #66ff66}");
+    tx_status_label->setText(" " + baseName + " ");
     on_stopButton_clicked();
     m_diskData=true;
     *future1 = QtConcurrent::run(getfile, fname, m_TRperiod);
