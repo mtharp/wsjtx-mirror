@@ -568,6 +568,9 @@
       </property>
       <item row="7" column="6">
        <widget class="QComboBox" name="MinW_comboBox">
+        <property name="maxVisibleItems">
+         <number>7</number>
+        </property>
         <item>
          <property name="text">
           <string>         MinW:  A</string>
@@ -2131,19 +2134,42 @@ list. The list can be maintained in Settings (F2).</string>
       </item>
       <item row="8" column="6">
        <widget class="QComboBox" name="submodeComboBox">
+        <property name="maxVisibleItems">
+         <number>7</number>
+        </property>
         <item>
          <property name="text">
-          <string>Submode:  JT65A</string>
+          <string>Submode:  JT4A</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Submode:  JT65B</string>
+          <string>Submode:  JT4B</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Submode:  JT65C</string>
+          <string>Submode:  JT4C</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Submode:  JT4D</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Submode:  JT4E</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Submode:  JT4F</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Submode:  JT4G</string>
          </property>
         </item>
        </widget>

@@ -346,7 +346,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->labDist->setStyleSheet("border: 0px;");
 
   readSettings();		         //Restore user's setup params
-
   // start the audio thread
   m_audioThread->start (m_audioThreadPriority);
 
@@ -413,7 +412,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_ntx=6;
   ui->txrb6->setChecked(true);
   if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and
-     m_mode!="JT9+JT65") m_mode="JT9";
+     m_mode!="JT9+JT65" and m_mode!="JT4") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
   m_wideGraph->setModeTx(m_mode);
@@ -422,6 +421,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
           SLOT(setFreq4(int,int)));
 
+  if(m_mode=="JT4") on_actionJT4_triggered();
   if(m_mode=="JT9") on_actionJT9_1_triggered();
   if(m_mode=="JT9W-1") on_actionJT9W_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
@@ -452,9 +452,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_config.transceiver_online (true);
   on_monitorButton_clicked (!m_config.monitor_off_at_startup ());
 
-  bool enable_VHF_0=m_config.enable_VHF_features();
-  ui->submodeComboBox->setVisible(enable_VHF_0);
-  ui->MinW_comboBox->setVisible(enable_VHF_0);
+  ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
+  ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
 
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
   ui->actionJT9W_1->setEnabled (false);
@@ -701,10 +700,8 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
 
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
       displayDialFrequency ();
-
-      bool enable_VHF_0=m_config.enable_VHF_features();
-      ui->submodeComboBox->setVisible(enable_VHF_0);
-      ui->MinW_comboBox->setVisible(enable_VHF_0);
+      ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
+      ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
     }
 
   setXIT (ui->TxFreqSpinBox->value ());
@@ -2524,6 +2521,8 @@ void MainWindow::on_actionJT9_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
+  ui->submodeComboBox->setVisible(false);
+  ui->MinW_comboBox->setVisible(false);
 }
 
 void MainWindow::on_actionJT9W_1_triggered()
@@ -2542,6 +2541,8 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
+  ui->submodeComboBox->setVisible(false);
+  ui->MinW_comboBox->setVisible(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
@@ -2560,12 +2561,25 @@ void MainWindow::on_actionJT65_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
+  bool bVHF=m_config.enable_VHF_features();
+  ui->submodeComboBox->setVisible(bVHF);
+  ui->MinW_comboBox->setVisible(bVHF);
+  ui->submodeComboBox->setMaxVisibleItems(3);
+  ui->submodeComboBox->setItemText(0,"Submode:  JT65A");
+  ui->submodeComboBox->setItemText(1,"Submode:  JT65B");
+  ui->submodeComboBox->setItemText(2,"Submode:  JT65C");
+  if(!bVHF) {
+    ui->MinW_comboBox->setCurrentIndex(0);
+    ui->submodeComboBox->setCurrentIndex(0);
+  }
+  if(m_MinW>m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
 }
 
 void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
   //  if(m_modeTx!="JT9") on_pbTxMode_clicked();
+  m_nSubMode=0;
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
@@ -2578,11 +2592,14 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
+  ui->submodeComboBox->setVisible(false);
+  ui->MinW_comboBox->setVisible(false);
 }
 
 void MainWindow::on_actionJT4_triggered()
 {
   m_mode="JT4";
+  m_modeTx="JT4";
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
@@ -2595,8 +2612,18 @@ void MainWindow::on_actionJT4_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
+  ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
+  ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
+  ui->submodeComboBox->setMaxVisibleItems(7);
+  ui->submodeComboBox->setItemText(0,"Submode:  JT4A");
+  ui->submodeComboBox->setItemText(1,"Submode:  JT4B");
+  ui->submodeComboBox->setItemText(2,"Submode:  JT4C");
+  ui->submodeComboBox->setItemText(3,"Submode:  JT4D");
+  ui->submodeComboBox->setItemText(4,"Submode:  JT4E");
+  ui->submodeComboBox->setItemText(5,"Submode:  JT4F");
+  ui->submodeComboBox->setItemText(6,"Submode:  JT4G");
+  if(m_MinW>m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
 }
-
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
 {
@@ -3109,6 +3136,11 @@ void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
   m_prefixes->showNormal();
 }
 
+void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
+{
+  m_MinW=n;
+}
+
 void MainWindow::on_submodeComboBox_currentIndexChanged(int n)
 {
   m_nSubMode=n;
@@ -3248,9 +3280,4 @@ void MainWindow::transmitDisplay (bool transmitting)
           ui->pbTxMode->setEnabled (false);
         }
     }
-}
-
-void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
-{
-  m_MinW=n;
 }
