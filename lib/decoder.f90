@@ -21,19 +21,14 @@ subroutine decoder(ss,id2)
                        float(id2(300000:310000)))/10000.0)
   if(rms.lt.2.0) go to 800 
 
-  nfreqs0=0
-  nfreqs1=0
-  ndecodes0=0
-  ndecodes1=0
-
   if (nagain .eq. 0) then
      open(13,file=trim(temp_dir)//'/decoded.txt',status='unknown')
   else
      open(13,file=trim(temp_dir)//'/decoded.txt',status='unknown',      &
           position='append')
   end if
-  open(22,file=trim(temp_dir)//'/kvasd.dat',access='direct',recl=1024,  &
-       status='unknown')
+  if(nmode.eq.65 .or. nmode.eq.(65+9)) open(22,file=trim(temp_dir)//    &
+       '/kvasd.dat',access='direct',recl=1024,status='unknown')
 
   npts65=52*12000
   if(baddata(id2,npts65)) then
@@ -46,12 +41,12 @@ subroutine decoder(ss,id2)
   newdat65=newdat
   newdat9=newdat
 
-  !$ call omp_set_dynamic(.true.)
-  !$omp parallel sections num_threads(2) copyin(/tracer_priv/) shared(ndecoded) if(.true.) !iif() needed on Mac
+!$ call omp_set_dynamic(.true.)
+!$omp parallel sections num_threads(2) copyin(/tracer_priv/) shared(ndecoded) if(.true.) !iif() needed on Mac
 
-  !$omp section
-  if(nmode.eq.65 .or. (nmode.gt.65 .and. ntxmode.eq.65)) then
-! We're decoding JT65 or should do this mode first
+!$omp section
+  if(nmode.eq.65 .or. (nmode.eq.(65+9) .and. ntxmode.eq.65)) then
+! We're in JT65 mode or should do this mode first
      if(newdat65.ne.0) dd(1:npts65)=id2(1:npts65)
      nf1=nfa
      nf2=nfb
@@ -59,16 +54,17 @@ subroutine decoder(ss,id2)
      call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,   &
           nsubmode,nagain,ndecoded)
      call timer('jt65a   ',1)
-  else
-! We're decoding JT9 or should do this mode first
+
+  else if(nmode.eq.9 .or. (nmode.eq.(65+9) .and. ntxmode.eq.9)) then
+! We're in JT9 mode or should do this mode first
      call timer('decjt9  ',0)
      call decjt9(ss,id2,nutc,nfqso,newdat9,npts8,nfa,nfsplit,nfb,ntol,nzhsym,  &
           nagain,ndepth,nmode)
      call timer('decjt9  ',1)
   endif
 
-  !$omp section
-  if(nmode.gt.65) then          ! do the other mode in dual mode
+!$omp section
+  if(nmode.eq.(65+9)) then          !Do the other mode (we're in dual mode)
      if (ntxmode.eq.9) then
         if(newdat65.ne.0) dd(1:npts65)=id2(1:npts65)
         nf1=nfa
@@ -84,7 +80,7 @@ subroutine decoder(ss,id2)
      end if
   endif
 
-  !$omp end parallel sections
+!$omp end parallel sections
 
 ! JT65 is not yet producing info for nsynced, ndecoded.
 800 write(*,1010) nsynced,ndecoded
