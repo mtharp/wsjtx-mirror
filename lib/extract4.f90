@@ -8,13 +8,13 @@ subroutine extract4(sym0,nadd,ncount,decoded)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
-  integer mettab(0:255,0:1)             !Metric table
+  integer mettab(-128:127,0:1)             !Metric table
   logical first
   data first/.true./
   save first,mettab
 
   if(first) then
-     call getmet4(mode,mettab)
+     call getmet4(mettab)
      first=.false.
   endif
 
@@ -30,12 +30,15 @@ subroutine extract4(sym0,nadd,ncount,decoded)
   sym=sym/rms0
 
   do j=1,207
-     r=amp*sym(j) + 128.
-     if(r.gt.255.0) r=255.0
-     if(r.lt.0.0) r=0.0
-     i4=nint(r)
-     if(i4.gt.127) i4=i4-256
-     symbol(j)=i4
+!     r=amp*sym(j) + 128.
+!     if(r.gt.255.0) r=255.0
+!     if(r.lt.0.0) r=0.0
+!     i4=nint(r)
+!     if(i4.gt.127) i4=i4-256
+     n=nint(amp*sym(j))
+     if(n.lt.-127) n=-127
+     if(n.gt.127) n=127
+     symbol(j)=n
   enddo
 
   nbits=72+31

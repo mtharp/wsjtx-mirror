@@ -14,7 +14,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
   real*4 rsymbol(207,7)
   real*4 sym(207)
   integer amp
-  integer mettab(0:255,0:1)             !Metric table
+  integer mettab(-128:127,0:1)             !Metric table
   integer nch(7)
   integer npr2(207)
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
@@ -32,7 +32,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
   data nch/1,2,4,9,18,36,72/
   save mettab,mode0,rsymbol
 
-  if(mode.ne.mode0) call getmet4(mode,mettab)
+  if(mode.ne.mode0) call getmet4(mettab)
   mode0=mode
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)

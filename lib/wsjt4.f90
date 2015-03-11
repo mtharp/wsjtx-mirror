@@ -61,6 +61,15 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,mode4,minwidth,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
 
+!  do i=-224,224
+!     write(51,3001) i,ccfred(i)
+!3001 format(i6,f12.3)
+!  enddo
+
+!  do i=-5,60
+!     write(52,3001) i,ccfblue(i)
+!  enddo
+
   csync=' '
   decoded='                      '
   deepmsg='                      '

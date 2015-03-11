@@ -11,7 +11,7 @@ subroutine jt4a(dat,jz)
 
   NClearAve=0
   MinSigdB=0
-  DFTolerance=1000
+  ntol=600
   NFreeze=0
   mode=7
   mode4=1
@@ -20,21 +20,17 @@ subroutine jt4a(dat,jz)
   hiscall='VK7MO'
   hisgrid='QE37'
   Nseg=1                          !???
-  MouseDF2=1270
+  MouseDF2=0
   NAgain=0
   ndepth=3
   neme=1
   idf=0                           !???
-  lumsg=13
+  lumsg=6                         !### temp ? ###
   lcum=.true.
   ndiag=1
 
 ! Lowpass filter and decimate by 2
-!  call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
-  jz2=jz/2
-  do i=1,jz2,2
-     dat(i)=dat(2*i) + dat(2*i-1)
-  enddo
+  call lpf1(dat,jz,jz2)
   nadd=1
 
   i=index(MyCall,char(0))
@@ -45,7 +41,7 @@ subroutine jt4a(dat,jz)
   hiscall=HisCall(1:i-1)//'            '
 
   call wsjt4(dat,jz2,cfile6,NClearAve,MinSigdB,                          &
-       DFTolerance,NFreeze,mode,mode4,minwidth,mycall,hiscall,hisgrid,   &
+       ntol,NFreeze,mode,mode4,minwidth,mycall,hiscall,hisgrid,   &
        Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,lcum,nspecial,ndf,     &
        NSyncOK,ccf,psavg,ndiag,ps0)
 

@@ -1,9 +1,10 @@
-subroutine getmet4(mode,mettab)
+subroutine getmet4(mettab)
 
 ! Return appropriate metric table for soft-decision convolutional decoder.
 
 ! Metric table (RxSymbol,TxSymbol)
-  integer mettab(0:255,0:1)
+!  integer mettab(0:255,0:1)
+  integer mettab(-128:127,0:1)
   real*4 xx0(0:255)
   data xx0/                                                      &
         1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000,  &
@@ -40,13 +41,13 @@ subroutine getmet4(mode,mettab)
        -9.966,-9.966,-9.966,-9.966,-9.966,-9.966,-9.966,-9.966/
   save
 
-  if(mode.eq.-99) xx0(0)=xx0(1)                !Silence compiler warning
   bias=0.5
   scale=10.0
   do i=0,255
-     mettab(i,0)=nint(scale*(xx0(i)-bias))
-     if(i.ge.1) mettab(256-i,1)=mettab(i,0)
+     mettab(i-128,0)=nint(scale*(xx0(i)-bias))
+     if(i.ge.1) mettab(128-i,1)=mettab(i-128,0)
   enddo
+  mettab(-128,1)=mettab(-127,1)
 
   return
 end subroutine getmet4

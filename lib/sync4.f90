@@ -9,6 +9,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   integer ntol                     !Range of DF search
   real dat(jz)
   real psavg(NHMAX)                !Average spectrum of whole record
+  real psavg0(NHMAX)   !### Temp
   real ps0(450)                    !Avg spectrum for plotting
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
@@ -34,11 +35,13 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   psavg(1:nh)=0.
   if(mode.eq.-999) width=0.                        !Silence compiler warning
 
-  do j=1,nsteps                     !Compute spectrum for each step, get average
+  do j=1,nsteps                 !Compute spectrum for each step, get average
      k=(j-1)*nq + 1
      call ps4(dat(k),nfft,s2(1,j))
      psavg(1:nh)=psavg(1:nh) + s2(1:nh,j)
   enddo
+  ia=120.0/df
+  psavg0=psavg
 
   nsmo=min(10*mode4,150)
   call flat1a(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
@@ -168,21 +171,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
      if(ccfred1(i).le.ccf10) exit
   enddo
   width=(i-i1)*df
-
-  do i=-224,224
-     write(51,3001) i,ccfred(i)
-3001 format(i6,f12.3)
-  enddo
-
-  do i=-5,540
-     write(52,3001) i,ccfblue(i)
-  enddo
-
-  df=2.0*0.5*11025.0/2520
-  do i=1,450
-     write(53,3002) i*df,ps0(i)
-3002 format(2f12.3)
-  enddo
 
   return
 end subroutine sync4

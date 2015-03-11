@@ -1,39 +1,27 @@
-subroutine lpf1(dat,jz,nz,mousedf,mousedf2)
+subroutine lpf1(dat,jz,jz2)
 
-  parameter (NMAX=1024*1024)
+  parameter (NFFT1=64*11025,NFFT2=32*11025)
   real dat(jz)
-  complex c(0:NMAX)
+  real x(NFFT1)
+  complex cx(0:NFFT1/2)
+  equivalence (x,cx)
 
-  write(*,*) 'aa',jz; flush(6)
+  fac=1.0/float(NFFT1)
+  x(1:jz)=fac*dat(1:jz)
+  x(jz+1:NFFT1)=0.0
+  call four2a(x,NFFT1,1,-1,0)                    !Forwarxd FFT, r2c
+  cx(NFFT2/2:)=0.0
 
-! Find FFT length
-  xn=log(float(jz))/log(2.0)
-  n=xn
-  if((xn-n).gt.0.) n=n+1
-  nfft=2**n
-  nh=nfft/2
-  write(*,*) 'b',nfft,nmax,nh; flush(6)
+!  df=11025.0/NFFT1
+!  do i=1,NFFT1/2
+!     sx=real(cx(i))**2 + aimag(cx(i))**2
+!     write(50,3000) i*df,sx
+!3000 format(f15.6,e12.3)
+!  enddo
 
-! Load data into real array x; pad with zeros up to nfft.
-  c(1:jz)=dat(1:jz)
-  c(jz+1:nfft)=0.0
-  call four2a(c,nfft,1,-1,1)
-  df=11025.0/nfft
-  write(*,*) 'c',df
-
-  ia=70/df
-  c(:ia)=0.
-  ib=5000.0/df
-  c(ib:)=0.
-
-  call four2a(c,nh,1,1,-1)        !Return to time domain
-  fac=1.0/nfft
-  nz=jz/2
-  do i=1,nz
-     dat(i)=fac*x(i)
-  enddo
-
+  call four2a(cx,NFFT2,1,1,-1)                   !Inverse FFT, c2r
+  jz2=jz/2
+  dat(1:jz2)=x(1:jz2)
 
   return
 end subroutine lpf1
-

@@ -2,7 +2,7 @@ subroutine flat1a(psavg,nsmo,s2,nh,nsteps,nhmax,nsmax)
 
   real psavg(nh)
   real s2(nhmax,nsmax)
-  real x(8192),tmp(150)
+  real x(8192)
 
   ia=nsmo/2 + 1
   ib=nh - nsmo/2 - 1
