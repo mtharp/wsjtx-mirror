@@ -1,13 +1,13 @@
 subroutine jt4a(dat,jz)
 
   real dat(jz)
+  real ccf(-5:540)
+  real psavg(450)
+  real ps0(450)
   character*6 cfile6
   character*12 mycall,hiscall
   character*6 hisgrid
   logical lcum
-  real ccf(-5:540)
-  real psavg(450)
-  real ps0(450)
 
   NClearAve=0
   MinSigdB=0
@@ -30,8 +30,11 @@ subroutine jt4a(dat,jz)
   ndiag=1
 
 ! Lowpass filter and decimate by 2
-  call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
-  idf=mousedf-mousedf2
+!  call lpf1(dat,jz,jz2,MouseDF,MouseDF2)
+  jz2=jz/2
+  do i=1,jz2,2
+     dat(i)=dat(2*i) + dat(2*i-1)
+  enddo
   nadd=1
 
   i=index(MyCall,char(0))

@@ -1,5 +1,4 @@
 subroutine wav12(d2,d1,npts,nbitsam2)
-!subroutine getfile(fname,len)
 
   parameter (NZ11=60*11025,NZ12=60*12000)
   parameter (NFFT1=64*11025,NFFT2=64*12000)

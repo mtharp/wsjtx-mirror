@@ -18,7 +18,7 @@ program jt9
   character wisfile*80
   integer :: arglen,stat,offset,remain,mode=0,flow=200,fsplit=2700,fhigh=4007,nrxfreq=1500,ntrperiod=1,ndepth=1
   logical :: shmem = .false., read_files = .false., have_args = .false., tx9 = .false., display_help = .false.
-  type (option) :: long_options(16) = [ &
+  type (option) :: long_options(17) = [ &
     option ('help', .false., 'h', 'Display this help message', ''), &
     option ('shmem', .true., 's', 'Use shared memory for sample data', '<key>'), &
     option ('tr-period', .true., 'p', 'Tx/Rx period, default=1', '<minutes>'), &
@@ -33,6 +33,7 @@ program jt9
     option ('fft-threads', .true., 'm', 'Number of threads to process large FFTs, default=1', '<number>'), &
     option ('jt65', .false., '6', 'JT65 mode', ''), &
     option ('jt9', .false., '9', 'JT9 mode', ''), &
+    option ('jt4', .false., '4', 'JT4 mode', ''), &
     option ('depth', .true., 'd', 'JT9 decoding depth (1-3), default=1', '<number>'), &
     option ('tx-jt9', .false., 'T', 'Tx mode is JT9, default=JT65', '') ]
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,ntr,       &
@@ -43,7 +44,7 @@ program jt9
   data npatience/1/,nthreads/1/
 
   do
-     call getopt('hs:e:a:r:m:p:d:f:w:t:96TL:S:H:',long_options,c,optarg,arglen,stat,     &
+     call getopt('hs:e:a:r:m:p:d:f:w:t:964TL:S:H:',long_options,c,optarg,arglen,stat,     &
           offset,remain)
      if (stat .ne. 0) then
         exit
@@ -92,6 +93,10 @@ program jt9
         case ('H')
            read_files = .true.
            read (optarg(:arglen), *) fhigh
+
+        case ('4')
+           read_files = .true.
+           mode = 4
 
         case ('6')
            read_files = .true.
@@ -154,6 +159,7 @@ program jt9
      read(10) ihdr
      nutc0=ihdr(1)                           !Silence compiler warning
      i1=index(infile,'.wav')
+     if(i1.lt.1) i1=index(infile,'.WAV')
      read(infile(i1-4:i1-1),*,err=1) nutc0
      go to 2
 1    nutc0=0

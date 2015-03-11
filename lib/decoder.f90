@@ -30,6 +30,13 @@ subroutine decoder(ss,id2)
   if(nmode.eq.65 .or. nmode.eq.(65+9)) open(22,file=trim(temp_dir)//    &
        '/kvasd.dat',access='direct',recl=1024,status='unknown')
 
+  if(nmode.eq.4) then
+     jz=52*12000
+     dd(1:jz)=id2(1:jz)
+     call jt4a(dd,jz)
+     go to 800
+  endif
+
   npts65=52*12000
   if(baddata(id2,npts65)) then
      nsynced=0

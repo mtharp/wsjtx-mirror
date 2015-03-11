@@ -41,7 +41,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   enddo
 
   nsmo=min(10*mode4,150)
-  call flat1(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
+  call flat1a(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
 
   if(mode4.ge.9) call smo(psavg,nh,tmp,mode4/4)
   i0=132
@@ -168,6 +168,21 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
      if(ccfred1(i).le.ccf10) exit
   enddo
   width=(i-i1)*df
+
+  do i=-224,224
+     write(51,3001) i,ccfred(i)
+3001 format(i6,f12.3)
+  enddo
+
+  do i=-5,540
+     write(52,3001) i,ccfblue(i)
+  enddo
+
+  df=2.0*0.5*11025.0/2520
+  do i=1,450
+     write(53,3002) i*df,ps0(i)
+3002 format(2f12.3)
+  enddo
 
   return
 end subroutine sync4

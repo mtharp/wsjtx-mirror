@@ -60,7 +60,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,mode4,minwidth,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
-  
+
   csync=' '
   decoded='                      '
   deepmsg='                      '

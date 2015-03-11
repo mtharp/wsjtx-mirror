@@ -24,7 +24,7 @@ subroutine fillcom(nutc0,ndepth0,nrxfreq,mode,tx9,flow,fsplit,fhigh)
   else
     ntxmode=65
   end if
-  if (mode.lt.9) then
+  if (mode.eq.0) then
     nmode=65+9
   else
     nmode=mode
