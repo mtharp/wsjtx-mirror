@@ -246,6 +246,7 @@ set (wsjt_FSRCS
   lib/astro.f90
   lib/astrosub.f90
   lib/astro0.f90
+  lib/avemsg4.f90
   lib/azdist.f90
   lib/baddata.f90
   lib/ccf2.f90
@@ -260,17 +261,22 @@ set (wsjt_FSRCS
   lib/decode65b.f90
   lib/fftw3mod.f90
   lib/jt9fano.f90
+  lib/decode4.f90
   lib/decoder.f90
   lib/decjt9.f90
+  lib/deep4.f90
   lib/deg2grid.f90
   lib/demod64a.f90
   lib/determ.f90
   lib/dot.f90
   lib/downsam9.f90
   lib/encode232.f90
+  lib/encode4.f90
   lib/entail.f90
   lib/extract.F90
+  lib/extract4.f90
   lib/geocentric.f90
+  lib/getmet4.f90
   lib/fano232.f90
   lib/fchisq.f90
   lib/fchisq65.f90
@@ -280,6 +286,7 @@ set (wsjt_FSRCS
   lib/filbig.f90
   lib/fillcom.f90
   lib/flat1.f90
+  lib/flat1a.f90
   lib/flat2.f90
   lib/flat4.f90
   lib/flat65.f90
@@ -297,10 +304,13 @@ set (wsjt_FSRCS
   lib/grid2k.f90
   lib/grid2n.f90
   lib/indexx.f90
+  lib/interleave4.f90
   lib/interleave63.f90
   lib/interleave9.f90
+  lib/jt4a.f90
   lib/jt65a.f90
   lib/k2grid.f90
+  lib/lpf1.f90
   lib/moon2.f90
   lib/moondop.f90
   lib/morse.f90
@@ -315,12 +325,15 @@ set (wsjt_FSRCS
   lib/packtext.f90
   lib/pctile.f90
   lib/peakdt9.f90
+  lib/peakup.f90
   lib/pfxdump.f90
   lib/polfit.f90
   lib/prog_args.f90
+  lib/ps4.f90
   lib/sec_midn.f90
   lib/setup65.f90
   lib/sleep_msec.f90
+  lib/slope.f90
   lib/smo.f90
   lib/smo121.f90
   lib/softsym.f90
@@ -330,6 +343,7 @@ set (wsjt_FSRCS
   lib/symspec.f90
   lib/symspec2.f90
   lib/symspec65.f90
+  lib/sync4.f90
   lib/sync9.f90
   lib/timer.f90
   lib/tm2.f90
@@ -342,6 +356,8 @@ set (wsjt_FSRCS
   lib/unpackmsg.f90
   lib/unpacktext.f90
   lib/wav12.f90
+  lib/wsjt4.f90
+  lib/xcor4.f90
   lib/zplot9.f90
   )
 
