@@ -1,13 +1,12 @@
-subroutine jt4a(dat,jz)
+subroutine jt4a(dat,jz,nutc)
 
-  real dat(jz)
-  real ccf(-5:540)
-  real psavg(450)
-  real ps0(450)
+  real*4 dat(jz)
+  real*4 ccf(-5:540)
+  real*4 psavg(450)
+  real*4 ps0(450)
   character*6 cfile6
   character*12 mycall,hiscall
   character*6 hisgrid
-  logical lcum
 
   NClearAve=0
   MinSigdB=0
@@ -26,7 +25,6 @@ subroutine jt4a(dat,jz)
   neme=1
   idf=0                           !???
   lumsg=6                         !### temp ? ###
-  lcum=.true.
   ndiag=1
 
 ! Lowpass filter and decimate by 2
@@ -40,9 +38,13 @@ subroutine jt4a(dat,jz)
   if(i.le.0) i=index(HisCall,' ')
   hiscall=HisCall(1:i-1)//'            '
 
+  write(cfile6(1:4),1000) nutc
+1000 format(i4.4)
+  cfile6(5:6)='  '
+
   call wsjt4(dat,jz2,cfile6,NClearAve,MinSigdB,                          &
        ntol,NFreeze,mode,mode4,minwidth,mycall,hiscall,hisgrid,   &
-       Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,lcum,nspecial,ndf,     &
+       Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,nspecial,ndf,     &
        NSyncOK,ccf,psavg,ndiag,ps0)
 
   return

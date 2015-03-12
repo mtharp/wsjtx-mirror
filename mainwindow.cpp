@@ -1308,6 +1308,10 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="JT9W-1") jt9com_.nmode=91;
   if(m_mode=="JT65") jt9com_.nmode=65;
   if(m_mode=="JT9+JT65") jt9com_.nmode=9+65;  // = 74
+  if(m_mode=="JT4") {
+    jt9com_.nmode=4;
+    jt9com_.ntxmode=4;
+  }
   jt9com_.ntrperiod=m_TRperiod;
   jt9com_.nsubmode=m_nSubMode;
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);

@@ -33,7 +33,7 @@ subroutine decoder(ss,id2)
   if(nmode.eq.4) then
      jz=52*12000
      dd(1:jz)=id2(1:jz)
-     call jt4a(dd,jz)
+     call jt4a(dd,jz,nutc)
      go to 800
   endif
 
@@ -53,7 +53,7 @@ subroutine decoder(ss,id2)
 
 !$omp section
   if(nmode.eq.65 .or. (nmode.eq.(65+9) .and. ntxmode.eq.65)) then
-! We're in JT65 mode or should do this mode first
+! We're in JT65 mode, or should do JT65 first
      if(newdat65.ne.0) dd(1:npts65)=id2(1:npts65)
      nf1=nfa
      nf2=nfb
@@ -63,7 +63,7 @@ subroutine decoder(ss,id2)
      call timer('jt65a   ',1)
 
   else if(nmode.eq.9 .or. (nmode.eq.(65+9) .and. ntxmode.eq.9)) then
-! We're in JT9 mode or should do this mode first
+! We're in JT9 mode, or should do JT9 first
      call timer('decjt9  ',0)
      call decjt9(ss,id2,nutc,nfqso,newdat9,npts8,nfa,nfsplit,nfb,ntol,nzhsym,  &
           nagain,ndepth,nmode)

@@ -1,6 +1,6 @@
 subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      mode,mode4,minwidth,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth, &
-     neme,idf,lumsg,lcum,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
+     neme,idf,lumsg,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
@@ -12,7 +12,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   real*4 ps0(450)
   integer DFTolerance
   logical first
-  logical lcum
   character decoded*22,cfile6*6,special*5,cooo*3
   character*22 avemsg1,avemsg2,deepmsg
   character*77 line,ave1,ave2
@@ -134,8 +133,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
 
-  if(lcum) write(21,1011) line
-
 ! Write decoded msg unless this is an "Exclude" request:
   if(MinSigdB.lt.99) write(lumsg,1011) line
 1011 format(a77)
@@ -160,8 +157,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      if(ns1.ge.100) write(ave1,1023) cfile6,1,nused1,ns1,            &
           avemsg1,nc1,nqual1
 1023 format(a6,i3,i4,'/',i3,19x,a19,i7,i5)
-     if(lcum .and. (avemsg1.ne.'                  '))                &
-          write(21,1011) ave1
      ns10=ns1
   endif
 
@@ -171,8 +166,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      if(ns2.ge.10 .and. nsave.le.99) write(ave2,1022) cfile6,       &
           2,nused2,ns2,avemsg2,nc2,nqual2
      if(ns2.ge.100) write(ave2,1023) cfile6,2,nused2,ns2,avemsg2,nc2,nqual2
-     if(lcum .and. (avemsg2.ne.'                  '))               &
-          write(21,1011) ave2
      ns20=ns2
   endif
 

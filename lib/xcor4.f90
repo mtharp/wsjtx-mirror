@@ -38,7 +38,6 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
   ccfmax=0.
   ccfmin=0.
   nw=nch(ich)
-
   do j=1,nsteps
      n=2*mode4
      if(mode4.eq.1) then

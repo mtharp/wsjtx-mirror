@@ -160,7 +160,11 @@ program jt9
      nutc0=ihdr(1)                           !Silence compiler warning
      i1=index(infile,'.wav')
      if(i1.lt.1) i1=index(infile,'.WAV')
-     read(infile(i1-4:i1-1),*,err=1) nutc0
+     if(infile(i1-5:i1-5).eq.'_') then
+        read(infile(i1-4:i1-1),*,err=1) nutc0
+     else
+        read(infile(i1-6:i1-3),*,err=1) nutc0
+     endif
      go to 2
 1    nutc0=0
 2    nsps=0

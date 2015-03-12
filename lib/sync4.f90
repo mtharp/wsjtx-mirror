@@ -9,7 +9,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   integer ntol                     !Range of DF search
   real dat(jz)
   real psavg(NHMAX)                !Average spectrum of whole record
-  real psavg0(NHMAX)   !### Temp
   real ps0(450)                    !Avg spectrum for plotting
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
@@ -40,8 +39,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
      call ps4(dat(k),nfft,s2(1,j))
      psavg(1:nh)=psavg(1:nh) + s2(1:nh,j)
   enddo
-  ia=120.0/df
-  psavg0=psavg
 
   nsmo=min(10*mode4,150)
   call flat1a(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
@@ -76,6 +73,8 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   ccfred=0.
   jmax=-1000
   jmin=1000
+  ichpk=1
+  ipk=1
 
   do ich=minwidth,7                       !Find best width
      kz=nch(ich)/2
