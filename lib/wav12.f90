@@ -1,5 +1,8 @@
 subroutine wav12(d2,d1,npts,nbitsam2)
 
+! Convert i*2 or i*1 data sampled at 11025 Hz (from WSJT *.wav files)
+! to i*2, sampled at 12000 Hz.
+
   parameter (NZ11=60*11025,NZ12=60*12000)
   parameter (NFFT1=64*11025,NFFT2=64*12000)
   integer*1 d1(NZ11)
@@ -15,8 +18,8 @@ subroutine wav12(d2,d1,npts,nbitsam2)
   jz=min(NZ11,npts)
   if(nbitsam2.eq.8) then
      jz=min(NZ11,2*npts)
-     d1a(1:jz)=d1(1:jz)
-     do i=1,jz
+     d1a(1:jz)=d1(1:jz) 
+     do i=1,jz                     ! Move data from d1a into d2
         i2=0
         i1=d1a(i)
         d2(i)=10*(i2-128)
@@ -31,7 +34,7 @@ subroutine wav12(d2,d1,npts,nbitsam2)
 
   npts=jz*12000.0/11025.0
   fac=1.e-6
-  if(nbitsam2.eq.16) fac=3.e-8
+!  if(nbitsam2.eq.16) fac=3.e-6
   x=fac*x
   d2(1:npts)=nint(x(1:npts))
   if(npts.lt.NZ12) d2(npts+1:NZ12)=0

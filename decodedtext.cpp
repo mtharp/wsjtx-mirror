@@ -53,6 +53,7 @@ int DecodedText::snr()
 bool DecodedText::report(QString const& myBaseCall, QString const& dxBaseCall, /*mod*/QString& report)
 {
     QString msg=_string.mid(column_qsoText);
+    if(msg.trimmed().length() < 1) return false;
     int i1=msg.indexOf("\r");
     if (i1>0)
         msg=msg.mid(0,i1-1) + "                      ";

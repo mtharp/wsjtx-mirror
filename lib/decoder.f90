@@ -31,7 +31,7 @@ subroutine decoder(ss,id2)
        '/kvasd.dat',access='direct',recl=1024,status='unknown')
 
   if(nmode.eq.4) then
-     jz=52*12000
+     jz=52*11025
      dd(1:jz)=id2(1:jz)
      call jt4a(dd,jz,nutc)
      go to 800

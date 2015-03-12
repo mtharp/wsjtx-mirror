@@ -205,15 +205,16 @@ program jt9
 
         nhsym=(k-2048)/kstep
         if(nhsym.ge.1 .and. nhsym.ne.nhsym0) then
-! Emit signal readyForFFT
-           ingain=0
-           call timer('symspec ',0)
-           call symspec(k,ntrperiod,nsps,ingain,nflatten,pxdb,s,df3,ihsym,npts8)
-           call timer('symspec ',1)
+           if(mode.eq.9 .or. mode.eq.74) then
+! Compute rough symbol spectra for the JT9 decoder
+              ingain=0
+              call timer('symspec ',0)
+              call symspec(k,ntrperiod,nsps,ingain,nflatten,pxdb,s,df3,   &
+                   ihsym,npts8)
+              call timer('symspec ',1)
+           endif
            nhsym0=nhsym
-!           write(77,*) 'a',nhsym,ihsym; flush(77)
-           if(ihsym.ge.181) exit
-!           if(ihsym.ge.173) exit
+           if(nhsym.ge.181) exit
         endif
      enddo
 
