@@ -1,4 +1,4 @@
-subroutine decoder(ss,id2)
+subroutine decoder(ss,id2,nfsample)
 
   use prog_args
   !$ use omp_lib
@@ -31,8 +31,9 @@ subroutine decoder(ss,id2)
        '/kvasd.dat',access='direct',recl=1024,status='unknown')
 
   if(nmode.eq.4) then
-     jz=52*11025
-     dd(1:jz)=id2(1:jz)
+     jz=52*nfsample
+     if(nfsample.eq.12000) call wav11(id2,jz,dd)
+     if(nfsample.eq.11025) dd(1:jz)=id2(1:jz)
      call jt4a(dd,jz,nutc)
      go to 800
   endif

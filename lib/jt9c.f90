@@ -16,8 +16,8 @@ subroutine jt9c(ss,savg,id2,nparams0)
   if(ndiskdat.ne.0) npatience=2
 
   call flush(6)
-!  if(sum(nparams).ne.0) call decoder(ss,id2,ldir)
-  call decoder(ss,id2)
+  nfsample=12000
+  call decoder(ss,id2,nfsample)
 
   return
 end subroutine jt9c

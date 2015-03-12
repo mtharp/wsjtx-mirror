@@ -157,6 +157,7 @@ program jt9
      infile = optarg(:arglen)
      open(10,file=infile,access='stream',status='old',err=998)
      read(10) ihdr
+     nfsample=ihdr(7)
      nutc0=ihdr(1)                           !Silence compiler warning
      i1=index(infile,'.wav')
      if(i1.lt.1) i1=index(infile,'.WAV')
@@ -220,7 +221,7 @@ program jt9
 
 10   close(10)
      call fillcom(nutc0,ndepth,nrxfreq,mode,tx9,flow,fsplit,fhigh)
-     call decoder(ss,id2)
+     call decoder(ss,id2,nfsample)
   enddo
 
   call timer('jt9     ',1)
