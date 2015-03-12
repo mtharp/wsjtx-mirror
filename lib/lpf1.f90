@@ -5,6 +5,7 @@ subroutine lpf1(dat,jz,jz2)
   real x(NFFT1)
   complex cx(0:NFFT1/2)
   equivalence (x,cx)
+  save x,cx
 
   fac=1.0/float(NFFT1)
   x(1:jz)=fac*dat(1:jz)
