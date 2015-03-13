@@ -1262,8 +1262,7 @@ def delwav():
     result=tkinter.messagebox.askyesno(message=t)
     if result:
 # Make a list of *.wav files in RxWav
-##        la=dircache.listdir(appdir+'/RxWav')
-        la=[]
+        la=os.listdir(appdir+'/RxWav')
         lb=[]
         for i in range(len(la)):
             j=la[i].find(".wav") + la[i].find(".WAV")
