@@ -292,6 +292,7 @@ set (wsjt_FSRCS
   lib/flat65.f90
   lib/four2a.f90
   lib/fmtmsg.f90
+  lib/gen4.f90
   lib/gen65.f90
   lib/genjt9.f90
   lib/geodist.f90

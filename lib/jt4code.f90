@@ -11,8 +11,9 @@ program jt4code
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
-  integer mettab(0:255,0:1)             !Metric table
+  integer mettab(-128:127,0:1)          !Metric table
   integer ncode(206)
+  integer i4tone(206)
   integer npr(207)
   data npr/                                                         &
        0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0, &
@@ -90,5 +91,10 @@ program jt4code
      write(*,1070) decoded
 1070 format(/'Decoded message: ',a22)
   endif
+
+  print*,'A'
+  call gen4(msg0,0,msgsent,i4tone,itype)
+  print*,'msgsent'
+  write(*,1060) i4tone(1:206)
 
 999 end program jt4code

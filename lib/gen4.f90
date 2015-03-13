@@ -8,16 +8,13 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
   character*22 msg0
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received
-  character*3 cok               !'   ' or 'OOO'
-  real*8 t,dt,phi,f,f0,dfgen,dphi,pi,twopi,samfac,tsymbol
-  integer*2 iwave(NMAX)         !Generated wave file
-  integer sendingsh
-  integer dgen(13)
-  integer*1 data0(13),symbol(216)
-  logical first
-  common/prcom2/ npr2(207),pr2(207)
-  common/n1n2ng/ncall1,ncall2,ngrid
-  data npr2/                                                    &
+!  character*3 cok               !'   ' or 'OOO'
+  integer i4tone(206)
+  integer dgen(12)
+!  integer*1 data1(13)
+  integer*1 symbol(216)
+  integer npr(207)
+  data npr/                                                         &
        0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0, &
        0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0, &
        1,0,0,1,0,0,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,1,1,1,0,1,1,0,0,1, &
@@ -25,8 +22,6 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
        0,1,1,1,0,0,1,0,1,1,0,1,1,1,1,0,0,0,0,1,1,0,1,1,0,0,0,1,1,1, &
        0,1,1,1,0,1,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,1,0,0,0,1,1,1,1,1, &
        1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1/
-
-  data first/.true./
   save
 
   message=msg0
@@ -42,55 +37,35 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
      message=message(i+1:)
   enddo
 
+!###
+  
+  call packmsg(message,dgen,itype)  !Pack 72-bit message into 12 six-bit symbols
+!  write(*,1020) msg0
+!1020 format('Message:   ',a22)            !Echo input message
+!  if(iand(dgen(10),8).ne.0) write(*,1030) !Is the plain text bit set?
+!1030 format('Plain text.')         
+!  write(*,1040) dgen
+!1040 format(/'Source-encoded message, 6-bit symbols: '/12i3)
+!  write(*,1041) dgen
+!1041 format(/'Source-encoded message, 72 bits: '/12b6.6)
+
+  call encode4(message,i4tone)
+  symbol(1:206)=i4tone
+  call interleave4(symbol,-1)         !Remove interleaving
+
+!  write(*,1050) symbol(1:206)
+!1050 format(/'Encoded information before interleaving, 206 bits:'/(70i1))
+
+!  write(*,1051) i4tone(1:206)
+!1051 format(/'Encoded information after interleaving, 206 bits:'/(70i1))
+
+  do i=1,206                          !Compute channel symbols, sync+2*data
+     i4tone(i)=2*i4tone(i)+npr(i+1)
+  enddo
+
+!###
+
   nsym=207                               !Symbols per transmission
-  if(first) then
-     do i=1,nsym
-        pr2(i)=2*npr2(i)-1
-     enddo
-     first=.false.
-  endif
-
-  call chkmsg(message,cok,nspecial,flip)
-  call packmsg(message,dgen)  !Pack 72-bit message into 12 six-bit symbols
-  if(ngrid.ge.32402 .and. ngrid.le.32462) flip=-1.0   !Use #-sync for reports
-  call entail(dgen,data0)
-  call unpackmsg(dgen,msgsent)
-
-  nbytes=(72+31+7)/8
-  call encode(data0,nbytes,symbol(2))    !Convolutional encoding
-  symbol(1)=0                            !Reference phase
-  sendingsh=0
-  if(iand(dgen(10),8).ne.0) sendingsh=-1 !Plain text flag
-  call interleave4(symbol(2),1)          !Apply JT4 interleaving
-
-! Set up necessary constants
-  tsymbol=2520.d0/11025.d0
-  dt=1.d0/(samfac*11025.d0)
-  f0=118*11025.d0/1024 + ntxdf
-  dfgen=11025.d0/2520                     !4.375 Hz
-  t=0.d0
-  phi=0.d0
-  j0=0
-  ndata=(nsym*11025.d0*samfac*tsymbol)/2
-  ndata=2*ndata
-  do i=1,ndata
-     t=t+dt
-     j=int(t/tsymbol) + 1   !Symbol number, 1-207
-     if(j.ne.j0) then
-        f=f0 + (npr2(j)+2*symbol(j)-1.5) * dfgen * mode4
-        if(flip.lt.0.0) f=f0+((1-npr2(j))+2*symbol(j)-1.5)*dfgen*mode4
-        dphi=twopi*dt*f
-        j0=j
-     endif
-     phi=phi+dphi
-     iwave(i)=32767.0*sin(phi)
-  enddo
-
-  do j=1,5512                !Put another 0.5 sec of silence at end
-     i=i+1
-     iwave(i)=0
-  enddo
-  nwave=i
 
   if(flip.lt.0.0 .and. (ngrid.lt.32402 .or. ngrid.gt.32464)) then
      do i=22,1,-1
