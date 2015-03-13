@@ -1,4 +1,4 @@
-subroutine jt4a(dat,jz,nutc)
+subroutine jt4a(dat,jz,nutc,mycall,mygrid,hiscall,hisgrid)
 
   real*4 dat(jz)
   real*4 ccf(-5:540)
@@ -6,7 +6,7 @@ subroutine jt4a(dat,jz,nutc)
   real*4 ps0(450)
   character*6 cfile6
   character*12 mycall,hiscall
-  character*6 hisgrid
+  character*6 mygrid,hisgrid
 
   NClearAve=0
   MinSigdB=0
@@ -15,9 +15,6 @@ subroutine jt4a(dat,jz,nutc)
   mode=7
   mode4=1
   minwidth=1                      !MinW ?
-  mycall='K1JT'
-  hiscall='DF2ZC'
-  hisgrid='JO30'
   Nseg=1                          !???
   MouseDF2=0
   NAgain=0
@@ -26,6 +23,8 @@ subroutine jt4a(dat,jz,nutc)
   idf=0                           !???
   lumsg=6                         !### temp ? ###
   ndiag=1
+
+  write(78,*) 'a',datetime,mycall,mygrid,hiscall,hisgrid; flush(78)
 
 ! Lowpass filter and decimate by 2
   call lpf1(dat,jz,jz2)

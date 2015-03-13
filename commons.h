@@ -27,6 +27,10 @@ extern struct FortranCommon {
   int ntxmode;
   int nmode;
   char datetime[20];
+  char mycall[12];
+  char mygrid[6];
+  char hiscall[12];
+  char hisgrid[6];
 } jt9com_;
 
 extern "C" {

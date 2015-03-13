@@ -49,8 +49,12 @@ program jt9
         '<number>'),                                                          &
     option ('tx-jt9', .false., 'T', 'Tx mode is JT9, default=JT65', '') ]
 
-  common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,ntr,        &
-       mousefqso,newdat,nfa,nfsplit,nfb,ntol,kin,nzhsym,nsynced,ndecoded
+  character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
+  common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,          &
+       ntr,mousefqso,newdat,npts8a,nfa,nfsplit,nfb,ntol,kin,nzhsym,         &
+       nsubmode,nagain,ndepth,ntxmode,nmode,datetime,mycall,mygrid,         &
+       hiscall,hisgrid
+
   common/tracer/limtrace,lu
   common/patience/npatience,nthreads
   common/decstats/num65,numbm,numkv,num9,numfano,infile

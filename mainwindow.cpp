@@ -607,7 +607,6 @@ void MainWindow::dataSink(qint64 frames)
   static int nzap=0;
   static int trmin;
   static int npts8;
-  static int nflatten=0;
   static float px=0.0;
   static float df3;
 
@@ -622,8 +621,6 @@ void MainWindow::dataSink(qint64 frames)
   int k (frames - 1);
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfb=m_wideGraph->getFmax();
-  nflatten=0;
-  if(m_wideGraph->flatten()) nflatten=1;
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;
@@ -1315,6 +1312,12 @@ void MainWindow::decode()                                       //decode()
   jt9com_.ntrperiod=m_TRperiod;
   jt9com_.nsubmode=m_nSubMode;
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);
+  strncpy(jt9com_.mycall, m_config.my_callsign().toLatin1(),12);
+  strncpy(jt9com_.mygrid, m_config.my_grid().toLatin1(),6);
+  QString hisCall=ui->dxCallEntry->text().toUpper().trimmed();
+  QString hisGrid=ui->dxGridEntry->text().toUpper().trimmed();
+  strncpy(jt9com_.hiscall,hisCall.toLatin1(),12);
+  strncpy(jt9com_.hisgrid,hisGrid.toLatin1(),6);
 
   //newdat=1  ==> this is new data, must do the big FFT
   //nagain=1  ==> decode only at fQSO +/- Tol

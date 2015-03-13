@@ -5,12 +5,15 @@ subroutine decoder(ss,id2,nfsample)
 
   include 'constants.f90'
   real ss(184,NSMAX)
-  character*20 datetime
   logical baddata
   integer*2 id2(NTMAX*12000)
   real*4 dd(NTMAX*12000)
+
+  character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfsplit,nfb,    &
-       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,datetime
+       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,datetime,        &
+       mycall,mygrid,hiscall,hisgrid
+
   common/tracer/limtrace,lu
   integer onlevel(0:10)
   common/tracer_priv/level,onlevel
@@ -34,7 +37,7 @@ subroutine decoder(ss,id2,nfsample)
      jz=52*nfsample
      if(nfsample.eq.12000) call wav11(id2,jz,dd)
      if(nfsample.eq.11025) dd(1:jz)=id2(1:jz)
-     call jt4a(dd,jz,nutc)
+     call jt4a(dd,jz,nutc,mycall,mygrid,hiscall,hisgrid)
      go to 800
   endif
 

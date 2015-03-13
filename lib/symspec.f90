@@ -25,9 +25,13 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   real*4 tmp(NSMAX)
   complex cx(0:MAXFFT3/2)
   integer*2 id2
-  common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,         &
+
+  character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
+  common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,          &
        ntr,mousefqso,newdat,npts8a,nfa,nfsplit,nfb,ntol,kin,nzhsym,         &
-       nsave,nagain,ndepth,ntxmode,nmode,junk(5)
+       nsubmode,nagain,ndepth,ntxmode,nmode,datetime,mycall,mygrid,         &
+       hiscall,hisgrid
+
   common/jt9w/syellow(NSMAX)
   data rms/999.0/,k0/99999999/,nfft3z/0/
   equivalence (xc,cx)
