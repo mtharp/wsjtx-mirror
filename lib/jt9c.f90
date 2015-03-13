@@ -13,7 +13,7 @@ subroutine jt9c(ss,savg,id2,nparams0)
 
   nutc=id2(1)+int(savg(1))             !Silence compiler warning
   nparams=nparams0                     !Copy parameters into common/npar/
-  if(ndiskdat.ne.0) npatience=2
+!  if(ndiskdat.ne.0) npatience=2
 
   call flush(6)
   nfsample=12000
