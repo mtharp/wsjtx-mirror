@@ -602,8 +602,9 @@ endif ()
 #
 # OpenMP
 #
-find_package (OpenMP)
-
+### JHT find_package (OpenMP)
+set (OPENMP_FOUND "NO")
+### JHT
 
 #
 # fftw3 single precsion library
