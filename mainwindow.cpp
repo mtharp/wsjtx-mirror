@@ -84,8 +84,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_wideGraph (new WideGraph (settings)),
   m_logDlg (new LogQSO (program_title (), settings, this)),
   m_dialFreq {0},
-  m_detector (RX_SAMPLE_RATE, NTMAX / 2, 6912 / 2, downSampleFactor),
-  m_modulator (TX_SAMPLE_RATE, NTMAX / 2),
+  m_detector (RX_SAMPLE_RATE, NTMAX, 6912 / 2, downSampleFactor),
+  m_modulator (TX_SAMPLE_RATE, NTMAX),
   m_audioThread {new QThread},
   m_diskData {false},
   m_appDir {QApplication::applicationDirPath ()},
@@ -1153,7 +1153,8 @@ void MainWindow::diskDat()                                   //diskDat()
   for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
     k=(n+1)*kstep;
     jt9com_.npts8=k/8;
-    dataSink(k * sizeof (jt9com_.d2[0]));
+//    dataSink(k * sizeof (jt9com_.d2[0]));
+    dataSink(k);
     if(n%10 == 1 or n == m_hsymStop)
       qApp->processEvents();                   //Keep GUI responsive
   }
