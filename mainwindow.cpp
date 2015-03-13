@@ -624,7 +624,7 @@ void MainWindow::dataSink(qint64 frames)
   jt9com_.nfb=m_wideGraph->getFmax();
   nflatten=0;
   if(m_wideGraph->flatten()) nflatten=1;
-  symspec_(&k,&trmin,&m_nsps,&m_inGain,&nflatten,&px,s,&df3,&ihsym,&npts8);
+  symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;

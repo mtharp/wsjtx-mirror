@@ -210,7 +210,7 @@ program jt9
 ! Compute rough symbol spectra for the JT9 decoder
               ingain=0
               call timer('symspec ',0)
-              call symspec(k,ntrperiod,nsps,ingain,nflatten,pxdb,s,df3,   &
+              call symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,   &
                    ihsym,npts8)
               call timer('symspec ',1)
            endif
