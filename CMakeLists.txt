@@ -750,6 +750,9 @@ target_link_libraries (jt65code wsjt_fort wsjt_cxx)
 add_executable (jt9code lib/jt9code.f90 wsjtx.rc)
 target_link_libraries (jt9code wsjt_fort wsjt_cxx)
 
+add_executable (jt4code lib/jt4code.f90 wsjtx.rc)
+target_link_libraries (jt4code wsjt_fort wsjt_cxx)
+
 add_executable (jt9 lib/jt9.f90 lib/jt9a.f90 lib/jt9b.f90 lib/jt9c.f90 ${jt9_CXXSRCS} wsjtx.rc)
 if (${OPENMP_FOUND} OR APPLE)
   if (APPLE)
@@ -840,7 +843,7 @@ install (TARGETS wsjtx
   BUNDLE DESTINATION . COMPONENT runtime
   )
 
-install (TARGETS jt9 jt65code jt9code
+install (TARGETS jt9 jt65code jt9code jt4code
   RUNTIME DESTINATION ${WSJT_BIN_DESTINATION} COMPONENT runtime
   BUNDLE DESTINATION ${WSJT_BIN_DESTINATION} COMPONENT runtime
   )
