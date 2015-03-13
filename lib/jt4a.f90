@@ -16,8 +16,8 @@ subroutine jt4a(dat,jz,nutc)
   mode4=1
   minwidth=1                      !MinW ?
   mycall='K1JT'
-  hiscall='VK7MO'
-  hisgrid='QE37'
+  hiscall='DF2ZC'
+  hisgrid='JO30'
   Nseg=1                          !???
   MouseDF2=0
   NAgain=0

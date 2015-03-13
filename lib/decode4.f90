@@ -1,7 +1,10 @@
 subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
      mycall,hiscall,hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
-! Decodes JT65 data, assuming that DT and DF have already been determined.
+! Decodes JT4 data, assuming that DT and DF have already been determined.
+! Input dat(npts) has already been downsampled by 2: rate = 11025/2.
+! ### NB: this initial downsampling should be removed in WSJT-X, since
+! it restricts the useful bandwidth to < 2.7 kHz.
 
   parameter (MAXAVE=120)
   real dat(npts)                        !Raw data
@@ -11,10 +14,10 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
   character submode*1
   real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
   complex*16 cz,cz1,c0,c1
-  real*4 rsymbol(207,7)
+  real*4 rsymbol(207,7)                 !Accumulated data for message averaging
   real*4 sym(207)
   integer amp
-  integer mettab(-128:127,0:1)             !Metric table
+  integer mettab(-128:127,0:1)          !Metric table
   integer nch(7)
   integer npr2(207)
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
@@ -30,7 +33,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
        1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1/
 
   data nch/1,2,4,9,18,36,72/
-  save mettab,mode0,rsymbol
+  save mettab,mode0,rsymbol,npr2,nch
 
   if(mode.ne.mode0) call getmet4(mettab)
   mode0=mode
@@ -47,18 +50,11 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
   ichbest=-1
 
 ! Should amp be adjusted according to signal strength?
-! Compute soft symbols using differential BPSK demodulation
-  c0=0.                                !### C0=amp ???
+  c0=0.
   k=istart
   phi=0.d0
   phi1=0.d0
 
-!  nw=0.5*width/df
-!  if(nw.gt.mode4) nw=mode4
-!  do ich=1,7
-!     if(nch(ich).ge.nw) exit
-!  enddo
-!  ich1=ich
   ich1=minwidth
   do ich=1,7
      if(nch(ich).le.mode4) ich2=ich
@@ -111,7 +107,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
         endif
      enddo
      
-     call extract4(sym,nadd,ncount,decoded)     !Do the convolutional decode
+     call extract4(sym,ncount,decoded)          !Do the convolutional decode
 
      qual=0.                                    !Now try deep search
      if(ndepth.ge.1) then
@@ -125,11 +121,12 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
 
      if(ncount.ge.0) then
         ichbest=ich
-        go to 100
+        exit
      endif
+
   enddo
 
-100 if(ncount.lt.0) then
+  if(ncount.lt.0) then
      decoded=deepbest
      qual=qbest
   endif

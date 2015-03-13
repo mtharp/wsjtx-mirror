@@ -1,4 +1,4 @@
-subroutine extract4(sym0,nadd,ncount,decoded)
+subroutine extract4(sym0,ncount,decoded)
 
   real sym0(207)
   real sym(207)
@@ -18,10 +18,10 @@ subroutine extract4(sym0,nadd,ncount,decoded)
      first=.false.
   endif
 
+!### Optimize these params: ...
   amp=30.0
   ndelta=50
   limit=50000
-  if(nadd.eq.-999) limit=limit+1         !Silence compiler warning
 
   ave0=sum(sym0)/207.0
   sym=sym0-ave0
@@ -30,27 +30,22 @@ subroutine extract4(sym0,nadd,ncount,decoded)
   sym=sym/rms0
 
   do j=1,207
-!     r=amp*sym(j) + 128.
-!     if(r.gt.255.0) r=255.0
-!     if(r.lt.0.0) r=0.0
-!     i4=nint(r)
-!     if(i4.gt.127) i4=i4-256
      n=nint(amp*sym(j))
      if(n.lt.-127) n=-127
      if(n.gt.127) n=127
      symbol(j)=n
   enddo
 
-  nbits=72+31
+  nbits=72
   ncycles=0
   ncount=-1
   decoded='                      '
-
   call interleave4(symbol(2),-1)          !Remove the interleaving
+  call fano232(symbol(2),nbits+31,mettab,ndelta,limit,data1,     &
+       ncycles,metric,ncount)
+  nlim=ncycles/(nbits+31)
 
-  call fano232(symbol(2),nbits,mettab,ndelta,limit,data1,ncycles,metric,ncount)
-!  nlim=ncycles/nbits
-
+!### Make usage here like that in jt9fano...
   if(ncount.ge.0) then
      do i=1,9
         i4=data1(i)
@@ -64,7 +59,8 @@ subroutine extract4(sym0,nadd,ncount,decoded)
 
      call unpackmsg(data4,decoded)
      if(decoded(1:6).eq.'000AAA') then
-        decoded='***WRONG MODE?***'
+!        decoded='***WRONG MODE?***'
+        decoded='                      '
         ncount=-1
      endif
   endif

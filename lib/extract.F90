@@ -6,7 +6,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 !   nqd      0/1 to indicate decode attempt at QSO frequency
 
 ! Output:
-!   ncount   number of symbols requiring correction
+!   ncount   number of symbols requiring correction (-1 for no KV decode)
 !   nhist    maximum number of identical symbol values
 !   decoded  decoded message (if ncount >=0)
 !   ltext    true if decoded message is free text
