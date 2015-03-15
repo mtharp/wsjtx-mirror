@@ -62,8 +62,8 @@ subroutine decoder(ss,id2,nfsample)
      nf1=nfa
      nf2=nfb
      call timer('jt65a   ',0)
-     call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,   &
-          nsubmode,nagain,ndecoded)
+     call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nsubmode,      &
+          nagain,ndecoded)
      call timer('jt65a   ',1)
 
   else if(nmode.eq.9 .or. (nmode.eq.(65+9) .and. ntxmode.eq.9)) then
@@ -81,7 +81,8 @@ subroutine decoder(ss,id2,nfsample)
         nf1=nfa
         nf2=nfb
         call timer('jt65a   ',0)
-        call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nagain,ndecoded)
+        call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nsubmode,   &
+             nagain,ndecoded)
         call timer('jt65a   ',1)
      else
         call timer('decjt9  ',0)

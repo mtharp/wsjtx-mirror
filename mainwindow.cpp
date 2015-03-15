@@ -2586,14 +2586,13 @@ void MainWindow::on_actionJT65_triggered()
     ui->MinW_comboBox->setCurrentIndex(0);
     ui->submodeComboBox->setCurrentIndex(0);
   }
-  if(m_MinW>m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
+  if(m_MinW > m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
 }
 
 void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
-  //  if(m_modeTx!="JT9") on_pbTxMode_clicked();
-  m_nSubMode=0;
+  m_nSubMode=0;                    //Dual-mode always means JT9 and JT65A
   statusChanged();
   m_TRperiod=60;
   m_nsps=6912;
@@ -2638,7 +2637,7 @@ void MainWindow::on_actionJT4_triggered()
   ui->submodeComboBox->setItemText(4,"Submode:  JT4E");
   ui->submodeComboBox->setItemText(5,"Submode:  JT4F");
   ui->submodeComboBox->setItemText(6,"Submode:  JT4G");
-  if(m_MinW>m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
+  if(m_MinW > m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
