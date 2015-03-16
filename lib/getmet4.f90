@@ -1,4 +1,4 @@
-subroutine getmet4(mettab)
+subroutine getmet4(mettab,ndelta)
 
 ! Return appropriate metric table for soft-decision convolutional decoder.
 
@@ -42,9 +42,12 @@ subroutine getmet4(mettab)
   save
 
   bias=0.5
-  scale=10.0
+  scale=50
+  ndelta=nint(3.4*scale)
   do i=0,255
-     mettab(i-128,0)=nint(scale*(xx0(i)-bias))
+     xx=xx0(i)
+     if(i.ge.160) xx=xx0(160) - (i-160)*6.822/65.3
+     mettab(i-128,0)=nint(scale*(xx-bias))
      if(i.ge.1) mettab(128-i,1)=mettab(i-128,0)
   enddo
   mettab(-128,1)=mettab(-127,1)

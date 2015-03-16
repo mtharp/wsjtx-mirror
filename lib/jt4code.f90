@@ -4,97 +4,46 @@ program jt4code
 ! convolutional encoding, and other necessary details of the JT4
 ! protocol.
 
-  character*22 msg0,msg,decoded
-  character*72 c72
-  integer   dgen(12)
-  integer*1 symbol(216)
-  integer*1 data1(13)                   !Decoded data (8-bit bytes)
-  integer   data4a(9)                   !Decoded data (8-bit bytes)
-  integer   data4(12)                   !Decoded data (6-bit bytes)
-  integer mettab(-128:127,0:1)          !Metric table
-  integer ncode(206)
+  character*22 msg,decoded,bad*1,msgtype*13
   integer i4tone(206)
-  integer npr(207)
-  data npr/                                                         &
-       0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0, &
-       0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0, &
-       1,0,0,1,0,0,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,1,1,1,0,1,1,0,0,1, &
-       0,0,0,1,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1,0,1,0,1, &
-       0,1,1,1,0,0,1,0,1,1,0,1,1,1,1,0,0,0,0,1,1,0,1,1,0,0,0,1,1,1, &
-       0,1,1,1,0,1,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,1,0,0,0,1,1,1,1,1, &
-       1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1/
-
+  include 'testmsg.f90'
+  include 'jt4sync.f90'
 
   nargs=iargc()
   if(nargs.ne.1) then
-     print*,'Usage: JT4code "message"'
+     print*,'Usage: jt4code "message"'
+     print*,'       jt4code -t'
      go to 999
   endif
-  call getmet4(mettab)
-  call getarg(1,msg0)                     !Get message from command line
-  msg=msg0
 
-  call packmsg(msg,dgen,itype)     !Pack 72-bit message into 12 six-bit symbols
-  write(*,1020) msg0
-1020 format('Message:   ',a22)            !Echo input message
-  if(iand(dgen(10),8).ne.0) write(*,1030) !Is the plain text bit set?
-1030 format('Plain text.')         
-  write(*,1040) dgen
-1040 format(/'Source-encoded message, 6-bit symbols: '/12i3)
-  write(*,1041) dgen
-1041 format(/'Source-encoded message, 72 bits: '/12b6.6)
+  call getarg(1,msg)
+  nmsg=1
+  if(msg(1:2).eq."-t") nmsg=NTEST
 
-  call encode4(msg,ncode)
-  symbol(1:206)=ncode
-  call interleave4(symbol,-1)         !Remove interleaving
+  write(*,1010)
+1010 format("     Message                 Decoded                Err? Type"/   &
+            74("-"))
+  do imsg=1,nmsg
+     if(nmsg.gt.1) msg=testmsg(imsg)
+     call fmtmsg(msg,iz)                !To upper case, collapse multiple blanks
+     ichk=0
+     call gen4(msg,ichk,decoded,i4tone,itype)
 
-  write(*,1050) symbol(1:206)
-1050 format(/'Encoded information before interleaving, 206 bits:'/(70i1))
+     msgtype=""
+     if(itype.eq.1) msgtype="Std Msg"
+     if(itype.eq.2) msgtype="Type 1 prefix"
+     if(itype.eq.3) msgtype="Type 1 suffix"
+     if(itype.eq.4) msgtype="Type 2 prefix"
+     if(itype.eq.5) msgtype="Type 2 suffix"
+     if(itype.eq.6) msgtype="Free text"
 
-  write(*,1051) ncode(1:206)
-1051 format(/'Encoded information after interleaving, 206 bits:'/(70i1))
-
-  do i=1,206                          !Compute channel symbols, sync+2*data
-     ncode(i)=2*ncode(i)+npr(i+1)
+     bad=" "
+     if(decoded.ne.msg) bad="*"
+     write(*,1020) imsg,msg,decoded,bad,itype,msgtype
+1020 format(i2,'.',2x,a22,2x,a22,3x,a1,i3,": ",a13)
   enddo
 
-  write(*,1052) npr(2:207)
-1052 format(/'Sync vector, 206 bits:'/(70i1))
-
-  write(*,1060) ncode(1:206)
-1060 format(/'Channel symbols, 206 x 4-FSK symbols:'/(70i1))
-
-  do i=1,206
-     if(symbol(i).eq.1) then
-        symbol(i)=-118
-     else
-        symbol(i)=118
-     endif
-  enddo
-
-  nbits=72+31
-  ndelta=50
-  limit=100
-  call fano232(symbol,nbits,mettab,ndelta,limit,data1,ncycles,metric,ncount)
-
-  if(ncount.ge.0) then
-     do i=1,9
-        i4=data1(i)
-        if(i4.lt.0) i4=i4+256
-        data4a(i)=i4
-     enddo
-     write(c72,1100) (data4a(i),i=1,9)
-1100 format(9b8.8)
-     read(c72,1102) data4
-1102 format(12b6)
-     call unpackmsg(data4,decoded)
-     write(*,1070) decoded
-1070 format(/'Decoded message: ',a22)
-  endif
-
-  print*,'A'
-  call gen4(msg0,0,msgsent,i4tone,itype)
-  print*,'msgsent'
-  write(*,1060) i4tone(1:206)
+  if(nmsg.eq.1) write(*,1030) i4tone
+1030 format(/'Channel symbols'/(30i2))
 
 999 end program jt4code
