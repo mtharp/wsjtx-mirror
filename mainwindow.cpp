@@ -35,8 +35,8 @@
 #include "ui_mainwindow.h"
 #include "moc_mainwindow.cpp"
 
-int volatile itone[NUM_JT65_SYMBOLS];	//Audio tones for all Tx symbols
-int volatile icw[NUM_CW_SYMBOLS];	//Dits for CW ID
+int volatile itone[NUM_JT4_SYMBOLS];	//Audio tones for all Tx symbols
+int volatile icw[NUM_CW_SYMBOLS];	    //Dits for CW ID
 
 int outBufSize;
 int rc;
@@ -1608,6 +1608,13 @@ void MainWindow::guiUpdate()
     //    ba2msg(ba,msgsent);
     int len1=22;
     int ichk=0,itype=0;
+    if(m_modeTx=="JT4") gen4_(message
+                                , &ichk
+                                , msgsent
+                                , const_cast<int *> (itone)
+                                , &itype
+                                , len1
+                                , len1);
     if(m_modeTx=="JT9") genjt9_(message
                                 , &ichk
                                 , msgsent
@@ -3106,14 +3113,17 @@ void MainWindow::rigFailure (QString const& reason, QString const& detail)
 
 void MainWindow::transmit (double snr)
 {
-  if (m_modeTx == "JT65")
-    {
-      Q_EMIT sendMessage (NUM_JT65_SYMBOLS, 4096.0 * 12000.0 / 11025.0, ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (), true, snr);
-    }
-  else
-    {
-      Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps, ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (), true, snr);
-    }
+  if (m_modeTx == "JT65") Q_EMIT sendMessage (NUM_JT65_SYMBOLS,
+           4096.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
+           m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
+           true, snr);
+  if (m_modeTx == "JT9") Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps,
+           ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing,
+           &m_soundOutput, m_config.audio_output_channel (), true, snr);
+  if (m_modeTx == "JT4") Q_EMIT sendMessage (NUM_JT4_SYMBOLS,
+           2520.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
+           m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
+           true, snr);
 }
 
 void MainWindow::on_outAttenuation_valueChanged (int a)

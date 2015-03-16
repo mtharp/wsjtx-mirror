@@ -24,8 +24,6 @@ subroutine jt4a(dat,jz,nutc,mycall,mygrid,hiscall,hisgrid)
   lumsg=6                         !### temp ? ###
   ndiag=1
 
-  write(78,*) 'a',datetime,mycall,mygrid,hiscall,hisgrid; flush(78)
-
 ! Lowpass filter and decimate by 2
   call lpf1(dat,jz,jz2)
   nadd=1

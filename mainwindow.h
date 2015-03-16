@@ -29,12 +29,13 @@
 #include "Modulator.hpp"
 #include "decodedtext.h"
 
+#define NUM_JT4_SYMBOLS 206
 #define NUM_JT65_SYMBOLS 126
 #define NUM_JT9_SYMBOLS 85
 #define NUM_CW_SYMBOLS 250
 #define TX_SAMPLE_RATE 48000
 
-extern int volatile itone[NUM_JT65_SYMBOLS]; //Audio tones for all Tx symbols
+extern int volatile itone[NUM_JT4_SYMBOLS];   //Audio tones for all Tx symbols
 extern int volatile icw[NUM_CW_SYMBOLS];	    //Dits for CW ID
 
 //--------------------------------------------------------------- MainWindow
@@ -408,6 +409,9 @@ extern "C" {
   //----------------------------------------------------- C and Fortran routines
   void symspec_(int* k, int* ntrperiod, int* nsps, int* ingain,
                 float* px, float s[], float* df3, int* nhsym, int* npts8);
+
+  void gen4_(char* msg, int* ichk, char* msgsent, int itone[],
+               int* itext, int len1, int len2);
 
   void genjt9_(char* msg, int* ichk, char* msgsent, int itone[],
                int* itext, int len1, int len2);
