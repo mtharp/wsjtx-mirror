@@ -47,7 +47,7 @@ wchar_t buffer[256];
 namespace
 {
   Radio::Frequency constexpr default_frequency {14076000};
-  QRegExp message_alphabet {"[- A-Za-z0-9+./?]*"};
+  QRegExp message_alphabet {"[- A-Za-z0-9+./?#]*"};
 }
 
 class BandAndFrequencyItemDelegate final
@@ -1549,8 +1549,7 @@ void MainWindow::guiUpdate()
   }
 
   if(m_auto or m_tune) {
-
-    QFile f(m_config.temp_dir ().absoluteFilePath ("txboth"));
+    QFile f(m_appDir + "/txboth");
     if(f.exists() and fmod(tsec,m_TRperiod) < (1.0 + 85.0*m_nsps/12000.0)) {
       bTxTime=true;
     }
