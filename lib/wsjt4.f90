@@ -102,7 +102,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      cooo='O ?'
   endif
 
-  call decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
+  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minwidth,            &
        mycall,hiscall,hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
 
 200 kvqual=0

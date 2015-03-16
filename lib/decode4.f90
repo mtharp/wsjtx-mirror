@@ -1,4 +1,4 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
+subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minwidth,   &
      mycall,hiscall,hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT4 data, assuming that DT and DF have already been determined.
@@ -17,26 +17,13 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
   real*4 rsymbol(207,7)                 !Accumulated data for message averaging
   real*4 sym(207)
   integer amp
-  integer mettab(-128:127,0:1)          !Metric table
   integer nch(7)
-  integer npr2(207)
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
-  data mode0/-999/
   data rsymbol/1449*0.0/
-  data npr2/                                                         &
-       0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0,  &
-       0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0,  &
-       1,0,0,1,0,0,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,1,1,1,0,1,1,0,0,1,  &
-       0,0,0,1,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1,0,1,0,1,  &
-       0,1,1,1,0,0,1,0,1,1,0,1,1,1,1,0,0,0,0,1,1,0,1,1,0,0,0,1,1,1,  &
-       0,1,1,1,0,1,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,1,0,0,0,1,1,1,1,1,  &
-       1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1/
-
+  include 'jt4sync.f90'
   data nch/1,2,4,9,18,36,72/
-  save mettab,mode0,rsymbol,npr2,nch
+  save rsymbol,npr,nch
 
-  if(mode.ne.mode0) call getmet4(mettab)
-  mode0=mode
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)
   df=11025.d0/2520.d0       !Tone separation for JT4A mode
@@ -69,11 +56,11 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode,mode4,ndepth,neme,minwidth,   &
      fac2=1.e-8 * sqrt(float(mode4))
      do j=1,nsym+1
         if(flip.gt.0.0) then
-           f0=1270.46 + dfx + (npr2(j)-1.5)*mode4*df
-           f1=1270.46 + dfx + (2+npr2(j)-1.5)*mode4*df
+           f0=1270.46 + dfx + (npr(j)-1.5)*mode4*df
+           f1=1270.46 + dfx + (2+npr(j)-1.5)*mode4*df
         else
-           f0=1270.46 + dfx + (1-npr2(j)-1.5)*mode4*df
-           f1=1270.46 + dfx + (3-npr2(j)-1.5)*mode4*df
+           f0=1270.46 + dfx + (1-npr(j)-1.5)*mode4*df
+           f1=1270.46 + dfx + (3-npr(j)-1.5)*mode4*df
         endif
         dphi=twopi*dt*f0
         dphi1=twopi*dt*f1

@@ -8,19 +8,18 @@ subroutine extract4(sym0,ncount,decoded)
   integer*1 data1(13)                   !Decoded data (8-bit bytes)
   integer   data4a(9)                   !Decoded data (8-bit bytes)
   integer   data4(12)                   !Decoded data (6-bit bytes)
-  integer mettab(-128:127,0:1)             !Metric table
+  integer mettab(-128:127,0:1)          !Metric table
   logical first
   data first/.true./
-  save first,mettab
+  save first,mettab,ndelta
 
   if(first) then
-     call getmet4(mettab)
+     call getmet4(mettab,ndelta)
      first=.false.
   endif
 
 !### Optimize these params: ...
   amp=30.0
-  ndelta=50
   limit=50000
 
   ave0=sum(sym0)/207.0
