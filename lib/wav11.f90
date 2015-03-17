@@ -1,13 +1,13 @@
 subroutine wav11(d2,npts,dd)
 
-! Convert i*2 data sampled at 12000 Hz to i*2 sampled at 11025 Hz.
+! Convert i*2 data sampled at 12000 Hz to r*4 sampled at 11025 Hz.
 
   parameter (NZ11=60*11025,NZ12=60*12000)
   parameter (NFFT1=64*12000,NFFT2=64*11025)
   integer*2 d2(NZ12)
-  real*4 dd(NZ12)
+  real*4 dd(NZ11)
   real x(NFFT2)
-  complex cx(0:NFFT2/2)
+  complex cx(0:NFFT1/2)
   equivalence (x,cx)
   save x,cx
 

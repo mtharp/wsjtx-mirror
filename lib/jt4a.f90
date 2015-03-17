@@ -28,7 +28,6 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
 
 ! Lowpass filter and decimate by 2
   call lpf1(dd,jz,dat,jz2)
-  nadd=1
 
   i=index(MyCall,char(0))
   if(i.le.0) i=index(MyCall,' ')

@@ -452,8 +452,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_config.transceiver_online (true);
   on_monitorButton_clicked (!m_config.monitor_off_at_startup ());
 
-  ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
-  ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
+  bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
+  ui->submodeComboBox->setVisible(b);
+  ui->MinW_comboBox->setVisible(b);
+
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
