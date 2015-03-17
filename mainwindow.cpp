@@ -543,6 +543,7 @@ void MainWindow::readSettings()
   m_modeTx=m_settings->value("ModeTx","JT9").toString();
   if(m_modeTx.mid(0,3)=="JT9") ui->pbTxMode->setText("Tx JT9  @");
   if(m_modeTx=="JT65") ui->pbTxMode->setText("Tx JT65  #");
+  if(m_modeTx=="JT4") ui->pbTxMode->setText("Tx JT4");
   ui->actionNone->setChecked(m_settings->value("SaveNone",true).toBool());
   ui->actionSave_decoded->setChecked(m_settings->value(
                                                        "SaveDecoded",false).toBool());
@@ -1961,24 +1962,20 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
       return;
     }
 
-  // only allow automatic mode changes when not transmitting
-  if (!m_transmitting)
-    {
+  // only allow automatic mode changes between JT9 and JT65, and when not transmitting
+  if (!m_transmitting and m_mode != "JT4") {
       if (decodedtext.isJT9())
         {
           m_modeTx="JT9";
           ui->pbTxMode->setText("Tx JT9  @");
           m_wideGraph->setModeTx(m_modeTx);
-        }
-      else if (decodedtext.isJT65())
-        {
+        } else if (decodedtext.isJT65()) {
           m_modeTx="JT65";
           ui->pbTxMode->setText("Tx JT65  #");
           m_wideGraph->setModeTx(m_modeTx);
         }
-    }
-  else if ((decodedtext.isJT9 () && m_modeTx != "JT9") || (decodedtext.isJT65 () && m_modeTx != "JT65"))
-    {
+    } else if ((decodedtext.isJT9 () && m_modeTx != "JT9") ||
+               (decodedtext.isJT65 () && m_modeTx != "JT65")) {
       // if we are not allowing mode change then don't process decode
       return;
     }

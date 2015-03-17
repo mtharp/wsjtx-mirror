@@ -110,7 +110,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   nqual=qual
   if(nqual.ge.nq1 .and.kvqual.eq.0) decoded=deepmsg
 
-  ndf=nint(dfx)
+  ndf=nint(dfx - 1.5*mode4*11025.0/2520.0)
   if(flip.lt.0.0 .and. (kvqual.eq.1 .or. nqual.ge.nq2)) cooo='OOO'
   if(kvqual.eq.0.and.nqual.ge.nq1.and.nqual.lt.nq2) cooo(2:3)=' ?'
   if(index(decoded,'-').ge.9) cooo='   '
