@@ -21,10 +21,9 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   character*6 hisgrid
   character submode*1
   real*4 ccfbluesum(-5:540),ccfredsum(-224:224)
-  integer nch(7)
+  include 'jt4sync.f90'
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
   data first/.true./,ns10/0/,ns20/0/
-  data nch/1,2,4,9,18,36,72/
   save
 
   if(first) then

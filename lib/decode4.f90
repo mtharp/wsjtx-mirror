@@ -17,11 +17,9 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minwidth,   &
   real*4 rsymbol(207,7)                 !Accumulated data for message averaging
   real*4 sym(207)
   integer amp
-  integer nch(7)
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
   data rsymbol/1449*0.0/
   include 'jt4sync.f90'
-  data nch/1,2,4,9,18,36,72/
   save rsymbol,npr,nch
 
   twopi=8*atan(1.d0)

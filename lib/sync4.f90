@@ -17,10 +17,9 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
   real tmp(1260)
   integer ipk1(1)
-  integer nch(7)
   logical savered
   equivalence (ipk1,ipk1a)
-  data nch/1,2,4,9,18,36,72/
+  include 'jt4sync.f90'
   save
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 

@@ -7,8 +7,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   character decoded*22,deepmsg*22,deepbest*22
   character mycall*12,hiscall*12,hisgrid*6
   real sym(207,7)
-  integer nch(7)
-  data nch/1,2,4,9,18,36,72/
+  include 'jt4sync.f90'
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
 
 ! Count the available spectra for this Monitor segment (mseg=1 or 2),

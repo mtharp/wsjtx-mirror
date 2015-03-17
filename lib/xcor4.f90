@@ -11,29 +11,9 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real a(NSMAX)
   real ccf(-5:540)
-  integer nch(7)
-  integer npr2(207)
-  real pr2(207)
-  logical first
   data lagmin/0/                    !Silence compiler warning
-  data first/.true./
-  data npr2/                                                        &
-       0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0, &
-       0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0, &
-       1,0,0,1,0,0,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,1,1,1,0,1,1,0,0,1, &
-       0,0,0,1,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1,0,1,0,1, &
-       0,1,1,1,0,0,1,0,1,1,0,1,1,1,1,0,0,0,0,1,1,0,1,1,0,0,0,1,1,1, &
-       0,1,1,1,0,1,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,1,0,0,0,1,1,1,1,1, &
-       1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1/
-  data nch/1,2,4,9,18,36,72/
+  include 'jt4sync.f90'
   save
-
-  if(first) then
-     do i=1,207
-        pr2(i)=2*npr2(i)-1
-     enddo
-     first=.false.
-  endif
 
   ccfmax=0.
   ccfmin=0.
@@ -65,7 +45,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
      x=0.
      do i=1,nsym
         j=2*i-1+lag
-        if(j.ge.1 .and. j.le.nsteps) x=x+a(j)*pr2(i)
+        if(j.ge.1 .and. j.le.nsteps) x=x+a(j)*float(2*npr(i)-1)
      enddo
      ccf(lag)=2*x                        !The 2 is for plotting scale
      if(ccf(lag).gt.ccfmax) then
