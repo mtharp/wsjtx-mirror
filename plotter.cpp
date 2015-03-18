@@ -90,7 +90,8 @@ void CPlotter::draw(float swide[])             //draw()
   int j,j0,y2;
   float y;
 
-  double gain = pow(10.0,0.05*m_plotGain);
+  double gain = pow(10.0,0.02*m_plotGain);
+  double gain2d = pow(10.0,0.02*(m_plot2dGain));
 
 //move current data down one line (must do this before attaching a QPainter object)
   m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
@@ -114,26 +115,30 @@ void CPlotter::draw(float swide[])             //draw()
   flat4_(swide,&iz,&m_Flatten);
   flat4_(&jt9com_.savg[j0],&jz,&m_Flatten);
 
+  float ymin=1.e30;
   for(int i=0; i<iz; i++) {
     y=swide[i];
+    if(y<ymin) ymin=y;
     int y1 = 10.0*gain*y + 10*m_plotZero +40;
     if (y1<0) y1=0;
     if (y1>254) y1=254;
     if (swide[i]>1.e29) y1=255;
     painter1.setPen(m_ColorTbl[y1]);
     painter1.drawPoint(i,0);
+  }
 
+  for(int i=0; i<iz; i++) {
+    y=swide[i] - ymin;
     y2=0;
-    if(m_bCurrent) y2 = gain*y - 15;
-
+    if(m_bCurrent) y2 = gain2d*y + m_plot2dZero - 25;
     if(m_bCumulative) {
       float sum=0.0;
       int j=j0+m_binsPerPixel*i;
       for(int k=0; k<m_binsPerPixel; k++) {
         sum+=jt9com_.savg[j++];
       }
-      y2=1.3*gain*sum/m_binsPerPixel + m_plotZero - 15;
-      if(m_Flatten==0) y2 += 40;
+      y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero - 15;
+      if(m_Flatten==0) y2 += 40;                  //### could do better! ###
     }
 
     if(m_bLinearAvg) {
@@ -142,7 +147,7 @@ void CPlotter::draw(float swide[])             //draw()
       for(int k=0; k<m_binsPerPixel; k++) {
         sum+=jt9w_.syellow[j++];
       }
-      y2=gain*sum/m_binsPerPixel * (m_h/50.0) - 20.0;
+      y2=0.2*gain2d*sum/m_binsPerPixel * (m_h/50.0) + m_plot2dZero - 20.0;
     }
 
     if(i==iz-1) painter2D.drawPolyline(LineBuf,j);
@@ -355,6 +360,26 @@ void CPlotter::setPlotGain(int plotGain)                  //setPlotGain()
 int CPlotter::getPlotGain()                               //getPlotGain()
 {
   return m_plotGain;
+}
+
+int CPlotter::getPlot2dGain()
+{
+  return m_plot2dGain;
+}
+
+void CPlotter::setPlot2dGain(int plot2dGain)
+{
+  m_plot2dGain=plot2dGain;
+}
+
+int CPlotter::getPlot2dZero()
+{
+  return m_plot2dZero;
+}
+
+void CPlotter::setPlot2dZero(int plot2dZero)
+{
+  m_plot2dZero=plot2dZero;
 }
 
 void CPlotter::setStartFreq(int f)                    //SetStartFreq()

@@ -38,6 +38,10 @@ public:
   int  getPlotZero();
   void setPlotGain(int plotGain);
   int  getPlotGain();
+  int getPlot2dGain();
+  void setPlot2dGain(int plot2dGain);
+  int getPlot2dZero();
+  void setPlot2dZero(int plot2dZero);
   void setStartFreq(int f);
   int startFreq();
   int  plotWidth();
@@ -100,6 +104,8 @@ private:
 
   qint32  m_plotZero;
   qint32  m_plotGain;
+  qint32  m_plot2dGain;
+  qint32  m_plot2dZero;
   qint32  m_nSpan;
   qint32  m_binsPerPixel;
   qint32  m_w;

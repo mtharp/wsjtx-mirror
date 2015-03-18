@@ -60,19 +60,23 @@ protected:
 private slots:
   void on_waterfallAvgSpinBox_valueChanged(int arg1);
   void on_freqSpanSpinBox_valueChanged(int arg1);
-  void on_zeroSpinBox_valueChanged(int arg1);
-  void on_gainSpinBox_valueChanged(int arg1);
   void on_spec2dComboBox_currentIndexChanged(const QString &arg1);
   void on_fMinSpinBox_valueChanged(int n);
   void on_fStartSpinBox_valueChanged(int n);
   void on_paletteComboBox_activated(const QString &palette);
   void on_cbFlatten_toggled(bool b);
   void on_adjust_palette_push_button_clicked (bool);
+  void on_gainSlider_valueChanged(int value);
+  void on_zeroSlider_valueChanged(int value);
+  void on_gain2dSlider_valueChanged(int value);
+  void on_zero2dSlider_valueChanged(int value);
 
 private:
   void   readPalette();
 
-  QScopedPointer<Ui::WideGraph> ui;
+//  QScopedPointer<Ui::WideGraph> ui;
+  Ui::WideGraph *ui;
+
   QSettings * m_settings;
   QDir m_palettes_path;
   WFPalette m_userPalette;

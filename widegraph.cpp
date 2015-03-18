@@ -44,8 +44,12 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   restoreGeometry (m_settings->value ("geometry", saveGeometry ()).toByteArray ());
   ui->widePlot->setPlotZero(m_settings->value("PlotZero", 0).toInt());
   ui->widePlot->setPlotGain(m_settings->value("PlotGain", 0).toInt());
-  ui->zeroSpinBox->setValue(ui->widePlot->getPlotZero());
-  ui->gainSpinBox->setValue(ui->widePlot->getPlotGain());
+  ui->widePlot->setPlot2dGain(m_settings->value("Plot2dGain", 0).toInt());
+  ui->widePlot->setPlot2dZero(m_settings->value("Plot2dZero", 0).toInt());
+  ui->zeroSlider->setValue(ui->widePlot->getPlotZero());
+  ui->gainSlider->setValue(ui->widePlot->getPlotGain());
+  ui->gain2dSlider->setValue(ui->widePlot->getPlot2dGain());
+  ui->zero2dSlider->setValue(ui->widePlot->getPlot2dZero());
   int n = m_settings->value("FreqSpan",2).toInt();
   m_bFlatten=m_settings->value("Flatten",true).toBool();
   ui->cbFlatten->setChecked(m_bFlatten);
@@ -112,6 +116,8 @@ void WideGraph::saveSettings()
   m_settings->setValue ("geometry", saveGeometry ());
   m_settings->setValue ("PlotZero", ui->widePlot->getPlotZero());
   m_settings->setValue ("PlotGain", ui->widePlot->getPlotGain());
+  m_settings->setValue ("Plot2dGain", ui->widePlot->getPlot2dGain());
+  m_settings->setValue ("Plot2dZero", ui->widePlot->getPlot2dZero());
   m_settings->setValue ("PlotWidth", ui->widePlot->plotWidth ());
   m_settings->setValue ("FreqSpan", ui->freqSpanSpinBox->value ());
   m_settings->setValue ("WaterfallAvg", ui->waterfallAvgSpinBox->value ());
@@ -181,16 +187,6 @@ void WideGraph::on_freqSpanSpinBox_valueChanged(int n)
 void WideGraph::on_waterfallAvgSpinBox_valueChanged(int n)
 {
   m_waterfallAvg = n;
-}
-
-void WideGraph::on_zeroSpinBox_valueChanged(int value)
-{
-  ui->widePlot->setPlotZero(value);
-}
-
-void WideGraph::on_gainSpinBox_valueChanged(int value)
-{
-  ui->widePlot->setPlotGain(value);
 }
 
 void WideGraph::keyPressEvent(QKeyEvent *e)
@@ -390,4 +386,24 @@ void WideGraph::on_adjust_palette_push_button_clicked (bool)
 bool WideGraph::flatten()
 {
   return m_bFlatten;
+}
+
+void WideGraph::on_gainSlider_valueChanged(int value)
+{
+  ui->widePlot->setPlotGain(value);
+}
+
+void WideGraph::on_zeroSlider_valueChanged(int value)
+{
+  ui->widePlot->setPlotZero(value);
+}
+
+void WideGraph::on_gain2dSlider_valueChanged(int value)
+{
+  ui->widePlot->setPlot2dGain(value);
+}
+
+void WideGraph::on_zero2dSlider_valueChanged(int value)
+{
+  ui->widePlot->setPlot2dZero(value);
 }
