@@ -140,7 +140,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minw,    &
 
   dt=2.0/11025.0
   istart=xlag*nq
-  dtx=istart*dt
+  dtx=istart*dt + 0.2
   ccfred1=0.
   jmin=max(jmin,-224)
   jmax=min(jmax,224)
