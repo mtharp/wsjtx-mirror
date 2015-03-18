@@ -57,8 +57,9 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_Size = size();
     m_w = m_Size.width();
     m_h = m_Size.height();
-    m_h1 = (100-m_Percent2DScreen)*(m_Size.height())/100;
-    m_h2 = (m_Percent2DScreen)*(m_Size.height())/100;
+    m_h2 = (m_Percent2DScreen)*(m_h)/100;
+    if(m_h2>100) m_h2=100;
+    m_h1=m_h-m_h2;
 
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
     m_2DPixmap.fill(Qt::black);
@@ -127,32 +128,37 @@ void CPlotter::draw(float swide[])             //draw()
     painter1.drawPoint(i,0);
   }
 
+  float y2min=1.e30;
+  float y2max=-1.e30;
   for(int i=0; i<iz; i++) {
     y=swide[i] - ymin;
     y2=0;
-    if(m_bCurrent) y2 = gain2d*y + m_plot2dZero - 25;
-    if(m_bCumulative) {
+    if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;       //Current
+
+    if(m_bCumulative) {                                     //Cumulative
       float sum=0.0;
       int j=j0+m_binsPerPixel*i;
       for(int k=0; k<m_binsPerPixel; k++) {
         sum+=jt9com_.savg[j++];
       }
-      y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero - 15;
+      y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero;
       if(m_Flatten==0) y2 += 40;                  //### could do better! ###
     }
 
-    if(m_bLinearAvg) {
+    if(m_bLinearAvg) {                                      //Linear Avg
       float sum=0.0;
       int j=j0+m_binsPerPixel*i;
       for(int k=0; k<m_binsPerPixel; k++) {
         sum+=jt9w_.syellow[j++];
       }
-      y2=0.2*gain2d*sum/m_binsPerPixel * (m_h/50.0) + m_plot2dZero - 20.0;
+      y2=gain2d*sum/m_binsPerPixel + m_plot2dZero;
     }
 
     if(i==iz-1) painter2D.drawPolyline(LineBuf,j);
     LineBuf[j].setX(i);
-    LineBuf[j].setY(m_h-(y2+0.8*m_h));
+    LineBuf[j].setY(0.9*m_h2-y2*m_h2/70.0);
+    if(y2<y2min) y2min=y2;
+    if(y2>y2max) y2max=y2;
     j++;
   }
 
