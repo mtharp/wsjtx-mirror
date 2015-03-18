@@ -1315,6 +1315,7 @@ void MainWindow::decode()                                       //decode()
   }
   jt9com_.ntrperiod=m_TRperiod;
   jt9com_.nsubmode=m_nSubMode;
+  jt9com_.minw=m_MinW;
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);
   strncpy(jt9com_.mycall, m_config.my_callsign().toLatin1(),12);
   strncpy(jt9com_.mygrid, m_config.my_grid().toLatin1(),6);
@@ -3161,7 +3162,8 @@ void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
 
 void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
 {
-  m_MinW=n;
+  m_MinW=qMin(n,m_nSubMode);
+  ui->MinW_comboBox->setCurrentIndex(m_MinW);
 }
 
 void MainWindow::on_submodeComboBox_currentIndexChanged(int n)

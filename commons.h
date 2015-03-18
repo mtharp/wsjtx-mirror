@@ -26,6 +26,7 @@ extern struct FortranCommon {
   int ndepth;
   int ntxmode;
   int nmode;
+  int minw;
   char datetime[20];
   char mycall[12];
   char mygrid[6];
