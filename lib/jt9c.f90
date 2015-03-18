@@ -4,10 +4,10 @@ subroutine jt9c(ss,savg,id2,nparams0)
   real*4 ss(184*NSMAX),savg(NSMAX)
   integer*2 id2(NTMAX*12000)
 
-  integer nparams0(31),nparams(31)
+  integer nparams0(32),nparams(32)
   character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfsplit,nfb,   &
-       ntol,kin,nzhsym,nsave,nagain,ndepth,ntxmode,nmode,datetime,          &
+       ntol,kin,nzhsym,nsave,nagain,ndepth,ntxmode,nmode,minw,datetime,     &
        mycall,mygrid,hiscall,hisgrid
 
   common/patience/npatience,nthreads

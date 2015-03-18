@@ -8,12 +8,10 @@ subroutine decoder(ss,id2,nfsample)
   logical baddata
   integer*2 id2(NTMAX*12000)
   real*4 dd(NTMAX*12000)
-
   character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfsplit,nfb,    &
-       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,datetime,        &
+       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,minw,datetime,   &
        mycall,mygrid,hiscall,hisgrid
-
   common/tracer/limtrace,lu
   integer onlevel(0:10)
   common/tracer_priv/level,onlevel
@@ -40,7 +38,7 @@ subroutine decoder(ss,id2,nfsample)
         if(nfsample.eq.11025) dd(1:jz)=id2(1:jz)
      endif
      call jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol,nagain,ndepth,      &
-          nsubmode,mycall,mygrid,hiscall,hisgrid)
+          minw,nsubmode,mycall,mygrid,hiscall,hisgrid)
      go to 800
   endif
 

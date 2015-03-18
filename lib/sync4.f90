@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
+subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minw,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -75,7 +75,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minwidth,    &
   ichpk=1
   ipk=1
 
-  do ich=minwidth,7                       !Find best width
+  do ich=minw+1,7                       !Find best width
      kz=nch(ich)/2
      savered=.false.
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF

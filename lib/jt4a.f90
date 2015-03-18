@@ -1,5 +1,5 @@
 subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
-          nsubmode,mycall,mygrid,hiscall,hisgrid)
+          minw,nsubmode,mycall,mygrid,hiscall,hisgrid)
 
   real*4 dd(jz)
   real*4 dat(30*12000)
@@ -9,14 +9,16 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
   character*6 cfile6
   character*12 mycall,hiscall
   character*6 mygrid,hisgrid
+  include 'jt4sync.f90'
 
+  mode4=nch(nsubmode+1)
+!  print*,'A',minw,nsubmode,mode4
+  nsubmode=0
   NClearAve=0
   MinSigdB=0
   ntol=600
   NFreeze=0
   mode=7
-  mode4=1
-  minwidth=1                      !MinW ?
   Nseg=1                          !???
   MouseDF2=nfqso - 1270
 !  NAgain=0
@@ -41,7 +43,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
   cfile6(5:6)='  '
 
   call wsjt4(dat,jz2,cfile6,NClearAve,MinSigdB,                          &
-       ntol,NFreeze,mode,mode4,minwidth,mycall,hiscall,hisgrid,   &
+       ntol,NFreeze,mode,mode4,minw,mycall,hiscall,hisgrid,   &
        Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,nspecial,ndf,     &
        NSyncOK,ccf,psavg,ndiag,ps0)
 

@@ -1,4 +1,4 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minwidth,   &
+subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      mycall,hiscall,hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
 
 ! Decodes JT4 data, assuming that DT and DF have already been determined.
@@ -40,7 +40,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minwidth,   &
   phi=0.d0
   phi1=0.d0
 
-  ich1=minwidth
+  ich1=minw+1
   do ich=1,7
      if(nch(ich).le.mode4) ich2=ich
   enddo

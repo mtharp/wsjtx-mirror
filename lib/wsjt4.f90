@@ -1,5 +1,5 @@
 subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
-     mode,mode4,minwidth,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth, &
+     mode,mode4,minw,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth, &
      neme,idf,lumsg,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
@@ -25,6 +25,8 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
   data first/.true./,ns10/0/,ns20/0/
   save
+
+!  print*,'B',minw,nsubmode,mode4
 
   if(first) then
      nsave=0
@@ -56,7 +58,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
-  call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,mode4,minwidth,  &
+  call sync4(dat,npts,DFTolerance,NFreeze,MouseDF,mode,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
 
 !  do i=-224,224
@@ -101,7 +103,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      cooo='O ?'
   endif
 
-  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minwidth,            &
+  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,                &
        mycall,hiscall,hisgrid,decoded,ncount,deepmsg,qual,ichbest,submode)
 
 200 kvqual=0
