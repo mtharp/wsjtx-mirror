@@ -26,8 +26,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   data first/.true./,ns10/0/,ns20/0/
   save
 
-!  print*,'B',minw,nsubmode,mode4
-
   if(first) then
      nsave=0
      first=.false.
@@ -159,13 +157,13 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 
   if(ns1.ge.1) then                            !Write the average line
      if(ns1.lt.10) write(ave1,1021) cfile6,1,nused1,ns1,avemsg1,nc1,nqual1
-1021 format(a6,i3,i4,'/',i1,21x,a19,i7,i5)
+1021 format(a6,i3,i4,'/',i1,6x,a19,i6,i4)
      if(ns1.ge.10 .and. nsave.le.99) write(ave1,1022) cfile6,        &
           1,nused1,ns1,avemsg1,nc1,nqual1
-1022 format(a6,i3,i4,'/',i2,20x,a19,i7,i5)
+1022 format(a6,i3,i4,'/',i2,5x,a19,i6,i4)
      if(ns1.ge.100) write(ave1,1023) cfile6,1,nused1,ns1,            &
           avemsg1,nc1,nqual1
-1023 format(a6,i3,i4,'/',i3,19x,a19,i7,i5)
+1023 format(a6,i3,i4,'/',i3,4x,a19,i6,i4)
      ns10=ns1
   endif
 
@@ -180,8 +178,8 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 
   if(ave1(31:40).eq.'          ') ave1=ave1(:30)
   if(ave2(31:40).eq.'          ') ave2=ave2(:30)
-  write(12,1011) ave1
-  write(12,1011) ave2
+  write(lumsg,1011) ave1
+  write(lumsg,1011) ave2
   call flush(12)
   
 900 continue

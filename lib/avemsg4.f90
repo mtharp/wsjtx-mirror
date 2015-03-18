@@ -38,7 +38,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
 
   nadd=nused*mode4
   do k=ich1,ich2
-     call extract4(sym(1,k),nadd,ncount,decoded)     !Do the KV decode
+     call extract4(sym(1,k),ncount,decoded)     !Do the Fano decode
      if(ncount.ge.0 .or. nch(k).ge.mode4) exit
   enddo
   if(ncount.lt.0) decoded='                      '
