@@ -308,6 +308,7 @@ set (wsjt_FSRCS
   lib/interleave4.f90
   lib/interleave63.f90
   lib/interleave9.f90
+  lib/jt4.f90
   lib/jt4a.f90
   lib/jt65a.f90
   lib/k2grid.f90

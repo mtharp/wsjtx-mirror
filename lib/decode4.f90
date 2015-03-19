@@ -6,7 +6,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
 ! ### NB: this initial downsampling should be removed in WSJT-X, since
 ! it restricts the useful bandwidth to < 2.7 kHz.
 
-  parameter (MAXAVE=120)
+  use jt4
   real dat(npts)                        !Raw data
   character decoded*22,deepmsg*22,deepbest*22
   character*12 mycall,hiscall
@@ -17,7 +17,6 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
   real*4 rsymbol(207,7)                 !Accumulated data for message averaging
   real*4 sym(207)
   integer amp
-  common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE),ich1,ich2
   data rsymbol/1449*0.0/
   include 'jt4sync.f90'
   save rsymbol,npr,nch

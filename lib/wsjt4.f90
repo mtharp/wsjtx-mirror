@@ -5,7 +5,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
 
-  parameter (MAXAVE=120)
+  use jt4
   real dat(npts)                                     !Raw data
   real*4 ccfblue(-5:540)                             !CCF in time
   real*4 ccfred(-224:224)                            !CCF in frequency
@@ -20,10 +20,8 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   character*12 hiscall
   character*6 hisgrid
   character submode*1
-  real*4 ccfbluesum(-5:540),ccfredsum(-224:224)
   include 'jt4sync.f90'
-  common/ave/ppsave(207,7,MAXAVE),nflag(MAXAVE),nsave,iseg(MAXAVE)
-  data first/.true./,ns10/0/,ns20/0/
+  data first/.true./
   save
 
   if(first) then
@@ -45,14 +43,8 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 
   if(NClearAve.ne.0) then
      nsave=0                        !Clear the averaging accumulators
-     ns10=0
-     ns20=0
      ave1=' '
      ave2=' '
-  endif
-  if(MinSigdB.eq.99 .or. MinSigdB.eq.-99) then
-     ns10=0                         !For Include/Exclude ?
-     ns20=0
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
@@ -125,68 +117,46 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   if(i.le.20) decoded(i+2:)=cooo
 !  if(nqual.lt.6) decoded(22:22)='?'               !### ??? ###
 
-!  write(line,1010) cfile6,nsync,nsnr,dtx-1.0,jdf,nint(width),         &
-!       csync,special,decoded,kvqual,nqual,submode
-!1010 format(a6,i3,i5,f5.1,i5,i4,1x,a1,1x,a5,a22,i4,i5,1x,a1)
-
-!### From decjt9():
-!              write(*,1000) nutc,nsnr,xdt,nint(freq),msg
-!1000          format(i4.4,i4,f5.1,i5,1x,'@',1x,a22)
-
   write(line,1010) cfile6(1:4),nsnr,dtx-0.8,1270+jdf,csync,decoded,    &
        kvqual,nqual,submode
 1010 format(a4,i4,f5.1,i5,1x,a1,1x,a22,i3,i4,1x,a1)
-
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
 
-! Write decoded msg unless this is an "Exclude" request:
-  if(MinSigdB.lt.99) write(lumsg,1011) line
+  write(lumsg,1011) line                       !Write the decoded results
 1011 format(a77)
 
-  if(nsave.ge.1) call avemsg4(1,mode4,ndepth,                        &
-       avemsg1,nused1,nq1,nq2,neme,mycall,hiscall,hisgrid,qual1,ns1,ncount1)
-  if(nsave.ge.1) call avemsg4(2,mode4,ndepth,                        &
-       avemsg2,nused2,nq1,nq2,neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2)
-  nqual1=qual1
-  nqual2=qual2
-  nc1=0
-  nc2=0
-  if(ncount1.ge.0) nc1=1
-  if(ncount2.ge.0) nc2=1
+  if(decoded.eq.'                      ') then
+! Decode failed, try message averaging
+     if(nsave.ge.1) call avemsg4(1,mode4,ndepth,avemsg1,nused1,nq1,nq2,  &
+          neme,mycall,hiscall,hisgrid,qual1,ns1,ncount1)
+     if(nsave.ge.1) call avemsg4(2,mode4,ndepth,avemsg2,nused2,nq1,nq2,  &
+          neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2)
+     nqual1=qual1
+     nqual2=qual2
+     nc1=0
+     nc2=0
+     if(ncount1.ge.0) nc1=nused1
+     if(ncount2.ge.0) nc2=nused2
 
-  if(ns1.ge.1) then                            !Write the average line
-     if(ns1.lt.10) write(ave1,1021) cfile6,1,nused1,ns1,avemsg1,nc1,nqual1
-1021 format(a6,i3,i4,'/',i1,6x,a19,i6,i4)
-     if(ns1.ge.10 .and. nsave.le.99) write(ave1,1022) cfile6,        &
-          1,nused1,ns1,avemsg1,nc1,nqual1
-1022 format(a6,i3,i4,'/',i2,5x,a19,i6,i4)
-     if(ns1.ge.100) write(ave1,1023) cfile6,1,nused1,ns1,            &
-          avemsg1,nc1,nqual1
-1023 format(a6,i3,i4,'/',i3,4x,a19,i6,i4)
-     ns10=ns1
-  endif
+     if(ns1.ge.1) then                            !Write the average line
+        write(ave1,1021) cfile6,avemsg1,nc1,nqual1
+1021    format(a4,4x,'Averaged:',4x,a22,i3,i4,1x,a1)
+!        if(ave1(31:40).eq.'          ') ave1=ave1(:30)
+        if(avemsg1.ne.'                      ') write(lumsg,1011) ave1
+     endif
 
 ! If Monitor segment #2 is available, write that line also
-  if(ns2.ge.1) then
-     if(ns2.lt.10) write(ave2,1021) cfile6,2,nused2,ns2,avemsg2,nc2,nqual2
-     if(ns2.ge.10 .and. nsave.le.99) write(ave2,1022) cfile6,       &
-          2,nused2,ns2,avemsg2,nc2,nqual2
-     if(ns2.ge.100) write(ave2,1023) cfile6,2,nused2,ns2,avemsg2,nc2,nqual2
-     ns20=ns2
+     if(ns2.ge.1) then
+        write(ave2,1021) cfile6,avemsg2,nc2,nqual2
+!        if(ave2(31:40).eq.'          ') ave2=ave2(:30)
+        if(avemsg2.ne.'                      ') write(lumsg,1011) ave2
+     endif
   endif
 
-  if(ave1(31:40).eq.'          ') ave1=ave1(:30)
-  if(ave2(31:40).eq.'          ') ave2=ave2(:30)
-  write(lumsg,1011) ave1
-  write(lumsg,1011) ave2
-  call flush(12)
-  
-900 continue
+  if(decoded.ne.'                      ') nsave=0  !Good decode, restart avging
 
-  ccfbluesum=ccfbluesum + ccfblue
-  ccfredsum=ccfredsum + ccfred
   if(mode4.gt.1 .and. ichbest.gt.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
 
-  return
+900 return
 end subroutine wsjt4
