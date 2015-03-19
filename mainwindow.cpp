@@ -551,10 +551,10 @@ void MainWindow::readSettings()
                                                        "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
-  m_MinW=m_settings->value("MinW",0).toInt();
-  ui->MinW_comboBox->setCurrentIndex(m_MinW);
   m_nSubMode=m_settings->value("SubMode",0).toInt();
   ui->submodeComboBox->setCurrentIndex(m_nSubMode);
+  m_MinW=m_settings->value("minW",0).toInt();
+  ui->MinW_comboBox->setCurrentIndex(m_MinW);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);

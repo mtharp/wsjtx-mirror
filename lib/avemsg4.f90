@@ -1,5 +1,5 @@
 subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
-     mycall,hiscall,hisgrid,qual,ns,ncount)
+     mycall,hiscall,hisgrid,qual,ns,ncount,kdecoded)
 
 ! Decodes averaged JT4 data for the specified segment (mseg=1 or 2).
 
@@ -35,6 +35,7 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   if(ns.gt.0) sym=sym/ns
 
   nadd=nused*mode4
+  kbest=ich1
   do k=ich1,ich2
      call extract4(sym(1,k),ncount,decoded)     !Do the Fano decode
      if(ncount.ge.0 .or. nch(k).ge.mode4) exit
@@ -53,12 +54,14 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
         if(qual.gt.qbest) then
            qbest=qual
            deepbest=deepmsg
+           kbest=k
         endif
         if(nch(k).ge.mode4) exit
      enddo
      deepmsg=deepbest
      qual=qbest
      nqual=qbest
+     kdecoded=kbest
 ! Set submode here?
      if(nqual.lt.nq1) deepbest='                      '
      if(nqual.ge.nq1 .and. nqual.lt.nq2) deepmsg(19:19)='?'

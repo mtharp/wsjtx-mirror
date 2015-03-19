@@ -128,9 +128,9 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   if(decoded.eq.'                      ') then
 ! Decode failed, try message averaging
      if(nsave.ge.1) call avemsg4(1,mode4,ndepth,avemsg1,nused1,nq1,nq2,  &
-          neme,mycall,hiscall,hisgrid,qual1,ns1,ncount1)
+          neme,mycall,hiscall,hisgrid,qual1,ns1,ncount1,kdec1)
      if(nsave.ge.1) call avemsg4(2,mode4,ndepth,avemsg2,nused2,nq1,nq2,  &
-          neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2)
+          neme,mycall,hiscall,hisgrid,qual2,ns2,ncount2,kdec2)
      nqual1=qual1
      nqual2=qual2
      nc1=0
@@ -139,7 +139,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      if(ncount2.ge.0) nc2=nused2
 
      if(ns1.ge.1) then                            !Write the average line
-        write(ave1,1021) cfile6,avemsg1,nc1,nqual1
+        write(ave1,1021) cfile6,avemsg1,nc1,nqual1,char(ichar('A')+kdec1-1)
 1021    format(a4,4x,'Averaged:',4x,a22,i3,i4,1x,a1)
 !        if(ave1(31:40).eq.'          ') ave1=ave1(:30)
         if(avemsg1.ne.'                      ') write(lumsg,1011) ave1
@@ -147,7 +147,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 
 ! If Monitor segment #2 is available, write that line also
      if(ns2.ge.1) then
-        write(ave2,1021) cfile6,avemsg2,nc2,nqual2
+        write(ave2,1021) cfile6,avemsg2,nc2,nqual2,char(ichar('A')+kdec1-1)
 !        if(ave2(31:40).eq.'          ') ave2=ave2(:30)
         if(avemsg2.ne.'                      ') write(lumsg,1011) ave2
      endif
