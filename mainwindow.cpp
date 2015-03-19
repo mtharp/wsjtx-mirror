@@ -2056,9 +2056,10 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
      || dtext.contains ("/" + my_base_call + " ")
      || dtext.contains (" " + my_base_call + "/"))
     {
-      if (t4.length()>=7   // enough fields for a normal msg
+      if (t4.length()>=8   // enough fields for a normal msg
           and !gridOK(t4.at(7))) // but no grid on end of msg
         {
+
           QString r=t4.at(7);
           if(r.mid(0,3)=="RRR") {
             m_ntx=5;
@@ -2716,14 +2717,17 @@ void MainWindow::on_actionOpen_log_directory_triggered ()
 
 bool MainWindow::gridOK(QString g)
 {
-  bool b=g.mid(0,1).compare("A")>=0 and
-    g.mid(0,1).compare("R")<=0 and
-    g.mid(1,1).compare("A")>=0 and
-    g.mid(1,1).compare("R")<=0 and
-    g.mid(2,1).compare("0")>=0 and
-    g.mid(2,1).compare("9")<=0 and
-    g.mid(3,1).compare("0")>=0 and
-    g.mid(3,1).compare("9")<=0;
+  bool b=false;
+  if(g.length()>=4) {
+    b=g.mid(0,1).compare("A")>=0 and
+        g.mid(0,1).compare("R")<=0 and
+        g.mid(1,1).compare("A")>=0 and
+        g.mid(1,1).compare("R")<=0 and
+        g.mid(2,1).compare("0")>=0 and
+        g.mid(2,1).compare("9")<=0 and
+        g.mid(3,1).compare("0")>=0 and
+        g.mid(3,1).compare("9")<=0;
+  }
   return b;
 }
 
