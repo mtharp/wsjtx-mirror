@@ -3116,17 +3116,32 @@ void MainWindow::rigFailure (QString const& reason, QString const& detail)
 
 void MainWindow::transmit (double snr)
 {
-  if (m_modeTx == "JT65") Q_EMIT sendMessage (NUM_JT65_SYMBOLS,
+  double toneSpacing=0.0;
+  if (m_modeTx == "JT65") {
+    if(m_nSubMode==0) toneSpacing=11025.0/4096.0;
+    if(m_nSubMode==1) toneSpacing=2*11025.0/4096.0;
+    if(m_nSubMode==2) toneSpacing=4*11025.0/4096.0;
+    Q_EMIT sendMessage (NUM_JT65_SYMBOLS,
            4096.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
            m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
            true, snr);
+  }
   if (m_modeTx == "JT9") Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps,
            ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing,
            &m_soundOutput, m_config.audio_output_channel (), true, snr);
-  if (m_modeTx == "JT4") Q_EMIT sendMessage (NUM_JT4_SYMBOLS,
+  if (m_modeTx == "JT4") {
+    if(m_nSubMode==0) toneSpacing=4.375;
+    if(m_nSubMode==1) toneSpacing=2*4.375;
+    if(m_nSubMode==2) toneSpacing=4*4.375;
+    if(m_nSubMode==3) toneSpacing=9*4.375;
+    if(m_nSubMode==4) toneSpacing=18*4.375;
+    if(m_nSubMode==5) toneSpacing=36*4.375;
+    if(m_nSubMode==6) toneSpacing=72*4.375;
+    Q_EMIT sendMessage (NUM_JT4_SYMBOLS,
            2520.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
-           m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
+           toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
            true, snr);
+  }
 }
 
 void MainWindow::on_outAttenuation_valueChanged (int a)
@@ -3173,6 +3188,7 @@ void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
 void MainWindow::on_submodeComboBox_currentIndexChanged(int n)
 {
   m_nSubMode=n;
+  if(m_nSubMode<m_MinW) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
 }
 
 void MainWindow::getpfx()
