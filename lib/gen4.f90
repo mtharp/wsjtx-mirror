@@ -4,13 +4,13 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
 ! decoded, an integer array i4tone(206) of 4-FSK tons values in the
 ! range 0-3; and itype, the JT message type.  
 
+  use jt4
   character*22 msg0
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received
   integer i4tone(206)
   integer*4 i4Msg6BitWords(13)            !72-bit message as 6-bit words
   integer mettab(-128:127,0:1)
-  include 'jt4sync.f90'
   save
 
   call getmet4(mettab,ndelta)

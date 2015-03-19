@@ -4,10 +4,10 @@ program jt4code
 ! convolutional encoding, and other necessary details of the JT4
 ! protocol.
 
+  use jt4
   character*22 msg,decoded,bad*1,msgtype*13
   integer i4tone(206)
   include 'testmsg.f90'
-  include 'jt4sync.f90'
 
   nargs=iargc()
   if(nargs.ne.1) then

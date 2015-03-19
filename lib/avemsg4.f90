@@ -7,7 +7,6 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   character decoded*22,deepmsg*22,deepbest*22
   character mycall*12,hiscall*12,hisgrid*6
   real sym(207,7)
-  include 'jt4sync.f90'
 
 ! Count the available spectra for this Monitor segment (mseg=1 or 2),
 ! and the number of spectra flagged as good.

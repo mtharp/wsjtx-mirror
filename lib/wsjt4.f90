@@ -20,7 +20,6 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   character*12 hiscall
   character*6 hisgrid
   character submode*1
-  include 'jt4sync.f90'
   data first/.true./
   save
 

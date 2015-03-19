@@ -18,8 +18,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
   real*4 sym(207)
   integer amp
   data rsymbol/1449*0.0/
-  include 'jt4sync.f90'
-  save rsymbol,npr,nch
+  save rsymbol
 
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)

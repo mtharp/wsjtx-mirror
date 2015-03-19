@@ -6,13 +6,13 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
 ! The CCF peak may be either positive or negative, with negative
 ! implying the "OOO" message.
 
+  use jt4
   parameter (NHMAX=1260)           !Max length of power spectra
   parameter (NSMAX=525)            !Max number of half-symbol steps
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real a(NSMAX)
   real ccf(-5:540)
   data lagmin/0/                    !Silence compiler warning
-  include 'jt4sync.f90'
   save
 
   ccfmax=0.

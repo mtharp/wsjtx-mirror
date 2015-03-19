@@ -3,6 +3,7 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minw,    &
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
 
+  use jt4
   parameter (NFFTMAX=2520)         !Max length of FFTs
   parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
   parameter (NSMAX=525)            !Max number of half-symbol steps
@@ -19,7 +20,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minw,    &
   integer ipk1(1)
   logical savered
   equivalence (ipk1,ipk1a)
-  include 'jt4sync.f90'
   save
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 

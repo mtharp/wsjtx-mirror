@@ -1,6 +1,7 @@
 subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
           minw,nsubmode,mycall,mygrid,hiscall,hisgrid)
 
+  use jt4
   real*4 dd(jz)
   real*4 dat(30*12000)
   real*4 ccf(-5:540)
@@ -9,7 +10,6 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
   character*6 cfile6
   character*12 mycall,hiscall
   character*6 mygrid,hisgrid
-  include 'jt4sync.f90'
 
   mode4=nch(nsubmode+1)
 !  print*,'A',minw,nsubmode,mode4
