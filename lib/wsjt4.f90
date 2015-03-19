@@ -133,7 +133,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
 !              write(*,1000) nutc,nsnr,xdt,nint(freq),msg
 !1000          format(i4.4,i4,f5.1,i5,1x,'@',1x,a22)
 
-  write(line,1010) cfile6(1:4),nsnr,dtx-1.0,1270+jdf,csync,decoded,    &
+  write(line,1010) cfile6(1:4),nsnr,dtx-0.8,1270+jdf,csync,decoded,    &
        kvqual,nqual,submode
 1010 format(a4,i4,f5.1,i5,1x,a1,1x,a22,i3,i4,1x,a1)
 
