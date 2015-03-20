@@ -414,9 +414,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and
      m_mode!="JT9+JT65" and m_mode!="JT4") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
-  m_wideGraph->setLockTxFreq(m_lockTxFreq);
-  m_wideGraph->setModeTx(m_mode);
-  m_wideGraph->setModeTx(m_modeTx);
 
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
           SLOT(setFreq4(int,int)));
@@ -426,6 +423,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode=="JT9W-1") on_actionJT9W_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
   if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
+
+  m_wideGraph->setLockTxFreq(m_lockTxFreq);
+  m_wideGraph->setMode(m_mode);
+  m_wideGraph->setModeTx(m_modeTx);
 
   future1 = new QFuture<void>;
   watcher1 = new QFutureWatcher<void>;
@@ -2979,6 +2980,7 @@ void MainWindow::on_readFreq_clicked()
 
 void MainWindow::on_pbTxMode_clicked()
 {
+  if(m_mode=="JT4") return;
   if(m_modeTx=="JT9") {
     m_modeTx="JT65";
     ui->pbTxMode->setText("Tx JT65  #");
@@ -3188,6 +3190,7 @@ void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
 void MainWindow::on_submodeComboBox_currentIndexChanged(int n)
 {
   m_nSubMode=n;
+  m_wideGraph->setSubMode(m_nSubMode);
   if(m_nSubMode<m_MinW) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
 }
 

@@ -59,6 +59,7 @@ public:
   void setNsps(int ntrperiod, int nsps);
   void setTxFreq(int n);
   void setMode(QString mode);
+  void setSubMode(int n);
   void setModeTx(QString modeTx);
   double fGreen();
   void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
@@ -110,6 +111,7 @@ private:
   qint32  m_binsPerPixel;
   qint32  m_w;
   qint32  m_Flatten;
+  qint32  m_nSubMode;
 
   QPixmap m_WaterfallPixmap;
   QPixmap m_2DPixmap;

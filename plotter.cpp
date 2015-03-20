@@ -277,8 +277,22 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     painter0.drawText(rect0, Qt::AlignHCenter|Qt::AlignVCenter,m_HDivText[i]);
   }
 
-  float bw=9.0*12000.0/m_nsps;
-  if(m_modeTx=="JT65") bw=66.0*11025.0/4096.0;
+  float bw=9.0*12000.0/m_nsps;                //JT9
+
+  if(m_modeTx=="JT4") {                       //JT4
+    bw=4*11025.0/2520.0;
+    if(m_nSubMode==1) bw=2*bw;
+    if(m_nSubMode==2) bw=4*bw;
+    if(m_nSubMode==3) bw=9*bw;
+    if(m_nSubMode==4) bw=18*bw;
+    if(m_nSubMode==5) bw=36*bw;
+    if(m_nSubMode==6) bw=72*bw;
+  }
+  if(m_modeTx=="JT65") {                     //JT65
+    bw=66.0*11025.0/4096.0;
+    if(m_nSubMode==1) bw=2*bw;
+    if(m_nSubMode==2) bw=4*bw;
+  }
 
   QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
   painter0.setPen(pen0);
@@ -488,6 +502,11 @@ void CPlotter::setTxFreq(int n)                                 //setTol()
 void CPlotter::setMode(QString mode)
 {
   m_mode=mode;
+}
+
+void CPlotter::setSubMode(int n)
+{
+  m_nSubMode=n;
 }
 
 void CPlotter::setModeTx(QString modeTx)

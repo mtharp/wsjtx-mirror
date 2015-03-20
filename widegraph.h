@@ -37,6 +37,7 @@ public:
   void   setPeriod(int ntrperiod, int nsps);
   void   setTxFreq(int n);
   void   setMode(QString mode);
+  void   setSubMode(int n);
   void   setModeTx(QString modeTx);
   void   setLockTxFreq(bool b);
   double fGreen();
@@ -88,6 +89,7 @@ private:
   qint32 m_ntr0;
   qint32 m_fMin;
   qint32 m_fMax;
+  qint32 m_nSubMode;
 
   bool   m_lockTxFreq;
   bool   m_bFlatten;
