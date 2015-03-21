@@ -62,7 +62,7 @@ private slots:
   void on_waterfallAvgSpinBox_valueChanged(int arg1);
   void on_freqSpanSpinBox_valueChanged(int arg1);
   void on_spec2dComboBox_currentIndexChanged(const QString &arg1);
-  void on_fMinSpinBox_valueChanged(int n);
+  void on_fSplitSpinBox_valueChanged(int n);
   void on_fStartSpinBox_valueChanged(int n);
   void on_paletteComboBox_activated(const QString &palette);
   void on_cbFlatten_toggled(bool b);

@@ -13,6 +13,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 !   nbmkv    0=no decode; 1=BM decode; 2=KV decode
 
   use prog_args                       !shm_key, exe_dir, data_dir
+  use packjt
 
   real s3(64,63)
   character decoded*22

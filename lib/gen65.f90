@@ -3,6 +3,7 @@ subroutine gen65(msg0,ichk,msgsent,itone,itype)
 ! Encodes a JT65 message to yieild itone(1:126)
 ! Temporarily, does not implement EME shorthands
 
+  use packjt
   character*22 msg0
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received

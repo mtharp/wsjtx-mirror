@@ -320,11 +320,7 @@ set (wsjt_FSRCS
   lib/n2grid.f90
   lib/nchar.f90
   lib/options.f90
-  lib/packbits.f90
-  lib/packcall.f90
-  lib/packgrid.f90
-  lib/packmsg.f90
-  lib/packtext.f90
+  lib/packjt.f90
   lib/pctile.f90
   lib/peakdt9.f90
   lib/peakup.f90
@@ -352,11 +348,6 @@ set (wsjt_FSRCS
   lib/toxyz.f90
   lib/twkfreq.f90
   lib/twkfreq65.f90
-  lib/unpackbits.f90
-  lib/unpackcall.f90
-  lib/unpackgrid.f90
-  lib/unpackmsg.f90
-  lib/unpacktext.f90
   lib/wav11.f90
   lib/wav12.f90
   lib/wavhdr.f90

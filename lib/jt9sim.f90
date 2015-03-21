@@ -3,6 +3,7 @@ program jt9sim
 ! Generate simulated data for testing of WSJT-X
 
   use wavhdr
+  use packjt
   parameter (NTMAX=120)
   parameter (NMAX=NTMAX*12000)
   type(hdr) h

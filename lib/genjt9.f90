@@ -4,6 +4,7 @@ subroutine genjt9(msg0,ichk,msgsent,i4tone,itype)
 ! be decoded, and an integer array i4tone(85) of 9-FSK tone values 
 ! in the range 0-8.  
 
+  use packjt
   character*22 msg0
   character*22 message                    !Message to be generated
   character*22 msgsent                    !Message as it will be received

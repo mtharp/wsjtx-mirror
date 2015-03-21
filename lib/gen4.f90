@@ -5,6 +5,7 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
 ! range 0-3; and itype, the JT message type.  
 
   use jt4
+  use packjt
   character*22 msg0
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received

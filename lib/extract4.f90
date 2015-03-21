@@ -1,5 +1,6 @@
 subroutine extract4(sym0,ncount,decoded)
 
+  use packjt
   real sym0(207)
   real sym(207)
   character decoded*22

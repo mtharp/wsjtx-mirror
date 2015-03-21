@@ -5,6 +5,7 @@ program jt4code
 ! protocol.
 
   use jt4
+  use packjt
   character*22 msg,decoded,bad*1,msgtype*13
   integer i4tone(206)
   include 'testmsg.f90'

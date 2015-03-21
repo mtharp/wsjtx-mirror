@@ -72,7 +72,7 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   m_waterfallPalette=m_settings->value("WaterfallPalette","Default").toString();
   m_userPalette = WFPalette {m_settings->value("UserPalette").value<WFPalette::Colours> ()};
   int m_fMin = m_settings->value ("fMin", 2500).toInt ();
-  ui->fMinSpinBox->setValue (m_fMin);
+  ui->fSplitSpinBox->setValue (m_fMin);
   setRxRange (m_fMin);
   m_settings->endGroup();
 
@@ -280,7 +280,7 @@ void WideGraph::setTxFreq(int n)
 void WideGraph::setMode(QString mode)
 {
   m_mode=mode;
-  ui->fMinSpinBox->setEnabled(m_mode=="JT9+JT65");
+  ui->fSplitSpinBox->setEnabled(m_mode=="JT9+JT65");
   ui->widePlot->setMode(mode);
   ui->widePlot->DrawOverlay();
   ui->widePlot->update();
@@ -311,7 +311,7 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
   if(arg1=="Linear Avg") ui->widePlot->setLinearAvg(true);
 }
 
-void WideGraph::on_fMinSpinBox_valueChanged(int n)
+void WideGraph::on_fSplitSpinBox_valueChanged(int n)
 {
   m_fMin=n;
   setRxRange(m_fMin);

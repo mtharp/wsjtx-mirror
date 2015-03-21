@@ -4,6 +4,7 @@ program JT65code
 ! Reed Solomon encoding, and other necessary details of the JT65
 ! protocol.
 
+  use packjt
   character*22 msg,msg0,msg1,decoded,cok*3,bad*1,msgtype*10
   integer dgen(12),sent(63),recd(12),era(51)
   include 'testmsg.f90'
