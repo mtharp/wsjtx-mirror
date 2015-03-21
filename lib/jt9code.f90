@@ -25,7 +25,7 @@ program jt9code
      if(nmsg.gt.1) msg=testmsg(imsg)
      call fmtmsg(msg,iz)                !To upper case, collapse multiple blanks
      ichk=0
-     call genjt9(msg,ichk,decoded,i4tone,itype)   !Encode message into tone #s
+     call gen9(msg,ichk,decoded,i4tone,itype)   !Encode message into tone #s
 
      msgtype=""
      if(itype.eq.1) msgtype="Std Msg"

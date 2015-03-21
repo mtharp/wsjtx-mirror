@@ -1619,7 +1619,7 @@ void MainWindow::guiUpdate()
                                 , &itype
                                 , len1
                                 , len1);
-    if(m_modeTx=="JT9") genjt9_(message
+    if(m_modeTx=="JT9") gen9_(message
                                 , &ichk
                                 , msgsent
                                 , const_cast<int *> (itone)
@@ -2357,7 +2357,7 @@ void MainWindow::msgtype(QString t, QLineEdit* tx)               //msgtype()
   QByteArray s=t.toUpper().toLocal8Bit();
   ba2msg(s,message);
   int ichk=1,itype=0;
-  genjt9_(message
+  gen9_(message
           , &ichk
           , msgsent
           , const_cast<int *> (itone)

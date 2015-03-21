@@ -1,4 +1,4 @@
-subroutine genjt9(msg0,ichk,msgsent,i4tone,itype)
+subroutine gen9(msg0,ichk,msgsent,i4tone,itype)
 
 ! Encodes a JT9 message and returns msgsent, the message as it will
 ! be decoded, and an integer array i4tone(85) of 9-FSK tone values 
@@ -53,4 +53,4 @@ subroutine genjt9(msg0,ichk,msgsent,i4tone,itype)
   enddo
 
 999 return
-end subroutine genjt9
+end subroutine gen9

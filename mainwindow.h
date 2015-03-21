@@ -413,7 +413,7 @@ extern "C" {
   void gen4_(char* msg, int* ichk, char* msgsent, int itone[],
                int* itext, int len1, int len2);
 
-  void genjt9_(char* msg, int* ichk, char* msgsent, int itone[],
+  void gen9_(char* msg, int* ichk, char* msgsent, int itone[],
                int* itext, int len1, int len2);
 
   void gen65_(char* msg, int* ichk, char* msgsent, int itone[],
