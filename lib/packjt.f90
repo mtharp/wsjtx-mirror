@@ -698,4 +698,204 @@ subroutine unpacktext(nc1,nc2,nc3,msg)
   return
 end subroutine unpacktext
 
+subroutine getpfx1(callsign,k,nv2)
+
+  character*12 callsign0,callsign,lof,rof
+  character*8 c
+  character addpfx*8,tpfx*4,tsfx*3
+  logical ispfx,issfx,invalid
+  common/pfxcom/addpfx
+  include 'pfx.f90'
+
+  callsign0=callsign
+  nv2=1
+  iz=index(callsign,' ') - 1
+  if(iz.lt.0) iz=12
+  islash=index(callsign(1:iz),'/')
+  k=0
+!  if(k.eq.0) go to 10     !Tnx to DL9RDZ for reminder:this was for tests only!
+  c='   '
+  if(islash.gt.0 .and. islash.le.(iz-4)) then
+! Add-on prefix
+     c=callsign(1:islash-1)
+     callsign=callsign(islash+1:iz)
+     do i=1,NZ
+        if(pfx(i)(1:4).eq.c) then
+           k=i
+           nv2=2
+           go to 10
+        endif
+     enddo
+     if(addpfx.eq.c) then
+        k=449
+        nv2=2
+        go to 10
+     endif
+
+  else if(islash.eq.(iz-1)) then
+! Add-on suffix
+     c=callsign(islash+1:iz)
+     callsign=callsign(1:islash-1)
+     do i=1,NZ2
+        if(sfx(i).eq.c(1:1)) then
+           k=400+i
+           nv2=3
+           go to 10
+        endif
+     enddo
+  endif
+
+10 if(islash.ne.0 .and.k.eq.0) then
+! Original JT65 would force this compound callsign to be treated as
+! plain text.  In JT65v2, we will encode the prefix or suffix into nc1.
+! The task here is to compute the proper value of k.
+     lof=callsign0(:islash-1)
+     rof=callsign0(islash+1:)
+     llof=len_trim(lof)
+     lrof=len_trim(rof)
+     ispfx=(llof.gt.0 .and. llof.le.4)
+     issfx=(lrof.gt.0 .and. lrof.le.3)
+     invalid=.not.(ispfx.or.issfx)
+     if(ispfx.and.issfx) then
+        if(llof.lt.3) issfx=.false.
+        if(lrof.lt.3) ispfx=.false.
+        if(ispfx.and.issfx) then
+           i=ichar(callsign0(islash-1:islash-1))
+           if(i.ge.ichar('0') .and. i.le.ichar('9')) then
+              issfx=.false.
+           else
+              ispfx=.false.
+           endif
+        endif
+     endif
+
+     if(invalid) then
+        k=-1
+     else
+        if(ispfx) then
+           tpfx=lof(1:4)
+           k=nchar(tpfx(1:1))
+           k=37*k + nchar(tpfx(2:2))
+           k=37*k + nchar(tpfx(3:3))
+           k=37*k + nchar(tpfx(4:4))
+           nv2=4
+           i=index(callsign0,'/')
+           callsign=callsign0(:i-1)
+           callsign=callsign0(i+1:)
+        endif
+        if(issfx) then
+           tsfx=rof(1:3)
+           k=nchar(tsfx(1:1))
+           k=37*k + nchar(tsfx(2:2))
+           k=37*k + nchar(tsfx(3:3))
+           nv2=5
+           i=index(callsign0,'/')
+           callsign=callsign0(:i-1)
+        endif
+     endif
+  endif
+
+  return
+end subroutine getpfx1
+
+subroutine getpfx2(k0,callsign)
+
+  character callsign*12
+  include 'pfx.f90'
+  character addpfx*8
+  common/pfxcom/addpfx
+
+  k=k0
+  if(k.gt.450) k=k-450
+  if(k.ge.1 .and. k.le.NZ) then
+     iz=index(pfx(k),' ') - 1
+     callsign=pfx(k)(1:iz)//'/'//callsign
+  else if(k.ge.401 .and. k.le.400+NZ2) then
+     iz=index(callsign,' ') - 1
+     callsign=callsign(1:iz)//'/'//sfx(k-400)
+  else if(k.eq.449) then
+     iz=index(addpfx,' ') - 1
+     if(iz.lt.1) iz=8
+     callsign=addpfx(1:iz)//'/'//callsign
+  endif
+
+  return
+end subroutine getpfx2
+
+subroutine grid2k(grid,k)
+
+  character*6 grid
+
+  call grid2deg(grid,xlong,xlat)
+  nlong=nint(xlong)
+  nlat=nint(xlat)
+  k=0
+  if(nlat.ge.85) k=5*(nlong+179)/2 + nlat-84
+
+  return
+end subroutine grid2k
+
+subroutine k2grid(k,grid)
+  character grid*6
+
+  nlong=2*mod((k-1)/5,90)-179
+  if(k.gt.450) nlong=nlong+180
+  nlat=mod(k-1,5)+ 85
+  dlat=nlat
+  dlong=nlong
+  call deg2grid(dlong,dlat,grid)
+
+  return
+end subroutine k2grid
+
+subroutine grid2n(grid,n)
+  character*4 grid
+
+  i1=ichar(grid(1:1))-ichar('A')
+  i2=ichar(grid(3:3))-ichar('0')
+  i=10*i1 + i2
+  n=-i - 31
+
+  return
+end subroutine grid2n
+
+subroutine n2grid(n,grid)
+  character*4 grid
+
+  if(n.gt.-31 .or. n.lt.-70) stop 'Error in n2grid'
+  i=-(n+31)                           !NB: 0 <= i <= 39
+  i1=i/10
+  i2=mod(i,10)
+  grid(1:1)=char(ichar('A')+i1)
+  grid(2:2)='A'
+  grid(3:3)=char(ichar('0')+i2)
+  grid(4:4)='0'
+
+  return
+end subroutine n2grid
+
+function nchar(c)
+
+! Convert ascii number, letter, or space to 0-36 for callsign packing.
+
+  character c*1
+
+  n=0                                    !Silence compiler warning
+  if(c.ge.'0' .and. c.le.'9') then
+     n=ichar(c)-ichar('0')
+  else if(c.ge.'A' .and. c.le.'Z') then
+     n=ichar(c)-ichar('A') + 10
+  else if(c.ge.'a' .and. c.le.'z') then
+     n=ichar(c)-ichar('a') + 10
+  else if(c.ge.' ') then
+     n=36
+  else
+     Print*,'Invalid character in callsign ',c,' ',ichar(c)
+     stop
+  endif
+  nchar=n
+
+  return
+end function nchar
+
 end module packjt

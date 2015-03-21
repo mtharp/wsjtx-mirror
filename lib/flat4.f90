@@ -38,7 +38,7 @@ subroutine flat4(s,npts,nflatten)
   a=0.
   nterms=3
   
-  call polfit(x,y,y,kz,nterms,0,a,chisqr)  !Fit a low-order polynomial
+  call polyfit(x,y,y,kz,nterms,0,a,chisqr)  !Fit a low-order polynomial
 
   do i=1,npts
      t=i-i0

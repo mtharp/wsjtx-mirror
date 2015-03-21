@@ -297,13 +297,9 @@ set (wsjt_FSRCS
   lib/gen9.f90
   lib/geodist.f90
   lib/getlags.f90
-  lib/getpfx1.f90
-  lib/getpfx2.f90
   lib/graycode.f90
   lib/graycode65.f90
   lib/grid2deg.f90
-  lib/grid2k.f90
-  lib/grid2n.f90
   lib/indexx.f90
   lib/interleave4.f90
   lib/interleave63.f90
@@ -311,21 +307,17 @@ set (wsjt_FSRCS
   lib/jt4.f90
   lib/jt4a.f90
   lib/jt65a.f90
-  lib/k2grid.f90
   lib/lpf1.f90
   lib/moon2.f90
   lib/moondop.f90
   lib/morse.f90
   lib/move.f90
-  lib/n2grid.f90
-  lib/nchar.f90
   lib/options.f90
   lib/packjt.f90
   lib/pctile.f90
   lib/peakdt9.f90
   lib/peakup.f90
-  lib/pfxdump.f90
-  lib/polfit.f90
+  lib/polyfit.f90
   lib/prog_args.f90
   lib/ps4.f90
   lib/sec_midn.f90
