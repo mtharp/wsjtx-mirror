@@ -50,6 +50,7 @@ class WideGraph;
 class LogQSO;
 class Transceiver;
 class Astro;
+class MessageAveraging;
 
 class MainWindow : public QMainWindow
 {
@@ -180,6 +181,8 @@ private slots:
   void on_submodeComboBox_currentIndexChanged(int n);
   void on_MinW_comboBox_currentIndexChanged(int n);
 
+  void on_actionMessage_averaging_triggered();
+
 private:
   void enable_DXCC_entity (bool on);
 
@@ -219,6 +222,7 @@ private:
   QScopedPointer<QTextEdit> m_shortcuts;
   QScopedPointer<QTextEdit> m_prefixes;
   QScopedPointer<QTextEdit> m_mouseCmnds;
+  QScopedPointer<MessageAveraging> m_msgAvgWidget;
 
   Frequency  m_dialFreq;
 
@@ -395,6 +399,7 @@ private:
   void pskSetLocal ();
   void displayDialFrequency ();
   void transmitDisplay (bool);
+  void toggleIncludeInAvg(QString t);
 };
 
 extern void getfile(QString fname, int ntrperiod);

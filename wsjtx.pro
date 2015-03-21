@@ -89,13 +89,14 @@ SOURCES += \
 	about.cpp \
 	mainwindow.cpp \
 	main.cpp \
-        decodedtext.cpp
+        decodedtext.cpp \
+    messageaveraging.cpp
 
 HEADERS  += qt_helpers.hpp \
 	    pimpl_h.hpp pimpl_impl.hpp \
             Radio.hpp NetworkServerLookup.hpp revision_utils.hpp \
 	    mainwindow.h plotter.h soundin.h soundout.h astro.h \
-            about.h WFPalette.hpp widegraph.h getfile.h \
+            about.h WFPalette.hpp widegraph.h getfile.h decodedtext.h \
             commons.h sleep.h displaytext.h logqso.h \
             Bands.hpp FrequencyList.hpp StationList.hpp ForeignKeyDelegate.hpp FrequencyItemDelegate.hpp LiveFrequencyValidator.hpp \
             FrequencyLineEdit.hpp AudioDevice.hpp Detector.hpp Modulator.hpp psk_reporter.h \
@@ -107,7 +108,8 @@ HEADERS  += qt_helpers.hpp \
     logbook/logbook.h \
     logbook/countrydat.h \
     logbook/countriesworked.h \
-    logbook/adif.h
+    logbook/adif.h \
+    messageaveraging.h
 
 INCLUDEPATH += qmake_only
 
@@ -117,7 +119,8 @@ HEADERS += OmniRigTransceiver.hpp
 }
 
 FORMS    += mainwindow.ui about.ui Configuration.ui widegraph.ui astro.ui \
-    logqso.ui wf_palette_design_dialog.ui
+    logqso.ui wf_palette_design_dialog.ui \
+    messageaveraging.ui
 
 RC_FILE = wsjtx.rc
 RESOURCES = wsjtx.qrc

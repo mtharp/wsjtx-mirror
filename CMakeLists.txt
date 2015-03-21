@@ -222,6 +222,7 @@ set (wsjtx_CXXSRCS
   widegraph.cpp
   about.cpp
   astro.cpp
+  messageaveraging.cpp
   mainwindow.cpp
   Configuration.cpp
   main.cpp
@@ -368,6 +369,7 @@ set (wsjtx_UISRCS
   mainwindow.ui
   about.ui
   astro.ui
+  messageaveraging.ui
   widegraph.ui
   logqso.ui
   Configuration.ui

@@ -21,6 +21,7 @@
 #include "plotter.h"
 #include "about.h"
 #include "astro.h"
+#include "messageaveraging.h"
 #include "widegraph.h"
 #include "sleep.h"
 #include "getfile.h"
@@ -1094,6 +1095,18 @@ void MainWindow::on_actionAstronomical_data_triggered()
   m_astroWidget->showNormal();
 }
 
+void MainWindow::on_actionMessage_averaging_triggered()
+{
+  if (!m_msgAvgWidget)
+    {
+      m_msgAvgWidget.reset (new MessageAveraging);
+
+      // hook up termination signal
+//      connect (this, &MainWindow::finished, m_msgAvgWidget.data (), &MessageAveraging::close);
+    }
+  m_msgAvgWidget->showNormal();
+}
+
 void MainWindow::on_actionOpen_triggered()                     //Open File
 {
   monitor (false);
@@ -1918,6 +1931,11 @@ void MainWindow::doubleClickOnCall2(bool shift, bool ctrl)
   m_decodedText2=false;
 }
 
+void MainWindow::toggleIncludeInAvg(QString t)
+{
+  qDebug() << "A" << t;
+}
+
 void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 {
   QTextCursor cursor;
@@ -1925,7 +1943,6 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   if(m_decodedText2) cursor=ui->decodedTextBrowser->textCursor();
   cursor.select(QTextCursor::LineUnderCursor);
   int i2=cursor.position();
-  if(shift and i2==-9999) return;        //Silence compiler warning
 
   QString t;
   if(!m_decodedText2) t= ui->decodedTextBrowser2->toPlainText(); //Full contents
@@ -1935,6 +1952,11 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
   decodedtext = t1.mid(i1,i2-i1);         //selected line
+
+  if(shift) {
+    toggleIncludeInAvg(t1.mid(i1,i2-i1));
+    return;
+  }
 
   if (decodedtext.indexOf(" CQ ") > 0)
     {
