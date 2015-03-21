@@ -356,7 +356,6 @@ private:
   QHash<QString,bool> m_sfx;
 
   QDateTime m_dateTimeQSO;
-  QRect   m_astroGeom;
 
   QSharedMemory *mem_jt9;
   PSK_Reporter *psk_Reporter;

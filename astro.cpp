@@ -25,22 +25,15 @@ Astro::Astro(QSettings * settings, QWidget * parent)
   , ui_ {new Ui::Astro}
 {
   ui_->setupUi(this);
-
   setWindowFlags (Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
-
   setWindowTitle(QApplication::applicationName () + " - " + tr ("Astronomical Data"));
-
   read_settings ();
-
   ui_->text_label->clear();
 }
 
 Astro::~Astro ()
 {
-  if (isVisible ())
-    {
-      write_settings ();
-    }
+  if (isVisible ()) write_settings ();
 }
 
 void Astro::closeEvent (QCloseEvent * e)

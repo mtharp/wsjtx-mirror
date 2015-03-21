@@ -2806,6 +2806,9 @@ list. The list can be maintained in Settings (F2).</string>
    <property name="text">
     <string>Message averaging</string>
    </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

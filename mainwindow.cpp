@@ -486,6 +486,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("DXcall",ui->dxCallEntry->text());
   m_settings->setValue("DXgrid",ui->dxGridEntry->text());
   m_settings->setValue ("AstroDisplayed", m_astroWidget && m_astroWidget->isVisible());
+  m_settings->setValue ("MsgAvgDisplayed", m_msgAvgWidget && m_msgAvgWidget->isVisible());
   m_settings->setValue ("FreeText", ui->freeTextMsg->currentText ());
   m_settings->endGroup();
 
@@ -524,6 +525,7 @@ void MainWindow::readSettings()
   m_txFirst = m_settings->value("TxFirst",false).toBool();
   ui->txFirstCheckBox->setChecked(m_txFirst);
   auto displayAstro = m_settings->value ("AstroDisplayed", false).toBool ();
+  auto displayMsgAvg = m_settings->value ("MsgAvgDisplayed", false).toBool ();
 
   if (m_settings->contains ("FreeText"))
   {
@@ -533,10 +535,8 @@ void MainWindow::readSettings()
   m_settings->endGroup();
 
   // do this outside of settings group because it uses groups internally
-  if (displayAstro)
-    {
-      on_actionAstronomical_data_triggered ();
-    }
+  if (displayAstro) on_actionAstronomical_data_triggered ();
+  if (displayMsgAvg) on_actionMessage_averaging_triggered();
 
   m_settings->beginGroup("Common");
   morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData())
@@ -1102,7 +1102,7 @@ void MainWindow::on_actionMessage_averaging_triggered()
       m_msgAvgWidget.reset (new MessageAveraging);
 
       // hook up termination signal
-//      connect (this, &MainWindow::finished, m_msgAvgWidget.data (), &MessageAveraging::close);
+      connect (this, &MainWindow::finished, m_msgAvgWidget.data (), &MessageAveraging::close);
     }
   m_msgAvgWidget->showNormal();
 }
