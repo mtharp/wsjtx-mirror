@@ -56,8 +56,8 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
      go to 1
   endif
 
-  call graycode65(mrsym,63,-1)        !Remove gray code and interleaving
-  call interleave63(mrsym,-1)         !from most reliable symbols
+  call graycode65(mrsym,63,-1)        !Remove gray code 
+  call interleave63(mrsym,-1)         !Remove interleaving
   call interleave63(mrprob,-1)
   num65=num65+1
 
