@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>345</height>
+    <width>206</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>11</x>
-     <y>10</y>
-     <width>184</width>
-     <height>327</height>
+     <x>13</x>
+     <y>12</y>
+     <width>182</width>
+     <height>356</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -562,22 +562,9 @@
      </widget>
     </item>
     <item row="11" column="0" colspan="2">
-     <widget class="QPushButton" name="pbClrAvg">
-      <property name="minimumSize">
-       <size>
-        <width>87</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Clear Avg</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="2">
-     <widget class="QPushButton" name="pbDecode">
+     <widget class="QPushButton" name="pbCompress">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -585,6 +572,56 @@
       <property name="minimumSize">
        <size>
         <width>87</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>87</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Compress</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="2">
+     <widget class="QPushButton" name="pbClrAll">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>87</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>87</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Clear All</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="0" colspan="3">
+     <widget class="QPushButton" name="pbDecode">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>160</width>
         <height>0</height>
        </size>
       </property>

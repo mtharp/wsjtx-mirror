@@ -30,7 +30,7 @@ MessageAveraging::MessageAveraging(QSettings * settings, QWidget *parent) :
   m_t.append(ui->lineEdit_8);
   m_t.append(ui->lineEdit_9);
   m_t.append(ui->lineEdit_10);
-  on_pbClrAvg_clicked();
+  on_pbClrAll_clicked();
 }
 
 MessageAveraging::~MessageAveraging()
@@ -64,10 +64,11 @@ void MessageAveraging::on_pbDecode_clicked()
   emit msgAvgDecode();
 }
 
-void MessageAveraging::on_pbClrAvg_clicked()
+void MessageAveraging::on_pbClrAll_clicked()
 {
   for(int i=0; i<10; i++) {
     m_t[i]->setText("");
+    m_cb[i]->setChecked(false);
   }
   m_k=0;
   emit clearAverage();
@@ -76,6 +77,27 @@ void MessageAveraging::on_pbClrAvg_clicked()
 void MessageAveraging::addItem(QString t)
 {
   m_t[m_k]->setText(t);
+  m_cb[m_k]->setChecked(true);
   if(m_k<9) m_k+=1;
 }
 
+
+void MessageAveraging::on_pbCompress_clicked()
+{
+  qDebug() << "Compress";
+  for(int i=0; i<m_k; i++) {
+    if(!m_cb[i]->isChecked()) {
+      for(int j=i; j<=m_k; j++) {
+        bool b=m_cb[j+1]->isChecked();
+        if(b) {
+          QString t=m_t[j+1]->text();
+          qDebug() << "a" << i << j << m_k << t << b;
+          m_t[i]->setText(t);
+          m_cb[i]->setChecked(b);
+          goto next_i;
+        }
+      }
+    }
+next_i: m_k-=1;
+  }
+}

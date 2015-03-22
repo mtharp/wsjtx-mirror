@@ -32,7 +32,8 @@ protected:
 
 private slots:
   void on_pbDecode_clicked();
-  void on_pbClrAvg_clicked();
+  void on_pbClrAll_clicked();
+  void on_pbCompress_clicked();
 
 private:
   void read_settings ();
