@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>245</width>
-    <height>475</height>
+    <width>200</width>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,14 +16,14 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>222</width>
-     <height>469</height>
+     <x>11</x>
+     <y>10</y>
+     <width>178</width>
+     <height>327</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0" colspan="3">
      <widget class="QLabel" name="label">
       <property name="maximumSize">
        <size>
@@ -33,27 +33,31 @@
       </property>
       <property name="font">
        <font>
-        <family>Courier New</family>
-        <pointsize>11</pointsize>
-        <underline>true</underline>
+        <pointsize>10</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>  UTC   dB  DT  Freq</string>
+       <string>        UTC   dB  DT  Freq</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
+    <item row="1" column="0">
      <widget class="QCheckBox" name="cb1">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -64,21 +68,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="1" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_1">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
      <widget class="QCheckBox" name="cb2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -89,21 +117,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="3" column="0" colspan="2">
+    <item row="2" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_2">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QCheckBox" name="cb3">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -114,21 +166,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="4" column="0" colspan="2">
+    <item row="3" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_3">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
      <widget class="QCheckBox" name="cb4">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -139,21 +215,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="5" column="0" colspan="2">
+    <item row="4" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_4">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
      <widget class="QCheckBox" name="cb5">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -164,21 +264,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="6" column="0" colspan="2">
+    <item row="5" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_5">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
      <widget class="QCheckBox" name="cb6">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -189,21 +313,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="7" column="0" colspan="2">
+    <item row="6" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_6">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
      <widget class="QCheckBox" name="cb7">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -214,21 +362,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="8" column="0" colspan="2">
+    <item row="7" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_7">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
      <widget class="QCheckBox" name="cb8">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -239,21 +411,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="9" column="0" colspan="2">
+    <item row="8" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_8">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
      <widget class="QCheckBox" name="cb9">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -264,21 +460,45 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="10" column="0" colspan="2">
-     <widget class="QCheckBox" name="cb10">
+    <item row="9" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_9">
       <property name="minimumSize">
        <size>
-        <width>220</width>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QCheckBox" name="cb10">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -289,143 +509,36 @@
        </font>
       </property>
       <property name="text">
-       <string>2343  -8  0.8 1089</string>
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="1" colspan="2">
+     <widget class="QLineEdit" name="lineEdit_10">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1229 -22  0.2 3002</string>
       </property>
      </widget>
     </item>
     <item row="11" column="0" colspan="2">
-     <widget class="QCheckBox" name="cb11">
-      <property name="minimumSize">
-       <size>
-        <width>220</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>2343  -8  0.8 1089</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="0" colspan="2">
-     <widget class="QCheckBox" name="cb12">
-      <property name="minimumSize">
-       <size>
-        <width>220</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>2343  -8  0.8 1089</string>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="0" colspan="2">
-     <widget class="QCheckBox" name="cb13">
-      <property name="minimumSize">
-       <size>
-        <width>220</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>2343  -8  0.8 1089</string>
-      </property>
-     </widget>
-    </item>
-    <item row="14" column="0" colspan="2">
-     <widget class="QCheckBox" name="cb14">
-      <property name="minimumSize">
-       <size>
-        <width>220</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>2343  -8  0.8 1089</string>
-      </property>
-     </widget>
-    </item>
-    <item row="15" column="0" colspan="2">
-     <widget class="QCheckBox" name="cb15">
-      <property name="minimumSize">
-       <size>
-        <width>220</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Courier New</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>2343  -8  0.8 1089</string>
-      </property>
-     </widget>
-    </item>
-    <item row="16" column="0">
      <widget class="QPushButton" name="pbClrAvg">
       <property name="text">
        <string>Clear Avg</string>
       </property>
      </widget>
     </item>
-    <item row="16" column="1">
+    <item row="11" column="2">
      <widget class="QPushButton" name="pbDecode">
       <property name="text">
        <string>Decode</string>

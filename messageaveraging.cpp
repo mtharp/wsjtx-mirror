@@ -17,13 +17,19 @@ MessageAveraging::MessageAveraging(QWidget *parent) :
   cb.append(ui->cb8);
   cb.append(ui->cb9);
   cb.append(ui->cb10);
-  cb.append(ui->cb11);
-  cb.append(ui->cb12);
-  cb.append(ui->cb13);
-  cb.append(ui->cb14);
-  cb.append(ui->cb15);
-  for(int i=0; i<15; i++) {
-    cb[i]->setText("     ");
+  QList<QLineEdit*> t;
+  t.append(ui->lineEdit_1);
+  t.append(ui->lineEdit_2);
+  t.append(ui->lineEdit_3);
+  t.append(ui->lineEdit_4);
+  t.append(ui->lineEdit_5);
+  t.append(ui->lineEdit_6);
+  t.append(ui->lineEdit_7);
+  t.append(ui->lineEdit_8);
+  t.append(ui->lineEdit_9);
+  t.append(ui->lineEdit_10);
+  for(int i=0; i<10; i++) {
+    t[i]->setText("");
   }
 }
 

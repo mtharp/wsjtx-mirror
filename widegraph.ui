@@ -348,7 +348,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>2d gain</string>
+          <string>Spectrum gain</string>
          </property>
          <property name="minimum">
           <number>-50</number>
@@ -432,7 +432,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>2d zero</string>
+          <string>Spectrum zero</string>
          </property>
          <property name="minimum">
           <number>-50</number>
