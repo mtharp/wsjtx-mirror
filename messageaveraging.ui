@@ -18,7 +18,7 @@
     <rect>
      <x>11</x>
      <y>10</y>
-     <width>178</width>
+     <width>184</width>
      <height>327</height>
     </rect>
    </property>
@@ -88,6 +88,9 @@
       <property name="text">
        <string>1229 -22  0.2 3002</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="2" column="0">
@@ -136,6 +139,9 @@
       </property>
       <property name="text">
        <string>1229 -22  0.2 3002</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -186,6 +192,9 @@
       <property name="text">
        <string>1229 -22  0.2 3002</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="4" column="0">
@@ -234,6 +243,9 @@
       </property>
       <property name="text">
        <string>1229 -22  0.2 3002</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -284,6 +296,9 @@
       <property name="text">
        <string>1229 -22  0.2 3002</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="6" column="0">
@@ -332,6 +347,9 @@
       </property>
       <property name="text">
        <string>1229 -22  0.2 3002</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -382,6 +400,9 @@
       <property name="text">
        <string>1229 -22  0.2 3002</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="8" column="0">
@@ -430,6 +451,9 @@
       </property>
       <property name="text">
        <string>1229 -22  0.2 3002</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -480,6 +504,9 @@
       <property name="text">
        <string>1229 -22  0.2 3002</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="10" column="0">
@@ -529,10 +556,19 @@
       <property name="text">
        <string>1229 -22  0.2 3002</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="11" column="0" colspan="2">
      <widget class="QPushButton" name="pbClrAvg">
+      <property name="minimumSize">
+       <size>
+        <width>87</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="text">
        <string>Clear Avg</string>
       </property>
@@ -540,6 +576,18 @@
     </item>
     <item row="11" column="2">
      <widget class="QPushButton" name="pbDecode">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>87</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="text">
        <string>Decode</string>
       </property>

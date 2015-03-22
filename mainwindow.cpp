@@ -1945,30 +1945,32 @@ void MainWindow::doubleClickOnCall2(bool shift, bool ctrl)
 
 void MainWindow::toggleIncludeInAvg(QString t)
 {
-  qDebug() << "A" << t;
+  qDebug() << "B" << t;
 }
 
 void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 {
   QTextCursor cursor;
-  if(!m_decodedText2) cursor=ui->decodedTextBrowser2->textCursor();
-  if(m_decodedText2) cursor=ui->decodedTextBrowser->textCursor();
+  QString t;                         //Full contents
+  if(shift) t="";                    //Silence compiler warning
+  if(m_decodedText2) {
+    cursor=ui->decodedTextBrowser->textCursor();
+    t= ui->decodedTextBrowser->toPlainText();
+  } else {
+    cursor=ui->decodedTextBrowser2->textCursor();
+    t= ui->decodedTextBrowser2->toPlainText();
+  }
+//  if(t.indexOf("\n")==0) t=t.mid(1,-1);
   cursor.select(QTextCursor::LineUnderCursor);
   int i2=cursor.position();
-
-  QString t;
-  if(!m_decodedText2) t= ui->decodedTextBrowser2->toPlainText(); //Full contents
-  if(m_decodedText2) t= ui->decodedTextBrowser->toPlainText();
-
   QString t1 = t.mid(0,i2);              //contents up to \n on selected line
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
   decodedtext = t1.mid(i1,i2-i1);         //selected line
+//  qDebug() << "a" << cursor.selectionStart() << cursor.selectionEnd() << cursor.selectedText();
+//  qDebug() << "b" << i1 << i2 << t1.mid(i1,i2-i1);
 
-  if(shift) {
-    toggleIncludeInAvg(t1.mid(i1,i2-i1));
-    return;
-  }
+  if(m_msgAvgWidget) m_msgAvgWidget->addItem(cursor.selectedText().mid(0,18));
 
   if (decodedtext.indexOf(" CQ ") > 0)
     {

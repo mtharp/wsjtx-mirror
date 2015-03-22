@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QCheckBox>
+#include <QList>
+#include <QLineEdit>
 
 class QSettings;
 
@@ -17,6 +20,8 @@ class MessageAveraging : public QWidget
 public:
   explicit MessageAveraging(QSettings * settings, QWidget *parent = 0);
   ~MessageAveraging();
+
+  void addItem(QString t);
 
 signals:
   void clearAverage() const;
@@ -33,6 +38,11 @@ private:
   void read_settings ();
   void write_settings ();
   QSettings * settings_;
+  QList<QCheckBox*> m_cb;
+  QList<QLineEdit*> m_t;
+
+  qint32 m_k;
+
   Ui::MessageAveraging *ui;
 };
 
