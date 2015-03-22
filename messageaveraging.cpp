@@ -84,20 +84,30 @@ void MessageAveraging::addItem(QString t)
 
 void MessageAveraging::on_pbCompress_clicked()
 {
-  qDebug() << "Compress";
-  for(int i=0; i<m_k; i++) {
-    if(!m_cb[i]->isChecked()) {
-      for(int j=i; j<=m_k; j++) {
-        bool b=m_cb[j+1]->isChecked();
-        if(b) {
-          QString t=m_t[j+1]->text();
-          qDebug() << "a" << i << j << m_k << t << b;
-          m_t[i]->setText(t);
-          m_cb[i]->setChecked(b);
-          goto next_i;
-        }
-      }
+  int i,j;
+  int k=0;
+  for(i=0; i<=m_k; i++) {
+    if(m_cb[i]->isChecked()) {
+      k+=1;
+    } else {
+      m_t[i]->setText("");
     }
-next_i: m_k-=1;
   }
+
+  for(i=0; i<m_k; i++) {
+    if(!m_cb[i]->isChecked()) {
+      for(j=i+1; j<m_k; j++) {
+        if(m_cb[j]->isChecked()) break;
+      }
+      m_cb[i]->setChecked(true);
+      m_t[i]->setText(m_t[j]->text());
+      m_cb[j]->setChecked(false);
+      m_t[j]->setText("");
+    }
+  }
+
+  for(i=k; i<=m_k; i++) {
+    m_cb[i]->setChecked(false);
+  }
+  m_k=k;
 }
