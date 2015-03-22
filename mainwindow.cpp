@@ -171,7 +171,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   //            SLOT(dialFreqChanged2(double)));
   connect (this, &MainWindow::finished, m_wideGraph.data (), &WideGraph::close);
 
-
   // setup the log QSO dialog
   connect (m_logDlg.data (), &LogQSO::acceptQSO, this, &MainWindow::acceptQSO2);
   connect (this, &MainWindow::finished, m_logDlg.data (), &LogQSO::close);
@@ -1099,10 +1098,12 @@ void MainWindow::on_actionMessage_averaging_triggered()
 {
   if (!m_msgAvgWidget)
     {
-      m_msgAvgWidget.reset (new MessageAveraging);
+      m_msgAvgWidget.reset (new MessageAveraging {m_settings});
 
-      // hook up termination signal
+      // Connect signals from Message Averaging window
       connect (this, &MainWindow::finished, m_msgAvgWidget.data (), &MessageAveraging::close);
+      connect( m_msgAvgWidget.data (), SIGNAL(clearAverage()), this, SLOT(clrAvg()));
+      connect( m_msgAvgWidget.data (), SIGNAL(msgAvgDecode()), this, SLOT(msgAvgDecode2()));
     }
   m_msgAvgWidget->showNormal();
 }
@@ -1292,6 +1293,17 @@ void MainWindow::on_DecodeButton_clicked (bool /* checked */)	//Decode request
 void MainWindow::freezeDecode(int n)                          //freezeDecode()
 {
   if((n%100)==2) on_DecodeButton_clicked (true);
+}
+
+void MainWindow::clrAvg()
+{
+  qDebug() << "ClrAvg";
+}
+
+void MainWindow::msgAvgDecode2()
+{
+  qDebug() << "MsgAvgDecode2";
+  on_DecodeButton_clicked (true);
 }
 
 void MainWindow::decode()                                       //decode()

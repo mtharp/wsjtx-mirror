@@ -1,8 +1,10 @@
+#include <QSettings>
 #include "messageaveraging.h"
 #include "ui_messageaveraging.h"
 
-MessageAveraging::MessageAveraging(QWidget *parent) :
+MessageAveraging::MessageAveraging(QSettings * settings, QWidget *parent) :
   QWidget(parent),
+  settings_ {settings},
   ui(new Ui::MessageAveraging)
 {
   ui->setupUi(this);
@@ -31,19 +33,42 @@ MessageAveraging::MessageAveraging(QWidget *parent) :
   for(int i=0; i<10; i++) {
     t[i]->setText("");
   }
+  read_settings ();
 }
 
 MessageAveraging::~MessageAveraging()
 {
+  if (isVisible ()) write_settings ();
   delete ui;
+}
+
+void MessageAveraging::closeEvent (QCloseEvent * e)
+{
+  write_settings ();
+  QWidget::closeEvent (e);
+}
+void MessageAveraging::read_settings ()
+{
+  settings_->beginGroup ("MessageAveraging");
+  move (settings_->value ("window/pos", pos ()).toPoint ());
+  settings_->endGroup ();
+}
+
+void MessageAveraging::write_settings ()
+{
+  settings_->beginGroup ("MessageAveraging");
+  settings_->setValue ("window/pos", pos ());
+  settings_->endGroup ();
 }
 
 void MessageAveraging::on_pbDecode_clicked()
 {
   qDebug() << "Decode";
+  emit msgAvgDecode();
 }
 
 void MessageAveraging::on_pbClrAvg_clicked()
 {
-  qDebug() << "Clear Avg";
+  emit clearAverage();
 }
+

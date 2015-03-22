@@ -80,6 +80,8 @@ public slots:
   void jt9_error(QProcess::ProcessError);
   void setXIT(int n);
   void setFreq4(int rxFreq, int txFreq);
+  void clrAvg();
+  void msgAvgDecode2();
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
