@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Message Averaging</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>13</x>
@@ -67,6 +67,9 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -118,6 +121,9 @@
         <family>Courier New</family>
         <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
       </property>
       <property name="text">
        <string/>
@@ -171,6 +177,9 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -222,6 +231,9 @@
         <family>Courier New</family>
         <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
       </property>
       <property name="text">
        <string/>
@@ -275,6 +287,9 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -326,6 +341,9 @@
         <family>Courier New</family>
         <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
       </property>
       <property name="text">
        <string/>
@@ -379,6 +397,9 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -430,6 +451,9 @@
         <family>Courier New</family>
         <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
       </property>
       <property name="text">
        <string/>
@@ -483,6 +507,9 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -535,6 +562,9 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>Check to include in average</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -581,6 +611,9 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="toolTip">
+       <string>Remove unselected entries</string>
+      </property>
       <property name="text">
        <string>Compress</string>
       </property>
@@ -606,6 +639,9 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="toolTip">
+       <string>Clear all entries</string>
+      </property>
       <property name="text">
        <string>Clear All</string>
       </property>
@@ -624,6 +660,9 @@
         <width>160</width>
         <height>0</height>
        </size>
+      </property>
+      <property name="toolTip">
+       <string>Attempt decoding again</string>
       </property>
       <property name="text">
        <string>Decode</string>
