@@ -185,6 +185,10 @@ private slots:
   void on_actionMessage_averaging_triggered();
   void on_sbTol_valueChanged(int i);
 
+  void on_actionInclude_averaging_triggered();
+
+  void on_actionInclude_correlation_triggered();
+
 private:
   void enable_DXCC_entity (bool on);
 

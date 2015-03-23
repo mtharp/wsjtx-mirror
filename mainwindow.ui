@@ -2485,6 +2485,8 @@ list. The list can be maintained in Settings (F2).</string>
     <addaction name="actionQuickDecode"/>
     <addaction name="actionMediumDecode"/>
     <addaction name="actionDeepestDecode"/>
+    <addaction name="actionInclude_averaging"/>
+    <addaction name="actionInclude_correlation"/>
    </widget>
    <widget class="QMenu" name="menuSave">
     <property name="title">
@@ -2681,7 +2683,7 @@ list. The list can be maintained in Settings (F2).</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Deepest</string>
+    <string>Deep</string>
    </property>
   </action>
   <action name="actionMonitor_OFF_at_startup">
@@ -2885,6 +2887,22 @@ list. The list can be maintained in Settings (F2).</string>
     <string>F7</string>
    </property>
   </action>
+  <action name="actionInclude_averaging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Include averaging</string>
+   </property>
+  </action>
+  <action name="actionInclude_correlation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Include correlation</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -2940,24 +2958,7 @@ list. The list can be maintained in Settings (F2).</string>
   <tabstop>pbCallCQ</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>monitorButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>update()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>264</x>
-     <y>275</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>126</x>
-     <y>515</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup">
    <property name="exclusive">

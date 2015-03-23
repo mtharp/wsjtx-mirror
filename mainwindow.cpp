@@ -194,6 +194,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionQuickDecode->setActionGroup(DepthGroup);
   ui->actionMediumDecode->setActionGroup(DepthGroup);
   ui->actionDeepestDecode->setActionGroup(DepthGroup);
+  ui->actionInclude_averaging->setActionGroup(DepthGroup);
+  ui->actionInclude_correlation->setActionGroup(DepthGroup);
 
   QButtonGroup* txMsgButtonGroup = new QButtonGroup;
   txMsgButtonGroup->addButton(ui->txrb1,1);
@@ -595,6 +597,8 @@ void MainWindow::readSettings()
   if(m_ndepth==1) ui->actionQuickDecode->setChecked(true);
   if(m_ndepth==2) ui->actionMediumDecode->setChecked(true);
   if(m_ndepth==3) ui->actionDeepestDecode->setChecked(true);
+  if(m_ndepth==4) ui->actionInclude_averaging->setChecked(true);
+  if(m_ndepth==5) ui->actionInclude_correlation->setChecked(true);
 
   statusChanged();
 }
@@ -1432,7 +1436,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
 
 //        qDebug() << "A" << decodedtext.snr() << decodedtext.dt() << decodedtext.frequencyOffset();
 //        qDebug() << "a" << decodedtext.frequencyOffset() << ui->RxFreqSpinBox->value ();
-        if(m_msgAvgWidget) {
+        if(m_msgAvgWidget and (t.trimmed().length()<=20)) {
           m_msgAvgWidget->addItem(t.mid(0,18));
         }
         auto my_base_call = baseCall (m_config.my_callsign ());
@@ -2715,6 +2719,18 @@ void MainWindow::on_actionDeepestDecode_triggered()
 {
   m_ndepth=3;
   ui->actionDeepestDecode->setChecked(true);
+}
+
+void MainWindow::on_actionInclude_averaging_triggered()
+{
+  m_ndepth=4;
+  ui->actionInclude_averaging->setChecked(true);
+}
+
+void MainWindow::on_actionInclude_correlation_triggered()
+{
+  m_ndepth=5;
+  ui->actionInclude_correlation->setChecked(true);
 }
 
 void MainWindow::on_inGain_valueChanged(int n)
