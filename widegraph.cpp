@@ -1,15 +1,12 @@
 #include "widegraph.h"
-
 #include <QApplication>
 #include <QSettings>
-
 #include "ui_widegraph.h"
 #include "commons.h"
 #include "Configuration.hpp"
-
 #include "moc_widegraph.cpp"
 
-#define MAX_SCREENSIZE 2048
+static float swide[MAX_SCREENSIZE];
 
 namespace
 {
@@ -55,7 +52,7 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->cbFlatten->setChecked(m_bFlatten);
   ui->widePlot->setFlatten(m_bFlatten);
   ui->widePlot->setBreadth(m_settings->value("PlotWidth",1000).toInt());
-  ui->freqSpanSpinBox->setValue(n);
+  ui->bppSpinBox->setValue(n);
   ui->widePlot->setNSpan(n);
   m_waterfallAvg = m_settings->value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
@@ -119,7 +116,7 @@ void WideGraph::saveSettings()
   m_settings->setValue ("Plot2dGain", ui->widePlot->getPlot2dGain());
   m_settings->setValue ("Plot2dZero", ui->widePlot->getPlot2dZero());
   m_settings->setValue ("PlotWidth", ui->widePlot->plotWidth ());
-  m_settings->setValue ("FreqSpan", ui->freqSpanSpinBox->value ());
+  m_settings->setValue ("FreqSpan", ui->bppSpinBox->value ());
   m_settings->setValue ("WaterfallAvg", ui->waterfallAvgSpinBox->value ());
   m_settings->setValue ("Current", ui->widePlot->current());
   m_settings->setValue ("Cumulative", ui->widePlot->cumulative());
@@ -137,7 +134,6 @@ void WideGraph::dataSink2(float s[], float df3, int ihsym,
                           int ndiskdata)
 {
   static float splot[NSMAX];
-	static float swide[MAX_SCREENSIZE];
   int nbpp = ui->widePlot->binsPerPixel();
   static int n=0;
 
@@ -179,7 +175,7 @@ void WideGraph::dataSink2(float s[], float df3, int ihsym,
   }
 }
 
-void WideGraph::on_freqSpanSpinBox_valueChanged(int n)
+void WideGraph::on_bppSpinBox_valueChanged(int n)
 {
   ui->widePlot->setBinsPerPixel(n);
 }
@@ -408,6 +404,7 @@ void WideGraph::on_zeroSlider_valueChanged(int value)
 void WideGraph::on_gain2dSlider_valueChanged(int value)
 {
   ui->widePlot->setPlot2dGain(value);
+//  ui->widePlot->draw(swide);
 }
 
 void WideGraph::on_zero2dSlider_valueChanged(int value)

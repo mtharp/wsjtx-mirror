@@ -1,12 +1,12 @@
 // -*- Mode: C++ -*-
 #ifndef WIDEGRAPH_H
 #define WIDEGRAPH_H
-
 #include <QDialog>
 #include <QScopedPointer>
 #include <QDir>
-
 #include "WFPalette.hpp"
+
+#define MAX_SCREENSIZE 2048
 
 namespace Ui {
   class WideGraph;
@@ -61,7 +61,7 @@ protected:
 
 private slots:
   void on_waterfallAvgSpinBox_valueChanged(int arg1);
-  void on_freqSpanSpinBox_valueChanged(int arg1);
+  void on_bppSpinBox_valueChanged(int arg1);
   void on_spec2dComboBox_currentIndexChanged(const QString &arg1);
   void on_fSplitSpinBox_valueChanged(int n);
   void on_fStartSpinBox_valueChanged(int n);

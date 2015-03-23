@@ -1124,7 +1124,7 @@ void MainWindow::on_actionOpen_triggered()                     //Open File
     m_path=fname;
     int i1=fname.lastIndexOf("/");
     QString baseName=fname.mid(i1+1);
-    tx_status_label->setStyleSheet("QLabel{background-color: #66ff66}");
+    tx_status_label->setStyleSheet("QLabel{background-color: #99ffff}");
     tx_status_label->setText(" " + baseName + " ");
     on_stopButton_clicked();
     m_diskData=true;
@@ -1148,12 +1148,10 @@ void MainWindow::on_actionOpen_next_in_directory_triggered()   //Open Next
       int n=m_path.length();
       QString fname=m_path.replace(n-len,len,list.at(i+1));
       m_path=fname;
-      int i;
-      i=fname.indexOf(".wav") - 11;
-      if(i>=0) {
-        tx_status_label->setStyleSheet("QLabel{background-color: #66ff66}");
-        tx_status_label->setText(" " + fname.mid(i,len) + " ");
-      }
+      int i1=fname.lastIndexOf("/");
+      QString baseName=fname.mid(i1+1);
+      tx_status_label->setStyleSheet("QLabel{background-color: #99ffff}");
+      tx_status_label->setText(" " + baseName + " ");
       m_diskData=true;
       *future1 = QtConcurrent::run(getfile, fname, m_TRperiod);
       watcher1->setFuture(*future1);
@@ -1178,8 +1176,7 @@ void MainWindow::diskDat()                                   //diskDat()
     jt9com_.npts8=k/8;
 //    dataSink(k * sizeof (jt9com_.d2[0]));
     dataSink(k);
-    if(n%10 == 1 or n == m_hsymStop)
-      qApp->processEvents();                   //Keep GUI responsive
+    if(n%10 == 1 or n == m_hsymStop) qApp->processEvents();   //Keep GUI responsive
   }
 }
 
@@ -1393,38 +1390,34 @@ void MainWindow::readFromStdout()                             //readFromStdout
   while(proc_jt9.canReadLine())
     {
       QByteArray t=proc_jt9.readLine();
-      if(t.indexOf("<DecodeFinished>") >= 0)
-        {
-          m_bdecoded = (t.mid(23,1).toInt()==1);
-          bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
-          if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
-          jt9com_.nagain=0;
-          jt9com_.ndiskdat=0;
-          QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.open(QIODevice::ReadWrite);
-          ui->DecodeButton->setChecked (false);
-          decodeBusy(false);
-          m_RxLog=0;
-          m_startAnother=m_loopall;
-          m_blankLine=true;
-          return;
-        } else {
+      if(t.indexOf("<DecodeFinished>") >= 0) {
+        m_bdecoded = (t.mid(23,1).toInt()==1);
+        bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
+        if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
+        jt9com_.nagain=0;
+        jt9com_.ndiskdat=0;
+        QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.open(QIODevice::ReadWrite);
+        ui->DecodeButton->setChecked (false);
+        decodeBusy(false);
+        m_RxLog=0;
+        m_startAnother=m_loopall;
+        m_blankLine=true;
+        return;
+      } else {
         QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-          {
-            QTextStream out(&f);
-            if(m_RxLog==1) {
-              out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
-                  << "  " << (m_dialFreq / 1.e6) << " MHz  " << m_mode << endl;
-              m_RxLog=0;
-            }
-            int n=t.length();
-            out << t.mid(0,n-2) << endl;
-            f.close();
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+          QTextStream out(&f);
+          if(m_RxLog==1) {
+            out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
+                << "  " << (m_dialFreq / 1.e6) << " MHz  " << m_mode << endl;
+            m_RxLog=0;
           }
-        else
-          {
-            msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
-          }
+          int n=t.length();
+          out << t.mid(0,n-2) << endl;
+          f.close();
+        } else {
+          msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
+        }
 
         if(m_config.insert_blank () && m_blankLine) {
           QString band = " " + ADIF::bandFromFrequency ((m_dialFreq +
@@ -1437,9 +1430,14 @@ void MainWindow::readFromStdout()                             //readFromStdout
         DecodedText decodedtext;
         decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);
 
+//        qDebug() << "A" << decodedtext.snr() << decodedtext.dt() << decodedtext.frequencyOffset();
+//        qDebug() << "a" << decodedtext.frequencyOffset() << ui->RxFreqSpinBox->value ();
+        if(m_msgAvgWidget) {
+          m_msgAvgWidget->addItem(t.mid(0,18));
+        }
         auto my_base_call = baseCall (m_config.my_callsign ());
 
-        // the left band display
+        //Left (Band activity) window
         ui->decodedTextBrowser->displayDecodedText (decodedtext
                                                     , my_base_call
                                                     , m_config.DXCC ()
@@ -1451,7 +1449,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
 
         if (abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) // this msg is within 10 hertz of our tuned frequency
           {
-            // the right QSO window
+        //Right (Rx Frequency) window
             ui->decodedTextBrowser2->displayDecodedText(decodedtext
                                                         , my_base_call
                                                         , false
@@ -1946,11 +1944,6 @@ void MainWindow::doubleClickOnCall2(bool shift, bool ctrl)
   m_decodedText2=true;
   doubleClickOnCall(shift,ctrl);
   m_decodedText2=false;
-}
-
-void MainWindow::toggleIncludeInAvg(QString t)
-{
-  qDebug() << "B" << t;
 }
 
 void MainWindow::doubleClickOnCall(bool shift, bool ctrl)

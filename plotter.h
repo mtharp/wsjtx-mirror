@@ -39,7 +39,7 @@ public:
   void setPlotGain(int plotGain);
   int  getPlotGain();
   int getPlot2dGain();
-  void setPlot2dGain(int plot2dGain);
+  void setPlot2dGain(int n);
   int getPlot2dZero();
   void setPlot2dZero(int plot2dZero);
   void setStartFreq(int f);

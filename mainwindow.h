@@ -401,7 +401,6 @@ private:
   void pskSetLocal ();
   void displayDialFrequency ();
   void transmitDisplay (bool);
-  void toggleIncludeInAvg(QString t);
 };
 
 extern void getfile(QString fname, int ntrperiod);

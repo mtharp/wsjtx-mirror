@@ -387,9 +387,10 @@ int CPlotter::getPlot2dGain()
   return m_plot2dGain;
 }
 
-void CPlotter::setPlot2dGain(int plot2dGain)
+void CPlotter::setPlot2dGain(int n)
 {
-  m_plot2dGain=plot2dGain;
+  m_plot2dGain=n;
+  update();
 }
 
 int CPlotter::getPlot2dZero()
@@ -536,5 +537,4 @@ void CPlotter::setTol(int n)                                 //setTol()
 {
   m_tol=n;
   DrawOverlay();
-  qDebug() << "A" << m_tol;
 }
