@@ -1,5 +1,5 @@
 subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
-     mycall,hiscall,hisgrid,qual,ns,ncount,kdecoded)
+     mycall,hiscall,hisgrid,qual,ns,ncount,kdecoded,snrave,dtave,nfave)
 
 ! Decodes averaged JT4 data for the specified segment (mseg=1 or 2).
 
@@ -25,14 +25,25 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
 
 ! Compute the average of all flagged soft symbols for this segment.
   sym=0.
+  snrsum=0.
+  dtsum=0.
+  fsum=0.
   ns=0
   do k=1,nsave
      if(nflag(k).eq.1 .and. iseg(k).eq.mseg) then
         sym(1:207,1:7)=sym(1:207,1:7) + ppsave(1:207,1:7,k)
+        snrsum=snrsum + snrsave(k)
+        dtsum=dtsum + dtsave(k)
+        fsum=fsum + nfsave(k)
         ns=ns+1
      endif
   enddo
-  if(ns.gt.0) sym=sym/ns
+  if(ns.gt.0) then
+     sym=sym/ns
+     snrave=snrsum/ns
+     dtave=dtsum/ns
+     nfave=nint(fsum/ns)
+  endif
 
   nadd=nused*mode4
   kbest=ich1

@@ -2,7 +2,10 @@ module jt4
   parameter (MAXAVE=120)
   integer nflag(MAXAVE)
   integer iseg(MAXAVE)
+  integer nfsave(MAXAVE)
   real    ppsave(207,7,MAXAVE)
+  real    dtsave(MAXAVE)
+  real    snrsave(MAXAVE)
   integer nsave,ich1,ich2
   integer nch(7)
   integer npr(207)
