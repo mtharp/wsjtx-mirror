@@ -78,11 +78,11 @@ void MessageAveraging::addItem(QString t)
 {
   m_t[m_k]->setText(t);
   m_cb[m_k]->setChecked(true);
-  jt9com_.nlist=m_k;
-  for(int i=0; i<m_k; i++) {
+  for(int i=0; i<=m_k; i++) {
     jt9com_.listutc[i]=m_t[i]->text().mid(0,4).toInt();
   }
   if(m_k<9) m_k+=1;
+  jt9com_.nlist=m_k;
 }
 
 
