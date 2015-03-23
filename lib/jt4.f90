@@ -4,10 +4,11 @@ module jt4
   integer nflag(MAXAVE)
   integer iseg(MAXAVE)
   integer nfsave(MAXAVE)
+  integer listutc(10)
   real    ppsave(207,7,MAXAVE)
   real    dtsave(MAXAVE)
   real    snrsave(MAXAVE)
-  integer nsave,ich1,ich2
+  integer nsave,nlist,ich1,ich2
   integer nch(7)
   integer npr(207)
   data nch/1,2,4,9,18,36,72/

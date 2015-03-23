@@ -1,6 +1,7 @@
 #include <QSettings>
 #include "messageaveraging.h"
 #include "ui_messageaveraging.h"
+#include "commons.h"
 
 MessageAveraging::MessageAveraging(QSettings * settings, QWidget *parent) :
   QWidget(parent),
@@ -60,7 +61,6 @@ void MessageAveraging::write_settings ()
 
 void MessageAveraging::on_pbDecode_clicked()
 {
-  qDebug() << "Decode";
   emit msgAvgDecode();
 }
 
@@ -78,6 +78,10 @@ void MessageAveraging::addItem(QString t)
 {
   m_t[m_k]->setText(t);
   m_cb[m_k]->setChecked(true);
+  jt9com_.nlist=m_k;
+  for(int i=0; i<m_k; i++) {
+    jt9com_.listutc[i]=m_t[i]->text().mid(0,4).toInt();
+  }
   if(m_k<9) m_k+=1;
 }
 
@@ -110,4 +114,9 @@ void MessageAveraging::on_pbCompress_clicked()
     m_cb[i]->setChecked(false);
   }
   m_k=k;
+
+  jt9com_.nlist=m_k;
+  for(int i=0; i<m_k; i++) {
+    jt9com_.listutc[i]=m_t[i]->text().mid(0,4).toInt();
+  }
 }

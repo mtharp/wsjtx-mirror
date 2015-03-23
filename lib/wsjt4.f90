@@ -1,6 +1,6 @@
-subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
-     mode,mode4,minw,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth, &
-     neme,idf,lumsg,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
+subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,DFTolerance,               &
+     NFreeze,mode,mode4,minw,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,     &
+     ndepth,neme,idf,lumsg,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  

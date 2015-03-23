@@ -1308,7 +1308,6 @@ void MainWindow::clrAvg()
 
 void MainWindow::msgAvgDecode2()
 {
-  qDebug() << "MsgAvgDecode2";
   on_DecodeButton_clicked (true);
 }
 
@@ -1436,7 +1435,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
 
 //        qDebug() << "A" << decodedtext.snr() << decodedtext.dt() << decodedtext.frequencyOffset();
 //        qDebug() << "a" << decodedtext.frequencyOffset() << ui->RxFreqSpinBox->value ();
-        if(m_msgAvgWidget and (t.trimmed().length()<=20)) {
+        if(m_msgAvgWidget and (t.trimmed().length()<=20) and jt9com_.newdat==1) {
           m_msgAvgWidget->addItem(t.mid(0,18));
         }
         auto my_base_call = baseCall (m_config.my_callsign ());
