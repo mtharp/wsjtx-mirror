@@ -287,7 +287,14 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==4) bw=18*bw;
     if(m_nSubMode==5) bw=36*bw;
     if(m_nSubMode==6) bw=72*bw;
+
+    QPen pen0(Qt::green, 4);                 //Mark Tol range with fat green line
+    painter0.setPen(pen0);
+    x1=XfromFreq(m_rxFreq-m_tol);
+    x2=XfromFreq(m_rxFreq+m_tol);
+    painter0.drawLine(x1,28,x2,28);
   }
+
   if(m_modeTx=="JT65") {                     //JT65
     bw=66.0*11025.0/4096.0;
     if(m_nSubMode==1) bw=2*bw;
