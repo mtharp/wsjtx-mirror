@@ -2369,8 +2369,20 @@ list. The list can be maintained in Settings (F2).</string>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QLabel" name="labTol">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
-           <string>100</string>
+           <string>Tol 500</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -2390,6 +2402,12 @@ list. The list can be maintained in Settings (F2).</string>
             <width>18</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="maximum">
+           <number>7</number>
+          </property>
+          <property name="value">
+           <number>5</number>
           </property>
          </widget>
         </item>

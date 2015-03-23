@@ -42,6 +42,7 @@ public:
   void   setLockTxFreq(bool b);
   double fGreen();
   bool   flatten();
+  void   setTol(int n);
 
 signals:
   void freezeDecode2(int n);

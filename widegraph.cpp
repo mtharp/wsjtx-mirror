@@ -414,3 +414,11 @@ void WideGraph::on_zero2dSlider_valueChanged(int value)
 {
   ui->widePlot->setPlot2dZero(value);
 }
+
+void WideGraph::setTol(int n)
+{
+//  ui->widePlot->m_tol=n;
+  ui->widePlot->setTol(n);
+  ui->widePlot->DrawOverlay();
+  ui->widePlot->update();
+}

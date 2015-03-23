@@ -338,6 +338,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   decodeBusy(false);
   m_MinW=0;
   m_nSubMode=0;
+  m_tol=500;
+  m_wideGraph->setTol(m_tol);
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
@@ -456,6 +458,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
   ui->submodeComboBox->setVisible(b);
   ui->MinW_comboBox->setVisible(b);
+  ui->labTol->setStyleSheet( \
+        "QLabel { background-color : white; color : black; }");
+  ui->labTol->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -3364,4 +3369,13 @@ void MainWindow::transmitDisplay (bool transmitting)
           ui->pbTxMode->setEnabled (false);
         }
     }
+}
+
+void MainWindow::on_sbTol_valueChanged(int i)
+{
+  static int ntol[] = {10,20,50,100,200,500,1000,2000};
+  m_tol=ntol[i];
+  m_wideGraph->setTol(m_tol);
+  QString t="Tol " + QString::number(ntol[i]);
+  ui->labTol->setText(t);
 }

@@ -182,8 +182,8 @@ private slots:
   void auto_tx_mode (bool);
   void on_submodeComboBox_currentIndexChanged(int n);
   void on_MinW_comboBox_currentIndexChanged(int n);
-
   void on_actionMessage_averaging_triggered();
+  void on_sbTol_valueChanged(int i);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -260,6 +260,7 @@ private:
   qint32  m_astroFont;
   qint32  m_nSubMode;
   qint32  m_MinW;
+  qint32  m_tol;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

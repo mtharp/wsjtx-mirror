@@ -77,6 +77,7 @@ public:
   void setLockTxFreq(bool b) {m_lockTxFreq = b;}
   void setColours(QVector<QColor> const& cl) {m_ColorTbl = cl;}
   void setFlatten(bool b);
+  void setTol(int n);
 
 signals:
   void freezeDecode1(int n);
@@ -151,6 +152,7 @@ private:
   qint32  m_fMin;
   qint32  m_fMax;
   qint32  m_startFreq;
+  qint32  m_tol;
 
   char    m_sutc[6];
 

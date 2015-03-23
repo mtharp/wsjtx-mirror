@@ -531,3 +531,10 @@ void CPlotter::setFlatten(bool b)
   m_Flatten=0;
   if(b) m_Flatten=1;
 }
+
+void CPlotter::setTol(int n)                                 //setTol()
+{
+  m_tol=n;
+  DrawOverlay();
+  qDebug() << "A" << m_tol;
+}
