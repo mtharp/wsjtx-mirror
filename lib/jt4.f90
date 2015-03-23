@@ -1,5 +1,6 @@
 module jt4
   parameter (MAXAVE=120)
+  integer iutc(MAXAVE)
   integer nflag(MAXAVE)
   integer iseg(MAXAVE)
   integer nfsave(MAXAVE)

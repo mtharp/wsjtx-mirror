@@ -42,7 +42,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
 1000 format(i4.4)
   cfile6(5:6)='  '
 
-  call wsjt4(dat,jz2,cfile6,NClearAve,MinSigdB,                          &
+  call wsjt4(dat,jz2,nutc,NClearAve,MinSigdB,                          &
        ntol,NFreeze,mode,mode4,minw,mycall,hiscall,hisgrid,   &
        Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,nspecial,ndf,     &
        NSyncOK,ccf,psavg,ndiag,ps0)

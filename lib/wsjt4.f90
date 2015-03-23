@@ -1,4 +1,4 @@
-subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
+subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      mode,mode4,minw,mycall,hiscall,hisgrid,Nseg,MouseDF,NAgain,ndepth, &
      neme,idf,lumsg,nspecial,ndf,NSyncOK,ccfblue,ccfred,ndiag,ps0)
 
@@ -12,7 +12,7 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   real*4 ps0(450)
   integer DFTolerance
   logical first
-  character decoded*22,cfile6*6,special*5,cooo*3
+  character decoded*22,special*5,cooo*3
   character*22 avemsg1,avemsg2,deepmsg
   character*77 line,ave1,ave2
   character*1 csync,c1
@@ -116,13 +116,14 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
   if(i.le.20) decoded(i+2:)=cooo
 !  if(nqual.lt.6) decoded(22:22)='?'               !### ??? ###
 
+  iutc(nsave)=nutc
   snrsave(nsave)=snrx
   dtsave(nsave)=dtx-0.8
   nfsave(nsave)=ndf+idf+1270
 
-  write(line,1010) cfile6(1:4),nsnr,dtx-0.8,1270+jdf,csync,decoded,    &
+  write(line,1010) nutc,nsnr,dtx-0.8,1270+jdf,csync,decoded,    &
        kvqual,nqual,submode
-1010 format(a4,i4,f5.1,i5,1x,a1,1x,a22,i3,i4,1x,a1)
+1010 format(i4.4,i4,f5.1,i5,1x,a1,1x,a22,i3,i4,1x,a1)
 ! Blank all end-of-line stuff if no decode
   if(line(31:40).eq.'          ') line=line(:30)
 
@@ -145,16 +146,16 @@ subroutine wsjt4(dat,npts,cfile6,NClearAve,MinSigdB,DFTolerance,NFreeze,    &
      if(ncount2.ge.0) nc2=nused2
 
      if(ns1.ge.1) then                            !Write the average line
-        write(ave1,1010) cfile6,nint(snrave),dtave,nfave,' ',           &
+        write(ave1,1010) nutc,nint(snrave),dtave,nfave,' ',           &
              avemsg1,nused1,nqual1,char(ichar('A')+kdec1-1)
-1021    format(a4,4x,'Averaged:',4x,a22,i3,i4,1x,a1)
 !        if(ave1(31:40).eq.'          ') ave1=ave1(:30)
         if(avemsg1.ne.'                      ') write(lumsg,1011) ave1
      endif
 
 ! If Monitor segment #2 is available, write that line also
      if(ns2.ge.1) then
-        write(ave2,1021) cfile6,avemsg2,nc2,nqual2,char(ichar('A')+kdec1-1)
+        write(ave2,1010) nutc,nint(snrave),dtave,nfave,' ',           &
+             avemsg2,nused2,nqual2,char(ichar('A')+kdec2-1)
 !        if(ave2(31:40).eq.'          ') ave2=ave2(:30)
         if(avemsg2.ne.'                      ') write(lumsg,1011) ave2
      endif
