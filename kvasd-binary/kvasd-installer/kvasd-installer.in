@@ -2,7 +2,7 @@
 #
 # Title			: @PROGRAM@
 # Version		: @VERSION@
-# Execution		: .In a terminal: ./kvasd-installer
+# Execution		: In a terminal: ./kvasd-installer
 # Requirements	: Bash (>= 4.3), awk, GNU Core Utils, wget, dialog, subversion
 #
 # Author		: @AUTHORS@
@@ -42,6 +42,13 @@ BINDIR=@BINDIR@
 PKGINFO=@SHARED@/pkg-info.txt
 HELP="$TMP"/kvasd-installer_help.txt
 EULA="$TMP"/kvasd_eula.txt
+
+# Foreground colours
+C_R='\033[01;31m'	# red
+C_G='\033[01;32m'	# green
+C_Y='\033[01;33m'	# yellow
+C_C='\033[01;36m'	# cyan
+C_NC='\033[01;37m'	# no color
 
 #*******************************************************************************
 # LANGUAGE                                                                     *
@@ -206,9 +213,10 @@ exit
 
 # subversion check ------------------------------------------------------------#
 check_svn() {
-svn --version > /dev/null 2>&1 || {
-	clear
-	echo '** MISSING PACKAGE [ Subversion ] **'
+echo ''
+echo 'Testing For Subversion ....'
+svn --version > /dev/null 2>&1  && echo -e "* SVN Available .. ${C_G}OK${C_NC}" || {
+	echo -e ${C_R}'** MISSING PACKAGE [ Subversion ] **'${C_NC}
 	echo ''
 	echo 'You must have Subversion installed in order to use'
 	echo '@PROGRAM@. SVN should have been installed for you'
@@ -230,9 +238,12 @@ svn --version > /dev/null 2>&1 || {
 
 # internet check --------------------------------------------------------------#
 check_internet() {
-((ping -w5 -c3 www.sourceforge.net || ping -w5 -c3 8.8.8.8 || ping -w5 -c3 208.67.222.222) > /dev/null 2>&1) || {
+clear
+echo 'Testing Internet Access ...'
+((ping -w5 -c3 www.sourceforge.net || ping -w5 -c3 8.8.8.8 || ping -w5 -c3 208.67.222.222) > /dev/null 2>&1) && \
+echo -e "* Internet Access .. ${C_G}OK${C_NC}"|| {
 	clear
-	echo '** INTERNET CONNECTION FAILURE **'
+	echo -e ${C_R}'** INTERNET CONNECTION FAILURE **'${C_NC}
 	echo ''
 	echo 'You must have internet access in order to'
 	echo 'install the decoder. The following tests failed:'
@@ -275,7 +286,7 @@ if [ -f "$BASED"/accept-kvasd-eula ]; then
 	clear
 	echo ""
 	echo "-------------------------------------------"
-	echo " [ $LOGNAME ] Accepted (EULA)"
+	echo -e ${C_Y}" [ $LOGNAME ] Accepted (EULA)"${C_NC}
 	echo "-------------------------------------------"
 	TAG=$(tail -1 < "$BASED"/accept-kvasd-eula) 
 	echo ".. Acceptance Tag: $TAG" 
@@ -299,7 +310,7 @@ else
 		clear
 		echo ""
 		echo "-------------------------------------------"
-		echo " [ $LOGNAME ] Accepted (EULA)"
+		echo -e ${C_G}" [ $LOGNAME ] Accepted (EULA)"${C_NC}
 		echo "-------------------------------------------"
 		TAG=$(tail -1 < "$BASED"/accept-kvasd-eula)
 		echo ".. Acceptance Tag: $TAG" 
@@ -384,7 +395,7 @@ remove_kvasd() {
 
 clear
 echo "-------------------------------------------"
-echo " Removing KVASD Decoder"
+echo -e ${C_Y}" Removing KVASD Decoder"${C_NC}
 echo "-------------------------------------------"
 if [ -f "$BINDIR"/kvasd ]; then
 	echo ".. Found KVASD in /usr/bin .." 
@@ -404,7 +415,7 @@ fi
 basic_kvasd_test() {
 	clear
 	echo "-------------------------------------------"
-	echo " Basic KVASD Decoder Test"
+	echo -e ${C_Y}" Basic KVASD Decoder Test"${C_NC}
 	echo "-------------------------------------------"
 
 if (/usr/bin/kvasd -v > /dev/null 2>&1) ; [ "$?" = "0" ] ; then
@@ -413,7 +424,7 @@ if (/usr/bin/kvasd -v > /dev/null 2>&1) ; [ "$?" = "0" ] ; then
 	echo ".. Results: $KVASD_VERSION"
 	echo ""
 	echo "-------------------------------------------"
-	echo " KVASD LDD Information"
+	echo -e ${C_Y}" KVASD LDD Information"${C_NC}
 	echo "-------------------------------------------"
 	if [ -f "$TMP"/ldd-info.txt ] ; then rm "$TMP"/ldd-info.txt ; fi 
 	touch "$TMP"/ldd-info.txt
@@ -433,7 +444,9 @@ fi
 
 # fatal error message ---------------------------------------------------------#
 fatal_error_msg() {
-	echo " FATAL ERROR: The download failed. Possible Causes:"
+	echo -e ${C_R}"** FATAL ERROR **"${C_NC}
+	echo ''
+	echo "The download failed. Possible Causes:"
 	echo " [1] Server or Local Internet Problems"
 	echo " [2] KVASD binary is currupt"
 	echo " [3] KVASD dependencies are not met"
@@ -758,12 +771,6 @@ make_eula
 # mkdir home directories
 make_dirs
 
-# basic internet check
-check_internet
-
-# test for subversion installation
-check_svn
-
 # setup main menu
 while [ 0 ]; do
 
@@ -775,6 +782,12 @@ MMSELECT=$(head -c 1 < "$TMP"/selection)
 
 # install
 if [ "$MMSELECT" = "I" ]; then
+
+	# check internst access
+	check_internet
+	
+	# check if Subverison is installed
+	check_svn
 
 	# check user accept eula
 	accept_eula
@@ -808,7 +821,7 @@ if [ "$MMSELECT" = "I" ]; then
 		echo ".. Results: $KVASD_VERSION"
 		echo ""
 		echo "-------------------------------------------"
-		echo " KVASD LDD Information"
+		echo -e ${C_Y}" KVASD LDD Information"${C_NC}
 		echo "-------------------------------------------"
 		touch "$TMP"/ldd-info.txt
 		ldd /usr/bin/kvasd |tee -a "$TMP"/ldd-info.txt > /dev/null 2>&1
