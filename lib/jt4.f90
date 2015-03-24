@@ -5,12 +5,15 @@ module jt4
   integer iseg(MAXAVE)
   integer nfsave(MAXAVE)
   integer listutc(10)
-  real    ppsave(207,7,MAXAVE)
+  real    ppsave(207,7,MAXAVE)           !Accumulated data for message averaging
+  real    rsymbol(207,7)                 
   real    dtsave(MAXAVE)
+  real    syncsave(MAXAVE)
   real    snrsave(MAXAVE)
   integer nsave,nlist,ich1,ich2
   integer nch(7)
   integer npr(207)
+  data rsymbol/1449*0.0/
   data nch/1,2,4,9,18,36,72/
   data npr/                                                         &
        0,0,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0, &

@@ -14,11 +14,8 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
   character submode*1
   real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
   complex*16 cz,cz1,c0,c1
-  real*4 rsymbol(207,7)                 !Accumulated data for message averaging
   real*4 sym(207)
   integer amp
-  data rsymbol/1449*0.0/
-  save rsymbol
 
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)
@@ -114,7 +111,6 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      qual=qbest
   endif
   submode=char(ichar('A')+ichbest-1)
-  ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  !Save data for message averaging
 
   return
 end subroutine decode4
