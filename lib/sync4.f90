@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minw,    &
+subroutine sync4(dat,jz,ntol,NFreeze,nfqso,mode,mode4,minw,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -54,11 +54,11 @@ subroutine sync4(dat,jz,ntol,NFreeze,MouseDF,mode,mode4,minw,    &
   fa=famin
   fb=fbmax
   if(NFreeze.eq.1) then
-     fa=max(famin,1270.46+MouseDF-ntol)
-     fb=min(fbmax,1270.46+MouseDF+ntol)
+     fa=max(famin,float(nfqso-ntol))
+     fb=min(fbmax,float(nfqso+ntol))
   else
-     fa=max(famin,1270.46+MouseDF-600)
-     fb=min(fbmax,1270.46+MouseDF+600)
+     fa=max(famin,nfqso-600.0)
+     fb=min(fbmax,nfqso+600.0)
   endif
   ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
   ib=fb/df - 3*mode4                   !Index of lowest tone, top of range

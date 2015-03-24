@@ -20,11 +20,9 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
   NFreeze=0
   mode=7
   Nseg=1                          !???
-  MouseDF2=nfqso - 1270
 !  NAgain=0
 !  ndepth=3
   neme=1
-  idf=0                           !???
   lumsg=6                         !### temp ? ###
   ndiag=1
   nlist=nlist0
@@ -46,7 +44,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
 
   call wsjt4(dat,jz2,nutc,NClearAve,MinSigdB,                          &
        ntol,NFreeze,mode,mode4,minw,mycall,hiscall,hisgrid,            &
-       Nseg,MouseDF2,NAgain,ndepth,neme,idf,lumsg,nspecial,ndf,        &
+       Nseg,nfqso,NAgain,ndepth,neme,lumsg,nspecial,                   &
        NSyncOK,ccf,psavg,ndiag,ps0)
 
   return

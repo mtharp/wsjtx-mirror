@@ -8,8 +8,8 @@ subroutine avemsg4(mseg,mode4,ndepth,decoded,nused,nq1,nq2,neme,   &
   character mycall*12,hiscall*12,hisgrid*6
   real sym(207,7)
 
-  write(78,3001) nlist,listutc(1:nlist); flush(78)
-3001 format(i5,10i6.4)
+  write(78,3001) nsave,nlist,listutc(1:nlist); flush(78)
+3001 format(2i5,2x,10i6.4)
 
 ! Count the available spectra for this Monitor segment (mseg=1 or 2),
 ! and the number of spectra flagged as good.

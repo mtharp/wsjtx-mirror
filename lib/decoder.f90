@@ -10,7 +10,7 @@ subroutine decoder(ss,id2,nfsample)
   real*4 dd(NTMAX*12000)
   character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
   common/npar/nutc,ndiskdat,ntrperiod,nfqso,newdat,npts8,nfa,nfsplit,nfb,    &
-       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,minw,            &
+       ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,minw,nclearave,  &
        nlist,listutc(10),datetime,mycall,mygrid,hiscall,hisgrid
 
   common/tracer/limtrace,lu
