@@ -2,8 +2,8 @@
 #
 # Title			: @PROGRAM@
 # Version		: @VERSION@
-# Execution		: kvasd-installer
-# Requirements	: Bash (>= 4.3), awk, GNU Core Utils, wget, dialog
+# Execution		: .In a terminal: ./kvasd-installer
+# Requirements	: Bash (>= 4.3), awk, GNU Core Utils, wget, dialog, subversion
 #
 # Author		: @AUTHORS@
 # Copyright		: @COPYRIGHT@
@@ -203,6 +203,53 @@ exit
 
 } # end clean exit
 
+
+# subversion check ------------------------------------------------------------#
+check_svn() {
+svn --version > /dev/null 2>&1 || {
+	clear
+	echo '** MISSING PACKAGE [ Subversion ] **'
+	echo ''
+	echo 'You must have Subversion installed in order to use'
+	echo '@PROGRAM@. SVN should have been installed for you'
+	echo 'if using the system package manager. Please send'
+	echo 'a bug report too:'
+	echo ''
+	echo '<debian-hams@lists.debian.org>'
+	echo ''
+	echo 'To install manually, open a terminal and type:'
+	echo ''
+	echo 'sudo apt-get install subversion'
+	echo ''
+	echo 'Then try to re-run @PROGRAM@'
+	echo ''
+	read -p "Press [ Enter ] to exit ..."
+	clean_exit
+	}
+} # end subversion check
+
+# internet check --------------------------------------------------------------#
+check_internet() {
+((ping -w5 -c3 www.sourceforge.net || ping -w5 -c3 8.8.8.8 || ping -w5 -c3 208.67.222.222) > /dev/null 2>&1) || {
+	clear
+	echo '** INTERNET CONNECTION FAILURE **'
+	echo ''
+	echo 'You must have internet access in order to'
+	echo 'install the decoder. The following tests failed:'
+	echo ''
+	echo 'ping -w5 -c3 www.sourceforge.net || ping -w5 -c3 8.8.8.8 || ping -w5 -c3 208.67.222.222'
+	echo ''
+	echo 'Sourceforge..: www.sourceforge.net'
+	echo 'Google DNS ..: 8.8.8.8'
+	echo 'OpenDNS .....: 208.67.222.222'
+	echo ''
+	echo 'Check you can access the internet, resolve any connection'
+	echo "problems, then re-run @PROGRAM@"
+	echo ''
+	read -p "Press [ Enter ] to continue ..."
+	clean_exit
+	}
+}
 
 # make main menu --------------------------------------------------------------#
 make_menu() {
@@ -676,6 +723,7 @@ esac
 
 } # end KVASD_URL set
 
+
 #*******************************************************************************
 # MAIN SCRIPT                                                                  *
 #*******************************************************************************
@@ -708,6 +756,13 @@ make_help
 make_eula
 
 # mkdir home directories
+make_dirs
+
+# basic internet check
+check_internet
+
+# test for subversion installation
+check_svn
 
 # setup main menu
 while [ 0 ]; do
