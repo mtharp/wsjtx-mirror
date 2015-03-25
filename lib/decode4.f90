@@ -1,5 +1,5 @@
 subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
-     mycall,hiscall,hisgrid,decoded,ncount,deepbest,qbest,ichbest,submode)
+     mycall,hiscall,hisgrid,decoded,nfano,deepbest,qbest,ichbest)
 
 ! Decodes JT4 data, assuming that DT and DF have already been determined.
 ! Input dat(npts) has already been downsampled by 2: rate = 11025/2.
@@ -11,7 +11,6 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
   character decoded*22,deepmsg*22,deepbest*22
   character*12 mycall,hiscall
   character*6 hisgrid
-  character submode*1
   real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
   complex*16 cz,cz1,c0,c1
   real*4 sym(207)
@@ -88,6 +87,12 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      enddo
      
      call extract4(sym,ncount,decoded)          !Do the convolutional decode
+     nfano=0
+     if(ncount.ge.0) then
+        nfano=1
+        ichbest=ich
+        exit
+     endif
 
      qual=0.                                    !Now try deep search
      if(ndepth.ge.1) then
@@ -98,19 +103,8 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
            ichbest=ich
         endif
      endif
-
-     if(ncount.ge.0) then
-        ichbest=ich
-        exit
-     endif
-
   enddo
-
-  if(ncount.lt.0) then
-     decoded=deepbest
-     qual=qbest
-  endif
-  submode=char(ichar('A')+ichbest-1)
+  qual=qbest
 
   return
 end subroutine decode4
