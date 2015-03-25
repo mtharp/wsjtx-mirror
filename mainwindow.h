@@ -184,10 +184,11 @@ private slots:
   void on_MinW_comboBox_currentIndexChanged(int n);
   void on_actionMessage_averaging_triggered();
   void on_sbTol_valueChanged(int i);
-
   void on_actionInclude_averaging_triggered();
-
   void on_actionInclude_correlation_triggered();
+  void on_sbDT_valueChanged(double x);
+  void VHF_features_visible(bool b);
+  void on_cbEME_toggled(bool b);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -240,6 +241,7 @@ private:
 
   qint64  m_msErase;
   qint64  m_secBandChanged;
+  float   m_DTtol;
 
   qint32  m_waterfallAvg;
   qint32  m_ntx;
@@ -305,6 +307,7 @@ private:
   bool    m_CATerror;
   bool    m_plus2kHz;
   bool    m_bAstroData;
+  bool    m_bEME;
 
   float   m_pctZap;
 
@@ -355,7 +358,7 @@ private:
   QString m_cmnd;
   QString m_msgSent0;
   QString m_fileToSave;
-  QString  m_band;
+  QString m_band;
 
   QStringList m_prefix;
   QStringList m_suffix;

@@ -341,6 +341,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_MinW=0;
   m_nSubMode=0;
   m_tol=500;
+  m_DTtol=0.2;
   m_wideGraph->setTol(m_tol);
 
   signalMeter = new SignalMeter(ui->meterFrame);
@@ -457,12 +458,11 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_config.transceiver_online (true);
   on_monitorButton_clicked (!m_config.monitor_off_at_startup ());
 
-  bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
-  ui->submodeComboBox->setVisible(b);
-  ui->MinW_comboBox->setVisible(b);
   ui->labTol->setStyleSheet( \
         "QLabel { background-color : white; color : black; }");
   ui->labTol->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
+  VHF_features_visible(b);
 
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -507,6 +507,8 @@ void MainWindow::writeSettings()
   m_settings->setValue("TxFreq",ui->TxFreqSpinBox->value ());
   m_settings->setValue("minW",ui->MinW_comboBox->currentIndex ());
   m_settings->setValue("SubMode",ui->submodeComboBox->currentIndex ());
+  m_settings->setValue("DTtol",m_DTtol);
+  m_settings->setValue("EME",m_bEME);
   m_settings->setValue ("DialFreq", QVariant::fromValue(m_lastMonitoredFrequency));
   m_settings->setValue("InGain",m_inGain);
   m_settings->setValue("OutAttenuation", ui->outAttenuation->value ());
@@ -561,6 +563,10 @@ void MainWindow::readSettings()
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
   m_nSubMode=m_settings->value("SubMode",0).toInt();
   ui->submodeComboBox->setCurrentIndex(m_nSubMode);
+  m_DTtol=m_settings->value("DTtol",0.2).toFloat();
+  ui->sbDT->setValue(m_DTtol);
+  m_bEME=m_settings->value("EME",false).toBool();
+  ui->cbEME->setChecked(m_bEME);
   m_MinW=m_settings->value("minW",0).toInt();
   ui->MinW_comboBox->setCurrentIndex(m_MinW);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
@@ -713,8 +719,8 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
 
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
       displayDialFrequency ();
-      ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
-      ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
+      bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
+      VHF_features_visible(b);
     }
 
   setXIT (ui->TxFreqSpinBox->value ());
@@ -1348,13 +1354,18 @@ void MainWindow::decode()                                       //decode()
   jt9com_.ntrperiod=m_TRperiod;
   jt9com_.nsubmode=m_nSubMode;
   jt9com_.minw=m_MinW;
+  jt9com_.nclearave=m_nclearave;
+  jt9com_.dttol=m_DTtol;
+  jt9com_.emedelay=0.0;
+  if(m_bEME) jt9com_.emedelay=2.5;
+
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);
-  strncpy(jt9com_.mycall, m_config.my_callsign().toLatin1(),12);
-  strncpy(jt9com_.mygrid, m_config.my_grid().toLatin1(),6);
+  strncpy(jt9com_.mycall, (m_config.my_callsign()+"            ").toLatin1(),12);
+  strncpy(jt9com_.mygrid, (m_config.my_grid()+"      ").toLatin1(),6);
   QString hisCall=ui->dxCallEntry->text().toUpper().trimmed();
   QString hisGrid=ui->dxGridEntry->text().toUpper().trimmed();
-  strncpy(jt9com_.hiscall,hisCall.toLatin1(),12);
-  strncpy(jt9com_.hisgrid,hisGrid.toLatin1(),6);
+  strncpy(jt9com_.hiscall,(hisCall+"            ").toLatin1(),12);
+  strncpy(jt9com_.hisgrid,(hisGrid+"      ").toLatin1(),6);
 
   //newdat=1  ==> this is new data, must do the big FFT
   //nagain=1  ==> decode only at fQSO +/- Tol
@@ -1400,6 +1411,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
         if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
         jt9com_.nagain=0;
         jt9com_.ndiskdat=0;
+        m_nclearave=0;
         QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.open(QIODevice::ReadWrite);
         ui->DecodeButton->setChecked (false);
         decodeBusy(false);
@@ -3383,6 +3395,26 @@ void MainWindow::on_sbTol_valueChanged(int i)
   static int ntol[] = {10,20,50,100,200,500,1000,2000};
   m_tol=ntol[i];
   m_wideGraph->setTol(m_tol);
-  QString t="Tol " + QString::number(ntol[i]);
+  QString t="F Tol " + QString::number(ntol[i]);
   ui->labTol->setText(t);
+}
+
+void MainWindow::on_sbDT_valueChanged(double x)
+{
+  m_DTtol=x;
+}
+
+void MainWindow::VHF_features_visible(bool b)
+{
+  ui->submodeComboBox->setVisible(b);
+  ui->MinW_comboBox->setVisible(b);
+  ui->cbEME->setVisible(b);
+  ui->sbDT->setVisible(b);
+  ui->labTol->setVisible(b);
+  ui->sbTol->setVisible(b);
+}
+
+void MainWindow::on_cbEME_toggled(bool b)
+{
+  m_bEME=b;
 }

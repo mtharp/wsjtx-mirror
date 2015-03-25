@@ -2368,6 +2368,67 @@ list. The list can be maintained in Settings (F2).</string>
       <item row="7" column="7">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>5</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="sbDT">
+          <property name="toolTip">
+           <string>Tolerance for expected time offset.</string>
+          </property>
+          <property name="prefix">
+           <string> DT Tol  </string>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="minimum">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>3.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="8" column="7">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>5</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QLabel" name="labTol">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -2377,12 +2438,15 @@ list. The list can be maintained in Settings (F2).</string>
           </property>
           <property name="minimumSize">
            <size>
-            <width>50</width>
+            <width>60</width>
             <height>0</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Tolerance for offset from selected Rx frequency.</string>
+          </property>
           <property name="text">
-           <string>Tol 500</string>
+           <string>  F tol 500</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -2413,8 +2477,8 @@ list. The list can be maintained in Settings (F2).</string>
         </item>
        </layout>
       </item>
-      <item row="8" column="7">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item row="6" column="7">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
@@ -2425,7 +2489,7 @@ list. The list can be maintained in Settings (F2).</string>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>10</width>
+            <width>20</width>
             <height>20</height>
            </size>
           </property>
@@ -2433,6 +2497,15 @@ list. The list can be maintained in Settings (F2).</string>
         </item>
         <item>
          <widget class="QCheckBox" name="cbEME">
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Check to add 2.5 s to expected propagation delay.</string>
+          </property>
           <property name="text">
            <string>EME</string>
           </property>

@@ -28,6 +28,8 @@ extern struct FortranCommon {
   int nmode;
   int minw;
   int nclearave;
+  float emedelay;
+  float dttol;
   int nlist;
   int listutc[10];
   char datetime[20];
