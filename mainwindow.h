@@ -265,6 +265,7 @@ private:
   qint32  m_nSubMode;
   qint32  m_MinW;
   qint32  m_tol;
+  qint32  m_nclearave;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

@@ -247,7 +247,7 @@ set (wsjt_FSRCS
   lib/astro.f90
   lib/astrosub.f90
   lib/astro0.f90
-  lib/avemsg4.f90
+  lib/avg4.f90
   lib/azdist.f90
   lib/baddata.f90
   lib/ccf2.f90
