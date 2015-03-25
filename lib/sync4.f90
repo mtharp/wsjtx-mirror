@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,ntol,NFreeze,nfqso,mode,mode4,minw,    &
+subroutine sync4(dat,jz,ntol,NFreeze,nfmid,mode4,minw,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -31,7 +31,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,nfqso,mode,mode4,minw,    &
   nsteps=jz/nq - 1
   df=0.5*11025.0/nfft
   psavg(1:nh)=0.
-  if(mode.eq.-999) width=0.                        !Silence compiler warning
 
   do j=1,nsteps                 !Compute spectrum for each step, get average
      k=(j-1)*nq + 1
@@ -54,11 +53,11 @@ subroutine sync4(dat,jz,ntol,NFreeze,nfqso,mode,mode4,minw,    &
   fa=famin
   fb=fbmax
   if(NFreeze.eq.1) then
-     fa=max(famin,float(nfqso-ntol))
-     fb=min(fbmax,float(nfqso+ntol))
+     fa=max(famin,float(nfmid-ntol))
+     fb=min(fbmax,float(nfmid+ntol))
   else
-     fa=max(famin,nfqso-600.0)
-     fb=min(fbmax,nfqso+600.0)
+     fa=max(famin,nfmid-600.0)
+     fb=min(fbmax,nfmid+600.0)
   endif
   ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
   ib=fb/df - 3*mode4                   !Index of lowest tone, top of range
@@ -169,6 +168,13 @@ subroutine sync4(dat,jz,ntol,NFreeze,nfqso,mode,mode4,minw,    &
      if(ccfred1(i).le.ccf10) exit
   enddo
   width=(i-i1)*df
+
+  rewind 71
+  do i=-450,450
+     write(71,3001) i*df,ccfred(i)
+3001 format(2f12.3)
+  enddo
+  flush(71)
 
   return
 end subroutine sync4

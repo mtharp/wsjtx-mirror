@@ -508,6 +508,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("minW",ui->MinW_comboBox->currentIndex ());
   m_settings->setValue("SubMode",ui->submodeComboBox->currentIndex ());
   m_settings->setValue("DTtol",m_DTtol);
+  m_settings->setValue("Ftol",ui->sbTol->value());
   m_settings->setValue("EME",m_bEME);
   m_settings->setValue ("DialFreq", QVariant::fromValue(m_lastMonitoredFrequency));
   m_settings->setValue("InGain",m_inGain);
@@ -565,6 +566,7 @@ void MainWindow::readSettings()
   ui->submodeComboBox->setCurrentIndex(m_nSubMode);
   m_DTtol=m_settings->value("DTtol",0.2).toFloat();
   ui->sbDT->setValue(m_DTtol);
+  ui->sbTol->setValue(m_settings->value("Ftol",4).toInt());
   m_bEME=m_settings->value("EME",false).toBool();
   ui->cbEME->setChecked(m_bEME);
   m_MinW=m_settings->value("minW",0).toInt();
@@ -1338,7 +1340,7 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfSplit=m_wideGraph->getFmin();
   jt9com_.nfb=m_wideGraph->getFmax();
-  jt9com_.ntol=20;
+  jt9com_.ntol=m_tol;
   if(jt9com_.nutc < m_nutc0) m_RxLog = 1;       //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
   jt9com_.ntxmode=9;

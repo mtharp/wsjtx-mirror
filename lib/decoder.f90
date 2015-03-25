@@ -39,7 +39,7 @@ subroutine decoder(ss,id2,nfsample)
         if(nfsample.eq.11025) dd(1:jz)=id2(1:jz)
      endif
      call jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol,nagain,ndepth,      &
-          minw,nsubmode,mycall,mygrid,hiscall,hisgrid,nlist,listutc)
+          nclearave,minw,nsubmode,mycall,mygrid,hiscall,hisgrid,nlist,listutc)
      go to 800
   endif
 

@@ -1,6 +1,6 @@
-subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                    &
-     NFreeze,mode,mode4,minw,mycall,hiscall,hisgrid,Nseg,nfqso,NAgain,     &
-     ndepth,neme,lumsg,nspecial,NSyncOK,ccfblue,ccfred,ndiag,ps0)
+subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
+     mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,    &
+     ndepth,neme,nspecial,NSyncOK,ccfblue,ccfred,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
@@ -13,7 +13,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                    &
   logical first
   character decoded*22,special*5
   character*22 avemsg,deepmsg,deepave,blank
-  character*77 line,ave1,ave2
   character*1 csync
   character*12 mycall
   character*12 hiscall
@@ -24,12 +23,9 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                    &
   if(first) then
      nsave=0
      first=.false.
-     ave1=' '
-     ave2=' '
      blank='                      '
      ccfblue=0.
      ccfred=0.
-     if(ndiag.eq.-999) ave1='  '          !Silence compiler warning
      if(nspecial.eq.999) go to 900        !Silence compiler warning
   endif
 
@@ -41,12 +37,11 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                    &
 
   if(NClearAve.ne.0) then
      nsave=0                        !Clear the averaging accumulators
-     ave1=' '
-     ave2=' '
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
-  call sync4(dat,npts,DFTolerance,NFreeze,nfqso,mode,mode4,minw,  &
+  nfmid=nfqso + nint(1.5*mode4*4.375)
+  call sync4(dat,npts,ntol,NFreeze,nfmid,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
 
 !  do i=-224,224
@@ -62,17 +57,12 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                    &
   decoded=blank
   deepmsg=blank
   special='     '
-  ncount=-1             !Flag for convolutional decode of current record
-  ncount1=-1            !Flag for convolutional decode of ave1
-  ncount2=-1            !Flag for convolutional decode of ave2
   NSyncOK=0
   nqual1=0
   nqual2=0
 
 !  if(nsave.lt.MAXAVE .and. (NAgain.eq.0 .or. NClearAve.eq.1)) nsave=nsave+1
 !  if(nsave.le.0) go to 900          !Prevent bounds error
-!  nflag(nsave)=0                    !Clear the "good sync" flag
-!  iseg(nsave)=Nseg                  !Set the RX segment to 1 or 2
 
   nsync=snrsync
   nsnr=nint(snrx)

@@ -1,5 +1,6 @@
 subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
-          minw,nsubmode,mycall,mygrid,hiscall,hisgrid,nlist0,listutc0)
+          nclearave,minw,nsubmode,mycall,mygrid,hiscall,hisgrid,nlist0,   &
+          listutc0)
 
   use jt4
   integer listutc0(10)
@@ -13,13 +14,10 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
   character*6 mygrid,hisgrid
 
   mode4=nch(nsubmode+1)
-  nsubmode=0
-  NClearAve=0
   MinSigdB=0
-  ntol=600
-  NFreeze=0
+  ntol=ntol0
+  NFreeze=1
   mode=7
-  Nseg=1                          !???
 !  NAgain=0
 !  ndepth=3
   neme=1
@@ -42,10 +40,9 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
 1000 format(i4.4)
   cfile6(5:6)='  '
 
-  call wsjt4(dat,jz2,nutc,NClearAve,MinSigdB,                          &
-       ntol,NFreeze,mode,mode4,minw,mycall,hiscall,hisgrid,            &
-       Nseg,nfqso,NAgain,ndepth,neme,lumsg,nspecial,                   &
-       NSyncOK,ccf,psavg,ndiag,ps0)
+  call wsjt4(dat,jz2,nutc,NClearAve,MinSigdB,ntol,mode4,   &
+       minw,mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,nspecial,   &
+       NSyncOK,ccf,psavg,ps0)
 
   return
 end subroutine jt4a
