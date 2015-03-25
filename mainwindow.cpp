@@ -1311,7 +1311,6 @@ void MainWindow::freezeDecode(int n)                          //freezeDecode()
 
 void MainWindow::clrAvg()
 {
-  qDebug() << "ClrAvg";
   m_nclearave=1;
 }
 

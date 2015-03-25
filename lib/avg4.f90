@@ -1,5 +1,5 @@
-subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,nfanoave,avemsg,   &
-     qave,deepave,ichbest)
+subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,minw,       &
+  mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest)
 
 ! Decodes averaged JT4 data
 
@@ -55,7 +55,7 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,nfanoave,avemsg,   &
      fave=float(nfsum)/nsum
   endif
 
-  nadd=nused*mode4
+!  nadd=nused*mode4
   kbest=ich1
   do k=ich1,ich2
      call extract4(sym(1,k),ncount,avemsg)     !Do the Fano decode
@@ -63,6 +63,7 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,nfanoave,avemsg,   &
      if(ncount.ge.0) then
         nfanoave=nsum
         ichbest=k
+!        print*,'a',nfanoave,k,avemsg
         go to 900
      endif
      if(nch(k).ge.mode4) exit
@@ -82,6 +83,7 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,nfanoave,avemsg,   &
            qbest=qave
            deepbest=deepave
            kbest=k
+!           print*,'b',qbest,k,deepbest
         endif
         if(nch(k).ge.mode4) exit
      enddo

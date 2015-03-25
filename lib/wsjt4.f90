@@ -1,6 +1,6 @@
 subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
      mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,    &
-     ndepth,neme,nspecial,NSyncOK,ccfblue,ccfred,ps0)
+     ndepth,neme,nspecial,ccfblue,ccfred,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
@@ -34,14 +34,11 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
   nq1=3
   nq2=6
   if(naggressive.eq.1) nq1=1
-
-  if(NClearAve.ne.0) then
-     nsave=0                        !Clear the averaging accumulators
-  endif
+  if(NClearAve.ne.0) nsave=0
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   nfmid=nfqso + nint(1.5*mode4*4.375)
-  call sync4(dat,npts,ntol,NFreeze,nfmid,mode4,minw,  &
+  call sync4(dat,npts,ntol,nfmid,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
 
 !  do i=-224,224
@@ -57,7 +54,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
   decoded=blank
   deepmsg=blank
   special='     '
-  NSyncOK=0
   nqual1=0
   nqual2=0
 
@@ -71,8 +67,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
   if(nsync.lt.MinSigdB .or. nsnr.lt.nsnrlim) go to 900    !### ??? ###
 
 ! If we get here, we have achieved sync!
-  NSyncOK=1
-!  nflag(nsave)=1            !Mark this RX file as potentially good
   csync='*'
   if(flip.lt.0.0) then
      csync='#'
@@ -96,22 +90,24 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
   if(snrsync.gt.0.9999*syncbest) then
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
-     call avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,nfanoave,avemsg,   &
-     qave,deepave,ichbest)
+     call avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,minw,     &
+         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest)
   endif
 
+!  print*,'c',nfanoave,avemsg,qave,deepave,ichbest
   if(nfanoave.gt.0) then
      write(*,1010) nutc,nsnr,dtxx,nfreq,csync,avemsg,    &
           nfanoave,0,char(ichar('A')+ichbest-1)
      go to 900
   endif
 
+!  print*,'d',qual,qave,nq1
   if(qual.gt.qave) then
      if(qual.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,deepmsg, &
           0,nint(qual),char(ichar('A')+ichbest-1)
      if(qual.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
   else
-     if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,deepmsg, &
+     if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,deepave, &
           0,nint(qave),char(ichar('A')+ichbest-1)
      if(qave.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
   endif

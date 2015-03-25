@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,ntol,NFreeze,nfmid,mode4,minw,    &
+subroutine sync4(dat,jz,ntol,nfmid,mode4,minw,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -50,15 +50,8 @@ subroutine sync4(dat,jz,ntol,NFreeze,nfmid,mode4,minw,    &
 ! Set freq and lag ranges
   famin=200.0 + 3*mode4*df
   fbmax=2700.0 - 3*mode4*df
-  fa=famin
-  fb=fbmax
-  if(NFreeze.eq.1) then
-     fa=max(famin,float(nfmid-ntol))
-     fb=min(fbmax,float(nfmid+ntol))
-  else
-     fa=max(famin,nfmid-600.0)
-     fb=min(fbmax,nfmid+600.0)
-  endif
+  fa=max(famin,float(nfmid-ntol))
+  fb=min(fbmax,float(nfmid+ntol))
   ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
   ib=fb/df - 3*mode4                   !Index of lowest tone, top of range
   i0=nint(1270.46/df)
@@ -168,13 +161,6 @@ subroutine sync4(dat,jz,ntol,NFreeze,nfmid,mode4,minw,    &
      if(ccfred1(i).le.ccf10) exit
   enddo
   width=(i-i1)*df
-
-  rewind 71
-  do i=-450,450
-     write(71,3001) i*df,ccfred(i)
-3001 format(2f12.3)
-  enddo
-  flush(71)
 
   return
 end subroutine sync4
