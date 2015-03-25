@@ -34,12 +34,22 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
   nq1=3
   nq2=6
   if(naggressive.eq.1) nq1=1
-  if(NClearAve.ne.0) nsave=0
+  if(NClearAve.ne.0) then
+     nsave=0
+     iutc=-1
+     nfsave=0.
+     listutc=0
+     ppsave=0.
+     rsymbol=0.
+     dtsave=0.
+     syncsave=0.
+  endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   nfmid=nfqso + nint(1.5*mode4*4.375)
   call sync4(dat,npts,ntol,nfmid,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
+
 
 !  do i=-224,224
 !     write(51,3001) i,ccfred(i)
