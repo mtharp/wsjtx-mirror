@@ -1,6 +1,6 @@
-subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
-     mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,    &
-     ndepth,neme,nspecial,ccfblue,ccfred,ps0)
+subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
+     mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,          &
+     ccfblue,ccfred,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.  
@@ -47,7 +47,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,                   &
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   nfmid=nfqso + nint(1.5*mode4*4.375)
-  call sync4(dat,npts,ntol,nfmid,mode4,minw,  &
+  call sync4(dat,npts,ntol,emedelay,dttol,nfmid,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
 
 

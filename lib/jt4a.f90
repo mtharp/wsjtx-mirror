@@ -1,6 +1,6 @@
-subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
-          nclearave,minw,nsubmode,mycall,mygrid,hiscall,hisgrid,nlist0,   &
-          listutc0)
+subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
+     nagain,ndepth,nclearave,minw,nsubmode,mycall,mygrid,hiscall,hisgrid, &
+     nlist0,listutc0)
 
   use jt4
   integer listutc0(10)
@@ -36,8 +36,8 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,nagain,ndepth,      &
 1000 format(i4.4)
   cfile6(5:6)='  '
 
-  call wsjt4(dat,jz2,nutc,NClearAve,MinSigdB,ntol,mode4,minw,      &
-       mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,nspecial,ccf,psavg,ps0)
+  call wsjt4(dat,jz2,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,mode4,minw, &
+       mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,ccf,psavg,ps0)
 
   return
 end subroutine jt4a

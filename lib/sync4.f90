@@ -1,4 +1,4 @@
-subroutine sync4(dat,jz,ntol,nfmid,mode4,minw,    &
+subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
      dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
@@ -58,8 +58,14 @@ subroutine sync4(dat,jz,ntol,nfmid,mode4,minw,    &
   irange=450
   if(ia-i0.lt.-irange) ia=i0-irange
   if(ib-i0.gt.irange)  ib=i0+irange
-  lag1=-5
-  lag2=59
+
+  thsym=1.0/(2.0*4.375)
+! lag1=-5
+! lag2=59
+  lag1=(0.8+emedelay-dttol)/thsym
+  lag2=(0.8+emedelay+dttol)/thsym
+!  print*,'A',lag1,lag2,lag1*0.1142857,lag2*0.1142857
+
   syncbest=-1.e30
   ccfred=0.
   jmax=-1000
