@@ -21,7 +21,9 @@ subroutine spread(iwave0,npts,fspread,iwave)
         x=iwave0(j)/32767.0
         y=0.
         y=sqrt(1.0-x*x)
-        if(j.ge.2 .and. iwave0(j).lt.iwave0(j-1)) y=-y
+        if(j.ge.2) then
+           if(iwave0(j).lt.iwave0(j-1)) y=-y
+        endif
         phi=phi+dphi
         zf=cmplx(cos(phi),sin(phi))
         z=zf*cmplx(x,y)
