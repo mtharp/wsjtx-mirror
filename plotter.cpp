@@ -280,7 +280,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   float bw=9.0*12000.0/m_nsps;                //JT9
 
   if(m_modeTx=="JT4") {                       //JT4
-    bw=4*11025.0/2520.0;
+    bw=3*11025.0/2520.0;           //NB: this is max tone spacing, 3/4 of actual BW
     if(m_nSubMode==1) bw=2*bw;
     if(m_nSubMode==2) bw=4*bw;
     if(m_nSubMode==3) bw=9*bw;
@@ -308,6 +308,12 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawLine(x1,24,x1,30);
   painter0.drawLine(x1,28,x2,28);
   painter0.drawLine(x2,24,x2,30);
+
+  if(m_modeTx=="JT4") {                       //In JT4, mark all four tones
+    x2=XfromFreq(m_rxFreq+bw/3.0);
+    painter0.drawLine(x2,24,x2,30);
+    x2=XfromFreq(m_rxFreq+bw*2.0/3.0);
+    painter0.drawLine(x2,24,x2,30);      }
 
   if(m_mode=="JT9+JT65") {
     QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider
