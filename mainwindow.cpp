@@ -639,7 +639,8 @@ void MainWindow::dataSink(qint64 frames)
 
   // Get power, spectrum, and ihsym
   trmin=m_TRperiod/60;
-  int k (frames - 1);
+//  int k (frames - 1);
+  int k (frames);
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfb=m_wideGraph->getFmax();
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
