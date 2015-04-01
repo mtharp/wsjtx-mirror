@@ -11,16 +11,16 @@ extern "C" {
 }
 
 Detector::Detector (unsigned frameRate, unsigned periodLengthInSeconds,
-                    unsigned framesPerSignal, unsigned downSampleFactor,
+                    unsigned framesPerSymbol, unsigned downSampleFactor,
                     QObject * parent)
   : AudioDevice (parent)
   , m_frameRate (frameRate)
   , m_period (periodLengthInSeconds)
   , m_downSampleFactor (downSampleFactor)
-  , m_framesPerSignal (framesPerSignal)
+  , m_framesPerSymbol (framesPerSymbol)
   , m_starting (false)
   , m_buffer ((downSampleFactor > 1) ?
-              new short [framesPerSignal * downSampleFactor] : 0)
+              new short [framesPerSymbol * downSampleFactor] : 0)
   , m_bufferPos (0)
 {
   (void)m_frameRate;            // quell compiler warning
@@ -64,16 +64,16 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
     }
 
     for (unsigned remaining = framesAccepted; remaining; ) {
-      size_t numFramesProcessed (qMin (m_framesPerSignal *
+      size_t numFramesProcessed (qMin (m_framesPerSymbol *
                                        m_downSampleFactor - m_bufferPos, remaining));
 
       if(m_downSampleFactor > 1) {
         store (&data[(framesAccepted - remaining) * bytesPerFrame ()],
                numFramesProcessed, &m_buffer[m_bufferPos]);
         m_bufferPos += numFramesProcessed;
-        if(m_bufferPos==m_framesPerSignal*m_downSampleFactor) {
-          qint32 framesToProcess (m_framesPerSignal * m_downSampleFactor);
-          qint32 framesAfterDownSample;
+        if(m_bufferPos==m_framesPerSymbol*m_downSampleFactor) {
+          qint32 framesToProcess (m_framesPerSymbol * m_downSampleFactor);
+          qint32 framesAfterDownSample (m_framesPerSymbol);
           if(framesToProcess==13824 and jt9com_.kin>=0 and
              jt9com_.kin < (NTMAX*12000 - framesAfterDownSample)) {
             fil4_(&m_buffer[0], &framesToProcess, &jt9com_.d2[jt9com_.kin],
@@ -93,7 +93,7 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
                numFramesProcessed, &jt9com_.d2[jt9com_.kin]);
         m_bufferPos += numFramesProcessed;
         jt9com_.kin += numFramesProcessed;
-        if (m_bufferPos == static_cast<unsigned> (m_framesPerSignal)) {
+        if (m_bufferPos == static_cast<unsigned> (m_framesPerSymbol)) {
           Q_EMIT framesWritten (jt9com_.kin);
           m_bufferPos = 0;
         }
