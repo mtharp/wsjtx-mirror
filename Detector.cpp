@@ -75,7 +75,7 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
           qint32 framesToProcess (m_framesPerSignal * m_downSampleFactor);
           qint32 framesAfterDownSample;
           if(framesToProcess==13824 and jt9com_.kin>=0 and
-             jt9com_.kin < (NTMAX*12000 - framesAfterDownSample) {
+             jt9com_.kin < (NTMAX*12000 - framesAfterDownSample)) {
             fil4_(&m_buffer[0], &framesToProcess, &jt9com_.d2[jt9com_.kin],
                   &framesAfterDownSample);
             jt9com_.kin += framesAfterDownSample;
