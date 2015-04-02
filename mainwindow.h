@@ -190,6 +190,7 @@ private slots:
   void on_sbMinW_valueChanged(int n);
   void on_sbSubmode_valueChanged(int n);
   void controlsVisible(bool b);
+  void on_cbSingleTones_toggled(bool b);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -309,6 +310,7 @@ private:
   bool    m_plus2kHz;
   bool    m_bAstroData;
   bool    m_bEME;
+  bool    m_bSingleTones;
 
   float   m_pctZap;
 

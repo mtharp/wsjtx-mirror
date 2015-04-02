@@ -3443,3 +3443,8 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
   ui->labSubmode->setText(t);
   mode_label->setText(m_mode + " " + t1);
 }
+
+void MainWindow::on_cbSingleTones_toggled(bool b)
+{
+  m_bSingleTones=b;
+}
