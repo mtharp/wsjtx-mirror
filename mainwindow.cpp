@@ -2601,6 +2601,12 @@ void MainWindow::on_actionJT9_1_triggered()
   ui->pbTxMode->setEnabled(false);
   ui->sbSubmode->setVisible(false);
   ui->sbMinW->setVisible(false);
+  ui->labMinW->setVisible(false);
+  ui->labSubmode->setVisible(false);
+  ui->cbEME->setVisible(false);
+  ui->sbDT->setVisible(false);
+  ui->labTol->setVisible(false);
+  ui->sbTol->setVisible(false);
 }
 
 void MainWindow::on_actionJT9W_1_triggered()
@@ -2622,6 +2628,8 @@ void MainWindow::on_actionJT9W_1_triggered()
   ui->pbTxMode->setEnabled(false);
   ui->sbSubmode->setVisible(false);
   ui->sbMinW->setVisible(false);
+  ui->labMinW->setVisible(false);
+  ui->labSubmode->setVisible(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
@@ -2645,6 +2653,12 @@ void MainWindow::on_actionJT65_triggered()
   bool bVHF=m_config.enable_VHF_features();
   ui->sbSubmode->setVisible(bVHF);
   ui->sbMinW->setVisible(bVHF);
+  ui->labMinW->setVisible(bVHF);
+  ui->labSubmode->setVisible(bVHF);
+  ui->cbEME->setVisible(bVHF);
+  ui->sbDT->setVisible(bVHF);
+  ui->labTol->setVisible(bVHF);
+  ui->sbTol->setVisible(bVHF);
   ui->sbSubmode->setMaximum(2);
   if(bVHF) {
     ui->sbSubmode->setValue(m_nSubMode);
@@ -2674,6 +2688,12 @@ void MainWindow::on_actionJT9_JT65_triggered()
   ui->pbTxMode->setEnabled(true);
   ui->sbSubmode->setVisible(false);
   ui->sbMinW->setVisible(false);
+  ui->labMinW->setVisible(false);
+  ui->labSubmode->setVisible(false);
+  ui->cbEME->setVisible(false);
+  ui->sbDT->setVisible(false);
+  ui->labTol->setVisible(false);
+  ui->sbTol->setVisible(false);
 }
 
 void MainWindow::on_actionJT4_triggered()
@@ -2697,6 +2717,12 @@ void MainWindow::on_actionJT4_triggered()
   bool bVHF=m_config.enable_VHF_features();
   ui->sbSubmode->setVisible(bVHF);
   ui->sbMinW->setVisible(bVHF);
+  ui->labMinW->setVisible(bVHF);
+  ui->labSubmode->setVisible(bVHF);
+  ui->cbEME->setVisible(bVHF);
+  ui->sbDT->setVisible(bVHF);
+  ui->labTol->setVisible(bVHF);
+  ui->sbTol->setVisible(bVHF);
   ui->sbSubmode->setMaximum(6);
 
   if(bVHF) {
