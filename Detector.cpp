@@ -11,16 +11,16 @@ extern "C" {
 }
 
 Detector::Detector (unsigned frameRate, unsigned periodLengthInSeconds,
-                    unsigned framesPerSymbol, unsigned downSampleFactor,
+                    unsigned samplesPerFFT, unsigned downSampleFactor,
                     QObject * parent)
   : AudioDevice (parent)
   , m_frameRate (frameRate)
   , m_period (periodLengthInSeconds)
   , m_downSampleFactor (downSampleFactor)
-  , m_framesPerSymbol (framesPerSymbol)
+  , m_samplesPerFFT (samplesPerFFT)
   , m_starting (false)
   , m_buffer ((downSampleFactor > 1) ?
-              new short [framesPerSymbol * downSampleFactor] : 0)
+              new short [samplesPerFFT * downSampleFactor] : 0)
   , m_bufferPos (0)
 {
   (void)m_frameRate;            // quell compiler warning
@@ -64,16 +64,16 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
     }
 
     for (unsigned remaining = framesAccepted; remaining; ) {
-      size_t numFramesProcessed (qMin (m_framesPerSymbol *
+      size_t numFramesProcessed (qMin (m_samplesPerFFT *
                                        m_downSampleFactor - m_bufferPos, remaining));
 
       if(m_downSampleFactor > 1) {
         store (&data[(framesAccepted - remaining) * bytesPerFrame ()],
                numFramesProcessed, &m_buffer[m_bufferPos]);
         m_bufferPos += numFramesProcessed;
-        if(m_bufferPos==m_framesPerSymbol*m_downSampleFactor) {
-          qint32 framesToProcess (m_framesPerSymbol * m_downSampleFactor);
-          qint32 framesAfterDownSample (m_framesPerSymbol);
+        if(m_bufferPos==m_samplesPerFFT*m_downSampleFactor) {
+          qint32 framesToProcess (m_samplesPerFFT * m_downSampleFactor);
+          qint32 framesAfterDownSample (m_samplesPerFFT);
           if(framesToProcess==13824 and jt9com_.kin>=0 and
              jt9com_.kin < (NTMAX*12000 - framesAfterDownSample)) {
             fil4_(&m_buffer[0], &framesToProcess, &jt9com_.d2[jt9com_.kin],
@@ -83,6 +83,7 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
             qDebug() << "framesToProcess = " << framesToProcess;
             qDebug() << "jt9com_.kin     = " << jt9com_.kin;
             qDebug() << "secondInPeriod  = " << secondInPeriod();
+            qDebug() << "framesAfterDownSample" << framesAfterDownSample;
           }
           Q_EMIT framesWritten (jt9com_.kin);
           m_bufferPos = 0;
@@ -93,7 +94,7 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
                numFramesProcessed, &jt9com_.d2[jt9com_.kin]);
         m_bufferPos += numFramesProcessed;
         jt9com_.kin += numFramesProcessed;
-        if (m_bufferPos == static_cast<unsigned> (m_framesPerSymbol)) {
+        if (m_bufferPos == static_cast<unsigned> (m_samplesPerFFT)) {
           Q_EMIT framesWritten (jt9com_.kin);
           m_bufferPos = 0;
         }

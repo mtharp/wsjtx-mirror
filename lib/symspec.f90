@@ -82,9 +82,8 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   do i=0,nfft3-1                      !Copy data into cx
      j=ja+i-(nfft3-1)
      xc(i)=0.
-     if(j.ge.1) xc(i)=fac0*id2(j)
+     if(j.ge.1 .and.j.le.NMAX) xc(i)=fac0*id2(j)
   enddo
-
   if(ihsym.lt.184) ihsym=ihsym+1
 
   xc(0:nfft3-1)=w3(1:nfft3)*xc(0:nfft3-1)    !Apply window w3
