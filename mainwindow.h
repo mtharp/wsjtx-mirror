@@ -180,8 +180,6 @@ private slots:
   void monitor (bool);
   void stop_tuning ();
   void auto_tx_mode (bool);
-  void on_submodeComboBox_currentIndexChanged(int n);
-  void on_MinW_comboBox_currentIndexChanged(int n);
   void on_actionMessage_averaging_triggered();
   void on_sbTol_valueChanged(int i);
   void on_actionInclude_averaging_triggered();
@@ -189,6 +187,8 @@ private slots:
   void on_sbDT_valueChanged(double x);
   void VHF_features_visible(bool b);
   void on_cbEME_toggled(bool b);
+  void on_sbMinW_valueChanged(int n);
+  void on_sbSubmode_valueChanged(int n);
 
 private:
   void enable_DXCC_entity (bool on);

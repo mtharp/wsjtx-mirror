@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>770</width>
+    <width>825</width>
     <height>440</height>
    </size>
   </property>
@@ -566,48 +566,6 @@
       <property name="verticalSpacing">
        <number>0</number>
       </property>
-      <item row="7" column="6">
-       <widget class="QComboBox" name="MinW_comboBox">
-        <property name="maxVisibleItems">
-         <number>7</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>         MinW:  A</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>         MinW:  B</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>         MinW:  C</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>         MinW:  D</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>         MinW:  E</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>         MinW:  F</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>         MinW:  G</string>
-         </property>
-        </item>
-       </widget>
-      </item>
       <item row="1" column="6">
        <widget class="QPushButton" name="pbTxMode">
         <property name="enabled">
@@ -2132,48 +2090,6 @@ list. The list can be maintained in Settings (F2).</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="6">
-       <widget class="QComboBox" name="submodeComboBox">
-        <property name="maxVisibleItems">
-         <number>7</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4A</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4B</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4C</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4D</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4E</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4F</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Submode:  JT4G</string>
-         </property>
-        </item>
-       </widget>
-      </item>
       <item row="2" column="1" rowspan="7">
        <widget class="QSlider" name="inGain">
         <property name="sizePolicy">
@@ -2508,6 +2424,110 @@ list. The list can be maintained in Settings (F2).</string>
           </property>
           <property name="text">
            <string>EME</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="6">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="labMinW">
+          <property name="text">
+           <string>MinW  A</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="sbMinW">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>6</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="8" column="6">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="labSubmode">
+          <property name="text">
+           <string>Submode  A</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="sbSubmode">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>6</number>
           </property>
          </widget>
         </item>

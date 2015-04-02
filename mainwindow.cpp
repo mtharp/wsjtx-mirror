@@ -461,6 +461,13 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->labTol->setStyleSheet( \
         "QLabel { background-color : white; color : black; }");
   ui->labTol->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  ui->labMinW->setStyleSheet( \
+        "QLabel { background-color : white; color : black; }");
+  ui->labMinW->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  ui->labSubmode->setStyleSheet( \
+        "QLabel { background-color : white; color : black; }");
+  ui->labSubmode->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
   bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
   VHF_features_visible(b);
 
@@ -503,10 +510,10 @@ void MainWindow::writeSettings()
   m_settings->setValue("SaveDecoded",ui->actionSave_decoded->isChecked());
   m_settings->setValue("SaveAll",ui->actionSave_all->isChecked());
   m_settings->setValue("NDepth",m_ndepth);
-  m_settings->setValue("RxFreq",ui->RxFreqSpinBox->value ());
-  m_settings->setValue("TxFreq",ui->TxFreqSpinBox->value ());
-  m_settings->setValue("minW",ui->MinW_comboBox->currentIndex ());
-  m_settings->setValue("SubMode",ui->submodeComboBox->currentIndex ());
+  m_settings->setValue("RxFreq",ui->RxFreqSpinBox->value());
+  m_settings->setValue("TxFreq",ui->TxFreqSpinBox->value());
+  m_settings->setValue("minW",ui->sbMinW->value());
+  m_settings->setValue("SubMode",ui->sbSubmode->value());
   m_settings->setValue("DTtol",m_DTtol);
   m_settings->setValue("Ftol",ui->sbTol->value());
   m_settings->setValue("EME",m_bEME);
@@ -563,14 +570,15 @@ void MainWindow::readSettings()
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
   m_nSubMode=m_settings->value("SubMode",0).toInt();
-  ui->submodeComboBox->setCurrentIndex(m_nSubMode);
+  ui->sbSubmode->setValue(m_nSubMode);
+  ui->sbMinW->setMaximum(m_nSubMode);
   m_DTtol=m_settings->value("DTtol",0.2).toFloat();
   ui->sbDT->setValue(m_DTtol);
   ui->sbTol->setValue(m_settings->value("Ftol",4).toInt());
   m_bEME=m_settings->value("EME",false).toBool();
   ui->cbEME->setChecked(m_bEME);
   m_MinW=m_settings->value("minW",0).toInt();
-  ui->MinW_comboBox->setCurrentIndex(m_MinW);
+  ui->sbMinW->setValue(m_MinW);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
@@ -2591,8 +2599,8 @@ void MainWindow::on_actionJT9_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  ui->submodeComboBox->setVisible(false);
-  ui->MinW_comboBox->setVisible(false);
+  ui->sbSubmode->setVisible(false);
+  ui->sbMinW->setVisible(false);
 }
 
 void MainWindow::on_actionJT9W_1_triggered()
@@ -2612,8 +2620,8 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  ui->submodeComboBox->setVisible(false);
-  ui->MinW_comboBox->setVisible(false);
+  ui->sbSubmode->setVisible(false);
+  ui->sbMinW->setVisible(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
@@ -2627,24 +2635,24 @@ void MainWindow::on_actionJT65_triggered()
   if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
-  mode_label->setText(m_mode);
+  QString t1=(QString)QChar(short(m_nSubMode+65));
+  mode_label->setText(m_mode + " " + t1);
   ui->actionJT65->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   bool bVHF=m_config.enable_VHF_features();
-  ui->submodeComboBox->setVisible(bVHF);
-  ui->MinW_comboBox->setVisible(bVHF);
-  ui->submodeComboBox->setMaxVisibleItems(3);
-  ui->submodeComboBox->setItemText(0,"Submode:  JT65A");
-  ui->submodeComboBox->setItemText(1,"Submode:  JT65B");
-  ui->submodeComboBox->setItemText(2,"Submode:  JT65C");
-  if(!bVHF) {
-    ui->MinW_comboBox->setCurrentIndex(0);
-    ui->submodeComboBox->setCurrentIndex(0);
+  ui->sbSubmode->setVisible(bVHF);
+  ui->sbMinW->setVisible(bVHF);
+  ui->sbSubmode->setMaximum(2);
+  if(bVHF) {
+    ui->sbSubmode->setValue(m_nSubMode);
+  } else {
+    ui->sbSubmode->setValue(0);
+    ui->sbMinW->setValue(0);
   }
-  if(m_MinW > m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
+  if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
 }
 
 void MainWindow::on_actionJT9_JT65_triggered()
@@ -2664,8 +2672,8 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
-  ui->submodeComboBox->setVisible(false);
-  ui->MinW_comboBox->setVisible(false);
+  ui->sbSubmode->setVisible(false);
+  ui->sbMinW->setVisible(false);
 }
 
 void MainWindow::on_actionJT4_triggered()
@@ -2679,23 +2687,25 @@ void MainWindow::on_actionJT4_triggered()
 //  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
-  mode_label->setText(m_mode);
+  QString t1=(QString)QChar(short(m_nSubMode+65));
+  mode_label->setText(m_mode + " " + t1);
   ui->actionJT4->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  ui->submodeComboBox->setVisible(m_config.enable_VHF_features());
-  ui->MinW_comboBox->setVisible(m_config.enable_VHF_features());
-  ui->submodeComboBox->setMaxVisibleItems(7);
-  ui->submodeComboBox->setItemText(0,"Submode:  JT4A");
-  ui->submodeComboBox->setItemText(1,"Submode:  JT4B");
-  ui->submodeComboBox->setItemText(2,"Submode:  JT4C");
-  ui->submodeComboBox->setItemText(3,"Submode:  JT4D");
-  ui->submodeComboBox->setItemText(4,"Submode:  JT4E");
-  ui->submodeComboBox->setItemText(5,"Submode:  JT4F");
-  ui->submodeComboBox->setItemText(6,"Submode:  JT4G");
-  if(m_MinW > m_nSubMode) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
+  bool bVHF=m_config.enable_VHF_features();
+  ui->sbSubmode->setVisible(bVHF);
+  ui->sbMinW->setVisible(bVHF);
+  ui->sbSubmode->setMaximum(6);
+
+  if(bVHF) {
+    ui->sbSubmode->setValue(m_nSubMode);
+  } else {
+    ui->sbSubmode->setValue(0);
+    ui->sbMinW->setValue(0);
+  }
+  if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -3243,19 +3253,6 @@ void MainWindow::on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered()
   m_prefixes->showNormal();
 }
 
-void MainWindow::on_MinW_comboBox_currentIndexChanged(int n)
-{
-  m_MinW=qMin(n,m_nSubMode);
-  ui->MinW_comboBox->setCurrentIndex(m_MinW);
-}
-
-void MainWindow::on_submodeComboBox_currentIndexChanged(int n)
-{
-  m_nSubMode=n;
-  m_wideGraph->setSubMode(m_nSubMode);
-  if(m_nSubMode<m_MinW) ui->MinW_comboBox->setCurrentIndex(m_nSubMode);
-}
-
 void MainWindow::getpfx()
 {
   m_prefix <<"1A" <<"1S" <<"3A" <<"3B6" <<"3B8" <<"3B9" <<"3C" <<"3C0" \
@@ -3408,8 +3405,8 @@ void MainWindow::on_sbDT_valueChanged(double x)
 
 void MainWindow::VHF_features_visible(bool b)
 {
-  ui->submodeComboBox->setVisible(b);
-  ui->MinW_comboBox->setVisible(b);
+  ui->sbSubmode->setVisible(b);
+  ui->sbMinW->setVisible(b);
   ui->cbEME->setVisible(b);
   ui->sbDT->setVisible(b);
   ui->labTol->setVisible(b);
@@ -3419,4 +3416,23 @@ void MainWindow::VHF_features_visible(bool b)
 void MainWindow::on_cbEME_toggled(bool b)
 {
   m_bEME=b;
+}
+
+void MainWindow::on_sbMinW_valueChanged(int n)
+{
+  m_MinW=qMin(n,m_nSubMode);
+  ui->sbMinW->setValue(m_MinW);
+  QString t="MinW  " + (QString)QChar(short(n+65));
+  ui->labMinW->setText(t);
+}
+
+void MainWindow::on_sbSubmode_valueChanged(int n)
+{
+  m_nSubMode=n;
+  m_wideGraph->setSubMode(m_nSubMode);
+  ui->sbMinW->setMaximum(m_nSubMode);
+  QString t1=(QString)QChar(short(m_nSubMode+65));
+  QString t="Submode  " + t1;
+  ui->labSubmode->setText(t);
+  mode_label->setText(m_mode + " " + t1);
 }
