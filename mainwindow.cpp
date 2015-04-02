@@ -2599,14 +2599,7 @@ void MainWindow::on_actionJT9_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  ui->sbSubmode->setVisible(false);
-  ui->sbMinW->setVisible(false);
-  ui->labMinW->setVisible(false);
-  ui->labSubmode->setVisible(false);
-  ui->cbEME->setVisible(false);
-  ui->sbDT->setVisible(false);
-  ui->labTol->setVisible(false);
-  ui->sbTol->setVisible(false);
+  controlsVisible(false);
 }
 
 void MainWindow::on_actionJT9W_1_triggered()
@@ -2626,10 +2619,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  ui->sbSubmode->setVisible(false);
-  ui->sbMinW->setVisible(false);
-  ui->labMinW->setVisible(false);
-  ui->labSubmode->setVisible(false);
+  controlsVisible(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
@@ -2651,14 +2641,7 @@ void MainWindow::on_actionJT65_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   bool bVHF=m_config.enable_VHF_features();
-  ui->sbSubmode->setVisible(bVHF);
-  ui->sbMinW->setVisible(bVHF);
-  ui->labMinW->setVisible(bVHF);
-  ui->labSubmode->setVisible(bVHF);
-  ui->cbEME->setVisible(bVHF);
-  ui->sbDT->setVisible(bVHF);
-  ui->labTol->setVisible(bVHF);
-  ui->sbTol->setVisible(bVHF);
+  controlsVisible(bVHF);
   ui->sbSubmode->setMaximum(2);
   if(bVHF) {
     ui->sbSubmode->setValue(m_nSubMode);
@@ -2686,14 +2669,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
-  ui->sbSubmode->setVisible(false);
-  ui->sbMinW->setVisible(false);
-  ui->labMinW->setVisible(false);
-  ui->labSubmode->setVisible(false);
-  ui->cbEME->setVisible(false);
-  ui->sbDT->setVisible(false);
-  ui->labTol->setVisible(false);
-  ui->sbTol->setVisible(false);
+  controlsVisible(false);
 }
 
 void MainWindow::on_actionJT4_triggered()
@@ -2715,14 +2691,7 @@ void MainWindow::on_actionJT4_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   bool bVHF=m_config.enable_VHF_features();
-  ui->sbSubmode->setVisible(bVHF);
-  ui->sbMinW->setVisible(bVHF);
-  ui->labMinW->setVisible(bVHF);
-  ui->labSubmode->setVisible(bVHF);
-  ui->cbEME->setVisible(bVHF);
-  ui->sbDT->setVisible(bVHF);
-  ui->labTol->setVisible(bVHF);
-  ui->sbTol->setVisible(bVHF);
+  controlsVisible(bVHF);
   ui->sbSubmode->setMaximum(6);
 
   if(bVHF) {
@@ -2732,6 +2701,18 @@ void MainWindow::on_actionJT4_triggered()
     ui->sbMinW->setValue(0);
   }
   if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
+}
+
+void::MainWindow::controlsVisible(bool b)
+{
+  ui->sbSubmode->setVisible(b);
+  ui->sbMinW->setVisible(b);
+  ui->labMinW->setVisible(b);
+  ui->labSubmode->setVisible(b);
+  ui->cbEME->setVisible(b);
+  ui->sbDT->setVisible(b);
+  ui->labTol->setVisible(b);
+  ui->sbTol->setVisible(b);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)

@@ -189,6 +189,7 @@ private slots:
   void on_cbEME_toggled(bool b);
   void on_sbMinW_valueChanged(int n);
   void on_sbSubmode_valueChanged(int n);
+  void controlsVisible(bool b);
 
 private:
   void enable_DXCC_entity (bool on);

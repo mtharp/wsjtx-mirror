@@ -2405,7 +2405,7 @@ list. The list can be maintained in Settings (F2).</string>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
+            <width>15</width>
             <height>20</height>
            </size>
           </property>
