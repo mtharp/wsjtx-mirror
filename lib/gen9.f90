@@ -18,39 +18,46 @@ subroutine gen9(msg0,ichk,msgsent,i4tone,itype)
   include 'jt9sync.f90'
   save
 
-  message=msg0
-  do i=1,22
-     if(ichar(message(i:i)).eq.0) then
-        message(i:)='                      '
-        exit
-     endif
-  enddo
+  if(msg0(1:1).eq.'@') then
+     read(msg0(2:5),*,end=1,err=1) nfreq
+     go to 2
+1    nfreq=1000
+2    i4tone(1)=nfreq
+  else
+     message=msg0
+     do i=1,22
+        if(ichar(message(i:i)).eq.0) then
+           message(i:)='                      '
+           exit
+        endif
+     enddo
 
-  do i=1,22                               !Strip leading blanks
-     if(message(1:1).ne.' ') exit
-     message=message(i+1:)
-  enddo
+     do i=1,22                               !Strip leading blanks
+        if(message(1:1).ne.' ') exit
+        message=message(i+1:)
+     enddo
 
-  call packmsg(message,i4Msg6BitWords,itype)  !Pack into 12 6-bit bytes
-  call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
-  if(ichk.ne.0) go to 999
-  call entail(i4Msg6BitWords,i1Msg8BitBytes)  !Add tail, convert to 8-bit bytes
-  nsym2=206
-  call encode232(i1Msg8BitBytes,nsym2,i1EncodedBits)   !Encode K=32, r=1/2
-  call interleave9(i1EncodedBits,1,i1ScrambledBits)    !Interleave the bits
-  call packbits(i1ScrambledBits,nsym2,3,i4DataSymbols) !Pack 3-bits into words
-  call graycode(i4DataSymbols,69,1,i4GrayCodedSymbols) !Apply Gray code
+     call packmsg(message,i4Msg6BitWords,itype)  !Pack into 12 6-bit bytes
+     call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
+     if(ichk.ne.0) go to 999
+     call entail(i4Msg6BitWords,i1Msg8BitBytes)  !Add tail, make 8-bit bytes
+     nsym2=206
+     call encode232(i1Msg8BitBytes,nsym2,i1EncodedBits)   !Encode K=32, r=1/2
+     call interleave9(i1EncodedBits,1,i1ScrambledBits)    !Interleave bits
+     call packbits(i1ScrambledBits,nsym2,3,i4DataSymbols) !Pk 3-bits into words
+     call graycode(i4DataSymbols,69,1,i4GrayCodedSymbols) !Apply Gray code
 
 ! Insert sync symbols at ntone=0 and add 1 to the data-tone numbers.
-  j=0
-  do i=1,85
-     if(isync(i).eq.1) then
-        i4tone(i)=0
-     else
-        j=j+1
-        i4tone(i)=i4GrayCodedSymbols(j)+1
-     endif
-  enddo
+     j=0
+     do i=1,85
+        if(isync(i).eq.1) then
+           i4tone(i)=0
+        else
+           j=j+1
+           i4tone(i)=i4GrayCodedSymbols(j)+1
+        endif
+     enddo
+  endif
 
 999 return
 end subroutine gen9

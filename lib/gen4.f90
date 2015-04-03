@@ -14,16 +14,22 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
   integer mettab(-128:127,0:1)
   save
 
-  call getmet4(mettab,ndelta)
+  if(msg0(1:1).eq.'@') then
+     read(msg0(2:5),*,end=1,err=1) nfreq
+     go to 2
+1    nfreq=1000
+2    i4tone(1)=nfreq
+  else
+     call getmet4(mettab,ndelta)
 
-  message=msg0
-  call fmtmsg(message,iz)
-  call packmsg(message,i4Msg6BitWords,itype)  !Pack into 12 6-bit bytes
-  call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
-  if(ichk.ne.0) go to 999
-  call encode4(message,i4tone)            !Encode the information bits
-
-  i4tone=2*i4tone + npr(2:)               !Data = MSB, sync = LSB
+     message=msg0
+     call fmtmsg(message,iz)
+     call packmsg(message,i4Msg6BitWords,itype)  !Pack into 12 6-bit bytes
+     call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
+     if(ichk.ne.0) go to 999
+     call encode4(message,i4tone)            !Encode the information bits
+     i4tone=2*i4tone + npr(2:)               !Data = MSB, sync = LSB
+  endif
 
 999 return
 end subroutine gen4
