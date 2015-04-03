@@ -50,17 +50,26 @@ void Detector::clear ()
 
 qint64 Detector::writeData (char const * data, qint64 maxSize)
 {
-    // no torn frames
-    Q_ASSERT (!(maxSize % static_cast<qint64> (bytesPerFrame ())));
-    // these are in terms of input frames (not down sampled)
-    size_t framesAcceptable ((sizeof (jt9com_.d2) /
-                              sizeof (jt9com_.d2[0]) - jt9com_.kin) * m_downSampleFactor);
-    size_t framesAccepted (qMin (static_cast<size_t> (maxSize /
-                                                      bytesPerFrame ()), framesAcceptable));
+  static int ns0=999;
+  int ns=secondInPeriod();
+  if(ns < ns0) {                      // When ns has wrapped around to zero, restart the buffers
+    jt9com_.kin = 0;
+    m_bufferPos = 0;
+  }
+  ns0=ns;
 
-    if (framesAccepted < static_cast<size_t> (maxSize / bytesPerFrame ())) {
-      qDebug () << "dropped " << maxSize / bytesPerFrame () - framesAccepted
-                << " frames of data on the floor!";
+  // no torn frames
+  Q_ASSERT (!(maxSize % static_cast<qint64> (bytesPerFrame ())));
+  // these are in terms of input frames (not down sampled)
+  size_t framesAcceptable ((sizeof (jt9com_.d2) /
+                            sizeof (jt9com_.d2[0]) - jt9com_.kin) * m_downSampleFactor);
+  size_t framesAccepted (qMin (static_cast<size_t> (maxSize /
+                                                    bytesPerFrame ()), framesAcceptable));
+
+  if (framesAccepted < static_cast<size_t> (maxSize / bytesPerFrame ())) {
+    qDebug () << "dropped " << maxSize / bytesPerFrame () - framesAccepted
+                << " frames of data on the floor!"
+                << jt9com_.kin << ns;
     }
 
     for (unsigned remaining = framesAccepted; remaining; ) {
@@ -71,6 +80,7 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
         store (&data[(framesAccepted - remaining) * bytesPerFrame ()],
                numFramesProcessed, &m_buffer[m_bufferPos]);
         m_bufferPos += numFramesProcessed;
+
         if(m_bufferPos==m_samplesPerFFT*m_downSampleFactor) {
           qint32 framesToProcess (m_samplesPerFFT * m_downSampleFactor);
           qint32 framesAfterDownSample (m_samplesPerFFT);
@@ -99,27 +109,10 @@ qint64 Detector::writeData (char const * data, qint64 maxSize)
           m_bufferPos = 0;
         }
       }
-
-      if (!secondInPeriod ()) {
-        if (!m_starting) {
-          // next samples will be in new period so wrap around to
-          // start of buffer
-          //
-          // we don't bother calling reset () since we expect to fill
-          // the whole buffer and don't need to waste cycles zeroing
-          jt9com_.kin = 0;
-          m_bufferPos = 0;
-          m_starting = true;
-        }
-      } else if(m_starting) {
-        m_starting = false;
-      }
       remaining -= numFramesProcessed;
     }
-  // } else {
-  //   jt9com_.kin = 0;
-  //   m_bufferPos = 0;
-  // }
+
+
 
   return maxSize;    // we drop any data past the end of the buffer on
   // the floor until the next period starts
