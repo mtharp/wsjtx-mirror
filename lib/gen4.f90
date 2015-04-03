@@ -9,6 +9,7 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
   character*22 msg0
   character*22 message          !Message to be generated
   character*22 msgsent          !Message as it will be received
+  character*1 c
   integer i4tone(206)
   integer*4 i4Msg6BitWords(13)            !72-bit message as 6-bit words
   integer mettab(-128:127,0:1)
@@ -29,6 +30,12 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
      if(ichk.ne.0) go to 999
      call encode4(message,i4tone)            !Encode the information bits
      i4tone=2*i4tone + npr(2:)               !Data = MSB, sync = LSB
+     i1=index(message,'-')
+     if(i1.ge.9) then
+        c=message(i1+1:i1+1)
+        if(c.ge.'0' .and. c.le.'3') i4tone=2*i4tone + (1-npr(2:))
+        if(c.ge.'0' .and. c.le.'3') print*,"#"
+     endif
   endif
 
 999 return

@@ -288,11 +288,24 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==5) bw=36*bw;
     if(m_nSubMode==6) bw=72*bw;
 
+    QPen pen3(Qt::red,2);                 //Mark JT4 single-tone freqs
+    painter0.setPen(pen3);
+    x1=XfromFreq(1000);
+    painter0.drawText(x1-4,20,"T");
+    x1=XfromFreq(1200);
+    painter0.drawText(x1-4,20,"S");
+    x1=XfromFreq(1500);
+    painter0.drawText(x1-4,20,"R");
+    x1=XfromFreq(1700);
+    painter0.drawText(x1-8,20,"73");
+
     QPen pen0(Qt::green, 4);                 //Mark Tol range with fat green line
     painter0.setPen(pen0);
     x1=XfromFreq(m_rxFreq-m_tol);
     x2=XfromFreq(m_rxFreq+m_tol);
     painter0.drawLine(x1,28,x2,28);
+
+
   }
 
   if(m_modeTx=="JT65") {                     //JT65
@@ -313,7 +326,8 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     x2=XfromFreq(m_rxFreq+bw/3.0);
     painter0.drawLine(x2,24,x2,30);
     x2=XfromFreq(m_rxFreq+bw*2.0/3.0);
-    painter0.drawLine(x2,24,x2,30);      }
+    painter0.drawLine(x2,24,x2,30);
+  }
 
   if(m_mode=="JT9+JT65") {
     QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider

@@ -3442,6 +3442,18 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
 
 void MainWindow::on_cbShMsgs_toggled(bool b)
 {
+  static qint64 ms0=0;
   m_bShMsgs=b;
   genStdMsgs(m_rpt);
+  qint64 ms=QDateTime::currentMSecsSinceEpoch();
+  if(ms-ms0 < 400) {                  // Double-click toggles between TUNE and SEND MSGS
+    QString t=ui->tx6->text();
+    if(t.indexOf("@1000")==0) {
+      t="@1200  (SEND MSGS)";
+    } else {
+      t="@1000  (TUNE)";
+    }
+    ui->tx6->setText(t);
+  }
+  ms0=ms;
 }

@@ -228,10 +228,14 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
           if (isym != m_isym0 || m_frequency != m_frequency0) {
             // qDebug () << "@m_ic:" << m_ic << "itone[" << isym << "] =" << itone[isym] << "@" << i << "in numFrames:" << numFrames;
 
-            if(m_toneSpacing==0.0) {
-              toneFrequency0=m_frequency + itone[isym]*baud;
+            if(itone[0]>=100) {
+              toneFrequency0=itone[0];
             } else {
-              toneFrequency0=m_frequency + itone[isym]*m_toneSpacing;
+              if(m_toneSpacing==0.0) {
+                toneFrequency0=m_frequency + itone[isym]*baud;
+              } else {
+                toneFrequency0=m_frequency + itone[isym]*m_toneSpacing;
+              }
             }
             m_dphi = m_twoPi * toneFrequency0 / m_frameRate;
             m_isym0 = isym;
