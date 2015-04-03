@@ -3448,12 +3448,13 @@ void MainWindow::on_cbShMsgs_toggled(bool b)
   qint64 ms=QDateTime::currentMSecsSinceEpoch();
   if(ms-ms0 < 400) {                  // Double-click toggles between TUNE and SEND MSGS
     QString t=ui->tx6->text();
-    if(t.indexOf("@1000")==0) {
+    if(m_tx6Prev=="" or m_tx6Prev.indexOf("@1000")==0) {
       t="@1200  (SEND MSGS)";
     } else {
       t="@1000  (TUNE)";
     }
     ui->tx6->setText(t);
+    m_tx6Prev=t;
   }
   ms0=ms;
 }

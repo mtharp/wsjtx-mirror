@@ -366,6 +366,7 @@ private:
   QString m_msgSent0;
   QString m_fileToSave;
   QString m_band;
+  QString m_tx6Prev;
 
   QStringList m_prefix;
   QStringList m_suffix;
