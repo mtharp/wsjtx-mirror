@@ -91,7 +91,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   if(nfano.gt.0) then
      write(*,1010) nutc,nsnr,dtxx,nfreq,csync,decoded,    &
           nfano,0,char(ichar('A')+ichbest-1)
-1010 format(i4.4,i4,f5.1,i5,1x,a1,1x,a22,2i3,1x,a1)
+1010 format(i4.4,i4,f5.2,i5,1x,a1,1x,a22,2i3,1x,a1)
      go to 900
   endif
 
