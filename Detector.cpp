@@ -18,7 +18,7 @@ Detector::Detector (unsigned frameRate, unsigned periodLengthInSeconds,
   , m_period (periodLengthInSeconds)
   , m_downSampleFactor (downSampleFactor)
   , m_samplesPerFFT (samplesPerFFT)
-  , m_starting (false)
+  , m_ns (999)
   , m_buffer ((downSampleFactor > 1) ?
               new short [samplesPerFFT * downSampleFactor] : 0)
   , m_bufferPos (0)
@@ -50,13 +50,12 @@ void Detector::clear ()
 
 qint64 Detector::writeData (char const * data, qint64 maxSize)
 {
-  static int ns0=999;
   int ns=secondInPeriod();
-  if(ns < ns0) {                      // When ns has wrapped around to zero, restart the buffers
+  if(ns < m_ns) {                      // When ns has wrapped around to zero, restart the buffers
     jt9com_.kin = 0;
     m_bufferPos = 0;
   }
-  ns0=ns;
+  m_ns=ns;
 
   // no torn frames
   Q_ASSERT (!(maxSize % static_cast<qint64> (bytesPerFrame ())));

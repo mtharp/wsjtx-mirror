@@ -1226,7 +1226,7 @@ QLabel[oob=&quot;true&quot;] {
             <enum>QTabWidget::Triangular</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="tab">
             <attribute name="title">
@@ -2536,7 +2536,7 @@ list. The list can be maintained in Settings (F2).</string>
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="cbSingleTones">
+         <widget class="QCheckBox" name="cbShMsgs">
           <property name="maximumSize">
            <size>
             <width>60</width>
@@ -2544,7 +2544,7 @@ list. The list can be maintained in Settings (F2).</string>
            </size>
           </property>
           <property name="text">
-           <string>ST Msgs</string>
+           <string>Sh Msgs</string>
           </property>
          </widget>
         </item>

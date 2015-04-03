@@ -190,27 +190,31 @@ private slots:
   void on_sbMinW_valueChanged(int n);
   void on_sbSubmode_valueChanged(int n);
   void controlsVisible(bool b);
-  void on_cbSingleTones_toggled(bool b);
+  void on_cbShMsgs_toggled(bool b);
 
 private:
   void enable_DXCC_entity (bool on);
 
-  Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo, unsigned channels, unsigned msBuffered) const;
+  Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
+      unsigned channels, unsigned msBuffered) const;
   Q_SIGNAL void stopAudioOutputStream () const;
-
-  Q_SIGNAL void startAudioInputStream (QAudioDeviceInfo const&, int framesPerBuffer, AudioDevice * sink, unsigned downSampleFactor, AudioDevice::Channel) const;
+  Q_SIGNAL void startAudioInputStream (QAudioDeviceInfo const&,
+      int framesPerBuffer, AudioDevice * sink,
+      unsigned downSampleFactor, AudioDevice::Channel) const;
   Q_SIGNAL void suspendAudioInputStream () const;
   Q_SIGNAL void resumeAudioInputStream () const;
-
   Q_SIGNAL void startDetector (AudioDevice::Channel) const;
   Q_SIGNAL void detectorClose () const;
-
   Q_SIGNAL void finished () const;
   Q_SIGNAL void transmitFrequency (unsigned) const;
   Q_SIGNAL void endTransmitMessage (bool quick = false) const;
   Q_SIGNAL void tune (bool = true) const;
-  Q_SIGNAL void sendMessage (unsigned symbolsLength, double framesPerSymbol, unsigned frequency, double toneSpacing, SoundOutput *, AudioDevice::Channel = AudioDevice::Mono, bool synchronize = true, double dBSNR = 99.) const;
+  Q_SIGNAL void sendMessage (unsigned symbolsLength, double framesPerSymbol,
+      unsigned frequency, double toneSpacing,
+      SoundOutput *, AudioDevice::Channel = AudioDevice::Mono,
+      bool synchronize = true, double dBSNR = 99.) const;
   Q_SIGNAL void outAttenuationChanged (qreal) const;
+  Q_SIGNAL void toggleShorthand () const;
 
 private:
   QDir m_dataDir;
@@ -310,7 +314,7 @@ private:
   bool    m_plus2kHz;
   bool    m_bAstroData;
   bool    m_bEME;
-  bool    m_bSingleTones;
+  bool    m_bShMsgs;
 
   float   m_pctZap;
 

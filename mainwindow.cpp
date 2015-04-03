@@ -343,6 +343,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_tol=500;
   m_DTtol=0.2;
   m_wideGraph->setTol(m_tol);
+  m_bShMsgs=false;
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
@@ -2187,6 +2188,7 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
   if(m_config.my_callsign () !="" and m_config.my_grid () !="")
     {
       t="CQ " + m_config.my_callsign () + " " + m_config.my_grid ().mid(0,4);
+      if(m_mode=="JT4") t="@1000  (TUNE)";
       msgtype(t, ui->tx6);
     }
   else
@@ -2224,8 +2226,10 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
     t=t0 + "R" + rpt;
     msgtype(t, ui->tx3);
     t=t0 + "RRR";
+    if(m_mode=="JT4" and m_bShMsgs) t="@1500  (RRR)";
     msgtype(t, ui->tx4);
     t=t0 + "73";
+    if(m_mode=="JT4" and m_bShMsgs) t="@1700  (73)";
     msgtype(t, ui->tx5->lineEdit ());
   }
 
@@ -2410,18 +2414,10 @@ void MainWindow::msgtype(QString t, QLineEdit* tx)               //msgtype()
   char message[23];
   char msgsent[23];
   int len1=22;
-
-  t=t.toUpper();
   QByteArray s=t.toUpper().toLocal8Bit();
   ba2msg(s,message);
   int ichk=1,itype=0;
-  gen9_(message
-          , &ichk
-          , msgsent
-          , const_cast<int *> (itone)
-          , &itype
-          , len1
-          , len1);
+  gen9_(message,&ichk,msgsent,const_cast<int *>(itone),&itype,len1,len1);
   msgsent[22]=0;
   bool text=false;
   if(itype==6) text=true;
@@ -3444,7 +3440,8 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
   mode_label->setText(m_mode + " " + t1);
 }
 
-void MainWindow::on_cbSingleTones_toggled(bool b)
+void MainWindow::on_cbShMsgs_toggled(bool b)
 {
-  m_bSingleTones=b;
+  m_bShMsgs=b;
+  genStdMsgs(m_rpt);
 }

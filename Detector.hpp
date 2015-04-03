@@ -46,7 +46,7 @@ private:
   unsigned m_period;
   unsigned m_downSampleFactor;
   qint32 m_samplesPerFFT;	// after any down sampling
-  bool m_starting;
+  qint32 m_ns;
   QScopedArrayPointer<short> m_buffer; // de-interleaved sample buffer
   // big enough for all the
   // samples for one increment of
