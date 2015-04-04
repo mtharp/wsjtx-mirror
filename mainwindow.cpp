@@ -470,7 +470,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->labSubmode->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
   bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
-  VHF_features_visible(b);
+  VHF_controls_visible(b);
 
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -732,7 +732,7 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
       displayDialFrequency ();
       bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
-      VHF_features_visible(b);
+      VHF_controls_visible(b);
     }
 
   setXIT (ui->TxFreqSpinBox->value ());
@@ -2595,7 +2595,7 @@ void MainWindow::on_actionJT9_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  controlsVisible(false);
+  VHF_controls_visible(false);
 }
 
 void MainWindow::on_actionJT9W_1_triggered()
@@ -2615,7 +2615,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
-  controlsVisible(false);
+  VHF_controls_visible(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
@@ -2637,7 +2637,7 @@ void MainWindow::on_actionJT65_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   bool bVHF=m_config.enable_VHF_features();
-  controlsVisible(bVHF);
+  VHF_controls_visible(bVHF);
   ui->sbSubmode->setMaximum(2);
   if(bVHF) {
     ui->sbSubmode->setValue(m_nSubMode);
@@ -2665,7 +2665,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
-  controlsVisible(false);
+  VHF_controls_visible(false);
 }
 
 void MainWindow::on_actionJT4_triggered()
@@ -2687,7 +2687,7 @@ void MainWindow::on_actionJT4_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   bool bVHF=m_config.enable_VHF_features();
-  controlsVisible(bVHF);
+  VHF_controls_visible(bVHF);
   ui->sbSubmode->setMaximum(6);
 
   if(bVHF) {
@@ -2697,18 +2697,6 @@ void MainWindow::on_actionJT4_triggered()
     ui->sbMinW->setValue(0);
   }
   if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
-}
-
-void::MainWindow::controlsVisible(bool b)
-{
-  ui->sbSubmode->setVisible(b);
-  ui->sbMinW->setVisible(b);
-  ui->labMinW->setVisible(b);
-  ui->labSubmode->setVisible(b);
-  ui->cbEME->setVisible(b);
-  ui->sbDT->setVisible(b);
-  ui->labTol->setVisible(b);
-  ui->sbTol->setVisible(b);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -3406,16 +3394,18 @@ void MainWindow::on_sbDT_valueChanged(double x)
   m_DTtol=x;
 }
 
-void MainWindow::VHF_features_visible(bool b)
+void::MainWindow::VHF_controls_visible(bool b)
 {
   ui->sbSubmode->setVisible(b);
   ui->sbMinW->setVisible(b);
+  ui->cbShMsgs->setVisible(b);
+  ui->labMinW->setVisible(b);
+  ui->labSubmode->setVisible(b);
   ui->cbEME->setVisible(b);
   ui->sbDT->setVisible(b);
   ui->labTol->setVisible(b);
   ui->sbTol->setVisible(b);
 }
-
 void MainWindow::on_cbEME_toggled(bool b)
 {
   m_bEME=b;

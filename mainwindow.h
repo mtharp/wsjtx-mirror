@@ -185,11 +185,10 @@ private slots:
   void on_actionInclude_averaging_triggered();
   void on_actionInclude_correlation_triggered();
   void on_sbDT_valueChanged(double x);
-  void VHF_features_visible(bool b);
+  void VHF_controls_visible(bool b);
   void on_cbEME_toggled(bool b);
   void on_sbMinW_valueChanged(int n);
   void on_sbSubmode_valueChanged(int n);
-  void controlsVisible(bool b);
   void on_cbShMsgs_toggled(bool b);
 
 private:
