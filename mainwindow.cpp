@@ -48,7 +48,7 @@ wchar_t buffer[256];
 namespace
 {
   Radio::Frequency constexpr default_frequency {14076000};
-  QRegExp message_alphabet {"[- A-Za-z0-9+./?#]*"};
+  QRegExp message_alphabet {"[- @A-Za-z0-9+./?#]*"};
 }
 
 class BandAndFrequencyItemDelegate final
@@ -1813,6 +1813,10 @@ void MainWindow::guiUpdate()
                                                  m_setftx, ui->TxFreqSpinBox->value ());
 
     if(m_transmitting) {
+      char s[37];
+      sprintf(s,"Tx: %s",msgsent);
+      nsendingsh=0;
+      if(s[4]==64) nsendingsh=1;
       if(nsendingsh==1) {
         tx_status_label->setStyleSheet("QLabel{background-color: #66ffff}");
       } else if(nsendingsh==-1) {
@@ -1823,8 +1827,6 @@ void MainWindow::guiUpdate()
       if(m_tune) {
         tx_status_label->setText("Tx: TUNE");
       } else {
-        char s[37];
-        sprintf(s,"Tx: %s",msgsent);
         tx_status_label->setText(s);
       }
     } else if(m_monitoring) {

@@ -20,6 +20,7 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
      go to 2
 1    nfreq=1000
 2    i4tone(1)=nfreq
+     msgsent=msg0
   else
      call getmet4(mettab,ndelta)
 

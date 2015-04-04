@@ -50,16 +50,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   call sync4(dat,npts,ntol,emedelay,dttol,nfmid,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
 
-
-!  do i=-224,224
-!     write(51,3001) i,ccfred(i)
-!3001 format(i6,f12.3)
-!  enddo
-
-!  do i=-5,60
-!     write(52,3001) i,ccfblue(i)
-!  enddo
-
   csync=' '
   decoded=blank
   deepmsg=blank

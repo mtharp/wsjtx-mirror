@@ -99,6 +99,11 @@ void CPlotter::draw(float swide[])             //draw()
   QPainter painter1(&m_WaterfallPixmap);
   m_2DPixmap = m_OverlayPixmap.copy(0,0,m_w,m_h2);
   QPainter painter2D(&m_2DPixmap);
+  QFont Font("Arial");
+  Font.setPointSize(12);
+  QFontMetrics metrics(Font);
+  Font.setWeight(QFont::Normal);
+  painter2D.setFont(Font);
 
   if(m_bLinearAvg) {
     painter2D.setPen(Qt::yellow);
@@ -168,6 +173,20 @@ void CPlotter::draw(float swide[])             //draw()
     UTCstr();
     painter1.setPen(Qt::white);
     painter1.drawText(5,10,m_sutc);
+  }
+
+  if(m_mode=="JT4") {                       //JT4
+    QPen pen3(Qt::red,2);                 //Mark freqs of JT4 single-tone msgs
+    painter2D.setPen(pen3);
+    int x1=XfromFreq(1000);
+    y=0.25*m_h2;
+    painter2D.drawText(x1-4,y,"T");
+    x1=XfromFreq(1200);
+    painter2D.drawText(x1-4,y,"S");
+    x1=XfromFreq(1500);
+    painter2D.drawText(x1-4,y,"R");
+    x1=XfromFreq(1700);
+    painter2D.drawText(x1-4,y,"73");
   }
   update();                              //trigger a new paintEvent
 }
@@ -279,7 +298,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
 
   float bw=9.0*12000.0/m_nsps;                //JT9
 
-  if(m_modeTx=="JT4") {                       //JT4
+  if(m_mode=="JT4") {                       //JT4
     bw=3*11025.0/2520.0;           //NB: this is max tone spacing, 3/4 of actual BW
     if(m_nSubMode==1) bw=2*bw;
     if(m_nSubMode==2) bw=4*bw;
@@ -288,24 +307,11 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==5) bw=36*bw;
     if(m_nSubMode==6) bw=72*bw;
 
-    QPen pen3(Qt::red,2);                 //Mark JT4 single-tone freqs
-    painter0.setPen(pen3);
-    x1=XfromFreq(1000);
-    painter0.drawText(x1-4,20,"T");
-    x1=XfromFreq(1200);
-    painter0.drawText(x1-4,20,"S");
-    x1=XfromFreq(1500);
-    painter0.drawText(x1-4,20,"R");
-    x1=XfromFreq(1700);
-    painter0.drawText(x1-8,20,"73");
-
     QPen pen0(Qt::green, 4);                 //Mark Tol range with fat green line
     painter0.setPen(pen0);
     x1=XfromFreq(m_rxFreq-m_tol);
     x2=XfromFreq(m_rxFreq+m_tol);
     painter0.drawLine(x1,28,x2,28);
-
-
   }
 
   if(m_modeTx=="JT65") {                     //JT65
@@ -322,7 +328,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawLine(x1,28,x2,28);
   painter0.drawLine(x2,24,x2,30);
 
-  if(m_modeTx=="JT4") {                       //In JT4, mark all four tones
+  if(m_mode=="JT4") {                       //In JT4, mark all four tones
     x2=XfromFreq(m_rxFreq+bw/3.0);
     painter0.drawLine(x2,24,x2,30);
     x2=XfromFreq(m_rxFreq+bw*2.0/3.0);
