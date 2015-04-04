@@ -28,13 +28,14 @@ subroutine gen4(msg0,ichk,msgsent,i4tone,itype)
      call packmsg(message,i4Msg6BitWords,itype)  !Pack into 12 6-bit bytes
      call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
      if(ichk.ne.0) go to 999
-     call encode4(message,i4tone)            !Encode the information bits
-     i4tone=2*i4tone + npr(2:)               !Data = MSB, sync = LSB
+     call encode4(message,i4tone)                !Encode the information bits
      i1=index(message,'-')
-     if(i1.ge.9) then
-        c=message(i1+1:i1+1)
-        if(c.ge.'0' .and. c.le.'3') i4tone=2*i4tone + (1-npr(2:))
-        if(c.ge.'0' .and. c.le.'3') print*,"#"
+     c=message(i1+1:i1+1)
+     if(i1.ge.9 .and. c.ge.'0' .and. c.le.'3') then
+        i4tone=2*i4tone + (1-npr(2:))            !Inverted '#' sync
+        print*,'#'
+     else 
+        i4tone=2*i4tone + npr(2:)                !Data = MSB, sync = LSB
      endif
   endif
 
