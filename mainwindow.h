@@ -190,6 +190,7 @@ private slots:
   void on_sbMinW_valueChanged(int n);
   void on_sbSubmode_valueChanged(int n);
   void on_cbShMsgs_toggled(bool b);
+  void on_cbTx6_toggled(bool b);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -365,7 +366,6 @@ private:
   QString m_msgSent0;
   QString m_fileToSave;
   QString m_band;
-  QString m_tx6Prev;
 
   QStringList m_prefix;
   QStringList m_suffix;

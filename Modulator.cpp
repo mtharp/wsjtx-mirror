@@ -58,8 +58,7 @@ void Modulator::start (unsigned symbolsLength, double framesPerSymbol, unsigned 
   m_quickClose = false;
 
   m_symbolsLength = symbolsLength;
-  m_isym0 = std::numeric_limits<unsigned>::max (); // Arbitrary big
-                                                   // number
+  m_isym0 = std::numeric_limits<unsigned>::max (); // big number
   m_frequency0 = 0.;
   m_addNoise = dBSNR < 0.;
   m_nsps = framesPerSymbol;
@@ -84,7 +83,8 @@ void Modulator::start (unsigned symbolsLength, double framesPerSymbol, unsigned 
     m_silentFrames = m_ic + m_frameRate - (mstr * m_frameRate / 1000);
   }
 
-  //  qDebug () << "Modulator: starting at " << m_ic / m_frameRate << " sec, sending " << m_silentFrames << " silent frames";
+  //  qDebug () << "Modulator: starting at " << m_ic / m_frameRate
+  //      << " sec, sending " << m_silentFrames << " silent frames";
 
   initialize (QIODevice::ReadOnly, channel);
   Q_EMIT stateChanged ((m_state = (synchronize && m_silentFrames) ?
@@ -271,6 +271,9 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
           m_phi = 0.0;
         }
 
+        static double dphi0=0.0;
+        if(m_dphi != dphi0) qDebug() << "B" << m_dphi*m_frameRate/m_twoPi;
+        dphi0=m_dphi;
         // done for this chunk - continue on next call
         return framesGenerated * bytesPerFrame ();
       }
