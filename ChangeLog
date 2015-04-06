@@ -7,6 +7,8 @@
 == Version 1.0.0
 by KI7MT, <ki7mt@yahoo.com>
 
+* Update ChamgeLog
+* Merge update script into build-doc.sh
 * Removed provision for manpages
 * Updated dev email url
 * Bumped version number
