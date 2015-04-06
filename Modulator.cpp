@@ -37,8 +37,8 @@ Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds, QObjec
   , m_tuning {false}
   , m_cwLevel {false}
 {
-  qsrand (QDateTime::currentMSecsSinceEpoch()); // Initialize random
-                                                // seed
+  qsrand (QDateTime::currentMSecsSinceEpoch()); // Initialize random seed
+  m_itone0=0;
 }
 
 void Modulator::start (unsigned symbolsLength, double framesPerSymbol, unsigned frequency, double toneSpacing, SoundOutput * stream, Channel channel, bool synchronize, double dBSNR)
@@ -212,15 +212,12 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
 
         double const baud (12000.0 / m_nsps);
         // fade out parameters (no fade out for tuning)
-        unsigned const i0 = m_tuning ? 999 * m_nsps :
-          (m_symbolsLength - 0.017) * 4.0 * m_nsps;
-        unsigned const i1 = m_tuning ? 999 * m_nsps :
-          m_symbolsLength * 4.0 * m_nsps;
+        unsigned const i0 = m_tuning ? 9999 * m_nsps : (m_symbolsLength - 0.017) * 4.0 * m_nsps;
+        unsigned const i1 = m_tuning ? 9999 * m_nsps :  m_symbolsLength * 4.0 * m_nsps;
 
         for (unsigned i = 0; i < numFrames && m_ic <= i1; ++i) {
           isym = m_tuning ? 0 : m_ic / (4.0 * m_nsps); //Actual fsample=48000
           if (isym != m_isym0 || m_frequency != m_frequency0) {
-            // qDebug () << "@m_ic:" << m_ic << "itone[" << isym << "] =" << itone[isym] << "@" << i << "in numFrames:" << numFrames;
             if(itone[0]>=100) {
               toneFrequency0=itone[0];
             } else {
@@ -232,7 +229,6 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
             }
             m_dphi = m_twoPi * toneFrequency0 / m_frameRate;
             m_isym0 = isym;
-            m_frequency0 = m_frequency;
           }
 
           int j=m_ic/480;
@@ -262,12 +258,13 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
           }
           m_phi = 0.0;
         }
-
 /*
-        static double dphi0=0.0;
-        if(m_dphi != dphi0) qDebug() << "Modulator B:" << m_dphi*m_frameRate/m_twoPi << itone[0];
-        dphi0=m_dphi;
+        if(m_frequency != m_frequency0 or itone[0] != m_itone0) qDebug() << "Modulator B:" << itone[0] << m_frequency
+                                                 << m_dphi*m_frameRate/m_twoPi ;
+        m_itone0=itone[0];
 */
+        m_frequency0 = m_frequency;
+
         // done for this chunk - continue on next call
         return framesGenerated * bytesPerFrame ();
       }

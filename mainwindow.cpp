@@ -1603,7 +1603,6 @@ void MainWindow::guiUpdate()
   bool bTxTime = ((t2p >= tx1) and (t2p < tx2)) or m_tune;
 
   if(nsec != nsec0) {
-//    qDebug() << "B" << nsec << m_btxok << m_tune << iptt0;
     nsec0=nsec;
   }
 
@@ -1859,7 +1858,6 @@ void MainWindow::stopTx()
 
 void MainWindow::stopTx2()
 {
-  qDebug() << "A1861";
   QString rt;
   //Lower PTT
   Q_EMIT m_config.transceiver_ptt (false);
@@ -3353,6 +3351,7 @@ void::MainWindow::VHF_controls_visible(bool b)
   ui->sbSubmode->setVisible(b);
   ui->sbMinW->setVisible(b);
   ui->cbShMsgs->setVisible(b);
+  ui->cbTx6->setVisible(b);
   ui->labMinW->setVisible(b);
   ui->labSubmode->setVisible(b);
   ui->cbEME->setVisible(b);
