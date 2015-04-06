@@ -1,4 +1,4 @@
-[[INSTALL_WIN]]
+ [[INSTALL_WIN]]
 === Windows
 
 - Download _WSJT_ from the {homepage}. Click on _WSJT_ at the left
@@ -32,7 +32,60 @@ Still to come ...
 [[INSTALL_OSX]]
 === OS X
 
-Still to come ...
+This guide refers to installation of _WSJT_ on Mac OSX 10.7 and 10.9.  This scheme should also work on OSX 10.8 but has not been tested.  There are
+problems with Tcl/Tk libraries which prevent the code from running on OSX 10.10.
+You will need to be familiar with Unix commands in a Terminal window.
+
+- Install the latest version of Xcode, available free from developer.apple.com.
+Launch Xcode and visit Preferences -> Downloads and select "command line tools" 
+and install them.
+
+- You will need a Fortran compiler.  Visit  https://gcc.gnu.org/wiki/GFortranBinaries#MacOS
+and select an installer for your OSX version.
+
+- The default Python installed on a Mac is version 2.7.   A later version is required.  Visit
+https://www.python.org/downloads/release/python-342/ and select _Mac OS X 64-bit/32-bit installer_.  Download the package 
+and install.
+
+- For the next downloads I recommend that you create an installation directory and use this
+for the downloads that follow.  
+
+- You need the _numpy_ suite.   Visit http://sourceforge.net/projects/numpy/files/NumPy/1.9.1/ and download _numpy-1.9.1.tar.gz_.   
+Expand this file and type: +
+ :: python setup.py build --fcompiler=gnu95 +
+ :: sudo python setup.py install +
+
+- Install portaudio.  Visit  http://www.portaudio.com/download.html and download _pa_snapshot.tgz_.  Expand this file
+and type: +
+ :: configure +
+ :: make +
+ :: sudo make install +
+
+- Install libsamplerate.  Visit  http://www.mega-nerd.com/SRC/download.html and download _libsamplerate-0.1.8.tar.gz_.  Expand this file and type: +
+ :: configure +
+ :: make +
+ :: sudo make install +
+
+- Install Fast Fourier code.  Visit http://www.fftw.org/download.html and download _fftw_3.3.4.tar.gz_ and expand the file. Type: +
+ :: configure --enable-float +
+ :: make +
+ :: sudo make install +
+
+- Install PIL for imaging.  Type: +
+ ::  sudo pip install Pillow +
+
+- Now it is time to download the source code.  Type the following which will download the complete source tree
+and install in a new directory _wsjt_.   
+ :: svn co svn://svn.code.sf.net/p/wsjt/wsjt/trunk wsjt +
+
+- Finally, change your working directory to _wsjt_ and type: +
+ :: configure --with-portaudio-include-dir=/usr/local/include --with-portaudio-lib-dir=/usr/local/lib +
+ :: make +
+ :: python wsjt.py +
+
+and if all has proceeded without error, _WSJT_ should launch.
+
+You will need a Mac driver to control the serial link between your Mac and the transmitter.
 
 [[SRC_CODE]]
 === Source Code
