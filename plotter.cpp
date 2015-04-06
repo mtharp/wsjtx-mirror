@@ -176,10 +176,12 @@ void CPlotter::draw(float swide[])             //draw()
   }
 
   if(m_mode=="JT4") {                       //JT4
-    QPen pen3(Qt::red,2);                 //Mark freqs of JT4 single-tone msgs
+    QPen pen3(Qt::yellow);                     //Mark freqs of JT4 single-tone msgs
     painter2D.setPen(pen3);
+    Font.setWeight(QFont::Bold);
+    painter2D.setFont(Font);
     int x1=XfromFreq(1000);
-    y=0.25*m_h2;
+    y=0.2*m_h2;
     painter2D.drawText(x1-4,y,"T");
     x1=XfromFreq(1200);
     painter2D.drawText(x1-4,y,"S");

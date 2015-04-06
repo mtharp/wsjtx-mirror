@@ -90,19 +90,13 @@ void Modulator::start (unsigned symbolsLength, double framesPerSymbol, unsigned 
   Q_EMIT stateChanged ((m_state = (synchronize && m_silentFrames) ?
                         Synchronizing : Active));
   m_stream = stream;
-  if (m_stream)
-    {
-      m_stream->restart (this);
-    }
+  if (m_stream) m_stream->restart (this);
 }
 
 void Modulator::tune (bool newState)
 {
   m_tuning = newState;
-  if (!m_tuning)
-    {
-      stop (true);
-    }
+  if (!m_tuning) stop (true);
 }
 
 void Modulator::stop (bool quick)
@@ -271,6 +265,11 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
           m_phi = 0.0;
         }
 
+/*
+        static double dphi0=0.0;
+        if(m_dphi != dphi0) qDebug() << "Modulator B:" << m_dphi*m_frameRate/m_twoPi << itone[0];
+        dphi0=m_dphi;
+*/
         // done for this chunk - continue on next call
         return framesGenerated * bytesPerFrame ();
       }

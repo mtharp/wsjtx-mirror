@@ -1616,24 +1616,16 @@ void MainWindow::guiUpdate()
     if (onAirFreq > 10139900 && onAirFreq < 10140320)
       {
         bTxTime=false;
-        if (m_tune)
-          {
-            stop_tuning ();
-          }
-	
-        if (m_auto)
-          {
-            auto_tx_mode (false);
-          }
+        if (m_tune) stop_tuning ();
+        if (m_auto) auto_tx_mode (false);
 
-        if(onAirFreq!=onAirFreq0)
-          {
-            onAirFreq0=onAirFreq;
-            QString t="Please choose another Tx frequency.\n";
-            t+="WSJT-X will not knowingly transmit\n";
-            t+="in the WSPR sub-band on 30 m.";
-            msgBox(t);
-          }
+        if(onAirFreq!=onAirFreq0) {
+          onAirFreq0=onAirFreq;
+          QString t="Please choose another Tx frequency.\n";
+          t+="WSJT-X will not knowingly transmit\n";
+          t+="in the WSPR sub-band on 30 m.";
+          msgBox(t);
+        }
       }
 
     float fTR=float((nsec%m_TRperiod))/m_TRperiod;
@@ -1665,9 +1657,13 @@ void MainWindow::guiUpdate()
     //    ba2msg(ba,msgsent);
     int len1=22;
     int ichk=0,itype=0;
-    if(m_modeTx=="JT4") gen4_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
-    if(m_modeTx=="JT9") gen9_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
-    if(m_modeTx=="JT65") gen65_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+    if(m_tune) {
+      itone[0]=0;
+    } else {
+      if(m_modeTx=="JT4") gen4_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+      if(m_modeTx=="JT9") gen9_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+      if(m_modeTx=="JT65") gen65_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+    }
     msgsent[22]=0;
     QString t=QString::fromLatin1(msgsent);
     if(m_tune) t="TUNE";
@@ -1974,8 +1970,6 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
   decodedtext = t1.mid(i1,i2-i1);         //selected line
-//  qDebug() << "a" << cursor.selectionStart() << cursor.selectionEnd() << cursor.selectedText();
-//  qDebug() << "b" << i1 << i2 << t1.mid(i1,i2-i1);
 
   if(m_msgAvgWidget) m_msgAvgWidget->addItem(cursor.selectedText().mid(0,18));
 
@@ -2952,16 +2946,14 @@ void MainWindow::on_rptSpinBox_valueChanged(int n)
 
 void MainWindow::on_tuneButton_clicked (bool checked)
 {
-  if (m_tune)
-    {
-      tuneButtonTimer->start(250);
-    } 
-  else
-    {
-      m_sent73=false;
-      m_repeatMsg=0;
-      on_monitorButton_clicked (true);
-    }
+  if (m_tune) {
+    tuneButtonTimer->start(250);
+  } else {
+    m_sent73=false;
+    m_repeatMsg=0;
+    itone[0]=0;
+    on_monitorButton_clicked (true);
+  }
   m_tune = checked;
   Q_EMIT tune (checked);
 }
