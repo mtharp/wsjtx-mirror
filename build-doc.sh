@@ -62,7 +62,7 @@ set -e
 ################################################################################
 
 # Main variables
-SCRIPTVER="0.9.0"
+SCRIPTVER="1.0.0"
 BASEDIR=$(exec pwd)
 DEVMAIL="wsjt-devel@lists.sourceforge.net"
 ICONSDIR="../icons"

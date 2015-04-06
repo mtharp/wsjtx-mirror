@@ -1,12 +1,18 @@
-= WSJT Documentation Change Log
+= WSJT Documentation Build Script Change Log
 
 == TO-DO:
-* Add provision to build Manpages without installing half the Ubuntu
-  repository to accomplish it, as it's not necessary (*Nix, Win32).
-* Single build function for each type, html, manpage, data-uri. (*Nix, Win32)
-* Build asciidoc.exe with Python27 base64 mime type support (Win32)
-* Add Windows clean_up function to build.bat (Win32)
+* Convert IF statements to case selections
+* Add provisions for new applications ( when needed )
 
+== Version 1.0.0
+by KI7MT, <ki7mt@yahoo.com>
+
+* Removed provision for manpages
+* Updated dev email url
+* Bumped version number
+* Removed all JTSDK v1.0 build scripts
+* Removed JTSDK v1.0 obsolete files
+* Other minor edits
 
 == Version 0.9.1
 by KI7MT, <ki7mt@yahoo.com>
