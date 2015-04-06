@@ -144,13 +144,15 @@ subroutine astro0(nyear,month,nday,uth8,nfreq,grid,cauxra,cauxdec,       &
      write(14,1010,err=800) ih,im,is,AzMoon,ElMoon,                  &
         ih,im,is,AzSun,ElSun,                                        &
         ih,im,is,AzAux,ElAux,                                        &
-        nfreq,doppler,dfdt,doppler00,dfdt0,c1
+        nfreq,doppler,dfdt,doppler00,dfdt0,c1,                       &
+        TXFirst,TRPeriod,poloffset,Dgrd,xnr,ave,rms,Receiving
 1010 format(i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Moon'/        &
             i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Sun'/         &
             i2.2,':',i2.2,':',i2.2,',',f5.1,',',f5.1,',Source'/      &
-            i5,',',f8.1,',',f8.2,',',f8.1,',',f8.2,',Doppler, ',a1)
-     close(14)
-800  isec0=isec
+            i5,',',f8.1,',',f8.2,',',f8.1,',',f8.2,',Doppler, ',a1/  &
+            i1,',',i3,',',f8.1,','f8.1,',',f8.1,',',f12.3,',',f12.3,',',i1,',RPol')
+800  close(14)
+     isec0=isec
      elmoon2=elmoon
      call cs_unlock
   endif
