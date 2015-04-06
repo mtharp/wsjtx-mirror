@@ -11,7 +11,7 @@
 #
 # Comment ......: This script is used with JTSDK v2 for Windows via the
 #                 JTSDK-DOC environment (Cyg32) and should work as a stand
-#                 alone script on Linux provided the package requirments
+#                 alone script on Linux provided the package requirements
 #                 are met.
 #
 # build-doc.sh is free software: you can redistribute it and/or modify it 
@@ -47,7 +47,7 @@
 #  All .....: ./build-doc.sh clean
 #
 # NOTE(s)
-#  The same method is used for all documentaion.
+#  The same method is used for all documentation.
 #  The prefix "d" designates data-uri or a stand
 #  alone version of the document
 #
@@ -64,20 +64,21 @@ set -e
 # Main variables
 SCRIPTVER="0.9.0"
 BASEDIR=$(exec pwd)
-DEVMAIL="wsjt-devel@lists.berlios.de"
+DEVMAIL="wsjt-devel@lists.sourceforge.net"
+ICONSDIR="../icons"
+DICONSDIR="$BASEDIR/icons"
+export PATH="$BASEDIR/asciidoc:$PATH"
+
+# Document Build Vars
+DEVG="$BASEDIR/dev-guide"
 MAP65="$BASEDIR/map65"
+QREF="$BASEDIR/quick-ref"
 SIMJT="$BASEDIR/simjt"
 WSJT="$BASEDIR/wsjt"
 WSJTX="$BASEDIR/wsjtx"
 WSPR="$BASEDIR/wspr"
 WFMT="$BASEDIR/wfmt"
 WSPRX="$BASEDIR/wsprx"
-DEVG="$BASEDIR/dev-guide"
-DEVG2="$BASEDIR/dev-guide2"
-QREF="$BASEDIR/quick-ref"
-ICONSDIR="../icons"
-DICONSDIR="$BASEDIR/icons"
-export PATH="$BASEDIR/asciidoc:$PATH"
 
 # Link build (linked css, images, js)
 TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
@@ -85,12 +86,8 @@ TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
 # data-uri build (embedded images, css, js)
 DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$DICONSDIR -a max-width=1024px"
 
-# build manpage (under construction)
-# data-uri builds (embedded images, css, js)
-# MTOC="a2x.py --format=manpage --doctype=manpage --no-xmllint -o $OUPUT_FILE $INPUT_FILE"
-
 # all available documents
-declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide' 'dev-guide2')
+declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide')
 
 # Color variables
 C_R='\033[01;31m'		# red
@@ -205,17 +202,6 @@ function build_ddoc() {
 
 }
 
-# Build manpages ---------------------------------------------------------------
-function build_man() {
-
-	# * Need input and output method
-	# * Manpages should reside in source trees, but there's no
-	#   reason they cannot be built externally, then update the 
-	#   source tree file as a fully formated manpage.
-	$MTOC -o $app_name.1 ./source/$app_name.1.txt
-
-}
-
 # Copy Images & Icons Dir to $app_name -----------------------------------------
 function copy_image_folders() {
 
@@ -229,7 +215,7 @@ rsync -aq --exclude=.svn $BASEDIR/$app_name/images/ $BASEDIR/$app_name/source/im
 # Remove Images & Icons Dir to $app_name ---------------------------------------
 function remove_image_folders() {
 
-# remove all the files we used for data-uri building
+# Remove all the files we used for data-uri building
 rm -r $BASEDIR/$app_name/source/images
 
 }
@@ -324,11 +310,10 @@ else
 fi
 }
 
-
 # Clean Folders ----------------------------------------------------------------
 function clean_up() {
 	# Delete any /tmp folders then remove HTML files
-	# suitable for use before sommit code changes to SVN
+	# suitable for use before commit code changes to SVN
 	clear
 	echo
 	echo -e ${C_Y}'Cleaning Temp Folders and HTML Files'${C_NC}
@@ -411,8 +396,7 @@ elif [[ $1 = "dall" ]]
 	doc_type=D
 	build_all_guides
 
-
-# Quick Reference Guides -------------------------------------------------------
+	# Quick Reference Guides -------------------------------------------------------
 # Linked version
 elif [[ $1 = "qref" ]]
 	then
@@ -439,11 +423,11 @@ elif [[ $1 = "dqref" ]]
 		remove_image_folders
 		post_file_check
 
-# Development Guide for JTSDK v1.0.0 -------------------------------------------
+# Development Guide for JTSDK --------------------------------------------------
 # Linked version
 elif [[ $1 = "devg" ]]
 	then
-		display_name="WSJT Developer's Guide for JTSDK v1"
+		display_name="WSJT Developer's Guide for JTSDK"
 		app_name="dev-guide"
 		cd "$DEVG"
 		pre_file_check
@@ -455,36 +439,9 @@ elif [[ $1 = "devg" ]]
 # embedded css, images, js
 elif [[ $1 = "ddevg" ]]
 	then
-		display_name="WSJT Developer's Guide data-uri for JTSDK v1"
+		display_name="WSJT Developer's Guide data-uri for JTSDK"
 		app_name="dev-guide"
 		cd "$DEVG"
-		pre_file_check
-		clear
-		main_wording
-		copy_image_folders
-		build_ddoc
-		remove_image_folders
-		post_file_check
-
-# Development Guide for JTSDK v2.0.0 -------------------------------------------
-# Linked version
-elif [[ $1 = "devg2" ]]
-	then
-		display_name="WSJT Developer's Guide for JTSDK v2"
-		app_name="dev-guide2"
-		cd "$DEVG2"
-		pre_file_check
-		clear
-		main_wording
-		build_doc
-		post_file_check
-
-# embedded css, images, js
-elif [[ $1 = "ddevg2" ]]
-	then
-		display_name="WSJT Developer's Guide data-uri for JTSDK v2"
-		app_name="dev-guide2"
-		cd "$DEVG2"
 		pre_file_check
 		clear
 		main_wording
