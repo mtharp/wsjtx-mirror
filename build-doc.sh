@@ -365,6 +365,43 @@ function app_menu_help() {
 	echo
 }
 
+function update_doc() {
+
+# check for svn
+which svn > /dev/null
+if [ "$?" -eq "1" ]; then
+	clear
+	echo -e ${C_Y}"Subversion Error: Not Found"${C_NC}
+	echo
+	echo 'Please ensure Subversion is installed and can be'
+	echo "found from the command line, then re-run $0"
+	echo
+	trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
+	exit 1
+fi
+
+# start updating
+clear
+echo -e ${C_Y}"Updating Documentation Folders From SVN"${C_NC}
+echo
+
+# loop through each sub-folder in the array and svn update
+for f in "${doc_ary[@]}"
+	do
+		app_name="$f"
+		cd "$f/"
+		dir=$(exec pwd)
+		echo -e ${C_C}"updating: $dir"${C_NC}
+		svn cleanup
+		svn update
+		cd "$BASEDIR"
+	done
+echo
+echo -e ${C_Y}"Finishing Updating: ${doc_ary[*]}"${C_NC}
+echo
+
+}
+
 ################################################################################
 # start the main script                                                        #
 ################################################################################
@@ -377,6 +414,11 @@ if [[ $1 = "" ]] || [[ $1 = "help" ]]
   then
     app_menu_help
 
+# update all SVN folders
+elif [[ $1 = "update" ]]
+	then
+	update_doc
+	
 # Clean Files & Folders
 elif [[ $1 = "clean" ]]
 	then
