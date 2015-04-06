@@ -271,9 +271,6 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
           m_phi = 0.0;
         }
 
-        static double dphi0=0.0;
-        if(m_dphi != dphi0) qDebug() << "B" << m_dphi*m_frameRate/m_twoPi;
-        dphi0=m_dphi;
         // done for this chunk - continue on next call
         return framesGenerated * bytesPerFrame ();
       }

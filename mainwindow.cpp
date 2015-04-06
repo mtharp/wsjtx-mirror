@@ -1665,27 +1665,9 @@ void MainWindow::guiUpdate()
     //    ba2msg(ba,msgsent);
     int len1=22;
     int ichk=0,itype=0;
-    if(m_modeTx=="JT4") gen4_(message
-                                , &ichk
-                                , msgsent
-                                , const_cast<int *> (itone)
-                                , &itype
-                                , len1
-                                , len1);
-    if(m_modeTx=="JT9") gen9_(message
-                                , &ichk
-                                , msgsent
-                                , const_cast<int *> (itone)
-                                , &itype
-                                , len1
-                                , len1);
-    if(m_modeTx=="JT65") gen65_(message
-                                , &ichk
-                                , msgsent
-                                , const_cast<int *> (itone)
-                                , &itype
-                                , len1
-                                , len1);
+    if(m_modeTx=="JT4") gen4_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+    if(m_modeTx=="JT9") gen9_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+    if(m_modeTx=="JT65") gen65_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
     msgsent[22]=0;
     QString t=QString::fromLatin1(msgsent);
     if(m_tune) t="TUNE";
@@ -3436,7 +3418,16 @@ void MainWindow::on_cbShMsgs_toggled(bool b)
 {
   ui->cbTx6->setEnabled(b);
   m_bShMsgs=b;
+  int itone0=itone[0];
+  int ntx=m_ntx;
   genStdMsgs(m_rpt);
+  itone[0]=itone0;
+  if(ntx==1) ui->txrb1->setChecked(true);
+  if(ntx==2) ui->txrb2->setChecked(true);
+  if(ntx==3) ui->txrb3->setChecked(true);
+  if(ntx==4) ui->txrb4->setChecked(true);
+  if(ntx==5) ui->txrb5->setChecked(true);
+  if(ntx==6) ui->txrb6->setChecked(true);
 }
 
 void MainWindow::on_cbTx6_toggled(bool b)
