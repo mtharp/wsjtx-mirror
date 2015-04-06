@@ -4,6 +4,17 @@
 
 #include "wsprnet.h"
 
+// Some hardwired, but tunable parameters
+const int PARAM_WORK_INTERVAL_MSEC = 200.0;  // time interval between work calls
+const int PARAM_WORK_TIMEOUT_SEC = 90.0;  // timeout for uploading of all spots
+const int PARAM_SEND_INTERVAL_SEC = 2.0;  // wait time between spot requests
+
+// Derived parameters
+const int PARAM_SEND_NO_CALLS =
+    int(1000.0*PARAM_SEND_INTERVAL_SEC/PARAM_WORK_INTERVAL_MSEC);
+const int PARAM_TIMEOUT_NO_CALLS =
+    int(1000.0*PARAM_WORK_TIMEOUT_SEC/PARAM_WORK_INTERVAL_MSEC);
+
 WSPRNet::WSPRNet(QObject *parent) :
     QObject(parent)
 {
@@ -32,13 +43,19 @@ void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq,
 
 //    qDebug() << "mode: " << m_mode;
 
+    // Initialize the counters, lists, queues
+    m_workCalls = 0;
+    urlQueue.clear( );
+    replyList.clear( );
+
     // Open the wsprd.out file
     QFile wsprdOutFile(fileName);
     if (!wsprdOutFile.open(QIODevice::ReadOnly | QIODevice::Text) ||
             wsprdOutFile.size() == 0) {
         urlQueue.enqueue( wsprNetUrl + urlEncodeNoSpot());
         m_uploadType = 1;
-        uploadTimer->start(200);
+        m_urlQueueSize = 1;
+        uploadTimer->start(PARAM_WORK_INTERVAL_MSEC);
         return;
     }
 
@@ -55,27 +72,32 @@ void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq,
         }
     }
     m_urlQueueSize = urlQueue.size();
-    uploadTimer->start(200);
+    uploadTimer->start(PARAM_WORK_INTERVAL_MSEC);
 }
 
 void WSPRNet::networkReply(QNetworkReply *reply)
 {
     QString serverResponse = reply->readAll();
-    if( m_uploadType == 2) {
+
+    qDebug() << "Server response:\n" << serverResponse;
+
+    // Check for network errors
+    if ((reply->error( )) != QNetworkReply::NoError) {
+        qDebug() << "Network Error:" <<  reply->error( );
+        emit uploadStatus("Network Error");
+    } else if (m_uploadType == 2) {
+        // Check for the expected reply from the server
         if (!serverResponse.contains(QRegExp("spot\\(s\\) added"))) {
-            emit uploadStatus("Upload Failed");
-            urlQueue.clear();
-            uploadTimer->stop();
+          qDebug() << "Server did not return expected response";
+          emit uploadStatus("Unexpected server response");
         }
     }
 
-    if (urlQueue.isEmpty()) {
-        emit uploadStatus("done");
-        QFile::remove(m_file);
-        uploadTimer->stop();
-    }
+    // Update the list of pending replies
+    replyList.removeAll(reply);
 
-    //qDebug() << serverResponse;
+    // Clean up to avoid a memory leak
+    reply->deleteLater( );
 }
 
 bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
@@ -183,23 +205,77 @@ QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
     queryString += "dbm=" + query["dbm"] + "&";
     queryString += "version=" + m_vers;
 
-    //qDebug() << queryString;
+    qDebug() << queryString;
 
     return queryString;
 }
 
 void WSPRNet::work()
 {
+    // Minor change to the basic strategy of operation by KD6EKQ. When
+    // requests are sent to the wsprnet.org server, the reply object that
+    // is returned by networkManager->get(request) is placed on a QList
+    // (named replyList). When a request finishes normally, it then gets
+    // removed from replyList in the networkReply( ) method. The timeout
+    // code below will abort any requests that have not finished after
+    // waiting some (configurable) time period.
+
+    // Increment the call counter
+
+    m_workCalls++;
+
+    // First check the URL queue for spot requests that have yet to be sent
+
     if (!urlQueue.isEmpty()) {
+        // Pace the sending of our requests (go easy on the wsprnet.org server)
+        if ((m_workCalls % PARAM_SEND_NO_CALLS) != 0) return;
+        // Send the next request
         QUrl url(urlQueue.dequeue());
         QNetworkRequest request(url);
-        networkManager->get(request);
-        QString status = "Uploading Spot " + QString::number(m_urlQueueSize - urlQueue.size()) + "/"+ QString::number(m_urlQueueSize);
+        QNetworkReply *reply = networkManager->get(request);
+        // Append the reply object to the list of pending replies
+        replyList.append(reply);
+        // Update the message in the status bar
+        QString status = "Uploading Spot " + 
+            QString::number(m_urlQueueSize - urlQueue.size()) +
+            "/" + QString::number(m_urlQueueSize);
         emit uploadStatus(status);
-    } else {
-        uploadTimer->stop();
+        return;
     }
+
+    // Check the list of pending replies
+
+    if (replyList.isEmpty()) {
+        // All replies were received, signal main that the upload has finished
+        emit uploadStatus("done");
+        QFile::remove(m_file);
+        uploadTimer->stop();
+        return;
+    }
+
+    // Pending reply list is non-empty, check if the timeout period has elapsed
+
+    if (m_workCalls >= PARAM_TIMEOUT_NO_CALLS) {
+        // Timeout period has elapsed, abort requests that are still running
+        qDebug() << "Timeout, len(replyList) = " << replyList.size();
+        emit uploadStatus("Timeout");
+        // Make a copy of the replyList (possible race condition with replyList)
+        QList<QNetworkReply *> replyListCopy;
+        for (int j = 0; j < replyList.size(); ++j)
+            replyListCopy.append((replyList.at(j)));
+        // Explicitly abort any requests that are still running
+        for (int j = 0; j < replyListCopy.size(); ++j) {
+            if (replyListCopy.at(j)->isRunning( )) {
+                // After an abort, the networkReply( ) method should get called
+                replyListCopy.at(j)->abort( );
+            }
+        }
+        emit uploadStatus("done");  // signal main that the upload has finished
+        QFile::remove(m_file);
+        uploadTimer->stop();
+        return;
+    }
+
 }
 
-
-
+// End of wsprnet.cpp

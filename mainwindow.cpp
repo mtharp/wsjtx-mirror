@@ -809,6 +809,8 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       if(m_uploadSpots and (m_band==m_RxStartBand)) {
         float x=rand()/((double)RAND_MAX + 1);
         int msdelay=20000*x;
+        lab3->setStyleSheet("QLabel{background-color:yellow}");
+        lab3->setText("Pausing before upload");
         uploadTimer->start(msdelay);                         //Upload delay
       } else {
         QFile f("wsprd.out");
@@ -892,7 +894,7 @@ void MainWindow::uploadSpots()
                     m_appDir + "/wsprd.out");
     loggit("Start WSPRNet Upload");
     m_uploading = true;
-    lab3->setStyleSheet("QLabel{background-color:yellow}");
+    lab3->setStyleSheet("QLabel{background-color: #00ff00}");
     lab3->setText("Uploading Spots");
 }
 
@@ -903,11 +905,8 @@ void MainWindow::uploadResponse(QString response)
         m_uploading=false;
         lab3->setStyleSheet("");
         lab3->setText("");
-    } else if (response == "Upload Failed") {
-        m_uploading=false;
-        lab3->setStyleSheet("");
-        lab3->setText(response);
     } else {
+        lab3->setStyleSheet("QLabel{background-color: #00ff00}");
         lab3->setText(response);
     }
 }

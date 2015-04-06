@@ -25,10 +25,12 @@ private:
     QNetworkAccessManager *networkManager;
     QString wsprNetUrl;
     QString m_call, m_grid, m_rfreq, m_tfreq, m_mode, m_tpct, m_dbm, m_vers, m_file;
+    QList<QNetworkReply *> replyList;	// list of pending server replies
     QQueue<QString> urlQueue;
     QTimer *uploadTimer;
     int m_urlQueueSize;
     int m_uploadType;
+    int m_workCalls;
 
     QString urlEncodeNoSpot();
     QString urlEncodeSpot(QHash<QString,QString> spot);
