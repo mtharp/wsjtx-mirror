@@ -221,7 +221,6 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
           isym = m_tuning ? 0 : m_ic / (4.0 * m_nsps); //Actual fsample=48000
           if (isym != m_isym0 || m_frequency != m_frequency0) {
             // qDebug () << "@m_ic:" << m_ic << "itone[" << isym << "] =" << itone[isym] << "@" << i << "in numFrames:" << numFrames;
-
             if(itone[0]>=100) {
               toneFrequency0=itone[0];
             } else {
@@ -261,7 +260,6 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
             Q_EMIT stateChanged ((m_state = Idle));
             return framesGenerated * bytesPerFrame ();
           }
-
           m_phi = 0.0;
         }
 

@@ -1603,6 +1603,7 @@ void MainWindow::guiUpdate()
   bool bTxTime = ((t2p >= tx1) and (t2p < tx2)) or m_tune;
 
   if(nsec != nsec0) {
+//    qDebug() << "B" << nsec << m_btxok << m_tune << iptt0;
     nsec0=nsec;
   }
 
@@ -1613,20 +1614,19 @@ void MainWindow::guiUpdate()
     }
 
     Frequency onAirFreq = m_dialFreq + ui->TxFreqSpinBox->value ();
-    if (onAirFreq > 10139900 && onAirFreq < 10140320)
-      {
-        bTxTime=false;
-        if (m_tune) stop_tuning ();
-        if (m_auto) auto_tx_mode (false);
+    if (onAirFreq > 10139900 && onAirFreq < 10140320) {
+      bTxTime=false;
+      if (m_tune) stop_tuning ();
+      if (m_auto) auto_tx_mode (false);
 
-        if(onAirFreq!=onAirFreq0) {
-          onAirFreq0=onAirFreq;
-          QString t="Please choose another Tx frequency.\n";
-          t+="WSJT-X will not knowingly transmit\n";
-          t+="in the WSPR sub-band on 30 m.";
-          msgBox(t);
-        }
+      if(onAirFreq!=onAirFreq0) {
+        onAirFreq0=onAirFreq;
+        QString t="Please choose another Tx frequency.\n";
+        t+="WSJT-X will not knowingly transmit\n";
+        t+="in the WSPR sub-band on 30 m.";
+        msgBox(t);
       }
+    }
 
     float fTR=float((nsec%m_TRperiod))/m_TRperiod;
     if(g_iptt==0 and ((bTxTime and fTR<0.4) or m_tune )) {
@@ -1636,9 +1636,7 @@ void MainWindow::guiUpdate()
       Q_EMIT m_config.transceiver_ptt (true);
       ptt1Timer->start(200);                       //Sequencer delay
     }
-    if(!bTxTime) {
-      m_btxok=false;
-    }
+    if(!bTxTime and !m_tune) m_btxok=false;
   }
 
   // Calculate Tx tones when needed
@@ -1861,8 +1859,8 @@ void MainWindow::stopTx()
 
 void MainWindow::stopTx2()
 {
+  qDebug() << "A1861";
   QString rt;
-
   //Lower PTT
   Q_EMIT m_config.transceiver_ptt (false);
 
@@ -2966,16 +2964,8 @@ void MainWindow::stop_tuning ()
 
 void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
 {
-  if (m_tune)
-    {
-      stop_tuning ();
-    }
-
-  if (m_auto)
-    {
-      auto_tx_mode (false);
-    }
-
+  if (m_tune) stop_tuning ();
+  if (m_auto) auto_tx_mode (false);
   m_btxok=false;
   m_repeatMsg=0;
 }
@@ -3311,49 +3301,37 @@ void MainWindow::pskSetLocal ()
 void MainWindow::transmitDisplay (bool transmitting)
 {
 
-  if (transmitting == m_transmitting)
-    {
-      if (transmitting)
-        {
-          signalMeter->setValue(0);
+  if (transmitting == m_transmitting) {
+    if (transmitting) {
+      signalMeter->setValue(0);
+      if (m_monitoring) monitor (false);
+      m_btxok=true;
+    }
 
-          if (m_monitoring)
-            {
-              monitor (false);
-            }
-
-          m_btxok=true;
-        }
-
-      auto QSY_allowed = !transmitting || m_config.tx_QSY_allowed () || !m_config.split_mode ();
-      if (ui->cbTxLock->isChecked ())
-        {
-          ui->RxFreqSpinBox->setEnabled (QSY_allowed);
-          ui->pbT2R->setEnabled (QSY_allowed);
-        }
-      ui->TxFreqSpinBox->setEnabled (QSY_allowed);
-      ui->pbR2T->setEnabled (QSY_allowed);
-      ui->cbTxLock->setEnabled (QSY_allowed);
+    auto QSY_allowed = !transmitting || m_config.tx_QSY_allowed () || !m_config.split_mode ();
+    if (ui->cbTxLock->isChecked ()) {
+      ui->RxFreqSpinBox->setEnabled (QSY_allowed);
+      ui->pbT2R->setEnabled (QSY_allowed);
+    }
+    ui->TxFreqSpinBox->setEnabled (QSY_allowed);
+    ui->pbR2T->setEnabled (QSY_allowed);
+    ui->cbTxLock->setEnabled (QSY_allowed);
 
       // only allow +2kHz when not transmitting or if TX QSYs are allowed
-      ui->cbPlus2kHz->setEnabled (!transmitting || m_config.tx_QSY_allowed ());
+    ui->cbPlus2kHz->setEnabled (!transmitting || m_config.tx_QSY_allowed ());
 
       // the following are always disallowed in transmit
-      ui->menuMode->setEnabled (!transmitting);
-      ui->bandComboBox->setEnabled (!transmitting);
-      if (!transmitting)
-        {
-          if ("JT9+JT65" == m_mode)
-            {
+    ui->menuMode->setEnabled (!transmitting);
+    ui->bandComboBox->setEnabled (!transmitting);
+      if (!transmitting) {
+        if ("JT9+JT65" == m_mode) {
               // allow mode switch in Rx when in dual mode
-              ui->pbTxMode->setEnabled (true);
-            }
+          ui->pbTxMode->setEnabled (true);
         }
-      else
-        {
-          ui->pbTxMode->setEnabled (false);
-        }
-    }
+      } else {
+        ui->pbTxMode->setEnabled (false);
+      }
+  }
 }
 
 void MainWindow::on_sbTol_valueChanged(int i)
