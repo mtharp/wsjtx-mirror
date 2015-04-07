@@ -3,7 +3,10 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
      ccfblue,ccfred,ps0)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
-! have been 2x downsampled.  
+! have been 2x downsampled.
+
+! NB: JT4 presently looks for only one decodable signal in the FTol 
+! range -- analogous to the nqd=1 step in JT9 and JT65.
 
   use jt4
   real dat(npts)                                     !Raw data
@@ -68,10 +71,9 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
 
 ! If we get here, we have achieved sync!
   csync='*'
-  if(flip.lt.0.0) then
-     csync='#'
-  endif
+  if(flip.lt.0.0) csync='#'
 
+! Attempt a single-sequence decode, including deep4 if Fano fails.
   call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,                &
        mycall,hiscall,hisgrid,decoded,nfano,deepmsg,qual,ichbest)
 
@@ -79,41 +81,45 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   dtxx=dtx-0.8
 
   if(nfano.gt.0) then
+! Fano succeeded: display the message and return
      write(*,1010) nutc,nsnr,dtxx,nfreq,csync,decoded,    &
           nfano,0,char(ichar('A')+ichbest-1)
 1010 format(i4.4,i4,f5.2,i5,1x,a1,1x,a22,2i3,1x,a1)
      go to 900
   endif
 
+! Single-sequence Fano decode failed, so try for an average Fano decode:
   qave=0.
+! If this is a new minute or a new frequency, reset syncbest=0:
   if(nutc.ne.nutc0 .or. abs(nfreq-nfreq0).gt.ntol) syncbest=0.
+! If operator tries several times, save only the one with best sync
   if(snrsync.gt.0.9999*syncbest) then
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
+! Attempt an average decode
      call avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,minw,     &
          mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest)
   endif
 
-!  print*,'c',nfanoave,avemsg,qave,deepave,ichbest
   if(nfanoave.gt.0) then
+! Fan succeeded: display the message and return
      write(*,1010) nutc,nsnr,dtxx,nfreq,csync,avemsg,    &
           nfanoave,0,char(ichar('A')+ichbest-1)
      go to 900
   endif
 
-!  print*,'d',qual,qave,nq1
+! Average fano decode failed, so look at the attempted correlation decodes
   if(qual.gt.qave) then
-     if(qual.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,deepmsg, &
-          0,nint(qual),char(ichar('A')+ichbest-1)
+! Single-sequence "qual" better than average "qave": display deepmsg
+     if(qual.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,   &
+          deepmsg,0,nint(qual),char(ichar('A')+ichbest-1)
      if(qual.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
   else
-     if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,deepave, &
-          0,nint(qave),char(ichar('A')+ichbest-1)
+! Average "qave better than single-sequence "qual": display deepave
+     if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,   &
+          deepave,0,nint(qave),char(ichar('A')+ichbest-1)
      if(qave.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
   endif
-
-!  if(decoded.ne.'                      ') nsave=0  !Good decode, restart avging
-!  if(mode4.gt.1 .and. ichbest.gt.1) ccfred=ccfred*sqrt(float(nch(ichbest)))
 
 900 return
 end subroutine wsjt4
