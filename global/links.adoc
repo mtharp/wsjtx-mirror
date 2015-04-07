@@ -90,6 +90,9 @@ d). Edit lines as needed. Keeping them in alphabetic order help see dupes.
 :wsjtx_rc2_tag: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/tags/wsjtx-1.4.0/[Tag: WSJT-X v1.4 RC2]
 :wspr_code: http://physics.princeton.edu/pulsar/K1JT/WSPRcode.exe[WSPRcode.exe]
 :wspr_svn: http://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/wspr/[here]
+:jtsdk_vcredist: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/base/contrib/vcredist_x86.exe/download[Download]
+:jtsdk_omnirig: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/base/contrib/OmniRig.zip/download[Download]
+:jtsdk_installer: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/JTSDK-2.0.0-B2-Win32.exe/download[Download]
 
 // MAIL-TO links
 :alex_efros: mailto:powerman@powerman.name[Alex Efros]

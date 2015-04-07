@@ -26,9 +26,6 @@ are purpose built to provide the the correct configuration of packages.
 While each may be customized by the user, care should be taken as to not break
 the core configuration. 
 
-All the packages used to build *JTSDK* (for Windows) are available on Sourceforge,
-along with basic build instructions for each section.
-
 === Linux
 *JTSDK* for Linux contains all builds and src folders within the users ($USER)
 home directory. Unlike the Windows collection, Linux packaging is done by way

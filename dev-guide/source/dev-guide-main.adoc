@@ -75,36 +75,48 @@ include::wspr.adoc[]
 == WSPR-X
 include::wsprx.adoc[]
 
-:numbered!:
-
 == Contact US
 include::../../global/communication.adoc[]
 
 == License
 include::../../global/license.adoc[]
 
-////
+:numbered!:
+[appendix]
 [[JTSDKDOC]]
 JTSDK-DOC
 ---------
 include::jtsdk-doc.adoc[]
 
+:numbered!:
+[appendix]
 [[JTSDKPY]]
 JTSDK-PY
 --------
 include::jtsdk-py.adoc[]
 Under Construction
 
+:numbered!:
+[appendix]
 [[JTSDKQT]]
 JTSDK-QT
 --------
 include::jtsdk-qt.adoc[]
 Under Construction
 
+:numbered!:
+[appendix]
+[[JTSDKMSYS]]
+JTSDK-MSYS
+----------
+include::jtsdk-msys.adoc[]
+Under Construction
+
+:numbered!:
+[appendix]
 [[JTSDKNIX]]
 JTSDK-NIX
 --------
 include::jtsdk-nix.adoc[]
 Under Construction
-////
 

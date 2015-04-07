@@ -1,2 +1,105 @@
+This section will guide you through the various steps of installation. For
+<<INSTALLWINDOWS,Windows>>, the 32-Bit installer will install or configure
+all elements from a single file. The <<INSTALLLINUX,Linux >> installation
+is through traditional methods of configure, make, make install.
 
-Under construction
+[[INSTALLWINDOS]]
+=== Windows
+For your convenience, all packages can be downloaded from the *JTSDK*
+SourceForge repository. Download the following packages, then proceed to
+<<MSCVINSTALL,MSVC Install>>. Install the packages *In The Order Listed*:
+
+[horizontal]
+*MSVC Redist*:: {jtsdk_vcredist}
+*OmniRig*:: {jtsdk_omnirig}
+*JTSDK Installer*:: {jtsdk_installer}
+
+[[MSCVINSTALL]]
+==== MSVC Redist Installation 
+* Browse to your download location
+* Run the installer (vcredist_x86.exe)
+* Read and accept the terms
+
+.MSVC Redist Terms
+image::images/msvc-redist1.png[]
+* Finish the installation
+
+.MSVC Redist Finish
+image::images/msvc-redist2.png[]
+
+==== OmniRig Installation
+* Browse to your download location
+* Unzip the installer (OmniRig.zip)
+* Run the installer (OmniRigSetup.exe)
+
+.OmniRig Install
+image::images/omnirig-install.png[]
+
+==== JTSDK Installation
+* Browse to your download location
+* Run the installer (JTSDK-2.0.0-B2-Win32.exe)
+
+.JTSDK INstall Start
+image::images/jtsdk-install1.png[]
+
+* Accept KVASD EULA Terms
+
+.KVASD EULA Terms
+image::images/jtsdk-install2.png[]
+
+* View GPL3 License Terms, then click next
+
+.View GPL3 License
+image::images/jtsdk-install3.png[]
+
+* Wait for primary instillation to complete
+
+.Primary Instillation
+image::images/jtsdk-install4.png[]
+
+* Script Download and <<JTSDKDOC,JTSDK-DOC>> installation should start automatically
+
+.Download Scripts and Install JTSDK-DOC
+image::images/cyg32-install1.png[]
+
+* Monitor Cygwin32 installation for any errors
+
+.Cygwin32 Install Status
+image::images/cyg32-install2.png[]
+
+* Installation finish screen
+
+.Finished Install
+image::images/jtsdk-finished-install.png[]
+
+* Select environment to launch
+
+.Post Install Launch
+image::images/jtsdk-install-launch.png[]
+
+*****
+IMPORTANT: Due to the custom installation of JTSDK-MSYS, upon first run, the
+environment will be set-up for your specific user.  You will be prompted to
+re-start JTSDK-MSYS after it configures the shell.
+*****
+
+.JTSDK-MSYS Custom Configuration
+image::images/jtsdk-msys-first-run.png[]
+
+
+
+[[INSTALLLINUX]]
+=== Linux
+There are (3) required prerequisites for installation:
+
+* An Internet Connection
+* Sunversion
+* Autoconf
+
+Using your package manager, perform the following:
+*****
+sudo apt-get update
+sudo apt-get install autoconf subversion
+*****
+
+
