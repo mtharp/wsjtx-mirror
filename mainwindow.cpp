@@ -1324,6 +1324,11 @@ void MainWindow::clrAvg()
   m_nclearave=1;
 }
 
+void MainWindow::on_ClrAvgButton_clicked()
+{
+  m_nclearave=1;
+}
+
 void MainWindow::msgAvgDecode2()
 {
   on_DecodeButton_clicked (true);
@@ -1416,6 +1421,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
   while(proc_jt9.canReadLine())
     {
       QByteArray t=proc_jt9.readLine();
+      bool bavemsg=(m_mode=="JT4" and t.mid(42,3).toInt()<0);
       if(t.indexOf("<DecodeFinished>") >= 0) {
         m_bdecoded = (t.mid(23,1).toInt()==1);
         bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
@@ -1472,8 +1478,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
                                                     , m_config.color_DXCC()
                                                     , m_config.color_NewCall());
 
-        if (abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) // this msg is within 10 hertz of our tuned frequency
-          {
+        if ((abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) or bavemsg) {
+          // This msg is within 10 hertz of our tuned frequency
         //Right (Rx Frequency) window
             ui->decodedTextBrowser2->displayDecodedText(decodedtext
                                                         , my_base_call
@@ -2564,6 +2570,7 @@ void MainWindow::on_actionJT9_1_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
   mode_label->setText(m_mode);
   m_toneSpacing=0.0;
+  ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_1->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
@@ -2584,6 +2591,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_toneSpacing=pow(2,m_config.jt9w_bw_mult ())*12000.0/6912.0;
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
   mode_label->setText(m_mode);
+  ui->ClrAvgButton->setVisible(false);
   ui->actionJT9W_1->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
@@ -2605,6 +2613,7 @@ void MainWindow::on_actionJT65_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
+  ui->ClrAvgButton->setVisible(false);
   ui->actionJT65->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
@@ -2634,6 +2643,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffa500}");
   mode_label->setText(m_mode);
+  ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_JT65->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
@@ -2656,6 +2666,9 @@ void MainWindow::on_actionJT4_triggered()
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   ui->actionJT4->setChecked(true);
+  ui->ClrAvgButton->setVisible(true);
+//  ui->decodedTextBrowser2->setVisible(false);
+//  ui->decodedTextLabel2->setVisible(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);

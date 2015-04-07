@@ -16,7 +16,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
   mode4=nch(nsubmode+1)
   MinSigdB=0
   ntol=ntol0
-  neme=1
+  neme=0
   lumsg=6                         !### temp ? ###
   ndiag=1
   nlist=nlist0

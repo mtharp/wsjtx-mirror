@@ -20,7 +20,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   character*12 mycall
   character*12 hiscall
   character*6 hisgrid
-  data first/.true./,nutc0/-999/,nfreq0/-999999/,syncbest/0.0/
+  data first/.true./,nutc0/-999/,nfreq0/-999999/
   save
 
   if(first) then
@@ -52,6 +52,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   nfmid=nfqso + nint(1.5*mode4*4.375)
   call sync4(dat,npts,ntol,emedelay,dttol,nfmid,mode4,minw,  &
        dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
+!  print*,emedelay,dttol,snrx,snrsync,snrsync-snrx,dtx,dfx
 
   csync=' '
   decoded=blank
@@ -74,7 +75,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   if(flip.lt.0.0) csync='#'
 
 ! Attempt a single-sequence decode, including deep4 if Fano fails.
-  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,                &
+  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,nutc,        &
        mycall,hiscall,hisgrid,decoded,nfano,deepmsg,qual,ichbest)
 
   nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
@@ -84,21 +85,20 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
 ! Fano succeeded: display the message and return
      write(*,1010) nutc,nsnr,dtxx,nfreq,csync,decoded,    &
           nfano,0,char(ichar('A')+ichbest-1)
-1010 format(i4.4,i4,f5.2,i5,1x,a1,1x,a22,2i3,1x,a1)
+1010 format(i4.4,i4,f5.2,i5,a1,1x,a22,2i3,1x,a1)
      go to 900
   endif
 
 ! Single-sequence Fano decode failed, so try for an average Fano decode:
   qave=0.
-! If this is a new minute or a new frequency, reset syncbest=0:
-  if(nutc.ne.nutc0 .or. abs(nfreq-nfreq0).gt.ntol) syncbest=0.
-! If operator tries several times, save only the one with best sync
-  if(snrsync.gt.0.9999*syncbest) then
+! If this is a new minute or a new frequency, call avg4
+  if(nutc.ne.nutc0 .or. abs(nfreq-nfreq0).gt.ntol) then
+     nutc0=nutc
+     nfreq0=nfreq
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
-! Attempt an average decode
-     call avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,minw,     &
-         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest)
+     call avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,     &
+         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,nave)
   endif
 
   if(nfanoave.gt.0) then
@@ -117,7 +117,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   else
 ! Average "qave better than single-sequence "qual": display deepave
      if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,   &
-          deepave,0,nint(qave),char(ichar('A')+ichbest-1)
+          deepave,nave,nint(qave),char(ichar('A')+ichbest-1)
      if(qave.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
   endif
 

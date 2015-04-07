@@ -1,4 +1,4 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
+subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,nutc,      &
      mycall,hiscall,hisgrid,decoded,nfano,deepbest,qbest,ichbest)
 
 ! Decodes JT4 data, assuming that DT and DF have already been determined.
@@ -97,6 +97,8 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      qual=0.                                    !Now try deep search
      if(ndepth.ge.1) then
         call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
+        write(81,3101) nutc,sym(51:53),flip,ich,qual,deepmsg
+3101    format(i4.4,4f8.1,i3,f7.2,2x,a22)
         if(qual.gt.qbest) then
            qbest=qual
            deepbest=deepmsg

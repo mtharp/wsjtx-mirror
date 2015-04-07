@@ -1,9 +1,9 @@
-subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
+subroutine deep4(sym0,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
 ! Deep search routine for JT4
 
   parameter (MAXCALLS=7000,MAXRPT=63)
-  real*4 sym(206)
+  real*4 sym0(206),sym(206)
   character callsign*12,grid*4,message*22,hisgrid*6,ceme*3
   character*12 mycall,hiscall
   character mycall0*12,hiscall0*12,hisgrid0*6
@@ -31,6 +31,7 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
            'RO','RRR','73'/
   save mycall0,hiscall0,hisgrid0,neme0,ntot,code,testmsg
 
+  sym=sym0
   if(mycall.eq.mycall0 .and. hiscall.eq.hiscall0 .and.         &
        hisgrid.eq.hisgrid0 .and. neme.eq.neme0) go to 30
 
@@ -133,18 +134,24 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
            p1=p
            ip1=k
         endif
+        write(78,3001) k,pp(k),testmsg(k)
+3001    format(i6,f10.3,2x,a22)
      endif
   enddo
+  flush(78)
 
   do i=1,ntot
      if(pp(i).gt.p2 .and. pp(i).ne.p1) p2=pp(i)
   enddo
 
-  qual=p1-max(1.15*p2,80.0)
+!  qual=p1-max(1.15*p2,80.0)
+  qual=p1-max(1.15*p2,70.0)
+
 ! ### DO NOT REMOVE ### 
   rewind 77
-  if(ip1.ge.1 .and. ip1.le.2*MAXCALLS+2+MAXRPT) write(77,*) p1,p2,ntot,   &
+  if(ip1.ge.1 .and. ip1.le.2*MAXCALLS+2+MAXRPT) write(77,1001) p1,p2,ntot,   &
        rms,qual,ip1,testmsg(ip1)
+1001 format(2f8.2,i8,2f8.2,i6,2x,a22)
   call flush(77)
 ! ### Works OK without it (in both Windows and Linux) if compiled 
 ! ### without optimization.  However, in Windows this is a colossal 
@@ -167,6 +174,9 @@ subroutine deep4(sym,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
      if(decoded(i:i).ge.'a' .and. decoded(i:i).le.'z')                &
           decoded(i:i)=char(ichar(decoded(i:i))-32)
   enddo
+
+  write(79,1001) p1,p2,ntot,rms,qual,ip1,testmsg(ip1)
+  call flush(79)
 
   return
 end subroutine deep4

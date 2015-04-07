@@ -192,6 +192,8 @@ private slots:
   void on_cbShMsgs_toggled(bool b);
   void on_cbTx6_toggled(bool b);
 
+  void on_ClrAvgButton_clicked();
+
 private:
   void enable_DXCC_entity (bool on);
 

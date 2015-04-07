@@ -444,6 +444,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="ClrAvgButton">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Clear Avg</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="DecodeButton">
           <property name="minimumSize">
            <size>

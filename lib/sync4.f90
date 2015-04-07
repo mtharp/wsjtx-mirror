@@ -64,7 +64,6 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
 ! lag2=59
   lag1=(0.8+emedelay-dttol)/thsym
   lag2=(0.8+emedelay+dttol)/thsym
-!  print*,'A',lag1,lag2,lag1*0.1142857,lag2*0.1142857
 
   syncbest=-1.e30
   ccfred=0.
@@ -167,6 +166,9 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
      if(ccfred1(i).le.ccf10) exit
   enddo
   width=(i-i1)*df
+
+!  write(*,3301) emedelay,lag1*0.1142857,lag2*0.1142857,dtx,dtx-0.8
+!3301 format(5f8.3)
 
   return
 end subroutine sync4
