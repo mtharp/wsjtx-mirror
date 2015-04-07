@@ -257,8 +257,8 @@ do
 	[Yy]* )
 		clear
 		echo -e ${C_Y}".. removing old files ... "${C_NC}
+		rm -f ./*.html
 		sleep 1
-		rm ./*.html
 		return
 	;;
 	[Nn]* )
@@ -296,7 +296,6 @@ else
 	SVN_VER=$(svn info | grep ^Revision)
 	BASH_VER=$(bash --version |awk 'FNR==1')
 	S_HIGH=$(source-highlight --version |awk 'FNR==1')
-	echo "Script version:" # $Id$ 
 	echo "Repository Version: ${SVN_VER: -4}"
 	echo "$SYS_INFO"
 	echo "$BASH_VER"
@@ -402,6 +401,17 @@ echo
 
 }
 
+# Hack to force updating the $app_name-main.adoc file to 
+# update the HTML file footer Last Update time.
+# This is a Bug in AsciiDoc as it does not update
+# the -m or --time=mtime if the $app_name-main.adoc file
+# if ::includes[] files are modified.
+function update_timestamp() {
+
+touch ./source/$app_name-main.adoc
+
+}
+
 ################################################################################
 # start the main script                                                        #
 ################################################################################
@@ -450,6 +460,7 @@ case "$option" in
 		app_name="quick-ref"
 		cd "$QREF"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -462,6 +473,7 @@ case "$option" in
 		app_name="quick-ref"
 		cd "$QREF"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -477,6 +489,7 @@ case "$option" in
 		app_name="dev-guide"
 		cd "$DEVG"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -489,6 +502,7 @@ case "$option" in
 		app_name="dev-guide"
 		cd "$DEVG"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -504,6 +518,7 @@ case "$option" in
 		app_name="map65"
 		cd "$MAP65"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -516,6 +531,7 @@ case "$option" in
 		app_name="map65"
 		cd "$MAP65"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -531,6 +547,7 @@ case "$option" in
 		app_name="simjt"
 		cd "$SIMJT"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -543,6 +560,7 @@ case "$option" in
 		app_name="simjt"
 		cd "$SIMJT"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -558,6 +576,7 @@ case "$option" in
 		app_name="wsjt"
 		cd "$WSJT"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -570,6 +589,7 @@ case "$option" in
 		app_name="wsjt"
 		cd "$WSJT"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -585,6 +605,7 @@ case "$option" in
 		app_name="wsjtx"
 		cd "$WSJTX"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -597,6 +618,7 @@ case "$option" in
 		app_name="wsjtx"
 		cd "$WSJTX"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -612,6 +634,7 @@ case "$option" in
 		app_name="wspr"
 		cd "$WSPR"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -624,6 +647,7 @@ case "$option" in
 		app_name="wspr"
 		cd "$WSPR"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -639,6 +663,7 @@ case "$option" in
 		app_name="wfmt"
 		cd "$WFMT"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -652,6 +677,7 @@ case "$option" in
 		app_name="wfmt"
 		cd "$WFMT"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
@@ -667,6 +693,7 @@ case "$option" in
 		app_name="wsprx"
 		cd "$WSPRX"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		build_doc
@@ -679,6 +706,7 @@ case "$option" in
 		app_name="wsprx"
 		cd "$WSPRX"
 		pre_file_check
+		update_timestamp
 		clear
 		main_wording
 		copy_image_folders
