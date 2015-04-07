@@ -1,8 +1,14 @@
 = WSJT Documentation Build Script Change Log
 
 == TO-DO:
-* Convert IF statements to case selections
 * Add provisions for new applications ( when needed )
+* Add Dialog build menu
+
+by KI7MT, <ki7mt@yahoo.com>
+* Removed obslete {a2x,asciidoc,asciidocapi}.exe binaries
+* Converted IF statments to case in
+* Set svn propset version Id for build-dc.sh
+* Manual version number updates no longer needed
 
 == Version 1.0.0
 by KI7MT, <ki7mt@yahoo.com>

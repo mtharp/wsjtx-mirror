@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Title ........: build-doc.sh
+# Version ......: $Id$ 
 # Description ..: WSJT Documentation Main Build Script for Win32/Linux
 # Project URL ..: http://sourceforge.net/projects/wsjt/
 # Requires .....: Python 2.5 <=> 2.7, AsciiDoc, rsync, Awk, Bash, Coreutils
@@ -62,7 +63,6 @@ set -e
 ################################################################################
 
 # Main variables
-SCRIPTVER="1.0.0"
 BASEDIR=$(exec pwd)
 DEVMAIL="wsjt-devel@lists.sourceforge.net"
 ICONSDIR="../icons"
@@ -296,7 +296,7 @@ else
 	SVN_VER=$(svn info | grep ^Revision)
 	BASH_VER=$(bash --version |awk 'FNR==1')
 	S_HIGH=$(source-highlight --version |awk 'FNR==1')
-	echo "Script version: v$SCRIPTVER"
+	echo "Script version:" # $Id$ 
 	echo "Repository Version: ${SVN_VER: -4}"
 	echo "$SYS_INFO"
 	echo "$BASH_VER"
@@ -409,39 +409,43 @@ echo
 # Trap Ctrl+C, Ctrl+Z and quit signals
 trap clean_exit SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
 
-# Display help if $1 is "" or "help" 
-if [[ $1 = "" ]] || [[ $1 = "help" ]]
-  then
-    app_menu_help
+option=$(echo ${1,,})
 
-# update all SVN folders
-elif [[ $1 = "update" ]]
-	then
-	update_doc
-	
-# Clean Files & Folders
-elif [[ $1 = "clean" ]]
-	then
-	clean_up
-	
-# Build All Guides
-# Linked version
-elif [[ $1 = "all" ]]
-	then
-	doc_type=L
-	build_all_guides
+case "$option" in
+	# Help ---------------------------------------------------------------------
+	# Display Help Menu
+	-h|-help|--help)
+		app_menu_help	
+	;;
 
-# Build All Documentation
-# embedded css, images, js
-elif [[ $1 = "dall" ]]
-	then
-	doc_type=D
-	build_all_guides
+	# Update -------------------------------------------------------------------
+	# Update all SVN folders
+	update|-update|--update)
+		update_doc
+	;;
 
-	# Quick Reference Guides -------------------------------------------------------
-# Linked version
-elif [[ $1 = "qref" ]]
-	then
+	# Clean --------------------------------------------------------------------
+	# Clean Files & Folders
+	clean|-clean|--clean)
+		clean_up
+	;;
+
+	# All Documents ------------------------------------------------------------
+	# Linked Version
+	all|-all|--all)
+		doc_type=L
+		build_all_guides
+	;;
+
+	# Embedded CSS, Images, JS
+	dall|-dall|--dall)
+		doc_type=D
+		build_all_guides
+	;;
+
+	# Quick Reference ----------------------------------------------------------
+	# Linked Version
+	qref)
 		display_name="Quick Reference"
 		app_name="quick-ref"
 		cd "$QREF"
@@ -450,10 +454,10 @@ elif [[ $1 = "qref" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dqref" ]]
-	then
+	# Embedded CSS, Images, JS
+	dqref)
 		display_name="Quick Reference data-uri"
 		app_name="quick-ref"
 		cd "$QREF"
@@ -464,11 +468,11 @@ elif [[ $1 = "dqref" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
+	;;
 
-# Development Guide for JTSDK --------------------------------------------------
-# Linked version
-elif [[ $1 = "devg" ]]
-	then
+	# Dev-Guide ----------------------------------------------------------------
+	# Linked Version
+	devg)
 		display_name="WSJT Developer's Guide for JTSDK"
 		app_name="dev-guide"
 		cd "$DEVG"
@@ -477,10 +481,10 @@ elif [[ $1 = "devg" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "ddevg" ]]
-	then
+	# Embedded CSS, Images, JS
+	ddevg)
 		display_name="WSJT Developer's Guide data-uri for JTSDK"
 		app_name="dev-guide"
 		cd "$DEVG"
@@ -491,11 +495,11 @@ elif [[ $1 = "ddevg" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
+	;;
 
-# MAP65 build ------------------------------------------------------------------
-# Linked version
-elif [[ $1 = "map65" ]]
-	then
+	# MAP65 --------------------------------------------------------------------
+	# Linked Version
+	map65)
 		display_name="MAP65"
 		app_name="map65"
 		cd "$MAP65"
@@ -504,10 +508,10 @@ elif [[ $1 = "map65" ]]
 		main_wording
 		build_doc
 		post_file_check
-		
-# embedded css, images, js
-elif [[ $1 = "dmap65" ]]
-	then
+	;;
+
+	# Embedded CSS, Images, JS	
+	dmap65)		
 		display_name="MAP65 data-uri"
 		app_name="map65"
 		cd "$MAP65"
@@ -518,11 +522,11 @@ elif [[ $1 = "dmap65" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
-		
-# SimJT build ------------------------------------------------------------------
-# Linked version
-elif [[ $1 = "simjt" ]]
-	then
+	;;
+
+	# SimJT --------------------------------------------------------------------
+	# Linked Version
+	simjt)		
 		display_name="SimJT"
 		app_name="simjt"
 		cd "$SIMJT"
@@ -531,10 +535,10 @@ elif [[ $1 = "simjt" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dsimjt" ]]
-	then
+	# Embedded CSS, Images, JS
+	dsimjt)
 		display_name="SimJT data-uri"
 		app_name="simjt"
 		cd "$SIMJT"
@@ -545,11 +549,11 @@ elif [[ $1 = "dsimjt" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
+	;;
 
-# WSJT build -------------------------------------------------------------------
-# Linked versoin
-elif [[ $1 = "wsjt" ]]
-	then
+	# WSJT ---------------------------------------------------------------------
+	# Linked Versoin
+	wsjt)
 		display_name="WSJT"
 		app_name="wsjt"
 		cd "$WSJT"
@@ -558,10 +562,10 @@ elif [[ $1 = "wsjt" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dwsjt" ]]
-	then
+	# Embedded CSS, Images, JS
+	dwsjt)
 		display_name="WSJT"
 		app_name="wsjt"
 		cd "$WSJT"
@@ -572,11 +576,11 @@ elif [[ $1 = "dwsjt" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
+	;;
 
-# WSJT-X build -----------------------------------------------------------------
-# Linked version
-elif [[ $1 = "wsjtx" ]]
-	then
+	# WSJT-X -------------------------------------------------------------------
+	# Linked Version
+	wsjtx)
 		display_name="WSJT-X"
 		app_name="wsjtx"
 		cd "$WSJTX"
@@ -585,10 +589,10 @@ elif [[ $1 = "wsjtx" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dwsjtx" ]]
-	then
+	# Embedded CSS, Images, JS
+	dwsjtx)
 		display_name="WSJT-X data-uri"
 		app_name="wsjtx"
 		cd "$WSJTX"
@@ -599,11 +603,11 @@ elif [[ $1 = "dwsjtx" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
+	;;
 
-# WSPR build -------------------------------------------------------------------
-# Linked version
-elif [[ $1 = "wspr" ]]
-	then
+	# WSPR ---------------------------------------------------------------------
+	# Linked version
+	wspr)
 		display_name="WSPR"
 		app_name="wspr"
 		cd "$WSPR"
@@ -612,10 +616,10 @@ elif [[ $1 = "wspr" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dwspr" ]]
-	then
+	# Embedded CSS, Images, JS
+	dwspr)
 		display_name="WSPR data-uri"
 		app_name="wspr"
 		cd "$WSPR"
@@ -626,11 +630,11 @@ elif [[ $1 = "dwspr" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
-		
-# WSPR-FMT build ---------------------------------------------------------------
-# Linked version
-elif [[ $1 = "wfmt" ]]
-	then
+	;;
+
+	# WSPR-FMT -----------------------------------------------------------------
+	# Linked Version
+	wfmt)
 		display_name="WFMT"
 		app_name="wfmt"
 		cd "$WFMT"
@@ -639,10 +643,11 @@ elif [[ $1 = "wfmt" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dwfmt" ]]
-	then
+
+	# Embedded CSS, Images, JS
+	dwfmt)
 		display_name="WFMT"
 		app_name="wfmt"
 		cd "$WFMT"
@@ -653,11 +658,11 @@ elif [[ $1 = "dwfmt" ]]
 		build_ddoc
 		remove_image_folders
 		post_file_check
-		
-# WSPR-X build -----------------------------------------------------------------
-# Linked version
-elif [[ $1 = "wsprx" ]]
-	then
+	;;
+
+	# WSPR-X -------------------------------------------------------------------
+	# Linked Version
+	wsprx)
 		display_name="WSPR-X"
 		app_name="wsprx"
 		cd "$WSPRX"
@@ -666,10 +671,10 @@ elif [[ $1 = "wsprx" ]]
 		main_wording
 		build_doc
 		post_file_check
+	;;
 
-# embedded css, images, js
-elif [[ $1 = "dwsprx" ]]
-	then
+	# Embedded CSS, Images, JS
+	dwsprx)
 		display_name="WSPR-X data-uri"
 		app_name="wsprx"
 		cd "$WSPRX"
@@ -681,9 +686,13 @@ elif [[ $1 = "dwsprx" ]]
 		remove_image_folders
 		post_file_check
 
-# Anything else for $1 do help -------------------------------------------------
-else
-	cd "$BASEDIR"
-	app_menu_help
-fi
+	;;
+
+	# Anything Else, Display Help Message
+	*)
+		cd "$BASEDIR"
+		app_menu_help
+	;;
+esac
+
 exit 0
