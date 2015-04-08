@@ -1,43 +1,52 @@
 [[BASE_ENV]]
 As a developer, one knows, there are many ways in which to set-up for 
-developing a particular application. When using *JTSDK*, a structured 
-environment is used in order to produce repeatable results.
+developing a particular application. *JTSDK* employs a structured 
+environment in order to produce repeatable results. All of the builds scripts
+are written to work with the SDK install locations. MOdification of the scripts
+is possible, but would entail a great deal of re-work to work properly.
 
-When using  *JTSDK* (Windows or Linux), the user should not be required to install
-additional packages in order to checkout and build any of the _WSJT_
-application or documentation.
+If the user wants to build applications manually, the environment scripts,
+(on Windows) provide the correct paths to all the required libraries and GCC
+tool chains for respective target applications. Building outside of the environment
+is possible, but would require setting the correct paths and ensuring system 
+wide installation of the same or similar tools do not conflict one another.
 
+On Linux, most if not all of the required dependencies are installed to system
+folder locations. If you installed *JTSDK* from the configure scripts, no 
+additional configuraiton should be needed.
+
+IMPORTANT: The *JTSDK* install location (on Windows) is fixed due to the fact
+Python3 and Qt5 have been previously installed, or in the case of Python3
+modules, built with a specific file / folder location. While it is possible to
+rebase both Python3 and Qt5 after installation, there is a risk of module failure
+in doing so. If your planning on changing the install location, all of the build
+and support scripts will need to be changed. It is highly advisable to leave the
+default installation location as is.
 
 The base containment locations are as follows:
 
 .Windows
 [horizontal]
 *Install Location*:: C:\JTSDK
-*App Install Location*:: C:\JTSDK\(Application Name)\install
-*Libraries*:: C:\JTSDK\(Library Name)
-*Environments*:: C:\JTSDK\(Cyg32,msys)
-
-IMPORTANT: The *JTSDK* install location is fixed do to the fact Python3 and Qt5
-have been previously installed, or in the case of Python3 modules, build with
-with a specific file / folder location. While it is possible to rebase 
-both Python3 and Qt5 after installation, there is a risk of module failure
-in doing so.
+*Source Directory*:: C:\JTSDK\src
+*App Install Location*:: C:\JTSDK\(app name)
+*Libraries*:: C:\JTSDK\(library name)
+*Environments*:: C:\JTSDK\(Cyg32,MSYS)
 
 .Linux
 [horizontal]
 *Install Location*:: /usr/local/bin
-*App Install Location*:: /home/$USER/jtsdk/(Application Name)
+*Source Directory*:: /home/$USER/jtsdk/src
+*App Install Location*:: /home/$USER/jtsdk/(app name)
 *Libraries*:: Default System Location
 *Environments*:: Default System
 
-
-
-=== Windows
-*JTSDK* for Windows provides the containment and includes all required tools to
-build a fully working application or the sub-targets if desired. Details of
-each kit can be found in the appropriate appendix. With the exception of the
-prerequisite packages, none of the packages within JTSDK should interfere nor
-conflict with previously installed system packages.
+=== Windows Notes
+*JTSDK* for Windows provides the containment and all required tools to build a
+fully working application or the sub-targets if desired. Details of each kit can
+be found in the appropriate appendix. With the exception of prerequisite 
+packages, none of the packages within *JTSDK* should interfere with nor conflict
+previously installed system packages.
 
 .There are (4) primary environments
 [horizontal]
@@ -55,7 +64,7 @@ the support libraries and respective GCC tool chains. This is especially
 important when dealing with Python3 modules that build _WSJT_ and _WSPR_ as they
 are version and compiler specific.
 
-=== Linux
+=== Linux Notes
 *JTSDK* for Linux places all builds and src folders within the users ($USER)
 home directory. Unlike the Windows collection, Linux packaging is done by way
 of the respective distribution package manager. The following distributions

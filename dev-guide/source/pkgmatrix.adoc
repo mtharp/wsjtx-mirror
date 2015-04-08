@@ -43,7 +43,7 @@ requirements for each application, including documentation.
 .Comments
 [horizontal]
 *Hamlib*:: Current distro release 1.2.15.x
-*Hamlib3*:: Custom build from Bill Somerville, (G3WJS)
+*Hamlib3*:: Custom build from Bill Somerville, (G4WJS)
 * Hamlib3 is still under development
 * Potential release dates have yet to be announced
 * Use with WSPR and WSPR-X is experimental only
@@ -100,7 +100,7 @@ installed in addition too the package matrix requirements:
 [horizontal]
 *GNU Tools*:: For 64bit OS C/C++, Gfortran, Make, v4.8.0{plus}
 *Hamlib*:: Current distro release 1.2.15.x
-*Hamlib3*:: Custom build from Bill Somerville, (G3WJS)
+*Hamlib3*:: Custom build from Bill Somerville, (G4WJS)
 * Hamlib3 is still under development
 * Potential release dates have yet to be announced
 * Use with WSPR and WSPR-X is experimental only

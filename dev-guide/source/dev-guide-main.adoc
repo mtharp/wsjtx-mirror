@@ -21,6 +21,7 @@ include::../../global/communication.adoc[]
 == Environment
 include::environment.adoc[]
 
+[[INSTALLATION]]
 == Installation
 include::installation.adoc[]
 

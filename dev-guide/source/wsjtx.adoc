@@ -97,7 +97,7 @@ build wsjtx dinstall
 
 *For Release*
 
-build wsjtx rinsrall
+build wsjtx rinstall
 
 Note the ( *r* for Release )
 -----

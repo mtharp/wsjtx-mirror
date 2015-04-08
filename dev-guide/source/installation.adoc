@@ -1,12 +1,12 @@
 This section will guide you through the various steps of installation. For
-<<INSTALLWINDOWS,Windows>>, the 32-Bit installer will install or configure
+<<INSTALLWINDOWS,Windows>>, the 32-Bit installer will install and configure
 all elements from a single file. The <<INSTALLLINUX,Linux >> installation
 is through traditional methods of configure, make, make install.
 
-[[INSTALLWINDOS]]
+[[INSTALLWINDOWS]]
 === Windows
-For your convenience, all packages can be downloaded from the *JTSDK*
-SourceForge repository. Download the following packages, then proceed to
+For your convenience, all packages can be downloaded from the {sourceforge-jtsdk}
+files section. Using the links below, download the packages, then proceed to
 <<MSCVINSTALL,MSVC Install>>. Install the packages *In The Order Listed*:
 
 [horizontal]
@@ -93,7 +93,7 @@ image::images/jtsdk-msys-first-run.png[]
 There are (3) required prerequisites for installation:
 
 * An Internet Connection
-* Sunversion
+* Subversion
 * Autoconf
 
 Using your package manager, perform the following:

@@ -16,22 +16,23 @@ the core building tools for consistency. The tools and more are explained in eac
 of the (4) primary environments.
 
 === Core Features
-*JTSDK* will provides the following core features:
+*JTSDK* provides the following core features:
 
 * QT5 + mingw32 (GCC 4.8.0) winpthread Tool Chain
 * MinGW32 (GCC 4.8.1) pthread Tool Chain
 * MSYS Base Environment {plus} Autotools
 * Cygwin 32Bit Env, Bash, Gnu Coreutils, Git, SVN {plus} much more ...
-* Python2 and Python3 with Tcl/Tk in Seperate Environments
+* Python2 and Python3 with Tcl/Tk in Separate Environments
+* InnoSetup and NSIS installer building tools
 * Build Scripts for WSJT, WSJT-X, WSPR, WSPR-X and MAP65
 * Build Scripts for All WSJT Documentation
 * Supports Win32/64 and Linux x86/x86-64
 
 === Core Functions
-The *JTSDK* guide will provide users with the following core functions:
+This guide will provide users with the following guidance:
 
 * Installing prerequisites packages
-* Installing JTSDK (Windows and Linux) 
+* Installing JTSDK on (<<INSTALLWINDOWS,Windows>> and <<INSTALLLINUX,Linux>>) 
 * Overview of packages, libraries and frameworks
 * Building each application using default configurations
 * Command line custom configuration builds
@@ -45,4 +46,4 @@ to fully leverage the SDKs potential.
 
 On Windows, *JTSDK*, by design, should not interfere with any previously
 installed development packages. If you find or have a conflict, please report it
-to the {devmail} list.
+to the {dev_mail_list}.

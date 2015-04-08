@@ -30,6 +30,8 @@ still makes sense in the caption. If not, just add another link.
 d). Edit lines as needed. Keeping them in alphabetic order help see dupes.
 
 ////
+
+// General URL's
 //:launchpadac6sl: https://launchpad.net/~jnogatch/+archive/wsjtx[WSJT-X Linux Packages]
 :asciidoc_cheatsheet: http://powerman.name/doc/asciidoc[AsciiDoc Cheatsheet]
 :asciidoc_help: http://www.methods.co.nz/asciidoc/userguide.html[AsciiDoc User Guide]
@@ -66,6 +68,7 @@ d). Edit lines as needed. Keeping them in alphabetic order help see dupes.
 :projsummary: http://sourceforge.net/projects/wsjt/[Project Summary]
 :pskreporter: http://pskreporter.info/pskmap.html[PSK Reporter]
 :sourceforge: https://sourceforge.net/user/registration[SourceForge]
+:sourceforge-jtsdk: https://sourceforge.net/projects/jtsdk[SourceForge JTSDK]
 :ubuntu_sdk: https://launchpad.net/~ubuntu-sdk-team/+archive/ppa[Ubuntu SDK Notice]
 :wsjt_yahoo_group: https://groups.yahoo.com/neo/groups/wsjtgroup/info[WSJT Group]
 :wsjtx: http://physics.princeton.edu/pulsar/K1JT/wsjtx.html[WSJT-X]
