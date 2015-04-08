@@ -1421,7 +1421,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
   while(proc_jt9.canReadLine())
     {
       QByteArray t=proc_jt9.readLine();
-      bool bavemsg=(m_mode=="JT4" and t.mid(42,3).toInt()<0);
+      bool baveJT4msg=(t.length()>48);
+//      qDebug() << "a" << t << t.length() << baveJT4msg;
       if(t.indexOf("<DecodeFinished>") >= 0) {
         m_bdecoded = (t.mid(23,1).toInt()==1);
         bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
@@ -1469,7 +1470,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
         auto my_base_call = baseCall (m_config.my_callsign ());
 
         //Left (Band activity) window
-        ui->decodedTextBrowser->displayDecodedText (decodedtext
+        if(!baveJT4msg) {
+          ui->decodedTextBrowser->displayDecodedText (decodedtext
                                                     , my_base_call
                                                     , m_config.DXCC ()
                                                     , m_logBook
@@ -1477,10 +1479,12 @@ void MainWindow::readFromStdout()                             //readFromStdout
                                                     , m_config.color_MyCall()
                                                     , m_config.color_DXCC()
                                                     , m_config.color_NewCall());
+        }
 
-        if ((abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) or bavemsg) {
-          // This msg is within 10 hertz of our tuned frequency
         //Right (Rx Frequency) window
+        if (((abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) and
+             m_mode!="JT4") or baveJT4msg) {
+          // This msg is within 10 hertz of our tuned frequency
             ui->decodedTextBrowser2->displayDecodedText(decodedtext
                                                         , my_base_call
                                                         , false

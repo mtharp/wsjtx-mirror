@@ -1,5 +1,5 @@
 subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
-  mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,nave)
+  mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,ndeepave)
 
 ! Decodes averaged JT4 data
 
@@ -62,7 +62,7 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
      nfanoave=0
      if(ncount.ge.0) then
         ichbest=k
-        nave=nsum
+        nfanoave=nsum
         go to 900
      endif
      if(nch(k).ge.mode4) exit
@@ -83,7 +83,7 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
            qbest=qave
            deepbest=deepave
            kbest=k
-           nave=-nsum
+           ndeepave=nsum
 !           print*,'b',qbest,k,deepbest
         endif
         if(nch(k).ge.mode4) exit
