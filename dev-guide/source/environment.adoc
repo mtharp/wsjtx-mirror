@@ -1,10 +1,36 @@
 [[BASE_ENV]]
 As a developer, one knows, there are many ways in which to set-up for 
 developing a particular application. When using *JTSDK*, a structured 
-environment is used in order to produce repeatable results. When using 
-*JTSDK* (Windows or Linux), the user should not be required to install
-any additional packages in order to checkout and build any of the _WSJT_
+environment is used in order to produce repeatable results.
+
+When using  *JTSDK* (Windows or Linux), the user should not be required to install
+additional packages in order to checkout and build any of the _WSJT_
 application or documentation.
+
+
+The base containment locations are as follows:
+
+.Windows
+[horizontal]
+*Install Location*:: C:\JTSDK
+*App Install Location*:: C:\JTSDK\(Application Name)\install
+*Libraries*:: C:\JTSDK\(Library Name)
+*Environments*:: C:\JTSDK\(Cyg32,msys)
+
+IMPORTANT: The *JTSDK* install location is fixed do to the fact Python3 and Qt5
+have been previously installed, or in the case of Python3 modules, build with
+with a specific file / folder location. While it is possible to rebase 
+both Python3 and Qt5 after installation, there is a risk of module failure
+in doing so.
+
+.Linux
+[horizontal]
+*Install Location*:: /usr/local/bin
+*App Install Location*:: /home/$USER/jtsdk/(Application Name)
+*Libraries*:: Default System Location
+*Environments*:: Default System
+
+
 
 === Windows
 *JTSDK* for Windows provides the containment and includes all required tools to
@@ -15,25 +41,34 @@ conflict with previously installed system packages.
 
 .There are (4) primary environments
 [horizontal]
-*JTSDK-QT*:: used for building _WSJT-X, _WSPR-X_ and _MAP65_
-*JTSDK-PY*:: used for building _WSJT_ and _WSPR_
-*JTSDK-DOC*:: used for building documentation
-*JTSDK-MSYS*:: a general purpose autotools environment
+<<JTSDKQT,JTSDK-QT>>:: used for building _WSJT-X_, _WSPR-X_ and _MAP65_
+<<JTSDKPY,JTSDK-PY>>:: used for building _WSJT_ and _WSPR_
+<<JTSDKDOC,JTSDK-DOC>>:: used for building documentation
+<<JTSDKMSYS,JTSDK-MSYS>>:: a general purpose autotools environment
 
 Each of the environments are completely isolated from one another, both
-in terms of compilers and support package the paths. All (4) environments
-are purpose built to provide the the correct configuration of packages.
-While each may be customized by the user, care should be taken as to not break
-the core configuration. 
+in terms of compilers and support package paths. All (4) environments
+are purpose built to provide the the correct configuration needed to build
+their respective packages. While environments may be customized by the user,
+care should be taken so as not to break the core configuration, in particular,
+the support libraries and respective GCC tool chains. This is especially
+important when dealing with Python3 modules that build _WSJT_ and _WSPR_ as they
+are version and compiler specific.
 
 === Linux
-*JTSDK* for Linux contains all builds and src folders within the users ($USER)
+*JTSDK* for Linux places all builds and src folders within the users ($USER)
 home directory. Unlike the Windows collection, Linux packaging is done by way
 of the respective distribution package manager. The following distributions
 are currently supported:
 
 * Ubuntu; 14.04, 14.10
 * Debian; 8.0*
-* MIntl 17.1
+* Mintl 17.1
 
-As time allows, other distributions will be added.
+As time allows, additional distributions will be added.
+
+Rather than separate environments, *JTSDK* for Linux uses the same tool set the
+users system would use. Builds are accomplished though a simple Dialog Ncurses
+menu system rather than command line entry. With very few exceptions, default
+distribution repository packages are used during the *JTSDK* installation
+process.

@@ -1,6 +1,5 @@
-= WSJT Developers Guide
+= JTSDK - Software Development Kit
 :revision: v2.0
-:badges:
 :icons:
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
@@ -10,28 +9,13 @@
 // use global link file
 include::../../global/links.adoc[]
 
+[[OVERVIEW]]
 == Overview
+include::overview.adoc[]
 
-The WSJT family of programs for weak-signal amateur radio
-communication includes _WSJT_, _WSPR_, _MAP65_, _WSJT-X_, and
-_WSPR-X_.  User interfaces for _WSJT_ and _WSPR_ are written in
-Python3. User interfaces for _WSJT-X_, _WSPR-X_ and _MAP65_ are
-written in C{plus}{plus} using the Qt5 framework. Most number-crunching
-in all of the _WSJT_ programs is done in Fortran.
-
-.This guide will walk the user through:
-* Installing prerequisites packages
-* Installing JTSDK (Windows and Linux) 
-* Overview of packages, libraries and frameworks
-* Building each application using default configurations
-* Command line custom configuration builds
-* Outline available tools and script capabilities
-* A brief introduction to building with Qtcreator
-
-In addition to core building tools each of the environments provides a host
-of very powerful command line tools. A details list is provided in the appendix,
-however, it is up to the user to reseach how best each of these tools can be
-used to fully leverage the SDKs potential.
+[[COMMUNICATION]]
+== Communication
+include::../../global/communication.adoc[]
 
 [[BASEENV]]
 == Environment
@@ -119,4 +103,3 @@ JTSDK-NIX
 --------
 include::jtsdk-nix.adoc[]
 Under Construction
-

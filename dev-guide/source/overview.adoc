@@ -1,0 +1,48 @@
+// Taken from WSJT Main Website
+_WSJT_, _MAP65_, _WSPR_, and _WSJT-X_ are open-source programs designed for
+weak-signal digital communication by amateur radio. Normal usage requires a
+standard SSB transceiver and a personal computer with soundcard. SDR-style
+hardware including the SDR-IQ, Perseus, SoftRock, and FUNcube Dongle is supported
+by MAP65 and WSPR. SimJT is a utility program that generates simulated signals for
+test purposes.
+
+It should be noted, building _WSJT_ applications can be extremely challenging.
+*JTSDK* provides a preconfigured set of packages and custom build scripts which
+allow a user to build all of the main applications with minimal effort. However,
+the default scripts may not be suitable for those actively developing applications
+in all cases. To aid the core developers, several tools have been included that
+allow for much greater flexibility in their final outputs, yet still maintain 
+the core building tools for consistency. The tools and more are explained in each
+of the (4) primary environments.
+
+=== Core Features
+*JTSDK* will provides the following core features:
+
+* QT5 + mingw32 (GCC 4.8.0) winpthread Tool Chain
+* MinGW32 (GCC 4.8.1) pthread Tool Chain
+* MSYS Base Environment {plus} Autotools
+* Cygwin 32Bit Env, Bash, Gnu Coreutils, Git, SVN {plus} much more ...
+* Python2 and Python3 with Tcl/Tk in Seperate Environments
+* Build Scripts for WSJT, WSJT-X, WSPR, WSPR-X and MAP65
+* Build Scripts for All WSJT Documentation
+* Supports Win32/64 and Linux x86/x86-64
+
+=== Core Functions
+The *JTSDK* guide will provide users with the following core functions:
+
+* Installing prerequisites packages
+* Installing JTSDK (Windows and Linux) 
+* Overview of packages, libraries and frameworks
+* Building each application using default configurations
+* Command line custom configuration builds
+* Outline available tools and script capabilities
+* A brief introduction to using QtCreator for builds
+
+In addition to the core application build tools, each environment provides a
+host of very powerful command line tools. A detailed list is provided in the
+appendix, however, it is up to the user to research how best to employ each tool
+to fully leverage the SDKs potential.
+
+On Windows, *JTSDK*, by design, should not interfere with any previously
+installed development packages. If you find or have a conflict, please report it
+to the {devmail} list.
