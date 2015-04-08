@@ -207,9 +207,12 @@ program jt9
      do iblk=1,npts/kstep
         k=iblk*kstep
         call timer('read_wav',0)
-        read(10,end=10) id2(k-kstep+1:k)
-        call timer('read_wav',1)
-
+        read(10,end=3) id2(k-kstep+1:k)
+        go to 4
+3       call timer('read_wav',1)
+        print*,'EOF on input file ',infile
+        exit
+4       call timer('read_wav',1)
         nhsym=(k-2048)/kstep
         if(nhsym.ge.1 .and. nhsym.ne.nhsym0) then
            if(mode.eq.9 .or. mode.eq.74) then

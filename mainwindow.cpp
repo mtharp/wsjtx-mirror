@@ -2581,6 +2581,8 @@ void MainWindow::on_actionJT9_1_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   VHF_controls_visible(false);
+  ui->label_6->setText("Band Activity");
+  ui->label_7->setText("Rx Frequency");
 }
 
 void MainWindow::on_actionJT9W_1_triggered()
@@ -2602,6 +2604,8 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   VHF_controls_visible(false);
+  ui->label_6->setText("Band Activity");
+  ui->label_7->setText("Rx Frequency");
 }
 
 void MainWindow::on_actionJT65_triggered()
@@ -2633,6 +2637,8 @@ void MainWindow::on_actionJT65_triggered()
     ui->sbMinW->setValue(0);
   }
   if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
+  ui->label_6->setText("Band Activity");
+  ui->label_7->setText("Rx Frequency");
 }
 
 void MainWindow::on_actionJT9_JT65_triggered()
@@ -2654,6 +2660,8 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(true);
   VHF_controls_visible(false);
+  ui->label_6->setText("Band Activity");
+  ui->label_7->setText("Rx Frequency");
 }
 
 void MainWindow::on_actionJT4_triggered()
@@ -2680,6 +2688,8 @@ void MainWindow::on_actionJT4_triggered()
   bool bVHF=m_config.enable_VHF_features();
   VHF_controls_visible(bVHF);
   ui->sbSubmode->setMaximum(6);
+  ui->label_6->setText("Single-Period Decodes");
+  ui->label_7->setText("Average Decodes");
 
   if(bVHF) {
     ui->sbSubmode->setValue(m_nSubMode);
