@@ -6,6 +6,7 @@
 
 #define MAX_SCREENSIZE 2048
 
+//float swide0[2048];
 
 CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   QFrame(parent)
@@ -123,7 +124,7 @@ void CPlotter::draw(float swide[])             //draw()
 
   float ymin=1.e30;
   for(int i=0; i<iz; i++) {
-    m_swide[i]=swide[i];
+    //    swide0[i]=swide[i];
     y=swide[i];
     if(y<ymin) ymin=y;
     int y1 = 10.0*gain*y + 10*m_plotZero +40;
@@ -476,7 +477,7 @@ void CPlotter::setRxFreq (int x)
 {
   m_rxFreq = x;         // x is freq in Hz
   DrawOverlay();
-  draw(m_swide);
+  //  draw(swide0);
   update();
 }
 

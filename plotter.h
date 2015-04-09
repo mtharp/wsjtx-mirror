@@ -134,8 +134,6 @@ private:
   double  m_dialFreq;
   double  m_xOffset;
 
-  float   m_swide[2048];
-
   qint32  m_dBStepSize;
   qint32  m_FreqUnits;
   qint32  m_hdivs;
