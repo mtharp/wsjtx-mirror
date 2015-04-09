@@ -224,7 +224,6 @@ private:
   bool m_multiple;
   QSettings * m_settings;
 
-//  QScopedPointer<Ui::MainWindow> ui;
   Ui::MainWindow * ui;
 
   // other windows
