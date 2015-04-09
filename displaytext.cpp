@@ -1,7 +1,10 @@
 #include "displaytext.h"
-#include <QDebug>
+
 #include <QMouseEvent>
 #include <QDateTime>
+#include <QTextCharFormat>
+#include <QFont>
+#include <QTextCursor>
 
 #include "qt_helpers.hpp"
 
@@ -12,6 +15,21 @@ DisplayText::DisplayText(QWidget *parent) :
 {
     setReadOnly (true);
     viewport ()->setCursor (Qt::ArrowCursor);
+    setWordWrapMode (QTextOption::NoWrap);
+    setStyleSheet ("");
+}
+
+void DisplayText::setContentFont(QFont const& font)
+{
+  setFont (font);
+  m_charFormat.setFont (font);
+  selectAll ();
+  auto cursor = textCursor ();
+  cursor.mergeCharFormat (m_charFormat);
+  cursor.clearSelection ();
+  cursor.movePosition (QTextCursor::End);
+  setTextCursor (cursor);
+  ensureCursorVisible ();
 }
 
 void DisplayText::mouseDoubleClickEvent(QMouseEvent *e)
@@ -31,10 +49,17 @@ void DisplayText::insertLineSpacer(QString tt)
 void DisplayText::_insertText(const QString text, const QString bg)
 {
     QString s = "<table border=0 cellspacing=0 width=100%><tr><td bgcolor=\"" +
-      bg + "\"><pre>" + text.trimmed () + "</pre></td></tr></table>";
-    moveCursor (QTextCursor::End);
-    append (s);
-    moveCursor (QTextCursor::End);
+      bg + "\">" + text.trimmed ().replace (' ', "&nbsp;") + "</td></tr></table>";
+    auto cursor = textCursor ();
+    cursor.movePosition (QTextCursor::End);
+    auto pos = cursor.position ();
+    cursor.insertHtml (s);
+    cursor.setPosition (pos, QTextCursor::MoveAnchor);
+    cursor.movePosition (QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.mergeCharFormat (m_charFormat);
+    cursor.clearSelection ();
+    setTextCursor (cursor);
+    ensureCursorVisible ();
 }
 
 
@@ -43,10 +68,7 @@ void DisplayText::_appendDXCCWorkedB4(DecodedText& t1, QString& bg,
                                       QColor color_DXCC,
                                       QColor color_NewCall)
 {
-    // extract the CQer's call   TODO: does this work with all call formats?  What about 'CQ DX'?
-    int s1 = 4 + t1.indexOf(" CQ ");
-    int s2 = t1.indexOf(" ",s1);
-    QString call = t1.mid(s1,s2-s1);
+    QString call = t1.CQersCall ();
 
     QString countryName;
     bool callWorkedBefore;
@@ -113,7 +135,7 @@ void DisplayText::displayDecodedText(DecodedText decodedText, QString myCall,
 {
     QString bg="white";
     bool CQcall = false;
-    if (decodedText.indexOf(" CQ ") > 0)
+    if (decodedText.string ().contains (" CQ ") > 0 || decodedText.string ().contains (" CQ DX "))
     {
         CQcall = true;
         bg=color_CQ.name();

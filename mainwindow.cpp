@@ -330,7 +330,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_decodedText2=false;
   m_freeText=false;
   m_msErase=0;
-  m_sent73=false;
+  m_sentFirst73=false;
   m_watchdogLimit=7;
   m_repeatMsg=0;
   m_secBandChanged=0;
@@ -622,9 +622,9 @@ void MainWindow::readSettings()
 
 void MainWindow::setDecodedTextFont (QFont const& font)
 {
-  auto style_sheet = font_as_stylesheet (font);
-  ui->decodedTextBrowser->setStyleSheet (ui->decodedTextBrowser->styleSheet () + style_sheet);
-  ui->decodedTextBrowser2->setStyleSheet (ui->decodedTextBrowser2->styleSheet () + style_sheet);
+  ui->decodedTextBrowser->setContentFont (font);
+  ui->decodedTextBrowser2->setContentFont (font);
+  auto style_sheet = "QLabel {" + font_as_stylesheet (font) + '}';
   ui->decodedTextLabel->setStyleSheet (ui->decodedTextLabel->styleSheet () + style_sheet);
   ui->decodedTextLabel2->setStyleSheet (ui->decodedTextLabel2->styleSheet () + style_sheet);
 }
@@ -2213,7 +2213,7 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
     if(m_mode=="JT4" and m_bShMsgs) t="@1500  (RRR)";
     msgtype(t, ui->tx4);
     t=t0 + "73";
-    if(m_mode=="JT4" and m_bShMsgs) t="@1700  (73)";
+    if(m_mode=="JT4" and m_bShMsgs) t="@1750  (73)";
     msgtype(t, ui->tx5->lineEdit ());
   }
 
@@ -3430,7 +3430,7 @@ void MainWindow::on_cbTx6_toggled(bool b)
 {
   QString t;
   if(b) {
-    t="@1200  (SEND MSGS)";
+    t="@1250  (SEND MSGS)";
   } else {
     t="@1000  (TUNE)";
   }

@@ -52,7 +52,7 @@ struct HRDMessage
     delete [] reinterpret_cast<char *> (p); // Mirror allocation in operator new above.
   }
 
-  qint32 size_;
+  quint32 size_;
   qint32 magic_1_;
   qint32 magic_2_;
   qint32 checksum_;            // Apparently not used.
@@ -375,8 +375,8 @@ void HRDTransceiver::map_modes (int dropdown, ModeMap *map)
   map->push_back (std::forward_as_tuple (CW_R, find_dropdown_selection (dropdown, QRegExp ("^(CW-R|CW|CWU)$"))));
   map->push_back (std::forward_as_tuple (LSB, find_dropdown_selection (dropdown, QRegExp ("^(LSB)$"))));
   map->push_back (std::forward_as_tuple (USB, find_dropdown_selection (dropdown, QRegExp ("^(USB)$"))));
-  map->push_back (std::forward_as_tuple (DIG_U, find_dropdown_selection (dropdown, QRegExp ("^(DIG|DIGU|DATA-U|PKT-U|USER-U|USB)$"))));
-  map->push_back (std::forward_as_tuple (DIG_L, find_dropdown_selection (dropdown, QRegExp ("^(DIG|DIGL|DATA-L|PKT-L|USER-L|LSB)$"))));
+  map->push_back (std::forward_as_tuple (DIG_U, find_dropdown_selection (dropdown, QRegExp ("^(DIG|DIGU|DATA-U|PKT-U|DATA|USER-U|USB)$"))));
+  map->push_back (std::forward_as_tuple (DIG_L, find_dropdown_selection (dropdown, QRegExp ("^(DIG|DIGL|DATA-L|PKT-L|DATA-R|USER-L|LSB)$"))));
   map->push_back (std::forward_as_tuple (FSK, find_dropdown_selection (dropdown, QRegExp ("^(DIG|FSK|RTTY|RTTY-LSB)$"))));
   map->push_back (std::forward_as_tuple (FSK_R, find_dropdown_selection (dropdown, QRegExp ("^(DIG|FSK-R|RTTY-R|RTTY|RTTY-USB)$"))));
   map->push_back (std::forward_as_tuple (AM, find_dropdown_selection (dropdown, QRegExp ("^(AM|DSB|SAM|DRM)$"))));
@@ -931,7 +931,7 @@ QString HRDTransceiver::send_command (QString const& cmd, bool no_debug, bool pr
   if (QTcpSocket::ConnectedState != hrd_->state ())
     {
 #if WSJT_TRACE_CAT
-      qDebug () << "HRDTransceiver::send_command \"" << cmd << "\" failed" << hrd_->errorString ();
+      qDebug () << "HRDTransceiver::send_command" << cmd << "failed" << hrd_->errorString ();
 #endif
 
       throw error {
@@ -947,7 +947,7 @@ QString HRDTransceiver::send_command (QString const& cmd, bool no_debug, bool pr
       if (!write_to_port (message.constData (), message.size ()))
         {
 #if WSJT_TRACE_CAT
-          qDebug () << "HRDTransceiver::send_command failed to write command \"" << cmd << "\" to HRD";
+          qDebug () << "HRDTransceiver::send_command failed to write command" << cmd << "to HRD";
 #endif
 
           throw error {
@@ -959,11 +959,11 @@ QString HRDTransceiver::send_command (QString const& cmd, bool no_debug, bool pr
   else
     {
       auto string = prepend_context ? context + cmd : cmd;
-      QScopedPointer<HRDMessage> message (new (string) HRDMessage);
+      QScopedPointer<HRDMessage> message {new (string) HRDMessage};
       if (!write_to_port (reinterpret_cast<char const *> (message.data ()), message->size_))
         {
 #if WSJT_TRACE_CAT
-          qDebug () << "HRDTransceiver::send_command failed to write command \"" << cmd << "\" to HRD";
+          qDebug () << "HRDTransceiver::send_command failed to write command" << cmd << "to HRD";
 #endif
 
           throw error {
@@ -973,40 +973,7 @@ QString HRDTransceiver::send_command (QString const& cmd, bool no_debug, bool pr
         }
     }
 
-  // waitForReadReady appears to be occasionally unreliable on Windows
-  // timing out when data is waiting so retry a few times
-  unsigned retries {3};
-  bool replied {false};
-  while (!replied && retries--)
-    {
-      replied = hrd_->waitForReadyRead ();
-      if (!replied && hrd_->error () != hrd_->SocketTimeoutError)
-        {
-#if WSJT_TRACE_CAT
-          qDebug () << "HRDTransceiver::send_command \"" << cmd << "\" failed to reply" << hrd_->errorString ();
-#endif
-
-          throw error {
-            tr ("Ham Radio Deluxe failed to reply to command \"%1\" %2\n")
-              .arg (cmd)
-              .arg (hrd_->errorString ())
-              };
-        }
-    }
-
-  if (!replied)
-    {
-#if WSJT_TRACE_CAT
-      qDebug () << "HRDTransceiver::send_command \"" << cmd << "\" retries exhausted";
-#endif
-
-      throw error {
-        tr ("Ham Radio Deluxe retries exhausted sending command \"%1\"")
-          .arg (cmd)
-          };
-    }
-
-  QByteArray buffer (hrd_->readAll ());
+  auto buffer = read_reply (cmd);
 
   if (v4 == protocol_)
     {
@@ -1014,18 +981,29 @@ QString HRDTransceiver::send_command (QString const& cmd, bool no_debug, bool pr
     }
   else
     {
-      HRDMessage const * reply (new (buffer) HRDMessage);
+      HRDMessage const * reply {new (buffer) HRDMessage};
 
       if (reply->magic_1_value_ != reply->magic_1_ && reply->magic_2_value_ != reply->magic_2_)
         {
 #if WSJT_TRACE_CAT
-          qDebug () << "HRDTransceiver::send_command \"" << cmd << "\" invalid reply";
+          qDebug () << "HRDTransceiver::send_command" << cmd << "invalid reply";
 #endif
 
           throw error {
             tr ("Ham Radio Deluxe sent an invalid reply to our command \"%1\"")
               .arg (cmd)
               };
+        }
+
+      // keep reading until expected size arrives
+      while (buffer.size () - offsetof (HRDMessage, size_) < reply->size_)
+        {
+#if WSJT_TRACE_CAT
+          qDebug () << "HRDTransceiver::send_command" << cmd << "reading more reply data";
+#endif
+
+          buffer += read_reply (cmd);
+          reply = new (buffer) HRDMessage;
         }
 
       result = QString {reply->payload_}; // this is not a memory leak (honest!)
@@ -1057,12 +1035,50 @@ bool HRDTransceiver::write_to_port (char const * data, qint64 length)
   return true;
 }
 
+QByteArray HRDTransceiver::read_reply (QString const& cmd)
+{
+  // waitForReadReady appears to be occasionally unreliable on Windows
+  // timing out when data is waiting so retry a few times
+  unsigned retries {3};
+  bool replied {false};
+  while (!replied && retries--)
+    {
+      replied = hrd_->waitForReadyRead ();
+      if (!replied && hrd_->error () != hrd_->SocketTimeoutError)
+        {
+#if WSJT_TRACE_CAT
+          qDebug () << "HRDTransceiver::send_command" << cmd << "failed to reply" << hrd_->errorString ();
+#endif
+
+          throw error {
+            tr ("Ham Radio Deluxe failed to reply to command \"%1\" %2\n")
+              .arg (cmd)
+              .arg (hrd_->errorString ())
+              };
+        }
+    }
+
+  if (!replied)
+    {
+#if WSJT_TRACE_CAT
+      qDebug () << "HRDTransceiver::send_command" << cmd << "retries exhausted";
+#endif
+
+      throw error {
+        tr ("Ham Radio Deluxe retries exhausted sending command \"%1\"")
+          .arg (cmd)
+          };
+    }
+
+  return hrd_->readAll ();
+}
+
 void HRDTransceiver::send_simple_command (QString const& command, bool no_debug)
 {
   if ("OK" != send_command (command, no_debug))
     {
 #if WSJT_TRACE_CAT
-      qDebug () << "HRDTransceiver::send_simple_command \"" << command << "\" unexpected response";
+      qDebug () << "HRDTransceiver::send_simple_command" << command << "unexpected response";
 #endif
 
       throw error {

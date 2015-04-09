@@ -59,7 +59,6 @@ program jt9sim
   if(nsps.eq.0) stop 'Bad value for minutes.'
 
   f0=1400.d0                         !Center frequency (Hz)
-  if(snrdb.gt.90.0) f0=fspan
 !  f0=3000.d0                         !Center frequency (Hz)
 
 !  f0=1500.0

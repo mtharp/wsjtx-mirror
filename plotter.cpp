@@ -123,6 +123,7 @@ void CPlotter::draw(float swide[])             //draw()
 
   float ymin=1.e30;
   for(int i=0; i<iz; i++) {
+    m_swide[i]=swide[i];
     y=swide[i];
     if(y<ymin) ymin=y;
     int y1 = 10.0*gain*y + 10*m_plotZero +40;
@@ -180,14 +181,14 @@ void CPlotter::draw(float swide[])             //draw()
     painter2D.setPen(pen3);
     Font.setWeight(QFont::Bold);
     painter2D.setFont(Font);
-    int x1=XfromFreq(1000);
+    int x1=XfromFreq(m_rxFreq);
     y=0.2*m_h2;
     painter2D.drawText(x1-4,y,"T");
-    x1=XfromFreq(1200);
+    x1=XfromFreq(m_rxFreq+250);
     painter2D.drawText(x1-4,y,"S");
-    x1=XfromFreq(1500);
+    x1=XfromFreq(m_rxFreq+500);
     painter2D.drawText(x1-4,y,"R");
-    x1=XfromFreq(1700);
+    x1=XfromFreq(m_rxFreq+750);
     painter2D.drawText(x1-4,y,"73");
   }
   update();                              //trigger a new paintEvent
@@ -475,6 +476,7 @@ void CPlotter::setRxFreq (int x)
 {
   m_rxFreq = x;         // x is freq in Hz
   DrawOverlay();
+  draw(m_swide);
   update();
 }
 

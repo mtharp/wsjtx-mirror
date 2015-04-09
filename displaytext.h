@@ -13,6 +13,7 @@ class DisplayText : public QTextEdit
 public:
     explicit DisplayText(QWidget *parent = 0);
 
+    void setContentFont (QFont const&);
     void insertLineSpacer(QString tt);
     void displayDecodedText(DecodedText decodedText, QString myCall, bool displayDXCCEntity,
                             LogBook logBook, QColor color_CQ, QColor color_MyCall,
@@ -34,6 +35,7 @@ private:
     void _appendDXCCWorkedB4(/*mod*/DecodedText& t1, QString &bg, LogBook logBook,
                  QColor color_CQ, QColor color_DXCC, QColor color_NewCall);
 
+  QTextCharFormat m_charFormat;
 };
 
 #endif // DISPLAYTEXT_H

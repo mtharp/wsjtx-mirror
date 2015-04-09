@@ -119,7 +119,6 @@ StationList::StationList (Bands const * bands, Stations stations, QObject * pare
   : QSortFilterProxyModel {parent}
   , m_ {bands, stations, parent}
 {
-  // setDynamicSortFilter (true);
   setSourceModel (&*m_);
   setSortRole (SortRole);
 }
@@ -307,7 +306,7 @@ QVariant StationList::impl::data (QModelIndex const& index, int role) const
             case Qt::AccessibleTextRole:
               item = stations_.at (row).band_name_;
               break;
-	      
+
             case Qt::ToolTipRole:
             case Qt::AccessibleDescriptionRole:
               item = tr ("Band name");

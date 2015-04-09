@@ -58,7 +58,6 @@ FrequencyList::FrequencyList (Frequencies frequencies, QObject * parent)
   : QSortFilterProxyModel {parent}
   , m_ {frequencies, parent}
 {
-  // setDynamicSortFilter (true);
   setSourceModel (&*m_);
   setSortRole (SortRole);
 }
@@ -213,7 +212,7 @@ QVariant FrequencyList::impl::data (QModelIndex const& index, int role) const
             case Qt::AccessibleTextRole:
               item = frequency;
               break;
-	      
+
             case Qt::ToolTipRole:
             case Qt::AccessibleDescriptionRole:
               item = tr ("Frequency");
@@ -237,7 +236,7 @@ QVariant FrequencyList::impl::data (QModelIndex const& index, int role) const
             case SortRole:	// use the underlying Frequency value
               item = frequency;
               break;
-	      
+
             case Qt::ToolTipRole:
             case Qt::AccessibleDescriptionRole:
               item = tr ("Frequency MHz");

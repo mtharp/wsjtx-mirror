@@ -155,12 +155,14 @@
 #include <QFontDialog>
 #include <QColorDialog>
 #include <QSerialPortInfo>
+#include <QScopedPointer>
 #include <QDebug>
 
 #include "qt_helpers.hpp"
 #include "SettingsGroup.hpp"
 #include "FrequencyLineEdit.hpp"
 #include "FrequencyItemDelegate.hpp"
+#include "CandidateKeyFilter.hpp"
 #include "ForeignKeyDelegate.hpp"
 #include "TransceiverFactory.hpp"
 #include "Transceiver.hpp"
@@ -240,13 +242,13 @@ class StationDialog final
   : public QDialog
 {
 public:
-  explicit StationDialog (Bands * bands, QWidget * parent = nullptr)
+  explicit StationDialog (StationList const * stations, Bands * bands, QWidget * parent = nullptr)
     : QDialog {parent}
-    , bands_ {bands}
+    , filtered_bands_ {new CandidateKeyFilter {stations, bands}}
   {
     setWindowTitle (QApplication::applicationName () + " - " + tr ("Add Station"));
 
-    band_.setModel (bands_);
+    band_.setModel (filtered_bands_.data ());
       
     auto form_layout = new QFormLayout ();
     form_layout->addRow (tr ("&Band:"), &band_);
@@ -273,8 +275,14 @@ public:
     return {band_.currentText (), delta_.frequency_delta (), description_.text ()};
   }
 
+  int exec () override
+  {
+    filtered_bands_->set_active_key ();
+    return QDialog::exec ();
+  }
+
 private:
-  Bands * bands_;
+  QScopedPointer<CandidateKeyFilter> filtered_bands_;
 
   QComboBox band_;
   FrequencyDeltaLineEdit delta_;
@@ -728,7 +736,7 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
   , stations_ {&bands_}
   , next_stations_ {&bands_}
   , frequency_dialog_ {new FrequencyDialog {this}}
-  , station_dialog_ {new StationDialog {&bands_, this}}
+  , station_dialog_ {new StationDialog {&next_stations_, &bands_, this}}
   , rig_active_ {false}
   , have_rig_ {false}
   , rig_changed_ {false}
@@ -783,24 +791,6 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
         throw std::runtime_error {"Failed to create usable temporary directory"};
       }
   }
-
-  // copy the kvasd.dat file used for inter-process communication with
-  // kvasd from the resources file system to the temporary directory
-  QString kvasd_data_file {"kvasd.dat"};
-  if (!temp_dir_.exists (kvasd_data_file))
-    {
-      auto dest_file = temp_dir_.absoluteFilePath (kvasd_data_file);
-      if (!QFile::copy (":/" + kvasd_data_file, dest_file))
-        {
-          QMessageBox::critical (this, "WSJT-X", tr ("Cannot copy: :/") + kvasd_data_file + tr (" to: ") + temp_dir_.absolutePath ());
-          throw std::runtime_error {"Failed to copy kvasd.dat to temporary directory"};
-        }
-      else
-        {
-          QFile {dest_file}.setPermissions (QFile::ReadOwner | QFile::WriteOwner);
-        }
-    }
-
 
   {
     // Find a suitable data file location
@@ -944,7 +934,7 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
   ui_->stations_table_view->setModel (&next_stations_);
   ui_->stations_table_view->sortByColumn (0, Qt::AscendingOrder);
   ui_->stations_table_view->setColumnWidth (1, 150);
-  ui_->stations_table_view->setItemDelegateForColumn (0, new ForeignKeyDelegate {&next_stations_, &bands_, 0, this});
+  ui_->stations_table_view->setItemDelegateForColumn (0, new ForeignKeyDelegate {&next_stations_, &bands_, 0, 0, this});
   ui_->stations_table_view->setItemDelegateForColumn (1, new FrequencyDeltaItemDelegate {this});
 
   station_delete_action_ = new QAction {tr ("&Delete"), ui_->stations_table_view};
@@ -1510,6 +1500,13 @@ void Configuration::impl::accept ()
     {
       return;			// not accepting
     }
+
+  QDialog::accept();            // do this before accessing custom
+                                // models so that any changes in
+                                // delegates in views get flushed to
+                                // the underlying models before we
+                                // access them
+
   sync_transceiver (true);	// force an update
 
   //
@@ -1659,8 +1656,6 @@ void Configuration::impl::accept ()
     }
  
   write_settings ();		// make visible to all
-
-  QDialog::accept();
 }
 
 void Configuration::impl::reject ()
@@ -2375,7 +2370,7 @@ void Configuration::impl::update_audio_channels (QComboBox const * source_combo_
 
 void Configuration::impl::set_application_font (QFont const& font)
 {
-  qApp->setStyleSheet (qApp->styleSheet () + font_as_stylesheet (font));
+  qApp->setStyleSheet (qApp->styleSheet () + "* {" + font_as_stylesheet (font) + '}');
 }
 
 // load all the supported rig names into the selection combo box
