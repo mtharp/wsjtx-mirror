@@ -1,6 +1,6 @@
 program t1
 
-  parameter (NMAX=1000000,M=52)
+  parameter (NMAX=10000000,M=26)
   integer ic(M,NMAX)
   integer ndist(NMAX)
   real c(M)
