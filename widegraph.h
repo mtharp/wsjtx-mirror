@@ -26,11 +26,9 @@ public:
   void   dataSink2(float s[], float df3, int ihsym, int ndiskdata);
   void   setRxFreq(int n);
   int    rxFreq();
-  int    nSpan();
   int    nStartFreq();
-  int    getFmin();
-  int    getFmax();
-  float  fSpan();
+  int    Fmin();
+  int    Fmax();
   void   saveSettings();
   void   setRxRange(int fMin);
   void   setFsample(int n);
@@ -40,7 +38,6 @@ public:
   void   setSubMode(int n);
   void   setModeTx(QString modeTx);
   void   setLockTxFreq(bool b);
-  double fGreen();
   bool   flatten();
   void   setTol(int n);
 

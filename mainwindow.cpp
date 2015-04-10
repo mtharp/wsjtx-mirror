@@ -651,7 +651,7 @@ void MainWindow::dataSink(qint64 frames)
 //  int k (frames - 1);
   int k (frames);
   jt9com_.nfa=m_wideGraph->nStartFreq();
-  jt9com_.nfb=m_wideGraph->getFmax();
+  jt9com_.nfb=m_wideGraph->Fmax();
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
   if(ihsym <=0) return;
   QString t;
@@ -1352,8 +1352,8 @@ void MainWindow::decode()                                       //decode()
   jt9com_.ndiskdat=0;
   if(m_diskData) jt9com_.ndiskdat=1;
   jt9com_.nfa=m_wideGraph->nStartFreq();
-  jt9com_.nfSplit=m_wideGraph->getFmin();
-  jt9com_.nfb=m_wideGraph->getFmax();
+  jt9com_.nfSplit=m_wideGraph->Fmin();
+  jt9com_.nfb=m_wideGraph->Fmax();
   jt9com_.ntol=m_tol;
   if(jt9com_.nutc < m_nutc0) m_RxLog = 1;       //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;

@@ -19,8 +19,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   setAttribute(Qt::WA_NoSystemBackground, true);
 
   m_startFreq = 0;
-  m_nSpan=2;                         //used for FFT bins/pixel
-  m_fSpan=(float)m_nSpan;
+  m_fSpan=2000.0;
   m_hdivs = HORZ_DIVS;
   m_FreqUnits = 1;
   m_Running = false;
@@ -76,7 +75,7 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
   DrawOverlay();
 }
 
-void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
+void CPlotter::paintEvent(QPaintEvent *)                                // paintEvent()
 {
   if(m_paintEventBusy) return;
   m_paintEventBusy=true;
@@ -87,7 +86,7 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=false;
 }
 
-void CPlotter::draw(float swide[], bool bScroll)             //draw()
+void CPlotter::draw(float swide[], bool bScroll)                            //draw()
 {
   int j,j0,y2;
   float y;
@@ -140,7 +139,7 @@ void CPlotter::draw(float swide[], bool bScroll)             //draw()
   for(int i=0; i<iz; i++) {
     y=swide[i] - ymin;
     y2=0;
-    if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;       //Current
+    if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;            //Current
 
     if(m_bCumulative) {                                     //Cumulative
       float sum=0.0;
@@ -149,7 +148,7 @@ void CPlotter::draw(float swide[], bool bScroll)             //draw()
         sum+=jt9com_.savg[j++];
       }
       y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero;
-      if(m_Flatten==0) y2 += 40;                  //### could do better! ###
+      if(m_Flatten==0) y2 += 40;                      //### could do better! ###
     }
 
     if(m_bLinearAvg) {                                      //Linear Avg
@@ -177,7 +176,7 @@ void CPlotter::draw(float swide[], bool bScroll)             //draw()
     painter1.drawText(5,10,m_sutc);
   }
 
-  if(m_mode=="JT4") {                       //JT4
+  if(m_mode=="JT4") {
     QPen pen3(Qt::yellow);                     //Mark freqs of JT4 single-tone msgs
     painter2D.setPen(pen3);
     Font.setWeight(QFont::Bold);
@@ -193,10 +192,10 @@ void CPlotter::draw(float swide[], bool bScroll)             //draw()
     x1=XfromFreq(m_rxFreq+750);
     painter2D.drawText(x1-4,y,"73");
   }
-  update();                              //trigger a new paintEvent
+  update();                    //trigger a new paintEvent
 }
 
-void CPlotter::UTCstr()
+void CPlotter::UTCstr()                                              //UTCstr
 {
   int ihr,imin;
   if(jt9com_.ndiskdat != 0) {
@@ -405,7 +404,7 @@ void CPlotter::setPlotZero(int plotZero)                  //setPlotZero()
   m_plotZero=plotZero;
 }
 
-int CPlotter::getPlotZero()                               //getPlotZero()
+int CPlotter::plotZero()                                  //PlotZero()
 {
   return m_plotZero;
 }
@@ -415,28 +414,28 @@ void CPlotter::setPlotGain(int plotGain)                  //setPlotGain()
   m_plotGain=plotGain;
 }
 
-int CPlotter::getPlotGain()                               //getPlotGain()
+int CPlotter::plotGain()                                 //plotGain()
 {
   return m_plotGain;
 }
 
-int CPlotter::getPlot2dGain()
+int CPlotter::plot2dGain()                                //plot2dGain
 {
   return m_plot2dGain;
 }
 
-void CPlotter::setPlot2dGain(int n)
+void CPlotter::setPlot2dGain(int n)                       //setPlot2dGain
 {
   m_plot2dGain=n;
   update();
 }
 
-int CPlotter::getPlot2dZero()
+int CPlotter::plot2dZero()                                //plot2dZero
 {
   return m_plot2dZero;
 }
 
-void CPlotter::setPlot2dZero(int plot2dZero)
+void CPlotter::setPlot2dZero(int plot2dZero)              //setPlot2dZero
 {
   m_plot2dZero=plot2dZero;
 }
@@ -453,37 +452,37 @@ int CPlotter::startFreq()                              //startFreq()
   return m_startFreq;
 }
 
-int CPlotter::plotWidth(){return m_WaterfallPixmap.width();}
-void CPlotter::UpdateOverlay() {DrawOverlay();}
-void CPlotter::setDataFromDisk(bool b) {m_dataFromDisk=b;}
+int CPlotter::plotWidth(){return m_WaterfallPixmap.width();}     //plotWidth
+void CPlotter::UpdateOverlay() {DrawOverlay();}                  //UpdateOverlay
+void CPlotter::setDataFromDisk(bool b) {m_dataFromDisk=b;}       //setDataFromDisk
 
-void CPlotter::setRxRange(int fMin)
+void CPlotter::setRxRange(int fMin)                           //setRxRange
 {
   m_fMin=fMin;
 }
 
-void CPlotter::setBinsPerPixel(int n)                       // set nbpp
+void CPlotter::setBinsPerPixel(int n)                         //setBinsPerPixel
 {
   m_binsPerPixel = n;
   DrawOverlay();                         //Redraw scales and ticks
   update();                              //trigger a new paintEvent}
 }
 
-int CPlotter::binsPerPixel()                                // get nbpp
+int CPlotter::binsPerPixel()                                   //binsPerPixel
 {
   return m_binsPerPixel;
 }
 
-void CPlotter::setRxFreq (int x)
+void CPlotter::setRxFreq (int x)                               //setRxFreq
 {
   m_rxFreq = x;         // x is freq in Hz
   DrawOverlay();
   update();
 }
 
-int CPlotter::rxFreq() {return m_rxFreq;}                //get rxFreq
+int CPlotter::rxFreq() {return m_rxFreq;}                      //rxFreq
 
-void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
+void CPlotter::mousePressEvent(QMouseEvent *event)             //mousePressEvent
 {
   int x=event->x();
   if(x<0) x=0;
@@ -500,7 +499,7 @@ void CPlotter::mousePressEvent(QMouseEvent *event)       //mousePressEvent
   emit freezeDecode1(n);
 }
 
-void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click
+void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)          //mouse2click
 {
   bool ctrl = (event->modifiers() & Qt::ControlModifier);
   int n=2;
@@ -508,17 +507,7 @@ void CPlotter::mouseDoubleClickEvent(QMouseEvent *event)  //mouse2click
   emit freezeDecode1(n);
 }
 
-void CPlotter::setNSpan(int n)                                  //setNSpan()
-{
-  m_nSpan=n;
-}
-
-double CPlotter::fGreen()
-{
-  return m_fGreen;
-}
-
-void CPlotter::setNsps(int ntrperiod, int nsps)                                  //setNSpan()
+void CPlotter::setNsps(int ntrperiod, int nsps)                    //setNsps
 {
   m_TRperiod=ntrperiod;
   m_nsps=nsps;
@@ -531,29 +520,29 @@ void CPlotter::setNsps(int ntrperiod, int nsps)                                 
   update();                              //trigger a new paintEvent}
 }
 
-void CPlotter::setTxFreq(int n)                                 //setTol()
+void CPlotter::setTxFreq(int n)                                 //setTxFreq
 {
   m_txFreq=n;
   DrawOverlay();
   update();
 }
 
-void CPlotter::setMode(QString mode)
+void CPlotter::setMode(QString mode)                            //setMode
 {
   m_mode=mode;
 }
 
-void CPlotter::setSubMode(int n)
+void CPlotter::setSubMode(int n)                                //setSubMode
 {
   m_nSubMode=n;
 }
 
-void CPlotter::setModeTx(QString modeTx)
+void CPlotter::setModeTx(QString modeTx)                        //setModeTx
 {
   m_modeTx=modeTx;
 }
 
-int CPlotter::getFmax()
+int CPlotter::Fmax()
 {
   return m_fMax;
 }

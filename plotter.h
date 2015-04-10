@@ -35,18 +35,16 @@ public:
   void draw(float swide[], bool bScroll);		//Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);
-  int  getPlotZero();
+  int  plotZero();
   void setPlotGain(int plotGain);
-  int  getPlotGain();
-  int getPlot2dGain();
+  int  plotGain();
+  int  plot2dGain();
   void setPlot2dGain(int n);
-  int getPlot2dZero();
+  int  plot2dZero();
   void setPlot2dZero(int plot2dZero);
   void setStartFreq(int f);
   int startFreq();
   int  plotWidth();
-  void setNSpan(int n);
-  int nSpan() const {return m_nSpan;}
   void UpdateOverlay();
   void setDataFromDisk(bool b);
   void setRxRange(int fMin);
@@ -61,9 +59,8 @@ public:
   void setMode(QString mode);
   void setSubMode(int n);
   void setModeTx(QString modeTx);
-  double fGreen();
   void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
-  int getFmax();
+  int  Fmax();
   void setDialFreq(double d);
   void setCurrent(bool b) {m_bCurrent = b;}
   bool current() const {return m_bCurrent;}
@@ -108,7 +105,6 @@ private:
   qint32  m_plotGain;
   qint32  m_plot2dGain;
   qint32  m_plot2dZero;
-  qint32  m_nSpan;
   qint32  m_binsPerPixel;
   qint32  m_w;
   qint32  m_Flatten;
@@ -129,7 +125,6 @@ private:
   bool    m_paintEventBusy;
   bool    m_dataFromDisk;
 
-  double  m_fGreen;
   double  m_fftBinWidth;
   double  m_dialFreq;
   double  m_xOffset;
