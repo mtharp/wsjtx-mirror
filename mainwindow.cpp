@@ -1452,10 +1452,23 @@ void MainWindow::readFromStdout()                             //readFromStdout
         } else {
           msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
         }
-
+/*
         if(m_config.insert_blank () && m_blankLine) {
           QString band = " " + ADIF::bandFromFrequency ((m_dialFreq +
                                              ui->TxFreqSpinBox->value ()) / 1.e6);
+          band = band.rightJustified(40, '-');
+          ui->decodedTextBrowser->insertLineSpacer(band);
+          m_blankLine=false;
+        }
+*/
+        if(m_config.insert_blank () && m_blankLine) {
+          // Patch from PA0TBR
+          QString band;
+          if (int(QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged) > 50) {
+            band = ADIF::bandFromFrequency ((m_dialFreq + ui->TxFreqSpinBox->value ()) / 1.e6);
+          } else {
+            band = "";
+          }
           band = band.rightJustified(40, '-');
           ui->decodedTextBrowser->insertLineSpacer(band);
           m_blankLine=false;

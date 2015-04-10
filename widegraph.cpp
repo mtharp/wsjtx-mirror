@@ -201,7 +201,6 @@ void WideGraph::keyPressEvent(QKeyEvent *e)                                 //F1
 void WideGraph::setRxFreq(int n)                                           //setRxFreq
 {
   ui->widePlot->setRxFreq(n);
-  qDebug() << n;
   ui->widePlot->draw(swide,false);
   if(m_lockTxFreq) setTxFreq(n);
 }
