@@ -1,19 +1,39 @@
 program t1
 
-  parameter (NMAX=10000000,M=26)
-  integer ic(M,NMAX)
-  integer ndist(NMAX)
-  real c(M)
+  parameter (MZ=26,JZ=30)
+  integer ic(MZ,JZ)
+  real c(MZ)
+  character*12 arg
 
-  do i=1,NMAX
-     call random_number(c)
-     ic(1:M,i)=int(4*c)
+  call getarg(1,arg)
+  read(arg,*) nz
+  
+  do i=1,MZ
+     ic(i,1)=mod(i-1,4)
+     ic(i,2)=mod(i,4)
+     ic(i,3)=mod(i+1,4)
+     ic(i,4)=mod(i+2,4)
   enddo
 
-  do j=1,NMAX
-     ndist(j)=count(ic(1:M,j).ne.ic(1:M,1))
-     if(ndist(j).le.10) write(13,1000) j,ndist(j)
-1000 format(2i10)
+  do j=1,4
+     write(*,1000) j,MZ
+1000 format(2i5)
+  enddo
+ 
+  do j=5,JZ
+     npk=0
+     do i=1,nz
+        call random_number(c)
+        ic(1:MZ,j)=int(4*c)
+        nd=MZ
+        do k=1,j-1
+           nd=min(nd,count(ic(1:MZ,j).ne.ic(1:MZ,k)))
+        enddo
+        if(nd.gt.npk) then
+           npk=nd
+        endif
+     enddo
+     write(*,1000) j,npk
   enddo
 
 end program t1
