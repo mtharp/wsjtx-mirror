@@ -31,9 +31,6 @@
   <property name="windowTitle">
    <string>WSJT-X   by K1JT</string>
   </property>
-  <property name="toolTip">
-   <string>Click to generate shorthand messages</string>
-  </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
@@ -650,7 +647,7 @@
                <bool>false</bool>
               </property>
               <property name="toolTip">
-               <string>Check to generate &quot;@1200  (SEND MSGS)&quot; in Tx6.</string>
+               <string>Check to generate &quot;@1250  (SEND MSGS)&quot; in Tx6.</string>
               </property>
               <property name="text">
                <string>Tx6</string>
