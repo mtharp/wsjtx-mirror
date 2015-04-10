@@ -171,7 +171,7 @@ void WideGraph::dataSink2(float s[], float df3, int ihsym,
       }
     }
     m_ntr0=ntr;
-    ui->widePlot->draw(swide);
+    ui->widePlot->draw(swide,true);
   }
 }
 
@@ -208,6 +208,8 @@ void WideGraph::keyPressEvent(QKeyEvent *e)
 void WideGraph::setRxFreq(int n)
 {
   ui->widePlot->setRxFreq(n);
+  qDebug() << n;
+  ui->widePlot->draw(swide,false);
   if(m_lockTxFreq) setTxFreq(n);
 }
 

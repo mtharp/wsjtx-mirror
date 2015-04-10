@@ -95,8 +95,8 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
      nfreq0=nfreq
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
-     call avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,     &
-         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,   &
+     call avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,minw,  &
+         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,     &
          ndeepave)
   endif
 

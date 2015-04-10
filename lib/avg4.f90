@@ -1,4 +1,4 @@
-subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
+subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,minw,    &
   mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,ndeepave)
 
 ! Decodes averaged JT4 data
@@ -21,11 +21,14 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
   do i=1,64
      if(nutc.eq.iutc(i) .and. abs(nhz-nfsave(i)).le.ntol) go to 10
   enddo  
+
+! Save data for message averaging
   iutc(nsave)=nutc
   syncsave(nsave)=snrsync
   dtsave(nsave)=dtxx
   nfsave(nsave)=nfreq
-  ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  !Save data for message averaging
+  flipsave(nsave)=flip
+  ppsave(1:207,1:7,nsave)=rsymbol(1:207,1:7)  
 
 10 sym=0.
   syncsum=0.
@@ -35,9 +38,10 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
 
   do i=1,64
      if(iutc(i).lt.0) cycle
-     if(mod(iutc(i),2).ne.mod(nutc,2)) cycle       !Use only same sequence
+     if(mod(iutc(i),2).ne.mod(nutc,2)) cycle  !Use only same (odd/even) sequence
      if(abs(nfreq-nfsave(i)).gt.ntol) cycle        !Freq must match
      if(abs(dtxx-dtsave(i)).gt.dtdiff) cycle       !DT must match
+     if(flipsave(i).ne.flip) cycle                 !Sync (*/#) must match
      sym(1:207,1:7)=sym(1:207,1:7) +  ppsave(1:207,1:7,i)
      syncsum=syncsum + syncsave(i)
      dtsum=dtsum + dtsave(i)
@@ -77,8 +81,8 @@ subroutine avg4(nutc,snrsync,dtxx,nfreq,mode4,ntol,ndepth,neme,minw,       &
      qbest=0.
      do k=ich1,ich2
         call deep4(sym(2,k),neme,flipx,mycall,hiscall,hisgrid,deepave,qave)
-        write(82,3101) nutc,sym(51:53,k),flipx,k,qave,deepave
-3101    format(i4.4,4f8.1,i3,f7.2,2x,a22)
+!        write(82,3101) nutc,sym(51:53,k),flipx,k,qave,deepave
+!3101    format(i4.4,4f8.1,i3,f7.2,2x,a22)
         if(qave.gt.qbest) then
            qbest=qave
            deepbest=deepave

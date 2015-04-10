@@ -1,5 +1,5 @@
 module jt4
-  parameter (MAXAVE=120)
+  parameter (MAXAVE=64)
   integer iutc(MAXAVE)
   integer nfsave(MAXAVE)
   integer listutc(10)
@@ -7,6 +7,7 @@ module jt4
   real    rsymbol(207,7)                 
   real    dtsave(MAXAVE)
   real    syncsave(MAXAVE)
+  real    flipsave(MAXAVE)
   integer nsave,nlist,ich1,ich2
   integer nch(7)
   integer npr(207)

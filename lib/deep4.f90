@@ -134,11 +134,11 @@ subroutine deep4(sym0,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
            p1=p
            ip1=k
         endif
-        write(78,3001) k,pp(k),testmsg(k)
-3001    format(i6,f10.3,2x,a22)
+!        write(78,3001) k,pp(k),testmsg(k)
+!3001    format(i6,f10.3,2x,a22)
      endif
   enddo
-  flush(78)
+!  flush(78)
 
   do i=1,ntot
      if(pp(i).gt.p2 .and. pp(i).ne.p1) p2=pp(i)
@@ -175,8 +175,8 @@ subroutine deep4(sym0,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
           decoded(i:i)=char(ichar(decoded(i:i))-32)
   enddo
 
-  write(79,1001) p1,p2,ntot,rms,qual,ip1,testmsg(ip1)
-  call flush(79)
+!  write(79,1001) p1,p2,ntot,rms,qual,ip1,testmsg(ip1)
+!  call flush(79)
 
   return
 end subroutine deep4

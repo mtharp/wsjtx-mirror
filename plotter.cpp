@@ -87,7 +87,7 @@ void CPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
   m_paintEventBusy=false;
 }
 
-void CPlotter::draw(float swide[])             //draw()
+void CPlotter::draw(float swide[], bool bScroll)             //draw()
 {
   int j,j0,y2;
   float y;
@@ -96,7 +96,7 @@ void CPlotter::draw(float swide[])             //draw()
   double gain2d = pow(10.0,0.02*(m_plot2dGain));
 
 //move current data down one line (must do this before attaching a QPainter object)
-  m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
+  if(bScroll) m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
   QPainter painter1(&m_WaterfallPixmap);
   m_2DPixmap = m_OverlayPixmap.copy(0,0,m_w,m_h2);
   QPainter painter2D(&m_2DPixmap);
@@ -182,6 +182,7 @@ void CPlotter::draw(float swide[])             //draw()
     painter2D.setPen(pen3);
     Font.setWeight(QFont::Bold);
     painter2D.setFont(Font);
+//    qDebug() << "B" << m_rxFreq;
     int x1=XfromFreq(m_rxFreq);
     y=0.2*m_h2;
     painter2D.drawText(x1-4,y,"T");
@@ -477,7 +478,6 @@ void CPlotter::setRxFreq (int x)
 {
   m_rxFreq = x;         // x is freq in Hz
   DrawOverlay();
-  //  draw(swide0);
   update();
 }
 
