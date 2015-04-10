@@ -1,4 +1,4 @@
-subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,minw,    &
+subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
   mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,ndeepave)
 
 ! Decodes averaged JT4 data

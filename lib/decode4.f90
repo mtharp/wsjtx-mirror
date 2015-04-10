@@ -1,4 +1,4 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,nutc,      &
+subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      mycall,hiscall,hisgrid,decoded,nfano,deepbest,qbest,ichbest)
 
 ! Decodes JT4 data, assuming that DT and DF have already been determined.

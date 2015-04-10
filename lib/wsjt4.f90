@@ -30,6 +30,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      ccfblue=0.
      ccfred=0.
      if(nspecial.eq.999) go to 900        !Silence compiler warning
+     nagain=0                             !Ditto
   endif
 
   naggressive=0
@@ -79,7 +80,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
   if(flip.lt.0.0) csync='#'
 
 ! Attempt a single-sequence decode, including deep4 if Fano fails.
-  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,nutc,       &
+  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,            &
        mycall,hiscall,hisgrid,decoded,nfano,deepmsg,qual,ichbest)
 
   nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
@@ -102,8 +103,8 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      nfreq0=nfreq
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
-     call avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,minw,  &
-         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,     &
+     call avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,      &
+         mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,    &
          ndeepave)
   endif
 
