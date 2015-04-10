@@ -1,4 +1,4 @@
-subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
+subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,          &
      ccfblue,ccfred,ps0)
 
@@ -65,7 +65,14 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,MinSigdB,ntol,emedelay,dttol,    &
   nsnr=nint(snrx)
   nsnrlim=-33
   if(nsnr.lt.nsnrlim .or. nsync.lt.0) nsync=0
-  if(nsync.lt.MinSigdB .or. nsnr.lt.nsnrlim) go to 900    !### ??? ###
+
+!  if(nsync.lt.syncmin .or. nsnr.lt.nsnrlim) then
+  if(snrsync.lt.syncmin .or. nsnr.lt.nsnrlim) then
+     dtxx=dtx-0.8
+     nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
+     write(*,1010) nutc,nsnr,dtx,nfreq
+     go to 900
+  endif
 
 ! If we get here, we have achieved sync!
   csync='*'

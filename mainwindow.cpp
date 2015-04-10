@@ -1422,7 +1422,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
     {
       QByteArray t=proc_jt9.readLine();
       bool baveJT4msg=(t.length()>48);
-//      qDebug() << "a" << t << t.length() << baveJT4msg;
+      if(m_mode=="JT4") t=t.mid(0,39) + t.mid(43,t.length()-43);
+//      qDebug() << "b" << t << t.length();
       if(t.indexOf("<DecodeFinished>") >= 0) {
         m_bdecoded = (t.mid(23,1).toInt()==1);
         bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
@@ -1452,15 +1453,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
         } else {
           msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
         }
-/*
-        if(m_config.insert_blank () && m_blankLine) {
-          QString band = " " + ADIF::bandFromFrequency ((m_dialFreq +
-                                             ui->TxFreqSpinBox->value ()) / 1.e6);
-          band = band.rightJustified(40, '-');
-          ui->decodedTextBrowser->insertLineSpacer(band);
-          m_blankLine=false;
-        }
-*/
+
         if(m_config.insert_blank () && m_blankLine) {
           // Patch from PA0TBR
           QString band;
@@ -1497,7 +1490,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
         //Right (Rx Frequency) window
         if (((abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) and
              m_mode!="JT4") or baveJT4msg) {
-          // This msg is within 10 hertz of our tuned frequency
+          // This msg is within 10 hertz of our tuned frequency, or a JT4 avg
             ui->decodedTextBrowser2->displayDecodedText(decodedtext
                                                         , my_base_call
                                                         , false

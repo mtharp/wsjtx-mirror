@@ -64,6 +64,12 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,minw,    &
   endif
 
   rewind 80
+  rewind 81
+  do i=1,nsave
+     csync='*'
+     if(flipsave(i).lt.0.0) csync='#'
+     write(81,3001) i,iutc(i),syncsave(i),dtsave(i),nfsave(i),csync
+  enddo
   sqt=0.
   sqf=0.
   do j=1,64
@@ -88,6 +94,7 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,minw,    &
   write(80,3003) rmst,nint(rmsf)
 3003 format(15x,f6.2,i6)
   flush(80)
+  flush(81)
 
 !  nadd=nused*mode4
   kbest=ich1
