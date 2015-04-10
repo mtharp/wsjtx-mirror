@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>799</width>
+    <width>778</width>
     <height>395</height>
    </rect>
   </property>
@@ -20,81 +20,139 @@
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="CPlotter" name="widePlot">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>400</width>
-         <height>100</height>
-        </size>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="lineWidth">
-        <number>1</number>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="CPlotter" name="widePlot">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="gainSlider">
+         <property name="maximumSize">
+          <size>
+           <width>7</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Waterfall gain</string>
+         </property>
+         <property name="minimum">
+          <number>-50</number>
+         </property>
+         <property name="maximum">
+          <number>50</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="zeroSlider">
+         <property name="maximumSize">
+          <size>
+           <width>7</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Waterfall zero</string>
+         </property>
+         <property name="minimum">
+          <number>-50</number>
+         </property>
+         <property name="maximum">
+          <number>50</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="gain2dSlider">
+         <property name="maximumSize">
+          <size>
+           <width>7</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Spectrum gain</string>
+         </property>
+         <property name="minimum">
+          <number>-50</number>
+         </property>
+         <property name="maximum">
+          <number>50</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="zero2dSlider">
+         <property name="maximumSize">
+          <size>
+           <width>7</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Spectrum zero</string>
+         </property>
+         <property name="minimum">
+          <number>-50</number>
+         </property>
+         <property name="maximum">
+          <number>50</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
        <property name="horizontalSpacing">
         <number>10</number>
        </property>
-       <item row="1" column="6">
-        <widget class="QComboBox" name="spec2dComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select data for spectral display&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="currentIndex">
-          <number>1</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>Current</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Cumulative</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Linear Avg</string>
-          </property>
-         </item>
-        </widget>
-       </item>
        <item row="1" column="2">
         <widget class="QSpinBox" name="waterfallAvgSpinBox">
          <property name="sizePolicy">
@@ -129,6 +187,26 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="7">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="5" rowspan="2">
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="4">
         <widget class="QComboBox" name="paletteComboBox">
          <property name="sizePolicy">
@@ -148,8 +226,15 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="fSplitSpinBox">
+       <item row="0" column="6">
+        <widget class="QCheckBox" name="cbFlatten">
+         <property name="text">
+          <string>Flatten</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QSpinBox" name="fStartSpinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -158,27 +243,24 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>120</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="toolTip">
-          <string>Decode JT65 below this frequency, JT9 above</string>
+          <string>Frequency (Hz) at left edge of waterfall</string>
          </property>
          <property name="suffix">
-          <string>  JT9</string>
+          <string> Hz</string>
          </property>
          <property name="prefix">
-          <string>JT65  </string>
-         </property>
-         <property name="minimum">
-          <number>0</number>
+          <string>Start </string>
          </property>
          <property name="maximum">
           <number>5000</number>
@@ -186,10 +268,41 @@
          <property name="singleStep">
           <number>100</number>
          </property>
-         <property name="value">
-          <number>3000</number>
-         </property>
         </widget>
+       </item>
+       <item row="0" column="0">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="4">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="labPalette">
+           <property name="text">
+            <string>  Palette</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="adjust_palette_push_button">
+           <property name="text">
+            <string>Adjust...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="0" column="1">
         <widget class="QSpinBox" name="bppSpinBox">
@@ -234,8 +347,40 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QSpinBox" name="fStartSpinBox">
+       <item row="0" column="3" rowspan="2">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="6">
+        <widget class="QComboBox" name="spec2dComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select data for spectral display&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Current</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Cumulative</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Linear Avg</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="fSplitSpinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -244,24 +389,27 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>120</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>120</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="toolTip">
-          <string>Frequency (Hz) at left edge of waterfall</string>
+          <string>Decode JT65 below this frequency, JT9 above</string>
          </property>
          <property name="suffix">
-          <string> Hz</string>
+          <string>  JT9</string>
          </property>
          <property name="prefix">
-          <string>Start </string>
+          <string>JT65  </string>
+         </property>
+         <property name="minimum">
+          <number>0</number>
          </property>
          <property name="maximum">
           <number>5000</number>
@@ -269,182 +417,8 @@
          <property name="singleStep">
           <number>100</number>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="9">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="0">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="6">
-        <widget class="QCheckBox" name="cbFlatten">
-         <property name="text">
-          <string>Flatten</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="labPalette">
-           <property name="text">
-            <string>  Palette</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="adjust_palette_push_button">
-           <property name="text">
-            <string>Adjust...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="3" rowspan="2">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="5" rowspan="2">
-        <widget class="Line" name="line_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="7">
-        <widget class="QSlider" name="gain2dSlider">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Spectrum gain</string>
-         </property>
-         <property name="minimum">
-          <number>-50</number>
-         </property>
-         <property name="maximum">
-          <number>50</number>
-         </property>
          <property name="value">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksAbove</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="8">
-        <widget class="QSlider" name="zeroSlider">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Waterfall zero</string>
-         </property>
-         <property name="minimum">
-          <number>-50</number>
-         </property>
-         <property name="maximum">
-          <number>50</number>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksAbove</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="7">
-        <widget class="QSlider" name="gainSlider">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Waterfall gain</string>
-         </property>
-         <property name="minimum">
-          <number>-50</number>
-         </property>
-         <property name="maximum">
-          <number>50</number>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksAbove</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="8">
-        <widget class="QSlider" name="zero2dSlider">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Spectrum zero</string>
-         </property>
-         <property name="minimum">
-          <number>-50</number>
-         </property>
-         <property name="maximum">
-          <number>50</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksAbove</enum>
+          <number>3000</number>
          </property>
         </widget>
        </item>
