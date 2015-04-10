@@ -398,3 +398,8 @@ void WideGraph::setTol(int n)                                         //setTol
   ui->widePlot->DrawOverlay();
   ui->widePlot->update();
 }
+
+void WideGraph::on_pbClrLongAvg_clicked()
+{
+  qDebug() << "ClrLongAvg_clicked";
+}

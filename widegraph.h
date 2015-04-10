@@ -70,6 +70,8 @@ private slots:
   void on_gain2dSlider_valueChanged(int value);
   void on_zero2dSlider_valueChanged(int value);
 
+  void on_pbClrLongAvg_clicked();
+
 private:
   void   readPalette();
 
