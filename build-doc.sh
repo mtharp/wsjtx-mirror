@@ -421,6 +421,24 @@ trap clean_exit SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
 
 option=$(echo ${1,,})
 
+# Test if source-highlight is installed
+source-highlight --version > /dev/null 2>&1 || {
+	clear
+	echo -e ${C_Y}'MISSING DEPENDENCY'${C_NC}
+	echo ''
+	echo 'You must have the package source-highlight installed to'
+	echo "build documentation. Please install the appropriate package"
+	echo 'for your distribution.'	
+	echo ''
+	echo 'For Debian, Ubuntu, Mint, or related distros, try:'
+	echo ''
+	echo 'sudo apt-get install source-highlight'
+	echo ''
+	read -p 'Press [Enter] to exit ...'
+	clean_exit
+}
+
+# Start case selection
 case "$option" in
 	# Help ---------------------------------------------------------------------
 	# Display Help Menu
