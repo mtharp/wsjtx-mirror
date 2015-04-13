@@ -543,18 +543,13 @@ void MainWindow::readSettings()
   ui->txFirstCheckBox->setChecked(m_txFirst);
   auto displayAstro = m_settings->value ("AstroDisplayed", false).toBool ();
   auto displayMsgAvg = m_settings->value ("MsgAvgDisplayed", false).toBool ();
-
-  if (m_settings->contains ("FreeText"))
-  {
-    ui->freeTextMsg->setCurrentText (m_settings->value ("FreeText").toString ());
-  }
-
+  if (m_settings->contains ("FreeText")) ui->freeTextMsg->setCurrentText (
+        m_settings->value ("FreeText").toString ());
   m_settings->endGroup();
 
   // do this outside of settings group because it uses groups internally
   if (displayAstro) on_actionAstronomical_data_triggered ();
   if (displayMsgAvg) on_actionMessage_averaging_triggered();
-
   m_settings->beginGroup("Common");
   morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData())
          , const_cast<int *> (icw)
@@ -1128,8 +1123,6 @@ void MainWindow::on_actionMessage_averaging_triggered()
 
       // Connect signals from Message Averaging window
       connect (this, &MainWindow::finished, m_msgAvgWidget.data (), &MessageAveraging::close);
-      connect( m_msgAvgWidget.data (), SIGNAL(clearAverage()), this, SLOT(clrAvg()));
-      connect( m_msgAvgWidget.data (), SIGNAL(msgAvgDecode()), this, SLOT(msgAvgDecode2()));
     }
   m_msgAvgWidget->showNormal();
 }
@@ -1421,7 +1414,6 @@ void MainWindow::readFromStdout()                             //readFromStdout
     QByteArray t=proc_jt9.readLine();
     bool baveJT4msg=(t.length()>48);
     if(m_mode=="JT4") t=t.mid(0,39) + t.mid(43,t.length()-43);
-//      qDebug() << "b" << t << t.length();
     if(t.indexOf("<DecodeFinished>") >= 0) {
       m_bdecoded = (t.mid(23,1).toInt()==1);
       bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
@@ -3409,7 +3401,7 @@ void::MainWindow::VHF_features_enabled(bool b)
   ui->actionInclude_averaging->setEnabled(b);
   ui->actionInclude_correlation->setEnabled(b);
   ui->actionMessage_averaging->setEnabled(b);
-  if(m_msgAvgWidget!=NULL) {
+  if(!b and m_msgAvgWidget!=NULL) {
     if(m_msgAvgWidget->isVisible()) m_msgAvgWidget->close();
   }
 }

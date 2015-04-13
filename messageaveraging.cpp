@@ -10,7 +10,6 @@ MessageAveraging::MessageAveraging(QSettings * settings, QWidget *parent) :
 {
   ui->setupUi(this);
   read_settings ();
-  on_pbClrAll_clicked();
 }
 
 MessageAveraging::~MessageAveraging()
@@ -39,24 +38,7 @@ void MessageAveraging::write_settings ()
   settings_->endGroup ();
 }
 
-void MessageAveraging::on_pbDecode_clicked()
-{
-  emit msgAvgDecode();
-}
-
-void MessageAveraging::on_pbClrAll_clicked()
-{
-  m_k=0;
-  emit clearAverage();
-}
-
 void MessageAveraging::displayAvg(QString t)
 {
   ui->msgAvgTextBrowser->setText(t);
-}
-
-
-void MessageAveraging::on_pbCompress_clicked()
-{
-
 }

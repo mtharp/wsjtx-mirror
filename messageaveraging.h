@@ -22,17 +22,8 @@ public:
   ~MessageAveraging();
   void displayAvg(QString t);
 
-signals:
-  void clearAverage() const;
-  void msgAvgDecode() const;
-
 protected:
   void closeEvent (QCloseEvent *) override;
-
-private slots:
-  void on_pbDecode_clicked();
-  void on_pbClrAll_clicked();
-  void on_pbCompress_clicked();
 
 private:
   void read_settings ();
