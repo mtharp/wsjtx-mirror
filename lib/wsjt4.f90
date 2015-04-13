@@ -63,7 +63,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
 
 !  if(nsync.lt.syncmin .or. nsnr.lt.nsnrlim) then
   if(snrsync.lt.syncmin .or. nsnr.lt.nsnrlim) then
-     dtxx=dtx-0.8
      nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
      write(*,1010) nutc,nsnr,dtx,nfreq
      go to 900
@@ -78,11 +77,10 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
        mycall,hiscall,hisgrid,decoded,nfano,deepmsg,qual,ichbest)
 
   nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
-  dtxx=dtx-0.8
 
   if(nfano.gt.0) then
 ! Fano succeeded: display the message and return
-     write(*,1010) nutc,nsnr,dtxx,nfreq,csync,decoded,' *',             &
+     write(*,1010) nutc,nsnr,dtx,nfreq,csync,decoded,' *',             &
           char(ichar('A')+ichbest-1)
 1010 format(i4.4,i4,f5.2,i5,a1,1x,a22,a2,1x,a1,i3)
      nsave=0
@@ -97,14 +95,14 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      nfreq0=nfreq
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
-     call avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,      &
+     call avg4(nutc,snrsync,dtx,flip,nfreq,mode4,ntol,ndepth,neme,      &
          mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,    &
          ndeepave)
   endif
 
   if(nfanoave.gt.0) then
 ! Fano succeeded: display the message and return
-     write(*,1010) nutc,nsnr,dtxx,nfreq,csync,avemsg,' *',              &
+     write(*,1010) nutc,nsnr,dtx,nfreq,csync,avemsg,' *',              &
           char(ichar('A')+ichbest-1),nfanoave
 !     go to 900
   endif
@@ -114,17 +112,17 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
 ! Single-sequence "qual" better than average "qave": display deepmsg
   if(nfano.eq.0) then
      write(cqual,'(i2)') nint(qual)
-     if(qual.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,   &
+     if(qual.ge.float(nq1)) write(*,1010) nutc,nsnr,dtx,nfreq,csync,   &
           deepmsg,cqual,char(ichar('A')+ichbest-1)
-     if(qual.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
+     if(qual.lt.float(nq1)) write(*,1010) nutc,nsnr,dtx,nfreq,csync
   endif
 !  else
 ! Average "qave better than single-sequence "qual": display deepave
   if(nfanoave.eq.0) then
      write(cqual,'(i2)') nint(qave)
-     if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync,   &
+     if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtx,nfreq,csync,   &
           deepave,cqual,char(ichar('A')+ichbest-1),ndeepave
-!     if(qave.lt.float(nq1)) write(*,1010) nutc,nsnr,dtxx,nfreq,csync
+!     if(qave.lt.float(nq1)) write(*,1010) nutc,nsnr,dtx,nfreq,csync
 !  endif
   endif
 

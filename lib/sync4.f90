@@ -132,7 +132,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   snrx=snrx + snrsync
 
   dt=2.0/11025.0
-  dtx=xlag*nq*dt
+  dtx=xlag*nq*dt - 0.8
 
 !###
   rewind 71

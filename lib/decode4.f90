@@ -21,7 +21,7 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
   df=11025.d0/2520.d0       !Tone separation for JT4A mode
   nsym=206
   amp=15
-  istart=nint(dtx/dt)              !Start index for synced FFTs
+  istart=nint((dtx+0.8)/dt)              !Start index for synced FFTs
   if(istart.lt.0) istart=0
   nchips=0
   qbest=0.0
