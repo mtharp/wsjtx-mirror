@@ -564,7 +564,6 @@ void MainWindow::readSettings()
   m_modeTx=m_settings->value("ModeTx","JT9").toString();
   if(m_modeTx.mid(0,3)=="JT9") ui->pbTxMode->setText("Tx JT9  @");
   if(m_modeTx=="JT65") ui->pbTxMode->setText("Tx JT65  #");
-  if(m_modeTx=="JT4") ui->pbTxMode->setText("Tx JT4");
   ui->actionNone->setChecked(m_settings->value("SaveNone",true).toBool());
   ui->actionSave_decoded->setChecked(m_settings->value(
                                                        "SaveDecoded",false).toBool());
@@ -2654,6 +2653,7 @@ void MainWindow::on_actionJT65_triggered()
 void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
+  if(m_modeTx != "JT65") m_modeTx="JT9";
   m_nSubMode=0;                    //Dual-mode always means JT9 and JT65A
   statusChanged();
   m_TRperiod=60;

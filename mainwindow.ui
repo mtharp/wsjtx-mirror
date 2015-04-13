@@ -965,7 +965,7 @@
              <string>Toggle Tx mode</string>
             </property>
             <property name="text">
-             <string>Tx JT9</string>
+             <string>Tx JT9 @</string>
             </property>
            </widget>
           </item>

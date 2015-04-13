@@ -36,6 +36,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_dBStepSize=10;
   m_Percent2DScreen = 30;	//percent of screen used for 2D display
   m_txFreq=0;
+  m_fftBinWidth=1500.0/2048.0;
 }
 
 CPlotter::~CPlotter() { }                                      // Destructor
@@ -186,7 +187,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     y=0.2*m_h2;
     painter2D.drawText(x1-4,y,"T");
     x1=XfromFreq(m_rxFreq+250);
-    painter2D.drawText(x1-4,y,"S");
+    painter2D.drawText(x1-4,y,"M");
     x1=XfromFreq(m_rxFreq+500);
     painter2D.drawText(x1-4,y,"R");
     x1=XfromFreq(m_rxFreq+750);
@@ -235,6 +236,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     pixperdiv = m_freqPerDiv/df;
     y = m_h2 - m_h2/VERT_DIVS;
     m_hdivs = w*df/m_freqPerDiv + 1.9999;
+
     float xx0=float(m_startFreq)/float(m_freqPerDiv);
     xx0=xx0-int(xx0);
     int x0=xx0*pixperdiv+0.5;
@@ -269,13 +271,15 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
 
   if(m_binsPerPixel < 1) m_binsPerPixel=1;
   m_fSpan = w*df;
-  int n=m_fSpan/10;
+//  int n=m_fSpan/10;
   m_freqPerDiv=10;
-  if(n>25) m_freqPerDiv=50;
-  if(n>70) m_freqPerDiv=100;
-  if(n>140) m_freqPerDiv=200;
-  if(n>310) m_freqPerDiv=500;
+  if(m_fSpan>100) m_freqPerDiv=20;
+  if(m_fSpan>250) m_freqPerDiv=50;
+  if(m_fSpan>500) m_freqPerDiv=100;
+  if(m_fSpan>1000) m_freqPerDiv=200;
+  if(m_fSpan>2500) m_freqPerDiv=500;
   m_hdivs = w*df/m_freqPerDiv + 0.9999;
+
   m_ScalePixmap.fill(Qt::white);
   painter0.drawRect(0, 0, w, 30);
   MakeFrequencyStrs();
@@ -311,6 +315,11 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==5) bw=36*bw;
     if(m_nSubMode==6) bw=72*bw;
 
+    x2=XfromFreq(m_rxFreq+bw/3.0);          //In JT4, mark all four tones
+    painter0.drawLine(x2,24,x2,30);
+    x2=XfromFreq(m_rxFreq+bw*2.0/3.0);
+    painter0.drawLine(x2,24,x2,30);
+
     QPen pen0(Qt::green, 4);                 //Mark Tol range with fat green line
     painter0.setPen(pen0);
     x1=XfromFreq(m_rxFreq-m_tol);
@@ -331,13 +340,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawLine(x1,24,x1,30);
   painter0.drawLine(x1,28,x2,28);
   painter0.drawLine(x2,24,x2,30);
-
-  if(m_mode=="JT4") {                       //In JT4, mark all four tones
-    x2=XfromFreq(m_rxFreq+bw/3.0);
-    painter0.drawLine(x2,24,x2,30);
-    x2=XfromFreq(m_rxFreq+bw*2.0/3.0);
-    painter0.drawLine(x2,24,x2,30);
-  }
 
   if(m_mode=="JT9+JT65") {
     QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider
