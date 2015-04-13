@@ -2585,6 +2585,7 @@ void MainWindow::on_actionJT9_1_triggered()
   m_toneSpacing=0.0;
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_1->setChecked(true);
+  VHF_features_enabled(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -2608,6 +2609,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   mode_label->setText(m_mode);
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9W_1->setChecked(true);
+  VHF_features_enabled(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -2632,6 +2634,7 @@ void MainWindow::on_actionJT65_triggered()
   mode_label->setText(m_mode + " " + t1);
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT65->setChecked(true);
+  VHF_features_enabled(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -2665,6 +2668,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   mode_label->setText(m_mode);
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_JT65->setChecked(true);
+  VHF_features_enabled(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -2688,9 +2692,8 @@ void MainWindow::on_actionJT4_triggered()
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   ui->actionJT4->setChecked(true);
+  VHF_features_enabled(true);
   ui->ClrAvgButton->setVisible(true);
-//  ui->decodedTextBrowser2->setVisible(false);
-//  ui->decodedTextLabel2->setVisible(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -3396,6 +3399,21 @@ void::MainWindow::VHF_controls_visible(bool b)
   ui->labTol->setVisible(b);
   ui->sbTol->setVisible(b);
 }
+
+void::MainWindow::VHF_features_enabled(bool b)
+{
+  if(!b and (ui->actionInclude_averaging->isChecked() or
+             ui->actionInclude_correlation->isChecked())) {
+    on_actionDeepestDecode_triggered();
+  }
+  ui->actionInclude_averaging->setEnabled(b);
+  ui->actionInclude_correlation->setEnabled(b);
+  ui->actionMessage_averaging->setEnabled(b);
+  if(m_msgAvgWidget!=NULL) {
+    if(m_msgAvgWidget->isVisible()) m_msgAvgWidget->close();
+  }
+}
+
 void MainWindow::on_cbEME_toggled(bool b)
 {
   m_bEME=b;
