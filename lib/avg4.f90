@@ -6,7 +6,7 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
   use jt4
   character*22 avemsg,deepave,deepbest
   character mycall*12,hiscall*12,hisgrid*6
-  character csync*1
+  character*1 csync,cused(64)
   real sym(207,7)
   integer iused(64)
   logical first
@@ -39,6 +39,7 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
   nsum=0
 
   do i=1,64
+     cused(i)='.'
      if(iutc(i).lt.0) cycle
      if(mod(iutc(i),2).ne.mod(nutc,2)) cycle  !Use only same (odd/even) sequence
      if(abs(dtxx-dtsave(i)).gt.dtdiff) cycle       !DT must match
@@ -48,6 +49,7 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
      syncsum=syncsum + syncsave(i)
      dtsum=dtsum + dtsave(i)
      nfsum=nfsum + nfsave(i)
+     cused(i)='$'
      nsum=nsum+1
      iused(nsum)=i
   enddo
@@ -64,12 +66,13 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
   endif
 
   rewind 80
-  rewind 81
   do i=1,nsave
      csync='*'
      if(flipsave(i).lt.0.0) csync='#'
-     write(81,3001) i,iutc(i),syncsave(i),dtsave(i),nfsave(i),csync
+     write(14,1000) cused(i),iutc(i),syncsave(i),dtsave(i),nfsave(i),csync
+1000 format(a1,i6.4,f6.1,f6.2,i6,1x,a1)
   enddo
+
   sqt=0.
   sqf=0.
   do j=1,64
@@ -94,7 +97,6 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
   write(80,3003) rmst,nint(rmsf)
 3003 format(15x,f6.2,i6)
   flush(80)
-  flush(81)
 
 !  nadd=nused*mode4
   kbest=ich1

@@ -982,14 +982,14 @@ void MainWindow::displayDialFrequency ()
   // search working frequencies for one we are within 10kHz of
   auto frequencies = m_config.frequencies ();
   bool valid {false};
-  for (int row = 0; row < frequencies->rowCount (); ++row)
-    {
-      auto working_frequency = frequencies->data (frequencies->index (row, 0)).value<Frequency> ();
-      if (std::llabs (working_frequency - m_dialFreq) < 10000)
-        {
-          valid = true;
-        }
+  for (int row = 0; row < frequencies->rowCount (); ++row) {
+    auto working_frequency = frequencies->data (frequencies->index (row, 0)).value<Frequency> ();
+    auto offset = m_dialFreq > working_frequency ? m_dialFreq - working_frequency : working_frequency - m_dialFreq;
+    if (offset < 10000u) {
+      valid = true;
     }
+  }
+
   ui->labDialFreq->setProperty ("oob", !valid);
   // the following sequence is necessary to update the style
   ui->labDialFreq->style ()->unpolish (ui->labDialFreq);
@@ -1417,69 +1417,62 @@ void MainWindow::readFromStderr()                             //readFromStderr
 
 void MainWindow::readFromStdout()                             //readFromStdout
 {
-  while(proc_jt9.canReadLine())
-    {
-      QByteArray t=proc_jt9.readLine();
-      bool baveJT4msg=(t.length()>48);
-      if(m_mode=="JT4") t=t.mid(0,39) + t.mid(43,t.length()-43);
+  while(proc_jt9.canReadLine()) {
+    QByteArray t=proc_jt9.readLine();
+    bool baveJT4msg=(t.length()>48);
+    if(m_mode=="JT4") t=t.mid(0,39) + t.mid(43,t.length()-43);
 //      qDebug() << "b" << t << t.length();
-      if(t.indexOf("<DecodeFinished>") >= 0) {
-        m_bdecoded = (t.mid(23,1).toInt()==1);
-        bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
-        if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
-        jt9com_.nagain=0;
-        jt9com_.ndiskdat=0;
-        m_nclearave=0;
-        QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.open(QIODevice::ReadWrite);
-        ui->DecodeButton->setChecked (false);
-        decodeBusy(false);
-        m_RxLog=0;
-        m_startAnother=m_loopall;
-        m_blankLine=true;
-        return;
-      } else {
-        QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
-          QTextStream out(&f);
-          if(m_RxLog==1) {
-            out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
-                << "  " << (m_dialFreq / 1.e6) << " MHz  " << m_mode << endl;
-            m_RxLog=0;
-          }
-          int n=t.length();
-          out << t.mid(0,n-2) << endl;
-          f.close();
-        } else {
-          msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
+    if(t.indexOf("<DecodeFinished>") >= 0) {
+      m_bdecoded = (t.mid(23,1).toInt()==1);
+      bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
+      if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
+      jt9com_.nagain=0;
+      jt9com_.ndiskdat=0;
+      m_nclearave=0;
+      QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.open(QIODevice::ReadWrite);
+      ui->DecodeButton->setChecked (false);
+      decodeBusy(false);
+      m_RxLog=0;
+      m_startAnother=m_loopall;
+      m_blankLine=true;
+      return;
+    } else {
+      QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
+      if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+        QTextStream out(&f);
+        if(m_RxLog==1) {
+          out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
+              << "  " << (m_dialFreq / 1.e6) << " MHz  " << m_mode << endl;
+          m_RxLog=0;
         }
+        int n=t.length();
+        out << t.mid(0,n-2) << endl;
+        f.close();
+      } else {
+        msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
+      }
 
-        if (m_config.insert_blank () && m_blankLine)
-          {
-            QString band;
-            if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50)
-              {
-                auto const& bands_model = m_config.bands ();
-                band = ' ' + bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
-              }
-            ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
-            m_blankLine = false;
-          }
+      if (m_config.insert_blank () && m_blankLine) {
+        QString band;
+        if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50) {
+          auto const& bands_model = m_config.bands ();
+          band = ' ' + bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
+        }
+        ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
+        m_blankLine = false;
+      }
 //          band = band.rightJustified(40, '-');
 //          ui->decodedTextBrowser->insertLineSpacer(band);
 //          m_blankLine=false;
 //        }
 
-        DecodedText decodedtext;
-        decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);
-
-        if(m_msgAvgWidget and (t.trimmed().length()<=20) and jt9com_.newdat==1) {
-          m_msgAvgWidget->addItem(t.mid(0,18));
-        }
-        auto my_base_call = baseCall (m_config.my_callsign ());
+      DecodedText decodedtext;
+      decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);
+      auto my_base_call = baseCall (m_config.my_callsign ());
 
         //Left (Band activity) window
-        if(!baveJT4msg) {
-          ui->decodedTextBrowser->displayDecodedText (decodedtext
+      if(!baveJT4msg) {
+        ui->decodedTextBrowser->displayDecodedText (decodedtext
                                                     , my_base_call
                                                     , m_config.DXCC ()
                                                     , m_logBook
@@ -1487,55 +1480,64 @@ void MainWindow::readFromStdout()                             //readFromStdout
                                                     , m_config.color_MyCall()
                                                     , m_config.color_DXCC()
                                                     , m_config.color_NewCall());
-        }
+      }
 
         //Right (Rx Frequency) window
-        if (((abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) and
-             m_mode!="JT4") or baveJT4msg) {
+      if (((abs(decodedtext.frequencyOffset() - m_wideGraph->rxFreq()) <= 10) and
+           m_mode!="JT4") or baveJT4msg) {
           // This msg is within 10 hertz of our tuned frequency, or a JT4 avg
-            ui->decodedTextBrowser2->displayDecodedText(decodedtext
-                                                        , my_base_call
-                                                        , false
-                                                        , m_logBook
-                                                        , m_config.color_CQ()
-                                                        , m_config.color_MyCall()
-                                                        , m_config.color_DXCC()
-                                                        , m_config.color_NewCall());
+        ui->decodedTextBrowser2->displayDecodedText(decodedtext
+                                                    , my_base_call
+                                                    , false
+                                                    , m_logBook
+                                                    , m_config.color_CQ()
+                                                    , m_config.color_MyCall()
+                                                    , m_config.color_DXCC()
+                                                    , m_config.color_NewCall());
 
-            bool b65=decodedtext.isJT65();
-            if(b65 and m_modeTx!="JT65") on_pbTxMode_clicked();
-            if(!b65 and m_modeTx=="JT65") on_pbTxMode_clicked();
-            m_QSOText=decodedtext;
-          }
+        bool b65=decodedtext.isJT65();
+        if(b65 and m_modeTx!="JT65") on_pbTxMode_clicked();
+        if(!b65 and m_modeTx=="JT65") on_pbTxMode_clicked();
+        m_QSOText=decodedtext;
+      }
 
         // find and extract any report for myCall
-        bool stdMsg = decodedtext.report(my_base_call
-                                         , baseCall (ui->dxCallEntry-> text ().toUpper ().trimmed ())
-                                         , /*mod*/m_rptRcvd);
+      bool stdMsg = decodedtext.report(my_base_call
+                                       , baseCall (ui->dxCallEntry-> text ().toUpper ().trimmed ())
+                                       , /*mod*/m_rptRcvd);
 
-        // extract details and send to PSKreporter
-        int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
-        bool okToPost=(nsec>50);
-        if(m_config.spot_to_psk_reporter () and stdMsg and !m_diskData and okToPost)
-          {
-            QString msgmode="JT9";
-            if (decodedtext.isJT65())
-              msgmode="JT65";
+      // extract details and send to PSKreporter
+      int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
+      bool okToPost=(nsec>50);
+      if(m_config.spot_to_psk_reporter () and stdMsg and !m_diskData and okToPost) {
+        QString msgmode="JT9";
+        if (decodedtext.isJT65())
+          msgmode="JT65";
 
-            QString deCall;
-            QString grid;
-            decodedtext.deCallAndGrid(/*out*/deCall,grid);
-            int audioFrequency = decodedtext.frequencyOffset();
-            int snr = decodedtext.snr();
-            Frequency frequency = m_dialFreq + audioFrequency;
+        QString deCall;
+        QString grid;
+        decodedtext.deCallAndGrid(/*out*/deCall,grid);
+        int audioFrequency = decodedtext.frequencyOffset();
+        int snr = decodedtext.snr();
+        Frequency frequency = m_dialFreq + audioFrequency;
 
-            pskSetLocal ();
-            if(gridOK(grid))
-              psk_Reporter->addRemoteStation(deCall,grid,QString::number(frequency),msgmode,QString::number(snr),
-                                             QString::number(QDateTime::currentDateTime().toTime_t()));
+        pskSetLocal ();
+        if(gridOK(grid))
+          psk_Reporter->addRemoteStation(deCall,grid,QString::number(frequency),msgmode,QString::number(snr),
+                                         QString::number(QDateTime::currentDateTime().toTime_t()));
+      }
+      if((m_mode=="JT4" or m_mode=="JT65") and m_msgAvgWidget!=NULL) {
+        if(m_msgAvgWidget->isVisible()) {
+          QFile f(m_config.temp_dir ().absoluteFilePath ("avemsg.txt"));
+          if(f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream s(&f);
+            QString t=s.readAll();
+            m_msgAvgWidget->displayAvg(t);
           }
+        }
       }
     }
+  }
 }
 
 void MainWindow::killFile()
@@ -1984,8 +1986,6 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
   decodedtext = t1.mid(i1,i2-i1);         //selected line
-
-  if(m_msgAvgWidget) m_msgAvgWidget->addItem(cursor.selectedText().mid(0,18));
 
   if (decodedtext.indexOf(" CQ ") > 0)
     {

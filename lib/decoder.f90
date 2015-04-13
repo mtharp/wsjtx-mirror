@@ -29,6 +29,9 @@ subroutine decoder(ss,id2,nfsample)
      open(13,file=trim(temp_dir)//'/decoded.txt',status='unknown',      &
           position='append')
   end if
+  if(nmode.eq.4 .or. nmode.eq.65) open(14,file=trim(temp_dir)//'/avemsg.txt', &
+       status='unknown')
+
   if(nmode.eq.65 .or. nmode.eq.(65+9)) open(22,file=trim(temp_dir)//    &
        '/kvasd.dat',access='direct',recl=1024,status='unknown')
 
@@ -101,7 +104,8 @@ subroutine decoder(ss,id2,nfsample)
 800 write(*,1010) nsynced,ndecoded
 1010 format('<DecodeFinished>',2i4)
   call flush(6)
-  close(13)
+  close(13) 
+  if(nmode.eq.4 .or. nmode.eq.65) close(14)
   close(22)
 
   return
