@@ -1,4 +1,4 @@
-subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
+subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccfblue,ccf0,   &
      lagpk,flip)
 
 ! Computes ccf of the 4_FSK spectral array s2 and the pseudo-random 
@@ -11,7 +11,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
   parameter (NSMAX=525)            !Max number of half-symbol steps
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real a(NSMAX)
-  real ccf(-5:540)
+  real ccfblue(-5:540)
   data lagmin/0/                    !Silence compiler warning
   save
 
@@ -47,14 +47,14 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
         j=2*i-1+lag
         if(j.ge.1 .and. j.le.nsteps) x=x+a(j)*float(2*npr(i)-1)
      enddo
-     ccf(lag)=2*x                        !The 2 is for plotting scale
-     if(ccf(lag).gt.ccfmax) then
-        ccfmax=ccf(lag)
+     ccfblue(lag)=2*x                        !The 2 is for plotting scale
+     if(ccfblue(lag).gt.ccfmax) then
+        ccfmax=ccfblue(lag)
         lagpk=lag
      endif
 
-     if(ccf(lag).lt.ccfmin) then
-        ccfmin=ccf(lag)
+     if(ccfblue(lag).lt.ccfmin) then
+        ccfmin=ccfblue(lag)
         lagmin=lag
      endif
   enddo
@@ -63,7 +63,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ich,mode4,ccf,ccf0,   &
   flip=1.0
   if(-ccfmin.gt.ccfmax) then
      do lag=lag1,lag2
-        ccf(lag)=-ccf(lag)
+        ccfblue(lag)=-ccfblue(lag)
      enddo
      lagpk=lagmin
      ccf0=-ccfmin

@@ -47,7 +47,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   call sync4(dat,npts,ntol,emedelay,dttol,nfqso,mode4,minw,  &
-       dtx,dfx,snrx,snrsync,flip,width)
+       dtx,dfx,snrx,snrsync,flip)
 
   csync=' '
   decoded=blank

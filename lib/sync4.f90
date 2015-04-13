@@ -1,5 +1,5 @@
 subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
-     dtx,dfx,snrx,snrsync,flip,width)
+     dtx,dfx,snrx,snrsync,flip)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
 
@@ -12,10 +12,9 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   real psavg(NHMAX)                !Average spectrum of whole record
   real ps0(450)                    !Avg spectrum for plotting
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
-  real ccfblue(-5:540)             !CCF with pseudorandom sequence
-  real ccfred(-450:450)            !Peak of ccfblue, as function of freq
-  real red(-450:450)               !Peak of ccfblue, as function of freq
-  real ccfred1(-224:224)           !Peak of ccfblue, as function of freq
+  real ccfblue(-5:59)              !CCF with pseudorandom sequence
+  real ccfred(NHMAX)
+  real redsave(NHMAX)
   real tmp(1260)
   integer ipk1(1)
   logical savered
@@ -24,6 +23,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
 
 ! Do FFTs of twice symbol length, stepped by half symbols.  Note that 
 ! we have already downsampled the data by factor of 2.
+
   nsym=207
   nfft=2520
   nh=nfft/2
@@ -76,15 +76,12 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   do ich=minw+1,7                       !Find best width
      kz=nch(ich)/2
      savered=.false.
+
+! Set istep>1 for wide submodes?
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
         call xcor4(s2,i,nsteps,nsym,lag1,lag2,ich,mode4,ccfblue,ccf0,   &
              lagpk0,flip)
-        j=i-i0 + 3*mode4
-        if(j.ge.-372 .and. j.le.372) then
-           ccfred(j)=ccf0
-           jmax=max(j,jmax)
-           jmin=min(j,jmin)
-        endif
+        ccfred(i)=ccf0
 
 ! Find rms of the CCF, without main peak
         call slope(ccfblue(lag1),lag2-lag1+1,lagpk0-lag1+1.0)
@@ -99,11 +96,10 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
            savered=.true.
         endif
      enddo
-     if(savered) red=ccfred
+     if(savered) redsave=ccfred
   enddo
 
-  ccfred=red
-!  width=df*nch(ichpk)
+  ccfred=redsave
   dfx=(ipk-i0 + 3*mode4)*df
 
 ! Peak up in time, at best whole-channel frequency
@@ -139,48 +135,16 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   dt=2.0/11025.0
   istart=xlag*nq
   dtx=istart*dt
-  ccfred1=0.
-  jmin=max(jmin,-224)
-  jmax=min(jmax,224)
-  do i=jmin,jmax
-     ccfred1(i)=ccfred(i)
-  enddo
-
-  ipk1=maxloc(ccfred1) - 225
-  ns=0
-  s=0.
-  iw=min(mode4,(ib-ia)/4)
-  do i=jmin,jmax
-     if(abs(i-ipk1a).gt.iw) then
-        s=s+ccfred1(i)
-        ns=ns+1
-     endif
-  enddo
-  base=s/ns
-  ccfred1=ccfred1-base
-  ccf10=0.5*maxval(ccfred1)
-  do i=ipk1a,jmin,-1
-     if(ccfred1(i).le.ccf10) exit
-  enddo
-  i1=i
-  do i=ipk1a,jmax
-     if(ccfred1(i).le.ccf10) exit
-  enddo
-  width=(i-i1)*df
-
-!  write(*,3301) emedelay,lag1*0.1142857,lag2*0.1142857,dtx,dtx-0.8
-!3301 format(5f8.3)
-
 
 !###
   rewind 71
   rewind 72
   df=0.5*11025.0/2520.0
-  do i=-224,224
-     write(71,3001) i,i*df,ccfred1(i)
+  do i=ia+kz,ib-kz
+     write(71,3001) i,i*df,ccfred(i)
 3001 format(i6,2f12.3)
   enddo
-  do i=-5,540
+  do i=lag1,lag2
      write(72,3001) i,i*(2520.0/2.0)/11025.0,ccfblue(i)
   enddo
   do i=1,450
@@ -190,8 +154,6 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   flush(72)
   flush(73)
 !###
-
-
 
   return
 end subroutine sync4
