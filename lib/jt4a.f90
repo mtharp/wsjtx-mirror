@@ -6,9 +6,6 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
   integer listutc0(10)
   real*4 dd(jz)
   real*4 dat(30*12000)
-  real*4 ccf(-5:540)
-  real*4 psavg(450)
-  real*4 ps0(450)
   character*6 cfile6
   character*12 mycall,hiscall
   character*6 mygrid,hisgrid
@@ -37,7 +34,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
   cfile6(5:6)='  '
 
   call wsjt4(dat,jz2,nutc,NClearAve,syncmin,ntol,emedelay,dttol,mode4,minw, &
-       mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,ccf,psavg,ps0)
+       mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme)
 
   return
 end subroutine jt4a

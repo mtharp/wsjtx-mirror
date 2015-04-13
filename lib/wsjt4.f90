@@ -1,6 +1,5 @@
 subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
-     mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme,          &
-     ccfblue,ccfred,ps0)
+     mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
 ! have been 2x downsampled.
@@ -10,9 +9,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
 
   use jt4
   real dat(npts)                                     !Raw data
-  real*4 ccfblue(-5:540)                             !CCF in time
-  real*4 ccfred(-224:224)                            !CCF in frequency
-  real*4 ps0(450)
   logical first
   character decoded*22,special*5
   character*22 avemsg,deepmsg,deepave,blank
@@ -50,10 +46,8 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
   endif
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
-  nfmid=nfqso + nint(1.5*mode4*4.375)
-  call sync4(dat,npts,ntol,emedelay,dttol,nfmid,mode4,minw,  &
-       dtx,dfx,snrx,snrsync,ccfblue,ccfred,flip,width,ps0)
-!  print*,emedelay,dttol,snrx,snrsync,snrsync-snrx,dtx,dfx
+  call sync4(dat,npts,ntol,emedelay,dttol,nfqso,mode4,minw,  &
+       dtx,dfx,snrx,snrsync,flip,width)
 
   csync=' '
   decoded=blank

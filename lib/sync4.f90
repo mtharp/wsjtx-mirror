@@ -1,5 +1,5 @@
-subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
-     dtx,dfx,snrx,snrsync,ccfblue,ccfred1,flip,width,ps0)
+subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
+     dtx,dfx,snrx,snrsync,flip,width)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
 
@@ -50,6 +50,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
 ! Set freq and lag ranges
   famin=200.0 + 3*mode4*df
   fbmax=2700.0 - 3*mode4*df
+  nfmid=nfqso + nint(1.5*mode4*4.375)
   fa=max(famin,float(nfmid-ntol))
   fb=min(fbmax,float(nfmid+ntol))
   ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
@@ -60,10 +61,10 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
   if(ib-i0.gt.irange)  ib=i0+irange
 
   thsym=1.0/(2.0*4.375)
-! lag1=-5
-! lag2=59
-  lag1=(0.8+emedelay-dttol)/thsym
-  lag2=(0.8+emedelay+dttol)/thsym
+  lag1=-5
+  lag2=59
+!  lag1=(0.8+emedelay-dttol)/thsym
+!  lag2=(0.8+emedelay+dttol)/thsym
 
   syncbest=-1.e30
   ccfred=0.
@@ -169,6 +170,28 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfmid,mode4,minw,    &
 
 !  write(*,3301) emedelay,lag1*0.1142857,lag2*0.1142857,dtx,dtx-0.8
 !3301 format(5f8.3)
+
+
+!###
+  rewind 71
+  rewind 72
+  df=0.5*11025.0/2520.0
+  do i=-224,224
+     write(71,3001) i,i*df,ccfred1(i)
+3001 format(i6,2f12.3)
+  enddo
+  do i=-5,540
+     write(72,3001) i,i*(2520.0/2.0)/11025.0,ccfblue(i)
+  enddo
+  do i=1,450
+     write(73,3001) i,i*df,ps0(i)
+  enddo
+  flush(71)
+  flush(72)
+  flush(73)
+!###
+
+
 
   return
 end subroutine sync4
