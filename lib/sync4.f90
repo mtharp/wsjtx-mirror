@@ -12,7 +12,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   real psavg(NHMAX)                !Average spectrum of whole record
   real ps0(450)                    !Avg spectrum for plotting
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
-  real ccfblue(-5:59)              !CCF with pseudorandom sequence
+  real ccfblue(65)                 !CCF with pseudorandom sequence
   real ccfred(NHMAX)
   real redsave(NHMAX)
   real tmp(1260)
@@ -61,8 +61,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   if(ib-i0.gt.irange)  ib=i0+irange
 
   thsym=1.0/(2.0*4.375)
-  lag1=-5
-  lag2=59
+
 !  lag1=(0.8+emedelay-dttol)/thsym
 !  lag2=(0.8+emedelay+dttol)/thsym
 
@@ -79,12 +78,12 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
 
 ! Set istep>1 for wide submodes?
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
-        call xcor4(s2,i,nsteps,nsym,lag1,lag2,ich,mode4,ccfblue,ccf0,   &
+        call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,   &
              lagpk0,flip)
         ccfred(i)=ccf0
 
 ! Find rms of the CCF, without main peak
-        call slope(ccfblue(lag1),lag2-lag1+1,lagpk0-lag1+1.0)
+        call slope(ccfblue(1),65,float(lagpk0))
         sync=abs(ccfblue(lagpk0))
 
 ! Find best sync value
@@ -102,20 +101,20 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   ccfred=redsave
   dfx=(ipk-i0 + 3*mode4)*df
 
-! Peak up in time, at best whole-channel frequency
-  call xcor4(s2,ipk,nsteps,nsym,lag1,lag2,ichpk,mode4,ccfblue,ccfmax,   &
+! Peak up once more in time, at best whole-channel frequency
+  call xcor4(s2,ipk,nsteps,nsym,ichpk,mode4,ccfblue,ccfmax,   &
        lagpk,flip)
   xlag=lagpk
-  if(lagpk.gt.lag1 .and. lagpk.lt.lag2) then
+  if(lagpk.gt.1 .and. lagpk.lt.65) then
      call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
      xlag=lagpk+dx2
   endif
 
 ! Find rms of the CCF, without the main peak
-  call slope(ccfblue(lag1),lag2-lag1+1,xlag-lag1+1.0)
+  call slope(ccfblue(1),65-1+1,xlag-1+1.0)
   sq=0.
   nsq=0
-  do lag=lag1,lag2
+  do lag=1,65
      if(abs(lag-xlag).gt.2.0) then
         sq=sq+ccfblue(lag)**2
         nsq=nsq+1
@@ -133,8 +132,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   snrx=snrx + snrsync
 
   dt=2.0/11025.0
-  istart=xlag*nq
-  dtx=istart*dt
+  dtx=xlag*nq*dt
 
 !###
   rewind 71
@@ -144,7 +142,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
      write(71,3001) i,i*df,ccfred(i)
 3001 format(i6,2f12.3)
   enddo
-  do i=lag1,lag2
+  do i=1,65
      write(72,3001) i,i*(2520.0/2.0)/11025.0,ccfblue(i)
   enddo
   do i=1,450
