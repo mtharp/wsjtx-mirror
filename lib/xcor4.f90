@@ -1,4 +1,4 @@
-subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip,zz65)
+subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip)
 
 ! Computes ccf of the 4-FSK spectral array s2 and the pseudo-random 
 ! array pr2.  Returns peak of CCF and the lag at which peak occurs.  
@@ -11,7 +11,6 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip,zz65)
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real a(NSMAX)
   real ccfblue(65)
-  real zz65(65)
   data lagmin/0/                    !Silence compiler warning
   save
 
@@ -59,7 +58,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip,zz65)
      endif
   enddo
 
-  zz65=ccfblue
+  zz(1:65,ipk,ich)=ccfblue
   ccf0=ccfmax
   flip=1.0
   if(-ccfmin.gt.ccfmax) then

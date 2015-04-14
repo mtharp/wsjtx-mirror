@@ -29,6 +29,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
      nagain=0                             !Ditto
   endif
 
+  zz=0.
   syncmin=1.0
   naggressive=0
   if(ndepth.ge.2) naggressive=1

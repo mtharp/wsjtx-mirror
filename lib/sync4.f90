@@ -15,8 +15,6 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   real ccfred(NHMAX)
   real redsave(NHMAX)
   real tmp(1260)
-  real zz(65,500,7)
-  real zz65(65)
   integer ipk1(1)
   logical savered
   equivalence (ipk1,ipk1a)
@@ -78,12 +76,9 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   do ich=minw+1,7                     !Find best width
      kz=nch(ich)/2
      savered=.false.
-     k=0
 ! Set istep>1 for wide submodes?
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
-        call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk0,flip,zz65)
-        k=min(500,k+1)
-        zz(1:65,k,ich)=zz65
+        call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk0,flip)
         ccfred(i)=ccf0
 
 ! Find rms of the CCF, without main peak
@@ -109,7 +104,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   nfreq=nint(ipk*df)
 
 ! Peak up once more in time, at best whole-channel frequency
-  call xcor4(s2,ipk,nsteps,nsym,ichpk,mode4,ccfblue,ccfmax,lagpk,flip,zz65)
+  call xcor4(s2,ipk,nsteps,nsym,ichpk,mode4,ccfblue,ccfmax,lagpk,flip)
   xlag=lagpk
   if(lagpk.gt.1 .and. lagpk.lt.65) then
      call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
@@ -158,11 +153,11 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
 !  do i=1,450
 !     write(73,3001) i,i*df,ps0(i)
 !  enddo
-!  write(74) zz
+  write(74) ia,ib,zz
 !  flush(71)
 !  flush(72)
 !  flush(73)
-!  flush(74)
+  flush(74)
 !###
 
   return
