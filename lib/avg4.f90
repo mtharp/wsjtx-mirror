@@ -65,12 +65,12 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
      fave=float(nfsum)/nsum
   endif
 
-  rewind 80
+!  rewind 80
   do i=1,nsave
      csync='*'
      if(flipsave(i).lt.0.0) csync='#'
      write(14,1000) cused(i),iutc(i),syncsave(i),dtsave(i),nfsave(i),csync
-1000 format(a1,i6.4,f6.1,f6.2,i6,1x,a1)
+1000 format(a1,i5.4,f6.1,f6.2,i6,1x,a1)
   enddo
 
   sqt=0.
@@ -80,8 +80,8 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
      if(i.eq.0) exit
      csync='*'
      if(flipsave(i).lt.0.0) csync='#'
-     write(80,3001) i,iutc(i),syncsave(i),dtsave(i),nfsave(i),csync
-3001 format(i3,i6.4,f6.1,f6.2,i6,1x,a1)
+!     write(80,3001) i,iutc(i),syncsave(i),dtsave(i),nfsave(i),csync
+!3001 format(i3,i6.4,f6.1,f6.2,i6,1x,a1)
      sqt=sqt + (dtsave(i)-dtave)**2
      sqf=sqf + (nfsave(i)-fave)**2
   enddo
@@ -91,12 +91,12 @@ subroutine avg4(nutc,snrsync,dtxx,flip,nfreq,mode4,ntol,ndepth,neme,       &
      rmst=sqrt(sqt/(nsum-1))
      rmsf=sqrt(sqf/(nsum-1))
   endif
-  write(80,3002)
-3002 format(16x,'----- -----')
-  write(80,3003) dtave,nint(fave)
-  write(80,3003) rmst,nint(rmsf)
-3003 format(15x,f6.2,i6)
-  flush(80)
+!  write(80,3002)
+!3002 format(16x,'----- -----')
+!  write(80,3003) dtave,nint(fave)
+!  write(80,3003) rmst,nint(rmsf)
+!3003 format(15x,f6.2,i6)
+!  flush(80)
 
 !  nadd=nused*mode4
   kbest=ich1

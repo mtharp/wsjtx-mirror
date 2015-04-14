@@ -11,7 +11,6 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
   character*6 mygrid,hisgrid
 
   mode4=nch(nsubmode+1)
-  syncmin=2.7
   ntol=ntol0
   neme=0
   lumsg=6                         !### temp ? ###
@@ -33,7 +32,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
 1000 format(i4.4)
   cfile6(5:6)='  '
 
-  call wsjt4(dat,jz2,nutc,NClearAve,syncmin,ntol,emedelay,dttol,mode4,minw, &
+  call wsjt4(dat,jz2,nutc,NClearAve,ntol,emedelay,dttol,mode4,minw, &
        mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme)
 
   return

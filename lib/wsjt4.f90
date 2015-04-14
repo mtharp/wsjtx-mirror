@@ -1,4 +1,4 @@
-subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
+subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
      mode4,minw,mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme)
 
 ! Orchestrates the process of decoding JT4 messages, using data that 
@@ -29,6 +29,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      nagain=0                             !Ditto
   endif
 
+  syncmin=1.0
   naggressive=0
   if(ndepth.ge.2) naggressive=1
   nq1=3
@@ -47,23 +48,21 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   call sync4(dat,npts,ntol,emedelay,dttol,nfqso,mode4,minw,  &
-       dtx,dfx,snrx,snrsync,flip)
+       dtx,nfreq,snrx,sync,flip)
 
   csync=' '
   decoded=blank
   deepmsg=blank
   special='     '
-  nqual1=0
-  nqual2=0
-
-  nsync=snrsync
+  nsync=sync
   nsnr=nint(snrx)
   nsnrlim=-33
-  if(nsnr.lt.nsnrlim .or. nsync.lt.0) nsync=0
+
+!  write(91,3101) nutc,syncmin,sync,dtx,nfreq
+!3101 format(i4.4,3f8.2,i6)
 
 !  if(nsync.lt.syncmin .or. nsnr.lt.nsnrlim) then
-  if(snrsync.lt.syncmin .or. nsnr.lt.nsnrlim) then
-     nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
+  if(sync.lt.syncmin) then
      write(*,1010) nutc,nsnr,dtx,nfreq
      go to 900
   endif
@@ -73,10 +72,8 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
   if(flip.lt.0.0) csync='#'
 
 ! Attempt a single-sequence decode, including deep4 if Fano fails.
-  call decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,            &
+  call decode4(dat,npts,dtx,nfreq,flip,mode4,ndepth,neme,minw,            &
        mycall,hiscall,hisgrid,decoded,nfano,deepmsg,qual,ichbest)
-
-  nfreq=nint(dfx + 1270.46 - 1.5*mode4*11025.0/2520.0)
 
   if(nfano.gt.0) then
 ! Fano succeeded: display the message and return
@@ -95,7 +92,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      nfreq0=nfreq
      nsave=nsave+1
      nsave=mod(nsave-1,64)+1
-     call avg4(nutc,snrsync,dtx,flip,nfreq,mode4,ntol,ndepth,neme,      &
+     call avg4(nutc,sync,dtx,flip,nfreq,mode4,ntol,ndepth,neme,      &
          mycall,hiscall,hisgrid,nfanoave,avemsg,qave,deepave,ichbest,    &
          ndeepave)
   endif
@@ -122,7 +119,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,syncmin,ntol,emedelay,dttol,    &
      write(cqual,'(i2)') nint(qave)
      if(qave.ge.float(nq1)) write(*,1010) nutc,nsnr,dtx,nfreq,csync,   &
           deepave,cqual,char(ichar('A')+ichbest-1),ndeepave
-!     if(qave.lt.float(nq1)) write(*,1010) nutc,nsnr,dtx,nfreq,csync
 !  endif
   endif
 

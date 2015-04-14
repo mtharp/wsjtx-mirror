@@ -1,5 +1,5 @@
 subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
-     dtx,dfx,snrx,snrsync,flip)
+     dtx,nfreq,snrx,sync,flip)
 
 ! Synchronizes JT4 data, finding the best-fit DT and DF.  
 
@@ -7,7 +7,6 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   parameter (NFFTMAX=2520)         !Max length of FFTs
   parameter (NHMAX=NFFTMAX/2)      !Max length of power spectra
   parameter (NSMAX=525)            !Max number of half-symbol steps
-  integer ntol                     !Range of DF search
   real dat(jz)
   real psavg(NHMAX)                !Average spectrum of whole record
   real ps0(450)                    !Avg spectrum for plotting
@@ -16,6 +15,8 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   real ccfred(NHMAX)
   real redsave(NHMAX)
   real tmp(1260)
+  real zz(65,500,7)
+  real zz65(65)
   integer ipk1(1)
   logical savered
   equivalence (ipk1,ipk1a)
@@ -48,20 +49,18 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   enddo
 
 ! Set freq and lag ranges
-  famin=200.0 + 3*mode4*df
-  fbmax=2700.0 - 3*mode4*df
-  nfmid=nfqso + nint(1.5*mode4*4.375)
-  fa=max(famin,float(nfmid-ntol))
-  fb=min(fbmax,float(nfmid+ntol))
-  ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
-  ib=fb/df - 3*mode4                   !Index of lowest tone, top of range
-  i0=nint(1270.46/df)
-  irange=450
-  if(ia-i0.lt.-irange) ia=i0-irange
-  if(ib-i0.gt.irange)  ib=i0+irange
+!  famin=200.0 + 3*mode4*df
+!  fbmax=2700.0 - 3*mode4*df
+!  nfmid=nfqso + nint(1.5*mode4*4.375)
+!  fa=max(famin,float(nfmid-ntol))
+!  fb=min(fbmax,float(nfmid+ntol))
+!  ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
+!  ib=fb/df - 3*mode4                   !Index of lowest tone, top of range
 
-  thsym=1.0/(2.0*4.375)
+  ia=600.0/df
+  ib=1600.0/df
 
+!  thsym=1.0/(2.0*4.375)
 !  lag1=(0.8+emedelay-dttol)/thsym
 !  lag2=(0.8+emedelay+dttol)/thsym
 
@@ -71,23 +70,31 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   jmin=1000
   ichpk=1
   ipk=1
+  zz=0.
+  dt=2.0/11025.0
+  dtoffset=0.8
 
-  do ich=minw+1,7                       !Find best width
+!  ichmax=1.0+log(float(mode4))/log(2.0)
+  do ich=minw+1,7                     !Find best width
      kz=nch(ich)/2
      savered=.false.
-
+     k=0
 ! Set istep>1 for wide submodes?
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
-        call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,   &
-             lagpk0,flip)
+        call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk0,flip,zz65)
+        k=min(500,k+1)
+        zz(1:65,k,ich)=zz65
         ccfred(i)=ccf0
 
 ! Find rms of the CCF, without main peak
-        call slope(ccfblue(1),65,float(lagpk0))
+        call slope(ccfblue,65,float(lagpk0))
         sync=abs(ccfblue(lagpk0))
 
 ! Find best sync value
-        if(sync.gt.syncbest) then
+        nf=nint(i*df)
+        dtxx=lagpk0*nq*dt - dtoffset
+        if(abs(nf-nfqso).le.ntol .and. abs(dtxx-emedelay).le.dttol .and.  &
+             sync.gt.syncbest) then
            ipk=i
            lagpk=lagpk0
            ichpk=ich
@@ -99,19 +106,19 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   enddo
 
   ccfred=redsave
-  dfx=(ipk-i0 + 3*mode4)*df
+  nfreq=nint(ipk*df)
 
 ! Peak up once more in time, at best whole-channel frequency
-  call xcor4(s2,ipk,nsteps,nsym,ichpk,mode4,ccfblue,ccfmax,   &
-       lagpk,flip)
+  call xcor4(s2,ipk,nsteps,nsym,ichpk,mode4,ccfblue,ccfmax,lagpk,flip,zz65)
   xlag=lagpk
   if(lagpk.gt.1 .and. lagpk.lt.65) then
      call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
      xlag=lagpk+dx2
   endif
 
+  call slope(ccfblue,65,xlag)
+
 ! Find rms of the CCF, without the main peak
-  call slope(ccfblue(1),65-1+1,xlag-1+1.0)
   sq=0.
   nsq=0
   do lag=1,65
@@ -121,36 +128,41 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
      endif
   enddo
   rms=sqrt(sq/nsq)
-  snrsync=max(0.0,db(abs(ccfblue(lagpk)/rms - 1.0)) - 4.5)
-  snrx=-26.
-  if(mode4.eq.2)  snrx=-25.
-  if(mode4.eq.4)  snrx=-24.
-  if(mode4.eq.9)  snrx=-23.
-  if(mode4.eq.18) snrx=-22.
-  if(mode4.eq.36) snrx=-21.
-  if(mode4.eq.72) snrx=-20.
-  snrx=snrx + snrsync
+  sync=max(0.0,db(abs(ccfblue(lagpk)/rms - 1.0)) - 4.5)
 
-  dt=2.0/11025.0
-  dtx=xlag*nq*dt - 0.8
+  snr0=-26.
+  if(mode4.eq.2)  snr0=-25.
+  if(mode4.eq.4)  snr0=-24.
+  if(mode4.eq.9)  snr0=-23.
+  if(mode4.eq.18) snr0=-22.
+  if(mode4.eq.36) snr0=-21.
+  if(mode4.eq.72) snr0=-20.
+  snrx=snr0 + sync
+
+  dtx=xlag*nq*dt - dtoffset
 
 !###
-  rewind 71
-  rewind 72
-  df=0.5*11025.0/2520.0
-  do i=ia+kz,ib-kz
-     write(71,3001) i,i*df,ccfred(i)
-3001 format(i6,2f12.3)
-  enddo
-  do i=1,65
-     write(72,3001) i,i*(2520.0/2.0)/11025.0,ccfblue(i)
-  enddo
-  do i=1,450
-     write(73,3001) i,i*df,ps0(i)
-  enddo
-  flush(71)
-  flush(72)
-  flush(73)
+!  rewind 71
+!  rewind 72
+!  rewind 73
+!  rewind 74
+!  df=0.5*11025.0/2520.0
+!  do i=ia+kz,ib-kz
+!     write(71,3001) i,i*df,ccfred(i)
+!3001 format(i6,2f12.3)
+!  enddo
+!  dtlag=(2520.0/4.0)/(11025.0/2.0)
+!  do i=1,65
+!     write(72,3001) i,i*dtlag-dtoffset,ccfblue(i)
+!  enddo
+!  do i=1,450
+!     write(73,3001) i,i*df,ps0(i)
+!  enddo
+!  write(74) zz
+!  flush(71)
+!  flush(72)
+!  flush(73)
+!  flush(74)
 !###
 
   return

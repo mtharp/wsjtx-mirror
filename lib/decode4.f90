@@ -1,4 +1,4 @@
-subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
+subroutine decode4(dat,npts,dtx,nfreq,flip,mode4,ndepth,neme,minw,           &
      mycall,hiscall,hisgrid,decoded,nfano,deepbest,qbest,ichbest)
 
 ! Decodes JT4 data, assuming that DT and DF have already been determined.
@@ -14,21 +14,18 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
   real*8 dt,df,phi,f0,dphi,twopi,phi1,dphi1
   complex*16 cz,cz1,c0,c1
   real*4 sym(207)
-  integer amp
 
   twopi=8*atan(1.d0)
   dt=2.d0/11025             !Sample interval (2x downsampled data)
   df=11025.d0/2520.d0       !Tone separation for JT4A mode
   nsym=206
-  amp=15
+  amp=15.0
   istart=nint((dtx+0.8)/dt)              !Start index for synced FFTs
   if(istart.lt.0) istart=0
   nchips=0
   qbest=0.0
   deepmsg='                      '
   ichbest=-1
-
-! Should amp be adjusted according to signal strength?
   c0=0.
   k=istart
   phi=0.d0
@@ -48,11 +45,11 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      fac2=1.e-8 * sqrt(float(mode4))
      do j=1,nsym+1
         if(flip.gt.0.0) then
-           f0=1270.46 + dfx + (npr(j)-1.5)*mode4*df
-           f1=1270.46 + dfx + (2+npr(j)-1.5)*mode4*df
+           f0=nfreq + (npr(j))*mode4*df
+           f1=nfreq + (2+npr(j))*mode4*df
         else
-           f0=1270.46 + dfx + (1-npr(j)-1.5)*mode4*df
-           f1=1270.46 + dfx + (3-npr(j)-1.5)*mode4*df
+           f0=nfreq + (1-npr(j))*mode4*df
+           f1=nfreq + (3-npr(j))*mode4*df
         endif
         dphi=twopi*dt*f0
         dphi1=twopi*dt*f1
@@ -97,8 +94,6 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
      qual=0.                                    !Now try deep search
      if(ndepth.ge.1) then
         call deep4(sym(2),neme,flip,mycall,hiscall,hisgrid,deepmsg,qual)
-!        write(81,3101) nutc,sym(51:53),flip,ich,qual,deepmsg
-!3101    format(i4.4,4f8.1,i3,f7.2,2x,a22)
         if(qual.gt.qbest) then
            qbest=qual
            deepbest=deepmsg
@@ -106,6 +101,9 @@ subroutine decode4(dat,npts,dtx,dfx,flip,mode4,ndepth,neme,minw,           &
         endif
      endif
   enddo
+  if(qbest.gt.qtop) then
+     qtop=qbest
+  endif
   qual=qbest
 
   return

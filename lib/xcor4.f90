@@ -1,7 +1,6 @@
-subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,   &
-     lagpk,flip)
+subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip,zz65)
 
-! Computes ccf of the 4_FSK spectral array s2 and the pseudo-random 
+! Computes ccf of the 4-FSK spectral array s2 and the pseudo-random 
 ! array pr2.  Returns peak of CCF and the lag at which peak occurs.  
 ! The CCF peak may be either positive or negative, with negative
 ! implying the "OOO" message.
@@ -12,6 +11,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,   &
   real s2(NHMAX,NSMAX)             !2d spectrum, stepped by half-symbols
   real a(NSMAX)
   real ccfblue(65)
+  real zz65(65)
   data lagmin/0/                    !Silence compiler warning
   save
 
@@ -59,12 +59,12 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,   &
      endif
   enddo
 
+  zz65=ccfblue
   ccf0=ccfmax
   flip=1.0
   if(-ccfmin.gt.ccfmax) then
-     do lag=1,65
-        ccfblue(lag)=-ccfblue(lag)
-     enddo
+! Negative peak was best
+     ccfblue=-ccfblue
      lagpk=lagmin
      ccf0=-ccfmin
      flip=-1.0
