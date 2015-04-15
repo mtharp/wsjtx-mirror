@@ -3,7 +3,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip)
 ! Computes ccf of the 4-FSK spectral array s2 and the pseudo-random 
 ! array pr2.  Returns peak of CCF and the lag at which peak occurs.  
 ! The CCF peak may be either positive or negative, with negative
-! implying the "OOO" message.
+! implying a message with report.
 
   use jt4
   parameter (NHMAX=1260)           !Max length of power spectra
@@ -46,7 +46,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip)
         j=2*i-1+lag
         if(j.ge.1 .and. j.le.nsteps) x=x+a(j)*float(2*npr(i)-1)
      enddo
-     ccfblue(lag)=2*x                        !The 2 is for plotting scale
+     ccfblue(lag)=x
      if(ccfblue(lag).gt.ccfmax) then
         ccfmax=ccfblue(lag)
         lagpk=lag
@@ -58,7 +58,7 @@ subroutine xcor4(s2,ipk,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk,flip)
      endif
   enddo
 
-  zz(1:65,ipk,ich)=ccfblue
+  zz(ipk,1:65,ich)=ccfblue
   ccf0=ccfmax
   flip=1.0
   if(-ccfmin.gt.ccfmax) then

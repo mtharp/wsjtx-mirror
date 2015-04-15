@@ -31,44 +31,35 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   df=0.5*11025.0/nfft
   psavg(1:nh)=0.
 
+  call timer('ps4     ',0)
   do j=1,nsteps                 !Compute spectrum for each step, get average
      k=(j-1)*nq + 1
      call ps4(dat(k),nfft,s2(1,j))
      psavg(1:nh)=psavg(1:nh) + s2(1:nh,j)
   enddo
+  call timer('ps4     ',1)
 
+  call timer('flat1a  ',0)
   nsmo=min(10*mode4,150)
   call flat1a(psavg,nsmo,s2,nh,nsteps,NHMAX,NSMAX)        !Flatten spectra
+  call timer('flat1a  ',1)
 
+  call timer('smo     ',0)
   if(mode4.ge.9) call smo(psavg,nh,tmp,mode4/4)
   i0=132
   do i=1,450
      ps0(i)=5.0*(psavg(i0+2*i) + psavg(i0+2*i+1) - 2.0)
   enddo
-
-! Set freq and lag ranges
-!  famin=200.0 + 3*mode4*df
-!  fbmax=2700.0 - 3*mode4*df
-!  nfmid=nfqso + nint(1.5*mode4*4.375)
-!  fa=max(famin,float(nfmid-ntol))
-!  fb=min(fbmax,float(nfmid+ntol))
-!  ia=fa/df - 3*mode4                   !Index of lowest tone, bottom of range
-!  ib=fb/df - 3*mode4                   !Index of lowest tone, top of range
+  call timer('smo     ',1)
 
   ia=600.0/df
   ib=1600.0/df
-
-!  thsym=1.0/(2.0*4.375)
-!  lag1=(0.8+emedelay-dttol)/thsym
-!  lag2=(0.8+emedelay+dttol)/thsym
-
   syncbest=-1.e30
   ccfred=0.
   jmax=-1000
   jmin=1000
   ichpk=1
   ipk=1
-  zz=0.
   dt=2.0/11025.0
   dtoffset=0.8
 
@@ -78,11 +69,15 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
      savered=.false.
 ! Set istep>1 for wide submodes?
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
+        call timer('xcor4   ',0)
         call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk0,flip)
+        call timer('xcor4   ',1)
         ccfred(i)=ccf0
 
 ! Find rms of the CCF, without main peak
+        call timer('slope   ',0)
         call slope(ccfblue,65,float(lagpk0))
+        call timer('slope   ',1)
         sync=abs(ccfblue(lagpk0))
 
 ! Find best sync value
@@ -133,32 +128,7 @@ subroutine sync4(dat,jz,ntol,emedelay,dttol,nfqso,mode4,minw,    &
   if(mode4.eq.36) snr0=-21.
   if(mode4.eq.72) snr0=-20.
   snrx=snr0 + sync
-
   dtx=xlag*nq*dt - dtoffset
-
-!###
-!  rewind 71
-!  rewind 72
-!  rewind 73
-!  rewind 74
-!  df=0.5*11025.0/2520.0
-!  do i=ia+kz,ib-kz
-!     write(71,3001) i,i*df,ccfred(i)
-!3001 format(i6,2f12.3)
-!  enddo
-!  dtlag=(2520.0/4.0)/(11025.0/2.0)
-!  do i=1,65
-!     write(72,3001) i,i*dtlag-dtoffset,ccfblue(i)
-!  enddo
-!  do i=1,450
-!     write(73,3001) i,i*df,ps0(i)
-!  enddo
-  write(74) ia,ib,zz
-!  flush(71)
-!  flush(72)
-!  flush(73)
-  flush(74)
-!###
 
   return
 end subroutine sync4

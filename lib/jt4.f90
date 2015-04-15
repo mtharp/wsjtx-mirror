@@ -8,7 +8,7 @@ module jt4
   real    dtsave(MAXAVE)
   real    syncsave(MAXAVE)
   real    flipsave(MAXAVE)
-  real    zz(65,1260,7)
+  real    zz(1260,65,7)
 
   integer nsave,nlist,ich1,ich2
   integer nch(7)
