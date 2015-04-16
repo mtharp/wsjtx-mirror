@@ -57,7 +57,8 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
   call timer('zplt    ',0)
   do ich=4,6
      z(1:458,1:65)=zz(274:731,1:65,ich)
-     call zplt(z,ich-4,syncz,dtxz,nfreqz,flipz,sync2z,0)
+     call zplt(z,ich-4,syncz,dtxz,nfreqz,flipz,sync2z,0,emedelay,dttol,   &
+          nfqso,ntol)
      if(ich.eq.5) then
         dtxzz=dtxz
         nfreqzz=nfreqz
@@ -69,7 +70,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
   sync=syncz
   flip=flipz
   if(sync.lt.syncmin) then
-     write(*,1010) nutc,nsnr,dtx,nfreq
+     write(*,1010) nutc,nsnr,dtxz,nfreqz
      go to 990
   endif
 
@@ -159,7 +160,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
      write(*,1010) nutc,nsnr,dtx,nfreq,csync,         &
           deepmsg,cqual,char(ichar('A')+ich-1)
   else
-     write(*,1010) nutc,nsnr,dtx,nfreq,csync
+     write(*,1010) nutc,nsnr,dtxz,nfreqz,csync
   endif
 
   dtx=dtx1

@@ -1,35 +1,52 @@
-subroutine zplt(z,iplt,sync,dtx,nfreq,flip,sync2,nplot)
+subroutine zplt(z,iplt,sync,dtx,nfreq,flip,sync2,nplot,emedelay,dttol,   &
+  nfqso,ntol)
+
   real z(458,65)
+  real zz(458,65)
   integer ij(2)
   character*4 lab
 
   call pctile(z,458*65,84,rms)
   fac=0.05/rms
   z=fac*z
+  dtq=0.114286
+  df=11025.0/(2.0*2520.0)
 
-  zmin=minval(z)
-  zmax=maxval(z)
+  ia=nint((nfqso-ntol)/df) - 273
+  if(ia.lt.1) ia=1
+  ib=nint((nfqso+ntol)/df) - 273
+  if(ib.gt.458) ib=458
+  ja=(emedelay+0.8-dttol)/dtq
+  if(ja.lt.1) ja=1
+  jb=(emedelay+0.8+dttol)/dtq
+  if(jb.gt.65) jb=65
+
+  zz=0.
+  zz(ia:ib,ja:jb)=z(ia:ib,ja:jb)
+
+  zmin=minval(zz)
+  zmax=maxval(zz)
   flip=1.0
   if(abs(zmin).gt.abs(zmax)) flip=-1.0
 
-  ij=maxloc(z)
-  if(flip.lt.0.0) ij=minloc(z)
+  ij=maxloc(zz)
+  if(flip.lt.0.0) ij=minloc(zz)
   i0=ij(1)
   j0=ij(2)
-
-  zmax=max(abs(zmin),abs(zmax),1.0)
-  zmin=-zmax
-
-  dtq=0.114286
-  df=11025.0/(2.0*2520.0)
   nfreq=nint((i0+273)*df)
   dtx=j0*dtq-0.8
+!  write(69,3101) ia,ib,ja,jb,ij,dtx,nfreq
+!3101 format(6i5,f8.2,i6)
+
   ia=max(1,i0-72)
   ib=min(458,i0+72)
   sync=16.33*flip*(z(i0,j0) - 0.5*(z(ia,j0)+z(ib,j0)))
   sync2=20.0*flip*z(i0,j0)
 
   if(nplot.eq.0) go to 900
+
+  zmax=max(abs(zmin),abs(zmax),1.0)
+  zmin=-zmax
 
   do j=1,65
      write(61,1100) j*dtq-0.8,z(i0,j)
