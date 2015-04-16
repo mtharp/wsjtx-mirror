@@ -148,6 +148,7 @@ private:
   qint32  m_fMax;
   qint32  m_startFreq;
   qint32  m_tol;
+  qint32  m_y2[2048];
 
   char    m_sutc[6];
 

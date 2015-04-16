@@ -119,8 +119,10 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   int jz=iz*m_binsPerPixel;
   m_fMax=FreqfromX(iz);
 
-  flat4_(swide,&iz,&m_Flatten);
-  flat4_(&jt9com_.savg[j0],&jz,&m_Flatten);
+  if(bScroll) {
+    flat4_(swide,&iz,&m_Flatten);
+    flat4_(&jt9com_.savg[j0],&jz,&m_Flatten);
+  }
 
   float ymin=1.e30;
   for(int i=0; i<iz; i++) {
@@ -143,13 +145,18 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;            //Current
 
     if(m_bCumulative) {                                     //Cumulative
-      float sum=0.0;
-      int j=j0+m_binsPerPixel*i;
-      for(int k=0; k<m_binsPerPixel; k++) {
-        sum+=jt9com_.savg[j++];
+      if(bScroll) {
+        float sum=0.0;
+        int j=j0+m_binsPerPixel*i;
+        for(int k=0; k<m_binsPerPixel; k++) {
+          sum+=jt9com_.savg[j++];
+        }
+        y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero;
+        if(m_Flatten==0) y2 += 40;                      //### could do better! ###
+        m_y2[i]=y2;
+      } else {
+        y2=m_y2[i];
       }
-      y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero;
-      if(m_Flatten==0) y2 += 40;                      //### could do better! ###
     }
 
     if(m_bLinearAvg) {                                      //Linear Avg
