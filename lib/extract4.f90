@@ -21,7 +21,7 @@ subroutine extract4(sym0,ncount,decoded)
 
 !### Optimize these params: ...
   amp=30.0
-  limit=50000
+  limit=10000
 
   ave0=sum(sym0)/207.0
   sym=sym0-ave0

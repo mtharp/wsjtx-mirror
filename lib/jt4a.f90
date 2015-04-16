@@ -19,7 +19,9 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
   listutc=listutc0
 
 ! Lowpass filter and decimate by 2
+  call timer('lpf1    ',0)
   call lpf1(dd,jz,dat,jz2)
+  call timer('lpf1    ',1)
 
   i=index(MyCall,char(0))
   if(i.le.0) i=index(MyCall,' ')
@@ -32,8 +34,10 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
 1000 format(i4.4)
   cfile6(5:6)='  '
 
+  call timer('wsjt4   ',0)
   call wsjt4(dat,jz2,nutc,NClearAve,ntol,emedelay,dttol,mode4,minw, &
        mycall,hiscall,hisgrid,nfqso,NAgain,ndepth,neme)
+  call timer('wsjt4   ',1)
 
   return
 end subroutine jt4a

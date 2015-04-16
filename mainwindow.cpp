@@ -1413,7 +1413,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
   while(proc_jt9.canReadLine()) {
     QByteArray t=proc_jt9.readLine();
     bool baveJT4msg=(t.length()>48);
-    if(m_mode=="JT4") t=t.mid(0,39) + t.mid(43,t.length()-43);
+    if(m_mode=="JT4") t=t.mid(0,39) + t.mid(42,t.length()-42);
     if(t.indexOf("<DecodeFinished>") >= 0) {
       m_bdecoded = (t.mid(23,1).toInt()==1);
       bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);

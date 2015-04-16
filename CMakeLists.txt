@@ -303,6 +303,7 @@ set (wsjt_FSRCS
   lib/graycode.f90
   lib/graycode65.f90
   lib/grid2deg.f90
+  lib/image.f90
   lib/indexx.f90
   lib/interleave4.f90
   lib/interleave63.f90
@@ -348,6 +349,7 @@ set (wsjt_FSRCS
   lib/wavhdr.f90
   lib/wsjt4.f90
   lib/xcor4.f90
+  lib/zplt.f90
   lib/zplot9.f90
   )
 
