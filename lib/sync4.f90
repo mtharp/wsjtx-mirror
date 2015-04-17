@@ -50,7 +50,7 @@ subroutine sync4(dat,jz,mode4,minw)
 ! Set istep>1 for wide submodes?
      do i=ia+kz,ib-kz                     !Find best frequency channel for CCF
         call timer('xcor4   ',0)
-        call xcor4(s2,i,nsteps,nsym,ich,mode4,ccfblue,ccf0,lagpk0,flip)
+        call xcor4(s2,i,nsteps,nsym,ich,mode4)
         call timer('xcor4   ',1)
      enddo
   enddo
