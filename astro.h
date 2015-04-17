@@ -24,7 +24,7 @@ public:
   ~Astro ();
 
   void astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
-                   int fQSO, int nsetftx, int ntxFreq);
+                   int fQSO, int nsetftx, int ntxFreq, qint64 freqMoon);
 
   Q_SLOT void on_font_push_button_clicked (bool);
 
@@ -40,7 +40,7 @@ private:
 };
 
 extern "C" {
-  void astrosub_(int* nyear, int* month, int* nday, double* uth, int* nfreq,
+  void astrosub_(int* nyear, int* month, int* nday, double* uth, double* freqMoon,
                  const char* mygrid, const char* hisgrid, double* azsun,
                  double* elsun, double* azmoon, double* elmoon, double* azmoondx,
                  double* elmoondx, int* ntsky, int* ndop, int* ndop00,

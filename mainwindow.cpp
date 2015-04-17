@@ -1797,7 +1797,7 @@ void MainWindow::guiUpdate()
     QDateTime t = QDateTime::currentDateTimeUtc();
     int fQSO=125;
     if(m_astroWidget) m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid, fQSO,
-                                                 m_setftx, ui->TxFreqSpinBox->value ());
+         m_setftx, ui->TxFreqSpinBox->value(), (qint64)m_dialFreq);
 
     if(m_transmitting) {
       char s[37];

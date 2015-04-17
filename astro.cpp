@@ -88,7 +88,7 @@ void Astro::on_font_push_button_clicked (bool /* checked */)
 }
 
 void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
-                        int fQSO, int nsetftx, int ntxFreq)
+                        int fQSO, int nsetftx, int ntxFreq, qint64 freqMoon)
 {
   static int ntxFreq0=-99;
   double azsun,elsun,azmoon,elmoon,azmoondx,elmoondx;
@@ -104,11 +104,11 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
   double sec=t.time().second() + 0.001*t.time().msec();
   int isec=sec;
   double uth=nhr + nmin/60.0 + sec/3600.0;
-  //  int nfreq=(int)datcom_.fcenter;
-  int nfreq=10368;
-  if(nfreq<10 or nfreq > 50000) nfreq=144;
+  if(freqMoon < 1) freqMoon=144000000;
+  int nfreq=freqMoon/1000000;
+  double freq8=(double)freqMoon;
 
-  astrosub_(&nyear, &month, &nday, &uth, &nfreq, mygrid.toLatin1(),
+  astrosub_(&nyear, &month, &nday, &uth, &freq8, mygrid.toLatin1(),
             hisgrid.toLatin1(), &azsun, &elsun, &azmoon, &elmoon,
             &azmoondx, &elmoondx, &ntsky, &ndop, &ndop00,&ramoon, &decmoon,
             &dgrd, &poloffset, &xnr, &techo, 6, 6);
