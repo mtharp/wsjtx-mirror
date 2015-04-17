@@ -2387,8 +2387,8 @@ void MainWindow::on_addButton_clicked()                       //Add button
     QFile f0 {m_dataDir.absoluteFilePath ("CALL3.OLD")};
     if(f0.exists()) f0.remove();
     QFile f1 {m_dataDir.absoluteFilePath ("CALL3.TXT")};
-    f1.rename(m_dataDir.absoluteFilePath ("CALL3.OLD"));
-    f2.rename(m_dataDir.absoluteFilePath ("CALL3.TXT"));
+    bool b1=f1.rename(m_dataDir.absoluteFilePath ("CALL3.OLD"));
+    bool b2=f2.rename(m_dataDir.absoluteFilePath ("CALL3.TXT"));
     f2.close();
   }
 }

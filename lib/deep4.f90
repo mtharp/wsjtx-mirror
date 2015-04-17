@@ -2,6 +2,7 @@ subroutine deep4(sym0,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
 
 ! Deep search routine for JT4
 
+  use prog_args
   parameter (MAXCALLS=7000,MAXRPT=63)
   real*4 sym0(206),sym(206)
   character callsign*12,grid*4,message*22,hisgrid*6,ceme*3
@@ -35,7 +36,7 @@ subroutine deep4(sym0,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   if(mycall.eq.mycall0 .and. hiscall.eq.hiscall0 .and.         &
        hisgrid.eq.hisgrid0 .and. neme.eq.neme0) go to 30
 
-  rewind 23
+  open(23,file=trim(data_dir)//'/CALL3.TXT',status='unknown')
   k=0
   icall=0
   do n=1,MAXCALLS
@@ -103,6 +104,7 @@ subroutine deep4(sym0,neme,flip,mycall,hiscall,hisgrid,decoded,qual)
   enddo
 
 20 continue
+  close(23)
   ntot=k
 
 30 mycall0=mycall
