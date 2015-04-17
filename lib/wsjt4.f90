@@ -66,8 +66,10 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
   call timer('zplt    ',1)
 
 ! Use results from zplt
-  sync=syncz
   flip=flipz
+  sync=syncz
+  snrx=db(sync) - 26.
+  nsnr=nint(snrx)
   if(sync.lt.syncmin) then
      write(*,1010) nutc,nsnr,dtxz,nfreqz
      go to 990
@@ -78,7 +80,6 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
   deepmsg=blank
   special='     '
   nsync=sync
-  nsnr=nint(snrx)
   nsnrlim=-33
   csync='*'
   if(flip.lt.0.0) csync='#'
