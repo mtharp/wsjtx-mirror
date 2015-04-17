@@ -50,8 +50,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,ntol,emedelay,dttol,    &
 
 ! Attempt to synchronize: look for sync pattern, get DF and DT.
   call timer('sync4   ',0)
-  call sync4(dat,npts,ntol,emedelay,dttol,nfqso,mode4,minw,  &
-       dtx,nfreq,snrx,sync,flip)
+  call sync4(dat,npts,mode4,minw)
   call timer('sync4   ',1)
 
   call timer('zplt    ',0)
