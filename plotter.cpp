@@ -322,16 +322,23 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==5) bw=36*bw;
     if(m_nSubMode==6) bw=72*bw;
 
-    x2=XfromFreq(m_rxFreq+bw/3.0);          //In JT4, mark all four tones
-    painter0.drawLine(x2,24,x2,30);
-    x2=XfromFreq(m_rxFreq+bw*2.0/3.0);
-    painter0.drawLine(x2,24,x2,30);
-
-    QPen pen0(Qt::green, 4);                 //Mark Tol range with fat green line
+    QPen pen0(Qt::green, 3);                 //Mark Tol range with green line
     painter0.setPen(pen0);
     x1=XfromFreq(m_rxFreq-m_tol);
     x2=XfromFreq(m_rxFreq+m_tol);
-    painter0.drawLine(x1,28,x2,28);
+    painter0.drawLine(x1,29,x2,29);
+    for(int i=0; i<4; i++) {
+      x1=XfromFreq(m_rxFreq+bw*i/3.0);
+      int j=24;
+      if(i==0) j=18;
+      painter0.drawLine(x1,j,x1,30);
+    }
+    QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
+    painter0.setPen(pen1);
+    for(int i=0; i<4; i++) {
+      x1=XfromFreq(m_txFreq+bw*i/3.0);
+      painter0.drawLine(x1,12,x1,18);
+    }
   }
 
   if(m_modeTx=="JT65") {                     //JT65
@@ -340,13 +347,23 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==2) bw=4*bw;
   }
 
-  QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
-  painter0.setPen(pen0);
-  x1=XfromFreq(m_rxFreq);
-  x2=XfromFreq(m_rxFreq+bw);
-  painter0.drawLine(x1,24,x1,30);
-  painter0.drawLine(x1,28,x2,28);
-  painter0.drawLine(x2,24,x2,30);
+  if(m_mode != "JT4") {
+    QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
+    painter0.setPen(pen0);
+    x1=XfromFreq(m_rxFreq);
+    x2=XfromFreq(m_rxFreq+bw);
+    painter0.drawLine(x1,24,x1,30);
+    painter0.drawLine(x1,28,x2,28);
+    painter0.drawLine(x2,24,x2,30);
+
+    QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
+    painter0.setPen(pen1);
+    x1=XfromFreq(m_txFreq);
+    x2=XfromFreq(m_txFreq+bw);
+    painter0.drawLine(x1,17,x1,21);
+    painter0.drawLine(x1,17,x2,17);
+    painter0.drawLine(x2,17,x2,21);
+  }
 
   if(m_mode=="JT9+JT65") {
     QPen pen2(Qt::blue, 3);                //Mark the JT65 | JT9 divider
@@ -356,14 +373,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     x2=x1+30;
     painter0.drawLine(x1,8,x1,28);
   }
-
-  QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
-  painter0.setPen(pen1);
-  x1=XfromFreq(m_txFreq);
-  x2=XfromFreq(m_txFreq+bw);
-  painter0.drawLine(x1,17,x1,21);
-  painter0.drawLine(x1,17,x2,17);
-  painter0.drawLine(x2,17,x2,21);
 
   if(m_dialFreq>10.13 and m_dialFreq< 10.15) {
     float f1=1.0e6*(10.1401 - m_dialFreq);

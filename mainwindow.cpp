@@ -2613,6 +2613,11 @@ void MainWindow::on_actionJT9W_1_triggered()
 
 void MainWindow::on_actionJT65_triggered()
 {
+  if(m_mode=="JT4") {
+// If coming from JT4 mode, pretend we're coming from JT9 and click the pbTxMode button
+    m_modeTx="JT9";
+    on_pbTxMode_clicked();
+  }
   m_mode="JT65";
   if(m_modeTx!="JT65") on_pbTxMode_clicked();
   statusChanged();
@@ -3039,7 +3044,6 @@ void MainWindow::on_readFreq_clicked()
 
 void MainWindow::on_pbTxMode_clicked()
 {
-  if(m_mode=="JT4") return;
   if(m_modeTx=="JT9") {
     m_modeTx="JT65";
     ui->pbTxMode->setText("Tx JT65  #");
