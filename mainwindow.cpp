@@ -2,7 +2,6 @@
 
 #include "mainwindow.h"
 #include <cinttypes>
-#include <cstdlib>
 
 #include <QThread>
 #include <QLineEdit>
@@ -977,13 +976,15 @@ void MainWindow::displayDialFrequency ()
   // search working frequencies for one we are within 10kHz of
   auto frequencies = m_config.frequencies ();
   bool valid {false};
+
   for (int row = 0; row < frequencies->rowCount (); ++row) {
-    auto working_frequency = frequencies->data (frequencies->index (row, 0)).value<Frequency> ();
-    auto offset = m_dialFreq > working_frequency ? m_dialFreq - working_frequency : working_frequency - m_dialFreq;
-    if (offset < 10000u) {
-      valid = true;
+      // we need to do specific checks for above and below here to
+      // ensure that we can use unsigned Radio::Frequency since we
+      // potentially use the full 64-bit unsigned range.
+      auto working_frequency = frequencies->data (frequencies->index (row, 0)).value<Frequency> ();
+      auto offset = m_dialFreq > working_frequency ? m_dialFreq - working_frequency : working_frequency - m_dialFreq;
+      if (offset < 10000u) valid = true;
     }
-  }
 
   ui->labDialFreq->setProperty ("oob", !valid);
   // the following sequence is necessary to update the style
@@ -1448,15 +1449,12 @@ void MainWindow::readFromStdout()                             //readFromStdout
         QString band;
         if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50) {
           auto const& bands_model = m_config.bands ();
-          band = ' ' + bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
+          band = ' ' + bands_model->data (bands_model->find (m_dialFreq +
+                                    ui->TxFreqSpinBox->value ())).toString ();
         }
         ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
         m_blankLine = false;
       }
-//          band = band.rightJustified(40, '-');
-//          ui->decodedTextBrowser->insertLineSpacer(band);
-//          m_blankLine=false;
-//        }
 
       DecodedText decodedtext;
       decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);
@@ -2387,8 +2385,8 @@ void MainWindow::on_addButton_clicked()                       //Add button
     QFile f0 {m_dataDir.absoluteFilePath ("CALL3.OLD")};
     if(f0.exists()) f0.remove();
     QFile f1 {m_dataDir.absoluteFilePath ("CALL3.TXT")};
-    bool b1=f1.rename(m_dataDir.absoluteFilePath ("CALL3.OLD"));
-    bool b2=f2.rename(m_dataDir.absoluteFilePath ("CALL3.TXT"));
+    f1.rename(m_dataDir.absoluteFilePath ("CALL3.OLD"));
+    f2.rename(m_dataDir.absoluteFilePath ("CALL3.TXT"));
     f2.close();
   }
 }
