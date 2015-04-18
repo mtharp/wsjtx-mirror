@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QtConcurrent/QtConcurrentRun>
 #include <QProgressDialog>
+#include <QHostInfo>
 
 #include "revision_utils.hpp"
 #include "soundout.h"
@@ -31,6 +32,7 @@
 #include "StationList.hpp"
 #include "LiveFrequencyValidator.hpp"
 #include "FrequencyItemDelegate.hpp"
+#include "MessageClient.hpp"
 
 #include "ui_mainwindow.h"
 #include "moc_mainwindow.cpp"
@@ -90,7 +92,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_diskData {false},
   m_appDir {QApplication::applicationDirPath ()},
   mem_jt9 {shdmem},
-  psk_Reporter (new PSK_Reporter (this)),
   m_msAudioOutputBuffered (0u),
   m_framesAudioInputBuffered (RX_SAMPLE_RATE / 10),
   m_downSampleFactor (downSampleFactor),
@@ -105,7 +106,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_firstDecode {0},
   m_optimizingProgress {"Optimizing decoder FFTs for your CPU.\n"
       "Please be patient,\n"
-      "this may take a few minutes", QString {}, 0, 1, this}
+      "this may take a few minutes", QString {}, 0, 1, this},
+  m_messageClient {new MessageClient {QApplication::applicationName (), m_config.udp_server_name (), m_config.udp_server_port (), this}},
+  psk_Reporter {new PSK_Reporter {m_messageClient, this}}
 {
   ui->setupUi(this);
 
@@ -175,7 +178,12 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect (this, &MainWindow::finished, m_logDlg.data (), &LogQSO::close);
 
 
-  on_EraseButton_clicked();
+  // Network message handlers
+  connect (m_messageClient, &MessageClient::reply, this, &MainWindow::replyToCQ);
+  connect (m_messageClient, &MessageClient::replay, this, &MainWindow::replayDecodes);
+  connect (m_messageClient, &MessageClient::error, this, &MainWindow::networkError);
+
+  on_EraseButton_clicked ();
 
   QActionGroup* modeGroup = new QActionGroup(this);
   ui->actionJT9_1->setActionGroup(modeGroup);
@@ -253,6 +261,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   // hook up configuration signals
   connect (&m_config, &Configuration::transceiver_update, this, &MainWindow::handle_transceiver_update);
   connect (&m_config, &Configuration::transceiver_failure, this, &MainWindow::handle_transceiver_failure);
+  connect (&m_config, &Configuration::udp_server_changed, m_messageClient, &MessageClient::set_server);
+  connect (&m_config, &Configuration::udp_server_port_changed, m_messageClient, &MessageClient::set_server_port);
 
   // set up message text validators
   ui->tx1->setValidator (new QRegExpValidator {message_alphabet, this});
@@ -693,6 +703,7 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
   ui->readFreq->setStyleSheet("");
   ui->readFreq->setEnabled(false);
 
+  // things that might change that we need know about
   auto callsign = m_config.my_callsign ();
 
   if (QDialog::Accepted == m_config.exec ())
@@ -997,6 +1008,8 @@ void MainWindow::displayDialFrequency ()
 
 void MainWindow::statusChanged()
 {
+  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall, QString::number (ui->rptSpinBox->value ()), m_modeTx);
+
   QFile f {m_config.temp_dir ().absoluteFilePath ("wsjtx_status.txt")};
   if(f.open(QFile::WriteOnly | QIODevice::Text)) {
     QTextStream out(&f);
@@ -1491,6 +1504,8 @@ void MainWindow::readFromStdout()                             //readFromStdout
         m_QSOText=decodedtext;
       }
 
+        postDecode (true, decodedtext.string ());
+
         // find and extract any report for myCall
       bool stdMsg = decodedtext.report(my_base_call
                                        , baseCall (ui->dxCallEntry-> text ().toUpper ().trimmed ())
@@ -1546,6 +1561,7 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
   m_QSOText.clear();
   if((ms-m_msErase)<500) {
     ui->decodedTextBrowser->clear();
+    m_messageClient->clear_decodes ();
     QFile f(m_config.temp_dir ().absoluteFilePath ("decoded.txt"));
     if(f.exists()) f.remove();
   }
@@ -1971,11 +1987,22 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   }
 //  if(t.indexOf("\n")==0) t=t.mid(1,-1);
   cursor.select(QTextCursor::LineUnderCursor);
-  int i2=cursor.position();
-  QString t1 = t.mid(0,i2);              //contents up to \n on selected line
+  int position {cursor.position()};
+  if(shift && position==-9999) return;        //Silence compiler warning
+
+  QString messages;
+  if(!m_decodedText2) messages= ui->decodedTextBrowser2->toPlainText();
+  //Full contents
+  if(m_decodedText2) messages= ui->decodedTextBrowser->toPlainText();
+  processMessage(messages, position, ctrl);
+}
+
+void MainWindow::processMessage(QString const& messages, int position, bool ctrl)
+{
+  QString t1 = messages.mid(0,position);              //contents up to \n on selected line
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
-  decodedtext = t1.mid(i1,i2-i1);         //selected line
+  decodedtext = messages.mid(i1,position-i1);         //selected line
 
   if (decodedtext.indexOf(" CQ ") > 0)
     {
@@ -1987,7 +2014,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
       decodedtext = decodedtext.left(s3);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
     }
 
-
+  /*
   //  if(decodedtext.indexOf("Tx")==6) return;        //Ignore Tx line
   int i4=t.mid(i1).length();
   if(i4>55) i4=55;
@@ -1996,16 +2023,24 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   if(i5>0) t3=t3.mid(0,i5+3) + "_" + t3.mid(i5+4);  //Make it "CQ_DX" (one word)
   QStringList t4=t3.split(" ",QString::SkipEmptyParts);
   if(t4.length() <5) return;             //Skip the rest if no decoded text
+*/
+  auto t3 = decodedtext.string ();
+  auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
+  if(t4.size () <5) return;             //Skip the rest if no decoded text
+
 
   QString hiscall;
   QString hisgrid;
   decodedtext.deCallAndGrid(/*out*/hiscall,hisgrid);
+  /*
   // basic valid call sign check i.e. contains at least one digit and
   // one letter next to each other
   if (!hiscall.contains (QRegularExpression {R"(\d[[:upper:]]|[[:upper:]]\d)"}))
     {
       return;
     }
+    */
+  if (!Radio::is_callsign (hiscall)) return;
 
   // only allow automatic mode changes between JT9 and JT65, and when not transmitting
   if (!m_transmitting and m_mode != "JT4") {
@@ -2528,7 +2563,7 @@ void MainWindow::on_logQSOButton_clicked()                 //Log QSO button
                         , m_rptSent
                         , m_rptRcvd
                         , m_dateTimeQSO
-                        , (m_dialFreq + ui->TxFreqSpinBox->value ()) / 1.e6
+                        , m_dialFreq + ui->TxFreqSpinBox->value ()
                         , m_config.my_callsign ()
                         , m_config.my_grid ()
                         , m_noSuffix
@@ -2537,27 +2572,28 @@ void MainWindow::on_logQSOButton_clicked()                 //Log QSO button
                         );
 }
 
-void MainWindow::acceptQSO2(bool accepted)
+void MainWindow::acceptQSO2(QDateTime const& QSO_date, QString const& call, QString const& grid
+                            , Frequency dial_freq, QString const& mode
+                            , QString const& rpt_sent, QString const& rpt_received
+                            , QString const& tx_power, QString const& comments
+                            , QString const& name)
 {
-  if(accepted)
-    {
-      auto const& bands_model = m_config.bands ();
-      auto band = bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
-      QString date = m_dateTimeQSO.toString("yyyy-MM-dd");
-      date=date.mid(0,4) + date.mid(5,2) + date.mid(8,2);
-      m_logBook.addAsWorked(m_hisCall,band,m_modeTx,date);
+  QString band = ADIF::bandFromFrequency ((m_dialFreq + ui->TxFreqSpinBox->value ()) / 1.e6);
+  QString date = m_dateTimeQSO.toString("yyyyMMdd");
+  m_logBook.addAsWorked(m_hisCall,band,m_modeTx,date);
 
-      if (m_config.clear_DX ())
-        {
-          m_hisCall="";
-          ui->dxCallEntry->setText("");
-          m_hisGrid="";
-          ui->dxGridEntry->setText("");
-          m_rptSent="";
-          m_rptRcvd="";
-          m_qsoStart="";
-          m_qsoStop="";
-        }
+  m_messageClient->qso_logged (QSO_date, call, grid, dial_freq, mode, rpt_sent, rpt_received, tx_power, comments, name);
+
+  if (m_config.clear_DX ())
+    {
+      m_hisCall="";
+      ui->dxCallEntry->setText("");
+      m_hisGrid="";
+      ui->dxGridEntry->setText("");
+      m_rptSent="";
+      m_rptRcvd="";
+      m_qsoStart="";
+      m_qsoStop="";
     }
 }
 
@@ -3457,4 +3493,97 @@ void MainWindow::on_cbTx6_toggled(bool b)
     t="@1000  (TUNE)";
   }
   ui->tx6->setText(t);
+}
+
+// Takes a decoded CQ line and sets it up for reply
+void MainWindow::replyToCQ (QTime time, qint32 snr, float delta_time, quint32 delta_frequency, QString const& mode, QString const& message_text)
+{
+  if (!m_config.accept_udp_requests ())
+    {
+      return;
+    }
+
+  auto decode_parts = message_text.split (' ', QString::SkipEmptyParts);
+
+  if (decode_parts.contains ("CQ") || decode_parts.contains ("QRZ"))
+    {
+      // a message we are willing to accept
+      auto cqtext = QString {"%1 %2 %3 %4 %5 %6"}.arg (time.toString ("hhmm"))
+                                                    .arg (snr, 3)
+                                                    .arg (delta_time, 4, 'f', 1)
+                                                    .arg (delta_frequency, 4)
+                                                    .arg (mode)
+                                                    .arg (message_text);
+      auto messages = ui->decodedTextBrowser->toPlainText ();
+      auto position = messages.lastIndexOf (cqtext);
+      if (position >= 0)
+        {
+          if (m_config.udpWindowToFront ())
+            {
+              show ();
+              raise ();
+              activateWindow ();
+            }
+          if (m_config.udpWindowRestore () && isMinimized ())
+            {
+              showNormal ();
+              raise ();
+            }
+          // find the linefeed at the end of the line
+          position = ui->decodedTextBrowser->toPlainText().indexOf("\n",position);
+          processMessage (messages, position, false);
+        }
+      else
+        {
+          qDebug () << "reply to CQ request ignored, decode not found:" << cqtext;
+        }
+    }
+  else
+    {
+      qDebug () << "rejecting UDP request to reply as decode is not a CQ or QRZ";
+    }
+}
+
+void MainWindow::replayDecodes ()
+{
+  // we accept this request even if the setting to accept UDP requests
+  // is not checked
+  Q_FOREACH (auto const& message, ui->decodedTextBrowser->toPlainText ().split ('\n', QString::SkipEmptyParts))
+    {
+      if (message.size() >= 4 && message.left (4) != "----")
+        {
+          auto eom_pos = message.indexOf (' ', 35);
+          // we always want at least the characters to position 35
+          if (eom_pos < 35)
+            {
+              eom_pos = message.size () - 1;
+            }
+          postDecode (false, message.left (eom_pos + 1));
+        }
+    }
+}
+
+void MainWindow::postDecode (bool is_new, QString const& message)
+{
+  auto decode = message.trimmed ();
+  auto parts = decode.left (21).split (' ', QString::SkipEmptyParts);
+  if (parts.size () >= 5)
+    {
+      m_messageClient->decode (is_new, QTime::fromString (parts[0], "hhmm"), parts[1].toInt ()
+                               , parts[2].toFloat (), parts[3].toUInt (), parts[4], decode.mid (21));
+    }
+}
+
+void MainWindow::networkError (QString const& e)
+{
+  if (QMessageBox::Retry == QMessageBox::warning (this, tr ("Network Error")
+                                                  , tr ("Error: %1\nUDP server %2:%3")
+                                                  .arg (e)
+                                                  .arg (m_config.udp_server_name ())
+                                                  .arg (m_config.udp_server_port ())
+                                                  , QMessageBox::Cancel | QMessageBox::Retry, QMessageBox::Cancel))
+    {
+      // retry server lookup
+      m_messageClient->set_server (m_config.udp_server_name ());
+    }
 }
