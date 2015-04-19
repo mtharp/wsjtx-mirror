@@ -30,12 +30,27 @@ protected:
 
 private slots:
   void on_cbDopplerTracking_toggled(bool b);
+  void on_rbConstFreqOnMoon_clicked();
+  void on_rbFullTrack_clicked();
+  void on_rbNoDoppler_clicked();
+  void on_rb1Hz_clicked();
+  void on_rb10Hz_clicked();
+  void on_rb100Hz_clicked();
+  void on_cbRxTrack_toggled(bool b);
+  void on_cbTxTrack_toggled(bool b);
+  void on_kHzSpinBox_valueChanged(int n);
 
 private:
   void read_settings ();
   void write_settings ();
 
   bool m_bDopplerTracking;
+  bool m_bRxAudioTrack;
+  bool m_bTxAudioTrack;
+
+  qint32 m_DopplerMethod;
+  qint32 m_kHz;
+  qint32 m_stepHz;
 
   QSettings * settings_;
 //  QScopedPointer<Ui::Astro> ui_;

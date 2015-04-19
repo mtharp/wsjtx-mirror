@@ -104,51 +104,38 @@
     <property name="title">
      <string>Doppler tracking</string>
     </property>
-    <widget class="QRadioButton" name="rbConstFreqOnMoon">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>23</y>
-       <width>163</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Constant frequency on Moon</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbFullTrack">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>46</y>
-       <width>145</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Full tracking to DX locator</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbNoDoppler">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>69</y>
-       <width>48</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>None</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QRadioButton" name="rbFullTrack">
+       <property name="text">
+        <string>Full tracking for DX Grid</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="rbConstFreqOnMoon">
+       <property name="text">
+        <string>Constant frequency on Moon</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QRadioButton" name="rbNoDoppler">
+       <property name="text">
+        <string>None</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">

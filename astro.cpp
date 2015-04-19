@@ -50,6 +50,20 @@ void Astro::read_settings ()
   restoreGeometry (settings_->value ("geometry", saveGeometry ()).toByteArray ());
   m_bDopplerTracking=settings_->value("DopplerTracking",false).toBool();
   ui_->cbDopplerTracking->setChecked(m_bDopplerTracking);
+  m_DopplerMethod=settings_->value("DopplerMethod",0).toInt();
+  if(m_DopplerMethod==0) ui_->rbNoDoppler->setChecked(true);
+  if(m_DopplerMethod==1) ui_->rbFullTrack->setChecked(true);
+  if(m_DopplerMethod==2) ui_->rbConstFreqOnMoon->setChecked(true);
+  m_stepHz=settings_->value("StepHz",1).toInt();
+  if(m_stepHz==1) ui_->rb1Hz->setChecked(true);
+  if(m_stepHz==10) ui_->rb10Hz->setChecked(true);
+  if(m_stepHz==100) ui_->rb100Hz->setChecked(true);
+  m_kHz=settings_->value("kHzAdd",100).toInt();
+  ui_->kHzSpinBox->setValue(m_kHz);
+  m_bRxAudioTrack=settings_->value("RxAudioTrack",false).toBool();
+  ui_->cbRxTrack->setChecked(m_bRxAudioTrack);
+  m_bTxAudioTrack=settings_->value("TxAudioTrack",false).toBool();
+  ui_->cbTxTrack->setChecked(m_bTxAudioTrack);
   move (settings_->value ("window/pos", pos ()).toPoint ());
   settings_->endGroup ();
 }
@@ -59,6 +73,11 @@ void Astro::write_settings ()
   settings_->beginGroup ("Astro");
   settings_->setValue ("geometry", saveGeometry ());
   settings_->setValue ("DopplerTracking",m_bDopplerTracking);
+  settings_->setValue ("DopplerMethod",m_DopplerMethod);
+  settings_->setValue ("StepHz",m_stepHz);
+  settings_->setValue ("kHzAdd",m_kHz);
+  settings_->setValue ("RxAudioTrack",m_bRxAudioTrack);
+  settings_->setValue ("TxAudioTrack",m_bTxAudioTrack);
   settings_->setValue ("window/pos", pos ());
   settings_->endGroup ();
 }
@@ -191,4 +210,51 @@ void Astro::on_cbDopplerTracking_toggled(bool b)
   }
   this->setGeometry(g);
   m_bDopplerTracking=b;
+}
+
+void Astro::on_rbFullTrack_clicked()
+{
+  m_DopplerMethod=1;
+}
+
+void Astro::on_rbConstFreqOnMoon_clicked()
+{
+  m_DopplerMethod=2;
+}
+
+void Astro::on_rbNoDoppler_clicked()
+{
+  m_DopplerMethod=0;
+}
+
+void Astro::on_rb1Hz_clicked()
+{
+  m_stepHz=1;
+}
+
+void Astro::on_rb10Hz_clicked()
+{
+  m_stepHz=10;
+
+}
+
+void Astro::on_rb100Hz_clicked()
+{
+  m_stepHz=100;
+
+}
+
+void Astro::on_cbRxTrack_toggled(bool b)
+{
+  m_bRxAudioTrack=b;
+}
+
+void Astro::on_cbTxTrack_toggled(bool b)
+{
+  m_bTxAudioTrack=b;
+}
+
+void Astro::on_kHzSpinBox_valueChanged(int n)
+{
+  m_kHz=n;
 }
