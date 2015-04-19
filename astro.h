@@ -22,21 +22,24 @@ private:
 public:
   explicit Astro(QSettings * settings, QWidget * parent = nullptr);
   ~Astro ();
-
   void astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
                    int fQSO, int nsetftx, int ntxFreq, qint64 freqMoon);
 
-  Q_SLOT void on_font_push_button_clicked (bool);
-
 protected:
   void closeEvent (QCloseEvent *) override;
+
+private slots:
+  void on_cbDopplerTracking_toggled(bool b);
 
 private:
   void read_settings ();
   void write_settings ();
 
+  bool m_bDopplerTracking;
+
   QSettings * settings_;
-  QScopedPointer<Ui::Astro> ui_;
+//  QScopedPointer<Ui::Astro> ui_;
+  Ui::Astro *ui_;
 };
 
 extern "C" {

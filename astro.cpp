@@ -8,8 +8,6 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDateTime>
-#include <QFont>
-#include <QFontDialog>
 #include <QStandardPaths>
 #include <QDir>
 #include <QDebug>
@@ -29,9 +27,10 @@ Astro::Astro(QSettings * settings, QWidget * parent)
   ui_->setupUi(this);
   setWindowFlags (Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
   setWindowTitle(QApplication::applicationName () + " - " + tr ("Astronomical Data"));
-  setStyleSheet ("QWidget {background: cyan;}");
+  setStyleSheet ("QWidget {background: white;}");
   read_settings ();
   ui_->text_label->clear();
+//  qDebug() << "A1" << ui->cbDopplerTracking->isChecked();
 }
 
 Astro::~Astro ()
@@ -48,43 +47,20 @@ void Astro::closeEvent (QCloseEvent * e)
 void Astro::read_settings ()
 {
   settings_->beginGroup ("Astro");
+  restoreGeometry (settings_->value ("geometry", saveGeometry ()).toByteArray ());
+  m_bDopplerTracking=settings_->value("DopplerTracking",false).toBool();
+  ui_->cbDopplerTracking->setChecked(m_bDopplerTracking);
   move (settings_->value ("window/pos", pos ()).toPoint ());
-  QFont font;
-  if (font.fromString (settings_->value ("font", ui_->text_label->font ().toString ()).toString ()))
-    {
-      ui_->text_label->setStyleSheet ("QLabel {" + font_as_stylesheet (font) + '}');
-      adjustSize ();
-    }
   settings_->endGroup ();
 }
 
 void Astro::write_settings ()
 {
   settings_->beginGroup ("Astro");
+  settings_->setValue ("geometry", saveGeometry ());
+  settings_->setValue ("DopplerTracking",m_bDopplerTracking);
   settings_->setValue ("window/pos", pos ());
-  settings_->setValue ("font", ui_->text_label->font ().toString ());
   settings_->endGroup ();
-}
-
-void Astro::on_font_push_button_clicked (bool /* checked */)
-{
-  bool changed;
-  auto ss = styleSheet ();
-  setStyleSheet ("");
-  auto font = QFontDialog::getFont (&changed
-                                    , ui_->text_label->font ()
-                                    , this
-                                    , tr ("WSJT-X Astro Text Font Chooser")
-#if QT_VERSION >= 0x050201
-                                    , QFontDialog::MonospacedFonts
-#endif
-                                    );
-  if (changed)
-    {
-      ui_->text_label->setStyleSheet ("QLabel {" + font_as_stylesheet (font) + '}');
-      adjustSize ();
-    }
-  setStyleSheet (ss);
 }
 
 void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
@@ -203,4 +179,16 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
         << qSetFieldWidth (0) << ",fQSO2";
   }
   f.close();
+}
+
+void Astro::on_cbDopplerTracking_toggled(bool b)
+{
+  QRect g=this->geometry();
+  if(b) {
+    g.setWidth(460);
+  } else {
+    g.setWidth(200);
+  }
+  this->setGeometry(g);
+  m_bDopplerTracking=b;
 }
