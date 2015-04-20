@@ -15,7 +15,6 @@ class QWidget;
 class QAudioDeviceInfo;
 class QString;
 class QDir;
-class QFont;
 class Bands;
 class FrequencyList;
 class StationList;

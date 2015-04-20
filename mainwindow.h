@@ -56,6 +56,7 @@ class Astro;
 class MessageAveraging;
 class MessageClient;
 class QTime;
+
 class MainWindow : public QMainWindow
 {
   Q_OBJECT;
@@ -315,8 +316,7 @@ private:
   bool    m_freeText;
   bool    m_quickCall;
   bool    m_73TxDisable;
-  bool    m_sent73;                         //###  Which of these ???
-  bool    m_sentFirst73;                    //###
+  bool    m_sentFirst73;
   int     m_currentMessageType;
   QString m_currentMessage;
   int     m_lastMessageType;
@@ -427,7 +427,6 @@ private:
   void qsy(Frequency f);
   bool gridOK(QString g);
   bool shortList(QString callsign);
-  QString baseCall(QString t);
   void transmit (double snr = 99.);
   void rigFailure (QString const& reason, QString const& detail);
   void pskSetLocal ();

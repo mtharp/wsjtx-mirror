@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include <cinttypes>
+#include <limits>
 
 #include <QThread>
 #include <QLineEdit>
@@ -26,6 +27,7 @@
 #include "sleep.h"
 #include "getfile.h"
 #include "logqso.h"
+#include "Radio.hpp"
 #include "Bands.hpp"
 #include "TransceiverFactory.hpp"
 #include "FrequencyList.hpp"
@@ -50,6 +52,13 @@ namespace
 {
   Radio::Frequency constexpr default_frequency {14076000};
   QRegExp message_alphabet {"[- @A-Za-z0-9+./?#]*"};
+
+  bool message_is_73 (int type, QStringList const& msg_parts)
+  {
+    return type >= 0
+      && ((type < 6 && msg_parts.contains ("73"))
+          || (type == 6 && !msg_parts.filter ("73").isEmpty ()));
+  }
 }
 
 class BandAndFrequencyItemDelegate final
@@ -85,11 +94,14 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_config (settings, this),
   m_wideGraph (new WideGraph (settings)),
   m_logDlg (new LogQSO (program_title (), settings, this)),
-  m_dialFreq {0},
+  m_dialFreq {std::numeric_limits<Radio::Frequency>::max ()},
   m_detector (RX_SAMPLE_RATE, NTMAX, 6912 / 2, downSampleFactor),
   m_modulator (TX_SAMPLE_RATE, NTMAX),
   m_audioThread {new QThread},
   m_diskData {false},
+  m_sentFirst73 {false},
+  m_currentMessageType {-1},
+  m_lastMessageType {-1},
   m_appDir {QApplication::applicationDirPath ()},
   mem_jt9 {shdmem},
   m_msAudioOutputBuffered (0u),
@@ -344,6 +356,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_repeatMsg=0;
   m_secBandChanged=0;
   m_lockTxFreq=false;
+  m_baseCall = Radio::base_callsign (m_config.my_callsign ());
+
   ui->readFreq->setEnabled(false);
   m_QSOText.clear();
   decodeBusy(false);
@@ -572,6 +586,7 @@ void MainWindow::readSettings()
   ui->actionSave_decoded->setChecked(m_settings->value(
                                                        "SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
+  ui->RxFreqSpinBox->setValue(0); // ensure a change is signaled
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
   m_nSubMode=m_settings->value("SubMode",0).toInt();
   ui->sbSubmode->setValue(m_nSubMode);
@@ -584,6 +599,7 @@ void MainWindow::readSettings()
   m_MinW=m_settings->value("minW",0).toInt();
   ui->sbMinW->setValue(m_MinW);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
+  ui->TxFreqSpinBox->setValue(0); // ensure a change is signaled
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
   m_saveDecoded=ui->actionSave_decoded->isChecked();
@@ -710,6 +726,7 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
     {
       if (m_config.my_callsign () != callsign)
         {
+          m_baseCall = Radio::base_callsign (m_config.my_callsign ());
           morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData())
                  , const_cast<int *> (icw)
                  , &m_ncw
@@ -811,12 +828,6 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
 void MainWindow::on_autoButton_clicked (bool checked)
 {
   m_auto = checked;
-  if (!m_auto)
-    {
-      m_btxok = false;
-      monitor (true);
-      m_repeatMsg = 0;
-    }
 }
 
 void MainWindow::auto_tx_mode (bool state)
@@ -1458,25 +1469,25 @@ void MainWindow::readFromStdout()                             //readFromStdout
         msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
       }
 
-      if (m_config.insert_blank () && m_blankLine) {
-        QString band;
-        if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50) {
-          auto const& bands_model = m_config.bands ();
-          band = ' ' + bands_model->data (bands_model->find (m_dialFreq +
-                                    ui->TxFreqSpinBox->value ())).toString ();
-        }
-        ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
-        m_blankLine = false;
-      }
+        if (m_config.insert_blank () && m_blankLine)
+          {
+            QString band;
+            if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50)
+              {
+                auto const& bands_model = m_config.bands ();
+                band = ' ' + bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
+              }
+            ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
+            m_blankLine = false;
+          }
 
       DecodedText decodedtext;
       decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);
-      auto my_base_call = baseCall (m_config.my_callsign ());
 
         //Left (Band activity) window
       if(!baveJT4msg) {
         ui->decodedTextBrowser->displayDecodedText (decodedtext
-                                                    , my_base_call
+                                                    , m_baseCall
                                                     , m_config.DXCC ()
                                                     , m_logBook
                                                     , m_config.color_CQ()
@@ -1490,7 +1501,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
            m_mode!="JT4") or baveJT4msg) {
           // This msg is within 10 hertz of our tuned frequency, or a JT4 avg
         ui->decodedTextBrowser2->displayDecodedText(decodedtext
-                                                    , my_base_call
+                                                    , m_baseCall
                                                     , false
                                                     , m_logBook
                                                     , m_config.color_CQ()
@@ -1507,9 +1518,9 @@ void MainWindow::readFromStdout()                             //readFromStdout
         postDecode (true, decodedtext.string ());
 
         // find and extract any report for myCall
-      bool stdMsg = decodedtext.report(my_base_call
-                                       , baseCall (ui->dxCallEntry-> text ().toUpper ().trimmed ())
-                                       , /*mod*/m_rptRcvd);
+        bool stdMsg = decodedtext.report(m_baseCall
+                                         , Radio::base_callsign (ui->dxCallEntry-> text ().toUpper ().trimmed ())
+                                         , /*mod*/m_rptRcvd);
 
       // extract details and send to PSKreporter
       int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
@@ -1632,7 +1643,7 @@ void MainWindow::guiUpdate()
     nsec0=nsec;
   }
 
-  if(m_auto or m_tune) {
+  if(m_transmitting or m_auto or m_tune) {
     QFile f(m_appDir + "/txboth");
     if(f.exists() and fmod(tsec,m_TRperiod) < (1.0 + 85.0*m_nsps/12000.0)) {
       bTxTime=true;
@@ -1679,18 +1690,47 @@ void MainWindow::guiUpdate()
     ba2msg(ba,message);
     //    ba2msg(ba,msgsent);
     int len1=22;
-    int ichk=0,itype=0;
+    int ichk=0;
+    if (m_lastMessageSent != m_currentMessage
+        || m_lastMessageType != m_currentMessageType)
+      {
+        m_lastMessageSent = m_currentMessage;
+        m_lastMessageType = m_currentMessageType;
+      }
+    m_currentMessageType = 0;
     if(m_tune) {
       itone[0]=0;
     } else {
-      if(m_modeTx=="JT4") gen4_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
-      if(m_modeTx=="JT9") gen9_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
-      if(m_modeTx=="JT65") gen65_(message,&ichk,msgsent,const_cast<int *> (itone),&itype,len1,len1);
+      if(m_modeTx=="JT4") gen4_(message
+                                , &ichk
+                                , msgsent
+                                , const_cast<int *> (itone)
+                                , &m_currentMessageType
+                                , len1
+                                , len1);
+      if(m_modeTx=="JT9") gen9_(message
+                                  , &ichk
+                                  , msgsent
+                                  , const_cast<int *> (itone)
+                                  , &m_currentMessageType
+                                  , len1
+                                  , len1);
+      if(m_modeTx=="JT65") gen65_(message
+                                  , &ichk
+                                  , msgsent
+                                  , const_cast<int *> (itone)
+                                  , &m_currentMessageType
+                                  , len1
+                                  , len1);
     }
     msgsent[22]=0;
-    QString t=QString::fromLatin1(msgsent);
-    if(m_tune) t="TUNE";
-    last_tx_label->setText("Last Tx:  " + t);
+    m_currentMessage = QString::fromLatin1(msgsent);
+    if (m_tune)
+      {
+        m_currentMessage = "TUNE";
+        m_currentMessageType = -1;
+      }
+    last_tx_label->setText("Last Tx:  " + m_currentMessage);
     if(m_restart) {
       QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
       if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
@@ -1698,7 +1738,7 @@ void MainWindow::guiUpdate()
           QTextStream out(&f);
           out << QDateTime::currentDateTimeUtc().toString("hhmm")
               << "  Transmitting " << (m_dialFreq / 1.e6) << " MHz  " << m_modeTx
-              << ":  " << t << endl;
+              << ":  " << m_currentMessage << endl;
           f.close();
         }
       else
@@ -1707,20 +1747,33 @@ void MainWindow::guiUpdate()
         }
       if (m_config.TX_messages ())
         {
-          ui->decodedTextBrowser2->displayTransmittedText(t,m_modeTx,
+          ui->decodedTextBrowser2->displayTransmittedText(m_currentMessage,m_modeTx,
                                 ui->TxFreqSpinBox->value(),m_config.color_TxMsg());
         }
     }
 
-    QStringList w=t.split(" ",QString::SkipEmptyParts);
-    t="";
-    if(w.length()==3) t=w[2];
-    icw[0]=0;
-    m_sent73=(t=="73" or itype==6);
-    if(m_sent73)  {
-      if(m_config.id_after_73 ())  icw[0]=m_ncw;
-      if(m_config.prompt_to_log () && !m_tune) logQSOTimer->start(200);
-    }
+    auto t2 = QDateTime::currentDateTimeUtc ().toString ("hhmm");
+    icw[0] = 0;
+    auto msg_parts = m_currentMessage.split (' ', QString::SkipEmptyParts);
+    auto is_73 = message_is_73 (m_currentMessageType, msg_parts);
+    m_sentFirst73 = is_73
+      && !message_is_73 (m_lastMessageType, m_lastMessageSent.split (' ', QString::SkipEmptyParts));
+    if (m_sentFirst73)
+      {
+        m_qsoStop=t2;
+        if(m_config.id_after_73 ())
+          {
+            icw[0] = m_ncw;
+          }
+        if (m_config.prompt_to_log () && !m_tune)
+          {
+            logQSOTimer->start (0);
+          }
+      }
+    if (is_73 && m_config.disable_TX_on_73 ())
+      {
+        auto_tx_mode (false);
+      }
 
     if(m_config.id_interval () >0) {
       int nmin=(m_sec0-m_secID)/60;
@@ -1730,27 +1783,50 @@ void MainWindow::guiUpdate()
       }
     }
 
-    QString t2=QDateTime::currentDateTimeUtc().toString("hhmm");
-    if(itype<6 and w.length()>=3 and w[1]==m_config.my_callsign ()) {
-      int i1;
-      bool ok;
-      i1=t.toInt(&ok);
-      if(ok and i1>=-50 and i1<50) {
-        m_rptSent=t;
-        m_qsoStart=t2;
-      } else {
-        if(t.mid(0,1)=="R") {
-          i1=t.mid(1).toInt(&ok);
-          if(ok and i1>=-50 and i1<50) {
-            m_rptSent=t.mid(1);
-            m_qsoStart=t2;
+    if (m_currentMessageType < 6 && msg_parts.length() >= 3
+       && (msg_parts[1] == m_config.my_callsign () || msg_parts[1] == m_baseCall))
+      {
+        int i1;
+        bool ok;
+        i1 = msg_parts[2].toInt(&ok);
+        if(ok and i1>=-50 and i1<50)
+          {
+            m_rptSent = msg_parts[2];
+            m_qsoStart = t2;
           }
-        }
+        else
+          {
+            if (msg_parts[2].mid (0, 1) == "R")
+              {
+                i1 = msg_parts[2].mid (1).toInt (&ok);
+                if (ok and i1 >= -50 and i1 < 50)
+                  {
+                    m_rptSent = msg_parts[2].mid (1);
+                    m_qsoStart = t2;
+                  }
+              }
+          }
       }
-    }
-    if(itype==6 or (w.length()==3 and w[2]=="73")) m_qsoStop=t2;
     m_restart=false;
   }
+  else
+    {
+      if (!m_auto && m_sentFirst73)
+        {
+          m_sentFirst73 = false;
+          if (1 == ui->tabWidget->currentIndex())
+            {
+              ui->genMsg->setText(ui->tx6->text());
+              m_ntx=7;
+              ui->rbGenMsg->setChecked(true);
+            }
+          else
+            {
+              m_ntx=6;
+              ui->txrb6->setChecked(true);
+            }
+        }
+    }
 
   if (g_iptt == 1 && iptt0 == 0)
     {
@@ -1773,7 +1849,7 @@ void MainWindow::guiUpdate()
               QTextStream out(&f);
               out << QDateTime::currentDateTimeUtc().toString("hhmm")
                   << "  Transmitting " << (m_dialFreq / 1.e6) << " MHz  " << m_modeTx
-                  << ":  " << t << endl;
+                  << ":  " << m_currentMessage << endl;
               f.close();
             }
           else
@@ -1887,11 +1963,6 @@ void MainWindow::stopTx2()
   QString rt;
   //Lower PTT
   Q_EMIT m_config.transceiver_ptt (false);
-
-  if (m_config.disable_TX_on_73 () && m_sent73)
-    {
-      on_stopTxButton_clicked();
-    }
 
   if (m_config.watchdog () && m_repeatMsg>=m_watchdogLimit-1)
     {
@@ -2007,22 +2078,20 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   if (decodedtext.indexOf(" CQ ") > 0)
     {
       // TODO this magic 36 characters is also referenced in DisplayText::_appendDXCCWorkedB4()
-      int s3 = decodedtext.indexOf(" ",35);
-      if (s3 < 35)
-        s3 = 35; // we always want at least the characters to position 35
-      s3 += 1; // convert the index into a character count
-      decodedtext = decodedtext.left(s3);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
+      auto eom_pos = decodedtext.string ().indexOf (' ', 35);
+      if (eom_pos < 35) eom_pos = decodedtext.string ().size () - 1; // we always want at least the characters
+                            // to position 35
+      decodedtext = decodedtext.string ().left (eom_pos + 1);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
     }
 
   /*
   //  if(decodedtext.indexOf("Tx")==6) return;        //Ignore Tx line
-  int i4=t.mid(i1).length();
-  if(i4>55) i4=55;
-  QString t3=t.mid(i1,i4);
-  int i5=t3.indexOf(" CQ DX ");
-  if(i5>0) t3=t3.mid(0,i5+3) + "_" + t3.mid(i5+4);  //Make it "CQ_DX" (one word)
-  QStringList t4=t3.split(" ",QString::SkipEmptyParts);
-  if(t4.length() <5) return;             //Skip the rest if no decoded text
+  // int i4=t.mid(i1).length();
+  // if(i4>55) i4=55;
+  // QString t3=t.mid(i1,i4);
+  auto t3 = decodedtext.string ();
+  auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
+  if(t4.size () <5) return;             //Skip the rest if no decoded text
 */
   auto t3 = decodedtext.string ();
   auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
@@ -2032,15 +2101,10 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   QString hiscall;
   QString hisgrid;
   decodedtext.deCallAndGrid(/*out*/hiscall,hisgrid);
-  /*
-  // basic valid call sign check i.e. contains at least one digit and
-  // one letter next to each other
-  if (!hiscall.contains (QRegularExpression {R"(\d[[:upper:]]|[[:upper:]]\d)"}))
+  if (!Radio::is_callsign (hiscall))
     {
       return;
     }
-    */
-  if (!Radio::is_callsign (hiscall)) return;
 
   // only allow automatic mode changes between JT9 and JT65, and when not transmitting
   if (!m_transmitting and m_mode != "JT4") {
@@ -2064,7 +2128,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   QString firstcall = decodedtext.call();
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down
-  if ((firstcall!=m_config.my_callsign ()) or m_lockTxFreq or ctrl)
+  if ((firstcall!=m_config.my_callsign () && firstcall != m_baseCall) || m_lockTxFreq or ctrl)
     {
       if (ui->TxFreqSpinBox->isEnabled ())
         {
@@ -2076,13 +2140,11 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
         }
     }
 
-  auto my_base_call = baseCall (m_config.my_callsign ());
-
   int i9=m_QSOText.indexOf(decodedtext.string());
   if (i9<0 and !decodedtext.isTX())
     {
       ui->decodedTextBrowser2->displayDecodedText(decodedtext
-                                                  , my_base_call
+                                                  , m_baseCall
                                                   , false
                                                   , m_logBook
                                                   , m_config.color_CQ()
@@ -2105,8 +2167,8 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
       return;
     }
 
-  auto base_call = baseCall (hiscall);
-  if (base_call != baseCall (ui->dxCallEntry-> text ().toUpper ().trimmed ()) || base_call != hiscall)
+  auto base_call = Radio::base_callsign (hiscall);
+  if (base_call != Radio::base_callsign (ui->dxCallEntry-> text ().toUpper ().trimmed ()) || base_call != hiscall)
     {
       // his base call different or his call more qualified
       // i.e. compound version of same base call
@@ -2129,15 +2191,15 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
 
   // determine the appropriate response to the received msg
   auto dtext = " " + decodedtext.string () + " ";
-  if(dtext.contains (" " + my_base_call + " ")
-     || dtext.contains ("/" + my_base_call + " ")
-     || dtext.contains (" " + my_base_call + "/"))
+  if(dtext.contains (" " + m_baseCall + " ")
+     || dtext.contains ("/" + m_baseCall + " ")
+     || dtext.contains (" " + m_baseCall + "/")
+     || firstcall == "DE")
     {
-      if (t4.length()>=8   // enough fields for a normal msg
-          and !gridOK(t4.at(7))) // but no grid on end of msg
+      if (t4.size () > 7   // enough fields for a normal msg
+          and !gridOK (t4.at (7))) // but no grid on end of msg
         {
-
-          QString r=t4.at(7);
+          QString r=t4.at (7);
           if(r.mid(0,3)=="RRR") {
             m_ntx=5;
             ui->txrb5->setChecked(true);
@@ -2225,10 +2287,9 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
     ui->genMsg->setText("");
     return;
   }
-  QString hisBase=baseCall(hisCall);
-  QString myBase=baseCall(m_config.my_callsign ());
+  QString hisBase = Radio::base_callsign (hisCall);
 
-  QString t0=hisBase + " " + myBase + " ";
+  QString t0=hisBase + " " + m_baseCall + " ";
   t=t0 + m_config.my_grid ().mid(0,4);
   msgtype(t, ui->tx1);
   if(rpt == "") {
@@ -2250,9 +2311,9 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
     msgtype(t, ui->tx5->lineEdit ());
   }
 
-  if(m_config.my_callsign ()!=myBase) {
+  if(m_config.my_callsign () != m_baseCall) {
     if(shortList(m_config.my_callsign ())) {
-      t=hisCall + " " + m_config.my_callsign ();
+      t=hisBase + " " + m_config.my_callsign ();
       msgtype(t, ui->tx1);
       t="CQ " + m_config.my_callsign ();
       msgtype(t, ui->tx6);
@@ -2298,18 +2359,13 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
   m_rpt=rpt;
 }
 
-QString MainWindow::baseCall(QString t)
-{
-  int n1=t.indexOf("/");
-  if(n1<0) return t;
-  int n2=t.length()-n1-1;
-  if(n2>=n1) return t.mid(n1+1);
-  return t.mid(0,n1);
-}
-
 void MainWindow::lookup()                                       //lookup()
 {
   QString hisCall=ui->dxCallEntry->text().toUpper().trimmed();
+  if (hisCall.isEmpty ())
+    {
+      return;
+    }
   ui->dxCallEntry->setText(hisCall);
   QFile f {m_dataDir.absoluteFilePath ("CALL3.TXT")};
   if (f.open (QIODevice::ReadOnly | QIODevice::Text))
@@ -2578,7 +2634,8 @@ void MainWindow::acceptQSO2(QDateTime const& QSO_date, QString const& call, QStr
                             , QString const& tx_power, QString const& comments
                             , QString const& name)
 {
-  QString band = ADIF::bandFromFrequency ((m_dialFreq + ui->TxFreqSpinBox->value ()) / 1.e6);
+  auto const& bands_model = m_config.bands ();
+  auto band = bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
   QString date = m_dateTimeQSO.toString("yyyyMMdd");
   m_logBook.addAsWorked(m_hisCall,band,m_modeTx,date);
 
@@ -2975,8 +3032,8 @@ void MainWindow::on_rbGenMsg_toggled(bool checked)
 {
   m_freeText=!checked;
   if(!m_freeText) {
+    if(m_ntx != 7 && m_transmitting) m_restart=true;
     m_ntx=7;
-    if(m_transmitting) m_restart=true;
   }
 }
 
@@ -3013,14 +3070,17 @@ void MainWindow::on_rptSpinBox_valueChanged(int n)
 
 void MainWindow::on_tuneButton_clicked (bool checked)
 {
-  if (m_tune) {
-    tuneButtonTimer->start(250);
-  } else {
-    m_sent73=false;
-    m_repeatMsg=0;
-    itone[0]=0;
-    on_monitorButton_clicked (true);
-  }
+  if (m_tune)
+    {
+      tuneButtonTimer->start(250);
+    } 
+  else
+    {
+      m_sentFirst73=false;
+      m_repeatMsg=0;
+      itone[0]=0;
+      on_monitorButton_clicked (true);
+    }
   m_tune = checked;
   Q_EMIT tune (checked);
 }

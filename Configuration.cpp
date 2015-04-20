@@ -573,8 +573,8 @@ private:
   bool accept_udp_requests_;
   bool udpWindowToFront_;
   bool udpWindowRestore_;
-
   DataMode data_mode_;
+
   QAudioDeviceInfo audio_input_device_;
   bool default_audio_input_device_selected_;
   AudioDevice::Channel audio_input_channel_;
