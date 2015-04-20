@@ -22,8 +22,15 @@ private:
 public:
   explicit Astro(QSettings * settings, QWidget * parent = nullptr);
   ~Astro ();
-  void astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
-                   int fQSO, int nsetftx, int ntxFreq, qint64 freqMoon);
+  void astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon, qint32* ndop);
+
+  bool m_bDopplerTracking;
+  bool m_bRxAudioTrack;
+  bool m_bTxAudioTrack;
+
+  qint32 m_DopplerMethod;
+  qint32 m_kHz;
+  qint32 m_stepHz;
 
 protected:
   void closeEvent (QCloseEvent *) override;
@@ -43,14 +50,6 @@ private slots:
 private:
   void read_settings ();
   void write_settings ();
-
-  bool m_bDopplerTracking;
-  bool m_bRxAudioTrack;
-  bool m_bTxAudioTrack;
-
-  qint32 m_DopplerMethod;
-  qint32 m_kHz;
-  qint32 m_stepHz;
 
   QSettings * settings_;
 //  QScopedPointer<Ui::Astro> ui_;

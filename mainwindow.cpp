@@ -181,8 +181,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
           SLOT(bumpFqso(int)));
   connect(m_wideGraph.data (), SIGNAL(setXIT2(int)),this,
           SLOT(setXIT(int)));
-  //    connect(m_wideGraph.data (), SIGNAL(dialFreqChanged(double)),this,
-  //            SLOT(dialFreqChanged2(double)));
   connect (this, &MainWindow::finished, m_wideGraph.data (), &WideGraph::close);
 
   // setup the log QSO dialog
@@ -331,7 +329,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_killAll=false;
   m_widebandDecode=false;
   m_ntx=1;
-  m_setftx=0;
   m_loopall=false;
   m_startAnother=false;
   m_saveDecoded=false;
@@ -698,7 +695,8 @@ void MainWindow::dataSink(qint64 frames)
       imin=imin - (imin%(m_TRperiod/60));
       QString t2;
       t2.sprintf("%2.2d%2.2d",ihr,imin);
-      m_fname=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") + "_" + t2 + ".wav");
+      m_fname=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
+                                                           "_" + t2 + ".wav");
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
     }
@@ -1617,7 +1615,6 @@ void MainWindow::decodeBusy(bool b)                             //decodeBusy()
 void MainWindow::guiUpdate()
 {
   static int iptt0=0;
-  static int nsec0=0;
   static bool btxok0=false;
   static char message[29];
   static char msgsent[29];
@@ -1638,10 +1635,6 @@ void MainWindow::guiUpdate()
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
   bool bTxTime = ((t2p >= tx1) and (t2p < tx2)) or m_tune;
-
-  if(nsec != nsec0) {
-    nsec0=nsec;
-  }
 
   if(m_transmitting or m_auto or m_tune) {
     QFile f(m_appDir + "/txboth");
@@ -1870,14 +1863,6 @@ void MainWindow::guiUpdate()
 
   if(!m_btxok && btxok0 && g_iptt==1) stopTx();
 
-  /*
-  // If m_btxok was just lowered, start a countdown for lowering PTT
-  if(!m_btxok && btxok0 && g_iptt==1) nc0=-11;  //RxDelay = 1.0 s
-  if(nc0 <= 0) {
-  nc0++;
-  }
-  */
-
   if(m_startAnother) {
     m_startAnother=false;
     on_actionOpen_next_in_directory_triggered();
@@ -1885,10 +1870,19 @@ void MainWindow::guiUpdate()
 
   if(nsec != m_sec0) {                                     //Once per second
     QDateTime t = QDateTime::currentDateTimeUtc();
-    int fQSO=125;
-    if(m_astroWidget) m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid, fQSO,
-         m_setftx, ui->TxFreqSpinBox->value(), (qint64)m_dialFreq);
-
+    m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz;
+    int ndop;
+    if(m_astroWidget) m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid,
+         m_freqMoon, &ndop);
+/*
+    if(m_astroWidget->m_DopplerMethod==1) {
+      // All Doppler correction will be done here; DX station stays at nominal dial frequency.
+      Frequency f=m_dialFreq + 1000*m_astroWidget->m_kHz + ndop;
+      qDebug() << "aa0";
+      Q_EMIT m_config.transceiver_frequency(f);
+      qDebug() << "A" << m_dialFreq << m_astroWidget->m_kHz << m_freqMoon << ndop;
+    }
+ */
     if(m_transmitting) {
       char s[37];
       sprintf(s,"Tx: %s",msgsent);
@@ -1914,7 +1908,6 @@ void MainWindow::guiUpdate()
       tx_status_label->setText("");
     }
 
-    m_setftx=0;
     QString utc = t.date().toString("yyyy MMM dd") + "\n " +
       t.time().toString() + " ";
     ui->labUTC->setText(utc);
@@ -3220,7 +3213,6 @@ void MainWindow::on_cbPlus2kHz_toggled(bool checked)
 void MainWindow::handle_transceiver_update (Transceiver::TransceiverState s)
 {
   transmitDisplay (s.ptt ());
-
   if ((s.frequency () - m_dialFreq) || s.split () != m_splitMode)
     {
       m_splitMode = s.split ();

@@ -30,7 +30,6 @@ Astro::Astro(QSettings * settings, QWidget * parent)
   setStyleSheet ("QWidget {background: white;}");
   read_settings ();
   ui_->text_label->clear();
-//  qDebug() << "A1" << ui->cbDopplerTracking->isChecked();
 }
 
 Astro::~Astro ()
@@ -82,13 +81,11 @@ void Astro::write_settings ()
   settings_->endGroup ();
 }
 
-void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
-                        int fQSO, int nsetftx, int ntxFreq, qint64 freqMoon)
+void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon, qint32* ndop)
 {
-  static int ntxFreq0=-99;
   double azsun,elsun,azmoon,elmoon,azmoondx,elmoondx;
   double ramoon,decmoon,dgrd,poloffset,xnr,techo;
-  int ntsky,ndop,ndop00;
+  int ntsky,ndop00;
   QString date = t.date().toString("yyyy MMM dd").trimmed ();
   QString utc = t.time().toString().trimmed ();
   int nyear=t.date().year();
@@ -105,7 +102,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
 
   astrosub_(&nyear, &month, &nday, &uth, &freq8, mygrid.toLatin1(),
             hisgrid.toLatin1(), &azsun, &elsun, &azmoon, &elmoon,
-            &azmoondx, &elmoondx, &ntsky, &ndop, &ndop00,&ramoon, &decmoon,
+            &azmoondx, &elmoondx, &ntsky, ndop, &ndop00,&ramoon, &decmoon,
             &dgrd, &poloffset, &xnr, &techo, 6, 6);
 
   QString message;
@@ -125,7 +122,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
       << qSetRealNumberPrecision (1)
       << "DxAz:  " << azmoondx << "\n"
       "DxEl:  " << elmoondx << "\n"
-      "DxDop: " << ndop << "\n"
+      "DxDop: " << *ndop << "\n"
       "Dec:   " << decmoon << "\n"
       "SunAz: " << azsun << "\n"
       "SunEl: " << elsun << "\n"
@@ -136,17 +133,14 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
   }
   ui_->text_label->setText(message);
 
-  static QFile f {QDir {QStandardPaths::writableLocation (QStandardPaths::DataLocation)}.absoluteFilePath ("azel.dat")};
-  if (!f.open (QIODevice::WriteOnly | QIODevice::Text))
-    {
+  static QFile f {QDir {QStandardPaths::writableLocation (
+            QStandardPaths::DataLocation)}.absoluteFilePath ("azel.dat")};
+  if (!f.open (QIODevice::WriteOnly | QIODevice::Text)) {
     QMessageBox mb;
     mb.setText ("Cannot open \"" + f.fileName () + "\" for writing:" + f.errorString ());
     mb.exec();
     return;
   }
-  int ndiff=0;
-  if(ntxFreq != ntxFreq0) ndiff=1;
-  ntxFreq0=ntxFreq;
   {
     QTextStream out {&f};
     out << fixed
@@ -187,15 +181,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid,
         << qSetFieldWidth (4) << nfreq
         << qSetFieldWidth (0) << ','
         << qSetFieldWidth (6) << ndop
-        << qSetFieldWidth (0) << ",Doppler\n"
-        << qSetFieldWidth (3) << fQSO
-        << qSetFieldWidth (0) << ','
-        << qSetFieldWidth (1) << nsetftx
-        << qSetFieldWidth (0) << ",fQSO\n"
-        << qSetFieldWidth (3) << ntxFreq
-        << qSetFieldWidth (0) << ','
-        << qSetFieldWidth (1) << ndiff
-        << qSetFieldWidth (0) << ",fQSO2";
+        << qSetFieldWidth (0) << ",Doppler";
   }
   f.close();
 }

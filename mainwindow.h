@@ -258,6 +258,8 @@ private:
 
   qint64  m_msErase;
   qint64  m_secBandChanged;
+  qint64  m_freqMoon;
+
   float   m_DTtol;
 
   qint32  m_waterfallAvg;

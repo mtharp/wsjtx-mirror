@@ -679,7 +679,6 @@ void Configuration::transceiver_frequency (Frequency f)
 #if WSJT_TRACE_CAT
   qDebug () << "Configuration::transceiver_frequency:" << f << m_->cached_rig_state_;
 #endif
-
   m_->transceiver_frequency (f);
 }
 
