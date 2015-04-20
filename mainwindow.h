@@ -259,6 +259,8 @@ private:
   qint64  m_msErase;
   qint64  m_secBandChanged;
   qint64  m_freqMoon;
+  qint64  m_freqNominal;
+  qint64  m_dialFreqTx;
 
   float   m_DTtol;
 
@@ -332,6 +334,8 @@ private:
   bool    m_bAstroData;
   bool    m_bEME;
   bool    m_bShMsgs;
+  bool    m_bDopplerTracking;
+  bool    m_bDopplerTracking0;
 
   float   m_pctZap;
 
