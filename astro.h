@@ -22,7 +22,8 @@ private:
 public:
   explicit Astro(QSettings * settings, QWidget * parent = nullptr);
   ~Astro ();
-  void astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon, qint32* ndop);
+  void astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon,
+                   qint32* ndop, qint32 *ndop00);
 
   bool m_bDopplerTracking;
   bool m_bRxAudioTrack;

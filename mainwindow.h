@@ -289,6 +289,8 @@ private:
   qint32  m_MinW;
   qint32  m_tol;
   qint32  m_nclearave;
+  qint32  m_DopplerMethod;
+  qint32  m_DopplerMethod0;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

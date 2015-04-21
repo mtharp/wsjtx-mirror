@@ -81,11 +81,12 @@ void Astro::write_settings ()
   settings_->endGroup ();
 }
 
-void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon, qint32* ndop)
+void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon,
+                        qint32* ndop, qint32* ndop00)
 {
   double azsun,elsun,azmoon,elmoon,azmoondx,elmoondx;
   double ramoon,decmoon,dgrd,poloffset,xnr,techo;
-  int ntsky,ndop00;
+  int ntsky;
   QString date = t.date().toString("yyyy MMM dd").trimmed ();
   QString utc = t.time().toString().trimmed ();
   int nyear=t.date().year();
@@ -102,7 +103,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 fre
 
   astrosub_(&nyear, &month, &nday, &uth, &freq8, mygrid.toLatin1(),
             hisgrid.toLatin1(), &azsun, &elsun, &azmoon, &elmoon,
-            &azmoondx, &elmoondx, &ntsky, ndop, &ndop00,&ramoon, &decmoon,
+            &azmoondx, &elmoondx, &ntsky, ndop, ndop00, &ramoon, &decmoon,
             &dgrd, &poloffset, &xnr, &techo, 6, 6);
 
   QString message;
@@ -116,7 +117,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 fre
       << qSetRealNumberPrecision (1)
       << "Az:    " << azmoon << "\n"
       "El:    " << elmoon << "\n"
-      "MyDop: " << ndop00 << "\n"
+      "MyDop: " << *ndop00 << "\n"
       << qSetRealNumberPrecision (2)
       << "Delay: " << techo << "\n"
       << qSetRealNumberPrecision (1)
