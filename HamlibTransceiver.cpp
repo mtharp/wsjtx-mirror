@@ -131,11 +131,15 @@ void HamlibTransceiver::register_transceivers (TransceiverFactory::Transceivers 
   rig_set_debug_callback (debug_callback, nullptr);
 
 #if WSJT_HAMLIB_TRACE
+#if WSJT_HAMLIB_VERBOSE_TRACE
   rig_set_debug (RIG_DEBUG_TRACE);
+#else
+  rig_set_debug (RIG_DEBUG_VERBOSE);
+#endif
 #elif defined (NDEBUG)
   rig_set_debug (RIG_DEBUG_ERR);
 #else
-  rig_set_debug (RIG_DEBUG_VERBOSE);
+  rig_set_debug (RIG_DEBUG_WARN);
 #endif
 
   rig_load_all_backends ();
@@ -169,6 +173,7 @@ HamlibTransceiver::HamlibTransceiver (int model_number
   , is_dummy_ {RIG_MODEL_DUMMY == model_number}
   , reversed_ {false}
   , split_query_works_ {true}
+  , get_vfo_works_ {true}
 {
   if (!rig_)
     {
@@ -267,6 +272,19 @@ void HamlibTransceiver::do_start ()
 
   error_check (rig_open (rig_.data ()), tr ("opening connection to rig"));
 
+  // the Net rigctl back end promises all functions work but we must
+  // test get_vfo as it determines our strategy for Icom rigs
+  vfo_t vfo;
+  int rc = rig_get_vfo (rig_.data (), &vfo);
+  if (-RIG_ENAVAIL == rc || -RIG_ENIMPL == rc)
+    {
+      get_vfo_works_ = false;
+    }
+  else
+    {
+      error_check (rc, "getting current VFO");
+    }
+
   if (!is_dummy_ && rig_->caps->set_split_vfo) // if split is possible
                                               // do some extra setup
     {
@@ -276,7 +294,8 @@ void HamlibTransceiver::do_start ()
       rmode_t mb;
       pbwidth_t w {RIG_PASSBAND_NORMAL};
       pbwidth_t wb;
-      if (!rig_->caps->get_vfo && (rig_->caps->set_vfo || rig_has_vfo_op (rig_.data (), RIG_OP_TOGGLE)))
+      if ((!get_vfo_works_ || !rig_->caps->get_vfo)
+          && (rig_->caps->set_vfo || rig_has_vfo_op (rig_.data (), RIG_OP_TOGGLE)))
         {
           // Icom have deficient CAT protocol with no way of reading which
           // VFO is selected or if SPLIT is selected so we have to simply
@@ -381,7 +400,7 @@ void HamlibTransceiver::do_start ()
         {
           vfo_t v {RIG_VFO_A};  // assume RX always on VFO A/MAIN
 
-          if (rig_->caps->get_vfo)
+          if (get_vfo_works_ && rig_->caps->get_vfo)
             {
 #if WSJT_TRACE_CAT
               qDebug () << "HamlibTransceiver::init_rig rig_get_vfo current VFO";
@@ -431,7 +450,7 @@ void HamlibTransceiver::do_stop ()
 
 auto HamlibTransceiver::get_vfos () const -> std::tuple<vfo_t, vfo_t>
 {
-  if (rig_->caps->get_vfo)
+  if (get_vfo_works_ && rig_->caps->get_vfo)
     {
       vfo_t v;
 #if WSJT_TRACE_CAT
@@ -688,7 +707,7 @@ void HamlibTransceiver::poll ()
 #if defined (NDEBUG)
       rig_set_debug (RIG_DEBUG_ERR);
 #else
-      rig_set_debug (RIG_DEBUG_VERBOSE);
+      rig_set_debug (RIG_DEBUG_WARN);
 #endif
 #endif
 
@@ -697,7 +716,7 @@ void HamlibTransceiver::poll ()
       pbwidth_t w;
       split_t s;
 
-      if (rig_->caps->get_vfo)
+      if (get_vfo_works_ && rig_->caps->get_vfo)
         {
 #if WSJT_TRACE_CAT && WSJT_TRACE_CAT_POLLS
           qDebug () << "HamlibTransceiver::poll rig_get_vfo";
@@ -817,11 +836,15 @@ void HamlibTransceiver::poll ()
 
 #if !WSJT_TRACE_CAT_POLLS
 #if WSJT_HAMLIB_TRACE
-      rig_set_debug (RIG_DEBUG_TRACE);
-#elif defined (NDEBUG)
-      rig_set_debug (RIG_DEBUG_ERR);
+#if WSJT_HAMLIB_VERBOSE_TRACE
+  rig_set_debug (RIG_DEBUG_TRACE);
 #else
-      rig_set_debug (RIG_DEBUG_VERBOSE);
+  rig_set_debug (RIG_DEBUG_VERBOSE);
+#endif
+#elif defined (NDEBUG)
+  rig_set_debug (RIG_DEBUG_ERR);
+#else
+  rig_set_debug (RIG_DEBUG_WARN);
 #endif
 #endif
     }
