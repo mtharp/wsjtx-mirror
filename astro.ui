@@ -108,7 +108,7 @@
      <item row="0" column="0">
       <widget class="QRadioButton" name="rbFullTrack">
        <property name="text">
-        <string>Full tracking for DX Grid</string>
+        <string>Full Doppler to DX Grid</string>
        </property>
        <property name="checked">
         <bool>true</bool>
