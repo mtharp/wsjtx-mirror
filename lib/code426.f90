@@ -1,12 +1,27 @@
-program t1
+program code426
 
-  parameter (MZ=26,JZ=30)
-  integer ic(MZ,JZ),icsave(MZ)
+  parameter (MZ=26)                !Number of 4-FSK symbols
+  parameter (JZMAX=64)             !Desired number of codewords
+  integer ic(MZ,JZMAX),icsave(MZ)
   real c(MZ)
   character*12 arg
 
+  nargs=iargc()
+  if(nargs.ne.2) then
+     print*,'Usage:   code426 <nmsgs> <iters>'
+     print*,'Example: code426   64   10000000'
+     go to 999
+  endif
   call getarg(1,arg)
-  read(arg,*) nz
+  read(arg,*) nmsgs
+  call getarg(2,arg)
+  read(arg,*) iters
+
+  open(13,file='code426.out',status='unknown')
+
+  write(*,1002) nmsgs,iters
+  write(13,1002) nmsgs,iters
+1002 format('Nmsgs:',i4,'   Iters:',i10/(66('-')))
   
   do i=1,MZ                     !Create 4 mutually orthogonal codewords
      ic(i,1)=mod(i-1,4)
@@ -17,12 +32,13 @@ program t1
 
   do j=1,4                      !Write them out
      write(*,1000) j,MZ,ic(1:MZ,j)
+     write(13,1000) j,MZ,ic(1:MZ,j)
 1000 format(2i5,3x,26i2)
   enddo
  
-  do j=5,JZ                     !Find codewords up to j=JZ with max 
+  do j=5,nmsgs                  !Find codewords up to j=nmsgs with maximum
      npk=0                      !distance from all the rest
-     do i=1,nz
+     do i=1,iters
         call random_number(c)
         ic(1:MZ,j)=int(4*c)
         nd=MZ
@@ -35,6 +51,7 @@ program t1
         endif
      enddo
      write(*,1000) j,npk,ic(1:MZ,j)
+     write(13,1000) j,npk,ic(1:MZ,j)
   enddo
 
-end program t1
+999 end program code426
