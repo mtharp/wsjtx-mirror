@@ -1004,7 +1004,7 @@ void MainWindow::displayDialFrequency ()
       // potentially use the full 64-bit unsigned range.
       auto working_frequency = frequencies->data (frequencies->index (row, 0)).value<Frequency> ();
       auto offset = m_dialFreq > working_frequency ? m_dialFreq - working_frequency : working_frequency - m_dialFreq;
-      if ((offset < 10000u) or m_config.enable_VHF_features()) {
+      if ((offset < 10000u) or (m_config.enable_VHF_features() and offset < 1000000u)) {
         m_freqNominal=working_frequency;
         valid = true;
       }
@@ -1897,7 +1897,6 @@ void MainWindow::guiUpdate()
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz;
       int ndop,ndop00;
       m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid,m_freqMoon, &ndop, &ndop00);
-
       if(m_astroWidget->m_bDopplerTracking and (m_DopplerMethod==1)) {
 // All Doppler correction will be done here; DX station stays at nominal dial frequency.
         int ndopr=m_astroWidget->m_stepHz*qRound(double(ndop)/double(m_astroWidget->m_stepHz));
