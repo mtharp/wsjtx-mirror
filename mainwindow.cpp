@@ -1374,6 +1374,8 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfSplit=m_wideGraph->Fmin();
   jt9com_.nfb=m_wideGraph->Fmax();
+  if(m_mode=="JT9" or m_mode=="JT9+JT65" or
+     (m_mode=="JT65" and !m_config.enable_VHF_features())) m_tol=20;
   jt9com_.ntol=m_tol;
   if(jt9com_.nutc < m_nutc0) m_RxLog = 1;       //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
@@ -1416,7 +1418,6 @@ void MainWindow::decode()                                       //decode()
     size -= noffset;
   }
   memcpy(to, from, qMin(mem_jt9->size(), size));
-
   QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.remove (); // Allow jt9 to start
   decodeBusy(true);
 }
