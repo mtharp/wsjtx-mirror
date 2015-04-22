@@ -877,8 +877,10 @@ void MainWindow::p1Error()                                     //p1Error
 
 void MainWindow::uploadSpots()
 {
-    if(m_uploading)
+    if(m_uploading) {
+        qDebug() << "Previous upload has not completed, spots were lost";
         return;
+    }
 
     QString rfreq = QString("%1").arg(m_dialFreq + 0.001500, 0, 'f', 6);
     QString tfreq = QString("%1").arg(0.000001 * m_txFreq + m_dialFreq, 0, 'f', 6);

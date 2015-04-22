@@ -258,7 +258,6 @@ void WSPRNet::work()
     if (m_workCalls >= PARAM_TIMEOUT_NO_CALLS) {
         // Timeout period has elapsed, abort requests that are still running
         qDebug() << "Timeout, len(replyList) = " << replyList.size();
-        emit uploadStatus("Timeout");
         // Make a copy of the replyList (possible race condition with replyList)
         QList<QNetworkReply *> replyListCopy;
         for (int j = 0; j < replyList.size(); ++j)
@@ -274,6 +273,10 @@ void WSPRNet::work()
         QFile::remove(m_file);
         uploadTimer->stop();
         return;
+    } else {
+        // Update the message in the status bar
+        if ((m_workCalls % PARAM_SEND_NO_CALLS) == 0)
+            emit uploadStatus("Waiting for wsprnet.org");
     }
 
 }
