@@ -287,6 +287,7 @@ set (wsjt_FSRCS
   lib/fchisq.f90
   lib/fchisq65.f90
   lib/fil3.f90
+  lib/fil3c.f90
   lib/fil4.f90
   lib/fil6521.f90
   lib/filbig.f90
@@ -315,6 +316,7 @@ set (wsjt_FSRCS
   lib/jt4a.f90
   lib/jt65a.f90
   lib/lpf1.f90
+  lib/mixlpf.f90
   lib/moon2.f90
   lib/moondop.f90
   lib/morse.f90
@@ -343,6 +345,7 @@ set (wsjt_FSRCS
   lib/sync4.f90
   lib/sync9.f90
   lib/timer.f90
+  lib/timf2.f90
   lib/tm2.f90
   lib/toxyz.f90
   lib/twkfreq.f90

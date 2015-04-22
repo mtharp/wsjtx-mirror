@@ -678,6 +678,7 @@ void MainWindow::dataSink(qint64 frames)
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfb=m_wideGraph->Fmax();
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
+  if(m_mode=="WSPR") wspr_downsample_(jt9com_.d2,&k);
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
