@@ -688,7 +688,6 @@ void MainWindow::dataSink(qint64 frames)
     m_wideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
-  qDebug() << "A" << m_hsymStop << ihsym;
   if(ihsym == m_hsymStop) {
     m_dataAvailable=true;
     jt9com_.npts8=(ihsym*m_nsps)/16;
@@ -714,6 +713,16 @@ void MainWindow::dataSink(qint64 frames)
                                                            "_" + t2 + ".wav");
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
+
+      m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
+                                                           "_" + t2 + ".c2");
+      int len1=m_c2name.length();
+      char c2name[80];
+      strcpy(c2name,m_c2name.toLatin1());
+      int nsec=120;
+      int nbfo=1500;
+      double f0m1500=m_dialFreq + 0.000001*(nbfo - 1500);
+      savec2_(c2name,&nsec,&f0m1500,len1);
     }
   }
 }
