@@ -1,8 +1,8 @@
 #ifndef COMMONS_H
 #define COMMONS_H
 
-#define NSMAX 6827
-#define NTMAX 60
+#define NSMAX 6827                  //Enough FFT bins to hold 5 kHz bandwidth
+#define NTMAX 120                   //Maximum T/R period (s)
 #define RX_SAMPLE_RATE 12000
 
 extern struct FortranCommon {

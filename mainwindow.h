@@ -204,6 +204,8 @@ private slots:
   void networkError (QString const&);
   void on_ClrAvgButton_clicked();
 
+  void on_actionWSPR_triggered();
+
 private:
   void enable_DXCC_entity (bool on);
 

@@ -201,6 +201,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionJT65->setActionGroup(modeGroup);
   ui->actionJT9_JT65->setActionGroup(modeGroup);
   ui->actionJT4->setActionGroup(modeGroup);
+  ui->actionWSPR->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -441,7 +442,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_ntx=6;
   ui->txrb6->setChecked(true);
   if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and
-     m_mode!="JT9+JT65" and m_mode!="JT4") m_mode="JT9";
+     m_mode!="JT9+JT65" and m_mode!="JT4" and m_mode!="WSPR") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
 
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
@@ -452,6 +453,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode=="JT9W-1") on_actionJT9W_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
   if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
+  if(m_mode=="WSPR") on_actionWSPR_triggered();
 
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
   m_wideGraph->setMode(m_mode);
@@ -495,8 +497,12 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
   VHF_controls_visible(b);
 
-  m_hsymStop=173;
-  if(m_config.decode_at_52s()) m_hsymStop=181;
+  if(m_mode=="WSPR") {
+    m_hsymStop=396;
+  } else {
+    m_hsymStop=173;
+    if(m_config.decode_at_52s()) m_hsymStop=181;
+  }
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
   ui->actionJT9W_1->setEnabled (false);
 #endif
@@ -681,13 +687,18 @@ void MainWindow::dataSink(qint64 frames)
     m_wideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
+  qDebug() << "A" << m_hsymStop << ihsym;
   if(ihsym == m_hsymStop) {
     m_dataAvailable=true;
     jt9com_.npts8=(ihsym*m_nsps)/16;
     jt9com_.newdat=1;
-    jt9com_.nagain=0;
-    if(!m_config.decode_at_52s()) m_hsymStop=173;
-    if(m_config.decode_at_52s()) m_hsymStop=181;
+    jt9com_.nagain=0;    
+    if(m_mode=="WSPR") {
+      m_hsymStop=396;
+    } else {
+      m_hsymStop=173;
+      if(m_config.decode_at_52s()) m_hsymStop=181;
+    }
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
@@ -1357,6 +1368,8 @@ void MainWindow::msgAvgDecode2()
 void MainWindow::decode()                                       //decode()
 {
   if(!m_dataAvailable) return;
+  if(m_mode=="WSPR") return;
+
   ui->DecodeButton->setChecked (true);
   if(jt9com_.newdat==1 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
@@ -2814,7 +2827,6 @@ void MainWindow::on_actionJT4_triggered()
   m_TRperiod=60;
   m_nsps=6912;                   //For symspec only
   m_hsymStop=181;
-//  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
@@ -2839,6 +2851,27 @@ void MainWindow::on_actionJT4_triggered()
     ui->sbMinW->setValue(0);
   }
   if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
+}
+
+void MainWindow::on_actionWSPR_triggered()
+{
+  m_mode="WSPR";
+  m_modeTx="WSPR";
+  statusChanged();
+  m_TRperiod=120;
+  m_nsps=6912;                   //For symspec only
+  m_hsymStop=396;
+  m_toneSpacing=0.0;             //### ???###
+  mode_label->setStyleSheet("QLabel{background-color: #ff00ff}");
+  mode_label->setText(m_mode);
+  ui->actionWSPR->setChecked(true);
+  VHF_features_enabled(false);
+  ui->ClrAvgButton->setVisible(false);
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
+  m_wideGraph->setMode(m_mode);
+  m_wideGraph->setModeTx(m_modeTx);
+  ui->pbTxMode->setEnabled(false);
+  VHF_controls_visible(false);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)

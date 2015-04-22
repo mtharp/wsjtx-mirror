@@ -354,6 +354,7 @@ set (wsjt_FSRCS
   lib/xcor4.f90
   lib/zplt.f90
   lib/wavhdr.f90
+  lib/wspr_downsample.f90
   lib/zplot9.f90
   )
 
