@@ -84,26 +84,29 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
      xc(i)=0.
      if(j.ge.1 .and.j.le.NMAX) xc(i)=fac0*id2(j)
   enddo
-  ihsym=ihsym+1
+  if(ihsym.lt.184) ihsym=ihsym+1
 
   xc(0:nfft3-1)=w3(1:nfft3)*xc(0:nfft3-1)    !Apply window w3
   call four2a(xc,nfft3,1,-1,0)               !Real-to-complex FFT
 
+  n=min(184,ihsym)
   df3=12000.0/nfft3                   !JT9-1: 0.732 Hz = 0.42 * tone spacing
+!  i0=nint(1000.0/df3)
+  i0=0
   iz=min(NSMAX,nint(5000.0/df3))
   fac=(1.0/nfft3)**2
   do i=1,iz
-     j=i-1
+     j=i0+i-1
      if(j.lt.0) j=j+nfft3
      sx=fac*(real(cx(j))**2 + aimag(cx(j))**2)
-     if(ihsym.le.184) ss(ihsym,i)=sx
+     ss(n,i)=sx
      ssum(i)=ssum(i) + sx
      s(i)=1000.0*gain*sx
   enddo
 
   savg=ssum/ihsym
 
-  if(mod(ihsym,10).eq.0) then
+  if(mod(n,10).eq.0) then
      mode4=36
      nsmo=min(10*mode4,150)
      nsmo=4*nsmo
