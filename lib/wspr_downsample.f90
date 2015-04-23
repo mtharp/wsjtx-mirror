@@ -4,7 +4,7 @@ subroutine wspr_downsample(id2,k)
 !  id2       raw 16-bit integer data, 12000 Hz sample rate
 !  k         pointer to the most recent new data
 
-! Output (in common/c2com)
+! Output (in common/c0com)
 !  c0        complex data downsampled to 1500 Hz
 
   parameter (NMAX=120*12000)         !Total sample intervals per 30 minutes
@@ -18,8 +18,8 @@ subroutine wspr_downsample(id2,k)
   real*4 ssum(NSMAX)
   logical*1 lstrong(0:1023)               !Should be (0:512)
   integer*2 id2(NMAX)
-  complex c0(NDMAX),c2
-  common/c2com/c2(NDMAX)
+  complex c0
+  common/c0com/c0(NDMAX)
   data rms/999.0/,k0/99999999/,nfft3z/0/,nsps/8192/,nbfo/1500/
   save
 
@@ -71,8 +71,6 @@ subroutine wspr_downsample(id2,k)
      k1=k1+kstep1
      k8=k8+kstep1/8
   enddo
-
-  if(k8.eq.179712) c2=c0
 
 999 return
 end subroutine wspr_downsample
