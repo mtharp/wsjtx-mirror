@@ -792,14 +792,8 @@ void MainWindow::on_monitorButton_clicked (bool checked)
             }
         }
 
-      Q_EMIT m_config.sync_transceiver (true, checked); // gets
-                                                        // Configuration
-                                                        // in/out of
-                                                        // strict
-                                                        // split and
-                                                        // mode
-                                                        // checking
-
+//Get Configuration in/out of strict split and mode checking
+      Q_EMIT m_config.sync_transceiver (true, checked);
     }
   else
     {
@@ -2132,15 +2126,6 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
       decodedtext = decodedtext.string ().left (eom_pos + 1);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
     }
 
-  /*
-  //  if(decodedtext.indexOf("Tx")==6) return;        //Ignore Tx line
-  // int i4=t.mid(i1).length();
-  // if(i4>55) i4=55;
-  // QString t3=t.mid(i1,i4);
-  auto t3 = decodedtext.string ();
-  auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
-  if(t4.size () <5) return;             //Skip the rest if no decoded text
-*/
   auto t3 = decodedtext.string ();
   auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
   if(t4.size () <5) return;             //Skip the rest if no decoded text
@@ -3200,7 +3185,7 @@ void MainWindow::on_pbTxMode_clicked()
 void MainWindow::setXIT(int n)
 {
   m_XIT = 0;
-  if (m_config.split_mode ())
+  if (m_config.split_mode () and (m_mode != "JT4"))    //Don't use XIT in JT4 mode
     {
       m_XIT=(n/500)*500 - 1500;
     }
@@ -3215,7 +3200,6 @@ void MainWindow::setXIT(int n)
             }
         }
     }
-
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
 }
 
