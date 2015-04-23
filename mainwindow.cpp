@@ -495,6 +495,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
   VHF_controls_visible(b);
 
+  m_ntx=1;
+  ui->txrb1->setChecked(true);
+
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
@@ -999,6 +1002,7 @@ void MainWindow::displayDialFrequency ()
   // search working frequencies for one we are within 10kHz of
   auto frequencies = m_config.frequencies ();
   bool valid {false};
+  quint64 min_offset=99999999;
 
   for (int row = 0; row < frequencies->rowCount (); ++row) {
       // we need to do specific checks for above and below here to
@@ -1006,11 +1010,13 @@ void MainWindow::displayDialFrequency ()
       // potentially use the full 64-bit unsigned range.
       auto working_frequency = frequencies->data (frequencies->index (row, 0)).value<Frequency> ();
       auto offset = m_dialFreq > working_frequency ? m_dialFreq - working_frequency : working_frequency - m_dialFreq;
-      if ((offset < 10000u) or (m_config.enable_VHF_features() and offset < 1000000u)) {
-        m_freqNominal=working_frequency;
-        valid = true;
+      if(offset<min_offset) {
+         m_freqNominal=working_frequency;
+         min_offset=offset;
       }
-    }
+  }
+  if ((min_offset < 10000u) or (m_config.enable_VHF_features() and
+                                min_offset < 1000000u)) valid = true;
 
   ui->labDialFreq->setProperty ("oob", !valid);
   // the following sequence is necessary to update the style
@@ -1665,7 +1671,7 @@ void MainWindow::guiUpdate()
 
     float fTR=float((nsec%m_TRperiod))/m_TRperiod;
 //    if(g_iptt==0 and ((bTxTime and fTR<0.4) or m_tune )) {
-    if(g_iptt==0 and ((bTxTime and fTR<99) or m_tune )) {
+    if(g_iptt==0 and ((bTxTime and fTR<99) or m_tune )) {   //### allow late starts ###
       icw[0]=m_ncw;
       g_iptt = 1;
       setXIT (ui->TxFreqSpinBox->value ()); // ensure correct offset
@@ -1901,8 +1907,8 @@ void MainWindow::guiUpdate()
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz;
       int ndop,ndop00;
       m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid,m_freqMoon, &ndop, &ndop00);
-      if(m_freqNominal>144000000) {
-//Apply Doppler corrections only for 144 MHz and above
+      if(m_freqNominal>=50000000) {
+//Apply Doppler corrections only for 50 MHz and above
         if(m_astroWidget->m_bDopplerTracking and (m_DopplerMethod==1)) {
 // All Doppler correction will be done here; DX station stays at nominal dial frequency.
           int ndopr=m_astroWidget->m_stepHz*qRound(double(ndop)/double(m_astroWidget->m_stepHz));
@@ -1951,6 +1957,7 @@ void MainWindow::guiUpdate()
     } else if(m_monitoring) {
       tx_status_label->setStyleSheet("QLabel{background-color: #00ff00}");
       tx_status_label->setText("Receiving ");
+      transmitDisplay(false);
     } else if (!m_diskData) {
       tx_status_label->setStyleSheet("");
       tx_status_label->setText("");
@@ -3481,7 +3488,15 @@ void MainWindow::transmitDisplay (bool transmitting)
       ui->RxFreqSpinBox->setEnabled (QSY_allowed);
       ui->pbT2R->setEnabled (QSY_allowed);
     }
-    ui->TxFreqSpinBox->setEnabled (QSY_allowed);
+
+//    if(m_mode=="JT4" and (m_dialFreq/1000000 >= 432)) {
+    if(m_mode=="JT4") {
+      ui->TxFreqSpinBox->setValue(1000);
+      ui->TxFreqSpinBox->setEnabled (false);
+    } else {
+      ui->TxFreqSpinBox->setEnabled (QSY_allowed);
+    }
+
     ui->pbR2T->setEnabled (QSY_allowed);
     ui->cbTxLock->setEnabled (QSY_allowed);
 
