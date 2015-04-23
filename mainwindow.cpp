@@ -413,7 +413,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
     "-s", QApplication::applicationName () // shared memory key,
                                            // includes rig-name
 #ifdef NDEBUG
-      , "-w", "2"               //FFTW patience - release
+      , "-w", "1"               //FFTW patience - release
 #else
       , "-w", "1"               //FFTW patience - debug builds for speed
 #endif
