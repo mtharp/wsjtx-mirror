@@ -48,6 +48,7 @@ program code426
         if(nd.gt.npk) then
            npk=nd
            icsave=ic(1:MZ,j)    !Best candidate so far, save it
+           if(npk.ge.19) exit   !It won't get any better...
         endif
      enddo
      write(*,1000) j,npk,ic(1:MZ,j)
