@@ -82,7 +82,7 @@ void Astro::write_settings ()
 }
 
 void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 freqMoon,
-                        qint32* ndop, qint32* ndop00)
+                        qint32* ndop, qint32* ndop00, bool bTx)
 {
   double azsun,elsun,azmoon,elmoon,azmoondx,elmoondx;
   double ramoon,decmoon,dgrd,poloffset,xnr,techo;
@@ -95,16 +95,18 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 fre
   int nhr=t.time().hour();
   int nmin=t.time().minute();
   double sec=t.time().second() + 0.001*t.time().msec();
-  int isec=sec;
   double uth=nhr + nmin/60.0 + sec/3600.0;
   if(freqMoon < 1) freqMoon=144000000;
   int nfreq=freqMoon/1000000;
   double freq8=(double)freqMoon;
 
+  QDir dataDir = QStandardPaths::writableLocation (QStandardPaths::DataLocation);
+  QString fname = QDir::toNativeSeparators(dataDir.absoluteFilePath ("azel.dat"));
+
   astrosub_(&nyear, &month, &nday, &uth, &freq8, mygrid.toLatin1(),
             hisgrid.toLatin1(), &azsun, &elsun, &azmoon, &elmoon,
             &azmoondx, &elmoondx, &ntsky, ndop, ndop00, &ramoon, &decmoon,
-            &dgrd, &poloffset, &xnr, &techo, 6, 6);
+            &dgrd, &poloffset, &xnr, &techo, &bTx, fname.toLatin1(), 6, 6, fname.length());
 
   QString message;
   {
@@ -134,6 +136,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 fre
   }
   ui_->text_label->setText(message);
 
+  /*
   static QFile f {QDir {QStandardPaths::writableLocation (
             QStandardPaths::DataLocation)}.absoluteFilePath ("azel.dat")};
   if (!f.open (QIODevice::WriteOnly | QIODevice::Text)) {
@@ -185,6 +188,7 @@ void Astro::astroUpdate(QDateTime t, QString mygrid, QString hisgrid, qint64 fre
         << qSetFieldWidth (0) << ",Doppler";
   }
   f.close();
+  */
 }
 
 void Astro::on_cbDopplerTracking_toggled(bool b)

@@ -1900,7 +1900,8 @@ void MainWindow::guiUpdate()
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz;
       int ndop,ndop00;
-      m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid,m_freqMoon, &ndop, &ndop00);
+      m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid,m_freqMoon,
+                                 &ndop, &ndop00, m_transmitting);
 
 //Apply Doppler corrections only for 50 MHz and above
       if(m_freqNominal>=50000000) {
