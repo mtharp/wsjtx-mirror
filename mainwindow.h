@@ -203,6 +203,7 @@ private slots:
   void on_cbTx6_toggled(bool b);
   void networkError (QString const&);
   void on_ClrAvgButton_clicked();
+  void on_actionWSPR_triggered();
 
 private:
   void enable_DXCC_entity (bool on);
@@ -389,6 +390,7 @@ private:
   QString m_msgSent0;
   QString m_fileToSave;
   QString m_band;
+  QString m_c2name;
 
   QStringList m_prefix;
   QStringList m_suffix;
@@ -480,6 +482,9 @@ extern "C" {
 
   int fftwf_import_wisdom_from_filename(const char *);
   int fftwf_export_wisdom_to_filename(const char *);
+
+  void wspr_downsample_(short int d2[], int* k);
+  void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq, int len1);
 }
 
 #endif // MAINWINDOW_H
