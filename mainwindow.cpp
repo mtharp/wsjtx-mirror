@@ -361,7 +361,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_MinW=0;
   m_nSubMode=0;
   m_tol=500;
-  m_DTtol=0.2;
+  m_DTtol=0.5;
   m_wideGraph->setTol(m_tol);
   m_bShMsgs=false;
   m_bDopplerTracking0=false;
@@ -594,7 +594,7 @@ void MainWindow::readSettings()
   m_nSubMode=m_settings->value("SubMode",0).toInt();
   ui->sbSubmode->setValue(m_nSubMode);
   ui->sbMinW->setMaximum(m_nSubMode);
-  m_DTtol=m_settings->value("DTtol",0.2).toFloat();
+  m_DTtol=m_settings->value("DTtol",0.5).toFloat();
   ui->sbDT->setValue(m_DTtol);
   ui->sbTol->setValue(m_settings->value("Ftol",4).toInt());
   m_bEME=m_settings->value("EME",false).toBool();
