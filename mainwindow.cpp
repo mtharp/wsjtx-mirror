@@ -963,23 +963,22 @@ void MainWindow::qsy (Frequency f)
           m_repeatMsg=0;
           m_secBandChanged=QDateTime::currentMSecsSinceEpoch()/1000;
 
-          QFile f2 {m_dataDir.absoluteFilePath ("ALL.TXT")};
-          if (f2.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-            {
+          if(m_dialFreq/1000000 < 30) {
+// Write freq changes to ALL.TXT only below 30 MHz.
+            QFile f2 {m_dataDir.absoluteFilePath ("ALL.TXT")};
+            if (f2.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
               QTextStream out(&f2);
               out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
                   << "  " << (m_dialFreq / 1.e6) << " MHz  " << m_mode << endl;
               f2.close();
-            }
-          else
-            {
+            } else {
               msgBox("Cannot open \"" + f2.fileName () + "\" for append:" + f2.errorString ());
             }
-          if (m_config.spot_to_psk_reporter ())
-            {
-              pskSetLocal ();
-            }
+          }
 
+          if (m_config.spot_to_psk_reporter ()) {
+            pskSetLocal ();
+          }
           displayDialFrequency ();
           statusChanged();
           m_wideGraph->setDialFreq(m_dialFreq / 1.e6);
@@ -2130,14 +2129,10 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
   if(t4.size () <5) return;             //Skip the rest if no decoded text
 
-
   QString hiscall;
   QString hisgrid;
   decodedtext.deCallAndGrid(/*out*/hiscall,hisgrid);
-  if (!Radio::is_callsign (hiscall))
-    {
-      return;
-    }
+  if (!Radio::is_callsign (hiscall)) return;
 
   // only allow automatic mode changes between JT9 and JT65, and when not transmitting
   if (!m_transmitting and m_mode != "JT4") {
@@ -2151,8 +2146,8 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
           ui->pbTxMode->setText("Tx JT65  #");
           m_wideGraph->setModeTx(m_modeTx);
         }
-    } else if ((decodedtext.isJT9 () && m_modeTx != "JT9") ||
-               (decodedtext.isJT65 () && m_modeTx != "JT65")) {
+    } else if ((decodedtext.isJT9 () and m_modeTx != "JT9" and m_mode != "JT4") or
+               (decodedtext.isJT65 () and m_modeTx != "JT65" and m_mode != "JT4")) {
       // if we are not allowing mode change then don't process decode
       return;
     }
@@ -2161,17 +2156,14 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   QString firstcall = decodedtext.call();
   // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
   // is true or CTRL is held down
-  if ((firstcall!=m_config.my_callsign () && firstcall != m_baseCall) || m_lockTxFreq or ctrl)
-    {
-      if (ui->TxFreqSpinBox->isEnabled ())
-        {
-          ui->TxFreqSpinBox->setValue(frequency);
-        }
-      else
-        {
-          return;
-        }
+  if ((firstcall!=m_config.my_callsign () and firstcall != m_baseCall) or
+      m_lockTxFreq or ctrl) {
+    if (ui->TxFreqSpinBox->isEnabled ()) {
+      ui->TxFreqSpinBox->setValue(frequency);
+    } else if(m_mode!="JT4") {
+      return;
     }
+  }
 
   int i9=m_QSOText.indexOf(decodedtext.string());
   if (i9<0 and !decodedtext.isTX())
