@@ -694,9 +694,7 @@ void MainWindow::dataSink(qint64 frames)
     m_wideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
-  qDebug() << "A" << m_hsymStop << ihsym;
   if(ihsym == m_hsymStop) {
-    qDebug() << "B";
     m_dataAvailable=true;
     jt9com_.npts8=(ihsym*m_nsps)/16;
     jt9com_.newdat=1;
@@ -732,7 +730,6 @@ void MainWindow::dataSink(qint64 frames)
       int nbfo=1500;
       double f0m1500=m_dialFreq + 0.000001*(nbfo - 1500);
       savec2_(c2name,&nsec,&f0m1500,len1);
-      qDebug() << "C" << m_c2name;
     }
   }
 }
