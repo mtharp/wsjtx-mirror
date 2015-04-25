@@ -501,7 +501,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->txrb1->setChecked(true);
 
   if(m_mode=="WSPR") {
-    m_hsymStop=181;                      //### should be 396
+    m_hsymStop=396;
   } else {
     m_hsymStop=173;
     if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -684,7 +684,7 @@ void MainWindow::dataSink(qint64 frames)
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfb=m_wideGraph->Fmax();
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&px,s,&df3,&ihsym,&npts8);
-//  if(m_mode=="WSPR") wspr_downsample_(jt9com_.d2,&k);                //###
+  if(m_mode=="WSPR") wspr_downsample_(jt9com_.d2,&k);                //###
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
@@ -694,21 +694,20 @@ void MainWindow::dataSink(qint64 frames)
     m_wideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
+  qDebug() << "A" << m_hsymStop << ihsym;
   if(ihsym == m_hsymStop) {
+    qDebug() << "B";
     m_dataAvailable=true;
     jt9com_.npts8=(ihsym*m_nsps)/16;
     jt9com_.newdat=1;
     jt9com_.nagain=0;
 
     if(m_mode=="WSPR") {
-      m_hsymStop=181;                                     //### SHould be 396
+      m_hsymStop=396;
     } else {
       m_hsymStop=173;
       if(m_config.decode_at_52s()) m_hsymStop=181;
     }
-
-    if(!m_config.decode_at_52s()) m_hsymStop=173;
-    if(m_config.decode_at_52s()) m_hsymStop=181;
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
@@ -724,8 +723,6 @@ void MainWindow::dataSink(qint64 frames)
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
 
-/* ### disabled ...
-
       m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
                                                            "_" + t2 + ".c2");
       int len1=m_c2name.length();
@@ -735,8 +732,7 @@ void MainWindow::dataSink(qint64 frames)
       int nbfo=1500;
       double f0m1500=m_dialFreq + 0.000001*(nbfo - 1500);
       savec2_(c2name,&nsec,&f0m1500,len1);
-*/
-
+      qDebug() << "C" << m_c2name;
     }
   }
 }
@@ -1388,7 +1384,10 @@ void MainWindow::msgAvgDecode2()
 void MainWindow::decode()                                       //decode()
 {
   if(!m_dataAvailable) return;
-  if(m_mode=="WSPR") return;                              //### no WSPR decoder, yet
+  if(m_mode=="WSPR") {
+    qDebug() << "No WSPR decoder, yet...";
+    return;
+  }
 
   ui->DecodeButton->setChecked (true);
   if(jt9com_.newdat==1 && (!m_diskData)) {
@@ -2879,7 +2878,7 @@ void MainWindow::on_actionWSPR_triggered()
   m_modulator.setPeriod(m_TRperiod);
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
-  m_hsymStop=181;                                           //### Should be 396
+  m_hsymStop=396;
   m_toneSpacing=0.0;             //### ???###
   mode_label->setStyleSheet("QLabel{background-color: #ff00ff}");
   mode_label->setText(m_mode);
