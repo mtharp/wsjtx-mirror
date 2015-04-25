@@ -506,6 +506,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
     m_hsymStop=173;
     if(m_config.decode_at_52s()) m_hsymStop=181;
   }
+  m_modulator.setPeriod(60);
 
 //### Remove this stuff!
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
@@ -2718,6 +2719,8 @@ void MainWindow::on_actionJT9_1_triggered()
   if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -2742,6 +2745,8 @@ void MainWindow::on_actionJT9W_1_triggered()
   if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -2771,6 +2776,8 @@ void MainWindow::on_actionJT65_triggered()
   if(m_modeTx!="JT65") on_pbTxMode_clicked();
   statusChanged();
   m_TRperiod=60;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -2806,6 +2813,8 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_nSubMode=0;                    //Dual-mode always means JT9 and JT65A
   statusChanged();
   m_TRperiod=60;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -2830,6 +2839,8 @@ void MainWindow::on_actionJT4_triggered()
   m_modeTx="JT4";
   statusChanged();
   m_TRperiod=60;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=181;
 //  if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -2865,6 +2876,8 @@ void MainWindow::on_actionWSPR_triggered()
   m_modeTx="WSPR";
   statusChanged();
   m_TRperiod=120;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=181;                                           //### Should be 396
   m_toneSpacing=0.0;             //### ???###
