@@ -728,9 +728,32 @@ void MainWindow::dataSink(qint64 frames)
       strcpy(c2name,m_c2name.toLatin1());
       int nsec=120;
       int nbfo=1500;
-      double f0m1500=m_dialFreq + 0.000001*(nbfo - 1500);
+      double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
       savec2_(c2name,&nsec,&f0m1500,len1);
     }
+    /*
+    lab3->setStyleSheet("QLabel{background-color:cyan}");
+    lab3->setText("Decoding");
+    m_rxdone=true;
+    loggit("Start Decoder");
+    QString cmnd;
+    if(m_diskData) {
+      t2.sprintf(" -f %.6f ",f0m1500);
+
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
+      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
+          m_path + '"';
+    } else {
+      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
+    }
+    QString t3=cmnd;
+    int i1=cmnd.indexOf("/wsprd ");
+    QString t4;
+    t4.sprintf("-t %.4f -b %.2f ",0.001*m_tBlank,0.01*m_fBlank);
+    cmnd=t3.mid(0,i1+7) + t4 + t3.mid(i1+7);
+    qDebug() << cmnd;
+    p1.start(QDir::toNativeSeparators(cmnd));
+    */
   }
 }
 
@@ -1730,27 +1753,13 @@ void MainWindow::guiUpdate()
     if(m_tune) {
       itone[0]=0;
     } else {
-      if(m_modeTx=="JT4") gen4_(message
-                                , &ichk
-                                , msgsent
-                                , const_cast<int *> (itone)
-                                , &m_currentMessageType
-                                , len1
-                                , len1);
-      if(m_modeTx=="JT9") gen9_(message
-                                  , &ichk
-                                  , msgsent
-                                  , const_cast<int *> (itone)
-                                  , &m_currentMessageType
-                                  , len1
-                                  , len1);
-      if(m_modeTx=="JT65") gen65_(message
-                                  , &ichk
-                                  , msgsent
-                                  , const_cast<int *> (itone)
-                                  , &m_currentMessageType
-                                  , len1
-                                  , len1);
+      if(m_modeTx=="JT4") gen4_(message, &ichk , msgsent, const_cast<int *> (itone),
+                                &m_currentMessageType, len1, len1);
+      if(m_modeTx=="JT9") gen9_(message, &ichk, msgsent, const_cast<int *> (itone),
+                                &m_currentMessageType, len1, len1);
+      if(m_modeTx=="JT65") gen65_(message, &ichk, msgsent, const_cast<int *> (itone),
+                                  &m_currentMessageType, len1, len1);
+//      if(m_mode=="WSPR") genwsprx_(message, const_cast<int *> (itone),len1);
     }
     msgsent[22]=0;
     m_currentMessage = QString::fromLatin1(msgsent);
