@@ -384,12 +384,13 @@ void WideGraph::on_zeroSlider_valueChanged(int value)                 //Zero
 void WideGraph::on_gain2dSlider_valueChanged(int value)               //Gain2
 {
   ui->widePlot->setPlot2dGain(value);
-//  ui->widePlot->draw(swide);
+  ui->widePlot->draw(swide,false);
 }
 
 void WideGraph::on_zero2dSlider_valueChanged(int value)               //Zero2
 {
   ui->widePlot->setPlot2dZero(value);
+  ui->widePlot->draw(swide,false);
 }
 
 void WideGraph::setTol(int n)                                         //setTol
