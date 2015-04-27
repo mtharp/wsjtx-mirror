@@ -1,4 +1,4 @@
-subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
+subroutine symspec(k,ntrperiod,nsps,ingain,nminw,pxdb,s,df3,ihsym,npts8)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -25,6 +25,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   real*4 tmp(NSMAX)
   complex cx(0:MAXFFT3/2)
   integer*2 id2
+  integer nch(7)
 
   character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,          &
@@ -35,6 +36,7 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
 
   common/jt9w/syellow(NSMAX)
   data rms/999.0/,k0/99999999/,nfft3z/0/
+  data nch/1,2,4,9,18,36,72/
   equivalence (xc,cx)
   save
 
@@ -105,11 +107,13 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   savg=ssum/ihsym
 
   if(mod(ihsym,10).eq.0) then
-     mode4=36
+     mode4=nch(nminw+1)
      nsmo=min(10*mode4,150)
      nsmo=4*nsmo
      call flat1(savg,iz,nsmo,syellow)
-     if(mode4.ge.9) call smo(syellow,iz,tmp,mode4)
+     if(mode4.ge.2) call smo(syellow,iz,tmp,mode4)
+     if(mode4.ge.2) call smo(syellow,iz,tmp,mode4)
+     syellow(1:250)=0.
      ia=500./df3
      ib=2700.0/df3
      smin=minval(syellow(ia:ib))

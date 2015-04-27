@@ -32,6 +32,8 @@ public:
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
+  bool    m_bScaleOK;
+
   void draw(float swide[], bool bScroll);		//Update the waterfall
   void SetRunningState(bool running);
   void setPlotZero(int plotZero);

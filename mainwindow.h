@@ -460,7 +460,7 @@ extern int ptt(int nport, int ntx, int* iptt, int* nopen);
 
 extern "C" {
   //----------------------------------------------------- C and Fortran routines
-  void symspec_(int* k, int* ntrperiod, int* nsps, int* ingain,
+  void symspec_(int* k, int* ntrperiod, int* nsps, int* ingain, int* minw,
                 float* px, float s[], float* df3, int* nhsym, int* npts8);
 
   void gen4_(char* msg, int* ichk, char* msgsent, int itone[],

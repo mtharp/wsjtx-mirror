@@ -37,6 +37,7 @@ CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   m_Percent2DScreen = 30;	//percent of screen used for 2D display
   m_txFreq=0;
   m_fftBinWidth=1500.0/2048.0;
+  m_bScaleOK=false;
 }
 
 CPlotter::~CPlotter() { }                                      // Destructor
@@ -159,7 +160,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
       }
     }
 
-    if(m_bLinearAvg) {                                      //Linear Avg
+    if(m_bLinearAvg) {                                   //Linear Avg (yellow)
       float sum=0.0;
       int j=j0+m_binsPerPixel*i;
       for(int k=0; k<m_binsPerPixel; k++) {
@@ -201,6 +202,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     painter2D.drawText(x1-4,y,"73");
   }
   update();                    //trigger a new paintEvent
+  m_bScaleOK=true;
 }
 
 void CPlotter::UTCstr()                                              //UTCstr
