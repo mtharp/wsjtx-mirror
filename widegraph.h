@@ -40,6 +40,7 @@ public:
   void   setLockTxFreq(bool b);
   bool   flatten();
   void   setTol(int n);
+  int    smoothYellow();
 
 signals:
   void freezeDecode2(int n);
@@ -70,6 +71,8 @@ private slots:
   void on_gain2dSlider_valueChanged(int value);
   void on_zero2dSlider_valueChanged(int value);
 
+  void on_smoSpinBox_valueChanged(int n);
+
 private:
   void   readPalette();
 
@@ -88,6 +91,7 @@ private:
   qint32 m_fMin;
   qint32 m_fMax;
   qint32 m_nSubMode;
+  qint32 m_nsmo;
 
   bool   m_lockTxFreq;
   bool   m_bFlatten;

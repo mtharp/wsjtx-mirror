@@ -53,6 +53,7 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->widePlot->setFlatten(m_bFlatten);
   ui->widePlot->setBreadth(m_settings->value("PlotWidth",1000).toInt());
   ui->bppSpinBox->setValue(n);
+  ui->smoSpinBox->setValue(m_settings->value("SmoothYellow",1).toInt());
   m_waterfallAvg = m_settings->value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->setCurrent(m_settings->value("Current",false).toBool());
@@ -111,6 +112,7 @@ void WideGraph::saveSettings()                                           //saveS
   m_settings->setValue ("Plot2dZero", ui->widePlot->plot2dZero());
   m_settings->setValue ("PlotWidth", ui->widePlot->plotWidth ());
   m_settings->setValue ("BinsPerPixel", ui->bppSpinBox->value ());
+  m_settings->setValue ("SmoothYellow", ui->smoSpinBox->value ());
   m_settings->setValue ("WaterfallAvg", ui->waterfallAvgSpinBox->value ());
   m_settings->setValue ("Current", ui->widePlot->current());
   m_settings->setValue ("Cumulative", ui->widePlot->cumulative());
@@ -398,4 +400,14 @@ void WideGraph::setTol(int n)                                         //setTol
   ui->widePlot->setTol(n);
   ui->widePlot->DrawOverlay();
   ui->widePlot->update();
+}
+
+void WideGraph::on_smoSpinBox_valueChanged(int n)
+{
+  m_nsmo=n;
+}
+
+int WideGraph::smoothYellow()
+{
+  return m_nsmo;
 }
