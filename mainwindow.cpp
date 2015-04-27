@@ -1448,6 +1448,10 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nsubmode=m_nSubMode;
   jt9com_.minw=m_MinW;
   jt9com_.nclearave=m_nclearave;
+  if(m_nclearave!=0) {
+    QFile f(m_config.temp_dir ().absoluteFilePath ("avemsg.txt"));
+    f.remove();
+  }
   jt9com_.dttol=m_DTtol;
   jt9com_.emedelay=0.0;
   if(m_bEME) jt9com_.emedelay=2.5;
