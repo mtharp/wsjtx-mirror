@@ -611,7 +611,8 @@ bool Configuration::enable_VHF_features () const {return m_->enable_VHF_features
 bool Configuration::decode_at_52s () const {return m_->decode_at_52s_;}
 bool Configuration::split_mode () const
 {
-  return !m_->rig_is_dummy_ and m_->rig_params_.split_mode != TransceiverFactory::split_mode_none;
+  return !m_->rig_is_dummy_ and
+      (m_->rig_params_.split_mode != TransceiverFactory::split_mode_none);
 }
 QString Configuration::udp_server_name () const {return m_->udp_server_name_;}
 auto Configuration::udp_server_port () const -> port_type {return m_->udp_server_port_;}

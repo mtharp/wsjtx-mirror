@@ -2171,7 +2171,6 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   QString hiscall;
   QString hisgrid;
   decodedtext.deCallAndGrid(/*out*/hiscall,hisgrid);
-
   if (!Radio::is_callsign (hiscall) // not interested if not from QSO partner
       && !(t4.size () == 7          // unless it is of the form
            && (t4.at (5) == m_baseCall // "<our-call> 73"
