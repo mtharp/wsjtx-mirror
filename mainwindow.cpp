@@ -552,6 +552,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("SubMode",ui->sbSubmode->value());
   m_settings->setValue("DTtol",m_DTtol);
   m_settings->setValue("Ftol",ui->sbTol->value());
+  m_settings->setValue("MinSync",m_minSync);
   m_settings->setValue("EME",m_bEME);
   m_settings->setValue ("DialFreq", QVariant::fromValue(m_lastMonitoredFrequency));
   m_settings->setValue("InGain",m_inGain);
@@ -606,6 +607,7 @@ void MainWindow::readSettings()
   m_DTtol=m_settings->value("DTtol",0.5).toFloat();
   ui->sbDT->setValue(m_DTtol);
   ui->sbTol->setValue(m_settings->value("Ftol",4).toInt());
+  ui->syncSpinBox->setValue(m_settings->value("MinSync",0).toInt());
   m_bEME=m_settings->value("EME",false).toBool();
   ui->cbEME->setChecked(m_bEME);
   m_MinW=m_settings->value("minW",0).toInt();
@@ -1448,6 +1450,7 @@ void MainWindow::decode()                                       //decode()
   jt9com_.dttol=m_DTtol;
   jt9com_.emedelay=0.0;
   if(m_bEME) jt9com_.emedelay=2.5;
+  jt9com_.minSync=m_minSync;
 
   strncpy(jt9com_.datetime, m_dateTime.toLatin1(), 20);
   strncpy(jt9com_.mycall, (m_config.my_callsign()+"            ").toLatin1(),12);
@@ -3627,6 +3630,7 @@ void::MainWindow::VHF_controls_visible(bool b)
   ui->sbDT->setVisible(b);
   ui->labTol->setVisible(b);
   ui->sbTol->setVisible(b);
+  ui->syncSpinBox->setVisible(b);
 }
 
 void::MainWindow::VHF_features_enabled(bool b)
@@ -3786,4 +3790,9 @@ void MainWindow::networkError (QString const& e)
       // retry server lookup
       m_messageClient->set_server (m_config.udp_server_name ());
     }
+}
+
+void MainWindow::on_syncSpinBox_valueChanged(int n)
+{
+  m_minSync=n;
 }

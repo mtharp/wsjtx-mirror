@@ -29,8 +29,9 @@ subroutine symspec(k,ntrperiod,nsps,ingain,pxdb,s,df3,ihsym,npts8)
   character datetime*20,mycall*12,mygrid*6,hiscall*12,hisgrid*6
   common/jt9com/ss(184,NSMAX),savg(NSMAX),id2(NMAX),nutc,ndiskdat,          &
        ntr,mousefqso,newdat,npts8a,nfa,nfsplit,nfb,ntol,kin,nzhsym,         &
-       nsubmode,nagain,ndepth,ntxmode,nmode,minw,nclearave,emedelay,        &
-       dttol,nlist,listutc(10),datetime,mycall,mygrid,hiscall,hisgrid
+       nsubmode,nagain,ndepth,ntxmode,nmode,minw,nclearave,minsync,         &
+       emedelay,dttol,nlist,listutc(10),datetime,mycall,mygrid,             &
+       hiscall,hisgrid
 
   common/jt9w/syellow(NSMAX)
   data rms/999.0/,k0/99999999/,nfft3z/0/

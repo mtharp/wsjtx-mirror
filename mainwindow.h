@@ -204,6 +204,7 @@ private slots:
   void networkError (QString const&);
   void on_ClrAvgButton_clicked();
   void on_actionWSPR_triggered();
+  void on_syncSpinBox_valueChanged(int n);
 
 private:
   void enable_DXCC_entity (bool on);
@@ -292,6 +293,7 @@ private:
   qint32  m_nclearave;
   qint32  m_DopplerMethod;
   qint32  m_DopplerMethod0;
+  qint32  m_minSync;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

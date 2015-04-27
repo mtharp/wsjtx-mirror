@@ -28,6 +28,7 @@ extern struct FortranCommon {
   int nmode;
   int minw;
   int nclearave;
+  int minSync;
   float emedelay;
   float dttol;
   int nlist;
