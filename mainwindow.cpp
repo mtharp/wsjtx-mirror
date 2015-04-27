@@ -3547,14 +3547,12 @@ void MainWindow::pskSetLocal ()
                                   , 1
                                   , Qt::MatchExactly);
   QString antenna_description;
-  if (!matches.isEmpty ())
-    {
-      antenna_description = stations->index (matches.first ().row (), 2).data ().toString ();
-    }
-  psk_Reporter->setLocalStation(
-                                m_config.my_callsign ()
-                                , m_config.my_grid ()
-                                , antenna_description, QString {"WSJT-X v" + version() + " " + m_revision}.simplified ());
+  if (!matches.isEmpty ()) {
+    antenna_description = stations->index (matches.first ().row (), 2).data ().toString ();
+  }
+  psk_Reporter->setLocalStation(m_config.my_callsign (), m_config.my_grid (),
+        antenna_description, QString {"WSJT-X v" + version() + " " +
+        m_revision}.simplified ());
 }
 
 void MainWindow::transmitDisplay (bool transmitting)
@@ -3574,18 +3572,19 @@ void MainWindow::transmitDisplay (bool transmitting)
       ui->pbT2R->setEnabled (QSY_allowed);
     }
 
-//    if(m_mode=="JT4" and (m_dialFreq/1000000 >= 432)) {
-    if(m_mode=="JT4") {
+    if(m_mode=="JT4" and (m_dialFreq/1000000 >= 432)) {
+//    if(m_mode=="JT4") {
       ui->TxFreqSpinBox->setValue(1000);
       ui->TxFreqSpinBox->setEnabled (false);
+      ui->cbTxLock->setChecked(false);
+      ui->cbTxLock->setEnabled(false);
     } else {
       ui->TxFreqSpinBox->setEnabled (QSY_allowed);
+      ui->pbR2T->setEnabled (QSY_allowed);
+      ui->cbTxLock->setEnabled (QSY_allowed);
     }
 
-    ui->pbR2T->setEnabled (QSY_allowed);
-    ui->cbTxLock->setEnabled (QSY_allowed);
-
-      // only allow +2kHz when not transmitting or if TX QSYs are allowed
+      // Allow +2kHz only when not transmitting or if TX QSYs are allowed
     ui->cbPlus2kHz->setEnabled (!transmitting || m_config.tx_QSY_allowed ());
 
       // the following are always disallowed in transmit

@@ -29,6 +29,7 @@ Astro::Astro(QSettings * settings, QWidget * parent)
   setWindowTitle(QApplication::applicationName () + " - " + tr ("Astronomical Data"));
   setStyleSheet ("QWidget {background: white;}");
   read_settings ();
+  m_Hz=0;
   ui_->text_label->clear();
 }
 
@@ -232,7 +233,6 @@ void Astro::on_rb10Hz_clicked()
 void Astro::on_rb100Hz_clicked()
 {
   m_stepHz=100;
-
 }
 
 void Astro::on_cbRxTrack_toggled(bool b)
