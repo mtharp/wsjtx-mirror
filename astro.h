@@ -31,6 +31,7 @@ public:
 
   qint32 m_DopplerMethod;
   qint32 m_kHz;
+  qint32 m_Hz;
   qint32 m_stepHz;
 
 protected:
@@ -47,6 +48,7 @@ private slots:
   void on_cbRxTrack_toggled(bool b);
   void on_cbTxTrack_toggled(bool b);
   void on_kHzSpinBox_valueChanged(int n);
+  void on_HzSpinBox_valueChanged(int n);
 
 private:
   void read_settings ();

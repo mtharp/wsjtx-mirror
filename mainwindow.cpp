@@ -1921,11 +1921,11 @@ void MainWindow::guiUpdate()
        (m_DopplerMethod==0 and m_DopplerMethod0>0)) {
 //Doppler tracking has just been turned off.  Reset dial frequency to "nominal + kHz"
       if(m_transmitting) {
-        m_dialFreqTx=m_freqNominal + 1000*m_astroWidget->m_kHz;
+        m_dialFreqTx=m_freqNominal + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
         ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreqTx));
         Q_EMIT m_config.transceiver_tx_frequency (m_dialFreqTx);
       } else {
-        f=m_freqNominal + 1000*m_astroWidget->m_kHz;
+        f=m_freqNominal + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
         Q_EMIT m_config.transceiver_frequency(f);
       }
     }
@@ -1936,7 +1936,7 @@ void MainWindow::guiUpdate()
   if(nsec != m_sec0) {                                                //Once per second
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
-      m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz;
+      m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
       int ndop,ndop00;
       m_astroWidget->astroUpdate(t, m_config.my_grid (), m_hisGrid,m_freqMoon,
                                  &ndop, &ndop00, m_transmitting);
@@ -1957,11 +1957,11 @@ void MainWindow::guiUpdate()
           }
 
           if(m_transmitting) {
-            m_dialFreqTx=m_freqNominal + 1000*m_astroWidget->m_kHz - ndopr;
+            m_dialFreqTx=m_freqNominal + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz - ndopr;
             ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreqTx));
             Q_EMIT m_config.transceiver_tx_frequency (m_dialFreqTx);
           } else {
-            m_dialFreq=m_freqNominal + 1000*m_astroWidget->m_kHz + ndopr;
+            m_dialFreq=m_freqNominal + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz + ndopr;
             ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
             Q_EMIT m_config.transceiver_frequency(m_dialFreq);
           }

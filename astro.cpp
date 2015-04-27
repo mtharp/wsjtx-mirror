@@ -195,7 +195,7 @@ void Astro::on_cbDopplerTracking_toggled(bool b)
 {
   QRect g=this->geometry();
   if(b) {
-    g.setWidth(460);
+    g.setWidth(430);
   } else {
     g.setWidth(200);
   }
@@ -248,4 +248,9 @@ void Astro::on_cbTxTrack_toggled(bool b)
 void Astro::on_kHzSpinBox_valueChanged(int n)
 {
   m_kHz=n;
+}
+
+void Astro::on_HzSpinBox_valueChanged(int n)
+{
+  m_Hz=n;
 }
