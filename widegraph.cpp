@@ -53,7 +53,8 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->widePlot->setFlatten(m_bFlatten);
   ui->widePlot->setBreadth(m_settings->value("PlotWidth",1000).toInt());
   ui->bppSpinBox->setValue(n);
-  ui->smoSpinBox->setValue(m_settings->value("SmoothYellow",1).toInt());
+  m_nsmo=m_settings->value("SmoothYellow",1).toInt();
+  ui->smoSpinBox->setValue(m_nsmo);
   m_waterfallAvg = m_settings->value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
   ui->widePlot->setCurrent(m_settings->value("Current",false).toBool());
