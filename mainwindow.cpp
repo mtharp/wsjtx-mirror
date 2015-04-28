@@ -724,6 +724,7 @@ void MainWindow::dataSink(qint64 frames)
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
 
+/*
       m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
                                                            "_" + t2 + ".c2");
       int len1=m_c2name.length();
@@ -733,6 +734,7 @@ void MainWindow::dataSink(qint64 frames)
       int nbfo=1500;
       double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
       savec2_(c2name,&nsec,&f0m1500,len1);
+*/
     }
     /*
     lab3->setStyleSheet("QLabel{background-color:cyan}");

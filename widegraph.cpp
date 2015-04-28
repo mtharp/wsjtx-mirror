@@ -285,9 +285,15 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
   ui->widePlot->setCurrent(false);
   ui->widePlot->setCumulative(false);
   ui->widePlot->setLinearAvg(false);
+  ui->smoSpinBox->setEnabled(false);
+  ui->labSmooth->setEnabled(false);
   if(arg1=="Current") ui->widePlot->setCurrent(true);
   if(arg1=="Cumulative") ui->widePlot->setCumulative(true);
-  if(arg1=="Linear Avg") ui->widePlot->setLinearAvg(true);
+  if(arg1=="Linear Avg") {
+    ui->widePlot->setLinearAvg(true);
+    ui->smoSpinBox->setEnabled(true);
+    ui->labSmooth->setEnabled(true);
+  }
 }
 
 void WideGraph::on_fSplitSpinBox_valueChanged(int n)              //fSplit

@@ -61,9 +61,8 @@ void Astro::read_settings ()
   m_kHz=settings_->value("kHzAdd",100).toInt();
   ui_->kHzSpinBox->setValue(m_kHz);
   m_bRxAudioTrack=settings_->value("RxAudioTrack",false).toBool();
-  ui_->cbRxTrack->setChecked(m_bRxAudioTrack);
   m_bTxAudioTrack=settings_->value("TxAudioTrack",false).toBool();
-  ui_->cbTxTrack->setChecked(m_bTxAudioTrack);
+  ui_->cbTxAudioTrack->setChecked(m_bTxAudioTrack);
   move (settings_->value ("window/pos", pos ()).toPoint ());
   settings_->endGroup ();
 }
@@ -235,12 +234,7 @@ void Astro::on_rb100Hz_clicked()
   m_stepHz=100;
 }
 
-void Astro::on_cbRxTrack_toggled(bool b)
-{
-  m_bRxAudioTrack=b;
-}
-
-void Astro::on_cbTxTrack_toggled(bool b)
+void Astro::on_cbTxAudioTrack_toggled(bool b)
 {
   m_bTxAudioTrack=b;
 }

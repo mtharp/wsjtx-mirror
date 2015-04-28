@@ -45,8 +45,7 @@ private slots:
   void on_rb1Hz_clicked();
   void on_rb10Hz_clicked();
   void on_rb100Hz_clicked();
-  void on_cbRxTrack_toggled(bool b);
-  void on_cbTxTrack_toggled(bool b);
+  void on_cbTxAudioTrack_toggled(bool b);
   void on_kHzSpinBox_valueChanged(int n);
   void on_HzSpinBox_valueChanged(int n);
 
