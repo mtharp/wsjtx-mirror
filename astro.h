@@ -64,8 +64,8 @@ extern "C" {
                  double* elsun, double* azmoon, double* elmoon, double* azmoondx,
                  double* elmoondx, int* ntsky, int* ndop, int* ndop00,
                  double* ramoon, double* decmoon, double* dgrd, double* poloffset,
-                 double* xnr, double* techo, bool* bTx, const char* fname,
-                 int len1, int len2, int len3);
+                 double* xnr, double* techo, double* width1, double* width2,
+                 bool* bTx, const char* fname, int len1, int len2, int len3);
 }
 
 #endif // ASTRO_H

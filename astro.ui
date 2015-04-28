@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>420</height>
+    <width>400</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>200</width>
-    <height>420</height>
+    <height>440</height>
    </size>
   </property>
   <property name="styleSheet">
@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>201</width>
-     <height>361</height>
+     <height>400</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -75,7 +75,7 @@
    <property name="geometry">
     <rect>
      <x>1</x>
-     <y>386</y>
+     <y>410</y>
      <width>195</width>
      <height>22</height>
     </rect>
@@ -119,10 +119,10 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>223</x>
+     <x>200</x>
      <y>12</y>
      <width>198</width>
-     <height>391</height>
+     <height>411</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -130,7 +130,7 @@
      <widget class="QGroupBox" name="groupBox_4">
       <property name="minimumSize">
        <size>
-        <width>185</width>
+        <width>196</width>
         <height>0</height>
        </size>
       </property>
@@ -208,7 +208,7 @@
      <widget class="QGroupBox" name="groupBox">
       <property name="minimumSize">
        <size>
-        <width>185</width>
+        <width>196</width>
         <height>0</height>
        </size>
       </property>
@@ -259,7 +259,7 @@
      <widget class="QGroupBox" name="groupBox_2">
       <property name="minimumSize">
        <size>
-        <width>185</width>
+        <width>196</width>
         <height>0</height>
        </size>
       </property>
@@ -317,34 +317,39 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>9</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbTxAudioTrack">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Tx audio tracking</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="minimumSize">
+       <size>
+        <width>196</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Tx audio tracking</string>
+      </property>
+      <widget class="QCheckBox" name="cbTxAudioTrack">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>105</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Enable</string>
+       </property>
+      </widget>
+     </widget>
     </item>
     <item>
      <spacer name="verticalSpacer">

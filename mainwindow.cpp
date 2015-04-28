@@ -736,6 +736,7 @@ void MainWindow::dataSink(qint64 frames)
       savec2_(c2name,&nsec,&f0m1500,len1);
 */
     }
+
     /*
     lab3->setStyleSheet("QLabel{background-color:cyan}");
     lab3->setText("Decoding");
