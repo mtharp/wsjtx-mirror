@@ -237,14 +237,13 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   setWindowTitle (program_title ());
   createStatusBar();
 
-  connect(&proc_jt9, SIGNAL(readyReadStandardOutput()),
-          this, SLOT(readFromStdout()));
+  connect(&proc_jt9, SIGNAL(readyReadStandardOutput()),this, SLOT(readFromStdout()));
+  connect(&proc_jt9, SIGNAL(error(QProcess::ProcessError)),this, SLOT(jt9_error(QProcess::ProcessError)));
+  connect(&proc_jt9, SIGNAL(readyReadStandardError()),this, SLOT(readFromStderr()));
 
-  connect(&proc_jt9, SIGNAL(error(QProcess::ProcessError)),
-          this, SLOT(jt9_error(QProcess::ProcessError)));
-
-  connect(&proc_jt9, SIGNAL(readyReadStandardError()),
-          this, SLOT(readFromStderr()));
+  connect(&p1, SIGNAL(readyReadStandardOutput()),this, SLOT(p1ReadFromStdout()));
+  connect(&p1, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p1Error(QProcess::ProcessError)));
+  connect(&p1, SIGNAL(readyReadStandardError()),this, SLOT(p1ReadFromStderr()));
 
   // Hook up working frequencies.
   ui->bandComboBox->setModel (m_config.frequencies ());
@@ -724,7 +723,6 @@ void MainWindow::dataSink(qint64 frames)
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
 
-/*
       m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
                                                            "_" + t2 + ".c2");
       int len1=m_c2name.length();
@@ -734,32 +732,42 @@ void MainWindow::dataSink(qint64 frames)
       int nbfo=1500;
       double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
       savec2_(c2name,&nsec,&f0m1500,len1);
-*/
     }
-
-    /*
-    lab3->setStyleSheet("QLabel{background-color:cyan}");
-    lab3->setText("Decoding");
-    m_rxdone=true;
-    loggit("Start Decoder");
-    QString cmnd;
+    qDebug() << m_path;
+    qDebug() << m_fname;
+    qDebug() << m_c2name;
+//###############################################################################
+//    lab3->setStyleSheet("QLabel{background-color:cyan}");
+//    lab3->setText("Decoding");
+//    m_rxdone=true;
+//    loggit("Start Decoder");
+    QString t2,cmnd;
+    double f0m1500=m_dialFreq;   // + 0.000001*(m_BFO - 1500);
     if(m_diskData) {
       t2.sprintf(" -f %.6f ",f0m1500);
 
       cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
-      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
-          m_path + '"';
-    } else {
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
+//      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
+//          m_path + '"';
+//    } else {
+//      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
+//      cmnd='"' + m_appDir + '"' + "/wsprd " + m_fname + '"';
     }
     QString t3=cmnd;
     int i1=cmnd.indexOf("/wsprd ");
-    QString t4;
-    t4.sprintf("-t %.4f -b %.2f ",0.001*m_tBlank,0.01*m_fBlank);
-    cmnd=t3.mid(0,i1+7) + t4 + t3.mid(i1+7);
+//    QString t4;
+//    t4.sprintf("-t %.4f -b %.2f ",0.001*m_tBlank,0.01*m_fBlank);
+//    cmnd=t3.mid(0,i1+7) + t4 + t3.mid(i1+7);
+    cmnd=t3.mid(0,i1+7) + t3.mid(i1+7);
     qDebug() << cmnd;
     p1.start(QDir::toNativeSeparators(cmnd));
+
+    /*
+        QStringList wsprd_args {"C:/data/WSPR/150426_0036.wav"};
+        p1.start(QDir::toNativeSeparators (m_appDir) + QDir::separator () +
+            "wsprd", wsprd_args, QIODevice::ReadWrite | QIODevice::Unbuffered);
     */
+//###############################################################################
   }
 }
 
@@ -3803,4 +3811,86 @@ void MainWindow::networkError (QString const& e)
 void MainWindow::on_syncSpinBox_valueChanged(int n)
 {
   m_minSync=n;
+}
+
+void MainWindow::p1ReadFromStderr()                        //p1readFromStderr
+{
+  QByteArray t=p1.readAllStandardError();
+  msgBox(t);
+}
+
+void MainWindow::p1Error (QProcess::ProcessError e)
+{
+  if(!m_killAll) {
+    msgBox("Error starting or running\n" + m_appDir + "/wsprd");
+    qDebug() << e;                           // silence compiler warning
+    exit(1);
+  }
+}
+
+void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
+{
+  QString t1;
+  while(p1.canReadLine()) {
+    QString t(p1.readLine());
+    if(t.indexOf("<DecodeFinished>") >= 0) {
+/*
+      lab3->setStyleSheet("");
+      lab3->setText("");
+      loggit("Decoder Finished");
+      if(m_uploadSpots and (m_band==m_RxStartBand)) {
+        float x=rand()/((double)RAND_MAX + 1);
+        int msdelay=20000*x;
+        uploadTimer->start(msdelay);                         //Upload delay
+      } else {
+        QFile f("wsprd.out");
+        if(f.exists()) f.remove();
+      }
+      if(m_save!=1 and m_save!=3 and !m_diskData) {
+        QFile savedWav(m_fname);
+        savedWav.remove();
+      }
+      if(m_save!=2 and m_save!=3 and !m_diskData) {
+        int i1=m_fname.indexOf(".wav");
+        QString sc2=m_fname.mid(0,i1) + ".c2";
+        QFile savedC2(sc2);
+        savedC2.remove();
+      }
+      m_RxLog=0;
+      m_startAnother=m_loopall;
+      return;
+      */
+    } else {
+      int n=t.length();
+      t=t.mid(0,n-2) + "                                                  ";
+      t.remove(QRegExp("\\s+$"));
+      QStringList rxFields = t.split(QRegExp("\\s+"));
+      //qDebug() << "++> Rx: " << rxFields;
+      QString rxLine;
+      if ( rxFields.count() == 8 ) {
+          rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
+                  .arg(rxFields.at(0), 4)
+                  .arg(rxFields.at(1), 4)
+                  .arg(rxFields.at(2), 5)
+                  .arg(rxFields.at(3), 11)
+                  .arg(rxFields.at(4), 4)
+                  .arg(rxFields.at(5), -12)
+                  .arg(rxFields.at(6), -6)
+                  .arg(rxFields.at(7), 3);
+      } else if ( rxFields.count() == 7 ) { // Type 2 message
+          rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
+                  .arg(rxFields.at(0), 4)
+                  .arg(rxFields.at(1), 4)
+                  .arg(rxFields.at(2), 5)
+                  .arg(rxFields.at(3), 11)
+                  .arg(rxFields.at(4), 4)
+                  .arg(rxFields.at(5), -12)
+                  .arg("", -6)
+                  .arg(rxFields.at(6), 3);
+      } else {
+          rxLine = t;
+      }
+      ui->decodedTextBrowser->append(rxLine);
+    }
+  }
 }

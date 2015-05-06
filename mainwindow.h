@@ -83,6 +83,9 @@ public slots:
   void readFromStdout();
   void readFromStderr();
   void jt9_error(QProcess::ProcessError);
+  void p1ReadFromStdout();
+  void p1ReadFromStderr();
+  void p1Error(QProcess::ProcessError);
   void setXIT(int n);
   void setFreq4(int rxFreq, int txFreq);
   void clrAvg();
@@ -360,6 +363,7 @@ private:
   QFutureWatcher<void>* watcher3;
 
   QProcess proc_jt9;
+  QProcess p1;
 
   QTimer m_guiTimer;
   QTimer* ptt1Timer;                 //StartTx delay
