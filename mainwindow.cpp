@@ -2973,11 +2973,12 @@ void MainWindow::on_actionWSPR_triggered()
   WSPR_config(true);
 }
 
-void MainWindow::WSPR_Config(bool b)
+void MainWindow::WSPR_config(bool b)
 {
-  ui->decodedTextBrowser2->setVisible(b);
-  ui->decodedTextLabel2->setVisible(b);
-  ui->label_7->setVisible(b);
+  qDebug() << b;
+  ui->decodedTextBrowser2->setVisible(!b);
+  ui->decodedTextLabel2->setVisible(!b);
+  ui->label_7->setVisible(!b);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
