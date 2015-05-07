@@ -212,6 +212,7 @@ private slots:
   void on_sbTxPercent_valueChanged(int n);
   void on_cbUploadWSPR_Spots_toggled(bool checked);
   void on_pbTxNext_clicked();
+  void WSPR_config(bool b);
 
 private:
   void enable_DXCC_entity (bool on);
