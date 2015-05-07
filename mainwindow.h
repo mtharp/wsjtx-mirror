@@ -208,6 +208,10 @@ private slots:
   void on_ClrAvgButton_clicked();
   void on_actionWSPR_triggered();
   void on_syncSpinBox_valueChanged(int n);
+  void on_TxPowerComboBox_currentIndexChanged(const QString &arg1);
+  void on_sbTxPercent_valueChanged(int n);
+  void on_cbUploadWSPR_Spots_toggled(bool checked);
+  void on_pbTxNext_clicked();
 
 private:
   void enable_DXCC_entity (bool on);
@@ -261,6 +265,8 @@ private:
   SoundOutput m_soundOutput;
   QThread * m_audioThread;
 
+  QString m_txNext_style;
+
   qint64  m_msErase;
   qint64  m_secBandChanged;
   qint64  m_freqMoon;
@@ -268,6 +274,7 @@ private:
   qint64  m_dialFreqTx;
 
   float   m_DTtol;
+  float   m_rxavg;
 
   qint32  m_waterfallAvg;
   qint32  m_ntx;
@@ -297,6 +304,8 @@ private:
   qint32  m_DopplerMethod;
   qint32  m_DopplerMethod0;
   qint32  m_minSync;
+  qint32  m_dBm;
+  qint32  m_pctx;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -344,6 +353,8 @@ private:
   bool    m_bShMsgs;
   bool    m_bDopplerTracking;
   bool    m_bDopplerTracking0;
+  bool    m_uploadSpots;
+  bool    m_txNext;
 
   float   m_pctZap;
 

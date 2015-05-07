@@ -369,6 +369,16 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
 
+  for(int i=0; i<28; i++)  {                      //Initialize dBm values
+    float dbm=(10.0*i)/3.0 - 30.0;
+    int ndbm=0;
+    if(dbm<0) ndbm=int(dbm-0.5);
+    if(dbm>=0) ndbm=int(dbm+0.5);
+    QString t;
+    t.sprintf("%d dBm",ndbm);
+    ui->TxPowerComboBox->addItem(t);
+  }
+
   ui->labAz->setStyleSheet("border: 0px;");
   ui->labDist->setStyleSheet("border: 0px;");
 
@@ -561,7 +571,8 @@ void MainWindow::writeSettings()
   m_settings->setValue("OutBufSize",outBufSize);
   m_settings->setValue("LockTxFreq",m_lockTxFreq);
   m_settings->setValue("Plus2kHz",m_plus2kHz);
-
+  m_settings->setValue("PctTx",m_pctx);
+  m_settings->setValue("dBm",m_dBm);
   m_settings->endGroup();
 }
 
@@ -620,6 +631,12 @@ void MainWindow::readSettings()
   m_ndepth=m_settings->value("NDepth",3).toInt();
   m_inGain=m_settings->value("InGain",0).toInt();
   ui->inGain->setValue(m_inGain);
+  m_pctx=m_settings->value("PctTx",20).toInt();
+  m_rxavg=1.0;
+  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
+  ui->sbTxPercent->setValue(m_pctx);
+  m_dBm=m_settings->value("dBm",37).toInt();
+  ui->TxPowerComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
 
   // setup initial value of tx attenuator
   ui->outAttenuation->setValue (m_settings->value ("OutAttenuation", 0).toInt ());
@@ -733,9 +750,6 @@ void MainWindow::dataSink(qint64 frames)
       double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
       savec2_(c2name,&nsec,&f0m1500,len1);
     }
-    qDebug() << m_path;
-    qDebug() << m_fname;
-    qDebug() << m_c2name;
 //###############################################################################
 //    lab3->setStyleSheet("QLabel{background-color:cyan}");
 //    lab3->setText("Decoding");
@@ -749,9 +763,9 @@ void MainWindow::dataSink(qint64 frames)
       cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
 //      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
 //          m_path + '"';
-//    } else {
+    } else {
 //      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
-//      cmnd='"' + m_appDir + '"' + "/wsprd " + m_fname + '"';
+      cmnd='"' + m_appDir + '"' + "/wsprd " + '"' + m_fname + '"' + '"';
     }
     QString t3=cmnd;
     int i1=cmnd.indexOf("/wsprd ");
@@ -2951,6 +2965,9 @@ void MainWindow::on_actionWSPR_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setEnabled(false);
   VHF_controls_visible(false);
+  ui->decodedTextBrowser2->setVisible(false);
+  ui->decodedTextLabel2->setVisible(false);
+  ui->label_7->setVisible(false);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -3893,4 +3910,30 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       ui->decodedTextBrowser->append(rxLine);
     }
   }
+}
+
+void MainWindow::on_TxPowerComboBox_currentIndexChanged(const QString &arg1)
+{
+  int i1=arg1.indexOf(" ");
+  m_dBm=arg1.mid(0,i1).toInt();
+}
+
+void MainWindow::on_sbTxPercent_valueChanged(int n)
+{
+  m_pctx=ui->sbTxPercent->value();
+  qDebug() << "A" << n << m_pctx;
+  m_rxavg=1.0;
+  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
+}
+
+void MainWindow::on_cbUploadWSPR_Spots_toggled(bool b)
+{
+  m_uploadSpots=b;
+}
+
+void MainWindow::on_pbTxNext_clicked()
+{
+  m_txNext=!m_txNext;
+  if(m_txNext)  ui->pbTxNext->setStyleSheet(m_txNext_style);
+  if(!m_txNext) ui->pbTxNext->setStyleSheet("");
 }

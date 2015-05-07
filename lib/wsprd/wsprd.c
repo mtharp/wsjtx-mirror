@@ -454,7 +454,8 @@ int main(int argc, char *argv[])
     }
     dialfreq -= (dialfreq_error*1.0e-06);
   } else {
-    printf("Error: infile must have suffix .wav or .c2\n");
+    printf("Error: Failed to open %s\n",ptr_to_infile);
+    printf("WSPR file must have suffix .wav or .c2\n");
     return 1;
   }
 
