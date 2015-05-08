@@ -651,7 +651,7 @@ int main(int argc, char *argv[])
   memset(cdbm,0,sizeof(char)*3);
   char hashtab[32768][13];
   memset(hashtab,0,sizeof(char)*32768*13);
-  uint32_t nhash( const void *, size_t, uint32_t);
+  uint32_t nhash_( const void *, size_t, uint32_t);
   int nh;
     
   if( usehashtable ) {
@@ -798,7 +798,7 @@ could each work on one candidate at a time.
 	  strncat(call_loc_pow,cdbm,2);
 	  strncat(call_loc_pow,"\0",1);
                     
-	  ihash=nhash(callsign,strlen(callsign),(uint32_t)146);
+	  ihash=nhash_(callsign,strlen(callsign),(uint32_t)146);
 	  strcpy(*hashtab+ihash*13,callsign);
 
 	  noprint=0;
@@ -817,7 +817,7 @@ could each work on one candidate at a time.
 	  strncat(call_loc_pow,cdbm,2);
 	  strncat(call_loc_pow,"\0",1);
                     
-	  ihash=nhash(callsign,strlen(callsign),(uint32_t)146);
+	  ihash=nhash_(callsign,strlen(callsign),(uint32_t)146);
 	  strcpy(*hashtab+ihash*13,callsign);
 
 	  noprint=0;

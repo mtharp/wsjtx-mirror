@@ -35,6 +35,7 @@
 #define NUM_JT4_SYMBOLS 206
 #define NUM_JT65_SYMBOLS 126
 #define NUM_JT9_SYMBOLS 85
+#define NUM_WSPR_SYMBOLS 162
 #define NUM_CW_SYMBOLS 250
 #define TX_SAMPLE_RATE 48000
 
@@ -366,6 +367,7 @@ private:
   bool    m_uploadSpots;
   bool    m_uploading;
   bool    m_txNext;
+  bool    m_grid6;
 
   float   m_pctZap;
 
@@ -505,6 +507,8 @@ extern "C" {
 
   void gen65_(char* msg, int* ichk, char* msgsent, int itone[],
               int* itext, int len1, int len2);
+
+  void genwspr_(char* msg, char* msgsent, int itone[], int len1, int len2);
 
   bool stdmsg_(const char* msg, int len);
 

@@ -1771,6 +1771,26 @@ void MainWindow::guiUpdate()
     if(m_ntx == 7) ba=ui->genMsg->text().toLocal8Bit();
     if(m_ntx == 8) ba=ui->freeTextMsg->currentText().toLocal8Bit();
 
+//###
+    QString sdBm,msg0,msg1,msg2;
+    sdBm.sprintf(" %d",m_dBm);
+    m_ntx=1-m_ntx;
+    int i2=m_config.my_callsign().indexOf("/");
+    if(i2>0 or m_grid6) {
+      if(i2<0) {                                                 // "Type 2" WSPR message
+        msg1=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;
+      } else {
+        msg1=m_config.my_callsign() + sdBm;
+      }
+      msg0="<" + m_config.my_callsign() + "> " + m_config.my_grid()+ sdBm;
+      if(m_ntx==0) msg2=msg0;
+      if(m_ntx==1) msg2=msg1;
+    } else {
+      msg2=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;         // Normal WSPR message
+    }
+    ba=msg2.toLatin1();
+//###
+
     ba2msg(ba,message);
     //    ba2msg(ba,msgsent);
     int len1=22;
@@ -1791,8 +1811,9 @@ void MainWindow::guiUpdate()
                                 &m_currentMessageType, len1, len1);
       if(m_modeTx=="JT65") gen65_(message, &ichk, msgsent, const_cast<int *> (itone),
                                   &m_currentMessageType, len1, len1);
-//      if(m_mode=="WSPR") genwsprx_(message, const_cast<int *> (itone),len1);
+      if(m_mode=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone), len1, len1);
     }
+
     msgsent[22]=0;
     m_currentMessage = QString::fromLatin1(msgsent);
     if (m_tune)
@@ -1878,9 +1899,7 @@ void MainWindow::guiUpdate()
           }
       }
     m_restart=false;
-  }
-  else
-    {
+  } else {
       if (!m_auto && m_sentFirst73)
         {
           m_sentFirst73 = false;
@@ -2958,7 +2977,7 @@ void MainWindow::on_actionWSPR_triggered()
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=396;
-  m_toneSpacing=0.0;             //### ???###
+  m_toneSpacing=12000.0/8192.0;
   mode_label->setStyleSheet("QLabel{background-color: #ff00ff}");
   mode_label->setText(m_mode);
   ui->actionWSPR->setChecked(true);
@@ -3461,12 +3480,14 @@ void MainWindow::transmit (double snr)
     if(m_nSubMode==2) toneSpacing=4*11025.0/4096.0;
     Q_EMIT sendMessage (NUM_JT65_SYMBOLS,
            4096.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
-           m_toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
+           toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
            true, snr);
   }
-  if (m_modeTx == "JT9") Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps,
-           ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing,
-           &m_soundOutput, m_config.audio_output_channel (), true, snr);
+  if (m_modeTx == "JT9") {
+    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps,
+                        ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing,
+                        &m_soundOutput, m_config.audio_output_channel (), true, snr);
+  }
   if (m_modeTx == "JT4") {
     if(m_nSubMode==0) toneSpacing=4.375;
     if(m_nSubMode==1) toneSpacing=2*4.375;
@@ -3479,6 +3500,12 @@ void MainWindow::transmit (double snr)
            2520.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
            toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
            true, snr);
+  }
+  if (m_modeTx == "WSPR") {
+
+    Q_EMIT sendMessage (NUM_WSPR_SYMBOLS, 8192.0,
+                        ui->TxFreqSpinBox->value(), m_toneSpacing,
+                        &m_soundOutput, m_config.audio_output_channel(), true, snr);
   }
 }
 

@@ -303,16 +303,19 @@ set (wsjt_FSRCS
   lib/gen4.f90
   lib/gen65.f90
   lib/gen9.f90
+  lib/genwspr.f90
   lib/geodist.f90
   lib/getlags.f90
   lib/graycode.f90
   lib/graycode65.f90
   lib/grid2deg.f90
+  lib/hash.f90
   lib/image.f90
   lib/indexx.f90
   lib/interleave4.f90
   lib/interleave63.f90
   lib/interleave9.f90
+  lib/inter_wspr.f90
   lib/jt4.f90
   lib/jt4a.f90
   lib/jt65a.f90
@@ -359,6 +362,7 @@ set (wsjt_FSRCS
   lib/xcor4.f90
   lib/zplt.f90
   lib/wavhdr.f90
+  lib/wqencode.f90
   lib/wspr_downsample.f90
   lib/zplot9.f90
   )
@@ -369,6 +373,7 @@ set (wsjt_CSRCS
   lib/gran.c
   lib/igray.c
   lib/init_rs.c
+  lib/wsprd/nhash.c
   lib/tmoonsub.c
   lib/usleep.c
   lib/wisdom.c

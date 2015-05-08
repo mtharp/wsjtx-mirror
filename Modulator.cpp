@@ -264,6 +264,7 @@ qint64 Modulator::readData (char * data, qint64 maxSize)
         m_itone0=itone[0];
 */
         m_frequency0 = m_frequency;
+//        qDebug() << "a" << m_frequency << m_nsps << m_toneSpacing << toneFrequency0 << baud << isym;
 
         // done for this chunk - continue on next call
         return framesGenerated * bytesPerFrame ();
