@@ -4070,6 +4070,9 @@ void MainWindow::on_sbTxPercent_valueChanged(int n)
 void MainWindow::on_cbUploadWSPR_Spots_toggled(bool b)
 {
   m_uploadSpots=b;
+  if(m_uploadSpots) ui->cbUploadWSPR_Spots->setStyleSheet("");
+  if(!m_uploadSpots) ui->cbUploadWSPR_Spots->setStyleSheet(
+        "QCheckBox{background-color: yellow}");
 }
 
 void MainWindow::on_pbTxNext_clicked()
