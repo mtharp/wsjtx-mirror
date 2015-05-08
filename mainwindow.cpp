@@ -767,15 +767,15 @@ void MainWindow::dataSink(qint64 frames)
 //    m_rxdone=true;
 //    loggit("Start Decoder");
     QString t2,cmnd;
-    double f0m1500=m_dialFreq;   // + 0.000001*(m_BFO - 1500);
+    double f0m1500=m_dialFreq/1000000.0;   // + 0.000001*(m_BFO - 1500);
+    t2.sprintf(" -f %.6f ",f0m1500);
     if(m_diskData) {
-      t2.sprintf(" -f %.6f ",f0m1500);
 
       cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
 //      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
 //          m_path + '"';
     } else {
-      cmnd='"' + m_appDir + '"' + "/wsprd " + '"' + m_fname + '"' + '"';
+      cmnd='"' + m_appDir + '"' + "/wsprd" + t2 + '"' + m_fname + '"' + '"';
     }
     QString t3=cmnd;
     int i1=cmnd.indexOf("/wsprd ");
