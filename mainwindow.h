@@ -30,6 +30,7 @@
 #include "Detector.hpp"
 #include "Modulator.hpp"
 #include "decodedtext.h"
+#include "wsprnet.h"
 
 #define NUM_JT4_SYMBOLS 206
 #define NUM_JT65_SYMBOLS 126
@@ -210,9 +211,17 @@ private slots:
   void on_syncSpinBox_valueChanged(int n);
   void on_TxPowerComboBox_currentIndexChanged(const QString &arg1);
   void on_sbTxPercent_valueChanged(int n);
-  void on_cbUploadWSPR_Spots_toggled(bool checked);
+  void on_cbUploadWSPR_Spots_toggled(bool b);
   void on_pbTxNext_clicked();
   void WSPR_config(bool b);
+  void uploadSpots();
+  void uploadResponse(QString response);
+  void p2ReadFromStdout();
+  void p2ReadFromStderr();
+  void p2Error();
+  void p3ReadFromStdout();
+  void p3ReadFromStderr();
+  void p3Error();
 
 private:
   void enable_DXCC_entity (bool on);
@@ -355,6 +364,7 @@ private:
   bool    m_bDopplerTracking;
   bool    m_bDopplerTracking0;
   bool    m_uploadSpots;
+  bool    m_uploading;
   bool    m_txNext;
 
   float   m_pctZap;
@@ -376,6 +386,10 @@ private:
 
   QProcess proc_jt9;
   QProcess p1;
+  QProcess p2;
+  QProcess p3;
+
+  WSPRNet *wsprNet;
 
   QTimer m_guiTimer;
   QTimer* ptt1Timer;                 //StartTx delay
@@ -383,6 +397,7 @@ private:
   QTimer* logQSOTimer;
   QTimer* killFileTimer;
   QTimer* tuneButtonTimer;
+  QTimer* uploadTimer;
 
   QString m_path;
   QString m_pbdecoding_style1;
@@ -409,6 +424,7 @@ private:
   QString m_fileToSave;
   QString m_band;
   QString m_c2name;
+  QString m_RxStartBand;
 
   QStringList m_prefix;
   QStringList m_suffix;
@@ -464,6 +480,8 @@ private:
   void replyToCQ (QTime, qint32 snr, float delta_time, quint32 delta_frequency, QString const& mode, QString const& message_text);
   void replayDecodes ();
   void postDecode (bool is_new, QString const& message);
+  void p2Start();
+
 };
 
 extern void getfile(QString fname, int ntrperiod);

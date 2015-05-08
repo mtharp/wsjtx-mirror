@@ -231,6 +231,7 @@ set (wsjtx_CXXSRCS
   mainwindow.cpp
   Configuration.cpp
   main.cpp
+  wsprnet.cpp
   )
 
 if (WIN32)
@@ -655,7 +656,6 @@ if (NOT "${QT_LIBRARY_DIR}" STREQUAL "/lib" AND NOT "${QT_LIBRARY_DIR}" STREQUAL
   set (QT_NEED_RPATH TRUE)
 endif ()
 
-
 #
 # OpenMP
 #
@@ -664,9 +664,8 @@ find_package (OpenMP)
 #
 # fftw3 single precsion library
 #
-find_package (FFTW3 COMPONENTS single threads REQUIRED)
+find_package (FFTW3 COMPONENTS double single threads REQUIRED)
 include_directories (${FFTW3_INCLUDE_DIRS})
-
 
 #
 # libhamlib setup
@@ -836,6 +835,9 @@ target_link_libraries (jt65code wsjt_fort wsjt_cxx)
 add_executable (jt9code lib/jt9code.f90 wsjtx.rc)
 target_link_libraries (jt9code wsjt_fort wsjt_cxx)
 
+add_executable (wsprd lib/wsprd/wsprd.c lib/wsprd/wsprd_utils.c lib/wsprd/fano.c lib/wsprd/tab.c lib/wsprd/nhash.c)
+target_link_libraries (wsprd ${FFTW3_LIBRARIES})
+
 add_executable (jt4code lib/jt4code.f90 wsjtx.rc)
 target_link_libraries (jt4code wsjt_fort wsjt_cxx)
 
@@ -940,7 +942,7 @@ install (TARGETS wsjtx
   BUNDLE DESTINATION . COMPONENT runtime
   )
 
-install (TARGETS jt9 jt65code jt9code jt4code message_aggregator
+install (TARGETS jt9 jt65code jt9code jt4code wsprd message_aggregator 
   RUNTIME DESTINATION ${WSJT_BIN_DESTINATION} COMPONENT runtime
   BUNDLE DESTINATION ${WSJT_BIN_DESTINATION} COMPONENT runtime
   )

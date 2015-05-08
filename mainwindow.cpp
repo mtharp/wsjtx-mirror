@@ -321,6 +321,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   killFileTimer->setSingleShot(true);
   connect(killFileTimer, &QTimer::timeout, this, &MainWindow::killFile);
 
+  uploadTimer = new QTimer(this);
+  uploadTimer->setSingleShot(true);
+  connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
+
   m_auto=false;
   m_waterfallAvg = 1;
   m_txFirst=false;
@@ -365,6 +369,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_wideGraph->setTol(m_tol);
   m_bShMsgs=false;
   m_bDopplerTracking0=false;
+  m_uploading=false;
 
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
@@ -517,6 +522,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   }
   m_modulator.setPeriod(60);
 
+  wsprNet = new WSPRNet(this);
+  connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
+
 //### Remove this stuff!
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
   ui->actionJT9W_1->setEnabled (false);
@@ -573,6 +581,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("Plus2kHz",m_plus2kHz);
   m_settings->setValue("PctTx",m_pctx);
   m_settings->setValue("dBm",m_dBm);
+  m_settings->setValue("UploadSpots",m_uploadSpots);
   m_settings->endGroup();
 }
 
@@ -637,7 +646,9 @@ void MainWindow::readSettings()
   ui->sbTxPercent->setValue(m_pctx);
   m_dBm=m_settings->value("dBm",37).toInt();
   ui->TxPowerComboBox->setCurrentIndex(int(0.3*(m_dBm + 30.0)+0.2));
-
+  m_uploadSpots=m_settings->value("UploadSpots",false).toBool();
+  ui->cbUploadWSPR_Spots->setChecked(m_uploadSpots);
+  if(!m_uploadSpots) ui->cbUploadWSPR_Spots->setStyleSheet("QCheckBox{background-color: yellow}");
   // setup initial value of tx attenuator
   ui->outAttenuation->setValue (m_settings->value ("OutAttenuation", 0).toInt ());
   on_outAttenuation_valueChanged (ui->outAttenuation->value ());
@@ -728,7 +739,7 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-    decode();                                                //Start decoder
+    if(m_mode!="WSPR") decode();                                                //Start decoder
     if(!m_diskData) {                        //Always save; may delete later
       int ihr=t.time().toString("hh").toInt();
       int imin=t.time().toString("mm").toInt();
@@ -764,23 +775,15 @@ void MainWindow::dataSink(qint64 frames)
 //      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
 //          m_path + '"';
     } else {
-//      cmnd='"' + m_appDir + '"' + "/wsprd " + m_c2name + '"';
       cmnd='"' + m_appDir + '"' + "/wsprd " + '"' + m_fname + '"' + '"';
     }
     QString t3=cmnd;
     int i1=cmnd.indexOf("/wsprd ");
-//    QString t4;
-//    t4.sprintf("-t %.4f -b %.2f ",0.001*m_tBlank,0.01*m_fBlank);
-//    cmnd=t3.mid(0,i1+7) + t4 + t3.mid(i1+7);
+
     cmnd=t3.mid(0,i1+7) + t3.mid(i1+7);
-    qDebug() << cmnd;
+    ui->DecodeButton->setChecked (true);
     p1.start(QDir::toNativeSeparators(cmnd));
 
-    /*
-        QStringList wsprd_args {"C:/data/WSPR/150426_0036.wav"};
-        p1.start(QDir::toNativeSeparators (m_appDir) + QDir::separator () +
-            "wsprd", wsprd_args, QIODevice::ReadWrite | QIODevice::Unbuffered);
-    */
 //###############################################################################
   }
 }
@@ -1432,12 +1435,8 @@ void MainWindow::msgAvgDecode2()
 void MainWindow::decode()                                       //decode()
 {
   if(!m_dataAvailable) return;
-  if(m_mode=="WSPR") {
-    qDebug() << "No WSPR decoder, yet...";
-    return;
-  }
-
   ui->DecodeButton->setChecked (true);
+
   if(jt9com_.newdat==1 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
     int imin=ms/60000;
@@ -2975,10 +2974,12 @@ void MainWindow::on_actionWSPR_triggered()
 
 void MainWindow::WSPR_config(bool b)
 {
-  qDebug() << b;
   ui->decodedTextBrowser2->setVisible(!b);
   ui->decodedTextLabel2->setVisible(!b);
+  ui->label_6->setVisible(!b);
   ui->label_7->setVisible(!b);
+  ui->DecodeButton->setEnabled(!b);
+  ui->logQSOButton->setEnabled(!b);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -3862,10 +3863,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
   while(p1.canReadLine()) {
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
-/*
-      lab3->setStyleSheet("");
-      lab3->setText("");
-      loggit("Decoder Finished");
+      ui->DecodeButton->setChecked (false);
       if(m_uploadSpots and (m_band==m_RxStartBand)) {
         float x=rand()/((double)RAND_MAX + 1);
         int msdelay=20000*x;
@@ -3874,20 +3872,21 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile f("wsprd.out");
         if(f.exists()) f.remove();
       }
-      if(m_save!=1 and m_save!=3 and !m_diskData) {
+      if(!m_saveAll and !m_diskData) {
         QFile savedWav(m_fname);
         savedWav.remove();
       }
-      if(m_save!=2 and m_save!=3 and !m_diskData) {
+/*
+      if(m_saveAll and !m_diskData) {
         int i1=m_fname.indexOf(".wav");
         QString sc2=m_fname.mid(0,i1) + ".c2";
         QFile savedC2(sc2);
         savedC2.remove();
       }
+*/
       m_RxLog=0;
       m_startAnother=m_loopall;
       return;
-      */
     } else {
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
@@ -3923,6 +3922,111 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
   }
 }
 
+void MainWindow::uploadSpots()
+{
+    if(m_uploading)
+        return;
+
+    QString rfreq = QString("%1").arg(m_dialFreq + 0.001500, 0, 'f', 6);
+    QString tfreq = QString("%1").arg(0.000001 * ui->TxFreqSpinBox->value () +
+                                      m_dialFreq, 0, 'f', 6);
+
+    wsprNet->upload(m_config.my_callsign(),
+                    m_config.my_grid(),
+                    rfreq,
+                    tfreq,
+                    m_mode,
+                    QString::number(m_btxok ? m_pctx : 0),
+                    QString::number(m_dBm),
+                    version(),
+                    m_appDir + "/wsprd.out");
+//    loggit("Start WSPRNet Upload");
+    m_uploading = true;
+//    lab3->setStyleSheet("QLabel{background-color:yellow}");
+//    lab3->setText("Uploading Spots");
+}
+
+void MainWindow::uploadResponse(QString response)
+{
+    //qDebug() << ">>> " << response;
+    if (response == "done") {
+        m_uploading=false;
+//        lab3->setStyleSheet("");
+//        lab3->setText("");
+    } else if (response == "Upload Failed") {
+        m_uploading=false;
+//        lab3->setStyleSheet("");
+//        lab3->setText(response);
+    } else {
+//        lab3->setText(response);
+    }
+}
+
+void MainWindow::p2Start()
+{
+  if(m_uploading) return;
+  QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
+      "/wsprd.out -F call=" + m_config.my_callsign() + " -F grid=" + m_config.my_grid();
+  cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
+//  loggit("Start curl");
+  m_uploading=true;
+//  lab3->setStyleSheet("QLabel{background-color:yellow}");
+//  lab3->setText("Uploading Spots");
+  p2.start(cmnd);
+}
+
+void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
+{
+  while(p2.canReadLine()) {
+    QString t(p2.readLine());
+    if(t.indexOf("spot(s) added") > 0) {
+      QFile f("wsprd.out");
+      f.remove();
+    }
+  }
+//  lab3->setStyleSheet("");
+//  lab3->setText("");
+  m_uploading=false;
+}
+
+void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
+{
+  QByteArray t=p2.readAllStandardError();
+  if(t.length()>0) {
+//    loggit(t);
+    msgBox(t);
+  }
+  m_uploading=false;
+}
+
+void MainWindow::p2Error()                                     //p2rror
+{
+  msgBox("Error attempting to start curl.");
+  m_uploading=false;
+}
+
+void MainWindow::p3ReadFromStdout()                        //p3readFromStdout
+{
+  QByteArray t=p3.readAllStandardOutput();
+  if(t.length()>0) {
+    msgBox("rigctl stdout:\n\n"+t+"\n"+m_cmnd);
+  }
+}
+
+void MainWindow::p3ReadFromStderr()                        //p3readFromStderr
+{
+  QByteArray t=p3.readAllStandardError();
+  if(t.length()>0) {
+    msgBox("rigctl stderr:\n\n"+t+"\n"+m_cmnd);
+  }
+}
+
+void MainWindow::p3Error()                                     //p3rror
+{
+  msgBox("Error attempting to run rigctl.\n\n"+m_cmnd);
+}
+
+
 void MainWindow::on_TxPowerComboBox_currentIndexChanged(const QString &arg1)
 {
   int i1=arg1.indexOf(" ");
@@ -3931,8 +4035,7 @@ void MainWindow::on_TxPowerComboBox_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_sbTxPercent_valueChanged(int n)
 {
-  m_pctx=ui->sbTxPercent->value();
-  qDebug() << "A" << n << m_pctx;
+  m_pctx=n;
   m_rxavg=1.0;
   if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
 }
