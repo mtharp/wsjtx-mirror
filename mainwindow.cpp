@@ -3128,18 +3128,10 @@ void MainWindow::on_bandComboBox_activated (int index)
 
 void MainWindow::band_changed (Frequency f)
 {
-  if (m_bandEdited)
-    {
+  if (m_bandEdited) {
       m_bandEdited = false;
-
-      // Upload any queued spots before changing band
-      psk_Reporter->sendReport();
-
-      if (!m_transmitting)
-        {
-          monitor (true);
-        }
-
+      psk_Reporter->sendReport();      // Upload any queued spots before changing band
+      if (!m_transmitting) monitor (true);
       Q_EMIT m_config.transceiver_frequency (f);
       qsy (f);
       setXIT (ui->TxFreqSpinBox->value ());
@@ -3394,26 +3386,17 @@ void MainWindow::on_cbPlus2kHz_toggled(bool checked)
 {
   m_plus2kHz = checked;
 
-  if (m_config.transceiver_online (false)) // only update state if not
-                                           // starting up
-    {
-      // Upload any queued spots before changing band
-      psk_Reporter->sendReport();
-
+  if (m_config.transceiver_online (false)) { // update state only if not starting up
+      psk_Reporter->sendReport();    // Upload any queued spots before changing band
       auto f = m_dialFreq;
-
-      if (m_plus2kHz)
-        {
-          f += 2000;
-        }
-      else
-        {
-          f -= 2000;
-        }
-
+      if (m_plus2kHz) {
+        f += 2000;
+      } else {
+        f -= 2000;
+      }
       m_bandEdited = true;
       band_changed (f);
-    }
+  }
 }
 
 void MainWindow::handle_transceiver_update (Transceiver::TransceiverState s)
@@ -3891,6 +3874,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       ui->DecodeButton->setChecked (false);
+      qDebug() << "A" << m_uploadSpots << m_band << m_RxStartBand;
       if(m_uploadSpots and (m_band==m_RxStartBand)) {
         float x=rand()/((double)RAND_MAX + 1);
         int msdelay=20000*x;
@@ -3951,14 +3935,15 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 
 void MainWindow::uploadSpots()
 {
-    if(m_uploading)
-        return;
-
-    QString rfreq = QString("%1").arg(m_dialFreq + 0.001500, 0, 'f', 6);
-    QString tfreq = QString("%1").arg(0.000001 * ui->TxFreqSpinBox->value () +
-                                      m_dialFreq, 0, 'f', 6);
-
-    wsprNet->upload(m_config.my_callsign(),
+  if(m_uploading) {
+    qDebug() << "Previous upload has not completed, spots were lost";
+    return;
+  }
+  qDebug() << "B" << m_dialFreq << ui->TxFreqSpinBox->value();
+  QString rfreq = QString("%1").arg(0.000001*m_dialFreq + 0.001500, 0, 'f', 6);
+  QString tfreq = QString("%1").arg(0.000001*(ui->TxFreqSpinBox->value() + m_dialFreq),
+                                    0, 'f', 6);
+  wsprNet->upload(m_config.my_callsign(),
                     m_config.my_grid(),
                     rfreq,
                     tfreq,
@@ -3975,7 +3960,7 @@ void MainWindow::uploadSpots()
 
 void MainWindow::uploadResponse(QString response)
 {
-    //qDebug() << ">>> " << response;
+    qDebug() << ">>> " << response;
     if (response == "done") {
         m_uploading=false;
 //        lab3->setStyleSheet("");
