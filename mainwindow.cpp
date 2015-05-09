@@ -300,7 +300,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->readFreq->setFont(font);
 
   connect(&m_guiTimer, &QTimer::timeout, this, &MainWindow::guiUpdate);
-  m_guiTimer.start(50);                            //Don't change the 100 ms!
+  m_guiTimer.start(100);   //### Don't change the 100 ms! ###
 
   ptt0Timer = new QTimer(this);
   ptt0Timer->setSingleShot(true);
