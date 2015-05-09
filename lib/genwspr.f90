@@ -25,10 +25,7 @@ subroutine genwspr(message,nsgsent,itone)
   do i=1,162
      itone(i)=npr3(i) + 2*symbol(i)
   enddo
-  msgsent=message                             !### To be fixed... ###
-
-  write(*,3001) message,itone
-3001 format(a22/(60i1))
+  msgsent=message                             !### To be fixed... ?? ###
 
   return
 end subroutine genwspr

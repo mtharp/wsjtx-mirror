@@ -297,6 +297,7 @@ private:
   qint32  m_RxLog;
   qint32  m_nutc0;
   qint32  m_nrx;
+  qint32  m_ntr;
   qint32  m_hsym;
   qint32  m_TRperiod;
   qint32  m_nsps;
@@ -317,6 +318,7 @@ private:
   qint32  m_minSync;
   qint32  m_dBm;
   qint32  m_pctx;
+  qint32  m_nseq;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

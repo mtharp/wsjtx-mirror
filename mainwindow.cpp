@@ -333,6 +333,15 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_killAll=false;
   m_widebandDecode=false;
   m_ntx=1;
+
+  m_nrx=1;
+//  m_ntx=0;
+  m_txNext=false;
+  m_uploading=false;
+  m_grid6=false;
+  m_nseq=0;
+  m_ntr=0;
+
   m_loopall=false;
   m_startAnother=false;
   m_saveDecoded=false;
@@ -1725,7 +1734,41 @@ void MainWindow::guiUpdate()
   int nsec=ms/1000;
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
-  bool bTxTime = ((t2p >= tx1) and (t2p < tx2)) or m_tune;
+  bool bTxTime=false;
+
+  if(m_mode=="WSPR") {
+    m_nseq = nsec % m_TRperiod;
+//###
+    if(m_nseq==0 and !m_monitoring and !m_transmitting and m_ntr==0) {
+      if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
+      if(m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and (m_ntr!=-1))) or
+         (m_auto and (m_pctx==100))) {
+  //This will be a normal Tx sequence. Compute # of Rx's that will follow.
+        float x=(float)rand()/RAND_MAX;
+        if(m_pctx<50) {
+          m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
+        } else {
+          m_nrx=0;
+          if(x<m_rxavg) m_nrx=1;
+        }
+        m_ntr=-1;                         //This says we will have transmitted
+        m_txNext=false;
+        ui->pbTxNext->setStyleSheet("");
+//        startTx();                        //Start a normal Tx sequence
+        bTxTime=true;                     //Start a WSPR Tx sequence
+      } else {
+        m_ntr=1;
+        m_RxStartBand=m_band;
+//        startRx();                        //Start a WSPR Rx sequence
+        bTxTime=false;                     //Start a WSPR Rx sequence
+      }
+    }
+//###
+
+  } else {
+    bTxTime = (t2p >= tx1) and (t2p < tx2);
+  }
+  if(m_tune) bTxTime=true;                //"Tune" takes precedence
 
   if(m_transmitting or m_auto or m_tune) {
     QFile f(m_appDir + "/txboth");
@@ -1733,17 +1776,16 @@ void MainWindow::guiUpdate()
       bTxTime=true;
     }
 
-    Frequency onAirFreq = m_dialFreq + ui->TxFreqSpinBox->value ();
-    if (onAirFreq > 10139900 && onAirFreq < 10140320) {
+    Frequency onAirFreq = m_dialFreq + ui->TxFreqSpinBox->value();
+    if ((onAirFreq > 10139900 and onAirFreq < 10140320) and m_mode!="WSPR") {
       bTxTime=false;
       if (m_tune) stop_tuning ();
       if (m_auto) auto_tx_mode (false);
-
       if(onAirFreq!=onAirFreq0) {
         onAirFreq0=onAirFreq;
         QString t="Please choose another Tx frequency.\n";
-        t+="WSJT-X will not knowingly transmit\n";
-        t+="in the WSPR sub-band on 30 m.";
+        t+="WSJT-X will not knowingly transmit another\n";
+        t+="mode in the WSPR sub-band on 30 m.";
         msgBox(t);
       }
     }
@@ -1763,33 +1805,36 @@ void MainWindow::guiUpdate()
   // Calculate Tx tones when needed
   if((g_iptt==1 && iptt0==0) || m_restart) {
     QByteArray ba;
-    if(m_ntx == 1) ba=ui->tx1->text().toLocal8Bit();
-    if(m_ntx == 2) ba=ui->tx2->text().toLocal8Bit();
-    if(m_ntx == 3) ba=ui->tx3->text().toLocal8Bit();
-    if(m_ntx == 4) ba=ui->tx4->text().toLocal8Bit();
-    if(m_ntx == 5) ba=ui->tx5->currentText().toLocal8Bit();
-    if(m_ntx == 6) ba=ui->tx6->text().toLocal8Bit();
-    if(m_ntx == 7) ba=ui->genMsg->text().toLocal8Bit();
-    if(m_ntx == 8) ba=ui->freeTextMsg->currentText().toLocal8Bit();
 
 //###
-    QString sdBm,msg0,msg1,msg2;
-    sdBm.sprintf(" %d",m_dBm);
-    m_ntx=1-m_ntx;
-    int i2=m_config.my_callsign().indexOf("/");
-    if(i2>0 or m_grid6) {
-      if(i2<0) {                                                 // "Type 2" WSPR message
-        msg1=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;
+    if(m_mode=="WSPR") {
+      QString sdBm,msg0,msg1,msg2;
+      sdBm.sprintf(" %d",m_dBm);
+      m_ntx=1-m_ntx;
+      int i2=m_config.my_callsign().indexOf("/");
+      if(i2>0 or m_grid6) {
+        if(i2<0) {                                                 // "Type 2" WSPR message
+          msg1=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;
+        } else {
+          msg1=m_config.my_callsign() + sdBm;
+        }
+        msg0="<" + m_config.my_callsign() + "> " + m_config.my_grid()+ sdBm;
+        if(m_ntx==0) msg2=msg0;
+        if(m_ntx==1) msg2=msg1;
       } else {
-        msg1=m_config.my_callsign() + sdBm;
+        msg2=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;         // Normal WSPR message
       }
-      msg0="<" + m_config.my_callsign() + "> " + m_config.my_grid()+ sdBm;
-      if(m_ntx==0) msg2=msg0;
-      if(m_ntx==1) msg2=msg1;
+      ba=msg2.toLatin1();
     } else {
-      msg2=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;         // Normal WSPR message
+      if(m_ntx == 1) ba=ui->tx1->text().toLocal8Bit();
+      if(m_ntx == 2) ba=ui->tx2->text().toLocal8Bit();
+      if(m_ntx == 3) ba=ui->tx3->text().toLocal8Bit();
+      if(m_ntx == 4) ba=ui->tx4->text().toLocal8Bit();
+      if(m_ntx == 5) ba=ui->tx5->currentText().toLocal8Bit();
+      if(m_ntx == 6) ba=ui->tx6->text().toLocal8Bit();
+      if(m_ntx == 7) ba=ui->genMsg->text().toLocal8Bit();
+      if(m_ntx == 8) ba=ui->freeTextMsg->currentText().toLocal8Bit();
     }
-    ba=msg2.toLatin1();
 //###
 
     ba2msg(ba,message);
