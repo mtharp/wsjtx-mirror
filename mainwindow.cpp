@@ -1713,8 +1713,9 @@ void MainWindow::guiUpdate()
   QString rt;
 
   double tx1=0.0;
-  double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;
+  double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;            // JT9
   if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
+  if(m_modeTx=="WSPR") tx2=1.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
 
   if(!m_txFirst) {
     tx1 += m_TRperiod;
@@ -3874,7 +3875,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       ui->DecodeButton->setChecked (false);
-      qDebug() << "A" << m_uploadSpots << m_band << m_RxStartBand;
       if(m_uploadSpots and (m_band==m_RxStartBand)) {
         float x=rand()/((double)RAND_MAX + 1);
         int msdelay=20000*x;
@@ -3903,7 +3903,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       t=t.mid(0,n-2) + "                                                  ";
       t.remove(QRegExp("\\s+$"));
       QStringList rxFields = t.split(QRegExp("\\s+"));
-      //qDebug() << "++> Rx: " << rxFields;
       QString rxLine;
       if ( rxFields.count() == 8 ) {
           rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
@@ -3939,7 +3938,6 @@ void MainWindow::uploadSpots()
     qDebug() << "Previous upload has not completed, spots were lost";
     return;
   }
-  qDebug() << "B" << m_dialFreq << ui->TxFreqSpinBox->value();
   QString rfreq = QString("%1").arg(0.000001*m_dialFreq + 0.001500, 0, 'f', 6);
   QString tfreq = QString("%1").arg(0.000001*(ui->TxFreqSpinBox->value() + m_dialFreq),
                                     0, 'f', 6);
@@ -3960,7 +3958,7 @@ void MainWindow::uploadSpots()
 
 void MainWindow::uploadResponse(QString response)
 {
-    qDebug() << ">>> " << response;
+//    qDebug() << ">>> " << response;
     if (response == "done") {
         m_uploading=false;
 //        lab3->setStyleSheet("");
