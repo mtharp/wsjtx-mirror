@@ -276,8 +276,6 @@ private:
   SoundOutput m_soundOutput;
   QThread * m_audioThread;
 
-  QString m_txNext_style;
-
   qint64  m_msErase;
   qint64  m_secBandChanged;
   qint64  m_freqMoon;
@@ -298,6 +296,7 @@ private:
   qint32  m_nutc0;
   qint32  m_nrx;
   qint32  m_ntr;
+  qint32  m_tx;
   qint32  m_hsym;
   qint32  m_TRperiod;
   qint32  m_nsps;

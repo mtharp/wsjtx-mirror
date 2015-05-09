@@ -2292,8 +2292,22 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="5" column="0">
                  <widget class="QPushButton" name="pbTxNext">
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton:checked {
+	background-color: red;
+	border-style: outset;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: black;
+	min-width: 5em;
+	padding: 3px;
+}</string>
+                  </property>
                   <property name="text">
                    <string>Tx Next</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>

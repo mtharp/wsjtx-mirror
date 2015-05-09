@@ -300,7 +300,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->readFreq->setFont(font);
 
   connect(&m_guiTimer, &QTimer::timeout, this, &MainWindow::guiUpdate);
-  m_guiTimer.start(100);                            //Don't change the 100 ms!
+  m_guiTimer.start(50);                            //Don't change the 100 ms!
 
   ptt0Timer = new QTimer(this);
   ptt0Timer->setSingleShot(true);
@@ -335,7 +335,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_ntx=1;
 
   m_nrx=1;
-//  m_ntx=0;
+  m_tx=0;
   m_txNext=false;
   m_uploading=false;
   m_grid6=false;
@@ -893,7 +893,6 @@ void MainWindow::monitor (bool state)
 {
   ui->monitorButton->setChecked (state);
   if (state) {
-    m_nrx=m_nrx-1;
     if (!m_monitoring) Q_EMIT resumeAudioInputStream ();
   } else {
     Q_EMIT suspendAudioInputStream ();
@@ -1710,6 +1709,7 @@ void MainWindow::guiUpdate()
 {
   static int iptt0=0;
   static bool btxok0=false;
+  static bool bTxTime=false;
   static char message[29];
   static char msgsent[29];
   static int nsendingsh=0;
@@ -1721,7 +1721,7 @@ void MainWindow::guiUpdate()
   if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
   if(m_modeTx=="WSPR") tx2=1.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
 
-  if(!m_txFirst) {
+  if(!m_txFirst and m_mode!="WSPR") {
     tx1 += m_TRperiod;
     tx2 += m_TRperiod;
   }
@@ -1729,16 +1729,17 @@ void MainWindow::guiUpdate()
   int nsec=ms/1000;
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
-  bool bTxTime=false;
 
   if(m_mode=="WSPR") {
     m_nseq = nsec % m_TRperiod;
 //###
-    if(m_nseq==0 and !m_monitoring and !m_transmitting and m_ntr==0) {
+//    if(m_nseq==0 and !m_monitoring and !m_transmitting and m_ntr==0) {
+    if(m_nseq==0 and m_ntr==0) {
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
       if(m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and (m_ntr!=-1))) or
          (m_auto and (m_pctx==100))) {
-  //This will be a normal Tx sequence. Compute # of Rx's that will follow.
+
+//This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
         float x=(float)rand()/RAND_MAX;
         if(m_pctx<50) {
           m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
@@ -1748,17 +1749,16 @@ void MainWindow::guiUpdate()
         }
         m_ntr=-1;                         //This says we will have transmitted
         m_txNext=false;
-        ui->pbTxNext->setStyleSheet("");
-//        startTx();                        //Start a normal Tx sequence
+        ui->pbTxNext->setChecked(false);
         bTxTime=true;                     //Start a WSPR Tx sequence
       } else {
-        m_ntr=1;
+//This will be a WSPR Rx sequence.
+        m_ntr=1;                           //This says we will have received
         m_RxStartBand=m_band;
-//        startRx();                        //Start a WSPR Rx sequence
         bTxTime=false;                     //Start a WSPR Rx sequence
       }
+      qDebug() << "BB" << m_nseq << m_nrx << m_ntr << bTxTime << m_txNext;
     }
-    qDebug() << "A" << m_nrx << m_ntx;
 //###
 
   } else {
@@ -1795,7 +1795,16 @@ void MainWindow::guiUpdate()
       Q_EMIT m_config.transceiver_ptt (true);
       ptt1Timer->start(200);                       //Sequencer delay
     }
-    if(!bTxTime and !m_tune) m_btxok=false;
+    if(!bTxTime and !m_tune) m_btxok=false;            //Time to stop transmitting
+  }
+
+  if(m_mode=="WSPR" and m_nseq>tx2) {
+    if(m_monitoring and m_ntr==1) m_nrx=m_nrx-1;  //Decrement the Rx-sequence count
+    if(m_transmitting) {
+      bTxTime=false;                              //Time to stop a WSPR transmission
+      m_btxok=false;
+    }
+    m_ntr=0;                                      //This WSPR sequence is complete
   }
 
   // Calculate Tx tones when needed
@@ -1806,7 +1815,7 @@ void MainWindow::guiUpdate()
     if(m_mode=="WSPR") {
       QString sdBm,msg0,msg1,msg2;
       sdBm.sprintf(" %d",m_dBm);
-      m_ntx=1-m_ntx;
+      m_tx=1-m_tx;
       int i2=m_config.my_callsign().indexOf("/");
       if(i2>0 or m_grid6) {
         if(i2<0) {                                                 // "Type 2" WSPR message
@@ -1815,10 +1824,10 @@ void MainWindow::guiUpdate()
           msg1=m_config.my_callsign() + sdBm;
         }
         msg0="<" + m_config.my_callsign() + "> " + m_config.my_grid()+ sdBm;
-        if(m_ntx==0) msg2=msg0;
-        if(m_ntx==1) msg2=msg1;
+        if(m_tx==0) msg2=msg0;
+        if(m_tx==1) msg2=msg1;
       } else {
-        msg2=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm;         // Normal WSPR message
+        msg2=m_config.my_callsign() + " " + m_config.my_grid().mid(0,4) + sdBm; // Normal WSPR message
       }
       ba=msg2.toLatin1();
     } else {
@@ -2019,6 +2028,7 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
+    qDebug() << "A" << m_nseq << m_nrx << m_ntr << bTxTime << m_txNext;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
@@ -2126,15 +2136,12 @@ void MainWindow::stopTx()
 void MainWindow::stopTx2()
 {
   QString rt;
-  //Lower PTT
-  Q_EMIT m_config.transceiver_ptt (false);
-
-  if (m_config.watchdog () && m_repeatMsg>=m_watchdogLimit-1)
-    {
-      on_stopTxButton_clicked();
-      msgBox("Runaway Tx watchdog");
-      m_repeatMsg=0;
-    }
+  Q_EMIT m_config.transceiver_ptt (false);      //Lower PTT
+  if (m_mode!="WSPR" and m_config.watchdog() and m_repeatMsg>=m_watchdogLimit-1) {
+    on_stopTxButton_clicked();
+    msgBox("Runaway Tx watchdog");
+    m_repeatMsg=0;
+  }
 }
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
@@ -3296,17 +3303,14 @@ void MainWindow::on_rptSpinBox_valueChanged(int n)
 
 void MainWindow::on_tuneButton_clicked (bool checked)
 {
-  if (m_tune)
-    {
-      tuneButtonTimer->start(250);
-    } 
-  else
-    {
-      m_sentFirst73=false;
-      m_repeatMsg=0;
-      itone[0]=0;
-      on_monitorButton_clicked (true);
-    }
+  if (m_tune) {
+    tuneButtonTimer->start(250);
+  } else {
+    m_sentFirst73=false;
+    m_repeatMsg=0;
+    itone[0]=0;
+    on_monitorButton_clicked (true);
+  }
   m_tune = checked;
   Q_EMIT tune (checked);
 }
@@ -4094,6 +4098,6 @@ void MainWindow::on_cbUploadWSPR_Spots_toggled(bool b)
 void MainWindow::on_pbTxNext_clicked()
 {
   m_txNext=!m_txNext;
-  if(m_txNext)  ui->pbTxNext->setStyleSheet(m_txNext_style);
-  if(!m_txNext) ui->pbTxNext->setStyleSheet("");
+//  if(m_txNext)  ui->pbTxNext->setStyleSheet(m_txNext_style);
+//  if(!m_txNext) ui->pbTxNext->setStyleSheet("");
 }
