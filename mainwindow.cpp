@@ -892,17 +892,12 @@ void MainWindow::on_monitorButton_clicked (bool checked)
 void MainWindow::monitor (bool state)
 {
   ui->monitorButton->setChecked (state);
-  if (state)
-    {
-      if (!m_monitoring)
-        {
-          Q_EMIT resumeAudioInputStream ();
-        }
-    }
-  else
-    {
-      Q_EMIT suspendAudioInputStream ();
-    }
+  if (state) {
+    m_nrx=m_nrx-1;
+    if (!m_monitoring) Q_EMIT resumeAudioInputStream ();
+  } else {
+    Q_EMIT suspendAudioInputStream ();
+  }
   m_monitoring = state;
 }
 
@@ -1763,6 +1758,7 @@ void MainWindow::guiUpdate()
         bTxTime=false;                     //Start a WSPR Rx sequence
       }
     }
+    qDebug() << "A" << m_nrx << m_ntx;
 //###
 
   } else {
@@ -1966,38 +1962,30 @@ void MainWindow::guiUpdate()
   if (g_iptt == 1 && iptt0 == 0)
     {
       QString t=QString::fromLatin1(msgsent);
-      if(t==m_msgSent0)
-        {
-          m_repeatMsg++;
-        }
-      else
-        {
-          m_repeatMsg=0;
-          m_msgSent0=t;
-        }
+      if(t==m_msgSent0) {
+        m_repeatMsg++;
+      } else {
+        m_repeatMsg=0;
+        m_msgSent0=t;
+      }
 
-      if(!m_tune)
-        {
-          QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
-          if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-            {
-              QTextStream out(&f);
-              out << QDateTime::currentDateTimeUtc().toString("hhmm")
-                  << "  Transmitting " << (m_dialFreq / 1.e6) << " MHz  " << m_modeTx
-                  << ":  " << m_currentMessage << endl;
-              f.close();
-            }
-          else
-            {
-              msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
-            }
+      if(!m_tune) {
+        QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+          QTextStream out(&f);
+          out << QDateTime::currentDateTimeUtc().toString("hhmm")
+              << "  Transmitting " << (m_dialFreq / 1.e6) << " MHz  " << m_modeTx
+              << ":  " << m_currentMessage << endl;
+          f.close();
+        } else {
+          msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
         }
+      }
 
-      if (m_config.TX_messages () && !m_tune)
-        {
-          ui->decodedTextBrowser2->displayTransmittedText(t,m_modeTx,
+      if (m_config.TX_messages () && !m_tune) {
+        ui->decodedTextBrowser2->displayTransmittedText(t,m_modeTx,
                              ui->TxFreqSpinBox->value(),m_config.color_TxMsg());
-        }
+      }
 
       m_transmitting = true;
       transmitDisplay (true);

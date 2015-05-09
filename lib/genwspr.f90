@@ -1,4 +1,4 @@
-subroutine genwspr(message,nsgsent,itone)
+subroutine genwspr(message,msgsent,itone)
 ! Encode a WSPR message and generate the array of channel symbols.
 
   character*22 message,msgsent
