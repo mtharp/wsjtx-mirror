@@ -1732,14 +1732,12 @@ void MainWindow::guiUpdate()
 
   if(m_mode=="WSPR") {
     m_nseq = nsec % m_TRperiod;
-//###
-//    if(m_nseq==0 and !m_monitoring and !m_transmitting and m_ntr==0) {
     if(m_nseq==0 and m_ntr==0) {
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
       if(m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and (m_ntr!=-1))) or
          (m_auto and (m_pctx==100))) {
 
-//This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
+        //This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
         float x=(float)rand()/RAND_MAX;
         if(m_pctx<50) {
           m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
@@ -1747,24 +1745,21 @@ void MainWindow::guiUpdate()
           m_nrx=0;
           if(x<m_rxavg) m_nrx=1;
         }
-        m_ntr=-1;                         //This says we will have transmitted
+        m_ntr=-1;                          //This says we will have transmitted
         m_txNext=false;
         ui->pbTxNext->setChecked(false);
-        bTxTime=true;                     //Start a WSPR Tx sequence
+        bTxTime=true;                      //Start a WSPR Tx sequence
       } else {
-//This will be a WSPR Rx sequence.
+        //This will be a WSPR Rx sequence.
         m_ntr=1;                           //This says we will have received
         m_RxStartBand=m_band;
         bTxTime=false;                     //Start a WSPR Rx sequence
       }
-      qDebug() << "BB" << m_nseq << m_nrx << m_ntr << bTxTime << m_txNext;
     }
-//###
-
   } else {
     bTxTime = (t2p >= tx1) and (t2p < tx2);
   }
-  if(m_tune) bTxTime=true;                //"Tune" takes precedence
+  if(m_tune) bTxTime=true;                 //"Tune" takes precedence
 
   if(m_transmitting or m_auto or m_tune) {
     QFile f(m_appDir + "/txboth");
@@ -2028,7 +2023,6 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
-    qDebug() << "A" << m_nseq << m_nrx << m_ntr << bTxTime << m_txNext;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
