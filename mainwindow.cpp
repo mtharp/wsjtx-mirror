@@ -1559,17 +1559,15 @@ void MainWindow::readFromStdout()                             //readFromStdout
         msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
       }
 
-        if (m_config.insert_blank () && m_blankLine)
-          {
-            QString band;
-            if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50)
-              {
-                auto const& bands_model = m_config.bands ();
-                band = ' ' + bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
-              }
-            ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
-            m_blankLine = false;
-          }
+      if (m_config.insert_blank () && m_blankLine) {
+        QString band;
+        if (QDateTime::currentMSecsSinceEpoch() / 1000 - m_secBandChanged > 50) {
+          auto const& bands_model = m_config.bands ();
+          band = ' ' + bands_model->data (bands_model->find (m_dialFreq + ui->TxFreqSpinBox->value ())).toString ();
+        }
+        ui->decodedTextBrowser->insertLineSpacer (band.rightJustified  (40, '-'));
+        m_blankLine = false;
+      }
 
       DecodedText decodedtext;
       decodedtext = t.replace("\n",""); //t.replace("\n","").mid(0,t.length()-4);
@@ -3033,6 +3031,19 @@ void MainWindow::WSPR_config(bool b)
   ui->label_7->setVisible(!b);
   ui->DecodeButton->setEnabled(!b);
   ui->logQSOButton->setEnabled(!b);
+  ui->RxFreqSpinBox->setEnabled(!b);
+  ui->pbR2T->setEnabled(!b);
+  ui->pbT2R->setEnabled(!b);
+  ui->cbTxLock->setEnabled(!b);
+  ui->label_3->setEnabled(!b);
+  ui->label_4->setEnabled(!b);
+  ui->label_8->setEnabled(!b);
+  ui->rptSpinBox->setEnabled(!b);
+  ui->txFirstCheckBox->setEnabled(!b);
+  ui->dxCallEntry->setEnabled(!b);
+  ui->dxGridEntry->setEnabled(!b);
+  ui->lookupButton->setEnabled(!b);
+  ui->addButton->setEnabled(!b);
   if(b) ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
   if(!b) ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
 }
@@ -3336,10 +3347,7 @@ void MainWindow::rigOpen ()
 
 void MainWindow::on_pbR2T_clicked()
 {
-  if (ui->TxFreqSpinBox->isEnabled ())
-    {
-      ui->TxFreqSpinBox->setValue(ui->RxFreqSpinBox->value ());
-    }
+  if (ui->TxFreqSpinBox->isEnabled ()) ui->TxFreqSpinBox->setValue(ui->RxFreqSpinBox->value ());
 }
 
 void MainWindow::on_pbT2R_clicked()
@@ -3669,7 +3677,7 @@ void MainWindow::transmitDisplay (bool transmitting)
       ui->TxFreqSpinBox->setEnabled (false);
       ui->cbTxLock->setChecked(false);
       ui->cbTxLock->setEnabled(false);
-    } else {
+    } else if(m_mode!="WSPR") {
       ui->TxFreqSpinBox->setEnabled (QSY_allowed);
       ui->pbR2T->setEnabled (QSY_allowed);
       ui->cbTxLock->setEnabled (QSY_allowed);
@@ -3929,6 +3937,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 */
       m_RxLog=0;
       m_startAnother=m_loopall;
+      m_blankLine=true;
       return;
     } else {
       int n=t.length();
@@ -3969,6 +3978,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 
 void MainWindow::uploadSpots()
 {
+  if(m_diskData) return;
   if(m_uploading) {
     qDebug() << "Previous upload has not completed, spots were lost";
     return;
