@@ -396,6 +396,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->labAz->setStyleSheet("border: 0px;");
   ui->labDist->setStyleSheet("border: 0px;");
 
+  auto t = "UTC   dB   DT Freq   Message";
+  ui->decodedTextLabel->setText(t);
+  ui->decodedTextLabel2->setText(t);
+
   readSettings();		         //Restore user's setup params
   // start the audio thread
   m_audioThread->start (m_audioThreadPriority);
@@ -492,12 +496,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
 
   Q_EMIT startAudioInputStream (m_config.audio_input_device (), m_framesAudioInputBuffered, &m_detector, m_downSampleFactor, m_config.audio_input_channel ());
   Q_EMIT initializeAudioOutputStream (m_config.audio_output_device (), AudioDevice::Mono == m_config.audio_output_channel () ? 1 : 2, m_msAudioOutputBuffered);
-
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
-
-  auto t = "UTC   dB   DT Freq   Message";
-  ui->decodedTextLabel->setText(t);
-  ui->decodedTextLabel2->setText(t);
 
   enable_DXCC_entity (m_config.DXCC ());  // sets text window proportions and (re)inits the logbook
 
@@ -2768,8 +2767,8 @@ void MainWindow::on_dxGridEntry_textChanged(const QString &t) //dxGrid changed
     qint64 nsec = QDateTime::currentMSecsSinceEpoch() % 86400;
     double utch=nsec/3600.0;
     int nAz,nEl,nDmiles,nDkm,nHotAz,nHotABetter;
-
-    azdist_(const_cast <char *> (m_config.my_grid ().toLatin1().constData()),const_cast<char *> (m_hisGrid.toLatin1().constData()),&utch,
+    azdist_(const_cast <char *> (m_config.my_grid ().toLatin1().constData()),
+            const_cast <char *> (m_hisGrid.toLatin1().constData()),&utch,
             &nAz,&nEl,&nDmiles,&nDkm,&nHotAz,&nHotABetter,6,6);
     QString t;
     t.sprintf("Az: %d",nAz);
@@ -3034,6 +3033,8 @@ void MainWindow::WSPR_config(bool b)
   ui->label_7->setVisible(!b);
   ui->DecodeButton->setEnabled(!b);
   ui->logQSOButton->setEnabled(!b);
+  if(b) ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
+  if(!b) ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -3933,6 +3934,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       t.remove(QRegExp("\\s+$"));
+      /*
       QStringList rxFields = t.split(QRegExp("\\s+"));
       QString rxLine;
       if ( rxFields.count() == 8 ) {
@@ -3959,6 +3961,8 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
           rxLine = t;
       }
       ui->decodedTextBrowser->append(rxLine);
+      */
+      ui->decodedTextBrowser->append(t);
     }
   }
 }

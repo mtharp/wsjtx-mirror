@@ -235,7 +235,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   {
     QPainter painter(&m_OverlayPixmap);
     painter.initFrom(this);
-    QLinearGradient gradient(0, 0, 0 ,m_h2);  //fill background with gradient
+    QLinearGradient gradient(0, 0, 0 ,m_h2);         //fill background with gradient
     gradient.setColorAt(1, Qt::black);
     gradient.setColorAt(0, Qt::darkBlue);
     painter.setBrush(gradient);
@@ -295,13 +295,13 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
 
 //draw tick marks on upper scale
   pixperdiv = m_freqPerDiv/df;
-  for( int i=0; i<m_hdivs; i++) {     //major ticks
+  for( int i=0; i<m_hdivs; i++) {                    //major ticks
     x = (int)((m_xOffset+i)*pixperdiv );
     painter0.drawLine(x,18,x,30);
   }
   int minor=5;
   if(m_freqPerDiv==200) minor=4;
-  for( int i=1; i<minor*m_hdivs; i++) {   //minor ticks
+  for( int i=1; i<minor*m_hdivs; i++) {             //minor ticks
     x = i*pixperdiv/minor;
     painter0.drawLine(x,24,x,30);
   }
@@ -313,10 +313,10 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     painter0.drawText(rect0, Qt::AlignHCenter|Qt::AlignVCenter,m_HDivText[i]);
   }
 
-  float bw=9.0*12000.0/m_nsps;                //JT9
+  float bw=9.0*12000.0/m_nsps;               //JT9
 
-  if(m_mode=="JT4") {                       //JT4
-    bw=3*11025.0/2520.0;           //NB: this is max tone spacing, 3/4 of actual BW
+  if(m_mode=="JT4") {                        //JT4
+    bw=3*11025.0/2520.0;                     //Max tone spacing (3/4 of actual BW)
     if(m_nSubMode==1) bw=2*bw;
     if(m_nSubMode==2) bw=4*bw;
     if(m_nSubMode==3) bw=9*bw;
@@ -349,19 +349,33 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     if(m_nSubMode==2) bw=4*bw;
   }
 
+
   if(m_mode != "JT4") {
     QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
     painter0.setPen(pen0);
-    x1=XfromFreq(m_rxFreq);
-    x2=XfromFreq(m_rxFreq+bw);
-    painter0.drawLine(x1,24,x1,30);
-    painter0.drawLine(x1,28,x2,28);
-    painter0.drawLine(x2,24,x2,30);
+    if(m_mode=="WSPR") {
+      x1=XfromFreq(1400);
+      x2=XfromFreq(1600);
+      painter0.drawLine(x1,29,x2,29);
+    } else {
+      x1=XfromFreq(m_rxFreq);
+      x2=XfromFreq(m_rxFreq+bw);
+      painter0.drawLine(x1,24,x1,30);
+      painter0.drawLine(x1,28,x2,28);
+      painter0.drawLine(x2,24,x2,30);
+    }
+  }
 
+  if(m_mode != "JT4") {
     QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
     painter0.setPen(pen1);
     x1=XfromFreq(m_txFreq);
     x2=XfromFreq(m_txFreq+bw);
+    if(m_modeTx=="WSPR") {
+      bw=4*12000.0/8192.0;                  //WSPR
+      x1=XfromFreq(m_txFreq-0.5*bw);
+      x2=XfromFreq(m_txFreq+0.5*bw);
+    }
     painter0.drawLine(x1,17,x1,21);
     painter0.drawLine(x1,17,x2,17);
     painter0.drawLine(x2,17,x2,21);
