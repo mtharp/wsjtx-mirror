@@ -2145,7 +2145,9 @@ void MainWindow::stopTx()
   tx_status_label->setText("");
   ptt0Timer->start(200);                       //Sequencer delay
   monitor (true);
-  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall, QString::number (ui->rptSpinBox->value ()), m_modeTx, ui->autoButton->isChecked (), m_transmitting);
+  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall,
+                                  QString::number (ui->rptSpinBox->value ()),
+                                  m_modeTx, ui->autoButton->isChecked (), m_transmitting);
 }
 
 void MainWindow::stopTx2()
@@ -4015,7 +4017,7 @@ void MainWindow::uploadSpots()
                     rfreq,
                     tfreq,
                     m_mode,
-                    QString::number(m_btxok ? m_pctx : 0),
+                    QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
                     QString::number(m_dBm),
                     version(),
                     m_appDir + "/wsprd.out");
