@@ -1,7 +1,6 @@
 /*
  This file is part of program wsprd, a detector/demodulator/decoder
- for the Weak Signal Propagation Reporter (WSPR) mode.  Presently
- implemented for WSPR-2; needs some changes for WSPR-15.
+ for the Weak Signal Propagation Reporter (WSPR) mode.
  
  File name: wsprd.c
 
@@ -35,8 +34,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <time.h>
+#include <fftw3.h>
 
-#include "fftw3.h"
 #include "fano.h"
 #include "wsprd_utils.h"
 
@@ -57,11 +56,11 @@ unsigned char pr3[162]=
  0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,0,
  0,0};
 
-int nr;
+unsigned long nr;
 
 //***************************************************************************
 unsigned long readc2file(char *ptr_to_infile, double *idat, double *qdat, 
-			 double *freq)
+			 double *freq, int *wspr_type)
 {
   float buffer[2*65536];
   double dfreq;
@@ -69,7 +68,6 @@ unsigned long readc2file(char *ptr_to_infile, double *idat, double *qdat,
   char *c2file[15];
   FILE* fp;
 
-  fp=fopen(ptr_to_infile,"r");
   fp = fopen(ptr_to_infile,"rb");
   if (fp == NULL) {
     fprintf(stderr, "Cannot open data file '%s'\n", ptr_to_infile);
@@ -80,6 +78,8 @@ unsigned long readc2file(char *ptr_to_infile, double *idat, double *qdat,
   nread=fread(&dfreq,sizeof(double),1,fp);
   *freq=dfreq;
   nread=fread(buffer,sizeof(float),2*45000,fp);
+
+  *wspr_type=ntrmin;
 
   for(i=0; i<45000; i++) {
     idat[i]=buffer[2*i];
@@ -94,19 +94,34 @@ unsigned long readc2file(char *ptr_to_infile, double *idat, double *qdat,
 }
 
 //***************************************************************************
-unsigned long readwavfile(char *ptr_to_infile, double *idat, double *qdat )
+unsigned long readwavfile(char *ptr_to_infile, int ntrmin, double *idat, double *qdat )
 {
-  int i, j;
-  int nfft1=1474560;;
-  int nfft2=nfft1/32;                  //nfft2=46080
-  int nh2=nfft2/2;
-  double df=12000.0/nfft1;
-  int i0=1500.0/df+0.5;
+  unsigned long i, j, npoints;
+  int nfft1, nfft2, nh2, i0;
+  double df;
+   
+  nfft2=46080; //this is the number of downsampled points that will be returned
+  nh2=nfft2/2;
+
+  if( ntrmin == 2 ) {
+    nfft1=nfft2*32;      //need to downsample by a factor of 32
+    df=12000.0/nfft1;
+    i0=1500.0/df+0.5;
+    npoints=114*12000;
+  } else if ( ntrmin == 15 ) {
+    nfft1=nfft2*8*32;
+    df=12000.0/nfft1;
+    i0=(1500.0+112.5)/df+0.5;
+    npoints=8*114*12000;
+  } else {
+    fprintf(stderr,"This should not happen\n");
+    return 1;
+  }
+
   double *realin;
   fftw_complex *fftin, *fftout;
 
   FILE *fp;
-  unsigned long npoints=114*12000;
   short int *buf2;
   buf2 = malloc(npoints*sizeof(short int));
 
@@ -318,8 +333,10 @@ void usage(void)
 //    printf("       -t n (n is blanking duration in milliseconds)\n");
 //    printf("       -b n (n is pct of time that is blanked)\n");
   printf("       -H do not use (or update) the hash table\n");
+  printf("       -m decode wspr-15 .wav file\n");
   printf("       -n write noise estimates to file noise.dat\n");
   printf("       -q quick mode - doesn't dig deep for weak signals\n");
+  printf("       -s slow mode - much slower, yields a few more decodes\n");
   printf("       -v verbose mode\n");
   printf("       -w wideband mode - decode signals within +/- 150 Hz of center\n");
 }
@@ -335,7 +352,7 @@ int main(int argc, char *argv[])
   char *callsign,*grid,*grid6, *call_loc_pow, *cdbm;
   char *ptr_to_infile,*ptr_to_infile_suffix;
   char uttime[5],date[7];
-  int c,delta,nfft2=65536,verbose=0,quickmode=0,writenoise=0,usehashtable=1;
+  int c,delta,maxpts=65536,verbose=0,quickmode=0,writenoise=0,usehashtable=1,wspr_type=2;
   int shift1, lagmin, lagmax, lagstep, worth_a_try, not_decoded, nadd, ndbm;
   int32_t n1, n2, n3;
   unsigned int nbits;
@@ -343,8 +360,8 @@ int main(int argc, char *argv[])
   float df=375.0/256.0/2;
   float freq0[200],snr0[200],drift0[200],sync0[200];
   int shift0[200];
-  float dt=1.0/375.0;
-  double dialfreq_cmdline=0.0, dialfreq;
+  float dt=1.0/375.0, dt_print;
+  double dialfreq_cmdline=0.0, dialfreq, freq_print;
   float dialfreq_error=0.0;
   float fmin=-110, fmax=110;
   float f1, fstep, sync1, drift1, tblank=0, fblank=0;
@@ -374,10 +391,10 @@ int main(int argc, char *argv[])
     fclose(fp_fftw_wisdom_file);
   }
 
-  idat=malloc(sizeof(double)*nfft2);
-  qdat=malloc(sizeof(double)*nfft2);
+  idat=malloc(sizeof(double)*maxpts);
+  qdat=malloc(sizeof(double)*maxpts);
 
-  while ( (c = getopt(argc, argv, "b:e:f:Hnqt:wv")) !=-1 ) {
+  while ( (c = getopt(argc, argv, "b:e:f:Hmnqst:wv")) !=-1 ) {
     switch (c) {
     case 'b':
       fblank = strtof(optarg,NULL);
@@ -392,11 +409,18 @@ int main(int argc, char *argv[])
     case 'H':
       usehashtable = 0;
       break;
+    case 'm':
+      wspr_type = 15;
+      break;
     case 'n':
       writenoise = 1;
       break;
     case 'q':
       quickmode = 1;
+      break;
+    case 's':
+      maxcycles=20000;
+      iifac=1;
       break;
     case 't':
       tblank = strtof(optarg,NULL);
@@ -439,7 +463,7 @@ int main(int argc, char *argv[])
     ptr_to_infile_suffix=strstr(ptr_to_infile,".wav");
 
     t0 = clock();
-    npoints=readwavfile(ptr_to_infile, idat, qdat);
+    npoints=readwavfile(ptr_to_infile, wspr_type, idat, qdat);
     treadwav += (double)(clock()-t0)/CLOCKS_PER_SEC;
 
     if( npoints == 1 ) {
@@ -448,7 +472,7 @@ int main(int argc, char *argv[])
     dialfreq=dialfreq_cmdline - (dialfreq_error*1.0e-06);
   } else if ( strstr(ptr_to_infile,".c2") !=0 )  {
     ptr_to_infile_suffix=strstr(ptr_to_infile,".c2");
-    npoints=readc2file(ptr_to_infile, idat, qdat, &dialfreq);
+    npoints=readc2file(ptr_to_infile, idat, qdat, &dialfreq, &wspr_type);
     if( npoints == 1 ) {
       return 1;
     }
@@ -526,11 +550,21 @@ int main(int argc, char *argv[])
 // Noise level of spectrum is estimated as 123/411= 30'th percentile
   float noise_level = tmpsort[122];
 
-// Renormalize spectrum so that (large) peaks represent an estimate of snr
-  float min_snr_neg33db = pow(10.0,(-33+26.5)/10.0);
+/* Renormalize spectrum so that (large) peaks represent an estimate of snr.
+ * We know from experience that threshold snr is near -7dB in wspr bandwidth, 
+ * corresponding to -7-26.3=-33.3dB in 2500 Hz bandwidth.
+ * The corresponding threshold is -42.3 dB in 2500 Hz bandwidth for WSPR-15. */
+
+  float min_snr, snr_scaling_factor;
+  min_snr = pow(10.0,-7.0/10.0); //this is min snr in wspr bw
+  if( wspr_type == 2 ) {
+      snr_scaling_factor=26.3;
+  } else {
+      snr_scaling_factor=35.3;
+  }
   for (j=0; j<411; j++) {
     smspec[j]=smspec[j]/noise_level - 1.0;
-    if( smspec[j] < min_snr_neg33db) smspec[j]=0.1;
+    if( smspec[j] < min_snr) smspec[j]=0.1;
     continue;
   }
 
@@ -547,7 +581,7 @@ int main(int argc, char *argv[])
   for(j=1; j<410; j++) {
     if((smspec[j]>smspec[j-1]) && (smspec[j]>smspec[j+1]) && (npk<200)) {
       freq0[npk]=(j-205)*df;
-      snr0[npk]=10*log10(smspec[j])-26.5;
+      snr0[npk]=10*log10(smspec[j])-snr_scaling_factor;
       npk++;
     }
   }
@@ -735,17 +769,17 @@ could each work on one candidate at a time.
 
       sq=0.0;
       for(i=0; i<162; i++) {
-	y=(double)symbols[i] - 128.0;
-	sq += y*y;
+	    y=(double)symbols[i] - 128.0;
+	    sq += y*y;
       }
       rms=sqrt(sq/162.0);
 
       if((sync1 > minsync2) && (rms > minrms)) {
-	deinterleave(symbols);
-	t0 = clock();
-	  not_decoded = fano(&metric,&cycles,&maxnp,decdata,symbols,nbits,
+	    deinterleave(symbols);
+	    t0 = clock();
+	    not_decoded = fano(&metric,&cycles,&maxnp,decdata,symbols,nbits,
 			     mettab,delta,maxcycles);
-	tfano += (double)(clock()-t0)/CLOCKS_PER_SEC;
+	    tfano += (double)(clock()-t0)/CLOCKS_PER_SEC;
 
 	/* ### Used for timing tests:
 	if(not_decoded) fprintf(fdiag,
@@ -863,19 +897,26 @@ could each work on one candidate at a time.
 // Add an extra space at the end of each line so that wspr-x doesn't 
 // truncate the power (TNX to DL8FCL!)
 
+    if( wspr_type == 15 ) {
+        freq_print=dialfreq+(1500+112.5+f1/8.0)/1e6;
+        dt_print=shift1*8*dt-2.0;
+    } else {
+        freq_print=dialfreq+(1500+f1)/1e6;
+        dt_print=shift1*dt-2.0;
+    }
 	printf("%4s %3.0f %4.1f %10.6f %2d  %-s \n",
-	       uttime, snr0[j],(shift1*dt-2.0), dialfreq+(1500+f1)/1e6,
+	       uttime, snr0[j],dt_print,freq_print,
 	       (int)drift1, call_loc_pow);
 
 	fprintf(fall_wspr,
 		"%6s %4s %3.0f %3.0f %4.1f %10.7f  %-22s %2d %5u %4d\n",
 		date,uttime,sync1*10,snr0[j],
-		shift1*dt-2.0, dialfreq+(1500+f1)/1e6,
+		dt_print, freq_print,
 		call_loc_pow, (int)drift1, cycles/81, ii);
 
 	fprintf(fwsprd,"%6s %4s %3d %3.0f %4.1f %10.6f  %-22s %2d %5u %4d\n",
 		date,uttime,(int)(sync1*10),snr0[j],
-		shift1*dt-2.0, dialfreq+(1500+f1)/1e6,
+		dt_print, freq_print,
 		call_loc_pow, (int)drift1, cycles/81, ii);
 
 /* For timing tests
