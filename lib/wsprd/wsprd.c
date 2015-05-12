@@ -34,7 +34,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <time.h>
-#include <fftw3.h>
+#include "fftw3.h"
 
 #include "fano.h"
 #include "wsprd_utils.h"
