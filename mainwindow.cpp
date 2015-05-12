@@ -3062,15 +3062,18 @@ void MainWindow::WSPR_config(bool b)
   ui->pbT2R->setVisible(!b);
   ui->rptSpinBox->setVisible(!b);
   ui->label_8->setVisible(!b);
+  ui->labAz->setVisible(!b);
+  ui->labDist->setVisible(!b);
   ui->logQSOButton->setVisible(!b);
+  ui->label_3->setVisible(!b);
+  ui->label_4->setVisible(!b);
+  ui->dxCallEntry->setVisible(!b);
+  ui->dxGridEntry->setVisible(!b);
+  ui->lookupButton->setVisible(!b);
+  ui->addButton->setVisible(!b);
 
   ui->DecodeButton->setEnabled(!b);
-  ui->label_3->setEnabled(!b);
-  ui->label_4->setEnabled(!b);
-  ui->dxCallEntry->setEnabled(!b);
-  ui->dxGridEntry->setEnabled(!b);
-  ui->lookupButton->setEnabled(!b);
-  ui->addButton->setEnabled(!b);
+
   if(b) {
     ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
     auto_tx_label->setText("");
