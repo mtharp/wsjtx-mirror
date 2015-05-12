@@ -3044,7 +3044,6 @@ void MainWindow::on_actionWSPR_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->pbTxMode->setEnabled(false);
   VHF_controls_visible(false);
   WSPR_config(true);
 }
@@ -3055,23 +3054,30 @@ void MainWindow::WSPR_config(bool b)
   ui->decodedTextLabel2->setVisible(!b);
   ui->label_6->setVisible(!b);
   ui->label_7->setVisible(!b);
+  ui->pbTxMode->setVisible(!b);
+  ui->RxFreqSpinBox->setVisible(!b);
+  ui->cbTxLock->setVisible(!b);
+  ui->txFirstCheckBox->setVisible(!b);
+  ui->pbR2T->setVisible(!b);
+  ui->pbT2R->setVisible(!b);
+  ui->rptSpinBox->setVisible(!b);
+  ui->label_8->setVisible(!b);
+  ui->logQSOButton->setVisible(!b);
+
   ui->DecodeButton->setEnabled(!b);
-  ui->logQSOButton->setEnabled(!b);
-  ui->RxFreqSpinBox->setEnabled(!b);
-  ui->pbR2T->setEnabled(!b);
-  ui->pbT2R->setEnabled(!b);
-  ui->cbTxLock->setEnabled(!b);
   ui->label_3->setEnabled(!b);
   ui->label_4->setEnabled(!b);
-  ui->label_8->setEnabled(!b);
-  ui->rptSpinBox->setEnabled(!b);
-  ui->txFirstCheckBox->setEnabled(!b);
   ui->dxCallEntry->setEnabled(!b);
   ui->dxGridEntry->setEnabled(!b);
   ui->lookupButton->setEnabled(!b);
   ui->addButton->setEnabled(!b);
-  if(b) ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
-  if(!b) ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
+  if(b) {
+    ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
+    auto_tx_label->setText("");
+  } else {
+    ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
+    auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
+  }
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
