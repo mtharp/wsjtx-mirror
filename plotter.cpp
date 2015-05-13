@@ -353,7 +353,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   if(m_mode != "JT4") {
     QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
     painter0.setPen(pen0);
-    if(m_mode=="WSPR") {
+    if(m_mode=="WSPR-2") {                   //### WSPR-15 code needed here, too ###
       x1=XfromFreq(1400);
       x2=XfromFreq(1600);
       painter0.drawLine(x1,29,x2,29);
@@ -371,7 +371,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     painter0.setPen(pen1);
     x1=XfromFreq(m_txFreq);
     x2=XfromFreq(m_txFreq+bw);
-    if(m_modeTx=="WSPR") {
+    if(m_mode=="WSPR-2") {                  //### WSPR-15 code needed here, too
       bw=4*12000.0/8192.0;                  //WSPR
       x1=XfromFreq(m_txFreq-0.5*bw);
       x2=XfromFreq(m_txFreq+0.5*bw);

@@ -930,7 +930,10 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
 void MainWindow::on_autoButton_clicked (bool checked)
 {
   m_auto = checked;
-  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall, QString::number (ui->rptSpinBox->value ()), m_modeTx, ui->autoButton->isChecked (), m_transmitting);
+  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall,
+                                  QString::number (ui->rptSpinBox->value ()),
+                                  m_modeTx, ui->autoButton->isChecked (),
+                                  m_transmitting);
 }
 
 void MainWindow::auto_tx_mode (bool state)
@@ -1126,7 +1129,9 @@ void MainWindow::displayDialFrequency ()
 
 void MainWindow::statusChanged()
 {
-  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall, QString::number (ui->rptSpinBox->value ()), m_modeTx, ui->autoButton->isChecked (), m_transmitting);
+  m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall,
+                                  QString::number (ui->rptSpinBox->value ()),
+                                  m_modeTx, ui->autoButton->isChecked (), m_transmitting);
 
   QFile f {m_config.temp_dir ().absoluteFilePath ("wsjtx_status.txt")};
   if(f.open(QFile::WriteOnly | QIODevice::Text)) {
@@ -2134,6 +2139,7 @@ void MainWindow::startTx2()
     if(t.mid(0,1)=="#") snr=t.mid(1,5).toDouble();
     if(snr>0.0 or snr < -50.0) snr=99.0;
     transmit (snr);
+    qDebug() << "A" << snr;
     signalMeter->setValue(0);
   }
 }
@@ -3568,7 +3574,7 @@ void MainWindow::transmit (double snr)
            toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
            true, snr);
   }
-  if (m_modeTx == "WSPR") {
+  if (m_mode=="WSPR-2") {                                      //### Similar code needed for WSPR-15 ###
 
     Q_EMIT sendMessage (NUM_WSPR_SYMBOLS, 8192.0,
                         ui->TxFreqSpinBox->value(), m_toneSpacing,
