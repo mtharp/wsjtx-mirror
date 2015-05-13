@@ -1749,8 +1749,11 @@ void MainWindow::guiUpdate()
     m_nseq = nsec % m_TRperiod;
     if(m_nseq==0 and m_ntr==0) {
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
-      if(m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and (m_ntr!=-1))) or
-         (m_auto and (m_pctx==100))) {
+//      if(m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and (m_ntr!=-1))) or
+//         (m_auto and (m_pctx==100))) {
+
+      if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and
+                       (m_ntr!=-1)))) or ((m_auto and (m_pctx==100)))) {
 
         //This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
         float x=(float)rand()/RAND_MAX;
@@ -3970,6 +3973,16 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       m_blankLine=true;
       return;
     } else {
+
+      if (m_config.insert_blank () && m_blankLine) {
+        QString band;
+        auto const& bands_model = m_config.bands ();
+        band = ' ' + bands_model->data (bands_model->find (m_dialFreq +
+                              ui->TxFreqSpinBox->value ())).toString ();
+        ui->decodedTextBrowser->append(band.rightJustified  (50, '-'));
+        m_blankLine = false;
+      }
+
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       t.remove(QRegExp("\\s+$"));
