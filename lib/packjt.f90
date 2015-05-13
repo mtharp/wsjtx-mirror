@@ -957,8 +957,8 @@ subroutine packpfx(call1,n1,ng,nadd)
   else
 ! Prefix of 1 to 3 characters
      pfx=call1(:i1-1)
-     if(pfx(3:3).eq.' ') pfx=' '//pfx
-     if(pfx(3:3).eq.' ') pfx=' '//pfx
+     if(pfx(3:3).eq.' ') pfx=' '//pfx(1:2)
+     if(pfx(3:3).eq.' ') pfx=' '//pfx(1:2)
      call0=call1(i1+1:)
      call packcall(call0,n1,text)
 

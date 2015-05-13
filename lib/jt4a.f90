@@ -1,6 +1,5 @@
-subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
-     nagain,ndepth,nclearave,minsync,minw,nsubmode,mycall,mygrid,         &
-     hiscall,hisgrid,nlist0,listutc0)
+subroutine jt4a(dd,jz,nutc,nfqso,ntol0,emedelay,dttol,nagain,ndepth,     &
+     nclearave,minsync,minw,nsubmode,mycall,hiscall,hisgrid,nlist0,listutc0)
 
   use jt4
   integer listutc0(10)
@@ -8,7 +7,7 @@ subroutine jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol0,emedelay,dttol,     &
   real*4 dat(30*12000)
   character*6 cfile6
   character*12 mycall,hiscall
-  character*6 mygrid,hisgrid
+  character*6 hisgrid
 
   mode4=nch(nsubmode+1)
   ntol=ntol0

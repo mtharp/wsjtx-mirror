@@ -42,9 +42,9 @@ subroutine decoder(ss,id2,nfsample)
         if(nfsample.eq.12000) call wav11(id2,jz,dd)
         if(nfsample.eq.11025) dd(1:jz)=id2(1:jz)
      endif
-     call jt4a(dd,jz,nutc,nfqso,newdat,nfa,nfb,ntol,emedelay,dttol,     &
-          nagain,ndepth,nclearave,minsync,minw,nsubmode,mycall,mygrid,  &
-          hiscall,hisgrid,nlist,listutc)
+     call jt4a(dd,jz,nutc,nfqso,ntol,emedelay,dttol,nagain,ndepth,       &
+          nclearave,minsync,minw,nsubmode,mycall,hiscall,hisgrid,        &
+          nlist,listutc)
      go to 800
   endif
 

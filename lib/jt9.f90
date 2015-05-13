@@ -229,8 +229,7 @@ program jt9
            if(nhsym.ge.181) exit
         endif
      enddo
-
-10   close(10)
+     close(10)
      call fillcom(nutc0,ndepth,nrxfreq,mode,tx9,flow,fsplit,fhigh)
      call decoder(ss,id2,nfsample)
   enddo

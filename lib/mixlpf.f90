@@ -1,7 +1,6 @@
 subroutine mixlpf(x1,nbfo,c0)
 
   real*4 x1(512)
-  real*4 x2(105+512)
   real*8 twopi,phi,dphi
   complex c1(512),c2(105+512)
   complex c0(64)
