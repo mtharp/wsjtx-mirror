@@ -791,11 +791,7 @@ void MainWindow::dataSink(qint64 frames)
       double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
       savec2_(c2name,&nsec,&f0m1500,len1);
     }
-//###############################################################################
-//    lab3->setStyleSheet("QLabel{background-color:cyan}");
-//    lab3->setText("Decoding");
-//    m_rxdone=true;
-//    loggit("Start Decoder");
+
     QString t2,cmnd;
     double f0m1500=m_dialFreq/1000000.0;   // + 0.000001*(m_BFO - 1500);
     t2.sprintf(" -f %.6f ",f0m1500);
@@ -814,7 +810,6 @@ void MainWindow::dataSink(qint64 frames)
     ui->DecodeButton->setChecked (true);
     p1.start(QDir::toNativeSeparators(cmnd));
 
-//###############################################################################
   }
 }
 
@@ -4030,10 +4025,7 @@ void MainWindow::uploadSpots()
                     QString::number(m_dBm),
                     version(),
                     m_appDir + "/wsprd.out");
-//    loggit("Start WSPRNet Upload");
     m_uploading = true;
-//    lab3->setStyleSheet("QLabel{background-color:yellow}");
-//    lab3->setText("Uploading Spots");
 }
 
 void MainWindow::uploadResponse(QString response)
@@ -4041,11 +4033,8 @@ void MainWindow::uploadResponse(QString response)
 //    qDebug() << ">>> " << response;
     if (response == "done") {
         m_uploading=false;
-//        lab3->setStyleSheet("");
-//        lab3->setText("");
     } else if (response == "Upload Failed") {
         m_uploading=false;
-//        lab3->setStyleSheet("");
 //        lab3->setText(response);
     } else {
 //        lab3->setText(response);
@@ -4058,10 +4047,7 @@ void MainWindow::p2Start()
   QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
       "/wsprd.out -F call=" + m_config.my_callsign() + " -F grid=" + m_config.my_grid();
   cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
-//  loggit("Start curl");
   m_uploading=true;
-//  lab3->setStyleSheet("QLabel{background-color:yellow}");
-//  lab3->setText("Uploading Spots");
   p2.start(cmnd);
 }
 
@@ -4074,8 +4060,6 @@ void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
       f.remove();
     }
   }
-//  lab3->setStyleSheet("");
-//  lab3->setText("");
   m_uploading=false;
 }
 
@@ -4083,7 +4067,6 @@ void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
 {
   QByteArray t=p2.readAllStandardError();
   if(t.length()>0) {
-//    loggit(t);
     msgBox(t);
   }
   m_uploading=false;
