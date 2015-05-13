@@ -213,7 +213,6 @@ private slots:
   void on_TxPowerComboBox_currentIndexChanged(const QString &arg1);
   void on_sbTxPercent_valueChanged(int n);
   void on_cbUploadWSPR_Spots_toggled(bool b);
-  void on_pbTxNext_clicked();
   void WSPR_config(bool b);
   void uploadSpots();
   void uploadResponse(QString response);
@@ -223,6 +222,8 @@ private slots:
   void p3ReadFromStdout();
   void p3ReadFromStderr();
   void p3Error();
+  void on_WSPRfreqSpinBox_valueChanged(int n);
+  void on_pbTxNext_clicked(bool b);
 
 private:
   void enable_DXCC_entity (bool on);

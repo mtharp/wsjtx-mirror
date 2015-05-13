@@ -594,6 +594,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("NDepth",m_ndepth);
   m_settings->setValue("RxFreq",ui->RxFreqSpinBox->value());
   m_settings->setValue("TxFreq",ui->TxFreqSpinBox->value());
+  m_settings->setValue("WSPRfreq",ui->WSPRfreqSpinBox->value());
   m_settings->setValue("minW",ui->sbMinW->value());
   m_settings->setValue("SubMode",ui->sbSubmode->value());
   m_settings->setValue("DTtol",m_DTtol);
@@ -635,17 +636,14 @@ void MainWindow::readSettings()
   if (displayAstro) on_actionAstronomical_data_triggered ();
   if (displayMsgAvg) on_actionMessage_averaging_triggered();
   m_settings->beginGroup("Common");
-  morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData())
-         , const_cast<int *> (icw)
-         , &m_ncw
-         , m_config.my_callsign ().length());
+  morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData()),
+         const_cast<int *> (icw), &m_ncw, m_config.my_callsign ().length());
   m_mode=m_settings->value("Mode","JT9").toString();
   m_modeTx=m_settings->value("ModeTx","JT9").toString();
   if(m_modeTx.mid(0,3)=="JT9") ui->pbTxMode->setText("Tx JT9  @");
   if(m_modeTx=="JT65") ui->pbTxMode->setText("Tx JT65  #");
   ui->actionNone->setChecked(m_settings->value("SaveNone",true).toBool());
-  ui->actionSave_decoded->setChecked(m_settings->value(
-                                                       "SaveDecoded",false).toBool());
+  ui->actionSave_decoded->setChecked(m_settings->value("SaveDecoded",false).toBool());
   ui->actionSave_all->setChecked(m_settings->value("SaveAll",false).toBool());
   ui->RxFreqSpinBox->setValue(0); // ensure a change is signaled
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
@@ -660,7 +658,10 @@ void MainWindow::readSettings()
   ui->cbEME->setChecked(m_bEME);
   m_MinW=m_settings->value("minW",0).toInt();
   ui->sbMinW->setValue(m_MinW);
-  m_lastMonitoredFrequency = m_settings->value ("DialFreq", QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
+  m_lastMonitoredFrequency = m_settings->value ("DialFreq",
+     QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
+  ui->WSPRfreqSpinBox->setValue(0); // ensure a change is signaled
+  ui->WSPRfreqSpinBox->setValue(m_settings->value("WSPRfreq",1500).toInt());
   ui->TxFreqSpinBox->setValue(0); // ensure a change is signaled
   ui->TxFreqSpinBox->setValue(m_settings->value("TxFreq",1500).toInt());
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
@@ -3055,6 +3056,7 @@ void MainWindow::WSPR_config(bool b)
   ui->label_6->setVisible(!b);
   ui->label_7->setVisible(!b);
   ui->pbTxMode->setVisible(!b);
+  ui->TxFreqSpinBox->setVisible(!b);
   ui->RxFreqSpinBox->setVisible(!b);
   ui->cbTxLock->setVisible(!b);
   ui->txFirstCheckBox->setVisible(!b);
@@ -3071,9 +3073,7 @@ void MainWindow::WSPR_config(bool b)
   ui->dxGridEntry->setVisible(!b);
   ui->lookupButton->setVisible(!b);
   ui->addButton->setVisible(!b);
-
   ui->DecodeButton->setEnabled(!b);
-
   if(b) {
     ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
     auto_tx_label->setText("");
@@ -4127,7 +4127,14 @@ void MainWindow::on_sbTxPercent_valueChanged(int n)
 {
   m_pctx=n;
   m_rxavg=1.0;
-  if(m_pctx>0) m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
+  if(m_pctx>0) {
+    m_rxavg=100.0/m_pctx - 1.0;  //Average # of Rx's per Tx
+    ui->pbTxNext->setEnabled(true);
+  } else {
+    m_txNext=false;
+    ui->pbTxNext->setEnabled(false);
+    ui->pbTxNext->setChecked(false);
+  }
 }
 
 void MainWindow::on_cbUploadWSPR_Spots_toggled(bool b)
@@ -4138,9 +4145,12 @@ void MainWindow::on_cbUploadWSPR_Spots_toggled(bool b)
         "QCheckBox{background-color: yellow}");
 }
 
-void MainWindow::on_pbTxNext_clicked()
+void MainWindow::on_WSPRfreqSpinBox_valueChanged(int n)
 {
-  m_txNext=!m_txNext;
-//  if(m_txNext)  ui->pbTxNext->setStyleSheet(m_txNext_style);
-//  if(!m_txNext) ui->pbTxNext->setStyleSheet("");
+  ui->TxFreqSpinBox->setValue(n);
+}
+
+void MainWindow::on_pbTxNext_clicked(bool b)
+{
+  m_txNext=b;
 }
