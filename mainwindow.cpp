@@ -1749,9 +1749,6 @@ void MainWindow::guiUpdate()
     m_nseq = nsec % m_TRperiod;
     if(m_nseq==0 and m_ntr==0) {
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
-//      if(m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and (m_ntr!=-1))) or
-//         (m_auto and (m_pctx==100))) {
-
       if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and
                        (m_ntr!=-1)))) or ((m_auto and (m_pctx==100)))) {
 
@@ -2096,7 +2093,9 @@ void MainWindow::guiUpdate()
       }
     } else if(m_monitoring) {
       tx_status_label->setStyleSheet("QLabel{background-color: #00ff00}");
-      tx_status_label->setText("Receiving ");
+      QString t="Receiving ";
+      if(m_auto and (m_mode=="WSPR")) t += QString::number(m_nrx);
+      tx_status_label->setText(t);
       transmitDisplay(false);
     } else if (!m_diskData) {
       tx_status_label->setStyleSheet("");
