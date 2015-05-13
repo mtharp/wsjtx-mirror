@@ -2772,7 +2772,8 @@ QLabel[oob=&quot;true&quot;] {
     <addaction name="actionJT9_JT65"/>
     <addaction name="actionJT9W_1"/>
     <addaction name="actionJT4"/>
-    <addaction name="actionWSPR"/>
+    <addaction name="actionWSPR_2"/>
+    <addaction name="actionWSPR_15"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -3158,12 +3159,20 @@ QLabel[oob=&quot;true&quot;] {
     <string>Include correlation</string>
    </property>
   </action>
-  <action name="actionWSPR">
+  <action name="actionWSPR_2">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>WSPR</string>
+    <string>WSPR-2</string>
+   </property>
+  </action>
+  <action name="actionWSPR_15">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>WSPR-15</string>
    </property>
   </action>
  </widget>

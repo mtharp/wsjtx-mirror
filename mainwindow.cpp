@@ -222,7 +222,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionJT65->setActionGroup(modeGroup);
   ui->actionJT9_JT65->setActionGroup(modeGroup);
   ui->actionJT4->setActionGroup(modeGroup);
-  ui->actionWSPR->setActionGroup(modeGroup);
+  ui->actionWSPR_2->setActionGroup(modeGroup);
+  ui->actionWSPR_15->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -489,8 +490,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   genStdMsgs(m_rpt);
   m_ntx=6;
   ui->txrb6->setChecked(true);
-  if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and
-     m_mode!="JT9+JT65" and m_mode!="JT4" and m_mode!="WSPR") m_mode="JT9";
+  if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and m_mode!="JT9+JT65" and
+     m_mode!="JT4" and m_mode!="WSPR-2" and m_mode!="WSPR-15") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
 
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
@@ -501,7 +502,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode=="JT9W-1") on_actionJT9W_1_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
   if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
-  if(m_mode=="WSPR") on_actionWSPR_triggered();
+  if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
+  if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
 
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
   m_wideGraph->setMode(m_mode);
@@ -543,8 +545,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_ntx=1;
   ui->txrb1->setChecked(true);
 
-  if(m_mode=="WSPR") {
+  if(m_mode=="WSPR-2") {
     m_hsymStop=396;
+  } else if(m_mode=="WSPR-15") {
+    m_hsymStop=3090;
   } else {
     m_hsymStop=173;
     if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -744,7 +748,7 @@ void MainWindow::dataSink(qint64 frames)
   jt9com_.nfb=m_wideGraph->Fmax();
   int nsmo=m_wideGraph->smoothYellow()-1;
   symspec_(&k,&trmin,&m_nsps,&m_inGain,&nsmo,&px,s,&df3,&ihsym,&npts8);
-  if(m_mode=="WSPR") wspr_downsample_(jt9com_.d2,&k);                //###
+  if(m_mode=="WSPR-2") wspr_downsample_(jt9com_.d2,&k);                //###
   if(ihsym <=0) return;
   QString t;
   m_pctZap=nzap*100.0/m_nsps;
@@ -760,8 +764,10 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.newdat=1;
     jt9com_.nagain=0;
 
-    if(m_mode=="WSPR") {
+    if(m_mode=="WSPR-2") {
       m_hsymStop=396;
+    } else if(m_mode=="WSPR-15") {
+      m_hsymStop=3090;
     } else {
       m_hsymStop=173;
       if(m_config.decode_at_52s()) m_hsymStop=181;
@@ -769,7 +775,7 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-    if(m_mode!="WSPR") decode();                                                //Start decoder
+    if(m_mode.mid(0,4)!="WSPR") decode();                                                //Start decoder
     if(!m_diskData) {                        //Always save; may delete later
       int ihr=t.time().toString("hh").toInt();
       int imin=t.time().toString("mm").toInt();
@@ -1734,9 +1740,10 @@ void MainWindow::guiUpdate()
   double tx1=0.0;
   double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;            // JT9
   if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
-  if(m_modeTx=="WSPR") tx2=1.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
+  if(m_mode=="WSPR-2") tx2=1.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
+//###  if(m_mode=="WSPR-15") tx2=...
 
-  if(!m_txFirst and m_mode!="WSPR") {
+  if(!m_txFirst and m_mode.mid(0,4)!="WSPR") {
     tx1 += m_TRperiod;
     tx2 += m_TRperiod;
   }
@@ -1745,7 +1752,7 @@ void MainWindow::guiUpdate()
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
 
-  if(m_mode=="WSPR") {
+  if(m_mode.mid(0,4)=="WSPR") {
     m_nseq = nsec % m_TRperiod;
     if(m_nseq==0 and m_ntr==0) {
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
@@ -1783,7 +1790,7 @@ void MainWindow::guiUpdate()
     }
 
     Frequency onAirFreq = m_dialFreq + ui->TxFreqSpinBox->value();
-    if ((onAirFreq > 10139900 and onAirFreq < 10140320) and m_mode!="WSPR") {
+    if ((onAirFreq > 10139900 and onAirFreq < 10140320) and m_mode.mid(0,4)!="WSPR") {
       bTxTime=false;
       if (m_tune) stop_tuning ();
       if (m_auto) auto_tx_mode (false);
@@ -1808,7 +1815,7 @@ void MainWindow::guiUpdate()
     if(!bTxTime and !m_tune) m_btxok=false;            //Time to stop transmitting
   }
 
-  if(m_mode=="WSPR" and m_nseq>tx2) {
+  if(m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
     if(m_monitoring and m_ntr==1) m_nrx=m_nrx-1;  //Decrement the Rx-sequence count
     if(m_transmitting) {
       bTxTime=false;                              //Time to stop a WSPR transmission
@@ -1821,8 +1828,7 @@ void MainWindow::guiUpdate()
   if((g_iptt==1 && iptt0==0) || m_restart) {
     QByteArray ba;
 
-//###
-    if(m_mode=="WSPR") {
+    if(m_mode.mid(0,4)=="WSPR") {
       QString sdBm,msg0,msg1,msg2;
       sdBm.sprintf(" %d",m_dBm);
       m_tx=1-m_tx;
@@ -1850,10 +1856,8 @@ void MainWindow::guiUpdate()
       if(m_ntx == 7) ba=ui->genMsg->text().toLocal8Bit();
       if(m_ntx == 8) ba=ui->freeTextMsg->currentText().toLocal8Bit();
     }
-//###
 
     ba2msg(ba,message);
-    //    ba2msg(ba,msgsent);
     int len1=22;
     int ichk=0;
     if (m_lastMessageSent != m_currentMessage
@@ -1872,7 +1876,8 @@ void MainWindow::guiUpdate()
                                 &m_currentMessageType, len1, len1);
       if(m_modeTx=="JT65") gen65_(message, &ichk, msgsent, const_cast<int *> (itone),
                                   &m_currentMessageType, len1, len1);
-      if(m_mode=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone), len1, len1);
+      if(m_mode.mid(0,4)=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone),
+                                           len1, len1);
     }
 
     msgsent[22]=0;
@@ -2094,7 +2099,7 @@ void MainWindow::guiUpdate()
     } else if(m_monitoring) {
       tx_status_label->setStyleSheet("QLabel{background-color: #00ff00}");
       QString t="Receiving ";
-      if(m_auto and (m_mode=="WSPR")) t += QString::number(m_nrx);
+      if(m_auto and (m_mode.mid(0,4)=="WSPR")) t += QString::number(m_nrx);
       tx_status_label->setText(t);
       transmitDisplay(false);
     } else if (!m_diskData) {
@@ -2152,7 +2157,7 @@ void MainWindow::stopTx2()
 {
   QString rt;
   Q_EMIT m_config.transceiver_ptt (false);      //Lower PTT
-  if (m_mode!="WSPR" and m_config.watchdog() and m_repeatMsg>=m_watchdogLimit-1) {
+  if (m_mode.mid(0,4)!="WSPR" and m_config.watchdog() and m_repeatMsg>=m_watchdogLimit-1) {
     on_stopTxButton_clicked();
     msgBox("Runaway Tx watchdog");
     m_repeatMsg=0;
@@ -3023,10 +3028,10 @@ void MainWindow::on_actionJT4_triggered()
   if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
 }
 
-void MainWindow::on_actionWSPR_triggered()
+void MainWindow::on_actionWSPR_2_triggered()
 {
-  m_mode="WSPR";
-  m_modeTx="WSPR";
+  m_mode="WSPR-2";
+  m_modeTx="WSPR-2";                                    //### not needed ?? ###
   statusChanged();
   m_TRperiod=120;
   m_modulator.setPeriod(m_TRperiod);
@@ -3036,7 +3041,7 @@ void MainWindow::on_actionWSPR_triggered()
   m_toneSpacing=12000.0/8192.0;
   mode_label->setStyleSheet("QLabel{background-color: #ff00ff}");
   mode_label->setText(m_mode);
-  ui->actionWSPR->setChecked(true);
+  ui->actionWSPR_2->setChecked(true);
   VHF_features_enabled(false);
   ui->ClrAvgButton->setVisible(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
@@ -3045,6 +3050,12 @@ void MainWindow::on_actionWSPR_triggered()
   VHF_controls_visible(false);
   WSPR_config(true);
 }
+
+void MainWindow::on_actionWSPR_15_triggered()
+{
+  msgBox("WSPR-15 is not yet available");
+}
+
 
 void MainWindow::WSPR_config(bool b)
 {
