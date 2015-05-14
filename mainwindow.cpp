@@ -3092,7 +3092,8 @@ void MainWindow::WSPR_config(bool b)
   ui->addButton->setVisible(!b);
   ui->DecodeButton->setEnabled(!b);
   if(b) {
-    ui->decodedTextLabel->setText("UTC   dB   DT    Freq  Drift Message");
+    ui->decodedTextLabel->setText(
+          "UTC    dB   DT     Freq     Drift  Call          Grid    dBm   Dist");
     auto_tx_label->setText("");
   } else {
     ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
@@ -3998,16 +3999,16 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         auto const& bands_model = m_config.bands ();
         band = ' ' + bands_model->data (bands_model->find (m_dialFreq +
                               ui->TxFreqSpinBox->value ())).toString ();
-        ui->decodedTextBrowser->append(band.rightJustified  (50, '-'));
+        ui->decodedTextBrowser->append(band.rightJustified (71, '-'));
         m_blankLine = false;
       }
 
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       t.remove(QRegExp("\\s+$"));
-      /*
       QStringList rxFields = t.split(QRegExp("\\s+"));
       QString rxLine;
+      QString grid="";
       if ( rxFields.count() == 8 ) {
           rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
                   .arg(rxFields.at(0), 4)
@@ -4018,6 +4019,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
                   .arg(rxFields.at(5), -12)
                   .arg(rxFields.at(6), -6)
                   .arg(rxFields.at(7), 3);
+          grid = rxFields.at(6);
       } else if ( rxFields.count() == 7 ) { // Type 2 message
           rxLine = QString("%1 %2 %3 %4 %5   %6  %7  %8")
                   .arg(rxFields.at(0), 4)
@@ -4031,9 +4033,22 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       } else {
           rxLine = t;
       }
+      if(grid!="") {
+        double utch=0.0;
+        int nAz,nEl,nDmiles,nDkm,nHotAz,nHotABetter;
+        azdist_(const_cast <char *> (m_config.my_grid ().toLatin1().constData()),
+                const_cast <char *> (grid.toLatin1().constData()),&utch,
+                &nAz,&nEl,&nDmiles,&nDkm,&nHotAz,&nHotABetter,6,6);
+        QString t1;
+        if(m_config.miles()) {
+          t1.sprintf("%7d",nDmiles);
+        } else {
+          t1.sprintf("%7d",nDkm);
+        }
+        rxLine += t1;
+      }
+//      ui->decodedTextBrowser->append(t);
       ui->decodedTextBrowser->append(rxLine);
-      */
-      ui->decodedTextBrowser->append(t);
     }
   }
 }
