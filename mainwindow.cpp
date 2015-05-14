@@ -2001,7 +2001,6 @@ void MainWindow::guiUpdate()
         m_repeatMsg=0;
         m_msgSent0=t;
       }
-
       if(!m_tune) {
         QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
         if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
@@ -2164,7 +2163,6 @@ void MainWindow::stopTx()
 
 void MainWindow::stopTx2()
 {
-  QString rt;
   Q_EMIT m_config.transceiver_ptt (false);      //Lower PTT
   if (m_mode.mid(0,4)!="WSPR" and m_config.watchdog() and m_repeatMsg>=m_watchdogLimit-1) {
     on_stopTxButton_clicked();

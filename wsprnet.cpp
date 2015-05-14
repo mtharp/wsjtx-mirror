@@ -30,8 +30,6 @@ void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq,
     m_vers = version;
     m_file = fileName;
 
-//    qDebug() << "mode: " << m_mode;
-
     // Open the wsprd.out file
     QFile wsprdOutFile(fileName);
     if (!wsprdOutFile.open(QIODevice::ReadOnly | QIODevice::Text) ||
@@ -156,8 +154,8 @@ QString WSPRNet::urlEncodeNoSpot()
     queryString += "tqrg=" + m_tfreq + "&";
     queryString += "dbm=" + m_dbm + "&";
     queryString += "version=" +  m_vers;
-    if(m_mode=="WSPR-2") queryString += "mode=2";
-    if(m_mode=="WSPR-15") queryString += "mode=15";
+    if(m_mode=="WSPR-2") queryString += "&mode=2";
+    if(m_mode=="WSPR-15") queryString += "&mode=15";
 
     qDebug() << queryString;
 
@@ -182,6 +180,8 @@ QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
     queryString += "tgrid=" + query["tgrid"] + "&";
     queryString += "dbm=" + query["dbm"] + "&";
     queryString += "version=" + m_vers;
+    if(m_mode=="WSPR-2") queryString += "&mode=2";
+    if(m_mode=="WSPR-15") queryString += "&mode=15";
 
     //qDebug() << queryString;
 
@@ -194,7 +194,8 @@ void WSPRNet::work()
         QUrl url(urlQueue.dequeue());
         QNetworkRequest request(url);
         networkManager->get(request);
-        QString status = "Uploading Spot " + QString::number(m_urlQueueSize - urlQueue.size()) + "/"+ QString::number(m_urlQueueSize);
+        QString status = "Uploading Spot " + QString::number(m_urlQueueSize - urlQueue.size()) +
+            "/"+ QString::number(m_urlQueueSize);
         emit uploadStatus(status);
     } else {
         uploadTimer->stop();
