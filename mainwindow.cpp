@@ -801,18 +801,22 @@ void MainWindow::dataSink(qint64 frames)
     QString t2,cmnd;
     double f0m1500=m_dialFreq/1000000.0;   // + 0.000001*(m_BFO - 1500);
     t2.sprintf(" -f %.6f ",f0m1500);
-    if(m_diskData) {
 
-      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
+    if(m_diskData) {
+//      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
+      cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
+          QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " + m_path;
 //      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
 //          m_path + '"';
     } else {
-      cmnd='"' + m_appDir + '"' + "/wsprd" + t2 + '"' + m_fname + '"' + '"';
+      cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
+          QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " +
+          t2 + '"' + m_fname + '"';
     }
     QString t3=cmnd;
     int i1=cmnd.indexOf("/wsprd ");
-
     cmnd=t3.mid(0,i1+7) + t3.mid(i1+7);
+//    qDebug() << "C" << cmnd;
     ui->DecodeButton->setChecked (true);
     p1.start(QDir::toNativeSeparators(cmnd));
 
@@ -3968,7 +3972,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         int msdelay=20000*x;
         uploadTimer->start(msdelay);                         //Upload delay
       } else {
-        QFile f("wsprd.out");
+        QFile f(QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
         if(f.exists()) f.remove();
       }
       if(!m_saveAll and !m_diskData) {
@@ -4044,15 +4048,10 @@ void MainWindow::uploadSpots()
   QString rfreq = QString("%1").arg(0.000001*m_dialFreq + 0.001500, 0, 'f', 6);
   QString tfreq = QString("%1").arg(0.000001*(ui->TxFreqSpinBox->value() + m_dialFreq),
                                     0, 'f', 6);
-  wsprNet->upload(m_config.my_callsign(),
-                    m_config.my_grid(),
-                    rfreq,
-                    tfreq,
-                    m_mode,
-                    QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
-                    QString::number(m_dBm),
-                    version(),
-                    m_appDir + "/wsprd.out");
+  wsprNet->upload(m_config.my_callsign(), m_config.my_grid(), rfreq, tfreq,
+                  m_mode, QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
+                  QString::number(m_dBm), version(),
+                  QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
     m_uploading = true;
 }
 
@@ -4072,8 +4071,9 @@ void MainWindow::uploadResponse(QString response)
 void MainWindow::p2Start()
 {
   if(m_uploading) return;
-  QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" + m_appDir +
-      "/wsprd.out -F call=" + m_config.my_callsign() + " -F grid=" + m_config.my_grid();
+  QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" +
+      QDir::toNativeSeparators(m_dataDir.absolutePath()) +
+      "/wspr_spots.txt -F call=" + m_config.my_callsign() + " -F grid=" + m_config.my_grid();
   cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
   m_uploading=true;
   p2.start(cmnd);
@@ -4084,7 +4084,7 @@ void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
   while(p2.canReadLine()) {
     QString t(p2.readLine());
     if(t.indexOf("spot(s) added") > 0) {
-      QFile f("wsprd.out");
+      QFile f(QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
       f.remove();
     }
   }

@@ -326,6 +326,7 @@ void usage(void)
   printf("       infile must have suffix .wav or .c2\n");
   printf("\n");
   printf("Options:\n");
+  printf("       -a <path> path to writeable data files, default=\".\"\n");
   printf("       -e x (x is transceiver dial frequency error in Hz)\n");
   printf("       -f x (x is transceiver dial frequency in MHz)\n");
 // blanking is not yet implemented. The options are accepted for compatibility
@@ -351,6 +352,9 @@ int main(int argc, char *argv[])
   signed char message[]={-9,13,-35,123,57,-39,64,0,0,0,0};
   char *callsign,*grid,*grid6, *call_loc_pow, *cdbm;
   char *ptr_to_infile,*ptr_to_infile_suffix;
+  char *data_dir=NULL;
+  char wisdom_fname[200],all_fname[200],spots_fname[200];
+  char timer_fname[200],hash_fname[200];
   char uttime[5],date[7];
   int c,delta,maxpts=65536,verbose=0,quickmode=0,writenoise=0,usehashtable=1,wspr_type=2;
   int shift1, lagmin, lagmax, lagstep, worth_a_try, not_decoded, nadd, ndbm;
@@ -384,18 +388,13 @@ int main(int argc, char *argv[])
   fftw_complex *fftin, *fftout;
 #include "./mettab.c"
 
-// Check for an optional FFTW wisdom file
-  FILE *fp_fftw_wisdom_file;
-  if ((fp_fftw_wisdom_file = fopen("fftw_wisdom_wsprd", "r"))) {
-    fftw_import_wisdom_from_file(fp_fftw_wisdom_file);
-    fclose(fp_fftw_wisdom_file);
-  }
-
   idat=malloc(sizeof(double)*maxpts);
   qdat=malloc(sizeof(double)*maxpts);
 
-  while ( (c = getopt(argc, argv, "b:e:f:Hmnqst:wv")) !=-1 ) {
+  while ( (c = getopt(argc, argv, "a:b:e:f:Hmnqst:wv")) !=-1 ) {
     switch (c) {
+    case 'a':
+      data_dir = optarg;
     case 'b':
       fblank = strtof(optarg,NULL);
       break;
@@ -445,19 +444,41 @@ int main(int argc, char *argv[])
     ptr_to_infile=argv[optind];
   }
 
-  FILE *fall_wspr, *fwsprd, *fhash, *ftimer;
-  FILE *fdiag;
-  fall_wspr=fopen("ALL_WSPR.TXT","a");
-  fwsprd=fopen("wsprd.out","w");
-  fdiag=fopen("wsprd_diag","a");
+  FILE *fp_fftw_wisdom_file, *fall_wspr, *fwsprd, *fhash, *ftimer;
+  strcpy(wisdom_fname,".");
+  strcpy(all_fname,".");
+  strcpy(spots_fname,".");
+  strcpy(timer_fname,".");
+  strcpy(hash_fname,".");
+  if(data_dir != NULL) {
+    strcpy(wisdom_fname,data_dir);
+    strcpy(all_fname,data_dir);
+    strcpy(spots_fname,data_dir);
+    strcpy(timer_fname,data_dir);
+    strcpy(hash_fname,data_dir);
+  }
+  strncat(wisdom_fname,"/wspr_wisdom.dat",20);
+  strncat(all_fname,"/ALL_WSPR.TXT",20);
+  strncat(spots_fname,"/wspr_spots.txt",20);
+  strncat(timer_fname,"/wspr_timer.out",20);
+  strncat(hash_fname,"/hashtable.txt",20);
+  if ((fp_fftw_wisdom_file = fopen(wisdom_fname, "r"))) {  //Open FFTW wisdom
+    fftw_import_wisdom_from_file(fp_fftw_wisdom_file);
+    fclose(fp_fftw_wisdom_file);
+  }
 
-  if((ftimer=fopen("wsprd_timer","r"))) {
+  fall_wspr=fopen(all_fname,"a");
+  fwsprd=fopen(spots_fname,"w");
+  //  FILE *fdiag;
+  //  fdiag=fopen("wsprd_diag","a");
+
+  if((ftimer=fopen(timer_fname,"r"))) {
     //Accumulate timing data
     nr=fscanf(ftimer,"%lf %lf %lf %lf %lf %lf %lf",
 	   &treadwav,&tcandidates,&tsync0,&tsync1,&tsync2,&tfano,&ttotal);
     fclose(ftimer);
   }
-  ftimer=fopen("wsprd_timer","w");
+  ftimer=fopen(timer_fname,"w");
 
   if( strstr(ptr_to_infile,".wav") ) {
     ptr_to_infile_suffix=strstr(ptr_to_infile,".wav");
@@ -690,13 +711,13 @@ int main(int argc, char *argv[])
     
   if( usehashtable ) {
     char line[80], hcall[12];
-    if( (fhash=fopen("hashtable.txt","r+")) ) {
+    if( (fhash=fopen(hash_fname,"r+")) ) {
       while (fgets(line, sizeof(line), fhash) != NULL) {
 	sscanf(line,"%d %s",&nh,hcall);
 	strcpy(*hashtab+nh*13,hcall);
       }
     } else {
-      fhash=fopen("hashtable.txt","w+");
+      fhash=fopen(hash_fname,"w+");
     }
     fclose(fhash);
   }
@@ -932,7 +953,7 @@ could each work on one candidate at a time.
   }
   printf("<DecodeFinished>\n");
 
-  if ((fp_fftw_wisdom_file = fopen("fftw_wisdom_wsprd", "w"))) {
+  if ((fp_fftw_wisdom_file = fopen(wisdom_fname, "w"))) {
     fftw_export_wisdom_to_file(fp_fftw_wisdom_file);
     fclose(fp_fftw_wisdom_file);
   }
@@ -956,14 +977,14 @@ could each work on one candidate at a time.
 
   fclose(fall_wspr);
   fclose(fwsprd);
-  fclose(fdiag);
+  //  fclose(fdiag);
   fclose(ftimer);
   fftw_destroy_plan(PLAN1);
   fftw_destroy_plan(PLAN2);
   fftw_destroy_plan(PLAN3);
 
   if( usehashtable ) {
-    fhash=fopen("hashtable.txt","w");
+    fhash=fopen(hash_fname,"w");
     for (i=0; i<32768; i++) {
       if( strncmp(hashtab[i],"\0",1) != 0 ) {
 	fprintf(fhash,"%5d %s\n",i,*hashtab+i*13);

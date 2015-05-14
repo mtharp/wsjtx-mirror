@@ -1437,7 +1437,7 @@
               <enum>QTabWidget::Triangular</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="tab">
               <attribute name="title">
@@ -3170,6 +3170,9 @@ QLabel[oob=&quot;true&quot;] {
   <action name="actionWSPR_15">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>WSPR-15</string>
