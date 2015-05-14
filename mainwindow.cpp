@@ -2139,7 +2139,6 @@ void MainWindow::startTx2()
     if(t.mid(0,1)=="#") snr=t.mid(1,5).toDouble();
     if(snr>0.0 or snr < -50.0) snr=99.0;
     transmit (snr);
-    qDebug() << "A" << snr;
     signalMeter->setValue(0);
   }
 }
