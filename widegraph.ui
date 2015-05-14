@@ -80,7 +80,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
+           <width>90</width>
            <height>0</height>
           </size>
          </property>
@@ -159,6 +159,12 @@
            <height>0</height>
           </size>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>125</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>Select waterfall palette</string>
          </property>
@@ -174,7 +180,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
+           <width>90</width>
            <height>0</height>
           </size>
          </property>
@@ -214,7 +220,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>55</width>
+           <width>65</width>
            <height>0</height>
           </size>
          </property>
@@ -325,6 +331,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="adjust_palette_push_button">
+           <property name="maximumSize">
+            <size>
+             <width>65</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>Adjust...</string>
            </property>
@@ -484,7 +496,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>55</width>
+             <width>65</width>
              <height>0</height>
             </size>
            </property>
