@@ -101,7 +101,7 @@ subroutine wsjt4(dat,npts,nutc,NClearAve,minsync,ntol,emedelay,dttol,    &
 ! Fano succeeded: display the message and return                      FANO OK
         write(*,1010) nutc,nsnr,dtx,nfreq,csync,decoded,' *',                 &
              char(ichar('A')+ich-1)
-1010    format(i4.4,i4,f5.2,i5,a1,1x,a22,a2,1x,a1,i3)
+1010    format(i4.4,i4,f5.2,i5,1x,a1,1x,a22,a2,1x,a1,i3)
         nsave=0
         go to 990
 

@@ -758,24 +758,25 @@ void MainWindow::dataSink(qint64 frames)
     m_wideGraph->dataSink2(s,df3,ihsym,m_diskData);
   }
 
+  if(m_mode=="WSPR-2") {
+    m_hsymStop=396;
+  } else if(m_mode=="WSPR-15") {
+    m_hsymStop=3090;
+  } else {
+    m_hsymStop=173;
+    if(m_config.decode_at_52s()) m_hsymStop=181;
+  }
+
   if(ihsym == m_hsymStop) {
     m_dataAvailable=true;
     jt9com_.npts8=(ihsym*m_nsps)/16;
     jt9com_.newdat=1;
     jt9com_.nagain=0;
-
-    if(m_mode=="WSPR-2") {
-      m_hsymStop=396;
-    } else if(m_mode=="WSPR-15") {
-      m_hsymStop=3090;
-    } else {
-      m_hsymStop=173;
-      if(m_config.decode_at_52s()) m_hsymStop=181;
-    }
     jt9com_.nzhsym=m_hsymStop;
     QDateTime t = QDateTime::currentDateTimeUtc();
     m_dateTime=t.toString("yyyy-MMM-dd hh:mm");
-    if(m_mode.mid(0,4)!="WSPR") decode();                                                //Start decoder
+    if(m_mode.mid(0,4)!="WSPR") decode();                            //Start decoder
+
     if(!m_diskData) {                        //Always save; may delete later
       int ihr=t.time().toString("hh").toInt();
       int imin=t.time().toString("mm").toInt();
@@ -787,39 +788,42 @@ void MainWindow::dataSink(qint64 frames)
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
 
-      m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
-                                                           "_" + t2 + ".c2");
-      int len1=m_c2name.length();
-      char c2name[80];
-      strcpy(c2name,m_c2name.toLatin1());
-      int nsec=120;
-      int nbfo=1500;
-      double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
-      savec2_(c2name,&nsec,&f0m1500,len1);
+      if(m_mode.mid(0,4)=="WSPR") {
+        m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
+                                                              "_" + t2 + ".c2");
+        int len1=m_c2name.length();
+        char c2name[80];
+        strcpy(c2name,m_c2name.toLatin1());
+        int nsec=120;
+        int nbfo=1500;
+        double f0m1500=m_dialFreq/1000000.0 + nbfo - 1500;
+        savec2_(c2name,&nsec,&f0m1500,len1);
+      }
     }
 
-    QString t2,cmnd;
-    double f0m1500=m_dialFreq/1000000.0;   // + 0.000001*(m_BFO - 1500);
-    t2.sprintf(" -f %.6f ",f0m1500);
+    if(m_mode.mid(0,4)=="WSPR") {
+      QString t2,cmnd;
+      double f0m1500=m_dialFreq/1000000.0;   // + 0.000001*(m_BFO - 1500);
+      t2.sprintf(" -f %.6f ",f0m1500);
 
-    if(m_diskData) {
+      if(m_diskData) {
 //      cmnd='"' + m_appDir + '"' + "/wsprd " + m_path;
-      cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
-          QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " + m_path;
+        cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
+            QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " + m_path;
 //      if(m_TRseconds==900) cmnd='"' + m_appDir + '"' + "/wsprd -m 15" + t2 +
 //          m_path + '"';
-    } else {
-      cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
-          QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " +
-          t2 + '"' + m_fname + '"';
-    }
-    QString t3=cmnd;
-    int i1=cmnd.indexOf("/wsprd ");
-    cmnd=t3.mid(0,i1+7) + t3.mid(i1+7);
+      } else {
+        cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
+            QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " +
+            t2 + '"' + m_fname + '"';
+      }
+      QString t3=cmnd;
+      int i1=cmnd.indexOf("/wsprd ");
+      cmnd=t3.mid(0,i1+7) + t3.mid(i1+7);
 //    qDebug() << "C" << cmnd;
-    ui->DecodeButton->setChecked (true);
-    p1.start(QDir::toNativeSeparators(cmnd));
-
+      ui->DecodeButton->setChecked (true);
+      p1.start(QDir::toNativeSeparators(cmnd));
+    }
   }
 }
 
@@ -1560,7 +1564,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
 {
   while(proc_jt9.canReadLine()) {
     QByteArray t=proc_jt9.readLine();
-    bool baveJT4msg=(t.length()>48);
+    bool baveJT4msg=(t.length()>49);
     if(m_mode=="JT4") t=t.mid(0,39) + t.mid(42,t.length()-42);
     if(t.indexOf("<DecodeFinished>") >= 0) {
       m_bdecoded = (t.mid(23,1).toInt()==1);
