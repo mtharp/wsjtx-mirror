@@ -545,6 +545,12 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_ntx=1;
   ui->txrb1->setChecked(true);
 
+  if(m_mode.mid(0,4)=="WSPR" and m_pctx>0)  {
+    QPalette* palette = new QPalette();
+    palette->setColor(QPalette::Base,Qt::yellow);
+    ui->sbTxPercent->setPalette(*palette);
+    delete palette;
+  }
   if(m_mode=="WSPR-2") {
     m_hsymStop=396;
   } else if(m_mode=="WSPR-15") {
@@ -942,6 +948,16 @@ void MainWindow::on_autoButton_clicked (bool checked)
                                   QString::number (ui->rptSpinBox->value ()),
                                   m_modeTx, ui->autoButton->isChecked (),
                                   m_transmitting);
+  if(m_mode.mid(0,4)=="WSPR")  {
+    QPalette* palette = new QPalette();
+    if(m_auto or m_pctx==0) {
+      palette->setColor(QPalette::Base,Qt::white);
+    } else {
+      palette->setColor(QPalette::Base,Qt::yellow);
+    }
+    ui->sbTxPercent->setPalette(*palette);
+    delete palette;
+  }
 }
 
 void MainWindow::auto_tx_mode (bool state)
