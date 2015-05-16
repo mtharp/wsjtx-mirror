@@ -1785,7 +1785,7 @@ void MainWindow::guiUpdate()
     m_nseq = nsec % m_TRperiod;
     if(m_nseq==0 and m_ntr==0) {
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
-      if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx==0) and
+      if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx<=0) and
                        (m_ntr!=-1)))) or ((m_auto and (m_pctx==100)))) {
 
         //This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
