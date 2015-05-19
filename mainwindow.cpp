@@ -1837,7 +1837,6 @@ void MainWindow::guiUpdate()
         m_ntr=1;                           //This says we will have received
         m_RxStartBand=m_band;
         m_dialFreqRxWSPR=m_dialFreq;
-        qDebug() << "Starting Rx at" << m_dialFreqRxWSPR;
         bTxTime=false;                     //Start a WSPR Rx sequence
       }
     }
@@ -1884,7 +1883,6 @@ void MainWindow::guiUpdate()
       bTxTime=false;                              //Time to stop a WSPR transmission
       m_btxok=false;
     }
-    qDebug() << "B" << m_ntr << m_nrx << m_monitoring << m_transmitting;
     if(m_bandHopping) bandHopping();
     m_ntr=0;                                      //This WSPR sequence is complete
   }
@@ -2108,7 +2106,6 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
-    if(nsec%10 == 0) qDebug() << "A" << nsec % 120 << m_ntr << m_nrx << m_txNext;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
@@ -4119,14 +4116,11 @@ void MainWindow::uploadSpots()
 
 void MainWindow::uploadResponse(QString response)
 {
-//    qDebug() << ">>> " << response;
     if (response == "done") {
         m_uploading=false;
     } else if (response == "Upload Failed") {
         m_uploading=false;
-//        lab3->setText(response);
     } else {
-//        lab3->setText(response);
     }
 }
 
@@ -4298,8 +4292,8 @@ void MainWindow::bandHopping()
     }
   }
   QString dailySequence[4]={"Sunrise grayline","Day","Sunset grayline","Night"};
-  auto_tx_label = new QLabel(dailySequence[isun]);
-  qDebug() << "C: Hopping" << bname << m_nrx << ntxnext << dailySequence[isun];
+  auto_tx_label->setText(dailySequence[isun]);
+  qDebug() << "Hopping" << bname << m_nrx << ntxnext << dailySequence[isun];
 }
 
 void MainWindow::on_pushButton_clicked()
