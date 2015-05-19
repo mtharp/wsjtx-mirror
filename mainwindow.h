@@ -546,6 +546,10 @@ extern "C" {
 
   void wspr_downsample_(short int d2[], int* k);
   void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq, int len1);
+
+  void hopping_(int* nyear, int* month, int* nday, float* uth, char* MyGrid,
+                int* nduration, int* npctx, int* isun, int* iband,
+                int* ntxnext, int len);
 }
 
 #endif // MAINWINDOW_H
