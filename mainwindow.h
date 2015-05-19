@@ -381,6 +381,7 @@ private:
   bool    m_txNext;
   bool    m_grid6;
   bool    m_bandHopping;
+  bool    m_hopTest;
 
   float   m_pctZap;
 

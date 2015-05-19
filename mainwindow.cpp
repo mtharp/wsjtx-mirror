@@ -401,6 +401,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bShMsgs=false;
   m_bDopplerTracking0=false;
   m_uploading=false;
+  m_hopTest=false;
 
   m_fWSPR["160"]=1.8366;                //WSPR frequencies
   m_fWSPR["80"]=3.5926;
@@ -4231,7 +4232,6 @@ void MainWindow::on_cbBandHop_toggled(bool b)
 void MainWindow::bandHopping()
 {
   QString bandName[]={"160","80","60","40","30","20","17","15","12","10"};
-//  static int icall=0;
   QDateTime t = QDateTime::currentDateTimeUtc();
   QString date = t.date().toString("yyyy MMM dd").trimmed();
   QString utc = t.time().toString().trimmed();
@@ -4246,8 +4246,9 @@ void MainWindow::bandHopping()
   int iband;
   int ntxnext;
 
-//  uth=(28*icall)/60.0;
-//  icall++;
+  static int icall=0;
+  if(m_hopTest) uth+= 2.0*icall/60.0;
+  icall++;
 
   hopping_(&nyear, &month, &nday, &uth,
            const_cast <char *> (m_config.my_grid ().toLatin1().constData()),
@@ -4282,12 +4283,6 @@ void MainWindow::bandHopping()
     bname=s.at(ib);
   }
 
-/*
-  if(uth-4.0 < 0.0) uth+=24.0;
-  qDebug() << int(uth-4.0) << int((uth-4-int(uth-4.0))*60) << isun << iband
-           << ib << bandName[iband] << bname << f0;
-*/
-
   auto frequencies = m_config.frequencies ();
   for (int i=0; i<99; i++) {
     auto frequency=frequencies->data (frequencies->index (i, 0));
@@ -4303,7 +4298,11 @@ void MainWindow::bandHopping()
 
 void MainWindow::on_pushButton_clicked()
 {
+  m_hopTest=true;
+//  for(int i=0; i<720; i++) {
   bandHopping();
+//  }
+  m_hopTest=false;
 }
 
 void MainWindow::on_sunriseBands_editingFinished()
