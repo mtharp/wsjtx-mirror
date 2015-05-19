@@ -16,15 +16,15 @@ subroutine grayline(nyear,month,nday,uth,mygrid,nduration,isun)
        AzSun,ElSun1,mjd,day)
 
   elchk=-0.8333
-  isun=0
+  isun=-1
   if(elsun0.lt.elchk .and. elsun1.ge.elchk) then
-     isun=1
+     isun=0
   else if(elsun0.gt.elchk .and. elsun1.le.elchk) then
-     isun=3
-  else if(elsun1.gt.elchk) then
      isun=2
+  else if(elsun1.gt.elchk) then
+     isun=1
   else
-     isun=4
+     isun=3
   endif
 
   return

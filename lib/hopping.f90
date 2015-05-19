@@ -70,6 +70,7 @@ subroutine hopping(nyear,month,nday,uth,mygrid,nduration,npctx,isun,   &
   else
      nrx=1
   endif
+  iband=iband-1
 
   return
 end subroutine hopping

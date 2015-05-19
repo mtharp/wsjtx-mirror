@@ -4230,9 +4230,8 @@ void MainWindow::on_cbBandHop_toggled(bool b)
 
 void MainWindow::bandHopping()
 {
-  Frequency ftab[]={1836600, 3592600, 5287200, 7038600, 10138700, 14095600, 18104600,
-                    21094600, 24924600, 28124600};
-  static int icall=0;
+  QString bandName[]={"160","80","60","40","30","20","17","15","12","10"};
+//  static int icall=0;
   QDateTime t = QDateTime::currentDateTimeUtc();
   QString date = t.date().toString("yyyy MMM dd").trimmed();
   QString utc = t.time().toString().trimmed();
@@ -4247,14 +4246,14 @@ void MainWindow::bandHopping()
   int iband;
   int ntxnext;
 
-  uth=(2*icall)/60.0;
-  icall++;
+//  uth=(28*icall)/60.0;
+//  icall++;
 
   hopping_(&nyear, &month, &nday, &uth,
            const_cast <char *> (m_config.my_grid ().toLatin1().constData()),
            &m_grayDuration, &m_pctx, &isun, &iband, &ntxnext, 6);
 
-  if(ntxnext==1) {
+  if(m_auto and ntxnext==1) {
     m_txNext=true;
     m_nrx=0;
   } else {
@@ -4262,25 +4261,33 @@ void MainWindow::bandHopping()
     m_nrx=1;
   }
 
-  Frequency f0=ftab[iband-1];
-  auto frequencies = m_config.frequencies ();
-  for (int i=0; i<99; i++) {
-    auto frequency=frequencies->data (frequencies->index (i, 0));
-    auto f = frequency.value<Frequency>();
-    if(f==0) break;
-    if(f==f0) {
-      on_bandComboBox_activated(i);
-      break;
+  QString bname;
+  QStringList s;
+  if(isun==0) s=m_sunriseBands;
+  if(isun==1) s=m_dayBands;
+  if(isun==2) s=m_sunsetBands;
+  if(isun==3) s=m_nightBands;
+  Frequency f0=0;
+  for(int i=0; i<s.length(); i++) {
+    if(s.at(i)==bandName[iband]) {
+      f0=(Frequency)1000000*m_fWSPR[bandName[iband]]+0.5;
+      bname=s.at(i);
     }
   }
-  if(uth-4.0 < 0.0) uth+=24.0;
-  qDebug() << "A" << icall << uth-4.0 << isun << iband << m_nrx << ntxnext << f0;
+
+  int ib=iband;
+  if(f0==0) {
+    ib=qrand() % s.length();
+    f0=(Frequency)1000000*m_fWSPR[s.at(ib)]+0.5;
+    bname=s.at(ib);
+  }
 
 /*
-  static int iband=0;
-  Frequency f0=(Frequency)1000000*m_fWSPR[m_sunriseBands.at(iband)]+0.5;
-  qDebug() << iband << m_sunriseBands.at(iband) << m_fWSPR[m_sunriseBands.at(iband)] << f0;
-  iband=(iband+1) % m_sunriseBands.length();
+  if(uth-4.0 < 0.0) uth+=24.0;
+  qDebug() << int(uth-4.0) << int((uth-4-int(uth-4.0))*60) << isun << iband
+           << ib << bandName[iband] << bname << f0;
+*/
+
   auto frequencies = m_config.frequencies ();
   for (int i=0; i<99; i++) {
     auto frequency=frequencies->data (frequencies->index (i, 0));
@@ -4291,7 +4298,7 @@ void MainWindow::bandHopping()
       break;
     }
   }
-  */
+  qDebug() << "Hopping" << isun << bname << m_nrx << ntxnext;
 }
 
 void MainWindow::on_pushButton_clicked()
