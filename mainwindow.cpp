@@ -402,6 +402,17 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bDopplerTracking0=false;
   m_uploading=false;
 
+  m_fWSPR["160"]=1.8366;                //WSPR frequencies
+  m_fWSPR["80"]=3.5926;
+  m_fWSPR["60"]=5.2872;
+  m_fWSPR["40"]=7.0386;
+  m_fWSPR["30"]=10.1387;
+  m_fWSPR["20"]=14.0956;
+  m_fWSPR["17"]=18.1046;
+  m_fWSPR["15"]=21.0946;
+  m_fWSPR["12"]=24.9246;
+  m_fWSPR["10"]=28.1246;
+
   signalMeter = new SignalMeter(ui->meterFrame);
   signalMeter->resize(50, 160);
 
@@ -622,6 +633,13 @@ void MainWindow::writeSettings()
   m_settings->setValue("PctTx",m_pctx);
   m_settings->setValue("dBm",m_dBm);
   m_settings->setValue("UploadSpots",m_uploadSpots);
+  m_settings->setValue("BandHopping",m_bandHopping);
+  m_settings->setValue("SunriseBands",ui->sunriseBands->text());
+  m_settings->setValue("DayBands",ui->dayBands->text());
+  m_settings->setValue("SunsetBands",ui->sunsetBands->text());
+  m_settings->setValue("NightBands",ui->nightBands->text());
+  m_settings->setValue("TuneBands",ui->tuneBands->text());
+  m_settings->setValue("GrayLineDuration",ui->graylineDuration->text());
   m_settings->endGroup();
 }
 
@@ -689,6 +707,8 @@ void MainWindow::readSettings()
   m_uploadSpots=m_settings->value("UploadSpots",false).toBool();
   ui->cbUploadWSPR_Spots->setChecked(m_uploadSpots);
   if(!m_uploadSpots) ui->cbUploadWSPR_Spots->setStyleSheet("QCheckBox{background-color: yellow}");
+  m_bandHopping=m_settings->value("BandHopping",false).toBool();
+  ui->cbBandHop->setChecked(m_bandHopping);
   // setup initial value of tx attenuator
   ui->outAttenuation->setValue (m_settings->value ("OutAttenuation", 0).toInt ());
   on_outAttenuation_valueChanged (ui->outAttenuation->value ());
@@ -701,6 +721,18 @@ void MainWindow::readSettings()
   ui->cbTxLock->setChecked(m_lockTxFreq);
   m_plus2kHz=m_settings->value("Plus2kHz",false).toBool();
   ui->cbPlus2kHz->setChecked(m_plus2kHz);
+  ui->sunriseBands->setText(m_settings->value("SunriseBands","").toString());
+  on_sunriseBands_editingFinished();
+  ui->dayBands->setText(m_settings->value("DayBands","").toString());
+  on_dayBands_editingFinished();
+  ui->sunsetBands->setText(m_settings->value("SunsetBands","").toString());
+  on_sunsetBands_editingFinished();
+  ui->nightBands->setText(m_settings->value("NightBands","").toString());
+  on_nightBands_editingFinished();
+  ui->tuneBands->setText(m_settings->value("TuneBands","").toString());
+  on_tuneBands_editingFinished();
+  ui->graylineDuration->setText(m_settings->value("GraylineDuration","").toString());
+  on_graylineDuration_editingFinished();
   m_settings->endGroup();
 
   // use these initialisation settings to tune the audio o/p buffer
@@ -1839,18 +1871,19 @@ void MainWindow::guiUpdate()
       g_iptt = 1;
       setXIT (ui->TxFreqSpinBox->value ()); // ensure correct offset
       Q_EMIT m_config.transceiver_ptt (true);
-      ptt1Timer->start(200);                       //Sequencer delay
+      ptt1Timer->start(200);                      //Sequencer delay
     }
-    if(!bTxTime and !m_tune) m_btxok=false;            //Time to stop transmitting
+    if(!bTxTime and !m_tune) m_btxok=false;       //Time to stop transmitting
   }
 
-  if(m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
-    if(m_monitoring and m_ntr==1) m_nrx=m_nrx-1;  //Decrement the Rx-sequence count
+  if(m_ntr==1 and m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
+    if(m_monitoring) m_nrx=m_nrx-1;               //Decrement the Rx-sequence count
     if(m_transmitting) {
       bTxTime=false;                              //Time to stop a WSPR transmission
       m_btxok=false;
     }
     m_ntr=0;                                      //This WSPR sequence is complete
+    if(m_bandHopping) bandHopping();
   }
 
   // Calculate Tx tones when needed
@@ -3219,27 +3252,18 @@ void MainWindow::on_bandComboBox_activated (int index)
 {
   auto frequencies = m_config.frequencies ();
   auto frequency = frequencies->data (frequencies->index (index, 0));
-
   // Lookup band
   auto bands = m_config.bands ();
   auto band_index = bands->find (frequency);
-  if (band_index.isValid ())
-    {
-      ui->bandComboBox->lineEdit ()->setStyleSheet ({});
-      ui->bandComboBox->setCurrentText (band_index.data ().toString ());
-    }
-  else
-    {
-      ui->bandComboBox->lineEdit ()->setStyleSheet ("QLineEdit {color: yellow; background-color : red;}");
-      ui->bandComboBox->setCurrentText (bands->data (QModelIndex {}).toString ());
-    }
-
+  if (band_index.isValid ()) {
+    ui->bandComboBox->lineEdit ()->setStyleSheet ({});
+    ui->bandComboBox->setCurrentText (band_index.data ().toString ());
+  } else {
+    ui->bandComboBox->lineEdit ()->setStyleSheet ("QLineEdit {color: yellow; background-color : red;}");
+    ui->bandComboBox->setCurrentText (bands->data (QModelIndex {}).toString ());
+  }
   auto f = frequency.value<Frequency> ();
-  if (m_plus2kHz)
-    {
-      f += 2000;
-    }
-
+  if (m_plus2kHz) f += 2000;
   m_bandEdited = true;
   band_changed (f);
 }
@@ -3247,13 +3271,13 @@ void MainWindow::on_bandComboBox_activated (int index)
 void MainWindow::band_changed (Frequency f)
 {
   if (m_bandEdited) {
-      m_bandEdited = false;
-      psk_Reporter->sendReport();      // Upload any queued spots before changing band
-      if (!m_transmitting) monitor (true);
-      Q_EMIT m_config.transceiver_frequency (f);
-      qsy (f);
-      setXIT (ui->TxFreqSpinBox->value ());
-    }
+    m_bandEdited = false;
+    psk_Reporter->sendReport();      // Upload any queued spots before changing band
+    if (!m_transmitting) monitor (true);
+    Q_EMIT m_config.transceiver_frequency (f);
+    qsy (f);
+    setXIT (ui->TxFreqSpinBox->value ());
+  }
 }
 
 void MainWindow::enable_DXCC_entity (bool on)
@@ -4197,4 +4221,62 @@ void MainWindow::on_WSPRfreqSpinBox_valueChanged(int n)
 void MainWindow::on_pbTxNext_clicked(bool b)
 {
   m_txNext=b;
+}
+
+void MainWindow::on_cbBandHop_toggled(bool b)
+{
+  m_bandHopping=b;
+}
+
+void MainWindow::bandHopping()
+{
+  static int iband=0;
+  Frequency f0=(Frequency)1000000*m_fWSPR[m_sunriseBands.at(iband)]+0.5;
+  qDebug() << iband << m_sunriseBands.at(iband) << m_fWSPR[m_sunriseBands.at(iband)] << f0;
+  iband=(iband+1) % m_sunriseBands.length();
+  auto frequencies = m_config.frequencies ();
+  for (int i=0; i<99; i++) {
+    auto frequency=frequencies->data (frequencies->index (i, 0));
+    auto f = frequency.value<Frequency>();
+    if(f==0) break;
+    if(f==f0) {
+      on_bandComboBox_activated(i);
+      break;
+    }
+  }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+  bandHopping();
+}
+
+void MainWindow::on_sunriseBands_editingFinished()
+{
+  m_sunriseBands=ui->sunriseBands->text().split(" ", QString::SkipEmptyParts);
+}
+
+void MainWindow::on_dayBands_editingFinished()
+{
+  m_dayBands=ui->dayBands->text().split(" ", QString::SkipEmptyParts);
+}
+
+void MainWindow::on_sunsetBands_editingFinished()
+{
+  m_sunsetBands=ui->sunsetBands->text().split(" ", QString::SkipEmptyParts);
+}
+
+void MainWindow::on_nightBands_editingFinished()
+{
+  m_nightBands=ui->nightBands->text().split(" ", QString::SkipEmptyParts);
+}
+
+void MainWindow::on_tuneBands_editingFinished()
+{
+  m_tuneBands=ui->tuneBands->text().split(" ", QString::SkipEmptyParts);
+}
+
+void MainWindow::on_graylineDuration_editingFinished()
+{
+  m_grayDuration=ui->graylineDuration->text().toInt();
 }

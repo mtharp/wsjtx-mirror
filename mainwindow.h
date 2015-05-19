@@ -225,6 +225,14 @@ private slots:
   void p3Error();
   void on_WSPRfreqSpinBox_valueChanged(int n);
   void on_pbTxNext_clicked(bool b);
+  void on_cbBandHop_toggled(bool b);
+  void on_sunriseBands_editingFinished();
+  void on_pushButton_clicked();
+  void on_dayBands_editingFinished();
+  void on_sunsetBands_editingFinished();
+  void on_nightBands_editingFinished();
+  void on_tuneBands_editingFinished();
+  void on_graylineDuration_editingFinished();
 
 private:
   void enable_DXCC_entity (bool on);
@@ -320,6 +328,7 @@ private:
   qint32  m_dBm;
   qint32  m_pctx;
   qint32  m_nseq;
+  qint32  m_grayDuration;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -371,6 +380,7 @@ private:
   bool    m_uploading;
   bool    m_txNext;
   bool    m_grid6;
+  bool    m_bandHopping;
 
   float   m_pctZap;
 
@@ -433,6 +443,13 @@ private:
 
   QStringList m_prefix;
   QStringList m_suffix;
+  QStringList m_sunriseBands;
+  QStringList m_dayBands;
+  QStringList m_sunsetBands;
+  QStringList m_nightBands;
+  QStringList m_tuneBands;
+
+  QMap<QString,double> m_fWSPR;
 
   QHash<QString,bool> m_pfx;
   QHash<QString,bool> m_sfx;
@@ -486,6 +503,7 @@ private:
   void replayDecodes ();
   void postDecode (bool is_new, QString const& message);
   void p2Start();
+  void bandHopping();
 
 };
 
