@@ -2400,9 +2400,15 @@ list. The list can be maintained in Settings (F2).</string>
                <layout class="QGridLayout" name="gridLayout_7">
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_12">
+                  <property name="minimumSize">
+                   <size>
+                    <width>55</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
+                    <width>60</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2426,9 +2432,15 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="label_13">
+                  <property name="minimumSize">
+                   <size>
+                    <width>55</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
+                    <width>60</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2452,9 +2464,15 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="2" column="0">
                  <widget class="QLabel" name="label_14">
+                  <property name="minimumSize">
+                   <size>
+                    <width>55</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
+                    <width>60</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2478,9 +2496,15 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="3" column="0">
                  <widget class="QLabel" name="label_15">
+                  <property name="minimumSize">
+                   <size>
+                    <width>55</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
+                    <width>60</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2504,9 +2528,15 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="4" column="0">
                  <widget class="QLabel" name="label_16">
+                  <property name="minimumSize">
+                   <size>
+                    <width>55</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
+                    <width>60</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2530,14 +2560,20 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="5" column="0">
                  <widget class="QLabel" name="label_17">
+                  <property name="minimumSize">
+                   <size>
+                    <width>55</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
+                    <width>60</width>
                     <height>16777215</height>
                    </size>
                   </property>
                   <property name="text">
-                   <string>Duration:</string>
+                   <string>Gray time:</string>
                   </property>
                  </widget>
                 </item>

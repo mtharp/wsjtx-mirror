@@ -157,7 +157,7 @@ QString WSPRNet::urlEncodeNoSpot()
     if(m_mode=="WSPR-2") queryString += "&mode=2";
     if(m_mode=="WSPR-15") queryString += "&mode=15";
 
-    qDebug() << queryString;
+//    qDebug() << queryString;
 
     return queryString;;
 }

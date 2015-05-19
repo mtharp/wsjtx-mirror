@@ -842,7 +842,7 @@ void MainWindow::dataSink(qint64 frames)
 
     if(m_mode.mid(0,4)=="WSPR") {
       QString t2,cmnd;
-      double f0m1500=m_dialFreq/1000000.0;   // + 0.000001*(m_BFO - 1500);
+      double f0m1500=m_dialFreqRxWSPR/1000000.0;   // + 0.000001*(m_BFO - 1500);
       t2.sprintf(" -f %.6f ",f0m1500);
 
       if(m_diskData) {
@@ -859,7 +859,6 @@ void MainWindow::dataSink(qint64 frames)
       QString t3=cmnd;
       int i1=cmnd.indexOf("/wsprd ");
       cmnd=t3.mid(0,i1+7) + t3.mid(i1+7);
-//    qDebug() << "C" << cmnd;
       ui->DecodeButton->setChecked (true);
       p1.start(QDir::toNativeSeparators(cmnd));
     }
@@ -1837,6 +1836,8 @@ void MainWindow::guiUpdate()
         //This will be a WSPR Rx sequence.
         m_ntr=1;                           //This says we will have received
         m_RxStartBand=m_band;
+        m_dialFreqRxWSPR=m_dialFreq;
+        qDebug() << "Starting Rx at" << m_dialFreqRxWSPR;
         bTxTime=false;                     //Start a WSPR Rx sequence
       }
     }
@@ -1877,14 +1878,15 @@ void MainWindow::guiUpdate()
     if(!bTxTime and !m_tune) m_btxok=false;       //Time to stop transmitting
   }
 
-  if(m_ntr==1 and m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
+  if(m_ntr!=0 and m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
     if(m_monitoring) m_nrx=m_nrx-1;               //Decrement the Rx-sequence count
     if(m_transmitting) {
       bTxTime=false;                              //Time to stop a WSPR transmission
       m_btxok=false;
     }
-    m_ntr=0;                                      //This WSPR sequence is complete
+    qDebug() << "B" << m_ntr << m_nrx << m_monitoring << m_transmitting;
     if(m_bandHopping) bandHopping();
+    m_ntr=0;                                      //This WSPR sequence is complete
   }
 
   // Calculate Tx tones when needed
@@ -2106,6 +2108,7 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
+    if(nsec%10 == 0) qDebug() << "A" << nsec % 120 << m_ntr << m_nrx << m_txNext;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
@@ -3267,6 +3270,7 @@ void MainWindow::on_bandComboBox_activated (int index)
   if (m_plus2kHz) f += 2000;
   m_bandEdited = true;
   band_changed (f);
+  m_wideGraph->setRxBand(band_index.data().toString());
 }
 
 void MainWindow::band_changed (Frequency f)
@@ -4255,11 +4259,11 @@ void MainWindow::bandHopping()
            &m_grayDuration, &m_pctx, &isun, &iband, &ntxnext, 6);
 
   if(m_auto and ntxnext==1) {
-    m_txNext=true;
+//    m_txNext=true;
     m_nrx=0;
   } else {
-    m_txNext=false;
-    m_nrx=1;
+//    m_txNext=false;
+//    m_nrx=1;
   }
 
   QString bname;
@@ -4293,7 +4297,9 @@ void MainWindow::bandHopping()
       break;
     }
   }
-  qDebug() << "Hopping" << isun << bname << m_nrx << ntxnext;
+  QString dailySequence[4]={"Sunrise grayline","Day","Sunset grayline","Night"};
+  auto_tx_label = new QLabel(dailySequence[isun]);
+  qDebug() << "C: Hopping" << bname << m_nrx << ntxnext << dailySequence[isun];
 }
 
 void MainWindow::on_pushButton_clicked()

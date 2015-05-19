@@ -41,6 +41,7 @@ public:
   bool   flatten();
   void   setTol(int n);
   int    smoothYellow();
+  void   setRxBand(QString band);
 
 signals:
   void freezeDecode2(int n);
@@ -70,7 +71,6 @@ private slots:
   void on_zeroSlider_valueChanged(int value);
   void on_gain2dSlider_valueChanged(int value);
   void on_zero2dSlider_valueChanged(int value);
-
   void on_smoSpinBox_valueChanged(int n);
 
 private:

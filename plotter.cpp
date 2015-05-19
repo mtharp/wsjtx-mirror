@@ -180,9 +180,9 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   if(swide[0]>1.0e29) m_line=0;
   m_line++;
   if(m_line == 13) {
-    UTCstr();
     painter1.setPen(Qt::white);
-    painter1.drawText(5,10,m_sutc);
+    QString t=QDateTime::currentDateTimeUtc().toString("hh:mm") + "    " + m_rxBand;
+    painter1.drawText(5,10,t);
   }
 
   if(m_mode=="JT4") {
@@ -190,7 +190,6 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     painter2D.setPen(pen3);
     Font.setWeight(QFont::Bold);
     painter2D.setFont(Font);
-//    qDebug() << "B" << m_rxFreq;
     int x1=XfromFreq(m_rxFreq);
     y=0.2*m_h2;
     painter2D.drawText(x1-4,y,"T");
@@ -205,29 +204,12 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   m_bScaleOK=true;
 }
 
-void CPlotter::UTCstr()                                              //UTCstr
-{
-  int ihr,imin;
-  if(jt9com_.ndiskdat != 0) {
-    ihr=jt9com_.nutc/100;
-    imin=jt9com_.nutc % 100;
-  } else {
-    qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
-    imin=ms/60000;
-    ihr=imin/60;
-    imin=imin % 60;
-    imin=imin - (imin % (m_TRperiod/60));
-  }
-  sprintf(m_sutc,"%2.2d:%2.2d",ihr,imin);
-}
-
 void CPlotter::DrawOverlay()                                 //DrawOverlay()
 {
   if(m_OverlayPixmap.isNull()) return;
   if(m_WaterfallPixmap.isNull()) return;
   int w = m_WaterfallPixmap.width();
   int x,y,x1,x2;
-//  int nHzDiv[11]={0,50,100,200,200,200,500,500,500,500,500};
   float pixperdiv;
 
   double df = m_binsPerPixel*m_fftBinWidth;
@@ -586,6 +568,11 @@ void CPlotter::setDialFreq(double d)
   m_dialFreq=d;
   DrawOverlay();
   update();
+}
+
+void CPlotter::setRxBand(QString band)
+{
+  m_rxBand=band;
 }
 
 void CPlotter::setFlatten(bool b)

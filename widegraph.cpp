@@ -318,6 +318,12 @@ void WideGraph::setDialFreq(double d)                             //setDialFreq
   ui->widePlot->setDialFreq(d);
 }
 
+void WideGraph::setRxBand(QString band)
+{
+  ui->widePlot->setRxBand(band);
+}
+
+
 void WideGraph::on_fStartSpinBox_valueChanged(int n)             //fStart
 {
   ui->widePlot->setStartFreq(n);

@@ -279,6 +279,7 @@ private:
   QScopedPointer<MessageAveraging> m_msgAvgWidget;
 
   Frequency  m_dialFreq;
+  Frequency  m_dialFreqRxWSPR;
 
   Detector m_detector;
   SoundInput m_soundInput;

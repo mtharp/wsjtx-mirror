@@ -77,6 +77,7 @@ public:
   void setColours(QVector<QColor> const& cl) {m_ColorTbl = cl;}
   void setFlatten(bool b);
   void setTol(int n);
+  void setRxBand(QString band);
 
 signals:
   void freezeDecode1(int n);
@@ -90,7 +91,6 @@ protected:
 private:
 
   void MakeFrequencyStrs();
-  void UTCstr();
   int XfromFreq(float f);
   float FreqfromX(int x);
 
@@ -122,6 +122,7 @@ private:
   QString m_HDivText[483];
   QString m_mode;
   QString m_modeTx;
+  QString m_rxBand;
 
   bool    m_Running;
   bool    m_paintEventBusy;
