@@ -267,10 +267,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(&p1, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p1Error(QProcess::ProcessError)));
   connect(&p1, SIGNAL(readyReadStandardError()),this, SLOT(p1ReadFromStderr()));
 
-  connect(&p2, SIGNAL(readyReadStandardOutput()),this, SLOT(p2ReadFromStdout()));
-  connect(&p2, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p2Error(QProcess::ProcessError)));
-  connect(&p2, SIGNAL(readyReadStandardError()),this, SLOT(p2ReadFromStderr()));
-
 //  connect(&p3, SIGNAL(readyReadStandardOutput()),this, SLOT(p3ReadFromStdout()));
   connect(&p3, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p3Error(QProcess::ProcessError)));
   connect(&p3, SIGNAL(readyReadStandardError()),this, SLOT(p3ReadFromStderr()));
@@ -4021,6 +4017,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       ui->DecodeButton->setChecked (false);
+//      qDebug() << "A" << m_uploadSpots;
       if(m_uploadSpots) {
         float x=rand()/((double)RAND_MAX + 1.0);
         int msdelay=20000*x;
@@ -4110,13 +4107,14 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 void MainWindow::uploadSpots()
 {
   if(m_diskData) return;
+//  qDebug() << "B" << m_uploading;
   if(m_uploading) {
     qDebug() << "Previous upload has not completed, spots were lost";
     return;
   }
-  QString rfreq = QString("%1").arg(0.000001*m_dialFreq + 0.001500, 0, 'f', 6);
-  QString tfreq = QString("%1").arg(0.000001*(ui->TxFreqSpinBox->value() + m_dialFreq),
-                                    0, 'f', 6);
+  QString rfreq = QString("%1").arg(0.000001*(m_dialFreqRxWSPR + 1500), 0, 'f', 6);
+  QString tfreq = QString("%1").arg(0.000001*(m_dialFreqRxWSPR +
+                        ui->TxFreqSpinBox->value()), 0, 'f', 6);
   wsprNet->upload(m_config.my_callsign(), m_config.my_grid(), rfreq, tfreq,
                   m_mode, QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
                   QString::number(m_dBm), version(),
@@ -4126,6 +4124,7 @@ void MainWindow::uploadSpots()
 
 void MainWindow::uploadResponse(QString response)
 {
+//  qDebug() << "aa" << response;
   if (response == "done") {
     m_uploading=false;
   } else if (response == "Upload Failed") {
@@ -4134,44 +4133,6 @@ void MainWindow::uploadResponse(QString response)
   }
 }
 
-void MainWindow::p2Start()
-{
-  if(m_uploading) return;
-  QString cmnd='"' + m_appDir + '"' + "/curl -s -S -F allmept=@" +
-      QDir::toNativeSeparators(m_dataDir.absolutePath()) +
-      "/wspr_spots.txt -F call=" + m_config.my_callsign() + " -F grid=" + m_config.my_grid();
-  cmnd=QDir::toNativeSeparators(cmnd) + " http://wsprnet.org/meptspots.php";
-  m_uploading=true;
-  p2.start(cmnd);
-}
-
-void MainWindow::p2ReadFromStdout()                        //p2readFromStdout
-{
-  while(p2.canReadLine()) {
-    QString t(p2.readLine());
-    if(t.indexOf("spot(s) added") > 0) {
-      QFile f(QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
-      f.remove();
-    }
-  }
-  m_uploading=false;
-}
-
-void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
-{
-  QByteArray t=p2.readAllStandardError();
-  if(t.length()>0) {
-    msgBox(t);
-  }
-  m_uploading=false;
-}
-
-void MainWindow::p2Error(QProcess::ProcessError e)                                     //p2rror
-{
-  msgBox("Error attempting to start curl.");
-  qDebug() << e;                           // silence compiler warning
-  m_uploading=false;
-}
 
 void MainWindow::p3ReadFromStdout()                        //p3readFromStdout
 {
@@ -4286,8 +4247,9 @@ void MainWindow::bandHopping()
 
   int ib=iband;
   if(f0==0) {
-    while(ib==iband) {
+    for(int i=1; i<s.length(); i++) {
       ib=qrand() % s.length();
+      if(ib!=iband) break;
     }
     f0=(Frequency)1000000*m_fWSPR[s.at(ib)]+0.5;
     bname=s.at(ib);

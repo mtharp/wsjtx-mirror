@@ -217,9 +217,6 @@ private slots:
   void WSPR_config(bool b);
   void uploadSpots();
   void uploadResponse(QString response);
-  void p2ReadFromStdout();
-  void p2ReadFromStderr();
-  void p2Error(QProcess::ProcessError e);
   void p3ReadFromStdout();
   void p3ReadFromStderr();
   void p3Error(QProcess::ProcessError e);
@@ -403,7 +400,6 @@ private:
 
   QProcess proc_jt9;
   QProcess p1;
-  QProcess p2;
   QProcess p3;
 
   WSPRNet *wsprNet;
@@ -504,7 +500,6 @@ private:
   void replyToCQ (QTime, qint32 snr, float delta_time, quint32 delta_frequency, QString const& mode, QString const& message_text);
   void replayDecodes ();
   void postDecode (bool is_new, QString const& message);
-  void p2Start();
   void bandHopping();
 };
 
