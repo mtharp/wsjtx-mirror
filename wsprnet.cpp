@@ -72,13 +72,10 @@ void WSPRNet::networkReply(QNetworkReply *reply)
         QFile::remove(m_file);
         uploadTimer->stop();
     }
-
-    //qDebug() << serverResponse;
 }
 
 bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
 {
-    //qDebug() << line;
     // 130223 2256 7    -21 -0.3  14.097090  DU1MGA PK04 37          0    40    0
     // Date   Time Sync dBm  DT   Freq       Msg
     // 1      2    3     4   5     6         -------7------          8     9    10
@@ -94,7 +91,7 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         // Check for Message Type 1
         msgRx.setPattern("^([A-Z0-9]{3,6})\\s+([A-Z]{2}\\d{2})\\s+(\\d+)");
         if (msgRx.indexIn(msg) != -1) {
-            //qDebug() << "Type 1" << msgRx.cap(1) << msgRx.cap(2) << msgRx.cap(3);
+            // qDebug() << "Type 1" << msgRx.cap(1) << msgRx.cap(2) << msgRx.cap(3);
             msgType = 1;
             call = msgRx.cap(1);
             grid = msgRx.cap(2);
@@ -104,7 +101,7 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         // Check for Message Type 2
         msgRx.setPattern("^([A-Z0-9/]+)\\s+(\\d+)");
         if (msgRx.indexIn(msg) != -1) {
-            //qDebug() << "Type 2" << msgRx.cap(1) << msgRx.cap(2);
+            // qDebug() << "Type 2" << msgRx.cap(1) << msgRx.cap(2);
             msgType = 2;
             call = msgRx.cap(1);
             grid = "";
@@ -114,7 +111,7 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         // Check for Message Type 3
         msgRx.setPattern("^<([A-Z0-9/]+)>\\s+([A-Z]{2}\\d{2}[A-Z]{2})\\s+(\\d+)");
         if (msgRx.indexIn(msg) != -1) {
-            //qDebug() << "Type 3" << msgRx.cap(1) << msgRx.cap(2) << msgRx.cap(3);
+            // qDebug() << "Type 3" << msgRx.cap(1) << msgRx.cap(2) << msgRx.cap(3);
             msgType = 3;
             call = msgRx.cap(1);
             grid = msgRx.cap(2);
@@ -157,7 +154,7 @@ QString WSPRNet::urlEncodeNoSpot()
     if(m_mode=="WSPR-2") queryString += "&mode=2";
     if(m_mode=="WSPR-15") queryString += "&mode=15";
 
-//    qDebug() << queryString;
+    // qDebug() << queryString;
 
     return queryString;;
 }
@@ -183,7 +180,7 @@ QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
     if(m_mode=="WSPR-2") queryString += "&mode=2";
     if(m_mode=="WSPR-15") queryString += "&mode=15";
 
-    //qDebug() << queryString;
+    // qDebug() << queryString;
 
     return queryString;
 }

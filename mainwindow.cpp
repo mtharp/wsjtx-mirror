@@ -580,7 +580,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
     if(m_config.decode_at_52s()) m_hsymStop=181;
   }
   m_modulator.setPeriod(60);
-
+  m_dialFreqRxWSPR=0;
   wsprNet = new WSPRNet(this);
   connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
 
@@ -850,6 +850,7 @@ void MainWindow::dataSink(qint64 frames)
 
     if(m_mode.mid(0,4)=="WSPR") {
       QString t2,cmnd;
+      if( m_dialFreqRxWSPR==0) m_dialFreqRxWSPR=m_dialFreq;
       double f0m1500=m_dialFreqRxWSPR/1000000.0;   // + 0.000001*(m_BFO - 1500);
       t2.sprintf(" -f %.6f ",f0m1500);
 
@@ -4020,9 +4021,8 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       ui->DecodeButton->setChecked (false);
-//      if(m_uploadSpots and (m_band==m_RxStartBand)) {
       if(m_uploadSpots) {
-        float x=rand()/((double)RAND_MAX + 1);
+        float x=rand()/((double)RAND_MAX + 1.0);
         int msdelay=20000*x;
         uploadTimer->start(msdelay);                         //Upload delay
       } else {
@@ -4121,17 +4121,17 @@ void MainWindow::uploadSpots()
                   m_mode, QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
                   QString::number(m_dBm), version(),
                   QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
-    m_uploading = true;
+  m_uploading = true;
 }
 
 void MainWindow::uploadResponse(QString response)
 {
-    if (response == "done") {
-        m_uploading=false;
-    } else if (response == "Upload Failed") {
-        m_uploading=false;
-    } else {
-    }
+  if (response == "done") {
+    m_uploading=false;
+  } else if (response == "Upload Failed") {
+    m_uploading=false;
+  } else {
+  }
 }
 
 void MainWindow::p2Start()
