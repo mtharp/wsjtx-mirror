@@ -1132,7 +1132,7 @@ void MainWindow::qsy (Frequency f)
           m_repeatMsg=0;
           m_secBandChanged=QDateTime::currentMSecsSinceEpoch()/1000;
 
-          if(m_dialFreq/1000000 < 30) {
+          if(m_dialFreq/1000000 < 30 and m_mode.mid(0,4)!="WSPR") {
 // Write freq changes to ALL.TXT only below 30 MHz.
             QFile f2 {m_dataDir.absoluteFilePath ("ALL.TXT")};
             if (f2.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
@@ -1159,7 +1159,9 @@ void MainWindow::displayDialFrequency ()
 {
   // lookup band
   auto bands_model = m_config.bands ();
-  ui->bandComboBox->setCurrentText (bands_model->data (bands_model->find (m_dialFreq)).toString ());
+  QString t {bands_model->data(bands_model->find(m_dialFreq)).toString()};
+  ui->bandComboBox->setCurrentText (t);
+  m_wideGraph->setRxBand(t);
 
   // search working frequencies for one we are within 10kHz of
   auto frequencies = m_config.frequencies ();
@@ -2202,6 +2204,23 @@ void MainWindow::startTx2()
     if(snr>0.0 or snr < -50.0) snr=99.0;
     transmit (snr);
     signalMeter->setValue(0);
+    if(m_mode.mid(0,4)=="WSPR" and !m_tune) {
+      auto const& bands_model = m_config.bands ();
+      t = " Transmiting " + m_mode + " ----------------------- " +
+          bands_model->data(bands_model->find(m_dialFreq)).toString ();
+      ui->decodedTextBrowser->append(t.rightJustified (71, '-'));
+
+      QFile f {m_dataDir.absoluteFilePath ("ALL_WSPR.TXT")};
+      if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+        QTextStream out(&f);
+        out << QDateTime::currentDateTimeUtc().toString("yyMMdd hhmm")
+            << "  Transmitting " << (m_dialFreq / 1.e6) << " MHz:  "
+            << m_currentMessage << "  " + m_mode << endl;
+        f.close();
+      } else {
+        msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
+      }
+    }
   }
 }
 
@@ -3432,9 +3451,10 @@ void MainWindow::stop_tuning ()
 void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
 {
   if (m_tune) stop_tuning ();
-  if (m_auto) auto_tx_mode (false);
+  if (m_auto and !m_tuneup) auto_tx_mode (false);
   m_btxok=false;
   m_repeatMsg=0;
+  m_tuneup=false;
 }
 
 void MainWindow::rigOpen ()
@@ -4267,6 +4287,7 @@ void MainWindow::bandHopping()
   }
 
 // Execute user's hardware controller
+  m_cmnd="";
   QFile f1 {m_appDir + "/user_hardware.bat"};
   if(f1.exists()) {
     m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware.bat ") + bname;
@@ -4283,7 +4304,7 @@ void MainWindow::bandHopping()
   if(f4.exists()) {
     m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware ") + bname;
   }
-  p3.start(m_cmnd);
+  if(m_cmnd!="") p3.start(m_cmnd);
 
 // Displat grayline status
   QString dailySequence[4]={"Sunrise grayline","Day","Sunset grayline","Night"};
@@ -4291,11 +4312,11 @@ void MainWindow::bandHopping()
 
 // Prodece a short tuneup signal
   s=m_tuneBands;
-  bool tuneup=false;
+  m_tuneup=false;
   for(int i=0; i<s.length(); i++) {
-    if(s.at(i)==bname) tuneup=true;
+    if(s.at(i)==bname) m_tuneup=true;
   }
-  if(tuneup) {
+  if(m_tuneup) {
     on_tuneButton_clicked(true);
     tuneButtonTimer->start(3000);
   }

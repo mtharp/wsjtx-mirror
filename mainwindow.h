@@ -380,6 +380,7 @@ private:
   bool    m_grid6;
   bool    m_bandHopping;
   bool    m_hopTest;
+  bool    m_tuneup;
 
   float   m_pctZap;
 
