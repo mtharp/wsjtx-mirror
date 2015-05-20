@@ -4020,7 +4020,8 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       ui->DecodeButton->setChecked (false);
-      if(m_uploadSpots and (m_band==m_RxStartBand)) {
+//      if(m_uploadSpots and (m_band==m_RxStartBand)) {
+      if(m_uploadSpots) {
         float x=rand()/((double)RAND_MAX + 1);
         int msdelay=20000*x;
         uploadTimer->start(msdelay);                         //Upload delay
