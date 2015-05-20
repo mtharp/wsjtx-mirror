@@ -355,10 +355,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   uploadTimer->setSingleShot(true);
   connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
 
-  tuneATU_Timer = new QTimer(this);
-  tuneATU_Timer->setSingleShot(true);
-  connect(tuneATU_Timer, SIGNAL(timeout()), this, SLOT(stop_tuning()));
-
   m_auto=false;
   m_waterfallAvg = 1;
   m_txFirst=false;
@@ -1813,7 +1809,7 @@ void MainWindow::guiUpdate()
   double tx1=0.0;
   double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;            // JT9
   if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
-  if(m_mode=="WSPR-2") tx2=1.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
+  if(m_mode=="WSPR-2") tx2=4.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
 //###  if(m_mode=="WSPR-15") tx2=...
 
   if(!m_txFirst and m_mode.mid(0,4)!="WSPR") {
@@ -4050,15 +4046,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       return;
     } else {
 
-      if (m_config.insert_blank () && m_blankLine) {
-        QString band;
-        auto const& bands_model = m_config.bands ();
-        band = ' ' + bands_model->data (bands_model->find (m_dialFreq +
-                              ui->TxFreqSpinBox->value ())).toString ();
-        ui->decodedTextBrowser->append(band.rightJustified (71, '-'));
-        m_blankLine = false;
-      }
-
       int n=t.length();
       t=t.mid(0,n-2) + "                                                  ";
       t.remove(QRegExp("\\s+$"));
@@ -4103,6 +4090,16 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         }
         rxLine += t1;
       }
+
+      if (m_config.insert_blank () && m_blankLine) {
+        QString band;
+        auto const& bands_model = m_config.bands ();
+        Frequency f=1000000.0*rxFields.at(3).toDouble()+0.5;
+        band = ' ' + bands_model->data (bands_model->find (f)).toString ();
+        ui->decodedTextBrowser->append(band.rightJustified (71, '-'));
+        m_blankLine = false;
+      }
+
 //      ui->decodedTextBrowser->append(t);
       ui->decodedTextBrowser->append(rxLine);
     }
@@ -4288,7 +4285,9 @@ void MainWindow::bandHopping()
 
   int ib=iband;
   if(f0==0) {
-    ib=qrand() % s.length();
+    while(ib==iband) {
+      ib=qrand() % s.length();
+    }
     f0=(Frequency)1000000*m_fWSPR[s.at(ib)]+0.5;
     bname=s.at(ib);
   }
@@ -4304,6 +4303,7 @@ void MainWindow::bandHopping()
     }
   }
 
+// Execute user's hardware controller
   QFile f1 {m_appDir + "/user_hardware.bat"};
   if(f1.exists()) {
     m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware.bat ") + bname;
@@ -4322,11 +4322,11 @@ void MainWindow::bandHopping()
   }
   p3.start(m_cmnd);
 
-
+// Displat grayline status
   QString dailySequence[4]={"Sunrise grayline","Day","Sunset grayline","Night"};
   auto_tx_label->setText(dailySequence[isun]);
-  qDebug() << "Line 4296: bname m_nrx ntxnext" << bname << m_nrx << ntxnext << dailySequence[isun];
 
+// Prodece a short tuneup signal
   s=m_tuneBands;
   bool tuneup=false;
   for(int i=0; i<s.length(); i++) {
@@ -4334,7 +4334,7 @@ void MainWindow::bandHopping()
   }
   if(tuneup) {
     on_tuneButton_clicked(true);
-    tuneATU_Timer->start(3000);
+    tuneButtonTimer->start(3000);
   }
 }
 

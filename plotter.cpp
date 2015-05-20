@@ -572,7 +572,6 @@ void CPlotter::setDialFreq(double d)
 
 void CPlotter::setRxBand(QString band)
 {
-  qDebug() << "Plotter" << band;
   m_rxBand=band;
 }
 

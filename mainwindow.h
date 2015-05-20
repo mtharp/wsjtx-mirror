@@ -415,7 +415,6 @@ private:
   QTimer* killFileTimer;
   QTimer* tuneButtonTimer;
   QTimer* uploadTimer;
-  QTimer* tuneATU_Timer;
 
   QString m_path;
   QString m_pbdecoding_style1;
