@@ -59,9 +59,6 @@ subroutine hopping(nyear,month,nday,uth,mygrid,nduration,npctx,isun,   &
         endif
      enddo
 
-!     write(*,3001) int(tx)
-!3001 format(10i2)
-
 ! We now have 1 to 3 Tx periods per band in the 2-hour interval.
   endif
 
@@ -74,7 +71,12 @@ subroutine hopping(nyear,month,nday,uth,mygrid,nduration,npctx,isun,   &
      nrx=1
   endif
   iband=iband-1
-!  print*,iband,iseq,nrx,ntxnext
+!  print*,
+  write(*,3000) iband,iseq,nrx,ntxnext
+3000 format('Fortran iband, iseq,nrx,ntxnext:',4i5)
+     write(*,3001) int(tx)
+3001 format(10i2)
+
 
   return
 end subroutine hopping

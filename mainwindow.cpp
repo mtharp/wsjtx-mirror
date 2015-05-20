@@ -267,6 +267,14 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(&p1, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p1Error(QProcess::ProcessError)));
   connect(&p1, SIGNAL(readyReadStandardError()),this, SLOT(p1ReadFromStderr()));
 
+  connect(&p2, SIGNAL(readyReadStandardOutput()),this, SLOT(p2ReadFromStdout()));
+  connect(&p2, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p2Error(QProcess::ProcessError)));
+  connect(&p2, SIGNAL(readyReadStandardError()),this, SLOT(p2ReadFromStderr()));
+
+//  connect(&p3, SIGNAL(readyReadStandardOutput()),this, SLOT(p3ReadFromStdout()));
+  connect(&p3, SIGNAL(error(QProcess::ProcessError)),this, SLOT(p3Error(QProcess::ProcessError)));
+  connect(&p3, SIGNAL(readyReadStandardError()),this, SLOT(p3ReadFromStderr()));
+
   // Hook up working frequencies.
   ui->bandComboBox->setModel (m_config.frequencies ());
   ui->bandComboBox->setModelColumn (1); // MHz
@@ -346,6 +354,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   uploadTimer = new QTimer(this);
   uploadTimer->setSingleShot(true);
   connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
+
+  tuneATU_Timer = new QTimer(this);
+  tuneATU_Timer->setSingleShot(true);
+  connect(tuneATU_Timer, SIGNAL(timeout()), this, SLOT(stop_tuning()));
 
   m_auto=false;
   m_waterfallAvg = 1;
@@ -4156,9 +4168,10 @@ void MainWindow::p2ReadFromStderr()                        //p2readFromStderr
   m_uploading=false;
 }
 
-void MainWindow::p2Error()                                     //p2rror
+void MainWindow::p2Error(QProcess::ProcessError e)                                     //p2rror
 {
   msgBox("Error attempting to start curl.");
+  qDebug() << e;                           // silence compiler warning
   m_uploading=false;
 }
 
@@ -4166,7 +4179,7 @@ void MainWindow::p3ReadFromStdout()                        //p3readFromStdout
 {
   QByteArray t=p3.readAllStandardOutput();
   if(t.length()>0) {
-    msgBox("rigctl stdout:\n\n"+t+"\n"+m_cmnd);
+    msgBox("user_hardware stdout:\n\n"+t+"\n"+m_cmnd);
   }
 }
 
@@ -4174,13 +4187,14 @@ void MainWindow::p3ReadFromStderr()                        //p3readFromStderr
 {
   QByteArray t=p3.readAllStandardError();
   if(t.length()>0) {
-    msgBox("rigctl stderr:\n\n"+t+"\n"+m_cmnd);
+    msgBox("user_hardware stderr:\n\n"+t+"\n"+m_cmnd);
   }
 }
 
-void MainWindow::p3Error()                                     //p3rror
+void MainWindow::p3Error(QProcess::ProcessError e)                                     //p3rror
 {
-  msgBox("Error attempting to run rigctl.\n\n"+m_cmnd);
+  msgBox("Error attempting to run user_hardware.\n\n"+m_cmnd);
+  qDebug() << e;                           // silence compiler warning
 }
 
 
@@ -4253,11 +4267,9 @@ void MainWindow::bandHopping()
            &m_grayDuration, &m_pctx, &isun, &iband, &ntxnext, 6);
 
   if(m_auto and ntxnext==1) {
-//    m_txNext=true;
     m_nrx=0;
   } else {
-//    m_txNext=false;
-//    m_nrx=1;
+    m_nrx=1;
   }
 
   QString bname;
@@ -4287,13 +4299,43 @@ void MainWindow::bandHopping()
     auto f = frequency.value<Frequency>();
     if(f==0) break;
     if(f==f0) {
-      on_bandComboBox_activated(i);
+      on_bandComboBox_activated(i);                        //Set new band
       break;
     }
   }
+
+  QFile f1 {m_appDir + "/user_hardware.bat"};
+  if(f1.exists()) {
+    m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware.bat ") + bname;
+  }
+  QFile f2 {m_appDir + "/user_hardware.cmd"};
+  if(f2.exists()) {
+    m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware.cmd ") + bname;
+  }
+  QFile f3 {m_appDir + "/user_hardware.exe"};
+  if(f3.exists()) {
+    m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware.exe ") + bname;
+  }
+  QFile f4 {m_appDir + "/user_hardware"};
+  if(f4.exists()) {
+    m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware ") + bname;
+  }
+  p3.start(m_cmnd);
+
+
   QString dailySequence[4]={"Sunrise grayline","Day","Sunset grayline","Night"};
   auto_tx_label->setText(dailySequence[isun]);
-  qDebug() << "Hopping" << bname << m_nrx << ntxnext << dailySequence[isun];
+  qDebug() << "Line 4296: bname m_nrx ntxnext" << bname << m_nrx << ntxnext << dailySequence[isun];
+
+  s=m_tuneBands;
+  bool tuneup=false;
+  for(int i=0; i<s.length(); i++) {
+    if(s.at(i)==bname) tuneup=true;
+  }
+  if(tuneup) {
+    on_tuneButton_clicked(true);
+    tuneATU_Timer->start(3000);
+  }
 }
 
 void MainWindow::on_pushButton_clicked()

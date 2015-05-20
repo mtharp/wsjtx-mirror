@@ -219,10 +219,10 @@ private slots:
   void uploadResponse(QString response);
   void p2ReadFromStdout();
   void p2ReadFromStderr();
-  void p2Error();
+  void p2Error(QProcess::ProcessError e);
   void p3ReadFromStdout();
   void p3ReadFromStderr();
-  void p3Error();
+  void p3Error(QProcess::ProcessError e);
   void on_WSPRfreqSpinBox_valueChanged(int n);
   void on_pbTxNext_clicked(bool b);
   void on_cbBandHop_toggled(bool b);
@@ -415,6 +415,7 @@ private:
   QTimer* killFileTimer;
   QTimer* tuneButtonTimer;
   QTimer* uploadTimer;
+  QTimer* tuneATU_Timer;
 
   QString m_path;
   QString m_pbdecoding_style1;
@@ -506,7 +507,6 @@ private:
   void postDecode (bool is_new, QString const& message);
   void p2Start();
   void bandHopping();
-
 };
 
 extern void getfile(QString fname, int ntrperiod);
