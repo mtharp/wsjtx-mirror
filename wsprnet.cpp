@@ -42,15 +42,15 @@ void WSPRNet::upload(QString call, QString grid, QString rfreq, QString tfreq,
 
     // Read the contents
     while (!wsprdOutFile.atEnd()) {
-        QHash<QString,QString> query;
-        if ( decodeLine(wsprdOutFile.readLine(), query) ) {
-           // Prevent reporting data ouside of the current frequency band
-           float f = fabs(m_rfreq.toFloat() - query["tqrg"].toFloat());
-           if (f > 0.0002)
-                continue;
-           urlQueue.enqueue( wsprNetUrl + urlEncodeSpot(query));
-           m_uploadType = 2;
+      QHash<QString,QString> query;
+      if ( decodeLine(wsprdOutFile.readLine(), query) ) {
+        // Prevent reporting data ouside of the current frequency band
+        float f = fabs(m_rfreq.toFloat() - query["tqrg"].toFloat());
+        if (f < 0.0002) {
+          urlQueue.enqueue( wsprNetUrl + urlEncodeSpot(query));
+          m_uploadType = 2;
         }
+      }
     }
     m_urlQueueSize = urlQueue.size();
     uploadTimer->start(200);
@@ -91,7 +91,6 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         // Check for Message Type 1
         msgRx.setPattern("^([A-Z0-9]{3,6})\\s+([A-Z]{2}\\d{2})\\s+(\\d+)");
         if (msgRx.indexIn(msg) != -1) {
-            // qDebug() << "Type 1" << msgRx.cap(1) << msgRx.cap(2) << msgRx.cap(3);
             msgType = 1;
             call = msgRx.cap(1);
             grid = msgRx.cap(2);
@@ -101,7 +100,6 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         // Check for Message Type 2
         msgRx.setPattern("^([A-Z0-9/]+)\\s+(\\d+)");
         if (msgRx.indexIn(msg) != -1) {
-            // qDebug() << "Type 2" << msgRx.cap(1) << msgRx.cap(2);
             msgType = 2;
             call = msgRx.cap(1);
             grid = "";
@@ -111,7 +109,6 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
         // Check for Message Type 3
         msgRx.setPattern("^<([A-Z0-9/]+)>\\s+([A-Z]{2}\\d{2}[A-Z]{2})\\s+(\\d+)");
         if (msgRx.indexIn(msg) != -1) {
-            // qDebug() << "Type 3" << msgRx.cap(1) << msgRx.cap(2) << msgRx.cap(3);
             msgType = 3;
             call = msgRx.cap(1);
             grid = msgRx.cap(2);
@@ -142,7 +139,6 @@ bool WSPRNet::decodeLine(QString line, QHash<QString,QString> &query)
 QString WSPRNet::urlEncodeNoSpot()
 {
     QString queryString;
-
     queryString += "function=wsprstat&";
     queryString += "rcall=" + m_call + "&";
     queryString += "rgrid=" + m_grid + "&";
@@ -153,16 +149,12 @@ QString WSPRNet::urlEncodeNoSpot()
     queryString += "version=" +  m_vers;
     if(m_mode=="WSPR-2") queryString += "&mode=2";
     if(m_mode=="WSPR-15") queryString += "&mode=15";
-
-    // qDebug() << queryString;
-
     return queryString;;
 }
 
 QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
 {
     QString queryString;
-
     queryString += "function=" + query["function"] + "&";
     queryString += "rcall=" + m_call + "&";
     queryString += "rgrid=" + m_grid + "&";
@@ -179,9 +171,6 @@ QString WSPRNet::urlEncodeSpot(QHash<QString,QString> query)
     queryString += "version=" + m_vers;
     if(m_mode=="WSPR-2") queryString += "&mode=2";
     if(m_mode=="WSPR-15") queryString += "&mode=15";
-
-    // qDebug() << queryString;
-
     return queryString;
 }
 

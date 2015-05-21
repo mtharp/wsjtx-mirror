@@ -193,6 +193,7 @@ private slots:
   void band_changed (Frequency);
   void monitor (bool);
   void stop_tuning ();
+  void stopTuneATU();
   void auto_tx_mode (bool);
   void on_actionMessage_averaging_triggered();
   void on_sbTol_valueChanged(int i);
@@ -381,6 +382,7 @@ private:
   bool    m_bandHopping;
   bool    m_hopTest;
   bool    m_tuneup;
+  bool    m_bTxTime;
 
   float   m_pctZap;
 
@@ -412,6 +414,7 @@ private:
   QTimer* killFileTimer;
   QTimer* tuneButtonTimer;
   QTimer* uploadTimer;
+  QTimer* tuneATU_Timer;
 
   QString m_path;
   QString m_pbdecoding_style1;
@@ -438,7 +441,6 @@ private:
   QString m_fileToSave;
   QString m_band;
   QString m_c2name;
-  QString m_RxStartBand;
 
   QStringList m_prefix;
   QStringList m_suffix;

@@ -343,6 +343,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   tuneButtonTimer->setSingleShot(true);
   connect(tuneButtonTimer, &QTimer::timeout, this, &MainWindow::on_stopTxButton_clicked);
 
+  tuneATU_Timer= new QTimer(this);
+  tuneATU_Timer->setSingleShot(true);
+  connect(tuneATU_Timer, &QTimer::timeout, this, &MainWindow::stopTuneATU);
+
   killFileTimer = new QTimer(this);
   killFileTimer->setSingleShot(true);
   connect(killFileTimer, &QTimer::timeout, this, &MainWindow::killFile);
@@ -406,6 +410,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bDopplerTracking0=false;
   m_uploading=false;
   m_hopTest=false;
+  m_bTxTime=false;
 
   m_fWSPR["160"]=1.8366;                //WSPR frequencies
   m_fWSPR["80"]=3.5926;
@@ -810,7 +815,10 @@ void MainWindow::dataSink(qint64 frames)
     if(m_config.decode_at_52s()) m_hsymStop=181;
   }
 
+  if(ihsym==3*m_hsymStop/4) m_dialFreqRxWSPR=m_dialFreq;
+
   if(ihsym == m_hsymStop) {
+    if( m_dialFreqRxWSPR==0) m_dialFreqRxWSPR=m_dialFreq;
     m_dataAvailable=true;
     jt9com_.npts8=(ihsym*m_nsps)/16;
     jt9com_.newdat=1;
@@ -846,7 +854,6 @@ void MainWindow::dataSink(qint64 frames)
 
     if(m_mode.mid(0,4)=="WSPR") {
       QString t2,cmnd;
-      if( m_dialFreqRxWSPR==0) m_dialFreqRxWSPR=m_dialFreq;
       double f0m1500=m_dialFreqRxWSPR/1000000.0;   // + 0.000001*(m_BFO - 1500);
       t2.sprintf(" -f %.6f ",f0m1500);
 
@@ -981,6 +988,8 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
 void MainWindow::on_autoButton_clicked (bool checked)
 {
   m_auto = checked;
+//  qDebug() << "AutoButton" << m_auto;
+
   m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall,
                                   QString::number (ui->rptSpinBox->value ()),
                                   m_modeTx, ui->autoButton->isChecked (),
@@ -999,6 +1008,7 @@ void MainWindow::on_autoButton_clicked (bool checked)
 
 void MainWindow::auto_tx_mode (bool state)
 {
+  qDebug() << "auto_tx_mode" << state;
   ui->autoButton->setChecked (state);
   on_autoButton_clicked (state);
 }
@@ -1798,7 +1808,6 @@ void MainWindow::guiUpdate()
 {
   static int iptt0=0;
   static bool btxok0=false;
-  static bool bTxTime=false;
   static char message[29];
   static char msgsent[29];
   static int nsendingsh=0;
@@ -1838,29 +1847,28 @@ void MainWindow::guiUpdate()
         m_ntr=-1;                          //This says we will have transmitted
         m_txNext=false;
         ui->pbTxNext->setChecked(false);
-        bTxTime=true;                      //Start a WSPR Tx sequence
+        m_bTxTime=true;                      //Start a WSPR Tx sequence
       } else {
         //This will be a WSPR Rx sequence.
         m_ntr=1;                           //This says we will have received
-        m_RxStartBand=m_band;
-        m_dialFreqRxWSPR=m_dialFreq;
-        bTxTime=false;                     //Start a WSPR Rx sequence
+        m_bTxTime=false;                     //Start a WSPR Rx sequence
       }
     }
+//    qDebug() << "L1857 m_bTxTime" << m_bTxTime;
   } else {
-    bTxTime = (t2p >= tx1) and (t2p < tx2);
+    m_bTxTime = (t2p >= tx1) and (t2p < tx2);
   }
-  if(m_tune) bTxTime=true;                 //"Tune" takes precedence
+  if(m_tune) m_bTxTime=true;                 //"Tune" takes precedence
 
   if(m_transmitting or m_auto or m_tune) {
     QFile f(m_appDir + "/txboth");
     if(f.exists() and fmod(tsec,m_TRperiod) < (1.0 + 85.0*m_nsps/12000.0)) {
-      bTxTime=true;
+      m_bTxTime=true;
     }
 
     Frequency onAirFreq = m_dialFreq + ui->TxFreqSpinBox->value();
     if ((onAirFreq > 10139900 and onAirFreq < 10140320) and m_mode.mid(0,4)!="WSPR") {
-      bTxTime=false;
+      m_bTxTime=false;
       if (m_tune) stop_tuning ();
       if (m_auto) auto_tx_mode (false);
       if(onAirFreq!=onAirFreq0) {
@@ -1873,21 +1881,21 @@ void MainWindow::guiUpdate()
     }
 
     float fTR=float((nsec%m_TRperiod))/m_TRperiod;
-//    if(g_iptt==0 and ((bTxTime and fTR<0.4) or m_tune )) {
-    if(g_iptt==0 and ((bTxTime and fTR<99) or m_tune )) {   //### allow late starts ###
+//    if(g_iptt==0 and ((m_bTxTime and fTR<0.4) or m_tune )) {
+    if(g_iptt==0 and ((m_bTxTime and fTR<99) or m_tune )) {   //### allow late starts ###
       icw[0]=m_ncw;
       g_iptt = 1;
       setXIT (ui->TxFreqSpinBox->value ()); // ensure correct offset
       Q_EMIT m_config.transceiver_ptt (true);
       ptt1Timer->start(200);                      //Sequencer delay
     }
-    if(!bTxTime and !m_tune) m_btxok=false;       //Time to stop transmitting
+    if(!m_bTxTime and !m_tune) m_btxok=false;       //Time to stop transmitting
   }
 
   if(m_ntr!=0 and m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
     if(m_monitoring) m_nrx=m_nrx-1;               //Decrement the Rx-sequence count
     if(m_transmitting) {
-      bTxTime=false;                              //Time to stop a WSPR transmission
+      m_bTxTime=false;                              //Time to stop a WSPR transmission
       m_btxok=false;
     }
     if(m_bandHopping) bandHopping();
@@ -2113,6 +2121,7 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
+//    qDebug() << "OneSec" << m_nseq << t2p << m_bTxTime << m_auto;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
@@ -3430,6 +3439,8 @@ void MainWindow::on_rptSpinBox_valueChanged(int n)
 
 void MainWindow::on_tuneButton_clicked (bool checked)
 {
+//  if(checked) qDebug() << "Tune ON" << m_tune << m_tuneup << m_auto;
+//  if(!checked) qDebug() << "Tune OFF" << m_tune << m_tuneup << m_auto;
   if (m_tune) {
     tuneButtonTimer->start(250);
   } else {
@@ -3448,13 +3459,23 @@ void MainWindow::stop_tuning ()
   on_tuneButton_clicked (false);
 }
 
+void MainWindow::stopTuneATU()
+{
+//  qDebug() << "stopTuneATU" << m_tune;
+  on_tuneButton_clicked(false);
+  m_tune=false;
+  m_bTxTime=false;
+}
+
 void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
 {
+//  qDebug() << "on_stopTxButton_clicked 1" << m_tune << m_auto << m_tuneup;
   if (m_tune) stop_tuning ();
   if (m_auto and !m_tuneup) auto_tx_mode (false);
   m_btxok=false;
   m_repeatMsg=0;
   m_tuneup=false;
+//  qDebug() << "on_stopTxButton_clicked 2" << m_tune << m_auto << m_tuneup;
 }
 
 void MainWindow::rigOpen ()
@@ -4037,7 +4058,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
       ui->DecodeButton->setChecked (false);
-//      qDebug() << "A" << m_uploadSpots;
       if(m_uploadSpots) {
         float x=rand()/((double)RAND_MAX + 1.0);
         int msdelay=20000*x;
@@ -4127,7 +4147,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
 void MainWindow::uploadSpots()
 {
   if(m_diskData) return;
-//  qDebug() << "B" << m_uploading;
   if(m_uploading) {
     qDebug() << "Previous upload has not completed, spots were lost";
     return;
@@ -4135,22 +4154,23 @@ void MainWindow::uploadSpots()
   QString rfreq = QString("%1").arg(0.000001*(m_dialFreqRxWSPR + 1500), 0, 'f', 6);
   QString tfreq = QString("%1").arg(0.000001*(m_dialFreqRxWSPR +
                         ui->TxFreqSpinBox->value()), 0, 'f', 6);
+//  qDebug() << "B" << rfreq << tfreq;
   wsprNet->upload(m_config.my_callsign(), m_config.my_grid(), rfreq, tfreq,
                   m_mode, QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
                   QString::number(m_dBm), version(),
                   QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
   m_uploading = true;
+//  qDebug() << "Uploading spots";
 }
 
 void MainWindow::uploadResponse(QString response)
 {
-//  qDebug() << "aa" << response;
   if (response == "done") {
     m_uploading=false;
   } else if (response == "Upload Failed") {
     m_uploading=false;
-  } else {
   }
+//  qDebug() << "uploadResponse" << response;
 }
 
 
@@ -4286,7 +4306,6 @@ void MainWindow::bandHopping()
     }
   }
 
-// Execute user's hardware controller
   m_cmnd="";
   QFile f1 {m_appDir + "/user_hardware.bat"};
   if(f1.exists()) {
@@ -4304,13 +4323,13 @@ void MainWindow::bandHopping()
   if(f4.exists()) {
     m_cmnd=QDir::toNativeSeparators (m_appDir + "/user_hardware ") + bname;
   }
-  if(m_cmnd!="") p3.start(m_cmnd);
+  if(m_cmnd!="") p3.start(m_cmnd);     // Execute user's hardware controller
 
 // Displat grayline status
   QString dailySequence[4]={"Sunrise grayline","Day","Sunset grayline","Night"};
   auto_tx_label->setText(dailySequence[isun]);
 
-// Prodece a short tuneup signal
+// Produce a short tuneup signal
   s=m_tuneBands;
   m_tuneup=false;
   for(int i=0; i<s.length(); i++) {
@@ -4318,7 +4337,7 @@ void MainWindow::bandHopping()
   }
   if(m_tuneup) {
     on_tuneButton_clicked(true);
-    tuneButtonTimer->start(3000);
+    tuneATU_Timer->start(2500);
   }
 }
 
