@@ -328,6 +328,7 @@ private:
   qint32  m_pctx;
   qint32  m_nseq;
   qint32  m_grayDuration;
+  qint32  m_band00;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

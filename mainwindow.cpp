@@ -411,6 +411,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_uploading=false;
   m_hopTest=false;
   m_bTxTime=false;
+  m_band00=-1;
 
   m_fWSPR["160"]=1.8366;                //WSPR frequencies
   m_fWSPR["80"]=3.5926;
@@ -1817,7 +1818,7 @@ void MainWindow::guiUpdate()
   double tx1=0.0;
   double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;            // JT9
   if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
-  if(m_mode=="WSPR-2") tx2=4.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
+  if(m_mode=="WSPR-2") tx2=2.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
 //###  if(m_mode=="WSPR-15") tx2=...
 
   if(!m_txFirst and m_mode.mid(0,4)!="WSPR") {
@@ -1835,8 +1836,7 @@ void MainWindow::guiUpdate()
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
       if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx<=0) and
                        (m_ntr!=-1)))) or ((m_auto and (m_pctx==100)))) {
-
-        //This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
+// This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
         float x=(float)rand()/RAND_MAX;
         if(m_pctx<50) {
           m_nrx=int(m_rxavg + 3.0*(x-0.5) + 0.5);
@@ -1849,23 +1849,26 @@ void MainWindow::guiUpdate()
         ui->pbTxNext->setChecked(false);
         m_bTxTime=true;                      //Start a WSPR Tx sequence
       } else {
-        //This will be a WSPR Rx sequence.
+// This will be a WSPR Rx sequence.
         m_ntr=1;                           //This says we will have received
         m_bTxTime=false;                     //Start a WSPR Rx sequence
       }
     }
-//    qDebug() << "L1857 m_bTxTime" << m_bTxTime;
+
   } else {
-    m_bTxTime = (t2p >= tx1) and (t2p < tx2);
+    m_bTxTime = (t2p >= tx1) and (t2p < tx2);  // For all modes other than WSPR
   }
   if(m_tune) m_bTxTime=true;                 //"Tune" takes precedence
 
   if(m_transmitting or m_auto or m_tune) {
+
+// Check for "txboth" (testing purposes only)
     QFile f(m_appDir + "/txboth");
     if(f.exists() and fmod(tsec,m_TRperiod) < (1.0 + 85.0*m_nsps/12000.0)) {
       m_bTxTime=true;
     }
 
+// Don't transmit another mode in the 30 m WSPR sub-band
     Frequency onAirFreq = m_dialFreq + ui->TxFreqSpinBox->value();
     if ((onAirFreq > 10139900 and onAirFreq < 10140320) and m_mode.mid(0,4)!="WSPR") {
       m_bTxTime=false;
@@ -1885,9 +1888,9 @@ void MainWindow::guiUpdate()
     if(g_iptt==0 and ((m_bTxTime and fTR<99) or m_tune )) {   //### allow late starts ###
       icw[0]=m_ncw;
       g_iptt = 1;
-      setXIT (ui->TxFreqSpinBox->value ()); // ensure correct offset
-      Q_EMIT m_config.transceiver_ptt (true);
-      ptt1Timer->start(200);                      //Sequencer delay
+      setXIT (ui->TxFreqSpinBox->value ());         //Ensure correct offset
+      Q_EMIT m_config.transceiver_ptt (true);       //Assert the PTT
+      ptt1Timer->start(200);                        //Sequencer delay
     }
     if(!m_bTxTime and !m_tune) m_btxok=false;       //Time to stop transmitting
   }
@@ -1895,7 +1898,7 @@ void MainWindow::guiUpdate()
   if(m_ntr!=0 and m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
     if(m_monitoring) m_nrx=m_nrx-1;               //Decrement the Rx-sequence count
     if(m_transmitting) {
-      m_bTxTime=false;                              //Time to stop a WSPR transmission
+      m_bTxTime=false;                            //Time to stop a WSPR transmission
       m_btxok=false;
     }
     if(m_bandHopping) bandHopping();
@@ -3439,8 +3442,6 @@ void MainWindow::on_rptSpinBox_valueChanged(int n)
 
 void MainWindow::on_tuneButton_clicked (bool checked)
 {
-//  if(checked) qDebug() << "Tune ON" << m_tune << m_tuneup << m_auto;
-//  if(!checked) qDebug() << "Tune OFF" << m_tune << m_tuneup << m_auto;
   if (m_tune) {
     tuneButtonTimer->start(250);
   } else {
@@ -3461,7 +3462,6 @@ void MainWindow::stop_tuning ()
 
 void MainWindow::stopTuneATU()
 {
-//  qDebug() << "stopTuneATU" << m_tune;
   on_tuneButton_clicked(false);
   m_tune=false;
   m_bTxTime=false;
@@ -3469,13 +3469,11 @@ void MainWindow::stopTuneATU()
 
 void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
 {
-//  qDebug() << "on_stopTxButton_clicked 1" << m_tune << m_auto << m_tuneup;
   if (m_tune) stop_tuning ();
   if (m_auto and !m_tuneup) auto_tx_mode (false);
   m_btxok=false;
   m_repeatMsg=0;
   m_tuneup=false;
-//  qDebug() << "on_stopTxButton_clicked 2" << m_tune << m_auto << m_tuneup;
 }
 
 void MainWindow::rigOpen ()
@@ -4154,13 +4152,11 @@ void MainWindow::uploadSpots()
   QString rfreq = QString("%1").arg(0.000001*(m_dialFreqRxWSPR + 1500), 0, 'f', 6);
   QString tfreq = QString("%1").arg(0.000001*(m_dialFreqRxWSPR +
                         ui->TxFreqSpinBox->value()), 0, 'f', 6);
-//  qDebug() << "B" << rfreq << tfreq;
   wsprNet->upload(m_config.my_callsign(), m_config.my_grid(), rfreq, tfreq,
                   m_mode, QString::number(ui->autoButton->isChecked() ? m_pctx : 0),
                   QString::number(m_dBm), version(),
                   QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
   m_uploading = true;
-//  qDebug() << "Uploading spots";
 }
 
 void MainWindow::uploadResponse(QString response)
@@ -4254,22 +4250,26 @@ void MainWindow::bandHopping()
   float sec=t.time().second() + 0.001*t.time().msec();
   float uth=nhr + nmin/60.0 + sec/3600.0;
   int isun;
-  int iband;
+  int iband0,iband;
   int ntxnext;
+  int i,j;
 
   static int icall=0;
   if(m_hopTest) uth+= 2.0*icall/60.0;
   icall++;
 
+// Find grayline status, isun: 0=Sunrise, 1=Day, 2=Sunset, 3=Night
   hopping_(&nyear, &month, &nday, &uth,
            const_cast <char *> (m_config.my_grid ().toLatin1().constData()),
-           &m_grayDuration, &m_pctx, &isun, &iband, &ntxnext, 6);
+           &m_grayDuration, &m_pctx, &isun, &iband0, &ntxnext, 6);
 
+/*
   if(m_auto and ntxnext==1) {
     m_nrx=0;
   } else {
     m_nrx=1;
   }
+*/
 
   QString bname;
   QStringList s;
@@ -4277,24 +4277,36 @@ void MainWindow::bandHopping()
   if(isun==1) s=m_dayBands;
   if(isun==2) s=m_sunsetBands;
   if(isun==3) s=m_nightBands;
-  Frequency f0=0;
-  for(int i=0; i<s.length(); i++) {
-    if(s.at(i)==bandName[iband]) {
-      f0=(Frequency)1000000*m_fWSPR[bandName[iband]]+0.5;
+
+  Frequency f0;
+  iband=-1;
+  for(i=0; i<s.length(); i++) {              //See if designated band is active
+    if(s.at(i)==bandName[iband0]) {
+      f0=(Frequency)1000000*m_fWSPR[bandName[iband0]]+0.5;
       bname=s.at(i);
+      iband=iband0;
     }
   }
 
-  int ib=iband;
-  if(f0==0) {
-    for(int i=1; i<s.length(); i++) {
-      ib=qrand() % s.length();
-      if(ib!=iband) break;
+//If designated band is not active, choose one that is active
+  if(iband==-1) {
+    for(i=0; i<s.length(); i++) {
+      j=qrand() % s.length();
+      bname=s.at(j);
+      f0=(Frequency)1000000*m_fWSPR[bname]+0.5;
+      if(s.at(j)!=bandName[m_band00]) break;
     }
-    f0=(Frequency)1000000*m_fWSPR[s.at(ib)]+0.5;
-    bname=s.at(ib);
+    for(i=0; i<10; i++) {
+      if(bname==bandName[i]) {
+        iband=i;
+        break;
+      }
+    }
   }
 
+//  qDebug() << "isun:" << isun << s << iband0 << m_band00 << iband << bname << f0/1000000.0;
+
+  m_band00=iband;
   auto frequencies = m_config.frequencies ();
   for (int i=0; i<99; i++) {
     auto frequency=frequencies->data (frequencies->index (i, 0));
