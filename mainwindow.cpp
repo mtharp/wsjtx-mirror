@@ -1762,12 +1762,16 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
 {
   qint64 ms=QDateTime::currentMSecsSinceEpoch();
   ui->decodedTextBrowser2->clear();
-  m_QSOText.clear();
-  if((ms-m_msErase)<500) {
+  if(m_mode.mid(0,4)=="WSPR") {
     ui->decodedTextBrowser->clear();
-    m_messageClient->clear_decodes ();
-    QFile f(m_config.temp_dir ().absoluteFilePath ("decoded.txt"));
-    if(f.exists()) f.remove();
+  } else {
+    m_QSOText.clear();
+    if((ms-m_msErase)<500) {
+      ui->decodedTextBrowser->clear();
+      m_messageClient->clear_decodes ();
+      QFile f(m_config.temp_dir ().absoluteFilePath ("decoded.txt"));
+      if(f.exists()) f.remove();
+    }
   }
   m_msErase=ms;
 }
@@ -2271,7 +2275,7 @@ void MainWindow::stopTx2()
     m_repeatMsg=0;
   }
   if(m_mode.mid(0,4)=="WSPR" and m_ntr==-1 and m_bandHopping and !m_tuneup) {
-    qDebug () << "Call bandHopping after Tx" << m_tuneup;
+//    qDebug () << "Call bandHopping after Tx" << m_tuneup;
     bandHopping();
     m_ntr=0;
   }
