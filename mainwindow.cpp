@@ -412,6 +412,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_hopTest=false;
   m_bTxTime=false;
   m_band00=-1;
+  m_rxDone=false;
 
   m_fWSPR["160"]=1.8366;                //WSPR frequencies
   m_fWSPR["80"]=3.5926;
@@ -816,7 +817,9 @@ void MainWindow::dataSink(qint64 frames)
     if(m_config.decode_at_52s()) m_hsymStop=181;
   }
 
-  if(ihsym==3*m_hsymStop/4) m_dialFreqRxWSPR=m_dialFreq;
+  if(ihsym==3*m_hsymStop/4) {
+    m_dialFreqRxWSPR=m_dialFreq;
+  }
 
   if(ihsym == m_hsymStop) {
     if( m_dialFreqRxWSPR==0) m_dialFreqRxWSPR=m_dialFreq;
@@ -875,6 +878,7 @@ void MainWindow::dataSink(qint64 frames)
       ui->DecodeButton->setChecked (true);
       p1.start(QDir::toNativeSeparators(cmnd));
     }
+    m_rxDone=true;
   }
 }
 
@@ -989,7 +993,7 @@ void MainWindow::on_actionAbout_triggered()                  //Display "About"
 void MainWindow::on_autoButton_clicked (bool checked)
 {
   m_auto = checked;
-//  qDebug() << "AutoButton" << m_auto;
+//  qDebug() << "autoButton_clicked" << m_auto << m_tuneup;
 
   m_messageClient->status_update (m_dialFreq, m_mode, m_hisCall,
                                   QString::number (ui->rptSpinBox->value ()),
@@ -1009,7 +1013,7 @@ void MainWindow::on_autoButton_clicked (bool checked)
 
 void MainWindow::auto_tx_mode (bool state)
 {
-  qDebug() << "auto_tx_mode" << state;
+//  qDebug() << "auto_tx_mode" << state << m_tuneup;
   ui->autoButton->setChecked (state);
   on_autoButton_clicked (state);
 }
@@ -1139,10 +1143,8 @@ void MainWindow::qsy (Frequency f)
       if (m_dialFreq != f)
         {
           m_dialFreq = f;
-
           m_repeatMsg=0;
           m_secBandChanged=QDateTime::currentMSecsSinceEpoch()/1000;
-
           if(m_dialFreq/1000000 < 30 and m_mode.mid(0,4)!="WSPR") {
 // Write freq changes to ALL.TXT only below 30 MHz.
             QFile f2 {m_dataDir.absoluteFilePath ("ALL.TXT")};
@@ -1832,7 +1834,9 @@ void MainWindow::guiUpdate()
 
   if(m_mode.mid(0,4)=="WSPR") {
     m_nseq = nsec % m_TRperiod;
+    ui->WSPRprogressBar->setValue(m_nseq);
     if(m_nseq==0 and m_ntr==0) {
+      m_tuneup=false;
       if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
       if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx<=0) and
                        (m_ntr!=-1)))) or ((m_auto and (m_pctx==100)))) {
@@ -1895,14 +1899,21 @@ void MainWindow::guiUpdate()
     if(!m_bTxTime and !m_tune) m_btxok=false;       //Time to stop transmitting
   }
 
-  if(m_ntr!=0 and m_mode.mid(0,4)=="WSPR" and m_nseq>tx2) {
-    if(m_monitoring) m_nrx=m_nrx-1;               //Decrement the Rx-sequence count
+  if(m_mode.mid(0,4)=="WSPR" and
+     ((m_ntr==1 and m_rxDone) or (m_ntr==-1 and m_nseq>tx2))) {
+    if(m_monitoring) {
+      m_nrx=m_nrx-1;               //Decrement the Rx-sequence count
+      m_rxDone=false;
+    }
     if(m_transmitting) {
-      m_bTxTime=false;                            //Time to stop a WSPR transmission
+      m_bTxTime=false;                        //Time to stop a WSPR transmission
       m_btxok=false;
     }
-    if(m_bandHopping) bandHopping();
-    m_ntr=0;                                      //This WSPR sequence is complete
+    if(m_bandHopping and m_ntr==1) {
+//      qDebug() << "Call bandHopping after Rx" << m_nseq << m_ntr << m_nrx << m_rxDone;
+      bandHopping();
+      m_ntr=0;                                //This WSPR Rx sequence is complete
+    }
   }
 
   // Calculate Tx tones when needed
@@ -2124,7 +2135,6 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
-//    qDebug() << "OneSec" << m_nseq << t2p << m_bTxTime << m_auto;
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;
@@ -2254,10 +2264,16 @@ void MainWindow::stopTx()
 void MainWindow::stopTx2()
 {
   Q_EMIT m_config.transceiver_ptt (false);      //Lower PTT
-  if (m_mode.mid(0,4)!="WSPR" and m_config.watchdog() and m_repeatMsg>=m_watchdogLimit-1) {
+  if (m_mode.mid(0,4)!="WSPR" and m_config.watchdog() and
+      m_repeatMsg>=m_watchdogLimit-1) {
     on_stopTxButton_clicked();
     msgBox("Runaway Tx watchdog");
     m_repeatMsg=0;
+  }
+  if(m_mode.mid(0,4)=="WSPR" and m_ntr==-1 and m_bandHopping and !m_tuneup) {
+    qDebug () << "Call bandHopping after Tx" << m_tuneup;
+    bandHopping();
+    m_ntr=0;
   }
 }
 
@@ -3304,6 +3320,7 @@ void MainWindow::on_bandComboBox_activated (int index)
   m_bandEdited = true;
   band_changed (f);
   m_wideGraph->setRxBand(band_index.data().toString());
+//  qDebug() << "bandComboBox_activated" << index << 0.000001*f;
 }
 
 void MainWindow::band_changed (Frequency f)
@@ -3473,7 +3490,6 @@ void MainWindow::on_stopTxButton_clicked()                    //Stop Tx
   if (m_auto and !m_tuneup) auto_tx_mode (false);
   m_btxok=false;
   m_repeatMsg=0;
-  m_tuneup=false;
 }
 
 void MainWindow::rigOpen ()
@@ -4304,7 +4320,10 @@ void MainWindow::bandHopping()
     }
   }
 
-//  qDebug() << "isun:" << isun << s << iband0 << m_band00 << iband << bname << f0/1000000.0;
+  QThread::msleep(1500);
+
+//  qDebug() << nhr << nmin << int(sec) << "isun:" << isun << s << iband0 << m_band00 << iband << bname << f0/1000000.0;
+//  qDebug() << nhr << nmin << int(sec) << "Switching to:"<< bname << f0/1000000.0;
 
   m_band00=iband;
   auto frequencies = m_config.frequencies ();
@@ -4314,6 +4333,7 @@ void MainWindow::bandHopping()
     if(f==0) break;
     if(f==f0) {
       on_bandComboBox_activated(i);                        //Set new band
+//      qDebug() << nhr << nmin << int(sec) << "Band selected" << i << 0.000001*f0 << 0.000001*f;
       break;
     }
   }

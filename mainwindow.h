@@ -384,6 +384,7 @@ private:
   bool    m_hopTest;
   bool    m_tuneup;
   bool    m_bTxTime;
+  bool    m_rxDone;
 
   float   m_pctZap;
 

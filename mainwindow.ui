@@ -2242,63 +2242,16 @@ list. The list can be maintained in Settings (F2).</string>
               <attribute name="title">
                <string>3</string>
               </attribute>
-              <widget class="QWidget" name="layoutWidget">
+              <widget class="QWidget" name="">
                <property name="geometry">
                 <rect>
-                 <x>29</x>
-                 <y>18</y>
-                 <width>201</width>
-                 <height>171</height>
+                 <x>30</x>
+                 <y>12</y>
+                 <width>200</width>
+                 <height>191</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
-                <item row="3" column="0">
-                 <widget class="QPushButton" name="pbTxNext">
-                  <property name="styleSheet">
-                   <string notr="true">QPushButton:checked {
-	background-color: red;
-	border-style: outset;
-	border-width: 1px;
-	border-radius: 5px;
-	border-color: black;
-	min-width: 5em;
-	padding: 3px;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string>Tx Next</string>
-                  </property>
-                  <property name="checkable">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="2">
-                 <widget class="QComboBox" name="TxPowerComboBox"/>
-                </item>
-                <item row="2" column="1">
-                 <spacer name="horizontalSpacer_4">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QCheckBox" name="cbBandHop">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="text">
-                   <string>Band hopping</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="0" colspan="3">
                  <widget class="QLabel" name="label_11">
                   <property name="maximumSize">
@@ -2365,6 +2318,63 @@ list. The list can be maintained in Settings (F2).</string>
                   </property>
                   <property name="value">
                    <number>20</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>5</width>
+                    <height>17</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QCheckBox" name="cbBandHop">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="text">
+                   <string>Band hopping</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QPushButton" name="pbTxNext">
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton:checked {
+	background-color: red;
+	border-style: outset;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: black;
+	min-width: 5em;
+	padding: 3px;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Tx Next</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QComboBox" name="TxPowerComboBox"/>
+                </item>
+                <item row="4" column="0" colspan="3">
+                 <widget class="QProgressBar" name="WSPRprogressBar">
+                  <property name="maximum">
+                   <number>112</number>
+                  </property>
+                  <property name="value">
+                   <number>24</number>
                   </property>
                  </widget>
                 </item>
