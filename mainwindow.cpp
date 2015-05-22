@@ -1258,6 +1258,9 @@ void MainWindow::createStatusBar()                           //createStatusBar
   auto_tx_label->setMinimumSize(QSize(150,18));
   auto_tx_label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(auto_tx_label);
+
+  progressBar = new QProgressBar;
+  statusBar()->addWidget(progressBar);
 }
 
 void MainWindow::closeEvent(QCloseEvent * e)
@@ -1822,12 +1825,13 @@ void MainWindow::guiUpdate()
   static double onAirFreq0=0.0;
   QString rt;
 
-  double tx1=0.0;
-  double tx2=1.0 + 85.0*m_nsps/12000.0 + icw[0]*2560.0/48000.0;            // JT9
-  if(m_modeTx=="JT65") tx2=1.0 + 126*4096/11025.0 + icw[0]*2560.0/48000.0;
-  if(m_mode=="WSPR-2") tx2=2.0 + 162*8192/12000.0 + icw[0]*2560.0/48000.0; // WSPR
+  double txDuration=1.0 + 85.0*m_nsps/12000.0;              // JT9
+  if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;   // JT65
+  if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;   // WSPR
 //###  if(m_mode=="WSPR-15") tx2=...
 
+  double tx1=0.0;
+  double tx2=txDuration + + icw[0]*2560.0/48000.0;          //Full length including CW ID
   if(!m_txFirst and m_mode.mid(0,4)!="WSPR") {
     tx1 += m_TRperiod;
     tx2 += m_TRperiod;
@@ -1836,13 +1840,12 @@ void MainWindow::guiUpdate()
   int nsec=ms/1000;
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
+  m_nseq = nsec % m_TRperiod;
 
   if(m_mode.mid(0,4)=="WSPR") {
-    m_nseq = nsec % m_TRperiod;
-    ui->WSPRprogressBar->setValue(m_nseq);
     if(m_nseq==0 and m_ntr==0) {
       m_tuneup=false;
-      if(m_pctx==0) m_nrx=1;                          //Always receive if pctx=0
+      if(m_pctx==0) m_nrx=1;                                //Always receive if pctx=0
       if((m_auto and (m_pctx>0) and (m_txNext or ((m_nrx<=0) and
                        (m_ntr!=-1)))) or ((m_auto and (m_pctx==100)))) {
 // This will be a WSPR Tx sequence. Compute # of Rx's that should follow.
@@ -2140,6 +2143,9 @@ void MainWindow::guiUpdate()
   }
 
   if(nsec != m_sec0) {                                                //Once per second
+    int ipct=0;
+    if(m_monitoring or m_transmitting) ipct=int(100*m_nseq/txDuration);
+    progressBar->setValue(ipct);
     QDateTime t = QDateTime::currentDateTimeUtc();
     if(m_astroWidget) {
       m_freqMoon=m_dialFreq + 1000*m_astroWidget->m_kHz + m_astroWidget->m_Hz;

@@ -2242,13 +2242,13 @@ list. The list can be maintained in Settings (F2).</string>
               <attribute name="title">
                <string>3</string>
               </attribute>
-              <widget class="QWidget" name="">
+              <widget class="QWidget" name="layoutWidget">
                <property name="geometry">
                 <rect>
                  <x>30</x>
-                 <y>12</y>
+                 <y>22</y>
                  <width>200</width>
-                 <height>191</height>
+                 <height>171</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
@@ -2367,16 +2367,6 @@ list. The list can be maintained in Settings (F2).</string>
                 </item>
                 <item row="3" column="2">
                  <widget class="QComboBox" name="TxPowerComboBox"/>
-                </item>
-                <item row="4" column="0" colspan="3">
-                 <widget class="QProgressBar" name="WSPRprogressBar">
-                  <property name="maximum">
-                   <number>112</number>
-                  </property>
-                  <property name="value">
-                   <number>24</number>
-                  </property>
-                 </widget>
                 </item>
                </layout>
               </widget>

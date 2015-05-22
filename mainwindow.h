@@ -394,6 +394,8 @@ private:
   QLabel * last_tx_label;
   QLabel * auto_tx_label;
 
+  QProgressBar* progressBar;
+
   QMessageBox msgBox0;
 
   QFuture<void>* future1;
