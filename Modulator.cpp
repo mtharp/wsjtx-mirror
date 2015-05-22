@@ -24,7 +24,8 @@ double const Modulator::m_twoPi = 2.0 * 3.141592653589793238462;
 //    m_nspd=3072;                           //18.75 WPM
 unsigned const Modulator::m_nspd = 2048 + 512; // 22.5 WPM
 
-Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds, QObject * parent)
+Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds,
+                      QObject * parent)
   : AudioDevice {parent}
   , m_stream {nullptr}
   , m_quickClose {false}
@@ -41,7 +42,10 @@ Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds, QObjec
   m_itone0=0;
 }
 
-void Modulator::start (unsigned symbolsLength, double framesPerSymbol, unsigned frequency, double toneSpacing, SoundOutput * stream, Channel channel, bool synchronize, double dBSNR)
+void Modulator::start (unsigned symbolsLength, double framesPerSymbol,
+                       unsigned frequency, double toneSpacing,
+                       SoundOutput * stream, Channel channel,
+                       bool synchronize, double dBSNR)
 {
   Q_ASSERT (stream);
 

@@ -111,6 +111,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bandEdited {false},
   m_splitMode {false},
   m_monitoring {false},
+
   m_transmitting {false},
   m_tune {false},
   m_lastMonitoredFrequency {default_frequency},
@@ -3689,8 +3690,9 @@ void MainWindow::transmit (double snr)
   if (m_mode=="WSPR-2") {                                      //### Similar code needed for WSPR-15 ###
 
     Q_EMIT sendMessage (NUM_WSPR_SYMBOLS, 8192.0,
-                        ui->TxFreqSpinBox->value(), m_toneSpacing,
-                        &m_soundOutput, m_config.audio_output_channel(), true, snr);
+                        ui->TxFreqSpinBox->value()-2, m_toneSpacing,
+                        &m_soundOutput, m_config.audio_output_channel(),
+                        true, snr);
   }
 }
 
