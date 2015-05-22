@@ -57,6 +57,7 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->smoSpinBox->setValue(m_nsmo);
   m_waterfallAvg = m_settings->value("WaterfallAvg",5).toInt();
   ui->waterfallAvgSpinBox->setValue(m_waterfallAvg);
+  ui->widePlot->setWaterfallAvg(m_waterfallAvg);
   ui->widePlot->setCurrent(m_settings->value("Current",false).toBool());
   ui->widePlot->setCumulative(m_settings->value("Cumulative",true).toBool());
   ui->widePlot->setLinearAvg(m_settings->value("LinearAvg",false).toBool());
@@ -179,6 +180,7 @@ void WideGraph::on_bppSpinBox_valueChanged(int n)                            //b
 void WideGraph::on_waterfallAvgSpinBox_valueChanged(int n)                  //Navg
 {
   m_waterfallAvg = n;
+  ui->widePlot->setWaterfallAvg(n);
 }
 
 void WideGraph::keyPressEvent(QKeyEvent *e)                                 //F11, F12

@@ -52,6 +52,7 @@ public:
   void setRxRange(int fMin);
   void setBinsPerPixel(int n);
   int  binsPerPixel();
+  void setWaterfallAvg(int n);
   void setRxFreq(int n);
   void DrawOverlay();
   int  rxFreq();
@@ -108,6 +109,7 @@ private:
   qint32  m_plot2dGain;
   qint32  m_plot2dZero;
   qint32  m_binsPerPixel;
+  qint32  m_waterfallAvg;
   qint32  m_w;
   qint32  m_Flatten;
   qint32  m_nSubMode;
