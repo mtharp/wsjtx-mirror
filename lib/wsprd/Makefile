@@ -26,7 +26,7 @@ OBJS1 = wsprd.o wsprd_utils.o fano.o tab.o nhash.o
 wsprd: $(OBJS1)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
-OBJS2 = test_wspr.o unpk.o wsprd_utils.o nhash.o
+OBJS2 = test_wspr.o wsprd_utils.o nhash.o
 test_wspr: $(OBJS2) libwspr.a
 	$(FC) -o test_wspr $(FFLAGS) $(OBJS2) libwspr.a
 
