@@ -3696,7 +3696,7 @@ void MainWindow::transmit (double snr)
   if (m_mode=="WSPR-2") {                                      //### Similar code needed for WSPR-15 ###
 
     Q_EMIT sendMessage (NUM_WSPR_SYMBOLS, 8192.0,
-                        ui->TxFreqSpinBox->value() - 1.5 * 12000 / 8192, m_toneSpacing,
+                        ui->TxFreqSpinBox->value()-2, m_toneSpacing,
                         &m_soundOutput, m_config.audio_output_channel(),
                         true, snr);
   }

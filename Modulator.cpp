@@ -43,7 +43,7 @@ Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds,
 }
 
 void Modulator::start (unsigned symbolsLength, double framesPerSymbol,
-                       double frequency, double toneSpacing,
+                       unsigned frequency, double toneSpacing,
                        SoundOutput * stream, Channel channel,
                        bool synchronize, double dBSNR)
 {
