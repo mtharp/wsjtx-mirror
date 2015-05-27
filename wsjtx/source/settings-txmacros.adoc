@@ -1,7 +1,7 @@
 // Status=review
 
 [[FigTxMacros]]
-image::images/r4148-txmac-ui.png[align="center",alt="Tx Macros Screen"]
+image::images/tx-macros.png[align="center",alt="Tx Macros Screen"]
 
 *Tx Macros* are an aid for sending brief, frequently used free-text
  messages.
@@ -13,4 +13,4 @@ characters) in the entry field at top, then click *Add*.
 *Delete*.
 
 - You can reorder your macro messages by using drag-and-drop. The
-new order will be preserved over program invocations.
+new order will be preserved when _WSJT-X_ is restarted.

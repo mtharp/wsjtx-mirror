@@ -5,16 +5,16 @@ Most of the items are self-explanatory; a few additional details are
 provided below.  Keyboard shortcuts for some frequently used menu
 items are listed at the right.
 
-[[FILE_MENU]]
-==== File menu
-image::images/file-menu.png[align="left",alt="File Menu"]
-
 ==== WSJT-X menu
 image::images/MacAppMenu.png[align="left",alt="Mac App Menu"]
 
-On Macintosh, *Settings* (otherwise found on the *File* menu) appears
-here instead, labeled as *Preferences*, and *About WSJT-X* appears
-here rather than on the *Help* menu.
+This menu appears on the Macintosh only. *Settings* appears here,
+labeled as *Preferences*, rather than on the *File* menu.  *About
+WSJT-X* appears here rather than on the *Help* menu.
+
+[[FILE_MENU]]
+==== File menu
+image::images/file-menu.png[align="left",alt="File Menu"]
 
 [[VIEW_MENU]]
 ==== View Menu

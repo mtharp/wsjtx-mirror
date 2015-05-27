@@ -29,8 +29,8 @@ IMPORTANT: Many Icom rigs cannot be queried for split status, so you
 should not change the split status using rig controls when using
 _WSJT-X_.
 
-* If *DX Grid* is a valid Maidenhead locator, its great-circle azimuth
-and distance from your location are displayed.
+* If *DX Grid* contains a valid Maidenhead locator, the corresponding
+great-circle azimuth and distance from your location are displayed.
 
 * The program can maintain a database of callsigns and locators for
 future reference.  Click *Add* to insert the present call and locator

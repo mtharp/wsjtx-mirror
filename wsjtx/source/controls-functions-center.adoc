@@ -27,6 +27,6 @@ dB.  Remember that JT65 reports saturate at an upper limit of -1
 dB.
 
 IMPORTANT: When signals are close to or above 0 dB, you and your QSO
-partner should probably reduce power. JT65 and JT9 are supposed to be
-weak signal modes!
+partner should probably reduce power.  The WSJT modes are supposed to
+be weak signal modes!
 
