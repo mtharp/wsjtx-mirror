@@ -25,6 +25,7 @@ SHELL		:=	@SHELL@
 MKDIR		:=	@MKDIR@
 INATALL		:=	@INSTALL@
 TOUCH		:=	@TOUCH@
+DIALOG		:=	@DIALOG@
 
 # Install locations
 BINDIR		:=	@BINDIR@
@@ -34,14 +35,21 @@ SHARED		:=	@SHARED@
 HOMEDIR		:=	@HOMEDIR@
 PKGINFO		:=	./pkg-info.txt
 
+# Foreground colours
+C_R		:=	'\033[01;31m'	# red
+C_G		:=	'\033[01;32m'	# green
+C_Y		:=	'\033[01;33m'	# yellow
+C_C		:=	'\033[01;36m'	# cyan
+C_NC	:=	'\033[01;37m'	# no color
+
 # Install targets
 all:	make-message
 
 make-message:
 	@echo ''
-	@echo '------------------------------------------------'
-	@echo ' Nothing To Do For Make'
-	@echo '------------------------------------------------'
+	@echo '---------------------------------------------'
+	@echo -e $(C_G)"Nothing To Do for Make"$(C_NC)
+	@echo '---------------------------------------------'
 	@echo ''
 	@echo ' To Install @PROGRAM@, type..: sudo make install'
 	@echo ''
@@ -50,9 +58,9 @@ make-message:
 # Install target wspr
 install:
 	@clear
-	@echo '-----------------------------------'
-	@echo " Installing @PROGRAM@"
-	@echo '-----------------------------------'
+	@echo '---------------------------------------------'
+	@echo -e $(C_Y)"Installing @PROGRAM@"$(C_NC)
+	@echo '---------------------------------------------'
 	@echo ''
 	@${MKDIR} -p $(DESTDIR)$(BINDIR)
 	@${MKDIR} -p $(DESTDIR)$(SHARED)
@@ -76,9 +84,9 @@ install:
 # Uninstall system files
 uninstall:
 	@clear
-	@echo '--------------------------------------'
-	@echo " Uninstalling @PROGRAM@"
-	@echo '--------------------------------------'
+	@echo '---------------------------------------------'
+	@echo -e $(C_Y)"Uninstalling @PROGRAM@"$(C_NC)
+	@echo '---------------------------------------------'
 	@echo ''
 	@echo ' Removing Installed files'
 	@${RM} -r $(DESTDIR)$(SHARED)
@@ -98,15 +106,13 @@ uninstall:
 .PHONY: clean
 
 clean:
-	@clear
-	@echo '--------------------------------------'
-	@echo ' Removing All Generated Components'
-	@echo '--------------------------------------'
+	@echo '---------------------------------------------'
+	@echo -e $(C_Y)"Removing All Generated Components"$(C_NC)
+	@echo '---------------------------------------------'
 	@echo ''
-	$(RM) -f $(PKGINFO) config.log config.status configure.scan autoscan.log \
+	@$(RM) -f $(PKGINFO) config.log config.status configure.scan autoscan.log \
 	kvasd-installer configure Makefile
-	${RM} -rf ./autom4*
-	@echo ''
-	@echo ' Finished distclean'
+	@${RM} -rf ./autom4*
+	@echo ' Finished'
 	@echo ''
 
