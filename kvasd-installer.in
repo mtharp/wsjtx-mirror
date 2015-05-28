@@ -31,12 +31,15 @@ ARCH=@_CPU@
 
 # base variables
 APP_NAME='@PROGRAM@'
-MSGCLIENT='dialog'
+MSGCLIENT='@DIALOG@'
 
 # path variables
-BASED="/home/$USER/.local/share/applications"
-TMP="$BASED"/tmp
+BASED="/home/$USER/.local/share/applications/kvasd-installer"
+TMP="$BASED/tmp"
 BINDIR=@BINDIR@
+
+# Make sure BASED exists
+mkdir -p "$BASED"
 
 # process variables
 PKGINFO=@SHARED@/pkg-info.txt
@@ -241,7 +244,7 @@ check_internet() {
 clear
 echo 'Testing Internet Access ...'
 ((ping -w5 -c3 www.sourceforge.net || ping -w5 -c3 8.8.8.8 || ping -w5 -c3 208.67.222.222) > /dev/null 2>&1) && \
-echo -e "* Internet Access .. ${C_G}OK${C_NC}"|| {
+echo -e "* Internet Access .. ${C_G}OK${C_NC}" || {
 	clear
 	echo -e ${C_R}'** INTERNET CONNECTION FAILURE **'${C_NC}
 	echo ''
@@ -785,10 +788,12 @@ if [ "$MMSELECT" = "I" ]; then
 
 	# check internst access
 	check_internet
+	sleep 1
 	
 	# check if Subverison is installed
 	check_svn
-
+	sleep 1
+	
 	# check user accept eula
 	accept_eula
 
