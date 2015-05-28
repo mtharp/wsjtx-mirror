@@ -34,50 +34,126 @@ set -e
 BASED=$(exec pwd)
 PROGRAM='KVASD Installer'
 
+# Foreground colours
+C_R='\033[01;31m'	# red
+C_G='\033[01;32m'	# green
+C_Y='\033[01;33m'	# yellow
+C_C='\033[01;36m'	# cyan
+C_NC='\033[01;37m'	# no color
+
 # Start main script
 cd $BASED
 
-autoconf --version > /dev/null 2>&1
-if test "$?" -eq 1; then
-# message if autoconf was found or not "0"=OK, "1"= Not Reachable
+# Test if Bash is installed
+bash --version > /dev/null 2>&1 || {
 	clear
+	echo '---------------------------------------------'
+	echo 'PACKAGE DEPENDENCY ERROR'
+	echo '---------------------------------------------'
 	echo ''
-	echo "You must have autoconf installed to compile $PROGRAM."
-	echo "Install the appropriate package for your distribution,"
+	echo 'You must have the package [ Bash ( >= 4.2 ) ]'
+	echo " installed to compile $PROGRAM. Please install"
+	echo ' the appropriate package for your distribution.'	
 	echo ''
 	exit 1
+}
+
+# Test if Awk is installed
+awk --version > /dev/null 2>&1 || {
+	clear
+	echo '---------------------------------------------'
+	echo 'PACKAGE DEPENDENCY ERROR'
+	echo '---------------------------------------------'
+	echo ''
+	echo 'You must have the package [ Awk or Gawk ]'
+	echo "installed to compile $PROGRAM. Please install"
+	echo 'the appropriate package for your distribution.'	
+	echo ''
+	exit 1
+}
+
+# Test if Dialog is installed
+dialog --version > /dev/null 2>&1 || {
+	clear
+	echo '---------------------------------------------'
+	echo 'PACKAGE DEPENDENCY ERROR'
+	echo '---------------------------------------------'
+	echo ''
+	echo 'You must have the package [ dialog ] installed'
+	echo "to compile $PROGRAM. Please install the"
+	echo 'appropriate package for your distribution.'	
+	echo ''
+	exit 1
+}
+
+# Test if autoconf is installed
+autoconf --version > /dev/null 2>&1 || {
+	clear
+	echo '---------------------------------------------'
+	echo 'PACKAGE DEPENDENCY ERROR'
+	echo '---------------------------------------------'
+	echo ''
+	echo 'You must have [ autoconf ] installed to compile'
+	echo "$PROGRAM. Install the appropriate package for"
+	echo 'your distribution.'
+	echo ''
+	exit 1
+}
+
+# Test if Subversion is installed
+svn --version > /dev/null 2>&1 || {
+	clear
+	echo '---------------------------------------------'
+	echo 'PACKAGE DEPENDENCY ERROR'
+	echo '---------------------------------------------'
+	echo ''
+	echo 'You must have [ Subversion ] installed to compile'
+	echo "$PROGRAM. Install the appropriate package for"
+	echo 'your distribution.'
+	echo ''
+	exit 1
+}
+
+# run make clean if makefile and configure are found
+if test -f ./Makefile -a ./configure ; then
+	clear
+	echo '---------------------------------------------------'
+	echo ${C_Y}"Checking for Old Makefile & Configure Script"${C_NC}
+	echo '---------------------------------------------------'
+	echo ''
+	echo 'Found old files, running make clean first'
+	echo ''
+	make -s clean
+	echo '---------------------------------------------------'
+	echo ${C_Y}"Running ( autoconf ) to process configure.ac"${C_NC}
+	echo '---------------------------------------------------'
+	autoconf -f -i
+else
+	clear
+	echo '---------------------------------------------------'
+	echo ${C_Y}"Running ( autoconf ) to process configure.ac"${C_NC}
+	echo '---------------------------------------------------'
+	autoconf -f -i
 fi
-
-clear
-echo ''
-echo "-------------------------------------------"
-echo " Running Autotools for: $PROGRAM"
-echo "-------------------------------------------"
-echo ''
-echo "Running ( autoconf -f -i ) to process configure.ac"
-
-# Generate configure script from configure.ac and aclocal.m4
-autoconf -f -i
 
 # simple test for the configure script, after running autogen.sh
 if test -s ./configure; then
-	echo "Finished autoconf .."
+	echo "Finished generating configure script"
 else
 # message if configure was not found
-	echo
+	echo ''
 	echo "There was a problem generating the configure script"
-	echo "Check config.status and config.log for details."	
-	echo
+	echo "Check config.status for details."	
+	echo ''
 	exit 1
 fi
 
 # message if no arguments were presented
 if test -z "$*"; then
-	echo "Using ./configure <defualts>"
+	echo "Using ./configure With Default Options"
 else
 # List user input arguments
 	echo "Using ./configure $@"
-	echo ''
 fi
 
 $BASED/configure "$@"

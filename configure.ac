@@ -2,7 +2,7 @@
 # Process this file with autoconf to create configure. -*- autoconf -*-
 # ------------------------------------------------------------------------------
 AC_PREREQ([2.65])
-AC_INIT([KVASD Installer],[1.12],[wsjt-devel@lists.sourceforge.net],[],
+AC_INIT([KVASD Installer],[1.12.14],[wsjt-devel@lists.sourceforge.net],[],
 [http://physics.princeton.edu/pulsar/k1jt/devel.html])
 AC_CONFIG_AUX_DIR([build-aux])
 AUTHORS="Greg Beam, Joseph H Taylor, and others"
@@ -64,24 +64,7 @@ AC_PATH_PROG([SED], [sed])
 AC_PATH_PROG([SHELL], [bash])
 AC_PATH_PROG([TOUCH], [touch])
 AC_PATH_PROG([TEE], [tee])
-
-# ------------------------------------------------------------------------------
-#  check for dialog installation
-# ------------------------------------------------------------------------------
-AC_CHECK_PROG([DIALOG], [dialog], [yes], [no])
-if test "$DIALOG" = no ; then
-	echo ''
-	AC_MSG_WARN([Critial Package Missing])
-	echo ''
-	echo 'The package ( Dialog ) is required to run kvasd-installer.'
-	echo 'Possible solutions are:'
-	echo ''
-	echo ' [1] Use your package manager to search for dialog'
-	echo ' [2] Review this link for additional options:'
-	echo '     URL: http://invisible-island.net/dialog/dialog.html'
-	echo ''
-	exit 1
-fi
+AC_PATH_PROG([DIALOG], [dialog])
 
 # generate pkg-info.txt file
 if test -f ./pkg-info.txt ; then rm -f ./pkg-info.txt ; fi
