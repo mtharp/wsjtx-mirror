@@ -113,6 +113,7 @@ ExternalProject_Add (hamlib
   LOG_CONFIGURE 1
   LOG_BUILD 1
   LOG_INSTALL 1
+  STEP_TARGETS update
   )
 
 #
@@ -127,7 +128,7 @@ add_custom_target (hamlib_sources
   COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_BINARY_DIR}/hamlib.tgz hamlib
   COMMAND ${CMAKE_COMMAND} -E remove_directory hamlib
   WORKING_DIRECTORY ${TMP_DIR}
-  DEPENDS hamlib
+  DEPENDS hamlib-update
   COMMENT "Generating the hamlib upstream source tarball"
   )
 
@@ -151,7 +152,7 @@ ExternalProject_Add (wsjtx
   LOG_UPDATE 1
   LOG_CONFIGURE 1
   LOG_BUILD 1
-  STEP_TARGETS configure build install
+  STEP_TARGETS update configure build install
   )
 ExternalProject_Add_Step (wsjtx package
   COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target package
@@ -182,7 +183,7 @@ add_custom_target (wsjtx_sources
   COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_BINARY_DIR}/wsjtx.tgz wsjtx
   COMMAND ${CMAKE_COMMAND} -E remove_directory wsjtx
   WORKING_DIRECTORY ${TMP_DIR}
-  DEPENDS wsjtx
+  DEPENDS wsjtx-update
   COMMENT "Generating the WSJT-X upstream source tarball"
   )
 
