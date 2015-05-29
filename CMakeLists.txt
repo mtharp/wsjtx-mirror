@@ -13,11 +13,11 @@ For a branch use branches/<branch-name> e.g. branches/wsjtx-1.4
 
 The  WSJTX_TAG option  is  only used  if the  directory  'src' is  not
 present.   If the  'src' directory  is present  the build  expects the
-sources to be found in it  consisting of the three files 'hamlib.tgz',
-'wsjtx.tgz'  and, 'wsjtx-main.html'.   This 'src'  directory is  to be
-used where build hosts do not allow source downloads using Subversion,
-git or cURL as  part of the build. See the 'source'  target for how to
-generate a suitable source tarball." )
+sources to be found in it consisting of the two files 'hamlib.tgz' and
+'wsjtx.tgz'.  This 'src' directory is to  be used where build hosts do
+not allow  source downloads using Subversion,  git or cURL as  part of
+the build.  See the  'source' target  for how  to generate  a suitable
+source tarball." )
 
 
 #
@@ -86,17 +86,8 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
     message (STATUS "hamlib branch: ${hamlib_TAG}")
   endif (NOT __prefix STREQUAL branches)
 else (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
-  # location of downloaded User Guide in LOCAL build source tree
-  set (wsjtx_user_guide_directory_url -D WSJT_MANUAL_DIRECTORY:STRING=file://${CMAKE_CURRENT_SOURCE_DIR}/src)
   read_md5sum (src/hamlib.tgz hamlib_md5sum)
   read_md5sum (src/wsjtx.tgz wsjtx_md5sum)
-
-  set (user-guide ${CMAKE_CURRENT_SOURCE_DIR}/src/wsjtx-main.html)
-  read_md5sum (${user-guide} user-guide_md5sum)
-  file (MD5 ${user-guide} md5sum)
-  if (NOT md5sum STREQUAL user-guide_md5sum)
-    message (FATAL_ERROR "Checksum mismatch on ${user-guide}")
-  endif (NOT md5sum STREQUAL user-guide_md5sum)
 endif (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 
@@ -155,19 +146,12 @@ ExternalProject_Add (wsjtx
   -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   ${WSJTX_EXTRA_CMAKE_OPTIONS}
-  ${wsjtx_user_guide_directory_url}
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
   LOG_DOWNLOAD 1
   LOG_UPDATE 1
   LOG_CONFIGURE 1
   LOG_BUILD 1
-  STEP_TARGETS user_manual configure build install
-  )
-ExternalProject_Get_Property (wsjtx BINARY_DIR)
-ExternalProject_Add_Step (wsjtx user_manual
-  COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target user_manual
-  COMMENT "Generating WSJT-X User Guide."
-  DEPENDEES configure
+  STEP_TARGETS configure build install
   )
 ExternalProject_Add_Step (wsjtx package
   COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target package
@@ -197,9 +181,8 @@ add_custom_target (wsjtx_sources
   COMMAND ${CMAKE_COMMAND} -E remove_directory wsjtx/.svn
   COMMAND ${CMAKE_COMMAND} -E tar czf ${CMAKE_CURRENT_BINARY_DIR}/wsjtx.tgz wsjtx
   COMMAND ${CMAKE_COMMAND} -E remove_directory wsjtx
-  COMMAND ${CMAKE_COMMAND} -E copy ${BINARY_DIR}/contrib/wsjtx-main.html ${CMAKE_CURRENT_BINARY_DIR}/
   WORKING_DIRECTORY ${TMP_DIR}
-  DEPENDS wsjtx-user_manual
+  DEPENDS wsjtx
   COMMENT "Generating the WSJT-X upstream source tarball"
   )
 
@@ -216,10 +199,8 @@ add_custom_target (source
   COMMAND ${CMAKE_COMMAND} -E make_directory ${__suffix}/src
   COMMAND ${CMAKE_COMMAND} -E rename hamlib.tgz ${__suffix}/src/hamlib.tgz
   COMMAND ${CMAKE_COMMAND} -E rename wsjtx.tgz ${__suffix}/src/wsjtx.tgz
-  COMMAND ${CMAKE_COMMAND} -E rename wsjtx-main.html ${__suffix}/src/wsjtx-main.html
   COMMAND ${CMAKE_COMMAND} -E md5sum ${__suffix}/src/hamlib.tgz > ${__suffix}/src/hamlib.tgz.md5sum
   COMMAND ${CMAKE_COMMAND} -E md5sum ${__suffix}/src/wsjtx.tgz > ${__suffix}/src/wsjtx.tgz.md5sum
-  COMMAND ${CMAKE_COMMAND} -E md5sum ${__suffix}/src/wsjtx-main.html > ${__suffix}/src/wsjtx-main.html.md5sum
   COMMAND ${CMAKE_COMMAND} -E tar czf ${__suffix}.tgz ${__suffix}
   COMMAND ${CMAKE_COMMAND} -E remove_directory ${__suffix}
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

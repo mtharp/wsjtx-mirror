@@ -10,6 +10,7 @@
  \$$      \$$  \$$$$$$   \$$$$$$     \$$        \$$   \$$
                                                          
                                                          
+Copyright 2001 - 2015 by Joe Taylor, K1JT.
                                                          
 Installation
 ============
@@ -25,6 +26,7 @@ On Linux:
    CMake-2.8.9
    git
    svn
+   asciidoc
 
    Qt5.2.1  or newer,  qt5libmultimedia-dev, qt5libserialport-dev  and
    their  prerequisites   libfftw3-single-dev  and   its  prerequsites
@@ -74,7 +76,6 @@ files:
 
 1) src/hamlib.tgz      - GZIP compressed tarball of the hamlib sources,
 2) src/wsjtx.tgz       - GZIP compressed tarball of the WSJT-X sources,
-3) src/wsjtx-main.html - the WSJT-X User Guide.
 
 You should not do this  augmentation manually, the build script should
 be used in advance  on a host with Internet access  to make a suitable
