@@ -87,7 +87,7 @@ TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
 DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$DICONSDIR -a max-width=1024px"
 
 # all available documents
-declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wsjtx' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide')
+declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide')
 
 # Color variables
 C_R='\033[01;31m'		# red
@@ -339,18 +339,18 @@ function app_menu_help() {
 	echo -e ${C_G}"WSJT DOCUMENTATION HELP MENU\n"${C_NC}
 	echo 'USAGE: [ build-doc.sh] [ option ]'
 	echo
-	echo 'OPTION: All map65 simjt wsjt wsjtx wspr wsprx'
+	echo 'OPTION: All map65 simjt wsjt wspr wsprx'
 	echo '        wfmt devg devg2 qref help clean'
 	echo
 	echo 'BUILD LINKED:'
 	echo '-----------------------------------'
 	echo '  All .....: ./build-doc.sh all'
-	echo '  WSJT-X...: ./build-doc.sh wsjtx'
+	echo '  WSPRX....: ./build-doc.sh wsjtx'
 	echo
 	echo 'BUILD DATA-URI - (Stand Alone)'
 	echo '----------------------------------'
 	echo '  All .....: ./build-doc.sh dall'
-	echo '  WSJT-X...: ./build-doc.sh dwsjtx'
+	echo '  WSPRX....: ./build-doc.sh dwsjtx'
 	echo
 	echo 'CLEAN FOLDERS & FILES'
 	echo '----------------------------------'
@@ -410,6 +410,29 @@ function update_timestamp() {
 
 touch ./source/$app_name-main.adoc
 
+}
+
+function wsjtx_doc_migration_msg() {
+	clear
+	echo -e ${C_Y}'DOCUMENT BUILD MIGRATION'${C_NC}
+	echo ''
+	echo 'WSJT-X documentaiton builds have been migrated to'
+	echo 'an applicaiton build target. All User Guide builds'
+	echo 'are part of the Release and Debug targets.'
+	echo ''
+	echo 'If you are working on documentaion specifically, you'
+	echo 'can build the documents as follows:'
+	echo ''
+	echo 'Linux....: Select Compile User Guide from WSJT-X Menu'
+	echo 'Windows..: For v1.6.0, type......: build-wsjtx doc'
+	echo '           For v1.5.0 RC, type ..: build-wsjtxrc doc'
+	echo ''
+	echo 'Manual methods of configuration and build are also'
+	echo 'available for advanced users using cmake-gui or direct'
+	echo 'command line entry.'
+	echo ''
+	read -p 'Press [Enter] to exit ...'
+	echo ''
 }
 
 ################################################################################
@@ -619,30 +642,12 @@ case "$option" in
 	# WSJT-X -------------------------------------------------------------------
 	# Linked Version
 	wsjtx)
-		display_name="WSJT-X"
-		app_name="wsjtx"
-		cd "$WSJTX"
-		pre_file_check
-		update_timestamp
-		clear
-		main_wording
-		build_doc
-		post_file_check
+	wsjtx_doc_migration_msg
 	;;
 
 	# Embedded CSS, Images, JS
 	dwsjtx)
-		display_name="WSJT-X data-uri"
-		app_name="wsjtx"
-		cd "$WSJTX"
-		pre_file_check
-		update_timestamp
-		clear
-		main_wording
-		copy_image_folders
-		build_ddoc
-		remove_image_folders
-		post_file_check
+	wsjtx_doc_migration_msg
 	;;
 
 	# WSPR ---------------------------------------------------------------------
