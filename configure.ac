@@ -22,8 +22,9 @@ fi
 # ------------------------------------------------------------------------------
 #  user input and doc paths
 # ------------------------------------------------------------------------------
-DOCSRC=$(exec pwd)/doc/user_guide/source
-STYLEDIR=$(exec pwd)/doc/user_guide/stylesheet
+DOCSRC=$(exec pwd)/doc/user_guide
+THEMEDIR=$(exec pwd)/doc/theme/wspr
+DOCCONF=$(exec pwd)/doc/wspr.conf
 DOCDIR="$prefix"/share/doc/wspr
 MANDIR="$prefix"/share/man/man1
 
@@ -100,6 +101,8 @@ AC_PATH_PROG([LD], [ld])
 AC_PATH_PROG([LN], [ln])
 AC_PATH_PROG([MKDIR], [mkdir])
 AC_PATH_PROG([MV], [mv])
+AC_PATH_PROG([MV], [mv])
+AC_PATH_PROG([PYTHON2], [python2])
 AC_PATH_PROG([RANLIB], [ranlib])
 AC_PATH_PROG([RM], [rm])
 AC_PATH_PROG([SED], [sed])
@@ -170,7 +173,7 @@ python3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
 		PY3V=`$PY3 -V`
 		AC_DEFINE([HAVE_PY3], [1])
 		AC_DEFINE_UNQUOTED([PY3_PATH], ["${PY3}"], [Path to Python3])
-		AC_SUBST([PYTHON], ["${PY3}"])
+		AC_SUBST([PYTHON3], ["${PY3}"])
 		AC_MSG_RESULT([yes ${PY3V}])
 	fi
 else
@@ -192,7 +195,7 @@ if test "$HAVE_PY3" = "no"; then
 		PY3V=`"$PY3_PATH" -V`
 		AC_DEFINE([HAVE_PY3], [1])
 		AC_DEFINE_UNQUOTED([PY3_PATH], ["${PY3_PATH}"], [Path to Python3])
-		AC_SUBST([PYTHON], ["${PY3_PATH}"])
+		AC_SUBST([PYTHON3], ["${PY3_PATH}"])
 		AC_MSG_RESULT([yes ${PY3V}])
 	fi
 fi
@@ -211,7 +214,7 @@ if test "$HAVE_PY3" = "no"; then
 		PY3V=`"$PY3_PATH" -V`
 		AC_DEFINE([HAVE_PY3], [1])
 		AC_DEFINE_UNQUOTED([PY3_PATH], ["${PY3_PATH}"], [Path to Python3])
-		AC_SUBST([PYTHON], ["${PY3_PATH}"])
+		AC_SUBST([PYTHON3], ["${PY3_PATH}"])
 		AC_MSG_RESULT([yes ${PY3V}])
 	fi
 fi
@@ -625,9 +628,14 @@ AC_SUBST([BINDIR], ["$PREFIX"/bin])
 AC_SUBST([LIBS], ["$LIBS"])
 AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
 AC_SUBST([USER], ["$USER"])
+AC_SUBST([PYTHON2], ["$PYTHON2"])
 AC_SUBST([DOCSRC], ["$DOCSRC"])
-AC_SUBST([STYLEDIR], ["$STYLEDIR"])
-AC_CONFIG_FILES([Makefile wspr.sh
+AC_SUBST([DOCCONF], ["$DOCCONF"])
+AC_SUBST([THEMEDIR], ["$THEMEDIR"])
+AC_CONFIG_FILES([Makefile
+wspr.sh
+doc/Makefile
+doc/wspr.conf
 manpages/fcal.1.txt
 manpages/fmeasure.1.txt
 manpages/fmtave.1.txt
@@ -650,7 +658,8 @@ echo ''
 echo " Install prefix ...: ${PREFIX}"
 echo " Package: .........: ${PROGRAM} ${VERSION}"
 echo " Optimization .....: ${flag_status}"
-echo " Python3: .........: ${PYTHON}"
+echo " Python2: .........: ${PYTHON2}"
+echo " Python3: .........: ${PYTHON3}"
 echo " F2py: ............: ${F2PY}"
 echo " Fcompiler: .......: ${FC}"
 echo " FC Lib Path ......: ${FC_LIB_PATH}"

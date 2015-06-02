@@ -70,7 +70,7 @@ DOCOPT		+=	-b xhtml11 -a data-uri
 DEFS		:=	@DEFS@
 
 # WSPR Targets
-all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0 manp
+all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0 manp user-guide
 	@echo ''
 	@echo '---------------------------------------------'
 	@echo " ${PROGRAM} ${VERSION} Make Summary"
@@ -192,7 +192,7 @@ user-guide:
 	@echo
 	@echo Generating User-Guide
 	@echo ---------------------
-	(cd doc/user_guide ; $(ASCIIDOC) $(DOCOPT) -b xhtml11 -a data-uri -a toc2 -o wspr-main-@VERSION@.html $(DOCSRC)/wspr-main.adoc)
+	@cd doc/ && make clean && make -f ./Makefile
 
 # Install target wspr
 install:
@@ -225,6 +225,7 @@ install:
 	@install -m 755 gocal Pmw*.py wspr.py wspr.sh wsprrc ${DESTDIR}${SHARED}
 	@echo '..Installing Shared Documents'
 	@install -m 644 AUTHORS	README NEWS COPYING COPYRIGHT ${DESTDIR}${DOCDIR}
+	@install -m 644 doc/wspr-main-@VERSION@.html ${DESTDIR}${DOCDIR}
 	@${CP} -r doc/examples/* ${DESTDIR}${DOCDIR}/examples/
 	@${CHMOD} -R 644 ${DESTDIR}${DOCDIR}/examples/*
 	@install -m 644 hamlib_rig* ${DESTDIR}${SHARED}
@@ -262,16 +263,15 @@ uninstall:
 clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode wspr0 fmtest fmtave fcal \
-	fmeasure wspr.sh
-	${RM} -f manpages/*.1
+	fmeasure wspr.sh manpages/*.1 doc/wspr*.html
 
 distclean: clean
 	${RM} -f config.log config.status ALL_WSPR*.TXT WSPR.INI \
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
-	pixmap.dat wspr.log configure Makefile
+	pixmap.dat wspr.log configure Makefile -r manpages/*.txt doc/wspr.conf \
+	doc/Makefile
 	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
-	${RM} -r manpages/*.txt
 
 dist: distclean
 	${SHELL} ./wspr-dist.sh @PROGRAM@ @VERSION@
