@@ -55,11 +55,15 @@ FCOPT		+=	@FCOPT@
 PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
+# For Manpages
+A2X		:=	@A2X@
+MANPSRC		:= $(wildcard manpages/*.1.txt)
+
 # Config Definitions
 DEFS		:=	@DEFS@
 
 # WSPR Targets
-all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0
+all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0 manp
 	@echo ''
 	@echo '---------------------------------------------'
 	@echo " ${PROGRAM} ${VERSION} Make Summary"
@@ -166,13 +170,23 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	--opt="${FCOPT}" thnix.o ${PORTAUDIO_LIBDIR} ${LDFLAGS} ${LIBS} libwspr.a -m w ${F2PYSRCS}
 	${MV} w*.so WsprMod/w.so
 
+# Generate Manpages
+manp:
+	@echo
+	@echo Generating Manpages
+	@echo --------------------
+	@for f in $(MANPSRC) ; do \
+	echo "$$f" ; \
+	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
+	done
+
 # Install target wspr
 install:
 	@clear
 	@echo '-----------------------------------'
-	@echo "      Installing ${PROGRAM}"
+	@echo " Installing ${PROGRAM}"
 	@echo '-----------------------------------'
-	@echo ''
+	@echo '..Creating Directories'
 	@${MKDIR} -p ${DESTDIR}${BINDIR}
 	@${MKDIR} -p ${DESTDIR}${MANDIR}
 	@${MKDIR} -p ${DESTDIR}${DOCDIR}/examples
@@ -181,40 +195,40 @@ install:
 	@${MKDIR} -p ${DESTDIR}${WSPRLIB}/WsprMod
 	@${MKDIR} -p ${DESTDIR}${SHARED}/../applications
 	@${MKDIR} -p ${DESTDIR}${SHARED}/../pixmaps
+	@echo '..Installing Binaries'
 	@install -m 755 fmtest fcal fmeasure fmtave wspr0 wsprcode ${DESTDIR}${BINDIR}
 	@strip	${DESTDIR}${BINDIR}/fmtest ${DESTDIR}${BINDIR}/fcal \
 		${DESTDIR}${BINDIR}/fmeasure ${DESTDIR}${BINDIR}/fmtave \
 		${DESTDIR}${BINDIR}/wspr0 ${DESTDIR}${BINDIR}/wsprcode
-	@install -m 644 manpages/man1/*.1 ${DESTDIR}${MANDIR}
+	@${CP}	 wspr.sh ${DESTDIR}${BINDIR}/wspr
+	@${CHMOD} 755 ${DESTDIR}${BINDIR}/wspr
+	@echo '..Installing WsprMod'
+	@install -m 755 WsprMod/* ${DESTDIR}${WSPRLIB}/WsprMod
+	@echo '..Installing Manpages'
+	@install -m 644 manpages/*.1 ${DESTDIR}${MANDIR}
+	@echo '..Installing Sample Files'
 	@install -m 644 save/Samples/* ${DESTDIR}${SHARED}/save/Samples/
 	@install -m 755 gocal Pmw*.py wspr.py wspr.sh wsprrc ${DESTDIR}${SHARED}
+	@echo '..Installing Shared Documents'
 	@install -m 644 AUTHORS	README NEWS COPYING COPYRIGHT ${DESTDIR}${DOCDIR}
+	@${CP} -r doc/examples/* ${DESTDIR}${DOCDIR}/examples/
+	@${CHMOD} -R 644 ${DESTDIR}${DOCDIR}/examples/*
 	@install -m 644 hamlib_rig* ${DESTDIR}${SHARED}
-	@install -m 755 WsprMod/* ${DESTDIR}${WSPRLIB}/WsprMod
 	@install -m 644 wspr.desktop ${DESTDIR}${SHARED}/../applications
 	@install -m 644 wspr.desktop ${DESTDIR}${SHARED}/applications
 	@install -m 644 wspr.xpm ${DESTDIR}${SHARED}/../pixmaps/
-	@${CP}	 wspr.sh ${DESTDIR}${BINDIR}/wspr
-	@${CHMOD} 755 ${DESTDIR}${BINDIR}/wspr
-	@${CP} -r doc/examples/* ${DESTDIR}${DOCDIR}/examples/
-	@${CHMOD} -R 644 ${DESTDIR}${DOCDIR}/examples/*
+	@echo ''
 	@echo "Finished Installing ${PROGRAM}"
-	@echo ''
-	@echo "Location: ${BINDIR}"
-	@echo '..To run, type..: wspr'
-	@echo ''
-	@echo "..Website ......: ${WEB}"
-	@echo "..Report Bugs ..: ${BUGS}"
+	@echo 'To run, type..: wspr'
 	@echo ''
 
 # Uninstall system files
 uninstall:
 	@clear
 	@echo '--------------------------------------'
-	@echo "       Uninstalling ${PROGRAM}"
+	@echo " Uninstalling ${PROGRAM}"
 	@echo '--------------------------------------'
-	@echo '.. Removing Installed files'
-	@echo ''
+	@echo '..Removing Installed files'
 	@${RM} -r ${SHARED}
 	@${RM} -r ${WSPRLIB}
 	@${RM} -r ${DOCDIR}
@@ -225,9 +239,8 @@ uninstall:
 	@${RM} -rf ${HOMEDIR}/{AUTHORS,README,NEWS,COPYING,COPYRIGHT}
 	@${RM} -f ${SHARED}/../applications/wspr.desktop
 	@${RM} -f ${SHARED}/../pixmaps/wspr.xpm
-	@echo '' 
-	@echo ".. User files remain in: ${HOMEDIR}"
-	@echo ".. To remove, type ....: rm -R ${HOMEDIR}"
+	@echo "..User files remain in: ${HOMEDIR}"
+	@echo "..To remove, type ....: rm -R ${HOMEDIR}"
 	@echo ''
 
 # Cleanup Source Tree
@@ -236,6 +249,7 @@ clean :
 	${RM} -f *.o libwspr.a *.pyc *.pyo WsprMod/*.pyc WsprMod/*.pyo \
 	WsprMod/w.so WsprMod/*.so w.so *~ wsprcode wspr0 fmtest fmtave fcal \
 	fmeasure wspr.sh
+	${RM} -f manpages/*.1
 
 distclean: clean
 	${RM} -f config.log config.status ALL_WSPR*.TXT WSPR.INI \
@@ -243,6 +257,7 @@ distclean: clean
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
 	pixmap.dat wspr.log configure Makefile
 	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
+	${RM}  -f manpages/*.txt
 
 dist: distclean
 	${SHELL} ./wspr-dist.sh @PROGRAM@ @VERSION@

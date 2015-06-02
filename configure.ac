@@ -87,6 +87,7 @@ CFLAGS="$OCFLAGS"
 # check standard apps
 # ------------------------------------------------------------------------------
 AC_C_INLINE
+AC_PATH_PROG([A2X], [a2x])
 AC_PATH_PROG([AR], [ar])
 AC_PATH_PROG([AWK], [awk])
 AC_PATH_PROG([CP], [cp])
@@ -620,18 +621,27 @@ AC_SUBST([BINDIR], ["$PREFIX"/bin])
 AC_SUBST([LIBS], ["$LIBS"])
 AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
 AC_SUBST([USER], ["$USER"])
-AC_CONFIG_FILES([Makefile wspr.sh])
+AC_CONFIG_FILES([Makefile wspr.sh
+manpages/fcal.1.txt
+manpages/fmeasure.1.txt
+manpages/fmtave.1.txt
+manpages/fmtest.1.txt
+manpages/wspr0.1.txt
+manpages/wspr.1.txt
+manpages/wsprcode.1.txt
+])
 AC_OUTPUT
 
 # ------------------------------------------------------------------------------
 #  configure summary
 # ------------------------------------------------------------------------------
 
-echo
+echo ''
 echo "-------------------------------------------"
 echo " Configuration Summary"
 echo "-------------------------------------------"
-echo
+echo ''
+echo " Install prefix ...: ${PREFIX}"
 echo " Package: .........: ${PROGRAM} ${VERSION}"
 echo " Optimization .....: ${flag_status}"
 echo " Python3: .........: ${PYTHON}"
@@ -643,12 +653,9 @@ echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"
 echo " Website ..........: ${WEB}"
 echo " Report Bugs To ...: ${BUGS}"
-echo " Install prefix ...: ${PREFIX}"
-echo
-echo " Finished creating Makefile"
-echo
-echo " To build $PROGRAM, type"
-echo
-echo " make"
-echo
-echo
+echo ''
+echo " Finished Configuration"
+echo ''
+echo " To build, type ...: make"
+echo ''
+
