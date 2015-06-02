@@ -1,7 +1,7 @@
 :doctype: manpage
+:man source: AsciiDoc
 :man manual: FMTave Man Page
-:man version: Version 4.0
-
+:man version: Version @VERSION@
 = fmtave(1)
 
 == NAME
@@ -42,7 +42,7 @@ wspr(1), fmtest(1), fmeasure(1), fcal(1)
 
 == COPYING
 
-Copyright &copy; 2014 Joseph H Taylor, Jr, K1JT
+@COPYRIGHT@
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

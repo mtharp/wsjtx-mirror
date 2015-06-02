@@ -49,33 +49,11 @@ Finished.
 
 BUILD MANPAGES
 --------------
-
 Example: to produce wspr.1 manpage
 
-* cd ~/wspr/manpages
+* After running ./autogeh.sh, cd ~/wspr/manpages
 * a2x --doctype manpage --format manpage --no-xmllint wspr.1.txt
-* mv wspr.1 ./man1/
-
-View New Manpage: man man1/wspr.1
-
-
-MANPAGE BUILD SCRIPT
---------------------
-
-A manpage build script is also provided. You can build one or all manpages
-with a single command. 
-
-Build Single manpage:
-
-* cd ./wspr/manpages
-* ./build-man.sh wspr
-
-Build all WSPR manpages:
-
-* cd ./wspr/manpages
-* ./build-man.sh all
-
-For Script Help, type: ./build-man.sh
+* View New Manpage: man man1/wspr.1
 
 
 READ MANPAGES

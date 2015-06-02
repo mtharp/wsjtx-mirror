@@ -1,7 +1,7 @@
 :doctype: manpage
+:man source: AsciiDoc
 :man manual: WSPRcode Man Page
-:man version: Version 4.0
-
+:man version: Version @VERSION@
 = wsprcode(1)
 
 

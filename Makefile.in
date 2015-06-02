@@ -7,6 +7,7 @@
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
 VERSION		:=	@VERSION@
+COPYRIGHT	:=	@COPYRIGHT@
 BUGS		:=	@BUGS@
 WEB         :=	@WEB@
 
@@ -56,8 +57,14 @@ PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
 # For Manpages
-A2X		:=	@A2X@
+A2X			:=	@A2X@
 MANPSRC		:= $(wildcard manpages/*.1.txt)
+
+# For User Guide
+DOCSRC		:=	@DOCSRC@
+STYLEDIR	:=	@STYLEDIR@
+ASCIIDOC	:=	@ASCIIDOC@
+DOCOPT		+=	-b xhtml11 -a data-uri
 
 # Config Definitions
 DEFS		:=	@DEFS@
@@ -180,6 +187,13 @@ manp:
 	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
 	done
 
+# Generate User Guide
+user-guide:
+	@echo
+	@echo Generating User-Guide
+	@echo ---------------------
+	(cd doc/user_guide ; $(ASCIIDOC) $(DOCOPT) -b xhtml11 -a data-uri -a toc2 -o wspr-main-@VERSION@.html $(DOCSRC)/wspr-main.adoc)
+
 # Install target wspr
 install:
 	@clear
@@ -257,7 +271,7 @@ distclean: clean
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
 	pixmap.dat wspr.log configure Makefile
 	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
-	${RM}  -f manpages/*.txt
+	${RM} -r manpages/*.txt
 
 dist: distclean
 	${SHELL} ./wspr-dist.sh @PROGRAM@ @VERSION@

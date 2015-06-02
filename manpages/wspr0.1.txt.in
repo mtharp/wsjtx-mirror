@@ -1,7 +1,7 @@
 :doctype: manpage
 :man source: AsciiDoc
-:man version: 1.0
 :man manual: WSPR0 Man Page
+:man version: Version @VERSION@
 = wspr0(1)
 
 == NAME

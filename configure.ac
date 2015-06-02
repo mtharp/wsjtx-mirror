@@ -2,9 +2,9 @@ dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_COPYRIGHT([$Id$])
 AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
+WSPR_COPYRIGHT="Copyright (C) 2001-2015 Joseph H Taylor, Jr, K1JT"
 
 # ------------------------------------------------------------------------------
 #  path vars
@@ -20,8 +20,10 @@ if test "$prefix" = "NONE"; then
 fi
 
 # ------------------------------------------------------------------------------
-#  user input paths
+#  user input and doc paths
 # ------------------------------------------------------------------------------
+DOCSRC=$(exec pwd)/doc/user_guide/source
+STYLEDIR=$(exec pwd)/doc/user_guide/stylesheet
 DOCDIR="$prefix"/share/doc/wspr
 MANDIR="$prefix"/share/man/man1
 
@@ -87,6 +89,7 @@ CFLAGS="$OCFLAGS"
 # check standard apps
 # ------------------------------------------------------------------------------
 AC_C_INLINE
+AC_PATH_PROG([ASCIIDOC], [asciidoc])
 AC_PATH_PROG([A2X], [a2x])
 AC_PATH_PROG([AR], [ar])
 AC_PATH_PROG([AWK], [awk])
@@ -609,6 +612,7 @@ AC_SUBST([BUGS], ["$PACKAGE_BUGREPORT"])
 AC_SUBST([PROGRAM], ["$PACKAGE_NAME"])
 AC_SUBST([VERSION], ["$PACKAGE_VERSION"])
 AC_SUBST([WEB], ["$PACKAGE_URL"])
+AC_SUBST([COPYRIGHT], ["$WSPR_COPYRIGHT"])
 AC_SUBST([CFLAGS], ["$CFLAGS"])
 AC_SUBST([CPPFLAGS], ["$CPPFLAGS"])
 AC_SUBST([FFLAGS], ["$FFLAGS"])
@@ -621,6 +625,8 @@ AC_SUBST([BINDIR], ["$PREFIX"/bin])
 AC_SUBST([LIBS], ["$LIBS"])
 AC_SUBST([HOMEDIR], [/home/"$USER"/.wspr])
 AC_SUBST([USER], ["$USER"])
+AC_SUBST([DOCSRC], ["$DOCSRC"])
+AC_SUBST([STYLEDIR], ["$STYLEDIR"])
 AC_CONFIG_FILES([Makefile wspr.sh
 manpages/fcal.1.txt
 manpages/fmeasure.1.txt
@@ -651,6 +657,7 @@ echo " FC Lib Path ......: ${FC_LIB_PATH}"
 echo " Samplerate: ......: ${srstatus}"
 echo " FFTW3: ...........: ${ffstatus}"
 echo " Portaudio: .......: ${pastatus}"
+echo " Copyright.........: ${WSPR_COPYRIGHT}"
 echo " Website ..........: ${WEB}"
 echo " Report Bugs To ...: ${BUGS}"
 echo ''

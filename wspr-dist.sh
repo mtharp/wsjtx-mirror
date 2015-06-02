@@ -40,7 +40,6 @@ _MANIFEST=wspr-manifest.in
 _DISTD="$_BASED/dist"
 _DOC="$_DISTD/$_NAME/doc"
 _EXAMPLES="$_DISTD/$_NAME/doc/examples"
-_MAN1="$_DISTD/$_NAME/manpages/man1"
 
 # test $1
 if [[ -z $_NAME ]]; then
@@ -113,10 +112,6 @@ cp -r ./AUTHORS ./NEWS ./README "$_DOC/"
 echo " ..copying FMT examples"
 mkdir -p $_EXAMPLES
 cp -r doc/examples/* "$_EXAMPLES/"
-
-# copy man pages
-mkdir -p "$_MAN1"
-cp -r manpages/man1/*.1 "$_MAN1/"
 
 # start copy loop
 for line in $(< $_MANIFEST)
