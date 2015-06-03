@@ -15,6 +15,7 @@ AR = $(SDK)/mingw32/bin/ar.exe
 CC = $(SDK)/mingw32/bin/gcc.exe
 FC = $(SDK)/mingw32/bin/gfortran.exe
 RANLIB = $(SDK)/mingw32/bin/ranlib.exe
+MAKE = $(SDK)/mingw32/bin/mingw32-make.exe
 
 # Fortran libs
 FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll
@@ -27,15 +28,21 @@ MKDIR = $(SDK)/tools/bin/mkdir.exe
 ISCC = $(SDK)/inno5/ISCC.exe
 ISS = $(SDK)/src/wspr/wspr4b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
+DOCPATH = $(SRCD)/doc
+DOCSRC = $(SRCD)/doc/user_guide
+DOCCONF = $(SRCD)/doc/wspr-jtsdk2.conf
+THEMEDIR = $(SRCD)/doc/theme
+ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
 
 # Output Paths
 INSTALLDIR = $(SDK)/wspr/install
 PACKAGEDIR = $(SDK)/wspr/package
 
 # Python Paths
-PYTHON = $(SDK)/Python33/python.exe
-F2PY = $(PYTHON) $(SDK)/Python33/Scripts/f2py.py
-CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze
+PYTHON2 = $(SDK)/python27/python.exe
+PYTHON3 = $(SDK)/Python33/python.exe
+F2PY = $(PYTHON3) $(SDK)/Python33/Scripts/f2py.py
+CXFR = $(PYTHON3) $(SDK)/Python33/Scripts/cxfreeze
 
 # Compiler Flags
 FFLAGS = -O2 -fbounds-check -fno-second-underscore -Werror -Wno-conversion \
@@ -56,7 +63,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 
 # Build Targets
 all:	libwspr.a fmtest.exe fmtave.exe fcal.exe fmeasure.exe \
-	WSPRcode.exe wspr0.exe WsprMod/w.pyd
+	WSPRcode.exe wspr0.exe WsprMod/w.pyd user-guide
 
 # Build OBJ1 for wspr0.exe
 OBJS1 = wspr0.o wspr0_tx.o sound.o ptt.o gmtime2.o wfile5.o \
@@ -167,6 +174,20 @@ WsprMod/w.pyd: libwspr.a $(F2PYSRC)
 	libpthreadGC2.a -lwinmm -m w $(F2PYSRC)
 	$(MV) w.pyd WsprMod/w.pyd
 
+user-guide:
+	@echo.
+	@echo  RUN AsciiDoc
+	@echo ------------------------------
+	@echo Building wspr-main-$(VER).html
+	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
+	--conf-file=$(DOCCONF) \
+	--backend=xhtml11 \
+	--theme wspr \
+	--out-file=$(DOCPATH)/wspr-main-$(VER).html $(DOCSRC)/wspr-main.adoc
+	@echo.
+	@echo Finished
+	@echo Doc location: $(DOCPATH)/wspr-main-$(VER).html
+
 # Run CX_Freeze to install WSPR to $(INSTALLDIR)
 # CX_Freeze creates the $(INSTALLDIR) if not present.
 install:
@@ -184,6 +205,7 @@ install:
 	fcal.exe fmeasure.exe fmtest.exe fmtave.exe WSPRcode.exe \
 	wspr0.exe fmt-env.bat gocal.bat AUTHORS BUGS COPYING \
 	INSTALL.txt NEWS README THANKS $(INSTALLDIR)
+	$(CP) -u $(DOCPATH)/wspr-main-$(VER).html $(INSTALLDIR)	
 	$(CP) -ur save WsprMod hamlib/* $(INSTALLDIR)
 	$(CP) -u $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 	@echo.
@@ -245,8 +267,8 @@ list-targets:
 	@echo.
 
 clean:
-	$(RM) -rf *.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
-	fmeasure.exe WSPRcode.exe wspr0.exe WsprMod/w.pyd
+	$(RM) -rf ./*.o libwspr.a wspr.exe fmtest.exe fmtave.exe fcal.exe \
+	fmeasure.exe WSPRcode.exe wspr0.exe WsprMod/w.pyd $(DOCPATH)/wspr-main-$(VER).html
 
 distclean: clean
 	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) $(SRCD)/JTSDK
