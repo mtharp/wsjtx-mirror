@@ -25,6 +25,7 @@ fi
 DOCSRC=$(exec pwd)/doc/user_guide
 THEMEDIR=$(exec pwd)/doc/theme/wspr
 DOCCONF=$(exec pwd)/doc/wspr.conf
+DOCPATH=$(exec pwd)/doc/
 DOCDIR="$prefix"/share/doc/wspr
 MANDIR="$prefix"/share/man/man1
 
@@ -631,10 +632,10 @@ AC_SUBST([USER], ["$USER"])
 AC_SUBST([PYTHON2], ["$PYTHON2"])
 AC_SUBST([DOCSRC], ["$DOCSRC"])
 AC_SUBST([DOCCONF], ["$DOCCONF"])
+AC_SUBST([DOCPATH], ["$DOCPATH"])
 AC_SUBST([THEMEDIR], ["$THEMEDIR"])
 AC_CONFIG_FILES([Makefile
 wspr.sh
-doc/Makefile
 doc/wspr.conf
 manpages/fcal.1.txt
 manpages/fmeasure.1.txt

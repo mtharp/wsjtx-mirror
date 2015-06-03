@@ -3,6 +3,7 @@
 #								make >& junk
 #
 # Prerequisites: Python 3.x, numpy-1.8.1+, PIL, Portaudio, Samplerate, FFTW
+#                Python 2.x and AsciiDoc for User Guide and Manpages
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -61,10 +62,12 @@ A2X			:=	@A2X@
 MANPSRC		:= $(wildcard manpages/*.1.txt)
 
 # For User Guide
-DOCSRC		:=	@DOCSRC@
-STYLEDIR	:=	@STYLEDIR@
 ASCIIDOC	:=	@ASCIIDOC@
-DOCOPT		+=	-b xhtml11 -a data-uri
+PYTHON2		:=	@PYTHON2@
+DOCSRC		:=	@DOCSRC@
+DOCCONF		:=	@DOCCONF@
+DOCPATH		:=	@DOCPATH@
+THEMEDIR	:=	@THEMEDIR@
 
 # Config Definitions
 DEFS		:=	@DEFS@
@@ -190,9 +193,13 @@ manp:
 # Generate User Guide
 user-guide:
 	@echo
-	@echo Generating User-Guide
+	@echo Generating User Guide
 	@echo ---------------------
-	@cd doc/ && make clean && make -f ./Makefile
+	@$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
+	--conf-file=$(DOCCONF) \
+	--backend=xhtml11 \
+	--theme wspr \
+	--out-file=$(DOCPATH)/wspr-main-@VERSION@.html $(DOCPATH)/user_guide/wspr-main.adoc
 
 # Install target wspr
 install:
@@ -225,7 +232,7 @@ install:
 	@install -m 755 gocal Pmw*.py wspr.py wspr.sh wsprrc ${DESTDIR}${SHARED}
 	@echo '..Installing Shared Documents'
 	@install -m 644 AUTHORS	README NEWS COPYING COPYRIGHT ${DESTDIR}${DOCDIR}
-	@install -m 644 doc/wspr-main-@VERSION@.html ${DESTDIR}${DOCDIR}
+	@install -m 644 $(DOCPATH)/wspr-main-@VERSION@.html ${DESTDIR}${DOCDIR}
 	@${CP} -r doc/examples/* ${DESTDIR}${DOCDIR}/examples/
 	@${CHMOD} -R 644 ${DESTDIR}${DOCDIR}/examples/*
 	@install -m 644 hamlib_rig* ${DESTDIR}${SHARED}
@@ -270,7 +277,6 @@ distclean: clean
 	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
 	pixmap.dat wspr.log configure Makefile -r manpages/*.txt doc/wspr.conf \
-	doc/Makefile
 	${RM} -rf ./autom4* WsprMod/__pycache__ ./dist
 
 dist: distclean
