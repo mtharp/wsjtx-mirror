@@ -1,5 +1,4 @@
-# This is an  asciidoc configuraiton file which is  processed by CMake
-# as a configuration file to substitute variables
+# This is an AsciiDoc configuration file processed by Autotools for *Nix.
 [attributes]
 themedir=@THEMEDIR@
 
