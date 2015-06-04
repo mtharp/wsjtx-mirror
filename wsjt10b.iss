@@ -31,6 +31,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: "c:\JTSDK\wsjt\install\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
+Name: "{group}\{#MyAppName}\Documentation\WSJT {#MyAppVersion} User Guide"; Filename: "{app}\wsjt-main-{#MyAppVersion}.html"; WorkingDir: {app}; IconFileName: "{app}\wsjt.ico"
 Name: "{group}\{#MyAppName}\Documentation\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{#MyAppName}\Resources\{cm:ProgramOnTheWeb,WSJT Group}"; Filename: "{#WsjtGroupURL}"
 Name: "{group}\{#MyAppName}\Uninstall\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"; Comment: "Uninstall WSPR";

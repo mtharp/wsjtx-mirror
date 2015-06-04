@@ -1,4 +1,4 @@
-# Makefile for Windows JTSDK v2.0.0: Python3, F2PY, MinGW, gcc and gfortran
+# Makefile for Windows JTSDK v2.0.0: Python2, Python3, F2PY, MinGW, gcc and gfortran
 
 # Re-direct stdout and stderr:     cmd.exe
 #                              make > junk 2>&1
@@ -27,16 +27,21 @@ RM = $(SDK)/tools/bin/rm.exe
 MKDIR = $(SDK)/tools/bin/mkdir.exe
 ISCC = $(SDK)/inno5/ISCC.exe
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
-
+DOCPATH = $(SRCD)/doc
+DOCSRC = $(SRCD)/doc/user_guide
+DOCCONF = $(SRCD)/doc/wsjt-jtsdk2.conf
+THEMEDIR = $(SRCD)/doc/theme
+ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
 
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
 PACKAGEDIR = $(SDK)/wsjt/package
 
 # Python Paths
-PYTHON = $(SDK)/Python33/python.exe
-F2PY = $(PYTHON) $(SDK)/Python33/Scripts/f2py.py
-CXFR = $(PYTHON) $(SDK)/Python33/Scripts/cxfreeze
+PYTHON2 = $(SDK)/python27/python.exe
+PYTHON3 = $(SDK)/Python33/python.exe
+F2PY = $(PYTHON3) $(SDK)/Python33/Scripts/f2py.py
+CXFR = $(PYTHON3) $(SDK)/Python33/Scripts/cxfreeze
 
 # Compiler Flags
 FFLAGS = -O2 -DWIN32 -DWin32 -fbounds-check -fno-second-underscore -Wall \
@@ -56,7 +61,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 	$(FC) $(FFLAGS) -c $<
 
 # Build Targets
-all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd
+all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd user-guide
 
 # Build OBJ1 for libjt.a
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
@@ -128,6 +133,20 @@ WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
 	libpthreadGC2.a -lwinmm -m Audio $(F2PYSRC)
 	$(MV) Audio.pyd WsjtMod/Audio.pyd
 
+user-guide:
+	@echo.
+	@echo  RUN AsciiDoc
+	@echo ------------------------------
+	@echo Building User Guide: wspr-main-$(VER).html
+	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
+	--conf-file=$(DOCCONF) \
+	--backend=xhtml11 \
+	--theme wspr \
+	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
+	@echo.
+	@echo Finished
+	@echo Doc location: $(DOCPATH)/wsjt-main-$(VER).html
+
 # Run CX_Freeze to install WSJT to $(INSTALLDIR)
 # CX_Freeze creates the $(INSTALLDIR) if not present.
 install:
@@ -142,6 +161,7 @@ install:
 	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u CALL3.TXT kvasd.exe kvasd.dat wsjt.ico wsjt.bat $(INSTALLDIR)
+	$(CP) -u $(DOCPATH)/wsjt-main-$(VER).html $(INSTALLDIR)	
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
@@ -152,6 +172,7 @@ install:
 	@echo  Version ......: $(VER)
 	@echo  Source .......: $(SRCD)
 	@echo  Install Dir ..: $(INSTALLDIR)
+	@echo  User Guide ...: $(INSTALLDIR)/wsjt-main-$(VER).html
 	
 # /O = Installer output directory
 # /F = Win32 output file name
@@ -174,7 +195,6 @@ package:
 	@echo  Package ..........: $(NAME)
 	@echo  Version ..........: $(VER)
 	@echo  Source ...........: $(SRCD)
-	@echo  Install Dir ......: $(INSTALLDIR)
 	@echo  Win32 Installer ..: $(PACKAGEDIR)/$(NAME)-$(VER)-$(OS).exe
 	@echo.
 
@@ -189,7 +209,8 @@ list-targets:
 	@echo  jt65code.exe ....... JT65 code test app
 	@echo  jt4code.exe ........ JT4 code test app
 	@echo  WsjtMod/Audio.pyd .. Audio Library for WSJT
-	@echo. install ............ Build and Install WSJT
+	@echo  user-guide ......... Build WSJT User Guide
+	@echo  install ............ Build and Install WSJT
 	@echo  package ............ Build Win32 Installer
 	@echo  clean .............. Clean SRC directory
 	@echo  distclean .......... Clean SRC, Install & Package Dirs
@@ -199,7 +220,8 @@ list-targets:
 	@echo.
 
 clean:
-	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd *.o
+	$(RM) -f $(DOCPATH)/wsjt-main-$(VER).html
+	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd ./*.o
 
 distclean: clean
 	$(RM) -rf $(INSTALLDIR) $(PACKAGEDIR) $(SRCD)/JTSDK

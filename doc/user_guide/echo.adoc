@@ -1,0 +1,60 @@
+Echo mode allows you to make sensitive measurements of your own lunar
+echoes, even when they are too weak to be heard.  Select *Echo* from
+the *Mode* menu, aim your antenna at the moon, pick a clear frequency,
+and toggle *Auto ON*.  _WSJT_ will then cycle through the following
+loop every 6 seconds:
+
+1. Transmit a fixed tone for 2.0 s 
+2. Wait about 0.5 s for start of return echo 
+3. Record the received signal for 2.0 s 
+4. Analyze, average, and display the results 
+5. Repeat from step 1 
+
+The program compensates for Doppler shift automatically, so your
+return echo should always fall at the center of the plot area, as in
+the screen shot below.  However, on bands higher than 144 MHz it is
+usually necessary to use split VFOs or RIT and to inform the program
+that you are doing so, to ensure that the echo falls within the
+limited receiver passband.  For example, when this screen shot was
+made the predicted Doppler shift at 432 MHz was -802 Hz.  Entry field
+*RIT (Hz)* on the *Setup | Options* window was set to a nearby round
+number, 800 Hz, and the transceiver's RIT control was set at the same
+value.
+
+image::images/echo.png[align="left",width=650,alt=""]
+
+A nonzero entry for *Dither (Hz)* instructs the program to offset the
+frequencies of successive echo pulses randomly, with a specified range
+around the nominal value 1500 Hz. The observed spectrum of each echo
+is shifted by the randomized dither amount before being accumulated
+into the average displayed in the red curve. This procedure is very
+effective in minimizing the impact of birdies in the receiver
+passband. In the average (red) spectrum, a fixed-frequency birdie will
+be smeared out over a frequency range equal to the *Dither* value. For
+comparison, the blue curve displays the echo data uncorrected for
+dithering.  In the above screen shot the peaks in the blue curve
+correspond to seven individual 2-second transmissions, which were
+dithered over a 50 Hz range.  Birdies will be spread slightly in the
+blue spectrum owing to gradual changes in Doppler shift, but they will
+not be affected by the dithering.
+
+Information displayed in the main text box gives the number *N* of
+completed echo cycles, the average *Level* of receiver background
+noise in dB, the average echo strength *Sig* in dB, its measured
+frequency offset *DF* in Hz (after correction for predicted Doppler
+shift), the spectral *Width* of the echo in Hz, and a relative quality
+indicator *Q* on a 0-10 scale. Background noise level is given with
+respect to the nominal 0 dB level used for all _WSJT_ modes. Signal
+strength is measured in dB relative to the noise power in a 2500 Hz
+passband. Low numbers for *Q* mean that an echo has not been detected,
+or is unreliable.  When *Q*=0 the values of *DF* and *Width* are
+meaningless, and *Sig* may be considered an upper limit. Larger values
+of *Q* imply increasingly believable echo measurements. If you can
+hear your own lunar echoes, you will see reliable echo numbers within
+a few seconds after toggling *Auto ON*. If your echoes are 15 to 20 dB
+below the audible threshold you should get significant results within
+a minute or less.  (Remember, though, that Faraday rotation can make
+the echo's linear polarization angle different from that of the
+transmitting antenna.)
+
+

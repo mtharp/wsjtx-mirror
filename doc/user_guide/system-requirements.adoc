@@ -1,0 +1,57 @@
+///
+////
+Should this be moverd to global file? as it applies accross all WSJT apps.
+. Maybe a Matrix would work, example.
+-------------------
+.System Requirments Matrix: x = Required, o = Optional .. ..
+			WSJT  	WSJTX .. .. ..
+CPU			1.x		1.x
+RAM			128MB	1024MB
+GPU			8x6		8x6
+Interface	T/V/C
+Audio I/O	48Khz	
+T(sync)		  X		  X
+I(conn)		  X		  X
+Antennna	V/U/S	 HF
+
+Ledgend:
+Interface
+	- T = T/R Relay
+	- C = CAT
+	- V = Virtual Serial Port
+Audio I/O
+	- 48Khz Sampling Rate Required
+T(sync)
+	- Time Syncronization 
+I(conn)
+	- USB or
+Antenna
+	- V {equal} VHF Antenna
+	- U {equal} UHF Antenna
+	- S {equal} SHF Antenna
+	- HF {equal} HF Antenna
+
+etc etc etc .. ..
+-------------------
+
+QUESTION, how do we convert this symbol ± to HTML)
+
+include::../global/system-requirements.adoc
+////
+- SSB transceiver and antenna for one or more VHF/UHF/SHF bands
+
+- Computer running the Microsoft Windows, Linux, FreeBSD, or OS X 
+operating system
+
+- 1 GHz or faster CPU and 128 MB of available RAM
+
+- Monitor with at least 800 x 600 resolution (more is better)
+
+- Computer-to-radio interface using a serial port for T/R switching,
+or VOX control
+
+- Audio input and output devices supported by the operating system
+
+- Audio or equivalent USB connections between transceiver and computer  
+
+- A means for synchronizing the computer clock to UTC within ±1 s
