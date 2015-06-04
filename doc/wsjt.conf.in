@@ -1,6 +1,4 @@
-# This is an  asciidoc configuration file which is
-# processed by Autotools as a configuration file to
-# substitute variables.
+# This is an AsciiDoc configuration file processed by Autotools for *Nix.
 [attributes]
 themedir=@THEMEDIR@
 
