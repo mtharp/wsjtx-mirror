@@ -1,0 +1,31 @@
+Unlike <<JTSDKWIN32,JTSDK-Win32>>, *JTSDK-Nix*, short for JTSDK Linux, is a single
+Linux environment.
+
+[[JTSDKNIX-FOLDERS]]
+=== Folder Structure
+For JTSDK-Nix, the folder structure is the same, except for the prefix, and
+when the user elects to use the ( _--enable-separate_ ) option. The tidle or
+* ~ * is short for $HOME or /home/$USER
+
+.Standard Folder Locations
+.Qt5 and Cmake ( _WSJT-X Only_ )
+-----
+# This example uses WSJTX Development Branch
+Source Dir ...: ~/jtsdk/src/wsjtx
+Build Dir ....: ~/jtsdk/wsjtx/build/(Release or Debug)
+Install Dir ..: ~/jtsdk/wsjtx/install/(Release or Debug)
+Package Dir ..: ~/jtsdk/wsjtx/package
+-----
+
+.Python and Autotools ( _WSJT and WSPR_ )
+-----
+# This example uses WSJT
+Source Dir ...: ~/jtsdk/src\trunk
+Build Dir ....: ~/jtsdk/wsjt
+Install Dir ..: ~/jtsdk/wsjt/install
+Package Dir ..: ~/jtsdk/wsjt/package
+-----
+
+IMPORTANT: With _WSJT_ specifically, the source code resides in the ../trunk
+within the ../trunk on SourceForge. _WSJT_ is the only application that does not
+has it's own branch in ../branches

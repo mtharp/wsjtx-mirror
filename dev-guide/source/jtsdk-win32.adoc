@@ -1,0 +1,35 @@
+JTSDK-Win32, short for JTSDK WIndows 32bit, is broken down into (4) separate
+environments to perform specific tasks without interaction with the users system
+or conflicting such things as tool-chains, Python interrupters, etc.
+
+* JTSDK-QT, used for ( _WSJT-X, WSPR-X and MAP65_ )
+* JTSDK-PY, used for ( _WSJT adn WSPR_ )
+* JTSDK-DOC, used for building documentation
+* JTSDK-MSYS, provides Autotools and builds Hamlib3
+
+[[JTSDKWIN32-FOLDERS]]
+=== Folder Structure
+The folder structure used by *JTSDK-Win32* has a set structure for the source
+file location as well as the output locations. They also differ based on the
+framework and build system used to compile: _( QT5 && Cmake ) or ( Python3 and Autotools )_ 
+
+.Qt5 and Cmake ( _WSJT-X, WSPR-X and MAP65_ )
+-----
+# This example uses WSJTX Development Branch
+Source Dir ...: C:\JTSDK\src\wsjtx
+Build Dir ....: C:\JTSDK\wsjtx\build\(Release or Debug)
+Install Dir ..: C:\JTSDK\wsjtx\install\(Release or Debug)
+Package Dir ..: C:\JTSDK\wsjtx\package
+-----
+
+.Python and Autotools ( _WSJT and WSPR_ )
+-----
+# This example uses WSJT
+Source Dir ...: C:\JTSDK\src\trunk
+Build Dir ....: C:\JTSDK\wsjt
+Install Dir ..: C:\JTSDK\wsjt\install
+Package Dir ..: C:\JTSDK\wsjtx\package
+-----
+
+Package builds for _WSJT and WSPR_ do not provide for an out of source build
+directory.

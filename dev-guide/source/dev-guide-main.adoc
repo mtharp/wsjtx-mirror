@@ -4,7 +4,7 @@
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
 :description: Software for Amateur Radio Weak-Signal Communication
-:page: WSJT Developers Guide
+:page: JTSDK Developers Guide
 
 // use global link file
 include::../../global/links.adoc[]
@@ -40,17 +40,13 @@ include::pkgmatrix.adoc[]
 == Documentation
 include::doc.adoc[]
 
-[[MAP65]]
-== MAP-65
-include::map65.adoc[]
+[[WSJTX]]
+== WSJT-X
+include::wsjtx.adoc[]
 
 [[WSJT]]
 == WSJT
 include::wsjt.adoc[]
-
-[[WSJTX]]
-== WSJT-X
-include::wsjtx.adoc[]
 
 [[WSPR]]
 == WSPR
@@ -60,47 +56,20 @@ include::wspr.adoc[]
 == WSPR-X
 include::wsprx.adoc[]
 
+[[MAP65]]
+== MAP-65
+include::map65.adoc[]
+
+[[JTSDKWIN32]]
+== JTSDK-Win32
+include::jtsdk-win32.adoc[]
+
+[[JTSDKNIX]]
+== JTSDK-Nix
+include::jtsdk-nix.adoc[]
+
 == Contact US
 include::../../global/communication.adoc[]
 
 == License
 include::../../global/license.adoc[]
-
-:numbered!:
-[appendix]
-[[JTSDKDOC]]
-JTSDK-DOC
----------
-include::jtsdk-doc.adoc[]
-
-:numbered!:
-[appendix]
-[[JTSDKPY]]
-JTSDK-PY
---------
-include::jtsdk-py.adoc[]
-Under Construction
-
-:numbered!:
-[appendix]
-[[JTSDKQT]]
-JTSDK-QT
---------
-include::jtsdk-qt.adoc[]
-Under Construction
-
-:numbered!:
-[appendix]
-[[JTSDKMSYS]]
-JTSDK-MSYS
-----------
-include::jtsdk-msys.adoc[]
-Under Construction
-
-:numbered!:
-[appendix]
-[[JTSDKNIX]]
-JTSDK-NIX
---------
-include::jtsdk-nix.adoc[]
-Under Construction
