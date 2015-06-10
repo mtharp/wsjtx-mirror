@@ -12,8 +12,7 @@ allow a user to build all of the main applications with minimal effort. However,
 the default scripts may not be suitable for those actively developing applications
 in all cases. To aid the core developers, several tools have been included that
 allow for much greater flexibility in their final outputs, yet still maintain 
-the core building tools for consistency. The tools and more are explained in each
-of the (4) primary environments.
+the core building tools for consistency.
 
 === Core Features
 While the implementation may differ slightly, both *JTSDK* for <<WINSDK,Windows>>
@@ -49,6 +48,7 @@ This guide will provide users with the following guidance:
 * Command line custom configuration builds
 * Outline available tools and script capabilities
 * A brief introduction to using QtCreator for builds
+* Basic How-Too using Cmake-Gui
 
 In addition to the core application build tools, each environment provides a
 host of very powerful command line tools. A detailed list is provided in the

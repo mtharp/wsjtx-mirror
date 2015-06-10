@@ -1,4 +1,4 @@
-= JTSDK - Developers Guide
+= JTSDK - WSJT Developers Guide
 :revision: v2.0
 :icons:
 :numbered:

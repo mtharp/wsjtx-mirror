@@ -1,9 +1,9 @@
 
 All source code for the WSJT programs is available through an open-source
 repository known as SourceForge, under control of the version-control
-program {svn}. Subversion is included in all three Software Development
-Kits *(SDK)*. There is no need to install Subversion if you intend to
-build applications or documentation using the *(SDKs)*.
+program {svn}. Subversion is included in both *JTSDKs*. There is no need to
+install Subversion separately if you intend to build applications or
+documentation using the *JTSDK*.
 
 You can browse the organization of files in the repository {wsjt_svn}.
 Code for program _WSJT_ lies in the +trunk+ directory, while code for
@@ -12,10 +12,33 @@ the other programs is found in +.../branches/map65+,
 branches may also exist, and snapshots of code for certain released
 program versions may be obtained from the +.../tags+ directory.
 
+*****
 WARNING: Please note: the HEAD of the SVN repository for any of these
 programs is likely to be an active development branch.  There is no
 guarantee that a build from every revision will be successful, nor
 that it will provide a stable executable program.
+*****
+
+=== Repository Layout
+The source code on SourceForge uses a slightly modified version of the
+traditional ( _trunk, branches, tags_ ) setup. With the exception of _WSJT_, all
+application source code resides in their respective branch.
+
+* *Trunk* is normally the main body of development, originating from the start
+of the project to present day. For the WSJT Project, the _Trunk_ is where
+the _WSJT_ application source code resides.
+* *Branch* would normally copy code from the trunk, apply major changes, add new
+features, fix bugs etc. When the work is complete, the updated code is merged
+back into the trunk. For all applications apart from _WSJT and kvasd-installer_,
+the source code for the application in question resides within a branch, affectively
+becoming the "Trunk" for particular application.
+* *Tag* is a point in time when the trunk ( for _WSJT_ ) or a branch ( for _all_
+others ) reaches a release point, and the code it locked into a revision. Tagging
+allows for preservation and quick retrieval. In affect, a Tag is nothing more
+than a copy of the trunk or branch at a given point in the development cycle
+a.k.a, the svn revision number ( _rXXXX_ ).
+* *Files* is a folder where Tags are converted to source tarballs and binary
+packages for use by the general public.
 
 === Checkout Methods
 There are two primary methods for checking out source code, <<ANONCO,Anonymous>>

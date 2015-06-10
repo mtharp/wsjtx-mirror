@@ -45,7 +45,7 @@ files section. Using the links below, download each package, then proceed to
 * Accept the defaults
 
 *****
-IMPORTANT: Due to the custom installation of JTSDK-MSYS, upon first run, the
+TIP: Due to the custom installation of JTSDK-MSYS, upon first run, the
 environment will be set-up for your specific user.  You will be prompted to
 re-start JTSDK-MSYS after it configures the shell.
 *****
@@ -67,6 +67,11 @@ supported for Linux.
 * WSPR-X and MAP65 are not supported on Linux.
 -----
 
+=== Install Location
+The default installation location is: /usr/local  Unless you need to have this
+elsewhere, the default location should suffice. Setting the install prefix to
+/usr is not recommended.
+
 ==== Download Source Tarball
 * Download jtsdk-nix-2.0.5.tar.gz
 * Extract: tar -xf jtsdk-nix-2.0.5.tar.gz
@@ -74,20 +79,45 @@ supported for Linux.
 
 .Enable Features
 -----
---enable-separate      # Separate dir's by version & svn number
---enable-docs          # Disable building docs and manpages
---disable-parallel     # Disable building with multiple cores
+--enable-separate      # Separate dir's svn number, default is disabled
+--disable-docs         # Disable building HTML docs, default is enabled
+--disable-parallel     # Disable Multi-Core builds, default is enabled
 -----
 
+*Enable Separate* is used for separating each build by SVN commit version. This
+is useful when want to keep a specific fall back version, yet build and test the
+latest revisions. When using this feature, monitor you disk usage, as it can add
+up quickly.
+
+*Disable Docs* is used to tun off HTML file generation. At present, this only
+applies too *JTSDK* itself. Future releases will control application documentation
+as well.
+
+*Disable Parallel* should not be used unless your testing the differences 
+between single and multi-core builds. One would be hard pressed to find a single
+core CPU in a modern day system.
+
 .Additional Configuration Items
-It is important to specify which distribution you are using, otherwise, the
-configure script will error back to the command line.
 -----
---with-distro=DISTRO   Distro Name: (debian, ubuntu, mint)
---with-homedir=PATH    Change Default Home directory path
---with-python3=PATH    Path to python3
---with-f2py3=PATH      Path to f2py3
+--with-distro=DISTRO   # Distro Name: (debian, ubuntu, mint)
+--with-python3=PATH    # Path to python3
+--with-f2py3=PATH      # Path to f2py3
+--with-homedir=PATH    # Change Default Home directory path
 -----
+
+*With Distro* - It is important to specify which distribution you are using,
+otherwise, the configure script will error back to the command line.
+
+*With Python3* - Unless you have a customized Python3 installation, you should
+not need to modify the Python3 paths.
+
+*With F2py* - This feature is usefull for testing odd locations for the F2py
+script. If you have built Python3-NumPY from source, and specidied a custom
+install locaiton, use this feature to tell the configure script the location
+of F2PY.
+
+*Home Dir* - The default home directory is ~/jtsdk and should suffice for most
+most users needs.
 
 .Recommended Invocation
 -----
@@ -96,6 +126,11 @@ Mint......: ./autogen.sh --with-distro=mint --enable-separate
 Debian....: ./autogen.sh --with-distro=debian --enable-spearate
 Raspbian..: ./autogen.sh --with-distro=debian --enable-separate
 -----
+
+The recommended configurations above should sufficient for most users. The only
+other option you may want to consider is disabling documentaiton, however, later
+versions of *JTSDK* will be uing this feature to enable / disable documentation
+builds within the application.
 
 ==== Make and Make Install
 * make
