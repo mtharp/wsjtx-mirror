@@ -1,5 +1,5 @@
 // Taken from WSJT Main Website
-_WSJT_, _MAP65_, _WSPR_, and _WSJT-X_ are open-source programs designed for
+_WSJT, MAP65, WSPR, and WSJT-X_ are open-source programs designed for
 weak-signal digital communication by amateur radio. Normal usage requires a
 standard SSB transceiver and a personal computer with soundcard. SDR-style
 hardware including the SDR-IQ, Perseus, SoftRock, and FUNcube Dongle is supported
@@ -16,23 +16,34 @@ the core building tools for consistency. The tools and more are explained in eac
 of the (4) primary environments.
 
 === Core Features
-*JTSDK* provides the following core features:
+While the implementation may differ slightly, both *JTSDK* for <<WINSDK,Windows>>
+and <<NIXSDK,Linux>> provide canned build scripts to compile _WSJT_ applications
+from source code. The core features are listed below. for each kit.
 
+[[WINSDK]]
+.JTSDK Win32* provides the following core features:
+* Supported applications: ( ALL )
 * QT5 + mingw32 (GCC 4.8.0) winpthread Tool Chain
 * MinGW32 (GCC 4.8.1) pthread Tool Chain
 * MSYS Base Environment {plus} Autotools
 * Cygwin 32Bit Env, Bash, Gnu Coreutils, Git, SVN {plus} much more ...
 * Python2 and Python3 with Tcl/Tk in Separate Environments
 * InnoSetup and NSIS installer building tools
-* Build Scripts for WSJT, WSJT-X, WSPR, WSPR-X and MAP65
-* Build Scripts for All WSJT Documentation
+* Build Scripts methods for All WSJT Documentation
 * Supports Win32/64 and Linux x86/x86-64
+
+[[NIXSDK]]
+.JTSDK Nix* provides the following core features:
+* Supported Applications: ( _WSJT, WSPR, WSJTX, Hamlib3_ )
+* Automated distribution package installation
+* Ncurses menu (command line) for building supported applications
+* Build Scripts methods for All WSJT Documentation
 
 === Core Functions
 This guide will provide users with the following guidance:
 
 * Installing prerequisites packages
-* Installing JTSDK on (<<INSTALLWINDOWS,Windows>> and <<INSTALLLINUX,Linux>>) 
+* Installing JTSDK on ( <<INSTALLWINDOWS,Windows>> and <<INSTALLLINUX,Linux>> ) 
 * Overview of packages, libraries and frameworks
 * Building each application using default configurations
 * Command line custom configuration builds

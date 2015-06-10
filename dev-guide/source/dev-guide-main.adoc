@@ -1,4 +1,4 @@
-= JTSDK - Software Development Kit
+= JTSDK - Developers Guide
 :revision: v2.0
 :icons:
 :numbered:

@@ -1,81 +1,48 @@
 This section will guide you through the various steps of installation. For
-<<INSTALLWINDOWS,Windows>>, the 32-Bit installer will install and configure
-all elements from a single file. The <<INSTALLLINUX,Linux >> installation
-is through traditional methods of configure, make, make install.
+<<INSTALLWINDOWS,Windows>>, the 32-Bit installer will configure all elements
+from a single file. The <<INSTALLLINUX,Linux >> installation is through
+traditional methods of configure, make, make install.
 
 [[INSTALLWINDOWS]]
 === Windows
 For your convenience, all packages can be downloaded from the {sourceforge-jtsdk}
-files section. Using the links below, download the packages, then proceed to
-<<MSCVINSTALL,MSVC Install>>. Install the packages *In The Order Listed*:
+files section. Using the links below, download each package, then proceed to
+<<MSCVINSTALL,MSVC Redist Installation>>. Install the packages *In The Order Listed*:
 
 [horizontal]
-*MSVC Redist*:: {jtsdk_vcredist}
-*OmniRig*:: {jtsdk_omnirig}
-*JTSDK Installer*:: {jtsdk_installer}
+.Download Packages
+*MSVC Redist*:: {jtsdk-vcredist}
+*OmniRig*:: {jtsdk-omnirig}
+*JTSDK Main Installer*:: {jtsdk-installer}
+*JTSDK Update 1*:: {jtsdk-update1}
 
 [[MSCVINSTALL]]
-==== MSVC Redist Installation 
+==== MSVC Redist Installation
 * Browse to your download location
-* Run the installer (vcredist_x86.exe)
+* Run the installer (vcredist-x86.exe)
 * Read and accept the terms
-
-.MSVC Redist Terms
-image::images/msvc-redist1.png[]
 * Finish the installation
-
-.MSVC Redist Finish
-image::images/msvc-redist2.png[]
 
 ==== OmniRig Installation
 * Browse to your download location
 * Unzip the installer (OmniRig.zip)
 * Run the installer (OmniRigSetup.exe)
-
-.OmniRig Install
-image::images/omnirig-install.png[]
+* Accept the defaults
 
 ==== JTSDK Installation
 * Browse to your download location
-* Run the installer (JTSDK-2.0.0-B2-Win32.exe)
-
-.JTSDK INstall Start
-image::images/jtsdk-install1.png[]
-
+* Run the installer (JTSDK-2.0.0-win32.exe)
 * Accept KVASD EULA Terms
-
-.KVASD EULA Terms
-image::images/jtsdk-install2.png[]
-
 * View GPL3 License Terms, then click next
-
-.View GPL3 License
-image::images/jtsdk-install3.png[]
-
 * Wait for primary instillation to complete
-
-.Primary Instillation
-image::images/jtsdk-install4.png[]
-
-* Script Download and <<JTSDKDOC,JTSDK-DOC>> installation should start automatically
-
-.Download Scripts and Install JTSDK-DOC
-image::images/cyg32-install1.png[]
-
 * Monitor Cygwin32 installation for any errors
-
-.Cygwin32 Install Status
-image::images/cyg32-install2.png[]
-
-* Installation finish screen
-
-.Finished Install
-image::images/jtsdk-finished-install.png[]
-
+* Installation should finish
 * Select environment to launch
 
-.Post Install Launch
-image::images/jtsdk-install-launch.png[]
+==== JTSDK Update-1
+* Browse to your download location
+* Run the installer (JTSDK-2.0.0-u1-win32.exe)
+* Accept the defaults
 
 *****
 IMPORTANT: Due to the custom installation of JTSDK-MSYS, upon first run, the
@@ -83,23 +50,80 @@ environment will be set-up for your specific user.  You will be prompted to
 re-start JTSDK-MSYS after it configures the shell.
 *****
 
-.JTSDK-MSYS Custom Configuration
-image::images/jtsdk-msys-first-run.png[]
-
-
-
 [[INSTALLLINUX]]
 === Linux
-There are (3) required prerequisites for installation:
+At the time of this writing, only Debian/UBuntu based distributions are
+supported for Linux.
 
-* An Internet Connection
-* Subversion
-* Autoconf
+.SUPPORTED DISTRIBUTIONS
+* Ubuntu.....: 14.04, 14.10, 15.04
+* Mint.......: 17.1
+* Debian.....: 8.*
+* Raspbian...: Jessie
 
-Using your package manager, perform the following:
+-----
+* Ubuntu includes Xubuntu, Lubuntu, Kubuntu
+* Rasbian upgraded to Jessie. Wheezy is not supported.
+* WSPR-X and MAP65 are not supported on Linux.
+-----
+
+==== Download Source Tarball
+* Download jtsdk-nix-2.0.5.tar.gz
+* Extract: tar -xf jtsdk-nix-2.0.5.tar.gz
+* cd ./jtsdk-nix-2.0.5
+
+.Enable Features
+-----
+--enable-separate      # Separate dir's by version & svn number
+--enable-docs          # Disable building docs and manpages
+--disable-parallel     # Disable building with multiple cores
+-----
+
+.Additional Configuration Items
+It is important to specify which distribution you are using, otherwise, the
+configure script will error back to the command line.
+-----
+--with-distro=DISTRO   Distro Name: (debian, ubuntu, mint)
+--with-homedir=PATH    Change Default Home directory path
+--with-python3=PATH    Path to python3
+--with-f2py3=PATH      Path to f2py3
+-----
+
+.Recommended Invocation
+-----
+Ubuntu....: ./autogen.sh --with-distro=ubuntu --enable-separate
+Mint......: ./autogen.sh --with-distro=mint --enable-separate
+Debian....: ./autogen.sh --with-distro=debian --enable-spearate
+Raspbian..: ./autogen.sh --with-distro=debian --enable-separate
+-----
+
+==== Make and Make Install
+* make
+* sudo make install
+
 *****
-sudo apt-get update
-sudo apt-get install autoconf subversion
+IMPORTANT: If during the make portion, your system requires additional packages,
+after running make the 1st time, you need to re-run your original autogen
+command, followed by make the 2nd time. This is to ensure all the new packages
+are picked up and the build scripts configured properly.
 *****
 
+==== RUN JTSDK
+* In a terminal..: jtsdk
+
+==== TO UNINSTALL
+* cd ./jtsdk-nix-2.0.5
+* sudo make uninstall
+
+.APPLICATION BUILD NOTES
+* If building WSJT-X, build Hamlib3 first, then build WSJT-X.
+* WSPR and WSJT do not require Hamlib3.
+* Ensure you update Hamlib3 often, as updates are frequently posted.
+
+.POTENTIAL ISSUES
+* The Mint 17.1 Cinnamon Desktop installs python-numpy as part of it's
+desktop environment. If you encounter PObject errors when running
+WSPR or WSJT, more than likely this is the cause. WSPR and WSJT requires
+python3-numpy. To resolve, remove python-numpy, but be warned, this may
+cause unexpected behavior in your Desktop Environment.
 
