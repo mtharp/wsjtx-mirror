@@ -137,11 +137,11 @@ user-guide:
 	@echo.
 	@echo  RUN AsciiDoc
 	@echo ------------------------------
-	@echo Building User Guide: wspr-main-$(VER).html
+	@echo Building User Guide: wsjt-main-$(VER).html
 	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
 	--conf-file=$(DOCCONF) \
 	--backend=xhtml11 \
-	--theme wspr \
+	--theme wsjt \
 	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
 	@echo.
 	@echo Finished
