@@ -1,0 +1,120 @@
+# Makefile for Linux
+
+# Re-direct stdout and stderr:	bash
+#								make >& junk
+
+# Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
+
+MV			?= 	mv
+CC			?= 	gcc
+MKDIR		?= 	mkdir
+RM			?=	/bin/rm
+INSTALL		=	install
+
+FFLAGS		=	-g -O2 -fno-range-check -ffixed-line-length-none -Wall -fbounds-check -fno-second-underscore -fPIC
+LDFLAGS		=	-L/usr/lib/x86_64-linux-gnu -L/usr/local/lib 
+LIBS		+=	 -lpthread  -lportaudio -lsamplerate -lfftw3f
+CPPFLAGS	=	-I/usr/include -I/usr/local/include 
+CFLAGS		=	 -Wall -O0 -g  -Wall -O0 -g
+PREFIX		=	/usr/local
+
+# WSJT specific C flags
+CFLAGS		+=	-DBIGSYM=1 -fPIC
+DEFS		=	-DPACKAGE_NAME=\"wsjt\" -DPACKAGE_TARNAME=\"wsjt\" -DPACKAGE_VERSION=\"10.0\" -DPACKAGE_STRING=\"wsjt\ 10.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DFC_LIB_PATH=\"/usr/lib/gcc/x86_64-linux-gnu/4.8/\" -DFC=\"gfortran\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_FCNTL_H=1 -DHAVE_FLOAT_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIMITS_H=1 -DHAVE_STDDEF_H=1 -DHAVE_STDINT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_STDINT_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_ERRNO_H=1 -DHAVE_SYS_SYSLOG_H=1 -DHAVE_STDDEF_H=1 -DHAVE_LIBGEN_H=1 -DHAVE_SYS_WAIT_H=1 -DHAVE_WAIT_H=1 -DHAVE_STDIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_LINUX_PPDEV_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_FCNTL_H=1 -DHAVE_SYS_IOCTL_H=1 -DTIME_WITH_SYS_TIME=1 -DSTRING_WITH_STRINGS=1 -DNDEBUG=1 -DHAS_SAMPLERATE_H=1 -DHAS_PORTAUDIO=1 -DHAS_PORTAUDIO_H=1 -DHAS_PORTAUDIO_LIB=1 -DHAS_FFTW3_H=1 -DHAS_FFTW3FLIBS=1
+
+CFLAGS		+=	${DEFS}
+CPPFLAGS	+=	${DEFS} -I.
+
+# WSJT specific Fortran flags
+FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation
+CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
+
+PYTHON		?=	/usr/bin/python3
+F2PY		?=	/usr/bin/f2py3
+
+# Default rules
+%.o: %.c
+	${CC} ${CFLAGS} -c $<
+%.o: %.f
+	${FC} ${FFLAGS} -c $<
+%.o: %.F
+	${FC} ${FFLAGS} -c $<
+%.o: %.f90
+	${FC} ${FFLAGS} -c $<
+%.o: %.F90
+	${FC} ${FFLAGS} -c $<
+
+all:	libjt.a WsjtMod/Audio.so jt65code jt4code
+
+OS			=	Linux
+FC			=	gfortran
+FCV			=	gnu95
+FC_LIB_PATH	+=	/usr/lib/gcc/x86_64-linux-gnu/4.8/
+
+LDFLAGS		+=	-L${FC_LIB_PATH}
+
+OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
+	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \
+	bzap.o chk441.o chkhist.o chkmsg.o coord.o db.o dcoord.o \
+	decode1.o decode2.o decode3.o decode4.o decode65.o decode6m.o \
+	decode_rs.o decodems.o deep4.o deep65.o deg2grid.o demod64a.o \
+	detect.o dot.o dtrim.o echogen.o encode232.o encode4.o \
+	encode65.o encode_rs.o entail.o extract.o extract4.o fano.o \
+	fano232.o fil651.o fil652.o fil653.o fivehz.o flat1.o flat2.o \
+	flatten.o foldms.o four2a.o fthread.o ftpeak65.o gen4.o \
+	gen441.o gen65.o gen6m.o gencw.o gencwid.o geniscat.o genmet.o \
+	genms.o gentone.o geocentric.o geodist.o get_fname.o getmet4.o \
+	getpfx1.o getpfx2.o getsnr.o gran.o graycode.o grid2deg.o \
+	grid2k.o hipass.o horizspec.o hscroll.o igray.o indexx.o \
+	init_rs.o interleave4.o interleave63.o iscat.o jtaudio.o jtms.o \
+	k2grid.o lenms.o limit.o longx.o lpf1.o makepings.o match.o \
+	moon2.o moondop.o morse.o msdf.o msgtype.o mtdecode.o nchar.o \
+	nhash.o packcall.o packgrid.o packmsg.o packpfx.o packtext.o \
+	pctile.o peakup.o pfxdump.o ping.o pix2d.o pix2d65.o ps.o \
+	ps4.o ptt_unix.o resample.o rfile.o rfile2.o s2shape.o savedata.o \
+	set.o setup65.o setupms.o short65.o slope.o smo.o smooth.o \
+	sort.o spec2d.o spec2d65.o spec441.o spread.o ssort.o \
+	start_threads.o stdecode.o sun.o symsync65.o sync.o sync4.o \
+	sync65.o syncf0.o syncf1.o synciscat.o syncms.o synct.o \
+	tab.o thnix.o tm2.o tmoonsub.o toxyz.o tweak1.o tweak2.o \
+	unpackcall.o unpackgrid.o unpackmsg.o unpackpfx.o unpacktext.o \
+	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
+	xcor4.o xfft.o xfft2.o 
+
+libjt.a: $(OBJS1)
+	ar cr libjt.a $(OBJS1)
+	ranlib libjt.a
+
+OBJS2 = jt65code.o 
+jt65code: $(OBJS2) libjt.a
+	$(FC) -o jt65code $(OBJS2) libjt.a -lgfortran
+
+OBJS3 = jt4code.o 
+jt4code: $(OBJS3)
+	$(FC) -o jt4code $(OBJS3) libjt.a
+
+OBJS4	= t75.o iscat.o four2a.o db.o pctile.o match.o dtrim.o \
+	sort.o ssort.o thnix_stub.o geniscat.o synciscat.o
+
+t75:	$(OBJS4)
+	$(FC) -o t75 $(OBJS4) -lfftw3f
+
+F2PYSRCS = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 getfile.f90 \
+	 azdist0.f90 astro0.f90 chkt0.f90
+
+WsjtMod/Audio.so: libjt.a ${F2PYSRCS} 
+	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
+	--opt="-cpp -fbounds-check -O2" ${LDFLAGS} \
+	${LIBS} libjt.a -m Audio ftn_init.f90 ftn_quit.f90 \
+	audio_init.f90 spec.f90 getfile.f90 azdist0.f90 \
+	astro0.f90 chkt0.f90
+	${MV} Audio*.so WsjtMod/Audio.so
+
+.PHONY : clean
+clean:
+	${RM} -f *.o *.pyc *.so *~ jt65code jt4code WsjtMod/*.pyc \
+	WsjtMod/*.pyc WsjtMod/*.so 
+	${RM} -rf build/
+
+distclean: clean
+	${RM} -f config.log config.status Makefile

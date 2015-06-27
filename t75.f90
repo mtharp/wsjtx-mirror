@@ -2,18 +2,19 @@ program t75
 
 ! Tests experimental ISCAT decoder
 
-  parameter (NMAX=512*1024)
-  real dat(NMAX)                          !Raw signal, 30 s at 11025 sps
+  parameter (NMAX=30*3101)
+  complex cdat(NMAX)                      !Raw signal, 30 s at 11025 sps
   character arg*12                        !Command-line argument
   character cfile6*6                      !File time
   character msg*28,msgsent*28
   character*40 infile
-  real ccfblue(-5:540)                        !blue line
+  real ccfblue(-5:540)                    !blue line
   integer dftolerance
   real ccf(-5:540)        !X-cor function in JT65 mode (blue line)
   real psavg(450)         !Average spectrum of the whole file
   integer*2 iwave(NMAX)
   real x(12)
+  logical pick
 
   nargs=iargc()
   if(nargs.ne.2) then
@@ -31,27 +32,16 @@ program t75
   MouseDF=0
   mousebutton=0
   mode4=2
+  nafc=0
+  nmore=0
+  pick=.false.
 
-  if(nrec.le.0) then
-     msg='W8WN K1JT'
-     nmsg=9
-     call geniscat(msg,nmsg,mode4,1.d0,iwave,jz,msgsent)
-     jz=jz/2                                               !15-sec 
-     do i=1,jz
-        call random_number(x)
-        xs=sum(x)-6.0
-        dat(i)=100.0*(0.1*iwave(i)/32768.0 + xs)
-     enddo
-     call iscat(dat,jz,cfile6,MinSigdB,DFTolerance,     &
-          NFreeze,MouseDF,mousebutton,mode4,ccf,psavg)
-  else
-     do irec=1,nrec
-        read(74,end=999) jz,cfile6,(dat(j),j=1,jz)
-        if(irec.ne.nrec .and. nrec.ne.999) cycle
-        t2=0.
-        call iscat(dat,jz,t2,cfile6,MinSigdB,DFTolerance,     &
-             NFreeze,MouseDF,mousebutton,mode4,ccf,psavg)
-     enddo
-  endif
+  do irec=1,nrec
+     read(74,end=999) npts,cfile6,cdat(1:npts)
+     if(irec.ne.nrec .and. nrec.ne.999) cycle
+     t2=0.
+     call iscat(cdat,npts,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
+     MouseDF,mousebutton,mode4,nafc,nmore,psavg)
+  enddo
 
 999 end program t75

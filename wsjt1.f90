@@ -305,7 +305,7 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
      if(pick) t2=(istart+0.5*jz)/11025.0 + 0.5           !### +0.5 is empirical
      jz=min(jz,30*11025)
      call ana932(dat,jz,cdat,npts)          !Make downsampled analytic signal
-!     write(74) npts,cfile6,(cdat(j),j=1,npts)
+!     write(74) npts,cfile6,cdat(1:npts)
 
 ! Now cdat() is the downsampled analytic signal.  
 ! New sample rate = fsample = BW = 11025 * (9/32) = 3100.78125 Hz

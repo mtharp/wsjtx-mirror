@@ -14,6 +14,7 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
   real s0(288,NSZ)
   real fs1(0:41,30)
   real psavg(72)                          !Average spectrum of whole file
+  integer nsum(30)
   integer dftolerance
   integer icos(4)
   logical pick,last
@@ -50,7 +51,9 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
         if(pick) t3=t2
 
 ! Compute symbol spectra and establish sync:
-        call synciscat(cdat,npts,s0,jsym,df,DFTolerance,NFreeze,             &
+        nh=5
+        npct=40
+        call synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,     &
              MouseDF,mousebutton,mode4,nafc,psavg,xsync,nsig,ndf0,msglen,    &
              ipk,jpk,idf,df1)
         nfdot=nint(idf*df1)
@@ -67,6 +70,7 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
         ipk3=0                                  !Silence compiler warning
         nblk=nsync+nlen+ndat
         fs1=0.
+        nsum=0
         nfold=jsym/96
         jb=96*nfold
         k=0
@@ -82,7 +86,17 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
                  iii=ii+ipk+2*i
                  if(iii.ge.1 .and. iii.le.288) fs1(i,m)=fs1(i,m) + s0(iii,j)
               enddo
+              nsum(m)=nsum(m)+1
            endif
+        enddo
+
+        do m=1,msglen
+           fs1(0:41,m)=fs1(0:41,m)/nsum(m)
+        enddo
+
+        do i=0,41
+           write(83,3005) i,fs1(i,1:4)
+3005       format(i2,4f10.3)
         enddo
 
 ! Read out the message contents:
@@ -120,6 +134,10 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
            msg=msg1(1:msglen-1)
         endif
 
+        ttot=npts/3100.78125
+        write(*,3001) xsync,nsig,ndf0,msglen,nfold,ttot,df1,worst,mpk,msg
+3001    format(f6.1,i4,i6,2i4,2f6.1,f8.3,i5,2x,a28)
+
         if(worst.gt.bigworst) then
            bigworst=worst
            bigavg=avg
@@ -131,6 +149,7 @@ subroutine iscat(cdat0,npts0,t2,pick,cfile6,MinSigdB,DFTolerance,NFreeze,   &
            msglenbig=msglen
            bigt2=t3
            tana=nframes*24*nsps/fsample
+           print*,'save'
            if(bigworst.gt.2.0) go to 110
         endif
 100  continue

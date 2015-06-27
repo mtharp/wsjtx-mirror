@@ -1,4 +1,4 @@
-subroutine synciscat(cdat,npts,s0,jsym,df,DFTolerance,NFreeze,            &
+subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,    &
      MouseDF,mousebutton,mode4,nafc,psavg,xsync,nsig,ndf0,msglen,         &
      ipk,jpk,idf,df1)
 
@@ -14,6 +14,7 @@ subroutine synciscat(cdat,npts,s0,jsym,df,DFTolerance,NFreeze,            &
   real s0(288,NSZ)
   real fs0(288,96)                        !108 = 96 + 3*4
   real savg(288)
+  real sref(288),tmp(288)
   real psavg(72)                          !Average spectrum of whole file
   integer dftolerance
   integer icos(4)
@@ -52,6 +53,7 @@ subroutine synciscat(cdat,npts,s0,jsym,df,DFTolerance,NFreeze,            &
         s0(i,j)=real(c(i))**2 + aimag(c(i))**2
         savg(i)=savg(i) + s0(i,j)                 !Accumulate avg spectrum
      enddo
+     i0=40
   enddo
 
   jsym=4*nsym
@@ -65,8 +67,14 @@ subroutine synciscat(cdat,npts,s0,jsym,df,DFTolerance,NFreeze,            &
      endif
   enddo
 
+  do i=nh+1,nfft-nh
+     call pctile(savg(i-nh),tmp,2*nh+1,npct,sref(i))
+  enddo
+  sref(1:nh)=sref(nh+11)
+  sref(nfft-nh+1:nfft)=sref(nfft-nh)
+
   do i=1,nfft                                 !Normalize the symbol spectra
-     fac=1.0/savg(i)
+     fac=1.0/sref(i)
      if(i.lt.11) fac=1.0/savg(11)
      do j=1,jsym
         s0(i,j)=fac*s0(i,j)
