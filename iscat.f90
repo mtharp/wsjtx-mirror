@@ -27,13 +27,13 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
 
   bigworst=-1.e30                      !Silence compiler warnings ...
   bigxsync=0.
-  nsigbig=0
+  bigsig=-1.e30
   msglenbig=0
   ndf0big=0
   nfdotbig=0
   bigt2=0.
   bigavg=0.
-  if(nmore.eq.-999) nsigbig=-1         !... to here
+  if(nmore.eq.-999) bigsig=-1         !... to here
 
   last=.false.
   do inf=1,6                           !Loop over data-segment sizes
@@ -52,7 +52,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
 
 ! Compute symbol spectra and establish sync:
         call synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,     &
-             MouseDF,mousebutton,mode4,nafc,psavg,xsync,nsig,ndf0,msglen,    &
+             MouseDF,mousebutton,mode4,nafc,psavg,xsync,sig,ndf0,msglen,    &
              ipk,jpk,idf,df1)
         nfdot=nint(idf*df1)
 
@@ -62,7 +62,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
            worst=1.
            avg=1.
            ndf0=0
-           go to 100
+           cycle
         endif
 
         ipk3=0                                  !Silence compiler warning
@@ -128,33 +128,48 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
         endif
 
         ttot=npts/3100.78125
-!        if(worst.ge.1.1) write(*,3001) xsync,nsig,ndf0,msglen,nfold,    &
+!        if(worst.ge.1.1) write(*,3001) xsync,sig,ndf0,msglen,nfold,    &
 !             ttot,df1,worst,mpk,msg
-!3001    format(f6.1,i4,i6,2i4,2f6.1,f8.3,i5,2x,a28)
+!3001    format(2f6.1,i6,2i4,2f6.1,f7.2,i5,1x,a28)
 
         if(worst.gt.bigworst) then
+!        if(sig.ge.bigsig) then
            bigworst=worst
            bigavg=avg
            bigxsync=xsync
-           nsigbig=nsig
+           bigsig=sig
            ndf0big=ndf0
            nfdotbig=nfdot
            msgbig=msg
            msglenbig=msglen
            bigt2=t3
-           tana=nframes*24*nsps/fsample
-           if(bigworst.gt.2.0) go to 110
+!           if(bigworst.gt.2.0) exit
         endif
-100  continue
+
+        if(minsigdb.le.0 .and. worst.gt.1.1) then
+           nsig=nint(sig)
+           nworst=10.0*(worst-1.0)
+           navg=10.0*(avg-1.0)
+           if(nworst.gt.10) nworst=10
+           if(navg.gt.10) navg=10
+           tana=nframes*24*nsps/fsample
+           csync=' '
+           if(isync.ge.1) csync='*'
+!           write(*,1020)  cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
+!                msglen,nworst,navg,tana
+           write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
+                msglen,nworst,navg,tana
+           write(21,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
+                msglen,nworst,navg,tana
+        endif
      enddo
-     if(last) go to 110
+     if(last) exit
   enddo
   
-110 continue
   worst=bigworst
   avg=bigavg
   xsync=bigxsync
-  nsig=nsigbig
+  sig=bigsig
   ndf0=ndf0big
   nfdot=nfdotbig
   msg=msgbig
@@ -173,17 +188,16 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
      navg=0
      ndf0=0
      nfdot=0
-!     nsig=-20
+!     sig=-20
      msglen=0
      tana=0.
      t2=0.
   endif
   csync=' '
   if(isync.ge.1) csync='*'
+  nsig=nint(sig)
 
   call cs_lock('iscat')
-!     write(*,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &
-!          msglen,nworst,navg,tana
      write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &
           msglen,nworst,navg,tana
      write(21,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &

@@ -25,7 +25,7 @@ program t75
   read(arg,*) nrec
   open(74,file=infile,form='unformatted',status='old')
 
-  MinSigdB=-20
+  MinSigdB=0
   DFTolerance=400
   NFreeze=0
   MouseDF=0

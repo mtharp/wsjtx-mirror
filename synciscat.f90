@@ -1,5 +1,5 @@
 subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,    &
-     MouseDF,mousebutton,mode4,nafc,psavg,xsync,nsig,ndf0,msglen,         &
+     MouseDF,mousebutton,mode4,nafc,psavg,xsync,sig,ndf0,msglen,         &
      ipk,jpk,idf,df1)
 
 ! Synchronize an ISCAT signal
@@ -22,7 +22,7 @@ subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,    &
   data nsync/4/,nlen/2/,ndat/18/
 
 ! Silence compiler warnings:
-  nsigbest=-20
+  sigbest=-20.0
   ndf0best=0
   msglenbest=0
   ipkbest=0
@@ -147,10 +147,10 @@ subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,    &
      if(nfold.lt.26) xsync=xsync * sqrt(nfold/26.0)
      xsync=xsync-0.5                           !Empirical
 
-     nsig=nint(db(smax/ref - 1.0) -15.0)
-     if(mode4.eq.1) nsig=nsig-5
-!     if(nsig.lt.-20 .or. xsync.lt.1.0) nsig=-20
-     if(nsig.lt.-20) nsig=-20
+     sig=db(smax/ref - 1.0) - 15.0
+     if(mode4.eq.1) sig=sig-5.0
+!     if(sig.lt.-20 .or. xsync.lt.1.0) sig=-20.0
+!     if(sig.lt.-20) sig=-20.0
      ndf0=nint(df*(ipk-i0))
 
      smax=0.
@@ -171,7 +171,7 @@ subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,    &
 
      if(xsync.ge.xsyncbest) then
         xsyncbest=xsync
-        nsigbest=nsig
+        sigbest=sig
         ndf0best=ndf0
         msglenbest=msglen
         ipkbest=ipk
@@ -181,7 +181,7 @@ subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,DFTolerance,NFreeze,    &
   enddo
 
   xsync=xsyncbest
-  nsig=nsigbest
+  sig=sigbest
   ndf0=ndf0best
   msglen=msglenbest
   ipk=ipkbest
