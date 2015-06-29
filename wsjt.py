@@ -1867,6 +1867,7 @@ def AutoIscatDoubleClick(line, linetomouse):
     HisSetup = ""
     CallToMe = False
     SetSequence = False
+    SetReport = False
     
     if (len(sline) >= 2):
     #   check for CQ message
@@ -1888,6 +1889,8 @@ def AutoIscatDoubleClick(line, linetomouse):
                         HisSetup = sline[2]
                 CallToMe = True
                 SetSequence = True
+                SetReport = True
+                
             else:
 #               Isolate the call in the line, this MUST be in the call area
                 mymouseline = linetomouse[linetomouse.rfind('\n')+1:]
@@ -1899,7 +1902,9 @@ def AutoIscatDoubleClick(line, linetomouse):
                     if (len(sline) >= 3):
                         if (AutoISCATIsInfoBlock(sline[2])):
                             HisSetup = sline[2]
+#  ADD CODE HERE TO CHECK FOR A GRID????  THIS COULD BE A TX2 IN GRID MODE. 
                     SetSequence = True
+                    SetReport = True
                 elif (len(mline) == 3):
                     if (AutoISCATIsInfoBlock(sline[2])):
                         HisSetup = sline[2]
@@ -1936,6 +1941,9 @@ def AutoIscatDoubleClick(line, linetomouse):
                 ntx.set(2)
             else:
                 ntx.set(1)
+        
+        if SetReport:
+            AutoISCATSetReport(myline)
                 
         GenMsgs()
         
@@ -2038,7 +2046,7 @@ def AutoISCAT(lines):
 #   Walk through the lines looking for a useful decode
     IsGood = False
     for line in lines:
-        print (line)
+#        print (line)
         sline = line[32:62].split()
         pline = line[:31].split()
         
