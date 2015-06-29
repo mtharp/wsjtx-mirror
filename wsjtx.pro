@@ -64,7 +64,7 @@ SOURCES += \
   getfile.cpp soundout.cpp soundin.cpp meterwidget.cpp signalmeter.cpp \
   WFPalette.cpp plotter.cpp widegraph.cpp about.cpp WsprTxScheduler.cpp mainwindow.cpp \
   main.cpp decodedtext.cpp wsprnet.cpp messageaveraging.cpp \
-  echoplot.cpp echograph.cpp Modes.cpp WSPRBandHopping.cpp
+  echoplot.cpp echograph.cpp fastgraph.cpp fastplot.cpp Modes.cpp WSPRBandHopping.cpp
 
 HEADERS  += qt_helpers.hpp \
   pimpl_h.hpp pimpl_impl.hpp \
@@ -77,11 +77,9 @@ HEADERS  += qt_helpers.hpp \
   Transceiver.hpp TransceiverBase.hpp TransceiverFactory.hpp PollingTransceiver.hpp \
   EmulateSplitTransceiver.hpp DXLabSuiteCommanderTransceiver.hpp HamlibTransceiver.hpp \
   Configuration.hpp wsprnet.h signalmeter.h meterwidget.h \
-  logbook/logbook.h \
-  logbook/countrydat.h \
-  logbook/countriesworked.h \
-  logbook/adif.h \
-  messageaveraging.h echoplot.h echograph.h Modes.hpp WSPRBandHopping.hpp WsprTxScheduler.h
+  logbook/logbook.h logbook/countrydat.h logbook/countriesworked.h logbook/adif.h \
+  messageaveraging.h echoplot.h echograph.h fastgraph.h fastplot.h Modes.hpp WSPRBandHopping.hpp \
+  WsprTxScheduler.h
 
 INCLUDEPATH += qmake_only
 
@@ -91,8 +89,8 @@ HEADERS += OmniRigTransceiver.hpp
 }
 
 FORMS    += mainwindow.ui about.ui Configuration.ui widegraph.ui astro.ui \
-    logqso.ui wf_palette_design_dialog.ui \
-    messageaveraging.ui echograph.ui
+    logqso.ui wf_palette_design_dialog.ui messageaveraging.ui echograph.ui \
+    fastgraph.ui
 
 RC_FILE = wsjtx.rc
 RESOURCES = wsjtx.qrc

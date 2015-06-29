@@ -24,6 +24,8 @@
 #include "plotter.h"
 #include "echoplot.h"
 #include "echograph.h"
+#include "fastplot.h"
+#include "fastgraph.h"
 #include "about.h"
 #include "astro.h"
 #include "messageaveraging.h"
