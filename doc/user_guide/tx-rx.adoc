@@ -3,19 +3,19 @@
 
 Immediately before the start of a transmission _WSJT-X_ encodes a
 user's message and computes the sequence of tones to be sent.  The
-audio waveform is computed on-the-fly, sending 16-bit integer samples
-to the audio output device at a 48000 Hz rate.  Generated JT65 and JT9
-signals have continuous phase and constant amplitude, and there are no
-key clicks.  The transmitter's power amplifier need not be highly
-linear.
-
+audio waveform is computed on-the-fly, with 16-bit integer samples
+sent to the audio output device at a 48000 Hz rate.  Generated JT65
+and JT9 signals have continuous phase and constant amplitude, and
+there are no key clicks.  The transmitter's power amplifier need not
+be highly linear.
 
 .Receiving
 
 _WSJT-X_ acquires 16-bit integer samples from the audio input device
 at a 48000 Hz rate and immediately downsamples the stream to 12000 Hz.
 Spectra from overlapping segments are computed for the waterfall
-display and saved at intervals of 0.188 s, half the JT9 symbol length.
+display and saved for the decoder at intervals of 3456/12000 = 0.288
+s, half the JT9 symbol length.
 
 .Decoding
 
@@ -24,8 +24,10 @@ minute, received data samples are forwarded to the decoder.  For
 operator convenience the decoder goes through its full procedure
 twice: first at the selected Rx frequency, and then over the full
 displayed frequency range.  Each decoding pass can be described as a
-sequence of discrete blocks.  The functional blocks are different
-for the JT65 and JT9 modes.
+sequence of discrete blocks.  The functional blocks are different for
+the JT65 and JT9 modes.  In dual-mode JT9+JT65 operation on computers
+with more than one CPU, decoding computations for the two modes are
+done in parallel.
 
 The basic decoding algorithm for JT65 mode is described in the 2005
 {jt65protocol} paper.  The following list summarizes the corresponding
@@ -72,6 +74,7 @@ can take exponentially long times.  If the +sync9+ step in the above
 sequence finds many seemingly worthy candidate signals and many of
 them turn out to be undecodable, the decoding loop can take an
 inconveniently long time.  For this reason the step labeled +decode9+
-is programmed to ``time out'' and report failure if it is taking too
-long.  The choices *Fast | Normal | Deepest* on the *Decode* menu
-provide the user with a three-step adjustment of this timeout limit.
+is programmed to ``time out'' and report failure for a given signal if
+it takes too long.  The choices *Fast | Normal | Deepest* on the
+*Decode* menu provide the user with a three-step adjustment of the
+timeout limit.

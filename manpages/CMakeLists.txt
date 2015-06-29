@@ -3,6 +3,7 @@ set (ASCIIDOC_MANS
   man1/jt65code.1.txt
   man1/rigctl-wsjtx.1.txt
   man1/rigctld-wsjtx.1.txt
+  man1/message_aggregator.1.txt
   )
 
 find_program (A2X_EXECUTABLE NAMES a2x a2x.py)
@@ -32,6 +33,7 @@ set (A2X_OPTS
   --xsltproc-opts=${XSLTPROC_OPTS}
   --doctype=manpage
   --no-xmllint
+  -a VERSION=${wsjtx_VERSION}
   )
 
 set (MANPAGES)

@@ -1,3 +1,4 @@
+/* the routine unpk() is not in wsprd_utils.c */
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

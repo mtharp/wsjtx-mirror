@@ -2,13 +2,13 @@
 
 - *Bins/Pixel* = 4
 - *JT65 .... JT9* = 2500
-- *Start* = 0
+- *Start* = 200 Hz
 - *N Avg* = 5
 - *Zero* = 0
-- *Gain* = 0,
+- *Gain* = 0
 - *Palette* = Digipan
 - *Flatten* = checked
 - Select *Cumulative* for data display.
-- Select *Tab 2* (below the *Decode* button on the main window) to
-choose the alternative set of controls for generating and selecting
-Tx messages.
+
+- Use the mouse to adjust the width of the *Wide Graph* so that its
+upper frequency limit is about 2400 Hz.

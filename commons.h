@@ -44,6 +44,13 @@ extern "C" {
 extern struct {
   float syellow[NSMAX];
 } jt9w_;
+extern struct {
+  int   nclearave;
+  int   nsum;
+  float blue[4096];
+  float red[4096];
+} echocom_;
+
 }
 
 #endif // COMMONS_H

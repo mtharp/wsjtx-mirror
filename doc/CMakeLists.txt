@@ -33,6 +33,7 @@ set (UG_SRCS
   user_guide/jt65-protocol.adoc
   user_guide/rig-config-softrock.adoc
   user_guide/tutorial-example2.adoc
+  user_guide/tutorial-vhf.adoc
   user_guide/controls-functions-messages.adoc
   user_guide/jt9-protocol.adoc
   user_guide/rig-config-template.adoc
@@ -56,13 +57,17 @@ set (UG_SRCS
   user_guide/font-sizes.adoc
   user_guide/rig-config-aor.adoc
   user_guide/settings-general.adoc
+  user_guide/cooperating-programs.adoc
+  user_guide/logging.adoc
+  user_guide/settings-colors.adoc
+  user_guide/support.adoc
   )
 
 set (UG_IMGS
   user_guide/images/130610_2343-wav-80.png
   user_guide/images/freemsg.png
   user_guide/images/misc-main-ui.png
-  user_guide/images/r4148-rpt-ui.png
+  user_guide/images/colors.png
   user_guide/images/status-bar-a.png
   user_guide/images/MacAppMenu.png
   user_guide/images/help-menu.png
@@ -80,18 +85,20 @@ set (UG_IMGS
   user_guide/images/settings-audio.png
   user_guide/images/view-menu.png
   user_guide/images/decode-menu.png
-  user_guide/images/main-ui-1.4.png
+  user_guide/images/main-ui-1.5.png
   user_guide/images/r3666-main-ui-80.png
-  user_guide/images/settings-ui.png
+  user_guide/images/settings-general.png
   user_guide/images/wide-graph-controls.png
   user_guide/images/decodes.png
   user_guide/images/main-ui-controls.png
-  user_guide/images/r4148-cat-ui.png
+  user_guide/images/reporting.png
   user_guide/images/setup-menu.png
   user_guide/images/file-menu.png
   user_guide/images/misc-controls-center.png
-  user_guide/images/r4148-freq-ui.png
+  user_guide/images/settings-frequencies.png
   user_guide/images/special-mouse-commands.png
+  user_guide/images/psk-reporter.png
+  user_guide/images/jtalert.png
 )
 
 find_package (PythonInterp 2.4 REQUIRED)
@@ -105,7 +112,10 @@ endif (PYTHON_VERSION_STRING VERSION_GREATER 2.9.9)
 
 find_program (ASCIIDOC_EXECUTABLE NAMES asciidoc asciidoc.py)
 if (NOT ASCIIDOC_EXECUTABLE)
-  message (FATAL_ERROR "Asciidoc is required to build the documentation")
+  message (FATAL_ERROR "Asciidoc is required to build the documentation
+
+Building the documenation may optionally be tured off by setting the CMake
+option WSJT_GENERATE_DOCS to OFF.")
 endif (NOT ASCIIDOC_EXECUTABLE)
 
 include (CMakeParseArguments)

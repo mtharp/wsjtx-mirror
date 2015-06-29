@@ -51,66 +51,37 @@ SOURCES += \
 	logbook/adif.cpp \
 	logbook/countrydat.cpp \
 	logbook/countriesworked.cpp \
-	logbook/logbook.cpp \
-        astro.cpp \
-        Radio.cpp \
-        NetworkServerLookup.cpp \
-        revision_utils.cpp \
-        Transceiver.cpp \
-        TransceiverBase.cpp \
-        TransceiverFactory.cpp \
-        PollingTransceiver.cpp \
-        EmulateSplitTransceiver.cpp \
-        HRDTransceiver.cpp \
-        DXLabSuiteCommanderTransceiver.cpp \
-        HamlibTransceiver.cpp \
-        FrequencyLineEdit.cpp \
-        Bands.cpp \
-        FrequencyList.cpp \
-        StationList.cpp \
-        ForeignKeyDelegate.cpp \
-        FrequencyItemDelegate.cpp \
-        LiveFrequencyValidator.cpp \
-        Configuration.cpp \
-	psk_reporter.cpp \
-        AudioDevice.cpp \
-	Modulator.cpp \
-	Detector.cpp \
-	logqso.cpp \
-	displaytext.cpp \
-	getfile.cpp \
-	soundout.cpp \
-	soundin.cpp \
-	meterwidget.cpp \
-	signalmeter.cpp \
-  WFPalette.cpp \
-	plotter.cpp \
-	widegraph.cpp \
-	about.cpp \
-	mainwindow.cpp \
-	main.cpp \
-  decodedtext.cpp \
-  wsprnet.cpp \
-  messageaveraging.cpp
+  logbook/logbook.cpp \
+  astro.cpp Radio.cpp NetworkServerLookup.cpp revision_utils.cpp \
+  Transceiver.cpp TransceiverBase.cpp TransceiverFactory.cpp \
+  PollingTransceiver.cpp EmulateSplitTransceiver.cpp \
+  HRDTransceiver.cpp DXLabSuiteCommanderTransceiver.cpp \
+  HamlibTransceiver.cpp FrequencyLineEdit.cpp Bands.cpp \
+  FrequencyList.cpp StationList.cpp ForeignKeyDelegate.cpp \
+  FrequencyItemDelegate.cpp LiveFrequencyValidator.cpp \
+  Configuration.cpp	psk_reporter.cpp AudioDevice.cpp \
+  Modulator.cpp Detector.cpp logqso.cpp displaytext.cpp \
+  getfile.cpp soundout.cpp soundin.cpp meterwidget.cpp signalmeter.cpp \
+  WFPalette.cpp plotter.cpp widegraph.cpp about.cpp WsprTxScheduler.cpp mainwindow.cpp \
+  main.cpp decodedtext.cpp wsprnet.cpp messageaveraging.cpp \
+  echoplot.cpp echograph.cpp Modes.cpp WSPRBandHopping.cpp
 
 HEADERS  += qt_helpers.hpp \
-	    pimpl_h.hpp pimpl_impl.hpp \
-            Radio.hpp NetworkServerLookup.hpp revision_utils.hpp \
-	    mainwindow.h plotter.h soundin.h soundout.h astro.h \
-            about.h WFPalette.hpp widegraph.h getfile.h decodedtext.h \
-            commons.h sleep.h displaytext.h logqso.h \
-            Bands.hpp FrequencyList.hpp StationList.hpp ForeignKeyDelegate.hpp FrequencyItemDelegate.hpp LiveFrequencyValidator.hpp \
-            FrequencyLineEdit.hpp AudioDevice.hpp Detector.hpp Modulator.hpp psk_reporter.h \
-            Transceiver.hpp TransceiverBase.hpp TransceiverFactory.hpp PollingTransceiver.hpp \
-            EmulateSplitTransceiver.hpp DXLabSuiteCommanderTransceiver.hpp HamlibTransceiver.hpp \
-            Configuration.hpp wsprnet.h \
-    signalmeter.h \
-    meterwidget.h \
-    logbook/logbook.h \
-    logbook/countrydat.h \
-    logbook/countriesworked.h \
-    logbook/adif.h \
-    messageaveraging.h
+  pimpl_h.hpp pimpl_impl.hpp \
+  Radio.hpp NetworkServerLookup.hpp revision_utils.hpp \
+  mainwindow.h plotter.h soundin.h soundout.h astro.h \
+  about.h WFPalette.hpp widegraph.h getfile.h decodedtext.h \
+  commons.h sleep.h displaytext.h logqso.h \
+  Bands.hpp FrequencyList.hpp StationList.hpp ForeignKeyDelegate.hpp FrequencyItemDelegate.hpp LiveFrequencyValidator.hpp \
+  FrequencyLineEdit.hpp AudioDevice.hpp Detector.hpp Modulator.hpp psk_reporter.h \
+  Transceiver.hpp TransceiverBase.hpp TransceiverFactory.hpp PollingTransceiver.hpp \
+  EmulateSplitTransceiver.hpp DXLabSuiteCommanderTransceiver.hpp HamlibTransceiver.hpp \
+  Configuration.hpp wsprnet.h signalmeter.h meterwidget.h \
+  logbook/logbook.h \
+  logbook/countrydat.h \
+  logbook/countriesworked.h \
+  logbook/adif.h \
+  messageaveraging.h echoplot.h echograph.h Modes.hpp WSPRBandHopping.hpp WsprTxScheduler.h
 
 INCLUDEPATH += qmake_only
 
@@ -121,7 +92,7 @@ HEADERS += OmniRigTransceiver.hpp
 
 FORMS    += mainwindow.ui about.ui Configuration.ui widegraph.ui astro.ui \
     logqso.ui wf_palette_design_dialog.ui \
-    messageaveraging.ui
+    messageaveraging.ui echograph.ui
 
 RC_FILE = wsjtx.rc
 RESOURCES = wsjtx.qrc

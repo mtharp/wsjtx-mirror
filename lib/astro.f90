@@ -42,12 +42,11 @@ subroutine astro(nyear,month,nday,uth,freq8,Mygrid,                    &
   call sun(nyear,month,nday,uth,lon,lat,RASun,DecSun,LST,      &
        AzSun,ElSun,mjd,day)
 
-!  freq=nfreq*1.e6
-!  if(nfreq.eq.2) freq=1.8e6
-!  if(nfreq.eq.4) freq=3.5e6
-
-  call MoonDop(nyear,month,nday,uth,lon,lat,RAMoon,DecMoon,    &
-       LST,HA,AzMoon,ElMoon,vr,dist)
+  call MoonDopJPL(nyear,month,nday,uth,lon,lat,RAMoon,DecMoon,    &
+       LST,HA,AzMoon,ElMoon,vr,techo)
+  RAMoon=rad*RAMoon
+  DecMoon=rad*DecMoon
+  dist=2.99792458d5*techo/2.d0
 
 ! Compute spatial polarization offset
   xx=sin(lat/rad)*cos(ElMoon/rad) - cos(lat/rad)*              &
@@ -56,14 +55,13 @@ subroutine astro(nyear,month,nday,uth,freq8,Mygrid,                    &
   if(NStation.eq.1) poloffset1=rad*atan2(yy,xx)
   if(NStation.eq.2) poloffset2=rad*atan2(yy,xx)
 
-  techo=2.0 * dist/2.99792458e5                  !Echo delay time
   doppler=-freq8*vr/2.99792458e5                 !One-way Doppler
 
   call coord(0.,0.,-1.570796,1.161639,RAMoon/rad,DecMoon/rad,el,eb)
   longecl_half=nint(rad*el/2.0)
   if(longecl_half.lt.1 .or. longecl_half.gt.180) longecl_half=180
   t144=nt144(longecl_half)
-  tsky=(t144-2.7)*(144.0/freq8)**2.6 + 2.7      !Tsky for obs freq
+  tsky=(t144-2.7)*(144.0d6/freq8)**2.6 + 2.7      !Tsky for obs freq
 
   xdop(NStation)=doppler
   if(NStation.eq.2) then
@@ -89,7 +87,7 @@ subroutine astro(nyear,month,nday,uth,freq8,Mygrid,                    &
   endif
 
   tr=80.0                              !Good preamp
-  tskymin=13.0*(408.0/freq8)**2.6      !Cold sky temperature
+  tskymin=13.0*(408.0d6/freq8)**2.6      !Cold sky temperature
   tsysmin=tskymin+tr
   tsys=tsky+tr
   dgrd=-10.0*log10(tsys/tsysmin) + dbMoon

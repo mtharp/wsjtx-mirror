@@ -2,14 +2,15 @@
 #define MESSAGE_CLIENT_HPP__
 
 #include <QObject>
-#include <QHostAddress>
 #include <QTime>
 #include <QDateTime>
 #include <QString>
-#include <QByteArray>
 
 #include "Radio.hpp"
 #include "pimpl_h.hpp"
+
+class QByteArray;
+class QHostAddress;
 
 //
 // MessageClient - Manage messages sent and replies received from a
@@ -75,7 +76,7 @@ public:
 
   // this signal is emitted if the server has requested a new free
   // message text
-  Q_SIGNAL void free_text (QString const&);
+  Q_SIGNAL void free_text (QString const&, bool send);
 
   // this signal is emitted when network errors occur or if a host
   // lookup fails

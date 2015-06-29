@@ -73,6 +73,7 @@ public:
 
   QDir temp_dir () const;
   QDir doc_dir () const;
+  QDir data_dir () const;
 
   QAudioDeviceInfo const& audio_input_device () const;
   AudioDevice::Channel audio_input_channel () const;
@@ -116,10 +117,15 @@ public:
   bool udpWindowToFront () const;
   bool udpWindowRestore () const;
   Bands * bands ();
+  Bands const * bands () const;
   FrequencyList * frequencies ();
+  FrequencyList const * frequencies () const;
   StationList * stations ();
+  StationList const * stations () const;
   QStringListModel * macros ();
+  QStringListModel const * macros () const;
   QDir save_directory () const;
+  QDir azel_directory () const;
   QString rig_name () const;
   unsigned jt9w_bw_mult () const;
   float jt9w_min_dt () const;

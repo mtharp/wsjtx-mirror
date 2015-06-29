@@ -113,7 +113,7 @@ option (WSJT_HAMLIB_TRACE "Debugging option that turns on minimal Hamlib interna
 option (WSJT_SOFT_KEYING "Apply a ramp to CW keying envelope to reduce transients." ON)
 option (WSJT_SKIP_MANPAGES "Skip *nix manpage generation.")
 option (WSJT_EMBED_SAMPLES "Embed sample files into WSJT-X resources." ON)
-option (WSJT_GENERATE_DOCS "Generate documentation files." OFF)
+option (WSJT_GENERATE_DOCS "Generate documentation files." ON)
 
 CMAKE_DEPENDENT_OPTION (WSJT_HAMLIB_VERBOSE_TRACE "Debugging option that turns on full Hamlib internal diagnostics." OFF WSJT_HAMLIB_TRACE OFF)
 CMAKE_DEPENDENT_OPTION (WSJT_QDEBUG_IN_RELEASE "Leave Qt debugging statements in Release configuration." OFF
@@ -152,6 +152,7 @@ set (WSJT_BIN_DESTINATION bin)
 set (WSJT_LIB_DESTINATION lib)
 set (WSJT_SHARE_DESTINATION share)
 set (WSJT_DOC_DESTINATION doc/${CMAKE_PROJECT_NAME})
+set (WSJT_DATA_DESTINATION ${CMAKE_PROJECT_NAME})
 set (WSJT_MANPAGE_DESTINATION share)
 set (WSJT_PLUGIN_DESTINATION lib/plugins)
 set (WSJT_QT_CONF_DESTINATION bin)
@@ -159,6 +160,7 @@ set (WSJT_QT_CONF_DESTINATION bin)
 if (WIN32)
   set (WSJT_SHARE_DESTINATION bin)
   set (WSJT_DOC_DESTINATION doc)
+  set (WSJT_DATA_DESTINATION data)
   set (WSJT_PLUGIN_DESTINATION plugins)
 endif (WIN32)
 
@@ -167,6 +169,7 @@ if (APPLE)
   set (WSJT_SHARE_DESTINATION ${CMAKE_PROJECT_NAME}.app/Contents/Resources)
   set (WSJT_MANPAGE_DESTINATION ${CMAKE_PROJECT_NAME}.app/Contents/Resources)
   set (WSJT_DOC_DESTINATION doc)
+  set (WSJT_DATA_DESTINATION data)
   set (WSJT_PLUGIN_DESTINATION ${CMAKE_PROJECT_NAME}.app/Contents/PlugIns)
   set (WSJT_QT_CONF_DESTINATION ${CMAKE_PROJECT_NAME}.app/Contents/Resources)
 endif (APPLE)
@@ -177,15 +180,16 @@ endif (APPLE)
 #
 set (wsjt_qt_CXXSRCS
   qt_helpers.cpp
+  MetaDataRegistry.cpp
   NetworkServerLookup.cpp
   revision_utils.cpp
   WFPalette.cpp
   Radio.cpp
   Bands.cpp
+  Modes.cpp
   FrequencyList.cpp
   StationList.cpp
   FrequencyLineEdit.cpp
-  FrequencyItemDelegate.cpp
   CandidateKeyFilter.cpp
   ForeignKeyDelegate.cpp
   LiveFrequencyValidator.cpp
@@ -202,6 +206,8 @@ set (wsjt_qt_CXXSRCS
   DXLabSuiteCommanderTransceiver.cpp
   NetworkMessage.cpp
   MessageClient.cpp
+  LettersSpinBox.cpp
+  HelpTextWindow.cpp
   )
 
 set (jt9_CXXSRCS
@@ -226,13 +232,17 @@ set (wsjtx_CXXSRCS
   signalmeter.cpp
   plotter.cpp
   widegraph.cpp
+  echograph.cpp
+  echoplot.cpp
   about.cpp
   astro.cpp
   messageaveraging.cpp
+  WsprTxScheduler.cpp
   mainwindow.cpp
   Configuration.cpp
   main.cpp
   wsprnet.cpp
+  WSPRBandHopping.cpp
   )
 
 if (WIN32)
@@ -254,6 +264,7 @@ set (wsjt_FSRCS
   lib/astro.f90
   lib/astrosub.f90
   lib/astro0.f90
+  lib/avecho.f90
   lib/avg4.f90
   lib/azdist.f90
   lib/baddata.f90
@@ -264,11 +275,8 @@ set (wsjt_FSRCS
   lib/chkss2.f90
   lib/coord.f90
   lib/db.f90
-  lib/dcoord.f90
   lib/decode65a.f90
   lib/decode65b.f90
-  lib/fftw3mod.f90
-  lib/jt9fano.f90
   lib/decode4.f90
   lib/decoder.f90
   lib/decjt9.f90
@@ -276,18 +284,17 @@ set (wsjt_FSRCS
   lib/deg2grid.f90
   lib/demod64a.f90
   lib/determ.f90
-  lib/dot.f90
   lib/downsam9.f90
   lib/encode232.f90
   lib/encode4.f90
   lib/entail.f90
+  lib/ephem.f90
   lib/extract.F90
   lib/extract4.f90
-  lib/geocentric.f90
-  lib/getmet4.f90
   lib/fano232.f90
   lib/fchisq.f90
   lib/fchisq65.f90
+  lib/fftw3mod.f90
   lib/fil3.f90
   lib/fil3c.f90
   lib/fil4.f90
@@ -307,25 +314,27 @@ set (wsjt_FSRCS
   lib/genwspr.f90
   lib/geodist.f90
   lib/getlags.f90
+  lib/getmet4.f90
   lib/graycode.f90
   lib/graycode65.f90
   lib/grayline.f90
   lib/grid2deg.f90
   lib/hash.f90
-  lib/hopping.f90
   lib/image.f90
   lib/indexx.f90
   lib/interleave4.f90
   lib/interleave63.f90
   lib/interleave9.f90
   lib/inter_wspr.f90
+  lib/jplsubs.f
   lib/jt4.f90
   lib/jt4a.f90
   lib/jt65a.f90
+  lib/jt9fano.f90
+  lib/libration.f90
   lib/lpf1.f90
   lib/mixlpf.f90
-  lib/moon2.f90
-  lib/moondop.f90
+  lib/moondopjpl.f90
   lib/morse.f90
   lib/move.f90
   lib/options.f90
@@ -339,6 +348,7 @@ set (wsjt_FSRCS
   lib/savec2.f90
   lib/sec_midn.f90
   lib/setup65.f90
+  lib/slasubs.f
   lib/sleep_msec.f90
   lib/slope.f90
   lib/smo.f90
@@ -354,8 +364,6 @@ set (wsjt_FSRCS
   lib/sync9.f90
   lib/timer.f90
   lib/timf2.f90
-  lib/tm2.f90
-  lib/toxyz.f90
   lib/twkfreq.f90
   lib/twkfreq65.f90
   lib/wav11.f90
@@ -391,6 +399,7 @@ set (wsjtx_UISRCS
   mainwindow.ui
   about.ui
   astro.ui
+  echograph.ui
   messageaveraging.ui
   widegraph.ui
   logqso.ui
@@ -621,23 +630,14 @@ endif (NOT APPLE)
 include (FortranCInterface)
 FortranCInterface_VERIFY (CXX QUIET)
 FortranCInterface_HEADER (FC.h MACRO_NAMESPACE "FC_" SYMBOL_NAMESPACE "FC_"
-  SYMBOLS )
+  SYMBOLS
+  grayline
+  )
 
 
 #
 # sort out pre-requisites
 #
-
-#
-# fetch latest HTML manual
-#
-#set (WSJT_MANUAL_DIRECTORY "${PROJECT_MANUAL_DIRECTORY_URL}"
-#  CACHE STRING "Can be overridden to a local URI")
-#add_custom_target (user_manual ALL
-#  ${CMAKE_COMMAND} -D URL=${WSJT_MANUAL_DIRECTORY} -D NAME=${PROJECT_MANUAL} -P ${CMAKE_SOURCE_DIR}/CMake/download_html_manual.cmake
-#  COMMENT "Downloading ${PROJECT_NAME} HTML manual"
-#  VERBATIM
-#  )
 
 #
 # Setup RPATH so that built executable targets will run in both the
@@ -840,6 +840,9 @@ if (WIN32)
   qt5_use_modules (wsjt_qt AxContainer AxBase)
 endif (WIN32)
 
+add_executable (jt4sim lib/jt4sim.f90 wsjtx.rc)
+target_link_libraries (jt4sim wsjt_fort wsjt_cxx)
+
 add_executable (jt9sim lib/jt9sim.f90 wsjtx.rc)
 target_link_libraries (jt9sim wsjt_fort wsjt_cxx)
 
@@ -851,6 +854,9 @@ target_link_libraries (jt9code wsjt_fort wsjt_cxx)
 
 add_executable (wsprd lib/wsprd/wsprd.c lib/wsprd/wsprd_utils.c lib/wsprd/fano.c lib/wsprd/tab.c lib/wsprd/nhash.c)
 target_link_libraries (wsprd ${FFTW3_LIBRARIES})
+
+add_executable (wsprsim lib/wsprd/wsprsim.c lib/wsprd/wsprsim_utils.c lib/wsprd/wsprd_utils.c lib/wsprd/fano.c lib/wsprd/tab.c lib/wsprd/nhash.c)
+target_link_libraries (wsprsim )
 
 add_executable (jt4code lib/jt4code.f90 wsjtx.rc)
 target_link_libraries (jt4code wsjt_fort wsjt_cxx)
@@ -960,7 +966,7 @@ install (TARGETS wsjtx
   BUNDLE DESTINATION . COMPONENT runtime
   )
 
-install (TARGETS jt9 jt65code jt9code jt4code wsprd message_aggregator 
+install (TARGETS jt9 jt65code jt9code jt4code jt4sim wsprd wsprsim message_aggregator 
   RUNTIME DESTINATION ${WSJT_BIN_DESTINATION} COMPONENT runtime
   BUNDLE DESTINATION ${WSJT_BIN_DESTINATION} COMPONENT runtime
   )
@@ -1003,6 +1009,12 @@ install (FILES
   INSTALL
   BUGS
   DESTINATION ${WSJT_SHARE_DESTINATION}/${WSJT_DOC_DESTINATION}
+  #COMPONENT runtime
+  )
+
+install (FILES
+  contrib/Ephemeris/JPLEPH
+  DESTINATION ${WSJT_SHARE_DESTINATION}/${WSJT_DATA_DESTINATION}
   #COMPONENT runtime
   )
 
@@ -1049,7 +1061,7 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/wsjtx_config.h.in"
   "${PROJECT_BINARY_DIR}/wsjtx_config.h"
   )
-include_directories ("${PROJECT_BINARY_DIR}")
+include_directories (BEFORE "${PROJECT_BINARY_DIR}")
 
 
 if (NOT WIN32 AND NOT APPLE)

@@ -35,8 +35,7 @@ class Bands;
 //  Implements the  QAbstractTableModel interface for a  grid of bands
 //  with offset frequencies and antenna descriptions.
 //
-//  Uses the QAbstractItemModel interface of the bands model to lookup
-//  band information.
+//  Uses the Bands model to lookup band information.
 //
 class StationList final
   : public QSortFilterProxyModel
@@ -59,13 +58,15 @@ public:
 
   using Stations = QList<Station>;
 
+  enum Column {band_column, offset_column, description_column};
+
   explicit StationList (Bands const * bands, QObject * parent = nullptr);
   explicit StationList (Bands const * bands, Stations, QObject * parent = nullptr);
   ~StationList ();
 
-  // Load and store contents.
-  StationList& operator = (Stations);
-  Stations stations () const;
+  // Load and query contents.
+  Stations station_list (Stations);
+  Stations const& station_list () const;
 
   //
   // Model API
@@ -83,10 +84,6 @@ private:
   pimpl<impl> m_;
 };
 
-#if !defined (QT_NO_DEBUG_STREAM)
-QDebug operator << (QDebug debug, StationList::Station const&);
-#endif
-
 // Station equivalence
 inline
 bool operator == (StationList::Station const& lhs, StationList::Station const& rhs)
@@ -95,6 +92,13 @@ bool operator == (StationList::Station const& lhs, StationList::Station const& r
     && lhs.offset_ == rhs.offset_
     && lhs.antenna_description_ == rhs.antenna_description_;
 }
+
+QDataStream& operator << (QDataStream&, StationList::Station const&);
+QDataStream& operator >> (QDataStream&, StationList::Station&);
+
+#if !defined (QT_NO_DEBUG_STREAM)
+QDebug operator << (QDebug debug, StationList::Station const&);
+#endif
 
 Q_DECLARE_METATYPE (StationList::Station);
 Q_DECLARE_METATYPE (StationList::Stations);

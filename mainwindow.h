@@ -16,21 +16,22 @@
 #include <QProgressDialog>
 #include <QAbstractSocket>
 #include <QHostAddress>
+#include <QPointer>
 
 #include "soundin.h"
 #include "AudioDevice.hpp"
 #include "soundout.h"
 #include "commons.h"
 #include "Radio.hpp"
+#include "Modes.hpp"
 #include "Configuration.hpp"
+#include "WSPRBandHopping.hpp"
 #include "Transceiver.hpp"
 #include "psk_reporter.h"
-#include "signalmeter.h"
 #include "logbook/logbook.h"
 #include "Detector.hpp"
 #include "Modulator.hpp"
 #include "decodedtext.h"
-#include "wsprnet.h"
 
 #define NUM_JT4_SYMBOLS 206
 #define NUM_JT65_SYMBOLS 126
@@ -51,6 +52,7 @@ class QSettings;
 class QLineEdit;
 class QFont;
 class QHostInfo;
+class EchoGraph;
 class WideGraph;
 class LogQSO;
 class Transceiver;
@@ -58,6 +60,9 @@ class Astro;
 class MessageAveraging;
 class MessageClient;
 class QTime;
+class WSPRBandHopping;
+class HelpTextWindow;
+class WSPRNet;
 
 class MainWindow : public QMainWindow
 {
@@ -65,6 +70,7 @@ class MainWindow : public QMainWindow
 
 public:
   using Frequency = Radio::Frequency;
+  using Mode = Modes::Mode;
 
   // Multiple instances: call MainWindow() with *thekey
   explicit MainWindow(bool multiple, QSettings *, QSharedMemory *shdmem,
@@ -90,7 +96,6 @@ public slots:
   void p1Error(QProcess::ProcessError);
   void setXIT(int n);
   void setFreq4(int rxFreq, int txFreq);
-  void clrAvg();
   void msgAvgDecode2();
 
 protected:
@@ -163,8 +168,8 @@ private slots:
   void on_pbAnswerCQ_clicked();
   void on_pbSendReport_clicked();
   void on_pbSend73_clicked();
-  void on_rbGenMsg_toggled(bool checked);
-  void on_rbFreeText_toggled(bool checked);
+  void on_rbGenMsg_clicked(bool checked);
+  void on_rbFreeText_clicked(bool checked);
   void on_freeTextMsg_currentTextChanged (QString const&);
   void on_rptSpinBox_valueChanged(int n);
   void killFile();
@@ -176,12 +181,12 @@ private slots:
                   , QString const& rpt_sent, QString const& rpt_received
                   , QString const& tx_power, QString const& comments
                   , QString const& name);
+  void on_bandComboBox_currentIndexChanged (int index);
   void on_bandComboBox_activated (int index);
   void on_readFreq_clicked();
   void on_pbTxMode_clicked();
   void on_RxFreqSpinBox_valueChanged(int n);
   void on_cbTxLock_clicked(bool checked);
-  void on_cbPlus2kHz_toggled(bool checked);
   void on_outAttenuation_valueChanged (int);
   void rigOpen ();
   void handle_transceiver_update (Transceiver::TransceiverState);
@@ -196,7 +201,7 @@ private slots:
   void stopTuneATU();
   void auto_tx_mode (bool);
   void on_actionMessage_averaging_triggered();
-  void on_sbTol_valueChanged(int i);
+  void on_FTol_combo_box_currentIndexChanged(QString const&);
   void on_actionInclude_averaging_triggered();
   void on_actionInclude_correlation_triggered();
   void on_sbDT_valueChanged(double x);
@@ -223,18 +228,14 @@ private slots:
   void p3Error(QProcess::ProcessError e);
   void on_WSPRfreqSpinBox_valueChanged(int n);
   void on_pbTxNext_clicked(bool b);
-  void on_cbBandHop_toggled(bool b);
-  void on_sunriseBands_editingFinished();
-  void on_pushButton_clicked();
-  void on_dayBands_editingFinished();
-  void on_sunsetBands_editingFinished();
-  void on_nightBands_editingFinished();
-  void on_tuneBands_editingFinished();
-  void on_graylineDuration_editingFinished();
+  void on_tabWidget_currentChanged (int);
+
+  void on_actionEcho_Graph_triggered();
+
+  void on_actionEcho_triggered();
+  void DopplerTracking_toggled (bool);
 
 private:
-  void enable_DXCC_entity (bool on);
-
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
       unsigned channels, unsigned msBuffered) const;
   Q_SIGNAL void stopAudioOutputStream () const;
@@ -246,11 +247,11 @@ private:
   Q_SIGNAL void startDetector (AudioDevice::Channel) const;
   Q_SIGNAL void detectorClose () const;
   Q_SIGNAL void finished () const;
-  Q_SIGNAL void transmitFrequency (unsigned) const;
+  Q_SIGNAL void transmitFrequency (double) const;
   Q_SIGNAL void endTransmitMessage (bool quick = false) const;
   Q_SIGNAL void tune (bool = true) const;
   Q_SIGNAL void sendMessage (unsigned symbolsLength, double framesPerSymbol,
-      unsigned frequency, double toneSpacing,
+      double frequency, double toneSpacing,
       SoundOutput *, AudioDevice::Channel = AudioDevice::Mono,
       bool synchronize = true, double dBSNR = 99.) const;
   Q_SIGNAL void outAttenuationChanged (qreal) const;
@@ -266,14 +267,16 @@ private:
 
   // other windows
   Configuration m_config;
+  WSPRBandHopping m_WSPR_band_hopping;
   QMessageBox m_rigErrorMessageBox;
 
   QScopedPointer<WideGraph> m_wideGraph;
+  QScopedPointer<EchoGraph> m_echoGraph;
   QScopedPointer<LogQSO> m_logDlg;
   QScopedPointer<Astro> m_astroWidget;
-  QScopedPointer<QTextEdit> m_shortcuts;
-  QScopedPointer<QTextEdit> m_prefixes;
-  QScopedPointer<QTextEdit> m_mouseCmnds;
+  QScopedPointer<HelpTextWindow> m_shortcuts;
+  QScopedPointer<HelpTextWindow> m_prefixes;
+  QScopedPointer<HelpTextWindow> m_mouseCmnds;
   QScopedPointer<MessageAveraging> m_msgAvgWidget;
 
   Frequency  m_dialFreq;
@@ -290,6 +293,8 @@ private:
   qint64  m_freqMoon;
   qint64  m_freqNominal;
   qint64  m_dialFreqTx;
+
+  double  m_s6;
 
   float   m_DTtol;
   float   m_rxavg;
@@ -319,16 +324,12 @@ private:
   qint32  m_astroFont;
   qint32  m_nSubMode;
   qint32  m_MinW;
-  qint32  m_tol;
   qint32  m_nclearave;
-  qint32  m_DopplerMethod;
-  qint32  m_DopplerMethod0;
   qint32  m_minSync;
   qint32  m_dBm;
   qint32  m_pctx;
   qint32  m_nseq;
-  qint32  m_grayDuration;
-  qint32  m_band00;
+  qint32  m_nWSPRdecodes;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -365,26 +366,25 @@ private:
   QString m_currentMessage;
   int     m_lastMessageType;
   QString m_lastMessageSent;
-  bool    m_runaway;
   bool    m_bMultipleOK;
   bool    m_lockTxFreq;
   bool    m_tx2QSO;
   bool    m_CATerror;
-  bool    m_plus2kHz;
   bool    m_bAstroData;
   bool    m_bEME;
   bool    m_bShMsgs;
-  bool    m_bDopplerTracking;
-  bool    m_bDopplerTracking0;
   bool    m_uploadSpots;
   bool    m_uploading;
   bool    m_txNext;
   bool    m_grid6;
-  bool    m_bandHopping;
-  bool    m_hopTest;
   bool    m_tuneup;
   bool    m_bTxTime;
   bool    m_rxDone;
+  bool    m_bSimplex; // not using split even if it is available
+  int     m_nonWSPRTab;
+  bool    m_bEchoTxOK;
+  bool    m_bTransmittedEcho;
+  bool    m_bEchoTxed;
 
   float   m_pctZap;
 
@@ -454,15 +454,12 @@ private:
   QStringList m_nightBands;
   QStringList m_tuneBands;
 
-  QMap<QString,double> m_fWSPR;
-
   QHash<QString,bool> m_pfx;
   QHash<QString,bool> m_sfx;
 
   QDateTime m_dateTimeQSO;
 
   QSharedMemory *mem_jt9;
-  SignalMeter *signalMeter;
   LogBook m_logBook;
   DecodedText m_QSOText;
   unsigned m_msAudioOutputBuffered;
@@ -490,6 +487,7 @@ private:
   void updateStatusBar();
   void msgBox(QString t);
   void genStdMsgs(QString rpt);
+  void clearDX ();
   void lookup();
   void ba2msg(QByteArray ba, char* message);
   void msgtype(QString t, QLineEdit* tx);
@@ -507,7 +505,12 @@ private:
   void replyToCQ (QTime, qint32 snr, float delta_time, quint32 delta_frequency, QString const& mode, QString const& message_text);
   void replayDecodes ();
   void postDecode (bool is_new, QString const& message);
-  void bandHopping();
+  void enable_DXCC_entity (bool on);
+  void switch_mode (Mode);
+  void WSPR_scheduling ();
+  void astroCalculations (QDateTime const&, bool adjust);
+  void WSPR_history(Frequency dialFreq, int ndecodes);
+  QString WSPR_hhmm(int n);
 };
 
 extern void getfile(QString fname, int ntrperiod);
@@ -517,6 +520,7 @@ extern void getDev(int* numDevices,char hostAPI_DeviceName[][50],
                    int minChan[], int maxChan[],
                    int minSpeed[], int maxSpeed[]);
 extern int ptt(int nport, int ntx, int* iptt, int* nopen);
+extern int next_tx_state(int pctx);
 
 extern "C" {
   //----------------------------------------------------- C and Fortran routines
@@ -550,9 +554,9 @@ extern "C" {
   void wspr_downsample_(short int d2[], int* k);
   void savec2_(char* fname, int* m_TRseconds, double* m_dialFreq, int len1);
 
-  void hopping_(int* nyear, int* month, int* nday, float* uth, char* MyGrid,
-                int* nduration, int* npctx, int* isun, int* iband,
-                int* ntxnext, int len);
+  void avecho_( short id2[], int* dop, int* nfrit, int* nqual, float* f1,
+                float* level, float* sigdb, float* snr, float* dfreq,
+                float* width);
 }
 
 #endif // MAINWINDOW_H

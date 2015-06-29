@@ -163,14 +163,15 @@
 #include <QDebug>
 
 #include "qt_helpers.hpp"
+#include "MetaDataRegistry.hpp"
 #include "SettingsGroup.hpp"
 #include "FrequencyLineEdit.hpp"
-#include "FrequencyItemDelegate.hpp"
 #include "CandidateKeyFilter.hpp"
 #include "ForeignKeyDelegate.hpp"
 #include "TransceiverFactory.hpp"
 #include "Transceiver.hpp"
 #include "Bands.hpp"
+#include "Modes.hpp"
 #include "FrequencyList.hpp"
 #include "StationList.hpp"
 #include "NetworkServerLookup.hpp"
@@ -182,17 +183,6 @@
 
 namespace
 {
-  struct init
-  {
-    init ()
-    {
-      qRegisterMetaType<Configuration::DataMode> ("Configuration::DataMode");
-      qRegisterMetaTypeStreamOperators<Configuration::DataMode> ("Configuration::DataMode");
-      qRegisterMetaType<Configuration::Type2MsgGen> ("Configuration::Type2MsgGen");
-      qRegisterMetaTypeStreamOperators<Configuration::Type2MsgGen> ("Configuration::Type2MsgGen");
-    }
-  } static_initializer;
-
   // these undocumented flag values when stored in (Qt::UserRole - 1)
   // of a ComboBox item model index allow the item to be enabled or
   // disabled
@@ -210,14 +200,17 @@ class FrequencyDialog final
   : public QDialog
 {
 public:
-  using Frequency = Radio::Frequency;
+  using Item = FrequencyList::Item;
 
-  explicit FrequencyDialog (QWidget * parent = nullptr)
+  explicit FrequencyDialog (Modes * modes_model, QWidget * parent = nullptr)
     : QDialog {parent}
   {
     setWindowTitle (QApplication::applicationName () + " - " + tr ("Add Frequency"));
 
+    mode_combo_box_.setModel (modes_model);
+
     auto form_layout = new QFormLayout ();
+    form_layout->addRow (tr ("&Mode:"), &mode_combo_box_);
     form_layout->addRow (tr ("&Frequency (MHz):"), &frequency_line_edit_);
 
     auto main_layout = new QVBoxLayout (this);
@@ -230,12 +223,13 @@ public:
     connect (button_box, &QDialogButtonBox::rejected, this, &FrequencyDialog::reject);
   }
 
-  Frequency frequency () const
+  Item item () const
   {
-    return frequency_line_edit_.frequency ();
+    return {frequency_line_edit_.frequency (), Modes::value (mode_combo_box_.currentText ())};
   }
 
 private:
+  QComboBox mode_combo_box_;
   FrequencyLineEdit frequency_line_edit_;
 };
 
@@ -249,7 +243,7 @@ class StationDialog final
 public:
   explicit StationDialog (StationList const * stations, Bands * bands, QWidget * parent = nullptr)
     : QDialog {parent}
-    , filtered_bands_ {new CandidateKeyFilter {stations, bands}}
+    , filtered_bands_ {new CandidateKeyFilter {bands, stations, 0, 0}}
   {
     setWindowTitle (QApplication::applicationName () + " - " + tr ("Add Station"));
 
@@ -311,6 +305,7 @@ public:
 };
 
 
+//
 // Class MessageItemDelegate
 //
 //	Item delegate for message entry such as free text message macros.
@@ -335,7 +330,6 @@ public:
     return editor;
   }
 };
-
 
 // Internal implementation of the Configuration class.
 class Configuration::impl final
@@ -415,7 +409,9 @@ private:
   Q_SLOT void delete_macro ();
   void delete_selected_macros (QModelIndexList);
   Q_SLOT void on_save_path_select_push_button_clicked (bool);
+  Q_SLOT void on_azel_path_select_push_button_clicked (bool);
   Q_SLOT void delete_frequencies ();
+  Q_SLOT void on_reset_frequencies_push_button_clicked (bool);
   Q_SLOT void insert_frequency ();
   Q_SLOT void delete_stations ();
   Q_SLOT void insert_station ();
@@ -447,9 +443,12 @@ private:
   QSettings * settings_;
 
   QDir doc_dir_;
+  QDir data_dir_;
   QDir temp_dir_;
   QDir default_save_directory_;
   QDir save_directory_;
+  QDir default_azel_directory_;
+  QDir azel_directory_;
 
   QFont font_;
   QFont next_font_;
@@ -469,12 +468,14 @@ private:
   QStringListModel macros_;
   RearrangableMacrosModel next_macros_;
   QAction * macro_delete_action_;
-  
+
   Bands bands_;
+  Modes modes_;
   FrequencyList frequencies_;
   FrequencyList next_frequencies_;
   StationList stations_;
   StationList next_stations_;
+  FrequencyDelta current_offset_;
 
   QAction * frequency_delete_action_;
   QAction * frequency_insert_action_;
@@ -572,6 +573,7 @@ Configuration::~Configuration ()
 }
 
 QDir Configuration::doc_dir () const {return m_->doc_dir_;}
+QDir Configuration::data_dir () const {return m_->data_dir_;}
 QDir Configuration::temp_dir () const {return m_->temp_dir_;}
 
 int Configuration::exec () {return m_->exec ();}
@@ -624,10 +626,15 @@ bool Configuration::accept_udp_requests () const {return m_->accept_udp_requests
 bool Configuration::udpWindowToFront () const {return m_->udpWindowToFront_;}
 bool Configuration::udpWindowRestore () const {return m_->udpWindowRestore_;}
 Bands * Configuration::bands () {return &m_->bands_;}
+Bands const * Configuration::bands () const {return &m_->bands_;}
 StationList * Configuration::stations () {return &m_->stations_;}
+StationList const * Configuration::stations () const {return &m_->stations_;}
 FrequencyList * Configuration::frequencies () {return &m_->frequencies_;}
+FrequencyList const * Configuration::frequencies () const {return &m_->frequencies_;}
 QStringListModel * Configuration::macros () {return &m_->macros_;}
+QStringListModel const * Configuration::macros () const {return &m_->macros_;}
 QDir Configuration::save_directory () const {return m_->save_directory_;}
+QDir Configuration::azel_directory () const {return m_->azel_directory_;}
 QString Configuration::rig_name () const {return m_->rig_params_.rig_name;}
 
 bool Configuration::transceiver_online (bool open_if_closed)
@@ -697,24 +704,19 @@ void Configuration::sync_transceiver (bool force_signal, bool enforce_mode_and_s
   m_->sync_transceiver (force_signal);
 }
 
-
 Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget * parent)
   : QDialog {parent}
   , self_ {self}
   , ui_ {new Ui::configuration_dialog}
   , settings_ {settings}
   , doc_dir_ {QApplication::applicationDirPath ()}
-  , frequencies_ {
-    { 136000, 136130, 474200, 1836600, 1838000, 3576000, 3592600, 5287200, 5357000,
-      7038600, 7076000, 10138000, 10138700, 14076000, 14095600, 18102000, 18104600,
-      21076000, 21094600, 24917000, 24924600, 28076000, 28124600, 50276000, 50293000,
-      70091000, 144000000, 144489000, 222000000, 432000000, 432300000,
-      902000000, 1296000000, 1296500000, 2301000000, 2304000000, 2320000000, 3400000000,
-      3456000000, 5760000000,10368000000, 24048000000 }
-    }
+  , data_dir_ {QApplication::applicationDirPath ()}
+  , frequencies_ {&bands_}
+  , next_frequencies_ {&bands_}
   , stations_ {&bands_}
   , next_stations_ {&bands_}
-  , frequency_dialog_ {new FrequencyDialog {this}}
+  , current_offset_ {0}
+  , frequency_dialog_ {new FrequencyDialog {&modes_, this}}
   , station_dialog_ {new StationDialog {&next_stations_, &bands_, this}}
   , rig_active_ {false}
   , have_rig_ {false}
@@ -728,15 +730,15 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
 {
   ui_->setupUi (this);
 
-
 #if !defined (CMAKE_BUILD)
 #define WSJT_SHARE_DESTINATION "."
 #define WSJT_DOC_DESTINATION "."
+#define WSJT_DATA_DESTINATION "."
 #endif
 
 #if !defined (Q_OS_WIN) || QT_VERSION >= 0x050300
-  auto path = QStandardPaths::locate (QStandardPaths::DataLocation, WSJT_DOC_DESTINATION, QStandardPaths::LocateDirectory);
-  if (path.isEmpty ())
+  auto doc_path = QStandardPaths::locate (QStandardPaths::DataLocation, WSJT_DOC_DESTINATION, QStandardPaths::LocateDirectory);
+  if (doc_path.isEmpty ())
     {
       doc_dir_.cdUp ();
 #if defined (Q_OS_MAC)
@@ -748,10 +750,27 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
     }
   else
     {
-      doc_dir_.cd (path);
+      doc_dir_.cd (doc_path);
+    }
+
+  auto data_path = QStandardPaths::locate (QStandardPaths::DataLocation, WSJT_DATA_DESTINATION, QStandardPaths::LocateDirectory);
+  if (data_path.isEmpty ())
+    {
+      data_dir_.cdUp ();
+#if defined (Q_OS_MAC)
+      data_dir_.cdUp ();
+      data_dir_.cdUp ();
+#endif
+      data_dir_.cd (WSJT_SHARE_DESTINATION);
+      data_dir_.cd (WSJT_DATA_DESTINATION);
+    }
+  else
+    {
+      data_dir_.cd (data_path);
     }
 #else
   doc_dir_.cd (WSJT_DOC_DESTINATION);
+  data_dir_.cd (WSJT_DATA_DESTINATION);
 #endif
 
   {
@@ -782,9 +801,11 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
     // Make sure the default save directory exists
     QString save_dir {"save"};
     default_save_directory_ = data_dir;
+    default_azel_directory_ = data_dir;
     if (!default_save_directory_.mkpath (save_dir) || !default_save_directory_.cd (save_dir))
       {
-        QMessageBox::critical (this, "WSJT-X", tr ("Create Directory", "Cannot create directory \"") + default_save_directory_.absoluteFilePath (save_dir) + "\".");
+        QMessageBox::critical (this, "WSJT-X", tr ("Create Directory", "Cannot create directory \"") +
+                               default_save_directory_.absoluteFilePath (save_dir) + "\".");
         throw std::runtime_error {"Failed to create save directory"};
       }
 
@@ -794,7 +815,8 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
     QString samples_dir {"samples"};
     if (!default_save_directory_.mkpath (samples_dir))
       {
-        QMessageBox::critical (this, "WSJT-X", tr ("Create Directory", "Cannot create directory \"") + default_save_directory_.absoluteFilePath (samples_dir) + "\".");
+        QMessageBox::critical (this, "WSJT-X", tr ("Create Directory", "Cannot create directory \"") +
+                               default_save_directory_.absoluteFilePath (samples_dir) + "\".");
         throw std::runtime_error {"Failed to create save directory"};
       }
 
@@ -891,13 +913,19 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
   //
   // setup working frequencies table model & view
   //
-  frequencies_.sort (0);
+  frequencies_.sort (FrequencyList::frequency_column);
 
   ui_->frequencies_table_view->setModel (&next_frequencies_);
-  ui_->frequencies_table_view->sortByColumn (0, Qt::AscendingOrder);
-  ui_->frequencies_table_view->setItemDelegateForColumn (0, new FrequencyItemDelegate {&bands_, this});
-  ui_->frequencies_table_view->setColumnHidden (1, true);
+  ui_->frequencies_table_view->sortByColumn (FrequencyList::frequency_column, Qt::AscendingOrder);
+  ui_->frequencies_table_view->setColumnHidden (FrequencyList::frequency_mhz_column, true);
 
+  // delegates
+  auto frequencies_item_delegate = new QStyledItemDelegate {this};
+  frequencies_item_delegate->setItemEditorFactory (item_editor_factory ());
+  ui_->frequencies_table_view->setItemDelegate (frequencies_item_delegate);
+  ui_->frequencies_table_view->setItemDelegateForColumn (FrequencyList::mode_column, new ForeignKeyDelegate {&modes_, 0, this});
+
+  // actions
   frequency_delete_action_ = new QAction {tr ("&Delete"), ui_->frequencies_table_view};
   ui_->frequencies_table_view->insertAction (nullptr, frequency_delete_action_);
   connect (frequency_delete_action_, &QAction::triggered, this, &Configuration::impl::delete_frequencies);
@@ -910,14 +938,18 @@ Configuration::impl::impl (Configuration * self, QSettings * settings, QWidget *
   //
   // setup stations table model & view
   //
-  stations_.sort (0);
+  stations_.sort (StationList::band_column);
 
   ui_->stations_table_view->setModel (&next_stations_);
-  ui_->stations_table_view->sortByColumn (0, Qt::AscendingOrder);
-  ui_->stations_table_view->setColumnWidth (1, 150);
-  ui_->stations_table_view->setItemDelegateForColumn (0, new ForeignKeyDelegate {&next_stations_, &bands_, 0, 0, this});
-  ui_->stations_table_view->setItemDelegateForColumn (1, new FrequencyDeltaItemDelegate {this});
+  ui_->stations_table_view->sortByColumn (StationList::band_column, Qt::AscendingOrder);
 
+  // delegates
+  auto stations_item_delegate = new QStyledItemDelegate {this};
+  stations_item_delegate->setItemEditorFactory (item_editor_factory ());
+  ui_->stations_table_view->setItemDelegate (stations_item_delegate);
+  ui_->stations_table_view->setItemDelegateForColumn (StationList::band_column, new ForeignKeyDelegate {&bands_, &next_stations_, 0, StationList::band_column, this});
+
+  // actions
   station_delete_action_ = new QAction {tr ("&Delete"), ui_->stations_table_view};
   ui_->stations_table_view->insertAction (nullptr, station_delete_action_);
   connect (station_delete_action_, &QAction::triggered, this, &Configuration::impl::delete_stations);
@@ -986,6 +1018,7 @@ void Configuration::impl::initialize_models ()
   ui_->CW_id_interval_spin_box->setValue (id_interval_);
   ui_->PTT_method_button_group->button (rig_params_.ptt_type)->setChecked (true);
   ui_->save_path_display_label->setText (save_directory_.absolutePath ());
+  ui_->azel_path_display_label->setText (azel_directory_.absolutePath ());
   ui_->CW_id_after_73_check_box->setChecked (id_after_73_);
   ui_->tx_QSY_check_box->setChecked (tx_QSY_allowed_);
   ui_->psk_reporter_check_box->setChecked (spot_to_psk_reporter_);
@@ -1041,8 +1074,8 @@ void Configuration::impl::initialize_models ()
     }
 
   next_macros_.setStringList (macros_.stringList ());
-  next_frequencies_ = frequencies_.frequencies ();
-  next_stations_ = stations_.stations ();
+  next_frequencies_.frequency_list (frequencies_.frequency_list ());
+  next_stations_.station_list (stations_.station_list ());
 
   set_rig_invariants ();
 }
@@ -1097,6 +1130,7 @@ void Configuration::impl::read_settings ()
   id_interval_ = settings_->value ("IDint", 0).toInt ();
 
   save_directory_ = settings_->value ("SaveDir", default_save_directory_.absolutePath ()).toString ();
+  azel_directory_ = settings_->value ("AzElDir", default_azel_directory_.absolutePath ()).toString ();
 
   {
     //
@@ -1170,10 +1204,10 @@ void Configuration::impl::read_settings ()
 
   if (settings_->contains ("frequencies"))
     {
-      frequencies_ = settings_->value ("frequencies").value<Radio::Frequencies> ();
+      frequencies_.frequency_list (settings_->value ("frequencies").value<FrequencyList::FrequencyItems> ());
     }
 
-  stations_ = settings_->value ("stations").value<StationList::Stations> ();
+  stations_.station_list (settings_->value ("stations").value<StationList::Stations> ());
 
   log_as_RTTY_ = settings_->value ("toRTTY", false).toBool ();
   report_in_comments_ = settings_->value("dBtoComments", false).toBool ();
@@ -1200,7 +1234,7 @@ void Configuration::impl::read_settings ()
   quick_call_ = settings_->value ("QuickCall", false).toBool ();
   disable_TX_on_73_ = settings_->value ("73TxDisable", false).toBool ();
   watchdog_ = settings_->value ("Runaway", false).toBool ();
-  TX_messages_ = settings_->value ("Tx2QSO", false).toBool ();
+  TX_messages_ = settings_->value ("Tx2QSO", true).toBool ();
   enable_VHF_features_ = settings_->value("VHFUHF",false).toBool ();
   decode_at_52s_ = settings_->value("Decode52",false).toBool ();
   rig_params_.poll_interval = settings_->value ("Polling", 0).toInt ();
@@ -1231,6 +1265,7 @@ void Configuration::impl::write_settings ()
   settings_->setValue ("PTTMethod", QVariant::fromValue (rig_params_.ptt_type));
   settings_->setValue ("PTTport", rig_params_.ptt_port);
   settings_->setValue ("SaveDir", save_directory_.absolutePath ());
+  settings_->setValue ("AzElDir", azel_directory_.absolutePath ());
 
   if (default_audio_input_device_selected_)
     {
@@ -1262,8 +1297,8 @@ void Configuration::impl::write_settings ()
   settings_->setValue ("After73", id_after_73_);
   settings_->setValue ("TxQSYAllowed", tx_QSY_allowed_);
   settings_->setValue ("Macros", macros_.stringList ());
-  settings_->setValue ("frequencies", QVariant::fromValue (frequencies_.frequencies ()));
-  settings_->setValue ("stations", QVariant::fromValue (stations_.stations ()));
+  settings_->setValue ("frequencies", QVariant::fromValue (frequencies_.frequency_list ()));
+  settings_->setValue ("stations", QVariant::fromValue (stations_.station_list ()));
   settings_->setValue ("toRTTY", log_as_RTTY_);
   settings_->setValue ("dBtoComments", report_in_comments_);
   settings_->setValue ("Rig", rig_params_.rig_name);
@@ -1646,6 +1681,7 @@ void Configuration::impl::accept ()
   TX_messages_ = ui_->TX_messages_check_box->isChecked ();
   data_mode_ = static_cast<DataMode> (ui_->TX_mode_button_group->checkedId ());
   save_directory_ = ui_->save_path_display_label->text ();
+  azel_directory_ = ui_->azel_path_display_label->text ();
   enable_VHF_features_ = ui_->enable_VHF_features_check_box->isChecked ();
   decode_at_52s_ = ui_->decode_at_52s_check_box->isChecked ();
   frequency_calibration_intercept_ = ui_->calibration_intercept_spin_box->value ();
@@ -1674,16 +1710,16 @@ void Configuration::impl::accept ()
       macros_.setStringList (next_macros_.stringList ());
     }
 
-  if (frequencies_.frequencies () != next_frequencies_.frequencies ())
+  if (frequencies_.frequency_list () != next_frequencies_.frequency_list ())
     {
-      frequencies_ = next_frequencies_.frequencies ();
-      frequencies_.sort (0);
+      frequencies_.frequency_list (next_frequencies_.frequency_list ());
+      frequencies_.sort (FrequencyList::frequency_column);
     }
 
-  if (stations_.stations () != next_stations_.stations ())
+  if (stations_.station_list () != next_stations_.station_list ())
     {
-      stations_ = next_stations_.stations ();
-      stations_.sort (0);
+      stations_.station_list(next_stations_.station_list ());
+      stations_.sort (StationList::band_column);
     }
  
   write_settings ();		// make visible to all
@@ -1975,13 +2011,26 @@ void Configuration::impl::delete_frequencies ()
   auto selection_model = ui_->frequencies_table_view->selectionModel ();
   selection_model->select (selection_model->selection (), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
   next_frequencies_.removeDisjointRows (selection_model->selectedRows ());
+  ui_->frequencies_table_view->resizeColumnToContents (FrequencyList::mode_column);
+}
+
+void Configuration::impl::on_reset_frequencies_push_button_clicked (bool /* checked */)
+{
+  if (QMessageBox::Yes == QMessageBox::question (this, tr ("Reset Working Frequencies")
+                                                 , tr ("Are you sure you want to discard your current "
+                                                       "working frequencies and replace them with default "
+                                                       "ones?")))
+    {
+      next_frequencies_.reset_to_defaults ();
+    }
 }
 
 void Configuration::impl::insert_frequency ()
 {
   if (QDialog::Accepted == frequency_dialog_->exec ())
     {
-      ui_->frequencies_table_view->setCurrentIndex (next_frequencies_.add (frequency_dialog_->frequency ()));
+      ui_->frequencies_table_view->setCurrentIndex (next_frequencies_.add (frequency_dialog_->item ()));
+      ui_->frequencies_table_view->resizeColumnToContents (FrequencyList::mode_column);
     }
 }
 
@@ -1990,6 +2039,8 @@ void Configuration::impl::delete_stations ()
   auto selection_model = ui_->stations_table_view->selectionModel ();
   selection_model->select (selection_model->selection (), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
   next_stations_.removeDisjointRows (selection_model->selectedRows ());
+  ui_->stations_table_view->resizeColumnToContents (StationList::band_column);
+  ui_->stations_table_view->resizeColumnToContents (StationList::offset_column);
 }
 
 void Configuration::impl::insert_station ()
@@ -1997,6 +2048,8 @@ void Configuration::impl::insert_station ()
   if (QDialog::Accepted == station_dialog_->exec ())
     {
       ui_->stations_table_view->setCurrentIndex (next_stations_.add (station_dialog_->station ()));
+      ui_->stations_table_view->resizeColumnToContents (StationList::band_column);
+      ui_->stations_table_view->resizeColumnToContents (StationList::offset_column);
     }
 }
 
@@ -2012,6 +2065,18 @@ void Configuration::impl::on_save_path_select_push_button_clicked (bool /* check
           ui_->save_path_display_label->setText (fd.selectedFiles ().at (0));
         }
     }
+}
+
+void Configuration::impl::on_azel_path_select_push_button_clicked (bool /* checked */)
+{
+  QFileDialog fd {this, tr ("AzEl Directory"), ui_->azel_path_display_label->text ()};
+  fd.setFileMode (QFileDialog::Directory);
+  fd.setOption (QFileDialog::ShowDirsOnly);
+  if (fd.exec ()) {
+    if (fd.selectedFiles ().size ()) {
+      ui_->azel_path_display_label->setText(fd.selectedFiles().at(0));
+    }
+  }
 }
 
 bool Configuration::impl::have_rig (bool open_if_closed)
@@ -2106,13 +2171,18 @@ void Configuration::impl::transceiver_frequency (Frequency f)
       cached_rig_state_.mode (mode);
 
       // apply any offset & calibration
-      Q_EMIT frequency (apply_calibration (f + stations_.offset (f)), mode);
+      // we store the offset here for use in feedback from the rig, we
+      // cannot absolutely determine if the offset should apply but by
+      // simply picking an offset when the Rx frequency is set and
+      // sticking to it we get sane behaviour
+      current_offset_ = stations_.offset (f);
+      Q_EMIT frequency (apply_calibration (f + current_offset_), mode);
     }
 }
 
 void Configuration::impl::transceiver_tx_frequency (Frequency f)
 {
-  if (/* set_mode () || */ cached_rig_state_.tx_frequency () != f || cached_rig_state_.split () != !!f)
+  if (/* set_mode () || */ cached_rig_state_.tx_frequency () != f || !cached_rig_state_.compare_split (!!f))
     {
       cached_rig_state_.split (f);
       cached_rig_state_.tx_frequency (f);
@@ -2121,7 +2191,12 @@ void Configuration::impl::transceiver_tx_frequency (Frequency f)
       if (cached_rig_state_.split ())
         {
           // apply and offset and calibration
-          f = apply_calibration (f + stations_.offset (f));
+          // we store the offset here for use in feedback from the
+          // rig, we cannot absolutely determine if the offset should
+          // apply but by simply picking an offset when the Rx
+          // frequency is set and sticking to it we get sane behaviour
+          current_offset_ = stations_.offset (f);
+          f = apply_calibration (f + current_offset_);
         }
 
 
@@ -2211,8 +2286,14 @@ void Configuration::impl::handle_transceiver_update (TransceiverState state)
                       setup_split_ = true;
                       required_tx_frequency_ = 0;
 
-                      // Q_EMIT self_->transceiver_failure (tr ("Rig split mode setting not consistent with WSJT-X settings. Changing WSJT-X settings for you."));
-                      Q_EMIT self_->transceiver_failure (tr ("Rig split mode setting not consistent with WSJT-X settings."));
+                      // Q_EMIT self_->transceiver_failure (tr ("Rig
+                      // split mode setting not consistent with WSJT-X
+                      // settings. Changing WSJT-X settings for
+                      // you."));
+                      if (cached_rig_state_.split () != state.split ())
+                        {
+                          Q_EMIT self_->transceiver_failure (tr ("Rig split mode setting not consistent with WSJT-X settings."));
+                        }
                     }
                 }
             }
@@ -2221,7 +2302,9 @@ void Configuration::impl::handle_transceiver_update (TransceiverState state)
       // One time rig setup split
       if (setup_split_ && cached_rig_state_.split () != state.split ())
         {
-          Q_EMIT tx_frequency (TransceiverFactory::split_mode_none != split_mode_selected ? (required_tx_frequency_ ? required_tx_frequency_ : state.tx_frequency ()) : 0, true);
+          Q_EMIT tx_frequency (TransceiverFactory::split_mode_none != split_mode_selected && cached_rig_state_.split ()
+                               ? (required_tx_frequency_ ? required_tx_frequency_ : state.tx_frequency ())
+                               : 0, true);
         }
       setup_split_ = false;
       required_tx_frequency_ = 0;
@@ -2232,12 +2315,12 @@ void Configuration::impl::handle_transceiver_update (TransceiverState state)
     }
 
   // take off calibration & offset
-  state.frequency (remove_calibration (state.frequency ()) - stations_.offset (state.frequency ()));
+  state.frequency (remove_calibration (state.frequency ()) - current_offset_);
 
   if (state.tx_frequency ())
     {
       // take off calibration & offset
-      state.tx_frequency (remove_calibration (state.tx_frequency ()) - stations_.offset (state.tx_frequency ()));
+      state.tx_frequency (remove_calibration (state.tx_frequency ()) - current_offset_);
     }
 
   cached_rig_state_ = state;
@@ -2382,6 +2465,10 @@ void Configuration::impl::update_audio_channels (QComboBox const * source_combo_
 void Configuration::impl::set_application_font (QFont const& font)
 {
   qApp->setStyleSheet (qApp->styleSheet () + "* {" + font_as_stylesheet (font) + '}');
+  for (auto& widget : qApp->topLevelWidgets ())
+    {
+      widget->updateGeometry ();
+    }
 }
 
 // load all the supported rig names into the selection combo box

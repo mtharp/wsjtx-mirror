@@ -140,13 +140,13 @@ void SoundOutput::stop ()
 
 qreal SoundOutput::attenuation () const
 {
-  return -(10. * qLn (m_volume) / qLn (10.));
+  return -(20. * qLn (m_volume) / qLn (10.));
 }
 
 void SoundOutput::setAttenuation (qreal a)
 {
   Q_ASSERT (0. <= a && a <= 999.);
-  m_volume = qPow (10., -a / 10.);
+  m_volume = qPow(10.0, -a/20.0);
   //  qDebug () << "SoundOut: attn = " << a << ", vol = " << m_volume;
   if (m_stream)
     {

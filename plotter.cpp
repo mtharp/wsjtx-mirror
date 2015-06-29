@@ -6,8 +6,6 @@
 
 #define MAX_SCREENSIZE 2048
 
-//float swide0[2048];
-
 CPlotter::CPlotter(QWidget *parent) :                  //CPlotter Constructor
   QFrame(parent)
 {
@@ -96,7 +94,6 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   double fac = sqrt(m_binsPerPixel*m_waterfallAvg/15.0);
   double gain = fac*pow(10.0,0.02*m_plotGain);
   double gain2d = pow(10.0,0.02*(m_plot2dGain));
-  qDebug() << m_binsPerPixel << m_waterfallAvg << m_plotGain << gain;
 
 //move current data down one line (must do this before attaching a QPainter object)
   if(bScroll) m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
@@ -128,15 +125,15 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   }
 
   float ymin=1.e30;
+  if(swide[0]>1.e29 and swide[0]< 1.5e30) painter1.setPen(Qt::green);
+  if(swide[0]>1.4e30) painter1.setPen(Qt::yellow);
   for(int i=0; i<iz; i++) {
-    //    swide0[i]=swide[i];
     y=swide[i];
     if(y<ymin) ymin=y;
     int y1 = 10.0*gain*y + 10*m_plotZero +40;
     if (y1<0) y1=0;
     if (y1>254) y1=254;
-    if (swide[i]>1.e29) y1=255;
-    painter1.setPen(m_ColorTbl[y1]);
+    if (swide[i]<1.e29) painter1.setPen(m_ColorTbl[y1]);
     painter1.drawPoint(i,0);
   }
 
@@ -334,23 +331,23 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
   }
 
 
-  if(m_mode != "JT4") {
-    QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
-    painter0.setPen(pen0);
-    if(m_mode=="WSPR-2") {                   //### WSPR-15 code needed here, too ###
-      x1=XfromFreq(1400);
-      x2=XfromFreq(1600);
-      painter0.drawLine(x1,29,x2,29);
-    } else {
-      x1=XfromFreq(m_rxFreq);
-      x2=XfromFreq(m_rxFreq+bw);
-      painter0.drawLine(x1,24,x1,30);
-      painter0.drawLine(x1,28,x2,28);
-      painter0.drawLine(x2,24,x2,30);
-    }
+  QPen pen0(Qt::green, 3);                 //Mark Rx Freq with green
+  painter0.setPen(pen0);
+  if(m_mode=="WSPR-2") {                   //### WSPR-15 code needed here, too ###
+    x1=XfromFreq(1400);
+    x2=XfromFreq(1600);
+    painter0.drawLine(x1,29,x2,29);
+  }
+  if(m_mode=="JT9" or m_mode=="JT65" or m_mode=="JT9+JT65") {
+    x1=XfromFreq(m_rxFreq);
+    x2=XfromFreq(m_rxFreq+bw);
+    painter0.drawLine(x1,24,x1,30);
+    painter0.drawLine(x1,28,x2,28);
+    painter0.drawLine(x2,24,x2,30);
   }
 
-  if(m_mode != "JT4") {
+  if(m_mode=="JT9" or m_mode=="JT65" or m_mode=="JT9+JT65" or
+     m_mode.mid(0,4)=="WSPR") {
     QPen pen1(Qt::red, 3);                   //Mark Tx freq with red
     painter0.setPen(pen1);
     x1=XfromFreq(m_txFreq);

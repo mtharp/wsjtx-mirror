@@ -15,9 +15,9 @@
 // Responsibilities
 //
 //  Provides  a  well  known  band  name mapped  to  lower  and  upper
-//  frequency  limits.  Also  provides   a  convenience  operation  to
-//  determine the band details for  any given frequency, the result of
-//  which may be  invalid if the given frequency doesn't  lie within a
+//  frequency  limits.   Also  provides  a  convenience  operation  to
+//  determine the  band name  for any given  frequency, the  result of
+//  which may  be null  if the  given frequency  doesn't lie  within a
 //  recognised band.
 //
 // Collaborations
@@ -30,12 +30,37 @@ class Bands final
   : public QAbstractTableModel
 {
 public:
+  using Frequency = Radio::Frequency;
+
+  // an iterator that meets the requirements of the C++ for range statement
+  class const_iterator
+  {
+  public:
+    const_iterator (int row)
+      : row_ {row}
+    {
+    }
+
+    QString operator * ();
+    bool operator != (const_iterator const&) const;
+    const_iterator& operator ++ ();
+
+  private:
+    int row_;
+  };
+
   explicit Bands (QObject * parent = nullptr);
 
   //
   // Model API
   //
-  QModelIndex find (QVariant const&) const; // find band Frequency is in
+  QString find (Frequency) const; // find band Frequency is in
+  int find (QString const&) const; // find row of band (-1 if not valid)
+  static QString const& oob ();
+
+  // Iterators
+  const_iterator begin () const;
+  const_iterator end () const;
 
   // Custom role for sorting.
   static int constexpr SortRole = Qt::UserRole;

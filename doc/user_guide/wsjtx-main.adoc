@@ -1,7 +1,5 @@
-// Status=review
 // This is a comment line, anything with // is ignored at process time.
 = WSJT-X User Guide
-//:Date: October 1, 2014
 :Revision: {VERSION}
 // For web-pages, adding :badges: is ok, but is a security issue for
 // package building .deb, .rpm, etc as it exposes the IP address and the images
@@ -9,7 +7,7 @@
 // :badges:
 :icons:
 :numbered:
-:keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M
+:keywords: amateur radio weak signal communication K1JT WSJT JT65 JT9
 :description: Software for Amateur Radio Weak-Signal Communication
 :prog: WSJT-X
 
@@ -17,7 +15,7 @@
 include::../common/links.adoc[]
 
 // These [[xxxx]] labels are HTML anchors, and can be used to
-// navigate though the document easily: <<[INTRO],See Introduction]>> will
+// navigate though the document easily: <<INTRO,See Introduction>> will
 // place a hyper-link in your text to take you too the anchored section.
 // All major sections or points of interest should have one.
 
@@ -35,9 +33,9 @@ include::system-requirements.adoc[]
 [[INSTALL]]
 == Installation
 
-Installation packages are found on the the {homepage}. Click on the
-_WSJT-X_ link at the left margin, and then select the appropriate
-package for your operating system.
+Installation packages for Windows, Linux, and OS X are found on the
+the {homepage}. Click on the _WSJT-X_ link at the left margin, and
+then select the appropriate package for your operating system.
 
 [[INSTALL_WIN]]
 === Windows
@@ -51,16 +49,19 @@ include::install-linux.adoc[]
 === Macintosh OS X
 include::install-mac.adoc[]
 
+////
 [[SRC_CODE]]
 === Source Code
 include::install-from-source.adoc[]
+////
 
 [[CONFIG]] 
 == Settings
 
 Select *Settings* from the *File* menu or by typing *F2* (on
-Macintosh, *Cmd+,*).  The following sections describe setup optiions
-available on each of six tabs selectable near the top of the window.
+Macintosh, *Command* or *Cmd*).  The following sections describe setup
+optiions available on each of seven tabs selectable near the top of the
+window.
 
 [[GENERAL]]
 === General
@@ -78,7 +79,7 @@ include::settings-audio.adoc[]
 === Tx Macros
 include::settings-txmacros.adoc[]
 
-[[LOGGING]]
+[[REPORTING]]
 === Reporting
 include::settings-reporting.adoc[]
 
@@ -86,12 +87,20 @@ include::settings-reporting.adoc[]
 === Frequencies
 include::settings-frequencies.adoc[]
 
+[[COLORS]]
+=== Colors
+include::settings-colors.adoc[]
+
 [[TRANSCEIVER]]
 == Transceiver Setup
 include::transceiver-setup.adoc[]
 
 [[TUTORIAL]]
 == Basic Operating Tutorial
+
+Sections <<TUT_MAIN,6.1>> through <<TUT_EX2,6.4>> are keyed to the
+needs of operation on the HF bands.  Section <<TUT_VHF,6.5>> has
+additional details of special relevance to VHF-and-up operation.
 
 [[TUT_MAIN]]
 === Main Window Settings
@@ -102,12 +111,20 @@ include::tutorial-main-window.adoc[]
 include::tutorial-wide-graph-settings.adoc[]
 
 [[TUT_EX1]]
-=== Sample File 1
+=== JT9 Mode
 include::tutorial-example1.adoc[]
 
 [[TUT_EX2]]
-=== Sample File 2
+=== JT9+JT65 Mode
 include::tutorial-example2.adoc[]
+
+[[TUT_WSPR]]
+=== WSPR Mode
+include::tutorial-wspr.adoc[]
+
+[[TUT_VHF]]
+=== VHF and Up
+include::tutorial-vhf.adoc[]
 
 [[MAKE_QSOS]]
 == Making QSOs
@@ -125,11 +142,11 @@ include::controls-functions-wide-graph.adoc[]
 include::controls-functions-main-window.adoc[]
 
 [[CONTROLS_LEFT]]
-=== Misc Controls Left
+=== Controls Left
 include::controls-functions-left.adoc[]
 
 [[CONTROLS_CENTER]]
-=== Misc Controls Center
+=== Controls Center
 include::controls-functions-center.adoc[]
 
 [[CONTROLS_MSGS]]
@@ -144,14 +161,18 @@ include::controls-functions-status-bar.adoc[]
 === Menus
 include::controls-functions-menus.adoc[]
 
+[[LOGGING]]
+== Logging
+include::logging.adoc[]
+
+[[COOP_PGMS]]
+== Cooperating Programs
+include::cooperating-programs.adoc[]
+
 [[PLATFORM]]
 == Platform Dependencies
 include::platform-dependencies.adoc[]
 
-[[COOP_PGMS]]
-== Cooperating Programs
-To be added: brief descriptions of _JTAlert-X_ and _PSK Reporter_, and
-how to use them with _WSJT-X_.
 
 [[FAQ]]
 == Frequently Asked Questions
@@ -185,6 +206,10 @@ To be added (?) ...
 [[UTIL]]
 == Utility Programs
 include::utilities.adoc[]
+
+[[SUPPORT]]
+== Support
+include::support.adoc[]
 
 [[ACK]]
 == Acknowledgements

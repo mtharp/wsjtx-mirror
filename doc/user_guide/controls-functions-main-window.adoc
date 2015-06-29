@@ -20,7 +20,11 @@ freeze the waterfall or open and explore a previously recorded audio
 file.
 
 * *Monitor* restarts normal receive operation.  This button is
-highlighted in green when the _WSJT-X_ is receiving.
+highlighted in green when the _WSJT-X_ is receiving.  If you are
+using CAT control, toggling *Monitor* OFF relinquishes control of the
+rig; if *Monitor returns to last used frequency" is selected
+on the *Settings | General* tab, toggling *Monitor* back ON will
+return to the original frequency.
 
 * *Erase* clears the right-hand decoded text window. 
 Double-clicking *Erase* clears both text windows.

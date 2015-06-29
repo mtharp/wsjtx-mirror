@@ -4,13 +4,13 @@
 #include <QObject>
 #include <QTime>
 #include <QDateTime>
-#include <QString>
-#include <QByteArray>
 #include <QHostAddress>
 
 #include "Radio.hpp"
 
 #include "pimpl_h.hpp"
+
+class QString;
 
 //
 // MessageServer - a reference implementation of a message server
@@ -52,8 +52,9 @@ public:
   // auto_only just disables auto Tx, otherwise halt is immediate
   Q_SLOT void halt_tx (QString const& id, bool auto_only);
 
-  // ask the client with identification 'id' to set the free text message
-  Q_SLOT void free_text (QString const& id, QString const& text);
+  // ask the client with identification 'id' to set the free text
+  // message and optionally send it ASAP
+  Q_SLOT void free_text (QString const& id, QString const& text, bool send);
 
   // the following signals are emitted when a client broadcasts the
   // matching message

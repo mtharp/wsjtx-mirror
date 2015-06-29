@@ -4,36 +4,20 @@ _WSJT-X_ offers CAT (Computer Aided Transceiver) control of the
 relevant features of most modern transceivers.  To configure the
 program for your radio, select the *Radio* tab.
 
-//image::images/RadioTab.png[align="center",alt="Radio Tab"]
-image::images/r4148-cat-ui.png[align="center",alt="Radio Tab"]
-
-////
-IMPORTANT: Unless you have selected *Monitor off at startup* under the
-above tab, _WSJT-X_ expects to seize exclusive rig control upon
-startup. You can prevent this by either selecting that option or by
-selecting the *Monitor* button on the main window and toggle it. Once
-done, _WSJT-X_ relinquishes exclusive rig control (but not the control
-port or client connection itself). Since it is extremely convenient to
-have all your required station programs running, which can include
-radio control software, it is imperative that the operator understand
-that any change in a separate radio control program can induce
-unwanted effects in _WSJT-X_. If you would like to switch to another
-operating mode while leaving _WSJT-X_ on in the background, simply
-toggle the *Monitor* button so that _WSJT-X_ is no longer active.
-////
+image::images/RadioTab.png[align="center",alt="Radio Tab"]
 
 - Select your radio type from the drop-down list labeled *Rig*, or
 *None* if you do not wish to use CAT control.
 
 - Alternatively, if you have configured your station for control by
 *DX Lab Suite Commander*, *Ham Radio Deluxe*, *Hamlib NET rigctl*, or
-*OmniRig*, you may select one of those program names.  In those cases
-the entry field immediately under _CAT Control_ will be relabeled as
-*Network Server*.  Leave this field blank to access the default
-instance of your control program, running on the same computer. If the
-control program runs on a different machine and/or port, specify it
-here.  Hover the mouse pointer over the entry field to see the
-required formatting details.
+*OmniRig*, you may select one of those program names from the *Rig*
+list.  In these cases the entry field immediately under _CAT Control_
+will be relabeled as *Network Server*.  Leave this field blank to
+access the default instance of your control program, running on the
+same computer. If the control program runs on a different computer
+and/or port, specify it here.  Hover the mouse pointer over the entry
+field to see the required formatting details.
 
 - Select *OmniRig Rig 1* or *OmniRig Rig 2* to connect to an _OmniRig_
 server running on the same computer.  Note that _OmniRig_ is available
@@ -52,13 +36,14 @@ than though another program, make the following settings:
 *Stop Bits*, and *Handshake* method.  Consult your radio's user guide
 for the proper parameter values.
 
-* _Force Control Lines_: A few station setups require the serial
-port's *RTS* and/or *DTR* control lines to be forced high.  Check
-these boxes only if you are sure they are needed.
+* _Force Control Lines_: A few station setups require the CAT serial
+port’s *RTS* and/or *DTR* control lines to be forced high or
+low. Check these boxes only if you are sure they are needed.
 
 - _PTT Method_: select *VOX*, *CAT*, *DTR*, or *RTS* as the desired
 method for T/R switching.  If your choice is *DTR* or *RTS*, select
-the desired serial port.
+the desired serial port (which may be the same one as used for
+CAT control).
 
 - _Transmit Audio Source_: some radios permit you to choose the
 connector that will accept Tx audio.  If this choice is enabled,
