@@ -50,6 +50,7 @@ fRIT=IntVar()
 dither=IntVar()
 cwSpeed=IntVar()
 trackWarn=StringVar()
+auto73Count=IntVar()
 temp=StringVar()
 wind=StringVar()
 pwr=StringVar()
@@ -86,7 +87,7 @@ def defaults():
         if histag.get()==1: t=' %H'
         if (ireport.get()==0 and iregion.get()==0):
             tx1.delete(0,END)
-            tx1.insert(0,'%T %M')
+            tx1.insert(0,'%T %M %I')
             tx2.delete(0,END)
             tx2.insert(0,'%T %M %R')
             tx3.delete(0,END)
@@ -96,10 +97,10 @@ def defaults():
             tx5.delete(0,END)
             tx5.insert(0,'73'+t)
             tx6.delete(0,END)
-            tx6.insert(0,'CQ %M')
+            tx6.insert(0,'CQ %M %G %I')
         elif (ireport.get()==1 and iregion.get()==0):
             tx1.delete(0,END)
-            tx1.insert(0,'%T %M')
+            tx1.insert(0,'%T %M %I')
             tx2.delete(0,END)
             tx2.insert(0,'%T %M %G')
             tx3.delete(0,END)
@@ -109,7 +110,7 @@ def defaults():
             tx5.delete(0,END)
             tx5.insert(0,'73'+t)
             tx6.delete(0,END)
-            tx6.insert(0,'CQ %M')
+            tx6.insert(0,'CQ %M %G %I')
 
         elif (ireport.get()==0 and iregion.get()==1):
             tx1.delete(0,END)
@@ -123,7 +124,7 @@ def defaults():
             tx5.delete(0,END)
             tx5.insert(0,'73 %M')
             tx6.delete(0,END)
-            tx6.insert(0,'CQ %M')
+            tx6.insert(0,'CQ %M %G')
 
         elif (ireport.get()==1 and iregion.get()==1):
             tx1.delete(0,END)
@@ -137,7 +138,7 @@ def defaults():
             tx5.delete(0,END)
             tx5.insert(0,'73 %M')
             tx6.delete(0,END)
-            tx6.insert(0,'CQ %M')
+            tx6.insert(0,'CQ %M %G')
 
 #------------------------------------------------------ setMyTag
 def setMyTag(event=NONE):
@@ -273,9 +274,11 @@ trackWarnEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Track warn (m
     entry_width=9,entry_textvariable=trackWarn)
 ##dlatency_entry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Latency (s):',
 ##    entry_width=9,entry_textvariable=dlatency)
+auto73CountEntry=Pmw.EntryField(g3.interior(),labelpos=W,label_text='Auto 73 Count:',
+    entry_width=9,entry_textvariable=auto73Count)
 
 widgets = (temp_prefix,aux_ra,aux_dec,azeldir_entry,ntc_entry, \
-           fRIT_entry,dither_entry,cwSpeedEntry,trackWarnEntry)
+           fRIT_entry,dither_entry,cwSpeedEntry,trackWarnEntry,auto73CountEntry)
 for widget in widgets:
     widget.pack(padx=10,pady=2)
 Pmw.alignlabels(widgets)

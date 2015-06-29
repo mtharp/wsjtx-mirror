@@ -1,5 +1,5 @@
 subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
-     NFreeze,MouseDF,mousebutton,mode4,nafc,nmore,psavg)
+     NFreeze,MouseDF,mousebutton,mode4,nafc,nmore,psavg,npkept)
 
 ! Decode an ISCAT signal
 
@@ -22,6 +22,8 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
   data nsync/4/,nlen/2/,ndat/18/
   data c42/'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ /.?@-'/
 
+
+  npkept = 0
   fsample=3100.78125                   !Sample rate after 9/32 downsampling
   nsps=144/mode4
 
@@ -146,7 +148,9 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
 !           if(bigworst.gt.2.0) exit
         endif
 
-        if(minsigdb.le.0 .and. worst.gt.1.1) then
+!        if(minsigdb.le.0 .and. worst.gt.1.1) then
+        isync = xsync
+        if(navg.gt.0 .and. isync.ge.max(minsigdb,0)) then
            nsig=nint(sig)
            nworst=10.0*(worst-1.0)
            navg=10.0*(avg-1.0)
@@ -157,10 +161,13 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
            if(isync.ge.1) csync='*'
 !           write(*,1020)  cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
 !                msglen,nworst,navg,tana
-           write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
-                msglen,nworst,navg,tana
-           write(21,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
-                msglen,nworst,navg,tana
+           npkept = npkept + 1
+           call cs_lock('iscat')
+               write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
+                    msglen,nworst,navg,tana
+!               write(21,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
+!                    msglen,nworst,navg,tana
+           call cs_unlock
         endif
      enddo
      if(last) exit
@@ -188,7 +195,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
      navg=0
      ndf0=0
      nfdot=0
-!     sig=-20
+     sig=-20
      msglen=0
      tana=0.
      t2=0.
@@ -196,7 +203,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,DFTolerance,   &
   csync=' '
   if(isync.ge.1) csync='*'
   nsig=nint(sig)
-
+  
   call cs_lock('iscat')
      write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &
           msglen,nworst,navg,tana

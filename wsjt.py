@@ -75,6 +75,8 @@ hiscall=""
 hisgrid=""
 isec0=-99
 jt4avg=IntVar()
+HideEmptyMessages=IntVar()
+ReportAllMessages=IntVar()
 jtol=IntVar()
 k2txb=IntVar()
 kb8rq=IntVar()
@@ -109,6 +111,7 @@ nzap=IntVar()
 qdecode=IntVar()
 setseq=IntVar()
 ShOK=IntVar()
+IsAuto=IntVar()
 slabel="Sync   "
 textheight=7
 ToRadio0=""
@@ -124,6 +127,10 @@ im=Image.new('P',(500,120))
 im.putpalette(Colormap2Palette(colormapLinrad),"RGB")
 pim=ImageTk.PhotoImage(im)
 balloon=Pmw.Balloon(root)
+TXStopCount=0
+BlinkingLogQSO=False
+BlinkingState=False
+
 
 g.freeze_decode=0
 g.mode=""
@@ -214,18 +221,31 @@ def textsize():
 
 #------------------------------------------------------ logqso
 def logqso(event=NONE):
+    ClearLogQSO()
     t=time.strftime("%Y-%b-%d,%H:%M",time.gmtime())
     tf=str(g.nfreq)
     if g.nfreq==2: tf="1.8"
     if g.nfreq==4: tf="3.5"
-    t=t+","+ToRadio.get()+","+HisGrid.get()+","+tf+","+g.mode+"\n"
+    t=t+","+ToRadio.get()+","+HisGrid.get()+","+tf+","+g.mode+","+report.get()+"\n"
     t2="Please confirm making the following entry in WSJT.LOG:\n\n" + t
     result=tkinter.messagebox.askyesno(message=t2)
     if result:
         f=open(appdir+'/WSJT.LOG','a')
         f.write(t)
         f.close()
+        
+#------------------------------------------------------ BlinkLogQSO
+def BlinkLogQSO(event = NONE):
+    global BlinkingLogQSO, BlinkingState
+    BlinkingLogQSO = True
+    BinkingState = False
     
+#------------------------------------------------------ ClearLogQSO
+def ClearLogQSO(event=NONE):
+    global BlinkingLogQSO
+    BlinkingLogQSO = False
+    blogqso.configure(bg='gray85')
+  
 #------------------------------------------------------ monitor
 def monitor(event=NONE):
     bmonitor.configure(bg='green')
@@ -287,45 +307,48 @@ def dbl_click_ave(event):
     t1=avetext.get('1.0',CURRENT)      #Contents from start to mouse pointer
     dbl_click_call(t,t1,'OOO',event)
 #------------------------------------------------------ dbl_click_call
-def dbl_click_call(t,t1,rpt,event):
+def dbl_click_call(t,t1,rpt,event): # t = entire line, t1 = line to mouse pointer, # varies, event = event
     global hiscall
-    i=len(t1)                       #Length to mouse pointer
-    i1=t1.rfind(' ')+1              #index of preceding space
-    i2=i1+t[i1:].find(' ')          #index of next space
-    hiscall=t[i1:i2]                #selected word, assumed as callsign
-    if hiscall[0:1]=='<' and hiscall [i2-i1-1:]=='>':
-        hiscall=hiscall[1:i2-i1-1]
-    ToRadio.delete(0,END)
-    ToRadio.insert(0,hiscall)
-    i3=t1.rfind('\n')+1             #start of selected line
-    if i>6 and i2>i1:
-        try:
-            nsec=60*int(t1[i3+2:i3+4]) + int(t1[i3+4:i3+6])
-        except:
-            nsec=0
-        if setseq.get(): TxFirst.set(int((nsec/Audio.gcom1.trperiod)%2))
-        lookup()
-        GenStdMsgs()
-        if mode.get()[:4]=='JT65' and rpt != "OOO":
-            n=tx1.get().rfind(" ")
-            if n>=7: 
-                t2=tx1.get()[0:n+1]
-            else:
-                t2=tx1.get() + " "
-            tx2.delete(0,END)
-            tx2.insert(0,t2+rpt)
-            tx3.delete(0,END)
-            tx3.insert(0,t2+"R"+rpt)
-            tx4.delete(0,END)
-            tx4.insert(0,t2+"RRR")
-            tx5.delete(0,END)
-            tx5.insert(0,t2+"73")
+    if mode.get()[:5]=='ISCAT':
+        AutoIscatDoubleClick(t, t1)
+    else:
+        i=len(t1)                       #Length to mouse pointer
+        i1=t1.rfind(' ')+1              #index of preceding space
+        i2=i1+t[i1:].find(' ')          #index of next space
+        hiscall=t[i1:i2]                #selected word, assumed as callsign
+        if hiscall[0:1]=='<' and hiscall [i2-i1-1:]=='>':
+            hiscall=hiscall[1:i2-i1-1]
+        ToRadio.delete(0,END)
+        ToRadio.insert(0,hiscall)
+        i3=t1.rfind('\n')+1             #start of selected line
+        if i>6 and i2>i1:
+            try:
+                nsec=60*int(t1[i3+2:i3+4]) + int(t1[i3+4:i3+6])
+            except:
+                nsec=0
+            if setseq.get(): TxFirst.set(int((nsec/Audio.gcom1.trperiod)%2))
+            lookup()
+            GenMsgs()
+            if mode.get()[:4]=='JT65' and rpt != "OOO":
+                n=tx1.get().rfind(" ")
+                if n>=7: 
+                    t2=tx1.get()[0:n+1]
+                else:
+                    t2=tx1.get() + " "
+                tx2.delete(0,END)
+                tx2.insert(0,t2+rpt)
+                tx3.delete(0,END)
+                tx3.insert(0,t2+"R"+rpt)
+                tx4.delete(0,END)
+                tx4.insert(0,t2+"RRR")
+                tx5.delete(0,END)
+                tx5.insert(0,t2+"73")
 
-        if t[i3:i1].find(' CQ ')>=0:
-            ntx.set(1)
-        else:
-            ntx.set(2)
-        if event.num==3 and not lauto: toggleauto()
+            if t[i3:i1].find(' CQ ')>=0:
+                ntx.set(1)
+            else:
+                ntx.set(2)
+            if event.num==3 and not lauto: toggleauto()
 
 def textkey(event=NONE):
     text.configure(state=DISABLED)
@@ -474,7 +497,7 @@ def lookup(event=NONE):
 
 def lookup_gen(event):
     lookup()
-    GenStdMsgs()
+    GenMsgs()
 
 #-------------------------------------------------------- addtodb
 def addtodb():
@@ -611,6 +634,7 @@ def ModeFSK441(event=NONE):
         shrx.grid(column=1,row=1,sticky='W',padx=2)
         shmsg.grid(column=1,row=0,sticky='W',padx=2)
         shmsg.configure(state=NORMAL)
+        isauto.grid_forget()
         shrx.configure(state=NORMAL)
         report.grid(column=1,row=1,sticky='W',padx=7)
         labreport.grid(column=0,row=1,sticky='E',padx=0)
@@ -622,7 +646,7 @@ def ModeFSK441(event=NONE):
         itol=4
         inctol()
         ntx.set(1)
-        GenStdMsgs()
+        GenMsgs()
         erase()
 
 #------------------------------------------------------ ModeJT65
@@ -654,6 +678,7 @@ def ModeJT65():
     if ltxdf: toggletxdf()
     btxdf.grid_forget()
     shmsg.grid_forget()
+    isauto.grid_forget()
     shrx.grid_forget()
     report.grid_forget()
     labreport.grid_forget()
@@ -665,7 +690,7 @@ def ModeJT65():
     inctol()
     nfreeze.set(0)
     ntx.set(1)
-    GenStdMsgs()
+    GenMsgs()
     erase()
 #    graph2.pack_forget()
 
@@ -753,10 +778,12 @@ def ModeISCAT_B(event=NONE):
         report.insert(0,'-15')
         shrx.grid_forget()
         shmsg.grid_forget()
+        isauto.grid(column=1,row=0,sticky='W',padx=2)
+        isauto.configure(state=NORMAL)
         ntx.set(1)
         Audio.gcom2.mousedf=0
         Audio.gcom2.mode4=2
-        GenStdMsgs()
+        GenMsgs()
         erase()        
 
 #------------------------------------------------------ ModeJT6M
@@ -773,6 +800,7 @@ def ModeJT6M(event=NONE):
         isync=isync6m
         lsync.configure(text=slabel+str(isync))
         shmsg.grid_forget()
+        isauto.grid_forget()
         shrx.grid_forget()
         cbzap.configure(state=NORMAL)
         cbfreeze.configure(state=NORMAL)
@@ -783,7 +811,7 @@ def ModeJT6M(event=NONE):
         nfreeze.set(0)
         ntx.set(1)
         Audio.gcom2.mousedf=0
-        GenStdMsgs()
+        GenMsgs()
         erase()
         
 
@@ -806,7 +834,7 @@ def ModeCW(event=NONE):
         f5b1.grid_forget()
         if ltxdf: toggletxdf()
         ntx.set(1)
-        GenStdMsgs()
+        GenMsgs()
         erase()
 
 #------------------------------------------------------ ModeJT4
@@ -973,6 +1001,7 @@ Alt+I	Include
 Alt+L	Lookup
 Ctrl+L	Lookup, then Generate Standard Messages
 Alt+M	Monitor
+Alt+N   Clear Log QSO Needed
 Alt+O	Tx Stop
 Alt+Q	Log QSO
 Alt+R	Enter report
@@ -1218,8 +1247,13 @@ def inctrperiod(event):
         if ncwtrperiod==60:  ncwtrperiod=120
         Audio.gcom1.trperiod=ncwtrperiod
     elif mode.get()=="FSK441" or mode.get()=="JTMS" or \
-             mode.get()[:5]=="ISCAT" or mode.get()=="JT6M":
+            mode.get()=="JT6M":
         if Audio.gcom1.trperiod==15: Audio.gcom1.trperiod=30
+    elif mode.get()[:5]=="ISCAT":
+        if Audio.gcom1.trperiod==15: Audio.gcom1.trperiod=30
+        if Audio.gcom1.trperiod==10: Audio.gcom1.trperiod=15
+        if Audio.gcom1.trperiod==5: Audio.gcom1.trperiod=10
+        GenMsgs()
 
 #------------------------------------------------------ dectrperiod
 def dectrperiod(event):
@@ -1229,8 +1263,13 @@ def dectrperiod(event):
         if ncwtrperiod==150: ncwtrperiod=120
         Audio.gcom1.trperiod=ncwtrperiod
     elif mode.get()=="FSK441" or mode.get()=="JTMS" or \
-         mode.get()[:5]=="ISCAT" or mode.get()=="JT6M":
+        mode.get()=="JT6M":
         if Audio.gcom1.trperiod==30: Audio.gcom1.trperiod=15
+    elif mode.get()[:5]=="ISCAT":
+        if Audio.gcom1.trperiod==10: Audio.gcom1.trperiod=5
+        if Audio.gcom1.trperiod==15: Audio.gcom1.trperiod=10
+        if Audio.gcom1.trperiod==30: Audio.gcom1.trperiod=15
+        GenMsgs()
 
 #------------------------------------------------------ erase
 def erase(event=NONE):
@@ -1286,8 +1325,11 @@ def toggleauto(event=NONE):
     else:
         Audio.gcom1.txok=0
         Audio.gcom2.mantx=0
-    if lauto==0: auto.configure(text='Auto is OFF',bg='gray85',relief=RAISED)
-    if lauto==1: auto.configure(text='Auto is  ON',bg='red',relief=SOLID)
+    if lauto==0:
+        auto.configure(text='Auto is OFF',bg='gray85',relief=RAISED)
+    if lauto==1: 
+        auto.configure(text='Auto is  ON',bg='red',relief=SOLID)
+        TXStopCount = 0
     
 #------------------------------------------------------ toggletxdf
 def toggletxdf(event=NONE):
@@ -1386,13 +1428,24 @@ def left_arrow(event=NONE):
     n=5*int(Audio.gcom2.mousedf/5)
     if n==Audio.gcom2.mousedf: n=n-5
     Audio.gcom2.mousedf=n
-
+    
+#------------------------------------------------------ GenMsgs
+def GenMsgs(event=NONE):
+    global altmsg
+    
+    if altmsg==1 and (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or mode.get()[:5]=='ISCAT'):
+        GenAltMsgs()
+    else:
+        GenStdMsgs()
+            
 #------------------------------------------------------ GenStdMsgs
 def GenStdMsgs(event=NONE):
     global altmsg,MyCall0,addpfx0,ToRadio0
 ##    if mode.get()[:3]=='JT4':
 ##        GenAltMsgs()
 ##        return
+    if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or mode.get()[:5]=='ISCAT':
+        altmsg=0
     t=ToRadio.get().upper().strip()
     ToRadio.delete(0,99)
     ToRadio.insert(0,t)
@@ -1448,7 +1501,6 @@ def GenStdMsgs(event=NONE):
         if nplain==0 and naddon==0 and ndiff==0:
             t0=t0 + " "+options.MyGrid.get()[:4]
         tx6.insert(0,t0.upper())
-        altmsg=0
     elif mode.get()[:2]=="CW":
         tx1.insert(0,"[" + ToRadio.get() + " " +options.MyCall.get() + "]")
         tx2.insert(0,tx1.get()+" [OOO]")
@@ -1456,10 +1508,11 @@ def GenStdMsgs(event=NONE):
         tx4.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [RRR]")
         tx5.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [73]")
         tx6.insert(0,"[CQ " + options.MyCall.get() + "]")
-
+        
 #------------------------------------------------------ GenAltMsgs
 def GenAltMsgs(event=NONE):
-    global altmsg,tx6alt
+#    global altmsg,tx6alt
+    global altmsg,MyCall0,addpfx0,ToRadio0,tx6alt
     t=ToRadio.get().upper().strip()
     ToRadio.delete(0,99)
     ToRadio.insert(0,t)
@@ -1488,9 +1541,26 @@ def GenAltMsgs(event=NONE):
         else:
             tx6.insert(0,tx6alt.upper())
         altmsg=1
+    elif mode.get()[:5]=='ISCAT':
+        altmsg=1
+        for m in (tx1, tx2, tx3, tx4, tx5, tx6):
+            m.delete(0,99)
+        t=ToRadio.get() + " "+options.MyCall.get()
+        t=t.upper()
+        r=report.get()
+        tx1.insert(0,setmsg(options.tx1.get(),r))
+        tx2.insert(0,setmsg(options.tx2.get(),r))
+        tx3.insert(0,t+" "+setmsg(options.tx3.get(),r))
+        tx4.insert(0,t+" "+setmsg(options.tx4.get(),r))
+        tx5.insert(0,t+" "+setmsg(options.tx5.get(),r))
+        tx6.insert(0,setmsg(options.tx6.get(),r))
+
+    
 
 #------------------------------------------------------ setmsg
 def setmsg(template,r):
+    global altmsg
+    
     msg=""
     t=options.MyCall.get()
     n=len(t)
@@ -1507,6 +1577,21 @@ def setmsg(template,r):
     if HisSuffix[0:1].isdigit()or HisSuffix[1:2].isdigit():
         HisSuffix=HisSuffix[1:]
     npct=0
+    Info=""
+    if mode.get()[:5]=='ISCAT':
+        Info = "?"
+        if altmsg==0:
+            Info = Info + "S"
+        else:
+            Info = Info + "A"
+        if options.ireport.get()==0:
+            Info = Info + 'R'
+        else:
+            Info = Info + "G"
+        if (Audio.gcom1.trperiod < 10):
+            Info = Info + '0' + str(Audio.gcom1.trperiod)
+        else:
+            Info = Info + str(Audio.gcom1.trperiod)
     for i in range(len(template)):
         if npct:
             if template[i]=="M": msg=msg+options.MyCall.get().upper().strip()
@@ -1516,6 +1601,7 @@ def setmsg(template,r):
             if template[i]=="L": msg=msg+options.MyGrid.get()
             if template[i]=="S": msg=msg+MySuffix
             if template[i]=="H": msg=msg+HisSuffix
+            if template[i]=="I": msg=msg+Info
             npct=0
         else:
             npct=0
@@ -1767,13 +1853,337 @@ def trackOK(event):
     lWarn.after_cancel(idWarn)
     if trackWarn0>0:
         idWarn=lWarn.after(60000*trackWarn0,trackWarning)
+        
+#--Routines used for auto sequencing ISCAT -- up to update() should be moved to own file
+def AutoIscatDoubleClick(line, linetomouse):
+    global altmsg
+#   Isolate the line that was clicked on
+    myline = line[linetomouse.rfind('\n')+1:]
+    myline = myline[:myline.find('\n')]
+    sline = myline[32:62].split()
+    pline = myline[:31].split()
+    NewHisCall = ""
+    NewHisGrid = ""
+    HisSetup = ""
+    CallToMe = False
+    SetSequence = False
+    
+    if (len(sline) >= 2):
+    #   check for CQ message
+        if (sline[0] == 'CQ'):
+    #       This is a CQ
+            NewHisCall = sline[1]
+            if (len(sline) >= 3):
+                NewHisGrid = sline[2]
+            if (len(sline) == 4):
+                if (AutoISCATIsInfoBlock(sline[3])):
+                    HisSetup = sline[3]
+            SetSequence = True
+        else: 
+#           Assume this is a TX1, it may or may not be addressed to us
+            if (sline[0] == options.MyCall.get()):
+                NewHisCall = sline[1]
+                if (len(sline) >= 3):
+                    if (AutoISCATIsInfoBlock(sline[2])):
+                        HisSetup = sline[2]
+                CallToMe = True
+                SetSequence = True
+            else:
+#               Isolate the call in the line, this MUST be in the call area
+                mymouseline = linetomouse[linetomouse.rfind('\n')+1:]
+                mline = mymouseline[32:].split()
+                if (len(mline) == 1):
+                    NewHisCall = sline[0]
+                elif (len(mline) == 2):
+                    NewHisCall = sline[1]
+                    if (len(sline) >= 3):
+                        if (AutoISCATIsInfoBlock(sline[2])):
+                            HisSetup = sline[2]
+                    SetSequence = True
+                elif (len(mline) == 3):
+                    if (AutoISCATIsInfoBlock(sline[2])):
+                        HisSetup = sline[2]
+                    
+        if (NewHisCall != ""):
+            ToRadio.delete(0,END)
+            ToRadio.insert(0,NewHisCall)
+            HisGrid.delete (0,END)
+            if (NewHisGrid != ""):
+                HisGrid.insert(0, NewHisGrid)
+            else:
+                HisCall3Entry = whois (NewHisCall)
+                if (HisCall3Entry != ""):
+                    call3 = HisCall3Entry.split(',')
+                    if (len(call3) >= 2 and len(call3[1]) >=4 and len(call3[1]) <= 6):
+                        HisGrid.insert(0, call3[1])
+                        
+        if (HisSetup != ""):
+            if (HisSetup[1:2] == 'S'):
+                altmsg = 0
+            elif (HisSetup[1:2] == 'A'):
+                altmsg = 1
+            if (HisSetup[2:3] == 'R'):
+                options.ireport.set(0)
+            elif (HisSetup[2:3] == 'G'):
+                options.ireport.set(1)
+            
+            Audio.gcom1.trperiod = int(HisSetup[3:])
+            if (CallToMe):
+                report.delete(0,END)
+                report.insert(0, pline[2])
+            options.defaults()
+            if (CallToMe):
+                ntx.set(2)
+            else:
+                ntx.set(1)
+                
+        GenMsgs()
+        
+        if (SetSequence):
+            if ((int(pline[0][4:]) % (2 * Audio.gcom1.trperiod)) < Audio.gcom1.trperiod):
+                TxFirst.set(0)
+            else:
+                TxFirst.set(1)
+                
+
+def AutoISCATIsInfoBlock (mysline):
+    if (mysline[:1] != '?'):
+        return False
+    if (mysline[1:2] != 'A' and mysline[1:2] != 'S'):
+        return False
+    if (mysline[2:3] != 'R' and mysline[2:3] != 'G'):
+        return False
+    return (mysline[3:] == '05' or mysline[3:] == '10' or mysline[3:] == '15' or mysline[3:] == '30')
+
+def AutoISCATIsTX1(myslines):
+    if (len(myslines) == 3):
+        if(not (AutoISCATIsInfoBlock (myslines[2]))):
+            return False
+    if (len(myslines) >= 2):
+        return (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper())
+    return False
+
+def AutoISCATIsTX2(myslines):
+    if (len(myslines) == 3):
+        if (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper()):
+            if (options.ireport.get()==0):
+                return ((myslines[2].isnumeric() and myslines[2] != '73') or (myslines[2][:1]=='-' and myslines[2][1:].isnumeric()))
+            if (options.ireport.get()==1):
+                return (myslines[2]==HisGrid.get()[:4].upper())
+    return False
+        
+def AutoISCATIsTX3(myslines):
+    global altmsg
+    if (altmsg==0):
+        if (options.ireport.get()==0):
+            return (len(myslines)==1 and (myslines[0][:1]=='R' and (myslines[0][1:].isnumeric() or (myslines[0][1:2]=='-' and myslines[0][2:].isnumeric()))))
+        if (options.ireport.get()==1):
+            return (len(myslines)==2 and myslines[0][:2]=='RR' and myslines[1]==HisGrid.get()[:4].upper())
+    elif (altmsg==1):
+        if (len(myslines) >= 2):
+            if (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper()):
+                if (options.ireport.get()==0):
+                    return (len(myslines)==3 and (myslines[2][:1]=='R' and (myslines[2][1:].isnumeric() or (myslines[2][1:2]=='-' and myslines[2][2:].isnumeric()))))
+                if (options.ireport.get()==1):
+                    return (len(myslines)==4 and myslines[2][:2]=='RR' and myslines[3]==HisGrid.get()[:4].upper())
+    return False
+    
+def AutoISCATIsTX4(myslines):
+    global altmsg
+    if (altmsg==0):
+        return (len(myslines)==1 and myslines[0]=='RRR')
+    elif (altmsg==1):
+        if len(myslines) == 3:
+            return (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper() and myslines[2]=='RRR')
+    return False
+    
+def AutoISCATIsTX5(myslines):    
+    global altmsg
+    if (altmsg==0):
+        return (len(myslines)==1 and myslines[0]=='73')
+    elif (altmsg==1):
+        if (len(myslines) == 3):
+            return (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper() and myslines[2]=='73')
+    return False
+    
+def AutoISCATSetReport(line):
+    global altmsg
+    pline = line[:31].split()
+    report.delete(0,END)
+    report.insert(0, pline[2])
+    t=ToRadio.get() + " "+options.MyCall.get()
+    t=t.upper()
+    r=report.get()
+    tx2.delete(0,END)
+    tx2.insert(0,setmsg(options.tx2.get(),r))
+    if (altmsg==0):
+        tx3.delete(0,END)
+        tx3.insert(0,setmsg(options.tx3.get(),r))
+    elif (altmsg==1):
+        tx3.delete(0,END)
+        tx3.insert(0,t + ' ' + setmsg(options.tx3.get(),r))
+        
+def AutoISCATFindStrongest(line, lines):
+    myreturnline = line
+    sline = line[:31].split()
+    for myline in lines:
+        if (myline[32:62] == line[32:62]):
+            mysline = myline[:31].split()
+            if (int(mysline[2]) > int(sline[2])):
+                myreturnline = myline
+    return myreturnline
+ 
+def AutoISCAT(lines):
+    global TXStopCount
+#   Walk through the lines looking for a useful decode
+    IsGood = False
+    for line in lines:
+        print (line)
+        sline = line[32:62].split()
+        pline = line[:31].split()
+        
+#       Check what message we got and react to it based on context
+        if ntx.get()==1:
+            if AutoISCATIsTX1(sline):
+                IsGood = True
+                AutoISCATSetReport(AutoISCATFindStrongest(line, lines))
+                ntx.set(2)
+                if Audio.gcom2.lauto:
+                    btx2()
+                break
+            if AutoISCATIsTX2(sline):
+                IsGood = True
+                AutoISCATSetReport(AutoISCATFindStrongest(line, lines))
+                ntx.set(3)
+                if Audio.gcom2.lauto:
+                    btx3()
+                break
+        elif ntx.get()==2:    
+            if AutoISCATIsTX2(sline):
+                IsGood = True
+                AutoISCATSetReport(AutoISCATFindStrongest(line, lines))
+                ntx.set(3)
+                if Audio.gcom2.lauto:
+                    btx3()
+                break
+            if AutoISCATIsTX3(sline):
+                IsGood = True
+                ntx.set(4)
+                if Audio.gcom2.lauto:
+                    btx4()
+                break
+        elif ntx.get()==3:
+            if AutoISCATIsTX3(sline):
+                IsGood = True
+                ntx.set(4)
+                if Audio.gcom2.lauto:
+                    btx4()
+                break
+            if AutoISCATIsTX4(sline):
+                IsGood = True
+                ntx.set(5)
+                if Audio.gcom2.lauto:
+                    btx5()
+                TXStopCount = options.auto73Count.get()
+                BlinkLogQSO ()
+                break
+        elif ntx.get()==4:
+            if AutoISCATIsTX5(sline):
+                IsGood = True
+                ntx.set(5)
+                if Audio.gcom2.lauto:
+                    btx5()
+                TXStopCount = options.auto73Count.get()
+                BlinkLogQSO()
+                break
+            if AutoISCATIsTX4(sline):
+                IsGood = True
+                ntx.set(5)
+                if Audio.gcom2.lauto:
+                    btx5()
+                TXStopCount = options.auto73Count.get()
+                BlinkLogQSO()
+                break
+        elif ntx.get()==5:
+            if AutoISCATIsTX5(sline):
+                IsGood = True
+#               We got a response to our TX5 so Turn off Transmit
+                TXStopCount = 0
+                txstop()
+                break
+#           Check if we are still getting RRR, if so keep sending 73 and set count                               
+            if AutoISCATIsTX4(sline):
+                IsGood = True
+                TXStopCount = options.auto73Count.get()
+                break
+        else:   
+            continue
+            
+    # We are either on the line we advanced with or the last line
+    if (len(lines) > 0 and line != ""):
+#       Print the line that was used putting an a into it to indicate auto
+        if IsGood:
+#           Find the strongest with the same decode
+            line = AutoISCATFindStrongest(line, lines)
+#           Mark this as having been used by the auto sequencer                        
+            line = line[:30] + 'a' + line[31:]
+#           Add the line we actually used to all.txt  
+            try:
+                f=open(appdir+'/all.txt',mode='a')
+                f.write(line)
+                f.close()
+            except:
+                print ("Error Appending to all.txt")
+        else:
+            line = lines[len(lines)-1]
+            
+        PrintISCAT (line)
+        
+        if (ntx.get() == 5 and not IsGood):
+            if (TXStopCount > 0):
+                TXStopCount = TXStopCount - 1
+                if (TXStopCount == 0):
+                    txstop()
+ 
+def DoISCAT(lines):
+    global lauto
+    if IsAuto.get() and lauto:
+        AutoISCAT (lines)
+    else:
+#       Print ISCAT in NON Auto mode
+        if (ReportAllMessages.get() and len(lines) > 2):
+#  ADD CODE HERE TO COMBINE IDENTICAL DECODES AND REPORT ONLY THE STRONGEST OF EACH <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                
+            for i in range (0, len(lines)-1):
+                PrintISCAT (lines[i])
+#               Write the extra lines to all.txt
+            try:
+                f=open(appdir+'/all.txt',mode='a')
+                for i in range (0, len(lines)-2):
+                    f.write(lines[i])
+                f.close()
+            except:
+                print ("Error Appending to all.txt")
+        else:
+            PrintISCAT (lines[len(lines) - 1])
+    
+def PrintISCAT (line): 
+    if (HideEmptyMessages.get()):
+        if (line[32:62].strip() != '000' and line[32:62].strip() != ""): 
+            text.configure(state=NORMAL)
+            text.insert(END,line)
+            text.see(END)
+    else:
+        text.configure(state=NORMAL)
+        text.insert(END,line)
+        text.see(END)
+             
 
 #------------------------------------------------------ update
 def update():
     global root_geom,isec0,naz,nel,ndmiles,ndkm,nhotaz,nhotabetter,nopen, \
            im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0, \
            isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas,g2font,           \
-           trackWarn0,trackWarn1,isync4
+           trackWarn0,trackWarn1,isync4,lauto,BlinkingLogQSO, BlinkingState
     
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
@@ -1808,7 +2218,15 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
-
+        
+        if BlinkingLogQSO:
+            if BlinkingState:
+                blogqso.configure(bg='gray85')
+                BlinkingState = False
+            else:
+                blogqso.configure(bg='red')
+                BlinkingState = True
+                
         if tx1.get()[0:2]=='GO' and mode.get()=='Echo':
             try:
                 nmin=int(tx1.get()[3:5])
@@ -1915,11 +2333,11 @@ def update():
         elif mode.get()=="Measure":
             msg2.configure(bg='#FF8800')
         g.mode=mode.get()
-        if first and mode.get()!='Echo': GenStdMsgs()
+        if first and mode.get()!='Echo': GenMsgs()
         first=0
 
     if options.genmsg.get():
-        GenStdMsgs()
+        GenMsgs()
         options.genmsg.set(0)
 
     samfac_in=Audio.gcom1.mfsample/110250.0
@@ -1956,9 +2374,12 @@ def update():
     msg5.configure(text="T/R Period: %d s" % (Audio.gcom1.trperiod,))
     if mode.get()=="CW": color='white'
     elif mode.get()=='FSK441' or mode.get()=='JTMS' or \
-             mode.get()[:5]=='ISCAT' or mode.get()=="JT6M":
+             mode.get()=="JT6M":
         if(Audio.gcom1.trperiod==15): color='yellow'
         else: color='white'
+    elif mode.get()[:5]=="ISCAT":
+        if(Audio.gcom1.trperiod==30): color='white'
+        else: color='yellow'
     else:
         color='gray85'
     msg5.configure(bg=color)
@@ -2029,7 +2450,7 @@ def update():
         bgcolor='green'
         t='Receiving'
     msg7.configure(text=t,bg=bgcolor)
-
+    
     if Audio.gcom2.ndecdone==1 or g.cmap != cmap0:
         if Audio.gcom2.ndecdone==1:
             if isync==-99 or isync==99:
@@ -2041,12 +2462,17 @@ def update():
                 f.close()
             except:
                 lines=""
-            text.configure(state=NORMAL)
-            for i in range(len(lines)):
-                text.insert(END,lines[i])
-            text.see(END)
-#            text.configure(state=DISABLED)
-
+                
+#           Auto TX Increment mode for ISCAT - print is internal, everything else is printed in the else's:
+            if mode.get()[:5]=='ISCAT':
+                DoISCAT (lines)
+            else:
+#               Print everything else but ISCAT
+                text.configure(state=NORMAL)
+                for i in range(len(lines)):
+                    text.insert(END,lines[i])
+                text.see(END)
+                
             if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
                 try:
                     f=open(appdir+'/decoded.ave',mode='r')
@@ -2261,9 +2687,13 @@ setupmenu.add_checkbutton(label = 'Monitor ON at startup',variable=nmonitor)
 setupmenu.add_checkbutton(label = 'Low-Duty Beacon Mode',variable=nlowbeacon)
 setupmenu.add_checkbutton(label = 'Plot average spectrum (yellow)',variable=jt4avg)
 setupmenu.add_separator()
+setupmenu.add_checkbutton(label = 'Hide Empty ISCAT Messages',variable=HideEmptyMessages)
+setupmenu.add_checkbutton(label = 'Report All ISCAT Messages',variable=ReportAllMessages)
+setupmenu.add_separator()
 ##setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Setup", menu=setupmenu)
+    
 
 #------------------------------------------------------ View menu
 if (sys.platform != 'darwin'):
@@ -2535,6 +2965,8 @@ root.bind_all('<Control-l>',lookup_gen)
 root.bind_all('<Control-L>',lookup_gen)
 root.bind_all('<Alt-m>',monitor)
 root.bind_all('<Alt-M>',monitor)
+root.bind_all('<Alt-n>',ClearLogQSO)
+root.bind_all('<Alt-N>',ClearLogQSO)
 root.bind_all('<Alt-o>',txstop)
 root.bind_all('<Alt-O>',txstop)
 root.bind_all('<Control-o>',openfile)
@@ -2566,8 +2998,9 @@ iframe4b.pack(expand=1, fill=X, padx=4)
 
 #------------------------------------------------------- Button Bar
 iframe4c = Frame(frame, bd=1, relief=SUNKEN)
-blogqso=Button(iframe4c, text='Log QSO',underline=4,command=logqso,
+blogqso=Button(iframe4c, text='Log QSO',underline=4,
                 padx=1,pady=1)
+                
 bstop=Button(iframe4c, text='Stop',underline=0,command=stopmon,
                 padx=1,pady=1)
 bmonitor=Button(iframe4c, text='Monitor',underline=0,command=monitor,
@@ -2588,6 +3021,8 @@ btxstop=Button(iframe4c,text='Tx Stop',underline=4,command=txstop,
                 padx=1,pady=1)
 
 blogqso.pack(side=LEFT,expand=1,fill=X)
+blogqso.bind('<Button-1>', logqso)
+blogqso.bind('<Button-3>', ClearLogQSO)
 bstop.pack(side=LEFT,expand=1,fill=X)
 bmonitor.pack(side=LEFT,expand=1,fill=X)
 ##bsavelast.pack(side=LEFT,expand=1,fill=X)
@@ -2693,11 +3128,14 @@ txfirst.grid(column=0,row=0,sticky='W',padx=2)
 shmsg=Checkbutton(f5b2,text='Tx ST',justify=RIGHT,variable=ShOK,
             command=restart2)
 shmsg.grid(column=1,row=0,sticky='W',padx=2)
+isauto=Checkbutton(f5b2,text='Tx Auto',justify=RIGHT,variable=IsAuto,
+            command=restart2)
+isauto.grid(column=1,row=0,sticky='W',padx=2)
 
 report=Entry(f5b2, width=4)
 report.insert(0,'26')
 report.grid(column=1,row=1,sticky='W',padx=7)
-report.bind('<Double-Button-1>',GenStdMsgs)
+report.bind('<Double-Button-1>',GenMsgs)
 labreport=Label(f5b2,text='Rpt:',width=4,underline=0)
 labreport.grid(column=0,row=1,sticky='E',padx=0)
 
@@ -2706,7 +3144,7 @@ btxdf.grid(column=1,row=0,sticky='EW',padx=2)
 
 f5b3=Frame(f5b,bd=2,relief=GROOVE)
 f5b3.grid(column=0,row=2,padx=2,sticky='EW')
-genmsg=Button(f5b3,text=' Gen Msgs ',underline=1,command=GenStdMsgs,
+genmsg=Button(f5b3,text=' Gen Msgs ',underline=1,command=GenMsgs,
             padx=1,pady=2)
 genmsg.grid(column=0,row=0,sticky='W',padx=2)
 auto=Button(f5b3,text='Auto is Off',underline=0,command=toggleauto,
@@ -2954,6 +3392,8 @@ try:
             report.insert(0,value)
             g.report=int(value)
         elif key == 'ShOK': ShOK.set(value)
+        elif key == 'IsAuto': IsAuto.set(value)
+        elif key == 'altmsg': altmsg = int(value)
         elif key == 'Nsave': nsave.set(value)
         elif key == 'Band': nfreq.set(value)
         elif key == 'S441': isync441=int(value)
@@ -2972,7 +3412,10 @@ try:
         elif key == 'Debug': ndebug.set(value)
         elif key == 'LowBeacon': nlowbeacon.set(value)
         elif key == 'JT4avg': jt4avg.set(value)
+        elif key == 'HideEmptyMessages': HideEmptyMessages.set(value)
+        elif key == 'ReportAllMessages': ReportAllMessages.set(value)
         elif key == 'Monitor': nmonitor.set(value)
+        elif key == 'auto73Count': options.auto73Count.set(value)
         
         elif key == 'HisCall':
             Audio.gcom2.hiscall=(value+' '*12)[:12]
@@ -3031,7 +3474,7 @@ f=open(appdir+'/WSJT.INI',mode='a')
 root_geom=root_geom[root_geom.index("+"):]
 f.write("WSJTGeometry " + root_geom + "\n")
 f.write("MinW " + str(iMinW) + "\n")
-f.write("Mode " + g.mode + "\n")
+f.write("altmsg " + str(altmsg) + "\n")
 f.write("MyCall " + options.MyCall.get() + "\n")
 f.write("MyGrid " + options.MyGrid.get() + "\n")
 t=Audio.gcom2.hiscall.tostring().decode('utf-8')
@@ -3040,6 +3483,7 @@ f.write("HisCall " + t + "\n")
 t=Audio.gcom2.hisgrid.tostring().decode('utf-8')
 if t=="      ": t="XX00xx"
 f.write("HisGrid " + t + "\n")
+f.write("Mode " + g.mode + "\n")
 #f.write("RxDelay " + str(options.RxDelay.get()) + "\n")
 #f.write("TxDelay " + str(options.TxDelay.get()) + "\n")
 f.write("IDinterval " + str(options.IDinterval.get()) + "\n")
@@ -3081,6 +3525,7 @@ f.write("K2TXB " + str(k2txb.get()) + "\n")
 f.write("SetSeq " + str(setseq.get()) + "\n")
 f.write("Report " + g.report + "\n")
 f.write("ShOK " + str(ShOK.get()) + "\n")
+f.write("IsAuto " + str(IsAuto.get()) + "\n")
 f.write("Nsave " + str(nsave.get()) + "\n")
 f.write("Band " + str(nfreq.get()) + "\n")
 f.write("S441 " + str(isync441) + "\n")
@@ -3098,6 +3543,8 @@ f.write("NDepth " + str(ndepth.get()) + "\n")
 f.write("Debug " + str(ndebug.get()) + "\n")
 f.write("LowBeacon " + str(nlowbeacon.get()) + "\n")
 f.write("JT4avg " + str(jt4avg.get()) + "\n")
+f.write("HideEmptyMessages " + str(HideEmptyMessages.get()) + "\n")
+f.write("ReportAllMessages " + str(ReportAllMessages.get()) + "\n")
 f.write("Monitor " + str(nmonitor.get()) + "\n")
 #f.write("TRPeriod " + str(Audio.gcom1.trperiod) + "\n")
 mrudir2=mrudir.replace(" ","#")
@@ -3106,6 +3553,7 @@ if g.astro_geom[:7]=="200x200":
     g.astro_geom="316x416" + g.astro_geom[7:]
 f.write("AstroGeometry " + g.astro_geom + "\n")
 f.write("CWTRPeriod " + str(ncwtrperiod) + "\n")
+f.write("auto73Count " + str(options.auto73Count.get()) + "\n")
 f.close()
 
 Audio.ftn_quit()

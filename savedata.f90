@@ -28,7 +28,11 @@ subroutine savedata
   ibuf2=ibuf0-1
 1 jza=2048*(ibuf2-ibuf1)
   if(jza.lt.0) jza=jza+NRxMax
-  if(jza.lt.110250) go to 999           !Don't save files less than 10 s
+  if(mode(1:5).eq.'ISCAT') then
+    if(jza.lt.5*11025) go to 999           !Don't save files less than 5 s
+  else
+    if(jza.lt.10*11025) go to 999           !Don't save files less than 10 s
+  endif    
   if(jza.gt.120*11025) go to 999         !Don't save if something's fishy
   k=2048*(ibuf1-1)
   if(mode(1:4).ne.'JT65' .and. mode(1:3).ne.'JT4'                   &
