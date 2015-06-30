@@ -12,9 +12,6 @@
 #include <QImage>
 #include <cstring>
 
-#define VERT_DIVS 7	//specify grid screen divisions
-#define HORZ_DIVS 20
-
 class FPlotter : public QFrame
 {
   Q_OBJECT
@@ -48,7 +45,7 @@ protected:
 
 private:
 
-  void MakeFrequencyStrs();
+  void MakeTimeStrs();
   int XfromFreq(float f);
   float FreqfromX(int x);
   qint64 RoundFreq(qint64 freq, int resolution);

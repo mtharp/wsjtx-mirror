@@ -19,7 +19,7 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
 
   m_StartFreq = -200;
   m_fftBinWidth=12000.0/32768.0;
-  m_hdivs = HORZ_DIVS;
+  m_hdivs = 30;
   m_2DPixmap = QPixmap(0,0);
   m_ScalePixmap = QPixmap(0,0);
   m_OverlayPixmap = QPixmap(0,0);
@@ -47,6 +47,7 @@ void FPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_Size = size();
     m_w = m_Size.width();
     m_h = m_Size.height();
+    qDebug() << m_w << m_h;
     m_h1=30;
     m_h2=m_h-m_h1;
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
@@ -117,15 +118,8 @@ void FPlotter::DrawOverlay()                                 //DrawOverlay()
   QRect rect;
   QPainter painter(&m_OverlayPixmap);
   painter.initFrom(this);
-  QLinearGradient gradient(0, 0, 0 ,m_h2);  //fill background with gradient
-  gradient.setColorAt(1, Qt::black);
-  gradient.setColorAt(0, Qt::darkBlue);
-  painter.setBrush(gradient);
-  painter.drawRect(0, 0, m_w, m_h2);
-  painter.setBrush(Qt::SolidPattern);
-
-
-  painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
+//  painter.setBrush(Qt::SolidPattern);
+//  painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
 
   QRect rect0;
   QPainter painter0(&m_ScalePixmap);
@@ -133,31 +127,22 @@ void FPlotter::DrawOverlay()                                 //DrawOverlay()
 
   //create Font to use for scales
   QFont Font("Arial");
-  Font.setPointSize(12);
+  Font.setPointSize(8);
   QFontMetrics metrics(Font);
   Font.setWeight(QFont::Normal);
   painter0.setFont(Font);
-  painter0.setPen(Qt::black);
+  painter0.setPen(Qt::white);
+  m_ScalePixmap.fill(Qt::black);
+  painter0.drawRect(0, 0, m_w, 20);
+  painter0.drawLine(0,20,m_w,20);
 
-  m_ScalePixmap.fill(Qt::white);
-  painter0.drawRect(0, 0, m_w, 30);
-
-  float pixPerHdiv = 50; //###
-
-//draw tick marks on upper scale
-  for( int i=1; i<m_hdivs; i++) {         //major ticks
+  float pixPerHdiv = 12000.0/512.0;
+  for( int i=0; i<=m_hdivs; i++) {         //Ticks at 1-second intervals
     x = (int)( (float)i*pixPerHdiv );
-    painter0.drawLine(x,18,x,30);
-  }
-  int minor=5;
-  if(m_freqPerDiv==200) minor=4;
-  for( int i=1; i<minor*m_hdivs; i++) {   //minor ticks
-    x = i*pixPerHdiv/minor;
-    painter0.drawLine(x,24,x,30);
+    painter0.drawLine(x,16,x,20);
   }
 
-//draw frequency values
-  MakeFrequencyStrs();
+  MakeTimeStrs();                          //Write numbers on time scale
   for( int i=0; i<=m_hdivs; i++) {
     if(0==i) {
       //left justify the leftmost text
@@ -183,12 +168,10 @@ void FPlotter::DrawOverlay()                                 //DrawOverlay()
 
 }
 
-void FPlotter::MakeFrequencyStrs()                       //MakeFrequencyStrs
+void FPlotter::MakeTimeStrs()                       //MakeTimeStrs
 {
-  float freq;
   for(int i=0; i<=m_hdivs; i++) {
-    freq=m_StartFreq + i*m_freqPerDiv;
-    m_HDivText[i].setNum((int)freq);
+    m_HDivText[i].setNum(i);
   }
 }
 

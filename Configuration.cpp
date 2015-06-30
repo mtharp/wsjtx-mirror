@@ -205,8 +205,8 @@ public:
   explicit FrequencyDialog (Modes * modes_model, QWidget * parent = nullptr)
     : QDialog {parent}
   {
-    setWindowTitle (QApplication::applicationName () + " - " + tr ("Add Frequency"));
-
+    setWindowTitle (QApplication::applicationName () + " - " +
+                    tr ("Add Frequency"));
     mode_combo_box_.setModel (modes_model);
 
     auto form_layout = new QFormLayout ();

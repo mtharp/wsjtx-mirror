@@ -53,6 +53,7 @@ class QLineEdit;
 class QFont;
 class QHostInfo;
 class EchoGraph;
+class FastGraph;
 class WideGraph;
 class LogQSO;
 class Transceiver;
@@ -229,11 +230,11 @@ private slots:
   void on_WSPRfreqSpinBox_valueChanged(int n);
   void on_pbTxNext_clicked(bool b);
   void on_tabWidget_currentChanged (int);
-
   void on_actionEcho_Graph_triggered();
-
   void on_actionEcho_triggered();
   void DopplerTracking_toggled (bool);
+  void on_actionISCAT_triggered();
+  void on_actionFast_Graph_triggered();
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -272,6 +273,7 @@ private:
 
   QScopedPointer<WideGraph> m_wideGraph;
   QScopedPointer<EchoGraph> m_echoGraph;
+  QScopedPointer<FastGraph> m_fastGraph;
   QScopedPointer<LogQSO> m_logDlg;
   QScopedPointer<Astro> m_astroWidget;
   QScopedPointer<HelpTextWindow> m_shortcuts;

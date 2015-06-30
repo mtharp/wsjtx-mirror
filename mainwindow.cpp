@@ -82,6 +82,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_WSPR_band_hopping {settings, &m_config, this},
   m_wideGraph (new WideGraph(settings)),
   m_echoGraph (new EchoGraph(settings)),
+  m_fastGraph (new FastGraph(settings)),
   m_logDlg (new LogQSO (program_title (), settings, this)),
   m_dialFreq {std::numeric_limits<Radio::Frequency>::max ()},
   m_detector (RX_SAMPLE_RATE, NTMAX, 6912 / 2, downSampleFactor),
@@ -114,7 +115,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_optimizingProgress {"Optimizing decoder FFTs for your CPU.\n"
       "Please be patient,\n"
       "this may take a few minutes", QString {}, 0, 1, this},
-  m_messageClient {new MessageClient {QApplication::applicationName (), m_config.udp_server_name (), m_config.udp_server_port (), this}},
+  m_messageClient {new MessageClient {QApplication::applicationName (),
+                   m_config.udp_server_name (), m_config.udp_server_port (),
+                   this}},
   psk_Reporter {new PSK_Reporter {m_messageClient, this}}
 {
   ui->setupUi(this);
@@ -170,15 +173,14 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(&m_detector, &Detector::framesWritten, this, &MainWindow::dataSink);
 
   // setup the waterfall
-  connect(m_wideGraph.data (), SIGNAL(freezeDecode2(int)),this,
-          SLOT(freezeDecode(int)));
-  connect(m_wideGraph.data (), SIGNAL(f11f12(int)),this,
-          SLOT(bumpFqso(int)));
-  connect(m_wideGraph.data (), SIGNAL(setXIT2(int)),this,
-          SLOT(setXIT(int)));
+  connect(m_wideGraph.data (), SIGNAL(freezeDecode2(int)),this,SLOT(freezeDecode(int)));
+  connect(m_wideGraph.data (), SIGNAL(f11f12(int)),this,SLOT(bumpFqso(int)));
+  connect(m_wideGraph.data (), SIGNAL(setXIT2(int)),this,SLOT(setXIT(int)));
   connect (this, &MainWindow::finished, m_wideGraph.data (), &WideGraph::close);
 
   connect (this, &MainWindow::finished, m_echoGraph.data (), &EchoGraph::close);
+
+  connect (this, &MainWindow::finished, m_fastGraph.data (), &FastGraph::close);
 
   // setup the log QSO dialog
   connect (m_logDlg.data (), &LogQSO::acceptQSO, this, &MainWindow::acceptQSO2);
@@ -234,6 +236,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionWSPR_2->setActionGroup(modeGroup);
   ui->actionWSPR_15->setActionGroup(modeGroup);
   ui->actionEcho->setActionGroup(modeGroup);
+  ui->actionISCAT->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -499,7 +502,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->txrb6->setChecked(true);
   if(m_mode!="JT9" and m_mode!="JT9W-1" and m_mode!="JT65" and m_mode!="JT9+JT65"
      and m_mode!="JT4" and m_mode!="WSPR-2" and m_mode!="WSPR-15" and
-     m_mode!="Echo") m_mode="JT9";
+     m_mode!="Echo" and m_mode!="ISCAT") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
 
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
@@ -513,6 +516,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
   if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
   if(m_mode=="Echo") on_actionEcho_triggered();
+  if(m_mode=="ISCAT") on_actionISCAT_triggered();
 
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
   m_wideGraph->setMode(m_mode);
@@ -1289,6 +1293,11 @@ void MainWindow::on_actionWide_Waterfall_triggered()      //Display Waterfalls
 void MainWindow::on_actionEcho_Graph_triggered()
 {
   m_echoGraph->show();
+}
+
+void MainWindow::on_actionFast_Graph_triggered()
+{
+  m_fastGraph->show();
 }
 
 void MainWindow::on_actionAstronomical_data_triggered()
@@ -3141,6 +3150,36 @@ void MainWindow::on_actionEcho_triggered()
   ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
   auto_tx_label->setText("");
   ui->tabWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_actionISCAT_triggered()
+{
+  m_mode="ISCAT";
+  m_modeTx="ISCAT";
+  ui->actionISCAT->setChecked(true);
+  m_TRperiod=3;
+  m_modulator.setPeriod(m_TRperiod);
+  m_detector.setPeriod(m_TRperiod);
+
+  m_nsps=6912;                   //For symspec only
+  m_hsymStop=103;
+  m_toneSpacing=11025.0/256.0;
+  switch_mode(Modes::ISCAT);
+  m_wideGraph->setMode(m_mode);
+  m_wideGraph->setModeTx(m_modeTx);
+  ui->TxFreqSpinBox->setValue(560);
+  ui->TxFreqSpinBox->setEnabled (false);
+  statusChanged();
+  if(!m_fastGraph->isVisible()) m_fastGraph->show();
+  if(m_wideGraph->isVisible()) m_wideGraph->hide();
+  mode_label->setStyleSheet("QLabel{background-color: #fc7c00}");
+  mode_label->setText(m_mode);
+  VHF_controls_visible(true);
+  WSPR_config(false);
+  ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
+  auto_tx_label->setText("");
+  ui->tabWidget->setCurrentIndex(0);
+
 }
 
 void MainWindow::switch_mode (Mode mode)

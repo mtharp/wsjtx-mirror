@@ -8,16 +8,18 @@
 #define NSMAX2 1366
 
 FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
-  QDialog {parent, Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint},
+  QDialog {parent, Qt::Window | Qt::WindowTitleHint |
+           Qt::WindowCloseButtonHint |
+           Qt::WindowMinimizeButtonHint},
   m_settings (settings),
   ui(new Ui::FastGraph)
 {
   ui->setupUi(this);
   installEventFilter(parent);                   //Installing the filter
   ui->fastPlot->setCursor(Qt::CrossCursor);
-  setMaximumWidth(2048);
-  setMaximumHeight(880);
-  ui->fastPlot->setMaximumHeight(800);
+//  setMaximumWidth(2048);
+//  setMaximumHeight(880);
+//  ui->fastPlot->setMaximumHeight(800);
 
 //Restore user's settings
   m_settings->beginGroup("FastGraph");

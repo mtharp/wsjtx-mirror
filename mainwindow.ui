@@ -2296,6 +2296,7 @@ QPushButton[state=&quot;ok&quot;] {
     <addaction name="actionAstronomical_data"/>
     <addaction name="actionMessage_averaging"/>
     <addaction name="actionEcho_Graph"/>
+    <addaction name="actionFast_Graph"/>
    </widget>
    <widget class="QMenu" name="menuDecode">
     <property name="title">
@@ -2340,6 +2341,8 @@ QPushButton[state=&quot;ok&quot;] {
     <addaction name="actionWSPR_2"/>
     <addaction name="actionWSPR_15"/>
     <addaction name="actionEcho"/>
+    <addaction name="separator"/>
+    <addaction name="actionISCAT"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -2666,6 +2669,9 @@ QPushButton[state=&quot;ok&quot;] {
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>JT9W-1</string>
    </property>
@@ -2761,6 +2767,22 @@ QPushButton[state=&quot;ok&quot;] {
    </property>
    <property name="toolTip">
     <string>EME Echo mode</string>
+   </property>
+  </action>
+  <action name="actionISCAT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ISCAT</string>
+   </property>
+  </action>
+  <action name="actionFast_Graph">
+   <property name="text">
+    <string>Fast Graph</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
    </property>
   </action>
  </widget>

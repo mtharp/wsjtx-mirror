@@ -8,15 +8,16 @@
 namespace
 {
   char const * const mode_names[] =
-    {
-      "",
-      "JT65",
-      "JT9",
-      "JT9W-1",
-      "JT4",
-      "WSPR",
-      "Echo",
-    };
+  {
+    "",
+    "JT65",
+    "JT9",
+    "JT9W-1",
+    "JT4",
+    "WSPR",
+    "Echo",
+    "ISCAT",
+  };
 }
 
 Modes::Modes (QObject * parent)
