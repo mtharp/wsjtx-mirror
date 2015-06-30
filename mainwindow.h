@@ -83,6 +83,7 @@ public slots:
   void showSoundOutError(const QString& errorMsg);
   void showStatusMessage(const QString& statusMsg);
   void dataSink(qint64 frames);
+  void fastSink(qint64 frames);
   void diskDat();
   void diskWriteFinished();
   void freezeDecode(int n);
@@ -332,6 +333,7 @@ private:
   qint32  m_pctx;
   qint32  m_nseq;
   qint32  m_nWSPRdecodes;
+  qint32  m_jh;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -528,6 +530,8 @@ extern "C" {
   //----------------------------------------------------- C and Fortran routines
   void symspec_(int* k, int* ntrperiod, int* nsps, int* ingain, int* minw,
                 float* px, float s[], float* df3, int* nhsym, int* npts8);
+
+  void hspec_(short int d2[], int* k, float green[], float s[], int* jh);
 
   void gen4_(char* msg, int* ichk, char* msgsent, int itone[],
                int* itext, int len1, int len2);

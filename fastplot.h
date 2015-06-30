@@ -46,8 +46,8 @@ protected:
 private:
 
   void MakeTimeStrs();
-  int XfromFreq(float f);
-  float FreqfromX(int x);
+  int XfromTime(float t);
+  float TimefromX(int x);
   qint64 RoundFreq(qint64 freq, int resolution);
 
   QPixmap m_2DPixmap;
@@ -56,9 +56,7 @@ private:
   QSize   m_Size;
   QString m_HDivText[483];
 
-  double  m_fftBinWidth;
-
-  qint64  m_StartFreq;
+  double  m_pixPerSecond;
 
   qint32  m_dBStepSize;
   qint32  m_hdivs;
@@ -67,6 +65,13 @@ private:
   qint32  m_h;
   qint32  m_h1;
   qint32  m_h2;
+  qint32  m_jh0;
+
+  bool m_Running;
 };
+
+extern float fast_green[703];
+extern float fast_s[44992];                                    //44992=64*703
+extern int   fast_jh;
 
 #endif // FPLOTTER_H

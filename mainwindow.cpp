@@ -54,7 +54,9 @@ int outBufSize;
 int rc;
 qint32  g_iptt;
 wchar_t buffer[256];
-
+float fast_green[703];
+float fast_s[44992];                                    //44992=64*703
+int   fast_jh;
 
 namespace
 {
@@ -543,7 +545,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   on_monitorButton_clicked (!m_config.monitor_off_at_startup ());
   if(m_mode=="Echo") monitor(false); //Don't auto-start Monitor in Echo mode.
 
-  bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
+  bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65" or
+                                             m_mode=="ISCAT");
   VHF_controls_visible(b);
 
   m_ntx=1;
@@ -752,6 +755,11 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.ndiskdat=0;
   }
 
+  if(m_mode=="ISCAT") {
+    fastSink(frames);
+    return;
+  }
+
   // Get power, spectrum, and ihsym
   trmin=m_TRperiod/60;
 //  int k (frames - 1);
@@ -871,6 +879,14 @@ void MainWindow::dataSink(qint64 frames)
     }
     m_rxDone=true;
   }
+}
+
+//-------------------------------------------------------------- fastSink()
+void MainWindow::fastSink(qint64 frames)
+{
+  int k (frames);
+  hspec_(&jt9com_.d2[0], &k, fast_green, fast_s, &fast_jh);
+  m_fastGraph->plotSpec();
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -1391,7 +1407,6 @@ void MainWindow::diskDat()                                   //diskDat()
   for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
     k=(n+1)*kstep;
     jt9com_.npts8=k/8;
-//    dataSink(k * sizeof (jt9com_.d2[0]));
     dataSink(k);
     if(n%10 == 1 or n == m_hsymStop) qApp->processEvents();   //Keep GUI responsive
   }
@@ -1786,6 +1801,7 @@ void MainWindow::guiUpdate()
   double txDuration=1.0 + 85.0*m_nsps/12000.0;              // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;   // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;   // WSPR
+  if(m_mode=="ISCAT") txDuration=30.0;                      // ISCAT
 //###  if(m_mode=="WSPR-15") tx2=...
 
   double tx1=0.0;
@@ -2092,14 +2108,14 @@ void MainWindow::guiUpdate()
   if(m_auto and m_mode=="Echo" and m_bEchoTxOK) progressBar->setValue(
         int(100*m_s6/6.0));
 
+  if(m_mode!="Echo") {
+    int ipct=0;
+    if(m_monitoring or m_transmitting) ipct=int(fmod(tsec,m_TRperiod)*100.0/txDuration);
+    progressBar->setValue(ipct);
+  }
+
 //Once per second:
   if(nsec != m_sec0) {
-    if(m_mode!="Echo") {
-      int ipct=0;
-      if(m_monitoring or m_transmitting) ipct=int(100*m_nseq/txDuration);
-      progressBar->setValue(ipct);
-    }
-
     QDateTime t = QDateTime::currentDateTimeUtc();
     astroCalculations (t, m_astroWidget && m_astroWidget->doppler_tracking ());
     if(m_transmitting) {
@@ -3066,7 +3082,6 @@ void MainWindow::on_actionJT4_triggered()
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=181;
-//  if(m_config.decode_at_52s()) m_hsymStop=181;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
@@ -3084,7 +3099,6 @@ void MainWindow::on_actionJT4_triggered()
   ui->sbSubmode->setMaximum(6);
   ui->label_6->setText("Single-Period Decodes");
   ui->label_7->setText("Average Decodes");
-
   if(bVHF) {
     ui->sbSubmode->setValue(m_nSubMode);
   } else {
@@ -3154,13 +3168,13 @@ void MainWindow::on_actionEcho_triggered()
 
 void MainWindow::on_actionISCAT_triggered()
 {
+  on_actionJT4_triggered();
   m_mode="ISCAT";
   m_modeTx="ISCAT";
   ui->actionISCAT->setChecked(true);
-  m_TRperiod=3;
+  m_TRperiod=30;
   m_modulator.setPeriod(m_TRperiod);
   m_detector.setPeriod(m_TRperiod);
-
   m_nsps=6912;                   //For symspec only
   m_hsymStop=103;
   m_toneSpacing=11025.0/256.0;
@@ -3174,12 +3188,11 @@ void MainWindow::on_actionISCAT_triggered()
   if(m_wideGraph->isVisible()) m_wideGraph->hide();
   mode_label->setStyleSheet("QLabel{background-color: #fc7c00}");
   mode_label->setText(m_mode);
-  VHF_controls_visible(true);
   WSPR_config(false);
   ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
   auto_tx_label->setText("");
   ui->tabWidget->setCurrentIndex(0);
-
+  ui->sbSubmode->setMaximum(1);
 }
 
 void MainWindow::switch_mode (Mode mode)

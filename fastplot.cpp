@@ -17,8 +17,7 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
   setAttribute(Qt::WA_OpaquePaintEvent, false);
   setAttribute(Qt::WA_NoSystemBackground, true);
 
-  m_StartFreq = -200;
-  m_fftBinWidth=12000.0/32768.0;
+  m_pixPerSecond= 12000.0/512.0;
   m_hdivs = 30;
   m_2DPixmap = QPixmap(0,0);
   m_ScalePixmap = QPixmap(0,0);
@@ -26,6 +25,7 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
   m_Size = QSize(0,0);
   m_line = 0;
   m_dBStepSize=10;
+  m_jh0=0;
 }
 
 FPlotter::~FPlotter() { }                                      // Destructor
@@ -47,7 +47,6 @@ void FPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_Size = size();
     m_w = m_Size.width();
     m_h = m_Size.height();
-    qDebug() << m_w << m_h;
     m_h1=30;
     m_h2=m_h-m_h1;
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
@@ -71,8 +70,7 @@ void FPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
 
 void FPlotter::draw()                           //draw()
 {
-  int i,j,y;
-  float blue[4096],red[4096];
+  int j,y;
   float gain = pow(10.0,(m_plotGain/20.0));
 
   if(m_2DPixmap.size().width()==0) return;
@@ -81,30 +79,21 @@ void FPlotter::draw()                           //draw()
   painter2D.fillRect(tmp,Qt::black);
 
   QPoint LineBuf[MAX_SCREENSIZE];
-  QPen penBlue(QColor(0,255,255),1);
-  QPen penRed(Qt::red,1);
+  QPen penGreen(Qt::green,1);
 
 
-// check i0 value! ...
-  painter2D.setPen(penBlue);
+// Update the green curve
+  painter2D.setPen(penGreen);
   j=0;
-  int i0=0;
-  for(i=0; i<m_w; i++) {
-    y = 0.9*m_h2 - gain*(m_h/10.0)*(blue[i0+i]-1.0) - 0.01*m_h2*m_plotZero;
-    LineBuf[j].setX(i);
+  for(int x=m_jh0; x<=fast_jh; x++) {
+    y = 0.9*m_h - gain*(m_h/100.0)*fast_green[x] - m_plotZero;
+    LineBuf[j].setX(x);
     LineBuf[j].setY(y);
+//    qDebug() << "a" << j << fast_jh << fast_green[x] << x << y;
     j++;
   }
-  painter2D.drawPolyline(LineBuf,j);
-
-  painter2D.setPen(penRed);
-  j=0;
-  for(int i=0; i<m_w; i++) {
-    y = 0.9*m_h2 - gain*(m_h/10.0)*(red[i0+i]-1.0) - 0.01*m_h2*m_plotZero;
-    LineBuf[j].setX(i);
-    LineBuf[j].setY(y);
-    j++;
-  }
+//  m_jh0=fast_jh;
+  m_jh0=0;
   painter2D.drawPolyline(LineBuf,j);
   update();                              //trigger a new paintEvent
 }
@@ -112,8 +101,7 @@ void FPlotter::draw()                           //draw()
 void FPlotter::DrawOverlay()                                 //DrawOverlay()
 {
   if(m_OverlayPixmap.isNull() or m_2DPixmap.isNull()) return;
-//  int w = m_WaterfallPixmap.width();
-  int x,y;
+  int x;
 
   QRect rect;
   QPainter painter(&m_OverlayPixmap);
@@ -136,36 +124,36 @@ void FPlotter::DrawOverlay()                                 //DrawOverlay()
   painter0.drawRect(0, 0, m_w, 20);
   painter0.drawLine(0,20,m_w,20);
 
-  float pixPerHdiv = 12000.0/512.0;
-  for( int i=0; i<=m_hdivs; i++) {         //Ticks at 1-second intervals
-    x = (int)( (float)i*pixPerHdiv );
+//Draw ticks at 1-second intervals
+  for( int i=0; i<=m_hdivs; i++) {
+    x = (int)( (float)i*m_pixPerSecond );
     painter0.drawLine(x,16,x,20);
   }
 
-  MakeTimeStrs();                          //Write numbers on time scale
+//Write numbers on the time scale
+  MakeTimeStrs();
   for( int i=0; i<=m_hdivs; i++) {
     if(0==i) {
       //left justify the leftmost text
-      x = (int)( (float)i*pixPerHdiv);
-      rect0.setRect(x,0, (int)pixPerHdiv, 20);
+      x = (int)( (float)i*m_pixPerSecond);
+      rect0.setRect(x,0, (int)m_pixPerSecond, 20);
       painter0.drawText(rect0, Qt::AlignLeft|Qt::AlignVCenter,
                        m_HDivText[i]);
     }
     else if(m_hdivs == i) {
       //right justify the rightmost text
-      x = (int)( (float)i*pixPerHdiv - pixPerHdiv);
-      rect0.setRect(x,0, (int)pixPerHdiv, 20);
+      x = (int)( (float)i*m_pixPerSecond - m_pixPerSecond);
+      rect0.setRect(x,0, (int)m_pixPerSecond, 20);
       painter0.drawText(rect0, Qt::AlignRight|Qt::AlignVCenter,
                        m_HDivText[i]);
     } else {
       //center justify the rest of the text
-      x = (int)( (float)i*pixPerHdiv - pixPerHdiv/2);
-      rect0.setRect(x,0, (int)pixPerHdiv, 20);
+      x = (int)( (float)i*m_pixPerSecond - m_pixPerSecond/2);
+      rect0.setRect(x,0, (int)m_pixPerSecond, 20);
       painter0.drawText(rect0, Qt::AlignHCenter|Qt::AlignVCenter,
                        m_HDivText[i]);
     }
   }
-
 }
 
 void FPlotter::MakeTimeStrs()                       //MakeTimeStrs
@@ -175,23 +163,19 @@ void FPlotter::MakeTimeStrs()                       //MakeTimeStrs
   }
 }
 
-int FPlotter::XfromFreq(float f)                               //XfromFreq()
+int FPlotter::XfromTime(float t)                               //XfromFreq()
 {
-//  int x = (int) m_w * (f - m_StartFreq)/m_fSpan;
-  int x=100;
-  if(x<0 ) return 0;
-  if(x>m_w) return m_w;
-  return x;
+  return int(t*m_pixPerSecond);
 }
 
-float FPlotter::FreqfromX(int x)                               //FreqfromX()
+float FPlotter::TimefromX(int x)                               //FreqfromX()
 {
-//  return float(m_StartFreq + x*m_fftBinWidth*m_binsPerPixel);
+  return float(x/m_pixPerSecond);
 }
 
 void FPlotter::SetRunningState(bool running)              //SetRunningState()
 {
-//  m_Running = running;
+  m_Running = running;
 }
 
 void FPlotter::setPlotZero(int plotZero)                  //setPlotZero()

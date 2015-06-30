@@ -17,9 +17,6 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   ui->setupUi(this);
   installEventFilter(parent);                   //Installing the filter
   ui->fastPlot->setCursor(Qt::CrossCursor);
-//  setMaximumWidth(2048);
-//  setMaximumHeight(880);
-//  ui->fastPlot->setMaximumHeight(800);
 
 //Restore user's settings
   m_settings->beginGroup("FastGraph");
