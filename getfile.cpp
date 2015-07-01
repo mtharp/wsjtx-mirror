@@ -42,7 +42,6 @@ void getfile(QString fname, int ntrperiod)
 
   int i1=fname.lastIndexOf("/");
   QString baseName=fname.mid(i1+1);
-//  qDebug() << baseName << baseName.length();
 
   int i0=fname.indexOf(".wav",0,Qt::CaseInsensitive);
   jt9com_.nutc=0;

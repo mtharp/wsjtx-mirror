@@ -47,14 +47,14 @@ void FPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_Size = size();
     m_w = m_Size.width();
     m_h = m_Size.height();
-    m_h1=30;
+    m_h1=21;
     m_h2=m_h-m_h1;
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
     m_2DPixmap.fill(Qt::black);
     m_OverlayPixmap = QPixmap(m_Size.width(), m_h2);
     m_OverlayPixmap.fill(Qt::black);
     m_2DPixmap.fill(Qt::black);
-    m_ScalePixmap = QPixmap(m_w,30);
+    m_ScalePixmap = QPixmap(m_w,20);
     m_ScalePixmap.fill(Qt::white);
   }
   DrawOverlay();
@@ -83,23 +83,20 @@ void FPlotter::draw()                           //draw()
   for(int k=0; k<64*fast_jh; k++) {
     int i = k%64;
     int j = k/64;
-    int y=gain*fast_s[k] + m_plotZero;
-    if(k==(64*fast_jh-1)) qDebug() << i << j << k << int(fast_green[j])
-                                          << int(fast_s[k]) << y;
+    int y=0.005*gain*fast_s[k] + m_plotZero;
       if(y<0) y=0;
       if(y>254) y=254;
       painter2D.setPen(g_ColorTbl[y]);
-      painter2D.drawPoint(j,64+20-i);
+      painter2D.drawPoint(j,64-i);
   }
 
 // Update the green curve
   painter2D.setPen(penGreen);
   int j=0;
   for(int x=m_jh0; x<=fast_jh; x++) {
-    int y = 0.9*m_h - gain*(m_h/100.0)*fast_green[x] - m_plotZero;
+    int y = 0.9*m_h - gain*fast_green[x] - m_plotZero + 40;
     LineBuf[j].setX(x);
     LineBuf[j].setY(y);
-//    qDebug() << "a" << j << fast_jh << fast_green[x] << x << y;
     j++;
   }
 //  m_jh0=fast_jh;

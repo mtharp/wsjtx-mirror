@@ -1405,7 +1405,8 @@ void MainWindow::diskDat()                                   //diskDat()
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  for(int n=1; n<=m_hsymStop; n++) {              // Do the half-symbol FFTs
+  if(m_mode=="ISCAT") m_hsymStop=103;
+  for(int n=1; n<=m_hsymStop; n++) {              // Do the waterfall spectra
     k=(n+1)*kstep;
     jt9com_.npts8=k/8;
     dataSink(k);
