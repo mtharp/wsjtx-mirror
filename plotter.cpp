@@ -133,7 +133,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     int y1 = 10.0*gain*y + 10*m_plotZero +40;
     if (y1<0) y1=0;
     if (y1>254) y1=254;
-    if (swide[i]<1.e29) painter1.setPen(m_ColorTbl[y1]);
+    if (swide[i]<1.e29) painter1.setPen(g_ColorTbl[y1]);
     painter1.drawPoint(i,0);
   }
 
@@ -589,4 +589,9 @@ void CPlotter::setTol(int n)                                 //setTol()
 {
   m_tol=n;
   DrawOverlay();
+}
+
+void CPlotter::setColours(QVector<QColor> const& cl)
+{
+  g_ColorTbl = cl;
 }

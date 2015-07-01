@@ -80,17 +80,16 @@ void FPlotter::draw()                           //draw()
 
   float gain = pow(10.0,(m_plotGain/20.0));
 
-  int k=0;
-  for(int i=0; i<64; i++) {
-    for(int j=0; j<=fast_jh; j++) {
-      int y=gain*fast_s[k] + 10*m_plotZero;
-      if(i==32 and j==fast_jh/2) qDebug() << "a" << i << j << k << fast_s[k] << y ;
+  for(int k=0; k<64*fast_jh; k++) {
+    int i = k%64;
+    int j = k/64;
+    int y=gain*fast_s[k] + m_plotZero;
+    if(k==(64*fast_jh-1)) qDebug() << i << j << k << int(fast_green[j])
+                                          << int(fast_s[k]) << y;
       if(y<0) y=0;
       if(y>254) y=254;
-      painter2D.setPen(m_ColorTbl[y]);
-      painter2D.drawPoint(64+20-i,j);
-      k++;
-    }
+      painter2D.setPen(g_ColorTbl[y]);
+      painter2D.drawPoint(j,64+20-i);
   }
 
 // Update the green curve

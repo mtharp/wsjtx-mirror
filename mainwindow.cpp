@@ -57,6 +57,7 @@ wchar_t buffer[256];
 float fast_green[703];
 float fast_s[44992];                                    //44992=64*703
 int   fast_jh;
+QVector<QColor> g_ColorTbl;
 
 namespace
 {

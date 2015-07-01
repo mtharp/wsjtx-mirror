@@ -75,7 +75,7 @@ public:
   qint32 breadth() const {return m_w;}
   float fSpan() const {return m_fSpan;}
   void setLockTxFreq(bool b) {m_lockTxFreq = b;}
-  void setColours(QVector<QColor> const& cl) {m_ColorTbl = cl;}
+  void setColours(QVector<QColor> const& cl);
   void setFlatten(bool b);
   void setTol(int n);
   void setRxBand(QString band);
@@ -94,8 +94,6 @@ private:
   void MakeFrequencyStrs();
   int XfromFreq(float f);
   float FreqfromX(int x);
-
-  QVector<QColor> m_ColorTbl;
 
   bool    m_bCurrent;
   bool    m_bCumulative;
@@ -118,7 +116,7 @@ private:
   QPixmap m_2DPixmap;
   QPixmap m_ScalePixmap;
   QPixmap m_OverlayPixmap;
-//  QPixmap m_LowerScalePixmap;
+
   QSize   m_Size;
   QString m_Str;
   QString m_HDivText[483];
@@ -161,6 +159,8 @@ private slots:
   void mousePressEvent(QMouseEvent *event);
   void mouseDoubleClickEvent(QMouseEvent *event);
 };
+
+extern QVector<QColor> g_ColorTbl;
 
 extern "C" {
   void flat4_(float swide[], int* iz, int* nflatten);

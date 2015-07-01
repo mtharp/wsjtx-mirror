@@ -35,7 +35,6 @@ public:
   int  plotWidth();
   void UpdateOverlay();
   void DrawOverlay();
-  void setColours(QVector<QColor> const& cl) {m_ColorTbl = cl;}
 
 //  void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
 
@@ -54,7 +53,6 @@ private:
   QPixmap m_2DPixmap;
   QPixmap m_ScalePixmap;
   QPixmap m_OverlayPixmap;
-  QVector<QColor> m_ColorTbl;
   QSize   m_Size;
   QString m_HDivText[483];
 
@@ -75,5 +73,7 @@ private:
 extern float fast_green[703];
 extern float fast_s[44992];                                    //44992=64*703
 extern int   fast_jh;
+extern QVector<QColor> g_ColorTbl;
+
 
 #endif // FPLOTTER_H
