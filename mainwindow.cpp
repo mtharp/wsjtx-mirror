@@ -3386,7 +3386,6 @@ void MainWindow::band_changed (Frequency f)
 
 void MainWindow::enable_DXCC_entity (bool on)
 {
-  qDebug() << on << m_mode;
   if (on and m_mode.mid(0,4)!="WSPR" and m_mode!="Echo") {
     m_logBook.init();                        // re-read the log and cty.dat files
     ui->gridLayout->setColumnStretch(0,55);  // adjust proportions of text displays
