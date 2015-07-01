@@ -25,6 +25,8 @@ public:
   qint32  m_w;
   qint32  m_plotZero;
   qint32  m_plotGain;
+  qint32  m_greenGain;
+  qint32  m_greenZero;
 
   void draw();		                                    //Update the Fast plot
   void SetRunningState(bool running);
@@ -32,11 +34,11 @@ public:
   int  getPlotZero();
   void setPlotGain(int plotGain);
   int  getPlotGain();
+  void setGreenGain(int n);
+  void setGreenZero(int n);
   int  plotWidth();
   void UpdateOverlay();
   void DrawOverlay();
-
-//  void SetPercent2DScreen(int percent){m_Percent2DScreen=percent;}
 
 protected:
   //re-implemented widget event handlers
@@ -50,7 +52,7 @@ private:
   float TimefromX(int x);
   qint64 RoundFreq(qint64 freq, int resolution);
 
-  QPixmap m_2DPixmap;
+  QPixmap m_horizPixmap;
   QPixmap m_ScalePixmap;
   QPixmap m_OverlayPixmap;
   QSize   m_Size;

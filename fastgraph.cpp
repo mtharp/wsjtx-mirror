@@ -25,6 +25,10 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   ui->fastPlot->setPlotGain(m_settings->value("PlotGain", 0).toInt());
   ui->zeroSlider->setValue(ui->fastPlot->getPlotZero());
   ui->gainSlider->setValue(ui->fastPlot->getPlotGain());
+  ui->fastPlot->setGreenZero(m_settings->value("GreenZero", 0).toInt());
+  ui->fastPlot->setGreenGain(m_settings->value("GreenGain", 0).toInt());
+  ui->greenZeroSlider->setValue(ui->fastPlot->m_greenZero);
+  ui->greenGainSlider->setValue(ui->fastPlot->m_greenGain);
   m_settings->endGroup();
 }
 
@@ -47,6 +51,8 @@ void FastGraph::saveSettings()
   m_settings->setValue ("geometry", saveGeometry ());
   m_settings->setValue("PlotZero",ui->fastPlot->m_plotZero);
   m_settings->setValue("PlotGain",ui->fastPlot->m_plotGain);
+  m_settings->setValue("GreenZero",ui->fastPlot->m_greenZero);
+  m_settings->setValue("GreenGain",ui->fastPlot->m_greenGain);
   m_settings->endGroup();
 }
 
@@ -64,5 +70,17 @@ void FastGraph::on_gainSlider_valueChanged(int value)
 void FastGraph::on_zeroSlider_valueChanged(int value)
 {
   ui->fastPlot->setPlotZero(value);
+  ui->fastPlot->draw();
+}
+
+void FastGraph::on_greenGainSlider_valueChanged(int value)
+{
+  ui->fastPlot->setGreenGain(value);
+  ui->fastPlot->draw();
+}
+
+void FastGraph::on_greenZeroSlider_valueChanged(int value)
+{
+  ui->fastPlot->setGreenZero(value);
   ui->fastPlot->draw();
 }
