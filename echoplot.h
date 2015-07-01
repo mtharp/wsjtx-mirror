@@ -24,7 +24,6 @@ public:
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
-  QColor  m_ColorTbl[256];
   float   m_fSpan;
   qint32  m_TxFreq;
   qint32  m_w;

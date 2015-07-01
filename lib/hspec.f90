@@ -31,9 +31,8 @@ subroutine hspec(id2,k,green,s,jh)
   endif
 
   do iblk=1,7
-     if(ja+nfft.gt.k) exit
      ja=ja+nfft
-     jh=jh+1
+     if(jh.lt.JZ-1) jh=jh+1
      x=id2(ja:ja+nfft-1)
      sq=dot_product(x,x)
      rms=sqrt(sq/nfft)

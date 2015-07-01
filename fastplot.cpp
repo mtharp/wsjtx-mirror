@@ -70,23 +70,34 @@ void FPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
 
 void FPlotter::draw()                           //draw()
 {
-  int j,y;
-  float gain = pow(10.0,(m_plotGain/20.0));
-
   if(m_2DPixmap.size().width()==0) return;
+
   QPainter painter2D(&m_2DPixmap);
   QRect tmp(0,0,m_w,m_h2);
   painter2D.fillRect(tmp,Qt::black);
-
-  QPoint LineBuf[MAX_SCREENSIZE];
+  QPoint LineBuf[703];
   QPen penGreen(Qt::green,1);
 
+  float gain = pow(10.0,(m_plotGain/20.0));
+
+  int k=0;
+  for(int i=0; i<64; i++) {
+    for(int j=0; j<=fast_jh; j++) {
+      int y=gain*fast_s[k] + 10*m_plotZero;
+      if(i==32 and j==fast_jh/2) qDebug() << "a" << i << j << k << fast_s[k] << y ;
+      if(y<0) y=0;
+      if(y>254) y=254;
+      painter2D.setPen(m_ColorTbl[y]);
+      painter2D.drawPoint(64+20-i,j);
+      k++;
+    }
+  }
 
 // Update the green curve
   painter2D.setPen(penGreen);
-  j=0;
+  int j=0;
   for(int x=m_jh0; x<=fast_jh; x++) {
-    y = 0.9*m_h - gain*(m_h/100.0)*fast_green[x] - m_plotZero;
+    int y = 0.9*m_h - gain*(m_h/100.0)*fast_green[x] - m_plotZero;
     LineBuf[j].setX(x);
     LineBuf[j].setY(y);
 //    qDebug() << "a" << j << fast_jh << fast_green[x] << x << y;
