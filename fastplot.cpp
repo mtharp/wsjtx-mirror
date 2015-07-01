@@ -96,7 +96,7 @@ void FPlotter::draw()                           //draw()
   float greenGain = pow(10.0,(m_greenGain/20.0));
   for(int x=m_jh0; x<=fast_jh; x++) {
     int y = 0.9*m_h - greenGain*fast_green[x] - m_greenZero + 40;
-    if(y>84) y=84;
+    if(y>119) y=119;
     LineBuf[j].setX(x);
     LineBuf[j].setY(y);
     j++;

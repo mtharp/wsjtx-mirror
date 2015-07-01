@@ -1405,7 +1405,7 @@ void MainWindow::diskDat()                                   //diskDat()
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  if(m_mode=="ISCAT") m_hsymStop=103;
+  if(m_mode=="ISCAT") m_hsymStop=jt9com_.kin/3456;
   for(int n=1; n<=m_hsymStop; n++) {              // Do the waterfall spectra
     k=(n+1)*kstep;
     jt9com_.npts8=k/8;

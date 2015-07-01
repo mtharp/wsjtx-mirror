@@ -60,7 +60,7 @@ void getfile(QString fname, int ntrperiod)
     if(hdr.nsamrate==11025) wav12_(jt9com_.d2,jt9com_.d2,&n,&hdr.nbitsam2);
     fclose(fp);
     jt9com_.newdat=1;
-    if(n==-99999) jt9com_.newdat=2;             //Silence compiler warning
+    jt9com_.kin=n;
   }
 }
 
