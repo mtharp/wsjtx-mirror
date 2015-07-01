@@ -1406,11 +1406,11 @@ void MainWindow::diskDat()                                   //diskDat()
   int kstep=m_nsps/2;
   m_diskData=true;
   if(m_mode=="ISCAT") m_hsymStop=jt9com_.kin/3456;
-  for(int n=1; n<=m_hsymStop; n++) {              // Do the waterfall spectra
+  for(int n=1; n<=m_hsymStop; n++) {                      // Do the waterfall spectra
     k=(n+1)*kstep;
     jt9com_.npts8=k/8;
     dataSink(k);
-    if(n%10 == 1 or n == m_hsymStop) qApp->processEvents();   //Keep GUI responsive
+    qApp->processEvents();                                //Update the waterfall
   }
 }
 

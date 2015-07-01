@@ -19,9 +19,6 @@ public:
   explicit FPlotter(QWidget *parent = 0);
   ~FPlotter();
 
-  QSize minimumSizeHint() const;
-  QSize sizeHint() const;
-
   qint32  m_w;
   qint32  m_plotZero;
   qint32  m_plotGain;
@@ -43,7 +40,7 @@ public:
 protected:
   //re-implemented widget event handlers
   void paintEvent(QPaintEvent *event);
-  void resizeEvent(QResizeEvent* event);
+//  void resizeEvent(QResizeEvent* event);
 
 private:
 
@@ -55,15 +52,11 @@ private:
   QPixmap m_horizPixmap;
   QPixmap m_ScalePixmap;
   QPixmap m_OverlayPixmap;
-  QSize   m_Size;
   QString m_HDivText[483];
 
   double  m_pixPerSecond;
 
-  qint32  m_dBStepSize;
   qint32  m_hdivs;
-  qint32  m_line;
-  qint32  m_freqPerDiv;
   qint32  m_h;
   qint32  m_h1;
   qint32  m_h2;
@@ -76,6 +69,5 @@ extern float fast_green[703];
 extern float fast_s[44992];                                    //44992=64*703
 extern int   fast_jh;
 extern QVector<QColor> g_ColorTbl;
-
 
 #endif // FPLOTTER_H

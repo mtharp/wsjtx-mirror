@@ -6,11 +6,9 @@
 
 #define MAX_SCREENSIZE 2048
 
-
 FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
   QFrame(parent)
 {
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
   setAttribute(Qt::WA_PaintOnScreen,false);
   setAutoFillBackground(false);
@@ -19,47 +17,25 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
 
   m_pixPerSecond= 12000.0/512.0;
   m_hdivs = 30;
-  m_horizPixmap = QPixmap(0,0);
-  m_ScalePixmap = QPixmap(0,0);
-  m_OverlayPixmap = QPixmap(0,0);
-  m_Size = QSize(0,0);
-  m_line = 0;
-  m_dBStepSize=10;
-  m_jh0=0;
-}
-
-FPlotter::~FPlotter() { }                                      // Destructor
-
-QSize FPlotter::minimumSizeHint() const
-{
-  return QSize(50, 50);
-}
-
-QSize FPlotter::sizeHint() const
-{
-  return QSize(180, 180);
-}
-
-void FPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
-{
-  if(!size().isValid()) return;
-  if( m_Size != size() ) {  //if changed, resize pixmaps to new screensize
-    m_Size = size();
-    m_w = m_Size.width();
-    m_h = m_Size.height();
-    m_h1=20;
-    m_h2=m_h-m_h1;
-    m_horizPixmap = QPixmap(m_Size.width(), m_h2);
-    m_horizPixmap.fill(Qt::black);
-    m_OverlayPixmap = QPixmap(m_Size.width(), m_h2);
-    m_OverlayPixmap.fill(Qt::black);
-    m_horizPixmap.fill(Qt::black);
-    m_ScalePixmap = QPixmap(m_w,20);
-    m_ScalePixmap.fill(Qt::white);
-  }
+  m_horizPixmap = QPixmap(703,200);
+  m_ScalePixmap = QPixmap(703,20);
+  m_OverlayPixmap = QPixmap(703,20);
+  m_w = 703;
+  m_h = 220;
+  m_h1=20;
+  m_h2=m_h-m_h1;
+  m_horizPixmap = QPixmap(m_w, m_h2);
+  m_horizPixmap.fill(Qt::black);
+  m_OverlayPixmap = QPixmap(m_w, m_h2);
+  m_OverlayPixmap.fill(Qt::black);
+  m_horizPixmap.fill(Qt::black);
+  m_ScalePixmap = QPixmap(m_w,m_h1);
+  m_ScalePixmap.fill(Qt::white);
   DrawOverlay();
   draw();
 }
+
+FPlotter::~FPlotter() { }                                      // Destructor
 
 void FPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
 {
@@ -115,8 +91,6 @@ void FPlotter::DrawOverlay()                                 //DrawOverlay()
   QRect rect;
   QPainter painter(&m_OverlayPixmap);
   painter.initFrom(this);
-//  painter.setBrush(Qt::SolidPattern);
-//  painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
 
   QRect rect0;
   QPainter painter0(&m_ScalePixmap);
