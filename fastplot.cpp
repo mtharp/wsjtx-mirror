@@ -17,6 +17,7 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
 
   m_pixPerSecond= 12000.0/512.0;
   m_hdivs = 30;
+  m_jh0=0;
   m_horizPixmap = QPixmap(703,200);
   m_ScalePixmap = QPixmap(703,20);
   m_OverlayPixmap = QPixmap(703,20);
@@ -37,17 +38,16 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
 
 FPlotter::~FPlotter() { }                                      // Destructor
 
-void FPlotter::paintEvent(QPaintEvent *)                    // paintEvent()
+void FPlotter::paintEvent(QPaintEvent *)                       // paintEvent()
 {
   QPainter painter(this);
   painter.drawPixmap(0,0,m_ScalePixmap);
   painter.drawPixmap(0,m_h1,m_horizPixmap);
 }
 
-void FPlotter::draw()                           //draw()
+void FPlotter::draw()                                         //draw()
 {
   if(m_horizPixmap.size().width()==0) return;
-
   QPainter painter2D(&m_horizPixmap);
   QRect tmp(0,0,m_w,m_h2);
   painter2D.fillRect(tmp,Qt::black);
@@ -56,7 +56,7 @@ void FPlotter::draw()                           //draw()
 
   float gain = pow(10.0,(m_plotGain/20.0));
 
-  for(int k=0; k<64*fast_jh; k++) {
+  for(int k=0; k<64*fast_jh; k++) {                          //Upper spectrogram
     int i = k%64;
     int j = k/64;
     int y=0.005*gain*fast_s[k] + m_plotZero;
@@ -66,21 +66,42 @@ void FPlotter::draw()                           //draw()
       painter2D.drawPoint(j,64-i);
   }
 
-// Update the green curve
-  painter2D.setPen(penGreen);
+
+  painter2D.setPen(penGreen);                               // Upper green curve
   int j=0;
   float greenGain = pow(10.0,(m_greenGain/20.0));
-  for(int x=m_jh0; x<=fast_jh; x++) {
+  for(int x=0; x<=fast_jh; x++) {
     int y = 0.9*m_h - greenGain*fast_green[x] - m_greenZero + 40;
     if(y>119) y=119;
     LineBuf[j].setX(x);
     LineBuf[j].setY(y);
     j++;
   }
-//  m_jh0=fast_jh;
-  m_jh0=0;
   painter2D.drawPolyline(LineBuf,j);
-  update();                              //trigger a new paintEvent
+
+  for(int k=0; k<64*fast_jh2; k++) {                          //Lower spectrogram
+    int i = k%64;
+    int j = k/64;
+    int y=0.005*gain*fast_s2[k] + m_plotZero;
+    if(y<0) y=0;
+    if(y>254) y=254;
+    painter2D.setPen(g_ColorTbl[y]);
+    painter2D.drawPoint(j,164-i);
+  }
+
+  painter2D.setPen(penGreen);                               //Lower green curve
+  j=0;
+  for(int x=0; x<=fast_jh2; x++) {
+    int y = 0.9*m_h - greenGain*fast_green2[x] - m_greenZero + 140;
+    if(y>219) y=219;
+    LineBuf[j].setX(x);
+    LineBuf[j].setY(y);
+    j++;
+  }
+  painter2D.drawPolyline(LineBuf,j);
+
+  m_jh0=fast_jh;
+  update();                                             //trigger a new paintEvent
 }
 
 void FPlotter::DrawOverlay()                                 //DrawOverlay()

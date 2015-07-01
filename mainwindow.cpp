@@ -55,8 +55,11 @@ int rc;
 qint32  g_iptt;
 wchar_t buffer[256];
 float fast_green[703];
+float fast_green2[703];
 float fast_s[44992];                                    //44992=64*703
+float fast_s2[44992];
 int   fast_jh;
+int   fast_jh2;
 QVector<QColor> g_ColorTbl;
 
 namespace
@@ -417,6 +420,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_nclearave=1;
   m_bEchoTxed=false;
   m_nWSPRdecodes=0;
+  m_k0=9999999;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -886,8 +890,21 @@ void MainWindow::dataSink(qint64 frames)
 void MainWindow::fastSink(qint64 frames)
 {
   int k (frames);
+
+  if(m_k0==9999999) {
+    memset(fast_green,0,sizeof(float)*703);        //Zero fast_gereen[]
+    memset(fast_s2,0,sizeof(float)*703*64);        //Zero fast_s2[]
+  } else {
+    if(k < m_k0) {
+      memcpy(fast_green2,fast_green,4*703);        //Copy fast_green[] to fast_green2[]
+      memcpy(fast_s2,fast_s,4*703*64);             //Copy fast_s[] into fast_s2[]
+      fast_jh2=fast_jh;
+    }
+  }
+
   hspec_(&jt9com_.d2[0], &k, fast_green, fast_s, &fast_jh);
   m_fastGraph->plotSpec();
+  m_k0=k;
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)

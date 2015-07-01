@@ -66,8 +66,11 @@ private:
 };
 
 extern float fast_green[703];
+extern float fast_green2[703];
 extern float fast_s[44992];                                    //44992=64*703
+extern float fast_s2[44992];
 extern int   fast_jh;
+extern int   fast_jh2;
 extern QVector<QColor> g_ColorTbl;
 
 #endif // FPLOTTER_H

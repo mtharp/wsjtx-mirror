@@ -334,6 +334,7 @@ private:
   qint32  m_nseq;
   qint32  m_nWSPRdecodes;
   qint32  m_jh;
+  qint32  m_k0;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
