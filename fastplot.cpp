@@ -17,22 +17,19 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
 
   m_pixPerSecond= 12000.0/512.0;
   m_hdivs = 30;
-  m_jh0=0;
-  m_horizPixmap = QPixmap(703,200);
+  m_jh0=9999;
+  m_HorizPixmap = QPixmap(703,200);
   m_ScalePixmap = QPixmap(703,20);
-  m_OverlayPixmap = QPixmap(703,20);
   m_w = 703;
   m_h = 220;
   m_h1=20;
   m_h2=m_h-m_h1;
-  m_horizPixmap = QPixmap(m_w, m_h2);
-  m_horizPixmap.fill(Qt::black);
-  m_OverlayPixmap = QPixmap(m_w, m_h2);
-  m_OverlayPixmap.fill(Qt::black);
-  m_horizPixmap.fill(Qt::black);
-  m_ScalePixmap = QPixmap(m_w,m_h1);
+  m_HorizPixmap = QPixmap(m_w, m_h2);
+  m_HorizPixmap.fill(Qt::black);
+  m_HorizPixmap.fill(Qt::black);
   m_ScalePixmap.fill(Qt::white);
-  DrawOverlay();
+  m_bPaint2=true;
+  drawScale();
   draw();
 }
 
@@ -42,76 +39,13 @@ void FPlotter::paintEvent(QPaintEvent *)                       // paintEvent()
 {
   QPainter painter(this);
   painter.drawPixmap(0,0,m_ScalePixmap);
-  painter.drawPixmap(0,m_h1,m_horizPixmap);
+  painter.drawPixmap(0,m_h1,m_HorizPixmap);
 }
 
-void FPlotter::draw()                                         //draw()
+void FPlotter::drawScale()                                 //drawScale()
 {
-  if(m_horizPixmap.size().width()==0) return;
-  QPainter painter2D(&m_horizPixmap);
-  QRect tmp(0,0,m_w,m_h2);
-  painter2D.fillRect(tmp,Qt::black);
-  QPoint LineBuf[703];
-  QPen penGreen(Qt::green,1);
-
-  float gain = pow(10.0,(m_plotGain/20.0));
-
-  for(int k=0; k<64*fast_jh; k++) {                          //Upper spectrogram
-    int i = k%64;
-    int j = k/64;
-    int y=0.005*gain*fast_s[k] + m_plotZero;
-      if(y<0) y=0;
-      if(y>254) y=254;
-      painter2D.setPen(g_ColorTbl[y]);
-      painter2D.drawPoint(j,64-i);
-  }
-
-
-  painter2D.setPen(penGreen);                               // Upper green curve
-  int j=0;
-  float greenGain = pow(10.0,(m_greenGain/20.0));
-  for(int x=0; x<=fast_jh; x++) {
-    int y = 0.9*m_h - greenGain*fast_green[x] - m_greenZero + 40;
-    if(y>119) y=119;
-    LineBuf[j].setX(x);
-    LineBuf[j].setY(y);
-    j++;
-  }
-  painter2D.drawPolyline(LineBuf,j);
-
-  for(int k=0; k<64*fast_jh2; k++) {                          //Lower spectrogram
-    int i = k%64;
-    int j = k/64;
-    int y=0.005*gain*fast_s2[k] + m_plotZero;
-    if(y<0) y=0;
-    if(y>254) y=254;
-    painter2D.setPen(g_ColorTbl[y]);
-    painter2D.drawPoint(j,164-i);
-  }
-
-  painter2D.setPen(penGreen);                               //Lower green curve
-  j=0;
-  for(int x=0; x<=fast_jh2; x++) {
-    int y = 0.9*m_h - greenGain*fast_green2[x] - m_greenZero + 140;
-    if(y>219) y=219;
-    LineBuf[j].setX(x);
-    LineBuf[j].setY(y);
-    j++;
-  }
-  painter2D.drawPolyline(LineBuf,j);
-
-  m_jh0=fast_jh;
-  update();                                             //trigger a new paintEvent
-}
-
-void FPlotter::DrawOverlay()                                 //DrawOverlay()
-{
-  if(m_OverlayPixmap.isNull() or m_horizPixmap.isNull()) return;
+  if(m_ScalePixmap.isNull()) return;
   int x;
-
-  QRect rect;
-  QPainter painter(&m_OverlayPixmap);
-  painter.initFrom(this);
 
   QRect rect0;
   QPainter painter0(&m_ScalePixmap);
@@ -157,7 +91,7 @@ void FPlotter::DrawOverlay()                                 //DrawOverlay()
   }
 }
 
-void FPlotter::MakeTimeStrs()                       //MakeTimeStrs
+void FPlotter::MakeTimeStrs()                              //MakeTimeStrs
 {
   for(int i=0; i<=m_hdivs; i++) {
     m_HDivText[i].setNum(i);
@@ -174,42 +108,92 @@ float FPlotter::TimefromX(int x)                               //FreqfromX()
   return float(x/m_pixPerSecond);
 }
 
-void FPlotter::SetRunningState(bool running)              //SetRunningState()
-{
-  m_Running = running;
-}
-
 void FPlotter::setPlotZero(int plotZero)                  //setPlotZero()
 {
   m_plotZero=plotZero;
-}
-
-int FPlotter::getPlotZero()                               //getPlotZero()
-{
-  return m_plotZero;
+  m_bPaint2=true;
 }
 
 void FPlotter::setPlotGain(int plotGain)                  //setPlotGain()
 {
   m_plotGain=plotGain;
-}
-
-int FPlotter::getPlotGain()                               //getPlotGain()
-{
-  return m_plotGain;
+  m_bPaint2=true;
 }
 
 void FPlotter::setGreenGain(int n)
 {
   m_greenGain=n;
+  m_bPaint2=true;
 }
 
 void FPlotter::setGreenZero(int n)
 {
   m_greenZero=n;
+  m_bPaint2=true;
 }
 
+void FPlotter::draw()                                         //draw()
+{
+  QPainter painter1(&m_HorizPixmap);
+  QPoint LineBuf[703];
+  QPen penGreen(Qt::green,1);
 
-int FPlotter::plotWidth(){return m_horizPixmap.width();}
+  int k0=m_jh0;
+  if(fast_jh < m_jh0 or m_bPaint2) {
+    k0=0;
+    QRect tmp(0,0,m_w,119);
+    painter1.fillRect(tmp,Qt::black);
+  }
+  float gain = pow(10.0,(m_plotGain/20.0));
+  for(int k=k0; k<64*fast_jh; k++) {                          //Upper spectrogram
+    int i = k%64;
+    int j = k/64;
+    int y=0.005*gain*fast_s[k] + m_plotZero;
+      if(y<0) y=0;
+      if(y>254) y=254;
+      painter1.setPen(g_ColorTbl[y]);
+      painter1.drawPoint(j,64-i);
+  }
 
-void FPlotter::UpdateOverlay() {DrawOverlay();}
+  painter1.setPen(penGreen);                               // Upper green curve
+  int j=0;
+  float greenGain = pow(10.0,(m_greenGain/20.0));
+  for(int x=k0; x<=fast_jh; x++) {
+    int y = 0.9*m_h - greenGain*fast_green[x] - m_greenZero + 40;
+    if(y>119) y=119;
+    LineBuf[j].setX(x);
+    LineBuf[j].setY(y);
+    j++;
+  }
+  painter1.drawPolyline(LineBuf,j);
+
+  if((fast_jh < m_jh0) or m_bPaint2) {
+    QRect tmp(0,120,m_w,219);
+    painter1.fillRect(tmp,Qt::black);
+
+    for(int k=0; k<64*fast_jh2; k++) {                          //Lower spectrogram
+      int i = k%64;
+      int j = k/64;
+      int y=0.005*gain*fast_s2[k] + m_plotZero;
+      if(y<0) y=0;
+      if(y>254) y=254;
+      painter1.setPen(g_ColorTbl[y]);
+      painter1.drawPoint(j,164-i);
+    }
+
+    painter1.setPen(penGreen);                               //Lower green curve
+    j=0;
+    for(int x=0; x<=fast_jh2; x++) {
+      int y = 0.9*m_h - greenGain*fast_green2[x] - m_greenZero + 140;
+      if(y>219) y=219;
+      LineBuf[j].setX(x);
+      LineBuf[j].setY(y);
+      j++;
+    }
+    painter1.drawPolyline(LineBuf,j);
+    m_bPaint2=false;
+  }
+
+  m_jh0=fast_jh;
+  update();                                             //trigger a new paintEvent
+}

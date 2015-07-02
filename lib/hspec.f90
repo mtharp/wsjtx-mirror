@@ -26,12 +26,11 @@ subroutine hspec(id2,k,green,s,jh)
   endif
 
   if(k.lt.k0) then                             !Start a new data block
-     ja=-nfft
+     ja=0
      jh=-1
   endif
 
   do iblk=1,7
-     ja=ja+nfft
      if(jh.lt.JZ-1) jh=jh+1
      x=id2(ja:ja+nfft-1)
      sq=dot_product(x,x)
@@ -39,7 +38,6 @@ subroutine hspec(id2,k,green,s,jh)
      green(jh)=0.
      if(rms.gt.0.0) green(jh)=20.0*log10(rms)
      call four2a(x,nfft,1,-1,0)                   !Real-to-complex FFT
-
      df=12000.0/nfft
      fac=(1.0/nfft)**2
      do i=1,64
@@ -48,6 +46,8 @@ subroutine hspec(id2,k,green,s,jh)
              aimag(cx(j-1))**2
         s(i-1,jh)=fac*sx
      enddo
+     if(ja+2*nfft.gt.k) exit
+     ja=ja+nfft
   enddo
   k0=k
 

@@ -3208,7 +3208,9 @@ void MainWindow::on_actionISCAT_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #fc7c00}");
   mode_label->setText(m_mode);
   WSPR_config(false);
-  ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
+  ui->decodedTextBrowser2->setVisible(false);
+  ui->decodedTextLabel2->setVisible(false);
+  ui->label_7->setVisible(false);
   auto_tx_label->setText("");
   ui->tabWidget->setCurrentIndex(0);
   ui->sbSubmode->setMaximum(1);

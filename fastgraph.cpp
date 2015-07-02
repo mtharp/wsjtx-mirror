@@ -23,8 +23,8 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   restoreGeometry (m_settings->value ("geometry", saveGeometry ()).toByteArray ());
   ui->fastPlot->setPlotZero(m_settings->value("PlotZero", 0).toInt());
   ui->fastPlot->setPlotGain(m_settings->value("PlotGain", 0).toInt());
-  ui->zeroSlider->setValue(ui->fastPlot->getPlotZero());
-  ui->gainSlider->setValue(ui->fastPlot->getPlotGain());
+  ui->zeroSlider->setValue(ui->fastPlot->m_plotZero);
+  ui->gainSlider->setValue(ui->fastPlot->m_plotGain);
   ui->fastPlot->setGreenZero(m_settings->value("GreenZero", 0).toInt());
   ui->fastPlot->setGreenGain(m_settings->value("GreenGain", 0).toInt());
   ui->greenZeroSlider->setValue(ui->fastPlot->m_greenZero);

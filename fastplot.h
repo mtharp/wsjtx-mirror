@@ -26,16 +26,11 @@ public:
   qint32  m_greenZero;
 
   void draw();		                                    //Update the Fast plot
-  void SetRunningState(bool running);
   void setPlotZero(int plotZero);
-  int  getPlotZero();
   void setPlotGain(int plotGain);
-  int  getPlotGain();
   void setGreenGain(int n);
   void setGreenZero(int n);
-  int  plotWidth();
-  void UpdateOverlay();
-  void DrawOverlay();
+  void drawScale();
 
 protected:
   //re-implemented widget event handlers
@@ -49,9 +44,8 @@ private:
   float TimefromX(int x);
   qint64 RoundFreq(qint64 freq, int resolution);
 
-  QPixmap m_horizPixmap;
+  QPixmap m_HorizPixmap;
   QPixmap m_ScalePixmap;
-  QPixmap m_OverlayPixmap;
   QString m_HDivText[483];
 
   double  m_pixPerSecond;
@@ -62,7 +56,7 @@ private:
   qint32  m_h2;
   qint32  m_jh0;
 
-  bool m_Running;
+  bool    m_bPaint2;
 };
 
 extern float fast_green[703];
