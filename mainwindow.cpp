@@ -1419,15 +1419,29 @@ void MainWindow::on_actionDecode_remaining_files_in_directory_triggered()
 
 void MainWindow::diskDat()                                   //diskDat()
 {
+  char msg[80];
+  float t;
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  if(m_mode=="ISCAT") m_hsymStop=jt9com_.kin/3456;
+  if(m_mode=="ISCAT") {
+    t=jt9com_.kin/12000.0;
+    if(t > m_TRperiod) t = m_TRperiod;
+    m_hsymStop=t*12000.0/3456.0;
+  }
+
   for(int n=1; n<=m_hsymStop; n++) {                      // Do the waterfall spectra
     k=(n+1)*kstep;
     jt9com_.npts8=k/8;
     dataSink(k);
     qApp->processEvents();                                //Update the waterfall
+  }
+  if(m_mode=="ISCAT") {
+    decode_iscat_(&jt9com_.d2[0],&k,msg,80);
+    QString message=QString::fromLatin1(msg);
+    qDebug() << QString::fromLatin1(msg);
+    qDebug() << message;
+    ui->decodedTextBrowser->appendText(message);
   }
 }
 

@@ -194,6 +194,8 @@ void FPlotter::draw()                                         //draw()
     m_bPaint2=false;
   }
 
+  painter1.setPen(Qt::white);
+  painter1.drawLine(0,100, m_w,100);
   m_jh0=fast_jh;
   update();                                             //trigger a new paintEvent
 }

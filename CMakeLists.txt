@@ -262,6 +262,7 @@ endif (WIN32)
 set (wsjt_FSRCS
   lib/afc65b.f90
   lib/afc9.f90
+  lib/ana932.f90
   lib/analytic.f90
   lib/astro.f90
   lib/astrosub.f90
@@ -277,9 +278,10 @@ set (wsjt_FSRCS
   lib/chkss2.f90
   lib/coord.f90
   lib/db.f90
+  lib/decode4.f90
   lib/decode65a.f90
   lib/decode65b.f90
-  lib/decode4.f90
+  lib/decode_iscat.f90
   lib/decoder.f90
   lib/decjt9.f90
   lib/deep4.f90
@@ -329,6 +331,7 @@ set (wsjt_FSRCS
   lib/interleave63.f90
   lib/interleave9.f90
   lib/inter_wspr.f90
+  lib/iscat.f90
   lib/jplsubs.f
   lib/jt4.f90
   lib/jt4a.f90
@@ -365,6 +368,7 @@ set (wsjt_FSRCS
   lib/symspec65.f90
   lib/sync4.f90
   lib/sync9.f90
+  lib/synciscat.f90
   lib/timer.f90
   lib/timf2.f90
   lib/twkfreq.f90

@@ -564,6 +564,8 @@ extern "C" {
   void avecho_( short id2[], int* dop, int* nfrit, int* nqual, float* f1,
                 float* level, float* sigdb, float* snr, float* dfreq,
                 float* width);
+
+  void decode_iscat_(short id2[], int* ndat, char* line, int len);
 }
 
 #endif // MAINWINDOW_H

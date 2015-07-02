@@ -16,6 +16,7 @@ subroutine hspec(id2,k,green,s,jh)
   complex cx(0:256)
   data rms/999.0/,k0/99999999/
   equivalence (x,cx)
+!  common/iscat_data/dat(30*12000)
   save
 
   nfft=512
@@ -32,7 +33,9 @@ subroutine hspec(id2,k,green,s,jh)
 
   do iblk=1,7
      if(jh.lt.JZ-1) jh=jh+1
-     x=id2(ja:ja+nfft-1)
+     jb=ja+nfft-1
+     x=id2(ja:jb)
+!     if(jb.lt.30*12000) dat(1+ja:1+jb)=x
      sq=dot_product(x,x)
      rms=sqrt(sq/nfft)
      green(jh)=0.
