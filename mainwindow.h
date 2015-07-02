@@ -37,10 +37,12 @@
 #define NUM_JT65_SYMBOLS 126
 #define NUM_JT9_SYMBOLS 85
 #define NUM_WSPR_SYMBOLS 162
+#define NUM_ISCAT_SYMBOLS 1291
+
 #define NUM_CW_SYMBOLS 250
 #define TX_SAMPLE_RATE 48000
 
-extern int volatile itone[NUM_JT4_SYMBOLS];   //Audio tones for all Tx symbols
+extern int volatile itone[NUM_ISCAT_SYMBOLS];   //Audio tones for all Tx symbols
 extern int volatile icw[NUM_CW_SYMBOLS];	    //Dits for CW ID
 
 //--------------------------------------------------------------- MainWindow
@@ -544,6 +546,8 @@ extern "C" {
               int* itext, int len1, int len2);
 
   void genwspr_(char* msg, char* msgsent, int itone[], int len1, int len2);
+
+  void geniscat_(char* msg, char* msgsent, int itone[], int len1, int len2);
 
   bool stdmsg_(const char* msg, int len);
 

@@ -47,7 +47,7 @@
 #include "ui_mainwindow.h"
 #include "moc_mainwindow.cpp"
 
-int volatile itone[NUM_JT4_SYMBOLS];	//Audio tones for all Tx symbols
+int volatile itone[NUM_ISCAT_SYMBOLS];	//Audio tones for all Tx symbols
 int volatile icw[NUM_CW_SYMBOLS];	    //Dits for CW ID
 
 int outBufSize;
@@ -1439,8 +1439,6 @@ void MainWindow::diskDat()                                   //diskDat()
   if(m_mode=="ISCAT") {
     decode_iscat_(&jt9com_.d2[0],&k,msg,80);
     QString message=QString::fromLatin1(msg);
-    qDebug() << QString::fromLatin1(msg);
-    qDebug() << message;
     ui->decodedTextBrowser->appendText(message);
   }
 }
@@ -1992,6 +1990,10 @@ void MainWindow::guiUpdate()
                                   &m_currentMessageType, len1, len1);
       if(m_mode.mid(0,4)=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone),
                                            len1, len1);
+
+      //### For ISCAT, must upgrade to len1=28 ###
+      if(m_mode=="ISCAT") geniscat_(message, msgsent, const_cast<int *> (itone),
+                                    len1, len1);
     }
 
     msgsent[22]=0;
@@ -3754,8 +3756,17 @@ void MainWindow::transmit (double snr)
   }
   if(m_mode=="Echo") {
     Q_EMIT sendMessage (27, 1024.0, 1500.0, 0.0, &m_soundOutput,
-                        m_config.audio_output_channel(),false, snr);
+                        m_config.audio_output_channel(), false, snr);
   }
+
+  if(m_mode=="ISCAT") {
+    double sps=256.0*12000.0/11025.0;
+    toneSpacing=11025.0/256.0;
+    double f0=13*toneSpacing;
+    Q_EMIT sendMessage (NUM_ISCAT_SYMBOLS, sps, f0, toneSpacing, &m_soundOutput,
+                        m_config.audio_output_channel(), true, snr);
+  }
+
 }
 
 void MainWindow::on_outAttenuation_valueChanged (int a)

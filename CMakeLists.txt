@@ -315,6 +315,7 @@ set (wsjt_FSRCS
   lib/gen4.f90
   lib/gen65.f90
   lib/gen9.f90
+  lib/geniscat.f90
   lib/genwspr.f90
   lib/geodist.f90
   lib/getlags.f90
