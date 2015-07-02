@@ -22,7 +22,6 @@ subroutine geniscat(msg,msgsent,itone)
      if(msg(i:i).ne.' ' .and. msg(i:i).ne.char(0)) exit
   enddo
   nmsg=i
-  print*,nmsg
   msglen=nmsg+1
   k=0
   kk=1
@@ -52,10 +51,6 @@ subroutine geniscat(msg,msgsent,itone)
      endif
   enddo
   msgsent=msg
-
-  print*,nsym
-  write(*,3001) itone(1:nsym)
-3001 format(20i3)
 
   return
 end subroutine geniscat
