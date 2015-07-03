@@ -103,7 +103,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_uploading {false},
   m_tuneup {false},
   m_bSimplex {false},
-  m_nonWSPRTab {-1},
   m_appDir {QApplication::applicationDirPath ()},
   mem_jt9 {shdmem},
   m_msAudioOutputBuffered (0u),
@@ -843,14 +842,13 @@ void MainWindow::dataSink(qint64 frames)
       imin=imin - (imin%(m_TRperiod/60));
       QString t2;
       t2.sprintf("%2.2d%2.2d",ihr,imin);
-      m_fname=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
-                                                           "_" + t2 + ".wav");
-      *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
+      m_fileToSave.clear ();
+      m_fname = m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") + "_" + t2);
+      *future2 = QtConcurrent::run(savewav, m_fname + ".wav", m_TRperiod);
       watcher2->setFuture(*future2);
 
-      if( m_mode.mid(0,4)=="WSPR" && (m_saveAll || (m_saveDecoded && m_bdecoded)) ) {
-        m_c2name=m_config.save_directory ().absoluteFilePath (t.date().toString("yyMMdd") +
-                                                              "_" + t2 + ".c2");
+      if (m_mode.mid (0,4) == "WSPR") {
+        m_c2name = m_fname + ".c2";
         int len1=m_c2name.length();
         char c2name[80];
         strcpy(c2name,m_c2name.toLatin1());
@@ -875,7 +873,7 @@ void MainWindow::dataSink(qint64 frames)
       } else {
         cmnd='"' + m_appDir + '"' + "/wsprd -a \"" +
             QDir::toNativeSeparators(m_dataDir.absolutePath()) + "\" " +
-            t2 + '"' + m_fname + '"';
+            t2 + '"' + m_fname + ".wav\"";
       }
       QString t3=cmnd;
       int i1=cmnd.indexOf("/wsprd ");
@@ -1281,7 +1279,7 @@ void MainWindow::closeEvent(QCloseEvent * e)
   m_shortcuts.reset ();
   m_mouseCmnds.reset ();
 
-  if(m_fname != "") killFile();
+  killFile ();
   m_killAll=true;
   mem_jt9->detach();
   QFile quitFile {m_config.temp_dir ().absoluteFilePath (".quit")};
@@ -1444,20 +1442,13 @@ void MainWindow::diskWriteFinished()                       //diskWriteFinished
 //Delete ../save/*.wav
 void MainWindow::on_actionDelete_all_wav_files_in_SaveDir_triggered()
 {
-  int i;
-  QString fname;
-  int ret = QMessageBox::warning(this, "Confirm Delete",
-                                 "Are you sure you want to delete all *.wav files in\n" +
-                                 QDir::toNativeSeparators(m_config.save_directory ().absolutePath ()) + " ?",
-                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-  if(ret==QMessageBox::Yes) {
-    QDir dir(m_config.save_directory ());
-    QStringList files=dir.entryList(QDir::Files);
-    QList<QString>::iterator f;
-    for(f=files.begin(); f!=files.end(); ++f) {
-      fname=*f;
-      i=(fname.indexOf(".wav"));
-      if(i>10) dir.remove(fname);
+  if (QMessageBox::Yes == QMessageBox::warning(this, "Confirm Delete",
+                                              "Are you sure you want to delete all *.wav and *.c2 files in\n" +
+                                              QDir::toNativeSeparators(m_config.save_directory ().absolutePath ()) + " ?",
+                                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)) {
+    Q_FOREACH (auto const& file
+               , m_config.save_directory ().entryList ({"*.wav", "*.c2"}, QDir::Files | QDir::Writable)) {
+      m_config.save_directory ().remove (file);
     }
   }
 }
@@ -1609,7 +1600,8 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="ISCAT") {
     char msg[80];
     qApp->processEvents();                                //Update the waterfall
-    decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,msg,80);
+    decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,&jt9com_.newdat,&jt9com_.minSync,
+        &jt9com_.nfa,&jt9com_.nfb,msg,80);
     QString message=QString::fromLatin1(msg);
     ui->decodedTextBrowser->appendText(message);
     ui->DecodeButton->setChecked (false);
@@ -1643,8 +1635,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
     if(m_mode=="JT4") t=t.mid(0,39) + t.mid(42,t.length()-42);
     if(t.indexOf("<DecodeFinished>") >= 0) {
       m_bdecoded = (t.mid(23,1).toInt()==1);
-      bool keepFile=m_saveAll or (m_saveDecoded and m_bdecoded);
-      if(!keepFile and !m_diskData) killFileTimer->start(45*1000); //Kill in 45 s
+      if(!m_diskData) killFileTimer->start (45*1000); //Kill in 45 s
       jt9com_.nagain=0;
       jt9com_.ndiskdat=0;
       m_nclearave=0;
@@ -1759,12 +1750,12 @@ void MainWindow::readFromStdout()                             //readFromStdout
   }
 }
 
-void MainWindow::killFile()
+void MainWindow::killFile ()
 {
-  if(m_fname==m_fileToSave) {
-  } else {
-    QFile savedFile(m_fname);
-    savedFile.remove();
+  if (!m_fname.isEmpty ()
+      && !(m_saveAll || (m_saveDecoded && m_bdecoded) || m_fname == m_fileToSave)) {
+    QFile {m_fname + ".wav"}.remove();
+    QFile {m_fname + ".c2"}.remove();
   }
 }
 
@@ -3201,7 +3192,6 @@ void MainWindow::on_actionEcho_triggered()
   WSPR_config(true);                       //Make some irrelevant controls invisible
   ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
   auto_tx_label->setText("");
-  ui->tabWidget->setCurrentIndex(0);
 }
 
 void MainWindow::on_actionISCAT_triggered()
@@ -3268,16 +3258,14 @@ void MainWindow::WSPR_config(bool b)
     ui->decodedTextLabel->setText(
           "UTC    dB   DT     Freq     Drift  Call          Grid    dBm   Dist");
     auto_tx_label->setText("");
-    ui->tabWidget->setCurrentIndex (2);
     Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
     m_bSimplex = true;
   } else {
     ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
     auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
-    ui->tabWidget->setCurrentIndex (m_nonWSPRTab >= 0 ? m_nonWSPRTab : 1);
     m_bSimplex = false;
   }
-  updateGeometry ();
+  enable_DXCC_entity (m_config.DXCC ());  // sets text window proportions and (re)inits the logbook
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -3437,6 +3425,7 @@ void MainWindow::enable_DXCC_entity (bool on)
     ui->gridLayout->setColumnStretch(0,0);
     ui->gridLayout->setColumnStretch(1,0);
   }
+  updateGeometry ();
 }
 
 void MainWindow::on_pbCallCQ_clicked()
@@ -4120,6 +4109,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
   while(p1.canReadLine()) {
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
+      m_bdecoded = m_nWSPRdecodes > 0;
       if(!m_diskData) {
         WSPR_history(m_dialFreqRxWSPR, m_nWSPRdecodes);
         if(m_nWSPRdecodes==0) {
@@ -4128,6 +4118,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
           t=WSPR_hhmm(-60) + ' ' + t.rightJustified (66, '-');
           ui->decodedTextBrowser->appendText(t);
         }
+        killFileTimer->start (45*1000); //Kill in 45s
       }
       m_nWSPRdecodes=0;
       ui->DecodeButton->setChecked (false);
@@ -4139,18 +4130,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         QFile f(QDir::toNativeSeparators(m_dataDir.absolutePath()) + "/wspr_spots.txt");
         if(f.exists()) f.remove();
       }
-      if(!m_saveAll and !m_diskData) {
-        QFile savedWav(m_fname);
-        savedWav.remove();
-      }
-/*
-      if(m_saveAll and !m_diskData) {
-        int i1=m_fname.indexOf(".wav");
-        QString sc2=m_fname.mid(0,i1) + ".c2";
-        QFile savedC2(sc2);
-        savedC2.remove();
-      }
-*/
       m_RxLog=0;
       m_startAnother=m_loopall;
       m_blankLine=true;
@@ -4392,13 +4371,6 @@ void MainWindow::WSPR_scheduling ()
     m_nrx = 0;
   } else {
     m_nrx = 1;
-  }
-}
-
-void MainWindow::on_tabWidget_currentChanged (int new_value)
-{
-  if (2 != new_value) {         // WSPR
-    m_nonWSPRTab = new_value;
   }
 }
 

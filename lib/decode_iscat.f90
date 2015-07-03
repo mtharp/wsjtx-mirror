@@ -1,14 +1,16 @@
-subroutine decode_iscat(id2,ndat,line)
+subroutine decode_iscat(id2,ndat0,newdat,minsync,ix,iy,line)
 
-  integer*2 id2(ndat)
+  integer*2 id2(ndat0)
   real dat(30*12000)
   complex cdat(262145)
   real psavg(450)
   logical pick
   character*6 cfile6
   character*80 line
-!  common/iscat_data/dat(30*12000)
 
+  print*,ndat0,newdat,minsync,ix,iy
+
+  ndat=ndat0
   call wav11(id2,ndat,dat)
 
   t2=0.
