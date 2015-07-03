@@ -32,10 +32,16 @@ public:
   void setGreenZero(int n);
   void drawScale();
 
+signals:
+  void fastPick1(int x, int y);
+
 protected:
   //re-implemented widget event handlers
   void paintEvent(QPaintEvent *event);
 //  void resizeEvent(QResizeEvent* event);
+
+private slots:
+  void mousePressEvent(QMouseEvent *event);
 
 private:
 

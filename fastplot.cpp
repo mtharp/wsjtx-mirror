@@ -199,3 +199,11 @@ void FPlotter::draw()                                         //draw()
   m_jh0=fast_jh;
   update();                                             //trigger a new paintEvent
 }
+
+void FPlotter::mousePressEvent(QMouseEvent *event)             //mousePressEvent
+{
+  int x=event->x();
+  int y=event->y();
+  bool ctrl = (event->modifiers() & Qt::ControlModifier);
+  Q_EMIT fastPick1(x,y);
+}

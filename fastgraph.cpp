@@ -30,6 +30,8 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   ui->greenZeroSlider->setValue(ui->fastPlot->m_greenZero);
   ui->greenGainSlider->setValue(ui->fastPlot->m_greenGain);
   m_settings->endGroup();
+
+  connect(ui->fastPlot, SIGNAL(fastPick1(int,int)),this,SLOT(fastPick1a(int,int)));
 }
 
 FastGraph::~FastGraph()
@@ -83,4 +85,9 @@ void FastGraph::on_greenZeroSlider_valueChanged(int value)
 {
   ui->fastPlot->setGreenZero(value);
   ui->fastPlot->draw();
+}
+
+void FastGraph::fastPick1a(int x, int y)
+{
+  Q_EMIT fastPick(x,y);
 }

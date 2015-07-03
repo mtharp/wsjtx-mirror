@@ -22,6 +22,12 @@ public:
   void   plotSpec();
   void   saveSettings();
 
+signals:
+  void fastPick(int x, int y);
+
+public slots:
+  void fastPick1a(int x, int y);
+
 private slots:
   void on_gainSlider_valueChanged(int value);
   void on_zeroSlider_valueChanged(int value);  

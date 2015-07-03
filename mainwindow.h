@@ -101,6 +101,7 @@ public slots:
   void setXIT(int n);
   void setFreq4(int rxFreq, int txFreq);
   void msgAvgDecode2();
+  void fastPick(int x, int y);
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );

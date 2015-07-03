@@ -182,10 +182,11 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(m_wideGraph.data (), SIGNAL(freezeDecode2(int)),this,SLOT(freezeDecode(int)));
   connect(m_wideGraph.data (), SIGNAL(f11f12(int)),this,SLOT(bumpFqso(int)));
   connect(m_wideGraph.data (), SIGNAL(setXIT2(int)),this,SLOT(setXIT(int)));
+
+  connect(m_fastGraph.data(),SIGNAL(fastPick(int,int)),this,SLOT(fastPick(int,int)));
+
   connect (this, &MainWindow::finished, m_wideGraph.data (), &WideGraph::close);
-
   connect (this, &MainWindow::finished, m_echoGraph.data (), &EchoGraph::close);
-
   connect (this, &MainWindow::finished, m_fastGraph.data (), &FastGraph::close);
 
   // setup the log QSO dialog
@@ -905,6 +906,10 @@ void MainWindow::fastSink(qint64 frames)
   hspec_(&jt9com_.d2[0], &k, fast_green, fast_s, &fast_jh);
   m_fastGraph->plotSpec();
   m_k0=k;
+  if(k >= jt9com_.kin-3456) {
+    m_dataAvailable=true;
+    decode();
+  }
 }
 
 void MainWindow::showSoundInError(const QString& errorMsg)
@@ -1419,27 +1424,16 @@ void MainWindow::on_actionDecode_remaining_files_in_directory_triggered()
 
 void MainWindow::diskDat()                                   //diskDat()
 {
-  char msg[80];
-  float t;
   int k;
   int kstep=m_nsps/2;
   m_diskData=true;
-  if(m_mode=="ISCAT") {
-    t=jt9com_.kin/12000.0;
-    if(t > m_TRperiod) t = m_TRperiod;
-    m_hsymStop=t*12000.0/3456.0;
-  }
 
   for(int n=1; n<=m_hsymStop; n++) {                      // Do the waterfall spectra
     k=(n+1)*kstep;
+    if(k > jt9com_.kin) break;
     jt9com_.npts8=k/8;
     dataSink(k);
     qApp->processEvents();                                //Update the waterfall
-  }
-  if(m_mode=="ISCAT") {
-    decode_iscat_(&jt9com_.d2[0],&k,msg,80);
-    QString message=QString::fromLatin1(msg);
-    ui->decodedTextBrowser->appendText(message);
   }
 }
 
@@ -1547,7 +1541,6 @@ void MainWindow::decode()                                       //decode()
 {
   if(!m_dataAvailable) return;
   ui->DecodeButton->setChecked (true);
-
   if(jt9com_.newdat==1 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
     int imin=ms/60000;
@@ -1612,9 +1605,19 @@ void MainWindow::decode()                                       //decode()
     from += noffset;
     size -= noffset;
   }
-  memcpy(to, from, qMin(mem_jt9->size(), size));
-  QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.remove (); // Allow jt9 to start
-  decodeBusy(true);
+
+  if(m_mode=="ISCAT") {
+    char msg[80];
+    qApp->processEvents();                                //Update the waterfall
+    decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,msg,80);
+    QString message=QString::fromLatin1(msg);
+    ui->decodedTextBrowser->appendText(message);
+    ui->DecodeButton->setChecked (false);
+  } else {
+    memcpy(to, from, qMin(mem_jt9->size(), size));
+    QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.remove (); // Allow jt9 to start
+    decodeBusy(true);
+  }
 }
 
 void MainWindow::jt9_error (QProcess::ProcessError e)
@@ -1769,7 +1772,7 @@ void MainWindow::on_EraseButton_clicked()                          //Erase
 {
   qint64 ms=QDateTime::currentMSecsSinceEpoch();
   ui->decodedTextBrowser2->clear();
-  if(m_mode.mid(0,4)=="WSPR" or m_mode=="Echo") {
+  if(m_mode.mid(0,4)=="WSPR" or m_mode=="Echo" or m_mode=="ISCAT") {
     ui->decodedTextBrowser->clear();
   } else {
     m_QSOText.clear();
@@ -3226,7 +3229,12 @@ void MainWindow::on_actionISCAT_triggered()
   WSPR_config(false);
   ui->decodedTextBrowser2->setVisible(false);
   ui->decodedTextLabel2->setVisible(false);
+/*
   ui->label_7->setVisible(false);
+  ui->cbEME->setVisible(false);
+  ui->sbMinW->setVisible(false);
+  ui->sbDT->setVisible(false);
+*/
   auto_tx_label->setText("");
   ui->tabWidget->setCurrentIndex(0);
   ui->sbSubmode->setMaximum(1);
@@ -4419,5 +4427,16 @@ void MainWindow::astroCalculations (QDateTime const& time, bool adjust) {
         Q_EMIT m_config.transceiver_frequency(m_dialFreq);
       }
     }
+  }
+}
+
+void MainWindow::fastPick(int x, int y)
+{
+  float t=x*512.0/12000.0;
+  if(!m_decoderBusy) {
+    jt9com_.newdat=0;
+    jt9com_.nagain=1;
+    m_blankLine=false; // don't insert the separator again
+    decode();
   }
 }
