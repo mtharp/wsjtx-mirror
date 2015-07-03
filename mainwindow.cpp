@@ -405,7 +405,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_secBandChanged=0;
   m_lockTxFreq=false;
   m_baseCall = Radio::base_callsign (m_config.my_callsign ());
-
   m_QSOText.clear();
   decodeBusy(false);
   m_MinW=0;
@@ -421,6 +420,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bEchoTxed=false;
   m_nWSPRdecodes=0;
   m_k0=9999999;
+  m_bPick=false;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -906,6 +906,8 @@ void MainWindow::fastSink(qint64 frames)
   m_k0=k;
   if(k >= jt9com_.kin-3456) {
     m_dataAvailable=true;
+    m_t0=0.0;
+    m_t1=jt9com_.kin/12000.0;
     decode();
   }
 }
@@ -1596,14 +1598,19 @@ void MainWindow::decode()                                       //decode()
     from += noffset;
     size -= noffset;
   }
-
   if(m_mode=="ISCAT") {
     char msg[80];
     qApp->processEvents();                                //Update the waterfall
-    decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,&jt9com_.newdat,&jt9com_.minSync,
-        &jt9com_.nfa,&jt9com_.nfb,msg,80);
+    if(m_bPick) {
+      decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,&jt9com_.newdat,&jt9com_.minSync,
+          &m_t0Pick,&m_t1Pick,msg,80);
+    } else {
+      decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,&jt9com_.newdat,&jt9com_.minSync,
+          &m_t0,&m_t1,msg,80);
+    }
     QString message=QString::fromLatin1(msg);
     ui->decodedTextBrowser->appendText(message);
+    m_bPick=false;
     ui->DecodeButton->setChecked (false);
   } else {
     memcpy(to, from, qMin(mem_jt9->size(), size));
@@ -4409,6 +4416,9 @@ void MainWindow::fastPick(int x, int y)
     jt9com_.newdat=0;
     jt9com_.nagain=1;
     m_blankLine=false; // don't insert the separator again
+    m_bPick=true;
+    m_t0Pick=t-1.0;
+    m_t1Pick=t+1.0;
     decode();
   }
 }

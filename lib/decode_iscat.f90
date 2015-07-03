@@ -1,4 +1,4 @@
-subroutine decode_iscat(id2,ndat0,newdat,minsync,ix,iy,line)
+subroutine decode_iscat(id2,ndat0,newdat,minsync,t0,t1,line)
 
   integer*2 id2(ndat0)
   real dat(30*12000)
@@ -7,16 +7,17 @@ subroutine decode_iscat(id2,ndat0,newdat,minsync,ix,iy,line)
   logical pick
   character*6 cfile6
   character*80 line
+  save cdat,npts
 
-  print*,ndat0,newdat,minsync,ix,iy
+  print*,ndat0,newdat,minsync,t0,t1
 
-  ndat=ndat0
-  call wav11(id2,ndat,dat)
+  if(newdat.eq.1) then
+     ndat=ndat0
+     call wav11(id2,ndat,dat)
 
-  t2=0.
-!  if(pick) t2=(istart+0.5*ndat)/11025.0 + 0.5           !### +0.5 is empirical
-  ndat=min(ndat,30*11025)
-  call ana932(dat,ndat,cdat,npts)          !Make downsampled analytic signal
+     ndat=min(ndat,30*11025)
+     call ana932(dat,ndat,cdat,npts)          !Make downsampled analytic signal
+  endif
 
 ! Now cdat() is the downsampled analytic signal.  
 ! New sample rate = fsample = BW = 11025 * (9/32) = 3100.78125 Hz

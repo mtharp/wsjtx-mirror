@@ -303,6 +303,10 @@ private:
 
   float   m_DTtol;
   float   m_rxavg;
+  float   m_t0;
+  float   m_t1;
+  float   m_t0Pick;
+  float   m_t1Pick;
 
   qint32  m_waterfallAvg;
   qint32  m_ntx;
@@ -391,6 +395,7 @@ private:
   bool    m_bEchoTxOK;
   bool    m_bTransmittedEcho;
   bool    m_bEchoTxed;
+  bool    m_bPick;
 
   float   m_pctZap;
 
@@ -569,7 +574,7 @@ extern "C" {
                 float* width);
 
   void decode_iscat_(short id2[], int* ndat, int* newdat, int* minSync,
-                     int* ix, int* iy, char* line, int len);
+                     float* t0, float* t1, char* line, int len);
 }
 
 #endif // MAINWINDOW_H
