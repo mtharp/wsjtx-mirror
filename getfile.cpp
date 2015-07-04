@@ -43,12 +43,15 @@ void getfile(QString fname, int ntrperiod)
   int i1=fname.lastIndexOf("/");
   QString baseName=fname.mid(i1+1);
 
-  int i0=fname.indexOf(".wav",0,Qt::CaseInsensitive);
+  i1=fname.indexOf(".wav",0,Qt::CaseInsensitive);
   jt9com_.nutc=0;
-  if(i0>0) {
-    int n=4;
-    if(baseName.length()!=15) n=6;
-    jt9com_.nutc=100*fname.mid(i0-n,2).toInt() + fname.mid(i0-n+2,2).toInt();
+  if(i1>0) {
+    int i0=fname.indexOf("_",-11);
+    if(i1==i0+7) {
+      jt9com_.nutc=fname.mid(i1-6,6).toInt();
+    } else {
+      jt9com_.nutc=100*fname.mid(i1-4,4).toInt();
+    }
   }
   int npts=ntrperiod*12000;
   memset(jt9com_.d2,0,2*npts);

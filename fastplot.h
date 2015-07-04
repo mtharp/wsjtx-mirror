@@ -24,8 +24,8 @@ public:
   qint32  m_plotGain;
   qint32  m_greenGain;
   qint32  m_greenZero;
+  qint32  m_x0;
   qint32  m_x1;
-  qint32  m_x2;
 
   void draw();		                                    //Update the Fast plot
   void setPlotZero(int plotZero);
@@ -35,7 +35,7 @@ public:
   void drawScale();
 
 signals:
-  void fastPick1(int x, int y);
+  void fastPick1(int x0, int x1, int y);
 
 protected:
   //re-implemented widget event handlers

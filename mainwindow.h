@@ -101,7 +101,7 @@ public slots:
   void setXIT(int n);
   void setFreq4(int rxFreq, int txFreq);
   void msgAvgDecode2();
-  void fastPick(int x, int y);
+  void fastPick(int x0, int x1, int y);
 
 protected:
   virtual void keyPressEvent( QKeyEvent *e );
@@ -238,6 +238,7 @@ private slots:
   void DopplerTracking_toggled (bool);
   void on_actionISCAT_triggered();
   void on_actionFast_Graph_triggered();
+  void fast_config(bool b);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -397,6 +398,7 @@ private:
   bool    m_bTransmittedEcho;
   bool    m_bEchoTxed;
   bool    m_bPick;
+  bool    m_bFastMode;
 
   float   m_pctZap;
 
@@ -575,7 +577,7 @@ extern "C" {
                 float* width);
 
   void decode_iscat_(int* nutc, short id2[], int* ndat, int* newdat, int* minSync,
-                     float* t0, float* t1, char* line, int len);
+                     bool* pick, float* t0, float* t1, char* line, int len);
 }
 
 #endif // MAINWINDOW_H

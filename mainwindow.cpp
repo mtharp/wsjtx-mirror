@@ -182,7 +182,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(m_wideGraph.data (), SIGNAL(f11f12(int)),this,SLOT(bumpFqso(int)));
   connect(m_wideGraph.data (), SIGNAL(setXIT2(int)),this,SLOT(setXIT(int)));
 
-  connect(m_fastGraph.data(),SIGNAL(fastPick(int,int)),this,SLOT(fastPick(int,int)));
+  connect(m_fastGraph.data(),SIGNAL(fastPick(int,int,int)),this,
+          SLOT(fastPick(int,int,int)));
 
   connect (this, &MainWindow::finished, m_wideGraph.data (), &WideGraph::close);
   connect (this, &MainWindow::finished, m_echoGraph.data (), &EchoGraph::close);
@@ -421,6 +422,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_nWSPRdecodes=0;
   m_k0=9999999;
   m_bPick=false;
+  m_bFastMode=false;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -1537,6 +1539,7 @@ void MainWindow::decode()                                       //decode()
 {
   if(!m_dataAvailable) return;
   ui->DecodeButton->setChecked (true);
+  if(m_diskData and !m_bFastMode) jt9com_.nutc=jt9com_.nutc/100;
   if(jt9com_.newdat==1 && (!m_diskData)) {
     qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
     int imin=ms/60000;
@@ -1615,10 +1618,10 @@ void MainWindow::decode()                                       //decode()
     qApp->processEvents();                                //Update the waterfall
     if(m_bPick) {
       decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
-          &jt9com_.minSync,&m_t0Pick,&m_t1Pick,msg,80);
+          &jt9com_.minSync,&m_bPick,&m_t0Pick,&m_t1Pick,msg,80);
     } else {
       decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
-          &jt9com_.minSync,&m_t0,&m_t1,msg,80);
+          &jt9com_.minSync,&m_bPick,&m_t0,&m_t1,msg,80);
     }
     QString message=QString::fromLatin1(msg);
     ui->decodedTextBrowser->appendText(message);
@@ -3014,6 +3017,7 @@ void MainWindow::on_actionJT9_1_triggered()
   ui->pbTxMode->setEnabled(false);
   VHF_controls_visible(false);
   WSPR_config(false);
+  fast_config(false);
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
 }
@@ -3042,6 +3046,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   ui->pbTxMode->setEnabled(false);
   VHF_controls_visible(false);
   WSPR_config(false);
+  fast_config(false);
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
 }
@@ -3078,6 +3083,7 @@ void MainWindow::on_actionJT65_triggered()
   bool bVHF=m_config.enable_VHF_features();
   VHF_controls_visible(bVHF);
   WSPR_config(false);
+  fast_config(false);
   ui->sbSubmode->setMaximum(2);
   if(bVHF) {
     ui->sbSubmode->setValue(m_nSubMode);
@@ -3115,6 +3121,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   ui->pbTxMode->setEnabled(true);
   VHF_controls_visible(false);
   WSPR_config(false);
+  fast_config(false);
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
 }
@@ -3144,6 +3151,7 @@ void MainWindow::on_actionJT4_triggered()
   bool bVHF=m_config.enable_VHF_features();
   VHF_controls_visible(bVHF);
   WSPR_config(false);
+  fast_config(false);
   ui->sbSubmode->setMaximum(6);
   ui->label_6->setText("Single-Period Decodes");
   ui->label_7->setText("Average Decodes");
@@ -3177,6 +3185,7 @@ void MainWindow::on_actionWSPR_2_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   WSPR_config(true);
+  fast_config(false);
 }
 
 void MainWindow::on_actionWSPR_15_triggered()
@@ -3209,6 +3218,7 @@ void MainWindow::on_actionEcho_triggered()
   on_actionAstronomical_data_triggered ();
   VHF_controls_visible(false);
   WSPR_config(true);                       //Make some irrelevant controls invisible
+  fast_config(false);
   ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
   auto_tx_label->setText("");
 }
@@ -3236,6 +3246,7 @@ void MainWindow::on_actionISCAT_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #fc7c00}");
   mode_label->setText(m_mode);
   WSPR_config(false);
+  fast_config(true);
   ui->decodedTextBrowser2->setVisible(false);
   ui->decodedTextLabel2->setVisible(false);
 /*
@@ -3285,6 +3296,11 @@ void MainWindow::WSPR_config(bool b)
     m_bSimplex = false;
   }
   enable_DXCC_entity (m_config.DXCC ());  // sets text window proportions and (re)inits the logbook
+}
+
+void MainWindow::fast_config(bool b)
+{
+  m_bFastMode=b;
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -4421,16 +4437,15 @@ void MainWindow::astroCalculations (QDateTime const& time, bool adjust) {
   }
 }
 
-void MainWindow::fastPick(int x, int y)
+void MainWindow::fastPick(int x0, int x1, int y)
 {
-  float t=x*512.0/12000.0;
   if(!m_decoderBusy) {
     jt9com_.newdat=0;
     jt9com_.nagain=1;
     m_blankLine=false; // don't insert the separator again
     m_bPick=true;
-    m_t0Pick=t-1.0;
-    m_t1Pick=t+1.0;
+    m_t0Pick=x0*512.0/12000.0;
+    m_t1Pick=x1*512.0/12000.0;
     decode();
   }
 }

@@ -29,8 +29,8 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
   m_HorizPixmap.fill(Qt::black);
   m_ScalePixmap.fill(Qt::white);
   m_bPaint2=true;
+  m_x0=0;
   m_x1=0;
-  m_x2=0;
   drawScale();
   draw();
 }
@@ -208,17 +208,19 @@ void FPlotter::mousePressEvent(QMouseEvent *event)             //mousePressEvent
   int y=event->y();
   int n=event->button();
 //  bool ctrl = (event->modifiers() & Qt::ControlModifier);
-  Q_EMIT fastPick1(x,y);
   QPainter painter(&m_HorizPixmap);
-  int x1=x-n*m_pixPerSecond;
-  int x2=x+n*m_pixPerSecond;
-  if(m_x1+m_x2 != 0) {
+  int x0=x-n*m_pixPerSecond;
+  int x1=x+n*m_pixPerSecond;
+  if(x0 < 0) x0=0;
+  if(x1 > 702) x1=702;
+  Q_EMIT fastPick1(x0,x1,y);
+  if(m_x0+m_x1 != 0) {
     painter.setPen(Qt::black);
-    painter.drawLine(m_x1,5,m_x2,5);                  //Erase previous yellow line
+    painter.drawLine(m_x0,5,m_x1,5);                  //Erase previous yellow line
   }
   painter.setPen(Qt::yellow);
-  painter.drawLine(x1,5,x2,5);                        //Draw yellow line
+  painter.drawLine(x0,5,x1,5);                        //Draw yellow line
   update();                                             //trigger a new paintEvent
+  m_x0=x0;
   m_x1=x1;
-  m_x2=x2;
 }
