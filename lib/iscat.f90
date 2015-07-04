@@ -1,4 +1,4 @@
-subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,ntol,   &
+subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
      NFreeze,MouseDF,mousebutton,mode4,nafc,nmore,psavg,npkept,line)
 
 ! Decode an ISCAT signal
@@ -59,7 +59,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,ntol,   &
         nfdot=nint(idf*df1)
 
         isync=xsync
-        if(msglen.eq.0 .or. isync.lt.max(MinSigdB,0)) then
+        if(msglen.eq.0 .or. isync.lt.max(minsync,0)) then
            msglen=0
            worst=1.
            avg=1.
@@ -148,9 +148,9 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,ntol,   &
 !           if(bigworst.gt.2.0) exit
         endif
 
-!        if(minsigdb.le.0 .and. worst.gt.1.1) then
+!        if(minsync.le.0 .and. worst.gt.1.1) then
         isync = xsync
-        if(navg.gt.0 .and. isync.ge.max(minsigdb,0)) then
+        if(navg.gt.0 .and. isync.ge.max(minsync,0)) then
            nsig=nint(sig)
            nworst=10.0*(worst-1.0)
            navg=10.0*(avg-1.0)
@@ -187,7 +187,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,MinSigdB,ntol,   &
   if(nworst.gt.10) nworst=10
   if(navg.gt.10) navg=10
 
-  if(navg.le.0 .or. isync.lt.max(minsigdb,0)) then
+  if(navg.le.0 .or. isync.lt.max(minsync,0)) then
      msg='                             '
      nworst=0
      navg=0

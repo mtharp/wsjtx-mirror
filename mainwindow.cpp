@@ -904,10 +904,13 @@ void MainWindow::fastSink(qint64 frames)
   hspec_(&jt9com_.d2[0], &k, fast_green, fast_s, &fast_jh);
   m_fastGraph->plotSpec();
   m_k0=k;
-  if(k >= jt9com_.kin-3456) {
+  int kdone=m_TRperiod*12000 - 3000;
+  if((m_diskData and k >= jt9com_.kin-3456) or (!m_diskData and k >= kdone)) {
     m_dataAvailable=true;
     m_t0=0.0;
-    m_t1=jt9com_.kin/12000.0;
+    m_t1=k/12000.0;
+    m_kdone=k;
+    jt9com_.newdat=1;
     decode();
   }
 }
@@ -1539,8 +1542,17 @@ void MainWindow::decode()                                       //decode()
     int imin=ms/60000;
     int ihr=imin/60;
     imin=imin % 60;
-    imin=imin - (imin % (m_TRperiod/60));
+    if(m_TRperiod>=60) imin=imin - (imin % (m_TRperiod/60));
     jt9com_.nutc=100*ihr + imin;
+    if(m_mode=="ISCAT") {
+
+      QDateTime t=QDateTime::currentDateTimeUtc().addSecs(2-m_TRperiod);
+      ihr=t.toString("hh").toInt();
+      imin=t.toString("mm").toInt();
+      int isec=t.toString("ss").toInt();
+      isec=isec - isec%m_TRperiod;
+      jt9com_.nutc=10000*ihr + 100*imin + isec;
+    }
   }
 
   jt9com_.nfqso=m_wideGraph->rxFreq();
@@ -1602,11 +1614,11 @@ void MainWindow::decode()                                       //decode()
     char msg[80];
     qApp->processEvents();                                //Update the waterfall
     if(m_bPick) {
-      decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,&jt9com_.newdat,&jt9com_.minSync,
-          &m_t0Pick,&m_t1Pick,msg,80);
+      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
+          &jt9com_.minSync,&m_t0Pick,&m_t1Pick,msg,80);
     } else {
-      decode_iscat_(&jt9com_.d2[0],&jt9com_.kin,&jt9com_.newdat,&jt9com_.minSync,
-          &m_t0,&m_t1,msg,80);
+      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
+          &jt9com_.minSync,&m_t0,&m_t1,msg,80);
     }
     QString message=QString::fromLatin1(msg);
     ui->decodedTextBrowser->appendText(message);

@@ -341,6 +341,7 @@ private:
   qint32  m_nWSPRdecodes;
   qint32  m_jh;
   qint32  m_k0;
+  qint32  m_kdone;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -573,7 +574,7 @@ extern "C" {
                 float* level, float* sigdb, float* snr, float* dfreq,
                 float* width);
 
-  void decode_iscat_(short id2[], int* ndat, int* newdat, int* minSync,
+  void decode_iscat_(int* nutc, short id2[], int* ndat, int* newdat, int* minSync,
                      float* t0, float* t1, char* line, int len);
 }
 
