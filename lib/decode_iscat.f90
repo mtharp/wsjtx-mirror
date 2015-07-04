@@ -33,12 +33,14 @@ subroutine decode_iscat(nutc,id2,ndat0,newdat,minsync,npick,t0,t1,line)
   t2=0.
   ia=1
   ib=npts
-  dt=1.0/11025.0 * (32.0/9.0)
   pick=.false.
+
   if(npick.gt.0) then
      pick=.true.
+     dt=1.0/11025.0 * (32.0/9.0)
      ia=t0/dt + 1.
      ib=t1/dt + 1.
+     t2=t0
   endif
   jz=ib-ia+1
   if(npick.eq.2) then

@@ -49,8 +49,10 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
      do ia=1,npts0-npts,nsps*24        !Loop over start times stepped by 1 frame
         ib=ia+npts-1
         cdat(1:npts)=cdat0(ia:ib)
-        t3=t2+(ia + 0.5*npts)/fsample + 0.9
-        if(pick) t3=t2
+!        t3=t2+(ia + 0.5*npts)/fsample + 0.9
+!        if(pick) t3=t2
+        t3=(ia + 0.5*npts)/fsample + 0.9 
+        if(pick) t3=t2+t3
 
 ! Compute symbol spectra and establish sync:
         call synciscat(cdat,npts,nh,npct,s0,jsym,df,ntol,NFreeze,     &

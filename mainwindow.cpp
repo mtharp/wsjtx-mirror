@@ -3254,6 +3254,8 @@ void MainWindow::on_actionISCAT_triggered()
   fast_config(true);
   ui->decodedTextBrowser2->setVisible(false);
   ui->decodedTextLabel2->setVisible(false);
+  ui->decodedTextLabel->setText(
+        "  UTC  Sync dB   DT   DF  F1                                   N  L  A   T");
 /*
   ui->label_7->setVisible(false);
   ui->cbEME->setVisible(false);
