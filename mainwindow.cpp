@@ -1620,15 +1620,16 @@ void MainWindow::decode()                                       //decode()
     size -= noffset;
   }
   if(m_mode=="ISCAT") {
+    float t0=m_t0;
+    float t1=m_t1;
     char msg[80];
     qApp->processEvents();                                //Update the waterfall
     if(m_nPick > 0) {
-      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&m_nSubMode,&jt9com_.newdat,
-          &jt9com_.minSync,&m_nPick,&m_t0Pick,&m_t1Pick,msg,80);
-    } else {
-      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&m_nSubMode,&jt9com_.newdat,
-          &jt9com_.minSync,&m_nPick,&m_t0,&m_t1,msg,80);
+      t0=m_t0Pick;
+      t1=m_t1Pick;
     }
+    decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&m_nSubMode,&jt9com_.newdat,
+          &jt9com_.minSync,&m_nPick,&t0,&t1,msg,80);
     QString message=QString::fromLatin1(msg);
     ui->decodedTextBrowser->appendText(message);
     m_nPick=0;
