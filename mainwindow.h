@@ -576,8 +576,9 @@ extern "C" {
                 float* level, float* sigdb, float* snr, float* dfreq,
                 float* width);
 
-  void decode_iscat_(int* nutc, short id2[], int* ndat, int* newdat, int* minSync,
-                     int* npick, float* t0, float* t1, char* line, int len);
+  void decode_iscat_(int* nutc, short id2[], int* ndat, int* submode, int* newdat,
+                     int* minSync, int* npick, float* t0, float* t1, char* line,
+                     int len);
 }
 
 #endif // MAINWINDOW_H

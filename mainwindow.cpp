@@ -966,7 +966,8 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
 
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
       displayDialFrequency ();
-      bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65");
+      bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65" or
+                                                 m_mode=="ISCAT");
       VHF_controls_visible(b);
     }
 
@@ -1622,10 +1623,10 @@ void MainWindow::decode()                                       //decode()
     char msg[80];
     qApp->processEvents();                                //Update the waterfall
     if(m_nPick > 0) {
-      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
+      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&m_nSubMode,&jt9com_.newdat,
           &jt9com_.minSync,&m_nPick,&m_t0Pick,&m_t1Pick,msg,80);
     } else {
-      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
+      decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&m_nSubMode,&jt9com_.newdat,
           &jt9com_.minSync,&m_nPick,&m_t0,&m_t1,msg,80);
     }
     QString message=QString::fromLatin1(msg);
@@ -3143,9 +3144,6 @@ void MainWindow::on_actionJT4_triggered()
   m_nsps=6912;                   //For symspec only
   m_hsymStop=181;
   m_toneSpacing=0.0;
-  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
-  QString t1=(QString)QChar(short(m_nSubMode+65));
-  mode_label->setText(m_mode + " " + t1);
   ui->actionJT4->setChecked(true);
   VHF_features_enabled(true);
   ui->ClrAvgButton->setVisible(true);
@@ -3167,6 +3165,9 @@ void MainWindow::on_actionJT4_triggered()
     ui->sbMinW->setValue(0);
   }
   if(m_MinW > m_nSubMode) ui->sbMinW->setValue(m_nSubMode);
+  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
+  QString t1=(QString)QChar(short(m_nSubMode+65));
+  mode_label->setText(m_mode + " " + t1);
 }
 
 void MainWindow::on_actionWSPR_2_triggered()
@@ -3218,8 +3219,6 @@ void MainWindow::on_actionEcho_triggered()
   ui->TxFreqSpinBox->setEnabled (false);
   statusChanged();
   if(!m_echoGraph->isVisible()) m_echoGraph->show();
-  mode_label->setStyleSheet("QLabel{background-color: #7cfc00}");
-  mode_label->setText(m_mode);
   on_actionAstronomical_data_triggered ();
   VHF_controls_visible(false);
   WSPR_config(true);                       //Make some irrelevant controls invisible
@@ -3256,15 +3255,12 @@ void MainWindow::on_actionISCAT_triggered()
   ui->decodedTextLabel2->setVisible(false);
   ui->decodedTextLabel->setText(
         "  UTC  Sync dB   DT   DF  F1                                   N  L  A   T");
-/*
-  ui->label_7->setVisible(false);
-  ui->cbEME->setVisible(false);
-  ui->sbMinW->setVisible(false);
-  ui->sbDT->setVisible(false);
-*/
   auto_tx_label->setText("");
   ui->tabWidget->setCurrentIndex(0);
   ui->sbSubmode->setMaximum(1);
+  mode_label->setStyleSheet("QLabel{background-color: #7cfc00}");
+  QString t1=(QString)QChar(short(m_nSubMode+65));
+  mode_label->setText(m_mode + " " + t1);
 }
 
 void MainWindow::switch_mode (Mode mode)
@@ -3308,6 +3304,10 @@ void MainWindow::WSPR_config(bool b)
 void MainWindow::fast_config(bool b)
 {
   m_bFastMode=b;
+  ui->cbEME->setVisible(!b);
+  ui->cbTx6->setVisible(!b);
+  ui->sbDT->setVisible(!b);
+  ui->sbMinW->setVisible(!b);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)

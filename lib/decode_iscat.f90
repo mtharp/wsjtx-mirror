@@ -1,4 +1,4 @@
-subroutine decode_iscat(nutc,id2,ndat0,newdat,minsync,npick,t0,t1,line)
+subroutine decode_iscat(nutc,id2,ndat0,nsubmode,newdat,minsync,npick,t0,t1,line)
 
   integer*2 id2(ndat0)
   real dat(30*12000)
@@ -27,7 +27,8 @@ subroutine decode_iscat(nutc,id2,ndat0,newdat,minsync,npick,t0,t1,line)
   nfreeze=1
   mousedf=0
   mousebutton=0
-  mode4=2
+  mode4=1
+  if(nsubmode.eq.1) mode4=2
   nafc=0
   ndebug=0
   t2=0.
