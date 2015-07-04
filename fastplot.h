@@ -26,6 +26,7 @@ public:
   qint32  m_greenZero;
   qint32  m_x0;
   qint32  m_x1;
+  qint32  m_y0;
 
   void draw();		                                    //Update the Fast plot
   void setPlotZero(int plotZero);

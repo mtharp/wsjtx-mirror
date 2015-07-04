@@ -343,6 +343,7 @@ private:
   qint32  m_jh;
   qint32  m_k0;
   qint32  m_kdone;
+  qint32  m_nPick;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
@@ -397,7 +398,6 @@ private:
   bool    m_bEchoTxOK;
   bool    m_bTransmittedEcho;
   bool    m_bEchoTxed;
-  bool    m_bPick;
   bool    m_bFastMode;
 
   float   m_pctZap;
@@ -577,7 +577,7 @@ extern "C" {
                 float* width);
 
   void decode_iscat_(int* nutc, short id2[], int* ndat, int* newdat, int* minSync,
-                     bool* pick, float* t0, float* t1, char* line, int len);
+                     int* npick, float* t0, float* t1, char* line, int len);
 }
 
 #endif // MAINWINDOW_H

@@ -421,7 +421,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bEchoTxed=false;
   m_nWSPRdecodes=0;
   m_k0=9999999;
-  m_bPick=false;
+  m_nPick=0;
   m_bFastMode=false;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
@@ -890,6 +890,7 @@ void MainWindow::dataSink(qint64 frames)
 //-------------------------------------------------------------- fastSink()
 void MainWindow::fastSink(qint64 frames)
 {
+  static float px;
   int k (frames);
 
   if(m_k0==9999999) {
@@ -904,6 +905,10 @@ void MainWindow::fastSink(qint64 frames)
   }
 
   hspec_(&jt9com_.d2[0], &k, fast_green, fast_s, &fast_jh);
+  px=fast_green[fast_jh] - 5.0;
+  QString t;
+  t.sprintf(" Rx noise: %5.1f ",px);
+  ui->signal_meter_widget->setValue(px); // Update thermometer
   m_fastGraph->plotSpec();
   m_k0=k;
   int kdone=m_TRperiod*12000 - 3000;
@@ -1616,16 +1621,16 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="ISCAT") {
     char msg[80];
     qApp->processEvents();                                //Update the waterfall
-    if(m_bPick) {
+    if(m_nPick > 0) {
       decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
-          &jt9com_.minSync,&m_bPick,&m_t0Pick,&m_t1Pick,msg,80);
+          &jt9com_.minSync,&m_nPick,&m_t0Pick,&m_t1Pick,msg,80);
     } else {
       decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&jt9com_.newdat,
-          &jt9com_.minSync,&m_bPick,&m_t0,&m_t1,msg,80);
+          &jt9com_.minSync,&m_nPick,&m_t0,&m_t1,msg,80);
     }
     QString message=QString::fromLatin1(msg);
     ui->decodedTextBrowser->appendText(message);
-    m_bPick=false;
+    m_nPick=0;
     ui->DecodeButton->setChecked (false);
   } else {
     memcpy(to, from, qMin(mem_jt9->size(), size));
@@ -4443,7 +4448,8 @@ void MainWindow::fastPick(int x0, int x1, int y)
     jt9com_.newdat=0;
     jt9com_.nagain=1;
     m_blankLine=false; // don't insert the separator again
-    m_bPick=true;
+    m_nPick=1;
+    if(y > 120) m_nPick=2;
     m_t0Pick=x0*512.0/12000.0;
     m_t1Pick=x1*512.0/12000.0;
     decode();
