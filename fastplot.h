@@ -24,6 +24,8 @@ public:
   qint32  m_plotGain;
   qint32  m_greenGain;
   qint32  m_greenZero;
+  qint32  m_x1;
+  qint32  m_x2;
 
   void draw();		                                    //Update the Fast plot
   void setPlotZero(int plotZero);

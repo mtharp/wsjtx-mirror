@@ -29,6 +29,8 @@ FPlotter::FPlotter(QWidget *parent) :                  //FPlotter Constructor
   m_HorizPixmap.fill(Qt::black);
   m_ScalePixmap.fill(Qt::white);
   m_bPaint2=true;
+  m_x1=0;
+  m_x2=0;
   drawScale();
   draw();
 }
@@ -145,7 +147,7 @@ void FPlotter::draw()                                         //draw()
     painter1.fillRect(tmp,Qt::black);
   }
   float gain = pow(10.0,(m_plotGain/20.0));
-  for(int k=k0; k<64*fast_jh; k++) {                          //Upper spectrogram
+  for(int k=64*k0; k<64*fast_jh; k++) {                          //Upper spectrogram
     int i = k%64;
     int j = k/64;
     int y=0.005*gain*fast_s[k] + m_plotZero;
@@ -204,6 +206,19 @@ void FPlotter::mousePressEvent(QMouseEvent *event)             //mousePressEvent
 {
   int x=event->x();
   int y=event->y();
-  bool ctrl = (event->modifiers() & Qt::ControlModifier);
+  int n=event->button();
+//  bool ctrl = (event->modifiers() & Qt::ControlModifier);
   Q_EMIT fastPick1(x,y);
+  QPainter painter(&m_HorizPixmap);
+  int x1=x-n*m_pixPerSecond;
+  int x2=x+n*m_pixPerSecond;
+  if(m_x1+m_x2 != 0) {
+    painter.setPen(Qt::black);
+    painter.drawLine(m_x1,5,m_x2,5);                  //Erase previous yellow line
+  }
+  painter.setPen(Qt::yellow);
+  painter.drawLine(x1,5,x2,5);                        //Draw yellow line
+  update();                                             //trigger a new paintEvent
+  m_x1=x1;
+  m_x2=x2;
 }

@@ -29,6 +29,7 @@ subroutine hspec(id2,k,green,s,jh)
   if(k.lt.k0) then                             !Start a new data block
      ja=0
      jh=-1
+     rms0=0.0
   endif
 
   do iblk=1,7
@@ -39,7 +40,8 @@ subroutine hspec(id2,k,green,s,jh)
      sq=dot_product(x,x)
      rms=sqrt(sq/nfft)
      green(jh)=0.
-     if(rms.gt.0.0) green(jh)=20.0*log10(rms)
+     if(rms.gt.0.0) green(jh)=20.0*log10(0.5*(rms0+rms))
+     rms0=rms
      call four2a(x,nfft,1,-1,0)                   !Real-to-complex FFT
      df=12000.0/nfft
      fac=(1.0/nfft)**2
