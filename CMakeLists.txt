@@ -281,7 +281,6 @@ set (wsjt_FSRCS
   lib/decode4.f90
   lib/decode65a.f90
   lib/decode65b.f90
-  lib/decode_iscat.f90
   lib/decoder.f90
   lib/decjt9.f90
   lib/deep4.f90
@@ -296,6 +295,7 @@ set (wsjt_FSRCS
   lib/extract.F90
   lib/extract4.f90
   lib/fano232.f90
+  lib/fast_decode.f90
   lib/fchisq.f90
   lib/fchisq65.f90
   lib/fftw3mod.f90

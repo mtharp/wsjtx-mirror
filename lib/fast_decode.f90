@@ -1,14 +1,24 @@
-subroutine decode_iscat(nutc,id2,ndat0,nsubmode,newdat,minsync,npick,t0,t1,line)
+subroutine fast_decode(id2,narg,line)
 
-  integer*2 id2(ndat0)
+  parameter (NMAX=30*12000)
+  integer*2 id2(NMAX)
+  integer narg(0:7)
   real dat(30*12000)
-  complex cdat(262145)
-  complex cdat2(262145)
+  complex cdat(262145),cdat2(262145)
   real psavg(450)
   logical pick
   character*6 cfile6
   character*80 line
-  save cdat,cdat2,npts
+  save npts
+
+  nutc=narg(0)
+  ndat0=narg(1)
+  nsubmode=narg(2)
+  newdat=narg(3)
+  minsync=narg(4)
+  npick=narg(5)
+  t0=0.001*narg(6)
+  t1=0.001*narg(7)
 
   if(newdat.eq.1) then
      cdat2=cdat
@@ -52,4 +62,5 @@ subroutine decode_iscat(nutc,id2,ndat0,nsubmode,newdat,minsync,npick,t0,t1,line)
           MouseDF,mousebutton,mode4,nafc,ndebug,psavg,npkept,line)
   endif
 
-end subroutine decode_iscat
+  return
+end subroutine fast_decode

@@ -238,7 +238,7 @@ private slots:
   void DopplerTracking_toggled (bool);
   void on_actionISCAT_triggered();
   void on_actionFast_Graph_triggered();
-  void fast_config(bool b);
+  void fast_decode_done();
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -402,6 +402,8 @@ private:
 
   float   m_pctZap;
 
+  char    m_msg[80];
+
   // labels in status bar
   QLabel * tx_status_label;
   QLabel * mode_label;
@@ -525,6 +527,7 @@ private:
   void astroCalculations (QDateTime const&, bool adjust);
   void WSPR_history(Frequency dialFreq, int ndecodes);
   QString WSPR_hhmm(int n);
+  void fast_config(bool b);
 };
 
 extern void getfile(QString fname, int ntrperiod);
@@ -576,9 +579,7 @@ extern "C" {
                 float* level, float* sigdb, float* snr, float* dfreq,
                 float* width);
 
-  void decode_iscat_(int* nutc, short id2[], int* ndat, int* submode, int* newdat,
-                     int* minSync, int* npick, float* t0, float* t1, char* line,
-                     int len);
+  void fast_decode_(short id2[], int narg[], char msg[], int len);
 }
 
 #endif // MAINWINDOW_H

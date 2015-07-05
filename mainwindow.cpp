@@ -539,6 +539,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   watcher2 = new QFutureWatcher<void>;
   connect(watcher2, SIGNAL(finished()),this,SLOT(diskWriteFinished()));
 
+  future3 = new QFuture<void>;
+  watcher3 = new QFutureWatcher<void>;
+  connect(watcher3, SIGNAL(finished()),this,SLOT(fast_decode_done()));
+
   Q_EMIT startAudioInputStream (m_config.audio_input_device (), m_framesAudioInputBuffered, &m_detector, m_downSampleFactor, m_config.audio_input_channel ());
   Q_EMIT initializeAudioOutputStream (m_config.audio_output_device (), AudioDevice::Mono == m_config.audio_output_channel () ? 1 : 2, m_msAudioOutputBuffered);
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
@@ -1622,23 +1626,35 @@ void MainWindow::decode()                                       //decode()
   if(m_mode=="ISCAT") {
     float t0=m_t0;
     float t1=m_t1;
-    char msg[80];
     qApp->processEvents();                                //Update the waterfall
     if(m_nPick > 0) {
       t0=m_t0Pick;
       t1=m_t1Pick;
     }
-    decode_iscat_(&jt9com_.nutc,&jt9com_.d2[0],&m_kdone,&m_nSubMode,&jt9com_.newdat,
-          &jt9com_.minSync,&m_nPick,&t0,&t1,msg,80);
-    QString message=QString::fromLatin1(msg);
-    ui->decodedTextBrowser->appendText(message);
-    m_nPick=0;
-    ui->DecodeButton->setChecked (false);
+    static int narg[8];
+    narg[0]=jt9com_.nutc;
+    narg[1]=m_kdone;
+    narg[2]=m_nSubMode;
+    narg[3]=jt9com_.newdat;
+    narg[4]=jt9com_.minSync;
+    narg[5]=m_nPick;
+    narg[6]=1000.0*t0;
+    narg[7]=1000.0*t1;
+    *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0],80);
+    watcher3->setFuture(*future3);
   } else {
     memcpy(to, from, qMin(mem_jt9->size(), size));
     QFile {m_config.temp_dir ().absoluteFilePath (".lock")}.remove (); // Allow jt9 to start
     decodeBusy(true);
   }
+}
+
+void::MainWindow::fast_decode_done()
+{
+  QString message=QString::fromLatin1(m_msg);
+  ui->decodedTextBrowser->appendText(message);
+  m_nPick=0;
+  ui->DecodeButton->setChecked (false);
 }
 
 void MainWindow::jt9_error (QProcess::ProcessError e)
