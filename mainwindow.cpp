@@ -915,8 +915,7 @@ void MainWindow::fastSink(qint64 frames)
   ui->signal_meter_widget->setValue(px); // Update thermometer
   m_fastGraph->plotSpec();
   m_k0=k;
-  int kdone=m_TRperiod*12000 - 3000;
-  if((m_diskData and k >= jt9com_.kin-3456) or (!m_diskData and k >= kdone)) {
+  if((m_diskData and k >= jt9com_.kin-3456) or (!m_diskData and m_tRemaining<0.35)) {
     m_dataAvailable=true;
     m_t0=0.0;
     m_t1=k/12000.0;
@@ -1887,6 +1886,7 @@ void MainWindow::guiUpdate()
   double t2p=fmod(tsec,2*m_TRperiod);
   m_s6=fmod(tsec,6.0);
   m_nseq = nsec % m_TRperiod;
+  m_tRemaining=m_TRperiod - fmod(tsec,double(m_TRperiod));
 
   if(m_mode=="Echo") {
     txDuration=2.5;
