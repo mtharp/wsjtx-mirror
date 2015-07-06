@@ -3,8 +3,7 @@ subroutine geniscat(msg,msgsent,itone)
 ! Generate an ISCAT waveform.
 
   parameter (NSZ=1291)
-!  character msg*28,msgsent*28                    !Message to be transmitted
-  character msg*22,msgsent*22                    !Message to be transmitted
+  character msg*28,msgsent*28                    !Message to be transmitted
   integer imsg(30)
   integer itone(NSZ)
   real*8 sps

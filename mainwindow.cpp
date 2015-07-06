@@ -2013,7 +2013,6 @@ void MainWindow::guiUpdate()
     }
 
     ba2msg(ba,message);
-    int len1=22;
     int ichk=0;
     if (m_lastMessageSent != m_currentMessage
         || m_lastMessageType != m_currentMessageType)
@@ -2025,21 +2024,24 @@ void MainWindow::guiUpdate()
     if(m_tune or m_mode=="Echo") {
       itone[0]=0;
     } else {
-      if(m_modeTx=="JT4") gen4_(message, &ichk , msgsent, const_cast<int *> (itone),
-                                &m_currentMessageType, len1, len1);
-      if(m_modeTx=="JT9") gen9_(message, &ichk, msgsent, const_cast<int *> (itone),
-                                &m_currentMessageType, len1, len1);
-      if(m_modeTx=="JT65") gen65_(message, &ichk, msgsent, const_cast<int *> (itone),
+      if(m_mode=="ISCAT") {
+        int len2=28;
+        geniscat_(message, msgsent, const_cast<int *> (itone),len2, len2);
+        msgsent[28]=0;
+      } else {
+        int len1=22;
+        if(m_modeTx=="JT4") gen4_(message, &ichk , msgsent, const_cast<int *> (itone),
                                   &m_currentMessageType, len1, len1);
-      if(m_mode.mid(0,4)=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone),
-                                           len1, len1);
-
-      //### For ISCAT, must upgrade to len1=28 ###
-      if(m_mode=="ISCAT") geniscat_(message, msgsent, const_cast<int *> (itone),
-                                    len1, len1);
+        if(m_modeTx=="JT9") gen9_(message, &ichk, msgsent, const_cast<int *> (itone),
+                                  &m_currentMessageType, len1, len1);
+        if(m_modeTx=="JT65") gen65_(message, &ichk, msgsent, const_cast<int *> (itone),
+                                    &m_currentMessageType, len1, len1);
+        if(m_mode.mid(0,4)=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone),
+                                             len1, len1);
+        msgsent[22]=0;
+      }
     }
 
-    msgsent[22]=0;
     m_currentMessage = QString::fromLatin1(msgsent);
     if (m_tune)
       {
@@ -2314,14 +2316,15 @@ void MainWindow::stopTx2()
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 {
   int iz=ba.length();
-  for(int i=0;i<22; i++) {
+  qDebug() << m_mode << iz;
+  for(int i=0;i<28; i++) {
     if(i<iz) {
       message[i]=ba[i];
     } else {
       message[i]=32;
     }
   }
-  message[22]=0;
+  message[28]=0;
 }
 
 void MainWindow::on_txFirstCheckBox_stateChanged(int nstate)        //TxFirst
@@ -2868,8 +2871,8 @@ void MainWindow::on_addButton_clicked()                       //Add button
 
 void MainWindow::msgtype(QString t, QLineEdit* tx)               //msgtype()
 {
-  char message[23];
-  char msgsent[23];
+  char message[29];
+  char msgsent[29];
   int len1=22;
   QByteArray s=t.toUpper().toLocal8Bit();
   ba2msg(s,message);
