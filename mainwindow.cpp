@@ -1633,6 +1633,7 @@ void MainWindow::decode()                                       //decode()
     if(m_nPick > 0) {
       t0=m_t0Pick;
       t1=m_t1Pick;
+      if(t1 > m_kdone/12000.0) t1=m_kdone/12000.0;
     }
     static int narg[8];
     narg[0]=jt9com_.nutc;
