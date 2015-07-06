@@ -3325,6 +3325,7 @@ void MainWindow::fast_config(bool b)
   ui->cbTx6->setVisible(!b);
   ui->sbDT->setVisible(!b);
   ui->sbMinW->setVisible(!b);
+  ui->cbTRsec->setVisible(b);
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -4019,6 +4020,14 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
   ui->sbMinW->setMaximum(m_nSubMode);
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
+}
+
+void MainWindow::on_cbTRsec_currentIndexChanged(int n)
+{
+  int trsec[]={5,10,15,30};
+  m_TRindex=n;
+  m_TRperiod=trsec[n];
+  qDebug() << n << ui->cbTRsec->currentText();
 }
 
 void MainWindow::on_cbShMsgs_toggled(bool b)

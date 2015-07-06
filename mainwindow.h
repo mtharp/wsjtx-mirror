@@ -239,6 +239,7 @@ private slots:
   void on_actionISCAT_triggered();
   void on_actionFast_Graph_triggered();
   void fast_decode_done();
+  void on_cbTRsec_currentIndexChanged(int n);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -345,6 +346,7 @@ private:
   qint32  m_k0;
   qint32  m_kdone;
   qint32  m_nPick;
+  qint32  m_TRindex;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
