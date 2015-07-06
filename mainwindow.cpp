@@ -2316,7 +2316,6 @@ void MainWindow::stopTx2()
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
 {
   int iz=ba.length();
-  qDebug() << m_mode << iz;
   for(int i=0;i<28; i++) {
     if(i<iz) {
       message[i]=ba[i];
