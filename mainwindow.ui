@@ -990,6 +990,9 @@ QLabel[oob=&quot;true&quot;] {
                         <property name="prefix">
                          <string>Sync   </string>
                         </property>
+                        <property name="minimum">
+                         <number>-1</number>
+                        </property>
                         <property name="maximum">
                          <number>10</number>
                         </property>

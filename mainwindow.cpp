@@ -1635,7 +1635,7 @@ void MainWindow::decode()                                       //decode()
       t1=m_t1Pick;
       if(t1 > m_kdone/12000.0) t1=m_kdone/12000.0;
     }
-    static int narg[8];
+    static int narg[9];
     narg[0]=jt9com_.nutc;
     narg[1]=m_kdone;
     narg[2]=m_nSubMode;
@@ -1644,7 +1644,9 @@ void MainWindow::decode()                                       //decode()
     narg[5]=m_nPick;
     narg[6]=1000.0*t0;
     narg[7]=1000.0*t1;
-    *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0],80);
+    narg[8]=1;                                //Max decode lines per decode attempt
+    if(jt9com_.minSync<0) narg[8]=50;
+    *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0][0],80);
     watcher3->setFuture(*future3);
   } else {
     memcpy(to, from, qMin(mem_jt9->size(), size));
@@ -1655,8 +1657,11 @@ void MainWindow::decode()                                       //decode()
 
 void::MainWindow::fast_decode_done()
 {
-  QString message=QString::fromLatin1(m_msg);
-  ui->decodedTextBrowser->appendText(message);
+  for(int i=0; i<100; i++) {
+    if(m_msg[i][0]==0) break;
+    QString message=QString::fromLatin1(m_msg[i]);
+    ui->decodedTextBrowser->appendText(message);
+  }
   m_nPick=0;
   ui->DecodeButton->setChecked (false);
 }

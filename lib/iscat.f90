@@ -1,5 +1,5 @@
 subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
-     NFreeze,MouseDF,mousebutton,mode4,nafc,nmore,psavg,npkept,line)
+     NFreeze,MouseDF,mousebutton,mode4,nafc,nmore,psavg,maxlines,nlines,line)
 
 ! Decode an ISCAT signal
 
@@ -8,7 +8,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
   character cfile6*6                      !File time
   character c42*42
   character msg*29,msg1*29,msgbig*29
-  character line*80
+  character*80 line(100)
   character csync*1
   complex cdat0(NMAX)
   complex cdat(NMAX)
@@ -23,7 +23,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
   data nsync/4/,nlen/2/,ndat/18/
   data c42/'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ /.?@-'/
 
-  npkept = 0
+  nlines = 0
   fsample=3100.78125                   !Sample rate after 9/32 downsampling
   nsps=144/mode4
 
@@ -132,9 +132,6 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
         endif
 
         ttot=npts/3100.78125
-!        if(worst.ge.1.1) write(*,3001) xsync,sig,ndf0,msglen,nfold,    &
-!             ttot,df1,worst,mpk,msg
-!3001    format(2f6.1,i6,2i4,2f6.1,f7.2,i5,1x,a28)
 
         if(worst.gt.bigworst) then
 !        if(sig.ge.bigsig) then
@@ -161,9 +158,11 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
            tana=nframes*24*nsps/fsample
            csync=' '
            if(isync.ge.1) csync='*'
-!           write(*,1020)  cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
-!                msglen,nworst,navg,tana
-           npkept = npkept + 1
+           if(maxlines.ge.2) then
+              if(nlines.le.maxlines-1) nlines = nlines + 1
+              write(line(nlines),1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync, &
+                   msg(1:28),msglen,nworst,navg,tana
+           endif
            write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
                 msglen,nworst,navg,tana
 !               write(21,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),    &
@@ -206,14 +205,16 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
   
 !  write(*,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &
 !       msglen,nworst,navg,tana
-  write(line,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),   &
+
+  if(nlines.le.maxlines-1) nlines = nlines + 1
+  write(line(nlines),1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),  &
        msglen,nworst,navg,tana
   write(11,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &
        msglen,nworst,navg,tana
   write(21,1020) cfile6,isync,nsig,t2,ndf0,nfdot,csync,msg(1:28),     &
        msglen,nworst,navg,tana
 1020 format(a6,2i4,f5.1,i5,i4,1x,a1,2x,a28,i4,2i3,f5.1)
-  line(76:76)=char(0)
+  line(1)(76:76)=char(0)
 
   flush(6)
   flush(11)

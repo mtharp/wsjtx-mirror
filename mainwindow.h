@@ -405,7 +405,7 @@ private:
 
   float   m_pctZap;
 
-  char    m_msg[80];
+  char    m_msg[100][80];
 
   // labels in status bar
   QLabel * tx_status_label;

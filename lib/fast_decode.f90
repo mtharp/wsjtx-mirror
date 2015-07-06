@@ -2,13 +2,13 @@ subroutine fast_decode(id2,narg,line)
 
   parameter (NMAX=30*12000)
   integer*2 id2(NMAX)
-  integer narg(0:7)
+  integer narg(0:8)
   real dat(30*12000)
   complex cdat(262145),cdat2(262145)
   real psavg(450)
   logical pick
   character*6 cfile6
-  character*80 line
+  character*80 line(100)
   save npts
 
   nutc=narg(0)
@@ -19,6 +19,7 @@ subroutine fast_decode(id2,narg,line)
   npick=narg(5)
   t0=0.001*narg(6)
   t1=0.001*narg(7)
+  maxlines=narg(8)  
 
   if(newdat.eq.1) then
      cdat2=cdat
@@ -54,12 +55,13 @@ subroutine fast_decode(id2,narg,line)
      t2=t0
   endif
   jz=ib-ia+1
+  line(1:100)(1:1)=char(0)
   if(npick.eq.2) then
      call iscat(cdat2(ia),jz,3,40,t2,pick,cfile6,minsync,ntol,NFreeze,    &
-          MouseDF,mousebutton,mode4,nafc,ndebug,psavg,npkept,line)
+          MouseDF,mousebutton,mode4,nafc,ndebug,psavg,nmax,nlines,line)
   else
      call iscat(cdat(ia),jz,3,40,t2,pick,cfile6,minsync,ntol,NFreeze,     &
-          MouseDF,mousebutton,mode4,nafc,ndebug,psavg,npkept,line)
+          MouseDF,mousebutton,mode4,nafc,ndebug,psavg,maxlines,nlines,line)
   endif
 
   return
