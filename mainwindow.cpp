@@ -577,7 +577,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
     m_hsymStop=10;
   } else {
     m_hsymStop=173;
-    if(m_config.decode_at_52s()) m_hsymStop=181;
+    if(m_config.decode_at_52s()) m_hsymStop=179;
   }
   m_modulator.setPeriod(m_TRperiod);
   m_dialFreqRxWSPR=0;
@@ -642,6 +642,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("dBm",m_dBm);
   m_settings->setValue("UploadSpots",m_uploadSpots);
   m_settings->setValue ("BandHopping", ui->band_hopping_group_box->isChecked ());
+  m_settings->setValue("TRindex",m_TRindex);
   m_settings->endGroup();
 }
 
@@ -665,6 +666,7 @@ void MainWindow::readSettings()
   // do this outside of settings group because it uses groups internally
   if (displayAstro) on_actionAstronomical_data_triggered ();
   if (displayMsgAvg) on_actionMessage_averaging_triggered();
+
   m_settings->beginGroup("Common");
   morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData()),
          const_cast<int *> (icw), &m_ncw, m_config.my_callsign ().length());
@@ -720,6 +722,8 @@ void MainWindow::readSettings()
   outBufSize=m_settings->value("OutBufSize",4096).toInt();
   m_lockTxFreq=m_settings->value("LockTxFreq",false).toBool();
   ui->cbTxLock->setChecked(m_lockTxFreq);
+  m_TRindex=m_settings->value("TRindex",4).toInt();
+  ui->cbTRsec->setCurrentIndex(m_TRindex);
   m_settings->endGroup();
 
   // use these initialisation settings to tune the audio o/p buffer
@@ -797,7 +801,7 @@ void MainWindow::dataSink(qint64 frames)
     m_hsymStop=10;
   } else {
     m_hsymStop=173;
-    if(m_config.decode_at_52s()) m_hsymStop=181;
+    if(m_config.decode_at_52s()) m_hsymStop=179;
   }
 
   if(ihsym==3*m_hsymStop/4) {
@@ -1870,7 +1874,7 @@ void MainWindow::guiUpdate()
   double txDuration=1.0 + 85.0*m_nsps/12000.0;              // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;   // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;   // WSPR
-  if(m_mode=="ISCAT") txDuration=30.0;                      // ISCAT
+  if(m_mode=="ISCAT") txDuration=m_TRperiod;                // ISCAT
 //###  if(m_mode=="WSPR-15") tx2=...
 
   double tx1=0.0;
@@ -3027,7 +3031,7 @@ void MainWindow::on_actionJT9_1_triggered()
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;
   m_hsymStop=173;
-  if(m_config.decode_at_52s()) m_hsymStop=181;
+  if(m_config.decode_at_52s()) m_hsymStop=179;
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
   mode_label->setText(m_mode);
   m_toneSpacing=0.0;
@@ -3056,7 +3060,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;
   m_hsymStop=173;
-  if(m_config.decode_at_52s()) m_hsymStop=181;
+  if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=pow(2,m_config.jt9w_bw_mult ())*12000.0/6912.0;
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
   mode_label->setText(m_mode);
@@ -3091,7 +3095,7 @@ void MainWindow::on_actionJT65_triggered()
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=173;
-  if(m_config.decode_at_52s()) m_hsymStop=181;
+  if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
@@ -3131,7 +3135,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;
   m_hsymStop=173;
-  if(m_config.decode_at_52s()) m_hsymStop=181;
+  if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffa500}");
   mode_label->setText(m_mode);
@@ -3159,7 +3163,7 @@ void MainWindow::on_actionJT4_triggered()
   m_modulator.setPeriod(m_TRperiod);
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
-  m_hsymStop=181;
+  m_hsymStop=179;
   m_toneSpacing=0.0;
   ui->actionJT4->setChecked(true);
   VHF_features_enabled(true);
@@ -3250,7 +3254,8 @@ void MainWindow::on_actionISCAT_triggered()
   m_mode="ISCAT";
   m_modeTx="ISCAT";
   ui->actionISCAT->setChecked(true);
-  m_TRperiod=30;
+  int trsec[]={5,10,15,30};
+  m_TRperiod=trsec[ui->cbTRsec->currentIndex()];
   m_modulator.setPeriod(m_TRperiod);
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
@@ -3259,8 +3264,6 @@ void MainWindow::on_actionISCAT_triggered()
   switch_mode(Modes::ISCAT);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->TxFreqSpinBox->setValue(560);
-  ui->TxFreqSpinBox->setEnabled (false);
   statusChanged();
   if(!m_fastGraph->isVisible()) m_fastGraph->show();
   if(m_wideGraph->isVisible()) m_wideGraph->hide();
@@ -3278,6 +3281,9 @@ void MainWindow::on_actionISCAT_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #7cfc00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
+  if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(560);
+  if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(1012);
+  ui->TxFreqSpinBox->setEnabled (false);
 }
 
 void MainWindow::switch_mode (Mode mode)
@@ -3325,6 +3331,7 @@ void MainWindow::fast_config(bool b)
   ui->cbTx6->setVisible(!b);
   ui->sbDT->setVisible(!b);
   ui->sbMinW->setVisible(!b);
+  ui->ClrAvgButton->setVisible(!b);
   ui->cbTRsec->setVisible(b);
 }
 
@@ -3817,9 +3824,16 @@ void MainWindow::transmit (double snr)
   }
 
   if(m_mode=="ISCAT") {
-    double sps=256.0*12000.0/11025.0;
-    toneSpacing=11025.0/256.0;
-    double f0=13*toneSpacing;
+    double sps,f0;
+    if(m_nSubMode==0) {
+      sps=512.0*12000.0/11025.0;
+      toneSpacing=11025.0/512.0;
+      f0=47*toneSpacing;
+    } else {
+      sps=256.0*12000.0/11025.0;
+      toneSpacing=11025.0/256.0;
+      f0=13*toneSpacing;
+    }
     Q_EMIT sendMessage (NUM_ISCAT_SYMBOLS, sps, f0, toneSpacing, &m_soundOutput,
                         m_config.audio_output_channel(), true, snr);
   }
@@ -4020,6 +4034,10 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
   ui->sbMinW->setMaximum(m_nSubMode);
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
+  if(m_mode=="ISCAT") {
+    if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(560);
+    if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(1012);
+  }
 }
 
 void MainWindow::on_cbTRsec_currentIndexChanged(int n)
@@ -4027,7 +4045,6 @@ void MainWindow::on_cbTRsec_currentIndexChanged(int n)
   int trsec[]={5,10,15,30};
   m_TRindex=n;
   m_TRperiod=trsec[n];
-  qDebug() << n << ui->cbTRsec->currentText();
 }
 
 void MainWindow::on_cbShMsgs_toggled(bool b)
