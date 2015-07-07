@@ -53,7 +53,7 @@ QSize CPlotter::sizeHint() const
 void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 {
   if(!size().isValid()) return;
-  if( m_Size != size() ) {  //if changed, resize pixmaps to new screensize
+  if( m_Size != size() or (m_bAverageDB != m_bAverageDB0)) {
     m_Size = size();
     m_w = m_Size.width();
     m_h = m_Size.height();
@@ -95,7 +95,9 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   double gain = fac*pow(10.0,0.02*m_plotGain);
   double gain2d = pow(10.0,0.02*(m_plot2dGain));
 
-  if(!m_bAverageDB) bScroll=false;
+  //  if(!m_bAverageDB) bScroll=false;
+  if(m_bAverageDB != m_bAverageDB0) resizeEvent(NULL);
+  m_bAverageDB0=m_bAverageDB;
 
 //move current data down one line (must do this before attaching a QPainter object)
   if(bScroll) m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);

@@ -101,6 +101,7 @@ private:
   bool    m_bCumulative;
   bool    m_bLinearAvg;
   bool    m_bAverageDB;
+  bool    m_bAverageDB0;
   bool    m_lockTxFreq;
 
   float   m_fSpan;
