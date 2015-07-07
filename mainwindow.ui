@@ -800,7 +800,7 @@ QLabel[oob=&quot;true&quot;] {
                        <number>0</number>
                       </property>
                       <property name="maximum">
-                       <number>2</number>
+                       <number>14</number>
                       </property>
                      </widget>
                     </item>
@@ -1013,39 +1013,6 @@ QLabel[oob=&quot;true&quot;] {
                          </size>
                         </property>
                        </spacer>
-                      </item>
-                      <item>
-                       <widget class="QComboBox" name="cbTRsec">
-                        <property name="currentIndex">
-                         <number>0</number>
-                        </property>
-                        <property name="maxVisibleItems">
-                         <number>4</number>
-                        </property>
-                        <property name="maxCount">
-                         <number>4</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>T/R  5  s</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>T/R  10  s</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>T/R  15  s</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>T/R  30  s</string>
-                         </property>
-                        </item>
-                       </widget>
                       </item>
                      </layout>
                     </item>

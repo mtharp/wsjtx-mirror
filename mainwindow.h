@@ -239,7 +239,6 @@ private slots:
   void on_actionISCAT_triggered();
   void on_actionFast_Graph_triggered();
   void fast_decode_done();
-  void on_cbTRsec_currentIndexChanged(int n);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,

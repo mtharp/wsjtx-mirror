@@ -422,7 +422,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_nWSPRdecodes=0;
   m_k0=9999999;
   m_nPick=0;
-  m_bFastMode=false;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -442,7 +441,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->decodedTextLabel2->setText(t);
 
   readSettings();		         //Restore user's setup params
-  // start the audio thread
   m_audioThread->start (m_audioThreadPriority);
 
 #ifdef WIN32
@@ -671,6 +669,7 @@ void MainWindow::readSettings()
   morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData()),
          const_cast<int *> (icw), &m_ncw, m_config.my_callsign ().length());
   m_mode=m_settings->value("Mode","JT9").toString();
+  if(m_mode=="ISCAT") m_bFastMode=true;
   m_modeTx=m_settings->value("ModeTx","JT9").toString();
   if(m_modeTx.mid(0,3)=="JT9") ui->pbTxMode->setText("Tx JT9  @");
   if(m_modeTx=="JT65") ui->pbTxMode->setText("Tx JT65  #");
@@ -681,7 +680,6 @@ void MainWindow::readSettings()
   ui->RxFreqSpinBox->setValue(m_settings->value("RxFreq",1500).toInt());
   m_nSubMode=m_settings->value("SubMode",0).toInt();
   ui->sbSubmode->setValue(m_nSubMode);
-  ui->sbMinW->setMaximum(m_nSubMode);
   m_DTtol=m_settings->value("DTtol",0.5).toFloat();
   ui->sbDT->setValue(m_DTtol);
   ui->FTol_combo_box->setCurrentText(m_settings->value("FTol","500").toString ());
@@ -723,7 +721,6 @@ void MainWindow::readSettings()
   m_lockTxFreq=m_settings->value("LockTxFreq",false).toBool();
   ui->cbTxLock->setChecked(m_lockTxFreq);
   m_TRindex=m_settings->value("TRindex",4).toInt();
-  ui->cbTRsec->setCurrentIndex(m_TRindex);
   m_settings->endGroup();
 
   // use these initialisation settings to tune the audio o/p buffer
@@ -3258,12 +3255,10 @@ void MainWindow::on_actionEcho_triggered()
 
 void MainWindow::on_actionISCAT_triggered()
 {
-  on_actionJT4_triggered();
   m_mode="ISCAT";
   m_modeTx="ISCAT";
   ui->actionISCAT->setChecked(true);
-  int trsec[]={5,10,15,30};
-  m_TRperiod=trsec[ui->cbTRsec->currentIndex()];
+  m_TRperiod=30;
   m_modulator.setPeriod(m_TRperiod);
   m_detector.setPeriod(m_TRperiod);
   m_nsps=6912;                   //For symspec only
@@ -3338,9 +3333,20 @@ void MainWindow::fast_config(bool b)
   ui->cbEME->setVisible(!b);
   ui->cbTx6->setVisible(!b);
   ui->sbDT->setVisible(!b);
-  ui->sbMinW->setVisible(!b);
   ui->ClrAvgButton->setVisible(!b);
-  ui->cbTRsec->setVisible(b);
+
+  if(b) {
+    ui->sbMinW->setMinimum(11);
+    ui->sbMinW->setMaximum(14);
+    ui->sbMinW->setValue(m_MinW);
+    ui->sbMinW->setPrefix("T/R  ");
+    ui->sbMinW->setSuffix("  s");
+  } else {
+    ui->sbMinW->setMinimum(0);
+    ui->sbMinW->setMaximum(m_nSubMode);
+    ui->sbMinW->setPrefix("MinW  ");
+    ui->sbMinW->setSuffix("");
+  }
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -4031,28 +4037,25 @@ void MainWindow::on_cbEME_toggled(bool b)
 
 void MainWindow::on_sbMinW_valueChanged(int n)
 {
-  m_MinW=qMin(n,m_nSubMode);
-  ui->sbMinW->setValue(m_MinW);
+  m_MinW=n;
+  if(!m_bFastMode and n>m_nSubMode) m_MinW=m_nSubMode;
+  if(m_bFastMode) {
+    m_TRperiod=ui->sbMinW->cleanText().toInt();
+    if(m_TRperiod<5 or m_TRperiod>30) m_TRperiod=30;
+  }
 }
 
 void MainWindow::on_sbSubmode_valueChanged(int n)
 {
   m_nSubMode=n;
   m_wideGraph->setSubMode(m_nSubMode);
-  ui->sbMinW->setMaximum(m_nSubMode);
+//  ui->sbMinW->setMaximum(m_nSubMode);
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   if(m_mode=="ISCAT") {
     if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(560);
     if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(1012);
   }
-}
-
-void MainWindow::on_cbTRsec_currentIndexChanged(int n)
-{
-  int trsec[]={5,10,15,30};
-  m_TRindex=n;
-  m_TRperiod=trsec[n];
 }
 
 void MainWindow::on_cbShMsgs_toggled(bool b)

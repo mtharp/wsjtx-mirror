@@ -54,7 +54,7 @@ SOURCES += \
   logbook/logbook.cpp \
   astro.cpp Radio.cpp NetworkServerLookup.cpp revision_utils.cpp \
   Transceiver.cpp TransceiverBase.cpp TransceiverFactory.cpp \
-  PollingTransceiver.cpp EmulateSplitTransceiver.cpp \
+  PollingTransceiver.cpp EmulateSplitTransceiver.cpp LettersSpinBox.cpp \
   HRDTransceiver.cpp DXLabSuiteCommanderTransceiver.cpp \
   HamlibTransceiver.cpp FrequencyLineEdit.cpp Bands.cpp \
   FrequencyList.cpp StationList.cpp ForeignKeyDelegate.cpp \
@@ -71,7 +71,7 @@ HEADERS  += qt_helpers.hpp \
   Radio.hpp NetworkServerLookup.hpp revision_utils.hpp \
   mainwindow.h plotter.h soundin.h soundout.h astro.h \
   about.h WFPalette.hpp widegraph.h getfile.h decodedtext.h \
-  commons.h sleep.h displaytext.h logqso.h \
+  commons.h sleep.h displaytext.h logqso.h LettersSpinBox.hpp \
   Bands.hpp FrequencyList.hpp StationList.hpp ForeignKeyDelegate.hpp FrequencyItemDelegate.hpp LiveFrequencyValidator.hpp \
   FrequencyLineEdit.hpp AudioDevice.hpp Detector.hpp Modulator.hpp psk_reporter.h \
   Transceiver.hpp TransceiverBase.hpp TransceiverFactory.hpp PollingTransceiver.hpp \

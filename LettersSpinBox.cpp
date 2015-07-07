@@ -7,12 +7,19 @@
 QString LettersSpinBox::textFromValue (int value) const
 {
   QString text;
-  do
-    {
+
+  if(value < 10) {
+    do {
       auto digit = value % 26;
       value /= 26;
       text = QChar {lowercase_ ? 'a' + digit : 'A' + digit} + text;
-    } while (value); 
+    } while (value);
+  } else {
+    if(value==11) text="5";
+    if(value==12) text="10";
+    if(value==13) text="15";
+    if(value==14) text="30";
+  }
   return text;
 }
 
