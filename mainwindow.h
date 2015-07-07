@@ -273,6 +273,7 @@ private:
   // other windows
   Configuration m_config;
   WSPRBandHopping m_WSPR_band_hopping;
+  bool m_WSPR_tx_next;
   QMessageBox m_rigErrorMessageBox;
 
   QScopedPointer<WideGraph> m_wideGraph;
@@ -304,7 +305,6 @@ private:
   double  m_tRemaining;
 
   float   m_DTtol;
-  float   m_rxavg;
   float   m_t0;
   float   m_t1;
   float   m_t0Pick;
@@ -319,7 +319,6 @@ private:
   qint32  m_sec0;
   qint32  m_RxLog;
   qint32  m_nutc0;
-  qint32  m_nrx;
   qint32  m_ntr;
   qint32  m_tx;
   qint32  m_hsym;
