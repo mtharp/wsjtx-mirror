@@ -3341,11 +3341,16 @@ void MainWindow::fast_config(bool b)
     ui->sbMinW->setValue(m_MinW);
     ui->sbMinW->setPrefix("T/R  ");
     ui->sbMinW->setSuffix("  s");
+    m_wideGraph->hide();
+    m_fastGraph->show();
+
   } else {
     ui->sbMinW->setMinimum(0);
     ui->sbMinW->setMaximum(m_nSubMode);
     ui->sbMinW->setPrefix("MinW  ");
     ui->sbMinW->setSuffix("");
+    m_wideGraph->show();
+    m_fastGraph->hide();
   }
 }
 
