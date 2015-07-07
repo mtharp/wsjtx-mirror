@@ -59,8 +59,8 @@ void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
     m_h = m_Size.height();
     m_h2 = (m_Percent2DScreen)*(m_h)/100;
     if(m_h2>100) m_h2=100;
+    if(m_bAverageDB) m_h2=m_h-30;
     m_h1=m_h-m_h2;
-
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
     m_2DPixmap.fill(Qt::black);
     m_WaterfallPixmap = QPixmap(m_Size.width(), m_h1);
@@ -89,11 +89,13 @@ void CPlotter::paintEvent(QPaintEvent *)                                // paint
 void CPlotter::draw(float swide[], bool bScroll)                            //draw()
 {
   int j,j0,y2;
-  float y;
+  float y,ymin;
 
   double fac = sqrt(m_binsPerPixel*m_waterfallAvg/15.0);
   double gain = fac*pow(10.0,0.02*m_plotGain);
   double gain2d = pow(10.0,0.02*(m_plot2dGain));
+
+  if(!m_bAverageDB) bScroll=false;
 
 //move current data down one line (must do this before attaching a QPainter object)
   if(bScroll) m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
@@ -108,6 +110,8 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
 
   if(m_bLinearAvg) {
     painter2D.setPen(Qt::yellow);
+  } else if(m_bAverageDB) {
+    painter2D.setPen(Qt::red);
   } else {
     painter2D.setPen(Qt::green);
   }
@@ -124,7 +128,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     flat4_(&jt9com_.savg[j0],&jz,&m_Flatten);
   }
 
-  float ymin=1.e30;
+  ymin=1.e30;
   if(swide[0]>1.e29 and swide[0]< 1.5e30) painter1.setPen(Qt::green);
   if(swide[0]>1.4e30) painter1.setPen(Qt::yellow);
   for(int i=0; i<iz; i++) {
@@ -144,7 +148,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     y2=0;
     if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;            //Current
 
-    if(m_bCumulative) {                                     //Cumulative
+    if(m_bCumulative or m_bAverageDB) {                     //Cumulative
       if(bScroll) {
         float sum=0.0;
         int j=j0+m_binsPerPixel*i;
