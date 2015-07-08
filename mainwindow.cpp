@@ -3041,7 +3041,7 @@ void MainWindow::on_actionJT9_1_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->pbTxMode->setEnabled(false);
+  ui->pbTxMode->setVisible(false);
   VHF_controls_visible(false);
   WSPR_config(false);
   fast_config(false);
@@ -3070,7 +3070,7 @@ void MainWindow::on_actionJT9W_1_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->pbTxMode->setEnabled(false);
+  ui->pbTxMode->setVisible(false);
   VHF_controls_visible(false);
   WSPR_config(false);
   fast_config(false);
@@ -3106,7 +3106,7 @@ void MainWindow::on_actionJT65_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->pbTxMode->setEnabled(false);
+  ui->pbTxMode->setVisible(false);
   bool bVHF=m_config.enable_VHF_features();
   VHF_controls_visible(bVHF);
   WSPR_config(false);
@@ -3145,7 +3145,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->pbTxMode->setEnabled(true);
+  ui->pbTxMode->setVisible(true);
   VHF_controls_visible(false);
   WSPR_config(false);
   fast_config(false);
@@ -3171,7 +3171,7 @@ void MainWindow::on_actionJT4_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
-  ui->pbTxMode->setEnabled(false);
+  ui->pbTxMode->setVisible(false);
   bool bVHF=m_config.enable_VHF_features();
   VHF_controls_visible(bVHF);
   WSPR_config(false);

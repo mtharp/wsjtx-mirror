@@ -136,6 +136,8 @@ private:
   double  m_dialFreq;
   double  m_xOffset;
 
+  float   m_sum[2048];
+
   qint32  m_dBStepSize;
   qint32  m_FreqUnits;
   qint32  m_hdivs;
@@ -155,7 +157,6 @@ private:
   qint32  m_fMax;
   qint32  m_startFreq;
   qint32  m_tol;
-  qint32  m_y2[2048];
 
   char    m_sutc[6];
 

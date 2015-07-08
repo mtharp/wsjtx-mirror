@@ -88,8 +88,8 @@ void CPlotter::paintEvent(QPaintEvent *)                                // paint
 
 void CPlotter::draw(float swide[], bool bScroll)                            //draw()
 {
-  int j,j0,y2;
-  float y,ymin;
+  int j,j0;
+  float y,y2,ymin;
 
   double fac = sqrt(m_binsPerPixel*m_waterfallAvg/15.0);
   double gain = fac*pow(10.0,0.02*m_plotGain);
@@ -104,6 +104,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   QPainter painter1(&m_WaterfallPixmap);
   m_2DPixmap = m_OverlayPixmap.copy(0,0,m_w,m_h2);
   QPainter painter2D(&m_2DPixmap);
+  if(!painter2D.isActive()) return;
   QFont Font("Arial");
   Font.setPointSize(12);
   QFontMetrics metrics(Font);
@@ -157,11 +158,12 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
         for(int k=0; k<m_binsPerPixel; k++) {
           sum+=jt9com_.savg[j++];
         }
+        m_sum[i]=sum;
         y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero;
         if(m_Flatten==0) y2 += 40;                      //### could do better! ###
-        m_y2[i]=y2;
       } else {
-        y2=m_y2[i];
+        y2=2.5*gain2d*m_sum[i]/m_binsPerPixel + m_plot2dZero;
+        if(m_Flatten==0) y2 += 40;                      //### could do better! ###
       }
     }
 
@@ -176,7 +178,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
 
     if(i==iz-1) painter2D.drawPolyline(LineBuf,j);
     LineBuf[j].setX(i);
-    LineBuf[j].setY(0.9*m_h2-y2*m_h2/70.0);
+    LineBuf[j].setY(int(0.9*m_h2-y2*m_h2/70.0));
     if(y2<y2min) y2min=y2;
     if(y2>y2max) y2max=y2;
     j++;
