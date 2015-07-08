@@ -159,7 +159,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
       m_sum[i]=sum;
     }
     y2=2.5*gain2d*(m_sum[i]/m_binsPerPixel + m_plot2dZero);
-    if(m_Flatten==0) y2 += 40;                      //### could do better! ###
+    if(m_Flatten==0) y2 += 15;                      //### could do better! ###
 
     if(m_bLinearAvg) {                                   //Linear Avg (yellow)
       float sum=0.0;
@@ -226,7 +226,6 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
     painter.setBrush(Qt::SolidPattern);
 
     pixperdiv = m_freqPerDiv/df;
-    y = m_h2 - m_h2/VERT_DIVS;
     m_hdivs = w*df/m_freqPerDiv + 1.9999;
 
     float xx0=float(m_startFreq)/float(m_freqPerDiv);
@@ -236,8 +235,7 @@ void CPlotter::DrawOverlay()                                 //DrawOverlay()
       x = (int)((float)i*pixperdiv ) - x0;
       if(x >= 0 and x<=m_w) {
         painter.setPen(QPen(Qt::white, 1,Qt::DotLine));
-        painter.drawLine(x, 0, x , y);
-        painter.drawLine(x, m_h2-5, x , m_h2);
+        painter.drawLine(x, 0, x , m_h2);
       }
     }
 
