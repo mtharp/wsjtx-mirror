@@ -2,8 +2,6 @@ subroutine ana932(dat,npts0,cdat,npts)
 
   real dat(npts0)
   complex cdat(262145)
-  complex cfft
-  common/down932/cfft(147456),npts2,df932
 
   n=log(float(npts0))/log(2.0)
   nfft1=2**(n+1)
@@ -15,7 +13,6 @@ subroutine ana932(dat,npts0,cdat,npts)
   enddo
   cdat(npts0/2+1:nfft1/2)=0.
   call four2a(cdat,nfft1,1,-1,0)               !Forward r2c FFT
-  cfft(1:nfft2)=cdat(1:nfft2)
   call four2a(cdat,nfft2,1,1,1)                !Inverse c2c FFT
   npts=npts0*9.0/32.0                          !Downsampled data length
   npts2=npts
