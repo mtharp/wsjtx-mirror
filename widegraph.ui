@@ -95,7 +95,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Average (dB)</string>
+           <string>Reference</string>
           </property>
          </item>
         </widget>

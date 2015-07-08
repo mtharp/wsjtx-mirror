@@ -61,11 +61,11 @@ WideGraph::WideGraph(QSettings * settings, QWidget *parent) :
   ui->widePlot->setCurrent(m_settings->value("Current",false).toBool());
   ui->widePlot->setCumulative(m_settings->value("Cumulative",true).toBool());
   ui->widePlot->setLinearAvg(m_settings->value("LinearAvg",false).toBool());
-  ui->widePlot->setAverage_dB(m_settings->value("AverageDB",false).toBool());
+  ui->widePlot->setReference(m_settings->value("Reference",false).toBool());
   if(ui->widePlot->current()) ui->spec2dComboBox->setCurrentIndex(0);
   if(ui->widePlot->cumulative()) ui->spec2dComboBox->setCurrentIndex(1);
   if(ui->widePlot->linearAvg()) ui->spec2dComboBox->setCurrentIndex(2);
-  if(ui->widePlot->averageDB()) ui->spec2dComboBox->setCurrentIndex(3);
+  if(ui->widePlot->Reference()) ui->spec2dComboBox->setCurrentIndex(3);
   int nbpp=m_settings->value("BinsPerPixel",2).toInt();
   ui->widePlot->setBinsPerPixel(nbpp);
   ui->widePlot->setStartFreq(m_settings->value("StartFreq",0).toInt());
@@ -120,7 +120,7 @@ void WideGraph::saveSettings()                                           //saveS
   m_settings->setValue ("Current", ui->widePlot->current());
   m_settings->setValue ("Cumulative", ui->widePlot->cumulative());
   m_settings->setValue ("LinearAvg", ui->widePlot->linearAvg());
-  m_settings->setValue ("AverageDB", ui->widePlot->averageDB());
+  m_settings->setValue ("Reference", ui->widePlot->Reference());
   m_settings->setValue ("BinsPerPixel", ui->widePlot->binsPerPixel ());
   m_settings->setValue ("StartFreq", ui->widePlot->startFreq ());
   m_settings->setValue ("WaterfallPalette", m_waterfallPalette);
@@ -292,7 +292,7 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
   ui->widePlot->setCurrent(false);
   ui->widePlot->setCumulative(false);
   ui->widePlot->setLinearAvg(false);
-  ui->widePlot->setAverage_dB(false);
+  ui->widePlot->setReference(false);
   ui->smoSpinBox->setEnabled(false);
   ui->labSmooth->setEnabled(false);
   if(arg1=="Current") ui->widePlot->setCurrent(true);
@@ -302,8 +302,8 @@ void WideGraph::on_spec2dComboBox_currentIndexChanged(const QString &arg1)
     ui->smoSpinBox->setEnabled(true);
     ui->labSmooth->setEnabled(true);
   }
-  if(arg1=="Average (dB)") {
-    ui->widePlot->setAverage_dB(true);
+  if(arg1=="Reference") {
+    ui->widePlot->setReference(true);
   }
 }
 

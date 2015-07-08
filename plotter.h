@@ -79,8 +79,8 @@ public:
   void setFlatten(bool b);
   void setTol(int n);
   void setRxBand(QString band);
-  void setAverage_dB(bool b) {m_bAverageDB = b;}
-  bool averageDB() const {return m_bAverageDB;}
+  void setReference(bool b) {m_bReference = b;}
+  bool Reference() const {return m_bReference;}
 
 signals:
   void freezeDecode1(int n);
@@ -100,8 +100,8 @@ private:
   bool    m_bCurrent;
   bool    m_bCumulative;
   bool    m_bLinearAvg;
-  bool    m_bAverageDB;
-  bool    m_bAverageDB0;
+  bool    m_bReference;
+  bool    m_bReference0;
   bool    m_lockTxFreq;
 
   float   m_fSpan;

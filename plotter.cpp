@@ -53,13 +53,13 @@ QSize CPlotter::sizeHint() const
 void CPlotter::resizeEvent(QResizeEvent* )                    //resizeEvent()
 {
   if(!size().isValid()) return;
-  if( m_Size != size() or (m_bAverageDB != m_bAverageDB0)) {
+  if( m_Size != size() or (m_bReference != m_bReference0)) {
     m_Size = size();
     m_w = m_Size.width();
     m_h = m_Size.height();
     m_h2 = (m_Percent2DScreen)*(m_h)/100;
     if(m_h2>100) m_h2=100;
-    if(m_bAverageDB) m_h2=m_h-30;
+    if(m_bReference) m_h2=m_h-30;
     m_h1=m_h-m_h2;
     m_2DPixmap = QPixmap(m_Size.width(), m_h2);
     m_2DPixmap.fill(Qt::black);
@@ -95,9 +95,8 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   double gain = fac*pow(10.0,0.02*m_plotGain);
   double gain2d = pow(10.0,0.02*(m_plot2dGain));
 
-  //  if(!m_bAverageDB) bScroll=false;
-  if(m_bAverageDB != m_bAverageDB0) resizeEvent(NULL);
-  m_bAverageDB0=m_bAverageDB;
+  if(m_bReference != m_bReference0) resizeEvent(NULL);
+  m_bReference0=m_bReference;
 
 //move current data down one line (must do this before attaching a QPainter object)
   if(bScroll) m_WaterfallPixmap.scroll(0,1,0,0,m_w,m_h1);
@@ -113,7 +112,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
 
   if(m_bLinearAvg) {
     painter2D.setPen(Qt::yellow);
-  } else if(m_bAverageDB) {
+  } else if(m_bReference) {
     painter2D.setPen(Qt::red);
   } else {
     painter2D.setPen(Qt::green);
@@ -151,7 +150,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     y2=0;
     if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;            //Current
 
-    if(m_bCumulative or m_bAverageDB) {                     //Cumulative
+    if(m_bCumulative or m_bReference) {                     //Cumulative or Reference
       if(bScroll) {
         float sum=0.0;
         int j=j0+m_binsPerPixel*i;
@@ -159,12 +158,9 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
           sum+=jt9com_.savg[j++];
         }
         m_sum[i]=sum;
-        y2=2.5*gain2d*sum/m_binsPerPixel + m_plot2dZero;
-        if(m_Flatten==0) y2 += 40;                      //### could do better! ###
-      } else {
-        y2=2.5*gain2d*m_sum[i]/m_binsPerPixel + m_plot2dZero;
-        if(m_Flatten==0) y2 += 40;                      //### could do better! ###
       }
+      y2=2.5*gain2d*m_sum[i]/m_binsPerPixel + m_plot2dZero;
+      if(m_Flatten==0) y2 += 40;                      //### could do better! ###
     }
 
     if(m_bLinearAvg) {                                   //Linear Avg (yellow)
