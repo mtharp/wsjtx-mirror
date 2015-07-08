@@ -54,5 +54,13 @@ subroutine hspec(id2,k,green,s,jh)
   enddo
   k0=k
 
+  rewind 71
+  do i=1,64
+     sx=1.e-6*sum(s(i-1,0:jh))
+     write(71,3001) 2*i*df,sx,db(sx)
+3001 format(3f10.1)
+  enddo
+  flush(71)
+
 900 return
 end subroutine hspec

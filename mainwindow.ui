@@ -2296,6 +2296,8 @@ QPushButton[state=&quot;ok&quot;] {
     <addaction name="actionOpen_next_in_directory"/>
     <addaction name="actionDecode_remaining_files_in_directory"/>
     <addaction name="separator"/>
+    <addaction name="actionSave_reference_spectrum"/>
+    <addaction name="separator"/>
     <addaction name="actionDelete_all_wav_files_in_SaveDir"/>
     <addaction name="actionErase_ALL_TXT"/>
     <addaction name="actionErase_wsjtx_log_adi"/>
@@ -2800,6 +2802,11 @@ QPushButton[state=&quot;ok&quot;] {
    </property>
    <property name="shortcut">
     <string>F9</string>
+   </property>
+  </action>
+  <action name="actionSave_reference_spectrum">
+   <property name="text">
+    <string>Save reference spectrum</string>
    </property>
   </action>
  </widget>

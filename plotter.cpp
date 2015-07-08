@@ -150,18 +150,16 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
     y2=0;
     if(m_bCurrent) y2 = gain2d*y + m_plot2dZero;            //Current
 
-    if(m_bCumulative or m_bReference) {                     //Cumulative or Reference
-      if(bScroll) {
-        float sum=0.0;
-        int j=j0+m_binsPerPixel*i;
-        for(int k=0; k<m_binsPerPixel; k++) {
-          sum+=jt9com_.savg[j++];
-        }
-        m_sum[i]=sum;
+    if(bScroll) {
+      float sum=0.0;
+      int j=j0+m_binsPerPixel*i;
+      for(int k=0; k<m_binsPerPixel; k++) {
+        sum+=jt9com_.savg[j++];
       }
-      y2=2.5*gain2d*m_sum[i]/m_binsPerPixel + m_plot2dZero;
-      if(m_Flatten==0) y2 += 40;                      //### could do better! ###
+      m_sum[i]=sum;
     }
+    y2=2.5*gain2d*(m_sum[i]/m_binsPerPixel + m_plot2dZero);
+    if(m_Flatten==0) y2 += 40;                      //### could do better! ###
 
     if(m_bLinearAvg) {                                   //Linear Avg (yellow)
       float sum=0.0;

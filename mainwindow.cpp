@@ -912,6 +912,7 @@ void MainWindow::fastSink(qint64 frames)
   t.sprintf(" Rx noise: %5.1f ",px);
   ui->signal_meter_widget->setValue(px); // Update thermometer
   m_fastGraph->plotSpec();
+
   m_k0=k;
   if((m_diskData and k >= jt9com_.kin-3456) or (!m_diskData and m_tRemaining<0.35)) {
     m_dataAvailable=true;
@@ -4498,4 +4499,9 @@ void MainWindow::fastPick(int x0, int x1, int y)
     m_t1Pick=x1*512.0/12000.0;
     decode();
   }
+}
+
+void MainWindow::on_actionSave_reference_spectrum_triggered()
+{
+
 }

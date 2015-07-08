@@ -240,6 +240,8 @@ private slots:
   void on_actionFast_Graph_triggered();
   void fast_decode_done();
 
+  void on_actionSave_reference_spectrum_triggered();
+
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
       unsigned channels, unsigned msBuffered) const;
