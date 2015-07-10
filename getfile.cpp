@@ -130,7 +130,6 @@ void savewav(QString fname, int ntrperiod)
 }
 
 //#define	MAX_RANDOM	0x7fffffff
-
 /* Generate gaussian random float with mean=0 and std_dev=1 */
 float gran()
 {

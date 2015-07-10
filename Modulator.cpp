@@ -84,7 +84,6 @@ void Modulator::start (unsigned symbolsLength, double framesPerSymbol,
   if (synchronize && !m_tuning && !fastMode)	{
     m_silentFrames = m_ic + m_frameRate - (mstr * m_frameRate / 1000);
   }
-  qDebug() << "A" << ms0 << mstr << m_ic << fastMode << m_silentFrames;
   initialize (QIODevice::ReadOnly, channel);
   Q_EMIT stateChanged ((m_state = (synchronize && m_silentFrames) ?
                         Synchronizing : Active));

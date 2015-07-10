@@ -441,6 +441,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->decodedTextLabel2->setText(t);
 
   readSettings();		         //Restore user's setup params
+
   m_audioThread->start (m_audioThreadPriority);
 
 #ifdef WIN32
@@ -580,6 +581,11 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_dialFreqRxWSPR=0;
   wsprNet = new WSPRNet(this);
   connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
+
+  if(m_bFastMode) {
+    int ntr[]={5,10,15,30};
+    m_TRperiod=ntr[m_MinW-11];
+  }
 
 //### Remove this stuff!
 #if !WSJT_ENABLE_EXPERIMENTAL_FEATURES
@@ -921,6 +927,19 @@ void MainWindow::fastSink(qint64 frames)
     m_kdone=k;
     jt9com_.newdat=1;
     decode();
+    if(!m_diskData and m_saveAll) {
+      QDateTime t=QDateTime::currentDateTimeUtc().addSecs(2-m_TRperiod);
+      int ihr=t.toString("hh").toInt();
+      int imin=t.toString("mm").toInt();
+      int isec=t.toString("ss").toInt();
+      isec=isec - isec%m_TRperiod;
+      QString t2;
+      t2.sprintf("%2.2d%2.2d%2.2d.wav",ihr,imin,isec);
+      m_fname = m_config.save_directory().absoluteFilePath(
+            t.date().toString("yyMMdd") + "_" + t2);
+      *future2 = QtConcurrent::run(savewav, m_fname + ".wav", m_TRperiod);
+      watcher2->setFuture(*future2);
+    }
   }
 }
 
