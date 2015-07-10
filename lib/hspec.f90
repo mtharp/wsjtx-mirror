@@ -1,4 +1,4 @@
-subroutine hspec(id2,k,green,s,jh)
+subroutine hspec(id2,k,ingain,green,s,jh)
 
 ! Input:
 !  k         pointer to the most recent new data
@@ -18,6 +18,7 @@ subroutine hspec(id2,k,green,s,jh)
   equivalence (x,cx)
   save ja,rms0
 
+  gain=10.0**(0.1*ingain)
   nfft=512
   if(k.gt.30*12000) go to 900
   if(k.lt.nfft) then       
@@ -36,7 +37,7 @@ subroutine hspec(id2,k,green,s,jh)
      jb=ja+nfft-1
      x=id2(ja:jb)
      sq=dot_product(x,x)
-     rms=sqrt(sq/nfft)
+     rms=sqrt(gain*sq/nfft)
      green(jh)=0.
      if(rms.gt.0.0) green(jh)=20.0*log10(0.5*(rms0+rms))
      rms0=rms
@@ -47,20 +48,20 @@ subroutine hspec(id2,k,green,s,jh)
         j=2*i
         sx=real(cx(j))**2 + aimag(cx(j))**2 + real(cx(j-1))**2 +        &
              aimag(cx(j-1))**2
-        s(i-1,jh)=fac*sx
+        s(i-1,jh)=fac*gain*sx
      enddo
      if(ja+2*nfft.gt.k) exit
      ja=ja+nfft
   enddo
   k0=k
 
-  rewind 71
-  do i=1,64
-     sx=1.e-6*sum(s(i-1,0:jh))
-     write(71,3001) 2*i*df,sx,db(sx)
-3001 format(3f10.1)
-  enddo
-  flush(71)
+!  rewind 71
+!  do i=1,64
+!     sx=1.e-6*sum(s(i-1,0:jh))
+!     write(71,3001) 2*i*df,sx,db(sx)
+!3001 format(3f10.1)
+!  enddo
+!  flush(71)
 
 900 return
 end subroutine hspec

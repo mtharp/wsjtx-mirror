@@ -260,7 +260,7 @@ private:
   Q_SIGNAL void sendMessage (unsigned symbolsLength, double framesPerSymbol,
       double frequency, double toneSpacing,
       SoundOutput *, AudioDevice::Channel = AudioDevice::Mono,
-      bool synchronize = true, double dBSNR = 99.) const;
+      bool synchronize = true, bool fastMode = false, double dBSNR = 99.) const;
   Q_SIGNAL void outAttenuationChanged (qreal) const;
   Q_SIGNAL void toggleShorthand () const;
 
@@ -547,7 +547,7 @@ extern "C" {
   void symspec_(int* k, int* ntrperiod, int* nsps, int* ingain, int* minw,
                 float* px, float s[], float* df3, int* nhsym, int* npts8);
 
-  void hspec_(short int d2[], int* k, float green[], float s[], int* jh);
+  void hspec_(short int d2[], int* k, int* ingain, float green[], float s[], int* jh);
 
   void gen4_(char* msg, int* ichk, char* msgsent, int itone[],
                int* itext, int len1, int len2);

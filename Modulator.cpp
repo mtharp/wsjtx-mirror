@@ -45,7 +45,7 @@ Modulator::Modulator (unsigned frameRate, unsigned periodLengthInSeconds,
 void Modulator::start (unsigned symbolsLength, double framesPerSymbol,
                        double frequency, double toneSpacing,
                        SoundOutput * stream, Channel channel,
-                       bool synchronize, double dBSNR)
+                       bool synchronize, bool fastMode, double dBSNR)
 {
   Q_ASSERT (stream);
 
@@ -81,10 +81,10 @@ void Modulator::start (unsigned symbolsLength, double framesPerSymbol,
 
   m_silentFrames = 0;
   // calculate number of silent frames to send
-  if (synchronize && !m_tuning)	{
+  if (synchronize && !m_tuning && !fastMode)	{
     m_silentFrames = m_ic + m_frameRate - (mstr * m_frameRate / 1000);
   }
-
+  qDebug() << "A" << ms0 << mstr << m_ic << fastMode << m_silentFrames;
   initialize (QIODevice::ReadOnly, channel);
   Q_EMIT stateChanged ((m_state = (synchronize && m_silentFrames) ?
                         Synchronizing : Active));

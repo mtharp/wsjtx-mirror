@@ -906,7 +906,7 @@ void MainWindow::fastSink(qint64 frames)
     }
   }
 
-  hspec_(&jt9com_.d2[0], &k, fast_green, fast_s, &fast_jh);
+  hspec_(&jt9com_.d2[0], &k, &m_inGain, fast_green, fast_s, &fast_jh);
   px=fast_green[fast_jh] - 5.0;
   QString t;
   t.sprintf(" Rx noise: %5.1f ",px);
@@ -3806,12 +3806,13 @@ void MainWindow::transmit (double snr)
     Q_EMIT sendMessage (NUM_JT65_SYMBOLS,
            4096.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
            toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
-           true, snr);
+           true, false, snr);
   }
   if (m_modeTx == "JT9") {
     Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps,
                         ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing,
-                        &m_soundOutput, m_config.audio_output_channel (), true, snr);
+                        &m_soundOutput, m_config.audio_output_channel (),
+                        true, false, snr);
   }
   if (m_modeTx == "JT4") {
     if(m_nSubMode==0) toneSpacing=4.375;
@@ -3824,18 +3825,19 @@ void MainWindow::transmit (double snr)
     Q_EMIT sendMessage (NUM_JT4_SYMBOLS,
            2520.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
            toneSpacing, &m_soundOutput, m_config.audio_output_channel (),
-           true, snr);
+           true, false, snr);
   }
   if (m_mode=="WSPR-2") {                                      //### Similar code needed for WSPR-15 ###
 
     Q_EMIT sendMessage (NUM_WSPR_SYMBOLS, 8192.0,
                         ui->TxFreqSpinBox->value() - 1.5 * 12000 / 8192, m_toneSpacing,
                         &m_soundOutput, m_config.audio_output_channel(),
-                        true, snr);
+                        true, false, snr);
   }
   if(m_mode=="Echo") {
+    //??? should use "fastMode = true" here ???
     Q_EMIT sendMessage (27, 1024.0, 1500.0, 0.0, &m_soundOutput,
-                        m_config.audio_output_channel(), false, snr);
+                        m_config.audio_output_channel(), false, false, snr);
   }
 
   if(m_mode=="ISCAT") {
@@ -3850,7 +3852,7 @@ void MainWindow::transmit (double snr)
       f0=13*toneSpacing;
     }
     Q_EMIT sendMessage (NUM_ISCAT_SYMBOLS, sps, f0, toneSpacing, &m_soundOutput,
-                        m_config.audio_output_channel(), true, snr);
+                        m_config.audio_output_channel(), true, true, snr);
   }
 
 }

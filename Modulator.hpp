@@ -32,7 +32,9 @@ public:
   void setSpread(double s) {m_fSpread=s;}
   void setPeriod(unsigned p) {m_period=p;}
 
-  Q_SLOT void start (unsigned symbolsLength, double framesPerSymbol, double frequency, double toneSpacing, SoundOutput *, Channel = Mono, bool synchronize = true, double dBSNR = 99.);
+  Q_SLOT void start (unsigned symbolsLength, double framesPerSymbol, double frequency,
+                     double toneSpacing, SoundOutput *, Channel = Mono,
+                     bool synchronize = true, bool fastMode = false, double dBSNR = 99.);
   Q_SLOT void stop (bool quick = false);
   Q_SLOT void tune (bool newState = true);
   Q_SLOT void setFrequency (double newFrequency) {m_frequency = newFrequency;}
