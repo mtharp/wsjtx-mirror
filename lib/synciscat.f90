@@ -14,7 +14,7 @@ subroutine synciscat(cdat,npts,nh,npct,s0,jsym,df,ntol,NFreeze,    &
   real s0(288,NSZ)
   real fs0(288,96)                        !108 = 96 + 3*4
   real savg(288)
-  real sref(288),tmp(288)
+  real sref(288)
   real psavg(72)                          !Average spectrum of whole file
   integer icos(4)
   data icos/0,1,3,2/
