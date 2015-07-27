@@ -2,6 +2,7 @@
 #define MODULATOR_HPP__
 
 #include <QAudio>
+#include <QPointer>
 
 #include "AudioDevice.hpp"
 
@@ -50,7 +51,7 @@ protected:
 private:
   qint16 postProcessSample (qint16 sample) const;
 
-  SoundOutput * m_stream;
+  QPointer<SoundOutput> m_stream;
   bool m_quickClose;
 
   unsigned m_symbolsLength;
