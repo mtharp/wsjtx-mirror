@@ -1229,7 +1229,7 @@ file (APPEND \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${WSJT_QT_CONF_DESTINATION
 	#COMPONENT runtime
 	)
 
-      # set (gp_tool "objdump")	# we want MinGW tool - not MSVC (See GetPrerequisites.cmake)
+      set (gp_tool "objdump")	# we want MinGW tool - not MSVC (See GetPrerequisites.cmake)
     endif (WIN32)
 
     #list (APPEND fixup_library_dirs ${hamlib_lib_dir})
@@ -1238,6 +1238,7 @@ file (APPEND \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${WSJT_QT_CONF_DESTINATION
     install (CODE "
      file (GLOB_RECURSE QTPLUGINS
        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${WSJT_PLUGIN_DESTINATION}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+     set (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules ${CMAKE_MODULE_PATH})
      include (BundleUtilities)
      set (BU_CHMOD_BUNDLE_ITEMS ON)
      set (gp_tool ${gp_tool})
