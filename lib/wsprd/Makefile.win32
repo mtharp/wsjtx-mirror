@@ -18,16 +18,22 @@ LIBS = c:/JTSDK/fftw3f/libfftw3-3.dll -lm
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    wsprd wsprsim
+all:    wsprd wsprsim wsprd_exp
 
-DEPS =  wsprsim_utils.h wsprd_utils.h fano.h
+DEPS =  wsprsim_utils.h wsprd_utils.h fano.h jelinek.h nhash.h
+
+OBJS1 = wsprd.o wsprsim_utils.o wsprd_utils.o tab.o fano.o jelinek.o nhash.o
+wsprd: $(OBJS1)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
 OBJS2 = wsprsim.o wsprsim_utils.o wsprd_utils.o tab.o fano.o nhash.o 
 wsprsim: $(OBJS2) 
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
-OBJS3 = wsprd_exp.o wsprsim_utils.o wsprd_utils.o tab.o fano.o nhash.o 
-wsprd: $(OBJS3)
+OBJS3 = wsprd_exp.o wsprsim_utils.o wsprd_utils.o tab.o fano.o jelinek.o \
+      nhash.o 
+wsprd_exp: $(OBJS3)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
+
 clean:
 	rm *.o wsprd.exe wsprsim.exe wsprd_exp.exe
