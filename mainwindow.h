@@ -207,7 +207,6 @@ private slots:
   void on_actionMessage_averaging_triggered();
   void on_actionInclude_averaging_triggered();
   void on_actionInclude_correlation_triggered();
-  void on_sbSpeed_valueChanged(int index);
   void VHF_controls_visible(bool b);
   void VHF_features_enabled(bool b);
   void on_cbEME_toggled(bool b);
@@ -239,6 +238,7 @@ private slots:
   void on_actionSave_reference_spectrum_triggered();
   void on_sbTR_valueChanged(int index);
   void on_sbFtol_valueChanged(int index);
+  void on_cbFast9_clicked(bool b);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -344,8 +344,6 @@ private:
   qint32  m_kdone;
   qint32  m_nPick;
   qint32  m_TRindex;
-  qint32  m_Speed;
-  qint32  m_SpeedIndex;
   qint32  m_FtolIndex;
   qint32  m_Ftol;
 
@@ -403,6 +401,7 @@ private:
   bool    m_bTransmittedEcho;
   bool    m_bEchoTxed;
   bool    m_bFastMode;
+  bool    m_bFast9;
 
   float   m_pctZap;
 

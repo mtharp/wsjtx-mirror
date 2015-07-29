@@ -655,7 +655,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("UploadSpots",m_uploadSpots);
   m_settings->setValue ("BandHopping", ui->band_hopping_group_box->isChecked ());
   m_settings->setValue("TRindex",m_TRindex);
-  m_settings->setValue("SpeedIndex",m_SpeedIndex);
+  m_settings->setValue("Fast9",m_bFast9);
   m_settings->endGroup();
 }
 
@@ -703,8 +703,8 @@ void MainWindow::readSettings()
   ui->cbEME->setChecked(m_bEME);
   m_TRindex=m_settings->value("TRindex",0).toInt();
   ui->sbTR->setValue(m_TRindex);
-  m_SpeedIndex=m_settings->value("SpeedIndex",0).toInt();
-  ui->sbSpeed->setValue(m_SpeedIndex);
+  m_bFast9=m_settings->value("Fast9",false).toBool();
+  ui->cbFast9->setChecked(m_bFast9);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq",
      QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->WSPRfreqSpinBox->setValue(0); // ensure a change is signaled
@@ -3073,7 +3073,7 @@ void MainWindow::on_actionJT9_triggered()
   bool bVHF=m_config.enable_VHF_features();
   VHF_features_enabled(bVHF);
   VHF_controls_visible(bVHF);
-  ui->sbSpeed->setVisible(bVHF);
+  ui->cbFast9->setVisible(bVHF);
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
   ui->sbTR->setVisible(true);
@@ -3181,7 +3181,7 @@ void MainWindow::on_actionJT4_triggered()
   VHF_controls_visible(bVHF);
   WSPR_config(false);
   fast_config(false);
-  ui->sbSpeed->setVisible(bVHF);
+  ui->cbFast9->setVisible(false);
   ui->cbShMsgs->setVisible(true);
   ui->cbTx6->setVisible(true);
   ui->sbTR->setVisible(false);
@@ -3805,10 +3805,11 @@ void MainWindow::transmit (double snr)
            true, false, snr);
   }
   if (m_modeTx == "JT9") {
-    m_toneSpacing=pow(2,m_nSubMode)*12000.0/6912.0;
-    bool fastmode=(m_TRperiod<60);
-    qDebug() << m_TRperiod << m_Speed << fastmode << m_nsps/m_Speed;
-    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, double(m_nsps)/m_Speed,
+    int nspeed=pow(2,m_nSubMode);
+    m_toneSpacing=nspeed*12000.0/6912.0;
+    bool fastmode=m_bFast9 and (nspeed>1);
+    qDebug() << m_TRperiod << m_bFast9 << fastmode << nspeed << m_nsps/nspeed;
+    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, double(m_nsps)/nspeed,
                         ui->TxFreqSpinBox->value() - m_XIT, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel (),
                         true, fastmode, snr);
@@ -4012,13 +4013,6 @@ void MainWindow::on_sbFtol_valueChanged(int index)
   m_wideGraph->setTol(m_Ftol);
 }
 
-
-void MainWindow::on_sbSpeed_valueChanged(int index)
-{
-  m_SpeedIndex=index;
-  m_Speed=pow(2,index);
-}
-
 void::MainWindow::VHF_controls_visible(bool b)
 {
   ui->VHFControls_widget->setVisible (b);
@@ -4057,7 +4051,6 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
 {
   m_nSubMode=n;
   m_wideGraph->setSubMode(m_nSubMode);
-  ui->sbSpeed->setMaximum(n);
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   if(m_mode=="ISCAT") {
@@ -4065,6 +4058,12 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
     if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(1012);
   }
 }
+
+void MainWindow::on_cbFast9_clicked(bool b)
+{
+  m_bFast9=b;
+}
+
 
 void MainWindow::on_cbShMsgs_toggled(bool b)
 {
@@ -4512,3 +4511,4 @@ void MainWindow::on_actionSave_reference_spectrum_triggered()
 {
 
 }
+
