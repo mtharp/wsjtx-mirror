@@ -3303,6 +3303,7 @@ void MainWindow::on_actionISCAT_triggered()
   if(m_wideGraph->isVisible()) m_wideGraph->hide();
   mode_label->setStyleSheet("QLabel{background-color: #fc7c00}");
   mode_label->setText(m_mode);
+  VHF_controls_visible(true);
   WSPR_config(false);
   fast_config(true);
   ui->decodedTextBrowser2->setVisible(false);
