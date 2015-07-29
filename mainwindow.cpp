@@ -3073,12 +3073,13 @@ void MainWindow::on_actionJT9_1_triggered()
   m_toneSpacing=0.0;
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_1->setChecked(true);
-  VHF_features_enabled(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setVisible(false);
-  VHF_controls_visible(false);
+  bool bVHF=m_config.enable_VHF_features();
+  VHF_features_enabled(bVHF);
+  VHF_controls_visible(bVHF);
   WSPR_config(false);
   fast_config(false);
   ui->label_6->setText("Band Activity");
