@@ -789,90 +789,26 @@ QLabel[oob=&quot;true&quot;] {
                      <number>0</number>
                     </property>
                     <item row="4" column="0">
-                     <widget class="LettersSpinBox" name="sbMinW">
+                     <widget class="LettersSpinBox" name="sbTR">
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
                       </property>
+                      <property name="suffix">
+                       <string>  s</string>
+                      </property>
                       <property name="prefix">
-                       <string>MinW </string>
+                       <string>T/R  </string>
                       </property>
                       <property name="minimum">
-                       <number>0</number>
+                       <number>11</number>
                       </property>
                       <property name="maximum">
                        <number>14</number>
                       </property>
+                      <property name="value">
+                       <number>14</number>
+                      </property>
                      </widget>
-                    </item>
-                    <item row="4" column="1">
-                     <layout class="QFormLayout" name="formLayout">
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="label_8">
-                        <property name="text">
-                         <string>F Tol:</string>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                        </property>
-                        <property name="buddy">
-                         <cstring>FTol_combo_box</cstring>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="1">
-                       <widget class="QComboBox" name="FTol_combo_box">
-                        <property name="currentText">
-                         <string>10</string>
-                        </property>
-                        <property name="insertPolicy">
-                         <enum>QComboBox::NoInsert</enum>
-                        </property>
-                        <property name="minimumContentsLength">
-                         <number>8</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>10</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>20</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>50</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>100</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>200</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>500</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>1000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>2000</string>
-                         </property>
-                        </item>
-                       </widget>
-                      </item>
-                     </layout>
                     </item>
                     <item row="3" column="0">
                      <widget class="LettersSpinBox" name="sbSubmode">
@@ -887,34 +823,6 @@ QLabel[oob=&quot;true&quot;] {
                       </property>
                       <property name="maximum">
                        <number>6</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="1">
-                     <widget class="QDoubleSpinBox" name="sbDT">
-                      <property name="toolTip">
-                       <string>Tolerance for expected time offset.</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                      <property name="prefix">
-                       <string> DT Tol  </string>
-                      </property>
-                      <property name="decimals">
-                       <number>1</number>
-                      </property>
-                      <property name="minimum">
-                       <double>0.100000000000000</double>
-                      </property>
-                      <property name="maximum">
-                       <double>3.000000000000000</double>
-                      </property>
-                      <property name="singleStep">
-                       <double>0.100000000000000</double>
-                      </property>
-                      <property name="value">
-                       <double>0.500000000000000</double>
                       </property>
                      </widget>
                     </item>
@@ -1015,6 +923,35 @@ QLabel[oob=&quot;true&quot;] {
                        </spacer>
                       </item>
                      </layout>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="LettersSpinBox" name="sbSpeed">
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                      <property name="prefix">
+                       <string>Speed  </string>
+                      </property>
+                      <property name="maximum">
+                       <number>6</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="1">
+                     <widget class="LettersSpinBox" name="sbFtol">
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                      <property name="prefix">
+                       <string>F Tol  </string>
+                      </property>
+                      <property name="minimum">
+                       <number>21</number>
+                      </property>
+                      <property name="maximum">
+                       <number>27</number>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -2352,7 +2289,6 @@ QPushButton[state=&quot;ok&quot;] {
     <addaction name="actionJT9_1"/>
     <addaction name="actionJT65"/>
     <addaction name="actionJT9_JT65"/>
-    <addaction name="actionJT9W_1"/>
     <addaction name="actionJT4"/>
     <addaction name="actionWSPR_2"/>
     <addaction name="actionWSPR_15"/>

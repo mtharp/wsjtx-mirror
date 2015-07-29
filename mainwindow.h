@@ -199,21 +199,18 @@ private slots:
   void on_actionAstronomical_data_triggered();
   void on_actionShort_list_of_add_on_prefixes_and_suffixes_triggered();
   void getpfx();
-  void on_actionJT9W_1_triggered();
   void band_changed (Frequency);
   void monitor (bool);
   void stop_tuning ();
   void stopTuneATU();
   void auto_tx_mode (bool);
   void on_actionMessage_averaging_triggered();
-  void on_FTol_combo_box_currentIndexChanged(QString const&);
   void on_actionInclude_averaging_triggered();
   void on_actionInclude_correlation_triggered();
-  void on_sbDT_valueChanged(double x);
+  void on_sbSpeed_valueChanged(int index);
   void VHF_controls_visible(bool b);
   void VHF_features_enabled(bool b);
   void on_cbEME_toggled(bool b);
-  void on_sbMinW_valueChanged(int n);
   void on_sbSubmode_valueChanged(int n);
   void on_cbShMsgs_toggled(bool b);
   void on_cbTx6_toggled(bool b);
@@ -239,8 +236,9 @@ private slots:
   void on_actionISCAT_triggered();
   void on_actionFast_Graph_triggered();
   void fast_decode_done();
-
   void on_actionSave_reference_spectrum_triggered();
+  void on_sbTR_valueChanged(int index);
+  void on_sbFtol_valueChanged(int index);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -335,7 +333,6 @@ private:
   qint32  m_watchdogLimit;
   qint32  m_astroFont;
   qint32  m_nSubMode;
-  qint32  m_MinW;
   qint32  m_nclearave;
   qint32  m_minSync;
   qint32  m_dBm;
@@ -347,6 +344,9 @@ private:
   qint32  m_kdone;
   qint32  m_nPick;
   qint32  m_TRindex;
+  qint32  m_Speed;
+  qint32  m_FtolIndex;
+  qint32  m_Ftol;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

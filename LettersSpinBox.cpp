@@ -27,7 +27,6 @@ QString LettersSpinBox::textFromValue (int value) const
     if(value==26) text="500";
     if(value==27) text="1000";
   }
-//  qDebug() << "A" << value << text;
   return text;
 }
 
