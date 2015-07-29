@@ -18,6 +18,7 @@ QString LettersSpinBox::textFromValue (int value) const
     if(value==12) text="10";
     if(value==13) text="15";
     if(value==14) text="30";
+    if(value==15) text="60";
 
     if(value==21) text="10";
     if(value==22) text="20";

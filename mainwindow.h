@@ -345,6 +345,7 @@ private:
   qint32  m_nPick;
   qint32  m_TRindex;
   qint32  m_Speed;
+  qint32  m_SpeedIndex;
   qint32  m_FtolIndex;
   qint32  m_Ftol;
 

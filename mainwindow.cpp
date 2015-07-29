@@ -596,7 +596,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
 
   if(m_bFastMode) {
-    int ntr[]={5,10,15,30};
+    int ntr[]={5,10,15,30,60};
     m_TRperiod=ntr[m_TRindex-11];
   }
 }
@@ -655,6 +655,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("UploadSpots",m_uploadSpots);
   m_settings->setValue ("BandHopping", ui->band_hopping_group_box->isChecked ());
   m_settings->setValue("TRindex",m_TRindex);
+  m_settings->setValue("SpeedIndex",m_SpeedIndex);
   m_settings->endGroup();
 }
 
@@ -700,8 +701,10 @@ void MainWindow::readSettings()
   ui->syncSpinBox->setValue(m_settings->value("MinSync",0).toInt());
   m_bEME=m_settings->value("EME",false).toBool();
   ui->cbEME->setChecked(m_bEME);
-  m_TRindex=m_settings->value("minW",0).toInt();
+  m_TRindex=m_settings->value("TRindex",0).toInt();
   ui->sbTR->setValue(m_TRindex);
+  m_SpeedIndex=m_settings->value("SpeedIndex",0).toInt();
+  ui->sbSpeed->setValue(m_SpeedIndex);
   m_lastMonitoredFrequency = m_settings->value ("DialFreq",
      QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->WSPRfreqSpinBox->setValue(0); // ensure a change is signaled
@@ -980,16 +983,14 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       on_dxGridEntry_textChanged (m_hisGrid); // recalculate distances in case of units change
       enable_DXCC_entity (m_config.DXCC ());  // sets text window proportions and (re)inits the logbook
 
-      if(m_config.spot_to_psk_reporter ())
-        {
-          pskSetLocal ();
-        }
-
-//      if(m_mode=="JT9W-1") m_toneSpacing=pow(2,m_config.jt9w_bw_mult ())*12000.0/6912.0;
+      if(m_config.spot_to_psk_reporter ()) {
+        pskSetLocal ();
+      }
 
       if(m_config.restart_audio_input ()) {
         Q_EMIT startAudioInputStream (m_config.audio_input_device (), m_framesAudioInputBuffered, m_detector, m_downSampleFactor, m_config.audio_input_channel ());
       }
+
       if(m_config.restart_audio_output ()) {
         Q_EMIT initializeAudioOutputStream (m_config.audio_output_device (), AudioDevice::Mono == m_config.audio_output_channel () ? 1 : 2, m_msAudioOutputBuffered);
       }
@@ -997,7 +998,7 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
       displayDialFrequency ();
       bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65" or
-                                                 m_mode=="ISCAT");
+                                                 m_mode=="ISCAT" or m_mode=="JT9");
       VHF_controls_visible(b);
     }
 
@@ -3076,6 +3077,7 @@ void MainWindow::on_actionJT9_triggered()
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
   ui->sbTR->setVisible(true);
+  ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
   fast_config(bVHF);
   ui->label_6->setText("Band Activity");
@@ -3803,10 +3805,13 @@ void MainWindow::transmit (double snr)
            true, false, snr);
   }
   if (m_modeTx == "JT9") {
-    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, m_nsps,
-                        ui->TxFreqSpinBox->value () - m_XIT, m_toneSpacing,
+    m_toneSpacing=pow(2,m_nSubMode)*12000.0/6912.0;
+    bool fastmode=(m_TRperiod<60);
+    qDebug() << m_TRperiod << m_Speed << fastmode << m_nsps/m_Speed;
+    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, double(m_nsps)/m_Speed,
+                        ui->TxFreqSpinBox->value() - m_XIT, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel (),
-                        true, false, snr);
+                        true, fastmode, snr);
   }
   if (m_modeTx == "JT4") {
     if(m_nSubMode==0) toneSpacing=4.375;
@@ -4010,6 +4015,7 @@ void MainWindow::on_sbFtol_valueChanged(int index)
 
 void MainWindow::on_sbSpeed_valueChanged(int index)
 {
+  m_SpeedIndex=index;
   m_Speed=pow(2,index);
 }
 
