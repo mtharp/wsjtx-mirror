@@ -251,7 +251,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   on_EraseButton_clicked ();
 
   QActionGroup* modeGroup = new QActionGroup(this);
-  ui->actionJT9_1->setActionGroup(modeGroup);
+  ui->actionJT9->setActionGroup(modeGroup);
   ui->actionJT65->setActionGroup(modeGroup);
   ui->actionJT9_JT65->setActionGroup(modeGroup);
   ui->actionJT4->setActionGroup(modeGroup);
@@ -531,7 +531,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
           SLOT(setFreq4(int,int)));
 
   if(m_mode=="JT4") on_actionJT4_triggered();
-  if(m_mode=="JT9") on_actionJT9_1_triggered();
+  if(m_mode=="JT9") on_actionJT9_triggered();
   if(m_mode=="JT65") on_actionJT65_triggered();
   if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
   if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
@@ -3048,7 +3048,7 @@ void MainWindow::acceptQSO2(QDateTime const& QSO_date, QString const& call, QStr
     }
 }
 
-void MainWindow::on_actionJT9_1_triggered()
+void MainWindow::on_actionJT9_triggered()
 {
   m_mode="JT9";
   switch_mode (Modes::JT9);
@@ -3064,7 +3064,7 @@ void MainWindow::on_actionJT9_1_triggered()
   mode_label->setText(m_mode);
   m_toneSpacing=0.0;
   ui->ClrAvgButton->setVisible(false);
-  ui->actionJT9_1->setChecked(true);
+  ui->actionJT9->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -3075,6 +3075,7 @@ void MainWindow::on_actionJT9_1_triggered()
   ui->sbSpeed->setVisible(bVHF);
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
+  ui->sbTR->setVisible(true);
   WSPR_config(false);
   fast_config(bVHF);
   ui->label_6->setText("Band Activity");
@@ -3180,6 +3181,8 @@ void MainWindow::on_actionJT4_triggered()
   fast_config(false);
   ui->sbSpeed->setVisible(bVHF);
   ui->cbShMsgs->setVisible(true);
+  ui->cbTx6->setVisible(true);
+  ui->sbTR->setVisible(false);
   ui->sbSubmode->setMaximum(6);
   ui->label_6->setText("Single-Period Decodes");
   ui->label_7->setText("Average Decodes");
@@ -4048,6 +4051,7 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
 {
   m_nSubMode=n;
   m_wideGraph->setSubMode(m_nSubMode);
+  ui->sbSpeed->setMaximum(n);
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   if(m_mode=="ISCAT") {

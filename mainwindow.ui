@@ -2286,7 +2286,7 @@ QPushButton[state=&quot;ok&quot;] {
     <property name="title">
      <string>Mode</string>
     </property>
-    <addaction name="actionJT9_1"/>
+    <addaction name="actionJT9"/>
     <addaction name="actionJT65"/>
     <addaction name="actionJT9_JT65"/>
     <addaction name="actionJT4"/>
@@ -2419,7 +2419,7 @@ QPushButton[state=&quot;ok&quot;] {
     <string>F5</string>
    </property>
   </action>
-  <action name="actionJT9_1">
+  <action name="actionJT9">
    <property name="checkable">
     <bool>true</bool>
    </property>

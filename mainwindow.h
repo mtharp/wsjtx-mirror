@@ -151,7 +151,7 @@ private slots:
   void on_dxGridEntry_textChanged(const QString &arg1);
   void on_genStdMsgsPushButton_clicked();
   void on_logQSOButton_clicked();
-  void on_actionJT9_1_triggered();
+  void on_actionJT9_triggered();
   void on_actionJT65_triggered();
   void on_actionJT9_JT65_triggered();
   void on_actionJT4_triggered();
