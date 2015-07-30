@@ -782,7 +782,7 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.ndiskdat=0;
   }
 
-  if(m_mode=="ISCAT") {
+  if(m_mode=="ISCAT" or m_bFast9) {
     fastSink(frames);
     return;
   }
@@ -949,7 +949,7 @@ void MainWindow::fastSink(qint64 frames)
       t2.sprintf("%2.2d%2.2d%2.2d.wav",ihr,imin,isec);
       m_fname = m_config.save_directory().absoluteFilePath(
             t.date().toString("yyMMdd") + "_" + t2);
-      *future2 = QtConcurrent::run(savewav, m_fname + ".wav", m_TRperiod);
+      *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
     }
   }
@@ -1583,7 +1583,7 @@ void MainWindow::decode()                                       //decode()
     imin=imin % 60;
     if(m_TRperiod>=60) imin=imin - (imin % (m_TRperiod/60));
     jt9com_.nutc=100*ihr + imin;
-    if(m_mode=="ISCAT") {
+    if(m_mode=="ISCAT" or m_bFast9) {
 
       QDateTime t=QDateTime::currentDateTimeUtc().addSecs(2-m_TRperiod);
       ihr=t.toString("hh").toInt();
@@ -1648,7 +1648,7 @@ void MainWindow::decode()                                       //decode()
     from += noffset;
     size -= noffset;
   }
-  if(m_mode=="ISCAT") {
+  if(m_mode=="ISCAT" or m_bFast9) {
     float t0=m_t0;
     float t1=m_t1;
     qApp->processEvents();                                //Update the waterfall
@@ -1657,7 +1657,7 @@ void MainWindow::decode()                                       //decode()
       t1=m_t1Pick;
       if(t1 > m_kdone/12000.0) t1=m_kdone/12000.0;
     }
-    static int narg[9];
+    static int narg[10];
     narg[0]=jt9com_.nutc;
     narg[1]=m_kdone;
     narg[2]=m_nSubMode;
@@ -1667,7 +1667,9 @@ void MainWindow::decode()                                       //decode()
     narg[6]=1000.0*t0;
     narg[7]=1000.0*t1;
     narg[8]=1;                                //Max decode lines per decode attempt
+    narg[9]=jt9com_.nmode;
     if(jt9com_.minSync<0) narg[8]=50;
+//    qDebug() << "a" << jt9com_.nmode;
     *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0][0],80);
     watcher3->setFuture(*future3);
   } else {
@@ -1686,6 +1688,7 @@ void::MainWindow::fast_decode_done()
   }
   m_nPick=0;
   ui->DecodeButton->setChecked (false);
+//  qDebug() << "b";
 }
 
 void MainWindow::jt9_error (QProcess::ProcessError e)
@@ -3058,11 +3061,17 @@ void MainWindow::on_actionJT9_triggered()
   m_TRperiod=60;
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
-  m_nsps=6912;
+  m_nsps=6912;  QString t1=(QString)QChar(short(m_nSubMode+65));
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
   mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
-  mode_label->setText(m_mode);
+  bool bVHF=m_config.enable_VHF_features();
+  if(bVHF) {
+    QString t1=(QString)QChar(short(m_nSubMode+65));
+    mode_label->setText(m_mode + " " + t1);
+  } else {
+    mode_label->setText(m_mode);
+  }
   m_toneSpacing=0.0;
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9->setChecked(true);
@@ -3070,7 +3079,6 @@ void MainWindow::on_actionJT9_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setVisible(false);
-  bool bVHF=m_config.enable_VHF_features();
   VHF_features_enabled(bVHF);
   VHF_controls_visible(bVHF);
   ui->cbFast9->setVisible(bVHF);
@@ -3080,6 +3088,10 @@ void MainWindow::on_actionJT9_triggered()
   ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
   fast_config(bVHF);
+  if(m_bFast9) {
+    m_wideGraph->hide();
+    m_fastGraph->show();
+  }
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
 }
@@ -3339,7 +3351,6 @@ void MainWindow::fast_config(bool b)
     ui->sbTR->setValue(m_TRindex);
     m_wideGraph->hide();
     m_fastGraph->show();
-
   } else {
     m_wideGraph->show();
     m_fastGraph->hide();
@@ -3815,8 +3826,6 @@ void MainWindow::transmit (double snr)
       sps=nsps[m_nSubMode-4];
       m_toneSpacing=12000.0/sps;
     }
-//    qDebug() << "A" <<fastmode << m_nSubMode << sps << m_toneSpacing;
-
     Q_EMIT sendMessage (NUM_JT9_SYMBOLS, sps,
                         ui->TxFreqSpinBox->value() - m_XIT, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel (),

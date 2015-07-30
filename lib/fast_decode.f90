@@ -2,7 +2,7 @@ subroutine fast_decode(id2,narg,line)
 
   parameter (NMAX=30*12000)
   integer*2 id2(NMAX)
-  integer narg(0:8)
+  integer narg(0:9)
   real dat(30*12000)
   complex cdat(262145),cdat2(262145)
   real psavg(450)
@@ -19,7 +19,10 @@ subroutine fast_decode(id2,narg,line)
   npick=narg(5)
   t0=0.001*narg(6)
   t1=0.001*narg(7)
-  maxlines=narg(8)  
+  maxlines=narg(8)
+  nmode=narg(9)
+
+!  print*,nmode
 
   if(newdat.eq.1) then
      cdat2=cdat
