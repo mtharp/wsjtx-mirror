@@ -1902,7 +1902,7 @@ void MainWindow::guiUpdate()
   double txDuration=1.0 + 85.0*m_nsps/12000.0;              // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;   // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;   // WSPR
-  if(m_mode=="ISCAT") txDuration=m_TRperiod;                // ISCAT
+  if(m_mode=="ISCAT" or m_bFast9) txDuration=m_TRperiod;    // ISCAT or JT9-fast
 //###  if(m_mode=="WSPR-15") tx2=...
 
   double tx1=0.0;
@@ -3802,17 +3802,25 @@ void MainWindow::transmit (double snr)
     Q_EMIT sendMessage (NUM_JT65_SYMBOLS,
            4096.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
            toneSpacing, m_soundOutput, m_config.audio_output_channel (),
-           true, false, snr);
+           true, false, snr, m_TRperiod);
   }
   if (m_modeTx == "JT9") {
-    int nspeed=pow(2,m_nSubMode);
-    m_toneSpacing=nspeed*12000.0/6912.0;
-    bool fastmode=m_bFast9 and (nspeed>1);
-    qDebug() << m_TRperiod << m_bFast9 << fastmode << nspeed << m_nsps/nspeed;
-    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, double(m_nsps)/nspeed,
+    int nsub=pow(2,m_nSubMode);
+    int nsps[]={480,240,120,60};
+    double sps=m_nsps;
+    m_toneSpacing=nsub*12000.0/6912.0;
+    bool fastmode=false;
+    if(m_bFast9 and (m_nSubMode>=4)) {
+      fastmode=true;
+      sps=nsps[m_nSubMode-4];
+      m_toneSpacing=12000.0/sps;
+    }
+//    qDebug() << "A" <<fastmode << m_nSubMode << sps << m_toneSpacing;
+
+    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, sps,
                         ui->TxFreqSpinBox->value() - m_XIT, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel (),
-                        true, fastmode, snr);
+                        true, fastmode, snr, m_TRperiod);
   }
   if (m_modeTx == "JT4") {
     if(m_nSubMode==0) toneSpacing=4.375;
@@ -3825,20 +3833,20 @@ void MainWindow::transmit (double snr)
     Q_EMIT sendMessage (NUM_JT4_SYMBOLS,
            2520.0*12000.0/11025.0, ui->TxFreqSpinBox->value () - m_XIT,
            toneSpacing, m_soundOutput, m_config.audio_output_channel (),
-           true, false, snr);
+           true, false, snr, m_TRperiod);
   }
   if (m_mode=="WSPR-2") {                                      //### Similar code needed for WSPR-15 ###
 
     Q_EMIT sendMessage (NUM_WSPR_SYMBOLS, 8192.0,
                         ui->TxFreqSpinBox->value() - 1.5 * 12000 / 8192, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel(),
-                        true, false, snr);
+                        true, false, snr, m_TRperiod);
   }
   if(m_mode=="Echo") {
     //??? should use "fastMode = true" here ???
-//    Q_EMIT sendMessage (27, 1024.0, 1500.0, 0.0, &m_soundOutput,
     Q_EMIT sendMessage (27, 1024.0, 1500.0, 0.0, m_soundOutput,
-                        m_config.audio_output_channel(), false, false, snr);
+                        m_config.audio_output_channel(),
+                        false, false, snr, m_TRperiod);
   }
 
   if(m_mode=="ISCAT") {
@@ -3853,7 +3861,8 @@ void MainWindow::transmit (double snr)
       f0=13*toneSpacing;
     }
     Q_EMIT sendMessage (NUM_ISCAT_SYMBOLS, sps, f0, toneSpacing, m_soundOutput,
-                        m_config.audio_output_channel(), true, true, snr);
+                        m_config.audio_output_channel(),
+                        true, true, snr, m_TRperiod);
   }
 
 }

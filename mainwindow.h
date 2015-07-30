@@ -258,7 +258,8 @@ private:
   Q_SIGNAL void sendMessage (unsigned symbolsLength, double framesPerSymbol,
       double frequency, double toneSpacing,
       SoundOutput *, AudioDevice::Channel = AudioDevice::Mono,
-      bool synchronize = true, bool fastMode = false, double dBSNR = 99.) const;
+      bool synchronize = true, bool fastMode = false, double dBSNR = 99.,
+                             int TRperiod=60) const;
   Q_SIGNAL void outAttenuationChanged (qreal) const;
   Q_SIGNAL void toggleShorthand () const;
 
