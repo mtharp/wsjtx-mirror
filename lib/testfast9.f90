@@ -21,7 +21,7 @@ program testfast9
   narg(6)=0
   narg(7)=14975
   narg(8)=1
-  narg(9)=1
+  narg(9)=102
 
   call fast9(id2,narg,line)
   print*,line(1)

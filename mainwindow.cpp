@@ -1667,7 +1667,8 @@ void MainWindow::decode()                                       //decode()
     narg[6]=1000.0*t0;
     narg[7]=1000.0*t1;
     narg[8]=1;                                //Max decode lines per decode attempt
-    narg[9]=jt9com_.nmode;
+    if(m_mode=="ISCAT") narg[9]=101;          //ISCAT
+    if(m_mode=="JT9") narg[9]=102;            //Fast JT9
     if(jt9com_.minSync<0) narg[8]=50;
 //    qDebug() << "a" << jt9com_.nmode;
     *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0][0],80);
