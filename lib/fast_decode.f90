@@ -22,7 +22,10 @@ subroutine fast_decode(id2,narg,line)
   maxlines=narg(8)
   nmode=narg(9)
 
-  print*,nutc,ndat0,nmode,nsubmode,newdat,npick,t0,t1,maxlines
+  if(nmode.eq.9) then
+     call fast9(id2,narg,line)
+     go to 900
+  endif
 
   if(newdat.eq.1) then
      cdat2=cdat
@@ -67,5 +70,5 @@ subroutine fast_decode(id2,narg,line)
           MouseDF,mousebutton,mode4,nafc,ndebug,psavg,maxlines,nlines,line)
   endif
 
-  return
+900 return
 end subroutine fast_decode

@@ -2,7 +2,7 @@ subroutine fast9(id2,narg,line)
 
   parameter (NMAX=15*12000)
   parameter (NFFT=120,NH=NFFT/2,NQ=NFFT/4,JZ=NMAX/(NH/4))
-  integer*2 id2(NMAX)
+  integer*2 id2(0:NMAX)
   integer narg(0:9)
   integer ii4(16)
   integer*1 i1SoftSymbolsScrambled(207)
@@ -52,10 +52,10 @@ subroutine fast9(id2,narg,line)
   enddo
 
   df=12000.0/NFFT
-  do i=1,NQ
-     write(13,3001) i*df,s(i)
-3001 format(f10.3,e12.3)
-  enddo
+!  do i=1,NQ
+!     write(13,3001) i*df,s(i)
+!3001 format(f10.3,e12.3)
+!  enddo
 
   ii4=4*ii-3
   ccf=0.
@@ -74,14 +74,14 @@ subroutine fast9(id2,narg,line)
            lagpk=lag
            kpk=k
         endif
-        if(k.eq.7) write(14,3002) lag,ccf(lag,7)    !Blue
-3002    format(i6,f10.3)
+!        if(k.eq.7) write(14,3002) lag,ccf(lag,7)    !Blue
+!3002    format(i6,f10.3)
      enddo
   enddo
 
-  do k=1,10
-     write(16,3002) k,ccf(lagpk,k)                  !Red
-  enddo
+!  do k=1,10
+!     write(16,3002) k,ccf(lagpk,k)                  !Red
+!  enddo
 
   ipk=7
 
@@ -100,10 +100,10 @@ subroutine fast9(id2,narg,line)
      enddo
   enddo
 
-  do j=1,85
-     write(15,3003) j,ss2(0:8,j)
-3003 format(i2,9f8.2)
-  enddo
+!  do j=1,85
+!     write(15,3003) j,ss2(0:8,j)
+!3003 format(i2,9f8.2)
+!  enddo
 
 ! ###########################################
 
@@ -153,15 +153,17 @@ subroutine fast9(id2,narg,line)
   limit=10000
 ! Remove interleaving
   call interleave9(i1SoftSymbolsScrambled,-1,i1SoftSymbols)
-
   call jt9fano(i1SoftSymbols,limit,nlim,msg)
 
-  nsnr=nint(snrdb)
+  nsync=0.25*ccfbest
+  if(nsync.lt.0) nsync=0
+  if(nsync.gt.10) nsync=10
+  nsnr=nint(db(ccfbest)-20.0)
+  xdt=0.
   freq=ipk*df
 
-  write(*,1000) nutc,nsnr,xdt,nint(freq),msg
-  write(line(1),1000) nutc,nsnr,xdt,nint(freq),msg
-1000 format(i6.6,i4,f5.1,i5,2x,a22)
+  write(line(1),1000) nutc,nsync,nsnr,xdt,nint(freq),0,msg
+1000 format(i6.6,2i4,f5.1,i5,i3,2x,a22)
 
   return
 end subroutine fast9

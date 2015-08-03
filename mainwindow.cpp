@@ -1920,6 +1920,10 @@ void MainWindow::guiUpdate()
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
   m_s6=fmod(tsec,6.0);
+  if(m_TRperiod==0) {
+    qDebug() << "A" << m_mode << m_nSubMode << m_TRperiod;
+    m_TRperiod=60;
+  }
   m_nseq = nsec % m_TRperiod;
   m_tRemaining=m_TRperiod - fmod(tsec,double(m_TRperiod));
 

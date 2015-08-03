@@ -295,6 +295,7 @@ set (wsjt_FSRCS
   lib/extract.F90
   lib/extract4.f90
   lib/fano232.f90
+  lib/fast9.f90
   lib/fast_decode.f90
   lib/fchisq.f90
   lib/fchisq65.f90
