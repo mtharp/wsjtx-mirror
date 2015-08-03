@@ -22,7 +22,7 @@ subroutine fast_decode(id2,narg,line)
   maxlines=narg(8)
   nmode=narg(9)
 
-!  print*,nmode
+  print*,nutc,ndat0,nmode,nsubmode,newdat,npick,t0,t1,maxlines
 
   if(newdat.eq.1) then
      cdat2=cdat

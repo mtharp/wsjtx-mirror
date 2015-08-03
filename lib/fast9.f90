@@ -1,8 +1,9 @@
-program fast9
+subroutine fast9(id2,narg,line)
 
   parameter (NMAX=15*12000)
   parameter (NFFT=120,NH=NFFT/2,NQ=NFFT/4,JZ=NMAX/(NH/4))
   integer*2 id2(NMAX)
+  integer narg(0:9)
   integer ii4(16)
   integer*1 i1SoftSymbolsScrambled(207)
   integer*1 i1SoftSymbols(207)
@@ -15,16 +16,22 @@ program fast9
   real x(NFFT)
   complex c(0:NH)
   character*22 msg
+  character*80 line(100)
   equivalence (x,c)
   include 'jt9sync.f90'
 
-!  open(10,file='150730_191115.wav',access='stream',status='old')   !E
-  open(10,file='150730_191345.wav',access='stream',status='old')   !H
-  read(10) id2(1:22)                     !Skip 44 header bytes
-  npts=NMAX
-  nsps=NH
-  read(10) id2(1:npts)                   !Read the raw data
+  nutc=narg(0)
+  npts=narg(1)
+  nsubmode=narg(2)
+  newdat=narg(3)
+  minsync=narg(4)
+  npick=narg(5)
+  t0=0.001*narg(6)
+  t1=0.001*narg(7)
+  maxlines=narg(8)
 
+  line(1:100)(1:1)=char(0)
+  nsps=NH
   s=0
   s2=0
 
@@ -153,6 +160,8 @@ program fast9
   freq=ipk*df
 
   write(*,1000) nutc,nsnr,xdt,nint(freq),msg
-1000 format(i4.4,i4,f5.1,i5,1x,'@',1x,a22)
+  write(line(1),1000) nutc,nsnr,xdt,nint(freq),msg
+1000 format(i6.6,i4,f5.1,i5,2x,a22)
 
-end program fast9
+  return
+end subroutine fast9
