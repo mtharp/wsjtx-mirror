@@ -583,7 +583,7 @@ endif (WSJT_GENERATE_DOCS)
 #
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11 -fexceptions -frtti")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-pragmas -std=c++11 -fexceptions -frtti")
 
 if (NOT APPLE)
   set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fdata-sections -ffunction-sections")
@@ -1244,7 +1244,6 @@ file (APPEND \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${WSJT_QT_CONF_DESTINATION
      set (gp_tool ${gp_tool})
      # canonicalize path in install context
      get_filename_component (the_exe ${fixup_exe} REALPATH)
-     message (STATUS \"fixup_exe: \${the_exe}\")
      fixup_bundle (\"\${the_exe}\" \"\${QTPLUGINS}\" \"${fixup_library_dirs}\")
    "
       #COMPONENT runtime
