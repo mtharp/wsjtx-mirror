@@ -21,7 +21,7 @@ subroutine fast9(id2,narg,line)
   include 'jt9sync.f90'
 
   nutc=narg(0)
-  npts=narg(1)
+  npts=min(narg(1),NMAX)
   nsubmode=narg(2)
   newdat=narg(3)
   minsync=narg(4)

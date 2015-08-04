@@ -988,7 +988,10 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       }
 
       if(m_config.restart_audio_input ()) {
-        Q_EMIT startAudioInputStream (m_config.audio_input_device (), m_framesAudioInputBuffered, m_detector, m_downSampleFactor, m_config.audio_input_channel ());
+        Q_EMIT startAudioInputStream (m_config.audio_input_device (),
+                                      m_framesAudioInputBuffered, m_detector,
+                                      m_downSampleFactor,
+                                      m_config.audio_input_channel ());
       }
 
       if(m_config.restart_audio_output ()) {
@@ -1659,6 +1662,9 @@ void MainWindow::decode()                                       //decode()
     }
     static int narg[10];
     narg[0]=jt9com_.nutc;
+    if(m_kdone>12000*m_TRperiod) {
+      m_kdone=12000*m_TRperiod;
+    }
     narg[1]=m_kdone;
     narg[2]=m_nSubMode;
     narg[3]=jt9com_.newdat;
@@ -1670,7 +1676,6 @@ void MainWindow::decode()                                       //decode()
     if(m_mode=="ISCAT") narg[9]=101;          //ISCAT
     if(m_mode=="JT9") narg[9]=102;            //Fast JT9
     if(jt9com_.minSync<0) narg[8]=50;
-//    qDebug() << "a" << jt9com_.nmode;
     *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0][0],80);
     watcher3->setFuture(*future3);
   } else {
@@ -1689,7 +1694,6 @@ void::MainWindow::fast_decode_done()
   }
   m_nPick=0;
   ui->DecodeButton->setChecked (false);
-//  qDebug() << "b";
 }
 
 void MainWindow::jt9_error (QProcess::ProcessError e)
@@ -1901,12 +1905,13 @@ void MainWindow::guiUpdate()
   static char msgsent[29];
   static int nsendingsh=0;
   static double onAirFreq0=0.0;
+  double txDuration;
   QString rt;
 
-  double txDuration=1.0 + 85.0*m_nsps/12000.0;              // JT9
-  if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;   // JT65
-  if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;   // WSPR
-  if(m_mode=="ISCAT" or m_bFast9) txDuration=m_TRperiod;    // ISCAT or JT9-fast
+  if(m_modeTx=="JT9")  txDuration=1.0 + 85.0*m_nsps/12000.0;  // JT9
+  if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;     // JT65
+  if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;     // WSPR
+  if(m_mode=="ISCAT" or m_bFast9) txDuration=m_TRperiod-0.25; // ISCAT or JT9-fast
 //###  if(m_mode=="WSPR-15") tx2=...
 
   double tx1=0.0;
@@ -1921,10 +1926,6 @@ void MainWindow::guiUpdate()
   double tsec=0.001*ms;
   double t2p=fmod(tsec,2*m_TRperiod);
   m_s6=fmod(tsec,6.0);
-  if(m_TRperiod==0) {
-    qDebug() << "A" << m_mode << m_nSubMode << m_TRperiod;
-    m_TRperiod=60;
-  }
   m_nseq = nsec % m_TRperiod;
   m_tRemaining=m_TRperiod - fmod(tsec,double(m_TRperiod));
 
@@ -3063,9 +3064,6 @@ void MainWindow::on_actionJT9_triggered()
   switch_mode (Modes::JT9);
   if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
-  m_TRperiod=60;
-  m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
-  m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   m_nsps=6912;  QString t1=(QString)QChar(short(m_nSubMode+65));
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
@@ -3094,9 +3092,15 @@ void MainWindow::on_actionJT9_triggered()
   WSPR_config(false);
   fast_config(bVHF);
   if(m_bFast9) {
+    m_TRperiod=ui->sbTR->cleanText().toInt();
     m_wideGraph->hide();
     m_fastGraph->show();
+    ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
+  } else {
+    m_TRperiod=60;
   }
+  m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
+  m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
 }
@@ -3356,6 +3360,7 @@ void MainWindow::fast_config(bool b)
     ui->sbTR->setValue(m_TRindex);
     m_wideGraph->hide();
     m_fastGraph->show();
+    ui->cbFast9->setVisible(false);
   } else {
     m_wideGraph->show();
     m_fastGraph->hide();
@@ -4084,7 +4089,10 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
 
 void MainWindow::on_cbFast9_clicked(bool b)
 {
-  m_bFast9=b;
+  if(m_mode=="JT9") {
+    m_bFast9=b;
+    on_actionJT9_triggered();
+  }
 }
 
 
