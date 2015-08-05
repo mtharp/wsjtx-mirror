@@ -92,6 +92,7 @@ subroutine fast9(id2,narg,line)
      do j=1,85
         j4=j4+4
         if(j4.gt.340) j4=j4-340
+        if(j4.lt.1) j4=j4+340
         ss2(i,j)=s2(j4,i2)
         if(i.ge.1 .and. isync(j).eq.0) then
            m=m+1
@@ -158,7 +159,7 @@ subroutine fast9(id2,narg,line)
   nsync=0.25*ccfbest
   if(nsync.lt.0) nsync=0
   if(nsync.gt.10) nsync=10
-  nsnr=nint(db(ccfbest)-20.0)
+  nsnr=nint(db(ccfbest)-22.0)
   xdt=0.
   freq=ipk*df
 

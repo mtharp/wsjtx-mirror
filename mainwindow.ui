@@ -609,7 +609,7 @@ QLabel[oob=&quot;true&quot;] {
                  <item row="4" column="0">
                   <widget class="QCheckBox" name="cbTxLock">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tx frequency tracks Rx frequency&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>Tx frequency tracks Rx frequency</string>
                    </property>
                    <property name="text">
                     <string>Lock Tx=Rx</string>
@@ -790,6 +790,9 @@ QLabel[oob=&quot;true&quot;] {
                     </property>
                     <item row="3" column="2">
                      <widget class="QCheckBox" name="cbFast9">
+                      <property name="toolTip">
+                       <string>Check for JT9 fast modes</string>
+                      </property>
                       <property name="text">
                        <string>Fast</string>
                       </property>
@@ -861,6 +864,9 @@ QLabel[oob=&quot;true&quot;] {
                      <layout class="QHBoxLayout" name="horizontalLayout_11">
                       <item>
                        <widget class="QSpinBox" name="syncSpinBox">
+                        <property name="toolTip">
+                         <string>Synchorizing threshold</string>
+                        </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
                         </property>
@@ -895,6 +901,9 @@ QLabel[oob=&quot;true&quot;] {
                     </item>
                     <item row="4" column="2">
                      <widget class="LettersSpinBox" name="sbFtol">
+                      <property name="toolTip">
+                       <string>Frequency tolerance (Hz)</string>
+                      </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
                       </property>
@@ -911,6 +920,9 @@ QLabel[oob=&quot;true&quot;] {
                     </item>
                     <item row="4" column="0">
                      <widget class="LettersSpinBox" name="sbTR">
+                      <property name="toolTip">
+                       <string>Tx/Rx sequence length</string>
+                      </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
                       </property>
@@ -933,6 +945,9 @@ QLabel[oob=&quot;true&quot;] {
                     </item>
                     <item row="3" column="0">
                      <widget class="LettersSpinBox" name="sbSubmode">
+                      <property name="toolTip">
+                       <string>Submode controls tone spacing (A is narrowest)</string>
+                      </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
                       </property>

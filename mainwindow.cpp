@@ -3103,9 +3103,11 @@ void MainWindow::on_actionJT9_triggered()
     m_TRperiod=ui->sbTR->cleanText().toInt();
     m_wideGraph->hide();
     m_fastGraph->show();
-    ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
+    ui->decodedTextLabel->setText("  UTC  Sync dB   DT   DF  F1");
+    ui->TxFreqSpinBox->setValue(700);
   } else {
     m_TRperiod=60;
+    ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
