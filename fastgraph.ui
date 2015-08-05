@@ -109,6 +109,9 @@
        </item>
        <item>
         <widget class="QSlider" name="gainSlider">
+         <property name="toolTip">
+          <string>Waterfall gain</string>
+         </property>
          <property name="minimum">
           <number>-40</number>
          </property>
@@ -138,6 +141,9 @@
        </item>
        <item>
         <widget class="QSlider" name="zeroSlider">
+         <property name="toolTip">
+          <string>Waterfall zero</string>
+         </property>
          <property name="minimum">
           <number>-150</number>
          </property>
@@ -167,6 +173,9 @@
        </item>
        <item>
         <widget class="QSlider" name="greenGainSlider">
+         <property name="toolTip">
+          <string>Spectrum gain</string>
+         </property>
          <property name="minimum">
           <number>-30</number>
          </property>
@@ -196,6 +205,9 @@
        </item>
        <item>
         <widget class="QSlider" name="greenZeroSlider">
+         <property name="toolTip">
+          <string>Spectrum zero</string>
+         </property>
          <property name="minimum">
           <number>-150</number>
          </property>

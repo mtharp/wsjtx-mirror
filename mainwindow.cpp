@@ -1288,7 +1288,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 {
   tx_status_label = new QLabel("Receiving");
   tx_status_label->setAlignment(Qt::AlignHCenter);
-  tx_status_label->setMinimumSize(QSize(80,18));
+  tx_status_label->setMinimumSize(QSize(150,18));
   tx_status_label->setStyleSheet("QLabel{background-color: #00ff00}");
   tx_status_label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   statusBar()->addWidget(tx_status_label);
@@ -1314,6 +1314,7 @@ void MainWindow::createStatusBar()                           //createStatusBar
 
   progressBar = new QProgressBar;
   statusBar()->addWidget(progressBar);
+  progressBar->setFormat("%v/%m");
 }
 
 void MainWindow::closeEvent(QCloseEvent * e)
@@ -2222,17 +2223,24 @@ void MainWindow::guiUpdate()
     on_actionOpen_next_in_directory_triggered();
   }
 
-  if(m_auto and m_mode=="Echo" and m_bEchoTxOK) progressBar->setValue(
-        int(100*m_s6/6.0));
-
-  if(m_mode!="Echo") {
-    int ipct=0;
-    if(m_monitoring or m_transmitting) ipct=int(fmod(tsec,m_TRperiod)*100.0/txDuration);
-    progressBar->setValue(ipct);
-  }
-
 //Once per second:
   if(nsec != m_sec0) {
+
+    if(m_auto and m_mode=="Echo" and m_bEchoTxOK) {
+      progressBar->setMaximum(6);
+      progressBar->setValue(int(m_s6));
+    }
+
+    if(m_mode!="Echo") {
+      if(m_monitoring or m_transmitting) {
+        progressBar->setMaximum(m_TRperiod);
+        int isec=int(fmod(tsec,m_TRperiod));
+        progressBar->setValue(isec);
+      } else {
+        progressBar->setValue(0);
+      }
+    }
+
     QDateTime t = QDateTime::currentDateTimeUtc();
     astroCalculations (t, m_astroWidget && m_astroWidget->doppler_tracking ());
     if(m_transmitting) {
@@ -3309,8 +3317,8 @@ void MainWindow::on_actionISCAT_triggered()
   mode_label->setStyleSheet("QLabel{background-color: #7cfc00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
-  if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(560);
-  if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(1012);
+  if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(1012);
+  if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(560);
   ui->TxFreqSpinBox->setEnabled (false);
 }
 
@@ -4073,6 +4081,16 @@ void MainWindow::on_sbTR_valueChanged(int index)
     m_TRperiod=ui->sbTR->cleanText().toInt();
     if(m_TRperiod<5 or m_TRperiod>30) m_TRperiod=30;
   }
+  if(m_monitoring) {
+    on_stopButton_clicked();
+    on_monitorButton_clicked(true);
+  }
+  if(m_transmitting) {
+    on_stopTxButton_clicked();
+//    on_autoButton_clicked();
+  }
+  m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
+  m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
 }
 
 void MainWindow::on_sbSubmode_valueChanged(int n)
@@ -4082,11 +4100,11 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   if(m_mode=="ISCAT") {
-    if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(560);
-    if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(1012);
+    if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(1012);
+    if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(560);
   }
+  if(m_mode=="JT9" and m_bFast9) ui->TxFreqSpinBox->setValue(700);
 }
-
 void MainWindow::on_cbFast9_clicked(bool b)
 {
   if(m_mode=="JT9") {
