@@ -9,7 +9,10 @@ image::images/MainButtons.png[align="left",width=650]
 [horizontal] 
 *Log QSO*:: Click to add an entry for the callsign in To radio* to the
 *log file +WSJT.LOG+.  Logged information includes date, time,
-*callsign, locator, band, and mode.
+*callsign, locator, band, mode and reported signal strength.  This 
+button is also used to indicate a completed auto sequence QSO by 
+blinking red, this can be cleared by logging the contact, pressing
+Alt-N or right mouse clicking the button.
 
 *Stop*:: Click to terminate *Monitor* mode.
 
@@ -100,6 +103,8 @@ the first period. ``First'' is defined as the first T/R interval of a
 UTC hour, and alternately thereafter.
 
 *Tx ST*:: Enable transmission of single-tone messages.
+
+*TX Auto*:: Along with Auto is On enable auto TX sequencing in ISCAT mode.
 
 *Rpt*:: Signal report to be inserted in generated messages.
 

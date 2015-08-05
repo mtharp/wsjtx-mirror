@@ -86,7 +86,7 @@ subroutine decode2
      if(mousebutton.gt.0) then
         if(mode(1:5).eq.'ISCAT' .and. abs(npingtime2-npingtime).lt.1000)   &
              lenpick=lenpick*2.24
-        if(mousebutton.eq.1 .or. (mode.eq.'FSK441' .and.              &
+        if(mousebutton.eq.1 .or. (mode(1:3).eq.'FSK' .and.              &
              mousebutton.eq.3)) jzz=lenpick
 
 !  This is a major kludge:

@@ -330,18 +330,24 @@ subroutine wsjt1(d,jz0,istart,samfacin,FileID,ndepth,degrade,      &
   nline0=nline
   STfound=.false.
   npkept=0
+  
+  if (mode.eq.1) then
+    isubmode = mode65
+  else
+    isubmode = 0
+  endif 
 
 ! Look for single-tone messages
   if((.not.pick) .or. MouseButton.eq.1) then
      call stdecode(s2,nchan,nz,sigma,dtbuf,df,stlim,                   &
-          DFTolerance,cfile6,pick,istart)
+          DFTolerance,cfile6,pick,istart,isubmode)
   endif
   if(nline.gt.nline0) STfound=.true.  !ST message(s) found
 
 ! Now the multi-tone decoding
 !        write(72) jz,nz,cfile6,(dat(j),j=1,jz)
   call mtdecode(dat,jz,nz,MinSigdB,MinWidth,NFreeze,DFTolerance,       &
-       MouseDF,istart,pick,cfile6,mycall,hiscall,mode,ps0)
+       MouseDF,istart,pick,cfile6,mycall,hiscall,mode,ps0,isubmode)
 
   npkept=nline             !Number of pings that were kept
   smax=0.

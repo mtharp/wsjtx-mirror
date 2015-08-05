@@ -29,7 +29,7 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,s2,nchan,nz,b)
         enddo
         k=k+500-nz
      enddo
-  else if(mode.eq.'FSK441') then
+  else if(mode(1:3).eq.'FSK') then
 ! This is a mouse-picked decode, so we compute the "zoomed" region.
      k=50*500
      do i=54,7,-1
@@ -98,6 +98,18 @@ subroutine pix2d(d2,jz,mousebutton,mousedf,nfreeze,mode,s2,nchan,nz,b)
               b((ich-1)*500+j+495)=254
            enddo
         enddo
+     else if(mode.eq.'FSK315') then
+! Insert yellow tick marks at frequencies of the FSK315 tones
+        do i=3,6
+           f=315*i
+           ich=58-nint(f/43.066)
+           do j=1,5
+              b((ich-1)*500+j+2)=254
+              b((ich-1)*500+j+248)=254
+              b((ich-1)*500+j+495)=254
+           enddo
+        enddo
+        
      else if(mode.eq.'JT6M') then
 ! Insert yellow tick marks at frequencies of the JT6M sync tone
         f=1076.66

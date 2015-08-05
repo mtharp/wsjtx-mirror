@@ -1,0 +1,185 @@
+
+Beginning with WSJT V10.0 r5639 auto sequencing and auto configure
+were added to ISCAT to support transient sporadic E openings on 6m.
+This entailed several improvements and modifications to ISCAT 
+
+.*Sequence Lengths*
+To take advantage of short Es openings shorter sequence lengths, 
+5s and 10s, are available for ISCAT. To change the sequence 
+length:  
+
+[literal]
+Left click T/R Period:	Move to next higher sequence length
+Right click T/R Period:	Move to next lower sequence length 
+
+.*Alternate Messages*
+With the Auto Sequencer and the increase in ISCAT activity it is often
+desirable to differentiate the source of TX3 - TX5 messages.   WSJT had
+an existing alternate message facility that added both calls to the TX3
+- TX5 messages.  This feature has been extended to ISCAT.
+
+[literal]
+Cntl-G:		Sets alternate style messages (TX3 - TX5 include both calls)
+Alt-G:		Sets standard style messages (TX3 - TX5 do not include calls)
+
+Note the message style selection is sticky between sessions of WSJT.
+
+.*Information Block*
+With the many options available, Alternate and Standard, Grid or Reports
+and several sequence lengths coordination between stations is an issue. 
+ISCAT now includes an Information Block as part of the TX1 and TX6 messages.  
+This block is used by the auto configuration feature discussed below but can 
+also be used to manually set the various options
+
+The structure of the information block is as follows:
+
+[literal]
+First Character:			? differentiates the Information block from a grid
+Second Character:			S for Standard, A for Alternate style messages
+Third Character:			R for Reports, G for Grids
+Forth & Fifth Characters:		Sequence Length in Seconds
+
+The Information Block is represented in the message templates with the macro %I
+which is only filled in if the mode is ISCAT.  The message templates can edited
+to remove %I if it is desired not to use the Information block.  
+
+.*Log QSO Reminder* 
+The Auto Sequencer recognizes when the conditions of a complete QSO have been met
+and indicates this by flashing the Log QSO button as a reminder.   This can be
+cleared with Alt-N, right clicking the Log QSO button or by logging the QSO by
+left clicking the Log QSO button.
+
+.*Message Reporting*
+In previous releases of WSJT the ISCAT decoder made the decision of which single 
+decode of many to pass up to the user and to report.  This has been changed so the
+decoder passes all messages to the user and the auto sequencer.  Because the
+decoder is capable of producing hundreds of decodes two new Setup options have been
+added two manage which messages you will see.
+
+Decodes that were used by the auto sequencer to advance are marked with an 'a' on 
+the 31st column of the line, right after the '*' used to indicate messages with 
+a strong sync value.  These decodes are also written to all.txt.  
+
+[literal]
+Setup/Report All ISCAT Messages:	
+If checked this Setup option will show all decoded messages on the text screen and 
+place them in all.txt.  This can be hundreds of messages so use sparingly.  Note 
+the auto sequencer being active overrides this setting and only the messages used 
+by the auto sequencer are displayed.
+
+[literal]
+Setup/Hide Empty ISCAT Messages:
+When the ISCAT decoder does not decode anything it generates a blank message.  If 
+checked this Setup option prevents blank messages from being displayed.
+
+.*Auto Configuration*
+With several variations of message type, reports and sequence lengths an auto configuration
+feature is active when in ISCAT mode.   It will make a best attempt to configure WSJT based
+on a received messaged that is double clicked.   As there are many variations of received 
+messages this operation is quite complex.   The following pseudo code shows the auto 
+configuration systems reaction to various situations:
+
+[literal]
+if First Field equals CQ then 
+       Second Field is copied to To Radio
+       Third Field is copied to Grid
+       if Click was on Forth Field and Forth Field equals valid Information block then
+            Set Parameters
+       Set TX First based on RX Time and T/R Period
+else if First Field equals my call then
+       Second Field  is copied to To Radio
+       If To Radio in Call3.txt then
+            Set Grid to value from call3.txt
+       if double click was on Third Field and Third Field equals valid Information block then
+            Set Parameters
+       Set TX First based on RX Time and T/R Period
+else if double click was on First Field
+      First Field copied to To Radio
+       If To Radio in Call3.txt then
+            Set Grid to value from call3.txt
+else if double click was on Second Field
+       Second Field  is copied to To Radio
+       If To Radio in Call3.txt then
+            Set Grid to value from call3.txt
+else if double click was on Third Field and Third Field equals valid Information block then
+            Set Parameters
+       Set TX First based on RX Time and T/R Period
+	  
+.*Auto Sequence*
+With the advent of 5s and 10s sequences changes start happening fairly fast.  ISCAT
+now has an auto sequencer to deal with this.   Based on the currently transmitted
+sequence (TX1 through TX5) the auto sequencer inspects received messages and if 
+appropriate advances the TX sequence.
+
+The auto sequencer is active when the TX Auto box is checked and Auto is ON is
+active.  
+
+Note that the auto sequencer is highly situational dependent and requires exact
+decodes as well as messages matching the message type (standard or alternate) and
+report type (grid or report).   If these conditions are not met the auto sequencer
+will not advance the TX sequence.
+
+Each segment of each message must match exactly, your call must exactly match the
+call you have entered in WSJT, the other stations call must exactly match the call
+in To Radio.  In the case of grids as reports the received grid must match the first
+4 characters in the Grid field.   In the case of reports the format must be correct
+and a reasonability test passed.   In addition all white space must be correct.
+
+In short the auto sequencer will not advance unless everything is exact.  You can
+at any time override the auto sequencers decision by clicking on the appropriate 
+TXx radio box (to send next TX sequence) or TX title box (to send now).
+
+A problematic issue with auto sequencers is when to stop sending as there is a 
+classic Catch 22.  To keep stations from sending forever Setup/Options/Auto 73 Count 
+has been added.   The default value of 5 will limit the number of 73 messages sent 
+to 5 if the other station is not being heard.  In most instances this will lead to
+an elegant shut down of both stations. 
+
+The following pseudo code shows the decision process of the auto sequencer
+
+[literal]
+if TX Auto is checked and Auto is On
+	if Current TX Sequence equals TX1
+		if Received Message equals valid TX1
+			Set Signal Report
+			Advance to TX2
+		else if Received Message equals valid TX2
+			Set Signal Report
+			Advance to TX3
+	else if Current TX Sequence equals TX2
+		if Received Message equals valid TX2
+			Set Signal Report
+			Advance to TX3
+		else if Received Message equals valid TX3
+			Advance to TX4
+	else if Current TX Sequence equals TX3
+		if Received Message equals valid TX3
+			Advance to TX4
+		else if Received Message equals TX4
+			Set TXStopCount to Auto73Count
+			Advance to TX5
+			Set Log QSO to blink
+	else if Current TX Sequence equals TX4
+		if Received Message equals valid TX4
+			Set TXStopCount to Auto73Count
+			Advance to TX5
+			Set Log QSO to blink
+		else if Received Message equals valid TX5
+			Set TXStopCount to Auto73Count
+			Advance to TX5
+			Set Log QSO to blink
+	else if Current TX Sequence equals TX5
+		if Received Message equals valid TX5
+			Set TXStopCount to 0
+			Set Auto is ON to Auto is OFF
+		else if Received Message equals valid TX4
+			Set TXStopCount to Auto73Count
+		else
+			Decrement TXStopCount
+			if TXStopCount equals 0
+				Set Auto is ON to Auto is OFF 
+
+
+
+ 
+   

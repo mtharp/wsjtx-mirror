@@ -1,8 +1,10 @@
-subroutine longx(dat,npts0,ps,DFTolerance,noffset,msg,msglen,bauderr)
+subroutine longx(dat,npts0,ps,DFTolerance,noffset,msg,msglen,bauderr,isubmode)
 
 ! Look for 441-baud modulation, synchronize to it, and decode message.
 ! Longest allowed data analysis is 1 second.
 
+  include 'FSKParameters.f90'
+  
   parameter (NMAX=11025)
   parameter (NDMAX=NMAX/25)
   real dat(npts0)
@@ -25,9 +27,16 @@ subroutine longx(dat,npts0,ps,DFTolerance,noffset,msg,msglen,bauderr)
   do i=1,NDMAX
      dit(i)=0
   enddo
-  NSPD=25                              !Change if FSK110 is implemented
-  LTone=2
-  NBaud=11025/NSPD
+  
+  nspd = NSPD441                              !Change if FSK110 is implemented
+  LTone = LTONE441
+  if (isubmode.eq.1) then
+    nspd = NSPD315
+    LTone = LTONE315
+  endif
+  
+  
+  NBaud=11025/nspd
   npts=min(NMAX,npts0)
   df=11025.0/256.0
   smax=0.
@@ -80,15 +89,15 @@ subroutine longx(dat,npts0,ps,DFTolerance,noffset,msg,msglen,bauderr)
      y4(i)=y4(i)*a4
   enddo
 
-  call sync(y1,y2,y3,y4,npts,jpk,baud,bauderr)
+  call sync(y1,y2,y3,y4,npts,jpk,baud,bauderr,isubmode)
 
 ! Decimate y arrays by NSPD
   ndits=npts/NSPD - 1
   do i=1,ndits
-     y1(i)=y1(jpk+(i-1)*NSPD)
-     y2(i)=y2(jpk+(i-1)*NSPD)
-     y3(i)=y3(jpk+(i-1)*NSPD)
-     y4(i)=y4(jpk+(i-1)*NSPD)
+     y1(i)=y1(jpk+(i-1)*nspd)
+     y2(i)=y2(jpk+(i-1)*nspd)
+     y3(i)=y3(jpk+(i-1)*nspd)
+     y4(i)=y4(jpk+(i-1)*nspd)
   enddo
 
 ! Now find the mod3 phase that has no tone 3's

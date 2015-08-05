@@ -241,7 +241,7 @@ def set_frange():
 
 #---------------------------------------------------- decode_request
 def decode_request(event):
-    if (g.mode=='FSK441' or g.mode=='JTMS' or g.mode=='JT6M') and \
+    if (g.mode[:3]=='FSK' or g.mode=='JTMS' or g.mode=='JT6M') and \
         nspeed0.get()>5:
 # If decoder is busy or we are not monitoring, ignore request
         if Audio.gcom2.ndecoding==0 and Audio.gcom2.monitoring:
@@ -377,7 +377,7 @@ def update():
     if g.mode!=mode0:
         if (g.mode[:4]=="JT65" or g.mode[:3]=="JT4" or g.mode=='Diana') \
            and nspeed0.get()>5: nspeed0.set(3)
-        if g.mode=="FSK441" and nspeed0.get()<6: nspeed0.set(7)
+        if g.mode[:3]=="FSK" and nspeed0.get()<6: nspeed0.set(7)
         if g.mode=="JT6M" and nspeed0.get()<6: nspeed0.set(7)
         if g.mode=="JTMS" and nspeed0.get()<6: nspeed0.set(7)
         if g.mode[:5]=="ISCAT" and nspeed0.get()<6: nspeed0.set(7)

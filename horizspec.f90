@@ -53,6 +53,11 @@ subroutine horizspec(x,brightness,contrast,a)
                  j=121-nint(n*441/df)
                  a(i,j)=254
               enddo
+           else if(mode.eq.'FSK315') then
+              do n=3,6
+                 j=121-nint(n*315/df)
+                 a(i,j)=254
+              enddo
            else if(mode(1:4).eq.'JT65') then
               j=121-nint(1270.46/df)
               a(i,j)=254

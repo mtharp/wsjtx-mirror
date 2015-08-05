@@ -81,6 +81,13 @@ used in meteor scatter QSOs, after callsigns have been exchanged.
 They are not used in IARU Region 1, where activity levels are high
 enough that messages should always be accompanied by callsigns.
 
+=== FSK315
+
+FSK315 is a variant of FSK441 designed for use in North America on
+10m.   Baud rate is 315 baud and tones of 945, 1260, 1575 and 1890
+Hz are used.   FSK315 supports shorthand messages with R26, R27, RRR
+and 73 being assigned to 945, 1260, 1575 and 1890Hz respectively.  
+
 === ISCAT
 
 ISCAT messages are free-form, up to 28 characters in length.
@@ -195,6 +202,7 @@ depends on the submode.
 |Mode   |T/R (s)| Mod   |  FEC    |Nsps| Baud |df (Hz)|BW (Hz)| cps |S/N (dB)
 |JTMS   | 15,30 | MSK   | parity  | 8  | 1378 | 689 | 2067 | 197 | -1
 |FSK441 | 15,30 | 4-FSK |         | 25 | 441  | 441 | 1764 | 147 | -1
+|FSK315 | 15,30 | 4-FSK |         | 35 | 315  | 315 | 945  | 105 | 
 |ISCAT-A| 15,30 | 42-FSK|         |512 | 21.5 | 21.5| 905  | 16.5| -17
 |ISCAT-B| 15,30 | 42-FSK|         |256 | 43.1 | 43.1|1809  | 32.3| -17
 |JT6M   | 15,30 | 44-FSK|         |512 | 21.5 | 21.5| 947  | 14.4| -10

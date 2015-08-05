@@ -13,6 +13,9 @@ different types of propagation:
 *FSK441*:: For meteor scatter.  Uses 4-tone frequency-shift keying
 (4-FSK) at 441 baud, character transmission rate 147 cps.
 
+*FSK315*:: For meteor scatter.  Uses 4-tone frequency-shift keying
+(4-FSK) at 315 baud, character transmission rate 105 cps.  10m legal. 
+
 *ISCAT*:: Optimized for meteor and ionospheric scatter on 6 meters.
 Uses 42-FSK at 21.53 or 43.07 baud, character transmission rate 16.15
 or 32.3 cps.

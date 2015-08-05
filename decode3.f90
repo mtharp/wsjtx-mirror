@@ -59,6 +59,13 @@ subroutine decode3(d2,jz,istart,filename)
   if(jz.gt.14*11025) call dtrim(d2d,jz)
   nfast=1
   if(mode.eq.'JT65B2' .or. mode.eq.'JT65C2') nfast=2
+  if(mode(1:3).eq.'FSK') then
+     if(mode(4:6).eq.'315') then
+         mode65 = 1
+     else
+         mode65 = 0
+     endif
+  endif
   call wsjt1(d2d,jz,istart,samfacin,FileID,ndepth,degrade,             &
        MinSigdB,DFTolerance,MouseButton,NClearAve,nforce,              &
        nMode,NFreeze,NAFC,NZap,mode65,nfast,mode4,minwidth,idf,        &
@@ -83,7 +90,7 @@ subroutine decode3(d2,jz,istart,filename)
   nagain=0
   if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT4') then
      call pix2d65(d2d,jz)
-  else if(mode.eq.'FSK441' .or. mode(1:4).eq.'JTMS') then
+  else if(mode(1:3).eq.'FSK' .or. mode(1:4).eq.'JTMS') then
      nz=s2(1,1)
      if(nz.gt.0) call pix2d(d2d,jz,mb0,mousedf,nfreeze,mode,s2,64,nz,b)
   else if(mode(1:4).eq.'JT6M' .and. mousebutton.eq.0) then
@@ -97,9 +104,9 @@ subroutine decode3(d2,jz,istart,filename)
   endif
 
 ! Compute red and magenta cutves for small plot area, FSK441/JTMS only
-  if(mode.eq.'FSK441' .or. mode.eq.'JT6M' .or. mode.eq.'JTMS') then
+  if(mode(1:3).eq.'FSK' .or. mode.eq.'JT6M' .or. mode.eq.'JTMS') then
      do i=1,128
-        if((mode.eq.'FSK441' .or. mode.eq.'JTMS')                      &
+        if((mode(1:3).eq.'FSK' .or. mode.eq.'JTMS')                      &
              .and. ps0(i).gt.0.0) ps0(i)=10.0*log10(ps0(i))
         if(psavg(i).gt.0.0) psavg(i)=10.0*log10(psavg(i))
      enddo

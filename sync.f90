@@ -1,24 +1,30 @@
-subroutine sync(y1,y2,y3,y4,npts,jpk,baud,bauderr)
+subroutine sync(y1,y2,y3,y4,npts,jpk,baud,bauderr,isubmode)
 
 ! Input data are in the y# arrays: detected sigs in four tone-channels,
 ! before decimation by NSPD.
- 
-  parameter (NSPD=25)
+
+  include 'FSKParameters.f90'
+
   real y1(npts)
   real y2(npts)
   real y3(npts)
   real y4(npts)
-  real zf(NSPD)
+  real zf(NSPD315)
   real tmp1
   real tmp2
   complex csum
-  integer nsum(NSPD)
+  integer nsum(NSPD315)
   real z(65538)                            !Ready for FSK110
   complex cz(0:32768)
   equivalence (z,cz)
   data twopi/6.283185307/
+  
+  nspd = NSPD441
+  if (isubmode.eq.1) then
+    nspd = NSPD315
+  endif
 
-  do i=1,NSPD
+  do i=1,nspd
      zf(i)=0.0
      nsum(i)=0
   enddo
@@ -37,7 +43,7 @@ subroutine sync(y1,y2,y3,y4,npts,jpk,baud,bauderr)
      endif
 
      z(i)=1.e-6*(a1-a2)                     !Subtract 2nd from 1st
-     j=mod(i-1,NSPD)+1
+     j=mod(i-1,nspd)+1
      zf(j)=zf(j)+z(i)
      nsum(j)=nsum(j)+1
   enddo
@@ -62,15 +68,15 @@ subroutine sync(y1,y2,y3,y4,npts,jpk,baud,bauderr)
 
 ! Find phase of signal at 441 Hz.
   csum=0.
-  do j=1,NSPD
-     pha=j*twopi/NSPD
+  do j=1,nspd
+     pha=j*twopi/nspd
      csum=csum+zf(j)*cmplx(cos(pha),-sin(pha))
   enddo
   tmp1=aimag(csum)
   tmp2=real(csum)
   pha=-atan2(tmp1,tmp2)
-  jpk=nint(NSPD*pha/twopi)
-  if(jpk.lt.1) jpk=jpk+NSPD
+  jpk=nint(nspd*pha/twopi)
+  if(jpk.lt.1) jpk=jpk+nspd
 
 !The following is nearly equivalent to the above.  I don't know which
 !(if either) is better.
@@ -82,7 +88,7 @@ subroutine sync(y1,y2,y3,y4,npts,jpk,baud,bauderr)
 !        endif
 !     enddo
 
-  bauderr=(baud-11025.0/NSPD)/df   !Baud rate error, in bins
+  bauderr=(baud-11025.0/nspd)/df   !Baud rate error, in bins
 
   return
 end subroutine sync

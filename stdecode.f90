@@ -1,5 +1,5 @@
 subroutine stdecode(s2,nchan,nz,sigma,dtbuf,df,stlim0,DFTolerance,    &
-     cfile6,pick,istart)
+     cfile6,pick,istart,isubmode)
 
 ! Search for and decode single-tone messages.
 
@@ -9,10 +9,18 @@ subroutine stdecode(s2,nchan,nz,sigma,dtbuf,df,stlim0,DFTolerance,    &
   character cfile6*6,msg3*3
   character*90 line
   common/ccom/nline,tping(100),line(100)
-
-  NSPD=25                                !Change if FSK110 is implemented
-  LTone=2
-  NBaud=11025/NSPD
+  
+  include 'FSKParameters.f90'
+                              
+  !Change if FSK110 is implemented
+  nspd = NSPD441
+  LTone = LTONE441
+  if (isubmode.eq.1) then 
+    nspd = NSPD315
+    LTone = LTONE315
+  endif
+    
+  NBaud=11025/nspd
 
   stlim=stlim0
   if(pick) stlim=stlim0-1.0
@@ -66,7 +74,7 @@ subroutine stdecode(s2,nchan,nz,sigma,dtbuf,df,stlim0,DFTolerance,    &
         if((noffset.lt.-DFTolerance) .or.(noffset.gt.DFTolerance)) goto 20
 
 ! The numbers 2 and 5 depend on Ltone:
-        if(n.lt.2 .or. n.gt.5) goto 20
+        if(n.lt.LTone .or. n.gt.LTone+3) goto 20
 
 ! OK, this detection has survived all tests.  Save it for output
 ! (uness perhaps it is redundant).

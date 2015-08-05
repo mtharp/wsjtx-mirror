@@ -7,7 +7,7 @@
 NAME = WSJT
 VER = 10.0
 OS = Win32
-SDK = C:/JTSDK
+SDK = C:/JTSDK-PY
 
 # Tool Chain
 AR = $(SDK)/mingw32/bin/ar.exe
@@ -31,7 +31,7 @@ DOCPATH = $(SRCD)/doc
 DOCSRC = $(SRCD)/doc/user_guide
 DOCCONF = $(SRCD)/doc/wsjt-jtsdk2.conf
 THEMEDIR = $(SRCD)/doc/theme
-ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
+ASCIIDOC = $(SDK)/doc/asciidoc/asciidoc.py
 
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install

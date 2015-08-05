@@ -9,8 +9,8 @@ subroutine wsjtgen
 !           nwave        number of samples
 !           sendingsh    0=normal; 1=shorthand; -1=plain text; 2=test file
 
+  include 'FSKParameters.f90'
   parameter (NMSGMAX=28)             !Max characters per message
-  parameter (NSPD=25)                !Samples per dit
   parameter (NDPC=3)                 !Dits per character
   parameter (NWMAX=150*11025)        !Max length of Tx waveform
   parameter (NTONES=4)               !Number of FSK tones
@@ -112,8 +112,7 @@ subroutine wsjtgen
   endif
 
   dt=1.d0/fsample_out
-  LTone=2
-
+ 
   if(mode(1:4).eq.'JT65' .or. mode(1:3).eq.'JT4' .or.                &
        mode(1:5).eq. 'ISCAT' .or. mode(1:4).eq.'JTMS') then
      if(mode(1:4).eq.'JT65') then
@@ -183,11 +182,11 @@ subroutine wsjtgen
      goto 900
   endif
 
-!  We're in FSK441 mode.
-  if(nmsg.lt.28) nmsg=nmsg+1          !Add trailing blank if nmsg < 28
+!  We're in FSK mode
+  if(nmsg.lt.NMSGMAX) nmsg=nmsg+1          !Add trailing blank if nmsg < 28
 
 !  Check for shorthand messages
-100 sendingsh = 0
+100  sendingsh = 0
   if(shok.eq.1) then
      if (msg(1:4).eq.'R26 ') then
         msg='++'
@@ -214,18 +213,25 @@ subroutine wsjtgen
 
 ! Encode the message
   call abc441(msg,nmsg,itone,ndits)
-  ndata=ndits*nspd
 
+  nspd = NSPD441
+  LTone = LTONE441
+  if (mode(4:6).eq.'315') then
+    nspd = NSPD315
+    LTone = LTONE315
+  endif
+  
+  ndata=ndits*nspd
 ! Generate iwave
   k=0
-  df=11025.0/NSPD
+  df=11025.0/nspd
   pha=0.
-  nrpt=30*11025/(NSPD*ndits)
+  nrpt=30*11025/(nspd*ndits)
   do irpt=1,nrpt
      do m=1,ndits
         freq=(LTone-1+itone(m))*df
         dpha=twopi*freq*dt
-        do i=1,NSPD
+        do i=1,nspd
            k=k+1
            pha=pha+dpha
            iwave(k)=nint(32767.0*sin(pha))
@@ -251,7 +257,7 @@ subroutine wsjtgen
   i=1
 910 nmsg=i
 
-  if(lcwid .and. (mode.eq.'FSK441' .or. mode(1:4).eq.'JTMS' .or.   &
+  if(lcwid .and. (mode(1:3).eq.'FSK' .or. mode(1:4).eq.'JTMS' .or.   &
        mode(1:4).eq.'JT6M')) then
 !  Generate and insert the CW ID.
      wpm=25.

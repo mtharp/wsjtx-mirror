@@ -102,6 +102,7 @@ nmeas=0
 nlowbeacon=IntVar()
 nlowbeacon.set(0)
 nmonitor=IntVar()
+auto73Count = IntVar()
 nopen=0
 nshrx=IntVar()
 noshjt65=IntVar()
@@ -130,6 +131,7 @@ balloon=Pmw.Balloon(root)
 TXStopCount=0
 BlinkingLogQSO=False
 BlinkingState=False
+auto73Count.set(5)
 
 
 g.freeze_decode=0
@@ -291,7 +293,7 @@ def dbl_click3_text(event):
         report.insert(0,rpt)
         dbl_click_call(t,t1,rpt,event)
 
-    elif mode.get()=='FSK441' or mode.get()=='JTMS':
+    elif mode.get()[:3]=='FSK' or mode.get()=='JTMS':
         t=text.get('1.0',END)           #Entire contents of text box
         t1=text.get('1.0',CURRENT)      #Contents from start to mouse pointer
         n=t1.rfind("\n")
@@ -649,6 +651,14 @@ def ModeFSK441(event=NONE):
         GenMsgs()
         erase()
 
+#------------------------------------------------------ ModeFSK315
+def ModeFSK315(event=NONE):
+    if g.mode != "FSK315":
+        if lauto: toggleauto()
+    ModeFSK441()
+    mode.set("FSK315")
+    g.mode=mode.get()
+    options.resetgen()
 #------------------------------------------------------ ModeJT65
 def ModeJT65():
     global slabel,isync,isync65,textheight,itol
@@ -1021,15 +1031,16 @@ def mouse_commands(event=NONE):
     t="""
 Click on          Action
 --------------------------------------------------------
-Waterfall        FSK441, JTMS, JT6M: click to decode region
+Waterfall        FSK441, FSK315, JTMS, JT6M: click to decode region
                       JT65: Click to set DF for Freeze
                        Double-click to Freeze and Decode
 
-Main screen,     FSK441, JTMS, ISCAT, JT6M: click to decode ping
+Main screen,     FSK441, FSK315, JTMS, ISCAT, JT6M: click to decode ping
 graphics area    JT65: Click to set DF for Freeze
                            Double-click to Freeze and Decode
 
 Main screen,     Double-click puts callsign in Tx messages
+                 ISCAT double click information block to set parameters
 text area           Right-double-click also sets Auto ON
 
 Sync, S,         Left/Right click to increase/decrease
@@ -1049,7 +1060,7 @@ use the following standard procedures and *do not* exchange pertinent
 information by other means (e.g., internet, telephone, ...) while the
 QSO is in progress!
 
-JTMS, FSK441, ISCAT, JT6M:   If you have received
+JTMS, FSK441, FSK315 ISCAT, JT6M:   If you have received
     ... less than both calls from the other station, send both calls.
     ... both calls, send both calls and your signal report.
     ... both calls and signal report, send R and your report.
@@ -1246,7 +1257,7 @@ def inctrperiod(event):
         if ncwtrperiod==120: ncwtrperiod=150
         if ncwtrperiod==60:  ncwtrperiod=120
         Audio.gcom1.trperiod=ncwtrperiod
-    elif mode.get()=="FSK441" or mode.get()=="JTMS" or \
+    elif mode.get()[:3]=="FSK" or mode.get()=="JTMS" or \
             mode.get()=="JT6M":
         if Audio.gcom1.trperiod==15: Audio.gcom1.trperiod=30
     elif mode.get()[:5]=="ISCAT":
@@ -1262,7 +1273,7 @@ def dectrperiod(event):
         if ncwtrperiod==120: ncwtrperiod=60
         if ncwtrperiod==150: ncwtrperiod=120
         Audio.gcom1.trperiod=ncwtrperiod
-    elif mode.get()=="FSK441" or mode.get()=="JTMS" or \
+    elif mode.get()[:3]=="FSK" or mode.get()=="JTMS" or \
         mode.get()=="JT6M":
         if Audio.gcom1.trperiod==30: Audio.gcom1.trperiod=15
     elif mode.get()[:5]=="ISCAT":
@@ -1454,7 +1465,7 @@ def GenStdMsgs(event=NONE):
     for m in (tx1, tx2, tx3, tx4, tx5, tx6):
         m.delete(0,99)
 ##    options.resetgen()
-    if mode.get()=="FSK441" or mode.get()[:5]=="ISCAT" or \
+    if mode.get()[:3]=="FSK" or mode.get()[:5]=="ISCAT" or \
        mode.get()=='JTMS' or mode.get()[:3]=='JT4' or mode.get()=="JT6M":
         r=report.get()
         tx1.insert(0,setmsg(options.tx1.get(),r))
@@ -1799,7 +1810,7 @@ def plot_small():
             psavg=psavg + 27.959
         n=int(150.0-2*psavg)
         xy.append(n)
-        if mode.get()=='FSK441' or mode.get()=="JTMS":
+        if mode.get()[:3]=='FSK' or mode.get()=="JTMS":
             ps0=Audio.gcom2.ps0[i]
             n=int(150.0-2*ps0)
             xy2.append(x)
@@ -1811,6 +1822,11 @@ def plot_small():
         graph2.create_line(xy2,fill="red")
         for i in range(4):
             x=(i+2)*441*fac
+            graph2.create_line([x,0,x,20],fill="yellow")
+    elif mode.get()=='FSK315':
+        graph2.create_line(xy2,fill="red")
+        for i in range(4):
+            x=(i+3)*315*fac
             graph2.create_line([x,0,x,20],fill="yellow")
     for i in range(7):
         x=i*500*fac
@@ -1868,6 +1884,11 @@ def AutoIscatDoubleClick(line, linetomouse):
     CallToMe = False
     SetSequence = False
     SetReport = False
+
+
+#   Isolate the call in the line, this MUST be in the text area
+    mymouseline = linetomouse[linetomouse.rfind('\n')+1:]
+    mline = mymouseline[32:].split()
     
     if (len(sline) >= 2):
     #   check for CQ message
@@ -1877,37 +1898,34 @@ def AutoIscatDoubleClick(line, linetomouse):
             if (len(sline) >= 3):
                 NewHisGrid = sline[2]
             if (len(sline) == 4):
-                if (AutoISCATIsInfoBlock(sline[3])):
-                    HisSetup = sline[3]
+                #  Figure out if click was on the information block
+                if (len(mline) == 4):
+                    if (AutoISCATIsInfoBlock(sline[3])):
+                        HisSetup = sline[3]
             SetSequence = True
         else: 
 #           Assume this is a TX1, it may or may not be addressed to us
             if (sline[0] == options.MyCall.get()):
                 NewHisCall = sline[1]
-                if (len(sline) >= 3):
+                if (len(mline)>= 3):
                     if (AutoISCATIsInfoBlock(sline[2])):
                         HisSetup = sline[2]
                 CallToMe = True
                 SetSequence = True
                 SetReport = True
-                
             else:
-#               Isolate the call in the line, this MUST be in the call area
-                mymouseline = linetomouse[linetomouse.rfind('\n')+1:]
-                mline = mymouseline[32:].split()
                 if (len(mline) == 1):
                     NewHisCall = sline[0]
                 elif (len(mline) == 2):
                     NewHisCall = sline[1]
-                    if (len(sline) >= 3):
-                        if (AutoISCATIsInfoBlock(sline[2])):
-                            HisSetup = sline[2]
-#  ADD CODE HERE TO CHECK FOR A GRID????  THIS COULD BE A TX2 IN GRID MODE. 
                     SetSequence = True
                     SetReport = True
                 elif (len(mline) == 3):
+                    NewHisCall = sline[1]
                     if (AutoISCATIsInfoBlock(sline[2])):
                         HisSetup = sline[2]
+                    SetSequence = True
+                    SetReport = True
                     
         if (NewHisCall != ""):
             ToRadio.delete(0,END)
@@ -2171,7 +2189,7 @@ def DoISCAT(lines):
                 f.close()
             except:
                 print ("Error Appending to all.txt")
-        else:
+        elif (len(lines) >= 1):
             PrintISCAT (lines[len(lines) - 1])
     
 def PrintISCAT (line): 
@@ -2322,7 +2340,7 @@ def update():
     t=t[:i]
     lab3.configure(text=t)
     if mode.get() != g.mode or first:
-        if mode.get()=="FSK441":
+        if mode.get()[:3]=="FSK":
             msg2.configure(bg='#FFFF00')
         elif mode.get()[:4]=="JT65":
             msg2.configure(bg='#00FFFF')
@@ -2381,7 +2399,7 @@ def update():
             bdecode.configure(text='*Decode*')
     msg5.configure(text="T/R Period: %d s" % (Audio.gcom1.trperiod,))
     if mode.get()=="CW": color='white'
-    elif mode.get()=='FSK441' or mode.get()=='JTMS' or \
+    elif mode.get()[:3]=='FSK' or mode.get()=='JTMS' or \
              mode.get()=="JT6M":
         if(Audio.gcom1.trperiod==15): color='yellow'
         else: color='white'
@@ -2541,7 +2559,7 @@ def update():
 # Save some parameters
     g.mode=mode.get()
     g.report=report.get()
-    if mode.get()=='FSK441' or mode.get()=='JTMS': isync441=isync
+    if mode.get()[:3]=='FSK' or mode.get()=='JTMS': isync441=isync
     elif mode.get()=='JT6M': isync6m=isync
     elif mode.get()[:5]=="ISCAT": isync_iscat=isync
     elif mode.get()[:4]=='JT65': isync65=isync
@@ -2602,7 +2620,7 @@ def update():
 #    Audio.gcom1.rxdelay=float('0'+options.RxDelay.get())
 #    Audio.gcom1.txdelay=float('0'+options.TxDelay.get())
     Audio.gcom2.nslim2=isync-4
-    if nshrx.get()==0 and (mode.get()=='FSK441' or mode.get()=='JTMS'):
+    if nshrx.get()==0 and (mode.get()[:3]=='FSK' or mode.get()=='JTMS'):
         Audio.gcom2.nslim2=99
     try:
         Audio.gcom2.nport=int(options.PttPort.get())
@@ -2735,6 +2753,7 @@ else:
 
 modemenu.add_radiobutton(label = 'JTMS', variable=mode, command = ModeJTMS)
 modemenu.add_radiobutton(label = 'FSK441', variable=mode,command = ModeFSK441, state=NORMAL)
+modemenu.add_radiobutton(label = 'FSK315', variable=mode,command = ModeFSK315, state=NORMAL)
 modemenu.add_separator()
 modemenu.add_radiobutton(label = 'ISCAT-A', variable=mode, command = ModeISCAT_A)
 modemenu.add_radiobutton(label = 'ISCAT-B', variable=mode, command = ModeISCAT_B)
@@ -3274,6 +3293,8 @@ try:
             mode.set(value)
             if value=='FSK441':
                 ModeFSK441()
+            if value=='FSK315':
+                ModeFSK315()
             elif value=='JT65A':
                 ModeJT65A()
             elif value=='JT65B':
@@ -3441,7 +3462,7 @@ except:
     print(key,value)
 
 g.mode=mode.get()
-if mode.get()=='FSK441' or mode.get()=='JTMS': isync=isync441
+if mode.get()[:3]=='FSK' or mode.get()=='JTMS': isync=isync441
 elif mode.get()[:5]=="ISCAT":
     isync=isync_iscat
     if mode.get()[6:7]=='A': Audio.gcom2.mode4=1

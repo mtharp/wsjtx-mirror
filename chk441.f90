@@ -1,8 +1,8 @@
 subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
-     dftolerance,pick,nok)
+     dftolerance,pick,nok,isubmode)
 
 ! Experimental FSK441 decoder
-
+  include 'FSKParameters.f90'
   parameter (NMAX=512*1024)
   parameter (MAXFFT=8192)
   real dat(NMAX)                          !Raw signal, 30 s at 11025 sps
@@ -18,10 +18,17 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
   data first/.true./
   common/scratch/work(NMAX)
   save
-
+  
+  nspd = NSPD441
+  LTone = LTONE441
+  if (isubmode.eq.1) then
+      nspd = NSPD315
+      LTone = LTONE315
+  endif
+  
   if(first) then
      call abc441(' ',1,itone,ndits)         !Generate waveform for <space>
-     call gen441(itone,ndits,cfrag)
+     call gen441(itone,ndits,cfrag,isubmode)
      first=.true.
   endif
 
@@ -32,8 +39,8 @@ subroutine chk441(dat,jz,tstart,width,nfreeze,mousedf,             &
      sb0=0.60
   endif
 
-  nsps=25                                  !Initialize variables
-  nsam=nsps*ndits
+  !Initialize variables
+  nsam=nspd*ndits
   dt=1.0/11025.0
   i0=(tstart-0.02)/dt
   if(i0.lt.1) i0=1

@@ -1,6 +1,6 @@
 subroutine mtdecode(dat,jz,nz,MinSigdB,MinWidth,NFreeze,           &
      DFTolerance,MouseDF,istart,pick,cfile6,mycall,hiscall,        &
-     mode,ps0)
+     mode,ps0,isubmode)
 
 ! Decode Multi-Tone FSK441 mesages.
 
@@ -25,6 +25,7 @@ subroutine mtdecode(dat,jz,nz,MinSigdB,MinWidth,NFreeze,           &
   nf2=DFTolerance
   msg3='   '
   dt=1.0/11025.0
+  
 
 ! Find signal power at suitable intervals to search for pings.
   istep=221
@@ -95,7 +96,7 @@ subroutine mtdecode(dat,jz,nz,MinSigdB,MinWidth,NFreeze,           &
          
 ! Decode the message.
      msg=' '
-     call longx(dat(jj),jjz,ps,DFTolerance,noffset,msg,msglen,bauderr)
+     call longx(dat(jj),jjz,ps,DFTolerance,noffset,msg,msglen,bauderr,isubmode)
 
 ! Assemble a signal report:
      nwidth=0
@@ -117,7 +118,7 @@ subroutine mtdecode(dat,jz,nz,MinSigdB,MinWidth,NFreeze,           &
      endif
 
      call chk441(dat,jz,tstart,width,nfreeze,mousedf,                &
-          dftolerance,pick,nok)
+          dftolerance,pick,nok,isubmode)
      if(msglen.eq.0 .or. nok.eq.0) go to 100
 
 ! Discard this ping if DF outside tolerance limits or bauderr too big.
