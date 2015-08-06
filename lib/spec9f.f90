@@ -4,8 +4,8 @@ subroutine spec9f(id2,npts,nsps,s1,jz,nq)
 
   integer*2 id2(0:npts)
   real s1(nq,jz)
-  real x(480)
-  complex c(0:240)
+  real x(960)
+  complex c(0:480)
   equivalence (x,c)
 
   nh=nsps

@@ -1,16 +1,26 @@
-subroutine sync9f(s2,nq,ss2,ss3,lagpk,ipk,ccfbest)
+subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,ipk,ccfbest)
+
+! Look for JT9 sync pattern in the folded symbol spectra, s2.
+! Frequency search extends from nfa to nfb.  Synchronized symbol
+! spectra are put into ss2() and ss3().
 
   integer ii4(16)
   real s2(340,nq)
   real ss2(0:8,85)
   real ss3(0:7,69)
-  real ccf(0:340-1,10)
+  real ccf(0:340-1,160)              !### What should 2nd bound be? ###
   include 'jt9sync.f90'
 
   ii4=4*ii-3
   ccf=0.
   ccfbest=0.
-  do k=1,10
+  nfft=4*nq
+  df=12000.0/nfft
+  k1=nfa/df
+  k2=nfb/df + 0.9999
+!  print*,nfft,k1,k2,k1*df,k2*df
+
+  do k=k1,k2
      do lag=0,339
         t=0.
         do i=1,16
@@ -20,20 +30,15 @@ subroutine sync9f(s2,nq,ss2,ss3,lagpk,ipk,ccfbest)
         enddo
         ccf(lag,k)=t
         if(t.gt.ccfbest) then
-           ccfbest=t
            lagpk=lag
            kpk=k
+           ccfbest=t
+!           print*,lagpk,kpk,kpk*df,ccfbest
         endif
-!        if(k.eq.7) write(14,3002) lag,ccf(lag,7)    !Blue
-!3002    format(i6,f10.3)
      enddo
   enddo
 
-!  do k=1,10
-!     write(16,3002) k,ccf(lagpk,k)                  !Red
-!  enddo
-
-  ipk=7
+  ipk=kpk
 
   do i=0,8
      j4=lagpk-4

@@ -1,5 +1,7 @@
 subroutine softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
 
+! Compute soft symbols
+
   real ss2(0:8,85)
   real ss3(0:7,69)
   integer*1 i1SoftSymbolsScrambled(207)
