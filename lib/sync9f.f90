@@ -1,4 +1,4 @@
-subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,ipk,ccfbest)
+subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
 
 ! Look for JT9 sync pattern in the folded symbol spectra, s2.
 ! Frequency search extends from nfa to nfb.  Synchronized symbol
@@ -18,7 +18,6 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,ipk,ccfbest)
   df=12000.0/nfft
   k1=nfa/df
   k2=nfb/df + 0.9999
-!  print*,nfft,k1,k2,k1*df,k2*df
 
   do k=k1,k2
      do lag=0,339
@@ -33,7 +32,6 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,ipk,ccfbest)
            lagpk=lag
            kpk=k
            ccfbest=t
-!           print*,lagpk,kpk,kpk*df,ccfbest
         endif
      enddo
   enddo
@@ -55,13 +53,6 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,ipk,ccfbest)
         endif
      enddo
   enddo
-
-!  do j=1,85
-!     write(15,3003) j,ss2(0:8,j)
-!3003 format(i2,9f8.2)
-!  enddo
-
-! ###########################################
 
   return
 end subroutine sync9f
