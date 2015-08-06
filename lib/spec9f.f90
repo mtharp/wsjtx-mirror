@@ -1,14 +1,15 @@
-subroutine spec9f(id2,npts,nsps,s1,jz,nq,s2)
+subroutine spec9f(id2,npts,nsps,s1,jz,nq)
+
+! Compute "fast-JT9" symbol spectra at quarter-symbol steps.
 
   integer*2 id2(0:npts)
-  real s1(jz,nq)
-  real s2(340,nq)
+  real s1(nq,jz)
   real x(480)
   complex c(0:240)
   equivalence (x,c)
 
   nh=nsps
-  nfft=2*nh
+  nfft=2*nh                               !FFTs at twice the symbol length
   do j=1,jz
      ia=(j-1)*nsps/4
      ib=ia+nsps-1
@@ -18,9 +19,7 @@ subroutine spec9f(id2,npts,nsps,s1,jz,nq,s2)
      call four2a(x,nfft,1,-1,0)           !r2c
      k=mod(j-1,340)+1
      do i=1,NQ
-        t=1.e-10*(real(c(i))**2 + aimag(c(i))**2)
-        s1(j,i)=t
-        s2(k,i)=s2(k,i)+t
+        s1(i,j)=1.e-10*(real(c(i))**2 + aimag(c(i))**2)
      enddo
   enddo
 

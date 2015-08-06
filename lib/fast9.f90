@@ -11,6 +11,8 @@ subroutine fast9(id2,narg,line)
   real ss3(0:7,69)
   character*22 msg
   character*80 line(100)
+  save s1,nsubmode0
+  data nsubmode0/-1/
 
   nutc=narg(0)
   npts=min(narg(1),NMAX)
@@ -33,30 +35,35 @@ subroutine fast9(id2,narg,line)
   istep=nsps/4
   jz=NMAX/istep
   df=12000.0/nfft
-  print*,nsubmode,nfft,istep,jz,nq
+  print*,newdat,nsubmode,nfft,jz,nq
 
-  call spec9f(id2,npts,nsps,s1,jz,nq,s2)
+  if(newdat.eq.1 .or. nsubmode.ne.nsubmode0) then
+     call spec9f(id2,npts,nsps,s1,jz,nq)          !Compute symbol spectra, s1 
+  endif
+  nsubmode0=nsubmode
 
-  call sync9f(s2,nq,ss2,ss3,lagpk,ipk,ccfbest)
+  call foldspec9f(s1,jz,nq,s2)                     !Fold symbol spectra into s2
 
-  call softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
+  call sync9f(s2,nq,ss2,ss3,lagpk,ipk,ccfbest)    !Look for sync pattern
 
+  call softsym9f(ss2,ss3,snrdb,i1SoftSymbols)     !Get soft symbols
+
+  limit=10000
   call jt9fano(i1SoftSymbols,limit,nlim,msg)
+!  print*,limit,nlim,msg
 
-  nsync=0.25*ccfbest
-  if(nsync.lt.0) nsync=0
-  if(nsync.gt.10) nsync=10
-  nsnr=nint(db(ccfbest)-22.0)
-  xdt=0.
-  freq=ipk*df
-
-  write(line(1),1000) nutc,nsync,nsnr,xdt,nint(freq),0,msg
+  if(nlim.lt.limit) then
+     nsync=0.25*ccfbest
+     if(nsync.lt.0) nsync=0
+     if(nsync.gt.10) nsync=10
+     nsnr=nint(db(ccfbest)-22.0)
+     xdt=0.
+     freq=ipk*df
+     write(line(1),1000) nutc,nsync,nsnr,xdt,nint(freq),0,msg
 1000 format(i6.6,2i4,f5.1,i5,i3,2x,a22)
+  endif
 
   return
 end subroutine fast9
 
-!include 'spec9f.f90'
-!include 'sync9f.f90'
-!include 'softsym9f.f90'
-
+include 'foldspec9f.f90'
