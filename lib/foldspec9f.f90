@@ -1,4 +1,4 @@
-subroutine foldspec9f(s1,jz,nq,s2)
+subroutine foldspec9f(s1,nq,jz,s2)
 
 ! Fold symbol spectra (quarter-symbol steps) from s1 into s2
 

@@ -5,7 +5,7 @@ subroutine fast9(id2,narg,line)
   integer*2 id2(0:NMAX)
   integer narg(0:9)
   integer*1 i1SoftSymbols(207)
-  real s1(720000)
+  real s1(720000)                  !It's actually s1(nq,jz)
   real s2(340,MAXQ)
   real ss2(0:8,85)
   real ss3(0:7,69)
@@ -40,11 +40,12 @@ subroutine fast9(id2,narg,line)
 !  print*,'A',newdat,nsubmode,nfft,jz,nq
 
   if(newdat.eq.1 .or. nsubmode.ne.nsubmode0) then
+     print*,'Computing symbol spectra'
      call spec9f(id2,npts,nsps,s1,jz,nq)          !Compute symbol spectra, s1 
   endif
   nsubmode0=nsubmode
 
-  call foldspec9f(s1,jz,nq,s2)                    !Fold symbol spectra into s2
+  call foldspec9f(s1,nq,jz,s2)                    !Fold symbol spectra into s2
 
 ! Find sync; put sync'ed symbol spectra into ss2 and ss3
   call sync9f(s2,nq,nfa,nfb,ss2,ss3,ipk,ccfbest) 
