@@ -69,5 +69,3 @@ subroutine fast9(id2,narg,line)
 
   return
 end subroutine fast9
-
-include 'foldspec9f.f90'
