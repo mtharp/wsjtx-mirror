@@ -15,7 +15,7 @@ Version 10.0
 :samples_tar: http://physics.princeton.edu/pulsar/K1JT/Samples_WSJT.tgz[tar]
 
 // use global link file
-include::../../global/links.adoc[]
+include::../common/links.adoc[]
 
 [[INTRO]]
 == Introduction
