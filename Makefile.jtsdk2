@@ -7,7 +7,7 @@
 NAME = WSJT
 VER = 10.0
 OS = Win32
-SDK = C:/JTSDK-PY
+SDK = C:/JTSDK
 
 # Tool Chain
 AR = $(SDK)/mingw32/bin/ar.exe
@@ -31,7 +31,7 @@ DOCPATH = $(SRCD)/doc
 DOCSRC = $(SRCD)/doc/user_guide
 DOCCONF = $(SRCD)/doc/wsjt-jtsdk2.conf
 THEMEDIR = $(SRCD)/doc/theme
-ASCIIDOC = $(SDK)/doc/asciidoc/asciidoc.py
+ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
 
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
@@ -137,11 +137,11 @@ user-guide:
 	@echo.
 	@echo  RUN AsciiDoc
 	@echo ------------------------------
-	@echo Building User Guide: wsjt-main-$(VER).html
+	@echo Building User Guide: wspr-main-$(VER).html
 	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
 	--conf-file=$(DOCCONF) \
 	--backend=xhtml11 \
-	--theme wsjt \
+	--theme wspr \
 	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
 	@echo.
 	@echo Finished
