@@ -362,7 +362,9 @@ set (wsjt_FSRCS
   lib/smo.f90
   lib/smo121.f90
   lib/softsym.f90
+  lib/softsym9f.f90
   lib/sort.f90
+  lib/spec9f.f90
   lib/stdmsg.f90
   lib/sun.f90
   lib/symspec.f90
@@ -370,6 +372,7 @@ set (wsjt_FSRCS
   lib/symspec65.f90
   lib/sync4.f90
   lib/sync9.f90
+  lib/sync9f.f90
   lib/synciscat.f90
   lib/timer.f90
   lib/timf2.f90
