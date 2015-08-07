@@ -1577,7 +1577,7 @@ void MainWindow::msgAvgDecode2()
 
 void MainWindow::decode()                                       //decode()
 {
-  if(!m_dataAvailable) return;
+  if(!m_dataAvailable or m_TRperiod==0) return;
   ui->DecodeButton->setChecked (true);
   if(m_diskData and !m_bFastMode) jt9com_.nutc=jt9com_.nutc/100;
   if(jt9com_.newdat==1 && (!m_diskData)) {
@@ -1911,6 +1911,7 @@ void MainWindow::guiUpdate()
   double txDuration;
   QString rt;
 
+  if(m_TRperiod==0) m_TRperiod=60;
   if(m_modeTx=="JT9")  txDuration=1.0 + 85.0*m_nsps/12000.0;  // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;     // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;     // WSPR
