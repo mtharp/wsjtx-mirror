@@ -34,15 +34,19 @@
 #
 # [ build-doc.sh] [ option ]
 #
-# OPTIONS: All map65 simjt wsjt wsjtx wspr wsprx wfmt devg qref help clean
+# OPTIONS: All map65 simjt wsprx wfmt devg qref help clean
+#
+# Note: WSJTX, WSJT and WSPR have meen migrated to in application
+#       building of documentation. This script is no longer used
+#       for those specific apps.
 #
 # BUILD LINKED
 #  All .....: ./build-doc.sh all
-#  WSJT-X...: ./build-doc.sh wsjtx
+#  WSPRX....: ./build-doc.sh wsprx
 #
 # BUILD DATA-URI - (Stand Alone)
 #	All .....: ./build-doc.sh dall
-#   WSJT-X ..: ./build-doc.sh dwsjtx
+#   WSPRX ..: ./build-doc.sh dwsprx
 #
 # CLEAN FOLDERS & FILES
 #  All .....: ./build-doc.sh clean
@@ -74,11 +78,8 @@ DEVG="$BASEDIR/dev-guide"
 MAP65="$BASEDIR/map65"
 QREF="$BASEDIR/quick-ref"
 SIMJT="$BASEDIR/simjt"
-WSJT="$BASEDIR/wsjt"
-WSJTX="$BASEDIR/wsjtx"
-WSPR="$BASEDIR/wspr"
-WFMT="$BASEDIR/wfmt"
 WSPRX="$BASEDIR/wsprx"
+WFMT="$BASEDIR/wfmt"
 
 # Link build (linked css, images, js)
 TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
@@ -87,7 +88,7 @@ TOC="asciidoc.py -b xhtml11 -a toc2 -a iconsdir=$ICONSDIR -a max-width=1024px"
 DTOC="asciidoc.py -b xhtml11 -a data-uri -a toc2 -a iconsdir=$DICONSDIR -a max-width=1024px"
 
 # all available documents
-declare -a doc_ary=('map65' 'simjt' 'wsjt' 'wspr' 'wsprx' 'wfmt' 'quick-ref' 'dev-guide')
+declare -a doc_ary=('map65' 'simjt' 'wfmt' 'wsprx' 'quick-ref' 'dev-guide')
 
 # Color variables
 C_R='\033[01;31m'		# red
@@ -339,18 +340,17 @@ function app_menu_help() {
 	echo -e ${C_G}"WSJT DOCUMENTATION HELP MENU\n"${C_NC}
 	echo 'USAGE: [ build-doc.sh] [ option ]'
 	echo
-	echo 'OPTION: All map65 simjt wsjt wspr wsprx'
-	echo '        wfmt devg devg2 qref help clean'
+	echo 'OPTION: All map65 simjt wsprx devg devg2 qref help clean'
 	echo
 	echo 'BUILD LINKED:'
 	echo '-----------------------------------'
 	echo '  All .....: ./build-doc.sh all'
-	echo '  WSPRX....: ./build-doc.sh wsjtx'
+	echo '  WSPRX....: ./build-doc.sh wsprx'
 	echo
 	echo 'BUILD DATA-URI - (Stand Alone)'
 	echo '----------------------------------'
 	echo '  All .....: ./build-doc.sh dall'
-	echo '  WSPRX....: ./build-doc.sh dwsjtx'
+	echo '  WSPRX....: ./build-doc.sh dwsprx'
 	echo
 	echo 'CLEAN FOLDERS & FILES'
 	echo '----------------------------------'
@@ -412,6 +412,7 @@ touch ./source/$app_name-main.adoc
 
 }
 
+# WSJT-X Doc Migration Message
 function wsjtx_doc_migration_msg() {
 	clear
 	echo -e ${C_Y}'DOCUMENT BUILD MIGRATION'${C_NC}
@@ -423,9 +424,8 @@ function wsjtx_doc_migration_msg() {
 	echo 'If you are working on documentaion specifically, you'
 	echo 'can build the documents as follows:'
 	echo ''
-	echo 'Linux....: Select Compile User Guide from WSJT-X Menu'
-	echo 'Windows..: For v1.6.0, type......: build-wsjtx doc'
-	echo '           For v1.5.0 RC, type ..: build-wsjtxrc doc'
+	echo 'Windows..: v1.6.0, type, build-wsjtx doc'
+	echo 'Linux....: Select User Guide from WSJT-X Menu'
 	echo ''
 	echo 'Manual methods of configuration and build are also'
 	echo 'available for advanced users using cmake-gui or direct'
@@ -434,6 +434,50 @@ function wsjtx_doc_migration_msg() {
 	read -p 'Press [Enter] to exit ...'
 	echo ''
 }
+
+# WSJT Doc Migration Message
+function wsjt_doc_migration_msg() {
+	clear
+	echo -e ${C_Y}'DOCUMENT BUILD MIGRATION'${C_NC}
+	echo ''
+	echo 'WSJT documentaiton builds have been migrated to'
+	echo 'an applicaiton build target. All User Guide builds'
+	echo 'are part of the main Makfiles for Windows. Linux is'
+	echo 'still being migrated'
+	echo ''
+	echo 'If you are working on documentaion specifically, you'
+	echo 'can build the documents as follows:'
+	echo ''
+	echo 'Windows..: JTSDK-PY v2 Shortcut, build-wsjt doc'
+	echo '           CLI, mingw32-make -f Makefile.jtsdk2 user-guide'	
+	echo 'Linux....: No User Guide build target at this time'
+	echo ''
+	echo ''
+	read -p 'Press [Enter] to exit ...'
+	echo ''
+}
+
+# WSPR Doc Migration Message
+function wspr_doc_migration_msg() {
+	clear
+	echo -e ${C_Y}'DOCUMENT BUILD MIGRATION'${C_NC}
+	echo ''
+	echo 'WSPR documentaiton builds have been migrated to'
+	echo 'an applicaiton build target. All User Guide builds'
+	echo 'are part of the main Makfiles for Windows and Linux'
+	echo ''
+	echo 'If you are working on documentaion specifically, you'
+	echo 'can build the documents as follows:'
+	echo ''
+	echo 'Linux....: After configure, make user-guide'
+	echo 'Windows..: JTSDK-PY v2 Shortcut, build-wspr doc'
+	echo '           CLI, mingw32-make -f Makefile.jtsdk2 user-guide'
+	echo ''
+	echo ''
+	read -p 'Press [Enter] to exit ...'
+	echo ''
+}
+
 
 ################################################################################
 # start the main script                                                        #
@@ -613,71 +657,29 @@ case "$option" in
 	# WSJT ---------------------------------------------------------------------
 	# Linked Versoin
 	wsjt)
-		display_name="WSJT"
-		app_name="wsjt"
-		cd "$WSJT"
-		pre_file_check
-		update_timestamp
-		clear
-		main_wording
-		build_doc
-		post_file_check
-	;;
+		wsjt_doc_migration_msg ;;
 
 	# Embedded CSS, Images, JS
 	dwsjt)
-		display_name="WSJT"
-		app_name="wsjt"
-		cd "$WSJT"
-		pre_file_check
-		update_timestamp
-		clear
-		main_wording
-		copy_image_folders
-		build_ddoc
-		remove_image_folders
-		post_file_check
-	;;
+		wsjt_doc_migration_msg ;;
 
 	# WSJT-X -------------------------------------------------------------------
 	# Linked Version
 	wsjtx)
-	wsjtx_doc_migration_msg
-	;;
+	wsjtx_doc_migration_msg ;;
 
 	# Embedded CSS, Images, JS
 	dwsjtx)
-	wsjtx_doc_migration_msg
-	;;
+	wsjtx_doc_migration_msg ;;
 
 	# WSPR ---------------------------------------------------------------------
 	# Linked version
 	wspr)
-		display_name="WSPR"
-		app_name="wspr"
-		cd "$WSPR"
-		pre_file_check
-		update_timestamp
-		clear
-		main_wording
-		build_doc
-		post_file_check
-	;;
+		wspr_doc_migration_msg ;;
 
 	# Embedded CSS, Images, JS
 	dwspr)
-		display_name="WSPR data-uri"
-		app_name="wspr"
-		cd "$WSPR"
-		pre_file_check
-		update_timestamp
-		clear
-		main_wording
-		copy_image_folders
-		build_ddoc
-		remove_image_folders
-		post_file_check
-	;;
+		wsjtx_doc_migration_msg ;;
 
 	# WSPR-FMT -----------------------------------------------------------------
 	# Linked Version
