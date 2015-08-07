@@ -22,9 +22,10 @@ subroutine softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
 !  call pctile(ss2,9*85,35,xmed)                       !### better? ###
   ss3=ss3/ave
   sig=sig/69.                             !Signal
-  t=max(1.0,sig - 1.0)
-  snrdb=db(t) - 61.3
-     
+  snrdb=-20
+  t=sig/ave - 1.0
+  if(t.gt.0.0) snrdb=db(t)                !### Should do better? ###
+
   m0=3
   k=0
   scale=10.0

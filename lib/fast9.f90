@@ -18,6 +18,7 @@ subroutine fast9(id2,narg,line)
   nutc=narg(0)                         !narg() holds parameters from GUI
   npts=min(narg(1),NMAX)
   nsubmode=narg(2)
+  if(nsubmode.lt.4) go to 900
   newdat=narg(3)
   minsync=narg(4)
   npick=narg(5)
@@ -38,6 +39,7 @@ subroutine fast9(id2,narg,line)
   istep=nsps/4
   jz=NMAX/istep
   df=12000.0/nfft
+  db1=db(2500.0/df)
   nfa=max(200,nrxfreq-ntol)
   nfb=min(nrxfreq+ntol,2500)
   nline=0
@@ -54,11 +56,11 @@ subroutine fast9(id2,narg,line)
      nlen=1.4142136**(ilength-1)
      if(nlen.gt.jz/340) nlen=jz/340
      if(nlen.eq.nlen0) cycle
-     write(71,*) ilength,nlen0,nlen
-     flush(71)
      nlen0=nlen
+     db0=db(float(nlen))
      jlen=nlen*340
      jstep=jlen/4                      !### Is this about right? ###
+     if(nsubmode.ge.6) jstep=jlen/2
 
      do ja=1,jz-jlen,jstep
         jb=ja+jlen-1
@@ -78,24 +80,25 @@ subroutine fast9(id2,narg,line)
         call jt9fano(i1SoftSymbols,limit,nlim,msg)      !Invoke Fano decoder
         t0=(ja-1)*istep/12000.0
         t1=(jb-1)*istep/12000.0
+        nsnr=nint(snrdb) - db0 - db1             !### Is this OK? ###
+!        if(nsnr.lt.-20) nsnr=-20
+!        if(nsnr.gt.30)  nsnr=30.
 
-!        write(*,3001) nlen,t0,t1,ccfbest,lagpk,ipk,nlim,msg   !Temporary
-!3001    format(i2,2f6.1,f9.2,2i6,i8,2x,a22)
+        freq=ipk*df
 
-        if(nlim.lt.limit .and. msg.ne.'                      ') then
+!        write(*,3001) nlen,t0,t1,ccfbest,nsnr,nint(freq),lagpk,ipk,nlim,msg
+
+        if(msg.ne.'                      ') then
+
+!           write(71,3001) nlen,t0,t1,ccfbest,nsnr,nint(freq),lagpk,ipk,nlim,msg
+!3001       format(i2,2f6.1,f9.2,4i6,i8,2x,a22)
+!           flush(71)
 
 ! Display multiple decodes only if they differ:
            do n=1,nline
               if(index(line(n),msg).gt.1) go to 100
            enddo
-
-           nsync=0.25*ccfbest                 !### Need a better formula! ###
-           if(nsync.lt.0) nsync=0
-           if(nsync.gt.10) nsync=10
-           nsnr=nint(db(ccfbest)-22.0)
 !### Might want to use decoded message to get a complete estimate of S/N.
-           xdt=0.
-           freq=ipk*df
            nline=nline+1
            write(line(nline),1000) nutc,nsnr,t0,nint(freq),msg
 1000       format(i6.6,i4,f5.1,i5,1x,'@',1x,a22)
