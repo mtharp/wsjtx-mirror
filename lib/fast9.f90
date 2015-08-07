@@ -97,8 +97,8 @@ subroutine fast9(id2,narg,line)
            xdt=0.
            freq=ipk*df
            nline=nline+1
-           write(line(nline),1000) nutc,nsync,nsnr,t0,nint(freq),0,msg
-1000       format(i6.6,2i4,f5.1,i5,i3,2x,a22)
+           write(line(nline),1000) nutc,nsnr,t0,nint(freq),msg
+1000       format(i6.6,i4,f5.1,i5,1x,'@',1x,a22)
            if(nline.eq.maxlines) go to 900
         endif
 100     continue

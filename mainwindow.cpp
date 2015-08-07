@@ -1673,7 +1673,7 @@ void MainWindow::decode()                                       //decode()
     narg[5]=m_nPick;
     narg[6]=1000.0*t0;
     narg[7]=1000.0*t1;
-    narg[8]=1;                                //Max decode lines per decode attempt
+    narg[8]=2;                                //Max decode lines per decode attempt
     if(jt9com_.minSync<0) narg[8]=50;
     if(m_mode=="ISCAT") narg[9]=101;          //ISCAT
     if(m_mode=="JT9") narg[9]=102;            //Fast JT9
@@ -2444,14 +2444,12 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
     cursor=ui->decodedTextBrowser2->textCursor();
     t= ui->decodedTextBrowser2->toPlainText();
   }
-//  if(t.indexOf("\n")==0) t=t.mid(1,-1);
   cursor.select(QTextCursor::LineUnderCursor);
   int position {cursor.position()};
   if(shift && position==-9999) return;        //Silence compiler warning
 
   QString messages;
   if(!m_decodedText2) messages= ui->decodedTextBrowser2->toPlainText();
-  //Full contents
   if(m_decodedText2) messages= ui->decodedTextBrowser->toPlainText();
   processMessage(messages, position, ctrl);
 }
@@ -2461,15 +2459,16 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   QString t1 = messages.mid(0,position);              //contents up to \n on selected line
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
-  decodedtext = messages.mid(i1,position-i1);         //selected line
+  QString t2 = messages.mid(i1,position-i1);         //selected line
+  if(m_bFast9) t2=t2.mid(0,4) + t2.mid(6,-1);        //Change hhmmss to hhmm for the message parser
+  decodedtext = t2;
 
-  if (decodedtext.indexOf(" CQ ") > 0)
-    {
+  if (decodedtext.indexOf(" CQ ") > 0) {
       // TODO this magic 36 characters is also referenced in DisplayText::_appendDXCCWorkedB4()
-      auto eom_pos = decodedtext.string ().indexOf (' ', 35);
-      if (eom_pos < 35) eom_pos = decodedtext.string ().size () - 1; // we always want at least the characters
+    auto eom_pos = decodedtext.string ().indexOf (' ', 35);
+    if (eom_pos < 35) eom_pos = decodedtext.string ().size () - 1; // we always want at least the characters
                             // to position 35
-      decodedtext = decodedtext.string ().left (eom_pos + 1);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
+    decodedtext = decodedtext.string ().left (eom_pos + 1);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
     }
 
   auto t3 = decodedtext.string ();
@@ -3106,11 +3105,11 @@ void MainWindow::on_actionJT9_triggered()
     m_TRperiod=ui->sbTR->cleanText().toInt();
     m_wideGraph->hide();
     m_fastGraph->show();
-    ui->decodedTextLabel->setText("  UTC  Sync dB   DT   DF  F1");
     ui->TxFreqSpinBox->setValue(700);
+    ui->decodedTextLabel->setText("UTC     dB   DT Freq   Message");
   } else {
     m_TRperiod=60;
-    ui->decodedTextLabel->setText("   UTC      N   Level    Sig      DF    Width   Q");
+    ui->decodedTextLabel->setText("UTC   dB   t  Freq   Message");
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
