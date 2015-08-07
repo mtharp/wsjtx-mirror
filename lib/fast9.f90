@@ -38,16 +38,25 @@ subroutine fast9(id2,narg,line)
   istep=nsps/4
   jz=NMAX/istep
   df=12000.0/nfft
-  nfa=nrxfreq-ntol
-  nfb=nrxfreq+ntol
+  nfa=max(200,nrxfreq-ntol)
+  nfb=min(nrxfreq+ntol,2500)
+  nline=0
 
   if(newdat.eq.1 .or. nsubmode.ne.nsubmode0) then
      call spec9f(id2,npts,nsps,s1,jz,nq)          !Compute symbol spectra, s1 
   endif
   nsubmode0=nsubmode
+  tmsg=nsps*85.0/12000.0
 
-  limit=10000
-  do nlen=jz/340,1,-1
+  limit=1000
+  nlen0=0
+  do ilength=1,14
+     nlen=1.4142136**(ilength-1)
+     if(nlen.gt.jz/340) nlen=jz/340
+     if(nlen.eq.nlen0) cycle
+     write(71,*) ilength,nlen0,nlen
+     flush(71)
+     nlen0=nlen
      jlen=nlen*340
      jstep=jlen/4                      !### Is this about right? ###
 
@@ -70,21 +79,29 @@ subroutine fast9(id2,narg,line)
         t0=(ja-1)*istep/12000.0
         t1=(jb-1)*istep/12000.0
 
-        write(*,3001) nlen,t0,t1,ccfbest,lagpk,ipk,nlim,msg   !Temporary
-3001    format(i2,2f6.1,f7.0,2i6,i8,2x,a22)
+!        write(*,3001) nlen,t0,t1,ccfbest,lagpk,ipk,nlim,msg   !Temporary
+!3001    format(i2,2f6.1,f9.2,2i6,i8,2x,a22)
 
-        if(nlim.lt.limit) then
+        if(nlim.lt.limit .and. msg.ne.'                      ') then
+
+! Display multiple decodes only if they differ:
+           do n=1,nline
+              if(index(line(n),msg).gt.1) go to 100
+           enddo
+
            nsync=0.25*ccfbest                 !### Need a better formula! ###
            if(nsync.lt.0) nsync=0
            if(nsync.gt.10) nsync=10
            nsnr=nint(db(ccfbest)-22.0)
+!### Might want to use decoded message to get a complete estimate of S/N.
            xdt=0.
            freq=ipk*df
-           write(line(1),1000) nutc,nsync,nsnr,t0,nint(freq),0,msg
+           nline=nline+1
+           write(line(nline),1000) nutc,nsync,nsnr,t0,nint(freq),0,msg
 1000       format(i6.6,2i4,f5.1,i5,i3,2x,a22)
-! ### Might want to display two decodes, if they differ. ###
-           go to 900
+           if(nline.eq.maxlines) go to 900
         endif
+100     continue
      enddo
   enddo
 

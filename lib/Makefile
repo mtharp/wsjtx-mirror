@@ -38,9 +38,10 @@ t2:     $(OBJS2)
 	$(FC) -o t2 $(OBJS2)
 
 OBJS3 = testfast9.o fast9.o four2a.o pctile.o db.o interleave9.o jt9fano.o \
-	sort.o fano232.o packjt.o deg2grid.o grid2deg.o fmtmsg.o
+	sort.o fano232.o packjt.o deg2grid.o grid2deg.o fmtmsg.o \
+	spec9f.o foldspec9f.o sync9f.o softsym9f.o
 testfast9:  $(OBJS3)
-	$(FC) -o testfast9 $(OBJS3) -L. -lfftw3f_threads -lfftw3f 
+	$(FC) -o testfast9 $(OBJS3) C:\JTSDK\fftw3f\libfftw3f-3.dll
 
 .PHONY : clean
 

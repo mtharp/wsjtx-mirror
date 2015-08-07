@@ -1,6 +1,6 @@
 subroutine softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
 
-! Compute soft symbols
+! Compute soft symbols and S/N
 
   real ss2(0:8,85)
   real ss3(0:7,69)
@@ -19,7 +19,7 @@ subroutine softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
      ss=ss-smax
   enddo
   ave=ss/(69*7)                           !Baseline
-  call pctile(ss2,9*85,35,xmed)
+!  call pctile(ss2,9*85,35,xmed)                       !### better? ###
   ss3=ss3/ave
   sig=sig/69.                             !Signal
   t=max(1.0,sig - 1.0)
@@ -28,7 +28,6 @@ subroutine softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
   m0=3
   k=0
   scale=10.0
-
   do j=1,69
      do m=m0-1,0,-1                   !Get bit-wise soft symbols
         if(m.eq.2) then
@@ -50,8 +49,7 @@ subroutine softsym9f(ss2,ss3,snrdb,i1SoftSymbols)
      enddo
   enddo
 
-  limit=10000
-! Remove interleaving
+
   call interleave9(i1SoftSymbolsScrambled,-1,i1SoftSymbols)
 
   return
