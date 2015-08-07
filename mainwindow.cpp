@@ -1661,7 +1661,7 @@ void MainWindow::decode()                                       //decode()
       t1=m_t1Pick;
       if(t1 > m_kdone/12000.0) t1=m_kdone/12000.0;
     }
-    static int narg[10];
+    static int narg[12];
     narg[0]=jt9com_.nutc;
     if(m_kdone>12000*m_TRperiod) {
       m_kdone=12000*m_TRperiod;
@@ -1674,9 +1674,11 @@ void MainWindow::decode()                                       //decode()
     narg[6]=1000.0*t0;
     narg[7]=1000.0*t1;
     narg[8]=1;                                //Max decode lines per decode attempt
+    if(jt9com_.minSync<0) narg[8]=50;
     if(m_mode=="ISCAT") narg[9]=101;          //ISCAT
     if(m_mode=="JT9") narg[9]=102;            //Fast JT9
-    if(jt9com_.minSync<0) narg[8]=50;
+    narg[10]=ui->RxFreqSpinBox->value();
+    narg[11]=m_Ftol;
     *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0][0],80);
     watcher3->setFuture(*future3);
   } else {
@@ -3387,7 +3389,6 @@ void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
 void MainWindow::on_RxFreqSpinBox_valueChanged(int n)
 {
   m_wideGraph->setRxFreq(n);
-
   if (m_lockTxFreq && ui->TxFreqSpinBox->isEnabled ())
     {
       ui->TxFreqSpinBox->setValue (n);

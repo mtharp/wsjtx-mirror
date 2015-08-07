@@ -1,6 +1,6 @@
 subroutine spec9f(id2,npts,nsps,s1,jz,nq)
 
-! Compute "fast-JT9" symbol spectra at quarter-symbol steps.
+! Compute symbol spectra at quarter-symbol steps.
 
   integer*2 id2(0:npts)
   real s1(nq,jz)
@@ -8,8 +8,8 @@ subroutine spec9f(id2,npts,nsps,s1,jz,nq)
   complex c(0:480)
   equivalence (x,c)
 
-  nh=nsps
-  nfft=2*nh                               !FFTs at twice the symbol length
+  nfft=2*nsps                               !FFTs at twice the symbol length
+  nh=nfft/2
   do j=1,jz
      ia=(j-1)*nsps/4
      ib=ia+nsps-1
@@ -22,6 +22,9 @@ subroutine spec9f(id2,npts,nsps,s1,jz,nq)
         s1(i,j)=1.e-10*(real(c(i))**2 + aimag(c(i))**2)
      enddo
   enddo
+
+!### Reference spectrum should be applied here (or possibly earlier?) ###
+!### Normalize so that rms (or level?) is 1.0 ?  ###
 
   return
 end subroutine spec9f

@@ -5,10 +5,10 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
 ! spectra are put into ss2() and ss3().
 
   integer ii4(16)
-  real s2(340,nq)
+  real s2(240,340)
   real ss2(0:8,85)
   real ss3(0:7,69)
-  real ccf(0:340-1,160)              !### What should 2nd bound be? ###
+!  real ccf(240,0:340-1)
   include 'jt9sync.f90'
 
   ii4=4*ii-3
@@ -16,27 +16,25 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
   ccfbest=0.
   nfft=4*nq
   df=12000.0/nfft
-  k1=nfa/df
-  k2=nfb/df + 0.9999
+  ia=nfa/df
+  ib=nfb/df + 0.9999
 
-  do k=k1,k2
+  do i=ia,ib
      do lag=0,339
         t=0.
-        do i=1,16
-           j=ii4(i)+lag
+        do n=1,16
+           j=ii4(n)+lag
            if(j.gt.340) j=j-340
-           t=t + s2(j,k)
+           t=t + s2(i,j)
         enddo
-        ccf(lag,k)=t
+!        ccf(i,lag)=t
         if(t.gt.ccfbest) then
            lagpk=lag
-           kpk=k
+           ipk=i
            ccfbest=t
         endif
      enddo
   enddo
-
-  ipk=kpk
 
   do i=0,8
      j4=lagpk-4
@@ -46,7 +44,7 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
         j4=j4+4
         if(j4.gt.340) j4=j4-340
         if(j4.lt.1) j4=j4+340
-        ss2(i,j)=s2(j4,i2)
+        ss2(i,j)=s2(i2,j4)
         if(i.ge.1 .and. isync(j).eq.0) then
            m=m+1
            ss3(i-1,m)=ss2(i,j)
