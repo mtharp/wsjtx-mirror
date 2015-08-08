@@ -11,38 +11,44 @@ files section. Using the links below, download each package, then proceed to
 
 [horizontal]
 .Download Packages
-*MSVC Redist*:: {jtsdk-vcredist}
+*MSVC Redist 2010*:: {jtsdk-vcredist-2010}
+*MSVC Redist 2013*:: {jtsdk-vcredist-2013}
 *OmniRig*:: {jtsdk-omnirig}
 *JTSDK Main Installer*:: {jtsdk-installer}
-*JTSDK Update 1*:: {jtsdk-update1}
+*Update 1*:: {jtsdk-update1}
+*Update 2*:: {jtsdk-update2}
 
 [[MSCVINSTALL]]
-==== MSVC Redist Installation
-* Browse to your download location
-* Run the installer (vcredist-x86.exe)
+==== MSVC Redist 2010
+* Run the installer ( vcredist-x86.exe )
 * Read and accept the terms
-* Finish the installation
+* Follow the prompts
+
+==== MSVC Redist 2013
+* Run the installer ( vcredist_msvc2013_x86.exe )
+* Read and accept the terms
+* Follow the prompts
 
 ==== OmniRig Installation
-* Browse to your download location
-* Unzip the installer (OmniRig.zip)
-* Run the installer (OmniRigSetup.exe)
-* Accept the defaults
+* Unzip the installer ( OmniRig.zip )
+* Run the installer ( OmniRigSetup.exe )
+* Follow the prompts
 
-==== JTSDK Installation
-* Browse to your download location
-* Run the installer (JTSDK-2.0.0-win32.exe)
-* Accept KVASD EULA Terms
-* View GPL3 License Terms, then click next
+==== JTSDK Main Installation
+* Run the installer ( JTSDK-2.0.0-win32.exe )
+* Accept KVASD EULA
 * Wait for primary instillation to complete
 * Monitor Cygwin32 installation for any errors
-* Installation should finish
-* Select environment to launch
 
-==== JTSDK Update-1
-* Browse to your download location
-* Run the installer (JTSDK-2.0.0-u1-win32.exe)
+==== Update-1
+* Run the installer ( JTSDK-2.0.0-u1-win32.exe )
 * Accept the defaults
+* Follow the prompts
+
+==== Update-2
+* Run the installer ( JTSDK-2.0.0-u2-win32.exe )
+* Accept the defaults
+* Follow the prompts
 
 *****
 TIP: Due to the custom installation of JTSDK-MSYS, upon first run, the
@@ -52,103 +58,112 @@ re-start JTSDK-MSYS after it configures the shell.
 
 [[INSTALLLINUX]]
 === Linux
-At the time of this writing, only Debian/UBuntu based distributions are
-supported for Linux.
+For Debian / Ubuntu based distributions, there is a pre-built package available
+on {launchpad_jtsdk}, however, the install method varries slightly for Debian.
+All other distributions should install from the <<LINUXSOURCE,Source Tarball>>
 
-.SUPPORTED DISTRIBUTIONS
-* Ubuntu.....: 14.04, 14.10, 15.04
-* Mint.......: 17.1
-* Debian.....: 8.*
-* Raspbian...: Jessie
+IMPORTANT:  WSPR-X and MAP65 *are not* supported on Linux.
+
+[[UBUNTUMINT]]
+==== Install via PPA ( Ubuntu / Mint )
+Installation is stright forward to Ubuntu and Mint, simply add the repository,
+update and install.
 
 -----
-* Ubuntu includes Xubuntu, Lubuntu, Kubuntu
-* Rasbian upgraded to Jessie. Wheezy is not supported.
-* WSPR-X and MAP65 are not supported on Linux.
+# Open a terminal, then type:
+
+* sudo add-apt-repository ppa:ki7mt/jtsdk
+* sudo apt-get update
+* sudo apt-get install jtsdk
+
 -----
 
-=== Install Location
-The default installation location is: /usr/local  Unless you need to have this
-elsewhere, the default location should suffice. Setting the install prefix to
-/usr is not recommended.
+[[DEBIANRASPBIAN]]
+==== Install via PPA ( Debian / Raspbian )
+For Debian / Raspbian, in order to use a {launchpad_jtsdk} PPA, you must set up the
+repository manually. Additionally, Raspbian is only supported when upgraded to
+Jessie.
 
-==== Download Source Tarball
-* Download jtsdk-nix-2.0.5.tar.gz
-* Extract: tar -xf jtsdk-nix-2.0.5.tar.gz
-* cd ./jtsdk-nix-2.0.5
-
-.Enable Features
 -----
+
+# Edit your source list, adding the source lines listed below
+# sudo nano /etc/apt/sources.list
+
+# Add the following Lines
+#--
+deb http://ppa.launchpad.net/ki7mt/jtsdk/ubuntu trusty main
+deb http://ppa.launchpad.net/ki7mt/kvasd-installer/ubuntu trusty main
+#--
+
+* Save and Exit
+* sudo apt-get update
+* sudo apt-get install jtsdk kvasd-installer
+* Run kvasd-installer, Select [I] Install Decoder
+* Exit KVASD Installer
+
+-----
+
+[[LINUXSOURCE]]
+==== Install via Source Tarball ( All Non-Debian / Non-Ubuntu Based Distros )
+At the time of this writing, the latest source version v2.0.12 and will be
+used for this install example. 
+
+* Download The Latest Source from: {sourceforge_linux_tarball} 
+* Extract: tar -xvf jtsdk-nix-2.0.12.tar.gz
+* cd ./jtsdk-nix-2.0.12
+* Then run the following commands:
+
+-----
+./autogeh.sh
+make
+sudo make uninstall
+sudo make install
+-----
+
+.Customize Features
+No options should be passed to the autogen.sh invocation initially. If after
+your first build you experience problems with packag loacations, or merely want
+to enable / disabel festures, the following options are available.
+
+-----
+--with-python3=PATH    # Path to python3
+--with-f2py3=PATH      # Path to f2py3
 --enable-separate      # Separate dir's svn number, default is disabled
 --disable-docs         # Disable building HTML docs, default is enabled
 --disable-parallel     # Disable Multi-Core builds, default is enabled
 -----
 
-*Enable Separate* is used for separating each build by SVN commit version. This
+*--with-python3* - Unless you have a customized Python3 installation, you should
+not need to modify the Python3 paths but it is availble nontheless.
+
+*--with=f2py* - This feature is usefull for testing odd locations for the F2py
+script. If you have built Python3-NumPY from source, and specidied a custom
+install locaiton, use this feature to tell the configure script the location
+of F2PY. Some distributions have different names for F2PY, this options allows
+for these type of variations.
+
+*--enable-separate* is used for separating each build by SVN commit version. This
 is useful when want to keep a specific fall back version, yet build and test the
 latest revisions. When using this feature, monitor you disk usage, as it can add
 up quickly.
 
-*Disable Docs* is used to tun off HTML file generation. At present, this only
+*--disable-docs* is used to tun off HTML file generation. At present, this only
 applies too *JTSDK* itself. Future releases will control application documentation
 as well.
 
-*Disable Parallel* should not be used unless your testing the differences 
+*--disable-parallel* should not be used unless your testing the differences 
 between single and multi-core builds. One would be hard pressed to find a single
 core CPU in a modern day system.
 
-.Additional Configuration Items
------
---with-distro=DISTRO   # Distro Name: (debian, ubuntu, mint)
---with-python3=PATH    # Path to python3
---with-f2py3=PATH      # Path to f2py3
---with-homedir=PATH    # Change Default Home directory path
------
 
-*With Distro* - It is important to specify which distribution you are using,
-otherwise, the configure script will error back to the command line.
-
-*With Python3* - Unless you have a customized Python3 installation, you should
-not need to modify the Python3 paths.
-
-*With F2py* - This feature is usefull for testing odd locations for the F2py
-script. If you have built Python3-NumPY from source, and specidied a custom
-install locaiton, use this feature to tell the configure script the location
-of F2PY.
-
-*Home Dir* - The default home directory is ~/jtsdk and should suffice for most
-most users needs.
-
-.Recommended Invocation
------
-Ubuntu....: ./autogen.sh --with-distro=ubuntu --enable-separate
-Mint......: ./autogen.sh --with-distro=mint --enable-separate
-Debian....: ./autogen.sh --with-distro=debian --enable-spearate
-Raspbian..: ./autogen.sh --with-distro=debian --enable-separate
------
-
-The recommended configurations above should sufficient for most users. The only
-other option you may want to consider is disabling documentaiton, however, later
-versions of *JTSDK* will be uing this feature to enable / disable documentation
-builds within the application.
-
-==== Make and Make Install
-* make
-* sudo make install
-
-*****
-IMPORTANT: If during the make portion, your system requires additional packages,
-after running make the 1st time, you need to re-run your original autogen
-command, followed by make the 2nd time. This is to ensure all the new packages
-are picked up and the build scripts configured properly.
-*****
 
 ==== RUN JTSDK
 * In a terminal..: jtsdk
 
 ==== TO UNINSTALL
-* cd ./jtsdk-nix-2.0.5
+* cd ./jtsdk-nix-2.0.12
 * sudo make uninstall
+
 
 .APPLICATION BUILD NOTES
 * If building WSJT-X, build Hamlib3 first, then build WSJT-X.
@@ -161,4 +176,3 @@ desktop environment. If you encounter PObject errors when running
 WSPR or WSJT, more than likely this is the cause. WSPR and WSJT requires
 python3-numpy. To resolve, remove python-numpy, but be warned, this may
 cause unexpected behavior in your Desktop Environment.
-
