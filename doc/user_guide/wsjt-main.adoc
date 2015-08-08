@@ -95,4 +95,4 @@ include::compiling.adoc[]
 include::acknowledgments.adoc[]
 
 == License
-include::../../global/license.adoc[]
+include::../common/license.adoc[]

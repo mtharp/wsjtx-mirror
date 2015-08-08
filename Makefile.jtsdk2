@@ -141,7 +141,7 @@ user-guide:
 	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
 	--conf-file=$(DOCCONF) \
 	--backend=xhtml11 \
-	--theme wspr \
+	--theme wsjt \
 	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
 	@echo.
 	@echo Finished
