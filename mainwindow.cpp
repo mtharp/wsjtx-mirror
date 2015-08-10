@@ -1107,6 +1107,7 @@ void MainWindow::keyPressEvent( QKeyEvent *e )                //keyPressEvent
       break;
     case Qt::Key_F4:
       clearDX ();
+      ui->dxCallEntry->setFocus();
       return;
     case Qt::Key_F6:
       if(e->modifiers() & Qt::ShiftModifier) {
@@ -1690,10 +1691,20 @@ void MainWindow::decode()                                       //decode()
 
 void::MainWindow::fast_decode_done()
 {
+  float t,tmax=-99.0;
+  QString msg0;
   for(int i=0; i<100; i++) {
+    if(m_bFast9 and m_bEME and tmax>=0.0) {              //Here, m_bEME implies AutoSeq
+      processMessage(msg0,40,false);
+    }
     if(m_msg[i][0]==0) break;
     QString message=QString::fromLatin1(m_msg[i]);
     ui->decodedTextBrowser->appendText(message);
+    t=message.mid(10,5).toFloat();
+    if(t>tmax) {
+      msg0=message;
+      tmax=t;
+    }
   }
   m_nPick=0;
   ui->DecodeButton->setChecked (false);
@@ -2229,6 +2240,7 @@ void MainWindow::guiUpdate()
 //Once per second:
   if(nsec != m_sec0) {
 
+/*
 //################################################################################
     QString diag;
 
@@ -2236,7 +2248,7 @@ void MainWindow::guiUpdate()
                  m_k0,m_monitoring,m_transmitting);
     ui->decodedTextBrowser2->setText(diag);
 //################################################################################
-
+*/
     if(m_auto and m_mode=="Echo" and m_bEchoTxOK) {
       progressBar->setMaximum(6);
       progressBar->setValue(int(m_s6));
@@ -2444,6 +2456,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
 {
   QTextCursor cursor;
   QString t;                         //Full contents
+  if(m_mode=="ISCAT") msgBox("Double-click not presently implemented for ISCAT mode");
   if(shift) t="";                    //Silence compiler warning
   if(m_decodedText2) {
     cursor=ui->decodedTextBrowser->textCursor();
@@ -2468,16 +2481,23 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
   QString t2 = messages.mid(i1,position-i1);         //selected line
-  if(m_bFast9) t2=t2.mid(0,4) + t2.mid(6,-1);        //Change hhmmss to hhmm for the message parser
+  int ntsec=3600*t2.mid(0,2).toInt() + 60*t2.mid(2,2).toInt();
+  if(m_bFast9) {
+    ntsec+=t2.mid(4,2).toInt();
+    t2=t2.mid(0,4) + t2.mid(6,-1);        //Change hhmmss to hhmm for the message parser
+  }
+  int nmod=ntsec % (2*m_TRperiod);
+  m_txFirst=(nmod!=0);
+  ui->txFirstCheckBox->setChecked(m_txFirst);
   decodedtext = t2;
 
   if (decodedtext.indexOf(" CQ ") > 0) {
-      // TODO this magic 36 characters is also referenced in DisplayText::_appendDXCCWorkedB4()
+// TODO this magic 36 characters is also referenced in DisplayText::_appendDXCCWorkedB4()
     auto eom_pos = decodedtext.string ().indexOf (' ', 35);
     if (eom_pos < 35) eom_pos = decodedtext.string ().size () - 1; // we always want at least the characters
                             // to position 35
     decodedtext = decodedtext.string ().left (eom_pos + 1);  // remove DXCC entity and worked B4 status. TODO need a better way to do this
-    }
+  }
 
   auto t3 = decodedtext.string ();
   auto t4 = t3.replace (" CQ DX ", " CQ_DX ").split (" ", QString::SkipEmptyParts);
@@ -2517,14 +2537,16 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
 
   int frequency = decodedtext.frequencyOffset();
   QString firstcall = decodedtext.call();
-  // Don't change Tx freq if a station is calling me, unless m_lockTxFreq
-  // is true or CTRL is held down
-  if ((firstcall!=m_config.my_callsign () and firstcall != m_baseCall) or
-      m_lockTxFreq or ctrl) {
-    if (ui->TxFreqSpinBox->isEnabled ()) {
-      ui->TxFreqSpinBox->setValue(frequency);
-    } else if(m_mode!="JT4") {
-      return;
+  if(!m_bFastMode) {
+  // Don't change Tx freq if in a fast mode; also not if a station is calling me,
+  // unless m_lockTxFreq is true or CTRL is held down
+    if ((firstcall!=m_config.my_callsign () and firstcall != m_baseCall) or
+        m_lockTxFreq or ctrl) {
+      if (ui->TxFreqSpinBox->isEnabled ()) {
+        ui->TxFreqSpinBox->setValue(frequency);
+      } else if(m_mode!="JT4") {
+        return;
+      }
     }
   }
 
@@ -2561,8 +2583,8 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   auto base_call = Radio::base_callsign (hiscall);
   if (base_call != Radio::base_callsign (ui->dxCallEntry-> text ().toUpper ().trimmed ()) || base_call != hiscall)
     {
-      // his base call different or his call more qualified
-      // i.e. compound version of same base call
+  // his base call different or his call more qualified
+  // i.e. compound version of same base call
       ui->dxCallEntry->setText(hiscall);
     }
   if (gridOK(hisgrid)) {
@@ -2572,16 +2594,12 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
     lookup();
   m_hisGrid = ui->dxGridEntry->text();
 
-  int n = decodedtext.timeInSeconds();
-  int nmod=n%(m_TRperiod/30);
-  m_txFirst=(nmod!=0);
-  ui->txFirstCheckBox->setChecked(m_txFirst);
-
   QString rpt = decodedtext.report();
   ui->rptSpinBox->setValue(rpt.toInt());
   genStdMsgs(rpt);
 
-  // determine the appropriate response to the received msg
+// Determine appropriate response to received message
+
   auto dtext = " " + decodedtext.string () + " ";
   if(dtext.contains (" " + m_baseCall + " ")
      || dtext.contains ("/" + m_baseCall + " ")
@@ -3261,11 +3279,8 @@ void MainWindow::on_actionWSPR_2_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   WSPR_config(true);
-<<<<<<< .working
   fast_config(false);
-=======
   ui->TxFreqSpinBox->setValue(ui->WSPRfreqSpinBox->value());
->>>>>>> .merge-right.r5772
 }
 
 void MainWindow::on_actionWSPR_15_triggered()
@@ -3380,6 +3395,14 @@ void MainWindow::fast_config(bool b)
 {
   m_bFastMode=b;
   ui->ClrAvgButton->setVisible(!b);
+  if(b) {
+// ### Does this work as intended? ###
+    Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
+    ui->cbEME->setText("Auto Seq");
+  } else {
+    ui->cbEME->setText("EME delay");
+  }
+
   if(b and (m_mode!="JT9")) {
     ui->sbTR->setValue(m_TRindex);
     m_wideGraph->hide();
@@ -4120,11 +4143,19 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
   }
   if(m_mode=="JT9" and m_bFast9) ui->TxFreqSpinBox->setValue(700);
 }
+
 void MainWindow::on_cbFast9_clicked(bool b)
 {
   if(m_mode=="JT9") {
     m_bFast9=b;
     on_actionJT9_triggered();
+  }
+  if(b) {
+// ### Does this work as intended? ###
+    Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
+    ui->cbEME->setText("Auto Seq");
+  } else {
+    ui->cbEME->setText("EME delay");
   }
 }
 

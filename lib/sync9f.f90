@@ -8,7 +8,6 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
   real s2(240,340)
   real ss2(0:8,85)
   real ss3(0:7,69)
-!  real ccf(240,0:340-1)
   include 'jt9sync.f90'
 
   ii4=4*ii-3
@@ -27,7 +26,6 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
            if(j.gt.340) j=j-340
            t=t + s2(i,j)
         enddo
-!        ccf(i,lag)=t
         if(t.gt.ccfbest) then
            lagpk=lag
            ipk=i
@@ -39,6 +37,7 @@ subroutine sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
   do i=0,8
      j4=lagpk-4
      i2=2*i + ipk
+     if(i2.lt.1) i2=1
      m=0
      do j=1,85
         j4=j4+4
