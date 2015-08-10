@@ -23,5 +23,8 @@ subroutine foldspec9f(s1,nq,jz,ja,jb,s2)
      s2(1:nq,k)=fac*s2(1:nq,k)
   enddo
 
+  ave=sum(s2(1:nq,1:340))/(340.0*nq)
+  s2=s2/ave
+
   return
 end subroutine foldspec9f

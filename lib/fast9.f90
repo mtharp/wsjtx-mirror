@@ -74,6 +74,7 @@ subroutine fast9(id2,narg,line)
 ! However... this simple approach works pretty well, as a start:
 
         call sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
+        if(ccfbest.lt.30.0) cycle
 
         call softsym9f(ss2,ss3,snrdb,i1SoftSymbols)     !Compute soft symbols
 
@@ -87,11 +88,11 @@ subroutine fast9(id2,narg,line)
         freq=ipk*df
 
 !        write(*,3001) nlen,t0,t1,ccfbest,nsnr,nint(freq),lagpk,ipk,nlim,msg
+!3001    format(i2,2f6.1,f9.2,4i6,i8,2x,a22)
 
         if(msg.ne.'                      ') then
 
 !           write(71,3001) nlen,t0,t1,ccfbest,nsnr,nint(freq),lagpk,ipk,nlim,msg
-!3001       format(i2,2f6.1,f9.2,4i6,i8,2x,a22)
 !           flush(71)
 
 ! Display multiple decodes only if they differ:
