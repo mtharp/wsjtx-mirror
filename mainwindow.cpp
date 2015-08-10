@@ -911,7 +911,9 @@ void MainWindow::dataSink(qint64 frames)
 void MainWindow::fastSink(qint64 frames)
 {
   static float px;
+  static bool decodeEarly;
   int k (frames);
+  bool decodeNow=false;
 
   if(m_k0==9999999) {
     memset(fast_green,0,sizeof(float)*703);        //Zero fast_gereen[]
@@ -921,6 +923,8 @@ void MainWindow::fastSink(qint64 frames)
       memcpy(fast_green2,fast_green,4*703);        //Copy fast_green[] to fast_green2[]
       memcpy(fast_s2,fast_s,4*703*64);             //Copy fast_s[] into fast_s2[]
       fast_jh2=fast_jh;
+      if(!m_diskData) memset(jt9com_.d2,0,2*30*12000);   //Zero the d2[] array
+      decodeEarly=false;
     }
   }
 
@@ -931,14 +935,23 @@ void MainWindow::fastSink(qint64 frames)
   ui->signal_meter_widget->setValue(px); // Update thermometer
   m_fastGraph->plotSpec();
 
+  decodeNow=false;
   m_k0=k;
-  if((m_diskData and k >= jt9com_.kin-3456) or (!m_diskData and m_tRemaining<0.35)) {
+  int secRcvd=m_k0/12000;
+  if(secRcvd>=m_TRperiod-5 and !decodeEarly and !m_diskData) {
+    decodeEarly=true;
+    decodeNow=true;
+  }
+  if(m_diskData and m_k0 >= jt9com_.kin-3456) decodeNow=true;
+  if(!m_diskData and m_tRemaining<0.35) decodeNow=true;
+
+  if(decodeNow) {
     m_dataAvailable=true;
     m_t0=0.0;
     m_t1=k/12000.0;
     m_kdone=k;
     jt9com_.newdat=1;
-    decode();
+    if(!m_decoderBusy) decode();
     if(!m_diskData and m_saveAll) {
       QDateTime t=QDateTime::currentDateTimeUtc().addSecs(2-m_TRperiod);
       int ihr=t.toString("hh").toInt();
@@ -1663,6 +1676,7 @@ void MainWindow::decode()                                       //decode()
       if(t1 > m_kdone/12000.0) t1=m_kdone/12000.0;
     }
     static int narg[12];
+    static short int d2b[360000];
     narg[0]=jt9com_.nutc;
     if(m_kdone>12000*m_TRperiod) {
       m_kdone=12000*m_TRperiod;
@@ -1680,7 +1694,8 @@ void MainWindow::decode()                                       //decode()
     if(m_mode=="JT9") narg[9]=102;            //Fast JT9
     narg[10]=ui->RxFreqSpinBox->value();
     narg[11]=m_Ftol;
-    *future3 = QtConcurrent::run(fast_decode_,&jt9com_.d2[0],&narg[0],&m_msg[0][0],80);
+    memcpy(d2b,jt9com_.d2,2*360000);
+    *future3 = QtConcurrent::run(fast_decode_,&d2b[0],&narg[0],&m_msg[0][0],80);
     watcher3->setFuture(*future3);
   } else {
     memcpy(to, from, qMin(mem_jt9->size(), size));
@@ -1699,7 +1714,14 @@ void::MainWindow::fast_decode_done()
     }
     if(m_msg[i][0]==0) break;
     QString message=QString::fromLatin1(m_msg[i]);
-    ui->decodedTextBrowser->appendText(message);
+
+//Left (Band activity) window
+    DecodedText decodedtext;
+    decodedtext=message.replace("\n","");
+    ui->decodedTextBrowser->displayDecodedText (decodedtext,m_baseCall,m_config.DXCC(),
+         m_logBook,m_config.color_CQ(),m_config.color_MyCall(),m_config.color_DXCC(),
+         m_config.color_NewCall());
+
     t=message.mid(10,5).toFloat();
     if(t>tmax) {
       msg0=message;
@@ -2481,15 +2503,18 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   int i1=t1.lastIndexOf("\n") + 1;       //points to first char of line
   DecodedText decodedtext;
   QString t2 = messages.mid(i1,position-i1);         //selected line
+  QString t2a;
   int ntsec=3600*t2.mid(0,2).toInt() + 60*t2.mid(2,2).toInt();
   if(m_bFast9) {
     ntsec+=t2.mid(4,2).toInt();
-    t2=t2.mid(0,4) + t2.mid(6,-1);        //Change hhmmss to hhmm for the message parser
+    t2a=t2.mid(0,4) + t2.mid(6,-1);        //Change hhmmss to hhmm for the message parser
+  } else {
+    t2a=t2;
   }
+  decodedtext = t2a;
   int nmod=ntsec % (2*m_TRperiod);
   m_txFirst=(nmod!=0);
   ui->txFirstCheckBox->setChecked(m_txFirst);
-  decodedtext = t2;
 
   if (decodedtext.indexOf(" CQ ") > 0) {
 // TODO this magic 36 characters is also referenced in DisplayText::_appendDXCCWorkedB4()
@@ -2553,6 +2578,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   int i9=m_QSOText.indexOf(decodedtext.string());
   if (i9<0 and !decodedtext.isTX())
     {
+    decodedtext=t2;
       ui->decodedTextBrowser2->displayDecodedText(decodedtext
                                                   , m_baseCall
                                                   , false
@@ -3133,9 +3159,11 @@ void MainWindow::on_actionJT9_triggered()
     m_fastGraph->show();
     ui->TxFreqSpinBox->setValue(700);
     ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
+    ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
   } else {
     m_TRperiod=60;
     ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
+    ui->decodedTextLabel2->setText("UTC   dB   DT Freq   Message");
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
@@ -4386,8 +4414,6 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
         ui->decodedTextBrowser->appendText(band.rightJustified (71, '-'));
         m_blankLine = false;
       }
-
-//      ui->decodedTextBrowser->appendText(t);
       m_nWSPRdecodes += 1;
       ui->decodedTextBrowser->appendText(rxLine);
     }
