@@ -1728,6 +1728,7 @@ void::MainWindow::fast_decode_done()
       tmax=t;
     }
   }
+  m_startAnother=m_loopall;
   m_nPick=0;
   ui->DecodeButton->setChecked (false);
 }
@@ -1755,7 +1756,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
     if(m_mode=="JT4") t=t.mid(0,39) + t.mid(42,t.length()-42);
     if(t.indexOf("<DecodeFinished>") >= 0) {
       m_bdecoded = (t.mid(23,1).toInt()==1);
-      if(!m_diskData) killFileTimer->start (45*1000); //Kill in 45 s
+      if(!m_diskData) killFileTimer->start (3*1000*m_TRperiod/4); //Kill in 45 s
       jt9com_.nagain=0;
       jt9com_.ndiskdat=0;
       m_nclearave=0;
