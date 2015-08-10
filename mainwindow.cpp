@@ -2229,6 +2229,14 @@ void MainWindow::guiUpdate()
 //Once per second:
   if(nsec != m_sec0) {
 
+//################################################################################
+    QString diag;
+
+    diag.sprintf("%c %2d/%d %7d %d %d",65+m_nSubMode,nsec%m_TRperiod,m_TRperiod,
+                 m_k0,m_monitoring,m_transmitting);
+    ui->decodedTextBrowser2->setText(diag);
+//################################################################################
+
     if(m_auto and m_mode=="Echo" and m_bEchoTxOK) {
       progressBar->setMaximum(6);
       progressBar->setValue(int(m_s6));
@@ -3106,10 +3114,10 @@ void MainWindow::on_actionJT9_triggered()
     m_wideGraph->hide();
     m_fastGraph->show();
     ui->TxFreqSpinBox->setValue(700);
-    ui->decodedTextLabel->setText("UTC     dB   DT Freq   Message");
+    ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
   } else {
     m_TRperiod=60;
-    ui->decodedTextLabel->setText("UTC   dB   t  Freq   Message");
+    ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
@@ -3253,7 +3261,11 @@ void MainWindow::on_actionWSPR_2_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   WSPR_config(true);
+<<<<<<< .working
   fast_config(false);
+=======
+  ui->TxFreqSpinBox->setValue(ui->WSPRfreqSpinBox->value());
+>>>>>>> .merge-right.r5772
 }
 
 void MainWindow::on_actionWSPR_15_triggered()
