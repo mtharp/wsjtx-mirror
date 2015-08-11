@@ -925,6 +925,18 @@ void MainWindow::fastSink(qint64 frames)
       fast_jh2=fast_jh;
       if(!m_diskData) memset(jt9com_.d2,0,2*30*12000);   //Zero the d2[] array
       decodeEarly=false;
+
+      QDateTime t=QDateTime::currentDateTimeUtc();     //.addSecs(2-m_TRperiod);
+      int ihr=t.toString("hh").toInt();
+      int imin=t.toString("mm").toInt();
+      int isec=t.toString("ss").toInt();
+      isec=isec - isec%m_TRperiod;
+      QString t2;
+      t2.sprintf("%2.2d%2.2d%2.2d.wav",ihr,imin,isec);
+      m_fname = m_config.save_directory().absoluteFilePath(
+            t.date().toString("yyMMdd") + "_" + t2);
+//      qDebug() << "a" << m_fname;
+
     }
   }
 
@@ -938,10 +950,12 @@ void MainWindow::fastSink(qint64 frames)
   decodeNow=false;
   m_k0=k;
   int secRcvd=m_k0/12000;
+  /*
   if(secRcvd>=m_TRperiod-5 and !decodeEarly and !m_diskData) {
     decodeEarly=true;
     decodeNow=true;
   }
+  */
   if(m_diskData and m_k0 >= jt9com_.kin-3456) decodeNow=true;
   if(!m_diskData and m_tRemaining<0.35) decodeNow=true;
 
@@ -952,19 +966,12 @@ void MainWindow::fastSink(qint64 frames)
     m_kdone=k;
     jt9com_.newdat=1;
     if(!m_decoderBusy) decode();
-    if(!m_diskData and m_saveAll) {
-      QDateTime t=QDateTime::currentDateTimeUtc().addSecs(2-m_TRperiod);
-      int ihr=t.toString("hh").toInt();
-      int imin=t.toString("mm").toInt();
-      int isec=t.toString("ss").toInt();
-      isec=isec - isec%m_TRperiod;
-      QString t2;
-      t2.sprintf("%2.2d%2.2d%2.2d.wav",ihr,imin,isec);
-      m_fname = m_config.save_directory().absoluteFilePath(
-            t.date().toString("yyMMdd") + "_" + t2);
+    if(!m_diskData and m_saveAll and m_fname != "" and !decodeEarly) {
+//      qDebug() << "c" << m_fname;
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
     }
+    decodeEarly=false;
   }
 }
 
@@ -2507,8 +2514,8 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   QString t2a;
   int ntsec=3600*t2.mid(0,2).toInt() + 60*t2.mid(2,2).toInt();
   if(m_bFast9) {
-    ntsec+=t2.mid(4,2).toInt();
-    t2a=t2.mid(0,4) + t2.mid(6,-1);        //Change hhmmss to hhmm for the message parser
+    ntsec = ntsec + t2.mid(4,2).toInt();
+    t2a=t2.mid(0,4) + t2.mid(6,-1);     //Change hhmmss to hhmm for the message parser
   } else {
     t2a=t2;
   }
@@ -2626,7 +2633,6 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   genStdMsgs(rpt);
 
 // Determine appropriate response to received message
-
   auto dtext = " " + decodedtext.string () + " ";
   if(dtext.contains (" " + m_baseCall + " ")
      || dtext.contains ("/" + m_baseCall + " ")

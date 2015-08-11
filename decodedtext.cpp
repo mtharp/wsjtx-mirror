@@ -51,7 +51,8 @@ int DecodedText::frequencyOffset()
 
 int DecodedText::snr()
 {
-    return _string.mid(column_snr,3).toInt();
+  int i1=_string.indexOf(" ")+1;
+  return _string.mid(i1,3).toInt();
 }
 
 float DecodedText::dt()

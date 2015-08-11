@@ -22,6 +22,8 @@ subroutine fast_decode(id2,narg,line)
   maxlines=narg(8)
   nmode=narg(9)
 
+!  call sleep_msec(100)                       !### TEMPORARY ###
+
   if(nmode.eq.102) then
      call fast9(id2,narg,line)
      go to 900
