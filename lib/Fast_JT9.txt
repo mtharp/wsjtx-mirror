@@ -28,7 +28,7 @@ automatic reporting of decodes to PSKreporter.
 
 For details on the modulation parameters of the JT9 submodes, see the
 table posted at
-http://physics.princeton.edu/pulsar/K1JT/wsjy_modes.txt.
+http://physics.princeton.edu/pulsar/K1JT/wsjt_modes.txt.
 
 WSJT-X v1.6.1 r5779 has the following changes from r5769:
 
@@ -37,6 +37,10 @@ WSJT-X v1.6.1 r5779 has the following changes from r5769:
 3. Faster decoding (further optimization still to come)
 4. Decoded text is highlighted as in WSJT-X slow modes
 5. Optional auto-sequencing
+
+Fair warning: auto-sequencing is basically functional, but scarcely
+tested.  Please watch what it is doing, and tell us how you think it
+should be improved!
 
 If you use WSJT-X also for other modes and other purposes, you may
 want to save several different sets of configuration settings.  In
