@@ -3157,6 +3157,7 @@ void MainWindow::on_actionJT9_triggered()
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
   ui->sbTR->setVisible(true);
+  ui->cbEME->setVisible(true);
   ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
   fast_config(bVHF);
@@ -3373,6 +3374,9 @@ void MainWindow::on_actionISCAT_triggered()
   VHF_controls_visible(true);
   WSPR_config(false);
   fast_config(true);
+  ui->cbShMsgs->setVisible(false);
+  ui->cbTx6->setVisible(false);
+  ui->cbEME->setVisible(false);
   ui->decodedTextBrowser2->setVisible(false);
   ui->decodedTextLabel2->setVisible(false);
   ui->decodedTextLabel->setText(
