@@ -1,0 +1,74 @@
+			Fast JT9 Submodes
+			-----------------
+			 August 11, 2015
+
+Since its origin in the dark ages (ca. 2001) WSJT has supported "fast"
+modes (designed for meteor scatter, etc.) and "slow" modes (optimized
+for EME and other weak-signal propagation types).  The most recent new
+mode, JT9, now has *both* fast and slow submodes.  
+
+JT9A (the "original" JT9) is like JT65 and JT4: its T/R sequences are
+one minute long, and its primary goal is best possible sensitivity for
+very weak, approximately steady signals.  The new experimental JT9
+submodes use the same message structure, encoding, and modulation type
+(9-tone FSK) as JT9A, but wider tone spacing and (optionally) faster
+keying rates.
+
+You can download an experimental version of WSJT-X (v1.6.1, r5779) here:
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5779-win32.exe
+
+The fast submodes currently being tested, JT9E - JT9H, have been found
+highly effective for meteors and ionoscatter propagation on 6 and 10
+meters.  Sensitivity is similar to ISCAT, or slightly better.
+Decoding is much more reliable, because the JT9 protocol includes
+strong forward error correction.  Decoding results are like those for
+all the WSJT "slow" modes: you should see messages exactly as they
+were transmitted, or nothing at all.  A potential side benefit is
+automatic reporting of decodes to PSKreporter.
+
+For details on the modulation parameters of the JT9 submodes, see the
+table posted at
+http://physics.princeton.edu/pulsar/K1JT/wsjy_modes.txt.
+
+WSJT-X v1.6.1 r5779 has the following changes from r5769:
+
+1. Numerous bug fixes
+2. Double-click on decoded message now behaves properly
+3. Faster decoding (further optimization still to come)
+4. Decoded text is highlighted as in WSJT-X slow modes
+5. Optional auto-sequencing
+
+If you use WSJT-X also for other modes and other purposes, you may
+want to save several different sets of configuration settings.  In
+that case it's convenient to use the "-r xxx" option and start the
+program from a command-prompt window.  For example:
+
+C:\Users\joe> cd \wsjt\wsjtx\bin
+C:\WSJT\wsjtx\bin> wsjtx -r xxx
+
+... where "xxx" can be anything you like, for example "ISCAT",
+"FAST9", etc.
+
+Proper configuration for the JT9 fast modes includes the following
+settings:
+
+On the Settings | General tab:
+
+ - check "Enable VHF/UHF/Microwave features"
+
+Main window settings:
+
+ - Mode JT9
+ - Tx 700 Hz
+ - Rx 700 Hz
+ - Sync 0
+ - Submode G  ... or E, F, and H (H not legal in US on 10m)
+ - Tick "Fast"
+ - T/R 30 s     (also 5, 10, 15 s)
+ - FTol 500
+
+Please keep in mind that this is an experimental version of WSJT-X.
+It still has some rough edges, and no doubt some bugs.  Your feedback
+will be much appreciated, and will help to make the program better!
+
+    -- 73, Joe, K1JT
