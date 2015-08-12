@@ -2,18 +2,26 @@ subroutine fast9(id2,narg,line)
 
 ! Decoder for "fast9" modes, JT9E to JT9H.
 
-  parameter (NMAX=30*12000)
+  parameter (NMAX=30*12000,NSAVE=500)
   integer*2 id2(0:NMAX)
   integer narg(0:11)
   integer*1 i1SoftSymbols(207)
+  integer*1 i1save(207,NSAVE)
+  integer indx(NSAVE)
+  integer*8 count0,count1,clkfreq
   real s1(720000)                      !To reserve space.  Logically s1(nq,jz)
   real s2(240,340)                     !Symbol spectra at quarter-symbol steps
   real ss2(0:8,85)                     !Folded symbol spectra
   real ss3(0:7,69)                     !Folded spectra without sync symbols
+  real ccfsave(NSAVE)
+  real t0save(NSAVE)
+  real t1save(NSAVE)
+  real freqSave(NSAVE)
+  real t(6)
   character*22 msg                     !Decoded message
   character*80 line(100)
-  save s1,nsubmode0
-  data nsubmode0/-1/
+  data nsubmode0/-1/,ntot/0/
+  save s1,nsubmode0,ntot
 
   nutc=narg(0)                         !narg() holds parameters from GUI
   npts=min(narg(1),NMAX)
@@ -28,6 +36,7 @@ subroutine fast9(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)
   ntol=narg(11)
+  tmid=npts*0.5/12000.0
 
   line(1:100)(1:1)=char(0)
   s=0
@@ -37,21 +46,28 @@ subroutine fast9(id2,narg,line)
   nh=nfft/2
   nq=nfft/4
   istep=nsps/4
-  jz=NMAX/istep
+  jz=npts/istep
   df=12000.0/nfft
   db1=db(2500.0/df)
   nfa=max(200,nrxfreq-ntol)
   nfb=min(nrxfreq+ntol,2500)
   nline=0
+  t=0.
 
   if(newdat.eq.1 .or. nsubmode.ne.nsubmode0) then
+     call system_clock(count0,clkfreq)
      call spec9f(id2,npts,nsps,s1,jz,nq)          !Compute symbol spectra, s1 
+     call system_clock(count1,clkfreq)
+     t(1)=t(1)+float(count1-count0)/float(clkfreq)
   endif
   nsubmode0=nsubmode
   tmsg=nsps*85.0/12000.0
 
-  limit=1000
+  limit=2000
   nlen0=0
+  i1=0
+  i2=0
+  ccfsave=0.
   do ilength=1,14
      nlen=1.4142136**(ilength-1)
      if(nlen.gt.jz/340) nlen=jz/340
@@ -64,7 +80,10 @@ subroutine fast9(id2,narg,line)
 
      do ja=1,jz-jlen,jstep
         jb=ja+jlen-1
+        call system_clock(count0,clkfreq)
         call foldspec9f(s1,nq,jz,ja,jb,s2)        !Fold symbol spectra into s2
+        call system_clock(count1,clkfreq)
+        t(2)=t(2)+float(count1-count0)/float(clkfreq)
 
 ! Find sync; put sync'ed symbol spectra into ss2 and ss3
 ! Possibly should loop to get sorted list of best ccfs, first; then attempt 
@@ -73,27 +92,64 @@ subroutine fast9(id2,narg,line)
 
 ! However... this simple approach works pretty well, as a start:
 
+        call system_clock(count0,clkfreq)
         call sync9f(s2,nq,nfa,nfb,ss2,ss3,lagpk,ipk,ccfbest)
+        call system_clock(count1,clkfreq)
+        t(3)=t(3)+float(count1-count0)/float(clkfreq)
+
+        i1=i1+1
         if(ccfbest.lt.30.0) cycle
-
+        call system_clock(count0,clkfreq)
         call softsym9f(ss2,ss3,snrdb,i1SoftSymbols)     !Compute soft symbols
+        call system_clock(count1,clkfreq)
+        t(4)=t(4)+float(count1-count0)/float(clkfreq)
 
-        call jt9fano(i1SoftSymbols,limit,nlim,msg)      !Invoke Fano decoder
+        i2=i2+1
+        ccfsave(i2)=ccfbest
+        i1save(1:207,i2)=i1SoftSymbols
         t0=(ja-1)*istep/12000.0
         t1=(jb-1)*istep/12000.0
-        nsnr=nint(snrdb) - db0 - db1             !### Is this OK? ###
-!        if(nsnr.lt.-20) nsnr=-20
-!        if(nsnr.gt.30)  nsnr=30.
-
+        t0save(i2)=t0
+        t1save(i2)=t1
         freq=ipk*df
+        freqSave(i2)=freq
+     enddo
+  enddo
+  nsaved=i2
 
-!        write(*,3001) nlen,t0,t1,ccfbest,nsnr,nint(freq),lagpk,ipk,nlim,msg
-!3001    format(i2,2f6.1,f9.2,4i6,i8,2x,a22)
+  ccfsave(1:nsaved)=-ccfsave(1:nsaved)
+  call system_clock(count0,clkfreq)
+  indx=0
+  call indexx(ccfsave,nsaved,indx)
+  call system_clock(count1,clkfreq)
+  t(5)=t(5)+float(count1-count0)/float(clkfreq)
+
+  ccfsave(1:nsaved)=-ccfsave(1:nsaved)
+
+  do iter=1,1
+!     do isave=1,nsaved
+     do isave=1,50
+        i2=indx(isave)
+        if(i2.lt.1 .or. i2.gt.nsaved) cycle      !### Why needed? ###
+        t0=t0save(i2)
+        t1=t1save(i2)
+!        if(iter.eq.1 .and. t1.lt.tmid) cycle
+!        if(iter.eq.2 .and. t1.ge.tmid) cycle
+        ccfbest=ccfsave(i2)
+        i1SoftSymbols=i1save(1:207,i2)
+        freq=freqSave(i2)
+        call system_clock(count0,clkfreq)
+        call jt9fano(i1SoftSymbols,limit,nlim,msg)      !Invoke Fano decoder
+        call system_clock(count1,clkfreq)
+        t(6)=t(6)+float(count1-count0)/float(clkfreq)
+
+        nsnr=nint(snrdb) - db0 - db1             !### Is this OK? ###
+
+!        write(72,3002) nutc,iter,isave,nlen,tmid,t0,t1,ccfbest,   &
+!             nint(freq),nlim,msg
+!3002    format(i6.6,i1,i4,i3,4f6.1,i5,i7,1x,a22)
 
         if(msg.ne.'                      ') then
-
-!           write(71,3001) nlen,t0,t1,ccfbest,nsnr,nint(freq),lagpk,ipk,nlim,msg
-!           flush(71)
 
 ! Display multiple decodes only if they differ:
            do n=1,nline
@@ -103,11 +159,18 @@ subroutine fast9(id2,narg,line)
            nline=nline+1
            write(line(nline),1000) nutc,nsnr,t0,nint(freq),msg
 1000       format(i6.6,i4,f5.1,i5,1x,'@',1x,a22)
-           if(nline.eq.maxlines) go to 900
+           ntot=ntot+1
+!           write(*,5001) nsaved,isave,nline,maxlines,ntot,nutc,msg
+!5001       format(5i5,i7.6,1x,a22)
+           if(nline.ge.maxlines) go to 900
         endif
 100     continue
      enddo
   enddo
 
-900 return
+900 continue
+!  write(*,6001) t,t(6)/sum(t)
+!6001 format(7f10.3)
+
+  return
 end subroutine fast9
