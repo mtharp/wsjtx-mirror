@@ -113,10 +113,10 @@
           <string>Waterfall gain</string>
          </property>
          <property name="minimum">
-          <number>0</number>
+          <number>-60</number>
          </property>
          <property name="maximum">
-          <number>80</number>
+          <number>140</number>
          </property>
          <property name="pageStep">
           <number>40</number>
@@ -183,10 +183,13 @@
           <string>Spectrum zero</string>
          </property>
          <property name="minimum">
-          <number>-150</number>
+          <number>-100</number>
          </property>
          <property name="maximum">
-          <number>150</number>
+          <number>160</number>
+         </property>
+         <property name="value">
+          <number>30</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>

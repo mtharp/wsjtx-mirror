@@ -67,6 +67,8 @@ void FastGraph::on_gainSlider_valueChanged(int value)
 {
   ui->fastPlot->setPlotGain(value);
   ui->fastPlot->draw();
+//  qDebug() << "B" << ui->gainSlider->value() << ui->zeroSlider->value()
+//           << ui->greenZeroSlider->value()  << m_ave;
 }
 
 void FastGraph::on_zeroSlider_valueChanged(int value)
@@ -93,7 +95,9 @@ void FastGraph::on_pbAutoLevel_clicked()
     sum += fast_green[i];
   }
   m_ave=sum/fast_jh;
-  ui->gainSlider->setValue(int(m_ave));
+  ui->gainSlider->setValue(127-int(2.2*m_ave));
   ui->zeroSlider->setValue(int(m_ave)+20);
-  ui->greenZeroSlider->setValue(int(m_ave)-10);
+  ui->greenZeroSlider->setValue(160-int(3.3*m_ave));
+//  qDebug() << "A" << ui->gainSlider->value() << ui->zeroSlider->value()
+//           << ui->greenZeroSlider->value()  << m_ave;
 }
