@@ -92,3 +92,8 @@ void FastGraph::fastPick1a(int x0, int x1, int y)
 {
   Q_EMIT fastPick(x0,x1,y);
 }
+
+void FastGraph::on_pbAutoLevel_clicked()
+{
+  qDebug() << "Set Level";
+}
