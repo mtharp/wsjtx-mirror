@@ -1716,7 +1716,9 @@ void::MainWindow::fast_decode_done()
   float t,tmax=-99.0;
   QString msg0;
   for(int i=0; i<100; i++) {
-    if(m_bFast9 and m_bEME and tmax>=0.0) {              //Here, m_bEME implies AutoSeq
+    int i1=msg0.indexOf(m_baseCall);
+    int i2=msg0.indexOf(m_hisCall);
+    if(m_bFast9 and m_bEME and tmax>=0.0 and i1>10 and i2>i1+3) {     //Here, "m_bEME" implies AutoSeq
       processMessage(msg0,40,false);
     }
     if(m_msg[i][0]==0) break;
@@ -1734,6 +1736,48 @@ void::MainWindow::fast_decode_done()
       msg0=message;
       tmax=t;
     }
+
+// Write decoded text to file "ALL.TXT".
+    QFile f {m_dataDir.absoluteFilePath ("ALL.TXT")};
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+      QTextStream out(&f);
+      if(m_RxLog==1) {
+        out << QDateTime::currentDateTimeUtc().toString("yyyy-MMM-dd hh:mm")
+            << "  " << (m_dialFreq / 1.e6) << " MHz  " << m_mode << endl;
+        m_RxLog=0;
+      }
+      int n=message.length();
+      out << message.mid(0,n-2) << endl;
+      f.close();
+    } else {
+      msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
+    }
+
+    if(m_mode=="JT9") {
+      // find and extract any report for myCall
+      QString msg=message.mid(0,4) + message.mid(6,-1);
+      decodedtext=msg.replace("\n","");
+      bool stdMsg = decodedtext.report(m_baseCall,
+              Radio::base_callsign(ui->dxCallEntry->text().toUpper().trimmed()), m_rptRcvd);
+      // extract details and send to PSKreporter
+      int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
+
+      if(m_config.spot_to_psk_reporter() and stdMsg and !m_diskData) {
+        QString msgmode="JT9";
+        QString deCall;
+        QString grid;
+        decodedtext.deCallAndGrid(/*out*/deCall,grid);
+        int audioFrequency = decodedtext.frequencyOffset();
+        int snr = decodedtext.snr();
+        Frequency frequency = m_dialFreq + audioFrequency;
+        pskSetLocal();
+        if(gridOK(grid))
+          qDebug() << "To PSRreporter:" << deCall << grid << frequency << msgmode << snr;
+          psk_Reporter->addRemoteStation(deCall,grid,QString::number(frequency),msgmode,
+                  QString::number(snr),QString::number(QDateTime::currentDateTime().toTime_t()));
+      }
+    }
+
   }
   m_startAnother=m_loopall;
   m_nPick=0;
@@ -1840,30 +1884,26 @@ void MainWindow::readFromStdout()                             //readFromStdout
       postDecode (true, decodedtext.string ());
 
       // find and extract any report for myCall
-      bool stdMsg = decodedtext.report(m_baseCall
-                                       , Radio::base_callsign (ui->dxCallEntry-> text ().toUpper ().trimmed ())
-                                       , /*mod*/m_rptRcvd);
-
+      bool stdMsg = decodedtext.report(m_baseCall,
+          Radio::base_callsign(ui->dxCallEntry->text().toUpper().trimmed()), m_rptRcvd);
       // extract details and send to PSKreporter
       int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
       bool okToPost=(nsec>50);
       if(m_config.spot_to_psk_reporter () and stdMsg and !m_diskData and okToPost) {
         QString msgmode="JT9";
-        if (decodedtext.isJT65())
-          msgmode="JT65";
-
+        if (decodedtext.isJT65()) msgmode="JT65";
         QString deCall;
         QString grid;
         decodedtext.deCallAndGrid(/*out*/deCall,grid);
         int audioFrequency = decodedtext.frequencyOffset();
         int snr = decodedtext.snr();
         Frequency frequency = m_dialFreq + audioFrequency;
-
         pskSetLocal ();
         if(gridOK(grid))
-          psk_Reporter->addRemoteStation(deCall,grid,QString::number(frequency),msgmode,QString::number(snr),
-                                         QString::number(QDateTime::currentDateTime().toTime_t()));
+          psk_Reporter->addRemoteStation(deCall,grid,QString::number(frequency),msgmode,
+             QString::number(snr),QString::number(QDateTime::currentDateTime().toTime_t()));
       }
+
       if((m_mode=="JT4" or m_mode=="JT65") and m_msgAvgWidget!=NULL) {
         if(m_msgAvgWidget->isVisible()) {
           QFile f(m_config.temp_dir ().absoluteFilePath ("avemsg.txt"));
@@ -2587,14 +2627,9 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
   if (i9<0 and !decodedtext.isTX())
     {
     decodedtext=t2;
-      ui->decodedTextBrowser2->displayDecodedText(decodedtext
-                                                  , m_baseCall
-                                                  , false
-                                                  , m_logBook
-                                                  , m_config.color_CQ()
-                                                  , m_config.color_MyCall()
-                                                  , m_config.color_DXCC()
-                                                  , m_config.color_NewCall());
+      ui->decodedTextBrowser2->displayDecodedText(decodedtext, m_baseCall, false, m_logBook,
+              m_config.color_CQ(), m_config.color_MyCall(), m_config.color_DXCC(),
+              m_config.color_NewCall());
       m_QSOText=decodedtext;
     }
 
@@ -2639,6 +2674,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
      || dtext.contains (" " + m_baseCall + "/")
      || (firstcall == "DE" && ((t4.size () > 7 && t4.at(7) != "73") || t4.size () <= 7)))
     {
+//      qDebug() << t4;
       if (t4.size () > 7   // enough fields for a normal msg
           and !gridOK (t4.at (7))) // but no grid on end of msg
         {
