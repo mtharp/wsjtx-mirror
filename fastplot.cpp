@@ -122,12 +122,6 @@ void FPlotter::setPlotGain(int plotGain)                  //setPlotGain()
   m_bPaint2=true;
 }
 
-void FPlotter::setGreenGain(int n)
-{
-  m_greenGain=n;
-  m_bPaint2=true;
-}
-
 void FPlotter::setGreenZero(int n)
 {
   m_greenZero=n;
@@ -159,6 +153,7 @@ void FPlotter::draw()                                         //draw()
 
   painter1.setPen(penGreen);                               // Upper green curve
   int j=0;
+  m_greenGain=10;
   float greenGain = pow(10.0,(m_greenGain/20.0));
   for(int x=k0; x<=fast_jh; x++) {
     int y = 0.9*m_h - greenGain*fast_green[x] - m_greenZero + 40;

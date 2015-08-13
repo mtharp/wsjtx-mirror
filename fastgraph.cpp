@@ -17,6 +17,7 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   ui->setupUi(this);
   installEventFilter(parent);                   //Installing the filter
   ui->fastPlot->setCursor(Qt::CrossCursor);
+  m_ave=40;
 
 //Restore user's settings
   m_settings->beginGroup("FastGraph");
@@ -26,9 +27,7 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   ui->zeroSlider->setValue(ui->fastPlot->m_plotZero);
   ui->gainSlider->setValue(ui->fastPlot->m_plotGain);
   ui->fastPlot->setGreenZero(m_settings->value("GreenZero", 0).toInt());
-  ui->fastPlot->setGreenGain(m_settings->value("GreenGain", 0).toInt());
   ui->greenZeroSlider->setValue(ui->fastPlot->m_greenZero);
-  ui->greenGainSlider->setValue(ui->fastPlot->m_greenGain);
   m_settings->endGroup();
 
   connect(ui->fastPlot, SIGNAL(fastPick1(int,int,int)),this,
@@ -76,12 +75,6 @@ void FastGraph::on_zeroSlider_valueChanged(int value)
   ui->fastPlot->draw();
 }
 
-void FastGraph::on_greenGainSlider_valueChanged(int value)
-{
-  ui->fastPlot->setGreenGain(value);
-  ui->fastPlot->draw();
-}
-
 void FastGraph::on_greenZeroSlider_valueChanged(int value)
 {
   ui->fastPlot->setGreenZero(value);
@@ -95,5 +88,12 @@ void FastGraph::fastPick1a(int x0, int x1, int y)
 
 void FastGraph::on_pbAutoLevel_clicked()
 {
-  qDebug() << "Set Level";
+  float sum=0.0;
+  for(int i=0; i<=fast_jh; i++) {
+    sum += fast_green[i];
+  }
+  m_ave=sum/fast_jh;
+  ui->gainSlider->setValue(int(m_ave));
+  ui->zeroSlider->setValue(int(m_ave)+20);
+  ui->greenZeroSlider->setValue(int(m_ave)-10);
 }

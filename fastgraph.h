@@ -31,14 +31,17 @@ public slots:
 private slots:
   void on_gainSlider_valueChanged(int value);
   void on_zeroSlider_valueChanged(int value);  
-  void on_greenGainSlider_valueChanged(int value);
   void on_greenZeroSlider_valueChanged(int value);
   void on_pbAutoLevel_clicked();
 
 private:
   QSettings * m_settings;
+  float m_ave;
 
   Ui::FastGraph *ui;
 };
+
+extern float fast_green[703];
+extern int   fast_jh;
 
 #endif // FASTGRAPH_H

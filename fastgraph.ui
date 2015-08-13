@@ -113,9 +113,12 @@
           <string>Waterfall gain</string>
          </property>
          <property name="minimum">
-          <number>-40</number>
+          <number>0</number>
          </property>
          <property name="maximum">
+          <number>80</number>
+         </property>
+         <property name="pageStep">
           <number>40</number>
          </property>
          <property name="orientation">
@@ -145,10 +148,13 @@
           <string>Waterfall zero</string>
          </property>
          <property name="minimum">
-          <number>-150</number>
+          <number>0</number>
          </property>
          <property name="maximum">
-          <number>150</number>
+          <number>120</number>
+         </property>
+         <property name="value">
+          <number>60</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -157,61 +163,6 @@
        </item>
        <item>
         <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Preferred</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pbAutoLevel">
-         <property name="text">
-          <string>Auto Level</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Preferred</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QSlider" name="greenGainSlider">
-         <property name="toolTip">
-          <string>Spectrum gain</string>
-         </property>
-         <property name="minimum">
-          <number>-30</number>
-         </property>
-         <property name="maximum">
-          <number>30</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -239,6 +190,29 @@
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbAutoLevel">
+         <property name="text">
+          <string>Auto Level</string>
          </property>
         </widget>
        </item>

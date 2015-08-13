@@ -31,7 +31,6 @@ public:
   void draw();		                                    //Update the Fast plot
   void setPlotZero(int plotZero);
   void setPlotGain(int plotGain);
-  void setGreenGain(int n);
   void setGreenZero(int n);
   void drawScale();
 
