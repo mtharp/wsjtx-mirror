@@ -1,6 +1,29 @@
 			Fast JT9 Submodes
 			-----------------
-			 August 11, 2015
+			 
+August 14, 2015
+---------------
+
+New release of of experimental WSJT-X v1.6.1, r5788
+
+Changes since WSJT-X v1.6.1, revision 5779:
+
+1.  Major speedup (5x) of fast-JT9 decoder.
+2.  Corrected logic for Auto-Sequencing operation.
+3.  Stop after sending 73 five times in auto-sequence mode.
+4.  Add an "Auto-Level" control to Fast Graph window.
+5.  Send fast-mode decodes to PSKreporter.
+6.  Support automatic logging via JTAlert-X.
+7.  Send fast-mode output to ALL.TXT.
+8.  Better definition of dB levels for fast-JT9 signals.
+9.  Rationalize the GUI behavior when changing mode, submode, fast/slow
+    status, or T/R period.
+10. Correct a flaw in the display of multiple decodes in a single 
+    fast-JT9 sequence.
+11. Fix minor bugs reported by G3WDG, ND0B, OZ1PIF.
+
+August 11, 2015
+---------------
 
 Since its origin in the dark ages (ca. 2001) WSJT has supported "fast"
 modes (designed for meteor scatter, etc.) and "slow" modes (optimized

@@ -172,8 +172,8 @@ subroutine fast9(id2,narg,line)
            enddo
 !### Might want to use decoded message to get a complete estimate of S/N.
            nline=nline+1
-           write(line(nline),1000) nutc,nsnr,t0,nint(freq),msg
-1000       format(i6.6,i4,f5.1,i5,1x,'@',1x,a22)
+           write(line(nline),1000) nutc,nsnr,t0,nint(freq),msg,char(0)
+1000       format(i6.6,i4,f5.1,i5,1x,'@',1x,a22,a1)
            ntot=ntot+1
            write(70,5001) nsaved,isave,nline,maxlines,ntot,nutc,msg
 5001       format(5i5,i7.6,1x,a22)

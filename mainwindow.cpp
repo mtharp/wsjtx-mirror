@@ -436,6 +436,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_k0=9999999;
   m_nPick=0;
   m_DTtol=3.0;
+  m_TRperiodFast=-1;
+  m_nTx73=0;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -590,13 +592,14 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
     m_hsymStop=173;
     if(m_config.decode_at_52s()) m_hsymStop=179;
   }
+  progressBar->setMaximum(m_TRperiod);
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_dialFreqRxWSPR=0;
   wsprNet = new WSPRNet(this);
   connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
 
   if(m_bFastMode) {
-    int ntr[]={5,10,15,30,60};
+    int ntr[]={5,10,15,30};
     m_TRperiod=ntr[m_TRindex-11];
   }
 }
@@ -655,6 +658,7 @@ void MainWindow::writeSettings()
   m_settings->setValue("UploadSpots",m_uploadSpots);
   m_settings->setValue ("BandHopping", ui->band_hopping_group_box->isChecked ());
   m_settings->setValue("TRindex",m_TRindex);
+  m_settings->setValue("FastMode",m_bFastMode);
   m_settings->setValue("Fast9",m_bFast9);
   m_settings->endGroup();
 }
@@ -684,7 +688,6 @@ void MainWindow::readSettings()
   morse_(const_cast<char *> (m_config.my_callsign ().toLatin1().constData()),
          const_cast<int *> (icw), &m_ncw, m_config.my_callsign ().length());
   m_mode=m_settings->value("Mode","JT9").toString();
-  if(m_mode=="ISCAT") m_bFastMode=true;
   m_modeTx=m_settings->value("ModeTx","JT9").toString();
   if(m_modeTx.mid(0,3)=="JT9") ui->pbTxMode->setText("Tx JT9  @");
   if(m_modeTx=="JT65") ui->pbTxMode->setText("Tx JT65  #");
@@ -705,6 +708,7 @@ void MainWindow::readSettings()
   ui->sbTR->setValue(m_TRindex);
   m_bFast9=m_settings->value("Fast9",false).toBool();
   ui->cbFast9->setChecked(m_bFast9);
+  m_bFastMode=m_settings->value("FastMode",false).toBool();
   m_lastMonitoredFrequency = m_settings->value ("DialFreq",
      QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->WSPRfreqSpinBox->setValue(0); // ensure a change is signaled
@@ -935,7 +939,6 @@ void MainWindow::fastSink(qint64 frames)
       t2.sprintf("%2.2d%2.2d%2.2d.wav",ihr,imin,isec);
       m_fname = m_config.save_directory().absoluteFilePath(
             t.date().toString("yyMMdd") + "_" + t2);
-//      qDebug() << "a" << m_fname;
 
     }
   }
@@ -949,8 +952,8 @@ void MainWindow::fastSink(qint64 frames)
 
   decodeNow=false;
   m_k0=k;
-  int secRcvd=m_k0/12000;
   /*
+  int secRcvd=m_k0/12000;
   if(secRcvd>=m_TRperiod-5 and !decodeEarly and !m_diskData) {
     decodeEarly=true;
     decodeNow=true;
@@ -967,7 +970,6 @@ void MainWindow::fastSink(qint64 frames)
     jt9com_.newdat=1;
     if(!m_decoderBusy) decode();
     if(!m_diskData and m_saveAll and m_fname != "" and !decodeEarly) {
-//      qDebug() << "c" << m_fname;
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
     }
@@ -1760,7 +1762,7 @@ void::MainWindow::fast_decode_done()
       bool stdMsg = decodedtext.report(m_baseCall,
               Radio::base_callsign(ui->dxCallEntry->text().toUpper().trimmed()), m_rptRcvd);
       // extract details and send to PSKreporter
-      int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
+//      int nsec=QDateTime::currentMSecsSinceEpoch()/1000-m_secBandChanged;
 
       if(m_config.spot_to_psk_reporter() and stdMsg and !m_diskData) {
         QString msgmode="JT9";
@@ -2437,6 +2439,10 @@ void MainWindow::stopTx()
 void MainWindow::stopTx2()
 {
   Q_EMIT m_config.transceiver_ptt (false);      //Lower PTT
+  if(m_mode=="JT9" and m_bFast9 and ui->cbEME->isChecked() and m_ntx==5 and (m_nTx73>=5)) {
+    on_stopTxButton_clicked();
+    m_nTx73=0;
+  }
   if (m_mode.mid(0,4)!="WSPR" and m_mode!="Echo" and m_config.watchdog() and
       m_repeatMsg>=m_watchdogLimit-1) {
     on_stopTxButton_clicked();
@@ -2674,7 +2680,6 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
      || dtext.contains (" " + m_baseCall + "/")
      || (firstcall == "DE" && ((t4.size () > 7 && t4.at(7) != "73") || t4.size () <= 7)))
     {
-//      qDebug() << t4;
       if (t4.size () > 7   // enough fields for a normal msg
           and !gridOK (t4.at (7))) // but no grid on end of msg
         {
@@ -2758,10 +2763,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
       }
     }
   if(m_transmitting) m_restart=true;
-  if(m_config.quick_call ())
-    {
-      auto_tx_mode (true);
-    }
+  if(m_config.quick_call()) auto_tx_mode(true);
 }
 
 void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
@@ -3196,7 +3198,7 @@ void MainWindow::on_actionJT9_triggered()
   ui->cbEME->setVisible(true);
   ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
-  fast_config(bVHF);
+  fast_config(m_bFastMode);
   if(m_bFast9) {
     m_TRperiod=ui->sbTR->cleanText().toInt();
     m_wideGraph->hide();
@@ -3474,8 +3476,10 @@ void MainWindow::fast_config(bool b)
 // ### Does this work as intended? ###
     Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
     ui->cbEME->setText("Auto Seq");
+    ui->sbTR->setVisible(true);
   } else {
     ui->cbEME->setText("EME delay");
+    ui->sbTR->setVisible(false);
   }
 
   if(b and (m_mode!="JT9")) {
@@ -4005,6 +4009,14 @@ void MainWindow::transmit (double snr)
                         true, true, snr, m_TRperiod);
   }
 
+// In auto-sequencing mode, stop after 5 transmissions of "73" message.
+  if(m_mode=="JT9" and m_bFast9 and ui->cbEME->isChecked()) {
+    if(m_ntx==5) {
+      m_nTx73 += 1;
+    } else {
+      m_nTx73=0;
+    }
+  }
 }
 
 void MainWindow::on_outAttenuation_valueChanged (int a)
@@ -4193,6 +4205,8 @@ void MainWindow::on_sbTR_valueChanged(int index)
   if(m_bFastMode) {
     m_TRperiod=ui->sbTR->cleanText().toInt();
     if(m_TRperiod<5 or m_TRperiod>30) m_TRperiod=30;
+    m_TRperiodFast=m_TRperiod;
+    progressBar->setMaximum(m_TRperiod);
   }
   if(m_monitoring) {
     on_stopButton_clicked();
@@ -4217,6 +4231,7 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
     if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(560);
   }
   if(m_mode=="JT9" and m_bFast9) ui->TxFreqSpinBox->setValue(700);
+  if(m_transmitting and m_bFast9 and m_nSubMode>=4) transmit(99.0);
 }
 
 void MainWindow::on_cbFast9_clicked(bool b)
@@ -4229,9 +4244,13 @@ void MainWindow::on_cbFast9_clicked(bool b)
 // ### Does this work as intended? ###
     Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
     ui->cbEME->setText("Auto Seq");
+    if(m_TRperiodFast>0) m_TRperiod=m_TRperiodFast;
   } else {
     ui->cbEME->setText("EME delay");
+    m_TRperiod=60;
   }
+  progressBar->setMaximum(m_TRperiod);
+  fast_config(b);
 }
 
 

@@ -347,6 +347,8 @@ private:
   qint32  m_TRindex;
   qint32  m_FtolIndex;
   qint32  m_Ftol;
+  qint32  m_TRperiodFast;
+  qint32  m_nTx73;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;
