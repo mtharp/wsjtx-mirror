@@ -709,6 +709,7 @@ void MainWindow::readSettings()
   m_bFast9=m_settings->value("Fast9",false).toBool();
   ui->cbFast9->setChecked(m_bFast9);
   m_bFastMode=m_settings->value("FastMode",false).toBool();
+  if(m_bFast9) m_bFastMode=true;
   m_lastMonitoredFrequency = m_settings->value ("DialFreq",
      QVariant::fromValue<Frequency> (default_frequency)).value<Frequency> ();
   ui->WSPRfreqSpinBox->setValue(0); // ensure a change is signaled
@@ -3193,7 +3194,6 @@ void MainWindow::on_actionJT9_triggered()
   ui->cbFast9->setVisible(bVHF);
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
-
   ui->cbEME->setVisible(true);
   ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
