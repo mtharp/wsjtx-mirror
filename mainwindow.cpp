@@ -3183,7 +3183,6 @@ void MainWindow::on_actionJT9_triggered()
     mode_label->setText(m_mode);
   }
   m_toneSpacing=0.0;
-  ui->ClrAvgButton->setVisible(false);
   ui->actionJT9->setChecked(true);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
@@ -3194,7 +3193,7 @@ void MainWindow::on_actionJT9_triggered()
   ui->cbFast9->setVisible(bVHF);
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
-  ui->sbTR->setVisible(true);
+
   ui->cbEME->setVisible(true);
   ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
@@ -3206,15 +3205,18 @@ void MainWindow::on_actionJT9_triggered()
     ui->TxFreqSpinBox->setValue(700);
     ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
     ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
+    ui->sbTR->setVisible(true);
   } else {
     m_TRperiod=60;
     ui->decodedTextLabel->setText("UTC   dB   DT Freq   Message");
     ui->decodedTextLabel2->setText("UTC   dB   DT Freq   Message");
+    ui->sbTR->setVisible(false);
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
+  ui->ClrAvgButton->setVisible(false);
 }
 
 void MainWindow::on_actionJT65_triggered()
