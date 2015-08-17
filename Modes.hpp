@@ -22,6 +22,7 @@ public:
     WSPR,
     Echo,
     ISCAT,
+    JTMSK,
   };
 
   explicit Modes (QObject * parent = nullptr);

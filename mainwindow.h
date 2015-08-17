@@ -29,11 +29,12 @@
 #include "logbook/logbook.h"
 #include "decodedtext.h"
 
-#define NUM_JT4_SYMBOLS 206
-#define NUM_JT65_SYMBOLS 126
-#define NUM_JT9_SYMBOLS 85
-#define NUM_WSPR_SYMBOLS 162
-#define NUM_ISCAT_SYMBOLS 1291
+#define NUM_JT4_SYMBOLS 206                //(72+31)*2, embedded sync
+#define NUM_JT65_SYMBOLS 126               //63 data + 63 sync
+#define NUM_JT9_SYMBOLS 85                 //69 data + 16 sync
+#define NUM_WSPR_SYMBOLS 162               //(50+31)*2, embedded sync
+#define NUM_ISCAT_SYMBOLS 1291             //30*11025/256
+#define NUM_JTMSK_SYMBOLS 231              //(72+15+12)*2 + 3*11 sync
 
 #define NUM_CW_SYMBOLS 250
 #define TX_SAMPLE_RATE 48000
@@ -239,6 +240,8 @@ private slots:
   void on_sbTR_valueChanged(int index);
   void on_sbFtol_valueChanged(int index);
   void on_cbFast9_clicked(bool b);
+
+  void on_actionJTMSK_triggered();
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -556,6 +559,9 @@ extern "C" {
                int* itext, int len1, int len2);
 
   void gen9_(char* msg, int* ichk, char* msgsent, int itone[],
+               int* itext, int len1, int len2);
+
+  void genmsk_(char* msg, int* ichk, char* msgsent, int itone[],
                int* itext, int len1, int len2);
 
   void gen65_(char* msg, int* ichk, char* msgsent, int itone[],

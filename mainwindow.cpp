@@ -259,6 +259,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   ui->actionWSPR_15->setActionGroup(modeGroup);
   ui->actionEcho->setActionGroup(modeGroup);
   ui->actionISCAT->setActionGroup(modeGroup);
+  ui->actionJTMSK->setActionGroup(modeGroup);
 
   QActionGroup* saveGroup = new QActionGroup(this);
   ui->actionNone->setActionGroup(saveGroup);
@@ -524,9 +525,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   genStdMsgs(m_rpt);
   m_ntx=6;
   ui->txrb6->setChecked(true);
-  if(m_mode!="JT9" and m_mode!="JT65" and m_mode!="JT9+JT65"
-     and m_mode!="JT4" and m_mode!="WSPR-2" and m_mode!="WSPR-15" and
-     m_mode!="Echo" and m_mode!="ISCAT") m_mode="JT9";
+  if(m_mode=="") m_mode="JT9";
   on_actionWide_Waterfall_triggered();                   //###
 
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
@@ -540,6 +539,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
   if(m_mode=="Echo") on_actionEcho_triggered();
   if(m_mode=="ISCAT") on_actionISCAT_triggered();
+  if(m_mode=="JTMSK") on_actionJTMSK_triggered();
 
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
   m_wideGraph->setMode(m_mode);
@@ -2163,6 +2163,8 @@ void MainWindow::guiUpdate()
                                     &m_currentMessageType, len1, len1);
         if(m_mode.mid(0,4)=="WSPR") genwspr_(message, msgsent, const_cast<int *> (itone),
                                              len1, len1);
+        if(m_modeTx=="JTMSK") genmsk_(message, &ichk, msgsent, const_cast<int *> (itone),
+                                  &m_currentMessageType, len1, len1);
         msgsent[22]=0;
       }
     }
@@ -3172,10 +3174,11 @@ void MainWindow::on_actionJT9_triggered()
   switch_mode (Modes::JT9);
   if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
-  m_nsps=6912;  QString t1=(QString)QChar(short(m_nSubMode+65));
+  m_nsps=6912;
+  QString t1=(QString)QChar(short(m_nSubMode+65));
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
-  mode_label->setStyleSheet("QLabel{background-color: #ff6ec7}");
+  mode_label->setStyleSheet("QLabel{background-color: #ffcccc}");
   bool bVHF=m_config.enable_VHF_features();
   if(bVHF) {
     QString t1=(QString)QChar(short(m_nSubMode+65));
@@ -3219,6 +3222,44 @@ void MainWindow::on_actionJT9_triggered()
   ui->ClrAvgButton->setVisible(false);
 }
 
+void MainWindow::on_actionJTMSK_triggered()
+{
+  m_mode="JTMSK";
+  m_modeTx="JTMSK";
+  switch_mode (Modes::JTMSK);
+  statusChanged();
+  m_nsps=6;
+  mode_label->setStyleSheet("QLabel{background-color: #ff0077}");
+  mode_label->setText(m_mode);
+  m_toneSpacing=0.0;
+  ui->actionJTMSK->setChecked(true);
+  VHF_features_enabled(true);
+  VHF_controls_visible(true);
+  ui->cbFast9->setVisible(false);
+  ui->cbShMsgs->setVisible(false);
+  ui->cbTx6->setVisible(false);
+  ui->cbEME->setVisible(true);
+  ui->sbSubmode->setVisible(false);
+  WSPR_config(false);
+  m_bFastMode=true;
+  m_bFast9=true;
+  fast_config(m_bFastMode);
+  m_TRperiod=ui->sbTR->cleanText().toInt();
+  m_wideGraph->hide();
+  m_fastGraph->show();
+  ui->TxFreqSpinBox->setValue(1500);
+  ui->RxFreqSpinBox->setValue(1500);
+  ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
+  ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
+  ui->sbTR->setVisible(true);
+  m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
+  m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
+  ui->label_6->setText("Band Activity");
+  ui->label_7->setText("Rx Frequency");
+  ui->ClrAvgButton->setVisible(false);
+}
+
+
 void MainWindow::on_actionJT65_triggered()
 {
   if(m_mode=="JT4" or m_mode.mid(0,4)=="WSPR") {
@@ -3238,7 +3279,7 @@ void MainWindow::on_actionJT65_triggered()
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=0.0;
-  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
+  mode_label->setStyleSheet("QLabel{background-color: #00ff00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   ui->ClrAvgButton->setVisible(false);
@@ -3277,7 +3318,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=0.0;
-  mode_label->setStyleSheet("QLabel{background-color: #ffa500}");
+  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   mode_label->setText(m_mode);
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_JT65->setChecked(true);
@@ -3298,6 +3339,7 @@ void MainWindow::on_actionJT4_triggered()
   m_mode="JT4";
   switch_mode (Modes::JT4);
   m_modeTx="JT4";
+  mode_label->setStyleSheet("QLabel{background-color: #7777ff}");
   statusChanged();
   m_TRperiod=60;
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
@@ -3329,7 +3371,6 @@ void MainWindow::on_actionJT4_triggered()
     ui->sbSubmode->setValue(0);
     ui->sbTR->setValue(0);
   }
-  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
 }
@@ -3370,6 +3411,7 @@ void MainWindow::on_actionEcho_triggered()
   on_actionJT4_triggered();
   m_mode="Echo";
   ui->actionEcho->setChecked(true);
+  mode_label->setStyleSheet("QLabel{background-color: #00ffff}");
   m_TRperiod=3;
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
@@ -3409,7 +3451,7 @@ void MainWindow::on_actionISCAT_triggered()
   statusChanged();
   if(!m_fastGraph->isVisible()) m_fastGraph->show();
   if(m_wideGraph->isVisible()) m_wideGraph->hide();
-  mode_label->setStyleSheet("QLabel{background-color: #fc7c00}");
+  mode_label->setStyleSheet("QLabel{background-color: #aa33ff}");
   mode_label->setText(m_mode);
   VHF_controls_visible(true);
   WSPR_config(false);
@@ -3424,7 +3466,6 @@ void MainWindow::on_actionISCAT_triggered()
   auto_tx_label->setText("");
   ui->tabWidget->setCurrentIndex(0);
   ui->sbSubmode->setMaximum(1);
-  mode_label->setStyleSheet("QLabel{background-color: #7cfc00}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(1012);
@@ -3968,6 +4009,16 @@ void MainWindow::transmit (double snr)
                         m_soundOutput, m_config.audio_output_channel (),
                         true, fastmode, snr, m_TRperiod);
   }
+
+  if (m_modeTx == "JTMSK") {
+    m_nsps=6;
+    m_toneSpacing=6000.0/m_nsps;
+    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, double(m_nsps),
+                        ui->TxFreqSpinBox->value() - m_XIT, m_toneSpacing,
+                        m_soundOutput, m_config.audio_output_channel (),
+                        true, true, snr, m_TRperiod);
+  }
+
   if (m_modeTx == "JT4") {
     if(m_nSubMode==0) toneSpacing=4.375;
     if(m_nSubMode==1) toneSpacing=2*4.375;
@@ -4700,4 +4751,5 @@ void MainWindow::on_actionSave_reference_spectrum_triggered()
 {
 
 }
+
 

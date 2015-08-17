@@ -2320,6 +2320,7 @@ QPushButton[state=&quot;ok&quot;] {
     <addaction name="actionEcho"/>
     <addaction name="separator"/>
     <addaction name="actionISCAT"/>
+    <addaction name="actionJTMSK"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -2765,6 +2766,11 @@ QPushButton[state=&quot;ok&quot;] {
   <action name="actionSave_reference_spectrum">
    <property name="text">
     <string>Save reference spectrum</string>
+   </property>
+  </action>
+  <action name="actionJTMSK">
+   <property name="text">
+    <string>JTMSK</string>
    </property>
   </action>
  </widget>
