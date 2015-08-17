@@ -1775,7 +1775,7 @@ void::MainWindow::fast_decode_done()
         Frequency frequency = m_dialFreq + audioFrequency;
         pskSetLocal();
         if(gridOK(grid))
-          qDebug() << "To PSRreporter:" << deCall << grid << frequency << msgmode << snr;
+//          qDebug() << "To PSKreporter:" << deCall << grid << frequency << msgmode << snr;
           psk_Reporter->addRemoteStation(deCall,grid,QString::number(frequency),msgmode,
                   QString::number(snr),QString::number(QDateTime::currentDateTime().toTime_t()));
       }
