@@ -3180,7 +3180,7 @@ void MainWindow::on_actionJT9_triggered()
   QString t1=(QString)QChar(short(m_nSubMode+65));
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
-  mode_label->setStyleSheet("QLabel{background-color: #ffcccc}");
+  mode_label->setStyleSheet("QLabel{background-color: #ff99cc}");
   bool bVHF=m_config.enable_VHF_features();
   if(bVHF) {
     QString t1=(QString)QChar(short(m_nSubMode+65));
@@ -3234,7 +3234,7 @@ void MainWindow::on_actionJTMSK_triggered()
   switch_mode (Modes::JTMSK);
   statusChanged();
   m_nsps=6;
-  mode_label->setStyleSheet("QLabel{background-color: #ff0077}");
+  mode_label->setStyleSheet("QLabel{background-color: #ff6666}");
   mode_label->setText(m_mode);
   m_toneSpacing=0.0;
   ui->actionJTMSK->setChecked(true);
@@ -3286,7 +3286,7 @@ void MainWindow::on_actionJT65_triggered()
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=0.0;
-  mode_label->setStyleSheet("QLabel{background-color: #00ff00}");
+  mode_label->setStyleSheet("QLabel{background-color: #66ff66}");
   QString t1=(QString)QChar(short(m_nSubMode+65));
   mode_label->setText(m_mode + " " + t1);
   ui->ClrAvgButton->setVisible(false);
@@ -3325,7 +3325,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_hsymStop=173;
   if(m_config.decode_at_52s()) m_hsymStop=179;
   m_toneSpacing=0.0;
-  mode_label->setStyleSheet("QLabel{background-color: #ffff00}");
+  mode_label->setStyleSheet("QLabel{background-color: #ffff66}");
   mode_label->setText(m_mode);
   ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_JT65->setChecked(true);
@@ -3346,7 +3346,7 @@ void MainWindow::on_actionJT4_triggered()
   m_mode="JT4";
   switch_mode (Modes::JT4);
   m_modeTx="JT4";
-  mode_label->setStyleSheet("QLabel{background-color: #7777ff}");
+  mode_label->setStyleSheet("QLabel{background-color: #cc99ff}");
   statusChanged();
   m_TRperiod=60;
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
@@ -3395,7 +3395,7 @@ void MainWindow::on_actionWSPR_2_triggered()
   m_nsps=6912;                   //For symspec only
   m_hsymStop=396;
   m_toneSpacing=12000.0/8192.0;
-  mode_label->setStyleSheet("QLabel{background-color: #ff00ff}");
+  mode_label->setStyleSheet("QLabel{background-color: #ff66ff}");
   mode_label->setText(m_mode);
   ui->actionWSPR_2->setChecked(true);
   VHF_features_enabled(false);
@@ -3419,7 +3419,7 @@ void MainWindow::on_actionEcho_triggered()
   on_actionJT4_triggered();
   m_mode="Echo";
   ui->actionEcho->setChecked(true);
-  mode_label->setStyleSheet("QLabel{background-color: #00ffff}");
+  mode_label->setStyleSheet("QLabel{background-color: #66ffff}");
   m_TRperiod=3;
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
@@ -3459,7 +3459,7 @@ void MainWindow::on_actionISCAT_triggered()
   statusChanged();
   if(!m_fastGraph->isVisible()) m_fastGraph->show();
   if(m_wideGraph->isVisible()) m_wideGraph->hide();
-  mode_label->setStyleSheet("QLabel{background-color: #aa33ff}");
+  mode_label->setStyleSheet("QLabel{background-color: #ff9933}");
   mode_label->setText(m_mode);
   VHF_controls_visible(true);
   WSPR_config(false);
