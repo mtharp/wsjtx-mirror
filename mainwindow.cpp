@@ -531,16 +531,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   connect(m_wideGraph.data (), SIGNAL(setFreq3(int,int)),this,
           SLOT(setFreq4(int,int)));
 
-  if(m_mode=="JT4") on_actionJT4_triggered();
-  if(m_mode=="JT9") on_actionJT9_triggered();
-  if(m_mode=="JT65") on_actionJT65_triggered();
-  if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
-  if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
-  if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
-  if(m_mode=="Echo") on_actionEcho_triggered();
-  if(m_mode=="ISCAT") on_actionISCAT_triggered();
-  if(m_mode=="JTMSK") on_actionJTMSK_triggered();
-
   m_wideGraph->setLockTxFreq(m_lockTxFreq);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
@@ -571,8 +561,19 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   if(m_mode=="Echo") monitor(false); //Don't auto-start Monitor in Echo mode.
 
   bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65" or
-                                             m_mode=="ISCAT" or m_mode=="JT9");
+                                             m_mode=="ISCAT" or m_mode=="JT9" or
+                                             m_mode=="JTMSK");
   VHF_controls_visible(b);
+
+  if(m_mode=="JT4") on_actionJT4_triggered();
+  if(m_mode=="JT9") on_actionJT9_triggered();
+  if(m_mode=="JT65") on_actionJT65_triggered();
+  if(m_mode=="JT9+JT65") on_actionJT9_JT65_triggered();
+  if(m_mode=="WSPR-2") on_actionWSPR_2_triggered();
+  if(m_mode=="WSPR-15") on_actionWSPR_15_triggered();
+  if(m_mode=="Echo") on_actionEcho_triggered();
+  if(m_mode=="ISCAT") on_actionISCAT_triggered();
+  if(m_mode=="JTMSK") on_actionJTMSK_triggered();
 
   m_ntx=1;
   ui->txrb1->setChecked(true);
@@ -1676,7 +1677,7 @@ void MainWindow::decode()                                       //decode()
     from += noffset;
     size -= noffset;
   }
-  if(m_mode=="ISCAT" or m_bFast9) {
+  if(m_mode=="ISCAT" or m_mode=="JTMSK" or m_bFast9) {
     float t0=m_t0;
     float t1=m_t1;
     qApp->processEvents();                                //Update the waterfall
@@ -1702,6 +1703,7 @@ void MainWindow::decode()                                       //decode()
     if(jt9com_.minSync<0) narg[8]=50;
     if(m_mode=="ISCAT") narg[9]=101;          //ISCAT
     if(m_mode=="JT9") narg[9]=102;            //Fast JT9
+    if(m_mode=="JTMSK") narg[9]=103;          //JTMSK
     narg[10]=ui->RxFreqSpinBox->value();
     narg[11]=m_Ftol;
     memcpy(d2b,jt9com_.d2,2*360000);
@@ -3198,6 +3200,7 @@ void MainWindow::on_actionJT9_triggered()
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
   ui->cbEME->setVisible(true);
+  ui->sbSubmode->setVisible(true);
   ui->sbSubmode->setMaximum(7);
   WSPR_config(false);
   fast_config(m_bFastMode);
@@ -3240,7 +3243,6 @@ void MainWindow::on_actionJTMSK_triggered()
   ui->cbFast9->setVisible(false);
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
-  ui->cbEME->setVisible(true);
   ui->sbSubmode->setVisible(false);
   WSPR_config(false);
   m_bFastMode=true;
@@ -3253,11 +3255,14 @@ void MainWindow::on_actionJTMSK_triggered()
   ui->RxFreqSpinBox->setValue(1500);
   ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
   ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
-  ui->sbTR->setVisible(true);
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
+
+//  ui->sbTR->setVisible(true);
+//  ui->sbFtol->setVisible(true);
+//  ui->cbEME->setVisible(true);
   ui->ClrAvgButton->setVisible(false);
 }
 
@@ -3364,6 +3369,7 @@ void MainWindow::on_actionJT4_triggered()
   ui->cbShMsgs->setVisible(true);
   ui->cbTx6->setVisible(true);
   ui->sbTR->setVisible(false);
+  ui->sbSubmode->setVisible(true);
   ui->sbSubmode->setMaximum(6);
   ui->label_6->setText("Single-Period Decodes");
   ui->label_7->setText("Average Decodes");
@@ -3458,6 +3464,10 @@ void MainWindow::on_actionISCAT_triggered()
   VHF_controls_visible(true);
   WSPR_config(false);
   fast_config(true);
+  ui->cbFast9->setVisible(false);
+  ui->sbTR->setVisible(true);
+  ui->sbFtol->setVisible(true);
+  ui->sbSubmode->setVisible(true);
   ui->cbShMsgs->setVisible(false);
   ui->cbTx6->setVisible(false);
   ui->cbEME->setVisible(false);
@@ -3526,12 +3536,10 @@ void MainWindow::fast_config(bool b)
     ui->cbEME->setText("EME delay");
     ui->sbTR->setVisible(false);
   }
-
-  if(b and (m_mode!="JT9")) {
+  if(b and (m_bFast9 or m_mode=="JTMSK" or m_mode=="ISCAT")) {
     ui->sbTR->setValue(m_TRindex);
     m_wideGraph->hide();
     m_fastGraph->show();
-    ui->cbFast9->setVisible(false);
   } else {
     m_wideGraph->show();
     m_fastGraph->hide();
@@ -4015,8 +4023,8 @@ void MainWindow::transmit (double snr)
   if (m_modeTx == "JTMSK") {
     m_nsps=6;
     m_toneSpacing=6000.0/m_nsps;
-    Q_EMIT sendMessage (NUM_JT9_SYMBOLS, double(m_nsps),
-                        ui->TxFreqSpinBox->value() - m_XIT, m_toneSpacing,
+    double f0=127*12000.0/(m_nsps*231.0);
+    Q_EMIT sendMessage (NUM_JTMSK_SYMBOLS, double(m_nsps), f0, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel (),
                         true, true, snr, m_TRperiod);
   }
