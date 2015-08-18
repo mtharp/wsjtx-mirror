@@ -46,4 +46,4 @@ JTMSKcode: $(OBJS5)
 .PHONY : clean
 
 clean:
-	$(RM) *.o jt9code
+	$(RM) *.o JTMSKcode JTMSKcode.exe

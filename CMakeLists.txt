@@ -399,8 +399,10 @@ set (wsjt_CSRCS
   lib/igray.c
   lib/init_rs.c
   lib/wsprd/nhash.c
+  lib/tab.c
   lib/tmoonsub.c
   lib/usleep.c
+  lib/vit213.c
   lib/wisdom.c
   lib/wrapkarn.c
   )

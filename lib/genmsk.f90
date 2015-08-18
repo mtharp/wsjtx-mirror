@@ -10,6 +10,7 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
   character*22 msgsent                    !Message as it will be received
   integer*4 i4Msg6BitWords(13)            !72-bit message as 6-bit words
   integer*1 i1Msg8BitBytes(13)            !72 bits and zero tail as 8-bit bytes
+  integer*1 e1(198)                       !Encoded bits before re-ordering
   integer*1 i1EncodedBits(198)            !Encoded information-carrying bits
 !  integer*1 i1ScrambledBits(207)          !Encoded bits after interleaving
   integer i4tone(231)                   !Tone #s, data and sync (values 0-1)
@@ -59,7 +60,14 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      kc=13
      nc=2
      nbits=87
-     call enc213(i1Msg8BitBytes,nbits,i1EncodedBits,nsym,kc,nc)
+     call enc213(i1Msg8BitBytes,nbits,e1,nsym,kc,nc)
+
+     j=0
+     do i=1,nsym/2
+        j=j+1
+        i1EncodedBits(j)=e1(2*i-1)
+        i1EncodedBits(j+99)=e1(2*i)
+     enddo
 
 ! Insert sync symbols
      i4tone(1:11)=b11

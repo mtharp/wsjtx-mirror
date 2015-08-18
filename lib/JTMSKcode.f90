@@ -5,6 +5,7 @@ program JTMSKcode
   use packjt
   character msg*22,decoded*22,bad*1,msgtype*13
   integer*4 i4tone(231)                   !Channel symbols (values 0-1)
+  integer*1 e1(198)
   integer*1 r1(198)
   integer*1 d8(13)
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
@@ -59,9 +60,17 @@ program JTMSKcode
      r1(132:198)=i4tone(165:231)
      where(r1.eq.0) r1=127
      where(r1.eq.1) r1=-127
-     nb1=87
 
-     call vit213(r1,nb1,mettab,d8,metric)
+     j=0
+     do i=1,99
+        j=j+1
+        e1(j)=r1(i)
+        j=j+1
+        e1(j)=r1(i+99)
+     enddo
+
+     nb1=87
+     call vit213(e1,nb1,mettab,d8,metric)
 
      ihash=nhash(d8,9,146)
      ihash=2*iand(ihash,32767)
@@ -81,7 +90,9 @@ program JTMSKcode
 1020 format(i2,'.',2x,a22,2x,a22,3x,a1,i3,": ",a13)
   enddo
 
-!  if(nmsg.eq.1) write(*,1030) i4tone
-!1030 format(/'Channel symbols'/(30i2))
+     write(*,4001) i4tone(1:76)
+     write(*,4001) i4tone(77:153)
+     write(*,4001) i4tone(154:231)
+4001 format(78i1)
 
 999 end program JTMSKcode
