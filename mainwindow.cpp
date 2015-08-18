@@ -3224,8 +3224,10 @@ void MainWindow::on_actionJT9_triggered()
 
 void MainWindow::on_actionJTMSK_triggered()
 {
+//  on_actionISCAT_triggered();
   m_mode="JTMSK";
   m_modeTx="JTMSK";
+  ui->actionJTMSK->setChecked(true);
   switch_mode (Modes::JTMSK);
   statusChanged();
   m_nsps=6;

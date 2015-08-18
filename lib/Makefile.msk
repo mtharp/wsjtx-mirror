@@ -1,0 +1,63 @@
+# Makefile for MinGW on Windows
+#
+# Needed libraries are located using the following variables:
+#
+#   QT_DIR - point this at the root of your Qt installation
+#   FFTW3_DIR - point this at the fftw v3 installation directory
+#
+# e.g.
+#   make -f Makefile.MinGW \
+#    QT_DIR=c:/Qt/5.2.1/mingw48_32 \
+#    FFTW3_DIR = c:/fftw-3.3.3-dll32-2
+#
+# Windows re-direct:
+#   C> make > junk1 2>&1
+
+# Set paths
+EXE_DIR = ..\\..\\wsjtx_install
+QT_DIR = C:/wsjt-env/Qt5/5.2.1/mingw48_32
+FFTW3_DIR = ..
+
+INCPATH = -I${QT_DIR}/include/QtCore -I${QT_DIR}/include 
+
+# Compilers
+CC = gcc
+CXX = g++
+FC = gfortran
+AR = ar cr
+RANLIB = ranlib
+MKDIR = mkdir -p
+CP = cp
+RM = rm -f
+
+FFLAGS = -g -O0 -fbounds-check -Wall -Wno-precision-loss 
+CFLAGS = -g -O0 -I. 
+
+# Default rules
+%.o: %.c
+	${CC} ${CFLAGS} -c $<
+%.o: %.f
+	${FC} ${FFLAGS} -c $<
+%.o: %.F
+	${FC} ${FFLAGS} -c $<
+%.o: %.f90
+	${FC} ${FFLAGS} -c $<
+%.o: %.F90
+	${FC} ${FFLAGS} -c $<
+
+all:    jt9code.exe JTMSKcode.exe
+
+OBJS4 = jt9code.o packjt.o fmtmsg.o gen9.o deg2grid.o grid2deg.o \
+      entail.o encode232.o interleave9.o graycode.o igray.o
+jt9code.exe: $(OBJS4) 
+	$(FC) -o jt9code.exe $(OBJS4) 
+
+OBJS5 = JTMSKcode.o packjt.o fmtmsg.o genmsk.o deg2grid.o grid2deg.o \
+      entail.o nhash.o tab.o vit213.o 
+JTMSKcode.exe: $(OBJS5) 
+	$(FC) -o JTMSKcode.exe $(OBJS5) 
+
+.PHONY : clean
+
+clean:
+	$(RM) *.o jt9code.exe

@@ -2769,6 +2769,9 @@ QPushButton[state=&quot;ok&quot;] {
    </property>
   </action>
   <action name="actionJTMSK">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>JTMSK</string>
    </property>
