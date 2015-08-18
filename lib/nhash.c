@@ -374,7 +374,8 @@ uint32_t nhash( const void *key, size_t length, uint32_t initval)
 /*
  * Fortran argument compatible wrapper
  */
-uint32_t nhash_( const void * key, size_t const * length, uint32_t const * initval)
+//uint32_t nhash_( const void * key, size_t const * length, uint32_t const * initval)
+uint32_t nhash_( const void * key, uint32_t const * length, uint32_t const * initval)
 {
   return nhash (key, *length, *initval);
 }

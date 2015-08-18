@@ -1,10 +1,10 @@
 			Fast JT9 Submodes
 			-----------------
 			 
-August 14, 2015
+August 15, 2015
 ---------------
 
-New release of of experimental WSJT-X v1.6.1, r5788
+New release of of experimental WSJT-X v1.6.1, r5789
 
 Changes since WSJT-X v1.6.1, revision 5779:
 
@@ -12,15 +12,25 @@ Changes since WSJT-X v1.6.1, revision 5779:
 2.  Corrected logic for Auto-Sequencing operation.
 3.  Stop after sending 73 five times in auto-sequence mode.
 4.  Add an "Auto-Level" control to Fast Graph window.
-5.  Send fast-mode decodes to PSKreporter.
+5.  Send fast-mode decodes to PSKreporter web site.
 6.  Support automatic logging via JTAlert-X.
-7.  Send fast-mode output to ALL.TXT.
+7.  Send fast-mode output to file ALL.TXT.
 8.  Better definition of dB levels for fast-JT9 signals.
 9.  Rationalize the GUI behavior when changing mode, submode, fast/slow
-    status, or T/R period.
+    status, and T/R period.
 10. Correct a flaw in the display of multiple decodes in a single 
     fast-JT9 sequence.
-11. Fix minor bugs reported by G3WDG, ND0B, OZ1PIF.
+11. Fix minor bugs reported by G3WDG, ND0B, OZ1PIF, and others.
+
+To download for Windows, paste the following link into your browser:
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5789-win32.exe
+
+Please keep in mind that this is an experimental version of WSJT-X.
+Bug reports and other feedback will be much appreciated, and will help
+to make the program better!  
+
+    -- 73, Joe, K1JT
+
 
 August 11, 2015
 ---------------

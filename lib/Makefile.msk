@@ -1,17 +1,3 @@
-# Makefile for MinGW on Windows
-#
-# Needed libraries are located using the following variables:
-#
-#   QT_DIR - point this at the root of your Qt installation
-#   FFTW3_DIR - point this at the fftw v3 installation directory
-#
-# e.g.
-#   make -f Makefile.MinGW \
-#    QT_DIR=c:/Qt/5.2.1/mingw48_32 \
-#    FFTW3_DIR = c:/fftw-3.3.3-dll32-2
-#
-# Windows re-direct:
-#   C> make > junk1 2>&1
 
 # Set paths
 EXE_DIR = ..\\..\\wsjtx_install
@@ -45,19 +31,19 @@ CFLAGS = -g -O0 -I.
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    jt9code.exe JTMSKcode.exe
+all:    jt9code JTMSKcode
 
 OBJS4 = jt9code.o packjt.o fmtmsg.o gen9.o deg2grid.o grid2deg.o \
       entail.o encode232.o interleave9.o graycode.o igray.o
-jt9code.exe: $(OBJS4) 
-	$(FC) -o jt9code.exe $(OBJS4) 
+jt9code: $(OBJS4) 
+	$(FC) -o jt9code $(OBJS4) 
 
 OBJS5 = JTMSKcode.o packjt.o fmtmsg.o genmsk.o deg2grid.o grid2deg.o \
       entail.o nhash.o tab.o vit213.o 
-JTMSKcode.exe: $(OBJS5) 
-	$(FC) -o JTMSKcode.exe $(OBJS5) 
+JTMSKcode: $(OBJS5) 
+	$(FC) -o JTMSKcode $(OBJS5) 
 
 .PHONY : clean
 
 clean:
-	$(RM) *.o jt9code.exe
+	$(RM) *.o jt9code
