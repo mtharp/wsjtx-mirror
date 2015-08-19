@@ -638,7 +638,7 @@ QLabel[oob=&quot;true&quot;] {
                     <string>Check to Tx in even minutes, uncheck for odd minutes</string>
                    </property>
                    <property name="text">
-                    <string>Tx even</string>
+                    <string>Tx even/1st</string>
                    </property>
                   </widget>
                  </item>

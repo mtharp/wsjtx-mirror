@@ -12,11 +12,11 @@ namespace
     "",
     "JT65",
     "JT9",
-    "JT9W-1",
     "JT4",
     "WSPR",
     "Echo",
     "ISCAT",
+    "JTMSK"
   };
 }
 
