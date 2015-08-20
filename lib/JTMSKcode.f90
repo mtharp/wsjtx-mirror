@@ -54,7 +54,7 @@ program JTMSKcode
      if(itype.eq.5) msgtype="Type 2 suffix"
      if(itype.eq.6) msgtype="Free text"
 
-! Insert sync symbols
+! Remove sync symbols
      r1(1:65)=i4tone(12:76)
      r1(66:131)=i4tone(88:153)
      r1(132:198)=i4tone(165:231)

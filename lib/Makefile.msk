@@ -16,7 +16,7 @@ MKDIR = mkdir -p
 CP = cp
 RM = rm -f
 
-FFLAGS = -g -O0 -fbounds-check -Wall -Wno-precision-loss 
+FFLAGS = -g -O0 -fbounds-check -Wall -Wno-precision-loss -Wno-conversion
 CFLAGS = -g -O0 -I. 
 
 # Default rules
@@ -31,7 +31,8 @@ CFLAGS = -g -O0 -I.
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    jt9code JTMSKcode
+#all:    jt9code JTMSKcode
+all:	 testmsk
 
 OBJS4 = jt9code.o packjt.o fmtmsg.o gen9.o deg2grid.o grid2deg.o \
       entail.o encode232.o interleave9.o graycode.o igray.o
@@ -42,6 +43,12 @@ OBJS5 = JTMSKcode.o packjt.o fmtmsg.o genmsk.o deg2grid.o grid2deg.o \
       entail.o nhash.o tab.o vit213.o 
 JTMSKcode: $(OBJS5) 
 	$(FC) -o JTMSKcode $(OBJS5) 
+
+OBJS6 = testmsk.o jtmsk.o analytic.o four2a.o db.o mskdf.o pctile.o \
+      sort.o tweak1.o syncmsk.o genmsk.o packjt.o fmtmsg.o \
+      deg2grid.o grid2deg.o entail.o nhash.o tab.o vit213.o 
+testmsk: $(OBJS6) 
+	$(FC) -o testmsk $(OBJS6) -lfftw3f
 
 .PHONY : clean
 
