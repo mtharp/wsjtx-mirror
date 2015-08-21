@@ -50,7 +50,6 @@ program testmsk
   enddo
   call system_clock(count1,clkfreq)
   ttotal=(count1-count0)/float(clkfreq)
-  print*,count0,count1,clkfreq,ttotal
   write(*,1100) tmskdf/ttotal,tsync/ttotal,tsoft/ttotal,tvit/ttotal,ttotal
 1100 format(4f8.3,f8.1)
 

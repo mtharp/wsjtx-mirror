@@ -21,7 +21,7 @@ subroutine jtmsk(id2,narg,line)
   character*22 msg                     !Decoded message
   character*80 line(100)
   logical first,ldebug
-  integer*8 count0,count1,clkfreq
+!  integer*8 count0,count1,clkfreq
   common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
   data first/.true./
   data b11/1,1,1,0,0,0,1,0,0,1,0/
@@ -112,30 +112,24 @@ subroutine jtmsk(id2,narg,line)
 !     call mskdf(cdat,iz,nfft1,f0,ldebug,dfx,snrsq2)      !Get freq offset
      t0=ia/12000.0
      nsnr=0
-!     print*,f0,dfx,f0+dfx
 
-     if(snrsq2.ge.15.0) then
-        do idf=1,11
-           itry=idf/2
-           if(mod(idf,2).eq.0) itry=-itry
-           twk=-6.0 + itry*0.5                  !Why the 6 Hz offset ???
-           call tweak1(cdat,iz,-(dfx+twk),cdat2)     !Mix to standard frequency
+     do jtry=1,31
+        jdf=jtry/2
+        if(mod(jtry,2).eq.0) jdf=-jdf
+        twk=-6.0 + jdf*0.5                  !Why the 6 Hz offset ???
+        call tweak1(cdat,iz,-(dfx+twk),cdat2)     !Mix to standard frequency
 ! DF is known, now establish sync and decode the message
-           call syncmsk(cdat2,iz,cb,ldebug,ipk,jpk,rmax,metric,msg)
-           write(81,3020) nutc,nsnr,t0,nint(f0+dfx+twk),ipk,metric,rmax,  &
-                snrsq2,itry,msg
-3020       format(i6.6,i5,f5.1,i6,2i6,f7.2,f7.1,i4,2x,a22)
-           if(msg.ne.'                      ') then
-              write(*,1020) nutc,nsnr,t0,nint(f0+dfx+twk),msg,ipk,metric,   &
-                   rmax,snrsq2,itry
-1020          format(i6.6,i5,f5.1,i6,2x,a22,2i6,f7.2,f7.0,i4)
-              exit
-           endif
-        enddo
-     else
-        write(81,3020) nutc,nsnr,t0,nint(f0+dfx+twk),0,0,0.0,snrsq2,0
-     endif
-
+        call syncmsk(cdat2,iz,cb,ldebug,ipk,idfsync,rmax,metric,msg)
+        write(81,3020) nutc,nsnr,t0,nint(f0+dfx+twk),ipk,metric,rmax,  &
+             jdf,idfsync,msg
+3020    format(i6.6,i5,f5.1,i6,2i6,f7.2,2i4,1x,a22)
+        if(msg.ne.'                      ') then
+           write(*,1020) nutc,nsnr,t0,nint(f0+dfx+twk),msg,ipk,metric,   &
+                rmax,jdf,idfsync
+1020       format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,2i4)
+           exit
+        endif
+     enddo
   enddo
 
   return

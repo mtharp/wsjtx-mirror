@@ -1,9 +1,10 @@
-subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax1,metric,decoded)
+subroutine syncmsk(cdat,npts,cb,ldebug,ipk,idf,rmax1,metric,decoded)
 
 ! Find the Barker codes within a JTMSK ping.
 
   use packjt
   complex cdat(npts)                    !Analytic signal
+  complex cdat2(24000)
   complex cb(66)                        !Complex waveform for Barker 11
   complex c0(6)
   complex c1(6)
@@ -98,99 +99,106 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax1,metric,decoded)
 
   if(rmax.lt.2.3) go to 900
 
-  z=0.
-  do i=1,66                               !Find carrier phase offset
-     z=z + cdat(jpk+i-1)*conjg(cb(i))
-  enddo
-  phi=atan2(aimag(z),real(z))
-  cfac=cmplx(cos(phi),-sin(phi))
-  cdat=cfac*cdat
-
-  if(ldebug) then
+  cdat2(1:npts)=cdat(1:npts)
+  do itry=1,11
+     idf=itry/2
+     if(mod(itry,2).eq.0) idf=-idf
+     twk=idf*0.5
+     call tweak1(cdat2,npts,twk,cdat)
      z=0.
-     do i=1,66
+     do i=1,66                               !Find carrier phase offset
         z=z + cdat(jpk+i-1)*conjg(cb(i))
-        phi=atan2(aimag(z),real(z))
-        write(74,3002) i/6.0,conjg(cb(i)),cdat(jpk+i-1),z,abs(z),phi
-3002    format(9f8.3)
      enddo
-  endif
+     phi=atan2(aimag(z),real(z))
+     cfac=cmplx(cos(phi),-sin(phi))
+     cdat=cfac*cdat
 
-  do k=1,231                                !Compute soft symbols
-     z0=0.
-     z1=0.
-     j=jpk+6*(k-1)
-     do i=1,6
-        z0=z0 + cdat(j+i-1)*conjg(c0(i))    !Signal matching 0
-        z1=z1 + cdat(j+i-1)*conjg(c1(i))    !Signal matching 1
-     enddo
-     sym=abs(real(z1))-abs(real(z0))
-     if(sym.lt.0.0) phi=atan2(aimag(z0),real(z0))
-     if(sym.ge.0.0) phi=atan2(aimag(z1),real(z1))
-     n=k
-     if(ipk.eq.2) n=k+76
-     if(ipk.eq.3) n=k+153
-     if(n.gt.231) n=n-231
-     symbol(n)=sym
-     ibit=0
-     if(sym.ge.0) ibit=1
-     ib(n)=ibit
      if(ldebug) then
-        write(75,3301) k,sym,phi,ibit
-3301    format(i3,2f8.3,i5)
+        z=0.
+        do i=1,66
+           z=z + cdat(jpk+i-1)*conjg(cb(i))
+           phi=atan2(aimag(z),real(z))
+           write(74,3002) i/6.0,conjg(cb(i)),cdat(jpk+i-1),z,abs(z),phi
+3002       format(9f8.3)
+        enddo
      endif
-  enddo
+
+     do k=1,231                                !Compute soft symbols
+        z0=0.
+        z1=0.
+        j=jpk+6*(k-1)
+        do i=1,6
+           z0=z0 + cdat(j+i-1)*conjg(c0(i))    !Signal matching 0
+           z1=z1 + cdat(j+i-1)*conjg(c1(i))    !Signal matching 1
+        enddo
+        sym=abs(real(z1))-abs(real(z0))
+        if(sym.lt.0.0) phi=atan2(aimag(z0),real(z0))
+        if(sym.ge.0.0) phi=atan2(aimag(z1),real(z1))
+        n=k
+        if(ipk.eq.2) n=k+76
+        if(ipk.eq.3) n=k+153
+        if(n.gt.231) n=n-231
+        symbol(n)=sym
+        ibit=0
+        if(sym.ge.0) ibit=1
+        ib(n)=ibit
+        if(ldebug) then
+           write(75,3301) k,sym,phi,ibit
+3301       format(i3,2f8.3,i5)
+        endif
+     enddo
 !  write(*,4100) ib
 !4100 format(76i1/77i1/78i1)
 
 !####################################################################
 ! Extract the information symbols by removing the sync vectors
-  if(ipk.eq.1) then
-     rdata(1:65)=symbol(12:76)
-     rdata(66:131)=symbol(88:153)
-     rdata(132:198)=symbol(165:231)
-  else if(ipk.eq.2) then
-     rdata(1:66)=symbol(12:77)
-     rdata(67:133)=symbol(89:155)
-     rdata(134:198)=symbol(167:231)
-  else if(ipk.eq.3) then
-     rdata(1:67)=symbol(12:78)
-     rdata(68:132)=symbol(90:154)
-     rdata(133:198)=symbol(166:231)
-  endif
+     if(ipk.eq.1) then
+        rdata(1:65)=symbol(12:76)
+        rdata(66:131)=symbol(88:153)
+        rdata(132:198)=symbol(165:231)
+     else if(ipk.eq.2) then
+        rdata(1:66)=symbol(12:77)
+        rdata(67:133)=symbol(89:155)
+        rdata(134:198)=symbol(167:231)
+     else if(ipk.eq.3) then
+        rdata(1:67)=symbol(12:78)
+        rdata(68:132)=symbol(90:154)
+        rdata(133:198)=symbol(166:231)
+     endif
 
 ! Re-order the symbols and make them i*1
-  j=0
-  do i=1,99
-     i4=128+rdata(i)
-     if(i4.gt.255)  i4=255
-     if(i4.lt.0) i4=0
-     j=j+1
-     e1(j)=i1
-     i4=128+rdata(i+99)
-     if(i4.gt.255)  i4=255
-     if(i4.lt.0) i4=0
-     j=j+1
-     e1(j)=i1
-  enddo
-  call system_clock(count0,clkfreq)
-  tsoft=tsoft + (count0-count1)/float(clkfreq)
+     j=0
+     do i=1,99
+        i4=128+rdata(i)
+        if(i4.gt.255)  i4=255
+        if(i4.lt.0) i4=0
+        j=j+1
+        e1(j)=i1
+        i4=128+rdata(i+99)
+        if(i4.gt.255)  i4=255
+        if(i4.lt.0) i4=0
+        j=j+1
+        e1(j)=i1
+     enddo
+     call system_clock(count0,clkfreq)
+     tsoft=tsoft + (count0-count1)/float(clkfreq)
 
 ! Decode the message
-  nb1=87
-  call vit213(e1,nb1,mettab,d8,metric)
-  call system_clock(count1,clkfreq)
-  tvit=tvit + (count1-count0)/float(clkfreq)
-
-  ihash=nhash(d8,9,146)
-  ihash=2*iand(ihash,32767)
-  if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then
-     write(c72,1012) d8(1:9)
-1012 format(9b8.8)
-     read(c72,1014) i4Msg6BitWords
-1014 format(12b6.6)
-     call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
-  endif
+     nb1=87
+     call vit213(e1,nb1,mettab,d8,metric)
+     call system_clock(count1,clkfreq)
+     tvit=tvit + (count1-count0)/float(clkfreq)
+     ihash=nhash(d8,9,146)
+     ihash=2*iand(ihash,32767)
+     if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then
+        write(c72,1012) d8(1:9)
+1012    format(9b8.8)
+        read(c72,1014) i4Msg6BitWords
+1014    format(12b6.6)
+        call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
+        exit
+     endif
+  enddo
 
 900 return
 end subroutine syncmsk
