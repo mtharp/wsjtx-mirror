@@ -1,4 +1,4 @@
-subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
+subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax1,metric,decoded)
 
 ! Find the Barker codes within a JTMSK ping.
 
@@ -21,6 +21,8 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
   character*22 decoded
   character*72 c72
   logical ldebug,first
+  integer*8 count0,count1,clkfreq,count2
+  common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
   equivalence (i1,i4)
   equivalence (ihash,i1hash)
   data first/.true./
@@ -42,11 +44,13 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
      first=.false.
   endif
 
+  call system_clock(count0,clkfreq)
   decoded="                      "
   ipk=0
   jpk=0
   metric=0
   r=0.
+  rmax1=0.
   jz=npts-65
   do j=1,jz                               !Find the sync vectors
      z=0.
@@ -56,9 +60,11 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
         z=z + cdat(j+i-1)*conjg(cb(i))    !Signal matching Barker 11
      enddo
      r(j)=abs(z)/ss                       !Goodness-of-fit to Barker 11
+     rmax1=max(rmax1,r(j))
      if(ldebug) write(76,3001) j,r(j)
 3001 format(i6,f12.3)
   enddo
+  call system_clock(count2,clkfreq)
 
   jz=npts-1386
   rmax=0.
@@ -86,9 +92,11 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
 3003    format(i6,4f12.3)
      endif
   enddo
-!  print*,ipk,jpk,rmax
+  call system_clock(count1,clkfreq)
+  tsync=tsync + (count1-count0)/float(clkfreq)
+!  print*,(count2-count0)/float(clkfreq),(count1-count2)/float(clkfreq),tsync
 
-  if(rmax.lt.2.0) go to 900
+  if(rmax.lt.2.3) go to 900
 
   z=0.
   do i=1,66                               !Find carrier phase offset
@@ -165,10 +173,14 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
      j=j+1
      e1(j)=i1
   enddo
+  call system_clock(count0,clkfreq)
+  tsoft=tsoft + (count0-count1)/float(clkfreq)
 
 ! Decode the message
   nb1=87
   call vit213(e1,nb1,mettab,d8,metric)
+  call system_clock(count1,clkfreq)
+  tvit=tvit + (count1-count0)/float(clkfreq)
 
   ihash=nhash(d8,9,146)
   ihash=2*iand(ihash,32767)

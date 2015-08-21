@@ -21,6 +21,8 @@ subroutine jtmsk(id2,narg,line)
   character*22 msg                     !Decoded message
   character*80 line(100)
   logical first,ldebug
+  integer*8 count0,count1,clkfreq
+  common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
   data first/.true./
   data b11/1,1,1,0,0,0,1,0,0,1,0/
   save first,cb,twopi,dt,f0,f1
@@ -38,7 +40,7 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
-  ldebug=.true.
+  ldebug=.false.
 
   if(first) then
      j=0

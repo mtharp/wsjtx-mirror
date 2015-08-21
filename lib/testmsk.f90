@@ -4,8 +4,10 @@ program testmsk
   integer*2 id2(NMAX)
   integer narg(0:11)
   character*80 line(100)
-  character submode*1,infile*80
-  
+  character infile*80
+  integer*8 count0,count1,clkfreq
+  common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
+
   nargs=iargc()
   if(nargs.lt.1) then
      print*,'Usage:    testmsk infile1 [infile2 ...]'
@@ -16,6 +18,12 @@ program testmsk
   open(81,file='testmsk.out',status='unknown',position='append')
   nfiles=nargs
 
+  tmskdf=0.
+  tsync=0.
+  tsoft=0.
+  tvit=0.
+  ttotal=0.
+  call system_clock(count0,clkfreq)
   do ifile=1,nfiles
      call getarg(ifile,infile)
      open(10,file=infile,access='stream',status='old')
@@ -40,5 +48,10 @@ program testmsk
 
      call jtmsk(id2,narg,line)
   enddo
+  call system_clock(count1,clkfreq)
+  ttotal=(count1-count0)/float(clkfreq)
+  print*,count0,count1,clkfreq,ttotal
+  write(*,1100) tmskdf/ttotal,tsync/ttotal,tsoft/ttotal,tvit/ttotal,ttotal
+1100 format(4f8.3,f8.1)
 
 999 end program testmsk
