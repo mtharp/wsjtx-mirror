@@ -18,13 +18,11 @@ subroutine jtmsk(id2,narg,line)
   complex cdat2(24000)
   integer narg(0:11)
   integer b11(11)
-  integer itry(11)
   character*22 msg                     !Decoded message
   character*80 line(100)
   logical first,ldebug
   data first/.true./
   data b11/1,1,1,0,0,0,1,0,0,1,0/
-  data itry/0,-1,1,-2,2,-3,3,-4,4,-5,5/
   save first,cb,twopi,dt,f0,f1
 
 ! Parameters from GUI are in narg():
@@ -94,28 +92,40 @@ subroutine jtmsk(id2,narg,line)
   do iter=1,999
      ib=ib+nstep
      if(ib.gt.npts) exit
-     ia=ib-nlen+1
+     ia=ib-nlen+1 
+!###
+!     if(iter.gt.1) exit
+!     ia=8.0*12000
+!     ib=ia+12000-1
+     snrsq2=20
+!     dfx=1134.0-1000.0
+     dfx=1126.3-1000.0
+     if(mod(nutc,10).ne.0) dfx=1073.7-1000.0
+!###
 
      iz=ib-ia+1
      n=log(float(iz))/log(2.0) + 1.0
      nfft1=2**n                                   !FFT length
      cdat(1:iz)=c(ia:ib)
-     call mskdf(cdat,iz,nfft1,f0,ldebug,dfx,snrsq2)      !Get freq offset
+!     call mskdf(cdat,iz,nfft1,f0,ldebug,dfx,snrsq2)      !Get freq offset
      t0=ia/12000.0
      nsnr=0
+!     print*,f0,dfx,f0+dfx
 
      if(snrsq2.ge.15.0) then
-        do idf=1,5
-           twk=-6.0 + itry(idf)*0.5                  !Why the 6 Hz offset ???
+        do idf=1,11
+           itry=idf/2
+           if(mod(idf,2).eq.0) itry=-itry
+           twk=-6.0 + itry*0.5                  !Why the 6 Hz offset ???
            call tweak1(cdat,iz,-(dfx+twk),cdat2)     !Mix to standard frequency
 ! DF is known, now establish sync and decode the message
            call syncmsk(cdat2,iz,cb,ldebug,ipk,jpk,rmax,metric,msg)
            write(81,3020) nutc,nsnr,t0,nint(f0+dfx+twk),ipk,metric,rmax,  &
-                snrsq2,idf,msg
+                snrsq2,itry,msg
 3020       format(i6.6,i5,f5.1,i6,2i6,f7.2,f7.1,i4,2x,a22)
            if(msg.ne.'                      ') then
               write(*,1020) nutc,nsnr,t0,nint(f0+dfx+twk),msg,ipk,metric,   &
-                   rmax,snrsq2,idf
+                   rmax,snrsq2,itry
 1020          format(i6.6,i5,f5.1,i6,2x,a22,2i6,f7.2,f7.0,i4)
               exit
            endif

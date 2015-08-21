@@ -16,8 +16,8 @@ MKDIR = mkdir -p
 CP = cp
 RM = rm -f
 
-FFLAGS = -g -O0 -fbounds-check -Wall -Wno-precision-loss -Wno-conversion
-CFLAGS = -g -O0 -I. 
+FFLAGS = -O2 -fbounds-check -Wall -Wno-precision-loss -Wno-conversion
+CFLAGS = -O2 -I. 
 
 # Default rules
 %.o: %.c

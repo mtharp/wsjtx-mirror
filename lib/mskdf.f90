@@ -15,6 +15,7 @@ subroutine mskdf(cdat,npts,nfft1,f0,ldebug,dfx,snrsq2)
   df1=12000.0/nfft1
   nh=nfft1/2
   fac=1.0/(nfft1**2)
+  fac=1.0
 
   do i=1,npts
      c(i)=fac*cdat(i)**2
@@ -58,11 +59,10 @@ subroutine mskdf(cdat,npts,nfft1,f0,ldebug,dfx,snrsq2)
      if(ccf(k).gt.smax) then
         smax=ccf(k)
         jpk=j
-        kpk=k
      endif
      if(ldebug) then
-        write(73,3002) k,ccf(k)
-3002    format(i6,f12.3)
+        write(73,3002) 0.5*(j-1)*df1-f0,ccf(k)
+3002    format(2f12.3)
      endif
   enddo
 

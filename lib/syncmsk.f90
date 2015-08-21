@@ -15,6 +15,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
   integer*1 d8(13)
   integer*1 i1hash(4)
   integer*1 i1
+  integer ib(231)
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
   character*22 decoded
@@ -55,6 +56,8 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
         z=z + cdat(j+i-1)*conjg(cb(i))    !Signal matching Barker 11
      enddo
      r(j)=abs(z)/ss                       !Goodness-of-fit to Barker 11
+     if(ldebug) write(76,3001) j,r(j)
+3001 format(i6,f12.3)
   enddo
 
   jz=npts-1386
@@ -78,7 +81,13 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
         jpk=j
         ipk=3
      endif
+     if(ldebug) then
+        write(77,3003) j,r1,r2,r3,max(r1,r2,r3)
+3003    format(i6,4f12.3)
+     endif
   enddo
+!  print*,ipk,jpk,rmax
+
   if(rmax.lt.2.0) go to 900
 
   z=0.
@@ -115,11 +124,16 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
      if(ipk.eq.3) n=k+153
      if(n.gt.231) n=n-231
      symbol(n)=sym
+     ibit=0
+     if(sym.ge.0) ibit=1
+     ib(n)=ibit
      if(ldebug) then
-        write(75,3301) k,sym,phi
-3301    format(i3,2f8.3)
+        write(75,3301) k,sym,phi,ibit
+3301    format(i3,2f8.3,i5)
      endif
   enddo
+!  write(*,4100) ib
+!4100 format(76i1/77i1/78i1)
 
 !####################################################################
 ! Extract the information symbols by removing the sync vectors
