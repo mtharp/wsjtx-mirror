@@ -1,4 +1,4 @@
-subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
+subroutine syncmsk(cdat,npts,cb,ldebug,ipk,jpk,rmax,metric,decoded)
 
 ! Find the Barker codes within a JTMSK ping.
 
@@ -19,13 +19,35 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
   character*22 decoded
   character*72 c72
-  logical ldebug
+  logical ldebug,first
   equivalence (i1,i4)
   equivalence (ihash,i1hash)
+  data first/.true./
+  save first,mettab,c0,c1
 
+  if(first) then
+! Get the metric table
+     open(10,file='bpskmetrics.dat',status='old')
+     bias=0.0
+     scale=20.0
+     do i=0,255
+        read(10,*) xjunk,x0,x1
+        mettab(i,0)=nint(scale*(x0-bias))
+        mettab(i,1)=nint(scale*(x1-bias))
+     enddo
+     close(10)
+     c0=cb(19:24)
+     c1=cb(1:6)
+     first=.false.
+  endif
+
+  decoded="                      "
+  ipk=0
+  jpk=0
+  metric=0
   r=0.
   jz=npts-65
-  do j=1,jz
+  do j=1,jz                               !Find the sync vectors
      z=0.
      ss=0.
      do i=1,66
@@ -37,7 +59,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
 
   jz=npts-1386
   rmax=0.
-  do j=1,jz
+  do j=1,jz                               !Find best full-message sync
      r1=r(j) + r(j+456) + r(j+918)        ! 6*76 6*(76+77)
      r2=r(j) + r(j+462) + r(j+930)        ! 6*77 6*(77+78)
      r3=r(j) + r(j+468) + r(j+924)        ! 6*78 6*(78+76)
@@ -57,23 +79,13 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
         ipk=3
      endif
   enddo
-
-  sq=0.
-  do j=jpk,jpk+1385
-     sq=sq + real(cdat(j))**2 + aimag(cdat(j))**2
-  enddo
-  rms=sqrt(sq/1386)
-  cdat=cdat/rms
+  if(rmax.lt.2.0) go to 900
 
   z=0.
-  do i=1,66
+  do i=1,66                               !Find carrier phase offset
      z=z + cdat(jpk+i-1)*conjg(cb(i))
   enddo
   phi=atan2(aimag(z),real(z))
-
-!1010 format('ipk:',i2,'   jpk:',i6,'   rmax:',f7.2,'   rms:',f7.1,     &
-!          '   phi:',f7.3)
-
   cfac=cmplx(cos(phi),-sin(phi))
   cdat=cfac*cdat
 
@@ -82,14 +94,12 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
      do i=1,66
         z=z + cdat(jpk+i-1)*conjg(cb(i))
         phi=atan2(aimag(z),real(z))
-        write(16,3002) i/6.0,conjg(cb(i)),cdat(jpk+i-1),z,abs(z),phi
+        write(74,3002) i/6.0,conjg(cb(i)),cdat(jpk+i-1),z,abs(z),phi
 3002    format(9f8.3)
      enddo
   endif
 
-  c0=cb(19:24)
-  c1=cb(1:6)
-  do k=1,231
+  do k=1,231                                !Compute soft symbols
      z0=0.
      z1=0.
      j=jpk+6*(k-1)
@@ -100,14 +110,14 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
      sym=abs(real(z1))-abs(real(z0))
      if(sym.lt.0.0) phi=atan2(aimag(z0),real(z0))
      if(sym.ge.0.0) phi=atan2(aimag(z1),real(z1))
-     ibit=0
-     if(sym.ge.0) ibit=1
-     n=k+76
+     n=k
+     if(ipk.eq.2) n=k+76
+     if(ipk.eq.3) n=k+153
      if(n.gt.231) n=n-231
      symbol(n)=sym
      if(ldebug) then
-        write(17,3301) k,sym,phi,ibit
-3301    format(i3,2f8.3,3i5)
+        write(75,3301) k,sym,phi
+3301    format(i3,2f8.3)
      endif
   enddo
 
@@ -122,9 +132,9 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
      rdata(67:133)=symbol(89:155)
      rdata(134:198)=symbol(167:231)
   else if(ipk.eq.3) then
-     rdata(1:65)=symbol(12:76)
-     rdata(66:131)=symbol(88:153)
-     rdata(132:198)=symbol(165:231)
+     rdata(1:67)=symbol(12:78)
+     rdata(68:132)=symbol(90:154)
+     rdata(133:198)=symbol(166:231)
   endif
 
 ! Re-order the symbols and make them i*1
@@ -142,33 +152,19 @@ subroutine syncmsk(cdat,npts,cb,ldebug,rmax)
      e1(j)=i1
   enddo
 
-! Get the metric table
-  open(10,file='bpskmetrics.dat',status='old')
-  bias=0.5
-  scale=20.0
-  do i=0,255
-     read(10,*) xjunk,x0,x1
-     mettab(i,0)=nint(scale*(x0-bias))
-     mettab(i,1)=nint(scale*(x1-bias))
-  enddo
-  close(10)
-
 ! Decode the message
   nb1=87
   call vit213(e1,nb1,mettab,d8,metric)
 
   ihash=nhash(d8,9,146)
   ihash=2*iand(ihash,32767)
-  decoded="                      "
   if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then
      write(c72,1012) d8(1:9)
 1012 format(9b8.8)
      read(c72,1014) i4Msg6BitWords
 1014 format(12b6.6)
      call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
-     write(*,1020) ipk,jpk,metric,rmax,rms,decoded
-1020 format(3i6,2f8.1,2x,a22)
   endif
 
-  return
+900 return
 end subroutine syncmsk
