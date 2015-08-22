@@ -100,10 +100,10 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,idf,rmax1,metric,decoded)
   if(rmax.lt.2.3) go to 900
 
   cdat2(1:npts)=cdat(1:npts)
-  do itry=1,11
+  do itry=1,21
      idf=itry/2
      if(mod(itry,2).eq.0) idf=-idf
-     twk=idf*0.5
+     twk=idf*0.5 + 6.0
      call tweak1(cdat2,npts,twk,cdat)
      z=0.
      do i=1,66                               !Find carrier phase offset

@@ -120,11 +120,12 @@ subroutine jtmsk(id2,narg,line)
         call tweak1(cdat,iz,-(dfx+twk),cdat2)     !Mix to standard frequency
 ! DF is known, now establish sync and decode the message
         call syncmsk(cdat2,iz,cb,ldebug,ipk,idfsync,rmax,metric,msg)
-        write(81,3020) nutc,nsnr,t0,nint(f0+dfx+twk),ipk,metric,rmax,  &
+        freq=f0+dfx+twk+idfsync*0.5
+        write(81,3020) nutc,nsnr,t0,freq,ipk,metric,rmax,  &
              jdf,idfsync,msg
-3020    format(i6.6,i5,f5.1,i6,2i6,f7.2,2i4,1x,a22)
+3020    format(i6.6,i5,f5.1,f7.1,2i6,f7.2,2i4,1x,a22)
         if(msg.ne.'                      ') then
-           write(*,1020) nutc,nsnr,t0,nint(f0+dfx+twk),msg,ipk,metric,   &
+           write(*,1020) nutc,nsnr,t0,nint(freq),msg,ipk,metric,   &
                 rmax,jdf,idfsync
 1020       format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,2i4)
            exit
