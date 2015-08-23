@@ -34,7 +34,7 @@
 #define NUM_JT9_SYMBOLS 85                 //69 data + 16 sync
 #define NUM_WSPR_SYMBOLS 162               //(50+31)*2, embedded sync
 #define NUM_ISCAT_SYMBOLS 1291             //30*11025/256
-#define NUM_JTMSK_SYMBOLS 231              //(72+15+12)*2 + 3*11 sync
+#define NUM_JTMSK_SYMBOLS 234              //(72+15+12)*2 + 3*11 sync + 3 f0-parity
 
 #define NUM_CW_SYMBOLS 250
 #define TX_SAMPLE_RATE 48000

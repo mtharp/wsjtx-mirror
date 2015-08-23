@@ -4023,7 +4023,7 @@ void MainWindow::transmit (double snr)
   if (m_modeTx == "JTMSK") {
     m_nsps=6;
     m_toneSpacing=6000.0/m_nsps;
-    double f0=127*12000.0/(m_nsps*231.0);
+    double f0=1000.0;
     Q_EMIT sendMessage (NUM_JTMSK_SYMBOLS, double(m_nsps), f0, m_toneSpacing,
                         m_soundOutput, m_config.audio_output_channel (),
                         true, true, snr, m_TRperiod);
