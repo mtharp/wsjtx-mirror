@@ -4,14 +4,15 @@ program JTMSKcode
 
   use packjt
   character msg*22,decoded*22,bad*1,msgtype*13
-  integer*4 i4tone(231)                   !Channel symbols (values 0-1)
-  integer*1 e1(198)
-  integer*1 r1(198)
+  integer*4 i4tone(234)                   !Channel symbols (values 0-1)
+  integer*1 e1(201)
+  integer*1 r1(201)
   integer*1 d8(13)
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
   integer*1 i1hash(4)
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
   character*72 c72
+  real*8 twopi,dt,f0,f1,f,phi,dphi
   equivalence (ihash,i1hash)
 
   include 'testmsg.f90'
@@ -54,10 +55,14 @@ program JTMSKcode
      if(itype.eq.5) msgtype="Type 2 suffix"
      if(itype.eq.6) msgtype="Free text"
 
-! Remove sync symbols
-     r1(1:65)=i4tone(12:76)
-     r1(66:131)=i4tone(88:153)
-     r1(132:198)=i4tone(165:231)
+! Extract the data symbols, skipping over sync and parity bits
+     n1=35
+     n2=69
+     n3=94
+
+     r1(1:n1)=i4tone(11+1:11+n1)
+     r1(n1+1:n1+n2)=i4tone(23+n1+1:23+n1+n2)
+     r1(n1+n2+1:n1+n2+n3)=i4tone(35+n1+n2+1:35+n1+n2+n3)
      where(r1.eq.0) r1=127
      where(r1.eq.1) r1=-127
 
@@ -74,7 +79,6 @@ program JTMSKcode
 
      ihash=nhash(d8,9,146)
      ihash=2*iand(ihash,32767)
-!     print*,d8(1:11),i1hash(2),i1hash(1)
      decoded="                      "
      if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then
         write(c72,1012) d8(1:9)
@@ -88,11 +92,16 @@ program JTMSKcode
      if(decoded.ne.msg) bad="*"
      write(*,1020) imsg,msg,decoded,bad,itype,msgtype
 1020 format(i2,'.',2x,a22,2x,a22,3x,a1,i3,": ",a13)
+
   enddo
 
-     write(*,4001) i4tone(1:76)
-     write(*,4001) i4tone(77:153)
-     write(*,4001) i4tone(154:231)
-4001 format(78i1)
+  if(nmsg.eq.1) then
+     open(10,file='JTMSKcode.out',status='unknown')
+     do j=1,234
+        write(10,1030) j,i4tone(j)
+1030    format(2i5)
+     enddo
+     close(10)
+  endif
 
 999 end program JTMSKcode

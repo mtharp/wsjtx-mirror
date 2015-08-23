@@ -1,7 +1,7 @@
 subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
 
 ! Encodes a JTMSK message and returns msgsent, the message as it will
-! be decoded, and an integer array i4tone(231) of MSK tone values 
+! be decoded, and an integer array i4tone(234) of MSK tone values 
 ! in the range 0-1.  
 
   use packjt
@@ -12,8 +12,7 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
   integer*1 i1Msg8BitBytes(13)            !72 bits and zero tail as 8-bit bytes
   integer*1 e1(198)                       !Encoded bits before re-ordering
   integer*1 i1EncodedBits(198)            !Encoded information-carrying bits
-!  integer*1 i1ScrambledBits(207)          !Encoded bits after interleaving
-  integer i4tone(231)                   !Tone #s, data and sync (values 0-1)
+  integer i4tone(234)                     !Tone #s, data and sync (values 0-1)
   integer*1 i1hash(4)
   integer b11(11)
   data b11/1,1,1,0,0,0,1,0,0,1,0/         !Barker 11 code
@@ -43,18 +42,10 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
      if(ichk.ne.0) go to 999
      call entail(i4Msg6BitWords,i1Msg8BitBytes)  !Add tail, make 8-bit bytes
-!     write(*,3001) i4Msg6BitWords(1:12)
-!3001 format(12b6.6)
-!     write(*,3002) i1Msg8BitBytes(1:9)
-!3002 format(9b8.8)
-
      ihash=nhash(i1Msg8BitBytes,9,146)
-     ihash=2*iand(ihash,32767)
-     i1Msg8BitBytes(10)=i1hash(2)
+     ihash=2*iand(ihash,32767)                   !Generate the CRC
+     i1Msg8BitBytes(10)=i1hash(2)                !CRC to bytes 10 and 11
      i1Msg8BitBytes(11)=i1hash(1)
-!     write(*,3010) ihash,i1Msg8BitBytes(10:11)
-!3010 format(/b16.16/b8.8,b8.8)
-!     print*,i1Msg8BitBytes(1:11)
 
      nsym=198
      kc=13
@@ -63,19 +54,31 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      call enc213(i1Msg8BitBytes,nbits,e1,nsym,kc,nc)
 
      j=0
-     do i=1,nsym/2
+     do i=1,nsym/2                               !Reorder the encoded bits
         j=j+1
         i1EncodedBits(j)=e1(2*i-1)
         i1EncodedBits(j+99)=e1(2*i)
      enddo
 
-! Insert sync symbols
-     i4tone(1:11)=b11
-     i4tone(12:76)=i1EncodedBits(1:65)
-     i4tone(77:87)=b11
-     i4tone(88:153)=i1EncodedBits(66:131)
-     i4tone(154:164)=b11
-     i4tone(165:231)=i1EncodedBits(132:198)
+! Insert sync symbols and "even-parity-on-f0" bits
+     i4tone=0                                    !Start with all 0's
+     n1=35
+     n2=69
+     n3=94
+     i4tone(1:11)=b11                            !11 sync bits
+     i4tone(11+1:11+n1)=i1EncodedBits(1:n1)      !n1 data bits
+     nn1=count(i4tone(11+1:11+n1).eq.0)          !Count the 0's
+     if(mod(nn1,2).eq.0) i4tone(12+n1)=1         !1 parity bit
+
+     i4tone(13+n1:23+n1)=b11                     !11 sync bits
+     i4tone(23+n1+1:23+n1+n2)=i1EncodedBits(n1+1:n1+n2) !n2 data bits
+     nn2=count(i4tone(23+n1+1:23+n1+n2).eq.0)    !Count the 0's
+     if(mod(nn2,2).eq.0) i4tone(24+n1+n2)=1      !1 parity bit
+
+     i4tone(25+n1+n2:35+n1+n2)=b11               !11 sync bits
+     i4tone(35+n1+n2+1:35+n1+n2+n3)=i1EncodedBits(n1+n2+1:n1+n2+n3)!n3 data bits
+     nn3=count(i4tone(35+n1+n2+1:35+n1+n2+n3).eq.0) !Count the 0's
+     if(mod(nn3,2).eq.0) i4tone(36+n1+n2+n3)=1      !1 parity bit
   endif
      
 999 return

@@ -1,4 +1,4 @@
-subroutine syncmsk(cdat,npts,cb,ldebug,ipk,idf,rmax1,metric,decoded)
+subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
 
 ! Find the Barker codes within a JTMSK ping.
 
@@ -103,6 +103,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,ipk,idf,rmax1,metric,decoded)
   do itry=1,21
      idf=itry/2
      if(mod(itry,2).eq.0) idf=-idf
+     idf=idf-7
      twk=idf*0.5 + 6.0
      call tweak1(cdat2,npts,twk,cdat)
      z=0.

@@ -113,21 +113,28 @@ subroutine jtmsk(id2,narg,line)
      t0=ia/12000.0
      nsnr=0
 
-     do jtry=1,31
-        jdf=jtry/2
-        if(mod(jtry,2).eq.0) jdf=-jdf
+!     do jtry=1,31
+     do jtry=1,3
+!        jdf=jtry/2
+!        if(mod(jtry,2).eq.0) jdf=-jdf
+        jdf=0
+        if(jtry.eq.2) jdf=2
+        if(jtry.eq.3) jdf=-12
         twk=-6.0 + jdf*0.5                  !Why the 6 Hz offset ???
         call tweak1(cdat,iz,-(dfx+twk),cdat2)     !Mix to standard frequency
 ! DF is known, now establish sync and decode the message
-        call syncmsk(cdat2,iz,cb,ldebug,ipk,idfsync,rmax,metric,msg)
-        freq=f0+dfx+twk+idfsync*0.5
+        call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,msg)
+        freq=f0+dfx+twk+idf*0.5
         write(81,3020) nutc,nsnr,t0,freq,ipk,metric,rmax,  &
-             jdf,idfsync,msg
+             jdf,idf,msg
 3020    format(i6.6,i5,f5.1,f7.1,2i6,f7.2,2i4,1x,a22)
         if(msg.ne.'                      ') then
            write(*,1020) nutc,nsnr,t0,nint(freq),msg,ipk,metric,   &
-                rmax,jdf,idfsync
+                rmax,jdf,idf
 1020       format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,2i4)
+           t0=(ia+jpk)/12000.0
+           write(60) nutc,t0,jpk,ipk,jdf,idf,freq,rmax1,rmax,metric,msg,  &
+                cb,cdat(1:iz)
            exit
         endif
      enddo
