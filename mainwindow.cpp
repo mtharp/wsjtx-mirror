@@ -1998,6 +1998,7 @@ void MainWindow::guiUpdate()
   QString rt;
 
   if(m_TRperiod==0) m_TRperiod=60;
+  txDuration=0.0;
   if(m_modeTx=="JT9")  txDuration=1.0 + 85.0*m_nsps/12000.0;  // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;     // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;     // WSPR
