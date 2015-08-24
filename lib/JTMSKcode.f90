@@ -12,7 +12,7 @@ program JTMSKcode
   integer*1 i1hash(4)
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
   character*72 c72
-  real*8 twopi,dt,f0,f1,f,phi,dphi
+!  real*8 twopi,dt,f0,f1,f,phi,dphi
   equivalence (ihash,i1hash)
 
   include 'testmsg.f90'

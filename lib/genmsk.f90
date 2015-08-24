@@ -1,8 +1,18 @@
 subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
 
-! Encodes a JTMSK message and returns msgsent, the message as it will
-! be decoded, and an integer array i4tone(234) of MSK tone values 
-! in the range 0-1.  
+! Encode a JTMSK message
+! Input:
+!   - msg0     requested message to be transmitted
+!   - ichk     if nonzero, return only msgsent
+!   - msgsent  message as it will be decoded
+!   - i4tone   array of audio tone values, 0 or 1
+!   - itype    message type 
+!                 1 = standard message  <call1> <call2> <grid/rpt>
+!                 2 = type 1 prefix
+!                 3 = type 1 suffix
+!                 4 = type 2 prefix
+!                 5 = type 2 suffix
+!                 6 = free text (up to 13 characters)
 
   use packjt
   character*22 msg0
@@ -19,8 +29,8 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
   equivalence (ihash,i1hash)
   save
 
-  if(msg0(1:1).eq.'@') then
-     read(msg0(2:5),*,end=1,err=1) nfreq
+  if(msg0(1:1).eq.'@') then                    !Generate a fixed tone
+     read(msg0(2:5),*,end=1,err=1) nfreq       !at specified frequency
      go to 2
 1    nfreq=1000
 2    i4tone(1)=nfreq
@@ -47,11 +57,11 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      i1Msg8BitBytes(10)=i1hash(2)                !CRC to bytes 10 and 11
      i1Msg8BitBytes(11)=i1hash(1)
 
-     nsym=198
+     nsym=198                                    !(72+12+15)*2 = 198
      kc=13
      nc=2
      nbits=87
-     call enc213(i1Msg8BitBytes,nbits,e1,nsym,kc,nc)
+     call enc213(i1Msg8BitBytes,nbits,e1,nsym,kc,nc) !Encode the message
 
      j=0
      do i=1,nsym/2                               !Reorder the encoded bits
@@ -60,7 +70,7 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
         i1EncodedBits(j+99)=e1(2*i)
      enddo
 
-! Insert sync symbols and "even-parity-on-f0" bits
+! Insert three Barker 11 codes and three "even-f0-parity" bits
      i4tone=0                                    !Start with all 0's
      n1=35
      n2=69
@@ -80,6 +90,9 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      nn3=count(i4tone(35+n1+n2+1:35+n1+n2+n3).eq.0) !Count the 0's
      if(mod(nn3,2).eq.0) i4tone(36+n1+n2+n3)=1      !1 parity bit
   endif
+
+  n=count(i4tone.eq.0)
+  if(mod(n,2).ne.0) stop 'Parity error in genmsk.'
      
 999 return
 end subroutine genmsk
