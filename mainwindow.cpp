@@ -788,7 +788,7 @@ void MainWindow::dataSink(qint64 frames)
     jt9com_.ndiskdat=0;
   }
 
-  if(m_mode=="ISCAT" or m_bFast9) {
+  if(m_mode=="ISCAT" or m_mode=="JTMSK" or m_bFast9) {
     fastSink(frames);
     return;
   }
@@ -1495,7 +1495,8 @@ void MainWindow::on_actionDecode_remaining_files_in_directory_triggered()
 void MainWindow::diskDat()                                   //diskDat()
 {
   int k;
-  int kstep=m_nsps/2;
+//  int kstep=m_nsps/2;
+  int kstep=3456;
   m_diskData=true;
 
   for(int n=1; n<=m_hsymStop; n++) {                      // Do the waterfall spectra
@@ -2317,16 +2318,6 @@ void MainWindow::guiUpdate()
 
 //Once per second:
   if(nsec != m_sec0) {
-
-/*
-//################################################################################
-    QString diag;
-
-    diag.sprintf("%c %2d/%d %7d %d %d",65+m_nSubMode,nsec%m_TRperiod,m_TRperiod,
-                 m_k0,m_monitoring,m_transmitting);
-    ui->decodedTextBrowser2->setText(diag);
-//################################################################################
-*/
     if(m_auto and m_mode=="Echo" and m_bEchoTxOK) {
       progressBar->setMaximum(6);
       progressBar->setValue(int(m_s6));
@@ -3174,6 +3165,10 @@ void MainWindow::acceptQSO2(QDateTime const& QSO_date, QString const& call, QStr
 void MainWindow::on_actionJT9_triggered()
 {
   m_mode="JT9";
+  if(ui->cbFast9->isChecked()) {
+    m_bFast9=true;
+    m_bFastMode=true;
+  }
   switch_mode (Modes::JT9);
   if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
@@ -3210,6 +3205,7 @@ void MainWindow::on_actionJT9_triggered()
     m_wideGraph->hide();
     m_fastGraph->show();
     ui->TxFreqSpinBox->setValue(700);
+    ui->RxFreqSpinBox->setValue(700);
     ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
     ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
     ui->sbTR->setVisible(true);
@@ -3298,6 +3294,8 @@ void MainWindow::on_actionJT65_triggered()
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setVisible(false);
   bool bVHF=m_config.enable_VHF_features();
+  m_bFastMode=false;
+  m_bFast9=false;
   VHF_controls_visible(bVHF);
   WSPR_config(false);
   fast_config(false);
@@ -3335,6 +3333,8 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setVisible(true);
+  m_bFastMode=false;
+  m_bFast9=false;
   VHF_controls_visible(false);
   WSPR_config(false);
   fast_config(false);
@@ -3362,6 +3362,8 @@ void MainWindow::on_actionJT4_triggered()
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setVisible(false);
+  m_bFastMode=false;
+  m_bFast9=false;
   bool bVHF=m_config.enable_VHF_features();
   VHF_controls_visible(bVHF);
   WSPR_config(false);
@@ -3404,6 +3406,8 @@ void MainWindow::on_actionWSPR_2_triggered()
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
+  m_bFastMode=false;
+  m_bFast9=false;
   WSPR_config(true);
   fast_config(false);
   ui->TxFreqSpinBox->setValue(ui->WSPRfreqSpinBox->value());
@@ -3436,6 +3440,8 @@ void MainWindow::on_actionEcho_triggered()
   statusChanged();
   if(!m_echoGraph->isVisible()) m_echoGraph->show();
   on_actionAstronomical_data_triggered ();
+  m_bFastMode=false;
+  m_bFast9=false;
   VHF_controls_visible(false);
   WSPR_config(true);                       //Make some irrelevant controls invisible
   fast_config(false);
@@ -3491,11 +3497,10 @@ void MainWindow::switch_mode (Mode mode)
   auto f = m_dialFreq;
   m_config.frequencies ()->filter (mode);
   auto const& row = m_config.frequencies ()->best_working_frequency (f);
-  if (row >= 0)
-    {
-      ui->bandComboBox->setCurrentIndex (row);
-      on_bandComboBox_activated (row);
-    }
+  if (row >= 0) {
+    ui->bandComboBox->setCurrentIndex (row);
+    on_bandComboBox_activated (row);
+  }
 }
 
 void MainWindow::WSPR_config(bool b)
@@ -3527,6 +3532,7 @@ void MainWindow::WSPR_config(bool b)
 void MainWindow::fast_config(bool b)
 {
   m_bFastMode=b;
+  qDebug() << "B" << m_bFastMode << m_bFast9;
   ui->ClrAvgButton->setVisible(!b);
   if(b) {
 // ### Does this work as intended? ###
