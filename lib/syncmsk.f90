@@ -4,7 +4,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
 
   use packjt
   complex cdat(npts)                    !Analytic signal
-!  complex cdat2(24000)
   complex cb(66)                        !Complex waveform for Barker 11
   complex c0(6)
   complex c1(6)
@@ -17,11 +16,9 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
   real rd2(198)
   complex z,z0,z1,cfac
   integer*1 e1(198)
-  integer*1 e0(198)
   integer*1 d8(13)
   integer*1 i1hash(4)
   integer*1 i1
-  integer ib(234)
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
   integer ipksave(1000)
@@ -55,18 +52,11 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
   endif
   nfft=1404
 
-  open(10,file='JTMSKcode.out',status='unknown')
-  do i=1,234
-     read(10,*) junk,ib(i)
-  enddo
-  close(10)
-
   call system_clock(count0,clkfreq)
   decoded="                      "
   ipk=0
   jpk=0
   metric=0
-
   r=0.
   rmax1=0.
   jz=npts-65
@@ -134,8 +124,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
      ipk=ipksave(k)
      jpk=jpksave(k)
      rmax=rsave(k)
-!     print*,'A',ipk,jpk,rmax,npts
-
      n1=35
      n2=69
      n3=94
@@ -159,7 +147,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
      smax=0.
      dfx=0.
      idfbest=0
-     do idf=-100,100,1
+     do idf=-100,100,1                  !### Might be better to do an FFT?
         twk=idf
         call tweak1(c,1404,-twk,c2)
         z=sum(c2)
@@ -169,42 +157,12 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
            phi=atan2(aimag(z),real(z))            !Carrier phase offset
            idfbest=idf
         endif
-        write(73,3005) idf,abs(z)
-3005    format(i5,f12.3)
      enddo
      idf=idfbest
-!  print*,'B',dfx,smax,phi
-
      call tweak1(cdat,npts,-dfx,cdat)
-!     phi=atan2(aimag(z),real(z))
      cfac=cmplx(cos(phi),-sin(phi))
      cdat=cfac*cdat
-
-!  call four2a(c,nfft,1,-1,1)                  !c2c FFT
-!  if(ldebug) then
-!     df=12000.0/nfft
-!     do i=0,nfft-1
-!        sq=real(c(i))**2 + aimag(c(i))**2
-!        f=i*df
-!        if(i.gt.nfft/2) f=f-12000.0
-!        write(72,3004) f,sq
-!3004    format(f12.3,e12.3)
-!     enddo
-!  endif
-
-
-!     idf=itry/2
-!     if(mod(itry,2).eq.0) idf=-idf
-!     idf=idf-7
-!     twk=idf*0.5 + 6.0
-!     call tweak1(cdat2,npts,twk,cdat)
-!     z=0.
-!     do i=1,66                               !Find carrier phase offset
-!        z=z + cdat(jpk+i-1)*conjg(cb(i))
-!     enddo
-
-
-     cdat=-cdat
+     cdat=-cdat                          !### ??? ###
      if(ldebug) then
         z=0.
         do i=1,66
@@ -215,8 +173,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
         enddo
      endif
 
-!$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-     nerr=0
      do k=1,234                                !Compute soft symbols
         z0=0.
         z1=0.
@@ -234,34 +190,18 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
         if(n.gt.234) n=n-234
         ibit=0
         if(sym.ge.0) ibit=1
-        if(ibit.ne.ib(n)) nerr=nerr+1
         symbol(n)=sym
-!        symbol(n)=2*ib(n)-1
         if(ldebug) then
-           write(75,3301) k,n,symbol(n),phi,ibit,ib(n),-abs(ibit-ib(n))
-3301       format(i3,i5,2f8.3,3i5)
+           write(75,3301) k,n,symbol(n),phi,ibit
+3301       format(i3,i5,2f8.3,i5)
         endif
      enddo
-!     print*,'C  nerr  (of 234):',nerr
 
-!####################################################################
-! Extract the information symbols by removing the sync vectors
-!     if(ipk.eq.1) then
-!        rdata(1:35)=symbol(12:46)
-!        rdata(36:104)=symbol(59:127)
-!        rdata(105:198)=symbol(140:233)
-!     else if(ipk.eq.2) then
-!        rdata(1:35)=symbol(12:80)
-!        rdata(36:104)=symbol(93:186)
-!        rdata(105:198)=symbol(199:233)
-!     else if(ipk.eq.3) then
-        rdata(1:35)=symbol(12:46)
-        rdata(36:104)=symbol(59:127)
-        rdata(105:198)=symbol(140:233)
-!     endif
+     rdata(1:35)=symbol(12:46)
+     rdata(36:104)=symbol(59:127)
+     rdata(105:198)=symbol(140:233)
 
 ! Re-order the symbols and make them i*1
-     nerr2=0
      j=0
      do i=1,99
         i4=128+rdata(i)
@@ -280,18 +220,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
      call system_clock(count0,clkfreq)
      tsoft=tsoft + (count0-count1)/float(clkfreq)
 
-     rewind 41
-     do i=1,198
-        read(41,*) junk,e0(i)
-        n=0
-        if(e1(i).lt.0) n=1
-        if(n.ne.e0(i)) nerr2=nerr2+1
-        write(42,4001) i,e0(i),n,n-e0(i),rd2(i)
-4001    format(4i6,f7.1)
-     enddo
-!     print*,'D  nerr2 (of 198):',nerr2
-!$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
 ! Decode the message
      nb1=87
      call vit213(e1,nb1,mettab,d8,metric)
@@ -306,12 +234,8 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
         read(c72,1014) i4Msg6BitWords
 1014    format(12b6.6)
         call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
-!        exit
+        exit
      endif
-!     write(*,6001) kk,ipk,jpk,rmax,nerr,nerr2,decoded
-     write(91,6001) kk,ipk,jpk,rmax,nerr,nerr2,decoded
-6001 format(3i6,f7.2,2i6,2x,a22)
-     if(decoded.ne.'                      ') exit
   enddo
 
   return

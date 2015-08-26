@@ -40,8 +40,8 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
-!  ldebug=.false.
-  ldebug=.true.
+  ldebug=.false.
+!  ldebug=.true.
 
   if(first) then
      j=0
@@ -103,16 +103,10 @@ subroutine jtmsk(id2,narg,line)
      ib=ib+nstep
      if(ib.gt.npts) exit
      ia=ib-nlen+1
-!###
-!     if(iter.gt.1) exit
-!     ia=13.5*12000
-!     ib=ia+12000-1
-!###
      iz=ib-ia+1
      cdat(1:iz)=c(ia:ib)
      t0=ia/12000.0
      nsnr=0
-
      cdat2(1:iz)=cdat(1:iz)
      call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,msg)
      freq=f0+idf
