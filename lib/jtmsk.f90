@@ -125,8 +125,7 @@ subroutine jtmsk(id2,narg,line)
         endif
         if(nsnr.gt.nsnr0) then
            write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg
-!                ,ipk,metric,rmax,idf
-1020       format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,i4)
+1020       format(i6.6,i4,f5.1,i5,3x,a22)
         endif
         nsnr0=nsnr
         msg0=msg
