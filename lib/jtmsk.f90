@@ -28,7 +28,6 @@ subroutine jtmsk(id2,narg,line)
 ! Parameters from GUI are in narg():
   nutc=narg(0)                         !UTC
   npts=min(narg(1),NMAX)               !Number of samples in id2 (12000 Hz)
-  npts=npts/2
   newdat=narg(3)                       !1==> new data, compute symbol spectra
   minsync=narg(4)                      !Lower sync limit
   npick=narg(5)
@@ -38,6 +37,9 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
+
+!  print*,'A',nutc,npts,maxlines,nmode,nrxfreq,ntol
+
   nline=0
   line(1:100)(1:1)=char(0)
   msg0='                      '

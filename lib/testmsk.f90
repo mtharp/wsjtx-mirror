@@ -30,19 +30,19 @@ program testmsk
      call getarg(ifile,infile)
      open(10,file=infile,access='stream',status='old')
      read(10) id2(1:22)                     !Skip 44 header bytes
-     npts=NMAX
-     read(10,end=1) id2(1:npts)                   !Read the raw data
+     npts=179712                            !### T/R = 15 s
+     read(10,end=1) id2(1:npts)             !Read the raw data
      close(10)
 
 1    i1=index(infile,'.wav')
      read(infile(i1-6:i1-1),*) narg(0)
-     narg(1)=NMAX        !nutc
+     narg(1)=npts        !npts
      narg(2)=0           !nsubmode
      narg(3)=1           !newdat
      narg(4)=0           !minsync
      narg(5)=0           !npick
      narg(6)=0           !t0 (ms)
-     narg(7)=29951       !t1 (ms) ???
+     narg(7)=npts/12     !t1 (ms) ???
      narg(8)=2           !maxlines
      narg(9)=103         !nmode
      narg(10)=1500       !nrxfreq
