@@ -29,6 +29,7 @@ subroutine fast_decode(id2,narg,line)
      go to 900
   else if(nmode.eq.103) then
      call jtmsk(id2,narg,line)
+     go to 900
   endif
 
   if(newdat.eq.1) then

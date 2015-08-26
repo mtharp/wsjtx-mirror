@@ -38,8 +38,6 @@ subroutine jtmsk(id2,narg,line)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
 
-!  print*,'A',nutc,npts,maxlines,nmode,nrxfreq,ntol
-
   nline=0
   line(1:100)(1:1)=char(0)
   msg0='                      '
@@ -113,9 +111,11 @@ subroutine jtmsk(id2,narg,line)
      nsnr=0
      cdat2(1:iz)=cdat(1:iz)
      call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,msg)
+     if(rmax.lt.2.0) cycle
      freq=f0+idf
      t0=(ia+jpk)/12000.0
      nsnr=db(snr) - 4.0
+!     write(*,3020) nutc,snr,t0,freq,ipk,metric,rmax,msg
      write(81,3020) nutc,snr,t0,freq,ipk,metric,rmax,msg
 3020 format(i6.6,2f5.1,f7.1,2i6,f7.2,1x,a22)
      if(msg.ne.'                      ') then
@@ -123,9 +123,11 @@ subroutine jtmsk(id2,narg,line)
            nline=nline+1
            nsnr0=-99
         endif
-        if(nsnr.gt.nsnr0) write(line(nline),1020) nutc,nsnr,t0,   &
-             nint(freq),msg,ipk,metric,rmax,idf
-1020    format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,i4)
+        if(nsnr.gt.nsnr0) then
+           write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg
+!                ,ipk,metric,rmax,idf
+1020       format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,i4)
+        endif
         nsnr0=nsnr
         msg0=msg
         if(nline.ge.maxlines) exit

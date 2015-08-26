@@ -954,13 +954,6 @@ void MainWindow::fastSink(qint64 frames)
 
   decodeNow=false;
   m_k0=k;
-  /*
-  int secRcvd=m_k0/12000;
-  if(secRcvd>=m_TRperiod-5 and !decodeEarly and !m_diskData) {
-    decodeEarly=true;
-    decodeNow=true;
-  }
-  */
   if(m_diskData and m_k0 >= jt9com_.kin-3456) decodeNow=true;
   if(!m_diskData and m_tRemaining<0.35) decodeNow=true;
 
@@ -1724,10 +1717,10 @@ void::MainWindow::fast_decode_done()
   for(int i=0; i<100; i++) {
     int i1=msg0.indexOf(m_baseCall);
     int i2=msg0.indexOf(m_hisCall);
-    if(m_bFast9 and m_bEME and tmax>=0.0 and i1>10 and i2>i1+3) {     //Here, "m_bEME" implies AutoSeq
+    if(((m_mode=="JTMSK") or m_bFast9) and m_bEME and tmax>=0.0 and i1>10 and i2>i1+3) {     //Here, "m_bEME" implies AutoSeq
       processMessage(msg0,40,false);
     }
-    if(m_msg[i][0]==0) break;
+    if(m_msg[i][0]==0) break;                        //### m_msg[0][i] ??? ###
     QString message=QString::fromLatin1(m_msg[i]);
 
 //Left (Band activity) window
@@ -1759,7 +1752,7 @@ void::MainWindow::fast_decode_done()
       msgBox("Cannot open \"" + f.fileName () + "\" for append:" + f.errorString ());
     }
 
-    if(m_mode=="JT9") {
+    if(m_mode=="JT9" or m_mode=="JTMSK") {
       // find and extract any report for myCall
       QString msg=message.mid(0,4) + message.mid(6,-1);
       decodedtext=msg.replace("\n","");
@@ -3532,7 +3525,6 @@ void MainWindow::WSPR_config(bool b)
 void MainWindow::fast_config(bool b)
 {
   m_bFastMode=b;
-  qDebug() << "B" << m_bFastMode << m_bFast9;
   ui->ClrAvgButton->setVisible(!b);
   if(b) {
 // ### Does this work as intended? ###
