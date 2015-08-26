@@ -1,4 +1,4 @@
-subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
+subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
 
 ! Find the Barker codes within a JTMSK ping, then decode.
 
@@ -148,7 +148,10 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
      smax=0.
      dfx=0.
      idfbest=0
-     do idf=-100,100,1                  !### Might be better to do an FFT?
+     do itry=1,100
+        idf=itry/2
+        if(mod(itry,2).eq.0) idf=-idf
+        idf=2*idf
         twk=idf
         call tweak1(c,1404,-twk,c2)
         z=sum(c2)
@@ -174,6 +177,8 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
         enddo
      endif
 
+     sig=0.
+     ref=0.
      do k=1,234                                !Compute soft symbols
         z0=0.
         z1=0.
@@ -183,8 +188,15 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
            z1=z1 + cdat(j+i-1)*conjg(c1(i))    !Signal matching 1
         enddo
         sym=abs(real(z1))-abs(real(z0))
-        if(sym.lt.0.0) phi=atan2(aimag(z0),real(z0))
-        if(sym.ge.0.0) phi=atan2(aimag(z1),real(z1))
+        if(sym.lt.0.0) then
+           phi=atan2(aimag(z0),real(z0))
+           sig=sig + real(z0)**2
+           ref=ref + aimag(z0)**2
+        else
+           phi=atan2(aimag(z1),real(z1))
+           sig=sig + real(z1)**2
+           ref=ref + aimag(z1)**2
+        endif
         n=k
         if(ipk.eq.2) n=k+47
         if(ipk.eq.3) n=k+128
@@ -197,6 +209,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
 3301       format(i3,i5,2f8.3,i5)
         endif
      enddo
+     snr=sig/ref
 
      rdata(1:35)=symbol(12:46)
      rdata(36:104)=symbol(59:127)

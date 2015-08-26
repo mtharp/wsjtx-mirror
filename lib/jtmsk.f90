@@ -18,7 +18,7 @@ subroutine jtmsk(id2,narg,line)
   complex cdat2(24000)
   integer narg(0:11)
   integer b11(11)
-  character*22 msg                     !Decoded message
+  character*22 msg,msg0                     !Decoded message
   character*80 line(100)
   logical first,ldebug
   data first/.true./
@@ -38,6 +38,9 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
+  nline=0
+  line(1:100)(1:1)=char(0)
+  msg0='                      '
   ldebug=.false.
 !  ldebug=.true.
 
@@ -96,6 +99,7 @@ subroutine jtmsk(id2,narg,line)
 
   nlen=12000
   nstep=6000
+  tstep=nstep/12000.0
   ib=6000
   do iter=1,999
      ib=ib+nstep
@@ -106,15 +110,23 @@ subroutine jtmsk(id2,narg,line)
      t0=ia/12000.0
      nsnr=0
      cdat2(1:iz)=cdat(1:iz)
-     call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,msg)
+     call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,msg)
      freq=f0+idf
      t0=(ia+jpk)/12000.0
-     write(81,3020) nutc,nsnr,t0,freq,ipk,metric,rmax,idf,msg
-3020 format(i6.6,i5,f5.1,f7.1,2i6,f7.2,i4,1x,a22)
+     nsnr=db(snr) - 4.0
+     write(81,3020) nutc,snr,t0,freq,ipk,metric,rmax,msg
+3020 format(i6.6,2f5.1,f7.1,2i6,f7.2,1x,a22)
      if(msg.ne.'                      ') then
-        write(*,1020) nutc,nsnr,t0,nint(freq),msg,ipk,metric,rmax,idf
+        if(msg.ne.msg0) then
+           nline=nline+1
+           nsnr0=-99
+        endif
+        if(nsnr.gt.nsnr0) write(line(nline),1020) nutc,nsnr,t0,   &
+             nint(freq),msg,ipk,metric,rmax,idf
 1020    format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,i4)
-        t0=(ia+jpk)/12000.0
+        nsnr0=nsnr
+        msg0=msg
+        if(nline.ge.maxlines) exit
      endif
   enddo
 

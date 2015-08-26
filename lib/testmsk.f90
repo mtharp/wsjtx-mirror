@@ -16,7 +16,8 @@ program testmsk
      go to 999
   endif
 
-  open(81,file='testmsk.out',status='unknown',position='append')
+!  open(81,file='testmsk.out',status='unknown',position='append')
+  open(81,file='testmsk.out',status='unknown')
   nfiles=nargs
 
   tsync1=0.
@@ -42,12 +43,17 @@ program testmsk
      narg(5)=0           !npick
      narg(6)=0           !t0 (ms)
      narg(7)=29951       !t1 (ms) ???
-     narg(8)=1           !maxlines
+     narg(8)=2           !maxlines
      narg(9)=103         !nmode
      narg(10)=1500       !nrxfreq
      narg(11)=500        !ntol
 
      call jtmsk(id2,narg,line)
+     do i=1,narg(8)
+        if(line(i)(1:1).eq.char(0)) exit
+        write(*,1002) line(i)
+1002    format(a80)
+     enddo
   enddo
   call system_clock(count1,clkfreq)
   ttotal=(count1-count0)/float(clkfreq)
