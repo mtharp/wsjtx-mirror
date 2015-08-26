@@ -341,6 +341,7 @@ set (wsjt_FSRCS
   lib/jt4a.f90
   lib/jt65a.f90
   lib/jt9fano.f90
+  lib/jtmsk.f90
   lib/libration.f90
   lib/lpf1.f90
   lib/mixlpf.f90
@@ -376,8 +377,10 @@ set (wsjt_FSRCS
   lib/sync9.f90
   lib/sync9f.f90
   lib/synciscat.f90
+  lib/syncmsk.f90
   lib/timer.f90
   lib/timf2.f90
+  lib/tweak1.f90
   lib/twkfreq.f90
   lib/twkfreq65.f90
   lib/wav11.f90
