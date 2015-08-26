@@ -10,8 +10,9 @@ program testmsk
 
   nargs=iargc()
   if(nargs.lt.1) then
-     print*,'Usage:    testmsk infile1 [infile2 ...]'
-     print*,'Example:  testmsk ~/data/JTMSK/150819_120445.wav'
+     print*,'Usage:     testmsk infile1 [infile2 ...]'
+     print*,'Examples:  testmsk ~/data/JTMSK3/150825_115515.wav'
+     print*,'           testmsk ~/data/JTMSK3/150825_120245.wav'
      go to 999
   endif
 
@@ -34,17 +35,17 @@ program testmsk
 
 1    i1=index(infile,'.wav')
      read(infile(i1-6:i1-1),*) narg(0)
-     narg(1)=NMAX
-     narg(2)=0
-     narg(3)=1
-     narg(4)=0
-     narg(5)=0
-     narg(6)=0
-     narg(7)=29951
-     narg(8)=1
-     narg(9)=103
-     narg(10)=1500
-     narg(11)=500
+     narg(1)=NMAX        !nutc
+     narg(2)=0           !nsubmode
+     narg(3)=1           !newdat
+     narg(4)=0           !minsync
+     narg(5)=0           !npick
+     narg(6)=0           !t0 (ms)
+     narg(7)=29951       !t1 (ms) ???
+     narg(8)=1           !maxlines
+     narg(9)=103         !nmode
+     narg(10)=1500       !nrxfreq
+     narg(11)=500        !ntol
 
      call jtmsk(id2,narg,line)
   enddo

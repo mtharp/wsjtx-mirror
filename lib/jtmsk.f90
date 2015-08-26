@@ -3,7 +3,7 @@ subroutine jtmsk(id2,narg,line)
 ! Decoder for JTMSK
 ! Files used for debugging output:
 !   71 - total power ("green line"), 10 ms steps
-!   72 - spectrum of squared complex signal
+!   72 - 
 !   73 - ccf used for the DF search
 !   74 - symbol#, cb, cdat, z, abs(z) phi
 !   75 - k, sym, phi, ibit
@@ -40,7 +40,8 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
-  ldebug=.false.
+!  ldebug=.false.
+  ldebug=.true.
 
   if(first) then
      j=0
@@ -64,27 +65,34 @@ subroutine jtmsk(id2,narg,line)
   endif
 
   d(0:npts-1)=id2(0:npts-1)
-  nfft=256*1024
+  n=log(float(npts))/log(2.0) + 1.0
+  nfft=2**n
   call analytic(d,npts,nfft,c)
 
-! Normalize the data
-  sq=0.
-  do i=1,npts
-     sq=sq + real(c(i))**2 + aimag(c(i))**2
+! Normalize the data, using minimum rms in a 1-second stretch.
+  rmsmin=1.e30
+  k=0
+  do i=2400,npts-14400,12000
+     sq=0.
+     do n=1,12000
+        sq=sq + real(c(i+n-1))**2 + aimag(c(i+n-1))**2
+     enddo
+     rms=sqrt(sq/12000)
+     rmsmin=min(rms,rmsmin)
+     k=k+1
   enddo
-  rms=sqrt(sq/npts)
+  rms=rmsmin
   c=c/rms
 
   if(ldebug) then
-     do i=1,npts,120
-        sq1=0.
-        sq2=0.
-        do n=1,120
-           sq1=sq1 + float(id2(i+n-1))**2
-           sq2=sq2 + real(c(i+n-1))**2 + aimag(c(i+n-1))**2 
+     do i=1,npts,600
+        sq=0.
+        do n=1,600
+           sq=sq + real(c(i+n-1))**2 + aimag(c(i+n-1))**2 
         enddo
-        write(71,3001) (i+60)*dt,1.e-6*sq1,0.5e-6*sq2   !Green line
-3001    format(f12.3,2f12.3)
+        sq=0.5*sq/600.0
+        write(71,3001) (i+300)*dt,sq,db(sq)               !Green line
+3001    format(3f12.3)
      enddo
   endif
 
@@ -94,50 +102,28 @@ subroutine jtmsk(id2,narg,line)
   do iter=1,999
      ib=ib+nstep
      if(ib.gt.npts) exit
-     ia=ib-nlen+1 
+     ia=ib-nlen+1
 !###
 !     if(iter.gt.1) exit
-!     ia=8.0*12000
+!     ia=13.5*12000
 !     ib=ia+12000-1
-     snrsq2=20
-!     dfx=1134.0-1000.0
-     dfx=1126.3-1000.0
-     if(mod(nutc,10).ne.0) dfx=1073.7-1000.0
 !###
-
      iz=ib-ia+1
-     n=log(float(iz))/log(2.0) + 1.0
-     nfft1=2**n                                   !FFT length
      cdat(1:iz)=c(ia:ib)
-!     call mskdf(cdat,iz,nfft1,f0,ldebug,dfx,snrsq2)      !Get freq offset
      t0=ia/12000.0
      nsnr=0
 
-!     do jtry=1,31
-     do jtry=1,3
-!        jdf=jtry/2
-!        if(mod(jtry,2).eq.0) jdf=-jdf
-        jdf=0
-        if(jtry.eq.2) jdf=2
-        if(jtry.eq.3) jdf=-12
-        twk=-6.0 + jdf*0.5                  !Why the 6 Hz offset ???
-        call tweak1(cdat,iz,-(dfx+twk),cdat2)     !Mix to standard frequency
-! DF is known, now establish sync and decode the message
-        call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,msg)
-        freq=f0+dfx+twk+idf*0.5
-        write(81,3020) nutc,nsnr,t0,freq,ipk,metric,rmax,  &
-             jdf,idf,msg
-3020    format(i6.6,i5,f5.1,f7.1,2i6,f7.2,2i4,1x,a22)
-        if(msg.ne.'                      ') then
-           write(*,1020) nutc,nsnr,t0,nint(freq),msg,ipk,metric,   &
-                rmax,jdf,idf
-1020       format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,2i4)
-           t0=(ia+jpk)/12000.0
-           write(60) nutc,t0,jpk,ipk,jdf,idf,freq,rmax1,rmax,metric,msg,  &
-                cb,cdat(1:iz)
-           exit
-        endif
-     enddo
+     cdat2(1:iz)=cdat(1:iz)
+     call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,msg)
+     freq=f0+idf
+     t0=(ia+jpk)/12000.0
+     write(81,3020) nutc,nsnr,t0,freq,ipk,metric,rmax,idf,msg
+3020 format(i6.6,i5,f5.1,f7.1,2i6,f7.2,i4,1x,a22)
+     if(msg.ne.'                      ') then
+        write(*,1020) nutc,nsnr,t0,nint(freq),msg,ipk,metric,rmax,idf
+1020    format(i6.6,i5,f5.1,i6,1x,a22,2i6,f7.2,i4)
+        t0=(ia+jpk)/12000.0
+     endif
   enddo
 
   return

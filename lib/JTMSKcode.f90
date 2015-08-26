@@ -74,6 +74,13 @@ program JTMSKcode
         e1(j)=r1(i+99)
      enddo
 
+     do i=1,198
+        n=0
+        if(e1(i).lt.0) n=1
+        write(41,4001) i,n
+4001    format(2i5)
+     enddo
+
      nb1=87
      call vit213(e1,nb1,mettab,d8,metric)
 
