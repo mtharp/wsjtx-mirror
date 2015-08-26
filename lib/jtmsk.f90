@@ -21,8 +21,6 @@ subroutine jtmsk(id2,narg,line)
   character*22 msg                     !Decoded message
   character*80 line(100)
   logical first,ldebug
-!  integer*8 count0,count1,clkfreq
-  common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
   data first/.true./
   data b11/1,1,1,0,0,0,1,0,0,1,0/
   save first,cb,twopi,dt,f0,f1

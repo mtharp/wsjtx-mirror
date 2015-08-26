@@ -29,7 +29,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
   character*72 c72
   logical ldebug,first
   integer*8 count0,count1,clkfreq,count2
-  common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
+  common/mskcom/tsync1,tsync2,tsoft,tvit,ttotal
   equivalence (i1,i4)
   equivalence (ihash,i1hash)
   data first/.true./
@@ -73,6 +73,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
 3001 format(i6,f12.3)
   enddo
   call system_clock(count2,clkfreq)
+  tsync1=tsync1 + (count2-count0)/float(clkfreq)
 
   jz=npts-nfft
   rmax=0.
@@ -115,7 +116,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax1,rmax,metric,decoded)
   enddo
   kmax=k
   call system_clock(count1,clkfreq)
-  tsync=tsync + (count1-count0)/float(clkfreq)
+  tsync2=tsync2 + (count1-count2)/float(clkfreq)
 !  print*,(count2-count0)/float(clkfreq),(count1-count2)/float(clkfreq),tsync
 
   call indexx(rsave,kmax,indx)

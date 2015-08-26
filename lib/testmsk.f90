@@ -6,7 +6,7 @@ program testmsk
   character*80 line(100)
   character infile*80
   integer*8 count0,count1,clkfreq
-  common/mskcom/tmskdf,tsync,tsoft,tvit,ttotal
+  common/mskcom/tsync1,tsync2,tsoft,tvit,ttotal
 
   nargs=iargc()
   if(nargs.lt.1) then
@@ -19,8 +19,8 @@ program testmsk
   open(81,file='testmsk.out',status='unknown',position='append')
   nfiles=nargs
 
-  tmskdf=0.
-  tsync=0.
+  tsync1=0.
+  tsync2=0.
   tsoft=0.
   tvit=0.
   ttotal=0.
@@ -51,7 +51,7 @@ program testmsk
   enddo
   call system_clock(count1,clkfreq)
   ttotal=(count1-count0)/float(clkfreq)
-  write(*,1100) tmskdf/ttotal,tsync/ttotal,tsoft/ttotal,tvit/ttotal,ttotal
+  write(*,1100) tsync1/ttotal,tsync2/ttotal,tsoft/ttotal,tvit/ttotal,ttotal
 1100 format(4f8.3,f8.1)
 
 999 end program testmsk
