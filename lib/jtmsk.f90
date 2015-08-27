@@ -4,20 +4,15 @@ subroutine jtmsk(id2,narg,line)
 
   parameter (NMAX=30*12000)
   parameter (NFFTMAX=512*1024)
-  integer*2 id2(0:NMAX)
-  real d(0:NMAX)
-  real xrms(256)
-  complex c(NFFTMAX)
-  complex cb(66)
-  complex cdat(24000)
-  integer narg(0:11)
-  integer b11(11)
-  character*22 msg,msg0                     !Decoded message
-  character*80 line(100)
-  logical first
-  data first/.true./
-  data b11/1,1,1,0,0,0,1,0,0,1,0/
-  save first,cb,twopi,dt,f0,f1
+  parameter (NSPM=1404)                !Samples per JTMSK message
+  integer*2 id2(0:NMAX)                !Raw i*2 data, up to T/R = 30 s
+  real d(0:NMAX)                       !Raw r*4 data
+  real xrms(256)                       !Rms in 117 ms segments
+  complex c(NFFTMAX)                   !Complex (analytic) data
+  complex cdat(24000)                  !Short segments, up to 2 s
+  integer narg(0:11)                   !Arguments passed from calling pgm
+  character*22 msg,msg0                !Decoded message
+  character*80 line(100)               !Decodes passed back to caller
 
 ! Parameters from GUI are in narg():
   nutc=narg(0)                         !UTC
@@ -31,72 +26,52 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
-
+  nsnr0=-99
   nline=0
   line(1:100)(1:1)=char(0)
   msg0='                      '
-
-  if(first) then
-     j=0
-     twopi=8.0*atan(1.0)
-     dt=1.0/12000.0
-     phi=0.
-     f0=1000.0
-     f1=2000.0
-     do i=1,11
-        if(b11(i).eq.0) dphi=twopi*f0*dt
-        if(b11(i).eq.1) dphi=twopi*f1*dt
-        do n=1,6
-           j=j+1
-           phi=phi+dphi
-           cb(j)=cmplx(cos(phi),sin(phi))
-        enddo
-     enddo
-     first=.false.
-     line(1)=""
-     msg=""
-  endif
+  msg=msg0
 
   d(0:npts-1)=id2(0:npts-1)
   n=log(float(npts))/log(2.0) + 1.0
   nfft=2**n
-  call analytic(d,npts,nfft,c)
+  call analytic(d,npts,nfft,c)         !Convert to analytic signal
 
-  nblks=npts/1404
+  nblks=npts/NSPM
   k=0
-  do j=1,nblks
+  do j=1,nblks                         !Find rms in segments of 117 ms
      sq=0.
-     do i=1,1404
+     do i=1,NSPM
         k=k+1
         sq=sq + d(k)*d(k)
      enddo
-     xrms(j)=sqrt(sq/1404.0)
+     xrms(j)=sqrt(sq/NSPM)
   enddo
-  call pctile(xrms,nblks,16,base)
+  call pctile(xrms,nblks,16,base)      !Get base, an estimate of baseline rms
   rms=1.25*base
   c=c/rms
 
   nlen=12000
   nstep=8000
   tstep=nstep/12000.0
-  ib=6000
-  sigmin=1.3
+  ib=nlen-nstep
+  sigmin=1.04
   do iter=1,999
-     if(ib.eq.npts) exit
+     if(ib.eq.npts) exit               !Previous one had ib=npts, we're done
      ib=ib+nstep
      if(ib.gt.npts) ib=npts
      ia=ib-nlen+1
      iz=ib-ia+1
-     cdat(1:iz)=c(ia:ib)
+     cdat(1:iz)=c(ia:ib)               !Select nlen complex samples
      t0=ia/12000.0
      nsnr=0
-     ja=ia/1404 + 1
-     jb=ib/1404 + 1
-     sig=maxval(xrms(ja:jb))/base
-     if(sig.lt.sigmin) cycle
-     call syncmsk(cdat,iz,cb,jpk,ipk,idf,rmax,snr,metric,msg)
-     if(rmax.lt.2.0) cycle
-     freq=f0+idf
+     ja=ia/NSPM + 1
+     jb=ib/NSPM + 1
+     sig=maxval(xrms(ja:jb))/rms       !Check sig level relative to baseline
+     if(sig.lt.sigmin) cycle           !Don't process if too weak to decode
+     call syncmsk(cdat,iz,jpk,ipk,idf,rmax,snr,metric,msg)
+     if(rmax.lt.2.0) cycle             !No output is no significant sync
+     freq=1500.0+idf
      t0=(ia+jpk)/12000.0
      nsnr=db(snr) - 4.0
 !     write(81,3020) nutc,snr,t0,freq,ipk,metric,sig,rmax,msg
@@ -114,7 +89,8 @@ subroutine jtmsk(id2,narg,line)
         msg0=msg
         if(nline.ge.maxlines) exit
      endif
- enddo
+  enddo
+  if(line(1)(1:6).eq.'      ') line(1)(1:1)=char(0)
 
   return
 end subroutine jtmsk

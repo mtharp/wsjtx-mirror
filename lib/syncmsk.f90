@@ -1,16 +1,18 @@
-subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
+subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
 
-! Find the Barker codes within a JTMSK ping, then decode.
+! Attempt synchronization, and if successful decode using Viterbi algorithm.
 
   use packjt
+  parameter (NSPM=1404)
   complex cdat(npts)                    !Analytic signal
-  complex cb(66)                        !Complex waveform for Barker 11
-  complex c0(6)
-  complex c1(6)
-  complex c(0:1404-1)
-  complex c2(0:1404-1)
-  complex cb3(1:1404,3)
+  complex cb(66)                        !Complex waveform for Barker-11 code
+  complex c0(6)                         !Waveform for 0
+  complex c1(6)                         !Waveform for 1
+  complex c(0:NSPM-1)                   !Complex data for one message length
+  complex c2(0:NSPM-1)
+  complex cb3(1:NSPM,3)
   real r(12000)
+  real ss1(12000)
   real symbol(234)
   real rdata(198)
   real rd2(198)
@@ -24,6 +26,7 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
   integer ipksave(1000)
   integer jpksave(1000)
   integer indx(1000)
+  integer b11(11)                      !Barker-11 code
   real rsave(1000)
   real xp(29)
   character*22 decoded
@@ -40,15 +43,17 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
           0.000329, 0.000225, 0.000187, 0.000086, 0.000063,    &
           0.000017, 0.000091, 0.000032, 0.000045/
   data first/.true./
-  save first,mettab,c0,c1
+  data b11/1,1,1,0,0,0,1,0,0,1,0/
+  save first,cb,c0,c1,twopi,dt,f0,f1,mettab
 
+  phi=0.
   if(first) then
 ! Get the metric table
      bias=0.0
      scale=20.0
      xln2=log(2.0)
      do i=128,156
-        x0=log(max(0.001,2.0*xp(i-127)))/xln2
+        x0=log(max(0.0001,2.0*xp(i-127)))/xln2
         x1=log(max(0.001,2.0*(1.0-xp(i-127))))/xln2
         mettab(i,0)=nint(scale*(x0-bias))
         mettab(i,1)=nint(scale*(x1-bias))
@@ -61,11 +66,26 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
         mettab(256-i,0)=mettab(i,1)
         mettab(256-i,1)=mettab(i,0)
      enddo
+     j=0
+     twopi=8.0*atan(1.0)
+     dt=1.0/12000.0
+     f0=1000.0
+     f1=2000.0
+     do i=1,11
+        if(b11(i).eq.0) dphi=twopi*f0*dt
+        if(b11(i).eq.1) dphi=twopi*f1*dt
+        do n=1,6
+           j=j+1
+           phi=phi+dphi
+           cb(j)=cmplx(cos(phi),sin(phi))
+        enddo
+     enddo
      c0=cb(19:24)
      c1=cb(1:6)
      first=.false.
   endif
-  nfft=1404
+
+  nfft=NSPM
   jz=npts-nfft
 
   call system_clock(count0,clkfreq)
@@ -74,17 +94,21 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
   jpk=0
   metric=0
   r=0.
-  rmax1=0.
+
+!### ??? Should do this loop using 16k FFTs, instead ??? ###
   do j=1,jz                               !Find the Barker-11 sync vectors
      z=0.
      ss=0.
      do i=1,66
-        ss=ss + abs(cdat(j+i-1))          !Total power (sort of)
+        ss=ss + real(cdat(j+i-1))**2 + aimag(cdat(j+i-1))**2
         z=z + cdat(j+i-1)*conjg(cb(i))    !Signal matching Barker 11
      enddo
-     r(j)=abs(z)/ss                       !Goodness-of-fit to Barker 11
-     rmax1=max(rmax1,r(j))
+     ss=sqrt(ss/66.0)*66.0
+     r(j)=abs(z)/(0.908*ss)               !Goodness-of-fit to Barker 11
+     ss1(j)=ss
   enddo
+!###
+
   call system_clock(count2,clkfreq)
   tsync1=tsync1 + (count2-count0)/float(clkfreq)
 
@@ -95,6 +119,7 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
   n3=94
   k=0
   do j=1,jz                               !Find best full-message sync
+     if(ss1(j).lt.85.0) cycle
      r1=r(j) + r(j+282) + r(j+768)        ! 6*(12+n1) 6*(24+n1+n2)
      r2=r(j) + r(j+486) + r(j+1122)       ! 6*(12+n2) 6*(24+n2+n3)
      r3=r(j) + r(j+636) + r(j+918)        ! 6*(12+n3) 6*(24+n3+n1)
@@ -153,7 +178,7 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
      cb3(637:702,3)=cb
      cb3(919:984,3)=cb
 
-     c=conjg(cb3(1:1404,ipk))*cdat(jpk:jpk+nfft-1)
+     c=conjg(cb3(1:NSPM,ipk))*cdat(jpk:jpk+nfft-1)
      smax=0.
      dfx=0.
      idfbest=0
@@ -162,7 +187,7 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
         if(mod(itry,2).eq.0) idf=-idf
         idf=2*idf
         twk=idf
-        call tweak1(c,1404,-twk,c2)
+        call tweak1(c,NSPM,-twk,c2)
         z=sum(c2)
         if(abs(z).gt.smax) then
            dfx=twk
@@ -244,8 +269,10 @@ subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
         read(c72,1014) i4Msg6BitWords
 1014    format(12b6.6)
         call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
-        exit
      endif
+     write(71,3301) r(jpk),ss1(jpk),decoded
+3301 format(2f12.3,2x,a22)
+     if(decoded.ne.'                      ') exit
   enddo
 
   return

@@ -25,6 +25,8 @@ program testmsk
   tsoft=0.
   tvit=0.
   ttotal=0.
+  ndecodes=0
+
   call system_clock(count0,clkfreq)
   do ifile=1,nfiles
      call getarg(ifile,infile)
@@ -51,13 +53,15 @@ program testmsk
      call jtmsk(id2,narg,line)
      do i=1,narg(8)
         if(line(i)(1:1).eq.char(0)) exit
+        ndecodes=ndecodes+1
         write(*,1002) line(i)
 1002    format(a80)
      enddo
   enddo
   call system_clock(count1,clkfreq)
   ttotal=(count1-count0)/float(clkfreq)
-  write(*,1100) tsync1/ttotal,tsync2/ttotal,tsoft/ttotal,tvit/ttotal,ttotal
-1100 format(4f8.3,f8.1)
+  write(*,1100) tsync1/ttotal,tsync2/ttotal,tsoft/ttotal,tvit/ttotal,   &
+       ttotal,ndecodes
+1100 format(4f8.3,f9.3,i6)
 
 999 end program testmsk
