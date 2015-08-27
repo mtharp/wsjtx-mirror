@@ -1,4 +1,4 @@
-subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
+subroutine syncmsk(cdat,npts,cb,jpk,ipk,idf,rmax,snr,metric,decoded)
 
 ! Find the Barker codes within a JTMSK ping, then decode.
 
@@ -10,7 +10,7 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
   complex c(0:1404-1)
   complex c2(0:1404-1)
   complex cb3(1:1404,3)
-  real r(60000)
+  real r(12000)
   real symbol(234)
   real rdata(198)
   real rd2(198)
@@ -25,32 +25,48 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
   integer jpksave(1000)
   integer indx(1000)
   real rsave(1000)
+  real xp(29)
   character*22 decoded
   character*72 c72
-  logical ldebug,first
+  logical first
   integer*8 count0,count1,clkfreq,count2
   common/mskcom/tsync1,tsync2,tsoft,tvit,ttotal
   equivalence (i1,i4)
   equivalence (ihash,i1hash)
+  data xp/0.500000, 0.401241, 0.309897, 0.231832, 0.168095,    &
+          0.119704, 0.083523, 0.057387, 0.039215, 0.026890,    &
+          0.018084, 0.012184, 0.008196, 0.005475, 0.003808,    &
+          0.002481, 0.001710, 0.001052, 0.000789, 0.000469,    &
+          0.000329, 0.000225, 0.000187, 0.000086, 0.000063,    &
+          0.000017, 0.000091, 0.000032, 0.000045/
   data first/.true./
   save first,mettab,c0,c1
 
   if(first) then
 ! Get the metric table
-     open(10,file='bpskmetrics.dat',status='old')
      bias=0.0
      scale=20.0
-     do i=0,255
-        read(10,*) xjunk,x0,x1
+     xln2=log(2.0)
+     do i=128,156
+        x0=log(max(0.001,2.0*xp(i-127)))/xln2
+        x1=log(max(0.001,2.0*(1.0-xp(i-127))))/xln2
         mettab(i,0)=nint(scale*(x0-bias))
         mettab(i,1)=nint(scale*(x1-bias))
+        mettab(256-i,0)=mettab(i,1)
+        mettab(256-i,1)=mettab(i,0)
      enddo
-     close(10)
+     do i=157,255
+        mettab(i,0)=mettab(156,0)
+        mettab(i,1)=mettab(156,1)
+        mettab(256-i,0)=mettab(i,1)
+        mettab(256-i,1)=mettab(i,0)
+     enddo
      c0=cb(19:24)
      c1=cb(1:6)
      first=.false.
   endif
   nfft=1404
+  jz=npts-nfft
 
   call system_clock(count0,clkfreq)
   decoded="                      "
@@ -59,18 +75,15 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
   metric=0
   r=0.
   rmax1=0.
-  jz=npts-65
   do j=1,jz                               !Find the Barker-11 sync vectors
      z=0.
      ss=0.
      do i=1,66
-        ss=ss + abs(cdat(j+i-1))          !Total power
+        ss=ss + abs(cdat(j+i-1))          !Total power (sort of)
         z=z + cdat(j+i-1)*conjg(cb(i))    !Signal matching Barker 11
      enddo
      r(j)=abs(z)/ss                       !Goodness-of-fit to Barker 11
      rmax1=max(rmax1,r(j))
-     if(ldebug) write(76,3001) j,r(j)
-3001 format(i6,f12.3)
   enddo
   call system_clock(count2,clkfreq)
   tsync1=tsync1 + (count2-count0)/float(clkfreq)
@@ -99,10 +112,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
         rmax=r3
         jpk=j
         ipk=3
-     endif
-     if(ldebug) then
-        write(77,3003) j,r1,r2,r3,max(r1,r2,r3)
-3003    format(i6,4f12.3)
      endif
      rrmax=max(r1,r2,r3)
      if(rrmax.gt.2.0) then
@@ -167,15 +176,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
      cfac=cmplx(cos(phi),-sin(phi))
      cdat=cfac*cdat
      cdat=-cdat                          !### ??? ###
-     if(ldebug) then
-        z=0.
-        do i=1,66
-           z=z + cdat(jpk+i-1)*conjg(cb(i))
-           phi=atan2(aimag(z),real(z))
-           write(74,3002) i/6.0,conjg(cb(i)),cdat(jpk+i-1),z,abs(z),phi
-3002       format(9f8.3)
-        enddo
-     endif
 
      sig=0.
      ref=0.
@@ -204,10 +204,6 @@ subroutine syncmsk(cdat,npts,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,decoded)
         ibit=0
         if(sym.ge.0) ibit=1
         symbol(n)=sym
-        if(ldebug) then
-           write(75,3301) k,n,symbol(n),phi,ibit
-3301       format(i3,i5,2f8.3,i5)
-        endif
      enddo
      snr=sig/ref
 

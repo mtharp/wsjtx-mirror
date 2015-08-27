@@ -1,26 +1,20 @@
 subroutine jtmsk(id2,narg,line)
 
 ! Decoder for JTMSK
-! Files used for debugging output:
-!   71 - total power ("green line"), 10 ms steps
-!   72 - 
-!   73 - ccf used for the DF search
-!   74 - symbol#, cb, cdat, z, abs(z) phi
-!   75 - k, sym, phi, ibit
 
   parameter (NMAX=30*12000)
   parameter (NFFTMAX=512*1024)
   integer*2 id2(0:NMAX)
   real d(0:NMAX)
+  real xsq(256)
   complex c(NFFTMAX)
   complex cb(66)
   complex cdat(24000)
-  complex cdat2(24000)
   integer narg(0:11)
   integer b11(11)
   character*22 msg,msg0                     !Decoded message
   character*80 line(100)
-  logical first,ldebug
+  logical first
   data first/.true./
   data b11/1,1,1,0,0,0,1,0,0,1,0/
   save first,cb,twopi,dt,f0,f1
@@ -41,8 +35,6 @@ subroutine jtmsk(id2,narg,line)
   nline=0
   line(1:100)(1:1)=char(0)
   msg0='                      '
-  ldebug=.false.
-!  ldebug=.true.
 
   if(first) then
      j=0
@@ -70,54 +62,45 @@ subroutine jtmsk(id2,narg,line)
   nfft=2**n
   call analytic(d,npts,nfft,c)
 
-! Normalize the data, using minimum rms in a 1-second stretch.
-  rmsmin=1.e30
+  nblks=npts/1404
   k=0
-  do i=2400,npts-14400,12000
+  do j=1,nblks
      sq=0.
-     do n=1,12000
-        sq=sq + real(c(i+n-1))**2 + aimag(c(i+n-1))**2
+     do i=1,1404
+        k=k+1
+        sq=sq + d(k)*d(k)
      enddo
-     rms=sqrt(sq/12000)
-     rmsmin=min(rms,rmsmin)
-     k=k+1
+     xsq(j)=sq/1404.0
   enddo
-  rms=rmsmin
+  call pctile(xsq,nblks,16,base)
+  base=sqrt(base)
+  rms=1.25*base
   c=c/rms
 
-  if(ldebug) then
-     do i=1,npts,600
-        sq=0.
-        do n=1,600
-           sq=sq + real(c(i+n-1))**2 + aimag(c(i+n-1))**2 
-        enddo
-        sq=0.5*sq/600.0
-        write(71,3001) (i+300)*dt,sq,db(sq)               !Green line
-3001    format(3f12.3)
-     enddo
-  endif
-
   nlen=12000
-  nstep=6000
+  nstep=8000
   tstep=nstep/12000.0
   ib=6000
+  sqmin=19.0
   do iter=1,999
      ib=ib+nstep
-     if(ib.gt.npts) exit
+     if(ib.gt.npts) ib=npts
      ia=ib-nlen+1
      iz=ib-ia+1
      cdat(1:iz)=c(ia:ib)
      t0=ia/12000.0
      nsnr=0
-     cdat2(1:iz)=cdat(1:iz)
-     call syncmsk(cdat2,iz,cb,ldebug,jpk,ipk,idf,rmax,snr,metric,msg)
+     ja=ia/1440 + 1
+     jb=ib/1440 + 1
+     sq=1.e-3*maxval(xsq(ja:jb))
+     if(sq.lt.sqmin) cycle
+     call syncmsk(cdat,iz,cb,jpk,ipk,idf,rmax,snr,metric,msg)
      if(rmax.lt.2.0) cycle
      freq=f0+idf
      t0=(ia+jpk)/12000.0
      nsnr=db(snr) - 4.0
-!     write(*,3020) nutc,snr,t0,freq,ipk,metric,rmax,msg
-     write(81,3020) nutc,snr,t0,freq,ipk,metric,rmax,msg
-3020 format(i6.6,2f5.1,f7.1,2i6,f7.2,1x,a22)
+!     write(81,3020) nutc,snr,t0,freq,ipk,metric,sq,rmax,msg
+!3020 format(i6.6,2f5.1,f7.1,2i6,f7.1,f7.2,1x,a22)
      if(msg.ne.'                      ') then
         if(msg.ne.msg0) then
            nline=nline+1
@@ -131,7 +114,8 @@ subroutine jtmsk(id2,narg,line)
         msg0=msg
         if(nline.ge.maxlines) exit
      endif
-  enddo
+     if(ib.eq.npts) exit
+ enddo
 
   return
 end subroutine jtmsk
