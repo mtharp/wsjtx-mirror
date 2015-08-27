@@ -6,7 +6,7 @@ subroutine jtmsk(id2,narg,line)
   parameter (NFFTMAX=512*1024)
   integer*2 id2(0:NMAX)
   real d(0:NMAX)
-  real xsq(256)
+  real xrms(256)
   complex c(NFFTMAX)
   complex cb(66)
   complex cdat(24000)
@@ -70,10 +70,9 @@ subroutine jtmsk(id2,narg,line)
         k=k+1
         sq=sq + d(k)*d(k)
      enddo
-     xsq(j)=sq/1404.0
+     xrms(j)=sqrt(sq/1404.0)
   enddo
-  call pctile(xsq,nblks,16,base)
-  base=sqrt(base)
+  call pctile(xrms,nblks,16,base)
   rms=1.25*base
   c=c/rms
 
@@ -81,8 +80,9 @@ subroutine jtmsk(id2,narg,line)
   nstep=8000
   tstep=nstep/12000.0
   ib=6000
-  sqmin=19.0
+  sigmin=1.3
   do iter=1,999
+     if(ib.eq.npts) exit
      ib=ib+nstep
      if(ib.gt.npts) ib=npts
      ia=ib-nlen+1
@@ -90,16 +90,16 @@ subroutine jtmsk(id2,narg,line)
      cdat(1:iz)=c(ia:ib)
      t0=ia/12000.0
      nsnr=0
-     ja=ia/1440 + 1
-     jb=ib/1440 + 1
-     sq=1.e-3*maxval(xsq(ja:jb))
-     if(sq.lt.sqmin) cycle
+     ja=ia/1404 + 1
+     jb=ib/1404 + 1
+     sig=maxval(xrms(ja:jb))/base
+     if(sig.lt.sigmin) cycle
      call syncmsk(cdat,iz,cb,jpk,ipk,idf,rmax,snr,metric,msg)
      if(rmax.lt.2.0) cycle
      freq=f0+idf
      t0=(ia+jpk)/12000.0
      nsnr=db(snr) - 4.0
-!     write(81,3020) nutc,snr,t0,freq,ipk,metric,sq,rmax,msg
+!     write(81,3020) nutc,snr,t0,freq,ipk,metric,sig,rmax,msg
 !3020 format(i6.6,2f5.1,f7.1,2i6,f7.1,f7.2,1x,a22)
      if(msg.ne.'                      ') then
         if(msg.ne.msg0) then
@@ -114,7 +114,6 @@ subroutine jtmsk(id2,narg,line)
         msg0=msg
         if(nline.ge.maxlines) exit
      endif
-     if(ib.eq.npts) exit
  enddo
 
   return
