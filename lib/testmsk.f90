@@ -54,8 +54,8 @@ program testmsk
      do i=1,narg(8)
         if(line(i)(1:1).eq.char(0)) exit
         ndecodes=ndecodes+1
-        write(*,1002) line(i)
-1002    format(a80)
+        write(*,1002) line(i)(1:60),ndecodes
+1002    format(a60,i10)
      enddo
   enddo
   call system_clock(count1,clkfreq)
