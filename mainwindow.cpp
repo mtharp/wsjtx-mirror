@@ -2670,6 +2670,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
      || dtext.contains (" " + m_baseCall + "/")
      || (firstcall == "DE" && ((t4.size () > 7 && t4.at(7) != "73") || t4.size () <= 7)))
     {
+
       if (t4.size () > 7   // enough fields for a normal msg
           and !gridOK (t4.at (7))) // but no grid on end of msg
         {
@@ -3228,6 +3229,7 @@ void MainWindow::on_actionJTMSK_triggered()
   mode_label->setText(m_mode);
   m_toneSpacing=0.0;
   ui->actionJTMSK->setChecked(true);
+  ui->pbTxMode->setVisible(false);
   VHF_features_enabled(true);
   VHF_controls_visible(true);
   ui->cbFast9->setVisible(false);
@@ -3249,10 +3251,9 @@ void MainWindow::on_actionJTMSK_triggered()
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
-
-//  ui->sbTR->setVisible(true);
-//  ui->sbFtol->setVisible(true);
-//  ui->cbEME->setVisible(true);
+  ui->sbTR->setVisible(true);
+  ui->sbFtol->setVisible(true);
+  ui->cbEME->setVisible(true);
   ui->ClrAvgButton->setVisible(false);
 }
 
@@ -3464,6 +3465,7 @@ void MainWindow::on_actionISCAT_triggered()
   VHF_controls_visible(true);
   WSPR_config(false);
   fast_config(true);
+  ui->pbTxMode->setVisible(false);
   ui->cbFast9->setVisible(false);
   ui->sbTR->setVisible(true);
   ui->sbFtol->setVisible(true);
