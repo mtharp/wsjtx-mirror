@@ -1,10 +1,58 @@
-			Fast JT9 Submodes
-			-----------------
+			Fast Modes in WSJT-X
+			--------------------
+
+August 28, 2015
+---------------
+
+New release of experimental WSJT-X v1.6.1, r5823
+------------------------------------------------
+
+This experimental version of WSJT-X introduces a new fast mode called
+JTMSK.  The letters MS, of course, imply meteor scatter; the three
+letters MSK mean "Minimum Shift Keying", the modulation scheme used in
+this mode.
+
+Revision 5823 also includes a number of (mostly minor) bug fixes
+relative to r5789.
+
+IMPORTANT: If you choose to try JTMSK, please accept the
+responsibility of reporting on your results.  You can send reports to
+the "wsjtgroup" reflector, wsjtgroup@yahoogroups.com or email them
+directly to me.  All suggestions for improvements are welcome!  Bug
+reports should include details on how to reproduce the undesirable
+program behavior.
+
+I view JTMSK as a candidate for replacing both FSK441 and JTMS for all
+meteor scatter work.  JTMSK has the major advantage of including
+strong forward error correction (FEC), similar in usage to the schemes
+used for many years in JT4, JT9, and JT65.  The structure of user
+messages and the format of minimal QSOs is also identical to those
+other modes.  But JTMSK is very fast, transmitting its full encoded
+message content in 0.117 s, in a 2 kHz bandwidth.  JTMSK therefore
+makes much better use of short pings than (for example) JT9H can do.
+
+The Tx waveform of JTMSK has been carefully designed to have a number
+of desirable features.  All messages are exactly the same length: 72
+bits of user information are followed by a 15-bit CRC and encoded into
+198 channel bits with a convolutional code (constraint length K=13,
+rate r=1/2).  Three sequences of the "Barker-11" code are added, along
+with three parity bits, making a total of 234 channel bits in each
+message.  The MSK symbols for these bits are transmitted at 2000 baud,
+and the full encoded message is repeated every 117 ms.
+
+A summary description of modulation parameters for all WSJT(-X) modes
+is shown in a table posted here:
+http://physics.princeton.edu/pulsar/K1JT/wsjt_modes.txt and
+illustrated graphically here:
+http://physics.princeton.edu/pulsar/K1JT/wsjt_modes.pdf
+
+
+
 			 
 August 15, 2015
 ---------------
 
-New release of of experimental WSJT-X v1.6.1, r5789
+New release of experimental WSJT-X v1.6.1, r5789
 
 Changes since WSJT-X v1.6.1, revision 5779:
 

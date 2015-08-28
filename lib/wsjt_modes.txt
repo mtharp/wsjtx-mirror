@@ -57,6 +57,8 @@ JT9E     480      25       225        40       3.40    Ionoscatter
 JT9F     240      50       450        20       1.70    Ionoscatter
 JT9G     120     100       900        10       0.85    Ionoscatter 
 JT9H      60     200      1800         5       0.43    Ionoscat (no 10m)
+
+JTMSK      6    2000      2000       0.5      0.117    MS
 ------------------------------------------------------------------------
 
 nsps  - Samples per symbol, at stated sample rate
