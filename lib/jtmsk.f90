@@ -62,11 +62,17 @@ subroutine jtmsk(id2,narg,line)
      if(ib.gt.npts) ib=npts
      ia=ib-nlen+1
      iz=ib-ia+1
+     ja=ia/NSPM + 1
+     jb=ib/NSPM
+     if(ia.lt.1 .or. ib.gt.NFFTMAX .or. ja.lt.1 .or. jb.gt.256) then
+        write(59,3456) ia,ib,ja,jb,iter,npts,nstep,nlen,NSPM
+3456    format(9i7)
+        flush(59)
+        cycle
+     endif
      cdat(1:iz)=c(ia:ib)               !Select nlen complex samples
      t0=ia/12000.0
      nsnr=0
-     ja=ia/NSPM + 1
-     jb=ib/NSPM + 1
      sig=maxval(xrms(ja:jb))/rms       !Check sig level relative to baseline
      if(sig.lt.sigmin) cycle           !Don't process if too weak to decode
      call syncmsk(cdat,iz,jpk,ipk,idf,rmax,snr,metric,msg)
