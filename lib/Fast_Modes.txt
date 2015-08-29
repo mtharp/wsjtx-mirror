@@ -22,6 +22,11 @@ directly to me.  All suggestions for improvements are welcome!  Bug
 reports should include details on how to reproduce the undesirable
 program behavior.
 
+KNOWN BUG: At present you should use T/R sequence lengths 15 s in
+JTMSK mode.  If you have a program crash, open Windows Task Manager,
+select the "Processes" tab, right-click on wsjtx.exe, and select "End
+Process Tree".  Then restart the program.
+
 I view JTMSK as a candidate for replacing both FSK441 and JTMS for all
 meteor scatter work.  JTMSK has the major advantage of including
 strong forward error correction (FEC), similar in usage to the schemes
