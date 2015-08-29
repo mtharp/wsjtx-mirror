@@ -7,6 +7,9 @@ August 28, 2015
 New release of experimental WSJT-X v1.6.1, r5823
 ------------------------------------------------
 
+To download for Windows, paste the following link into your browser:
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5823-win32.exe
+
 This experimental version of WSJT-X introduces a new fast mode called
 JTMSK.  The letters MS, of course, imply meteor scatter; the three
 letters MSK mean "Minimum Shift Keying", the modulation scheme used in
@@ -21,6 +24,13 @@ the "wsjtgroup" reflector, wsjtgroup@yahoogroups.com or email them
 directly to me.  All suggestions for improvements are welcome!  Bug
 reports should include details on how to reproduce the undesirable
 program behavior.
+
+The present JTMSK decoder has been optimized for short pings.  It does
+not yet do a wide search for proper frequency alignment; you and your
+QSO partner need to be "on frequency" to within +/- 100 Hz or better.
+The decoder does not (yet) attempt to make optimal use of weak, slowly
+varying signals.  These and other characteristics may be improved in
+coming revisions.
 
 KNOWN BUG: At present you should use T/R sequence lengths 15 s in
 JTMSK mode.  If you have a program crash, open Windows Task Manager,
@@ -51,8 +61,7 @@ http://physics.princeton.edu/pulsar/K1JT/wsjt_modes.txt and
 illustrated graphically here:
 http://physics.princeton.edu/pulsar/K1JT/wsjt_modes.pdf
 
-
-
+	-- 73, Joe, K1jT
 			 
 August 15, 2015
 ---------------
