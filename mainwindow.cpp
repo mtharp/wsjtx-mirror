@@ -1018,7 +1018,7 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
       displayDialFrequency ();
       bool b=m_config.enable_VHF_features() and (m_mode=="JT4" or m_mode=="JT65" or
-                                                 m_mode=="ISCAT" or m_mode=="JT9");
+                              m_mode=="ISCAT" or m_mode=="JT9" or m_mode=="JTMSK");
       VHF_controls_visible(b);
     }
 
