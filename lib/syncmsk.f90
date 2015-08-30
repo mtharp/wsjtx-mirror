@@ -27,6 +27,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   integer jpksave(1000)
   integer indx(1000)
   integer b11(11)                      !Barker-11 code
+  integer*8 len8
   real rsave(1000)
   real xp(29)
   character*22 decoded
@@ -260,7 +261,8 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      call vit213(e1,nb1,mettab,d8,metric)
      call system_clock(count1,clkfreq)
      tvit=tvit + (count1-count0)/float(clkfreq)
-     ihash=nhash(d8,9,146)
+     len8=9
+     ihash=nhash(d8,len8,146)
      ihash=2*iand(ihash,32767)
      decoded='                      '
      if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then

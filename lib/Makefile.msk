@@ -58,6 +58,9 @@ OBJS2 = t6.o four2a.o db.o
 t6:   $(OBJS2)
 	$(FC) -o t6 $(OBJS2) -lfftw3f
 
+nhash.o: wsprd/nhash.h wsprd/nhash.c
+	 $(CC) -c -O2 wsprd/nhash.c
+
 .PHONY : clean
 
 clean:
