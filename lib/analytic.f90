@@ -4,7 +4,6 @@ subroutine analytic(d,npts,nfft,c)
 
   parameter (NFFTMAX=512*1024)
   real d(npts)
-  real s(NFFTMAX/2)
   complex c(NFFTMAX)
 
   df=12000.0/nfft

@@ -35,6 +35,7 @@ subroutine iscat(cdat0,npts0,nh,npct,t2,pick,cfile6,minsync,ntol,   &
   nfdotbig=0
   bigt2=0.
   bigavg=0.
+  bigtana=0.
   if(nmore.eq.-999) bigsig=-1         !... to here
 
   last=.false.

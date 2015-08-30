@@ -9,6 +9,7 @@ subroutine softsym9f(ss2,ss3,i1SoftSymbols)
 
   ss=0.
   sig=0.
+  if(ss2(0,1).eq.-999.0) return       !Silence compiler warning
   do j=1,69
      smax=0.
      do i=0,7
@@ -18,10 +19,10 @@ subroutine softsym9f(ss2,ss3,i1SoftSymbols)
      sig=sig+smax
      ss=ss-smax
   enddo
-  ave=ss/(69*7)                           !Baseline
+  ave=ss/(69*7)                       !Baseline
 !  call pctile(ss2,9*85,35,xmed)                       !### better? ###
   ss3=ss3/ave
-  sig=sig/69.                             !Signal
+  sig=sig/69.                         !Signal
 
   m0=3
   k=0
