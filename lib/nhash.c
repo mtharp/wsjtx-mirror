@@ -201,7 +201,7 @@ acceptable.  Do NOT use for cryptographic purposes.
 -------------------------------------------------------------------------------
 */
 
-uint32_t nhash( const void *key, size_t length, uint32_t initval)
+uint32_t nhash( const void *key, uint32_t length, uint32_t initval)
 {
   uint32_t a,b,c;                                          /* internal state */
   union { const void *ptr; size_t i; } u;     /* needed for Mac Powerbook G4 */
@@ -375,7 +375,9 @@ uint32_t nhash( const void *key, size_t length, uint32_t initval)
  * Fortran argument compatible wrapper
  */
 //uint32_t nhash_( const void * key, size_t const * length, uint32_t const * initval)
-uint32_t nhash_( const void * key, uint32_t const * length, uint32_t const * initval)
+uint32_t nhash_( const void * key, 
+		 uint32_t const * length, 
+		 uint32_t const * initval)
 {
   return nhash (key, *length, *initval);
 }
