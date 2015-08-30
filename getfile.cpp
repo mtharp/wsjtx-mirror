@@ -53,6 +53,7 @@ void getfile(QString fname, int ntrperiod)
       jt9com_.nutc=100*fname.mid(i1-4,4).toInt();
     }
   }
+  if(ntrperiod > 120 or ntrperiod <0) ntrperiod=120;
   int npts=ntrperiod*12000;
   memset(jt9com_.d2,0,2*npts);
 
