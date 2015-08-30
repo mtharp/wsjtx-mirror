@@ -25,6 +25,7 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
   integer i4tone(234)                     !Tone #s, data and sync (values 0-1)
   integer*1 i1hash(4)
   integer b11(11)
+  integer*8 len8
   data b11/1,1,1,0,0,0,1,0,0,1,0/         !Barker 11 code
   equivalence (ihash,i1hash)
   save
@@ -52,7 +53,8 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
      if(ichk.ne.0) go to 999
      call entail(i4Msg6BitWords,i1Msg8BitBytes)  !Add tail, make 8-bit bytes
-     ihash=nhash(i1Msg8BitBytes,9,146)
+     len8=9
+     ihash=nhash(i1Msg8BitBytes,len8,146)
      ihash=2*iand(ihash,32767)                   !Generate the CRC
      i1Msg8BitBytes(10)=i1hash(2)                !CRC to bytes 10 and 11
      i1Msg8BitBytes(11)=i1hash(1)
