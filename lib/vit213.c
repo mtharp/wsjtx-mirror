@@ -1,13 +1,13 @@
 /* Viterbi decoder for arbitrary convolutional code
  * viterbi27 and viterbi37 for the r=1/2 and r=1/3 K=7 codes are faster
  * Copyright 1999 Phil Karn, KA9Q
+ * Modifications by Joe Taylor, K1JT
  * May be used under the terms of the GNU Public License
  */
 
 /* Select code here */
 
 #define V213
-
 
 #ifdef V213
 #define	K 13			/* Constraint length */
@@ -41,25 +41,8 @@ int parity(int x)
   return Partab[x & 0xff];
 }
 
-// Wrapper for calling "encode" from Fortran:
-void enc213_(
-unsigned char data[],           // User data, 8 bits per byte
-int *nbits,                     // Number of user bits
-unsigned char symbols[],        // Encoded one-bit symbols, 8 per byte
-int *nsymbols,                  // Number of symbols
-int *kk,                        // K
-int *nn)                        // N
-{
-  int nbytes;
-  nbytes=(*nbits+7)/8;          // Always encode multiple of 8 information bits
-  enc213(symbols,data,nbytes,0,0); // Do the encoding
-  *nsymbols=(*nbits+K-1)*N;        // Return number of encoded symbols
-  *kk=K;
-  *nn=N;
-}
-
 /* Convolutionally encode data into binary symbols */
-  enc213(unsigned char symbols[], unsigned char data[],
+int enc213(unsigned char symbols[], unsigned char data[],
        unsigned int nbytes, unsigned int startstate,
        unsigned int endstate)
 {
@@ -84,20 +67,6 @@ int *nn)                        // N
     }
   }
   return 0;
-}
-
-// Wrapper for calling "viterbi" from Fortran:
-//void __stdcall VITERBI(
-void vit213_(
-unsigned char symbols[],  /* Raw deinterleaved input symbols */
-unsigned int *Nbits,	  /* Number of decoded information bits */
-int mettab[2][256],	  /* Metric table, [sent sym][rx symbol] */
-unsigned char ddec[],	  /* Decoded output data */
-int *Metric              /* Final path metric (bigger is better) */
-){
-  int metric;
-  vit213(&metric,ddec,symbols,*Nbits,mettab,0,0);
-  *Metric=metric;
 }
 
 /* Viterbi decoder */
@@ -217,3 +186,34 @@ unsigned int endstate            /* Encoder ending state */
   }
   return 0;
 }
+
+// Wrapper for calling "encode" from Fortran:
+void enc213_(
+unsigned char data[],           // User data, 8 bits per byte
+int *nbits,                     // Number of user bits
+unsigned char symbols[],        // Encoded one-bit symbols, 8 per byte
+int *nsymbols,                  // Number of symbols
+int *kk,                        // K
+int *nn)                        // N
+{
+  int nbytes;
+  nbytes=(*nbits+7)/8;          // Always encode multiple of 8 information bits
+  enc213(symbols,data,nbytes,0,0); // Do the encoding
+  *nsymbols=(*nbits+K-1)*N;        // Return number of encoded symbols
+  *kk=K;
+  *nn=N;
+}
+
+// Wrapper for calling "viterbi" from Fortran:
+void vit213_(
+unsigned char symbols[],  /* Raw deinterleaved input symbols */
+unsigned int *Nbits,	  /* Number of decoded information bits */
+int mettab[2][256],	  /* Metric table, [sent sym][rx symbol] */
+unsigned char ddec[],	  /* Decoded output data */
+int *Metric              /* Final path metric (bigger is better) */
+){
+  int metric;
+  vit213(&metric,ddec,symbols,*Nbits,mettab,0,0);
+  *Metric=metric;
+}
+
