@@ -964,7 +964,10 @@ void MainWindow::fastSink(qint64 frames)
     m_t1=k/12000.0;
     m_kdone=k;
     jt9com_.newdat=1;
-    if(!m_decoderBusy) decode();
+    if(!m_decoderBusy) {
+      m_bFastDecodeCalled=true;
+      decode();
+    }
     if(!m_diskData and m_saveAll and m_fname != "" and !decodeEarly) {
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
