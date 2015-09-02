@@ -328,6 +328,7 @@ set (wsjt_FSRCS
   lib/grayline.f90
   lib/grid2deg.f90
   lib/hash.f90
+  lib/hashing.f90
   lib/hspec.f90
   lib/image.f90
   lib/indexx.f90

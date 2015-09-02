@@ -2,7 +2,9 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
 
 ! Attempt synchronization, and if successful decode using Viterbi algorithm.
 
+  use iso_c_binding, only: c_loc
   use packjt
+  use hashing
   parameter (NSPM=1404)
   complex cdat(npts)                    !Analytic signal
   complex cb(66)                        !Complex waveform for Barker-11 code
@@ -18,7 +20,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   real rd2(198)
   complex z,z0,z1,cfac
   integer*1 e1(198)
-  integer*1 d8(13)
+  integer*1, target :: d8(13)
   integer*1 i1hash(4)
   integer*1 i1
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
@@ -27,7 +29,6 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   integer jpksave(1000)
   integer indx(1000)
   integer b11(11)                      !Barker-11 code
-  integer*8 len8
   real rsave(1000)
   real xp(29)
   character*22 decoded
@@ -261,8 +262,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      call vit213(e1,nb1,mettab,d8,metric)
      call system_clock(count1,clkfreq)
      tvit=tvit + (count1-count0)/float(clkfreq)
-     len8=9
-     ihash=nhash(d8,len8,146)
+     ihash=nhash(c_loc(d8),9,146)
      ihash=2*iand(ihash,32767)
      decoded='                      '
      if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then
