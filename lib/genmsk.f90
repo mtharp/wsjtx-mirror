@@ -54,7 +54,7 @@ subroutine genmsk(msg0,ichk,msgsent,i4tone,itype)
      call unpackmsg(i4Msg6BitWords,msgsent)      !Unpack to get msgsent
      if(ichk.ne.0) go to 999
      call entail(i4Msg6BitWords,i1Msg8BitBytes)  !Add tail, make 8-bit bytes
-     ihash=nhash(c_loc(i1Msg8BitBytes),9,146)
+     ihash=nhash(c_loc(i1Msg8BitBytes),int8(9),146)
      ihash=2*iand(ihash,32767)                   !Generate the CRC
      i1Msg8BitBytes(10)=i1hash(2)                !CRC to bytes 10 and 11
      i1Msg8BitBytes(11)=i1hash(1)
