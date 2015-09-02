@@ -1,6 +1,7 @@
 #include "echograph.h"
 #include "commons.h"
 #include <QSettings>
+#include <QApplication>
 #include "echoplot.h"
 #include "ui_echograph.h"
 #include "moc_echograph.cpp"
@@ -13,6 +14,7 @@ EchoGraph::EchoGraph(QSettings * settings, QWidget *parent) :
   ui(new Ui::EchoGraph)
 {
   ui->setupUi(this);
+  setWindowTitle (QApplication::applicationName () + " - " + tr ("Echo Graph"));
   installEventFilter(parent);                   //Installing the filter
   ui->echoPlot->setCursor(Qt::CrossCursor);
   setMaximumWidth(2048);

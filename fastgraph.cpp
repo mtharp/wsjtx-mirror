@@ -1,6 +1,7 @@
 #include "fastgraph.h"
 #include "commons.h"
 #include <QSettings>
+#include <QApplication>
 #include "fastplot.h"
 #include "ui_fastgraph.h"
 #include "moc_fastgraph.cpp"
@@ -15,6 +16,7 @@ FastGraph::FastGraph(QSettings * settings, QWidget *parent) :
   ui(new Ui::FastGraph)
 {
   ui->setupUi(this);
+  setWindowTitle (QApplication::applicationName () + " - " + tr ("Fast Graph"));
   installEventFilter(parent);                   //Installing the filter
   ui->fastPlot->setCursor(Qt::CrossCursor);
   m_ave=40;
