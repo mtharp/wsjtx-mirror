@@ -408,6 +408,7 @@ private:
   bool    m_bEchoTxed;
   bool    m_bFastMode;
   bool    m_bFast9;
+  bool    m_bFastDecodeCalled;
 
   float   m_pctZap;
 

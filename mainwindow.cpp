@@ -431,6 +431,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_rxDone=false;
   m_bEchoTxOK=false;
   m_bTransmittedEcho=false;
+  m_bFastDecodeCalled=false;
   m_nclearave=1;
   m_bEchoTxed=false;
   m_nWSPRdecodes=0;
@@ -924,14 +925,15 @@ void MainWindow::fastSink(qint64 frames)
   if(m_k0==9999999) {
     memset(fast_green,0,sizeof(float)*703);        //Zero fast_gereen[]
     memset(fast_s2,0,sizeof(float)*703*64);        //Zero fast_s2[]
+    m_bFastDecodeCalled=false;
   } else {
-    if(k < m_k0) {
+    if(k < m_k0) {                                 //New sequence ?
       memcpy(fast_green2,fast_green,4*703);        //Copy fast_green[] to fast_green2[]
       memcpy(fast_s2,fast_s,4*703*64);             //Copy fast_s[] into fast_s2[]
       fast_jh2=fast_jh;
       if(!m_diskData) memset(jt9com_.d2,0,2*30*12000);   //Zero the d2[] array
       decodeEarly=false;
-
+      m_bFastDecodeCalled=false;
       QDateTime t=QDateTime::currentDateTimeUtc();     //.addSecs(2-m_TRperiod);
       int ihr=t.toString("hh").toInt();
       int imin=t.toString("mm").toInt();
@@ -941,7 +943,6 @@ void MainWindow::fastSink(qint64 frames)
       t2.sprintf("%2.2d%2.2d%2.2d.wav",ihr,imin,isec);
       m_fname = m_config.save_directory().absoluteFilePath(
             t.date().toString("yyMMdd") + "_" + t2);
-
     }
   }
 
@@ -955,7 +956,7 @@ void MainWindow::fastSink(qint64 frames)
   decodeNow=false;
   m_k0=k;
   if(m_diskData and m_k0 >= jt9com_.kin-3456) decodeNow=true;
-  if(!m_diskData and m_tRemaining<0.35) decodeNow=true;
+  if(!m_diskData and m_tRemaining<0.35 and !m_bFastDecodeCalled) decodeNow=true;
 
   if(decodeNow) {
     m_dataAvailable=true;
@@ -4468,7 +4469,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
       m_bdecoded = m_nWSPRdecodes > 0;
       if(!m_diskData) {
         WSPR_history(m_dialFreqRxWSPR, m_nWSPRdecodes);
-        if(m_nWSPRdecodes==0) {
+        if(m_nWSPRdecodes==0 and ui->band_hopping_group_box->isChecked()) {
           t = " Receiving " + m_mode + " ----------------------- " +
               m_config.bands ()->find (m_dialFreqRxWSPR);
           t=WSPR_hhmm(-60) + ' ' + t.rightJustified (66, '-');
