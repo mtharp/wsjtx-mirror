@@ -13,8 +13,14 @@ program JTMSKcode
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
   character*72 c72
 !  real*8 twopi,dt,f0,f1,f,phi,dphi
+  real xp(29)
   equivalence (ihash,i1hash)
-
+  data xp/0.500000, 0.401241, 0.309897, 0.231832, 0.168095,    &
+          0.119704, 0.083523, 0.057387, 0.039215, 0.026890,    &
+          0.018084, 0.012184, 0.008196, 0.005475, 0.003808,    &
+          0.002481, 0.001710, 0.001052, 0.000789, 0.000469,    &
+          0.000329, 0.000225, 0.000187, 0.000086, 0.000063,    &
+          0.000017, 0.000091, 0.000032, 0.000045/
   include 'testmsg.f90'
 
   nargs=iargc()
@@ -28,16 +34,24 @@ program JTMSKcode
   nmsg=1
   if(msg(1:2).eq."-t") nmsg=NTEST
 
-
-  open(10,file='bpskmetrics.dat',status='old')
-  bias=0.5
+! Get the metric table
+  bias=0.0
   scale=20.0
-  do i=0,255
-     read(10,*) xjunk,x0,x1
+  xln2=log(2.0)
+  do i=128,156
+     x0=log(max(0.0001,2.0*xp(i-127)))/xln2
+     x1=log(max(0.001,2.0*(1.0-xp(i-127))))/xln2
      mettab(i,0)=nint(scale*(x0-bias))
      mettab(i,1)=nint(scale*(x1-bias))
+     mettab(256-i,0)=mettab(i,1)
+     mettab(256-i,1)=mettab(i,0)
   enddo
-
+  do i=157,255
+     mettab(i,0)=mettab(156,0)
+     mettab(i,1)=mettab(156,1)
+     mettab(256-i,0)=mettab(i,1)
+     mettab(256-i,1)=mettab(i,0)
+  enddo
 
   write(*,1010)
 1010 format("     Message                 Decoded                Err? Type"/   &

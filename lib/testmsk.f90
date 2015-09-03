@@ -12,7 +12,7 @@ program testmsk
   if(nargs.lt.1) then
      print*,'Usage:     testmsk infile1 [infile2 ...]'
      print*,'Examples:  testmsk ~/data/JTMSK3/150825_115515.wav'
-     print*,'           testmsk ~/data/JTMSK3/150825_120245.wav'
+     print*,'           testmsk C:/data/JTMSK3/150825_120245.wav'
      go to 999
   endif
 

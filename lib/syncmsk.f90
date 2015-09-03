@@ -232,7 +232,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         if(sym.ge.0) ibit=1
         symbol(n)=sym
      enddo
-     snr=sig/ref
+     snr=db(sig/ref-1.0)
 
      rdata(1:35)=symbol(12:46)
      rdata(36:104)=symbol(59:127)
@@ -272,8 +272,8 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
 1014    format(12b6.6)
         call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
      endif
-     write(71,3301) r(jpk),ss1(jpk),decoded
-3301 format(2f12.3,2x,a22)
+!     write(71,3301) r(jpk),ss1(jpk),decoded
+!3301 format(2f12.3,2x,a22)
      if(decoded.ne.'                      ') exit
   enddo
 

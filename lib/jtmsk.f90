@@ -79,7 +79,7 @@ subroutine jtmsk(id2,narg,line)
      if(rmax.lt.2.0) cycle             !No output is no significant sync
      freq=1500.0+idf
      t0=(ia+jpk)/12000.0
-     nsnr=db(snr) - 4.0
+     nsnr=nint(snr)
 !     write(81,3020) nutc,snr,t0,freq,ipk,metric,sig,rmax,msg
 !3020 format(i6.6,2f5.1,f7.1,2i6,f7.1,f7.2,1x,a22)
      if(msg.ne.'                      ') then
@@ -90,8 +90,8 @@ subroutine jtmsk(id2,narg,line)
         if(nsnr.gt.nsnr0) then
            write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg
 1020       format(i6.6,i4,f5.1,i5,' & ',a22)
+           nsnr0=nsnr
         endif
-        nsnr0=nsnr
         msg0=msg
         if(nline.ge.maxlines) exit
      endif
