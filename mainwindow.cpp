@@ -2799,6 +2799,9 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
     msgtype("RRR", ui->tx4);
     msgtype("73", ui->tx5->lineEdit ());
   } else {
+    int n=rpt.toInt();
+    rpt.sprintf("%+2.2d",n);
+    qDebug() << n << rpt;
     t=t0 + rpt;
     msgtype(t, ui->tx2);
     t=t0 + "R" + rpt;
