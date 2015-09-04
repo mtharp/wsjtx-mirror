@@ -2,12 +2,14 @@ program JTMSKcode
 
 ! Generate simulated data for testing of JTMSK
 
+  use iso_c_binding, only: c_loc,c_size_t
+  use hashing
   use packjt
   character msg*22,decoded*22,bad*1,msgtype*13
   integer*4 i4tone(234)                   !Channel symbols (values 0-1)
   integer*1 e1(201)
   integer*1 r1(201)
-  integer*1 d8(13)
+  integer*1, target :: d8(13)
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
   integer*1 i1hash(4)
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
@@ -91,7 +93,7 @@ program JTMSKcode
      nb1=87
      call vit213(e1,nb1,mettab,d8,metric)
 
-     ihash=nhash(d8,9,146)
+     ihash=nhash(c_loc(d8),int(9,c_size_t),146)
      ihash=2*iand(ihash,32767)
      decoded="                      "
      if(d8(10).eq.i1hash(2) .and. d8(11).eq.i1hash(1)) then

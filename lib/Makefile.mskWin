@@ -31,12 +31,12 @@ CFLAGS = -O2 -I.
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-#all:    jt9code JTMSKcode
-all:	 testmsk JTMSKsim
+#all:    jt9code JTMSKcode.exe
+all:	 testmsk.exe JTMSKsim.exe JTMSKcode.exe
 
 OBJS3 = JTMSKsim.o wavhdr.o gran.o four2a.o db.o
-JTMSKsim: $(OBJS3)
-	$(FC) -o JTMSKsim $(OBJS3) C:\JTSDK\fftw3f\libfftw3f-3.dll
+JTMSKsim.exe: $(OBJS3)
+	$(FC) -o JTMSKsim.exe $(OBJS3) C:\JTSDK\fftw3f\libfftw3f-3.dll
 
 OBJS4 = jt9code.o packjt.o fmtmsg.o gen9.o deg2grid.o grid2deg.o \
       entail.o encode232.o interleave9.o graycode.o igray.o
@@ -44,15 +44,15 @@ jt9code: $(OBJS4)
 	$(FC) -o jt9code $(OBJS4) 
 
 OBJS5 = JTMSKcode.o packjt.o fmtmsg.o genmsk.o deg2grid.o grid2deg.o \
-      entail.o nhash.o tab.o vit213.o 
-JTMSKcode: $(OBJS5) 
-	$(FC) -o JTMSKcode $(OBJS5) 
+      entail.o tab.o vit213.o hashing.o nhash.o
+JTMSKcode.exe: $(OBJS5) 
+	$(FC) -o JTMSKcode.exe $(OBJS5) 
 
 OBJS6 = testmsk.o jtmsk.o analytic.o four2a.o db.o pctile.o \
       sort.o tweak1.o syncmsk.o genmsk.o packjt.o fmtmsg.o indexx.o \
-      deg2grid.o grid2deg.o entail.o nhash.o tab.o vit213.o smo121.o
-testmsk: $(OBJS6) 
-	$(FC) -o testmsk $(OBJS6) C:\JTSDK\fftw3f\libfftw3f-3.dll
+      deg2grid.o grid2deg.o entail.o hashing.o nhash.o tab.o vit213.o smo121.o
+testmsk.exe: $(OBJS6) 
+	$(FC) -o testmsk.exe $(OBJS6) C:\JTSDK\fftw3f\libfftw3f-3.dll
 
 OBJS1 = t1.o four2a.o db.o
 t1:   $(OBJS1)
