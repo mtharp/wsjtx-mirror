@@ -31,6 +31,9 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
+
+  print*,'A',nrxfreq,ntol
+
   nsnr0=-99
   nline=0
   line(1:100)(1:1)=char(0)

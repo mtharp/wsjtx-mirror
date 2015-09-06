@@ -349,6 +349,7 @@ set (wsjt_FSRCS
   lib/moondopjpl.f90
   lib/morse.f90
   lib/move.f90
+  lib/mskdt.f90
   lib/options.f90
   lib/packjt.f90
   lib/pctile.f90
