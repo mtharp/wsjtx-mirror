@@ -9,9 +9,9 @@ subroutine jtmsk(id2,narg,line)
   real d(0:NMAX)                       !Raw r*4 data
   real ty(703)
   real yellow(703)
-  real spk2(20)
-  real fpk2(20)
-  integer jpk2(20)
+!  real spk2(20)
+!  real fpk2(20)
+!  integer jpk2(20)
   complex c(NFFTMAX)                   !Complex (analytic) data
   complex cdat(24000)                  !Short segments, up to 2 s
   complex cdat2(24000)
@@ -31,8 +31,6 @@ subroutine jtmsk(id2,narg,line)
   nmode=narg(9)
   nrxfreq=narg(10)                     !Target Rx audio frequency (Hz)
   ntol=narg(11)                        !Search range, +/- ntol (Hz)
-
-  print*,'A',nrxfreq,ntol
 
   nsnr0=-99
   nline=0
@@ -92,7 +90,7 @@ subroutine jtmsk(id2,narg,line)
               nsnr0=-99
            endif
            if(nsnr.gt.nsnr0) then
-              write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg,n,nyel,fpk
+              write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg !,n,nyel,fpk
 1020          format(i6.6,i4,f5.1,i5,' & ',a22,2i4,f7.0)
               nsnr0=nsnr
               go to 900
