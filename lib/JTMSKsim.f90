@@ -81,7 +81,9 @@ program JTMSKsim
   c=c/rms
 
   i0=3*12000
-  c(i0:i0+NSPM-1)=c(i0:i0+NSPM-1) + sig*cmsg
+  ncopy=NSPM
+!  ncopy=0.5*NSPM
+  c(i0:i0+ncopy-1)=c(i0:i0+ncopy-1) + sig*cmsg(0:ncopy-1)
   do i=1,npts
      iwave(i)=100.0*real(c(i))
   enddo

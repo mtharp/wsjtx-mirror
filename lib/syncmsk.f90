@@ -34,8 +34,6 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   character*22 decoded
   character*72 c72
   logical first
-  integer*8 count0,count1,clkfreq,count2
-  common/mskcom/tsync1,tsync2,tsoft,tvit,ttotal
   equivalence (i1,i4)
   equivalence (ihash,i1hash)
   data xp/0.500000, 0.401241, 0.309897, 0.231832, 0.168095,    &
@@ -84,20 +82,31 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      enddo
      c0=cb(19:24)
      c1=cb(1:6)
+     cb3=0.
+     cb3(1:66,1)=cb
+     cb3(283:348,1)=cb
+     cb3(769:834,1)=cb
+
+     cb3(1:66,2)=cb
+     cb3(487:552,2)=cb
+     cb3(1123:1188,2)=cb
+
+     cb3(1:66,3)=cb
+     cb3(637:702,3)=cb
+     cb3(919:984,3)=cb
+
      first=.false.
   endif
 
   nfft=NSPM
   jz=npts-nfft
-
-  call system_clock(count0,clkfreq)
   decoded="                      "
   ipk=0
   jpk=0
   metric=0
   r=0.
 
-!### ??? Should do this loop using 16k FFTs, instead ??? ###
+  call timer('sync1   ',0)
   do j=1,jz                               !Find the Barker-11 sync vectors
      z=0.
      ss=0.
@@ -109,16 +118,12 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      r(j)=abs(z)/(0.908*ss)               !Goodness-of-fit to Barker 11
      ss1(j)=ss
   enddo
-!###
+  call timer('sync1   ',1)
 
-  call system_clock(count2,clkfreq)
-  tsync1=tsync1 + (count2-count0)/float(clkfreq)
-
+  call timer('sync2   ',0)
   jz=npts-nfft
   rmax=0.
-  n1=35
-  n2=69
-  n3=94
+!  n1=35, n2=69, n3=94
   k=0
   do j=1,jz                               !Find best full-message sync
      if(ss1(j).lt.85.0) cycle
@@ -141,7 +146,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         ipk=3
      endif
      rrmax=max(r1,r2,r3)
-     if(rrmax.gt.2.0) then
+     if(rrmax.gt.1.9) then
         k=k+1
         if(r1.eq.rrmax) ipksave(k)=1
         if(r2.eq.rrmax) ipksave(k)=2
@@ -150,44 +155,29 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         rsave(k)=rrmax
      endif
   enddo
+  call timer('sync2   ',1)
   kmax=k
-  call system_clock(count1,clkfreq)
-  tsync2=tsync2 + (count1-count2)/float(clkfreq)
-!  print*,(count2-count0)/float(clkfreq),(count1-count2)/float(clkfreq),tsync
 
+  call timer('indexx  ',0)
   call indexx(rsave,kmax,indx)
+  call timer('indexx  ',1)
+
+  call timer('sync3   ',0)
   do kk=1,kmax
      k=indx(kmax+1-kk)
      ipk=ipksave(k)
      jpk=jpksave(k)
      rmax=rsave(k)
-     n1=35
-     n2=69
-     n3=94
-!     r1=r(j) + r(j+282) + r(j+768)        ! 6*(12+n1) 6*(24+n1+n2)
-!     r2=r(j) + r(j+486) + r(j+1122)       ! 6*(12+n2) 6*(24+n2+n3)
-!     r3=r(j) + r(j+636) + r(j+918)        ! 6*(12+n3) 6*(24+n3+n1)
-     cb3=0.
-     cb3(1:66,1)=cb
-     cb3(283:348,1)=cb
-     cb3(769:834,1)=cb
-
-     cb3(1:66,2)=cb
-     cb3(487:552,2)=cb
-     cb3(1123:1188,2)=cb
-
-     cb3(1:66,3)=cb
-     cb3(637:702,3)=cb
-     cb3(919:984,3)=cb
 
      c=conjg(cb3(1:NSPM,ipk))*cdat(jpk:jpk+nfft-1)
      smax=0.
      dfx=0.
      idfbest=0
-     do itry=1,100
+     call timer('idf     ',0)
+     do itry=1,25
         idf=itry/2
         if(mod(itry,2).eq.0) idf=-idf
-        idf=2*idf
+        idf=4*idf
         twk=idf
         call tweak1(c,NSPM,-twk,c2)
         z=sum(c2)
@@ -203,7 +193,9 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      cfac=cmplx(cos(phi),-sin(phi))
      cdat=cfac*cdat
      cdat=-cdat                          !### ??? ###
+     call timer('idf     ',1)
 
+     call timer('softsym ',0)
      sig=0.
      ref=0.
      do k=1,234                                !Compute soft symbols
@@ -233,6 +225,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         symbol(n)=sym
      enddo
      snr=db(sig/ref-1.0)
+     call timer('softsym ',1)
 
      rdata(1:35)=symbol(12:46)
      rdata(36:104)=symbol(59:127)
@@ -254,14 +247,16 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         e1(j)=i1
         rd2(j)=rdata(i+99)
      enddo
-     call system_clock(count0,clkfreq)
-     tsoft=tsoft + (count0-count1)/float(clkfreq)
+!     call system_clock(count0,clkfreq)
+!     tsoft=tsoft + (count0-count1)/float(clkfreq)
 
 ! Decode the message
      nb1=87
+     call timer('vit213  ',0)
      call vit213(e1,nb1,mettab,d8,metric)
-     call system_clock(count1,clkfreq)
-     tvit=tvit + (count1-count0)/float(clkfreq)
+     call timer('vit213  ',1)
+!     call system_clock(count1,clkfreq)
+!     tvit=tvit + (count1-count0)/float(clkfreq)
      ihash=nhash(c_loc(d8),int(9,c_size_t),146)
      ihash=2*iand(ihash,32767)
      decoded='                      '
@@ -276,6 +271,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
 !3301 format(2f12.3,2x,a22)
      if(decoded.ne.'                      ') exit
   enddo
+  call timer('sync3   ',1)
 
   return
 end subroutine syncmsk

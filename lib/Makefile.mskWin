@@ -50,7 +50,8 @@ JTMSKcode.exe: $(OBJS5)
 
 OBJS6 = testmsk.o jtmsk.o analytic.o four2a.o db.o pctile.o \
       sort.o tweak1.o syncmsk.o genmsk.o packjt.o fmtmsg.o indexx.o \
-      deg2grid.o grid2deg.o entail.o hashing.o nhash.o tab.o vit213.o smo121.o
+      deg2grid.o grid2deg.o entail.o hashing.o nhash.o tab.o vit213.o \
+      smo121.o mskdt.o msksync.o softmsk.o timer.o
 testmsk.exe: $(OBJS6) 
 	$(FC) -o testmsk.exe $(OBJS6) C:\JTSDK\fftw3f\libfftw3f-3.dll
 
