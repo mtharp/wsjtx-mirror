@@ -40,7 +40,6 @@ int main(int argc, char *argv[]){
     extern char *optarg;
     extern int optind;
     
-    int hi_there[]={25,57,1,8,29,22,61,14,46,15,56,28};
     int revdat[12];
     int parity[51];
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
@@ -55,7 +54,7 @@ int main(int argc, char *argv[]){
     float xlambda;
     int mrsym[63],mrprob[63],mr2sym[63],mr2prob[63];
     int nsec2,ncount,dat4[12];
-    int ntrials=10000;
+    int ntrials=2500;
     
     while ( (c = getopt(argc, argv, "n:")) !=-1 ) {
         switch (c) {
@@ -76,7 +75,7 @@ int main(int argc, char *argv[]){
         infile=argv[optind];
     }
     
-    printf("Input file from command line: %s\n",infile);
+//    printf("Input file from command line: %s\n",infile);
     
     datfile=fopen(infile,"rb");
     if( !datfile ) {
@@ -98,10 +97,11 @@ int main(int argc, char *argv[]){
         //    printf("mrsym: ");
         //    for (i=0; i<nn; i++) printf("%d ",mrsym[i]);
         //    printf("\n");
-        
-        printf("   kv decode nerrors= %3d : ",ncount);
-        for (i=0; i<12; i++) printf("%2d ",dat4[i]);
-        printf("\n");
+        if( ncount >= 0 ) {
+            printf("   kv decode nerrors= %3d : ",ncount);
+            for (i=0; i<12; i++) printf("%2d ",dat4[i]);
+            printf("\n");
+        }
     }
     
     // initialize the ka9q reed solomon encoder/decoder
@@ -183,10 +183,30 @@ int main(int argc, char *argv[]){
         memcpy(workdat,rxdat,sizeof(rxdat));
         nerr=decode_rs_int(rs,workdat,era_pos,numera);
         if( nerr >= 0 ) {
+            for(i=0; i<12; i++) dat4[i]=workdat[11-i];
             printf("Chase decode nerrors= %3d : ",nerr);
-            for(i=0; i<12; i++) printf("%2d ",workdat[11-i]);
+            for(i=0; i<12; i++) printf("%2d ",dat4[i]);
             printf("\n");
+            break;
         }
+    }
+    datfile=fopen(infile,"wb");
+    if( !datfile ) {
+        printf("Unable to open kvasd.dat\n");
+        return 1;
+    } else {
+        fwrite(&nsec,sizeof(int),1,datfile);
+        fwrite(&xlambda,sizeof(float),1,datfile);
+        fwrite(&maxe,sizeof(int),1,datfile);
+        fwrite(&nads,sizeof(int),1,datfile);
+        fwrite(&mrsym,sizeof(int),63,datfile);
+        fwrite(&mrprob,sizeof(int),63,datfile);
+        fwrite(&mr2sym,sizeof(int),63,datfile);
+        fwrite(&mr2prob,sizeof(int),63,datfile);
+        fwrite(&nsec2,sizeof(int),1,datfile);
+        fwrite(&nerr,sizeof(int),1,datfile);
+        fwrite(&dat4,sizeof(int),12,datfile);
+        fclose(datfile);
     }
     exit(0);
 }
