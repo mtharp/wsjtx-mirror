@@ -57,11 +57,13 @@ subroutine jtmsk(id2,narg,line)
 ! Process ping list (sorted by S/N) from top down.
   do n=1,nyel
      ia=ty(n)*12000.0 - nbefore
+     if(ia.lt.1) ia=1
      ib=ia + nafter
+     if(ib.gt.CFFMTAX) ib=CFFTMAX
      iz=ib-ia+1
+     cdat2(1:iz)=c(ia:ib)               !Select nlen complex samples
      ja=ia/NSPM + 1
      jb=ib/NSPM
-     cdat2(1:iz)=c(ia:ib)               !Select nlen complex samples
      t0=ia/12000.0
 !     call msksync(cdat,iz,jpk2,fpk2,spk2)
 !     call softmsk(cdat,iz,jpk2,fpk2,spk2)
