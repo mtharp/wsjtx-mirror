@@ -81,17 +81,17 @@ subroutine jtmsk(id2,narg,line)
         freq=fpk+idf
 !        write(72,4001) jpk,idf,nint(freq),rmax,snr,msg
 !4001    format(3i6,2f9.2,2x,a22)
-        if(rmax.lt.1.9) cycle             !No output if no significant sync
+        if(metric.eq.-9999) cycle             !No output if no significant sync
         t0=(ia+jpk)/12000.0
-        nsnr=nint(snr)
+        nsnr=nint(yellow(n))
         if(msg.ne.'                      ') then
            if(msg.ne.msg0) then
               nline=nline+1
               nsnr0=-99
            endif
            if(nsnr.gt.nsnr0) then
-              write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg !,n,nyel,fpk
-1020          format(i6.6,i4,f5.1,i5,' & ',a22,2i4,f7.0)
+              write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg
+1020          format(i6.6,i4,f5.1,i5,' & ',a22)
               nsnr0=nsnr
               go to 900
            endif

@@ -14,10 +14,7 @@ program testmsk
      go to 999
   endif
 
-!  open(81,file='testmsk.out',status='unknown',position='append')
-  open(81,file='testmsk.out',status='unknown')
   nfiles=nargs
-
   tsync1=0.
   tsync2=0.
   tsoft=0.

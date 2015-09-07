@@ -14,6 +14,9 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   complex c2(0:NSPM-1)
   complex cb3(1:NSPM,3)
   real r(12000)
+  real rdat(12000)
+  real s0(6)
+  real s1(6)
   real ss1(12000)
   real symbol(234)
   real rdata(198)
@@ -82,6 +85,8 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      enddo
      c0=cb(19:24)
      c1=cb(1:6)
+     s0=real(c0)
+     s1=real(c1)
      cb3=0.
      cb3(1:66,1)=cb
      cb3(283:348,1)=cb
@@ -103,7 +108,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   decoded="                      "
   ipk=0
   jpk=0
-  metric=0
+  metric=-9999
   r=0.
 
   call timer('sync1   ',0)
@@ -192,21 +197,36 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      call tweak1(cdat,npts,-dfx,cdat)
      cfac=cmplx(cos(phi),-sin(phi))
      cdat=cfac*cdat
-     cdat=-cdat                          !### ??? ###
      call timer('idf     ',1)
 
      call timer('softsym ',0)
      sig=0.
      ref=0.
+     rdat(1:npts)=cdat
+!     is=1
      do k=1,234                                !Compute soft symbols
-        z0=0.
-        z1=0.
         j=jpk+6*(k-1)
-        do i=1,6
-           z0=z0 + cdat(j+i-1)*conjg(c0(i))    !Signal matching 0
-           z1=z1 + cdat(j+i-1)*conjg(c1(i))    !Signal matching 1
-        enddo
+        z0=dot_product(cdat(j:j+5),c0)
+        z1=dot_product(cdat(j:j+5),c1)
+
+!###
+        if(j+1404+5.lt.npts) then
+           j=j+1404
+           z0=z0 + dot_product(cdat(j:j+5),c0)
+           z1=z1 + dot_product(cdat(j:j+5),c1)
+        endif
+        if(j-1404.ge.1) then
+           j=j-1404
+           z0=z0 + dot_product(cdat(j:j+5),c0)
+           z1=z1 + dot_product(cdat(j:j+5),c1)
+        endif
+!###
+
         sym=abs(real(z1))-abs(real(z0))
+!        x0=is*dot_product(rdat(j:j+5),s0)
+!        x1=is*dot_product(rdat(j:j+5),s1)
+!        sym2=x1-x0
+!        if(sym2.lt.0.0) is=-is
         if(sym.lt.0.0) then
            phi=atan2(aimag(z0),real(z0))
            sig=sig + real(z0)**2
@@ -216,6 +236,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
            sig=sig + real(z1)**2
            ref=ref + aimag(z1)**2
         endif
+!        sym=2*sym2
         n=k
         if(ipk.eq.2) n=k+47
         if(ipk.eq.3) n=k+128
@@ -223,6 +244,8 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         ibit=0
         if(sym.ge.0) ibit=1
         symbol(n)=sym
+!        write(71,5001) k,z0,z1,sym,real(z1)-real(z0),x0,x1,phi,rmax,is
+!5001    format(i3,9f6.1,f6.2,i3)
      enddo
      snr=db(sig/ref-1.0)
      call timer('softsym ',1)
@@ -234,7 +257,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
 ! Re-order the symbols and make them i*1
      j=0
      do i=1,99
-        i4=128+rdata(i)
+        i4=128+rdata(i)                       !### Should be nint() ??? ###
         if(i4.gt.255)  i4=255
         if(i4.lt.0) i4=0
         j=j+1
