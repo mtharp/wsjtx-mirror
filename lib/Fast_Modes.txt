@@ -4,7 +4,38 @@
 September 8, 2015
 -----------------
 
-New alpha release of experimental WSJT-X v1.6.1, r5864
+#######################################################################
+
+IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT 
+
+Third-party individuals (i.e., others not part of the WSJT development
+team) have been compiling WSJT-X from the open source code and making
+unauthorized "releases" of their builds.  I do NOT reccommend use of
+these builds on the air.  If you operate with one of these
+unauthorized "rXXXX" code revisions in our experimental code branch
+you have no idea what you've got.  Quite possibly, the program was
+built from an intermediate temporary "save" of various files, and was
+not even supposed to produce a usable program.  Your observetions
+about what works or does not work are then worse than useless -- they
+waste your time and ours.
+
+So please, PLEASE, *PLEASE*: use *authorized*, "released* revisions
+of this still-in-development software, like the revision described here.
+
+*ALSO:* If you choose to try an experimental release of JTMSK, please
+accept the responsibility of reporting on your results.  You can send
+reports to the "wsjtgroup" reflector, wsjtgroup@yahoogroups.com, or
+email them directly to me.  All suggestions for improvements are
+welcome!
+
+Bug reports should include details on how to reproduce the undesirable
+program behavior.  Reports on decoding performance are especially
+useful when accompanied by example *.wav files with signals that
+you think should have decoded, but did not.
+
+#######################################################################
+
+New alpha release of experimental WSJT-X v1.6.1, r5865
 ------------------------------------------------------
 
 This alpha release of WSJT-X includes major improvements to the JTMSK
@@ -40,17 +71,6 @@ signal.
 up some harmless compiler warnings.
 
 #######################################################################
-IMPORTANT: If you choose to try an experimental release of JTMSK,
-please accept the responsibility of reporting on your results.  You
-can send reports to the "wsjtgroup" reflector,
-wsjtgroup@yahoogroups.com, or email them directly to me.  All
-suggestions for improvements are welcome!  
-
-Bug reports should include details on how to reproduce the undesirable
-program behavior.  Reports on decoding performance are especially
-useful when accompanied by example *.wav files with signals that
-you think should have decoded, but did not.
-#######################################################################
 		Summary Description of JTMSK Protocol
 
 JTMSK uses the same standard message structure as slow modes JT4, JT9,
@@ -67,7 +87,7 @@ frequencies of 1000 and 2000 Hz.
 
 To download this alpha release for Windows, paste the following link
 into your browser:
-http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5864-win32.exe
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5865-win32.exe
 
 	-- 73, Joe, K1JT
 
