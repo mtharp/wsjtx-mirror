@@ -2204,24 +2204,20 @@ void MainWindow::guiUpdate()
     auto is_73 = message_is_73 (m_currentMessageType, msg_parts);
     m_sentFirst73 = is_73
       && !message_is_73 (m_lastMessageType, m_lastMessageSent.split (' ', QString::SkipEmptyParts));
-    if (m_sentFirst73)
-      {
-        m_qsoStop=t2;
-        if(m_config.id_after_73 ())
-          {
-            icw[0] = m_ncw;
-          }
-        if (m_config.prompt_to_log () && !m_tune)
-          {
-            logQSOTimer->start (0);
-          }
+    if (m_sentFirst73) {
+      m_qsoStop=t2;
+      if(m_config.id_after_73 () and (!m_bFastMode)) {
+        icw[0] = m_ncw;
       }
-    if (is_73 && m_config.disable_TX_on_73 ())
-      {
-        auto_tx_mode (false);
+      if (m_config.prompt_to_log () && !m_tune) {
+        logQSOTimer->start (0);
       }
+    }
+    if (is_73 && m_config.disable_TX_on_73 ()) {
+      auto_tx_mode (false);
+    }
 
-    if(m_config.id_interval () >0) {
+    if(m_config.id_interval () >0 and (!m_bFastMode)) {
       int nmin=(m_sec0-m_secID)/60;
       if(nmin >= m_config.id_interval ()) {
         icw[0]=m_ncw;
