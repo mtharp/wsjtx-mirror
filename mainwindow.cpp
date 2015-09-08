@@ -1016,7 +1016,9 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       }
 
       if(m_config.restart_audio_output ()) {
-        Q_EMIT initializeAudioOutputStream (m_config.audio_output_device (), AudioDevice::Mono == m_config.audio_output_channel () ? 1 : 2, m_msAudioOutputBuffered);
+        Q_EMIT initializeAudioOutputStream (m_config.audio_output_device (),
+           AudioDevice::Mono == m_config.audio_output_channel () ? 1 : 2,
+                                            m_msAudioOutputBuffered);
       }
 
       auto_tx_label->setText (m_config.quick_call () ? "Tx-Enable Armed" : "Tx-Enable Disarmed");
@@ -1026,7 +1028,7 @@ void MainWindow::on_actionSettings_triggered()               //Setup Dialog
       VHF_controls_visible(b);
     }
 
-  setXIT (ui->TxFreqSpinBox->value ());
+  if(!m_bFastMode) setXIT (ui->TxFreqSpinBox->value ());
   if (m_config.transceiver_online ())
     {
       Q_EMIT m_config.transceiver_frequency (m_dialFreq);
@@ -3826,6 +3828,7 @@ void MainWindow::on_tuneButton_clicked (bool checked)
 
 void MainWindow::stop_tuning ()
 {
+  on_tuneButton_clicked(false);
   ui->tuneButton->setChecked (false);
   m_bTxTime=false;
   m_tune=false;

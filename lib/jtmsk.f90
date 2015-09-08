@@ -18,7 +18,10 @@ subroutine jtmsk(id2,narg,line)
   integer narg(0:11)                   !Arguments passed from calling pgm
   character*22 msg,msg0                !Decoded message
   character*80 line(100)               !Decodes passed back to caller
+  common/tracer/ limtrace,lu
 
+  limtrace=-1
+  lu=12
 ! Parameters from GUI are in narg():
   nutc=narg(0)                         !UTC
   npts=min(narg(1),NMAX)               !Number of samples in id2 (12000 Hz)
