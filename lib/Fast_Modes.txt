@@ -4,40 +4,40 @@
 September 8, 2015
 -----------------
 
-New alpha release of experimental WSJT-X v1.6.1, r5861
+New alpha release of experimental WSJT-X v1.6.1, r5863
 ------------------------------------------------------
 
-This alpha release of WSJT-X includes some major improvements to the
-JTMSK decoder.  Changes from revision 5823 include the following:
+This alpha release of WSJT-X includes major improvements to the JTMSK
+decoder.  Changes since revision 5823 include the following:
 
-1. On-screen controls "Rx nnnn Hz" and "F Tol" (Rx frequency and
-tolerance) now function as expected in JTMSK mode.  The frequency
-search range can be up to 500 Hz.  Normally you should leave Rx Freq
-set at 1500 Hz; suitable values for F Tol are 100 to 500 Hz.  Note
-that sensitivity is necessarily reduced for signals off frequency by
-more than about 250 Hz.
+1. On-screen controls labeled "Rx nnnn Hz" and "F Tol" (Rx frequency
+and tolerance) now function as expected in JTMSK mode.  The frequency
+search range can be up to 500 Hz, but note that sensitivity is
+necessarily reduced for signals off frequency by more than about 250
+Hz.  Normally you should leave Rx Freq set at 1500 Hz; suitable values
+for F Tol are 100 to 500 Hz.
 
 2. The JTMSK decoder now makes good use of strong, short pings (as
 short as 0.1 s) as well as weak pings several times longer.
 
 3. Improved calculation of S/N and frequency of decoded signals.
 
-4. Unified the appearance of window titles on all non-modal windows.
+4. Unified appearance of window titles on all non-modal windows.
 
 5. CW ID is disabled (for now, at least) when operating in any of the
 WSJT fast modes.
 
-6. In WSPR mode, disabled the display of "Receiving ... <band>"
-messages when band-hopping is not in use.
+6. In WSPR mode, display of "Receiving ... <band>" messages is
+disabled when band-hopping is not in use.
 
-7. Fixed several bugs affecting the status of on-screen controls after
-changes in operating mode.
+7. Fixed several bugs affecting status and visibility of certain
+on-screen controls after changes in operating mode.
 
-8. Fixed a bug allowing the display of duplicate decodes for the same
+8. Fixed a bug allowing display of duplicate decodes for the same
 signal.
 
 9. Fixed a bug preventing compilation on 64-bit systems, and cleaned
-up some (harmless) compiler warnings.
+up some harmless compiler warnings.
 
 #######################################################################
 IMPORTANT: If you choose to try an experimental release of JTMSK,
@@ -48,26 +48,26 @@ suggestions for improvements are welcome!
 
 Bug reports should include details on how to reproduce the undesirable
 program behavior.  Reports on decoding performance are especially
-welcome when accompanied by example *.wav files with signals that
+useful when accompanied by example *.wav files with signals that
 you think should have decoded, but did not.
 #######################################################################
 		Summary Description of JTMSK Protocol
 
-JTMSK uses the same standard message structure as the slow modes JT4,
-JT9, and JT65.  User information is "source encoded" to 72 bits. A
-15-bit CRC is appended and a convolutional code with constraint length
-K=13 and rate r=1/2 is applied, making a total of (72+15+12)*2 = 198
+JTMSK uses the same standard message structure as slow modes JT4, JT9,
+and JT65.  User information is "source encoded" to 72 bits. A 15-bit
+CRC is appended and a convolutional code with constraint length K=13
+and rate r=1/2 is applied, making a total of (72+15+12)*2 = 198
 information bits.  Three copies of the "Barker-11" code and three
 even-parity bits are added for synchronization, making a total of
-198+36 = 234 channel symbols.  Modulation is done with a
-constant-envelope, continuous-phase "minimum-shift keying" (MSK)
-waveform, with tone frequencies of 1000 and 2000 Hz.
+198+33+3 = 234 channel symbols.  Modulation uses a constant-envelope,
+continuous-phase "minimum-shift keying" (MSK) waveform, with tone
+frequencies of 1000 and 2000 Hz.
 
 #######################################################################
 
 To download this alpha release for Windows, paste the following link
 into your browser:
-http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5861-win32.exe
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5863-win32.exe
 
 	-- 73, Joe, K1JT
 
