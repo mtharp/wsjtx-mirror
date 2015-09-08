@@ -4748,6 +4748,7 @@ void MainWindow::astroCalculations (QDateTime const& time, bool adjust) {
 
 void MainWindow::fastPick(int x0, int x1, int y)
 {
+  if(m_mode!="ISCAT") return;
   if(!m_decoderBusy) {
     jt9com_.newdat=0;
     jt9com_.nagain=1;
