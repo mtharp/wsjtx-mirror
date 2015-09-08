@@ -206,21 +206,19 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
 !     is=1
      do k=1,234                                !Compute soft symbols
         j=jpk+6*(k-1)
-        z0=dot_product(cdat(j:j+5),c0)
-        z1=dot_product(cdat(j:j+5),c1)
+        z0=2.0*dot_product(cdat(j:j+5),c0)
+        z1=2.0*dot_product(cdat(j:j+5),c1)
 
-!###
+!### Maybe these should be weighted by yellow() ?
         if(j+1404+5.lt.npts) then
-           j=j+1404
-           z0=z0 + dot_product(cdat(j:j+5),c0)
-           z1=z1 + dot_product(cdat(j:j+5),c1)
+           z0=z0 + dot_product(cdat(j+1404:j+1404+5),c0)
+           z1=z1 + dot_product(cdat(j+1404:j+1404+5),c1)
         endif
+
         if(j-1404.ge.1) then
-           j=j-1404
-           z0=z0 + dot_product(cdat(j:j+5),c0)
-           z1=z1 + dot_product(cdat(j:j+5),c1)
+           z0=z0 + dot_product(cdat(j-1404:j-1404+5),c0)
+           z1=z1 + dot_product(cdat(j-1404:j-1404+5),c1)
         endif
-!###
 
         sym=abs(real(z1))-abs(real(z0))
 !        x0=is*dot_product(rdat(j:j+5),s0)
@@ -289,6 +287,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         read(c72,1014) i4Msg6BitWords
 1014    format(12b6.6)
         call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
+!        print*,freq2,snr2
      endif
 !     write(71,3301) r(jpk),ss1(jpk),decoded
 !3301 format(2f12.3,2x,a22)

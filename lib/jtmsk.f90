@@ -59,7 +59,7 @@ subroutine jtmsk(id2,narg,line)
      ia=ty(n)*12000.0 - nbefore
      if(ia.lt.1) ia=1
      ib=ia + nafter
-     if(ib.gt.CFFMTAX) ib=CFFTMAX
+     if(ib.gt.NFFTMAX) ib=NFFTMAX
      iz=ib-ia+1
      cdat2(1:iz)=c(ia:ib)               !Select nlen complex samples
      ja=ia/NSPM + 1
@@ -92,7 +92,8 @@ subroutine jtmsk(id2,narg,line)
               nsnr0=-99
            endif
            if(nsnr.gt.nsnr0) then
-              write(line(nline),1020) nutc,nsnr,t0,nint(freq),msg
+              call rectify_msk(cdat2(jpk:jpk+NSPM-1),msg,freq2)
+              write(line(nline),1020) nutc,nsnr,t0,nint(freq2),msg
 1020          format(i6.6,i4,f5.1,i5,' & ',a22)
               nsnr0=nsnr
               go to 900
