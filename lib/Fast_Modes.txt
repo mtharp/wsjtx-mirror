@@ -4,7 +4,7 @@
 September 8, 2015
 -----------------
 
-New alpha release of experimental WSJT-X v1.6.1, r5863
+New alpha release of experimental WSJT-X v1.6.1, r5864
 ------------------------------------------------------
 
 This alpha release of WSJT-X includes major improvements to the JTMSK
@@ -67,7 +67,7 @@ frequencies of 1000 and 2000 Hz.
 
 To download this alpha release for Windows, paste the following link
 into your browser:
-http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5863-win32.exe
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5864-win32.exe
 
 	-- 73, Joe, K1JT
 

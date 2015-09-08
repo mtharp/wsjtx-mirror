@@ -6,13 +6,12 @@ subroutine analytic(d,npts,nfft,c)
   real d(npts)
   real h(NFFTMAX/2)
   complex c(NFFTMAX)
-  logical first
-  data first/.true./
-  save first,h
+  data nfft0/0/
+  save nfft0,h
 
   df=12000.0/nfft
   nh=nfft/2
-  if(first) then
+  if(nfft.ne.nfft0) then
      t=1.0/2000.0
      beta=0.6
      pi=4.0*atan(1.0)
@@ -26,7 +25,7 @@ subroutine analytic(d,npts,nfft,c)
         endif
         h(i)=sqrt(h(i))
      enddo
-     first=.false.
+     nfft0=nfft
   endif
 
   fac=2.0/nfft
