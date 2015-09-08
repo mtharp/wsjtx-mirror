@@ -85,7 +85,7 @@ subroutine jtmsk(id2,narg,line)
 !4001    format(3i6,2f9.2,2x,a22)
         if(metric.eq.-9999) cycle             !No output if no significant sync
         t0=(ia+jpk)/12000.0
-        nsnr=nint(yellow(n))
+        nsnr=nint(yellow(n)-2.0)
         if(msg.ne.'                      ') then
            if(msg.ne.msg0) then
               nline=nline+1
