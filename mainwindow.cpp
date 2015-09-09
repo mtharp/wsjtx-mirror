@@ -1999,7 +1999,7 @@ void MainWindow::guiUpdate()
 
   if(m_TRperiod==0) m_TRperiod=60;
   txDuration=0.0;
-  if(m_modeTx=="JT4")  txDuration=1.0 + 207.0*2520/11025.0;  // JT4
+  if(m_modeTx=="JT4")  txDuration=1.0 + 207.0*2520/11025.0;   // JT4
   if(m_modeTx=="JT9")  txDuration=1.0 + 85.0*m_nsps/12000.0;  // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;     // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;     // WSPR
@@ -3223,8 +3223,8 @@ void MainWindow::on_actionJT9_triggered()
     m_fastGraph->show();
     ui->TxFreqSpinBox->setValue(700);
     ui->RxFreqSpinBox->setValue(700);
-    ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
-    ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
+    ui->decodedTextLabel->setText("UTC     dB   T  Freq   Message");
+    ui->decodedTextLabel2->setText("UTC     dB   T  Freq   Message");
     ui->sbTR->setVisible(true);
   } else {
     m_TRperiod=60;
@@ -3268,8 +3268,8 @@ void MainWindow::on_actionJTMSK_triggered()
   m_fastGraph->show();
   ui->TxFreqSpinBox->setValue(1500);
   ui->RxFreqSpinBox->setValue(1500);
-  ui->decodedTextLabel->setText("UTC     dB   t  Freq   Message");
-  ui->decodedTextLabel2->setText("UTC     dB   t  Freq   Message");
+  ui->decodedTextLabel->setText("UTC     dB   T  Freq   Message");
+  ui->decodedTextLabel2->setText("UTC     dB   T  Freq   Message");
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   ui->label_6->setText("Band Activity");
