@@ -1999,6 +1999,7 @@ void MainWindow::guiUpdate()
 
   if(m_TRperiod==0) m_TRperiod=60;
   txDuration=0.0;
+  if(m_modeTx=="JT4")  txDuration=1.0 + 207.0*2520/11025.0;  // JT4
   if(m_modeTx=="JT9")  txDuration=1.0 + 85.0*m_nsps/12000.0;  // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;     // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;     // WSPR
@@ -2196,7 +2197,7 @@ void MainWindow::guiUpdate()
       if (m_config.TX_messages ())
         {
           ui->decodedTextBrowser2->displayTransmittedText(m_currentMessage,m_modeTx,
-                                ui->TxFreqSpinBox->value(),m_config.color_TxMsg());
+                     ui->TxFreqSpinBox->value(),m_config.color_TxMsg(),m_bFastMode);
         }
     }
 
@@ -2293,7 +2294,7 @@ void MainWindow::guiUpdate()
 
       if (m_config.TX_messages () && !m_tune) {
         ui->decodedTextBrowser2->displayTransmittedText(t,m_modeTx,
-                             ui->TxFreqSpinBox->value(),m_config.color_TxMsg());
+              ui->TxFreqSpinBox->value(),m_config.color_TxMsg(),m_bFastMode);
       }
 
       m_transmitting = true;
@@ -2556,6 +2557,24 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
     t2a=t2.mid(0,4) + t2.mid(6,-1);     //Change hhmmss to hhmm for the message parser
   } else {
     t2a=t2;
+  }
+  if(m_bFast9) {
+    i1=t2a.indexOf(" CQ ");
+    if(i1>10) {
+      bool ok;
+      int kHz=t2a.mid(i1+4,3).toInt(&ok);
+      if(ok and kHz>=0 and kHz<=999) {
+        t2a=t2a.mid(0,i1+4) + t2a.mid(i1+8,-1);
+        if (m_config.transceiver_online ()) {
+          int MHz=int(m_dialFreq/1000000);
+          m_dialFreq=1000000*MHz + 1000*kHz;
+          QString t;
+          t.sprintf("QSY %7.3f",0.000001*m_dialFreq);
+          ui->decodedTextBrowser2->displayQSY(t);
+          Q_EMIT m_config.transceiver_frequency (m_dialFreq);
+        }
+      }
+    }
   }
   decodedtext = t2a;
   int nmod=ntsec % (2*m_TRperiod);

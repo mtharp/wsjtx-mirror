@@ -166,15 +166,27 @@ void DisplayText::displayDecodedText(DecodedText decodedText, QString myCall,
 
 
 void DisplayText::displayTransmittedText(QString text, QString modeTx, qint32 txFreq,
-                                         QColor color_TxMsg)
+                                         QColor color_TxMsg, bool bFastMode)
 {
     QString bg=color_TxMsg.name();
     QString t1=" @ ";
     if(modeTx=="JT65") t1=" # ";
     QString t2;
     t2.sprintf("%4d",txFreq);
-    QString t = QDateTime::currentDateTimeUtc().toString("hhmm") + \
-        "  Tx      " + t2 + t1 + text;   // The position of the 'Tx' is searched for in DecodedText and in MainWindow.  Not sure if thats required anymore? VK3ACF
-
+    QString t;
+    if(bFastMode) {
+      t = QDateTime::currentDateTimeUtc().toString("hhmmss") + \
+        "  Tx      " + t2 + t1 + text;
+    } else {
+      t = QDateTime::currentDateTimeUtc().toString("hhmm") + \
+        "  Tx      " + t2 + t1 + text;
+    }
     appendText(t,bg);
+}
+
+void DisplayText::displayQSY(QString text)
+{
+  QString t = QDateTime::currentDateTimeUtc().toString("hhmmss") + "            " + text;
+  QString bg="hot pink";
+  appendText(t,bg);
 }
