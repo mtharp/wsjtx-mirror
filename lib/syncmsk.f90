@@ -5,7 +5,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   use iso_c_binding, only: c_loc,c_size_t
   use packjt
   use hashing
-  parameter (NSPM=1404)
+  parameter (NSPM=1404,NSAVE=2000)
   complex cdat(npts)                    !Analytic signal
   complex cb(66)                        !Complex waveform for Barker-11 code
   complex c0(6)                         !Waveform for 0
@@ -21,6 +21,8 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   real symbol(234)
   real rdata(198)
   real rd2(198)
+  real rsave(NSAVE)
+  real xp(29)
   complex z,z0,z1,cfac
   integer*1 e1(198)
   integer*1, target :: d8(13)
@@ -28,12 +30,10 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   integer*1 i1
   integer*4 i4Msg6BitWords(12)            !72-bit message as 6-bit words
   integer mettab(0:255,0:1)               !Metric table for BPSK modulation
-  integer ipksave(1000)
-  integer jpksave(1000)
-  integer indx(1000)
+  integer ipksave(NSAVE)
+  integer jpksave(NSAVE)
+  integer indx(NSAVE)
   integer b11(11)                      !Barker-11 code
-  real rsave(1000)
-  real xp(29)
   character*22 decoded
   character*72 c72
   logical first
@@ -152,7 +152,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      endif
      rrmax=max(r1,r2,r3)
      if(rrmax.gt.1.9) then
-        k=k+1
+        k=min(k+1,NSAVE)
         if(r1.eq.rrmax) ipksave(k)=1
         if(r2.eq.rrmax) ipksave(k)=2
         if(r3.eq.rrmax) ipksave(k)=3
