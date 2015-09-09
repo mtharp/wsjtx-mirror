@@ -2,7 +2,7 @@ subroutine analytic(d,npts,nfft,c)
 
 ! Convert real data to analytic signal
 
-  parameter (NFFTMAX=512*1024)
+  parameter (NFFTMAX=1024*1024)
   real d(npts)
   real h(NFFTMAX/2)
   complex c(NFFTMAX)

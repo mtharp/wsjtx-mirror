@@ -3182,10 +3182,14 @@ void MainWindow::acceptQSO2(QDateTime const& QSO_date, QString const& call, QStr
 void MainWindow::on_actionJT9_triggered()
 {
   m_mode="JT9";
-  if(ui->cbFast9->isChecked()) {
-    m_bFast9=true;
-    m_bFastMode=true;
+  if(m_nSubMode<4) {
+    ui->cbFast9->setChecked(false);
+    ui->cbFast9->setEnabled(false);
+  } else {
+    ui->cbFast9->setEnabled(true);
   }
+  m_bFast9=ui->cbFast9->isChecked();
+  m_bFastMode=m_bFast9;
   switch_mode (Modes::JT9);
   if(m_modeTx!="JT9") on_pbTxMode_clicked();
   statusChanged();
@@ -3314,6 +3318,7 @@ void MainWindow::on_actionJT65_triggered()
   m_bFastMode=false;
   m_bFast9=false;
   VHF_controls_visible(bVHF);
+  ui->cbFast9->setVisible(false);
   WSPR_config(false);
   fast_config(false);
   ui->sbSubmode->setMaximum(2);
@@ -4318,7 +4323,19 @@ void MainWindow::on_sbSubmode_valueChanged(int n)
     if(m_nSubMode==0) ui->TxFreqSpinBox->setValue(1012);
     if(m_nSubMode==1) ui->TxFreqSpinBox->setValue(560);
   }
-  if(m_mode=="JT9" and m_bFast9) ui->TxFreqSpinBox->setValue(700);
+  if(m_mode=="JT9") {
+    if(m_nSubMode<4) {
+      ui->cbFast9->setChecked(false);
+      on_cbFast9_clicked(false);
+      ui->cbFast9->setEnabled(false);
+      ui->sbTR->setVisible(false);
+      m_TRperiod=60;
+    } else {
+      ui->cbFast9->setEnabled(true);
+    }
+    ui->sbTR->setVisible(m_bFast9);
+    if(m_bFast9) ui->TxFreqSpinBox->setValue(700);
+  }
   if(m_transmitting and m_bFast9 and m_nSubMode>=4) transmit(99.0);
 }
 
