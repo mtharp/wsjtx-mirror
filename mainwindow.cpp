@@ -4338,6 +4338,7 @@ void MainWindow::on_cbFast9_clicked(bool b)
     m_TRperiod=60;
   }
   progressBar->setMaximum(m_TRperiod);
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   fast_config(b);
 }
 
