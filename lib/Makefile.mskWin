@@ -32,7 +32,7 @@ CFLAGS = -O2 -I.
 	${FC} ${FFLAGS} -c $<
 
 #all:    jt9code JTMSKcode.exe
-all:	 testmsk.exe JTMSKsim.exe JTMSKcode.exe
+all:	 testmsk.exe JTMSKsim.exe JTMSKcode.exe fixwav.exe
 
 OBJS3 = JTMSKsim.o wavhdr.o gran.o four2a.o db.o
 JTMSKsim.exe: $(OBJS3)
@@ -55,9 +55,9 @@ OBJS6 = testmsk.o jtmsk.o analytic.o four2a.o db.o pctile.o \
 testmsk.exe: $(OBJS6) 
 	$(FC) -o testmsk.exe $(OBJS6) C:\JTSDK\fftw3f\libfftw3f-3.dll
 
-OBJS1 = t1.o four2a.o db.o
-t1:   $(OBJS1)
-	$(FC) -o t1 $(OBJS1) C:\JTSDK\fftw3f\libfftw3f-3.dll
+OBJS1 = fixwav.o wavhdr.o
+fixwav.exe: $(OBJS1)
+	$(FC) -o fixwav.exe $(OBJS1)
 
 OBJS2 = t6.o four2a.o db.o
 t6:   $(OBJS2)
