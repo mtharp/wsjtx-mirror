@@ -440,6 +440,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_DTtol=3.0;
   m_TRperiodFast=-1;
   m_nTx73=0;
+  m_freqCQ=0;
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -1223,6 +1224,7 @@ void MainWindow::qsy (Frequency f)
       if (m_dialFreq != f)
         {
           m_dialFreq = f;
+          qDebug() << "qsy 1226" << m_dialFreq;
           m_repeatMsg=0;
           m_secBandChanged=QDateTime::currentMSecsSinceEpoch()/1000;
           if(m_dialFreq/1000000 < 30 and m_mode.mid(0,4)!="WSPR") {
@@ -2085,6 +2087,29 @@ void MainWindow::guiUpdate()
       icw[0]=m_ncw;
       g_iptt = 1;
       setXIT (ui->TxFreqSpinBox->value ());         //Ensure correct offset
+
+      //###
+      if(m_config.offsetRxFreq()) {
+        qDebug() << "A" << 0.000001*m_dialFreq << m_ntx;
+        m_dialFreqTx=m_dialFreq;
+        m_freqCQ=0;
+        bool ok;
+        QString t=ui->tx6->text();
+        int kHz=t.mid(3,3).toInt(&ok);
+        if(ok and kHz>=0 and kHz<=999) {
+          m_freqCQ=kHz;
+          int MHz=int(m_dialFreq/1000000);
+          m_dialFreqTx=1000000*MHz + 1000*m_freqCQ;
+          if(m_ntx==6) m_dialFreqTx=m_dialFreq;
+        }
+        qDebug() << "B" << 0.000001*m_dialFreq << m_ntx;
+        ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreqTx));
+        qDebug() << "C" << 0.000001*m_dialFreq;
+        Q_EMIT m_config.transceiver_tx_frequency (m_dialFreqTx);
+        qDebug() << "TxFreq" << 0.000001*m_dialFreq << 0.000001*m_dialFreqTx << m_ntx;
+      }
+      //###
+
       Q_EMIT m_config.transceiver_ptt (true);       //Assert the PTT
       ptt1Timer->start(200);                        //Sequencer delay
     }
@@ -2330,7 +2355,7 @@ void MainWindow::guiUpdate()
     }
 
     QDateTime t = QDateTime::currentDateTimeUtc();
-    astroCalculations (t, m_astroWidget && m_astroWidget->doppler_tracking ());
+    astroCalculations (t, (m_astroWidget && m_astroWidget->doppler_tracking()));
     if(m_transmitting) {
       char s[37];
       sprintf(s,"Tx: %s",msgsent);
@@ -2446,6 +2471,21 @@ void MainWindow::stopTx2()
     m_wideGraph->setWSPRtransmitted();
     WSPR_scheduling ();
     m_ntr=0;
+  }
+  if(m_config.offsetRxFreq()) {
+    m_dialFreqRx=m_dialFreq;
+    m_freqCQ=0;
+    bool ok;
+    QString t=ui->tx6->text();
+    int kHz=t.mid(3,3).toInt(&ok);
+    if(ok and kHz>=0 and kHz<=999) {
+      m_freqCQ=kHz;
+      int MHz=int(m_dialFreq/1000000);
+      m_dialFreqRx=1000000*MHz + 1000*m_freqCQ;
+    }
+    ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreqRx));
+    Q_EMIT m_config.transceiver_frequency(m_dialFreqRx);
+    qDebug() << "RxFreq" << 0.000001*m_dialFreq << 0.000001*m_dialFreqRx;
   }
 }
 
@@ -2567,7 +2607,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
         t2a=t2a.mid(0,i1+4) + t2a.mid(i1+8,-1);
         if (m_config.transceiver_online ()) {
           int MHz=int(m_dialFreq/1000000);
-          m_dialFreq=1000000*MHz + 1000*kHz;
+          m_dialFreq=1000000*MHz + 1000*kHz;            //QSY Freq for answering CQ nnn
           QString t;
           t.sprintf("QSY %7.3f",0.000001*m_dialFreq);
           ui->decodedTextBrowser2->displayQSY(t);
@@ -3091,13 +3131,6 @@ void MainWindow::on_tx6_editingFinished()                       //tx6 edited
 {
   QString t=ui->tx6->text();
   msgtype(t, ui->tx6);
-
-  // G4WJS: disabled setting of snr from msg 6 on live edit, will
-  // still generate noise on next full tx period
-
-  // double snr=t.mid(1,5).toDouble();
-  // if(snr>0.0 or snr < -50.0) snr=99.0;
-  // m_modulator->setTxSNR(snr); // TODO - not thread safe
 }
 
 void MainWindow::on_dxCallEntry_textChanged(const QString &t) //dxCall changed
@@ -3922,24 +3955,23 @@ void MainWindow::on_pbTxMode_clicked()
 void MainWindow::setXIT(int n)
 {
   m_XIT = 0;
-  if (!m_bSimplex) // Don't use split in WSPR
-    {
-      if (m_config.split_mode () && m_mode != "JT4") // Don't use XIT in JT4
-        {
-          m_XIT=(n/500)*500 - 1500;
-        }
-
-      if (m_monitoring || m_transmitting)
-        {
-          if (m_config.transceiver_online ())
-            {
-              if (m_config.split_mode ())
-                {
-                  Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq + m_XIT);
-                }
-            }
-        }
+  if (!m_bSimplex) {
+    // m_bSimplex is false, we might use split mode
+    if (m_config.split_mode () && m_mode != "JT4") {
+      // Don't use XIT in JT4, we may be using Doppler control
+      m_XIT=(n/500)*500 - 1500;
     }
+
+    if (m_monitoring || m_transmitting) {
+      if (m_config.transceiver_online ()) {
+        if (m_config.split_mode ()) {
+          // All conditions are met, reset the transceiver dial frequency:
+          Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq + m_XIT);
+        }
+      }
+    }
+  }
+  //Now set the audio Tx freq
   Q_EMIT transmitFrequency (ui->TxFreqSpinBox->value () - m_XIT);
 }
 
@@ -3972,6 +4004,7 @@ void MainWindow::handle_transceiver_update (Transceiver::TransceiverState s)
   if ((s.frequency () - m_dialFreq) || s.split () != m_splitMode)
     {
       m_splitMode = s.split ();
+      qDebug() << "qsy 4007" << m_dialFreq;
       qsy (s.frequency ());
     }
 
@@ -4766,13 +4799,13 @@ void MainWindow::DopplerTracking_toggled (bool enabled)
   }
 }
 
-void MainWindow::astroCalculations (QDateTime const& time, bool adjust) {
+void MainWindow::astroCalculations (QDateTime const& time, bool adjust)
+{
   if (m_astroWidget) {
-    auto astro_correction = m_astroWidget->astroUpdate(time, m_config.my_grid (), m_hisGrid
-                                                       , m_dialFreq, "Echo" == m_mode, m_transmitting);
-    if (adjust && !m_bSimplex        // only adjust frequency if
-                                     // requested and allowed by mode
-        && m_dialFreq >= 50000000) { // and above 50MHz
+    auto astro_correction = m_astroWidget->astroUpdate(time, m_config.my_grid(),
+                 m_hisGrid, m_dialFreq, "Echo" == m_mode, m_transmitting);
+    // Adjust frequency only if requested, allowed by mode, and freq > 50MHz.
+    if (adjust && !m_bSimplex && (m_dialFreq >= 50000000)) {
       if(m_transmitting) {
         m_dialFreqTx = m_freqNominal + astro_correction;
         ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreqTx));
@@ -4803,7 +4836,5 @@ void MainWindow::fastPick(int x0, int x1, int y)
 
 void MainWindow::on_actionSave_reference_spectrum_triggered()
 {
-
+  msgBox("Reference spectrum not presently implemented");
 }
-
-

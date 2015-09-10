@@ -110,6 +110,7 @@ public:
   bool split_mode () const;
   bool enable_VHF_features () const;
   bool decode_at_52s () const;
+  bool offsetRxFreq () const;
   bool post_decodes () const;
   QString udp_server_name () const;
   port_type udp_server_port () const;

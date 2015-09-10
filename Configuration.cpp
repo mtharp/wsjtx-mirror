@@ -541,6 +541,7 @@ private:
   bool TX_messages_;
   bool enable_VHF_features_;
   bool decode_at_52s_;
+  bool offsetRxFreq_;
   QString udp_server_name_;
   port_type udp_server_port_;
   bool accept_udp_requests_;
@@ -614,6 +615,7 @@ bool Configuration::watchdog () const {return m_->watchdog_;}
 bool Configuration::TX_messages () const {return m_->TX_messages_;}
 bool Configuration::enable_VHF_features () const {return m_->enable_VHF_features_;}
 bool Configuration::decode_at_52s () const {return m_->decode_at_52s_;}
+bool Configuration::offsetRxFreq () const {return m_->offsetRxFreq_;}
 bool Configuration::split_mode () const
 {
   return !m_->rig_is_dummy_ and
@@ -1036,6 +1038,7 @@ void Configuration::impl::initialize_models ()
   ui_->TX_messages_check_box->setChecked (TX_messages_);
   ui_->enable_VHF_features_check_box->setChecked(enable_VHF_features_);
   ui_->decode_at_52s_check_box->setChecked(decode_at_52s_);
+  ui_->offset_Rx_freq_check_box->setChecked(offsetRxFreq_);
   ui_->jt9w_bandwidth_mult_combo_box->setCurrentText (QString::number (jt9w_bw_mult_));
   ui_->jt9w_min_dt_double_spin_box->setValue (jt9w_min_dt_);
   ui_->jt9w_max_dt_double_spin_box->setValue (jt9w_max_dt_);
@@ -1254,6 +1257,7 @@ void Configuration::impl::read_settings ()
   TX_messages_ = settings_->value ("Tx2QSO", true).toBool ();
   enable_VHF_features_ = settings_->value("VHFUHF",false).toBool ();
   decode_at_52s_ = settings_->value("Decode52",false).toBool ();
+  offsetRxFreq_ = settings_->value("OffsetRx",false).toBool();
   rig_params_.poll_interval = settings_->value ("Polling", 0).toInt ();
   rig_params_.split_mode = settings_->value ("SplitMode", QVariant::fromValue (TransceiverFactory::split_mode_none)).value<TransceiverFactory::SplitMode> ();
   udp_server_name_ = settings_->value ("UDPServer", "127.0.0.1").toString ();
@@ -1344,6 +1348,7 @@ void Configuration::impl::write_settings ()
   settings_->setValue ("SplitMode", QVariant::fromValue (rig_params_.split_mode));
   settings_->setValue ("VHFUHF", enable_VHF_features_);
   settings_->setValue ("Decode52", decode_at_52s_);
+  settings_->setValue("OffsetRx",offsetRxFreq_);
   settings_->setValue ("UDPServer", udp_server_name_);
   settings_->setValue ("UDPServerPort", udp_server_port_);
   settings_->setValue ("AcceptUDPRequests", accept_udp_requests_);
@@ -1705,6 +1710,7 @@ void Configuration::impl::accept ()
   azel_directory_ = ui_->azel_path_display_label->text ();
   enable_VHF_features_ = ui_->enable_VHF_features_check_box->isChecked ();
   decode_at_52s_ = ui_->decode_at_52s_check_box->isChecked ();
+  offsetRxFreq_ = ui_->offset_Rx_freq_check_box->isChecked();
   frequency_calibration_intercept_ = ui_->calibration_intercept_spin_box->value ();
   frequency_calibration_slope_ppm_ = ui_->calibration_slope_ppm_spin_box->value ();
 

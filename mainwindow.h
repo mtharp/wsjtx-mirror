@@ -304,6 +304,7 @@ private:
   qint64  m_freqMoon;
   qint64  m_freqNominal;
   qint64  m_dialFreqTx;
+  qint64  m_dialFreqRx;
 
   double  m_s6;
   double  m_tRemaining;
@@ -352,6 +353,7 @@ private:
   qint32  m_Ftol;
   qint32  m_TRperiodFast;
   qint32  m_nTx73;
+  qint32  m_freqCQ;
 
   bool    m_btxok;		//True if OK to transmit
   bool    m_diskData;

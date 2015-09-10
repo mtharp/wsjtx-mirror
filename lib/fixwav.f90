@@ -64,4 +64,3 @@ program fixwav
   write(10) h,id2(1:npts)
 
 999 end program fixwav
-
