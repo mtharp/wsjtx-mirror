@@ -512,14 +512,6 @@ set (PALETTE_FILES
 set (SAMPLE_FILES
   samples/130418_1742.wav
   samples/130610_2343.wav
-  samples/141105_180500.wav
-  samples/141105_180700.wav
-  samples/141105_180900.wav
-  samples/150426_0442.wav
-  samples/150629_020800.wav
-  samples/150810_234430.wav
-  samples/150829_122700.wav
-  samples/150830_111930.wav
   )
 
 if (APPLE)
