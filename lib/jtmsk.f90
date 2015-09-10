@@ -50,7 +50,7 @@ subroutine jtmsk(id2,narg,line)
   call timer('mskdt   ',1)
 
   n=log(float(npts))/log(2.0) + 1.0
-  nfft=2**n
+  nfft=min(2**n,1024*1024)
   call timer('analytic',0)
   call analytic(d,npts,nfft,c)         !Convert to analytic signal
   call timer('analytic',1)
