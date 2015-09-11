@@ -2586,6 +2586,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
           QString t;
           t.sprintf("QSY %7.3f",0.000001*m_dialFreq);
           ui->decodedTextBrowser2->displayQSY(t);
+          ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
           Q_EMIT m_config.transceiver_frequency (m_dialFreq);
         }
       }
