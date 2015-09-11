@@ -2084,11 +2084,12 @@ void MainWindow::guiUpdate()
 
     float fTR=float((nsec%m_TRperiod))/m_TRperiod;
 //    if(g_iptt==0 and ((m_bTxTime and fTR<0.4) or m_tune )) {
-    if(g_iptt==0 and ((m_bTxTime and fTR<99) or m_tune )) {   // Allow late starts
+    if(g_iptt==0 and ((m_bTxTime and fTR<99) or m_tune )) {   //### Allow late starts
       icw[0]=m_ncw;
       g_iptt = 1;
       setXIT (ui->TxFreqSpinBox->value ());         //Ensure correct offset
 
+// If "CQ nnn ..." feature is active, set the proper Tx frequency
       if(m_config.offsetRxFreq() and ui->cbCQRx->isChecked()) {
         if(m_ntx==6) {
           m_dialFreq = m_dialFreq0;
@@ -2096,8 +2097,13 @@ void MainWindow::guiUpdate()
           int MHz=int(m_dialFreq/1000000);
           m_dialFreq=1000000*MHz + 1000*m_freqCQ;
         }
-        ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
-        Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+        if (m_config.transceiver_online ()) {
+          if (m_config.split_mode ()) {
+            // All conditions are met, reset the transceiver dial frequency:
+//            ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
+            Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+          }
+        }
       }
 
       Q_EMIT m_config.transceiver_ptt (true);       //Assert the PTT
