@@ -240,8 +240,9 @@ private slots:
   void on_sbTR_valueChanged(int index);
   void on_sbFtol_valueChanged(int index);
   void on_cbFast9_clicked(bool b);
-
   void on_actionJTMSK_triggered();
+  void on_sbCQRxFreq_valueChanged(int n);
+  void on_cbCQRx_toggled(bool b);
 
 private:
   Q_SIGNAL void initializeAudioOutputStream (QAudioDeviceInfo,
@@ -291,6 +292,7 @@ private:
   QScopedPointer<MessageAveraging> m_msgAvgWidget;
 
   Frequency  m_dialFreq;
+  Frequency  m_dialFreq0;
   Frequency  m_dialFreqRxWSPR;
 
   Detector * m_detector;
@@ -540,6 +542,7 @@ private:
   void WSPR_history(Frequency dialFreq, int ndecodes);
   QString WSPR_hhmm(int n);
   void fast_config(bool b);
+  void CQRxFreq();
 };
 
 extern void getfile(QString fname, int ntrperiod);
