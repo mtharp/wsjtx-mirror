@@ -3575,10 +3575,11 @@ void MainWindow::WSPR_config(bool b)
 void MainWindow::fast_config(bool b)
 {
   m_bFastMode=b;
+  m_bSimplex=b;
   ui->ClrAvgButton->setVisible(!b);
   if(b) {
 // ### Does this work as intended? ###
-    Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
+//    Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
     ui->cbEME->setText("Auto Seq");
     ui->sbTR->setVisible(true);
   } else {
@@ -3944,7 +3945,7 @@ void MainWindow::setXIT(int n)
 {
   m_XIT = 0;
   if (!m_bSimplex) {
-    // m_bSimplex is false, we might use split mode
+    // m_bSimplex is false, so we can use split mode if requested
     if (m_config.split_mode () && m_mode != "JT4") {
       // Don't use XIT in JT4, we may be using Doppler control
       m_XIT=(n/500)*500 - 1500;
