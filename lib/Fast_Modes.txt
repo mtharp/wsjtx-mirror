@@ -1,7 +1,7 @@
 			Fast Modes in WSJT-X
 			--------------------
 
-September 8, 2015
+September 12, 2015
 -----------------
 
 #######################################################################
@@ -11,16 +11,18 @@ IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT
 Third-party individuals (i.e., others not part of the WSJT development
 team) have been compiling WSJT-X from the open source code and making
 unauthorized "releases" of their builds.  I do NOT reccommend use of
-these builds on the air.  If you operate with one of these
-unauthorized "rXXXX" code revisions in our experimental code branch
-you have no idea what you've got.  Quite possibly, the program was
-built from an intermediate temporary "save" of various files, and was
-not even supposed to produce a usable program.  Your observetions
-about what works or does not work are then worse than useless -- they
-waste your time and ours.
+unauthorized builds on the air.  If a program revision has been released
+in any official way, you will see it listed here.
+
+If you operate with an unauthorized "rXXXX" code revisions in our
+experimental code branch you have no idea what you've got.  Quite
+possibly, the program was built from an intermediate temporary "save"
+of various files, and was not even supposed to produce a usable
+program.  Your observetions about what works or does not work are then
+worse than useless -- they waste your time and ours.
 
 So please, PLEASE, *PLEASE*: use *authorized*, "released* revisions
-of this still-in-development software, like the revision described here.
+of this still-in-development software, like the revisions described here.
 
 *ALSO:* If you choose to try an experimental release of JTMSK, please
 accept the responsibility of reporting on your results.  You can send
@@ -32,6 +34,96 @@ Bug reports should include details on how to reproduce the undesirable
 program behavior.  Reports on decoding performance are especially
 useful when accompanied by example *.wav files with signals that
 you think should have decoded, but did not.
+
+#######################################################################
+
+New alpha release of experimental WSJT-X v1.6.1, r5889
+------------------------------------------------------
+
+A principal new feature in this release is designed to promote the use
+of an agreed "calling frequency" for transmissions of the form
+
+  CQ 265 K1ABC FN42
+
+signifying that K1ABC will listen for replies on 50.265 (or 144.265,
+or whatever) and will complete the QSO there.  The feature uses the
+rig-control features of WSJT-X to handle the necessary frequency
+switching.
+
+##########################################################################
+Changes since revision 5865 include the following:
+
+1. New features that allow automatic rig control when you transmit or
+respond to messages of the form "CQ 265 K1ABC FN42" on an agreed
+calling frequency.  This feature should be especially useful for
+meteor scatter.
+
+2. Yellow-highlighted "Tx" messages in the right text window are now
+properly labeled with 6-digit UTC (hhmmss) in all fast modes.
+
+3. Fixed a bug (introduced in r5865) that inhibited transmitting in
+JT4 mode.
+
+4. Fixed a bug that caused Wide Graph to continue issuing green
+separator lines at short (e.g. 15 s) intervals after you have switched
+to a slow mode.
+
+5. Fixed several more GUI appearance bugs associated with changing
+modes or submodes.
+
+6. Fixed a bug in which double-clicking on the Fast Graph could cause
+program crashes.
+
+7. Fixed a bug that sometimes caused "high tones" to be emitted in
+JTMSK mode.
+
+#######################################################################
+Here's a brief description of how to use the "CQ nnn ..." features.
+
+1. On program startup, go to the Settings | General tab and tick the
+box labeled 'Rx frequency offset with "CQ nnn ..."'
+
+2. Select JTMSK mode and 50.280 (or your some other agreed calling
+frequency) from the drop-down band menu.  Remember that this menu is
+not pre-populated with preferred frequencies for all modes on all
+bands. Use Settings | Frequencies to add your desired modes and
+frequencies to the list.
+
+3. Tick the unlabeled checkbox just under the "Report: spinner to
+activate the "CQ Rx nnn" spinner.  Set this control to your desired
+QSO frequency in kHz above the nominal band edge.  On 6 meters, for
+example, "265" means "50.265".
+
+4. Your transceiver dial frequency should now show 50.265.  Changes to
+the "CQ Rx nnn" spinner value should be reflected immediately in the
+transceiver dial frequency, the displayed value on the WSJT-X main
+screen, and in Tx message #6, the "CQ nnn... " message.
+
+5. When you transmit the Tx6 message, the Tx frequency will be set at
+the calling frequency.  Otherwise (when receiving, or when
+transmitting any of the messages Tx1 through Tx5) the offset frequency
+(50.265 in my example) will be used.
+
+6. If you double-click on a received "CQ nnn ..." message on the
+calling frequency, your rig will QSY to specified response frequency,
+e.g. 50.265, for both Rx and Tx.
+
+7. To go back to listening on the calling frequency, uncheck the box
+that activated the "CQ Rx nnn" spinner.
+
+#######################################################################
+
+Fair warning: I have not yet tested all possible combinations of
+"Split Operation" configuration (i.e., "None", "Rig", and "Fake it").
+If you normally use Split operation, that should be OK for the "CQ
+nnn ..." feature.
+
+
+As always, please report any bugs that you find in r5889, including
+pertinent details on your settings and the exact series of steps
+required to reproduce the bug.
+
+    -- 73, Joe, K1JT
 
 #######################################################################
 
