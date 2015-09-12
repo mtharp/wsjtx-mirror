@@ -2006,7 +2006,7 @@ void MainWindow::guiUpdate()
   if(m_modeTx=="JT9")  txDuration=1.0 + 85.0*m_nsps/12000.0;  // JT9
   if(m_modeTx=="JT65") txDuration=1.0 + 126*4096/11025.0;     // JT65
   if(m_mode=="WSPR-2") txDuration=2.0 + 162*8192/12000.0;     // WSPR
-  if(m_mode=="ISCAT" or m_bFast9) txDuration=m_TRperiod-0.25; // ISCAT or JT9-fast
+  if(m_mode=="ISCAT" or m_bFast9) txDuration=m_TRperiod-0.25; // ISCAT, JT9-fast, JTMSK
 //###  if(m_mode=="WSPR-15") tx2=...
 
   double tx1=0.0;
@@ -2391,7 +2391,6 @@ void MainWindow::guiUpdate()
     }
     m_sec0=nsec;
   }
-
   iptt0=g_iptt;
   btxok0=m_btxok;
 }               //End of GUIupdate
@@ -2594,6 +2593,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
           ui->decodedTextBrowser2->displayQSY(t);
           ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
           Q_EMIT m_config.transceiver_frequency (m_dialFreq);
+          Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
         }
       }
     }
@@ -4001,7 +4001,6 @@ void MainWindow::handle_transceiver_update (Transceiver::TransceiverState s)
       m_splitMode = s.split ();
       qsy (s.frequency ());
     }
-
   update_dynamic_property (ui->readFreq, "state", "ok");
   ui->readFreq->setEnabled (false);
   ui->readFreq->setText (s.split () ? "S" : "");
@@ -4373,8 +4372,9 @@ void MainWindow::on_cbFast9_clicked(bool b)
     on_actionJT9_triggered();
   }
   if(b) {
-// ### Does this work as intended? ###
-    Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
+    if(m_mode!="JTMSK") {
+      Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
+    }
     ui->cbEME->setText("Auto Seq");
     if(m_TRperiodFast>0) m_TRperiod=m_TRperiodFast;
   } else {
