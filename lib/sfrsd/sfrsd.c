@@ -33,6 +33,7 @@ void usage(void)
     printf("\n");
     printf("Options:\n");
     printf("       -n number of random erasure vectors to try\n");
+    printf("       -v verbose\n");
 }
 
 int main(int argc, char *argv[]){
@@ -49,18 +50,21 @@ int main(int argc, char *argv[]){
     char *infile;
     
     FILE *datfile;
-    //nsec,xlambda,maxe,nads,mrsym,mrprob,mr2sym,mr2prob
     int nsec, maxe, nads;
     float xlambda;
     int mrsym[63],mrprob[63],mr2sym[63],mr2prob[63];
     int nsec2,ncount,dat4[12];
-    int ntrials=2500;
+    int ntrials=10000;
+    int verbose=0;
     
-    while ( (c = getopt(argc, argv, "n:")) !=-1 ) {
+    while ( (c = getopt(argc, argv, "n:v")) !=-1 ) {
         switch (c) {
             case 'n':
                 ntrials=(int)strtof(optarg,NULL);
                 printf("ntrials set to %d\n",ntrials);
+                break;
+            case 'v':
+                verbose=1;
                 break;
             case '?':
                 usage();
@@ -76,6 +80,7 @@ int main(int argc, char *argv[]){
     }
     
 //    printf("Input file from command line: %s\n",infile);
+    printf("---\n");
     
     datfile=fopen(infile,"rb");
     if( !datfile ) {
@@ -126,7 +131,7 @@ int main(int argc, char *argv[]){
         nerror+=error;
         //    printf("%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxprob2[i],error);
     }
-    //  printf("%3d errors\n",nerror);
+    printf("kv: %3d errors\n",nerror);
     
     // sort the mrsym probabilities to find the least reliable symbols
     int k, pass, tmp, nsym=63;
@@ -148,6 +153,9 @@ int main(int argc, char *argv[]){
         }
     }
     
+//    for (i=0; i<nsym; i++) {
+//        printf("%d %d %d\n",i,indexes[i],probs[i]);
+//    }
     // see if we can decode using BM HDD (and calculate the syndrome vector)
     memset(era_pos,0,51*sizeof(int));
     numera=0;
@@ -175,7 +183,7 @@ int main(int argc, char *argv[]){
         numera=0;
         for (i=0; i<(nn-kk); i++) {
             if( random() & 1 ) {
-                era_pos[numera]=indexes[i];
+                era_pos[numera]=indexes[63-i];
                 numera=numera+1;
             }
         }
@@ -187,9 +195,16 @@ int main(int argc, char *argv[]){
             printf("Chase decode nerrors= %3d : ",nerr);
             for(i=0; i<12; i++) printf("%2d ",dat4[i]);
             printf("\n");
+            nerror=0;
+            for (i=0; i<63; i++) {
+                if( workdat[i] != rxdat[i] ) nerror=nerror+1;
+            }
+            printf("numera %d ntrial %d nerrors %d\n",numera,k,nerror);
             break;
         }
     }
+    
+    if( nerr >= 0 ) {
     datfile=fopen(infile,"wb");
     if( !datfile ) {
         printf("Unable to open kvasd.dat\n");
@@ -207,6 +222,7 @@ int main(int argc, char *argv[]){
         fwrite(&nerr,sizeof(int),1,datfile);
         fwrite(&dat4,sizeof(int),12,datfile);
         fclose(datfile);
+    }
     }
     exit(0);
 }
