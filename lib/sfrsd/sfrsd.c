@@ -148,11 +148,11 @@ int main(int argc, char *argv[]){
         }
     }
     
-    // see if we can decode using BM HDD
+    // see if we can decode using BM HDD (and calculate the syndrome vector)
     memset(era_pos,0,51*sizeof(int));
     numera=0;
     memcpy(workdat,rxdat,sizeof(rxdat));
-    nerr=decode_rs_int(rs,workdat,era_pos,numera);
+    nerr=decode_rs_int(rs,workdat,era_pos,numera,1);
     if( nerr >= 0 ) {
         printf("   BM decode nerrors= %3d : ",nerr);
         for(i=0; i<12; i++) printf("%2d ",workdat[11-i]);
@@ -181,7 +181,7 @@ int main(int argc, char *argv[]){
         }
         //  printf("%d %d\n",k,numera);
         memcpy(workdat,rxdat,sizeof(rxdat));
-        nerr=decode_rs_int(rs,workdat,era_pos,numera);
+        nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
         if( nerr >= 0 ) {
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
             printf("Chase decode nerrors= %3d : ",nerr);

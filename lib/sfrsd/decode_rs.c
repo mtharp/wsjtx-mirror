@@ -24,7 +24,7 @@ int DECODE_RS(
 #ifndef FIXED
 void *p,
 #endif
-DTYPE *data, int *eras_pos, int no_eras){
+DTYPE *data, int *eras_pos, int no_eras, int calc_syn){
 
 #ifndef FIXED
   struct rs *rs = (struct rs *)p;
@@ -32,12 +32,14 @@ DTYPE *data, int *eras_pos, int no_eras){
   int deg_lambda, el, deg_omega;
   int i, j, r,k;
   DTYPE u,q,tmp,num1,num2,den,discr_r;
-  DTYPE lambda[NROOTS+1], s[NROOTS];	/* Err+Eras Locator poly
-					 * and syndrome poly */
+  DTYPE lambda[NROOTS+1];	// Err+Eras Locator poly
+  static DTYPE s[51];					 // and syndrome poly
   DTYPE b[NROOTS+1], t[NROOTS+1], omega[NROOTS+1];
   DTYPE root[NROOTS], reg[NROOTS+1], loc[NROOTS];
   int syn_error, count;
 
+    if( calc_syn ) {
+        printf("Calculating syndrome vector\n");
   /* form the syndromes; i.e., evaluate data(x) at roots of g(x) */
   for(i=0;i<NROOTS;i++)
     s[i] = data[0];
@@ -58,7 +60,8 @@ DTYPE *data, int *eras_pos, int no_eras){
     syn_error |= s[i];
     s[i] = INDEX_OF[s[i]];
   }
-
+    }
+    
   if (!syn_error) {
     /* if syndrome is zero, data[] is a codeword and there are no
      * errors to correct. So return data[] unmodified
@@ -66,6 +69,7 @@ DTYPE *data, int *eras_pos, int no_eras){
     count = 0;
     goto finish;
   }
+        
   memset(&lambda[1],0,NROOTS*sizeof(lambda[0]));
   lambda[0] = 1;
 

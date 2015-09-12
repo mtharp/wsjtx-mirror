@@ -44,7 +44,7 @@ static inline int modnn(struct rs *rs,int x){
 #define FREE_RS free_rs_int
 
 void ENCODE_RS(void *p,DTYPE *data,DTYPE *parity);
-int DECODE_RS(void *p,DTYPE *data,int *eras_pos,int no_eras);
+int DECODE_RS(void *p,DTYPE *data,int *eras_pos,int no_eras, int calc_syn);
 void *INIT_RS(unsigned int symsize,unsigned int gfpoly,unsigned int fcr,
 		   unsigned int prim,unsigned int nroots);
 void FREE_RS(void *p);
