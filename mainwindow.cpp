@@ -3502,7 +3502,7 @@ void MainWindow::on_actionISCAT_triggered()
   m_mode="ISCAT";
   m_modeTx="ISCAT";
   ui->actionISCAT->setChecked(true);
-  m_TRperiod=30;
+  m_TRperiod=ui->sbTR->cleanText().toInt();
   m_modulator->setPeriod(m_TRperiod);
   m_detector->setPeriod(m_TRperiod);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
