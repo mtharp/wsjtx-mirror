@@ -1734,7 +1734,8 @@ void::MainWindow::fast_decode_done()
   for(int i=0; i<100; i++) {
     int i1=msg0.indexOf(m_baseCall);
     int i2=msg0.indexOf(m_hisCall);
-    if(((m_mode=="JTMSK") or m_bFast9) and m_bEME and tmax>=0.0 and i1>10 and i2>i1+3) {     //Here, "m_bEME" implies AutoSeq
+    if(((m_mode=="JTMSK") or m_bFast9) and m_bEME and tmax>=0.0 and i1>10 and
+       i2>i1+3) {     //Here, "m_bEME" implies AutoSeq
       processMessage(msg0,40,false);
     }
     if(m_msg[i][0]==0) break;
@@ -2606,8 +2607,6 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
           ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
           Q_EMIT m_config.transceiver_frequency (m_dialFreq);
 
-//###
-//          Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
           if (m_monitoring || m_transmitting) {
             if (m_config.transceiver_online ()) {
               if (m_config.split_mode ()) {
@@ -2616,7 +2615,6 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
               }
             }
           }
-//###
 
         }
       }
@@ -4882,6 +4880,7 @@ void MainWindow::on_cbCQRx_toggled(bool b)
 {
   ui->sbCQRxFreq->setEnabled(b);
   genStdMsgs(m_rpt);
+  if(b) ui->txrb6->setChecked(true);
   CQRxFreq();
 }
 
