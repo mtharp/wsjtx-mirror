@@ -371,7 +371,7 @@ private:
   bool    m_call3Modified;
   bool    m_dataAvailable;
   bool    m_killAll;
-  bool    m_bdecoded;
+  bool    m_bDecoded;
   bool    m_monitorStartOFF;
   bool    m_pskReporterInit;
   bool    m_noSuffix;

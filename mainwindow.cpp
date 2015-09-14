@@ -1725,6 +1725,7 @@ void::MainWindow::fast_decode_done()
 {
   float t,tmax=-99.0;
   QString msg0;
+  m_bDecoded=false;
   for(int i=0; i<100; i++) {
     int i1=msg0.indexOf(m_baseCall);
     int i2=msg0.indexOf(m_hisCall);
@@ -1745,6 +1746,7 @@ void::MainWindow::fast_decode_done()
     if(t>tmax) {
       msg0=message;
       tmax=t;
+      m_bDecoded=true;
     }
 
 // Write decoded text to file "ALL.TXT".
@@ -1816,7 +1818,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
     bool baveJT4msg=(t.length()>49);
     if(m_mode=="JT4") t=t.mid(0,39) + t.mid(42,t.length()-42);
     if(t.indexOf("<DecodeFinished>") >= 0) {
-      m_bdecoded = (t.mid(23,1).toInt()==1);
+      m_bDecoded = (t.mid(23,1).toInt()==1);
       if(!m_diskData) killFileTimer->start (3*1000*m_TRperiod/4); //Kill in 45 s
       jt9com_.nagain=0;
       jt9com_.ndiskdat=0;
@@ -1931,7 +1933,7 @@ void MainWindow::readFromStdout()                             //readFromStdout
 void MainWindow::killFile ()
 {
   if (!m_fname.isEmpty ()
-      && !(m_saveAll || (m_saveDecoded && m_bdecoded) || m_fname == m_fileToSave)) {
+      && !(m_saveAll || (m_saveDecoded && m_bDecoded) || m_fname == m_fileToSave)) {
     QFile {m_fname + ".wav"}.remove();
     QFile {m_fname + ".c2"}.remove();
   }
@@ -4539,7 +4541,7 @@ void MainWindow::p1ReadFromStdout()                        //p1readFromStdout
   while(p1.canReadLine()) {
     QString t(p1.readLine());
     if(t.indexOf("<DecodeFinished>") >= 0) {
-      m_bdecoded = m_nWSPRdecodes > 0;
+      m_bDecoded = m_nWSPRdecodes > 0;
       if(!m_diskData) {
         WSPR_history(m_dialFreqRxWSPR, m_nWSPRdecodes);
         if(m_nWSPRdecodes==0 and ui->band_hopping_group_box->isChecked()) {
