@@ -158,7 +158,7 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
       }
       m_sum[i]=sum;
     }
-    y2=2.5*gain2d*(m_sum[i]/m_binsPerPixel + m_plot2dZero);
+    if(m_bCumulative) y2=2.5*gain2d*(m_sum[i]/m_binsPerPixel + m_plot2dZero);
     if(m_Flatten==0) y2 += 15;                      //### could do better! ###
 
     if(m_bLinearAvg) {                                   //Linear Avg (yellow)
@@ -182,7 +182,15 @@ void CPlotter::draw(float swide[], bool bScroll)                            //dr
   m_line++;
   if(m_line == 13) {
     painter1.setPen(Qt::white);
-    QString t=QDateTime::currentDateTimeUtc().toString("hh:mm") + "    " + m_rxBand;
+    QString t;
+    if(m_TRperiod < 60) {
+      qint64 ms = QDateTime::currentMSecsSinceEpoch() % 86400000;
+      int n=(ms/1000) % m_TRperiod;
+      QDateTime t1=QDateTime::currentDateTimeUtc().addSecs(-n);
+      t=t1.toString("hh:mm:ss") + "    " + m_rxBand;
+    } else {
+      t=QDateTime::currentDateTimeUtc().toString("hh:mm") + "    " + m_rxBand;
+    }
     painter1.drawText(5,10,t);
   }
 

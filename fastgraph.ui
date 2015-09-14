@@ -148,7 +148,7 @@
           <string>Waterfall zero</string>
          </property>
          <property name="minimum">
-          <number>0</number>
+          <number>-60</number>
          </property>
          <property name="maximum">
           <number>120</number>

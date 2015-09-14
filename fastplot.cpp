@@ -139,9 +139,13 @@ void FPlotter::draw()                                         //draw()
     k0=0;
     QRect tmp(0,0,m_w,119);
     painter1.fillRect(tmp,Qt::black);
+    painter1.setPen(Qt::white);
+    m_t=QDateTime::currentDateTimeUtc().toString("hh:mm:ss");
+    painter1.drawText(10,95,m_t);
   }
+
   float gain = pow(10.0,(m_plotGain/20.0));
-  for(int k=64*k0; k<64*fast_jh; k++) {                          //Upper spectrogram
+  for(int k=64*k0; k<64*fast_jh; k++) {                     //Upper spectrogram
     int i = k%64;
     int j = k/64;
     int y=0.005*gain*fast_s[k] + m_plotZero;
@@ -151,7 +155,7 @@ void FPlotter::draw()                                         //draw()
       painter1.drawPoint(j,64-i);
   }
 
-  painter1.setPen(penGreen);                               // Upper green curve
+  painter1.setPen(penGreen);                                // Upper green curve
   int j=0;
   m_greenGain=10;
   float greenGain = pow(10.0,(m_greenGain/20.0));
@@ -167,8 +171,11 @@ void FPlotter::draw()                                         //draw()
   if((fast_jh < m_jh0) or m_bPaint2) {
     QRect tmp(0,120,m_w,219);
     painter1.fillRect(tmp,Qt::black);
+    painter1.setPen(Qt::white);
+    painter1.drawText(10,195,m_t0);
+    m_t0=m_t;
 
-    for(int k=0; k<64*fast_jh2; k++) {                          //Lower spectrogram
+    for(int k=0; k<64*fast_jh2; k++) {                      //Lower spectrogram
       int i = k%64;
       int j = k/64;
       int y=0.005*gain*fast_s2[k] + m_plotZero;
@@ -178,7 +185,7 @@ void FPlotter::draw()                                         //draw()
       painter1.drawPoint(j,164-i);
     }
 
-    painter1.setPen(penGreen);                               //Lower green curve
+    painter1.setPen(penGreen);                              //Lower green curve
     j=0;
     for(int x=0; x<=fast_jh2; x++) {
       int y = 0.9*m_h - greenGain*fast_green2[x] - m_greenZero + 140;

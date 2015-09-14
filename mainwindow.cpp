@@ -793,7 +793,7 @@ void MainWindow::dataSink(qint64 frames)
 
   if(m_mode=="ISCAT" or m_mode=="JTMSK" or m_bFast9) {
     fastSink(frames);
-    return;
+//    return;
   }
 
   // Get power, spectrum, and ihsym
@@ -802,8 +802,10 @@ void MainWindow::dataSink(qint64 frames)
   int k (frames);
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfb=m_wideGraph->Fmax();
+  int nsps=m_nsps;
+  if(m_bFastMode) nsps=6912;
   int nsmo=m_wideGraph->smoothYellow()-1;
-  symspec_(&k,&trmin,&m_nsps,&m_inGain,&nsmo,&px,s,&df3,&ihsym,&npts8);
+  symspec_(&k,&trmin,&nsps,&m_inGain,&nsmo,&px,s,&df3,&ihsym,&npts8);
   if(m_mode=="WSPR-2") wspr_downsample_(jt9com_.d2,&k);
   if(ihsym <=0) return;
   QString t;
@@ -3299,6 +3301,7 @@ void MainWindow::on_actionJTMSK_triggered()
   ui->decodedTextLabel2->setText("UTC     dB   T  Freq   Message");
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
   ui->sbTR->setVisible(true);
@@ -3502,6 +3505,7 @@ void MainWindow::on_actionISCAT_triggered()
   m_TRperiod=30;
   m_modulator->setPeriod(m_TRperiod);
   m_detector->setPeriod(m_TRperiod);
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_nsps=6912;                   //For symspec only
   m_hsymStop=103;
   m_toneSpacing=11025.0/256.0;
@@ -4337,6 +4341,7 @@ void MainWindow::on_sbTR_valueChanged(int index)
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
 }
 
 void MainWindow::on_sbSubmode_valueChanged(int n)

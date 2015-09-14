@@ -55,6 +55,8 @@ private:
   QPixmap m_HorizPixmap;
   QPixmap m_ScalePixmap;
   QString m_HDivText[483];
+  QString m_t;
+  QString m_t0;
 
   double  m_pixPerSecond;
 
