@@ -204,7 +204,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
       if (m_config.accept_udp_requests ()) {
         if (auto_only) {
           if (ui->autoButton->isChecked ()) {
-            ui->autoButton->click ();
+            ui->autoButton->click();
           }
         } else {
           ui->stopTxButton->click();
@@ -381,6 +381,10 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   uploadTimer->setSingleShot(true);
   connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
 
+  startTxAgainTimer = new QTimer(this);
+  startTxAgainTimer->setSingleShot(true);
+  connect(startTxAgainTimer, SIGNAL(timeout()), this, SLOT(startTxAgain()));
+
   m_auto=false;
   m_waterfallAvg = 1;
   m_txFirst=false;
@@ -432,6 +436,7 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_bEchoTxOK=false;
   m_bTransmittedEcho=false;
   m_bFastDecodeCalled=false;
+  m_bDoubleClickAfterCQnnn=false;
   m_nclearave=1;
   m_bEchoTxed=false;
   m_nWSPRdecodes=0;
@@ -2095,17 +2100,19 @@ void MainWindow::guiUpdate()
 
 // If "CQ nnn ..." feature is active, set the proper Tx frequency
       if(m_config.offsetRxFreq() and ui->cbCQRx->isChecked()) {
-        if(m_ntx==6) {
+        if(m_ntx==6 and !m_transmitting) {
           m_dialFreq = m_dialFreq0;
         } else {
           int MHz=int(m_dialFreq/1000000);
           m_dialFreq=1000000*MHz + 1000*m_freqCQ;
         }
-        if (m_config.transceiver_online ()) {
-          if (m_config.split_mode ()) {
+        if (m_monitoring || m_transmitting) {
+          if (m_config.transceiver_online ()) {
+            if (m_config.split_mode ()) {
             // All conditions are met, reset the transceiver dial frequency:
 //            ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
-            Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+              Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+            }
           }
         }
       }
@@ -2565,6 +2572,7 @@ void MainWindow::doubleClickOnCall(bool shift, bool ctrl)
   QString messages;
   if(!m_decodedText2) messages= ui->decodedTextBrowser2->toPlainText();
   if(m_decodedText2) messages= ui->decodedTextBrowser->toPlainText();
+  if(ui->cbCQRx->isChecked()) m_bDoubleClickAfterCQnnn=true;
   processMessage(messages, position, ctrl);
 }
 
@@ -2597,7 +2605,19 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
           ui->decodedTextBrowser2->displayQSY(t);
           ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
           Q_EMIT m_config.transceiver_frequency (m_dialFreq);
-          Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+
+//###
+//          Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+          if (m_monitoring || m_transmitting) {
+            if (m_config.transceiver_online ()) {
+              if (m_config.split_mode ()) {
+                // All conditions are met, reset the transceiver dial frequency:
+                Q_EMIT m_config.transceiver_tx_frequency(m_dialFreq);
+              }
+            }
+          }
+//###
+
         }
       }
     }
@@ -2659,7 +2679,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
     if ((firstcall!=m_config.my_callsign () and firstcall != m_baseCall) or
         m_lockTxFreq or ctrl) {
       if (ui->TxFreqSpinBox->isEnabled ()) {
-        ui->TxFreqSpinBox->setValue(frequency);
+        if(!m_bFastMode) ui->TxFreqSpinBox->setValue(frequency);
       } else if(m_mode!="JT4") {
         return;
       }
@@ -2766,6 +2786,12 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
           m_ntx=7;
           ui->rbGenMsg->setChecked(true);
         }
+
+        if(m_bDoubleClickAfterCQnnn and m_transmitting) {
+          on_stopTxButton_clicked();
+          startTxAgainTimer->start(1000);
+        }
+        m_bDoubleClickAfterCQnnn=false;
       }
     }
   else if (firstcall == "DE" && t4.size () == 8 && t4.at (7) == "73") {
@@ -2910,6 +2936,11 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
   m_ntx=1;
   ui->txrb1->setChecked(true);
   m_rpt=rpt;
+}
+
+void MainWindow::startTxAgain()
+{
+  auto_tx_mode(true);
 }
 
 void MainWindow::clearDX ()
@@ -3590,8 +3621,6 @@ void MainWindow::fast_config(bool b)
   m_bSimplex=b;
   ui->ClrAvgButton->setVisible(!b);
   if(b) {
-// ### Does this work as intended? ###
-//    Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
     ui->cbEME->setText("Auto Seq");
     ui->sbTR->setVisible(true);
   } else {
@@ -4339,7 +4368,6 @@ void MainWindow::on_sbTR_valueChanged(int index)
   }
   if(m_transmitting) {
     on_stopTxButton_clicked();
-//    on_autoButton_clicked();
   }
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
@@ -4378,10 +4406,13 @@ void MainWindow::on_cbFast9_clicked(bool b)
     m_bFast9=b;
     on_actionJT9_triggered();
   }
+
   if(b) {
+/*
     if(m_mode!="JTMSK") {
       Q_EMIT m_config.transceiver_tx_frequency (0); // turn off split
     }
+*/
     ui->cbEME->setText("Auto Seq");
     if(m_TRperiodFast>0) m_TRperiod=m_TRperiodFast;
   } else {

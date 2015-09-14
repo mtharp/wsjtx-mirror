@@ -204,7 +204,7 @@ private slots:
   void monitor (bool);
   void stop_tuning ();
   void stopTuneATU();
-  void auto_tx_mode (bool);
+  void auto_tx_mode(bool);
   void on_actionMessage_averaging_triggered();
   void on_actionInclude_averaging_triggered();
   void on_actionInclude_correlation_triggered();
@@ -224,6 +224,7 @@ private slots:
   void on_cbUploadWSPR_Spots_toggled(bool b);
   void WSPR_config(bool b);
   void uploadSpots();
+  void startTxAgain();
   void uploadResponse(QString response);
   void p3ReadFromStdout();
   void p3ReadFromStderr();
@@ -413,7 +414,7 @@ private:
   bool    m_bFastMode;
   bool    m_bFast9;
   bool    m_bFastDecodeCalled;
-
+  bool    m_bDoubleClickAfterCQnnn;
   float   m_pctZap;
 
   char    m_msg[100][80];
@@ -441,7 +442,7 @@ private:
 
   WSPRNet *wsprNet;
 
-  QTimer m_guiTimer;
+  QTimer  m_guiTimer;
   QTimer* ptt1Timer;                 //StartTx delay
   QTimer* ptt0Timer;                 //StopTx delay
   QTimer* logQSOTimer;
@@ -449,6 +450,7 @@ private:
   QTimer* tuneButtonTimer;
   QTimer* uploadTimer;
   QTimer* tuneATU_Timer;
+  QTimer* startTxAgainTimer;
 
   QString m_path;
   QString m_pbdecoding_style1;
