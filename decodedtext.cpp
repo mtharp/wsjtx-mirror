@@ -7,6 +7,7 @@ QString DecodedText::CQersCall()
     // extract the CQer's call   TODO: does this work with all call formats?
   int s1 {0};
   int position;
+  QString t=_string;
   if ((position = _string.indexOf (" CQ DX ")) >= 0)
     {
       s1 = 7 + position;
@@ -14,6 +15,7 @@ QString DecodedText::CQersCall()
   else if ((position = _string.indexOf (" CQ ")) >= 0)
     {
       s1 = 4 + position;
+      if(_string.mid(s1,3).toInt() > 0 and _string.mid(s1,3).toInt() <= 999) s1 += 4;
     }
   else if ((position = _string.indexOf (" DE ")) >= 0)
     {

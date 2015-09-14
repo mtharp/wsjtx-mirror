@@ -123,6 +123,12 @@ As always, please report any bugs that you find in r5889, including
 pertinent details on your settings and the exact series of steps
 required to reproduce the bug.
 
+
+To download this alpha release for Windows, paste the following link
+into your browser:
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5889-win32.exe
+
+
     -- 73, Joe, K1JT
 
 #######################################################################
