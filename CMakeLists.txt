@@ -369,7 +369,7 @@ set (wsjt_FSRCS
   lib/smo121.f90
   lib/softsym.f90
   lib/softsym9f.f90
-  lib/sort.f90
+  lib/shell.f90
   lib/spec9f.f90
   lib/stdmsg.f90
   lib/sun.f90

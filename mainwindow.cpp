@@ -381,9 +381,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   uploadTimer->setSingleShot(true);
   connect(uploadTimer, SIGNAL(timeout()), this, SLOT(uploadSpots()));
 
-  startTxAgainTimer = new QTimer(this);
-  startTxAgainTimer->setSingleShot(true);
-  connect(startTxAgainTimer, SIGNAL(timeout()), this, SLOT(startTxAgain()));
+  TxAgainTimer = new QTimer(this);
+  TxAgainTimer->setSingleShot(true);
+  connect(TxAgainTimer, SIGNAL(timeout()), this, SLOT(startTxAgain()));
 
   m_auto=false;
   m_waterfallAvg = 1;
@@ -1228,7 +1228,8 @@ void MainWindow::qsy (Frequency f)
         {
           m_lastMonitoredFrequency = f;
         }
-      if (m_dialFreq != f)
+//      if (m_dialFreq != f)
+      if (m_dialFreq != f and (m_mode!="JTMSK" or !ui->cbCQRx->isChecked()))
         {
           m_dialFreq = f;
           m_repeatMsg=0;
@@ -2101,18 +2102,19 @@ void MainWindow::guiUpdate()
 
 // If "CQ nnn ..." feature is active, set the proper Tx frequency
       if(m_config.offsetRxFreq() and ui->cbCQRx->isChecked()) {
-        if(m_ntx==6 and !m_transmitting) {
-          m_dialFreq = m_dialFreq0;
+        if(m_ntx==6) {
+          m_dialFreqTx = m_dialFreq0;
         } else {
           int MHz=int(m_dialFreq/1000000);
-          m_dialFreq=1000000*MHz + 1000*m_freqCQ;
+          m_dialFreqTx=1000000*MHz + 1000*m_freqCQ;
         }
+
         if (m_monitoring || m_transmitting) {
           if (m_config.transceiver_online ()) {
             if (m_config.split_mode ()) {
             // All conditions are met, reset the transceiver dial frequency:
 //            ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
-              Q_EMIT m_config.transceiver_tx_frequency (m_dialFreq);
+              Q_EMIT m_config.transceiver_tx_frequency (m_dialFreqTx);
             }
           }
         }
@@ -2479,6 +2481,9 @@ void MainWindow::stopTx2()
     WSPR_scheduling ();
     m_ntr=0;
   }
+  if(ui->cbCQRx->isChecked()) {
+    Q_EMIT m_config.transceiver_frequency(m_dialFreq);
+  }
 }
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
@@ -2600,7 +2605,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
         t2a=t2a.mid(0,i1+4) + t2a.mid(i1+8,-1);
         if (m_config.transceiver_online ()) {
           int MHz=int(m_dialFreq/1000000);
-          m_dialFreq=1000000*MHz + 1000*kHz;            //QSY Freq for answering CQ nnn
+          m_dialFreq = 1000000*MHz + 1000*kHz;            //QSY Freq for answering CQ nnn
           QString t;
           t.sprintf("QSY %7.3f",0.000001*m_dialFreq);
           ui->decodedTextBrowser2->displayQSY(t);
@@ -2787,7 +2792,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
 
         if(m_bDoubleClickAfterCQnnn and m_transmitting) {
           on_stopTxButton_clicked();
-          startTxAgainTimer->start(1000);
+          TxAgainTimer->start(1000);
         }
         m_bDoubleClickAfterCQnnn=false;
       }
@@ -4846,6 +4851,7 @@ void MainWindow::astroCalculations (QDateTime const& time, bool adjust)
         Q_EMIT m_config.transceiver_frequency(m_dialFreq);
       }
     }
+//    qDebug() << "A" << 0.000001*m_dialFreq << 0.000001*m_dialFreqTx << astro_correction;
   }
 }
 
@@ -4880,7 +4886,10 @@ void MainWindow::on_cbCQRx_toggled(bool b)
 {
   ui->sbCQRxFreq->setEnabled(b);
   genStdMsgs(m_rpt);
-  if(b) ui->txrb6->setChecked(true);
+  if(b) {
+    ui->txrb6->setChecked(true);
+    m_ntx=6;
+  }
   CQRxFreq();
 }
 
@@ -4888,7 +4897,7 @@ void MainWindow::CQRxFreq()
 {
   if(m_config.offsetRxFreq() and ui->cbCQRx->isChecked()) {
     int MHz=int(m_dialFreq/1000000);
-    m_dialFreq=1000000*MHz + 1000*m_freqCQ;
+    m_dialFreq = 1000000*MHz + 1000*m_freqCQ;
   } else {
     m_dialFreq = m_dialFreq0;
   }

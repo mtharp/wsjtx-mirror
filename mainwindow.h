@@ -450,7 +450,7 @@ private:
   QTimer* tuneButtonTimer;
   QTimer* uploadTimer;
   QTimer* tuneATU_Timer;
-  QTimer* startTxAgainTimer;
+  QTimer* TxAgainTimer;
 
   QString m_path;
   QString m_pbdecoding_style1;

@@ -11,7 +11,7 @@ subroutine pctile(x,npts,npct,xpct)
   if(npts.gt.NMAX) stop
 
   tmp(1:npts)=x
-  call sort(npts,tmp)
+  call shell(npts,tmp)
   j=nint(npts*0.01*npct)
   if(j.lt.1) j=1
   if(j.gt.npts) j=npts
