@@ -1,4 +1,7 @@
-Rig control tests for use of "CQ nnn ..." in JTMSK mode.
+Before using the new "CQ nnn ..." feature in JTMSK mode, I suggest
+performing the following tests of the necessary CAT control for your
+radio.  (I'm assuming that you already have some experience with
+JTMSK.)
 
 TEST 1:
 --------------------------------------------------------------------------
@@ -27,6 +30,7 @@ TEST 2:
    "Rx frequency offset with 'CQ nnn ...'", Split=Rig
 4. Main screen settings: Band=50.280, mode=JTMSK, T/R=15 s
 5. Open file 150826_120515.wav
+   ==> see decoded message "K1JT VE1SKY FN74"
 6. Click "Monitor" to restart monitoring
 7. Activate CQRx 
    ==> Rx dial should now read (say) 50.265; Tx6 should be queued
