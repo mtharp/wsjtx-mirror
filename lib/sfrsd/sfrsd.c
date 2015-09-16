@@ -167,8 +167,10 @@ int main(int argc, char *argv[]){
     float p_erase;
     int thresh, nsum;
     ncandidates=0;
+    
+    
     for( k=0; k<ntrials; k++) {
-
+        
         memset(era_pos,0,51*sizeof(int));
         // mark a subset of the n-k least reliable symbols as erasures
         numera=0;
@@ -191,14 +193,13 @@ int main(int argc, char *argv[]){
                 numera=numera+1;
             }
         }
-        
         memcpy(workdat,rxdat,sizeof(rxdat));
         nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
-
+        
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            fprintf(logfile,"Chase decode nerr= %3d : ",nerr);
+            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
             for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
             fprintf(logfile,"\n");
             nhard=0;
@@ -218,18 +219,65 @@ int main(int argc, char *argv[]){
                     nhard_min=nhard;
                     memcpy(bestdat,dat4,12*sizeof(int));
                 }
-
+                
             } else {
                 fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
             }
-            if( ncandidates >= 10 ) {
+            if( ncandidates >= 5000 ) {
                 break;
             }
         }
     }
+    
+    printf("%d candidates from loop1\n",ncandidates);
+    
+    // do Forney Generalized Minimum Distance pattern
+    for (k=0; k<25; k++) {
+        memset(era_pos,0,51*sizeof(int));
+        numera=2*k;
+        for (i=0; i<numera; i++) {
+            era_pos[i]=indexes[62-i];
+        }
+        
+        memcpy(workdat,rxdat,sizeof(rxdat));
+        nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
+        
+        if( nerr >= 0 ) {
+            ncandidates=ncandidates+1;
+            for(i=0; i<12; i++) dat4[i]=workdat[11-i];
+            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
+            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+            fprintf(logfile,"\n");
+            nhard=0;
+            nsoft=0;
+            nsum=0;
+            for (i=0; i<63; i++) {
+                nsum=nsum+rxprob[i];
+                if( workdat[i] != rxdat[i] ) {
+                    nhard=nhard+1;
+                    nsoft=nsoft+rxprob[i];
+                }
+            }
+            if( nsum != 0 ) {
+                nsoft=63*nsoft/nsum;
+                if( (nsoft < nsoft_min) ) {
+                    nsoft_min=nsoft;
+                    nhard_min=nhard;
+                    memcpy(bestdat,dat4,12*sizeof(int));
+                }
+                
+            } else {
+                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
+            }
+            if( ncandidates >=5000 ) {
+                break;
+            }
+        }
+    }
+    
+    printf("%d candidates after GMD\n",ncandidates);
 
-
-    if( (nerr >= 0) && (nsoft_min < 44) && (nhard_min < 48) ) {
+    if( (ncandidates >= 0) && (nsoft_min < 44) && (nhard_min < 48) ) {
         fprintf(logfile,"ncandidates %d nerr %d numera %d ntrial %d nhard %d nsoft %d nsum %d\n",ncandidates,nerr,numera,k,nhard,nsoft,nsum);
         datfile=fopen(infile,"wb");
         if( !datfile ) {
@@ -245,7 +293,7 @@ int main(int argc, char *argv[]){
             fwrite(&mr2sym,sizeof(int),63,datfile);
             fwrite(&mr2prob,sizeof(int),63,datfile);
             fwrite(&nsec2,sizeof(int),1,datfile);
-            fwrite(&nerr,sizeof(int),1,datfile);
+            fwrite(&nsoft_min,sizeof(int),1,datfile);
             fwrite(&bestdat,sizeof(int),12,datfile);
             fclose(datfile);
         }
