@@ -5,7 +5,7 @@ TEST 1:
 1. Start WSJT-X
 2. Settings: "Enable VHF/UHF/Microwave features, "Rx frequency offset
    with 'CQ nnn ...'", Split=Rig
-3. Main screen settings: Band=50.280, mode=JTMSK, T/R=5 s
+3. Main screen settings: Band=50.280, mode=JTMSK, T/R=15 s
 4. Activate CQRx, set CQ Rx=265
    ==> Rx dial should now read 50.265 and Tx6 should be queued
 5. Click "Enable Tx" 
@@ -23,19 +23,19 @@ TEST 1:
 TEST 2:
 --------------------------------------------------------------------------
 1. Start WSJT-X
-2. Settings: "Enable VHF/UHF/Microwave features, "Rx frequency offset
-   with 'CQ nnn ...'", Split=Rig
-4. Main screen settings: Band=50.280, mode=JTMSK, T/R=5 s
+2. Settings: MyCall=K1JT, "Enable VHF/UHF/Microwave features, 
+   "Rx frequency offset with 'CQ nnn ...'", Split=Rig
+4. Main screen settings: Band=50.280, mode=JTMSK, T/R=15 s
 5. Open file 150826_120515.wav
 6. Click "Monitor" to restart monitoring
 7. Activate CQRx 
    ==> Rx dial should now read (say) 50.265; Tx6 should be queued
 8. Click "Enable Tx" 
    ==> Tx sequences should occur at 50.280, Rx at 50.265
-9. Near the start of a transmission, double-click on the decoded message
+9. After the start of a transmission, double-click on the decoded message
    "K1JT VE1SKY FN74"
-   ==> Tx2 should be generated and queued; transmission paused
-   briefly; Tx freq changed to 50.265; Tx resumed.
+   ==> Tx2 should be generated and queued; transmission will pause
+   briefly, Tx freq changed to 50.265, then Tx resumed.
 
 Note that TEST 2 should also work with Split="Fake it".
 

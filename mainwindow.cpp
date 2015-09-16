@@ -2792,7 +2792,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
 
         if(m_bDoubleClickAfterCQnnn and m_transmitting) {
           on_stopTxButton_clicked();
-          TxAgainTimer->start(1000);
+          TxAgainTimer->start(1500);
         }
         m_bDoubleClickAfterCQnnn=false;
       }
