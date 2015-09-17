@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
     float xlambda;
     int mrsym[63],mrprob[63],mr2sym[63],mr2prob[63];
     int nsec2,ncount,dat4[12],bestdat[12];
-    int ntrials=1000;
+    int ntrials=2500;
     int verbose=0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     
@@ -99,20 +99,33 @@ int main(int argc, char *argv[]){
         fread(&mr2prob,sizeof(int),63,datfile);
         fread(&nsec2,sizeof(int),1,datfile);
         fread(&ncount,sizeof(int),1,datfile);
+//        printf("ncount %d\n",ncount);
         fread(&dat4,sizeof(int),12,datfile);
         fclose(datfile);
-    }
-    
-    if( verbose ) {
-        fprintf(logfile,"---\n");
-        fprintf(logfile,"rx symbols: ");
-        for (i=0; i<63; i++) fprintf(logfile,"%d ",mrsym[i]);
-        fprintf(logfile,"\n");
     }
     
     // initialize the ka9q reed solomon encoder/decoder
     unsigned int symsize=6, gfpoly=0x43, fcr=3, prim=1, nroots=51;
     rs=init_rs_int(symsize, gfpoly, fcr, prim, nroots, 0);
+
+/*    // debug
+    int revdat[12], parity[51], correct[63];
+    for (i=0; i<12; i++) {
+        revdat[i]=dat4[11-i];
+        printf("%d ",revdat[i]);
+    }
+    printf("\n");
+    encode_rs_int(rs,revdat,parity);
+    for (i=0; i<63; i++) {
+        if( i<12 ) {
+            correct[i]=revdat[i];
+            printf("%d ",parity[i]);
+        } else {
+            correct[i]=parity[i-12];
+        }
+    }
+    printf("\n");
+*/
     
     // reverse the received symbol vector for bm decoder
     for (i=0; i<63; i++) {
@@ -121,6 +134,12 @@ int main(int argc, char *argv[]){
         rxdat2[i]=mr2sym[62-i];
         rxprob2[i]=mr2prob[62-i];
     }
+
+/*
+    for (i=0; i<63; i++) {
+        printf("%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
+    }
+*/
     
     // sort the mrsym probabilities to find the least reliable symbols
     int k, pass, tmp, nsym=63;
@@ -164,28 +183,27 @@ int main(int argc, char *argv[]){
     //
     //  srandom(time(NULL));
     srandom(0xdeadbeef);
-    float p_erase;
+    float p_erase, p0;
     int thresh, nsum;
     ncandidates=0;
     
-    
+
     for( k=0; k<ntrials; k++) {
-        
         memset(era_pos,0,51*sizeof(int));
         // mark a subset of the n-k least reliable symbols as erasures
         numera=0;
-        for (i=0; i<(nn-kk); i++) {
+        for (i=0; i<nn; i++) {
             p_erase=0.0;
             if( probs[62-i] >= 255 ) {
-                p_erase = 0.0;
+                p_erase = 0.5;
             } else if ( probs[62-i] >= 196 ) {
-                p_erase = 0.5;
+                p_erase = 0.6;
             } else if ( probs[62-i] >= 128 ) {
-                p_erase = 0.5;
-            } else if ( probs[62-i] >= 64 ) {
-                p_erase = 0.5;
+                p_erase = 0.6;
+            } else if ( probs[62-i] >= 32 ) {
+                p_erase = 0.6;
             } else {
-                p_erase = 0.5;
+                p_erase = 0.8;
             }
             thresh = p_erase*100;
             if( ((random() % 100) < thresh ) && numera < 51 ) {
@@ -229,7 +247,73 @@ int main(int argc, char *argv[]){
         }
     }
     
-    printf("%d candidates from loop1\n",ncandidates);
+    fprintf(logfile,"%d candidates after stochastic loop\n",ncandidates);
+
+// do exhaustive erasure pattern search of the least reliable symbols
+
+    int j,pattern[1024], n1, npat=0;
+    for (i=0; i<1024; i++) {
+        n1=0;
+        for( j=0; j<32; j++) {
+            if( i>>j & 1 == 1 ) {
+                n1++;
+            }
+        }
+        if( n1%2 == 0 ) {
+            pattern[npat]=i;
+//            printf("%d, %x, %d\n",npat,pattern[npat],n1);
+            npat++;
+        }
+    }
+    n1=npat; // now, n1 is the number of patterns.
+    
+    for( k=0; k<n1; k++) {
+        numera=0;
+        memset(era_pos,0,51*sizeof(int));
+        
+        for( j=0; j<32; j++) {
+            if( pattern[k]>>j & 1 == 1 ) {
+                era_pos[numera]=indexes[62-j];
+                numera=numera+1;
+            }
+        }
+        memcpy(workdat,rxdat,sizeof(rxdat));
+        nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
+        
+        if( nerr >= 0 ) {
+            ncandidates=ncandidates+1;
+            for(i=0; i<12; i++) dat4[i]=workdat[11-i];
+            fprintf(logfile,"exhaustive loop decode nerr= %3d : ",nerr);
+            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+            fprintf(logfile,"\n");
+            nhard=0;
+            nsoft=0;
+            nsum=0;
+            for (i=0; i<63; i++) {
+                nsum=nsum+rxprob[i];
+                if( workdat[i] != rxdat[i] ) {
+                    nhard=nhard+1;
+                    nsoft=nsoft+rxprob[i];
+                }
+            }
+            if( nsum != 0 ) {
+                nsoft=63*nsoft/nsum;
+                if( (nsoft < nsoft_min) ) {
+                    nsoft_min=nsoft;
+                    nhard_min=nhard;
+                    memcpy(bestdat,dat4,12*sizeof(int));
+                }
+                
+            } else {
+                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
+            }
+            if( ncandidates >= 5000 ) {
+                break;
+            }
+        }
+    }
+    
+    fprintf(logfile,"%d candidates after exhaustive loop\n",ncandidates);
     
     // do Forney Generalized Minimum Distance pattern
     for (k=0; k<25; k++) {
@@ -275,9 +359,9 @@ int main(int argc, char *argv[]){
         }
     }
     
-    printf("%d candidates after GMD\n",ncandidates);
+    fprintf(logfile,"%d candidates after GMD\n",ncandidates);
 
-    if( (ncandidates >= 0) && (nsoft_min < 44) && (nhard_min < 48) ) {
+    if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
         fprintf(logfile,"ncandidates %d nerr %d numera %d ntrial %d nhard %d nsoft %d nsum %d\n",ncandidates,nerr,numera,k,nhard,nsoft,nsum);
         datfile=fopen(infile,"wb");
         if( !datfile ) {
