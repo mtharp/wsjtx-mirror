@@ -1,6 +1,7 @@
 /* Reed-Solomon decoder
  * Copyright 2002 Phil Karn, KA9Q
  * May be used under the terms of the GNU General Public License (GPL)
+ * Modified by Steve Franke, K9AN, for use in a soft-symbol RS decoder
  */
 
 #ifdef DEBUG
@@ -59,14 +60,16 @@ int DECODE_RS(
             syn_error |= s[i];
             s[i] = INDEX_OF[s[i]];
         }
-    }
-    
-    if (!syn_error) {
-        /* if syndrome is zero, data[] is a codeword and there are no
-         * errors to correct. So return data[] unmodified
-         */
-        count = 0;
-        goto finish;
+        
+        
+        if (!syn_error) {
+            /* if syndrome is zero, data[] is a codeword and there are no
+             * errors to correct. So return data[] unmodified
+             */
+            count = 0;
+            goto finish;
+        }
+        
     }
     
     memset(&lambda[1],0,NROOTS*sizeof(lambda[0]));

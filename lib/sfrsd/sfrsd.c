@@ -1,17 +1,15 @@
 /*
  sfrsd.c
  
- A rudimentary soft-decision decoder for the JT65 (63,12) code.
+ A soft-decision decoder for the JT65 (63,12) code.
  
- This slow and dirty decoding scheme is built around Phil Karn's
- Berlekamp-Massey errors and erasures decoder.
- The approach is inspired by the stochastic Chase decoder described
+ This decoding scheme is built around Phil Karn's Berlekamp-Massey 
+ errors and erasures decoder. The approach is inspired by a number of 
+ publications, including the stochastic Chase decoder described
  in "Stochastic Chase Decoding of Reed-Solomon Codes", by Leroux et al.,
- IEEE Communications Letters, Vol. 14, No. 9, September 2010.
- The implementation here is much simpler and probably not nearly as
- effective as the algorithm described therein. Nevertheless, this
- algorithm decodes a significant number of cases that are not
- decoded by errors-only HDD using BM.
+ IEEE Communications Letters, Vol. 14, No. 9, September 2010 and
+ "Soft-Decision Decoding of Reed-Solomon Codes Using Successive Error-
+ and-Erasure Decoding," by Soo-Woong Lee and B. V. K. Vjaya Kumar.
  
  Steve Franke K9AN, Urbana IL, September 2015
  */
@@ -52,7 +50,7 @@ int main(int argc, char *argv[]){
     float xlambda;
     int mrsym[63],mrprob[63],mr2sym[63],mr2prob[63];
     int nsec2,ncount,dat4[12],bestdat[12];
-    int ntrials=2500;
+    int ntrials=5000;
     int verbose=0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     
@@ -175,22 +173,20 @@ int main(int argc, char *argv[]){
     }
     
     // generate random erasure-locator vectors and see if any of them
-    // decode. This will generate a list of potential codewords. Some
-    // suitable metric can be used to decide which member of the list
-    // is "best". So far, all decodes seem to yield the same vector -
-    // so in practice, the list may contain only one unique vector in
-    // most cases.
+    // decode. This will generate a list of potential codewords. The
+    // "soft" distance between each codeword and the received word is
+    // used to decide which codeword is "best".
     //
     //  srandom(time(NULL));
     srandom(0xdeadbeef);
-    float p_erase, p0;
+    float p_erase;
     int thresh, nsum;
     ncandidates=0;
     
 
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
-        // mark a subset of the n-k least reliable symbols as erasures
+        // mark a subset of the symbols as erasures
         numera=0;
         for (i=0; i<nn; i++) {
             p_erase=0.0;
@@ -217,9 +213,9 @@ int main(int argc, char *argv[]){
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
-            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-            fprintf(logfile,"\n");
+//            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
+//            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+//            fprintf(logfile,"\n");
             nhard=0;
             nsoft=0;
             nsum=0;
@@ -255,7 +251,7 @@ int main(int argc, char *argv[]){
     for (i=0; i<1024; i++) {
         n1=0;
         for( j=0; j<32; j++) {
-            if( i>>j & 1 == 1 ) {
+            if( ((i>>j) & 1) == 1 ) {
                 n1++;
             }
         }
@@ -283,9 +279,9 @@ int main(int argc, char *argv[]){
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            fprintf(logfile,"exhaustive loop decode nerr= %3d : ",nerr);
-            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-            fprintf(logfile,"\n");
+//            fprintf(logfile,"exhaustive loop decode nerr= %3d : ",nerr);
+//            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+//            fprintf(logfile,"\n");
             nhard=0;
             nsoft=0;
             nsum=0;
@@ -329,9 +325,9 @@ int main(int argc, char *argv[]){
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
-            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-            fprintf(logfile,"\n");
+//            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
+//            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+//            fprintf(logfile,"\n");
             nhard=0;
             nsoft=0;
             nsum=0;
@@ -362,7 +358,7 @@ int main(int argc, char *argv[]){
     fprintf(logfile,"%d candidates after GMD\n",ncandidates);
 
     if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
-        fprintf(logfile,"ncandidates %d nerr %d numera %d ntrial %d nhard %d nsoft %d nsum %d\n",ncandidates,nerr,numera,k,nhard,nsoft,nsum);
+        fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",ncandidates,nhard_min,nsoft_min,nsum);
         datfile=fopen(infile,"wb");
         if( !datfile ) {
             printf("Unable to open kvasd.dat\n");
@@ -377,7 +373,7 @@ int main(int argc, char *argv[]){
             fwrite(&mr2sym,sizeof(int),63,datfile);
             fwrite(&mr2prob,sizeof(int),63,datfile);
             fwrite(&nsec2,sizeof(int),1,datfile);
-            fwrite(&nsoft_min,sizeof(int),1,datfile);
+            fwrite(&nhard_min,sizeof(int),1,datfile);
             fwrite(&bestdat,sizeof(int),12,datfile);
             fclose(datfile);
         }
