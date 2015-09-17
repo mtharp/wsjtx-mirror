@@ -538,11 +538,17 @@ endif (APPLE)
 
 set_source_files_properties (${WSJTX_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
-if (NOT WSJT_QDEBUG_IN_RELEASE)
+if (WSJT_QDEBUG_IN_RELEASE)
+  # context info in Qt message handler in release configuration
+  set_property (DIRECTORY APPEND PROPERTY
+    COMPILE_DEFINITIONS $<$<NOT:$<CONFIG:Debug>>:QT_MESSAGELOGCONTEXT>
+    )
+else (WSJT_QDEBUG_IN_RELEASE)
+  # disable Qt trace and warning messages from release configurations
   set_property (DIRECTORY APPEND PROPERTY
     COMPILE_DEFINITIONS $<$<NOT:$<CONFIG:Debug>>:QT_NO_DEBUG_OUTPUT;QT_NO_WARNING_OUTPUT>
     )
-endif (NOT WSJT_QDEBUG_IN_RELEASE)
+endif (WSJT_QDEBUG_IN_RELEASE)
 
 set_property (SOURCE ${all_C_and_CXXSRCS} APPEND_STRING PROPERTY COMPILE_FLAGS " -include wsjtx_config.h")
 set_property (SOURCE ${all_C_and_CXXSRCS} APPEND PROPERTY OBJECT_DEPENDS wsjtx_config.h)
