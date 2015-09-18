@@ -37,7 +37,7 @@ you think should have decoded, but did not.
 September 18, 2015
 -----------------
 
-New alpha release of experimental WSJT-X v1.6.1, r5909
+New alpha release of experimental WSJT-X v1.6.1, r5910
 ------------------------------------------------------
 Changes since revision 5889 include the following:
 
@@ -59,9 +59,10 @@ problems with your rig.)
 
 8. Display proper symbol '&' in Tx messages in JTMSK mode.
 
+
 To download this alpha release for Windows, paste the following link
 into your browser:
-http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5909-win32.exe
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5910-win32.exe
 
     -- 73, Joe, K1JT
 

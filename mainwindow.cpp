@@ -2493,9 +2493,7 @@ void MainWindow::stopTx2()
 
 void MainWindow::RxQSY()
 {
-//  Q_EMIT m_config.transceiver_frequency(m_dialFreq);
-  ui->cbCQRx->toggle();
-  ui->cbCQRx->toggle();
+  Q_EMIT m_config.transceiver_frequency(m_dialFreq);
 }
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
