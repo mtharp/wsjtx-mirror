@@ -1,9 +1,6 @@
 			Fast Modes in WSJT-X
 			--------------------
 
-September 12, 2015
------------------
-
 #######################################################################
 
 IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT - IMPORTANT 
@@ -12,7 +9,7 @@ Third-party individuals (i.e., others not part of the WSJT development
 team) have been compiling WSJT-X from the open source code and making
 unauthorized "releases" of their builds.  I do NOT reccommend use of
 unauthorized builds on the air.  If a program revision has been released
-in any official way, you will see it listed here.
+in an official way, you will see it listed here.
 
 If you operate with an unauthorized "rXXXX" code revisions in our
 experimental code branch you have no idea what you've got.  Quite
@@ -36,6 +33,42 @@ useful when accompanied by example *.wav files with signals that
 you think should have decoded, but did not.
 
 #######################################################################
+
+September 18, 2015
+-----------------
+
+New alpha release of experimental WSJT-X v1.6.1, r5909
+------------------------------------------------------
+Changes since revision 5889 include the following:
+
+1. Improved behavior for auto-QSY with "CQ nnn ..." feature.  (May not
+be exactly correct, yet, for all radios.  Please report if you find
+problems with your rig.)
+
+2. Allow optional use of Wide Graph in fast modes.
+
+3. Add UTC labels to Fast Graph spectrograms.
+
+4. Display correct DXCC entiry for "CQ nnn ..." messages.
+
+5. Implement "Save Decoded" for fast modes.
+
+6. Select Tx6 when "CQ Rx nnn" is enabled.
+
+7. Fix bug in setting of TRperiod after switch to ISCAT mode.
+
+8. Display proper symbol '&' in Tx messages in JTMSK mode.
+
+To download this alpha release for Windows, paste the following link
+into your browser:
+http://physics.princeton.edu/pulsar/K1JT/wsjtx-1.6.1-r5909-win32.exe
+
+    -- 73, Joe, K1JT
+
+#######################################################################
+
+September 12, 2015
+-----------------
 
 New alpha release of experimental WSJT-X v1.6.1, r5889
 ------------------------------------------------------
