@@ -224,7 +224,8 @@ private slots:
   void on_cbUploadWSPR_Spots_toggled(bool b);
   void WSPR_config(bool b);
   void uploadSpots();
-  void startTxAgain();
+  void TxAgain();
+  void RxQSY();
   void uploadResponse(QString response);
   void p3ReadFromStdout();
   void p3ReadFromStderr();
@@ -451,6 +452,7 @@ private:
   QTimer* uploadTimer;
   QTimer* tuneATU_Timer;
   QTimer* TxAgainTimer;
+  QTimer* RxQSYTimer;
 
   QString m_path;
   QString m_pbdecoding_style1;

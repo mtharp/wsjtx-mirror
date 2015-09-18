@@ -383,7 +383,11 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
 
   TxAgainTimer = new QTimer(this);
   TxAgainTimer->setSingleShot(true);
-  connect(TxAgainTimer, SIGNAL(timeout()), this, SLOT(startTxAgain()));
+  connect(TxAgainTimer, SIGNAL(timeout()), this, SLOT(TxAgain()));
+
+  RxQSYTimer = new QTimer(this);
+  RxQSYTimer->setSingleShot(true);
+  connect(RxQSYTimer, SIGNAL(timeout()), this, SLOT(RxQSY()));
 
   m_auto=false;
   m_waterfallAvg = 1;
@@ -2481,9 +2485,17 @@ void MainWindow::stopTx2()
     WSPR_scheduling ();
     m_ntr=0;
   }
-  if(ui->cbCQRx->isChecked()) {
-    Q_EMIT m_config.transceiver_frequency(m_dialFreq);
+  if(m_config.offsetRxFreq() and ui->cbCQRx->isChecked()) {
+//    Q_EMIT m_config.transceiver_frequency(m_dialFreq);
+    RxQSYTimer->start(50);
   }
+}
+
+void MainWindow::RxQSY()
+{
+//  Q_EMIT m_config.transceiver_frequency(m_dialFreq);
+  ui->cbCQRx->toggle();
+  ui->cbCQRx->toggle();
 }
 
 void MainWindow::ba2msg(QByteArray ba, char message[])             //ba2msg()
@@ -2941,7 +2953,7 @@ void MainWindow::genStdMsgs(QString rpt)                       //genStdMsgs()
   m_rpt=rpt;
 }
 
-void MainWindow::startTxAgain()
+void MainWindow::TxAgain()
 {
   auto_tx_mode(true);
 }
