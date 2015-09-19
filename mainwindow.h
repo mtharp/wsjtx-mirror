@@ -476,6 +476,7 @@ private:
   QString m_qsoStop;
   QString m_cmnd;
   QString m_msgSent0;
+  QString m_fileToKill;
   QString m_fileToSave;
   QString m_band;
   QString m_c2name;

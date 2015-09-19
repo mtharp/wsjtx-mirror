@@ -981,9 +981,12 @@ void MainWindow::fastSink(qint64 frames)
       m_bFastDecodeCalled=true;
       decode();
     }
-    if(!m_diskData and m_saveAll and m_fname != "" and !decodeEarly) {
+    if(!m_diskData and (m_saveAll or m_saveDecoded) and m_fname != "" and
+       !decodeEarly) {
       *future2 = QtConcurrent::run(savewav, m_fname, m_TRperiod);
       watcher2->setFuture(*future2);
+      m_fileToKill=m_fname;
+      killFileTimer->start (3*1000*m_TRperiod/4); //Kill 3/4 period from now
     }
     decodeEarly=false;
   }
@@ -1943,10 +1946,17 @@ void MainWindow::readFromStdout()                             //readFromStdout
 
 void MainWindow::killFile ()
 {
-  if (!m_fname.isEmpty ()
-      && !(m_saveAll || (m_saveDecoded && m_bDecoded) || m_fname == m_fileToSave)) {
-    QFile {m_fname + ".wav"}.remove();
-    QFile {m_fname + ".c2"}.remove();
+  QString f=m_fname;
+  if(m_bFastMode) f=m_fileToKill;
+  if (!m_fname.isEmpty() &&
+      !(m_saveAll || (m_saveDecoded && m_bDecoded) || m_fname == m_fileToSave)) {
+    if(m_fname.indexOf(".wav")<0) f+= ".wav";
+    QFile f1{f};
+    f1.remove();
+    if(m_mode.mid(0,4)=="WSPR") {
+      QFile f2{m_fname + ".c2"};
+      f2.remove();
+    }
   }
 }
 
