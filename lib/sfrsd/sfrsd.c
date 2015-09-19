@@ -144,7 +144,9 @@ int main(int argc, char *argv[]){
     int probs[63], indexes[63];
     for (i=0; i<63; i++) {
         indexes[i]=i;
-        probs[i]=rxprob[i]-rxprob2[i];
+//        probs[i]=rxprob[i]-rxprob2[i];
+        probs[i]=rxprob[i];
+
     }
     for (pass = 1; pass <= nsym-1; pass++) {
         for (k = 0; k < nsym - pass; k++) {
@@ -186,6 +188,8 @@ int main(int argc, char *argv[]){
 
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
+        memcpy(workdat,rxdat,sizeof(rxdat));
+
         // mark a subset of the symbols as erasures
         numera=0;
         for (i=0; i<nn; i++) {
@@ -207,7 +211,7 @@ int main(int argc, char *argv[]){
                 numera=numera+1;
             }
         }
-        memcpy(workdat,rxdat,sizeof(rxdat));
+
         nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
         
         if( nerr >= 0 ) {
@@ -245,73 +249,7 @@ int main(int argc, char *argv[]){
     
     fprintf(logfile,"%d candidates after stochastic loop\n",ncandidates);
 
-// do exhaustive erasure pattern search of the least reliable symbols
-
-    int j,pattern[1024], n1, npat=0;
-    for (i=0; i<1024; i++) {
-        n1=0;
-        for( j=0; j<32; j++) {
-            if( ((i>>j) & 1) == 1 ) {
-                n1++;
-            }
-        }
-        if( n1%2 == 0 ) {
-            pattern[npat]=i;
-//            printf("%d, %x, %d\n",npat,pattern[npat],n1);
-            npat++;
-        }
-    }
-    n1=npat; // now, n1 is the number of patterns.
-    
-    for( k=0; k<n1; k++) {
-        numera=0;
-        memset(era_pos,0,51*sizeof(int));
-        
-        for( j=0; j<32; j++) {
-            if( pattern[k]>>j & 1 == 1 ) {
-                era_pos[numera]=indexes[62-j];
-                numera=numera+1;
-            }
-        }
-        memcpy(workdat,rxdat,sizeof(rxdat));
-        nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
-        
-        if( nerr >= 0 ) {
-            ncandidates=ncandidates+1;
-            for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-//            fprintf(logfile,"exhaustive loop decode nerr= %3d : ",nerr);
-//            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-//            fprintf(logfile,"\n");
-            nhard=0;
-            nsoft=0;
-            nsum=0;
-            for (i=0; i<63; i++) {
-                nsum=nsum+rxprob[i];
-                if( workdat[i] != rxdat[i] ) {
-                    nhard=nhard+1;
-                    nsoft=nsoft+rxprob[i];
-                }
-            }
-            if( nsum != 0 ) {
-                nsoft=63*nsoft/nsum;
-                if( (nsoft < nsoft_min) ) {
-                    nsoft_min=nsoft;
-                    nhard_min=nhard;
-                    memcpy(bestdat,dat4,12*sizeof(int));
-                }
-                
-            } else {
-                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
-            }
-            if( ncandidates >= 5000 ) {
-                break;
-            }
-        }
-    }
-    
-    fprintf(logfile,"%d candidates after exhaustive loop\n",ncandidates);
-    
-    // do Forney Generalized Minimum Distance pattern
+// do Forney Generalized Minimum Distance pattern
     for (k=0; k<25; k++) {
         memset(era_pos,0,51*sizeof(int));
         numera=2*k;
