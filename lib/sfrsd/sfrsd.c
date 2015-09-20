@@ -1,15 +1,15 @@
 /*
  sfrsd.c
  
- A soft-decision decoder for the JT65 (63,12) code.
+ A soft-decision decoder for the JT65 (63,12) Reed-Solomon code.
  
- This decoding scheme is built around Phil Karn's Berlekamp-Massey 
+ This decoding scheme is built around Phil Karn's Berlekamp-Massey
  errors and erasures decoder. The approach is inspired by a number of 
  publications, including the stochastic Chase decoder described
  in "Stochastic Chase Decoding of Reed-Solomon Codes", by Leroux et al.,
  IEEE Communications Letters, Vol. 14, No. 9, September 2010 and
  "Soft-Decision Decoding of Reed-Solomon Codes Using Successive Error-
- and-Erasure Decoding," by Soo-Woong Lee and B. V. K. Vjaya Kumar.
+ and-Erasure Decoding," by Soo-Woong Lee and B. V. K. Vijaya Kumar.
  
  Steve Franke K9AN, Urbana IL, September 2015
  */
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
     float xlambda;
     int mrsym[63],mrprob[63],mr2sym[63],mr2prob[63];
     int nsec2,ncount,dat4[12],bestdat[12];
-    int ntrials=5000;
+    int ntrials=10000;
     int verbose=0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     

@@ -3,7 +3,7 @@ prefix = /usr/local
 exec_prefix=${prefix}
 CC=gcc
 
-CFLAGS=-I/usr/local/include  -Wall -O2
+CFLAGS=-I/usr/local/include  -Wall -O3
 
 all: sfrsd
 
