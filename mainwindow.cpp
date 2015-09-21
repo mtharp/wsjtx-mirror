@@ -3640,9 +3640,11 @@ void MainWindow::WSPR_config(bool b)
 
 void MainWindow::fast_config(bool b)
 {
+  qDebug() << "A Fast:" << b << ui->TxFreqSpinBox->isEnabled();
   m_bFastMode=b;
   m_bSimplex=b;
   ui->ClrAvgButton->setVisible(!b);
+  ui->TxFreqSpinBox->setEnabled(!b);
   if(b) {
     ui->cbEME->setText("Auto Seq");
     ui->sbTR->setVisible(true);
@@ -3658,6 +3660,7 @@ void MainWindow::fast_config(bool b)
     m_wideGraph->show();
     m_fastGraph->hide();
   }
+  qDebug() << "B" << ui->TxFreqSpinBox->isEnabled();
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)
@@ -4324,7 +4327,7 @@ void MainWindow::transmitDisplay (bool transmitting)
       ui->cbTxLock->setChecked(false);
       ui->cbTxLock->setEnabled(false);
     } else if(m_mode!="WSPR") {
-      ui->TxFreqSpinBox->setEnabled (QSY_allowed);
+      ui->TxFreqSpinBox->setEnabled (QSY_allowed and !m_bFastMode);
       ui->pbR2T->setEnabled (QSY_allowed);
       ui->cbTxLock->setEnabled (QSY_allowed);
     }
