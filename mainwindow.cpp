@@ -3610,6 +3610,11 @@ void MainWindow::switch_mode (Mode mode)
   bool b=m_mode=="JTMSK";
   ui->sbCQRxFreq->setVisible(b);
   ui->cbCQRx->setVisible(b);
+  ui->syncSpinBox->setVisible(!b);
+  ui->pbR2T->setVisible(!b);
+  ui->pbT2R->setVisible(!b);
+  ui->cbTxLock->setVisible(!b);
+  ui->TxFreqSpinBox->setVisible(!b);
 }
 
 void MainWindow::WSPR_config(bool b)
