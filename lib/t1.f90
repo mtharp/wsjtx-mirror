@@ -9,7 +9,14 @@ program t1
   real r(234)
   character*12 arg
 
+  nargs=iargc()
+  if(nargs.ne.2) then
+     print*,'Usage: t1 nsymtest snr'
+     go to 999
+  endif
   call getarg(1,arg)
+  read(arg,*) nsymtest
+  call getarg(2,arg)
   read(arg,*) snr
 
   call random_number(r)
@@ -72,12 +79,21 @@ enddo
 
   c=csig + cnoise/snr
   nerr=0
+  n1=2
+  nstep=2
+  iz=5
+  if(nsymtest.eq.2) then
+     n1=3
+     nstep=1
+     iz=11
+  endif
+
   do j=1,233
      smax=0.
-     do n=0,3
+     do n=0,n1,nstep
         s=0.
         k=6*(j-1)
-        do i=0,11
+        do i=0,iz
            s=s + aimag(c(k+i))*aimag(cd(i,n))
         enddo
         if(abs(s).gt.abs(smax)) then
@@ -92,5 +108,5 @@ enddo
   write(*,1020) nerr
 1020 format('nerr:',i4)
 
-end program t1
+999 end program t1
 
