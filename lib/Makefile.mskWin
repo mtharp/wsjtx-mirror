@@ -49,7 +49,7 @@ JTMSKcode.exe: $(OBJS5)
 	$(FC) -o JTMSKcode.exe $(OBJS5) 
 
 OBJS6 = testmsk.o jtmsk.o analytic.o four2a.o db.o pctile.o \
-      sort.o tweak1.o syncmsk.o genmsk.o packjt.o fmtmsg.o indexx.o \
+      shell.o tweak1.o syncmsk.o genmsk.o packjt.o fmtmsg.o indexx.o \
       deg2grid.o grid2deg.o entail.o hashing.o nhash.o tab.o vit213.o \
       mskdt.o timer.o rectify_msk.o
 testmsk.exe: $(OBJS6) 

@@ -3645,7 +3645,6 @@ void MainWindow::WSPR_config(bool b)
 
 void MainWindow::fast_config(bool b)
 {
-  qDebug() << "A Fast:" << b << ui->TxFreqSpinBox->isEnabled();
   m_bFastMode=b;
   m_bSimplex=b;
   ui->ClrAvgButton->setVisible(!b);
@@ -3665,7 +3664,6 @@ void MainWindow::fast_config(bool b)
     m_wideGraph->show();
     m_fastGraph->hide();
   }
-  qDebug() << "B" << ui->TxFreqSpinBox->isEnabled();
 }
 
 void MainWindow::on_TxFreqSpinBox_valueChanged(int n)

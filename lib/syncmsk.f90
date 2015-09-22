@@ -8,22 +8,19 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
   parameter (NSPM=1404,NSAVE=2000)
   complex cdat(npts)                    !Analytic signal
   complex cb(66)                        !Complex waveform for Barker-11 code
-  complex c0(6)                         !Waveform for 0
-  complex c1(6)                         !Waveform for 1
+  complex cd(0:11,0:3)
   complex c(0:NSPM-1)                   !Complex data for one message length
   complex c2(0:NSPM-1)
   complex cb3(1:NSPM,3)
   real r(12000)
   real rdat(12000)
-  real s0(6)
-  real s1(6)
   real ss1(12000)
   real symbol(234)
   real rdata(198)
   real rd2(198)
   real rsave(NSAVE)
   real xp(29)
-  complex z,z0,z1,cfac
+  complex z,z0,z1,z2,z3,cfac
   integer*1 e1(198)
   integer*1, target :: d8(13)
   integer*1 i1hash(4)
@@ -47,7 +44,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
           0.000017, 0.000091, 0.000032, 0.000045/
   data first/.true./
   data b11/1,1,1,0,0,0,1,0,0,1,0/
-  save first,cb,c0,c1,twopi,dt,f0,f1,mettab
+  save first,cb,cd,twopi,dt,f0,f1,mettab
 
   phi=0.
   if(first) then
@@ -83,10 +80,6 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
            cb(j)=cmplx(cos(phi),sin(phi))
         enddo
      enddo
-     c0=cb(19:24)
-     c1=cb(1:6)
-     s0=real(c0)
-     s1=real(c1)
      cb3=0.
      cb3(1:66,1)=cb
      cb3(283:348,1)=cb
@@ -99,6 +92,28 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      cb3(1:66,3)=cb
      cb3(637:702,3)=cb
      cb3(919:984,3)=cb
+
+     phi=0.
+     do n=0,3
+        k=-1
+        dphi=twopi*f0*dt
+        if(n.ge.2) dphi=twopi*f1*dt
+        do i=0,5
+           k=k+1
+           phi=phi+dphi
+           if(phi.gt.twopi) phi=phi-twopi
+           cd(k,n)=cmplx(cos(phi),sin(phi))
+        enddo
+
+        dphi=twopi*f0*dt
+        if(mod(n,2).eq.1) dphi=twopi*f1*dt
+        do i=6,11
+           k=k+1
+           phi=phi+dphi
+           if(phi.gt.twopi) phi=phi-twopi
+           cd(k,n)=cmplx(cos(phi),sin(phi))
+        enddo
+     enddo
 
      first=.false.
   endif
@@ -203,28 +218,32 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
      sig=0.
      ref=0.
      rdat(1:npts)=cdat
-!     is=1
+     iz=11
      do k=1,234                                !Compute soft symbols
         j=jpk+6*(k-1)
-        z0=2.0*dot_product(cdat(j:j+5),c0)
-        z1=2.0*dot_product(cdat(j:j+5),c1)
+
+        z0=2.0*dot_product(cdat(j:j+iz),cd(0:iz,0))
+        z1=2.0*dot_product(cdat(j:j+iz),cd(0:iz,1))
+        z2=2.0*dot_product(cdat(j:j+iz),cd(0:iz,2))
+        z3=2.0*dot_product(cdat(j:j+iz),cd(0:iz,3))
 
 !### Maybe these should be weighted by yellow() ?
-        if(j+1404+5.lt.npts) then
-           z0=z0 + dot_product(cdat(j+1404:j+1404+5),c0)
-           z1=z1 + dot_product(cdat(j+1404:j+1404+5),c1)
+        if(j+1404+iz.lt.npts) then
+           z0=z0 + dot_product(cdat(j+1404:j+1404+iz),cd(0:iz,0))
+           z1=z1 + dot_product(cdat(j+1404:j+1404+iz),cd(0:iz,1))
+           z2=z2 + dot_product(cdat(j+1404:j+1404+iz),cd(0:iz,2))
+           z3=z3 + dot_product(cdat(j+1404:j+1404+iz),cd(0:iz,3))
         endif
 
         if(j-1404.ge.1) then
-           z0=z0 + dot_product(cdat(j-1404:j-1404+5),c0)
-           z1=z1 + dot_product(cdat(j-1404:j-1404+5),c1)
+           z0=z0 + dot_product(cdat(j-1404:j-1404+iz),cd(0:iz,0))
+           z1=z1 + dot_product(cdat(j-1404:j-1404+iz),cd(0:iz,1))
+           z2=z2 + dot_product(cdat(j-1404:j-1404+iz),cd(0:iz,2))
+           z3=z3 + dot_product(cdat(j-1404:j-1404+iz),cd(0:iz,3))
         endif
 
-        sym=abs(real(z1))-abs(real(z0))
-!        x0=is*dot_product(rdat(j:j+5),s0)
-!        x1=is*dot_product(rdat(j:j+5),s1)
-!        sym2=x1-x0
-!        if(sym2.lt.0.0) is=-is
+        sym=max(abs(real(z2)),abs(real(z3))) - max(abs(real(z0)),abs(real(z1)))
+
         if(sym.lt.0.0) then
            phi=atan2(aimag(z0),real(z0))
            sig=sig + real(z0)**2
@@ -234,7 +253,6 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
            sig=sig + real(z1)**2
            ref=ref + aimag(z1)**2
         endif
-!        sym=2*sym2
         n=k
         if(ipk.eq.2) n=k+47
         if(ipk.eq.3) n=k+128
@@ -242,8 +260,6 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         ibit=0
         if(sym.ge.0) ibit=1
         symbol(n)=sym
-!        write(71,5001) k,z0,z1,sym,real(z1)-real(z0),x0,x1,phi,rmax,is
-!5001    format(i3,9f6.1,f6.2,i3)
      enddo
      snr=db(sig/ref-1.0)
      call timer('softsym ',1)
@@ -287,10 +303,7 @@ subroutine syncmsk(cdat,npts,jpk,ipk,idf,rmax,snr,metric,decoded)
         read(c72,1014) i4Msg6BitWords
 1014    format(12b6.6)
         call unpackmsg(i4Msg6BitWords,decoded)      !Unpack to get msgsent
-!        print*,freq2,snr2
      endif
-!     write(71,3301) r(jpk),ss1(jpk),decoded
-!3301 format(2f12.3,2x,a22)
      if(decoded.ne.'                      ') exit
   enddo
   call timer('sync3   ',1)
