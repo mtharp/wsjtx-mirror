@@ -3288,7 +3288,6 @@ void MainWindow::on_actionJT9_triggered()
   }
   m_toneSpacing=0.0;
   ui->actionJT9->setChecked(true);
-  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_wideGraph->setMode(m_mode);
   m_wideGraph->setModeTx(m_modeTx);
   ui->pbTxMode->setVisible(false);
@@ -3317,6 +3316,7 @@ void MainWindow::on_actionJT9_triggered()
     ui->decodedTextLabel2->setText("UTC   dB   DT Freq   Message");
     ui->sbTR->setVisible(false);
   }
+  m_wideGraph->setPeriod(m_TRperiod,m_nsps);
   m_modulator->setPeriod(m_TRperiod); // TODO - not thread safe
   m_detector->setPeriod(m_TRperiod);  // TODO - not thread safe
   ui->label_6->setText("Band Activity");
