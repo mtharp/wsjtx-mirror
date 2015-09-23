@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
     extern int optind;
     
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
-    int workdat[63];
+    int workdat[63], correct[63];
     int era_pos[51];
     int c, i, numera, nerr, nn=63, kk=12;
     char *infile;
@@ -132,20 +132,13 @@ int main(int argc, char *argv[]){
         rxdat2[i]=mr2sym[62-i];
         rxprob2[i]=mr2prob[62-i];
     }
-
-/*
-    for (i=0; i<63; i++) {
-        printf("%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
-    }
-*/
     
     // sort the mrsym probabilities to find the least reliable symbols
     int k, pass, tmp, nsym=63;
     int probs[63], indexes[63];
     for (i=0; i<63; i++) {
         indexes[i]=i;
-//        probs[i]=rxprob[i]-rxprob2[i];
-        probs[i]=rxprob[i];
+        probs[i]=rxprob[i]; // must un-comment sfrsd metrics in demod64a
 
     }
     for (pass = 1; pass <= nsym-1; pass++) {
@@ -236,6 +229,7 @@ int main(int argc, char *argv[]){
                     nsoft_min=nsoft;
                     nhard_min=nhard;
                     memcpy(bestdat,dat4,12*sizeof(int));
+                    memcpy(correct,workdat,63*sizeof(int));
                 }
                 
             } else {
@@ -282,6 +276,7 @@ int main(int argc, char *argv[]){
                     nsoft_min=nsoft;
                     nhard_min=nhard;
                     memcpy(bestdat,dat4,12*sizeof(int));
+                    memcpy(correct,workdat,63*sizeof(int));
                 }
                 
             } else {
@@ -296,6 +291,11 @@ int main(int argc, char *argv[]){
     fprintf(logfile,"%d candidates after GMD\n",ncandidates);
 
     if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
+        for (i=0; i<63; i++) {
+            fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
+//            fprintf(logfile,"%3d %3d %3d %3d %3d\n",i,workdat[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
+        }
+
         fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",ncandidates,nhard_min,nsoft_min,nsum);
         datfile=fopen(infile,"wb");
         if( !datfile ) {
