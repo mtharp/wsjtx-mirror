@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
     int verbose=0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     
-    while ( (c = getopt(argc, argv, "n:v")) !=-1 ) {
+    while ( (c = getopt(argc, argv, "n:qv")) !=-1 ) {
         switch (c) {
             case 'n':
                 ntrials=(int)strtof(optarg,NULL);
@@ -62,6 +62,8 @@ int main(int argc, char *argv[]){
                 break;
             case 'v':
                 verbose=1;
+                break;
+            case 'q': //accept (and ignore) -q option for WSJT10 compatibility
                 break;
             case '?':
                 usage();
