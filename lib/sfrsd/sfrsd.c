@@ -4,7 +4,7 @@
  A soft-decision decoder for the JT65 (63,12) Reed-Solomon code.
  
  This decoding scheme is built around Phil Karn's Berlekamp-Massey
- errors and erasures decoder. The approach is inspired by a number of 
+ errors and erasures decoder. The approach is inspired by a number of
  publications, including the stochastic Chase decoder described
  in "Stochastic Chase Decoding of Reed-Solomon Codes", by Leroux et al.,
  IEEE Communications Letters, Vol. 14, No. 9, September 2010 and
@@ -56,24 +56,24 @@ int main(int argc, char *argv[]){
     
     while ( (c = getopt(argc, argv, "n:qv")) !=-1 ) {
         switch (c) {
-            case 'n':
+                case 'n':
                 ntrials=(int)strtof(optarg,NULL);
                 printf("ntrials set to %d\n",ntrials);
                 break;
-            case 'v':
+                case 'v':
                 verbose=1;
                 break;
-            case 'q': //accept (and ignore) -q option for WSJT10 compatibility
+                case 'q': //accept (and ignore) -q option for WSJT10 compatibility
                 break;
-            case '?':
+                case '?':
                 usage();
                 exit(1);
         }
     }
     
     if( optind+1 > argc) {
-//        usage();
-//        exit(1);
+        //        usage();
+        //        exit(1);
         infile="kvasd.dat";
     } else {
         infile=argv[optind];
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
         fread(&mr2prob,sizeof(int),63,datfile);
         fread(&nsec2,sizeof(int),1,datfile);
         fread(&ncount,sizeof(int),1,datfile);
-//        printf("ncount %d\n",ncount);
+        //        printf("ncount %d\n",ncount);
         fread(&dat4,sizeof(int),12,datfile);
         fclose(datfile);
     }
@@ -108,25 +108,25 @@ int main(int argc, char *argv[]){
     // initialize the ka9q reed solomon encoder/decoder
     unsigned int symsize=6, gfpoly=0x43, fcr=3, prim=1, nroots=51;
     rs=init_rs_int(symsize, gfpoly, fcr, prim, nroots, 0);
-
-/*    // debug
-    int revdat[12], parity[51], correct[63];
-    for (i=0; i<12; i++) {
-        revdat[i]=dat4[11-i];
-        printf("%d ",revdat[i]);
-    }
-    printf("\n");
-    encode_rs_int(rs,revdat,parity);
-    for (i=0; i<63; i++) {
-        if( i<12 ) {
-            correct[i]=revdat[i];
-            printf("%d ",parity[i]);
-        } else {
-            correct[i]=parity[i-12];
-        }
-    }
-    printf("\n");
-*/
+    
+    /*    // debug
+     int revdat[12], parity[51], correct[63];
+     for (i=0; i<12; i++) {
+     revdat[i]=dat4[11-i];
+     printf("%d ",revdat[i]);
+     }
+     printf("\n");
+     encode_rs_int(rs,revdat,parity);
+     for (i=0; i<63; i++) {
+     if( i<12 ) {
+     correct[i]=revdat[i];
+     printf("%d ",parity[i]);
+     } else {
+     correct[i]=parity[i-12];
+     }
+     }
+     printf("\n");
+     */
     
     // reverse the received symbol vector for bm decoder
     for (i=0; i<63; i++) {
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]){
     for (i=0; i<63; i++) {
         indexes[i]=i;
         probs[i]=rxprob[i]; // must un-comment sfrsd metrics in demod64a
-
+        
     }
     for (pass = 1; pass <= nsym-1; pass++) {
         for (k = 0; k < nsym - pass; k++) {
@@ -185,11 +185,11 @@ int main(int argc, char *argv[]){
     int thresh, nsum;
     ncandidates=0;
     
-
+    
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
         memcpy(workdat,rxdat,sizeof(rxdat));
-
+        
         // mark a subset of the symbols as erasures
         numera=0;
         for (i=0; i<nn; i++) {
@@ -206,26 +206,26 @@ int main(int argc, char *argv[]){
                 p_erase = 0.8;
             }
             thresh = p_erase*100;
-	    long int ir;
+            long int ir;
 #ifdef WIN32
-	    ir=rand();
+            ir=rand();
 #else
-	    ir=random();
+            ir=random();
 #endif
             if( ((ir % 100) < thresh ) && numera < 51 ) {
                 era_pos[numera]=indexes[62-i];
                 numera=numera+1;
             }
         }
-
+        
         nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
         
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-//            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
-//            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-//            fprintf(logfile,"\n");
+            //            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
+            //            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+            //            fprintf(logfile,"\n");
             nhard=0;
             nsoft=0;
             nsum=0;
@@ -255,8 +255,8 @@ int main(int argc, char *argv[]){
     }
     
     fprintf(logfile,"%d candidates after stochastic loop\n",ncandidates);
-
-// do Forney Generalized Minimum Distance pattern
+    
+    // do Forney Generalized Minimum Distance pattern
     for (k=0; k<25; k++) {
         memset(era_pos,0,51*sizeof(int));
         numera=2*k;
@@ -270,9 +270,9 @@ int main(int argc, char *argv[]){
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-//            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
-//            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-//            fprintf(logfile,"\n");
+            //            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
+            //            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
+            //            fprintf(logfile,"\n");
             nhard=0;
             nsoft=0;
             nsum=0;
@@ -302,33 +302,37 @@ int main(int argc, char *argv[]){
     }
     
     fprintf(logfile,"%d candidates after GMD\n",ncandidates);
-
+    
     if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
         for (i=0; i<63; i++) {
             fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
-//            fprintf(logfile,"%3d %3d %3d %3d %3d\n",i,workdat[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
+            //            fprintf(logfile,"%3d %3d %3d %3d %3d\n",i,workdat[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
         }
-
+        
         fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",ncandidates,nhard_min,nsoft_min,nsum);
-        datfile=fopen(infile,"wb");
-        if( !datfile ) {
-            printf("Unable to open kvasd.dat\n");
-            return 1;
-        } else {
-            fwrite(&nsec,sizeof(int),1,datfile);
-            fwrite(&xlambda,sizeof(float),1,datfile);
-            fwrite(&maxe,sizeof(int),1,datfile);
-            fwrite(&nads,sizeof(int),1,datfile);
-            fwrite(&mrsym,sizeof(int),63,datfile);
-            fwrite(&mrprob,sizeof(int),63,datfile);
-            fwrite(&mr2sym,sizeof(int),63,datfile);
-            fwrite(&mr2prob,sizeof(int),63,datfile);
-            fwrite(&nsec2,sizeof(int),1,datfile);
-            fwrite(&nhard_min,sizeof(int),1,datfile);
-            fwrite(&bestdat,sizeof(int),12,datfile);
-            fclose(datfile);
-        }
+    } else {
+        nhard_min=-1;
+        memset(bestdat,0,12*sizeof(int));
     }
+    datfile=fopen(infile,"wb");
+    if( !datfile ) {
+        printf("Unable to open kvasd.dat\n");
+        return 1;
+    } else {
+        fwrite(&nsec,sizeof(int),1,datfile);
+        fwrite(&xlambda,sizeof(float),1,datfile);
+        fwrite(&maxe,sizeof(int),1,datfile);
+        fwrite(&nads,sizeof(int),1,datfile);
+        fwrite(&mrsym,sizeof(int),63,datfile);
+        fwrite(&mrprob,sizeof(int),63,datfile);
+        fwrite(&mr2sym,sizeof(int),63,datfile);
+        fwrite(&mr2prob,sizeof(int),63,datfile);
+        fwrite(&nsec2,sizeof(int),1,datfile);
+        fwrite(&nhard_min,sizeof(int),1,datfile);
+        fwrite(&bestdat,sizeof(int),12,datfile);
+        fclose(datfile);
+    }
+    
     fprintf(logfile,"exiting sfrsd\n");
     fflush(logfile);
     fclose(logfile);
