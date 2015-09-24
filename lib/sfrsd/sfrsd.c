@@ -72,8 +72,9 @@ int main(int argc, char *argv[]){
     }
     
     if( optind+1 > argc) {
-        usage();
-        exit(1);
+//        usage();
+//        exit(1);
+        infile="kvasd.dat";
     } else {
         infile=argv[optind];
     }
