@@ -49,26 +49,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     // initialize the ka9q reed solomon encoder/decoder
     unsigned int symsize=6, gfpoly=0x43, fcr=3, prim=1, nroots=51;
     rs=init_rs_int(symsize, gfpoly, fcr, prim, nroots, 0);
-    
-    /*    // debug
-     int revdat[12], parity[51], correct[63];
-     for (i=0; i<12; i++) {
-     revdat[i]=dat4[11-i];
-     printf("%d ",revdat[i]);
-     }
-     printf("\n");
-     encode_rs_int(rs,revdat,parity);
-     for (i=0; i<63; i++) {
-     if( i<12 ) {
-     correct[i]=revdat[i];
-     printf("%d ",parity[i]);
-     } else {
-     correct[i]=parity[i-12];
-     }
-     }
-     printf("\n");
-     */
-    
+
     // reverse the received symbol vector for bm decoder
     for (i=0; i<63; i++) {
         rxdat[i]=mrsym[62-i];
@@ -268,27 +249,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
         nhard_min=-1;
         memset(bestdat,0,12*sizeof(int));
     }
-
-/*  ###
-    datfile=fopen(infile,"wb");
-    if( !datfile ) {
-        printf("Unable to open kvasd.dat\n");
-        return 1;
-    } else {
-        fwrite(&nsec,sizeof(int),1,datfile);
-        fwrite(&xlambda,sizeof(float),1,datfile);
-        fwrite(&maxe,sizeof(int),1,datfile);
-        fwrite(&nads,sizeof(int),1,datfile);
-        fwrite(&mrsym,sizeof(int),63,datfile);
-        fwrite(&mrprob,sizeof(int),63,datfile);
-        fwrite(&mr2sym,sizeof(int),63,datfile);
-        fwrite(&mr2prob,sizeof(int),63,datfile);
-        fwrite(&nsec2,sizeof(int),1,datfile);
-        fwrite(&nhard_min,sizeof(int),1,datfile);
-        fwrite(&bestdat,sizeof(int),12,datfile);
-        fclose(datfile);
-    }
-### */
     
     fprintf(logfile,"exiting sfrsd\n");
     fflush(logfile);
