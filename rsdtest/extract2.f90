@@ -2,15 +2,14 @@ subroutine extract2(s3,nadd,ntrials,param,decoded)
 
   real s3(64,63)
   real tmp(4032)
-  character decoded*22
+  character msg*22
   integer dat4(12)
   integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
   integer correct(0:62)
   integer param(0:7)
   integer indx(0:62)
-  logical first
   common/extcom/ntdecode
-  data first/.true./,nsec1/0/
+  data ndone/0/,ngood/0/
   save
 
   nfail=0
@@ -41,7 +40,13 @@ subroutine extract2(s3,nadd,ntrials,param,decoded)
 
   nverbose=0
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,param,indx)
-  ncount=param(1)
+  ncandidates=param(0)
+  nhard=param(1)
+  nsoft=param(2)
+  nera=param(3)
+  ngmd=param(4)
+  ndone=ndone+1
+
   do i=1,12
      dat4(i)=correct(12-i)
   enddo
@@ -61,15 +66,23 @@ subroutine extract2(s3,nadd,ntrials,param,decoded)
         n=0
         n0=n0+1
      endif
+     p1=mrprob(i)/255.0 + 1.e-10
+     p2=mr2prob(i)/255.0
+     if(n.eq.2) then
+        write(34,1002) p1,p2,p2/p1,p1-p2,(p1-p2)/p1
+1002    format(5f9.3)
+     else
+        write(33,1002) p1,p2,p2/p1,p1-p2,(p1-p2)/p1
+     endif
   enddo
-  param(5)=n1
-  param(6)=n2
-  param(7)=n0
 
-  decoded='                      '
-  if(ncount.ge.0) then
-     call unpackmsg(dat4,decoded) !Unpack the user message
-  endif
+  msg='                      '
+  if(nhard.ge.0) call unpackmsg(dat4,msg) !Unpack the user message
+  if(msg.eq.'VK7MO K1JT FN20       ') ngood=ngood+1
+  frac=float(ngood)/ndone
+  write(*,1010) ndone,frac,ncandidates,nhard,nsoft,nera,ngmd,n1,n2,n0,msg
+  write(32,1010) ndome,frac,ncandidates,nhard,nsoft,nera,ngmd,n1,n2,n0,msg
+1010 format(i5,f8.3,i9,7i4,2x,a22)
 
   return
 end subroutine extract2

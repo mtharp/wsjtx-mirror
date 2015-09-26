@@ -31,7 +31,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int workdat[63];
     int era_pos[51];
     int c, i, numera, nerr, nn=63, kk=12;
-    FILE *datfile, *logfile;
+    FILE *datfile, *logfile, *fdiag;
     int nsec, maxe, nads;
     float xlambda;
     int nsec2,ncount,dat4[12],bestdat[12];
@@ -39,8 +39,11 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int verbose = *verbose0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     int ngmd,nera_best;
+    int ne;
+    int d4good[12]={53,22,5,49,23,55,3,29,53,53,39,14};
     
-    logfile=fopen("/tmp/sfrsd.log","a");
+    fdiag=fopen("fdiag.txt","a");
+    logfile=fopen("sfrsd.log","a");
     if( !logfile ) {
         printf("Unable to open sfrsd.log\n");
         exit(1);
@@ -114,7 +117,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int thresh, nsum;
     ncandidates=0;
     
-    
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
         memcpy(workdat,rxdat,sizeof(rxdat));
@@ -155,6 +157,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
             //            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
             //            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
             //            fprintf(logfile,"\n");
+
             nhard=0;
             nsoft=0;
             nsum=0;
@@ -165,6 +168,13 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
                     nsoft=nsoft+rxprob[i];
                 }
             }
+	    ne=0;
+            for(i=0; i<12; i++) {
+	      //	      fprintf(fdiag,"%3d",dat4[i]);
+	      if(dat4[i] != d4good[i]) ne++;
+	    }
+            fprintf(fdiag,"%3d %3d %5d %3d %5d %3d %3d\n",ncandidates,nerr,
+		    nsum,nhard,nsoft,63*nsoft/nsum,ne);
             if( nsum != 0 ) {
                 nsoft=63*nsoft/nsum;
                 if( (nsoft < nsoft_min) ) {
@@ -253,6 +263,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     fprintf(logfile,"exiting sfrsd\n");
     fflush(logfile);
     fclose(logfile);
+    fclose(fdiag);
     param[0]=ncandidates;
     param[1]=nhard_min;
     param[2]=nsoft_min;
