@@ -117,7 +117,9 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int thresh0[63];
     ncandidates=0;
 
+    nsum=0;
     for (i=0; i<nn; i++) {
+      nsum=nsum+rxprob[i];
       j = indexes[62-i];
       ratio = (float)rxprob2[j]/(float)rxprob[j];
       ratio0[i]=ratio;
@@ -129,6 +131,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
       }      
       thresh0[i] = p_erase*100.0;
     }
+    if(nsum==0) return;
     
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
@@ -166,12 +169,14 @@ NB: j is the symbol-vector index of the symbol with rank i.
 
             nhard=0;
             nsoft=0;
-            nsum=0;
             for (i=0; i<63; i++) {
-                nsum=nsum+rxprob[i];
-                if( workdat[i] != rxdat[i] ) {
+                if(workdat[i] != rxdat[i]) {
                     nhard=nhard+1;
-                    nsoft=nsoft+rxprob[i];
+		    if(workdat[i] != rxdat2[i]) {
+		      nsoft=nsoft+rxprob[i];
+		    } else {
+		      nsoft=nsoft+rxprob[i]/2;     //### empirical 
+		    }
                 }
             }
 	    ne=0;
@@ -181,23 +186,16 @@ NB: j is the symbol-vector index of the symbol with rank i.
 	    }
             fprintf(fdiag,"%3d %3d %5d %3d %5d %3d %3d\n",ncandidates,nerr,
 		    nsum,nhard,nsoft,63*nsoft/nsum,ne);
-            if( nsum != 0 ) {
-                nsoft=63*nsoft/nsum;
-                if( (nsoft < nsoft_min) ) {
-                    nsoft_min=nsoft;
-                    nhard_min=nhard;
-                    memcpy(bestdat,dat4,12*sizeof(int));
-                    memcpy(correct,workdat,63*sizeof(int));
-		    ngmd=0;
-		    nera_best=numera;
-                }
-                
-            } else {
-                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
-            }
-            if( (nsoft_min < 36) && (nhard_min < 44) ) {
-                break;
-            }
+	    nsoft=63*nsoft/nsum;
+	    if( (nsoft < nsoft_min) ) {
+	      nsoft_min=nsoft;
+	      nhard_min=nhard;
+	      memcpy(bestdat,dat4,12*sizeof(int));
+	      memcpy(correct,workdat,63*sizeof(int));
+	      ngmd=0;
+	      nera_best=numera;
+	    }
+            if( (nsoft_min < 36) && (nhard_min < 44) ) break;
         }
     }
     
