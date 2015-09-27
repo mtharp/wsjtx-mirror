@@ -96,7 +96,7 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
        mrprob(62-indx(37)),msg
   write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nhard+nsoft,  &
        mrprob(62-indx(37)),msg
-1010 format(i5,2f7.3,i6,5i4,1x,a22)
+1010 format(i5,2f7.3,i7,5i4,1x,a22)
   flush(32)
 
   rewind 40
