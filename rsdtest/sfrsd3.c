@@ -141,7 +141,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
             ir=random();
 #endif
             if( ((ir % 100) < thresh ) && numera < 51 ) {
-                era_pos[numera]=indexes[62-i];
+                era_pos[numera]=j;
                 numera=numera+1;
             }
         }
@@ -186,65 +186,14 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
             } else {
                 fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
             }
-	    //            if( ncandidates >= 5000 ) {
-            if( ncandidates >= ntrials/2 ) {
+            if( (nsoft_min < 36) && (nhard_min < 44) ) {
                 break;
             }
         }
     }
     
-    fprintf(logfile,"%d candidates after stochastic loop\n",ncandidates);
-    
-    // do Forney Generalized Minimum Distance pattern
-    for (k=0; k<25; k++) {
-        memset(era_pos,0,51*sizeof(int));
-        numera=2*k;
-        for (i=0; i<numera; i++) {
-            era_pos[i]=indexes[62-i];
-        }
-        
-        memcpy(workdat,rxdat,sizeof(rxdat));
-        nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
-        
-        if( nerr >= 0 ) {
-            ncandidates=ncandidates+1;
-            for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            //            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
-            //            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-            //            fprintf(logfile,"\n");
-            nhard=0;
-            nsoft=0;
-            nsum=0;
-            for (i=0; i<63; i++) {
-                nsum=nsum+rxprob[i];
-                if( workdat[i] != rxdat[i] ) {
-                    nhard=nhard+1;
-                    nsoft=nsoft+rxprob[i];
-                }
-            }
-            if( nsum != 0 ) {
-                nsoft=63*nsoft/nsum;
-                if( (nsoft < nsoft_min) ) {
-                    nsoft_min=nsoft;
-                    nhard_min=nhard;
-                    memcpy(bestdat,dat4,12*sizeof(int));
-                    memcpy(correct,workdat,63*sizeof(int));
-		    ngmd=1;
-		    nera_best=numera;
-                }
-                
-            } else {
-                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
-            }
-	    //            if( ncandidates >=5000 ) {
-            if( ncandidates >= ntrials/2 ) {
-                break;
-            }
-        }
-    }
-    
-    fprintf(logfile,"%d candidates after GMD\n",ncandidates);
-    
+    fprintf(logfile,"%d trials and %d candidates after stochastic loop\n",k,ncandidates);
+
     if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
         for (i=0; i<63; i++) {
             fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
