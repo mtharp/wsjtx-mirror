@@ -12,7 +12,7 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   integer indx(0:62)
   logical first
   common/extcom/ntdecode
-  data ndone/0/,ngood/0/,first/.true./
+  data ndone/0/,ngood/0/,nbad/0/,first/.true./
   save
 
   if(first) then
@@ -64,33 +64,39 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
 
 
   msg='                      '
-  if(nhard.ge.0) call unpackmsg(dat4,msg) !Unpack the user message
-  if(msg.eq.'VK7MO K1JT FN20       ') then
-     ngood=ngood+1
-     n0=0
-     n1=0
-     n2=0
-     do k=0,62
-        j=indx(k)
-        i=(62-j)
-        p1=mrprob(i)/255.0 + 1.e-10
-        p2=mr2prob(i)/255.0
-        ii=k/8
-        jj=7.9999*p2/p1
-        ns(ii,jj)=ns(ii,jj)+1
-        if(correct(j).eq.mrsym(i)) then
-           np1(ii,jj)=np1(ii,jj)+1
-        else
-           np0(ii,jj)=np0(ii,jj)+1
-        endif
-        if(correct(j).eq.mr2sym(i)) np2(ii,jj)=np2(ii,jj)+1
-     enddo
+ if(nhard.ge.0) then
+!  if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
+!       (nhard+nsoft).le.73) then
+     call unpackmsg(dat4,msg) !Unpack the user message
+     if(msg.eq.'VK7MO K1JT FN20       ') then
+        ngood=ngood+1
+        do k=0,62
+           j=indx(k)
+           i=(62-j)
+           p1=mrprob(i)/255.0 + 1.e-10
+           p2=mr2prob(i)/255.0
+           ii=k/8
+           jj=7.9999*p2/p1
+           ns(ii,jj)=ns(ii,jj)+1
+           if(correct(j).eq.mrsym(i)) then
+              np1(ii,jj)=np1(ii,jj)+1
+           else
+              np0(ii,jj)=np0(ii,jj)+1
+           endif
+           if(correct(j).eq.mr2sym(i)) np2(ii,jj)=np2(ii,jj)+1
+        enddo
+     else
+        nbad=nbad+1
+     endif
   endif
-  frac=float(ngood)/ndone
+  fgood=float(ngood)/ndone
+  fbad=float(nbad)/ndone
 
-  write(*,1010) ndone,frac,ncandidates,nhard,nsoft,nera,ngmd,msg
-  write(32,1010) ndone,frac,ncandidates,nhard,nsoft,nera,ngmd,msg
-1010 format(i5,f8.3,i9,4i4,2x,a22)
+  write(*,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nhard+nsoft,   &
+       mrprob(62-indx(37)),msg
+  write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nhard+nsoft,  &
+       mrprob(62-indx(37)),msg
+1010 format(i5,2f7.3,i6,5i4,1x,a22)
   flush(32)
 
   rewind 40

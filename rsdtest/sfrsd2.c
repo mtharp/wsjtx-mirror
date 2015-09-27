@@ -31,16 +31,13 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int workdat[63],workdat2[63];
     int era_pos[51];
     int c, i, numera, nerr, nn=63, kk=12;
-    FILE *datfile, *logfile, *fdiag;
+    FILE *datfile, *logfile;
     int ncount,dat4[12],bestdat[12];
     int ntrials = *ntrials0;
     int verbose = *verbose0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     int ngmd,nera_best;
-    int ne;
-    int d4good[12]={53,22,5,49,23,55,3,29,53,53,39,14};    
 
-    fdiag=fopen("fdiag.txt","a");
     logfile=fopen("sfrsd.log","a");
     if( !logfile ) {
         printf("Unable to open sfrsd.log\n");
@@ -86,9 +83,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     nerr=decode_rs_int(rs,workdat,era_pos,numera,1);
     if( nerr >= 0 ) {
         fprintf(logfile,"   BM decode nerrors= %3d : ",nerr);
-	//        for(i=0; i<12; i++) printf("%2d ",workdat[11-i]);
-	//        fprintf(logfile,"\n");
-        //fclose(logfile);
 	memcpy(correct,workdat,63*sizeof(int));
 	ngmd=-1;
 	param[0]=0;
@@ -155,7 +149,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
                 numera=numera+1;
             }
         }
-        
+
         nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
         
         if( nerr >= 0 ) {
@@ -173,17 +167,10 @@ NB: j is the symbol-vector index of the symbol with rank i.
 		    if(workdat[i] != rxdat2[i]) {
 		      nsoft=nsoft+rxprob[i];
 		    } else {
-		      nsoft=nsoft+rxprob[i]/2;     //### empirical 
+		      nsoft=nsoft+rxprob[i]/2;     //??? empirical ???
 		    }
                 }
             }
-	    ne=0;
-            for(i=0; i<12; i++) {
-	      //	      fprintf(fdiag,"%3d",dat4[i]);
-	      if(dat4[i] != d4good[i]) ne++;
-	    }
-            fprintf(fdiag,"%3d %3d %5d %3d %5d %3d %3d\n",ncandidates,nerr,
-		    nsum,nhard,nsoft,63*nsoft/nsum,ne);
 	    nsoft=63*nsoft/nsum;
 	    if( (nsoft < nsoft_min) ) {
 	      nsoft_min=nsoft;
@@ -193,7 +180,9 @@ NB: j is the symbol-vector index of the symbol with rank i.
 	      ngmd=0;
 	      nera_best=numera;
 	    }
-            if( (nsoft_min < 36) && (nhard_min < 44) ) break;
+	    if(nsoft_min < 27) break;
+            if((nsoft_min < 32) && (nhard_min < 43) && 
+		(nhard_min+nsoft_min) < 74) break;
         }
     }
     
@@ -214,7 +203,6 @@ NB: j is the symbol-vector index of the symbol with rank i.
     fprintf(logfile,"exiting sfrsd\n");
     fflush(logfile);
     fclose(logfile);
-    fclose(fdiag);
     param[0]=ncandidates;
     param[1]=nhard_min;
     param[2]=nsoft_min;
