@@ -119,21 +119,21 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
         memcpy(workdat,rxdat,sizeof(rxdat));
- 
-        // mark a subset of the symbols as erasures
+
+/* 
+Mark a subset of the symbols as erasures.
+Run through the ranked symbols, starting with the worst, i=0.
+NB: j is the symbol-vector index of the symbol with rank i.
+*/
         numera=0;
-        for (i=0; i<nn; i++) { // run through the ranked symbols, starting with the worst, i=0;
-            j = indexes[62-i]; // j is the symbol-vector index of the symbol with rank i.
-            ratio = rxprob2[j]/rxprob[j];   
-
-//(0.8, 0.9, 0.3 = 713) (0.7, 0.9, 0.3 = 675ish) (0.9,0.9,0.3 = 721) (0.9,0.9,0.2 = 713)
-//(0.8,0.9,0.6 = 591) (0.8,0.9,0.5=666), (0.8,0.9,0.4=710), (0.8,0.9,0.3=713)
-
+        for (i=0; i<nn; i++) {
+            j = indexes[62-i];
+            ratio = (float)rxprob2[j]/(float)rxprob[j];
             p_erase=0.9; 
-            if( (ratio > 0.5) && (i < 32)) {    
-                p_erase = 0.90;
-            } else if (( i > 42 ) && ( ratio <= 0.5 )) {
-                p_erase=0.3; 
+            if( (ratio > 0.4) && (i < 32)) {    
+                p_erase = 0.99;
+            } else if (( i > 38 ) && ( ratio <= 0.5)) {
+	      p_erase=0.5 - 0.2*(i-38.0)/24.0;
             }      
             thresh = p_erase*100;
             long int ir;
