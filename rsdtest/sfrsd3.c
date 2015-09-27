@@ -28,7 +28,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 	     int indexes[])
 {        
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
-    int workdat[63];
+    int workdat[63],workdat2[63];
     int era_pos[51];
     int c, i, numera, nerr, nn=63, kk=12;
     FILE *datfile, *logfile, *fdiag;
@@ -112,9 +112,23 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 #else
     srandom(0xdeadbeef);
 #endif
-    float p_erase, ratio;
+    float p_erase, ratio, ratio0[63];
     int thresh, nsum, j;
+    int thresh0[63];
     ncandidates=0;
+
+    for (i=0; i<nn; i++) {
+      j = indexes[62-i];
+      ratio = (float)rxprob2[j]/(float)rxprob[j];
+      ratio0[i]=ratio;
+      p_erase=0.9; 
+      if( (ratio > 0.4) && (i < 32)) {    
+	p_erase = 0.99;
+      } else if (( i > 38 ) && ( ratio <= 0.5)) {
+	p_erase=0.5 - 0.2*(i-38.0)/24.0;
+      }      
+      thresh0[i] = p_erase*100.0;
+    }
     
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
@@ -128,14 +142,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
         numera=0;
         for (i=0; i<nn; i++) {
             j = indexes[62-i];
-            ratio = (float)rxprob2[j]/(float)rxprob[j];
-            p_erase=0.9; 
-            if( (ratio > 0.4) && (i < 32)) {    
-                p_erase = 0.99;
-            } else if (( i > 38 ) && ( ratio <= 0.5)) {
-	      p_erase=0.5 - 0.2*(i-38.0)/24.0;
-            }      
-            thresh = p_erase*100;
+	    thresh=thresh0[i];
             long int ir;
 #ifdef WIN32
             ir=rand();

@@ -28,7 +28,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 	     int indexes[])
 {        
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
-    int workdat[63];
+    int workdat[63],workdat2[63];
     int era_pos[51];
     int c, i, numera, nerr, nn=63, kk=12;
     FILE *datfile, *logfile, *fdiag;
@@ -40,8 +40,8 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     int ngmd,nera_best;
     int ne;
-    int d4good[12]={53,22,5,49,23,55,3,29,53,53,39,14};
-    
+    int d4good[12]={53,22,5,49,23,55,3,29,53,53,39,14};    
+
     fdiag=fopen("fdiag.txt","a");
     logfile=fopen("sfrsd.log","a");
     if( !logfile ) {
@@ -67,7 +67,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     for (i=0; i<63; i++) {
         indexes[i]=i;
         probs[i]=rxprob[i]; // must un-comment sfrsd metrics in demod64a
-        
     }
     for (pass = 1; pass <= nsym-1; pass++) {
         for (k = 0; k < nsym - pass; k++) {
@@ -113,30 +112,37 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 #else
     srandom(0xdeadbeef);
 #endif
-    float p_erase;
-    int thresh, nsum;
+    float p_erase, ratio, ratio0[63];
+    int thresh, nsum, j;
+    int thresh0[63];
     ncandidates=0;
+
+    for (i=0; i<nn; i++) {
+      j = indexes[62-i];
+      ratio = (float)rxprob2[j]/(float)rxprob[j];
+      ratio0[i]=ratio;
+      p_erase=0.9; 
+      if( (ratio > 0.4) && (i < 32)) {    
+	p_erase = 0.99;
+      } else if (( i > 38 ) && ( ratio <= 0.5)) {
+	p_erase=0.5 - 0.2*(i-38.0)/24.0;
+      }      
+      thresh0[i] = p_erase*100.0;
+    }
     
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
         memcpy(workdat,rxdat,sizeof(rxdat));
-        
-        // mark a subset of the symbols as erasures
+
+/* 
+Mark a subset of the symbols as erasures.
+Run through the ranked symbols, starting with the worst, i=0.
+NB: j is the symbol-vector index of the symbol with rank i.
+*/
         numera=0;
         for (i=0; i<nn; i++) {
-            p_erase=0.0;
-            if( probs[62-i] >= 255 ) {
-                p_erase = 0.5;
-            } else if ( probs[62-i] >= 196 ) {
-                p_erase = 0.6;
-            } else if ( probs[62-i] >= 128 ) {
-                p_erase = 0.6;
-            } else if ( probs[62-i] >= 32 ) {
-                p_erase = 0.6;
-            } else {
-                p_erase = 0.8;
-            }
-            thresh = p_erase*100;
+            j = indexes[62-i];
+	    thresh=thresh0[i];
             long int ir;
 #ifdef WIN32
             ir=rand();
@@ -144,7 +150,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
             ir=random();
 #endif
             if( ((ir % 100) < thresh ) && numera < 51 ) {
-                era_pos[numera]=indexes[62-i];
+                era_pos[numera]=j;
                 numera=numera+1;
             }
         }
@@ -189,65 +195,14 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
             } else {
                 fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
             }
-	    //            if( ncandidates >= 5000 ) {
-            if( ncandidates >= ntrials/2 ) {
+            if( (nsoft_min < 36) && (nhard_min < 44) ) {
                 break;
             }
         }
     }
     
-    fprintf(logfile,"%d candidates after stochastic loop\n",ncandidates);
-    
-    // do Forney Generalized Minimum Distance pattern
-    for (k=0; k<25; k++) {
-        memset(era_pos,0,51*sizeof(int));
-        numera=2*k;
-        for (i=0; i<numera; i++) {
-            era_pos[i]=indexes[62-i];
-        }
-        
-        memcpy(workdat,rxdat,sizeof(rxdat));
-        nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
-        
-        if( nerr >= 0 ) {
-            ncandidates=ncandidates+1;
-            for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            //            fprintf(logfile,"GMD decode nerr= %3d : ",nerr);
-            //            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-            //            fprintf(logfile,"\n");
-            nhard=0;
-            nsoft=0;
-            nsum=0;
-            for (i=0; i<63; i++) {
-                nsum=nsum+rxprob[i];
-                if( workdat[i] != rxdat[i] ) {
-                    nhard=nhard+1;
-                    nsoft=nsoft+rxprob[i];
-                }
-            }
-            if( nsum != 0 ) {
-                nsoft=63*nsoft/nsum;
-                if( (nsoft < nsoft_min) ) {
-                    nsoft_min=nsoft;
-                    nhard_min=nhard;
-                    memcpy(bestdat,dat4,12*sizeof(int));
-                    memcpy(correct,workdat,63*sizeof(int));
-		    ngmd=1;
-		    nera_best=numera;
-                }
-                
-            } else {
-                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
-            }
-	    //            if( ncandidates >=5000 ) {
-            if( ncandidates >= ntrials/2 ) {
-                break;
-            }
-        }
-    }
-    
-    fprintf(logfile,"%d candidates after GMD\n",ncandidates);
-    
+    fprintf(logfile,"%d trials and %d candidates after stochastic loop\n",k,ncandidates);
+
     if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
         for (i=0; i<63; i++) {
             fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);

@@ -1,16 +1,27 @@
-subroutine extract2(s3,nadd,ntrials,param,decoded)
+subroutine extract2(s3,nadd,ntrials,param,msg)
 
   real s3(64,63)
   real tmp(4032)
+  integer np1(0:7,0:7),np2(0:7,0:7),np0(0:7,0:7)
+  integer ns(0:7,0:7)
   character msg*22
   integer dat4(12)
-  integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
+  integer mrsym(0:62),mr2sym(0:62),mrprob(0:62),mr2prob(0:62)
   integer correct(0:62)
   integer param(0:7)
   integer indx(0:62)
+  logical first
   common/extcom/ntdecode
-  data ndone/0/,ngood/0/
+  data ndone/0/,ngood/0/,first/.true./
   save
+
+  if(first) then
+     np1=0
+     np2=0
+     np0=0
+     ns=0
+     first=.false.
+  endif
 
   nfail=0
 1 call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
@@ -51,38 +62,52 @@ subroutine extract2(s3,nadd,ntrials,param,decoded)
      dat4(i)=correct(12-i)
   enddo
 
-  n0=0
-  n1=0
-  n2=0
-  do j=0,62
-     i=(62-j) + 1
-     if(correct(j).eq.mrsym(i)) then
-        n=1
-        n1=n1+1
-     else if(correct(j).eq.mr2sym(i)) then
-        n=2
-        n2=n2+1
-     else
-        n=0
-        n0=n0+1
-     endif
-     p1=mrprob(i)/255.0 + 1.e-10
-     p2=mr2prob(i)/255.0
-     if(n.eq.2) then
-        write(34,1002) p1,p2,p2/p1,p1-p2,(p1-p2)/p1
-1002    format(5f9.3)
-     else
-        write(33,1002) p1,p2,p2/p1,p1-p2,(p1-p2)/p1
-     endif
-  enddo
 
   msg='                      '
   if(nhard.ge.0) call unpackmsg(dat4,msg) !Unpack the user message
-  if(msg.eq.'VK7MO K1JT FN20       ') ngood=ngood+1
+  if(msg.eq.'VK7MO K1JT FN20       ') then
+     ngood=ngood+1
+     n0=0
+     n1=0
+     n2=0
+     do k=0,62
+        j=indx(k)
+        i=(62-j)
+        p1=mrprob(i)/255.0 + 1.e-10
+        p2=mr2prob(i)/255.0
+        ii=k/8
+        jj=7.9999*p2/p1
+        ns(ii,jj)=ns(ii,jj)+1
+        if(correct(j).eq.mrsym(i)) then
+           np1(ii,jj)=np1(ii,jj)+1
+        else
+           np0(ii,jj)=np0(ii,jj)+1
+        endif
+        if(correct(j).eq.mr2sym(i)) np2(ii,jj)=np2(ii,jj)+1
+     enddo
+  endif
   frac=float(ngood)/ndone
-  write(*,1010) ndone,frac,ncandidates,nhard,nsoft,nera,ngmd,n1,n2,n0,msg
-  write(32,1010) ndome,frac,ncandidates,nhard,nsoft,nera,ngmd,n1,n2,n0,msg
-1010 format(i5,f8.3,i9,7i4,2x,a22)
+
+  write(*,1010) ndone,frac,ncandidates,nhard,nsoft,nera,ngmd,msg
+  write(32,1010) ndone,frac,ncandidates,nhard,nsoft,nera,ngmd,msg
+1010 format(i5,f8.3,i9,4i4,2x,a22)
+  flush(32)
+
+  rewind 40
+  write(40,1080)
+1080 format('Totals:')
+  write(40,1090) ns
+1090 format(8i7)
+  write(40,1091)
+1091 format(/'error:')
+  write(40,1090) np0
+  write(40,1092)
+1092 format(/'sym = mrsym:')
+  write(40,1090) np1
+  write(40,1093)
+1093 format(/'sym = mr2sym:')
+  write(40,1090) np2
+  flush(40)
 
   return
 end subroutine extract2

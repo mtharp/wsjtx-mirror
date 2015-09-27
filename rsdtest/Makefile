@@ -25,12 +25,22 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 all:    rsdtest
 
 # Build rsdtest
-OBJS2 = rsdtest.o extract2.o demod64b.o sfrsd2.o
+OBJS2 = rsdtest.o extract2.o demod64b.o sfrsd2.o encode_rs_int.o \
+	decode_rs_int.o init_rs_int.o 
 rsdtest: $(OBJS2) ../libjt.a
 	$(FC) -o rsdtest $(OBJS2) ../libjt.a ../libpthreadGC2.a
 
 sfrsd: sfrsd.o encode_rs_int.o decode_rs_int.o init_rs_int.o
 	gcc -g -o $@ $^
+
+encode_rs_int.o: encode_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+decode_rs_int.o: decode_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+init_rs_int.o: init_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
 
 .PHONY : clean
 
