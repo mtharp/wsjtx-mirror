@@ -11,7 +11,7 @@
  "Soft-Decision Decoding of Reed-Solomon Codes Using Successive Error-
  and-Erasure Decoding," by Soo-Woong Lee and B. V. K. Vijaya Kumar.
  
- Steve Franke K9AN, Urbana IL, September 2015
+ Steve Franke K9AN and Joe Taylor K1JT
  */
 
 #include <stdio.h>
@@ -32,9 +32,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int era_pos[51];
     int c, i, numera, nerr, nn=63, kk=12;
     FILE *datfile, *logfile, *fdiag;
-    int nsec, maxe, nads;
-    float xlambda;
-    int nsec2,ncount,dat4[12],bestdat[12];
+    int ncount,dat4[12],bestdat[12];
     int ntrials = *ntrials0;
     int verbose = *verbose0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
