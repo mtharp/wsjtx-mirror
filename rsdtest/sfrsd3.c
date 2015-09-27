@@ -67,7 +67,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     for (i=0; i<63; i++) {
         indexes[i]=i;
         probs[i]=rxprob[i]; // must un-comment sfrsd metrics in demod64a
-        
     }
     for (pass = 1; pass <= nsym-1; pass++) {
         for (k = 0; k < nsym - pass; k++) {
@@ -123,16 +122,19 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
  
         // mark a subset of the symbols as erasures
         numera=0;
-        for (i=0; i<nn; i++) {
-            j = indexes[62-i]; // i=0/j=62 is lowest ranked symbol
+        for (i=0; i<nn; i++) { // run through the ranked symbols, starting with the worst, i=0;
+            j = indexes[62-i]; // j is the symbol-vector index of the symbol with rank i.
             ratio = rxprob2[j]/rxprob[j];   
 
-            p_erase=0.8;
+//(0.8, 0.9, 0.3 = 713) (0.7, 0.9, 0.3 = 675ish) (0.9,0.9,0.3 = 721) (0.9,0.9,0.2 = 713)
+//(0.8,0.9,0.6 = 591) (0.8,0.9,0.5=666), (0.8,0.9,0.4=710), (0.8,0.9,0.3=713)
+
+            p_erase=0.9; 
             if( (ratio > 0.5) && (i < 32)) {    
-              p_erase = 0.9;
+                p_erase = 0.90;
             } else if (( i > 42 ) && ( ratio <= 0.5 )) {
-              p_erase=0.5;
-            }
+                p_erase=0.3; 
+            }      
             thresh = p_erase*100;
             long int ir;
 #ifdef WIN32
