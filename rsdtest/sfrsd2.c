@@ -25,7 +25,7 @@ static void *rs;
 
 void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[], 
 	     int* ntrials0, int* verbose0, int correct[], int param[],
-	     int indexes[])
+	     int indexes[], double tt[], int ntry[])
 {        
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
     int workdat[63],workdat2[63];
@@ -37,6 +37,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int verbose = *verbose0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     int ngmd,nera_best;
+    clock_t t0=0,t1=0;
     int perr[8][8] = {
      12,     31,     44,     52,     60,     57,     50,     50,
      28,     38,     49,     58,     65,     69,     64,     80,
@@ -168,7 +169,10 @@ NB: j is the symbol-vector index of the symbol with rank i.
             }
         }
 
+	t0=clock();
         nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
+	t1=clock();
+	tt[0]+=(double)(t1-t0)/CLOCKS_PER_SEC;
         
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
@@ -195,12 +199,14 @@ NB: j is the symbol-vector index of the symbol with rank i.
 		memcpy(correct,workdat,63*sizeof(int));
 		ngmd=0;
 		nera_best=numera;
+		ntry[0]=k;
 	      }
 	    }
 	    if(nsoft_min < 27) break;
             if((nsoft_min < 32) && (nhard_min < 43) && 
 		(nhard_min+nsoft_min) < 74) break;
         }
+	if(k == ntrials-1) ntry[0]=k+1;
     }
     
     if(verbose) fprintf(logfile,

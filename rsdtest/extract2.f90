@@ -12,6 +12,7 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   integer param(0:7)
   integer indx(0:62)
   logical first
+  real*8 tt
   common/extcom/ntdecode
   data ndone/0/,ngood/0/,nbad/0/,first/.true./
   save
@@ -51,7 +52,8 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   call interleave63(mr2prob,-1)
 
   nverbose=0
-  call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,param,indx)
+  call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
+       param,indx,tt,ntry)
   ncandidates=param(0)
   nhard=param(1)
   nsoft=param(2)
@@ -100,11 +102,17 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
      nboth=99
   endif
   write(*,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,   &
-       mrprob(62-indx(37)),msg
+       ntry,tt,msg
   write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,  &
-       mrprob(62-indx(37)),msg
-1010 format(i5,2f7.3,i7,5i4,1x,a22)
+       ntry,tt,msg
+1010 format(i5,2f7.3,i6,4i4,i8,f7.1,1x,a22)
   flush(32)
+
+  if(msg.eq.'VK7MO K1JT FN20       ') then
+     write(33,1012) ndone,ngood,nbad,ntry,log10(float(1+ntry))
+1012 format(4i8,f8.3)
+     flush(33)
+  endif
 
   rewind 40
   write(40,1080)
