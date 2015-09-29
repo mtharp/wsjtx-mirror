@@ -185,8 +185,6 @@ NB: j is the symbol-vector index of the symbol with rank i.
                     nhard=nhard+1;
 		    if(workdat[i] != rxdat2[i]) {
 		      nsoft=nsoft+rxprob[i];
-		    } else {
-		      nsoft=nsoft+rxprob[i]/2;     //??? empirical ???
 		    }
                 }
             }
