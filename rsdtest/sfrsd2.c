@@ -30,19 +30,40 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
     int workdat[63],workdat2[63];
     int era_pos[51];
-    int c, i, numera, nerr, nn=63, kk=12;
+    int c, i, j, numera, nerr, nn=63, kk=12;
     FILE *datfile, *logfile;
     int ncount,dat4[12],bestdat[12];
     int ntrials = *ntrials0;
     int verbose = *verbose0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     int ngmd,nera_best;
+    int perr[8][8] = {
+     12,     31,     44,     52,     60,     57,     50,     50,
+     28,     38,     49,     58,     65,     69,     64,     80,
+     40,     41,     53,     62,     66,     73,     76,     81,
+     50,     53,     53,     64,     70,     76,     77,     81,
+     50,     50,     52,     60,     71,     72,     77,     84,
+     50,     50,     56,     62,     67,     73,     81,     85,
+     50,     50,     71,     62,     70,     77,     80,     85,
+     50,     50,     62,     64,     71,     75,     82,     87};
 
-    logfile=fopen("sfrsd.log","a");
-    if( !logfile ) {
+    int pmr2[8][8] = {
+     29,     23,     19,     13,     10,      0,      0,      0,
+     33,     41,     30,     18,     14,     10,      9,      0,
+      0,     55,     39,     24,     18,     14,      8,      3,
+      0,     56,     53,     32,     23,     18,     14,      9,
+      0,     50,     48,     42,     26,     20,     14,     10,
+      0,      0,     54,     45,     31,     25,     16,     12,
+      0,      0,     68,     47,     40,     30,     23,     14,
+      0,      0,    100,     57,     45,     27,     24,     14};
+
+    if(verbose) {
+      logfile=fopen("sfrsd.log","a");
+      if( !logfile ) {
         printf("Unable to open sfrsd.log\n");
         exit(1);
-    }    
+      }
+    } 
     
     // initialize the ka9q reed solomon encoder/decoder
     unsigned int symsize=6, gfpoly=0x43, fcr=3, prim=1, nroots=51;
@@ -82,7 +103,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     memcpy(workdat,rxdat,sizeof(rxdat));
     nerr=decode_rs_int(rs,workdat,era_pos,numera,1);
     if( nerr >= 0 ) {
-        fprintf(logfile,"   BM decode nerrors= %3d : ",nerr);
+      if(verbose) fprintf(logfile,"   BM decode nerrors= %3d : ",nerr);
 	memcpy(correct,workdat,63*sizeof(int));
 	ngmd=-1;
 	param[0]=0;
@@ -104,24 +125,21 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 #else
     srandom(0xdeadbeef);
 #endif
-    float p_erase, ratio, ratio0[63];
-    int thresh, nsum, j;
+    float ratio, ratio0[63];
+    int thresh, nsum;
     int thresh0[63];
     ncandidates=0;
 
     nsum=0;
+    int ii,jj;
     for (i=0; i<nn; i++) {
       nsum=nsum+rxprob[i];
       j = indexes[62-i];
       ratio = (float)rxprob2[j]/(float)rxprob[j];
       ratio0[i]=ratio;
-      p_erase=0.9; 
-      if( (ratio > 0.4) && (i < 32)) {    
-	p_erase = 0.99;
-      } else if (( i > 38 ) && ( ratio <= 0.5)) {
-	p_erase=0.5 - 0.2*(i-38.0)/24.0;
-      }      
-      thresh0[i] = p_erase*100.0;
+      ii = 7.999*ratio;
+      jj = (62-i)/8;
+      thresh0[i] = 1.3*perr[ii][jj];
     }
     if(nsum==0) return;
     
@@ -155,9 +173,6 @@ NB: j is the symbol-vector index of the symbol with rank i.
         if( nerr >= 0 ) {
             ncandidates=ncandidates+1;
             for(i=0; i<12; i++) dat4[i]=workdat[11-i];
-            //            fprintf(logfile,"loop1 decode nerr= %3d : ",nerr);
-            //            for(i=0; i<12; i++) fprintf(logfile, "%2d ",dat4[i]);
-            //            fprintf(logfile,"\n");
 
             nhard=0;
             nsoft=0;
@@ -172,13 +187,15 @@ NB: j is the symbol-vector index of the symbol with rank i.
                 }
             }
 	    nsoft=63*nsoft/nsum;
-	    if( (nsoft < nsoft_min) ) {
-	      nsoft_min=nsoft;
-	      nhard_min=nhard;
-	      memcpy(bestdat,dat4,12*sizeof(int));
-	      memcpy(correct,workdat,63*sizeof(int));
-	      ngmd=0;
-	      nera_best=numera;
+            if((nsoft < 33) && (nhard < 43) && (nhard+nsoft) < 74) {  //???
+	      if( (nsoft < nsoft_min) ) {
+		nsoft_min=nsoft;
+		nhard_min=nhard;
+		memcpy(bestdat,dat4,12*sizeof(int));
+		memcpy(correct,workdat,63*sizeof(int));
+		ngmd=0;
+		nera_best=numera;
+	      }
 	    }
 	    if(nsoft_min < 27) break;
             if((nsoft_min < 32) && (nhard_min < 43) && 
@@ -186,23 +203,28 @@ NB: j is the symbol-vector index of the symbol with rank i.
         }
     }
     
-    fprintf(logfile,"%d trials and %d candidates after stochastic loop\n",k,ncandidates);
+    if(verbose) fprintf(logfile,
+		"%d trials and %d candidates after stochastic loop\n",
+		k,ncandidates);
 
     if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
+      if(verbose) {
         for (i=0; i<63; i++) {
-            fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
-            //            fprintf(logfile,"%3d %3d %3d %3d %3d\n",i,workdat[i],rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
+	  fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],
+		  rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
         }
-        
-        fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",ncandidates,nhard_min,nsoft_min,nsum);
+        fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",
+		ncandidates,nhard_min,nsoft_min,nsum);
+      }
     } else {
         nhard_min=-1;
         memset(bestdat,0,12*sizeof(int));
     }
     
-    fprintf(logfile,"exiting sfrsd\n");
-    fflush(logfile);
-    fclose(logfile);
+    if(verbose) {
+      fprintf(logfile,"exiting sfrsd\n");
+      fclose(logfile);
+    }
     param[0]=ncandidates;
     param[1]=nhard_min;
     param[2]=nsoft_min;

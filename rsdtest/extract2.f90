@@ -65,9 +65,9 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
 
 
   msg='                      '
- if(nhard.ge.0) then
-!  if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
-!       (nhard+nsoft).le.73) then
+! if(nhard.ge.0) then
+  if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
+       (nhard+nsoft).le.73) then
      call unpackmsg(dat4,msg) !Unpack the user message
      if(msg.eq.'VK7MO K1JT FN20       ') then
         ngood=ngood+1
@@ -93,27 +93,18 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   fgood=float(ngood)/ndone
   fbad=float(nbad)/ndone
 
-  write(*,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nhard+nsoft,   &
+  nboth=nhard+nsoft
+  if(nhard.lt.0) then
+     nsoft=99
+     nera=99
+     nboth=99
+  endif
+  write(*,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,   &
        mrprob(62-indx(37)),msg
-  write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nhard+nsoft,  &
+  write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,  &
        mrprob(62-indx(37)),msg
 1010 format(i5,2f7.3,i7,5i4,1x,a22)
   flush(32)
-
-  do i=0,7
-    do j=0,7
-      if( ns(i,j) .ne. 0 ) then
-        perr(i,j)=100*np0(i,j)/ns(i,j);
-      else
-        perr(i,j)=0.5
-      endif
-      if( np0(i,j) .ne. 0 ) then
-        pmr2(i,j)=100*np2(i,j)/np0(i,j);
-      else
-        pmr2(i,j)=0
-      endif
-    enddo
-  enddo
 
   rewind 40
   write(40,1080)
@@ -129,16 +120,17 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   write(40,1093)
 1093 format(/'sym = mr2sym:')
   write(40,1090) np2
+
   write(40,1095)
 1095 format(/'Probability of error:')
+  perr=nint(100.0*float(np0)/(ns+0.001))
   write(40,1096) perr
 1096 format(8i7)
+
   write(40,1097)
-1097 format(/'P(mr2 correct|mr not correct) :')
+1097 format(/'P(mr2 correct | mr not correct) :')
+  pmr2=nint(100.0*float(np2)/(np0+0.001))
   write(40,1096) pmr2
-
-
-
   flush(40)
 
   return
