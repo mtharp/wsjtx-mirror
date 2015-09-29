@@ -4,6 +4,7 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   real tmp(4032)
   integer np1(0:7,0:7),np2(0:7,0:7),np0(0:7,0:7)
   integer ns(0:7,0:7)
+  integer perr(0:7,0:7),pmr2(0:7,0:7)
   character msg*22
   integer dat4(12)
   integer mrsym(0:62),mr2sym(0:62),mrprob(0:62),mr2prob(0:62)
@@ -99,6 +100,21 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
 1010 format(i5,2f7.3,i7,5i4,1x,a22)
   flush(32)
 
+  do i=0,7
+    do j=0,7
+      if( ns(i,j) .ne. 0 ) then
+        perr(i,j)=100*np0(i,j)/ns(i,j);
+      else
+        perr(i,j)=0.5
+      endif
+      if( np0(i,j) .ne. 0 ) then
+        pmr2(i,j)=100*np2(i,j)/np0(i,j);
+      else
+        pmr2(i,j)=0
+      endif
+    enddo
+  enddo
+
   rewind 40
   write(40,1080)
 1080 format('Totals:')
@@ -113,6 +129,16 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   write(40,1093)
 1093 format(/'sym = mr2sym:')
   write(40,1090) np2
+  write(40,1095)
+1095 format(/'Probability of error:')
+  write(40,1096) perr
+1096 format(8i7)
+  write(40,1097)
+1097 format(/'P(mr2 correct|mr not correct) :')
+  write(40,1096) pmr2
+
+
+
   flush(40)
 
   return
