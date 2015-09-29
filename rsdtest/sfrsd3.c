@@ -11,7 +11,7 @@
  "Soft-Decision Decoding of Reed-Solomon Codes Using Successive Error-
  and-Erasure Decoding," by Soo-Woong Lee and B. V. K. Vijaya Kumar.
  
- Steve Franke K9AN, Urbana IL, September 2015
+ Steve Franke K9AN and Joe Taylor K1JT
  */
 
 #include <stdio.h>
@@ -30,19 +30,39 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
     int workdat[63],workdat2[63];
     int era_pos[51];
-    int c, i, numera, nerr, nn=63, kk=12;
-    FILE *datfile, *logfile, *fdiag;
-    int nsec, maxe, nads;
-    float xlambda;
-    int nsec2,ncount,dat4[12],bestdat[12];
+    int c, i, j, numera, nerr, nn=63, kk=12;
+    FILE *datfile, *logfile;
+    int ncount,dat4[12],bestdat[12];
     int ntrials = *ntrials0;
     int verbose = *verbose0;
     int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
     int ngmd,nera_best;
-    int ne;
-    int d4good[12]={53,22,5,49,23,55,3,29,53,53,39,14};    
+    int perr[8][8] = {
+     12,     31,     44,     52,     60,     57,     50,     50,
+     28,     38,     49,     58,     65,     69,     64,     80,
+     40,     41,     53,     62,     66,     73,     76,     81,
+     50,     53,     53,     64,     70,     76,     77,     81,
+     50,     50,     52,     60,     71,     72,     77,     84,
+     50,     50,     56,     62,     67,     73,     81,     85,
+     50,     50,     71,     62,     70,     77,     80,     85,
+     50,     50,     62,     64,     71,     75,     82,     87};
 
-    fdiag=fopen("fdiag.txt","a");
+    int pmr2[8][8] = {
+     29,     23,     19,     13,     10,      0,      0,      0,
+     33,     41,     30,     18,     14,     10,      9,      0,
+      0,     55,     39,     24,     18,     14,      8,      3,
+      0,     56,     53,     32,     23,     18,     14,      9,
+      0,     50,     48,     42,     26,     20,     14,     10,
+      0,      0,     54,     45,     31,     25,     16,     12,
+      0,      0,     68,     47,     40,     30,     23,     14,
+      0,      0,    100,     57,     45,     27,     24,     14};
+
+/*    for( i=0; i<8; i++ ) {
+      for( j=0; j<8; j++) {
+        printf("%d %d %d\n",i,j,perr[i][j]);
+      }
+    }
+*/
     logfile=fopen("sfrsd.log","a");
     if( !logfile ) {
         printf("Unable to open sfrsd.log\n");
@@ -88,9 +108,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     nerr=decode_rs_int(rs,workdat,era_pos,numera,1);
     if( nerr >= 0 ) {
         fprintf(logfile,"   BM decode nerrors= %3d : ",nerr);
-	//        for(i=0; i<12; i++) printf("%2d ",workdat[11-i]);
-	//        fprintf(logfile,"\n");
-        //fclose(logfile);
 	memcpy(correct,workdat,63*sizeof(int));
 	ngmd=-1;
 	param[0]=0;
@@ -112,23 +129,24 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 #else
     srandom(0xdeadbeef);
 #endif
-    float p_erase, ratio, ratio0[63];
-    int thresh, nsum, j;
+    float ratio, ratio0[63];
+    int thresh, nsum;
     int thresh0[63];
     ncandidates=0;
 
+    nsum=0;
+    int ii,jj;
     for (i=0; i<nn; i++) {
+      nsum=nsum+rxprob[i];
       j = indexes[62-i];
       ratio = (float)rxprob2[j]/(float)rxprob[j];
       ratio0[i]=ratio;
-      p_erase=0.9; 
-      if( (ratio > 0.4) && (i < 32)) {    
-	p_erase = 0.99;
-      } else if (( i > 38 ) && ( ratio <= 0.5)) {
-	p_erase=0.5 - 0.2*(i-38.0)/24.0;
-      }      
-      thresh0[i] = p_erase*100.0;
+      ii = 7.999*ratio;
+      jj = (62-i)/8;
+//      printf("i %d ratio %f ii %d jj %d p_erase %d\n",i,ratio,ii,jj,perr[ii][jj]);
+      thresh0[i] = 1.1*perr[ii][jj];
     }
+    if(nsum==0) return;
     
     for( k=0; k<ntrials; k++) {
         memset(era_pos,0,51*sizeof(int));
@@ -154,7 +172,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
                 numera=numera+1;
             }
         }
-        
+
         nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
         
         if( nerr >= 0 ) {
@@ -166,38 +184,28 @@ NB: j is the symbol-vector index of the symbol with rank i.
 
             nhard=0;
             nsoft=0;
-            nsum=0;
             for (i=0; i<63; i++) {
-                nsum=nsum+rxprob[i];
-                if( workdat[i] != rxdat[i] ) {
+                if(workdat[i] != rxdat[i]) {
                     nhard=nhard+1;
-                    nsoft=nsoft+rxprob[i];
+		    if(workdat[i] != rxdat2[i]) {
+		      nsoft=nsoft+rxprob[i];
+		    } else {
+		      nsoft=nsoft+rxprob[i]/2;     //??? empirical ???
+		    }
                 }
             }
-	    ne=0;
-            for(i=0; i<12; i++) {
-	      //	      fprintf(fdiag,"%3d",dat4[i]);
-	      if(dat4[i] != d4good[i]) ne++;
+	    nsoft=63*nsoft/nsum;
+	    if( (nsoft < nsoft_min) ) {
+	      nsoft_min=nsoft;
+	      nhard_min=nhard;
+	      memcpy(bestdat,dat4,12*sizeof(int));
+	      memcpy(correct,workdat,63*sizeof(int));
+	      ngmd=0;
+	      nera_best=numera;
 	    }
-            fprintf(fdiag,"%3d %3d %5d %3d %5d %3d %3d\n",ncandidates,nerr,
-		    nsum,nhard,nsoft,63*nsoft/nsum,ne);
-            if( nsum != 0 ) {
-                nsoft=63*nsoft/nsum;
-                if( (nsoft < nsoft_min) ) {
-                    nsoft_min=nsoft;
-                    nhard_min=nhard;
-                    memcpy(bestdat,dat4,12*sizeof(int));
-                    memcpy(correct,workdat,63*sizeof(int));
-		    ngmd=0;
-		    nera_best=numera;
-                }
-                
-            } else {
-                fprintf(logfile,"error - nsum %d nsoft %d nhard %d\n",nsum,nsoft,nhard);
-            }
-            if( (nsoft_min < 36) && (nhard_min < 44) ) {
-                break;
-            }
+	    if(nsoft_min < 27) break;
+            if((nsoft_min < 32) && (nhard_min < 43) && 
+		(nhard_min+nsoft_min) < 74) break;
         }
     }
     
@@ -218,7 +226,6 @@ NB: j is the symbol-vector index of the symbol with rank i.
     fprintf(logfile,"exiting sfrsd\n");
     fflush(logfile);
     fclose(logfile);
-    fclose(fdiag);
     param[0]=ncandidates;
     param[1]=nhard_min;
     param[2]=nsoft_min;
