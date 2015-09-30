@@ -69,7 +69,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 
   num65=num65+1
   nverbose=0
-  ntrials=10000
+  ntrials=1000
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
        param,indx,tt,ntry)
   ncandidates=param(0)
