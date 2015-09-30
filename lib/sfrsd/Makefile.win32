@@ -5,7 +5,7 @@ CC=gcc
 
 CFLAGS=-I/usr/local/include  -Wall -O3
 
-all: sfrsd
+all: sfrsd.exe
 
 encode_rs_int.o: encode_rs.c
 	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
@@ -16,9 +16,9 @@ decode_rs_int.o: decode_rs.c
 init_rs_int.o: init_rs.c
 	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
 
-sfrsd: sfrsd.o encode_rs_int.o decode_rs_int.o init_rs_int.o
-	gcc -g -o -DWIN32 $@ $^
+sfrsd.exe: sfrsd.o encode_rs_int.o decode_rs_int.o init_rs_int.o
+	gcc -g -DWIN32 -o $@ $^
 
 clean:
-	rm -f *.o *.a sfrsd
+	rm -f *.o *.a sfrsd.exe
 

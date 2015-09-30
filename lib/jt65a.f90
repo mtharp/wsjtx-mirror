@@ -45,7 +45,8 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      ia=max(51,nint(fa/df))
      ib=min(NSZ-51,nint(fb/df))
      
-     thresh0=1.5
+!     thresh0=1.5
+     thresh0=1.0
 
      do i=ia,ib                               !Search over freq range
         freq=i*df

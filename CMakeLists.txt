@@ -399,11 +399,12 @@ set (wsjt_FSRCS
   )
 
 set (wsjt_CSRCS
-  lib/decode_rs.c
-  lib/encode_rs.c
+  lib/sfrsd2/decode_rs.c
+  lib/sfrsd2/encode_rs.c
+  lib/sfrsd2/init_rs.c
+  lib/sfrsd2/sfrsd2.c
   lib/gran.c
   lib/igray.c
-  lib/init_rs.c
   lib/wsprd/nhash.c
   lib/tab.c
   lib/tmoonsub.c

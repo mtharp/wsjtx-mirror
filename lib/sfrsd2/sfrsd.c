@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
-#include "rs.h"
+#include "rs2.h"
 
 static void *rs;
 
