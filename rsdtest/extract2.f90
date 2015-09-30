@@ -105,7 +105,7 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
        ntry,tt,msg
   write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,  &
        ntry,tt,msg
-1010 format(i5,2f7.3,i6,4i4,i8,f7.1,1x,a22)
+1010 format(i4,2f7.3,i7,4i3,i8,f8.1,1x,a22)
   flush(32)
 
   if(msg.eq.'VK7MO K1JT FN20       ') then
