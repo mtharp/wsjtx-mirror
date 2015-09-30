@@ -136,8 +136,8 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
 1096 format(8i7)
 
   write(40,1097)
-1097 format(/'P(mr2 correct | mr not correct) :')
-  pmr2=nint(100.0*float(np2)/(np0+0.001))
+1097 format(/'P(mr2 correct) :')
+  pmr2=nint(100.0*float(np2)/(ns+0.001))
   write(40,1096) pmr2
   flush(40)
 
