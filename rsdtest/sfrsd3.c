@@ -37,6 +37,8 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
   int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
   int ngmd,nera_best;
   clock_t t0=0,t1=0;
+
+// For JT exp(x) symbol metrics
   int perr[8][8] = {
      12,     31,     44,     52,     60,     57,     50,     50,
      28,     38,     49,     58,     65,     69,     64,     80,
@@ -56,6 +58,29 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
       0,      0,     28,     27,     22,     19,     14,     11,
       0,      0,     40,     29,     29,     23,     18,     12,
       0,      0,     40,     35,     31,     21,     20,     13};
+
+
+/* For SF power-percentage symbol metrics
+  int perr[8][8] = {
+      1,     10,     10,     20,     30,     50,     50,     50,
+      2,     20,     20,     30,     40,     50,     50,     50,
+      7,     24,     27,     40,     50,     50,     50,     50,
+     13,     25,     35,     46,     52,     70,     50,     50,
+     17,     30,     42,     54,     55,     64,     71,     70,
+     25,     39,     48,     57,     64,     66,     77,     77,
+     32,     45,     54,     63,     66,     75,     78,     83,
+     51,     58,     57,     66,     72,     77,     82,     86};
+
+  int pmr2[8][8] = {
+      0,      0,      0,      0,      0,      0,      0,      0,
+      0,      0,      0,      0,      0,      0,      0,      0,
+      1,      4,      0,      0,      0,      0,      0,      0,
+      3,      4,      4,      3,      4,      0,      0,      0,
+      6,      7,      8,      7,      9,      8,      6,      0,
+     13,     13,     12,     12,     10,      7,      9,      6,
+     21,     20,     19,     17,     16,     14,     11,     10,
+     43,     35,     27,     24,     21,     19,     16,     13};
+*/
 
   if(verbose) {
     logfile=fopen("sfrsd.log","a");
@@ -141,7 +166,7 @@ used to decide which codeword is "best".
     ii = 7.999*ratio;
     jj = (62-i)/8;
     thresh0[i] = 1.3*perr[ii][jj];
-    thresh1[i] = 0.4*pmr2[ii][jj];
+    thresh1[i] = 0.0*pmr2[ii][jj];
   }
   if(nsum==0) return;
     
@@ -178,8 +203,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
       }
     }
     t0=clock();
-//    rs=init_rs_int(symsize, gfpoly, fcr, prim, nroots, 1);
-    nerr=decode_rs_int(rs,workdat,era_pos,numera,1);
+    nerr=decode_rs_int(rs,workdat,era_pos,numera,0);
     t1=clock();
     tt[0]+=(double)(t1-t0)/CLOCKS_PER_SEC;
         
