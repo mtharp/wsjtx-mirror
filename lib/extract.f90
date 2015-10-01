@@ -59,9 +59,6 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
      go to 1
   endif
 
-  write(79,3001) nhist,ipk,mrsym
-3001 format(/i2,i3,2x,24i3/(7x,24i3))
-
   call graycode65(mrsym,63,-1)        !Remove gray code 
   call interleave63(mrsym,-1)         !Remove interleaving
   call interleave63(mrprob,-1)
@@ -72,7 +69,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 
   num65=num65+1
   nverbose=0
-  ntrials=10000
+  ntrials=5000
   ntry=0
   call timer('sfrsd   ',0)
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
@@ -94,15 +91,11 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
   if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
        (nhard+nsoft).le.73) then
      call unpackmsg(dat4,decoded)     !Unpack the user message
-     write(79,3002) decoded
-3002 format(a22)
      ncount=0
      if(iand(dat4(10),8).ne.0) ltext=.true.
      nbmkv=2
   endif
-
 900 continue
-  flush(79)
 
   return
 end subroutine extract

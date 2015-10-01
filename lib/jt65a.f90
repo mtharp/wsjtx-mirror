@@ -70,6 +70,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         ftest=abs(freq+a(1)-freq0)
         if(ftest.lt.ftol) cycle
 
+!        if(decoded.ne.'                      ') then
         if(decoded.ne.'                      ' .or. minsync.lt.0) then
            ndecoded=1
            nfreq=nint(freq+a(1))
@@ -95,10 +96,10 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
            call flush(13)
            !$omp end critical(decode_results)
 
-           freq0=freq+a(1)
-           i2=min(NSZ,i+15)                !### ??? ###
-           done(i:i2)=.true.
         endif
+        freq0=freq+a(1)
+        i2=min(NSZ,i+15)                !### ??? ###
+        done(i:i2)=.true.
      enddo
      if(nagain.eq.1) exit
   enddo
