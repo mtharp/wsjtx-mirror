@@ -1,5 +1,5 @@
 subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
-     nagain,ndecoded)
+     minsync,nagain,ndecoded)
 
 !  Process dd() data to find and decode JT65 signals.
 
@@ -57,7 +57,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         call timer('ccf65   ',1)
 
         ftest=abs(freq-freq0)
-        thresh1=1.0
+        thresh1=0.5
         if(nqd.eq.1 .and. ntol.le.100) thresh1=0.
         if(sync1.lt.thresh1 .or. ftest.lt.ftol) cycle
 
@@ -70,7 +70,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         ftest=abs(freq+a(1)-freq0)
         if(ftest.lt.ftol) cycle
 
-        if(decoded.ne.'                      ') then
+        if(decoded.ne.'                      ' .or. minsync.lt.0) then
            ndecoded=1
            nfreq=nint(freq+a(1))
            ndrift=nint(2.0*a(2))
