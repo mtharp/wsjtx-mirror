@@ -36,9 +36,10 @@ EchoGraph::EchoGraph(QSettings * settings, QWidget *parent) :
   ui->binsPerPixelSpinBox->setValue(n);
   ui->echoPlot->m_blue=m_settings->value("BlueCurve",false).toBool();
   ui->cbBlue->setChecked(ui->echoPlot->m_blue);
+  m_nColor=m_settings->value("EchoColors",0).toInt();
   m_settings->endGroup();
-
   ui->cbBlue->setVisible(false);                   //Not using "blue" (for now, at least)
+  ui->echoPlot->setColors(m_nColor);
 }
 
 EchoGraph::~EchoGraph()
@@ -63,6 +64,7 @@ void EchoGraph::saveSettings()
   m_settings->setValue("Smooth",ui->echoPlot->m_smooth);
   m_settings->setValue("EchoBPP",ui->echoPlot->m_binsPerPixel);
   m_settings->setValue("BlueCurve",ui->echoPlot->m_blue);
+  m_settings->setValue("EchoColors",m_nColor);
   m_settings->endGroup();
 }
 
@@ -101,4 +103,10 @@ void EchoGraph::on_binsPerPixelSpinBox_valueChanged(int n)
   ui->echoPlot->m_binsPerPixel=n;
   ui->echoPlot->DrawOverlay();
   ui->echoPlot->draw();
+}
+
+void EchoGraph::on_pbColors_clicked()
+{
+  m_nColor = (m_nColor+1) % 6;
+  ui->echoPlot->setColors(m_nColor);
 }
