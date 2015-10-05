@@ -13,15 +13,11 @@ subroutine decoder(ss,id2,nfsample)
        ntol,kin,nzhsym,nsubmode,nagain,ndepth,ntxmode,nmode,minw,nclearave,  &
        minsync,emedelay,dttol,nlist,listutc(10),datetime,mycall,mygrid,      &
        hiscall,hisgrid
-
   common/tracer/limtrace,lu
   integer onlevel(0:10)
   common/tracer_priv/level,onlevel
-  !$omp threadprivate(/tracer_priv/)
+!$omp threadprivate(/tracer_priv/)
   save
-
-  write(79,*) 'A',minsync
-!  if(minsync.ge.0) minsync=-1
 
   rms=sqrt(dot_product(float(id2(300000:310000)),                            &
                        float(id2(300000:310000)))/10000.0)
@@ -92,7 +88,7 @@ subroutine decoder(ss,id2,nfsample)
         nf2=nfb
         call timer('jt65a   ',0)
         call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nsubmode,   &
-             nagain,ndecoded)
+             minsync,nagain,ndecoded)
         call timer('jt65a   ',1)
      else
         call timer('decjt9  ',0)
