@@ -1648,9 +1648,8 @@ void MainWindow::decode()                                       //decode()
   jt9com_.nfa=m_wideGraph->nStartFreq();
   jt9com_.nfSplit=m_wideGraph->Fmin();
   jt9com_.nfb=m_wideGraph->Fmax();
-//  if(m_mode=="JT9" or m_mode=="JT9+JT65" or
-//     (m_mode=="JT65" and !m_config.enable_VHF_features())) ui->FTol_combo_box->setCurrentText ("20");
   jt9com_.ntol=m_Ftol;
+  if(m_mode=="JT9+JT65") jt9com_.ntol=20;
   if(jt9com_.nutc < m_nutc0) m_RxLog = 1;       //Date and Time to all.txt
   m_nutc0=jt9com_.nutc;
   jt9com_.ntxmode=9;
