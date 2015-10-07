@@ -88,7 +88,6 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 !$omp end critical(decode_results)
      endif
   enddo
-  enddo
 
 !     if(nagain.eq.1) exit
 !  enddo
