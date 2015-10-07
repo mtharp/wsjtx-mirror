@@ -377,6 +377,7 @@ set (wsjt_FSRCS
   lib/symspec2.f90
   lib/symspec65.f90
   lib/sync4.f90
+  lib/sync65.f90
   lib/sync9.f90
   lib/sync9f.f90
   lib/synciscat.f90
@@ -390,6 +391,7 @@ set (wsjt_FSRCS
   lib/wav12.f90
   lib/wavhdr.f90
   lib/wsjt4.f90
+  lib/xcor.f90
   lib/xcor4.f90
   lib/zplt.f90
   lib/wavhdr.f90
