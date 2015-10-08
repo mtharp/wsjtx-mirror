@@ -72,7 +72,9 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,sync2,a,dt,    &
   do k=1,nsym
      do i=1,nfft
         j=j+1
-        c5a(i)=cx(j)
+        if( j .le. NMAX/8 ) then  !added by k9an to squelch an out of bounds error
+          c5a(i)=cx(j)
+        endif
      enddo
      call four2a(c5a,nfft,1,1,1)
      do i=1,66
