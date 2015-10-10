@@ -16,7 +16,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      real dt
      real sync
   end type candidate
-  type(candidate) ca(100)
+  type(candidate) ca(300)
   common/decstats/num65,numbm,numkv,num9,numfano
   save
 
