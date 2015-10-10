@@ -39,6 +39,9 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,sync2,a,dt,    &
   if(i0.lt.1) then
      i0=1
   endif
+  if( i0 .gt. 2500 ) then  ! completely arbitrary. Added to squelch a case that presented i0>>22500
+    i0=2500
+  endif
   nz=n6+1-i0
 
 ! We're looking only at sync tone here... so why not downsample by another
