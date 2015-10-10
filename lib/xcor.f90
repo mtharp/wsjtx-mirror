@@ -20,7 +20,9 @@ subroutine xcor(ss,ipk,nsteps,nsym,lag1,lag2,ccf,ccf0,lagpk,flip,fdot)
 
   do j=1,nsteps
      ii=nint((j-nsteps/2)*fdot*fac)+ipk
-     a(j)=ss(j,ii)
+     if( (ii.ge.1) .and. (ii.le.NHMAX) ) then
+       a(j)=ss(j,ii)
+     endif
   enddo
 
   ccfmax=0.
