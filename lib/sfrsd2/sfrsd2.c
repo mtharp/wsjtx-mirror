@@ -38,7 +38,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
   int ngmd,nera_best;
   clock_t t0=0,t1=0;
 
-// For JT exp(x) symbol metrics
+/* For JT exp(x) symbol metrics - gaussian noise, no fading
   int perr[8][8] = {
      12,     31,     44,     52,     60,     57,     50,     50,
      28,     38,     49,     58,     65,     69,     64,     80,
@@ -48,19 +48,21 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
      50,     50,     56,     62,     67,     73,     81,     85,
      50,     50,     71,     62,     70,     77,     80,     85,
      50,     50,     62,     64,     71,     75,     82,     87};
+*/
 
-  int pmr2[8][8] = { 
-      4,      8,      9,      7,      6,      0,      0,      0,
-     13,     18,     15,     11,      9,      7,      5,      0,
-      0,     23,     21,     15,     12,     10,      7,      4,
-      0,     34,     28,     20,     16,     14,     11,      7,
-      0,     20,     26,     25,     19,     14,     12,      9,
-      0,      0,     28,     27,     22,     19,     14,     11,
-      0,      0,     40,     29,     29,     23,     18,     12,
-      0,      0,     40,     35,     31,     21,     20,     13};
+/* For JT exp(x) symbol metrics - hf conditions
+  int perr[8][8] = {
+     10,     10,     10,     12,     13,     15,     15,      9,
+     28,     30,     43,     50,     61,     58,     50,     34,
+     40,     40,     50,     53,     70,     65,     58,     45,
+     50,     50,     53,     74,     71,     68,     66,     52,
+     50,     50,     52,     45,     67,     70,     70,     60,
+     50,     50,     56,     73,     55,     74,     69,     67,
+     50,     50,     70,     81,     81,     69,     76,     75,
+     50,     50,     62,     57,     77,     81,     73,     78};
+*/
 
-
-/* For SF power-percentage symbol metrics
+/* For SF power-percentage symbol metrics - gaussian noise, no fading
   int perr[8][8] = {
       1,     10,     10,     20,     30,     50,     50,     50,
       2,     20,     20,     30,     40,     50,     50,     50,
@@ -70,17 +72,19 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
      25,     39,     48,     57,     64,     66,     77,     77,
      32,     45,     54,     63,     66,     75,     78,     83,
      51,     58,     57,     66,     72,     77,     82,     86};
-
-  int pmr2[8][8] = {
-      0,      0,      0,      0,      0,      0,      0,      0,
-      0,      0,      0,      0,      0,      0,      0,      0,
-      1,      4,      0,      0,      0,      0,      0,      0,
-      3,      4,      4,      3,      4,      0,      0,      0,
-      6,      7,      8,      7,      9,      8,      6,      0,
-     13,     13,     12,     12,     10,      7,      9,      6,
-     21,     20,     19,     17,     16,     14,     11,     10,
-     43,     35,     27,     24,     21,     19,     16,     13};
 */
+
+// For SF power-percentage symbol metrics - hf
+  int perr[8][8] = {
+      4,      9,     11,     13,     14,     14,     15,     15,
+      9,     12,     14,     25,     28,     30,     50,     50,
+     18,     22,     22,     28,     32,     35,     50,     50,
+     30,     35,     38,     38,     57,     50,     50,     50,
+     43,     46,     45,     53,     50,     64,     70,     50,
+     56,     58,     58,     57,     67,     66,     80,     77,
+     65,     72,     73,     72,     67,     75,     80,     83,
+     70,     74,     73,     70,     75,     77,     80,     86};
+//
 
   if(verbose) {
     logfile=fopen("sfrsd.log","a");
@@ -234,10 +238,10 @@ NB: j is the symbol-vector index of the symbol with rank i.
 
   if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
     if(verbose) {
-      for (i=0; i<63; i++) {
-	fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],
-		rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
-      }
+    //  for (i=0; i<63; i++) {
+    //	fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],
+    //		rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
+    //  }
       fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",
 	      ncandidates,nhard_min,nsoft_min,nsum);
     }
