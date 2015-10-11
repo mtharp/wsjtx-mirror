@@ -36,11 +36,9 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
   decoded='                      '
   call pctile(s3,4032,npct,base)
   s3=s3/base
-
 ! Get most reliable and second-most-reliable symbol values, and their
 ! probabilities
 1 call demod64a(s3,nadd,afac1,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
-!  if(ntest.lt.100) then
   if(ntest.lt.0) then
      ncount=-999                      !Flag and reject bad data
      go to 900
@@ -69,7 +67,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 
   num65=num65+1
   nverbose=0
-  ntrials=5000
+  ntrials=1000
   ntry=0
   call timer('sfrsd   ',0)
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
@@ -88,8 +86,9 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
   ncount=-1
   decoded='                      '
   ltext=.false.
-  if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
-       (nhard+nsoft).le.73) then
+  if(nhard.ge.0) then
+!  if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
+!       (nhard+nsoft).le.73) then
      call unpackmsg(dat4,decoded)     !Unpack the user message
      ncount=0
      if(iand(dat4(10),8).ne.0) ltext=.true.
