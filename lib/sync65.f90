@@ -10,7 +10,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
      real dt
      real sync
   end type candidate
-  type(candidate) ca(100)
+  type(candidate) ca(300)
 
   call setup65
   df=12000.0/NFFT                            !df = 12000.0/16384 = 0.732 Hz
@@ -19,7 +19,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
   lag1=-5
   lag2=59
   nsym=126
-  thresh0=3.0
+  thresh0=1.0
   ncand=0
   fdot=0.
   ccfred=0.
@@ -44,9 +44,9 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
         itry=1
         ncand=ncand+1
      endif
-     write(79,1010) i,freq,ccfred(i),itry
-1010 format(i6,2f10.2,i5)
-     flush(79)
+!     write(79,1010) i,freq,ccfred(i),itry,ncand
+!1010 format(i6,2f10.2,i5,i6)
+!     flush(79)
      if(itry.ne.0) then
         call xcor(ss,i,nhsym,nsym,lag1,lag2,ccfblue,ccf0,lagpk,flip,fdot)
         call slope(ccfblue(lag1),lag2-lag1+1,lagpk-lag1+1.0)
