@@ -66,8 +66,8 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
   call interleave63(mr2prob,-1)
 
   num65=num65+1
-  nverbose=1
-  ntrials=1000
+  nverbose=0
+  ntrials=2000
   ntry=0
   call timer('sfrsd   ',0)
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &

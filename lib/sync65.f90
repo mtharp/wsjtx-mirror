@@ -19,7 +19,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
   lag1=-5
   lag2=59
   nsym=126
-  thresh0=2.0
+  thresh0=2.5
   ncand=0
   fdot=0.
   ccfred=0.
@@ -58,10 +58,12 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
         dtx=xlag*2048.0/11025.0 - 2.7   !### empirical
         ccfblue(lag1)=0.
         ccfblue(lag2)=0.
+!        open(14,file="/tmp/fort.14",access="append")
 !        do j=lag1,lag2
 !           write(14,1020) j,ccfblue(j)
 !1020       format(i5,f10.3)
 !        enddo
+!        close(14)
         ca(ncand)%freq=freq
         ca(ncand)%dt=dtx
         ca(ncand)%sync=ccfred(i)
