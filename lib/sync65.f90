@@ -19,7 +19,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
   lag1=-5
   lag2=59
   nsym=126
-  thresh0=1.0
+  thresh0=2.0
   ncand=0
   fdot=0.
   ccfred=0.

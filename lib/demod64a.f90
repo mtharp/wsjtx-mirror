@@ -48,7 +48,7 @@ subroutine demod64a(s3,nadd,afac1,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
      enddo
 !     p1=fs(i1)/fsum           !Normalized probabilities for kvasd
 !     p2=fs(i2)/fsum
-     p1=s1/psum                !Use these for sfrsd (???)
+     p1=s1/psum                !Use these for sfrsd
      p2=s2/psum                !
      mrsym(j)=i1-1
      mr2sym(j)=i2-1
@@ -60,7 +60,7 @@ subroutine demod64a(s3,nadd,afac1,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
   do j=1,63
      if(mrprob(j).le.5) nlow=nlow+1
   enddo
-  ntest=sum(mrprob)/63.0
+  ntest=sum(mrprob)
 
   return
 end subroutine demod64a

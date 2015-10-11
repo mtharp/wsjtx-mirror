@@ -87,7 +87,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
 //
 
   if(verbose) {
-    logfile=fopen("sfrsd.log","a");
+    logfile=fopen("/tmp/sfrsd.log","a");
     if( !logfile ) {
       printf("Unable to open sfrsd.log\n");
       exit(1);
@@ -132,7 +132,10 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
   memcpy(workdat,rxdat,sizeof(rxdat));
   nerr=decode_rs_int(rs,workdat,era_pos,numera,1);
   if( nerr >= 0 ) {
-    if(verbose) fprintf(logfile,"   BM decode nerrors= %3d : ",nerr);
+    if(verbose) {
+      fprintf(logfile,"BM decode nerrors= %3d : \n",nerr);
+      fclose(logfile);
+    }
     memcpy(correct,workdat,63*sizeof(int));
     ngmd=-1;
     param[0]=0;
@@ -165,7 +168,7 @@ used to decide which codeword is "best".
   for (i=0; i<nn; i++) {
     nsum=nsum+rxprob[i];
     j = indexes[62-i];
-    ratio = (float)rxprob2[j]/(float)rxprob[j];
+    ratio = (float)rxprob2[j]/((float)rxprob[j]+0.01);
     ratio0[i]=ratio;
     ii = 7.999*ratio;
     jj = (62-i)/8;
@@ -216,7 +219,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
 	}
       }
       nsoft=63*nsoft/nsum;
-      if((nsoft < 33) && (nhard < 43) && (nhard+nsoft) < 74) {  //???
+      if( (nsoft < 33) && (nhard < 44) ) {  //???
 	if( (nsoft < nsoft_min) ) {
 	  nsoft_min=nsoft;
 	  nhard_min=nhard;
@@ -227,32 +230,26 @@ NB: j is the symbol-vector index of the symbol with rank i.
 	}
       }
       if(nsoft_min < 27) break;
-      if((nsoft_min < 32) && (nhard_min < 43) && 
-	 (nhard_min+nsoft_min) < 74) break;
+      if(nhard_min < 39) break;
+      if((nsoft_min < 32) && (nhard_min < 43)) break;  
     }
     if(k == ntrials-1) ntry[0]=k+1;
   }
   
-  if(verbose) fprintf(logfile,
-     "%d trials and %d candidates after stochastic loop\n",k,ncandidates);
-
-  if( (ncandidates >= 0) && (nsoft_min < 36) && (nhard_min < 44) ) {
-    if(verbose) {
-    //  for (i=0; i<63; i++) {
-    //	fprintf(logfile,"%3d %3d %3d %3d %3d %3d\n",i,correct[i],
-    //		rxdat[i],rxprob[i],rxdat2[i],rxprob2[i]);
-    //  }
-      fprintf(logfile,"**** ncandidates %d nhard %d nsoft %d nsum %d\n",
-	      ncandidates,nhard_min,nsoft_min,nsum);
-    }
-  } else {
+  if( (nhard_min+nsoft_min)>=75 ) {
     nhard_min=-1;
   }
   
   if(verbose) {
-    fprintf(logfile,"exiting sfrsd\n");
+    if( (nhard_min+nsoft_min) < 75 ) {
+      fprintf(logfile,"ncand %4d nhard %4d nsoft %4d nhard+nsoft %4d nsum %8d\n",
+	      ncandidates,nhard_min,nsoft_min,nhard_min+nsoft_min,nsum);
+    } else {
+      fprintf(logfile,"nsum %8d\n",nsum);
+    }
     fclose(logfile);
   }
+
   param[0]=ncandidates;
   param[1]=nhard_min;
   param[2]=nsoft_min;
