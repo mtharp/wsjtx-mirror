@@ -100,8 +100,6 @@ int main(int argc, char *argv[]){
         fread(&nsec2,sizeof(int),1,datfile);
         fread(&ncount,sizeof(int),1,datfile);
         fread(&dat4,sizeof(int),12,datfile);
-        for(i=0; i<11; i++) printf("%d ",dat4[i]);
-        printf("\n");
         fclose(datfile);
     }
     
@@ -111,9 +109,6 @@ int main(int argc, char *argv[]){
         for (i=0; i<12; i++) {
             dat4[i]=correct[11-i];
         }
-        for(i=0; i<11; i++) printf("%d ",dat4[i]);
-        printf("\n");
-
     } else {
         nhard=-1;
         memset(dat4,0,12*sizeof(int));
