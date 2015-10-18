@@ -26,15 +26,16 @@ static void *rs;
 void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[], 
 	     int* ntrials0, int* verbose0, int correct[], int param[],
 	     int indexes[], double tt[], int ntry[])
-{        
+{
   int rxdat[63], rxprob[63], rxdat2[63], rxprob2[63];
-  int workdat[63],workdat2[63];
+  int workdat[63];
   int era_pos[51];
-  int c, i, j, numera, nerr, nn=63, kk=12;
+  int i, j, numera, nerr, nn=63, kk=12;
   FILE *datfile, *logfile;
   int ntrials = *ntrials0;
   int verbose = *verbose0;
-  int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768, ncandidates;
+  int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768;
+  int nsofter=0,nsofter_min=32768,ntotal=0,ntotal_min=32768,ncandidates;
   int ngmd,nera_best;
   clock_t t0=0,t1=0;
 
@@ -62,6 +63,18 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
      50,     50,     62,     57,     77,     81,     73,     78};
 */
 
+// For SF power-percentage symbol metrics - composite gnnf/hf 
+  int perr[8][8] = {
+      4,      9,     11,     13,     14,     14,     15,     15,
+      2,     20,     20,     30,     40,     50,     50,     50,
+      7,     24,     27,     40,     50,     50,     50,     50,
+     13,     25,     35,     46,     52,     70,     50,     50,
+     17,     30,     42,     54,     55,     64,     71,     70,
+     25,     39,     48,     57,     64,     66,     77,     77,
+     32,     45,     54,     63,     66,     75,     78,     83,
+     51,     58,     57,     66,     72,     77,     82,     86};
+//
+
 /* For SF power-percentage symbol metrics - gaussian noise, no fading
   int perr[8][8] = {
       1,     10,     10,     20,     30,     50,     50,     50,
@@ -74,7 +87,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
      51,     58,     57,     66,     72,     77,     82,     86};
 */
 
-// For SF power-percentage symbol metrics - hf
+/* For SF power-percentage symbol metrics - hf
   int perr[8][8] = {
       4,      9,     11,     13,     14,     14,     15,     15,
       9,     12,     14,     25,     28,     30,     50,     50,
@@ -84,7 +97,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
      56,     58,     58,     57,     67,     66,     80,     77,
      65,     72,     73,     72,     67,     75,     80,     83,
      70,     74,     73,     70,     75,     77,     80,     86};
-//
+*/
 
   if(verbose) {
     logfile=fopen("/tmp/sfrsd.log","a");
@@ -92,7 +105,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
       printf("Unable to open sfrsd.log\n");
       exit(1);
     }
-  } 
+  }
     
 // Initialize the KA9Q Reed-Solomon encoder/decoder
   unsigned int symsize=6, gfpoly=0x43, fcr=3, prim=1, nroots=51;
@@ -125,7 +138,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
       }
     }
   }
-    
+  
 // See if we can decode using BM HDD, and calculate the syndrome vector.
   memset(era_pos,0,51*sizeof(int));
   numera=0;
@@ -210,43 +223,43 @@ NB: j is the symbol-vector index of the symbol with rank i.
       ncandidates=ncandidates+1;
       nhard=0;
       nsoft=0;
+      nsofter=0;
       for (i=0; i<63; i++) {
 	if(workdat[i] != rxdat[i]) {
 	  nhard=nhard+1;
+      nsofter=nsofter+rxprob[i];
 	  if(workdat[i] != rxdat2[i]) {
 	    nsoft=nsoft+rxprob[i];
 	  }
-	}
+	} else {
+          nsofter=nsofter-rxprob[i];
+        } 
       }
       nsoft=63*nsoft/nsum;
-      if( (nsoft < 33) && (nhard < 44) ) {  //???
-	if( (nsoft < nsoft_min) ) {
-	  nsoft_min=nsoft;
-	  nhard_min=nhard;
-	  memcpy(correct,workdat,63*sizeof(int));
-	  ngmd=0;
-	  nera_best=numera;
-	  ntry[0]=k;
-	}
+      nsofter=63*nsofter/nsum;
+      ntotal=nsoft+nhard;
+      if( ntotal<ntotal_min ) {
+        nsoft_min=nsoft;
+        nhard_min=nhard;
+        nsofter_min=nsofter;
+        ntotal_min=ntotal;
+        memcpy(correct,workdat,63*sizeof(int));
+        ngmd=0;
+        nera_best=numera;
+        ntry[0]=k;
       }
-      if(nsoft_min < 27) break;
-      if(nhard_min < 39) break;
-      if((nsoft_min < 32) && (nhard_min < 43)) break;  
+      if(ntotal_min<72 && nhard_min<42) break;  
     }
     if(k == ntrials-1) ntry[0]=k+1;
   }
   
-  if( (nhard_min+nsoft_min)>=75 ) {
+  if( ntotal_min>=76 || nhard>=44 ) {
     nhard_min=-1;
   }
   
   if(verbose) {
-    if( (nhard_min+nsoft_min) < 75 ) {
-      fprintf(logfile,"ncand %4d nhard %4d nsoft %4d nhard+nsoft %4d nsum %8d\n",
-	      ncandidates,nhard_min,nsoft_min,nhard_min+nsoft_min,nsum);
-    } else {
-      fprintf(logfile,"nsum %8d\n",nsum);
-    }
+    fprintf(logfile,"ncand %4d nhard %4d nsoft %4d nhard+nsoft %4d nsum %8d\n",
+      ncandidates,nhard_min,nsoft_min,ntotal_min,nsum);
     fclose(logfile);
   }
 
@@ -254,7 +267,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
   param[1]=nhard_min;
   param[2]=nsoft_min;
   param[3]=nera_best;
-  param[4]=ngmd;
+  param[4]=nsofter_min;
   if(param[0]==0) param[2]=-1;
   return;
 }
