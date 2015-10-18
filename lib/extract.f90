@@ -39,7 +39,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 ! Get most reliable and second-most-reliable symbol values, and their
 ! probabilities
 1 call demod64a(s3,nadd,afac1,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
-  if(ntest.lt.1300) then  ! use 1300 for sf symbol metrics
+  if(ntest.lt.0) then  ! use 1300 for sf symbol metrics
      ncount=-999                      !Flag and reject bad data
      go to 900
   endif
