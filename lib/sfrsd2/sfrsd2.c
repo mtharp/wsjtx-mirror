@@ -31,12 +31,12 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
   int workdat[63];
   int era_pos[51];
   int i, j, numera, nerr, nn=63, kk=12;
-  FILE *datfile, *logfile;
+  FILE *logfile;
   int ntrials = *ntrials0;
   int verbose = *verbose0;
   int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768;
   int nsofter=0,nsofter_min=32768,ntotal=0,ntotal_min=32768,ncandidates;
-  int ngmd,nera_best;
+  int nera_best;
   clock_t t0=0,t1=0;
 
 /* For JT exp(x) symbol metrics - gaussian noise, no fading
@@ -150,7 +150,6 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
       fclose(logfile);
     }
     memcpy(correct,workdat,63*sizeof(int));
-    ngmd=-1;
     param[0]=0;
     param[1]=0;
     param[2]=0;
@@ -244,7 +243,6 @@ NB: j is the symbol-vector index of the symbol with rank i.
         nsofter_min=nsofter;
         ntotal_min=ntotal;
         memcpy(correct,workdat,63*sizeof(int));
-        ngmd=0;
         nera_best=numera;
         ntry[0]=k;
       }
