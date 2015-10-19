@@ -14,8 +14,8 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
 
   call setup65
   df=12000.0/NFFT                            !df = 12000.0/16384 = 0.732 Hz
-  ia=nfa/df
-  ib=nfb/df
+  ia=max(1,nint(nfa/df))
+  ib=min(NSZ,nint(nfb/df))
   lag1=-5
   lag2=59
   nsym=126
