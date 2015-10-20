@@ -79,7 +79,7 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	tab.o thnix.o tm2.o tmoonsub.o toxyz.o tweak1.o tweak2.o \
 	unpackcall.o unpackgrid.o unpackmsg.o unpackpfx.o unpacktext.o \
 	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
-	xcor4.o xfft.o xfft2.o 
+	xcor4.o xfft.o xfft2.o sfrsd2.o
 
 libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1)
@@ -102,7 +102,7 @@ WsjtMod/Audio.so: libjt.a ${F2PYSRCS}
 	${LIBS} libjt.a -m Audio ftn_init.f90 ftn_quit.f90 \
 	audio_init.f90 spec.f90 getfile.f90 azdist0.f90 \
 	astro0.f90 chkt0.f90
-	
+
 	${MV} Audio*.so WsjtMod/Audio.so
 
 .PHONY : clean

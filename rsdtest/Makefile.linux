@@ -1,0 +1,58 @@
+# Makefile for Linux
+
+CC = gcc
+FC = gfortran
+
+FFLAGS = -O2 -fbounds-check -fno-second-underscore -Wall \
+       -Wno-conversion -Wno-character-truncation
+CFLAGS = -I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC
+
+# Default rules
+%.o: %.c
+	${CC} ${CFLAGS} -c $<
+%.o: %.f
+	${FC} ${FFLAGS} -c $<
+%.o: %.F
+	${FC} ${FFLAGS} -c $<
+%.o: %.f90
+	${FC} ${FFLAGS} -c $<
+%.o: %.F90
+	${FC} ${FFLAGS} -c $<
+
+all:    libsfrsd.a rsdtest rsdtest2 rsdtest3
+
+OBJS0 = extract2.o sfrsd2.o init_rs_int.o encode_rs_int.o decode_rs_int.o
+libsfrsd.a: $(OBJS0)
+	ar cr libsfrsd.a $(OBJS0)
+	ranlib libsfrsd.a
+	cp libsfrsd.a ..
+
+OBJS1 = rsdtest.o extract2.o sfrsd2.o encode_rs_int.o \
+	decode_rs_int.o init_rs_int.o 
+rsdtest: $(OBJS1) ../libjt.a
+	$(FC) -o rsdtest $(OBJS1) libsfrsd.a ../libjt.a -lpthread
+
+OBJS2 = rsdtest2.o sfrsd2.o encode_rs_int.o decode_rs_int.o init_rs_int.o 
+rsdtest2: $(OBJS2) ../libjt.a
+	$(FC) -o rsdtest2 $(OBJS2) libsfrsd.a ../libjt.a -lfftw3f -lpthread
+
+OBJS3 = rsdtest3.o sfrsd2.o encode_rs_int.o decode_rs_int.o init_rs_int.o 
+rsdtest3: $(OBJS3) ../libjt.a
+	$(FC) -o rsdtest3 $(OBJS3) libsfrsd.a ../libjt.a -lfftw3f -lpthread
+
+sfrsd: sfrsd.o encode_rs_int.o decode_rs_int.o init_rs_int.o
+	gcc -g -o $@ $^
+
+encode_rs_int.o: encode_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+decode_rs_int.o: decode_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+init_rs_int.o: init_rs.c
+	gcc -DBIGSYM=1 $(CFLAGS) -c -o $@ $^
+
+.PHONY : clean
+
+clean:
+	rm -rf *.o libjt.a rsdtest rsdtest2 rsdtest3 sfrsd
