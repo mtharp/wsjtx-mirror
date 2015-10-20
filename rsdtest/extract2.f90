@@ -24,22 +24,20 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
      ns=0
      first=.false.
   endif
-
   nfail=0
 1 call demod64a(s3,nadd,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
 
-!  if(ntest.lt.50 .or. nlow.gt.20) then
-!     ncount=-999                         !Flag bad data
-!     go to 900
-!  endif
-
   call chkhist(mrsym,nhist,ipk)
+
   if(nhist.ge.20) then
      nfail=nfail+1
      call pctile(s3,tmp,4032,50,base)     ! ### or, use ave from demod64a ?
-     do j=1,63
-        s3(ipk,j)=base
-     enddo
+     s3(ipk,1:63)=base
+     if( nfail .gt. 30 ) then
+       msg='                     '
+       ncount=-1
+       go to 900
+     endif
      go to 1
   endif
 
@@ -51,7 +49,7 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   call interleave63(mr2sym,-1)
   call interleave63(mr2prob,-1)
 
-  nverbose=0
+  nverbose=1
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
        param,indx,tt,ntry)
   ncandidates=param(0)
@@ -67,11 +65,12 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
 
 
   msg='                      '
-! if(nhard.ge.0) then
-  if(nhard.ge.0 .and. nhard.le.42 .and. nsoft.le.32 .and.              &
-       (nhard+nsoft).le.73) then
+  if(nhard.ge.0) then
+!  if(nhard.ge.0 .and. nhard.le.43 .and. nsoft.le.32 .and.              &
+!       (nhard+nsoft).le.74) then
      call unpackmsg(dat4,msg) !Unpack the user message
      if(msg.eq.'VK7MO K1JT FN20       ') then
+!     if(msg.ne.'') then
         ngood=ngood+1
         do k=0,62
            j=indx(k)
@@ -96,16 +95,17 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
   fbad=float(nbad)/ndone
 
   nboth=nhard+nsoft
+  nboth2=nhard/2 + nsoft
   if(nhard.lt.0) then
      nsoft=99
      nera=99
      nboth=99
   endif
-  write(*,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,   &
+  write(*,1010) ndone,fgood,fbad,ntest,ncandidates,nhard,nsoft,nboth2,nboth,   &
        ntry,tt,msg
-  write(32,1010) ndone,fgood,fbad,ncandidates,nhard,nsoft,nera,nboth,  &
-       ntry,tt,msg
-1010 format(i4,2f7.3,i7,4i3,i8,f8.1,1x,a22)
+  write(32,1010) ndone,fgood,fbad,ntest,ncandidates,nhard,nsoft,nboth2,nboth,  &
+       ntry,tt,msg(1:18)
+1010 format(i4,2f6.3,i3,i8,4i3,i8,f8.1,1x,a18)
   flush(32)
 
   if(msg.eq.'VK7MO K1JT FN20       ') then
@@ -133,13 +133,13 @@ subroutine extract2(s3,nadd,ntrials,param,msg)
 1095 format(/'Probability of error:')
   perr=nint(100.0*float(np0)/(ns+0.001))
   write(40,1096) perr
-1096 format(8i7)
+1096 format(8(i7,","))
 
   write(40,1097)
 1097 format(/'P(mr2 correct) :')
   pmr2=nint(100.0*float(np2)/(ns+0.001))
   write(40,1096) pmr2
   flush(40)
-
+900 continue
   return
 end subroutine extract2

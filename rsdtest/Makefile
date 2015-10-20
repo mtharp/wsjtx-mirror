@@ -22,13 +22,28 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    rsdtest
+all:    libsfrsd.a rsdtest rsdtest2 rsdtest3
 
-# Build rsdtest
-OBJS2 = rsdtest.o extract2.o sfrsd2.o encode_rs_int.o \
+OBJS0 = extract2.o sfrsd2.o init_rs_int.o encode_rs_int.o decode_rs_int.o
+libsfrsd.a: $(OBJS0)
+	ar cr libsfrsd.a $(OBJS0)
+	ranlib libsfrsd.a
+	cp libsfrsd.a ..
+
+OBJS1 = rsdtest.o extract2.o sfrsd2.o encode_rs_int.o \
 	decode_rs_int.o init_rs_int.o 
-rsdtest: $(OBJS2) ../libjt.a
-	$(FC) -o rsdtest $(OBJS2) ../libjt.a ../libpthreadGC2.a
+rsdtest: $(OBJS1) ../libjt.a
+	$(FC) -o rsdtest $(OBJS1) libsfrsd.a ../libjt.a ../libpthreadGC2.a
+
+OBJS2 = rsdtest2.o sfrsd2.o encode_rs_int.o decode_rs_int.o init_rs_int.o 
+rsdtest2: $(OBJS2) ../libjt.a
+	$(FC) -o rsdtest2 $(OBJS2) libsfrsd.a ../libjt.a \
+	../libfftw3f_win.a ../libpthreadGC2.a
+
+OBJS3 = rsdtest3.o sfrsd2.o encode_rs_int.o decode_rs_int.o init_rs_int.o 
+rsdtest3: $(OBJS3) ../libjt.a
+	$(FC) -o rsdtest3 $(OBJS3) libsfrsd.a ../libjt.a \
+	../libfftw3f_win.a ../libpthreadGC2.a
 
 sfrsd: sfrsd.o encode_rs_int.o decode_rs_int.o init_rs_int.o
 	gcc -g -o $@ $^
@@ -45,4 +60,4 @@ init_rs_int.o: init_rs.c
 .PHONY : clean
 
 clean:
-	rm -rf *.o libjt.a rsdtest sfrsd
+	rm -rf *.o libjt.a rsdtest rsdtest2 sfrsd

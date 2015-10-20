@@ -111,6 +111,7 @@ subroutine wsjt65(dat,npts,cfile6,NClearAve,MinSigdB,                 &
 
   call decode65(dat,npts,dtx,dfx,flip,ndepth,neme,mycall,hiscall,hisgrid,  &
        mode65,nfast,nafc,decoded,ncount,deepmsg,qual)
+
   if(ncount.eq.-999) qual=0                 !Bad data
 200 kvqual=0
   if(ncount.ge.0) kvqual=1

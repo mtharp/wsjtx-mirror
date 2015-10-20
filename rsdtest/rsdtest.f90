@@ -14,8 +14,11 @@ program rsdtest
   call getarg(2,arg)
   read(arg,*) nfiles
 
+!  open(10,file='s3_hf2_clean.bin',access='stream', status='old')
+!  open(10,file='s3_hf2.bin',access='stream', status='old')
   open(10,file='s3_1000.bin',access='stream', status='old')
-  open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
+!  open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
+!  open(20,file='s3_hf2_clean.bin',access='stream',status='new')
 
   nadd=1
   ifile0=0
@@ -26,7 +29,7 @@ program rsdtest
 
   do ifile=1,nfiles
      read(10,end=999) s3
-     if(ifile.lt.ifile0) cycle
+     if( ifile.lt.ifile0 ) cycle
      call extract2(s3,nadd,ntrials,param,msg)
      if(ifile.eq.ifile0) exit
   enddo
