@@ -60,4 +60,4 @@ init_rs_int.o: init_rs.c
 .PHONY : clean
 
 clean:
-	rm -rf *.o libjt.a rsdtest rsdtest2 sfrsd
+	rm -rf *.o libsfrsd.a rsdtest.exe rsdtest2.exe rsdtest3.exe sfrsd
