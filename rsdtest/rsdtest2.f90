@@ -9,13 +9,11 @@ program rsdtest2
   include '../avecom.f90'
 
   nargs=iargc()
-  if(nargs.ne.2) then
-     print*,'Usage: rsdtest ntrials nfiles'
+  if(nargs.ne.1) then
+     print*,'Usage: rsdtest nfiles'
      go to 999
   endif
   call getarg(1,arg)
-  read(arg,*) ntrials
-  call getarg(2,arg)
   read(arg,*) nfiles
 
   open(10,file='dat_1000_24dB.bin',access='stream',status='unknown')
