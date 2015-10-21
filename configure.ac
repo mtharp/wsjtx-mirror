@@ -2,7 +2,7 @@
 # Process this file with autoconf to create configure. -*- autoconf -*-
 # ------------------------------------------------------------------------------
 AC_PREREQ([2.65])
-AC_INIT([KVASD Installer],[1.12.14],[wsjt-devel@lists.sourceforge.net],[],
+AC_INIT([KVASD Installer],[1.12.16],[wsjt-devel@lists.sourceforge.net],[],
 [http://physics.princeton.edu/pulsar/k1jt/devel.html])
 AC_CONFIG_AUX_DIR([build-aux])
 AUTHORS="Greg Beam, Joseph H Taylor, and others"

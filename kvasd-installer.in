@@ -265,22 +265,6 @@ echo -e "* Internet Access .. ${C_G}OK${C_NC}" || {
 	}
 }
 
-# make main menu --------------------------------------------------------------#
-make_menu() {
-
-touch "$TMP"/MMenu.txt
-cat << 'EOF' > "$TMP/MMenu.txt"
-"I Install decoder" "" \
-"R Remove decoder" "" \
-"T Test decoder" "" \
-"S System Info" "" \
-"E Read EULA" "" \
-"H HELP" "" \
-"X EXIT" ""
-EOF
-
-} # end make main menu
-
 # accept kvasd end user license agreement (EULA) ------------------------------#
 
 accept_eula() {
@@ -674,8 +658,19 @@ sys_chk() {
 #    could be used.
 
 # OS from configure.ac
+# OS from configure.ac
 case "$OS" in
-	*linux* )
+	linux-gnueabi ) # ARMv6 - According to the README, this KVASD binary is not 1.12
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
+				MD5_1='2c306a35a34cec909553c90d3ae8e1b0'
+	;;
+
+	linux-gnueabihf ) # ARMv7
+				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armv7l/kvasd'
+				MD5_1='9e18289ae42d56ecec1036f90d1a4859'
+	;;
+
+	Linux*|linux* )
 		# ARCH information from configure.ac
 		case "$ARCH" in
 			*x86_64* )
@@ -688,16 +683,7 @@ case "$OS" in
 				MD5_1='e43b0a42681c1f5129de4714e5606712'
 			;;
 
-			*armv6* ) # According to the README, this KVASD binary is not 1.12
-				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armel/kvasd'
-				MD5_1='2c306a35a34cec909553c90d3ae8e1b0'
-			;;
-
-			*armv7* )
-				KVASD_URL='https://svn.code.sf.net/p/wsjt/wsjt/trunk/kvasd-binary/Linux-armv7l/kvasd'
-				MD5_1='9e18289ae42d56ecec1036f90d1a4859'
-			;;
-		esac
+			esac
 	;;
 
 	*darwin* )
@@ -762,9 +748,6 @@ sys_chk
 # make directories
 make_dialogrc
 
-# make menu
-make_menu
-
 # setup main menu help doc
 make_help
 
@@ -778,7 +761,14 @@ make_dirs
 while [ 0 ]; do
 
 $MSGCLIENT --ok-label SELECT --nocancel --backtitle "$BACKTITLE" --title \
-"$MMTITLE" --menu "$MENUMSG" 15 60 22 --file "$TMP/MMenu.txt" 2> "$TMP/selection"
+"$MMTITLE" --menu "$MENUMSG" 15 60 22 \
+"I Install decoder" "" \
+"R Remove decoder" "" \
+"T Test decoder" "" \
+"S System Info" "" \
+"E Read EULA" "" \
+"H HELP" "" \
+"X EXIT" "" 2> "$TMP/selection"
 
 # get user selection
 MMSELECT=$(head -c 1 < "$TMP"/selection)
