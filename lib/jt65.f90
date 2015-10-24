@@ -22,11 +22,8 @@ program jt65
   limtrace=0
   lu=12
 
-  newdat=1
   ntol=50
-  nfa=200
-  nfb=3000
-  nfqso=1270
+  nfqso=3000
   nagain=0
   minsync=2.5
   nsubmode=0
@@ -37,6 +34,9 @@ program jt65
   call timer('jt65    ',0)
 
   do ifile=1,nargs
+     newdat=1
+     nfa=200
+     nfb=3000
      call getarg(ifile,infile)
      open(10,file=infile,access='stream',status='old',err=998)
 
@@ -54,8 +54,8 @@ program jt65
      dd(npts+1:)=0.
 
      call timer('jt65a   ',0)
-     call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode,minsync,nagain,ndecoded)
-     write(*,*) 'returned from jt65a', nutc, nfa,nfb,nfqso,ntol,nsubmode,minsync,nagain,ndecoded
+     call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode, &
+                minsync,nagain,ndecoded)
      call timer('jt65a   ',1)
   enddo
 
