@@ -3417,7 +3417,10 @@ void MainWindow::on_actionJT9_JT65_triggered()
 {
   m_mode="JT9+JT65";
   switch_mode (Modes::JT65);
-  if(m_modeTx != "JT65") m_modeTx="JT9";
+  if(m_modeTx != "JT65") {
+    ui->pbTxMode->setText("Tx JT9  @");
+    m_modeTx="JT9";
+  }
   m_nSubMode=0;                    //Dual-mode always means JT9 and JT65A
   statusChanged();
   m_TRperiod=60;
