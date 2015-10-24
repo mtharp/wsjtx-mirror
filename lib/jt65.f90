@@ -24,10 +24,12 @@ program jt65
 
   newdat=1
   ntol=50
-  nfa=2700
-!  nfb=4000
-  nfqso=933
+  nfa=200
+  nfb=3000
+  nfqso=1270
   nagain=0
+  minsync=2.5
+  nsubmode=0
 
   open(12,file='timer.out',status='unknown')
   open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
@@ -52,7 +54,8 @@ program jt65
      dd(npts+1:)=0.
 
      call timer('jt65a   ',0)
-     call jt65a(dd,npts,newdat,nutc,ntol,nfa,nfqso,nagain,ndecoded)
+     call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode,minsync,nagain,ndecoded)
+     write(*,*) 'returned from jt65a', nutc, nfa,nfb,nfqso,ntol,nsubmode,minsync,nagain,ndecoded
      call timer('jt65a   ',1)
   enddo
 
