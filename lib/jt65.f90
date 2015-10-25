@@ -9,8 +9,8 @@ program jt65
   character*80 infile
   integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
   character*4 ariff,awave,afmt,adata
-  common/hdr/ariff,lenfile,awave,afmt,lenfmt,nfmt2,nchan2, &
-     nsamrate,nbytesec,nbytesam2,nbitsam2,adata,ndata
+!  common/hdr/ariff,lenfile,awave,afmt,lenfmt,nfmt2,nchan2, &
+!     nsamrate,nbytesec,nbytesam2,nbitsam2,adata,ndata
   common/tracer/limtrace,lu
   equivalence (lenfile,ihdr(2))
 
@@ -29,7 +29,6 @@ program jt65
   nsubmode=0
 
   open(12,file='timer.out',status='unknown')
-  open(22,file='kvasd.dat',access='direct',recl=1024,status='unknown')
 
   call timer('jt65    ',0)
 
@@ -38,6 +37,7 @@ program jt65
      nfa=200
      nfb=3000
      call getarg(ifile,infile)
+     write(*,*) ifile, nargs,infile
      open(10,file=infile,access='stream',status='old',err=998)
 
      call timer('read    ',0)
@@ -52,7 +52,8 @@ program jt65
      call timer('read    ',1)
      dd(1:npts)=id2(1:npts)
      dd(npts+1:)=0.
-
+!open(56,file='subtracted.wav',access='stream',status='old')
+!write(56) ihdr(1:11)
      call timer('jt65a   ',0)
      call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode, &
                 minsync,nagain,ndecoded)
@@ -61,8 +62,8 @@ program jt65
 
   call timer('jt65    ',1)
   call timer('jt65    ',101)
-  call four2a(a,-1,1,1,1)                  !Free the memory used for plans
-  call filbig(a,-1,1,0.0,0,0,0,0,0)        ! (ditto)
+!  call four2a(a,-1,1,1,1)                  !Free the memory used for plans
+!  call filbig(a,-1,1,0.0,0,0,0,0,0)        ! (ditto)
   go to 999
 
 998 print*,'Cannot open file:'

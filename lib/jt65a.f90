@@ -63,6 +63,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 
 !     if(decoded.ne.'                      ') then
      if(decoded.ne.'                      ' .or. minsync.lt.0) then
+!        call subtract65(dd,npts,freq,dtx,decoded) 
         ndecoded=1
         nfreq=nint(freq+a(1))
         ndrift=nint(2.0*a(2))

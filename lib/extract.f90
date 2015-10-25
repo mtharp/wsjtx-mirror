@@ -19,12 +19,13 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
   character decoded*22
   integer dat4(12)
   integer mrsym(63),mr2sym(63),mrprob(63),mr2prob(63)
-  integer correct(0:62)
+  integer correct(63),tmp(63)
   integer param(0:7)
   integer indx(0:62)
   real*8 tt
   logical nokv,ltext
   common/decstats/num65,numbm,numkv,num9,numfano
+  common/chansyms65/correct
   data nokv/.false./,nsec1/0/
   save
 
@@ -80,17 +81,26 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
   ngmd=param(4)
   ndone=ndone+1
   do i=1,12
-     dat4(i)=correct(12-i)
+     dat4(i)=correct(13-i)
   enddo
 
   ncount=-1
   decoded='                      '
   ltext=.false.
-  if(nhard.ge.0) then 
+  if(nhard.ge.0) then
+    !turn the corrected symbol array into channel symbols for subtraction
+    !pass it back to jt65a via common block "chansyms65"
+    do i=1,63
+       tmp(i)=correct(64-i)
+     enddo
+     correct(1:63)=tmp(1:63)
+     call interleave63(correct,63,1)
+     call graycode65(correct,63,1)
      call unpackmsg(dat4,decoded)     !Unpack the user message
      ncount=0
      if(iand(dat4(10),8).ne.0) ltext=.true.
-     nbmkv=2
+     nbmkv=1
+     if( nhard .gt. 25 ) nbmkv=2
   endif
 900 continue
 
