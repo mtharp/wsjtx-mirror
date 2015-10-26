@@ -5,9 +5,8 @@
 ! complex amp: cfilt(t)=LPF[dd(t)*cref(t)]
 ! Form: dd(t)-Re{cref*cfilt}
 !
-subroutine subtract65(dd,npts,f0,dt,decoded)
+subroutine subtract65(dd,npts,f0,dt)
   use packjt
-  character*22 decoded
   integer correct(63)
 
   parameter (NMAX=60*12000) !Samples per 60 s

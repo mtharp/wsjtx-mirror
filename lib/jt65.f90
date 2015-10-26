@@ -7,10 +7,6 @@ program jt65
   integer*2 id2(NZMAX)
   real*4 dd(NZMAX)
   character*80 infile
-  integer*2 nfmt2,nchan2,nbitsam2,nbytesam2
-  character*4 ariff,awave,afmt,adata
-!  common/hdr/ariff,lenfile,awave,afmt,lenfmt,nfmt2,nchan2, &
-!     nsamrate,nbytesec,nbytesam2,nbitsam2,adata,ndata
   common/tracer/limtrace,lu
   equivalence (lenfile,ihdr(2))
 
@@ -37,7 +33,6 @@ program jt65
      nfa=200
      nfb=3000
      call getarg(ifile,infile)
-     write(*,*) ifile, nargs,infile
      open(10,file=infile,access='stream',status='old',err=998)
 
      call timer('read    ',0)
