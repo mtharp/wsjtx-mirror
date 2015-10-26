@@ -1,9 +1,9 @@
 ! subtract a jt65 signal
 !
-! measured signal: dd(t)=A(t)cos(2*pi*fo*t+theta(t))
-! reference signal:   cref(t)=exp( j*phi(t) )
-! complex amp: cfilt(t)=LPF[dd(t)*cref(t)]
-! Form: dd(t)-Re{cref*cfilt}
+! measured signal  : dd(t)    = a(t)cos(2*pi*f0*t+theta(t))
+! reference signal : cref(t)  = exp( j*(2*pi*f0*t+phi(t)) )
+! complex amp      : cfilt(t) = LPF[ dd(t)*CONJG(cref(t)) ]
+! subtract         : dd(t)    = dd(t) - 2*REAL{cref*cfilt}
 !
 subroutine subtract65(dd,npts,f0,dt)
   use packjt
@@ -13,7 +13,7 @@ subroutine subtract65(dd,npts,f0,dt)
   parameter (NFILT=600)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
   complex cref(NMAX),camp(NMAX),cfilt(NMAX),csum
-  integer*2 id2(NMAX)
+  integer*2 id2(NMAX) !used to write data to .wav file for debugging.
   integer nprc(126)
   real*8 dphi
   data nprc/                                   &
