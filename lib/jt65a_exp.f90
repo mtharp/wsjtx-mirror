@@ -7,6 +7,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   parameter (NFFT=8192)
   real dd0(NZMAX)
   real dd(NZMAX)
+  integer*2 id2(NZMAX)
   real ss(322,NSZ)
   real savg(NSZ)
   real a(5)
@@ -17,7 +18,15 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      real sync
   end type candidate
   type(candidate) ca(300)
+  type decode
+     real freq
+     real dt
+     real sync
+     character*22 decoded
+  end type decode
+  type(decode) dec(30)
   common/decstats/num65,numbm,numkv,num9,numfano
+  common/steve/thresh0
   save
 
   dd=0.
@@ -25,6 +34,15 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   npad=12000*tpad
   dd(1+npad:npts+npad)=dd0(1:npts)
   npts=npts+npad
+do iii=1,2 !!!!!!!!!!!!!!!!!!!!!!!!
+newdat=1
+if(iii.eq.1) then
+  thresh0=2.5
+  nsubtract=1
+elseif( iii.eq.2 ) then
+  thresh0=2.5
+  nsubtract=0
+endif
 
 !  if(newdat.ne.0) then
      call timer('symsp65 ',0)
@@ -35,15 +53,17 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   nfa=nf1
   nfb=nf2
 !  if(newdat.eq.0) then
-  if(newdat.eq.0 .or. nfqso.eq.1270) then
-     nfa=nfqso-ntol
-     nfb=nfqso+ntol
-  endif
+!  if(newdat.eq.0 .or. nfqso.eq.1270) then
+!     nfa=nfqso-ntol
+!     nfb=nfqso+ntol
+!  endif
 
   ncand=0
   call timer('sync65  ',0)
   call sync65(ss,nfa,nfb,nhsym,ca,ncand)    !Get a list of JT65 candidates
   call timer('sync65  ',1)
+
+write(*,*) iii, ncand, nfa, nfb,newdat
 
   df=12000.0/NFFT                     !df = 12000.0/8192 = 1.465 Hz
   mode65=2**nsubmode
@@ -63,6 +83,9 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 
 !     if(decoded.ne.'                      ') then
      if(decoded.ne.'                      ' .or. minsync.lt.0) then
+        if( nsubtract .eq. 1 ) then
+          call subtract65(dd,npts,freq,dtx)
+        endif
         ndecoded=1
         nfreq=nint(freq+a(1))
         ndrift=nint(2.0*a(2))
@@ -89,6 +112,9 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      endif
   enddo
 
+enddo !!!!!!!!!!!
+id2(1:npts)=dd(1:npts)
+write(56) id2(1:npts)
 !     if(nagain.eq.1) exit
 !  enddo
 

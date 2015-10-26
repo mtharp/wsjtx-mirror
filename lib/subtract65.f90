@@ -10,10 +10,9 @@ subroutine subtract65(dd,npts,f0,dt)
   integer correct(63)
 
   parameter (NMAX=60*12000) !Samples per 60 s
-  parameter (NFILT=600)
+  parameter (NFILT=1600)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
   complex cref(NMAX),camp(NMAX),cfilt(NMAX),csum
-  integer*2 id2(NMAX) !used to write data to .wav file for debugging.
   integer nprc(126)
   real*8 dphi
   data nprc/                                   &
@@ -87,8 +86,6 @@ subroutine subtract65(dd,npts,f0,dt)
   do i=1,nref
     dd(nstart+i-1)=dd(nstart+i-1)-2*REAL(cfilt(i)*cref(i))
   enddo
-!  id2(1:npts)=dd(1:npts)
-!  write(56) id2(1:npts)
 
   return
 end subroutine subtract65 

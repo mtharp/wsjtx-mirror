@@ -25,7 +25,6 @@ program jt65
   nsubmode=0
 
   open(12,file='timer.out',status='unknown')
-
   call timer('jt65    ',0)
 
   do ifile=1,nargs
@@ -47,9 +46,11 @@ program jt65
      call timer('read    ',1)
      dd(1:npts)=id2(1:npts)
      dd(npts+1:)=0.
-!open(56,file='subtracted.wav',access='stream',status='old')
-!write(56) ihdr(1:11)
      call timer('jt65a   ',0)
+
+open(56,file='subtracted.wav',access='stream',status='unknown')
+write(56) ihdr(1:11)
+
      call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode, &
                 minsync,nagain,ndecoded)
      call timer('jt65a   ',1)
