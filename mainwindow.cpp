@@ -4868,7 +4868,8 @@ void MainWindow::astroCalculations (QDateTime const& time, bool adjust)
     auto astro_correction = m_astroWidget->astroUpdate(time, m_config.my_grid(),
                  m_hisGrid, m_dialFreq, "Echo" == m_mode, m_transmitting);
     // Adjust frequency only if requested, allowed by mode, and freq > 50MHz.
-    if (adjust && !m_bSimplex && (m_dialFreq >= 50000000)) {
+    if (adjust && !m_bSimplex && (m_dialFreq >= 50000000) &&
+        m_astroWidget->trackVFO()) {
       if(m_transmitting) {
         m_dialFreqTx = m_freqNominal + astro_correction;
         ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreqTx));
