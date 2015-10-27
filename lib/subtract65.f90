@@ -115,7 +115,8 @@ subroutine subtract65(dd,npts,f0,dt)
   ! subtract the reconstructed signal
   call timer('subtr_3 ',0)
   do i=1,nref
-    dd(nstart+i-1)=dd(nstart+i-1)-2*REAL(cfilt(i)*cref(i))
+     j=nstart+i-1
+     if(j.ge.1 .and. j.le.npts) dd(j)=dd(j)-2*REAL(cfilt(i)*cref(i))
   enddo
   call timer('subtr_3 ',1)
 
