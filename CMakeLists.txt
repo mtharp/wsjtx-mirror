@@ -26,6 +26,7 @@ source tarball." )
 # Find_library (USB_LIBRARY NAMES libusb.a usb)
 Find_program (MAKE_EXECUTABLE NAMES make mingw32_make gmake)
 Find_program (SVN_EXECUTABLE svn)
+Find_program (PATCH_EXECUTABLE patch)
 
 
 #
@@ -104,6 +105,7 @@ ExternalProject_Add (hamlib
   URL ${CMAKE_CURRENT_SOURCE_DIR}/src/hamlib.tgz
   URL_HASH MD5=${hamlib_md5sum}
   UPDATE_COMMAND ""
+  PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/hamlib.patch
   CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
   BUILD_COMMAND ${MAKE_EXECUTABLE} all
   INSTALL_COMMAND ${MAKE_EXECUTABLE} install-strip
@@ -143,6 +145,7 @@ ExternalProject_Add (wsjtx
   SVN_REPOSITORY ${wsjtx_repo}
   URL ${CMAKE_CURRENT_SOURCE_DIR}/src/wsjtx.tgz
   URL_HASH MD5=${wsjtx_md5sum}
+  PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/wsjtx.patch
   CMAKE_ARGS
   -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
