@@ -3432,7 +3432,6 @@ void MainWindow::on_actionJT9_JT65_triggered()
   m_toneSpacing=0.0;
   mode_label->setStyleSheet("QLabel{background-color: #ffff66}");
   mode_label->setText(m_mode);
-  ui->ClrAvgButton->setVisible(false);
   ui->actionJT9_JT65->setChecked(true);
   VHF_features_enabled(false);
   m_wideGraph->setPeriod(m_TRperiod,m_nsps);
@@ -3446,6 +3445,7 @@ void MainWindow::on_actionJT9_JT65_triggered()
   fast_config(false);
   ui->label_6->setText("Band Activity");
   ui->label_7->setText("Rx Frequency");
+  ui->ClrAvgButton->setVisible(false);
 }
 
 void MainWindow::on_actionJT4_triggered()
