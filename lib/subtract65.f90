@@ -12,9 +12,10 @@ subroutine subtract65(dd,npts,f0,dt)
   parameter (NMAX=60*12000) !Samples per 60 s
   parameter (NFILT=1600)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
-  complex cref(NMAX),camp(NMAX),cfilt(NMAX),csum
+  complex cref(NMAX),camp(NMAX),cfilt(NMAX),csum,cw(NMAX)
   integer nprc(126)
   real*8 dphi
+  logical first
   data nprc/                                   &
     1,0,0,1,1,0,0,0,1,1,1,1,1,1,0,1,0,1,0,0, &
     0,1,0,1,1,0,0,1,0,0,0,1,1,1,0,0,1,1,1,1, &
@@ -23,7 +24,9 @@ subroutine subtract65(dd,npts,f0,dt)
     1,0,0,0,0,0,0,0,1,1,0,1,0,0,1,0,1,1,0,1, &
     0,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,0,0,1,1, &
     1,1,1,1,1,1/
+  data first/.true./
   common/chansyms65/correct
+  save first,cw
   pi=4.0*atan(1.0)
 
 ! Symbol duration is 4096/11025 s.
@@ -43,6 +46,7 @@ subroutine subtract65(dd,npts,f0,dt)
   ind=1
   isym=1
 !  f0=1270
+  call timer('subtr_1 ',0)
   do k=1,nsym
     if( nprc(k) .eq. 1 ) then
         omega=2*pi*f0
@@ -59,6 +63,7 @@ subroutine subtract65(dd,npts,f0,dt)
         ind=ind+1
      enddo
   enddo
+  call timer('subtr_1 ',1)
 
   ! create and normalize the filter
   sum=0.0
@@ -71,21 +76,48 @@ subroutine subtract65(dd,npts,f0,dt)
   enddo
 
   ! apply smoothing filter - ignore end effects for now
-  do i=1, nref
-    csum=cmplx(0.0,0.0)
-    do j=-NFILT/2,NFILT/2
-      k=i+j
-      if( k.gt.1 .and. k.le.nref) then
-        csum=csum+window(j)*camp(k)
-      endif
-    enddo
-    cfilt(i)=csum
-  enddo
+  call timer('subtr_2 ',0)
+!  do i=1, nref
+!    csum=cmplx(0.0,0.0)
+!    do j=-NFILT/2,NFILT/2
+!      k=i+j
+!      if( k.gt.1 .and. k.le.nref) then
+!        csum=csum+window(j)*camp(k)
+!      endif
+!    enddo
+!    cfilt(i)=csum
+!  enddo
+
+! Smoothing filter: do the convolution by means of FFTs. Ignore end-around 
+! cyclic effects for now.
+
+  nfft=564480
+  if(first) then
+     cw=0.
+     do i=-NFILT/2,NFILT/2
+        j=i+1
+        if(j.lt.1) j=j+nfft
+        cw(j)=window(i)
+     enddo
+     call four2a(cw,nfft,1,-1,1)
+     first=.false.
+  endif
+
+  nz=561708
+  cfilt(1:nz)=camp(1:nz)
+  cfilt(nz+1:nfft)=0.
+  call four2a(cfilt,nfft,1,-1,1)
+  fac=1.0/float(NMAX)
+  cfilt(1:nfft)=fac*cfilt(1:nfft)*cw(1:nfft)
+  call four2a(cfilt,nfft,1,1,1)
+  call timer('subtr_2 ',1)
 
   ! subtract the reconstructed signal
+  call timer('subtr_3 ',0)
   do i=1,nref
     dd(nstart+i-1)=dd(nstart+i-1)-2*REAL(cfilt(i)*cref(i))
   enddo
+  call timer('subtr_3 ',1)
 
   return
 end subroutine subtract65 
