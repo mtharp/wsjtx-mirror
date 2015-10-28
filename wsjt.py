@@ -466,7 +466,12 @@ def savelast(event=NONE):
 
 #------------------------------------------------------ stub
 def stub(event=NONE):
-    MsgBox("Sorry, this function is not yet implemented.")
+    MsgBox("Sorry, this function is not yet iplemented.")
+
+#------------------------------------------------------ udev
+# currently used for Logbook message
+def udev(event=NONE):
+    MsgBox("\nThis feature is currently under development.")
 
 #------------------------------------------------------ MsgBox
 def MsgBox(t):
@@ -2698,8 +2703,7 @@ if (sys.platform != 'darwin'):
     setupbutton['menu'] = setupmenu
 else:   
     setupmenu = Menu(mbar, tearoff=0)
-setupmenu.add('command', label = 'Options', command = options1, \
-              accelerator='F2')
+setupmenu.add('command', label = 'Options', command = options1, accelerator='F2')
 setupmenu.add_separator()
 setupmenu.add('command', label = 'Toggle size of text window', command=textsize)
 setupmenu.add('command', label = 'Generate messages for test tones', command=testmsgs)
@@ -2869,6 +2873,21 @@ nfreq.set(144)
 
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Band", menu=bandmenu)
+
+#------------------------------------------------------ Logbook Menu
+if (sys.platform != 'darwin'):
+    logbookbutton = Menubutton(mbar, text = 'Logbook')
+    logbookbutton.pack(side = LEFT)
+    logbookmenu = Menu(logbookbutton, tearoff=0)
+    logbookbutton['menu'] = logbookmenu
+else:    
+    logbookmenu = Menu(mbar, tearoff=use_tearoff)
+logbookmenu.add_radiobutton(label = 'Call3 Data', command = udev)
+logbookmenu.add_radiobutton(label = 'Generate Call3 CSV', command = udev)
+logbookmenu.add_radiobutton(label = 'View Main Log', command = udev)
+
+if (sys.platform == 'darwin'):
+    mbar.add_cascade(label="Logbook", menu=logbookmenu)
 
 #------------------------------------------------------ Help menu
 if (sys.platform != 'darwin'):

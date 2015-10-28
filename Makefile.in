@@ -29,8 +29,25 @@ CPPFLAGS	+=	${DEFS} -I.
 FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation
 CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
 
+# TODO: Add Python3 and Python2 locations to configure.ac
 PYTHON		?=	@PYTHON@
 F2PY		?=	@F2PY@
+
+# For Core Developers only. Not for package distribution. 
+# To enable, configure with: RSDTEST=Yes
+# TO-DO: Add --enable-rsdtest m4 macro to configure.ac
+BRSDTEST     = No
+
+# Optional Manpage and Doc builds
+# To enable, configure with: BMAP=Yes BDOC=Yes
+# To-Do: Add --enable-docs --enable-manp macros to configure.ac
+SRCD = $(shell exec pwd)
+DOCPATH = $(SRCD)/doc
+DOCSRC = $(SRCD)/doc/user_guide
+DOCCONF = $(SRCD)/doc/wsjt.conf
+THEMEDIR = $(SRCD)/doc/theme
+BMANP = No
+BDOC = No
 
 # Default rules
 %.o: %.c
@@ -44,15 +61,17 @@ F2PY		?=	@F2PY@
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
+# WSJT targets
+# TO-D): Add Manpage and userguide targets to the build.
 all:	libjt.a WsjtMod/Audio.so jt65code jt4code
 
 OS			=	@OS@
 FC			=	@FC@
 FCV			=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
-
 LDFLAGS		+=	-L${FC_LIB_PATH}
 
+# Objects
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	avecho.o avemsg4.o avemsg65.o avemsg6m.o avesp2.o azdist.o \
 	bzap.o chk441.o chkhist.o chkmsg.o coord.o db.o dcoord.o \
@@ -81,35 +100,66 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
 	xcor4.o xfft.o xfft2.o sfrsd2.o
 
+# Build libjt.a library
 libjt.a: $(OBJS1)
 	ar cr libjt.a $(OBJS1)
 	ranlib libjt.a
 
+# Build jt65code binary
 OBJS2 = jt65code.o 
 jt65code: $(OBJS2) libjt.a
 	$(FC) -o jt65code $(OBJS2) libjt.a -lgfortran
 
+# Build jt4code binary
 OBJS3 = jt4code.o 
 jt4code: $(OBJS3)
 	$(FC) -o jt4code $(OBJS3) libjt.a
 
+# SRCS for Audio.so
 F2PYSRCS = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 getfile.f90 \
 	 azdist0.f90 astro0.f90 chkt0.f90
 
+# Build Audio.so libary
 WsjtMod/Audio.so: libjt.a ${F2PYSRCS} 
 	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
 	--opt="-cpp -fbounds-check -O2" ${LDFLAGS} \
 	${LIBS} libjt.a -m Audio ftn_init.f90 ftn_quit.f90 \
-	audio_init.f90 spec.f90 getfile.f90 azdist0.f90 \
-	astro0.f90 chkt0.f90
-
+	audio_init.f90 spec.f90 getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
 	${MV} Audio*.so WsjtMod/Audio.so
 
-.PHONY : clean
+# For Core Developers only, not for distribution:
+# Build rsdtest binaries
+rsdtest:
+ifeq ($(BRSDTEST),Yes)
+	@(cd rsdtest/ ; make -f Makefile.linux all)
+endif
+
+# Generate Manpages
+ifeq ($(BMANP),Yes)
+manp:
+	@for f in $(MANPSRC) ; do \
+	echo "$$f" ; \
+	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
+	done
+endif
+
+# Generate User Guide
+ifeq ($(BDOC),Yes)
+user-guide:
+	@$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
+	--conf-file=$(DOCCONF) \
+	--backend=xhtml11 \
+	--theme wsjt \
+	--out-file=$(DOCPATH)/wsjt-main-@VERSION@.html $(DOCPATH)/user_guide/wsjt-main.adoc
+endif
+
+# TO-DO: Add manpage, user guide cleanup makefile.
+.PHONY : clean distclean
 clean:
-	${RM} -f *.o *.pyc *.so *~ jt65code jt4code WsjtMod/*.pyc \
-	WsjtMod/*.pyc WsjtMod/*.so 
+	${RM} -f *.o *.pyc *.so *~ jt65code jt4code WsjtMod/*.pyc WsjtMod/*.pyc WsjtMod/*.so  doc/wsjt.conf
+	(cd rsdtest/ ; make -f Makefile.linux clean)
 	${RM} -rf build/
 
 distclean: clean
 	${RM} -f config.log config.status Makefile
+	${RM} -rf autom4te.cache/

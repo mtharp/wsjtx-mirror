@@ -1,0 +1,46 @@
+:doctype: manpage
+:man source: AsciiDoc
+:man version: @VERSION@
+:man manual: WSJT Manual
+= wsjt(1)
+
+== NAME
+
+wsjt - Weak signal communications program.
+
+== SYNOPSIS
+
+*wsjt* ['OPTIONS']
+
+== DESCRIPTION
+
+*wsjt* is a weak signal communications program supporting several operating
+modes: JT65.
+
+TO-DO - add additional modes
+
+
+== OPTIONS
+
+TO-DO - Add options if available
+
+
+== FILES
+
+TO-DO - Add file locaiton information
+
+
+== AUTHOR
+
+Joe Taylor, K1JT.
+
+== COPYING
+
+*wsjt* is Copyright (C) 2001 - 2015 by Joseph H. Taylor, Jr., K1JT,
+with contributions from additional authors.  WSJT-X is Open Source
+software, licensed under the GNU General Public License (GPLv3).
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.

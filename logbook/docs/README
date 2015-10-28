@@ -1,0 +1,7 @@
+SQLLite3 Docs
+-------------
+
+This folder is for hold basic documentation regarding the database scture,
+usage and an general query syntax examples.
+
+This documentation should not be included in the distribution packages.

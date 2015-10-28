@@ -216,7 +216,17 @@ if test $fail -eq 1; then
 	AC_MSG_ERROR([Please check error messages and install missing packages.])
 fi
 
-dnl 
+dnl
+dnl Set batch for documentation conf file
+dnl TO-DO: add this to m4 macro's and update Makefile.in properly
+DOCSRC=$(exec pwd)/doc/user_guide
+THEMEDIR=$(exec pwd)/doc/theme/wsjt
+DOCCONF=$(exec pwd)/doc/wsjt.conf
+DOCPATH=$(exec pwd)/doc/
+AC_SUBST([DOCSRC], ["$DOCSRC"])
+AC_SUBST([DOCCONF], ["$DOCCONF"])
+AC_SUBST([DOCPATH], ["$DOCPATH"])
+AC_SUBST([THEMEDIR], ["$THEMEDIR"])
 AC_SUBST(PREFIX, "${prefix}")
 AC_SUBST(CPPFLAGS, "${CPPFLAGS}")
 AC_SUBST(LDFLAGS, "${LDFLAGS}")
@@ -224,7 +234,9 @@ AC_SUBST(LIBS, "${LIBS}")
 AC_SUBST(CFLAGS)
 AC_SUBST(FFLAGS)
 AC_SUBST(F2PY, "${F2PY}")
-AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(Makefile
+doc/wsjt.conf
+)
 AC_OUTPUT
 
 dnl do summary

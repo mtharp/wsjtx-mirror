@@ -1,0 +1,48 @@
+WSJT Logbook
+------------
+
+Status: In Development
+
+This is a "work in progress" to enable the use of an Sqlite3 Database,
+which is bundeled with virtually all current Python2/3 distributions.
+The main features will include, but may not be limited to:
+
+* Call3 Text Data Management
+* WSJT Specific QSO Looging
+* ADIF Exports
+* Basic Report Generation and Queries
+* Explore the possibility of contest logging.
+ 
+The data present in the *call3* table was generated from the CALL3.txt file
+located in ^/trunk/CALL3.TXT
+
+A CSV ( call3.csv ) file generated from CALL3.TXT has also been provided to
+facilitate script automation testing. Several fields from the CALL3.TXT
+file were re-structured to correct CSV import errors.
+
+All database files (wsjt.db, wsjt.sql, call3.csv ) are in an unstable state
+and may not represent the final configuration when / if the SQLite3 integration
+moves forward to a release state.
+
+Browsing the database can easily be done through the use of many Open Source
+SQLite3 Database Management tools. With these tools you can perform virtuall
+any SQLite3 function, including data manipulation, including creating your own
+CALL3.TXT file for use with WSJT as it stands now.
+
+* GUI Based Tools
+--http://www.sqlite.org/cvstrac/wiki?p=ManagementTools
+
+* Browser Based Tools
+-- Firefox Plugin: https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/
+
+Other browsers have plugins; search for them as you would for other browser
+based tools.
+
+
+NOTE(s)
+-------
+- This Logbook is *Not* intened to be a full featured loging program.
+- At present, none of the feature have been added to the repository.
+- None of the additions todate will affect the current Win32 / *Nix
+  distributions.
+

@@ -1,0 +1,62 @@
+
+WSJT manpages are build using AsciiDoc (a2x); You do not need LaTex,
+DocBook, A-A-P etc, nor do you need to run the Makefiles to build
+the manpages. The following explains how to setup and build manpages
+individually.
+
+While this example is for WSJT mapnages, the same approach could be used to
+generate most any manpage using AscciDoc as the markup language.
+
+
+REQUIEMENTS
+-----------
+* Python2.7 (installed on most *Nix systems)
+* xslproc	(in most repo inventories)
+* AsciiDoc
+
+Note: AsciiDoc reuires Python2.5 <=> 2.7 and will not run on Python3.x
+
+
+INSTALL XSLPROC
+---------------
+* sudo apt-get install xslproc
+
+
+DOWNLOAD && EDIT a2x.py
+-----------------------
+* http://iweb.dl.sourceforge.net/project/asciidoc/asciidoc/8.6.9/asciidoc-8.6.9.tar.gz
+* tar -xzvf asciidoc-8.6.9.tar.gz
+* cd asciidoc-8.6.9
+* EDIT: a2x.py, and change the following lines to match:
+
+# External executables.
+ASCIIDOC = 'asciidoc'
+XSLTPROC = 'xsltproc'
+DBLATEX = ''         # pdf generation.
+FOP = ''             # pdf generation (--fop option).
+W3M = ''             # text generation.
+LYNX = ''            # text generation (if no w3m).
+XMLLINT = ''         # Set to '' to disable.
+EPUBCHECK = ''       # Set to '' to disable.
+
+Save && Exit
+
+
+INSTALL ASCIIDOC
+----------------
+./configure
+make && sudo make install
+
+Finished.
+
+BUILD MANPAGES
+--------------
+Example: to produce wspr.1 manpage
+
+* cd ~/wspr/manpages
+* a2x --doctype manpage --format manpage --no-xmllint wsjt.1.txt
+
+READ MANPAGES
+-------------
+* To read the new ,ampage: man ./wsjt.1
+

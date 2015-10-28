@@ -1,0 +1,9 @@
+Database Files
+--------------
+
+This folder contains all the SQLite3 database related files.
+
+* wsjt.sql is the database table teplate
+* call3.csv is an excel/open-office comma deliniated file
+* wsjt.db is the actual SQLite3 database
+
