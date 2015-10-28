@@ -14,7 +14,7 @@ subroutine subtract65(dd,npts,f0,dt)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
   complex cref(NMAX),camp(NMAX),cfilt(NMAX),csum,cw(NMAX)
   integer nprc(126)
-  real*8 dphi
+  real*8 dphi,phi
   logical first
   data nprc/                                   &
     1,0,0,1,1,0,0,0,1,1,1,1,1,1,0,1,0,1,0,0, &
@@ -107,7 +107,7 @@ subroutine subtract65(dd,npts,f0,dt)
   cfilt(1:nz)=camp(1:nz)
   cfilt(nz+1:nfft)=0.
   call four2a(cfilt,nfft,1,-1,1)
-  fac=1.0/float(NMAX)
+  fac=1.0/float(nfft)
   cfilt(1:nfft)=fac*cfilt(1:nfft)*cw(1:nfft)
   call four2a(cfilt,nfft,1,1,1)
   call timer('subtr_2 ',1)
