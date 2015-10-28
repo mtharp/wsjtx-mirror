@@ -48,8 +48,8 @@ program jt65
      dd(npts+1:)=0.
      call timer('jt65a   ',0)
 
-open(56,file='subtracted.wav',access='stream',status='unknown')
-write(56) ihdr(1:11)
+!     open(56,file='subtracted.wav',access='stream',status='unknown')
+!     write(56) ihdr(1:11)
 
      call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode, &
                 minsync,nagain,ndecoded)

@@ -126,8 +126,9 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 
   enddo !two-pass loop
 
-  id2(1:npts)=dd(1:npts)
-  write(56) id2(1:npts)
+!  id2(1:npts)=dd(1:npts)
+!  write(56) id2(1:npts)
+
 !     if(nagain.eq.1) exit
 !  enddo
 

@@ -19,6 +19,13 @@ subroutine decoder(ss,id2,nfsample)
 !$omp threadprivate(/tracer_priv/)
   save
 
+  n=ndepth/10000
+  if(mod(n,2).eq.0) ntrials=10**(n/2)
+  if(mod(n,2).eq.1) ntrials=3*10**(n/2)
+  if(n.eq.0) ntrials=0
+  naggressive=(ndepth - (n*10000))/100
+  ndepth=mod(ndepth,10)
+
   rms=sqrt(dot_product(float(id2(300000:310000)),                            &
                        float(id2(300000:310000)))/10000.0)
   if(rms.lt.2.0) go to 800 
@@ -69,7 +76,7 @@ subroutine decoder(ss,id2,nfsample)
      nf2=nfb
      call timer('jt65a   ',0)
      call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nsubmode,      &
-          minsync,nagain,ndecoded)
+          minsync,nagain,ntrials,naggressive,ndepth,ndecoded)
      call timer('jt65a   ',1)
 
   else if(nmode.eq.9 .or. (nmode.eq.(65+9) .and. ntxmode.eq.9)) then
@@ -88,7 +95,7 @@ subroutine decoder(ss,id2,nfsample)
         nf2=nfb
         call timer('jt65a   ',0)
         call jt65a(dd,npts65,newdat65,nutc,nf1,nf2,nfqso,ntol65,nsubmode,   &
-             minsync,nagain,ndecoded)
+             minsync,nagain,ntrials,naggressive,ndepth,ndecoded)
         call timer('jt65a   ',1)
      else
         call timer('decjt9  ',0)

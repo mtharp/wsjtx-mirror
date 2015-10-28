@@ -1,5 +1,5 @@
 subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
-     minsync,nagain,ndecoded)
+     minsync,nagain,ntrials,naggressive,ndepth,ndecoded)
 
 !  Process dd0() data to find and decode JT65 signals.
 
@@ -20,6 +20,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   common/decstats/num65,numbm,numkv,num9,numfano
   save
 
+!  print*,ntrials,naggressive,ndepth,nagain
   dd=0.
   tpad=2.0
   npad=12000*tpad

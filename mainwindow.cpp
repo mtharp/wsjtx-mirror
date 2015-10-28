@@ -1642,7 +1642,7 @@ void MainWindow::decode()                                       //decode()
   }
 
   jt9com_.nfqso=m_wideGraph->rxFreq();
-  jt9com_.ndepth=m_ndepth;
+  jt9com_.ndepth=10000*m_config.ntrials() + 100*m_config.aggressive() +  m_ndepth;
   jt9com_.ndiskdat=0;
   if(m_diskData) jt9com_.ndiskdat=1;
   jt9com_.nfa=m_wideGraph->nStartFreq();
