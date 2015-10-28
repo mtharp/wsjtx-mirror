@@ -1,14 +1,14 @@
-! subtract a jt65 signal
-!
-! measured signal  : dd(t)    = a(t)cos(2*pi*f0*t+theta(t))
-! reference signal : cref(t)  = exp( j*(2*pi*f0*t+phi(t)) )
-! complex amp      : cfilt(t) = LPF[ dd(t)*CONJG(cref(t)) ]
-! subtract         : dd(t)    = dd(t) - 2*REAL{cref*cfilt}
-!
 subroutine subtract65(dd,npts,f0,dt)
+
+! Subtract a jt65 signal
+!
+! Measured signal  : dd(t)    = a(t)cos(2*pi*f0*t+theta(t))
+! Reference signal : cref(t)  = exp( j*(2*pi*f0*t+phi(t)) )
+! Complex amp      : cfilt(t) = LPF[ dd(t)*CONJG(cref(t)) ]
+! Subtract         : dd(t)    = dd(t) - 2*REAL{cref*cfilt}
+
   use packjt
   integer correct(63)
-
   parameter (NMAX=60*12000) !Samples per 60 s
   parameter (NFILT=1600)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
@@ -27,6 +27,7 @@ subroutine subtract65(dd,npts,f0,dt)
   data first/.true./
   common/chansyms65/correct
   save first,cw
+
   pi=4.0*atan(1.0)
 
 ! Symbol duration is 4096/11025 s.
@@ -36,7 +37,7 @@ subroutine subtract65(dd,npts,f0,dt)
 ! Could eliminate accumulated error by injecting one extra sample every
 ! 5 or so symbols... Maybe try this later.
 
-  nstart=(dt+1)*12000;  !??? Why do I have to add 1 second here?
+  nstart=(dt+1)*12000;
   nsym=126
   ns=4458 
   nref=nsym*ns
@@ -45,7 +46,6 @@ subroutine subtract65(dd,npts,f0,dt)
   iref=1
   ind=1
   isym=1
-!  f0=1270
   call timer('subtr_1 ',0)
   do k=1,nsym
     if( nprc(k) .eq. 1 ) then
@@ -65,39 +65,24 @@ subroutine subtract65(dd,npts,f0,dt)
   enddo
   call timer('subtr_1 ',1)
 
-  ! create and normalize the filter
-  sum=0.0
-  do j=-NFILT/2,NFILT/2
-    window(j)=cos(pi*j/NFILT)**2
-    sum=sum+window(j)
-  enddo
-  do j=-NFILT/2,NFILT/2
-    window(j)=window(j)/sum
-  enddo
-
-  ! apply smoothing filter - ignore end effects for now
   call timer('subtr_2 ',0)
-!  do i=1, nref
-!    csum=cmplx(0.0,0.0)
-!    do j=-NFILT/2,NFILT/2
-!      k=i+j
-!      if( k.gt.1 .and. k.le.nref) then
-!        csum=csum+window(j)*camp(k)
-!      endif
-!    enddo
-!    cfilt(i)=csum
-!  enddo
-
 ! Smoothing filter: do the convolution by means of FFTs. Ignore end-around 
 ! cyclic effects for now.
 
   nfft=564480
+
   if(first) then
+! Create and normalize the filter
+     sum=0.0
+     do j=-NFILT/2,NFILT/2
+        window(j)=cos(pi*j/NFILT)**2
+        sum=sum+window(j)
+     enddo
      cw=0.
      do i=-NFILT/2,NFILT/2
         j=i+1
         if(j.lt.1) j=j+nfft
-        cw(j)=window(i)
+        cw(j)=window(i)/sum
      enddo
      call four2a(cw,nfft,1,-1,1)
      first=.false.
@@ -112,7 +97,7 @@ subroutine subtract65(dd,npts,f0,dt)
   call four2a(cfilt,nfft,1,1,1)
   call timer('subtr_2 ',1)
 
-  ! subtract the reconstructed signal
+! Subtract the reconstructed signal
   call timer('subtr_3 ',0)
   do i=1,nref
      j=nstart+i-1
