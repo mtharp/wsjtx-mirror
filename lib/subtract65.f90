@@ -12,7 +12,7 @@ subroutine subtract65(dd,npts,f0,dt)
   parameter (NMAX=60*12000) !Samples per 60 s
   parameter (NFILT=1600)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
-  complex cref(NMAX),camp(NMAX),cfilt(NMAX),csum,cw(NMAX)
+  complex cref(NMAX),camp(NMAX),cfilt(NMAX),cw(NMAX)
   integer nprc(126)
   real*8 dphi,phi
   logical first
