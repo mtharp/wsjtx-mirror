@@ -1992,6 +1992,7 @@ void MainWindow::decodeBusy(bool b)                             //decodeBusy()
       m_firstDecode += 9;
       showProgress = true;
     }
+/* ###   Temporarily(?) disable the long-decode progress bar.
   if (showProgress)
     {
       // this sequence is needed to create an indeterminate progress
@@ -2000,6 +2001,7 @@ void MainWindow::decodeBusy(bool b)                             //decodeBusy()
       m_optimizingProgress.setValue (0);
       m_optimizingProgress.setRange (0, 0);
     }
+### */
   if (!b)
     {
       m_optimizingProgress.reset ();

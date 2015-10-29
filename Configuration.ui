@@ -2204,7 +2204,7 @@ Right click for insert and delete options.</string>
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Maximum number of erasure patterns for stochastic soft-decision Reed Solomon decoder is 10^(n/2).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="minimum">
-              <number>6</number>
+              <number>0</number>
              </property>
              <property name="maximum">
               <number>12</number>

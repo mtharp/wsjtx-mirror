@@ -12,7 +12,7 @@ subroutine subtract65(dd,npts,f0,dt)
   parameter (NMAX=60*12000) !Samples per 60 s
   parameter (NFILT=1600)
   real*4  dd(NMAX), window(-NFILT/2:NFILT/2)
-  complex cref(NMAX),camp(NMAX),cfilt(NMAX),cw(NMAX)
+  complex cref,camp,cfilt,cw
   integer nprc(126)
   real*8 dphi,phi
   logical first
@@ -26,7 +26,8 @@ subroutine subtract65(dd,npts,f0,dt)
     1,1,1,1,1,1/
   data first/.true./
   common/chansyms65/correct
-  save first,cw
+  common/test/cref(NMAX),camp(NMAX),cfilt(NMAX),cw(NMAX)
+  save first
 
   pi=4.0*atan(1.0)
 

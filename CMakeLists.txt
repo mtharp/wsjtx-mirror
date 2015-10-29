@@ -372,6 +372,7 @@ set (wsjt_FSRCS
   lib/shell.f90
   lib/spec9f.f90
   lib/stdmsg.f90
+  lib/subtract65.f90
   lib/sun.f90
   lib/symspec.f90
   lib/symspec2.f90

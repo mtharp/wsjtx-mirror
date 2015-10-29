@@ -1,5 +1,5 @@
-subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,sync2,a,dt,    &
-     nbmkv,nhist,decoded)
+subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,ntrials,     &
+     naggressive,ndepth,sync2,a,dt,nbmkv,nhist,decoded)
 
 ! Apply AFC corrections to a candidate JT65 signal, then decode it.
 
@@ -90,7 +90,8 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,sync2,a,dt,    &
   call timer('sh_ffts ',1)
 
   call timer('dec65b  ',0)
-  call decode65b(s2,nflip,mode65,nqd,nbmkv,nhist,decoded)
+  call decode65b(s2,nflip,mode65,ntrials,naggressive,ndepth,nqd,nbmkv,   &
+       nhist,decoded)
   dt=dt00 + dtbest + 1.7
   call timer('dec65b  ',1)
 

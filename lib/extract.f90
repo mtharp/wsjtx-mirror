@@ -1,4 +1,5 @@
-subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
+subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
+     decoded,ltext,nbmkv)
 
 ! Input:
 !   s3       64-point spectra for each of 63 data symbols
@@ -68,7 +69,7 @@ subroutine extract(s3,nadd,nqd,ncount,nhist,decoded,ltext,nbmkv)
 
   num65=num65+1
   nverbose=0
-  ntrials=2000
+!  ntrials=2000
   ntry=0
   call timer('sfrsd   ',0)
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &

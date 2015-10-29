@@ -12,6 +12,8 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
   end type candidate
   type(candidate) ca(300)
 
+  common/steve/thresh0
+
   call setup65
   df=12000.0/NFFT                            !df = 12000.0/16384 = 0.732 Hz
   ia=max(2,nint(nfa/df))
@@ -19,7 +21,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
   lag1=-5
   lag2=59
   nsym=126
-  thresh0=2.5
+!!  thresh0=5.5
   ncand=0
   fdot=0.
   ccfred=0.
