@@ -26,7 +26,7 @@ subroutine subtract65(dd,npts,f0,dt)
     1,1,1,1,1,1/
   data first/.true./
   common/chansyms65/correct
-  common/test/cref(NMAX),camp(NMAX),cfilt(NMAX),cw(NMAX)
+  common/heap1/cref(NMAX),camp(NMAX),cfilt(NMAX),cw(NMAX)
   save first
 
   pi=4.0*atan(1.0)

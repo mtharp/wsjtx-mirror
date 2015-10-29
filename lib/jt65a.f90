@@ -36,12 +36,12 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   npts=npts+npad
   ndecoded=0
 
-  do iii=1,2 ! 2-pass decoding loop
+  do ipass=1,2 ! 2-pass decoding loop
     newdat=1
-    if(iii.eq.1) then !first-pass parameters
+    if(ipass.eq.1) then !first-pass parameters
       thresh0=2.5
       nsubtract=1
-    elseif( iii.eq.2 ) then !second-pass parameters
+    elseif( ipass.eq.2 ) then !second-pass parameters
       thresh0=2.5
       nsubtract=0
     endif
@@ -64,8 +64,6 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
     call timer('sync65  ',0)
     call sync65(ss,nfa,nfb,nhsym,ca,ncand)    !Get a list of JT65 candidates
     call timer('sync65  ',1)
-
-!    write(*,*) iii, ncand, nfa, nfb,newdat
 
     df=12000.0/NFFT                     !df = 12000.0/8192 = 1.465 Hz
     mode65=2**nsubmode
@@ -111,7 +109,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
           dec(ndecoded)%dt=dtx
           dec(ndecoded)%sync=sync2
           dec(ndecoded)%decoded=decoded
-!          write(*,1010) iii,nutc,nsnr,dtx,nfreq,decoded
+!          write(*,1010) ipass,nutc,nsnr,dtx,nfreq,decoded
 !1010      format(i1,2x,i4.4,i4,f5.1,i5,1x,'#',1x,a22)
           write(*,1010) nutc,nsnr,dtx,nfreq,decoded
 1010      format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
@@ -124,7 +122,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 !$omp end critical(decode_results)
       endif
     enddo !candidate loop
-
+    if(ndecoded.lt.1) exit
   enddo !two-pass loop
 
 !  id2(1:npts)=dd(1:npts)
