@@ -25,7 +25,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      character*22 decoded
   end type decode
   type(decode) dec(30)
-  common/decstats/num65,numbm,numkv,num9,numfano
+  common/decstats/num65a,num65,numsfa,numsf,num9,numfano
   common/steve/thresh0
   save
 
@@ -77,7 +77,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
       sync1=ca(icand)%sync
       call timer('decod65a',0)
       call decode65a(dd,npts,newdat,nqd,freq,nflip,mode65,ntrials,     &
-           naggressive,ndepth,sync2,a,dtx,nbmkv,nhist,decoded)
+           naggressive,ndepth,sync2,a,dtx,nsf,nhist,decoded)
       call timer('decod65a',1)
       if(decoded.eq.decoded0) cycle            !Don't display dupes
 
@@ -94,8 +94,6 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         if(nsnr.lt.-30) nsnr=-30
         if(nsnr.gt.-1) nsnr=-1
         dtx=dtx-tpad
-        if(nbmkv.eq.1) numbm=numbm+1
-        if(nbmkv.eq.2) numkv=numkv+1
 
 ! Serialize writes - see also decjt9.f90
 !$omp critical(decode_results) 
@@ -103,7 +101,8 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         do i=1, ndecoded
           if( decoded==dec(i)%decoded ) ndupe=1
         enddo
-        if( ndupe .ne. 1 ) then
+        if(ndupe.ne.1) then
+          numsf=numsf+1
           ndecoded=ndecoded+1
           dec(ndecoded)%freq=freq
           dec(ndecoded)%dt=dtx
@@ -114,7 +113,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
           write(*,1010) nutc,nsnr,dtx,nfreq,decoded
 1010      format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
           write(13,1012) nutc,nint(sync1),nsnr,dtx,float(nfreq),ndrift,  &
-             decoded,nbmkv
+             decoded,nsf
 1012      format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT65',i4)
           call flush(6)
           call flush(13)
@@ -122,6 +121,10 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 !$omp end critical(decode_results)
       endif
     enddo !candidate loop
+    if(ipass.eq.1) then
+       num65a=num65
+       numsfa=numsf
+    endif
     if(ndecoded.lt.1) exit
   enddo !two-pass loop
 

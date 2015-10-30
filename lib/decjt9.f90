@@ -11,7 +11,7 @@ subroutine decjt9(ss,id2,nutc,nfqso,newdat,npts8,nfa,nfsplit,nfb,ntol,  &
   logical done(NSMAX)
   integer*2 id2(NTMAX*12000)
   integer*1 i1SoftSymbols(207)
-  common/decstats/num65,numbm,numkv,num9,numfano,infile
+  common/decstats/num65a,num65,numsfa,numsf,num9,numfano,infile
   save ccfred,red2
 
   nsynced=0

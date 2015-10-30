@@ -1,5 +1,5 @@
 subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
-     decoded,ltext,nbmkv)
+     decoded,ltext,nsf)
 
 ! Input:
 !   s3       64-point spectra for each of 63 data symbols
@@ -11,7 +11,7 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
 !   nhist    maximum number of identical symbol values
 !   decoded  decoded message (if ncount >=0)
 !   ltext    true if decoded message is free text
-!   nbmkv    0=no decode; 1=BM decode; 2=KV decode
+!   nsf    0=no decode; 1=BM decode; 2=KV decode
 
   use prog_args                       !shm_key, exe_dir, data_dir
   use packjt
@@ -25,7 +25,7 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
   integer indx(0:62)
   real*8 tt
   logical nokv,ltext
-  common/decstats/num65,numbm,numkv,num9,numfano
+  common/decstats/num65a,num65,numsfa,numsf,num9,numfano
   common/chansyms65/correct
   data nokv/.false./,nsec1/0/
   save
@@ -33,7 +33,7 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
   nbirdie=20
   npct=50
   afac1=1.1
-  nbmkv=0
+  nsf=0
   nfail=0
   decoded='                      '
   call pctile(s3,4032,npct,base)
@@ -41,10 +41,6 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
 ! Get most reliable and second-most-reliable symbol values, and their
 ! probabilities
 1 call demod64a(s3,nadd,afac1,mrsym,mrprob,mr2sym,mr2prob,ntest,nlow)
-  if(ntest.lt.0) then  ! use 1300 for sf symbol metrics
-     ncount=-999                      !Flag and reject bad data
-     go to 900
-  endif
 
   call chkhist(mrsym,nhist,ipk)       !Test for birdies and QRM
   if(nhist.ge.nbirdie) then
@@ -69,7 +65,6 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
 
   num65=num65+1
   nverbose=0
-!  ntrials=2000
   ntry=0
   call timer('sfrsd   ',0)
   call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
@@ -100,8 +95,7 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
      call unpackmsg(dat4,decoded)     !Unpack the user message
      ncount=0
      if(iand(dat4(10),8).ne.0) ltext=.true.
-     nbmkv=1
-     if( nhard .gt. 25 ) nbmkv=2
+     nsf=1
   endif
 900 continue
 

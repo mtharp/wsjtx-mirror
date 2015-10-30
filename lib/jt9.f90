@@ -58,7 +58,7 @@ program jt9
 
   common/tracer/limtrace,lu
   common/patience/npatience,nthreads
-  common/decstats/num65,numbm,numkv,num9,numfano,infile
+  common/decstats/num65a,num65,numsfa,numsf,num9,numfano,infile
   data npatience/1/,nthreads/1/
 
   do
@@ -145,8 +145,7 @@ program jt9
   iret=fftwf_import_wisdom_from_filename(wisfile)
 
   num65=0
-  numbm=0
-  numkv=0
+  numsf=0
   num9=0
   numfano=0
 
@@ -243,8 +242,10 @@ program jt9
 
 999 continue
 ! Output decoder statistics
-  write(12,1100) numbm,numkv,numbm+numkv,num65,numfano,num9
-1100 format(58('-')/'     BM      KV     JT65   Tries     JT9   Tries'/  &
+  numsfb=numsf-numsfa
+  num65b=num65-num65a
+  write(12,1100) numsfa,num65a,numsfb,num65b,numfano,num9
+1100 format(58('-')/'   JT65_1  Tries_1  JT65_1 Tries_2    JT9   Tries'/  &
             58('-')/6i8)
 
 ! Save wisdom and free memory
