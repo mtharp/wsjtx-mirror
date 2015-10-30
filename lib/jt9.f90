@@ -17,7 +17,7 @@ program jt9
   character(len=500) optarg, infile
   character wisfile*80
   integer :: arglen,stat,offset,remain,mode=0,flow=200,fsplit=2700,          &
-       fhigh=4000,nrxfreq=1500,ntrperiod=1,ndepth=1
+       fhigh=4000,nrxfreq=1500,ntrperiod=1,ndepth=60001
   logical :: shmem = .false., read_files = .false., have_args = .false.,     &
        tx9 = .false., display_help = .false.
   type (option) :: long_options(17) = [ &
