@@ -25,7 +25,6 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
   integer indx(0:62)
   real*8 tt
   logical nokv,ltext
-  common/decstats/num65a,num65,numsfa,numsf,num9,numfano
   common/chansyms65/correct
   data nokv/.false./,nsec1/0/
   save
@@ -63,7 +62,6 @@ subroutine extract(s3,nadd,nqd,ntrials,naggressive,ndepth,ncount,nhist,   &
   call interleave63(mr2sym,-1)       !from second-most-reliable symbols
   call interleave63(mr2prob,-1)
 
-  num65=num65+1
   nverbose=0
   ntry=0
   call timer('sfrsd   ',0)

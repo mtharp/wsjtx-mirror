@@ -25,7 +25,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      character*22 decoded
   end type decode
   type(decode) dec(30)
-  common/decstats/num65a,num65,numsfa,numsf,num9,numfano
+  common/decstats/ntry65a,ntry65b,n65a,n65b,num9,numfano
   common/steve/thresh0
   save
 
@@ -75,6 +75,8 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
       freq=ca(icand)%freq
       dtx=ca(icand)%dt
       sync1=ca(icand)%sync
+      if(ipass.eq.1) ntry65a=ntry65a + 1
+      if(ipass.eq.2) ntry65b=ntry65b + 1
       call timer('decod65a',0)
       call decode65a(dd,npts,newdat,nqd,freq,nflip,mode65,ntrials,     &
            naggressive,ndepth,sync2,a,dtx,nsf,nhist,decoded)
@@ -102,7 +104,8 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
           if( decoded==dec(i)%decoded ) ndupe=1
         enddo
         if(ndupe.ne.1) then
-          numsf=numsf+1
+          if(ipass.eq.1) n65a=n65a + 1
+          if(ipass.eq.2) n65b=n65b + 1
           ndecoded=ndecoded+1
           dec(ndecoded)%freq=freq
           dec(ndecoded)%dt=dtx
@@ -121,10 +124,6 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 !$omp end critical(decode_results)
       endif
     enddo !candidate loop
-    if(ipass.eq.1) then
-       num65a=num65
-       numsfa=numsf
-    endif
     if(ndecoded.lt.1) exit
   enddo !two-pass loop
 
