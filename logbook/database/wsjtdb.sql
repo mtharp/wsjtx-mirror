@@ -24,11 +24,3 @@ CREATE TABLE logbook (id INTEGER PRIMARY KEY AUTOINCREMENT,
                      tx_pwr TEXT,
                      comments TEXT
 );
-
-* Open JTSDK-Py
-* cd src\trunk\logbook\database
-* svn update
-* .output CALL3.TXT
-* .separator ","
-* SELECT call, grid mode, previous_call, comment, last_update FROM call3;
-* .output stdout

@@ -4,7 +4,7 @@
 #
 # Author........: Greg Beam, KI7MT, <ki7mt@yahoo.com>
 # File Name.....: wsjtdb.py
-# Description...: WSJt Database Interface Module
+# Description...: WSJT Database Interface Module
 # 
 # Copyright (C) 2001-2015 Joseph Taylor, K1JT
 # License: GPL-3
@@ -25,14 +25,14 @@
 #
 #-------------------------------------------------------------------------------
 
-import os, sys, time
+import os, sys, time, csv
 import sqlite3 as lite
 
 # Sqlite3 variables
 wsjtdb="database/wsjt.db"
-db_exists = os.path.exists(wsjtdb)
-con = lite.connect(wsjtdb)
-cur = con.cursor()
+wsjtsql="database/wsjtdb.sql"
+testdb="database/test.db"
+c3csv="database/call3.csv"
 
 #--------------------------------------------------------------- clean screen
 def clearscreen():
@@ -40,55 +40,129 @@ def clearscreen():
     if sys.platform == 'win32':
         os.system('cls')
     else:
-        os.system('cls')
+        os.system('clear')
 
-#--------------------------------------------------------------- SQlite3 version
+#--------------------------------------------------------------- SQLite3 version
 def sql3v():
     ''' fetch the SQLite Version '''
-    cur = con.cursor()
-    cur.execute('SELECT SQLITE_VERSION()')
-    Sv = cur.fetchone()
+    con = lite.connect(wsjtdb)
+    c = con.cursor()
+    c.execute('SELECT SQLITE_VERSION()')
+    Sv = c.fetchone()
+    con.close()
     print(" SQLite version ......: %s" % Sv)
 
 #--------------------------------------------------------------- number of tables
 def ntables():    
     ''' count the number of tables in the database'''
-    cur = con.cursor()
-    cur.execute("SELECT Count(*) as nTables FROM sqlite_master where type='table';")
-    Nt = cur.fetchone()
+    con = lite.connect(wsjtdb)
+    c = con.cursor()
+    c.execute("SELECT Count(*) as nTables FROM sqlite_master where type='table';")
+    Nt = c.fetchone()
+    con.close()
     print(" Number of Tables ....: %s" % Nt)
 
 #--------------------------------------------------------------- call3 entries
 def c3entries():    
     ''' count the number of records in Call3 Table '''
-    cur = con.cursor()
-    cur.execute("SELECT Count(*) FROM call3;")
-    C3 = cur.fetchone()
+    con = lite.connect(wsjtdb)
+    c = con.cursor()
+    c.execute("SELECT Count(*) FROM call3;")
+    C3 = c.fetchone()
+    con.close()
     print(" Call3 Record Count ..: %s" % C3)
 
 #--------------------------------------------------------------- logbook entries
 def logentries():    
     ''' count the number of records in Call3 Table '''
-    cur = con.cursor()
-    cur.execute("SELECT Count(*) FROM logbook;")
-    Lc = cur.fetchone()
+    con = lite.connect(wsjtdb)
+    c = con.cursor()
+    c.execute("SELECT Count(*) FROM logbook;")
+    Lc = c.fetchone()
+    con.close()
     print(" Main Log Count ......: %s" % Lc)
+
+#--------------------------------------------------------------- create test db
+def create_test_db():
+    '''
+    Test function is to create a test database, tables and insert call3 data.
+
+    TO-DO: consolidate functions to allow argv input for either
+    the test database or the main log database.
+        
+    '''
+    clearscreen()
+    query_time1 = time.time() # start script 
+    print("----------------------------------------")
+    print("GENERATE TEST DATABASE")
+    print("----------------------------------------")       
+    print(" Database ............: test.db")
+
+    if os.path.isfile(testdb):
+        print(" Remove old DB .......: OK")
+        os.remove(testdb)
+   
+    con = lite.connect(testdb)
+    c = con.cursor()
+    print(" Reading SQL input ...: OK")
+    fd = open(wsjtsql, 'r')
+    script = fd.read()
+    print(" Importing data ......: OK")
+    c.executescript(script)
+    fd.close()
+    c3data = csv.reader(open(c3csv))
+    c.executemany('''INSERT into call3(id, call, grid, mode, previous_call,
+                     comment, last_update) values (?, ?, ?, ?, ?, ?, ?);''', c3data)
+    print(" Commit changes ......: OK\n")
+    con.commit()
+    c.close()
+
+    print("DATABASE QUERIES")
+    con = lite.connect(testdb)
+    c = con.cursor()
+    c.execute('SELECT SQLITE_VERSION()')
+    Sv = c.fetchone()
+    con.close()
+    print(" SQLite version ......: %s" % Sv)
+
+    con = lite.connect(testdb)
+    c = con.cursor()
+    c.execute("SELECT Count(*) as nTables FROM sqlite_master where type='table';")
+    Nt = c.fetchone()
+    con.close()
+    print(" Number of Tables ....: %s" % Nt)
+
+    con = lite.connect(testdb)
+    c = con.cursor()
+    c.execute("SELECT Count(*) FROM logbook;")
+    Lc = c.fetchone()
+    con.close()
+    print(" Main Log Count ......: %s" % Lc)
+
+    con = lite.connect(testdb)
+    c = con.cursor()
+    c.execute("SELECT Count(*) FROM call3;")
+    C3 = c.fetchone()
+    con.close()
+    print(" Call3 Record Count ..: %s" % C3)
+
+    query_time2 = (time.time()-query_time1) # end script timer
+    print(" Execution time.......: %.5f seconds\n" % query_time2)
 
 #--------------------------------------------------------------- test the functions
 if __name__ == '__main__':
     ''' print the data to screen '''
     query_time1 = time.time() # start script 
     clearscreen()
-    print("****************************************")
+    print("----------------------------------------")
     print("DATABASE CONNECTION TEST")
-    print("****************************************")       
+    print("----------------------------------------")       
     print(" Database ............:", wsjtdb)
     sql3v()
     ntables()
     logentries()
     c3entries()
     query_time2 = (time.time()-query_time1) # end script timer
-    print(" Execution Time.......: %.5f seconds" % query_time2)
-    cur.close()
+    print(" Execution Time.......: %.5f seconds\n" % query_time2)
 
  # end wsjtdb module
