@@ -2,46 +2,68 @@ program jt65
 
 ! Test the JT65 decoder for WSJT-X
 
+  use options
+  character c
+logical :: display_help=.false.,err
   parameter (NZMAX=60*12000)
   integer*4 ihdr(11)
   integer*2 id2(NZMAX)
   real*4 dd(NZMAX)
   character*80 infile
+  character(len=500) optarg
   common/tracer/limtrace,lu
   equivalence (lenfile,ihdr(2))
+  type (option) :: long_options(2) = [ &
+    option ('help',.false.,'h','Display this help message',''),      &
+    option ('ntrials',.true.,'n','default=1000','') ]
+
+limtrace=0
+lu=12
+ntol=50
+nfqso=1270
+nagain=0
+minsync=2.5
+nsubmode=0
+ntrials=1000
+
+  do
+    call getopt('hn:',long_options,c,optarg,narglen,nstat,noffset,nremain,err)
+    if( nstat .ne. 0 ) then
+      exit
+    end if
+    select case (c)
+      case ('h')
+        display_help = .true.
+      case ('n')
+        read (optarg(:narglen), *) ntrials
+    end select
+  end do
 
   nargs=iargc()
-  if(nargs.lt.1) then
-     print*,'Usage: jt65 file1 [file2 ...]'
+  if(display_help .or. (nargs.lt.1)) then
+     print*,'Usage: jt65 [-n ntrials] file1 [file2 ...]'
      go to 999
   endif
-  limtrace=0
-  lu=12
-
-  ntol=50
-  nfqso=3000
-  nagain=0
-  minsync=2.5
-  nsubmode=0
 
   open(12,file='timer.out',status='unknown')
   call timer('jt65    ',0)
 
+  ndecoded=0
   do ifile=1,nargs
      newdat=1
-     nfa=200
-     nfb=3000
-     call getarg(ifile,infile)
+!     nfa=200
+!     nfb=3000
+     nfa=1250
+     nfb=1290
+     call getarg(ifile+noffset,infile)
+     if( infile.eq.'' ) goto 999
      open(10,file=infile,access='stream',status='old',err=998)
-
      call timer('read    ',0)
      read(10) ihdr
-     nutc=ihdr(1)                           !Silence compiler warning
      i1=index(infile,'.wav')
-     read(infile(i1-4:i1-1),*,err=10) nutc
-     go to 20
-10    nutc=0
-20    npts=52*12000
+     if( i1 .eq. 0 ) i1=index(infile,'.WAV')
+     read(infile(i1-4:i1-1),*,err=998) nutc
+     npts=52*12000
      read(10) id2(1:npts)
      call timer('read    ',1)
      dd(1:npts)=id2(1:npts)
@@ -52,7 +74,7 @@ program jt65
 !     write(56) ihdr(1:11)
 
      call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode, &
-                minsync,nagain,ndecoded)
+                minsync,nagain,ntrials, naggressive,ndepth,ndecoded)
      call timer('jt65a   ',1)
   enddo
 
@@ -62,7 +84,7 @@ program jt65
 !  call filbig(a,-1,1,0.0,0,0,0,0,0)        ! (ditto)
   go to 999
 
-998 print*,'Cannot open file:'
+998 print*,'Cannot read from file:'
   print*,infile
 
 999 end program jt65
