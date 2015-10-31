@@ -51,10 +51,10 @@ ntrials=1000
   ndecoded=0
   do ifile=1,nargs
      newdat=1
-!     nfa=200
-!     nfb=3000
-     nfa=1250
-     nfb=1290
+     nfa=200
+     nfb=3000
+!     nfa=1250
+!     nfb=1290
      call getarg(ifile+noffset,infile)
      if( infile.eq.'' ) goto 999
      open(10,file=infile,access='stream',status='old',err=998)
