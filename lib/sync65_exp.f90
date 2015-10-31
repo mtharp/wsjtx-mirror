@@ -57,7 +57,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
            call peakup(ccfblue(lagpk-1),ccfmax,ccfblue(lagpk+1),dx2)
            xlag=lagpk+dx2
         endif
-        dtx=xlag*2048.0/11025.0 - 2.7   !### empirical
+        dtx=xlag*2048.0/11025.0
         ccfblue(lag1)=0.
         ccfblue(lag2)=0.
 !        open(14,file="/tmp/fort.14",access="append")
