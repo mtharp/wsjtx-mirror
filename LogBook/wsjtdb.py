@@ -589,7 +589,8 @@ def logui():
     
     outCancelBtn = tkinter.Button(stepThree, text="Cancel", fg="black", command=form.quit)
     outCancelBtn.grid(row=0, column=2, sticky='W', padx=5, pady=2)
-    
+    outCancelBtn.pack()
+
     form.mainloop()
     return
 

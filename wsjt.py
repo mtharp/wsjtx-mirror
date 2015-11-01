@@ -20,7 +20,7 @@ from types import *
 import array
 import _thread
 import webbrowser
-from LogBook.wsjtdb import *
+# from LogBook.wsjtdb import *
 
 root = Tk()
 Version="10.0 r" + "$Rev$"[6:-1]
