@@ -6,10 +6,10 @@
  NAME           DESCRIPTION
  ----------------------------------------------------------------------------
   call           The contacted station's Callsign
-  my_name        QSO date
-  my_gridsquare  QSO Log time    
-  my_cqz         QSO Band
-  my_itu         QSO Band
+  my_name        Name of the operator
+  my_gridsquare  Operators grid square
+  my_cqz         Operators CQ Zone
+  my_itu         Operators ITU Zone
 
 */
 CREATE TABLE my_station (operator TEXT,
