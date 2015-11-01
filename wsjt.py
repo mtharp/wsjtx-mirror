@@ -7,7 +7,8 @@ from tkinter.filedialog import *
 import Pmw
 import tkinter.messagebox
 from WsjtMod import g
-import os,time
+import os, sys, time, csv
+import sqlite3 as lite
 from WsjtMod import Audio
 from math import log10
 import numpy.core.multiarray         # Tell cxfreeze we need the numpy stuff
@@ -19,14 +20,14 @@ from types import *
 import array
 import _thread
 import webbrowser
+from LogBook.wsjtdb import *
 
 root = Tk()
 Version="10.0 r" + "$Rev$"[6:-1]
 print("******************************************************************")
 print("WSJT Version " + Version + ", by K1JT")
-print("Revision date: " + \
-      "$Date$"[7:-1])
-print("Run date:   " + time.asctime(time.gmtime()) + " UTC")
+print("Revision date..: " + "$Date$"[7:-1])
+print("Run date.......: " + time.asctime(time.gmtime()) + " UTC")
 
 Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
 
@@ -64,6 +65,7 @@ itol=5                                       #Default tol=400 Hz
 ntol=(10,25,50,100,200,400,600)              #List of available tolerances
 iMinW=1
 idsec=0
+idWarn=-1  # <-- proposed fix for idWan msg's ( from vk2ziw ), needs evaluation
 #irdsec=0
 lauto=0
 ltxdf=0
@@ -133,13 +135,13 @@ BlinkingLogQSO=False
 BlinkingState=False
 auto73Count.set(5)
 
-
 g.freeze_decode=0
 g.mode=""
 g.ndevin=IntVar()
 g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
+
 #------------------------------------------------------ showspecjt
 def showspecjt(event=NONE):
     if g.showspecjt==0: g.showspecjt=1
@@ -2882,9 +2884,10 @@ if (sys.platform != 'darwin'):
     logbookbutton['menu'] = logbookmenu
 else:    
     logbookmenu = Menu(mbar, tearoff=use_tearoff)
-logbookmenu.add_radiobutton(label = 'Call3 Data', command = udev)
-logbookmenu.add_radiobutton(label = 'Generate Call3 CSV', command = udev)
-logbookmenu.add_radiobutton(label = 'View Main Log', command = udev)
+logbookmenu.add('command',label="Create Test DB", command=udev)
+# logbookmenu.add('command',label="Create Test DB", command=create_test_db)
+logbookmenu.add('command',label = 'Generate Call3 CSV', command = udev)
+logbookmenu.add('command', label = 'View Main Log', command = udev)
 
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Logbook", menu=logbookmenu)

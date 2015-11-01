@@ -164,6 +164,7 @@ install:
 	$(CP) -u $(DOCPATH)/wsjt-main-$(VER).html $(INSTALLDIR)	
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
+	$(CP) -ur LogBook $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 	@echo.
 	@echo  INSTALL SUMMARY
