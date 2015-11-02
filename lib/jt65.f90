@@ -24,7 +24,7 @@ nfqso=1270
 nagain=0
 minsync=2.5
 nsubmode=0
-ntrials=1000
+ntrials=10000
 
   do
     call getopt('hn:',long_options,c,optarg,narglen,nstat,noffset,nremain,err)
@@ -51,12 +51,12 @@ ntrials=1000
   ndecoded=0
   do ifile=1,nargs
      newdat=1
-     nfa=200
-     nfb=3000
-!     nfa=1250
-!     nfb=1290
+!     nfa=200
+!     nfb=3000
+     nfa=1250
+     nfb=1290
      call getarg(ifile+noffset,infile)
-     if( infile.eq.'' ) goto 999
+     if( infile.eq.'' ) goto 900
      open(10,file=infile,access='stream',status='old',err=998)
      call timer('read    ',0)
      read(10) ihdr
@@ -78,7 +78,7 @@ ntrials=1000
      call timer('jt65a   ',1)
   enddo
 
-  call timer('jt65    ',1)
+900 call timer('jt65    ',1)
   call timer('jt65    ',101)
 !  call four2a(a,-1,1,1,1)                  !Free the memory used for plans
 !  call filbig(a,-1,1,0.0,0,0,0,0,0)        ! (ditto)

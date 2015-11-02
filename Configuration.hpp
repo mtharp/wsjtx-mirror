@@ -112,6 +112,7 @@ public:
   bool split_mode () const;
   bool enable_VHF_features () const;
   bool decode_at_52s () const;
+  bool twoPass() const;
   bool MyDx() const;
   bool CQMyN() const;
   bool NDxG() const;

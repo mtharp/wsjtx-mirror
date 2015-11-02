@@ -32,11 +32,11 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   dd=dd0
   ndecoded=0
 
-  do ipass=1,2 ! 2-pass decoding loop
+  do ipass=1,1 ! 2-pass decoding loop
     newdat=1
     if(ipass.eq.1) then !first-pass parameters
       thresh0=2.5
-      nsubtract=1
+      nsubtract=0
     elseif( ipass.eq.2 ) then !second-pass parameters
       thresh0=2.5
       nsubtract=0

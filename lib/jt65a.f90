@@ -1,5 +1,5 @@
 subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
-     minsync,nagain,ntrials,naggressive,ndepth,ndecoded)
+     minsync,nagain,n2pass,ntrials,naggressive,ndepth,ndecoded)
 
 !  Process dd0() data to find and decode JT65 signals.
 
@@ -29,22 +29,19 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   common/steve/thresh0
   save
 
-  dd=0.
-  tpad=2.0
-  npad=12000*tpad
-  dd(1+npad:npts+npad)=dd0(1:npts)
-  npts=npts+npad
+  dd=dd0
   ndecoded=0
 
-  do ipass=1,2 ! 2-pass decoding loop
+  do ipass=1,n2pass                             ! 2-pass decoding loop
     newdat=1
-    if(ipass.eq.1) then !first-pass parameters
+    if(ipass.eq.1) then                         !first-pass parameters
       thresh0=2.5
       nsubtract=1
     elseif( ipass.eq.2 ) then !second-pass parameters
       thresh0=2.5
       nsubtract=0
     endif
+    if(n2pass.lt.2) nsubtract=0
 
 !  if(newdat.ne.0) then
      call timer('symsp65 ',0)
@@ -52,13 +49,10 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
      call symspec65(dd,npts,ss,nhsym,savg)    !Get normalized symbol spectra
      call timer('symsp65 ',1)
 !  endif
-    nfa=nf1
-    nfb=nf2
-!  if(newdat.eq.0) then
-!  if(newdat.eq.0 .or. nfqso.eq.1270) then
-!     nfa=nfqso-ntol
-!     nfb=nfqso+ntol
-!  endif
+     nfa=nf1
+     nfb=nf2
+!     nfa=max(200,nfqso-ntol)
+!     nfb=min(4000,nfqso+ntol)
 
     ncand=0
     call timer('sync65  ',0)
@@ -75,12 +69,14 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
       freq=ca(icand)%freq
       dtx=ca(icand)%dt
       sync1=ca(icand)%sync
+
       if(ipass.eq.1) ntry65a=ntry65a + 1
       if(ipass.eq.2) ntry65b=ntry65b + 1
       call timer('decod65a',0)
       call decode65a(dd,npts,newdat,nqd,freq,nflip,mode65,ntrials,     &
            naggressive,ndepth,sync2,a,dtx,nsf,nhist,decoded)
       call timer('decod65a',1)
+
       if(decoded.eq.decoded0) cycle            !Don't display dupes
 
       if(decoded.ne.'                      ' .or. minsync.lt.0) then
@@ -91,11 +87,10 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         endif
         nfreq=nint(freq+a(1))
         ndrift=nint(2.0*a(2))
-        s2db=10.0*log10(sync2) - 32             !### empirical (was 40) ###
+        s2db=10.0*log10(sync2) - 35             !### empirical ###
         nsnr=nint(s2db)
         if(nsnr.lt.-30) nsnr=-30
         if(nsnr.gt.-1) nsnr=-1
-        dtx=dtx-tpad
 
 ! Serialize writes - see also decjt9.f90
 !$omp critical(decode_results) 
@@ -107,12 +102,10 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
           if(ipass.eq.1) n65a=n65a + 1
           if(ipass.eq.2) n65b=n65b + 1
           ndecoded=ndecoded+1
-          dec(ndecoded)%freq=freq
+          dec(ndecoded)%freq=freq+a(1)
           dec(ndecoded)%dt=dtx
           dec(ndecoded)%sync=sync2
           dec(ndecoded)%decoded=decoded
-!          write(*,1010) ipass,nutc,nsnr,dtx,nfreq,decoded
-!1010      format(i1,2x,i4.4,i4,f5.1,i5,1x,'#',1x,a22)
           write(*,1010) nutc,nsnr,dtx,nfreq,decoded
 1010      format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
           write(13,1012) nutc,nint(sync1),nsnr,dtx,float(nfreq),ndrift,  &
@@ -123,15 +116,9 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
         endif
 !$omp end critical(decode_results)
       endif
-    enddo !candidate loop
+    enddo                                 !candidate loop
     if(ndecoded.lt.1) exit
-  enddo !two-pass loop
-
-!  id2(1:npts)=dd(1:npts)
-!  write(56) id2(1:npts)
-
-!     if(nagain.eq.1) exit
-!  enddo
+  enddo                                   !two-pass loop
 
   return
 end subroutine jt65a

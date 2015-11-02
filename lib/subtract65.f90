@@ -38,7 +38,7 @@ subroutine subtract65(dd,npts,f0,dt)
 ! Could eliminate accumulated error by injecting one extra sample every
 ! 5 or so symbols... Maybe try this later.
 
-  nstart=(dt+1)*12000;
+  nstart=dt*12000+1;
   nsym=126
   ns=4458 
   nref=nsym*ns
