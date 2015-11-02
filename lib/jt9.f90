@@ -245,7 +245,7 @@ program jt9
 999 continue
 ! Output decoder statistics
   write(12,1100) n65a,ntry65a,n65b,ntry65b,numfano,num9
-1100 format(58('-')/'   JT65_1  Tries_1  JT65_1 Tries_2    JT9   Tries'/  &
+1100 format(58('-')/'   JT65_1  Tries_1  JT65_2 Tries_2    JT9   Tries'/  &
             58('-')/6i8)
 
 ! Save wisdom and free memory
