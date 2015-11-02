@@ -8,7 +8,6 @@ import Pmw
 import tkinter.messagebox
 from WsjtMod import g
 import os, sys, time, csv
-import sqlite3 as lite
 from WsjtMod import Audio
 from math import log10
 import numpy.core.multiarray         # Tell cxfreeze we need the numpy stuff
@@ -20,7 +19,8 @@ from types import *
 import array
 import _thread
 import webbrowser
-# from LogBook.wsjtdb import *
+import sqlite3 as lite
+from LogBook.wsjtdb import *
 
 root = Tk()
 Version="10.0 r" + "$Rev$"[6:-1]
@@ -141,6 +141,15 @@ g.ndevin=IntVar()
 g.ndevout=IntVar()
 g.DevinName=StringVar()
 g.DevoutName=StringVar()
+
+#------------------------------------------------------ logbook paths
+dbdir = os.path.join(appdir, 'Logbook', 'database')
+dbackup = os.path.join(appdir, 'LogBook', 'backup')
+wsjtdb = os.path.join(dbdir, 'wsjtdb.db')
+testdb = os.path.join(dbdir, 'testdb.db')
+wsjtsql = os.path.join(dbdir, 'wsjtdb.sql')
+c3csv = os.path.join(dbdir, 'call3.csv')
+log_db=(testdb)
 
 #------------------------------------------------------ showspecjt
 def showspecjt(event=NONE):
@@ -2876,6 +2885,148 @@ nfreq.set(144)
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Band", menu=bandmenu)
 
+# -------------------------------------------------------------- Draw Logbook Widget
+def logform():
+    form = Toplevel()
+    form.title('WSJT Logbook')
+    form.iconbitmap("wsjt.ico")
+
+    # top frame
+    stepOne = LabelFrame(form, text="  QSO LOG  ")
+    stepOne.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # middle frame
+    stepTwo = LabelFrame(form, text="  CALL3 DATA ")
+    stepTwo.grid(row=2, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # bottom frame
+    stepThree = LabelFrame(form, relief=FLAT)
+    stepThree.grid(row=3, columnspan=3, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # -------------------------------------------------------------- Logbook 1st Frame
+    # Call
+    inCallLbl = Label(stepOne, text="Callsign")
+    inCallLbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    inCallTxt = Entry(stepOne)
+    inCallTxt.grid(row=1, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Date
+    inDateLbl = Label(stepOne, text="Date")
+    inDateLbl.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    inDateTxt = Entry(stepOne)
+    inDateTxt.grid(row=1, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Time
+    inTimeLbl = Label(stepOne, text="Time")
+    inTimeLbl.grid(row=0, column=2, sticky='W', padx=5, pady=2)
+    inTimeTxt = Entry(stepOne)
+    inTimeTxt.grid(row=1, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Mode
+    inModeLbl = Label(stepOne, text="Mode")
+    inModeLbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+    inModeTxt = Entry(stepOne)
+    inModeTxt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Band
+    inBandLbl = Label(stepOne, text="Band")
+    inBandLbl.grid(row=0, column=4, sticky='W', padx=5, pady=2)
+    inBandTxt = Entry(stepOne)
+    inBandTxt.grid(row=1, column=4, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Rpt_Sent
+    inRsentLbl = Label(stepOne, text="Rpt Sent")
+    inRsentLbl.grid(row=2, column=0, sticky='W', padx=5, pady=2)
+    inRsentTxt = Entry(stepOne)
+    inRsentTxt.grid(row=3, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Rpt_Rcvd
+    inRrcvdLbl = Label(stepOne, text="Rpt Rcvd")
+    inRrcvdLbl.grid(row=2, column=1, sticky='W', padx=5, pady=2)
+    inRrcvdTxt = Entry(stepOne)
+    inRrcvdTxt.grid(row=3, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Grid
+    inGridLbl = Label(stepOne, text="Grid")
+    inGridLbl.grid(row=2, column=2, sticky='W', padx=5, pady=2)
+    inGridTxt = Entry(stepOne)
+    inGridTxt.grid(row=3, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Name
+    inNameLbl = Label(stepOne, text="Name")
+    inNameLbl.grid(row=2, column=3, sticky='W', padx=5, pady=2)
+    inNameTxt = Entry(stepOne)
+    inNameTxt.grid(row=3, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # EME COntact
+    inEme = Checkbutton(stepOne, text="Contact is an EME QSO", onvalue=1, offvalue=0)
+    inEme.grid(row=4, column=0, sticky='W', padx=5, pady=2)
+
+    # TxPwr
+    inTxpwrLbl = Label(stepOne, text="Tx Pwr")
+    inTxpwrLbl.grid(row=6, column=0, sticky='W', padx=5, pady=2)
+    inTxpwrTxt = Entry(stepOne)
+    inTxpwrTxt.grid(row=7, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Retain Tx Pwr Setting
+    retainPwr = Checkbutton(stepOne, text="Retain", onvalue=1, offvalue=0)
+    retainPwr.grid(row=7, column=1, sticky='W', padx=5, pady=2)
+
+    # Comment
+    inCommentLbl = Label(stepOne, text="General Comments")
+    inCommentLbl.grid(row=8, column=0, sticky='W', padx=5, pady=2)
+    inCommentTxt = Entry(stepOne)
+    inCommentTxt.grid(row=9, column=0, columnspan=7, rowspan=2, padx=5, sticky="WE", pady=3)
+
+    # Retain Comment Setting
+    retainComment = Checkbutton(stepOne, text="Retain", onvalue=1, offvalue=0)
+    retainComment.grid(row=9, column=8, sticky='E', padx=5, pady=2)
+    
+#--------------------------------------------------------------- Logbook UI 2nd Frame
+    # Call
+    inC3CallLbl = Label(stepTwo, text="Callsign")
+    inC3CallLbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    inC3CallTxt = Entry(stepTwo)
+    inC3CallTxt.grid(row=1, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Grid
+    inC3GridLbl = Label(stepTwo, text="Grid")
+    inC3GridLbl.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    inC3GridTxt = Entry(stepTwo)
+    inC3GridTxt.grid(row=1, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Previous Calls
+    inC3PcallLbl = Label(stepTwo, text="Previous Calls")
+    inC3PcallLbl.grid(row=0, column=2, sticky='W', padx=5, pady=2)
+    inC3PcallTxt = Entry(stepTwo)
+    inC3PcallTxt.grid(row=1, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
+
+   # Previous Calls
+    inC3LastUpdateLbl = Label(stepTwo, text="Last Update")
+    inC3LastUpdateLbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+    inC3LastUpdateTxt = Entry(stepTwo)
+    inC3LastUpdateTxt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # EME Contact
+    inEme = Checkbutton(stepTwo, text="Contact is an EME QSO", onvalue=1, offvalue=0)
+    inEme.grid(row=2, column=0, sticky='W', padx=5, pady=2)
+
+    # CALL3 Comment field
+    inC3commentLbl = Label(stepTwo, text="General Comments")
+    inC3commentLbl.grid(row=3, column=0, sticky='W', padx=5, pady=2)
+    inC3commentTxt = Entry(stepTwo)
+    inC3commentTxt.grid(row=4, column=0, columnspan=7, rowspan=2, padx=5, sticky="WE", pady=3)
+
+#--------------------------------------------------------------- Logbook UI 3rd Frame
+    outSaveBtn = Button(stepThree, text="Save", fg="black", command=form.destroy)
+    outSaveBtn.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+
+    outCancelBtn = Button(stepThree, text="Cancel", fg="black", command=form.destroy)
+    outCancelBtn.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+
+    form.pack()
+    form.mainloop()
+
 #------------------------------------------------------ Logbook Menu
 if (sys.platform != 'darwin'):
     logbookbutton = Menubutton(mbar, text = 'Logbook')
@@ -2884,7 +3035,7 @@ if (sys.platform != 'darwin'):
     logbookbutton['menu'] = logbookmenu
 else:    
     logbookmenu = Menu(mbar, tearoff=use_tearoff)
-logbookmenu.add('command',label="Create Test DB", command=udev)
+logbookmenu.add('command',label="View Logbook UI", command=logform)
 # logbookmenu.add('command',label="Create Test DB", command=create_test_db)
 logbookmenu.add('command',label = 'Generate Call3 CSV', command = udev)
 logbookmenu.add('command', label = 'View Main Log', command = udev)
