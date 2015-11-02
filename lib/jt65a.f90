@@ -106,9 +106,9 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
           dec(ndecoded)%dt=dtx
           dec(ndecoded)%sync=sync2
           dec(ndecoded)%decoded=decoded
-          write(*,1010) nutc,nsnr,dtx,nfreq,decoded
+          write(*,1010) nutc,nsnr,dtx-1.0,nfreq,decoded
 1010      format(i4.4,i4,f5.1,i5,1x,'#',1x,a22)
-          write(13,1012) nutc,nint(sync1),nsnr,dtx,float(nfreq),ndrift,  &
+          write(13,1012) nutc,nint(sync1),nsnr,dtx-1.0,float(nfreq),ndrift,  &
              decoded,nsf
 1012      format(i4.4,i4,i5,f6.1,f8.0,i4,3x,a22,' JT65',i4)
           call flush(6)
