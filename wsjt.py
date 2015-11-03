@@ -2,34 +2,52 @@
 #---------------------------------------------------------------------- WSJT
 # $Date$ $Revision$
 #
+import sys, os, time, csv, array, _thread, webbrowser, Pmw, glob, shutil
+import sqlite3 as lite
 from tkinter import *
 from tkinter.filedialog import *
-import Pmw
 import tkinter.messagebox
-from WsjtMod import g
-import os, sys, time, csv
-from WsjtMod import Audio
+from WsjtMod import g, logbook, appdirs, Audio
 from math import log10
 import numpy.core.multiarray         # Tell cxfreeze we need the numpy stuff
-from PIL import Image
-from PIL import ImageTk
+from PIL import (Image, ImageTk)
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
-import array
-import _thread
-import webbrowser
-import sqlite3 as lite
-from LogBook.wsjtdb import *
+from appdirs import AppDirs
 
+# To Test FSH paths, set fsh=1
+fsh=0
+
+# for fsh testing only, default is set to 0 == no
+#******************************************************************************
+if fsh==1:
+    db_prefix = AppDirs("WSJT", appauthor='', version='', multipath='')
+    dbdir=(db_prefix.user_data_dir)
+    
+    # make the new directories
+    for p in (datadir):
+        try:
+            if not os.path.exists(p):
+               os.makedirs(p)
+        except:
+            pass
+
+#******************************************************************************
+
+# START WSJT MAIN UI
 root = Tk()
 Version="10.0 r" + "$Rev$"[6:-1]
+Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
+
+# print WSJT Console Header
 print("******************************************************************")
 print("WSJT Version " + Version + ", by K1JT")
-print("Revision date..: " + "$Date$"[7:-1])
-print("Run date.......: " + time.asctime(time.gmtime()) + " UTC")
-
-Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
+print("Revision date....: " + "$Date$"[7:-1])
+print("Run date.........: " + time.asctime(time.gmtime()) + " UTC")
+print("Application Dir..:", appdir)
+if fsh==1:
+    print("Database Dir.....:", dbdir)
 
 #See if we are running in Windows
 g.Win32=0
@@ -2903,6 +2921,11 @@ def logform():
     stepThree = LabelFrame(form, relief=FLAT)
     stepThree.grid(row=3, columnspan=3, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
 
+    # Package the frames
+    stepOne.pack(expand="yes", fill="both")
+    stepTwo.pack(expand="yes", fill="both")
+    stepThree.pack(expand="yes", fill="both")
+
     # -------------------------------------------------------------- Logbook 1st Frame
     # Call
     inCallLbl = Label(stepOne, text="Callsign")
@@ -3018,13 +3041,14 @@ def logform():
     inC3commentTxt.grid(row=4, column=0, columnspan=7, rowspan=2, padx=5, sticky="WE", pady=3)
 
 #--------------------------------------------------------------- Logbook UI 3rd Frame
-    outSaveBtn = Button(stepThree, text="Save", fg="black", command=form.destroy)
+    outSaveBtn = Button(stepThree, text="Save", fg="black", activebackground="green", background="green", command=form.destroy)
     outSaveBtn.grid(row=0, column=0, sticky='W', padx=5, pady=2)
 
-    outCancelBtn = Button(stepThree, text="Cancel", fg="black", command=form.destroy)
+    outCancelBtn = Button(stepThree, text="Cancel", fg="black", activebackground="green", background="red", command=form.destroy)
     outCancelBtn.grid(row=0, column=3, sticky='W', padx=5, pady=2)
 
-    form.pack()
+    outSaveBtn.pack(side="left")
+    outCancelBtn.pack(side="left", pady=10)
     form.mainloop()
 
 #------------------------------------------------------ Logbook Menu

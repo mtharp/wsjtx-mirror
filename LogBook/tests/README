@@ -1,8 +1,0 @@
-Nose Tests
-----------
-
-This folder is containes Python nosetests for validating functions and 
-evaluating database performance transactions.
-
-This documentation should not be included in distribution packages.
-
