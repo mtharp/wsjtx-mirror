@@ -47,9 +47,9 @@ if [ ${os} != "FreeBSD" ]; then
 	mkdir -p $_HOMEDIR
 
 # update files only if newer
-	cp -uR /usr/share/wspr/* $_HOMEDIR
-	cp -uR /usr/share/doc/wspr/* $_HOMEDIR/
-	cp -uR /usr/lib/wspr/* $_HOMEDIR
+	cp -uR @SHARED@/* $_HOMEDIR
+	cp -uR @DOCDIR@/* $_HOMEDIR/
+	cp -uR @WSPRLIB@/* $_HOMEDIR
 
 else
 # update out of date files
@@ -71,4 +71,4 @@ fi
 
 # run: py location updated by configure.ac
 cd $_HOMEDIR
-@PYTHON3@ -O wspr.py
+@PYTHON3@ -O ./wspr.py

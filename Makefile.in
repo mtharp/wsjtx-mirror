@@ -275,7 +275,7 @@ uninstall:
 # Cleanup Source Tree
 .PHONY: clean distclean dist
 clean :
-	@RM@ -f *.o libwspr.a ./WsprMod/*.pyc ./WsprMod/*.pyo
+	@RM@ -f *.o libwspr.a wspr.desktop ./WsprMod/*.pyc ./WsprMod/*.pyo
 	@RM@ -f ./WsprMod/w.so ./WsprMod/*.so ./WsprMod/*.so
 	@RM@ -f ./{wsprcode,wspr0,fmtest,fmtave,fcal,fmeasure,wspr.sh}
 	@RM@ -f ./manpages/{wspr.1,fmtest.1,fmtave.1,fmeasure.1,fcal.1,wsprcode.1,wspr0.1}

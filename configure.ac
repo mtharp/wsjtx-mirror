@@ -636,6 +636,7 @@ AC_SUBST([DOCPATH], ["$DOCPATH"])
 AC_SUBST([THEMEDIR], ["$THEMEDIR"])
 AC_CONFIG_FILES([Makefile
 wspr.sh
+wspr.desktop
 doc/wspr.conf
 manpages/fcal.1.txt
 manpages/fmeasure.1.txt
