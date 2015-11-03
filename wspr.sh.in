@@ -71,4 +71,4 @@ fi
 
 # run: py location updated by configure.ac
 cd $_HOMEDIR
-@PYTHON@ -O wspr.py
+@PYTHON3@ -O wspr.py
