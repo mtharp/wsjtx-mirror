@@ -17,7 +17,6 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,ntrials,     &
   save
 
 ! Mix sync tone to baseband, low-pass filter, downsample to 1378.125 Hz
-  dt00=dt !save initial delay estimate
   call timer('filbig  ',0)
   call filbig(dd,npts,f0,newdat,cx,n5,sq0)
   call timer('filbig  ',1)
@@ -30,19 +29,11 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,ntrials,     &
   call timer('fil6521 ',1)
 
   fsample=1378.125/4.
-  a(5)=dt00
-  i0=nint(a(5)*fsample)
-  if(i0.lt.1) then
-     i0=1
-  endif
-  if( i0 .gt. n6-5000 ) then  ! ? Added to handle cases that present huge i0
-    i0=n6-5000
-  endif
-  nz=n6+1-i0
 
   call timer('afc65b  ',0)
 ! Best fit for DF, drift, banana-coefficient, and dt. fsample = 344.53125 S/s
-  call afc65b(c5x(i0),nz,fsample,nflip,a,ccfbest,dtbest)
+  dtbest=dt
+  call afc65b(c5x,n6,fsample,nflip,a,ccfbest,dtbest)
   call timer('afc65b  ',1)
 
   sync2=3.7e-4*ccfbest/sq0                    !Constant is empirical 
@@ -58,8 +49,7 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,ntrials,     &
 ! Compute spectrum for each symbol.
   nsym=126
   nfft=512
-  dt_total=dt00+dtbest
-  j=int(dt_total*1378.125)
+  j=int(dtbest*1378.125)
   if(j.lt.0) j=0
 
   c5a=cmplx(0.0,0.0)
@@ -82,7 +72,7 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,ntrials,     &
   call timer('dec65b  ',0)
   call decode65b(s2,nflip,mode65,ntrials,naggressive,ndepth,nqd,nsf,   &
        nhist,decoded)
-  dt=dt00 + dtbest
+  dt=dtbest !return new, improved estimate of dt
   call timer('dec65b  ',1)
 
   return

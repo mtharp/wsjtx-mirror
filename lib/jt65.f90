@@ -13,9 +13,10 @@ logical :: display_help=.false.,err
   character(len=500) optarg
   common/tracer/limtrace,lu
   equivalence (lenfile,ihdr(2))
-  type (option) :: long_options(2) = [ &
+  type (option) :: long_options(3) = [ &
     option ('help',.false.,'h','Display this help message',''),      &
-    option ('ntrials',.true.,'n','default=1000','') ]
+    option ('ntrials',.true.,'n','default=1000',''),                 &
+    option ('single-signal mode',.false.,'s','default=1000','') ]
 
 limtrace=0
 lu=12
@@ -25,9 +26,12 @@ nagain=0
 minsync=2.5
 nsubmode=0
 ntrials=10000
+nlow=200
+nhigh=4000
+n2pass=2
 
   do
-    call getopt('hn:',long_options,c,optarg,narglen,nstat,noffset,nremain,err)
+    call getopt('hn:s',long_options,c,optarg,narglen,nstat,noffset,nremain,err)
     if( nstat .ne. 0 ) then
       exit
     end if
@@ -36,12 +40,17 @@ ntrials=10000
         display_help = .true.
       case ('n')
         read (optarg(:narglen), *) ntrials
+      case ('s')
+        nlow=1250
+        nhigh=1290
+        n2pass=1
     end select
   end do
 
   nargs=iargc()
   if(display_help .or. (nargs.lt.1)) then
-     print*,'Usage: jt65 [-n ntrials] file1 [file2 ...]'
+     print*,'Usage: jt65 [-n ntrials] [-s] file1 [file2 ...]'
+     print*,'             -s single-signal mode'
      go to 999
   endif
 
@@ -51,10 +60,8 @@ ntrials=10000
   ndecoded=0
   do ifile=1,nargs
      newdat=1
-!     nfa=200
-!     nfb=3000
-     nfa=1250
-     nfb=1290
+     nfa=nlow
+     nfb=nhigh
      call getarg(ifile+noffset,infile)
      if( infile.eq.'' ) goto 900
      open(10,file=infile,access='stream',status='old',err=998)
@@ -74,7 +81,7 @@ ntrials=10000
 !     write(56) ihdr(1:11)
 
      call jt65a(dd,npts,newdat,nutc,nfa,nfb,nfqso,ntol,nsubmode, &
-                minsync,nagain,ntrials, naggressive,ndepth,ndecoded)
+                minsync,nagain,n2pass,ntrials, naggressive,ndepth,ndecoded)
      call timer('jt65a   ',1)
   enddo
 
