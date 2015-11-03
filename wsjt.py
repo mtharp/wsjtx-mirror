@@ -1,4 +1,4 @@
-cd .#!/usr/bin/env python
+#!/usr/bin/env python
 #---------------------------------------------------------------------- WSJT
 # $Date$ $Revision$
 #
