@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+cd .#!/usr/bin/env python
 #---------------------------------------------------------------------- WSJT
 # $Date$ $Revision$
 #
@@ -14,7 +14,7 @@ from PIL import (Image, ImageTk)
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
-from appdirs import AppDirs
+from WsjtMod.appdirs import AppDirs
 
 # To Test FSH paths, set fsh=1
 fsh=0
@@ -2906,8 +2906,6 @@ if (sys.platform == 'darwin'):
 def logform():
     form = Toplevel()
     form.title('WSJT Logbook')
-    form.iconbitmap("wsjt.ico")
-
     # top frame
     stepOne = LabelFrame(form, text="  QSO LOG  ")
     stepOne.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
@@ -2921,9 +2919,9 @@ def logform():
     stepThree.grid(row=3, columnspan=3, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
 
     # Package the frames
-    stepOne.pack(expand="yes", fill="both")
-    stepTwo.pack(expand="yes", fill="both")
-    stepThree.pack(expand="yes", fill="both")
+#    stepOne.pack(expand="yes", fill="both")
+#    stepTwo.pack(expand="yes", fill="both")
+#    stepThree.pack(expand="yes", fill="both")
 
     # -------------------------------------------------------------- Logbook 1st Frame
     # Call
@@ -3040,14 +3038,12 @@ def logform():
     inC3commentTxt.grid(row=4, column=0, columnspan=7, rowspan=2, padx=5, sticky="WE", pady=3)
 
 #--------------------------------------------------------------- Logbook UI 3rd Frame
-    outSaveBtn = Button(stepThree, text="Save", fg="black", activebackground="green", background="green", command=form.destroy)
-    outSaveBtn.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    SaveBtn = Button(stepThree, text="Save", fg="black", activebackground="green", background="green", command=form.destroy)
+    SaveBtn.pack(side=LEFT)
 
-    outCancelBtn = Button(stepThree, text="Cancel", fg="black", activebackground="green", background="red", command=form.destroy)
-    outCancelBtn.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+    CancelBtn = Button(stepThree, text="Cancel", fg="black", activebackground="red", background="red", command=form.destroy)
+    CancelBtn.pack(side=LEFT)
 
-    outSaveBtn.pack(side="left")
-    outCancelBtn.pack(side="left", pady=10)
     form.mainloop()
 
 #------------------------------------------------------ Logbook Menu
