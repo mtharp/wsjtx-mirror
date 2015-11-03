@@ -45,7 +45,6 @@ print("******************************************************************")
 print("WSJT Version " + Version + ", by K1JT")
 print("Revision date....: " + "$Date$"[7:-1])
 print("Run date.........: " + time.asctime(time.gmtime()) + " UTC")
-print("Application Dir..:", appdir)
 if fsh==1:
     print("Database Dir.....:", dbdir)
 
