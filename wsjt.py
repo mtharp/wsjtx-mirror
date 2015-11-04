@@ -2904,145 +2904,150 @@ if (sys.platform == 'darwin'):
 
 # -------------------------------------------------------------- Draw Logbook Widget
 def logform():
+    lb_band=('160m','80m','40m','30m','20m','17m','15m','12m','10m','2m',"4m",
+            '1.25m','70cm','33cm','23cm','9cm','6cm','3cm','1.25cm')
+	
+    lb_mode=('CW','ISCAT-A','ISCAT-B','ISCAT-B','JT44','JT4A','JT4B','JT4C','JT4D',\
+            'JT4E','JT4F','JT4G','JT65A','JT65B','JT65B2','JT65C','JT65C2','JT6M',\
+            'JT9-1','JT9-10','JT9-2','JT9-30','JT9-5','SK441','WSPR-15','WSPR-2')
+        
     form = Toplevel()
     form.title('WSJT Logbook')
+    form.resizable(0,0)
+    #------------------------------------------------------ Main UI Frames
     # top frame
-    stepOne = LabelFrame(form, text="  QSO LOG  ")
-    stepOne.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+    lf1 = LabelFrame(form, text="  QSO Log Table ")
+    lf1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
 
-    # middle frame
-    stepTwo = LabelFrame(form, text="  CALL3 DATA ")
-    stepTwo.grid(row=2, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+    # bottom left
+    lf2 = LabelFrame(form, text="  Call3 Data Table")
+    lf2.grid(row=2, columnspan=4, sticky='W', padx=5, pady=5, ipadx=8, ipady=8)
 
-    # bottom frame
-    stepThree = LabelFrame(form, relief=FLAT)
-    stepThree.grid(row=3, columnspan=3, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+    # bottom right
+    lf3 = LabelFrame(form, text="  Save Options ")
+    lf3.grid(row=2, column=6, columnspan=1, sticky='N', padx=4, pady=4, ipadx=0, ipady=0)
 
-    # Package the frames
-#    stepOne.pack(expand="yes", fill="both")
-#    stepTwo.pack(expand="yes", fill="both")
-#    stepThree.pack(expand="yes", fill="both")
-
-    # -------------------------------------------------------------- Logbook 1st Frame
+    #------------------------------------------------------ QSO Log Frame
     # Call
-    inCallLbl = Label(stepOne, text="Callsign")
+    inCallLbl = Label(lf1, text="Callsign")
     inCallLbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
-    inCallTxt = Entry(stepOne)
+    inCallTxt = Entry(lf1)
     inCallTxt.grid(row=1, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Date
-    inDateLbl = Label(stepOne, text="Date")
+    inDateLbl = Label(lf1, text="Date")
     inDateLbl.grid(row=0, column=1, sticky='W', padx=5, pady=2)
-    inDateTxt = Entry(stepOne)
+    inDateTxt = Entry(lf1)
     inDateTxt.grid(row=1, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Time
-    inTimeLbl = Label(stepOne, text="Time")
+    inTimeLbl = Label(lf1, text="Time")
     inTimeLbl.grid(row=0, column=2, sticky='W', padx=5, pady=2)
-    inTimeTxt = Entry(stepOne)
+    inTimeTxt = Entry(lf1)
     inTimeTxt.grid(row=1, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Mode
-    inModeLbl = Label(stepOne, text="Mode")
+    inModeLbl = Label(lf1, text="Mode")
     inModeLbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
-    inModeTxt = Entry(stepOne)
+    inModeTxt = Entry(lf1)
     inModeTxt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
 
-    # Band
-    inBandLbl = Label(stepOne, text="Band")
-    inBandLbl.grid(row=0, column=4, sticky='W', padx=5, pady=2)
-    inBandTxt = Entry(stepOne)
-    inBandTxt.grid(row=1, column=4, columnspan=1, padx=5, sticky="WE", pady=3)
+    # Mode Selection Pmw.ComboBox
+    lbmodelbl = Label(lf1, text="Mode Select")
+    lbmodelbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+    lbmodetxt=Pmw.ComboBox(lf1,labelpos=W,scrolledlist_items=lb_mode)
+    lbmodetxt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
+
+    # Band Slectiopn Pmw.ComboBox
+    lbbandlbl = Label(lf1, text="Band Select")
+    lbbandlbl.grid(row=0, column=4, sticky='W', padx=5, pady=2)
+    lbbandtxt=Pmw.ComboBox(lf1,scrolledlist_items=lb_band)
+    lbbandtxt.grid(row=1, column=4, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Rpt_Sent
-    inRsentLbl = Label(stepOne, text="Rpt Sent")
+    inRsentLbl = Label(lf1, text="Rpt Sent")
     inRsentLbl.grid(row=2, column=0, sticky='W', padx=5, pady=2)
-    inRsentTxt = Entry(stepOne)
+    inRsentTxt = Entry(lf1)
     inRsentTxt.grid(row=3, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Rpt_Rcvd
-    inRrcvdLbl = Label(stepOne, text="Rpt Rcvd")
+    inRrcvdLbl = Label(lf1, text="Rpt Rcvd")
     inRrcvdLbl.grid(row=2, column=1, sticky='W', padx=5, pady=2)
-    inRrcvdTxt = Entry(stepOne)
+    inRrcvdTxt = Entry(lf1)
     inRrcvdTxt.grid(row=3, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Grid
-    inGridLbl = Label(stepOne, text="Grid")
+    inGridLbl = Label(lf1, text="Grid")
     inGridLbl.grid(row=2, column=2, sticky='W', padx=5, pady=2)
-    inGridTxt = Entry(stepOne)
+    inGridTxt = Entry(lf1)
     inGridTxt.grid(row=3, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Name
-    inNameLbl = Label(stepOne, text="Name")
+    inNameLbl = Label(lf1, text="Name")
     inNameLbl.grid(row=2, column=3, sticky='W', padx=5, pady=2)
-    inNameTxt = Entry(stepOne)
+    inNameTxt = Entry(lf1)
     inNameTxt.grid(row=3, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
 
-    # EME COntact
-    inEme = Checkbutton(stepOne, text="Contact is an EME QSO", onvalue=1, offvalue=0)
-    inEme.grid(row=4, column=0, sticky='W', padx=5, pady=2)
-
     # TxPwr
-    inTxpwrLbl = Label(stepOne, text="Tx Pwr")
-    inTxpwrLbl.grid(row=6, column=0, sticky='W', padx=5, pady=2)
-    inTxpwrTxt = Entry(stepOne)
-    inTxpwrTxt.grid(row=7, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
-
-    # Retain Tx Pwr Setting
-    retainPwr = Checkbutton(stepOne, text="Retain", onvalue=1, offvalue=0)
-    retainPwr.grid(row=7, column=1, sticky='W', padx=5, pady=2)
+    inTxpwrLbl = Label(lf1, text="Tx Pwr")
+    inTxpwrLbl.grid(row=2, column=4, sticky='W', padx=5, pady=2)
+    inTxpwrTxt = Entry(lf1)
+    inTxpwrTxt.grid(row=3, column=4, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Comment
-    inCommentLbl = Label(stepOne, text="General Comments")
-    inCommentLbl.grid(row=8, column=0, sticky='W', padx=5, pady=2)
-    inCommentTxt = Entry(stepOne)
-    inCommentTxt.grid(row=9, column=0, columnspan=7, rowspan=2, padx=5, sticky="WE", pady=3)
+    inCommentLbl = Label(lf1, text="General Comments")
+    inCommentLbl.grid(row=7, column=0, sticky='W', padx=5, pady=2)
+    inCommentTxt = Entry(lf1)
+    inCommentTxt.grid(row=8, column=0, columnspan=3, rowspan=2, padx=5, sticky="WE", pady=3)
 
-    # Retain Comment Setting
-    retainComment = Checkbutton(stepOne, text="Retain", onvalue=1, offvalue=0)
-    retainComment.grid(row=9, column=8, sticky='E', padx=5, pady=2)
-    
-#--------------------------------------------------------------- Logbook UI 2nd Frame
+
+    #------------------------------------------------------ Call3 Data Table
     # Call
-    inC3CallLbl = Label(stepTwo, text="Callsign")
+    inC3CallLbl = Label(lf2, text="Callsign")
     inC3CallLbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
-    inC3CallTxt = Entry(stepTwo)
+    inC3CallTxt = Entry(lf2)
     inC3CallTxt.grid(row=1, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Grid
-    inC3GridLbl = Label(stepTwo, text="Grid")
+    inC3GridLbl = Label(lf2, text="Grid")
     inC3GridLbl.grid(row=0, column=1, sticky='W', padx=5, pady=2)
-    inC3GridTxt = Entry(stepTwo)
+    inC3GridTxt = Entry(lf2)
     inC3GridTxt.grid(row=1, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
 
     # Previous Calls
-    inC3PcallLbl = Label(stepTwo, text="Previous Calls")
+    inC3PcallLbl = Label(lf2, text="Previous Calls")
     inC3PcallLbl.grid(row=0, column=2, sticky='W', padx=5, pady=2)
-    inC3PcallTxt = Entry(stepTwo)
+    inC3PcallTxt = Entry(lf2)
     inC3PcallTxt.grid(row=1, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
 
-   # Previous Calls
-    inC3LastUpdateLbl = Label(stepTwo, text="Last Update")
+    # Last Update
+    inC3LastUpdateLbl = Label(lf2, text="Last Update")
     inC3LastUpdateLbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
-    inC3LastUpdateTxt = Entry(stepTwo)
+    inC3LastUpdateTxt = Entry(lf2)
     inC3LastUpdateTxt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
 
-    # EME Contact
-    inEme = Checkbutton(stepTwo, text="Contact is an EME QSO", onvalue=1, offvalue=0)
-    inEme.grid(row=2, column=0, sticky='W', padx=5, pady=2)
-
     # CALL3 Comment field
-    inC3commentLbl = Label(stepTwo, text="General Comments")
+    inC3commentLbl = Label(lf2, text="General Comments")
     inC3commentLbl.grid(row=3, column=0, sticky='W', padx=5, pady=2)
-    inC3commentTxt = Entry(stepTwo)
-    inC3commentTxt.grid(row=4, column=0, columnspan=7, rowspan=2, padx=5, sticky="WE", pady=3)
+    inC3commentTxt = Entry(lf2)
+    inC3commentTxt.grid(row=4, column=0, columnspan=3, rowspan=2, padx=5, sticky="WE", pady=3)
 
-#--------------------------------------------------------------- Logbook UI 3rd Frame
-    SaveBtn = Button(stepThree, text="Save", fg="black", activebackground="green", background="green", command=form.destroy)
-    SaveBtn.pack(side=LEFT)
 
-    CancelBtn = Button(stepThree, text="Cancel", fg="black", activebackground="red", background="red", command=form.destroy)
-    CancelBtn.pack(side=LEFT)
+    #------------------------------------------------------ Save Options
+    # Update Call3 Table
+    iEme = Checkbutton(lf3, text="Update Call3 Table", onvalue=1, offvalue=0)
+    iEme.grid(row=1, column=0, sticky='W', padx=5, pady=2)
+
+    # Contact is EME QSO
+    iUp = Checkbutton(lf3, text="Contact is EME QSO", onvalue=1, offvalue=0)
+    iUp.grid(row=2, column=0, sticky='W', padx=5, pady=2)
+
+    # SAVE Buttons
+    SaveBtn = Button(lf3, text=" Save ", fg="black", activebackground="green", background="green", command=form.destroy)
+    SaveBtn.grid(row=3, column=0, sticky='N', padx=1, pady=1, ipadx=1, ipady=1)
+
+    CancelBtn = Button(lf3, text="Cancel", fg="black", activebackground="red", background="red", command=form.destroy)
+    CancelBtn.grid(row=4, column=0, sticky='S', padx=1, pady=1, ipadx=1, ipady=1)
 
     form.mainloop()
 

@@ -3,8 +3,8 @@
 # This file is part of the WSJT application
 #
 # Author........: Greg Beam, KI7MT, <ki7mt@yahoo.com>
-# File Name.....: wsjtdb.py
-# Description...: WSJT Database Interface Module
+# File Name.....: logbook.py
+# Description...: WSJT Loogbook Interface Module
 # 
 # Copyright (C) 2001-2015 Joseph Taylor, K1JT
 # License: GPL-3
@@ -160,6 +160,17 @@ logbook_modes = {"PCW": "CW",
         "WSPR-2": "WSPR",
         "WSPR-15": "WSPR",
 }
+
+'''
+ lb_band and lb_mode are testing lists for manual selection during
+ UI development.
+'''
+b_band=('160m','80m','40m','30m','20m','17m','15m','12m','10m','2m',"4m",\
+        '1.25m','70cm','33cm','23cm','9cm','6cm','3cm','1.25cm')
+	
+lb_mode=('CW','ISCAT-A','ISCAT-B','ISCAT-B','JT44','JT4A','JT4B','JT4C','JT4D',
+        'JT4E','JT4F','JT4G','JT65A','JT65B','JT65B2','JT65C','JT65C2','JT6M',\
+        'JT9-1','JT9-10','JT9-2','JT9-30','JT9-5','SK441','WSPR-15','WSPR-2')
 
 ################################################################################
 #                                                                              #
