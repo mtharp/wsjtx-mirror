@@ -1,6 +1,6 @@
 subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
 
-  parameter (NSZ=3413,NFFT=8192)
+  parameter (NSZ=3413,NFFT=8192,MAXCAND=300)
   real ss(322,NSZ)
   real ccfblue(-5:540)             !CCF with pseudorandom sequence
   real ccfred(NSZ)                 !Peak of ccfblue, as function of freq
@@ -10,7 +10,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
      real dt
      real sync
   end type candidate
-  type(candidate) ca(300)
+  type(candidate) ca(MAXCAND)
 
   common/steve/thresh0
 
@@ -70,6 +70,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
         ca(ncand)%dt=dtx
         ca(ncand)%sync=ccfred(i)
      endif
+     if(ncand.eq.MAXCAND) return
   enddo
 
   return
