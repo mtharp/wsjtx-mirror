@@ -462,6 +462,11 @@ case "${host_os}" in
 					FFLAGS="${OPT_FLAGS} -O2 -Wall -fbounds-check -fno-second-underscore \
 -Wno-conversion -Wno-character-truncation -fPIC"
 				;;
+				*powerpc* )
+					CFLAGS="${OPT_FLAGS} -fPIE"
+					FFLAGS="${OPT_FLAGS} -O2 -Wall -fbounds-check -fno-second-underscore \
+-Wno-conversion -Wno-character-truncation -fPIE"
+				;;
 			esac
 	;;
 	*darwin* )

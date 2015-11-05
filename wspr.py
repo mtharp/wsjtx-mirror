@@ -45,9 +45,8 @@
 from tkinter import *
 from tkinter.filedialog import *
 import tkinter.messagebox
-import os, time, sys
+import os, time, sys, random, math, string, socket, _thread, webbrowser, Pmw
 from WsprMod import g
-import Pmw
 from WsprMod import palettes
 from math import log10
 import numpy.core.multiarray
@@ -57,15 +56,9 @@ from PIL import Image, ImageTk, ImageDraw
 from WsprMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
-import random
-import math
-import string
 from WsprMod import w
 from WsprMod import smeter
-import socket
 import urllib.request, urllib.parse, urllib.error
-import _thread
-import webbrowser
 import tkinter.font
 
 root = Tk()
