@@ -75,7 +75,7 @@ CREATE TABLE call3 (id INTEGER PRIMARY KEY AUTOINCREMENT,
                    gridsquare TEXT,
                    force_init TEXT,
                    previous_call TEXT,
-                   notes TEXT,
+                   comment TEXT,
                    last_update TEXT
 );
 /*
@@ -84,10 +84,3 @@ CREATE TABLE call3 (id INTEGER PRIMARY KEY AUTOINCREMENT,
  TO-DO: add table for MS Shower selection
  
  */
- 
- 
- 
- 
-
-
-
