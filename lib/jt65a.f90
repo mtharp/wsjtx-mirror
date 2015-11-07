@@ -59,6 +59,15 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
     call sync65(ss,nfa,nfb,nhsym,ca,ncand)    !Get a list of JT65 candidates
     call timer('sync65  ',1)
 
+! Some files have strongly modulated noise baseline (AGC pumping?) and 
+! very large signal amplitudes at the very beginning of the record
+! (AGC attack characteristic?) and produce a large number of false syncs.
+! This is to keep large number of false syncs from bogging down the decoder.
+    nvec=ntrials
+    if(ncand.gt.100) then
+      nvec=100
+    endif
+
     df=12000.0/NFFT                     !df = 12000.0/8192 = 1.465 Hz
     mode65=2**nsubmode
     nflip=1                             !### temporary ###
@@ -73,7 +82,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
       if(ipass.eq.1) ntry65a=ntry65a + 1
       if(ipass.eq.2) ntry65b=ntry65b + 1
       call timer('decod65a',0)
-      call decode65a(dd,npts,newdat,nqd,freq,nflip,mode65,ntrials,     &
+      call decode65a(dd,npts,newdat,nqd,freq,nflip,mode65,nvec,     &
            naggressive,ndepth,sync2,a,dtx,nsf,nhist,decoded)
       call timer('decod65a',1)
 

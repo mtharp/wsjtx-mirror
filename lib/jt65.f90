@@ -23,7 +23,6 @@ lu=12
 ntol=50
 nfqso=1270
 nagain=0
-minsync=2.5
 nsubmode=0
 ntrials=10000
 nlow=200

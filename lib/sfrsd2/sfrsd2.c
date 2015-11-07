@@ -31,13 +31,14 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
   int workdat[63];
   int era_pos[51];
   int i, j, numera, nerr, nn=63, kk=12;
-  FILE *logfile;
+  FILE *datfile, *logfile;
   int ntrials = *ntrials0;
   int verbose = *verbose0;
   int nhard=0,nhard_min=32768,nsoft=0,nsoft_min=32768;
   int nsofter=0,nsofter_min=32768,ntotal=0,ntotal_min=32768,ncandidates;
   int nera_best;
   clock_t t0=0,t1=0;
+  static unsigned int nseed;
 
 /* For JT exp(x) symbol metrics - gaussian noise, no fading
   int perr[8][8] = {
@@ -155,6 +156,7 @@ void sfrsd2_(int mrsym[], int mrprob[], int mr2sym[], int mr2prob[],
     param[2]=0;
     param[3]=0;
     param[4]=0;
+    ntry[0]=0;
     return;
   }
 
@@ -165,11 +167,7 @@ decode. This will generate a list of potential codewords. The
 used to decide which codeword is "best".
 */
 
-#ifdef WIN32
-  srand(0xdeadbeef);
-#else
-  srandom(0xdeadbeef);
-#endif
+  nseed=1;                                 //Seed for random numbers
 
   float ratio, ratio0[63];
   int thresh, nsum;
@@ -187,8 +185,8 @@ used to decide which codeword is "best".
     thresh0[i] = 1.3*perr[ii][jj];
   }
   if(nsum==0) return;
-    
-  for( k=0; k<ntrials; k++) {
+
+  for (k=0; k<ntrials; k++) {
     memset(era_pos,0,51*sizeof(int));
     memcpy(workdat,rxdat,sizeof(rxdat));
 
@@ -202,14 +200,15 @@ NB: j is the symbol-vector index of the symbol with rank i.
       j = indexes[62-i];
       thresh=thresh0[i];
       long int ir;
-#ifdef WIN32
-      ir=rand();
-#else
-      ir=random();
-#endif
-      if( ((ir % 100) < thresh ) && numera < 51 ) {
-	era_pos[numera]=j;
-	numera=numera+1;
+
+// Generate a random number ir, 0 <= ir < 100 (see POSIX.1-2001 example).
+      nseed = nseed * 1103515245 + 12345;
+      ir = (unsigned)(nseed/65536) % 32768;
+      ir = (100*ir)/32768;
+
+      if((ir < thresh ) && numera < 51) {
+        era_pos[numera]=j;
+        numera=numera+1;
       }
     }
 
@@ -226,7 +225,7 @@ NB: j is the symbol-vector index of the symbol with rank i.
       for (i=0; i<63; i++) {
 	if(workdat[i] != rxdat[i]) {
 	  nhard=nhard+1;
-      nsofter=nsofter+rxprob[i];
+	  nsofter=nsofter+rxprob[i];
 	  if(workdat[i] != rxdat2[i]) {
 	    nsoft=nsoft+rxprob[i];
 	  }

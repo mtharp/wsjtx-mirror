@@ -41,7 +41,7 @@ subroutine decode65a(dd,npts,newdat,nqd,f0,nflip,mode65,ntrials,     &
 ! Apply AFC corrections to the time-domain signal
 ! Now we are back to using the 1378.125 Hz sample rate, enough to 
 ! accommodate the full JT65C bandwidth.
-  a(3)=0 ! seems to work best if we fit including this and then ignore it??
+  a(3)=0 
   call timer('twkfreq ',0)
   call twkfreq65(cx,n5,a)
   call timer('twkfreq ',1)
