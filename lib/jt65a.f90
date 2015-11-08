@@ -35,7 +35,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
   do ipass=1,n2pass                             ! 2-pass decoding loop
     newdat=1
     if(ipass.eq.1) then                         !first-pass parameters
-      thresh0=2.5
+      thresh0=2.5 ! use thresh0=2.0 for -24dB files when using 1-bit sync ccf
       nsubtract=1
     elseif( ipass.eq.2 ) then !second-pass parameters
       thresh0=2.5
@@ -65,6 +65,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 ! This is to keep large number of false syncs from bogging down the decoder.
     nvec=ntrials
     if(ncand.gt.100) then
+!      write(*,*) 'Pass ',ipass,' ncandidates too large ',ncand
       nvec=100
     endif
 
@@ -85,7 +86,7 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
       call decode65a(dd,npts,newdat,nqd,freq,nflip,mode65,nvec,     &
            naggressive,ndepth,sync2,a,dtx,nsf,nhist,decoded)
       call timer('decod65a',1)
-
+!write(*,*) icand,freq+a(1),dtx,sync1,sync2
       if(decoded.eq.decoded0) cycle            !Don't display dupes
 
       if(decoded.ne.'                      ' .or. minsync.lt.0) then

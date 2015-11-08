@@ -25,6 +25,17 @@ subroutine xcor(ss,ipk,nsteps,nsym,lag1,lag2,ccf,ccf0,lagpk,flip,fdot)
      endif
   enddo
 
+! use robust correlation estimator to mitigate AGC attack spikes at beginning
+! this reduces the number of spurious candidates overall
+  call pctile(a,nsteps,50,xmed)
+  do j=1,nsteps
+    if( a(j).ge.xmed ) then
+      a(j)=1
+    else
+      a(j)=-1
+    endif
+  enddo
+
   ccfmax=0.
   ccfmin=0.
   do lag=lag1,lag2
