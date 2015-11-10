@@ -1,0 +1,16 @@
+Documentation Status
+====================
+
+Currently, WSPRX documentation does not build with the package. The
+main document is in MS Word format, located at:
+
+^/branches/wsprx/WSPRX_User_Guide.doc
+
+Traditionally, the MS Word document was updated direcrtly, then coverted to pdf
+for each release.
+
+TO-DO:
+* Add / Update Cmakelists.txt file ( use WSJT-X as a template )
+* Convert the MS Word document into Asciidoc / Asciidoctor format
+* Archive the MS Word template
+
