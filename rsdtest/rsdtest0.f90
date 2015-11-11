@@ -12,15 +12,18 @@ program rsdtest0
   logical*1 eme(NMAX)
 
   nargs=iargc()
-  if(nargs.ne.3) then
-     print*,'Usage: rsdtest0 neme ntrials nfiles'
+  if(nargs.ne.4) then
+     print*,'Usage:   rsdtest0 neme nexplim ntrials nfiles'
+     print*,'Example: rsdtest0  0      72    10000   1000'
      go to 999
   endif
   call getarg(1,arg)
   read(arg,*) neme
   call getarg(2,arg)
-  read(arg,*) ntrials
+  read(arg,*) nexplim
   call getarg(3,arg)
+  read(arg,*) ntrials
+  call getarg(4,arg)
   read(arg,*) nfiles
 
   open(10,file='known_calls.txt',status='old')
@@ -73,8 +76,9 @@ program rsdtest0
      where(mrprob<0) mrprob=mrprob+256
      where(mr2prob<0) mr2prob=mr2prob+256
 
-     call extr2(mrsym,mrprob,mr2sym,mr2prob,sym1,nused,ntrials)
+     call extr2(mrsym,mrprob,mr2sym,mr2prob,sym1,nused,nexplim,ntrials)
      if(ifile.eq.ifile0) exit
   enddo
+  print*,nused
 
 999 end program rsdtest0

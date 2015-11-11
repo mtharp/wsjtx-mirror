@@ -1,4 +1,4 @@
-subroutine extr2(mrsym,mrprob,mr2sym,mr2prob,sym1,nused,ntrials)
+subroutine extr2(mrsym,mrprob,mr2sym,mr2prob,sym1,nused,nexplim,ntrials)
 
   parameter (NMAX=10000)
   integer mrsym(0:62),mr2sym(0:62),mrprob(0:62),mr2prob(0:62)
@@ -13,7 +13,7 @@ subroutine extr2(mrsym,mrprob,mr2sym,mr2prob,sym1,nused,ntrials)
   save
 
   ndone=ndone+1
-  itry=0
+  if(nexplim.le.0) go to 1
   nbest=999999
   do j=1,nused
      test=sym1(0:62,j)
@@ -27,9 +27,9 @@ subroutine extr2(mrsym,mrprob,mr2sym,mr2prob,sym1,nused,ntrials)
         correct=test
      endif
   enddo
-  if(nbest.lt.72) go to 10
+  if(nbest.lt.nexplim) go to 10
 
-  call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
+1 call sfrsd2(mrsym,mrprob,mr2sym,mr2prob,ntrials,nverbose,correct,   &
        param,indx,tt,ntry)
   ncandidates=param(0)
   nhard=param(1)
