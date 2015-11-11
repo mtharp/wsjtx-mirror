@@ -1,4 +1,4 @@
-subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
+subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand,nrobust)
 
   parameter (NSZ=3413,NFFT=8192,MAXCAND=300)
   real ss(322,NSZ)
@@ -28,7 +28,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
   ccfblue=0.
 
   do i=ia,ib
-     call xcor(ss,i,nhsym,nsym,lag1,lag2,ccfblue,ccf0,lagpk0,flip,fdot)
+     call xcor(ss,i,nhsym,nsym,lag1,lag2,ccfblue,ccf0,lagpk0,flip,fdot,nrobust)
 ! Remove best-fit slope from ccfblue and normalize so baseline rms=1.0
      call slope(ccfblue(lag1),lag2-lag1+1,lagpk0-lag1+1.0)
      ccfred(i)=ccfblue(lagpk0)
@@ -50,7 +50,7 @@ subroutine sync65(ss,nfa,nfb,nhsym,ca,ncand)
 !1010 format(i6,2f10.2,i5,i6)
 !     flush(79)
      if(itry.ne.0) then
-        call xcor(ss,i,nhsym,nsym,lag1,lag2,ccfblue,ccf0,lagpk,flip,fdot)
+        call xcor(ss,i,nhsym,nsym,lag1,lag2,ccfblue,ccf0,lagpk,flip,fdot,nrobust)
         call slope(ccfblue(lag1),lag2-lag1+1,lagpk-lag1+1.0)
         xlag=lagpk
         if(lagpk.gt.lag1 .and. lagpk.lt.lag2) then

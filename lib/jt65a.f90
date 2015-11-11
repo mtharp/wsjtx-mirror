@@ -55,16 +55,25 @@ subroutine jt65a(dd0,npts,newdat,nutc,nf1,nf2,nfqso,ntol,nsubmode,   &
 !     nfb=min(4000,nfqso+ntol)
 
     ncand=0
+    nrobust=0 ! controls use of robust correlation estimator in sync65
     call timer('sync65  ',0)
-    call sync65(ss,nfa,nfb,nhsym,ca,ncand)    !Get a list of JT65 candidates
+    call sync65(ss,nfa,nfb,nhsym,ca,ncand,nrobust)    !Get a list of JT65 candidates
     call timer('sync65  ',1)
 
-! Some files have strongly modulated noise baseline (AGC pumping?) and 
-! very large signal amplitudes at the very beginning of the record
-! (AGC attack characteristic?) and produce a large number of false syncs.
-! This is to keep large number of false syncs from bogging down the decoder.
+! When AGC threshold is set too low, noise will suddenly quiet when a strong
+! signal starts up. This causes a lot of false syncs, and bogs down the decoder.
+! If 1-bit correlation doesn't tame the resulting false syncs then, as a last
+! resort, drop down to nrials=100.
+    if(ncand.ge.50) then
+      ncand=0
+      nrobust=1
+      call timer('sync65  ',0)
+      call sync65(ss,nfa,nfb,nhsym,ca,ncand,nrobust)    !Get a list of JT65 candidates
+      call timer('sync65  ',1)
+    endif
+!write(*,*) 'ncand',ncand
     nvec=ntrials
-    if(ncand.gt.100) then
+    if(ncand.gt.75) then
 !      write(*,*) 'Pass ',ipass,' ncandidates too large ',ncand
       nvec=100
     endif
