@@ -1,8 +1,7 @@
 ; For Use With JTSDK v2
 #define MyAppName "WSJT"
 #define MyAppVersion "10.0"
-; Change publisher to whomever is creating the formal release
-#define MyAppPublisher "Greg Beam, KI7MT"
+#define MyAppPublisher "Joe Taylor, K1JT"
 #define MyAppCopyright "Copyright (C) 2001-2015 by Joe Taylor, K1JT"
 #define MyAppURL "http://physics.princeton.edu/pulsar/k1jt/doc/wsjt/"
 #define WsjtGroupURL "https://groups.yahoo.com/neo/groups/wsjtgroup/info"
