@@ -22,7 +22,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 %.o: %.F90
 	${FC} ${FFLAGS} -c $<
 
-all:    libsfrsd.a rsdtest rsdtest2 rsdtest3
+all:    libsfrsd.a rsdtest rsdtest2 rsdtest3 rsdtest0
 
 OBJS0 = extract2.o sfrsd2.o init_rs_int.o encode_rs_int.o decode_rs_int.o
 libsfrsd.a: $(OBJS0)
@@ -45,6 +45,12 @@ rsdtest3: $(OBJS3) ../libjt.a
 	$(FC) -o rsdtest3 $(OBJS3) libsfrsd.a ../libjt.a \
 	../libfftw3f_win.a ../libpthreadGC2.a
 
+OBJS4 = rsdtest0.o extr2.o exp_decode.o fmtmsg.o sfrsd2.o encode_rs_int.o \
+      decode_rs_int.o init_rs_int.o 
+rsdtest0: $(OBJS4) ../libjt.a
+	$(FC) -o rsdtest0 $(OBJS4) libsfrsd.a ../libjt.a \
+	../libfftw3f_win.a ../libpthreadGC2.a
+
 sfrsd: sfrsd.o encode_rs_int.o decode_rs_int.o init_rs_int.o
 	gcc -g -o $@ $^
 
@@ -60,4 +66,5 @@ init_rs_int.o: init_rs.c
 .PHONY : clean
 
 clean:
-	rm -rf *.o libsfrsd.a rsdtest.exe rsdtest2.exe rsdtest3.exe sfrsd
+	rm -rf *.o libsfrsd.a rsdtest.exe rsdtest2.exe rsdtest3.exe \
+	rsdtest0.exe sfrsd
