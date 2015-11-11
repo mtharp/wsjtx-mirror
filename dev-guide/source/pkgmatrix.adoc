@@ -27,6 +27,7 @@ requirements for each application, including documentation.
 [width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
 |=================================================
 |Package    |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
+|AsciiDoc   |    |X   |x     |X   |      |
 |CMake      |    |    |x     |    |x     |x
 |FFTW3F     |    |x   |x     |x   |x     |x
 |Hamlib     |    |    |o     |x   |x     |
@@ -35,6 +36,7 @@ requirements for each application, including documentation.
 |Mingw48_32 |    |    |x     |    |x     |x
 |Omni-Rig   |    |    |x     |    |      |
 |Portaudio  |    |x   |      |x   |x     |x
+|Python2    |    |x   |X     |x   |      |
 |Python3    |    |x   |      |x   |      |
 |Qt5        |    |    |x     |    |x     |x
 |Subversion |x   |x   |x     |x   |x     |x

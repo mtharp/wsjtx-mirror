@@ -1,10 +1,9 @@
-// Taken from WSJT Main Website
-_WSJT, MAP65, WSPR, and WSJT-X_ are open-source programs designed for
-weak-signal digital communication by amateur radio. Normal usage requires a
-standard SSB transceiver and a personal computer with soundcard. SDR-style
-hardware including the SDR-IQ, Perseus, SoftRock, and FUNcube Dongle is supported
-by MAP65 and WSPR. SimJT is a utility program that generates simulated signals for
-test purposes.
+**_WSJT-X_**, **_WSJT_**, **_WSPR_**, and **_MAP65_** are open-source programs
+designed for weak-signal digital communication by amateur radio. Normal usage
+requires a standard SSB transceiver and a personal computer with soundcard.
+SDR-style hardware including the SDR-IQ, Perseus, SoftRock, and FUNcube Dongle
+is supported by MAP65 and WSPR. SimJT is a utility program that generates
+simulated signals for test purposes.
 
 It should be noted, building _WSJT_ applications can be extremely challenging.
 *JTSDK* provides a preconfigured set of packages and custom build scripts which
@@ -16,45 +15,77 @@ the core building tools for consistency.
 
 === Core Features
 While the implementation may differ slightly, both *JTSDK* for <<WINSDK,Windows>>
-and <<NIXSDK,Linux>> provide canned build scripts to compile _WSJT_ applications
-from source code. The core features are listed below. for each kit.
+and <<NIXSDK,Linux>> both provide similar core features.
+
+.Hundreds of Usefull Tools
+****
+In both JTSDK-Win32 and JTSDK-Nix, there are literaly hundreds of tools
+and applications available for use. The matrix below outlines the core
+elements used to compile all `*WSJT*` applications.
+****
 
 [[WINSDK]]
-.JTSDK Win32* provides the following core features:
-* Supported applications: ( ALL )
-* QT5 + mingw32 (GCC 4.8.0) winpthread Tool Chain
-* MinGW32 (GCC 4.8.1) pthread Tool Chain
-* MSYS Base Environment {plus} Autotools
-* Cygwin 32Bit Env, Bash, Gnu Coreutils, Git, SVN {plus} much more ...
-* Python2 and Python3 with Tcl/Tk in Separate Environments
-* InnoSetup and NSIS installer building tools
-* Build Scripts methods for All WSJT Documentation
-* Supports Win32/64 and Linux x86/x86-64
+.JTSDK Core Features
+[options="header,footer,autowidth"]
+|===
+|Platform|Features|Comments
 
-[[NIXSDK]]
-.JTSDK Nix* provides the following core features:
-* Supported Applications: ( _WSJT, WSPR, WSJTX, Hamlib3_ )
-* Automated distribution package installation
-* Ncurses menu (command line) for building supported applications
-* Build Scripts methods for All WSJT Documentation
+|Windows
+|
+Applications Builds +
+QT-5.0 +
+QT-5.5 +
+QtCreator +
+Cmake +
+MinGW32 +
+MSYS Base Environment +
+Cygwin Environment +
+Python2 and Python3 +
+InnoSetup and NSIS +
+Subversion, Git +
+Asciidoctor +
+|
+-> WSJTX, WSJT, WSPR, MAP65, WSPRX, Hamlib3 +
+-> GCC 4.8 WinPthreads +
+-> GCC 4.9 WinPthreads +
+-> Cross-Platform IDE +
+-> Cross-Platform Build System +
+-> GCC 4.8.1 Ptheads +
+-> GNU Autotools +
+-> Bash, Coreutils, {plus} much more +
+->  Intreputer, Tcl/Tk, required modules +
+-> Win32 Installer Design Tools +
+-> Repository Management Tools +
+-> Documentation Design Tool +
 
-=== Core Functions
-This guide will provide users with the following guidance:
+|Linux
+|
+Application Build sub-set +
+Distribution package installation +
+Source package availabe +
+Ncurses Menu +
+Build Scripts +
+|
+-> WSJT, WSPR, WSJTX, Hamlib3 +
+-> Available for Debian based distros +
+-> Source tarball for non .deb distros +
+-> Command Line menu system +
+-> Canned scrtipts for consistency +
+|===
 
-* Installing prerequisites packages
-* Installing JTSDK on ( <<INSTALLWINDOWS,Windows>> and <<INSTALLLINUX,Linux>> ) 
-* Overview of packages, libraries and frameworks
-* Building each application using default configurations
-* Command line custom configuration builds
-* Outline available tools and script capabilities
-* A brief introduction to using QtCreator for builds
-* Basic How-Too using Cmake-Gui
+.Cross Platform Access
+With the exception of Windows specific applications, things line InnoSetup,
+Mingw32, Cygwin, MSYS; all of the tools available for Windows can be accessed
+on a Linux / OSX system and have not been listed specifically.
 
+.Command Line Tools
 In addition to the core application build tools, each environment provides a
 host of very powerful command line tools. A detailed list is provided in the
 appendix, however, it is up to the user to research how best to employ each tool
 to fully leverage the SDKs potential.
 
-On Windows, *JTSDK*, by design, should not interfere with any previously
-installed development packages. If you find or have a conflict, please report it
-to the {dev_mail_list}.
+.Syetem Interference
+On Windows, *JTSDK-Win32*, by design, **_should not_** interfere with
+any previously installed development packages. If you find or have a conflict,
+please report it to the {dev_mail_list}.
+

@@ -58,9 +58,8 @@ re-start JTSDK-MSYS after it configures the shell.
 
 [[INSTALLLINUX]]
 === Linux
-For Debian / Ubuntu based distributions, there is a pre-built package available
-on {launchpad_jtsdk}, however, the install method varries slightly for Debian.
-All other distributions should install from the <<LINUXSOURCE,Source Tarball>>
+At the time of this writing, only Debian/Ubuntu based distributions are
+supported for Linux.
 
 IMPORTANT:  WSPR-X and MAP65 *are not* supported on Linux.
 
@@ -78,91 +77,85 @@ update and install.
 
 -----
 
-[[DEBIANRASPBIAN]]
-==== Install via PPA ( Debian / Raspbian )
-For Debian / Raspbian, in order to use a {launchpad_jtsdk} PPA, you must set up the
-repository manually. Additionally, Raspbian is only supported when upgraded to
-Jessie.
+==== Install Location
+The default installation location is: /usr/local  Unless you need to have this
+elsewhere, the default location should suffice. Setting the install prefix to
+/usr is not recommended.
 
+
+.Configuration Options
 -----
-
-# Edit your source list, adding the source lines listed below
-# sudo nano /etc/apt/sources.list
-
-# Add the following Lines
-#--
-deb http://ppa.launchpad.net/ki7mt/jtsdk/ubuntu trusty main
-deb http://ppa.launchpad.net/ki7mt/kvasd-installer/ubuntu trusty main
-#--
-
-* Save and Exit
-* sudo apt-get update
-* sudo apt-get install jtsdk kvasd-installer
-* Run kvasd-installer, Select [I] Install Decoder
-* Exit KVASD Installer
-
------
-
-[[LINUXSOURCE]]
-==== Install via Source Tarball ( All Non-Debian / Non-Ubuntu Based Distros )
-At the time of this writing, the latest source version v2.0.12 and will be
-used for this install example. 
-
-* Download The Latest Source from: {sourceforge_linux_tarball} 
-* Extract: tar -xvf jtsdk-nix-2.0.12.tar.gz
-* cd ./jtsdk-nix-2.0.12
-* Then run the following commands:
-
------
-./autogeh.sh
-make
-sudo make uninstall
-sudo make install
------
-
-.Customize Features
-No options should be passed to the autogen.sh invocation initially. If after
-your first build you experience problems with packag loacations, or merely want
-to enable / disabel festures, the following options are available.
-
------
---with-python3=PATH    # Path to python3
---with-f2py3=PATH      # Path to f2py3
---enable-separate      # Separate dir's svn number, default is disabled
+# Configurable Items
+--enable-separate      # Separate dir's by svn number, default is disabled
 --disable-docs         # Disable building HTML docs, default is enabled
 --disable-parallel     # Disable Multi-Core builds, default is enabled
+--with-distro=DISTRO   # Distro Name: (debian, ubuntu, mint)
+--with-python3=PATH    # Path to python3
+--with-f2py3=PATH      # Path to f2py3
+--with-homedir=PATH    # Change Default Home directory path
+
+# Distribution Recommendations:
+Ubuntu....: ./autogen.sh --with-distro=ubuntu --enable-separate
+Mint......: ./autogen.sh --with-distro=mint --enable-separate
+Debian....: ./autogen.sh --with-distro=debian --enable-spearate
+Raspbian..: ./autogen.sh --with-distro=debian --enable-separate
 -----
 
-*--with-python3* - Unless you have a customized Python3 installation, you should
-not need to modify the Python3 paths but it is availble nontheless.
-
-*--with=f2py* - This feature is usefull for testing odd locations for the F2py
+-----
+* *Enable Separate* is used for separating each build by SVN commit version. This
+is useful when want to keep a specific fall back version, yet build and test the
+latest revisions. When using this feature, monitor you disk usage, as it can add
+up quickly.
+* *Disable Docs* is used to tun off HTML file generation. At present, this only
+applies too *JTSDK* itself. Future releases will control application documentation
+as well.
+* *Disable Parallel* should not be used unless your testing the differences 
+between single and multi-core builds. One would be hard pressed to find a single
+core CPU in a modern day system.
+* *With Distro* - It is important to specify which distribution you are using,
+otherwise, the configure script will error back to the command line.
+* *With Python3* - Unless you have a customized Python3 installation, you should
+not need to modify the Python3 paths.
+* *With F2py* - This feature is usefull for testing odd locations for the F2py
 script. If you have built Python3-NumPY from source, and specidied a custom
 install locaiton, use this feature to tell the configure script the location
 of F2PY. Some distributions have different names for F2PY, this options allows
 for these type of variations.
+* *Home Dir* - The default home directory is ~/jtsdk and should suffice for most
+users needs.
+* The only other option you may want to consider is disabling documentaiton,
+however, later versions of *JTSDK* will be uing this feature to enable / disable
+documentation builds within the application.
+-----
 
-*--enable-separate* is used for separating each build by SVN commit version. This
-is useful when want to keep a specific fall back version, yet build and test the
-latest revisions. When using this feature, monitor you disk usage, as it can add
-up quickly.
+==== Configure, Make, Make Install
+-----
+# This example uses Ubuntu as the Distro
+# In the terminal, type
 
-*--disable-docs* is used to tun off HTML file generation. At present, this only
-applies too *JTSDK* itself. Future releases will control application documentation
-as well.
-
-*--disable-parallel* should not be used unless your testing the differences 
-between single and multi-core builds. One would be hard pressed to find a single
-core CPU in a modern day system.
-
+cd ./jtsdk-nix-2.0.5
+./autogen.sh --with-distro=ubuntu --enable-separate
+make
+sudo make install
+-----
 
 
 ==== RUN JTSDK
-* In a terminal..: jtsdk
+-----
+# In the terminal, type
+
+jtsdk
+
+-----
 
 ==== TO UNINSTALL
-* cd ./jtsdk-nix-2.0.12
-* sudo make uninstall
+-----
+# In the terminal, type
+
+cd ./jtsdk-nix-2.0.5
+sudo make uninstall
+-----
+
 
 
 .APPLICATION BUILD NOTES
