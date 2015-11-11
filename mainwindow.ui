@@ -501,7 +501,7 @@
            </size>
           </property>
           <property name="toolTip">
-           <string>Set Tx Enable OFF</string>
+           <string>Stop transmitting immediately</string>
           </property>
           <property name="text">
            <string>&amp;Halt Tx</string>
@@ -1688,6 +1688,9 @@ list. The list can be maintained in Settings (F2).</string>
                     <layout class="QHBoxLayout" name="horizontalLayout_7">
                      <item>
                       <widget class="QPushButton" name="band_hopping_schedule_push_button">
+                       <property name="toolTip">
+                        <string>Choose bands and times of day for band-hopping.</string>
+                       </property>
                        <property name="text">
                         <string>Schedule ...</string>
                        </property>
@@ -1696,24 +1699,24 @@ list. The list can be maintained in Settings (F2).</string>
                     </layout>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QSpinBox" name="sbTxPercent">
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
+                  <item row="0" column="3">
+                   <spacer name="horizontalSpacer_2">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
                     </property>
-                    <property name="suffix">
-                     <string>  %</string>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
                     </property>
-                    <property name="prefix">
-                     <string>Tx Pct </string>
-                    </property>
-                    <property name="maximum">
-                     <number>100</number>
-                    </property>
-                   </widget>
+                   </spacer>
                   </item>
                   <item row="0" column="2">
                    <widget class="QCheckBox" name="cbUploadWSPR_Spots">
+                    <property name="toolTip">
+                     <string>Upload decoded messages to WPRnet.org.</string>
+                    </property>
                     <property name="text">
                      <string>Upload spots</string>
                     </property>
@@ -1743,6 +1746,9 @@ list. The list can be maintained in Settings (F2).</string>
                   </item>
                   <item row="1" column="2">
                    <widget class="QPushButton" name="pbTxNext">
+                    <property name="toolTip">
+                     <string>Transmit during the next 2-minute sequence.</string>
+                    </property>
                     <property name="styleSheet">
                      <string notr="true">QPushButton:checked {
 	background-color: red;
@@ -1763,7 +1769,11 @@ list. The list can be maintained in Settings (F2).</string>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QComboBox" name="TxPowerComboBox"/>
+                   <widget class="QComboBox" name="TxPowerComboBox">
+                    <property name="toolTip">
+                     <string>Set Tx power in dBm (dB above 1 mW) as part of your WSPR message.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="0" column="0">
                    <spacer name="horizontalSpacer_3">
@@ -1778,18 +1788,24 @@ list. The list can be maintained in Settings (F2).</string>
                     </property>
                    </spacer>
                   </item>
-                  <item row="0" column="3">
-                   <spacer name="horizontalSpacer_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                  <item row="1" column="1">
+                   <widget class="QSpinBox" name="sbTxPercent">
+                    <property name="toolTip">
+                     <string>Percentage of 2-minute sequences devoted to transmitting.</string>
                     </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
                     </property>
-                   </spacer>
+                    <property name="suffix">
+                     <string>  %</string>
+                    </property>
+                    <property name="prefix">
+                     <string>Tx Pct </string>
+                    </property>
+                    <property name="maximum">
+                     <number>100</number>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -2676,17 +2692,6 @@ QPushButton[state=&quot;ok&quot;] {
   <action name="actionAstronomical_data">
    <property name="text">
     <string>Astronomical data</string>
-   </property>
-  </action>
-  <action name="actionJT9W_1">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>JT9W-1</string>
    </property>
   </action>
   <action name="actionShort_list_of_add_on_prefixes_and_suffixes">

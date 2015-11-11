@@ -451,6 +451,9 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_nTx73=0;
   m_freqCQ=0;
   m_dialFreq0=0;
+  QString t1[28]={"1 uW","2 uW","5 uW","10 uW","20 uW","50 uW","100 uW","200 uW","500 uW",
+                  "1 mW","2 mW","5 mW","10 mW","20 mW","50 mW","100 mW","200 mW","500 mW",
+                  "1 W","2 W","5 W","10 W","20 W","50 W","100 W","200 W","500 W","1 kW"};
 
   for(int i=0; i<28; i++)  {                      //Initialize dBm values
     float dbm=(10.0*i)/3.0 - 30.0;
@@ -458,7 +461,8 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
     if(dbm<0) ndbm=int(dbm-0.5);
     if(dbm>=0) ndbm=int(dbm+0.5);
     QString t;
-    t.sprintf("%d dBm",ndbm);
+    t.sprintf("%d dBm  ",ndbm);
+    t+=t1[i];
     ui->TxPowerComboBox->addItem(t);
   }
 
@@ -608,7 +612,6 @@ MainWindow::MainWindow(bool multiple, QSettings * settings, QSharedMemory *shdme
   m_dialFreqRxWSPR=0;
   wsprNet = new WSPRNet(this);
   connect( wsprNet, SIGNAL(uploadStatus(QString)), this, SLOT(uploadResponse(QString)));
-
   if(m_bFastMode) {
     int ntr[]={5,10,15,30};
     m_TRperiod=ntr[m_TRindex-11];
@@ -1293,8 +1296,11 @@ void MainWindow::displayDialFrequency ()
   }
 
   update_dynamic_property (ui->labDialFreq, "oob", !valid);
-  if(m_dialFreq < 25.0e9) {
+  if(m_dialFreq==18446744073709551615u) {
+    ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (default_frequency));
+  } else {
     ui->labDialFreq->setText (Radio::pretty_frequency_MHz_string (m_dialFreq));
+
   }
 }
 
@@ -2679,7 +2685,7 @@ void MainWindow::processMessage(QString const& messages, int position, bool ctrl
     }
 
   // only allow automatic mode changes between JT9 and JT65, and when not transmitting
-  if (!m_transmitting and m_mode != "JT4") {
+  if (!m_transmitting and m_mode == "JT9+JT65") {
       if (decodedtext.isJT9())
         {
           m_modeTx="JT9";
@@ -3367,7 +3373,6 @@ void MainWindow::on_actionJTMSK_triggered()
   ui->cbEME->setVisible(true);
   ui->ClrAvgButton->setVisible(false);
 }
-
 
 void MainWindow::on_actionJT65_triggered()
 {
