@@ -15,18 +15,20 @@ the core building tools for consistency.
 
 === Core Features
 While the implementation may differ slightly, both *JTSDK* for <<WINSDK,Windows>>
-and <<NIXSDK,Linux>> both provide similar core features.
+and <<NIXSDK,Linux>> provide similar core features.
 
 .Hundreds of Usefull Tools
 ****
-In both JTSDK-Win32 and JTSDK-Nix, there are literaly hundreds of tools
-and applications available for use. The matrix below outlines the core
-elements used to compile all `*WSJT*` applications.
+In both **_JTSDK-Win32_** and **_JTSDK-Nix_**, there are literaly hundreds of tools
+and applications available to the user. The <<COREFEATURES,Core Features Table>>
+outlines the base Frameworks, Tool-Chains, and libraries used to compile all
+**_WSJT_** applications. For a detailed list, per application, see the
+<<PKGMATRIX,Package Matrix>>
 ****
 
-[[WINSDK]]
+[[COREFEATURES]]
 .JTSDK Core Features
-[options="header,footer,autowidth"]
+[options="header,autowidth"]
 |===
 |Platform|Features|Comments
 
@@ -45,47 +47,46 @@ InnoSetup and NSIS +
 Subversion, Git +
 Asciidoctor +
 |
--> WSJTX, WSJT, WSPR, MAP65, WSPRX, Hamlib3 +
--> GCC 4.8 WinPthreads +
--> GCC 4.9 WinPthreads +
--> Cross-Platform IDE +
--> Cross-Platform Build System +
--> GCC 4.8.1 Ptheads +
--> GNU Autotools +
--> Bash, Coreutils, {plus} much more +
-->  Intreputer, Tcl/Tk, required modules +
--> Win32 Installer Design Tools +
--> Repository Management Tools +
--> Documentation Design Tool +
+WSJT-X, WSJT, WSPR, MAP65, WSPR-X, Hamlib3 +
+GCC 4.8 WinPthreads +
+GCC 4.9 WinPthreads +
+Cross-Platform IDE +
+Cross-Platform Build System +
+GCC 4.8.1 Ptheads +
+GNU Autotools +
+Bash, Coreutils, {plus} much more +
+Intreputer, Tcl/Tk, required modules +
+Win32 Installer Design Tools +
+Repository Management Tools +
+Documentation Design Tool +
 
 |Linux
 |
 Application Build sub-set +
-Distribution package installation +
+Distribution Package +
 Source package availabe +
 Ncurses Menu +
 Build Scripts +
 |
--> WSJT, WSPR, WSJTX, Hamlib3 +
--> Available for Debian based distros +
--> Source tarball for non .deb distros +
--> Command Line menu system +
--> Canned scrtipts for consistency +
+WSJT-X, WSJT, WSPR, Hamlib3 +
+Available for Debian based distros +
+Source tarball for non .deb distros +
+Command Line menu system +
+Canned scrtipts for consistency +
 |===
 
 .Cross Platform Access
-With the exception of Windows specific applications, things line InnoSetup,
+* With the exception of Windows specific applications, things line InnoSetup,
 Mingw32, Cygwin, MSYS; all of the tools available for Windows can be accessed
 on a Linux / OSX system and have not been listed specifically.
 
 .Command Line Tools
-In addition to the core application build tools, each environment provides a
+* In addition to the core application build tools, each environment provides a
 host of very powerful command line tools. A detailed list is provided in the
 appendix, however, it is up to the user to research how best to employ each tool
 to fully leverage the SDKs potential.
 
 .Syetem Interference
-On Windows, *JTSDK-Win32*, by design, **_should not_** interfere with
+* On Windows, *JTSDK-Win32*, by design, **_should not_** interfere with
 any previously installed development packages. If you find or have a conflict,
 please report it to the {dev_mail_list}.
-

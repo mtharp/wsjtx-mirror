@@ -1,8 +1,8 @@
 [[BASE_ENV]]
 As a developer, one knows, there are many ways in which to set-up for 
-developing a particular application. *JTSDK* employs a structured 
+developing a particular application. **_JTSDK_** employs a structured 
 environment in order to produce repeatable results. All build scripts are
-written to work with the *JTSDK* install locations. Modification of the scripts
+written to work with the **_JTSDK_** install locations. Modification of the scripts
 is possible, but would entail a great deal of re-work.
 
 If the user wants to build applications manually, the environment scripts,
@@ -12,72 +12,190 @@ setting the correct paths and ensuring system wide installation of the same or
 similar tools do not conflict one another.
 
 On Linux, most, if not all of the required dependencies, are installed to system
-folder locations. If you installed *JTSDK* from the configure scripts, no 
+folder locations. If you installed **_JTSDK_** from the configure scripts, no 
 additional configuration should be required.
 
 *****
-WARNING: The *JTSDK* install location ( on Windows ) is fixed due to the fact
+WARNING: The **_JTSDK_** install location ( on **_Windows_** ) is fixed due to the fact
 Python3 and Qt5 have been previously installed, or in the case of Python3
-modules, built with a specific file / folder location. While it is possible to
+modules, built with a specific file / folder combination. While it is possible to
 rebase both Python3 and Qt5, there is a risk of module failure in doing so. If
 your planning on changing the install location, all of the build and support
 scripts will need to be changed. It is highly advisable to leave the
 default installation location as is.
 *****
 
-.Windows Folder Locations
-[horizontal]
-*Install Location*:: C:\JTSDK
-*Source Directory*:: C:\JTSDK\src
-*App Install Location*:: C:\JTSDK\(app name)
-*Libraries*:: C:\JTSDK\(library name)
-*Environments*:: C:\JTSDK\(Cyg32,MSYS)
+=== System Paths
+On Linux / OSX, the applications are separated in three ways, by the application
+name, version and subversion commit number. Currently, Windows does not use the
+Subversion separator, but will in future releases. For **_WSJT-X_**, **MAP-65_**
+and **_WSPR-X_** there are (2) additional levels, Release and Debug, both for
+install and the build tree locations.
 
-.Linux FOlder Locations
-[horizontal]
-*Install Location*:: /usr/local/bin
-*Source Directory*:: /home/$USER/jtsdk/src
-*App Install Location*:: /home/$USER/jtsdk/(app name)
-*Libraries*:: Default System Location
-*Environments*:: Default System
+[[PATHLOCATIONS]]
+.JTSDK Folder Locations
+[options="header,autowidth"]
+|===
+|Platform|Type|Location
+
+|Windows
+|
+Install Location +
+Source Directory +
+App Install Location +
+Libraries +
+Environments +
+|
+C:\JTSDK +
+C:\JTSDK\src +
+C:\JTSDK\(app name) +
+C:\JTSDK\(library name) +
+C:\JTSDK\JTSDK-(QT, PY, DOC, MSYS) +
+
+|Linux
+|
+Install Location +
+Source Directory +
+App Install Location +
+Libraries +
+Environments +
+|
+/usr/local/bin +
+/home/$USER/jtsdk/src +
+/home/$USER/jtsdk/(app name) +
+System Default Location +
+System Default (sh, tcsh, ksh, bash) +
+|===
+
+=== Path Examples
+**_WSJT_** and **_WSPR_** do not have multiple branches, debug and release
+targets. The data below represents typical build flow data as it is today.
+
+.Example Data
+* **_WSJT-X_**,  **_1.6.0_**,  **_Development_**,  **_Release_**,  **_6073_**
+* **_WSJT_**,  **_10.0_**,  **_6032_**
+
+[[PATHLOCATIONS]]
+.Path Locations Using Example Data
+[options="header,autowidth"]
+|===
+|Name|Directory|Path
+
+|WSJT-X
+|
+Source +
+Build +
+Install +
+Package +
+
+|/home/$USER/jtsdk/src/wsjtx +
+/home/$USER/jtsdk/wsjtx/1.6.0/6073/build/Release +
+/home/$USER/jtsdk/wsjtx/1.6.0/6073/install/Release +
+/home/$USER/jtsdk/wsjtx/1.6.0/6073/package +
+
+
+|WSJT
+|
+Source +
+Build +
+Install +
+
+|/home/$USER/jtsdk/src/trunk +
+/home/$USER/jtsdk/src/trunk +
+/home/$USER/jtsdk/wsjt/10.0/6032/install +
+|===
+
+The application paths will increment with each svn commitment. This allows
+for testing eeach respoitory commit individually. It should be noted, the 
+location will only be incremented **_IF_** the change occurs to the branch,
+not the the revision of the repository. Meaning, if a commit is made to
+**_WSJT_**, it's svn revision would become **_6051_**. A new path would
+be created for **_WSJT_**, but, **_WSJT-X_** would remain **_6073_**.
+
+.WSJT-X v1.6.1 Directory Tree for Linux
+----
+/home/ki7mt/jtsdk/wsjtx/1.6.1
+├── 6056
+│   ├── build
+│   │   └── Release
+│   ├── install
+│   │   └── Release
+│   └── package
+├── 6059
+│   ├── build
+│   │   └── Release
+│   ├── install
+│   │   └── Release
+│   └── package
+└── 6073
+    ├── build
+    │   └── Release
+    ├── install
+    │   └── Release
+    └── package
+----
+
+.WSJT 10.0 Directory Tree for Linux
+----
+/home/$USER/jtsdk/wsjt/10.0
+├── 6005
+│   └── install
+├── 6045
+│   └── install
+├── 6046
+│   └── install
+├── 6047
+│   └── install
+└── 6051
+----
 
 === Windows Notes
-*JTSDK* for Windows provides the containment and all required tools to build a
-fully working application or the sub-targets if desired. Details of each kit can
-be found in the appropriate appendix. With the exception of prerequisite 
-packages, none of the packages within *JTSDK* should interfere with nor conflict
-previously installed system packages.
+**_JTSDK-Win32_** provides the containment and all required tools to build a
+fully working application or the sub-target if desired. Details of each kit can
+be found in the appropriate appendix.
 
-.There are (4) primary environments
-[horizontal]
-<<JTSDKQT,JTSDK-QT>>:: used for building _WSJT-X_, _WSPR-X_ and _MAP65_
-<<JTSDKPY,JTSDK-PY>>:: used for building _WSJT_ and _WSPR_
-<<JTSDKDOC,JTSDK-DOC>>:: used for building documentation
-<<JTSDKMSYS,JTSDK-MSYS>>:: a general purpose autotools environment
+NOTE: **_JTSDK-Maint_** has access to all the general Unix type tools, _grep_,
+_awk_, _rm_, _which_, etc and Subversion. It **_does not_** have a path set
+for any of the GCC Tool-Chains.
 
-Each of the environments are completely isolated from one another, both
-in terms of compilers and support package paths. All (4) environments
-are purpose built to provide the the correct configuration needed to build
-their respective packages. While environments may be customized by the user,
-care should be taken so as not to break the core configuration, in particular,
-the support libraries and respective GCC tool chains. This is especially
-important when dealing with Python3 modules that build _WSJT_ and _WSPR_ as they
-are version and compiler specific.
+.JTSDK-Nix Environments
+[options="header,autowidth"]
+|===
+|Environment|Purpose
+
+|JTSDK-QT
+|used for building **_WSJT-X_**, **_WSPR-X_** and **_MAP65_**
+
+|JTSDK-PY
+|used for building **_WSJT_** and **_WSPR_**
+
+|JTSDK-DOC
+|Cygwin-32, used for building documentation
+
+|JTSDK-MSYS
+|MSYS with autotools, used for building **_Hamlib3_**
+
+|JTSDK-Maint
+|used for updates and upgrades
+|===
+
+.A Word of Caution
+****
+For **_JTSDK-Win_**, each of the environments are completely isolated from
+one another, both in terms of compilers and support package paths. All
+environments are purpose built to provide the the correct configuration
+needed to build their respective packages. While environments may be customized
+by the user, care should be taken so as not to break the core configuration, in
+particular, the support libraries and respective GCC tool chains. This is
+especially important when dealing with Python3 modules that build
+**_WSJT_** and **_WSPR_** as they are version and compiler specific.
+****
 
 === Linux Notes
-*JTSDK* for Linux places all builds and src folders within the users ($USER)
-home directory. Unlike the Windows collection, Linux packaging is done by way
-of the respective distribution package manager. The following distributions
-are currently supported:
+**_JTSDK-Nix_**  packaging is done with a distribution package manager or from
+the source tarball. Supported distributions can be found in the
+<<INSTALLLINUX,Installation Section>>.
 
-* Ubuntu; 14.04, 14.10
-* Debian; 8.0*
-* Mintl 17.1
-
-As time allows, additional distributions will be added.
-
-Rather than separate environments, *JTSDK* for Linux uses the same tool set the
-users system would use. Builds are accomplished though a simple Dialog Ncurses
-menu system rather than command line entry. With very few exceptions, default
-distribution repository packages are used during the *JTSDK* installation
-process.
+Rather than separate environments, **_JTSDK-Nix_** simply runs in the users default
+environment, which provides access all system resouroces. Builds are
+accomplished though a simple Dialog Ncurses menu rather than command line entry.
