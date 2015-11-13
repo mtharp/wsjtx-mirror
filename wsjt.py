@@ -1698,6 +1698,7 @@ def GenStdMsgs(event=NONE):
     if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or mode.get()[:5]=='ISCAT':
         altmsg=0
     t=ToRadio.get().upper().strip()
+    if t=="": return
     ToRadio.delete(0,99)
     ToRadio.insert(0,t)
     if k2txb.get()!=0: ntx.set(1)
