@@ -15,35 +15,20 @@ set (UG_SRCS
   user_guide/controls-functions-messages.adoc
   user_guide/controls-functions-status-bar.adoc
   user_guide/controls-functions-wide-graph.adoc
-  user_guide/coop-prgrms.adoc
   user_guide/cooperating-programs.adoc
   user_guide/faq.adoc
   user_guide/font-sizes.adoc
+  user_guide/implementation.adoc
   user_guide/install-from-source.adoc
   user_guide/install-linux.adoc
   user_guide/install-mac.adoc
   user_guide/install-windows.adoc
   user_guide/introduction.adoc
-  user_guide/jt65-jt9-differences.adoc
-  user_guide/jt65-protocol.adoc
-  user_guide/jt9-protocol.adoc
+  user_guide/protocols.adoc
   user_guide/logging.adoc
   user_guide/make-qso.adoc
   user_guide/new_features.adoc
   user_guide/platform-dependencies.adoc
-  user_guide/rig-config-adat.adoc
-  user_guide/rig-config-alinco.adoc
-  user_guide/rig-config-aor.adoc
-  user_guide/rig-config-drake.adoc
-  user_guide/rig-config-elecraft.adoc
-  user_guide/rig-config-flexrad.adoc
-  user_guide/rig-config-icom.adoc
-  user_guide/rig-config-kenwood.adoc
-  user_guide/rig-config-main.adoc
-  user_guide/rig-config-softrock.adoc
-  user_guide/rig-config-template.adoc
-  user_guide/rig-config-tentec.adoc
-  user_guide/rig-config-yaesu.adoc
   user_guide/settings-audio.adoc
   user_guide/settings-colors.adoc
   user_guide/settings-frequencies.adoc
@@ -58,7 +43,6 @@ set (UG_SRCS
   user_guide/tutorial-example2.adoc
   user_guide/tutorial-main-window.adoc
   user_guide/tutorial-wide-graph-settings.adoc
-  user_guide/tx-rx.adoc
   user_guide/utilities.adoc
   user_guide/vhf-features.adoc
   user_guide/wsjtx-main.adoc
