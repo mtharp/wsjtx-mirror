@@ -131,7 +131,6 @@ include::tutorial-example2.adoc[]
 == WSPR Mode
 include::wspr.adoc[]
 
-
 [[VHF_AND_UP]]
 == VHF+ Features
 include::vhf-features.adoc[]
@@ -195,7 +194,7 @@ include::protocols.adoc[]
 
 [[TXRX]]
 == Implementation Details
-include::tx-rx.adoc[]
+include::implementation.adoc[]
 
 ////
 [[TROUBLE_SHOOTING]]
