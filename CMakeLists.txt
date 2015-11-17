@@ -24,7 +24,6 @@ source tarball." )
 # find prerequisites
 #
 # Find_library (USB_LIBRARY NAMES libusb.a usb)
-Find_program (MAKE_EXECUTABLE NAMES make mingw32_make gmake)
 Find_program (SVN_EXECUTABLE svn)
 Find_program (PATCH_EXECUTABLE patch)
 
@@ -33,7 +32,7 @@ Find_program (PATCH_EXECUTABLE patch)
 # extra C flags to minimize hamlib excutable sizes
 #
 if (NOT APPLE)
-  set (EXTRA_FLAGS "CFLAGS=-fdata-sections -ffunction-sections" "LDFLAGS=-Wl,--gc-sections")
+  set (EXTRA_FLAGS "CFLAGS=-fPIC -fdata-sections -ffunction-sections" "LDFLAGS=-Wl,--gc-sections")
 endif (NOT APPLE)
 
 
@@ -96,7 +95,7 @@ include (ExternalProject)
 
 
 #
-# build aand install hamlib locally so it can be referenced by the
+# build and install hamlib locally so it can be referenced by the
 # WSJT-X build
 #
 ExternalProject_Add (hamlib
@@ -107,14 +106,8 @@ ExternalProject_Add (hamlib
   UPDATE_COMMAND ""
   PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/hamlib.patch
   CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
-  BUILD_COMMAND ${MAKE_EXECUTABLE} all
-  INSTALL_COMMAND ${MAKE_EXECUTABLE} install-strip
-  LOG_DOWNLOAD 1
-  LOG_UPDATE 1
-  LOG_UPDATE 1
-  LOG_CONFIGURE 1
-  LOG_BUILD 1
-  LOG_INSTALL 1
+  BUILD_COMMAND $(MAKE) all V=1 # $(MAKE) is ExternalProject_Add() magic to do recursive make
+  INSTALL_COMMAND $(MAKE) install-strip V=1
   STEP_TARGETS update
   )
 
@@ -151,10 +144,6 @@ ExternalProject_Add (wsjtx
   -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   ${WSJTX_EXTRA_CMAKE_OPTIONS}
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-  LOG_DOWNLOAD 1
-  LOG_UPDATE 1
-  LOG_CONFIGURE 1
-  LOG_BUILD 1
   STEP_TARGETS update configure build install
   )
 ExternalProject_Add_Step (wsjtx package
