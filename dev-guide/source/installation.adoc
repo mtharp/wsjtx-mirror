@@ -17,6 +17,7 @@ files section. Using the links below, download each package, then proceed to
 *JTSDK Main Installer*:: {jtsdk-installer}
 *Update 1*:: {jtsdk-update1}
 *Update 2*:: {jtsdk-update2}
+*Update 3*:: {jtsdk-update2}
 
 [[MSCVINSTALL]]
 ==== MSVC Redist 2010
@@ -50,11 +51,17 @@ files section. Using the links below, download each package, then proceed to
 * Accept the defaults
 * Follow the prompts
 
-*****
+==== Update-3
+* Run the installer ( JTSDK-2.0.0-u3-win32.exe )
+* Accept the defaults
+* Follow the prompts
+
+
 TIP: Due to the custom installation of JTSDK-MSYS, upon first run, the
 environment will be set-up for your specific user.  You will be prompted to
-re-start JTSDK-MSYS after it configures the shell.
-*****
+re-start JTSDK-MSYS after it configures the shell. Or you can simply reload the
+shell with a command: `exec $SHELL -l`
+
 
 [[INSTALLLINUX]]
 === Linux
@@ -64,108 +71,67 @@ supported for Linux.
 IMPORTANT:  WSPR-X and MAP65 *are not* supported on Linux.
 
 [[UBUNTUMINT]]
-==== Install via PPA ( Ubuntu / Mint )
-Installation is stright forward to Ubuntu and Mint, simply add the repository,
-update and install.
+==== Install From PPA ( Ubuntu / Mint )
+To install **_JTSDK-Nix_** from PPA (Debian packge from Launchpad), open a
+terminal, and execute the following commands:
 
 -----
-# Open a terminal, then type:
-
-* sudo add-apt-repository ppa:ki7mt/jtsdk
-* sudo apt-get update
-* sudo apt-get install jtsdk
-
+sudo add-apt-repository -y ppa:ki7mt/jtsdk
+sudo apt-get update
+sudo apt-get install jtsdk
 -----
 
-==== Install Location
-The default installation location is: /usr/local  Unless you need to have this
-elsewhere, the default location should suffice. Setting the install prefix to
-/usr is not recommended.
+==== Installation From Source Tarball
+Installing from source code is fairly simple. Download, extract then run the 
+standard commands for installing via source tarballs. You can obtain
+the source tarball from: {jtsdk-nix}
 
+IMPORTANT: When installing from the source tarball, it is the **_users responsibility_**
+to ensure all package requirments are met, both for **_JTSDK-Nix_** and all
+**_WSJT_** applications. This should be done **_before_** running the
+autogeh.sh script. A package list if available, for select distribtions,
+See {readmepkglist}.
 
-.Configuration Options
------
-# Configurable Items
---enable-separate      # Separate dir's by svn number, default is disabled
---disable-docs         # Disable building HTML docs, default is enabled
---disable-parallel     # Disable Multi-Core builds, default is enabled
---with-distro=DISTRO   # Distro Name: (debian, ubuntu, mint)
---with-python3=PATH    # Path to python3
---with-f2py3=PATH      # Path to f2py3
---with-homedir=PATH    # Change Default Home directory path
-
-# Distribution Recommendations:
-Ubuntu....: ./autogen.sh --with-distro=ubuntu --enable-separate
-Mint......: ./autogen.sh --with-distro=mint --enable-separate
-Debian....: ./autogen.sh --with-distro=debian --enable-spearate
-Raspbian..: ./autogen.sh --with-distro=debian --enable-separate
------
+Extract jtsdk-nix-2.0.16.tar.gz to a suitable location, then execute the following
+commands in a termainl:
 
 -----
-* *Enable Separate* is used for separating each build by SVN commit version. This
-is useful when want to keep a specific fall back version, yet build and test the
-latest revisions. When using this feature, monitor you disk usage, as it can add
-up quickly.
-* *Disable Docs* is used to tun off HTML file generation. At present, this only
-applies too *JTSDK* itself. Future releases will control application documentation
-as well.
-* *Disable Parallel* should not be used unless your testing the differences 
-between single and multi-core builds. One would be hard pressed to find a single
-core CPU in a modern day system.
-* *With Distro* - It is important to specify which distribution you are using,
-otherwise, the configure script will error back to the command line.
-* *With Python3* - Unless you have a customized Python3 installation, you should
-not need to modify the Python3 paths.
-* *With F2py* - This feature is usefull for testing odd locations for the F2py
-script. If you have built Python3-NumPY from source, and specidied a custom
-install locaiton, use this feature to tell the configure script the location
-of F2PY. Some distributions have different names for F2PY, this options allows
-for these type of variations.
-* *Home Dir* - The default home directory is ~/jtsdk and should suffice for most
-users needs.
-* The only other option you may want to consider is disabling documentaiton,
-however, later versions of *JTSDK* will be uing this feature to enable / disable
-documentation builds within the application.
------
-
-==== Configure, Make, Make Install
------
-# This example uses Ubuntu as the Distro
-# In the terminal, type
-
-cd ./jtsdk-nix-2.0.5
-./autogen.sh --with-distro=ubuntu --enable-separate
+cd ./jtsdk-nix-2.0.16
+./autogeh.sh
 make
 sudo make install
 -----
 
+If there were no errors during configuration, build or install steps,
+**_JTSDK-Nix_** is ready for use.
 
-==== RUN JTSDK
+
+==== Run JTSDK
+To run **_JTSDK-Nix_** form an open terminal, type: `jtsdk`. Or, search your menu
+system for `jtsdk` and dboule click the icon.
+
+
+==== Uninstall
+To uninstall **_JTSDK-Nix_**, open a termainl and execute the following commands:
+
 -----
-# In the terminal, type
-
-jtsdk
-
------
-
-==== TO UNINSTALL
------
-# In the terminal, type
-
-cd ./jtsdk-nix-2.0.5
+# change directories to the location where you installed from
+cd ./jtsdk-nix-2.0.16      
 sudo make uninstall
 -----
 
+==== Upgrading
+If you are upgrading **_JTSDK-Nix_** to a newer version, perform an *Uninstall*
+first, then proceed with a normal source install.
 
+==== POTENTIAL ISSUES
 
-.APPLICATION BUILD NOTES
-* If building WSJT-X, build Hamlib3 first, then build WSJT-X.
-* WSPR and WSJT do not require Hamlib3.
-* Ensure you update Hamlib3 often, as updates are frequently posted.
+[WARNING]
+====
+- The Mint 17.1 / 17.2 Cinnamon Desktop installs python-numpy as part of it's
+default installation. If you encounter `PObject Errors` when running **_WSPR_** or
+**_WSJT_**, more than likely this is the cause.
 
-.POTENTIAL ISSUES
-* The Mint 17.1 Cinnamon Desktop installs python-numpy as part of it's
-desktop environment. If you encounter PObject errors when running
-WSPR or WSJT, more than likely this is the cause. WSPR and WSJT requires
-python3-numpy. To resolve, remove python-numpy, but be warned, this may
-cause unexpected behavior in your Desktop Environment.
+- **_WSPR_** and **_WSJT_** require python3-numpy. To resolve, remove python-numpy,
+but be warned, this may cause unexpected behavior in your Desktop Environment.
+====

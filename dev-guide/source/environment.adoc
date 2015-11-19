@@ -16,7 +16,7 @@ folder locations. If you installed **_JTSDK_** from the configure scripts, no
 additional configuration should be required.
 
 *****
-WARNING: The **_JTSDK_** install location ( on **_Windows_** ) is fixed due to the fact
+WARNING: The **_JTSDK-Win_** install location is fixed due to the fact
 Python3 and Qt5 have been previously installed, or in the case of Python3
 modules, built with a specific file / folder combination. While it is possible to
 rebase both Python3 and Qt5, there is a risk of module failure in doing so. If
@@ -28,9 +28,9 @@ default installation location as is.
 === System Paths
 On Linux / OSX, the applications are separated in three ways, by the application
 name, version and subversion commit number. Currently, Windows does not use the
-Subversion separator, but will in future releases. For **_WSJT-X_**, **MAP-65_**
+Subversion separator, but will in future releases. For **_WSJT-X_**, **_MAP-65_**
 and **_WSPR-X_** there are (2) additional levels, Release and Debug, both for
-install and the build tree locations.
+install and build tree locations.
 
 [[PATHLOCATIONS]]
 .JTSDK Folder Locations
