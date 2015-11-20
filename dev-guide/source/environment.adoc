@@ -11,7 +11,7 @@ tool chains. Building outside of the environment is possible, but would require
 setting the correct paths and ensuring system wide installation of the same or
 similar tools do not conflict one another.
 
-=== Spported Builds
+=== Suported Builds
 The following matrix outlines which packages are supported by *JTSDK*.
 
 [[SUPPORTEDBUILDS]]

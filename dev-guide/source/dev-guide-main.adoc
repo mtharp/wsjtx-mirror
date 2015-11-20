@@ -9,6 +9,7 @@ Greg Beam, KI7MT Version 2.0
 :experimental:
 :y: icon:check[role="green"]
 :n: icon:times[role="red"]
+:o: icon:circle-thin[role="blue"]
 
 // use global link file
 include::links.adoc[]
@@ -35,10 +36,6 @@ include::sourcecode.adoc[]
 [[BUILDMATRIX]]
 == Build Matrix
 include::buildmatrix.adoc[]
-
-[[PKGMATRIX]]
-== Package Matrix
-include::pkgmatrix.adoc[]
 
 [[DOCSETUP]]
 == Documentation
@@ -72,8 +69,23 @@ include::jtsdk-win32.adoc[]
 == JTSDK-Nix
 include::jtsdk-nix.adoc[]
 
-== Contact US
-include::../../global/communication.adoc[]
+[[PKGMATRIX]]
+[appendix]
+== Package Matrix
+include::pkgmatrix.adoc[]
+
+[[DISTROPKGS]]
+[appendix]
+== Distribution Pakcaging
+
+=== Debian
+TO-DO: Add Packages
+
+=== Ubuntu
+TO-DO: Add Packages
+
+=== Others
+TO-DO: Add Packages
 
 == License
-include::../../global/license.adoc[]
+include::license.adoc[]

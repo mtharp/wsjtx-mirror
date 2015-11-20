@@ -1,4 +1,3 @@
-//
 Generally, the package requirements are the same for Windows, Linux
 and OS X. The major differences between them is the Windows compiler
 requirement, Mingw32 or Mingw48_32 v.s. the standard GNU tools available
@@ -20,44 +19,240 @@ details from within the package. Most are fairly straight forward.
 === Windows
 
 The following matrix outlines the *Windows* development package
-requirements for each application, including documentation.
+requirements for each application, including documentation. The
+( {y} ) is a required package, where ( {o} ) is optional, blank is
+not applicable.
 
-.Windows Package Matrix: x = Required, o = Optional
+
 [[WINDOWSPKG]]
-[width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
-|=================================================
-|Package    |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
-|AsciiDoc   |    |X   |x     |X   |      |
-|CMake      |    |    |x     |    |x     |x
-|FFTW3F     |    |x   |x     |x   |x     |x
-|Hamlib     |    |    |o     |x   |x     |
-|Hamlib3    |    |    |x     |o   |o     |
-|Mingw32    |    |x   |      |x   |      |   
-|Mingw48_32 |    |    |x     |    |x     |x
-|Omni-Rig   |    |    |x     |    |      |
-|Portaudio  |    |x   |      |x   |x     |x
-|Python2    |    |x   |X     |x   |      |
-|Python3    |    |x   |      |x   |      |
-|Qt5        |    |    |x     |    |x     |x
-|Subversion |x   |x   |x     |x   |x     |x
-|=================================================
+[cols="^2,^1,^1,^1,^1,^1,^1"]
+|===
+|Package|Docs|WSJT|WSPR|WSJT-X|WSPR-X|MAP65
 
-.Comments
-[horizontal]
-*Hamlib*:: Current distro release 1.2.15.x
-*Hamlib3*:: Custom build from Bill Somerville, (G4WJS)
-* Hamlib3 is still under development
-* Potential release dates have yet to be announced
-* Use with WSPR and WSPR-X is experimental only
-*Mingw32*:: GNU 4.8.1 Tool Chain, provided by mingw.org
-*Mingw48_32*:: GNU 4.8.0 Tool Chain, provided by QT5
-*Omni-Rig*:: Required to build WSJT-X using CMake
-*Python3 Modules*:: WSJT and WSPR also require several Python Modules
-* Numpy (Numeric Python) v1.8.0{plus}
-* Pillow (Python Imaging) v2.3.0{plus}
-* Pmw (Python Megawidgets) v.2.0.0+ required for Python3
-* PyWin32 (Windows Extensions) 218.5{plus}, Python version specific
-* cx_Freeze (Builds Windows exe files), v4.3.2{plus}, Python3 version specific
+|AsciiDoc
+|{y}
+|{y}
+|{y}
+|{y}
+|{o}
+|{o}
+
+|Asciidoctor
+|{y}
+|{o}
+|{y}
+|{o}
+|{o}
+|{o}
+
+|Asciidoctor-Pdf
+|{o}
+|{o}
+|{o}
+|{o}
+|{o}
+|{o}
+
+|CMake
+|
+|
+|
+|{y}
+|{y}
+|{y}
+
+|FFTW3F
+|
+|{y}
+|{y}
+|{y}
+|{y}
+|{y}
+
+|Hamlib
+|
+|
+|
+|{y}
+|{y}
+|{y}
+
+|Hamlib3
+|
+|
+|{y}
+|{o}
+|{o}
+|{o}
+
+|Mingw32
+|
+|{y}
+|{y}
+|
+|
+|   
+
+|Mingw48_32
+|
+|
+|
+|{y}
+|{y}
+|{y}
+
+|Omni-Rig
+|
+|
+|
+|{y}
+|
+|
+
+|Portaudio
+|
+|{y}
+|{y}
+|
+|{y}
+|{y}
+
+|Python2
+|{y}
+|{y}
+|{y}
+|{y}
+|
+|
+
+|Python3
+|
+|{y}
+|{y}
+|
+|
+|
+
+|Qt5
+|
+|
+|
+|{y}
+|{y}
+|{y}
+
+|Subversion
+|{y}
+|{y}
+|{y}
+|{y}
+|{y}
+|{y}
+|===
+
+==== Version Matrix
+The following package versions are used in *JTSDK-Win32*. While later versions
+may work, the table represents what is currently deployed in *JTSDK v2.0*.
+
+.Version Matrix for Windows
+[cols="1,^1,1", options="header, autowidth"]
+|===
+|Package|Version|Comments
+
+|Asciidoc
+|8.6.9
+|From Github Master
+
+|Asciidoctor
+|1.5.3
+|From Gem repository
+
+|Asciidoctor-Pdf
+|1.5.0
+|Pre-Release from Gem repository
+
+|Cmake
+|3.0.2
+|Windows Installer
+
+|FFTW3F
+|3.3.4
+|Windows Installer
+
+|Hamlib
+|1.2.15.3
+|Windows Zip File
+
+|Hamlib3
+|3.0.0
+|G4WJS Git repository
+
+|Mingw32
+|4.8.0
+|Pthreads Tool Chain from Mingw.org
+
+|Mingw48_32
+|4.8.1
+|WinPthreads Tool Chain from QT5 Project
+
+|OmniRig
+|0.0.0
+|Afreet Software, zip file
+
+|Portaudio
+|19.0
+|SVN 20140130-1
+
+|Python27
+|2.7.0
+|Python.org, Windows Installer
+
+|Python33
+|3.3.4
+|Python.org, Windows Installer
+
+|Qt5
+|5.1.0
+|Qt.io, opensource installer
+
+|===
+
+
+==== Python3 Modules
+**_WSJT_** and **_WSPR_** are failry sensitive to Python Module versions. This
+is due primarly to the way each module is imported at runtime. Python3 NumPy has
+a sensitivity the tool chain used to compile the module. It is for this reason,
+on *Windows*, Python3 NumPy was built using the same tool chain both
+**_WSJT_** and **_WSPR_** are compiled with ( _Mingw32_ ). All the other modules
+were installed using a simple windows installer.
+
+
+.Python3 Module Matrix for WSJT and WSPR
+[cols="1,^1,1", options="header, autowidth"]
+|===
+|Module|Version|Comments
+
+|NumPy
+|1.8.0
+|Compiled from Source
+
+|Pillow
+|2.3.0
+|Windows Installer
+
+|Pmw
+|2.0.0
+|Included in SVN Sources
+
+|PyWin32
+|218.5
+|Windows Installer
+
+|CxFreeze
+|4.3.2
+|Windows Installer
+
+|===
 
 === Linux
 
