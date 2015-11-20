@@ -1,3 +1,9 @@
+Commication with the *WSJT Group* can very depending on subject.
+Generally, most deveopment activity is conducted through the {dev_mail_list}
+and user discussion can be found on the {wsjt_yahoo_group}. The sections
+below outline the methods to be used based on the subject matter.
+
+=== Established Channels
 The following are established communication channels for the WSJT Group.
 For updates and other information on the continuing development of **_WSJT_**,
 **_MAP65_**, **_WSPR_**, **_WSPR-X_**, and **_WSJT-X_**. You are invited to
@@ -27,4 +33,35 @@ Commit Notifications (join) +
 |Discussion Board (join)
 |{wsjt_yahoo_group}
 |===
+
+////
+These sections are taken from Joe's WSJT-X Support Section, with
+additions for JTSDK, if used
+////
+=== Bug Reports
+
+One of your responsibilities as a *JTSDK* user is to help the
+volunteer programmers to make the programs better.  Bugs may be
+reported to {wsjt_yahoo_group} (email address
+wsjtgroup@yahoogroups.com) or the WSJT Developers list
+(wsjt-devel@lists.sourceforge.net).  To be useful, bug reports should
+include at least the following information:
+
+- JTSDK Version or Installation Source
+- Program version
+- Operating system
+- Concise description of the problem
+- Exact sequence of steps required to reproduce the problem
+- Provide .wav files if appropriate
+
+
+=== Feature Requests
+
+Suggestions from users often result in new program features.  Good
+ideas are always welcome: if there's a feature you would like to see
+in *JTSDK* or any of the **_WSJT_** programs, spell it out in as much
+detail as seems useful and send it to us at one the the email addresses given
+a few lines above. Be sure to explain why you think the feature is desirable,
+and what sort of other users might find it so.
+
 

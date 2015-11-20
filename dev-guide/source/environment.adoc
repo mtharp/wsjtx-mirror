@@ -1,8 +1,8 @@
 [[BASE_ENV]]
 As a developer, one knows, there are many ways in which to set-up for 
-developing a particular application. **_JTSDK_** employs a structured 
+developing a particular application. *JTSDK* employs a structured 
 environment in order to produce repeatable results. All build scripts are
-written to work with the **_JTSDK_** install locations. Modification of the scripts
+written to work with the *JTSDK* install locations. Modification of the scripts
 is possible, but would entail a great deal of re-work.
 
 If the user wants to build applications manually, the environment scripts,
@@ -11,19 +11,56 @@ tool chains. Building outside of the environment is possible, but would require
 setting the correct paths and ensuring system wide installation of the same or
 similar tools do not conflict one another.
 
-On Linux, most, if not all of the required dependencies, are installed to system
-folder locations. If you installed **_JTSDK_** from the configure scripts, no 
-additional configuration should be required.
+=== Spported Builds
+The following matrix outlines which packages are supported by *JTSDK*.
 
-*****
-WARNING: The **_JTSDK-Win_** install location is fixed due to the fact
-Python3 and Qt5 have been previously installed, or in the case of Python3
-modules, built with a specific file / folder combination. While it is possible to
-rebase both Python3 and Qt5, there is a risk of module failure in doing so. If
-your planning on changing the install location, all of the build and support
-scripts will need to be changed. It is highly advisable to leave the
-default installation location as is.
-*****
+[[SUPPORTEDBUILDS]]
+.Build Matrix
+[cols="^2m,^1,^2,^1,^2,^1,5"]
+|===
+|System|WSJT|WSJT-X|WSPR|WSPR-X|MAP65|Supported Arch
+
+|Windows
+|{y}
+|{y}
+|{y}
+|{y}
+|{y}
+|32bit, runs on 64bit
+
+|Linux
+|{y}
+|{y}
+|{y}
+|{n}
+|{n}
+|i386, amd64, armhf, ppc64el
+
+|Mac OSX
+|{y}
+|{y}
+|{y}
+|{n}
+|{n}
+|i386, amd64
+
+|iMac G4/G5
+|{y}
+|{y}
+|{y}
+|{n}
+|{n}
+|32bit OS, 64bit Kernel via ppc64el
+
+|===
+
+.Development Needs
+****
+At the time of this writing, **_WSPR-X_** and **_MAP65_** do not build on
+Linux, Mac OSX or iMac. If you would like to join the development team and work any
+of the packages, make your desires known to the {dev_mail_list} or email
+*Joe Taylor* {joe_taylor}, to discuss helping out.
+****
 
 === System Paths
 On Linux / OSX, the applications are separated in three ways, by the application
@@ -72,8 +109,8 @@ System Default (sh, tcsh, ksh, bash) +
 targets. The data below represents typical build flow data as it is today.
 
 .Example Data
-* **_WSJT-X_**,  **_1.6.0_**,  **_Development_**,  **_Release_**,  **_6073_**
-* **_WSJT_**,  **_10.0_**,  **_6032_**
+* **_WSJT-X_**,  **_1.7.0_**,  **_Development_**,  **_Release_**,  **_6133_**
+* **_WSJT_**,  **_10.0_**,  **_6051_**
 
 [[PATHLOCATIONS]]
 .Path Locations Using Example Data
@@ -89,9 +126,9 @@ Install +
 Package +
 
 |/home/$USER/jtsdk/src/wsjtx +
-/home/$USER/jtsdk/wsjtx/1.6.0/6073/build/Release +
-/home/$USER/jtsdk/wsjtx/1.6.0/6073/install/Release +
-/home/$USER/jtsdk/wsjtx/1.6.0/6073/package +
+/home/$USER/jtsdk/wsjtx/1.7.0/6133/build/Release +
+/home/$USER/jtsdk/wsjtx/1.7.0/6133/install/Release +
+/home/$USER/jtsdk/wsjtx/1.7.0/6133/package +
 
 
 |WSJT
@@ -102,60 +139,53 @@ Install +
 
 |/home/$USER/jtsdk/src/trunk +
 /home/$USER/jtsdk/src/trunk +
-/home/$USER/jtsdk/wsjt/10.0/6032/install +
+/home/$USER/jtsdk/wsjt/10.0/6051/install +
 |===
 
-The application paths will increment with each svn commitment. This allows
-for testing eeach respoitory commit individually. It should be noted, the 
-location will only be incremented **_IF_** the change occurs to the branch,
-not the the revision of the repository. Meaning, if a commit is made to
-**_WSJT_**, it's svn revision would become **_6051_**. A new path would
-be created for **_WSJT_**, but, **_WSJT-X_** would remain **_6073_**.
+The application paths will increment with each svn commit. This allows
+for testing each respoitory revision individually. The location will only be
+incremented **_IF_** the change occurs to the branch, not the revision of
+the repository.
 
-.WSJT-X v1.6.1 Directory Tree for Linux
+TIP: Note the differene between ( _Debug_ ) and ( _Release_ ) for
+the **_WSJT-X v1.7.0_** example. This type of separation is for aplications
+built with *Cmake*:  **_WSJT-X_**, **_WSPR-X_** and **_MAP65_**.
+
+.Linux Directory Tree for: WSJT-X v1.7.0
 ----
-/home/ki7mt/jtsdk/wsjtx/1.6.1
-├── 6056
+/home/$USER/jtsdk/wsjtx/1.7.0
+├── 6131
 │   ├── build
 │   │   └── Release
 │   ├── install
 │   │   └── Release
 │   └── package
-├── 6059
-│   ├── build
-│   │   └── Release
-│   ├── install
-│   │   └── Release
-│   └── package
-└── 6073
+└── 6133
     ├── build
+    │   ├── Debug
     │   └── Release
     ├── install
+    │   ├── Debug
     │   └── Release
     └── package
 ----
 
-.WSJT 10.0 Directory Tree for Linux
+.Linux Directory Tree for: WSJT 10.0
 ----
 /home/$USER/jtsdk/wsjt/10.0
-├── 6005
-│   └── install
-├── 6045
-│   └── install
-├── 6046
-│   └── install
 ├── 6047
 │   └── install
 └── 6051
+    └── install
 ----
 
 === Windows Notes
-**_JTSDK-Win32_** provides the containment and all required tools to build a
+*JTSDK-WIn32* provides the containment and all required tools to build a
 fully working application or the sub-target if desired. Details of each kit can
 be found in the appropriate appendix.
 
 NOTE: **_JTSDK-Maint_** has access to all the general Unix type tools, _grep_,
-_awk_, _rm_, _which_, etc and Subversion. It **_does not_** have a path set
+_awk_, _rm_, _which_, etc and Subversion. It *does not* have a path set
 for any of the GCC Tool-Chains.
 
 .JTSDK-Nix Environments
@@ -181,7 +211,7 @@ for any of the GCC Tool-Chains.
 
 .A Word of Caution
 ****
-For **_JTSDK-Win_**, each of the environments are completely isolated from
+For *JTSDK-Win*, each of the environments are completely isolated from
 one another, both in terms of compilers and support package paths. All
 environments are purpose built to provide the the correct configuration
 needed to build their respective packages. While environments may be customized
@@ -192,10 +222,10 @@ especially important when dealing with Python3 modules that build
 ****
 
 === Linux Notes
-**_JTSDK-Nix_**  packaging is done with a distribution package manager or from
+*JTSDK-Nix*  packaging is done with a distribution package manager or from
 the source tarball. Supported distributions can be found in the
 <<INSTALLLINUX,Installation Section>>.
 
-Rather than separate environments, **_JTSDK-Nix_** simply runs in the users default
+Rather than separate environments, *JTSDK-Nix* simply runs in the users default
 environment, which provides access all system resouroces. Builds are
 accomplished though a simple Dialog Ncurses menu rather than command line entry.

@@ -1,33 +1,40 @@
-**_WSJT-X_**, **_WSJT_**, **_WSPR_**, and **_MAP65_** are open-source programs
-designed for weak-signal digital communication by amateur radio. Normal usage
-requires a standard SSB transceiver and a personal computer with soundcard.
-SDR-style hardware including the SDR-IQ, Perseus, SoftRock, and FUNcube Dongle
-is supported by MAP65 and WSPR. SimJT is a utility program that generates
-simulated signals for test purposes.
+**_WSJT_**, **_WSJT-X_**, **_WSPR_**, **_WSPR-X_**, and **_MAP65_** are
+open-source programs designed for weak-signal digital communication by amateur
+radio. Normal usage requires a standard SSB transceiver and a personal computer
+with soundcard. SDR-style hardware including the SDR-IQ, Perseus, SoftRock, and
+FUNcube Dongle is supported by **_MAP65_** and **_WSPR_**. **_SimJT_** is a utility
+program that generates simulated signals for test purposes.
 
-It should be noted, building _WSJT_ applications can be extremely challenging.
+It should be noted, building **_WSJT_** applications can be extremely challenging.
 *JTSDK* provides a preconfigured set of packages and custom build scripts which
-allow a user to build all of the main applications with minimal effort. However,
+allow a user to build ( _compile_ ) all of the main applications with minimal effort. However,
 the default scripts may not be suitable for those actively developing applications
 in all cases. To aid the core developers, several tools have been included that
 allow for much greater flexibility in their final outputs, yet still maintain 
 the core building tools for consistency.
 
-=== Core Features
+.Join The Development Team
+****
+If you would like to join the development team and work any of the applications,
+documentation, build systems, packaging; make your desires known to the {dev_mail_list},
+or email *Joe Taylor* {joe_taylor}, to discuss helping out.
+****
+
+=== Core Elements
 While the implementation may differ slightly, both *JTSDK* for <<WINSDK,Windows>>
 and <<NIXSDK,Linux>> provide similar core features.
 
 .Hundreds of Usefull Tools
 ****
-In both **_JTSDK-Win32_** and **_JTSDK-Nix_**, there are literaly hundreds of tools
-and applications available to the user. The <<COREFEATURES,Core Features Table>>
-outlines the base Frameworks, Tool-Chains, and libraries used to compile all
+In both *JTSDK-Win32* and *JTSDK-Nix*, there are literaly hundreds of tools
+and applications available to the user. The <<COREFEATURES,Core Elements Table>>
+outlines the base Frameworks, Tool-Chains, and Libraries used to compile all
 **_WSJT_** applications. For a detailed list, per application, see the
 <<PKGMATRIX,Package Matrix>>
 ****
 
 [[COREFEATURES]]
-.JTSDK Core Features
+.JTSDK Core Elements
 [options="header,autowidth"]
 |===
 |Platform|Features|Comments
@@ -87,6 +94,6 @@ appendix, however, it is up to the user to research how best to employ each tool
 to fully leverage the SDKs potential.
 
 .Syetem Interference
-* On Windows, *JTSDK-Win32*, by design, **_should not_** interfere with
+* On Windows, *JTSDK-Win32*, by design, *should not* interfere with
 any previously installed development packages. If you find or have a conflict,
 please report it to the {dev_mail_list}.

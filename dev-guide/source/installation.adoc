@@ -1,7 +1,7 @@
-This section will guide you through the various steps of installation. For
-<<INSTALLWINDOWS,Windows>>, the 32-Bit installer will configure all elements
+For <<INSTALLWINDOWS,Windows>>, the 32-Bit installer(s) will configure all elements
 from a single file. The <<INSTALLLINUX,Linux >> installation is through
-traditional methods of configure, make, make install.
+traditional methods of configure, make, make install or the distribution package
+manager.
 
 [[INSTALLWINDOWS]]
 === Windows
@@ -9,70 +9,98 @@ For your convenience, all packages can be downloaded from the {sourceforge-jtsdk
 files section. Using the links below, download each package, then proceed to
 <<MSCVINSTALL,MSVC Redist Installation>>. Install the packages *In The Order Listed*:
 
-[horizontal]
-.Download Packages
-*MSVC Redist 2010*:: {jtsdk-vcredist-2010}
-*MSVC Redist 2013*:: {jtsdk-vcredist-2013}
-*OmniRig*:: {jtsdk-omnirig}
-*JTSDK Main Installer*:: {jtsdk-installer}
-*Update 1*:: {jtsdk-update1}
-*Update 2*:: {jtsdk-update2}
-*Update 3*:: {jtsdk-update2}
+TIP: If you have previously installed *MSVC Redist 2010*, *MSVC Redist 2013* or
+*OmniRig* {quot}AND{quot} did not remove them, you can start the installation
+with the *JTSDK Main Installer*. If there is *any doubt*, install all the
+packages.
+
+[[WIN32DOWNLOADS]]
+.Download Matrix
+[options="header,autowidth"]
+
+|===
+|Package|Link|Description
+
+|*MSVC Redist 2010*
+|{jtsdk-vcredist-2010}
+|MS Runtime DLLs for QT5 {amp} Python27
+
+|*MSVC Redist 2013*
+|{jtsdk-vcredist-2013}
+|MS Runtime DLLs for QT5.5
+
+|*OmniRig*
+|{jtsdk-omnirig}
+|WSJT-X Rig Control
+
+|*JTSDK Main Installer*
+|{jtsdk-installer}
+|Main JTSDK Program Set
+
+|*Update 1*
+|{jtsdk-update1}
+|Adds Python27 {plus} AsciiDoc
+
+|*Update 2*
+|{jtsdk-update2}
+|Adds QT5.5 for Devel Testing
+
+|*Update 3*
+|{jtsdk-update3}
+|Adds Ruby {plus} Asciidoctor
+|===
 
 [[MSCVINSTALL]]
-==== MSVC Redist 2010
-* Run the installer ( vcredist-x86.exe )
-* Read and accept the terms
-* Follow the prompts
 
-==== MSVC Redist 2013
-* Run the installer ( vcredist_msvc2013_x86.exe )
-* Read and accept the terms
-* Follow the prompts
+.JTSDK-Win32 Fixed Install Location
+*****
+The *JTSDK-Win32* install location pass:q[*C:\JTSDK*] is fixed  due to the fact
+Python3 and Qt5 have been previously installed, or in the case of Python3
+modules, built with a specific file / folder combination. While it is possible to
+rebase both Python3 and Qt5, there is a risk of module failure in doing so. If
+your planning on changing the install location, all of the build and support
+scripts will need to be changed. It is highly advisable to leave the
+default installation location as is.
+*****
 
-==== OmniRig Installation
-* Unzip the installer ( OmniRig.zip )
-* Run the installer ( OmniRigSetup.exe )
-* Follow the prompts
+IMPORTANT: You *must have* Internet access in order to perform the installation
 
-==== JTSDK Main Installation
-* Run the installer ( JTSDK-2.0.0-win32.exe )
-* Accept KVASD EULA
-* Wait for primary instillation to complete
-* Monitor Cygwin32 installation for any errors
+With the exception of *OmniRig*, where you must Unzip the package first, 
+all that is required is to run the respective installer ( [red]+++<u>In The Order Listed</u>+++ ),
+accept the license terms, then following the prompts.
 
-==== Update-1
-* Run the installer ( JTSDK-2.0.0-u1-win32.exe )
-* Accept the defaults
-* Follow the prompts
-
-==== Update-2
-* Run the installer ( JTSDK-2.0.0-u2-win32.exe )
-* Accept the defaults
-* Follow the prompts
-
-==== Update-3
-* Run the installer ( JTSDK-2.0.0-u3-win32.exe )
-* Accept the defaults
-* Follow the prompts
+. Run vcredist-x86.exe, accept terms, contimue
+. Run vcredist_msvc2013_x86.exe, accept terms, continue
+. Unzip OmniRigSetup, then run the .exe file, follow the prompts
+. Run JTSDK-2.0.0-win32.exe, accept terms, continue
+. Run JTSDK-2.0.0-u1-win32.exe, accept terms, continue
+. Run JTSDK-2.0.0-u2-win32.exe, accept terms, continue
+. Run JTSDK-2.0.0-u3-win32.exe, accept terms, continue
 
 
-TIP: Due to the custom installation of JTSDK-MSYS, upon first run, the
+NOTE: Due to the custom installation of JTSDK-MSYS, upon first run, the
 environment will be set-up for your specific user.  You will be prompted to
 re-start JTSDK-MSYS after it configures the shell. Or you can simply reload the
 shell with a command: `exec $SHELL -l`
 
-
 [[INSTALLLINUX]]
 === Linux
-At the time of this writing, only Debian/Ubuntu based distributions are
-supported for Linux.
 
-IMPORTANT:  WSPR-X and MAP65 *are not* supported on Linux.
+At the time of this writing, the following distributions are supported from
+native package managers, *apt-get, dpkg, Gdebi* or *Synaptic*.
+
+There may be additional *Debian* / *Ubuntu* distributions that *JTSDK Nix** 
+will work with, the matrix below represents those that have been tested and
+known to work properly.
+
+.Supported Distributions
+
+
+
 
 [[UBUNTUMINT]]
 ==== Install From PPA ( Ubuntu / Mint )
-To install **_JTSDK-Nix_** from PPA (Debian packge from Launchpad), open a
+To install *JTSDK-Nix* from PPA (Debian packge from Launchpad), open a
 terminal, and execute the following commands:
 
 -----
@@ -86,10 +114,10 @@ Installing from source code is fairly simple. Download, extract then run the
 standard commands for installing via source tarballs. You can obtain
 the source tarball from: {jtsdk-nix}
 
-IMPORTANT: When installing from the source tarball, it is the **_users responsibility_**
-to ensure all package requirments are met, both for **_JTSDK-Nix_** and all
-**_WSJT_** applications. This should be done **_before_** running the
-autogeh.sh script. A package list if available, for select distribtions,
+IMPORTANT: When installing from the source tarball, it is the *your responsibility*
+to ensure all package requirements are met, both for *JTSDK-Nix* and all
+**_WSJT_** applications. This should be done *before* running the
+``autogen.sh'' script. A package list if available, for select distributions,
 See {readmepkglist}.
 
 Extract jtsdk-nix-2.0.16.tar.gz to a suitable location, then execute the following
@@ -103,16 +131,16 @@ sudo make install
 -----
 
 If there were no errors during configuration, build or install steps,
-**_JTSDK-Nix_** is ready for use.
+*JTSDK-Nix* is ready for use.
 
 
 ==== Run JTSDK
-To run **_JTSDK-Nix_** form an open terminal, type: `jtsdk`. Or, search your menu
+To run *JTSDK-Nix* form an open terminal, type: `jtsdk`. Or, search your menu
 system for `jtsdk` and dboule click the icon.
 
 
 ==== Uninstall
-To uninstall **_JTSDK-Nix_**, open a termainl and execute the following commands:
+To uninstall *JTSDK-Nix*, open a terminal and execute the following commands:
 
 -----
 # change directories to the location where you installed from
@@ -121,7 +149,7 @@ sudo make uninstall
 -----
 
 ==== Upgrading
-If you are upgrading **_JTSDK-Nix_** to a newer version, perform an *Uninstall*
+If you are upgrading *JTSDK-Nix* to a newer version, perform an *Uninstall*
 first, then proceed with a normal source install.
 
 ==== POTENTIAL ISSUES

@@ -2,11 +2,13 @@
 Greg Beam, KI7MT Version 2.0
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M JT9 WSJTX
 :description: Software for Amateur Radio Weak-Signal Communication
-:page: JTSDK Developers Guide
+:page: JTSDK - WSJT Developers Guide
 :imagewdir: images
 :icons: font
 :numbered:
 :experimental:
+:y: icon:check[role="green"]
+:n: icon:times[role="red"]
 
 // use global link file
 include::links.adoc[]
