@@ -7,7 +7,7 @@ below outline the methods to be used based on the subject matter.
 The following are established communication channels for the WSJT Group.
 For updates and other information on the continuing development of **_WSJT_**,
 **_MAP65_**, **_WSPR_**, **_WSPR-X_**, and **_WSJT-X_**. You are invited to
-subscribe to the {dev_mail_list}. 
+subscribe to the {dev-mail-list}. 
 
 [cols="1,1,1", options="autowidth"]
 |===
@@ -17,7 +17,7 @@ Project Manager +
 Main Site +
 Development Site +
 |
-{joe_taylor} +
+{joe-taylor} +
 {homepage} +
 {projsummary} +
 
@@ -26,12 +26,12 @@ Development Site +
 Mainling List (join) +
 Commit Notifications (join) +
 |
-{dev_mail_list} +
-{dev_mail_svn} +
+{dev-mail-list} +
+{dev-mail-svn} +
 
 |Community
 |Discussion Board (join)
-|{wsjt_yahoo_group}
+|{wsjt-yahoo-group}
 |===
 
 ////
@@ -42,7 +42,7 @@ additions for JTSDK, if used
 
 One of your responsibilities as a *JTSDK* user is to help the
 volunteer programmers to make the programs better.  Bugs may be
-reported to {wsjt_yahoo_group} (email address
+reported to {wsjt-yahoo-group} (email address
 wsjtgroup@yahoogroups.com) or the WSJT Developers list
 (wsjt-devel@lists.sourceforge.net).  To be useful, bug reports should
 include at least the following information:

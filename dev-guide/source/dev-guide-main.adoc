@@ -7,6 +7,7 @@ Greg Beam, KI7MT Version 2.0
 :icons: font
 :numbered:
 :experimental:
+:docinfo1:
 :y: icon:check[role="green"]
 :n: icon:times[role="red"]
 :o: icon:circle-thin[role="blue"]

@@ -1,7 +1,7 @@
 Generally, the package requirements are the same for Windows, Linux
 and OS X. The major differences between them is the Windows compiler
-requirement, Mingw32 or Mingw48_32 v.s. the standard GNU tools available
-in most all Linux or OS X.
+requirement, Mingw32 or pass:[Mingw48_32] v.s. the distributions version
+of GNU Tool Chain.
 
 For *Windows*, it is possible, through the use of MSYS or Cygwin to 
 compile the required dependencies. However, it is highly recommended
@@ -20,14 +20,14 @@ details from within the package. Most are fairly straight forward.
 
 The following matrix outlines the *Windows* development package
 requirements for each application, including documentation. The
-( {y} ) is a required package, where ( {o} ) is optional, blank is
+( {y} ) indicates a required package, ( {o} ) is optional, blank is
 not applicable.
 
 
 [[WINDOWSPKG]]
 [cols="^2,^1,^1,^1,^1,^1,^1"]
 |===
-|Package|Docs|WSJT|WSPR|WSJT-X|WSPR-X|MAP65
+h|Package|Docs|WSJT|WSPR|WSJT-X|WSPR-X|MAP65
 
 |AsciiDoc
 |{y}
@@ -85,6 +85,14 @@ not applicable.
 |{o}
 |{o}
 
+|InnoSetup
+|
+|{y}
+|{y}
+|
+|{y}
+|{y}
+
 |Mingw32
 |
 |{y}
@@ -93,13 +101,21 @@ not applicable.
 |
 |   
 
-|Mingw48_32
+|pass:[Mingw48_32]
 |
 |
 |
 |{y}
 |{y}
 |{y}
+
+|NSIS
+|
+|
+|
+|{y}
+|
+|
 
 |Omni-Rig
 |
@@ -152,68 +168,121 @@ not applicable.
 
 ==== Version Matrix
 The following package versions are used in *JTSDK-Win32*. While later versions
-may work, the table represents what is currently deployed in *JTSDK v2.0*.
+may work, the table represents what is currently deployed.
+
+IMPORTANT: Package versions used in JTSDK v2 may or may not be the latest available
+from the links provided below. Using the latest and greatest *does not*, in any
+way, gaurentee a sucessful build environment. If you use a different version,
+understand the risks before hand.
 
 .Version Matrix for Windows
-[cols="1,^1,1", options="header, autowidth"]
+[cols="1,^1,^1,1", options="header, autowidth"]
 |===
-|Package|Version|Comments
+|Package|Version|Link|Comments
 
 |Asciidoc
 |8.6.9
-|From Github Master
+|https://github.com/asciidoc/asciidoc[Github]
+|Github Master
 
 |Asciidoctor
 |1.5.3
-|From Gem repository
+|http://asciidoctor.org/[Asciidoctor.org]
+|Gem repository
 
 |Asciidoctor-Pdf
-|1.5.0
-|Pre-Release from Gem repository
+|1.5.0a
+|https://github.com/asciidoctor/asciidoctor-pdf[Github]
+|Gem repository, Pre-Release
 
 |Cmake
 |3.0.2
+|https://cmake.org/download/[Cmake.org]
 |Windows Installer
 
 |FFTW3F
 |3.3.4
+|http://www.fftw.org/download.html[Fftw.org]
 |Windows Installer
 
 |Hamlib
 |1.2.15.3
+|http://sourceforge.net/projects/hamlib/[Sourceforge]
 |Windows Zip File
 
 |Hamlib3
 |3.0.0
-|G4WJS Git repository
+|http://sourceforge.net/projects/wsjt/[Sourceforge]
+|G4WJS Git repository, Integration Branch
 
-|Mingw32
-|4.8.0
-|Pthreads Tool Chain from Mingw.org
+|InnoSetup
+|5.5.5a
+|http://www.jrsoftware.org/isdl.php[Jrsoftware.org]
+|Windows iInstaller
 
-|Mingw48_32
+|Mingw32 GCC
 |4.8.1
-|WinPthreads Tool Chain from QT5 Project
+|http://www.mingw.org/[Mingw.org]
+|
+* Pthreads Tool Chain +
+* Include Gfortran
+
+|NSIS
+|3.0b1
+|http://nsis.sourceforge.net/Download[Sourceforge]
+|Windows Installer
+
+|pass:[Mingw48_32 GCC]
+|4.8.0
+|https://www.qt.io/download-open-source/[Qt.io]
+|
+* WinPthreads Tool Chain +
+* Include Gfortran {plus} OpenMP
+
+|pass:[Mingw49_32 GCC]
+|4.9.2
+|https://www.qt.io/download-open-source/[Qt.io]
+|
+* For Development Testing +
+* WinPthreads Tool Chain +
+* Include Gfortran {plus} OpenMP
 
 |OmniRig
-|0.0.0
+|1.15
+|http://www.dxatlas.com/Download.asp[Dxatlas.com]
 |Afreet Software, zip file
 
 |Portaudio
 |19.0
+|http://www.portaudio.com/download.html[Portaudio.com]
 |SVN 20140130-1
 
 |Python27
-|2.7.0
-|Python.org, Windows Installer
+|2.7.9
+|https://www.python.org/downloads//[Python.org]
+|Windows Installer
 
 |Python33
-|3.3.4
-|Python.org, Windows Installer
+|3.3.5
+|https://www.python.org/downloads/[Python.org]
+|Windows Installer
 
 |Qt5
-|5.1.0
-|Qt.io, opensource installer
+|5.2
+|https://www.qt.io/download-open-source/[Qt.io]
+|QT 5.2 Development Libraries
+
+|Qt5
+|5.5
+|https://www.qt.io/download-open-source/[Qt.io]
+|
+* For Development Testing +
+* QT 5.5 Development Libraries
+
+|Ruby
+|2.2.3
+|http://rubyinstaller.org/downloads/[Rubyinstaller.org]
+|Windows Installer
 
 |===
 
@@ -223,35 +292,55 @@ may work, the table represents what is currently deployed in *JTSDK v2.0*.
 is due primarly to the way each module is imported at runtime. Python3 NumPy has
 a sensitivity the tool chain used to compile the module. It is for this reason,
 on *Windows*, Python3 NumPy was built using the same tool chain both
-**_WSJT_** and **_WSPR_** are compiled with ( _Mingw32_ ). All the other modules
-were installed using a simple windows installer.
+**_WSJT_** and **_WSPR_** are compiled with ( _Mingw32_ ). All other modules
+were installed using a simple windows installer or provided by a module
+itself, *F2py* for example, is provided by *NumPy*.
 
 
-.Python3 Module Matrix for WSJT and WSPR
-[cols="1,^1,1", options="header, autowidth"]
+.Python3 Module Matrix
+[cols="1,^1,^1,1", options="header, autowidth"]
 |===
-|Module|Version|Comments
+|Module|Version|Link|Comments
+
+|CxFreeze
+|4.3.3
+|http://www.lfd.uci.edu/~gohlke/pythonlibs/[Lfd.uci.edu]
+|Windows Installer
+
+|F2py
+|2.0.0
+|( n/a )
+|Provided by NumPy
 
 |NumPy
-|1.8.0
+|1.8.2
+|http://sourceforge.net/projects/numpy/?source=navbar[Sourceforge]
 |Compiled from Source
 
 |Pillow
 |2.3.0
+|http://www.lfd.uci.edu/~gohlke/pythonlibs/[Lfd.uci.edu]
+|Windows Installer
+
+|Pip3
+|1.5.6
+|http://www.lfd.uci.edu/~gohlke/pythonlibs/[Lfd.uci.edu]
 |Windows Installer
 
 |Pmw
 |2.0.0
-|Included in SVN Sources
+| ( n/a )
+|WSJT SVN Sources
 
 |PyWin32
-|218.5
+|219
+|http://www.lfd.uci.edu/~gohlke/pythonlibs/[Lfd.uci.edu]
 |Windows Installer
 
-|CxFreeze
-|4.3.2
-|Windows Installer
-
+|SetupTools
+|5.8
+|( n/a )
+|Pip Installed
 |===
 
 === Linux

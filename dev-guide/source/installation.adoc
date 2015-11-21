@@ -94,8 +94,7 @@ will work with, the matrix below represents those that have been tested and
 known to work properly.
 
 .Supported Distributions
-
-
+*TO-DO*: add supported distribution matrix
 
 
 [[UBUNTUMINT]]

@@ -58,8 +58,8 @@ The following matrix outlines which packages are supported by *JTSDK*.
 ****
 At the time of this writing, **_WSPR-X_** and **_MAP65_** do not build on
 Linux, Mac OSX or iMac. If you would like to join the development team and work any
-of the packages, make your desires known to the {dev_mail_list} or email
-*Joe Taylor* {joe_taylor}, to discuss helping out.
+of the packages, make your desires known to the {dev-mail-list} or email
+*Joe Taylor* {joe-taylor}, to discuss helping out.
 ****
 
 === System Paths
