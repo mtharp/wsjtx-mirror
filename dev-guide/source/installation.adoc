@@ -85,29 +85,65 @@ shell with a command: `exec $SHELL -l`
 
 [[INSTALLLINUX]]
 === Linux
+Depending on your Linux distribution, **_JTSDK-Nix_** can be installed in one
+of two methods, <<SOURCE_INSTALL_METHOD,Source Tarball>> or
+<<PPA_INSTALL_METHOD,Launchpad PPA>>. The <<LINUX_INSTALL_METHOD,matrix>> below
+outlines the preferred method for various distributions.
 
-At the time of this writing, the following distributions are supported from
-native package managers, *apt-get, dpkg, Gdebi* or *Synaptic*.
+[IMPORTANT]
+====
+Installing **_JTSDK-Nix_** *Does Not* install the required build dependencies.
+You must follow the guide recommendations outlined in the
+<<DISTROPKGS, Linux Packaging>> section.
+====
 
-There may be additional *Debian* / *Ubuntu* distributions that *JTSDK Nix** 
-will work with, the matrix below represents those that have been tested and
-known to work properly.
+[[LINUX_INSTALL_METHOD]]
+.Linux Preferred Installation Method
+[cols="1,^1,^1,1", options="header, autowidth"]
+|===
+|Distribution|Method|Reference|Package-Manager
 
-.Supported Distributions
-*TO-DO*: add supported distribution matrix
+|Debian
+|PPA
+|
+|apt-get, gdebi, Synaptic
 
+|Fedora
+|Source Tarball
+|
+|manual entry
 
-[[UBUNTUMINT]]
-==== Install From PPA ( Ubuntu / Mint )
-To install *JTSDK-Nix* from PPA (Debian packge from Launchpad), open a
-terminal, and execute the following commands:
+|Linux Lite
+|PPA
+|Reference
+|apt-get
 
+|Linux Mint
+|PPA
+|Reference
+|apt-get
+
+|Ubuntu
+|PPA
+|Reference
+|apt-get
+
+|===
+
+[[PPA_INSTALL_METHOD]]
+==== Install From PPA
+To install *JTSDK-Nix* from PPA:
+
+* Open a terminal kbd:[Ctrl + Alt + t], and execute the following commands:
 -----
 sudo add-apt-repository -y ppa:ki7mt/jtsdk
 sudo apt-get update
 sudo apt-get install jtsdk
 -----
+* After installing JTSDK-Nix, follow the guide for your distribution build dependencies
+found in <<DISTROPKGS,Linux Packaging>> section.
 
+[[SOURCE_INSTALL_METHOD]]
 ==== Installation From Source Tarball
 Installing from source code is fairly simple. Download, extract then run the 
 standard commands for installing via source tarballs. You can obtain
@@ -119,31 +155,39 @@ to ensure all package requirements are met, both for *JTSDK-Nix* and all
 ``autogen.sh'' script. A package list if available, for select distributions,
 See {readmepkglist}.
 
-Extract jtsdk-nix-2.0.16.tar.gz to a suitable location, then execute the following
-commands in a termainl:
+Extract jtsdk-nix-2.0.17.tar.gz to a suitable location, then execute the following
+commands in a terminal:
 
 -----
-cd ./jtsdk-nix-2.0.16
+cd ./jtsdk-nix-2.0.17
 ./autogeh.sh
 make
 sudo make install
 -----
 
-If there were no errors during configuration, build or install steps,
+If there were no errors during configuration, check the distribution 
+<<LINUX_INSTALL_METHOD,matrix>> for any additional actions, then
 *JTSDK-Nix* is ready for use.
 
 
 ==== Run JTSDK
-To run *JTSDK-Nix* form an open terminal, type: `jtsdk`. Or, search your menu
-system for `jtsdk` and dboule click the icon.
-
+* Open a terminal, kbd:[Ctrl + Alt + t], then type: `jtsdk`
+* Alternatively, search your menu system for `jtsdk` and double click the icon.
 
 ==== Uninstall
 To uninstall *JTSDK-Nix*, open a terminal and execute the following commands:
 
+.Uninstall via PPA
+
+* In a terminal kbd:[Ctrl + Alt + t], type:
 -----
-# change directories to the location where you installed from
-cd ./jtsdk-nix-2.0.16      
+sudo apt-get remove jtsdk
+-----
+
+.Uninstall via Source
+-----
+# change directories to the location where you installed JTSDK-Nix from
+cd ./jtsdk-nix-2.0.17    
 sudo make uninstall
 -----
 

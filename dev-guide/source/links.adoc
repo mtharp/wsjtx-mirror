@@ -89,7 +89,7 @@ d). Edit lines as needed. Keeping them in alphabetic order help see dupes.
 :hamlib3: https://dl.dropboxusercontent.com/u/4192709/Hamlib-integration-wsjtx.zip[Download]
 :jtsdk_doc: http://physics.princeton.edu/pulsar/K1JT/JTSDK-DOC.exe[Download]
 :jtsdk-installer: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/JTSDK-2.0.0-win32.exe/download[Download]
-:jtsdk-nix-2-0-16: http://sourceforge.net/projects/jtsdk/files/linux/2.0.0/jtsdk-nix-2.0.16.tar.gz/download[Download]
+:jtsdk-nix: http://sourceforge.net/projects/jtsdk/files/linux/2.0.0/jtsdk-nix-2.0.17.tar.gz/download[Download]
 :jtsdk-update1: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/JTSDK-2.0.0-u1-win32.exe/download[Download]
 :jtsdk-update2: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/JTSDK-2.0.0-u2-win32.exe/download[Download]
 :jtsdk-update3: http://sourceforge.net/projects/jtsdk/files/win32/2.0.0/JTSDK-2.0.0-u3-win32.exe/download[Download]

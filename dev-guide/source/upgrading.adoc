@@ -1,0 +1,80 @@
+Upgrading *JTSDK*, either on Windows or Linux is fairly straight forward. The
+following outlines the basic steps required to perform an update {amp} upgrade.
+
+[[UPGRADE_WINDOWS]]
+=== Windows
+Windows Upgrades have two forms / types:
+
+{sb} - Package Upgrade Installations, via Win32 Installers +
+{sb} - Scripts Updates, via SVN update
+
+* For *Package Upgrades*, following the instructions given from the sourceforge
+site. Usually, this entails downloading a Win32 Installer, running it accepting
+the defaults. The upgrade installers will always have `jtsdk-2.0.*-u*-win32.exe`
+as the name, where `-u*` is the version of the upgrade. Package upgrades add
+major features, programs and infrastructure to *JTSDK*
+
+* For *Script Updates*, this simply pulls the latest version of scripts and or text
+files the Sourceforge Repository. Script updates enable / disable features,
+re-configure build scripts, things of that nature.
+
+To upgrade *JTSDK-Win32*, the following process is recommended.
+
+====
+* Close all open *JTSDK* terminals.
+* Download and run all the Win32 Upgrade Installers if you've not done so previously
+* Open *JTSDK-Maint* terminal, then type:
+-----
+update
+upgrade
+-----
+* Close *JTSDK-Maint*, and continue building as you normally would.
+====
+
+
+[[UPGRADE_LINUX]]
+=== Linux
+For Linux, there are two methods of upgrading, depending on how you installed
+*JTSDK-Nix* originally, select which is appropriate your installation.
+
+[NOTE]
+====
+No matter which method is used, none of your build files will be removed when
+uninstalling or upgradeing *JTSDK-Nix*, they remain in `~/jtsdk` indefinitely,
+or until you remove them specifically.
+====
+
+==== Upgrade Via PPA
+If you installed *JTSDK-Nix* via PPA, all updates are provided during your
+normal system update and upgrade process. to perform this step manually:
+
+====
+* Open a terminal,  kbd:[Ctrl + Alt + t], then type:
+-----
+sudo apt-get update
+sudo apt-get upgrade
+-----
+* You are now upgraded to the latest version of *JTSDK-Nix
+====
+
+
+==== Upgrade Via Source Package
+Before install the latest version of *JTSDK-Nix* from Source Code, it is a good
+remove the previous version first.
+
+====
+* Open a terminal,  kbd:[Ctrl + Alt + t], change directories to old source
+location, then uninstall
+-----
+cd ./jtsdk-nix-2.0.16
+sudo make uninstall
+-----
+* Change directories to the new source location, and install
+-----
+cd ./jtsdk-nix-2.0.17
+./autogen.sh
+make
+sudo make install
+-----
+* You are now upgraded to the latest version of *JTSDK-Nix
+====

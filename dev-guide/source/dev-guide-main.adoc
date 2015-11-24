@@ -36,6 +36,10 @@ include::environment.adoc[]
 == Installation
 include::installation.adoc[]
 
+[[UPGRADING]]
+== Upgrading
+include::upgrading.adoc[]
+
 == Source Code
 include::sourcecode.adoc[]
 

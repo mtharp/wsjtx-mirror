@@ -2,10 +2,10 @@ Dependency management is an area that can casue a great deal of confusion. There
 are many types of dependencies, however, for this guide, we are mainly concerned
 with *Build* depeendencies.
 
-Eeach section will list the primnary build dependencies, special notes or known
-issues and how best to resolve them if known.
+* Each section will list the primnary build dependencies, special notes or known
+issues and how best to resolve them.
 
-In some cases, where package incompatibilties exist, a special note will be
+* In some cases, where package incompatibilties exist, a special note will be
 provided if it has been tested. 
 
 The following distributions version combinations have been tested or are known to
@@ -13,11 +13,12 @@ work with minimal package system manipulation.
 
 [[LINUX_DISTRO_MATRIX]]
 .Distribution Matrix
-[cols="1,^1,^1,^1,^1", options="header, autowidth"]
+[cols="1,^1,^1,^1,^1,^1", options="header, autowidth"]
 |===
-|Distrbution|Desktop|Version|Code Name|Remarks
+|Distrbution|Arch|Desktop|Version|Code Name|Remarks
 
 |Debian
+|i386, amd64
 |Gnome3
 |8.0 +
 9.0
@@ -28,6 +29,7 @@ Sid
 {sg} {ub}
 
 |Fedora
+|i386, amd64
 |Gnome3
 |21 +
 22 +
@@ -40,6 +42,7 @@ Sid
 {sg}
 
 |Linux Lite
+|i386, amd64
 |Mate
 |2.6
 |Lite
@@ -47,6 +50,7 @@ Sid
 {sr} {sb} {ub}
 
 |Linux Mint
+|i386, amd64
 |Mate
 |17.2
 |Rebecca
@@ -54,6 +58,7 @@ Sid
 {sr} {sb} {ub}
 
 |Ubuntu
+|i386, amd64, armhf, ppc64el
 |Unity
 |
 14.04 +
@@ -79,88 +84,122 @@ Xenial
 
 '''
 
-=== Ubuntu
-The following package list has been tested and known to work with the *Ubuntu*,
-for the versions listed in the <<LINUX_DISTRO_MATRIX,Distribution Matrix>>.
-All actions are performed in a terminal kbd:[Ctrl + Alt + t]:
-
------
-sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
-gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5-plugins \
-libqt5serialport5-dev libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev \
-libxml2-utils pkg-config portaudio19-dev python3-pil python3-pil.imagetk \
-python3-tk python3-dev python3-numpy python3-pip python3-setuptools python-dev \
-qtbase5-dev qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
------
-
-[[UBUNTU_SPRCIAL_INSTRUCTIONS]]
-[IMPORTANT]
-====
-Ubuntu 14.04 requires Asciidoctor be installed anually, see:
-<<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
-====
-
-Now you can run run JTSDK and build the applications from the main menu.
-
-'''
-
-=== Linux Mint
-
-The following package list has been tested and known to work with the
-*Linux Mint*, for the versions listed in the <<LINUX_DISTRO_MATRIX,Distribution Matrix>>.
-All actions are performed in a terminal kbd:[Ctrl + Alt + t]:
-
------
-sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
-gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5-plugins \
-libqt5serialport5-dev libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev \
-libxml2-utils pkg-config portaudio19-dev python3-pil python3-pil.imagetk \
-python3-tk python3-dev python3-numpy python3-pip python3-setuptools python-dev \
-qtbase5-dev qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
------
-
-[[MINT_SPRCIAL_INSTRUCTIONS]]
-[IMPORTANT]
-====
-Ubuntu 14.04 requires Asciidoctor be installed anually, see:
-<<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
-====
-
-Now you can run run JTSDK and build the applications from the main menu.
-
-'''
-
+[[DEBIAN_SETUP]]
 === Debian
 
+Install process tested on: *Debian 8.0*
+
 Due to a repository package incompatability in python3-pil, additional packages
-and steps are required in order to build WSJT and WSPR. This is not a *JTSDK*
-issue, rather, it is an incompatibility problem with the Pillow package itself.
+and steps are required in order to build WSJT and WSPR.
 
-Install the following packages first, the install python3-pilling using Pip3.
+Install dependencies first, then install Python3 Pillow using Pip3.
 
+* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoctor clang-3.5 cmake dialog g++ gettext \
-gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5-plugins \
-libqt5serialport5-dev libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev \
-libxml2-utils pkg-config portaudio19-dev python3-imagetk python3-tk python3-dev
-python3-numpy python3-pip python3-setuptools python-dev qtbase5-dev qtmultimedia5-dev
-source-highlight subversion ruby texinfo xmlto  libfreetype6-dev libjpeg-dev
-liblcms2-dev libtiff5-dev libwebp-dev libwebpmux1 mime-support tcl8.6-dev
-tk8.6-dev zlib1g-dev
+gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
+libqt5multimediawidgets libqt5multimedia5-plugins libqt5serialport5-dev \
+libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev libxml2-utils \
+pkg-config portaudio19-dev python3-imagetk python3-tk python3-dev \
+python3-numpy python3-pip python3-setuptools python-dev qtbase5-dev \
+qtmultimedia5-dev source-highlight subversion ruby texinfo xmlto \
+libfreetype6-dev libjpeg-dev liblcms2-dev libtiff5-dev libwebp-dev \
+libwebpmux1 mime-support tcl8.6-dev tk8.6-dev zlib1g-dev
 -----
 
-Once the installation is complete, perform the following in a terminal:
+* Once the installation is complete, install Pillow with:
+---
+sudo pip3 install pillow
+---
+* Install Asciidoctor anually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
+* Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
+* Now you can run run *JTSDK* and build the applications from the main menu.
 
-* sudo pip3 install pillow
+'''
 
-[[DEBIAN_SPRCIAL_INSTRUCTIONS]]
-[IMPORTANT]
-====
-Debian 8.0 requires Asciidoctor be installed anually, see:
-<<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
-====
+[[FEDORA_SETUP]]
 
-Now you can run run *JTSDK* and build the applications from the main menu.
+=== Fedora
+
+Install process tested on: *(none)*
+
+Several users in the {wsjt-yahoo-group} or users who contribute regularly to the
+{dev-mail-list} run *JTSDK* on *Fedora*, however, at the time of this writing, we
+do not have a package list nor specific install instructions.
+
+If you have a firm install procedure and wish to include it, send the
+informattionto the {dev-mail-list}.
+
+[[MINT_SETUP]]
+=== Linux Mint
+
+Install process tested on: *Mint 17.2*
+
+On Linux Mint, audio selection can be problematic. The package list below has
+been updated with the solutions that resolved this for several users. If you
+still hae Audio Selection problems with **_WSJT-X_**, report it to the
+{dev-mail-list} 
+
+* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+-----
+sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
+gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
+libqt5multimedia5-plugins libqt5multimediawidgets libqt5serialport5-dev \
+libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev libxml2-utils \
+pkg-config portaudio19-dev python3-pil python3-pil.imagetk python3-tk \
+python3-dev python3-numpy python3-pip python3-setuptools python-dev qtbase5-dev \
+qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
+-----
+* Install Asciidoctor manually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
+* Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
+* See <<JACKD2_NOTE, Special Note>> regarding Jackd configuration
+* Now you can run run JTSDK and build the applications from the main menu.
+
+'''
+
+
+[[MINT_SETUP]]
+=== Linux Lite
+
+Install process tested on: *Lite 2.6*
+
+* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+-----
+sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
+gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
+libqt5multimedia5-plugins libqt5multimediawidgets libqt5serialport5-dev \
+libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev libxml2-utils \
+pkg-config portaudio19-dev python3-pil python3-pil.imagetk python3-tk \
+python3-dev python3-numpy python3-pip python3-setuptools python-dev qtbase5-dev \
+qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
+-----
+* Install Asciidoctor manually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
+* Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
+* Now you can run run JTSDK and build the applications from the main menu.
+
+'''
+
+[[UBUNTU_SETUP]]
+=== Ubuntu
+
+Install process tested on: *Ubuntu 14.04*, *15.04*, *15.10* and *16.04*
+
+The default installation was performed on Unity. The package list should
+also work for Lubuntu, Xubuntu and Kubuntu.
+
+* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+-----
+sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
+gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
+libqt5multimedia5-plugins libqt5multimediawidgets libqt5serialport5-dev \
+libqt5opengl5-dev libsamplerate0-dev libtool libusb-dev libxml2-utils \
+pkg-config portaudio19-dev python3-pil python3-pil.imagetk python3-tk \
+python3-dev python3-numpy python3-pip python3-setuptools python-dev qtbase5-dev \
+qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
+-----
+* Install Asciidoctor anually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
+* Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
+* Now you can run run JTSDK and build the applications from the main menu.
 
 '''
 
@@ -170,7 +209,7 @@ Now you can run run *JTSDK* and build the applications from the main menu.
 On Debian / Ubuntu based systems, the user must be in the *dialout*
 in order to use, set or other wise manipulate comports (STTY or USB). To ensure
 your user is in the dialout group, perform the following  (before installing
-package dependencies ):
+package dependencies ).
 
 ====
 * Open a terminal kbd:[Ctrl + Alt + t], then type: groups
@@ -178,7 +217,7 @@ package dependencies ):
 -----
 sudo adduser $USER dialout 
 -----
-* Logout out, back in, recheck, and continue with package installation.
+* Logout out, back in, recheck, and continue.
 ====
 
 '''
