@@ -11,6 +11,11 @@ Greg Beam, KI7MT Version 2.0
 :y: icon:check[role="green"]
 :n: icon:times[role="red"]
 :o: icon:circle-thin[role="blue"]
+:sr: icon:exclamation-circle[role="red"]
+:sb: icon:sticky-note[role="blue"]
+:sg: icon:stop[role="green"]
+:ub: icon:tty[role="yellow"]
+
 
 // use global link file
 include::links.adoc[]
@@ -77,16 +82,8 @@ include::pkgmatrix.adoc[]
 
 [[DISTROPKGS]]
 [appendix]
-== Distribution Pakcaging
-
-=== Debian
-TO-DO: Add Packages
-
-=== Ubuntu
-TO-DO: Add Packages
-
-=== Others
-TO-DO: Add Packages
+== Linux Pakcaging
+include::linux-packaging.adoc[]
 
 == License
 include::license.adoc[]

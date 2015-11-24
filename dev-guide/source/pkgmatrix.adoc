@@ -40,8 +40,8 @@ h|Package|Docs|WSJT|WSPR|WSJT-X|WSPR-X|MAP65
 |Asciidoctor
 |{y}
 |{o}
-|{y}
 |{o}
+|{y}
 |{o}
 |{o}
 
@@ -71,17 +71,17 @@ h|Package|Docs|WSJT|WSPR|WSJT-X|WSPR-X|MAP65
 
 |Hamlib
 |
-|
-|
 |{y}
+|
+|
 |{y}
 |{y}
 
 |Hamlib3
 |
 |
-|{y}
 |{o}
+|{Y}
 |{o}
 |{o}
 
@@ -345,54 +345,100 @@ itself, *F2py* for example, is provided by *NumPy*.
 
 === Linux
 
-The following matrix outlines the *Linux* development package
-requirements for each application, including documentation.
 
-Package names very between Linux distributions. Distro package names, 
-when known, are listed in the build section of each application. If
-you have a firm list of packages for your Linux distribution,
-send it to {devmail} for inclusion in {page}.
-
-.Linux Package Matrix: x = Required, o = Optional
 [[LINUXPKG]]
-[width="90%",cols="^2,^2,^2,^2,^2,^2,^2",frame="topbot",options="header"]
-|=================================================
-|Package    |Docs|WSJT|WSJT-X|WSPR|WSPR-X|MAP65
-|CMake      |    |    |x     |    |x     |x
-|FFTW3F     |    |x   |x     |x   |x     |x
-|GNU Tools  |    |x   |x     |x   |x     |x
-|Hamlib     |    |    |o     |x   |x     |
-|Hamlib3    |    |    |x     |o   |o     |
-|Portaudio  |    |x   |      |x   |x     |x
-|Pulseaudio |    |    |x     |    |      |
-|Python3    |    |x   |      |x   |      |
-|Qt5        |    |    |x     |    |x     |x
-|Subversion |x   |x   |x     |x   |x     |x
-|=================================================
+The following matrix outlines the *Linux* development package
+requirements for each application, including documentation. The
+( {y} ) indicates a required package, ( {o} ) is optional, blank is
+not applicable.
 
-WARNING: KVASD requires 32-Bit libc6. Some Linux distros
-call these multi-libs, others ia32-libs, some are individual libraries.
-If your using a 64-Bit OS the following 32-Bit libraries must be
-installed in addition too the package matrix requirements:
 
-.KVASD Requirements
-[horizontal]
-*libc.so.6*:: GCC C Library
-*libm.so.6*:: GCC C Library
-*libgcc_s.so.1libm.so.6*:: GCC C Library 
-*libquadmath.so.0*:: Quad-Precision Math Library
+[cols="^2,^1,^1,^1,^1"]
+|===
+h|Package|Docs|WSJT|WSPR|WSJT-X
 
-.Comments
-[horizontal]
-*GNU Tools*:: For 64bit OS C/C++, Gfortran, Make, v4.8.0{plus}
-*Hamlib*:: Current distro release 1.2.15.x
-*Hamlib3*:: Custom build from Bill Somerville, (G4WJS)
-* Hamlib3 is still under development
-* Potential release dates have yet to be announced
-* Use with WSPR and WSPR-X is experimental only
-*Omni-Rig*:: Required to build WSJT-X using CMake
-*Pulseaudio*:: QT5 Runtime plug-in requirement
-*Python3 Modules*:: WSJT and WSPR also require several Python Modules
-* Numpy (Numeric Python) v1.8.0{plus}
-* Pillow (Python Imaging) v2.3.0{plus}
-* Pmw (Python Megawidgets) v.2.0.0+ required for Python3
+|AsciiDoc
+|{y}
+|{y}
+|{y}
+|{y}
+
+|Asciidoctor
+|{y}
+|{o}
+|{o}
+|{y}
+
+|Asciidoctor-Pdf
+|{o}
+|{o}
+|{o}
+|{o}
+
+|CMake
+|
+|
+|
+|{y}
+
+|FFTW3F
+|
+|{y}
+|{y}
+|{y}
+
+|GNU GCC
+|
+|{y}
+|{y}
+|{y}
+
+|Hamlib
+|
+|{y}
+|
+|
+
+|Hamlib3
+|
+|
+|{o}
+|{y}
+
+|NSIS
+|
+|
+|
+|{y}
+
+|Portaudio
+|
+|{y}
+|{y}
+|
+
+|Python2
+|{y}
+|{y}
+|{y}
+|{y}
+
+|Python3
+|
+|{y}
+|{y}
+|
+
+|Qt5
+|
+|
+|
+|{y}
+
+|Subversion
+|{y}
+|{y}
+|{y}
+|{y}
+|===
+

@@ -188,7 +188,7 @@ NOTE: **_JTSDK-Maint_** has access to all the general Unix type tools, _grep_,
 _awk_, _rm_, _which_, etc and Subversion. It *does not* have a path set
 for any of the GCC Tool-Chains.
 
-.JTSDK-Nix Environments
+.JTSDK-Win32 Environments
 [options="header,autowidth"]
 |===
 |Environment|Purpose
