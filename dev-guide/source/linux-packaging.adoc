@@ -107,13 +107,15 @@ libfreetype6-dev libjpeg-dev liblcms2-dev libtiff5-dev libwebp-dev \
 libwebpmux1 mime-support tcl8.6-dev tk8.6-dev zlib1g-dev
 -----
 
-* Once the installation is complete, install Pillow with:
----
+=====
+* Once the installation is complete, install Pillow with
+-----
 sudo pip3 install pillow
----
+-----
 * Install Asciidoctor anually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
 * Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
 * Now you can run run *JTSDK* and build the applications from the main menu.
+=====
 
 '''
 
@@ -140,6 +142,7 @@ been updated with the solutions that resolved this for several users. If you
 still hae Audio Selection problems with **_WSJT-X_**, report it to the
 {dev-mail-list} 
 
+====
 * Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
@@ -154,15 +157,26 @@ qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
 * Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
 * See <<JACKD2_NOTE, Special Note>> regarding Jackd configuration
 * Now you can run run JTSDK and build the applications from the main menu.
+====
+
+[WARNING]
+====
+- The Mint 17.1 / 17.2 Cinnamon Desktop installs python-numpy as part of it's
+default installation. If you encounter `PObject Errors` when running **_WSPR_** or
+**_WSJT_**, more than likely this is the cause.
+
+- **_WSPR_** and **_WSJT_** require python3-numpy. To resolve, remove python-numpy,
+but be warned, this may cause unexpected behavior in your Desktop Environment.
+====
 
 '''
 
-
-[[MINT_SETUP]]
+[[LITE_SETUP]]
 === Linux Lite
 
 Install process tested on: *Lite 2.6*
 
+====
 * Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
@@ -176,6 +190,7 @@ qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
 * Install Asciidoctor manually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
 * Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
 * Now you can run run JTSDK and build the applications from the main menu.
+====
 
 '''
 
@@ -187,6 +202,7 @@ Install process tested on: *Ubuntu 14.04*, *15.04*, *15.10* and *16.04*
 The default installation was performed on Unity. The package list should
 also work for Lubuntu, Xubuntu and Kubuntu.
 
+====
 * Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
@@ -200,6 +216,7 @@ qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
 * Install Asciidoctor anually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
 * Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
 * Now you can run run JTSDK and build the applications from the main menu.
+====
 
 '''
 

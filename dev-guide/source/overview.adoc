@@ -21,7 +21,7 @@ or email *Joe Taylor* {joe-taylor}, to discuss helping out.
 ****
 
 === About This Guide
-.What This Guide *_IS_*
+.What This Guide *_"IS"_*
 The purpose of the {page} is to walk through the variaous elements of bulding
 each of the **_WSJT_** applications {amp} their associated documentation. The
 guide will, as time allows, be updated to include ( _basic_ ) operation of major
@@ -30,12 +30,12 @@ again, as time allows, a brief introcuction to tools used by developers
 specific to **_WSJT_** applications themself, such as jt9sim, and command line
 operation of various binaries each package builds.
 
-.What This Guide *_IS NOT_*
+.What This Guide *_"IS NOT"_*
 {page} does not go into any of the source code construction, functions or
 architectural composition. Those discussions are left to the ( _Core Development
 Team_ ), generally discussed on the {dev-mail-list}.
 
-.What The Scripts *PROVIDE*
+.What The Scripts *_"PROVIDE"_*
 All the build scripts in *JTSDK* proved a default build for each of the
 various applications and their associated user guide when available. The intension
 is to create repeatable results providing a high level of consistency. In
@@ -45,7 +45,7 @@ as the average user will not be changing the default build constructs. Thus
 providing the experinced developer with a know set of variables used to build
 the application if and when a problem is identified.
 
-.Help Improve This *GUIDE*
+.Help Improve This *_"GUIDE"_*
 Many of the **_WSJT_** applications are under constant revision. As such,
 changes to the build system, source locations, method of construction and other
 key aspects can, and often do, change form day to day. The {page}
@@ -58,21 +58,21 @@ Additionally, if you feel something should be added, modified, omitted or
 otherwise adjusted in {page}, send your recommendations {dev-mail-list}.
 
 === The Command Line
-The {page} is all from the ( _Command Line_ ), *DOS Console* on Windows, *Bash
-Shell* on Linux or Mac OSX. There is no Graphical User Interace ( _GUI_ ),
-Widgets or Point {amp} Click interface associated with the scripts.
+With {page}, all work is performed from the ( _Command Line_ ), *DOS Console* 
+on Windows, *Bash Shell* on Linux. There is no Graphical User Interace 
+( _GUI_ ), Widgets or Point {amp} Click interface associated with the scripts.
 Without question, there are *_PROS_* {amp} *_CONS_* to both methods, however,
 this guide will not discuss the merits of either approach.
 
-Do not confuse this with the absence of Framework GUI's such as *QtDesigner* or
-*Cmake-Gui*. All of the the GUIs that accompany the various packages are included
-in *JTSDK*, just as if you installed the package(s) yourself. They are made readily
+Do not confuse this with the absence of Framework UI's such as *QtDesigner* or
+*Cmake-Gui*. All of the the UIs that accompany each package are included in 
+*JTSDK*, just as if you installed the package(s) yourself. They are made readily
 available to the user, in most cases, with a Desktop Shortcut or Program Menu
 entry.
 
 It is understood, not all users of *JTSDK* are experts in Command Line Foo. Every
 attempt has been made to *_make compiling as easy as possible_* for those new
-to building applications from source code, while not placing limitation on the
+to building applications from source code, while not placing limitations on the
 more advaced users.
 
 === Core Elements
@@ -152,3 +152,12 @@ to fully leverage the SDKs potential.
 * On Windows, *JTSDK-Win32*, by design, *should not* interfere with
 any previously installed development packages. If you find or have a conflict,
 please report it to the {dev-mail-list}.
+
+=== Special Terms
+The following is a short list of special terms used throught this guide, and their
+intended meaning.
+
+* **_Windows_**: refers to all version of Windows, Vista, 7, 8, and 10
+* **_JTSDK-Win32_**: refers to *JTSDK* on Windows
+* **_Linux_**: refers to all versions of Linux, Unix and BSD.
+* **_JTSDK-Nix_**: refers to *JTSDK* on Linux

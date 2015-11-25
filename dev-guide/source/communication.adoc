@@ -1,6 +1,6 @@
 Commication with the *WSJT Group* can very depending on subject.
-Generally, most deveopment activity is conducted through the {dev_mail_list}
-and user discussion can be found on the {wsjt_yahoo_group}. The sections
+Generally, most deveopment activity is conducted through the {dev-mail-list}
+and user discussion can be found on the {wsjt-yahoo-group}. The sections
 below outline the methods to be used based on the subject matter.
 
 === Established Channels

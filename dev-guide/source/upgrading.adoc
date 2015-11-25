@@ -35,18 +35,20 @@ upgrade
 [[UPGRADE_LINUX]]
 === Linux
 For Linux, there are two methods of upgrading, depending on how you installed
-*JTSDK-Nix* originally, select which is appropriate your installation.
+*JTSDK-Nix* originally, select which methode appropriate your installation, 
+<<UPGRADE_VIA_PPA,using PPA>> or <<UPGRADE_VIA_SOURCE,from the Source Package>>.
 
 [NOTE]
 ====
 No matter which method is used, none of your build files will be removed when
-uninstalling or upgradeing *JTSDK-Nix*, they remain in `~/jtsdk` indefinitely,
+uninstalling or upgrading *JTSDK-Nix*, they remain in `~/jtsdk` indefinitely,
 or until you remove them specifically.
 ====
 
+[[UPGRADE_VIA_PPA]]
 ==== Upgrade Via PPA
 If you installed *JTSDK-Nix* via PPA, all updates are provided during your
-normal system update and upgrade process. to perform this step manually:
+normal system update and upgrade process. To perform this step manually:
 
 ====
 * Open a terminal,  kbd:[Ctrl + Alt + t], then type:
@@ -57,10 +59,10 @@ sudo apt-get upgrade
 * You are now upgraded to the latest version of *JTSDK-Nix
 ====
 
-
+[[UPGRADE_VIA_SOURCE]]
 ==== Upgrade Via Source Package
-Before install the latest version of *JTSDK-Nix* from Source Code, it is a good
-remove the previous version first.
+Before installing the latest version of *JTSDK-Nix* from Source Code, you should
+remove the previous installation first.
 
 ====
 * Open a terminal,  kbd:[Ctrl + Alt + t], change directories to old source

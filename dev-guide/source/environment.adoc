@@ -145,7 +145,8 @@ Install +
 The application paths will increment with each svn commit. This allows
 for testing each respoitory revision individually. The location will only be
 incremented **_IF_** the change occurs to the branch, not the revision of
-the repository.
+the repository. It is important to note, the subversion separation is only for
+Linux at this time.
 
 TIP: Note the differene between ( _Debug_ ) and ( _Release_ ) for
 the **_WSJT-X v1.7.0_** example. This type of separation is for aplications
@@ -179,14 +180,35 @@ built with *Cmake*:  **_WSJT-X_**, **_WSPR-X_** and **_MAP65_**.
     └── install
 ----
 
+.Windows Directory Tree for: WSJT-X v1.7.0
+-----
+C:\JTSDK\wsjtx
+|-- build
+|   |-- Debug
+|   |-- Release
+|-- install
+|   |-- Debug
+|    -- Release
+|-- package
+|-- userguide
+-----
+
+.Windows Directory Tree for: WSJT v10.0
+-----
+C:\JTSDK\wsjt
+|-- install
+-----
+
+
 === Windows Notes
 *JTSDK-WIn32* provides the containment and all required tools to build a
 fully working application or the sub-target if desired. Details of each kit can
 be found in the appropriate appendix.
 
 NOTE: **_JTSDK-Maint_** has access to all the general Unix type tools, _grep_,
-_awk_, _rm_, _which_, etc and Subversion. It *does not* have a path set
-for any of the GCC Tool-Chains.
+_awk_, _rm_, _which_ {plus} many more, as well as Subversion and Asciidoctor.
+It *does not* have a path set for any of the GCC Tool-Chains but you can
+manually add to the %PATH% variable is desired.
 
 .JTSDK-Win32 Environments
 [options="header,autowidth"]
@@ -200,7 +222,7 @@ for any of the GCC Tool-Chains.
 |used for building **_WSJT_** and **_WSPR_**
 
 |JTSDK-DOC
-|Cygwin-32, used for building documentation
+|Cygwin-32, for doc builds, ( being phased out )
 
 |JTSDK-MSYS
 |MSYS with autotools, used for building **_Hamlib3_**

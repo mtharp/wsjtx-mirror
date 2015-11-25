@@ -90,42 +90,34 @@ of two methods, <<SOURCE_INSTALL_METHOD,Source Tarball>> or
 <<PPA_INSTALL_METHOD,Launchpad PPA>>. The <<LINUX_INSTALL_METHOD,matrix>> below
 outlines the preferred method for various distributions.
 
-[IMPORTANT]
-====
 Installing **_JTSDK-Nix_** *Does Not* install the required build dependencies.
 You must follow the guide recommendations outlined in the
 <<DISTROPKGS, Linux Packaging>> section.
-====
 
 [[LINUX_INSTALL_METHOD]]
 .Linux Preferred Installation Method
-[cols="1,^1,^1,1", options="header, autowidth"]
+[cols="1,^1,1", options="header, autowidth"]
 |===
-|Distribution|Method|Reference|Package-Manager
+|Distribution|Method|Package-Manager
 
 |Debian
 |PPA
-|
 |apt-get, gdebi, Synaptic
 
 |Fedora
 |Source Tarball
-|
-|manual entry
+|autogeh.sh, make, make install
 
 |Linux Lite
 |PPA
-|Reference
 |apt-get
 
 |Linux Mint
 |PPA
-|Reference
 |apt-get
 
 |Ubuntu
 |PPA
-|Reference
 |apt-get
 
 |===
@@ -134,6 +126,7 @@ You must follow the guide recommendations outlined in the
 ==== Install From PPA
 To install *JTSDK-Nix* from PPA:
 
+====
 * Open a terminal kbd:[Ctrl + Alt + t], and execute the following commands:
 -----
 sudo add-apt-repository -y ppa:ki7mt/jtsdk
@@ -142,19 +135,21 @@ sudo apt-get install jtsdk
 -----
 * After installing JTSDK-Nix, follow the guide for your distribution build dependencies
 found in <<DISTROPKGS,Linux Packaging>> section.
+====
 
 [[SOURCE_INSTALL_METHOD]]
 ==== Installation From Source Tarball
-Installing from source code is fairly simple. Download, extract then run the 
-standard commands for installing via source tarballs. You can obtain
-the source tarball from: {jtsdk-nix}
-
-IMPORTANT: When installing from the source tarball, it is the *your responsibility*
+When installing from the source tarball, it is the *your responsibility*
 to ensure all package requirements are met, both for *JTSDK-Nix* and all
 **_WSJT_** applications. This should be done *before* running the
-``autogen.sh'' script. A package list if available, for select distributions,
-See {readmepkglist}.
+``autogen.sh'' script. See <<DISTROPKGS,LInux Packaging>> for distribution
+specific instruction.
 
+Once all the dependencies have been met, installing from source code is fairly
+simple. Download, extract then run the standard commands for installing via
+source tarballs. You can obtain the source tarball from: {jtsdk-nix}
+
+====
 Extract jtsdk-nix-2.0.17.tar.gz to a suitable location, then execute the following
 commands in a terminal:
 
@@ -168,41 +163,32 @@ sudo make install
 If there were no errors during configuration, check the distribution 
 <<LINUX_INSTALL_METHOD,matrix>> for any additional actions, then
 *JTSDK-Nix* is ready for use.
-
+====
 
 ==== Run JTSDK
+====
 * Open a terminal, kbd:[Ctrl + Alt + t], then type: `jtsdk`
 * Alternatively, search your menu system for `jtsdk` and double click the icon.
+====
 
 ==== Uninstall
 To uninstall *JTSDK-Nix*, open a terminal and execute the following commands:
 
-.Uninstall via PPA
-
+==== Uninstall via PPA
+====
 * In a terminal kbd:[Ctrl + Alt + t], type:
 -----
 sudo apt-get remove jtsdk
 -----
+====
 
-.Uninstall via Source
+
+==== Uninstall via Source
+====
+* In a terminal kbd:[Ctrl + Alt + t], change directories to the location where
+you installed JTSDK-Nix from, then uninstall.
 -----
-# change directories to the location where you installed JTSDK-Nix from
 cd ./jtsdk-nix-2.0.17    
 sudo make uninstall
 -----
-
-==== Upgrading
-If you are upgrading *JTSDK-Nix* to a newer version, perform an *Uninstall*
-first, then proceed with a normal source install.
-
-==== POTENTIAL ISSUES
-
-[WARNING]
-====
-- The Mint 17.1 / 17.2 Cinnamon Desktop installs python-numpy as part of it's
-default installation. If you encounter `PObject Errors` when running **_WSPR_** or
-**_WSJT_**, more than likely this is the cause.
-
-- **_WSPR_** and **_WSJT_** require python3-numpy. To resolve, remove python-numpy,
-but be warned, this may cause unexpected behavior in your Desktop Environment.
 ====
