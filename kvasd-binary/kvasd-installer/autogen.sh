@@ -46,7 +46,7 @@ cd $BASED
 
 # Test if Bash is installed
 bash --version > /dev/null 2>&1 || {
-	clear
+	clear ||:
 	echo '---------------------------------------------'
 	echo 'PACKAGE DEPENDENCY ERROR'
 	echo '---------------------------------------------'
@@ -60,7 +60,7 @@ bash --version > /dev/null 2>&1 || {
 
 # Test if Awk is installed
 awk --version > /dev/null 2>&1 || {
-	clear
+	clear ||:
 	echo '---------------------------------------------'
 	echo 'PACKAGE DEPENDENCY ERROR'
 	echo '---------------------------------------------'
@@ -74,7 +74,7 @@ awk --version > /dev/null 2>&1 || {
 
 # Test if Dialog is installed
 dialog --version > /dev/null 2>&1 || {
-	clear
+	clear ||:
 	echo '---------------------------------------------'
 	echo 'PACKAGE DEPENDENCY ERROR'
 	echo '---------------------------------------------'
@@ -88,7 +88,7 @@ dialog --version > /dev/null 2>&1 || {
 
 # Test if autoconf is installed
 autoconf --version > /dev/null 2>&1 || {
-	clear
+	clear ||:
 	echo '---------------------------------------------'
 	echo 'PACKAGE DEPENDENCY ERROR'
 	echo '---------------------------------------------'
@@ -102,7 +102,7 @@ autoconf --version > /dev/null 2>&1 || {
 
 # Test if Subversion is installed
 svn --version > /dev/null 2>&1 || {
-	clear
+	clear ||:
 	echo '---------------------------------------------'
 	echo 'PACKAGE DEPENDENCY ERROR'
 	echo '---------------------------------------------'
@@ -116,7 +116,7 @@ svn --version > /dev/null 2>&1 || {
 
 # run make clean if makefile and configure are found
 if test -f ./Makefile -a ./configure ; then
-	clear
+	clear ||:
 	echo '---------------------------------------------------'
 	echo ${C_Y}"Checking for Old Makefile & Configure Script"${C_NC}
 	echo '---------------------------------------------------'
@@ -129,7 +129,7 @@ if test -f ./Makefile -a ./configure ; then
 	echo '---------------------------------------------------'
 	autoconf -f -i
 else
-	clear
+	clear ||:
 	echo '---------------------------------------------------'
 	echo ${C_Y}"Running ( autoconf ) to process configure.ac"${C_NC}
 	echo '---------------------------------------------------'

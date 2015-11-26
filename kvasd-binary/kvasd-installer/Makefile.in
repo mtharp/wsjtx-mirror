@@ -57,7 +57,7 @@ make-message:
 
 # Install target wspr
 install:
-	@clear
+	@clear ||:
 	@echo '---------------------------------------------'
 	@echo -e $(C_Y)"Installing @PROGRAM@"$(C_NC)
 	@echo '---------------------------------------------'
@@ -83,7 +83,7 @@ install:
 
 # Uninstall system files
 uninstall:
-	@clear
+	@clear ||:
 	@echo '---------------------------------------------'
 	@echo -e $(C_Y)"Uninstalling @PROGRAM@"$(C_NC)
 	@echo '---------------------------------------------'
