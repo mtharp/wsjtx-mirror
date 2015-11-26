@@ -129,6 +129,24 @@ add_custom_target (hamlib_sources
 
 
 #
+# build a list of command line argumenst to pass on to the WSJT-X
+# build
+#
+get_cmake_property (CACHE_VARS CACHE_VARIABLES)
+foreach (CACHE_VAR ${CACHE_VARS})
+  get_property (CACHE_VAR_HELPSTRING CACHE ${CACHE_VAR} PROPERTY HELPSTRING)
+  if (CACHE_VAR_HELPSTRING STREQUAL "No help, variable specified on the command line.")
+    get_property (CACHE_VAR_TYPE CACHE ${CACHE_VAR} PROPERTY TYPE)
+    if (CACHE_VAR_TYPE STREQUAL "UNINITIALIZED")
+      set (CACHE_VAR_TYPE)
+    else ()
+      set (CACHE_VAR_TYPE :${CACHE_VAR_TYPE})
+    endif ()
+    list (APPEND CMAKE_ARGS "-D${CACHE_VAR}${CACHE_VAR_TYPE}=${${CACHE_VAR}}")
+  endif ()
+endforeach ()
+
+#
 # build and optionally install WSJT-X using the hamlib package built
 # above
 #
@@ -140,8 +158,9 @@ ExternalProject_Add (wsjtx
   URL_HASH MD5=${wsjtx_md5sum}
   PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/wsjtx.patch
   CMAKE_ARGS
-  -D CMAKE_PREFIX_PATH=${INSTALL_DIR}
-  -D CMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+  ${CMAKE_ARGS}
+  -DCMAKE_PREFIX_PATH=${INSTALL_DIR}
+  -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   ${WSJTX_EXTRA_CMAKE_OPTIONS}
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
   STEP_TARGETS update configure build install
@@ -199,6 +218,7 @@ add_custom_target (source
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
   DEPENDS hamlib_sources wsjtx_sources
   COMMENT "
+
 Generating the WSJT-X superbuild self-contained source tarball ${__suffix}.tgz
 
 To use this  tarball, transfer it to the target  build host, un-tar it
@@ -208,9 +228,19 @@ default is /usr), then build and install. For example:
     $ tar xzf ${__suffix}.tgz
     $ mkdir build
     $ cd build
-    $ cmake ../${__suffix}
+    $ cmake <extra-args> ../${__suffix}
     $ cmake --build .
     $ sudo cmake --build . --target install
 
-"
-  )
+where <extra-args>  are CMake  command line arguments  that are  to be
+passed  onto  the  WSJT-X  CMake  configuration.  The  sort  of  extra
+arguments you might want to pass are for example:
+
+  -D CMAKE_INSTALL_PREFIX=/usr/local -D WSJT_MANPAGE_DESTINATION=.
+
+which   changes    the   install   path   for    the   manpages   from
+<install-prefix>/share  to <install-prefix>.  This particular  example
+would be useful on FreeBSD where manpages are expected to reside under
+/usr/local/man.
+
+" )
