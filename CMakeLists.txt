@@ -223,7 +223,7 @@ Generating the WSJT-X superbuild self-contained source tarball ${__suffix}.tgz
 
 To use this  tarball, transfer it to the target  build host, un-tar it
 and, configure  it including  a CMAKE_INSTALL_PREFIX if  required (the
-default is /usr), then build and install. For example:
+default is /usr/local), then build and install. For example:
 
     $ tar xzf ${__suffix}.tgz
     $ mkdir build
@@ -236,11 +236,18 @@ where <extra-args>  are CMake  command line arguments  that are  to be
 passed  onto  the  WSJT-X  CMake  configuration.  The  sort  of  extra
 arguments you might want to pass are for example:
 
-  -D CMAKE_INSTALL_PREFIX=/usr/local -D WSJT_MANPAGE_DESTINATION=.
+  -D WSJT_MANPAGE_DESTINATION=.
 
 which   changes    the   install   path   for    the   manpages   from
-<install-prefix>/share  to <install-prefix>.  This particular  example
-would be useful on FreeBSD where manpages are expected to reside under
+<install-prefix>/share to  <install-prefix>.  This  particular example
+might be useful on FreeBSD where manpages are expected to reside under
 /usr/local/man.
+
+A test install may be carried out in a local user directory by passing
+the DESTDIR variable to the build step e.g.:
+
+    $ cmake --build . --target install -- -j2 DESTDIR=$HOME/local
+
+which would install into ~/local/usr/local.
 
 " )
