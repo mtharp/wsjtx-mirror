@@ -92,6 +92,10 @@ used for a local build is automatically built. For example:
     $ cmake -D WSJTX_TAG=tags/wsjtx-1.4.0 <source-dir-path>
     $ cmake --build . --target source
 
+NOTE:  CMake assumes  an  out of  source  build, in  this  case it  is
+mandatory as  the 'source' target  packages itself and  therefore must
+not include any build artefacts.
+
 The  above commands,  if  successful,  will produce  'wsjtx-1.4.0.tgz'
 which is  a source  tarball ready for  use on another  system to  do a
 local build, for example:
