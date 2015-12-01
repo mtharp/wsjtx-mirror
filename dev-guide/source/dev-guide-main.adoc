@@ -43,6 +43,8 @@ include::upgrading.adoc[]
 == Source Code
 include::sourcecode.adoc[]
 
+////
+Currently not being used
 [[BUILDMATRIX]]
 == Build Matrix
 include::buildmatrix.adoc[]
@@ -50,11 +52,14 @@ include::buildmatrix.adoc[]
 [[DOCSETUP]]
 == Documentation
 include::doc.adoc[]
+////
+
 
 [[WSJTX]]
 == WSJT-X
 include::wsjtx.adoc[]
 
+////
 [[WSJT]]
 == WSJT
 include::wsjt.adoc[]
@@ -78,6 +83,7 @@ include::jtsdk-win32.adoc[]
 [[JTSDKNIX]]
 == JTSDK-Nix
 include::jtsdk-nix.adoc[]
+////
 
 [[PKGMATRIX]]
 [appendix]

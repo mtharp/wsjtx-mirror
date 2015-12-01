@@ -56,7 +56,7 @@ normal system update and upgrade process. To perform this step manually:
 sudo apt-get update
 sudo apt-get upgrade
 -----
-* You are now upgraded to the latest version of *JTSDK-Nix
+* You are now upgraded to the latest version of *JTSDK-Nix*
 ====
 
 [[UPGRADE_VIA_SOURCE]]
@@ -78,5 +78,5 @@ cd ./jtsdk-nix-2.0.17
 make
 sudo make install
 -----
-* You are now upgraded to the latest version of *JTSDK-Nix
+* You are now upgraded to the latest version of *JTSDK-Nix*
 ====

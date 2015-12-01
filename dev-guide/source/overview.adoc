@@ -158,6 +158,6 @@ The following is a short list of special terms used throught this guide, and the
 intended meaning.
 
 * **_Windows_**: refers to all version of Windows, Vista, 7, 8, and 10
-* **_JTSDK-Win32_**: refers to *JTSDK* on Windows
 * **_Linux_**: refers to all versions of Linux, Unix and BSD.
+* **_JTSDK-Win32_**: refers to *JTSDK* on Windows
 * **_JTSDK-Nix_**: refers to *JTSDK* on Linux

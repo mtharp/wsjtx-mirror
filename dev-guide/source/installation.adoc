@@ -106,7 +106,7 @@ You must follow the guide recommendations outlined in the
 
 |Fedora
 |Source Tarball
-|autogeh.sh, make, make install
+|autogen.sh, make, make install
 
 |Linux Lite
 |PPA
@@ -181,7 +181,6 @@ To uninstall *JTSDK-Nix*, open a terminal and execute the following commands:
 sudo apt-get remove jtsdk
 -----
 ====
-
 
 ==== Uninstall via Source
 ====

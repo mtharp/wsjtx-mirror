@@ -94,6 +94,7 @@ and steps are required in order to build WSJT and WSPR.
 
 Install dependencies first, then install Python3 Pillow using Pip3.
 
+=====
 * Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoctor clang-3.5 cmake dialog g++ gettext \
@@ -107,7 +108,6 @@ libfreetype6-dev libjpeg-dev liblcms2-dev libtiff5-dev libwebp-dev \
 libwebpmux1 mime-support tcl8.6-dev tk8.6-dev zlib1g-dev
 -----
 
-=====
 * Once the installation is complete, install Pillow with
 -----
 sudo pip3 install pillow
