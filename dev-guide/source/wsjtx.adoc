@@ -1,5 +1,5 @@
 
-**_WSJT-X_** can be built on Windows, Linux and OS X. **_WSJT_** employs CMake
+**_WSJT-X_** can be built on Windows, Linux and OS X. **_WSJT-X_** employs CMake
 to manage the build process. There are many ways to build **_WSJT-X_**. This
 guide will cover two primary methods:
 
@@ -73,7 +73,6 @@ of the build.
 . The *User Guide* build has it's own Build and Install location. This is to
 facilitated  working on documents without having to build the entire package.
 
-
 .Commands for ( _Release and Debug_ )
 =====
 * Open *JTSDK-QT*, then type:
@@ -107,3 +106,89 @@ checkout-wsjtx
 build-wsjtx doc
 -----
 =====
+
+=== Linux
+Building **_WSJT-X_** on Linux differes slightly from Windows, in that, 
+*JTSDK-Nix* provides a simple Ncurses Dialog menu for selecting package options
+rather than being strictly command line entry.
+
+At the time of this writing, *JTSDK-Nix* can build both the the Release
+Candidate Branch ( _v1.6.0-RCx_ ) as well as the main Development Branch
+( _v1.7.0_ ).
+
+
+==== Comile Using Menu System
+To build **_WSJT-X_** using the *JTSDK-Nix* Main Build Menu, launch *JTSDK*
+from either your applications menu system, or open a terminal,
+kbd:[Ctrl + Alt + t], then type:
+-----
+jtsdk
+-----
+
+The following screen should appear in your terminal:
+
+.JTSDK-Nix Main Menu
+image::images/jtsdk-nix-main-menu.png[Main Menu]
+
+.Build Hamlib3 before Building WSJT-X
+****
+Before building **_WSJT-X_**, select *Hamlib3* from the Main Build menu.
+Only after sucessfully building *Hamlib3* should you proceed to the 
+**_WSJT-X_** builds menus.
+****
+
+To build **Hamlib3**, simply select it form the Main Menu. If the build was
+sucessful, you will be presented with the <<HAMLIB3SUCESS,image>> below. You 
+should build Hamlib3 often as updates are frequently posted the integration
+repository. Whenever you build *Hamlib3*, you must also build or rebuild
+**_WSJT-X_** to integrate any changes that were made.
+
+[[HAMLIB3SUCESS]]
+.Sucessful Hamlib3 Build Summary
+image::images/hamlib3-build-summary.png[Hamlib3 Build Summary]
+
+From this point, you can select to either build the Development Branch ( _v1.7.0_ )
+or the current Release Candidate Branch ( _v1.6.0-RCx_ ). Build options
+for both are identical, the difference being the repository source location.
+
+.WSJT-X Build Menu
+image::images/wsjtx-build-menu.png[WSJT-X Build Menu]
+
+Serveral targets exist for **_WSJT-X_**, both in Debug and Release. The selections
+outlined below is a brief description of what each perform.
+
+[[WIN32BUILDCOMMADS]]
+.Selection Descriptions
+[options="header,autowidth"]
+|===
+|Selection|Description
+
+|Release Target
+|Default install target build
+
+|Debug Target
+|Default install target build with Debigging enabled
+
+|Superbuild
+|Builds Hamlib3 and WSJT-X using the Superbuild Script
+
+|Compile User Guide
+|Builds just the user guide
+
+|Help
+|Explination for each build option
+
+|Back
+|Returns to the Main Menu
+
+|===
+
+After the build finishes, you will be provided with a build summary detailing
+various elements relevant to that particual build. A similar summary will be 
+presented for all *JTSDK-Nix* builds that use the menu system.
+
+.Sucessful WSJT-X Build Summary
+image::images/wsjtx-build-summary.png[WSJT-X Build Summary]
+
+
+
