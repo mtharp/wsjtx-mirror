@@ -14,56 +14,10 @@ from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 
-
-# BEGIN: For Testing Logbook and File System Hirearchy Locations
-#*******************************************************************************
-#
-#  To Enable FSH paths...: set fsh=1 
-#  To Enable logbook.....: set lbform=1 ( not fully functional yet )
-#
-#  Note: Both options are "Disabled" by default, e.g.: set to 0
-# 
-#  FSH Base Locations:
-#  * Linux FSH Example: ~/.local/share/applications/WSJT
-#  * Win32 FSH Example: C:\Users\%USERNAME%\AppData\Local\WSJT
-#
-#
-# 0=Dsiabled, 1=Enabled
-fsh=0
-logform=0
-
-# logbook imports, if enabled
-if logform==1:
-    import csv
-    import sqlite3
-    from WsjtMod import logbook
-
-# fsh imports and setup, if enabled
-if fsh==1:
-    from WsjtMod import appdirs
-    from WsjtMod.appdirs import AppDirs
-    
-    # appdirs
-    db_prefix = AppDirs("WSJT", appauthor='', version='', multipath='')
-    dbdir=(db_prefix.user_data_dir)
-    dbdir = os.path.join(appdir, 'logbook', 'database')
-    dbackup = os.path.join(appdir, 'logbook', 'backup')
-    wsjtdb = os.path.join(dbdir, 'wsjt.db')
-    testdb = os.path.join(dbdir, 'test.db')
-    sql_file = os.path.join(dbdir, 'logbook.sql')
-    c3csv = os.path.join(dbdir, 'call3.csv')
-
-    # make the new FSH directories
-    for p in (datadir):
-        try:
-            if not os.path.exists(p):
-               os.makedirs(p)
-        except:
-            pass
-
-#*******************************************************************************
-# END: For Testing Logbook and File System Hirearchy Locations
-
+# Enable / disable Logbook Menu: 1=Enabled, 0=disabled
+EnableLogbook=0
+if EnableLogbook==1:
+    from Logbook import logbook
 
 # START WSJT MAIN UI
 root = Tk()
@@ -75,8 +29,6 @@ print("******************************************************************")
 print("WSJT Version " + Version + ", by K1JT")
 print("Revision date....: " + "$Date$"[7:-1])
 print("Run date.........: " + time.asctime(time.gmtime()) + " UTC")
-if fsh==1:
-    print("Database Dir.....:", dbdir)
 
 #See if we are running in Windows
 g.Win32=0
@@ -271,11 +223,6 @@ def textsize():
     text.configure(height=textheight)
 
 #------------------------------------------------------ logqso
-# TO-DO: - GB
-# - finish rept_sent and rpt_rcvd input
-# - convert entry filed to Pmw.Entry v.s. tkinter
-# - add sql statment for log entry to db
-# - enable save button function
 def logqso(event=NONE):
     ClearLogQSO()
     t=time.strftime("%Y-%b-%d,%H:%M",time.gmtime())
@@ -285,186 +232,10 @@ def logqso(event=NONE):
     t=t+","+ToRadio.get()+","+HisGrid.get()+","+tf+","+g.mode+","+report.get()+"\n"
     t2="Please confirm making the following entry in WSJT.LOG:\n\n" + t
     result=tkinter.messagebox.askyesno(message=t2)
-    # write data to the the original logbook ( WSJT.LOG )
     if result:
         f=open(appdir+'/WSJT.LOG','a')
         f.write(t)
         f.close()
-        # use logbook form only if enabled
-        if logform==1:
-            lb_operator=ToRadio.get()
-            lb_date=time.strftime("%Y-%b-%d",time.gmtime())
-            lb_time=time.strftime("%H:%M",time.gmtime())
-            lb_gridsquare=HisGrid.get()
-            lb_rpt_rcvd=report.get()
-            lb_rpt_sent=report.get()
-            lb_submode=g.mode
-            
-            # set band from tf frequency
-            if tf == '2': lb_band='160m'
-            elif tf == '4': lb_band='80m'
-            elif tf == '7': lb_band='40m'
-            elif tf == '10': lb_band='30m'
-            elif tf == '14': lb_band='20m'
-            elif tf == '18': lb_band='17m'
-            elif tf == '21': lb_band='15m'
-            elif tf == '24': lb_band='12m'
-            elif tf == '28': lb_band='10m'
-            elif tf == '50': lb_band='6m'
-            elif tf == '70': lb_band='4m'
-            elif tf == '144': lb_band='2m'
-            elif tf == '222': lb_band='1.25m'
-            elif tf == '432': lb_band='70cm'
-            elif tf == '902': lb_band='33cm'
-            elif tf == '1296': lb_band='23'
-            elif tf == '3456': lb_band='9cm'
-            elif tf == '5760': lb_band='6cm'
-            elif tf == '10368': lb_band='3cm'
-            elif tf == '24048': lb_band='1.25cm'
-            else: lb_band=''
-            
-            # open the logbook form
-            form = Toplevel()
-            form.title('WSJT Logbook')
-            form.resizable(0,0)
-            
-            #------------------------------------------------------ Logbook UI Frames
-            # top frame (lbf1)
-            lbf1 = LabelFrame(form, text="  QSO Log Table ")
-            lbf1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
-
-            # bottom left (lbf2)
-            lbf2 = LabelFrame(form, text="  Call3 Data Table")
-            lbf2.grid(row=2, columnspan=4, sticky='W', padx=5, pady=5, ipadx=8, ipady=8)
-
-            # bottom right (lbf2)
-            lbf3 = LabelFrame(form, text="  Save Options ")
-            lbf3.grid(row=2, column=6, columnspan=1, sticky='N', padx=4, pady=4, ipadx=0, ipady=0)
-
-            #------------------------------------------------------ QSO Log Frame
-            # Call Pmw.EntryField
-            lbf1_operator_Lbl = Label(lbf1, text="Callsign")
-            lbf1_operator_Lbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
-            lbf1_operator_txt = Entry(lbf1)
-            lbf1_operator_txt.insert(END, lb_operator)
-            lbf1_operator_txt.grid(row=1, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Date Pmw.EntryField w/Validator
-            lbf1_qso_date_lbl = Label(lbf1, text="Date (UTC)")
-            lbf1_qso_date_lbl.grid(row=0, column=1, sticky='W', padx=5, pady=2)
-            lbf1_qso_date_txt = Entry(lbf1)
-            lbf1_qso_date_txt.insert(END, lb_date)
-            lbf1_qso_date_txt.grid(row=1, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Time Pmw.EntryField w/Validator
-            lbf1_time_on_lbl= Label(lbf1, text="Time  (UTC)")
-            lbf1_time_on_lbl.grid(row=0, column=2, sticky='W', padx=5, pady=2)
-            lbf1_time_on_txt = Entry(lbf1)
-            lbf1_time_on_txt.insert(END, lb_time)
-            lbf1_time_on_txt.grid(row=1, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Submode Selection Pmw.Combobox
-            lbf1_submode_lbl = Label(lbf1, text="Mode Select")
-            lbf1_submode_lbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
-            lbf1_submode_txt = Entry(lbf1)
-            lbf1_submode_txt.insert(END, lb_submode)
-            lbf1_submode_txt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Band Slection Pmw.ComboBox
-            lbf1_band_lbl = Label(lbf1, text="Band Select")
-            lbf1_band_lbl.grid(row=0, column=4, sticky='W', padx=5, pady=2)
-            lbf1_band_txt = Entry(lbf1)
-            lbf1_band_txt.insert(END, lb_band)
-            lbf1_band_txt.grid(row=1, column=4, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Rpt_Sent Pmw.EntryField 
-            lbf1_rpt_sent_lbl = Label(lbf1, text="Rpt Sent")
-            lbf1_rpt_sent_lbl.grid(row=2, column=0, sticky='W', padx=5, pady=2)
-            lbf1_rpt_sent_txt = Entry(lbf1)
-            lbf1_rpt_sent_txt.grid(row=3, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Rpt_Rcvd
-            lbf1_rpt_rcvd_lbl = Label(lbf1, text="Rpt Rcvd")
-            lbf1_rpt_rcvd_lbl.grid(row=2, column=1, sticky='W', padx=5, pady=2)
-            lbf1_rpt_rcvd_txt = Entry(lbf1)
-            lbf1_rpt_rcvd_txt.insert(END, lb_rpt_rcvd)
-            lbf1_rpt_rcvd_txt.grid(row=3, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Grid
-            lbf1_gridsquare_lbl = Label(lbf1, text="Grid")
-            lbf1_gridsquare_lbl.grid(row=2, column=2, sticky='W', padx=5, pady=2)
-            lbf1_gridsquare_txt = Entry(lbf1)
-            lbf1_gridsquare_txt.insert(END, lb_gridsquare)
-            lbf1_gridsquare_txt.grid(row=3, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Name
-            lbf1_name_lbl = Label(lbf1, text="Name")
-            lbf1_name_lbl.grid(row=2, column=3, sticky='W', padx=5, pady=2)
-            lbf1_name_txt = Entry(lbf1)
-            lbf1_name_txt.grid(row=3, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # TxPwr
-            lbf1_tx_pwr_lbl = Label(lbf1, text="Tx Pwr")
-            lbf1_tx_pwr_lbl.grid(row=2, column=4, sticky='W', padx=5, pady=2)
-            lbf1_tx_pwr_txt = Entry(lbf1)
-            lbf1_tx_pwr_txt.grid(row=3, column=4, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # Comment
-            lbf1_comment_lbl= Label(lbf1, text="General Comments")
-            lbf1_comment_lbl.grid(row=7, column=0, sticky='W', padx=5, pady=2)
-            lbf1_comment_txt = Entry(lbf1)
-            lbf1_comment_txt.grid(row=8, column=0, columnspan=3, rowspan=2, padx=5, sticky="WE", pady=3)
-
-
-            #------------------------------------------------------ Call3 Data Table
-            # C3 Call
-            lbf2_operator_lbl = Label(lbf2, text="Callsign")
-            lbf2_operator_lbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
-            lbf2_operator_txt = Entry(lbf2)
-            lbf2_operator_txt.grid(row=1, column=0, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # C3 Grid
-            lbf2_gridsquare_lbl = Label(lbf2, text="Grid")
-            lbf2_gridsquare_lbl.grid(row=0, column=1, sticky='W', padx=5, pady=2)
-            lbf2_gridsquare_txt = Entry(lbf2)
-            lbf2_gridsquare_txt.grid(row=1, column=1, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # C3 notes
-            lbf2_notes_lbl= Label(lbf2, text="Previous Calls")
-            lbf2_notes_lbl.grid(row=0, column=2, sticky='W', padx=5, pady=2)
-            lbf2_notes_txt = Entry(lbf2)
-            lbf2_notes_txt.grid(row=1, column=2, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # C3 Last Update ( Non ADIF Spec Field )
-            lbf2_last_update_lbl = Label(lbf2, text="Last Update")
-            lbf2_last_update_lbl.grid(row=0, column=3, sticky='W', padx=5, pady=2)
-            lbf2_last_update_txt = Entry(lbf2)
-            lbf2_last_update_txt.grid(row=1, column=3, columnspan=1, padx=5, sticky="WE", pady=3)
-
-            # C3 Comment field
-            lbf2_comment_lbl = Label(lbf2, text="General Comments")
-            lbf2_comment_lbl.grid(row=3, column=0, sticky='W', padx=5, pady=2)
-            lbf2_comment_txt = Entry(lbf2)
-            lbf2_comment_txt.grid(row=4, column=0, columnspan=3, rowspan=2, padx=5, sticky="WE", pady=3)
-
-            #------------------------------------------------------ Save Options
-            # Update Call3 Data (checkbox)
-            lbf3_update_lbf2_txt = Checkbutton(lbf3, text="Update Call3 Table", onvalue=1, offvalue=0)
-            lbf3_update_lbf2_txt.grid(row=1, column=0, sticky='W', padx=5, pady=2)
-
-            # EME QSO Y/N (checkbox)
-            lbf3_is_eme_qso_txt = Checkbutton(lbf3, text="Contact is EME QSO", onvalue=1, offvalue=0)
-            lbf3_is_eme_qso_txt.grid(row=2, column=0, sticky='W', padx=5, pady=2)
-
-            # Save Buttons
-            lbf3_save_qso_button_txt = Button(lbf3, text=" Save ", fg="black", activebackground="green", background="green", command=form.destroy)
-            lbf3_save_qso_button_txt.grid(row=3, column=0, sticky='N', padx=1, pady=1, ipadx=1, ipady=1)
-
-            # Cancel Button
-            lbf3_cancel_button_txt = Button(lbf3, text="Cancel", fg="black", activebackground="red", background="red", command=form.destroy)
-            lbf3_cancel_button_txt.grid(row=4, column=0, sticky='S', padx=1, pady=1, ipadx=1, ipady=1)
-
-            form.mainloop()
 
 #------------------------------------------------------ BlinkLogQSO
 def BlinkLogQSO(event = NONE):
@@ -714,10 +485,6 @@ def txstop(event=NONE):
     Audio.gcom2.mantx=0
     
 #------------------------------------------------------ lookup
-'''
-TO-DO: Add funtion in logbook class for call3 HisGrid
-       lookup in sql3 database - GB
-'''
 def lookup(event=NONE):
     global hiscall,hisgrid
     hiscall=ToRadio.get().upper().strip()
@@ -741,9 +508,6 @@ def lookup_gen(event):
     GenMsgs()
 
 #-------------------------------------------------------- addtodb / call3
-'''
- TO-DO: add function in logbook class to add call3 record to sql3 database - GB
-'''
 def addtodb():
     global hiscall
     if HisGrid.get()=="":
@@ -2914,15 +2678,11 @@ if (sys.platform != 'darwin'):
     filebutton['menu'] = filemenu
 else:
     filemenu = Menu(mbar, tearoff=0)
-filemenu.add('command', label = 'Open', command = openfile, \
-             accelerator='Ctrl+O')
-filemenu.add('command', label = 'Open next in directory', command = opennext, \
-             accelerator='F6')
-filemenu.add('command', label = 'Decode remaining files in directory', \
-             command = decodeall, accelerator='Shift+F6')
+filemenu.add('command', label = 'Open', command = openfile,accelerator='Ctrl+O')
+filemenu.add('command', label = 'Open next in directory', command = opennext,accelerator='F6')
+filemenu.add('command', label = 'Decode remaining files in directory',command = decodeall, accelerator='Shift+F6')
 filemenu.add_separator()
-filemenu.add('command', label = 'Delete all *.WAV files in RxWav', \
-             command = delwav)
+filemenu.add('command', label = 'Delete all *.WAV files in RxWav',command = delwav)
 filemenu.add_separator()
 filemenu.add('command', label = 'Erase ALL.TXT', command = del_all)
 filemenu.add_separator()
@@ -3112,7 +2872,7 @@ if (sys.platform == 'darwin'):
 
 #------------------------------------------------------ Logbook Menu
 # Present menu only if enabled
-if logform==1:
+if EnableLogbook==1:
     if (sys.platform != 'darwin'):
         logbookbutton = Menubutton(mbar, text = 'Logbook')
         logbookbutton.pack(side = LEFT)
@@ -3120,8 +2880,8 @@ if logform==1:
         logbookbutton['menu'] = logbookmenu
     else:    
         logbookmenu = Menu(mbar, tearoff=use_tearoff)
-    logbookmenu.add('command',label="View Logbook UI", command=logform)
-    logbookmenu.add('command',label="Create Test DB", command=create_test_db)
+    logbookmenu.add('command',label="View Logbook UI", command= udev)
+    logbookmenu.add('command',label="Create Test DB", command= udev)
     logbookmenu.add('command',label = 'Generate Call3 CSV', command = udev)
     logbookmenu.add('command', label = 'View Main Log', command = udev)
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 #-------------------------------------------------------------------------------
 # This file is part of the WSJT application
@@ -26,16 +25,41 @@
 #
 #-------------------------------------------------------------------------------
 
-import sys, os, csv, time
+import sys, os, time, Pmw, csv
 from tkinter import *
-import tkinter as tk
-import sqlite3 as lite
+import sqlite3
+import appdirs
+from appdirs import AppDirs
 
-#--------------------------------------------------------------- submode dictionary
-'''
-    Maps (g.modes) submode to ADIF v3.0.4 suported modes for logbook entry
-'''
+dbf='test.db'
+wsjtdb='wsjt.db'
+testdb='test.db'
+sql_file='logbook.sql'
+c3csv='call3.csv'
 
+# For testing FSH directories
+db_prefix = AppDirs("WSJT", appauthor='', version='', multipath='')
+appdir=os.getcwd()
+dbdir=(db_prefix.user_data_dir)
+dbdir = os.path.join(appdir, 'logbook')
+dbackup = os.path.join(appdir, 'logbook')
+wsjtdb = os.path.join(dbdir, 'wsjt.db')
+testdb = os.path.join(dbdir, 'test.db')
+sql_file = os.path.join(dbdir, 'logbook.sql')
+c3csv = os.path.join(dbdir, 'call3.csv')
+
+    # make the new FSH directories
+    for p in (dbdir):
+        try:
+            if not os.path.exists(p):
+                os.makedirs(p)
+        except:
+            pass
+
+#------------------------------------------------------ Submode dictionary
+'''
+ Used to convert Submode into Mode for lb_EntryForm
+'''
 lb_submode={"PCW": "CW", \
             "CW": "CW", \
             "FSK441": "FSK441", \
@@ -65,35 +89,53 @@ lb_submode={"PCW": "CW", \
             "WSPR-15": "WSPR"
 }
 
-#--------------------------------------------------------------- bands dictinary
+#------------------------------------------------------ Band dictionary
 '''
-    Maps (tf) frequency to ADIF v3.0.4 suported bands for logbook entry
+ Used to convert (tf) from selected frequency to band
 '''
-
-lb_band={"2": "160m","4": "80m","7": "40m","10": "30m","14": "20m",\
-        "18": "17m","21": "15m","24": "12m","28": "12m","50": "2m",\
-        "70": "4m","144": "2m","222": "1.25m","432": "70cm",\
-        "902": "33cm","1296": "23cm","3456": "9cm","5760": "6cm",\
-        "10368": "3cm","24048": "1.25cm"
+lb_band={"2": "160m", \
+        "4": "80m", \
+        "7": "40m", \
+        "10": "30m", \
+        "14": "20m", \
+        "18": "17m", \
+        "21": "15m", \
+        "24": "12m", \
+        "28": "12m", \
+        "50": "2m", \
+        "70": "4m", \
+        "144": "2m", \
+        "222": "1.25m", \
+        "432": "70cm", \
+        "902": "33cm", \
+        "1296": "23cm", \
+        "3456": "9cm", \
+        "5760": "6cm", \
+        "10368": "3cm", \
+        "24048": "1.25cm"
 }
 
-#--------------------------------------------------------------- cleab scren
-'''' 
-    * Simple clear screen function used for testing locally
-    * Set the GUI widget Icon based on OS
+#------------------------------------------------------ State/Provience List
 '''
+ Used for select state or provience in lb_EntryForm
+'''
+lb_StateProv=['BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC',
+'SK', 'YT', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'IA',
+'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS',
+'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA',
+'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY'
+]
 
-def clearScreen():
+#------------------------------------------------------ Clear screen
+def lb_ClearScreen():
     if sys.platform == 'win32':
         os.system('cls')
-        icon = ("wsjt.ico")
     else:
         os.system('clear')
-        icon =  ("wsjt.jpg")
 
-#--------------------------------------------------------------- band convertion
+#------------------------------------------------------ Band conversion
 '''
-    Looks up the frequency supplied from (tf), then finds the associated
+    Look up the frequency supplied from (tf), then find the associated
     band (20m, 40m, 2m, etc) for logbook entry.
     
     Examples:
@@ -101,16 +143,16 @@ def clearScreen():
               logbook.bandConvert('14')
               logbook.bandConvert(tf)
 '''
-def bandConvert(tf):
+def lb_BandConvert(tf):
     if tf in lb_band:
         band=(str(lb_band[tf]))
         print(tf, 'was converted to', band )
     else:
         print(tf, 'was not found in the conversion dictionary')
 
-#--------------------------------------------------------------- submode converstion
+#------------------------------------------------------ Submode converstion
 '''
-    Looks up the submode supplied from ( g.modes() ), then finds the associated
+    Look up the submode supplied from ( g.modes() ), then find the associated
     mode for logbook entry. e.g. JT65A --> JT65, ISCAT-B --> ISCAT
     
     Examples:
@@ -118,7 +160,7 @@ def bandConvert(tf):
               logbook.submodeConvert('JT65A')
               logbook.submodeConvert(sm)
 '''
-def submodeConvert(sm):
+def lb_SubmodeConvert(sm):
     if sm in lb_submode:
         mode=(str(lb_submode[sm]))
         print(sm, 'was converted to', mode )
@@ -126,32 +168,15 @@ def submodeConvert(sm):
         print(sm, 'was not found in the conversion dictionary')
 
 
-#--------------------------------------------------------------- Test Database
-def testDatabase():
-    '''
-    Performs a series of simple test database activities
-        * Removes Old database ( test.db ) if exists
-        * Reads the sql input file ( logbook.sql )
-        * Creates all the database tables
-        * Populates the CALL3 table from ( c3csv.csv ) file
-        * Counts the number of tables ( nTables )
-        * Counts the number of records in ( logbook ) table
-        * Counts the number of records in ( call3 ) table
-        * Times the process from start to finish
-    '''
-
-    dbf='test.db'
-    sql_file='logbook.sql'
-    c3csv='call3.csv'
-
-    # clear and start the script
-    clearScreen()
+#------------------------------------------------------ Create DB Start
+def lb_CreateTestDatabase():
+    lb_ClearScreen()
     query_time1 = time.time()
     print("----------------------------------------")
     print("GENERATE TEST DATABASE")
     print("----------------------------------------")       
-    print(" Database ............:", dbf)
-        
+    print(" Database ............:", dbf)        
+ 
     # remove old db if exists
     if os.path.exists(dbf):
         print(" Remove old DB .......: OK")
@@ -167,7 +192,6 @@ def testDatabase():
     script = fd.read()
 
     # execute the sql script
-    print(" Importing data ......: OK")
     cursor.executescript(script)
     fd.close()
     c3data = csv.reader(open(c3csv))
@@ -175,15 +199,16 @@ def testDatabase():
                             previous_call, comment, last_update) 
                             values (?, ?, ?, ?, ?, ?, ?);''', c3data)
 
+    print(" Importing data ......: OK")
     print(" Commit changes ......: OK\n")
-    db.commit()
+    db.commit()    
 
     # get SQLite3 version
     print("DATABASE QUERIES")
     cursor.execute('SELECT SQLITE_VERSION()')
     Sv = cursor.fetchone()
-    print(" SQLite version ......: %s" % Sv)
-
+    print(" SQLite version ......: %s" % Sv) 
+ 
     # get total tables in the database
     cursor.execute("SELECT Count(*) as nTables FROM sqlite_master where type='table';")
     Nt = cursor.fetchone()
@@ -201,20 +226,39 @@ def testDatabase():
     query_time2 = (time.time()-query_time1)
     
     # close the db
-    db.close()
+    db.close() 
 
     # print total execution time
     print(" Execution time.......: %.5f seconds\n" % query_time2)
 
+ #------------------------------------------------------ Logbook Entry Form
+'''
+    Main Logbook Entry Form
+'''
+def lb_EntryForm():
+    # Use these for real WSJT.py script
+    # lb_operator=ToRadio.get()
+    #lb_date=time.strftime("%Y-%b-%d",time.gmtime())
+    #lb_time=time.strftime("%H:%M",time.gmtime())
+    #lb_gridsquare=HisGrid.get()
+    #lb_rpt_rcvd=report.get()
+    #lb_rpt_sent=report.get()
+    #lb_submode=g.mode
 
-#--------------------------------------------------------------- Logbook Entry Form
-
-def entryForm():
-    form = tk.Tk()
-    form.title('WSJT Logbook')
+    # For Testing Entry Form
+    lb_operator="K1JT"
+    lb_date=time.strftime("%Y-%b-%d",time.gmtime())
+    lb_time=time.strftime("%H:%M",time.gmtime())
+    lb_gridsquare="EM13"
+    lb_rpt_rcvd="-10"
+    lb_rpt_sent="-15"
+    lb_submode="JT65A"
+    
+    form = Tk()
+    form.title('WSJT Logbook Entry FOrm')
     form.resizable(0,0)
 
-    #------------------------------------------------------ Logbook UI Frames
+    #-------------------------------------------------- Logbook UI Frames
     # top frame (lbf1)
     lbf1 = LabelFrame(form, text="  QSO Log Table ")
     lbf1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
@@ -227,7 +271,7 @@ def entryForm():
     lbf3 = LabelFrame(form, text="  Save Options ")
     lbf3.grid(row=2, column=6, columnspan=1, sticky='N', padx=4, pady=4, ipadx=0, ipady=0)
 
-    #------------------------------------------------------ QSO Log Frame
+    #-------------------------------------------------- QSO Log Frame
     # Call Pmw.EntryField
     lbf1_operator_Lbl = Label(lbf1, text="Callsign")
     lbf1_operator_Lbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
@@ -302,7 +346,7 @@ def entryForm():
     lbf1_comment_txt.grid(row=8, column=0, columnspan=3, rowspan=2, padx=5, sticky="WE", pady=3)
 
 
-    #------------------------------------------------------ Call3 Data Table
+    #-------------------------------------------------- Call3 Data Table
     # C3 Call
     lbf2_operator_lbl = Label(lbf2, text="Callsign")
     lbf2_operator_lbl.grid(row=0, column=0, sticky='W', padx=5, pady=2)
@@ -333,7 +377,7 @@ def entryForm():
     lbf2_comment_txt = Entry(lbf2)
     lbf2_comment_txt.grid(row=4, column=0, columnspan=3, rowspan=2, padx=5, sticky="WE", pady=3)
 
-    #------------------------------------------------------ Save Options
+    #-------------------------------------------------- Save Options
     # Update Call3 Data (checkbox)
     lbf3_update_lbf2_txt = Checkbutton(lbf3, text="Update Call3 Table", onvalue=1, offvalue=0)
     lbf3_update_lbf2_txt.grid(row=1, column=0, sticky='W', padx=5, pady=2)
@@ -351,11 +395,4 @@ def entryForm():
     lbf3_cancel_button_txt.grid(row=4, column=0, sticky='S', padx=1, pady=1, ipadx=1, ipady=1)
 
     form.mainloop()
-
-#------------------------------------------------------------------------------#
-
-if __name__ == '__main__':
-    testDatabase()         # run basic tests
-    # entryForm()          # test the  mogbook form
-
-# END LOGBOOK MODULE
+ 
