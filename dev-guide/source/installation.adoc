@@ -155,7 +155,7 @@ commands in a terminal:
 
 -----
 cd ./jtsdk-nix-2.0.17
-./autogeh.sh
+./autogen.sh
 make
 sudo make install
 -----

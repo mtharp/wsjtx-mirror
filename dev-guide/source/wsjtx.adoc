@@ -23,8 +23,8 @@ having to type out long strings. These are similar in function to Linux Alias
 Commands.
 
 ==== Compile With Scripts
-Serveral targets exist for **_WSJT-X_**, both in Debug and Release. The commands
-outlind below are used to checkout and build the Development Branch for types.
+Several targets exist for **_WSJT-X_**, both in Debug and Release. The commands
+outlined below are used to checkout and build the Development Branch for types. 
 
 [[WIN32BUILDCOMMADS]]
 .WSJT-X Development Branch Build Steps
@@ -117,7 +117,7 @@ Candidate Branch ( _v1.6.0-RCx_ ) as well as the main Development Branch
 ( _v1.7.0_ ).
 
 
-==== Comile Using Menu System
+==== Compile Using Menu System
 To build **_WSJT-X_** using the *JTSDK-Nix* Main Build Menu, launch *JTSDK*
 from either your applications menu system, or open a terminal,
 kbd:[Ctrl + Alt + t], then type:
@@ -133,18 +133,18 @@ image::images/jtsdk-nix-main-menu.png[Main Menu]
 .Build Hamlib3 before Building WSJT-X
 ****
 Before building **_WSJT-X_**, select *Hamlib3* from the Main Build menu.
-Only after sucessfully building *Hamlib3* should you proceed to the 
+Only after successfully building *Hamlib3* should you proceed to the
 **_WSJT-X_** builds menus.
 ****
 
 To build **Hamlib3**, simply select it form the Main Menu. If the build was
-sucessful, you will be presented with the <<HAMLIB3SUCESS,image>> below. You 
+successful, you will be presented with the <<HAMLIB3SUCESS,image>> below. You 
 should build Hamlib3 often as updates are frequently posted the integration
 repository. Whenever you build *Hamlib3*, you must also build or rebuild
 **_WSJT-X_** to integrate any changes that were made.
 
 [[HAMLIB3SUCESS]]
-.Sucessful Hamlib3 Build Summary
+.Successful Hamlib3 Build Summary
 image::images/hamlib3-build-summary.png[Hamlib3 Build Summary]
 
 From this point, you can select to either build the Development Branch ( _v1.7.0_ )
@@ -154,7 +154,7 @@ for both are identical, the difference being the repository source location.
 .WSJT-X Build Menu
 image::images/wsjtx-build-menu.png[WSJT-X Build Menu]
 
-Serveral targets exist for **_WSJT-X_**, both in Debug and Release. The selections
+Several targets exist for **_WSJT-X_**, both in Debug and Release. The selections
 outlined below is a brief description of what each perform.
 
 [[WIN32BUILDCOMMADS]]
@@ -167,7 +167,7 @@ outlined below is a brief description of what each perform.
 |Default install target build
 
 |Debug Target
-|Default install target build with Debigging enabled
+|Default install target build with Debugin enabled
 
 |Superbuild
 |Builds Hamlib3 and WSJT-X using the Superbuild Script
@@ -176,7 +176,7 @@ outlined below is a brief description of what each perform.
 |Builds just the user guide
 
 |Help
-|Explination for each build option
+|Explanation for each build option
 
 |Back
 |Returns to the Main Menu
@@ -184,10 +184,10 @@ outlined below is a brief description of what each perform.
 |===
 
 After the build finishes, you will be provided with a build summary detailing
-various elements relevant to that particual build. A similar summary will be 
+various elements relevant to that particular build. A similar summary will be 
 presented for all *JTSDK-Nix* builds that use the menu system.
 
-.Sucessful WSJT-X Build Summary
+.Successful WSJT-X Build Summary
 image::images/wsjtx-build-summary.png[WSJT-X Build Summary]
 
 

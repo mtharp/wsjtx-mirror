@@ -22,12 +22,12 @@ or email *Joe Taylor* {joe-taylor}, to discuss helping out.
 
 === About This Guide
 .What This Guide *_"IS"_*
-The purpose of the {page} is to walk through the variaous elements of bulding
+The purpose of the {page} is to walk through the variaous elements of building
 each of the **_WSJT_** applications {amp} their associated documentation. The
 guide will, as time allows, be updated to include ( _basic_ ) operation of major
 tools such as *Cmake-gui*, *QtDesigner* and the like. It will also include,
 again, as time allows, a brief introcuction to tools used by developers
-specific to **_WSJT_** applications themself, such as jt9sim, and command line
+specific to **_WSJT_** applications them self, such as jt9sim, and command line
 operation of various binaries each package builds.
 
 .What This Guide *_"IS NOT"_*
@@ -40,9 +40,9 @@ All the build scripts in *JTSDK* proved a default build for each of the
 various applications and their associated user guide when available. The intension
 is to create repeatable results providing a high level of consistency. In
 no way should the default build(s) place limititations on more experienced
-devlopers. Rahter, the scripts should be considered an aid to troubleshooting
+devlopers. Rather, the scripts should be considered an aid to troubleshooting
 as the average user will not be changing the default build constructs. Thus 
-providing the experinced developer with a know set of variables used to build
+providing the experienced developer with a know set of variables used to build
 the application if and when a problem is identified.
 
 .Help Improve This *_"GUIDE"_*
@@ -81,7 +81,7 @@ and <<NIXSDK,Linux>> provide similar core features.
 
 .Hundreds of Usefull Tools
 ****
-In both *JTSDK-Win32* and *JTSDK-Nix*, there are literaly hundreds of tools
+In both *JTSDK-Win32* and *JTSDK-Nix*, there are literally hundreds of tools
 and applications available to the user. The <<COREFEATURES,Core Elements Table>>
 outlines the base Frameworks, Tool-Chains, and Libraries used to compile all
 **_WSJT_** applications. For a detailed list, per application, see the
@@ -154,8 +154,7 @@ any previously installed development packages. If you find or have a conflict,
 please report it to the {dev-mail-list}.
 
 === Special Terms
-The following is a short list of special terms used throught this guide, and their
-intended meaning.
+The following is a short list of special terms used throughout this guide:
 
 * **_Windows_**: refers to all version of Windows, Vista, 7, 8, and 10
 * **_Linux_**: refers to all versions of Linux, Unix and BSD.

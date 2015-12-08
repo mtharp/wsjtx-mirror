@@ -1,11 +1,11 @@
 Dependency management is an area that can casue a great deal of confusion. There
 are many types of dependencies, however, for this guide, we are mainly concerned
-with *Build* depeendencies.
+with *Build* dependencies.
 
-* Each section will list the primnary build dependencies, special notes or known
+* Each section will list the primary build dependencies, special notes or known
 issues and how best to resolve them.
 
-* In some cases, where package incompatibilties exist, a special note will be
+* In some cases, where package incompatibilities exist, a special note will be
 provided if it has been tested. 
 
 The following distributions version combinations have been tested or are known to
@@ -89,13 +89,13 @@ Xenial
 
 Install process tested on: *Debian 8.0*
 
-Due to a repository package incompatability in python3-pil, additional packages
+Due to a repository package incompatibility in python3-pil, additional packages
 and steps are required in order to build WSJT and WSPR.
 
 Install dependencies first, then install Python3 Pillow using Pip3.
 
 =====
-* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+* Open a terminal kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoctor clang-3.5 cmake dialog g++ gettext \
 gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
@@ -112,7 +112,7 @@ libwebpmux1 mime-support tcl8.6-dev tk8.6-dev zlib1g-dev
 -----
 sudo pip3 install pillow
 -----
-* Install Asciidoctor anually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
+* Install Asciidoctor amanually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
 * Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
 * Now you can run run *JTSDK* and build the applications from the main menu.
 =====
@@ -130,7 +130,7 @@ Several users in the {wsjt-yahoo-group} or users who contribute regularly to the
 do not have a package list nor specific install instructions.
 
 If you have a firm install procedure and wish to include it, send the
-informattionto the {dev-mail-list}.
+information to the {dev-mail-list}.
 
 [[MINT_SETUP]]
 === Linux Mint
@@ -143,7 +143,7 @@ still hae Audio Selection problems with **_WSJT-X_**, report it to the
 {dev-mail-list} 
 
 ====
-* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+* Open a terminal kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
 gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
@@ -161,7 +161,7 @@ qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
 
 [WARNING]
 ====
-- The Mint 17.1 / 17.2 Cinnamon Desktop installs python-numpy as part of it's
+- The Mint 17.1 / 17.2 Cinnamon Desktop installs python-numpy as part of it is
 default installation. If you encounter `PObject Errors` when running **_WSPR_** or
 **_WSJT_**, more than likely this is the cause.
 
@@ -177,7 +177,7 @@ but be warned, this may cause unexpected behavior in your Desktop Environment.
 Install process tested on: *Lite 2.6*
 
 ====
-* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+* Open a terminal kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
 gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
@@ -203,7 +203,7 @@ The default installation was performed on Unity. The package list should
 also work for Lubuntu, Xubuntu and Kubuntu.
 
 ====
-* Open a termainl kbd:[Ctrl + Alt + t], and install the build dependencies
+* Open a terminal kbd:[Ctrl + Alt + t], and install the build dependencies
 -----
 sudo apt-get install automake asciidoc clang-3.5 cmake dialog g++ gettext \
 gfortran git libfftw3-dev libhamlib-dev libhamlib-utils libqt5multimedia5 \
@@ -213,7 +213,7 @@ pkg-config portaudio19-dev python3-pil python3-pil.imagetk python3-tk \
 python3-dev python3-numpy python3-pip python3-setuptools python-dev qtbase5-dev \
 qtmultimedia5-dev ruby source-highlight subversion texinfo xmlto
 -----
-* Install Asciidoctor anually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
+* Install Asciidoctor manually, see <<ASCIIDOCTOR_INSTALL, Installing Asciidoctor>>
 * Ensure your user is in the *dialout* group, see <<DIAOUT_GROUP, How-Too>>
 * Now you can run run JTSDK and build the applications from the main menu.
 ====
@@ -242,7 +242,7 @@ sudo adduser $USER dialout
 [[ASCIIDOCTOR_INSTALL]]
 === Asciidoctor Install
 Some distributions, Ubuntu 14.04 (Trusty) and Debian 8.0 (Jessie) for example,
-do not meet the minimum Asciidoctor version requirment ( *v1.5.3* ) for building
+do not meet the minimum Asciidoctor version requirement ( *v1.5.3* ) for building
 **_WSJT-X v1.7.0_**. This can easily be resolved by installing Asciidoctor
 through the Gem Module Manager. If your distribution Asciidoctor package *is not*
 at least ( *v1.5.3* ), install Asciidoctor as follows:
@@ -283,6 +283,6 @@ Runtime Environment (ruby 1.9.3p484 (2013-11-22 revision 43786) [x86_64-linux])
 [[JACKD2_NOTE]]
 === Jackd2 Specail Note
 On some Debian / Ubuntu distributions, during the installation of portaudio19-dev,
-Jack2 may be uninsatalled. If you are using Jackd2 for other applications, you
+Jack2 may be uninstalled. If you are using Jackd2 for other applications, you
 should be able to re-install it without affecting the portaudio19-dev package.
 
