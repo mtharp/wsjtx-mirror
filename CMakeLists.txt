@@ -171,6 +171,7 @@ ExternalProject_Add_Step (wsjtx package
   DEPENDEES build
   )
 
+set_target_properties (hamlib PROPERTIES EXCLUDE_FROM_ALL 1)
 set_target_properties (wsjtx PROPERTIES EXCLUDE_FROM_ALL 1)
 
 add_dependencies (wsjtx-configure hamlib-install)
