@@ -36,6 +36,7 @@ ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
 PACKAGEDIR = $(SDK)/wsjt/package
+LOGBOOKDIR = $(SDK)/wsjt/install/logbook
 
 # Python Paths
 PYTHON2 = $(SDK)/python27/python.exe
@@ -165,8 +166,8 @@ install:
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
-	$(MKDIR) -p $(INSTALLDIR)/logbook
-	$(CP) -ur Logbook/call3.csv Logbook/logbook.sql Logbook/logbook.db $(INSTALLDIR)/logbook
+	$(MKDIR) $(LOGBOOKDIR)
+	$(CP) -ur Logbook/call3.csv Logbook/logbook.sql Logbook/logbook.db $(LOGBOOKDIR)
 	@echo.
 	@echo  INSTALL SUMMARY
 	@echo --------------------------------------
