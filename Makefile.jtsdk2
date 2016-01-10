@@ -165,7 +165,7 @@ install:
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
-	$(MKDIR) $(INSTALLDIR)/logbook
+	$(MKDIR) -p $(INSTALLDIR)/logbook
 	$(CP) -ur Logbook/call3.csv Logbook/logbook.sql Logbook/logbook.db $(INSTALLDIR)/logbook
 	@echo.
 	@echo  INSTALL SUMMARY
