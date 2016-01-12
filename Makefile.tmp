@@ -201,7 +201,7 @@ list-targets:
 	@echo  ^distclean ..^: Clean SRC, Install ^& Package Dirs
 	@echo. 
 	@echo  At the prompt, type:
-	@echo  ^build-wsjtx target-name
+	@echo  ^build-wsjt target-name
 	@echo.
 
 clean:
