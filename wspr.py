@@ -65,7 +65,8 @@ root = Tk()
 Version="4.0 r" + "$Rev$"[6:-2]
 print("******************************************************************")
 print("WSPR Version " + Version + ", by K1JT")
-print("Run date:   " + time.asctime(time.gmtime()) + " UTC")
+print("Revision date...: " + "$Date: 2016-01-12 01:54:47 -0700 (Tue, 12 Jan 2016) $"[7:-1])
+print("Run date .......: " + time.asctime(time.gmtime()) + " UTC")
 
 #See if we are running in Windows
 g.Win32=0
