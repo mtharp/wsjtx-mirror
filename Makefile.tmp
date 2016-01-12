@@ -1,13 +1,16 @@
-# Makefile for Windows JTSDK v2.0.0: Python2, Python3, F2PY, MinGW, gcc and gfortran
-
-# Re-direct stdout and stderr:     cmd.exe
-#                              make > junk 2>&1
+# JTSDK-Win32 v2.0.4 Temporary Makefile
+# TO-DO
+# - Update Makefile.jtsdk2 with this makefile
+# - Convert User Guide from AsciiDoc to AsciiDoctor
+# - Remove Makefile.tmp when v2.0.4 is released
+# - After v2.0.4 is released, Python27 and AsciiDoc will no longer be required
 
 # Application Information
-NAME = WSJT
-VER = 10.0
-OS = Win32
-SDK = C:/JTSDK
+NAME	=	WSJT
+VER		=	10.0
+SVER	?=
+OS		=	Win32
+SDK		=	C:/JTSDK
 
 # Tool Chain
 AR = $(SDK)/mingw32/bin/ar.exe
@@ -32,6 +35,7 @@ DOCSRC = $(SRCD)/doc/user_guide
 DOCCONF = $(SRCD)/doc/wsjt-jtsdk2.conf
 THEMEDIR = $(SRCD)/doc/theme
 ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
+ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
@@ -62,7 +66,7 @@ CFLAGS = -I. -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 	$(FC) $(FFLAGS) -c $<
 
 # Build Targets
-all:	libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd user-guide
+all:	libjt.a jt65code jt4code Audio.pyd docs
 
 # Build OBJ1 for libjt.a
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
@@ -103,7 +107,7 @@ libjt.a: $(OBJS1)
 
 # Build jt65code.exe
 OBJS2 = jt65code.o 
-jt65code.exe: $(OBJS2) libjt.a
+jt65code: $(OBJS2) libjt.a
 	@echo.
 	@echo  Compiling jt65code.exe
 	@echo ------------------------------
@@ -111,7 +115,7 @@ jt65code.exe: $(OBJS2) libjt.a
 
 # Build jt4code.exe
 OBJS3 = jt4code.o 
-jt4code.exe: $(OBJS3) libjt.a
+jt4code: $(OBJS3) libjt.a
 	@echo.
 	@echo  Compiling jt4code.exe
 	@echo ------------------------------
@@ -122,9 +126,9 @@ F2PYSRC = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 \
 	getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
 
 # Build Audio.pyd
-WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
+Audio.pyd: libjt.a $(F2PYSRC)
 	@echo.
-	@echo  RUN F2PY for Audio.pyd
+	@echo  Run F2PY for Audio.pyd
 	@echo ------------------------------
 	$(F2PY) -c -I. \
 	--quiet --fcompiler=gnu95 \
@@ -134,47 +138,36 @@ WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
 	libpthreadGC2.a -lwinmm -m Audio $(F2PYSRC)
 	$(MV) Audio.pyd WsjtMod/Audio.pyd
 
-user-guide:
+# Build the User Guide
+docs:
 	@echo.
-	@echo  RUN AsciiDoc
+	@echo  Run AsciiDoc
 	@echo ------------------------------
-	@echo Building User Guide: wsjt-main-$(VER).html
 	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
 	--conf-file=$(DOCCONF) \
 	--backend=xhtml11 \
 	--theme wsjt \
-	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
-	@echo.
-	@echo Finished
-	@echo Doc location: $(DOCPATH)/wsjt-main-$(VER).html
+	--out-file=$(DOCPATH)/wsjt-main.html $(DOCSRC)/wsjt-main.adoc
 
 # Run CX_Freeze to install WSJT to $(INSTALLDIR)
-# CX_Freeze creates the $(INSTALLDIR) if not present.
+# CX_Freeze creates $(INSTALLDIR) if not present.
 install:
 	@echo.
-	@echo  RUN CX_FREEZE
+	@echo  Run Cx_Freeze
 	@echo --------------------------------------
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
 	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
 	@echo.
-	@echo  INSTALL ADDITIONAL FILES
+	@echo  Install Additional Files
 	@echo --------------------------------------
 	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
-	$(CP) -u CALL3.TXT wsjt.ico wsjt.bat $(INSTALLDIR)
-	$(CP) -u $(DOCPATH)/wsjt-main-$(VER).html $(INSTALLDIR)	
+	$(CP) -u CALL3.TXT wsjt.ico $(INSTALLDIR)
+	$(CP) -u $(DOCPATH)/wsjt-main.html $(INSTALLDIR)	
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
 	$(CP) -ur Logbook/call3.csv Logbook/logbook.sql Logbook/logbook.db $(LOGBOOKDIR)
-	@echo.
-	@echo  INSTALL SUMMARY
-	@echo --------------------------------------
-	@echo  Package ......: $(NAME)
-	@echo  Version ......: $(VER)
-	@echo  Source .......: $(SRCD)
-	@echo  Install Dir ..: $(INSTALLDIR)
-	@echo  User Guide ...: $(INSTALLDIR)/wsjt-main-$(VER).html
 	
 # /O = Installer output directory
 # /F = Win32 output file name
@@ -186,43 +179,33 @@ install:
 # ISCC creates $(PACKAGEDIR) if not present.
 package:
 	@echo.
-	@echo  BUILDING INSTALLER with InnoSetup
+	@echo  Build Win32 Installer
 	@echo --------------------------------------
-	@$(RM) -rf $(PACKAGEDIR)
-	@$(MKDIR) -p $(PACKAGEDIR)
-	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(OS)" /cc $(ISS)
-	@echo.
-	@echo  WIN32 PACKAGE SUMMARY
-	@echo --------------------------------------
-	@echo  Package ..........: $(NAME)
-	@echo  Version ..........: $(VER)
-	@echo  Source ...........: $(SRCD)
-	@echo  Win32 Installer ..: $(PACKAGEDIR)/$(NAME)-$(VER)-$(OS).exe
-	@echo.
+	$(ISCC) "/Q[p]" /O"$(PACKAGEDIR)" /F"$(NAME)-$(VER)-$(SVER)-$(OS)" /cc $(ISS)
 
-.PHONY : list-targets clean distclean
+.PHONY: list-targets clean distclean
+
 list-targets:
-	@cls
 	@echo --------------------------------------
-	@echo  $(NAME) Build Targets
+	@echo  $(NAME) Targets
 	@echo --------------------------------------
 	@echo. 
-	@echo  libjt.a  ........... WSJT Library
-	@echo  jt65code.exe ....... JT65 code test app
-	@echo  jt4code.exe ........ JT4 code test app
-	@echo  WsjtMod/Audio.pyd .. Audio Library for WSJT
-	@echo  user-guide ......... Build WSJT User Guide
-	@echo  install ............ Build and Install WSJT
-	@echo  package ............ Build Win32 Installer
-	@echo  clean .............. Clean SRC directory
-	@echo  distclean .......... Clean SRC, Install & Package Dirs
+	@echo  ^libjt.a ....^: WSJT Library
+	@echo  ^jt65code ...^: JT65 code binary
+	@echo  ^jt4code ....^: JT4 code binary
+	@echo  ^Audio.pyd ..^: Audio Library
+	@echo  ^docs .......^: Build WSJT User Guide
+	@echo  ^install ....^: Build and Install WSJT
+	@echo  ^package ....^: Build Win32 Installer
+	@echo  ^clean ......^: Clean SRC directory
+	@echo  ^distclean ..^: Clean SRC, Install ^& Package Dirs
 	@echo. 
 	@echo  At the prompt, type:
-	@echo  make -f Makefile.jtsdk2 ^<target-name^>
+	@echo  ^build-wsjtx target-name
 	@echo.
 
 clean:
-	$(RM) -f $(DOCPATH)/wsjt-main-$(VER).html
+	$(RM) -f $(DOCPATH)/wsjt-main-$(VER).html jtsdk.iss
 	$(RM) -rf libjt.a jt65code.exe jt4code.exe WsjtMod/Audio.pyd ./*.o
 
 distclean: clean
