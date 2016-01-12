@@ -8,6 +8,7 @@ Greg Beam, KI7MT Version 2.0
 :numbered:
 :experimental:
 :docinfo1:
+:source-highlighter: coderay
 :y: icon:check[role="green"]
 :n: icon:times[role="red"]
 :o: icon:circle-thin[role="blue"]

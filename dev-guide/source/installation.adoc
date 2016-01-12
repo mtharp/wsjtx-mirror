@@ -63,6 +63,8 @@ scripts will need to be changed. It is highly advisable to leave the
 default installation location as is.
 *****
 
+==== Windows Installation Steps
+
 IMPORTANT: You *must have* Internet access in order to perform the installation
 
 With the exception of *OmniRig*, where you must Unzip the package first, 

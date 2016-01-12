@@ -22,7 +22,7 @@ or email *Joe Taylor* {joe-taylor}, to discuss helping out.
 
 === About This Guide
 .What This Guide *_"IS"_*
-The purpose of the {page} is to walk through the variaous elements of building
+The purpose of the {page} is to walk through the various elements of building
 each of the **_WSJT_** applications {amp} their associated documentation. The
 guide will, as time allows, be updated to include ( _basic_ ) operation of major
 tools such as *Cmake-gui*, *QtDesigner* and the like. It will also include,
@@ -58,7 +58,7 @@ Additionally, if you feel something should be added, modified, omitted or
 otherwise adjusted in {page}, send your recommendations {dev-mail-list}.
 
 === The Command Line
-With {page}, all work is performed from the ( _Command Line_ ), *DOS Console* 
+When using *JTSDK*, all work is performed from the ( _Command Line_ ), *DOS Console* 
 on Windows, *Bash Shell* on Linux. There is no Graphical User Interace 
 ( _GUI_ ), Widgets or Point {amp} Click interface associated with the scripts.
 Without question, there are *_PROS_* {amp} *_CONS_* to both methods, however,

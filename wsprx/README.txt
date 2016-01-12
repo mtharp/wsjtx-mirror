@@ -1,4 +1,4 @@
 WSPRX documentation has been moved too:
 
-^/branches/doc
+^/branches/wsprx/doc
 
