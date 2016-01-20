@@ -79,9 +79,9 @@ decoding pings by itself, and the transmitted message is correctly
 decoded for three different pings in each of these two files, for
 example:
 
-------------
+-----
     111730  7.7  140  3 26  15   K1JT N5SIX          *
-------------
+-----
 
 - Each line of decoded text contains the starting time of the
 transmission; the time *T* of each detected ping, relative to the
@@ -115,9 +115,9 @@ signal that failed to decode automatically.
 the +...\Samples\FSK441+ subdirectory.  The decoder produces the
 following text in the main text box:
 
-----
+-----
     O1JT 26 K5CZD 2626 K1JT 27 K5CZ #6
-----
+-----
 
 - K5CZD is sending K1JT the signal report 26.  In FSK441 mode it
 is not uncommon to see some incorrect characters, especially near the
@@ -127,7 +127,7 @@ ends of decoded sequences where the signal is weak.
 and decode successive files in the FSK441 directory.  These recordings 
 contain the following easily decoded messages:
 
----------
+-----
     B KI4BWW K8EB KI4BWW K8EB KI4BWW K8
     32 CQ KC0HLN EN32 CQ KC0HLN E
     LN K1JT KC0HLN K1JT KC0HLN K1JT K
@@ -136,7 +136,7 @@ contain the following easily decoded messages:
     26 K1JT 26 KM5ES 
     M5PO K1JT KM5PO K1JT KM5PO K1JT KM5PO
     EGT CQ DE N9EGT CQ DE N9EGT CQ DE N9E
----------
+-----
 
 - Try left- and right-clicking on pings in any of these files to
 invoke the decoder at a particular location in the file.
@@ -177,7 +177,7 @@ all -- but ISCAT decodes them flawlessly.
 TIP: Usable ISCAT signals are often well below the noise, so signal
 strengths are quoted as S/N rather than (S+N)/N. 
 
-///////////
+////
 The four numbers following each decoded message give the detected
 message length in characters (including the invisible
 beginning-of-message character); the worst-case confidence level for
@@ -186,24 +186,24 @@ confidence level for all characters in the message, on the same 0-10
 scale; and the length in seconds of a selected data segment yielding
 highest confidence levels.  These numbers have been useful in
 optimizing the ISCAT decoder; they may be removed in future.
-////////////
+////
 
 .JT6M
 
 - Switch to mode JT6M and open file +AA9MY_030323_142300.wav+ in the
 JT6M subdirectory.  You should see decoded text 
 
-----
+-----
     9MY 73 DE AA9MF2
-----
+-----
 
 - Try left-clicking near t = 15.0 s.  You should be able to obtain the
 average message shown below.  (Averaged messages are indicated by an
 asterisk +*+ near the end of line, followed by the message length.)
 
-----
+-----
     73 DE AA9MY         *
-----
+-----
 
 
 - Hit *F6* to read and decode subsequent files in the JT6M directory.
@@ -249,9 +249,9 @@ interfering signals.  However, the red curve in the main-screen
 graphical area shows a strong JT65 sync tone amongst the clutter, and
 the decoder produces
 
-----
+-----
   074800 2 -20 2.6 361  3 *   K1JT F9HS JN23      1  0
-----
+-----
 
 - Double-click on +F9HS+ in the text window.  This callsign will be
 copied into the *To Radio* box; the database will be searched and the

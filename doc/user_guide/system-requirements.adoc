@@ -1,4 +1,3 @@
-///
 ////
 Should this be moverd to global file? as it applies accross all WSJT apps.
 . Maybe a Matrix would work, example.

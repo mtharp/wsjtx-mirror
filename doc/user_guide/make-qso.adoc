@@ -191,27 +191,27 @@ like the sequence of transmissions below.  You should step ahead to
 the next message in your sequence only when you have received your QSO
 partner's information from his sequence.
 
-------------
+-----
   1.  CQ K1ABC
   2.                     K1ABC W9XYZ
   3.  W9XYZ K1ABC 27 
   4.                     K1ABC W9XYZ R26 
   5.  W9XYZ K1ABC RRR
   6.                     K1ABC W9XYZ 73
-------------
+-----
 
 In North America, shorthand messages R26, RRR and 73 are often
 substituted for messages 4, 5, and 6, so the QSO would proceed
 like this:
  
-------------
+-----
   1.  CQ K1ABC
   2.                     K1ABC W9XYZ
   3.  W9XYZ K1ABC 27 
   4.                     R26 
   5.  RRR
   6.                     73
-------------
+-----
 
 
 === Slow Modes
@@ -221,14 +221,14 @@ QSOs by using short structured messages.  The process works best if
 you use these formats and follow standard operating practices.  The
 recommended basic QSO goes something like this:
 
-------------
+-----
   1.  CQ K1ABC FN42
   2.                    K1ABC G0XYZ IO91
   3.  G0XYZ K1ABC -19
   4.                    K1ABC G0XYZ R-22
   5.  G0XYZ K1ABC RRR
   6.                    K1ABC G0XYZ 73
--------------
+-----
 
 *Standard messages* consist of two callsigns (or CQ, QRZ, or DE and
 one callsign) followed by the transmitting station's grid locator, a
@@ -253,14 +253,14 @@ these messages can be easily recognized on the waterfall and also by
 ear.  EME QSOs often use the shorthand messages, and in that case a
 typical QSO proceeds like this:
 
-------------
+-----
   1.  CQ K1ABC FN42
   2.                        K1ABC G0XYZ IO91
   3.  G0XYZ K1ABC FN42 OOO
   4.                        RO
   5.  RRR
   6.                        73
--------------
+-----
 
 *Free text messages* are often used to convey some friendly chit-chat
 at the end of a QSO.  Arbitrary messages such as ``TNX ROBERT 73'' or
@@ -280,32 +280,32 @@ used instead of a third message word in a structured message.  Thus,
 the following examples are all acceptable *Type 1* messages involving
 compound callsigns:
 
------------
+-----
   CQ ZA/K1ABC
   CQ K1ABC/4
   ZA/K1ABC G0XYZ
   G0XYZ K1ABC/4
------------
+-----
 
 The following messages are _not_ valid, because a third word is not
 permitted in a *Type 1* compound-callsign message:
 
------------
+-----
   ZA/K1ABC G0XYZ -22        #These messages will be sent
   G0XYZ K1ABC/4 73          #without the third "word"
------------
+-----
 
 A QSO involving a station using a *Type 1* compound callsign might
 look like this:
 
-----------------
+-----
   1.  CQ ZA/K1ABC
   2.                      ZA/K1ABC G0XYZ
   3.  G0XYZ K1ABC -19
   4.                      K1ABC G0XYZ R-22
   5.  G0XYZ K1ABC RRR
   6.                      K1ABC G0XYZ 73
-----------------
+-----
 
 Notice that both operators send and receive the full compound
 callsign in their first transmission.  After that, they omit the
@@ -320,11 +320,11 @@ characters, suffixes 1 to 3 characters.  A third word conveying a
 locator, signal report, RRR, or 73 is permitted.  The following are
 valid *Type 2* messages with compound callsigns:
 
-----------
+-----
   CQ W4/G0XYZ FM07
   DE W4/G0XYZ -22
   QRZ K1ABC/VE6 DO33
-----------
+-----
 
 In each case, the message is treated as *Type 2* because the add-on
 prefix or suffix is _not_ one of those in the fixed list displayed
@@ -334,24 +334,24 @@ messages involvinf *Type 2* compound callsigns.
 QSOs involving *Type 2* compound callsigns might look like one
 of the following sequences
 
-----------
+-----
 1.  CQ KP4/K1ABC FK68
 2.                      K1ABC G0XYZ IO91
 3.  G0XYZ K1ABC -19
 4.                      K1ABC G0XYZ R-22
 5.  G0XYZ K1ABC RRR
 6.                      K1ABC G0XYZ 73
-----------
+-----
 
 
-----------
+-----
 1.  CQ K1ABC FN42
 2.                      DE G0XYZ/W4 FM18
 3.  G0XYZ K1ABC -19
 4.                      K1ABC G0XYZ R-22
 5.  G0XYZ K1ABC RRR
 6.                      DE G0XYZ/W4 73
-----------
+-----
 
 Each operator sends his own compound callsign in the first (and
 possibly also last) transmission, as may be required by licensing

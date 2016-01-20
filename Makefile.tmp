@@ -143,10 +143,7 @@ docs:
 	@echo.
 	@echo  Run AsciiDoc
 	@echo ------------------------------
-	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
-	--conf-file=$(DOCCONF) \
-	--backend=xhtml11 \
-	--theme wsjt \
+	$(ASCIIDOCTOR) -a data-uri -a toc2=left -a max-width=1024px \
 	--out-file=$(DOCPATH)/wsjt-main.html $(DOCSRC)/wsjt-main.adoc
 
 # Run CX_Freeze to install WSJT to $(INSTALLDIR)
