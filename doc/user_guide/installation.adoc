@@ -95,11 +95,12 @@ compile the program you will need to install the following packages:
 
 - Subversion
 - Python 3.x, and the following Python packages
-** python-numpy
-** python-imaging-tk
-** python-pmw
+** python3-numpy
+** python3-imaging-tk
+** python3-pil
+** python3-pil.imagetk
 - gcc
-- gfortran or g95
+- gfortran
 - fftw3
 - PortAudio
 - libsamplerate
@@ -108,7 +109,7 @@ compile the program you will need to install the following packages:
 With Subversion installed, the full source code for _WSJT_ can be
 downloaded with the command:
 
-  svn co svn://svn.berlios.de/wsjt/trunk
+  svn co http://svn.code.sf.net/p/wsjt/wsjt/trunk
 
 // Need further compiling Instructions
 For some basic instructions on building _WSJT_ from source code, see the

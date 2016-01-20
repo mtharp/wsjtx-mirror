@@ -32,6 +32,7 @@ DOCSRC = $(SRCD)/doc/user_guide
 DOCCONF = $(SRCD)/doc/wsjt-jtsdk2.conf
 THEMEDIR = $(SRCD)/doc/theme
 ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
+ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
@@ -136,13 +137,10 @@ WsjtMod/Audio.pyd: libjt.a $(F2PYSRC)
 
 user-guide:
 	@echo.
-	@echo  RUN AsciiDoc
+	@echo  RUN Asciidoctor
 	@echo ------------------------------
 	@echo Building User Guide: wsjt-main-$(VER).html
-	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
-	--conf-file=$(DOCCONF) \
-	--backend=xhtml11 \
-	--theme wsjt \
+	$(ASCIIDOCTOR) -a data-uri -a toc2=left -a max-width=1024px \
 	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
 	@echo.
 	@echo Finished
@@ -166,6 +164,7 @@ install:
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
+	$(MKDIR) $(INSTALLDIR)/Logbook
 	$(CP) -ur Logbook/call3.csv Logbook/logbook.sql Logbook/logbook.db $(LOGBOOKDIR)
 	@echo.
 	@echo  INSTALL SUMMARY
