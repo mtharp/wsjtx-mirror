@@ -39,6 +39,7 @@ DOCSRC = $(SRCD)/doc/user_guide
 DOCCONF = $(SRCD)/doc/wspr-jtsdk2.conf
 THEMEDIR = $(SRCD)/doc/theme
 ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
+ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 
 # Output Paths
 INSTALLDIR = $(SDK)/wspr/install
@@ -181,13 +182,10 @@ w.pyd: libwspr.a $(F2PYSRC)
 
 docs:
 	@echo.
-	@echo  Run AsciiDoc
+	@echo  Run Asciidoctor
 	@echo ------------------------------
 	@echo Building wspr-main-$(VER).html
-	$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
-	--conf-file=$(DOCCONF) \
-	--backend=xhtml11 \
-	--theme wspr \
+	$(ASCIIDOCTOR) -a data-uri -a toc2=left -a max-width=1024px \
 	--out-file=$(DOCPATH)/wspr-main-$(VER).html $(DOCSRC)/wspr-main.adoc
 
 # Run CX_Freeze to install WSPR to $(INSTALLDIR)

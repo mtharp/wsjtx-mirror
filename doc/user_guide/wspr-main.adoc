@@ -1,8 +1,7 @@
 = WSPR User Guide
 Version 4.0
-
-:badges:
-:icons:
+:docinfo1:
+:icons: font
 :numbered:
 :keywords: amateur radio weak signal communication K1JT WSJT FSK441 JT65 JT6M WSPR WSJT-X WSPR-X
 :description: Software for Amateur Radio Weak-Signal Communication
