@@ -3,7 +3,8 @@
 #								make >& junk
 #
 # Prerequisites: Python 3.x, numpy-1.8.1+, PIL, Portaudio, Samplerate, FFTW
-#                Python 2.x and AsciiDoc for User Guide and Manpages
+#                Python 2.x and A2X for Manpages
+#                Ruby and Asciidoctor for User Guide
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -58,11 +59,14 @@ PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
 # For Manpages
+BMANP		:=	@BMANP@
 A2X			:=	@A2X@
 MANPSRC		:= $(wildcard manpages/*.1.txt)
 
 # For User Guide
+BDOC		:=	@BDOC@
 ASCIIDOC	:=	@ASCIIDOC@
+ASCIIDOCTOR	:=	@ASCIIDOCTOR@
 PYTHON2		:=	@PYTHON2@
 DOCSRC		:=	@DOCSRC@
 DOCCONF		:=	@DOCCONF@
@@ -181,6 +185,7 @@ WsprMod/w.so:	libwspr.a ${F2PYSRCS} acom1.f90
 	${MV} w*.so WsprMod/w.so
 
 # Generate Manpages
+ifeq ($(BMANP),Yes)
 manp:
 	@echo
 	@echo Generating Manpages
@@ -189,17 +194,18 @@ manp:
 	echo "$$f" ; \
 	@A2X@ --doctype manpage --format manpage --no-xmllint $$f ; \
 	done
+endif
 
 # Generate User Guide
+ifeq ($(BDOC),Yes)
 user-guide:
 	@echo
 	@echo Generating User Guide
 	@echo ---------------------
-	@@PYTHON2@ @ASCIIDOC@ -a data-uri -a toc2 -a max-width=1024px \
-	--conf-file=@DOCCONF@ \
-	--backend=xhtml11 \
-	--theme wspr \
+	@@ASCIIDOCTOR@ -a data-uri -a toc=left -a max-width=1024px \
 	--out-file=$(DOCPATH)/wspr-main-@VERSION@.html $(DOCPATH)/user_guide/wspr-main.adoc
+	@echo "Building ..: wspr-main-@VERSION@.html"
+endif
 
 # Install target wspr
 install:
@@ -209,13 +215,13 @@ install:
 	@echo '-----------------------------------'
 	@echo '..Creating Directories'
 	@@MKDIR@ -p ${DESTDIR}@BINDIR@
-	@@MKDIR@ -p ${DESTDIR}@MANDIR@
-	@@MKDIR@ -p ${DESTDIR}@DOCDIR@/examples
 	@@MKDIR@ -p ${DESTDIR}@SHARED@
 	@@MKDIR@ -p ${DESTDIR}@SHARED@/save/Samples
-	@@MKDIR@ -p ${DESTDIR}@WSPRLIB@/WsprMod
 	@@MKDIR@ -p ${DESTDIR}@SHARED@/../applications
 	@@MKDIR@ -p ${DESTDIR}@SHARED@/../pixmaps
+	@@MKDIR@ -p ${DESTDIR}@MANDIR@
+	@@MKDIR@ -p ${DESTDIR}@DOCDIR@/examples
+	@@MKDIR@ -p ${DESTDIR}@WSPRLIB@/WsprMod
 	@echo '..Installing Binaries'
 	@install -m 755 fmtest fcal fmeasure fmtave wspr0 wsprcode ${DESTDIR}@BINDIR@
 	@strip	${DESTDIR}@BINDIR@/fmtest ${DESTDIR}@BINDIR@/fcal \
@@ -225,14 +231,18 @@ install:
 	@@CHMOD@ 755 ${DESTDIR}@BINDIR@/wspr
 	@echo '..Installing WsprMod'
 	@install -m 755 WsprMod/* ${DESTDIR}@WSPRLIB@/WsprMod
+ifeq ($(BMANP),Yes)
 	@echo '..Installing Manpages'
 	@install -m 644 manpages/*.1 ${DESTDIR}@MANDIR@
+endif
 	@echo '..Installing Sample Files'
 	@install -m 644 save/Samples/* ${DESTDIR}@SHARED@/save/Samples/
 	@install -m 755 gocal Pmw*.py wspr.py wspr.sh wsprrc ${DESTDIR}@SHARED@
 	@echo '..Installing Shared Documents'
-	@install -m 644 AUTHORS	README NEWS COPYING COPYRIGHT ${DESTDIR}@DOCDIR@
-	@install -m 644 $(DOCPATH)/wspr-main-@VERSION@.html ${DESTDIR}@DOCDIR@
+	@install -m 644 AUTHORS	README NEWS COPYING COPYRIGHT ${DESTDIR}@DOCDIR@/
+ifeq ($(BDOC),Yes)
+	@install -m 644 $(DOCPATH)/wspr-main-@VERSION@.html ${DESTDIR}@DOCDIR@/
+endif
 	@@CP@ -r doc/examples/* ${DESTDIR}@DOCDIR@/examples/
 	@@CHMOD@ -R 644 ${DESTDIR}@DOCDIR@/examples/*
 	@install -m 644 hamlib_rig* ${DESTDIR}@SHARED@
@@ -278,8 +288,12 @@ clean :
 	@RM@ -f *.o libwspr.a wspr.desktop ./WsprMod/*.pyc ./WsprMod/*.pyo
 	@RM@ -f ./WsprMod/w.so ./WsprMod/*.so ./WsprMod/*.so
 	@RM@ -f ./{wsprcode,wspr0,fmtest,fmtave,fcal,fmeasure,wspr.sh}
-	@RM@ -f ./manpages/{wspr.1,fmtest.1,fmtave.1,fmeasure.1,fcal.1,wsprcode.1,wspr0.1}
+ifeq ($(BDOC),Yes)
 	@RM@ -f doc/wspr*.html
+endif
+ifeq ($(BMANP),Yes)
+	@RM@ -f ./manpages/{wspr.1,fmtest.1,fmtave.1,fmeasure.1,fcal.1,wsprcode.1,wspr0.1}
+endif
 
 distclean: clean
 	@RM@ -f config.log config.status ALL_WSPR*.TXT WSPR.INI \

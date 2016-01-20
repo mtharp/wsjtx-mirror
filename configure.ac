@@ -91,8 +91,6 @@ CFLAGS="$OCFLAGS"
 # check standard apps
 # ------------------------------------------------------------------------------
 AC_C_INLINE
-AC_PATH_PROG([ASCIIDOC], [asciidoc])
-AC_PATH_PROG([A2X], [a2x])
 AC_PATH_PROG([AR], [ar])
 AC_PATH_PROG([AWK], [awk])
 AC_PATH_PROG([CP], [cp])
@@ -136,6 +134,41 @@ limits.h linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h portaudio.h \
 samplerate.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h strings.h \
 sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h sys/stat.h sys/syslog.h \
 sys/time.h sys/wait.h termios.h unistd.h wait.h])
+
+
+# ------------------------------------------------------------------------------
+#  enable - disable user guide, default is enabled
+# ----------------------------------------------------------------------------
+AC_ARG_ENABLE([docs],
+	AC_HELP_STRING([--disable-docs], [Disable Building Documentation]),
+	[ac_cv_docs=yes], [])
+
+if test "x$ac_cv_docs" = "xyes"; then
+	BDOC=No
+	AC_MSG_NOTICE([Build Documentation is Disabled])
+else
+	BDOC=Yes
+	AC_MSG_NOTICE([Build Documentation is Enabled])
+	AC_PATH_PROG([ASCIIDOCTOR], [asciidoctor])
+fi
+AC_SUBST([BDOC], ["$BDOC"])
+
+# ------------------------------------------------------------------------------
+#  enable - disable manpages, default is enabled
+# ----------------------------------------------------------------------------
+AC_ARG_ENABLE([manpages],
+	AC_HELP_STRING([--disable-manpages], [Disable Manpages]),
+	[ac_cv_manpages=yes], [])
+
+if test "x$ac_cv_manpages" = "xyes"; then
+	BMANP=No
+	AC_MSG_NOTICE([Build Manpages is Disabled])
+else
+	BMANP=Yes
+	AC_MSG_NOTICE([Build Manpages is Enabled])
+	AC_PATH_PROG([A2X], [a2x])
+fi
+AC_SUBST([BMANP], ["$BMANP"])
 
 
 # ------------------------------------------------------------------------------
@@ -664,6 +697,8 @@ echo "-------------------------------------------"
 echo ''
 echo " Install prefix ...: ${PREFIX}"
 echo " Package: .........: ${PROGRAM} ${VERSION}"
+echo " Build Docs .......: ${BDOC}"
+echo " Build Manpages ...: ${BMANP}"
 echo " Optimization .....: ${flag_status}"
 echo " Python2: .........: ${PYTHON2}"
 echo " Python3: .........: ${PYTHON3}"
