@@ -251,7 +251,7 @@ ifeq ($(BMANP),Yes)
 endif
 ifeq ($(BDOC),Yes)
 	@echo "..Installing User Guide"
-	@#install -m 644 $(DOCPATH)/wsjt-main-@VERSION@.html $(DESTDIR)$(DOCDIR)/
+	@install -m 644 $(DOCPATH)/wsjt-main-@VERSION@.html $(DESTDIR)$(DOCDIR)/
 endif
 ifeq ($(RSDTEST),Yes)
 	@echo "..Installing RSD Test Tools"
