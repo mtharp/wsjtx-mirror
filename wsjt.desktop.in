@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=@PROGRAM@ @VERSION@
+Comment=Weak Signal Digital Mode Application
+Exec=@BINDIR@/wsjt
+Terminal=true
+Categories=Audio;AudioVideo;HamRadio
+Keywords=Scientific;Hamradio;Radio;Signal;WSJT;
+Icon=/home/@LOGNAME@/.local/share/icons/wsjt.xpm
+StartupWMClass=Tk

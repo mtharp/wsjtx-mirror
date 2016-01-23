@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------------------------------
+# This file is part of the WSJT application
+#
+# File Name:    wsjt
+# Description:  Shell script wrapper to run WSJT
+# 
+# Copyright (C) 2001-2016 Joseph Taylor, K1JT
+# License: GNU GPL v3
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+# Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+#-------------------------------------------------------------------------------
+
+set -e
+
+# Problem
+# With the correct directory installation directories, we can run
+# WSJT without copying all the files to the users $RUNDIR however,
+# WSJT-X and WSJT conflict one another with jt65code and jt4code in
+# the /bin directory and manpages. To get around this problem, the
+# runtime script screates it's own bin, lib, share directories, then
+# exports those paths below.
+PATH=$PATH:@PREFIX@/bin:@PREFIX@/lib:@PREFIX@/share ; export PATH
+
+# home dir
+RUNDIR="$HOME/.local/share/WSJT"
+
+# make dirs and copy / update files
+if [ ! -d $RUNDIR ] ; then mkdir -p $RUNDIR ; fi
+
+# WSJT wants to have CALL3.TXT and wsjtrc in the same directory
+# as the main script wsjt.py, but if the user has updated
+# CALL3.TXT, we dont want to overwrite their changes.
+if [ ! -e "$RUNDIR/CALL3.TXT" ] ; then cp @SHARED@/CALL3.TXT $RUNDIR ; fi
+if [ ! -e "$RUNDIR/wsjtrc" ] ; then cp @SHARED@/wsjtrc $RUNDIR ; fi
+
+# Add Desktop Entries
+cp -u @SHARED@/applications/wsjt.desktop $HOME/.local/share/applications/ 
+
+# Add xpm Icon
+cp -u @SHARED@/pixmaps/wsjt.xpm $HOME/.local/share/icons/
+
+# Link files from RxWav/Samples rather than copying them
+if [ ! -d $RUNDIR/RxWav ] ; then
+	mkdir -p $RUNDIR/RxWav
+	ln -s @DOCDIR@/RxWav/Samples $RUNDIR/RxWav/Samples
+fi
+
+# run paths are set by configure.ac, do not edit manually
+cd $RUNDIR
+env PYTHONPATH=@WSJTLIB@ @PYTHON3@ -O @SHARED@/wsjt.py

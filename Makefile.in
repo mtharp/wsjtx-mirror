@@ -1,75 +1,99 @@
 # Makefile for Linux
-
-# Re-direct stdout and stderr:	bash
+# Re-direct stdout and stderr:		bash
 #								make >& junk
+#
+# Prerequisites: Python 3.x, numpy-1.8.1+, PIL, Portaudio, Samplerate, FFTW
+#                Python 2.x and A2X for Manpages
+#                Ruby and Asciidoctor for User Guide
 
-# Prerequisites: Python 3.x, numpy-1.8.1, PIL, Pmw-2.0.0+
+# Program Infomation
+PROGRAM		:=	@PROGRAM@
+VERSION		:=	@VERSION@
+COPYRIGHT	:=	@COPYRIGHT@
+BUGS		:=	@BUGS@
+WEB         :=	@WEB@
 
-MV			?= 	mv
-CC			?= 	@CC@
-MKDIR		?= 	mkdir
-RM			?=	@RM@
-INSTALL		=	install
+# System Information
+OS			:=	@OS@
+CPU			:=	@CPU@
 
-FFLAGS		=	@FFLAGS@
-LDFLAGS		=	@LDFLAGS@
-LIBS		+=	@LIBS@
-CPPFLAGS	=	@CPPFLAGS@
-CFLAGS		=	@CFLAGS@
-PREFIX		=	@PREFIX@
+# General Use Tools
+AR			:=	@AR@
+CP			:=	@CP@
+LN			:=	@LN@
+MV			:=	@MV@
+RM			:=	@RM@
+CHOWN		:=	@CHOWN@
+CHMOD		:=	@CHMOD@
+SHELL		:=	@SHELL@
+MKDIR		:=	@MKDIR@ -p
+INSTALL		:=	install
 
-# WSJT specific C flags
-CFLAGS		+=	-DBIGSYM=1 -fPIC
-DEFS		=	@DEFS@
+# Libs and FLags
+LIBS		:=	@LIBS@
+LIBDIR      +=	@LIBDIR@
+CFLAGS		+=	@CFLAGS@
+FFLAGS		+=	@FFLAGS@
+LDFLAGS		+=	@LDFLAGS@
+FCOPT		+=	@FCOPT@
 
-CFLAGS		+=	${DEFS}
-CPPFLAGS	+=	${DEFS} -I.
+DEFS		+=	@DEFS@
+CFLAGS		+=	$(DEFS) -DBIGSYM=1 -DHAVE_STRUCT_TIMESPEC -fPIC
 
-# WSJT specific Fortran flags
-FFLAGS		+=	-O2 -fbounds-check -fno-second-underscore -Wall -Wno-conversion -Wno-character-truncation
-CFLAGS		+=	-I. -DBIGSYM -DHAVE_STRUCT_TIMESPEC -fPIC
+FC			=	@FC@
+FCV			=	@FCV@
+FC_LIB_PATH	+=	@FC_LIB_PATH@
+LDFLAGS		+=	-L$(FC_LIB_PATH)
 
-# TODO: Add Python3 and Python2 locations to configure.ac
+# Python Locations
 PYTHON		?=	@PYTHON@
 F2PY		?=	@F2PY@
 
 # For Core Developers only. Not for package distribution. 
-# To enable, configure with: RSDTEST=Yes
-# TO-DO: Add --enable-rsdtest m4 macro to configure.ac
-BRSDTEST     = No
+RSDTEST		:= @RSDTEST@
 
-# Optional Manpage and Doc builds
-# To enable, configure with: BMAP=Yes BDOC=Yes
-# To-Do: Add --enable-docs --enable-manp macros to configure.ac
-SRCD = $(shell exec pwd)
-DOCPATH = $(SRCD)/doc
-DOCSRC = $(SRCD)/doc/user_guide
-DOCCONF = $(SRCD)/doc/wsjt.conf
-THEMEDIR = $(SRCD)/doc/theme
-BMANP = No
-BDOC = No
+# ser Guide
+BDOC		:=	@BDOC@
+ASCIIDOCTOR	:=	@ASCIIDOCTOR@
+SRCD		:=	$(shell exec pwd)
+DOCPATH		:=	$(SRCD)/doc
+DOCSRC		:=	$(SRCD)/doc/user_guide
+DOCCONF		:=	$(SRCD)/doc/wsjt.conf
+THEMEDIR	:=	$(SRCD)/doc/theme
+
+# Manpages
+BMANP		:=	@BMANP@
+A2X			:=	@A2X@
+ASCIIDOC	:=	@ASCIIDOC@
+MANPSRC		:= $(wildcard manpages/*.1.txt)
+BMANP		:=	@BMANP@
+
+# Install paths
+LOGNAME		:=	@LOGNAME@
+HOMEDIR		:=	/home/@LOGNAME@/.local/share/$(PROGRAM)
+LOGGRP		:=	$(shell groups @LOGNAME@ | cut -d ' ' -f 3)
+PREFIX		:=	@PREFIX@
+BINDIR		:=	@BINDIR@
+DOCDIR		:=	@DOCDIR@
+MANDIR		:=	@MANDIR@
+SHARED		:=	@SHARED@
+WSJTLIB		:=	@WSJTLIB@
 
 # Default rules
 %.o: %.c
-	${CC} ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 %.o: %.f
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.F
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.f90
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 %.o: %.F90
-	${FC} ${FFLAGS} -c $<
+	$(FC) $(FFLAGS) -c $<
 
 # WSJT targets
 # TO-D): Add Manpage and userguide targets to the build.
-all:	libjt.a WsjtMod/Audio.so jt65code jt4code
-
-OS			=	@OS@
-FC			=	@FC@
-FCV			=	@FCV@
-FC_LIB_PATH	+=	@FC_LIB_PATH@
-LDFLAGS		+=	-L${FC_LIB_PATH}
+all:	libjt.a WsjtMod/Audio.so jt65code jt4code manp docs rtest mkmsg
 
 # Objects
 OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
@@ -100,66 +124,182 @@ OBJS1 =	a2d.o abc441.o alignmsg.o ana932.o analytic.o astro.o \
 	usleep.o wrapkarn.o wsjt1.o wsjt4.o wsjt65.o wsjtgen.o xcor.o \
 	xcor4.o xfft.o xfft2.o sfrsd2.o
 
-# Build libjt.a library
+# Bbuild libjt.a library
 libjt.a: $(OBJS1)
+	@echo
+	@echo Build libjt.a
+	@echo --------------------
 	ar cr libjt.a $(OBJS1)
 	ranlib libjt.a
 
 # Build jt65code binary
 OBJS2 = jt65code.o 
 jt65code: $(OBJS2) libjt.a
+	@echo
+	@echo Build jt65code
+	@echo --------------------
 	$(FC) -o jt65code $(OBJS2) libjt.a -lgfortran
 
 # Build jt4code binary
-OBJS3 = jt4code.o 
+OBJS3 = jt4code.o
 jt4code: $(OBJS3)
+	@echo
+	@echo Build jt4code
+	@echo --------------------
 	$(FC) -o jt4code $(OBJS3) libjt.a
 
 # SRCS for Audio.so
-F2PYSRCS = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 getfile.f90 \
-	 azdist0.f90 astro0.f90 chkt0.f90
+F2PYSRCS = ftn_init.f90 ftn_quit.f90 audio_init.f90 spec.f90 getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
 
 # Build Audio.so libary
 WsjtMod/Audio.so: libjt.a ${F2PYSRCS} 
-	${F2PY} -c -I. --fcompiler=gnu95 --f77exec=gfortran --f90exec=gfortran \
-	--opt="-cpp -fbounds-check -O2" ${LDFLAGS} \
-	${LIBS} libjt.a -m Audio ftn_init.f90 ftn_quit.f90 \
-	audio_init.f90 spec.f90 getfile.f90 azdist0.f90 astro0.f90 chkt0.f90
-	${MV} Audio*.so WsjtMod/Audio.so
+	@echo
+	@echo RUN F2PY Audio.so
+	@echo -----------------
+	$(F2PY) -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
+	--opt="${FCOPT}" $(LDFLAGS) $(LIBS) libjt.a -m Audio $(F2PYSRCS)
+	$(MV) Audio*.so WsjtMod/Audio.so
 
-# For Core Developers only, not for distribution:
-# Build rsdtest binaries
-rsdtest:
-ifeq ($(BRSDTEST),Yes)
-	@(cd rsdtest/ ; make -f Makefile.linux all)
+# Build user guide
+docs:
+ifeq ($(BDOC),Yes)
+	@echo
+	@echo Build User Guide
+	@echo --------------------
+	@ASCIIDOCTOR@ -a data-uri \
+	-a toc=left \
+	-a max-width=1024px \
+	--out-file=$(DOCPATH)/wsjt-main-@VERSION@.html $(DOCPATH)/user_guide/wsjt-main.adoc
+	@echo
 endif
 
-# Generate Manpages
-ifeq ($(BMANP),Yes)
+# Build manpages
 manp:
+ifeq ($(BMANP),Yes)
+	@echo
+	@echo Build Manpages
+	@echo --------------------
 	@for f in $(MANPSRC) ; do \
 	echo "$$f" ; \
 	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
 	done
 endif
 
-# Generate User Guide
-ifeq ($(BDOC),Yes)
-user-guide:
-	@$(PYTHON2) $(ASCIIDOC) -a data-uri -a toc2 -a max-width=1024px \
-	--conf-file=$(DOCCONF) \
-	--backend=xhtml11 \
-	--theme wsjt \
-	--out-file=$(DOCPATH)/wsjt-main-@VERSION@.html $(DOCPATH)/user_guide/wsjt-main.adoc
+# Build rsdtest tools, disabled by deault
+rtest:
+ifeq ($(RSDTEST),Yes)
+	@echo
+	@echo Generating rdtest tools
+	@echo -----------------------
+	@(cd rsdtest/ ; make -f Makefile.linux > /dev/null 2>&1)
+	@echo " Finished RSD tools"
+	@echo
 endif
 
-# TO-DO: Add manpage, user guide cleanup makefile.
+# make summary message
+mkmsg:
+	@echo ''
+	@echo '---------------------------------------------'
+	@echo "$(PROGRAM) Make Summary"
+	@echo '---------------------------------------------'
+	@echo ''
+	@echo "Package ..............: $(PROGRAM) $(VERSION)"
+	@echo " Install prefix ......: $(PREFIX)"
+	@echo " Working Directory ...: $(HOMEDIR)"
+	@echo ''
+	@echo 'OPTIONS'
+ifeq ($(BDOC),Yes)
+	@echo " With HTML Docs ......: $(BDOC)"
+endif
+ifeq ($(BMANP),Yes)
+	@echo " With Manpages .......: $(BMANP)"
+endif
+ifeq ($(RSDTEST),Yes)
+	@echo " With RSD Tools ......: $(RSDTEST)"
+endif
+	@echo ''
+	@echo ' For System Install ..: sudo make install'
+	@echo ''
+
+# Install WSJT
+install:
+	@echo
+	@echo Installing $(PROGRAM) $(VER)
+	@echo ----------------------------
+	@$(MKDIR) $(DESTDIR)$(BINDIR)
+	@$(MKDIR) $(DESTDIR)$(DOCDIR)
+	@$(MKDIR) $(DESTDIR)$(MANDIR)
+	@$(MKDIR) $(DESTDIR)$(WSJTLIB)
+	@$(MKDIR) $(DESTDIR)$(WSJTLIB)/WsjtMod
+	@$(MKDIR) $(DESTDIR)$(DOCDIR)/RxWav/Samples
+	@$(MKDIR) $(DESTDIR)$(SHARED)
+	@$(MKDIR) ${DESTDIR}$(SHARED)/applications
+	@$(MKDIR) ${DESTDIR}$(SHARED)/pixmaps
+	@echo "..Installing binaries and scripts"
+	@install -m 755 wsjt jt65code jt4code $(DESTDIR)$(BINDIR)/
+	@install -m 644 wsjt.desktop ${DESTDIR}$(SHARED)/applications
+	@install -m 644 wsjt.xpm ${DESTDIR}$(SHARED)/pixmaps/
+	@echo "..Installing Python Files"
+	@install -m 755 wsjt.py Pmw* $(DESTDIR)$(SHARED)/
+	@install -m 755 WsjtMod/{*.py,Audio.so} $(DESTDIR)$(WSJTLIB)/WsjtMod
+	@echo "..Installing documents"
+	@install -m 644 CALL3.TXT wsjtrc $(DESTDIR)$(SHARED)
+	@install -m 644 RxWav/Samples/*.wav $(DESTDIR)$(DOCDIR)/RxWav/Samples
+ifeq ($(BMANP),Yes)
+	@echo "..Installing manpages"
+	@install -m 644 manpages/{wsjt.1,jt65code.1} $(DESTDIR)$(MANDIR)
+endif
+ifeq ($(BDOC),Yes)
+	@echo "..Installing User Guide"
+	@#install -m 644 $(DOCPATH)/wsjt-main-@VERSION@.html $(DESTDIR)$(DOCDIR)/
+endif
+ifeq ($(RSDTEST),Yes)
+	@echo "..Installing RSD Test Tools"
+	@install -m 755 -s rsdtest/{rsdtest,rsdtest2,rsdtest3} $(DESTDIR)$(BINDIR)
+endif
+	@echo
+	@echo " To Run $(PROGRAM) $(VERSION):"
+	@echo ''
+	@echo " Type ..: @PREFIX@/bin/wsjt"
+	@echo ''
+	@echo ''
+
+# uninstall WSJT
+uninstall:
+	@echo ''
+	@echo "Uninstalling $(PROGRAM) $(VER)"
+	@echo '----------------------------'
+	@echo 'Removing binaries'
+	@$(RM) -f $(DESTDIR)$(BINDIR)/{wsjt,jt65code,jt4code}
+	@echo 'Removing shared files'
+	@$(RM) -rf $(DESTDIR)$(SHARED)
+	@$(RM) -f /home/@LOGNAME@/.local/share/applications/wsjt.desktop
+	@$(RM) -f /home/@LOGNAME@/.local/share/icons/wsjt.xpm
+	@echo 'Removing documents'
+	@$(RM) -rf $(DESTDIR)$(DOCDIR)
+	@echo 'Removing Manpages'
+	@$(RM) -f $(DESTDIR)$(MANDIR)/{wsjt.1,jt65code.1}
+	@echo 'Removing Module Files'
+	@$(RM) -rf $(DESTDIR)$(WSJTLIB)
+	@echo ''
+	@echo "User generated files remain in: /home/@LOGNAME@/.local/share/WSJT"
+	@echo ''
+
+
 .PHONY : clean distclean
 clean:
-	${RM} -f *.o *.pyc *.so *~ jt65code jt4code WsjtMod/*.pyc WsjtMod/*.pyc WsjtMod/*.so  doc/wsjt.conf
+	$(RM) -f *.o *.pyc *.so *~ jt65code jt4code WsjtMod/*.pyc WsjtMod/*.pyc \
+	WsjtMod/*.so  doc/wsjt.conf wsjt.desktop wsjt
 	(cd rsdtest/ ; make -f Makefile.linux clean)
-	${RM} -rf build/
+	$(RM) -rf build/
+ifeq ($(BDOC),Yes)
+	@RM@ -f doc/wsjt*.html
+endif
+ifeq ($(BMANP),Yes)
+	@RM@ -f manpages/{wsjt.1,jt65code.1,jt4code.1}
+endif
 
 distclean: clean
-	${RM} -f config.log config.status Makefile
-	${RM} -rf autom4te.cache/
+	$(RM) -f ALL._TXT config.log config.status Makefile decoded.ave decoded.txt \
+	prefixes.txt WSJT.INI azel.dat FFT_plans.txt RxWav/*.wav ALL.txt debug.txt
+	$(RM) -rf autom4te.cache/

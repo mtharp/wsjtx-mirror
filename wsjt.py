@@ -27,8 +27,8 @@ Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
 # print WSJT Console Header
 print("******************************************************************")
 print("WSJT Version " + Version + ", by K1JT")
-print("Revision date..: " + "$Date$"[7:-1])
-print("Run date.......: " + time.asctime(time.gmtime()) + " UTC")
+print("Revision date ..: " + "$Date$"[7:-1])
+print("Run date .......: " + time.asctime(time.gmtime()) + " UTC")
 
 #See if we are running in Windows
 g.Win32=0
