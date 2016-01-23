@@ -5901,21 +5901,21 @@ else
 $as_echo "no" >&6; }
 fi
 
-# if not user supplied, check by calling f2py
+# if f2py is not supplied, try calling with with f2py3
 if test "$HAVE_F2PY" = "no"; then
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking F2PY using: f2py" >&5
-$as_echo_n "checking F2PY using: f2py... " >&6; }
-	f2py -v  >/dev/null 2>&1
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking F2PY using: f2py3" >&5
+$as_echo_n "checking F2PY using: f2py3... " >&6; }
+	f2py3 -v  >/dev/null 2>&1
 
-	# test if f2py3 is called using "f2py"
+	# test if f2py3 is called with f2py3 worked
 	if test "$?" != "0"; then
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 		HAVE_F2PY=no
 	else
 		HAVE_F2PY=yes
-		F2PY=`which f2py`
+		F2PY=`which f2py3`
 		F2PYV=`$F2PY -v`
 		$as_echo "#define HAVE_F2PY 1" >>confdefs.h
 
@@ -5931,21 +5931,21 @@ $as_echo "yes v${F2PYV}" >&6; }
 	fi
 fi
 
-# if not user supplied, and not by calling f2py, call with f2py3
+# if not user supplied, check by calling f2py
 if test "$HAVE_F2PY" = "no"; then
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking F2PY using: f2py3" >&5
-$as_echo_n "checking F2PY using: f2py3... " >&6; }
-	f2py3 -v  >/dev/null 2>&1
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking F2PY using: f2py" >&5
+$as_echo_n "checking F2PY using: f2py... " >&6; }
+	f2py -v  >/dev/null 2>&1
 
-	# test if f2py3 is called with f2py3 worked
+	# test if f2py3 is called using "f2py"
 	if test "$?" != "0"; then
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 		HAVE_F2PY=no
 	else
 		HAVE_F2PY=yes
-		F2PY=`which f2py3`
+		F2PY=`which f2py`
 		F2PYV=`$F2PY -v`
 		$as_echo "#define HAVE_F2PY 1" >>confdefs.h
 

@@ -169,7 +169,7 @@ ifeq ($(BDOC),Yes)
 	@ASCIIDOCTOR@ -a data-uri \
 	-a toc=left \
 	-a max-width=1024px \
-	--out-file=$(DOCPATH)/wsjt-main-@VERSION@.html $(DOCPATH)/user_guide/wsjt-main.adoc
+	--out-file=$(DOCPATH)/wsjt-main-$(VERSION).html $(DOCPATH)/user_guide/wsjt-main.adoc
 	@echo
 endif
 
@@ -203,28 +203,26 @@ mkmsg:
 	@echo "$(PROGRAM) Make Summary"
 	@echo '---------------------------------------------'
 	@echo ''
-	@echo "Package ..............: $(PROGRAM) $(VERSION)"
-	@echo " Install prefix ......: $(PREFIX)"
-	@echo " Working Directory ...: $(HOMEDIR)"
-	@echo ''
-	@echo 'OPTIONS'
+	@echo "Package ..........: $(PROGRAM) $(VERSION)"
+	@echo " Install prefix ..: $(PREFIX)"
 ifeq ($(BDOC),Yes)
-	@echo " With HTML Docs ......: $(BDOC)"
+	@echo " With HTML Docs ..: $(BDOC)"
 endif
 ifeq ($(BMANP),Yes)
-	@echo " With Manpages .......: $(BMANP)"
+	@echo " With Manpages ...: $(BMANP)"
 endif
 ifeq ($(RSDTEST),Yes)
-	@echo " With RSD Tools ......: $(RSDTEST)"
+	@echo " With RSD Tools ..: $(RSDTEST)"
 endif
 	@echo ''
-	@echo ' For System Install ..: sudo make install'
+	@echo 'INSTALL'
+	@echo ' System Install ..: sudo make install'
 	@echo ''
 
 # Install WSJT
 install:
 	@echo
-	@echo Installing $(PROGRAM) $(VER)
+	@echo INSTALLING $(PROGRAM) $(VERSION)
 	@echo ----------------------------
 	@$(MKDIR) $(DESTDIR)$(BINDIR)
 	@$(MKDIR) $(DESTDIR)$(DOCDIR)
@@ -235,18 +233,18 @@ install:
 	@$(MKDIR) $(DESTDIR)$(SHARED)
 	@$(MKDIR) ${DESTDIR}$(SHARED)/applications
 	@$(MKDIR) ${DESTDIR}$(SHARED)/pixmaps
-	@echo "..Installing binaries and scripts"
+	@echo "..Installing Binaries and Scripts"
 	@install -m 755 wsjt jt65code jt4code $(DESTDIR)$(BINDIR)/
 	@install -m 644 wsjt.desktop ${DESTDIR}$(SHARED)/applications
 	@install -m 644 wsjt.xpm ${DESTDIR}$(SHARED)/pixmaps/
 	@echo "..Installing Python Files"
 	@install -m 755 wsjt.py Pmw* $(DESTDIR)$(SHARED)/
 	@install -m 755 WsjtMod/{*.py,Audio.so} $(DESTDIR)$(WSJTLIB)/WsjtMod
-	@echo "..Installing documents"
+	@echo "..Installing Misc Documents"
 	@install -m 644 CALL3.TXT wsjtrc $(DESTDIR)$(SHARED)
 	@install -m 644 RxWav/Samples/*.wav $(DESTDIR)$(DOCDIR)/RxWav/Samples
 ifeq ($(BMANP),Yes)
-	@echo "..Installing manpages"
+	@echo "..Installing Manpages"
 	@install -m 644 manpages/{wsjt.1,jt65code.1} $(DESTDIR)$(MANDIR)
 endif
 ifeq ($(BDOC),Yes)
@@ -258,10 +256,9 @@ ifeq ($(RSDTEST),Yes)
 	@install -m 755 -s rsdtest/{rsdtest,rsdtest2,rsdtest3} $(DESTDIR)$(BINDIR)
 endif
 	@echo
-	@echo " To Run $(PROGRAM) $(VERSION):"
-	@echo ''
-	@echo " Type ..: @PREFIX@/bin/wsjt"
-	@echo ''
+	@echo "TO RUN $(PROGRAM) $(VERSION):"
+	@echo "  Type ..........: @PREFIX@/bin/wsjt"
+	@echo "  Help Options ..: @PREFIX@/bin/wsjt -h"
 	@echo ''
 
 # uninstall WSJT
@@ -269,29 +266,30 @@ uninstall:
 	@echo ''
 	@echo "Uninstalling $(PROGRAM) $(VER)"
 	@echo '----------------------------'
-	@echo 'Removing binaries'
+	@echo '..Removing binaries'
 	@$(RM) -f $(DESTDIR)$(BINDIR)/{wsjt,jt65code,jt4code}
-	@echo 'Removing shared files'
+	@echo '..Removing shared files'
 	@$(RM) -rf $(DESTDIR)$(SHARED)
 	@$(RM) -f /home/@LOGNAME@/.local/share/applications/wsjt.desktop
 	@$(RM) -f /home/@LOGNAME@/.local/share/icons/wsjt.xpm
-	@echo 'Removing documents'
+	@echo '..Removing documents'
 	@$(RM) -rf $(DESTDIR)$(DOCDIR)
-	@echo 'Removing Manpages'
+	@echo '..Removing Manpages'
 	@$(RM) -f $(DESTDIR)$(MANDIR)/{wsjt.1,jt65code.1}
-	@echo 'Removing Module Files'
+	@echo '..Removing Module Files'
 	@$(RM) -rf $(DESTDIR)$(WSJTLIB)
 	@echo ''
-	@echo "User generated files remain in: /home/@LOGNAME@/.local/share/WSJT"
+	@echo "User generated files *do not* get removed"
 	@echo ''
-
 
 .PHONY : clean distclean
 clean:
 	$(RM) -f *.o *.pyc *.so *~ jt65code jt4code WsjtMod/*.pyc WsjtMod/*.pyc \
 	WsjtMod/*.so  doc/wsjt.conf wsjt.desktop wsjt
-	(cd rsdtest/ ; make -f Makefile.linux clean)
 	$(RM) -rf build/
+ifeq ($(RSDTEST),Yes)
+	(cd rsdtest/ ; make -f Makefile.linux clean)
+endif
 ifeq ($(BDOC),Yes)
 	@RM@ -f doc/wsjt*.html
 endif
