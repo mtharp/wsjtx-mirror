@@ -1,0 +1,219 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------------------------------
+# This file is part of the WSPR application
+#
+# File Name:    wspr
+# Description:  Shell script wrapper to run WSPR
+# 
+# Copyright (C) 2001-2016 Joseph Taylor, K1JT
+# License: GNU GPL v3
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+# Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+#-------------------------------------------------------------------------------
+
+# Run Multiple Instances:
+# Using the -n [NAME] option at start-up allows the user to create / use
+# multiple instances of WSPR. Using this option creates separate directories
+# for each name, example: [ wspr -n WSPR1 ]  and [ wspr -n WSPR2 ] would
+# create the following:
+#
+# ~/.local/share/WSPR1
+# ~/.local.share/WSPR2
+#
+# Using the [-p PATH] options allows the user to specify the folder location,
+# [ wspr -n WSPR1 -p $HOME/Desktop ]  and [ wspr -n WSPR2 -p $HOME/Desktop ]
+# would create:
+#
+# ~/Desktop/WSPR1
+# ~/Desktop/WSPR2
+#
+# 
+# All folders are completely isolated, WSPR.INI, decodes,
+# user ID, rig settings etc, basically anything you can configure will
+# be separated.
+
+# exit on errors
+set -e
+
+# foreground colours
+C_R='\033[01;31m'		# red
+C_G='\033[01;32m'		# green
+C_Y='\033[01;33m'		# yellow
+C_C='\033[01;36m'		# cyan
+C_NC='\033[01;37m'		# no color
+
+# local user directories for WSPR.desktop and icon files
+APPD="$HOME/.local/share/applications"
+ICOND="$HOME/.local/share/icons"
+
+# file array
+file_array=('hamlib_rig_numbers' 'wsprrc')
+
+################################################################################
+# FUNCTIONS
+################################################################################
+cli_help() {
+clear ||:
+echo '--------------------------------------------'
+echo -e ${C_G}" COMMAND LINE OPTIONS"${C_NC}
+echo '--------------------------------------------'
+echo ''
+cat <<EOF
+ To run multiple instances of WSPR, use
+ the [-n] operator. To designate a custom
+ runtime location use the [-p] operator.
+
+ Usage ....: wspr [-h] [-n] [-p]
+ Example ..: wspr -n wspr1 -p $HOME/Desktop
+
+ OPTIONS:
+	-h	displays this help message
+
+	-n	Sets the runtime folder name [ -n NAME ] 
+		Default folder name is ..: WSPR
+
+	-p	Sets the runtime folder path [ -p PATH ]
+		Defualt is ..: $HOME/.local/share
+
+ NOTES
+  1. You must setup each instance separately.
+     See Setup >> Station Parameters (F2) on the WSPR main menu.
+ 
+  2. All decoded data, logs etc are separated by [-n NAME].
+
+EOF
+
+exit 0
+
+}
+
+rigctl_error() {
+clear ||:
+echo '--------------------------------------------'
+echo -e ${C_G}" RIG CONTROL ERROR"${C_NC}
+echo '--------------------------------------------'
+echo ''
+cat <<EOF
+ There was an error when trying to access the
+ application rigctl (from libhamlib-utils) to
+ generate the latest rig list.
+ 
+ Ensure you have Hamlib Utils installed and it
+ is reachable from the the command line.
+ 
+ For most distributions, the package is called:
+ 
+ libhamlib-utils
+ 
+EOF
+
+exit 1
+
+}
+
+################################################################################
+# PROCESS COMMAND-LINE OPTIONS
+################################################################################
+while getopts "hn:p:" opt; do
+	case $opt in
+		# dispalay the help message
+		h) cli_help ; exit 0 ;;
+		
+		# add user defined name		
+		n)	N_OPT=$OPTARG ;;
+		
+		# add user defined path
+		p) P_OPT=$OPTARG ;;
+		'?')
+			echo "Invalid Option" 1>&2
+			read -rp " Press [ Enter ] to view the help message"
+			cli_help
+			exit 1
+		;;
+	esac
+done
+shift $((OPTIND -1))
+
+# set folder name if -n [NAME] is used
+if [ ! -z $N_OPT ] ; then
+	N_NAME="$N_OPT"
+fi
+
+# set default folder name if -n [NAME] is not used
+if [ -z $N_OPT ] ; then
+	N_NAME="WSPR"
+fi
+
+# set path if -p [PATH] is used
+if [ ! -z $P_OPT ] ; then
+	P_PATH="$P_OPT"
+fi
+
+# set default path if -p [PATH] is not used
+if [ -z $P_OPT ] ; then
+	P_PATH="$HOME/.local/share"
+fi
+
+# combine final runtime path
+RUNDIR="$P_PATH/$N_NAME"
+
+
+################################################################################
+# START MAIN SCRIPT
+################################################################################
+# clear and run the script
+clear ||:
+echo '--------------------------------------------'
+echo -e ${C_G}" RUNNING WSPR"${C_NC}
+echo '--------------------------------------------'
+echo ''
+echo " Instance Name ..: $N_NAME"
+echo " Script Name ....: @PREFIX@/bin/$(basename $0)"
+echo " Run Directory ..: $RUNDIR"
+echo ''
+
+# set the paths to WSPR package files
+PATH=$PATH:@PREFIX@/bin:@PREFIX@/lib/wspr:@PREFIX@/share/wspr ; export PATH
+
+# make dirs and copy / update files
+if [ ! -d $RUNDIR ] ; then mkdir -p $RUNDIR ; fi
+
+# WSPR needs wsprrc in order to run
+cp -u @SHARED@/wsprrc $RUNDIR
+
+# generate new rig control list
+rigctl -l >> $RUNDIR/r.l || { rigctl_error }
+if [ -f $RUNDIR/hamlib_rig_numbers ] ; then rm -f $RUNDIR/hamlib_rig_numbers ; fi
+awk 'NR > 3 { print }' < $RUNDIR/r.l > $RUNDIR/hamlib_rig_numbers
+rm -f $RUNDIR/r.l
+
+# add .desktop file for local users
+if [ ! -d "$APPD" ] ; then mkdir -p "$APPD" ; fi
+cp -u @PREFIX@/share/applications/wspr.desktop "$APPD"/ 
+
+# add wspr.xpm icon
+if [ ! -d "$ICOND" ] ; then mkdir -p "$ICOND"/ ; fi
+cp -u @PREFIX@/share/pixmaps/wspr.xpm "$ICOND"/
+
+# use links rather than copying, only if they do not exist
+if [ ! -L $RUNDIR/save/Samples ] ; then
+    mkdir -p $RUNDIR/save
+    ln -s @DOCDIR@/save/Samples $RUNDIR/save/Samples
+fi
+
+# run paths are set by configure.ac, do not edit manually
+cd $RUNDIR
+env PYTHONPATH=@WSPRLIB@ @PYTHON3@ -O @SHARED@/wspr.py

@@ -1,16 +1,13 @@
 #!/bin/sh
-#
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propagation Reporter
+# This file is part of the WSPR application
 #
-# SVN	: $Id$
-#
-# File Name:    autogen.sh
-# Description:  script to generate configire and makefile
+# File Name ....: autogen.sh
+# Description ..: script to generate Makefile
 #
 # Run ./autogen.sh
 #
-# Copyright (C) 2001-2014 Joseph Taylor, K1JT
+# Copyright (C) 2001-2016 Joseph Taylor, K1JT
 # License: GPL-3
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -54,11 +51,10 @@ echo
 echo "Running ( autoconf -f -i ) to process configure.ac"
 
 # Generate configure script from configure.ac and aclocal.m4
-autoconf -f -i
+autoreconf -f -i
 
 # simple test for the configure script, after running autogen.sh
 if test -s ./configure; then
-	echo "Finished"
 	echo "Autoconf will now build the Makefile"
 	echo "Running ./configure to generate Makefile"
 	sleep 1
