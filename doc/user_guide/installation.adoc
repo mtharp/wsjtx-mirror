@@ -32,42 +32,22 @@ this writing, version 10.0
 The biggest issue with compiling _WSJT_ on Linux seems to be with
 Python3-Numpy. Some Linux distributions include Python-Numpy (built with 
 Python 2.x.x) with their desktop packaging. If your desktop includes
-Python-Numpy built with Python 2.x.x, use the flag --with-f2py=(/path/to/f2py3)
-option with the autogen.sh command.
+Python-Numpy built with Python 2.x.x, use the command 
+*kbd:[./autogen.sh --with-f2py=(/path/to/f2py3)]* to pass the correct location
+for F2PY.
 
-To properly build _WSJT v10.0_, you will need the following development packages,
-consult your package manager for proper package names
+* To properly build _WSJT v10.0_, you you must have all the core development
+packages installed. See <<SRC_CODE,Dev Package List>> below for details.+
+ :: svn co https://svn.code.sf.net/p/wsjt/wsjt/trunk wsjt-code +
+ :: cd ./wsjt-code +
+ :: ./autogen.sh +
+ :: make +
+ :: sudo make install +
 
-* autoconf
-* gcc compiler
-* subversion
-* Python3
-* Python3 Numpy
-* Python3 Tk
-* Python3 PIL
-* Python3 PIL Image Tk
-* Python3 Dev
-* Python3 Setup Tools
-* Samplerate Dev
-* FFTW3 Dev
-* Portaudio19 Dev
+* To list autotools enabled options, use: +
+ :: ./autogen.sh +
+ :: ./configure --help=short +
 
-[source,shell]
-----------
-svn co https://svn.code.sf.net/p/wsjt/wsjt/trunk wsjt-code
-cd ./wsjt-code
-./autogen.sh
-make
-sudo make install
-----------
-
-To list autotools enabled options, use:
-
-[source,shell]
-----------
-./autogen.sh
-./configure --help=short
-----------
 
 By default, due to potential conflicts with _WSJT-X_, the source installation
 will be located in pass:[/usr/local/wsjt]. It is highly advised to keep this prefix
@@ -147,24 +127,98 @@ You will need a Mac driver to control the serial link between your Mac and the t
 Source code is available from the public repository at {devsvn}. To
 compile the program you will need to install the following packages:
 
-- Subversion
-- Python 3.x, and the following Python packages
-** python3-numpy
-** python3-imaging-tk
-** python3-pil
-** python3-pil.imagetk
-- gcc
-- gfortran
-- fftw3
-- PortAudio
-- libsamplerate
-- MinGW (for Windows only)
+[[CORE-DEV-PKGS]]
+.Core Development Packages
+[cols="1,1", options="header, autowidth"]
+|===
+|Package|Description
 
-With Subversion installed, the full source code for _WSJT_ can be
-downloaded with the command:
+|Autoconf
+|GNU automatic configure script builder
 
-  svn co http://svn.code.sf.net/p/wsjt/wsjt/trunk
+|GCC
+|GNU C Compiler
 
-// Need further compiling Instructions
-For some basic instructions on building _WSJT_ from source code, see the
-section <<COMPILING,Compiling WSJT-X>> near the end of this Guide.
+|Make
+|GNU utility for Directing compilation
+
+|Subversion
+|Advanced version control system
+
+|Python3
+|Interactive high-level object-oriented language, v3.2 or above
+
+|Python3 Numpy
+|Fast array facility to the Python 3 language
+
+|Python3 Tk
+|Tkinter - Writing Tk applications with Python 3.x
+
+|Python3 PIL
+|Python Imaging Library (Python3)
+
+|Python3 PIL Image Tk
+|Python Imaging Library - ImageTk Module (Python3)
+
+|Python3 Dev
+|Header files and a static library for Python3
+
+|Samplerate Dev
+|Development files for audio sample rate conversion
+
+|FFTW3 Dev
+|Library for computing Fast Fourier Transforms
+
+|Portaudio 19 Dev
+|Portable audio I/O - development files
+
+|MinGW-32
+|Cross Compiling tool chain (*Windows Only)
+|===
+
+If you want to compile documentation, in addition to the <<CORE-DEV-PKGS,Core
+Development Packages>>, you will need the following packages:
+
+[NOTE]
+=====
+You can disable building documentation, thus alleviate 
+<<DOC-PKGS,Documentation Package Requirements>> by using the build option
+*kbd:[./autogen.sh --disable-docs]*
+=====
+
+[[DOC-PKGS]]
+.Documentation Package Requirements
+[cols="1,1", options="header, autowidth"]
+|===
+|Package|Description
+
+|Ruby
+|Interpreter of object-oriented scripting
+
+|Asciidoctor
+|AsciiDoc to HTML rendering for Ruby
+|===
+
+If you want to compile documentation, in addition to the <<CORE-DEV-PKGS,Core
+Development Packages>>, you will need the following packages:
+
+[NOTE]
+=====
+You can disable building Manpages, thus alleviate a large number of 
+<<DOC-PKGS,Manpage Package Requirements>> by using the build option
+*kbd:[./autogen.sh --disable-manpages]*
+=====
+
+[[MANP-PKGS]]
+.Manpage Package Requirements ( *Nix Only )
+[cols="1,1", options="header, autowidth"]
+|===
+|Package|Description
+
+|AsciiDoc
+|Highly configurable text format for writing documentation
+
+|Python2
+|Interactive high-level object-oriented language
+|===
+
