@@ -10,7 +10,7 @@ AC_MSG_CHECKING([Python2 --with-python2])
 if test -n "$PY2"; then
 
 # check if user provided python3 is >= 2.6
-python2 -c "import sys; sys.exit(sys.version < '2.6')" >/dev/null 2>&1
+$PY2 -c "import sys; sys.exit(sys.version < '2.6')" >/dev/null 2>&1
 	
 	if test "$?" != "0"; then
 		HAVE_PY2=no
@@ -48,7 +48,7 @@ if test "$HAVE_PY2" = "no"; then
 	fi
 fi
 
-# if not user supplied && not from calling python, check by calling python3
+# if not user supplied, if not by calling python, check by calling python2
 if test "$HAVE_PY2" = "no"; then
 	AC_MSG_CHECKING([Python2 using: python2])
 	python2 -c "import sys; sys.exit(sys.version < '2.6')" >/dev/null 2>&1

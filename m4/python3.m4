@@ -10,7 +10,7 @@ AC_MSG_CHECKING([Python3 --with-python3])
 if test -n "$PY3"; then
 
 # check if user provided python3 is >= 3.2
-python3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
+$PY3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
 	
 	if test "$?" != "0"; then
 		HAVE_PY3=no
@@ -28,7 +28,26 @@ else
 	AC_MSG_RESULT([no])
 fi
 
-# if not user supplied, check by calling python
+# if not user supplied, check by calling python3
+if test "$HAVE_PY3" = "no"; then
+	AC_MSG_CHECKING([Python3 using: python3])
+	python3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
+
+	if test "$?" != 0; then
+		AC_MSG_RESULT([no])
+		HAVE_PY3=no
+	else
+		HAVE_PY3=yes
+		PY3_PATH=`which python3`
+		PY3V=`$PY3_PATH -c "import sys; print(sys.version)" |${HEAD} -1 |${AWK} '{print $1}' |${CUT} -c1-5`
+		AC_DEFINE([HAVE_PY3], [1])
+		AC_DEFINE_UNQUOTED([PY3_PATH], ["${PY3_PATH}"], [Path to Python3])
+		AC_SUBST([PYTHON3], ["${PY3_PATH}"])
+		AC_MSG_RESULT([yes ${PY3V}])
+	fi
+fi
+
+# if not user supplied, if not by using python3, check by calling python
 if test "$HAVE_PY3" = "no"; then
 
 	AC_MSG_CHECKING([Python3 using: python])
@@ -40,25 +59,6 @@ if test "$HAVE_PY3" = "no"; then
 	else
 		HAVE_PY3=yes
 		PY3_PATH=`which python`
-		PY3V=`$PY3_PATH -c "import sys; print(sys.version)" |${HEAD} -1 |${AWK} '{print $1}' |${CUT} -c1-5`
-		AC_DEFINE([HAVE_PY3], [1])
-		AC_DEFINE_UNQUOTED([PY3_PATH], ["${PY3_PATH}"], [Path to Python3])
-		AC_SUBST([PYTHON3], ["${PY3_PATH}"])
-		AC_MSG_RESULT([yes ${PY3V}])
-	fi
-fi
-
-# if not user supplied && not from calling python, check by calling python3
-if test "$HAVE_PY3" = "no"; then
-	AC_MSG_CHECKING([Python3 using: python3])
-	python3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
-
-	if test "$?" != 0; then
-		AC_MSG_RESULT([no])
-		HAVE_PY3=no
-	else
-		HAVE_PY3=yes
-		PY3_PATH=`which python3`
 		PY3V=`$PY3_PATH -c "import sys; print(sys.version)" |${HEAD} -1 |${AWK} '{print $1}' |${CUT} -c1-5`
 		AC_DEFINE([HAVE_PY3], [1])
 		AC_DEFINE_UNQUOTED([PY3_PATH], ["${PY3_PATH}"], [Path to Python3])
