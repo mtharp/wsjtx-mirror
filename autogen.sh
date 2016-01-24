@@ -1,10 +1,10 @@
 #!/bin/sh
 #
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propagation Reporter
+# This file is part of the WSJT application
 #
 # File Name:    autogen.sh
-# Description:  script to generate configire and makefile
+# Description:  script to generate Makefile
 #
 # Run ./autogen.sh
 #
@@ -30,7 +30,7 @@
 set -e
 
 _BASED=$(exec pwd)
-_PROGRAM=WSPR
+_PROGRAM=WSJT
 
 # Start main script
 cd $_BASED
