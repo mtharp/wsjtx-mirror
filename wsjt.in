@@ -28,7 +28,7 @@
 # With the current directory installation, we can run WSJT without copying
 # all the files to the users $RUNDIR however, WSJT-X and WSJT conflict one
 # another with jt65code and jt4code in the /bin directory and manpages.
-# To get around this problem, the runtime script screates it's own bin, lib,
+# To get around this problem, the runtime script creates it's own bin, lib,
 # share directories, then exports those paths. See START MAIN SCRIPT.
 #
 # Run Multiple Instances:
@@ -41,7 +41,7 @@
 # ~/.local.share/wsjt-uhf
 # 
 # Both folders are completely isolated, WSJT.INI, CALL3.TXT, logs, decodes,
-# user ID, etc, bassically anything you can configure will be separated.
+# user ID, etc, basically anything you can configure will be separated.
 
 # exit on errors
 set -e
@@ -72,7 +72,7 @@ echo ''
 cat <<EOF
  To run multiple instances of WSJT, use
  the [-n] operator. To designate a custom
-runtime location use the [-p] operator.
+ runtime location use the [-p] operator.
 
  Usage ....: wsjt [-h] [-n] [-p]
  Example ..: wsjt -n wsjt1 -p $HOME/Desktop
@@ -87,10 +87,10 @@ runtime location use the [-p] operator.
 		Defualt is ..: $HOME/.local/share
 
  NOTES
-  1. You must setup each instance seperately.
+  1. You must setup each instance separately.
      See Setup >> Options from the WSJT main application menu.
  
-  2. All decoded data, CALL3.TXT, logs etc are seperated by [-n NAME].
+  2. All decoded data, CALL3.TXT, logs etc are separated by [-n NAME].
 
 EOF
 
@@ -155,7 +155,7 @@ echo '--------------------------------------------'
 echo ''
 echo " Instance Name ..: $N_NAME"
 echo " Script Name ....: @PREFIX@/bin/$(basename $0)"
-echo " Run Direcotry ..: $RUNDIR"
+echo " Run Directory ..: $RUNDIR"
 echo ''
 
 # set the paths to WSJT package files
