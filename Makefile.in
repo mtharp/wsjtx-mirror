@@ -45,9 +45,9 @@ FCV			=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 LDFLAGS		+=	-L$(FC_LIB_PATH)
 
-# Python Locations
-PYTHON		?=	@PYTHON@
-F2PY		?=	@F2PY@
+# Python3 locations
+PYTHON3		:=	@PYTHON3@
+F2PY		:=	@F2PY@
 
 # For Core Developers only. Not for package distribution. 
 RSDTEST		:= @RSDTEST@
@@ -63,6 +63,7 @@ THEMEDIR	:=	$(SRCD)/doc/theme
 
 # Manpages
 BMANP		:=	@BMANP@
+PYTHON2		:=	@PYTHON2@
 A2X			:=	@A2X@
 ASCIIDOC	:=	@ASCIIDOC@
 MANPSRC		:= $(wildcard manpages/*.1.txt)

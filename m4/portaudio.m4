@@ -6,9 +6,10 @@ HAVE_PORTAUDIO=0
 #
 case "${host_os}" in
 	*freebsd* )
-	AC_SUBST([PORTAUDIO_INCLUDE], ["-I/usr/local/include/portaudio2"])
-	AC_SUBST([PORTAUDIO_LIBDIR], ["-L/usr/local/lib/portaudio2"])
-	LDFLAGS="-L/usr/local/lib/portaudio2 ${LDFLAGS}"
+		AC_SUBST([PORTAUDIO_INCLUDE], ["-I/usr/local/include/portaudio2"])
+		AC_SUBST([PORTAUDIO_LIBDIR], ["-L/usr/local/lib/portaudio2"])
+		LDFLAGS="-L$PORTAUDIO_INCLUDE $LDFLAGS"
+		CFLAGS="-I$PORTAUDIO_INCLUDE $CFLAGS"
 	;;
 	*)
 	;;
@@ -31,9 +32,10 @@ fi
 #
 case "${host_os}" in
 	*freebsd* )
-	AC_SUBST([PORTAUDIO_INCLUDE], ["-I/usr/local/include/portaudio2"])
-	AC_SUBST([PORTAUDIO_LIBDIR], ["-L/usr/local/lib/portaudio2"])
-	LDFLAGS="-L/usr/local/lib/portaudio2 ${LDFLAGS}"
+		AC_SUBST([PORTAUDIO_INCLUDE], ["-I/usr/local/include/portaudio2"])
+		AC_SUBST([PORTAUDIO_LIBDIR], ["-L/usr/local/lib/portaudio2"])
+		LDFLAGS="-L$PORTAUDIO_LIBDIR $LDFLAGS"
+		CFLAGS="-I$PORTAUDIO_INCLUDE $CFLAGS"
 	;;
 	*)
 	;;
