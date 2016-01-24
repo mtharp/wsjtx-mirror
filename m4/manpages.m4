@@ -11,7 +11,8 @@ if test "x$ac_cv_manpages" = "xyes"; then
 else
 	BMANP=Yes
 	AC_MSG_NOTICE([Build Manpages is Enabled])
-	AC_PATH_PROG([A2X], [a2x])
+	AC_PATH_PROG(ASCIIDOC, asciidoc)
+	AC_PATH_PROG(A2X, a2x)
 fi
 AC_SUBST([BMANP], ["$BMANP"])
 

@@ -79,17 +79,17 @@ MANDIR		:=	@MANDIR@
 SHARED		:=	@SHARED@
 WSJTLIB		:=	@WSJTLIB@
 
-# Default rules
+# Default Rules
 %.o: %.c
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(PORTAUDIO_INCLUDE) $(CFLAGS) $(CPPFLAGS) -c $<
 %.o: %.f
-	$(FC) $(FFLAGS) -c $<
+	$(FC) $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 %.o: %.F
-	$(FC) $(FFLAGS) -c $<
+	$(FC) $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 %.o: %.f90
-	$(FC) $(FFLAGS) -c $<
+	$(FC) $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 %.o: %.F90
-	$(FC) $(FFLAGS) -c $<
+	${FC} $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 
 # WSJT targets
 # TO-D): Add Manpage and userguide targets to the build.
@@ -156,8 +156,8 @@ WsjtMod/Audio.so: libjt.a ${F2PYSRCS}
 	@echo
 	@echo RUN F2PY Audio.so
 	@echo -----------------
-	$(F2PY) -c --quiet --fcompiler=${FCV} --f77exec=${FC} --f90exec=${FC} \
-	--opt="${FCOPT}" $(LDFLAGS) $(LIBS) libjt.a -m Audio $(F2PYSRCS)
+	$(F2PY) -c --quiet --fcompiler=$(FCV) --f77exec=$(FC) --f90exec=$(FC) \
+	--opt="$(FCOPT)" $(PORTAUDIO_LIBDIR) $(LDFLAGS) $(LIBS) libjt.a -m Audio $(F2PYSRCS)
 	$(MV) Audio*.so WsjtMod/Audio.so
 
 # Build user guide
@@ -234,26 +234,26 @@ install:
 	@$(MKDIR) ${DESTDIR}$(SHARED)/applications
 	@$(MKDIR) ${DESTDIR}$(SHARED)/pixmaps
 	@echo "..Installing Binaries and Scripts"
-	@install -m 755 wsjt jt65code jt4code $(DESTDIR)$(BINDIR)/
-	@install -m 644 wsjt.desktop ${DESTDIR}$(SHARED)/applications
-	@install -m 644 wsjt.xpm ${DESTDIR}$(SHARED)/pixmaps/
-	@echo "..Installing Python Files"
-	@install -m 755 wsjt.py Pmw* $(DESTDIR)$(SHARED)/
-	@install -m 755 WsjtMod/{*.py,Audio.so} $(DESTDIR)$(WSJTLIB)/WsjtMod
-	@echo "..Installing Misc Documents"
-	@install -m 644 CALL3.TXT wsjtrc $(DESTDIR)$(SHARED)
-	@install -m 644 RxWav/Samples/*.wav $(DESTDIR)$(DOCDIR)/RxWav/Samples
+	@$(INSTALL) -m 755 wsjt jt65code jt4code $(DESTDIR)$(BINDIR)/
+	@$(INSTALL) -m 644 wsjt.desktop ${DESTDIR}$(SHARED)/applications
+	@$(INSTALL) -m 644 wsjt.xpm ${DESTDIR}$(SHARED)/pixmaps/
+	@echo "..Installing Python3 Files"
+	@$(INSTALL) -m 755 wsjt.py Pmw* $(DESTDIR)$(SHARED)/
+	@$(INSTALL) -m 755 WsjtMod/{*.py,Audio.so} $(DESTDIR)$(WSJTLIB)/WsjtMod
+	@echo "..Installing Misc Documents and Wav Files"
+	@$(INSTALL) -m 644 CALL3.TXT wsjtrc $(DESTDIR)$(SHARED)
+	@$(INSTALL) -m 644 RxWav/Samples/*.wav $(DESTDIR)$(DOCDIR)/RxWav/Samples
 ifeq ($(BMANP),Yes)
 	@echo "..Installing Manpages"
-	@install -m 644 manpages/{wsjt.1,jt65code.1} $(DESTDIR)$(MANDIR)
+	@$(INSTALL) -m 644 manpages/{wsjt.1,jt65code.1} $(DESTDIR)$(MANDIR)
 endif
 ifeq ($(BDOC),Yes)
 	@echo "..Installing User Guide"
-	@install -m 644 $(DOCPATH)/wsjt-main-@VERSION@.html $(DESTDIR)$(DOCDIR)/
+	@$(INSTALL) -m 644 $(DOCPATH)/wsjt-main-@VERSION@.html $(DESTDIR)$(DOCDIR)/
 endif
 ifeq ($(RSDTEST),Yes)
 	@echo "..Installing RSD Test Tools"
-	@install -m 755 -s rsdtest/{rsdtest,rsdtest2,rsdtest3} $(DESTDIR)$(BINDIR)
+	@$(INSTALL) -m 755 -s rsdtest/{rsdtest,rsdtest2,rsdtest3} $(DESTDIR)$(BINDIR)
 endif
 	@echo
 	@echo "TO RUN $(PROGRAM) $(VERSION):"
