@@ -53,6 +53,12 @@ C_Y='\033[01;33m'		# yellow
 C_C='\033[01;36m'		# cyan
 C_NC='\033[01;37m'		# no color
 
+# local user directories for wsjt.desktop and icon files
+APPD="$HOME/.local/share/applications"
+ICOND="$HOME/.local/share/icons"
+
+# file array
+file_array=('CALL3.TXT' 'wsjtrc')
 
 ################################################################################
 # FUNCTIONS
@@ -161,20 +167,24 @@ if [ ! -d $RUNDIR ] ; then mkdir -p $RUNDIR ; fi
 # WSJT wants to have CALL3.TXT and wsjtrc in the same directory
 # as the main script wsjt.py, but if the user has updated
 # CALL3.TXT, we dont want to overwrite their changes.
-if [ ! -e "$RUNDIR/CALL3.TXT" ] ; then cp @SHARED@/CALL3.TXT $RUNDIR ; fi
-if [ ! -e "$RUNDIR/wsjtrc" ] ; then cp @SHARED@/wsjtrc $RUNDIR ; fi
+for f in "${file_array[@]}"
+do
+    if [ ! -e "$f" ] ; then cp @SHARED@/"$f" $RUNDIR ; fi
+done
 
-# add Desktop Entries to users
-if [ ! -e "@SHARED@/applications" ] ; then mkdir -p @SHARED@/applications ; fi
-cp -u @SHARED@/applications/wsjt.desktop $HOME/.local/share/applications/ 
+# add .desktop file for local users
+if [ ! -d "$APPD" ] ; then mkdir -p "$APPD" ; fi
+cp -u @SHARED@/applications/wsjt.desktop "$APPD"/ 
 
-# add xpm Icon
-if [ ! -e "@SHARED@/pixmaps" ] ; then mkdir -p @SHARED@/pixmaps ; fi
-cp -u @SHARED@/pixmaps/wsjt.xpm $HOME/.local/share/icons/
+# add wsjt.xpm icon
+if [ ! -d "$ICOND" ] ; then mkdir -p "$ICOND"/ ; fi
+cp -u @SHARED@/pixmaps/wsjt.xpm "$ICOND"/
 
-# link files from RxWav/Samples rather than copying them
-if [ ! -d $RUNDIR/RxWav ] ; then mkdir -p $RUNDIR/RxWav ; fi
-ln -s @DOCDIR@/RxWav/Samples $RUNDIR/RxWav/Samples
+# use links rather than copying, only if they do not exist
+if [ ! -L $RUNDIR/RxWav/Samples ] ; then
+    mkdir -p $RUNDIR/RxWav
+    ln -s @DOCDIR@/RxWav/Samples $RUNDIR/RxWav/Samples
+fi
 
 # run paths are set by configure.ac, do not edit manually
 cd $RUNDIR
