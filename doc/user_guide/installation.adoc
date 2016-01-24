@@ -26,13 +26,67 @@ are not transmitted over the air.
 
 [[INSTALL_UBU]]
 === Linux
+As with OSX, this section refers to the latest code in the repository. As of
+this writing, version 10.0
 
-Still to come ...
+The biggest issue with compiling _WSJT_ on Linux seems to be with
+Python3-Numpy. Some Linux distributions include Python-Numpy (built with 
+Python 2.x.x) with their desktop packaging. If your desktop includes
+Python-Numpy built with Python 2.x.x, use the flag --with-f2py=(/path/to/f2py3)
+option with the autogen.sh command.
+
+To properly build _WSJT v10.0_, you will need the following development packages,
+consult your package manager for proper package names
+
+* autoconf
+* gcc compiler
+* subversion
+* Python3
+* Python3 Numpy
+* Python3 Tk
+* Python3 PIL
+* Python3 PIL Image Tk
+* Python3 Dev
+* Python3 Setup Tools
+* Samplerate Dev
+* FFTW3 Dev
+* Portaudio19 Dev
+
+[source,shell]
+----------
+svn co https://svn.code.sf.net/p/wsjt/wsjt/trunk wsjt-code
+cd ./wsjt-code
+./autogen.sh
+make
+sudo make install
+----------
+
+To list autotools enabled options, use:
+
+[source,shell]
+----------
+./autogen.sh
+./configure --help=short
+----------
+
+By default, due to potential conflicts with _WSJT-X_, the source installation
+will be located in pass:[/usr/local/wsjt]. It is highly advised to keep this prefix
+location as is. If you must change the pass:[--prefix], consider using pass:[/opt]
+rather than pass:[/usr/local].
+
+For running _WSJT_ after installation, if you followed the example above,
+use the following help command
+
+[source,shell]
+----------
+/usr/local/wsjt/bin/wsjt -h
+----------
 
 [[INSTALL_OSX]]
 === OS X
 
-This guide refers to installation of _WSJT_ on Mac OSX 10.7 and 10.9.  This scheme should also work on OSX 10.8 but has not been tested.  There are
+This guide refers to installation of _WSJT_ on Mac OSX 10.7 and 10.9.  This
+scheme should also work on OSX 10.8 but has not been tested.  There are
 problems with Tcl/Tk libraries which prevent the code from running on OSX 10.10.
 You will need to be familiar with Unix commands in a Terminal window.
 
