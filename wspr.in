@@ -203,6 +203,7 @@ rigctl_error
 }
 if [ -f $RUNDIR/hamlib_rig_numbers ] ; then rm -f $RUNDIR/hamlib_rig_numbers ; fi
 awk 'NR > 3 { print }' < $RUNDIR/r.l > $RUNDIR/hamlib_rig_numbers
+sed  -i 's .\{2\}  ' $RUNDIR/hamlib_rig_numbers
 rm -f $RUNDIR/r.l
 
 # add .desktop file for local users
