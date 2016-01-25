@@ -1,11 +1,13 @@
 acom1.f90
 acom2.f90
 afc2.f90
+aclocal.m4
 audiodev.f90
 AUTHORS
 autogen.sh
 averms.f90
 azdist.f90
+configure
 calibrate.f90
 calobs.f90
 ccf2.f90
@@ -119,7 +121,7 @@ wfile5.f90
 wqdecode.f90
 wqencode.f90
 write_wav.f90
-wspr.sh.in
+wspr.in
 wspr0.f90
 wspr0init.f90
 wspr0_rx.f90

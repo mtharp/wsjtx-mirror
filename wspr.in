@@ -48,6 +48,9 @@
 # exit on errors
 set -e
 
+# make sure we are not sudo
+sudo -k > /dev/null 2>&1
+
 # foreground colours
 C_R='\033[01;31m'		# red
 C_G='\033[01;32m'		# green
@@ -192,10 +195,12 @@ PATH=$PATH:@PREFIX@/bin:@PREFIX@/lib/wspr:@PREFIX@/share/wspr ; export PATH
 if [ ! -d $RUNDIR ] ; then mkdir -p $RUNDIR ; fi
 
 # WSPR needs wsprrc in order to run
-cp -u @SHARED@/wsprrc $RUNDIR
+cp -u @SHARED@/wsprrc $RUNDIR/
 
 # generate new rig control list
-rigctl -l >> $RUNDIR/r.l || { rigctl_error }
+rigctl -l >> $RUNDIR/r.l || {
+rigctl_error
+}
 if [ -f $RUNDIR/hamlib_rig_numbers ] ; then rm -f $RUNDIR/hamlib_rig_numbers ; fi
 awk 'NR > 3 { print }' < $RUNDIR/r.l > $RUNDIR/hamlib_rig_numbers
 rm -f $RUNDIR/r.l

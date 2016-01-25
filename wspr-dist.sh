@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Title			: wspr-dist.sh
-# Version		: 1.0.0
+# Version		: For SVN r6412
 # Author		: Greg, Beam, ki7mt -at- yahoo.com
 # Description	: Script to create ${name}-${version}.tar.gz
 # Usage			: wspr-dist.sh [NAME] [VERSION]
@@ -10,7 +10,7 @@
 # Generates		: wspr-4.0.tar.gz
 # File Location	: $(src-path)/wspr/dist
 #
-# Copyright		: Copyright (C) 2014 Greg Beam, KI7MT
+# Copyright		: Copyright (C) 2014-2016 Greg Beam, KI7MT
 # License		: GPL-3
 #
 # wspr-dist.sh is free software: you can redistribute it and/or modify
@@ -41,6 +41,13 @@ _DISTD="$_BASED/dist"
 _DOC="$_DISTD/$_NAME/doc"
 _EXAMPLES="$_DISTD/$_NAME/doc/examples"
 
+# foreground colours
+C_R='\033[01;31m'		# red
+C_G='\033[01;32m'		# green
+C_Y='\033[01;33m'		# yellow
+C_C='\033[01;36m'		# cyan
+C_NC='\033[01;37m'		# no color
+
 # test $1
 if [[ -z $_NAME ]]; then
 	echo
@@ -55,6 +62,9 @@ if [[ -z $_NAME ]]; then
 	exit 1
 fi
 
+################################################################################
+# FUNCTIONS
+################################################################################
 function re_run() {
 	echo
 	echo "Check the build script for accuracy, then re-run $_SCRIPT"
@@ -62,10 +72,14 @@ function re_run() {
 	exit 1
 }
 
-# start main
-clear
-echo
-echo "Creating ( $_NAME-$_VER ) Distribution Tarball"
+
+################################################################################
+# START MAIN SCRIPT
+################################################################################
+clear ||:
+echo '--------------------------------------------'
+echo -e ${C_G}"Creating ( $_NAME-$_VER ) Distribution Tarball"${C_NC}
+echo '--------------------------------------------'
 echo
 
 # look for manifest file
@@ -97,7 +111,7 @@ fi
 
 # copying required folders
 echo " ..copying folders"
-cp -r save/ WsprMod/ build-aux/ "$_DISTD/$_NAME"
+cp -r save/ WsprMod/ build-aux/ doc/ manpages/ m4/ "$_DISTD/$_NAME"
 
 # remove any .dll's from WsprMod
 echo " ..removing any .dll files"
@@ -198,15 +212,15 @@ fi
 _FILESIZE=$(du -k "$_TARNAME" | cut -f1)
 _FILEPATH=$(exec pwd -P)
 echo
-echo "----------------------------------------------"
-echo " Summary for $_TARNAME"
-echo "----------------------------------------------"
+echo '--------------------------------------------'
+echo -e ${C_G}"Summary for $_TARNAME"${C_NC}
+echo '--------------------------------------------'
 echo
-echo "Created ....: $_TARNAME"
-echo "File Size ..: $_FILESIZE kb"
-echo "MD5SUM: ....: $_MD5"
-echo "SHASUM .....: $_SHA"
-echo "Location ...: $_FILEPATH/$_TARNAME"
+echo " Created ....: $_TARNAME"
+echo " File Size ..: $_FILESIZE kb"
+echo " MD5SUM: ....: $_MD5"
+echo " SHASUM .....: $_SHA"
+echo " Location ...: $_FILEPATH/$_TARNAME"
 echo
 
 # change directories back to $_BASED
