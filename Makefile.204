@@ -1,9 +1,7 @@
-# JTSDK-Win32 v2.0.4 Temporary Makefile
-# TO-DO
-# - Update Makefile.jtsdk2 with this makefile
-# - Convert User Guide from AsciiDoc to AsciiDoctor
-# - Remove Makefile.tmp when v2.0.4 is released
-# - After v2.0.4 is released, Python27 and AsciiDoc will no longer be required
+# JTSDK-Win32 v2.0.4 Makefile
+#
+# User Guide Migration to AsciiDoctor complete
+# Python2 and AsciiDoc are no longer required
 
 # Re-direct stdout and stderr:    cmd.exe
 #                              make > junk 2>&1
@@ -36,9 +34,6 @@ ISS = $(SDK)/src/wspr/wspr4b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
 DOCPATH = $(SRCD)/doc
 DOCSRC = $(SRCD)/doc/user_guide
-DOCCONF = $(SRCD)/doc/wspr-jtsdk2.conf
-THEMEDIR = $(SRCD)/doc/theme
-ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
 ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 
 # Output Paths
@@ -46,7 +41,6 @@ INSTALLDIR = $(SDK)/wspr/install
 PACKAGEDIR = $(SDK)/wspr/package
 
 # Python Paths
-PYTHON2 = $(SDK)/python27/python.exe
 PYTHON3 = $(SDK)/Python33/python.exe
 F2PY = $(PYTHON3) $(SDK)/Python33/Scripts/f2py.py
 CXFR = $(PYTHON3) $(SDK)/Python33/Scripts/cxfreeze
