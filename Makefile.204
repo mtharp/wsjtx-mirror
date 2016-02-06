@@ -1,9 +1,7 @@
-# JTSDK-Win32 v2.0.4 Temporary Makefile
-# TO-DO
-# - Update Makefile.jtsdk2 with this makefile
-# - Convert User Guide from AsciiDoc to AsciiDoctor
-# - Remove Makefile.tmp when v2.0.4 is released
-# - After v2.0.4 is released, Python27 and AsciiDoc will no longer be required
+# JTSDK-Win32 v2.0.4 Makefile
+#
+# User Guide Migration to AsciiDoctor complete
+# Python2 and AsciiDoc are no longer required
 
 # Application Information
 NAME	=	WSJT
@@ -32,9 +30,6 @@ ISCC = $(SDK)/inno5/ISCC.exe
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
 DOCPATH = $(SRCD)/doc
 DOCSRC = $(SRCD)/doc/user_guide
-DOCCONF = $(SRCD)/doc/wsjt-jtsdk2.conf
-THEMEDIR = $(SRCD)/doc/theme
-ASCIIDOC = $(SDK)/asciidoc/asciidoc.py
 ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 
 # Output Paths
@@ -43,7 +38,6 @@ PACKAGEDIR = $(SDK)/wsjt/package
 LOGBOOKDIR = $(SDK)/wsjt/install/Logbook
 
 # Python Paths
-PYTHON2 = $(SDK)/python27/python.exe
 PYTHON3 = $(SDK)/Python33/python.exe
 F2PY = $(PYTHON3) $(SDK)/Python33/Scripts/f2py.py
 CXFR = $(PYTHON3) $(SDK)/Python33/Scripts/cxfreeze
@@ -141,10 +135,10 @@ Audio.pyd: libjt.a $(F2PYSRC)
 # Build the User Guide
 docs:
 	@echo.
-	@echo  Run AsciiDoc
+	@echo  Run AsciiDoctor
 	@echo ------------------------------
 	$(ASCIIDOCTOR) -a data-uri -a toc2=left -a max-width=1024px \
-	--out-file=$(DOCPATH)/wsjt-main.html $(DOCSRC)/wsjt-main.adoc
+	--out-file=$(DOCPATH)/wsjt-main-$(VER).html $(DOCSRC)/wsjt-main.adoc
 
 # Run CX_Freeze to install WSJT to $(INSTALLDIR)
 # CX_Freeze creates $(INSTALLDIR) if not present.
@@ -160,7 +154,7 @@ install:
 	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
 	$(CP) -u CALL3.TXT wsjt.ico $(INSTALLDIR)
-	$(CP) -u $(DOCPATH)/wsjt-main.html $(INSTALLDIR)	
+	$(CP) -u $(DOCPATH)/wsjt-main-$(VER).html $(INSTALLDIR)	
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
