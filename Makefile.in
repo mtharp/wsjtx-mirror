@@ -229,7 +229,7 @@ install:
 	@$(MKDIR) $(DESTDIR)$(DOCDIR)
 	@$(MKDIR) $(DESTDIR)$(MANDIR)
 	@$(MKDIR) $(DESTDIR)$(WSJTLIB)
-	@$(MKDIR) $(DESTDIR)$(WSJTLIB)/WsjtMod
+	@$(MKDIR) $(DESTDIR)$(WSJTLIB)/WsjtMod/sql
 	@$(MKDIR) $(DESTDIR)$(DOCDIR)/RxWav/Samples
 	@$(MKDIR) $(DESTDIR)$(SHARED)
 	@$(MKDIR) ${DESTDIR}$(SHARED)/applications
@@ -241,6 +241,7 @@ install:
 	@echo "..Installing Python3 Files"
 	@$(INSTALL) -m 755 wsjt.py Pmw* $(DESTDIR)$(SHARED)/
 	@$(INSTALL) -m 755 WsjtMod/{*.py,Audio.so} $(DESTDIR)$(WSJTLIB)/WsjtMod
+	@$(INSTALL) -m 644 WsjtMod/sql/* $(DESTDIR)$(WSJTLIB)/WsjtMod/sql
 	@echo "..Installing Misc Documents and Wav Files"
 	@$(INSTALL) -m 644 CALL3.TXT wsjtrc $(DESTDIR)$(SHARED)
 	@$(INSTALL) -m 644 RxWav/Samples/*.wav $(DESTDIR)$(DOCDIR)/RxWav/Samples
@@ -299,6 +300,6 @@ ifeq ($(BMANP),Yes)
 endif
 
 distclean: clean
-	$(RM) -f ALL._TXT config.log config.status Makefile decoded.ave decoded.txt \
-	prefixes.txt WSJT.INI azel.dat FFT_plans.txt RxWav/*.wav ALL.txt debug.txt
+	$(RM) -f ALL.TXT config.log config.status Makefile decoded.ave decoded.txt \
+	prefixes.txt WSJT.INI azel.dat FFT_plans.txt RxWav/*.wav debug.txt
 	$(RM) -rf autom4te.cache/

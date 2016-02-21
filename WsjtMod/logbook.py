@@ -45,15 +45,10 @@ c3csv1='call3.csv'
 appdir=os.getcwd()
 commond = AppDirs("WSJT", appauthor='', version='', multipath='')
 commond = commond.user_data_dir
-sqld=(appdir + (os.sep) + 'WsjtMod' + (os.sep) + 'sql')
+sqld=(commond + (os.sep) + 'sql')
 dbf=(commond + (os.sep) + dbname)
 sqlf1 = (sqld + (os.sep) + sql_file)
 c3csv = (sqld + (os.sep) + c3csv1)
-
-# simple call3 lookup script, only used during testing
-wsjtmod=(appdir + (os.sep) + 'WsjtMod')
-testscript='call3.py'
-c3test=(wsjtmod + (os.sep) + testscript)
 
 #------------------------------------------------------ logbook message box
 def lbMsgBox(l):

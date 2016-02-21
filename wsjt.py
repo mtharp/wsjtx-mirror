@@ -13,14 +13,10 @@ from PIL import (Image, ImageTk)
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
-from shutil import copyfile
 
 # make the new FSH directories
 if not os.path.exists(logbook.commond):
     os.makedirs(logbook.commond)
-
-# simple call3 lookup script, only used during testing
-copyfile(logbook.c3test, (logbook.commond + (os.sep) + 'call3.py'))
 
 # check that wsjt.db
 if os.path.isfile(logbook.dbf):

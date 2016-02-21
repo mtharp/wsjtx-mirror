@@ -46,6 +46,9 @@
 # exit on errors
 set -e
 
+# make sure we're not running as sudo
+if $(which sudo) [[$? -eq 0 ]] ; then sudo -k ; fi
+
 # foreground colours
 C_R='\033[01;31m'		# red
 C_G='\033[01;32m'		# green
@@ -143,7 +146,6 @@ fi
 # combine final runtime path
 RUNDIR="$P_PATH/$N_NAME"
 
-
 ################################################################################
 # START MAIN SCRIPT
 ################################################################################
@@ -184,6 +186,17 @@ cp -u @SHARED@/pixmaps/wsjt.xpm "$ICOND"/
 if [ ! -L $RUNDIR/RxWav/Samples ] ; then
     mkdir -p $RUNDIR/RxWav
     ln -s @DOCDIR@/RxWav/Samples $RUNDIR/RxWav/Samples
+fi
+
+# link sql folder to FSH location
+if [ ! -L $RUNDIR/sql ] ; then
+    mkdir -p $RUNDIR
+    ln -s @WSJTLIB@/WsjtMod/sql $RUNDIR/sql
+fi
+
+# temporary Link call3 grid seach script
+if [ ! -L $RUNDIR/call3.py ] ; then
+    ln -s @WSJTLIB@/call3.py $RUNDIR/call3.py
 fi
 
 # run paths are set by configure.ac, do not edit manually

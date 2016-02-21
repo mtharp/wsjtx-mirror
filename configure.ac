@@ -2,7 +2,7 @@ dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([WSJT], [10.0], [wsjt-devel@lists.sourceforge.net],[],
+AC_INIT([WSJT], [11.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
 WSJT_COPYRIGHT="Copyright (C) 2001-2016 Joseph H Taylor, Jr, K1JT"
 
