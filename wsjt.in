@@ -195,8 +195,9 @@ if [ ! -L $RUNDIR/sql ] ; then
 fi
 
 # temporary Link call3 grid seach script
+rm -f $RUNDIR/call3.py
 if [ ! -L $RUNDIR/call3.py ] ; then
-    ln -s @WSJTLIB@/call3.py $RUNDIR/call3.py
+    ln -s @WSJTLIB@/WsjtMod/call3.py $RUNDIR/call3.py
 fi
 
 # run paths are set by configure.ac, do not edit manually
