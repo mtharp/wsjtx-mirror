@@ -2842,7 +2842,7 @@ def qsoform(event=NONE):
     # QSO Start Date
     lb_date_label = Label(lbf1, text="Start Date")
     lb_date_label.grid(row=0, column=2, sticky='W', padx=5, pady=2)
-    lb_date_start = Entry(lbf1, width=10, bg='yellow')
+    lb_date_start = Entry(lbf1, width=10)
     lb_date_start.insert(END, qso_date)
     lb_date_start.focus_set()
     lb_date_start.grid(row=1, column=2, sticky='W', padx=5, pady=2)
@@ -2850,7 +2850,7 @@ def qsoform(event=NONE):
     # QSO Start Time
     lb_time_label = Label(lbf1, text="Start Time")
     lb_time_label.grid(row=0, column=3, sticky='W', padx=5, pady=2)
-    lb_time_start = Entry(lbf1, width=8, bg='yellow')
+    lb_time_start = Entry(lbf1, width=8)
     lb_time_start.insert(END, qso_time)
     lb_time_start.grid(row=1, column=3, sticky='W', padx=5, pady=2)
 
@@ -2892,7 +2892,7 @@ def qsoform(event=NONE):
     # Rpt_Rcvd
     lb_rpt_rcvd_label = Label(lbf1, text="Rpt Rcvd")
     lb_rpt_rcvd_label.grid(row=2, column=3, sticky='W', padx=5, pady=2)
-    lb_rpt_rcvd = Entry(lbf1, width=8, bg='yellow')
+    lb_rpt_rcvd = Entry(lbf1, width=8)
     lb_rpt_rcvd.insert(0, rpt_rcvd)
     lb_rpt_rcvd.grid(row=3, column=3, sticky='W', padx=5, pady=2)
 
