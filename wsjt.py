@@ -3184,17 +3184,15 @@ if (sys.platform == 'darwin'):
 
 #------------------------------------------------------ Logbook Menu
 if (sys.platform != 'darwin'):
-    logbookbutton = Menubutton(mbar, text = 'Logging')
+    logbookbutton = Menubutton(mbar, text = 'Logbook')
     logbookbutton.pack(side = LEFT)
     logbookmenu = Menu(logbookbutton, tearoff=0)
     logbookbutton['menu'] = logbookmenu
 else:
     logbookmenu = Menu(mbar, tearoff=use_tearoff)
-logbookmenu.add('command',label="Add Station To Call3 Table", command= udev, accelerator='Shift+A')
-logbookmenu.add('command',label="Update Station In Call3 Table", command= udev, accelerator='Shift+U')
-logbookmenu.add('command',label="Generate Call3 Text File", command= udev, accelerator='Shift+G')
+logbookmenu.add('command',label="Add Station To Call3 Table", command= udev)
 logbookmenu.add_separator()
-logbookmenu.add('command', label = 'Log QSO', command = qsoform, accelerator='Shift+L')
+logbookmenu.add('command', label = 'Log QSO', command = qsoform, accelerator='Alt+Q')
 logbookmenu.add('command', label = 'Log QSO Help', command = qsoform_help, accelerator='Shift+H')
 
 if (sys.platform == 'darwin'):
