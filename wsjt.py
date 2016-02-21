@@ -2,22 +2,38 @@
 #----------------------------------------------------------------------- WSJT
 # $Date$ $Revision$
 #
-import sys, os, time, array, _thread, webbrowser, Pmw
+import sys, os, time, array, _thread, webbrowser, csv, sqlite3, Pmw 
 from tkinter import *
 from tkinter.filedialog import *
 import tkinter.messagebox
-from WsjtMod import g, Audio
+from WsjtMod import g, Audio, logbook
 from math import log10
 import numpy.core.multiarray         # Tell cxfreeze we need the numpy stuff
 from PIL import (Image, ImageTk)
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
+from shutil import copyfile
 
-# Enable / disable Logbook Menu: 1=Enabled, 0=disabled
-EnableLogbook=0
-if EnableLogbook==1:
-    from Logbook import logbook
+# make the new FSH directories
+if not os.path.exists(logbook.commond):
+    os.makedirs(logbook.commond)
+
+# simple call3 lookup script, only used during testing
+copyfile(logbook.c3test, (logbook.commond + (os.sep) + 'call3.py'))
+
+# check that wsjt.db
+if os.path.isfile(logbook.dbf):
+    try:
+        logbook.db_version()
+
+    except NameError as err:
+        print("Name error: {0}".format(err))
+        print("Creating Database..: {}".format(logbook.dbname))
+        raise
+        logbook.lb_create_database()
+else:
+    logbook.lb_create_database()
 
 # START WSJT MAIN UI
 root = Tk()
@@ -27,8 +43,9 @@ Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
 # print WSJT Console Header
 print("******************************************************************")
 print("WSJT Version " + Version + ", by K1JT")
-print("Revision date ...: " + "$Date$"[7:-1])
-print("Run date ........: " + time.asctime(time.gmtime()) + " UTC")
+print("Revision date ..: " + "$Date$"[7:-1])
+print("Run date .......: " + time.asctime(time.gmtime()) + " UTC")
+print("WSJT Database...: {}".format(logbook.dbname))
 
 #See if we are running in Windows
 g.Win32=0
@@ -229,26 +246,31 @@ def logqso(event=NONE):
     tf=str(g.nfreq)
     if g.nfreq==2: tf="1.8"
     if g.nfreq==4: tf="3.5"
-    t=t+","+ToRadio.get()+","+HisGrid.get()+","+tf+","+g.mode+","+report.get()+"\n"
-    t2="Please confirm making the following entry in WSJT.LOG:\n\n" + t
-    result=tkinter.messagebox.askyesno(message=t2)
-    if result:
-        f=open(appdir+'/WSJT.LOG','a')
-        f.write(t)
-        f.close()
+#    t=t+","+ToRadio.get()+","+HisGrid.get()+","+tf+","+g.mode+","+report.get()+"\n"
+#    t2="Please confirm making the following entry in WSJT.LOG:\n\n" + t
+#    result=tkinter.messagebox.askyesno(message=t2)
+#    if result:
+#        f=open(appdir+'/WSJT.LOG','a')
+#        f.write(t)
+#        f.close()
+    # now using the SQLite Database for Logging
+    if HisGrid.get()=="":
+        MsgBox("Please enter a valid grid locator.")
+    else:
+        qsoform()
 
 #------------------------------------------------------ BlinkLogQSO
 def BlinkLogQSO(event = NONE):
     global BlinkingLogQSO, BlinkingState
     BlinkingLogQSO = True
     BinkingState = False
-    
+
 #------------------------------------------------------ ClearLogQSO
 def ClearLogQSO(event=NONE):
     global BlinkingLogQSO
     BlinkingLogQSO = False
     blogqso.configure(bg='gray85')
-  
+
 #------------------------------------------------------ monitor
 def monitor(event=NONE):
     bmonitor.configure(bg='green')
@@ -303,12 +325,12 @@ def dbl_click3_text(event):
         report.insert(0,rpt)
         dbl_click_call(t,t1,rpt,event)
 
-
 #------------------------------------------------------ dbl_click_ave
 def dbl_click_ave(event):
     t=avetext.get('1.0',END)           #Entire contents of text box
     t1=avetext.get('1.0',CURRENT)      #Contents from start to mouse pointer
     dbl_click_call(t,t1,'OOO',event)
+
 #------------------------------------------------------ dbl_click_call
 def dbl_click_call(t,t1,rpt,event): # t = entire line, t1 = line to mouse pointer, # varies, event = event
     global hiscall
@@ -334,7 +356,7 @@ def dbl_click_call(t,t1,rpt,event): # t = entire line, t1 = line to mouse pointe
             GenMsgs()
             if mode.get()[:4]=='JT65' and rpt != "OOO":
                 n=tx1.get().rfind(" ")
-                if n>=7: 
+                if n>=7:
                     t2=tx1.get()[0:n+1]
                 else:
                     t2=tx1.get() + " "
@@ -407,7 +429,7 @@ def openfile(event=NONE):
         mrudir=os.path.dirname(fname)
         fileopened=os.path.basename(fname)
     os.chdir(appdir)
- 
+
 #------------------------------------------------------ opennext
 def opennext(event=NONE):
     global ncall,fileopened,loopall,mrudir
@@ -483,14 +505,14 @@ def txstop(event=NONE):
     if lauto: toggleauto()
     Audio.gcom1.txok=0
     Audio.gcom2.mantx=0
-    
-#------------------------------------------------------ lookup
+
+#------------------------------------------------------ lookup from call3 file
 def lookup(event=NONE):
     global hiscall,hisgrid
     hiscall=ToRadio.get().upper().strip()
     ToRadio.delete(0,END)
     ToRadio.insert(0,hiscall)
-    s=whois(hiscall)
+    s=logbook.lb_whois(hiscall)
     balloon.bind(ToRadio,s[:-1])
     hisgrid=""
     if s:
@@ -507,7 +529,7 @@ def lookup_gen(event):
     lookup()
     GenMsgs()
 
-#-------------------------------------------------------- addtodb / call3
+#-------------------------------------------------------- addtodb / call3 file
 def addtodb():
     global hiscall
     if HisGrid.get()=="":
@@ -581,7 +603,7 @@ def clrToRadio(event):
         ntx.set(6)
         nfreeze.set(0)
 
-#------------------------------------------------------ whois
+#------------------------------------------------------ whois from call3
 def whois(hiscall):
     whodat=""
     try:
@@ -591,6 +613,7 @@ def whois(hiscall):
     except:
         print('Error when searching CALL3.TXT, or no such file present')
         s=""
+
     for i in range(len(s)):
         if s[i][:2] != '//':
             i1=s[i].find(',')
@@ -665,6 +688,7 @@ def ModeFSK315(event=NONE):
     mode.set("FSK315")
     g.mode=mode.get()
     options.resetgen()
+
 #------------------------------------------------------ ModeJT65
 def ModeJT65():
     global slabel,isync,isync65,textheight,itol
@@ -769,7 +793,7 @@ def ModeISCAT_A(event=NONE):
     ModeISCAT_B()
     mode.set("ISCAT-A")
     Audio.gcom2.mode4=1
-    
+
 #------------------------------------------------------ ModeISCAT_B
 def ModeISCAT_B(event=NONE):
     global isync,isync_iscat,slabel
@@ -800,7 +824,7 @@ def ModeISCAT_B(event=NONE):
         Audio.gcom2.mousedf=0
         Audio.gcom2.mode4=2
         GenMsgs()
-        erase()        
+        erase()
 
 #------------------------------------------------------ ModeJT6M
 def ModeJT6M(event=NONE):
@@ -945,7 +969,7 @@ def msgpos():
     t=g[1:]
     x=int(t[:t.index("+")])          # + 70
     y=int(t[t.index("+")+1:])        # + 70
-    return "+%d+%d" % (x,y)    
+    return "+%d+%d" % (x,y)
 
 #------------------------------------------------------ about
 def about(event=NONE):
@@ -968,10 +992,10 @@ these operating modes:
   7. CW     -  15 WPM Morse code, messages structured for EME
   8. Echo   -  EME Echo testing
 
-Copy (c) 2001-2015 by Joseph H. Taylor, Jr., K1JT, with
-contributions from additional authors.  WSJT is Open Source 
+Copy (c) 2001-2016 by Joseph H. Taylor, Jr., K1JT, with
+contributions from additional authors.  WSJT is Open Source
 software, licensed under the GNU General Public License (GPL).
-Source code and programming information may be found at 
+Source code and programming information may be found at
 http://developer.berlios.de/projects/wsjt/.
 """
     Label(about,text=t,justify=LEFT).pack(padx=20)
@@ -1005,8 +1029,8 @@ Alt+1 to Alt+6  Tx1 to Tx6
 Alt+A	Toggle Auto On/Off
 Alt+C	Clear average
 Alt+D	Decode
-Ctrl+D	Force Decode 
-Shift+Ctrl+D  Force Decode, no JT65 shorthands 
+Ctrl+D	Force Decode
+Shift+Ctrl+D  Force Decode, no JT65 shorthands
 Alt+E	Erase
 Alt+F	Toggle Freeze
 Alt+G	Generate standard messages
@@ -1018,6 +1042,7 @@ Alt+M	Monitor
 Alt+N   Clear Log QSO Needed
 Alt+O	Tx Stop
 Alt+Q	Log QSO
+Shift+L Log QSO With Form
 Alt+R	Enter report
 Alt+S	Stop Monitoring or Decoding
 Alt+V	Save Last
@@ -1177,7 +1202,7 @@ def azdist():
             labDist.configure(text=str(ndmiles)+" mi")
         else:
             labDist.configure(text=str(int(1.609344*ndmiles))+" km")
-    
+
 #------------------------------------------------------ incsync
 def incsync(event):
     global isync
@@ -1217,7 +1242,7 @@ def decMinW(event):
     global iMinW
     if iMinW>1 : iMinW=iMinW-1
     lMinW.configure(text='MinW   ' + chr(ord('A')+iMinW-1))
-                    
+
 #------------------------------------------------------ setMinW
 def setMinW(n):
     global iMinW
@@ -1342,10 +1367,10 @@ def toggleauto(event=NONE):
         Audio.gcom2.mantx=0
     if lauto==0:
         auto.configure(text='Auto is OFF',bg='gray85',relief=RAISED)
-    if lauto==1: 
+    if lauto==1:
         auto.configure(text='Auto is  ON',bg='red',relief=SOLID)
         TXStopCount = 0
-    
+
 #------------------------------------------------------ toggletxdf
 def toggletxdf(event=NONE):
     global ltxdf
@@ -1371,7 +1396,7 @@ def dtdf_change(event):
             lab6.configure(text=t,bg="#33FFFF")
         elif (event.y>=40 and event.y<95) or \
                  (event.y<95 and Audio.gcom2.nspecial>0):
-         
+
             idf=Audio.gcom2.idf
             if (mode.get()[:3]=='JT4' or mode.get()[:4]=='JT65') and \
                     event.y<67 and jt4avg.get():
@@ -1419,7 +1444,7 @@ def mouse_click_g1(event):
 def double_click_g1(event):
     if(mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4'):
         g.freeze_decode=1
-    
+
 #------------------------------------------------------ mouse_up_g1
 def mouse_up_g1(event):
     if mode.get()[:5]=='ISCAT' and Audio.gcom2.ndecoding==0:
@@ -1443,16 +1468,16 @@ def left_arrow(event=NONE):
     n=5*int(Audio.gcom2.mousedf/5)
     if n==Audio.gcom2.mousedf: n=n-5
     Audio.gcom2.mousedf=n
-    
+
 #------------------------------------------------------ GenMsgs
 def GenMsgs(event=NONE):
     global altmsg
-    
+
     if altmsg==1 and (mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4' or mode.get()[:5]=='ISCAT'):
         GenAltMsgs()
     else:
         GenStdMsgs()
-            
+
 #------------------------------------------------------ GenStdMsgs
 def GenStdMsgs(event=NONE):
     global altmsg,MyCall0,addpfx0,ToRadio0
@@ -1499,7 +1524,7 @@ def GenStdMsgs(event=NONE):
             nplain,naddon,ndiff=Audio.chkt0()
             if nplain==1:
                 MsgBox("Bad callsign in 'To Radio'?\nPlease check.")
-            
+
         t0=(ToRadio.get() + " "+options.MyCall.get()).upper()
         Audio.gcom2.t0msg=(t0+' '*22)[:22]
         nplain,naddon,ndiff=Audio.chkt0()
@@ -1524,7 +1549,7 @@ def GenStdMsgs(event=NONE):
         tx4.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [RRR]")
         tx5.insert(0,ToRadio.get() + " " + options.MyCall.get()+" [73]")
         tx6.insert(0,"[CQ " + options.MyCall.get() + "]")
-        
+
 #------------------------------------------------------ GenAltMsgs
 def GenAltMsgs(event=NONE):
 #    global altmsg,tx6alt
@@ -1571,12 +1596,12 @@ def GenAltMsgs(event=NONE):
         tx5.insert(0,t+" "+setmsg(options.tx5.get(),r))
         tx6.insert(0,setmsg(options.tx6.get(),r))
 
-    
+
 
 #------------------------------------------------------ setmsg
 def setmsg(template,r):
     global altmsg
-    
+
     msg=""
     t=options.MyCall.get()
     n=len(t)
@@ -1874,7 +1899,7 @@ def trackOK(event):
     lWarn.after_cancel(idWarn)
     if trackWarn0>0:
         idWarn=lWarn.after(60000*trackWarn0,trackWarning)
-        
+
 #--Routines used for auto sequencing ISCAT -- up to update() should be moved to own file
 def AutoIscatDoubleClick(line, linetomouse):
     global altmsg
@@ -1894,7 +1919,7 @@ def AutoIscatDoubleClick(line, linetomouse):
 #   Isolate the call in the line, this MUST be in the text area
     mymouseline = linetomouse[linetomouse.rfind('\n')+1:]
     mline = mymouseline[32:].split()
-    
+
     if (len(sline) >= 2):
     #   check for CQ message
         if (sline[0] == 'CQ'):
@@ -1908,7 +1933,7 @@ def AutoIscatDoubleClick(line, linetomouse):
                     if (AutoISCATIsInfoBlock(sline[3])):
                         HisSetup = sline[3]
             SetSequence = True
-        else: 
+        else:
 #           Assume this is a TX1, it may or may not be addressed to us
             if (sline[0] == options.MyCall.get()):
                 NewHisCall = sline[1]
@@ -1931,7 +1956,7 @@ def AutoIscatDoubleClick(line, linetomouse):
                         HisSetup = sline[2]
                     SetSequence = True
                     SetReport = True
-                    
+
         if (NewHisCall != ""):
             ToRadio.delete(0,END)
             ToRadio.insert(0,NewHisCall)
@@ -1944,7 +1969,7 @@ def AutoIscatDoubleClick(line, linetomouse):
                     call3 = HisCall3Entry.split(',')
                     if (len(call3) >= 2 and len(call3[1]) >=4 and len(call3[1]) <= 6):
                         HisGrid.insert(0, call3[1])
-                        
+
         if (HisSetup != ""):
             if (HisSetup[1:2] == 'S'):
                 altmsg = 0
@@ -1954,7 +1979,7 @@ def AutoIscatDoubleClick(line, linetomouse):
                 options.ireport.set(0)
             elif (HisSetup[2:3] == 'G'):
                 options.ireport.set(1)
-            
+
             Audio.gcom1.trperiod = int(HisSetup[3:])
             if (CallToMe):
                 report.delete(0,END)
@@ -1964,18 +1989,18 @@ def AutoIscatDoubleClick(line, linetomouse):
                 ntx.set(2)
             else:
                 ntx.set(1)
-        
+
         if SetReport:
             AutoISCATSetReport(myline)
-                
+
         GenMsgs()
-        
+
         if (SetSequence):
             if ((int(pline[0][4:]) % (2 * Audio.gcom1.trperiod)) < Audio.gcom1.trperiod):
                 TxFirst.set(0)
             else:
                 TxFirst.set(1)
-                
+
 
 def AutoISCATIsInfoBlock (mysline):
     if (mysline[:1] != '?'):
@@ -2002,7 +2027,7 @@ def AutoISCATIsTX2(myslines):
             if (options.ireport.get()==1):
                 return (myslines[2]==HisGrid.get()[:4].upper())
     return False
-        
+
 def AutoISCATIsTX3(myslines):
     global altmsg
     if (altmsg==0):
@@ -2018,7 +2043,7 @@ def AutoISCATIsTX3(myslines):
                 if (options.ireport.get()==1):
                     return (len(myslines)==4 and myslines[2][:2]=='RR' and myslines[3]==HisGrid.get()[:4].upper())
     return False
-    
+
 def AutoISCATIsTX4(myslines):
     global altmsg
     if (altmsg==0):
@@ -2027,8 +2052,8 @@ def AutoISCATIsTX4(myslines):
         if len(myslines) == 3:
             return (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper() and myslines[2]=='RRR')
     return False
-    
-def AutoISCATIsTX5(myslines):    
+
+def AutoISCATIsTX5(myslines):
     global altmsg
     if (altmsg==0):
         return (len(myslines)==1 and myslines[0]=='73')
@@ -2036,7 +2061,7 @@ def AutoISCATIsTX5(myslines):
         if (len(myslines) == 3):
             return (myslines[0]==options.MyCall.get().upper() and myslines[1]==ToRadio.get().upper() and myslines[2]=='73')
     return False
-    
+
 def AutoISCATSetReport(line):
     global altmsg
     pline = line[:31].split()
@@ -2053,7 +2078,7 @@ def AutoISCATSetReport(line):
     elif (altmsg==1):
         tx3.delete(0,END)
         tx3.insert(0,t + ' ' + setmsg(options.tx3.get(),r))
-        
+
 def AutoISCATFindStrongest(line, lines):
     myreturnline = line
     sline = line[:31].split()
@@ -2063,7 +2088,7 @@ def AutoISCATFindStrongest(line, lines):
             if (int(mysline[2]) > int(sline[2])):
                 myreturnline = myline
     return myreturnline
- 
+
 def AutoISCAT(lines):
     global TXStopCount
 #   Walk through the lines looking for a useful decode
@@ -2072,7 +2097,7 @@ def AutoISCAT(lines):
 #        print (line)
         sline = line[32:62].split()
         pline = line[:31].split()
-        
+
 #       Check what message we got and react to it based on context
         if ntx.get()==1:
             if AutoISCATIsTX1(sline):
@@ -2089,7 +2114,7 @@ def AutoISCAT(lines):
                 if Audio.gcom2.lauto:
                     btx3()
                 break
-        elif ntx.get()==2:    
+        elif ntx.get()==2:
             if AutoISCATIsTX2(sline):
                 IsGood = True
                 AutoISCATSetReport(AutoISCATFindStrongest(line, lines))
@@ -2142,23 +2167,23 @@ def AutoISCAT(lines):
                 TXStopCount = 0
                 txstop()
                 break
-#           Check if we are still getting RRR, if so keep sending 73 and set count                               
+#           Check if we are still getting RRR, if so keep sending 73 and set count
             if AutoISCATIsTX4(sline):
                 IsGood = True
                 TXStopCount = options.auto73Count.get()
                 break
-        else:   
+        else:
             continue
-            
+
     # We are either on the line we advanced with or the last line
     if (len(lines) > 0 and line != ""):
 #       Print the line that was used putting an a into it to indicate auto
         if IsGood:
 #           Find the strongest with the same decode
             line = AutoISCATFindStrongest(line, lines)
-#           Mark this as having been used by the auto sequencer                        
+#           Mark this as having been used by the auto sequencer
             line = line[:30] + 'a' + line[31:]
-#           Add the line we actually used to all.txt  
+#           Add the line we actually used to all.txt
             try:
                 f=open(appdir+'/all.txt',mode='a')
                 f.write(line)
@@ -2167,15 +2192,15 @@ def AutoISCAT(lines):
                 print ("Error Appending to all.txt")
         else:
             line = lines[len(lines)-1]
-            
+
         PrintISCAT (line)
-        
+
         if (ntx.get() == 5 and not IsGood):
             if (TXStopCount > 0):
                 TXStopCount = TXStopCount - 1
                 if (TXStopCount == 0):
                     txstop()
- 
+
 def DoISCAT(lines):
     global lauto
     if IsAuto.get() and lauto:
@@ -2183,7 +2208,7 @@ def DoISCAT(lines):
     else:
 #       Print ISCAT in NON Auto mode
         if (ReportAllMessages.get() and len(lines) > 2):
-#  ADD CODE HERE TO COMBINE IDENTICAL DECODES AND REPORT ONLY THE STRONGEST OF EACH <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                
+#  ADD CODE HERE TO COMBINE IDENTICAL DECODES AND REPORT ONLY THE STRONGEST OF EACH <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             for i in range (0, len(lines)-1):
                 PrintISCAT (lines[i])
 #               Write the extra lines to all.txt
@@ -2196,10 +2221,10 @@ def DoISCAT(lines):
                 print ("Error Appending to all.txt")
         elif (len(lines) >= 1):
             PrintISCAT (lines[len(lines) - 1])
-    
-def PrintISCAT (line): 
+
+def PrintISCAT (line):
     if (HideEmptyMessages.get()):
-        if (line[32:62].strip() != '000' and line[32:62].strip() != ""): 
+        if (line[32:62].strip() != '000' and line[32:62].strip() != ""):
             text.configure(state=NORMAL)
             text.insert(END,line)
             text.see(END)
@@ -2207,7 +2232,7 @@ def PrintISCAT (line):
         text.configure(state=NORMAL)
         text.insert(END,line)
         text.see(END)
-             
+
 
 #------------------------------------------------------ update
 def update():
@@ -2215,7 +2240,7 @@ def update():
            im,pim,cmap0,isync,isync441,isync6m,isync_iscat,isync65,trxnoise0, \
            isync_save,idsec,first,itol,txsnrdb,tx6alt,nmeas,g2font,           \
            trackWarn0,trackWarn1,isync4,lauto,BlinkingLogQSO, BlinkingState
-    
+
     utc=time.gmtime(time.time()+0.1*idsec)
     isec=utc[5]
 
@@ -2249,7 +2274,7 @@ def update():
             options.MyGrid.get().upper(),HisGrid.get().upper(),utchours)
         azdist()
         g.nfreq=nfreq.get()
-        
+
         if BlinkingLogQSO:
             if BlinkingState:
                 blogqso.configure(bg='gray85')
@@ -2257,7 +2282,7 @@ def update():
             else:
                 blogqso.configure(bg='red')
                 BlinkingState = True
-                
+
         if tx1.get()[0:2]=='GO' and mode.get()=='Echo':
             try:
                 nmin=int(tx1.get()[3:5])
@@ -2268,7 +2293,7 @@ def update():
             if isec==4 and (utc[4]%nmin)==1 and lauto==1:
                 toggleauto()
                 Audio.gcom2.nsumecho=0
-        
+
         if Audio.gcom2.ndecoding==0:
             g.AzSun,g.ElSun,g.AzMoon,g.ElMoon,g.AzMoonB,g.ElMoonB,g.ntsky, \
                 g.ndop,g.ndop00,g.dbMoon,g.RAMoon,g.DecMoon,g.HA8,g.Dgrd,  \
@@ -2394,7 +2419,7 @@ def update():
     if abs(int(Audio.gcom2.mousedf))>600:
         msg3.configure(text=t,fg='black',bg='red')
     else:
-        msg3.configure(text=t,fg='black',bg='gray85')    
+        msg3.configure(text=t,fg='black',bg='gray85')
     bdecode.configure(bg='gray85',activebackground='gray95')
     if (sys.platform == 'darwin'):
         bdecode.configure(text='Decode')
@@ -2455,9 +2480,9 @@ def update():
         if (sys.platform == 'darwin'):
             bmonitor.configure(text='*Monitor*')
     else:
-        bmonitor.configure(bg='gray85')    
+        bmonitor.configure(bg='gray85')
         if (sys.platform == 'darwin'):
-            bmonitor.configure(text='Monitor')    
+            bmonitor.configure(text='Monitor')
     if Audio.gcom1.transmitting:
         nmsg=int(Audio.gcom2.nmsg)
         t0=Audio.gcom2.sending.tostring().decode('ascii')
@@ -2481,7 +2506,7 @@ def update():
         bgcolor='green'
         t='Receiving'
     msg7.configure(text=t,bg=bgcolor)
-    
+
     if Audio.gcom2.ndecdone==1 or g.cmap != cmap0:
         if Audio.gcom2.ndecdone==1:
             if isync==-99 or isync==99:
@@ -2493,7 +2518,7 @@ def update():
                 f.close()
             except:
                 lines=""
-                
+
 #           Auto TX Increment mode for ISCAT - print is internal, everything else is printed in the else's:
             if mode.get()[:5]=='ISCAT':
                 DoISCAT (lines)
@@ -2503,7 +2528,7 @@ def update():
                 for i in range(len(lines)):
                     text.insert(END,lines[i])
                 text.see(END)
-                
+
             if mode.get()[:4]=='JT65' or mode.get()[:3]=='JT4':
                 try:
                     f=open(appdir+'/decoded.ave',mode='r')
@@ -2519,7 +2544,7 @@ def update():
                     avetext.insert(END,lines[1])
 #                avetext.configure(state=DISABLED)
             Audio.gcom2.ndecdone=2
-        
+
         if g.cmap != cmap0:
             im.putpalette(g.palette)
             cmap0=g.cmap
@@ -2655,8 +2680,296 @@ def update():
     Audio.gcom2.nlowbeacon=nlowbeacon.get()
 # Queue up the next update
     ldate.after(100,update)
-    
-#------------------------------------------------------ Top level frame
+
+#------------------------------------------------------- LOGBOOK ENTRY FUNCTIONS
+
+#------------------------------------------------------ entry form help
+def qsoform_help(event=NONE):
+    msg="""
+The following Fields are used when logging QSO and / or updating
+the CALL3 Database Table. All fileds should be updated as
+appropriate before saving.
+
+Field       Description
+------------------------------------------------------------------
+Call........: Station being worked callsign
+Grid........: Station being worked Grid
+Start Date..: Date when QSO started, (UTC), update as Needed
+Start Time..: Time when QSO Started, (UTC), update as Needed
+End Date....: Date when QSO ended, (UTC), set when logging QSO
+End Time....: Time when QSO ended, (UTC), set when logging QSO
+Submode.....: Set from Main Menu >> Mode
+Mode........: Cross reference based on Submode
+Snt Rpt.....: Report set to Call Station
+Rcvd Rpt....: Report Recieved from Call Station
+TxPwr.......: Power level used during QSO, optional field
+Band........: Set from Main Menu >> Band
+
+Add QSO to Call3, if checked, will the QSO to the Call3 Table in wsjt.db
+if it does not exist.
+
+Rebuild Call3 file, if checked, will regenerate a CALL3.TXT file
+if a call has been added to the CALL3 table in wsjt.db
+
+Contact is EME QSO, if checked, will add a flag in both the QSO
+log and CALL3 data table.
+
+"""
+    qsoform_help=Toplevel(root)
+    qsoform_help.geometry(root_geom[root_geom.index("+"):])
+    if g.Win32: qsoform_help.iconbitmap("wsjt.ico")
+    qsoform_help.title('Log QSO Entry Form Help')
+    Label(qsoform_help,text=msg,justify=LEFT).pack(padx=20)
+    qsoform_help.focus_set()
+
+
+#------------------------------------------------------ main entry form
+def qsoform(event=NONE):
+    # get initial form insert values
+    operator=ToRadio.get()
+    qso_date=time.strftime("%Y%m%d",time.gmtime())
+    qso_time=time.strftime("%H%M",time.gmtime())
+    his_grid=HisGrid.get()
+    rpt_sent=report.get()
+    rpt_rcvd=report.get()
+    pwr="100"
+    tf=(str(g.nfreq))
+    sm=(str(g.mode))
+    last_update=time.strftime("%Y%m%d",time.gmtime())
+    band=logbook.lb_band_convert(tf)
+    mode=logbook.lb_mode_convert(sm)
+
+    # open Toplevel QSO Form
+    form=Toplevel()
+    form.title('Log QSO Entry Form')
+    form.resizable(0,0)
+
+    # attempt to center log form in the middle of the screen
+    x = (form.winfo_screenwidth() - form.winfo_reqwidth()) / 2
+    y = (form.winfo_screenheight() - form.winfo_reqheight()) / 2
+    form.geometry("+%d+%d" % (x, y))
+
+    # initilize variables used in log entry form
+    lbo=StringVar()
+    lbg=StringVar()
+    lb_date=StringVar()
+    lb_time=StringVar()
+    lb_submode=StringVar()
+    lb_mode=StringVar()
+    lb_band=StringVar()
+    lb_rpt_sent=StringVar()
+    lb_rpt_rcvd=StringVar()
+    lb_band_list=StringVar()
+    lb_submode_list=StringVar()
+    ms_list_dropdown=StringVar()
+    nr_bursts=IntVar()
+    nr_pings=IntVar()
+    c3update=IntVar()
+    qsotype=IntVar()
+    eme_ms=BooleanVar()
+
+    def rbselect():
+        return eme_ms.get()
+        
+    # get form values after save, then send them to logbook.lb_addqso
+    def displayEntry():
+        MCALL=options.MyCall.get()
+        MGRID=options.MyGrid.get()
+        CALL=lbo.get()
+        GRIDSQUARE=lbg.get()
+        QSO_DATE=lb_date_start.get()
+        TIME_ON=lb_time_start.get()
+        QSO_DATE_OFF=lb_date_end.get()
+        TIME_OFF=lb_time_end.get()
+        SUBMODE=lb_submode.get()
+        MODE=lb_mode.get()
+        RST_SENT=lb_rpt_sent.get()
+        RST_RCVD=lb_rpt_sent.get()
+        TX_PWR=lb_pwr.get()
+        BAND=lb_band.get()
+        NR_BURSTS=nr_bursts.get()
+        NR_PINGS=nr_pings.get()
+        VUCC_GRIDS=hisgrid[:4].upper()
+        QSO_TYPE=eme_ms.get()
+        MS_SHOWER=ms_list_dropdown.get()
+        NR_BURSTS=nr_bursts.get()
+        NR_PINGS=nr_pings.get()
+        C3UPD=c3update.get()
+
+        # try to post qso data to log book
+        # QSO_TYPE is a swithch for EME or MS QSO's
+        try:
+            logbook.lb_addqso(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD)
+
+        except (ValueError):
+            print("\n*********")
+            print("An Error occured while adding the QSO", Argument)
+            print("The QSO was not added to the database")
+            print("\n*********")
+            form.withdraw()
+            
+        finally:
+            form.withdraw()        
+
+    # Start the main log form frame
+    # top frame (lbf1)
+    lbf1 = LabelFrame(form, text=" QSO Data ")
+    lbf1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # middle frame (lbf2)
+    lbf2 = LabelFrame(form, text=" Meteor Shower Data ")
+    lbf2.grid(row=4, columnspan=7, sticky='WE', padx=4, pady=4, ipadx=0, ipady=0)
+
+    # meator shower frame (lbf3)
+    lbf3 = LabelFrame(form, text=" Save Options ")
+    lbf3.grid(row=5, columnspan=7, sticky='WE', padx=4, pady=4, ipadx=0, ipady=0)
+
+    # bottom frame (lbf3)
+    lbf4 = LabelFrame(form)
+    lbf4.grid(row=6, sticky='W', padx=4, pady=4, ipadx=0, ipady=0)
+
+    #-------------------------------------------------- top frame (lbf1)
+    # Operator Call
+    lbo_label = Label(lbf1, text="Call")
+    lbo_label.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    lbo = Entry(lbf1, width=10)
+    lbo.insert(END, operator)
+    lbo.grid(row=1, column=0, sticky="W", padx=5)
+
+    # His Grid
+    lbg_label = Label(lbf1, text="Grid")
+    lbg_label.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    lbg = Entry(lbf1, width=8)
+    lbg.insert(END, his_grid)
+    lbg.grid(row=1, column=1, sticky='W', padx=5, pady=2)
+
+    # QSO Start Date
+    lb_date_label = Label(lbf1, text="Start Date")
+    lb_date_label.grid(row=0, column=2, sticky='W', padx=5, pady=2)
+    lb_date_start = Entry(lbf1, width=10, bg='yellow')
+    lb_date_start.insert(END, qso_date)
+    lb_date_start.focus_set()
+    lb_date_start.grid(row=1, column=2, sticky='W', padx=5, pady=2)
+
+    # QSO Start Time
+    lb_time_label = Label(lbf1, text="Start Time")
+    lb_time_label.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+    lb_time_start = Entry(lbf1, width=8, bg='yellow')
+    lb_time_start.insert(END, qso_time)
+    lb_time_start.grid(row=1, column=3, sticky='W', padx=5, pady=2)
+
+    # QSO End Date
+    lb_date_label = Label(lbf1, text="End Date")
+    lb_date_label.grid(row=0, column=4, sticky='W', padx=5, pady=2)
+    lb_date_end = Entry(lbf1, width=10)
+    lb_date_end.insert(END, qso_date)
+    lb_date_end.grid(row=1, column=4, sticky='W', padx=5, pady=2)
+
+    # QSO End Time
+    lb_time_label = Label(lbf1, text="End Time")
+    lb_time_label.grid(row=0, column=5, sticky='W', padx=5, pady=2)
+    lb_time_end = Entry(lbf1, width=8)
+    lb_time_end.insert(END, qso_time)
+    lb_time_end.grid(row=1, column=5, sticky='W', padx=5, pady=2)
+
+    # Submode
+    lb_submode_label = Label(lbf1, text="Submode")
+    lb_submode_label.grid(row=2, column=0, sticky='W', padx=5, pady=2)
+    lb_submode = Entry(lbf1, width=10)
+    lb_submode.insert(END, sm)
+    lb_submode.grid(row=3, column=0, sticky='W', padx=5, pady=2)
+
+    # Mode
+    lb_mode_label = Label(lbf1, text="Mode")
+    lb_mode_label.grid(row=2, column=1, sticky='W', padx=5, pady=2)
+    lb_mode = Entry(lbf1, width=8)
+    lb_mode.insert(END, mode)
+    lb_mode.grid(row=3, column=1, sticky='W', padx=5, pady=2)
+
+    # Rpt Sent
+    lb_rpt_sent_label = Label(lbf1, text="Rpt Sent")
+    lb_rpt_sent_label.grid(row=2, column=2, sticky='W', padx=5, pady=2)
+    lb_rpt_sent = Entry(lbf1, width=8)
+    lb_rpt_sent.insert(0, rpt_sent)
+    lb_rpt_sent.grid(row=3, column=2, sticky='W', padx=5, pady=2)
+
+    # Rpt_Rcvd
+    lb_rpt_rcvd_label = Label(lbf1, text="Rpt Rcvd")
+    lb_rpt_rcvd_label.grid(row=2, column=3, sticky='W', padx=5, pady=2)
+    lb_rpt_rcvd = Entry(lbf1, width=8, bg='yellow')
+    lb_rpt_rcvd.insert(0, rpt_rcvd)
+    lb_rpt_rcvd.grid(row=3, column=3, sticky='W', padx=5, pady=2)
+
+    # TxPwr
+    lb_pwr_label = Label(lbf1, text="Tx Pwr")
+    lb_pwr_label.grid(row=2, column=4, sticky='W', padx=5, pady=2)
+    lb_pwr = Entry(lbf1, width=10)
+    lb_pwr.insert(0, pwr)
+    lb_pwr.grid(row=3, column=4, sticky='W', padx=5, pady=2)
+
+    # Band
+    lb_band_label = Label(lbf1, text="Band")
+    lb_band_label.grid(row=2, column=5, sticky='W', padx=5, pady=2)
+    lb_band = Entry(lbf1, width=4)
+    lb_band.insert(END, band)
+    lb_band.grid(row=3, column=5, sticky='W', padx=5, pady=2)
+
+    #-------------------------------------------------- middle frame (lbf2)
+    ms_list_label = Label(lbf2, text="Select")
+    ms_list_label.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    ms_list_dropdown = Pmw.ComboBox(lbf2, scrolledlist_items=(logbook.lb_gen_mslist()), entry_width=20)
+    balloon.bind(ms_list_dropdown, 'Slect Meteor Shower')
+    ms_list_dropdown.grid(row=1, column=0, padx=5, sticky="WE", pady=3)
+
+    # Bursts
+    nr_bursts_label = Label(lbf2, text="Bursts")
+    nr_bursts_label.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    nr_bursts = Entry(lbf2, width=6)
+    balloon.bind(nr_bursts, 'Enter Number of Bursts Detected')
+    nr_bursts.grid(row=1, column=1, sticky='W', padx=5, pady=2)
+
+    # Pings
+    nr_pings_label = Label(lbf2, text="Pings")
+    nr_pings_label.grid(row=0, column=2, sticky='W', padx=5, pady=2)
+    nr_pings = Entry(lbf2, width=6)
+    balloon.bind(nr_pings, 'Enter Number of Pings Detected')
+    nr_pings.grid(row=1, column=2, sticky='W', padx=5, pady=2)
+
+    #-------------------------------------------------- meteor shower frame (lbf3)
+    # Update Call3 Data Checkbox, Default Set to "Yes"
+    c3_update = Checkbutton(lbf3, text="Update Call3 Table", variable=c3update, onvalue=1, offvalue=0, )
+    c3_update.select()
+    balloon.bind(c3_update, 'Click to update CALL3 Table')
+    c3_update.grid(row=1, column=0, sticky='W', padx=5, pady=2)
+
+    # EME QSO Y/N
+    R1 = Radiobutton(lbf3, text="EME QSO", variable=eme_ms, value=1, command=rbselect)
+    balloon.bind(R1, 'Click if Station is an EME Operator')
+    R1.grid(row=1, column=3, sticky='W', padx=5, pady=2)
+
+    # MS QSO Y/N
+    R2 = Radiobutton(lbf3, text="MS QSO", variable=eme_ms, value=2, command=rbselect)
+    balloon.bind(R2, 'Click to Set Meteor Scatter Contact')
+    R2.grid(row=1, column=4, sticky='W', padx=5, pady=2)
+
+    #---------------------------------- save / hrlp / cancel bottom frame (lbf3)
+    # Save QSO Button
+    save_button = Button(lbf4, text="Save", fg="black", activebackground="cyan", background="cyan", command=displayEntry)
+    balloon.bind(save_button, 'Add QSO to Database')
+    save_button.grid(row=0, column=0, sticky='WE', padx=5, pady=6)
+
+    # Entry Form Help Button
+    help_button = Button(lbf4, text="Help", fg="black", activebackground="yellow", background="yellow", command=qsoform_help)
+    balloon.bind(help_button, 'Display Logform Help')
+    help_button.grid(row=0, column=1, sticky='WE', padx=5, pady=6)
+
+    # Cancel QSO Button
+    cancel_button = Button(lbf4, text="Cancel", fg="black", activebackground="red", background="red", command=form.withdraw)
+    balloon.bind(cancel_button, 'Cancel Without Saving QSO')
+    cancel_button.grid(row=0, column=2, sticky='WE', padx=5, pady=6)
+    form.deiconify()
+
+#---------------------------------------------------------- TOP LEVEL MAIN FRAME
 frame = Frame(root)
 
 #------------------------------------------------------ Menu Bar
@@ -2697,7 +3010,7 @@ if (sys.platform != 'darwin'):
     setupbutton.pack(side = LEFT)
     setupmenu = Menu(setupbutton, tearoff=0)
     setupbutton['menu'] = setupmenu
-else:   
+else:
     setupmenu = Menu(mbar, tearoff=0)
 setupmenu.add('command', label = 'Options', command = options1, accelerator='F2')
 setupmenu.add_separator()
@@ -2705,8 +3018,7 @@ setupmenu.add('command', label = 'Toggle size of text window', command=textsize)
 setupmenu.add('command', label = 'Generate messages for test tones', command=testmsgs)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'F4 sets Tx6',variable=kb8rq)
-setupmenu.add_checkbutton(label = 'Double-click on callsign sets TxFirst',
-                          variable=setseq)
+setupmenu.add_checkbutton(label = 'Double-click on callsign sets TxFirst',variable=setseq)
 setupmenu.add_checkbutton(label = 'Gen Msgs sets Tx1',variable=k2txb)
 setupmenu.add_separator()
 setupmenu.add_checkbutton(label = 'Monitor ON at startup',variable=nmonitor)
@@ -2719,7 +3031,7 @@ setupmenu.add_separator()
 ##setupmenu.add_checkbutton(label = 'Enable diagnostics',variable=ndebug)
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Setup", menu=setupmenu)
-    
+
 
 #------------------------------------------------------ View menu
 if (sys.platform != 'darwin'):
@@ -2727,7 +3039,7 @@ if (sys.platform != 'darwin'):
     viewbutton.pack(side=LEFT)
     viewmenu=Menu(viewbutton,tearoff=0)
     viewbutton['menu']=viewmenu
-else:    
+else:
     viewmenu=Menu(mbar,tearoff=0)
 viewmenu.add('command', label = 'SpecJT', command = showspecjt, \
              accelerator='F10')
@@ -2743,7 +3055,7 @@ if (sys.platform != 'darwin'):
     modebutton.pack(side = LEFT)
     modemenu = Menu(modebutton, tearoff=0)
     modebutton['menu'] = modemenu
-else:    
+else:
     modemenu = Menu(mbar, tearoff=use_tearoff)
 
 # To enable menu item 0:
@@ -2792,7 +3104,7 @@ if (sys.platform != 'darwin'):
     decodebutton.pack(side = LEFT)
     decodemenu = Menu(decodebutton, tearoff=use_tearoff)
     decodebutton['menu'] = decodemenu
-else:    
+else:
     decodemenu = Menu(mbar, tearoff=use_tearoff)
 ##decodemenu.ISCAT=Menu(decodemenu,tearoff=0)
 ##decodemenu.ISCAT.add_checkbutton(label='Exhaustive',variable=iscat_ex)
@@ -2823,7 +3135,7 @@ if (sys.platform != 'darwin'):
     savebutton.pack(side = LEFT)
     savemenu = Menu(savebutton, tearoff=use_tearoff)
     savebutton['menu'] = savemenu
-else:    
+else:
     savemenu = Menu(mbar, tearoff=use_tearoff)
 nsave=IntVar()
 savemenu.add_radiobutton(label = 'None', variable=nsave,value=0)
@@ -2841,7 +3153,7 @@ if (sys.platform != 'darwin'):
     bandbutton.pack(side = LEFT)
     bandmenu = Menu(bandbutton, tearoff=use_tearoff)
     bandbutton['menu'] = bandmenu
-else:    
+else:
     bandmenu = Menu(mbar, tearoff=use_tearoff)
 nfreq=IntVar()
 bandmenu.add_radiobutton(label = '1.8', variable=nfreq,value=2)
@@ -2871,22 +3183,22 @@ if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Band", menu=bandmenu)
 
 #------------------------------------------------------ Logbook Menu
-# Present menu only if enabled
-if EnableLogbook==1:
-    if (sys.platform != 'darwin'):
-        logbookbutton = Menubutton(mbar, text = 'Logbook')
-        logbookbutton.pack(side = LEFT)
-        logbookmenu = Menu(logbookbutton, tearoff=0)
-        logbookbutton['menu'] = logbookmenu
-    else:    
-        logbookmenu = Menu(mbar, tearoff=use_tearoff)
-    logbookmenu.add('command',label="View Logbook UI", command= udev)
-    logbookmenu.add('command',label="Create Test DB", command= udev)
-    logbookmenu.add('command',label = 'Generate Call3 CSV', command = udev)
-    logbookmenu.add('command', label = 'View Main Log', command = udev)
+if (sys.platform != 'darwin'):
+    logbookbutton = Menubutton(mbar, text = 'Logging')
+    logbookbutton.pack(side = LEFT)
+    logbookmenu = Menu(logbookbutton, tearoff=0)
+    logbookbutton['menu'] = logbookmenu
+else:
+    logbookmenu = Menu(mbar, tearoff=use_tearoff)
+logbookmenu.add('command',label="Add Station To Call3 Table", command= udev, accelerator='Shift+A')
+logbookmenu.add('command',label="Update Station In Call3 Table", command= udev, accelerator='Shift+U')
+logbookmenu.add('command',label="Generate Call3 Text File", command= udev, accelerator='Shift+G')
+logbookmenu.add_separator()
+logbookmenu.add('command', label = 'Log QSO', command = qsoform, accelerator='Shift+L')
+logbookmenu.add('command', label = 'Log QSO Help', command = qsoform_help, accelerator='Shift+H')
 
-    if (sys.platform == 'darwin'):
-        mbar.add_cascade(label="Logbook", menu=logbookmenu)
+if (sys.platform == 'darwin'):
+    mbar.add_cascade(label="Logbook", menu=logbookmenu)
 
 #------------------------------------------------------ Help menu
 if (sys.platform != 'darwin'):
@@ -2894,7 +3206,7 @@ if (sys.platform != 'darwin'):
     helpbutton.pack(side = LEFT)
     helpmenu = Menu(helpbutton, tearoff=0)
     helpbutton['menu'] = helpmenu
-else:   
+else:
     helpmenu = Menu(mbar, tearoff=0)
 helpmenu.add('command',label="Online User's Guide",command=usersguide)
 helpmenu.add('command', label = 'Keyboard shortcuts', command = shortcuts, \
@@ -3028,6 +3340,8 @@ root.bind_all('<Alt-x>',decode_exclude)
 root.bind_all('<Alt-X>',decode_exclude)
 root.bind_all('<Alt-z>',toggle_zap)
 root.bind_all('<Alt-Z>',toggle_zap)
+root.bind_all('<Shift-h>',qsoform_help) # Log Form Help
+root.bind_all('<Shift-H>',qsoform_help)
 
 text.pack(side=LEFT, fill=X, padx=1)
 sb = Scrollbar(iframe4, orient=VERTICAL, command=text.yview)
@@ -3045,7 +3359,7 @@ iframe4b.pack(expand=1, fill=X, padx=4)
 iframe4c = Frame(frame, bd=1, relief=SUNKEN)
 blogqso=Button(iframe4c, text='Log QSO',underline=4,
                 padx=1,pady=1)
-                
+
 bstop=Button(iframe4c, text='Stop',underline=0,command=stopmon,
                 padx=1,pady=1)
 bmonitor=Button(iframe4c, text='Monitor',underline=0,command=monitor,
@@ -3084,7 +3398,7 @@ iframe5 = Frame(frame, bd=1, relief=FLAT,height=180)
 
 #------------------------------------------------------ "Other station" info
 f5a=Frame(iframe5,height=170,bd=2,relief=GROOVE)
-labToRadio=Label(f5a,text='To radio:', width=9, relief=FLAT)
+labToRadio=Label(f5a,text='To Radio:', width=9, relief=FLAT)
 labToRadio.grid(column=0,row=0)
 ToRadio=Entry(f5a,width=12)
 ToRadio.insert(0,'W8WN')
@@ -3092,7 +3406,7 @@ ToRadio.grid(column=1,row=0,pady=3)
 ToRadio.bind('<Return>',lookup)
 bLookup=Button(f5a, text='Lookup',underline=0,command=lookup,padx=1,pady=1)
 bLookup.grid(column=2,row=0,sticky='EW',padx=4)
-labGrid=Label(f5a,text='Grid:', width=9, relief=FLAT)
+labGrid=Label(f5a,text='His Grid:', width=9, relief=FLAT)
 labGrid.grid(column=0,row=1)
 HisGrid=Entry(f5a,width=12)
 HisGrid.grid(column=1,row=1,pady=1)
@@ -3264,6 +3578,8 @@ msg5=Message(iframe6, text='Message #5', width=300,relief=SUNKEN)
 msg5.pack(side=LEFT, fill=X, padx=1)
 ##msg6=Message(iframe6, text='', width=300,relief=SUNKEN)
 ##msg6.pack(side=LEFT, fill=X, padx=1)
+msg6=Message(iframe6, text="Database: " + (logbook.dbname), width=300,relief=SUNKEN)
+msg6.pack(side=LEFT, fill=X, padx=1)
 Widget.bind(msg5,'<Button-1>',inctrperiod)
 if (sys.platform != 'darwin'):
     Widget.bind(msg5,'<Button-3>',dectrperiod)
@@ -3463,7 +3779,7 @@ try:
         elif key == 'ReportAllMessages': ReportAllMessages.set(value)
         elif key == 'Monitor': nmonitor.set(value)
         elif key == 'auto73Count': options.auto73Count.set(value)
-        
+
         elif key == 'HisCall':
             Audio.gcom2.hiscall=(value+' '*12)[:12]
             ToRadio.delete(0,99)
