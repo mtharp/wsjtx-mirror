@@ -2716,7 +2716,7 @@ def QsoForm(event=NONE):
     def rbselect():
         return eme_ms.get()
         
-    # get form values after save, then send them to logbook.lb_addqso
+    # get form values after save, then send them to the logbook
     def displayEntry():
         MCALL=options.MyCall.get()
         MGRID=options.MyGrid.get()
@@ -2744,7 +2744,7 @@ def QsoForm(event=NONE):
         # try to post qso data to log book
         # QSO_TYPE is a swithch for EME or MS QSO's
         try:
-            logbook.lb_addqso(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD)
+            logbook.AddQSO(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD)
 
         except (ValueError):
             print("\n*********")
