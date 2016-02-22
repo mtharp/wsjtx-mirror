@@ -157,7 +157,7 @@ def Whois(hiscall):
     previous=""
     comment=""
     lupdate=""
-    print("\nCall3 Database Lookup")
+    print("\nCall3 Lookup")
     print("---------------------------------------------------")
 
     cdb(dbf)
@@ -189,7 +189,11 @@ def Whois(hiscall):
     return s
 
 #--------------------------------------------------- add callsign to call3 table
+# call3 tables fields: call, gridsquare, force_init, prev_call, comment, last_update
+# This is also used when adding a QSO via the LogQSO button, however not all
+# fields are used in both cases.
 def AddCall3(callsign,his_grid):
+    emeval=IntVar()
     # check if callsign exists in call3 Database
     cdb(dbf)
     ccdb.execute('SELECT * FROM call3 WHERE call=?', (callsign,))
@@ -203,14 +207,13 @@ def AddCall3(callsign,his_grid):
     # EME variable call back
     def emecb():
         return emeval.get()   
-    
+   
     # init form variables
     c3o=StringVar()     # callsign
     c3g=StringVar()     # grid
     c3p=StringVar()     # previous calls
     c3c=StringVar()     # comment
     c3d=StringVar()     # last update
-    emeval=BooleanVar() # Callback variable for Checkbox
     previous=StringVar()
     comment=StringVar()
     previous=""
@@ -232,13 +235,11 @@ def AddCall3(callsign,his_grid):
         C3COMMENT=c3c.get()
         C3COMMENT=C3COMMENT.replace(',', '')
         LUPDATE=time.strftime("%Y%m%d",time.gmtime())
-        
-        # satisfy db table check constraint
-        if emeval.get()==True:
+        if emeval.get()==1:
             EME="Y"
         else:
             EME="N"
-
+       
         # from wsjtlookup, make sure the grid is somewhat valid
         # TO-DO: this should be a function
         grid=c3g.get()
@@ -247,12 +248,14 @@ def AddCall3(callsign,his_grid):
         if len(grid)==5: grid=hisgrid+"m"
         GRIDSQUARE=grid
 
+
+
         cdb(dbf)
         ccdb.execute('''INSERT INTO call3 (call, gridsquare, force_init, prev_call, comment, last_update) 
                     VALUES(?,?,?,?,?,?)''', (CALL,GRIDSQUARE,EME,PREVIOUS,C3COMMENT,LUPDATE))
         conn.commit()
 
-        print("\nAdded QSO To Database")
+        print("\nAdded Station to Call3 Table")
         print("---------------------------------------------------")
         print("Station Call ....: %s" % CALL)
         print("Station Grid ....: %s" % GRIDSQUARE)
@@ -297,7 +300,7 @@ def AddCall3(callsign,his_grid):
     c3g.grid(row=1, column=1, sticky='W', padx=5, pady=2)
 
     # EME Station
-    c3e = Checkbutton(c3f1, text="EME Station", variable=emeval, onvalue=Y, offvalue=N, command=emecb)
+    c3e = Checkbutton(c3f1, text="EME Station", variable=emeval, onvalue=1, offvalue=0, command=emecb)
     c3e.grid(row=1, column=4, sticky='W', padx=5, pady=2)
 
     # C3 Previous calls
@@ -350,11 +353,11 @@ def AddQSO(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME
 
     conn.commit()
     
-    if C3UPD==1:
-        ccdb.execute('''REPLACE INTO call3 (call, gridsquare, force_init, last_update) VALUES (?,?,?,?)''', (CALL,GRIDSQUARE,FORCE_INIT,LUPDATE))
-        conn.commit()
-    
-    conn.close()
+#    if C3UPD==1:
+#        ccdb.execute('''REPLACE INTO call3 (call, gridsquare, force_init, last_update) VALUES (?,?,?,?)''', (CALL,GRIDSQUARE,FORCE_INIT,LUPDATE))
+#        conn.commit()
+#    
+#    conn.close()
 
     try:
         if lbDebug==1:

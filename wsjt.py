@@ -532,6 +532,7 @@ def addtodb():
     else:
         callsign=ToRadio.get()
         his_grid=HisGrid.get()
+        force_init=""
         logbook.AddCall3(callsign,his_grid)
 
 #------------------------------------------------------ setrpt
@@ -1651,7 +1652,7 @@ def plot_large():
             y.append(green)
         ymax=max(y)
         if ymax<1: ymax=1
-        yfac=4.0
+        yfac=time.strftime("%Y%m%d",time.gmtime())
         if ymax>75.0/yfac: yfac=75.0/ymax
         xy=[]
         for i in range(ngreen):             #Make xy list for green curve
@@ -2715,9 +2716,9 @@ def QsoForm(event=NONE):
 
     def rbselect():
         return eme_ms.get()
-        
+
     # get form values after save, then send them to the logbook
-    def displayEntry():
+    def AddQsoToDatabase():
         MCALL=options.MyCall.get()
         MGRID=options.MyGrid.get()
         CALL=lbo.get()
@@ -2752,9 +2753,15 @@ def QsoForm(event=NONE):
             print("The QSO was not added to the database")
             print("\n*********")
             form.withdraw()
-            
+
         finally:
-            form.withdraw()        
+            form.withdraw()
+            # if log QSO was sucessfull && update call3 was selected
+            # send the qso data to the call3 table   
+            if c3update.get()==1:
+                callsign=CALL
+                his_grid=GRIDSQUARE
+                logbook.AddCall3(callsign,his_grid)
 
     # Start the main log form frame
     # top frame (lbf1)
@@ -2899,7 +2906,7 @@ def QsoForm(event=NONE):
 
     #---------------------------------- save / hrlp / cancel bottom frame (lbf3)
     # Save QSO Button
-    save_button = Button(lbf4, text="Save", fg="black", activebackground="cyan", background="cyan", command=displayEntry)
+    save_button = Button(lbf4, text="Save", fg="black", activebackground="cyan", background="cyan", command=AddQsoToDatabase)
     balloon.bind(save_button, 'Add QSO to Database')
     save_button.grid(row=0, column=0, sticky='WE', padx=5, pady=6)
 
