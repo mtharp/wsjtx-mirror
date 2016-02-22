@@ -47,7 +47,7 @@
 set -e
 
 # make sure we're not running as sudo
-if $(which sudo) [[$? -eq 0 ]] ; then sudo -k ; fi
+sudo -k > /dev/null 2>&1
 
 # foreground colours
 C_R='\033[01;31m'		# red

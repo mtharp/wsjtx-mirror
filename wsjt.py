@@ -27,9 +27,9 @@ if os.path.isfile(logbook.dbf):
         print("Name error: {0}".format(err))
         print("Creating Database..: {}".format(logbook.dbname))
         raise
-        logbook.lb_create_database()
+        logbook.init_db()
 else:
-    logbook.lb_create_database()
+    logbook.init_db()
 
 # START WSJT MAIN UI
 root = Tk()
@@ -253,7 +253,7 @@ def logqso(event=NONE):
     if HisGrid.get()=="":
         MsgBox("Please enter a valid grid locator.")
     else:
-        qsoform()
+        QsoForm()
 
 #------------------------------------------------------ BlinkLogQSO
 def BlinkLogQSO(event = NONE):
@@ -508,16 +508,15 @@ def lookup(event=NONE):
     hiscall=ToRadio.get().upper().strip()
     ToRadio.delete(0,END)
     ToRadio.insert(0,hiscall)
-    s=logbook.lb_whois(hiscall)
+    s=logbook.Whois(hiscall,)
     balloon.bind(ToRadio,s[:-1])
     hisgrid=""
     if s:
-        i1=s.find(',')
-        i2=s.find(',',i1+1)
-        hisgrid=s[i1+1:i2]
+        hisgrid=s
         hisgrid=hisgrid[:2].upper()+hisgrid[2:4]+hisgrid[4:6].lower()
-    if len(hisgrid)==4: hisgrid=hisgrid+"mm"
-    if len(hisgrid)==5: hisgrid=hisgrid+"m"
+        if len(hisgrid)==4: hisgrid=hisgrid+"mm"
+        if len(hisgrid)==5: hisgrid=hisgrid+"m"
+    
     HisGrid.delete(0,99)
     HisGrid.insert(0,hisgrid)
 
@@ -525,65 +524,15 @@ def lookup_gen(event):
     lookup()
     GenMsgs()
 
-#-------------------------------------------------------- addtodb / call3 file
+#-------------------------------------------------------- add to call3 database
 def addtodb():
     global hiscall
     if HisGrid.get()=="":
         MsgBox("Please enter a valid grid locator.")
     else:
-        modified=0
-        hiscall=ToRadio.get().upper().strip()
-        hisgrid=HisGrid.get().strip()
-        hc=hiscall
-        NewEntry=hc + "," + hisgrid
-        result=tkinter.messagebox.askyesno(message="Is this station known to be active on EME?")
-        if result:
-            NewEntry=NewEntry + ",EME,,"
-        else:
-            NewEntry=NewEntry + ",,,"
-        try:
-            f=open(appdir+'/CALL3.TXT','r')
-            s=f.readlines()
-        except:
-            print('Error opening CALL3.TXT')
-            s=""
-        f.close()
-        hc2=""
-        stmp=[]
-        for i in range(len(s)):
-            hc1=hc2
-            if s[i][:2]=="//":
-                stmp.append(s[i])
-            else:
-                i1=s[i].find(",")
-                hc2=s[i][:i1]
-                if hc>hc1 and hc<hc2:
-                    stmp.append(NewEntry+"\n")
-                    modified=1
-                elif hc==hc2:
-                    t=s[i] + "\n\n is already in CALL3.TXT\nDo you wish to replace this entry?"
-                    result=tkinter.messagebox.askyesno(message=t)
-                    if result:
-                        i1=s[i].find(",")
-                        i2=s[i].find(",",i1+1)
-                        i3=s[i].find(",",i2+1)
-                        i4=len(NewEntry)
-                        s[i]=NewEntry[:i4-1] + s[i][i3+1:]
-                        modified=1
-                stmp.append(s[i])
-        if hc>hc1 and modified==0:
-            stmp.append(NewEntry+"\n")
-        try:
-            f=open(appdir+'/CALL3.TMP','w')
-            f.writelines(stmp)
-            f.close()
-        except:
-            print('Error in opening or writing to CALL3.TMP')
-
-        if modified:
-            if os.path.exists("CALL3.OLD"): os.remove("CALL3.OLD")
-            os.rename("CALL3.TXT","CALL3.OLD")
-            os.rename("CALL3.TMP","CALL3.TXT")
+        callsign=ToRadio.get()
+        his_grid=HisGrid.get()
+        logbook.AddCall3(callsign,his_grid)
 
 #------------------------------------------------------ setrpt
 def setrpt(event):
@@ -2680,7 +2629,7 @@ def update():
 #------------------------------------------------------- LOGBOOK ENTRY FUNCTIONS
 
 #------------------------------------------------------ entry form help
-def qsoform_help(event=NONE):
+def QsoFormHelp(event=NONE):
     msg="""
 The following Fields are used when logging QSO and / or updating
 the CALL3 Database Table. All fileds should be updated as
@@ -2711,16 +2660,16 @@ Contact is EME QSO, if checked, will add a flag in both the QSO
 log and CALL3 data table.
 
 """
-    qsoform_help=Toplevel(root)
-    qsoform_help.geometry(root_geom[root_geom.index("+"):])
-    if g.Win32: qsoform_help.iconbitmap("wsjt.ico")
-    qsoform_help.title('Log QSO Entry Form Help')
-    Label(qsoform_help,text=msg,justify=LEFT).pack(padx=20)
-    qsoform_help.focus_set()
+    QsoFormHelp=Toplevel(root)
+    QsoFormHelp.geometry(root_geom[root_geom.index("+"):])
+    if g.Win32: QsoFormHelp.iconbitmap("wsjt.ico")
+    QsoFormHelp.title('Log QSO Entry Form Help')
+    Label(QsoFormHelp,text=msg,justify=LEFT).pack(padx=20)
+    QsoFormHelp.focus_set()
 
 
 #------------------------------------------------------ main entry form
-def qsoform(event=NONE):
+def QsoForm(event=NONE):
     # get initial form insert values
     operator=ToRadio.get()
     qso_date=time.strftime("%Y%m%d",time.gmtime())
@@ -2732,8 +2681,8 @@ def qsoform(event=NONE):
     tf=(str(g.nfreq))
     sm=(str(g.mode))
     last_update=time.strftime("%Y%m%d",time.gmtime())
-    band=logbook.lb_band_convert(tf)
-    mode=logbook.lb_mode_convert(sm)
+    band=logbook.BandConvert(tf)
+    mode=logbook.ModeConvert(sm)
 
     # open Toplevel QSO Form
     form=Toplevel()
@@ -2913,7 +2862,7 @@ def qsoform(event=NONE):
     #-------------------------------------------------- middle frame (lbf2)
     ms_list_label = Label(lbf2, text="Select")
     ms_list_label.grid(row=0, column=0, sticky='W', padx=5, pady=2)
-    ms_list_dropdown = Pmw.ComboBox(lbf2, scrolledlist_items=(logbook.lb_gen_mslist()), entry_width=20)
+    ms_list_dropdown = Pmw.ComboBox(lbf2, scrolledlist_items=(logbook.MsList()), entry_width=20)
     balloon.bind(ms_list_dropdown, 'Slect Meteor Shower')
     ms_list_dropdown.grid(row=1, column=0, padx=5, sticky="WE", pady=3)
 
@@ -2955,7 +2904,7 @@ def qsoform(event=NONE):
     save_button.grid(row=0, column=0, sticky='WE', padx=5, pady=6)
 
     # Entry Form Help Button
-    help_button = Button(lbf4, text="Help", fg="black", activebackground="yellow", background="yellow", command=qsoform_help)
+    help_button = Button(lbf4, text="Help", fg="black", activebackground="yellow", background="yellow", command=QsoFormHelp)
     balloon.bind(help_button, 'Display Logform Help')
     help_button.grid(row=0, column=1, sticky='WE', padx=5, pady=6)
 
@@ -3188,8 +3137,8 @@ else:
     logbookmenu = Menu(mbar, tearoff=use_tearoff)
 logbookmenu.add('command',label="Add Station To Call3 Table", command= udev)
 logbookmenu.add_separator()
-logbookmenu.add('command', label = 'Log QSO', command = qsoform, accelerator='Alt+Q')
-logbookmenu.add('command', label = 'Log QSO Help', command = qsoform_help, accelerator='Shift+H')
+logbookmenu.add('command', label = 'Log QSO', command = QsoForm, accelerator='Alt+Q')
+logbookmenu.add('command', label = 'Log QSO Help', command = QsoFormHelp, accelerator='Shift+H')
 
 if (sys.platform == 'darwin'):
     mbar.add_cascade(label="Logbook", menu=logbookmenu)
@@ -3334,8 +3283,8 @@ root.bind_all('<Alt-x>',decode_exclude)
 root.bind_all('<Alt-X>',decode_exclude)
 root.bind_all('<Alt-z>',toggle_zap)
 root.bind_all('<Alt-Z>',toggle_zap)
-root.bind_all('<Shift-h>',qsoform_help) # Log Form Help
-root.bind_all('<Shift-H>',qsoform_help)
+root.bind_all('<Shift-h>',QsoFormHelp) # Log Form Help
+root.bind_all('<Shift-H>',QsoFormHelp)
 
 text.pack(side=LEFT, fill=X, padx=1)
 sb = Scrollbar(iframe4, orient=VERTICAL, command=text.yview)

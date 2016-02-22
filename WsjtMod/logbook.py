@@ -50,11 +50,21 @@ dbf=(commond + (os.sep) + dbname)
 sqlf1 = (sqld + (os.sep) + sql_file)
 c3csv = (sqld + (os.sep) + c3csv1)
 
-#------------------------------------------------------ logbook message box
+#----------------------------------------------------------- logbook message box
 def lbMsgBox(l):
     tkinter.messagebox._show(message=l)
 
-#------------------------------------------------------ Check Database
+#-------------------------------------------------------- already in call3 table
+def InCall3(call):
+    l=(" [ %s ] Is already in the Call3 Database" % call)
+    lbMsgBox(l)
+
+#------------------------------------------------------------ reset query timers
+def ResetTimers():
+    query_time1=""
+    query_time2=""
+
+#---------------------------------------------------------- Basic Check Database
 def CheckDatabase(dbf):
     if os.path.exists(dbf)==True:
         try:
@@ -72,10 +82,10 @@ def CheckDatabase(dbf):
             print("Will Create New Database..: %s" % dbname)
             print("*********\n")
             if con: con.close()
-            lb_create_database()
+            init_db()
 
     else:
-        lb_create_database()
+        init_db()
 
 #---------------------------------------------------- connect to sqlite database
 def cdb(dbf):
@@ -110,7 +120,7 @@ def db_version():
     return dbv
 
 #---------------------------------------------- submode conversion from database
-def lb_mode_convert(sm):
+def ModeConvert(sm):
     cdb(dbf)
     ccdb.execute('SELECT mode FROM submode_list WHERE submode=?', (sm,))
     for row in ccdb.fetchall():
@@ -120,7 +130,7 @@ def lb_mode_convert(sm):
     return mode
 
 #------------------------------------------------- band conversion from database
-def lb_band_convert(tf):
+def BandConvert(tf):
     cdb(dbf)
     ccdb.execute('SELECT band FROM band_list WHERE freq=?', (tf,))
     for row in ccdb.fetchall():
@@ -130,7 +140,7 @@ def lb_band_convert(tf):
     return band
 
 #-------------------------------------------------------- gen meteor shower list
-def lb_gen_mslist():
+def MsList():
     cdb(dbf)
     ccdb.row_factory = lambda cursor, row: row[0]
     ms_list = ccdb.execute('SELECT ms_name FROM ms_shower ORDER BY ms_name ASC').fetchall()
@@ -138,33 +148,180 @@ def lb_gen_mslist():
     return ms_list
 
 #------------------------------------------------- grid square lookup from call3
-def lb_whois(hiscall):
-    query_time1=""
-    query_time2=""
-    
-    if lbDebug==1:
-        query_time1 = time.time()
-    
+def Whois(hiscall):
+    ResetTimers()
+    query_time1 = time.time()
+    call=""
+    grid=""
+    eme=""
+    previous=""
+    comment=""
+    lupdate=""
+    print("\nCall3 Database Lookup")
+    print("---------------------------------------------------")
+
     cdb(dbf)
-    ccdb.execute('SELECT gridsquare FROM call3 WHERE call=?', (hiscall,))
-    data=ccdb.fetchone()
+    ccdb.execute('SELECT * FROM call3 WHERE call=?', (hiscall,))
+    for row in ccdb.fetchall():
+        call = row[0]
+        grid = row[1]
+        eme = row[2]
+        previous = row[3]
+        comment = row[4]
+        lupdate = row[5]
+
+    if call=="":
+        s=""
+        print("[ %s ] Was Not Found In The Call3 Database" % (hiscall))
+    else:
+        query_time2 = (time.time()-query_time1)
+        s=grid
+        print("Station Call ....: %s" % call)
+        print("Station Grid ....: %s" % grid)
+        print("Previous Calls ..: %s" % previous)
+        print("EME Station .....: %s" % eme)
+        print("Last Update .....: %s" % lupdate)
+        print("Comment  ........: %s" % comment)
+        print("Query Time ......: %.5f seconds" % (query_time2))
+
+
+    conn.close()
+    return s
+
+#--------------------------------------------------- add callsign to call3 table
+def AddCall3(callsign,his_grid):
+    # check if callsign exists in call3 Database
+    cdb(dbf)
+    ccdb.execute('SELECT * FROM call3 WHERE call=?', (callsign,))
+    for row in ccdb.fetchall():
+        call = row[0]
+        if call != None:
+            InCall3(call)
+            return
     conn.close()
 
-    if data==None:
-        s=""
-        if lbDebug==1:
-            print("%s Was Not Found In CALL3 Database" % (hiscall))
-    else:
-        s=data[0]
+    # EME variable call back
+    def emecb():
+        return emeval.get()   
+    
+    # init form variables
+    c3o=StringVar()     # callsign
+    c3g=StringVar()     # grid
+    c3p=StringVar()     # previous calls
+    c3c=StringVar()     # comment
+    c3d=StringVar()     # last update
+    emeval=BooleanVar() # Callback variable for Checkbox
+    previous=StringVar()
+    comment=StringVar()
+    previous=""
+    comment=""
 
-    if lbDebug==1:
-        query_time2 = (time.time()-query_time1)
-        print("%s Grid Lookup Took %.5f seconds" % (hiscall, query_time2))
+    # open Toplevel QSO Form
+    c3form=Toplevel()
+    c3form.title("Add To Call3 Datbase")
+    c3form.resizable(0,0)
+    x = (c3form.winfo_screenwidth() - c3form.winfo_reqwidth()) / 2
+    y = (c3form.winfo_screenheight() - c3form.winfo_reqheight()) / 2
+    c3form.geometry("+%d+%d" % (x, y))
 
-    return s
-   
+    # get form values after user edits, then commit to call3 Table
+    def CommitCall3():
+        CALL=c3o.get()
+        PREVIOUS=c3p.get()
+        PREVIOUS=PREVIOUS.replace(',', '').upper()
+        C3COMMENT=c3c.get()
+        C3COMMENT=C3COMMENT.replace(',', '')
+        LUPDATE=time.strftime("%Y%m%d",time.gmtime())
+        
+        # satisfy db table check constraint
+        if emeval.get()==True:
+            EME="Y"
+        else:
+            EME="N"
+
+        # from wsjtlookup, make sure the grid is somewhat valid
+        # TO-DO: this should be a function
+        grid=c3g.get()
+        grid=grid[:2].upper()+grid[2:4]+grid[4:6].lower()
+        if len(grid)==4: grid=hisgrid+"mm"
+        if len(grid)==5: grid=hisgrid+"m"
+        GRIDSQUARE=grid
+
+        cdb(dbf)
+        ccdb.execute('''INSERT INTO call3 (call, gridsquare, force_init, prev_call, comment, last_update) 
+                    VALUES(?,?,?,?,?,?)''', (CALL,GRIDSQUARE,EME,PREVIOUS,C3COMMENT,LUPDATE))
+        conn.commit()
+
+        print("\nAdded QSO To Database")
+        print("---------------------------------------------------")
+        print("Station Call ....: %s" % CALL)
+        print("Station Grid ....: %s" % GRIDSQUARE)
+        print("Previous Calls ..: %s" % PREVIOUS)
+        print("EME Station .....: %s" % EME)
+        print("Last Update .....: %s" % LUPDATE)
+        print("Comment  ........: %s" % C3COMMENT)
+        c3form.withdraw()
+
+        conn.close()
+
+    # Start the main log form frame
+    # top frame (c3f1)
+    c3f1 = LabelFrame(c3form, text="")
+    c3f1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # EME Station
+    c3f2 = LabelFrame(c3form, text="Previous Calls")
+    c3f2.grid(row=4, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # Call3 Comments
+    c3f3 = LabelFrame(c3form, text=" Comments ")
+    c3f3.grid(row=6, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # bottom frame (c3f3)
+    c3f4 = LabelFrame(c3form)
+    c3f4.grid(row=8, sticky='W', padx=5, pady=5)
+
+    #-------------------------------------------------- top frame (lbf1)
+    # Callsign
+    c3o_label = Label(c3f1, text="Call")
+    c3o_label.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    c3o = Entry(c3f1, width=10)
+    c3o.insert(END, callsign)
+    c3o.grid(row=1, column=0, sticky="W", padx=5)
+
+    # His Grid
+    c3g_label = Label(c3f1, text="Grid")
+    c3g_label.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    c3g = Entry(c3f1, width=8)
+    c3g.insert(END, his_grid)
+    c3g.grid(row=1, column=1, sticky='W', padx=5, pady=2)
+
+    # EME Station
+    c3e = Checkbutton(c3f1, text="EME Station", variable=emeval, onvalue=Y, offvalue=N, command=emecb)
+    c3e.grid(row=1, column=4, sticky='W', padx=5, pady=2)
+
+    # C3 Previous calls
+    c3p = Entry(c3f2, width=34)
+    c3p.grid(row=2, column=1, columnspan=7, sticky="W", padx=5)
+    c3p.insert(END, previous)
+
+    # C3 Comment
+    c3c = Entry(c3f3, width=34)
+    c3c.grid(row=2, column=1, columnspan=7, sticky="W", padx=5)
+    c3c.insert(END, comment)
+
+    #---------------------------------- save / hrlp / cancel bottom frame (lbf3)
+    # Save QSO Button
+    save_button = Button(c3f4, text="Save", fg="black", activebackground="cyan", background="cyan", command=CommitCall3)
+    save_button.grid(row=0, column=0, sticky='WE', padx=5, pady=6)
+
+    # Cancel QSO Button
+    cancel_button = Button(c3f4, text="Cancel", fg="black", activebackground="red", background="red", command=c3form.withdraw)
+    cancel_button.grid(row=0, column=1, sticky='WE', padx=5, pady=6)
+    c3form.deiconify()
+
 #------------------------------------------------ add the QSO to SQLit3 database
-def lb_addqso(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD):
+def AddQSO(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD):
     FORCE_INIT=""
     MSQSO=""
     C3UPDATE=""
@@ -201,6 +358,7 @@ def lb_addqso(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, T
 
     try:
         if lbDebug==1:
+            print("\nDebug Data")
             print("----------------------------------------------------------------")
             print("[1]  My Station......: %s %s" % (MCALL, MGRID))
             print("[2]  His Call........: %s" % CALL)
@@ -239,14 +397,14 @@ def lb_addqso(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, T
         raise
 
 #------------------------------------------------------------------ Clear screen
-def lb_clear_screen():
+def clear_screen():
     if sys.platform == 'win32':
         os.system('cls')
     else:
         os.system('clear')
 
 #--------------------------------------------------------------- Create Database
-def lb_create_database():
+def init_db():
     query_time1 = time.time()
     print("\n---------------------------------------")
     print("Creating New WSJT Database")
