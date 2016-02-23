@@ -174,6 +174,11 @@ def Whois(hiscall):
         s=""
         print("[ %s ] Was Not Found In The Call3 Database" % (hiscall))
     else:
+        # TO-DO: this should be a function
+        grid=grid[:2].upper()+grid[2:4]+grid[4:6].lower()
+        if len(grid)==4: grid=hisgrid+"mm"
+        if len(grid)==5: grid=hisgrid+"m"
+        
         query_time2 = (time.time()-query_time1)
         s=grid
         print("Station Call ....: %s" % call)
@@ -247,8 +252,6 @@ def AddCall3(callsign,his_grid):
         if len(grid)==4: grid=hisgrid+"mm"
         if len(grid)==5: grid=hisgrid+"m"
         GRIDSQUARE=grid
-
-
 
         cdb(dbf)
         ccdb.execute('''INSERT INTO call3 (call, gridsquare, force_init, prev_call, comment, last_update) 

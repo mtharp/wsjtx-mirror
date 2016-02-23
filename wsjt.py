@@ -1652,7 +1652,7 @@ def plot_large():
             y.append(green)
         ymax=max(y)
         if ymax<1: ymax=1
-        yfac=time.strftime("%Y%m%d",time.gmtime())
+        yfac=4.0
         if ymax>75.0/yfac: yfac=75.0/ymax
         xy=[]
         for i in range(ngreen):             #Make xy list for green curve
