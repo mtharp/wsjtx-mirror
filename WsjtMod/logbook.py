@@ -28,8 +28,6 @@
 import sys, os, time, csv, sqlite3
 from tkinter import *
 import tkinter.messagebox
-import appdirs
-from appdirs import AppDirs
 
 lbDebug=0
 dbname=""

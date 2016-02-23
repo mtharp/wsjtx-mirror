@@ -3,9 +3,12 @@
 # User Guide Migration to AsciiDoctor complete
 # Python2 and AsciiDoc are no longer required
 
+# TO-DO: when reintegrating wsjt-11 into the trunk,
+#       change all instances of /wsjt-11 back to /trunk
+
 # Application Information
 NAME	=	WSJT
-VER		=	10.0
+VER		=	11.0
 SVER	?=
 OS		=	Win32
 SDK		=	C:/JTSDK
@@ -20,7 +23,7 @@ RANLIB = $(SDK)/mingw32/bin/ranlib.exe
 FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll
 
 # Misc Tools & Files & Folders
-SRCD = $(SDK)/src/trunk
+SRCD = $(SDK)/src/wsjt-11
 ISS = $(SRCD)/wsjt10b.iss
 CP = $(SDK)/tools/bin/cp.exe
 MV = $(SDK)/tools/bin/mv.exe
@@ -35,7 +38,6 @@ ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 # Output Paths
 INSTALLDIR = $(SDK)/wsjt/install
 PACKAGEDIR = $(SDK)/wsjt/package
-LOGBOOKDIR = $(SDK)/wsjt/install/Logbook
 
 # Python Paths
 PYTHON3 = $(SDK)/Python33/python.exe
@@ -153,19 +155,19 @@ install:
 	@echo --------------------------------------
 	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
-	$(CP) -u CALL3.TXT wsjt.ico $(INSTALLDIR)
+	$(CP) -u wsjt.ico $(INSTALLDIR)
 	$(CP) -u $(DOCPATH)/wsjt-main-$(VER).html $(INSTALLDIR)	
 	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
-	$(CP) -ur Logbook/call3.csv Logbook/logbook.sql Logbook/logbook.db $(LOGBOOKDIR)
+    $(CP) -ur WsjtMod/sql $(INSTALLDIR)
 	
 # /O = Installer output directory
 # /F = Win32 output file name
 # /cc = Compiler command
 # $(ISS) = .iss file name
 # The other vars are from the top of the Makefile.
-# Output: $(SDK)\wsjt\package\WSJT-10-Win32.exe
+# Output: $(SDK)\wsjt\package\WSJT-$(VER)-Win32.exe
 # Optional: Super Quiet, with errors only, add "/Q[p]" before /O
 # ISCC creates $(PACKAGEDIR) if not present.
 package:

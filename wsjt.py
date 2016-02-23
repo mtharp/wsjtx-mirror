@@ -6,13 +6,16 @@ import sys, os, time, array, _thread, webbrowser, csv, sqlite3, Pmw
 from tkinter import *
 from tkinter.filedialog import *
 import tkinter.messagebox
-from WsjtMod import g, Audio, logbook
+from WsjtMod import g, Audio
 from math import log10
 import numpy.core.multiarray         # Tell cxfreeze we need the numpy stuff
 from PIL import (Image, ImageTk)
 from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
+from WsjtMod import appdirs
+from appdirs import AppDirs
+from WsjtMod import logbook
 
 # make the new FSH directories
 if not os.path.exists(logbook.commond):
@@ -33,8 +36,8 @@ else:
 
 # START WSJT MAIN UI
 root = Tk()
-Version="10.0 r" + "$Rev$"[6:-1]
-Title="  WSJT 10.0    r" + "$Rev$"[6:-1] + "     by K1JT"
+Version="11.0 r" + "$Rev$"[6:-1]
+Title="  WSJT 11.0    r" + "$Rev$"[6:-1] + "     by K1JT"
 
 # print WSJT Console Header
 print("******************************************************************")
