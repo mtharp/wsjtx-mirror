@@ -36,8 +36,8 @@ DOCSRC = $(SRCD)/doc/user_guide
 ASCIIDOCTOR = $(SDK)/Ruby/bin/asciidoctor
 
 # Output Paths
-INSTALLDIR = $(SDK)/wsjt/install
-PACKAGEDIR = $(SDK)/wsjt/package
+INSTALLDIR = $(SDK)/wsjt-11/install
+PACKAGEDIR = $(SDK)/wsjt-11/package
 
 # Python Paths
 PYTHON3 = $(SDK)/Python33/python.exe
@@ -149,19 +149,20 @@ install:
 	@echo  Run Cx_Freeze
 	@echo --------------------------------------
 	$(CXFR) --silent --icon=wsjt.ico --include-path=. \
-	--include-modules=Pmw wsjt.py --target-dir=$(INSTALLDIR)/bin
+	--include-path=.\WsjtMod --include-modules=Pmw,appdirs wsjt.py \
+	--target-dir=$(INSTALLDIR)/bin
 	@echo.
 	@echo  Install Additional Files
 	@echo --------------------------------------
 	@$(RM) -rf $(INSTALLDIR)/bin/tcl/tzdata
 	@$(RM) -rf $(INSTALLDIR)/bin/tk/demos
-	$(CP) -u wsjt.ico $(INSTALLDIR)
+	$(CP) -u wsjt.ico wsjt-11.bat $(INSTALLDIR)
 	$(CP) -u $(DOCPATH)/wsjt-main-$(VER).html $(INSTALLDIR)	
-	$(CP) -u wsjtrc wsjtrc.win $(INSTALLDIR)
+	$(CP) -u wsjtrc.win $(INSTALLDIR)
 	$(CP) -ur RxWav $(INSTALLDIR)
 	$(CP) -u jt65code.exe jt4code.exe $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
-    $(CP) -ur WsjtMod/sql $(INSTALLDIR)
-	
+	$(CP) -ur WsjtMod/sql $(INSTALLDIR)
+
 # /O = Installer output directory
 # /F = Win32 output file name
 # /cc = Compiler command

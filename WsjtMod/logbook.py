@@ -28,6 +28,8 @@
 import sys, os, time, csv, sqlite3
 from tkinter import *
 import tkinter.messagebox
+from WsjtMod import appdirs
+from appdirs import AppDirs
 
 lbDebug=0
 dbname=""
