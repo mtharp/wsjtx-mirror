@@ -210,8 +210,6 @@ def AddCall3(callsign,his_grid,eme_status):
     if eme_status==1:
         emeval.set(1)
 
-    print(eme_status,emeval)
-
     # check if callsign exists in call3 Database
     cdb(dbf)
     ccdb.execute('SELECT * FROM call3 WHERE call=?', (callsign,))
