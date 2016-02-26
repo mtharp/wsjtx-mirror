@@ -4,7 +4,7 @@
 #
 # Author........: Greg Beam, KI7MT, <ki7mt@yahoo.com>
 # File Name.....: logbook.py
-# Description...: WSJT Loogbook Miscellaneous Functions
+# Description...: WSJT Logbook Miscellaneous Functions
 # 
 # Copyright (C) 2001-2016 Joseph Taylor, K1JT
 # License: GPL-3
@@ -25,7 +25,7 @@
 #
 #-------------------------------------------------------------------------------
 
-import sys, os, time, csv, sqlite3
+import sys, os, time, csv, sqlite3, Pmw
 from tkinter import *
 import tkinter.messagebox
 from WsjtMod import appdirs
@@ -157,9 +157,6 @@ def Whois(hiscall):
     previous=""
     comment=""
     lupdate=""
-    print("\nCall3 Lookup")
-    print("---------------------------------------------------")
-
     cdb(dbf)
     ccdb.execute('SELECT * FROM call3 WHERE call=?', (hiscall,))
     for row in ccdb.fetchall():
@@ -181,6 +178,8 @@ def Whois(hiscall):
         
         query_time2 = (time.time()-query_time1)
         s=grid
+        print("\nCall3 Lookup Found")
+        print("---------------------------------------------------")
         print("Station Call ....: %s" % call)
         print("Station Grid ....: %s" % grid)
         print("Previous Calls ..: %s" % previous)
@@ -188,7 +187,6 @@ def Whois(hiscall):
         print("Last Update .....: %s" % lupdate)
         print("Comment  ........: %s" % comment)
         print("Query Time ......: %.5f seconds" % (query_time2))
-
 
     conn.close()
     return s
@@ -226,7 +224,7 @@ def AddCall3(callsign,his_grid):
 
     # open Toplevel QSO Form
     c3form=Toplevel()
-    c3form.title("Add To Call3 Datbase")
+    c3form.title("Add Station To Call3 Database")
     c3form.resizable(0,0)
     x = (c3form.winfo_screenwidth() - c3form.winfo_reqwidth()) / 2
     y = (c3form.winfo_screenheight() - c3form.winfo_reqheight()) / 2
@@ -249,8 +247,8 @@ def AddCall3(callsign,his_grid):
         # TO-DO: this should be a function
         grid=c3g.get()
         grid=grid[:2].upper()+grid[2:4]+grid[4:6].lower()
-        if len(grid)==4: grid=hisgrid+"mm"
-        if len(grid)==5: grid=hisgrid+"m"
+        if len(grid)==4: grid=grid+"mm"
+        if len(grid)==5: grid=grid+"m"
         GRIDSQUARE=grid
 
         cdb(dbf)
@@ -258,7 +256,7 @@ def AddCall3(callsign,his_grid):
                     VALUES(?,?,?,?,?,?)''', (CALL,GRIDSQUARE,EME,PREVIOUS,C3COMMENT,LUPDATE))
         conn.commit()
 
-        print("\nAdded Station to Call3 Table")
+        print("\nAdded Station to Call3 Database")
         print("---------------------------------------------------")
         print("Station Call ....: %s" % CALL)
         print("Station Grid ....: %s" % GRIDSQUARE)
@@ -390,7 +388,7 @@ def AddQSO(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME
             print("----------------------------------------------------------------")
 
         else:
-            print("Loogged QSO..: %s" % CALL, GRIDSQUARE, QSO_DATE_OFF, TIME_OFF, SUBMODE)
+            print("\nLogged QSO..: %s" % CALL, GRIDSQUARE, QSO_DATE_OFF, TIME_OFF, SUBMODE)
             
     except NameError as err:
         print("\n*********")
@@ -473,4 +471,282 @@ def init_db():
     print(" Execution time..........: %.3f seconds" % query_time2)
     print("\n")    
     conn.close()
+
+#------------------------------------------------------ entry form help
+def QsoFormHelp():
+    msg="""
+The following Fields are used when logging QSO and / or updating
+the CALL3 Database Table. All fileds should be updated as
+appropriate before saving.
+
+Field       Description
+------------------------------------------------------------------
+Call........: Station being worked callsign
+Grid........: Station being worked Grid
+Start Date..: Date when QSO started, (UTC), update as Needed
+Start Time..: Time when QSO Started, (UTC), update as Needed
+End Date....: Date when QSO ended, (UTC), set when logging QSO
+End Time....: Time when QSO ended, (UTC), set when logging QSO
+Submode.....: Set from Main Menu >> Mode
+Mode........: Cross reference based on Submode
+Snt Rpt.....: Report set to Call Station
+Rcvd Rpt....: Report Recieved from Call Station
+TxPwr.......: Power level used during QSO, optional field
+Band........: Set from Main Menu >> Band
+
+Add QSO to Call3, if checked, will the QSO to the Call3 Table in wsjt.db
+if it does not exist.
+
+Rebuild Call3 file, if checked, will regenerate a CALL3.TXT file
+if a call has been added to the CALL3 table in wsjt.db
+
+Contact is EME QSO, if checked, will add a flag in both the QSO
+log and CALL3 data table.
+
+"""
+    root=Toplevel()
+    root.title('Log QSO Entry Form Help')
+    Label(root,text=msg,justify=LEFT).pack(padx=20)
+    root.focus_set()
+
+#------------------------------------------------------ main entry form
+def QsoForm(mcall,mgrid,operator,qso_date,qso_time,his_grid,rpt_sent,rpt_rcvd,pwr,tf,sm,last_update,band,mode):
+
+    # open Toplevel QSO Form
+    root=Toplevel()
+    root.title('Log QSO Entry Form')
+    root.resizable(0,0)
+    balloon = Pmw.Balloon()
+
+    # attempt to center log form in the middle of the screen
+    x = (root.winfo_screenwidth() - root.winfo_reqwidth()) / 2
+    y = (root.winfo_screenheight() - root.winfo_reqheight()) / 2
+    root.geometry("+%d+%d" % (x, y))
+
+    # initilize variables used in log entry form
+    lbo=StringVar()
+    lbg=StringVar()
+    lb_date=StringVar()
+    lb_time=StringVar()
+    lb_submode=StringVar()
+    lb_mode=StringVar()
+    lb_band=StringVar()
+    lb_rpt_sent=StringVar()
+    lb_rpt_rcvd=StringVar()
+    lb_band_list=StringVar()
+    lb_submode_list=StringVar()
+    ms_list_dropdown=StringVar()
+    nr_bursts=IntVar()
+    nr_pings=IntVar()
+    c3update=IntVar()
+    qsotype=IntVar()
+    eme_ms=BooleanVar()
+
+    def rbselect():
+        return eme_ms.get()
+
+    # get form values after save, then send them to the logbook
+    def AddQsoToDatabase():
+        MCALL=mcall
+        MGRID=mgrid
+        CALL=lbo.get()
+        GRIDSQUARE=lbg.get()
+        QSO_DATE=lb_date_start.get()
+        TIME_ON=lb_time_start.get()
+        QSO_DATE_OFF=lb_date_end.get()
+        TIME_OFF=lb_time_end.get()
+        SUBMODE=lb_submode.get()
+        MODE=lb_mode.get()
+        RST_SENT=lb_rpt_sent.get()
+        RST_RCVD=lb_rpt_sent.get()
+        TX_PWR=lb_pwr.get()
+        BAND=lb_band.get()
+        NR_BURSTS=nr_bursts.get()
+        NR_PINGS=nr_pings.get()
+        VUCC_GRIDS=lbg.get()[:4].upper()
+        QSO_TYPE=eme_ms.get()
+        MS_SHOWER=ms_list_dropdown.get()
+        NR_BURSTS=nr_bursts.get()
+        NR_PINGS=nr_pings.get()
+        C3UPD=c3update.get()
+
+        # try to post qso data to log book
+        # QSO_TYPE is a swithch for EME or MS QSO's
+        try:
+            AddQSO(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD)
+
+        except (ValueError):
+            print("\n*********")
+            print("An Error occured while adding the QSO", Argument)
+            print("The QSO was not added to the database")
+            print("\n*********")
+            root.withdraw()
+            
+        finally:
+            root.withdraw()
+            # if log QSO was sucessfull && update call3 was selected
+            # send the qso data to the call3 table   
+            if c3update.get()==1:
+                callsign=CALL
+                his_grid=GRIDSQUARE
+                AddCall3(callsign,his_grid)
+
+    # Start the main log form frame
+    # top frame (lbf1)
+    lbf1 = LabelFrame(root, text=" QSO Data ")
+    lbf1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
+
+    # middle frame (lbf2)
+    lbf2 = LabelFrame(root, text=" Meteor Shower Data ")
+    lbf2.grid(row=4, columnspan=7, sticky='WE', padx=4, pady=4, ipadx=0, ipady=0)
+
+    # meator shower frame (lbf3)
+    lbf3 = LabelFrame(root, text=" Save Options ")
+    lbf3.grid(row=5, columnspan=7, sticky='WE', padx=4, pady=4, ipadx=0, ipady=0)
+
+    # bottom frame (lbf3)
+    lbf4 = LabelFrame(root)
+    lbf4.grid(row=6, sticky='W', padx=4, pady=4, ipadx=0, ipady=0)
+
+    #-------------------------------------------------- top frame (lbf1)
+    # Operator Call
+    lbo_label = Label(lbf1, text="Call")
+    lbo_label.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    lbo = Entry(lbf1, width=10)
+    lbo.insert(END, operator)
+    lbo.grid(row=1, column=0, sticky="W", padx=5)
+
+    # His Grid
+    lbg_label = Label(lbf1, text="Grid")
+    lbg_label.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    lbg = Entry(lbf1, width=8)
+    lbg.insert(END, his_grid)
+    lbg.grid(row=1, column=1, sticky='W', padx=5, pady=2)
+
+    # QSO Start Date
+    lb_date_label = Label(lbf1, text="Start Date")
+    lb_date_label.grid(row=0, column=2, sticky='W', padx=5, pady=2)
+    lb_date_start = Entry(lbf1, width=10)
+    lb_date_start.insert(END, qso_date)
+    lb_date_start.focus_set()
+    lb_date_start.grid(row=1, column=2, sticky='W', padx=5, pady=2)
+
+    # QSO Start Time
+    lb_time_label = Label(lbf1, text="Start Time")
+    lb_time_label.grid(row=0, column=3, sticky='W', padx=5, pady=2)
+    lb_time_start = Entry(lbf1, width=8)
+    lb_time_start.insert(END, qso_time)
+    lb_time_start.grid(row=1, column=3, sticky='W', padx=5, pady=2)
+
+    # QSO End Date
+    lb_date_label = Label(lbf1, text="End Date")
+    lb_date_label.grid(row=0, column=4, sticky='W', padx=5, pady=2)
+    lb_date_end = Entry(lbf1, width=10)
+    lb_date_end.insert(END, qso_date)
+    lb_date_end.grid(row=1, column=4, sticky='W', padx=5, pady=2)
+
+    # QSO End Time
+    lb_time_label = Label(lbf1, text="End Time")
+    lb_time_label.grid(row=0, column=5, sticky='W', padx=5, pady=2)
+    lb_time_end = Entry(lbf1, width=8)
+    lb_time_end.insert(END, qso_time)
+    lb_time_end.grid(row=1, column=5, sticky='W', padx=5, pady=2)
+
+    # Submode
+    lb_submode_label = Label(lbf1, text="Submode")
+    lb_submode_label.grid(row=2, column=0, sticky='W', padx=5, pady=2)
+    lb_submode = Entry(lbf1, width=10)
+    lb_submode.insert(END, sm)
+    lb_submode.grid(row=3, column=0, sticky='W', padx=5, pady=2)
+
+    # Mode
+    lb_mode_label = Label(lbf1, text="Mode")
+    lb_mode_label.grid(row=2, column=1, sticky='W', padx=5, pady=2)
+    lb_mode = Entry(lbf1, width=8)
+    lb_mode.insert(END, mode)
+    lb_mode.grid(row=3, column=1, sticky='W', padx=5, pady=2)
+
+    # Rpt Sent
+    lb_rpt_sent_label = Label(lbf1, text="Rpt Sent")
+    lb_rpt_sent_label.grid(row=2, column=2, sticky='W', padx=5, pady=2)
+    lb_rpt_sent = Entry(lbf1, width=8)
+    lb_rpt_sent.insert(0, rpt_sent)
+    lb_rpt_sent.grid(row=3, column=2, sticky='W', padx=5, pady=2)
+
+    # Rpt_Rcvd
+    lb_rpt_rcvd_label = Label(lbf1, text="Rpt Rcvd")
+    lb_rpt_rcvd_label.grid(row=2, column=3, sticky='W', padx=5, pady=2)
+    lb_rpt_rcvd = Entry(lbf1, width=8)
+    lb_rpt_rcvd.insert(0, rpt_rcvd)
+    lb_rpt_rcvd.grid(row=3, column=3, sticky='W', padx=5, pady=2)
+
+    # TxPwr
+    lb_pwr_label = Label(lbf1, text="Tx Pwr")
+    lb_pwr_label.grid(row=2, column=4, sticky='W', padx=5, pady=2)
+    lb_pwr = Entry(lbf1, width=10)
+    lb_pwr.insert(0, pwr)
+    lb_pwr.grid(row=3, column=4, sticky='W', padx=5, pady=2)
+
+    # Band
+    lb_band_label = Label(lbf1, text="Band")
+    lb_band_label.grid(row=2, column=5, sticky='W', padx=5, pady=2)
+    lb_band = Entry(lbf1, width=4)
+    lb_band.insert(END, band)
+    lb_band.grid(row=3, column=5, sticky='W', padx=5, pady=2)
+
+    #-------------------------------------------------- middle frame (lbf2)
+    ms_list_label = Label(lbf2, text="Select")
+    ms_list_label.grid(row=0, column=0, sticky='W', padx=5, pady=2)
+    ms_list_dropdown = Pmw.ComboBox(lbf2, scrolledlist_items=(MsList()), entry_width=20)
+    balloon.bind(ms_list_dropdown, 'Slect Meteor Shower')
+    ms_list_dropdown.grid(row=1, column=0, padx=5, sticky="WE", pady=3)
+
+    # Bursts
+    nr_bursts_label = Label(lbf2, text="Bursts")
+    nr_bursts_label.grid(row=0, column=1, sticky='W', padx=5, pady=2)
+    nr_bursts = Entry(lbf2, width=6)
+    balloon.bind(nr_bursts, 'Enter Number of Bursts Detected')
+    nr_bursts.grid(row=1, column=1, sticky='W', padx=5, pady=2)
+
+    # Pings
+    nr_pings_label = Label(lbf2, text="Pings")
+    nr_pings_label.grid(row=0, column=2, sticky='W', padx=5, pady=2)
+    nr_pings = Entry(lbf2, width=6)
+    balloon.bind(nr_pings, 'Enter Number of Pings Detected')
+    nr_pings.grid(row=1, column=2, sticky='W', padx=5, pady=2)
+
+    #-------------------------------------------------- meteor shower frame (lbf3)
+    # Update Call3 Data Checkbox, Default Set to "Yes"
+    c3_update = Checkbutton(lbf3, text="Update Call3 Table", variable=c3update, onvalue=1, offvalue=0, )
+    c3_update.select()
+    balloon.bind(c3_update, 'Click to update CALL3 Table')
+    c3_update.grid(row=1, column=0, sticky='W', padx=5, pady=2)
+
+    # EME QSO Y/N
+    R1 = Radiobutton(lbf3, text="EME QSO", variable=eme_ms, value=1, command=rbselect)
+    balloon.bind(R1, 'Click if Station is an EME Operator')
+    R1.grid(row=1, column=3, sticky='W', padx=5, pady=2)
+
+    # MS QSO Y/N
+    R2 = Radiobutton(lbf3, text="MS QSO", variable=eme_ms, value=2, command=rbselect)
+    balloon.bind(R2, 'Click to Set Meteor Scatter Contact')
+    R2.grid(row=1, column=4, sticky='W', padx=5, pady=2)
+
+    #---------------------------------- save / hrlp / cancel bottom frame (lbf3)
+    # Save QSO Button
+    save_button = Button(lbf4, text="Save", fg="black", activebackground="cyan", background="cyan", command=AddQsoToDatabase)
+    balloon.bind(save_button, 'Add QSO to Database')
+    save_button.grid(row=0, column=0, sticky='WE', padx=5, pady=6)
+
+    # Entry Form Help Button
+    help_button = Button(lbf4, text="Help", fg="black", activebackground="yellow", background="yellow", command=QsoFormHelp)
+    balloon.bind(help_button, 'Display Logform Help')
+    help_button.grid(row=0, column=1, sticky='WE', padx=5, pady=6)
+
+    # Cancel QSO Button
+    cancel_button = Button(lbf4, text="Cancel", fg="black", activebackground="red", background="red", command=root.withdraw)
+    balloon.bind(cancel_button, 'Cancel Without Saving QSO')
+    cancel_button.grid(row=0, column=2, sticky='WE', padx=5, pady=6)
+    root.deiconify()
+
 
