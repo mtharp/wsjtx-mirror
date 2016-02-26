@@ -195,8 +195,23 @@ def Whois(hiscall):
 # call3 tables fields: call, gridsquare, force_init, prev_call, comment, last_update
 # This is also used when adding a QSO via the LogQSO button, however not all
 # fields are used in both cases.
-def AddCall3(callsign,his_grid):
+def AddCall3(callsign,his_grid,eme_status):
+    # init form variables
+    c3o=StringVar()     # callsign
+    c3g=StringVar()     # grid
+    c3p=StringVar()     # previous calls
+    c3c=StringVar()     # comment
+    c3d=StringVar()     # last update
+    previous=StringVar()
+    comment=StringVar()
+    previous=""
+    comment=""
     emeval=IntVar()
+    if eme_status==1:
+        emeval.set(1)
+
+    print(eme_status,emeval)
+
     # check if callsign exists in call3 Database
     cdb(dbf)
     ccdb.execute('SELECT * FROM call3 WHERE call=?', (callsign,))
@@ -211,24 +226,13 @@ def AddCall3(callsign,his_grid):
     def emecb():
         return emeval.get()   
    
-    # init form variables
-    c3o=StringVar()     # callsign
-    c3g=StringVar()     # grid
-    c3p=StringVar()     # previous calls
-    c3c=StringVar()     # comment
-    c3d=StringVar()     # last update
-    previous=StringVar()
-    comment=StringVar()
-    previous=""
-    comment=""
-
     # open Toplevel QSO Form
-    c3form=Toplevel()
-    c3form.title("Add Station To Call3 Database")
-    c3form.resizable(0,0)
-    x = (c3form.winfo_screenwidth() - c3form.winfo_reqwidth()) / 2
-    y = (c3form.winfo_screenheight() - c3form.winfo_reqheight()) / 2
-    c3form.geometry("+%d+%d" % (x, y))
+    root=Toplevel()
+    root.title("Add Station To Call3 Database")
+    root.resizable(0,0)
+    x = (root.winfo_screenwidth() - root.winfo_reqwidth()) / 2
+    y = (root.winfo_screenheight() - root.winfo_reqheight()) / 2
+    root.geometry("+%d+%d" % (x, y))
 
     # get form values after user edits, then commit to call3 Table
     def CommitCall3():
@@ -264,25 +268,25 @@ def AddCall3(callsign,his_grid):
         print("EME Station .....: %s" % EME)
         print("Last Update .....: %s" % LUPDATE)
         print("Comment  ........: %s" % C3COMMENT)
-        c3form.withdraw()
+        root.withdraw()
 
         conn.close()
 
     # Start the main log form frame
     # top frame (c3f1)
-    c3f1 = LabelFrame(c3form, text="")
+    c3f1 = LabelFrame(root, text="")
     c3f1.grid(row=0, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
 
     # EME Station
-    c3f2 = LabelFrame(c3form, text="Previous Calls")
+    c3f2 = LabelFrame(root, text="Previous Calls")
     c3f2.grid(row=4, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
 
     # Call3 Comments
-    c3f3 = LabelFrame(c3form, text=" Comments ")
+    c3f3 = LabelFrame(root, text=" Comments ")
     c3f3.grid(row=6, columnspan=7, sticky='W', padx=5, pady=5, ipadx=5, ipady=5)
 
     # bottom frame (c3f3)
-    c3f4 = LabelFrame(c3form)
+    c3f4 = LabelFrame(root)
     c3f4.grid(row=8, sticky='W', padx=5, pady=5)
 
     #-------------------------------------------------- top frame (lbf1)
@@ -301,7 +305,7 @@ def AddCall3(callsign,his_grid):
     c3g.grid(row=1, column=1, sticky='W', padx=5, pady=2)
 
     # EME Station
-    c3e = Checkbutton(c3f1, text="EME Station", variable=emeval, onvalue=1, offvalue=0, command=emecb)
+    c3e = Checkbutton(c3f1, text="EME Station", variable=emeval, command=emecb)
     c3e.grid(row=1, column=4, sticky='W', padx=5, pady=2)
 
     # C3 Previous calls
@@ -320,9 +324,9 @@ def AddCall3(callsign,his_grid):
     save_button.grid(row=0, column=0, sticky='WE', padx=5, pady=6)
 
     # Cancel QSO Button
-    cancel_button = Button(c3f4, text="Cancel", fg="black", activebackground="red", background="red", command=c3form.withdraw)
+    cancel_button = Button(c3f4, text="Cancel", fg="black", activebackground="red", background="red", command=root.withdraw)
     cancel_button.grid(row=0, column=1, sticky='WE', padx=5, pady=6)
-    c3form.deiconify()
+    root.deiconify()
 
 #------------------------------------------------ add the QSO to SQLit3 database
 def AddQSO(MCALL, MGRID, CALL, GRIDSQUARE, QSO_DATE, TIME_ON, QSO_DATE_OFF, TIME_OFF, SUBMODE, MODE, RST_SENT, RST_RCVD, TX_PWR, BAND, QSO_TYPE, MS_SHOWER, NR_BURSTS, NR_PINGS, VUCC_GRIDS, C3UPD):
@@ -589,7 +593,8 @@ def QsoForm(mcall,mgrid,operator,qso_date,qso_time,his_grid,rpt_sent,rpt_rcvd,pw
             if c3update.get()==1:
                 callsign=CALL
                 his_grid=GRIDSQUARE
-                AddCall3(callsign,his_grid)
+                eme_status=QSO_TYPE
+                AddCall3(callsign,his_grid,eme_status)
 
     # Start the main log form frame
     # top frame (lbf1)
