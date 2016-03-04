@@ -14,25 +14,34 @@ from WsjtMod.palettes import colormapblue, colormapgray0, colormapHot, \
      colormapAFMHot, colormapgray1, colormapLinrad, Colormap2Palette
 from types import *
 from WsjtMod import appdirs
-from appdirs import AppDirs
 from WsjtMod import logbook
 
 # make the new FSH directories
-if not os.path.exists(logbook.commond):
-    os.makedirs(logbook.commond)
+appdir=os.getcwd()
+commond = appdirs.AppDirs("WSJT", appauthor='', version='', multipath='')
+commond = commond.user_data_dir
+lbcommond = appdirs.AppDirs("WSJT-LOG", appauthor='', version='', multipath='')
+lbcommond = lbcommond.user_data_dir
+if not os.path.exists(commond):
+    os.makedirs(commond)
 
-# check that wsjt.db
+if not os.path.exists(lbcommond):
+    os.makedirs(lbcommond)
+    # if lbcommond does not exist, assume the databased does not exist either
+    logbook.InitDB()
+
+# check wsjt.db exists
 if os.path.isfile(logbook.dbf):
     try:
-        logbook.db_version()
+        logbook.DBVersion()
 
     except NameError as err:
         print("Name error: {0}".format(err))
         print("Creating Database..: {}".format(logbook.dbname))
         raise
-        logbook.init_db()
+        logbook.InitDB()
 else:
-    logbook.init_db()
+    logbook.InitDB()
 
 # START WSJT MAIN UI
 root = Tk()
@@ -51,12 +60,12 @@ g.Win32=0
 if sys.platform=="win32":
     g.Win32=1
     try:
-        root.option_readfile('wsjtrc.win')
+        root.option_readfile(commond + (os.sep) + 'wsjtrc.win')
     except:
         pass
 else:
     try:
-        root.option_readfile('wsjtrc')
+        root.option_readfile(commond + (os.sep) + 'wsjtrc')
     except:
         pass
 root_geom=""
@@ -520,7 +529,7 @@ def txstop(event=NONE):
     Audio.gcom1.txok=0
     Audio.gcom2.mantx=0
 
-#------------------------------------------------------ lookup from call3 file
+#------------------------------------------------------- lookup from call3 file
 def lookup(event=NONE):
     global hiscall,hisgrid
     hiscall=ToRadio.get().upper().strip()
@@ -542,7 +551,7 @@ def lookup_gen(event):
     lookup()
     GenMsgs()
 
-#-------------------------------------------------------- add to call3 database
+#------------------------------------------------------ add to call3 database
 def addtodb():
     global hiscall
     if HisGrid.get()=="":
@@ -2866,7 +2875,9 @@ if (sys.platform != 'darwin'):
     logbookbutton['menu'] = logbookmenu
 else:
     logbookmenu = Menu(mbar, tearoff=use_tearoff)
-logbookmenu.add('command',label="Add Station To Call3 Table", command= udev)
+logbookmenu.add('command',label="Add Station To Call3 Table", command=udev)
+#logbookmenu.add('command',label="Update Station in Call3 Table", command= logbook.UpdateCall3Search)
+logbookmenu.add('command',label="Update Station in Call3 Table", command= udev)
 logbookmenu.add_separator()
 logbookmenu.add('command', label = 'Log QSO', command = logqso, accelerator='Alt+Q')
 logbookmenu.add('command', label = 'Log QSO Help', command = logbook.QsoFormHelp, accelerator='Shift+H')

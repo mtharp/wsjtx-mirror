@@ -14,7 +14,7 @@ The main features will include, but may not be limited to:
 * Explore the possibility of contest logging.
  
 The data present in the *call3* table was generated from the CALL3.txt file
-located in ^/trunk/CALL3.TXT
+located in ^/branches/wsjt-11/CALL3.TXT
 
 A CSV ( call3.csv ) file generated from CALL3.TXT has also been provided to
 facilitate script automation testing. Several fields from the CALL3.TXT

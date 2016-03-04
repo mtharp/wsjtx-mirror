@@ -59,6 +59,7 @@ C_NC='\033[01;37m'		# no color
 # local user directories for wsjt.desktop and icon files
 APPD="$HOME/.local/share/applications"
 ICOND="$HOME/.local/share/icons"
+LOGD="$HOME/.local/share/WSJT-LOG"
 
 # file array
 file_array=('CALL3.TXT' 'wsjtrc')
@@ -175,29 +176,21 @@ do
 done
 
 # add .desktop file for local users
-if [ ! -d "$APPD" ] ; then mkdir -p "$APPD" ; fi
+mkdir -p $APPD
 cp -u @SHARED@/applications/wsjt.desktop "$APPD"/ 
 
 # add wsjt.xpm icon
-if [ ! -d "$ICOND" ] ; then mkdir -p "$ICOND"/ ; fi
+mkdir -p $ICOND
 cp -u @SHARED@/pixmaps/wsjt.xpm "$ICOND"/
+
+# copy sql items to Logbook directory
+mkdir -p $LOGD/sql
+cp -u @WSJTLIB@/WsjtMod/sql/* $LOGD/sql/
 
 # use links rather than copying, only if they do not exist
 if [ ! -L $RUNDIR/RxWav/Samples ] ; then
     mkdir -p $RUNDIR/RxWav
     ln -s @DOCDIR@/RxWav/Samples $RUNDIR/RxWav/Samples
-fi
-
-# link sql folder to FSH location
-if [ ! -L $RUNDIR/sql ] ; then
-    mkdir -p $RUNDIR
-    ln -s @WSJTLIB@/WsjtMod/sql $RUNDIR/sql
-fi
-
-# temporary Link call3 grid seach script
-rm -f $RUNDIR/call3.py
-if [ ! -L $RUNDIR/call3.py ] ; then
-    ln -s @WSJTLIB@/WsjtMod/call3.py $RUNDIR/call3.py
 fi
 
 # run paths are set by configure.ac, do not edit manually
