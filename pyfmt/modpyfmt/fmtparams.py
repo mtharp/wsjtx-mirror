@@ -1,27 +1,36 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from __future__ import absolute_import, division, print_function
 
-r"""Setup AudioIn, Com-Ports and Rig Control for FMTest Suite
+r"""Setup Station Parameters
 
-    This module sets the users information (Call and Grid Square), Input and
-    Output Audio Devices, selects rig control (CAT) via Hamlib, and comport
-    settings. 
-
-    Save Button, saved the maoe fmtparams.ini
-    Test Cat Button, sucessful CAT initilization, the fmt.ini is written
+    This module sets the users information (Call and Grid Square), Input Audio
+    Devices, selects rig control (CAT) via Hamlib, and comport settings. 
 
 
-    Python Module Requirments
+    Buttons
+    -------
+    Save Button: saves the main fmtparams.ini
+    Show Button: upon successful CAT initialization, displays fmt.ini
+    Exit Button: exits the widget
+
+
+    Python Module Requirements
     -------------------------
     Pmw, pyaudio, pyserial
 
+    * All packages are available from PyPi
+    * To install: python -m pip install Pmw pyaudio pyserial
 
-    System Level Requirments
+
+    System Level Requirements
     ------------------------
     portaudio19-dev
     rigctrl and libhamlib.a
-    Build from G4WJS Hamlib3 Integration Git Repo
+    
+    * Hamlib3 is built from G4WJS Hamlib3 Integration branch ( Git repo )
+
 
     Outputs
     -------
@@ -33,9 +42,9 @@ r"""Setup AudioIn, Com-Ports and Rig Control for FMTest Suite
     ---------
    soundevice, cffi, numpy
 
-    An optional approach for the audio chain selection would be to use the
-    module sounddevice. NumPY is only required if iyou want to record and
-    play back numpy-arrays.
+    An optional approach for audio chain selection would be to use the
+    module sounddevice. NumPY is only required if if you want to record
+    and play back numpy-arrays.
 
 """
 import tkinter
@@ -195,9 +204,9 @@ def MsgInfo(t):
 
 #------------------------------------------------------------------ save_params
 def save_params():
-    r"""Save fmtparams.ini and fmt.ini if cat check passes
+    r"""Save fmtparams.ini and fmt.ini if CAT / Rig Control checks pass
     
-    The funciton will try to change frequencies to the 20M WSPR frequency.
+    The function will try to change frequencies to the 20M WSPR frequency.
     If it passes, the both the fmtparams.ini and fmt.ini files will be written,
     and Info Message box is displayed, otherwise, an Error Message Box is shown
     to the user, with a prompt to correct the settings.
@@ -270,7 +279,7 @@ def catp(event=NONE):
 
 #------------------------------------------------------------- callback chkcall
 def chkcall(t):
-    r"""Callback: check user entered call is valid"""
+    r"""Callback: check if user entered call is valid"""
     r = -1
     n = len(t)
     if n >= 3 and n <= 10:
@@ -296,7 +305,7 @@ def listini():
 
 #------------------------------------------------------------- callback chkgrid
 def chkgrid(t):
-    r"""Callback: check user entered grid square is valid"""
+    r"""Callback: check if user entered grid square is valid"""
     r = -1
     n = len(t)
     if n == 4 or n == 6:
@@ -452,7 +461,7 @@ show_button = Button(text="Show", command = listini)
 balloon.bind(show_button, 'Display Contents of fmt.ini file')
 
 exit_button = Button(text="Exit", command = quit)
-balloon.bind(exit_button, 'Exit, With No Changes')
+balloon.bind(exit_button, 'Exit widget without changes')
 buttons = (save_button,show_button,exit_button)
 
 # pack buttons
