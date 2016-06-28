@@ -1,6 +1,6 @@
 #!/bin/sh
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application
+# This file is part of the FMT application
 #
 # File Name ....: autogen.sh
 # Description ..: script to generate Makefile
@@ -26,11 +26,10 @@
 #
 #-------------------------------------------------------------------------------
 
-
 set -e
 
 _BASED=$(exec pwd)
-_PROGRAM=WSPR
+_PROGRAM=PyFMT
 
 # Start main script
 cd $_BASED

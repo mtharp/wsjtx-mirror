@@ -2,7 +2,7 @@ dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([WSPR], [4.0], [wsjt-devel@lists.sourceforge.net],[],
+AC_INIT([PyFMT], [0.1.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
 WSPR_COPYRIGHT="Copyright (C) 2001-2015 Joseph H Taylor, Jr, K1JT"
 
