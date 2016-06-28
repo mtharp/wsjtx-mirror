@@ -1,1 +1,0 @@
-"c:\joe\Inno Setup 4\iscc" wspr.iss
