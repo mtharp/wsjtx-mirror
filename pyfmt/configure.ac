@@ -4,14 +4,13 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
 AC_INIT([PyFMT], [0.1.0], [wsjt-devel@lists.sourceforge.net],[],
 [http://www.physics.princeton.edu/pulsar/K1JT/wspr.html])
-WSPR_COPYRIGHT="Copyright (C) 2001-2015 Joseph H Taylor, Jr, K1JT"
+PYFMT_COPYRIGHT="Copyright (C) 2001-2016 Joseph H Taylor, Jr, K1JT"
 
 AC_SUBST([BUGS], ["$PACKAGE_BUGREPORT"])
 AC_SUBST([PROGRAM], ["$PACKAGE_NAME"])
 AC_SUBST([VERSION], ["$PACKAGE_VERSION"])
 AC_SUBST([WEB], ["$PACKAGE_URL"])
-AC_SUBST([COPYRIGHT], ["$WSPR_COPYRIGHT"])
-
+AC_SUBST([COPYRIGHT], ["$PYFMT_COPYRIGHT"])
 
 # ------------------------------------------------------------------------------
 #  canonical host and autotools locations
@@ -22,7 +21,6 @@ AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 AC_SUBST([OS], ["$host_os"])
 AC_SUBST([CPU], ["$host_cpu"])
-
 
 # ------------------------------------------------------------------------------
 #  set default install prefix if not specified
@@ -37,31 +35,11 @@ AC_SUBST([PREFIX], ["$prefix"])
 #  system install folder locations
 # ------------------------------------------------------------------------------
 BINDIR=${PREFIX}/bin
-WSPRLIB=${PREFIX}/lib/wspr
-SHARED=${PREFIX}/share/wspr
-MANDIR=${PREFIX}/share/man/man1
-DOCDIR=${PREFIX}/share/doc/wspr
+PYFMTLIB=${PREFIX}/lib/pyfmt
+SHARED=${PREFIX}/share/pyfmt
 AC_SUBST([BINDIR], ["$BINDIR"])
 AC_SUBST([SHARED], ["$SHARED"])
-AC_SUBST([DOCDIR], ["$DOCDIR"])
-AC_SUBST([WSPRLIB], ["$WSPRLIB"])
-AC_SUBST([MANDIR], ["$MANDIR"])
-
-
-# ------------------------------------------------------------------------------
-#  source - docs and manpage paths
-# ------------------------------------------------------------------------------
-LOGNAME="$LOGNAME"
-DOCSRC=$(exec pwd)/doc/user_guide
-THEMEDIR=$(exec pwd)/doc/theme/wspr
-DOCCONF=$(exec pwd)/doc/wspr.conf
-DOCPATH=$(exec pwd)/doc/
-AC_SUBST([LOGNAME], ["$LOGNAME"])
-AC_SUBST([DOCSRC], ["$DOCSRC"])
-AC_SUBST([THEMEDIR], ["$THEMEDIR"])
-AC_SUBST([DOCCONF], ["$DOCCONF"])
-AC_SUBST([DOCPATH], ["$DOCPATH"])
-
+AC_SUBST([PYFMT], ["$PYFMTLIB"])
 
 # ------------------------------------------------------------------------------
 #  tool chain
@@ -75,7 +53,6 @@ AC_PROG_RANLIB
 AC_PROG_GCC_TRADITIONAL
 AC_USE_SYSTEM_EXTENSIONS
 CFLAGS="$OCFLAGS"
-
 
 # ------------------------------------------------------------------------------
 #  general tools
@@ -102,7 +79,6 @@ AC_PATH_PROG(TR, tr)
 AC_PATH_PROG(SED, sed)
 AC_PATH_PROG(TEST, [test], [test])
 
-
 # ------------------------------------------------------------------------------
 #  try to find the right lib / include paths
 # ----------------------------------------------------------------------------
@@ -112,7 +88,6 @@ if test -d "/usr/lib/x86_64-linux-gnu"; then LIBDIR="-L/usr/lib/x86_64-linux-gnu
 if test -d "/usr/lib/i386-linux-gnu"; then LIBDIR="-L/usr/lib/i386-linux-gnu ${LIBDIR}"; fi
 if test -d "/usr/lib"; then LIBDIR="-L/usr/lib ${LIBDIR}"; fi
 if test -d "/usr/lib/arm-linux-gnueabihf"; then LIBDIR="-L/usr/lib/arm-linux-gnueabihf ${LIBDIR}"; fi
-
 
 # ------------------------------------------------------------------------------
 #  check headers
@@ -138,90 +113,45 @@ samplerate.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h strings.h \
 sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h sys/stat.h sys/syslog.h \
 sys/time.h sys/wait.h termios.h unistd.h wait.h])
 
-
-# ------------------------------------------------------------------------------
-#  user defined docdir
-# ----------------------------------------------------------------------------
-AC_ARG_WITH([docdir],
-AC_HELP_STRING([--with-docdir=DIR], [Path to documentation]), [docdir=$with_docdir])
-if test -n "$with_docdir"; then
-	AC_SUBST([DOCDIR], ["$with_docdir"])
-fi
-
-# ------------------------------------------------------------------------------
-#  user defined mandir
-# ----------------------------------------------------------------------------
-AC_ARG_WITH([mandir],
-AC_HELP_STRING([--with-mandir=DIR], [Path to manpages]), [mandir=$with_mandir])
-if test -n "$with_mandir"; then
-	AC_SUBST([MANDIR], ["$with_mandir"])
-fi
-
-
-# ------------------------------------------------------------------------------
-#  enable - disable user guide, default is enabled
-# ----------------------------------------------------------------------------
-AC_WSPR_DOCS
-
-
-# ------------------------------------------------------------------------------
-#  enable - disable manpages, default is enabled
-# ----------------------------------------------------------------------------
-AC_WSPR_MANPAGES
-
-
-# ------------------------------------------------------------------------------
-#  python2 path
-# ----------------------------------------------------------------------------
-AC_WSPR_PYTHON2
-
-
 # ------------------------------------------------------------------------------
 #  Python3 path
 # ------------------------------------------------------------------------------
-AC_WSPR_PYTHON3
-
+AC_PYFMT_PYTHON3
 
 # ------------------------------------------------------------------------------
 #  find f2py - ( must be built with Python3 )
 # ------------------------------------------------------------------------------
-AC_WSPR_F2PY
-
+AC_PYFMT_F2PY
 
 # ------------------------------------------------------------------------------
 #  check gfortran
 # ------------------------------------------------------------------------------
-AC_WSPR_GFORTRAN
-
+AC_PYFMT_GFORTRAN
 
 # ------------------------------------------------------------------------------
 #  check fftw3
 # ------------------------------------------------------------------------------
-AC_WSPR_FFTW3
-
+AC_PYFMT_FFTW3
 
 # ------------------------------------------------------------------------------
 #  check samplerate
 # ------------------------------------------------------------------------------
-AC_WSPR_SAMPLERATE
-
+AC_PYFMT_SAMPLERATE
 
 # ------------------------------------------------------------------------------
 #  check portaudio
 # ------------------------------------------------------------------------------
-AC_WSPR_PORTAUDIO
+AC_PYFMT_PORTAUDIO
 
 # ------------------------------------------------------------------------------
 #  consolidate flags - ( remove dupes and sort )
 # ------------------------------------------------------------------------------
-AC_WSPR_FLAGS
-
+AC_PYFMT_FLAGS
 
 # ------------------------------------------------------------------------------
 #  substitute flag variables
 # ------------------------------------------------------------------------------
-AC_WSPR_FLAGS
-
+AC_PYFMT_FLAGS
 
 # ------------------------------------------------------------------------------
 #  report f2py
@@ -240,26 +170,6 @@ if test "$HAVE_F2PY" = "no"; then
 	echo 
 	exit 1
 fi
-
-
-# ------------------------------------------------------------------------------
-#  report Python2
-# ------------------------------------------------------------------------------
-if test "$HAVE_PY2" = "no"; then
-	echo
-	echo "Python v2.6+ is required to build $PACKAGE_NAME"
-	echo
-	echo "Possible Solutions:"
-	echo "[1] Install your distro version of: Python v2.6+"
-	echo "[2] Add Python2.6+ to your system paths"
-	echo "[3] Include Python2.6+:"
-	echo
-	echo 'Example:'
-	echo './configure --with-python2="/path/to/python2/"'
-	echo
-	exit 1
-fi
-
 
 # ------------------------------------------------------------------------------
 #  report Python3
@@ -349,16 +259,10 @@ AC_SUBST([LDFLAGS], ["$LDFLAGS"])
 AC_SUBST([FCOPT], ["$FCOPT"])
 AC_SUBST([LIBDIR], ["$LIBDIR"])
 AC_CONFIG_FILES([Makefile
-wspr
-wspr.desktop
-doc/wspr.conf
 manpages/fcal.1.txt
 manpages/fmeasure.1.txt
 manpages/fmtave.1.txt
 manpages/fmtest.1.txt
-manpages/wspr0.1.txt
-manpages/wspr.1.txt
-manpages/wsprcode.1.txt
 ])
 AC_OUTPUT
 
@@ -372,13 +276,6 @@ echo "-------------------------------------------"
 echo ''
 echo " Install prefix ..: ${PREFIX}"
 echo " Package .........: ${PROGRAM} ${VERSION}"
-if test "${BDOC}" = "Yes"; then
-echo " Build Docs ......: ${BDOC}"
-fi
-if test "${BMANP}" = "Yes"; then
-echo " Build Manpages ..: ${BMANP}"
-fi
-echo " Python2 .........: ${PYTHON2} ${PY2V}"
 echo " Python3 .........: ${PYTHON3} ${PY3V}"
 echo " F2py ............: ${F2PY}"
 echo " Fcompiler: ......: ${FC}"

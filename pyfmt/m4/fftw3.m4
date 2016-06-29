@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_FFTW3], [
+AC_DEFUN([AC_PYFMT_FFTW3], [
 HAVE_FFTW3_LIB=0
 AC_CHECK_LIB([fftw3f], [sfftw_destroy_plan_], [], [])
 

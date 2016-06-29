@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_SAMPLERATE], [
+AC_DEFUN([AC_PYFMT_SAMPLERATE], [
 HAVE_SAMPLERATE=0
 AC_CHECK_LIB([samplerate], [src_simple], [], [])
 

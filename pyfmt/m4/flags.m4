@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_FLAGS], [
+AC_DEFUN([AC_PYFMT_FLAGS], [
 _LBU=$(echo "-lpthread $LIBS" |tr ' ' '\n'|sort -su |tr '\n' ' ')
 LIBS="$_LBU"
 

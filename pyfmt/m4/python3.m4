@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_PYTHON3], [
+AC_DEFUN([AC_PYFMT_PYTHON3], [
 HAVE_PY3=no
 
 # check with-enable first

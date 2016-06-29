@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_F2PY], [
+AC_DEFUN([AC_PYFMT_F2PY], [
 HAVE_F2PY=no
 
 # check with-f2py first

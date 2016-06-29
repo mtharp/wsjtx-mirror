@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_PORTAUDIO], [
+AC_DEFUN([AC_PYFMT_PORTAUDIO], [
 HAVE_PORTAUDIO=0
 #
 # This unpleasant hack due to FreeBSD supporting both portaudio2 (v19+)

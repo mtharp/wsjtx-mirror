@@ -1,4 +1,4 @@
-AC_DEFUN([AC_WSPR_GFORTRAN], [
+AC_DEFUN([AC_PYFMT_GFORTRAN], [
 gfortran="gfortran"
 #
 # Sames as portadio, use case for FreeBSD to prevent Linux shell errors. -gb

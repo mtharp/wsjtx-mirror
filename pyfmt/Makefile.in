@@ -2,9 +2,7 @@
 # Re-direct stdout and stderr:		bash
 #								make >& junk
 #
-# Prerequisites: Python 3.x, numpy-1.8.1+, PIL, Portaudio, Samplerate, FFTW
-#                Python 2.x and A2X for Manpages
-#                Ruby and Asciidoctor for User Guide
+# Prerequisites: Python 3.x, Portaudio, Samplerate, FFTW
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -59,27 +57,11 @@ FCOPT		+=	@FCOPT@
 PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
-# For Manpages
-BMANP		:=	@BMANP@
-A2X			:=	@A2X@
-ASCIIDOC	:=	@ASCIIDOC@
-MANPSRC		:= $(wildcard manpages/*.1.txt)
-PYTHON2		:=	@PYTHON2@
-APPSRC		:= $(./fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode,wspr)
-
-# For User Guide
-BDOC		:=	@BDOC@
-ASCIIDOCTOR	:=	@ASCIIDOCTOR@
-DOCSRC		:=	@DOCSRC@
-DOCCONF		:=	@DOCCONF@
-DOCPATH		:=	@DOCPATH@
-THEMEDIR	:=	@THEMEDIR@
-
 # Config Definitions
 DEFS		:=	@DEFS@
 
 # ALL WSPR Targets
-all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0 manp docs mkmsg
+all:	libwspr.a fmtest fmtave fcal fmeasure mkmsg
 
 # Default Rules
 %.o: %.c
@@ -93,49 +75,14 @@ all:	libwspr.a WsprMod/w.so fmtest fmtave fcal fmeasure wsprcode wspr0 manp docs
 %.o: %.F90
 	${FC} $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 
-# prevent compiler warnings ( r4142 commit )
-thnix_stub.o: thnix_stub.f90
-	@echo
-	@echo Build thnix_stub
-	@echo --------------------
-	$(FC) -c thnix_stub.f90
-
-# OBJ1
-OBJS1 = wspr0.o wspr0init.o wspr0_rx.o wspr0_tx.o thnix_stub.o
-
-# build wspr0
-wspr0:  $(OBJS1)
-	@echo
-	@echo Build wspr0
-	@echo --------------------
-	$(FC) $(PORTAUDIO_LIBDIR) $(FFLAGS) -o wspr0 $(FFLAGS) $(LDFLAGS) $(OBJS1) libwspr.a -lfftw3f -lportaudio
-
-# build wsprcode
-wsprcode: wsprcode.o thnix_stub.o
-	@echo
-	@echo Build wsprcode
-	@echo --------------------
-	$(FC) $(LDFLAGS) -o wsprcode wsprcode.o thnix_stub.o libwspr.a -pthread
-
-OBJS3 = azdist.o ccf2.o chklevel.o db.o decode.o decode162.o deg2grid.o \
-	encode232.o fano232.o fchisq.o fil1.o flat3.o four2a.o\
-	fthread.o gencwid.o genmept.o genwspr.o geodist.o getrms.o getutc.o \
-	gmtime2.o gran.o grid2deg.o hash.o inter_mept.o iqdemod.o \
-	mept162.o mix162.o morse.o msgtrim.o nchar.o nhash.o pack50.o \
-	packcall.o packgrid.o packname.o packpfx.o packprop.o packtext2.o \
-	padevsub.o pctile.o peakup.o phasetx.o ps162.o ptt_unix.o rx.o \
-	rxtxcoord.o set.o sort.o sound.o spec162.o speciq.o ssort.o \
-	start_threads.o startdec.o startrx.o starttx.o sync162.o \
-	twkfreq.o tx.o thnix.o unpack50.o unpackcall.o unpackgrid.o \
-	unpackname.o unpackpfx.o unpackprop.o unpacktext2.o wfile5.o \
-	wqdecode.o wqencode.o wspr2.o xcor162.o xfft.o 
+OBJS1 = padevsub.o xfft.o four2a.o audiodev.o
 
 # build libwspr.a
-libwspr.a: $(OBJS3) acom1.f90 acom2.f90
+libwspr.a: $(OBJS1) acom1.f90 acom2.f90
 	@echo
 	@echo Build libwspr library
 	@echo -----------------------------
-	$(AR) cr libwspr.a $(OBJS3)
+	$(AR) cr libwspr.a $(OBJS1)
 	ranlib libwspr.a
 
 # buid fmtest
@@ -166,43 +113,6 @@ fmeasure: fmeasure.f90
 	@echo --------------------
 	$(FC) $(LDFLAGS) -o fmeasure fmeasure.f90
 
-# SRC for w.so
-F2PYSRCS = wspr1.f90 getfile.f90 paterminate.f90 audiodev.f90
-
-# build W.SO & MV to WsprMod/
-WsprMod/w.so:	libwspr.a $(F2PYSRCS) acom1.f90
-	@echo
-	@echo RUN F2PY w.so
-	@echo --------------------
-	$(F2PY) -c --quiet --fcompiler=$(FCV) --f77exec=$(FC) --f90exec=$(FC) \
-	--opt="$(FCOPT)" thnix.o $(PORTAUDIO_LIBDIR) $(LDFLAGS) $(LIBS) libwspr.a -m w $(F2PYSRCS)
-	$(MV) w*.so WsprMod/w.so
-
-# build user guide
-docs:
-ifeq ($(BDOC),Yes)
-	@echo
-	@echo Build User Guide
-	@echo --------------------
-	$(ASCIIDOCTOR) -a data-uri \
-	-a toc=left \
-	-a max-width=1024px \
-	--out-file=$(DOCPATH)/wspr-main-$(VERSION).html $(DOCPATH)/user_guide/wspr-main.adoc
-	@echo
-endif
-
-# build manpages
-manp:
-ifeq ($(BMANP),Yes)
-	@echo
-	@echo Build Manpages
-	@echo --------------------
-	@for f in $(MANPSRC) ; do \
-	echo "$$f" ; \
-	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
-	done
-endif
-
 # make summary message
 mkmsg:
 	@echo ''
@@ -212,94 +122,20 @@ mkmsg:
 	@echo ''
 	@echo "Package ..........: $(PROGRAM) $(VERSION)"
 	@echo " Install prefix ..: $(PREFIX)"
-ifeq ($(BDOC),Yes)
-	@echo " With HTML Docs ..: $(BDOC)"
-endif
-ifeq ($(BMANP),Yes)
-	@echo " With Manpages ...: $(BMANP)"
-endif
 	@echo ''
 	@echo 'INSTALL'
 	@echo ' System Install ..: sudo make install'
 	@echo ''
 
-# install WSPR
-install:
-	@echo
-	@echo INSTALLING $(PROGRAM) $(VERSION)
-	@echo ----------------------------
-	@$(MKDIR) $(DESTDIR)/usr/local/bin
-	@$(MKDIR) $(DESTDIR)$(BINDIR)
-	@$(MKDIR) $(DESTDIR)$(MANDIR)
-	@$(MKDIR) $(DESTDIR)$(DOCDIR)
-	@$(MKDIR) $(DESTDIR)$(SHARED)/save/Samples
-	@$(MKDIR) $(DESTDIR)$(WSPRLIB)/WsprMod
-	@$(MKDIR) $(DESTDIR)$(DOCDIR)/examples
-	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/applications
-	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/pixmaps
-	@echo "..Installing Binaries and Scripts"
-	@$(INSTALL) -m 755 -s fmtest fcal fmeasure fmtave wspr0 wsprcode $(DESTDIR)$(BINDIR)
-	@$(INSTALL) -m 755 wspr $(DESTDIR)$(BINDIR)
-	@$(INSTALL) -m 644 wspr.desktop $(DESTDIR)$(PREFIX)/share/applications/
-	@$(INSTALL) -m 644 wspr.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
-	@echo '..Installing Python3 Files'
-	@$(INSTALL) -m 755 gocal wspr.py wsprrc Pmw* $(DESTDIR)$(SHARED)/
-	@$(INSTALL) -m 755 WsprMod/{*.py,w.so} $(DESTDIR)$(WSPRLIB)/WsprMod/
-	@echo "..Installing Misc Items and Wav Files"
-	@$(INSTALL) -m 644 save/Samples/* $(DESTDIR)$(SHARED)/save/Samples/
-	@$(INSTALL) -m 644 AUTHORS README NEWS COPYING COPYRIGHT $(DESTDIR)$(DOCDIR)/
-	@$(INSTALL) -m 644 doc/examples/* $(DESTDIR)$(DOCDIR)/examples/
-ifeq ($(BDOC),Yes)
-	@echo '..Installing User Guide'
-	@install -m 644 $(DOCPATH)/wspr-main-$(VERSION).html ${DESTDIR}$(DOCDIR)/
-endif
-ifeq ($(BMANP),Yes)
-	@echo '..Installing Manpages'
-	@install -m 644 manpages/*.1 ${DESTDIR}$(MANDIR)
-endif
-	@echo
-	@echo "TO RUN $(PROGRAM) $(VERSION):"
-	@echo "  Type ..........: wspr"
-	@echo "  Help Options ..: wspr -h"
-	@echo ''
-
-# Uninstall system files
-uninstall:
-	@clear
-	@echo '--------------------------------------'
-	@echo " Uninstalling @PROGRAM@"
-	@echo '--------------------------------------'
-	$(RM) -rf ${DESTDIR}$(PREFIX)/share/wspr/*
-	$(RM) -r ${DESTDIR}$(PREFIX)/bin/{fmtest,fcal,fmeasure,fmtave,wspr0,wsprcode,wspr}
-	$(RM) -rf ${DESTDIR}${PREFIX}/lib/WsprMod/*
-	$(RM) -rf ${DESTDIR}$(PREFIX)/share/doc/wspr
-	$(RM) -f ${DESTDIR}$(PREFIX)/share/man/man1/{wspr.1,fmtest.1,fmtave.1,fmeasure.1,fcal.1,wsprcode.1,wspr0.1}
-	$(RM) -f ${DESTDIR}$(PREFIX)/share/applications/wspr.desktop
-	$(RM) -f ${DESTDIR}$(PREFIX)/share/pixmaps/wspr.xpm
-	@echo ''
-	@echo "* Finished"
-	@echo "* User generated files *do not* get removed"
-	@echo ''
-
 # Cleanup Source Tree
 .PHONY: clean distclean dist
 clean :
-	$(RM) -f *.o libwspr.a wspr.desktop ./WsprMod/*.pyc ./WsprMod/*.pyo
-	$(RM) -f ./WsprMod/w.so
-	$(RM) -f ./{wsprcode,wspr0,fmtest,fmtave,fcal,fmeasure,wspr}
-ifeq ($(BDOC),Yes)
-	$(RM) -f doc/wspr*.html
-endif
-ifeq ($(BMANP),Yes)
-	$(RM) -f ./manpages/{wspr.1,fmtest.1,fmtave.1,fmeasure.1,fcal.1,wsprcode.1,wspr0.1}
-endif
+	$(RM) -f *.o libwspr.a
+	$(RM) -f ./{fmtest,fmtave,fcal,fmeasure}
 
 distclean: clean
-	$(RM) -f config.log config.status ALL_WSPR*.TXT WSPR.INI \
-	audio_caps autoscan.log configure.scan decoded.txt hopping.ini \
+	$(RM) -f config.log config.status autoscan.log configure.scan 
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
-	pixmap.dat wspr.log Makefile -r manpages/*.txt doc/wspr.conf
-	$(RM) -rf ./autom4* ./WsprMod/__pycache__ ./dist
+	Makefile -r
+	$(RM) -rf ./autom4*
 
-dist: distclean
-	$(SHELL) ./wspr-dist.sh @PROGRAM@ @VERSION@

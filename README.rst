@@ -1,9 +1,9 @@
-PyFMT is a Python wrapper for the former FMT Suite by Joe Taylor (K1JT). The packages were originally contains in the `Python WSPR Package`_
+PyFMT is a Python wrapper for the former FMT Suite by Joe Taylor (K1JT). The packages were originally contained in the `Python WSPR Package`_
 
 
 Development Status
 ^^^^^^^^^^^^^^^^^^
-At this time, only the FMT Paramaters Scritp is functional. It's
+At this time, only the FMT Paramater Script is functional. It's
 main purpose is to:
 
 * Set station information (Call and Grid)
