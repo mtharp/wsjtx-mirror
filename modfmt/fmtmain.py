@@ -18,6 +18,7 @@ import tkinter
 from tkinter import *
 import tkinter.messagebox
 from builtins import input
+import subprocess
 
 #--------------------------------------------------------------- Pause function
 def pause():
@@ -64,7 +65,7 @@ def main():
         selection = input("Selection: ")
         # Set Station Parameters and Rig Control
         if selection == '1':
-            import fmtparams
+            subprocess.call(['python', 'fmtparams.py'])
             main()
         # Ris Calibration Functions
         if selection == '2':
@@ -87,13 +88,13 @@ def main_menu():
     print(45 * "-")
     print(" PyFMT Main Menu")
     print(45 * "-")
-    print("\n PARAMETER SETUP")
+    print("\n Station Parameters")
     print("   1. Set Station Parameters and Rig Control")
-    print("\n RIG CALIBRATION SETUP")
+    print("\n Rig Calibration")
     print("   2. Setup Test Stations")
-    print("\n ARRL FMT RUN")
+    print("\n ARRL  Frequency Measuring")
     print("   3. Setup ARRL Run Stations")
-    print("\n UTILITIES")    
+    print("\n Utilities")
     print("   4. Exit")
     print("")
 
