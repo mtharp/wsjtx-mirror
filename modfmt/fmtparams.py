@@ -60,6 +60,7 @@ import time
 import serial
 import pyaudio
 import Pmw
+from _version import __version__
 
 qt1 = time.time()
 # set default paths
@@ -75,11 +76,6 @@ hslist = ("None","XONXOFF","Hardware")
 datalist=(7,8)
 stoplist=(1,2)
 
-#------------------------------------------------------------------------- done
-def done():
-    """Exit the main Widget"""
-    root.destroy()
-
 #----------------------------------------------------------------- clear_screen
 def clear_screen():
     """Clear Screen Based On Platform Type"""
@@ -89,7 +85,8 @@ def clear_screen():
         os.system('clear')
 
 clear_screen()
-Version="4.0.0"
+ver=__version__
+Version="0.1.0"
 print(65 * '*')
 print("FMTest Version ..: " + Version + ", by K1JT")
 print("Run date ........: " + time.asctime(time.gmtime()) + " UTC")
@@ -152,18 +149,17 @@ with open('hamlib_rig_numbers', 'r') as csvfile:
 #------------------------------------------------------------------------------
 # Start Main Widget
 #------------------------------------------------------------------------------
-root = Tk()
+window = Tk()
 if sys.platform == 'win32':
-    root.option_readfile('wsprrc.win')
+    window.option_readfile('wsprrc.win')
 else:
-    root.option_readfile('wsprrc.nix')
-root.protocol('WM_DELETE_WINDOW',done)
-root.title("FMT Parameters")
-root_geom=""
-balloon = Pmw.Balloon(root)
+    window.option_readfile('wsprrc.nix')
+window.title("FMT Parameters")
+window_geom=""
+balloon = Pmw.Balloon(window)
 
 #-------------------------------------------------------- Main Widget Variables
-g1 = Pmw.Group(root,tag_pyclass=None)
+g1 = Pmw.Group(window,tag_pyclass=None)
 
 MyCall=StringVar()
 MyGrid=StringVar()
@@ -182,6 +178,11 @@ databits = IntVar()
 stopbits = IntVar()
 serial_handshake = StringVar()
 
+#--------------------------------------------------------------------- onDestroy
+def onDestroy ():
+    """Exit the main Widget"""
+    window.destroy()
+
 #---------------------------------------------------------------------- saveini
 def saveini():
     """Save parameters and quit"""
@@ -191,7 +192,7 @@ def saveini():
 def quit():
     """Quit quit without saving"""
     print("Exiting FMT Parameters\n")
-    root.quit()
+    sys.exit()
 
 #---------------------------------------------------------------------- MsgWarn
 def MsgWarn(t):
@@ -459,7 +460,9 @@ balloon.bind(save_button, 'Save Current Settings')
 show_button = Button(text="Show", command = listini)
 balloon.bind(show_button, 'Display Contents of fmt.ini file')
 
-exit_button = Button(text="Exit", command = quit)
+# The exit button is cause Python to crash on WIndows
+# Leave commented-out. Until resolved, use the "X" button to quit
+exit_button = Button(text="Exit", command = onDestroy)
 balloon.bind(exit_button, 'Exit widget without changes')
 buttons = (save_button,show_button,exit_button)
 
@@ -470,6 +473,6 @@ for button in buttons:
 qt2 = (time.time() - qt1)
 print("* Execution time ..: %.3f seconds" % qt2)
 
-root.mainloop()
+window.mainloop()
 
 # END fmtparams.py
