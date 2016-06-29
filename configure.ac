@@ -119,11 +119,6 @@ sys/time.h sys/wait.h termios.h unistd.h wait.h])
 AC_PYFMT_PYTHON3
 
 # ------------------------------------------------------------------------------
-#  find f2py - ( must be built with Python3 )
-# ------------------------------------------------------------------------------
-AC_PYFMT_F2PY
-
-# ------------------------------------------------------------------------------
 #  check gfortran
 # ------------------------------------------------------------------------------
 AC_PYFMT_GFORTRAN
@@ -259,10 +254,6 @@ AC_SUBST([LDFLAGS], ["$LDFLAGS"])
 AC_SUBST([FCOPT], ["$FCOPT"])
 AC_SUBST([LIBDIR], ["$LIBDIR"])
 AC_CONFIG_FILES([Makefile
-manpages/fcal.1.txt
-manpages/fmeasure.1.txt
-manpages/fmtave.1.txt
-manpages/fmtest.1.txt
 ])
 AC_OUTPUT
 

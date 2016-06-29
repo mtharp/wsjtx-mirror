@@ -61,7 +61,7 @@ PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 DEFS		:=	@DEFS@
 
 # ALL WSPR Targets
-all:	libwspr.a fmtest fmtave fcal fmeasure mkmsg
+all:	libfmt.a fmtest fmtave fcal fmeasure mkmsg
 
 # Default Rules
 %.o: %.c
@@ -75,22 +75,23 @@ all:	libwspr.a fmtest fmtave fcal fmeasure mkmsg
 %.o: %.F90
 	${FC} $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 
-OBJS1 = padevsub.o xfft.o four2a.o audiodev.o
+OBJS1 = audiodev.o db.o fil1.o four2a.o padevsub.o peakup.o \
+	sound.o xfft.o 
 
-# build libwspr.a
-libwspr.a: $(OBJS1) acom1.f90 acom2.f90
+# build libfmt.a
+libfmt.a: $(OBJS1) acom1.f90 acom2.f90
 	@echo
-	@echo Build libwspr library
+	@echo Build libfmt library
 	@echo -----------------------------
-	$(AR) cr libwspr.a $(OBJS1)
-	ranlib libwspr.a
+	$(AR) cr libfmt.a $(OBJS1)
+	ranlib libfmt.a
 
 # buid fmtest
-fmtest: fmtest.f90 libwspr.a
+fmtest: fmtest.f90 libfmt.a
 	@echo
 	@echo Build Fmtest
 	@echo --------------------
-	$(FC) $(PORTAUDIO_LIBDIR) $(LDFLAGS) -o fmtest fmtest.f90 libwspr.a -lfftw3f -lportaudio
+	$(FC) $(PORTAUDIO_LIBDIR) $(LDFLAGS) -o fmtest fmtest.f90 libfmt.a -lfftw3f -lportaudio
 
 # build fmtave
 fmtave: fmtave.f90
@@ -124,18 +125,31 @@ mkmsg:
 	@echo " Install prefix ..: $(PREFIX)"
 	@echo ''
 	@echo 'INSTALL'
-	@echo ' System Install ..: sudo make install'
+	@echo ' Type ,,,,,,,,,,,.: make install'
 	@echo ''
+
+# install PyFMT
+install:
+	@echo
+	@echo INSTALLING $(PROGRAM) $(VERSION)
+	@echo ----------------------------
+	@$(MKDIR) ./install
+	@echo "..Installing Binaries"
+	@$(INSTALL) -m 755 fmtest fcal fmeasure fmtave ./install
+	@$(INSTALL) -m 755 libfmt.a ./install
+	@echo '..Installing Python Related Files'
+	@$(INSTALL) -m 755 modfmt/* ./install
+	@echo '..Installing Misc. Files'
+	@$(INSTALL) -m 755 examples/* ./install
 
 # Cleanup Source Tree
 .PHONY: clean distclean dist
 clean :
-	$(RM) -f *.o libwspr.a
+	$(RM) -f *.o libfmt.a
 	$(RM) -f ./{fmtest,fmtave,fcal,fmeasure}
 
 distclean: clean
-	$(RM) -f config.log config.status autoscan.log configure.scan 
-	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
-	Makefile -r
-	$(RM) -rf ./autom4*
-
+	$(RM) -f config.log config.status autoscan.log configure.scan Makefile \
+	configure
+	$(RM) -rf ./autom4* Makefile configure
+	$(RM) -rf ./install
