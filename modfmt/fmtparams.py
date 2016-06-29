@@ -50,6 +50,7 @@ r"""Setup Station Parameters
 import tkinter
 from tkinter import *
 import tkinter.messagebox
+import tkinter.font
 import math
 import os
 import sys
@@ -77,7 +78,7 @@ stoplist=(1,2)
 #------------------------------------------------------------------------- done
 def done():
     """Exit the main Widget"""
-    root.quit()
+    root.destroy()
 
 #----------------------------------------------------------------- clear_screen
 def clear_screen():
@@ -142,19 +143,17 @@ for i, dev in enumerate(devices):
 #---------------------------------------------------------------------  riglist
 # requires comma separated file from Hamlib: rigctrl --list
 print("* Generating Hamlib Rig List")
-f=open("hamlib_rig_numbers", 'rt')
-reader = csv.reader(f)
-
-for row in reader:
-    riglist.append(row)
-
-f.close()
+with open('hamlib_rig_numbers', 'r') as csvfile:
+	list = csv.reader(csvfile, delimiter=',')
+	for row in list:
+		line = (row[0] + ' ' + row[1] + ' ' + row[2])
+		riglist.append(line)
 
 #------------------------------------------------------------------------------
 # Start Main Widget
 #------------------------------------------------------------------------------
 root = Tk()
-if sys.platform == 'wi32':
+if sys.platform == 'win32':
     root.option_readfile('wsprrc.win')
 else:
     root.option_readfile('wsprrc.nix')
