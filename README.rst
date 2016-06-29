@@ -1,14 +1,15 @@
-PyFMT is a Python wrapper for the FMT Suite by Joe Taylor (K1JT). The packages were originally contained in the `Python WSPR Package`_
+PyFMT is a Python wrapper for the FMT Suite by Joe Taylor (K1JT). The program
+suite was originally bundeled with the `Python WSPR Package`_
 
 
 Development Status
 ^^^^^^^^^^^^^^^^^^
 All of the core elements are now functional. The :code:`ftmparams.py` scripts provided the following:
 
-* Set station information (Call and Grid)
-* Select the Input Audio Device (via `PyAudio`_)
+* Set station information, Call and Grid
+* Select Input Audio Device via `PyAudio`_
 * Setup Rig Control via `Hamlib Control Libraries`_
-* Configure COM Ports settings ( via `PySerial`_
+* Configure COM Ports settings via `PySerial`_
 * Write out :code:`fmtparams.ini` and :code:`fmt.ini` files
 * Widgets are drawn with a combination of `tKinter`_ and `Pmw`_.
 
@@ -16,15 +17,15 @@ Individual Program Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Each of the utility programs and shell scritp files in the FMT package performs a single function ( excerpts from `FMT User Guide`_ ):
 
-**gocal** –Shell file, must be edited to your specific needs. Executes program fmtest for a number of specified frequency-calibration stations. Output will accumulate in file :code:`fmt.all`.
+**gocal** Shell file, must be edited to your specific needs. Executes program fmtest for a number of specified frequency-calibration stations. Output will accumulate in file :code:`fmt.all`.
 
-**fmtest** – Sets the dial frequency of a CAT-controlled radio and performs a sequence of measurements of the strongest resulting audio tone near a specified offset frequency. Input parameters are taken from the command line, and output goes to files :code:`fmt.out` and :code:`fmt.all`. The latter file is cumulative.
+**fmtest**  Sets the dial frequency of a CAT-controlled radio and performs a sequence of measurements of the strongest resulting audio tone near a specified offset frequency. Input parameters are taken from the command line, and output goes to files :code:`fmt.out` and :code:`fmt.all`. The latter file is cumulative.
 
-**fmtave** – Averages data found in a specified file having the format of fmt.all. Output goes to file :code:`fmtave.out`.
+**fmtave**  Averages data found in a specified file having the format of fmt.all. Output goes to file :code:`fmtave.out`.
 
-**fcal** – Calculates a best-fit straight line for a data saved in :code:`fmtave.out`. Results are saved in file :code:`fcal.out`.
+**fcal**  Calculates a best-fit straight line for a data saved in :code:`fmtave.out`. Results are saved in file :code:`fcal.out`.
 
-**fmeasure** – Calculates the properly calibrated frequency of each test signal found in file :code:`fmtave.out`. Results are saved in file :code:`fmeasure.out`, and these are the numbers you should report if you are entering the Frequency Measuring Test.
+**fmeasure**  Calculates the properly calibrated frequency of each test signal found in file :code:`fmtave.out`. Results are saved in file :code:`fmeasure.out`, and these are the numbers you should report if you are entering the Frequency Measuring Test.
 
 Python Environment
 ^^^^^^^^^^^^^^^^^^
