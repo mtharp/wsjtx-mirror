@@ -36,6 +36,7 @@ MANDIR		:=	@MANDIR@
 SHARED		:=	@SHARED@
 PYFMTLIB	:=	@PYFMTLIB@
 RIGCTL		:=	@RIGCTL@
+LOGNAME		:=	@LOGNAME@
 
 # Compiler Information
 CC			:=	@CC@
@@ -77,7 +78,7 @@ THEMEDIR	:=	@THEMEDIR@
 DEFS		:=	@DEFS@
 
 # ALL WSPR Targets
-all:	libfmt.a fmtest fmtave fcal fmeasure manp doc mkmsg
+all:	libfmt.a fmtest fmtave fcal fmeasure manp docs mkmsg
 
 # Default Rules
 %.o: %.c
@@ -130,7 +131,7 @@ fmeasure: fmeasure.f90
 	$(FC) $(LDFLAGS) -o fmeasure fmeasure.f90
 
 # build user guide
-doc:
+docs:
 ifeq ($(BDOC),Yes)
 	@echo
 	@echo Build User Guide
@@ -171,7 +172,30 @@ ifeq ($(BMANP),Yes)
 endif
 	@echo ''
 	@echo 'INSTALL'
-	@echo ' System Install ..: sudo make install'
+	@echo '* System Install ..: sudo make install'
+	@echo "* Test Install ....: make DESTDIR=/home/@LOGNAME@/PyFMT install"
+	@echo ''
+
+help:
+	@echo ''
+	@echo '---------------------------------------------'
+	@echo "$(PROGRAM) Target Summary"
+	@echo '---------------------------------------------'
+	@echo ''
+	@echo 'The following targets are available'
+	@echo '------------------------------------'
+	@echo '* help ......: prints this message'
+	@echo '* libfmt.a ..: main fmt library'
+	@echo '* fmtest ....: main measuring application'
+	@echo '* fmtave ....: averages data found in fmt.all'
+	@echo '* fcal ......: calculates a best-fit straight line for data'
+	@echo '* fmeasure ..: calculates the properly calibrated frequency'
+ifeq ($(BDOC),Yes)
+	@echo "* doc .......: build html documentation"
+endif
+ifeq ($(BMANP),Yes)
+	@echo "* manp ......: builds manpages"
+endif
 	@echo ''
 
 # install WSPR
@@ -179,30 +203,30 @@ endif
 install:
 	@echo
 	@echo INSTALLING $(PROGRAM) $(VERSION)
-	@echo ----------------------------
-	@$(MKDIR) $(DESTDIR)/usr/local/bin
+	@echo -----------------------------------
 	@$(MKDIR) $(DESTDIR)$(BINDIR)
+	@$(MKDIR) $(DESTDIR)$(SHARED)
 	@$(MKDIR) $(DESTDIR)$(MANDIR)
-	@$(MKDIR) $(DESTDIR)$(DOCDIR)
-	@$(MKDIR) $(DESTDIR)$(PYFMTLIB)/modfmt
+	@$(MKDIR) $(DESTDIR)$(DOCDIR)/examples
+	@$(MKDIR) $(DESTDIR)$(PYFMTLIB)
 	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/applications
 	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/pixmaps
-	@echo "..Installing Binaries and Scripts"
+	@echo " * Installing Binaries and Scripts"
 	@$(INSTALL) -m 755 -s fmtest fcal fmeasure fmtave $(DESTDIR)$(BINDIR)
 	@$(INSTALL) -m 755 pyfmt $(DESTDIR)$(BINDIR)
 	@$(INSTALL) -m 644 data/pyfmt.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	@$(INSTALL) -m 644 data/pyfmt.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
-	@echo '..Installing Python3 Files'
-	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/ptfmtrc.nix $(DESTDIR)$(SHARED)/
-	@$(INSTALL) -m 755 modfmt/{*.py} $(DESTDIR)$(WSPRLIB)/modfmt/
-	@echo "..Installing Misc Items and Wav Files"
+	@echo ' * Installing Python3 Files'
+	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/pyfmtrc.nix $(DESTDIR)$(SHARED)/
+	@$(INSTALL) -m 755 modfmt/*.py $(DESTDIR)$(PYFMTLIB)
+	@echo " * Installing Misc Items"
 	@$(INSTALL) -m 644 doc/examples/* $(DESTDIR)$(DOCDIR)/examples/
 ifeq ($(BDOC),Yes)
-	@echo '..Installing User Guide'
+	@echo ' * Installing User Guide'
 	@install -m 644 $(DOCPATH)/pyfmt-main-$(VERSION).html ${DESTDIR}$(DOCDIR)/
 endif
 ifeq ($(BMANP),Yes)
-	@echo '..Installing Manpages'
+	@echo ' * Installing Manpages'
 	@install -m 644 manpages/*.1 ${DESTDIR}$(MANDIR)
 endif
 	@echo
@@ -219,8 +243,8 @@ uninstall:
 	@echo " Uninstalling @PROGRAM@"
 	@echo '--------------------------------------'
 	$(RM) -rf ${DESTDIR}$(PREFIX)/share/pyfmt/*
-	$(RM) -r ${DESTDIR}$(PREFIX)/bin/{fmtest,fcal,fmeasure,fmtave}
-	$(RM) -rf ${DESTDIR}${PREFIX}/lib/modfmt/*
+	$(RM) -r ${DESTDIR}$(PREFIX)/bin/{fmtest,fcal,fmeasure,fmtave,pyfmt}
+	$(RM) -rf ${DESTDIR}${PREFIX}/lib/pyfmt/*
 	$(RM) -rf ${DESTDIR}$(PREFIX)/share/doc/pyfmt
 	$(RM) -f ${DESTDIR}$(PREFIX)/share/man/man1/{fmtest.1,fmtave.1,fmeasure.1,fcal.1}
 	$(RM) -f ${DESTDIR}$(PREFIX)/share/applications/pyfmt.desktop

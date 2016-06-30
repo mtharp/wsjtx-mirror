@@ -51,7 +51,7 @@ AC_SUBST([MANDIR], ["$MANDIR"])
 LOGNAME="$LOGNAME"
 DOCSRC=$(exec pwd)/doc/user_guide
 THEMEDIR=$(exec pwd)/doc/theme/pyfmt
-DOCCONF=$(exec pwd)/doc/pyfmtr.conf
+DOCCONF=$(exec pwd)/doc/pyfmt.conf
 DOCPATH=$(exec pwd)/doc/
 AC_SUBST([LOGNAME], ["$LOGNAME"])
 AC_SUBST([DOCSRC], ["$DOCSRC"])
@@ -236,11 +236,29 @@ if test "$HAVE_PY3" = "no"; then
 fi
 
 # ------------------------------------------------------------------------------
+#  report rigctl
+# ------------------------------------------------------------------------------
+if test ${HAVE_RGC} = "no"; then
+	echo "CONFIGURATION ERROR"
+	echo
+	echo "Hamlib Rig Control ti run $PACKAGE_NAME"
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: libhamlib-utils"
+	echo "[2] configure --with-rigctl=[Path]"
+	echo
+	echo 'Example:'
+	echo "./autogen.sh --with-rigctl=/home/$USER/jtsdk/hamlib3/bin/rigctl"
+	echo
+	exit 1
+fi
+
+# ------------------------------------------------------------------------------
 #  report samplerate
 # ------------------------------------------------------------------------------
 
 if test ${HAVE_SAMPLERATE} -eq 1; then
-	srstatus="OK"
+	sr_status="OK"
 else
 	echo "CONFIGURATION ERROR"
 	echo
@@ -262,7 +280,7 @@ fi
 # ------------------------------------------------------------------------------
 
 if test ${HAVE_FFTW3_LIB} -eq 1; then
-	ffstatus="OK"
+	ff_status="OK"
 else
 	echo "CONFIGURATION ERROR"
 	echo
@@ -282,7 +300,7 @@ fi
 # ------------------------------------------------------------------------------
 
 if test ${HAVE_PORTAUDIO} -eq 1; then
-	pastatus="OK"
+	pa_status="OK"
 else
 	echo "CONFIGURATION ERROR"
 	echo
@@ -294,26 +312,6 @@ else
 	echo
 	echo './configure CPPFLAGS="-I/path/to/portaudio/include" \'
 	echo 'LIBDIR="/path/to/portaudio/lib"'
-	echo
-	exit 1
-fi
-
-# ------------------------------------------------------------------------------
-#  report rigctl
-# ------------------------------------------------------------------------------
-if test ${HAVE_RGC} = "yes"; then
-	srstatus="OK"
-else
-	echo "CONFIGURATION ERROR"
-	echo
-	echo "Hamlib Rig Control ti run $PACKAGE_NAME"
-	echo
-	echo "Possible Solutions:"
-	echo "[1] Install your distro version of: libhamlib-utils"
-	echo "[2] configure --with-rigctl=[Path]"
-	echo
-	echo 'Example:'
-	echo "./autogen.sh --with-rigctl=/home/$USER/jtsdk/hamlib3/bin/rigctl"
 	echo
 	exit 1
 fi
@@ -345,11 +343,11 @@ echo "-------------------------------------------"
 echo ''
 echo " Package .........: ${PROGRAM} ${VERSION}"
 echo " Install prefix ..: ${PREFIX}"
-echo " Rigctl: .........: ${RIGCTL}"
+echo " Rig Control......: ${RIGCTL}"
 echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
-echo " FFTW3 ...........: ${ffstatus}"
-echo " Portaudio .......: ${pastatus}"
+echo " FFTW3 ...........: ${ff_status}"
+echo " Portaudio .......: ${pa_status}"
 echo " Copyright........: ${COPYRIGHT}"
 echo " Website .........: ${WEB}"
 echo " Report Bugs To ..: ${BUGS}"

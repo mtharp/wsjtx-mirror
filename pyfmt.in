@@ -53,7 +53,7 @@
 #
 
 # exit on errors
-set -e
+set -e -u
 
 # make sure we are not sudo
 sudo -k > /dev/null 2>&1
@@ -66,11 +66,12 @@ C_C='\033[01;36m'		# cyan
 C_NC='\033[01;37m'		# no color
 
 # local user directories for pyfmt.desktop and icon files
+SHARED=@SHARED@
+PREFIX=@PREFIX@
 APPD="$HOME/.local/share/applications"
 ICOND="$HOME/.local/share/icons"
-
-# file array
-file_array=('hamlib_rig_numbers' 'pyfmtrc.nix')
+DTG=$(date -u)
+VERSION=@VERSION@
 
 ################################################################################
 # FUNCTIONS
@@ -109,34 +110,10 @@ exit 0
 
 }
 
-rigctl_error() {
-clear ||:
-echo '--------------------------------------------'
-echo -e ${C_G}" RIG CONTROL ERROR"${C_NC}
-echo '--------------------------------------------'
-echo ''
-cat <<EOF
- There was an error when trying to access the
- application Hamlib rigctl.
-  
- If your building Hamlib3 for use with WSJT-X, add
- the hamlib3/bin path to your .bashrc, for example:
- 
- PATH="$HOME/jtsdk/hamlib3/bin:$PATH"
- 
- Close, re-open your terminal and test with:
- 
- rigctl-wsjtx -V
- 
-EOF
-
-exit 1
-
-}
-
 ################################################################################
 # PROCESS COMMAND-LINE OPTIONS
 ################################################################################
+set +u
 while getopts "hn:p:" opt; do
 	case $opt in
 		# dispalay the help message
@@ -179,41 +156,39 @@ fi
 
 # combine final runtime path
 RUNDIR="$P_PATH/$N_NAME"
+set -u
 
 ################################################################################
 # START MAIN SCRIPT
 ################################################################################
 # clear and run the script
 clear ||:
-echo '--------------------------------------------'
-echo -e ${C_G}" RUNNING PyFMT"${C_NC}
-echo '--------------------------------------------'
-echo ''
-echo " Instance Name ..: $N_NAME"
-echo " Script Name ....: @PREFIX@/bin/$(basename $0)"
-echo " Run Directory ..: $RUNDIR"
-echo ''
-
+echo '***************************************************'
+echo " FMTest Version ..: @VERSION@, by K1JT"
+echo " Date ............: $DTG"
+echo " Instance Name ...: $N_NAME"
+echo " Run Directory ...: $RUNDIR"
+echo '***************************************************'
 # set the paths to PyFMT package files
-PATH=$PATH:@PREFIX@/bin:@PREFIX@/lib/pyfmt:@PREFIX@/share/pyfmt ; export PATH
+PATH=@RIGCTL@:$PATH:@PREFIX@/bin:@PREFIX@/lib/pyfmt:@PREFIX@/share/pyfmt ; export PATH
 
 # make dirs and copy / update files
-if [ ! -d $RUNDIR ] ; then mkdir -p $RUNDIR ; fi
+if [ ! -d "$RUNDIR" ] ; then mkdir -p "$RUNDIR" ; fi
 
 # PyFMT needs pyfmtrc.nix in order to run
-cp -u @SHARED@/pyfmtrc.nix $RUNDIR/
+cp -u "$SHARED"/pyfmtrc.nix "$RUNDIR"/
 
 # PyFMT needs hamlib_rig_numbers in order to run
-cp -u @SHARED@/hamlib_rig_numbers $RUNDIR/
+cp -u "$SHARED"/hamlib_rig_numbers "$RUNDIR"/
 
 # add .desktop file for local users
 if [ ! -d "$APPD" ] ; then mkdir -p "$APPD" ; fi
-cp -u @PREFIX@/share/applications/pyfmt.desktop "$APPD"/ 
+cp -u "$PREFIX"/share/applications/pyfmt.desktop "$APPD"/ 
 
 # add pyfmt.xpm icon
 if [ ! -d "$ICOND" ] ; then mkdir -p "$ICOND"/ ; fi
-cp -u @PREFIX@/share/pixmaps/pyfmt.xpm "$ICOND"/
+cp -u "$PREFIX"/share/pixmaps/pyfmt.xpm "$ICOND"/
 
 # run paths are set by configure.ac, do not edit manually
-cd $RUNDIR
-env PYTHONPATH=@PYFMTLIB@ @PYTHON@ -O @SHARED@/pyfmtmain.py
+cd "$RUNDIR"
+env PYTHONPATH=@PYFMTLIB@ @PYTHON@ -O @PYFMTLIB@/fmtmain.py
