@@ -35,6 +35,7 @@ HOMEDIR		:=	@HOMEDIR@
 MANDIR		:=	@MANDIR@
 SHARED		:=	@SHARED@
 PYFMTLIB	:=	@PYFMTLIB@
+RIGCTL		:=	@RIGCTL@
 
 # Compiler Information
 CC			:=	@CC@

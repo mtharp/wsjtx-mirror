@@ -626,6 +626,7 @@ ac_subst_vars='LTLIBOBJS
 LIBDIR
 FCOPT
 FFLAGS
+RIGCTL
 PORTAUDIO_LIBDIR
 PORTAUDIO_INCLUDE
 FCV
@@ -750,6 +751,7 @@ enable_manpages
 with_python2
 with_python3
 with_gfortran
+with_rigctl
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1389,6 +1391,7 @@ Optional Packages:
   --with-python2=DIR      Path to python2
   --with-python3=DIR      Path to python3
   --with-gfortran=DIR     Path to gfortran
+  --with-rigctl=PATH      Path to rigctl
 
 Some influential environment variables:
   CC          C compiler command
@@ -5940,7 +5943,7 @@ fi
 done
 
 for ac_header in errno.h fcntl.h fcntl.h float.h fftw3.h inttypes.h libgen.h \
-limits.h linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h portaudio.h \
+limits.h linux/ppdev.h dev/ppbus/ppi.h linux/parport.h portaudio.h \
 samplerate.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h strings.h \
 sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h sys/stat.h sys/syslog.h \
 sys/time.h sys/wait.h termios.h unistd.h wait.h
@@ -6558,6 +6561,74 @@ fi
 
 
 # ------------------------------------------------------------------------------
+#  check samplerate
+# ------------------------------------------------------------------------------
+
+HAVE_SAMPLERATE=0
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for src_simple in -lsamplerate" >&5
+$as_echo_n "checking for src_simple in -lsamplerate... " >&6; }
+if ${ac_cv_lib_samplerate_src_simple+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsamplerate  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char src_simple ();
+int
+main ()
+{
+return src_simple ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_samplerate_src_simple=yes
+else
+  ac_cv_lib_samplerate_src_simple=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_samplerate_src_simple" >&5
+$as_echo "$ac_cv_lib_samplerate_src_simple" >&6; }
+if test "x$ac_cv_lib_samplerate_src_simple" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSAMPLERATE 1
+_ACEOF
+
+  LIBS="-lsamplerate $LIBS"
+
+fi
+
+
+if test "$ac_cv_lib_samplerate_src_simple" = "yes"; then
+	LIBS="-lsamplerate ${LIBS}"
+fi
+
+# if headers and libs found, set define
+if test "$ac_cv_header_samplerate_h" = "yes" -a "$ac_cv_lib_samplerate_src_simple" = "yes"; then
+	HAVE_SAMPLERATE=1
+
+$as_echo "#define HAVE_SAMPLERATE_H 1" >>confdefs.h
+
+
+$as_echo "#define HAVE_SAMPLERATE_LIB 1" >>confdefs.h
+
+fi
+
+
+
+# ------------------------------------------------------------------------------
 #  check portaudio
 # ------------------------------------------------------------------------------
 
@@ -6718,6 +6789,83 @@ esac
 
 
 # ------------------------------------------------------------------------------
+#  check rigctl
+# ----------------------------------------------------------------------------
+
+HAVE_RGC=no
+
+# check with-enable first
+
+# Check whether --with-rigctl was given.
+if test "${with_rigctl+set}" = set; then :
+  withval=$with_rigctl; RGC=$with_rigctl
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Rigctl --with-rigctl" >&5
+$as_echo_n "checking Rigctl --with-rigctl... " >&6; }
+
+# if --with-rigctl is not empty
+if test -n "$RGC"; then
+
+# check if user provided python3 is >= 3.2
+$RGC -V >/dev/null 2>&1
+
+	if test "$?" != "0"; then
+		HAVE_RGC=no
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	else
+		HAVE_RGC=yes
+		RGC_PATH="$RGC"
+		RGCV=`${RGC} --version | ${AWK} 'FNR==1{print }'`
+		$as_echo "#define HAVE_RGC 1" >>confdefs.h
+
+
+cat >>confdefs.h <<_ACEOF
+#define RGC_PATH "${RGC}"
+_ACEOF
+
+		RIGCTL="${RGC}"
+
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ${RGCV}" >&5
+$as_echo "yes ${RGCV}" >&6; }
+	fi
+else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+# if not user supplied, check by calling rigctl directly
+if test "$HAVE_RGC" = "no"; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Rigctl using: rigctl" >&5
+$as_echo_n "checking Rigctl using: rigctl... " >&6; }
+	rigctl -h >/dev/null 2>&1
+
+	if test "$?" != 0; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		HAVE_RGC=no
+	else
+		HAVE_RGC=1
+		RGC_PATH=`which rigctl`
+		RGCV=`$RGC_PATH --version |head -1`
+		$as_echo "#define HAVE_RGC 1" >>confdefs.h
+
+
+cat >>confdefs.h <<_ACEOF
+#define RGC_PATH "${RGC_PATH}"
+_ACEOF
+
+		RIGCTL="${RGC_PATH}"
+
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ${RGCV}" >&5
+$as_echo "yes ${RGCV}" >&6; }
+	fi
+fi
+
+
+
+# ------------------------------------------------------------------------------
 #  report Python2
 # ------------------------------------------------------------------------------
 if test "$HAVE_PY2" = "no"; then
@@ -6749,6 +6897,28 @@ if test "$HAVE_PY3" = "no"; then
 	echo
 	echo 'Example:'
 	echo './configure --with-python3="/path/to/python3/"'
+	echo
+	exit 1
+fi
+
+# ------------------------------------------------------------------------------
+#  report samplerate
+# ------------------------------------------------------------------------------
+
+if test ${HAVE_SAMPLERATE} -eq 1; then
+	srstatus="OK"
+else
+	echo "CONFIGURATION ERROR"
+	echo
+	echo "Samplerate-dev is required to build $PACKAGE_NAME"
+	echo
+	echo "Possible Solutions:"
+	echo "1 Install your distro version of: Saplerate - Libs & Headers"
+	echo "2 Confiure Samplerate with non-standard paths:"
+	echo
+	echo 'Example:'
+	echo './configure CPPFLAGS="-I/path/to/samplerate/include" \'
+	echo 'LIBDIR="/path/to/samplerate/lib"'
 	echo
 	exit 1
 fi
@@ -6790,6 +6960,26 @@ else
 	echo
 	echo './configure CPPFLAGS="-I/path/to/portaudio/include" \'
 	echo 'LIBDIR="/path/to/portaudio/lib"'
+	echo
+	exit 1
+fi
+
+# ------------------------------------------------------------------------------
+#  report rigctl
+# ------------------------------------------------------------------------------
+if test ${HAVE_RGC} = "yes"; then
+	srstatus="OK"
+else
+	echo "CONFIGURATION ERROR"
+	echo
+	echo "Hamlib Rig Control ti run $PACKAGE_NAME"
+	echo
+	echo "Possible Solutions:"
+	echo "1 Install your distro version of: libhamlib-utils"
+	echo "2 configure --with-rigctl=Path"
+	echo
+	echo 'Example:'
+	echo "./autogen.sh --with-rigctl=/home/$USER/jtsdk/hamlib3/bin/rigctl"
 	echo
 	exit 1
 fi
@@ -7988,6 +8178,7 @@ echo "-------------------------------------------"
 echo ''
 echo " Package .........: ${PROGRAM} ${VERSION}"
 echo " Install prefix ..: ${PREFIX}"
+echo " Rigctl: .........: ${RIGCTL}"
 echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
 echo " FFTW3 ...........: ${ffstatus}"

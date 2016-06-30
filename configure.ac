@@ -126,7 +126,7 @@ AC_TYPE_UINT8_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday strchr])
 AC_CHECK_HEADERS([errno.h fcntl.h fcntl.h float.h fftw3.h inttypes.h libgen.h \
-limits.h linux/ppdev.h dev/ppbus/ppi.h linux/parport.h pthread.h portaudio.h \
+limits.h linux/ppdev.h dev/ppbus/ppi.h linux/parport.h portaudio.h \
 samplerate.h stddef.h stdint.h stdint.h stdio.h stdlib.h string.h strings.h \
 sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h sys/stat.h sys/syslog.h \
 sys/time.h sys/wait.h termios.h unistd.h wait.h])
@@ -180,6 +180,11 @@ AC_PYFMT_GFORTRAN
 AC_PYFMT_FFTW3
 
 # ------------------------------------------------------------------------------
+#  check samplerate
+# ------------------------------------------------------------------------------
+AC_PYFMT_SAMPLERATE
+
+# ------------------------------------------------------------------------------
 #  check portaudio
 # ------------------------------------------------------------------------------
 AC_PYFMT_PORTAUDIO
@@ -188,6 +193,11 @@ AC_PYFMT_PORTAUDIO
 #  consolidate flags - ( remove dupes and sort )
 # ------------------------------------------------------------------------------
 AC_PYFMT_FLAGS
+
+# ------------------------------------------------------------------------------
+#  check rigctl
+# ----------------------------------------------------------------------------
+AC_PYFMT_RIGCTL
 
 # ------------------------------------------------------------------------------
 #  report Python2
@@ -221,6 +231,28 @@ if test "$HAVE_PY3" = "no"; then
 	echo
 	echo 'Example:'
 	echo './configure --with-python3="/path/to/python3/"'
+	echo
+	exit 1
+fi
+
+# ------------------------------------------------------------------------------
+#  report samplerate
+# ------------------------------------------------------------------------------
+
+if test ${HAVE_SAMPLERATE} -eq 1; then
+	srstatus="OK"
+else
+	echo "CONFIGURATION ERROR"
+	echo
+	echo "Samplerate-dev is required to build $PACKAGE_NAME"
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: Saplerate - Libs & Headers"
+	echo "[2] Confiure Samplerate with non-standard paths:"
+	echo
+	echo 'Example:'
+	echo './configure CPPFLAGS="-I/path/to/samplerate/include" \'
+	echo 'LIBDIR="/path/to/samplerate/lib"'
 	echo
 	exit 1
 fi
@@ -266,6 +298,26 @@ else
 	exit 1
 fi
 
+# ------------------------------------------------------------------------------
+#  report rigctl
+# ------------------------------------------------------------------------------
+if test ${HAVE_RGC} = "yes"; then
+	srstatus="OK"
+else
+	echo "CONFIGURATION ERROR"
+	echo
+	echo "Hamlib Rig Control ti run $PACKAGE_NAME"
+	echo
+	echo "Possible Solutions:"
+	echo "[1] Install your distro version of: libhamlib-utils"
+	echo "[2] configure --with-rigctl=[Path]"
+	echo
+	echo 'Example:'
+	echo "./autogen.sh --with-rigctl=/home/$USER/jtsdk/hamlib3/bin/rigctl"
+	echo
+	exit 1
+fi
+
 AC_SUBST([CFLAGS], ["$CFLAGS"])
 AC_SUBST([CPPFLAGS], ["$CPPFLAGS"])
 AC_SUBST([FFLAGS], ["$FFLAGS"])
@@ -293,6 +345,7 @@ echo "-------------------------------------------"
 echo ''
 echo " Package .........: ${PROGRAM} ${VERSION}"
 echo " Install prefix ..: ${PREFIX}"
+echo " Rigctl: .........: ${RIGCTL}"
 echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
 echo " FFTW3 ...........: ${ffstatus}"
