@@ -37,17 +37,21 @@ AC_SUBST([PREFIX], ["$prefix"])
 BINDIR=${PREFIX}/bin
 PYFMTLIB=${PREFIX}/lib/pyfmt
 SHARED=${PREFIX}/share/pyfmt
+MANDIR=${PREFIX}/share/man/man1
+DOCDIR=${PREFIX}/share/doc/pyfmt
 AC_SUBST([BINDIR], ["$BINDIR"])
 AC_SUBST([SHARED], ["$SHARED"])
-AC_SUBST([PYFMT], ["$PYFMTLIB"])
+AC_SUBST([DOCDIR], ["$DOCDIR"])
+AC_SUBST([PYFMTLIB], ["$PYFMTLIB"])
+AC_SUBST([MANDIR], ["$MANDIR"])
 
 # ------------------------------------------------------------------------------
 #  source - docs and manpage paths
 # ------------------------------------------------------------------------------
 LOGNAME="$LOGNAME"
 DOCSRC=$(exec pwd)/doc/user_guide
-THEMEDIR=$(exec pwd)/doc/theme/wspr
-DOCCONF=$(exec pwd)/doc/wspr.conf
+THEMEDIR=$(exec pwd)/doc/theme/pyfmt
+DOCCONF=$(exec pwd)/doc/pyfmtr.conf
 DOCPATH=$(exec pwd)/doc/
 AC_SUBST([LOGNAME], ["$LOGNAME"])
 AC_SUBST([DOCSRC], ["$DOCSRC"])
@@ -153,17 +157,17 @@ AC_PYFMT_DOCS
 # ------------------------------------------------------------------------------
 #  enable - disable manpages, default is enabled
 # ----------------------------------------------------------------------------
-AC_PTFMT_MANPAGES
+AC_PYFMT_MANPAGES
 
 # ------------------------------------------------------------------------------
 #  python2 path
 # ----------------------------------------------------------------------------
-AC_WSPR_PYTHON2
+AC_PYFMT_PYTHON2
 
 # ------------------------------------------------------------------------------
 #  Python3 path
 # ------------------------------------------------------------------------------
-AC_WSPR_PYTHON3
+AC_PYFMT_PYTHON3
 
 # ------------------------------------------------------------------------------
 #  check gfortran
@@ -272,10 +276,10 @@ AC_CONFIG_FILES([Makefile
 pyfmt
 data/pyfmt.desktop
 doc/pyfmt.conf
-manpages/fcal
-manpages/fmeasure
-manpages/fmtave
-manpages/fmtest
+manpages/fcal.1.txt
+manpages/fmeasure.1.txt
+manpages/fmtave.1.txt
+manpages/fmtest.1.txt
 ])
 AC_OUTPUT
 

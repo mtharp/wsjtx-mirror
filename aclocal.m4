@@ -13,10 +13,10 @@
 
 m4_ifndef([AC_CONFIG_MACRO_DIRS], [m4_defun([_AM_CONFIG_MACRO_DIRS], [])m4_defun([AC_CONFIG_MACRO_DIRS], [_AM_CONFIG_MACRO_DIRS($@)])])
 m4_include([m4/docs.m4])
-m4_include([m4/manpages.m4])
 m4_include([m4/fftw3.m4])
 m4_include([m4/flags.m4])
 m4_include([m4/gfortran.m4])
+m4_include([m4/manpages.m4])
 m4_include([m4/portaudio.m4])
 m4_include([m4/python2.m4])
 m4_include([m4/python3.m4])
