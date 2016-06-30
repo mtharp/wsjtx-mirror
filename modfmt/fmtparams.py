@@ -151,10 +151,11 @@ with open('hamlib_rig_numbers', 'r') as csvfile:
 #------------------------------------------------------------------------------
 window = Tk()
 if sys.platform == 'win32':
-    window.option_readfile('wsprrc.win')
+    window.option_readfile('pyfmtrc.win')
 else:
-    window.option_readfile('wsprrc.nix')
-window.title("FMT Parameters")
+    window.option_readfile('pyfmtrc.nix')
+
+window.title("Station Parameters")
 window_geom=""
 balloon = Pmw.Balloon(window)
 
@@ -460,8 +461,6 @@ balloon.bind(save_button, 'Save Current Settings')
 show_button = Button(text="Show", command = listini)
 balloon.bind(show_button, 'Display Contents of fmt.ini file')
 
-# The exit button is cause Python to crash on WIndows
-# Leave commented-out. Until resolved, use the "X" button to quit
 exit_button = Button(text="Exit", command = onDestroy)
 balloon.bind(exit_button, 'Exit widget without changes')
 buttons = (save_button,show_button,exit_button)

@@ -1,10 +1,10 @@
 #-------------------------------------------------------------------------------
-# This file is part of the WSPR application, Weak Signal Propagation Reporter
+# This file is part of the PyFMT application, Frequency Measurement Test
 #
 # File Name:    user_harware.py
 # Description:
 # 
-# Copyright (C) 2001-2014 Joseph Taylor, K1JT
+# Copyright (C) 2001-2016 Joseph Taylor, K1JT
 # License: GPL-3
 #
 # This program is free software; you can redistribute it and/or modify it under

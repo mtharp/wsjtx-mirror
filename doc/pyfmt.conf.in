@@ -1,0 +1,4 @@
+# This is an AsciiDoc configuration file processed by Autotools for *Nix.
+[attributes]
+themedir=@THEMEDIR@
+

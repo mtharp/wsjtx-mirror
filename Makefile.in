@@ -1,8 +1,8 @@
-# Makefile for Linux
+# PyFMT Makefile for Linux
 # Re-direct stdout and stderr:		bash
 #								make >& junk
 #
-# Prerequisites: Python 3.x, Portaudio, Samplerate, FFTW
+# Prerequisites: Python3, Python2, A2x, AsciiDoctor, Portaudio, FFTW
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -34,7 +34,7 @@ DOCDIR		:=	@DOCDIR@
 HOMEDIR		:=	@HOMEDIR@
 MANDIR		:=	@MANDIR@
 SHARED		:=	@SHARED@
-WSPRLIB		:=	@WSPRLIB@
+PYFMTLIB	:=	@PYFMTLIB@
 
 # Compiler Information
 CC			:=	@CC@
@@ -44,7 +44,6 @@ FC_LIB_PATH	+=	@FC_LIB_PATH@
 
 # Python Information
 PYTHON3		:=	@PYTHON3@
-F2PY		:=	@F2PY@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
@@ -57,11 +56,27 @@ FCOPT		+=	@FCOPT@
 PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
+# For Manpages
+BMANP		:=	@BMANP@
+A2X			:=	@A2X@
+ASCIIDOC	:=	@ASCIIDOC@
+MANPSRC		:= $(wildcard manpages/*.1.txt)
+PYTHON2		:=	@PYTHON2@
+APPSRC		:= $(./fmtest,fcal,fmeasure,fmtave)
+
+# For User Guide
+BDOC		:=	@BDOC@
+ASCIIDOCTOR	:=	@ASCIIDOCTOR@
+DOCSRC		:=	@DOCSRC@
+DOCCONF		:=	@DOCCONF@
+DOCPATH		:=	@DOCPATH@
+THEMEDIR	:=	@THEMEDIR@
+
 # Config Definitions
 DEFS		:=	@DEFS@
 
 # ALL WSPR Targets
-all:	libfmt.a fmtest fmtave fcal fmeasure mkmsg
+all:	libfmt.a fmtest fmtave fcal fmeasure manp doc mkmsg
 
 # Default Rules
 %.o: %.c
@@ -75,8 +90,7 @@ all:	libfmt.a fmtest fmtave fcal fmeasure mkmsg
 %.o: %.F90
 	${FC} $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 
-OBJS1 = audiodev.o db.o fil1.o four2a.o padevsub.o peakup.o \
-	sound.o xfft.o 
+OBJS1 = audiodev.o db.o fil1.o four2a.o padevsub.o peakup.o sound.o 
 
 # build libfmt.a
 libfmt.a: $(OBJS1) acom1.f90 acom2.f90
@@ -114,6 +128,31 @@ fmeasure: fmeasure.f90
 	@echo --------------------
 	$(FC) $(LDFLAGS) -o fmeasure fmeasure.f90
 
+# build user guide
+doc:
+ifeq ($(BDOC),Yes)
+	@echo
+	@echo Build User Guide
+	@echo --------------------
+	$(ASCIIDOCTOR) -a data-uri \
+	-a toc=left \
+	-a max-width=1024px \
+	--out-file=$(DOCPATH)/pyfmt-main-$(VERSION).html $(DOCPATH)/user_guide/pyfmt-main.adoc
+	@echo
+endif
+
+# build manpages
+manp:
+ifeq ($(BMANP),Yes)
+	@echo
+	@echo Build Manpages
+	@echo --------------------
+	@for f in $(MANPSRC) ; do \
+	echo "$$f" ; \
+	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
+	done
+endif
+
 # make summary message
 mkmsg:
 	@echo ''
@@ -123,33 +162,87 @@ mkmsg:
 	@echo ''
 	@echo "Package ..........: $(PROGRAM) $(VERSION)"
 	@echo " Install prefix ..: $(PREFIX)"
+ifeq ($(BDOC),Yes)
+	@echo " With HTML Docs ..: $(BDOC)"
+endif
+ifeq ($(BMANP),Yes)
+	@echo " With Manpages ...: $(BMANP)"
+endif
 	@echo ''
 	@echo 'INSTALL'
-	@echo ' Type ,,,,,,,,,,,.: make install'
+	@echo ' System Install ..: sudo make install'
 	@echo ''
 
-# install PyFMT
+# install WSPR
 install:
 	@echo
 	@echo INSTALLING $(PROGRAM) $(VERSION)
 	@echo ----------------------------
-	@$(MKDIR) ./install
-	@echo "..Installing Binaries"
-	@$(INSTALL) -m 755 fmtest fcal fmeasure fmtave ./install
-	@$(INSTALL) -m 755 libfmt.a ./install
-	@echo '..Installing Python Related Files'
-	@$(INSTALL) -m 755 modfmt/* ./install
-	@echo '..Installing Misc. Files'
-	@$(INSTALL) -m 755 examples/* ./install
+	@$(MKDIR) $(DESTDIR)/usr/local/bin
+	@$(MKDIR) $(DESTDIR)$(BINDIR)
+	@$(MKDIR) $(DESTDIR)$(MANDIR)
+	@$(MKDIR) $(DESTDIR)$(DOCDIR)
+	@$(MKDIR) $(DESTDIR)$(PYFMTLIB)/modfmt
+	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/applications
+	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/pixmaps
+	@echo "..Installing Binaries and Scripts"
+	@$(INSTALL) -m 755 -s fmtest fcal fmeasure fmtave $(DESTDIR)$(BINDIR)
+	@$(INSTALL) -m 755 pyfmt $(DESTDIR)$(BINDIR)
+	@$(INSTALL) -m 644 data/pyfmt.desktop $(DESTDIR)$(PREFIX)/share/applications/
+	@$(INSTALL) -m 644 data/pyfmt.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
+	@echo '..Installing Python3 Files'
+	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/ptfmtrc.nix $(DESTDIR)$(SHARED)/
+	@$(INSTALL) -m 755 modfmt/{*.py} $(DESTDIR)$(WSPRLIB)/modfmt/
+	@echo "..Installing Misc Items and Wav Files"
+	@$(INSTALL) -m 644 AUTHORS README NEWS COPYING COPYRIGHT $(DESTDIR)$(DOCDIR)/
+	@$(INSTALL) -m 644 doc/examples/* $(DESTDIR)$(DOCDIR)/examples/
+ifeq ($(BDOC),Yes)
+	@echo '..Installing User Guide'
+	@install -m 644 $(DOCPATH)/pyfmt-main-$(VERSION).html ${DESTDIR}$(DOCDIR)/
+endif
+ifeq ($(BMANP),Yes)
+	@echo '..Installing Manpages'
+	@install -m 644 manpages/*.1 ${DESTDIR}$(MANDIR)
+endif
+	@echo
+	@echo "TO RUN $(PROGRAM) $(VERSION):"
+	@echo "  Type ..........: pyfmt"
+	@echo "  Help Options ..: pyfmt -h"
+	@echo ''
+
+# Uninstall system files
+uninstall:
+	@clear
+	@echo '--------------------------------------'
+	@echo " Uninstalling @PROGRAM@"
+	@echo '--------------------------------------'
+	$(RM) -rf ${DESTDIR}$(PREFIX)/share/pyfmt/*
+	$(RM) -r ${DESTDIR}$(PREFIX)/bin/{fmtest,fcal,fmeasure,fmtave}
+	$(RM) -rf ${DESTDIR}${PREFIX}/lib/modfmt/*
+	$(RM) -rf ${DESTDIR}$(PREFIX)/share/doc/pyfmt
+	$(RM) -f ${DESTDIR}$(PREFIX)/share/man/man1/{fmtest.1,fmtave.1,fmeasure.1,fcal.1}
+	$(RM) -f ${DESTDIR}$(PREFIX)/share/applications/pyfmt.desktop
+	$(RM) -f ${DESTDIR}$(PREFIX)/share/pixmaps/pyfmt.xpm
+	@echo ''
+	@echo "* Finished"
+	@echo "* User generated files *do not* get removed"
+	@echo ''
 
 # Cleanup Source Tree
 .PHONY: clean distclean dist
 clean :
-	$(RM) -f *.o libfmt.a
-	$(RM) -f ./{fmtest,fmtave,fcal,fmeasure}
+	$(RM) -f *.o libfmt.a pyfmt.desktop ./modfmt/*.pyc ./modfmt/*.pyo
+	$(RM) -f ./{fmtest,fmtave,fcal,fmeasure,wspr}
+ifeq ($(BDOC),Yes)
+	$(RM) -f doc/pyfmt*.html
+endif
+ifeq ($(BMANP),Yes)
+	$(RM) -f ./manpages/{fmtest.1,fmtave.1,fmeasure.1,fcal.1}
+endif
 
 distclean: clean
-	$(RM) -f config.log config.status autoscan.log configure.scan Makefile \
-	configure
-	$(RM) -rf ./autom4* Makefile configure
-	$(RM) -rf ./install
+	$(RM) -f config.log config.status audio_caps autoscan.log configure.scan \
+	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
+	pixmap.dat Makefile manpages/*.txt doc/pywspr.conf
+	$(RM) -rf ./autom4* ./modfmt/__pycache__ ./dist
+

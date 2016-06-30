@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=@PROGRAM@ @VERSION@
+Comment=Frequency Measurement Tools
+Exec=@BINDIR@/pyfmt
+Terminal=true
+Categories=Audio;AudioVideo;HamRadio
+Keywords=Scientific;Hamradio;Radio;Signal;WSPR;
+Icon=/home/@LOGNAME@/.local/share/icons/pyfmt.xpm
+StartupWMClass=Tk

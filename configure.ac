@@ -42,6 +42,20 @@ AC_SUBST([SHARED], ["$SHARED"])
 AC_SUBST([PYFMT], ["$PYFMTLIB"])
 
 # ------------------------------------------------------------------------------
+#  source - docs and manpage paths
+# ------------------------------------------------------------------------------
+LOGNAME="$LOGNAME"
+DOCSRC=$(exec pwd)/doc/user_guide
+THEMEDIR=$(exec pwd)/doc/theme/wspr
+DOCCONF=$(exec pwd)/doc/wspr.conf
+DOCPATH=$(exec pwd)/doc/
+AC_SUBST([LOGNAME], ["$LOGNAME"])
+AC_SUBST([DOCSRC], ["$DOCSRC"])
+AC_SUBST([THEMEDIR], ["$THEMEDIR"])
+AC_SUBST([DOCCONF], ["$DOCCONF"])
+AC_SUBST([DOCPATH], ["$DOCPATH"])
+
+# ------------------------------------------------------------------------------
 #  tool chain
 # ------------------------------------------------------------------------------
 OCFLAGS="$CFLAGS"
@@ -62,22 +76,22 @@ AC_C_INLINE
 AC_PROG_INSTALL
 AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(AWK, awk)
-AC_PATH_PROG(CHOWN, chown)
 AC_PATH_PROG(CHMOD, chmod)
+AC_PATH_PROG(CHOWN, chown)
+AC_PATH_PROG(CHOWN, chown)
 AC_PATH_PROG(CP, cp)
 AC_PATH_PROG(CUT, cut)
-AC_PATH_PROG(CHOWN, chown)
-AC_PATH_PROG(CHMOD, chmod)
 AC_PATH_PROG(HEAD, head)
-AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(LD, ld)
 AC_PATH_PROG(LN, ln)
-AC_PATH_PROG(MV, mv)
 AC_PATH_PROG(MKDIR, mkdir)
-AC_PATH_PROG(SORT, sort)
-AC_PATH_PROG(TR, tr)
+AC_PATH_PROG(MV, mv)
+AC_PATH_PROG(PYTHON, python)
+AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(SED, sed)
+AC_PATH_PROG(SORT, sort)
 AC_PATH_PROG(TEST, [test], [test])
+AC_PATH_PROG(TR, tr)
 
 # ------------------------------------------------------------------------------
 #  try to find the right lib / include paths
@@ -114,9 +128,42 @@ sys/ioctl.h sys/ioctl.h sys/param.h sys/resource.h sys/stat.h sys/syslog.h \
 sys/time.h sys/wait.h termios.h unistd.h wait.h])
 
 # ------------------------------------------------------------------------------
+#  user defined docdir
+# ----------------------------------------------------------------------------
+AC_ARG_WITH([docdir],
+AC_HELP_STRING([--with-docdir=DIR], [Path to documentation]), [docdir=$with_docdir])
+if test -n "$with_docdir"; then
+	AC_SUBST([DOCDIR], ["$with_docdir"])
+fi
+
+# ------------------------------------------------------------------------------
+#  user defined mandir
+# ----------------------------------------------------------------------------
+AC_ARG_WITH([mandir],
+AC_HELP_STRING([--with-mandir=DIR], [Path to manpages]), [mandir=$with_mandir])
+if test -n "$with_mandir"; then
+	AC_SUBST([MANDIR], ["$with_mandir"])
+fi
+
+# ------------------------------------------------------------------------------
+#  enable - disable user guide, default is enabled
+# ----------------------------------------------------------------------------
+AC_PYFMT_DOCS
+
+# ------------------------------------------------------------------------------
+#  enable - disable manpages, default is enabled
+# ----------------------------------------------------------------------------
+AC_PTFMT_MANPAGES
+
+# ------------------------------------------------------------------------------
+#  python2 path
+# ----------------------------------------------------------------------------
+AC_WSPR_PYTHON2
+
+# ------------------------------------------------------------------------------
 #  Python3 path
 # ------------------------------------------------------------------------------
-AC_PYFMT_PYTHON3
+AC_WSPR_PYTHON3
 
 # ------------------------------------------------------------------------------
 #  check gfortran
@@ -129,11 +176,6 @@ AC_PYFMT_GFORTRAN
 AC_PYFMT_FFTW3
 
 # ------------------------------------------------------------------------------
-#  check samplerate
-# ------------------------------------------------------------------------------
-AC_PYFMT_SAMPLERATE
-
-# ------------------------------------------------------------------------------
 #  check portaudio
 # ------------------------------------------------------------------------------
 AC_PYFMT_PORTAUDIO
@@ -144,25 +186,20 @@ AC_PYFMT_PORTAUDIO
 AC_PYFMT_FLAGS
 
 # ------------------------------------------------------------------------------
-#  substitute flag variables
+#  report Python2
 # ------------------------------------------------------------------------------
-AC_PYFMT_FLAGS
-
-# ------------------------------------------------------------------------------
-#  report f2py
-# ------------------------------------------------------------------------------
-if test "$HAVE_F2PY" = "no"; then
+if test "$HAVE_PY2" = "no"; then
 	echo
-	echo "F2PY v2.0 (Numpy 1.8.1+) is required to build $PACKAGE_NAME"
+	echo "Python v2.6+ is required to build $PACKAGE_NAME"
 	echo
 	echo "Possible Solutions:"
-	echo "[1] Install your distro version of: Python3 Numpy 1.8.1+"
-	echo "[2] Add F2PY v2.0 to your system paths"
-	echo "[3] Include F2PY:"
+	echo "[1] Install your distro version of: Python v2.6+"
+	echo "[2] Add Python2.6+ to your system paths"
+	echo "[3] Include Python2.6+:"
 	echo
 	echo 'Example:'
-	echo './configure --with-f2py=/path/to/f2py3'
-	echo 
+	echo './configure --with-python2="/path/to/python2/"'
+	echo
 	exit 1
 fi
 
@@ -180,28 +217,6 @@ if test "$HAVE_PY3" = "no"; then
 	echo
 	echo 'Example:'
 	echo './configure --with-python3="/path/to/python3/"'
-	echo
-	exit 1
-fi
-
-# ------------------------------------------------------------------------------
-#  report samplerate
-# ------------------------------------------------------------------------------
-
-if test ${HAVE_SAMPLERATE} -eq 1; then
-	srstatus="OK"
-else
-	echo "CONFIGURATION ERROR"
-	echo
-	echo "Samplerate-dev is required to build $PACKAGE_NAME"
-	echo
-	echo "Possible Solutions:"
-	echo "[1] Install your distro version of: Saplerate - Libs & Headers"
-	echo "[2] Confiure Samplerate with non-standard paths:"
-	echo
-	echo 'Example:'
-	echo './configure CPPFLAGS="-I/path/to/samplerate/include" \'
-	echo 'LIBDIR="/path/to/samplerate/lib"'
 	echo
 	exit 1
 fi
@@ -254,6 +269,13 @@ AC_SUBST([LDFLAGS], ["$LDFLAGS"])
 AC_SUBST([FCOPT], ["$FCOPT"])
 AC_SUBST([LIBDIR], ["$LIBDIR"])
 AC_CONFIG_FILES([Makefile
+pyfmt
+data/pyfmt.desktop
+doc/pyfmt.conf
+manpages/fcal
+manpages/fmeasure
+manpages/fmtave
+manpages/fmtest
 ])
 AC_OUTPUT
 
@@ -265,13 +287,10 @@ echo "-------------------------------------------"
 echo " Configuration Summary"
 echo "-------------------------------------------"
 echo ''
-echo " Install prefix ..: ${PREFIX}"
 echo " Package .........: ${PROGRAM} ${VERSION}"
-echo " Python3 .........: ${PYTHON3} ${PY3V}"
-echo " F2py ............: ${F2PY}"
+echo " Install prefix ..: ${PREFIX}"
 echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
-echo " Samplerate ......: ${srstatus}"
 echo " FFTW3 ...........: ${ffstatus}"
 echo " Portaudio .......: ${pastatus}"
 echo " Copyright........: ${COPYRIGHT}"
