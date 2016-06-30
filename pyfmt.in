@@ -181,6 +181,9 @@ cp -u "$SHARED"/pyfmtrc.nix "$RUNDIR"/
 # PyFMT needs hamlib_rig_numbers in order to run
 cp -u "$SHARED"/hamlib_rig_numbers "$RUNDIR"/
 
+# Copy gocal script to runtime directory
+cp -u "$SHARED"/gocal "$RUNDIR"/
+
 # add .desktop file for local users
 if [ ! -d "$APPD" ] ; then mkdir -p "$APPD" ; fi
 cp -u "$PREFIX"/share/applications/pyfmt.desktop "$APPD"/ 

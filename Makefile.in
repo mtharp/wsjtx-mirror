@@ -217,7 +217,7 @@ install:
 	@$(INSTALL) -m 644 data/pyfmt.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	@$(INSTALL) -m 644 data/pyfmt.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
 	@echo ' * Installing Python3 Files'
-	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/pyfmtrc.nix $(DESTDIR)$(SHARED)/
+	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/pyfmtrc.nix data/gocal $(DESTDIR)$(SHARED)/
 	@$(INSTALL) -m 755 modfmt/*.py $(DESTDIR)$(PYFMTLIB)
 	@echo " * Installing Misc Items"
 	@$(INSTALL) -m 644 doc/examples/* $(DESTDIR)$(DOCDIR)/examples/

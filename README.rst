@@ -63,11 +63,13 @@ Check out the code from the `WSJT Sourceforge Project`_
 .. code-block:: bash
 
    1. svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/fmt
-   2. ./fmt
-   3. ./autogen.sh
-   4. make && make install
+   2. cd ./fmt
+   3. ./autogen.sh --with-rigctl="/home/user-name/jtsdk/hamlib3/bin/rigctl" \
+   --disable-docs --disable-manpages
+   4. make && sudo make install
 
-.. NOTE:: At this time, unless DESTDIR is used, the install location will be created in the source tree under ./install
+.. NOTE:: Do not forget to change :code:`user-name` to your user. The install location will be :code:`/usr/local` which is the recomended location. If your system does not have libhamlib-utiuls installed, you must pass a local location for the rigctl binary, otherwise, the configure script will present an error message.
+
 
 Uninstall
 ^^^^^^^^^
@@ -75,35 +77,45 @@ To uninstall, perform a distclean in the checkout root directory:
 
 .. code-block:: bash
 
+   cd ./fmt
+   sudo make uninstall
    make distclean
    
 Usage and Testing
 ^^^^^^^^^^^^^^^^^
 There is an `FMT USer Guide`_ available from the `WSJT`_ main site. 
-Additionally, within the install directory you will find the :code:`gocal` 
-file. Edit this as needed for your local stations.
+Additionally, within the install directory you will find the :code:`gocal` file. Edit this as needed for your local stations.
 
-Before running any of the **FMT Tools**, users should run :code:`fmtparams.py`
-**Before** running :code:`gocal`.
+Before running any of the **FMT Tools**, users should run :code:`pyfmt` then select option (1) to configure Stations Parameters. there are two option you can pass to :code:`pyfmt`
 
-.. code-block:: bash
+.. code:: bash
 
-   1. cd ./install
-   2. python -O ./fmtparams.py
-   3. Fill in CALL and GRID.
-   4. Select Audio Device and Rig from the pulls down options
-   5. Setup up yout CAT comport settings
-   6. CLick Save
+   pyfmt -n NAME -p PATH
+   
+:code:`pyfmt -n NAME` specifics the profile to use in setting up Station Parameters. for example, using :code:`pyfmt -n ts2000` would create an instance for the Kenwood TS-2000, with all files and ini files being located in:
 
-If the the rig selection and comprt settings are correct, you will be presented
-with an info box stating so.
+.. code:: bash
 
-If the rig command fails, correct the entries and Re-Save.
+   /home/user-name/.local/share/ts2000
 
-.. NOTE:: The :code:`fmtparams.ini` and :code:`fmt.ini` willl not be written until a successful CAT connection can be made.
+This configuratoin allows for running many different rig / port combinations, which allows running multiple radios at the same time. The contests of the folder, after a full run with **PyFMT** would look similar to:
+
+.. code:: bash
+
+   ├── fcal.out
+   ├── fcal.plt
+   ├── fmt.all
+   ├── fmtave.out
+   ├── fmt.ini
+   ├── fmt.out
+   ├── fmtparams.ini
+   ├── gocal
+   ├── hamlib_rig_numbers
+   └── pyfmtrc.nix
+
+.. NOTE:: If the the rig selection and comprt settings are correct, you will be presented with an info box stating so. The :code:`fmtparams.ini` and :code:`fmt.ini` files are written after a successful CAT connection made by saving your paramerter.
 
 After successful rig control setup, follow the `FMT User Guide`_ to perform the calibration test.
-
 
 .. _Python Wspr Package: http://physics.princeton.edu/pulsar/k1jt/wspr.html
 .. _Hamlib COntrol Libraries: https://sourceforge.net/projects/hamlib/?source=directory
