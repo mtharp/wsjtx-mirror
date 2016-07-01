@@ -2,7 +2,8 @@
 # Re-direct stdout and stderr:		bash
 #								make >& junk
 #
-# Prerequisites: Python3 or Python2, AsciiDoctor, Portaudio, FFTW
+# Prerequisites:	Python3 or Python2, AsciiDoctor, Portaudio, FFTW
+#					PySerial, PyAudio, Pmw
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -17,26 +18,27 @@ CPU			:=	@CPU@
 
 # General Use Tools
 AR			:=	@AR@
+ECHO		:=	@ECHO@
+CHMOD		:=	@CHMOD@
+CHOWN		:=	@CHOWN@
 CP			:=	@CP@
 LN			:=	@LN@
+MKDIR		:=	@MKDIR@ -p
 MV			:=	@MV@
 RM			:=	@RM@
-CHOWN		:=	@CHOWN@
-CHMOD		:=	@CHMOD@
 SHELL		:=	@SHELL@
-MKDIR		:=	@MKDIR@ -p
 
-# Install locations
+# Install Locations
 INSTALL		:=	install
-PREFIX		:=	@PREFIX@
 BINDIR		:=	@BINDIR@
 DOCDIR		:=	@DOCDIR@
 HOMEDIR		:=	@HOMEDIR@
+LOGNAME		:=	@LOGNAME@
 MANDIR		:=	@MANDIR@
-SHARED		:=	@SHARED@
+PREFIX		:=	@PREFIX@
 PYFMTLIB	:=	@PYFMTLIB@
 RIGCTL		:=	@RIGCTL@
-LOGNAME		:=	@LOGNAME@
+SHARED		:=	@SHARED@
 
 # Compiler Information
 CC			:=	@CC@
@@ -58,12 +60,12 @@ FCOPT		+=	@FCOPT@
 PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
-# For Manpages ( uses asciidoctor )
+# For Manpages ( Uses Asciidoctor )
 BMANP		:=	@BMANP@
 MANPSRC		:= $(wildcard manpages/*.1.txt)
 APPSRC		:= $(./fmtest,fcal,fmeasure,fmtave)
 
-# For User Guide
+# For User Guide ( Uses Asciidoctor )
 ASCIIDOCTOR	:=	@ASCIIDOCTOR@
 BDOC		:=	@BDOC@
 DOCSRC		:=	@DOCSRC@
@@ -73,9 +75,6 @@ THEMEDIR	:=	@THEMEDIR@
 
 # Config Definitions
 DEFS		:=	@DEFS@
-
-# ALL WSPR Targets
-all:	libfmt.a fmtest fmtave fcal fmeasure manp docs mkmsg
 
 # Default Rules
 %.o: %.c
@@ -89,6 +88,10 @@ all:	libfmt.a fmtest fmtave fcal fmeasure manp docs mkmsg
 %.o: %.F90
 	${FC} $(PORTAUDIO_INCLUDE) $(FFLAGS) -c $<
 
+# ALL PyFMT Targets
+all:	libfmt.a fmtest fmtave fcal fmeasure docs manp mkmsg
+
+# libfmt object file
 OBJS1 = audiodev.o db.o fil1.o four2a.o padevsub.o peakup.o sound.o 
 
 # build libfmt.a
@@ -132,12 +135,12 @@ docs:
 ifeq ($(BDOC),Yes)
 	@echo
 	@echo Build User Guide
-	@echo --------------------
-	$(ASCIIDOCTOR) -a data-uri \
+	@echo ----------------
+	@echo "Building pyfmt-main-$(VERSION).html"
+	@$(ASCIIDOCTOR) -a data-uri \
 	-a toc=left \
 	-a max-width=1024px \
 	--out-file=$(DOCPATH)/pyfmt-main-$(VERSION).html $(DOCPATH)/user_guide/pyfmt-main.adoc
-	@echo
 endif
 
 # build manpages
@@ -145,12 +148,15 @@ manp:
 ifeq ($(BMANP),Yes)
 	@echo
 	@echo Build Manpages
-	@echo --------------------
+	@echo --------------
 	@for f in $(MANPSRC) ; do \
-	echo "$$f" ; \
+	echo "Building $$f" ; \
 	$(ASCIIDOCTOR) -b manpage $$f ; \
 	done
 endif
+
+# Phony non-file targets
+.PHONY: install uninstall mkmsg help clean distclean
 
 # make summary message
 mkmsg:
@@ -197,7 +203,7 @@ ifeq ($(BMANP),Yes)
 endif
 	@echo ''
 
-# install WSPR
+# install pyfmt
 install:
 	@echo
 	@echo "'INSTALLING $(PROGRAM) $(VERSION)"
@@ -252,7 +258,6 @@ uninstall:
 	@echo ''
 
 # Cleanup Source Tree
-.PHONY: clean distclean dist
 clean :
 	$(RM) -f *.o libfmt.a data/pyfmt.desktop ./modfmt/*.pyc ./modfmt/*.pyo
 	$(RM) -f ./{fmtest,fmtave,fcal,fmeasure,pyfmt}
@@ -263,6 +268,7 @@ ifeq ($(BMANP),Yes)
 	$(RM) -f ./manpages/{fmtest.1,fmtave.1,fmeasure.1,fcal.1}
 endif
 
+# Clean source, autotool, fmt and Python files
 distclean: clean
 	$(RM) -f config.log config.status audio_caps autoscan.log configure.scan \
 	fmt.ini fmt.all fmt.dat fcal.plt fmtave.out fmtave.out fmt.out fcal.out \
