@@ -44,7 +44,7 @@
 # All folders are completely isolated and include:
 # -- Call and Grid
 # -- Rig Control (CAT)
-# -- fmtparams.ini
+# -- pyfmt.ini
 # -- fmt.ini
 # -- fmt.all
 # -- fmtave.out
@@ -175,14 +175,8 @@ PATH=@RIGCTL@:$PATH:@PREFIX@/bin:@PREFIX@/lib/pyfmt:@PREFIX@/share/pyfmt ; expor
 # make dirs and copy / update files
 if [ ! -d "$RUNDIR" ] ; then mkdir -p "$RUNDIR" ; fi
 
-# PyFMT needs pyfmtrc.nix in order to run
-cp -u "$SHARED"/pyfmtrc.nix "$RUNDIR"/
-
-# PyFMT needs hamlib_rig_numbers in order to run
-cp -u "$SHARED"/hamlib_rig_numbers "$RUNDIR"/
-
-# Copy gocal script to runtime directory
-cp -u "$SHARED"/gocal "$RUNDIR"/
+# PyFMT needs these files in the run directory
+cp -u "$SHARED"/{pyfmtrc.nix,hamlib_rig_numbers,gocal} "$RUNDIR"/
 
 # add .desktop file for local users
 if [ ! -d "$APPD" ] ; then mkdir -p "$APPD" ; fi

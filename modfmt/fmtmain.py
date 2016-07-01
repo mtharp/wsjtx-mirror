@@ -5,11 +5,10 @@ from __future__ import absolute_import, division, print_function
 
 r"""PyFMT Main Module
 
-    DEV STATUS
-    ----------
-    This file only exists to provide a simple call function to fmtparams.py.
-    It may not function properly in all cases do to the fact ftmparams.py is
-    called at the root widget level as opposed to root = Toplevel().
+    TODO
+    ----
+    Update fmtmain description with full details.
+
 """
 import tkinter
 from tkinter import *
@@ -77,8 +76,9 @@ def stationParams():
     hslist = ("None","XONXOFF","Hardware")
     datalist=(7,8)
     stoplist=(1,2)
-
-    # requires Portaudio19-Dev to be installed at the system level
+    
+    #-------------------------------------------------------- Audio Device List
+    # requires Portaudio19-Dev
     if debug == 1:
         print("* Generating Audio Device List")
     p = pyaudio.PyAudio()
@@ -91,16 +91,16 @@ def stationParams():
         a = (str(i) + ' ' + str(dev['name']))
         indevlist.append(a)
 
-    # requires comma separated file from Hamlib: rigctrl --list
+    #----------------------------------------------------------------- Rig List
     if debug == 1:
         print("* Generating Hamlib Rig List")
-    
     with open('hamlib_rig_numbers', 'r') as csvfile:
         list = csv.reader(csvfile, delimiter=',')
         for row in list:
             line = (row[0] + ' ' + row[1] + ' ' + row[2])
             riglist.append(line)
 
+    #------------------------------------------------------------ COM Port List
     # for Windows
     if debug ==1:
         print("* Generating Serial Port List")
@@ -134,17 +134,27 @@ def stationParams():
     # set the final list
     serialportlist = result
 
+    #--------------------------------------------------------------------------
+    # Stat Window
+    #--------------------------------------------------------------------------
     window = Tk()
     if sys.platform == 'win32':
         window.option_readfile('pyfmtrc.win')
     else:
         window.option_readfile('pyfmtrc.nix')
-
     window.title("Station Parameters")
-    window_geom=""
+
+    # try to center widget in the middle of screen
+    window.update_idletasks()
+    x = (window.winfo_screenwidth() - window.winfo_reqwidth()) / 2
+    y = (window.winfo_screenheight() - window.winfo_reqheight()) / 2
+    window.geometry("+%d+%d" % (x, y))
+    window.deiconify()
+
+    # balloon for tool-tips
     balloon = Pmw.Balloon(window)
 
-    #-------------------------------------------------------- Main Widget Variables
+    #---------------------------------------------------- Main Widget Variables
     g1 = Pmw.Group(window,tag_pyclass=None)
 
     MyCall=StringVar()
@@ -164,42 +174,37 @@ def stationParams():
     stopbits = IntVar()
     serial_handshake = StringVar()
 
-    #--------------------------------------------------------------------- onDestroy
+    #---------------------------------------------------------------- onDestroy
     def onDestroy ():
         """Exit the main Widget"""
         window.destroy()
 
-    #---------------------------------------------------------------------- saveini
+    #------------------------------------------------------------------ saveini
     def saveini():
         """Save parameters and quit"""
         save_params()
 
-    #---------------------------------------------------------------------- saveini
-    def quit():
-        """Quit quit without saving"""
-        print("Exiting FMT Parameters\n")
-        sys.exit()
-
-    #---------------------------------------------------------------------- MsgWarn
+    #------------------------------------------------------------------ MsgWarn
     def MsgWarn(t):
         result=tkinter.messagebox.showwarning(message=t)
 
-    #---------------------------------------------------------------------- Msginfo
+    #------------------------------------------------------------------ Msginfo
     def MsgInfo(t):
         result=tkinter.messagebox.showinfo(message=t)
 
-    #------------------------------------------------------------------ save_params
+    #-------------------------------------------------------------- save_params
     def save_params():
-        r"""Save fmtparams.ini and fmt.ini if CAT / Rig Control checks pass
+        r"""Save pyfmt.ini and fmt.ini if CAT / Rig Control checks pass
         
         The function will try to change frequencies to the 20M WSPR frequency.
-        If it passes, the both the fmtparams.ini and fmt.ini files will be written,
-        and Info Message box is displayed, otherwise, an Error Message Box is shown
-        to the user, with a prompt to correct the settings.
+        If it passes, the both the pyfmt.ini and fmt.ini files will be
+        written, and Info Message box is displayed, otherwise, an Error Message
+        Box is shown to the user, with a prompt to correct the settings.
 
         """
         # 20m band WSPR frequenccy
         test_band = str(14095600)
+        
         # Hamlib rigctrl command
         cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %s" % \
             (
@@ -219,8 +224,8 @@ def stationParams():
             MsgWarn(t)
             status = 1
         else:
-            # write fmtparams.ini
-            with open(appdir + (os.sep) + 'fmtparams.ini', mode = 'w') as f:
+            # write pyfmt.ini
+            with open(appdir + (os.sep) + 'pyfmt.ini', mode = 'w') as f:
                 f.write("MyCall" + "=" + MyCall.get() + "\n")
                 f.write("MyGrid" + "=" + MyGrid.get() + "\n")
                 f.write("AudioIn" + "=" + str(DevinName.get().split()[0]) + "\n")
@@ -245,25 +250,25 @@ def stationParams():
             MsgInfo(t)
             status = 0
 
-    #--------------------------------------------------------------- callback audin
+    #----------------------------------------------------------- callback audin
     def audin(event=NONE):
         r"""Callback: user selected input sound device"""
         DevinName.get().split()[0]
         ndevin.set(DevinName.get().split()[0])
 
-    #--------------------------------------------------------------- callback rigin
+    #----------------------------------------------------------- callback rigin
     def rigin(event=NONE):
         r"""Callback: user selected rig number from widget"""
         RiginName.get().split()[0]
         ndevrig.set(RiginName.get().split()[0])
 
-    #---------------------------------------------------------------- callback catp
+    #------------------------------------------------------------ callback catp
     def catp(event=NONE):
         r"""Callback: user selected cat port"""
         CatPort.get()
         ncatport.set(CatPort.get())
 
-    #------------------------------------------------------------- callback chkcall
+    #--------------------------------------------------------- callback chkcall
     def chkcall(t):
         r"""Callback: check if user entered call is valid"""
         r = -1
@@ -277,7 +282,7 @@ def stationParams():
                 r = 1
         return r
 
-    #------------------------------------------------------------- callback chkcall
+    #--------------------------------------------------------- callback chkcall
     def listini():
         print("")
         print(45 * '-')
@@ -289,7 +294,7 @@ def stationParams():
                 print(line)
         f.close()
 
-    #------------------------------------------------------------- callback chkgrid
+    #--------------------------------------------------------- callback chkgrid
     def chkgrid(t):
         r"""Callback: check if user entered grid square is valid"""
         r = -1
@@ -305,13 +310,13 @@ def stationParams():
                    int(t[5:6],36) >= 10 and int(t[5:6],36) <= 33: r = 1
         return r
 
-    #-------------------------------------------------------- process fmtparams.ini
+    #---------------------------------------------------- process pyfmt.ini
     # read ini file
     try:
-        with open("fmtparams.ini", mode = 'r') as f:
+        with open("pyfmt.ini", mode = 'r') as f:
             params = f.read().splitlines()
             if debug ==1:
-                print("* Reading fmtparams.ini file")
+                print("* Reading pyfmt.ini file")
 
             for i in range(len(params)):
                 key,value = params[i].split("=")
@@ -473,7 +478,7 @@ def main():
     Function Notes:
         * Setup Station Parameters
         * Tests CAT control via Hamlib
-        * Writes fmtparams.ini and fmt.ini
+        * Writes pyfmt.ini and fmt.ini
 
     All other functions are under development
 

@@ -10,7 +10,7 @@ All of the core elements are now functional. The :code:`ftmparams.py` scripts pr
 * Select Input Audio Device via `PyAudio`_
 * Setup Rig Control via `Hamlib Control Libraries`_
 * Configure COM Ports settings via `PySerial`_
-* Write out :code:`fmtparams.ini` and :code:`fmt.ini` files
+* Write out :code:`pyfmt.ini` and :code:`fmt.ini` files
 * Widgets are drawn with a combination of `tKinter`_ and `Pmw`_.
 
 Individual Program Functions
@@ -108,12 +108,12 @@ This configuratoin allows for running many different rig / port combinations, wh
    ├── fmtave.out
    ├── fmt.ini
    ├── fmt.out
-   ├── fmtparams.ini
+   ├── pyfmt.ini
    ├── gocal
    ├── hamlib_rig_numbers
    └── pyfmtrc.nix
 
-.. NOTE:: If the the rig selection and comprt settings are correct, you will be presented with an info box stating so. The :code:`fmtparams.ini` and :code:`fmt.ini` files are written after a successful CAT connection made by saving your paramerter.
+.. NOTE:: If the the rig selection and comprt settings are correct, you will be presented with an info box stating so. The :code:`pyfmt.ini` and :code:`fmt.ini` files are written after a successful CAT connection made by saving your paramerter.
 
 After successful rig control setup, follow the `FMT User Guide`_ to perform the calibration test.
 
