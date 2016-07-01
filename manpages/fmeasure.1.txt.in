@@ -1,5 +1,5 @@
 :doctype: manpage
-:man source: AsciiDoc
+:man source: Asciidoctor
 :man manual: Fmeasure Man Page
 :man version: Version @VERSION@
 = fmeasure(1)

@@ -48,14 +48,14 @@ Finished.
 
 BUILD MANPAGES
 --------------
-Example: to produce wspr.1 manpage
+Example: to produce fmtest.1 manpage
 
-* After running ./autogeh.sh, cd ~/wspr/manpages
-* a2x --doctype manpage --format manpage --no-xmllint wspr.1.txt
-* View New Manpage: man man1/wspr.1
+* After running ./autogeh.sh, cd ~/pyfmt/manpages
+* a2x --doctype manpage --format manpage --no-xmllint fmttest.1.txt
+* View New Manpage: man man1/fmtest.1
 
 
 READ MANPAGES
 -------------
-man ~/wspr/manpages/man1/wspr.1
+man ~/pyfmt/manpages/man1/fmtest.1
 

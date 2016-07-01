@@ -2,7 +2,7 @@
 # Re-direct stdout and stderr:		bash
 #								make >& junk
 #
-# Prerequisites: Python3, Python2, A2x, AsciiDoctor, Portaudio, FFTW
+# Prerequisites: Python3 or Python2, AsciiDoctor, Portaudio, FFTW
 
 # Program Infomation
 PROGRAM		:=	@PROGRAM@
@@ -45,7 +45,7 @@ FCV			:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
 # Python Information
-PYTHON3		:=	@PYTHON3@
+PYTHON		:=	@PYTHON@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
@@ -58,17 +58,14 @@ FCOPT		+=	@FCOPT@
 PORTAUDIO_INCLUDE = 	@PORTAUDIO_INCLUDE@
 PORTAUDIO_LIBDIR =	@PORTAUDIO_LIBDIR@
 
-# For Manpages
+# For Manpages ( uses asciidoctor )
 BMANP		:=	@BMANP@
-A2X			:=	@A2X@
-ASCIIDOC	:=	@ASCIIDOC@
 MANPSRC		:= $(wildcard manpages/*.1.txt)
-PYTHON2		:=	@PYTHON2@
 APPSRC		:= $(./fmtest,fcal,fmeasure,fmtave)
 
 # For User Guide
-BDOC		:=	@BDOC@
 ASCIIDOCTOR	:=	@ASCIIDOCTOR@
+BDOC		:=	@BDOC@
 DOCSRC		:=	@DOCSRC@
 DOCCONF		:=	@DOCCONF@
 DOCPATH		:=	@DOCPATH@
@@ -151,7 +148,7 @@ ifeq ($(BMANP),Yes)
 	@echo --------------------
 	@for f in $(MANPSRC) ; do \
 	echo "$$f" ; \
-	$(A2X) --doctype manpage --format manpage --no-xmllint $$f ; \
+	$(ASCIIDOCTOR) -b manpage $$f ; \
 	done
 endif
 
@@ -203,8 +200,8 @@ endif
 # install WSPR
 install:
 	@echo
-	@echo INSTALLING $(PROGRAM) $(VERSION)
-	@echo -----------------------------------
+	@echo "'INSTALLING $(PROGRAM) $(VERSION)"
+	@echo '-----------------------------------'
 	@$(MKDIR) $(DESTDIR)$(BINDIR)
 	@$(MKDIR) $(DESTDIR)$(SHARED)
 	@$(MKDIR) $(DESTDIR)$(MANDIR)
@@ -212,15 +209,15 @@ install:
 	@$(MKDIR) $(DESTDIR)$(PYFMTLIB)
 	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/applications
 	@$(MKDIR) ${DESTDIR}$(PREFIX)/share/pixmaps
-	@echo " * Installing Binaries and Scripts"
+	@echo ' * Installing Binaries and Scripts'
 	@$(INSTALL) -m 755 -s fmtest fcal fmeasure fmtave $(DESTDIR)$(BINDIR)
 	@$(INSTALL) -m 755 pyfmt $(DESTDIR)$(BINDIR)
 	@$(INSTALL) -m 644 data/pyfmt.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	@$(INSTALL) -m 644 data/pyfmt.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
-	@echo ' * Installing Python Files
+	@echo ' * Installing Python Files'
 	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/pyfmtrc.nix data/gocal $(DESTDIR)$(SHARED)/
 	@$(INSTALL) -m 755 modfmt/*.py $(DESTDIR)$(PYFMTLIB)
-	@echo " * Installing Misc Items"
+	@echo ' * Installing Misc Items'
 	@$(INSTALL) -m 644 doc/examples/* $(DESTDIR)$(DOCDIR)/examples/
 ifeq ($(BDOC),Yes)
 	@echo ' * Installing User Guide'

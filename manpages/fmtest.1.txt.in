@@ -1,5 +1,5 @@
 :doctype: manpage
-:man source: AsciiDoc
+:man source: Asciidoctor
 :man manual: FMTest Man Page
 :man version: Version @VERSION@
 = fmtest(1)

@@ -79,6 +79,7 @@ AC_ISC_POSIX
 AC_C_INLINE
 AC_PROG_INSTALL
 AC_PATH_PROG(AR, ar)
+AC_PATH_PROG(ASCIIDOCTOR, asciidoctor)
 AC_PATH_PROG(AWK, awk)
 AC_PATH_PROG(CHMOD, chmod)
 AC_PATH_PROG(CHOWN, chown)
@@ -159,12 +160,12 @@ AC_PYFMT_DOCS
 # ----------------------------------------------------------------------------
 AC_PYFMT_MANPAGES
 
-# ------------------------------------------------------------------------------
-#  python2 path
+#------------------------------------------------------------------------------
+#  check python ( whatever is the default python install )
 # ----------------------------------------------------------------------------
-AC_PYFMT_PYTHON2
+AC_PYFMT_PYTHON
 
-# ------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #  check python modules - Pmw, PySerial, PyAudio
 # ----------------------------------------------------------------------------
 AC_PYFMT_PYMOD(Pmw)
@@ -204,9 +205,9 @@ AC_PYFMT_RIGCTL
 # ------------------------------------------------------------------------------
 #  report Python2
 # ------------------------------------------------------------------------------
-if test "$HAVE_PY2" = "no"; then
+if test "$HAVE_PY" = "no"; then
 	echo
-	echo "Python v2.6+ is required to build $PACKAGE_NAME"
+	echo "Python v2.6++ is required to build $PACKAGE_NAME"
 	echo
 	echo "Possible Solutions:"
 	echo "[1] Install your distro version of: Python v2.6+"
@@ -214,25 +215,7 @@ if test "$HAVE_PY2" = "no"; then
 	echo "[3] Include Python2.6+:"
 	echo
 	echo 'Example:'
-	echo './configure --with-python2="/path/to/python2/"'
-	echo
-	exit 1
-fi
-
-# ------------------------------------------------------------------------------
-#  report Python3
-# ------------------------------------------------------------------------------
-if test "$HAVE_PY3" = "no"; then
-	echo
-	echo "Python v3.2+ is required to build $PACKAGE_NAME"
-	echo
-	echo "Possible Solutions:"
-	echo "[1] Install your distro version of: Python v3.2+"
-	echo "[2] Add Python3.2+ to your system paths"
-	echo "[3] Include Python3.2+:"
-	echo
-	echo 'Example:'
-	echo './configure --with-python3="/path/to/python3/"'
+	echo './configure --with-python="/path/to/python/"'
 	echo
 	exit 1
 fi
