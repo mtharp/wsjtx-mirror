@@ -631,7 +631,6 @@ PORTAUDIO_LIBDIR
 PORTAUDIO_INCLUDE
 FCV
 FC_LIB_PATH
-PYTHON3
 PYTHON2
 BMANP
 ASCIIDOC
@@ -749,7 +748,6 @@ with_mandir
 enable_docs
 enable_manpages
 with_python2
-with_python3
 with_gfortran
 with_rigctl
 '
@@ -1389,7 +1387,6 @@ Optional Packages:
   --with-docdir=DIR       Path to documentation
   --with-mandir=DIR       Path to manpages
   --with-python2=DIR      Path to python2
-  --with-python3=DIR      Path to python3
   --with-gfortran=DIR     Path to gfortran
   --with-rigctl=PATH      Path to rigctl
 
@@ -6268,109 +6265,55 @@ fi
 
 
 # ------------------------------------------------------------------------------
-#  Python3 path
-# ------------------------------------------------------------------------------
+#  check python modules - Pmw, PySerial, PyAudio
+# ----------------------------------------------------------------------------
 
-HAVE_PY3=no
-
-# check with-enable first
-
-# Check whether --with-python3 was given.
-if test "${with_python3+set}" = set; then :
-  withval=$with_python3; PY3=$with_python3
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Python3 --with-python3" >&5
-$as_echo_n "checking Python3 --with-python3... " >&6; }
-
-# if --with-python3 is not empty
-if test -n "$PY3"; then
-
-# check if user provided python3 is >= 3.2
-$PY3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
-
-	if test "$?" != "0"; then
-		HAVE_PY3=no
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+    PYTHON_NAME=`basename $PYTHON`
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking $PYTHON_NAME module: Pmw" >&5
+$as_echo_n "checking $PYTHON_NAME module: Pmw... " >&6; }
+    $PYTHON -c "import Pmw" 2>/dev/null
+    if test $? -eq 0 ;
+    then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	else
-		HAVE_PY3=yes
-		PY3_PATH="$PY3"
-		PY3V=`$PY3_PATH -c "import sys; print(sys.version)" |${HEAD} -1 |${AWK} '{print }' |${CUT} -c1-5`
-		$as_echo "#define HAVE_PY3 1" >>confdefs.h
+        as_fn_error $? "Critical Error - cannot find module Pmw" "$LINENO" 5
+        exit 1
+    fi
 
 
-cat >>confdefs.h <<_ACEOF
-#define PY3_PATH "${PY3}"
-_ACEOF
-
-		PYTHON3="${PY3}"
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ${PY3V}" >&5
-$as_echo "yes ${PY3V}" >&6; }
-	fi
-else
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+    PYTHON_NAME=`basename $PYTHON`
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking $PYTHON_NAME module: serial" >&5
+$as_echo_n "checking $PYTHON_NAME module: serial... " >&6; }
+    $PYTHON -c "import serial" 2>/dev/null
+    if test $? -eq 0 ;
+    then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-fi
+        as_fn_error $? "Critical Error - cannot find module serial" "$LINENO" 5
+        exit 1
+    fi
 
-# if not user supplied, check by calling python3
-if test "$HAVE_PY3" = "no"; then
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Python3 using: python3" >&5
-$as_echo_n "checking Python3 using: python3... " >&6; }
-	python3 -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
 
-	if test "$?" != 0; then
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+    PYTHON_NAME=`basename $PYTHON`
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking $PYTHON_NAME module: pyaudio" >&5
+$as_echo_n "checking $PYTHON_NAME module: pyaudio... " >&6; }
+    $PYTHON -c "import pyaudio" 2>/dev/null
+    if test $? -eq 0 ;
+    then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-		HAVE_PY3=no
-	else
-		HAVE_PY3=yes
-		PY3_PATH=`which python3`
-		PY3V=`$PY3_PATH -c "import sys; print(sys.version)" |${HEAD} -1 |${AWK} '{print }' |${CUT} -c1-5`
-		$as_echo "#define HAVE_PY3 1" >>confdefs.h
-
-
-cat >>confdefs.h <<_ACEOF
-#define PY3_PATH "${PY3_PATH}"
-_ACEOF
-
-		PYTHON3="${PY3_PATH}"
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ${PY3V}" >&5
-$as_echo "yes ${PY3V}" >&6; }
-	fi
-fi
-
-# if not user supplied, if not by using python3, check by calling python
-if test "$HAVE_PY3" = "no"; then
-
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Python3 using: python" >&5
-$as_echo_n "checking Python3 using: python... " >&6; }
-	python -c "import sys; sys.exit(sys.version < '3.2')" >/dev/null 2>&1
-
-	if test "$?" != 0; then
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-		HAVE_PY3=no
-	else
-		HAVE_PY3=yes
-		PY3_PATH=`which python`
-		PY3V=`$PY3_PATH -c "import sys; print(sys.version)" |${HEAD} -1 |${AWK} '{print }' |${CUT} -c1-5`
-		$as_echo "#define HAVE_PY3 1" >>confdefs.h
-
-
-cat >>confdefs.h <<_ACEOF
-#define PY3_PATH "${PY3_PATH}"
-_ACEOF
-
-		PYTHON3="${PY3_PATH}"
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ${PY3V}" >&5
-$as_echo "yes ${PY3V}" >&6; }
-	fi
-fi
-
+        as_fn_error $? "Critical Error - cannot find module pyaudio" "$LINENO" 5
+        exit 1
+    fi
 
 
 # ------------------------------------------------------------------------------

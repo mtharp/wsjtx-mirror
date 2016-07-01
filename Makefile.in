@@ -162,18 +162,20 @@ mkmsg:
 	@echo "$(PROGRAM) Make Summary"
 	@echo '---------------------------------------------'
 	@echo ''
-	@echo "Package ..........: $(PROGRAM) $(VERSION)"
-	@echo " Install prefix ..: $(PREFIX)"
+	@echo 'PACKAGE'
+	@echo "  Version .........: $(VERSION)"
+	@echo "  Install prefix ..: $(PREFIX)"
+	@echo "  Rig Control .....: $(RIGCTL)"
 ifeq ($(BDOC),Yes)
-	@echo " With HTML Docs ..: $(BDOC)"
+	@echo "  With HTML Docs ..: $(BDOC)"
 endif
 ifeq ($(BMANP),Yes)
-	@echo " With Manpages ...: $(BMANP)"
+	@echo "  With Manpages ...: $(BMANP)"
 endif
 	@echo ''
 	@echo 'INSTALL'
-	@echo '* System Install ..: sudo make install'
-	@echo "* Test Install ....: make DESTDIR=/home/@LOGNAME@/PyFMT install"
+	@echo '  System Install ..: sudo make install'
+	@echo "  Test Install ....: make DESTDIR=/home/@LOGNAME@/PyFMT install"
 	@echo ''
 
 help:
@@ -199,7 +201,6 @@ endif
 	@echo ''
 
 # install WSPR
-# TODO: Update misc docs, and Python file installation paths
 install:
 	@echo
 	@echo INSTALLING $(PROGRAM) $(VERSION)
@@ -216,7 +217,7 @@ install:
 	@$(INSTALL) -m 755 pyfmt $(DESTDIR)$(BINDIR)
 	@$(INSTALL) -m 644 data/pyfmt.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	@$(INSTALL) -m 644 data/pyfmt.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
-	@echo ' * Installing Python3 Files'
+	@echo ' * Installing Python Files
 	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/pyfmtrc.nix data/gocal $(DESTDIR)$(SHARED)/
 	@$(INSTALL) -m 755 modfmt/*.py $(DESTDIR)$(PYFMTLIB)
 	@echo " * Installing Misc Items"
@@ -236,7 +237,6 @@ endif
 	@echo ''
 
 # Uninstall system files
-# TODO: Update uninstall locations
 uninstall:
 	@clear
 	@echo '--------------------------------------'
