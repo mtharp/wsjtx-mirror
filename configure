@@ -633,6 +633,8 @@ FCV
 FC_LIB_PATH
 BMANP
 BDOC
+ASCIIDOCTOR
+ADOCP
 LIBOBJS
 TR
 TEST
@@ -651,7 +653,6 @@ CP
 CHOWN
 CHMOD
 AWK
-ASCIIDOCTOR
 AR
 INSTALL_DATA
 INSTALL_SCRIPT
@@ -719,6 +720,7 @@ infodir
 docdir
 oldincludedir
 includedir
+runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -801,6 +803,7 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
+runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1053,6 +1056,15 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
+  -runstatedir | --runstatedir | --runstatedi | --runstated \
+  | --runstate | --runstat | --runsta | --runst | --runs \
+  | --run | --ru | --r)
+    ac_prev=runstatedir ;;
+  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
+  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
+  | --run=* | --ru=* | --r=*)
+    runstatedir=$ac_optarg ;;
+
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1190,7 +1202,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir
+		libdir localedir mandir runstatedir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1343,6 +1355,7 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -2606,6 +2619,7 @@ DOCSRC=$(exec pwd)/doc/user_guide
 THEMEDIR=$(exec pwd)/doc/theme/pyfmt
 DOCCONF=$(exec pwd)/doc/pyfmt.conf
 DOCPATH=$(exec pwd)/doc/
+MODIR==$(exec pwd)/modfmt
 LOGNAME="$LOGNAME"
 
 DOCSRC="$DOCSRC"
@@ -4738,46 +4752,6 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of "asciidoctor", so it can be a program name with args.
-set dummy asciidoctor; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_ASCIIDOCTOR+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $ASCIIDOCTOR in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_ASCIIDOCTOR="$ASCIIDOCTOR" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_ASCIIDOCTOR="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-ASCIIDOCTOR=$ac_cv_path_ASCIIDOCTOR
-if test -n "$ASCIIDOCTOR"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ASCIIDOCTOR" >&5
-$as_echo "$ASCIIDOCTOR" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
 # Extract the first word of "awk", so it can be a program name with args.
 set dummy awk; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -6070,29 +6044,26 @@ fi
 # Check whether --enable-docs was given.
 if test "${enable_docs+set}" = set; then :
   enableval=$enable_docs; ac_cv_docs=yes
-else
-  ac_cv_docs=no
-
 fi
 
+
 if test "x$ac_cv_docs" = "xyes"; then
-	BDOC=No
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: Build Documentation Disabled" >&5
-$as_echo "$as_me: Build Documentation Disabled" >&6;}
+    BDOC="No"
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Docs Disabled by user" >&5
+$as_echo "$as_me: Docs Disabled by user" >&6;}
 else
-	BDOC=Yes
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: Build Documentation Enabled" >&5
-$as_echo "$as_me: Build Documentation Enabled" >&6;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: User Requested Docs" >&5
+$as_echo "$as_me: User Requested Docs" >&6;}
 	# Extract the first word of "asciidoctor", so it can be a program name with args.
 set dummy asciidoctor; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_ASCIIDOCTOR+:} false; then :
+if ${ac_cv_path_ADOCP+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $ASCIIDOCTOR in
+  case $ADOCP in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_ASCIIDOCTOR="$ASCIIDOCTOR" # Let the user override the test with a path.
+  ac_cv_path_ADOCP="$ADOCP" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -6102,7 +6073,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_ASCIIDOCTOR="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_ADOCP="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -6113,17 +6084,28 @@ IFS=$as_save_IFS
   ;;
 esac
 fi
-ASCIIDOCTOR=$ac_cv_path_ASCIIDOCTOR
-if test -n "$ASCIIDOCTOR"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ASCIIDOCTOR" >&5
-$as_echo "$ASCIIDOCTOR" >&6; }
+ADOCP=$ac_cv_path_ADOCP
+if test -n "$ADOCP"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ADOCP" >&5
+$as_echo "$ADOCP" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
 
+    if test $? != 0; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: Docs disabled, Asciidoctor not found" >&5
+$as_echo "$as_me: Docs disabled, Asciidoctor not found" >&6;}
+	else
+        BDOC="Yes"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: Docs Enabled" >&5
+$as_echo "$as_me: Docs Enabled" >&6;}
+        ASCIIDOCTOR="$ac_cv_path_ADOCP"
+
+	fi
 fi
+
 BDOC="$BDOC"
 
 
@@ -6143,14 +6125,64 @@ fi
 
 
 if test "x$ac_cv_manpages" = "xyes"; then
-	BMANP=No
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: Build Manpages is Disabled" >&5
-$as_echo "$as_me: Build Manpages is Disabled" >&6;}
+    BMANP="No"
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Manpages Disabled by user" >&5
+$as_echo "$as_me: Manpages Disabled by user" >&6;}
 else
-	BMANP=Yes
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: Build Manpages is Enabled" >&5
-$as_echo "$as_me: Build Manpages is Enabled" >&6;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: User Requested Manpages" >&5
+$as_echo "$as_me: User Requested Manpages" >&6;}
+	# Extract the first word of "asciidoctor", so it can be a program name with args.
+set dummy asciidoctor; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ADOCP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ADOCP in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ADOCP="$ADOCP" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ADOCP="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
 fi
+ADOCP=$ac_cv_path_ADOCP
+if test -n "$ADOCP"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ADOCP" >&5
+$as_echo "$ADOCP" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+    if test $? != 0; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: Manpages disabled, Asciidoctor not found" >&5
+$as_echo "$as_me: Manpages disabled, Asciidoctor not found" >&6;}
+	else
+        BMANP="Yes"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: Manpages Enabled" >&5
+$as_echo "$as_me: Manpages Enabled" >&6;}
+        ASCIIDOCTOR="$ac_cv_path_ADOCP"
+
+	fi
+fi
+
 BMANP="$BMANP"
 
 
@@ -6265,22 +6297,6 @@ fi
 #------------------------------------------------------------------------------
 #  check python modules - Pmw, PySerial, PyAudio
 #------------------------------------------------------------------------------
-
-    PYTHON_NAME=`basename $PYTHON`
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking $PYTHON_NAME module: Pmw" >&5
-$as_echo_n "checking $PYTHON_NAME module: Pmw... " >&6; }
-    $PYTHON -c "import Pmw" 2>/dev/null
-    if test $? -eq 0 ;
-    then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-        as_fn_error $? "Critical Error - cannot find module Pmw" "$LINENO" 5
-        exit 1
-    fi
-
 
     PYTHON_NAME=`basename $PYTHON`
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking $PYTHON_NAME module: serial" >&5
@@ -6742,8 +6758,8 @@ if test "${with_rigctl+set}" = set; then :
   withval=$with_rigctl; RGC=$with_rigctl
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Rigctl --with-rigctl" >&5
-$as_echo_n "checking Rigctl --with-rigctl... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking rigctl using: ${with_rigctl}" >&5
+$as_echo_n "checking rigctl using: ${with_rigctl}... " >&6; }
 
 # if --with-rigctl is not empty
 if test -n "$RGC"; then
@@ -6768,8 +6784,8 @@ _ACEOF
 
 		RIGCTL="${RGC}"
 
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes ${RGCV}" >&5
-$as_echo "yes ${RGCV}" >&6; }
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 	fi
 else
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -6778,8 +6794,8 @@ fi
 
 # if not user supplied, check by calling rigctl directly
 if test "$HAVE_RGC" = "no"; then
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Rigctl using: rigctl" >&5
-$as_echo_n "checking Rigctl using: rigctl... " >&6; }
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking rigctl using: rigctl" >&5
+$as_echo_n "checking rigctl using: rigctl... " >&6; }
 	rigctl -h >/dev/null 2>&1
 
 	if test "$?" != 0; then
@@ -8107,6 +8123,8 @@ echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
 echo " FFTW3 ...........: ${ff_status}"
 echo " Portaudio .......: ${pa_status}"
+echo " Build Docs ......: ${BDOC}"
+echo " Build Manpages ..: ${BMANP}"
 echo " Copyright........: ${COPYRIGHT}"
 echo " Website .........: ${WEB}"
 echo " Report Bugs To ..: ${BUGS}"

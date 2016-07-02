@@ -4,7 +4,7 @@ HAVE_RGC=no
 # check with-enable first
 AC_ARG_WITH([rigctl],
 AC_HELP_STRING([--with-rigctl=PATH], [Path to rigctl]), [RGC=$with_rigctl])
-AC_MSG_CHECKING([Rigctl --with-rigctl])
+AC_MSG_CHECKING([rigctl using: ${with_rigctl}])
 
 # if --with-rigctl is not empty
 if test -n "$RGC"; then
@@ -22,7 +22,7 @@ $RGC -V >/dev/null 2>&1
 		AC_DEFINE([HAVE_RGC], [1])
 		AC_DEFINE_UNQUOTED([RGC_PATH], ["${RGC}"], [Path to Rigctl])
 		AC_SUBST([RIGCTL], ["${RGC}"])
-		AC_MSG_RESULT([yes ${RGCV}])
+		AC_MSG_RESULT([yes])
 	fi
 else
 	AC_MSG_RESULT([no])
@@ -30,7 +30,7 @@ fi
 
 # if not user supplied, check by calling rigctl directly
 if test "$HAVE_RGC" = "no"; then
-	AC_MSG_CHECKING([Rigctl using: rigctl])
+	AC_MSG_CHECKING([rigctl using: rigctl])
 	rigctl -h >/dev/null 2>&1
 
 	if test "$?" != 0; then

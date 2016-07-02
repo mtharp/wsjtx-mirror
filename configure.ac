@@ -53,6 +53,7 @@ DOCSRC=$(exec pwd)/doc/user_guide
 THEMEDIR=$(exec pwd)/doc/theme/pyfmt
 DOCCONF=$(exec pwd)/doc/pyfmt.conf
 DOCPATH=$(exec pwd)/doc/
+MODIR==$(exec pwd)/modfmt
 AC_SUBST([LOGNAME], ["$LOGNAME"])
 AC_SUBST([DOCSRC], ["$DOCSRC"])
 AC_SUBST([THEMEDIR], ["$THEMEDIR"])
@@ -79,7 +80,6 @@ AC_ISC_POSIX
 AC_C_INLINE
 AC_PROG_INSTALL
 AC_PATH_PROG(AR, ar)
-AC_PATH_PROG(ASCIIDOCTOR, asciidoctor)
 AC_PATH_PROG(AWK, awk)
 AC_PATH_PROG(CHMOD, chmod)
 AC_PATH_PROG(CHOWN, chown)
@@ -169,7 +169,6 @@ AC_PYFMT_PYTHON
 #------------------------------------------------------------------------------
 #  check python modules - Pmw, PySerial, PyAudio
 #------------------------------------------------------------------------------
-AC_PYFMT_PYMOD(Pmw)
 AC_PYFMT_PYMOD(serial)
 AC_PYFMT_PYMOD(pyaudio)
 
@@ -337,6 +336,8 @@ echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
 echo " FFTW3 ...........: ${ff_status}"
 echo " Portaudio .......: ${pa_status}"
+echo " Build Docs ......: ${BDOC}"
+echo " Build Manpages ..: ${BMANP}"
 echo " Copyright........: ${COPYRIGHT}"
 echo " Website .........: ${WEB}"
 echo " Report Bugs To ..: ${BUGS}"
