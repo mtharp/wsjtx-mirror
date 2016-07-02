@@ -1,10 +1,10 @@
-PyFMT is a Python wrapper for the FMT Suite by Joe Taylor (K1JT). The program
-suite was originally bundeled with the `Python WSPR Package`_
+`PyFMT`_ is a Python wrapper for the `FMT Suite`_ by `Joe Taylor, (K1JT)`_. The program
+suite was originally bundeled with the `WSPR Package`_. Its primary use if for Rig Calibration and the `ARRL Frequency Measurement Test`_
 
 
 Development Status
 ^^^^^^^^^^^^^^^^^^
-All of the core elements are now functional. The :code:`ftmparams.py` scripts provided the following:
+All of the core elements are now functional. The :code:`pyfmt` script provides the following:
 
 * Set station information, Call and Grid
 * Select Input Audio Device via `PyAudio`_
@@ -35,13 +35,13 @@ Both Python27 and Python35 have been tested. In addition to the base modules, in
 
 .. code-block:: bash
 
-   pip install Pwm pyserial pyaudio
+   pip install pyserial pyaudio
 
 **For Python3**
 
 .. code-block:: bash
 
-   pip3 install Pwm pyserial pyaudio
+   pip3 install pyserial pyaudio
 
 System Packages
 ^^^^^^^^^^^^^^^
@@ -54,7 +54,6 @@ The following packages are required at the system level:
 * Python2 / Python3
 * portaudio19-dev
 * libfftw3-3
-* libsamplerate0-dev
 
 Checkout and Compiling
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -62,24 +61,28 @@ Check out the code from the `WSJT Sourceforge Project`_
 
 .. code-block:: bash
 
-   1. svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/fmt
-   2. cd ./fmt
-   3. ./autogen.sh --with-rigctl="/home/user-name/jtsdk/hamlib3/bin/rigctl" \
-   --disable-docs --disable-manpages
-   4. make && sudo make install
-
-.. NOTE:: Do not forget to change :code:`user-name` to your user. The install location will be :code:`/usr/local` which is the recomended location. If your system does not have libhamlib-utiuls installed, you must pass a local location for the rigctl binary, otherwise, the configure script will present an error message.
+   * svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/fmt
+   * cd ./fmt
+   * ./autogen.sh
+   * make
+   * sudo make install
 
 
-Uninstall
-^^^^^^^^^
-To uninstall, perform a distclean in the checkout root directory:
+.. NOTE:: If your system does not have libhamlib-utiuls installed, you must pass a location of :code:`rigctl`, otherwise, the configure script will present an error message. The example below shows this method when compiled with `JTSDK for Nix`_.
 
 .. code-block:: bash
 
-   cd ./fmt
-   sudo make uninstall
-   make distclean
+   ./autogen.sh --with-rigctl="/home/$USER/jtsdk/hamlib3/bin/rigctl"
+
+Uninstall
+^^^^^^^^^
+To uninstall **PyFMT**, ferform the following tasks in a terminal
+
+.. code-block:: bash
+
+   cd ./fmt               # location of the checkout
+   sudo make uninstall    # run the invocation
+   make distclean         # clean the source tree
    
 Usage and Testing
 ^^^^^^^^^^^^^^^^^
@@ -113,11 +116,11 @@ This configuratoin allows for running many different rig / port combinations, wh
    ├── hamlib_rig_numbers
    └── pyfmtrc.nix
 
-.. NOTE:: If the the rig selection and comprt settings are correct, you will be presented with an info box stating so. The :code:`pyfmt.ini` and :code:`fmt.ini` files are written after a successful CAT connection made by saving your paramerter.
+.. NOTE:: If the the rig selection and comport settings are correct, you will be presented with an info box stating so. The :code:`pyfmt.ini` and :code:`fmt.ini` files are written after a successful CAT connection made by saving your paramerter.
 
 After successful rig control setup, follow the `FMT User Guide`_ to perform the calibration test.
 
-.. _Python Wspr Package: http://physics.princeton.edu/pulsar/k1jt/wspr.html
+.. _WSPR Package: http://physics.princeton.edu/pulsar/k1jt/wspr.html
 .. _Hamlib COntrol Libraries: https://sourceforge.net/projects/hamlib/?source=directory
 .. _PyAudio: https://people.csail.mit.edu/hubert/pyaudio/
 .. _PySerial: http://pyserial.readthedocs.io/en/latest/pyserial_api.html
@@ -128,3 +131,8 @@ After successful rig control setup, follow the `FMT User Guide`_ to perform the 
 .. _WSJT Sourceforge Project: https://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/fmt/
 .. _FMT User Guide: http://physics.princeton.edu/pulsar/k1jt/FMT_User.pdf
 .. _WSJT: http://physics.princeton.edu/pulsar/k1jt/
+.. _JTSDK for Nix: https://sourceforge.net/projects/jtsdk/
+.. _FMT Suite: http://physics.princeton.edu/pulsar/k1jt/FMT_User.pdf
+.. _Joe Taylor, (K1JT): https://en.wikipedia.org/wiki/Joseph_Hooton_Taylor_Jr.
+.. _PyFMT: https://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/fmt/
+.. _ARRL Frequency Measurement Test: http://www.arrl.org/frequency-measuring-test
