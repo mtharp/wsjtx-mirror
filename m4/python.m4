@@ -67,4 +67,15 @@ if test "$HAVE_PY" = "no"; then
 	fi
 fi
 
+# if we are using Python as the default Python, we need Pmw-2.0.0 files
+PMWV=`$PY_PATH -c "import sys; print sys.version" |${HEAD} -1 |${AWK} '{print $1}' |${HEAD} -c1 |${TAIL} -c1`
+if test ${PMWV} = '3'; then
+    PMW3='Yes'
+else
+    PMW3='No'
+fi
+
+AC_MSG_NOTICE([Copy Pmw3 files... ${PMW3}])
+AC_SUBST([PMW3], ["${PMW3}"])
+
 ])

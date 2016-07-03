@@ -46,8 +46,9 @@ FC			:=	@FC@
 FCV			:=	@FCV@
 FC_LIB_PATH	+=	@FC_LIB_PATH@
 
-# Python Information
+# Python and PMW Information
 PYTHON		:=	@PYTHON@
+PMW3		:=	@PMW3@
 
 # Libs and Flags
 LIBS		:=	@LIBS@
@@ -222,7 +223,11 @@ install:
 	@$(INSTALL) -m 644 data/pyfmt.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/
 	@echo ' * Installing Python Files'
 	@$(INSTALL) -m 644 data/hamlib_rig_numbers data/pyfmtrc.nix data/gocal $(DESTDIR)$(SHARED)/
-	@$(INSTALL) -m 755 modfmt/*.py $(DESTDIR)$(PYFMTLIB)
+	@$(INSTALL) -m 755 modfmt/*init*.py modfmt/fmt*.py modfmt/user*.py \
+	modfmt/*version.py modfmt/README* $(DESTDIR)$(PYFMTLIB)
+ifeq ($(PMW3),Yes)
+	@install -m 755 modfmt/Pmw*.py $(DESTDIR)$(PYFMTLIB)
+endif
 	@echo ' * Installing Misc Items'
 	@$(INSTALL) -m 644 doc/examples/* $(DESTDIR)$(DOCDIR)/examples/
 ifeq ($(BDOC),Yes)

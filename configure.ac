@@ -97,6 +97,7 @@ AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(SED, sed)
 AC_PATH_PROG(SORT, sort)
 AC_PATH_PROG(TEST, [test], [test])
+AC_PATH_PROG(TAIL, tail)
 AC_PATH_PROG(TR, tr)
 
 #------------------------------------------------------------------------------
@@ -332,6 +333,7 @@ echo ''
 echo " Package .........: ${PROGRAM} ${VERSION}"
 echo " Install prefix ..: ${PREFIX}"
 echo " Rig Control......: ${RIGCTL}"
+echo " Use Pmw v2 ......: ${PMW3}"
 echo " Fcompiler: ......: ${FC}"
 echo " FC Lib Path .....: ${FC_LIB_PATH}"
 echo " FFTW3 ...........: ${ff_status}"

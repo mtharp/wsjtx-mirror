@@ -14,11 +14,13 @@ _VERSION = '2.0.0'
 
 def setversion(version):
     if version != _VERSION:
-        raise ValueError, 'Dynamic versioning not available'
+#JHT/GB        raise ValueError, 'Dynamic versioning not available'
+        pass
 
 def setalphaversions(*alpha_versions):
     if alpha_versions != ():
-        raise ValueError, 'Dynamic versioning not available'
+#JHT/GB        raise ValueError, 'Dynamic versioning not available'
+        pass
 
 def version(alpha = 0):
     if alpha:
@@ -1511,7 +1513,7 @@ def initialise(
 
     # Set the base font size for the application and set the
     # Tk option database font resources.
-    from . 
+#JHT/GB    from . 
     _font_initialise(root, size, fontScheme)
     return root
 
