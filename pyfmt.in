@@ -73,6 +73,8 @@ APPD="$HOME/.local/share/applications"
 ICOND="$HOME/.local/share/icons"
 DTG=$(date -u)
 VERSION=@VERSION@
+OPATH="$PATH"
+
 
 ################################################################################
 # FUNCTIONS
@@ -111,9 +113,71 @@ exit 0
 
 }
 
-################################################################################
-# PROCESS COMMAND-LINE OPTIONS
-################################################################################
+#------------------------------------------------------------ UNSET BASH OPTIONS
+function set_options() {
+
+set +e
+set +o pipefail
+set +u
+
+}
+
+#------------------------------------------------------------ UNSET BASH OPTIONS
+function unset_options() {
+
+set +e
+set +o pipefail
+set +u
+
+}
+
+#------------------------------------------------------------------ SIGNAL CATCH
+sig_catch_cleanup() {
+
+EXIT_STATUS="$?"
+
+if [[ $EXIT_STATUS -eq 1 ]]
+then
+    export PATH="$OPATH"
+    echo ''
+	echo "Exit Status ""[ $EXIT_STATUS ]"
+	trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
+	unset exit_status
+	echo "@PROGRAM@ Signal Catch Cleanup Complete"
+	echo ''
+	exit 0
+fi
+
+}
+
+#-------------------------------------------------------------- NORMAL SHUTDOWN
+clean_exit() {
+
+EXIT_STATUS=$?
+
+export PATH="$OPATH"
+echo ''
+echo "Python Exit Status ""[ $EXIT_STATUS - OK ]"
+unset_options
+trap - SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
+export PATH="$OPATH"
+unset EXIT_STATUS
+echo "@PROGRAM@ Clean Exit Complete."
+echo ''
+exit 0
+
+}
+
+###############################################################################
+# START MAIN SCRIPT
+###############################################################################
+
+# set traps
+trap sig_catch_cleanup SIGHUP SIGINT SIGQUIT SIGTERM SIGTSTP
+
+# set options
+set_options
+
 set +u
 while getopts "hn:p:" opt; do
 	case $opt in
@@ -159,9 +223,6 @@ fi
 RUNDIR="$P_PATH/$N_NAME"
 set -u
 
-################################################################################
-# START MAIN SCRIPT
-################################################################################
 # clear and run the script
 clear ||:
 echo '***************************************************'
@@ -190,3 +251,8 @@ cp -u "$PREFIX"/share/pixmaps/pyfmt.xpm "$ICOND"/
 # run paths are set by configure.ac, do not edit manually
 cd "$RUNDIR"
 env PYTHONPATH=@PYFMTLIB@ @PYTHON@ -O @PYFMTLIB@/fmtmain.py
+
+# clean exit and traps
+clean_exit
+
+# END @PROGRAM@ @VERSION@

@@ -504,7 +504,7 @@ def main():
             main()
         # exit basic menu
         if selection == '4':
-            sys.exit("\n")
+            sys.exit(0)
         else:
             clear_screen()
             main_menu()
