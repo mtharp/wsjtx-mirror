@@ -27,33 +27,58 @@ Each of the utility programs and shell scritp files in the FMT package performs 
 
 **fmeasure**  Calculates the properly calibrated frequency of each test signal found in file :code:`fmtave.out`. Results are saved in file :code:`fmeasure.out`, and these are the numbers you should report if you are entering the Frequency Measuring Test.
 
-Python Environment
-^^^^^^^^^^^^^^^^^^
-Both Python27 and Python35 have been tested. In addition to the base modules, install the following packages with pip:
-
-**For Python2**
-
-.. code-block:: bash
-
-   pip install pyserial pyaudio
-
-**For Python3**
-
-.. code-block:: bash
-
-   pip3 install pyserial pyaudio
-
-System Packages
-^^^^^^^^^^^^^^^
+General System Level Packages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The following packages are required at the system level:
 
-* GCC
-* Gfortran
+**System**
+
+* asciidoctor
 * automake
 * autoconf
-* Python2 / Python3
+* GCC
+* Gfortran
+* libfftw3-dev
 * portaudio19-dev
-* libfftw3-3
+* libhamlib-utils ( optional if building Hamlib3 locally )
+
+.. NOTE::
+
+   On some systems ( `Ubuntu`_, `Debian`_ and `Linux Mint`_ ), it is required to install :code:`libjack-jackd2-dev` before installing :code:`portaudio19-dev`. The following proess has been reported to work by users of `JTSDK for Nix`_:
+   
+.. code-block:: bash
+
+   sudo apt-get install libjack-jackd2-dev
+   sudo apt-get install portautio19-dev
+
+There may be other system using the Jack subsystem. Care should be taken when installing manually. The
+Launchpad version of `PyFMT`_ ( when released ) will use a Pre-Depends section to deal with this situaiton. 
+
+
+**Python2 Modules**
+
+The folloiwing packages are for system that have **Python2** as the default Python installaiton. To test which version of Python you have, in a termainl, type:
+
+.. code-block:: bash
+
+   python --version
+
+If yout have :code:`2.7.0 thru 2.7.x` the following packages apply to that system
+
+* python-future
+* python-pmw
+* python-pyaudio
+* python-serial
+* python-tk
+
+**Python3 Systems**
+
+For systems with Python3 as their default, the following packages should be installed:
+
+* python3-pyaudio
+* python3-serial
+* python3-tk
+
 
 Checkout and Compiling
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -76,7 +101,7 @@ Check out the code from the `WSJT Sourceforge Project`_
 
 Uninstall
 ^^^^^^^^^
-To uninstall **PyFMT**, ferform the following tasks in a terminal
+To uninstall `PyFMT`_, ferform the following tasks in a terminal
 
 .. code-block:: bash
 
@@ -136,3 +161,6 @@ After successful rig control setup, follow the `FMT User Guide`_ to perform the 
 .. _Joe Taylor, (K1JT): https://en.wikipedia.org/wiki/Joseph_Hooton_Taylor_Jr.
 .. _PyFMT: https://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/fmt/
 .. _ARRL Frequency Measurement Test: http://www.arrl.org/frequency-measuring-test
+.. _Ubuntu: http://www.ubuntu.com/
+.. _Debian: https://www.debian.org/
+.. _Linux Mint: https://www.linuxmint.com/
