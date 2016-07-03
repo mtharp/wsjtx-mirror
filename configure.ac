@@ -173,6 +173,12 @@ AC_PYFMT_PYTHON
 AC_PYFMT_PYMOD(serial)
 AC_PYFMT_PYMOD(pyaudio)
 
+# these modules are not needed on Python3 systems
+if test ${PMW3} = "No"; then
+    AC_PYFMT_PYMOD(Pmw)
+    AC_PYFMT_PYMOD(future)
+fi
+
 #------------------------------------------------------------------------------
 #  check gfortran
 #------------------------------------------------------------------------------
