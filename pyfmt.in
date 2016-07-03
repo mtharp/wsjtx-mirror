@@ -68,6 +68,7 @@ C_NC='\033[01;37m'		# no color
 # local user directories for pyfmt.desktop and icon files
 SHARED=@SHARED@
 PREFIX=@PREFIX@
+RIGCTL=$(dirname @RIGCTL@)
 APPD="$HOME/.local/share/applications"
 ICOND="$HOME/.local/share/icons"
 DTG=$(date -u)
@@ -170,7 +171,7 @@ echo " Instance Name ...: $N_NAME"
 echo " Run Directory ...: $RUNDIR"
 echo '***************************************************'
 # set the paths to PyFMT package files
-PATH=@RIGCTL@:$PATH:@PREFIX@/bin:@PREFIX@/lib/pyfmt:@PREFIX@/share/pyfmt ; export PATH
+export PATH="$RIGCTL:$PREFIX/bin:$PREFIX/lib/pyfmt:$PREFIX/share/pyfmt:$PATH"
 
 # make dirs and copy / update files
 if [ ! -d "$RUNDIR" ] ; then mkdir -p "$RUNDIR" ; fi

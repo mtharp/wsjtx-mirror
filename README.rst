@@ -97,7 +97,17 @@ Check out the code from the `WSJT Sourceforge Project`_
 
 .. code-block:: bash
 
-   ./autogen.sh --with-rigctl="/home/$USER/jtsdk/hamlib3/bin/rigctl"
+   ./autogen.sh --with-rigctl="/home/<usr-name>/jtsdk/hamlib3/bin/rigctl"
+
+The :code:`rigctl` path must include the actual name of the file, for example, if your are using the binary built from `JTSDK for Nix`_, your path would look similar to this:
+
+.. code-block::
+
+   # Always add the file name
+   # Always use single quotes, and **do not** use variables that expand, like $HOME or $USER
+   #
+   ./autogen.sh --with-rigctl='/home/ki7mt/jtsdk/hamlib3/bin/rigctl'
+
 
 Uninstall
 ^^^^^^^^^
