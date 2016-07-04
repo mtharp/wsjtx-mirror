@@ -1,12 +1,12 @@
 ::-----------------------------------------------------------------------------::
 :: Name .........: gocal.bat
-:: Project ......: Part of the WSPR Project
-:: Description ..: Maintenance script for updated & upgrades or general use
+:: Project ......: Part of the PyFMT Project
+:: Description ..: Runs a series of frequencies for rig calibration
 :: Project URL ..: http://sourceforge.net/projects/jtsdk
 :: Usage ........: Run this file directly, or from the Windows Start Menu
 ::
 :: Author .......: Greg, Beam, KI7MT, <ki7mt@yahoo.com>
-:: Copyright ....: Copyright (C) 2001-2014 Joe Taylor, K1JT
+:: Copyright ....: Copyright (C) 2001-2016 Joe Taylor, K1JT
 :: License ......: GPL-3
 ::
 :: gocal.bat is free software: you can redistribute it and/or modify it under
@@ -24,15 +24,14 @@
 
 @ECHO OFF
 SETLOCAL
+IF NOT EXIST "%~dp0\fmt.ini" ( GOTO NEED_INI )
 PATH=.;.\bin
-IF NOT EXIST "%~dp0\WSPR.INI" ( GOTO NEED_INI )
 
 REM -- Only edit items "between" < BEGIN .. and .. END >
 REM    More Info: http://physics.princeton.edu/pulsar/K1JT/FMT_User.pdf
 
 :: < BEGIN - Edit Station Information >
-fmtest   660 1 1500 100 30  WFAN
-fmtest   880 1 1500 100 30  WCBS
+fmtest   950 1 1500 100 30  KCAP
 fmtest  1210 1 1500 100 30  WPHT
 fmtest  2500 1 1500 100 30  WWV
 fmtest  3330 1 1500 100 30  CHU
@@ -52,15 +51,14 @@ EXIT /B 0
 :NEED_INI
 CLS
 ECHO ------------------------------------
-ECHO        Missing WSPR.INI File
+ECHO  Missing [ fmt.ini ] File
 ECHO ------------------------------------
-ECHO  You must first run WSPR to generate
-ECHO  the an WSPR.INI file before running
-ECHO  gocal.bat
+ECHO  You must first run [ fmtmain.exe to
+ECHO  generate the an fmt.ini file before
+ECHO  running gocal.bat
 ECHO.
-ECHO  Make sure to save your latest
-ECHO  changes by going to: 
-ECHO  File, Save user parameters
+ECHO  Make sure to use the Save Button
+ECHO  before exiting the Station Parameters WWidget
 ECHO.
 ENDLOCAL
 EXIT /B 1

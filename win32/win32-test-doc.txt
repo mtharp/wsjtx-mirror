@@ -1,0 +1,58 @@
+FMT Test Documentation
+
+At present, rigcontrol is not copied automatically, but will be when the
+FMT build script is completed. Also, the package target is not function
+at thei time. All other targets build properly.
+
+Build and Installation
+======================
+1. Open JTSDK-PY
+2. cd C:\JTSDK\src
+3. svn co https://svn.code.sf.net/p/wsjt/wsjt/branches/fmt
+4. cd C:\JTSDK\src\fmt
+5. mingw32-make -f Makefile.jtsdk2 install
+
+Copy Hamlib Rig Control
+========================
+
+You must first build Hamlib3 with wither QT5.2 ot QT5.5, then following the
+instructions below based on which framwork you chose.
+
+* For QT5.2 Hamlib3 Builds:
+cd C:\JTSDK\fmt\install\bin
+cp C:\JTSDK\hamlib3\bin\rigctl.exe .\
+cp C:\JTSDK\qt5\Tools\mingw48_32\bin\libwinpthread-1.dll .\
+
+* For QT5.3 Hamlib3 Builds:
+cd C:\JTSDK\fmt\install\bin
+cp C:\JTSDK\hamlib3-qt55\bin\rigctl.exe .\
+cp C:\JTSDK\qt55\Tools\mingw492_32\bin\libwinpthread-1.dll .\
+
+Run and Test
+============
+1. Open JTSDK-PY if not already open.
+2. cd C:\JTSDK\fmt\install\bin
+3. fmtmain.exe
+4. Select options [1], set your station and rig parameters, Then Save Button
+5. Click on the Show Button to view the fmt.ini, then Exit Button
+6. Select option [4] on the menu to exit.
+7. cp fmt.ini ..\
+8. cd ..\
+9. Edit gocal.bat, add your desired frequencies
+10. Set your rig to USB and turn off or 0 RIT
+11. .\gocal.bat
+12. Edit fmt.all results per the current FMT User Guide, located at:
+
+http://physics.princeton.edu/pulsar/k1jt/FMT_User.pdf
+
+13. fmtave.exe fmt.all
+14. fcal.exe fmtave.out
+15. If it was a good run, add the the resutls in the WSJT-X WSPR settings
+Done!
+
+# End Test
+
+Reporting Bugs
+===============
+If you hit any problems report them to:  <wsjt-devel@lists.sourceforge.net>
+

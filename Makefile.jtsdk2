@@ -18,7 +18,8 @@ RANLIB = $(SDK)/mingw32/bin/ranlib.exe
 MAKE = $(SDK)/mingw32/bin/mingw32-make.exe
 
 # Fortran libs
-FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll
+FLIBS = $(SDK)/mingw32/bin/libgfortran-3.dll $(SDK)/mingw32/bin/libquadmath-0.dll \
+$(SDK)/mingw32/bin/libgcc_s_dw2-1.dll
 
 # Misc Tools & Files & Paths
 CP = $(SDK)/tools/bin/cp.exe
