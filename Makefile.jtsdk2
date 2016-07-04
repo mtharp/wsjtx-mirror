@@ -26,6 +26,7 @@ CP = $(SDK)/tools/bin/cp.exe
 MV = $(SDK)/tools/bin/mv.exe
 RM = $(SDK)/tools/bin/rm.exe
 MKDIR = $(SDK)/tools/bin/mkdir.exe
+TEST = $(SDK)tools\bin\test.EXE
 ISCC = $(SDK)/inno5/ISCC.exe
 ISS = $(SDK)/src/wspr/wspr4b.iss
 MSVCR = $(SDK)/Python33/DLLs/msvcr100.dll
@@ -43,7 +44,25 @@ PACKAGEDIR = $(SDK)/fmt/package
 PYTHON3 = $(SDK)/Python33/python.exe
 CXFR = $(PYTHON3) $(SDK)/Python33/Scripts/cxfreeze
 
-# COmpiler flags, libs and headers
+# Rig Control
+# Default is using the QT55 tool chain.
+# To change at build time, use:
+# mingw32-make QTVER=QTXX -f Makefile.jtsdk2
+QTVER := QT55
+ifeq ($(QTVER),QT52)
+	RCTL = C:/JTSDK/hamlib3/bin/rigctl.exe
+	RCTLDLL = C:/JTSDK/qt5/Tools/mingw48_32/bin/libwinpthread-1.dll
+endif
+ifeq ($(QTVER),QT55)
+	RCTL = C:/JTSDK/hamlib3-qt55/bin/rigctl.exe
+	RCTLDLL = C:/JTSDK/qt55/Tools/mingw492_32/bin/libwinpthread-1.dll
+endif
+ifeq ($(QTVER),QT56)
+	RCTL = C:/JTSDK/hamlib3-qt56/bin/rigctl.exe
+	RCTLDLL = C:/JTSDK/qt56/Tools/mingw492_32/bin/libwinpthread-1.dll
+endif
+
+# Compiler flags, libs and headers
 FFLAGS = -O2 -fbounds-check -fno-second-underscore -Werror -Wno-conversion -Wno-character-truncation
 CFLAGS = -I $(SRCD)/win32/include -DWIN32 -DWin32 -DBIGSYM -DHAVE_STRUCT_TIMESPEC
 LIBDIR = $(SRCD)/win32/lib
@@ -137,6 +156,8 @@ install: all
 	$(CP) -u win32/data/gocal.bat $(INSTALLDIR)
 	$(CP) -u $(DOCPATH)/pyfmt-main-$(VER).html $(INSTALLDIR)/doc/
 	$(CP) -u $(FLIBS) $(MSVCR) $(INSTALLDIR)/bin
+	$(CP) -u $(RCTL) $(INSTALLDIR)/bin/
+	$(CP) -u $(RCTLDLL) $(INSTALLDIR)/bin/
 	@echo.
 	@echo  INSTALL SUMMARY
 	@echo --------------------------------------
@@ -144,6 +165,7 @@ install: all
 	@echo  Version ......: $(VER)
 	@echo  Source .......: $(SRCD)
 	@echo  Install Dir ..: $(INSTALLDIR)
+	@echo  Rig Control ..: $(RCTL)
 	
 # /O = Installer output directory
 # /F = Win32 output file name

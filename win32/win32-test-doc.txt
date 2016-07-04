@@ -1,8 +1,19 @@
 FMT Test Documentation
 
-At present, rigcontrol is not copied automatically, but will be when the
-FMT build script is completed. Also, the package target is not function
-at thei time. All other targets build properly.
+Rig control paths are now set in the Makefile by parsing the variable QTVER. The
+default is set to QT55. You must build Hamlib3 with JTSDK before compiling
+PyFMT, either with QT52 or QT55, as the paths are hard coded. To change back / 
+uyse QT52 rather than QT55, add the variable at make time, for example:
+
+To set QT52 v.s. QT55:
+
+mingw32-make QTVER=QT52 -f Makefile.jtsdk install
+
+If the Makefile does not find the appropriate path / file combinations, most
+likely due to the fact Hamlib3 has not been built, the Makefile will exit with
+an error stating "..missing destination file operand after..", meaning,
+the files could not be found to copy.
+
 
 Build and Installation
 ======================
@@ -12,21 +23,6 @@ Build and Installation
 4. cd C:\JTSDK\src\fmt
 5. mingw32-make -f Makefile.jtsdk2 install
 
-Copy Hamlib Rig Control
-========================
-
-You must first build Hamlib3 with wither QT5.2 ot QT5.5, then following the
-instructions below based on which framwork you chose.
-
-* For QT5.2 Hamlib3 Builds:
-cd C:\JTSDK\fmt\install\bin
-cp C:\JTSDK\hamlib3\bin\rigctl.exe .\
-cp C:\JTSDK\qt5\Tools\mingw48_32\bin\libwinpthread-1.dll .\
-
-* For QT5.3 Hamlib3 Builds:
-cd C:\JTSDK\fmt\install\bin
-cp C:\JTSDK\hamlib3-qt55\bin\rigctl.exe .\
-cp C:\JTSDK\qt55\Tools\mingw492_32\bin\libwinpthread-1.dll .\
 
 Run and Test
 ============
@@ -52,7 +48,7 @@ Done!
 
 # End Test
 
+
 Reporting Bugs
 ===============
 If you hit any problems report them to:  <wsjt-devel@lists.sourceforge.net>
-
