@@ -48,8 +48,8 @@ def done():
     """Exit messagebox window"""
     root.quit()
 
-#---------------------------------------------------------------------- MsgWarn
-def MsgUdev():
+#---------------------------------------------------------------------- msgWarn
+def msgUdev():
     root = Tk()
     root.withdraw()
     tkinter.messagebox.showinfo("Under Development", "Feature is under development")
@@ -180,17 +180,72 @@ def stationParams():
         window.destroy()
 
     #------------------------------------------------------------------ saveini
+    def doNothing():
+        """Dummy function, used for testing"""
+        print("Dummy Function, doing nothing")
+
+    #------------------------------------------------------------------ saveini
     def saveini():
         """Save parameters and quit"""
         save_params()
 
-    #------------------------------------------------------------------ MsgWarn
-    def MsgWarn(t):
+    #------------------------------------------------------------------ msgWarn
+    def msgWarn(t):
         result=tkinter.messagebox.showwarning(message=t)
 
-    #------------------------------------------------------------------ Msginfo
-    def MsgInfo(t):
+    #------------------------------------------------------------------ msgInfo
+    def msgInfo(t):
         result=tkinter.messagebox.showinfo(message=t)
+
+    #------------------------------------------------------------------ msgInfo
+    def redButton(bc):
+        """Sets a button background color to red"""
+        bc.configure(bg='red')
+
+    #------------------------------------------------------------------ msgInfo
+    def greenYellow(bc):
+        """Sets a button background color to yellow"""
+        bc.configure(bg='yellow')
+
+    #------------------------------------------------------------------ msgInfo
+    def greenButton(bc):
+        """Sets a button background color to green"""
+        bc.configure(bg='green')
+
+    #-------------------------------------------------------------- save_params
+    def testCat():
+        r"""Test CAT connection by reading the current rig frequency
+        
+        Assumption
+            If you can read the rigs frequency, you should be able to
+            change bands
+        """
+        # Hamlib rigctrl command
+        cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s f " % \
+            (
+            RiginName.get().split()[0],
+            CatPort.get(),
+            serial_rate.get(),
+            databits.get(),
+            stopbits.get(),
+            serial_handshake.get()
+            ) 
+        # try to read the rig frequency
+        ierr = os.system(cmd)
+        if ierr != 0:
+            print
+            bc = test_button
+            redButton(bc)
+            t = "\n       Rig Control Failed!\nCheck CAT Setting and Re-Test  "
+            msgWarn(t)
+            status = 1
+        else:
+            # show sucess message
+            bc = test_button
+            greenButton(bc)
+            t = "\nRig Control is ( OK )  "
+            msgInfo(t)
+            status = 0
 
     #-------------------------------------------------------------- save_params
     def save_params():
@@ -220,8 +275,10 @@ def stationParams():
         # try to change bands with the rig
         ierr = os.system(cmd)
         if ierr != 0:
-            t = "Rig Control Failed!\nCheck CAT Setting and Re-Save"
-            MsgWarn(t)
+            bc = test_button
+            redButton(bc)
+            t = "   Rig Control Failed!\nCheck CAT Settings Test-CAT"
+            msgWarn(t)
             status = 1
         else:
             # write pyfmt.ini
@@ -246,8 +303,10 @@ def stationParams():
             f.close()
 
             # show sucess message
-            t = "Rig Control is ( OK )\nParameter files have been saved"
-            MsgInfo(t)
+            bc = test_button
+            greenButton(bc)
+            t = "\n  Saved Files pyfmt.ini and fmt.ini"
+            msgInfo(t)
             status = 0
 
     #----------------------------------------------------------- callback audin
@@ -446,6 +505,9 @@ def stationParams():
     g1.pack(side=LEFT, fill=BOTH, expand = 1, padx = 4, pady = 4)
 
     # side buttons
+    test_button = Button(text="Test CAT", command = testCat)
+    balloon.bind(test_button, 'Check CAT Settings')
+
     save_button = Button(text="Save", command = saveini)
     balloon.bind(save_button, 'Save Current Settings')
 
@@ -454,7 +516,7 @@ def stationParams():
 
     exit_button = Button(text="Exit", command = onDestroy)
     balloon.bind(exit_button, 'Exit widget without changes')
-    buttons = (save_button,show_button,exit_button)
+    buttons = (test_button,save_button,show_button,exit_button)
 
     # pack buttons
     for button in buttons:
@@ -493,13 +555,13 @@ def main():
             main()
         # Ris Calibration Functions
         if selection == '2':
-            MsgUdev()
+            msgUdev()
             clear_screen()
             main()
         # ARRL FM Test Functions
         if selection == '3':
             t='Ths feature is under development'
-            MsgUdev()
+            msgUdev()
             clear_screen()
             main()
         # exit basic menu

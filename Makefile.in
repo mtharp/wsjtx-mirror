@@ -207,7 +207,7 @@ endif
 # install pyfmt
 install:
 	@echo
-	@echo "'INSTALLING $(PROGRAM) $(VERSION)"
+	@echo "INSTALLING $(PROGRAM) $(VERSION)"
 	@echo '-----------------------------------'
 	@$(MKDIR) $(DESTDIR)$(BINDIR)
 	@$(MKDIR) $(DESTDIR)$(SHARED)
