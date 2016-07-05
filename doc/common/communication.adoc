@@ -1,7 +1,6 @@
 The following are established communication channels for the WSJT Group.
 For updates and other information on the continuing development of _WSJT_,
-_MAP65_, _WSPR_, _WSPR-X_, and _WSJT-X_ you are invited to subscribe to the
-{dev_mail_list}. 
+_WSPR_, and _WSJT-X_ you are invited to subscribe to the {dev_mail_list}. 
 
 .General Information
 * Main Site: {homepage}
