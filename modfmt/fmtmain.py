@@ -21,6 +21,7 @@ import glob
 import csv
 import time
 import subprocess
+import argparse
 import serial
 import pyaudio
 import Pmw
@@ -56,7 +57,7 @@ def msgUdev():
     root.destroy()
 
 #----------------------------------------------------------------- clear_screen
-def clear_screen():
+def clearScreen():
     """Clear Screen Based On Platform Type"""
     if sys.platform == 'win32':
         os.system('cls')
@@ -168,7 +169,7 @@ def stationParams():
     ndevrig = IntVar()
 
     CatPort = StringVar()
-    ncatport = StringVar()
+    ncatPortort = StringVar()
 
     serial_rate = IntVar()
     databits = IntVar()
@@ -180,15 +181,15 @@ def stationParams():
         """Exit the main Widget"""
         window.destroy()
 
-    #------------------------------------------------------------------ saveini
+    #------------------------------------------------------------------ saveIni
     def doNothing():
         """Dummy function, used for testing"""
         print("Dummy Function, doing nothing")
 
-    #------------------------------------------------------------------ saveini
-    def saveini():
+    #------------------------------------------------------------------ saveIni
+    def saveIni():
         """Save parameters and quit"""
-        save_params()
+        saveParams()
 
     #------------------------------------------------------------------ msgWarn
     def msgWarn(t):
@@ -303,13 +304,13 @@ def stationParams():
         astatus = status
         return astatus
 
-    #-------------------------------------------------------------- save_params
-    def save_params():
+    #-------------------------------------------------------------- saveParams
+    def saveParams():
         r"""Save pyfmt.ini and fmt.ini 
         
         Note
             This will save both ini files even with bad data, however,
-            the button chage colors to alert the user that either CAT or
+            the button changes colors alerting the user that either CAT or
             the Audio device selection has an error.
         
         """
@@ -349,14 +350,14 @@ def stationParams():
         RiginName.get().split()[0]
         ndevrig.set(RiginName.get().split()[0])
 
-    #------------------------------------------------------------ callback catp
-    def catp(event=NONE):
+    #------------------------------------------------------------ callback catPort
+    def catPort(event=NONE):
         r"""Callback: user selected cat port"""
         CatPort.get()
-        ncatport.set(CatPort.get())
+        ncatPortort.set(CatPort.get())
 
     #--------------------------------------------------------- callback chkcall
-    def chkcall(t):
+    def chkCall(t):
         r"""Callback: check if user entered call is valid"""
         r = -1
         n = len(t)
@@ -369,20 +370,26 @@ def stationParams():
                 r = 1
         return r
 
-    #--------------------------------------------------------- callback chkcall
-    def listini():
-        print("")
-        print(45 * '-')
-        print("Show fmt.ini")
-        print(45 * '-')
-        with open('fmt.ini', mode = 'r') as f:
-            for line in f:
-                line = line.rstrip('\n')
-                print(line)
-        f.close()
+    #--------------------------------------------------------- callback chkCall
+    def showFmtIni():
+        source=('fmt.ini')
+        if ( not os.path.isfile(source)):
+            t = "  Try settings first, then show results  "
+            msgWarn(t)
+            return             
+        else:
+            print("")
+            print(45 * '-')
+            print("Show fmt.ini")
+            print(45 * '-')
+            with open(source, mode = 'r') as f:
+                for line in f:
+                    line = line.rstrip('\n')
+                    print(line) 
+            f.close()
 
-    #--------------------------------------------------------- callback chkgrid
-    def chkgrid(t):
+    #--------------------------------------------------------- callback chkGrid
+    def chkGrid(t):
         r"""Callback: check if user entered grid square is valid"""
         r = -1
         n = len(t)
@@ -438,7 +445,7 @@ def stationParams():
         value='',
         entry_textvariable=MyCall,
         entry_width = 8,
-        validate=chkcall
+        validate=chkCall
         )
     # Grid EntryField
     lgrid = Pmw.EntryField(
@@ -448,7 +455,7 @@ def stationParams():
         value='',
         entry_textvariable=MyGrid,
         entry_width = 5,
-        validate=chkgrid
+        validate=chkGrid
         )
     # AudioIn  ComboBox
     audioin = Pmw.ComboBox(
@@ -478,7 +485,7 @@ def stationParams():
         entry_textvariable=CatPort,
         entry_width = 12,
         scrolledlist_items=serialportlist,
-        selectioncommand=catp
+        selectioncommand=catPort
         )
     # Baud ComboBox
     cbbaud = Pmw.ComboBox(
@@ -537,10 +544,10 @@ def stationParams():
     test_cat_button = Button(text="Test CAT", command = testCat)
     balloon.bind(test_cat_button, 'Check CAT Settings')
 
-    save_button = Button(text="Save", command = saveini)
+    save_button = Button(text="Save", command = saveIni)
     balloon.bind(save_button, 'Save Current Settings')
 
-    show_button = Button(text="Show", command = listini)
+    show_button = Button(text="Show", command = showFmtIni)
     balloon.bind(show_button, 'Display Contents of fmt.ini file')
 
     exit_button = Button(text="Exit", command = onDestroy)
@@ -567,7 +574,6 @@ def stationParams():
 # End - Stations Parameter Widget
 #******************************************************************************
 
-
 #---------------------------------------------------------- Main Menu Functions
 def main():
     """Main Menu Functions
@@ -581,44 +587,47 @@ def main():
     All other functions are under development
 
     """
+    clearScreen()
+    #----------------------------------------------------------------- Main Menu
+    def main_menu():
+        """Prints The Main Menu"""
+        print("\n Station Parameters")
+        print("   1. Set Station Parameters and Rig Control")
+        print("\n Rig Calibration")
+        print("   2. Setup Test Stations")
+        print("\n ARRL  Frequency Measuring")
+        print("   3. Setup ARRL Run Stations")
+        print("\n Utilities")
+        print("   4. Exit")
+        print("")
+
     while True:
         main_menu()
         selection = input("Selection: ")
         # Set Station Parameters and Rig Control
         if selection == '1':
             stationParams()
-            clear_screen()
+            clearScreen()
             main()
         # Ris Calibration Functions
         elif selection == '2':
             msgUdev()
-            clear_screen()
+            clearScreen()
             main()
         # ARRL FM Test Functions
         elif selection == '3':
             t='Ths feature is under development'
             msgUdev()
-            clear_screen()
+            clearScreen()
             main()
         # exit basic menu
         elif selection == '4':
             sys.exit(0)
         else:
-            clear_screen()
+            clearScreen()
             main()
 
-#-------------------------------------------------------------------- Main Menu
-def main_menu():
-    """Prints The Main Menu"""
-    print("\n Station Parameters")
-    print("   1. Set Station Parameters and Rig Control")
-    print("\n Rig Calibration")
-    print("   2. Setup Test Stations")
-    print("\n ARRL  Frequency Measuring")
-    print("   3. Setup ARRL Run Stations")
-    print("\n Utilities")
-    print("   4. Exit")
-    print("")
+
 
 if __name__ == "__main__":
     main()
