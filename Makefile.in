@@ -240,7 +240,7 @@ ifeq ($(BMANP),Yes)
 endif
 	@echo
 	@echo "TO RUN $(PROGRAM) $(VERSION):"
-	@echo "  Type ..........: pyfmt"
+	@echo "  Type ..........: pyfmt -n rig-name"
 	@echo "  Help Options ..: pyfmt -h"
 	@echo ''
 

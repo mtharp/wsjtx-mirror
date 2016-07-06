@@ -237,7 +237,7 @@ def stationParams():
         ierr = os.system(cmd)
         if ierr != 0:
             print
-            bc = test_button
+            bc = test_cat_button
             redButton(bc)
             t = "\n       Rig Control Failed!\nCheck CAT Setting and Re-Test  "
             msgWarn(t)
@@ -566,6 +566,7 @@ def main():
     Function Notes:
         * Setup Station Parameters
         * Tests CAT control via Hamlib
+        * Test AUdio Device Sample Rate
         * Writes pyfmt.ini and fmt.ini
 
     All other functions are under development
@@ -594,11 +595,11 @@ def main():
         elif selection == '4':
             sys.exit(0)
         else:
-            main_menu()
+            clear_screen()
+            main()
 
 #-------------------------------------------------------------------- Main Menu
 def main_menu():
-    clear_screen()
     """Prints The Main Menu"""
     print("\n Station Parameters")
     print("   1. Set Station Parameters and Rig Control")
