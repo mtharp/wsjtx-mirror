@@ -53,6 +53,7 @@ def msgUdev():
     root = Tk()
     root.withdraw()
     tkinter.messagebox.showinfo("Under Development", "Feature is under development")
+    root.destroy()
 
 #----------------------------------------------------------------- clear_screen
 def clear_screen():
@@ -175,7 +176,7 @@ def stationParams():
     serial_handshake = StringVar()
 
     #---------------------------------------------------------------- onDestroy
-    def onDestroy ():
+    def onDestroy():
         """Exit the main Widget"""
         window.destroy()
 
@@ -256,10 +257,18 @@ def stationParams():
     def testAudioDevice():
         """Test if selected Audio device supports 48000.0 khz sampling rate"""
         global astatus
-        idx = int(DevinName.get().split()[0])
-        srate = 48000.0
-        p = pyaudio.PyAudio()
-        devinfo = p.get_device_info_by_index(idx)
+        try:
+            idx = int(DevinName.get().split()[0])
+            srate = 48000.0
+            p = pyaudio.PyAudio()
+            devinfo = p.get_device_info_by_index(idx)
+        except ValueError:
+            bc = test_audio_button
+            redButton(bc)
+            t = "  Please select a valid audio device  "
+            msgWarn(t)
+            status = 1
+            return
 
         try:
             for x in range(1):
@@ -288,7 +297,7 @@ def stationParams():
             t = "\n    Wrong Audio Device Selected   "
             msgWarn(t)
             status = 1
-            pass
+            return
 
         p.terminate()
         astatus = status
