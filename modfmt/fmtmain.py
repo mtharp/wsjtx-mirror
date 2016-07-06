@@ -57,7 +57,7 @@ def msgUdev():
 #----------------------------------------------------------------- clear_screen
 def clear_screen():
     """Clear Screen Based On Platform Type"""
-    if sys.platform == 'wi32':
+    if sys.platform == 'win32':
         os.system('cls')
     else:
         os.system('clear')
@@ -197,22 +197,22 @@ def stationParams():
     def msgInfo(t):
         result=tkinter.messagebox.showinfo(message=t)
 
-    #------------------------------------------------------------------ msgInfo
+    #-----------------------------------------------------------------redButton
     def redButton(bc):
         """Sets a button background color to red"""
         bc.configure(bg='red')
 
-    #------------------------------------------------------------------ msgInfo
-    def greenYellow(bc):
+    #------------------------------------------------------------- yellowButton
+    def yellowButton(bc):
         """Sets a button background color to yellow"""
         bc.configure(bg='yellow')
 
-    #------------------------------------------------------------------ msgInfo
+    #-------------------------------------------------------------- greenButton
     def greenButton(bc):
         """Sets a button background color to green"""
         bc.configure(bg='green')
 
-    #-------------------------------------------------------------- save_params
+    #----------------------------------------------------------------- testCcat
     def testCat():
         r"""Test CAT connection by reading the current rig frequency
         
@@ -220,6 +220,9 @@ def stationParams():
             If you can read the rigs frequency, you should be able to
             change bands
         """
+        global cmd
+        global cstatus
+
         # Hamlib rigctrl command
         cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s f " % \
             (
@@ -241,73 +244,89 @@ def stationParams():
             status = 1
         else:
             # show sucess message
-            bc = test_button
+            bc = test_cat_button
             greenButton(bc)
-            t = "\nRig Control is ( OK )  "
-            msgInfo(t)
             status = 0
+
+        return cmd
+        cstatus = status
+        return cstatus
+
+    #---------------------------------------------------------- testAudioDevice
+    def testAudioDevice():
+        """Test if selected Audio device supports 48000.0 khz sampling rate"""
+        global astatus
+        idx = int(DevinName.get().split()[0])
+        srate = 48000.0
+        p = pyaudio.PyAudio()
+        devinfo = p.get_device_info_by_index(idx)
+
+        try:
+            for x in range(1):
+                p.is_format_supported(
+                    srate,
+                    input_device=devinfo['index'],
+                    input_channels=devinfo['maxInputChannels'],
+                    input_format=pyaudio.paInt16
+                    )
+            if x != 0:
+                bc = test_audio_button
+                redButton(bc)
+                t = "\n    Unsupported Sampling Rate, Chose Another Device   "
+                msgWarn(t)
+                status = 1
+            else:
+                # show success message
+                print(idx)
+                bc = test_audio_button
+                greenButton(bc)
+                status = 0
+
+        except ValueError:
+            bc = test_audio_button
+            redButton(bc)
+            t = "\n    Wrong Audio Device Selected   "
+            msgWarn(t)
+            status = 1
+            pass
+
+        p.terminate()
+        astatus = status
+        return astatus
 
     #-------------------------------------------------------------- save_params
     def save_params():
-        r"""Save pyfmt.ini and fmt.ini if CAT / Rig Control checks pass
+        r"""Save pyfmt.ini and fmt.ini 
         
-        The function will try to change frequencies to the 20M WSPR frequency.
-        If it passes, the both the pyfmt.ini and fmt.ini files will be
-        written, and Info Message box is displayed, otherwise, an Error Message
-        Box is shown to the user, with a prompt to correct the settings.
-
+        Note
+            This will save both ini files even with bad data, however,
+            the button chage colors to alert the user that either CAT or
+            the Audio device selection has an error.
+        
         """
-        # 20m band WSPR frequenccy
-        test_band = str(14095600)
-        
-        # Hamlib rigctrl command
-        cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F %s" % \
-            (
-            RiginName.get().split()[0],
-            CatPort.get(),
-            serial_rate.get(),
-            databits.get(),
-            stopbits.get(),
-            serial_handshake.get(),
-            test_band
-            )
+        testAudioDevice()
+        testCat()
+        # write pyfmt.ini
+        with open(appdir + (os.sep) + 'pyfmt.ini', mode = 'w') as f:
+            f.write("MyCall" + "=" + MyCall.get() + "\n")
+            f.write("MyGrid" + "=" + MyGrid.get() + "\n")
+            f.write("AudioIn" + "=" + str(DevinName.get().split()[0]) + "\n")
+            f.write("Rig" + "=" + str(RiginName.get().split()[0]) + "\n")
+            f.write("CatPort" + "=" + str(CatPort.get()) + "\n")
+            f.write("SerialRate" + "=" + str(serial_rate.get()) + "\n")
+            f.write("DataBits" + "=" + str(databits.get()) + "\n")
+            f.write("StopBits" + "=" + str(stopbits.get()) + "\n")
+            f.write("Handshake" + "=" + serial_handshake.get() + "\n")
+        f.close()
 
-        # try to change bands with the rig
-        ierr = os.system(cmd)
-        if ierr != 0:
-            bc = test_button
-            redButton(bc)
-            t = "   Rig Control Failed!\nCheck CAT Settings Test-CAT"
-            msgWarn(t)
-            status = 1
-        else:
-            # write pyfmt.ini
-            with open(appdir + (os.sep) + 'pyfmt.ini', mode = 'w') as f:
-                f.write("MyCall" + "=" + MyCall.get() + "\n")
-                f.write("MyGrid" + "=" + MyGrid.get() + "\n")
-                f.write("AudioIn" + "=" + str(DevinName.get().split()[0]) + "\n")
-                f.write("Rig" + "=" + str(RiginName.get().split()[0]) + "\n")
-                f.write("CatPort" + "=" + str(CatPort.get()) + "\n")
-                f.write("SerialRate" + "=" + str(serial_rate.get()) + "\n")
-                f.write("DataBits" + "=" + str(databits.get()) + "\n")
-                f.write("StopBits" + "=" + str(stopbits.get()) + "\n")
-                f.write("Handshake" + "=" + serial_handshake.get() + "\n")
-            f.close()
+        # write fmt.ini
+        with open(appdir + (os.sep) + 'fmt.ini', mode = 'w') as f:
+            f.write(cmd + '\n')
+            f.write(str(DevinName.get().split()[0]) + '\n')
+            f.write(MyCall.get() + '\n')
+            f.write(MyGrid.get() + '\n')
+        f.close()
 
-            # write fmt.ini
-            with open(appdir + (os.sep) + 'fmt.ini', mode = 'w') as f:
-                f.write(cmd + '\n')
-                f.write(str(DevinName.get().split()[0]) + '\n')
-                f.write(MyCall.get() + '\n')
-                f.write(MyGrid.get() + '\n')
-            f.close()
-
-            # show sucess message
-            bc = test_button
-            greenButton(bc)
-            t = "\n  Saved Files pyfmt.ini and fmt.ini"
-            msgInfo(t)
-            status = 0
 
     #----------------------------------------------------------- callback audin
     def audin(event=NONE):
@@ -369,14 +388,15 @@ def stationParams():
                    int(t[5:6],36) >= 10 and int(t[5:6],36) <= 33: r = 1
         return r
 
-    #---------------------------------------------------- process pyfmt.ini
-    # read ini file
+    #--------------------------------------------------------------------------
+    # Draw Station Parameters Widget
+    #--------------------------------------------------------------------------
+    # try to read pyfmt.ini file before drawing the widget
     try:
         with open("pyfmt.ini", mode = 'r') as f:
             params = f.read().splitlines()
             if debug ==1:
                 print("* Reading pyfmt.ini file")
-
             for i in range(len(params)):
                 key,value = params[i].split("=")
                 if   key == 'MyCall': MyCall.set(value)
@@ -401,9 +421,6 @@ def stationParams():
         stopbits.set(2)
         serial_handshake.set('None')
 
-    #--------------------------------------------------------------------------
-    # Draw Station Parameters Widget
-    #--------------------------------------------------------------------------
     # Callsign EntryField
     lcall = Pmw.EntryField(
         g1.interior(),
@@ -505,8 +522,11 @@ def stationParams():
     g1.pack(side=LEFT, fill=BOTH, expand = 1, padx = 4, pady = 4)
 
     # side buttons
-    test_button = Button(text="Test CAT", command = testCat)
-    balloon.bind(test_button, 'Check CAT Settings')
+    test_audio_button = Button(text="Test Audio", command = testAudioDevice)
+    balloon.bind(test_audio_button, 'Test Audio Device Sample Rate')
+
+    test_cat_button = Button(text="Test CAT", command = testCat)
+    balloon.bind(test_cat_button, 'Check CAT Settings')
 
     save_button = Button(text="Save", command = saveini)
     balloon.bind(save_button, 'Save Current Settings')
@@ -516,7 +536,13 @@ def stationParams():
 
     exit_button = Button(text="Exit", command = onDestroy)
     balloon.bind(exit_button, 'Exit widget without changes')
-    buttons = (test_button,save_button,show_button,exit_button)
+    buttons =   (
+                test_audio_button,
+                test_cat_button,
+                save_button,
+                show_button,
+                exit_button
+                )
 
     # pack buttons
     for button in buttons:
@@ -554,25 +580,25 @@ def main():
             clear_screen()
             main()
         # Ris Calibration Functions
-        if selection == '2':
+        elif selection == '2':
             msgUdev()
             clear_screen()
             main()
         # ARRL FM Test Functions
-        if selection == '3':
+        elif selection == '3':
             t='Ths feature is under development'
             msgUdev()
             clear_screen()
             main()
         # exit basic menu
-        if selection == '4':
+        elif selection == '4':
             sys.exit(0)
         else:
-            clear_screen()
             main_menu()
 
 #-------------------------------------------------------------------- Main Menu
 def main_menu():
+    clear_screen()
     """Prints The Main Menu"""
     print("\n Station Parameters")
     print("   1. Set Station Parameters and Rig Control")
