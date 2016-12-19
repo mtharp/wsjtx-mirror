@@ -236,11 +236,23 @@ def stationParams():
             If you can read the rigs frequency, you should be able to
             change bands
         """
-        global cmd
+        global scmd
+        global rcmd
         global cstatus
         freq = 14095600
         # Hamlib rigctrl command
-        cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s f" % \
+        # sets the rig frequency using u/c F
+        scmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s F" % \
+            (
+            RiginName.get().split()[0],
+            CatPort.get(),
+            serial_rate.get(),
+            databits.get(),
+            stopbits.get(),
+            serial_handshake.get(),
+            )
+        # reads the rig frequency with l/c f
+        rcmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s f" % \
             (
             RiginName.get().split()[0],
             CatPort.get(),
@@ -250,7 +262,7 @@ def stationParams():
             serial_handshake.get(),
             ) 
         # try to read the rig frequency
-        if os.system(cmd) != 0:
+        if os.system(rcmd) != 0:
             print
             bc = test_cat_button
             redButton(bc)
@@ -266,7 +278,7 @@ def stationParams():
             greenButton(bc)
             status = 0
 
-        return cmd
+        return rcmd
         cstatus = status
         return cstatus
 
@@ -354,7 +366,7 @@ def stationParams():
 
         # write fmt.ini
         with open(appdir + (os.sep) + 'fmt.ini', mode = 'w') as f:
-            f.write(cmd + '\n')
+            f.write(scmd + '\n')
             f.write(str(DevinName.get().split()[0]) + '\n')
             f.write(MyCall.get() + '\n')
             f.write(MyGrid.get() + '\n')
