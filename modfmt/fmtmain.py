@@ -68,9 +68,21 @@ def clearScreen():
 # Begin - Stations Parameter Widget
 #******************************************************************************
 def stationParams():
-    qt1 = time.time()
+    """Function to set the following:
 
-    # generate lists
+    Callsign
+    Grid Square
+    Audio In Device
+
+    Cate Control
+        Hamlib Rig Number
+        Serial Rate
+        Data Bits
+        Stop Bits
+        Handshake
+    """
+    # widget lists
+    qt1 = time.time()
     indevlist=[]
     riglist=[]
     devices = []
@@ -80,7 +92,7 @@ def stationParams():
     stoplist=(1,2)
     
     #-------------------------------------------------------- Audio Device List
-    # requires Portaudio19-Dev
+    # PyAudio requires Portaudio19-Dev
     if debug == 1:
         print("* Generating Audio Device List")
     p = pyaudio.PyAudio()
@@ -94,6 +106,7 @@ def stationParams():
         indevlist.append(a)
 
     #----------------------------------------------------------------- Rig List
+    # Rig Lists requires Hamlib rigctl
     if debug == 1:
         print("* Generating Hamlib Rig List")
     with open('hamlib_rig_numbers', 'r') as csvfile:
@@ -103,6 +116,7 @@ def stationParams():
             riglist.append(line)
 
     #------------------------------------------------------------ COM Port List
+    # Requires pyserial
     # for Windows
     if debug ==1:
         print("* Generating Serial Port List")
@@ -224,20 +238,19 @@ def stationParams():
         """
         global cmd
         global cstatus
-
+        freq = 14095600
         # Hamlib rigctrl command
-        cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s f " % \
+        cmd = "rigctl -m %s -r %s -s %s -C data_bits=%s -C stop_bits=%s -C serial_handshake=%s f" % \
             (
             RiginName.get().split()[0],
             CatPort.get(),
             serial_rate.get(),
             databits.get(),
             stopbits.get(),
-            serial_handshake.get()
+            serial_handshake.get(),
             ) 
         # try to read the rig frequency
-        ierr = os.system(cmd)
-        if ierr != 0:
+        if os.system(cmd) != 0:
             print
             bc = test_cat_button
             redButton(bc)
@@ -246,6 +259,9 @@ def stationParams():
             status = 1
         else:
             # show sucess message
+            if debug == 1:
+                t = ("\n  Rig Number [ %s ] is OK  " % RiginName.get().split()[0])
+                msgInfo(t)
             bc = test_cat_button
             greenButton(bc)
             status = 0
@@ -256,7 +272,12 @@ def stationParams():
 
     #---------------------------------------------------------- testAudioDevice
     def testAudioDevice():
-        """Test if selected Audio device supports 48000.0 khz sampling rate"""
+        """Test if selected Audio device supports 48000.0 khz sampling rate
+        
+        Important
+            If the device index being testing is in use, 
+        
+        """
         global astatus
         try:
             idx = int(DevinName.get().split()[0])
@@ -279,18 +300,20 @@ def stationParams():
                     input_channels=devinfo['maxInputChannels'],
                     input_format=pyaudio.paInt16
                     )
-            if x != 0:
-                bc = test_audio_button
-                redButton(bc)
-                t = "\n    Unsupported Sampling Rate, Chose Another Device   "
-                msgWarn(t)
-                status = 1
-            else:
-                # show success message
-                print(idx)
-                bc = test_audio_button
-                greenButton(bc)
-                status = 0
+                if x != 0:
+                    bc = test_audio_button
+                    redButton(bc)
+                    t = "\n    Device Busy or Unsupported   "
+                    msgWarn(t)
+                    status = 1
+                else:
+                    # show success message
+                    if debug == 1:
+                        t = ("\n  Audio Device [ %s ] is OK  " % idx)
+                        msgInfo(t)
+                    bc = test_audio_button
+                    greenButton(bc)
+                    status = 0
 
         except ValueError:
             bc = test_audio_button
