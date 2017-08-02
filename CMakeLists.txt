@@ -102,8 +102,9 @@ ExternalProject_Add (hamlib
   GIT_TAG ${hamlib_TAG}
   URL ${CMAKE_CURRENT_SOURCE_DIR}/src/hamlib.tgz
   URL_HASH MD5=${hamlib_md5sum}
+  UPDATE_COMMAND ./bootstrap
   PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/hamlib.patch
-  CONFIGURE_COMMAND <SOURCE_DIR>/autogen.sh --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
+  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-shared --enable-static --without-cxx-binding ${EXTRA_FLAGS} # LIBUSB_LIBS=${USB_LIBRARY}
   BUILD_COMMAND $(MAKE) all V=1 # $(MAKE) is ExternalProject_Add() magic to do recursive make
   INSTALL_COMMAND $(MAKE) install-strip V=1 DESTDIR=""
   STEP_TARGETS update install
