@@ -31,7 +31,7 @@ Find_program (PATCH_EXECUTABLE patch REQUIRED)
 # extra C flags to minimize hamlib excutable sizes
 #
 if (NOT APPLE)
-  set (EXTRA_FLAGS "CFLAGS=-fPIC -fdata-sections -ffunction-sections" "LDFLAGS=-Wl,--gc-sections")
+  set (EXTRA_FLAGS "CFLAGS=-g -O2 -fPIC -fdata-sections -ffunction-sections" "LDFLAGS=-Wl,--gc-sections")
 endif (NOT APPLE)
 
 
