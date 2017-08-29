@@ -161,7 +161,7 @@ ExternalProject_Add (wsjtx
   -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   ${WSJTX_EXTRA_CMAKE_OPTIONS}
   INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-  STEP_TARGETS update configure build install
+  STEP_TARGETS update configure build install package
   )
 ExternalProject_Add_Step (wsjtx package
   COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target package
@@ -178,6 +178,7 @@ set_target_properties (wsjtx PROPERTIES EXCLUDE_FROM_ALL 1)
 add_dependencies (wsjtx-configure hamlib-install)
 add_dependencies (wsjtx-build hamlib-install)
 add_dependencies (wsjtx-install hamlib-install)
+add_dependencies (wsjtx-package hamlib-install)
 
 # export traditional targets
 add_custom_target (build ALL DEPENDS wsjtx-build)
