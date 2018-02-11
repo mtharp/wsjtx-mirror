@@ -590,6 +590,9 @@ set (wsjt_FSRCS
   lib/zplot9.f90
   )
 
+# temporary workaround for a gfortran v7.3 ICE on Fedora 27 64-bit
+set_source_files_properties (lib/slasubs.f PROPERTIES COMPILE_FLAGS -O2)
+
 set (ka9q_CSRCS
   lib/ftrsd/decode_rs.c
   lib/ftrsd/encode_rs.c
@@ -642,7 +645,7 @@ set (wsprsim_CSRCS
   )
 
 set (wsprd_CSRCS
-  lib/wsprd/wsprd_exp.c
+  lib/wsprd/wsprd.c
   lib/wsprd/wsprsim_utils.c
   lib/wsprd/wsprd_utils.c
   lib/wsprd/fano.c
