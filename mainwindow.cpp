@@ -3320,9 +3320,11 @@ void MainWindow::guiUpdate()
               ui->TxFreqSpinBox->setValue(nf);
             }
           }
-          if (m_nSentFoxRrpt == 2) {
-            // move off the original Fox frequency on subsequent tries
-            ui->TxFreqSpinBox->setValue (m_nFoxFreq + 300);
+          if (m_nSentFoxRrpt==2 and m_ntx==3) {
+            // move off the original Fox frequency on subsequent tries of Tx3
+            int nfreq=m_nFoxFreq + 300;
+            if(m_nFoxFreq>600) nfreq=m_nFoxFreq - 300;  //keep nfreq below 900 Hz
+            ui->TxFreqSpinBox->setValue(nfreq);
           }
           if (m_nSentFoxRrpt == 1) {
             ++m_nSentFoxRrpt;
@@ -7712,7 +7714,7 @@ list2Done:
 Transmit:
   foxcom_.nslots=islot;
   foxcom_.nfreq=ui->TxFreqSpinBox->value();
-  if(m_config.split_mode()) foxcom_.nfreq = foxcom_.nfreq + 1500;  //Fox Tx freq
+  if(m_config.split_mode()) foxcom_.nfreq = foxcom_.nfreq - m_XIT;  //Fox Tx freq
   QString foxCall=m_config.my_callsign() + "         ";
   strncpy(&foxcom_.mycall[0], foxCall.toLatin1(),12);   //Copy Fox callsign into foxcom_
   foxgen_();
